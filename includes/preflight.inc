@@ -268,9 +268,6 @@ function drush_preflight_root() {
   // Load the config options from Drupal's /drush and sites/all/drush directories,
   // even prior to bootstrapping the root.
   drush_load_config('drupal');
-
-  // Add whatever drupal console module commands we can find in the root
-  consoleadapter_add_module_commands();
 }
 
 function drush_preflight_site() {

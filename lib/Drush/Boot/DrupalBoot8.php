@@ -74,9 +74,19 @@ class DrupalBoot8 extends DrupalBoot {
   }
 
   function bootstrap_drupal_configuration() {
-    $this->request = Request::createFromGlobals();
     $classloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
-    $this->kernel = DrupalKernel::createFromRequest($this->request, $classloader, 'prod');
+    $application = drush_get_context('CONSOLE_APPLICATION');
+    if (!empty($application)) {
+      $application->setDrupalAutoLoad($classloader);
+      $debug = drush_get_context('DRUSH_DEBUG', FALSE);
+      $application->setup('prod', $debug);
+      $this->kernel = $application->getKernel();
+      $this->request = $application->getHelperSet()->get('kernel')->getRequest();
+    }
+    else {
+      $this->request = Request::createFromGlobals();
+      $this->kernel = DrupalKernel::createFromRequest($this->request, $classloader, 'prod');
+    }
 
     // Unset drupal error handler and restore drush's one.
     restore_error_handler();
@@ -88,8 +98,15 @@ class DrupalBoot8 extends DrupalBoot {
     if (!drush_get_context('DRUSH_QUIET', FALSE)) {
       ob_start();
     }
-    $this->kernel->boot();
-    $this->kernel->prepareLegacyRequest($this->request);
+    $application = drush_get_context('CONSOLE_APPLICATION');
+    if (!empty($application)) {
+      $application->bootstrap();
+      consoleadapter_add_module_commands(DRUPAL_ROOT);
+    }
+    else {
+      $this->kernel->boot();
+      $this->kernel->prepareLegacyRequest($this->request);
+    }
     if (!drush_get_context('DRUSH_QUIET', FALSE)) {
       ob_end_clean();
     }

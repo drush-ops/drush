@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "be3f9714724eb03579970f09fb725596",
+    "hash": "71173c7386a8df209ed4f5197aae2b84",
     "packages": [
         {
             "name": "composer/installers",
@@ -139,16 +139,16 @@
         },
         {
             "name": "drupal/console",
-            "version": "0.7.9",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hechoendrupal/DrupalAppConsole.git",
-                "reference": "5dceda77e2538efa494d36d21b5437ed6f87bf56"
+                "reference": "3eb00b790ec687b8bcecd13ff18ccd48b5860ff3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hechoendrupal/DrupalAppConsole/zipball/5dceda77e2538efa494d36d21b5437ed6f87bf56",
-                "reference": "5dceda77e2538efa494d36d21b5437ed6f87bf56",
+                "url": "https://api.github.com/repos/hechoendrupal/DrupalAppConsole/zipball/3eb00b790ec687b8bcecd13ff18ccd48b5860ff3",
+                "reference": "3eb00b790ec687b8bcecd13ff18ccd48b5860ff3",
                 "shasum": ""
             },
             "require": {
@@ -162,6 +162,7 @@
                 "symfony/dom-crawler": "2.6.*",
                 "symfony/event-dispatcher": "2.6.*",
                 "symfony/finder": "2.6.*",
+                "symfony/http-foundation": "2.6.*",
                 "symfony/translation": "2.6.*",
                 "symfony/yaml": "2.6.*",
                 "twig/twig": "1.16.*"
@@ -206,7 +207,7 @@
                 "development",
                 "drupal"
             ],
-            "time": "2015-04-15 17:13:17"
+            "time": "2015-04-17 07:19:01"
         },
         {
             "name": "herrera-io/json",
@@ -1018,6 +1019,60 @@
             "description": "Symfony Finder Component",
             "homepage": "http://symfony.com",
             "time": "2015-03-30 15:54:10"
+        },
+        {
+            "name": "symfony/http-foundation",
+            "version": "v2.6.6",
+            "target-dir": "Symfony/Component/HttpFoundation",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/HttpFoundation.git",
+                "reference": "8a6337233f08f7520de97f4ffd6f00e947d892f9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/8a6337233f08f7520de97f4ffd6f00e947d892f9",
+                "reference": "8a6337233f08f7520de97f4ffd6f00e947d892f9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "symfony/expression-language": "~2.4",
+                "symfony/phpunit-bridge": "~2.7"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.6-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\HttpFoundation\\": ""
+                },
+                "classmap": [
+                    "Symfony/Component/HttpFoundation/Resources/stubs"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Symfony HttpFoundation Component",
+            "homepage": "http://symfony.com",
+            "time": "2015-04-01 16:50:12"
         },
         {
             "name": "symfony/translation",
@@ -2199,7 +2254,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "drupal/console": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

@@ -102,16 +102,16 @@ function consoleadapter_add_global_commands($application) {
     drush_set_context('CONSOLE_APPLICATION_COMMANDS', $items);
 }
 
-function consoleadapter_add_module_commands() {
-    /*
-    $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+function consoleadapter_add_module_commands($root) {
     $application = drush_get_context('CONSOLE_APPLICATION');
-    $registerCommandsHelper = $application->getHelperSet()->get('register_commands');
+    $kernel = $application->bootstrap($root);
     $commands = drush_get_context('CONSOLE_APPLICATION_COMMANDS');
     // Add commands defined by Drupal modules
+    $registerCommandsHelper = $application->getHelperSet()->get('register_commands');
     $items = consoleadapter_convert_console_commands_to_drush($registerCommandsHelper->getCustomCommands());
     drush_set_context('CONSOLE_APPLICATION_COMMANDS', array_merge($commands, $items));
-    */
+
+    return $kernel;
 }
 
 function consoleadapter_callback() {
@@ -173,8 +173,6 @@ function consoleadapter_convert_console_commands_to_drush($console_command_list)
             'options' => $options,
             'core' => array('8+'),
             'callback' => 'consoleadapter_callback',
-            // We will let the console command bootstrap, since it expects to do that.
-            'bootstrap' => DRUSH_BOOTSTRAP_NONE,
             'commandfile' => 'core',
             'path' => FALSE,
             'category' => 'console',
