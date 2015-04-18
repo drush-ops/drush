@@ -12,6 +12,7 @@ Advanced usage
 - Skip slow tests (usually those with network usage): `unish.sh --exclude-group slow`
 - XML results: `unish.sh --filter=testVersionString --log-junit results.xml`
 - Use an alternate version of Drupal: `UNISH_DRUPAL_MAJOR_VERSION=8 unish.sh ...`
+- Skip teardown (to examine test sites after a failure): `UNISH_DIRTY=1 unish.sh ...`
 
 Reuse by Drush Commandfiles
 -----------
