@@ -85,55 +85,61 @@ class configMergeTest extends CommandUnishTestCase {
       return;
     }
 
-    // Pass $separate_roots TRUE to install each site in a different directory
-    $sites = $this->setUpSingleSiteDrupal('dev', TRUE);
-    $sites = $this->setUpSingleSiteDrupal('stage', TRUE);
+    // Create a dev site; we will copy this site to create our stage site
+    $sites = $this->setUpDrupal(1, TRUE);
+
+    // Copy settings.php from sites/dev to sites/default.
+    $dev_settings = file_get_contents($sites['dev']['root'] . '/sites/dev/settings.php');
+    file_put_contents($sites['dev']['root'] . '/sites/default/settings.php', $dev_settings);
 
     $dev_options = array(
-      'root' => $this->webroot('dev'),
+      'root' => $sites['dev']['root'],
       'uri' => 'default',
       'yes' => NULL,
     );
 
     $stage_options = array(
-      'root' => $this->webroot('stage'),
+      'root' => dirname($sites['dev']['root']) . '/stage',
       'uri' => 'default',
       'yes' => NULL,
       'tool' => '0',
       'strict' => '0',
     );
 
+    // Create a root directory for the staging site
+    mkdir($stage_options['root']);
+
+    // Create a site alias for the staging site.
+    $this->writeSiteAlias('stage', $stage_options['root'], 'default');
+
+    // Export initial configuration for dev site
+    $this->drush('config-export', array(), $dev_options);
+
+    // Write a .gitignore file for the dev site, to ignore settings.php and the files/php directory.
+    file_put_contents($dev_options['root'] . '/.gitignore', "sites/default/settings.php\nsites/default/files/php");
+    // Make a git repository for the dev site.
+    $this->createGitRepository($dev_options['root']);
+
+    // We have to check out the files in the 'stage' site from
+    // the git repository of the 'dev' site so that we can
+    // use git to transfer configuration.
+
+    // make a bare repository, push the dev site up to it, and clone from there.
+    $master_repo = dirname($dev_options['root']) . '/config-merge.git';
+    mkdir($master_repo, 0777, TRUE);
+    $this->execute("git init --bare", CommandUnishTestCase::EXIT_SUCCESS, $master_repo);
+    $this->execute("git remote add origin file://" . $master_repo . " && git push origin master", CommandUnishTestCase::EXIT_SUCCESS, $dev_options['root']);
+    $this->execute("git clone file://" . $master_repo . " " . $stage_options['root']);
+    $this->execute("git config user.email 'unish@drush.org' && git config user.name 'Unish'", CommandUnishTestCase::EXIT_SUCCESS, $stage_options['root']);
+
+    // Change the db settings in $stage_settings
+    $stage_settings = str_replace("_dev", "_stage", $dev_settings);
+    file_put_contents($stage_options['root'] . '/sites/default/settings.php', $stage_settings);
+
     // Both sites must be based off of the same install; otherwise, the uuids
     // for the initial configuration items will not match, which will cause
     // problems.
     $this->drush('sql-sync', array('@self', '@stage'), $dev_options);
-
-    // Export initial configuration
-    $this->drush('config-export', array(), $dev_options);
-    $this->drush('config-export', array(), $stage_options);
-
-    // Write a .gitignore file for each site, to ignore settings.php.
-    foreach (array_keys($sites) as $site) {
-      file_put_contents($this->webroot($site) . '/.gitignore', "sites/default/settings.php\nsites/default/files/php");
-    }
-    // Make a git repository for the dev site.
-    $this->createGitRepository($this->webroot('dev'));
-
-    // We have to check out the files in the 'stage' site from
-    // the git repository of the 'dev' site so that we can
-    // use git to transfer configuration.  To do this, we will
-    // first save the settings.php file from the stage site,
-    // then we will do the checkout, and replace settings.php.
-    $stage_settings = file_get_contents($this->webroot('stage') . '/sites/default/settings.php');
-    unish_file_delete_recursive($this->webroot('stage'), TRUE);
-    // make a bare repository, push the dev site up to it, and clone from there.
-    $master_repo = dirname($this->webroot('dev')) . '/config-merge.git';
-    mkdir($master_repo, 0777, TRUE);
-    $this->execute("git init --bare", CommandUnishTestCase::EXIT_SUCCESS, $master_repo);
-    $this->execute("git remote add origin file://" . $master_repo . " && git push origin master", CommandUnishTestCase::EXIT_SUCCESS, $this->webroot('dev'));
-    $this->execute("git clone file://" . $master_repo . " " . $this->webroot('stage'));
-    $this->execute("git config user.email 'unish@drush.org' && git config user.name 'Unish'", CommandUnishTestCase::EXIT_SUCCESS, $this->webroot('stage'));
-    file_put_contents($this->webroot('stage') . '/sites/default/settings.php', $stage_settings);
 
     // Part one:  test config-merge using the git push / pull mechanism
     // We have to test 'git' first, because it requires both sites to stay
@@ -144,7 +150,7 @@ class configMergeTest extends CommandUnishTestCase {
     // up the repository.
 
     // Get the last commit hash
-    $this->execute("git log --pretty=format:%h -1", CommandUnishTestCase::EXIT_SUCCESS, $this->webroot('dev'));
+    $this->execute("git log --pretty=format:%h -1", CommandUnishTestCase::EXIT_SUCCESS, $dev_options['root']);
     $base = $this->getOutput();
 
     // Make a configuration change on 'stage' site
@@ -172,7 +178,7 @@ class configMergeTest extends CommandUnishTestCase {
     // Part two:  test config-merge using the format-patch mechanism
 
     // Get the last commit hash
-    $this->execute("git log --pretty=format:%h -1", CommandUnishTestCase::EXIT_SUCCESS, $this->webroot('dev'));
+    $this->execute("git log --pretty=format:%h -1", CommandUnishTestCase::EXIT_SUCCESS, $dev_options['root']);
     $base = $this->getOutput();
 
     // Make a configuration change on 'stage' site
@@ -186,7 +192,7 @@ class configMergeTest extends CommandUnishTestCase {
     $this->assertEquals("'system.site:name': format_patch", $this->getOutput(), 'Config set, merged and fetched via format-patch.');
 
     // Get the last commit hash
-    $this->execute("git log --pretty=format:%h -1", CommandUnishTestCase::EXIT_SUCCESS, $this->webroot('dev'));
+    $this->execute("git log --pretty=format:%h -1", CommandUnishTestCase::EXIT_SUCCESS, $dev_options['root']);
     $base = $this->getOutput();
 
     // Make a configuration change on 'stage' site
@@ -211,7 +217,7 @@ class configMergeTest extends CommandUnishTestCase {
     $this->drush('config-get', array('system.site', 'name'), $dev_options);
     $this->assertEquals("'system.site:name': config_test", $this->getOutput(), 'Config set, merged and fetched via rsync.');
 
-    $this->execute("git reset --hard", CommandUnishTestCase::EXIT_SUCCESS, $this->webroot('dev'));
+    $this->execute("git reset --hard", CommandUnishTestCase::EXIT_SUCCESS, $dev_options['root']);
 
     // Make a second configuration change on 'stage' site
     $this->drush('config-set', array('system.site', 'name', 'config_test_2'), $stage_options);
@@ -226,7 +232,7 @@ class configMergeTest extends CommandUnishTestCase {
 
     // Finally, make sure that we have all of the commits we should
     // in the 'dev' site
-    $this->execute("git log", CommandUnishTestCase::EXIT_SUCCESS, $this->webroot('dev'));
+    $this->execute("git log", CommandUnishTestCase::EXIT_SUCCESS, $dev_options['root']);
     // First, we remove blank lines, and lines that do not begin with a space.
     // This gets rid of all of the header lines, like "commit" and "Date:" that
     // contain variable data.
@@ -265,6 +271,7 @@ Initial commit.", implode("\n", $outputList));
   }
 
   protected function createGitRepository($dir) {
+    unish_file_delete_recursive($dir . '/.git');
     $this->execute("git init && git config user.email 'unish@drush.org' && git config user.name 'Unish' && git add . && git commit -m 'Initial commit.'", CommandUnishTestCase::EXIT_SUCCESS, $dir);
   }
 }
