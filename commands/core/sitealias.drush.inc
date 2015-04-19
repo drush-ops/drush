@@ -391,34 +391,71 @@ function drush_sitealias_site_set($site = '@none') {
           drush_log($success_message, 'ok');
         }
       }
+      // Create a symlink to the site-local Drush, if it
+      // exists, in $HOME/.drush/use/__PPID__/bin and
+      // $HOME/.drush/use/bin, or remove both of those
+      // if there is no site-local Drush.
+      $use_dir = drush_server_home() . '/.drush/use';
+      $terminal_specific_link = drush_sitealias_create_site_specific_symlinks($use_dir, $site);
+
       // See if user requested PATH adjustment
       if (drush_get_option('path')) {
-        $alias_record = drush_sitealias_get_record($site);
-        $root = sitealias_find_local_drupal_root(array($alias_record));
-        $new_path = array();
-        if (!empty($root)) {
-          $search_locations = array('.', 'core', '..');
-          foreach ($search_locations as $loc) {
-            $drush_test = "$root/$loc/vendor/drush/drush";
-            if (is_file($drush_test . '/drush')) {
-              $new_path[] = $drush_test;
-            }
-          }
-        }
-        $path = getenv("PATH");
-        foreach (explode(':', $path) as $path_item) {
-          if (strstr($path_item, "/vendor/drush/drush") === FALSE) {
-            $new_path[] = $path_item;
-          }
-        }
-        $set_path = implode(':', $new_path);
-        if (trim($set_path) != trim($path)) {
-          drush_print($set_path);
-        }
+        drush_sitealias_manage_path($use_dir, $terminal_specific_link);
       }
     }
     else {
       return drush_set_error('DRUPAL_SITE_NOT_FOUND', dt("Could not find a site definition for !site.", array('!site' => $site)));
     }
+  }
+}
+
+function drush_sitealias_create_site_specific_symlinks($use_dir, $site) {
+  drush_mkdir($use_dir);
+  $terminal_specific_link = $use_dir . '/' . posix_getppid() . '/bin';
+  $global_link = $use_dir . '/bin';
+
+  $alias_record = drush_sitealias_get_record($site);
+  $root = sitealias_find_local_drupal_root(array($alias_record));
+  $site_local_drush_dir = FALSE;
+  if (!empty($root)) {
+    $search_locations = array('.', 'core', '..');
+    foreach (array('vendor/bin', 'vendor/drush/drush') as $bin_dir) {
+      foreach ($search_locations as $loc) {
+        $drush_test = "$root/$loc/$bin_dir";
+        if (!$site_local_drush_dir && file_exists($drush_test . '/drush')) {
+          $site_local_drush_dir = $drush_test;
+        }
+      }
+    }
+  }
+  if ($site_local_drush_dir) {
+    drush_mkdir(dirname($terminal_specific_link));
+    @symlink($site_local_drush_dir, $terminal_specific_link);
+    @symlink($site_local_drush_dir, $global_link);
+
+    return $terminal_specific_link;
+  }
+  else {
+    @unlink($terminal_specific_link);
+    @unlink($global_link);
+
+    return FALSE;
+  }
+}
+
+function drush_sitealias_manage_path($use_dir, $terminal_specific_link = FALSE) {
+  $new_path = array();
+  if ($terminal_specific_link) {
+    $new_path[] = $terminal_specific_link;
+  }
+  $path = getenv("PATH");
+  foreach (explode(':', $path) as $path_item) {
+    if (strstr($path_item, $use_dir) === FALSE) {
+      $new_path[] = $path_item;
+    }
+  }
+  $set_path = implode(':', $new_path);
+  if (trim($set_path) != trim($path)) {
+    drush_print($set_path);
   }
 }
