@@ -113,10 +113,10 @@ class configMergeTest extends CommandUnishTestCase {
 
     // Part one:  test config-merge using the git push / pull mechanism
     // We have to test 'git' first, because it requires both sites to stay
-    // in sync with the upstream repository.  In contrast, the format-patch
-    // and rsync mechanisms presume that the remote site cannot reach the
-    // central repository, so they do not attempt to keep the remote side
-    // in sync.  Doing those tests later means that we do not need to clean
+    // in sync with the upstream repository.  In contrast, the
+    // rsync mechanism presumes that the remote site cannot reach the
+    // central repository, so it does not attempt to keep the remote side
+    // in sync.  Doing this tests later means that we do not need to clean
     // up the repository.
 
     // Get the last commit hash
@@ -144,38 +144,7 @@ class configMergeTest extends CommandUnishTestCase {
     $this->drush('config-get', array('system.site', 'name'), $dev_options);
     $this->assertEquals("'system.site:name': git-2", $this->getOutput(), 'Config set, merged and fetched via git a second time.');
 
-
-    // Part two:  test config-merge using the format-patch mechanism
-
-    // Get the last commit hash
-    $this->execute("git log --pretty=format:%h -1", CommandUnishTestCase::EXIT_SUCCESS, $sites['dev']['root']);
-    $base = $this->getOutput();
-
-    // Make a configuration change on 'stage' site
-    $this->drush('config-set', array('system.site', 'name', 'format_patch'), $stage_options);
-
-    // Run config-merge to copy the configuration change to the 'dev' site
-    $this->drush('config-merge', array('@stage'), $dev_options + array('format-patch' => NULL, 'base' => $base));
-
-    // Verify that the configuration change we made on 'stage' now exists on 'dev'
-    $this->drush('config-get', array('system.site', 'name'), $dev_options);
-    $this->assertEquals("'system.site:name': format_patch", $this->getOutput(), 'Config set, merged and fetched via format-patch.');
-
-    // Get the last commit hash
-    $this->execute("git log --pretty=format:%h -1", CommandUnishTestCase::EXIT_SUCCESS, $sites['dev']['root']);
-    $base = $this->getOutput();
-
-    // Make a configuration change on 'stage' site
-    $this->drush('config-set', array('system.site', 'name', 'format_patch-2'), $stage_options);
-
-    // Run config-merge to copy the configuration change to the 'dev' site
-    $this->drush('config-merge', array('@stage'), $dev_options + array('format-patch' => NULL, 'base' => $base));
-
-    // Verify that the configuration change we made on 'stage' now exists on 'dev'
-    $this->drush('config-get', array('system.site', 'name'), $dev_options);
-    $this->assertEquals("'system.site:name': format_patch-2", $this->getOutput(), 'Config set, merged and fetched via format-patch.');
-
-    // Part three:  test config-merge using the rsync mechanism
+    // Part two:  test config-merge using the rsync mechanism
 
     // Make a configuration change on 'stage' site
     $this->drush('config-set', array('system.site', 'name', 'config_test'), $stage_options);
@@ -223,12 +192,6 @@ class configMergeTest extends CommandUnishTestCase {
 Collection Config Operation
 system.site update
 Merged configuration from @stage in config_test
-Collection Config Operation
-system.site update
-Merged configuration from @stage in format_patch-2
-Collection Config Operation
-system.site update
-Merged configuration from @stage in format_patch
 Collection Config Operation
 system.site update
 Exported configuration.

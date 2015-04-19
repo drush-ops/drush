@@ -30,11 +30,10 @@ above, we have the following commits:
 
 ## Transport Mechanisms
 
-The `drush config-merge` command provides three different ways to transfer
+The `drush config-merge` command provides two ways to transfer
 changes from the remote server to the local development server:
 
 - Git branches, using `git push` and `git pull`.
-- `git format-patch`, with `rsync` and `git am`.
 - Raw file copying of all configuration files with `rsync`
 
 ### Using Git Branches
@@ -55,32 +54,15 @@ on the target machine to pull them in, where they are merged.
 
     $ drush @dev config-merge @stage --git --branch=stage
 
-## Using Git Format-Patch
-
-If the remote server cannot push commits to the central git repository,
-then you can use the --format-patch option.
-
-**Requirements:**
-
-- The congfiguration files on the staging server must be under git version control.
-- The base commit must be identified.
-- Path to configuration folder must be the same for both sites (Drupal multisites not supported).
-- ssh access to the remote server is required.
-
-**Usage:**
-
-    $ drush @dev config-merge @stage --format-patch --base=E
-
 ## Using rsync to Copy all of the Configuration Files
 
-Finally, if the remote server contains only the deployed files, and
-no local repository exists (.git folder not deployed), then you can
-merge via rsync.
+If the remote server cannot push commits to the central git repository,
+then you can use the rsync mechanism (the default).
 
 **Requirements:**
 
 - ssh access to the remote server is required.
-- Merged changes should be deployed back to the remote server before more remote configuration changes are made.  Otherwise, the next run of `config-merge` will back out configuration changes made on the dev machine.
+- Merged changes should be deployed back to the remote server before more remote configuration changes are made.  Otherwise, the next run of `config-merge` will back out any additional configuration changes made on the dev machine.
 
 **Usage:**
 

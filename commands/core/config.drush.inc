@@ -94,10 +94,6 @@ function config_drush_command() {
       'add' => 'Run `git add -p` after exporting. This lets you choose which config changes to stage for commit.',
       'commit' => 'Run `git add -A` and `git commit` after exporting.  This commits everything that was exported without prompting.',
       'push' => 'Run `git push` after committing.  Implies --commit.',
-      'format-patch' => array(
-        'description' => 'Run `git format-patch` after committing, and store patch files in the specified path.  Implies --commit.',
-        'example-value' => '/path/filename.patch',
-      ),
       'remote' => array(
         'description' => 'The remote git branch to use to push changes.  Defaults to "origin".',
         'example-value' => 'origin',
@@ -190,18 +186,12 @@ function config_drush_command() {
         'description' => 'The remote git branch to use to fetch changes.  Defaults to "origin".',
         'example-value' => 'origin',
       ),
-      'format-patch' => 'Use `git format-patch` to create a single patch file when moving changes from the remote site via rsync.  Optional.  Default is to copy all of the files via rsync.',
-      'format-patch-file' => array(
-        'description' => 'Save the format-patch file at the specified path.  Optional; default is to delete the patch file.',
-        'example-value' => 'path',
-        'value' => 'required',
-      ),
     ),
     'examples' => array(
       'drush @dev config-merge @production' => 'Merge configuration changes from the production site with the configuration changes made on the development site.',
       'drush @dev config-merge /path/to/drupal#sitefolder' => 'Merge configuration changes from the site indicated by the provided site specification.',
     ),
-    'topics' => array('docs-cmi'),
+    'topics' => array('docs-cm'),
   );
 
   return $items;
@@ -349,10 +339,9 @@ function drush_config_export($destination = NULL) {
 
   // Prepare a new branch, if applicable
   $remote = drush_get_option('push', FALSE);
-  $format_patch_path = drush_get_option('format-patch', FALSE);
   $original_branch = FALSE;
   $branch = FALSE;
-  if ($remote || $format_patch_path) {
+  if ($remote) {
     // Get the branch that we're on at the moment
     $result = drush_shell_cd_and_exec($destination_dir, 'git rev-parse --abbrev-ref HEAD');
     if (!$result) {
@@ -445,8 +434,7 @@ function _drush_config_export($destination, $destination_dir, $branch) {
 
   // Commit and push, or add exported configuration if requested.
   $remote = drush_get_option('push', FALSE);
-  $format_patch_path = drush_get_option('format-patch', FALSE);
-  if ($commit || $remote || $format_patch_path) {
+  if ($commit || $remote) {
     // There must be changed files at the destination dir; if there are not, then
     // we will skip the commit-and-push step
     $result = drush_shell_cd_and_exec($destination_dir, 'git status --porcelain .');
@@ -473,20 +461,6 @@ function _drush_config_export($destination, $destination_dir, $branch) {
         $result = drush_shell_cd_and_exec($destination_dir, 'git push --set-upstream %s %s', $remote, $branch);
         if (!$result) {
           return drush_set_error('DRUSH_CONFIG_EXPORT_FAILURE', dt("`git push` failed."));
-        }
-      }
-      if ($format_patch_path) {
-        // Use a well-known filename if --format-patch is specified without a path.
-        if ($format_patch_path === TRUE) {
-          $format_patch_path = DRUPAL_ROOT . '/config-export.patch';
-        }
-        $result = drush_mkdir(dirname($format_patch_path));
-        if ($result === FALSE) {
-          return FALSE;
-        }
-        $result = drush_shell_cd_and_exec($destination_dir, 'git format-patch -k --stdout HEAD~ > %s', $format_patch_path);
-        if (!$result) {
-          return drush_set_error('DRUSH_CONFIG_EXPORT_FAILURE', dt("`git format-patch` failed."));
         }
       }
     }
@@ -710,8 +684,6 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
     'commit' => !drush_get_option('no-commit', FALSE),
     'git-transport' => drush_get_option('git', FALSE),
     'remote' => drush_get_option('remote', 'origin'),
-    'format-patch-remote' => drush_get_option('format-patch', FALSE),
-    'format-patch-local' => drush_get_option('format-patch-file', FALSE),
     'tool' => drush_get_option('tool', ''),
     'config-label' => $config_label,
     'live-site' => $alias,
@@ -724,11 +696,6 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
   $result = drush_command_invoke_all_ref('drush_config_merge_info_alter', $merge_info);
   if (array_search(FALSE, $result, TRUE) !== FALSE) {
     return FALSE;
-  }
-  // If format-patch was specified without a path, then make a temporary file
-  // to hold it in.
-  if ($merge_info['format-patch-remote'] === TRUE) {
-    $merge_info['format-patch-remote'] = drush_tempnam('config-export-patch-');
   }
 
   // Find the current configuration path
@@ -767,15 +734,15 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
     return drush_set_error('DRUSH_CONFIG_MERGE_UNCOMMITTED_CHANGES', dt("Working set has uncommitted changes; please commit or discard them before merging.  `git stash` before `drush config-merge`, and `git stash pop` afterwards can be useful here.\n\n!changes", array('!changes' => $uncommitted_changes)));
   }
 
-  // Format patch only works if both sites have the same config path, so look up the
+  // The git transport only works if both sites have the same config path, so look up the
   // remote config path to see if this is the case, and error out if it is not.
-  if ($merge_info['format-patch-remote'] || $merge_info['git-transport']) {
+  if ($merge_info['git-transport']) {
     $configdir_values = drush_invoke_process($merge_info['live-site'], 'drupal-directory', array('config-' . $merge_info['config-label']));
     $rootdir_values = drush_invoke_process($merge_info['live-site'], 'drupal-directory', array());
     // n.b. $configuration_path is a relative path, whereas drupal-directory will give us
     // an absolute path.  We therefore compare only the ends of the strings.
     if ($configuration_path != substr(trim($configdir_values['output']), -strlen($configuration_path))) {
-      return drush_set_error('CONFIG_MERGE_INCOMPATIBLE_PATHS', dt("The --git and --format-patch options only work when the configuration path is the same on the source and destination sites.  On your source site, the configuration path is !remote; on the target site, it was !local.  You must use the default transport mechanism (rsync).", array('!remote' => $configdir_values['output'], '!local' => $configuration_path)));
+      return drush_set_error('CONFIG_MERGE_INCOMPATIBLE_PATHS', dt("The --git option only works when the configuration path is the same on the source and destination sites.  On your source site, the configuration path is !remote; on the target site, it was !local.  You must use the default transport mechanism (rsync).", array('!remote' => $configdir_values['output'], '!local' => $configuration_path)));
     }
   }
 
@@ -787,10 +754,6 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
 
   // Decide how we are going to transfer the exported configuration.
   $export_options = array();
-  if ($merge_info['format-patch-remote']) {
-    $export_options['format-patch'] = $merge_info['format-patch-remote'];
-    $export_options['branch'] = $merge_info['live-config'];
-  }
 
   // Check to see if the user wants to use git to transfer the configuration changes;
   // if so, set up the appropriate options to pass along to config-export.
@@ -852,43 +815,21 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
     if ($result) {
       drush_shell_cd_and_exec($configuration_path, 'git branch --set-upstream-to=%s', $original_branch);
     }
-    if ($export_options['format-patch']) {
-      // Copy the formatted patch from 'live-site' via rsync and apply
-      // it with `git am`
-      $other_path = $export_options['format-patch'];
-      $local_path = $merge_info['format-patch-local'] ? $merge_info['format-patch-local'] : drush_tempnam('config-merge-');
-      $values = drush_invoke_process($merge_info['dev-site'], 'core-rsync', array($merge_info['live-site'] . ":$other_path", $merge_info['dev-site'] . ":$local_path"), array('delete' => TRUE));
-      if ($values['error_status']) {
-        return drush_set_error('DRUSH_CONFIG_MERGE_RSYNC_FAILED', dt("Could not rsync from !live to !dev.", array('!live' => $merge_info['live-config'], '!dev' => $merge_info['dev-config'])));
-      }
-      // Run `git am`.  This will add the commits exported from config-export
-      // directly to git.
-      $result = drush_shell_cd_and_exec($configuration_path, 'git am --3way < %s', $local_path);
-
-      // Check to see if anything changed in the branch we just pulled over.
-      $result = drush_shell_cd_and_exec($configuration_path, 'git diff-tree --no-commit-id --name-only -r HEAD %s .', $original_hash);
-      if (!$result) {
-        return drush_set_error('DRUSH_CONFIG_EXPORT_FAILURE', dt("`git diff-tree` failed."));
-      }
-      $changed_configuration_files = drush_shell_exec_output();
+    // Copy the exported configuration files from 'live-site' via rsync and commit them
+    $remote_configuration_path = "%config-" . $merge_info['config-label'];
+    $values = drush_invoke_process($merge_info['dev-site'], 'core-rsync', array($merge_info['live-site'] . ":$remote_configuration_path/", $merge_info['dev-site'] . ":$configuration_path/"), array('delete' => TRUE));
+    if ($values['error_status']) {
+      return drush_set_error('DRUSH_CONFIG_MERGE_RSYNC_FAILED', dt("Could not rsync from !live to !dev.", array('!live' => $merge_info['live-config'], '!dev' => $merge_info['dev-config'])));
     }
-    else {
-      // Copy the exported configuration files from 'live-site' via rsync and commit them
-      $remote_configuration_path = "%config-" . $merge_info['config-label'];
-      $values = drush_invoke_process($merge_info['dev-site'], 'core-rsync', array($merge_info['live-site'] . ":$remote_configuration_path/", $merge_info['dev-site'] . ":$configuration_path/"), array('delete' => TRUE));
-      if ($values['error_status']) {
-        return drush_set_error('DRUSH_CONFIG_MERGE_RSYNC_FAILED', dt("Could not rsync from !live to !dev.", array('!live' => $merge_info['live-config'], '!dev' => $merge_info['dev-config'])));
-      }
 
-      // Commit the new changes to the branch prepared for @live. Exit with
-      // "nothing to do" if there are no changes to be committed.
-      $result = drush_shell_cd_and_exec($configuration_path, 'git status --porcelain .');
-      if (!$result) {
-        return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git status` failed."));
-      }
-      $changed_configuration_files = drush_shell_exec_output();
-      $commit_needed = TRUE;
+    // Commit the new changes to the branch prepared for @live. Exit with
+    // "nothing to do" if there are no changes to be committed.
+    $result = drush_shell_cd_and_exec($configuration_path, 'git status --porcelain .');
+    if (!$result) {
+      return drush_set_error('DRUSH_CONFIG_MERGE_FAILURE', dt("`git status` failed."));
     }
+    $changed_configuration_files = drush_shell_exec_output();
+    $commit_needed = TRUE;
   }
 
   // Exit if there were no changes from 'live-site'.
