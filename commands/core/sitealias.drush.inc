@@ -64,6 +64,9 @@ function sitealias_drush_command() {
       'drush site-set -' => 'Go back to the previously-set site (like `cd -`).',
       'drush site-set' => 'Without an argument, any existing site becomes unset.',
     ),
+    'options' => array(
+      'path' => 'Print out a modified PATH that places the site-local Drush at the head if it exists in the used site.',
+    ),
   );
   return $items;
 }
@@ -380,12 +383,37 @@ function drush_sitealias_site_set($site = '@none') {
       $success_message = dt("Site set to !site", array('!site' => $site));
       if ($site == '@none') {
         if (drush_delete_dir($filename)) {
-          drush_print($success_message);
+          drush_log($success_message, 'ok');
         }
       }
       elseif (drush_mkdir(dirname($filename), TRUE)) {
         if (file_put_contents($filename, $site)) {
-          drush_print($success_message);
+          drush_log($success_message, 'ok');
+        }
+      }
+      // See if user requested PATH adjustment
+      if (drush_get_option('path')) {
+        $alias_record = drush_sitealias_get_record($site);
+        $root = sitealias_find_local_drupal_root(array($alias_record));
+        $new_path = array();
+        if (!empty($root)) {
+          $search_locations = array('.', 'core', '..');
+          foreach ($search_locations as $loc) {
+            $drush_test = "$root/$loc/vendor/drush/drush";
+            if (is_file($drush_test . '/drush')) {
+              $new_path[] = $drush_test;
+            }
+          }
+        }
+        $path = getenv("PATH");
+        foreach (explode(':', $path) as $path_item) {
+          if (strstr($path_item, "/vendor/drush/drush") === FALSE) {
+            $new_path[] = $path_item;
+          }
+        }
+        $set_path = implode(':', $new_path);
+        if (trim($set_path) != trim($path)) {
+          drush_print($set_path);
         }
       }
     }
