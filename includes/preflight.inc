@@ -33,6 +33,10 @@ function drush_preflight_prepare() {
     return FALSE;
   }
 
+  // Set SITE_LOCAL_DRUSH to TRUE iff this is a site-local Drush
+  // that shares an autoload.php file with a Drupal site.
+  define('SITE_LOCAL_DRUSH', ($vendor_path == $global_vendor_path));
+
   $classloader = require $vendor_path;
 
   require_once DRUSH_BASE_PATH . '/includes/bootstrap.inc';
@@ -166,20 +170,22 @@ function drush_preflight() {
   // Set up base environment for system-wide file locations.
   _drush_preflight_base_environment();
 
-  // Setup global alias_paths[] in context system.
-  _drush_preflight_alias_path();
+  if (!drush_get_option('site-local')) {
+    // Setup global alias_paths[] in context system.
+    _drush_preflight_alias_path();
 
-  // Load a drushrc.php file in the drush.php's directory.
-  drush_load_config('drush');
+    // Load a drushrc.php file in the drush.php's directory.
+    drush_load_config('drush');
 
-  // Load a drushrc.php file in the $ETC_PREFIX/etc/drush directory.
-  drush_load_config('system');
+    // Load a drushrc.php file in the $ETC_PREFIX/etc/drush directory.
+    drush_load_config('system');
 
-  // Load a drushrc.php file at ~/.drushrc.php.
-  drush_load_config('user');
+    // Load a drushrc.php file at ~/.drushrc.php.
+    drush_load_config('user');
 
-  // Load a drushrc.php file in the ~/.drush directory.
-  drush_load_config('home.drush');
+    // Load a drushrc.php file in the ~/.drush directory.
+    drush_load_config('home.drush');
+  }
 
   // Load a custom config specified with the --config option.
   drush_load_config('custom');
@@ -383,7 +389,8 @@ function _drush_find_commandfiles_drush() {
     }
   }
 
-  if (!drush_get_option('site-local')) {
+  // In site-local Drush mode, we ignore global commandfiles.
+  if (!SITE_LOCAL_DRUSH && !drush_get_option('site-local')) {
     // System commands, residing in $SHARE_PREFIX/share/drush/commands
     $share_path = drush_get_context('DRUSH_SITE_WIDE_COMMANDFILES');
     if (is_dir($share_path)) {
