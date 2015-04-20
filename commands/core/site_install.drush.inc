@@ -155,7 +155,20 @@ function drush_core_pre_site_install($profile = NULL) {
     drush_log(dt('Sites directory @subdir already exists - proceeding.', array('@subdir' => $conf_path)));
   }
 
-  if (!drush_file_not_empty($settingsfile)) {
+  // If there is an existing settings.php file, and if it records the installation profile used,
+  // then update it to insure that it matches the installation profile currently being installed.
+  // See https://github.com/drush-ops/drush/issues/1344
+  if (drush_file_not_empty($settingsfile)) {
+    $selected_profile = $profile ?: "standard";
+    // If the settings.php file exists, we need to make sure that the $settings['install_profile'] line is
+    // removed, if it exists.
+    $settings_contents = file_get_contents($settingsfile);
+    $settings_contents = preg_replace('/(\$settings\[.install_profile.\] = ).*/m', '\1 ' . "'$selected_profile';", $settings_contents);
+    @chmod(dirname($settingsfile), 0777);
+    @chmod($settingsfile, 0777);
+    file_put_contents($settingsfile, $settings_contents);
+  }
+  else {
     if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !drush_get_context('DRUSH_SIMULATE')) {
       return drush_set_error(dt('Failed to copy sites/default/default.settings.php to @settingsfile', array('@settingsfile' => $settingsfile)));
     }
