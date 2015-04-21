@@ -1599,7 +1599,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
  * Substrings to ignore during commandfile and site alias searching.
  */
 function drush_filename_blacklist() {
-  $blacklist = array('.', '..', 'drush_make', 'examples', 'tests', 'disabled', 'gitcache', 'cache');
+  $blacklist = array('.', '..', 'drush_make', 'examples', 'tests', 'disabled', 'gitcache', 'cache', 'vendor');
   for ($v=4; $v<=(DRUSH_MAJOR_VERSION)+3; ++$v) {
     if ($v != DRUSH_MAJOR_VERSION) {
       $blacklist[] = 'drush' . $v;
