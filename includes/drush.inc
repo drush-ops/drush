@@ -1187,7 +1187,6 @@ function drush_do_command_redispatch($command, $args = array(), $remote_host = N
   elseif (drush_get_option('interactive')) {
     $backend_options['interactive'] = TRUE;
   }
-
   // Run the command in a new process.
   drush_log(dt('Begin redispatch via drush_invoke_process().'));
   $values = drush_invoke_process('@self', $command_name, $args, $command_options, $backend_options);
