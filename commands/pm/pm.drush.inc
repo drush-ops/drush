@@ -1059,12 +1059,9 @@ function drush_pm_enable_validate() {
       // Check to see if the module can be installed/enabled (hook_requirements).
       // See @system_modules_submit
       if (!drupal_check_module($module)) {
+        unset($modules[$key]);
         drush_set_error('DRUSH_PM_ENABLE_MODULE_UNMEET_REQUIREMENTS', dt('Module !module doesn\'t meet the requirements to be enabled.', array('!module' => $module)));
         _drush_log_drupal_messages();
-        if (count($modules) > 1) {
-          drush_set_error('DRUSH_PM_ENABLE_MODULE_UNMEET_REQUIREMENTS', dt('None of these !modules is enabled', array('!modules' => join(', ', array_keys($modules)))));
-        }
-        return FALSE;
       }
     }
   }
