@@ -773,12 +773,10 @@ function _sitealias_array_merge($site_alias_a, $site_alias_b) {
  */
 function _drush_sitealias_add_inherited_values(&$aliases) {
   foreach ($aliases as $alias_name => $alias_value) {
-    if (isset($alias_value['parent'])) {
-      // Prevent circular references from causing an infinite loop
-      _drush_sitealias_cache_alias("@$alias_name", array());
-      _drush_sitealias_add_inherited_values_to_record($alias_value);
-      $aliases[$alias_name] = $alias_value;
-    }
+    // Prevent circular references from causing an infinite loop
+    _drush_sitealias_cache_alias("@$alias_name", array());
+    _drush_sitealias_add_inherited_values_to_record($alias_value);
+    $aliases[$alias_name] = $alias_value;
   }
 }
 
