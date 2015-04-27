@@ -311,8 +311,7 @@ function drush_user_create($name) {
   );
   if (!drush_get_context('DRUSH_SIMULATE')) {
     if ($account = $userversion->create($new_user)) {
-      $userlist = new UserList($account->uid);
-      return $userlist->each('info');
+      return array($account->id() => $account->info());
     }
     else {
       return drush_set_error("Could not create a new user account with the name " . $name . ".");
