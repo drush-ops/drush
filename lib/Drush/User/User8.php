@@ -13,7 +13,7 @@ class User8 extends UserVersion {
   public function create($properties) {
     $account = entity_create('user', $properties);
     $account->save();
-    return $account;
+    return new UserSingle8($account);
   }
 
   /**
