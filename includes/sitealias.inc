@@ -1021,6 +1021,10 @@ function drush_sitealias_resolve_path_references(&$alias_record, $test_string = 
         $alias_record['path-aliases'][$key] = $path;
       }
     }
+    // If 'root' is not set in the alias, then fill it in from the status values.
+    if (!isset($alias_record['root']) && isset($status_values['root'])) {
+      $alias_record['root'] = $status_values['root'];
+    }
   }
 }
 
