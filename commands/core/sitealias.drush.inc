@@ -67,6 +67,9 @@ function sitealias_drush_command() {
     'options' => array(
       'path' => 'Print out a modified PATH that places the site-local Drush at the head if it exists in the used site.',
     ),
+    'outputformat' => array(
+      'default' => 'string',
+    ),
   );
   return $items;
 }
@@ -397,10 +400,13 @@ function drush_sitealias_site_set($site = '@none') {
       // if there is no site-local Drush.
       $use_dir = drush_server_home() . '/.drush/use';
       $terminal_specific_link = drush_sitealias_create_site_specific_symlinks($use_dir, $site);
+      if ($terminal_specific_link === FALSE) {
+        return FALSE;
+      }
 
       // See if user requested PATH adjustment
       if (drush_get_option('path')) {
-        drush_sitealias_manage_path($use_dir, $terminal_specific_link);
+        return drush_sitealias_manage_path($use_dir, $terminal_specific_link);
       }
     }
     else {
@@ -409,6 +415,18 @@ function drush_sitealias_site_set($site = '@none') {
   }
 }
 
+/**
+ * Create symlinks to 'use' / 'site-set' the specified $site.  Both
+ * a "terminal-specific" (based on PPID) and "global" link are written.
+ *
+ * @param $use_dir
+ *   location to write symlinks.
+ * @param $site
+ *   alias name or site specification for the site to use
+ * @return
+ *   path to the terminal-specific symlink created, or an empty
+ *   string if a symlink is instead removed.
+ */
 function drush_sitealias_create_site_specific_symlinks($use_dir, $site) {
   drush_mkdir($use_dir);
   $terminal_specific_link = $use_dir . '/' . posix_getppid() . '/bin';
@@ -424,25 +442,49 @@ function drush_sitealias_create_site_specific_symlinks($use_dir, $site) {
         $drush_test = "$root/$loc/$bin_dir";
         if (!$site_local_drush_dir && file_exists($drush_test . '/drush')) {
           $site_local_drush_dir = $drush_test;
+          break 2;
         }
       }
     }
   }
   if ($site_local_drush_dir) {
     drush_mkdir(dirname($terminal_specific_link));
-    @symlink($site_local_drush_dir, $terminal_specific_link);
-    @symlink($site_local_drush_dir, $global_link);
+    if (!@symlink($site_local_drush_dir, $terminal_specific_link)) {
+      return drush_set_error('DRUSH_SYMLINK_ERROR', dt("Could not create symlink at !link", array('!link' => $terminal_specific_link)));
+    }
+    if (!@symlink($site_local_drush_dir, $global_link)) {
+      return drush_set_error('DRUSH_SYMLINK_ERROR', dt("Could not create symlink at !link", array('!link' => $global_link)));
+    }
 
     return $terminal_specific_link;
   }
   else {
-    @unlink($terminal_specific_link);
-    @unlink($global_link);
+    if (!@unlink($terminal_specific_link)) {
+      return drush_set_error('DRUSH_SYMLINK_ERROR', dt("Could not remove symlink at !link", array('!link' => $terminal_specific_link)));
+    }
+    if (!@unlink($global_link)) {
+      return drush_set_error('DRUSH_SYMLINK_ERROR', dt("Could not remove symlink at !link", array('!link' => $global_link)));
+    }
 
-    return FALSE;
+    return '';
   }
 }
 
+/**
+ * Given the path to a new symlink to the site-local
+ * Drush that the user just 'use'd, adjust the PATH
+ * to include the site-local Drush directory at its head.
+ * Also remove any existing PATH components inside the
+ * specified $use_dir.
+ *
+ * @param $use_dir
+ *   path to the directory where site-local Drush symlinks are created.
+ * @param $teminal_specific_link
+ *   path to the symlink created for the currently-use'd site, or
+ *   FALSE / empty for 'use @none'
+ * @return
+ *   a new $PATH, adjusted for the provided teminal-specific symlink
+ */
 function drush_sitealias_manage_path($use_dir, $terminal_specific_link = FALSE) {
   $new_path = array();
   if ($terminal_specific_link) {
@@ -456,6 +498,6 @@ function drush_sitealias_manage_path($use_dir, $terminal_specific_link = FALSE) 
   }
   $set_path = implode(':', $new_path);
   if (trim($set_path) != trim($path)) {
-    drush_print($set_path);
+    return $set_path;
   }
 }
