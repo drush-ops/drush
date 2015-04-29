@@ -93,6 +93,7 @@ function config_drush_command() {
     'options' => array(
       'add' => 'Run `git add -p` after exporting. This lets you choose which config changes to stage for commit.',
       'commit' => 'Run `git add -A` and `git commit` after exporting.  This commits everything that was exported without prompting.',
+      'message' => 'Commit comment for the exported configuration.  Optional; may only be used with --commit or --push.',
       'push' => 'Run `git push` after committing.  Implies --commit.',
       'remote' => array(
         'description' => 'The remote git branch to use to push changes.  Defaults to "origin".',
