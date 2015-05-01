@@ -164,6 +164,7 @@ function sql_drush_command() {
   $items['sql-sanitize'] = array(
     'description' => "Run sanitization operations on the current database.",
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+    'drush dependencies' => array('sqlsync'),
     'options' => drupal_sanitize_options() + array(
       'db-prefix' => 'Enable replacement of braces in sanitize queries.',
     ) + $db_url,
@@ -464,7 +465,7 @@ function drush_sql_sanitize() {
   if (drush_get_option('db-prefix')) {
     drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
   }
-  drush_include(DRUSH_BASE_PATH . '/commands/sql', 'sync.sql');
+
   drush_command_invoke_all('drush_sql_sync_sanitize', 'default');
   $options = drush_get_context('post-sync-ops');
   if (!empty($options)) {

@@ -239,8 +239,8 @@ EOD;
   $commandfiles = drush_commandfile_list();
   $files = array_flip($commandfiles);
   // In addition to the commandfiles, we will also look for files
-  // that drush will load when executing a command; examples include
-  // updatecode.pm.inc and sync.sql.inc.
+  // that drush will load when executing a command (e.g
+  // updatecode.pm.inc)
   $commands = drush_get_commands();
   foreach ($commands as $command_name => $command) {
     $files = array_merge($files, drush_command_get_includes($command_name));
