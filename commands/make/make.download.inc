@@ -156,8 +156,6 @@ function make_download_file_unpack($filename, $download_location, $name, $subtre
 
 /**
  * Move a downloaded and unpacked file or directory into place.
- *
- * TODO merge with core drush methods.
  */
 function _make_download_file_move($tmp_path, $filename, $download_location, $subtree = NULL) {
   $lines = drush_scan_directory($tmp_path, '/./', array('.', '..'), 0, FALSE, 'filename', 0, TRUE);

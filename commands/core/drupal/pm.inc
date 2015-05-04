@@ -101,7 +101,6 @@ function _drush_pm_disable($args) {
 
 /**
  * Command callback. Uninstall one or more modules.
- * // TODO: Use drupal_execute on system_modules_uninstall_confirm_form so that input is validated.
  */
 function _drush_pm_uninstall($modules) {
   drush_include_engine('drupal', 'environment');
