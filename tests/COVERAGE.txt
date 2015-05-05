@@ -50,7 +50,6 @@ shellalias: GOOD
   need test: shell alias with site alias
 site-install: FAIR. Implicit test by setUpDrupal().
 ssh: GOOD
-test-*
 topic
 usage-*
 variable-*: GOOD
