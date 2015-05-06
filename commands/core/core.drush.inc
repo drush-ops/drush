@@ -509,8 +509,10 @@ function _core_path_aliases($project = '') {
       }
       if (drush_drupal_major_version() >= 8 && drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
         try {
-          foreach ($GLOBALS['config_directories'] as $label => $unused) {
-            $paths["%config-$label"] = config_get_config_directory($label);
+          if (isset($GLOBALS['config_directories'])) {
+            foreach ($GLOBALS['config_directories'] as $label => $unused) {
+              $paths["%config-$label"] = config_get_config_directory($label);
+            }
           }
         }
         catch (Exception $e) {
