@@ -10,6 +10,22 @@ class Sqlsqlsrv extends SqlBase {
   public function command() {
     return 'sqlcmd';
   }
+  
+  /*
+   * Override of params_to_options.
+   */
+  public function params_to_options($parameters) {
+    // Turn each parameter into a valid parameter string.
+    $parameter_strings = array();
+    foreach ($parameters as $key => $value) {
+      // Only escape the values, not the keys or the rest of the string.
+      $value = drush_escapeshellarg($value);
+      $parameter_strings[] = "-$key $value";
+    }
+
+    // Join the parameters and return.
+    return implode(' ', $parameter_strings);
+  }
 
   public function creds() {
     // Some drush commands (e.g. site-install) want to connect to the
