@@ -17,7 +17,13 @@ class Sqlsqlsrv extends SqlBase {
     $database = empty($this->db_spec['database']) ? 'master' : $this->db_spec['database'];
     // Host and port are optional but have defaults.
     $host = empty($this->db_spec['host']) ? '.\SQLEXPRESS' : $this->db_spec['host'];
-    return ' -S ' . $host . ' -d ' . $database . ' -U ' . '"' . $this->db_spec['username'] . '"' . ' -P ' . '"' . $this->db_spec['password'] . '"';
+    $parameters = array(
+      'S' => $host,
+      'd' => $database,
+      'U' => $this->db_spec['username'],
+      'P' => $this->db_spec['password']
+    );
+    return $this->params_to_options($parameters);
   }
 
   public function db_exists() {
@@ -49,7 +55,12 @@ class Sqlsqlsrv extends SqlBase {
     if (!$file) {
       $file = $this->db_spec['database'] . '_' . date('Ymd_His') . '.bak';
     }
-    $exec = "sqlcmd -U \"" . $this->db_spec['username'] . "\" -P \"" . $this->db_spec['password'] . "\" -S \"" . $this->db_spec['host'] . "\" -Q \"BACKUP DATABASE [" . $this->db_spec['database'] . "] TO DISK='" . $file . "'\"";
+    $parameters = array(
+      'U' => $this->db_spec['username'],
+      'P' => $this->db_spec['password'],
+      'Q' => "BACKUP DATABASE [" . $this->db_spec['database'] . "] TO DISK='" . $file . "'\"",
+    );
+    $exec = "sqlcmd " . $this->params_to_options($parameters);
     return array($exec, $file);
   }
 
