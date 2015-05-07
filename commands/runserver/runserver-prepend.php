@@ -56,6 +56,8 @@ if (!function_exists('system_watchdog')) {
   }
 }
 
+// Get a $_SERVER key, or equivalent environment variable
+// if it is not set in $_SERVER.
 function runserver_env($key) {
   if (isset($_SERVER[$key])) {
     return $_SERVER[$key];

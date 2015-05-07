@@ -139,7 +139,11 @@ class StatusInfoDrush implements StatusInfoInterface {
         $this->calculateProjectUpdateStatus($project_release_info, $project_update_info);
       }
 
-      $update_info[$project_name] = $project_release_info->getInfo() + $project_update_info;
+      // We want to ship all release info data including all releases,
+      // not just the ones selected by calculateProjectUpdateStatus().
+      // We use it to allow the user to update to a specific version.
+      unset($project_update_info['releases']);
+      $update_info[$project_name] = $project_update_info + $project_release_info->getInfo();
     }
 
     return $update_info;
@@ -274,7 +278,7 @@ class StatusInfoDrush implements StatusInfoInterface {
       }
 
       // See if this is a higher major version than our target and discard it.
-      // Note: at this poont Drupal record it as an "Also available" release.
+      // Note: at this point Drupal record it as an "Also available" release.
       if (isset($release['version_major']) && $release['version_major'] > $target_major) {
         continue;
       }
@@ -335,7 +339,7 @@ class StatusInfoDrush implements StatusInfoInterface {
 
       // See if this release is a security update.
       if (isset($release['terms']['Release type'])
-        && in_array('Security update', $release['terms']['Release type'])) {
+          && in_array('Security update', $release['terms']['Release type'])) {
         $project_data['security updates'][] = $release;
       }
     }

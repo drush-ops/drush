@@ -29,7 +29,7 @@ function shellalias_drush_command() {
 
   $items['shell-alias'] = array(
     'description' => 'Print all known shell alias records.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'arguments' => array(
       'alias' => 'Shell alias to print',
     ),

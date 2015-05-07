@@ -250,6 +250,8 @@ function drush_complete_process_argv() {
   // Check for and record any site alias.
   drush_sitealias_check_arg();
   drush_sitealias_check_site_env();
+  // We might have just changed our root--run drush_select_bootstrap_class() again.
+  $bootstrap = drush_select_bootstrap_class();
 
   // Return the new argv for easy reference.
   return $argv;

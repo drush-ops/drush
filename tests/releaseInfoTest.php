@@ -7,8 +7,6 @@
 
 namespace Unish;
 
-require "lib/Drush/Boot/bootstrap.inc";
-
 /**
  * pm testing
  *

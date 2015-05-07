@@ -18,7 +18,7 @@ function sitealias_drush_command() {
   $items['site-alias'] = array(
     'callback' => 'drush_sitealias_print',
     'description' => 'Print site alias records for all known site aliases and local sites.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'arguments' => array(
       'site' => 'Site specification to print',
     ),
@@ -29,6 +29,7 @@ function sitealias_drush_command() {
       'with-optional' => 'Include optional default items.',
       'alias-name' => 'For a single alias, set the name to use in the output.',
       'local' => 'Only display sites that are available on the local system (remote-site not set, and Drupal root exists).',
+      'show-hidden' => 'Include hidden internal elements in site alias output',
     ),
     'outputformat' => array(
       'default' => 'config',
@@ -51,7 +52,7 @@ function sitealias_drush_command() {
   );
   $items['site-set'] = array(
     'description' => 'Set a site alias to work on that will persist for the current session.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'handle-remote-commands' => TRUE,
     'arguments' => array(
       'site' => 'Site specification to use, or "-" for previous site. Omit this argument to "unset"',
@@ -243,8 +244,13 @@ function _drush_sitealias_prepare_record($alias_record) {
   }
 
   // We don't want certain fields to go into the output
-  unset($alias_record['#group']);
-  unset($alias_record['#hidden']);
+  if (!drush_get_option('show-hidden')) {
+    foreach ($alias_record as $key => $value) {
+      if ($key[0] == '#') {
+        unset($alias_record[$key]);
+      }
+    }
+  }
 
   // We only want to output the 'root' item; don't output the '%root' path alias
   if (array_key_exists('path-aliases', $alias_record) && array_key_exists('%root', $alias_record['path-aliases'])) {

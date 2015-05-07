@@ -4,11 +4,27 @@
  * Install Drupal 7
  */
 function drush_core_site_install_version($profile, array $additional_form_options = array()) {
-  if (!isset($profile)) {
-    $profile = 'standard';
-  }
-
   require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
+
+  if (!isset($profile)) {
+    require_once DRUSH_DRUPAL_CORE . '/includes/file.inc';
+    require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
+    require_once DRUSH_DRUPAL_CORE . '/includes/common.inc';
+    require_once DRUSH_DRUPAL_CORE . '/includes/module.inc';
+
+    // If there is an installation profile that is marked as exclusive, use that
+    // one.
+    try {
+      $profile = _install_select_profile(install_find_profiles());
+    }
+    catch (\Exception $e) {
+      // This is only a best effort to provide a better default, no harm done
+      // if it fails.
+    }
+    if (empty($profile)) {
+      $profile = 'standard';
+    }
+  }
 
   $sql = drush_sql_get_class();
   $db_spec = $sql->db_spec();

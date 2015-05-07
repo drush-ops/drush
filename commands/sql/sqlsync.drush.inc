@@ -13,6 +13,94 @@
  * - Can we now simplify anything in sitealias.inc or backend.inc?
  */
 
+/**
+ * Implementation of hook_drush_command().
+ */
+function sqlsync_drush_command() {
+  $items['sql-sync'] = array(
+    'description' => 'Copies the database contents from a source site to a target site. Transfers the database dump via rsync.',
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+    'drush dependencies' => array('sql', 'core'), // core-rsync.
+    'package' => 'sql',
+    'examples' => array(
+      'drush sql-sync @source @target' => 'Copy the database from the site with the alias "source" to the site with the alias "target".',
+      'drush sql-sync prod dev' => 'Copy the database from the site in /sites/prod to the site in /sites/dev (multisite installation).',
+    ),
+    'arguments' => array(
+      'source' => 'A site-alias or the name of a subdirectory within /sites whose database you want to copy from.',
+      'target' => 'A site-alias or the name of a subdirectory within /sites whose database you want to replace.',
+    ),
+    'required-arguments' => TRUE,
+    'options' => array(
+      'skip-tables-key' => 'A key in the $skip_tables array. See example.drushrc.php. Optional.',
+      'skip-tables-list' => 'A comma-separated list of tables to exclude completely. Optional.',
+      'structure-tables-key' => 'A key in the $structure_tables array. See example.drushrc.php. Optional.',
+      'structure-tables-list' => 'A comma-separated list of tables to include for structure, but not data. Optional.',
+      'tables-key' => 'A key in the $tables array. Optional.',
+      'tables-list' => 'A comma-separated list of tables to transfer. Optional.',
+      // 'cache' => 'Skip dump if result file exists and is less than "cache" hours old. Optional; default is 24 hours.',
+      // 'no-cache' => 'Do not cache the sql-dump file.',
+      'no-dump' => 'Do not dump the sql database; always use an existing dump file.',
+      'source-db-url' => 'Database specification for source system to dump from.',
+      'source-remote-port' => 'Override sql database port number in source-db-url. Optional.',
+      'source-remote-host' => 'Remote machine to run sql-dump file on. Optional; default is local machine.',
+      'source-dump' => 'The destination for the dump file, or the path to the dump file when --no-dump is specified.',
+      'source-database' => 'A key in the $db_url (D6) or $databases (D7+) array which provides the data.',
+      'source-target' => array(
+        'description' => 'A key within the SOURCE database identifying a particular server in the database group.',
+        'example-value' => 'key',
+        // Gets unhidden in help_alter(). We only want to show to D7+ users but have to
+        // declare it here since this command does not bootstrap fully.
+        'hidden' => TRUE,
+      ),
+      'target-db-url' => '',
+      'target-remote-port' => '',
+      'target-remote-host' => '',
+      'target-dump' => 'A path for saving the dump file on target. Mandatory when using --no-sync.',
+      'target-database' => 'A key in the $db_url (D6) or $databases (D7+) array which shall receive the data.',
+      'target-target' => array(
+        'description' => 'Oy. A key within the TARGET database identifying a particular server in the database group.',
+        'example-value' => 'key',
+        // Gets unhidden in help_alter(). We only want to show to D7+ users but have to
+        // declare it here since this command does not bootstrap fully.
+        'hidden' => TRUE,
+      ),
+      // 'temp' => 'Use a temporary file to hold dump files.  Implies --no-cache.',
+      // 'dump-dir' => 'Directory to store sql dump files in when --source-dump or --target-dump are not used.',
+      'create-db' => 'Create a new database before importing the database dump on the target machine.',
+      'db-su' => array(
+        'description' => 'Account to use when creating a new database. Optional.',
+        'example-value' => 'root',
+      ),
+      'db-su-pw' => array(
+        'description' => 'Password for the "db-su" account. Optional.',
+        'example-value' => 'pass',
+      ),
+      // 'no-ordered-dump' => 'Do not pass --ordered-dump to sql-dump.  sql-sync orders the dumpfile by default in order to increase the efficiency of rsync.',
+      'sanitize' => 'Obscure email addresses and reset passwords in the user table post-sync.',
+    ),
+    'sub-options' => array(
+      'sanitize' => drupal_sanitize_options() + array(
+          'confirm-sanitizations' => 'Prompt yes/no after importing the database, but before running the sanitizations',
+        ),
+    ),
+    'topics' => array('docs-aliases', 'docs-policy', 'docs-example-sync-via-http', 'docs-example-sync-extension'),
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_drush_help_alter().
+ */
+function sqlsync_drush_help_alter(&$command) {
+  // Drupal 7+ only options.
+  if (drush_drupal_major_version() >= 7) {
+    if ($command['command'] == 'sql-sync') {
+      unset($command['options']['source-target']['hidden'], $command['options']['target-target']['hidden']);
+    }
+  }
+}
+
 /*
  * Implements COMMAND hook init.
  */
@@ -35,7 +123,7 @@ function drush_sql_sync_init($source, $destination) {
 /*
  * A command validate callback.
  */
-function drush_sql_sync_validate($source, $destination) {
+function drush_sqlsync_sql_sync_validate($source, $destination) {
   // Get destination info for confirmation prompt.
   $source_settings = drush_sitealias_overlay_options(drush_sitealias_get_record($source), 'source-');
   $destination_settings = drush_sitealias_overlay_options(drush_sitealias_get_record($destination), 'target-');
@@ -81,7 +169,7 @@ function drush_sql_sync_validate($source, $destination) {
 /*
  * A command callback.
  */
-function drush_sql_sync($source, $destination) {
+function drush_sqlsync_sql_sync($source, $destination) {
   // Get destination info for confirmation prompt.
   $source_settings = drush_sitealias_overlay_options(drush_sitealias_get_record($source), 'source-');
   $destination_settings = drush_sitealias_overlay_options(drush_sitealias_get_record($destination), 'target-');

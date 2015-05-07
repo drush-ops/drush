@@ -47,9 +47,7 @@
  *        a. /etc/drush
  *        b. $HOME/.drush
  *        c. The /drush and /sites/all/drush folders for the current Drupal site
- *   3. Inside the sites folder of any bootstrapped Drupal site,
- *      or any local Drupal site indicated by an alias used as
- *      a parameter to a command
+ *   3. Inside the /sites subdirectory for the specified Drupal site.
  *
  * Folders and files containing other versions of drush in their names will
  * be *skipped* (e.g. mysite.aliases.drush4rc.php or
@@ -157,7 +155,7 @@
  *
  * @code
  * $aliases['mydevsites'] = array(
- *   'site-list' => array('@mysite.dev', '@otherside.dev');
+ *   'site-list' => array('@mysite.dev', '@otherside.dev')
  * );
  * @endcode
  *
@@ -203,11 +201,7 @@
  *   standard port, alternative identity file, or alternative
  *   authentication method, ssh-options can contain a string of extra
  *   options that are used with the ssh command, eg "-p 100"
- * - 'parent': The name of a parent alias (e.g. '@server') to use as a basis
- *   for this alias.  Any value of the parent will appear in the child
- *   unless overridden by an item with the same name in the child.
- *   Multiple inheritance is possible; name multiple parents in the
- *   'parent' item separated by commas (e.g. '@server,@devsite').
+ * - 'parent': Deprecated.  See "altering aliases", below.
  * - 'db-url': The Drupal 6 database connection string from settings.php.
  *   For remote databases accessed via an ssh tunnel, set the port
  *   number to the tunneled port as it is accessed on the local machine.
@@ -297,6 +291,30 @@
  * ),
  * @endcode
  *
+ * Altering aliases:
+ *
+ * Alias records are written in php, so you may use php code to alter
+ * alias records if you wish.  For example:
+ *
+ * @code
+ * $common_live = array(
+ *   'remote-host' => 'myserver.isp.com',
+ *   'remote-user' => 'www-admin',
+ * );
+ *
+ * $aliases['live'] = array(
+ *   'uri' => 'mysite.com',
+ *   'root' => '/path.to/root',
+ * ) + $common_live;
+ * @endcode
+ *
+ * If you wish, you might want to put $common_live in a separate file,
+ * and include it at the top of each alias file that uses it.
+ *
+ * You may also use a policy file to alter aliases in code as they are
+ * loaded by Drush.  See policy_drush_sitealias_alter in
+ * `drush topic docs-policy` for details.
+ *
  * Some examples appear below.  Remove the leading hash signs to enable.
  */
 
@@ -356,11 +374,6 @@
 #    'os' => 'Linux',
 #  );
 #$aliases['live'] = array(
-#    'parent' => '@server,@dev',
 #    'uri' => 'mydrupalsite.com',
-#     'target-command-specific' => array (
-#       'sql-sync' => array (
-#         'skip-tables-list' => 'comments',
-#       ),
-#     ),
-#  );
+#    'root' => $aliases['dev']['root'],
+#  ) + $aliases['server'];

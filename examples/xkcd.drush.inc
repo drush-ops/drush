@@ -48,7 +48,7 @@ function xkcd_drush_command() {
     ),
     'aliases' => array('xkcd'),
     // No bootstrap at all.
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
   );
 
   return $items;

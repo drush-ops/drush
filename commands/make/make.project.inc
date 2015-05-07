@@ -476,7 +476,7 @@ class DrushMakeProject {
             }
             else {
               drush_mkdir($project_directory . '/translations');
-              drush_copy_dir($filename, $project_directory . '/translations/' . $langcode . '.po', TRUE);
+              drush_copy_dir($filename, $project_directory . '/translations/' . $langcode . '.po', FILE_EXISTS_OVERWRITE);
             }
           }
           else {

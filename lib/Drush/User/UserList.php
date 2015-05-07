@@ -20,7 +20,6 @@ class UserList {
     }
   }
 
-
   /**
    * Iterate over each account and call the specified method.
    *
@@ -46,8 +45,6 @@ class UserList {
   function getFromOptions() {
     $accounts = array();
     $userversion = drush_user_get_class();
-    // Unused?
-    // $uids = drush_get_option_list('uids');
     if ($mails = _convert_csv_to_array(drush_get_option('mail'))) {
       foreach ($mails as $mail) {
         if ($account = $userversion->load_by_mail($mail)) {
@@ -100,7 +97,7 @@ class UserList {
   public static function getFromParameters($inputs) {
     $accounts = array();
     $userversion = drush_user_get_class();
-    if ($inputs) {
+    if ($inputs && $userversion) {
       $inputs = _convert_csv_to_array($inputs);
       foreach($inputs as $input) {
         if (is_numeric($input) && $account = $userversion->load_by_uid($input)) {

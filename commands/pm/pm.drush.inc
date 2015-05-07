@@ -853,7 +853,7 @@ function drush_pm_list() {
 
   foreach ($status_filter as $status) {
     if (!in_array($status, $all_status)) { //TODO: this kind of check can be implemented drush-wide
-      return drush_set_error('DRUSH_PM_INVALID_PROJECT_TYPE', dt('!status is not a valid project status.', array('!status' => $status)));
+      return drush_set_error('DRUSH_PM_INVALID_PROJECT_STATUS', dt('!status is not a valid project status.', array('!status' => $status)));
   }
   }
 
@@ -1904,12 +1904,14 @@ function drush_pm_update_lock(&$projects, $projects_to_lock, $projects_to_unlock
 
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
   foreach ($projects as $name => $project) {
-    if ($name == 'drupal') {
-      continue;
-    }
     $message = NULL;
     if (isset($project['path'])) {
-      $lockfile = $drupal_root . '/' . $project['path'] . '/.drush-lock-update';
+      if ($name == 'drupal') {
+        $lockfile = $drupal_root . '/.drush-lock-update';
+      }
+      else {
+        $lockfile = $drupal_root . '/' . $project['path'] . '/.drush-lock-update';
+      }
 
       // Remove the lock file if the --unlock option was specified
       if (((in_array($name, $projects_to_unlock)) || (in_array('all', $projects_to_unlock))) && (file_exists($lockfile))) {

@@ -37,7 +37,7 @@ function runserver_drush_command() {
     'options' => array(
       'variables' => 'Key-value array of variables to override in the $conf array for the running site. By default disables drupal_http_request_fails to avoid errors on Windows (which supports only one connection at a time). Comma delimited list of name=value pairs (or array in drushrc).',
       'default-server' => 'A default addr:port/path to use for any values not specified as an argument.',
-      'user' => 'If opening a web browser, automatically log in as this user (user ID or username).',
+      'user' => 'If opening a web browser, automatically log in as this user (user ID or username). Default is to log in as uid 1.',
       'browser' => 'If opening a web browser, which browser to user (defaults to operating system default).',
       'dns' => 'Resolve hostnames/IPs using DNS/rDNS (if possible) to determine binding IPs and/or human friendly hostnames for URLs and browser.',
     ),
@@ -62,43 +62,27 @@ function drush_core_runserver($uri = NULL) {
   global $user, $base_url;
 
   // Determine active configuration.
-  $drush_default = array(
-    'host' => '127.0.0.1',
-    'port' => '8888',
-    'path' => '',
-  );
-  $user_default = runserver_parse_uri(drush_get_option('default-server', '127.0.0.1:8888'));
-  $uri = runserver_parse_uri($uri);
+  $uri = runserver_uri($uri);
   if (!$uri) {
-    return $uri;
+    return FALSE;
   }
-  // Populate defaults.
-  $uri = $uri + $user_default + $drush_default;
-  if (ltrim($uri['path'], '/') == '-') {
-    // Allow a path of a single hyphen to clear a default path.
-    $uri['path'] = '';
-  }
+
   // Remove any leading slashes from the path, since that is what url() expects.
   $path = ltrim($uri['path'], '/');
 
-  // Determine and set the new URI.
-  $hostname = $addr = $uri['host'];
-  if (drush_get_option('dns', FALSE)) {
-    if (ip2long($hostname)) {
-      $hostname = gethostbyaddr($hostname);
-    }
-    else {
-      $addr = gethostbyname($hostname);
-    }
-  }
+  // $uri['addr'] is a special field set by runserver_uri()
+  $hostname = $uri['host'];
+  $addr = $uri['addr'];
+
   drush_set_context('DRUSH_URI', 'http://' . $hostname . ':' . $uri['port']);
 
   // We pass in the currently logged in user (if set via the --user option),
   // which will automatically log this user in the browser during the first
   // request.
-  if (drush_get_option('user', FALSE)) {
-    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_LOGIN);
+  if (drush_get_option('user', FALSE) === FALSE) {
+    drush_set_option('user', 1);
   }
+  drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_LOGIN);
 
   // We delete any registered files here, since they are not caught by Ctrl-C.
   _drush_delete_registered_files();
@@ -148,7 +132,46 @@ function drush_core_runserver($uri = NULL) {
   }
   // Start the server using 'php -S'.
   $php = drush_get_option('php');
-  drush_shell_exec_interactive($php . ' -S ' . $addr . ':' . $uri['port'] . ' --define auto_prepend_file="' . DRUSH_BASE_PATH . '/commands/runserver/runserver-prepend.php"');
+  if (drush_drupal_major_version() >=8) {
+    $extra = ' "' . __DIR__ . '/d8-rs-router.php"';
+  }
+  else {
+    $extra = ' --define auto_prepend_file="' . __DIR__ . '/runserver-prepend.php"';
+  }
+  drush_shell_exec_interactive($php . ' -S ' . $addr . ':' . $uri['port'] . $extra);
+}
+
+/**
+ * Determine the URI to use for this server.
+ */
+function runserver_uri($uri) {
+  $drush_default = array(
+    'host' => '127.0.0.1',
+    'port' => '8888',
+    'path' => '',
+  );
+  $user_default = runserver_parse_uri(drush_get_option('default-server', ''));
+  $site_default = runserver_parse_uri(drush_get_option('uri', ''));
+  $uri = runserver_parse_uri($uri);
+  if (is_array($uri)) {
+    // Populate defaults.
+    $uri = $uri + $user_default + $site_default + $drush_default;
+    if (ltrim($uri['path'], '/') == '-') {
+      // Allow a path of a single hyphen to clear a default path.
+      $uri['path'] = '';
+    }
+    // Determine and set the new URI.
+    $uri['addr'] = $uri['host'];
+    if (drush_get_option('dns', FALSE)) {
+      if (ip2long($uri['host'])) {
+        $uri['host'] = gethostbyaddr($uri['host']);
+      }
+      else {
+        $uri['addr'] = gethostbyname($uri['host']);
+      }
+    }
+  }
+  return $uri;
 }
 
 /**
@@ -161,6 +184,9 @@ function drush_core_runserver($uri = NULL) {
  *   URI array as returned by parse_url.
  */
 function runserver_parse_uri($uri) {
+  if (empty($uri)) {
+    return array();
+  }
   if ($uri[0] == ':') {
     // ':port/path' shorthand, insert a placeholder hostname to allow parsing.
     $uri = 'placeholder-hostname' . $uri;

@@ -8,14 +8,16 @@
 /**
  * Loads the Drupal autoloader and returns the instance.
  */
-function drush_drupal_load_autoloader($drupal_root, $new_autoloader = NULL) {
+function drush_drupal_load_autoloader($drupal_root) {
   static $autoloader = FALSE;
-  if (isset($new_autoloader)) {
-    $autoloader = $new_autoloader;
-  }
+
   if (!$autoloader) {
-    // Should this just be 'require'?  See drush_preflight_prepare()
-    $autoloader = require_once $drupal_root .'/core/vendor/autoload.php';
+    $autoloader = require $drupal_root .'/autoload.php';
+    if ($autoloader === TRUE) {
+      // The autoloader was already require(). Assume that Drush and Drupal share an autoloader per
+      // "Point autoload.php to the proper vendor directory" - https://www.drupal.org/node/2404989
+      $autoloader = drush_get_context('DRUSH_CLASSLOADER');
+    }
   }
   return $autoloader;
 }
@@ -35,7 +37,7 @@ function drush_drupal_version($drupal_root = NULL) {
   if (!$version) {
     if (($drupal_root != NULL) || ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT'))) {
       // Try and find D8.
-      if (file_exists($drupal_root . '/core/vendor/autoload.php')) {
+      if (file_exists($drupal_root . '/autoload.php')) {
         // Load the autoloader so we can access the class constants.
         drush_drupal_load_autoloader($drupal_root);
         // Drush depends on bootstrap being loaded at this point.
@@ -254,3 +256,20 @@ function drush_cid_install_profile() {
   return drush_get_cid('install_profile', array(), array(drush_get_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH')));
 }
 
+/*
+ * An array of options shared by sql-sanitize and sql-sync commands.
+ */
+function drupal_sanitize_options() {
+  return array(
+    'sanitize-password' => array(
+      'description' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.',
+      'example-value' => 'password',
+      'value' => 'required',
+    ),
+    'sanitize-email' => array(
+      'description' => 'The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %name.',
+      'example-value' => 'user+%uid@localhost',
+      'value' => 'required',
+    ),
+  );
+}

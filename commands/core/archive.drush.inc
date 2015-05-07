@@ -59,7 +59,7 @@ function archive_drush_command() {
       'drush archive-restore ./example.tar.gz --destination=/var/www/example.com/docroot' => 'Restore archive to a custom location.',
       'drush archive-restore ./example.tar.gz --db-url=mysql://root:pass@127.0.0.1/dbname' => 'Restore archive to a new database (and customize settings.php to point there.).',
     ),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'aliases' => array('arr'),
   );
   return $items;

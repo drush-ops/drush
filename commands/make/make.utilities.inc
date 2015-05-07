@@ -54,7 +54,7 @@ function _make_parse_info_file($makefile) {
     if (is_array($info['includes'])) {
       $include_path = dirname($makefile);
       $includes = array();
-      foreach ($info['includes'] as $include) {
+      foreach ($info['includes'] as $key => $include) {
         if (!empty($include)) {
           if (is_array($include) && $include['download']['type'] = 'git') {
             $tmp_dir = make_tmp();
@@ -78,12 +78,39 @@ function _make_parse_info_file($makefile) {
           else {
             make_error('BUILD_ERROR', dt("Cannot determine include file location: !include", array('!include' => $include)));
           }
+
           $info = array_replace_recursive(_make_parse_info_file($include_makefile), $info);
+          // Move core back to the top of the list, where
+          // make_generate_from_makefile() expects it.
+          array_reverse($info['projects']);
         }    
       }
     }
   }
+  // Ensure $info['projects'] is an associative array, so that we can merge
+  // includes properly.
+  make_normalize_info($info);
+
   return $info;
+}
+
+/**
+ * Expand shorthand elements, so that we have an associative array.
+ */
+function make_normalize_info(&$info) {
+  foreach($info['projects'] as $key => $project) {
+    if (is_numeric($key) && is_string($project)) {
+      unset($info['projects'][$key]);
+      $info['projects'][$project] = array(
+        'version' => '',
+      );
+    }
+    if (is_string($key) && is_numeric($project)) {
+      $info['projects'][$key] = array(
+        'version' => $project,
+      );
+    }
+  }
 }
 
 /**
@@ -398,7 +425,7 @@ function make_clean_tmp() {
  */
 function make_prepare_install($build_path) {
   $default = make_tmp() . '/__build__/sites/default';
-  drush_copy_dir($default . DIRECTORY_SEPARATOR . 'default.settings.php', $default . DIRECTORY_SEPARATOR . 'settings.php', TRUE);
+  drush_copy_dir($default . DIRECTORY_SEPARATOR . 'default.settings.php', $default . DIRECTORY_SEPARATOR . 'settings.php', FILE_EXISTS_OVERWRITE);
   drush_mkdir($default . '/files');
   chmod($default . DIRECTORY_SEPARATOR . 'settings.php', 0666);
   chmod($default . DIRECTORY_SEPARATOR . 'files', 0777);
@@ -509,7 +536,7 @@ function make_apply_defaults(&$info) {
     foreach ($defaults as $type => $default_data) {
       if (isset($info[$type])) {
         foreach ($info[$type] as $project => $data) {
-          $info[$type][$project] += $default_data;
+          $info[$type][$project] = _drush_array_overlay_recursive($default_data, $info[$type][$project]);
         }
       }
       else {

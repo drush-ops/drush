@@ -150,6 +150,15 @@ function drush_dispatch($command, $arguments = array()) {
   $return = FALSE;
 
   if ($command) {
+    // Insure that we have reached the bootstrap level
+    // desired by the command.  We might not have bootstrapped
+    // far enough if a command uses drush_invoke to call
+    // a subcommand with a higher bootstrap level, for example.
+    $bootstrap_result = drush_bootstrap_to_phase($command['bootstrap']);
+    if (!$bootstrap_result) {
+      return FALSE;
+    }
+
     // Add arguments, if this has not already been done.
     // (If the command was fetched from drush_parse_command,
     // then you cannot provide arguments to drush_dispatch.)
@@ -571,16 +580,35 @@ function _drush_verify_cli_options($command) {
     }
   }
 
-  // Next check to see if all required options were specified.
+  // Next check to see if all required options were specified,
+  // and if all specified options with required values have values.
   $missing_required_options = array();
+  $options_missing_required_values = array();
   foreach ($command['options'] as $option_name => $option) {
     if (is_array($option) && !empty($option['required']) && drush_get_option($option_name, NULL) === NULL) {
       $missing_required_options[] = $option_name;
     }
+    // Note that drush_get_option() will return TRUE if an option
+    // was specified without a value (--option), as opposed to
+    // the string "1" is --option=1 was used.
+    elseif (is_array($option) && !empty($option['value']) && ($option['value'] == 'required') && drush_get_option($option_name, NULL) === TRUE) {
+      $options_missing_required_values[] = $option_name;
+    }
   }
-  if (!empty($missing_required_options)) {
-    $missing = count($missing_required_options) > 1 ? dt('Missing required options') : dt('Missing required option');
-    return drush_set_error(dt("@missing: --@options.  See `drush help @command` for information on usage.", array('@missing' => $missing, '@options' => implode(', --', $missing_required_options), '@command' => $command['command'])));
+  if (!empty($missing_required_options) || !empty($options_missing_required_values)) {
+    $missing_message = '';
+    if (!empty($missing_required_options)) {
+      $missing = count($missing_required_options) > 1 ? dt('Missing required options') : dt('Missing required option');
+      $missing_message = dt("@missing: --@options.", array('@missing' => $missing, '@options' => implode(', --', $missing_required_options)));
+    }
+    if (!empty($options_missing_required_values)) {
+      if (!empty($missing_message)) {
+        $missing_message .= "  ";
+      }
+      $missing = count($options_missing_required_values) > 1 ? dt('Options used without providing required values') : dt('Option used without a value where one was required');
+      $missing_message .= dt("@missing: --@options.", array('@missing' => $missing, '@options' => implode(', --', $options_missing_required_values)));
+    }
+    return drush_set_error(dt("!message  See `drush help @command` for information on usage.", array('!message' => $missing_message, '@command' => $command['command'])));
   }
   return TRUE;
 }
@@ -1050,7 +1078,6 @@ function drush_command_defaults($key, $commandfile, $path) {
     'aliases' => array(),
     'core' => array(),
     'scope' => 'site',
-    'drupal dependencies' => array(),
     'drush dependencies' => array(),
     'handle-remote-commands' => FALSE,
     'remote-tty' => FALSE,
@@ -1070,7 +1097,7 @@ function drush_command_defaults($key, $commandfile, $path) {
   // additional defaults if needed.  The bootstrap command defaults
   // will be merged into the command object again just before
   // running it in bootstrap_and_dispatch().
-  if ($bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT')) {
+  if ($bootstrap = drush_get_bootstrap_object()) {
     $defaults = array_merge($defaults, $bootstrap->command_defaults());
   }
   return $defaults;
@@ -1370,6 +1397,14 @@ function drush_commandfile_list() {
   return commandfiles_cache()->get();
 }
 
+function _drush_find_commandfiles($phase, $phase_max = FALSE) {
+  drush_log(dt("Find command files for phase !phase (max=!max)", array('!phase' => $phase, '!max' => $phase_max)), 'debug');
+  if ($bootstrap = drush_get_bootstrap_object()) {
+    $searchpath = $bootstrap->commandfile_searchpaths($phase, $phase_max);
+    _drush_add_commandfiles($searchpath, $phase);
+  }
+}
+
 function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
   static $evaluated = array();
   $needs_sort = FALSE;
@@ -1379,7 +1414,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
       // Assemble a cid specific to the bootstrap phase and searchpaths.
       // Bump $cf_version when making a change to a dev version of Drush
       // that invalidates the commandfile cache.
-      $cf_version = 4;
+      $cf_version = 5;
       $cid = drush_get_cid('commandfiles-' . $phase, array(), array_merge($searchpath, array($cf_version)));
       $command_cache = drush_cache_get($cid);
       if (isset($command_cache->data)) {
@@ -1711,7 +1746,7 @@ function drush_enforce_requirement_core(&$command) {
  * Check if a shell alias exists for current request. If so, re-route to
  * core-execute and pass alias value along with rest of CLI arguments.
  */
-function drush_shell_alias_replace() {
+function drush_shell_alias_replace($target_site_alias) {
   $escape = TRUE;
   $args = drush_get_arguments();
   $argv = drush_get_context('argv');
@@ -1728,7 +1763,6 @@ function drush_shell_alias_replace() {
       // when the alias value is a string; if it is already broken out into an array,
       // then the values therein are used literally.
       $alias_variables = array( '{{@target}}' => '@none' );
-      $target_site_alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS', FALSE);
       if ($target_site_alias) {
         $alias_variables = array( '{{@target}}' => $target_site_alias );
         $target = drush_sitealias_get_record($target_site_alias);
@@ -1765,7 +1799,12 @@ function drush_shell_alias_replace() {
     }
     drush_log(dt('Shell alias found: !key => !value', array('!key' => $first, '!value' => implode(' ', $alias_value))), 'debug');
     $pos = array_search($first, $argv);
-    array_splice($argv, $pos, 1, $alias_value);
+    $number = 1;
+    if ($target_site_alias && ($argv[$pos - 1] == $target_site_alias)) {
+      --$pos;
+      ++$number;
+    }
+    array_splice($argv, $pos, $number, $alias_value);
     if (!$escape) {
       drush_set_option('escape', FALSE);
     }

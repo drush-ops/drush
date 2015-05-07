@@ -52,7 +52,8 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * Runs after all tests in a class are run. Remove sandbox directory.
    */
   public static function tearDownAfterClass() {
-    if (file_exists(UNISH_SANDBOX)) {
+    $dirty = getenv('UNISH_DIRTY');
+    if (file_exists(UNISH_SANDBOX) && empty($dirty)) {
       unish_file_delete_recursive(UNISH_SANDBOX, TRUE);
     }
     self::$sites = array();
@@ -267,21 +268,21 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     // Stash details about each site.
     foreach ($sites_subdirs as $subdir) {
       self::$sites[$subdir] = array(
+        'root' => $root,
+        'uri' => $subdir,
         'db_url' => $this->db_url($subdir),
       );
       // Make an alias for the site
-      $alias_definition = array($subdir => array('root' => $root,  'uri' => $subdir));
-      file_put_contents(UNISH_SANDBOX . '/etc/drush/' . $subdir . '.alias.drushrc.php', $this->unish_file_aliases($alias_definition));
+      $this->writeSiteAlias($subdir, $root, $subdir);
     }
     return self::$sites;
   }
 
-  function fetchInstallDrupal($env = 'dev', $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL) {
-    $options = array();
+  function fetchInstallDrupal($env = 'dev', $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL, $separate_roots = FALSE) {
     $root = $this->webroot();
-    $site = "$root/sites/$env";
-
-
+    $uri = $separate_roots ? "default" : "$env";
+    $options = array();
+    $site = "$root/sites/$uri";
 
     if (substr($version_string, 0, 1) == 6 && $this->db_driver(UNISH_DB_URL) == 'sqlite') {
       // Validate
@@ -296,15 +297,15 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     // Download Drupal if not already present.
     if (!file_exists($root)) {
       $options += array(
-        'destination' => UNISH_SANDBOX,
-        'drupal-project-rename' => 'web',
+        'destination' => dirname($root),
+        'drupal-project-rename' => basename($root),
         'yes' => NULL,
         'quiet' => NULL,
         'cache' => NULL,
       );
       $this->drush('pm-download', array("drupal-$version_string"), $options);
       // @todo This path is not proper in D8.
-      mkdir(UNISH_SANDBOX . '/web/sites/all/drush', 0777, TRUE);
+      mkdir($root . '/sites/all/drush', 0777, TRUE);
     }
 
     // If specified, install Drupal as a multi-site.
@@ -312,7 +313,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
       $options = array(
         'root' => $root,
         'db-url' => $this->db_url($env),
-        'sites-subdir' => $env,
+        'sites-subdir' => $uri,
         'yes' => NULL,
         'quiet' => NULL,
       );
@@ -324,6 +325,11 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
       mkdir($site);
       touch("$site/settings.php");
     }
+  }
+
+  function writeSiteAlias($name, $root, $uri) {
+    $alias_definition = array($name => array('root' => $root,  'uri' => $uri));
+    file_put_contents(UNISH_SANDBOX . '/etc/drush/' . $name . '.alias.drushrc.php', $this->unish_file_aliases($alias_definition));
   }
 
   /**

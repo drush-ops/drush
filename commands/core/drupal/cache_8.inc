@@ -8,14 +8,23 @@ use Drupal\Core\Cache\Cache;
 
 function _drush_cache_command_get($cid, $bin) {
   if (is_null($bin)) {
-    $bin = 'default';
+    $bin = _drush_cache_bin_default();
   }
   return \Drupal::cache($bin)->get($cid);
 }
 
+/**
+ * The default bin.
+ *
+ * @return string
+ */
+function _drush_cache_bin_default() {
+  return 'default';
+}
+
 function _drush_cache_command_set($cid, $data, $bin, $expire, $tags) {
   if (is_null($bin)) {
-    $bin = 'default';
+    $bin = _drush_cache_bin_default();
   }
 
   // Convert the "expire" argument to a valid value for Drupal's cache_set().

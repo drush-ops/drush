@@ -26,8 +26,17 @@ include_once 'generate.contents.make.inc';
  * Implements hook_drush_command().
  */
 function make_drush_command() {
+  $projects = array(
+    'description' => 'Restrict the make to this comma-separated list of projects. To specify all projects, pass *.',
+    'example-value' => 'views,ctools',
+  );
+  $libraries = array(
+    'description' => 'Restrict the make to this comma-separated list of libraries. To specify all libraries, pass *.',
+    'example-value' => 'tinymce',
+  );
+
   $items['make'] = array(
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'description' => 'Turns a makefile into a working Drupal codebase.',
     'arguments' => array(
       'makefile' => 'Filename of the makefile to use for this build.',
@@ -38,7 +47,6 @@ function make_drush_command() {
       'drush make --no-core --contrib-destination=. installprofile.make' => 'Build an installation profile within an existing Drupal site',
       'drush make http://example.com/example.make example' => 'Build the remote example.make makefile in the example directory.',
       'drush make example.make --no-build --lock=example.lock' => 'Write a new makefile to example.lock. All project versions will be resolved.',
-      'drush make example.make --no-build --lock-update=example.make' => 'Write a new makefile to example.make. All project versions will be updated.',
     ),
     'options' => array(
       'version' => 'Print the make API version and exit.',
@@ -71,24 +79,14 @@ function make_drush_command() {
       'translations' => 'Retrieve translations for the specified comma-separated list of language(s) if available for all projects.',
       'working-copy' => 'Preserves VCS directories, like .git, for projects downloaded using such methods.',
       'download-mechanism' => 'How to download files. Should be autodetected, but this is an override if it doesn\'t work. Options are "curl" and "make" (a native download method).',
-      'projects' => array(
-        'description' => 'Restrict the make to this comma-separated list of projects. To specify all projects, pass *.',
-        'example-value' => 'views,ctools',
-      ),
-      'libraries' => array(
-        'description' => 'Restrict the make to this comma-separated list of libraries. To specify all libraries, pass *.',
-        'example-value' => 'tinymce',
-      ),
+      'projects' => $projects,
+      'libraries' => $libraries,
       'allow-override' => array(
         'description' => 'Restrict the make options to a comma-separated list. Defaults to unrestricted.',
       ),
       'lock' => array(
         'description' => 'Generate a makefile, based on the one passed in, with all versions *resolved*. Defaults to printing to the terminal, but an output file may be provided.',
         'example-value' => 'example.make.lock',
-      ),
-      'lock-update' => array(
-        'description' => 'Generate an updated makefile, based on the one passed in, with all versions *updated*. Defaults to printing to the terminal, but an output file may be provided.',
-        'example-value' => 'example.make',
       ),
       'shallow-clone' => array(
         'description' => 'For makefile entries which use git for downloading, this option will utilize shallow clones where possible (ie. by using the git-clone\'s depth=1 option). If the "working-copy" option is not desired, this option will significantly speed up makes which involve modules stored in very large git repos. In fact, if "working-copy" option is enabled, this option cannot be used.',
@@ -115,6 +113,22 @@ function make_drush_command() {
     'aliases' => array('generate-makefile'),
   );
 
+  $items['make-convert'] = array(
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+    'description' => 'Convert a legacy makefile into YAML format.',
+    'arguments' => array(
+      'makefile' => 'Filename of the makefile to convert.',
+    ),
+    'options' => array(
+      'projects' => $projects,
+      'libraries' => $libraries,
+    ),
+    'required-arguments' => TRUE,
+    'examples' => array(
+      'drush make-convert example.make' => 'Convert example.make to example.make.yml',
+    ),
+  );
+
   // Hidden command to build a group of projects.
   $items['make-process'] = array(
     'hidden' => TRUE,
@@ -125,8 +139,23 @@ function make_drush_command() {
       'projects-location' => 'Name of a temporary file containing json-encoded output of make_projects().',
       'manifest' => 'An array of projects already being processed.',
     ),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'engines' => array('release_info'),
+  );
+
+  $items['make-update'] = array(
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+    'description' => 'Process a makefile and outputs an equivalent makefile with projects version resolved to latest available.',
+    'arguments' => array(
+      'makefile' => 'Filename of the makefile to use for this build.',
+    ),
+    'options' => array(
+      'result-file' => array(
+        'description' => 'Save to a file. If not provided, the updated makefile will be dump to stdout.',
+        'example-value' => 'updated.make',
+      ),
+    ),
+    'engines' => array('release_info', 'update_status'),
   );
 
   // Add docs topic.
@@ -135,7 +164,7 @@ function make_drush_command() {
     'description' => 'Drush Make overview with examples',
     'hidden' => TRUE,
     'topic' => TRUE,
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'callback' => 'drush_print_file',
     'callback arguments' => array($docs_dir . '/docs/make.md'),
   );
@@ -143,7 +172,7 @@ function make_drush_command() {
     'description' => 'Drush Make example makefile',
     'hidden' => TRUE,
     'topic' => TRUE,
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'callback' => 'drush_print_file',
     'callback arguments' => array($docs_dir . '/examples/example.make.yml'),
   );
@@ -222,10 +251,9 @@ function drush_make($makefile = NULL, $build_path = NULL) {
   // Set the cache option based on our '--no-cache' option.
   _make_enable_cache();
 
-  $info = make_parse_info_file($makefile);
-
   // Build.
   if (!drush_get_option('no-build', FALSE)) {
+    $info = make_parse_info_file($makefile);
     drush_log(dt('Beginning to build !makefile.', array('!makefile' => $makefile)), 'ok');
 
     // Default contrib destination depends on Drupal core version.
@@ -267,17 +295,36 @@ function drush_make($makefile = NULL, $build_path = NULL) {
 
   // Process --lock.
   if (drush_get_option('lock', FALSE)) {
-    make_generate_from_makefile(drush_get_option('lock'), $makefile);
-  }
-
-  // Process --lock-update.
-  if (drush_get_option('lock-update', FALSE)) {
-    make_generate_from_makefile(drush_get_option('lock-update'), $makefile);
+    return make_generate_from_makefile(drush_get_option('lock'), $makefile);
   }
 
   // Used by core-quick-drupal command.
   // @see drush_core_quick_drupal().
   return $info;
+}
+
+/**
+ * Command callback; convert ini makefile to YAML.
+ */
+function drush_make_convert($makefile) {
+
+  drush_log(dt('Beginning to convert !makefile.', array('!makefile' => $makefile)), 'ok');
+
+  $file = $makefile . '.yml';
+  $info = make_parse_info_file($makefile);
+  // Remove incorrect value.
+  unset($info['format']);
+
+  $dumper = drush_load_engine('outputformat', 'yaml');
+  $yaml = $dumper->format($info, array());
+
+  if (file_put_contents($file, $yaml)) {
+    drush_log(dt("Wrote make file @file", array('@file' => $file)), 'ok');
+    return $file;
+  }
+  else {
+    make_error('FILE_ERROR', dt("Unable to write file !file", array('!file' => $file)));
+  }
 }
 
 /**

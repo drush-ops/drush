@@ -35,7 +35,7 @@ class outputFormatCase extends CommandUnishTestCase {
       // not change our output contrary to our expectations when run in
       // a narrow terminal window.
       $env = array(
-        'COLUMNS' => '120',
+        'COLUMNS' => '800',
       );
       $this->drush($command, $args, $site_options + $options + array('format' => $format), NULL, NULL, self::EXIT_SUCCESS, NULL, $env);
       $output = implode("\n", $this->getOutputAsList()); // note: we consider trailing eols insignificant
@@ -58,7 +58,7 @@ class outputFormatCase extends CommandUnishTestCase {
         'args' => array('drush version'),
         'options' => array(),
         'format' => 'list',
-        'output_filter' => array('/[0-9]+\.[0-9]+[a-zA-Z0-9-]*/' => '0.0-dev'),
+        'output_filter' => array('/[0-9]+\.[0-9]+[a-zA-Z0-9-]*/' => '0.0-dev',),
         'expected' => '0.0-dev',
       ),
 //      array(
@@ -77,8 +77,13 @@ class outputFormatCase extends CommandUnishTestCase {
         'args' => array('drush'),
         'options' => array(),
         'format' => 'var_export',
-        'output_filter' => array('/[0-9]+\.[0-9]+[a-zA-Z0-9-]*/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
+        'output_filter' => array(
+          '/[0-9]+\.[0-9]+[a-zA-Z0-9-]*/' => '0.0-dev',
+          '#/.*/etc/drush#' => '/etc/drush',
+          "/'drush-script' => '.*drush.php'/" => "'drush-script' => 'drush.php'",
+        ),
         'expected' => "array(
+  'drush-script' => 'drush.php',
   'drush-version' => '0.0-dev',
   'drush-temp' => '$unish_tmp',
   'drush-conf' => array(),
@@ -93,8 +98,12 @@ class outputFormatCase extends CommandUnishTestCase {
         'args' => array('drush'),
         'options' => array(),
         'format' => 'key-value',
-        'output_filter' => array('/[0-9]+\.[0-9]+[a-zA-Z0-9-]*/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush'),
-        'expected' => "Drush version          :  0.0-dev
+        'output_filter' => array(
+          '/[0-9]+\.[0-9]+[a-zA-Z0-9-]*/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush',
+          "/(Drush script *:  ).*drush.php/" => "Drush script:  drush.php",
+        ),
+        'expected' => "Drush script:  drush.php
+ Drush version          :  0.0-dev
  Drush temp directory   :  $unish_tmp
  Drush configuration    :
  Drush alias files      :  /etc/drush/dev.alias.drushrc.php",

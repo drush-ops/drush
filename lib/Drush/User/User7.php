@@ -9,6 +9,6 @@ class User7 extends UserVersion {
    */
   public function create($properties) {
     $account = user_save(NULL, $properties, NULL);
-    return $account;
+    return new UserSingle7($account);
   }
 }

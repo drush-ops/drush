@@ -39,14 +39,13 @@ function drush_main() {
   }
 
   // Load the global Drush configuration files, and global Drush commands.
-  drush_preflight();
-
-  // Find the selected site based on --root, --uri or cwd, and
-  // return the bootstrap object that goes with it.
-  $bootstrap = _drush_preflight_root();
-
+  // Find the selected site based on --root, --uri or cwd
   // Preflight the selected site, and load any configuration and commandfiles associated with it.
-  drush_preflight_site();
+  // Select and return the bootstrap class.
+  $bootstrap = drush_preflight();
+
+  // Reset our bootstrap phase to the beginning
+  drush_set_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE);
 
   $return = '';
   if (!drush_get_error()) {
@@ -71,6 +70,13 @@ function drush_main() {
         $return = $bootstrap->bootstrap_and_dispatch();
       }
     }
+  }
+  // TODO: Get rid of global variable access here, and just trust
+  // the bootstrap object returned from drush_preflight().  This will
+  // require some adjustments to Drush bootstrapping.
+  // See: https://github.com/drush-ops/drush/pull/1303
+  if ($bootstrap = drush_get_bootstrap_object()) {
+    $bootstrap->terminate();
   }
   drush_postflight();
 

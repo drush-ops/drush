@@ -230,6 +230,9 @@ function drush_field_delete($field_name) {
     if (count($all_bundles) > 1) {
       $options = array_merge(array('all' => dt('All bundles')), array_combine($all_bundles, $all_bundles));
       $bundle = drush_choice($options, dt("Choose a particular bundle or 'All bundles'"));
+      if (!$bundle) {
+        return drush_user_abort();
+      }
       $confirm = FALSE;
     }
     else {

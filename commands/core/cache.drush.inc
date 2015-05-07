@@ -160,7 +160,7 @@ function drush_cache_command_get($cid = NULL, $bin = NULL) {
   $result = drush_op('_drush_cache_command_get', $cid, $bin);
 
   if (empty($result)) {
-    return drush_set_error('DRUSH_CACHE_OBJECT_NOT_FOUND', dt('The !cid object in the !bin cache bin was not found.', array('!cid' => $cid, '!bin' => $bin)));
+    return drush_set_error('DRUSH_CACHE_OBJECT_NOT_FOUND', dt('The !cid object in the !bin bin was not found.', array('!cid' => $cid, '!bin' => $bin ? $bin : _drush_cache_bin_default())));
   }
   return $result;
 }
@@ -258,7 +258,17 @@ function drush_cache_clear_drush() {
  * it also clears drush cache and drupal render cache.
  */
 function drush_cache_rebuild() {
+  if (!drush_get_option('cache-clear', TRUE)) {
+    drush_log(dt("Skipping cache-clear operation due to --cache-clear=0 option."), 'ok');
+    return TRUE;
+  }
   chdir(DRUPAL_ROOT);
+
+  // Clear the APC cache to ensure APC class loader is reset.
+  if (function_exists('apc_fetch')) {
+    apc_clear_cache('user');
+  }
+
   $autoloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
   require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';
 
@@ -281,9 +291,5 @@ function drush_cache_rebuild() {
   // As this command replaces `drush cache-clear all` for Drupal 8 users, clear
   // the Drush cache as well, for consistency with that behavior.
   drush_cache_clear_drush();
-
-  // Clears the render cache.
-  drush_include_engine('drupal', 'cache');
-  drush_cache_clear_render();
 }
 

@@ -49,7 +49,7 @@ function sandwich_drush_command() {
     ),
     'aliases' => array('mmas'),
     // No bootstrap at all.
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
   );
 
   // The 'sandwiches-served' command.  Informs how many 'mmas' commands
@@ -73,7 +73,7 @@ function sandwich_drush_command() {
       ),
     ),
     // No bootstrap at all.
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
   );
 
   // The 'spreads-status' command.  Prints a table about available spreads.
@@ -108,7 +108,7 @@ function sandwich_drush_command() {
       ),
     ),
     // No bootstrap at all.
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
   );
 
   // Commandfiles may also add topics.  These will appear in
@@ -118,7 +118,7 @@ function sandwich_drush_command() {
     'description' => 'Ruminations on the true meaning and philosophy of sandwiches.',
     'hidden' => TRUE,
     'topic' => TRUE,
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'callback' => 'drush_print_file',
     'callback arguments' => array(dirname(__FILE__) . '/sandwich-topic.txt'),
   );

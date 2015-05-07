@@ -161,13 +161,21 @@ function drush_role_add_perm($rid, $permissions = NULL) {
   else {
     $perms = _convert_csv_to_array($permissions);
   }
+
+  $added_perm = FALSE;
+
   foreach($perms as $perm) {
     $result = drush_role_perm('add', $rid, $perm);
     if ($result !== FALSE) {
+      $added_perm = TRUE;
       drush_log(dt('Added "!perm" to "!role"', array('!perm' => $perm, '!role' => $result->name)), 'success');
     }
   }
-  drush_drupal_cache_clear_all();
+
+  if ($added_perm) {
+    drush_drupal_cache_clear_all();
+  }
+
   return $result;
 }
 
@@ -187,13 +195,21 @@ function drush_role_remove_perm($rid, $permissions = NULL) {
   else {
     $perms = _convert_csv_to_array($permissions);
   }
+
+  $removed_perm = FALSE;
+
   foreach($perms as $perm) {
     $result = drush_role_perm('remove', $rid, $perm);
     if ($result !== FALSE) {
+      $removed_perm = TRUE;
       drush_log(dt('Removed "!perm" from "!role"', array('!perm' => $perm, '!role' => $result->name)), 'ok');
     }
   }
-  drush_drupal_cache_clear_all();
+
+  if ($removed_perm) {
+    drush_drupal_cache_clear_all();
+  }
+
   return $result;
 }
 
@@ -227,7 +243,7 @@ function drush_role_perm($action, $rid, $permission = NULL) {
     }
     $choice = drush_choice($module_perms, "Enter a number to choose which permission to $action.");
     if ($choice === FALSE) {
-      return FALSE;
+      return drush_user_abort();
     }
     $permission = $module_perms[$choice];
   }

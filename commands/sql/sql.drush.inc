@@ -43,7 +43,7 @@ function sql_drush_command() {
     'description' => 'Drop all tables in a given database.',
     'arguments' => array(
     ),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'options' => array(
       'yes' => 'Skip confirmation and proceed.',
       'result-file' => array(
@@ -56,7 +56,7 @@ function sql_drush_command() {
   $items['sql-conf'] = array(
     'description' => 'Print database connection details using print_r().',
     'hidden' => TRUE,
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'options' => array(
       'all' => 'Show all database connections, instead of just one.',
       'show-passwords' => 'Show database password.',
@@ -69,7 +69,7 @@ function sql_drush_command() {
   );
   $items['sql-connect'] = array(
     'description' => 'A string for connecting to the DB.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'options' => $options + $db_url + array(
         'extra' => array(
           'description' => 'Add custom options to the mysql command.',
@@ -82,7 +82,7 @@ function sql_drush_command() {
   );
   $items['sql-create'] = array(
     'description' => 'Create a database.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'examples' => array(
       'drush sql-create' => 'Create the database for the current site.',
       'drush @site.test sql-create' => 'Create the database as specified for @site.test.',
@@ -96,7 +96,7 @@ function sql_drush_command() {
   );
   $items['sql-dump'] = array(
     'description' => 'Exports the Drupal DB as SQL using mysqldump or equivalent.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'examples' => array(
       'drush sql-dump --result-file=../18.sql' => 'Save SQL dump to the directory above Drupal root.',
       'drush sql-dump --skip-tables-key=common' => 'Skip standard tables. @see example.drushrc.php',
@@ -120,7 +120,7 @@ function sql_drush_command() {
     ) + $options + $db_url,
   );
   $items['sql-query'] = array(
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'description' => 'Execute a query against a database.',
     'examples' => array(
       'drush sql-query "SELECT * FROM users WHERE uid=1"' => 'Browse user record. Table prefixes, if used, must be added to table names by hand.',
@@ -149,79 +149,9 @@ function sql_drush_command() {
     ) + $options + $db_url,
     'aliases' => array('sqlq'),
   );
-  $items['sql-sync'] = array(
-    'description' => 'Copies the database contents from a source site to a target site. Transfers the database dump via rsync.',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-    'drush dependencies' => array('core'), // core-rsync.
-    'examples' => array(
-      'drush sql-sync @source @target' => 'Copy the database from the site with the alias "source" to the site with the alias "target".',
-      'drush sql-sync prod dev' => 'Copy the database from the site in /sites/prod to the site in /sites/dev (multisite installation).',
-    ),
-    'arguments' => array(
-      'source' => 'A site-alias or the name of a subdirectory within /sites whose database you want to copy from.',
-      'target' => 'A site-alias or the name of a subdirectory within /sites whose database you want to replace.',
-    ),
-    'required-arguments' => TRUE,
-    'options' => array(
-      'skip-tables-key' => 'A key in the $skip_tables array. See example.drushrc.php. Optional.',
-      'skip-tables-list' => 'A comma-separated list of tables to exclude completely. Optional.',
-      'structure-tables-key' => 'A key in the $structure_tables array. See example.drushrc.php. Optional.',
-      'structure-tables-list' => 'A comma-separated list of tables to include for structure, but not data. Optional.',
-      'tables-key' => 'A key in the $tables array. Optional.',
-      'tables-list' => 'A comma-separated list of tables to transfer. Optional.',
-      // 'cache' => 'Skip dump if result file exists and is less than "cache" hours old. Optional; default is 24 hours.',
-      // 'no-cache' => 'Do not cache the sql-dump file.',
-      'no-dump' => 'Do not dump the sql database; always use an existing dump file.',
-      'source-db-url' => 'Database specification for source system to dump from.',
-      'source-remote-port' => 'Override sql database port number in source-db-url. Optional.',
-      'source-remote-host' => 'Remote machine to run sql-dump file on. Optional; default is local machine.',
-      'source-dump' => 'The destination for the dump file, or the path to the dump file when --no-dump is specified.',
-      'source-database' => 'A key in the $db_url (D6) or $databases (D7+) array which provides the data.',
-      'source-target' => array(
-        'description' => 'A key within the SOURCE database identifying a particular server in the database group.',
-        'example-value' => 'key',
-        // Gets unhidden in help_alter(). We only want to show to D7+ users but have to
-        // declare it here since this command does not bootstrap fully.
-        'hidden' => TRUE,
-      ),
-      'target-db-url' => '',
-      'target-remote-port' => '',
-      'target-remote-host' => '',
-      'target-dump' => 'A path for saving the dump file on target. Mandatory when using --no-sync.',
-      'target-database' => 'A key in the $db_url (D6) or $databases (D7+) array which shall receive the data.',
-      'target-target' => array(
-          'description' => 'Oy. A key within the TARGET database identifying a particular server in the database group.',
-          'example-value' => 'key',
-          // Gets unhidden in help_alter(). We only want to show to D7+ users but have to
-          // declare it here since this command does not bootstrap fully.
-          'hidden' => TRUE,
-      ),
-      // 'temp' => 'Use a temporary file to hold dump files.  Implies --no-cache.',
-      // 'dump-dir' => 'Directory to store sql dump files in when --source-dump or --target-dump are not used.',
-      'create-db' => 'Create a new database before importing the database dump on the target machine.',
-      'db-su' => array(
-        'description' => 'Account to use when creating a new database. Optional.',
-        'example-value' => 'root',
-      ),
-      'db-su-pw' => array(
-        'description' => 'Password for the "db-su" account. Optional.',
-        'example-value' => 'pass',
-      ),
-      // 'no-ordered-dump' => 'Do not pass --ordered-dump to sql-dump.  sql-sync orders the dumpfile by default in order to increase the efficiency of rsync.',
-      'sanitize' => 'Obscure email addresses and reset passwords in the user table post-sync.',
-    ),
-    'sub-options' => array(
-      'sanitize' => array(
-        'sanitize-password' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.  Default is "password".',
-        'sanitize-email' => 'The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %name.  Default is "user+%uid@localhost".',
-        'confirm-sanitizations' => 'Prompt yes/no after importing the database, but before running the sanitizations',
-      ),
-    ),
-    'topics' => array('docs-aliases', 'docs-policy', 'docs-example-sync-via-http', 'docs-example-sync-extension'),
-  );
   $items['sql-cli'] = array(
     'description' => "Open a SQL command-line interface using Drupal's credentials.",
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     // 'options' => $options + $db_url,
     'allow-additional-options' => array('sql-connect'),
     'aliases' => array('sqlc'),
@@ -233,11 +163,10 @@ function sql_drush_command() {
   );
   $items['sql-sanitize'] = array(
     'description' => "Run sanitization operations on the current database.",
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
-    'options' => array(
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+    'drush dependencies' => array('sqlsync'),
+    'options' => drupal_sanitize_options() + array(
       'db-prefix' => 'Enable replacement of braces in sanitize queries.',
-      'sanitize-password' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.  Default is "password".',
-      'sanitize-email' => 'The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %name.  Default is "user+%uid@localhost".',
     ) + $db_url,
     'aliases' => array('sqlsan'),
   );
@@ -250,10 +179,7 @@ function sql_drush_command() {
 function sql_drush_help_alter(&$command) {
   // Drupal 7+ only options.
   if (drush_drupal_major_version() >= 7) {
-    if ($command['command'] == 'sql-sync') {
-      unset($command['options']['source-target']['hidden'], $command['options']['target-target']['hidden']);
-    }
-    elseif ($command['commandfile'] == 'sql') {
+    if ($command['commandfile'] == 'sql') {
       unset($command['options']['target']['hidden']);
     }
   }
@@ -539,7 +465,7 @@ function drush_sql_sanitize() {
   if (drush_get_option('db-prefix')) {
     drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
   }
-  drush_include(DRUSH_BASE_PATH . '/commands/sql', 'sync.sql');
+
   drush_command_invoke_all('drush_sql_sync_sanitize', 'default');
   $options = drush_get_context('post-sync-ops');
   if (!empty($options)) {
@@ -645,7 +571,7 @@ function drush_sql_get_class($db_spec = NULL) {
 
   // Try a few times to quickly get $db_spec.
   if ($db_spec) {
-    return drush_get_class('Drush\Sql\Sql', array($db_spec), array($db_spec['driver']));
+    return drush_get_class(array('Drush\Sql\Sql', 'Drupal\Driver\Database\\' .  $db_spec['driver'] . '\Drush'), array($db_spec), array($db_spec['driver']));
   }
   elseif ($url = drush_get_option('db-url')) {
     $url =  is_array($url) ? $url[$database] : $url;
@@ -669,6 +595,12 @@ function drush_sql_get_class($db_spec = NULL) {
   throw new \Drush\Sql\SqlException('Unable to find a matching SQL Class. Drush cannot find your database connection details.');
 }
 
+/**
+ * Wrapper for drush_get_class; instantiates a Drupal version-specific instance
+ * of SqlVersion class.
+ *
+ * @return Drush\Sql\SqlVersion
+ */
 function drush_sql_get_version() {
   return drush_get_class('Drush\Sql\Sql', array(), array(drush_drupal_major_version())) ?: NULL;
 }
@@ -694,7 +626,7 @@ function drush_sql_get_version() {
 function sql_drush_sql_sync_sanitize($site) {
   $site_settings = drush_sitealias_get_record($site);
   $databases = sitealias_get_databases_from_record($site_settings);
-  if (drush_get_option('db-prefix') || isset($databases['default']['default']['prefix'])) {
+  if (drush_get_option('db-prefix') || !empty($databases['default']['default']['prefix'])) {
     $wrap_table_name = TRUE;
   }
   else {
@@ -744,6 +676,10 @@ function sql_drush_sql_sync_sanitize($site) {
       $db_driver = $databases['default']['default']['driver'];
       if ($db_driver == 'pgsql') {
         $email_map = array('%uid' => "' || uid || '", '%mail' => "' || replace(mail, '@', '_') || '", '%name' => "' || replace(name, ' ', '_') || '");
+        $newmail =  "'" . str_replace(array_keys($email_map), array_values($email_map), $newemail) . "'";
+      }
+      elseif ($db_driver == 'mssql') {
+        $email_map = array('%uid' => "' + uid + '", '%mail' => "' + replace(mail, '@', '_') + '", '%name' => "' + replace(name, ' ', '_') + '");
         $newmail =  "'" . str_replace(array_keys($email_map), array_values($email_map), $newemail) . "'";
       }
       else {

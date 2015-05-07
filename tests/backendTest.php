@@ -89,7 +89,7 @@ EOD;
     $this->drush('core-cron', array(), array('backend' => NULL), NULL, NULL, self::EXIT_ERROR);
     $parsed = $this->parse_backend_output($this->getOutput());
     $this->assertEquals(1, $parsed['error_status']);
-    $this->assertArrayHasKey('DRUSH_NO_DRUPAL_ROOT', $parsed['error_log']);
+    $this->assertArrayHasKey('DRUSH_COMMAND_INSUFFICIENT_BOOTSTRAP', $parsed['error_log']);
   }
 
   /**

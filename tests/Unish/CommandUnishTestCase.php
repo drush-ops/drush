@@ -10,6 +10,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
   // Unix exit codes.
   const EXIT_SUCCESS  = 0;
   const EXIT_ERROR = 1;
+  const UNISH_EXITCODE_USER_ABORT = 75; // Same as DRUSH_EXITCODE_USER_ABORT
 
   /**
    * Code coverage data collected during a single test.
@@ -163,7 +164,6 @@ abstract class CommandUnishTestCase extends UnishTestCase {
   function execute($command, $expected_return = self::EXIT_SUCCESS, $cd = NULL, $env = array()) {
     $return = 1;
     $this->tick();
-    $this->log("Executing: $command", 'warning');
 
     // Apply the environment variables we need for our test to the head of the
     // command. Process does have an $env argument, but it replaces the entire
@@ -175,6 +175,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     foreach ($env as $env_name => $env_value) {
       $prefix .= $env_name . '=' . self::escapeshellarg($env_value) . ' ';
     }
+    $this->log("Executing: $prefix$command", 'warning');
 
     try {
       // Process uses a default timeout of 60 seconds, set it to 0 (none).
