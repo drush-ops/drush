@@ -301,14 +301,29 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
 
 function drush_config_export_validate() {
   if ($destination = drush_get_option('destination')) {
+    $additional = array();
+    $values = drush_sitealias_evaluate_path($destination, $additional, TRUE);
+    if (!isset($values['path'])) {
+      return drush_set_error('config_export_target', 'The destination directory could not be evaluated.');
+    }
+    $destination = $values['path'];
+    drush_set_option('destination', $destination);
     if (!file_exists($destination)) {
-      return drush_set_error('config_export_target', 'The destination directory does not exist.');
+      $parent = dirname($destination);
+      if (!is_dir($parent)) {
+        return drush_set_error('config_export_target', 'The destination parent directory does not exist.');
+      }
+      if (!is_writable($parent)) {
+        return drush_set_error('config_export_target', 'The destination parent directory is not writable.');
+      }
     }
-    if (!is_dir($destination)) {
-      return drush_set_error('config_export_target', 'The destination is not a directory.');
-    }
-    if (!is_writable($destination)) {
-      return drush_set_error('config_export_target', 'The destination directory is not writable.');
+    else {
+      if (!is_dir($destination)) {
+        return drush_set_error('config_export_target', 'The destination is not a directory.');
+      }
+      if (!is_writable($destination)) {
+        return drush_set_error('config_export_target', 'The destination directory is not writable.');
+      }
     }
   }
 }
@@ -322,6 +337,9 @@ function drush_config_export($destination = NULL) {
   // Determine which target directory to use.
   if ($target = drush_get_option('destination')) {
     $destination_dir = $target;
+    // It is important to be able to specify a destination directory that
+    // does not exist yet, for exporting on remote systems
+    drush_mkdir($destination_dir);
   }
   else {
     $choices = drush_map_assoc(array_keys($config_directories));
@@ -469,6 +487,11 @@ function _drush_config_export($destination, $destination_dir, $branch) {
   elseif (drush_get_option('add')) {
     drush_shell_exec_interactive('git add -p %s', $destination_dir);
   }
+
+  $values = array(
+    'destination' => $destination_dir,
+  );
+  return $values;
 }
 
 function drush_config_import_validate() {
