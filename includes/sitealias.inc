@@ -1617,7 +1617,7 @@ function drush_convert_db_from_db_url($db_url) {
     $host = '';
     // The sqlite path with start with a / if there
     // is both a host and a path component; sqlite
-    // databases without an abosolute path will have only
+    // databases without an absolute path will have only
     // a host component.
     if (isset($url->path)) {
       $database = '/' . $url->host  . $url->path;
