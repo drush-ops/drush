@@ -20,4 +20,3 @@ Drush is built by people like you! Please [join us](https://github.com/drush-ops
 ## Documentation
 * The docs are in the [docs](docs) and [examples](examples) folders in the git repository, so people can easily find the suitable docs for the current git revision. You can read these from within Drush, with the `drush topic` command.
 * Documentation should be kept up-to-date. This means, whenever you add a new API method, add a new hook or change the database model, pack the relevant changes to the docs in the same pull request.
-* You can build the docs e.g. produce html, using `drush help --html`. This page also resides at http://www.drush.org. You might enjoy prettier and more comprehensive version at [Drush Commands](http://www.drushcommands.com)
