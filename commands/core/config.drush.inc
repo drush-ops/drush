@@ -187,6 +187,10 @@ function config_drush_command() {
         'description' => 'The remote git branch to use to fetch changes.  Defaults to "origin".',
         'example-value' => 'origin',
       ),
+      'temp' => array(
+        'description' => "Export destination site's configuration to a temporary directory.",
+        'example-value' => 'path',
+      ),
     ),
     'examples' => array(
       'drush @dev config-merge @production' => 'Merge configuration changes from the production site with the configuration changes made on the development site.',
@@ -709,6 +713,7 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
     'git-transport' => drush_get_option('git', FALSE),
     'remote' => drush_get_option('remote', 'origin'),
     'tool' => drush_get_option('tool', ''),
+    'temp' => drush_get_option('temp', ''),
     'config-label' => $config_label,
     'live-site' => $alias,
     'dev-site' => '@self',
@@ -786,16 +791,32 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
     $export_options['remote'] = $merge_info['remote'];
     $export_options['branch'] = $merge_info['live-config'];
   }
+  elseif ($merge_info['temp']) {
+    if ($merge_info['temp'] === TRUE) {
+      $export_options['destination'] = '%temp/config';
+    }
+    else {
+      $export_options['destination'] = $merge_info['temp'];
+    }
+  }
 
   // Make a temporary copy of our configuration directory, so that we
   // can record what changed after calling config-export and merging.
   $original_configuration_files = drush_tempdir() . '/original';
   drush_copy_dir($configuration_path, $original_configuration_files, FILE_EXISTS_OVERWRITE);
 
+  // In rsync mode, this is where we will copy from.
+  $remote_configuration_path = "%config-" . $merge_info['config-label'];
+  $rsync_options = array('delete' => TRUE);
+
   // Run config-export on the live site.
   $values = drush_invoke_process($merge_info['live-site'], 'config-export', array($merge_info['config-label']), $export_options);
   if ($values['error_status']) {
     return drush_set_error('DRUSH_CONFIG_MERGE_CANNOT_EXPORT', dt("Could not export configuration for site !site", array('!site' => $merge_info['live-site'])));
+  }
+  if (!empty($values['object']) && ($merge_info['temp'])) {
+    $remote_configuration_path = $values['object'];
+    $rsync_options['remove-source-files'] = TRUE;
   }
 
   // Copy the exported configuration from 'live-site', either via git pull or via rsync
@@ -840,8 +861,7 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
       drush_shell_cd_and_exec($configuration_path, 'git branch --set-upstream-to=%s', $original_branch);
     }
     // Copy the exported configuration files from 'live-site' via rsync and commit them
-    $remote_configuration_path = "%config-" . $merge_info['config-label'];
-    $values = drush_invoke_process($merge_info['dev-site'], 'core-rsync', array($merge_info['live-site'] . ":$remote_configuration_path/", $merge_info['dev-site'] . ":$configuration_path/"), array('delete' => TRUE));
+    $values = drush_invoke_process($merge_info['dev-site'], 'core-rsync', array($merge_info['live-site'] . ":$remote_configuration_path/", $merge_info['dev-site'] . ":$configuration_path/"), $rsync_options);
     if ($values['error_status']) {
       return drush_set_error('DRUSH_CONFIG_MERGE_RSYNC_FAILED', dt("Could not rsync from !live to !dev.", array('!live' => $merge_info['live-config'], '!dev' => $merge_info['dev-config'])));
     }
