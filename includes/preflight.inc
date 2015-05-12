@@ -50,6 +50,7 @@ function drush_preflight_prepare() {
   require_once DRUSH_BASE_PATH . '/includes/cache.inc';
   require_once DRUSH_BASE_PATH . '/includes/filesystem.inc';
   require_once DRUSH_BASE_PATH . '/includes/dbtng.inc';
+  require_once DRUSH_BASE_PATH . '/includes/consoleadapter.inc';
 
   // Stash our vendor path and classloader.
   drush_set_context('DRUSH_VENDOR_PATH', dirname(realpath($vendor_path)));
@@ -188,6 +189,10 @@ function drush_preflight() {
   drush_load_config('custom');
 
   _drush_preflight_global_options();
+
+  // Create the Console Application object, and add the global Console commands
+  consoleadapter_preflight();
+
   // Load all the commandfiles findable from any of the
   // scopes listed above.
   _drush_find_commandfiles_drush();

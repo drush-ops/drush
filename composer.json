@@ -30,7 +30,8 @@
     "d11wtq/boris": "~1.0",
     "symfony/yaml": "~2.2",
     "symfony/var-dumper": "2.6.3",
-    "pear/console_table": "~1.2.0"
+    "pear/console_table": "~1.2.0",
+    "drupal/console": "dev-master"
   },
   "require-dev": {
     "phpunit/phpunit": ">=3.5",
