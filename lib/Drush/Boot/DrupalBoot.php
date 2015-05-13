@@ -245,6 +245,12 @@ abstract class DrupalBoot extends BaseBoot {
       return drush_bootstrap_error('DRUSH_INVALID_DRUPAL_ROOT', dt("The directory !drupal_root does not contain a valid Drupal installation", array('!drupal_root' => $drupal_root)));
     }
 
+    $version = drush_drupal_version($drupal_root);
+    $major_version = drush_drupal_major_version($drupal_root);
+    if ($major_version <= 5) {
+      return drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', array('!drush_version' => DRUSH_VERSION, '!major_version' => $major_version)));
+    }
+
     drush_bootstrap_value('drupal_root', realpath($drupal_root));
     define('DRUSH_DRUPAL_SIGNATURE', $signature);
 
@@ -274,21 +280,16 @@ abstract class DrupalBoot extends BaseBoot {
     $version = drush_drupal_version();
     $major_version = drush_drupal_major_version();
 
-    if ($major_version <= 5) {
-      drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', array('!drush_version' => DRUSH_VERSION, '!major_version' => $major_version)));
-    }
-    else {
-      $core = $this->bootstrap_drupal_core($drupal_root);
+    $core = $this->bootstrap_drupal_core($drupal_root);
 
-      // DRUSH_DRUPAL_CORE should point to the /core folder in Drupal 8+ or to DRUPAL_ROOT
-      // in prior versions.
-      drush_set_context('DRUSH_DRUPAL_CORE', $core);
-      define('DRUSH_DRUPAL_CORE', $core);
+    // DRUSH_DRUPAL_CORE should point to the /core folder in Drupal 8+ or to DRUPAL_ROOT
+    // in prior versions.
+    drush_set_context('DRUSH_DRUPAL_CORE', $core);
+    define('DRUSH_DRUPAL_CORE', $core);
 
-      _drush_preflight_global_options();
+    _drush_preflight_global_options();
 
-      drush_log(dt("Initialized Drupal !version root directory at !drupal_root", array("!version" => $version, '!drupal_root' => $drupal_root)));
-    }
+    drush_log(dt("Initialized Drupal !version root directory at !drupal_root", array("!version" => $version, '!drupal_root' => $drupal_root)));
   }
 
   /**
