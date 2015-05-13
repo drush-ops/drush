@@ -46,8 +46,9 @@
  *   2. In one of the default locations:
  *        a. /etc/drush
  *        b. $HOME/.drush
- *        c. The /drush and /sites/all/drush folders for the current Drupal site
- *   3. Inside the /sites subdirectory for the specified Drupal site.
+ *   3. In one of the site-specific locations:
+ *        a. The /drush and /sites/all/drush folders for the current Drupal site
+ *        b. The /drush folder in the directory above the current Drupal site
  *
  * Folders and files containing other versions of drush in their names will
  * be *skipped* (e.g. mysite.aliases.drush4rc.php or
