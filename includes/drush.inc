@@ -676,7 +676,18 @@ function drush_op($callable) {
   foreach ($args as $arg) {
     $args_printed[] = is_scalar($arg) ? $arg : (is_array($arg) ? 'Array' : 'Object');
   }
-  $callable_string = is_array($callable) ? implode('::', $callable) : $callable;
+
+  if (!is_array($callable)) {
+    $callable_string = $callable;
+  }
+  else {
+    if (is_object($callable[0])) {
+      $callable_string = get_class($callable[0]) . '::' . $callable[1];
+    }
+    else {
+      $callable_string = implode('::', $callable);
+    }
+  }
 
   // Special checking for drush_op('system')
   if ($callable == 'system') {
