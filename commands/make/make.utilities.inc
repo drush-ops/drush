@@ -607,13 +607,13 @@ function _get_working_copy_option($download) {
  *   Returns parsed data if it matches any known format.
  */
 function _make_determine_format($data) {
-  // Test INI first.
-  if ($parsed = ParserIni::parse($data)) {
-    $parsed['format'] = 'ini';
+  // Test YAML first to avoid segmentation faults from preg_match in INI parser.
+  if ($parsed = ParserYaml::parse($data)) {
+    $parsed['format'] = 'yaml';
     return $parsed;
   }
-  elseif ($parsed = ParserYaml::parse($data)) {
-    $parsed['format'] = 'yaml';
+  elseif ($parsed = ParserIni::parse($data)) {
+    $parsed['format'] = 'ini';
     return $parsed;
   }
   return drush_set_error('MAKE_STDIN_ERROR', dt('Unknown make file format'));
