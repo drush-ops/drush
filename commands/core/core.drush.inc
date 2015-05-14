@@ -306,7 +306,7 @@ function core_drush_command() {
     ),
     'options' => array(
       'component' => "The portion of the evaluated path to return.  Defaults to 'path'; 'name' returns the site alias of the target.",
-      'local' => "Reject any target that specifies a remote site.",
+      'local-only' => "Reject any target that specifies a remote site.",
     ),
     'examples' => array(
       'cd `drush dd devel`' => 'Navigate into the devel module directory',
@@ -1225,7 +1225,7 @@ function _drush_core_directory($target = 'root', $component = 'path', $local_onl
  * Command callback.
  */
 function drush_core_drupal_directory($target = 'root') {
-  $path = _drush_core_directory($target, drush_get_option('component', 'path'), drush_get_option('local', FALSE));
+  $path = _drush_core_directory($target, drush_get_option('component', 'path'), drush_get_option('local-only', FALSE));
 
   // If _drush_core_directory is working right, it will turn
   // %blah into the path to the item referred to by the key 'blah'.

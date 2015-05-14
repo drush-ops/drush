@@ -24,7 +24,7 @@
 #       dl               - drush pm-download
 #       ev               - drush php-eval
 #       sa               - drush site-alias
-#       sa               - drush site-alias --local (show local site aliases)
+#       sa               - drush site-alias --local-only (show local site aliases)
 #       st               - drush core-status
 #       use              - drush site-set
 #
@@ -80,7 +80,7 @@ alias ddd='drush drupal-directory'
 alias dl='drush pm-download'
 alias ev='drush php-eval'
 alias sa='drush site-alias'
-alias lsa='drush site-alias --local'
+alias lsa='drush site-alias --local-only'
 alias st='drush core-status'
 alias use='drush site-set'
 
@@ -126,7 +126,7 @@ if [ -h "$d" ] ; then
     d="$d2"
   else
     d="$(dirname $d)/$d2"
-  fi 
+  fi
 fi
 
 # Get the directory that drush is stored in.
@@ -155,13 +155,19 @@ function cddl() {
     builtin cd
   elif [ "${s:0:1}" == "@" ] || [ "${s:0:1}" == "%" ]
   then
-    d="$(drush drupal-directory $1 --local 2>/dev/null)"
+    d="$(drush drupal-directory $1 --local-only 2>/dev/null)"
     if [ $? == 0 ]
     then
       echo "cd $d";
       builtin cd "$d";
     else
-      echo "Cannot cd to remote site $s"
+      t="$(drush site-alias $1 >/dev/null 2>/dev/null)"
+      if [ $? == 0 ]
+      then
+        echo "Cannot cd to remote site $s"
+      else
+        echo "Cannot cd to $s"
+      fi
     fi
   else
     builtin cd "$s";
@@ -259,7 +265,7 @@ function cpd() {
   for a in "$@" ; do
     if [ ${a:0:1} == "@" ] || [ ${a:0:1} == "%" ]
     then
-      p[${#p[@]}]="$(drush drupal-directory $a --local 2>/dev/null)"
+      p[${#p[@]}]="$(drush drupal-directory $a --local-only 2>/dev/null)"
     elif [ -n "$a" ]
     then
       p[${#p[@]}]="$a"
