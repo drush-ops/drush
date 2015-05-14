@@ -274,6 +274,19 @@ Do not use both types of declarations for a single project in your makefile.
 
   `working-copy` - If true, the checked out source will be kept as a working copy rather than exported as standalone files
 
+  Shorthand for `download[url]` available for all download types:
+  
+     projects:
+       mytheme:
+         download: "git://github.com/jane_doe/mytheme.git"
+         
+  is equivalent to:
+  
+     projects:
+       mytheme:
+         download:
+           url: "git://github.com/jane_doe/mytheme.git"
+
 ### Libraries
 
 An array of non-Drupal-specific libraries to be retrieved (e.g. js, PHP or other

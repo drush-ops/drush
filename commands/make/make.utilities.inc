@@ -314,6 +314,17 @@ function make_validate_info_file($info) {
     }
   }
 
+  // Convert shorthand project/library download style to array format.
+  foreach (array('projects', 'libraries') as $type) {
+    if (isset($info[$type]) && is_array($info[$type])) {
+      foreach ($info[$type] as $name => $item) {
+        if (!empty($item['download']) && is_string($item['download'])) {
+          $info[$type][$name]['download'] = array('url' => $item['download']);
+        }
+      }
+    }
+  }
+
   // Apply defaults after projects[] array has been expanded, but prior to
   // external validation.
   make_apply_defaults($info);
