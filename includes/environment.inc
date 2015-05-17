@@ -140,7 +140,9 @@ function drush_cwd() {
  */
 function _drush_convert_path($path) {
   $path = str_replace('\\','/', $path);
-  $path = preg_replace('/^\/cygdrive\/([A-Za-z])(.*)$/', '\1:\2', $path);
+  if (drush_is_windows(_drush_get_os()) && !drush_is_cygwin(_drush_get_os())) {
+    $path = preg_replace('/^\/cygdrive\/([A-Za-z])(.*)$/', '\1:\2', $path);
+  }
 
   return $path;
 }
