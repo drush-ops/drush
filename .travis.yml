@@ -23,12 +23,12 @@ env:
   - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=7 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=quick-drupal
   - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=7 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
 #D8
-  - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=make
-  - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=base
-  - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=commands
-  - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=pm
-  - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=quick-drupal
-  - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
+  # - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=make
+  # - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=base
+  # - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=commands
+  # - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=pm
+  # - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=quick-drupal
+  # - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
 
   # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=make
   # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=base
