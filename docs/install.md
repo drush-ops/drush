@@ -12,14 +12,7 @@ Drush 3       | 3.x | 5.2.0+ | D5, D6                     | Unsupported
 
 Pick an install method
 -----------------
-The four sections below describe ways to install Drush. None is superior to the others. 
-
-Composer - One Drush per Project
------------------
-* If your web site is built from a composer.json file (see https://github.com/drupal-composer/drupal-project), add the following to the `require` section: `"drush/drush": "6.*"`
-* Run `composer install` for a new project or `composer update` for an existing one. Do so from the same directory as composer.json.
-* Optional: Copy the /examples/drush file to your project root and modify to taste. This is a handy launcher script.
-* To update, change the drush/drush line and run `composer update`.
+The four sections below describe ways to install Drush. None is superior to the others.
 
 Composer - One Drush for all Projects
 ------------------
@@ -75,6 +68,13 @@ Composer - One Drush for all Projects
 Merge this in with any other content that may already exist in this file.
 
 See [Configure](configure.md) for next steps.
+
+Composer - One Drush per Project
+-----------------
+* If your web site is built from a composer.json file (see https://github.com/drupal-composer/drupal-project), add the following to the `require` section: `"drush/drush": "6.*"`
+* Run `composer install` for a new project or `composer update` for an existing one. Do so from the same directory as composer.json.
+* Optional: Copy the /examples/drush file to your project root and modify to taste. This is a handy launcher script.
+* To update, change the drush/drush line and run `composer update`.
 
 Git Clone (i.e. manual install)
 -----------
