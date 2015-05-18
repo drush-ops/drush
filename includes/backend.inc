@@ -63,7 +63,7 @@
  * Note that Drush now outputs a null ("\0") before the DRUSH_BACKEND_OUTPUT_DELIMITER,
  * but this null occurs where this constant is output rather than being
  * included in the define.  This is done to maintain compatibility with
- * older versions of Drush, so that Drush-6.x can correctly parse backend messages
+ * older versions of Drush, so that Drush-7.x can correctly parse backend messages
  * from calls made to Drush-5.x and earlier.  The null is removed via trim().
  */
 define('DRUSH_BACKEND_OUTPUT_START', 'DRUSH_BACKEND_OUTPUT_START>>>');

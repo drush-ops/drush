@@ -1,10 +1,11 @@
 Pick a version
 -----------------
-Each version of Drush supports multiple Drupal versions.  Drush 6 is current stable Drush.
+Each version of Drush supports multiple Drupal versions.  Drush 7 is current stable Drush.
 
 Drush Version | Branch  | PHP | Compatible Drupal versions | Code Status
 ------------- | ------  | --- | -------------------------- | -----------
-Drush 7       | [master](https://travis-ci.org/drush-ops/drush)  | 5.3.0+ | D6, D7, D8                 | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=master">
+Drush 8       | [master](https://travis-ci.org/drush-ops/drush)  | 5.4.0+ | D6, D7, D8                 | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=master">
+Drush 7       | [7.x](https://travis-ci.org/drush-ops/drush) | 5.3.0+ | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=7.x">
 Drush 6       | [6.x](https://travis-ci.org/drush-ops/drush) | 5.3.0+ | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=6.x">
 Drush 5       | [5.x](https://travis-ci.org/drush-ops/drush) | 5.2.0+ | D6, D7                     | Unsupported
 Drush 4       | 4.x | 5.2.0+ | D5, D6, D7                 | Unsupported
@@ -19,11 +20,11 @@ Composer - One Drush for all Projects
 
 * Optional - [video instructions by Drupalize.me.](https://youtu.be/eAtDaD8xz0Q)
 * [Install Composer globally](https://getcomposer.org/doc/00-intro.md#globally).
-* To install Drush 6.x (stable):
+* To install Drush 7.x (stable):
 
-        composer global require drush/drush:6.*
+        composer global require drush/drush:7.*
 
-* To install Drush 7.x (dev) which is required for Drupal 8:
+* To install Drush 8.x (dev) which is required for Drupal 8:
 
         composer global require drush/drush:dev-master
         
@@ -71,7 +72,7 @@ See [Configure](configure.md) for next steps.
 
 Composer - One Drush per Project
 -----------------
-* If your web site is built from a composer.json file (see https://github.com/drupal-composer/drupal-project), add the following to the `require` section: `"drush/drush": "6.*"`
+* If your web site is built from a composer.json file (see https://github.com/drupal-composer/drupal-project), add the following to the `require` section: `"drush/drush": "7.*"`
 * Run `composer install` for a new project or `composer update` for an existing one. Do so from the same directory as composer.json.
 * Optional: Copy the /examples/drush file to your project root and modify to taste. This is a handy launcher script.
 * To update, change the drush/drush line and run `composer update`.
