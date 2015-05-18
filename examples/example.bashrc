@@ -136,6 +136,14 @@ if [ -f "$d/drush.complete.sh" ] ; then
   . "$d/drush.complete.sh"
 fi
 
+# Navigation between site directories.
+function dcd {
+  path=$(drush dd $1)
+  if [ $path ]; then
+    cd $path
+  fi
+}
+
 # We extend the cd command to allow convenient
 # shorthand notations, such as:
 #   cd @site1
