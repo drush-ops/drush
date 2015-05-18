@@ -68,6 +68,10 @@ class DrupalBoot8 extends DrupalBoot {
     return $core;
   }
 
+  function bootstrap_drupal_root_validate() {
+    return drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal 8.', array('!drush_version' => DRUSH_VERSION)));
+  }
+
   function bootstrap_drupal_database() {
     // D8 omits this bootstrap level as nothing special needs to be done.
     parent::bootstrap_drupal_database();
