@@ -9,7 +9,7 @@ use \Drush\UpdateService\ReleaseInfo;
 /**
  * Default localization server for downloading translations.
  */
-define('MAKE_DEFAULT_L10N_SERVER', 'https://localize.drupal.org/l10n_server.xml');
+define('MAKE_DEFAULT_L10N_SERVER', 'http://ftp.drupal.org/files/translations/l10n_server.xml');
 
 /**
  * Make refuses to build makefiles whose api version is mismatched
