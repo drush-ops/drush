@@ -118,8 +118,8 @@ Windows support has improved, but is still lagging. For full functionality, cons
 
 These Windows packages include Drush and its dependencies (including MSys). 
 
-- [6.6.0 (stable)](https://github.com/drush-ops/drush/releases/download/6.6.0/windows-6.6.0.zip).
-- [7.0.0-rc1](https://github.com/drush-ops/drush/releases/download/7.0.0-rc1/windows-7.0.0-rc1.zip).
+- [7.0.0 (stable)](https://github.com/drush-ops/drush/releases/download/7.0.0/windows-7.0.0.zip).
+- [6.6.0](https://github.com/drush-ops/drush/releases/download/6.6.0/windows-6.6.0.zip).
 - [6.0](https://github.com/drush-ops/drush/releases/download/6.0.0/Drush-6.0-2013-08-28-Installer-v1.0.21.msi).
 
 Unzip the downloaded file to anywhere thats convenient on your system. 
