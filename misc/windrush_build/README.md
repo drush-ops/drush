@@ -4,5 +4,5 @@ To use this script:
 
 - Edit the metadata at the top
 - Run the script
-- Attach the .zip file to the correspionding Release on Github.
+- Attach the .zip file to the corresponding Release on Github.
 - Update the links at bottom of docs/install.md
