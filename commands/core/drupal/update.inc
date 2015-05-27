@@ -44,6 +44,8 @@ function drush_update_do_one($module, $number, $dependency_map,  &$context) {
 
   $context['log'] = FALSE;
 
+  \Drupal::moduleHandler()->loadInclude($module, 'install');
+
   $ret = array();
   if (function_exists($function)) {
     try {
@@ -65,6 +67,10 @@ function drush_update_do_one($module, $number, $dependency_map,  &$context) {
     if ($context['log']) {
       $ret['queries'] = Database::getLog($function);
     }
+  }
+  else {
+    $ret['#abort'] = array('success' => FALSE);
+    drush_set_error('DRUSH_UPDATE_FUNCTION_NOT_FOUND', dt('Update function @function not found', array('@function' => $function)));
   }
 
   if (isset($context['sandbox']['#finished'])) {
