@@ -188,7 +188,7 @@ function config_drush_command() {
         'example-value' => 'origin',
       ),
       'temp' => array(
-        'description' => "Export destination site's configuration to a temporary directory.",
+        'description' => "Export destination site's configuration to a temporary directory.  Defaults to --temp; use --temp=0 to disable. Always ignored in --git mode.",
         'example-value' => 'path',
       ),
     ),
@@ -713,7 +713,7 @@ function drush_config_merge($alias = '', $config_label = 'staging') {
     'git-transport' => drush_get_option('git', FALSE),
     'remote' => drush_get_option('remote', 'origin'),
     'tool' => drush_get_option('tool', ''),
-    'temp' => drush_get_option('temp', ''),
+    'temp' => drush_get_option('temp', TRUE),
     'config-label' => $config_label,
     'live-site' => $alias,
     'dev-site' => '@self',
