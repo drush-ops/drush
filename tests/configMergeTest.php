@@ -52,6 +52,8 @@ class configMergeTest extends CommandUnishTestCase {
     $this->drush('config-export', array(), $dev_options);
     $this->drush('config-export', array(), $stage_options);
 
+    file_put_contents($sites['dev']['root'] . '/.gitignore', "sites/*/settings.php\nsites/*/files/php");
+
     // Make a git repository
     $this->createGitRepository($this->webroot());
 
@@ -123,28 +125,153 @@ class configMergeTest extends CommandUnishTestCase {
     $this->execute("git log --pretty=format:%h -1", CommandUnishTestCase::EXIT_SUCCESS, $sites['dev']['root']);
     $base = $this->getOutput();
 
+    $msg = "Before test 1 -- about to set site name to git";
+    file_put_contents($sites['dev']['root'] . '/log', $msg);
+    $this->execute("git add log && git commit -m '$msg'", CommandUnishTestCase::EXIT_SUCCESS, $sites['dev']['root']);
+
     // Make a configuration change on 'stage' site
     $this->drush('config-set', array('system.site', 'name', 'git'), $stage_options);
 
     // Run config-merge to copy the configuration change to the 'dev' site
-    $this->drush('config-merge', array('@stage'), $dev_options + array('git' => NULL, 'base' => $base));
+    $this->drush('config-merge', array('@stage'), $dev_options + array('git' => NULL));
 
     // Verify that the configuration change we made on 'stage' now exists on 'dev'
     $this->drush('config-get', array('system.site', 'name'), $dev_options);
     $this->assertEquals("'system.site:name': git", $this->getOutput(), 'Config set, merged and fetched via git.');
 
+    $msg = "Before test 2 -- about to set site name to git-2";
+    file_put_contents($sites['dev']['root'] . '/log', $msg);
+    $this->execute("git add log && git commit -m '$msg'", CommandUnishTestCase::EXIT_SUCCESS, $sites['dev']['root']);
 
     // Make a second configuration change on 'stage' site
     $this->drush('config-set', array('system.site', 'name', 'git-2'), $stage_options);
 
+    // Make a non-conflicting configuration change to the same file on 'dev' site
+    $slogan = "merging configuration since 2015";
+    $this->drush('config-set', array('system.site', 'slogan', $slogan), $dev_options);
+
     // Run config-merge again
-    $this->drush('config-merge', array('@stage'), $dev_options + array('git' => NULL, 'base' => $base));
+    $this->drush('config-merge', array('@stage'), $dev_options + array('git' => NULL));
 
     // Verify that the configuration change we made on 'stage' now exists on 'dev'
     $this->drush('config-get', array('system.site', 'name'), $dev_options);
     $this->assertEquals("'system.site:name': git-2", $this->getOutput(), 'Config set, merged and fetched via git a second time.');
+    $this->drush('config-get', array('system.site', 'slogan'), $dev_options);
+    $this->assertEquals("'system.site:slogan': '$slogan'", $this->getOutput(), 'Non-conflicting merge automatically merged in.');
+
+    // Make sure that we have all of the commits we should in the 'dev' site
+    $gitLog = $this->getSimplfiedGitLog($sites['dev']['root']);
+    // Test to see if the compressed result matches our expectations.
+    $this->assertEquals("commit --------
+Exported configuration.
+Collection Config Operation
+system.site update
+commit --------
+Drush config-merge exported configuration from @self
+commit --------
+Before test 2 -- about to set site name to git-2
+commit --------
+Merged configuration from @stage in git
+Collection Config Operation
+system.site update
+commit --------
+Exported configuration.
+Collection Config Operation
+system.site update
+commit --------
+Before test 1 -- about to set site name to git
+commit --------
+Initial commit.", $gitLog);
+
+    $msg = "Before test 3 -- about to set site name to git-3";
+    file_put_contents($sites['dev']['root'] . '/log', $msg);
+    $this->execute("git add log && git commit -m '$msg'", CommandUnishTestCase::EXIT_SUCCESS, $sites['dev']['root']);
+
+    // Do a 'git pull' on the staging site to simulate a deploy.
+    $this->execute("git push origin master", CommandUnishTestCase::EXIT_SUCCESS, $sites['dev']['root']);
+    $this->execute("git pull", CommandUnishTestCase::EXIT_SUCCESS, $sites['stage']['root']);
+
+    // Make a third configuration change on 'stage' site
+    $this->drush('config-set', array('system.site', 'name', 'git-3'), $stage_options);
+
+    // Explicitly export and commit this change to git
+    $this->drush('config-export', array(), $stage_options + array('commit' => NULL, 'message' => 'Test script set system.site name to git-3 on @stage.', 'push' => NULL));
+
+    // Run config-merge again, this time not providing a target site (merge with changes already in git)
+    $this->drush('config-merge', array(), $dev_options + array('git' => NULL));
+
+    // Verify that the configuration change we made on 'stage' now exists on 'dev'
+    $this->drush('config-get', array('system.site', 'name'), $dev_options);
+    $this->assertEquals("'system.site:name': git-3", $this->getOutput(), 'Config set, merged and fetched via git a third time.');
+
+    $msg = "Before test 4 -- about to set site name to git-4";
+    file_put_contents($sites['dev']['root'] . '/log', $msg);
+    $this->execute("git add log && git commit -m '$msg'", CommandUnishTestCase::EXIT_SUCCESS, $sites['dev']['root']);
+
+    // Do a 'git pull' on the staging site to simulate a deploy.
+    $this->execute("git push origin master", CommandUnishTestCase::EXIT_SUCCESS, $sites['dev']['root']);
+    $this->execute("git pull", CommandUnishTestCase::EXIT_SUCCESS, $sites['stage']['root']);
+
+    // We'll run the next test on a branch
+    $this->execute("git checkout -B 'test-branch'", CommandUnishTestCase::EXIT_SUCCESS, $sites['stage']['root']);
+
+    // Make a fourth configuration change on 'stage' site
+    $this->drush('config-set', array('system.site', 'name', 'git-4'), $stage_options);
+
+    // Explicitly export and commit this change to git
+    $this->drush('config-export', array(), $stage_options + array('commit' => NULL, 'message' => 'Test script set system.site name to git-4 on @stage.', 'push' => NULL));
+
+    // Put the staging site back on the master branch
+    $this->execute("git checkout master", CommandUnishTestCase::EXIT_SUCCESS, $sites['stage']['root']);
+
+    // Run config-merge again, this time not providing a target site (merge with changes already in git)
+    $this->drush('config-merge', array(), $dev_options + array('git' => NULL, 'branch' => 'test-branch'));
+
+    // Verify that the configuration change we made on 'stage' now exists on 'dev'
+    $this->drush('config-get', array('system.site', 'name'), $dev_options);
+    $this->assertEquals("'system.site:name': git-4", $this->getOutput(), 'Config set, merged and fetched via git a third time.');
+
+    // Make sure that we have all of the commits we should in the 'dev' site
+    $gitLog = $this->getSimplfiedGitLog($sites['dev']['root']);
+    // Test to see if the compressed result matches our expectations.
+    $this->assertEquals("commit --------
+Test script set system.site name to git-4 on @stage.
+Collection Config Operation
+system.site update
+commit --------
+Before test 4 -- about to set site name to git-4
+commit --------
+Test script set system.site name to git-3 on @stage.
+Collection Config Operation
+system.site update
+commit --------
+Before test 3 -- about to set site name to git-3
+commit --------
+Exported configuration.
+Collection Config Operation
+system.site update
+commit --------
+Drush config-merge exported configuration from @self
+commit --------
+Before test 2 -- about to set site name to git-2
+commit --------
+Merged configuration from @stage in git
+Collection Config Operation
+system.site update
+commit --------
+Exported configuration.
+Collection Config Operation
+system.site update
+commit --------
+Before test 1 -- about to set site name to git
+commit --------
+Initial commit.", $gitLog);
 
     // Part two:  test config-merge using the rsync mechanism
+
+    $msg = "Before test 5 -- about to set site name to config_test";
+    file_put_contents($sites['dev']['root'] . '/log', $msg);
+    $this->execute("git add log && git commit -m '$msg'", CommandUnishTestCase::EXIT_SUCCESS, $sites['dev']['root']);
 
     // Make a configuration change on 'stage' site
     $this->drush('config-set', array('system.site', 'name', 'config_test'), $stage_options);
@@ -158,6 +285,10 @@ class configMergeTest extends CommandUnishTestCase {
 
     $this->execute("git reset --hard", CommandUnishTestCase::EXIT_SUCCESS, $sites['dev']['root']);
 
+    $msg = "Before test 6 -- about to set site name to config_test_2";
+    file_put_contents($sites['dev']['root'] . '/log', $msg);
+    $this->execute("git add log && git commit -m '$msg'", CommandUnishTestCase::EXIT_SUCCESS, $sites['dev']['root']);
+
     // Make a second configuration change on 'stage' site
     $this->drush('config-set', array('system.site', 'name', 'config_test_2'), $stage_options);
 
@@ -168,39 +299,38 @@ class configMergeTest extends CommandUnishTestCase {
     $this->drush('config-get', array('system.site', 'name'), $dev_options);
     $this->assertEquals("'system.site:name': config_test_2", $this->getOutput(), 'Config set, merged and fetched via rsync.');
 
+  }
 
-    // Finally, make sure that we have all of the commits we should
-    // in the 'dev' site
-    $this->execute("git log", CommandUnishTestCase::EXIT_SUCCESS, $sites['dev']['root']);
-    // First, we remove blank lines, and lines that do not begin with a space.
-    // This gets rid of all of the header lines, like "commit" and "Date:" that
+  function getSimplfiedGitLog($cwd) {
+    $this->execute("git log", CommandUnishTestCase::EXIT_SUCCESS, $cwd);
+
+    $outputList = $this->getOutputAsList();
+
+    // Convert all of the "commit <hash>" lines in to " commit -------",
+    // and get rid of "file://" references to our temporary repository that
+    // git inserted into our merge commits.
+    $outputList = array_map(
+      function($line) {
+        return preg_replace("/^commit.*/", " commit --------", preg_replace('/file:.*/', '...', $line));
+      }, $outputList);
+
+    // Next, remove blank lines, and lines that do not begin with a space.
+    // This gets rid of all of the remaining header lines, like "Date:" that
     // contain variable data.
-    $outputList = array_filter($this->getOutputAsList(),
+    $outputList = array_filter($outputList,
       function($line) {
         if (empty($line)) {
           return FALSE;
         }
         return ($line[0] == ' ');
       });
+
     // Next, convert all runs of spaces into a single space, and trim.
     $outputList = array_map(
       function($line) {
         return trim(preg_replace("/  */", " ", $line));
       }, $outputList);
-    // Test to see if the compressed result matches our expectations.
-    $this->assertEquals("Merged configuration from @stage in config_test_2
-Collection Config Operation
-system.site update
-Merged configuration from @stage in config_test
-Collection Config Operation
-system.site update
-Exported configuration.
-Collection Config Operation
-system.site update
-Exported configuration.
-Collection Config Operation
-system.site update
-Initial commit.", implode("\n", $outputList));
+    return implode("\n", $outputList);
   }
 
   function setUpStagingWorkflow($sites) {
@@ -223,7 +353,7 @@ Initial commit.", implode("\n", $outputList));
     mkdir($sites['stage']['root']);
 
     // Write a .gitignore file for the dev site, to ignore settings.php and the files/php directory.
-    file_put_contents($sites['dev']['root'] . '/.gitignore', "sites/default/settings.php\nsites/default/files/php");
+    file_put_contents($sites['dev']['root'] . '/.gitignore', "sites/*/settings.php\nsites/*/files/php");
     // Make a git repository for the dev site.
     $this->createGitRepository($sites['dev']['root']);
 
