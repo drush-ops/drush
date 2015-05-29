@@ -348,7 +348,6 @@ function drush_sitealias_site_set_validate() {
  */
 function drush_sitealias_site_set($site = '@none') {
   if ($filename = drush_sitealias_get_envar_filename()) {
-    $current = drush_sitealias_site_get() ?: "@none";
     $last_site_filename = drush_sitealias_get_envar_filename('drush-drupal-prev-site-');
     if ($site == '-') {
       if (file_exists($last_site_filename)) {
@@ -367,9 +366,11 @@ function drush_sitealias_site_set($site = '@none') {
       else {
         $site = '@none';
       }
-    }
-    if ($current == $site) {
-      return;
+      // Using 'site-set @self' is quiet if there is no change.
+      $current = is_file($filename) ? trim(file_get_contents($filename)) : "@none";
+      if ($current == $site) {
+        return;
+      }
     }
     if (_drush_sitealias_set_context_by_name($site)) {
       if (file_exists($filename)) {
