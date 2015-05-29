@@ -172,6 +172,7 @@ function cddl() {
   else
     builtin cd "$s";
   fi
+  use @self
 }
 
 # Works just like the `cd` shell alias above, with one additional

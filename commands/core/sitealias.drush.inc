@@ -348,6 +348,7 @@ function drush_sitealias_site_set_validate() {
  */
 function drush_sitealias_site_set($site = '@none') {
   if ($filename = drush_sitealias_get_envar_filename()) {
+    $current = is_file($filename) ? trim(file_get_contents($filename)) : "@none";
     $last_site_filename = drush_sitealias_get_envar_filename('drush-drupal-prev-site-');
     if ($site == '-') {
       if (file_exists($last_site_filename)) {
@@ -356,6 +357,19 @@ function drush_sitealias_site_set($site = '@none') {
       else {
         $site = '@none';
       }
+    }
+    if ($site == '@self') {
+      $path = drush_cwd();
+      $site_record = drush_sitealias_lookup_alias_by_path($path, TRUE);
+      if (isset($site_record['#name'])) {
+        $site = '@' . $site_record['#name'];
+      }
+      else {
+        $site = '@none';
+      }
+    }
+    if ($current == $site) {
+      return;
     }
     if (_drush_sitealias_set_context_by_name($site)) {
       if (file_exists($filename)) {
@@ -375,7 +389,7 @@ function drush_sitealias_site_set($site = '@none') {
       }
     }
     else {
-      drush_set_error('DRUPAL_SITE_NOT_FOUND', dt("Could not find a site definition for !site.", array('!site' => $site)));
+      return drush_set_error('DRUPAL_SITE_NOT_FOUND', dt("Could not find a site definition for !site.", array('!site' => $site)));
     }
   }
 }
