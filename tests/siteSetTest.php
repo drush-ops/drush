@@ -23,11 +23,6 @@ class siteSetCommandCase extends CommandUnishTestCase {
     $output = $this->getOutput();
     $this->assertEquals('Site set to @none', $output);
 
-    // No output when we set the site to the same site it was already set to
-    $this->drush('site-set', array());
-    $output = $this->getOutput();
-    $this->assertEquals('', $output);
-
     $this->drush('site-set', array($alias));
     $expected = 'Site set to ' . $alias;
     $output = $this->getOutput();

@@ -348,7 +348,7 @@ function drush_sitealias_site_set_validate() {
  */
 function drush_sitealias_site_set($site = '@none') {
   if ($filename = drush_sitealias_get_envar_filename()) {
-    $current = is_file($filename) ? trim(file_get_contents($filename)) : "@none";
+    $current = drush_sitealias_site_get() ?: "@none";
     $last_site_filename = drush_sitealias_get_envar_filename('drush-drupal-prev-site-');
     if ($site == '-') {
       if (file_exists($last_site_filename)) {
