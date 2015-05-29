@@ -149,6 +149,15 @@ fi
 # that will ssh to the remote server when a remote site
 # specification is used.
 function cddl() {
+  fastcddl "$1"
+  use @self
+}
+
+# Use this function instead of 'cddl' if you have a very large number
+# of alias files, and the 'cddl' function is getting too slow as a result.
+# This function does not automatically set your prompt to the site that
+# you 'cd' to, as 'cddl' does.
+function fastcddl() {
   s="$1"
   if [ -z "$s" ]
   then
@@ -172,14 +181,12 @@ function cddl() {
   else
     builtin cd "$s";
   fi
-  use @self
 }
 
-# Works just like the `cd` shell alias above, with one additional
+# Works just like the `cddl` shell alias above, with one additional
 # feature: `cdd @remote-site` works like `ssh @remote-site`,
 # whereas cd above will fail unless the site alias is local.  If
-# you prefer the `ssh` behavior, you can rename this shell alias
-# to `cd`.
+# you prefer this behavior, you can add `alias cd='cdd'` to your .bashrc
 function cdd() {
   s="$1"
   if [ -z "$s" ]
