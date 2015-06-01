@@ -230,6 +230,13 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     $hide_stderr = FALSE;
     $cmd[] = UNISH_DRUSH;
 
+    // If the UNISH_INCLUDE environment variable is set, then include  the specified
+    // commandfiles directory (allow Drush extensions to use Drush's unit test framework)
+    $include=getenv('UNISH_INCLUDE');
+    if ($include) {
+      $cmd[] = "--include='$include'";
+    }
+
     // insert global options
     foreach ($options as $key => $value) {
       if (in_array($key, $global_option_list)) {
