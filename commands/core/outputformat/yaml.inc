@@ -20,7 +20,7 @@ class drush_outputformat_yaml extends drush_outputformat {
     $dumper->setIndentation(2);
     // The level where you switch to inline YAML is set to PHP_INT_MAX to
     // ensure this does not occur.
-    $output = $dumper->dump($input, PHP_INT_MAX);
+    $output = $dumper->dump($input, PHP_INT_MAX, NULL, NULL, TRUE);
     return $output;
   }
 }
