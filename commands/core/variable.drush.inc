@@ -262,7 +262,7 @@ function _drush_variable_format($value, $format) {
       break;
 
     case 'yaml':
-      $value = Yaml::parse($value);
+      $value = Yaml::parse($value, FALSE, TRUE);
       break;
   }
   return $value;
