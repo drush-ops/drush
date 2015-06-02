@@ -16,6 +16,8 @@ sudo: false
 
 env:
   matrix:
+#Test
+    - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=tests/configTest.php TEST_CHILDREN="drush-ops/config-extra"
 #D7
     - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=7 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=make
     - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=7 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=base
@@ -54,5 +56,4 @@ before_script:
 
 script: ${PWD}/unish.sh $PHPUNIT_ARGS
 
-after_success:
-  - for CHILD in $TEST_CHILDREN ; do BUILD_NUM=$(curl -s 'https://api.travis-ci.org/repos/$CHILD/builds' | grep -o '^\[{"id":[0-9]*,' | grep -o '[0-9]' | tr -d '\n') && echo curl -X POST https://api.travis-ci.org/builds/$BUILD_NUM/restart --header "Authorization: token "$AUTH_TOKEN" ; done
+after_success: ${PWD}/children.sh $TEST_CHILDREN
