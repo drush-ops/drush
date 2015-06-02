@@ -204,6 +204,8 @@ function drush_latch_bootstrap_object($bootstrap) {
  * Get the appropriate bootstrap object.  We'll search for a new
  * bootstrap object every time someone asks for one until we start
  * bootstrapping; then we'll returned the same cached one every time.
+ *
+ * @return \Drush\Boot\Boot
  */
 function drush_get_bootstrap_object() {
   $bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT', FALSE);
