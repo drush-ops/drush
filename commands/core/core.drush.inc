@@ -111,6 +111,11 @@ function core_drush_command() {
     ),
     'aliases' => array('updb'),
   );
+  $items['twig-compile'] = array(
+    'description' => 'Compile all Twig template(s).',
+    'aliases' => array('twigc'),
+    'core' => array('8+'),
+  );
   $items['updatedb-status'] = array(
     'description' => 'List any pending database updates.',
     'outputformat' => array(
@@ -1300,6 +1305,23 @@ function drush_core_execute() {
     return drush_set_error('CORE_EXECUTE_FAILED', dt("Command !command failed.", array('!command' => $cmd)));
   }
   return $result;
+}
+
+function drush_core_twig_compile() {
+  require_once DRUSH_DRUPAL_CORE . "/themes/engines/twig/twig.engine";
+  // Scan all enabled modules and themes.
+  // @todo Refactor to not reuse commandfile paths directly.
+  $boot = drush_get_bootstrap_object();
+  $searchpaths = $boot->commandfile_searchpaths(DRUSH_BOOTSTRAP_DRUPAL_FULL);
+  $searchpaths[] = drupal_get_path('theme', drush_theme_get_default());;
+  $searchpaths[] = drupal_get_path('theme', drush_theme_get_admin());
+  foreach ($searchpaths as $searchpath) {
+    foreach ($file = drush_scan_directory($searchpath, '/\.html.twig/', array('tests')) as $file) {
+      $relative = str_replace(drush_get_context('DRUSH_DRUPAL_ROOT'). '/', '', $file->filename);
+      twig_render_template($relative, array());
+      drush_log(dt('Compiled twig template !path', array('!path' => $relative)), 'notice');
+    }
+  }
 }
 
 /**
