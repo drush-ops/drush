@@ -17,7 +17,12 @@ class Sqlsqlsrv extends SqlBase {
     $database = empty($this->db_spec['database']) ? 'master' : $this->db_spec['database'];
     // Host and port are optional but have defaults.
     $host = empty($this->db_spec['host']) ? '.\SQLEXPRESS' : $this->db_spec['host'];
-    return ' -S ' . $host . ' -d ' . $database . ' -U ' . $this->db_spec['username'] . ' -P ' . $this->db_spec['password'];
+    if ($this->db_spec['username'] == '') {
+      return ' -S ' . $host . ' -d ' . $database;
+    }
+    else {
+      return ' -S ' . $host . ' -d ' . $database . ' -U ' . $this->db_spec['username'] . ' -P ' . $this->db_spec['password'];    
+    }
   }
 
   public function db_exists() {
