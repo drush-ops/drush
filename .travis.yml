@@ -46,4 +46,4 @@ before_script:
   $4}'`
 - export UNISH_DRUSH="${PWD}/drush"
 script: ${PWD}/unish.sh $PHPUNIT_ARGS
-after_success: ${PWD}/children.sh $AUTH_TOKEN $TEST_CHILDREN
+after_success: ${PWD}/children.sh
