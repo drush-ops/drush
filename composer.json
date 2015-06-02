@@ -36,6 +36,9 @@
     "phpunit/phpunit": ">=3.5",
     "symfony/process": "2.4.5"
   },
+  "suggest": {
+      "drush/config-extra": "Provides configuration workflow commands, such as config-merge."
+  },
   "autoload": {
     "psr-0": {
       "Drush":        "lib/"
