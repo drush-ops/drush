@@ -1,49 +1,59 @@
+# Configuration file for unit test runner at http://travis-ci.org/#!/drush-ops/drush
+# whitelist
 branches:
   only:
-  - master
-  - 7.x
-  - 6.x
-  - 5.x
+    - master
+    - 7.x
+    - 6.x
+    - 5.x
 language: php
 php:
-- 5.5
+#  See master-fulltest branch for broader PHP version testing.
+  - 5.5
+
+# http://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure/
 sudo: false
+
 env:
   matrix:
-  - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1
-    PHPUNIT_ARGS=tests/configTest.php TEST_CHILDREN="drush-ops/config-extra"
-  - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=7 UNISH_DB_URL=mysql://root:@127.0.0.1
-    PHPUNIT_ARGS=--group=make
-  - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=7 UNISH_DB_URL=mysql://root:@127.0.0.1
-    PHPUNIT_ARGS=--group=base
-  - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=7 UNISH_DB_URL=mysql://root:@127.0.0.1
-    PHPUNIT_ARGS=--group=commands
-  - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=7 UNISH_DB_URL=mysql://root:@127.0.0.1
-    PHPUNIT_ARGS=--group=pm
-  - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=7 UNISH_DB_URL=mysql://root:@127.0.0.1
-    PHPUNIT_ARGS=--group=quick-drupal
-  - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=7 UNISH_DB_URL=mysql://root:@127.0.0.1
-    PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
-  - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1
-    PHPUNIT_ARGS=--group=make
-  - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1
-    PHPUNIT_ARGS=--group=base
-  - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1
-    PHPUNIT_ARGS=--group=commands
-  - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1
-    PHPUNIT_ARGS=--group=pm
-  - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1
-    PHPUNIT_ARGS=--group=quick-drupal
-  - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1
-    PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal TEST_CHILDREN="drush-ops/config-extra"
+    - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=tests/configTest.php TEST_CHILDREN="drush-ops/config-extra"
+
+#D7
+    - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=7 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=make
+    - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=7 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=base
+    - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=7 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=commands
+    - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=7 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=pm
+    - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=7 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=quick-drupal
+    - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=7 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
+#D8
+    - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=make
+    - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=base
+    - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=commands
+    - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=pm
+    - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--group=quick-drupal
+    - UNISH_NO_TIMEOUTS=y UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DB_URL=mysql://root:@127.0.0.1 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
+
+    # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=make
+    # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=base
+    # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=commands
+    # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=pm
+    # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=quick-drupal
+    # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
+    # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=make
+    # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=base
+    # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=commands
+    # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=pm
+    # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=quick-drupal
+    # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
   global:
-  - secure: ZBWA4p/91hyF/Zjc7eiYiN4rxoLIBkLA6FP3VDsRsD0qn1xSv3QYocnRoJnLCdcosBt00hbENlL4cZIjyGEVGYJYRLAuV3UZKW6vqaWEaZCAm9bhKvJeidmDpMeZP0l45fBcauhGvobDkhcbLbzyp6AiZ2PXutyfWt6r4effeQw=
-  - secure: o3D3pStzKE18kXLat1TWNAFfiNGE38t8VC3DIDXxDMj/98VNy+B2HRmk6EqHOGc+iRYNSjY/VThrcpOKCj/dc780OmlhyOA33P/O9AxhexS0MqXlWpgaUlxRs12S9V+LFiPmak6aFIflHlkxefTcsAVAmQo200wY18h0ZeRIcv0=
+    secure: VfYokT2CchfuBRJp9/gSwfVGPfsVfkZdDVEuNWEqxww3z4vq+5aLKqoCtPL54E5EIMjhyCE3GVo+biG35Gab1KOVgUs8zD1hAUWA1FPKfMFhoPDfI3ZJC2rX2T1iWK4ZR90pBtcPzS+2OObzTYz8go0PfeSTT6eq69Na1KcNLaE=
 before_install: composer selfupdate
 install: composer install
+
 before_script:
-- echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print
-  $4}'`
-- export UNISH_DRUSH="${PWD}/drush"
+  - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
+  - export UNISH_DRUSH="${PWD}/drush"
+
 script: ${PWD}/unish.sh $PHPUNIT_ARGS
+
 after_success: ${PWD}/children.sh
