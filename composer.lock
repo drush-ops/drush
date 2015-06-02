@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d5bb6cd6768a39b3c79c56dfd44dd7ae",
+    "hash": "0839439a1593f281a4ae602ee11a1cf7",
     "packages": [
         {
             "name": "d11wtq/boris",
@@ -1170,7 +1170,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.3.0"
+        "php": ">=5.4.5"
     },
     "platform-dev": []
 }
