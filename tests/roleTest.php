@@ -18,7 +18,7 @@ class roleCase extends CommandUnishTestCase {
    */
   public function testRole() {
     // In D8+, the testing profile has no perms.
-    $sites = $this->setUpDrupal(1, TRUE, UNISH_DRUPAL_MAJOR_VERSION, 'standard');
+    $sites = $this->setUpDrupal(1, TRUE, UNISH_DRUPAL_MAJOR_VERSION, UNISH_DRUPAL_MAJOR_VERSION == 6 ? 'default' : 'standard');
     $root = $this->webroot();
     $name = "example";
     $options = array(
