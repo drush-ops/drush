@@ -31,13 +31,14 @@ class userCase extends CommandUnishTestCase {
   function testBlockUnblock() {
     $this->drush('user-block', array(self::NAME), $this->options());
     $this->drush('user-information', array(self::NAME), $this->options() + array('format' => 'json'));
-    $output = $this->getOutputFromJSON('2');
+    $uid = UNISH_DRUPAL_MAJOR_VERSION == 6 ? 3 : 2;
+    $output = $this->getOutputFromJSON($uid);
     $this->assertEquals(0, $output->{self::$status_prop}, 'User is blocked.');
 
     // user-unblock
     $this->drush('user-unblock', array(self::NAME), $this->options());
     $this->drush('user-information', array(self::NAME), $this->options() + array('format' => 'json'));
-    $output = $this->getOutputFromJSON('2');
+    $output = $this->getOutputFromJSON($uid);
     $this->assertEquals(1, $output->{self::$status_prop}, 'User is unblocked.');
   }
 
@@ -46,14 +47,15 @@ class userCase extends CommandUnishTestCase {
     $this->drush('role-create', array('test role'), $this->options());
     $this->drush('user-add-role', array('test role', self::NAME), $this->options());
     $this->drush('user-information', array(self::NAME), $this->options() + array('format' => 'json'));
-    $output = $this->getOutputFromJSON('2');
+     $uid = UNISH_DRUPAL_MAJOR_VERSION == 6 ? 3 : 2;
+     $output = $this->getOutputFromJSON($uid);
     $expected = array(self::$authenticated, 'test role');
     $this->assertEquals($expected, array_values((array)$output->roles), 'User has test role.');
 
     // user-remove-role
     $this->drush('user-remove-role', array('test role', self::NAME), $this->options());
     $this->drush('user-information', array(self::NAME), $this->options() + array('format' => 'json'));
-    $output = $this->getOutputFromJSON('2');
+    $output = $this->getOutputFromJSON($uid);
     $expected = array(self::$authenticated);
     $this->assertEquals($expected, array_values((array)$output->roles), 'User removed test role.');
   }
@@ -98,7 +100,7 @@ class userCase extends CommandUnishTestCase {
     }
     $this->assertEquals($browser, TRUE, 'Correct browser opened at correct URL');
     // Check specific user and path argument.
-    $uid = 2;
+     $uid = UNISH_DRUPAL_MAJOR_VERSION == 6 ? 3 : 2;
     $this->drush('user-login', array(self::NAME, 'node/add'), $user_login_options);
     $output = $this->getOutput();
     $url = parse_url($output);
@@ -155,7 +157,8 @@ class userCase extends CommandUnishTestCase {
   function UserCreate() {
     $this->drush('user-create', array(self::NAME), $this->options() + array('password' => 'password', 'mail' => "example@example.com"));
     $this->drush('user-information', array(self::NAME), $this->options() + array('format' => 'json'));
-    $output = $this->getOutputFromJSON('2');
+    $uid = UNISH_DRUPAL_MAJOR_VERSION == 6 ? 3 : 2;
+    $output = $this->getOutputFromJSON($uid);
     $this->assertEquals('example@example.com', $output->mail);
     $this->assertEquals(self::NAME, $output->name);
     $this->assertEquals(1, $output->{self::$status_prop}, 'Newly created user is Active.');
