@@ -13,20 +13,23 @@ use Drupal\Core\Config\StorageInterface;
  * This filter adjusts the data going to and coming from
  * the core.extension configuration object.
  *
- * Modules named in this list cause the following actions:
+ * Modules named in this list are ignored during config-import
+ * and config-export operations.  What this means in practical terms is:
  *
- *   * On read, items from the "adjustments" list are examined
- *     one at a time.  If their value is numeric, it is used as
- *     the module weight, and merged in with the data being read
- *     from the existing core.extension configuration item, forcing
- *     the extension to be enabled.  If the value is non-numeric,
- *     such as FALSE or NULL or "disable", then the item will be
- *     removed from the list, forcing the extension to be disabled.
+ *   * During a 'read' operation, if a named module is enabled in the
+ *     active configuration, then it will remain enabled after the
+ *     import.  If it is disabled in the active configuration, then it
+ *     will remain disabled.  The value from the data being imported
+ *     is ignored.
  *
- *   * On write, the existing storage configuration object
- *     is read.  Items in the data being written are replaced
- *     with their value from the existing configuration data
- *     iff the item exists in the "adjustments" list.
+ *   * During a 'write' operation, if a named module is enabled in
+ *     the configuration already written out on the target storage
+ *     object, then it will remain enabled.  If it is disabled in
+ *     the previously-exported data, then it will remain disabled.  If
+ *     there is no existing export (first-time export), then all of
+ *     the named modules will be excluded (disabled) from the export.
+ *     The current enabled / disabled state of the module in the
+ *     active configuration is ignored.
  *
  * The data from core.extension looks like this:
  *
@@ -35,14 +38,13 @@ use Drupal\Core\Config\StorageInterface;
  * theme:
  *   themename: weight
  *
- * The "adjustments" lists should contain a list of "modulename: weight"
- * pairs.  Use non-numeric weights to indicate "disabled".  Only
- * the module list is adjusted; the theme list is not altered.
+ * The "adjustments" lists is just an array where the values
+ * are the module names to exclude from import / export, as
+ * described above.
  */
 class CoreExtensionFilter implements StorageFilter {
 
   protected $adjustments;
-  protected $alwaysDisabled;
 
   function __construct($adjustments = array()) {
     $this->adjustments = $adjustments;
@@ -52,15 +54,8 @@ class CoreExtensionFilter implements StorageFilter {
     if ($name != 'core.extension') {
       return $data;
     }
-    foreach($this->adjustments as $module => $weight) {
-      if (is_numeric($weight)) {
-        $data['module'][$module] = $weight;
-      }
-      else {
-        unset($data['module'][$module]);
-      }
-    }
-    return $data;
+    $active_storage = \Drupal::service('config.storage');
+    return $this->filterOutIgnored($data, $active_storage->read($name));
   }
 
   public function filterWrite($name, array $data, StorageInterface $storage) {
@@ -68,7 +63,11 @@ class CoreExtensionFilter implements StorageFilter {
       return $data;
     }
     $originalData = $storage->read($name);
-    foreach($this->adjustments as $module => $weight) {
+    return $this->filterOutIgnored($data, $storage->read($name));
+  }
+
+  protected function filterOutIgnored($data, $originalData) {
+    foreach($this->adjustments as $module) {
       if (is_array($originalData) && array_key_exists($module, $originalData['module'])) {
         $data['module'][$module] = $originalData['module'][$module];
       }
@@ -77,6 +76,6 @@ class CoreExtensionFilter implements StorageFilter {
       }
     }
     return $data;
-  }
 
+  }
 }
