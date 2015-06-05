@@ -63,28 +63,28 @@ class ConfigCase extends CommandUnishTestCase {
     $this->assertContains('unish', $page->front, 'Config was successfully imported.');
 
     $this->drush('pm-enable', array('tracker'), $options);
-    $module_adjustments = array('module-adjustments' => 'tracker');
-
-    // Run config-import again, but filter 'tracker' into the configuration.
-    // It is not presently in the exported configuration, because we enabled
-    // it after export.  If we imported again without adding 'tracker' with
-    // 'module-adjustments', then it would be disabled.
-    $this->drush('config-import', array(), $options + $module_adjustments);
-    $this->drush('config-get', array('core.extension', 'module'), $options + array('format' => 'yaml'));
-    $modules = $this->getOutput();
-    $this->assertEquals('tracker', $modules, 'Tracker module found in extension list after import.');
+    $ignored_modules = array('ignored-modules' => 'tracker');
 
     // Run config-export again - note that 'tracker' is enabled, but we
-    // are going to filter it out on write, so no changes should be written
+    // are going to ignore it on write, so no changes should be written
     // to core.extension when it is exported.
-    $this->drush('config-export', array(), $options + $module_adjustments);
+    $this->drush('config-export', array(), $options + $ignored_modules);
     $this->assertFileExists($core_extension_yml);
     $contents = file_get_contents($core_extension_yml);
     $this->assertNotContains('tracker', $contents);
 
+    // Run config-import again, but ignore 'tracker' when importing.
+    // It is not presently in the exported configuration, because we enabled
+    // it after export.  If we imported again without adding 'tracker' with
+    // 'ignored-modules' option, then it would be disabled.
+    $this->drush('config-import', array(), $options + $ignored_modules);
+    $this->drush('config-get', array('core.extension', 'module'), $options + array('format' => 'yaml'));
+    $modules = $this->getOutput();
+    $this->assertContains('tracker', $modules, 'Tracker module appears in extension list after import, as it should.');
+
     // Run config-export one final time.  'tracker' is still enabled, even
-    // though it was filtered out, and therefore not exported last time.
-    // When we remove the module-adjustments option, then 'tracker' will
+    // though it was ignored in the previous import/export operations.
+    // When we remove the ignored-modules option, then 'tracker' will
     // be exported.
     $this->drush('config-export', array(), $options);
     $this->assertFileExists($core_extension_yml);
