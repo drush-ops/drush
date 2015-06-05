@@ -105,7 +105,7 @@ abstract class DrupalBoot extends BaseBoot {
       case DRUSH_BOOTSTRAP_DRUPAL_SITE:
         // If we are going to stop bootstrapping at the site, then
         // we will quickly add all commandfiles that we can find for
-        // any module associated with the site, whether it is enabled
+        // any extension associated with the site, whether it is enabled
         // or not.  If we are, however, going to continue on to bootstrap
         // all the way to DRUSH_BOOTSTRAP_DRUPAL_FULL, then we will
         // instead wait for that phase, which will more carefully add
@@ -120,16 +120,16 @@ abstract class DrupalBoot extends BaseBoot {
           if ($cached = drush_cache_get($cid)) {
             $profile = $cached->data;
             $searchpath[] = "profiles/$profile/modules";
+            $searchpath[] = "profiles/$profile/themes"
           }
           else {
             // If install_profile is not available, scan all profiles.
             $searchpath[] = "profiles";
             $searchpath[] = "sites/all/profiles";
           }
-        }
 
-        // TODO: Treat themes like modules and stop unconditionally searching here.
-        $searchpath = array_merge($searchpath, $this->contrib_themes_paths());
+          $searchpath = array_merge($searchpath, $this->contrib_themes_paths());
+        }
         break;
       case DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION:
         // Nothing to do here anymore. Left for documentation.
@@ -148,6 +148,9 @@ abstract class DrupalBoot extends BaseBoot {
             $searchpath[] = $filepath;
           }
         }
+
+        $searchpath[] = drupal_get_path('theme', drush_theme_get_admin());
+        $searchpath[] = drupal_get_path('theme', drush_theme_get_default());
         break;
     }
 
