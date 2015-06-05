@@ -727,7 +727,11 @@ function drush_core_config_load($headers = TRUE) {
     }
   }
   if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
-    $drupal = array_merge(array(realpath($site_root . '/settings.php'), realpath(DRUPAL_ROOT . '/.htaccess')));
+    $drupal[] = realpath($site_root . '/settings.php');
+    if (file_exists($site_root . '/settings.local.php')) {
+      $drupal[] = realpath($site_root . '/settings.local.php');
+    }
+    $drupal[] = realpath(DRUPAL_ROOT . '/.htaccess');
     if ($headers) {
       $drupal_header = array('drupal' => '-- Drupal --');
     }
