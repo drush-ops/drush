@@ -120,7 +120,7 @@ abstract class DrupalBoot extends BaseBoot {
           if ($cached = drush_cache_get($cid)) {
             $profile = $cached->data;
             $searchpath[] = "profiles/$profile/modules";
-            $searchpath[] = "profiles/$profile/themes"
+            $searchpath[] = "profiles/$profile/themes";
           }
           else {
             // If install_profile is not available, scan all profiles.
