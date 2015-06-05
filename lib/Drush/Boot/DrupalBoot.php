@@ -120,16 +120,15 @@ abstract class DrupalBoot extends BaseBoot {
           if ($cached = drush_cache_get($cid)) {
             $profile = $cached->data;
             $searchpath[] = "profiles/$profile/modules";
+            $searchpath[] = "profiles/$profile/themes";
           }
           else {
             // If install_profile is not available, scan all profiles.
             $searchpath[] = "profiles";
             $searchpath[] = "sites/all/profiles";
           }
+          $searchpath = array_merge($searchpath, $this->contrib_themes_paths());
         }
-
-        // TODO: Treat themes like modules and stop unconditionally searching here.
-        $searchpath = array_merge($searchpath, $this->contrib_themes_paths());
         break;
       case DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION:
         // Nothing to do here anymore. Left for documentation.
@@ -144,6 +143,12 @@ abstract class DrupalBoot extends BaseBoot {
         }
         foreach (array_diff(drush_module_list(), $ignored_modules) as $module) {
           $filepath = drupal_get_path('module', $module);
+          if ($filepath && $filepath != '/') {
+            $searchpath[] = $filepath;
+          }
+        }
+        foreach (array_diff(drush_theme_list(), $ignored_modules) as $module) {
+          $filepath = drupal_get_path('theme', $module);
           if ($filepath && $filepath != '/') {
             $searchpath[] = $filepath;
           }

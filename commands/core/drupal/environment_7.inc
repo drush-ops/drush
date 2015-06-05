@@ -118,6 +118,19 @@ function drush_module_list() {
 }
 
 /**
+ * Returns a list of enabled themes.
+ */
+function drush_theme_list() {
+  $enabled = array();
+  $rsc = drush_db_select('system', 'name', 'type=:type AND status=:status', array(':type' => 'theme', ':status' => 1));
+  while ($row = drush_db_result($rsc)) {
+    $enabled[$row] = $row;
+  }
+
+  return $enabled;
+}
+
+/**
  * Return a list of extensions from a list of named extensions.
  * Both enabled and disabled/uninstalled extensions are returned.
  */
@@ -201,7 +214,7 @@ function drush_module_implements($hook, $sort = FALSE, $reset = FALSE) {
  */
 function drush_module_invoke($module, $hook) {
   $args = func_get_args();
-  return call_user_func_array('module_invoke', $args);  
+  return call_user_func_array('module_invoke', $args);
 }
 
 /**
