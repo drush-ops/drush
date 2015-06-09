@@ -20,6 +20,9 @@ function queue_drush_command() {
       'queue_name' => 'The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.',
     ),
     'required-arguments' => TRUE,
+    'options' => array(
+      'time-limit' => 'The maximum number of seconds allowed to run the queue',
+    ),
   );
   $items['queue-list'] = array(
     'description' => 'Returns a list of all defined queues',
@@ -46,16 +49,13 @@ function queue_drush_command() {
  * Validation callback for drush queue-run.
  */
 function drush_queue_run_validate($queue_name) {
-  $queue = drush_queue_get_class();
-  $queue->validate('queue-run');
-}
-
-/**
- * Validation callback for drush queue-list.
- */
-function drush_queue_list_validate() {
-  $queue = drush_queue_get_class();
-  $queue->validate('queue-list');
+  try {
+    $queue = drush_queue_get_class();
+    $queue->getInfo($queue_name);
+  }
+  catch (\Drush\Queue\QueueException $exception) {
+    return drush_set_error('DRUSH_QUEUE_RUN_VALIDATION_ERROR', $exception->getMessage());
+  }
 }
 
 /**
@@ -76,7 +76,11 @@ function drush_queue_get_class() {
  */
 function drush_queue_run($queue_name) {
   $queue = drush_queue_get_class();
-  $queue->run($queue_name);
+  $time_limit = (int) drush_get_option('time-limit');
+  $start = microtime(TRUE);
+  $count = $queue->run($queue_name, $time_limit);
+  $elapsed = microtime(TRUE) - $start;
+  drush_log(dt('Processed @count items from the @name queue in @elapsed sec.', array('@count' => $count, '@name' => $queue_name, '@elapsed' => round($elapsed, 2))), drush_get_error() ? 'warning' : 'ok');
 }
 
 /**

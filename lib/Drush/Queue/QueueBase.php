@@ -9,17 +9,7 @@ abstract class QueueBase implements QueueInterface {
    *
    * @var array
    */
-  protected $queues;
-
-  /**
-   * Validate the given command.
-   *
-   * @param string $command
-   *   The command to validate.
-   */
-  public function validate($command = '') {
-    // No default validation.
-  }
+  protected static $queues;
 
   /**
    * Lists all available queues.
@@ -41,11 +31,11 @@ abstract class QueueBase implements QueueInterface {
    * {@inheritdoc}
    */
   public function getInfo($name) {
-    $this->getQueues();
-    if (!isset($this->queues[$name])) {
+    $queues = $this->getQueues();
+    if (!isset($queues[$name])) {
       throw new QueueException(dt('Could not find the !name queue.', array('!name' => $name)));
     }
-    return $this->queues[$name];
+    return $queues[$name];
   }
 
 }
