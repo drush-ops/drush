@@ -116,8 +116,15 @@ function drush_queue_run($queue_name) {
   $end = time() + (isset($info['cron']['time']) ? $info['cron']['time'] : 15);
   $queue = drush_queue_get($queue_name);
   while (time() < $end && ($item = $queue->claimItem())) {
-    $function($item->data);
+    // A callback can report an error by returning FALSE. A callback can throw an
+    // exception to halt the run and keep the item from being deleted.
+    if (!$function($item->data)) {
+      $run_result = FALSE;
+    }
     $queue->deleteItem($item);
+  }
+  if (isset($run_result) && $run_result === FALSE) {
+    return drush_set_error('DRUSH_QUEUE_RUN_ERROR', dt('Error during queue run.'));
   }
 }
 
