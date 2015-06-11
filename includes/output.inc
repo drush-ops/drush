@@ -253,7 +253,10 @@ function _drush_format_table($rows, $header = FALSE, $widths = array(), $console
   // Add defaults.
   $tbl = new ReflectionClass('Console_Table');
   $console_table_options += array(CONSOLE_TABLE_ALIGN_LEFT , '');
-  $tbl = $tbl->newInstanceArgs($console_table_options);
+
+  // Avoid PHP 5.3.3 bug.
+  // @see https://bugs.php.net/bug.php?id=52854
+  $tbl = empty($console_table_options) ? $tbl->newInstanceArgs() : $tbl->newInstanceArgs($console_table_options);
 
   $auto_widths = drush_table_column_autowidth($rows, $widths);
 
