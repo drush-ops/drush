@@ -2,6 +2,9 @@
 
 namespace Drush\Queue;
 
+use Drupal\Core\Queue\QueueWorkerManager;
+use Drupal\Core\Queue\SuspendQueueException;
+
 class Queue8 extends QueueBase {
 
   /**
@@ -20,16 +23,19 @@ class Queue8 extends QueueBase {
    * {@inheritdoc}
    */
   public function getQueues() {
-    if (!isset($this->queues)) {
+    if (!isset(static::$queues)) {
+      static::$queues = array();
       foreach ($this->workerManager->getDefinitions() as $name => $info) {
-        $this->queues[$name] = $info;
+        static::$queues[$name] = $info;
       }
     }
-    return $this->queues;
+    return static::$queues;
   }
 
   /**
    * {@inheritdoc}
+   *
+   * @return \Drupal\Core\Queue\QueueInterface
    */
   public function getQueue($name) {
     return \Drupal::queue($name);
@@ -38,16 +44,33 @@ class Queue8 extends QueueBase {
   /**
    * {@inheritdoc}
    */
-  public function run($name) {
-    $info = $this->getInfo($name);
+  public function run($name, $time_limit = 0) {
     $worker = $this->workerManager->createInstance($name);
-    $end = time() + (isset($info['cron']['time']) ? $info['cron']['time'] : 15);
+    $end = time() + $time_limit;
     $queue = $this->getQueue($name);
-    while (time() < $end && ($item = $queue->claimItem())) {
-      $worker->processItem($item->data);
-      $queue->deleteItem($item);
+    $count = 0;
+
+    while ((!$time_limit || time() < $end) && ($item = $queue->claimItem())) {
+      try {
+        drush_log(dt('Processing item @id from @name queue.', array('@name' => $name, 'id' => $item->item_id)), 'info');
+        $worker->processItem($item->data);
+        $queue->deleteItem($item);
+        $count++;
+      }
+      catch (SuspendQueueException $e) {
+        // If the worker indicates there is a problem with the whole queue,
+        // release the item and skip to the next queue.
+        $queue->releaseItem($item);
+        drush_set_error('DRUSH_SUSPEND_QUEUE_EXCEPTION', $e->getMessage());
+      }
+      catch (\Exception $e) {
+        // In case of any other kind of exception, log it and leave the item
+        // in the queue to be processed again later.
+        drush_set_error('DRUSH_QUEUE_EXCEPTION', $e->getMessage());
+      }
     }
 
+    return $count;
   }
 
 }
