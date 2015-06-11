@@ -47,14 +47,11 @@ function queue_drush_command() {
 
 /**
  * Call the correct queue factory method
+ *
+ * @deprecated
  */
 function drush_queue_get($name) {
-  if (drush_drupal_major_version() < 8) {
-    return DrupalQueue::get($name);
-  }
-  else {
-    return queue($name);
-  }
+  return DrupalQueue::get($name);
 }
 
 /**
@@ -112,7 +109,8 @@ function drush_queue_run($queue_name) {
   $function = $info['cron']['callback'];
   $time_limit = (int) drush_get_option('time-limit');
   $end = time() + $time_limit;
-  $queue = drush_queue_get($queue_name);
+  /** @var DrupalQueueInterface $queue */
+  $queue = DrupalQueue::get($queue_name);
   $count = 0;
 
   $start = microtime(TRUE);
@@ -140,14 +138,13 @@ function drush_queue_run($queue_name) {
 function drush_queue_list() {
   $result = array();
   $queues = drush_queue_get_queues();
-  $default_class = variable_get('queue_default_class', 'SystemQueue');
   foreach (array_keys($queues) as $name) {
-    $q = drush_queue_get($name);
-    $class = variable_get('queue_class_' . $name, $default_class);
+    /** @var DrupalQueueInterface $q */
+    $q = DrupalQueue::get($name);
     $result[$name] = array(
       'queue' => $name,
       'items' => $q->numberOfItems(),
-      'class' => $class,
+      'class' => get_class($q),
     );
   }
   return $result;
@@ -156,26 +153,26 @@ function drush_queue_list() {
 /**
  * Get queues defined with hook_cron_queue_info().
  *
- * @return
+ * @return array
  *   Array of queues indexed by name and containing queue object and number
  *   of items.
  */
 function drush_queue_get_queues() {
   static $queues;
-  $hook_name = (drush_drupal_major_version() < 8) ? 'cron_queue_info' : 'queue_info';
-  if (!isset($queues)) {
-    // Invoke hook_queue_info(), currently only defined by the queue_ui module.
-    $queues = module_invoke_all('queue_info');
 
-    // Merge in queues from modules that implement hook_cron_queue_info().
-    $cron_queues = module_invoke_all($hook_name);
-    drupal_alter($hook_name, $cron_queues);
-    foreach($cron_queues as $name => $queue) {
-      $queues[$name]['cron']['callback'] = $queue['worker callback'];
-      if (isset($queue['time'])) {
-        $queues[$name]['cron']['time'] = $queue['time'];
+  if (!isset($queues)) {
+    $queues = module_invoke_all('cron_queue_info');
+    drupal_alter('cron_queue_info', $queues);
+    // Merge in queues from modules that implement hook_queue_info.
+    // Currently only defined by the queue_ui module.
+    $info_queues = module_invoke_all('queue_info');
+    foreach ($info_queues as $name => $queue) {
+      $queues[$name]['worker callback'] = $queue['cron']['callback'];
+      if (isset($queue['cron']['time'])) {
+        $queues[$name]['time'] = $queue['cron']['time'];
       }
     }
   }
+
   return $queues;
 }
