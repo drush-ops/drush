@@ -20,6 +20,9 @@ function queue_drush_command() {
       'queue_name' => 'The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.',
     ),
     'required-arguments' => TRUE,
+    'options' => array(
+      'time-limit' => 'The maximum number of seconds allowed to run the queue',
+    ),
   );
   $items['queue-list'] = array(
     'description' => 'Returns a list of all defined queues',
@@ -105,20 +108,30 @@ function drush_queue_run($queue_name) {
   // Get all queues.
   $queues = drush_queue_get_queues();
 
-  // Try to increase the maximum execution time if it is too low.
-  $max_execution_time = ini_get('max_execution_time');
-  if ($max_execution_time > 0 && $max_execution_time < 240 && !ini_get('safe_mode')) {
-    set_time_limit(240);
-  }
-
   $info = $queues[$queue_name];
   $function = $info['cron']['callback'];
-  $end = time() + (isset($info['cron']['time']) ? $info['cron']['time'] : 15);
+  $time_limit = (int) drush_get_option('time-limit');
+  $end = time() + $time_limit;
   $queue = drush_queue_get($queue_name);
-  while (time() < $end && ($item = $queue->claimItem())) {
-    $function($item->data);
-    $queue->deleteItem($item);
+  $count = 0;
+
+  $start = microtime(TRUE);
+  while ((!$time_limit || time() < $end) && ($item = $queue->claimItem())) {
+    try {
+      drush_log(dt('Processing item @id from @name queue.', array('@name' => $queue_name, 'id' => $item->item_id)), 'info');
+      $function($item->data);
+      $queue->deleteItem($item);
+      $count++;
+    }
+    catch (Exception $e) {
+      // In case of exception log it and leave the item in the queue
+      // to be processed again later.
+      drush_set_error('DRUSH_QUEUE_EXCEPTION', $e->getMessage());
+    }
   }
+  $elapsed = microtime(TRUE) - $start;
+
+  drush_log(dt('Processed @count items from the @name queue in @elapsed sec.', array('@count' => $count, '@name' => $queue_name, '@elapsed' => round($elapsed, 2))), drush_get_error() ? 'warning' : 'ok');
 }
 
 /**
