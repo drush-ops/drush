@@ -52,6 +52,10 @@ class DrupalBoot6 extends DrupalBoot {
     return $core;
   }
 
+  function bootstrap_drupal_database_validate() {
+    return parent::bootstrap_drupal_database_validate() && $this->bootstrap_drupal_database_has_table('cache');
+  }
+
   function bootstrap_drupal_database() {
     drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
     parent::bootstrap_drupal_database();

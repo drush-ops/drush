@@ -454,6 +454,35 @@ abstract class DrupalBoot extends BaseBoot {
     return TRUE;
   }
 
+  // This is a bootstrap helper function designed to be called
+  // from the bootstrap_drupal_database_validate() methods of
+  // derived DrupalBoot classes.  If a database exists, but is
+  // empty, then the Drupal database bootstrap will fail.  To
+  // prevent this situation, we test for some table that is needed
+  // in an ordinary bootstrap, and return FALSE from the validate
+  // function if it does not exist, so that we do not attempt to
+  // start the database bootstrap.
+  function bootstrap_drupal_database_has_table($required_tables) {
+    try {
+      $sql = drush_sql_get_class();
+      $spec = $sql->db_spec();
+      $prefix = $spec['prefix'];
+      $tables = $sql->listTables();
+      foreach ((array)$required_tables as $required_table) {
+        if (!in_array($prefix . $required_table, $tables)) {
+          return FALSE;
+        }
+      }
+    }
+    catch (Exception $e) {
+      // Usually the checks above should return a result without
+      // throwing an exception, but we'll catch any that are
+      // thrown just in case.
+      return FALSE;
+    }
+    return TRUE;
+  }
+
   /**
    * Boostrap the Drupal database.
    */

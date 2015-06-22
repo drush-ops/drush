@@ -50,31 +50,7 @@ class DrupalBoot7 extends DrupalBoot {
   }
 
   function bootstrap_drupal_database_validate() {
-    if (!parent::bootstrap_drupal_database_validate()) {
-      return FALSE;
-    }
-    // This is like drush_valid_db_credentials, but
-    // for Drupal 7, we also want to know if the
-    // {blocked_ips} table exists, as the bootstrap will
-    // fail if it does not.  If that is the situation,
-    // then we'll return FALSE here in validate, so that
-    // we do not attempt to start the database bootstrap.
-    try {
-      $sql = drush_sql_get_class();
-      $spec = $sql->db_spec();
-      $prefix = $spec['prefix'];
-      $tables = $sql->listTables();
-      if (!in_array($prefix . "blocked_ips", $tables)) {
-        return FALSE;
-      }
-    }
-    catch (Exception $e) {
-      // Usually the checks above should return a result without
-      // throwing an exception, but we'll catch any that are
-      // thrown just in case.
-      return FALSE;
-    }
-    return TRUE;
+    return parent::bootstrap_drupal_database_validate() && $this->bootstrap_drupal_database_has_table('blocked_ips');
   }
 
   function bootstrap_drupal_database() {
