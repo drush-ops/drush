@@ -103,6 +103,7 @@ function update_main() {
   // In D8, we expect to be in full bootstrap.
   drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUPAL_FULL);
 
+  require_once DRUPAL_ROOT . '/core/includes/schema.inc';
   require_once DRUPAL_ROOT . '/core/includes/install.inc';
   require_once DRUPAL_ROOT . '/core/includes/update.inc';
   drupal_load_updates();
