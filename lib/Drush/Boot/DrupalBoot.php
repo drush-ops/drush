@@ -467,9 +467,13 @@ abstract class DrupalBoot extends BaseBoot {
       $sql = drush_sql_get_class();
       $spec = $sql->db_spec();
       $prefix = $spec['prefix'];
+      if (!is_array($prefix)) {
+        $prefix = array('default' => $prefix);
+      }
       $tables = $sql->listTables();
       foreach ((array)$required_tables as $required_table) {
-        if (!in_array($prefix . $required_table, $tables)) {
+        $prefix_key = array_key_exists($required_table, $prefix) ? $required_table : 'default';
+        if (!in_array($prefix[$prefix_key] . $required_table, $tables)) {
           return FALSE;
         }
       }
