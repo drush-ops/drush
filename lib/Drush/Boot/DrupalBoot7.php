@@ -61,13 +61,15 @@ class DrupalBoot7 extends DrupalBoot {
     // we do not attempt to start the database bootstrap.
     try {
       $sql = drush_sql_get_class();
-      $result = $sql->query('SELECT * from blocked_ips limit 1;');
-      if ($result === false) {
+      $spec = $sql->db_spec();
+      $prefix = $spec['prefix'];
+      $tables = $sql->listTables();
+      if (!in_array($prefix . "blocked_ips", $tables)) {
         return FALSE;
       }
     }
     catch (Exception $e) {
-      // Usually the query above should return a result without
+      // Usually the checks above should return a result without
       // throwing an exception, but we'll catch any that are
       // thrown just in case.
       return FALSE;
