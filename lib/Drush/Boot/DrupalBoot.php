@@ -452,6 +452,55 @@ abstract class DrupalBoot extends BaseBoot {
   }
 
   /**
+   * Test to see if the Drupal database has a specified
+   * table or tables.
+   *
+   * This is a bootstrap helper function designed to be called
+   * from the bootstrap_drupal_database_validate() methods of
+   * derived DrupalBoot classes.  If a database exists, but is
+   * empty, then the Drupal database bootstrap will fail.  To
+   * prevent this situation, we test for some table that is needed
+   * in an ordinary bootstrap, and return FALSE from the validate
+   * function if it does not exist, so that we do not attempt to
+   * start the database bootstrap.
+   *
+   * Note that we must manually do our own prefix testing here,
+   * because the existing wrappers we have for handling prefixes
+   * depend on bootstrapping to the "database" phase, and therefore
+   * are not available to validate this same phase.
+   *
+   * @param $required_tables
+   *   Array of table names, or string with one table name
+   *
+   * @return TRUE if all tables in input parameter exist in
+   *   the database.
+   */
+  function bootstrap_drupal_database_has_table($required_tables) {
+    try {
+      $sql = drush_sql_get_class();
+      $spec = $sql->db_spec();
+      $prefix = $spec['prefix'];
+      if (!is_array($prefix)) {
+        $prefix = array('default' => $prefix);
+      }
+      $tables = $sql->listTables();
+      foreach ((array)$required_tables as $required_table) {
+        $prefix_key = array_key_exists($required_table, $prefix) ? $required_table : 'default';
+        if (!in_array($prefix[$prefix_key] . $required_table, $tables)) {
+          return FALSE;
+        }
+      }
+    }
+    catch (Exception $e) {
+      // Usually the checks above should return a result without
+      // throwing an exception, but we'll catch any that are
+      // thrown just in case.
+      return FALSE;
+    }
+    return TRUE;
+  }
+
+  /**
    * Boostrap the Drupal database.
    */
   function bootstrap_drupal_database() {

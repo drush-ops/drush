@@ -10,6 +10,8 @@ class Sql6 extends SqlVersion {
       $url =  is_array($url) ? $url[$database] : $url;
       $db_spec = drush_convert_db_from_db_url($url);
       $db_spec['db_prefix'] = isset($GLOBALS['db_prefix']) ? $GLOBALS['db_prefix'] : drush_get_option('db-prefix', NULL);
+      // For uniformity with code designed for Drupal 7/8 db_specs, copy the 'db_prefix' to 'prefix'.
+      $db_spec['prefix'] = $db_spec['db_prefix'];
     }
     return $db_spec;
   }
