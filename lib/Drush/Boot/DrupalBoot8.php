@@ -68,6 +68,10 @@ class DrupalBoot8 extends DrupalBoot {
     return $core;
   }
 
+  function bootstrap_drupal_database_validate() {
+    return parent::bootstrap_drupal_database_validate() && $this->bootstrap_drupal_database_has_table('key_value');
+  }
+
   function bootstrap_drupal_database() {
     // D8 omits this bootstrap level as nothing special needs to be done.
     parent::bootstrap_drupal_database();
