@@ -41,6 +41,7 @@ function sqlsync_drush_command() {
       // 'cache' => 'Skip dump if result file exists and is less than "cache" hours old. Optional; default is 24 hours.',
       // 'no-cache' => 'Do not cache the sql-dump file.',
       'no-dump' => 'Do not dump the sql database; always use an existing dump file.',
+      'no-sync' => 'Do not rsync the database dump file from source to target.',
       'source-db-url' => 'Database specification for source system to dump from.',
       'source-remote-port' => 'Override sql database port number in source-db-url. Optional.',
       'source-remote-host' => 'Remote machine to run sql-dump file on. Optional; default is local machine.',
