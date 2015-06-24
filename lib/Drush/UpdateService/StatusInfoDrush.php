@@ -27,7 +27,7 @@ class StatusInfoDrush implements StatusInfoInterface {
     // Iterate all projects and get the time of the older release info.
     $projects = drush_get_projects();
     foreach ($projects as $project_name => $project) {
-      $request = pm_parse_request($project_name);
+      $request = pm_parse_request($project_name, NULL, $projects);
       $url = Project::buildFetchUrl($request);
       $cache_file = drush_download_file_name($url);
       if (file_exists($cache_file)) {
@@ -48,7 +48,7 @@ class StatusInfoDrush implements StatusInfoInterface {
     // Clear all caches for the available projects.
     $projects = drush_get_projects();
     foreach ($projects as $project_name => $project) {
-      $request = pm_parse_request($project_name);
+      $request = pm_parse_request($project_name, NULL, $projects);
       $release_info->clearCached($request);
     }
   }
@@ -88,7 +88,7 @@ class StatusInfoDrush implements StatusInfoInterface {
         continue;
       }
       drush_log(dt('Checking available update data for !project.', array('!project' => $project['label'])), 'ok');
-      $request = pm_parse_request($project_name);
+      $request = pm_parse_request($project_name, NULL, $project_name);
       $project_release_info = $release_info->get($request);
       if ($project_release_info) {
         $available[$project_name] = $project_release_info;
