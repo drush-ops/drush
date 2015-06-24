@@ -603,7 +603,7 @@ class Project {
       $last_updated = $xml->xpath('//div[@class="last-updated"]');
       $last_updated = $last_updated[0]->asXML();
       $notes = $xml->xpath('//div[contains(@class,"field-name-body")]');
-      $notes = $notes[0]->asXML();
+      $notes = (!empty($notes)) ? $notes[0]->asXML() : dt("There're no release notes.");
 
       // Build the notes header.
       $header = array();
