@@ -15,16 +15,16 @@ function drush_pm_updatestatus() {
   // Get specific requests.
   $args = pm_parse_arguments(func_get_args(), FALSE);
 
-  // Parse out project name and version.
-  $requests = array();
-  foreach ($args as $request) {
-    $request = pm_parse_request($request);
-    $requests[$request['name']] = $request;
-  }
-
   // Get installed extensions and projects.
   $extensions = drush_get_extensions();
   $projects = drush_get_projects($extensions);
+
+  // Parse out project name and version.
+  $requests = array();
+  foreach ($args as $request) {
+    $request = pm_parse_request($request, NULL, $projects);
+    $requests[$request['name']] = $request;
+  }
 
   // Get the engine instance.
   $update_status = drush_get_engine('update_status');

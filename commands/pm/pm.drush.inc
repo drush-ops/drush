@@ -1221,14 +1221,16 @@ function drush_pm_releases() {
     $filter = '';
   }
 
+  $status_url = drush_get_option('source');
+
   $rows = array();
   $releases_info = array();
   foreach ($requests as $request) {
-    $request = pm_parse_request($request);
+    $request = pm_parse_request($request, $status_url, $projects);
     $project_name = $request['name'];
     $project_release_info = $release_info->get($request);
     if ($project_release_info) {
-      $version = isset($projects[$request['name']]) ? $projects[$request['name']]['version'] : NULL;
+      $version = isset($projects[$project_name]) ? $projects[$project_name]['version'] : NULL;
       $releases = $project_release_info->filterReleases($filter, $version);
       foreach ($releases as $key => $release) {
         $rows[$key] = array(
@@ -1257,13 +1259,24 @@ function drush_pm_releases() {
 function drush_pm_releasenotes() {
   $release_info = drush_get_engine('release_info');
 
+  // Obtain requests.
   if (!$requests = pm_parse_arguments(func_get_args(), FALSE)) {
     $requests = array('drupal');
   }
 
+  // Get installed projects.
+  if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+    $projects = drush_get_projects();
+  }
+  else {
+    $projects = array();
+  }
+
+  $status_url = drush_get_option('source');
+
   $output = '';
   foreach($requests as $request) {
-    $request = pm_parse_request($request);
+    $request = pm_parse_request($request, $status_url, $projects);
     $project_release_info = $release_info->get($request);
     if ($project_release_info) {
       $version = empty($request['version']) ? NULL : $request['version'];
@@ -1599,7 +1612,7 @@ function pm_parse_version($version, $is_core = FALSE) {
  * @return array
  *   Array with all parts of the request info.
  */
-function pm_parse_request($request_string) {
+function pm_parse_request($request_string, $status_url = NULL, &$projects = array()) {
   $request = array();
 
   // Split $request_string in project name and version. Note that hyphens (-)
@@ -1624,6 +1637,14 @@ function pm_parse_request($request_string) {
   $request = array(
     'name' => $project,
   ) + pm_parse_version($version, $is_core);
+
+  // Set the status url if provided or available in project's info file.
+  if ($status_url) {
+    $request['status url'] = $status_url;
+  }
+  elseif (!empty($projects[$project]['status url'])) {
+    $request['status url'] = $projects[$project]['status url'];
+  }
 
   return $request;
 }
