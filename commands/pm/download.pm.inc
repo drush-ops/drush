@@ -89,7 +89,7 @@ function drush_pm_download() {
   }
 
   // Pick cli options.
-  $source = drush_get_option('source', ReleaseInfo::DEFAULT_URL);
+  $status_url = drush_get_option('source', ReleaseInfo::DEFAULT_URL);
   $restrict_to = drush_get_option('dev', '');
   $select = drush_get_option('select', 'auto');
   $all = drush_get_option('all', FALSE);
@@ -105,8 +105,7 @@ function drush_pm_download() {
 
   // Get release history for each request and download the project.
   foreach ($requests as $request) {
-    $request = pm_parse_request($request);
-    $request['status url'] = $source;
+    $request = pm_parse_request($request, $status_url, $projects);
     $version = isset($projects[$request['name']]) ? $projects[$request['name']]['version'] : NULL;
     $release = $release_info->selectReleaseBasedOnStrategy($request, $restrict_to, $select, $all, $version);
     if ($release == FALSE) {
