@@ -2190,23 +2190,34 @@ function drush_sitealias_cache_alias_by_path($alias_record) {
  */
 function drush_sitealias_lookup_alias_by_path($path, $allow_best_match=FALSE) {
   $result = drush_sitealias_quick_lookup_cached_alias_by_path($path);
-  $fallback = array();
+  $fallback = $fallback_default = array();
   if (empty($result)) {
     $aliases = _drush_sitealias_find_and_load_all_aliases();
     foreach ($aliases as $name => $alias_record) {
-      if (!isset($alias_record['remote-host']) && isset($alias_record['root']) && isset($alias_record['uri']) && isset($alias_record['#name']) && isset($alias_record['#file'])) {
-        if ($path == drush_sitealias_local_site_path($alias_record)) {
-          $result = $alias_record;
-          break;
-        }
-        if (substr($path, 0, strlen($alias_record['root'])) == $alias_record['root']) {
-          $fallback = $alias_record;
+      if (!isset($alias_record['remote-host']) && isset($alias_record['root']) && isset($alias_record['#name']) && isset($alias_record['#file'])) {
+        $site_dir = drush_sitealias_local_site_path($alias_record);
+        if (!empty($site_dir)) {
+          if (substr($path, 0, strlen($site_dir)) == $site_dir) {
+            $result = $alias_record;
+            break;
+          }
+          if (substr($path, 0, strlen($alias_record['root'])) == $alias_record['root']) {
+            $fallback = $alias_record;
+            // There might be multiple 'fallback' records in a multisite situation.
+            // If so, favor the one associated with the 'default' folder, if any.
+            if (substr($site_dir, -7) == 'default') {
+              $fallback_default = $alias_record;
+            }
+          }
         }
       }
     }
   }
   if (empty($result) && $allow_best_match) {
     $result = $fallback;
+    if (!empty($fallback_default)) {
+      $result = $fallback_default;
+    }
   }
   if (!empty($result)) {
     _drush_sitealias_add_inherited_values_to_record($result);
