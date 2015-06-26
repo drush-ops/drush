@@ -151,7 +151,8 @@ function drush_preflight() {
   // --reserve-margin flag can be used to declare how much
   // space to leave out.  This only affects drush functions
   // such as drush_print_table() that wrap the output.
-  $columns -= drush_get_option('reserve-margin', 0);
+  //$columns -= drush_get_option('reserve-margin', 0);
+  $columns = 300; 
   drush_set_context('DRUSH_COLUMNS', $columns);
 
   // Display is tidy now that column width has been handled.
