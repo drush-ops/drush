@@ -115,6 +115,8 @@ function drush_preflight_prepare() {
  * Additionally the DRUSH_QUIET and DRUSH_BACKEND contexts,
  * will be evaluated now, as they need to be set very early in
  * the execution flow to be able to take affect.
+ *
+ * @return \Drush\Boot\Boot;
  */
 function drush_preflight() {
   // Create an alias '@none' to represent no Drupal site
