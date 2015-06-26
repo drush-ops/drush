@@ -70,10 +70,7 @@ function drush_drupal_cache_clear_all() {
     drush_invoke_process('@self', 'cache-rebuild');
   }
   else {
-    // $prior = drush_get_context('DRUSH_AFFIRMATIVE');
-    // drush_set_context('DRUSH_AFFIRMATIVE', TRUE);
     drush_invoke_process('@self', 'cache-clear', array('all'));
-    // drush_set_context('DRUSH_AFFIRMATIVE', $prior);
   }
 }
 
