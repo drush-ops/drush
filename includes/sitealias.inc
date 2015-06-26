@@ -1683,8 +1683,8 @@ function _drush_sitealias_set_record_element(&$alias_record, $key, $value) {
  * @param prefix
  *   The prefix value to afix to the beginning of every
  *   key set.
- * @return boolean
- *   TRUE is an alias was found and processed.
+ * @return array
+ *   A site alias record, if found.
  */
 function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
   if ($alias) {
