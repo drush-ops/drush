@@ -480,10 +480,10 @@ function drush_help_categorize($implemented) {
 
 
 /**
- * Return an HTML page header that includes all global options.
+ * Return an HTML page header.
  */
 function drush_help_html_header() {
-  $output =  "<html><head><title>drush help</title><style>dt {font-size: 110%; font-weight: bold}</style></head><body>\n";
+  return "<html><head><title>Drush help</title><style>dt {font-size: 110%; font-weight: bold}</style></head><body>\n";
 }
 
 function drush_help_html_global_options($global_options_help) {
