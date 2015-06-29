@@ -106,7 +106,7 @@ function drush_queue_run($queue_name) {
   $queues = drush_queue_get_queues();
 
   $info = $queues[$queue_name];
-  $function = $info['cron']['callback'];
+  $function = $info['worker callback'];
   $time_limit = (int) drush_get_option('time-limit');
   $end = time() + $time_limit;
   /** @var DrupalQueueInterface $queue */
