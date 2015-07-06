@@ -10,7 +10,7 @@
 use Drupal\Core\Site\Settings;
 use Drupal\Core\StreamWrapper\PrivateStream;
 use Psr\Log\LogLevel;
-
+use Drupal\Core\Logger\RfcLogLevel;
 
 /**
  * Get complete information for all available modules.
@@ -307,23 +307,19 @@ function drush_theme_uninstall($themes) {
 /**
  * Helper function to obtain the severity levels based on Drupal version.
  *
- * This is a copy of watchdog_severity_levels() without t().
- *
- * Severity levels, as defined in RFC 3164: http://www.ietf.org/rfc/rfc3164.txt.
- *
- * @return
- *   Array of watchdog severity levels.
+ * @return array
+ *   Watchdog severity levels keyed by RFC 3164 severities.
  */
 function drush_watchdog_severity_levels() {
   return array(
-    LogLevel::EMERGENCY => 'emergency',
-    LogLevel::ALERT => 'alert',
-    LogLevel::CRITICAL => 'critical',
-    LogLevel::ERROR    => 'error',
-    LogLevel::WARNING  => 'warning',
-    LogLevel::NOTICE   => 'notice',
-    LogLevel::INFO     => 'info',
-    LogLevel::DEBUG    => 'debug',
+    RfcLogLevel::EMERGENCY => LogLevel::EMERGENCY,
+    RfcLogLevel::ALERT => LogLevel::ALERT,
+    RfcLogLevel::CRITICAL => LogLevel::CRITICAL,
+    RfcLogLevel::ERROR => LogLevel::ERROR,
+    RfcLogLevel::WARNING => LogLevel::WARNING,
+    RfcLogLevel::NOTICE => LogLevel::NOTICE,
+    RfcLogLevel::INFO => LogLevel::INFO,
+    RfcLogLevel::DEBUG => LogLevel::DEBUG,
   );
 }
 
