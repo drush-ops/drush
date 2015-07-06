@@ -66,7 +66,7 @@ specified as the key.
 
     projects:
       drupal:
-        version: 7.33
+        version: "7.33"
 
 Do not use both types of declarations for a single project in your makefile.
 
@@ -86,15 +86,19 @@ Do not use both types of declarations for a single project in your makefile.
 
         projects
           views:
-            version: 2.8
+            version: "2.8"
 
         projects
           views
-            version: 3.0-alpha2
+            version: "3.0-alpha2"
 
         # Shorthand syntax for versions if no other options are to be specified
         projects:
-          views: 3.0-alpha2
+          views: "3.0-alpha2"
+
+  Note that version numbers should be enclosed in
+  quotes to ensure they are interpreted correctly
+  by the YAML parser.
 
 - `patch`
 
