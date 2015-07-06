@@ -21,6 +21,11 @@ function drush_cli_core_cli() {
   // Use the Symfony var-dumper to inspect variables.
   $boris->setInspector(new \Drush\Boris\VarDumperInspector());
 
+  if (drush_drupal_major_version() >= 8) {
+    // Set a local $container variable for Drupal 8.
+    $boris->setLocal(['container' => \Drupal::getContainer()]);
+  }
+
   // Boris will never return control to us, but our shutdown
   // handler will still run after the user presses ^D.  Mark
   // this command as completed to avoid a spurious error message.
