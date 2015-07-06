@@ -9,8 +9,7 @@
 
 use Drupal\Core\Site\Settings;
 use Drupal\Core\StreamWrapper\PrivateStream;
-use Psr\Log\LogLevel;
-
+use Drupal\Core\Logger\RfcLogLevel;
 
 /**
  * Get complete information for all available modules.
@@ -316,14 +315,14 @@ function drush_theme_uninstall($themes) {
  */
 function drush_watchdog_severity_levels() {
   return array(
-    LogLevel::EMERGENCY => 'emergency',
-    LogLevel::ALERT => 'alert',
-    LogLevel::CRITICAL => 'critical',
-    LogLevel::ERROR    => 'error',
-    LogLevel::WARNING  => 'warning',
-    LogLevel::NOTICE   => 'notice',
-    LogLevel::INFO     => 'info',
-    LogLevel::DEBUG    => 'debug',
+    RfcLogLevel::EMERGENCY => 'emergency',
+    RfcLogLevel::ALERT => 'alert',
+    RfcLogLevel::CRITICAL => 'critical',
+    RfcLogLevel::ERROR => 'error',
+    RfcLogLevel::WARNING => 'warning',
+    RfcLogLevel::NOTICE => 'notice',
+    RfcLogLevel::INFO => 'info',
+    RfcLogLevel::DEBUG => 'debug',
   );
 }
 
