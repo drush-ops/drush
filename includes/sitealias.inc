@@ -427,7 +427,7 @@ function drush_sitealias_alias_path($alias_path_context = NULL) {
  * anywhere inside the specified directory for aliases.
  */
 function drush_sitealias_alias_base_directory($dir) {
-  $potential_location = $dir . '/aliases';
+  $potential_location = $dir . '/site-aliases';
   if (is_dir($potential_location)) {
     return $potential_location;
   }
