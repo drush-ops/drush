@@ -18,12 +18,12 @@ class saCase extends CommandUnishTestCase {
    *     places said option AFTER the command name.
    */
   function testDispatchStrictOptions() {
-    $aliasPath = UNISH_SANDBOX . '/aliases';
+    $aliasPath = UNISH_SANDBOX . '/site-alias-directory';
     mkdir($aliasPath);
     $aliasFile = $aliasPath . '/bar.aliases.drushrc.php';
     $aliasContents = <<<EOD
   <?php
-  // Writtne by Unish. This file is safe to delete.
+  // Written by Unish. This file is safe to delete.
   \$aliases['test'] = array(
     'remote-host' => 'fake.remote-host.com',
     'remote-user' => 'www-admin',
@@ -120,14 +120,14 @@ EOD;
    * for alias files.
    */
   public function testDeepAliasSearching() {
-    $aliasPath = UNISH_SANDBOX . '/aliases';
+    $aliasPath = UNISH_SANDBOX . '/site-alias-directory';
     mkdir($aliasPath);
     $deepPath = $aliasPath . '/deep';
     mkdir($deepPath);
     $aliasFile = $deepPath . '/baz.aliases.drushrc.php';
     $aliasContents = <<<EOD
   <?php
-  // Writtne by Unish. This file is safe to delete.
+  // Written by Unish. This file is safe to delete.
   \$aliases['deep'] = array(
     'remote-host' => 'fake.remote-host.com',
     'remote-user' => 'www-admin',
