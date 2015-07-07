@@ -114,4 +114,38 @@ EOD;
   public function testBadAlias() {
     $this->drush('sa', array('@badalias'), array(), NULL, NULL, self::EXIT_ERROR);
   }
+
+  /**
+   * Ensure that Drush searches deep inside specified search locations
+   * for alias files.
+   */
+  public function testDeepAliasSearching() {
+    $aliasPath = UNISH_SANDBOX . '/aliases';
+    mkdir($aliasPath);
+    $deepPath = $aliasPath . '/deep';
+    mkdir($deepPath);
+    $aliasFile = $deepPath . '/baz.aliases.drushrc.php';
+    $aliasContents = <<<EOD
+  <?php
+  // Writtne by Unish. This file is safe to delete.
+  \$aliases['deep'] = array(
+    'remote-host' => 'fake.remote-host.com',
+    'remote-user' => 'www-admin',
+    'root' => '/fake/path/to/root',
+    'uri' => 'default',
+    'command-specific' => array(
+      'rsync' => array(
+        'delete' => TRUE,
+      ),
+    ),
+  );
+EOD;
+    file_put_contents($aliasFile, $aliasContents);
+    $options = array(
+      'alias-path' => $aliasPath,
+      'simulate' => TRUE,
+    );
+
+    $this->drush('sa', array('@deep'), $options);
+  }
 }
