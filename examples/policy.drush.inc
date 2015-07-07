@@ -36,7 +36,7 @@ function drush_policy_sql_sync_validate($source = NULL, $destination = NULL) {
  */
 function drush_policy_core_rsync_validate($source = NULL, $destination = NULL) {
   if (preg_match("/^@prod/", $destination)) {
-    return drush_set_error('POLICY_DENY', dt('Per examples/policy.drush.inc, you may never rsync to the production site.' . $destination));
+    return drush_set_error('POLICY_DENY', dt('Per examples/policy.drush.inc, you may never rsync to the production site.'));
   }
 }
 
