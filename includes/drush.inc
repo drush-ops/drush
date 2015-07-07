@@ -796,7 +796,7 @@ function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
  */
 function drush_download_file_name($url) {
   if ($cache_dir = drush_directory_cache('download')) {
-    $cache_name = str_replace(array(':', '/', '?', '='), '-', $url);
+    $cache_name = str_replace('https', 'http', str_replace(array(':', '/', '?', '='), '-', $url));
     return $cache_dir . "/" . $cache_name;
   }
   else {
@@ -829,6 +829,15 @@ function _drush_is_url($url) {
  *   downloaded.
  */
 function _drush_download_file($url, $destination, $overwrite = TRUE) {
+  // If the requested download URL is http://, try 'https://' first.
+  // Fall back to http:// if the secure URL does not work.
+  if (preg_match('#http://#', $url)) {
+    $secure_url = str_replace('http://', 'https://', $url);
+    $result = _drush_download_file($secure_url, $destination, $overwrite);
+    if ($result) {
+      return $result;
+    }
+  }
   static $use_wget;
   if ($use_wget === NULL) {
     $use_wget = drush_shell_exec('wget --version');
