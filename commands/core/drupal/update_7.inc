@@ -115,7 +115,16 @@ function drush_update_do_one($module, $number, $dependency_map,  &$context) {
     drupal_set_installed_schema_version($module, $number);
   }
 
-  $context['message'] = 'Performed update: ' . $function;
+  $message = 'Performed update: ' . $function;
+
+  // Show execution progress for batch updates.
+  if (isset($context['sandbox']['max'])) {
+    $items = $context['sandbox']['progress'] . '/' . $context['sandbox']['max'];
+    $percentage = round(($context['sandbox']['progress'] * 100) / $context['sandbox']['max']) . '%';
+    $message .= ' - ' . $percentage . ' (' . $items . ')';
+  }
+
+  $context['message'] = $message;
 }
 
 /**
