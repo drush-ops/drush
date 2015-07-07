@@ -50,6 +50,20 @@
  *        a. The /drush and /sites/all/drush folders for the current Drupal site
  *        b. The /drush folder in the directory above the current Drupal site
  *
+ * These locations are searched recursively.  If there is a folder called
+ * 'site-aliases' in any search path, then Drush will search for site aliases
+ * only inside that directory.
+ *
+ * The preferred locations for alias files, then, are:
+ *
+ *   /etc/drush/site-aliases
+ *   $HOME/.drush/site-aliases
+ *   $ROOT/drush/site-aliases
+ *   $ROOT/sites/all/drush/site-aliases
+ *   $ROOT/../drush/site-aliases
+ *
+ * Or any path set in $options['alias-path'] or via --alias-path.
+ *
  * Folders and files containing other versions of drush in their names will
  * be *skipped* (e.g. mysite.aliases.drush4rc.php or
  * drush4/mysite.aliases.drushrc.php). Names containing the current version of

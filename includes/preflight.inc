@@ -356,13 +356,13 @@ function _drush_preflight_alias_path() {
   $alias_path =& drush_get_context('ALIAS_PATH');
   $default_prefix_configuration = drush_is_windows() ? getenv('ALLUSERSPROFILE') . '/Drush' : '';
   $site_wide_configuration_dir = drush_get_context('ETC_PREFIX', $default_prefix_configuration) . '/etc/drush';
-  $alias_path[] = $site_wide_configuration_dir;
+  $alias_path[] = drush_sitealias_alias_base_directory($site_wide_configuration_dir);
 
-  $alias_path[] = dirname(__FILE__) . '/..';
+  $alias_path[] = drush_sitealias_alias_base_directory(dirname(__FILE__) . '/..');
 
   $server_home = drush_server_home();
   if (isset($server_home)) {
-    $alias_path[] = $server_home . '/.drush';
+    $alias_path[] = drush_sitealias_alias_base_directory($server_home . '/.drush');
   }
 }
 
