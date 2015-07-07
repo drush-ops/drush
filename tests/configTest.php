@@ -54,7 +54,7 @@ class ConfigCase extends CommandUnishTestCase {
 
     // Test import by finish the round trip.
     $contents = file_get_contents($system_site_yml);
-    $contents = str_replace('front: user', 'front: unish', $contents);
+    $contents = preg_replace('/front: .*/', 'front: unish', $contents);
     $contents = file_put_contents($system_site_yml, $contents);
     $this->drush('config-import', array(), $options);
     $this->drush('config-get', array('system.site', 'page'), $options + array('format' => 'json'));
