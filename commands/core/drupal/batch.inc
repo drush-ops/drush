@@ -143,10 +143,24 @@ function _drush_batch_worker() {
         'finished' => &$finished,
         'message'  => &$task_message,
       );
-      // Magic wrap to catch changes to 'message' key.
+      // Magic wrap to catch changes to 'error_message' key.
       $batch_context = new DrushBatchContext($batch_context);
 
       call_user_func_array($function, array_merge($args, array(&$batch_context)));
+
+      // Show execution progress of batch operation.
+      if (isset($batch_context['sandbox']['max'])) {
+        $items = $batch_context['sandbox']['progress'] . '/' . $batch_context['sandbox']['max'];
+        $percentage = round(($batch_context['sandbox']['progress'] * 100) / $batch_context['sandbox']['max']) . '%';
+        $batch_context['message'] .= ' - ' . $percentage . ' (' . $items . ')';
+      }
+
+      // Print batch message.
+      if (isset($batch_context['message'])) {
+        drush_log(strip_tags($batch_context['message']), 'ok');
+      }
+
+
       $finished = $batch_context['finished'];
       if ($finished >= 1) {
         // Make sure this step is not counted twice when computing $current.

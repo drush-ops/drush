@@ -435,7 +435,6 @@ function _update_do_one($module, $number, &$context) {
   }
 
   $function = $module .'_update_'. $number;
-  drush_log("Executing $function", 'success');
 
   if (function_exists($function)) {
     $ret = $function($context['sandbox']);
@@ -452,6 +451,7 @@ function _update_do_one($module, $number, &$context) {
     drupal_set_installed_schema_version($module, $number);
   }
 
+  $context['message'] = 'Performed update: ' . $function;
 }
 
 function _update_batch_command($id) {

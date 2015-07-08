@@ -29,16 +29,13 @@
  * some keys of the array change.
  *
  * It is used to wrap batch's $context array and set log messages when values
- * are assigned to keys 'message' or 'error_message'.
+ * are assigned to 'error_message' key.
  *
  * @see _drush_batch_worker().
  */
 class DrushBatchContext extends ArrayObject {
   function offsetSet($name, $value) {
-    if ($name == 'message') {
-      drush_log(strip_tags($value), 'ok');
-    }
-    elseif ($name == 'error_message') {
+    if ($name == 'error_message') {
       drush_set_error('DRUSH_BATCH_ERROR', strip_tags($value));
     }
     parent::offsetSet($name, $value);

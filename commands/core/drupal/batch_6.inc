@@ -99,10 +99,23 @@ function _drush_batch_worker() {
       // Build the 'context' array, execute the function call,
       // and retrieve the user message.
       $batch_context = array('sandbox' => &$current_set['sandbox'], 'results' => &$current_set['results'], 'finished' => &$finished, 'message' => &$task_message);
-      // Magic wrap to catch changes to 'message' key.
+      // Magic wrap to catch changes to 'error_message' key.
       $batch_context = new DrushBatchContext($batch_context);
       // Process the current operation.
       call_user_func_array($function, array_merge($args, array(&$batch_context)));
+
+      // Show execution progress of batch operation.
+      if (isset($batch_context['sandbox']['max'])) {
+        $items = $batch_context['sandbox']['progress'] . '/' . $batch_context['sandbox']['max'];
+        $percentage = round(($batch_context['sandbox']['progress'] * 100) / $batch_context['sandbox']['max']) . '%';
+        $batch_context['message'] .= ' - ' . $percentage . ' (' . $items . ')';
+      }
+
+      // Print batch message.
+      if (isset($batch_context['message'])) {
+        drush_log(strip_tags($batch_context['message']), 'ok');
+      }
+
       $finished = $batch_context['finished'];
     }
 
