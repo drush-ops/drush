@@ -44,12 +44,8 @@ Users of MAMP will need to manually specify in their PATH which version of php
 and MySQL to use in the command line interface. This is independent of the php
 version selected in the MAMP application settings.  Under OS X, edit (or create
 if it does not already exist) a file called .bash_profile in your home folder.
-
-If you want to use php 5.4.x, add this line:
-
-    export PATH="/Applications/MAMP/Library/bin:/Applications/MAMP/bin/php5.4/bin:$PATH"
     
-If you use MAMP 3 (php 5.5.14 by default) and want to use php 5.5.x , add this line instead:
+If you use MAMP 3 (php 5.5.14 by default) and want to use php 5.5.x , add this line:
 
     export PATH="/Applications/MAMP/Library/bin:/Applications/MAMP/bin/php/php5.5.14/bin:$PATH"
 
