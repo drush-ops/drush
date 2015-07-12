@@ -46,6 +46,7 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
       _batch_populate_queue($batch, $key);
     }
 
+    drush_include_engine('drupal', 'environment');
     // Store the batch.
     db_insert('batch')
       ->fields(array(
