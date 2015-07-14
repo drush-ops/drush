@@ -48,7 +48,7 @@ abstract class DrupalBoot extends BaseBoot {
    * bootstrap to the phase declared by the command.
    */
   function bootstrap_init_phases() {
-    return array(DRUSH_BOOTSTRAP_DRUSH, DRUSH_BOOTSTRAP_DRUPAL_FULL);
+    return array(DRUSH_BOOTSTRAP_DRUSH, DRUSH_BOOTSTRAP_DRUPAL_ROOT, DRUSH_BOOTSTRAP_DRUPAL_FULL);
   }
 
   function enforce_requirement(&$command) {
