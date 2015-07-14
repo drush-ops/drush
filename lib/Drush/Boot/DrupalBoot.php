@@ -41,14 +41,22 @@ abstract class DrupalBoot extends BaseBoot {
   }
 
   /**
-   * The phases where Drush will look to see if new commandfiles
-   * have been defined.  For Drupal, we first do a preflight, and
-   * if a command is not found at that point, we next attempt a full
-   * bootstrap.  If a command is found after preflight, then we
-   * bootstrap to the phase declared by the command.
+   * List of bootstrap phases where Drush should stop and look for commandfiles.
+   *
+   * For Drupal, we try at these bootstrap phases:
+   *
+   *   - Drush preflight: to find commandfiles in any system location,
+   *     out of a Drupal installation.
+   *   - Drupal root: to find commandfiles based on Drupal core version.
+   *   - Drupal full: to find commandfiles defined within a Drupal directory.
+   *
+   * Once a command is found, Drush will ensure a bootstrap to the phase
+   * declared by the command.
+   *
+   * @return array of PHASE indexes.
    */
   function bootstrap_init_phases() {
-    return array(DRUSH_BOOTSTRAP_DRUSH, DRUSH_BOOTSTRAP_DRUPAL_FULL);
+    return array(DRUSH_BOOTSTRAP_DRUSH, DRUSH_BOOTSTRAP_DRUPAL_ROOT, DRUSH_BOOTSTRAP_DRUPAL_FULL);
   }
 
   function enforce_requirement(&$command) {
