@@ -233,10 +233,6 @@
  *     the full path to drush.php on the local machine.
  *   - '%drush': A read-only property: points to the folder that the drush
  *     script is stored in.
- *   - '%dump-dir': Path to directory that "drush sql-sync" should use to store
- *     sql-dump files. Helpful filenames are auto-generated.
- *   - '%dump': Path to the file that "drush sql-sync" should use to store
- *     sql-dump file.
  *   - '%files': Path to 'files' directory.  This will be looked up if not
  *     specified.
  *   - '%root': A reference to the Drupal root defined in the 'root' item in the
@@ -343,7 +339,6 @@
 #    'path-aliases' => array(
 #      '%drush' => '/path/to/drush',
 #      '%drush-script' => '/path/to/drush/drush',
-#      '%dump-dir' => '/path/to/dumps',
 #      '%files' => 'sites/mydrupalsite.com/files',
 #      '%custom' => '/my/custom/path',
 #     ),
@@ -367,7 +362,7 @@
 #      ),
 #     'command-specific' => array (
 #       'sql-sync' => array (
-#         'no-cache' => TRUE,
+#         'no-dump' => TRUE,
 #       ),
 #     ),
 #     # This shell alias will run `mycommand` when executed via

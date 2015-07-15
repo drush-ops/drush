@@ -146,14 +146,6 @@
 # $options['alias-path'] = array('/path/to/aliases','/path2/to/more/aliases');
 
 /**
- * Specify the folder where 'sql-sync' should store persistent dump files.
- * Keeping the dump files around improves the performance of rsync when the
- * database is rsync'ed to a remote system.  If a dump directory is not
- * specified, then 'sql-sync' will store dumps in temporary files.
- */
-# $options['dump-dir'] = '/path/to/dumpdir';
-
-/**
  * Specify the filename and path where 'sql-dump' should store backups of
  * database dumps.  The default is to dump to STDOUT, however if this option is
  * set in a drushrc.php file, the default behaviour can be achieved by
