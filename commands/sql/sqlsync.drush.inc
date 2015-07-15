@@ -66,8 +66,6 @@ function sqlsync_drush_command() {
         // declare it here since this command does not bootstrap fully.
         'hidden' => TRUE,
       ),
-      // 'temp' => 'Use a temporary file to hold dump files.  Implies --no-cache.',
-      // 'dump-dir' => 'Directory to store sql dump files in when --source-dump or --target-dump are not used.',
       'create-db' => 'Create a new database before importing the database dump on the target machine.',
       'db-su' => array(
         'description' => 'Account to use when creating a new database. Optional.',
