@@ -12,7 +12,7 @@ If you just want to get started quickly, here is a crontab entry that will run c
 
 You should set up crontab to run your cron tasks as the same user that runs the web server; for example, if you run your webserver as the user www-data:
 
-`sudo -u www-data crontab -e`
+`sudo crontab -u www-data -e`
 
 You might need to edit the crontab entry shown above slightly for your particular setup; for example, if you have installed Drush to some directory other than /usr/local/drush, then you will need to adjust the path to drush appropriately. We'll break down the meaning of each section of the crontab entry in the documentation that continues below.
 
