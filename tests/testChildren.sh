@@ -1,3 +1,5 @@
+# See https://github.com/drush-ops/drush/pull/1426 for background information.
+#
 # $AUTH_TOKEN is provided via a secure Travis environment variable.
 # Secure environment variables are not set for pull requests that
 # originated from another repository, so skip child tests if $AUTH_TOKEN
