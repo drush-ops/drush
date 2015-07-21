@@ -1741,7 +1741,7 @@ function drush_sitealias_get_path_option($site_alias_record, $option, $default =
  * @param site_alias_settings
  *   An alias record
  * @param prefix
- *   The prefix value to afix to the beginning of every
+ *   The prefix value to affix to the beginning of every
  *   key set.  For example, if this function is called once with
  *   'source-' and again with 'destination-' prefixes, then the
  *   source database records will be stored in 'source-databases',
