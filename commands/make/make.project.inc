@@ -439,7 +439,7 @@ class DrushMakeProject {
             $update_url = $cache[$l10n_server];
           }
           else {
-            make_error('XML_ERROR', dt("Could not retrieve l10n update url for !project.", array('!project' => $project['name'])));
+            make_error('XML_ERROR', dt("Could not retrieve l10n update url for !project.", array('!project' => $this->name)));
             return FALSE;
           }
         }
