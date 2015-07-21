@@ -177,6 +177,7 @@ function drush_sqlsync_sql_sync($source, $destination) {
   $destination_is_local = !array_key_exists('remote-host', $destination_settings) || drush_is_local_host($destination_settings);
 
   $backend_options = array();
+  // @todo drush_redispatch_get_options() assumes you will execute same command. Not good.
   $global_options = drush_redispatch_get_options() + array(
      'strict' => 0,
   );
