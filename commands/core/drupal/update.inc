@@ -159,21 +159,8 @@ function _update_batch_command($id) {
 
 /**
  * Start the database update batch process.
- *
- * @param $start
- *   An array of all the modules and which update to start at.
- * @param $redirect
- *   Path to redirect to when the batch has finished processing.
- * @param $url
- *   URL of the batch processing page (should only be used for separate
- *   scripts like update.php).
- * @param $batch
- *   Optional parameters to pass into the batch API.
- * @param $redirect_callback
- *   (optional) Specify a function to be called to redirect to the progressive
- *   processing page.
  */
-function drush_update_batch($start) {
+function drush_update_batch() {
   $start = drush_get_update_list();
   // Resolve any update dependencies to determine the actual updates that will
   // be run and the order they will be run in.
@@ -190,13 +177,6 @@ function drush_update_batch($start) {
 
   $operations = array();
 
-  // First of all perform entity definition updates, which will update
-  // storage schema if needed, so that module update functions work with
-  // the correct entity schema.
-  if (\Drupal::service('entity.definition_update_manager')->needsUpdates()) {
-    $operations[] = array('update_entity_definitions', array('system', '0 - Update entity definitions'));
-  }
-
   foreach ($updates as $update) {
     if ($update['allowed']) {
       // Set the installed version of each module so updates will start at the
@@ -210,6 +190,16 @@ function drush_update_batch($start) {
       $function = $update['module'] . '_update_' . $update['number'];
       $operations[] = array('drush_update_do_one', array($update['module'], $update['number'], $dependency_map[$function]));
     }
+  }
+
+  // Lastly, perform entity definition updates, which will update storage
+  // schema if needed. If module update functions need to work with specific
+  // entity schema they should call the entity update service for the specific
+  // update themselves.
+  // @see \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface::applyEntityUpdate()
+  // @see \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface::applyFieldUpdate()
+  if (\Drupal::service('entity.definition_update_manager')->needsUpdates()) {
+    $operations[] = array('update_entity_definitions', array('system', '0 - Update entity definitions'));
   }
 
   $batch['operations'] = $operations;
