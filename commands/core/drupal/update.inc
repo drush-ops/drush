@@ -199,7 +199,7 @@ function drush_update_batch() {
   // @see \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface::applyEntityUpdate()
   // @see \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface::applyFieldUpdate()
   if (\Drupal::service('entity.definition_update_manager')->needsUpdates()) {
-    $operations[] = array('update_entity_definitions', array('system', '0 - Update entity definitions'));
+    $operations[] = array('update_entity_definitions', array());
   }
 
   $batch['operations'] = $operations;
