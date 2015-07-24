@@ -241,11 +241,11 @@
  * - 'php-options': commandline options for php interpreter, you may
  *   want to set this to '-d error_reporting="E_ALL^E_DEPRECATED"'
  * - 'variables' : An array of name/value pairs which override Drupal
- *   variables/config.
- *    These values take precedence even over settings.php overrides.
+ *   variables/config. These values take precedence even over settings.php
+ *   overrides.
  * - 'command-specific': These options will only be set if the alias
  *   is used with the specified command.  In the example below, the option
- *   `--no-cache` will be selected whenever the @stage alias
+ *   `--no-dump` will be selected whenever the @stage alias
  *   is used in any of the following ways:
  *   - `drush @stage sql-sync @self @live`
  *   - `drush sql-sync @stage @live`
