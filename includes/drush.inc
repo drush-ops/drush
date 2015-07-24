@@ -1822,3 +1822,52 @@ function drush_complete_cache_clear($type = NULL, $command = NULL) {
   // No type or command, so clear the entire complete cache.
   drush_cache_clear_all('*', 'complete', TRUE);
 }
+
+/*
+ * Cast a value according to the provided format
+ *
+ * @param mixed $value.
+ * @param string $format
+ *   Allowed values: integer, bool, boolean, json, yaml.
+ *
+ * @return $value
+ *  The value, re-typed as needed.
+ */function drush_value_format($value, $format) {
+  if ($format == 'auto') {
+    if (is_int($value)) {
+      $format = 'integer';
+    }
+    elseif (($value == 'TRUE') || ($value == 'FALSE')) {
+      $format = 'bool';
+    }
+  }
+
+  // Now, we parse the object.
+  switch ($format) {
+    case 'integer':
+      $value = (integer)$value;
+      break;
+
+    case 'bool':
+    case 'boolean':
+      if ($value == 'TRUE') {
+        $value = TRUE;
+      }
+      elseif ($value == 'FALSE') {
+        $value = FALSE;
+      }
+      else {
+        $value = (bool)$value;
+      }
+      break;
+
+    case 'json':
+      $value = drush_json_decode($value);
+      break;
+
+    case 'yaml':
+      $value = \Symfony\Component\Yaml\Yaml::parse($value, FALSE, TRUE);
+      break;
+  }
+  return $value;
+}
