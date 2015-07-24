@@ -1828,14 +1828,16 @@ function drush_complete_cache_clear($type = NULL, $command = NULL) {
  *
  * @param mixed $value.
  * @param string $format
- *   Allowed values: integer, bool, boolean, json, yaml.
+ *   Allowed values: auto, integer, float, bool, boolean, json, yaml.
  *
  * @return $value
  *  The value, re-typed as needed.
- */function drush_value_format($value, $format) {
+ */
+function drush_value_format($value, $format) {
   if ($format == 'auto') {
-    if (is_int($value)) {
-      $format = 'integer';
+    if (is_numeric($value)) {
+      $value = $value + 0; // http://php.net/manual/en/function.is-numeric.php#107326
+      $format = gettype($value);
     }
     elseif (($value == 'TRUE') || ($value == 'FALSE')) {
       $format = 'bool';
@@ -1847,7 +1849,12 @@ function drush_complete_cache_clear($type = NULL, $command = NULL) {
     case 'integer':
       $value = (integer)$value;
       break;
-
+    // from: http://php.net/gettype
+    // for historical reasons "double" is returned in case of a float, and not simply "float"
+    case 'double':
+    case 'float':
+      $value = (float)$value;
+      break;
     case 'bool':
     case 'boolean':
       if ($value == 'TRUE') {

@@ -52,7 +52,7 @@ function variable_drush_command() {
       'always-set' => array('description' => 'Older synonym for --exact; deprecated.', 'hidden' => TRUE),
       'exact' => 'The exact name of the variable to set has been provided; do not prompt for similarly-named variables.',
       'format' => array(
-        'description' => 'Type for the value. Use "auto" to detect format from value (default), "string", "integer" or "boolean" for corresponding primitive type, or json, yaml for complex types.',
+        'description' => 'Type for  the value. Use "auto" to detect format from value. Other recognized values are string, integer float, or boolean for corresponding primitive type, or json, yaml for complex types.',
         'example-value' => 'boolean',
       ),
     ),

@@ -47,7 +47,7 @@ function state_drush_command() {
     'required arguments' => 2,
     'options' => array(
       'format' => array(
-        'description' => 'Type for  the value. Use "auto" to detect format from value (default), "string", "integer" or "boolean" for corresponding primitive type, or json, yaml for complex types.',
+        'description' => 'Type for  the value. Use "auto" to detect format from value. Other recognized values are string, integer float, or boolean for corresponding primitive type, or json, yaml for complex types.',
         'example-value' => 'boolean',
         'value' => 'required',
       ),
