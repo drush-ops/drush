@@ -98,6 +98,10 @@ function _make_parse_info_file($makefile) {
  * Expand shorthand elements, so that we have an associative array.
  */
 function make_normalize_info(&$info) {
+  if (empty($info['projects'])) {
+    return;
+  }
+
   foreach($info['projects'] as $key => $project) {
     if (is_numeric($key) && is_string($project)) {
       unset($info['projects'][$key]);
