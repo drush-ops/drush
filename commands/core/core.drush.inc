@@ -1322,7 +1322,8 @@ function drush_core_twig_compile() {
   foreach ($searchpaths as $searchpath) {
     foreach ($file = drush_scan_directory($searchpath, '/\.html.twig/', array('tests')) as $file) {
       $relative = str_replace(drush_get_context('DRUSH_DRUPAL_ROOT'). '/', '', $file->filename);
-      twig_render_template($relative, array());
+      // @todo Dynamically disable twig debugging since there is no good info there anyway.
+      twig_render_template($relative, array('theme_hook_original' => ''));
       drush_log(dt('Compiled twig template !path', array('!path' => $relative)), 'notice');
     }
   }
