@@ -944,6 +944,7 @@ function drush_attempt_mime_content_type($filename) {
     $filename = basename(current(explode('?', $filename, 2)));
     $extension_mimetype = array(
       '.tar'     => 'application/x-tar',
+      '.sql'     => 'application/octet-stream',
     );
     foreach ($extension_mimetype as $extension => $ct) {
       if (substr($filename, -strlen($extension)) === $extension) {
