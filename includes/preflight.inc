@@ -407,6 +407,13 @@ function _drush_find_commandfiles_drush() {
     if (!empty($per_user_config_dir)) {
       $searchpath[] = $per_user_config_dir;
     }
+
+    // Composer Installer packages, residing in ~/.composer/drush.
+    // These are composer packages that contain the type: "drupal-drush".
+    $composer_installer_path = drush_get_context('DRUSH_VENDOR_PATH') . '/../drush';
+    if (is_dir($composer_installer_path)) {
+      $searchpath[] = $composer_installer_path;
+    }
   }
 
   // @todo the zero parameter is a bit weird here. It's $phase.
