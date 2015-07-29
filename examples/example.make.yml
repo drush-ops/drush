@@ -11,7 +11,7 @@
 # Each makefile should begin by declaring the core version of Drupal that all
 # projects should be compatible with.
 
-core: '7.x'
+core: "7.x"
 
 # API version
 # ------------
@@ -37,7 +37,7 @@ api: 2
 #
 # Git clone of Drupal 7.x. Requires the `core` property to be set to 7.x.
 # projects
-#   drupal: 
+#   drupal:
 #     type: "core"
 #     download:
 #       url: "http://git.drupal.org/project/drupal.git"
@@ -57,31 +57,31 @@ projects:
   views:
     version: ~
 
-  # This will, by default, retrieve the latest recommended version of the project
-  # using its update XML feed on Drupal.org. If any of those defaults are not
-  # desirable for a project, you will want to use the keyed syntax combined with
-  # some options.
+  # This will, by default, retrieve the latest recommended version of the
+  # project using its update XML feed on Drupal.org. If any of those defaults
+  # are not desirable for a project, you will want to use the keyed syntax
+  # combined with some options.
 
   # If you want to retrieve a specific version of a project:
 
   # projects:
-  #   views: 2.16
+  #   views: "2.16"
 
   # Or an alternative, extended syntax:
 
   ctools:
-    version: 1.3
+    version: "1.3"
 
   # Check out the latest version of a project from Git. Note that when using a
   # repository as your project source, you must explicitly declare the project
   # type so that drush_make knows where to put your project.
 
   data:
-    type: 'module'
+    type: "module"
     download:
-      type: 'git' # Note, 'git' is the default, no need to specify.
-      url: 'http://git.drupal.org/project/views.git'
-      revision: '7.x-3.x'
+      type: "git" # Note, 'git' is the default, no need to specify.
+      url: "http://git.drupal.org/project/views.git"
+      revision: "7.x-3.x"
 
   # For projects on drupal.org, some shorthand is available. If any
   # download parameters are specified, but not type, the default is git.
@@ -111,7 +111,7 @@ projects:
 
     patch:
       - "http://drupal.org/files/issues/admin_menu.long_.31.patch"
- 
+
 # If all projects or libraries share common attributes, the `defaults`
 # array can be used to specify these globally, rather than
 # per-project.
