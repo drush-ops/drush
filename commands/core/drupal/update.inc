@@ -207,7 +207,7 @@ function drush_update_batch() {
     'title' => 'Updating',
     'init_message' => 'Starting updates',
     'error_message' => 'An unrecoverable error has occurred. You can find the error message below. It is advised to copy it to the clipboard for reference.',
-    // 'finished' => array('finished' => array('\Drupal\system\Controller\DbUpdateController', 'batchFinished')),
+    'finished' => 'drush_update_finished',
     'file' => 'includes/update.inc',
   );
   batch_set($batch);
@@ -227,8 +227,31 @@ function drush_get_update_list() {
   return $return;
 }
 
+/**
+ * Process and display any returned update output.
+ *
+ * @see \Drupal\system\Controller\DbUpdateController::results()
+ */
 function drush_update_finished($success, $results, $operations) {
-  // Nothing to do here. All caches already cleared. Kept as documentation of 'finished' callback.
+  foreach ($results as $module => $updates) {
+    if ($module != '#abort') {
+      foreach ($updates as $number => $queries) {
+        foreach ($queries as $query) {
+          // If there is no message for this update, don't show anything.
+          if (empty($query['query'])) {
+            continue;
+          }
+
+          if ($query['success']) {
+            drush_log($query['query']);
+          }
+          else {
+            drush_set_error(dt('Failed: ' . $query['query']));
+          }
+        }
+      }
+    }
+  }
 }
 
 /**
