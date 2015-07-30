@@ -52,8 +52,26 @@ function drush_preflight_prepare() {
   require_once DRUSH_BASE_PATH . '/includes/dbtng.inc';
 
   // Stash our vendor path and classloader.
-  drush_set_context('DRUSH_VENDOR_PATH', dirname(realpath($vendor_path)));
+  $vendor_path = dirname(realpath($vendor_path));
+  drush_set_context('DRUSH_VENDOR_PATH', $vendor_path);
   drush_set_context('DRUSH_CLASSLOADER', $classloader);
+
+  // Attempt to retrieve the home path of Composer directly from its config
+  // information (in case Drush was installed somewhere else). Use the
+  // "global" context here in case the CWD does not have a composer.json
+  // file which would cause the failure of this command.
+  if (drush_shell_exec('composer global config home')) {
+    $composer_output = drush_shell_exec_output();
+    $composer_home_path = _drush_convert_path(array_pop($composer_output));
+  }
+  // In case no path can be determined, simply step up one directory
+  // from the current Drush vendor path as a fallback.
+  else {
+    $composer_home_path = _drush_convert_path(_drush_shift_path_up($vendor_path));
+  }
+
+  // Store the Composer home path.
+  drush_set_context('DRUSH_COMPOSER_HOME_PATH', $composer_home_path);
 
   // Terminate immediately unless invoked as a command line script
   if (!drush_verify_cli()) {
@@ -408,11 +426,12 @@ function _drush_find_commandfiles_drush() {
       $searchpath[] = $per_user_config_dir;
     }
 
-    // Composer Installer packages, residing in ~/.composer/drush.
-    // These are composer packages that contain the type: "drupal-drush".
-    $composer_installer_path = drush_get_context('DRUSH_VENDOR_PATH') . '/../drush';
-    if (is_dir($composer_installer_path)) {
-      $searchpath[] = $composer_installer_path;
+    // Global Composer Installer packages, residing in $COMPOSER_HOME/drush.
+    // Note: this is not the same directory that Drush is typically installed,
+    // which is $COMPOSER_HOME/vendor/drush/drush.
+    $composer_home_path = drush_get_context('DRUSH_COMPOSER_HOME_PATH');
+    if ($composer_home_path && is_dir("$composer_home_path/drush")) {
+      $searchpath[] = "$composer_home_path/drush";
     }
   }
 
