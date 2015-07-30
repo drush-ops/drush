@@ -243,10 +243,10 @@ function drush_update_finished($success, $results, $operations) {
           }
 
           if ($query['success']) {
-            drush_log($query['query']);
+            drush_log(strip_tags($query['query']));
           }
           else {
-            drush_set_error(dt('Failed: ' . $query['query']));
+            drush_set_error(dt('Failed: ') . strip_tags($query['query']));
           }
         }
       }
