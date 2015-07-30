@@ -230,9 +230,18 @@ function drush_get_update_list() {
 /**
  * Process and display any returned update output.
  *
+ * @see \Drupal\system\Controller\DbUpdateController::batchFinished()
  * @see \Drupal\system\Controller\DbUpdateController::results()
  */
 function drush_update_finished($success, $results, $operations) {
+
+  if (!drush_get_option('cache-clear', TRUE)) {
+    drush_log(dt("Skipping cache-clear operation due to --cache-clear=0 option."), 'warning');
+  }
+  else {
+    drupal_flush_all_caches();
+  }
+
   foreach ($results as $module => $updates) {
     if ($module != '#abort') {
       foreach ($updates as $number => $queries) {
