@@ -116,7 +116,12 @@ function _drush_make_generate_projects($all_extensions, $version_options) {
     }
     // Add version number if this project's version is to be tracked.
     if (_drush_generate_track_version($name, $version_options) && $project["version"]) {
-      $projects[$name]['version'] = preg_replace("/^" . drush_get_drupal_core_compatibility() . "-/", "", $project["version"]);
+      $version = preg_replace("/^" . drush_get_drupal_core_compatibility() . "-/", "", $project["version"]);
+      // Strip out MINOR+GIT_COMMIT strings for dev releases.
+      if (substr($version, -4) == '-dev' && strpos($version, '+')) {
+        $version = substr($version, 0, strrpos($version, '.')) . '.x-dev';
+      }
+      $projects[$name]['version'] = $version;
     }
     foreach ($project['extensions'] as $extension_name) {
       _drush_make_generate_add_patch_files($projects[$name], _drush_extension_get_path($all_extensions[$extension_name]));
