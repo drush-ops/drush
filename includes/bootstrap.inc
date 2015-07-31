@@ -542,27 +542,8 @@ function _drush_bootstrap_output_prepare() {
 }
 
 /**
- * Used by a Drush extension to request that its Composer autoload
- * files be loaded by Drush, if they have not already been.
- *
- * Usage:
- *
- * function mycommandfile_drush_init() {
- *   drush_autoload(__FILE__)
- * }
- *
+ * Obsolete; autoloading is handled automatically now.
  */
 function drush_autoload($commandfile) {
-  $already_added = commandfiles_cache()->add($commandfile);
-
-  $dir = dirname($commandfile);
-  $candidates = array("vendor/autoload.php", "../../../vendor/autoload.php");
-  $drush_autoload_file = drush_get_context('DRUSH_VENDOR_PATH', '');
-
-  foreach ($candidates as $candidate) {
-    $autoload = $dir . '/' . $candidate;
-    if (file_exists($autoload) && (realpath($autoload) != $drush_autoload_file)) {
-      include $autoload;
-    }
-  }
+  // No longer does anything
 }
