@@ -14,7 +14,8 @@
  */
 require_once DRUSH_DRUPAL_CORE . '/includes/update.inc';
 
-
+use Drupal\Core\Utility\Error;
+use Drupal\Core\Entity\EntityStorageException;
 /**
  * Perform one update and store the results which will later be displayed on
  * the finished page.
@@ -112,10 +113,13 @@ function update_main() {
 
   $start = array();
 
-  $change_summary = \Drupal::service('entity.definition_update_manager')->getChangeSummary();
+  $change_summary = FALSE;
+  if (drush_get_option('entity-updates', FALSE)) {
+    $change_summary = \Drupal::service('entity.definition_update_manager')->getChangeSummary();
+  }
 
   // Print a list of pending updates for this module and get confirmation.
-  if (count($pending) || count($change_summary)) {
+  if (count($pending) || $change_summary) {
     drush_print(dt('The following updates are pending:'));
     drush_print();
 
@@ -198,8 +202,8 @@ function drush_update_batch() {
   // update themselves.
   // @see \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface::applyEntityUpdate()
   // @see \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface::applyFieldUpdate()
-  if (\Drupal::service('entity.definition_update_manager')->needsUpdates()) {
-    $operations[] = array('update_entity_definitions', array());
+  if (drush_get_option('entity-updates', FALSE) &&  \Drupal::service('entity.definition_update_manager')->needsUpdates()) {
+    $operations[] = array('drush_update_entity_definitions', array());
   }
 
   $batch['operations'] = $operations;
@@ -214,6 +218,26 @@ function drush_update_batch() {
   \Drupal::service('state')->set('system.maintenance_mode', TRUE);
   drush_backend_batch_process('updatedb-batch-process');
   \Drupal::service('state')->set('system.maintenance_mode', FALSE);
+}
+
+/**
+ * Apply entity schema updates.
+ */
+function drush_update_entity_definitions(&$context) {
+  try {
+    \Drupal::service('entity.definition_update_manager')->applyUpdates();
+  }
+  catch (EntityStorageException $e) {
+    watchdog_exception('update', $e);
+    $variables = Error::decodeException($e);
+    unset($variables['backtrace']);
+    // The exception message is run through
+    // \Drupal\Component\Utility\SafeMarkup::checkPlain() by
+    // \Drupal\Core\Utility\Error::decodeException().
+    $ret['#abort'] = array('success' => FALSE, 'query' => t('%type: !message in %function (line %line of %file).', $variables));
+    $context['results']['core']['update_entity_definitions'] = $ret;
+    $context['results']['#abort'][] = 'update_entity_definitions';
+  }
 }
 
 // Copy of protected \Drupal\system\Controller\DbUpdateController::getModuleUpdates.

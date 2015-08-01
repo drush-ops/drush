@@ -109,6 +109,11 @@ function core_drush_command() {
     'global-options' => array(
       'cache-clear',
     ),
+    'options' => array(
+      'entity-updates' => 'Run automatic entity schema updates at the end of any update hooks.',
+      // @todo How does this only show up for 8+?
+      'core' => array('8+'),
+    ),
     'aliases' => array('updb'),
   );
   $items['twig-compile'] = array(
