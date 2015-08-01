@@ -106,7 +106,7 @@ function config_drush_command() {
         'example-value' => 'branchname',
       ),
       'destination' => 'An arbitrary directory that should receive the exported files. An alternative to label argument',
-      'ignored-modules' => 'A list of modules to ignore during export (e.g. to avoid listing dev-only modules in exported configuration).',
+      'skip-modules' => 'A list of modules to ignore during export (e.g. to avoid listing dev-only modules in exported configuration).',
     ),
   );
 
@@ -122,7 +122,7 @@ function config_drush_command() {
       ),
       'source' => 'An arbitrary directory that holds the configuration files. An alternative to label argument',
       'partial' => 'Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted).',
-      'ignored-modules' => 'A list of modules to ignore during import (e.g. to avoid disabling dev-only modules that are not enabled in the imported configuration).',
+      'skip-modules' => 'A list of modules to ignore during import (e.g. to avoid disabling dev-only modules that are not enabled in the imported configuration).',
     ),
     'core' => array('8+'),
     'aliases' => array('cim'),
@@ -424,7 +424,7 @@ function _drush_config_export($destination, $destination_dir, $branch) {
   // Write all .yml files.
   $source_storage = Drupal::service('config.storage');
   $destination_storage = new FileStorage($destination_dir);
-  // If therea re any filters, then attach them to the destination storage
+  // If there are any filters, then attach them to the destination storage
   if (!empty($storage_filters)) {
     $destination_storage = new StorageWrapper($destination_storage, $storage_filters);
   }
@@ -500,7 +500,7 @@ function drush_config_import_validate() {
 
 function _drush_config_get_storage_filters() {
   $result = array();
-  $module_adjustments = drush_get_option('ignored-modules');
+  $module_adjustments = drush_get_option('skip-modules');
   if (!empty($module_adjustments)) {
     if (is_string($module_adjustments)) {
       $module_adjustments = explode(',', $module_adjustments);
