@@ -371,7 +371,7 @@ function _drush_config_export($destination, $destination_dir, $branch) {
   if (!$comment) {
     $comment = "Exported configuration.";
   }
-  $storage_filters = _drush_config_get_storage_filters();
+  $storage_filters = drush_config_get_storage_filters();
   if (count(glob($destination_dir . '/*')) > 0) {
     // Retrieve a list of differences between the active and target configuration (if any).
     $target_storage = new FileStorage($destination_dir);
@@ -498,7 +498,11 @@ function drush_config_import_validate() {
   }
 }
 
-function _drush_config_get_storage_filters() {
+function drush_config_get_storage_filters() {
+  return drush_command_invoke_all('drush_storage_filters');
+}
+
+function config_drush_storage_filters() {
   $result = array();
   $module_adjustments = drush_get_option('skip-modules');
   if (!empty($module_adjustments)) {
@@ -541,7 +545,7 @@ function drush_config_import($source = NULL) {
   // If our configuration storage is being filtered, then attach all filters
   // to the source storage object.  We will use the filtered values uniformly
   // for comparison, full imports, and partial imports.
-  $storage_filters = _drush_config_get_storage_filters();
+  $storage_filters = drush_config_get_storage_filters();
   if (!empty($storage_filters)) {
     $source_storage = new StorageWrapper($source_storage, $storage_filters);
   }
