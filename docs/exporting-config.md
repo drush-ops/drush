@@ -6,6 +6,11 @@ methods in order to provide different behaviors in different environments;
 for example, a development server might be configured slightly differently
 than the production server.
 
+This document describes how to make simple value changes to configuration
+based on the environment, how to have a different set of enabled modules
+in different configurations without affecting your exported configuration
+values, and how to make more complex changes.
+
 ## Simple Value Changes
 
 It is not necessary to alter the configuration system values to 
@@ -19,6 +24,12 @@ For example, to change the name of a local development site:
 ```
 $config['system.site']['name'] = 'Local Install of Awesome Widgets, Inc.';
 ```
+Note that the configuration override system is a Drupal feature, not
+a Drush feature. It should be the preferred method for changing
+configuration values on a per-environment basis; however, it does not
+work for some things, such as enabling and disabling modules.  For
+configuration changes not handled by the configuration override system,
+you can use Drush configuration filters.
 
 ## Ignoring Development Modules
 
@@ -36,10 +47,15 @@ configuration settings in your drushrc.php file:
 ```
 You may then use `drush pm-enable` to enable the devel module on the
 development machine, and subsequent imports of the configuration data
-will not cause it to be disabled again.
+will not cause it to be disabled again.  Similarly, if you make changes
+to configuration on the development environment and export them, then
+the devel module will not be listed in the exports.
 
 ## More Complex Adjustments
 
 Drush allows more complex changes to the configuration data to be made
-via the configuration filter mechanism.  See [filtering configuration](filtering-config.md)
-for more information.
+via the configuration filter mechanism.  In order to do this, you must
+write some code inside a Drush extension.
+
+See [filtering configuration](filtering-config.md) for more information
+on how to do this.
