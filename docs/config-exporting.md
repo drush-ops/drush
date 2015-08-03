@@ -15,7 +15,7 @@ values, and how to make more complex changes.
 
 It is not necessary to alter the configuration system values to 
 make simple value changes to configuration variables, as this may be
-done by the configuration override system.
+done by the [configuration override system](https://www.drupal.org/node/1928898).
 
 The configuration override system allows you to change configuration
 values for a given instance of a site (e.g. the development server) by
@@ -57,5 +57,5 @@ Drush allows more complex changes to the configuration data to be made
 via the configuration filter mechanism.  In order to do this, you must
 write some code inside a Drush extension.
 
-See [filtering configuration](filtering-config.md) for more information
+See [Drupal Configuration Filtering](config-filter.md) for more information
 on how to do this.

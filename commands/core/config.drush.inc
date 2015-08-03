@@ -108,6 +108,9 @@ function config_drush_command() {
       'destination' => 'An arbitrary directory that should receive the exported files. An alternative to label argument',
       'skip-modules' => 'A list of modules to ignore during export (e.g. to avoid listing dev-only modules in exported configuration).',
     ),
+    'examples' => array(
+      'drush config-export --skip-modules=devel' => 'Export configuration; do not include the devel module in the exported configuration, regardless of whether or not it is enabled in the site.',
+    ),
   );
 
   $items['config-import'] = array(
@@ -125,6 +128,9 @@ function config_drush_command() {
       'skip-modules' => 'A list of modules to ignore during import (e.g. to avoid disabling dev-only modules that are not enabled in the imported configuration).',
     ),
     'core' => array('8+'),
+    'examples' => array(
+      'drush config-import --skip-modules=devel' => 'Import configuration; do not enable or disable the devel module, regardless of whether or not it appears in the imported list of enabled modules.',
+    ),
     'aliases' => array('cim'),
   );
 

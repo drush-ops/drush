@@ -13,12 +13,12 @@ pages:
   - Shell scripts: shellscripts.md
   - Strict options: strict-options.md
   - Bastion: bastion.md
-  - Exporting Drupal configuration: exporting-config.md
+  - Exporting Drupal configuration: config-exporting.md
 - Writing commands:
   - Command Authoring: commands.md
   - Bootstrap: bootstrap.md
   - Context system: context.md
-  - Filtering Drupal configuration: filtering-config.md
+  - Filtering Drupal configuration: config-filter.md
 theme: readthedocs
 site_author: ""
 repo_url: https://github.com/drush-ops/drush

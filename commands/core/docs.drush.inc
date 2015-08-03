@@ -65,21 +65,21 @@ function docs_drush_command() {
     'callback' => 'drush_print_file',
     'callback arguments' => array($docs_dir . '/examples/example.drushrc.php'),
   );
-  $items['docs-filter-config'] = array(
-    'description' => 'Filtering Drupal configuration with custom storage filters.',
+  $items['docs-config-filter'] = array(
+    'description' => 'Drupal Configuration Filtering with custom storage filters.',
     'hidden' => TRUE,
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'callback' => 'drush_print_file',
-    'callback arguments' => array($docs_dir . '/docs/filtering-config.md'),
+    'callback arguments' => array($docs_dir . '/docs/config-filter.md'),
   );
-  $items['docs-exporting-config'] = array(
-    'description' => 'Exporting and importing Drupal configuration.',
+  $items['docs-config-exporting'] = array(
+    'description' => 'Drupal configuration export instructions, including customizing configuration by environment.',
     'hidden' => TRUE,
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'callback' => 'drush_print_file',
-    'callback arguments' => array($docs_dir . '/docs/exporting-config.md'),
+    'callback arguments' => array($docs_dir . '/docs/config-exporting.md'),
   );
   $items['docs-aliases'] = array(
     'description' => 'Site aliases overview on creating your own aliases for commonly used Drupal sites with examples from example.aliases.drushrc.php.',
