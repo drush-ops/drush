@@ -65,14 +65,6 @@ function docs_drush_command() {
     'callback' => 'drush_print_file',
     'callback arguments' => array($docs_dir . '/examples/example.drushrc.php'),
   );
-  $items['docs-config-filter'] = array(
-    'description' => 'Drupal Configuration Filtering with custom storage filters.',
-    'hidden' => TRUE,
-    'topic' => TRUE,
-    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
-    'callback' => 'drush_print_file',
-    'callback arguments' => array($docs_dir . '/docs/config-filter.md'),
-  );
   $items['docs-config-exporting'] = array(
     'description' => 'Drupal configuration export instructions, including customizing configuration by environment.',
     'hidden' => TRUE,

@@ -504,11 +504,15 @@ function drush_config_import_validate() {
   }
 }
 
+/**
+ * Presently, the only configuraiton storage filter that is supported
+ * is the 'CoreExtensionFilter'.  If other use cases arise that are
+ * not supported by Drupal's configuration override system, then we
+ * could add a hook here via drush_command_invoke_all('drush_storage_filters');
+ *
+ * See: https://github.com/drush-ops/drush/pull/1522
+ */
 function drush_config_get_storage_filters() {
-  return drush_command_invoke_all('drush_storage_filters');
-}
-
-function config_drush_storage_filters() {
   $result = array();
   $module_adjustments = drush_get_option('skip-modules');
   if (!empty($module_adjustments)) {
