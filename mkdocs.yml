@@ -3,7 +3,7 @@ pages:
 - Home: index.md
 - General:
   - Install: install.md
-  - Configure: configure.md
+  - Configure Drush: configure.md
   - Usage: usage.md
   - Example files: examples.md
   - Cron: cron.md
@@ -13,6 +13,7 @@ pages:
   - Shell scripts: shellscripts.md
   - Strict options: strict-options.md
   - Bastion: bastion.md
+  - Exporting Drupal configuration: config-exporting.md
 - Writing commands:
   - Command Authoring: commands.md
   - Bootstrap: bootstrap.md

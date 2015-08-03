@@ -8,6 +8,8 @@
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\ConfigImporter;
 use Drupal\Core\Config\FileStorage;
+use Drush\Config\StorageWrapper;
+use Drush\Config\CoreExtensionFilter;
 use Symfony\Component\Yaml\Parser;
 
 /**
@@ -104,6 +106,10 @@ function config_drush_command() {
         'example-value' => 'branchname',
       ),
       'destination' => 'An arbitrary directory that should receive the exported files. An alternative to label argument',
+      'skip-modules' => 'A list of modules to ignore during export (e.g. to avoid listing dev-only modules in exported configuration).',
+    ),
+    'examples' => array(
+      'drush config-export --skip-modules=devel' => 'Export configuration; do not include the devel module in the exported configuration, regardless of whether or not it is enabled in the site.',
     ),
   );
 
@@ -119,8 +125,12 @@ function config_drush_command() {
       ),
       'source' => 'An arbitrary directory that holds the configuration files. An alternative to label argument',
       'partial' => 'Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted).',
+      'skip-modules' => 'A list of modules to ignore during import (e.g. to avoid disabling dev-only modules that are not enabled in the imported configuration).',
     ),
     'core' => array('8+'),
+    'examples' => array(
+      'drush config-import --skip-modules=devel' => 'Import configuration; do not enable or disable the devel module, regardless of whether or not it appears in the imported list of enabled modules.',
+    ),
     'aliases' => array('cim'),
   );
 
@@ -367,12 +377,30 @@ function _drush_config_export($destination, $destination_dir, $branch) {
   if (!$comment) {
     $comment = "Exported configuration.";
   }
+  $storage_filters = drush_config_get_storage_filters();
   if (count(glob($destination_dir . '/*')) > 0) {
     // Retrieve a list of differences between the active and target configuration (if any).
     $target_storage = new FileStorage($destination_dir);
     /** @var \Drupal\Core\Config\StorageInterface $active_storage */
     $active_storage = Drupal::service('config.storage');
-    $config_comparer = new StorageComparer($active_storage, $target_storage, Drupal::service('config.manager'));
+    $comparison_source = $active_storage;
+
+    // If the output is being filtered, then write a temporary copy before doing
+    // any comparison.
+    if (!empty($storage_filters)) {
+      $tmpdir = drush_tempdir();
+      drush_copy_dir($destination_dir, $tmpdir, FILE_EXISTS_OVERWRITE);
+      $comparison_source = new FileStorage($tmpdir);
+      $comparison_source_filtered = new StorageWrapper($comparison_source, $storage_filters);
+      foreach ($active_storage->listAll() as $name) {
+        // Copy active storage to our temporary active store.
+        if ($existing = $active_storage->read($name)) {
+          $comparison_source_filtered->write($name, $existing);
+        }
+      }
+    }
+
+    $config_comparer = new StorageComparer($comparison_source, $target_storage, Drupal::service('config.manager'));
     if (!$config_comparer->createChangelist()->hasChanges()) {
       return drush_log(dt('There are no changes to export.'), 'ok');
     }
@@ -402,6 +430,10 @@ function _drush_config_export($destination, $destination_dir, $branch) {
   // Write all .yml files.
   $source_storage = Drupal::service('config.storage');
   $destination_storage = new FileStorage($destination_dir);
+  // If there are any filters, then attach them to the destination storage
+  if (!empty($storage_filters)) {
+    $destination_storage = new StorageWrapper($destination_storage, $storage_filters);
+  }
   foreach ($source_storage->listAll() as $name) {
     $destination_storage->write($name, $source_storage->read($name));
   }
@@ -473,6 +505,26 @@ function drush_config_import_validate() {
 }
 
 /**
+ * Presently, the only configuraiton storage filter that is supported
+ * is the 'CoreExtensionFilter'.  If other use cases arise that are
+ * not supported by Drupal's configuration override system, then we
+ * could add a hook here via drush_command_invoke_all('drush_storage_filters');
+ *
+ * See: https://github.com/drush-ops/drush/pull/1522
+ */
+function drush_config_get_storage_filters() {
+  $result = array();
+  $module_adjustments = drush_get_option('skip-modules');
+  if (!empty($module_adjustments)) {
+    if (is_string($module_adjustments)) {
+      $module_adjustments = explode(',', $module_adjustments);
+    }
+    $result[] = new CoreExtensionFilter($module_adjustments);
+  }
+  return $result;
+}
+
+/**
  * Command callback. Import from specified config directory (defaults to staging).
  */
 function drush_config_import($source = NULL) {
@@ -500,6 +552,13 @@ function drush_config_import($source = NULL) {
   $source_storage = new FileStorage($source_dir);
   /** @var \Drupal\Core\Config\StorageInterface $active_storage */
   $active_storage = Drupal::service('config.storage');
+  // If our configuration storage is being filtered, then attach all filters
+  // to the source storage object.  We will use the filtered values uniformly
+  // for comparison, full imports, and partial imports.
+  $storage_filters = drush_config_get_storage_filters();
+  if (!empty($storage_filters)) {
+    $source_storage = new StorageWrapper($source_storage, $storage_filters);
+  }
   if (drush_get_option('partial', FALSE)) {
     // With partial imports, the comparison must only be made against configs
     // that exist in the source directory.
