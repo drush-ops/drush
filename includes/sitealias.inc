@@ -414,7 +414,7 @@ function drush_sitealias_alias_path($alias_path_context = NULL) {
     }
     $site_dir = drush_sitealias_uri_to_site_dir($uri, $drupal_root);
     if ($site_dir) {
-      $site_paths[] = drush_sitealias_alias_base_directory("$drupal_root/sites/$site_dir");
+      $site_paths[] = drush_sitealias_alias_base_directory("$drupal_root/sites/$site_dir/drush");
     }
   }
   $alias_path = (array) drush_get_context('ALIAS_PATH', array());
@@ -842,7 +842,7 @@ function _drush_sitealias_cache_alias($alias_name, $alias_record) {
     drush_sitealias_add_to_alias_path($alias_record['root'] . '/sites/all/drush');
     $site_dir = drush_sitealias_local_site_path($alias_record);
     if (isset($site_dir)) {
-      drush_sitealias_add_to_alias_path($site_dir);
+      drush_sitealias_add_to_alias_path($site_dir . '/drush');
     }
   }
 }
