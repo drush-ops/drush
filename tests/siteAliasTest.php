@@ -19,7 +19,7 @@ class saCase extends CommandUnishTestCase {
    */
   function testDispatchStrictOptions() {
     $aliasPath = UNISH_SANDBOX . '/site-alias-directory';
-    mkdir($aliasPath);
+    file_exists($aliasPath) ?: mkdir($aliasPath);
     $aliasFile = $aliasPath . '/bar.aliases.drushrc.php';
     $aliasContents = <<<EOD
   <?php
@@ -121,9 +121,9 @@ EOD;
    */
   public function testDeepAliasSearching() {
     $aliasPath = UNISH_SANDBOX . '/site-alias-directory';
-    mkdir($aliasPath);
+    file_exists($aliasPath) ?: mkdir($aliasPath);
     $deepPath = $aliasPath . '/deep';
-    mkdir($deepPath);
+    file_exists($deepPath) ?: mkdir($deepPath);
     $aliasFile = $deepPath . '/baz.aliases.drushrc.php';
     $aliasContents = <<<EOD
   <?php
@@ -147,5 +147,33 @@ EOD;
     );
 
     $this->drush('sa', array('@deep'), $options);
+
+    // Verify that the files directory is not recursed into.
+    $filesPath = $aliasPath . '/files';
+    file_exists($filesPath) ?: mkdir($filesPath);
+    $aliasFile = $filesPath . '/biz.aliases.drushrc.php';
+    $aliasContents = <<<EOD
+    <?php
+    // Written by unish. This file is safe to delete.
+    \$aliases['nope'] = array(
+    'remote-host' => 'fake.remote-host.com',
+    'remote-user' => 'www-admin',
+    'root' => '/fake/path/to/root',
+    'uri' => 'default',
+    'command-specific' => array(
+      'rsync' => array(
+        'delete' => TRUE,
+      ),
+    ),
+  );
+EOD;
+    file_put_contents($aliasFile, $aliasContents);
+    $options = array(
+      'alias-path' => $aliasPath,
+      'simulate' => TRUE,
+    );
+
+    // This should not find the '@nope' alias.
+    $this->drush('sa', array('@nope'), $options, NULL, NULL, self::EXIT_ERROR);
   }
 }
