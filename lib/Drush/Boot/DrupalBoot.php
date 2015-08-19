@@ -341,7 +341,7 @@ abstract class DrupalBoot extends BaseBoot {
       }
       // Fill in defaults.
       $drupal_base_url += array(
-        'path' => NULL,
+        'path' => '',
         'host' => NULL,
         'port' => NULL,
       );
@@ -356,20 +356,15 @@ abstract class DrupalBoot extends BaseBoot {
       }
       $_SERVER['SERVER_PORT'] = $drupal_base_url['port'];
 
-      if (array_key_exists('path', $drupal_base_url)) {
-        $_SERVER['PHP_SELF'] = $drupal_base_url['path'] . '/index.php';
-      }
-      else {
-        $_SERVER['PHP_SELF'] = '/index.php';
-      }
+      $_SERVER['REQUEST_URI'] = $drupal_base_url['path'] . '/';
     }
     else {
       $_SERVER['HTTP_HOST'] = 'default';
-      $_SERVER['PHP_SELF'] = '/index.php';
+      $_SERVER['REQUEST_URI'] = '/';
     }
 
+    $_SERVER['PHP_SELF'] = $_SERVER['REQUEST_URI'] . 'index.php';
     $_SERVER['SCRIPT_NAME'] = $_SERVER['PHP_SELF'];
-    $_SERVER['REQUEST_URI'] = '/';
     $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
     $_SERVER['REQUEST_METHOD']  = NULL;
 
