@@ -625,11 +625,15 @@ function _drush_sitealias_find_alias_files($aliasname = NULL, $alias_path_contex
     $alias_files[] = '/' . preg_quote($aliasname, '/') . '\.alias\.drush(' . DRUSH_MAJOR_VERSION . '|)rc\.php$/';
   }
 
-  // Search each path in turn
+  // Do not scan into the files directory.
+  $blacklist = array_merge(array('files'), drush_filename_blacklist());
+
+  // Search each path in turn.
   foreach ($alias_path as $path) {
     // Find all of the matching files in this location
     foreach ($alias_files as $file_pattern_to_search_for) {
-      $alias_files_to_consider = array_merge($alias_files_to_consider, array_keys(drush_scan_directory($path, $file_pattern_to_search_for, drush_filename_blacklist(), 0, TRUE)));
+      drush_log(dt('Scanning into @path for @pattern', array('@path' => $path, '@pattern' => $file_pattern_to_search_for)), 'sitealias');
+      $alias_files_to_consider = array_merge($alias_files_to_consider, array_keys(drush_scan_directory($path, $file_pattern_to_search_for, $blacklist, 0, TRUE)));
     }
   }
 
