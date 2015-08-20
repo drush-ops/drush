@@ -126,6 +126,12 @@ function core_drush_command() {
     ),
     'aliases' => array('updb'),
   );
+  $items['entity-updates'] = array(
+    'description' => 'Apply pending entity schema updates.',
+    'aliases' => array('entup'),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+    'core' => array('8+'),
+  );
   $items['twig-compile'] = array(
     'description' => 'Compile all Twig template(s).',
     'aliases' => array('twigc'),
@@ -461,6 +467,24 @@ function core_drush_engine_drupal() {
 /**
  * @} End of "Engine types".
  */
+
+/**
+ * Command handler. Apply pending entity schema updates.
+ */
+function drush_core_entity_updates() {
+  if (drush_get_context('DRUSH_SIMULATE')) {
+    drush_log(dt('entity-updates command does not support --simpulate option.'), 'ok');
+  }
+
+  drush_include_engine('drupal', 'update');
+  if (entity_updates_main() === FALSE) {
+    return FALSE;
+  }
+
+  drush_drupal_cache_clear_all();
+
+  drush_log(dt('Finished performing updates.'), 'ok');
+}
 
 /**
  * Command handler. Execute update.php code from drush.
