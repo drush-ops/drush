@@ -44,6 +44,18 @@ function core_drush_help($section) {
 }
 
 /**
+ * Implements hook_drush_help_alter().
+ */
+function core_drush_help_alter(&$command) {
+  // Drupal 8+ only options.
+  if (drush_drupal_major_version() < 8) {
+    if ($command['commandfile'] == 'core' && $command['command'] == 'updatedb') {
+      unset($command['options']['entity-updates']);
+    }
+  }
+}
+
+/**
  * Implementation of hook_drush_command().
  *
  * In this hook, you specify which commands your
@@ -111,8 +123,6 @@ function core_drush_command() {
     ),
     'options' => array(
       'entity-updates' => 'Run automatic entity schema updates at the end of any update hooks.',
-      // @todo How does this only show up for 8+?
-      'core' => array('8+'),
     ),
     'aliases' => array('updb'),
   );
