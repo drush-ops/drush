@@ -257,7 +257,10 @@ class SqlBase {
       $this->drop($this->listTables());
     }
     else {
+      $original_spec = $this->db_spec;
       $this->createdb();
+      // Restore the original spec as create db and su() can modify the spec.
+      $this->db_spec = $original_spec;
     }
   }
 
