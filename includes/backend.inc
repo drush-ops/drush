@@ -1022,7 +1022,8 @@ function _drush_backend_invoke($cmds, $common_backend_options = array(), $contex
     $ret = array();
     foreach ($procs as $site => $proc) {
       if (($proc['code'] == DRUSH_APPLICATION_ERROR) && isset($common_backend_options['integrate'])) {
-        drush_set_error('DRUSH_APPLICATION_ERROR', dt("The external command could not be executed due to an application error."));
+        drush_set_error('DRUSH_APPLICATION_ERROR', dt("The external command could not be executed due to an application error. Try running the command again with the --debug option."));
+        drush_log(dt('The raw command and output is !proc', array('!proc' => var_export($proc, TRUE))), 'debug');
       }
 
       if ($proc['output']) {
