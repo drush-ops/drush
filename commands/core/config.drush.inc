@@ -7,6 +7,7 @@
 
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\ConfigImporter;
+use Drupal\Core\Config\ConfigException;
 use Drupal\Core\Config\FileStorage;
 use Drush\Config\StorageWrapper;
 use Drush\Config\CoreExtensionFilter;
