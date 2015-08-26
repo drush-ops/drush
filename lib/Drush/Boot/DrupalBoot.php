@@ -479,7 +479,7 @@ abstract class DrupalBoot extends BaseBoot {
     try {
       $sql = drush_sql_get_class();
       $spec = $sql->db_spec();
-      $prefix = $spec['prefix'];
+      $prefix = isset($spec['prefix']) ? $spec['prefix'] : NULL;
       if (!is_array($prefix)) {
         $prefix = array('default' => $prefix);
       }
