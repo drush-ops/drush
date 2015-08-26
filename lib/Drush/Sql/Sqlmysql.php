@@ -32,8 +32,12 @@ EOT;
 
     // Some drush commands (e.g. site-install) want to connect to the
     // server, but not the database.  Connect to the built-in database.
-    if (!empty($this->db_spec['database'])) {
-      $parameters['database'] = $this->db_spec['database'];
+    $parameters['database'] = empty($this->db_spec['database']) ? 'information_schema' : $this->db_spec['database'];
+
+    // If we are creating a new database we don't want to include the database
+    // parameter.
+    if ($this->db_spec['new-database']) {
+      unset($parameters['database']);
     }
 
     // Default to unix socket if configured.
