@@ -630,8 +630,11 @@ function _drush_config_import(StorageComparer $storage_comparer) {
       // concurrent synchronizations are an edge-case happening only when
       // multiple developers or site builders attempt to do it without
       // coordinating.
-      watchdog_exception('config_import', $e);
-      return drush_set_error('config_import_fail', 'The import failed due to an error. Any errors have been logged.');
+      $message = $e->getMessage() . "\n";
+      $message .= implode("\n", $config_importer->getErrors());
+
+      watchdog_exception('config_import', $e, $message);
+      return drush_set_error('config_import_fail', 'The import failed due to an error. Any errors have been logged. Use `drush ws` for getting more information.');
     }
   }
 }
