@@ -239,14 +239,18 @@ class SqlBase {
    *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
    */
   public function createdb($quoted = FALSE) {
-    $original_spec = $this->db_spec['database'];
+    $original_spec = $this->db_spec;
     $dbname = $this->db_spec['database'];
     $sql = $this->createdb_sql($dbname);
 
     // Adjust connection to allow for superuser creds if provided.
     $this->su();
 
-    // Perform the query.
+    // Set the new-database option to prevent including the database on the
+    // sql connection parameters.
+    $this->db_spec['new-database'] = TRUE;
+
+    // Create the query.
     $result = $this->query($sql);
 
     // the su() command can change the database name to an empty string which
@@ -370,10 +374,6 @@ class SqlBase {
     $create_db_target = $this->db_spec;
 
     $create_db_target['database'] = '';
-    // Set the new-database option to prevent including the database on the
-    // sql connection parameters.
-    $create_db_target['new-database'] = TRUE;
-
     $db_superuser = drush_get_option('db-su');
     if (isset($db_superuser)) {
       $create_db_target['username'] = $db_superuser;

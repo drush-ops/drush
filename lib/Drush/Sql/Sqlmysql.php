@@ -35,8 +35,8 @@ EOT;
     $parameters['database'] = empty($this->db_spec['database']) ? 'information_schema' : $this->db_spec['database'];
 
     // If we are creating a new database we don't want to include the database
-    // parameter.
-    if ($this->db_spec['new-database']) {
+    // parameter for the mysql statement.
+    if (isset($this->db_spec['new-database']) && $this->db_spec['new-database']) {
       unset($parameters['database']);
     }
 
