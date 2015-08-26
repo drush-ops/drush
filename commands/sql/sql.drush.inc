@@ -544,7 +544,7 @@ function _drush_sql_get_post_sync_messages() {
 
   $options = drush_get_context('post-sync-ops');
   if (!empty($options)) {
-    $messages = dt('The following post-sync operations will be done on the destination:') . "\n";
+    $messages = dt('The following operations will be done on the target database:') . "\n";
 
     foreach($options as $id => $data) {
       $messages .= "  * " . $data['message'] . "\n";
