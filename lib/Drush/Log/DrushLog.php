@@ -1,14 +1,40 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drush\Log\DrushLog.
+ */
+
 namespace Drush\Log;
 
+use Drupal\Core\Logger\LogMessageParserInterface;
 use Drupal\Core\Logger\RfcLoggerTrait;
 use Drupal\Core\Logger\RfcLogLevel;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Redirects Drupal logging messages to Drush log.
+ */
 class DrushLog implements LoggerInterface {
 
   use RfcLoggerTrait;
+
+  /**
+   * The message's placeholders parser.
+   *
+   * @var \Drupal\Core\Logger\LogMessageParserInterface
+   */
+  protected $parser;
+
+  /**
+   * Constructs a DrushLog object.
+   *
+   * @param \Drupal\Core\Logger\LogMessageParserInterface $parser
+   *   The parser to use when extracting message variables.
+   */
+  public function __construct(LogMessageParserInterface $parser) {
+    $this->parser = $parser;
+  }
 
   /**
    * {@inheritdoc}
@@ -41,6 +67,10 @@ class DrushLog implements LoggerInterface {
         $error_type = $level;
         break;
     }
+
+    // Populate the message placeholders and then replace them in the message.
+    $message_placeholders = $this->parser->parseMessagePlaceholders($message, $context);
+    $message = empty($message_placeholders) ? $message : strtr($message, $message_placeholders);
     drush_log($message, $error_type);
   }
 
