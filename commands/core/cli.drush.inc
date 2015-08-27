@@ -21,7 +21,7 @@ function drush_cli_core_cli() {
 
   if (drush_drupal_major_version() >= 8) {
     // Register the assertion handler so exceptions are thrown instead of errors
-    // being triggered. The plays nicer with PsySH.
+    // being triggered. This plays nicer with PsySH.
     \Drupal\Component\Assertion\Handle::register();
     $shell->setScopeVariables(['container' => \Drupal::getContainer()]);
   }
