@@ -301,7 +301,7 @@ function make_validate_info_file($info) {
             }
             // Prevent malicious attempts to access other areas of the
             // filesystem.
-            elseif (in_array($attribute, array('contrib-destination', 'directory_name')) && !make_safe_path($value)) {
+            elseif (in_array($attribute, array('contrib_destination', 'directory_name')) && !make_safe_path($value)) {
               $args = array(
                 '!path' => $value,
                 '!attribute' => $attribute,
