@@ -115,7 +115,7 @@ function update_main() {
 
   $change_summary = [];
   if (drush_get_option('entity-updates', FALSE)) {
-    $change_summary = \Drupal::service('entity.definition_update_manager')->getChangeSummary();
+    $change_summary = \Drupal::entityDefinitionUpdateManager()->getChangeSummary();
   }
 
   // Print a list of pending updates for this module and get confirmation.
@@ -202,7 +202,7 @@ function drush_update_batch() {
   // update themselves.
   // @see \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface::applyEntityUpdate()
   // @see \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface::applyFieldUpdate()
-  if (drush_get_option('entity-updates', FALSE) &&  \Drupal::service('entity.definition_update_manager')->needsUpdates()) {
+  if (drush_get_option('entity-updates', FALSE) &&  \Drupal::entityDefinitionUpdateManager()->needsUpdates()) {
     $operations[] = array('drush_update_entity_definitions', array());
   }
 
@@ -225,7 +225,7 @@ function drush_update_batch() {
  */
 function drush_update_entity_definitions(&$context) {
   try {
-    \Drupal::service('entity.definition_update_manager')->applyUpdates();
+    \Drupal::entityDefinitionUpdateManager()->applyUpdates();
   }
   catch (EntityStorageException $e) {
     watchdog_exception('update', $e);
@@ -299,7 +299,7 @@ function updatedb_status() {
   // Ensure system module's updates run first.
   $start['system'] = array();
 
-  foreach (\Drupal::service('entity.definition_update_manager')->getChangeSummary() as $entity_type_id => $changes) {
+  foreach (\Drupal::entityDefinitionUpdateManager()->getChangeSummary() as $entity_type_id => $changes) {
     foreach ($changes as $change) {
       $return[] = array(
         'module' => dt('@type entity type', array('@type' => $entity_type_id)), 'update_id' => '', 'description' => strip_tags($change));
@@ -327,7 +327,7 @@ function updatedb_status() {
  * Apply pending entity schema updates.
  */
 function entity_updates_main() {
-  $change_summary = \Drupal::service('entity.definition_update_manager')->getChangeSummary();
+  $change_summary = \Drupal::entityDefinitionUpdateManager()->getChangeSummary();
   if (!empty($change_summary)) {
     drush_print(dt('The following updates are pending:'));
     drush_print();
