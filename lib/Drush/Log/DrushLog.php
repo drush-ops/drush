@@ -2,13 +2,13 @@
 
 namespace Drush\Log;
 
+use Drupal\Core\Logger\RfcLoggerTrait;
+use Drupal\Core\Logger\RfcLogLevel;
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
-use Psr\Log\LoggerTrait;
 
 class DrushLog implements LoggerInterface {
 
-  use LoggerTrait;
+  use RfcLoggerTrait;
 
   /**
    * {@inheritdoc}
@@ -20,20 +20,20 @@ class DrushLog implements LoggerInterface {
     // and they should cause Drush to exit or panic. Not sure how to handle this,
     // though.
     switch ($level) {
-      case LogLevel::ALERT:
-      case LogLevel::CRITICAL:
-      case LogLevel::EMERGENCY:
-      case LogLevel::ERROR:
+      case RfcLogLevel::ALERT:
+      case RfcLogLevel::CRITICAL:
+      case RfcLogLevel::EMERGENCY:
+      case RfcLogLevel::ERROR:
         $error_type = 'error';
         break;
 
-      case LogLevel::WARNING:
+      case RfcLogLevel::WARNING:
         $error_type = 'warning';
         break;
 
-      case LogLevel::DEBUG:
-      case LogLevel::INFO:
-      case LogLevel::NOTICE:
+      case RfcLogLevel::DEBUG:
+      case RfcLogLevel::INFO:
+      case RfcLogLevel::NOTICE:
         $error_type = 'notice';
         break;
 
