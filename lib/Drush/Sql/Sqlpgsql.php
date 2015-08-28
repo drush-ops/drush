@@ -86,8 +86,6 @@ class Sqlpgsql extends SqlBase {
     $return = $this->query(PSQL_SHOW_TABLES);
     $tables = drush_shell_exec_output();
     if (!empty($tables)) {
-      // Shift off the header of the column of data returned.
-      array_shift($tables);
       return $tables;
     }
     return array();
