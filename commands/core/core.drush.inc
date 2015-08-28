@@ -44,6 +44,18 @@ function core_drush_help($section) {
 }
 
 /**
+ * Implements hook_drush_help_alter().
+ */
+function core_drush_help_alter(&$command) {
+  // Drupal 8+ only options.
+  if (drush_drupal_major_version() < 8) {
+    if ($command['commandfile'] == 'core' && $command['command'] == 'updatedb') {
+      unset($command['options']['entity-updates']);
+    }
+  }
+}
+
+/**
  * Implementation of hook_drush_command().
  *
  * In this hook, you specify which commands your
@@ -109,7 +121,16 @@ function core_drush_command() {
     'global-options' => array(
       'cache-clear',
     ),
+    'options' => array(
+      'entity-updates' => 'Run automatic entity schema updates at the end of any update hooks.',
+    ),
     'aliases' => array('updb'),
+  );
+  $items['entity-updates'] = array(
+    'description' => 'Apply pending entity schema updates.',
+    'aliases' => array('entup'),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+    'core' => array('8+'),
   );
   $items['twig-compile'] = array(
     'description' => 'Compile all Twig template(s).',
@@ -446,6 +467,24 @@ function core_drush_engine_drupal() {
 /**
  * @} End of "Engine types".
  */
+
+/**
+ * Command handler. Apply pending entity schema updates.
+ */
+function drush_core_entity_updates() {
+  if (drush_get_context('DRUSH_SIMULATE')) {
+    drush_log(dt('entity-updates command does not support --simpulate option.'), 'ok');
+  }
+
+  drush_include_engine('drupal', 'update');
+  if (entity_updates_main() === FALSE) {
+    return FALSE;
+  }
+
+  drush_drupal_cache_clear_all();
+
+  drush_log(dt('Finished performing updates.'), 'ok');
+}
 
 /**
  * Command handler. Execute update.php code from drush.
