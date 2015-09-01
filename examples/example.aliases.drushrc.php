@@ -81,7 +81,7 @@
  * like a drushrc.php configuration file:
  *
  * @code
- * $options['uri'] = 'dev.mydrupalsite.com',
+ * $options['uri'] = 'dev.mydrupalsite.com';
  * $options['root'] = '/path/to/drupal';
  * @endcode
  *
