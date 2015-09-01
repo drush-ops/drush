@@ -73,6 +73,6 @@ class siteInstallD6Case extends CommandUnishTestCase {
     );
 
     $this->drush('variable-get', array($name), $options);
-    $this->assertEquals("$name: '$value'", $this->getOutput());
+    $this->assertEquals("$name: $value", $this->getOutput());
   }
 }

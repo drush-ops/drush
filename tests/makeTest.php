@@ -133,7 +133,7 @@ class makeMakefileCase extends CommandUnishTestCase {
         'name'     => 'gzip',
         'makefile' => 'gzip.make',
         'build'    => TRUE,
-        'md5'      => '615975484966c36f4c9186601afd61e0',
+        'md5'      => '526332db5456847c316cad7dc6d496f8',
         'options'  => array('no-core' => NULL),
       ),
       'ignore-checksums' => array(
@@ -222,7 +222,7 @@ class makeMakefileCase extends CommandUnishTestCase {
         'name'     => 'Test patching and writing of PATCHES.txt file',
         'makefile' => 'patches.make',
         'build'    => TRUE,
-        'md5' => 'edf94818907bff754b24ac5c34506028',
+        'md5' => '536ee287344c24f47e0808622d7d091b',
         'options'  => array('no-core' => NULL),
       ),
       'recursion' => array(

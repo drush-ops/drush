@@ -98,17 +98,19 @@ function _make_parse_info_file($makefile) {
  * Expand shorthand elements, so that we have an associative array.
  */
 function make_normalize_info(&$info) {
-  foreach($info['projects'] as $key => $project) {
-    if (is_numeric($key) && is_string($project)) {
-      unset($info['projects'][$key]);
-      $info['projects'][$project] = array(
-        'version' => '',
-      );
-    }
-    if (is_string($key) && is_numeric($project)) {
-      $info['projects'][$key] = array(
-        'version' => $project,
-      );
+  if (isset($info['projects'])) {
+    foreach($info['projects'] as $key => $project) {
+      if (is_numeric($key) && is_string($project)) {
+        unset($info['projects'][$key]);
+        $info['projects'][$project] = array(
+          'version' => '',
+        );
+      }
+      if (is_string($key) && is_numeric($project)) {
+        $info['projects'][$key] = array(
+          'version' => $project,
+        );
+      }
     }
   }
 }
@@ -299,7 +301,7 @@ function make_validate_info_file($info) {
             }
             // Prevent malicious attempts to access other areas of the
             // filesystem.
-            elseif (in_array($attribute, array('contrib-destination', 'directory_name')) && !make_safe_path($value)) {
+            elseif (in_array($attribute, array('contrib_destination', 'directory_name')) && !make_safe_path($value)) {
               $args = array(
                 '!path' => $value,
                 '!attribute' => $attribute,
@@ -309,6 +311,17 @@ function make_validate_info_file($info) {
               $errors = TRUE;
             }
           }
+        }
+      }
+    }
+  }
+
+  // Convert shorthand project/library download style to array format.
+  foreach (array('projects', 'libraries') as $type) {
+    if (isset($info[$type]) && is_array($info[$type])) {
+      foreach ($info[$type] as $name => $item) {
+        if (!empty($item['download']) && is_string($item['download'])) {
+          $info[$type][$name]['download'] = array('url' => $item['download']);
         }
       }
     }

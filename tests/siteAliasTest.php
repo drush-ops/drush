@@ -18,12 +18,12 @@ class saCase extends CommandUnishTestCase {
    *     places said option AFTER the command name.
    */
   function testDispatchStrictOptions() {
-    $aliasPath = UNISH_SANDBOX . '/aliases';
-    mkdir($aliasPath);
+    $aliasPath = UNISH_SANDBOX . '/site-alias-directory';
+    file_exists($aliasPath) ?: mkdir($aliasPath);
     $aliasFile = $aliasPath . '/bar.aliases.drushrc.php';
     $aliasContents = <<<EOD
   <?php
-  // Writtne by Unish. This file is safe to delete.
+  // Written by Unish. This file is safe to delete.
   \$aliases['test'] = array(
     'remote-host' => 'fake.remote-host.com',
     'remote-user' => 'www-admin',
@@ -113,5 +113,67 @@ EOD;
    */
   public function testBadAlias() {
     $this->drush('sa', array('@badalias'), array(), NULL, NULL, self::EXIT_ERROR);
+  }
+
+  /**
+   * Ensure that Drush searches deep inside specified search locations
+   * for alias files.
+   */
+  public function testDeepAliasSearching() {
+    $aliasPath = UNISH_SANDBOX . '/site-alias-directory';
+    file_exists($aliasPath) ?: mkdir($aliasPath);
+    $deepPath = $aliasPath . '/deep';
+    file_exists($deepPath) ?: mkdir($deepPath);
+    $aliasFile = $deepPath . '/baz.aliases.drushrc.php';
+    $aliasContents = <<<EOD
+  <?php
+  // Written by Unish. This file is safe to delete.
+  \$aliases['deep'] = array(
+    'remote-host' => 'fake.remote-host.com',
+    'remote-user' => 'www-admin',
+    'root' => '/fake/path/to/root',
+    'uri' => 'default',
+    'command-specific' => array(
+      'rsync' => array(
+        'delete' => TRUE,
+      ),
+    ),
+  );
+EOD;
+    file_put_contents($aliasFile, $aliasContents);
+    $options = array(
+      'alias-path' => $aliasPath,
+      'simulate' => TRUE,
+    );
+
+    $this->drush('sa', array('@deep'), $options);
+
+    // Verify that the files directory is not recursed into.
+    $filesPath = $aliasPath . '/files';
+    file_exists($filesPath) ?: mkdir($filesPath);
+    $aliasFile = $filesPath . '/biz.aliases.drushrc.php';
+    $aliasContents = <<<EOD
+    <?php
+    // Written by unish. This file is safe to delete.
+    \$aliases['nope'] = array(
+    'remote-host' => 'fake.remote-host.com',
+    'remote-user' => 'www-admin',
+    'root' => '/fake/path/to/root',
+    'uri' => 'default',
+    'command-specific' => array(
+      'rsync' => array(
+        'delete' => TRUE,
+      ),
+    ),
+  );
+EOD;
+    file_put_contents($aliasFile, $aliasContents);
+    $options = array(
+      'alias-path' => $aliasPath,
+      'simulate' => TRUE,
+    );
+
+    // This should not find the '@nope' alias.
+    $this->drush('sa', array('@nope'), $options, NULL, NULL, self::EXIT_ERROR);
   }
 }

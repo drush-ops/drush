@@ -21,7 +21,7 @@ class cacheCommandCase extends CommandUnishTestCase {
     $inputs = array(
       6 => array('variables', NULL),
       7 => array('schema', NULL),
-      8 => array('system.filter', 'config'),
+      8 => array('system.date', 'config'),
     );
     list($key, $bin) = $inputs[UNISH_DRUPAL_MAJOR_VERSION];
     $this->drush('cache-get', array($key, $bin), $options + array('format' => 'json'));

@@ -44,6 +44,18 @@ function core_drush_help($section) {
 }
 
 /**
+ * Implements hook_drush_help_alter().
+ */
+function core_drush_help_alter(&$command) {
+  // Drupal 8+ only options.
+  if (drush_drupal_major_version() < 8) {
+    if ($command['commandfile'] == 'core' && $command['command'] == 'updatedb') {
+      unset($command['options']['entity-updates']);
+    }
+  }
+}
+
+/**
  * Implementation of hook_drush_command().
  *
  * In this hook, you specify which commands your
@@ -109,7 +121,21 @@ function core_drush_command() {
     'global-options' => array(
       'cache-clear',
     ),
+    'options' => array(
+      'entity-updates' => 'Run automatic entity schema updates at the end of any update hooks.',
+    ),
     'aliases' => array('updb'),
+  );
+  $items['entity-updates'] = array(
+    'description' => 'Apply pending entity schema updates.',
+    'aliases' => array('entup'),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+    'core' => array('8+'),
+  );
+  $items['twig-compile'] = array(
+    'description' => 'Compile all Twig template(s).',
+    'aliases' => array('twigc'),
+    'core' => array('8+'),
   );
   $items['updatedb-status'] = array(
     'description' => 'List any pending database updates.',
@@ -306,7 +332,7 @@ function core_drush_command() {
     ),
     'options' => array(
       'component' => "The portion of the evaluated path to return.  Defaults to 'path'; 'name' returns the site alias of the target.",
-      'local' => "Reject any target that specifies a remote site.",
+      'local-only' => "Reject any target that specifies a remote site.",
     ),
     'examples' => array(
       'cd `drush dd devel`' => 'Navigate into the devel module directory',
@@ -355,7 +381,7 @@ function core_drush_command() {
   $items['core-quick-drupal'] = array(
     'description' => 'Download, install, serve and login to Drupal with minimal configuration and dependencies.',
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
-    'aliases' => array('qd'),
+    'aliases' => array('qd', 'cutie'),
     'arguments' => array(
       'site' => 'Short name for the site to be created - used as a directory name and as sqlite file name. Optional - if omitted timestamped "quick-drupal" directory will be used instead.',
       'projects' => 'A list of projects to download into the new site. If projects contain extensions (modules or themes) with the same name they will be enabled by default. See --enable option to control this behaviour further.',
@@ -441,6 +467,24 @@ function core_drush_engine_drupal() {
 /**
  * @} End of "Engine types".
  */
+
+/**
+ * Command handler. Apply pending entity schema updates.
+ */
+function drush_core_entity_updates() {
+  if (drush_get_context('DRUSH_SIMULATE')) {
+    drush_log(dt('entity-updates command does not support --simpulate option.'), 'ok');
+  }
+
+  drush_include_engine('drupal', 'update');
+  if (entity_updates_main() === FALSE) {
+    return FALSE;
+  }
+
+  drush_drupal_cache_clear_all();
+
+  drush_log(dt('Finished performing updates.'), 'ok');
+}
 
 /**
  * Command handler. Execute update.php code from drush.
@@ -722,7 +766,11 @@ function drush_core_config_load($headers = TRUE) {
     }
   }
   if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
-    $drupal = array_merge(array(realpath($site_root . '/settings.php'), realpath(DRUPAL_ROOT . '/.htaccess')));
+    $drupal[] = realpath($site_root . '/settings.php');
+    if (file_exists($site_root . '/settings.local.php')) {
+      $drupal[] = realpath($site_root . '/settings.local.php');
+    }
+    $drupal[] = realpath(DRUPAL_ROOT . '/.htaccess');
     if ($headers) {
       $drupal_header = array('drupal' => '-- Drupal --');
     }
@@ -1225,7 +1273,7 @@ function _drush_core_directory($target = 'root', $component = 'path', $local_onl
  * Command callback.
  */
 function drush_core_drupal_directory($target = 'root') {
-  $path = _drush_core_directory($target, drush_get_option('component', 'path'), drush_get_option('local', FALSE));
+  $path = _drush_core_directory($target, drush_get_option('component', 'path'), drush_get_option('local-only', FALSE));
 
   // If _drush_core_directory is working right, it will turn
   // %blah into the path to the item referred to by the key 'blah'.
@@ -1300,6 +1348,24 @@ function drush_core_execute() {
     return drush_set_error('CORE_EXECUTE_FAILED', dt("Command !command failed.", array('!command' => $cmd)));
   }
   return $result;
+}
+
+function drush_core_twig_compile() {
+  require_once DRUSH_DRUPAL_CORE . "/themes/engines/twig/twig.engine";
+  // Scan all enabled modules and themes.
+  // @todo Refactor to not reuse commandfile paths directly.
+  $boot = drush_get_bootstrap_object();
+  $searchpaths = $boot->commandfile_searchpaths(DRUSH_BOOTSTRAP_DRUPAL_FULL);
+  $searchpaths[] = drupal_get_path('theme', drush_theme_get_default());;
+  $searchpaths[] = drupal_get_path('theme', drush_theme_get_admin());
+  foreach ($searchpaths as $searchpath) {
+    foreach ($file = drush_scan_directory($searchpath, '/\.html.twig/', array('tests')) as $file) {
+      $relative = str_replace(drush_get_context('DRUSH_DRUPAL_ROOT'). '/', '', $file->filename);
+      // @todo Dynamically disable twig debugging since there is no good info there anyway.
+      twig_render_template($relative, array('theme_hook_original' => ''));
+      drush_log(dt('Compiled twig template !path', array('!path' => $relative)), 'notice');
+    }
+  }
 }
 
 /**

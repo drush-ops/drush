@@ -47,7 +47,6 @@ function _drush_cache_clear_types($include_bootstrapped_types) {
       'theme-registry' => 'drush_cache_clear_theme_registry',
       'menu' => 'drush_cache_clear_menu',
       'css-js' => 'drush_cache_clear_css_js',
-      'block' => 'drush_cache_clear_block',
       'module-list' => 'drush_get_modules',
       'theme-list' => 'drush_get_themes',
       'render' => 'drush_cache_clear_render',
@@ -76,7 +75,8 @@ function drush_cache_clear_css_js() {
  * Clear the cache of the block output.
  */
 function drush_cache_clear_block() {
-  \Drupal::cache('block')->deleteAll();
+  // There is no distinct block cache in D8. See https://github.com/drush-ops/drush/issues/1531.
+  // \Drupal::cache('block')->deleteAll();
 }
 
 /**

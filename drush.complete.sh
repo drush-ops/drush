@@ -24,6 +24,13 @@ __drush_ps1() {
     __DRUPAL_SITE="$DRUPAL_SITE"
   fi
 
+  # Set DRUSH_PS1_SHOWCOLORHINTS to a non-empty value and define a
+  # __drush_ps1_colorize_alias() function for color hints in your Drush PS1
+  # prompt. See example.prompt.sh for an example implementation.
+  if [ -n "${__DRUPAL_SITE-}" ] && [ -n "${DRUSH_PS1_SHOWCOLORHINTS-}" ]; then
+    __drush_ps1_colorize_alias
+  fi
+
   [[ -n "$__DRUPAL_SITE" ]] && printf "${1:- (%s)}" "$__DRUPAL_SITE"
 }
 
@@ -40,4 +47,4 @@ _drush_completion() {
 }
 
 # Register our completion function. We include common short aliases for Drush.
-complete -o bashdefault -o default -o nospace -F _drush_completion d dr drush drush5 drush6 drush7 drush.php
+complete -o bashdefault -o default -o nospace -F _drush_completion d dr drush drush5 drush6 drush7 drush8 drush.php

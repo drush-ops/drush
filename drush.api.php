@@ -212,8 +212,7 @@ function hook_drush_pm_post_download($project, $release) {
 /**
  * Take action after a project has been updated.
  */
-function hook_pm_post_update($release_name, $release_candidate_version, $project_parent_path) {
-
+function hook_pm_post_update($project_name, $installed_release, $project) {
 }
 
 /**

@@ -112,6 +112,8 @@ define('DRUSH_BOOTSTRAP_DRUPAL_LOGIN', 6);
  * Return the list of bootstrap objects that are available for
  * initializing a CMS with Drush.  We insure that any given candidate
  * class is instantiated only once.
+ *
+ * @return \Drush\Boot\Boot[]
  */
 function drush_get_bootstrap_candidates() {
   $candidate_classes = drush_get_bootstrap_candidate_classnames();
@@ -135,6 +137,8 @@ function drush_get_bootstrap_candidates() {
 /**
  * Find the list of bootstrap classnames available for initializing a
  * CMS with Drush.
+ *
+ * @return array
  */
 function drush_get_bootstrap_candidate_classnames() {
   // Give all commandfiles a chance to return candidates.  They should
@@ -204,6 +208,8 @@ function drush_latch_bootstrap_object($bootstrap) {
  * Get the appropriate bootstrap object.  We'll search for a new
  * bootstrap object every time someone asks for one until we start
  * bootstrapping; then we'll returned the same cached one every time.
+ *
+ * @return \Drush\Boot\Boot
  */
 function drush_get_bootstrap_object() {
   $bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT', FALSE);

@@ -97,8 +97,7 @@ function make_generate_from_makefile($file, $makefile) {
     // If a specific revision was requested, do not set the version.
     if (!isset($project['revision'])) {
       $projects[$name]['version'] = $project['download']['full_version'];
-
-      if (strpos($projects[$name]['version'], $project['core']) === 0) {
+      if ($project['type'] != 'core' && strpos($projects[$name]['version'], $project['core']) === 0) {
         $projects[$name]['version'] = substr($projects[$name]['version'], strlen($project['core'] . '-'));
       }
     }
@@ -123,7 +122,7 @@ function make_generate_from_makefile($file, $makefile) {
       unset($projects[$name]['name']);
     }
     if ($project['type'] == 'module' && !isset($info[$name]['type'])) {
-      unset($projects[$name]['type']);
+      unset($projects[$name]['type']);  // Module is the default
     }
     if (!(isset($project['download']['type'])) || ($project['download']['type'] == 'pm')) {
       unset($projects[$name]['download']); // PM is the default
@@ -133,7 +132,7 @@ function make_generate_from_makefile($file, $makefile) {
       unset($projects[$name][$key]);
     }
     // Remove empty entries (e.g. 'directory_name')
-    $projects[$name] = array_filter($projects[$name]);
+    $projects[$name] = _make_generate_array_filter($projects[$name]);
   }
 
   $libraries = drush_get_option('DRUSH_MAKE_LIBRARIES', FALSE);
@@ -152,6 +151,22 @@ function make_generate_from_makefile($file, $makefile) {
   // Write or print our makefile.
   $file = $file !== TRUE ? $file : NULL;
   make_generate_print($contents, $file);
+}
+
+/**
+ * Helper function to recursively remove empty values from an array (but not
+ * '0'!).
+ */
+function _make_generate_array_filter($haystack) {
+  foreach ($haystack as $key => $value) {
+    if (is_array($value)) {
+      $haystack[$key] = _make_generate_array_filter($haystack[$key]);
+    }
+    if (empty($value) && $value !== '0') {
+      unset($haystack[$key]);
+    }
+  }
+  return $haystack;
 }
 
 /**

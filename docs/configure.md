@@ -45,11 +45,7 @@ and MySQL to use in the command line interface. This is independent of the php
 version selected in the MAMP application settings.  Under OS X, edit (or create
 if it does not already exist) a file called .bash_profile in your home folder.
 
-To use php 5.3.x, add this line to .bash_profile:
-
-    export PATH="/Applications/MAMP/Library/bin:/Applications/MAMP/bin/php5.3/bin:$PATH"
-
-If you want to use php 5.4.x, add this line instead:
+If you want to use php 5.4.x, add this line:
 
     export PATH="/Applications/MAMP/Library/bin:/Applications/MAMP/bin/php5.4/bin:$PATH"
     
@@ -144,14 +140,7 @@ be passed to php on the command line when Drush is executed.
 
 Drush requires a fairly unrestricted php environment to run in.  In particular,
 you should insure that safe_mode, open_basedir, disable_functions and
-disable_classes are empty.  If you are using php 5.3.x, you may also need to
-add the following definitions to your php.ini file:
-
-```ini
-magic_quotes_gpc = Off
-magic_quotes_runtime = Off
-magic_quotes_sybase = Off
-```
+disable_classes are empty.
 
 Drushrc.php
 -----------

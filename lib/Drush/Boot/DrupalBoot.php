@@ -41,14 +41,22 @@ abstract class DrupalBoot extends BaseBoot {
   }
 
   /**
-   * The phases where Drush will look to see if new commandfiles
-   * have been defined.  For Drupal, we first do a preflight, and
-   * if a command is not found at that point, we next attempt a full
-   * bootstrap.  If a command is found after preflight, then we
-   * bootstrap to the phase declared by the command.
+   * List of bootstrap phases where Drush should stop and look for commandfiles.
+   *
+   * For Drupal, we try at these bootstrap phases:
+   *
+   *   - Drush preflight: to find commandfiles in any system location,
+   *     out of a Drupal installation.
+   *   - Drupal root: to find commandfiles based on Drupal core version.
+   *   - Drupal full: to find commandfiles defined within a Drupal directory.
+   *
+   * Once a command is found, Drush will ensure a bootstrap to the phase
+   * declared by the command.
+   *
+   * @return array of PHASE indexes.
    */
   function bootstrap_init_phases() {
-    return array(DRUSH_BOOTSTRAP_DRUSH, DRUSH_BOOTSTRAP_DRUPAL_FULL);
+    return array(DRUSH_BOOTSTRAP_DRUSH, DRUSH_BOOTSTRAP_DRUPAL_ROOT, DRUSH_BOOTSTRAP_DRUPAL_FULL);
   }
 
   function enforce_requirement(&$command) {
@@ -95,6 +103,7 @@ abstract class DrupalBoot extends BaseBoot {
     switch ($phase) {
       case DRUSH_BOOTSTRAP_DRUPAL_ROOT:
         $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+        $searchpath[] = $drupal_root . '/../drush';
         $searchpath[] = $drupal_root . '/drush';
         $searchpath[] = $drupal_root . '/sites/all/drush';
 
@@ -104,7 +113,7 @@ abstract class DrupalBoot extends BaseBoot {
       case DRUSH_BOOTSTRAP_DRUPAL_SITE:
         // If we are going to stop bootstrapping at the site, then
         // we will quickly add all commandfiles that we can find for
-        // any module associated with the site, whether it is enabled
+        // any extension associated with the site, whether it is enabled
         // or not.  If we are, however, going to continue on to bootstrap
         // all the way to DRUSH_BOOTSTRAP_DRUPAL_FULL, then we will
         // instead wait for that phase, which will more carefully add
@@ -119,16 +128,16 @@ abstract class DrupalBoot extends BaseBoot {
           if ($cached = drush_cache_get($cid)) {
             $profile = $cached->data;
             $searchpath[] = "profiles/$profile/modules";
+            $searchpath[] = "profiles/$profile/themes";
           }
           else {
             // If install_profile is not available, scan all profiles.
             $searchpath[] = "profiles";
             $searchpath[] = "sites/all/profiles";
           }
-        }
 
-        // TODO: Treat themes like modules and stop unconditionally searching here.
-        $searchpath = array_merge($searchpath, $this->contrib_themes_paths());
+          $searchpath = array_merge($searchpath, $this->contrib_themes_paths());
+        }
         break;
       case DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION:
         // Nothing to do here anymore. Left for documentation.
@@ -147,6 +156,9 @@ abstract class DrupalBoot extends BaseBoot {
             $searchpath[] = $filepath;
           }
         }
+
+        $searchpath[] = drupal_get_path('theme', drush_theme_get_admin());
+        $searchpath[] = drupal_get_path('theme', drush_theme_get_default());
         break;
     }
 
@@ -245,6 +257,12 @@ abstract class DrupalBoot extends BaseBoot {
       return drush_bootstrap_error('DRUSH_INVALID_DRUPAL_ROOT', dt("The directory !drupal_root does not contain a valid Drupal installation", array('!drupal_root' => $drupal_root)));
     }
 
+    $version = drush_drupal_version($drupal_root);
+    $major_version = drush_drupal_major_version($drupal_root);
+    if ($major_version <= 5) {
+      return drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', array('!drush_version' => DRUSH_VERSION, '!major_version' => $major_version)));
+    }
+
     drush_bootstrap_value('drupal_root', realpath($drupal_root));
     define('DRUSH_DRUPAL_SIGNATURE', $signature);
 
@@ -274,21 +292,16 @@ abstract class DrupalBoot extends BaseBoot {
     $version = drush_drupal_version();
     $major_version = drush_drupal_major_version();
 
-    if ($major_version <= 5) {
-      drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', array('!drush_version' => DRUSH_VERSION, '!major_version' => $major_version)));
-    }
-    else {
-      $core = $this->bootstrap_drupal_core($drupal_root);
+    $core = $this->bootstrap_drupal_core($drupal_root);
 
-      // DRUSH_DRUPAL_CORE should point to the /core folder in Drupal 8+ or to DRUPAL_ROOT
-      // in prior versions.
-      drush_set_context('DRUSH_DRUPAL_CORE', $core);
-      define('DRUSH_DRUPAL_CORE', $core);
+    // DRUSH_DRUPAL_CORE should point to the /core folder in Drupal 8+ or to DRUPAL_ROOT
+    // in prior versions.
+    drush_set_context('DRUSH_DRUPAL_CORE', $core);
+    define('DRUSH_DRUPAL_CORE', $core);
 
-      _drush_preflight_global_options();
+    _drush_preflight_global_options();
 
-      drush_log(dt("Initialized Drupal !version root directory at !drupal_root", array("!version" => $version, '!drupal_root' => $drupal_root)));
-    }
+    drush_log(dt("Initialized Drupal !version root directory at !drupal_root", array("!version" => $version, '!drupal_root' => $drupal_root)));
   }
 
   /**
@@ -328,7 +341,7 @@ abstract class DrupalBoot extends BaseBoot {
       }
       // Fill in defaults.
       $drupal_base_url += array(
-        'path' => NULL,
+        'path' => '',
         'host' => NULL,
         'port' => NULL,
       );
@@ -343,20 +356,15 @@ abstract class DrupalBoot extends BaseBoot {
       }
       $_SERVER['SERVER_PORT'] = $drupal_base_url['port'];
 
-      if (array_key_exists('path', $drupal_base_url)) {
-        $_SERVER['PHP_SELF'] = $drupal_base_url['path'] . '/index.php';
-      }
-      else {
-        $_SERVER['PHP_SELF'] = '/index.php';
-      }
+      $_SERVER['REQUEST_URI'] = $drupal_base_url['path'] . '/';
     }
     else {
       $_SERVER['HTTP_HOST'] = 'default';
-      $_SERVER['PHP_SELF'] = '/index.php';
+      $_SERVER['REQUEST_URI'] = '/';
     }
 
+    $_SERVER['PHP_SELF'] = $_SERVER['REQUEST_URI'] . 'index.php';
     $_SERVER['SCRIPT_NAME'] = $_SERVER['PHP_SELF'];
-    $_SERVER['REQUEST_URI'] = '/';
     $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
     $_SERVER['REQUEST_METHOD']  = NULL;
 
@@ -445,6 +453,55 @@ abstract class DrupalBoot extends BaseBoot {
   function bootstrap_drupal_database_validate() {
     if (!drush_valid_db_credentials()) {
       return drush_bootstrap_error('DRUSH_DRUPAL_DB_ERROR');
+    }
+    return TRUE;
+  }
+
+  /**
+   * Test to see if the Drupal database has a specified
+   * table or tables.
+   *
+   * This is a bootstrap helper function designed to be called
+   * from the bootstrap_drupal_database_validate() methods of
+   * derived DrupalBoot classes.  If a database exists, but is
+   * empty, then the Drupal database bootstrap will fail.  To
+   * prevent this situation, we test for some table that is needed
+   * in an ordinary bootstrap, and return FALSE from the validate
+   * function if it does not exist, so that we do not attempt to
+   * start the database bootstrap.
+   *
+   * Note that we must manually do our own prefix testing here,
+   * because the existing wrappers we have for handling prefixes
+   * depend on bootstrapping to the "database" phase, and therefore
+   * are not available to validate this same phase.
+   *
+   * @param $required_tables
+   *   Array of table names, or string with one table name
+   *
+   * @return TRUE if all tables in input parameter exist in
+   *   the database.
+   */
+  function bootstrap_drupal_database_has_table($required_tables) {
+    try {
+      $sql = drush_sql_get_class();
+      $spec = $sql->db_spec();
+      $prefix = isset($spec['prefix']) ? $spec['prefix'] : NULL;
+      if (!is_array($prefix)) {
+        $prefix = array('default' => $prefix);
+      }
+      $tables = $sql->listTables();
+      foreach ((array)$required_tables as $required_table) {
+        $prefix_key = array_key_exists($required_table, $prefix) ? $required_table : 'default';
+        if (!in_array($prefix[$prefix_key] . $required_table, $tables)) {
+          return FALSE;
+        }
+      }
+    }
+    catch (Exception $e) {
+      // Usually the checks above should return a result without
+      // throwing an exception, but we'll catch any that are
+      // thrown just in case.
+      return FALSE;
     }
     return TRUE;
   }

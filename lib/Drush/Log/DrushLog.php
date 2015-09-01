@@ -1,14 +1,40 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drush\Log\DrushLog.
+ */
+
 namespace Drush\Log;
 
+use Drupal\Core\Logger\LogMessageParserInterface;
+use Drupal\Core\Logger\RfcLoggerTrait;
+use Drupal\Core\Logger\RfcLogLevel;
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
-use Psr\Log\LoggerTrait;
 
+/**
+ * Redirects Drupal logging messages to Drush log.
+ */
 class DrushLog implements LoggerInterface {
 
-  use LoggerTrait;
+  use RfcLoggerTrait;
+
+  /**
+   * The message's placeholders parser.
+   *
+   * @var \Drupal\Core\Logger\LogMessageParserInterface
+   */
+  protected $parser;
+
+  /**
+   * Constructs a DrushLog object.
+   *
+   * @param \Drupal\Core\Logger\LogMessageParserInterface $parser
+   *   The parser to use when extracting message variables.
+   */
+  public function __construct(LogMessageParserInterface $parser) {
+    $this->parser = $parser;
+  }
 
   /**
    * {@inheritdoc}
@@ -20,20 +46,20 @@ class DrushLog implements LoggerInterface {
     // and they should cause Drush to exit or panic. Not sure how to handle this,
     // though.
     switch ($level) {
-      case LogLevel::ALERT:
-      case LogLevel::CRITICAL:
-      case LogLevel::EMERGENCY:
-      case LogLevel::ERROR:
+      case RfcLogLevel::ALERT:
+      case RfcLogLevel::CRITICAL:
+      case RfcLogLevel::EMERGENCY:
+      case RfcLogLevel::ERROR:
         $error_type = 'error';
         break;
 
-      case LogLevel::WARNING:
+      case RfcLogLevel::WARNING:
         $error_type = 'warning';
         break;
 
-      case LogLevel::DEBUG:
-      case LogLevel::INFO:
-      case LogLevel::NOTICE:
+      case RfcLogLevel::DEBUG:
+      case RfcLogLevel::INFO:
+      case RfcLogLevel::NOTICE:
         $error_type = 'notice';
         break;
 
@@ -41,6 +67,10 @@ class DrushLog implements LoggerInterface {
         $error_type = $level;
         break;
     }
+
+    // Populate the message placeholders and then replace them in the message.
+    $message_placeholders = $this->parser->parseMessagePlaceholders($message, $context);
+    $message = empty($message_placeholders) ? $message : strtr($message, $message_placeholders);
     drush_log($message, $error_type);
   }
 

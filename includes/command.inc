@@ -150,15 +150,6 @@ function drush_dispatch($command, $arguments = array()) {
   $return = FALSE;
 
   if ($command) {
-    // Insure that we have reached the bootstrap level
-    // desired by the command.  We might not have bootstrapped
-    // far enough if a command uses drush_invoke to call
-    // a subcommand with a higher bootstrap level, for example.
-    $bootstrap_result = drush_bootstrap_to_phase($command['bootstrap']);
-    if (!$bootstrap_result) {
-      return FALSE;
-    }
-
     // Add arguments, if this has not already been done.
     // (If the command was fetched from drush_parse_command,
     // then you cannot provide arguments to drush_dispatch.)

@@ -46,6 +46,7 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
       _batch_populate_queue($batch, $key);
     }
 
+    drush_include_engine('drupal', 'environment');
     // Store the batch.
     db_insert('batch')
       ->fields(array(
@@ -177,7 +178,7 @@ function _drush_batch_worker() {
     $queue = _batch_queue($current_set);
 
     // If we are in progressive mode, break processing after 1 second.
-    if ((memory_get_usage() * 2) >= drush_memory_limit()) {
+    if (drush_memory_limit() > 0 && (memory_get_usage() * 2) >= drush_memory_limit()) {
       drush_log(dt("Batch process has consumed in excess of 50% of available memory. Starting new thread"), "batch");
       // Record elapsed wall clock time.
       $current_set['elapsed'] = round((microtime(TRUE) - $current_set['start']) * 1000, 2);

@@ -12,8 +12,9 @@
  *   2. Anywhere in a folder tree below an active module on your site.
  *   3. /usr/share/drush/commands (configurable)
  *   4. In an arbitrary folder specified with the --include option.
- *   5. Drupal's /drush or sites/all/drush folder (note: sql-sync validation
- *      won't work here).
+ *   5. Drupal's /drush or sites/all/drush folder, or in the /drush
+ *        folder in the directory above the Drupal root (note: sql-sync
+ *        validation won't work in any of these locations).
  */
 
 /**
@@ -25,6 +26,17 @@
 function drush_policy_sql_sync_validate($source = NULL, $destination = NULL) {
   if ($destination == '@prod') {
     return drush_set_error('POLICY_DENY', dt('Per examples/policy.drush.inc, you may never overwrite the production database.'));
+  }
+}
+
+/**
+ * Implements drush_hook_COMMAND_validate().
+ *
+ * We can also limit rsync operations to production sites.
+ */
+function drush_policy_core_rsync_validate($source = NULL, $destination = NULL) {
+  if (preg_match("/^@prod/", $destination)) {
+    return drush_set_error('POLICY_DENY', dt('Per examples/policy.drush.inc, you may never rsync to the production site.'));
   }
 }
 

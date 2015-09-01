@@ -4,11 +4,11 @@
 # Configurations
 
 BINTOOL_GIT=https://github.com/acquia/DevDesktopCommon.git
-PHP_VER=5.4.39-nts-Win32-VC9-x86
+PHP_VER=5.4.41-nts-Win32-VC9-x86
 # NOTE there in also "5.5" string in the download url. Change it if upgrading to 5.6
 MYSQL_VER=5.5.41-win32
 # goes to composer require command
-DRUSH_VER=7.0.0-rc1
+DRUSH_VER=7.0.0
 
 TOPDIR=windrush
 

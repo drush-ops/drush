@@ -292,7 +292,7 @@ function drush_user_remove_role($role, $users = '') {
   $role_object = drush_role_get_class($role);
   $userlist = new UserList($users);
   $userlist->each('removeRole', array($role_object->rid));
-  drush_log(dt('Removed role !role role to !users', array('!role' => $role, '!users' => $userlist->names())),'success');
+  drush_log(dt('Removed !role role from !users', array('!role' => $role, '!users' => $userlist->names())),'success');
 }
 
 /**

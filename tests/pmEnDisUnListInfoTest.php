@@ -93,7 +93,9 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
     $this->drush('pm-enable', array('views'), $options + array('resolve-dependencies' => TRUE));
     $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
     $list = $this->getOutputAsList();
-    // @todo fails in D6
+    if (UNISH_DRUPAL_MAJOR_VERSION == 6) {
+      $this->markTestSkipped("Drupal 6 Views does not depend on CTools.");
+    }
     $this->assertTrue(in_array('ctools', $list));
   }
 }

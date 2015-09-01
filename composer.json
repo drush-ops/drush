@@ -26,15 +26,18 @@
     "drush.complete.sh"
   ],
   "require": {
-    "php": ">=5.3.0",
-    "d11wtq/boris": "~1.0",
+    "php": ">=5.4.5",
+    "psy/psysh": "~0.5",
     "symfony/yaml": "~2.2",
-    "symfony/var-dumper": "2.6.3",
+    "symfony/var-dumper": "^2.6.3",
     "pear/console_table": "~1.2.0"
   },
   "require-dev": {
     "phpunit/phpunit": ">=3.5",
     "symfony/process": "2.4.5"
+  },
+  "suggest": {
+      "drush/config-extra": "Provides configuration workflow commands, such as config-merge."
   },
   "autoload": {
     "psr-0": {
@@ -48,7 +51,7 @@
   },
   "extra": {
     "branch-alias": {
-        "dev-master": "7.0.x-dev"
+        "dev-master": "8.0.x-dev"
     }
   }
 }

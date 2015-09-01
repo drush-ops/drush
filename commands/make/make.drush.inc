@@ -9,7 +9,7 @@ use \Drush\UpdateService\ReleaseInfo;
 /**
  * Default localization server for downloading translations.
  */
-define('MAKE_DEFAULT_L10N_SERVER', 'https://localize.drupal.org/l10n_server.xml');
+define('MAKE_DEFAULT_L10N_SERVER', 'http://ftp.drupal.org/files/translations/l10n_server.xml');
 
 /**
  * Make refuses to build makefiles whose api version is mismatched
@@ -670,10 +670,15 @@ function make_move_build($build_path) {
         // To prevent the removal of top-level directories such as 'modules' or
         // 'themes', descend in a level if the file exists.
         // TODO: This only protects one level of directories from being removed.
-        $files = drush_scan_directory($file->filename, '/./', array('.', '..'), 0, FALSE);
         $overwrite = drush_get_option('overwrite', FALSE) ? FILE_EXISTS_OVERWRITE : FILE_EXISTS_MERGE;
-        foreach ($files as $file) {
-          $ret = $ret && drush_copy_dir($file->filename, $destination . DIRECTORY_SEPARATOR . $file->basename, $overwrite);
+        if (is_dir($destination)) {
+          $files = drush_scan_directory($file->filename, '/./', array('.', '..'), 0, FALSE);
+          foreach ($files as $file) {
+            $ret = $ret && drush_copy_dir($file->filename, $destination . DIRECTORY_SEPARATOR . $file->basename, $overwrite);
+          }
+        }
+        else {
+          $ret = $ret && drush_copy_dir($file->filename, $destination, $overwrite);
         }
       }
       else {

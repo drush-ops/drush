@@ -36,9 +36,13 @@ class Sqlsqlsrv extends SqlBase {
     $parameters = array(
       'S' => $host,
       'd' => $database,
-      'U' => $this->db_spec['username'],
-      'P' => $this->db_spec['password']
     );
+    if (!empty($this->db_spec['username'])) {
+      $parameters += array(
+      'U' => $this->db_spec['username'],
+      'P' => $this->db_spec['password'],
+      );
+    }
     return $this->params_to_options($parameters);
   }
 
