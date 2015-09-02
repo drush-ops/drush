@@ -151,7 +151,7 @@ function make_drush_command() {
     ),
     'options' => array(
       'result-file' => array(
-        'description' => 'Save to a file. If not provided, the updated makefile will be dump to stdout.',
+        'description' => 'Save to a file. If not provided, the updated makefile will be dumped to stdout.',
         'example-value' => 'updated.make',
       ),
     ),
