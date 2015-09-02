@@ -1605,6 +1605,8 @@ function drush_sitealias_uri_to_site_dir($uri, $site_root = NULL) {
  *   the db url. If the parse fails the array is empty.
  */
 function drush_convert_db_from_db_url($db_url) {
+  $db_spec = array();
+
   if (is_array($db_url)) {
     $db_url_default = $db_url['default'];
   }
@@ -1612,42 +1614,38 @@ function drush_convert_db_from_db_url($db_url) {
     $db_url_default = $db_url;
   }
 
-  $url = parse_url($db_url_default);
-  // If parse_url failed, return an empty array
-  if (!is_array($url)) {
-    return array();
-  }
-
-  // Fill in defaults to prevent notices.
-  $url += array(
-    'driver' => NULL,
-    'user' => NULL,
-    'pass' => NULL,
-    'host' => NULL,
-    'port' => NULL,
-    'path' => NULL,
-    'database' => NULL,
-  );
-  $url = (object)array_map('urldecode', $url);
-
-  // Convert url parts to database spec.
-  if ($url->scheme == 'sqlite') {
-    // parse_url() splits the path to the database in host and path.
-    $database = $url->host  . $url->path;
-    $url->host = '';
+  // If it's a sqlite database, pick the database path and we're done.
+  if (strpos($db_url_default, 'sqlite://') === 0) {
+    $db_spec = array(
+      'driver'   => 'sqlite',
+      'database' => substr($db_url_default, strlen('sqlite://')),
+    );
   }
   else {
-    // The database name is $url->path without the leading slash.
-    $database = substr($url->path, 1);
+    $url = parse_url($db_url_default);
+    if ($url) {
+      // Fill in defaults to prevent notices.
+      $url += array(
+        'scheme' => NULL,
+        'user'   => NULL,
+        'pass'   => NULL,
+        'host'   => NULL,
+        'port'   => NULL,
+        'path'   => NULL,
+      );
+      $url = (object)array_map('urldecode', $url);
+      $db_spec = array(
+        'driver'   => $url->scheme == 'mysqli' ? 'mysql' : $url->scheme,
+        'username' => $url->user,
+        'password' => $url->pass,
+        'host' => $url->host,
+        'port' => $url->port,
+        'database' => ltrim($url->path, '/'),
+      );
+    }
   }
-  return array(
-    'driver' => $url->scheme == 'mysqli' ? 'mysql' : $url->scheme,
-    'username' => $url->user,
-    'password' => $url->pass,
-    'port' => $url->port,
-    'host' => $url->host,
-    'database' => $database,
-  );
+
+  return $db_spec;
 }
 
 /**
