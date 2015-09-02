@@ -884,8 +884,7 @@ function drush_sitealias_convert_db_spec_to_db_url($db_spec) {
     $result .= "@";
   }
   // Host is required, unless this is an sqlite db.
-  if (isset($db_spec["host"]))
-  {
+  if (isset($db_spec["host"])) {
     $result .= urlencode($db_spec["host"]);
     if (isset($db_spec["port"])) {
       $result .= ":" . urlencode($db_spec["port"]);
@@ -1597,62 +1596,56 @@ function drush_sitealias_uri_to_site_dir($uri, $site_root = NULL) {
 }
 
 /**
- * Convert from an old-style database URL to an array of database settings
+ * Convert from an old-style database URL to an array of database settings.
  *
  * @param db_url
- *   A Drupal 6 db-url string to convert, or an array with a 'default' element.
+ *   A Drupal 6 db url string to convert, or an array with a 'default' element.
  * @return array
  *   An array of database values containing only the 'default' element of
- *   the db_url.
+ *   the db url. If the parse fails the array is empty.
  */
 function drush_convert_db_from_db_url($db_url) {
+  $db_spec = array();
+
   if (is_array($db_url)) {
     $db_url_default = $db_url['default'];
   }
   else {
     $db_url_default = $db_url;
   }
-  $url = parse_url($db_url_default);
-  // If parse_url failed, return an empty array
-  if (!is_array($url)) {
-    return array();
+
+  // If it's a sqlite database, pick the database path and we're done.
+  if (strpos($db_url_default, 'sqlite://') === 0) {
+    $db_spec = array(
+      'driver'   => 'sqlite',
+      'database' => substr($db_url_default, strlen('sqlite://')),
+    );
   }
-  // Fill in defaults to prevent notices.
-  $url += array(
-    'driver' => NULL,
-    'user' => NULL,
-    'pass' => NULL,
-    'host' => NULL,
-    'port' => NULL,
-    'path' => NULL,
-    'database' => NULL,
-  );
-  $url = (object)array_map('urldecode', $url);
-  $host = $url->host;
-  $database = substr($url->path, 1);
-  if ($url->scheme == 'sqlite') {
-    $host = '';
-    // The sqlite path with start with a / if there
-    // is both a host and a path component; sqlite
-    // databases without an absolute path will have only
-    // a host component.
-    if (isset($url->path)) {
-      $database = '/' . $url->host  . $url->path;
-    }
-    else {
-      $database = $url->host;
+  else {
+    $url = parse_url($db_url_default);
+    if ($url) {
+      // Fill in defaults to prevent notices.
+      $url += array(
+        'scheme' => NULL,
+        'user'   => NULL,
+        'pass'   => NULL,
+        'host'   => NULL,
+        'port'   => NULL,
+        'path'   => NULL,
+      );
+      $url = (object)array_map('urldecode', $url);
+      $db_spec = array(
+        'driver'   => $url->scheme == 'mysqli' ? 'mysql' : $url->scheme,
+        'username' => $url->user,
+        'password' => $url->pass,
+        'host' => $url->host,
+        'port' => $url->port,
+        'database' => ltrim($url->path, '/'),
+      );
     }
   }
-  return array(
-    'driver' => $url->scheme == 'mysqli' ? 'mysql' : $url->scheme,
-    'username' => $url->user,
-    'password' => $url->pass,
-    'port' => $url->port,
-    'host' => $host,
-    // Remove leading / character from database names, unless we're installing
-    // to SQLite (which won't have a slash there unless it's part of a path).
-    'database' => $database,
-  );
+
+  return $db_spec;
 }
 
 /**
