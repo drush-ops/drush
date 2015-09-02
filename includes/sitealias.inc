@@ -884,8 +884,7 @@ function drush_sitealias_convert_db_spec_to_db_url($db_spec) {
     $result .= "@";
   }
   // Host is required, unless this is an sqlite db.
-  if (isset($db_spec["host"]))
-  {
+  if (isset($db_spec["host"])) {
     $result .= urlencode($db_spec["host"]);
     if (isset($db_spec["port"])) {
       $result .= ":" . urlencode($db_spec["port"]);
@@ -1612,11 +1611,13 @@ function drush_convert_db_from_db_url($db_url) {
   else {
     $db_url_default = $db_url;
   }
+
   $url = parse_url($db_url_default);
   // If parse_url failed, return an empty array
   if (!is_array($url)) {
     return array();
   }
+
   // Fill in defaults to prevent notices.
   $url += array(
     'driver' => NULL,
@@ -1628,29 +1629,23 @@ function drush_convert_db_from_db_url($db_url) {
     'database' => NULL,
   );
   $url = (object)array_map('urldecode', $url);
-  $host = $url->host;
-  $database = substr($url->path, 1);
+
+  // Convert url parts to database spec.
   if ($url->scheme == 'sqlite') {
-    $host = '';
-    // The sqlite path with start with a / if there
-    // is both a host and a path component; sqlite
-    // databases without an absolute path will have only
-    // a host component.
-    if (isset($url->path)) {
-      $database = '/' . $url->host  . $url->path;
-    }
-    else {
-      $database = $url->host;
-    }
+    // parse_url() splits the path to the database in host and path.
+    $database = $url->host  . $url->path;
+    $url->host = '';
+  }
+  else {
+    // The database name is $url->path without the leading slash.
+    $database = substr($url->path, 1);
   }
   return array(
     'driver' => $url->scheme == 'mysqli' ? 'mysql' : $url->scheme,
     'username' => $url->user,
     'password' => $url->pass,
     'port' => $url->port,
-    'host' => $host,
-    // Remove leading / character from database names, unless we're installing
-    // to SQLite (which won't have a slash there unless it's part of a path).
+    'host' => $url->host,
     'database' => $database,
   );
 }
