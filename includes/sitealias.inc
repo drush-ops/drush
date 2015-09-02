@@ -1597,13 +1597,13 @@ function drush_sitealias_uri_to_site_dir($uri, $site_root = NULL) {
 }
 
 /**
- * Convert from an old-style database URL to an array of database settings
+ * Convert from an old-style database URL to an array of database settings.
  *
  * @param db_url
- *   A Drupal 6 db-url string to convert, or an array with a 'default' element.
+ *   A Drupal 6 db url string to convert, or an array with a 'default' element.
  * @return array
  *   An array of database values containing only the 'default' element of
- *   the db_url.
+ *   the db url. If the parse fails the array is empty.
  */
 function drush_convert_db_from_db_url($db_url) {
   if (is_array($db_url)) {

@@ -570,14 +570,16 @@ function drush_sql_get_class($db_spec = NULL) {
   $target = drush_get_option('target', 'default');
 
   // Try a few times to quickly get $db_spec.
-  if ($db_spec) {
+  if (!empty($db_spec)) {
     return drush_get_class(array('Drush\Sql\Sql', 'Drupal\Driver\Database\\' .  $db_spec['driver'] . '\Drush'), array($db_spec), array($db_spec['driver']));
   }
   elseif ($url = drush_get_option('db-url')) {
     $url =  is_array($url) ? $url[$database] : $url;
     $db_spec = drush_convert_db_from_db_url($url);
-    $db_spec['db_prefix'] = drush_get_option('db-prefix');
-    return drush_sql_get_class($db_spec);
+    if (!empty($db_spec)) {
+      $db_spec['db_prefix'] = drush_get_option('db-prefix');
+      return drush_sql_get_class($db_spec);
+    }
   }
   elseif (($databases = drush_get_option('databases')) && (array_key_exists($database, $databases)) && (array_key_exists($target, $databases[$database]))) {
     $db_spec = $databases[$database][$target];
