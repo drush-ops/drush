@@ -197,7 +197,8 @@ function drush_module_enable($modules) {
   drush_module_install($modules);
 
   // Our logger got blown away during the container rebuild above.
-  \Drupal::getContainer()->get('logger.factory')->addLogger(new \Drush\Log\DrushLog);
+  $boot = drush_select_bootstrap_class();
+  $boot->add_logger();
 
   // Flush all caches. No longer needed in D8 per https://github.com/drush-ops/drush/issues/1207
   // drupal_flush_all_caches();
@@ -224,7 +225,8 @@ function drush_module_disable($modules) {
 function drush_module_uninstall($modules) {
   \Drupal::service('module_installer')->uninstall($modules);
   // Our logger got blown away during the container rebuild above.
-  \Drupal::getContainer()->get('logger.factory')->addLogger(new \Drush\Log\DrushLog);
+  $boot = drush_select_bootstrap_class();
+  $boot->add_logger();
 }
 
 /**
@@ -301,7 +303,8 @@ function drush_theme_disable($themes) {
 function drush_theme_uninstall($themes) {
   \Drupal::service('theme_handler')->uninstall($themes);
   // Our logger got blown away during the container rebuild above.
-  \Drupal::getContainer()->get('logger.factory')->addLogger(new \Drush\Log\DrushLog);
+  $boot = drush_select_bootstrap_class();
+  $boot->add_logger();
 }
 
 /**
