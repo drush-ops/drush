@@ -570,8 +570,10 @@ function drush_sql_get_class($db_spec = NULL) {
   $target = drush_get_option('target', 'default');
 
   // Try a few times to quickly get $db_spec.
-  if ($db_spec) {
-    return drush_get_class(array('Drush\Sql\Sql', 'Drupal\Driver\Database\\' .  $db_spec['driver'] . '\Drush'), array($db_spec), array($db_spec['driver']));
+  if (!empty($db_spec)) {
+    if (!empty($db_spec['driver'])) {
+      return drush_get_class(array('Drush\Sql\Sql', 'Drupal\Driver\Database\\' .  $db_spec['driver'] . '\Drush'), array($db_spec), array($db_spec['driver']));
+    }
   }
   elseif ($url = drush_get_option('db-url')) {
     $url =  is_array($url) ? $url[$database] : $url;
