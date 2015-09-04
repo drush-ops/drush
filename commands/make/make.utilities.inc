@@ -607,7 +607,22 @@ function _get_working_copy_option($download) {
  *   Returns parsed data if it matches any known format.
  */
 function _make_determine_format($data) {
-  // Test YAML first to avoid segmentation faults from preg_match in INI parser.
+  // Most .make files will have a `core` attribute. Use this to determine
+  // the format.
+  if (preg_match('/^\s*core:/', $data)) {
+    $parsed = ParserYaml::parse($data);
+    $parsed['format'] = 'yaml';
+    return $parsed;
+  }
+  elseif (preg_match('/^\s*core\s*=/', $data)) {
+    $parsed = ParserIni::parse($data);
+    $parsed['format'] = 'ini';
+    return $parsed;
+  }
+
+  // If the .make file did not have a core attribute, it is being included
+  // by another .make file. Test YAML first to avoid segmentation faults from
+  // preg_match in INI parser.
   $yaml_parse_exception = FALSE;
   try {
     if ($parsed = ParserYaml::parse($data)) {
