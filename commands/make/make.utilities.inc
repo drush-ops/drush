@@ -609,12 +609,12 @@ function _get_working_copy_option($download) {
 function _make_determine_format($data) {
   // Most .make files will have a `core` attribute. Use this to determine
   // the format.
-  if (preg_match('/^\s*core:/', $data)) {
+  if (preg_match('/^\s*core:/m', $data)) {
     $parsed = ParserYaml::parse($data);
     $parsed['format'] = 'yaml';
     return $parsed;
   }
-  elseif (preg_match('/^\s*core\s*=/', $data)) {
+  elseif (preg_match('/^\s*core\s*=/m', $data)) {
     $parsed = ParserIni::parse($data);
     $parsed['format'] = 'ini';
     return $parsed;
