@@ -323,11 +323,6 @@ function drush_locate_root($start_path = NULL) {
     if ($follow_symlinks && is_link($path)) {
       $path = realpath($path);
     }
-    // Check to see if we have any bootstrap classes in this location.
-    $bootstrap_class_dir = $path . '/drush/bootstrap';
-    if (is_dir($bootstrap_class_dir)) {
-      _drush_add_commandfiles(array($bootstrap_class_dir), DRUSH_BOOTSTRAP_DRUSH);
-    }
     // Check the start path.
     if (drush_valid_root($path)) {
       $drupal_root = $path;
