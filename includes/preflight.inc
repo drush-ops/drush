@@ -588,7 +588,6 @@ function drush_preflight_tilde_expansion(&$command) {
       }
     }
     $command['arguments'] = array_map(function($value) use($match, $replacement) { return preg_replace($match, $replacement, $value); } , $command['arguments']);
-    drush_set_arguments($command['arguments']);
   }
 }
 
