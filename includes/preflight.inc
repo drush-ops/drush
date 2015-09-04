@@ -583,13 +583,14 @@ function drush_preflight_tilde_expansion(&$command) {
     $match = '#^~/#';
     $replacement = drush_server_home() . '/';
     foreach ($cli as $key => $value) {
-      $cli[$key] = preg_replace($match, $replacement, $value);
+      if (preg_match($match, $value)) {
+        $cli[$key] = preg_replace($match, $replacement, $value);
+      }
     }
     $command['arguments'] = array_map(function($value) use($match, $replacement) { return preg_replace($match, $replacement, $value); } , $command['arguments']);
     drush_set_arguments($command['arguments']);
   }
 }
-
 
 /**
  * We set this context to let the shutdown function know we reached the end of drush_main().
