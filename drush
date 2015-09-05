@@ -2,17 +2,17 @@
 
 #
 # This is the Drush "finder" script, which is one part of the
-# Drush dispatching strategy.  This is the script that
+# Drush dispatching chain.  This is the script that
 # should appear in your global $PATH, or, if using composer
 # (as usually the case), will be found in your vendor/bin directory.
 #
 #
-# NEVER copy this script to your Drupal root. Use examples/drush instead.
+# - Never copy this script to your site root. Use examples/drush instead.
 #
-# NEVER copy this script to a directory other than its install directory.
+# - Never copy this script to a directory other than its install directory.
 # Symlink to it instead.
 #
-# NEVER rename this script to "drush.launcher".  Why would you do that?
+# - Never rename this script to "drush.launcher".  Why would you do that?
 #
 #
 # OVERVIEW OF DRUSH FINDER / WRAPPER / LAUNCHER SCRIPTS
@@ -58,18 +58,19 @@
 #
 # DRUSH WRAPPER
 #
-# - The "drush" script that the user copies to their Drupal __ROOT__
-# - Its goal is to allow the user to add config locations when --local is in use
+# - The "drush" script that the user copies to their site __ROOT__
+# - Its goal is to allow the user to add options when --local is in use
 #
-# The "drush wrapper" is found in examples/drush, and may optionally
-# be copied to __ROOT__/drush by the user.  It will call the "drush launcher"
+# The drush "wrapper" is found in examples/drush, and may optionally
+# be copied to __ROOT__/drush by the user.  It may be named either
+# "drush" or "drush.wrapper".  It will call the "drush launcher"
 # for the same site that it is located in.  It adds the --local flag; the
 # user is encouraged to add other options to the "drush wrapper", e.g. to set
 # the location where aliases and global commandfiles can be found.
-# We must always call the "drush wrapper" if it exists, since it
-# can be customized.  However, if the user does not want to customize
-# the site-local Drush's early options (site-alias locations, etc.),
-# then the wrapper does not need to be used.
+# The drush "finder" script always calls the "drush wrapper" if it exists;
+# however, if the user does not want to customize the site-local Drush's
+# early options (site-alias locations, etc.), then the wrapper does not
+# need to be used.
 #
 #
 # DRUSH LAUNCHER
@@ -122,7 +123,7 @@ FOUND_SCRIPT=
 SITE_USE_DIR="$HOME/.drush/use/$$/bin"
 
 # We will look for a "drush wrapper" script that might
-# be stored in the root of a Drupal site.  If there is
+# be stored in the root of a site site.  If there is
 # no wrapper script, then we will look for the
 # drush.launcher script in vendor/bin.  We try just a
 # few of the most common locations; if the user relocates
@@ -137,12 +138,12 @@ SITE_USE_DIR="$HOME/.drush/use/$$/bin"
 # "drush.launcher" at the root, or "drush" in a vendor directory.
 # We also allow users to rename their drush wrapper to
 # 'drush.wrapper' to avoid conflicting with a directory named
-# 'drush' at the Drupal root.
+# 'drush' at the site root.
 DRUSH_LOCATIONS="drush vendor/bin/drush ../vendor/bin/drush sites/all/vendor/bin/drush"
 
 # Here is the function that checks each location and
 # returns the drush wrapper or drush launcher, if found.
-function find_wrapper_or_launcher {
+find_wrapper_or_launcher() {
   LOCATON="$1"
   for d in $DRUSH_LOCATIONS
   do
@@ -191,7 +192,7 @@ for option in "$@" ; do
         NONE=true
         ;;
       --root=*)
-        ROOT="${option:7}"
+        ROOT="`echo $option | cut -c 8-`"
         ;;
       -r)
         VAR=ROOT
@@ -235,14 +236,14 @@ fi
 #
 #   drush --root=/path
 #
-# If the Drupal root is specified via a commandline option, then we
+# If the site root is specified via a commandline option, then we
 # should always use the Drush stored at this root, if there is one.
 # We will first check for a "wrapper" script at the root, and then
 # we will look for a "launcher" script in vendor/bin.
 #
 if [ -z "$FOUND_SCRIPT" ]
 then
-  FOUND_SCRIPT="$(find_wrapper_or_launcher "$ROOT")"
+  FOUND_SCRIPT="`find_wrapper_or_launcher "$ROOT"`"
   if [ -n "$FOUND_SCRIPT" ]
   then
     cd "$ROOT"
@@ -273,7 +274,7 @@ if [ -z "$FOUND_SCRIPT" ]
 then
   if [ -f ".drush-use" ]
   then
-    FOUND_SCRIPT="$(cat .drush-use)"
+    FOUND_SCRIPT="`cat .drush-use`"
   fi
 fi
 
@@ -286,17 +287,16 @@ fi
 #
 if [ -z "$FOUND_SCRIPT" ]
 then
-  c="$(pwd)"
+  c="`pwd`"
   while [ -n "$c" ] && [ "$c" != "/" ]
   do
-    echo $c
-    FOUND_SCRIPT="$(find_wrapper_or_launcher "$c")"
+    FOUND_SCRIPT="`find_wrapper_or_launcher "$c"`"
     if [ -n "$FOUND_SCRIPT" ]
     then
       cd "$c"
       break
     fi
-    c="$(dirname $c)"
+    c="`dirname $c`"
   done
 fi
 
@@ -319,15 +319,15 @@ then
   # there is a "drush.launcher" script in the same directory,
   # then we will skip the "drush" script and use the drush launcher
   # instead.  This is because drush "wrapper" scripts should
-  # only ever exist at the ROOT OF A DRUPAL SITE, and there should
-  # NEVER be a drush "launcher" at the root of a Drupal site.
+  # only ever exist at the root of a site, and there should
+  # never be a drush "launcher" at the root of a site.
   # Therefore, if we find a "drush.launcher" next to a script
   # called "drush", we have probably found a Drush install directory,
-  # not a Drupal root.  Adjust appropriately.  Note that this
+  # not a site root.  Adjust appropriately.  Note that this
   # also catches the case where a drush "finder" script finds itself.
-  if [ -f "$(dirname "$FOUND_SCRIPT")/drush.launcher" ]
+  if [ -f "`dirname "$FOUND_SCRIPT"`/drush.launcher" ]
   then
-    FOUND_SCRIPT="$(dirname "$FOUND_SCRIPT")/drush.launcher"
+    FOUND_SCRIPT="`dirname "$FOUND_SCRIPT"`/drush.launcher"
   fi
 fi
 
