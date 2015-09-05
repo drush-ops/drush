@@ -1,131 +1,350 @@
-#!/usr/bin/env sh
+#!/bin/sh
+
 #
-# This script is a simple wrapper that will run Drush with the most appropriate
-# php executable it can find.
+# This is the Drush "finder" script, which is one part of the
+# Drush dispatching strategy.  This is the script that
+# should appear in your global $PATH, or, if using composer
+# (as usually the case), will be found in your vendor/bin directory.
 #
-# Solaris users: Add /usr/xpg4/bin to the head of your PATH
 #
+# NEVER copy this script to your Drupal root. Use examples/drush instead.
+#
+# NEVER copy this script to a directory other than its install directory.
+# Symlink to it instead.
+#
+# NEVER rename this script to "drush.launcher".  Why would you do that?
+#
+#
+# OVERVIEW OF DRUSH FINDER / WRAPPER / LAUNCHER SCRIPTS
+#
+# When the user types "drush", up to three scripts might be
+# involved in the initial launch:
+#
+#   "drush finder" -> "drush wrapper" -> "drush launcher".
+#
+# Breif description of each:
+#
+#  - Drush finder:   Finds the right Drush script and calls it.
+#  - Drush wrapper:  Contains user customizations to options.
+#  - Drush launcher: Excutes drush.php.
+#
+# A full explanation of each script follows.
+#
+#
+# DRUSH FINDER
+#
+# - The "drush" script on the user's global $PATH
+# - It's goal is to find the correct site-local Drush to run.
+#
+# The Drush finder will locate the correct site-local Drush to use
+# by examining:
+#
+#   a) The --root option
+#   b) The site set via `drush site set` in the current terminal
+#   c) The cwd
+#
+# If no site-local Drush is found, then the global Drush will be
+# used.  The Drush finder assumes that the global Drush is the
+# "Drush launcher" found in the same directory as the Drush finder itself.
+#
+# If a site-local Drush is found, then the Drush finder will call
+# either the "Drush wrapper", if it exists, or the "Drush launcher" if
+# there is no wrapper script.  If the "Drush launcher" is called, then
+# the Drush Finder will add the --local flag.  If the --local flag was
+# already passed in when the Drush Finder is called, then it will always
+# call the "Drush launcher", even if there is a Drush Wrapper, to prevent
+# possible infinite loops.
+#
+#
+# DRUSH WRAPPER
+#
+# - The "drush" script that the user copies to their Drupal __ROOT__
+# - Its goal is to allow the user to add config locations when --local is in use
+#
+# The "drush wrapper" is found in examples/drush, and may optionally
+# be copied to __ROOT__/drush by the user.  It will call the "drush launcher"
+# for the same site that it is located in.  It adds the --local flag; the
+# user is encouraged to add other options to the "drush wrapper", e.g. to set
+# the location where aliases and global commandfiles can be found.
+# We must always call the "drush wrapper" if it exists, since it
+# can be customized.  However, if the user does not want to customize
+# the site-local Drush's early options (site-alias locations, etc.),
+# then the wrapper does not need to be used.
+#
+#
+# DRUSH LAUNCHER
+#
+# - The "drush.launcher" script in vendor/bin
+# - The script formerly called "drush"
+#
+# The "drush launcher" is the traditional script that identifies PHP and
+# sets up to call drush.php.  It is called by the "drush wrapper", or
+# directly by the "drush launcher" if there is no "drush wrapper" in use.
+#
+#
+# LOCATIONS FOR THESE SCRIPTS
+#
+#   "drush finder"  :   __ROOT__/vendor/bin/drush           (composer install)
+#                       __DRUSH__/drush                     (source)
+#
+#   "drush wrapper" :   __ROOT__/drush                      (copied by user)
+#                       __DRUSH__/examples/drush            (source)
+#
+#   "drush laucher" :   __ROOT__/vendor/bin/drush.launcher  (composer install)
+#                       __DRUSH__/drush.launcher            (source)
+#
+#
+# BACKEND CALL DISPATCHING
+#
+# Backend calls are typically set up to call the "drush" script in the $PATH,
+# or perhaps some might call __ROOT__/vendor/bin/drush directly, by way
+# of the "drush-script" element in a site alias.  In either event, this is
+# the "drush finder" script.
+#
+# The backend call will always set --root.  The "drush finder" script
+# always favors the site-local Drush stored with the site indicated by the
+# --root option, if it exists.  If there is no site-local Drush, then the
+# "drush finder" will behave as usual (i.e., it will end up calling the
+# "drush launcher" located next to it).
+#
+# This should always get you the correct "Drush" for local and remote calls.
+# Note that it is also okay for aliases to specify a path directly to
+# drush.launcher, in instances where it is known that a recent version of
+# Drush is installed on the remote end.
+#
+
 
 # Get the absolute path of this executable
 SELF_DIRNAME="`dirname -- "$0"`"
 SELF_PATH="`cd -P -- "$SELF_DIRNAME" && pwd -P`/`basename -- "$0"`"
 
-# Decide if we are running a Unix shell on Windows
-if `which uname > /dev/null 2>&1`; then
-  case "`uname -a`" in
-    CYGWIN*)
-      CYGWIN=1 ;;
-    MINGW*)
-      MINGW=1 ;;
-  esac
+FOUND_SCRIPT=
+SITE_USE_DIR="$HOME/.drush/use/$$/bin"
+
+# We will look for a "drush wrapper" script that might
+# be stored in the root of a Drupal site.  If there is
+# no wrapper script, then we will look for the
+# drush.launcher script in vendor/bin.  We try just a
+# few of the most common locations; if the user relocates
+# their vendor directory anywhere else, then they must
+# use a wrapper script to locate it.  See the comment in
+# 'examples/drush' for details.
+#
+# We are somewhat "loose" about whether we are looking
+# for "drush" or "drush.launcher", because in old versions
+# of Drush, the "drush launcher" was named "drush".
+# Otherwise, there wouldn't be any point in looking for
+# "drush.launcher" at the root, or "drush" in a vendor directory.
+# We also allow users to rename their drush wrapper to
+# 'drush.wrapper' to avoid conflicting with a directory named
+# 'drush' at the Drupal root.
+DRUSH_LOCATIONS="drush vendor/bin/drush ../vendor/bin/drush sites/all/vendor/bin/drush"
+
+# Here is the function that checks each location and
+# returns the drush wrapper or drush launcher, if found.
+function find_wrapper_or_launcher {
+  LOCATON="$1"
+  for d in $DRUSH_LOCATIONS
+  do
+    if [ -f "$LOCATON/$d.launcher" ]
+    then
+      echo "$LOCATON/$d.launcher"
+      break;
+    fi
+    if [ -f "$LOCATON/$d.wrapper" ]
+    then
+      echo "$LOCATON/$d.wrapper"
+      break;
+    fi
+    if [ -f "$LOCATON/$d" ]
+    then
+      echo "$LOCATON/$d"
+      break;
+    fi
+  done
+}
+
+#
+# We need to do at least a partial parsing of the options,
+# so that we can find --root / -r and --local
+#
+VERBOSE=false
+LOCAL=false
+NONE=false
+ROOT=
+VAR=
+
+for option in "$@" ; do
+  # If a variable to set was indicated on the
+  # previous iteration, then set the value of
+  # the named variable (e.g. "ROOT") to "$option".
+  if [ -n "$VAR" ]
+  then
+    eval $VAR="$option"
+    VAR=
+  else
+    case "$option" in
+      --local)
+        LOCAL=true
+        ;;
+      @none)
+        NONE=true
+        ;;
+      --root=*)
+        ROOT="${option:7}"
+        ;;
+      -r)
+        VAR=ROOT
+        ;;
+      --verbose|-v)
+        VERBOSE=true
+        ;;
+    esac
+  fi
+done
+
+#
+# First check:
+#
+#   drush --local ...
+#   drush @none ...
+#
+# If either the --local option, or the @none alias is used, then
+# we must skip the Drush wrapper, and call the Drush launcher directly.
+#
+# In this instance, we are assuming that the 'drush' that is being
+# called is:
+#
+#  a) The global 'drush', or
+#  b) A site-local 'drush' in a vendor/bin directory.
+#
+# In either event, the appropriate 'drush.launcher' should be right next
+# to this script (stored in the same directory).
+if $NONE || $LOCAL ; then
+  if [ -f "$SELF_DIRNAME/drush.launcher" ]
+  then
+    FOUND_SCRIPT="$SELF_DIRNAME/drush.launcher"
+  else
+    echo "Could not find drush.launcher in $SELF_DIRNAME. Check your installation." >&2
+    exit 1
+  fi
 fi
 
-# Resolve symlinks - this is the equivalent of "readlink -f", but also works with non-standard OS X readlink.
-while [ -h "$SELF_PATH" ]; do
-    # 1) cd to directory of the symlink
+#
+# Second check:
+#
+#   drush --root=/path
+#
+# If the Drupal root is specified via a commandline option, then we
+# should always use the Drush stored at this root, if there is one.
+# We will first check for a "wrapper" script at the root, and then
+# we will look for a "launcher" script in vendor/bin.
+#
+if [ -z "$FOUND_SCRIPT" ]
+then
+  FOUND_SCRIPT="$(find_wrapper_or_launcher "$ROOT")"
+  if [ -n "$FOUND_SCRIPT" ]
+  then
+    cd "$ROOT"
+  fi
+fi
+
+#
+# Third check:
+#
+# If there is a "drush" symlink in the "use dir",
+# then we will use the Drush indicated by this file.
+#
+if [ -z "$FOUND_SCRIPT" ]
+then
+  if [ -f "$SITE_USE_DIR/drush" ]
+  then
+    FOUND_SCRIPT="$SITE_USE_DIR/drush"
+  fi
+fi
+
+#
+# Fourth check:
+#
+# If there is a .drush-use file, then its contents will
+# contain the path to the Drush to use.
+#
+if [ -z "$FOUND_SCRIPT" ]
+then
+  if [ -f ".drush-use" ]
+  then
+    FOUND_SCRIPT="$(cat .drush-use)"
+  fi
+fi
+
+#
+# Fifth check:
+#
+# Look for a 'drush' wrapper or launcher at the cwd,
+# and in each of the directories above the cwd.  If
+# we find one, use it.
+#
+if [ -z "$FOUND_SCRIPT" ]
+then
+  c="$(pwd)"
+  while [ -n "$c" ] && [ "$c" != "/" ]
+  do
+    echo $c
+    FOUND_SCRIPT="$(find_wrapper_or_launcher "$c")"
+    if [ -n "$FOUND_SCRIPT" ]
+    then
+      cd "$c"
+      break
+    fi
+    c="$(dirname $c)"
+  done
+fi
+
+if [ -n "$FOUND_SCRIPT" ]
+then
+  # Resolve symlinks - this is the equivalent of "readlink -f", but also works with non-standard OS X readlink.
+  while [ -h "$FOUND_SCRIPT" ]; do
+    # 1) cd to directory of the symlink (in case the symlink is relative)
     # 2) cd to the directory of where the symlink points
     # 3) Get the pwd
     # 4) Append the basename
-    DIR="`dirname -- "$SELF_PATH"`"
-    SYM="`readlink "$SELF_PATH"`"
+    DIR="`dirname -- "$FOUND_SCRIPT"`"
+    SYM="`readlink "$FOUND_SCRIPT"`"
     SYM_DIRNAME="`dirname -- "$SYM"`"
-    SELF_PATH="`cd "$DIR" && cd "$SYM_DIRNAME" && pwd`/`basename -- "$SYM"`"
-done
+    FOUND_SCRIPT="`cd "$DIR" && cd "$SYM_DIRNAME" && pwd`/`basename -- "$SYM"`"
+  done
 
-# If not exported, try to determine and export the number of columns.
-# We do not want to run `tput cols` if $TERM is empty, "unknown", or "dumb", because
-# if we do, tput will output an undesirable error message to stderr.  If
-# we redirect stderr in any way, e.g. `tput cols 2>/dev/null`, then the
-# error message is suppressed, but tput cols becomes confused about the
-# terminal and prints out the default value (80).
-if [ -z $COLUMNS ] && [ -n "$TERM" ] && [ "$TERM" != dumb ] && [ "$TERM" != unknown ] && [ -n "`which tput`" ] ; then
-  # Note to cygwin/mingw/msys users: install the ncurses package to get tput command.
-  # Note to mingw/msys users: there is no precompiled ncurses package.
-  if COLUMNS="`tput cols`"; then
-    export COLUMNS
+  # Guard against errors:  if we have found a "drush" script
+  # (that is, theoretically a drush wrapper script), and
+  # there is a "drush.launcher" script in the same directory,
+  # then we will skip the "drush" script and use the drush launcher
+  # instead.  This is because drush "wrapper" scripts should
+  # only ever exist at the ROOT OF A DRUPAL SITE, and there should
+  # NEVER be a drush "launcher" at the root of a Drupal site.
+  # Therefore, if we find a "drush.launcher" next to a script
+  # called "drush", we have probably found a Drush install directory,
+  # not a Drupal root.  Adjust appropriately.  Note that this
+  # also catches the case where a drush "finder" script finds itself.
+  if [ -f "$(dirname "$FOUND_SCRIPT")/drush.launcher" ]
+  then
+    FOUND_SCRIPT="$(dirname "$FOUND_SCRIPT")/drush.launcher"
   fi
 fi
 
-if [ -n "$DRUSH_PHP" ] ; then
-  # Use the DRUSH_PHP environment variable if it is available.
-  php="$DRUSH_PHP"
-else
-  # On MSYSGIT, we need to use "php", not the full path to php
-  if [ -n "$MINGW" ] ; then
-    php="php"
-  else
-    # Default to using the php that we find on the PATH.
-    # We check for a command line (cli) version of php, and if found use that.
-    # Note that we need the full path to php here for Dreamhost, which behaves oddly.  See http://drupal.org/node/662926
-    php="`which php-cli 2>/dev/null`"
-
-    if [ ! -x "$php" ]; then
-      php="`which php 2>/dev/null`"
-    fi
-
-    if [ ! -x "$php" ]; then
-      echo "ERROR: can't find php."; exit 1
-    fi
-  fi
+# Didn't find any site-local Drush, or @use'd Drush?
+# In that case, there should always be a drush.launcher in
+# the same directory this script is stored in; use that.
+if [ -z "$FOUND_SCRIPT" ]
+then
+  FOUND_SCRIPT="$SELF_DIRNAME/drush.launcher"
 fi
 
-# Build the path to drush.php.
-SCRIPT_PATH="`dirname "$SELF_PATH"`/drush.php"
-if [ -n "$CYGWIN" ] ; then
-  # try to determine if we are running cygwin port php or Windows native php:
-  if [ -n "`"$php" -i | grep -E '^System => Windows'`" ]; then
-    SCRIPT_PATH="`cygpath -w -a -- "$SCRIPT_PATH"`"
-  else
-    SCRIPT_PATH="`cygpath -u -a -- "$SCRIPT_PATH"`"
-  fi
+# Emit a message in verbose mode advertising the location of the
+# script we found.
+if $VERBOSE
+then
+  echo "Using the Drush script found at $FOUND_SCRIPT" >&2
 fi
 
-# Check to see if the user has provided a php.ini file or drush.ini file in any conf dir
-# Last found wins, so search in reverse priority order
-for conf_dir in "`dirname "$SELF_PATH"`" /etc/drush "$HOME/.drush" ; do
-  if [ ! -d "$conf_dir" ] ; then
-    continue
-  fi
-  # Handle paths that don't start with a drive letter on MinGW shell. Equivalent to cygpath on Cygwin.
-  if [ -n "$MINGW" ] ; then
-    conf_dir=`sh -c "cd \"$conf_dir\"; pwd -W"`
-  fi
-  if [ -f "$conf_dir/php.ini" ] ; then
-    drush_php_ini="$conf_dir/php.ini"
-  fi
-  if [ -f "$conf_dir/drush.ini" ] ; then
-    drush_php_override="$conf_dir/drush.ini"
-  fi
-done
-# If the PHP_INI environment variable is specified, then tell
-# php to use the php.ini file that it specifies.
-if [ -n "$PHP_INI" ] ; then
-  drush_php_ini="$PHP_INI"
-fi
-# If the DRUSH_INI environment variable is specified, then
-# extract all ini variable assignments from it and convert
-# them into php '-d' options. These will override similarly-named
-# options in the php.ini file
-if [ -n "$DRUSH_INI" ] ; then
-  drush_php_override="$DRUSH_INI"
-fi
-
-# Add in the php file location and/or the php override variables as appropriate
-if [ -n "$drush_php_ini" ] ; then
-  php_options="--php-ini $drush_php_ini"
-fi
-if [ -n "$drush_php_override" ] ; then
-  php_options=`grep '^[a-z_A-Z0-9.]\+ *=' $drush_php_override | sed -e 's|\([^ =]*\) *= *\(.*\)|\1="\2"|' -e 's| ||g' -e 's|^|-d |' | tr '\n\r' '  '`
-fi
-# If the PHP_OPTIONS environment variable is specified, then
-# its contents will be passed to php on the command line as
-# additional options to use.
-if [ -n "$PHP_OPTIONS" ] ; then
-  php_options="$php_options $PHP_OPTIONS"
-fi
-
-# Pass in the path to php so that drush knows which one to use if it
-# re-launches itself to run subcommands.  We will also pass in the php options.
-# Important note: Any options added here must be removed  when Drush processes
-# a #! (shebang) script.  @see drush_adjust_args_if_shebang_script()
-exec "$php" $php_options "$SCRIPT_PATH" --php="$php" --php-options="$php_options" "$@"
+# Launch the script that we found.
+"$FOUND_SCRIPT" "$@"
