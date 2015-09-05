@@ -192,7 +192,7 @@ for option in "$@" ; do
         NONE=true
         ;;
       --root=*)
-        ROOT="${option:7}"
+        ROOT="`echo $option | cut -c 8-`"
         ;;
       -r)
         VAR=ROOT
