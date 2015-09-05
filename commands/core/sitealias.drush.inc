@@ -459,11 +459,15 @@ function drush_sitealias_create_site_specific_symlinks($use_dir, $site) {
     return $terminal_specific_link;
   }
   else {
-    if (!@unlink($terminal_specific_link)) {
-      return drush_set_error('DRUSH_SYMLINK_ERROR', dt("Could not remove symlink at !link", array('!link' => $terminal_specific_link)));
+    if (is_file($terminal_specific_link)) {
+      if (!@unlink($terminal_specific_link)) {
+        return drush_set_error('DRUSH_SYMLINK_ERROR', dt("Could not remove symlink at !link", array('!link' => $terminal_specific_link)));
+      }
     }
-    if (!@unlink($global_link)) {
-      return drush_set_error('DRUSH_SYMLINK_ERROR', dt("Could not remove symlink at !link", array('!link' => $global_link)));
+    if (is_file($global_link)) {
+      if (!@unlink($global_link)) {
+        return drush_set_error('DRUSH_SYMLINK_ERROR', dt("Could not remove symlink at !link", array('!link' => $global_link)));
+      }
     }
 
     return '';
