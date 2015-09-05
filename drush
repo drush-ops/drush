@@ -1,350 +1,353 @@
-#!/bin/sh
+#!/usr/bin/env php
+<?php
 
-#
-# This is the Drush "finder" script, which is one part of the
-# Drush dispatching chain.  This is the script that
-# should appear in your global $PATH, or, if using composer
-# (as usually the case), will be found in your vendor/bin directory.
-#
-#
-# - Never copy this script to your site root. Use examples/drush instead.
-#
-# - Never copy this script to a directory other than its install directory.
-# Symlink to it instead.
-#
-# - Never rename this script to "drush.launcher".  Why would you do that?
-#
-#
-# OVERVIEW OF DRUSH FINDER / WRAPPER / LAUNCHER SCRIPTS
-#
-# When the user types "drush", up to three scripts might be
-# involved in the initial launch:
-#
-#   "drush finder" -> "drush wrapper" -> "drush launcher".
-#
-# Breif description of each:
-#
-#  - Drush finder:   Finds the right Drush script and calls it.
-#  - Drush wrapper:  Contains user customizations to options.
-#  - Drush launcher: Excutes drush.php.
-#
-# A full explanation of each script follows.
-#
-#
-# DRUSH FINDER
-#
-# - The "drush" script on the user's global $PATH
-# - It's goal is to find the correct site-local Drush to run.
-#
-# The Drush finder will locate the correct site-local Drush to use
-# by examining:
-#
-#   a) The --root option
-#   b) The site set via `drush site set` in the current terminal
-#   c) The cwd
-#
-# If no site-local Drush is found, then the global Drush will be
-# used.  The Drush finder assumes that the global Drush is the
-# "Drush launcher" found in the same directory as the Drush finder itself.
-#
-# If a site-local Drush is found, then the Drush finder will call
-# either the "Drush wrapper", if it exists, or the "Drush launcher" if
-# there is no wrapper script.  If the "Drush launcher" is called, then
-# the Drush Finder will add the --local flag.  If the --local flag was
-# already passed in when the Drush Finder is called, then it will always
-# call the "Drush launcher", even if there is a Drush Wrapper, to prevent
-# possible infinite loops.
-#
-#
-# DRUSH WRAPPER
-#
-# - The "drush" script that the user copies to their site __ROOT__
-# - Its goal is to allow the user to add options when --local is in use
-#
-# The drush "wrapper" is found in examples/drush, and may optionally
-# be copied to __ROOT__/drush by the user.  It may be named either
-# "drush" or "drush.wrapper".  It will call the "drush launcher"
-# for the same site that it is located in.  It adds the --local flag; the
-# user is encouraged to add other options to the "drush wrapper", e.g. to set
-# the location where aliases and global commandfiles can be found.
-# The drush "finder" script always calls the "drush wrapper" if it exists;
-# however, if the user does not want to customize the site-local Drush's
-# early options (site-alias locations, etc.), then the wrapper does not
-# need to be used.
-#
-#
-# DRUSH LAUNCHER
-#
-# - The "drush.launcher" script in vendor/bin
-# - The script formerly called "drush"
-#
-# The "drush launcher" is the traditional script that identifies PHP and
-# sets up to call drush.php.  It is called by the "drush wrapper", or
-# directly by the "drush launcher" if there is no "drush wrapper" in use.
-#
-#
-# LOCATIONS FOR THESE SCRIPTS
-#
-#   "drush finder"  :   __ROOT__/vendor/bin/drush           (composer install)
-#                       __DRUSH__/drush                     (source)
-#
-#   "drush wrapper" :   __ROOT__/drush                      (copied by user)
-#                       __DRUSH__/examples/drush            (source)
-#
-#   "drush laucher" :   __ROOT__/vendor/bin/drush.launcher  (composer install)
-#                       __DRUSH__/drush.launcher            (source)
-#
-#
-# BACKEND CALL DISPATCHING
-#
-# Backend calls are typically set up to call the "drush" script in the $PATH,
-# or perhaps some might call __ROOT__/vendor/bin/drush directly, by way
-# of the "drush-script" element in a site alias.  In either event, this is
-# the "drush finder" script.
-#
-# The backend call will always set --root.  The "drush finder" script
-# always favors the site-local Drush stored with the site indicated by the
-# --root option, if it exists.  If there is no site-local Drush, then the
-# "drush finder" will behave as usual (i.e., it will end up calling the
-# "drush launcher" located next to it).
-#
-# This should always get you the correct "Drush" for local and remote calls.
-# Note that it is also okay for aliases to specify a path directly to
-# drush.launcher, in instances where it is known that a recent version of
-# Drush is installed on the remote end.
-#
+/**
+ * This is the Drush "finder" script, which is one part of the
+ * Drush dispatching chain.  This is the script that
+ * should appear in your global $PATH, or, if using composer
+ * (as usually the case), will be found in your vendor/bin directory.
+ *
+ *
+ * - Never copy this script to your site root. Use examples/drush instead.
+ *
+ * - Never copy this script to a directory other than its install directory.
+ * Symlink to it instead.
+ *
+ * - Never rename this script to "drush.launcher".  Why would you do that?
+ * This is the Drush "finder" script. You can rename it to "drush.finder"
+ * if you wish.
+ *
+ *
+ * OVERVIEW OF DRUSH FINDER / WRAPPER / LAUNCHER SCRIPTS
+ *
+ * When the user types "drush", up to three scripts might be
+ * involved in the initial launch:
+ *
+ *   "drush finder" -> "drush wrapper" -> "drush launcher".
+ *
+ * Breif description of each:
+ *
+ *  - Drush finder:   Finds the right Drush script and calls it.
+ *  - Drush wrapper:  Contains user customizations to options.
+ *  - Drush launcher: Excutes drush.php.
+ *
+ * A full explanation of each script follows.
+ *
+ *
+ * DRUSH FINDER
+ *
+ * - The "drush" script on the user's global $PATH
+ * - It's goal is to find the correct site-local Drush to run.
+ *
+ * The Drush finder will locate the correct site-local Drush to use
+ * by examining:
+ *
+ *   a) The --root option
+ *   b) The site set via `drush site set` in the current terminal
+ *   c) The cwd
+ *
+ * If no site-local Drush is found, then the global Drush will be
+ * used.  The Drush finder assumes that the global Drush is the
+ * "Drush launcher" found in the same directory as the Drush finder itself.
+ *
+ * If a site-local Drush is found, then the Drush finder will call
+ * either the "Drush wrapper", if it exists, or the "Drush launcher" if
+ * there is no wrapper script.  If the "Drush launcher" is called, then
+ * the Drush Finder will add the --local flag.  If the --local flag was
+ * already passed in when the Drush Finder is called, then it will always
+ * call the "Drush launcher", even if there is a Drush Wrapper, to prevent
+ * possible infinite loops.
+ *
+ *
+ * DRUSH WRAPPER
+ *
+ * - The "drush" script that the user copies to their site __ROOT__
+ * - Its goal is to allow the user to add options when --local is in use
+ *
+ * The drush "wrapper" is found in examples/drush, and may optionally
+ * be copied to __ROOT__/drush by the user.  It may be named either
+ * "drush" or "drush.wrapper".  It will call the "drush launcher"
+ * for the same site that it is located in.  It adds the --local flag; the
+ * user is encouraged to add other options to the "drush wrapper", e.g. to set
+ * the location where aliases and global commandfiles can be found.
+ * The drush "finder" script always calls the "drush wrapper" if it exists;
+ * however, if the user does not want to customize the eary options of
+ * the site-local Drush (site-alias locations, etc.), then the wrapper does not
+ * need to be used.
+ *
+ *
+ * DRUSH LAUNCHER
+ *
+ * - The "drush.launcher" script in vendor/bin
+ * - The script formerly called "drush"
+ *
+ * The "drush launcher" is the traditional script that identifies PHP and
+ * sets up to call drush.php.  It is called by the "drush wrapper", or
+ * directly by the "drush launcher" if there is no "drush wrapper" in use.
+ *
+ *
+ * LOCATIONS FOR THESE SCRIPTS
+ *
+ *   "drush finder"  :   __ROOT__/vendor/bin/drush           (composer install)
+ *                       __DRUSH__/drush                     (source)
+ *
+ *   "drush wrapper" :   __ROOT__/drush                      (copied by user)
+ *                       __DRUSH__/examples/drush            (source)
+ *
+ *   "drush laucher" :   __ROOT__/vendor/bin/drush.launcher  (composer install)
+ *                       __DRUSH__/drush.launcher            (source)
+ *
+ *
+ * BACKEND CALL DISPATCHING
+ *
+ * Backend calls are typically set up to call the "drush" script in the $PATH,
+ * or perhaps some might call __ROOT__/vendor/bin/drush directly, by way
+ * of the "drush-script" element in a site alias.  In either event, this is
+ * the "drush finder" script.
+ *
+ * The backend call will always set --root.  The "drush finder" script
+ * always favors the site-local Drush stored with the site indicated by the
+ * --root option, if it exists.  If there is no site-local Drush, then the
+ * "drush finder" will behave as usual (i.e., it will end up calling the
+ * "drush launcher" located next to it).
+ *
+ * This should always get you the correct "Drush" for local and remote calls.
+ * Note that it is also okay for aliases to specify a path directly to
+ * drush.launcher, in instances where it is known that a recent version of
+ * Drush is installed on the remote end.
+ */
 
 
-# Get the absolute path of this executable
-SELF_DIRNAME="`dirname -- "$0"`"
-SELF_PATH="`cd -P -- "$SELF_DIRNAME" && pwd -P`/`basename -- "$0"`"
+// Get the absolute path of this executable
+$self_path = realpath(array_shift($argv));
+$self_dirname = dirname($self_path);
 
-FOUND_SCRIPT=
-SITE_USE_DIR="$HOME/.drush/use/$$/bin"
+$found_script = "";
+$home = getenv("HOME");
+$use_dir = "$home/.drush/use";
 
-# We will look for a "drush wrapper" script that might
-# be stored in the root of a site site.  If there is
-# no wrapper script, then we will look for the
-# drush.launcher script in vendor/bin.  We try just a
-# few of the most common locations; if the user relocates
-# their vendor directory anywhere else, then they must
-# use a wrapper script to locate it.  See the comment in
-# 'examples/drush' for details.
-#
-# We are somewhat "loose" about whether we are looking
-# for "drush" or "drush.launcher", because in old versions
-# of Drush, the "drush launcher" was named "drush".
-# Otherwise, there wouldn't be any point in looking for
-# "drush.launcher" at the root, or "drush" in a vendor directory.
-# We also allow users to rename their drush wrapper to
-# 'drush.wrapper' to avoid conflicting with a directory named
-# 'drush' at the site root.
-DRUSH_LOCATIONS="drush vendor/bin/drush ../vendor/bin/drush sites/all/vendor/bin/drush"
-
-# Here is the function that checks each location and
-# returns the drush wrapper or drush launcher, if found.
-find_wrapper_or_launcher() {
-  LOCATON="$1"
-  for d in $DRUSH_LOCATIONS
-  do
-    if [ -f "$LOCATON/$d.launcher" ]
-    then
-      echo "$LOCATON/$d.launcher"
-      break;
-    fi
-    if [ -f "$LOCATON/$d.wrapper" ]
-    then
-      echo "$LOCATON/$d.wrapper"
-      break;
-    fi
-    if [ -f "$LOCATON/$d" ]
-    then
-      echo "$LOCATON/$d"
-      break;
-    fi
-  done
+// Drush site-set will always write both the terminal-specific
+// and global links.  We should always use the terminal-specific
+// link if posix_getppid() is available; otherwise, we will use
+// the global location.
+$site_use_link = "$use_dir/bin/drush";
+if (function_exists('posix_getppid')) {
+  $site_use_link = $use_dir . '/' . posix_getppid() . '/bin/drush';
 }
 
-#
-# We need to do at least a partial parsing of the options,
-# so that we can find --root / -r and --local
-#
-VERBOSE=false
-LOCAL=false
-NONE=false
-ROOT=
-VAR=
+// Here is the function that checks each location and
+// returns the drush wrapper or drush launcher, if found.
+function find_wrapper_or_launcher($location) {
+  // We will look for a "drush wrapper" script that might
+  // be stored in the root of a site site.  If there is
+  // no wrapper script, then we will look for the
+  // drush.launcher script in vendor/bin.  We try just a
+  // few of the most common locations; if the user relocates
+  // their vendor directory anywhere else, then they must
+  // use a wrapper script to locate it.  See the comment in
+  // 'examples/drush' for details.
+  //
+  // We are somewhat "loose" about whether we are looking
+  // for "drush" or "drush.launcher", because in old versions
+  // of Drush, the "drush launcher" was named "drush".
+  // Otherwise, there wouldn't be any point in looking for
+  // "drush.launcher" at the root, or "drush" in a vendor directory.
+  // We also allow users to rename their drush wrapper to
+  // 'drush.wrapper' to avoid conflicting with a directory named
+  // 'drush' at the site root.
+  $drush_locations = array(
+    "drush",
+    "vendor/bin/drush",
+    "../vendor/bin/drush",
+    "sites/all/vendor/bin/drush",
+  );
 
-for option in "$@" ; do
-  # If a variable to set was indicated on the
-  # previous iteration, then set the value of
-  # the named variable (e.g. "ROOT") to "$option".
-  if [ -n "$VAR" ]
-  then
-    eval $VAR="$option"
-    VAR=
-  else
-    case "$option" in
-      --local)
-        LOCAL=true
-        ;;
-      @none)
-        NONE=true
-        ;;
-      --root=*)
-        ROOT="`echo $option | cut -c 8-`"
-        ;;
-      -r)
-        VAR=ROOT
-        ;;
-      --verbose|-v)
-        VERBOSE=true
-        ;;
-    esac
-  fi
-done
+  foreach ($drush_locations as $d) {
+    foreach (array('.launcher', '.wrapper', '') as $suffix) {
+      if (is_file("$location/$d$suffix")) {
+        return "$location/$d$suffix";
+      }
+    }
+  }
+  return "";
+}
 
-#
-# First check:
-#
-#   drush --local ...
-#   drush @none ...
-#
-# If either the --local option, or the @none alias is used, then
-# we must skip the Drush wrapper, and call the Drush launcher directly.
-#
-# In this instance, we are assuming that the 'drush' that is being
-# called is:
-#
-#  a) The global 'drush', or
-#  b) A site-local 'drush' in a vendor/bin directory.
-#
-# In either event, the appropriate 'drush.launcher' should be right next
-# to this script (stored in the same directory).
-if $NONE || $LOCAL ; then
-  if [ -f "$SELF_DIRNAME/drush.launcher" ]
-  then
-    FOUND_SCRIPT="$SELF_DIRNAME/drush.launcher"
-  else
-    echo "Could not find drush.launcher in $SELF_DIRNAME. Check your installation." >&2
-    exit 1
-  fi
-fi
 
-#
-# Second check:
-#
-#   drush --root=/path
-#
-# If the site root is specified via a commandline option, then we
-# should always use the Drush stored at this root, if there is one.
-# We will first check for a "wrapper" script at the root, and then
-# we will look for a "launcher" script in vendor/bin.
-#
-if [ -z "$FOUND_SCRIPT" ]
-then
-  FOUND_SCRIPT="`find_wrapper_or_launcher "$ROOT"`"
-  if [ -n "$FOUND_SCRIPT" ]
-  then
-    cd "$ROOT"
-  fi
-fi
+//
+// We need to do at least a partial parsing of the options,
+// so that we can find --root / -r and --local
+//
+$VERBOSE=FALSE;
+$LOCAL=FALSE;
+$NONE=FALSE;
+$ROOT=FALSE;
+$VAR=FALSE;
 
-#
-# Third check:
-#
-# If there is a "drush" symlink in the "use dir",
-# then we will use the Drush indicated by this file.
-#
-if [ -z "$FOUND_SCRIPT" ]
-then
-  if [ -f "$SITE_USE_DIR/drush" ]
-  then
-    FOUND_SCRIPT="$SITE_USE_DIR/drush"
-  fi
-fi
+foreach ($argv as $option) {
+  // If a variable to set was indicated on the
+  // previous iteration, then set the value of
+  // the named variable (e.g. "ROOT") to "$option".
+  if ($VAR) {
+    $$VAR = "$option";
+    $VAR = FALSE;
+  }
+  else {
+    switch ($option) {
+      case "--local":
+        $LOCAL = TRUE;
+        break;
 
-#
-# Fourth check:
-#
-# If there is a .drush-use file, then its contents will
-# contain the path to the Drush to use.
-#
-if [ -z "$FOUND_SCRIPT" ]
-then
-  if [ -f ".drush-use" ]
-  then
-    FOUND_SCRIPT="`cat .drush-use`"
-  fi
-fi
+      case "@none":
+        $NONE = TRUE;
+        break;
 
-#
-# Fifth check:
-#
-# Look for a 'drush' wrapper or launcher at the cwd,
-# and in each of the directories above the cwd.  If
-# we find one, use it.
-#
-if [ -z "$FOUND_SCRIPT" ]
-then
-  c="`pwd`"
-  while [ -n "$c" ] && [ "$c" != "/" ]
-  do
-    FOUND_SCRIPT="`find_wrapper_or_launcher "$c"`"
-    if [ -n "$FOUND_SCRIPT" ]
-    then
-      cd "$c"
-      break
-    fi
-    c="`dirname $c`"
-  done
-fi
+      case "-r":
+        $VAR = "ROOT";
+        break;
 
-if [ -n "$FOUND_SCRIPT" ]
-then
-  # Resolve symlinks - this is the equivalent of "readlink -f", but also works with non-standard OS X readlink.
-  while [ -h "$FOUND_SCRIPT" ]; do
-    # 1) cd to directory of the symlink (in case the symlink is relative)
-    # 2) cd to the directory of where the symlink points
-    # 3) Get the pwd
-    # 4) Append the basename
-    DIR="`dirname -- "$FOUND_SCRIPT"`"
-    SYM="`readlink "$FOUND_SCRIPT"`"
-    SYM_DIRNAME="`dirname -- "$SYM"`"
-    FOUND_SCRIPT="`cd "$DIR" && cd "$SYM_DIRNAME" && pwd`/`basename -- "$SYM"`"
-  done
+      case "--verbose":
+      case "-v":
+        $VERBOSE = TRUE;
+        break;
+    }
+    if (substr($option, 0, 7) == "--root=") {
+      $ROOT = substr($option, 7);
+    }
+  }
+}
 
-  # Guard against errors:  if we have found a "drush" script
-  # (that is, theoretically a drush wrapper script), and
-  # there is a "drush.launcher" script in the same directory,
-  # then we will skip the "drush" script and use the drush launcher
-  # instead.  This is because drush "wrapper" scripts should
-  # only ever exist at the root of a site, and there should
-  # never be a drush "launcher" at the root of a site.
-  # Therefore, if we find a "drush.launcher" next to a script
-  # called "drush", we have probably found a Drush install directory,
-  # not a site root.  Adjust appropriately.  Note that this
-  # also catches the case where a drush "finder" script finds itself.
-  if [ -f "`dirname "$FOUND_SCRIPT"`/drush.launcher" ]
-  then
-    FOUND_SCRIPT="`dirname "$FOUND_SCRIPT"`/drush.launcher"
-  fi
-fi
+//
+// First check:
+//
+//   drush --local ...
+//   drush @none ...
+//
+// If either the --local option, or the @none alias is used, then
+// we must skip the Drush wrapper, and call the Drush launcher directly.
+//
+// In this instance, we are assuming that the 'drush' that is being
+// called is:
+//
+//  a) The global 'drush', or
+//  b) A site-local 'drush' in a vendor/bin directory.
+//
+// In either event, the appropriate 'drush.launcher' should be right next
+// to this script (stored in the same directory).
+if ($NONE || $LOCAL) {
+  if (is_file("$self_dirname/drush.launcher")) {
+    $found_script = "$self_dirname/drush.launcher";
+  }
+  else {
+    fwrite(STDERR, "Could not find drush.launcher in $self_dirname. Check your installation.\n");
+    exit(1);
+  }
+}
 
-# Didn't find any site-local Drush, or @use'd Drush?
-# In that case, there should always be a drush.launcher in
-# the same directory this script is stored in; use that.
-if [ -z "$FOUND_SCRIPT" ]
-then
-  FOUND_SCRIPT="$SELF_DIRNAME/drush.launcher"
-fi
+//
+// Second check:
+//
+//   drush --root=/path
+//
+// If the site root is specified via a commandline option, then we
+// should always use the Drush stored at this root, if there is one.
+// We will first check for a "wrapper" script at the root, and then
+// we will look for a "launcher" script in vendor/bin.
+//
+if (empty($found_script)) {
+  $found_script = find_wrapper_or_launcher($ROOT);
+  if (!empty("$found_script")) {
+    chdir("$ROOT");
+  }
+}
 
-# Emit a message in verbose mode advertising the location of the
-# script we found.
-if $VERBOSE
-then
-  echo "Using the Drush script found at $FOUND_SCRIPT" >&2
-fi
+//
+// Third check:
+//
+// If there is a "drush" symlink in the "use dir",
+// then we will use the Drush indicated by this file.
+//
+if (empty($found_script)) {
+  if (is_file("$site_use_link")) {
+    $found_script = "$site_use_link";
+  }
+}
 
-# Launch the script that we found.
-"$FOUND_SCRIPT" "$@"
+//
+// Fourth check:
+//
+// If there is a .drush-use file, then its contents will
+// contain the path to the Drush to use.
+//
+if (empty($found_script)) {
+  if (is_file(".drush-use")) {
+    $found_script = file_get_contents(".drush-use");
+  }
+}
+
+//
+// Fifth check:
+//
+// Look for a 'drush' wrapper or launcher at the cwd,
+// and in each of the directories above the cwd.  If
+// we find one, use it.
+//
+if (empty($found_script)) {
+  $c = getcwd();
+  while (!empty($c) && ($c != "/")) {
+    $found_script = find_wrapper_or_launcher($c);
+    if ($found_script) {
+      chdir($c);
+      break;
+    }
+    $c = dirname($c);
+  }
+}
+
+if (!empty("$found_script")) {
+  $found_script = realpath($found_script);
+
+  // Guard against errors:  if we have found a "drush" script
+  // (that is, theoretically a drush wrapper script), and
+  // there is a "drush.launcher" script in the same directory,
+  // then we will skip the "drush" script and use the drush launcher
+  // instead.  This is because drush "wrapper" scripts should
+  // only ever exist at the root of a site, and there should
+  // never be a drush "launcher" at the root of a site.
+  // Therefore, if we find a "drush.launcher" next to a script
+  // called "drush", we have probably found a Drush install directory,
+  // not a site root.  Adjust appropriately.  Note that this
+  // also catches the case where a drush "finder" script finds itself.
+  if (is_file(dirname($found_script) . "/drush.launcher")) {
+    $found_script = dirname($found_script) . "/drush.launcher";
+  }
+}
+
+// Didn't find any site-local Drush, or @use'd Drush?
+// In that case, there should always be a drush.launcher in
+// the same directory this script is stored in; use that.
+if (empty($found_script)) {
+  $found_script = "$self_dirname/drush.launcher";
+}
+
+// Emit a message in verbose mode advertising the location of the
+// script we found.
+if ($VERBOSE) {
+  fwrite(STDERR, "Using the Drush script found at $found_script\n");
+}
+
+// Prepare the environment for pnctl_exec.
+$env = $_ENV;
+
+// If PHP is not configured correctly, $_ENV will be
+// empty.  In these cases, it is still possible to
+// get environment variable values with getenv(), but
+// we cannot determine the names of all of the available
+// variables.  Maybe we should just fail here?
+foreach (array('PATH', 'HOME', 'USER') as $name) {
+  $env[$name] = getenv($name);
+}
+
+// Launch the new script in the same process.
+// If the launch succeeds, then it will not return.
+pcntl_exec($found_script, $argv, $env);
+exit(1);
