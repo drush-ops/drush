@@ -290,7 +290,6 @@ then
   c="`pwd`"
   while [ -n "$c" ] && [ "$c" != "/" ]
   do
-    echo $c
     FOUND_SCRIPT="`find_wrapper_or_launcher "$c"`"
     if [ -n "$FOUND_SCRIPT" ]
     then
