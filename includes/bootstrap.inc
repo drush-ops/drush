@@ -160,7 +160,12 @@ function drush_get_bootstrap_candidate_classnames() {
   return $candidates;
 }
 
+/**
+ * Look up the best bootstrap class for the given location
+ * from the set of available candidates.
+ */
 function drush_bootstrap_class_for_root($path) {
+  drush_load_bootstrap_commandfile_at_path($path);
   $candidates = drush_get_bootstrap_candidates();
   foreach ($candidates as $candidate) {
     if ($candidate->valid_root($path)) {
@@ -168,6 +173,23 @@ function drush_bootstrap_class_for_root($path) {
     }
   }
   return NULL;
+}
+
+/**
+ * Check to see if there is a bootstrap class available
+ * at the specified location; if there is, load it.
+ */
+function drush_load_bootstrap_commandfile_at_path($path) {
+  static $paths = array();
+
+  if (!empty($path) && (!array_key_exists($path, $paths))) {
+    $paths[$path] = TRUE;
+    // Check to see if we have any bootstrap classes in this location.
+    $bootstrap_class_dir = $path . '/drush/bootstrap';
+    if (is_dir($bootstrap_class_dir)) {
+      _drush_add_commandfiles(array($bootstrap_class_dir), DRUSH_BOOTSTRAP_DRUSH);
+    }
+  }
 }
 
 /**
