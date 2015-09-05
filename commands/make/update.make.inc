@@ -5,6 +5,9 @@
  * make-update command implementation.
  */
 
+use SebastianBergmann\Diff\LCS\TimeEfficientImplementation;
+use SebastianBergmann\Diff\Differ;
+
 /**
  * Command callback for make-update.
  */
@@ -87,8 +90,8 @@ function drush_make_update($makefile = NULL) {
       $header .= "+++ New\n";
     }
 
-    $differ = new SebastianBergmann\Diff\Differ($header);
-    $lcs = new SebastianBergmann\Diff\LCS\TimeEfficientImplementation();
+    $differ = new Differ($header);
+    $lcs = new TimeEfficientImplementation();
     $diff = $differ->diff($old, $new, $lcs);
 
     if (!$file) {
