@@ -154,6 +154,8 @@ function make_drush_command() {
         'description' => 'Save to a file. If not provided, the updated makefile will be dump to stdout.',
         'example-value' => 'updated.make',
       ),
+      'security-only'  => 'Only update modules that have security updates available.',
+      'diff' => 'Return the diff instead of the whole new makefile.',
     ),
     'engines' => array('release_info', 'update_status'),
   );

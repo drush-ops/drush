@@ -14,6 +14,7 @@ function drush_make_update($makefile = NULL) {
 
   make_prepare_projects(FALSE, $info);
   $make_projects = drush_get_option('DRUSH_MAKE_PROJECTS', FALSE);
+  $diff = drush_get_option('diff');
 
   // Pick projects coming from drupal.org and adjust its structure
   // to feed update_status engine.
@@ -63,6 +64,38 @@ function drush_make_update($makefile = NULL) {
     if (!$security_only || ($security_only && $project_update_info['status'] == DRUSH_UPDATESTATUS_NOT_SECURE)) {
       $make_projects[$project_name]['download']['full_version'] = $project_update_info['recommended'];
     }
+  }
+
+  if ($diff) {
+    ob_start();
+    make_generate_from_makefile(NULL, $makefile);
+    $old = ob_get_clean();
+
+    drush_set_option('DRUSH_MAKE_PROJECTS', $make_projects);
+
+    ob_start();
+    make_generate_from_makefile(NULL, $makefile);
+    $new = ob_get_clean();
+
+    $file = drush_get_option('result-file');
+
+    $header = "--- {$makefile}\n";
+    if ($file) {
+      $header .= "+++ {$file}\n";
+    }
+    else {
+      $header .= "+++ New\n";
+    }
+
+    $differ = new SebastianBergmann\Diff\Differ($header);
+    $lcs = new SebastianBergmann\Diff\LCS\TimeEfficientImplementation();
+    $diff = $differ->diff($old, $new, $lcs);
+
+    if (!$file) {
+      return drush_print($diff);
+    }
+
+    return file_put_contents($file, $diff);
   }
 
   // Inject back make projects and generate the updated makefile.
