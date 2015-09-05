@@ -339,12 +339,15 @@ if ($VERBOSE) {
 $env = $_ENV;
 
 // If PHP is not configured correctly, $_ENV will be
-// empty.  In these cases, it is still possible to
-// get environment variable values with getenv(), but
-// we cannot determine the names of all of the available
-// variables.  Maybe we should just fail here?
-foreach (array('PATH', 'HOME', 'USER') as $name) {
-  $env[$name] = getenv($name);
+// empty.  Drush counts on the fact that environment
+// variables will always be passed through, so we
+// need to repair this situation.
+if (empty($env)) {
+  exec('printenv', $env_items);
+  foreach ($env_items as $item) {
+    list($key, $value) = explode('=', $item, 2);
+    $env[$key] = $value;
+  }
 }
 
 // Launch the new script in the same process.
