@@ -117,10 +117,7 @@
  * Drush is installed on the remote end.
  */
 
-
-// Get the absolute path of this executable
-$self_path = realpath(array_shift($argv));
-$self_dirname = dirname($self_path);
+include __DIR__ . '/includes/startup.inc';
 
 $found_script = "";
 $home = getenv("HOME");
@@ -134,44 +131,6 @@ $site_use_link = "$use_dir/bin/drush";
 if (function_exists('posix_getppid')) {
   $site_use_link = $use_dir . '/' . posix_getppid() . '/bin/drush';
 }
-
-// Here is the function that checks each location and
-// returns the drush wrapper or drush launcher, if found.
-function find_wrapper_or_launcher($location) {
-  // We will look for a "drush wrapper" script that might
-  // be stored in the root of a site site.  If there is
-  // no wrapper script, then we will look for the
-  // drush.launcher script in vendor/bin.  We try just a
-  // few of the most common locations; if the user relocates
-  // their vendor directory anywhere else, then they must
-  // use a wrapper script to locate it.  See the comment in
-  // 'examples/drush' for details.
-  //
-  // We are somewhat "loose" about whether we are looking
-  // for "drush" or "drush.launcher", because in old versions
-  // of Drush, the "drush launcher" was named "drush".
-  // Otherwise, there wouldn't be any point in looking for
-  // "drush.launcher" at the root, or "drush" in a vendor directory.
-  // We also allow users to rename their drush wrapper to
-  // 'drush.wrapper' to avoid conflicting with a directory named
-  // 'drush' at the site root.
-  $drush_locations = array(
-    "drush",
-    "vendor/bin/drush",
-    "../vendor/bin/drush",
-    "sites/all/vendor/bin/drush",
-  );
-
-  foreach ($drush_locations as $d) {
-    foreach (array('.launcher', '.wrapper', '') as $suffix) {
-      if (is_file("$location/$d$suffix")) {
-        return "$location/$d$suffix";
-      }
-    }
-  }
-  return "";
-}
-
 
 //
 // We need to do at least a partial parsing of the options,
@@ -234,11 +193,11 @@ foreach ($argv as $option) {
 // In either event, the appropriate 'drush.launcher' should be right next
 // to this script (stored in the same directory).
 if ($NONE || $LOCAL) {
-  if (is_file("$self_dirname/drush.launcher")) {
-    $found_script = "$self_dirname/drush.launcher";
+  if (is_file(__DIR__ . "/drush.launcher")) {
+    $found_script = __DIR__ . "/drush.launcher";
   }
   else {
-    fwrite(STDERR, "Could not find drush.launcher in $self_dirname. Check your installation.\n");
+    fwrite(STDERR, "Could not find drush.launcher in " . __DIR__ . ". Check your installation.\n");
     exit(1);
   }
 }
@@ -326,7 +285,7 @@ if (!empty("$found_script")) {
 // In that case, there should always be a drush.launcher in
 // the same directory this script is stored in; use that.
 if (empty($found_script)) {
-  $found_script = "$self_dirname/drush.launcher";
+  $found_script = __DIR__ . "/drush.launcher";
 }
 
 // Emit a message in verbose mode advertising the location of the
@@ -334,6 +293,11 @@ if (empty($found_script)) {
 if ($VERBOSE) {
   fwrite(STDERR, "Using the Drush script found at $found_script\n");
 }
+
+// Get the arguments for the command.  Shift off argv[0],
+// which contains the name of this script.
+$arguments = $argv;
+array_shift($arguments);
 
 // Prepare the environment for pnctl_exec.
 $env = $_ENV;
@@ -352,5 +316,5 @@ if (empty($env)) {
 
 // Launch the new script in the same process.
 // If the launch succeeds, then it will not return.
-pcntl_exec($found_script, $argv, $env);
+pcntl_exec($found_script, $arguments, $env);
 exit(1);
