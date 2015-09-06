@@ -25,6 +25,8 @@
 #
 # IMPORTANT:  Modify the path below if your 'vendor' directory has been
 # relocated to another location in your composer.json file.
+# `../vendor/bin/drush.launcher --local $@` is a common variant for
+# composer-managed Drupal sites.
 #
 cd "`dirname $0`"
 vendor/bin/drush.launcher --local $@
