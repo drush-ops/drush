@@ -123,14 +123,10 @@ $found_script = "";
 $home = getenv("HOME");
 $use_dir = "$home/.drush/use";
 
-// Drush site-set will always write both the terminal-specific
-// and global links.  We should always use the terminal-specific
-// link if posix_getppid() is available; otherwise, we will use
-// the global location.
-$site_use_link = "$use_dir/bin/drush";
-if (function_exists('posix_getppid')) {
-  $site_use_link = $use_dir . '/' . posix_getppid() . '/bin/drush';
-}
+// Get the arguments for the command.  Shift off argv[0],
+// which contains the name of this script.
+$arguments = $argv;
+array_shift($arguments);
 
 //
 // We need to do at least a partial parsing of the options,
@@ -138,26 +134,23 @@ if (function_exists('posix_getppid')) {
 //
 $VERBOSE=FALSE;
 $LOCAL=FALSE;
-$NONE=FALSE;
 $ROOT=FALSE;
+$COMMAND=FALSE;
+$ALIAS=FALSE;
 $VAR=FALSE;
 
-foreach ($argv as $option) {
+foreach ($arguments as $arg) {
   // If a variable to set was indicated on the
   // previous iteration, then set the value of
-  // the named variable (e.g. "ROOT") to "$option".
+  // the named variable (e.g. "ROOT") to "$arg".
   if ($VAR) {
-    $$VAR = "$option";
+    $$VAR = "$arg";
     $VAR = FALSE;
   }
   else {
-    switch ($option) {
+    switch ($arg) {
       case "--local":
         $LOCAL = TRUE;
-        break;
-
-      case "@none":
-        $NONE = TRUE;
         break;
 
       case "-r":
@@ -169,14 +162,22 @@ foreach ($argv as $option) {
         $VERBOSE = TRUE;
         break;
     }
-    if (substr($option, 0, 7) == "--root=") {
-      $ROOT = substr($option, 7);
+    if (!$COMMAND && !$ALIAS && ($arg[0] == '@')) {
+      $ALIAS = $arg;
+    }
+    elseif (!$COMMAND && ($arg[0] != '-')) {
+      $COMMAND = $arg;
+    }
+    if (substr($arg, 0, 7) == "--root=") {
+      $ROOT = substr($arg, 7);
     }
   }
 }
 
+$NONE=($ALIAS == "@none");
+
 //
-// First check:
+// Check for @none or --local usage:
 //
 //   drush --local ...
 //   drush @none ...
@@ -203,7 +204,7 @@ if ($NONE || $LOCAL) {
 }
 
 //
-// Second check:
+// Check for a root option:
 //
 //   drush --root=/path
 //
@@ -220,20 +221,6 @@ if (empty($found_script)) {
 }
 
 //
-// Third check:
-//
-// If there is a "drush" symlink in the "use dir",
-// then we will use the Drush indicated by this file.
-//
-if (empty($found_script)) {
-  if (is_file("$site_use_link")) {
-    $found_script = "$site_use_link";
-  }
-}
-
-//
-// Fourth check:
-//
 // If there is a .drush-use file, then its contents will
 // contain the path to the Drush to use.
 //
@@ -243,8 +230,6 @@ if (empty($found_script)) {
   }
 }
 
-//
-// Fifth check:
 //
 // Look for a 'drush' wrapper or launcher at the cwd,
 // and in each of the directories above the cwd.  If
@@ -293,11 +278,6 @@ if (empty($found_script)) {
 if ($VERBOSE) {
   fwrite(STDERR, "Using the Drush script found at $found_script\n");
 }
-
-// Get the arguments for the command.  Shift off argv[0],
-// which contains the name of this script.
-$arguments = $argv;
-array_shift($arguments);
 
 // Prepare the environment for pnctl_exec.
 $env = $_ENV;
