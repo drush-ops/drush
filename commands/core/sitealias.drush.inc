@@ -398,8 +398,7 @@ function drush_sitealias_site_set($site = '@none') {
       // exists, in $HOME/.drush/use/__PPID__/bin and
       // $HOME/.drush/use/bin, or remove both of those
       // if there is no site-local Drush.
-      $use_dir = drush_server_home() . '/.drush/use';
-      $terminal_specific_link = drush_sitealias_create_site_specific_symlinks($use_dir, $site);
+      $terminal_specific_link = drush_sitealias_create_site_specific_symlinks($site);
       if ($terminal_specific_link === FALSE) {
         return FALSE;
       }
@@ -427,41 +426,44 @@ function drush_sitealias_site_set($site = '@none') {
  *   path to the terminal-specific symlink created, or an empty
  *   string if a symlink is instead removed.
  */
-function drush_sitealias_create_site_specific_symlinks($use_dir, $site) {
-  drush_mkdir($use_dir);
-  $terminal_specific_link = $use_dir . '/' . posix_getppid() . '/bin';
-  $global_link = $use_dir . '/bin';
+function drush_sitealias_create_site_specific_symlinks($site, $use_dir = FALSE) {
+  // Get the path to the link files.
+  $terminal_specific_link = drush_get_terminal_specific_use_link_path($use_dir);
+  $global_link = drush_get_global_use_link_path($use_dir);
 
   $alias_record = drush_sitealias_get_record($site);
   $root = sitealias_find_local_drupal_root(array($alias_record));
-  $site_local_drush_dir = FALSE;
+  $site_local_drush_target = FALSE;
   if (!empty($root)) {
-    $search_locations = array('.', 'core', '..');
-    foreach (array('vendor/bin', 'vendor/drush/drush') as $bin_dir) {
-      foreach ($search_locations as $loc) {
-        $drush_test = "$root/$loc/$bin_dir";
-        if (!$site_local_drush_dir && file_exists($drush_test . '/drush')) {
-          $site_local_drush_dir = $drush_test;
-          break 2;
-        }
-      }
-    }
+    $site_local_drush_target = find_wrapper_or_launcher($root);
   }
-  if ($site_local_drush_dir) {
+  if ($site_local_drush_target) {
     drush_mkdir(dirname($terminal_specific_link));
-    if (!@symlink($site_local_drush_dir, $terminal_specific_link)) {
+    if (!@symlink($site_local_drush_target, $terminal_specific_link)) {
       return drush_set_error('DRUSH_SYMLINK_ERROR', dt("Could not create symlink at !link", array('!link' => $terminal_specific_link)));
     }
-    if (!@symlink($site_local_drush_dir, $global_link)) {
+    drush_mkdir(dirname($global_link));
+    if (!@symlink($site_local_drush_target, $global_link)) {
       return drush_set_error('DRUSH_SYMLINK_ERROR', dt("Could not create symlink at !link", array('!link' => $global_link)));
     }
 
     return $terminal_specific_link;
   }
   else {
+    // If there is no site-specific Drush script associated
+    // with this alias, then remove the terminal-specific and
+    // global "use" symlinks.
     if (is_file($terminal_specific_link)) {
       if (!@unlink($terminal_specific_link)) {
         return drush_set_error('DRUSH_SYMLINK_ERROR', dt("Could not remove symlink at !link", array('!link' => $terminal_specific_link)));
+      }
+      // If there is a terminal-specific link (it will be at
+      // the same path as the global link if not), then also
+      // remove the PPID directory, and the 'bin' directory
+      // inside it.
+      if ($terminal_specific_link != $global_link) {
+        @rmdir(dirname($terminal_specific_link));
+        @rmdir(dirname(dirname($terminal_specific_link)));
       }
     }
     if (is_file($global_link)) {
