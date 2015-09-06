@@ -187,7 +187,7 @@ function drush_load_bootstrap_commandfile_at_path($path) {
     // Check to see if we have any bootstrap classes in this location.
     $bootstrap_class_dir = $path . '/drush/bootstrap';
     if (is_dir($bootstrap_class_dir)) {
-      _drush_add_commandfiles(array($bootstrap_class_dir), DRUSH_BOOTSTRAP_DRUSH);
+      _drush_add_commandfiles(array($bootstrap_class_dir), DRUSH_BOOTSTRAP_NONE);
     }
   }
 }
