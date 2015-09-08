@@ -84,12 +84,12 @@ Do not use both types of declarations for a single project in your makefile.
             # Picks the latest release.
             version: ~
 
-        projects
+        projects:
           views:
             version: "2.8"
 
-        projects
-          views
+        projects:
+          views:
             version: "3.0-alpha2"
 
         # Shorthand syntax for versions if no other options are to be specified

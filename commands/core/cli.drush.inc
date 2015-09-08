@@ -20,10 +20,13 @@ function drush_cli_core_cli() {
   $shell = new Psy\Shell();
 
   if (drush_drupal_major_version() >= 8) {
+    // Register the assertion handler so exceptions are thrown instead of errors
+    // being triggered. This plays nicer with PsySH.
+    \Drupal\Component\Assertion\Handle::register();
     $shell->setScopeVariables(['container' => \Drupal::getContainer()]);
   }
 
-  // Psysh will never return control to us, but our shutdown handler will still
+  // PsySH will never return control to us, but our shutdown handler will still
   // run after the user presses ^D.  Mark this command as completed to avoid a
   // spurious error message.
   drush_set_context('DRUSH_EXECUTION_COMPLETED', TRUE);
