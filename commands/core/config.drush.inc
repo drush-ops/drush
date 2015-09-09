@@ -40,8 +40,8 @@ function config_drush_command() {
     'required-arguments' => 1,
     'options' => array(
       'source' => array(
-        'description' => 'The config storage source to read. recognized values are \'active \'and \'staging\'.',
-        'example-value' => 'active',
+        'description' => 'The config storage source to read. Additional labels may be defined in settings.php',
+        'example-value' => 'staging',
         'value' => 'required',
       ),
       'include-overridden' => array(
@@ -61,7 +61,7 @@ function config_drush_command() {
   );
 
   $items['config-set'] = array(
-    'description' => 'Set config value directly in active configuration.',
+    'description' => 'Set config value directly.',
     'arguments' => array(
       'config-name' => 'The config object name, for example "system.site".',
       'key' => 'The config key, for example "page.front".',
@@ -87,7 +87,7 @@ function config_drush_command() {
   );
 
   $items['config-export'] = array(
-    'description' => 'Export config from the active directory.',
+    'description' => 'Export configuration to a directory.',
     'core' => array('8+'),
     'aliases' => array('cex'),
     'arguments' => array(
