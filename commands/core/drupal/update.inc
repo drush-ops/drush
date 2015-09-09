@@ -208,7 +208,7 @@ function drush_update_batch() {
   // Apply post update hooks.
   $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateFunctions();
   if ($post_updates) {
-    $operations[] = ['drupal_flush_all_caches', []];
+    $operations[] = ['drush_drupal_cache_clear_all', []];
     foreach ($post_updates as $function) {
       $operations[] = ['update_invoke_post_update', [$function]];
     }
