@@ -753,4 +753,24 @@ class makeMakefileCase extends CommandUnishTestCase {
   function testMakeUseDistributionAsCore() {
     $this->runMakefileTest('use-distribution-as-core');
   }
+
+  /**
+   * Test that files without a core attribute are correctly identified.
+   */
+  public function testNoCoreMakefileParsing() {
+    require __DIR__ . '/../commands/make/make.utilities.inc';
+
+    // INI.
+    $data = file_get_contents(__DIR__ . '/makefiles/no-core.make');
+    $parsed = _make_determine_format($data);
+    $this->assertEquals('ini', $parsed['format']);
+    $this->assertEquals(42, $parsed['projects']['foo']['version']);
+
+    // YAML.
+    $data = file_get_contents(__DIR__ . '/makefiles/no-core.make.yml');
+    $parsed = _make_determine_format($data);
+    $this->assertEquals('yaml', $parsed['format']);
+    $this->assertEquals(42, $parsed['projects']['foo']['version']);
+  }
+
 }
