@@ -17,7 +17,7 @@ class siteSetCommandCase extends CommandUnishTestCase {
 
     $this->drush('ev', array("drush_invoke('site-set', '$alias'); print drush_sitealias_site_get();"));
     $output = $this->getOutput();
-    $this->assertEquals("Site set to $alias\n$alias", $output);
+    $this->assertEquals("$alias", $output);
 
     $this->drush('site-set', array());
     $output = $this->getOutput();
@@ -25,15 +25,24 @@ class siteSetCommandCase extends CommandUnishTestCase {
 
     $this->drush('site-set', array($alias));
     $expected = 'Site set to ' . $alias;
-    $output = $this->getOutput();
+    $output = $this->getErrorOutput();
+    $output = trim(rtrim($output, "[ok]"));
     $this->assertEquals($expected, $output);
 
+    $this->drush('site-set', array());
+    $output = $this->getErrorOutput();
+    $output = trim(rtrim($output, "[ok]"));
+    $this->assertEquals('Site set to @none', $output);
+
     $this->drush('ev', array("drush_invoke('site-set', '@none'); drush_invoke('site-set', '$alias'); drush_invoke('site-set', '@none'); drush_invoke('site-set', '-'); print drush_sitealias_site_get();"));
+    $stderr = $this->getErrorOutputAsList();
+    $stderr = array_map(function ($line) { return trim(rtrim($line, "[ok]")); }, $stderr);
+    $stderr = implode("\n", $stderr);
     $output = $this->getOutput();
+    $this->assertEquals($alias, $output);
     $this->assertEquals("Site set to @none
 Site set to $alias
 Site set to @none
-Site set to $alias
-$alias", $output);
+Site set to $alias", $stderr);
   }
 }

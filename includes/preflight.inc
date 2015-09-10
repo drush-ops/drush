@@ -35,6 +35,7 @@ function drush_preflight_prepare() {
 
   $classloader = require $vendor_path;
 
+  require_once DRUSH_BASE_PATH . '/includes/startup.inc';
   require_once DRUSH_BASE_PATH . '/includes/bootstrap.inc';
   require_once DRUSH_BASE_PATH . '/includes/environment.inc';
   require_once DRUSH_BASE_PATH . '/includes/command.inc';
