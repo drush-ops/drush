@@ -380,7 +380,8 @@ abstract class DrupalBoot extends BaseBoot {
   function bootstrap_drupal_site_validate_settings_present() {
     $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
 
-    $conf_path = drush_bootstrap_value('conf_path', \conf_path(TRUE, TRUE));
+    $drush_uri = _drush_bootstrap_selected_uri();
+    $conf_path = drush_bootstrap_value('conf_path', \drush_conf_path($drush_uri, TRUE));
     $conf_file = "$conf_path/settings.php";
     if (!file_exists($conf_file)) {
       return drush_bootstrap_error('DRUPAL_SITE_SETTINGS_NOT_FOUND', dt("Could not find a Drupal settings.php file at !file.",
