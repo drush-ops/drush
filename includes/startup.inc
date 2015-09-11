@@ -125,11 +125,11 @@ function drush_startup($argv) {
   // In either event, the appropriate 'drush.launcher' should be right next
   // to this script (stored in the same directory).
   if ($NONE || $LOCAL) {
-    if (is_file(__DIR__ . "/drush.launcher")) {
-      $found_script = __DIR__ . "/drush.launcher";
+    if (is_file(dirname(__DIR__) . "/drush.launcher")) {
+      $found_script = dirname(__DIR__) . "/drush.launcher";
     }
     else {
-      fwrite(STDERR, "Could not find drush.launcher in " . __DIR__ . ". Check your installation.\n");
+      fwrite(STDERR, "Could not find drush.launcher in " . dirname(__DIR__) . ". Check your installation.\n");
       exit(1);
     }
   }
@@ -201,7 +201,7 @@ function drush_startup($argv) {
   // In that case, there should always be a drush.launcher in
   // the same directory this script is stored in; use that.
   if (empty($found_script)) {
-    $found_script = __DIR__ . "/drush.launcher";
+    $found_script = dirname(__DIR__) . "/drush.launcher";
   }
 
   // Emit a message in verbose mode advertising the location of the
