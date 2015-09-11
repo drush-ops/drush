@@ -47,7 +47,7 @@ class DrupalBoot8 extends DrupalBoot {
 
   function contrib_modules_paths() {
     return array(
-      conf_path() . '/modules',
+      $this->kernel->getSitePath() . '/modules',
       'sites/all/modules',
       'modules',
     );
@@ -59,7 +59,7 @@ class DrupalBoot8 extends DrupalBoot {
    */
   function contrib_themes_paths() {
     return array(
-      conf_path() . '/themes',
+      $this->kernel->getSitePath() . '/themes',
       'sites/all/themes',
       'themes',
     );

@@ -346,7 +346,8 @@ function _drush_theme_admin() {
 }
 
 function _drush_file_public_path() {
-  return Settings::get('file_public_path', conf_path() . '/files');
+  $drush_uri = _drush_bootstrap_selected_uri();
+  return Settings::get('file_public_path', drush_conf_path($drush_uri) . '/files');
 }
 
 function _drush_file_private_path() {

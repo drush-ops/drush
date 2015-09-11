@@ -539,13 +539,14 @@ function _core_path_aliases($project = '') {
     $paths['%root'] = $drupal_root;
     if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
       $paths['%site'] = $site_root;
-      if (is_dir($modules_path = conf_path() . '/modules')) {
+      $drush_uri = _drush_bootstrap_selected_uri();
+      if (is_dir($modules_path = drush_conf_path($drush_uri) . '/modules')) {
         $paths['%modules'] = $modules_path;
       }
       else {
         $paths['%modules'] = ltrim($site_wide . '/modules', '/');
       }
-      if (is_dir($themes_path = conf_path() . '/themes')) {
+      if (is_dir($themes_path = drush_conf_path($drush_uri) . '/themes')) {
         $paths['%themes'] = $themes_path;
       }
       else {
