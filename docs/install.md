@@ -49,7 +49,7 @@ Composer - One Drush for all Projects
 
         git clone https://github.com/drush-ops/drush.git /usr/local/src/drush
         cd /usr/local/src/drush
-        git checkout 7.0.0-alpha5  #or whatever version you want.
+        git checkout 7.0.0  #or whatever version you want.
         ln -s /usr/local/src/drush/drush /usr/bin/drush
         composer install
         drush --version
@@ -75,10 +75,11 @@ See [Configure](configure.md) for next steps.
 
 Composer - One Drush per Project
 -----------------
-* If your web site is built from a composer.json file (see https://github.com/drupal-composer/drupal-project), add the following to the `require` section: `"drush/drush": "7.*"`
+* If your web site is built from a composer.json file (see https://github.com/drupal-composer/drupal-project), add the following to the `require` section: `"drush/drush": "7.*"` or, for Drupal 8, `"drush/drush": "8.*"`
+* If you require Drush from your composer.json, then the global Drush in your $PATH will find and launch your site-local Drush.  This way, you can use different versions of Drush with each of your sites.
 * Run `composer install` for a new project or `composer update` for an existing one. Do so from the same directory as composer.json.
-* Optional: Copy the /examples/drush file to your project root and modify to taste. This is a handy launcher script.
-* To update, change the drush/drush line and run `composer update`.
+* Optional: Copy the /examples/drush.wrapper file to your project root and modify to taste. This is a handy launcher script; add --local here to turn off all global configuration locations, and maintain absolute control over the configuration settings for the site.
+* Run `composer update` to get minor updates to Drush. Change the version in the `"drush/drush"` line in the `require` section of your composer.json to do a major version upgrade.
 
 Git Clone (i.e. manual install)
 -----------
