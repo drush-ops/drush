@@ -46,12 +46,12 @@ function drush_env() {
 
 /**
  * Checks the provided location and return the appropriate
- * drush wrapper or drush launcher script, if found.
+ * Drush wrapper or Drush launcher script, if found.
  */
 function find_wrapper_or_launcher($location) {
-  // We will look for a "drush wrapper" script that might
-  // be stored in the root of a site site.  If there is
-  // no wrapper script, then we will look for the
+  // We look for a "Drush wrapper" script that might
+  // be stored in the root of a site.  If there is
+  // no wrapper script, then we look for the
   // drush.launcher script in vendor/bin.  We try just a
   // few of the most common locations; if the user relocates
   // their vendor directory anywhere else, then they must
@@ -84,9 +84,9 @@ function find_wrapper_or_launcher($location) {
 }
 
 /**
- * drush_startup is called once, by the drush "finder"
+ * drush_startup is called once, by the Drush "finder"
  * script -- the "drush" script at the Drush root.
- * It finds the correct drush "wrapper" or "launcher"
+ * It finds the correct Drush "wrapper" or "launcher"
  * script to use, and executes it with process replacement.
  */
 function drush_startup($argv) {

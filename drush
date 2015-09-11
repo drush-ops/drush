@@ -4,18 +4,14 @@
 /**
  * This is the Drush "finder" script, which is one part of the
  * Drush dispatching chain.  This is the script that
- * should appear in your global $PATH, or, if using composer
+ * should appear in your global $PATH, or, if using Composer
  * (as usually the case), will be found in your vendor/bin directory.
  *
  *
- * - Never copy this script to your site root. Use examples/drush instead.
+ * - Never copy this script to your site root. Copy examples/drush instead.
  *
  * - Never copy this script to a directory other than its install directory.
  * Symlink to it instead.
- *
- * - Never rename this script to "drush.launcher".  Why would you do that?
- * This is the Drush "finder" script. You can rename it to "drush.finder"
- * if you wish.
  *
  *
  * OVERVIEW OF DRUSH FINDER / WRAPPER / LAUNCHER SCRIPTS
@@ -25,7 +21,7 @@
  *
  *   "drush finder" -> "drush wrapper" -> "drush launcher".
  *
- * Breif description of each:
+ * Brief description of each:
  *
  *  - Drush finder:   Finds the right Drush script and calls it.
  *  - Drush wrapper:  Contains user customizations to options.
@@ -61,12 +57,12 @@
  *
  * DRUSH WRAPPER
  *
- * - The "drush" script that the user copies to their site __ROOT__
+ * - The "drush" script that the user optionally copies and edits.
  * - Its goal is to allow the user to add options when --local is in use
  *
  * The drush "wrapper" is found in examples/drush, and may optionally
  * be copied to __ROOT__/drush by the user.  It may be named either
- * "drush" or "drush.wrapper".  It will call the "drush launcher"
+ * "drush" or "drush.wrapper".  It will call the "Drush launcher"
  * for the same site that it is located in.  It adds the --local flag; the
  * user is encouraged to add other options to the "drush wrapper", e.g. to set
  * the location where aliases and global commandfiles can be found.
@@ -79,7 +75,7 @@
  * DRUSH LAUNCHER
  *
  * - The "drush.launcher" script in vendor/bin
- * - The script formerly called "drush"
+ * - The bash script formerly called "drush"
  *
  * The "drush launcher" is the traditional script that identifies PHP and
  * sets up to call drush.php.  It is called by the "drush wrapper", or
@@ -88,13 +84,13 @@
  *
  * LOCATIONS FOR THESE SCRIPTS
  *
- *   "drush finder"  :   __ROOT__/vendor/bin/drush           (composer install)
+ *   "drush finder"   :  __ROOT__/vendor/bin/drush           (composer install)
  *                       __DRUSH__/drush                     (source)
  *
- *   "drush wrapper" :   __ROOT__/drush                      (copied by user)
+ *   "drush wrapper"  :  __ROOT__/drush                      (copied by user)
  *                       __DRUSH__/examples/drush            (source)
  *
- *   "drush laucher" :   __ROOT__/vendor/bin/drush.launcher  (composer install)
+ *   "drush launcher" :  __ROOT__/vendor/bin/drush.launcher  (composer install)
  *                       __DRUSH__/drush.launcher            (source)
  *
  *
