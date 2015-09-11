@@ -46,8 +46,9 @@ class DrupalBoot8 extends DrupalBoot {
   }
 
   function contrib_modules_paths() {
+    $drush_uri = _drush_bootstrap_selected_uri();
     return array(
-      $this->kernel->getSitePath() . '/modules',
+      drush_conf_path($drush_uri) . '/modules',
       'sites/all/modules',
       'modules',
     );
@@ -58,8 +59,9 @@ class DrupalBoot8 extends DrupalBoot {
    * themes can be found
    */
   function contrib_themes_paths() {
+    $drush_uri = _drush_bootstrap_selected_uri();
     return array(
-      $this->kernel->getSitePath() . '/themes',
+      drush_conf_path($drush_uri) . '/themes',
       'sites/all/themes',
       'themes',
     );
