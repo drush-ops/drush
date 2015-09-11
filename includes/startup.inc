@@ -9,6 +9,40 @@
  * available.
  */
 
+/**
+ * Get the current enviornment.
+ */
+function drush_env() {
+  // Fetch the current environment.  To ensure that
+  // $_ENV is correctly populated, make sure that
+  // the value of 'variables-order' in your php.ini
+  // contains "E" ("Environment").  See:
+  // http://us.php.net/manual/en/ini.core.php#ini.variables-order
+  $env = $_ENV;
+
+  // If PHP is not configured correctly, $_ENV will be
+  // empty.  Drush counts on the fact that environment
+  // variables will always be available, though, so we
+  // need to repair this situation.  We can always access
+  // individual environmnet values via getenv(); however,
+  // there is no PHP API that will tell us all of the
+  // available values, so we will get the environment
+  // variable values using 'printenv'.
+  if (empty($env)) {
+    exec('printenv', $env_items);
+    foreach ($env_items as $item) {
+      // Each $item is 'key=value' or just 'key'.
+      // If $item has no value, then explode will return
+      // a single array, [0 => 'key'].  We add a default
+      // value of [1 => 'value'] to cover this case.  If
+      // explode returns two items, the default value is ignored.
+      list($key, $value) = explode('=', $item, 2) + array(1 => '');
+      $env[$key] = $value;
+    }
+  }
+
+  return $env;
+}
 
 /**
  * Checks the provided location and return the appropriate
@@ -49,6 +83,12 @@ function find_wrapper_or_launcher($location) {
   return "";
 }
 
+/**
+ * drush_startup is called once, by the drush "finder"
+ * script -- the "drush" script at the Drush root.
+ * It finds the correct drush "wrapper" or "launcher"
+ * script to use, and executes it with process replacement.
+ */
 function drush_startup($argv) {
   $found_script = "";
   $home = getenv("HOME");
@@ -210,24 +250,11 @@ function drush_startup($argv) {
     fwrite(STDERR, "Using the Drush script found at $found_script\n");
   }
 
-  // Prepare the environment for pnctl_exec.
-  $env = $_ENV;
-
-  // If PHP is not configured correctly, $_ENV will be
-  // empty.  Drush counts on the fact that environment
-  // variables will always be passed through, so we
-  // need to repair this situation.
-  if (empty($env)) {
-    exec('printenv', $env_items);
-    foreach ($env_items as $item) {
-      list($key, $value) = explode('=', $item, 2);
-      $env[$key] = $value;
-    }
-  }
+  // Get the current environment for pnctl_exec.
+  $env = drush_env();
 
   // Launch the new script in the same process.
   // If the launch succeeds, then it will not return.
   pcntl_exec($found_script, $arguments, $env);
   exit(1);
-
 }
