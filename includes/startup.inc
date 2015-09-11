@@ -104,6 +104,7 @@ function drush_startup($argv) {
   // so that we can find --root / -r and --local
   //
   $VERBOSE=FALSE;
+  $DEBUG=FALSE;
   $LOCAL=FALSE;
   $ROOT=FALSE;
   $COMMAND=FALSE;
@@ -126,6 +127,11 @@ function drush_startup($argv) {
 
         case "-r":
           $VAR = "ROOT";
+          break;
+
+        case "--debug":
+        case "-d":
+          $DEBUG = TRUE;
           break;
 
         case "--verbose":
