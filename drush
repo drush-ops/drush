@@ -51,7 +51,7 @@
  * there is no wrapper script.  If the "Drush launcher" is called, then
  * the Drush Finder will add the --local flag.  If the --local flag was
  * already passed in when the Drush Finder is called, then it will always
- * call the "Drush launcher", even if there is a Drush Wrapper, to prevent
+ * call the "Drush launcher", even if there is a Drush wrapper, to prevent
  * possible infinite loops.
  *
  *
@@ -60,13 +60,13 @@
  * - The "drush" script that the user optionally copies and edits.
  * - Its goal is to allow the user to add options when --local is in use
  *
- * The drush "wrapper" is found in examples/drush, and may optionally
+ * The Drush "wrapper" is found in examples/drush, and may optionally
  * be copied to __ROOT__/drush by the user.  It may be named either
  * "drush" or "drush.wrapper".  It will call the "Drush launcher"
  * for the same site that it is located in.  It adds the --local flag; the
- * user is encouraged to add other options to the "drush wrapper", e.g. to set
+ * user is encouraged to add other options to the "Drush wrapper", e.g. to set
  * the location where aliases and global commandfiles can be found.
- * The drush "finder" script always calls the "drush wrapper" if it exists;
+ * The Drush "finder" script always calls the "Drush wrapper" if it exists;
  * however, if the user does not want to customize the eary options of
  * the site-local Drush (site-alias locations, etc.), then the wrapper does not
  * need to be used.
@@ -77,20 +77,20 @@
  * - The "drush.launcher" script in vendor/bin
  * - The bash script formerly called "drush"
  *
- * The "drush launcher" is the traditional script that identifies PHP and
- * sets up to call drush.php.  It is called by the "drush wrapper", or
- * directly by the "drush launcher" if there is no "drush wrapper" in use.
+ * The "Drush launcher" is the traditional script that identifies PHP and
+ * sets up to call drush.php.  It is called by the "Drush wrapper", or
+ * directly by the "Drush launcher" if there is no "Drush wrapper" in use.
  *
  *
  * LOCATIONS FOR THESE SCRIPTS
  *
- *   "drush finder"   :  __ROOT__/vendor/bin/drush           (composer install)
+ *   "Drush finder"   :  __ROOT__/vendor/bin/drush           (composer install)
  *                       __DRUSH__/drush                     (source)
  *
- *   "drush wrapper"  :  __ROOT__/drush                      (copied by user)
+ *   "Drush wrapper"  :  __ROOT__/drush                      (copied by user)
  *                       __DRUSH__/examples/drush            (source)
  *
- *   "drush launcher" :  __ROOT__/vendor/bin/drush.launcher  (composer install)
+ *   "Drush launcher" :  __ROOT__/vendor/bin/drush.launcher  (composer install)
  *                       __DRUSH__/drush.launcher            (source)
  *
  *
@@ -101,11 +101,11 @@
  * of the "drush-script" element in a site alias.  In either event, this is
  * the "drush finder" script.
  *
- * The backend call will always set --root.  The "drush finder" script
+ * The backend call will always set --root.  The "Drush finder" script
  * always favors the site-local Drush stored with the site indicated by the
  * --root option, if it exists.  If there is no site-local Drush, then the
- * "drush finder" will behave as usual (i.e., it will end up calling the
- * "drush launcher" located next to it).
+ * "Drush finder" will behave as usual (i.e., it will end up calling the
+ * "Drush launcher" located next to it).
  *
  * This should always get you the correct "Drush" for local and remote calls.
  * Note that it is also okay for aliases to specify a path directly to
