@@ -96,7 +96,7 @@ You should first follow the instructions "Composer - One Drush for all Projects"
 
 In the instructions above, `/path/to/site/composer-root` should be the directory that contains your composer.json file.  This could be your Drupal root, or it might be the directory above your Drupal root, depending on how you have set up your composer.json file.
 
-Most of the standard [Drupal Composer example projects]() already load Drush from their composer.json file.  If your composer.json already requires Drush, then it is not necessary to follow these instructions again.
+Most of the standard [Drupal Composer example projects](https://github.com/drupal-composer/drupal-project) already load Drush from their composer.json file.  If your composer.json already requires Drush, then it is not necessary to follow these instructions again.
 
 Finally, note that if you have multiple Drupal sites on your system, it is possible to use a different version of Drush with each one.
 
