@@ -4,6 +4,7 @@ branches:
 
 install:
   - cinst php
+  - cinst composer
   - cinst rsync
 
 services:
