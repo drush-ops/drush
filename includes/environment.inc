@@ -434,11 +434,15 @@ function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, 
   $additional_options = '';
   $prefix = '';
   if (!$drush_path) {
+    $drush_finder = drush_is_windows($os) ? 'drush.bat' : 'drush';
     if (!$remote_command) {
       $drush_path = DRUSH_COMMAND;
+      if (drush_which($drush_finder)) {
+        $drush_path = $drush_finder;
+      }
     }
     else {
-      $drush_path = drush_is_windows($os) ? 'drush.bat' : 'drush';
+      $drush_path = $drush_finder;
     }
   }
   // If the path to drush points to drush.php, then we will need to
