@@ -429,12 +429,12 @@ function drush_verify_cli() {
  * Build a drush command suitable for use for drush to call itself
  * e.g. in backend_invoke.
  */
-function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, $remote_command = FALSE, $environment_variables = array()) {
+function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, $is_different_site = FALSE, $environment_variables = array()) {
   $os = _drush_get_os($os);
   $additional_options = '';
   $prefix = '';
-  if (!isset($drush_path)) {
-    if (!$remote_command) {
+  if (!$drush_path) {
+    if (!$is_different_site) {
       $drush_path = DRUSH_COMMAND;
     }
     else {

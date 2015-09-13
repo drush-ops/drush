@@ -826,6 +826,8 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     $command_options = $item['command-options'];
     $drush_global_options = $item['drush-global-options'];
     $backend_options = $item['backend-options'];
+    $is_remote = array_key_exists('remote-host', $site_record);
+    $is_different_site = $is_remote || (isset($site_record['root']) && ($site_record['root'] != drush_get_context('DRUSH_DRUPAL_SITE_ROOT')));
     $os = drush_os($site_record);
     // If the caller did not pass in a specific path to drush, then we will
     // use a default value.  For commands that are being executed on the same
@@ -833,9 +835,12 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     // that is running right now.  For remote commands, we will run a wrapper
     // script instead of drush.php -- drush.bat on Windows, or drush on Linux.
     $drush_path = $site_record['path-aliases']['%drush-script'];
+    if (!$drush_path && !$is_remote && $is_different_site) {
+      $drush_path = find_wrapper_or_launcher($site_record['root']);
+    }
     $env_vars = $site_record['#env-vars'];
     $php = array_key_exists('php', $site_record) ? $site_record['php'] : (array_key_exists('php', $command_options) ? $command_options['php'] : NULL);
-    $drush_command_path = drush_build_drush_command($drush_path, $php, $os, array_key_exists('remote-host', $site_record), $env_vars);
+    $drush_command_path = drush_build_drush_command($drush_path, $php, $os, $is_different_site, $env_vars);
     $cmd = _drush_backend_generate_command($site_record, $drush_command_path . " " . _drush_backend_argument_string($drush_global_options, $os) . " " . $site_record_to_dispatch . " " . $command, $args, $commandline_options, $backend_options) . ' 2>&1';
     $cmds[$site] = array(
       'cmd' => $cmd,
