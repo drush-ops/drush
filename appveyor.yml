@@ -1,0 +1,45 @@
+branches:
+  only:
+    - appveyor
+
+install:
+  - cinst php
+  - cinst rsync
+
+services:
+  - mysql
+  - iis
+
+before_build:
+  - composer selfupdate
+  - composer install --no-interaction
+
+test_script:
+  - c:\projects\drush\unish.sh
+
+# environment variables
+environment:
+  global:
+      UNISH_NO_TIMEOUTS: y
+      UNISH_DB_URL: mysql://root:@127.0.0.1
+      UNISH_DRUSH: c:\projects\drush
+  
+  matrix:
+  - UNISH_DRUPAL_MAJOR_VERSION: 7
+    PHPUNIT_ARGS: --group=make
+
+  - UNISH_DRUPAL_MAJOR_VERSION: 7
+    PHPUNIT_ARGS: --group=base
+
+  - UNISH_DRUPAL_MAJOR_VERSION: 7
+    PHPUNIT_ARGS: --group=commands
+
+  - UNISH_DRUPAL_MAJOR_VERSION: 7
+    PHPUNIT_ARGS: --group=pm
+
+  - UNISH_DRUPAL_MAJOR_VERSION: 7
+    PHPUNIT_ARGS: --group=quick-drupal
+
+  - UNISH_DRUPAL_MAJOR_VERSION: 7
+    PHPUNIT_ARGS: --exclude-group=base,make,commands,pm,quick-drupal
+
