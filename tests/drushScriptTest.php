@@ -43,31 +43,67 @@ class drushScriptCase extends CommandUnishTestCase {
       "sites/all",
     );
 
-    $drupal_root = $this->webroot();
-
     foreach ($drush_locations as $drush_base) {
-      $drush_root = $drupal_root . '/' . $drush_base . '/drush/drush';
-      $bin_dir = $drupal_root . '/' . $drush_base . '/bin';
-
-      $this->recursive_copy(dirname(UNISH_DRUSH), $drush_root);
-      @chmod($drush_root . '/drush', 0777);
-      @chmod($drush_root . '/drush.launcher', 0777);
-      $this->mkdir($bin_dir);
-      symlink($drush_root . '/drush', $bin_dir . '/drush');
+      $drush_root = $this->create_site_local_drush($drush_base);
 
       // Test `drush --root ` ... with a site-local Drush
-      $drush_location = $this->getDrushLocation(array('root' => $drupal_root));
+      $drush_location = $this->getDrushLocation(array('root' => $this->webroot()));
       $this->assertEquals(realpath($drush_root . '/drush.php'), realpath($drush_location));
+      // Ensure that --local was NOT added
+      $result = $this->drush('ev', array('return drush_get_option("local");'), array('root' => $this->webroot()));
+      $output = $this->getOutput();
+      $this->assertEquals("", $output);
 
-      // TODO:: Test `drush --root ` ... with a site-local Drush and a Drush wrapper
-      // What we will do here is write a wrapper that runs the
-      // same site-local Drush, but also adds an option or two.
-      // If the drush location does not change, and the options
-      // added by the wrapper are set, then we know that the
-      // Drush finder launched the wrapper.
+      // Run the `drush --root` test again, this time with
+      // a drush.wrapper script in place.
+      $this->createDrushWrapper($drush_base);
+      $drush_location = $this->getDrushLocation(array('root' => $this->webroot()));
+      $this->assertEquals(realpath($drush_root . '/drush.php'), realpath($drush_location));
+      // Test to see if --local was added
+      $result = $this->drush('ev', array('return drush_get_option("local");'), array('root' => $this->webroot()));
+      $output = $this->getOutput();
+      $this->assertEquals("TRUE", $output);
 
       // Get rid of the symlink and site-local Drush we created
-      unish_file_delete_recursive($drupal_root . '/' . $drush_base);
+      $this->remove_site_local_drush($drush_base);
+    }
+
+    // Next, try again with a site-local Drush in a location
+    // that Drush does not search.
+    $mysterious_location = "path/drush/does/not/search";
+    $drush_root = $this->create_site_local_drush($mysterious_location);
+    // We should not find the site-local Drush without a Drush wrapper.
+    $drush_location = $this->getDrushLocation(array('root' => $this->webroot()));
+    $this->assertEquals(UNISH_DRUSH . '.php', $drush_location);
+    $this->createDrushWrapper($mysterious_location);
+    // Now that there is a Drush wrapper, we should be able to find the site-local Drush.
+    $drush_location = $this->getDrushLocation(array('root' => $this->webroot()));
+    $this->assertEquals(realpath($drush_root . '/drush.php'), $drush_location);
+  }
+
+  /**
+   * Copy UNISH_DRUSH into the specified site-local location.
+   */
+  function create_site_local_drush($drush_base) {
+    $drush_root = $this->webroot() . '/' . $drush_base . '/drush/drush';
+    $bin_dir = $this->webroot() . '/' . $drush_base . '/bin';
+
+    $this->mkdir(dirname($drush_root));
+    $this->recursive_copy(dirname(UNISH_DRUSH), $drush_root);
+    @chmod($drush_root . '/drush', 0777);
+    @chmod($drush_root . '/drush.launcher', 0777);
+    $this->mkdir($bin_dir);
+    symlink($drush_root . '/drush', $bin_dir . '/drush');
+
+    return $drush_root;
+  }
+
+  function remove_site_local_drush($drush_base) {
+    // Get rid of the symlink and site-local Drush we created
+    unish_file_delete_recursive($this->webroot() . '/' . $drush_base . '/drush/drush');
+    unlink($this->webroot() . '/' . $drush_base . '/bin/drush');
+    if (file_exists($this->webroot() . '/drush.wrapper')) {
+      unlink($this->webroot() . '/drush.wrapper');
     }
   }
 
@@ -76,6 +112,17 @@ class drushScriptCase extends CommandUnishTestCase {
    * to the root of the fake Drupal site, and point it
    * at the specified site-local Drush script.
    */
+  function createDrushWrapper($drush_base) {
+    $drush_launcher = $drush_base . '/drush/drush/drush.launcher';
+
+    $drush_wrapper_src = dirname(UNISH_DRUSH) . '/examples/drush.wrapper';
+    $drush_wrapper_contents = file_get_contents($drush_wrapper_src);
+    $drush_wrapper_contents = preg_replace('#vendor/bin/drush.launcher#', $drush_launcher, $drush_wrapper_contents);
+    $drush_wrapper_target = $this->webroot() . '/drush.wrapper';
+
+    file_put_contents($drush_wrapper_target, $drush_wrapper_contents);
+    @chmod($drush_wrapper_target, 0777);
+  }
 
   /**
    * Get the current location of the Drush script via

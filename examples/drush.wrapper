@@ -29,4 +29,4 @@
 # composer-managed Drupal sites.
 #
 cd "`dirname $0`"
-vendor/bin/drush.launcher --local $@
+vendor/bin/drush.launcher --local "$@"
