@@ -71,6 +71,8 @@ function find_wrapper_or_launcher($location) {
     "vendor/bin/drush",
     "../vendor/bin/drush",
     "sites/all/vendor/bin/drush",
+    "sites/all/drush/drush/drush",
+    "drush/drush/drush",
   );
 
   foreach ($drush_locations as $d) {
