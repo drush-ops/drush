@@ -206,6 +206,34 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     return $pass;
   }
 
+  public function mkdir($path) {
+    if (!is_dir($path)) {
+      if ($this->mkdir(dirname($path))) {
+        if (@mkdir($path)) {
+          return TRUE;
+        }
+      }
+      return FALSE;
+    }
+    return TRUE;
+  }
+
+  public function recursive_copy($src, $dst) {
+    $dir = opendir($src);
+    $this->mkdir($dst);
+    while(false !== ( $file = readdir($dir)) ) {
+      if (( $file != '.' ) && ( $file != '..' )) {
+        if ( is_dir($src . '/' . $file) ) {
+          $this->recursive_copy($src . '/' . $file,$dst . '/' . $file);
+        }
+        else {
+          copy($src . '/' . $file,$dst . '/' . $file);
+        }
+      }
+    }
+    closedir($dir);
+  }
+
   function webroot() {
     return UNISH_SANDBOX . '/web';
   }
