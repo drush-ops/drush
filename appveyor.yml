@@ -4,6 +4,7 @@ branches:
 
 install:
   - cinst php
+  - cinst vcredist2012
   - cinst composer
   - cinst rsync
 
