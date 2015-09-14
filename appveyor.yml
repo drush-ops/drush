@@ -4,17 +4,17 @@ branches:
 
 install:
   - cinst php
-  - cinst vcredist2012
-  - cinst composer
-  - cinst rsync
 
 services:
   - mysql
   - iis
 
 before_build:
-  - composer selfupdate
-  - composer install --no-interaction
+  - mkdir c:\bin
+  - cd c:\bin
+  - php -r "readfile('https://getcomposer.org/installer');" | php
+  - c:\bin\composer.phar selfupdate
+  - c:\bin\composer.phar install --no-interaction
 
 test_script:
   - c:\projects\drush\unish.sh
