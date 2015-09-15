@@ -41,7 +41,7 @@ environment:
   global:
       UNISH_NO_TIMEOUTS: y
       UNISH_DB_URL: mysql://root:@127.0.0.1
-      UNISH_DRUSH: c:\projects\drush
+      UNISH_DRUSH: c:\projects\drush\drush
       UNISH_TMP: c:\drush_temp
   
   matrix:
