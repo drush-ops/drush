@@ -417,13 +417,14 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
       $project['l10n_url'] = MAKE_DEFAULT_L10N_SERVER;
     }
     // Classify projects in core or contrib.
-    if ($project['location'] != ReleaseInfo::DEFAULT_URL && !isset($project['type'])) {
+    if ($project['type'] == 'core') {
+      $project['download_type'] = 'core';
+    }
+    elseif ($project['location'] != ReleaseInfo::DEFAULT_URL || !isset($project['download'])) {
       $request = make_prepare_request($project);
       $is_core = $release_info->checkProject($request, 'core');
       $project['download_type'] = ($is_core ? 'core' : 'contrib');
-    }
-    elseif (!empty($project['type'])) {
-      $project['download_type'] = ($project['type'] == 'core' ? 'core' : 'contrib');
+      $project['type'] = $is_core ? 'core' : $project['type'];
     }
     else {
       $project['download_type'] = ($project['name'] == 'drupal' ? 'core' : 'contrib');
