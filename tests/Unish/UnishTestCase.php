@@ -29,7 +29,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   public static function setUpFreshSandBox() {
     $sandbox = UNISH_SANDBOX;
     if (file_exists($sandbox)) {
-      unish_file_delete_recursive($sandbox);
+      unish_file_delete_recursive($sandbox, TRUE);
     }
     $ret = mkdir($sandbox, 0777, TRUE);
     chdir(UNISH_SANDBOX);
