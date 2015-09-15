@@ -28,7 +28,6 @@ install:
 
 services:
   - mysql
-  - iis
 
 test_script:
   - c:\projects\drush\unish.sh
