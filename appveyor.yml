@@ -1,3 +1,6 @@
+build: false
+shallow_clone: true
+platform: 'x86'
 branches:
   only:
     - appveyor
