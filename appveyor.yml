@@ -12,7 +12,7 @@ services:
 before_build:
   - mkdir c:\bin
   - cd c:\bin
-  - php -r "readfile('https://getcomposer.org/installer');" | php
+  - C:\tools\php\php.exe -r "readfile('https://getcomposer.org/installer');" | C:\tools\php\php.exe
   - c:\bin\composer.phar selfupdate
   - c:\bin\composer.phar install --no-interaction
 
