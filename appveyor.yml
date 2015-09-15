@@ -12,9 +12,9 @@ services:
 before_build:
   - mkdir c:\bin
   - cd c:\bin
-  - C:\tools\php\php.exe -r "readfile('https://getcomposer.org/installer');" | C:\tools\php\php.exe
-  - c:\bin\composer.phar selfupdate
-  - c:\bin\composer.phar install --no-interaction
+  - C:\tools\php\php.exe -r "readfile('http://getcomposer.org/installer');" | C:\tools\php\php.exe
+  - C:\tools\php\php.exe c:\bin\composer.phar selfupdate
+  - C:\tools\php\php.exe c:\bin\composer.phar install --no-interaction
 
 test_script:
   - c:\projects\drush\unish.sh
