@@ -618,7 +618,7 @@ function drush_is_local_host($host) {
   // In order for this to work right, you must use 'localhost' or '127.0.0.1'
   // or the machine returned by 'uname -n' for your 'remote-host' entry in
   // your site alias.
-  if (($host == 'localhost') || ($host == '127.0.0.1')) {
+  if (($host == 'localhost') || ($host == '127.0.0.1') || (gethostbyname($host) == '127.0.0.1')) {
     return TRUE;
   }
 
