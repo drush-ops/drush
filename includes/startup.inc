@@ -103,11 +103,10 @@ function drush_startup($argv) {
 
   //
   // We need to do at least a partial parsing of the options,
-  // so that we can find --root / -r and --local
+  // so that we can find --root / -r and so on.
   //
   $VERBOSE=FALSE;
   $DEBUG=FALSE;
-  $LOCAL=FALSE;
   $ROOT=FALSE;
   $COMMAND=FALSE;
   $ALIAS=FALSE;
@@ -123,10 +122,6 @@ function drush_startup($argv) {
     }
     else {
       switch ($arg) {
-        case "--local":
-          $LOCAL = TRUE;
-          break;
-
         case "-r":
           $VAR = "ROOT";
           break;
@@ -156,13 +151,8 @@ function drush_startup($argv) {
   $NONE=($ALIAS == "@none");
 
   //
-  // Check for @none or --local usage:
-  //
-  //   drush --local ...
-  //   drush @none ...
-  //
-  // If either the --local option, or the @none alias is used, then
-  // we must skip the Drush wrapper, and call the Drush launcher directly.
+  // If the @none alias is used, then we skip the Drush wrapper,
+  // and call the Drush launcher directly.
   //
   // In this instance, we are assuming that the 'drush' that is being
   // called is:
@@ -172,7 +162,7 @@ function drush_startup($argv) {
   //
   // In either event, the appropriate 'drush.launcher' should be right next
   // to this script (stored in the same directory).
-  if ($NONE || $LOCAL) {
+  if ($NONE) {
     if (is_file(dirname(__DIR__) . "/drush.launcher")) {
       $found_script = dirname(__DIR__) . "/drush.launcher";
     }

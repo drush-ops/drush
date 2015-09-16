@@ -48,11 +48,7 @@
  *
  * If a site-local Drush is found, then the Drush finder will call
  * either the "Drush wrapper", if it exists, or the "Drush launcher" if
- * there is no wrapper script.  If the "Drush launcher" is called, then
- * the Drush Finder will add the --local flag.  If the --local flag was
- * already passed in when the Drush Finder is called, then it will always
- * call the "Drush launcher", even if there is a Drush wrapper, to prevent
- * possible infinite loops.
+ * there is no wrapper script.
  *
  *
  * DRUSH WRAPPER
