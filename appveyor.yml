@@ -30,7 +30,7 @@ install:
   - php composer.phar install --prefer-dist -n --no-ansi
   - SET PATH=%APPVEYOR_BUILD_FOLDER%;%APPVEYOR_BUILD_FOLDER%/vendor/bin;%PATH%
   - mkdir c:\drush_temp
-  - ps: ls %APPVEYOR_BUILD_FOLDER%
+  - ps: ls .
   - ps: ls c:\projects\drush
 
 services:
