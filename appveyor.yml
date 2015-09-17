@@ -10,6 +10,8 @@ install:
   - SET PATH=C:\Program Files\MySql\MySQL Server 5.6\bin\;%PATH%
   - cinst -y OpenSSL.Light
   - SET PATH=C:\Program Files\OpenSSL;%PATH%
+  - cinst -y which
+  - SET PATH=C:\Program Files\which;%PATH%
   - cinst -y curl
   - SET PATH=C:\Program Files\curl;%PATH%
   - cinst -y php

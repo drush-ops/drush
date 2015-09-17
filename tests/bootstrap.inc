@@ -131,6 +131,7 @@ function unish_file_delete_recursive($dir, $force = FALSE, $follow_symlinks = FA
     // Force deletion of items with readonly flag.
     @chmod($dir, 0777);
   }
+  echo "Dir is \n" . scandir($dir);
   return rmdir($dir);
 }
 
