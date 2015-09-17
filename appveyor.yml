@@ -30,8 +30,8 @@ install:
   - php composer.phar install --prefer-dist -n --no-ansi
   - SET PATH=%APPVEYOR_BUILD_FOLDER%;%APPVEYOR_BUILD_FOLDER%/vendor/bin;%PATH%
   - mkdir c:\drush_temp
-  - ps: "ls %APPVEYOR_BUILD_FOLDER%"
-  - ps: "ls c:\projects\drush"
+  - ps: ls %APPVEYOR_BUILD_FOLDER%
+  - ps: ls c:\projects\drush
 
 services:
   - mysql
@@ -65,4 +65,3 @@ environment:
 
   - UNISH_DRUPAL_MAJOR_VERSION: 7
     PHPUNIT_ARGS: --exclude-group=base,make,commands,pm,quick-drupal
-
