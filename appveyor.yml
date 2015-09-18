@@ -5,19 +5,12 @@ branches:
   only:
     - appveyor
 
-install:
 # Inspired by https://github.com/Codeception/base/blob/master/appveyor.yml and https://github.com/phpmd/phpmd/blob/master/appveyor.yml
+install:
   - SET PATH=C:\Program Files\MySql\MySQL Server 5.6\bin\;%PATH%
-  #- cinst -y OpenSSL.Light
-  #- SET PATH=C:\Program Files\OpenSSL;%PATH%
-  #which is only needed by the test suite.
-  - cinst -y which
-  - SET PATH=C:\Program Files\which;%PATH%
   - cinst -y curl
   - SET PATH=C:\Program Files\curl;%PATH%
-  #For tar, cksum, ...
-  #- cinst -y cygwin
-  - git clone https://github.com/acquia/DevDesktopCommon.git
+  - git clone https://github.com/acquia/DevDesktopCommon.git #For tar, cksum, ...
   - SET PATH=%APPVEYOR_BUILD_FOLDER%/DevDesktopCommon/bintools-win/msys/bin;%PATH%
   - cinst -y php
   - cd c:\tools\php
@@ -25,8 +18,7 @@ install:
   - echo extension_dir=ext >> php.ini
   - echo extension=php_openssl.dll >> php.ini
   - echo date.timezone="UTC" >> php.ini
-  #Debugging related to https://github.com/drush-ops/drush/pull/646. May be unneeded.
-  - echo variables_order="EGPCS" >> php.ini
+  - echo variables_order="EGPCS" >> php.ini #Debugging related to https://github.com/drush-ops/drush/pull/646. May be unneeded.
   - echo extension=php_mbstring.dll >> php.ini
   - echo extension=php_curl.dll >> php.ini
   - echo extension=php_pdo_mysql.dll >> php.ini
@@ -34,6 +26,7 @@ install:
   - echo extension=php_pdo_sqlite.dll >> php.ini
   - echo extension=php_pgsql.dll >> php.ini
   - SET PATH=C:\tools\php;%PATH%
+  - php -i
   - cd %APPVEYOR_BUILD_FOLDER%
   - php -r "readfile('http://getcomposer.org/installer');" | php
   - php composer.phar -q install --prefer-dist -n --no-ansi
@@ -44,7 +37,10 @@ services:
   - mysql
 
 test_script:
-  - phpunit -v --colors=never --configuration tests %PHPUNIT_ARGS%
+  - phpunit -v --configuration tests %PHPUNIT_ARGS%
+
+cache:
+  - '%UNISH_TMP%'
 
 # environment variables
 environment:
