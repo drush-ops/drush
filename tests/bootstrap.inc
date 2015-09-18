@@ -89,6 +89,9 @@ function unish_init() {
  * Usually respects read-only files and folders. To do a forced delete use
  * drush_delete_tmp_dir() or set the parameter $forced.
  *
+ * To avoid permission denied error on Windows, make sure your CWD is not
+ * inside the directory being deleted.
+ *
  * This is essentially a copy of drush_delete_dir().
  *
  * @todo This sort of duplication isn't very DRY. This is bound to get out of
