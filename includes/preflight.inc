@@ -33,6 +33,10 @@ function drush_preflight_prepare() {
     return FALSE;
   }
 
+  // Set SITE_LOCAL_DRUSH to TRUE iff this is a site-local Drush
+  // that shares an autoload.php file with a Drupal site.
+  define('SITE_LOCAL_DRUSH', ($vendor_path == $global_vendor_path));
+
   $classloader = require $vendor_path;
 
   require_once DRUSH_BASE_PATH . '/includes/bootstrap.inc';
@@ -137,11 +141,10 @@ function drush_preflight() {
   // Set up base environment for system-wide file locations.
   _drush_preflight_base_environment();
 
-  // Setup global alias_paths[] in context system.
-  if (!drush_get_option('local')) {
+  if (!drush_get_option('site-local')) {
+    // Setup global alias_paths[] in context system.
     _drush_preflight_alias_path();
-  }
-  if (!drush_get_option('local')) {
+
     // Load a drushrc.php file in the drush.php's directory.
     drush_load_config('drush');
 
@@ -395,7 +398,8 @@ function _drush_find_commandfiles_drush() {
     }
   }
 
-  if (!drush_get_option('local')) {
+  // In site-local Drush mode, we ignore global commandfiles.
+  if (!SITE_LOCAL_DRUSH && !drush_get_option('site-local')) {
     // System commands, residing in $SHARE_PREFIX/share/drush/commands
     $share_path = drush_get_context('DRUSH_SITE_WIDE_COMMANDFILES');
     if (is_dir($share_path)) {
@@ -471,7 +475,7 @@ function drush_preflight_command_dispatch() {
   $command_name = array_shift($args);
   $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
   $local_drush = drush_get_option('drush-script');
-  $is_local = drush_get_option('local');
+  $is_local = drush_get_option('site-local');
   $values = NULL;
   if (!empty($root) && !empty($local_drush) && empty($is_local)) {
     if (!drush_is_absolute_path($local_drush)) {
@@ -485,7 +489,7 @@ function drush_preflight_command_dispatch() {
       $uri = drush_get_context('DRUSH_SELECTED_URI');
       $aditional_options = array(
         'root' => $root,
-        'local' => TRUE,
+        'site-local' => TRUE,
       );
       if (!empty($uri)) {
         $aditional_options['uri'] = $uri;
