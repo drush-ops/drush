@@ -172,14 +172,14 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     // Travis, for unknown reasons.
     // @see https://github.com/drush-ops/drush/pull/646
     $prefix = '';
-    foreach ($env as $env_name => $env_value) {
-      $prefix .= $env_name . '=' . self::escapeshellarg($env_value) . ' ';
-    }
+//    foreach ($env as $env_name => $env_value) {
+//      $prefix .= $env_name . '=' . self::escapeshellarg($env_value) . ' ';
+//    }
     $this->log("Executing: $prefix$command", 'warning');
 
     try {
       // Process uses a default timeout of 60 seconds, set it to 0 (none).
-      $this->process = new Process($prefix . $command, $cd, NULL, NULL, 0);
+      $this->process = new Process($command, $cd, array_merge($_ENV, $env), NULL, 0);
       if (!getenv('UNISH_NO_TIMEOUTS')) {
         $this->process->setTimeout($this->timeout)
           ->setIdleTimeout($this->idleTimeout);

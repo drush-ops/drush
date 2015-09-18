@@ -21,6 +21,8 @@ install:
   - echo extension_dir=ext >> php.ini
   - echo extension=php_openssl.dll >> php.ini
   - echo date.timezone="UTC" >> php.ini
+  #Debugging related to https://github.com/drush-ops/drush/pull/646.
+  - echo variables_order="EGPCS" >> php.ini
   - echo extension=php_mbstring.dll >> php.ini
   - echo extension=php_curl.dll >> php.ini
   - echo extension=php_pdo_mysql.dll >> php.ini
