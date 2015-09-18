@@ -70,7 +70,7 @@ function unish_init() {
     $ret = mkdir(UNISH_CACHE, 0777, TRUE);
   }
 
-  $home = UNISH_SANDBOX . '/home';
+  $home = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'home';
   putenv("HOME=$home");
   putenv("HOMEDRIVE=$home");
 
