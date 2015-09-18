@@ -41,6 +41,7 @@ services:
 
 test_script:
   - mysql -uroot -pPassword12! -e "create database YourDatabase;"
+  - mysql -uroot -pPassword12! -e "SHOW DATABASES;"
   - phpunit -v --configuration tests %PHPUNIT_ARGS%
 
 cache:
@@ -50,7 +51,7 @@ cache:
 environment:
   global:
       UNISH_NO_TIMEOUTS: y
-      UNISH_DB_URL: mysql://root:Password12!@127.0.0.1
+      UNISH_DB_URL: mysql://root:Password12!@localhost
       UNISH_TMP: c:\drush_temp
       UNISH_DRUSH: drush
   
