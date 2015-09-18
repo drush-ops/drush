@@ -16,7 +16,7 @@ install:
   - cinst -y curl
   - SET PATH=C:\Program Files\curl;%PATH%
   #For tar, cksum, ...
-  - cinst -y cyg-get default
+  - cinst -y cygwin
   - cinst -y php
   - cd c:\tools\php
   - copy php.ini-production php.ini
