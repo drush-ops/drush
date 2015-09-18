@@ -40,6 +40,7 @@ services:
   - mysql
 
 test_script:
+  - mysql -uroot -pPassword12! -e "create database YourDatabase;"
   - phpunit -v --configuration tests %PHPUNIT_ARGS%
 
 cache:
