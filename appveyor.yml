@@ -49,7 +49,7 @@ cache:
 environment:
   global:
       UNISH_NO_TIMEOUTS: y
-      UNISH_DB_URL: mysql://root:@127.0.0.1
+      UNISH_DB_URL: mysql://root:Password12!@127.0.0.1
       UNISH_TMP: c:\drush_temp
       UNISH_DRUSH: drush
   
