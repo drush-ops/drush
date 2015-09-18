@@ -75,7 +75,7 @@ class commandCase extends CommandUnishTestCase {
     );
     $this->drush('unit-drush-dependency', array(), $options, NULL, NULL, self::EXIT_ERROR);
     $parsed = $this->parse_backend_output($this->getOutput());
-    print "parsed is \n". var_export($parsed, TRUE);
+    $this->log("parsed is \n". var_export($parsed, TRUE));
     $this->assertArrayHasKey("DRUSH_COMMANDFILE_DEPENDENCY_ERROR", $parsed['error_log']);
   }
 
