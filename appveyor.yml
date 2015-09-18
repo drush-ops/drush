@@ -35,6 +35,7 @@ install:
   - mkdir c:\composer
   - cd c:\composer
   - php -r "readfile('http://getcomposer.org/installer');" | php
+  - SET PATH=c:\composer;%PATH%
   #Install Drush's dependencies via Composer
   - cd %APPVEYOR_BUILD_FOLDER%
   - php composer.phar -q install --prefer-dist -n --no-ansi
