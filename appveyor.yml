@@ -37,7 +37,7 @@ services:
   - mysql
 
 test_script:
-  - phpunit --colors=never --configuration --verbose tests
+  - phpunit -v --colors=never --configuration tests
 
 # environment variables
 environment:
