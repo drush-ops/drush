@@ -112,9 +112,9 @@ function unish_init() {
  * @see drush_delete_dir()
  */
 function unish_file_delete_recursive($dir, $force = FALSE, $follow_symlinks = FALSE) {
-  if (empty($dir)) {
-    return TRUE;
-  }
+//  if (empty($dir)) {
+//    return TRUE;
+//  }
 
   // Do not delete symlinked files, only unlink symbolic links
   if (is_link($dir) && !$follow_symlinks) {
@@ -138,7 +138,7 @@ function unish_file_delete_recursive($dir, $force = FALSE, $follow_symlinks = FA
     // Force deletion of items with readonly flag.
     @chmod($dir, 0777);
   }
-  echo "Dir is ". var_dump($dir). "CWD is " . getcwd(). "\n. Contents: " . var_dump(scandir($dir));
+  // echo "Dir is ". var_dump($dir). "CWD is " . getcwd(). "\n. Contents: " . var_dump(scandir($dir));
   return rmdir($dir);
 }
 
