@@ -15,13 +15,15 @@ install:
   - SET PATH=C:\Program Files\which;%PATH%
   - cinst -y curl
   - SET PATH=C:\Program Files\curl;%PATH%
+  #For tar, cksum, ...
+  - cinst -y cyg-get default
   - cinst -y php
   - cd c:\tools\php
   - copy php.ini-production php.ini
   - echo extension_dir=ext >> php.ini
   - echo extension=php_openssl.dll >> php.ini
   - echo date.timezone="UTC" >> php.ini
-  #Debugging related to https://github.com/drush-ops/drush/pull/646.
+  #Debugging related to https://github.com/drush-ops/drush/pull/646. May be unneeded.
   - echo variables_order="EGPCS" >> php.ini
   - echo extension=php_mbstring.dll >> php.ini
   - echo extension=php_curl.dll >> php.ini
