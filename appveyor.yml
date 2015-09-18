@@ -16,7 +16,9 @@ install:
   - cinst -y curl
   - SET PATH=C:\Program Files\curl;%PATH%
   #For tar, cksum, ...
-  - cinst -y cygwin
+  #- cinst -y cygwin
+  - git clone https://github.com/acquia/DevDesktopCommon.git
+  - SET PATH=%APPVEYOR_BUILD_FOLDER%/DevDesktopCommon/bintools-win/msys/bin;%PATH%
   - cinst -y php
   - cd c:\tools\php
   - copy php.ini-production php.ini
