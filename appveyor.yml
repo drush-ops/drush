@@ -13,7 +13,7 @@ install:
   #which is only needed by the test suite, and already installed by DevDesktop below.
   - cinst -y which
   - SET PATH=C:\Program Files\which;%PATH%
-  - git -q clone https://github.com/acquia/DevDesktopCommon.git #For tar, cksum, ...
+  - git clone -q https://github.com/acquia/DevDesktopCommon.git #For tar, cksum, ...
   - SET PATH=%APPVEYOR_BUILD_FOLDER%/DevDesktopCommon/bintools-win/msys/bin;%PATH%
   - cinst -y php
   - cd c:\tools\php
