@@ -402,7 +402,11 @@ function drush_valid_db_credentials() {
  * @see DRUSH_COMMAND
  */
 function drush_find_drush() {
-  $drush = realpath($_SERVER['argv']['0']);
+  // In case of issues with detected Drush command path, declare an
+  // environment variable "DRUSH_COMMAND". Useful on windows when php
+  // extension files open directly with a given program.
+  $drush = (isset($_SERVER['DRUSH_COMMAND'])) ? $_SERVER['DRUSH_COMMAND'] : realpath($_SERVER['argv']['0']);
+
   // TODO: On Windows, if we leave $drush as-is, then callbacks will
   // be done just as we were called by the batch file:  php.exe C:\path\drush.php
   // We could also convert drush.php to drush.bat to run the batch file again,
