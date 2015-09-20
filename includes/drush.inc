@@ -944,6 +944,7 @@ function drush_attempt_mime_content_type($filename) {
     $filename = basename(current(explode('?', $filename, 2)));
     $extension_mimetype = array(
       '.tar'     => 'application/x-tar',
+      '.sql'     => 'application/octet-stream',
     );
     foreach ($extension_mimetype as $extension => $ct) {
       if (substr($filename, -strlen($extension)) === $extension) {
@@ -1821,4 +1822,60 @@ function drush_complete_cache_clear($type = NULL, $command = NULL) {
   }
   // No type or command, so clear the entire complete cache.
   drush_cache_clear_all('*', 'complete', TRUE);
+}
+
+/*
+ * Cast a value according to the provided format
+ *
+ * @param mixed $value.
+ * @param string $format
+ *   Allowed values: auto, integer, float, bool, boolean, json, yaml.
+ *
+ * @return $value
+ *  The value, re-typed as needed.
+ */
+function drush_value_format($value, $format) {
+  if ($format == 'auto') {
+    if (is_numeric($value)) {
+      $value = $value + 0; // http://php.net/manual/en/function.is-numeric.php#107326
+      $format = gettype($value);
+    }
+    elseif (($value == 'TRUE') || ($value == 'FALSE')) {
+      $format = 'bool';
+    }
+  }
+
+  // Now, we parse the object.
+  switch ($format) {
+    case 'integer':
+      $value = (integer)$value;
+      break;
+    // from: http://php.net/gettype
+    // for historical reasons "double" is returned in case of a float, and not simply "float"
+    case 'double':
+    case 'float':
+      $value = (float)$value;
+      break;
+    case 'bool':
+    case 'boolean':
+      if ($value == 'TRUE') {
+        $value = TRUE;
+      }
+      elseif ($value == 'FALSE') {
+        $value = FALSE;
+      }
+      else {
+        $value = (bool)$value;
+      }
+      break;
+
+    case 'json':
+      $value = drush_json_decode($value);
+      break;
+
+    case 'yaml':
+      $value = \Symfony\Component\Yaml\Yaml::parse($value, FALSE, TRUE);
+      break;
+  }
+  return $value;
 }

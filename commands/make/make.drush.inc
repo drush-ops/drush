@@ -151,7 +151,7 @@ function make_drush_command() {
     ),
     'options' => array(
       'result-file' => array(
-        'description' => 'Save to a file. If not provided, the updated makefile will be dump to stdout.',
+        'description' => 'Save to a file. If not provided, the updated makefile will be dumped to stdout.',
         'example-value' => 'updated.make',
       ),
     ),
@@ -387,6 +387,7 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
     // Merge the known data onto the project info.
     $project += array(
       'name'                => $key,
+      'type'                => 'module',
       'core'                => $info['core'],
       'translations'        => $translations,
       'build_path'          => $build_path,
@@ -416,13 +417,14 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
       $project['l10n_url'] = MAKE_DEFAULT_L10N_SERVER;
     }
     // Classify projects in core or contrib.
-    if ($project['location'] != ReleaseInfo::DEFAULT_URL && !isset($project['type'])) {
+    if ($project['type'] == 'core') {
+      $project['download_type'] = 'core';
+    }
+    elseif ($project['location'] != ReleaseInfo::DEFAULT_URL || !isset($project['download'])) {
       $request = make_prepare_request($project);
       $is_core = $release_info->checkProject($request, 'core');
       $project['download_type'] = ($is_core ? 'core' : 'contrib');
-    }
-    elseif (!empty($project['type'])) {
-      $project['download_type'] = ($project['type'] == 'core' ? 'core' : 'contrib');
+      $project['type'] = $is_core ? 'core' : $project['type'];
     }
     else {
       $project['download_type'] = ($project['name'] == 'drupal' ? 'core' : 'contrib');
@@ -670,10 +672,15 @@ function make_move_build($build_path) {
         // To prevent the removal of top-level directories such as 'modules' or
         // 'themes', descend in a level if the file exists.
         // TODO: This only protects one level of directories from being removed.
-        $files = drush_scan_directory($file->filename, '/./', array('.', '..'), 0, FALSE);
         $overwrite = drush_get_option('overwrite', FALSE) ? FILE_EXISTS_OVERWRITE : FILE_EXISTS_MERGE;
-        foreach ($files as $file) {
-          $ret = $ret && drush_copy_dir($file->filename, $destination . DIRECTORY_SEPARATOR . $file->basename, $overwrite);
+        if (is_dir($destination)) {
+          $files = drush_scan_directory($file->filename, '/./', array('.', '..'), 0, FALSE);
+          foreach ($files as $file) {
+            $ret = $ret && drush_copy_dir($file->filename, $destination . DIRECTORY_SEPARATOR . $file->basename, $overwrite);
+          }
+        }
+        else {
+          $ret = $ret && drush_copy_dir($file->filename, $destination, $overwrite);
         }
       }
       else {

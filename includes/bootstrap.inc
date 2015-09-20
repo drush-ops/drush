@@ -112,6 +112,8 @@ define('DRUSH_BOOTSTRAP_DRUPAL_LOGIN', 6);
  * Return the list of bootstrap objects that are available for
  * initializing a CMS with Drush.  We insure that any given candidate
  * class is instantiated only once.
+ *
+ * @return \Drush\Boot\Boot[]
  */
 function drush_get_bootstrap_candidates() {
   $candidate_classes = drush_get_bootstrap_candidate_classnames();
@@ -135,6 +137,8 @@ function drush_get_bootstrap_candidates() {
 /**
  * Find the list of bootstrap classnames available for initializing a
  * CMS with Drush.
+ *
+ * @return array
  */
 function drush_get_bootstrap_candidate_classnames() {
   // Give all commandfiles a chance to return candidates.  They should
@@ -156,7 +160,12 @@ function drush_get_bootstrap_candidate_classnames() {
   return $candidates;
 }
 
+/**
+ * Look up the best bootstrap class for the given location
+ * from the set of available candidates.
+ */
 function drush_bootstrap_class_for_root($path) {
+  drush_load_bootstrap_commandfile_at_path($path);
   $candidates = drush_get_bootstrap_candidates();
   foreach ($candidates as $candidate) {
     if ($candidate->valid_root($path)) {
@@ -164,6 +173,23 @@ function drush_bootstrap_class_for_root($path) {
     }
   }
   return NULL;
+}
+
+/**
+ * Check to see if there is a bootstrap class available
+ * at the specified location; if there is, load it.
+ */
+function drush_load_bootstrap_commandfile_at_path($path) {
+  static $paths = array();
+
+  if (!empty($path) && (!array_key_exists($path, $paths))) {
+    $paths[$path] = TRUE;
+    // Check to see if we have any bootstrap classes in this location.
+    $bootstrap_class_dir = $path . '/drush/bootstrap';
+    if (is_dir($bootstrap_class_dir)) {
+      _drush_add_commandfiles(array($bootstrap_class_dir), DRUSH_BOOTSTRAP_NONE);
+    }
+  }
 }
 
 /**

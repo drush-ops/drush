@@ -44,6 +44,18 @@ function core_drush_help($section) {
 }
 
 /**
+ * Implements hook_drush_help_alter().
+ */
+function core_drush_help_alter(&$command) {
+  // Drupal 8+ only options.
+  if (drush_drupal_major_version() < 8) {
+    if ($command['commandfile'] == 'core' && $command['command'] == 'updatedb') {
+      unset($command['options']['entity-updates']);
+    }
+  }
+}
+
+/**
  * Implementation of hook_drush_command().
  *
  * In this hook, you specify which commands your
@@ -109,7 +121,16 @@ function core_drush_command() {
     'global-options' => array(
       'cache-clear',
     ),
+    'options' => array(
+      'entity-updates' => 'Run automatic entity schema updates at the end of any update hooks.',
+    ),
     'aliases' => array('updb'),
+  );
+  $items['entity-updates'] = array(
+    'description' => 'Apply pending entity schema updates.',
+    'aliases' => array('entup'),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+    'core' => array('8+'),
   );
   $items['twig-compile'] = array(
     'description' => 'Compile all Twig template(s).',
@@ -154,7 +175,7 @@ function core_drush_command() {
       'drush core-status version' => 'Show all status lines that contain version information.',
       'drush core-status --pipe' => 'A list key=value items separated by line breaks.',
       'drush core-status drush-version --pipe' => 'Emit just the drush version with no label.',
-      'drush core-status config-active --pipe' => 'Emit just the active Config directory with no label.',
+      'drush core-status config-staging --pipe' => 'Emit just the staging Config directory with no label.',
     ),
     'arguments' => array(
       'item' => 'Optional.  The status item line(s) to display.',
@@ -170,7 +191,7 @@ function core_drush_command() {
     'outputformat' => array(
       'default' => 'key-value',
       'pipe-format' => 'json',
-      'field-labels' => array('drupal-version' => 'Drupal version', 'uri' => 'Site URI', 'db-driver' => 'Database driver', 'db-hostname' => 'Database hostname', 'db-port' => 'Database port', 'db-username' => 'Database username', 'db-password' => 'Database password', 'db-name' => 'Database name', 'db-status' => 'Database', 'bootstrap' => 'Drupal bootstrap', 'user' => 'Drupal user', 'theme' => 'Default theme', 'admin-theme' => 'Administration theme', 'php-bin' => 'PHP executable', 'php-conf' => 'PHP configuration', 'php-os' => 'PHP OS', 'drush-script' => 'Drush script', 'drush-version' => 'Drush version', 'drush-temp' => 'Drush temp directory', 'drush-conf' => 'Drush configuration', 'drush-alias-files' => 'Drush alias files', 'install-profile' => 'Install profile', 'root' => 'Drupal root', 'site-path' => 'Site path', 'root' => 'Drupal root', 'site' => 'Site path', 'themes' => 'Themes path', 'modules' => 'Modules path', 'files' => 'File directory path', 'private' => 'Private file directory path', 'temp' => 'Temporary file directory path', 'config-active' => 'Active config path', 'config-staging' => 'Staging config path', 'files-path' => 'File directory path', 'temp-path' => 'Temporary file directory path', '%paths' => 'Other paths'),
+      'field-labels' => array('drupal-version' => 'Drupal version', 'uri' => 'Site URI', 'db-driver' => 'Database driver', 'db-hostname' => 'Database hostname', 'db-port' => 'Database port', 'db-username' => 'Database username', 'db-password' => 'Database password', 'db-name' => 'Database name', 'db-status' => 'Database', 'bootstrap' => 'Drupal bootstrap', 'user' => 'Drupal user', 'theme' => 'Default theme', 'admin-theme' => 'Administration theme', 'php-bin' => 'PHP executable', 'php-conf' => 'PHP configuration', 'php-os' => 'PHP OS', 'drush-script' => 'Drush script', 'drush-version' => 'Drush version', 'drush-temp' => 'Drush temp directory', 'drush-conf' => 'Drush configuration', 'drush-alias-files' => 'Drush alias files', 'install-profile' => 'Install profile', 'root' => 'Drupal root', 'site-path' => 'Site path', 'root' => 'Drupal root', 'site' => 'Site path', 'themes' => 'Themes path', 'modules' => 'Modules path', 'files' => 'File directory path', 'private' => 'Private file directory path', 'temp' => 'Temporary file directory path', 'config-staging' => 'Staging config path', 'files-path' => 'File directory path', 'temp-path' => 'Temporary file directory path', '%paths' => 'Other paths'),
       'formatted-filter' => '_drush_core_status_format_table_data',
       'private-fields' => 'db-password',
       'simplify-single' => TRUE,
@@ -360,7 +381,7 @@ function core_drush_command() {
   $items['core-quick-drupal'] = array(
     'description' => 'Download, install, serve and login to Drupal with minimal configuration and dependencies.',
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
-    'aliases' => array('qd'),
+    'aliases' => array('qd', 'cutie'),
     'arguments' => array(
       'site' => 'Short name for the site to be created - used as a directory name and as sqlite file name. Optional - if omitted timestamped "quick-drupal" directory will be used instead.',
       'projects' => 'A list of projects to download into the new site. If projects contain extensions (modules or themes) with the same name they will be enabled by default. See --enable option to control this behaviour further.',
@@ -446,6 +467,24 @@ function core_drush_engine_drupal() {
 /**
  * @} End of "Engine types".
  */
+
+/**
+ * Command handler. Apply pending entity schema updates.
+ */
+function drush_core_entity_updates() {
+  if (drush_get_context('DRUSH_SIMULATE')) {
+    drush_log(dt('entity-updates command does not support --simpulate option.'), 'ok');
+  }
+
+  drush_include_engine('drupal', 'update');
+  if (entity_updates_main() === FALSE) {
+    return FALSE;
+  }
+
+  drush_drupal_cache_clear_all();
+
+  drush_log(dt('Finished performing updates.'), 'ok');
+}
 
 /**
  * Command handler. Execute update.php code from drush.
@@ -727,7 +766,11 @@ function drush_core_config_load($headers = TRUE) {
     }
   }
   if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
-    $drupal = array_merge(array(realpath($site_root . '/settings.php'), realpath(DRUPAL_ROOT . '/.htaccess')));
+    $drupal[] = realpath($site_root . '/settings.php');
+    if (file_exists($site_root . '/settings.local.php')) {
+      $drupal[] = realpath($site_root . '/settings.local.php');
+    }
+    $drupal[] = realpath(DRUPAL_ROOT . '/.htaccess');
     if ($headers) {
       $drupal_header = array('drupal' => '-- Drupal --');
     }
@@ -1318,7 +1361,8 @@ function drush_core_twig_compile() {
   foreach ($searchpaths as $searchpath) {
     foreach ($file = drush_scan_directory($searchpath, '/\.html.twig/', array('tests')) as $file) {
       $relative = str_replace(drush_get_context('DRUSH_DRUPAL_ROOT'). '/', '', $file->filename);
-      twig_render_template($relative, array());
+      // @todo Dynamically disable twig debugging since there is no good info there anyway.
+      twig_render_template($relative, array('theme_hook_original' => ''));
       drush_log(dt('Compiled twig template !path', array('!path' => $relative)), 'notice');
     }
   }

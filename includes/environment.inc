@@ -140,7 +140,9 @@ function drush_cwd() {
  */
 function _drush_convert_path($path) {
   $path = str_replace('\\','/', $path);
-  $path = preg_replace('/^\/cygdrive\/([A-Za-z])(.*)$/', '\1:\2', $path);
+  if (drush_is_windows(_drush_get_os()) && !drush_is_cygwin(_drush_get_os())) {
+    $path = preg_replace('/^\/cygdrive\/([A-Za-z])(.*)$/', '\1:\2', $path);
+  }
 
   return $path;
 }
@@ -190,7 +192,7 @@ function drush_site_path($path = NULL) {
     // Move up dir by dir and check each.
     // Stop if we get to a Drupal root.   We don't care
     // if it is DRUSH_SELECTED_DRUPAL_ROOT or some other root.
-    while ($path = _drush_shift_path_up($path) && !drush_valid_root($path)) {
+    while (($path = _drush_shift_path_up($path)) && !drush_valid_root($path)) {
       if (file_exists($path . '/settings.php')) {
         $site_path = $path;
         break;

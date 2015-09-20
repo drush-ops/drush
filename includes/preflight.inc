@@ -65,7 +65,7 @@ function drush_preflight_prepare() {
   // PHP_VERSION, such as drush_json_encode(), runserver/runserver.drush.inc, and also
   // adjust _drush_environment_check_php_ini() and the php_prohibited_options
   // list in the drush script.  See http://drupal.org/node/1748228
-  define('DRUSH_MINIMUM_PHP', '5.3.0');
+  define('DRUSH_MINIMUM_PHP', '5.4.5');
   if (version_compare(phpversion(), DRUSH_MINIMUM_PHP) < 0 && !getenv('DRUSH_NO_MIN_PHP')) {
     return drush_set_error('DRUSH_REQUIREMENTS_ERROR', dt('Your command line PHP installation is too old. Drush requires at least PHP !version. To suppress this check, set the environment variable DRUSH_NO_MIN_PHP=1', array('!version' => DRUSH_MINIMUM_PHP)));
   }
@@ -115,44 +115,15 @@ function drush_preflight_prepare() {
  * Additionally the DRUSH_QUIET and DRUSH_BACKEND contexts,
  * will be evaluated now, as they need to be set very early in
  * the execution flow to be able to take affect.
+ *
+ * @return \Drush\Boot\Boot;
  */
 function drush_preflight() {
   // Create an alias '@none' to represent no Drupal site
   _drush_sitealias_cache_alias('@none', array('root' => '', 'uri' => ''));
 
-  // Set the terminal width, used for wrapping table output.
-  // Normally this is exported using tput in the drush script.
-  // If this is not present we do an additional check using stty here.
-  // On Windows in CMD and PowerShell is this exported using mode con.
-  if (!($columns = getenv('COLUMNS'))) {
-    // Trying to export the columns using stty.
-    exec('stty size 2>&1', $columns_output, $columns_status);
-    if (!$columns_status) $columns = preg_replace('/\d+\s(\d+)/', '$1', $columns_output[0], -1, $columns_count);
-
-    // If stty fails and Drush us running on Windows are we trying with mode con.
-    if (($columns_status || !$columns_count) && drush_is_windows()) {
-      $columns_output = array();
-      exec('mode con', $columns_output, $columns_status);
-      if (!$columns_status && is_array($columns_output)) {
-        $columns = (int)preg_replace('/\D/', '', $columns_output[4], -1, $columns_count);
-      }
-      else {
-        drush_log(dt('Drush could not detect the console window width. Set a Windows Environment Variable of COLUMNS to the desired width.'), 'warning');
-      }
-    }
-
-    // Failling back to default columns value
-    if (empty($columns)) {
-      $columns = 80;
-    }
-  }
-  // If a caller wants to reserve some room to add additional
-  // information to the drush output via post-processing, the
-  // --reserve-margin flag can be used to declare how much
-  // space to leave out.  This only affects drush functions
-  // such as drush_print_table() that wrap the output.
-  $columns -= drush_get_option('reserve-margin', 0);
-  drush_set_context('DRUSH_COLUMNS', $columns);
+  // Discover terminal width for pretty output.
+  _drush_preflight_columns();
 
   // Display is tidy now that column width has been handled.
   drush_log(dt('Starting Drush preflight.'), 'preflight');
@@ -343,17 +314,55 @@ function _drush_preflight_base_environment() {
   }
 }
 
+/*
+ * Set the terminal width, used for wrapping table output.
+ * Normally this is exported using tput in the drush script.
+ * If this is not present we do an additional check using stty here.
+ * On Windows in CMD and PowerShell is this exported using mode con.
+ */
+function _drush_preflight_columns() {
+  if (!($columns = getenv('COLUMNS'))) {
+    // Trying to export the columns using stty.
+    exec('stty size 2>&1', $columns_output, $columns_status);
+    if (!$columns_status) $columns = preg_replace('/\d+\s(\d+)/', '$1', $columns_output[0], -1, $columns_count);
+
+    // If stty fails and Drush us running on Windows are we trying with mode con.
+    if (($columns_status || !$columns_count) && drush_is_windows()) {
+      $columns_output = array();
+      exec('mode con', $columns_output, $columns_status);
+      if (!$columns_status && is_array($columns_output)) {
+        $columns = (int)preg_replace('/\D/', '', $columns_output[4], -1, $columns_count);
+      }
+      else {
+        drush_log(dt('Drush could not detect the console window width. Set a Windows Environment Variable of COLUMNS to the desired width.'), 'warning');
+      }
+    }
+
+    // Failling back to default columns value
+    if (empty($columns)) {
+      $columns = 80;
+    }
+  }
+  // If a caller wants to reserve some room to add additional
+  // information to the drush output via post-processing, the
+  // --reserve-margin flag can be used to declare how much
+  // space to leave out.  This only affects drush functions
+  // such as drush_print_table() that wrap the output.
+  $columns -= drush_get_option('reserve-margin', 0);
+  drush_set_context('DRUSH_COLUMNS', $columns);
+}
+
 function _drush_preflight_alias_path() {
   $alias_path =& drush_get_context('ALIAS_PATH');
   $default_prefix_configuration = drush_is_windows() ? getenv('ALLUSERSPROFILE') . '/Drush' : '';
   $site_wide_configuration_dir = drush_get_context('ETC_PREFIX', $default_prefix_configuration) . '/etc/drush';
-  $alias_path[] = $site_wide_configuration_dir;
+  $alias_path[] = drush_sitealias_alias_base_directory($site_wide_configuration_dir);
 
-  $alias_path[] = dirname(__FILE__) . '/..';
+  $alias_path[] = drush_sitealias_alias_base_directory(dirname(__FILE__) . '/..');
 
   $server_home = drush_server_home();
   if (isset($server_home)) {
-    $alias_path[] = $server_home . '/.drush';
+    $alias_path[] = drush_sitealias_alias_base_directory($server_home . '/.drush');
   }
 }
 
@@ -554,6 +563,32 @@ function drush_preflight_command_dispatch() {
     return TRUE;
   }
   return FALSE;
+}
+
+/**
+ * Look for instances of arguments or parameters that
+ * start with "~/".  Replace these with "$HOME/".
+ *
+ * Note that this function is called _after_ Drush does
+ * its redispatch checks; tildes are passed through
+ * unmodified on a redispatch, and are only expanded when
+ * a command is handled locally.
+ */
+function drush_preflight_tilde_expansion(&$command) {
+  // Skip tilde expansion for commands that use
+  // stict option handling, or those that explicitly
+  // turn it off via $command['tilde-expansion'] = FALSE.
+  if ($command['tilde-expansion'] && !$command['strict-option-handling']) {
+    $cli =& drush_get_context('cli');
+    $match = '#^~/#';
+    $replacement = drush_server_home() . '/';
+    foreach ($cli as $key => $value) {
+      if (is_string($value) && preg_match($match, $value)) {
+        $cli[$key] = preg_replace($match, $replacement, $value);
+      }
+    }
+    $command['arguments'] = array_map(function($value) use($match, $replacement) { return is_string($value) ? preg_replace($match, $replacement, $value) : $value; } , $command['arguments']);
+  }
 }
 
 /**

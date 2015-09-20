@@ -98,17 +98,19 @@ function _make_parse_info_file($makefile) {
  * Expand shorthand elements, so that we have an associative array.
  */
 function make_normalize_info(&$info) {
-  foreach($info['projects'] as $key => $project) {
-    if (is_numeric($key) && is_string($project)) {
-      unset($info['projects'][$key]);
-      $info['projects'][$project] = array(
-        'version' => '',
-      );
-    }
-    if (is_string($key) && is_numeric($project)) {
-      $info['projects'][$key] = array(
-        'version' => $project,
-      );
+  if (isset($info['projects'])) {
+    foreach($info['projects'] as $key => $project) {
+      if (is_numeric($key) && is_string($project)) {
+        unset($info['projects'][$key]);
+        $info['projects'][$project] = array(
+          'version' => '',
+        );
+      }
+      if (is_string($key) && is_numeric($project)) {
+        $info['projects'][$key] = array(
+          'version' => $project,
+        );
+      }
     }
   }
 }
@@ -299,7 +301,7 @@ function make_validate_info_file($info) {
             }
             // Prevent malicious attempts to access other areas of the
             // filesystem.
-            elseif (in_array($attribute, array('contrib-destination', 'directory_name')) && !make_safe_path($value)) {
+            elseif (in_array($attribute, array('contrib_destination', 'directory_name')) && !make_safe_path($value)) {
               $args = array(
                 '!path' => $value,
                 '!attribute' => $attribute,
@@ -605,14 +607,43 @@ function _get_working_copy_option($download) {
  *   Returns parsed data if it matches any known format.
  */
 function _make_determine_format($data) {
-  // Test INI first.
+  // Most .make files will have a `core` attribute. Use this to determine
+  // the format.
+  if (preg_match('/^\s*core:/m', $data)) {
+    $parsed = ParserYaml::parse($data);
+    $parsed['format'] = 'yaml';
+    return $parsed;
+  }
+  elseif (preg_match('/^\s*core\s*=/m', $data)) {
+    $parsed = ParserIni::parse($data);
+    $parsed['format'] = 'ini';
+    return $parsed;
+  }
+
+  // If the .make file did not have a core attribute, it is being included
+  // by another .make file. Test YAML first to avoid segmentation faults from
+  // preg_match in INI parser.
+  $yaml_parse_exception = FALSE;
+  try {
+    if ($parsed = ParserYaml::parse($data)) {
+      $parsed['format'] = 'yaml';
+      return $parsed;
+    }
+  }
+  catch (\Symfony\Component\Yaml\Exception\ParseException $e) {
+    // Note that an exception was thrown, and display after .ini parsing.
+    $yaml_parse_exception = $e;
+  }
+
+  // Try INI format.
   if ($parsed = ParserIni::parse($data)) {
     $parsed['format'] = 'ini';
     return $parsed;
   }
-  elseif ($parsed = ParserYaml::parse($data)) {
-    $parsed['format'] = 'yaml';
-    return $parsed;
+
+  if ($yaml_parse_exception) {
+    throw $e;
   }
+
   return drush_set_error('MAKE_STDIN_ERROR', dt('Unknown make file format'));
 }

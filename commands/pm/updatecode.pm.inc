@@ -372,7 +372,7 @@ function pm_update_project($project, $version_control) {
  */
 function pm_update_finish($project, $version_control) {
   drush_print(dt('Project !project was updated successfully. Installed version is now !version.', array('!project' => $project['name'], '!version' => $project['candidate_version'])));
-  drush_command_invoke_all('pm_post_update', $project['name'], $project['releases'][$project['candidate_version']]);
+  drush_command_invoke_all('pm_post_update', $project['name'], $project['releases'][$project['candidate_version']], $project);
   $version_control->post_update($project);
 }
 

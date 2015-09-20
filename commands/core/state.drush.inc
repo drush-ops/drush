@@ -47,8 +47,8 @@ function state_drush_command() {
     'required arguments' => 2,
     'options' => array(
       'format' => array(
-        'description' => 'Format to parse the object. Use "string" for string (default), and "yaml" for YAML.',
-        'example-value' => 'yaml',
+        'description' => 'Type for  the value. Use "auto" to detect format from value. Other recognized values are string, integer float, or boolean for corresponding primitive type, or json, yaml for complex types.',
+        'example-value' => 'boolean',
         'value' => 'required',
       ),
       // A convenient way to pass a multiline value within a backend request.
@@ -58,7 +58,8 @@ function state_drush_command() {
       ),
     ),
     'examples' => array(
-      'drush state-set system.cron_last 1406682882' => 'Sets a timestamp for last cron run.',
+      'drush state-set system.cron_last 1406682882 --format=integer' => 'Sets a timestamp for last cron run.',
+      'php -r "print json_encode(array(\'drupal\', \'simpletest\'));"  | drush state-set --format=json foo.name -'=> 'Set a key to a complex value (e.g. array)',
     ),
     'aliases' => array('sset'),
     'core' => array('8+'),
@@ -95,23 +96,29 @@ function drush_state_get($key = NULL) {
  *
  * @param $key
  *   The config key.
- * @param $data
- *    The data to save to config.
+ * @param $value
+ *    The data to save to state.
  */
-function drush_state_set($key = NULL, $data = NULL) {
+function drush_state_set($key = NULL, $value = NULL) {
   // This hidden option is a convenient way to pass a value without passing a key.
-  $data = drush_get_option('value', $data);
+  $value = drush_get_option('value', $value);
 
-  if (!isset($data)) {
+  if (!isset($value)) {
     return drush_set_error('DRUSH_STATE_ERROR', dt('No state value specified.'));
   }
 
   // Special flag indicating that the value has been passed via STDIN.
-  if ($data === '-') {
-    $data = stream_get_contents(STDIN);
+  if ($value === '-') {
+    $value = stream_get_contents(STDIN);
   }
 
-  \Drupal::state()->set($key, $data);
+  // If the value is a string (usual case, unless we are called from code),
+  // then format the input.
+  if (is_string($value)) {
+    $value = drush_value_format($value, drush_get_option('format', 'auto'));
+  }
+
+  \Drupal::state()->set($key, $value);
 }
 
 /**

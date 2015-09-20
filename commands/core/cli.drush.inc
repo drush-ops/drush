@@ -17,13 +17,18 @@ function cli_drush_command() {
  * Command callback.
  */
 function drush_cli_core_cli() {
-  $boris = new \Boris\Boris(drush_sitealias_bootstrapped_site_name() . '> ');
-  // Use the Symfony var-dumper to inspect variables.
-  $boris->setInspector(new \Drush\Boris\VarDumperInspector());
+  $shell = new Psy\Shell();
 
-  // Boris will never return control to us, but our shutdown
-  // handler will still run after the user presses ^D.  Mark
-  // this command as completed to avoid a spurious error message.
+  if (drush_drupal_major_version() >= 8) {
+    // Register the assertion handler so exceptions are thrown instead of errors
+    // being triggered. This plays nicer with PsySH.
+    \Drupal\Component\Assertion\Handle::register();
+    $shell->setScopeVariables(['container' => \Drupal::getContainer()]);
+  }
+
+  // PsySH will never return control to us, but our shutdown handler will still
+  // run after the user presses ^D.  Mark this command as completed to avoid a
+  // spurious error message.
   drush_set_context('DRUSH_EXECUTION_COMPLETED', TRUE);
-  $boris->start();
+  $shell->run();
 }

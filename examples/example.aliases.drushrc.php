@@ -50,6 +50,20 @@
  *        a. The /drush and /sites/all/drush folders for the current Drupal site
  *        b. The /drush folder in the directory above the current Drupal site
  *
+ * These locations are searched recursively.  If there is a folder called
+ * 'site-aliases' in any search path, then Drush will search for site aliases
+ * only inside that directory.
+ *
+ * The preferred locations for alias files, then, are:
+ *
+ *   /etc/drush/site-aliases
+ *   $HOME/.drush/site-aliases
+ *   $ROOT/drush/site-aliases
+ *   $ROOT/sites/all/drush/site-aliases
+ *   $ROOT/../drush/site-aliases
+ *
+ * Or any path set in $options['alias-path'] or via --alias-path.
+ *
  * Folders and files containing other versions of drush in their names will
  * be *skipped* (e.g. mysite.aliases.drush4rc.php or
  * drush4/mysite.aliases.drushrc.php). Names containing the current version of
@@ -67,7 +81,7 @@
  * like a drushrc.php configuration file:
  *
  * @code
- * $options['uri'] = 'dev.mydrupalsite.com',
+ * $options['uri'] = 'dev.mydrupalsite.com';
  * $options['root'] = '/path/to/drupal';
  * @endcode
  *
@@ -219,10 +233,6 @@
  *     the full path to drush.php on the local machine.
  *   - '%drush': A read-only property: points to the folder that the drush
  *     script is stored in.
- *   - '%dump-dir': Path to directory that "drush sql-sync" should use to store
- *     sql-dump files. Helpful filenames are auto-generated.
- *   - '%dump': Path to the file that "drush sql-sync" should use to store
- *     sql-dump file.
  *   - '%files': Path to 'files' directory.  This will be looked up if not
  *     specified.
  *   - '%root': A reference to the Drupal root defined in the 'root' item in the
@@ -231,11 +241,11 @@
  * - 'php-options': commandline options for php interpreter, you may
  *   want to set this to '-d error_reporting="E_ALL^E_DEPRECATED"'
  * - 'variables' : An array of name/value pairs which override Drupal
- *   variables/config.
- *    These values take precedence even over settings.php overrides.
+ *   variables/config. These values take precedence even over settings.php
+ *   overrides.
  * - 'command-specific': These options will only be set if the alias
  *   is used with the specified command.  In the example below, the option
- *   `--no-cache` will be selected whenever the @stage alias
+ *   `--no-dump` will be selected whenever the @stage alias
  *   is used in any of the following ways:
  *   - `drush @stage sql-sync @self @live`
  *   - `drush sql-sync @stage @live`
@@ -329,7 +339,6 @@
 #    'path-aliases' => array(
 #      '%drush' => '/path/to/drush',
 #      '%drush-script' => '/path/to/drush/drush',
-#      '%dump-dir' => '/path/to/dumps',
 #      '%files' => 'sites/mydrupalsite.com/files',
 #      '%custom' => '/my/custom/path',
 #     ),
@@ -353,7 +362,7 @@
 #      ),
 #     'command-specific' => array (
 #       'sql-sync' => array (
-#         'no-cache' => TRUE,
+#         'no-dump' => TRUE,
 #       ),
 #     ),
 #     # This shell alias will run `mycommand` when executed via

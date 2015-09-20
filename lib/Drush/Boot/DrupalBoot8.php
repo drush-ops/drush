@@ -39,7 +39,10 @@ class DrupalBoot8 extends DrupalBoot {
     // If we're running on Drupal 8 or later, we provide a logger which will send
     // output to drush_log(). This should catch every message logged through every
     // channel.
-    \Drupal::getContainer()->get('logger.factory')->addLogger(new \Drush\Log\DrushLog);
+    $container = \Drupal::getContainer();
+    $parser = $container->get('logger.log_message_parser');
+    $logger = new \Drush\Log\DrushLog($parser);
+    $container->get('logger.factory')->addLogger($logger);
   }
 
   function contrib_modules_paths() {
@@ -66,6 +69,10 @@ class DrupalBoot8 extends DrupalBoot {
     $core = DRUPAL_ROOT . '/core';
 
     return $core;
+  }
+
+  function bootstrap_drupal_database_validate() {
+    return parent::bootstrap_drupal_database_validate() && $this->bootstrap_drupal_database_has_table('key_value');
   }
 
   function bootstrap_drupal_database() {

@@ -60,7 +60,8 @@ function sitealias_drush_command() {
     'aliases' => array('use'),
     'examples' => array(
       'drush site-set @dev' => 'Set the current session to use the @dev alias.',
-      'drush site-set user@server/path/to/drupal#sitename' => 'Set the current session to use a site specification.',
+      'drush site-set user@server/path/to/drupal#sitename' => 'Set the current session to use a remote site via site specification.',
+      'drush site-set /path/to/drupal#sitename' => 'Set the current session to use a local site via site specification.',
       'drush site-set -' => 'Go back to the previously-set site (like `cd -`).',
       'drush site-set' => 'Without an argument, any existing site becomes unset.',
     ),
@@ -357,6 +358,21 @@ function drush_sitealias_site_set($site = '@none') {
         $site = '@none';
       }
     }
+    if ($site == '@self') {
+      $path = drush_cwd();
+      $site_record = drush_sitealias_lookup_alias_by_path($path, TRUE);
+      if (isset($site_record['#name'])) {
+        $site = '@' . $site_record['#name'];
+      }
+      else {
+        $site = '@none';
+      }
+      // Using 'site-set @self' is quiet if there is no change.
+      $current = is_file($filename) ? trim(file_get_contents($filename)) : "@none";
+      if ($current == $site) {
+        return;
+      }
+    }
     if (_drush_sitealias_set_context_by_name($site)) {
       if (file_exists($filename)) {
         @unlink($last_site_filename);
@@ -375,7 +391,7 @@ function drush_sitealias_site_set($site = '@none') {
       }
     }
     else {
-      drush_set_error('DRUPAL_SITE_NOT_FOUND', dt("Could not find a site definition for !site.", array('!site' => $site)));
+      return drush_set_error('DRUPAL_SITE_NOT_FOUND', dt("Could not find a site definition for !site.", array('!site' => $site)));
     }
   }
 }

@@ -406,19 +406,32 @@ function drush_sitealias_alias_path($alias_path_context = NULL) {
   // look for alias files in /drush and /sites/all/drush.
   $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
   if (!empty($drupal_root)) {
-    $site_paths[] = $drupal_root . '/drush';
-    $site_paths[] = $drupal_root . '/sites/all/drush';
+    $site_paths[] = drush_sitealias_alias_base_directory($drupal_root . '/drush');
+    $site_paths[] = drush_sitealias_alias_base_directory($drupal_root . '/sites/all/drush');
     $uri = drush_get_context('DRUSH_SELECTED_URI');
     if (empty($uri)) {
       $uri = 'default';
     }
     $site_dir = drush_sitealias_uri_to_site_dir($uri, $drupal_root);
     if ($site_dir) {
-      $site_paths[] = "$drupal_root/sites/$site_dir";
+      $site_paths[] = drush_sitealias_alias_base_directory("$drupal_root/sites/$site_dir");
     }
   }
   $alias_path = (array) drush_get_context('ALIAS_PATH', array());
   return array_unique(array_merge($context_path, $alias_path, $site_paths));
+}
+
+/**
+ * If there is a directory 'aliases' in the specified search location,
+ * then search ONLY in that directory for aliases.  Otherwise, search
+ * anywhere inside the specified directory for aliases.
+ */
+function drush_sitealias_alias_base_directory($dir) {
+  $potential_location = $dir . '/site-aliases';
+  if (is_dir($potential_location)) {
+    return $potential_location;
+  }
+  return $dir;
 }
 
 /**
@@ -612,11 +625,15 @@ function _drush_sitealias_find_alias_files($aliasname = NULL, $alias_path_contex
     $alias_files[] = '/' . preg_quote($aliasname, '/') . '\.alias\.drush(' . DRUSH_MAJOR_VERSION . '|)rc\.php$/';
   }
 
-  // Search each path in turn
+  // Do not scan into the files directory.
+  $blacklist = array_merge(array('files'), drush_filename_blacklist());
+
+  // Search each path in turn.
   foreach ($alias_path as $path) {
     // Find all of the matching files in this location
     foreach ($alias_files as $file_pattern_to_search_for) {
-      $alias_files_to_consider = array_merge($alias_files_to_consider, array_keys(drush_scan_directory($path, $file_pattern_to_search_for, drush_filename_blacklist(), 0, FALSE)));
+      drush_log(dt('Scanning into @path for @pattern', array('@path' => $path, '@pattern' => $file_pattern_to_search_for)), 'sitealias');
+      $alias_files_to_consider = array_merge($alias_files_to_consider, array_keys(drush_scan_directory($path, $file_pattern_to_search_for, $blacklist, 0, TRUE)));
     }
   }
 
@@ -867,8 +884,7 @@ function drush_sitealias_convert_db_spec_to_db_url($db_spec) {
     $result .= "@";
   }
   // Host is required, unless this is an sqlite db.
-  if (isset($db_spec["host"]))
-  {
+  if (isset($db_spec["host"])) {
     $result .= urlencode($db_spec["host"]);
     if (isset($db_spec["port"])) {
       $result .= ":" . urlencode($db_spec["port"]);
@@ -1580,62 +1596,56 @@ function drush_sitealias_uri_to_site_dir($uri, $site_root = NULL) {
 }
 
 /**
- * Convert from an old-style database URL to an array of database settings
+ * Convert from an old-style database URL to an array of database settings.
  *
  * @param db_url
- *   A Drupal 6 db-url string to convert, or an array with a 'default' element.
+ *   A Drupal 6 db url string to convert, or an array with a 'default' element.
  * @return array
  *   An array of database values containing only the 'default' element of
- *   the db_url.
+ *   the db url. If the parse fails the array is empty.
  */
 function drush_convert_db_from_db_url($db_url) {
+  $db_spec = array();
+
   if (is_array($db_url)) {
     $db_url_default = $db_url['default'];
   }
   else {
     $db_url_default = $db_url;
   }
-  $url = parse_url($db_url_default);
-  // If parse_url failed, return an empty array
-  if (!is_array($url)) {
-    return array();
+
+  // If it's a sqlite database, pick the database path and we're done.
+  if (strpos($db_url_default, 'sqlite://') === 0) {
+    $db_spec = array(
+      'driver'   => 'sqlite',
+      'database' => substr($db_url_default, strlen('sqlite://')),
+    );
   }
-  // Fill in defaults to prevent notices.
-  $url += array(
-    'driver' => NULL,
-    'user' => NULL,
-    'pass' => NULL,
-    'host' => NULL,
-    'port' => NULL,
-    'path' => NULL,
-    'database' => NULL,
-  );
-  $url = (object)array_map('urldecode', $url);
-  $host = $url->host;
-  $database = substr($url->path, 1);
-  if ($url->scheme == 'sqlite') {
-    $host = '';
-    // The sqlite path with start with a / if there
-    // is both a host and a path component; sqlite
-    // databases without an absolute path will have only
-    // a host component.
-    if (isset($url->path)) {
-      $database = '/' . $url->host  . $url->path;
-    }
-    else {
-      $database = $url->host;
+  else {
+    $url = parse_url($db_url_default);
+    if ($url) {
+      // Fill in defaults to prevent notices.
+      $url += array(
+        'scheme' => NULL,
+        'user'   => NULL,
+        'pass'   => NULL,
+        'host'   => NULL,
+        'port'   => NULL,
+        'path'   => NULL,
+      );
+      $url = (object)array_map('urldecode', $url);
+      $db_spec = array(
+        'driver'   => $url->scheme == 'mysqli' ? 'mysql' : $url->scheme,
+        'username' => $url->user,
+        'password' => $url->pass,
+        'host' => $url->host,
+        'port' => $url->port,
+        'database' => ltrim($url->path, '/'),
+      );
     }
   }
-  return array(
-    'driver' => $url->scheme == 'mysqli' ? 'mysql' : $url->scheme,
-    'username' => $url->user,
-    'password' => $url->pass,
-    'port' => $url->port,
-    'host' => $host,
-    // Remove leading / character from database names, unless we're installing
-    // to SQLite (which won't have a slash there unless it's part of a path).
-    'database' => $database,
-  );
+
+  return $db_spec;
 }
 
 /**
@@ -1741,7 +1751,7 @@ function drush_sitealias_get_path_option($site_alias_record, $option, $default =
  * @param site_alias_settings
  *   An alias record
  * @param prefix
- *   The prefix value to afix to the beginning of every
+ *   The prefix value to affix to the beginning of every
  *   key set.  For example, if this function is called once with
  *   'source-' and again with 'destination-' prefixes, then the
  *   source database records will be stored in 'source-databases',
@@ -2188,20 +2198,29 @@ function drush_sitealias_cache_alias_by_path($alias_record) {
  * @return
  *   An alias record for the provided path
  */
-function drush_sitealias_lookup_alias_by_path($path) {
+function drush_sitealias_lookup_alias_by_path($path, $allow_best_match=FALSE) {
   $result = drush_sitealias_quick_lookup_cached_alias_by_path($path);
+  $fallback = array();
   if (empty($result)) {
     $aliases = _drush_sitealias_find_and_load_all_aliases();
     foreach ($aliases as $name => $alias_record) {
       if (!isset($alias_record['remote-host']) && isset($alias_record['root']) && isset($alias_record['uri']) && isset($alias_record['#name']) && isset($alias_record['#file'])) {
         if ($path == drush_sitealias_local_site_path($alias_record)) {
           $result = $alias_record;
-          _drush_sitealias_add_inherited_values_to_record($result);
-          drush_sitealias_cache_alias_by_path($result);
-          return $result;
+          break;
+        }
+        if (substr($path, 0, strlen($alias_record['root'])) == $alias_record['root']) {
+          $fallback = $alias_record;
         }
       }
     }
+  }
+  if (empty($result) && $allow_best_match) {
+    $result = $fallback;
+  }
+  if (!empty($result)) {
+    _drush_sitealias_add_inherited_values_to_record($result);
+    drush_sitealias_cache_alias_by_path($result);
   }
   return $result;
 }

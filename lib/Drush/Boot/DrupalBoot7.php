@@ -49,6 +49,10 @@ class DrupalBoot7 extends DrupalBoot {
     return $core;
   }
 
+  function bootstrap_drupal_database_validate() {
+    return parent::bootstrap_drupal_database_validate() && $this->bootstrap_drupal_database_has_table('blocked_ips');
+  }
+
   function bootstrap_drupal_database() {
     drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
     parent::bootstrap_drupal_database();

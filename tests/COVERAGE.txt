@@ -20,7 +20,7 @@ sql-connect:
 sql-query: FAIR. Implicit by site-install, sql-sync
 sql-dump: GOOD. tested by sqlDumpTest.
 sql-sync: GOOD. testLocalSqlSync().
-  need test: %dump, %dump-dir, --dump, --dump-dir, --source-dump, --target-dump, --source-dump-dir and --target-dump-dir and permutations of same used together.
+  need test: --source-dump, --target-dump, --source-dump-dir and --target-dump-dir and permutations of same used together.
 sql-drop: FAIR. Implicit by site-install
 sql-sanitize: FAIR. Implicit by testLocalSqlSync()
 
@@ -49,6 +49,7 @@ search-*
 shellalias: GOOD
   need test: shell alias with site alias
 site-install: FAIR. Implicit test by setUpDrupal().
+state: NONE
 ssh: GOOD
 topic
 usage-*

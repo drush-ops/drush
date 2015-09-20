@@ -97,8 +97,7 @@ function make_generate_from_makefile($file, $makefile) {
     // If a specific revision was requested, do not set the version.
     if (!isset($project['revision'])) {
       $projects[$name]['version'] = $project['download']['full_version'];
-
-      if (strpos($projects[$name]['version'], $project['core']) === 0) {
+      if ($project['type'] != 'core' && strpos($projects[$name]['version'], $project['core']) === 0) {
         $projects[$name]['version'] = substr($projects[$name]['version'], strlen($project['core'] . '-'));
       }
     }

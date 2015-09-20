@@ -30,6 +30,17 @@ function drush_policy_sql_sync_validate($source = NULL, $destination = NULL) {
 }
 
 /**
+ * Implements drush_hook_COMMAND_validate().
+ *
+ * We can also limit rsync operations to production sites.
+ */
+function drush_policy_core_rsync_validate($source = NULL, $destination = NULL) {
+  if (preg_match("/^@prod/", $destination)) {
+    return drush_set_error('POLICY_DENY', dt('Per examples/policy.drush.inc, you may never rsync to the production site.'));
+  }
+}
+
+/**
  * Implements hook_drush_sitealias_alter
  *
  * Alter alias record data in code.

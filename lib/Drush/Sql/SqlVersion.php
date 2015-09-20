@@ -24,7 +24,7 @@ class SqlVersion {
    * by drush_valid_db_credentials().
    */
   public function valid_credentials($db_spec) {
-    // Drupal >=7 requires PDO and Drush requires php 5.3 which ships with PDO
+    // Drupal >=7 requires PDO and Drush requires php 5.4+ which ships with PDO
     // but it may be compiled with --disable-pdo.
     if (!class_exists('\PDO')) {
       drush_log(dt('PDO support is required.'), 'bootstrap');

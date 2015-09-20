@@ -5,7 +5,6 @@ namespace Unish;
 /**
  * Generate makefile tests
  *
- * @group commands
  * @group make
  * @group slow
  */

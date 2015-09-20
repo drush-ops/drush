@@ -174,6 +174,11 @@ function drush_dispatch($command, $arguments = array()) {
       return FALSE;
     }
 
+    // Do tilde expansion immediately prior to execution,
+    // so that tildes are passed through unchanged for
+    // remote commands and other redispatches.
+    drush_preflight_tilde_expansion($command);
+
     // Call the callback function of the active command.
     $return = call_user_func_array($command['callback'], $command['arguments']);
   }
@@ -1073,6 +1078,7 @@ function drush_command_defaults($key, $commandfile, $path) {
     'handle-remote-commands' => FALSE,
     'remote-tty' => FALSE,
     'strict-option-handling' => FALSE,
+    'tilde-expansion' => TRUE,
     'bootstrap_errors' => array(),
     'topics' => array(),
     'hidden' => FALSE,
