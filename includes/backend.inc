@@ -688,6 +688,12 @@ function _drush_backend_adjust_options($site_record, $command, $command_options,
  *            dispatched using the alias name on the command line, instead of
  *            the options from the alias being added to the command line
  *            automatically.
+ *          'process-replacement'
+ *            Optional. Defauts to FALSE. Only usable locally.
+ *            If set, then backend invoke with use execve to do a full process
+ *            replacement, overlaying the new process on top of the current
+ *            process, terminating it. In this mode, the call to backend
+ *            invoke will never return.
  * @param common_options
  *    Optional. Merged in with the options for each invocation.
  * @param backend_options
@@ -814,6 +820,59 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     }
   }
 
+  if (!empty($backend_options['process-replacement'])) {
+    // Execute the first command (there should only be one).  We will never return from pcntl_exec()
+    // (unless we get a 'command not found', or similar.)
+    $item = array_shift($invocation_options);
+    $site_record = $item['site-record'];
+    $site_record_to_dispatch = $item['site-record-to-dispatch'];
+    $command = $item['command'];
+    $args = $item['args'];
+    $post_options = $item['post-options'];
+    $commandline_options = $item['commandline-options'];
+    $drush_global_options = $item['drush-global-options'];
+    $os = drush_os($site_record);
+    // If the caller did not pass in a specific path to drush, then we will
+    // use a default value.  For commands that are being executed on the same
+    // machine, we will use DRUSH_COMMAND, which is the path to the drush.php
+    // that is running right now.  For remote commands, we will run a wrapper
+    // script instead of drush.php -- drush.bat on Windows, or drush on Linux.
+    $drush_path = $site_record['path-aliases']['%drush-script'];
+    $env_vars = $site_record['#env-vars'];
+
+    $command_args = array();
+    foreach ($drush_global_options as $key => $value) {
+      if ($key[0] != '#') {
+        $option = "--$key";
+        if ($value !== TRUE) {
+          $option .= '=' . drush_escapeshellarg($value);
+        }
+        $command_args[] = $option;
+      }
+    }
+    $command_args[] = $command;
+    foreach ($commandline_options as $key => $value) {
+      if ($key[0] != '#') {
+        $option = "--$key";
+        if ($value !== TRUE) {
+          $option .= '=' . drush_escapeshellarg($value);
+        }
+        $command_args[] = $option;
+      }
+    }
+    $command_args = array_merge($command_args, $args);
+    // variables_order settings in php.ini may cause $_ENV to be empty; in this case,
+    // getenv() will still work.  Fetch a minimum environment (the PATH)
+    // with getenv(), and fill in the rest of the environment if it is available.
+    $env_vars['PATH'] = getenv('PATH');
+    $env_vars += $_ENV;
+    drush_log(dt('Backend invoke (process replacement): !cmd', array('!cmd' => $drush_path . ' ' . implode(' ', $command_args))), 'command');
+
+    // Unless there is an error launching Drush, pcntl_exec will not return.
+    $result = pcntl_exec($drush_path, $command_args, $env_vars);
+    exit($result);
+  }
+
   // Now take our prepared options and generate the command strings
   $cmds = array();
   foreach ($invocation_options as $site => $item) {
@@ -903,7 +962,7 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
     $additional_global_options = $backend_options['additional-global-options'];
     $command_options += $additional_global_options;
   }
-  $method_post = ((!array_key_exists('method', $backend_options)) || ($backend_options['method'] == 'POST'));
+  $method_post = (!array_key_exists('process-replacement', $backend_options)) && ((!array_key_exists('method', $backend_options)) || ($backend_options['method'] == 'POST'));
   $post_options = array();
   $commandline_options = array();
   $drush_global_options = array();

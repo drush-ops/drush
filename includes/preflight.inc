@@ -483,14 +483,15 @@ function drush_preflight_command_dispatch() {
     // same drush that is currently running, redispatch to it.
     if (file_exists($local_drush) && ($this_drush != $local_drush)) {
       $uri = drush_get_context('DRUSH_SELECTED_URI');
-      $aditional_options = array(
+      $additional_options = array(
         'root' => $root,
         'local' => TRUE,
       );
       if (!empty($uri)) {
-        $aditional_options['uri'] = $uri;
+        $additional_options['uri'] = $uri;
       }
-      $values = drush_do_command_redispatch(is_array($command) ? $command : $command_name, $args, NULL, NULL, $local_drush, TRUE, $aditional_options);
+      $additional_options['#process-replacement'] = TRUE;
+      $values = drush_do_command_redispatch(is_array($command) ? $command : $command_name, $args, NULL, NULL, $local_drush, TRUE, $additional_options);
     }
   }
   // If the command sets the 'handle-remote-commands' flag, then we will short-circuit
