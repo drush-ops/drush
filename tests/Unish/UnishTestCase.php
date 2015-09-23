@@ -31,7 +31,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     chdir(dirname(UNISH_SANDBOX));
     $sandbox = UNISH_SANDBOX;
     if (file_exists($sandbox)) {
-      unish_file_delete_recursive($sandbox, TRUE);
+      unish_file_delete_recursive($sandbox);
     }
     $ret = mkdir($sandbox, 0777, TRUE);
     chdir(UNISH_SANDBOX);

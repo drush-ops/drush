@@ -4,7 +4,6 @@ platform: 'x86'
 branches:
   only:
     - appveyor
-
 # Inspired by https://github.com/Codeception/base/blob/master/appveyor.yml and https://github.com/phpmd/phpmd/blob/master/appveyor.yml
 install:
   - SET PATH=C:\Program Files\MySql\MySQL Server 5.6\bin\;%PATH%
@@ -58,7 +57,7 @@ environment:
       UNISH_DB_URL: mysql://root:Password12!@localhost
       UNISH_TMP: c:\drush_temp
       UNISH_DRUSH: drush
-  
+
   matrix:
   - UNISH_DRUPAL_MAJOR_VERSION: 7
     PHPUNIT_ARGS: --group=base
