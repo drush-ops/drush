@@ -583,11 +583,11 @@ function drush_preflight_tilde_expansion(&$command) {
     $match = '#^~/#';
     $replacement = drush_server_home() . '/';
     foreach ($cli as $key => $value) {
-      if (preg_match($match, $value)) {
+      if (is_string($value) && preg_match($match, $value)) {
         $cli[$key] = preg_replace($match, $replacement, $value);
       }
     }
-    $command['arguments'] = array_map(function($value) use($match, $replacement) { return preg_replace($match, $replacement, $value); } , $command['arguments']);
+    $command['arguments'] = array_map(function($value) use($match, $replacement) { return is_string($value) ? preg_replace($match, $replacement, $value) : $value; } , $command['arguments']);
   }
 }
 

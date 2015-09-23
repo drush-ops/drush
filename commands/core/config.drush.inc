@@ -22,8 +22,6 @@ function config_drush_help($section) {
       return dt('Config commands');
     case 'meta:config:summary':
       return dt('Interact with the configuration system.');
-    case 'drush:config-merge':
-      return dt('Combine configuration data from this site with the configuration data of another site; if there are conflicts, open an interactive three-way merge tool comparing the changes with the base revision');
   }
 }
 

@@ -112,7 +112,10 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   function tick() {
     static $chars = array('/', '-', '\\', '|');
     static $counter = 0;
-    print $chars[($counter++ % 4)] . "\033[1D";
+    // ANSI support is flaky on Win32, so don't try to do ticks there.
+    if (!$this->is_windows()) {
+      print $chars[($counter++ % 4)] . "\033[1D";
+    }
   }
 
   /**
