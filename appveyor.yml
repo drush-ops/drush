@@ -45,7 +45,7 @@ services:
 test_script:
   - mysql -uroot -pPassword12! -hlocalhost -e "create database YourDatabase;"
   - mysql -uroot -pPassword12! -hlocalhost -e "SHOW DATABASES;"
-  - php -r "new PDO('mysql:YourDatabase;host=localhost', root, Password12!);"
+  - php -r "new PDO('mysql:YourDatabase;host=localhost', 'root', 'Password12!');"
   - phpunit -v --configuration tests %PHPUNIT_ARGS%
 
 cache:
