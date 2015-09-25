@@ -288,7 +288,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
 
     $cmd[] = $suffix;
     if ($hide_stderr) {
-      $cmd[] = '2>/dev/null';
+      $cmd[] = '2>' . $this->bit_bucket();
     }
     $exec = array_filter($cmd, 'strlen'); // Remove NULLs
     // set sendmail_path to 'true' to disable any outgoing emails
