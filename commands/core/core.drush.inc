@@ -533,17 +533,18 @@ function _core_site_credentials($right_margin = 0) {
 function _core_path_aliases($project = '') {
   $paths = array();
   $site_wide = drush_drupal_sitewide_directory();
+  $boot = drush_get_bootstrap_object();
   if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
     $paths['%root'] = $drupal_root;
     if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
       $paths['%site'] = $site_root;
-      if (is_dir($modules_path = conf_path() . '/modules')) {
+      if (is_dir($modules_path = $boot->conf_path() . '/modules')) {
         $paths['%modules'] = $modules_path;
       }
       else {
         $paths['%modules'] = ltrim($site_wide . '/modules', '/');
       }
-      if (is_dir($themes_path = conf_path() . '/themes')) {
+      if (is_dir($themes_path = $boot->conf_path() . '/themes')) {
         $paths['%themes'] = $themes_path;
       }
       else {

@@ -13,6 +13,10 @@ abstract class DrupalBoot extends BaseBoot {
   function get_profile() {
   }
 
+  function conf_path($require_settings = TRUE, $reset = FALSE) {
+    return conf_path($require_settings = TRUE, $reset = FALSE);
+  }
+
   /**
    * Bootstrap phases used with Drupal:
    *
@@ -380,7 +384,7 @@ abstract class DrupalBoot extends BaseBoot {
   function bootstrap_drupal_site_validate_settings_present() {
     $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
 
-    $conf_path = drush_bootstrap_value('conf_path', \conf_path(TRUE, TRUE));
+    $conf_path = drush_bootstrap_value('conf_path', $this->conf_path(TRUE, TRUE));
     $conf_file = "$conf_path/settings.php";
     if (!file_exists($conf_file)) {
       return drush_bootstrap_error('DRUPAL_SITE_SETTINGS_NOT_FOUND', dt("Could not find a Drupal settings.php file at !file.",
