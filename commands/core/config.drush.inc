@@ -160,9 +160,9 @@ function config_drush_command() {
       'config-name' => 'The config object name, for example "system.site".',
     ),
     'options' => array(
-      'bg' => 'Run editor in the background. Does not work with editors such as `vi` that run in the terminal. Supresses config-import at the end.',
       'file' => 'Import from a file instead of interactively editing a given config.',
     ),
+    'global-options' => array('editor', 'bg'),
     'examples' => array(
       'drush config-edit image.style.large' => 'Edit the image style configurations.',
       'drush config-edit' => 'Choose a config file to edit.',

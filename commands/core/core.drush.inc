@@ -154,9 +154,7 @@ function core_drush_command() {
     'arguments' => array(
       'filter' => 'A substring for filtering the list of files. Omit this argument to choose from loaded files.',
     ),
-    'options' => array(
-      'bg' => 'Run editor in the background. Does not work with editors such as `vi` that run in the terminal.',
-    ),
+    'global-options' => array('editor', 'bg'),
     'examples' => array(
       'drush core-config' => 'Pick from a list of config/alias/settings files. Open selected in editor.',
       'drush --bg core-config' => 'Return to shell prompt as soon as the editor window opens.',
