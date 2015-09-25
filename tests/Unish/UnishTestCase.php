@@ -91,7 +91,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     if (in_array('--debug', $_SERVER['argv'])) {
       return 'debug';
     }
-    elseif (in_array('--verbose', $_SERVER['argv'])) {
+    elseif (in_array('--verbose', $_SERVER['argv']) || in_array('-v', $_SERVER['argv'])) {
       return 'verbose';
     }
   }

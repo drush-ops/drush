@@ -157,11 +157,14 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    * @param sting cd
    *   The directory to run the command in.
    * @param array $env
-   *   Extra environment variables
+   *  @todo Not implemented yet. Ineriting environment is hard - http://stackoverflow.com/questions/3780866/why-is-my-env-empty.
+   *  Extra environment variables.
+   * @param string $input
+   *   A string representing the STDIN that is piped to the command.
    * @return integer
    *   Exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
    */
-  function execute($command, $expected_return = self::EXIT_SUCCESS, $cd = NULL, $env = array()) {
+  function execute($command, $expected_return = self::EXIT_SUCCESS, $cd = NULL, $env = NULL, $input = NULL) {
     $return = 1;
     $this->tick();
 
@@ -179,7 +182,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
 
     try {
       // Process uses a default timeout of 60 seconds, set it to 0 (none).
-      $this->process = new Process($command, $cd, array_merge($_ENV, $env), NULL, 0);
+      $this->process = new Process($command, $cd, NULL, $input, 0);
       if (!getenv('UNISH_NO_TIMEOUTS')) {
         $this->process->setTimeout($this->timeout)
           ->setIdleTimeout($this->idleTimeout);
@@ -222,6 +225,8 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     *   The expected exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
     * @param $suffix
     *   Any code to append to the command. For example, redirection like 2>&1.
+    * @param array $env
+   *   Environment variables to pass along to the subprocess. @todo - not used.
     * @return integer
     *   An exit code.
     */
@@ -289,6 +294,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     // set sendmail_path to 'true' to disable any outgoing emails
     // that tests might cause Drupal to send.
     $php_options = (array_key_exists('PHP_OPTIONS', $env)) ? $env['PHP_OPTIONS'] . " " : "";
+    // @todo The PHP Options below are not yet honored by execute(). See .travis.yml for an alternative way.
     $env['PHP_OPTIONS'] = "${php_options}-d sendmail_path='true'";
     $return = $this->execute(implode(' ', $exec), $expected_return, $cd, $env);
 
