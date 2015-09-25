@@ -54,6 +54,9 @@ Composer - One Drush for all Projects
         composer install
         drush --version
 
+* Alternate way to install for all users via Composer:
+
+        COMPOSER_HOME=/opt/drush COMPOSER_BIN_DIR=/usr/local/bin COMPOSER_VENDOR_DIR=/opt/drush/7 composer require drush/drush:7
 
 [Fuller explanation of the require command.](http://getcomposer.org/doc/03-cli.md#require)
 
