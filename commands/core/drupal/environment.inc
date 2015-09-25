@@ -9,6 +9,7 @@
 
 use Drupal\Core\Site\Settings;
 use Drupal\Core\StreamWrapper\PrivateStream;
+use Drupal\Core\StreamWrapper\PublicStream;
 use Psr\Log\LogLevel;
 use Drupal\Core\Logger\RfcLogLevel;
 
@@ -346,7 +347,7 @@ function _drush_theme_admin() {
 }
 
 function _drush_file_public_path() {
-  return Settings::get('file_public_path', conf_path() . '/files');
+  return PublicStream::basePath();
 }
 
 function _drush_file_private_path() {

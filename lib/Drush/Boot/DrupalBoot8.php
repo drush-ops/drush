@@ -35,6 +35,25 @@ class DrupalBoot8 extends DrupalBoot {
     return drupal_get_profile();
   }
 
+  function conf_path($require_settings = TRUE, $reset = FALSE, Request $request = NULL) {
+    if (!isset($request)) {
+      if (\Drupal::hasRequest()) {
+        $request = \Drupal::request();
+      }
+      // @todo Remove once external CLI scripts (Drush) are updated.
+      else {
+        $request = Request::createFromGlobals();
+      }
+    }
+    if (\Drupal::hasService('kernel')) {
+      $site_path = \Drupal::service('kernel')->getSitePath();
+    }
+    if (!isset($site_path) || empty($site_path)) {
+      $site_path = DrupalKernel::findSitePath($request, $require_settings);
+    }
+    return $site_path;
+  }
+
   function add_logger() {
     // If we're running on Drupal 8 or later, we provide a logger which will send
     // output to drush_log(). This should catch every message logged through every
@@ -47,7 +66,7 @@ class DrupalBoot8 extends DrupalBoot {
 
   function contrib_modules_paths() {
     return array(
-      conf_path() . '/modules',
+      $this->conf_path() . '/modules',
       'sites/all/modules',
       'modules',
     );
@@ -59,7 +78,7 @@ class DrupalBoot8 extends DrupalBoot {
    */
   function contrib_themes_paths() {
     return array(
-      conf_path() . '/themes',
+      $this->conf_path() . '/themes',
       'sites/all/themes',
       'themes',
     );

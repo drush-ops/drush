@@ -30,14 +30,14 @@ class DrupalBoot7 extends DrupalBoot {
 
   function contrib_modules_paths() {
     return array(
-      conf_path() . '/modules',
+      $this->conf_path() . '/modules',
       'sites/all/modules',
     );
   }
 
   function contrib_themes_paths() {
     return array(
-      conf_path() . '/themes',
+      $this->conf_path() . '/themes',
       'sites/all/themes',
     );
   }
