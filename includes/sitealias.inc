@@ -1933,7 +1933,9 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
     drush_sitealias_set_alias_context($site_alias_settings);
 
     // Use 'remote-host' from settings if available; otherwise site is local
-    if (array_key_exists('remote-host', $site_alias_settings) && !drush_is_local_host($site_alias_settings['remote-host'])) {
+    // also check if the remote-user is the same (use remote if the ssh user is different)
+    // this prevents errors on local machines when a different remote user is used on shared environments
+    if (array_key_exists('remote-host', $site_alias_settings) && !drush_is_local_host($site_alias_settings['remote-host']) || (drush_get_username() != $site_alias_settings['remote-user'])) {
       $machine = drush_remote_host($site_alias_settings);
     }
     else {
