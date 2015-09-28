@@ -7,7 +7,7 @@ branches:
 
 init:
   #https://github.com/composer/composer/blob/master/appveyor.yml
-  - ANSICON: "121x90 (121x90)"
+  - SET ANSICON=121x90 (121x90)
 
 # Inspired by https://github.com/Codeception/base/blob/master/appveyor.yml and https://github.com/phpmd/phpmd/blob/master/appveyor.yml
 install:
