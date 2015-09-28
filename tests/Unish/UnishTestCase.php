@@ -210,7 +210,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   function webroot() {
-    return UNISH_SANDBOX . '/web';
+    return UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'web';
   }
 
   function getSites() {
