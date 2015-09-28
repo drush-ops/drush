@@ -22,7 +22,7 @@ command line options just for Drush to work. If you do not specify a URI, Drush 
 back to the default site configuration, Drupal's $GLOBALS['base_url'] will be set to http://default.  This may cause some
 functionality to not work as expected.
 
-    $ drush --uri http://example.com pm-updatecode
+    $ drush --uri=http://example.com pm-updatecode
 
 If you wish to be able to select your Drupal site implicitly from the
 current working directory without using the -l option, but you need your
