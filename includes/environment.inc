@@ -160,7 +160,11 @@ function _drush_shift_path_up($path) {
   if (empty($path)) {
     return FALSE;
   }
-  return dirname($path);
+  $path = explode('/', $path);
+  // Move one directory up.
+  array_pop($path);
+  return implode('/', $path);
+  // return dirname($path);
 }
 
 /**
