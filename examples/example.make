@@ -86,6 +86,11 @@ projects[tao][type] = theme
 projects[tao][download][type] = git
 projects[tao][download][url] = git://github.com/developmentseed/tao.git
 
+; If you want to use a specific make file which does not follow the default naming pattern
+; you can specify it's name including extension (only .make.yml and .make are allowed.
+
+projects[tao][makefile] = tao-release.make.yml
+
 ; If you want to install a module into a sub-directory, you can use the
 ; `subdir` attribute.
 

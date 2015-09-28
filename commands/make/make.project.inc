@@ -526,6 +526,40 @@ class DrushMakeProject {
   }
 
   /**
+   * Returns make file candidates respecting a specificied make file to be able to use different make files e. g. for
+   * release builds.
+   *
+   * @return array|bool
+   *   If a make file is specified and has a valid extension (.make.yml or .make), it is returned as a single candidate.
+   *   If it has an invalid extension FALSE is returned.
+   *   If no make file is specified, the possible candidates are returned.
+   */
+  protected function makefileCandidates() {
+    if (isset($this->makefile) && !empty($this->makefile)) {
+      $specific = $this->makefile;
+      // only allow .make.yml and .make extensions
+      $specific_len = strlen($specific);
+      foreach (array('.make.yml', '.make') as $ext) {
+        // TODO: Is there a better string endswith() implementation?
+        $ext_pos = $specific_len - strlen($ext);
+        if ($specific_len > $ext_len && strrpos($specific, $ext, $ext_pos) == $ext_pos) {
+          // We have a specific makefile set, so use this as the only candidate
+          return array($specific);
+        }
+      }
+      make_error('MAKEFILE', dt('"@makefile" is not a valid make file in project @project', array('@makefile' => $specific, '@project' => $this->name)));
+      return FALSE;
+    }
+    $candidates = array(
+        $this->name . '.make.yml',
+        $this->name . '.make',
+        'drupal-org.make.yml',
+        'drupal-org.make',
+    );
+    return $candidates;
+  }
+
+  /**
    * Recurse to process additional makefiles that may be found during
    * processing.
    */
@@ -535,12 +569,10 @@ class DrushMakeProject {
                 array("!project" => $this->name)), 'notice');
       return TRUE;
     }
-    $candidates = array(
-      $this->name . '.make.yml',
-      $this->name . '.make',
-      'drupal-org.make.yml',
-      'drupal-org.make',
-    );
+    $candidates = $this->makefileCandidates();
+    if ($candidates === FALSE) {
+      return TRUE;
+    }
     $makefile = FALSE;
     foreach ($candidates as $filename) {
       if (file_exists($this->download_location . '/' . $filename)) {
@@ -550,6 +582,9 @@ class DrushMakeProject {
     }
 
     if (!$makefile) {
+      if (count($candidates) == 1) {
+        drush_log(dt('The specified make file @makefile could not be found.', array('@makefile' => $candidates[0])), 'error');
+      }
       return TRUE;
     }
 

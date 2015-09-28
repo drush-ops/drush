@@ -173,6 +173,18 @@ Do not use both types of declarations for a single project in your makefile.
           mytheme:
             l10n_url: "http://myl10nserver.com/l10n_server.xml"
 
+- `makefile`
+
+  By default Drush Make searches for make files in a project following a specific pattern (`project_name.make.yml`,
+  `project_name.make`, `drush-org.make.yml` or `drush-org.make`). If you want to override this and use a specific
+  make file, e. g. for release builds, you can specifiy the exact name of the make file in the project. This is useful
+  if you want to checkout a different branch or a tag in the release build of sub-projects.
+  The filename must include the extension, only .make.yml and .make are allowed.
+
+        projects:
+          myproject:
+            makefile: "myproject-release.make.yml"
+
 - `overwrite`
 
   Allows the project to be installed in a directory that is not empty.
