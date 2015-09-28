@@ -43,7 +43,7 @@ services:
   - mysql
 
 test_script:
-  #- mysql -uroot -pPassword12! -hlocalhost -e "create database YourDatabase;"
+  - mysql -uroot -pPassword12! -hlocalhost -e "create database YourDatabase;"
   #- mysql -uroot -pPassword12! -hlocalhost -e "SHOW DATABASES;"
   - php -r "$a = new PDO('mysql:YourDatabase;host=localhost', 'root', 'Password12!'); foreach($a->query('SHOW DATABASES;') as $row) print_r($row);"
   - phpunit -v --configuration tests %PHPUNIT_ARGS%
