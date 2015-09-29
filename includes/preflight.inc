@@ -35,6 +35,7 @@ function drush_preflight_prepare() {
 
   $classloader = require $vendor_path;
 
+  require_once DRUSH_BASE_PATH . '/includes/startup.inc';
   require_once DRUSH_BASE_PATH . '/includes/bootstrap.inc';
   require_once DRUSH_BASE_PATH . '/includes/environment.inc';
   require_once DRUSH_BASE_PATH . '/includes/command.inc';
@@ -471,6 +472,9 @@ function drush_preflight_command_dispatch() {
   $command_name = array_shift($args);
   $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
   $local_drush = drush_get_option('drush-script');
+  if (empty($local_drush) && !empty($root)) {
+    $local_drush = find_wrapper_or_launcher($root);
+  }
   $is_local = drush_get_option('local');
   $values = NULL;
   if (!empty($root) && !empty($local_drush) && empty($is_local)) {
@@ -481,7 +485,13 @@ function drush_preflight_command_dispatch() {
     $this_drush = drush_find_drush();
     // If there is a local drush selected, and it is not the
     // same drush that is currently running, redispatch to it.
-    if (file_exists($local_drush) && ($this_drush != $local_drush)) {
+    // We compare the dirname instead of the full dir + filename
+    // so that the finder / launcher will compare as the "same"
+    // Note that the "wrapper" will be in a different directory
+    // than the launcher; however, the wrapper should set --local,
+    // and therefore will not be considered here due to the
+    // 'empty($is_local)' test above.
+    if (file_exists($local_drush) && (dirname($this_drush) != dirname($local_drush))) {
       $uri = drush_get_context('DRUSH_SELECTED_URI');
       $aditional_options = array(
         'root' => $root,
@@ -490,6 +500,9 @@ function drush_preflight_command_dispatch() {
       if (!empty($uri)) {
         $aditional_options['uri'] = $uri;
       }
+      // We need to chdir to the Drupal root here, for the
+      // benefit of the Drush wrapper.
+      chdir($root);
       $values = drush_do_command_redispatch(is_array($command) ? $command : $command_name, $args, NULL, NULL, $local_drush, TRUE, $aditional_options);
     }
   }

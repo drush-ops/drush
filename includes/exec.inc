@@ -166,6 +166,15 @@ function _drush_shell_exec($args, $interactive = FALSE) {
 }
 
 /**
+ * Determine whether 'which $command' can find
+ * a command on this system.
+ */
+function drush_which($command) {
+  exec("which $command 2>&1", $output, $result);
+  return ($result == 0);
+}
+
+/**
  * Build an SSH string including an optional fragment of bash. Commands that use
  * this should also merge drush_shell_proc_build_options() into their
  * command options. @see ssh_drush_command().
