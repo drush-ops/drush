@@ -168,6 +168,13 @@ function drush_variable_set() {
   }
 
   $args[0] = drush_variable_name_adjust($args[0]);
+
+  // Show warning when try to set a variable overridden in $conf global variable.
+  global $conf;
+  if (isset($conf[$args[0]])) {
+    drush_log(dt('Variable is already set in $conf. See !link for more information.', array('!link' => 'http://docs.drush.org/en/master/usage/#variable-overrides')), 'warning');
+  }
+
   $result = drush_variable_like($args[0]);
 
   $options[] = "$args[0] ". dt('(new variable)');
@@ -179,13 +186,6 @@ function drush_variable_set() {
     }
     else {
       $options[] = $name;
-    }
-  }
-  // Do not allow to set variable that are set in $conf global variable.
-  if (!$match) {
-    global $conf;
-    if (isset($conf[$args[0]])) {
-      return drush_set_error('DRUSH_VARIABLE_ERROR', dt('Variable set in $conf in settings.php.'));
     }
   }
 
