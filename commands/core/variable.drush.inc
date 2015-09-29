@@ -181,6 +181,13 @@ function drush_variable_set() {
       $options[] = $name;
     }
   }
+  // Do not allow to set variable that are set in $conf global variable.
+  if (!$match) {
+    global $conf;
+    if (isset($conf[$args[0]])) {
+      return drush_set_error('DRUSH_VARIABLE_ERROR', dt('Variable set in $conf in settings.php.'));
+    }
+  }
 
   if ($value == '-') {
     $value = stream_get_contents(STDIN);
