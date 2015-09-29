@@ -802,7 +802,7 @@ function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
  */
 function drush_download_file_name($url) {
   if ($cache_dir = drush_directory_cache('download')) {
-    $cache_name = str_replace(array(':', '/', '?', '='), '-', $url);
+    $cache_name = str_replace(array(':', '/', '?', '=', '\\'), '-', $url);
     return $cache_dir . "/" . $cache_name;
   }
   else {
