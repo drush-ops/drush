@@ -1132,7 +1132,7 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
   $ssh_options = $site_record['ssh-options'];
   $os = drush_os($site_record);
 
-  if (array_key_exists('#check-local', $site_record) && drush_is_local_host($hostname)) {
+  if (drush_is_local_host($hostname)) {
     $hostname = null;
   }
 

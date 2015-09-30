@@ -1050,11 +1050,15 @@ function drush_sitealias_is_bootstrapped_site($alias_record) {
  *   Returns TRUE if the alias refers to a remote site, FALSE if it does not, or NULL is unsure.
  */
 function drush_sitealias_is_remote_site($alias) {
-  if (!is_string($alias) || !strlen($alias)) {
-    return NULL;
+  if (is_array($alias)) {
+    $site_record = $alias;
   }
-
-  $site_record = drush_sitealias_get_record($alias);
+  else {
+    if (!is_string($alias) || !strlen($alias)) {
+      return NULL;
+    }
+    $site_record = drush_sitealias_get_record($alias);
+  }
   if ($site_record) {
     if (!empty($site_record['remote-host'])) {
       return TRUE;
@@ -1774,7 +1778,7 @@ function drush_sitealias_set_alias_context($site_alias_settings, $prefix = '') {
   // and 'remote-user' if 'remote-host' is actually the local machine.
   // This prevents drush from using the remote dispatch mechanism (the command
   // is just run directly on the local machine, bootstrapping to the specified alias)
-  elseif (array_key_exists('remote-host', $site_alias_settings) && array_key_exists('#check-local', $site_alias_settings) && drush_is_local_host($site_alias_settings['remote-host'])) {
+  elseif (array_key_exists('remote-host', $site_alias_settings) && drush_is_local_host($site_alias_settings['remote-host'])) {
     $skip_list[] = 'remote-host';
     $skip_list[] = 'remote-user';
   }

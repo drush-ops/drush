@@ -619,30 +619,17 @@ function drush_read_drush_info() {
  *   True if the host is local.
  */
 function drush_is_local_host($host) {
-  // In order for this to work right, you must use 'localhost' or '127.0.0.1'
-  // or the machine returned by 'uname -n' for your 'remote-host' entry in
-  // your site alias.
-  if (($host == 'localhost') || ($host == '127.0.0.1')) {
+  // Check to see if the provided host is "local".
+  // @see hook_drush_sitealias_alter() in drush.api.php.
+  if (
+    ($host == 'localhost') ||
+    ($host == '127.0.0.1') ||
+    preg_match('/\.local$/', $host)
+  ) {
     return TRUE;
   }
 
-  // We'll start out by asking for uname -n via php_uname, since
-  // that is most portable.  On Linux, uname -n returns the contents of
-  // /etc/hostname, which, according to `man hostname`, should never
-  // contain the fqdn.  We will therefore also try `hostname -f`, and
-  // see if we can get the fqdn from that.
-  $uname = php_uname('n');
-  if ((strpos($uname,'.') === FALSE) && (!drush_is_windows())) {
-    $hostname = exec('hostname -f');
-    if (!empty($hostname)) {
-      $uname = $hostname;
-    }
-  }
-  // We will require an exact match if we have the fqdn for this
-  // host; if we only have the short name, then we will consider it
-  // to be a match if it matches the first part of the remote-host
-  // item (up to the first dot).
-  return (strpos($uname,'.') !== FALSE) ? ($host == $uname) : substr($host . '.',0,strlen($uname)+1) == $uname . '.';
+  return FALSE;
 }
 
 /**

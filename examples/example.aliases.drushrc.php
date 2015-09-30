@@ -199,11 +199,9 @@
  *   used on the remote machine in the 'remote-port' setting.
  * - 'remote-host': The fully-qualified domain name of the remote system
  *   hosting the Drupal instance. **Important Note: The remote-host option
- *   must be omitted for local sites, as this option controls whether or not
- *   rsync parameters are for local or remote machines.
- * - '#check-local': Test to see if 'remote-host' is the local machine; if
- *   it is, then 'remote-host' will be ignore. Useful when sharing aliases
- *   among multiple machines.
+ *   must be omitted for local sites, as this option controls various
+ *   operations, such as whether or not rsync parameters are for local or
+ *   remote machines, and so on. @see hook_drush_sitealias_alter() in drush.api.php
  * - 'remote-user': The username to log in as when using ssh or rsync.
  * - 'os': The operating system of the remote server.  Valid values
  *   are 'Windows' and 'Linux'. Be sure to set this value for all remote
