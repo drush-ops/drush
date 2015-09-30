@@ -1050,15 +1050,14 @@ function drush_sitealias_is_bootstrapped_site($alias_record) {
  *   Returns TRUE if the alias refers to a remote site, FALSE if it does not, or NULL is unsure.
  */
 function drush_sitealias_is_remote_site($alias) {
-  if (is_array($alias)) {
-    $site_record = $alias;
+  if (is_array($alias) && !empty($alias['remote-host'])) {
+    return TRUE;
   }
-  else {
-    if (!is_string($alias) || !strlen($alias)) {
-      return NULL;
-    }
-    $site_record = drush_sitealias_get_record($alias);
+  if (!is_string($alias) || !strlen($alias)) {
+    return NULL;
   }
+
+  $site_record = drush_sitealias_get_record($alias);
   if ($site_record) {
     if (!empty($site_record['remote-host'])) {
       return TRUE;
