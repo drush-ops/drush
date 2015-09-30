@@ -184,8 +184,8 @@ function drush_startup($argv) {
   //
   if (empty($found_script)) {
     $found_script = find_wrapper_or_launcher($ROOT);
-    if (!empty("$found_script")) {
-      chdir("$ROOT");
+    if (!empty($found_script)) {
+      chdir($ROOT);
     }
   }
 
@@ -216,7 +216,7 @@ function drush_startup($argv) {
     }
   }
 
-  if (!empty("$found_script")) {
+  if (!empty($found_script)) {
     $found_script = realpath($found_script);
 
     // Guard against errors:  if we have found a "drush" script
