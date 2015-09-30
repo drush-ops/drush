@@ -84,12 +84,12 @@ You should first follow the instructions "Composer - One Drush for all Projects"
 * To install Drush 7.x (stable):
 
         cd /path/to/site/composer-root
-        composer global require drush/drush:7.*
+        composer require drush/drush:7.*
 
 * To install Drush 8.x (dev) which is required for Drupal 8:
 
         cd /path/to/site/composer-root
-        composer global require drush/drush:dev-master
+        composer require drush/drush:dev-master
 
 * Run `composer install` for a new project or `composer update` for an existing one. Do so from the same directory as composer.json.
 * Optional: Copy the examples/drush.wrapper file to your project root and modify to taste. This is a handy launcher script; add --local here to turn off all global configuration locations, and maintain absolute control over the configuration settings for the site.
