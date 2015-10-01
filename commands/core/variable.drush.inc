@@ -168,13 +168,6 @@ function drush_variable_set() {
   }
 
   $args[0] = drush_variable_name_adjust($args[0]);
-
-  // Show warning when try to set a variable overridden in $conf global variable.
-  global $conf;
-  if (isset($conf[$args[0]])) {
-    drush_log(dt('Variable is already set in $conf. See !link for more information.', array('!link' => 'http://docs.drush.org/en/master/usage/#variable-overrides')), 'warning');
-  }
-
   $result = drush_variable_like($args[0]);
 
   $options[] = "$args[0] ". dt('(new variable)');
@@ -212,14 +205,12 @@ function drush_variable_set() {
   else {
     $display = '"' . $value . '"';
   }
-
   // Check 'always-set' for compatibility with older scripts; --exact is preferred.
   $always_set = drush_get_option('always-set', FALSE) || drush_get_option('exact', FALSE);
-
   if ($always_set || count($options) == 1 || $match) {
     variable_set($args[0], $value);
     drush_log(dt('!name was set to !value.', array('!name' => $args[0], '!value' => $display)), 'success');
-    return '';
+    $has_set = TRUE;
   }
   else {
     $choice = drush_choice($options, 'Enter a number to choose which variable to set.');
@@ -230,6 +221,14 @@ function drush_variable_set() {
     $choice = str_replace(' ' . dt('(new variable)'), '', $choice);
     drush_op('variable_set', $choice, $value);
     drush_log(dt('!name was set to !value', array('!name' => $choice, '!value' => $display)), 'success');
+    $has_set = TRUE;
+  }
+  // Show warning when try to set a variable overridden in $conf global variable.
+  if ($has_set) {
+    $data = drush_invoke_process("@self", "variable-get", array($args[0]), array('--exact'), array('output' => FALSE));
+    if (!$data['error_status'] && is_string($data['object']) && $data['object'] != $value) {
+      drush_log(dt('Variable is already set in $conf. See !link for more information.', array('!link' => 'http://docs.drush.org/en/master/usage/#variable-overrides')), 'warning');
+    }
   }
 }
 
