@@ -38,6 +38,7 @@
     "symfony/process": "2.4.5"
   },
   "suggest": {
+      "ext-pcntl": "*",
       "drush/config-extra": "Provides configuration workflow commands, such as config-merge."
   },
   "autoload": {
