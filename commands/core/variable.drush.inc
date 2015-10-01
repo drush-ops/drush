@@ -130,6 +130,11 @@ function drush_variable_get() {
 
   $keys = array_keys($conf);
   if ($args = func_get_args()) {
+    // Handle special variables case.
+    if (in_array($args[0], array('dev_query', 'cron_safe_threshold'))) {
+      return drush_set_error('DRUSH_VARIABLE_ERROR', dt('This variable is altered internally for drush. Use drush sql-query "select value from variable where name = \'cron_safe_threshold\'"'));
+    }
+
     $args[0] = drush_variable_name_adjust($args[0]);
     if ($exact) {
       $keys = in_array($args[0], $keys) ? array($args[0]) : array();
