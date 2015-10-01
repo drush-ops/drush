@@ -157,7 +157,8 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    * @param sting cd
    *   The directory to run the command in.
    * @param array $env
-   *  @todo Not implemented yet. Ineriting environment is hard - http://stackoverflow.com/questions/3780866/why-is-my-env-empty.
+   *  @todo: Not implemented yet. Ineriting environment is hard - http://stackoverflow.com/questions/3780866/why-is-my-env-empty.
+   *         @see drush_env().
    *  Extra environment variables.
    * @param string $input
    *   A string representing the STDIN that is piped to the command.
