@@ -256,7 +256,7 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
     foreach ($data as $key => $value) {
       $config->set($key, $value);
     }
-    return $config->save();
+    $return = $config->save();
   }
   else {
     $confirmed = FALSE;
@@ -270,8 +270,26 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
       $confirmed = TRUE;
     }
     if ($confirmed && !drush_get_context('DRUSH_SIMULATE')) {
-      return $config->set($key, $data)->save();
+      $return = $config->set($key, $data)->save();
     }
+  }
+  if (isset($return)) {
+    $overridden_keys = array();
+    $data = is_array($data) ?: array($key => $data);
+    foreach ($data as $key => $value) {
+      $current_data = drush_invoke_process("@self", "config-get", array($config_name, $key), array(), array('output' => FALSE));
+      if (!$current_data['error_status'] && is_array($current_data['object']) && $current_data['object'][0] != $value) {
+        $overridden_keys[] = $key;
+      }
+    }
+    if (!empty($overridden_keys)) {
+      $options = array(
+        '@link' => 'http://docs.drush.org/en/master/usage/#variable-overrides',
+        '@key_string' => count($overridden_keys) > 1 ? 'keys are' : 'key is',
+      );
+      drush_log(dt('Config @key_string already overridden in $config. See @link for more information.', $options), 'warning');
+    }
+    return $return;
   }
 }
 
