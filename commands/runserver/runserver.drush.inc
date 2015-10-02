@@ -132,8 +132,8 @@ function drush_core_runserver($uri = NULL) {
   }
   // Start the server using 'php -S'.
   $php = drush_get_option('php');
-  if (drush_drupal_major_version() >=8) {
-    $extra = ' "' . __DIR__ . '/d8-rs-router.php"';
+  if (drush_drupal_major_version() >=7) {
+    $extra = ' "' . __DIR__ . '/rs-router.php"';
   }
   else {
     $extra = ' --define auto_prepend_file="' . __DIR__ . '/runserver-prepend.php"';
