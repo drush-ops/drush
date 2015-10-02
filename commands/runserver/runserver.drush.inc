@@ -192,7 +192,7 @@ function drush_core_runserver($uri = NULL) {
       drush_start_browser($browse, 2);
     }
     // Start the server using 'php -S'.
-    $php = drush_get_option('php');
+    $php = drush_get_option('php', 'php');
     drush_shell_exec_interactive($php . ' -S ' . $addr . ':' . $uri['port'] . ' --define auto_prepend_file="' . DRUSH_BASE_PATH . '/commands/runserver/runserver-prepend.php"');
   }
   else {
