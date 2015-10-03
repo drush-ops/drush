@@ -86,6 +86,38 @@ function find_wrapper_or_launcher($location) {
 }
 
 /**
+ * Linux version of escapeshellarg().
+ *
+ * This is intended to work the same way that escapeshellarg() does on
+ * Linux.  If we need to escape a string that will be used remotely on
+ * a Linux system, then we need our own implementation of escapeshellarg,
+ * because the Windows version behaves differently.
+ */
+function _drush_escapeshellarg_linux($arg, $raw = FALSE) {
+  // For single quotes existing in the string, we will "exit"
+  // single-quote mode, add a \' and then "re-enter"
+  // single-quote mode.  The result of this is that
+  // 'quote' becomes '\''quote'\''
+  $arg = preg_replace('/\'/', '\'\\\'\'', $arg);
+
+  // Replace "\t", "\n", "\r", "\0", "\x0B" with a whitespace.
+  // Note that this replacement makes Drush's escapeshellarg work differently
+  // than the built-in escapeshellarg in PHP on Linux, as these characters
+  // usually are NOT replaced. However, this was done deliberately to be more
+  // conservative when running _drush_escapeshellarg_linux on Windows
+  // (this can happen when generating a command to run on a remote Linux server.)
+  $arg = str_replace(array("\t", "\n", "\r", "\0", "\x0B"), ' ', $arg);
+
+  // Only wrap with quotes when needed.
+  if(!$raw) {
+    // Add surrounding quotes.
+    $arg = "'" . $arg . "'";
+  }
+
+  return $arg;
+}
+
+/**
  * drush_startup is called once, by the Drush "finder"
  * script -- the "drush" script at the Drush root.
  * It finds the correct Drush "wrapper" or "launcher"
@@ -248,11 +280,18 @@ function drush_startup($argv) {
     fwrite(STDERR, "Using the Drush script found at $found_script\n");
   }
 
-  // Get the current environment for pnctl_exec.
-  $env = drush_env();
+  if (function_exists("pcntl_exec")) {
+    // Get the current environment for pnctl_exec.
+    $env = drush_env();
 
-  // Launch the new script in the same process.
-  // If the launch succeeds, then it will not return.
-  pcntl_exec($found_script, $arguments, $env);
-  exit(1);
+    // Launch the new script in the same process.
+    // If the launch succeeds, then it will not return.
+    pcntl_exec($found_script, $arguments, $env);
+    exit(1);
+  }
+  else {
+    $escaped_args = array_map(function($item) { return _drush_escapeshellarg_linux($item); }, $arguments);
+    passthru($found_script . ' ' . implode(' ', $escaped_args), $status_code);
+    exit($status_code);
+  }
 }
