@@ -291,6 +291,7 @@ function drush_startup($argv) {
   }
   else {
     $escaped_args = array_map(function($item) { return _drush_escapeshellarg_linux($item); }, $arguments);
-    passthru($found_script . ' ' . implode(' ', $escaped_args));
+    passthru($found_script . ' ' . implode(' ', $escaped_args), &$status_code);
+    exit($status_code);
   }
 }
