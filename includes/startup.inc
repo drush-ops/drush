@@ -280,7 +280,7 @@ function drush_startup($argv) {
     fwrite(STDERR, "Using the Drush script found at $found_script\n");
   }
 
-  if (FALSE && function_exists("pcntl_exec")) {
+  if (function_exists("pcntl_exec")) {
     // Get the current environment for pnctl_exec.
     $env = drush_env();
 
