@@ -406,6 +406,7 @@ function drush_sitealias_alias_path($alias_path_context = NULL) {
   // look for alias files in /drush and /sites/all/drush.
   $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
   if (!empty($drupal_root)) {
+    $site_paths[] = drush_sitealias_alias_base_directory($drupal_root . '/../drush');
     $site_paths[] = drush_sitealias_alias_base_directory($drupal_root . '/drush');
     $site_paths[] = drush_sitealias_alias_base_directory($drupal_root . '/sites/all/drush');
     $uri = drush_get_context('DRUSH_SELECTED_URI');
@@ -422,7 +423,7 @@ function drush_sitealias_alias_path($alias_path_context = NULL) {
 }
 
 /**
- * If there is a directory 'aliases' in the specified search location,
+ * If there is a directory 'site-aliases' in the specified search location,
  * then search ONLY in that directory for aliases.  Otherwise, search
  * anywhere inside the specified directory for aliases.
  */
