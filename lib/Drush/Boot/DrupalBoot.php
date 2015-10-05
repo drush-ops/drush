@@ -430,7 +430,7 @@ abstract class DrupalBoot extends BaseBoot {
    * Also override Drupal variables as per --variables option.
    */
   function bootstrap_drupal_configuration() {
-    global $conf;
+    global $conf, $conf_original;
 
     $override = array(
       'dev_query' => FALSE, // Force Drupal6 not to store queries since we are not outputting them.
@@ -443,6 +443,12 @@ abstract class DrupalBoot extends BaseBoot {
         list($name, $value) = explode('=', $value, 2);
       }
       $override[$name] = $value;
+    }
+    // Keep the original values before override.
+    foreach ($override as $variable => $value) {
+      if (isset($conf[$variable])) {
+        $conf_original[$variable] = $conf[$variable];
+      }
     }
     $conf = is_array($conf) ? array_merge($conf, $override) : $conf;
   }

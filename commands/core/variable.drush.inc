@@ -125,16 +125,11 @@ function variable_complete_variables() {
  * List your site's variables.
  */
 function drush_variable_get() {
-  global $conf;
+  global $conf, $conf_original;
   $exact = drush_get_option('exact', FALSE);
 
   $keys = array_keys($conf);
   if ($args = func_get_args()) {
-    // Handle special variables case.
-    if (in_array($args[0], array('dev_query', 'cron_safe_threshold'))) {
-      return drush_set_error('DRUSH_VARIABLE_ERROR', dt('This variable is altered internally for drush. Use drush sql-query "select value from variable where name = \'@variable\'"', array('@variable' => $args[0])));
-    }
-
     $args[0] = drush_variable_name_adjust($args[0]);
     if ($exact) {
       $keys = in_array($args[0], $keys) ? array($args[0]) : array();
@@ -157,6 +152,16 @@ function drush_variable_get() {
     return drush_set_error('No matching variable found.');
   }
   else {
+    if ($exact && isset($conf_original[$key])) {
+      $returns =  $conf_original[$key];
+    }
+    else {
+      foreach ($keys as $name) {
+        if (isset($conf_original[$name])) {
+          $returns[$name] = $conf_original[$name];
+        }
+      }
+    }
     return $returns;
   }
 }
