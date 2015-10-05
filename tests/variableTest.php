@@ -54,5 +54,17 @@ class VariableCase extends CommandUnishTestCase {
     $this->drush('variable-delete', array('site_name'), $options);
     $output = $this->getOutput();
     $this->assertEmpty($output, 'Variable was successfully deleted.');
+
+    $this->drush('variable-get', array('cron_safe_threshold'), $options);
+    $var_export = $this->getOutput();
+    eval($var_export);
+    // @todo: Should return "No matching variable found." error.
+    $this->assertEquals(0, $variables['cron_safe_threshold'], 'Internal drush overridden value.');
+
+    $this->drush('variable-set', array('cron_safe_threshold', 100), $options);
+    $this->drush('variable-get', array('cron_safe_threshold'), $options);
+    eval($var_export);
+    $this->assertEquals(100, $variables['cron_safe_threshold'], 'Value set for internally overridden variable.');
   }
+
 }

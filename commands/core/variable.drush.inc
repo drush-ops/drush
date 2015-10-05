@@ -152,8 +152,9 @@ function drush_variable_get() {
     return drush_set_error('No matching variable found.');
   }
   else {
+    $conf_original = variable_init($conf_original);
     if ($exact && isset($conf_original[$key])) {
-      $returns =  $conf_original[$key];
+      $returns = $conf_original[$key];
     }
     else {
       foreach ($keys as $name) {
