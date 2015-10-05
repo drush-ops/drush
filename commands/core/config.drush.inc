@@ -59,7 +59,7 @@ function config_drush_command() {
   );
 
   $items['config-set'] = array(
-    'description' => 'Set config value directly.',
+    'description' => 'Set config value directly. Config can be overridden by global $config variable. When overridden, drush cset would have no effect in drush cget.',
     'arguments' => array(
       'config-name' => 'The config object name, for example "system.site".',
       'key' => 'The config key, for example "page.front".',

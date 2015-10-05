@@ -12,6 +12,8 @@
  *
  * @return
  *   An associative array describing your command(s).
+ *
+ *
  */
 function variable_drush_command() {
   $items['variable-get'] = array(
@@ -40,7 +42,7 @@ function variable_drush_command() {
     'aliases' => array('vget'),
   );
   $items['variable-set'] = array(
-    'description' => "Set a variable.",
+    'description' => 'Set a variable. Variable can be overridden by global $conf variable. When overridden, drush vset would have no effect in drush vget and drush vdel.',
     'core' => array(6,7),
     'arguments' => array(
       'name' => 'The name of a variable or the first few letters of its name.',

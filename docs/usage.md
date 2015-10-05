@@ -47,11 +47,3 @@ $ drush sql-sync --structure-tables-key=custom @live @dev
 ```
 
 See [example.aliases.drushrc.php](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.aliases.drushrc.php) for more information.
-
-Variable overrides
-------------------
-
-Variables can be overridden by global variable $conf in settings.php. When a variable is overridden, drush vset would set the value for the variable in database.
-However, the drush vget and vdel would behave as below:
-drush vget returns the value in $conf variable.
-drush vdel deletes the value from database, but the overridden value in $conf displayed for drush vget.
