@@ -432,6 +432,9 @@ abstract class DrupalBoot extends BaseBoot {
   function bootstrap_drupal_configuration() {
     global $conf, $conf_original;
 
+    // Keep the original values before override.
+    $conf_original = $conf;
+
     $override = array(
       'dev_query' => FALSE, // Force Drupal6 not to store queries since we are not outputting them.
       'cron_safe_threshold' => 0, // Don't run poormanscron during Drush request (D7+).
@@ -443,12 +446,6 @@ abstract class DrupalBoot extends BaseBoot {
         list($name, $value) = explode('=', $value, 2);
       }
       $override[$name] = $value;
-    }
-    // Keep the original values before override.
-    foreach ($override as $variable => $value) {
-      if (isset($conf[$variable])) {
-        $conf_original[$variable] = $conf[$variable];
-      }
     }
     $conf = is_array($conf) ? array_merge($conf, $override) : $conf;
   }
