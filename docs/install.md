@@ -79,7 +79,7 @@ Composer - One Drush per Project
 -----------------
 Drush requires some of the same dependencies as Drupal 8.  If Drush and Drupal are installed separately, it is possible that different versions of these libraries will be loaded; this can lead to unpredictable results, usually resulting in difficult-to-diagnose crahses. It is therefore recommended that you use a separate copy of Drush for every Composer-managed Drupal site on your system.
 
-You should first follow the instructions "Composer - One Drush for all Projects", above, or "Git Clone (i.e. manual install)", so that you have a copy of Drush on your PATH.  When you run Drush, it will notice that you have a site-local Drush with the site you have selected, and will use that one instead.  This gives you the convenience of running Drush as "drush", without specifying the full path to the executable you want to use, without sacrificing the safety provided by a site-local Drush.
+You should first follow the instructions "Composer - One Drush for all Projects", above, or "Git Clone (i.e. manual install)", so that you have a copy of Drush 8.x on your PATH.  When you run Drush, it will notice that you have a site-local Drush with the site you have selected, and will use that one instead.  This gives you the convenience of running Drush as "drush", without specifying the full path to the executable you want to use, without sacrificing the safety provided by a site-local Drush.
 
 * To install Drush 7.x (stable):
 
