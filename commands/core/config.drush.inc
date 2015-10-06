@@ -39,7 +39,7 @@ function config_drush_command() {
     'options' => array(
       'source' => array(
         'description' => 'The config storage source to read. Additional labels may be defined in settings.php',
-        'example-value' => 'staging',
+        'example-value' => 'sync',
         'value' => 'required',
       ),
       'include-overridden' => array(
@@ -89,10 +89,10 @@ function config_drush_command() {
     'core' => array('8+'),
     'aliases' => array('cex'),
     'arguments' => array(
-      'label' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'staging'",
+      'label' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'sync'",
     ),
     'options' => array(
-      'add' => 'Run `git add -p` after exporting. This lets you choose which config changes to stage for commit.',
+      'add' => 'Run `git add -p` after exporting. This lets you choose which config changes to sync for commit.',
       'commit' => 'Run `git add -A` and `git commit` after exporting.  This commits everything that was exported without prompting.',
       'message' => 'Commit comment for the exported configuration.  Optional; may only be used with --commit or --push.',
       'push' => 'Run `git push` after committing.  Implies --commit.',
@@ -115,7 +115,7 @@ function config_drush_command() {
   $items['config-import'] = array(
     'description' => 'Import config from a config directory.',
     'arguments' => array(
-      'label' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'staging'",
+      'label' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'sync'",
     ),
     'options' => array(
       'preview' => array(
@@ -125,6 +125,9 @@ function config_drush_command() {
       'source' => 'An arbitrary directory that holds the configuration files. An alternative to label argument',
       'partial' => 'Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted).',
       'skip-modules' => 'A list of modules to ignore during import (e.g. to avoid disabling dev-only modules that are not enabled in the imported configuration).',
+    ),
+    'global-options' => array(
+      'cache-clear',
     ),
     'core' => array('8+'),
     'examples' => array(
@@ -305,7 +308,7 @@ function drush_config_export_validate() {
 }
 
 /**
- * Command callback: Export config to specified directory (usually staging).
+ * Command callback: Export config to specified directory (usually sync).
  */
 function drush_config_export($destination = NULL) {
   global $config_directories;
@@ -327,7 +330,7 @@ function drush_config_export($destination = NULL) {
       }
     }
     elseif (!isset($destination)) {
-      $destination = CONFIG_STAGING_DIRECTORY;
+      $destination = CONFIG_SYNC_DIRECTORY;
     }
     $destination_dir = config_get_config_directory($destination);
   }
@@ -419,7 +422,7 @@ function _drush_config_export($destination, $destination_dir, $branch) {
     }
     $comment .= "\n\n$output";
 
-    if (!$commit && !drush_confirm(dt('The current contents of your export directory (!target) will be deleted.', array('!target' => $destination_dir)))) {
+    if (!$commit && !drush_confirm(dt('The .yml files in your export directory (!target) will be deleted.', array('!target' => $destination_dir)))) {
       return drush_user_abort();
     }
     // Only delete .yml files, and not .htaccess or .git.
@@ -524,7 +527,7 @@ function drush_config_get_storage_filters() {
 }
 
 /**
- * Command callback. Import from specified config directory (defaults to staging).
+ * Command callback. Import from specified config directory (defaults to sync).
  */
 function drush_config_import($source = NULL) {
   global $config_directories;
@@ -542,7 +545,7 @@ function drush_config_import($source = NULL) {
       }
     }
     elseif (!isset($source)) {
-      $source = CONFIG_STAGING_DIRECTORY;
+      $source = CONFIG_SYNC_DIRECTORY;
     }
     $source_dir = config_get_config_directory($source);
   }
@@ -619,7 +622,7 @@ function _drush_config_import(StorageComparer $storage_comparer) {
   else{
     try {
       $config_importer->import();
-      drupal_flush_all_caches();
+      drush_drupal_cache_clear_all();
       drush_log('The configuration was imported successfully.', 'success');
     }
     catch (ConfigException $e) {
@@ -727,12 +730,8 @@ function drush_config_get_object($config_name) {
     $config = \Drupal::config($config_name);
     $data = $config->get();
   }
-  elseif ($source == 'active') {
-    $config = \Drupal::service('config.storage');
-    $data = $config->read($config_name);
-  }
-  elseif ($source == 'staging') {
-    $config = \Drupal::service('config.storage.staging');
+  elseif ($source == 'sync') {
+    $config = \Drupal::service('config.storage.sync');
     $data = $config->read($config_name);
   }
   else {
