@@ -121,7 +121,7 @@ function make_generate_from_makefile($file, $makefile) {
     if ($project['name'] == $name) {
       unset($projects[$name]['name']);
     }
-    if ($project['type'] == 'module' && !isset($info[$name]['type'])) {
+    if ($project['type'] == 'module' && $project['download']['type'] === 'pm' && !isset($info[$name]['type'])) {
       unset($projects[$name]['type']);  // Module is the default
     }
     if (!(isset($project['download']['type'])) || ($project['download']['type'] == 'pm')) {
