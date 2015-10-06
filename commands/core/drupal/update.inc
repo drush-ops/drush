@@ -109,7 +109,11 @@ function update_main() {
   drupal_load_updates();
   update_fix_compatibility();
 
+  // Pending hook_update_N() implementations.
   $pending = update_get_update_list();
+
+  // Pending hook_post_update_X() implementations.
+  $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateInformation();
 
   $start = array();
 
@@ -119,7 +123,7 @@ function update_main() {
   }
 
   // Print a list of pending updates for this module and get confirmation.
-  if (count($pending) || $change_summary) {
+  if (count($pending) || $change_summary || count($post_updates)) {
     drush_print(dt('The following updates are pending:'));
     drush_print();
 
@@ -130,16 +134,21 @@ function update_main() {
       }
     }
 
-    foreach ($pending as $module => $updates) {
-      if (isset($updates['start']))  {
-        drush_print($module . ' module : ');
+    foreach (array('update', 'post_update') as $update_type) {
+      $updates = $update_type == 'update' ? $pending : $post_updates;
+      foreach ($updates as $module => $updates) {
         if (isset($updates['start'])) {
-          $start[$module] = $updates['start'];
-          foreach ($updates['pending'] as $update) {
-            drush_print(strip_tags($update), 2);
+          drush_print($module . ' module : ');
+          if (!empty($updates['pending'])) {
+            $start += [$module => array()];
+
+            $start[$module] = array_merge($start[$module], $updates['pending']);
+            foreach ($updates['pending'] as $update) {
+              drush_print(strip_tags($update), 2);
+            }
           }
+          drush_print();
         }
-        drush_print();
       }
     }
 
@@ -193,6 +202,15 @@ function drush_update_batch() {
       // Add this update function to the batch.
       $function = $update['module'] . '_update_' . $update['number'];
       $operations[] = array('drush_update_do_one', array($update['module'], $update['number'], $dependency_map[$function]));
+    }
+  }
+
+  // Apply post update hooks.
+  $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateFunctions();
+  if ($post_updates) {
+    $operations[] = ['drush_drupal_cache_clear_all', []];
+    foreach ($post_updates as $function) {
+      $operations[] = ['update_invoke_post_update', [$function]];
     }
   }
 
