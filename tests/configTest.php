@@ -43,11 +43,11 @@ class ConfigCase extends CommandUnishTestCase {
 
   function testConfigExportImport() {
     $options = $this->options();
-    // Get path to staging dir.
+    // Get path to sync dir.
     $this->drush('core-status', array(), $options + array('format' => 'json'));
-    $staging = $this->webroot() . '/' . $this->getOutputFromJSON('config-staging');
-    $system_site_yml = $staging . '/system.site.yml';
-    $core_extension_yml = $staging . '/core.extension.yml';
+    $sync = $this->webroot() . '/' . $this->getOutputFromJSON('config-sync');
+    $system_site_yml = $sync . '/system.site.yml';
+    $core_extension_yml = $sync . '/core.extension.yml';
 
     // Test export
     $this->drush('config-export', array(), $options);
