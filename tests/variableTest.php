@@ -58,7 +58,7 @@ class VariableCase extends CommandUnishTestCase {
     // Make sure internal variable overrides does not affect variable-get.
     $this->drush('variable-get', array('cron_safe_threshold'), $options + array('backend' => NULL,), NULL, NULL, self::EXIT_ERROR);
     $parsed = $this->parse_backend_output($this->getOutput());
-    $this->assertArrayHasKey("DRUSH_VARIABLE_NOT_FOUND", $parsed['error_log']);
+    $this->assertArrayHasKey("DRUSH_VARIABLE_NOT_FOUND", $parsed['error_log'], 'Variable was not set by default.');
 
     $this->drush('variable-set', array('cron_safe_threshold', 100), $options);
     $this->drush('variable-get', array('cron_safe_threshold'), $options);
