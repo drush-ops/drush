@@ -125,10 +125,10 @@ function variable_complete_variables() {
  * List your site's variables.
  */
 function drush_variable_get() {
-  global $conf, $conf_original;
+  global $conf_original;
   $exact = drush_get_option('exact', FALSE);
 
-  $keys = array_keys($conf);
+  $keys = array_keys($conf_original);
   if ($args = func_get_args()) {
     $args[0] = drush_variable_name_adjust($args[0]);
     if ($exact) {
@@ -140,29 +140,18 @@ function drush_variable_get() {
   // In --exact mode, if --pipe is not set, then simplify the return type.
   if ($exact && !drush_get_context('DRUSH_PIPE')) {
     $key = reset($keys);
-    $returns = isset($conf[$key]) ? $conf[$key] : FALSE;
+    $returns = isset($conf_original[$key]) ? $conf_original[$key] : FALSE;
   }
   else {
     foreach ($keys as $name) {
-      $value = $conf[$name];
+      $value = $conf_original[$name];
       $returns[$name] = $value;
     }
   }
   if (empty($keys)) {
-    return drush_set_error('No matching variable found.');
+    return drush_set_error('DRUSH_VARIABLE_NOT_FOUND', dt('No matching variable found.'));
   }
   else {
-    $conf_original = variable_init($conf_original);
-    if ($exact && isset($conf_original[$key])) {
-      $returns = $conf_original[$key];
-    }
-    else {
-      foreach ($keys as $name) {
-        if (isset($conf_original[$name])) {
-          $returns[$name] = $conf_original[$name];
-        }
-      }
-    }
     return $returns;
   }
 }
@@ -289,4 +278,19 @@ function drush_variable_name_adjust($arg) {
     $arg = 'maintenance_mode';
   }
   return $arg;
+}
+
+/**
+ * Implements hook_drush_command_alter
+ */
+function variable_drush_command_alter(&$command) {
+  if ($command['command'] == 'variable-get') {
+    global $conf_original;
+    if (drush_drupal_major_version() < 7) {
+      $conf_original = variable_init($conf_original);
+    }
+    elseif (drush_drupal_major_version() >= 7) {
+      $conf_original = variable_initialize($conf_original);
+    }
+  }
 }

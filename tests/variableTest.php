@@ -55,16 +55,20 @@ class VariableCase extends CommandUnishTestCase {
     $output = $this->getOutput();
     $this->assertEmpty($output, 'Variable was successfully deleted.');
 
-    $this->drush('variable-get', array('cron_safe_threshold'), $options);
-    $var_export = $this->getOutput();
-    eval($var_export);
-    // @todo: Should return "No matching variable found." error.
-    $this->assertEquals(0, $variables['cron_safe_threshold'], 'Internal drush overridden value.');
+    // Make sure there is no value for cron_safe_threshold by default.
+    $this->drush('variable-get', array('cron_safe_threshold'), $options + array('backend' => NULL,), NULL, NULL, self::EXIT_ERROR);
+    $parsed = $this->parse_backend_output($this->getOutput());
+    $this->assertArrayHasKey("DRUSH_VARIABLE_NOT_FOUND", $parsed['error_log']);
 
     $this->drush('variable-set', array('cron_safe_threshold', 100), $options);
     $this->drush('variable-get', array('cron_safe_threshold'), $options);
+    $var_export = $this->getOutput();
     eval($var_export);
-    $this->assertEquals(100, $variables['cron_safe_threshold'], 'Value set for internally overridden variable.');
+    $this->assertEquals(100, $variables['cron_safe_threshold'], 'Internal variable was successfully set and get.');
+
+    $this->drush('variable-delete', array('cron_safe_threshold'), $options);
+    $output = $this->getOutput();
+    $this->assertEmpty($output, 'Internal variable was successfully deleted.');
   }
 
 }
