@@ -731,7 +731,11 @@ function drush_config_get_object($config_name) {
     $data = $config->get();
   }
   elseif ($source == 'active') {
-    $config = \Drupal::service('config.storage.active');
+    $config = \Drupal::service('config.storage');
+    $data = $config->read($config_name);
+  }
+  elseif ($source == 'sync') {
+    $config = \Drupal::service('config.storage.sync');
     $data = $config->read($config_name);
   }
   else {
