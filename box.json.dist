@@ -1,0 +1,24 @@
+{
+  "chmod": "0755",
+  "directories": ["commands", "docs", "examples", "includes", "lib", "misc"],
+  "files": [
+    "drush.info"
+  ],
+  "finder": [
+    {
+      "name": "*.php",
+      "exclude": [
+        "phing",
+        "test",
+        "tests",
+        "Test",
+        "Tests",
+        "Tester"
+      ],
+      "in": "vendor"
+    }
+  ],
+  "main": "drush",
+  "output": "drush.phar",
+  "stub": true
+}
