@@ -279,6 +279,11 @@ function drush_startup($argv) {
     $found_script = dirname(__DIR__) . "/drush.launcher";
   }
 
+  // Normalize the slashes in the path before executing it. Surround with
+  // quotes in case of spaces in the path. We do not use _drush_convert_path
+  // here because we are trying to keep the finder as lightweight as possible.
+  $found_script = '"' . str_replace('\\', '/', $found_script) . '"';
+
   // Emit a message in verbose mode advertising the location of the
   // script we found.
   if ($VERBOSE) {
@@ -296,7 +301,7 @@ function drush_startup($argv) {
   }
   else {
     $escaped_args = array_map(function($item) { return _drush_escapeshellarg_linux($item); }, $arguments);
-    passthru($found_script . ' ' . implode(' ', $escaped_args), $status_code);
+    passthru('sh ' . $found_script . ' ' . implode(' ', $escaped_args), $status_code);
     exit($status_code);
   }
 }
