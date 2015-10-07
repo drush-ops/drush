@@ -353,7 +353,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
       chmod($site, 0777);
     }
     else {
-      mkdir($site);
+      @mkdir($site);
       touch("$site/settings.php");
     }
   }

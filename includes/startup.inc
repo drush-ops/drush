@@ -276,7 +276,7 @@ function drush_startup($argv) {
 
   // Emit a message in verbose mode advertising the location of the
   // script we found.
-  if ($VERBOSE) {
+  if ($DEBUG) {
     fwrite(STDERR, "Using the Drush script found at $found_script\n");
   }
 
