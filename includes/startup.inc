@@ -214,7 +214,7 @@ function drush_startup($argv) {
   // We will first check for a "wrapper" script at the root, and then
   // we will look for a "launcher" script in vendor/bin.
   //
-  if (empty($found_script)) {
+  if (empty($found_script) && !empty($ROOT)) {
     $found_script = find_wrapper_or_launcher($ROOT);
     if (!empty($found_script)) {
       chdir($ROOT);
