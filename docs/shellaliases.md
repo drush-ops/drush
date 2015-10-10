@@ -21,7 +21,7 @@ For example, given the following site alias:
 
          $aliases['dev'] = array (
            'root' => '/path/to/drupal',
-           'uri' => 'mysite.org',
+           'uri' => 'http://example.com',
            '#live' => '@acme.live',
          );
 

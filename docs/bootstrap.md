@@ -24,9 +24,7 @@ DRUSH\_BOOTSTRAP\_DRUPAL\_SITE
 
 Set up a Drupal site directory and the correct environment variables to allow Drupal to find the configuration file.
 
-If no site is specified with the -l / --uri options, Drush will assume the site is 'default', which mimics Drupal's behaviour.
-
-If you want to avoid this behaviour, it is recommended that you use the DRUSH\_BOOTSTRAP\_DRUPAL\_ROOT bootstrap phase instead.
+If no site is specified with the -l / --uri options, Drush will assume the site is 'default', which mimics Drupal's behaviour.  Note that it is necessary to specify a full URI, e.g. --uri=http://example.com, in order for certain Drush commands and Drupal modules to behave correctly. See examples/example.drushrc.php for more information. 
 
 Any code that needs to modify or interact with a specific Drupal site's settings.php file should bootstrap to this phase.
 

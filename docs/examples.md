@@ -1,4 +1,4 @@
-This folder contains example files which you are copy and edit as needed. Read the documentation right in the file. If you see an opportunity to improve the file, please submit a pull request.
+This folder contains example files which you may copy and edit as needed. Read the documentation right in the file. If you see an opportunity to improve the file, please submit a pull request.
 
 * [drush](https://raw.githubusercontent.com/drush-ops/drush/master/examples/drush). A handy launcher script which calls the Drush located in vendor/bin/drush and can add options like --local, --root, etc.
 * [example.make](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.make). An ini style make file.

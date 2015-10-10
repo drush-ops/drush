@@ -10,12 +10,12 @@
  * local or remote Drupal installations; however, an alias
  * is really nothing more than a collection of options.
  * A canonical alias named "dev" that points to a local
- * Drupal site named "dev.mydrupalsite.com" looks like this:
+ * Drupal site named "http://example.com" looks like this:
  *
  * @code
  * $aliases['dev'] = array(
  *   'root' => '/path/to/drupal',
- *   'uri' => 'dev.mydrupalsite.com',
+ *   'uri' => 'http://example.com',
  * );
  * @endcode
  *
@@ -23,7 +23,7 @@
  * are equivalent:
  *
  *   $ drush @dev status
- *   $ drush --root=/path/to/drupal --uri=dev.mydrupalsite.com status
+ *   $ drush --root=/path/to/drupal --uri=http://example.com status
  *
  * See the --uri option documentation below for hints on setting its value.
  *
@@ -81,7 +81,7 @@
  * like a drushrc.php configuration file:
  *
  * @code
- * $options['uri'] = 'dev.mydrupalsite.com';
+ * $options['uri'] = 'http://example.com';
  * $options['root'] = '/path/to/drupal';
  * @endcode
  *
@@ -99,11 +99,11 @@
  * # File: mysite.aliases.drushrc.php
  * $aliases['dev'] = array(
  *   'root' => '/path/to/drupal',
- *   'uri' => 'dev.mydrupalsite.com',
+ *   'uri' => 'http://example.com',
  * );
  * $aliases['live'] = array(
  *   'root' => '/other/path/to/drupal',
- *   'uri' => 'mydrupalsite.com',
+ *   'uri' => 'http://example.com',
  * );
  * @endcode
  *
@@ -155,7 +155,7 @@
  *   'remote-host' => 'server.domain.com',
  *   'remote-user' => 'www-admin',
  *   'root' => '/other/path/to/drupal',
- *   'uri' => 'mydrupalsite.com',
+ *   'uri' => 'http://example.com',
  * );
  * @endcode
  *
@@ -186,13 +186,12 @@
  * Although most aliases will contain only a few options, a number
  * of settings that are commonly used appear below:
  *
- * - 'uri': In Drupal 7, the value of --uri should always be the same as
- *   when the site is being accessed from a web browser (e.g. http://mysite.org,
- *   although the http:// is optional).  In Drupal 6, the value of --uri should
- *   always be the same as the site's folder name in the 'sites' folder
- *   (e.g. default); it is best if the site folder name matches the
- *   URI from the browser, and is consistent on every instance of the
- *   same site (e.g. also use sites/mysite.org for http://dev.mysite.org).
+ * - 'uri': In Drupal 7 and 8, the value of --uri should always be the same as
+ *   when the site is being accessed from a web browser (e.g. http://example.com)
+ *   In Drupal 6, the value of --uri should always be the same as the site's folder
+ *   name in the 'sites' folder (e.g. default); it is best if the site folder name
+ *   matches the URI from the browser, and is consistent on every instance of the
+ *   same site (e.g. also use sites/example.com for http://example.com).
  * - 'root': The Drupal root; must not be specified as a relative path.
  * - 'remote-port': If the database is remote and 'db-url' contains
  *   a tunneled port number, put the actual database port number
@@ -312,7 +311,7 @@
  * );
  *
  * $aliases['live'] = array(
- *   'uri' => 'mysite.com',
+ *   'uri' => 'http://example.com',
  *   'root' => '/path.to/root',
  * ) + $common_live;
  * @endcode
@@ -328,7 +327,7 @@
  */
 
 #$aliases['stage'] = array(
-#    'uri' => 'stage.mydrupalsite.com',
+#    'uri' => 'http://stage.example.com',
 #    'root' => '/path/to/remote/drupal/root',
 #    'db-url' => 'pgsql://username:password@dbhost.com:port/databasename',
 #    'remote-host' => 'mystagingserver.myisp.com',
@@ -370,7 +369,7 @@
 #     ),
 #  );
 #$aliases['dev'] = array(
-#    'uri' => 'dev.mydrupalsite.com',
+#    'uri' => 'http://dev.example.com',
 #    'root' => '/path/to/drupal/root',
 #    'variables' => array(
 #      'mail_system' => array('default-system' => 'DevelMailLog'),
@@ -382,6 +381,6 @@
 #    'os' => 'Linux',
 #  );
 #$aliases['live'] = array(
-#    'uri' => 'mydrupalsite.com',
+#    'uri' => 'http://example.com',
 #    'root' => $aliases['dev']['root'],
 #  ) + $aliases['server'];

@@ -58,7 +58,7 @@ The drush\_command hook is the most important part of the commandfile. It return
 -   'examples': An array of examples that are understood by the command. Used by `drush help` only.
 -   'scope': One of 'system', 'project', 'site'. Not currently used.
 -   'bootstrap': Drupal bootstrap level. Valid values are:
-    -   DRUSH\_BOOTSTRAP\_DRUSH
+    -   DRUSH\_BOOTSTRAP\_NONE
     -   DRUSH\_BOOTSTRAP\_DRUPAL\_ROOT
     -   DRUSH\_BOOTSTRAP\_DRUPAL\_SITE
     -   DRUSH\_BOOTSTRAP\_DRUPAL\_CONFIGURATION
