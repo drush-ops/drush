@@ -101,8 +101,8 @@ class DrupalBoot8 extends DrupalBoot {
 
   function bootstrap_drupal_configuration() {
     $this->request = Request::createFromGlobals();
-    $classloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
-    $this->kernel = DrupalKernel::createFromRequest($this->request, $classloader, 'prod');
+    $autoloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
+    $this->kernel = new DrupalKernel('prod', $autoloader);
 
     // Unset drupal error handler and restore drush's one.
     restore_error_handler();
