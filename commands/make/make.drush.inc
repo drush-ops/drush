@@ -387,7 +387,6 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
     // Merge the known data onto the project info.
     $project += array(
       'name'                => $key,
-      'type'                => 'module',
       'core'                => $info['core'],
       'translations'        => $translations,
       'build_path'          => $build_path,
@@ -424,7 +423,6 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
       $request = make_prepare_request($project);
       $is_core = $release_info->checkProject($request, 'core');
       $project['download_type'] = ($is_core ? 'core' : 'contrib');
-      $project['type'] = $is_core ? 'core' : $project['type'];
     }
     else {
       $project['download_type'] = ($project['name'] == 'drupal' ? 'core' : 'contrib');
