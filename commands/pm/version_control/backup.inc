@@ -18,7 +18,11 @@ class drush_version_control_backup implements drush_version_control {
       }
       return TRUE;
     }
-    if ($backup_target = $this->prepare_backup_dir()) {
+    // TODO: how should we name the backup directory?
+    // When we are bootstrapped, Drush uses the database name.
+    // We will provide a db name here, so that we do not
+    // need to be bootstrapped to use this engine.
+    if ($backup_target = $this->prepare_backup_dir("backup")) {
       if ($project['project_type'] != 'core') {
         $backup_target .= '/' . $project['project_type'] . 's';
         drush_mkdir($backup_target);

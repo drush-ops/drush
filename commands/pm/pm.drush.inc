@@ -340,12 +340,14 @@ function pm_drush_command() {
       ),
       'update_status',
     ),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
   );
   // Merge all items from above.
   $items['pm-update'] = array(
     'description' => 'Update Drupal core and contrib projects and apply any pending database updates (Same as pm-updatecode + updatedb).',
     'aliases' => array('up'),
     'allow-additional-options' => array('pm-updatecode', 'updatedb'),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
   );
   $items['pm-updatecode-postupdate'] = array(
     'description' => 'Notify of pending db updates.',

@@ -15,13 +15,10 @@
  * just to check on. In this case, say at the confirmation prompt.
  */
 function drush_pm_updatecode() {
-  // In --pipe mode, just run pm-updatestatus and exit.
-  if (drush_get_context('DRUSH_PIPE')) {
-    drush_set_option('strict', 0);
-    return drush_invoke('pm-updatestatus');
-  }
+  // We won't support --pipe mode with pm-updatecode any longer;
+  // folks should be using pm-updatestatus for this by now.
 
-  $update_status = drush_get_engine('update_status');
+  //$update_status = drush_get_engine('update_status');
 
   // Get specific requests.
   $requests = pm_parse_arguments(func_get_args(), FALSE);
@@ -42,8 +39,8 @@ function drush_pm_updatecode() {
   if (!is_array($values) || $values['error_status']) {
     return drush_set_error('pm-updatestatus failed.');
   }
-  $last = $update_status->lastCheck();
-  drush_print(dt('Update information last refreshed: ') . ($last  ? format_date($last) : dt('Never')));
+  //$last = $update_status->lastCheck();
+  //drush_print(dt('Update information last refreshed: ') . ($last  ? format_date($last) : dt('Never')));
   drush_print($values['output']);
 
   $update_info = $values['object'];
@@ -124,18 +121,21 @@ function drush_pm_updatecode() {
  *   copied from $update_info['drupal'].  @see drush_pm_updatecode.
  */
 function _pm_update_core(&$project, $tmpfile) {
-  $release_info = drush_get_engine('release_info');
+  //$release_info = drush_get_engine('release_info');
 
   drush_print(dt('Code updates will be made to drupal core.'));
   drush_print(dt("WARNING:  Updating core will discard any modifications made to Drupal core files, most noteworthy among these are .htaccess and robots.txt.  If you have made any modifications to these files, please back them up before updating so that you can re-create your modifications in the updated version of the file."));
   drush_print(dt("Note: Updating core can potentially break your site. It is NOT recommended to update production sites without prior testing."));
   drush_print();
+  // TODO: use drush_invoke_process() to call pm-releasenotes
+  /*
   if (drush_get_option('notes', FALSE)) {
     drush_print('Obtaining release notes for above projects...');
     #TODO# Build the $request array from info in $project.
     $request = pm_parse_request('drupal');
     $release_info->get($request)->getReleaseNotes(NULL, TRUE, $tmpfile);
   }
+  */
   if(!drush_confirm(dt('Do you really want to continue?'))) {
     drush_print(dt('Rolling back all changes. Run again with --no-core to update modules only.'));
     return drush_user_abort();
@@ -186,19 +186,27 @@ function _pm_update_core(&$project, $tmpfile) {
   // the _pm_update_move_files above.
   drush_set_context('DRUSH_PM_DRUPAL_CORE', $project);
 
+  drush_log(dt('Loading version control engine.'), 'debug');
+
   if (!$version_control = drush_pm_include_version_control($project['full_project_path'])) {
     return FALSE;
   }
+
+  drush_log(dt('Calling version control engine pre-update function.'), 'debug');
 
   // Check we have a version control system, and it clears its pre-flight.
   if (!$version_control->pre_update($project, $items_to_test)) {
     return FALSE;
   }
 
+  drush_log(dt('Calling pm_update_project to update core.'), 'debug');
+
   // Update core.
   if (pm_update_project($project, $version_control) === FALSE) {
     return FALSE;
   }
+
+  drush_log(dt('Move files back.'), 'debug');
 
   // Take the updated files in the 'core' directory that have been updated,
   // and move all except for the items in the skip list back to
@@ -214,6 +222,8 @@ function _pm_update_core(&$project, $tmpfile) {
     _pm_update_move_files($project['backup_target'], $drupal_root, $project['skip_list'], FALSE);
     _pm_update_move_files($project['backup_target'] . '/profiles', $drupal_root . '/profiles', array('default'), FALSE);
   }
+
+  drush_log(dt('Call pm_update_finish.'), 'debug');
 
   pm_update_finish($project, $version_control);
 
@@ -245,7 +255,7 @@ function _pm_update_move_files($src_dir, $dest_dir, $skip_list, $remove_conflict
  *   array key candidate_version that specifies the version to be installed.
  */
 function pm_update_packages($update_info, $tmpfile) {
-  $release_info = drush_get_engine('release_info');
+  // $release_info = drush_get_engine('release_info');
 
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
 
@@ -271,6 +281,8 @@ function pm_update_packages($update_info, $tmpfile) {
   drush_print($print);
   file_put_contents($tmpfile, "\n\n$print\n\n", FILE_APPEND);
 
+  // TODO: use drush_invoke_process() to call pm-releasenotes
+  /*
   // Print the release notes for projects to be updated.
   if (drush_get_option('notes', FALSE)) {
     drush_print('Obtaining release notes for above projects...');
@@ -280,6 +292,7 @@ function pm_update_packages($update_info, $tmpfile) {
       $release_info->get($request)->getReleaseNotes(NULL, TRUE, $tmpfile);
     }
   }
+  */
 
   // We print some warnings before the user confirms the update.
   drush_print();
