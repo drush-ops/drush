@@ -136,7 +136,7 @@ Git Clone (i.e. manual install)
 
 See [Configure](configure.md) for next steps.
 
-Windows Zip Package
+Windows Support
 ----------------------------
 
 Windows support has improved, but is still lagging. For full functionality, consider running Linux/Unix/OSX via Virtualbox, or other virtual machine platform. [The Vlad virtual machine](https://github.com/hashbangcode/vlad) is popular.
@@ -147,12 +147,17 @@ These Windows packages include Drush and its dependencies (including MSys).
 - [6.6.0](https://github.com/drush-ops/drush/releases/download/6.6.0/windows-6.6.0.zip).
 - [6.0](https://github.com/drush-ops/drush/releases/download/6.0.0/Drush-6.0-2013-08-28-Installer-v1.0.21.msi).
 
-Unzip the downloaded file to anywhere thats convenient on your system. 
+Unzip the downloaded file to anywhere that is convenient on your system. 
 
 Whenever the documentation or the help text refers to `drush [option] <command>` or something similar, 'drush' may need to be replaced by 'drush.bat'.
-
-Most Drush commands will run in a Windows CMD shell or PowerShell, but the Git Bash shell provided by the [Git for Windows](http://msysgit.github.com) installation is the preferred shell in which to run Drush commands.
 
 When creating site aliases for Windows remote machines, pay particular attention to information presented in the example.aliases.drushrc.php file, especially when setting values for 'remote-host' and 'os', as these are very important when running Drush rsync and Drush sql-sync commands.
 
 See [Configure](configure.md) for next steps.
+
+Drush with the Git Bash shell 
+----------------------------
+
+Most Drush commands will run in a Windows CMD shell or PowerShell, but the Git Bash shell provided by the [Git for Windows](http://msysgit.github.com) installation is the preferred shell in which to run Drush commands.
+
+Adding `export DRUSH_SHELL_PREFIX="sh "` to your `.bashrc` file will ensure Drush uses the correct shell when executing commands.

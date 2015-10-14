@@ -284,6 +284,11 @@ function drush_startup($argv) {
   // here because we are trying to keep the finder as lightweight as possible.
   $found_script = '"' . str_replace('\\', '/', $found_script) . '"';
 
+  // Allow Windows users to specify which program will run the .launcher file.
+  if ($prefix = getenv('DRUSH_SHELL_PREFIX')) {
+    $found_script = $prefix . $found_script;
+  }
+
   // Emit a message in verbose mode advertising the location of the
   // script we found.
   if ($VERBOSE) {
