@@ -271,7 +271,12 @@ function drush_startup($argv) {
   // In that case, there should always be a drush.launcher in
   // the same directory this script is stored in; use that.
   if (empty($found_script)) {
-    $found_script = dirname(__DIR__) . "/drush.launcher";
+    if (function_exists("drush_main")) {
+      exit(drush_main());
+    }
+    else {
+      $found_script = dirname(__DIR__) . "/drush.launcher";
+    }
   }
 
   // Emit a message in verbose mode advertising the location of the
