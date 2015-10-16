@@ -4,6 +4,16 @@ namespace Drush\User;
 
 abstract class UserSingleBase {
 
+  /**
+   * The user account status is active.
+   */
+  const STATUS_ACTIVE = 'active';
+
+  /**
+   * The user account status is blocked.
+   */
+  const STATUS_BLOCKED = 'blocked';
+
   // A Drupal user entity.
   public $account;
 
@@ -29,7 +39,7 @@ abstract class UserSingleBase {
       'user_login' => $this->account->getLastLoginTime(),
       'login' => format_date($this->account->getLastLoginTime()),
       'user_status' => $this->account->get('status')->value,
-      'status' => $this->account->isActive() ? 'active' : 'blocked',
+      'status' => $this->getStatus(),
       'timezone' => $this->account->getTimeZone(),
       'roles' => $this->account->getRoles(),
       'langcode' => $this->account->getPreferredLangcode(),
@@ -41,16 +51,20 @@ abstract class UserSingleBase {
    * Block a user from login.
    */
   public function block() {
-    $this->account->block();
-    $this->account->save();
+    if ($this->getStatus() != self::STATUS_BLOCKED) {
+      $this->account->block();
+      $this->account->save();
+    }
   }
 
   /**
    * Unblock a user from login.
    */
   public function unblock() {
-    $this->account->get('status')->value = 1;
-    $this->account->save();
+    if ($this->getStatus() != self::STATUS_ACTIVE) {
+      $this->account->get('status')->value = 1;
+      $this->account->save();
+    }
   }
 
   /**
@@ -129,5 +143,24 @@ abstract class UserSingleBase {
    */
   public function id() {
     return $this->account->id();
+  }
+
+  /**
+   * Get if a user is active or blocked.
+   * @return string
+   */
+  public function getStatus() {
+    return $this->account->isActive() ? self::STATUS_ACTIVE : self::STATUS_BLOCKED;
+  }
+
+  /**
+   * Check if a user is active, and if not, prompt to unblock the user.
+   */
+  public function checkIsActive() {
+    if ($this->getStatus() == self::STATUS_BLOCKED) {
+      if (drush_confirm(dt('The user @name is currently blocked. Would you like to unblock it?', array('@name' => $this->getUsername())))) {
+        $this->unblock();
+      }
+    }
   }
 }

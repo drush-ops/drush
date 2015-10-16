@@ -28,7 +28,7 @@ class UserSingle7 extends UserSingleBase {
     foreach (array('created', 'access', 'login') as $key) {
       $userinfo['user_' . $key] = format_date($userinfo[$key]);
     }
-    $userinfo['user_status'] = $userinfo['status'] ? 'active' : 'blocked';
+    $userinfo['user_status'] = $this->getStatus();
     return $userinfo;
   }
 
@@ -51,5 +51,12 @@ class UserSingle7 extends UserSingleBase {
 
   public function id() {
     return $this->account->uid;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getStatus() {
+    return $this->account->status ? self::STATUS_ACTIVE : self::STATUS_BLOCKED;
   }
 }

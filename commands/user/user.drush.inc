@@ -358,9 +358,8 @@ function drush_user_password($inputs) {
     if (empty($pass)) {
       $pass = drush_prompt(dt('Password'), NULL, TRUE, TRUE);
     }
-    foreach ($userlist->accounts as $account) {
-      $userlist->each('password', array($pass));
-    }
+    $userlist->each('checkIsActive');
+    $userlist->each('password', array($pass));
     drush_log(dt('Changed password for !users', array('!users' => $userlist->names())), 'success');
   }
 }
@@ -407,6 +406,7 @@ function drush_user_login($inputs = '', $path = NULL) {
       // No user option or argument was passed, so we default to uid 1.
         $userlist = new UserList(1);
     }
+    $userlist->each('checkIsActive');
     $links = $userlist->each('passResetUrl', array($path));
   }
   $port = drush_get_option('redirect-port', FALSE);
