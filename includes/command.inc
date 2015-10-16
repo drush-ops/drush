@@ -1395,7 +1395,7 @@ function drush_commandfile_list() {
 }
 
 function _drush_find_commandfiles($phase, $phase_max = FALSE) {
-  drush_log(dt("Find command files for phase !phase (max=!max)", array('!phase' => $phase, '!max' => $phase_max)), 'debug');
+  drush_log(dt("Find command files for phase !phase (max=!max)", array('!phase' => $phase, '!max' => (string)$phase_max)), 'debug');
   if ($bootstrap = drush_get_bootstrap_object()) {
     $searchpath = $bootstrap->commandfile_searchpaths($phase, $phase_max);
     _drush_add_commandfiles($searchpath, $phase);

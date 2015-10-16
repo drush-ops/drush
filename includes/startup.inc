@@ -238,12 +238,17 @@ function drush_startup($argv) {
   //
   if (empty($found_script)) {
     $c = getcwd();
-    while (!empty($c) && ($c != "/")) {
+    // Windows can give us lots of different strings to represent the root
+    // directory as it often includes the drive letter. If we get the same
+    // result from dirname() twice in a row, then we know we're at the root.
+    $last = '';
+    while (!empty($c) && ($c != $last)) {
       $found_script = find_wrapper_or_launcher($c);
       if ($found_script) {
         chdir($c);
         break;
       }
+      $last = $c;
       $c = dirname($c);
     }
   }
@@ -281,7 +286,7 @@ function drush_startup($argv) {
 
   // Emit a message in verbose mode advertising the location of the
   // script we found.
-  if ($VERBOSE) {
+  if ($DEBUG) {
     fwrite(STDERR, "Using the Drush script found at $found_script\n");
   }
 

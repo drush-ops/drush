@@ -116,6 +116,57 @@ EOD;
   }
 
   /**
+   * Test to see if we can access aliases defined inside of
+   * a provided Drupal root in various locations where they
+   * may be stored.
+   */
+  public function testAliasFilesInDocroot() {
+    $root = $this->webroot();
+
+    $aliasContents = <<<EOD
+  <?php
+  // Written by Unish. This file is safe to delete.
+  \$aliases['atroot'] = array(
+    'root' => '/fake/path/to/othersite',
+    'uri' => 'default',
+  );
+EOD;
+    @mkdir($root . "/drush");
+    @mkdir($root . "/drush/site-aliases");
+    file_put_contents($root . "/drush/site-aliases/atroot.aliases.drushrc.php", $aliasContents);
+
+    $aliasContents = <<<EOD
+  <?php
+  // Written by Unish. This file is safe to delete.
+  \$aliases['insitefolder'] = array(
+    'root' => '/fake/path/to/othersite',
+    'uri' => 'default',
+  );
+EOD;
+    @mkdir($root . "/sites/all/drush");
+    @mkdir($root . "/sites/all/drush/site-aliases");
+    file_put_contents($root . "/sites/all/drush/site-aliases/sitefolder.aliases.drushrc.php", $aliasContents);
+
+    $aliasContents = <<<EOD
+  <?php
+  // Written by Unish. This file is safe to delete.
+  \$aliases['aboveroot'] = array(
+    'root' => '/fake/path/to/othersite',
+    'uri' => 'default',
+  );
+EOD;
+    @mkdir($root . "/../drush");
+    @mkdir($root . "/../drush/site-aliases");
+    file_put_contents($root . "/../drush/site-aliases/aboveroot.aliases.drushrc.php", $aliasContents);
+
+    // Ensure that none of these 'sa' commands return an error
+    $this->drush('sa', array('@atroot'), array(), '@dev');
+    $this->drush('sa', array('@insitefolder'), array(), '@dev');
+    $this->drush('sa', array('@aboveroot'), array(), '@dev');
+  }
+
+
+  /**
    * Ensure that Drush searches deep inside specified search locations
    * for alias files.
    */
