@@ -295,7 +295,7 @@ function drush_startup($argv) {
     if (!$error) {
       $errno = pcntl_get_last_error();
       $strerror = pcntl_strerror($errno);
-      fwrite(STDERR, "Error has ocurred executing the Drush script found at $found_script\n");
+      fwrite(STDERR, "Error has occurred executing the Drush script found at $found_script\n");
       fwrite(STDERR, "(errno {$errno}) $strerror\n");
     }
     exit(1);
