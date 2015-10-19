@@ -284,7 +284,8 @@ function drush_startup($argv) {
       if ($DEBUG) {
         fwrite(STDERR, "Phar detected. Proceeding to drush_main().");
       }
-      require __DIR__ . '/../drush.php';
+      require __DIR__ . '/preflight.inc';
+      exit(drush_main());
     }
   }
 
