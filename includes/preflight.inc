@@ -44,7 +44,7 @@ function drush_main() {
   $return = '';
   if (!drush_get_error()) {
     if ($file = drush_get_option('early', FALSE)) {
-      require_once $file;
+      require_once drush_is_absolute_path($file) ? $file : DRUSH_BASE_PATH . DIRECTORY_SEPARATOR . $file;
       $function = 'drush_early_' . basename($file, '.inc');
       if (function_exists($function)) {
         if ($return = $function()) {
