@@ -7,7 +7,7 @@ pulling sources from various locations. It does this by parsing a flat text file
 practical terms, this means that it is possible to distribute a complicated
 Drupal distribution as a single text file.
 
-Among drush make's capabilities are:
+Among Drush make's capabilities are:
 
 - Downloading Drupal core, as well as contrib modules from drupal.org.
 - Checking code out from SVN, git, and bzr repositories.
@@ -176,8 +176,8 @@ Do not use both types of declarations for a single project in your makefile.
 - `overwrite`
 
   Allows the project to be installed in a directory that is not empty.
-  If not specified this is treated as FALSE, drush_make sets an error when the directory is not empty.
-  If specified TRUE, drush_make will continue and use the existing directory.
+  If not specified this is treated as FALSE, Drush make sets an error when the directory is not empty.
+  If specified TRUE, Drush make will continue and use the existing directory.
   Useful when adding extra files and folders to existing folders in libraries or module extensions.
 
         projects:
@@ -356,7 +356,7 @@ makefiles to override the keys/values of former makefiles.
       download:
         type: "git"
         url: "git@github.com:organisation/repository.git"
-        # Branch could be tag or revision, it relies on the standard drush git download feature.
+        # Branch could be tag or revision, it relies on the standard Drush git download feature.
         branch: "master"          
 
 ### Defaults
@@ -419,12 +419,12 @@ setting the corresponding key to NULL:
 
 Recursion
 ---------
-If a project that is part of a build contains a `.make.yml` itself, drush make will
+If a project that is part of a build contains a `.make.yml` itself, Drush make will
 automatically parse it and recurse into a derivative build.
 
 For example, a full build tree may look something like this:
 
-    drush make distro.make distro
+    Drush make distro.make distro
 
     distro.make FOUND
     - Drupal core
@@ -465,7 +465,7 @@ directory. Subdirectories will be ignored.
 
 Testing
 -------
-Drush make also comes with testing capabilities, designed to test drush make
+Drush make also comes with testing capabilities, designed to test Drush make
 itself. Writing a new test is extremely simple. The process is as follows:
 
 1. Figure out what you want to test. Write a makefile that will test
@@ -485,7 +485,7 @@ itself. Writing a new test is extremely simple. The process is as follows:
       ),
       'options'  => array('any' => TRUE, 'other' => TRUE, 'options' => TRUE),
     ),
-5. Test! Run drush test suite (see DRUSH/tests/README.md). To just
+5. Test! Run Drush test suite (see DRUSH/tests/README.md). To just
    run the make tests:
 
      `./unish.sh --filter=makeMake .`
@@ -511,8 +511,8 @@ Maintainers
 -----------
 - Jonathan Hedstrom ([jhedstrom](https://www.drupal.org/u/jhedstrom))
 - Christopher Gervais ([ergonlogic](http://drupal.org/u/ergonlogic))
-- The rest of the Drush maintainers
+- [The rest of the Drush maintainers](https://github.com/drush-ops/drush/graphs/contributors)
 
 Original Author
 ---------------
-Dmitri Gaskin (dmitrig01)
+[Dmitri Gaskin (dmitrig01)](https://twitter.com/dmitrig01)
