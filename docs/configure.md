@@ -16,11 +16,11 @@ Configure
    add your current drush site (set with `drush use @sitename`) to your PS1
    prompt like so:
       
-      ```bash   
-      if [ "\$(type -t __git_ps1)" ] && [ "\$(type -t __drush_ps1)" ]; then
-        PS1='\u@\h \w$(__git_ps1 " (%s)")$(__drush_ps1 "[%s]")\$ '
-      fi
-      ```
+```bash   
+if [ "\$(type -t __git_ps1)" ] && [ "\$(type -t __drush_ps1)" ]; then
+  PS1='\u@\h \w$(__git_ps1 " (%s)")$(__drush_ps1 "[%s]")\$ '
+fi
+```
       
    Putting this in a .bashrc/.bash_profile/.profile would produce this prompt:
 
