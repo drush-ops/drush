@@ -2161,7 +2161,7 @@ function drush_sitealias_get_envar_filename($filename_prefix = 'drush-drupal-sit
     return FALSE;
   }
 
-  $tmp = getenv('TMPDIR') ? getenv('TMPDIR') : '/tmp/';
+  $tmp = getenv('TMPDIR') ? getenv('TMPDIR') : '/tmp';
   $username = drush_get_username();
 
   return "{$tmp}/drush-env-{$username}/{$filename_prefix}" . posix_getppid();
