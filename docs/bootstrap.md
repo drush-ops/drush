@@ -2,7 +2,7 @@ The Drush Bootstrap Process
 ===========================
 When preparing to run a command, Drush works by "bootstrapping" the Drupal environment in very much the same way that is done during a normal page request from the web server, so most Drush commands run in the context of a fully-initialized website.
 
-For efficiency and convenience, some Drush commands can work without first bootstrapping a Drupal site, or by only partially bootstrapping a site. This is more faster than a full bootstrap. It is also a matter of convenience, because some commands are useful even when you don't have a working Drupal site. For example, you can use Drush to download Drupal with `drush dl drupal`. This obviously does not require any bootstrapping to work.
+For efficiency and convenience, some Drush commands can work without first bootstrapping a Drupal site, or by only partially bootstrapping a site. This is faster than a full bootstrap. It is also a matter of convenience, because some commands are useful even when you don't have a working Drupal site. For example, you can use Drush to download Drupal with `drush dl drupal`. This obviously does not require any bootstrapping to work.
 
 DRUSH\_BOOTSTRAP\_NONE
 -----------------------
@@ -10,11 +10,11 @@ Only run Drush _preflight_, without considering Drupal at all. Any code that ope
 
 DRUSH\_BOOTSTRAP\_DRUPAL\_ROOT
 ------------------------------
-Set up and test for a valid Drupal root, either through the -r/--root options, or evaluated based on the current working directory. Any code that interacts with an entire Drupal installation, and not a specific site on the Drupal installation should use this bootstrap phase.
+Set up and test for a valid Drupal root, either through the --root options, or evaluated based on the current working directory. Any code that interacts with an entire Drupal installation, and not a specific site on the Drupal installation should use this bootstrap phase.
 
 DRUSH\_BOOTSTRAP\_DRUPAL\_SITE
 ------------------------------
-Set up a Drupal site directory and the correct environment variables to allow Drupal to find the configuration file. If no site is specified with the -l / --uri options, Drush will assume the site is 'default', which mimics Drupal's behaviour.  Note that it is necessary to specify a full URI, e.g. --uri=http://example.com, in order for certain Drush commands and Drupal modules to behave correctly. See examples/example.drushrc.php for more information. Any code that needs to modify or interact with a specific Drupal site's settings.php file should bootstrap to this phase.
+Set up a Drupal site directory and the correct environment variables to allow Drupal to find the configuration file. If no site is specified with the --uri options, Drush will assume the site is 'default', which mimics Drupal's behaviour.  Note that it is necessary to specify a full URI, e.g. --uri=http://example.com, in order for certain Drush commands and Drupal modules to behave correctly. See the [example Config file](examples/example.drushrc.php) for more information. Any code that needs to modify or interact with a specific Drupal site's settings.php file should bootstrap to this phase.
 
 DRUSH\_BOOTSTRAP\_DRUPAL\_CONFIGURATION
 ---------------------------------------
