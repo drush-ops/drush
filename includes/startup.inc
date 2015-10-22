@@ -291,7 +291,13 @@ function drush_startup($argv) {
 
     // Launch the new script in the same process.
     // If the launch succeeds, then it will not return.
-    pcntl_exec($found_script, $arguments, $env);
+    $error = pcntl_exec($found_script, $arguments, $env);
+    if (!$error) {
+      $errno = pcntl_get_last_error();
+      $strerror = pcntl_strerror($errno);
+      fwrite(STDERR, "Error has occurred executing the Drush script found at $found_script\n");
+      fwrite(STDERR, "(errno {$errno}) $strerror\n");
+    }
     exit(1);
   }
   else {
