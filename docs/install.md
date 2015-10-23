@@ -11,7 +11,7 @@ Drush 5       | [5.x](https://travis-ci.org/drush-ops/drush) | 5.2.0+ | D6, D7  
 
 Pick an install method
 -----------------
-The four sections below describe ways to install Drush. If you are using Drupal 8, or if you are using Composer to manage your Drupal sites, you should follow the instructions in the section "Composer - One Drush per Project," below.
+The three sections below describe ways to install Drush. If you are using Drupal 8 (or Drupal7+Composer) follow the instructions in [Composer - One Drush per Project](#composer-one-drush-per-project).
 
 Composer - One Drush for all Projects
 ------------------
@@ -40,43 +40,9 @@ Composer - One Drush per Project
 -----------------
 Starting with Drupal 8, it is recommended that you [build your site using Composer, with Drush listed as a dependency](https://github.com/drupal-composer/drupal-project).   
 
-1. Follow the instructions [Composer - One Drush for all Projects](#composer-one-drush-per-project), so that you have a copy of Drush 8.x on your PATH.  When you run `drush`, it will notice that you have a site-local Drush with the site you have selected, and will use that one instead.  This gives you the convenience of running `drush` without specifying the full path to the executable, without sacrificing the safety provided by a site-local Drush.
+1. Follow the instructions [Composer - One Drush for all Projects](#composer-one-drush-for-all-projects), so that you have a copy of Drush 8.x on your PATH.  When you run `drush`, it will notice that you have a site-local Drush with the site you have selected, and will use that one instead.  This gives you the convenience of running `drush` without specifying the full path to the executable, without sacrificing the safety provided by a site-local Drush.
 2. Optional: Copy the examples/drush.wrapper file to your project root and modify to taste. This is a handy launcher script; add --local here to turn off all global configuration locations, and maintain absolute consistency over the configuration/aliases/commandfiles settings for your Drush calls.
 3. Note that if you have multiple Drupal sites on your system, it is possible to use a different version of Drush with each one.
-
-See [Configure](configure.md) for next steps.
-
-Git Clone (i.e. manual install)
------------
-1. Place the uncompressed drush.tar.gz, drush.zip, or cloned git repository in a directory that is outside of your web root.
-1. Make the 'drush' command executable:
-
-    `$ chmod u+x /path/to/drush/drush`
-
-1. Configure your system to recognize where Drush resides. There are 3 options:
-    1. Create a symbolic link to the Drush executable in a directory that is already in your PATH, e.g.:
-
-         `$ ln -s /path/to/drush/drush /usr/bin/drush`
-
-    1. Explicitly add the Drush executable to the PATH variable which is defined in the the shell configuration file called .profile, .bash_profile, .bash_aliases, or .bashrc that is located in your home folder, i.e.:
-
-           `export PATH="$PATH:/path/to/drush:/usr/local/bin"`
-
-    1. Add an alias for drush (this method can also be handy if you want to use 2 versions of Drush, for example Drush 5 or 6 (stable) for Drupal 7 development, and Drush 7 (master) for Drupal 8 development).
-     To add an alias to your Drush 7 executable, add this to you shell configuration file (see list in previous option):
-         `$ alias drush-master=/path/to/drush/drush`
-
-    For options 2 and 3 above, in order to apply your changes to your current session, either log out and then log back in again, or re-load your bash configuration file, i.e.:
-
-      `$ source .bashrc`
-
-1. Test that Drush is found by your system:
-
-     `$ which drush`
-
-1. From Drush root, run Composer to fetch dependencies.
-
-     `$ composer install`
 
 See [Configure](configure.md) for next steps.
 
