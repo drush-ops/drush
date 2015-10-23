@@ -24,61 +24,25 @@ Follow the instructions below, or [watch a video by Drupalize.me](https://youtu.
 1. See [Configure](configure.md) for next steps.
 
 #### Notes
-
-* To update to a newer version (what you get depends on your specification in ~/.composer/composer.json):
-
-        composer global update
-        
+* Update to latest release (per your specification in ~/.composer/composer.json): `composer global update`
 * Alternate commands to install a specific version of Drush:
 
         # Install a specific version of Drush, e.g. Drush 7.1.0
         composer global require drush/drush:7.1.0
         # Master branch as a git clone. Great for contributing back to Drush project.
-        composer global require drush/drush:dev-master --prefer-source
-        
-* To install for all users on the server:
-
-        curl -sS https://getcomposer.org/installer | php
-        mv composer.phar /usr/local/bin/composer
-        ln -s /usr/local/bin/composer /usr/bin/composer
-
-        git clone https://github.com/drush-ops/drush.git /usr/local/src/drush
-        cd /usr/local/src/drush
-        git checkout 8.0.0  #or whatever version you want.
-        ln -s /usr/local/src/drush/drush /usr/bin/drush
-        composer install
-        drush --version
-
+        composer global require drush/drush:dev-master --prefer-source        
 * Alternate way to install for all users via Composer:
-
+        
         COMPOSER_HOME=/opt/drush COMPOSER_BIN_DIR=/usr/local/bin COMPOSER_VENDOR_DIR=/opt/drush/7 composer require drush/drush:7
-
 * [Documentation for composer's require command.](http://getcomposer.org/doc/03-cli.md#require)
 
 Composer - One Drush per Project
 -----------------
-Drush requires some of the same dependencies as Drupal 8.  If Drush and Drupal are installed separately, it is possible that different versions of these libraries will be loaded; this can lead to unpredictable results, usually resulting in difficult-to-diagnose crahses. It is therefore recommended that you use a separate copy of Drush for every Composer-managed Drupal site on your system.
+Starting with Drupal 8, it is recommended that you [build your site using Composer, with Drush listed as a dependency](https://github.com/drupal-composer/drupal-project).   
 
-You should first follow the instructions "Composer - One Drush for all Projects", above, or "Git Clone (i.e. manual install)", so that you have a copy of Drush 8.x on your PATH.  When you run Drush, it will notice that you have a site-local Drush with the site you have selected, and will use that one instead.  This gives you the convenience of running Drush as "drush", without specifying the full path to the executable you want to use, without sacrificing the safety provided by a site-local Drush.
-
-* To install Drush 7.x (stable):
-
-        cd /path/to/site/composer-root
-        composer require drush/drush:7.*
-
-* To install Drush 8.x (dev) which is required for Drupal 8:
-
-        cd /path/to/site/composer-root
-        composer require drush/drush:dev-master
-
-* Run `composer install` for a new project or `composer update` for an existing one. Do so from the same directory as composer.json.
-* Optional: Copy the examples/drush.wrapper file to your project root and modify to taste. This is a handy launcher script; add --local here to turn off all global configuration locations, and maintain absolute control over the configuration settings for the site.
-
-In the instructions above, `/path/to/site/composer-root` should be the directory that contains your composer.json file.  This could be your Drupal root, or it might be the directory above your Drupal root, depending on how you have set up your composer.json file.
-
-Most of the standard [Drupal Composer example projects](https://github.com/drupal-composer/drupal-project) already load Drush from their composer.json file.  If your composer.json already requires Drush, then it is not necessary to follow these instructions again.
-
-Finally, note that if you have multiple Drupal sites on your system, it is possible to use a different version of Drush with each one.
+1. Follow the instructions [Composer - One Drush for all Projects](#composer-one-drush-per-project), so that you have a copy of Drush 8.x on your PATH.  When you run `drush`, it will notice that you have a site-local Drush with the site you have selected, and will use that one instead.  This gives you the convenience of running `drush` without specifying the full path to the executable, without sacrificing the safety provided by a site-local Drush.
+2. Optional: Copy the examples/drush.wrapper file to your project root and modify to taste. This is a handy launcher script; add --local here to turn off all global configuration locations, and maintain absolute consistency over the configuration/aliases/commandfiles settings for your Drush calls.
+3. Note that if you have multiple Drupal sites on your system, it is possible to use a different version of Drush with each one.
 
 See [Configure](configure.md) for next steps.
 
@@ -118,21 +82,15 @@ See [Configure](configure.md) for next steps.
 
 Windows Zip Package
 ----------------------------
-
 Windows support has improved, but is still lagging. For full functionality, consider running Linux/Unix/OSX via Virtualbox, or other virtual machine platform. [The Vlad virtual machine](https://github.com/hashbangcode/vlad) is popular.
 
-These Windows packages include Drush and its dependencies (including MSys). 
-
-- [7.0.0 (stable)](https://github.com/drush-ops/drush/releases/download/7.0.0/windows-7.0.0.zip).
-- [6.6.0](https://github.com/drush-ops/drush/releases/download/6.6.0/windows-6.6.0.zip).
-- [6.0](https://github.com/drush-ops/drush/releases/download/6.0.0/Drush-6.0-2013-08-28-Installer-v1.0.21.msi).
-
-Unzip the downloaded file to anywhere thats convenient on your system. 
-
-Whenever the documentation or the help text refers to `drush [option] <command>` or something similar, 'drush' may need to be replaced by 'drush.bat'.
-
-Most Drush commands will run in a Windows CMD shell or PowerShell, but the Git Bash shell provided by the [Git for Windows](http://msysgit.github.com) installation is the preferred shell in which to run Drush commands.
-
-When creating site aliases for Windows remote machines, pay particular attention to information presented in the example.aliases.drushrc.php file, especially when setting values for 'remote-host' and 'os', as these are very important when running Drush rsync and Drush sql-sync commands.
+* These Windows packages include Drush and its dependencies (including MSys). 
+    * [7.0.0 (stable)](https://github.com/drush-ops/drush/releases/download/7.0.0/windows-7.0.0.zip).
+    * [6.6.0](https://github.com/drush-ops/drush/releases/download/6.6.0/windows-6.6.0.zip).
+    * [6.0](https://github.com/drush-ops/drush/releases/download/6.0.0/Drush-6.0-2013-08-28-Installer-v1.0.21.msi).
+* Unzip the downloaded file to anywhere thats convenient on your system. 
+* Whenever the documentation or the help text refers to `drush [option] <command>` or something similar, 'drush' may need to be replaced by 'drush.bat'.
+* Most Drush commands will run in a Windows CMD shell or PowerShell, but the Git Bash shell provided by the [Git for Windows](http://msysgit.github.com) installation is the preferred shell in which to run Drush commands.
+* When creating site aliases for Windows remote machines, pay particular attention to information presented in the example.aliases.drushrc.php file, especially when setting values for 'remote-host' and 'os', as these are very important when running Drush rsync and Drush sql-sync commands.
 
 See [Configure](configure.md) for next steps.
