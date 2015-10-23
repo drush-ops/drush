@@ -15,27 +15,24 @@ The four sections below describe ways to install Drush. If you are using Drupal 
 
 Composer - One Drush for all Projects
 ------------------
+Follow the instructions below, or [watch a video by Drupalize.me](https://youtu.be/eAtDaD8xz0Q).
 
-* Optional - [video instructions by Drupalize.me.](https://youtu.be/eAtDaD8xz0Q)
-* [Install Composer globally](https://getcomposer.org/doc/00-intro.md#globally).
-* To install Drush 7.x (stable):
+1. [Install Composer globally](https://getcomposer.org/doc/00-intro.md#globally).
+1. Add composer's `bin` directory to the system path by placing `export PATH="$HOME/.composer/vendor/bin:$PATH"` into your ~/.bash_profile (Mac OS users) or into your ~/.bashrc (Linux users).
+1. Install latest stable Drush: `composer global require drush/drush`.
+1. Verify that Drush works: `drush status`
+1. See [Configure](configure.md) for next steps.
 
-        composer global require drush/drush:7.*
-
-* To install Drush 8.x (dev) which is required for Drupal 8:
-
-        composer global require drush/drush:dev-master
-        
-* Now add Drush to your system path by placing `export PATH="$HOME/.composer/vendor/bin:$PATH"` into your ~/.bash_profile (Mac OS users) or into your ~/.bashrc (Linux users).
+#### Notes
 
 * To update to a newer version (what you get depends on your specification in ~/.composer/composer.json):
 
         composer global update
         
-* Alternate commands to install some other variant of Drush:
+* Alternate commands to install a specific version of Drush:
 
-        # Install a specific version of Drush, e.g. Drush 6.1.0
-        composer global require drush/drush:6.1.0
+        # Install a specific version of Drush, e.g. Drush 7.1.0
+        composer global require drush/drush:7.1.0
         # Master branch as a git clone. Great for contributing back to Drush project.
         composer global require drush/drush:dev-master --prefer-source
         
@@ -47,7 +44,7 @@ Composer - One Drush for all Projects
 
         git clone https://github.com/drush-ops/drush.git /usr/local/src/drush
         cd /usr/local/src/drush
-        git checkout 7.0.0  #or whatever version you want.
+        git checkout 8.0.0  #or whatever version you want.
         ln -s /usr/local/src/drush/drush /usr/bin/drush
         composer install
         drush --version
@@ -56,22 +53,7 @@ Composer - One Drush for all Projects
 
         COMPOSER_HOME=/opt/drush COMPOSER_BIN_DIR=/usr/local/bin COMPOSER_VENDOR_DIR=/opt/drush/7 composer require drush/drush:7
 
-[Fuller explanation of the require command.](http://getcomposer.org/doc/03-cli.md#require)
-
-**Tips:**
-
-* If Drush cannot find an autoloaded class, run `composer self-update`. Drush often tracks composer changes closely, so you may have some problems if you are not running a recent version.
-* If composer cannot find a requirement, and suggests that *The package is not available in a stable-enough version according to your minimum-stability setting*, then place the following in `$HOME/.composer/composer.json`:
-```
-{
-  "minimum-stability": "dev"
-}
-```
-Merge this in with any other content that may already exist in this file.
-
-If you are using Composer to manage your sites, then you should also follow the instructions in "Composer - One Drush per Project", below.
-
-See [Configure](configure.md) for next steps.
+* [Documentation for composer's require command.](http://getcomposer.org/doc/03-cli.md#require)
 
 Composer - One Drush per Project
 -----------------
