@@ -25,15 +25,18 @@ Follow the instructions below, or [watch a video by Drupalize.me](https://youtu.
 
 #### Notes
 * Update to latest release (per your specification in ~/.composer/composer.json): `composer global update`
-* Alternate commands to install a specific version of Drush:
+* Install a specific version of Drush:
 
         # Install a specific version of Drush, e.g. Drush 7.1.0
         composer global require drush/drush:7.1.0
-        # Master branch as a git clone. Great for contributing back to Drush project.
+        
+        # Install master branch as a git clone. Great for contributing back to Drush project.
         composer global require drush/drush:dev-master --prefer-source        
+
 * Alternate way to install for all users via Composer:
         
         COMPOSER_HOME=/opt/drush COMPOSER_BIN_DIR=/usr/local/bin COMPOSER_VENDOR_DIR=/opt/drush/7 composer require drush/drush:7
+
 * [Documentation for composer's require command.](http://getcomposer.org/doc/03-cli.md#require)
 
 Composer - One Drush per Project
@@ -41,7 +44,7 @@ Composer - One Drush per Project
 Starting with Drupal 8, it is recommended that you [build your site using Composer, with Drush listed as a dependency](https://github.com/drupal-composer/drupal-project).   
 
 1. Follow the instructions [Composer - One Drush for all Projects](#composer-one-drush-for-all-projects), so that you have a copy of Drush 8.x on your PATH.  When you run `drush`, it will notice that you have a site-local Drush with the site you have selected, and will use that one instead.  This gives you the convenience of running `drush` without specifying the full path to the executable, without sacrificing the safety provided by a site-local Drush.
-2. Optional: Copy the examples/drush.wrapper file to your project root and modify to taste. This is a handy launcher script; add --local here to turn off all global configuration locations, and maintain absolute consistency over the configuration/aliases/commandfiles settings for your Drush calls.
+2. Optional: Copy the examples/drush.wrapper file to your project root and modify to taste. This is a handy launcher script; add --local here to turn off all global configuration locations, and maintain consistency over configuration/aliases/commandfiles for your team.
 3. Note that if you have multiple Drupal sites on your system, it is possible to use a different version of Drush with each one.
 
 See [Configure](configure.md) for next steps.
