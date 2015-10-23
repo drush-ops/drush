@@ -214,7 +214,7 @@ function drush_startup($argv) {
   // We will first check for a "wrapper" script at the root, and then
   // we will look for a "launcher" script in vendor/bin.
   //
-  if (empty($found_script)) {
+  if (empty($found_script) && !empty($ROOT)) {
     $found_script = find_wrapper_or_launcher($ROOT);
     if (!empty($found_script)) {
       chdir($ROOT);
@@ -242,7 +242,7 @@ function drush_startup($argv) {
     // directory as it often includes the drive letter. If we get the same
     // result from dirname() twice in a row, then we know we're at the root.
     $last = '';
-    while (!empty($c) && ($c != $last)) {
+    while (!empty($c) && ($c != $last) && file_exists("$c/index.php")) {
       $found_script = find_wrapper_or_launcher($c);
       if ($found_script) {
         chdir($c);
@@ -291,7 +291,13 @@ function drush_startup($argv) {
 
     // Launch the new script in the same process.
     // If the launch succeeds, then it will not return.
-    pcntl_exec($found_script, $arguments, $env);
+    $error = pcntl_exec($found_script, $arguments, $env);
+    if (!$error) {
+      $errno = pcntl_get_last_error();
+      $strerror = pcntl_strerror($errno);
+      fwrite(STDERR, "Error has occurred executing the Drush script found at $found_script\n");
+      fwrite(STDERR, "(errno {$errno}) $strerror\n");
+    }
     exit(1);
   }
   else {

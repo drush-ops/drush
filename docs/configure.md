@@ -4,7 +4,7 @@ Configure
 * See [example.bashrc](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.bashrc) for instructions on how to add some
    useful shell aliases that provides even tighter integration between
    drush and bash. You may source this file directly into your shell by adding to
-   your .bashrc (or equivalent): source /path/to/drush/examples/example.bashrc
+   your .bashrc (or equivalent): `source /path/to/drush/examples/example.bashrc`
 
 * If you didn't source it the step above, see top of
    [drush.complete.sh](https://raw.githubusercontent.com/drush-ops/drush/master/drush.complete.sh) file for instructions on adding completion for drush
@@ -16,26 +16,15 @@ Configure
    add your current drush site (set with `drush use @sitename`) to your PS1
    prompt like so:
       
-      ```   
-      if [ "\$(type -t __git_ps1)" ] && [ "\$(type -t __drush_ps1)" ]; then
-        PS1='\u@\h \w$(__git_ps1 " (%s)")$(__drush_ps1 "[%s]")\$ '
-      fi
-      ```
+```bash   
+if [ "\$(type -t __git_ps1)" ] && [ "\$(type -t __drush_ps1)" ]; then
+  PS1='\u@\h \w$(__git_ps1 " (%s)")$(__drush_ps1 "[%s]")\$ '
+fi
+```
       
    Putting this in a .bashrc/.bash_profile/.profile would produce this prompt:
 
-     `msonnabaum@hostname ~/repos/drush (master)[@sitename]$`
-
-* Help the Drush development team by sending anonymized usage statistics.  To automatically send usage data, please add the following to a .drushrc.php file:
-     ```
-     $options['drush_usage_log'] = TRUE;
-     $options['drush_usage_send'] = TRUE;
-     ```
-
-     Stats are usually logged locally and sent whenever log file exceeds 50Kb.
-     Alternatively, one may disable automatic sending and instead use
-     `usage-show` and `usage-send` commands to more carefully send data.
-
+     msonnabaum@hostname ~/repos/drush (master)[@sitename]$
 
 Additional Configurations for Mamp:
 -----------------------------------
@@ -67,7 +56,7 @@ from PDO::__construct, try this:
 ```
 
 Additionally, you may need to adjust your php.ini settings before you can use
-drush successfully. See CONFIGURING PHP.INI below for more details on how to
+drush successfully. See [Configuring php.ini](#configuring-phpini) below for more details on how to
 proceed.
 
 Additional Configurations for Other amp Stacks:
@@ -106,12 +95,10 @@ the command line. Make sure that Drush's php.ini is given as much memory to
 work with as the web server is; otherwise, Drupal might run out of memory when
 Drush bootstraps it.
 
-To see which php.ini file Drush is using, run:
-
-    $ drush status
-
-To see which php.ini file the webserver is using, use the phpinfo() function in
-a .php web page.  See http://drupal.org/node/207036.
+Task                                       | Command
+-----                                      | ----
+See which php.ini the Drush is using       | `drush status php-conf`
+See which php.ini the webserver is using   | [Drupal Handbook](http://drupal.org/node/207036)
 
 If Drush is using the same php.ini file as the web server, you can create a
 php.ini file exclusively for Drush by copying your web server's php.ini file to
@@ -145,7 +132,7 @@ disable_classes are empty.
 Drushrc.php
 -----------
 
-If you get tired of typing options all the time you can contain them in a
+If you get tired of typing options all the time you can specify them in a
 drushrc.php file. Multiple Drush configuration files can provide the
 flexibility of providing specific options in different site directories of a
 multi-site installation. See [example.drushrc.php](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.drushrc.php) for examples and installation
@@ -157,4 +144,4 @@ Configuring Drush for Php 5.5
 If you are running on Linux, you may find that you need
 the php5-json package.  On Ubuntu, you can install it via:
 
-`apt-get install php5-json`
+    apt-get install php5-json
