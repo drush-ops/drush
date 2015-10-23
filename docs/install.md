@@ -1,6 +1,6 @@
 Pick a version
 -----------------
-Each version of Drush supports multiple Drupal versions.  Drush 7 is current stable Drush.
+Drush 8 is recommended.
 
 Drush Version | Branch  | PHP | Compatible Drupal versions | Code Status
 ------------- | ------  | --- | -------------------------- | -----------
@@ -8,8 +8,6 @@ Drush 8       | [master](https://travis-ci.org/drush-ops/drush)  | 5.4.5+ | D6, 
 Drush 7       | [7.x](https://travis-ci.org/drush-ops/drush) | 5.3.0+ | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=7.x">
 Drush 6       | [6.x](https://travis-ci.org/drush-ops/drush) | 5.3.0+ | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=6.x">
 Drush 5       | [5.x](https://travis-ci.org/drush-ops/drush) | 5.2.0+ | D6, D7                     | Unsupported
-Drush 4       | 4.x | 5.2.0+ | D5, D6, D7                 | Unsupported
-Drush 3       | 3.x | 5.2.0+ | D5, D6                     | Unsupported
 
 Pick an install method
 -----------------
