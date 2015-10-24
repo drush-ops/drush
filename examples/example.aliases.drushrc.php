@@ -193,9 +193,6 @@
  *   matches the URI from the browser, and is consistent on every instance of the
  *   same site (e.g. also use sites/example.com for http://example.com).
  * - 'root': The Drupal root; must not be specified as a relative path.
- * - 'remote-port': If the database is remote and 'db-url' contains
- *   a tunneled port number, put the actual database port number
- *   used on the remote machine in the 'remote-port' setting.
  * - 'remote-host': The fully-qualified domain name of the remote system
  *   hosting the Drupal instance. **Important Note: The remote-host option
  *   must be omitted for local sites, as this option controls various
@@ -214,14 +211,6 @@
  *   authentication method, ssh-options can contain a string of extra
  *   options that are used with the ssh command, eg "-p 100"
  * - 'parent': Deprecated.  See "altering aliases", below.
- * - 'db-url': The Drupal 6 database connection string from settings.php.
- *   For remote databases accessed via an ssh tunnel, set the port
- *   number to the tunneled port as it is accessed on the local machine.
- *   If 'db-url' is not provided, then drush will automatically look it
- *   up, either from settings.php on the local machine, or via backend invoke
- *   if the target alias specifies a remote server.
- * - 'databases': Like 'db-url', but contains the full Drupal 7 databases
- *   record.  Drush will look up the 'databases' record if it is not specified.
  * - 'path-aliases': An array of aliases for common rsync targets.
  *   Relative aliases are always taken from the Drupal root.
  *   - '%drush-script': The path to the 'drush' script, or to 'drush.php' or
@@ -329,7 +318,6 @@
 #$aliases['stage'] = array(
 #    'uri' => 'http://stage.example.com',
 #    'root' => '/path/to/remote/drupal/root',
-#    'db-url' => 'pgsql://username:password@dbhost.com:port/databasename',
 #    'remote-host' => 'mystagingserver.myisp.com',
 #    'remote-user' => 'publisher',
 #    'os' => 'Linux',
@@ -338,21 +326,6 @@
 #      '%drush-script' => '/path/to/drush/drush',
 #      '%files' => 'sites/mydrupalsite.com/files',
 #      '%custom' => '/my/custom/path',
-#     ),
-#    'databases' =>
-#      array (
-#        'default' =>
-#        array (
-#          'default' =>
-#          array (
-#            'driver' => 'mysql',
-#            'username' => 'sqlusername',
-#            'password' => 'sqlpassword',
-#            'port' => '',
-#            'host' => 'localhost',
-#            'database' => 'sqldbname',
-#          ),
-#       ),
 #     ),
 #     'variables' => array(
 #        'site_name' => 'My Drupal site',
