@@ -1037,7 +1037,10 @@ function drush_get_commands($reset = FALSE) {
         if (isset($command['aliases']) && count($command['aliases'])) {
           foreach ($command['aliases'] as $alias) {
             $commands[$alias] = $command;
+            // Actually is_alias flag could be replaced with usage of current_alias.
+            // But it's here for backwards compatibility.
             $commands[$alias]['is_alias'] = TRUE;
+            $commands[$alias]['current_alias'] = $alias;
           }
         }
       }
