@@ -189,7 +189,7 @@ function user_drush_command() {
   );
   $items['user-login'] = array(
     'description' => 'Display a one time login link for the given user account (defaults to uid 1).',
-    'aliases' => array('uli'),
+    'aliases' => array('uli', 'ulil'),
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'handle-remote-commands' => TRUE,
     'arguments' => array(
@@ -206,6 +206,7 @@ function user_drush_command() {
     'examples' => array(
       'drush user-login ryan node/add/blog' => 'Displays and opens default web browser (if configured or detected) for a one-time login link for the user with the username ryan and redirect to the path node/add/blog.',
       'drush user-login --browser=firefox --mail=drush@example.org admin/settings/performance' => 'Open firefox web browser, login as the user with the e-mail address drush@example.org and redirect to the path admin/settings/performance.',
+      'drush ulil ryan' => 'Use ulil alias to always get login link without opening of browser.',
     ),
   );
   return $items;
@@ -370,6 +371,12 @@ function drush_user_password($inputs) {
  */
 function drush_user_login($inputs = '', $path = NULL) {
   $args = func_get_args();
+
+  $command = drush_get_command();
+  // The ulil alias is actually a shortcut for --browser=0 option.
+  if (array_key_exists('current_alias', $command) && $command['current_alias'] == 'ulil') {
+    drush_set_option('browser', FALSE);
+  }
 
   // Redispatch if called against a remote-host so a browser is started on the
   // the *local* machine.
