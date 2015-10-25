@@ -1012,7 +1012,7 @@ function drush_get_commands($reset = FALSE) {
     $result = array();
 
     // Try to load commands from a YAML command file.
-    $yaml_commandfile = basename($path, '.inc') . '.yml';
+    $yaml_commandfile = dirname($path) . '/' . basename($path, '.inc') . '.yml';
     if (file_exists($yaml_commandfile)) {
       $result += Yaml::parse($yaml_commandfile);
     }

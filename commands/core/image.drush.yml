@@ -1,0 +1,14 @@
+image-derive:
+  description: Create an image derivative.
+  core: 7+
+  'drupal dependencies':
+    - image
+  arguments:
+    style: An image style machine name.
+    source: Path to a source image. Optionally prepend stream wrapper scheme.
+  'required arguments': true
+  options: []
+  examples:
+    'drush image-derive thumbnail themes/bartik/logo.png': Save thumbnail sized derivative of logo image.
+  aliases:
+    - id
