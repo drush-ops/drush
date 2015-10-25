@@ -1,6 +1,7 @@
 image-derive:
   description: Create an image derivative.
-  core: 7+
+  core:
+    - 7+
   'drupal dependencies':
     - image
   arguments:
