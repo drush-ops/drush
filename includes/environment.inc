@@ -28,7 +28,7 @@ function drush_error_handler($errno, $message, $filename, $line, $context) {
   if ($errno & error_reporting()) {
     // By default we log notices.
     $type = drush_get_option('php-notices', 'notice');
-    $recoverable_errors_handling = drush_get_option('recoverable-errors-handling', 'skip');
+    $recoverable_errors_handling = drush_get_option('recoverable-errors-handling', 'ignore');
 
     // Bitmask value that constitutes an error needing to be logged.
     $error = E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR;
