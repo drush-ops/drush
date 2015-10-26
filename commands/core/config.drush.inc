@@ -104,11 +104,12 @@ function config_drush_command() {
         'description' => 'Make commit on provided working branch. Ignored if used without --commit or --push.',
         'example-value' => 'branchname',
       ),
-      'destination' => 'An arbitrary directory that should receive the exported files. An alternative to label argument',
+      'destination' => 'An arbitrary directory that should receive the exported files. An alternative to label argument.',
       'skip-modules' => 'A list of modules to ignore during export (e.g. to avoid listing dev-only modules in exported configuration).',
     ),
     'examples' => array(
       'drush config-export --skip-modules=devel' => 'Export configuration; do not include the devel module in the exported configuration, regardless of whether or not it is enabled in the site.',
+      'drush config-export --destination' => 'Export configuration; Save files in a backup directory named config-export.',
     ),
   );
 
@@ -171,6 +172,22 @@ function config_drush_command() {
       'drush config-edit' => 'Choose a config file to edit.',
       'drush config-edit --choice=2' => 'Edit the second file in the choice list.',
       'drush --bg config-edit image.style.large' => 'Return to shell prompt as soon as the editor window opens.',
+    ),
+  );
+
+  $items['config-pull'] = array(
+    'description' => 'Transfer config from a remote site to the current site.',
+    'core' => array('8+'),
+    'drush dependencies' => array('config', 'core'), // core-rsync.
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
+    'handle-remote-commands' => TRUE,
+    'aliases' => array('cpull'),
+    'arguments' => array(
+      'label' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'sync'",
+    ),
+    'allow-additional-options' => array('config-export', 'core-rsync'),
+    'examples' => array(
+      'drush @prod config-pull vcs' => "Export config from @prod and transfer to the 'vcs' config directory.",
     ),
   );
 
@@ -278,8 +295,12 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
   }
 }
 
+/*
+ * If provided $destination is not TRUE and not empty, make sure it is writable.
+ */
 function drush_config_export_validate() {
-  if ($destination = drush_get_option('destination')) {
+  $destination = drush_get_option('destination');
+  if ($destination !== TRUE && !empty($destination)) {
     $additional = array();
     $values = drush_sitealias_evaluate_path($destination, $additional, TRUE);
     if (!isset($values['path'])) {
@@ -315,10 +336,18 @@ function drush_config_export($destination = NULL) {
 
   // Determine which target directory to use.
   if ($target = drush_get_option('destination')) {
-    $destination_dir = $target;
-    // It is important to be able to specify a destination directory that
-    // does not exist yet, for exporting on remote systems
-    drush_mkdir($destination_dir);
+    if ($target === TRUE) {
+      // User did not pass a specific value for --destination. Make one.
+      /** @var drush_version_control_backup $backup */
+      $backup = drush_include_engine('version_control', 'backup');
+      $destination_dir = $backup->prepare_backup_dir('config-export');
+    }
+    else {
+      $destination_dir = $target;
+      // It is important to be able to specify a destination directory that
+      // does not exist yet, for exporting on remote systems
+      drush_mkdir($destination_dir);
+    }
   }
   else {
     $choices = drush_map_assoc(array_keys($config_directories));
@@ -713,6 +742,57 @@ function drush_config_edit($config_name = '') {
     $config->setData($new_data);
     $config->save();
   }
+}
+
+/**
+ * Config pull command callback
+ *
+ * @param string $bale
+ *   The config label which receives the transferred files.
+ */
+function drush_config_pull($label = CONFIG_SYNC_DIRECTORY) {
+  if (!$alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
+    return drush_set_error('DRUSH_MISSING_TARGET_ALIAS', 'A site alias is required.');
+  }
+
+  // @todo drush_redispatch_get_options() assumes you will execute same command. Not good.
+  $global_options = drush_redispatch_get_options() + array(
+    'strict' => 0,
+    'yes' => TRUE,
+  );
+
+  $backend_options = array();
+  if (drush_get_context('DRUSH_SIMULATE')) {
+    $backend_options['backend-simulate'] = TRUE;
+  }
+
+  $export_options = array(
+    // Use the standard backup directory on Destination.
+    'destination' => TRUE,
+  );
+  drush_log(dt('Starting to export configuration on Target.'), 'ok');
+  $return = drush_invoke_process($alias, 'config-export', array(), $global_options + $export_options, $backend_options);
+  if ($return['error_status']) {
+    return drush_set_error('DRUSH_CONFIG_PULL_EXPORT_FAILED', dt('Config-export failed.'));
+  }
+  else {
+    $export_path = $return['object'];
+  }
+
+  $rsync_options = array(
+    'yes' => TRUE,
+    'include-vcs' => 0, // Reduce noise in logs.
+    // `rsync` options
+    'remove-source-files' => TRUE,
+    'delete' => TRUE,
+  );
+  drush_log(dt('Starting to rsync configuration from Source to Local.'), 'ok');
+  $return = drush_invoke_process('@self', 'core-rsync', array("$alias:$export_path", "@self:%config-$label"), $rsync_options);
+  if ($return['error_status']) {
+    return drush_set_error('DRUSH_CONFIG_PULL_RSYNC_FAILED', dt('Config-pull rsync failed.'));
+  }
+
+  drush_backend_set_result(config_get_config_directory($label));
 }
 
 /**

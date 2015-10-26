@@ -232,7 +232,7 @@ function drush_sqlsync_sql_sync($source, $destination) {
   }
   elseif ($source_is_local && $destination_is_local) {
     $destination_dump_path = $source_dump_path;
-    $do_rsync = false;
+    $do_rsync = FALSE;
   }
   else {
     $tmp = '/tmp'; // Our fallback plan.

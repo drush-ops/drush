@@ -39,7 +39,7 @@ you can use Drush configuration filters.
 ## Ignoring Development Modules
 
 If you have a certain list of modules that should only be enabled on
-the deveopment or staging server, then this may be done with the
+the development or staging server, then this may be done with the
 built-in `--skip-modules` option in the config-export and config-import
 commands.
 
