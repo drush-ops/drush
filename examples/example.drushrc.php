@@ -159,6 +159,13 @@
 # $options['php-notices'] = 'warning';
 
 /**
+ * Specify the error handling of recoverable errors (E_RECOVERABLE_ERROR).
+ * Defaults to "ignore". Will stop further execution of Drush, when set to "halt"
+ * (same behaviour as Drupal core).
+ */
+# $options['recoverable-errors-handling'] = 'halt';
+
+/**
  * Specify options to pass to ssh in backend invoke.  The default is to prohibit
  * password authentication, and is included here, so you may add additional
  * parameters without losing the default configuration.
