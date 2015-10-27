@@ -776,12 +776,12 @@ function drush_config_pull($label = CONFIG_SYNC_DIRECTORY) {
     return drush_set_error('DRUSH_CONFIG_PULL_EXPORT_FAILED', dt('Config-export failed.'));
   }
   else {
-    $export_path = $return['object'];
+    // Trailing slash assures that transer files and not the containing dir.
+    $export_path = $return['object'] . '/';
   }
 
   $rsync_options = array(
     'yes' => TRUE,
-    'include-vcs' => 0, // Reduce noise in logs.
     // `rsync` options
     'remove-source-files' => TRUE,
     'delete' => TRUE,
