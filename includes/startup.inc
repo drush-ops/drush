@@ -285,6 +285,12 @@ function drush_startup($argv) {
     fwrite(STDERR, "Using the Drush script found at $found_script\n");
   }
 
+  // If we have posix_getppid, then pass in the shell pid so
+  // that 'site-set' et. al. can work correctly.
+  if (function_exists('posix_getppid')) {
+    array_unshift($arguments, "--shell-pid=" . posix_getppid());
+  }
+
   if (function_exists("pcntl_exec")) {
     // Get the current environment for pnctl_exec.
     $env = drush_env();
