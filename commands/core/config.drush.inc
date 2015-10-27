@@ -758,10 +758,9 @@ function drush_config_pull($label = CONFIG_SYNC_DIRECTORY) {
   // @todo drush_redispatch_get_options() assumes you will execute same command. Not good.
   $global_options = drush_redispatch_get_options() + array(
     'strict' => 0,
-    'yes' => TRUE,
   );
 
-  $backend_options = array();
+  $backend_options = array('interactive' => FALSE);
   if (drush_get_context('DRUSH_SIMULATE')) {
     $backend_options['backend-simulate'] = TRUE;
   }
@@ -781,13 +780,11 @@ function drush_config_pull($label = CONFIG_SYNC_DIRECTORY) {
   }
 
   $rsync_options = array(
-    'yes' => TRUE,
-    // `rsync` options
     'remove-source-files' => TRUE,
     'delete' => TRUE,
   );
   drush_log(dt('Starting to rsync configuration from Source to Local.'), 'ok');
-  $return = drush_invoke_process('@self', 'core-rsync', array("$alias:$export_path", "@self:%config-$label"), $rsync_options);
+  $return = drush_invoke_process('@self', 'core-rsync', array("$alias:$export_path", "@self:%config-$label"), $rsync_options, $backend_options);
   if ($return['error_status']) {
     return drush_set_error('DRUSH_CONFIG_PULL_RSYNC_FAILED', dt('Config-pull rsync failed.'));
   }
