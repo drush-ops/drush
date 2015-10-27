@@ -117,7 +117,7 @@ class drushScriptCase extends CommandUnishTestCase {
 
     $drush_wrapper_src = dirname(UNISH_DRUSH) . '/examples/drush.wrapper';
     $drush_wrapper_contents = file_get_contents($drush_wrapper_src);
-    $drush_wrapper_contents = preg_replace('#vendor/bin/drush.launcher#', $drush_launcher, $drush_wrapper_contents);
+    $drush_wrapper_contents = preg_replace('#\.\./vendor/bin/drush.launcher#', $drush_launcher, $drush_wrapper_contents);
     $drush_wrapper_target = $this->webroot() . '/drush.wrapper';
 
     file_put_contents($drush_wrapper_target, $drush_wrapper_contents);
