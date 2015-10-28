@@ -277,9 +277,19 @@ function drush_startup($argv) {
   // the same directory this script is stored in; use that.
   if (empty($found_script)) {
     $found_script = dirname(__DIR__) . "/drush.launcher";
+    if (!is_executable($found_script)) {
+      // Can't execute the found launcher, so proceed with the current drush,
+      // bypassing the Bash niceties of the launcher.
+      // Emit a message in debug mode advertising how we proceeded.
+      if ($DEBUG) {
+        fwrite(STDERR, "Phar detected. Proceeding to drush_main().");
+      }
+      require __DIR__ . '/preflight.inc';
+      exit(drush_main());
+    }
   }
 
-  // Emit a message in verbose mode advertising the location of the
+  // Emit a message in debug mode advertising the location of the
   // script we found.
   if ($DEBUG) {
     fwrite(STDERR, "Using the Drush script found at $found_script\n");

@@ -109,5 +109,7 @@
  * Drush is installed on the remote end.
  */
 
-include __DIR__ . '/includes/startup.inc';
+if (!function_exists("drush_startup")) {
+  include __DIR__ . '/includes/startup.inc';
+}
 drush_startup($argv);
