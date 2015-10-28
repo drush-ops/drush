@@ -27,21 +27,6 @@ function image_drush_command() {
     ),
     'aliases' => array('if'),
   );
-  $items['image-derive'] = array(
-    'description' => 'Create an image derivative.',
-    'core' => array('7+'),
-    'drupal dependencies' => array('image'),
-    'arguments' => array(
-      'style' => 'An image style machine name.',
-      'source' => 'Path to a source image. Optionally prepend stream wrapper scheme.',
-    ),
-    'required arguments' => TRUE,
-    'options' => array(),
-    'examples' => array(
-      'drush image-derive thumbnail themes/bartik/logo.png' => 'Save thumbnail sized derivative of logo image.',
-    ),
-    'aliases' => array('id'),
-  );
   return $items;
 }
 
