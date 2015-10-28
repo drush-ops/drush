@@ -288,7 +288,7 @@ function drush_startup($argv) {
   // If we have posix_getppid, then pass in the shell pid so
   // that 'site-set' et. al. can work correctly.
   if (function_exists('posix_getppid')) {
-    array_unshift($arguments, "--shell-pid=" . posix_getppid());
+    putenv("DRUSH_SHELL_PID=" . posix_getppid());
   }
 
   if (function_exists("pcntl_exec")) {

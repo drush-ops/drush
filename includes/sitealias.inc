@@ -2157,7 +2157,7 @@ function drush_sitealias_site_get() {
  *   Returns the full path to temp file if possible, or FALSE if not.
  */
 function drush_sitealias_get_envar_filename($filename_prefix = 'drush-drupal-site-') {
-  $shell_pid = drush_get_context('DRUSH_SHELL_PPID');
+  $shell_pid = getenv('DRUSH_SHELL_PID');
   if (!$shell_pid && function_exists('posix_getppid')) {
     $shell_pid = posix_getppid();
   }
