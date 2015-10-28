@@ -2074,14 +2074,18 @@ function drush_sitealias_site_get() {
  *   Returns the full path to temp file if possible, or FALSE if not.
  */
 function drush_sitealias_get_envar_filename($filename_prefix = 'drush-drupal-site-') {
-  if (!function_exists('posix_getppid')) {
+  $shell_pid = getenv('DRUSH_SHELL_PID');
+  if (!$shell_pid && function_exists('posix_getppid')) {
+    $shell_pid = posix_getppid();
+  }
+  if (!$shell_pid) {
     return FALSE;
   }
 
-  $tmp = getenv('TMPDIR') ? getenv('TMPDIR') : '/tmp/';
+  $tmp = getenv('TMPDIR') ? getenv('TMPDIR') : '/tmp';
   $username = drush_get_username();
 
-  return "{$tmp}/drush-env-{$username}/{$filename_prefix}" . posix_getppid();
+  return "{$tmp}/drush-env-{$username}/{$filename_prefix}" . $shell_pid;
 }
 
 /**
