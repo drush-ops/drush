@@ -289,11 +289,8 @@ function drush_startup($argv) {
     }
   }
 
-  // Emit a message in debug mode advertising the location of the
-  // script we found.
-  if ($DEBUG) {
-    fwrite(STDERR, "Using the Drush script found at $found_script\n");
-  }
+  // Always use pcntl_exec if it exists.
+  $use_pcntl_exec = function_exists("pcntl_exec");
 
   // If we have posix_getppid, then pass in the shell pid so
   // that 'site-set' et. al. can work correctly.
@@ -301,7 +298,15 @@ function drush_startup($argv) {
     putenv("DRUSH_SHELL_PID=" . posix_getppid());
   }
 
-  if (function_exists("pcntl_exec")) {
+
+  // Emit a message in debug mode advertising the location of the
+  // script we found.
+  if ($DEBUG) {
+    $launch_method = $use_pcntl_exec ? 'pcntl_exec' : 'proc_open';
+    fwrite(STDERR, "Using the Drush script found at $found_script using $launch_method\n");
+  }
+
+  if ($use_pcntl_exec) {
     // Get the current environment for pnctl_exec.
     $env = drush_env();
 
@@ -318,7 +323,9 @@ function drush_startup($argv) {
   }
   else {
     $escaped_args = array_map(function($item) { return _drush_escapeshellarg_linux($item); }, $arguments);
-    passthru($found_script . ' ' . implode(' ', $escaped_args), $status_code);
-    exit($status_code);
+    $process = proc_open($found_script . ' ' . implode(' ', $escaped_args), array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
+    $proc_status = proc_get_status($process);
+    $exit_code = proc_close($process);
+    exit($proc_status["running"] ? $exit_code : $proc_status["exitcode"] );
   }
 }
