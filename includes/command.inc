@@ -1458,8 +1458,9 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
       // Only try to require if the file exists. If not, a file from the
       // command file cache may not be available anymore, in which case
       // we rebuild the cache for this phase.
-      if ($filepath = realpath($filename)) {
-        $load_command = commandfiles_cache()->add($filepath);
+      if (file_exists($filename)) {
+        // Avoid realpath() here as Drush commandfiles can have phar:// locations.
+        $load_command = commandfiles_cache()->add($filename);
         if ($load_command) {
           $needs_sort = TRUE;
         }
