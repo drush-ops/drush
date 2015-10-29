@@ -19,7 +19,7 @@
   ],
   "git-commit": "git-commit",
   "git-version": "git-version",
-  "output": "drush-@git-version@.phar",
+  "output": "drush.phar",
   "main": "drush",
   "stub": true
 }
