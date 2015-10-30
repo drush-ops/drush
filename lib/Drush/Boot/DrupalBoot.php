@@ -10,6 +10,9 @@ abstract class DrupalBoot extends BaseBoot {
   function valid_root($path) {
   }
 
+  function get_version($drupal_root) {
+  }
+
   function get_profile() {
   }
 
