@@ -18,6 +18,16 @@ class DrupalBoot6 extends DrupalBoot {
     }
   }
 
+  function get_version($drupal_root) {
+    $path = $drupal_root . '/modules/system/system.module';
+    if (is_file($path)) {
+      require_once $path;
+      if (defined('VERSION')) {
+        return VERSION;
+      }
+    }
+  }
+
   function get_profile() {
     return variable_get('install_profile', 'standard');
   }
@@ -47,6 +57,7 @@ class DrupalBoot6 extends DrupalBoot {
 
   function bootstrap_drupal_core($drupal_root) {
     define('DRUPAL_ROOT', $drupal_root);
+    require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
     $core = DRUPAL_ROOT;
 
     return $core;

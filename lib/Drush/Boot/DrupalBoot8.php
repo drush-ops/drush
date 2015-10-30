@@ -31,6 +31,16 @@ class DrupalBoot8 extends DrupalBoot {
     }
   }
 
+  function get_version($drupal_root) {
+    // Load the autoloader so we can access the class constants.
+    drush_drupal_load_autoloader($drupal_root);
+    // Drush depends on bootstrap being loaded at this point.
+    require_once $drupal_root .'/core/includes/bootstrap.inc';
+    if (defined('Drupal::VERSION')) {
+      return \Drupal::VERSION;
+    }
+  }
+
   function get_profile() {
     return drupal_get_profile();
   }

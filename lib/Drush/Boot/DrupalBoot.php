@@ -10,6 +10,9 @@ abstract class DrupalBoot extends BaseBoot {
   function valid_root($path) {
   }
 
+  function get_version($drupal_root) {
+  }
+
   function get_profile() {
   }
 
@@ -278,9 +281,8 @@ abstract class DrupalBoot extends BaseBoot {
 
     $drupal_root = drush_set_context('DRUSH_DRUPAL_ROOT', drush_bootstrap_value('drupal_root'));
     chdir($drupal_root);
-    $version = drush_drupal_version();
-    $major_version = drush_drupal_major_version();
 
+    $version = $this->get_version($drupal_root);
     $core = $this->bootstrap_drupal_core($drupal_root);
 
     // DRUSH_DRUPAL_CORE should point to the /core folder in Drupal 8+ or to DRUPAL_ROOT
