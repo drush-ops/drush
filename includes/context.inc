@@ -570,6 +570,9 @@ function _drush_get_option($option, $context) {
   elseif (array_key_exists($option, $context)) {
     return $context[$option];
   }
+  elseif (array_key_exists('no-' . $option, $context)) {
+    return FALSE;
+  }
 
   return NULL;
 }
