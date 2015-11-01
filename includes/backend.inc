@@ -757,7 +757,7 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
       $site_record_to_dispatch = '';
     }
     if (array_key_exists('backend-simulate', $backend_options)) {
-      $commandline_options['simulate'] = TRUE;
+      $drush_global_options['simulate'] = TRUE;
     }
     $site_record += array('path-aliases' => array(), '#env-vars' => array());
     $site_record['path-aliases'] += array(
