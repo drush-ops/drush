@@ -57,7 +57,7 @@
  * - Its goal is to allow the user to add options when --local is in use
  *
  * The Drush "wrapper" is found in examples/drush, and may optionally
- * be copied to __ROOT__/drush by the user.  It may be named either
+ * be copied to __ROOT__ by the user.  It may be named either
  * "drush" or "drush.wrapper".  It will call the "Drush launcher"
  * for the same site that it is located in.  It adds the --local flag; the
  * user is encouraged to add other options to the "Drush wrapper", e.g. to set
@@ -109,5 +109,7 @@
  * Drush is installed on the remote end.
  */
 
-include __DIR__ . '/includes/startup.inc';
+if (!function_exists("drush_startup")) {
+  include __DIR__ . '/includes/startup.inc';
+}
 drush_startup($argv);
