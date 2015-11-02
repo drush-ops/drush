@@ -2264,3 +2264,28 @@ function drush_sitealias_quick_lookup_cached_alias_by_path($path) {
 function drush_sitealias_get_root($alias_record) {
   return array_key_exists('root', $alias_record) ? $alias_record['root'] : NULL;
 }
+
+/**
+ * Decide on which side to run a core-rsync.
+ *
+ * @param $source
+ * @param $destination
+ * @return mixed
+ */
+function drush_get_runner($source, $destination) {
+// Try run to rsync locally so that aliases always resolve. https://github.com/drush-ops/drush/issues/668
+  if (drush_sitealias_is_remote_site($source) === FALSE) {
+    $runner = $source;
+    return $runner;
+  }
+  elseif (drush_sitealias_is_remote_site($destination) === FALSE) {
+    $runner = $destination;
+    return $runner;
+  }
+  else {
+    // Both are remote. Arbitrarily run rsync on destination. Aliases must be defined there (for now).
+    // @todo Add an option for choosing runner? Resolve aliases before rsync?
+    $runner = $destination;
+    return $runner;
+  }
+}
