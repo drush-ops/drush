@@ -65,7 +65,7 @@ function outputformat_drush_engine_type_info() {
         'hidden' => TRUE,
       ),
       'field-labels' => array(
-        'description' => 'Add field labels before first line of data. Default is on; --field-labels=0 to disable.',
+        'description' => 'Add field labels before first line of data. Default is on; use --no-field-labels to disable.',
         'default' => '1',
         'key' => 'include-field-labels',
       ),

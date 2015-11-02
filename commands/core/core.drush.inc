@@ -122,7 +122,7 @@ function core_drush_command() {
       'cache-clear',
     ),
     'options' => array(
-      'entity-updates' => 'Run automatic entity schema updates at the end of any update hooks.',
+      'entity-updates' => 'Run automatic entity schema updates at the end of any update hooks. Defaults to --no-entity-updates.',
     ),
     'aliases' => array('updb'),
   );
@@ -179,7 +179,7 @@ function core_drush_command() {
       'item' => 'Optional.  The status item line(s) to display.',
     ),
     'options' => array(
-      'show-passwords' => 'Show database password.',
+      'show-passwords' => 'Show database password.  Defaults to --no-show-passwords.',
       'full' => 'Show all file paths and drush aliases in the report, even if there are a lot.',
       'project' => array(
         'description' => 'One or more projects that should be added to the path list',
@@ -281,7 +281,7 @@ function core_drush_command() {
       'command' => 'The shell command to be executed.',
     ),
     'options' => array(
-      'escape' => 'Escape parameters before executing them with the shell. Default is escape; use --escape=0 to disable.',
+      'escape' => 'Escape parameters before executing them with the shell. Default is escape; use --no-escape to disable.',
     ) + drush_shell_exec_proc_build_options(),
     'required-arguments' => TRUE,
     'allow-additional-options' => TRUE,
@@ -868,7 +868,7 @@ function drush_core_status() {
 
 // Command callback. Show all global options. Exposed via topic command.
 function drush_core_global_options() {
-  drush_print(dt('These options are applicable to most drush commands.'));
+  drush_print(dt('These options are applicable to most drush commands. Most options can be disabled by using --no-option (i.e. --no-debug to disable --debug.)'));
   drush_print();
   $fake = drush_global_options_command(FALSE);
   return drush_format_help_section($fake, 'options');

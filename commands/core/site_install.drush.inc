@@ -44,7 +44,7 @@ function site_install_drush_command() {
         'description' => 'A short language code. Sets the default site language. Language files must already be present. You may use download command to get them.',
         'example-value' => 'en-GB',
       ),
-      'clean-url'=> 'Defaults to 1',
+      'clean-url'=> 'Defaults to clean; use --no-clean-url to disable. Note that Drupal 8 and later requires clean.',
       'site-name' => 'Defaults to Site-Install',
       'site-mail' => 'From: for system mailings. Defaults to admin@example.com',
       'sites-subdir' => array(
