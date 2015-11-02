@@ -1,6 +1,6 @@
 # Exporting and Importing Configuration
 
-Drush provides commands to export and import the configuration files
+Drush provides commands to export, transfer, and import configuration files
 to and from a Drupal 8 site.  Configuration can be altered by different
 methods in order to provide different behaviors in different environments;
 for example, a development server might be configured slightly differently

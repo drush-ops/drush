@@ -176,7 +176,7 @@ function config_drush_command() {
   );
 
   $items['config-pull'] = array(
-    'description' => 'Transfer config from a remote site to the current site.',
+    'description' => 'Export and transfer config from one environment to another.',
     // 'core' => array('8+'), Operates on remote sites so not possible to declare this locally.
     'drush dependencies' => array('config', 'core'), // core-rsync, core-execute.
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
@@ -195,7 +195,7 @@ function config_drush_command() {
       'safe' => 'Validate that there are no git uncommitted changes before proceeding',
       'label' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'sync'",
     ),
-    'topics' => array('docs-aliases'),
+    'topics' => array('docs-aliases', 'docs-config-exporting'),
   );
 
   return $items;
