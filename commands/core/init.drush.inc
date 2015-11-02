@@ -57,7 +57,7 @@ function drush_init_core_init() {
   // ~/.bashrc or ~/.bash_profile
   $bashrc = drush_init_find_bashrc($home);
 
-  // If drush is not in the $PATH, then figure out which
+  // If Drush is not in the $PATH, then figure out which
   // path to add so that Drush can be found globally.
   if (!drush_which("drush")) {
     $drush_path = drush_find_path_to_drush();
@@ -66,7 +66,7 @@ function drush_init_core_init() {
     $bashrc_additions = array("%$drush_path%" => "# Path to Drush, added by 'drush init'\n\$PATH=\$PATH:$drush_path\n\n");
   }
 
-  // Modify the users bashrc file, adding our customizations.
+  // Modify the user's bashrc file, adding our customizations.
   $bashrc_contents = "";
   if (file_exists($bashrc)) {
     $bashrc_contents = file_get_contents($bashrc);
