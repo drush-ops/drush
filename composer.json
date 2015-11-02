@@ -29,13 +29,13 @@
   "require": {
     "php": ">=5.4.5",
     "psy/psysh": "~0.5",
-    "symfony/yaml": "~2.2",
+    "symfony/yaml": "2.7.*",
     "symfony/var-dumper": "^2.6.3",
     "pear/console_table": "~1.2.0"
   },
   "require-dev": {
     "phpunit/phpunit": ">=3.5",
-    "symfony/process": "2.4.5"
+    "symfony/process": "2.7.*"
   },
   "suggest": {
       "ext-pcntl": "*",
