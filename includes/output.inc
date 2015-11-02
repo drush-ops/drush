@@ -150,8 +150,8 @@ function dt($string, $args = array()) {
   // The language system requires a working container which has the string
   // translation service.
   else if (drush_drupal_major_version() >= 8 && \Drupal::hasService('string_translation')) {
-    // Drupal 8 deprecates (and will eventually remove) !var replacements,
-    // so we'll pre-replace these before calling translate().
+    // Drupal 8 removes !var replacements, creating a user-level error when
+    // these are used, so we'll pre-replace these before calling translate().
     $legacy_args = find_legacy_dt_args($args);
     $string = strtr($string, $legacy_args);
     // Remove the legacy replacements.
