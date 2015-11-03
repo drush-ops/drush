@@ -150,10 +150,14 @@ function dt($string, $args = array()) {
   // The language system requires a working container which has the string
   // translation service.
   else if (drush_drupal_major_version() >= 8 && \Drupal::hasService('string_translation')) {
-    // Drupal 8 deprecates (and will eventually remove) !var replacements,
-    // so we'll pre-replace these before calling translate().
+    // Drupal 8 removes !var replacements, creating a user-level error when
+    // these are used, so we'll pre-replace these before calling translate().
     $legacy_args = find_legacy_dt_args($args);
     $string = strtr($string, $legacy_args);
+    // Remove the legacy replacements.
+    foreach (array_keys($legacy_args) as $legacy_arg_key) {
+      unset($args[$legacy_arg_key]);
+    }
     $output = \Drupal::translation()->translate($string, $args);
   }
   else if (function_exists('t') && drush_drupal_major_version() <= 7 && function_exists('theme')) {
@@ -181,7 +185,13 @@ function dt($string, $args = array()) {
  * will flip the array twice to filter on the key.
  */
 function find_legacy_dt_args($args) {
-  return array_flip(array_filter(array_flip($args), function ($v) { return $v[0] == '!'; } ));
+  $legacy_args = [];
+  foreach ($args as $arg => $replacement) {
+    if ($arg[0] == '!') {
+      $legacy_args[$arg] = $replacement;
+    }
+  }
+  return $legacy_args;
 }
 
 /**

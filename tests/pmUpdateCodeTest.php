@@ -19,12 +19,25 @@ class pmUpdateCode extends CommandUnishTestCase {
    */
   public $modules;
 
+  private function getPreviousStable($project) {
+    // Call drush pm-releases and get the output
+    $this->drush('pm-releases', array($project), array('all' => NULL, 'fields' => 'Release'));
+    $list = $this->getOutputAsList();
+    // Line 0 is "Release"
+    // Line 1 is "...-dev"
+    // Line 2 is current best release
+    // Line 3 is the previous release
+    return trim($list[3]);
+  }
+
   /**
    * Download old core and older contrib releases which will always need updating.
    */
   public function setUp() {
     if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
-      $core = '8.0.0-beta2';
+      // Make sure that we can still update from the previous release
+      // to the current release.
+      $core = $this->getPreviousStable("drupal-8");
       $modules_str = 'unish-8.x-1.2,honeypot-8.x-1.18-beta3';
       $this->modules = array('block', 'unish', 'honeypot');
     }

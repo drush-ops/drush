@@ -1504,7 +1504,7 @@ function _drush_log_drupal_messages() {
 }
 
 // Copy of format_size() in Drupal.
-function drush_format_size($size, $langcode = NULL) {
+function drush_format_size($size) {
   if ($size < DRUSH_KILOBYTE) {
     // format_plural() not always available.
     return dt('@count bytes', array('@count' => $size));
@@ -1512,14 +1512,14 @@ function drush_format_size($size, $langcode = NULL) {
   else {
     $size = $size / DRUSH_KILOBYTE; // Convert bytes to kilobytes.
     $units = array(
-      dt('@size KB', array(), array('langcode' => $langcode)),
-      dt('@size MB', array(), array('langcode' => $langcode)),
-      dt('@size GB', array(), array('langcode' => $langcode)),
-      dt('@size TB', array(), array('langcode' => $langcode)),
-      dt('@size PB', array(), array('langcode' => $langcode)),
-      dt('@size EB', array(), array('langcode' => $langcode)),
-      dt('@size ZB', array(), array('langcode' => $langcode)),
-      dt('@size YB', array(), array('langcode' => $langcode)),
+      dt('@size KB', array()),
+      dt('@size MB', array()),
+      dt('@size GB', array()),
+      dt('@size TB', array()),
+      dt('@size PB', array()),
+      dt('@size EB', array()),
+      dt('@size ZB', array()),
+      dt('@size YB', array()),
     );
     foreach ($units as $unit) {
       if (round($size, 2) >= DRUSH_KILOBYTE) {

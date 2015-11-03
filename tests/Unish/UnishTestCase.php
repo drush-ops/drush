@@ -5,7 +5,8 @@ namespace Unish;
 abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
 
   /**
-   * A list of Drupal sites that have been recently installed.
+   * A list of Drupal sites that have been recently installed. They key is the
+   * site name and values are details about each site.
    *
    * @var array
    */
@@ -73,22 +74,23 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     $line = "\nLog: $message\n";
     switch ($this->log_level()) {
       case 'verbose':
-        if (in_array($type, array('notice', 'verbose'))) print $line;
+        if (in_array($type, array('notice', 'verbose'))) fwrite(STDERR, $line);
         break;
       case 'debug':
-        print $line;
+        fwrite(STDERR, $line);
         break;
       default:
-        if ($type == 'notice') print $line;
+        if ($type == 'notice') fwrite(STDERR, $line);
         break;
     }
   }
 
   function log_level() {
+    // -d is reserved by `phpunit`
     if (in_array('--debug', $_SERVER['argv'])) {
       return 'debug';
     }
-    elseif (in_array('--verbose', $_SERVER['argv'])) {
+    elseif (in_array('--verbose', $_SERVER['argv']) || in_array('-v', $_SERVER['argv'])) {
       return 'verbose';
     }
   }

@@ -13,7 +13,7 @@ function ssh_drush_command() {
       'bash' => 'Bash to execute on target. Optional, except when site-alias is a list.',
     ),
     'options' => array(
-      'cd' => "Directory to change to. Use a full path, TRUE for the site's Drupal root directory, or FALSE for the remote user's home directory. Defaults to the Drupal root.",
+      'cd' => "Directory to change to. Use a full path, TRUE for the site's Drupal root directory, or --no-cd for the ssh default (usually the remote user's home directory). Defaults to the Drupal root.",
     ) + drush_shell_exec_proc_build_options(),
     'handle-remote-commands' => TRUE,
     'strict-option-handling' => TRUE,

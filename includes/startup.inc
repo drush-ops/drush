@@ -71,6 +71,7 @@ function find_wrapper_or_launcher($location) {
     "vendor/bin/drush",
     "../vendor/bin/drush",
     "sites/all/vendor/bin/drush",
+    "sites/all/vendor/drush/drush/drush",
     "sites/all/drush/drush/drush",
     "drush/drush/drush",
   );
@@ -277,15 +278,36 @@ function drush_startup($argv) {
   // the same directory this script is stored in; use that.
   if (empty($found_script)) {
     $found_script = dirname(__DIR__) . "/drush.launcher";
+    if (!is_executable($found_script)) {
+      // Can't execute the found launcher, so proceed with the current drush,
+      // bypassing the Bash niceties of the launcher.
+      // Emit a message in debug mode advertising how we proceeded.
+      if ($DEBUG) {
+        fwrite(STDERR, "Phar detected. Proceeding to drush_main().");
+      }
+      require __DIR__ . '/preflight.inc';
+      exit(drush_main());
+    }
   }
 
-  // Emit a message in verbose mode advertising the location of the
+  // Always use pcntl_exec if it exists.
+  $use_pcntl_exec = function_exists("pcntl_exec");
+
+  // If we have posix_getppid, then pass in the shell pid so
+  // that 'site-set' et. al. can work correctly.
+  if (function_exists('posix_getppid')) {
+    putenv("DRUSH_SHELL_PID=" . posix_getppid());
+  }
+
+
+  // Emit a message in debug mode advertising the location of the
   // script we found.
   if ($DEBUG) {
-    fwrite(STDERR, "Using the Drush script found at $found_script\n");
+    $launch_method = $use_pcntl_exec ? 'pcntl_exec' : 'proc_open';
+    fwrite(STDERR, "Using the Drush script found at $found_script using $launch_method\n");
   }
 
-  if (function_exists("pcntl_exec")) {
+  if ($use_pcntl_exec) {
     // Get the current environment for pnctl_exec.
     $env = drush_env();
 
@@ -302,7 +324,9 @@ function drush_startup($argv) {
   }
   else {
     $escaped_args = array_map(function($item) { return _drush_escapeshellarg_linux($item); }, $arguments);
-    passthru($found_script . ' ' . implode(' ', $escaped_args), $status_code);
-    exit($status_code);
+    $process = proc_open($found_script . ' ' . implode(' ', $escaped_args), array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
+    $proc_status = proc_get_status($process);
+    $exit_code = proc_close($process);
+    exit($proc_status["running"] ? $exit_code : $proc_status["exitcode"] );
   }
 }

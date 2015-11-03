@@ -619,8 +619,7 @@ function drush_is_local_host($host) {
   // @see hook_drush_sitealias_alter() in drush.api.php.
   if (
     ($host == 'localhost') ||
-    ($host == '127.0.0.1') ||
-    preg_match('/\.local$/', $host)
+    ($host == '127.0.0.1')
   ) {
     return TRUE;
   }

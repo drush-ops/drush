@@ -31,6 +31,7 @@
 # Aliases for drush commands that work on the current drupal site:
 #
 #       cc               - drush cache-clear
+#       cr               - drush cache-rebuild
 #       cca              - drush cache-clear all
 #       dis              - drush pm-disable
 #       en               - drush pm-enable
@@ -86,6 +87,7 @@ alias use='drush site-set'
 
 # Aliases for drush commands that work on the current drupal site
 alias cc='drush cache-clear'
+alias cr='drush cache-rebuild'
 alias cca='drush cache-clear all'
 alias dis='drush pm-disable'
 alias en='drush pm-enable'
