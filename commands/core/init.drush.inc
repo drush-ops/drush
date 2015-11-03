@@ -59,7 +59,7 @@ function drush_init_core_init() {
   if (!is_file($drush_bashrc)) {
     @copy($example_bashrc, $drush_bashrc);
     $pattern = basename($drush_bashrc);
-    $bashrc_additions = array("%$pattern%" => "# Include Drush bash customizations\n. $drush_bashrc\n\n");
+    $bashrc_additions["%$pattern%"] = "# Include Drush bash customizations\n. $drush_bashrc\n\n";
     drush_log(dt("Copied example Drush bash configuration file to !path", array('!path' => $drush_bashrc)), 'ok');
   }
 
@@ -73,7 +73,7 @@ function drush_init_core_init() {
     $drush_path = drush_find_path_to_drush();
     $drush_path = preg_replace("%^$home/%", '$HOME/', $drush_path);
 
-    $bashrc_additions = array("%$drush_path%" => "# Path to Drush, added by 'drush init'\n\$PATH=\$PATH:$drush_path\n\n");
+    $bashrc_additions["%$drush_path%"] = "# Path to Drush, added by 'drush init'\n\$PATH=\$PATH:$drush_path\n\n";
   }
 
   // Modify the user's bashrc file, adding our customizations.
