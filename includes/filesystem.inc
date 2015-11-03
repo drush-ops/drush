@@ -391,6 +391,16 @@ function drush_mkdir($path, $required = TRUE) {
   }
 }
 
+/*
+ * Determine if program exists on user's PATH.
+ *
+ * @return bool
+ */
+function drush_program_exists($program) {
+  $bucket = drush_bit_bucket();
+  return drush_op_system("command -v $program >$bucket 2>&1") === 0 ? TRUE : FALSE;
+}
+
 /**
  * Save a string to a temporary file. Does not depend on Drupal's API.
  * The temporary file will be automatically deleted when drush exits.

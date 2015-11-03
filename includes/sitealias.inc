@@ -406,6 +406,7 @@ function drush_sitealias_alias_path($alias_path_context = NULL) {
   // look for alias files in /drush and /sites/all/drush.
   $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
   if (!empty($drupal_root)) {
+    $site_paths[] = drush_sitealias_alias_base_directory($drupal_root . '/../drush');
     $site_paths[] = drush_sitealias_alias_base_directory($drupal_root . '/drush');
     $site_paths[] = drush_sitealias_alias_base_directory($drupal_root . '/sites/all/drush');
     $uri = drush_get_context('DRUSH_SELECTED_URI');
@@ -422,7 +423,7 @@ function drush_sitealias_alias_path($alias_path_context = NULL) {
 }
 
 /**
- * If there is a directory 'aliases' in the specified search location,
+ * If there is a directory 'site-aliases' in the specified search location,
  * then search ONLY in that directory for aliases.  Otherwise, search
  * anywhere inside the specified directory for aliases.
  */
@@ -2156,14 +2157,18 @@ function drush_sitealias_site_get() {
  *   Returns the full path to temp file if possible, or FALSE if not.
  */
 function drush_sitealias_get_envar_filename($filename_prefix = 'drush-drupal-site-') {
-  if (!function_exists('posix_getppid')) {
+  $shell_pid = getenv('DRUSH_SHELL_PID');
+  if (!$shell_pid && function_exists('posix_getppid')) {
+    $shell_pid = posix_getppid();
+  }
+  if (!$shell_pid) {
     return FALSE;
   }
 
-  $tmp = getenv('TMPDIR') ? getenv('TMPDIR') : '/tmp/';
+  $tmp = getenv('TMPDIR') ? getenv('TMPDIR') : '/tmp';
   $username = drush_get_username();
 
-  return "{$tmp}/drush-env-{$username}/{$filename_prefix}" . posix_getppid();
+  return "{$tmp}/drush-env-{$username}/{$filename_prefix}" . $shell_pid;
 }
 
 /**
@@ -2258,4 +2263,29 @@ function drush_sitealias_quick_lookup_cached_alias_by_path($path) {
  */
 function drush_sitealias_get_root($alias_record) {
   return array_key_exists('root', $alias_record) ? $alias_record['root'] : NULL;
+}
+
+/**
+ * Decide on which side to run a core-rsync.
+ *
+ * @param $source
+ * @param $destination
+ * @return mixed
+ */
+function drush_get_runner($source, $destination) {
+// Try run to rsync locally so that aliases always resolve. https://github.com/drush-ops/drush/issues/668
+  if (drush_sitealias_is_remote_site($source) === FALSE) {
+    $runner = $source;
+    return $runner;
+  }
+  elseif (drush_sitealias_is_remote_site($destination) === FALSE) {
+    $runner = $destination;
+    return $runner;
+  }
+  else {
+    // Both are remote. Arbitrarily run rsync on destination. Aliases must be defined there (for now).
+    // @todo Add an option for choosing runner? Resolve aliases before rsync?
+    $runner = $destination;
+    return $runner;
+  }
 }

@@ -562,10 +562,14 @@ function drush_get_merged_prefixed_options($prefix) {
 function _drush_get_option($option, $context) {
   if (is_array($option)) {
     foreach ($option as $current) {
-      if (array_key_exists($current, $context)) {
-        return $context[$current];
+      $current_value = _drush_get_option($current, $context);
+      if (isset($current_value)) {
+        return $current_value;
       }
     }
+  }
+  elseif (array_key_exists('no-' . $option, $context)) {
+    return FALSE;
   }
   elseif (array_key_exists($option, $context)) {
     return $context[$option];

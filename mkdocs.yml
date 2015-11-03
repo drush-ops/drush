@@ -20,6 +20,7 @@ pages:
   - Context system: context.md
 theme: readthedocs
 site_author: ""
+repo_name: Drush
 repo_url: https://github.com/drush-ops/drush
 include_search: true
 #use_directory_urls: false

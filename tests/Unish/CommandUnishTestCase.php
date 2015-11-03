@@ -230,7 +230,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     $hide_stderr = FALSE;
     $cmd[] = UNISH_DRUSH;
 
-    // insert global options
+    // Insert global options.
     foreach ($options as $key => $value) {
       if (in_array($key, $global_option_list)) {
         unset($options[$key]);
@@ -263,11 +263,11 @@ abstract class CommandUnishTestCase extends UnishTestCase {
       }
     }
 
-    // insert site specification and drush command
+    // Insert site specification and drush command.
     $cmd[] = empty($site_specification) ? NULL : self::escapeshellarg($site_specification);
     $cmd[] = $command;
 
-    // insert drush command arguments
+    // Insert drush command arguments.
     foreach ($args as $arg) {
       $cmd[] = self::escapeshellarg($arg);
     }
@@ -286,7 +286,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
       $cmd[] = '2>/dev/null';
     }
     $exec = array_filter($cmd, 'strlen'); // Remove NULLs
-    // set sendmail_path to 'true' to disable any outgoing emails
+    // Set sendmail_path to 'true' to disable any outgoing emails
     // that tests might cause Drupal to send.
     $php_options = (array_key_exists('PHP_OPTIONS', $env)) ? $env['PHP_OPTIONS'] . " " : "";
     $env['PHP_OPTIONS'] = "${php_options}-d sendmail_path='true'";

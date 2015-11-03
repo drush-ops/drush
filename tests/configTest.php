@@ -5,6 +5,7 @@ namespace Unish;
 /**
  * Tests for Configuration Management commands for D8+.
  * @group commands
+ * @group config
  */
 class ConfigCase extends CommandUnishTestCase {
 

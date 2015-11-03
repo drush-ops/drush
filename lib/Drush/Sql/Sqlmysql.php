@@ -62,7 +62,7 @@ EOT;
     $sql[] = sprintf('CREATE DATABASE %s /*!40100 DEFAULT CHARACTER SET utf8 */;', $dbname);
     $db_superuser = drush_get_option('db-su');
     if (isset($db_superuser)) {
-      $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO \'%s\'@\'%s\'', $dbname, $this->db_spec['username'], $this->db_spec['host']);
+      $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO \'%s\'@\'%%\'', $dbname, $this->db_spec['username']);
       $sql[] = sprintf("IDENTIFIED BY '%s';", $this->db_spec['password']);
       $sql[] = 'FLUSH PRIVILEGES;';
     }

@@ -59,7 +59,7 @@
  * affects the loading of Drush configuration files.
  */
 
-// Specify a particular multisite.
+// Specify the base_url that should be used when generating links
 # $options['l'] = 'http://example.com/subdir';
 
 // Specify your Drupal core base directory (useful if you use symlinks).
@@ -77,6 +77,7 @@
  */
 # $options['shell-aliases']['pull'] = '!git pull'; // We've all done it.
 # $options['shell-aliases']['pulldb'] = '!git pull && drush updatedb';
+# $options['shell-aliases']['cpull'] = 'config-pull @example.prod @self --label=vcs';
 # $options['shell-aliases']['noncore'] = 'pm-list --no-core';
 # $options['shell-aliases']['wipe'] = 'cache-clear all';
 # $options['shell-aliases']['unsuck'] = 'pm-disable -y overlay,dashboard';

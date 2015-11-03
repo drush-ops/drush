@@ -72,6 +72,7 @@ function drush_core_rsync($source, $destination, $additional_options = array()) 
     }
   }
 
+  drush_backend_set_result($destination_path);
   // Go ahead and call rsync with the paths we determined
   return drush_core_exec_rsync($source_path, $destination_path, $options);
 }

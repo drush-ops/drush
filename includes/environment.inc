@@ -434,15 +434,11 @@ function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, 
   $additional_options = '';
   $prefix = '';
   if (!$drush_path) {
-    $drush_finder = drush_is_windows($os) ? 'drush.bat' : 'drush';
     if (!$remote_command) {
       $drush_path = DRUSH_COMMAND;
-      if (drush_which($drush_finder)) {
-        $drush_path = $drush_finder;
-      }
     }
     else {
-      $drush_path = $drush_finder;
+      $drush_path = drush_is_windows($os) ? 'drush.bat' : 'drush';
     }
   }
   // If the path to drush points to drush.php, then we will need to
@@ -623,8 +619,7 @@ function drush_is_local_host($host) {
   // @see hook_drush_sitealias_alter() in drush.api.php.
   if (
     ($host == 'localhost') ||
-    ($host == '127.0.0.1') ||
-    preg_match('/\.local$/', $host)
+    ($host == '127.0.0.1')
   ) {
     return TRUE;
   }
