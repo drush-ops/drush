@@ -69,4 +69,5 @@ deploy:
     secure: vRtKwJNzm+FXS5VCsaCu5YM4IS02tAdqV4G557HEyVzNgRmSgPWkaHDR/95TnXtZRjmxuTI++rccEj9+jzjknQ9LWkWhl13WiJdZYobnb240f9Ja8g0gs6/r+EEZG2+DTTerK9zicpf51h5hUaE46zObHjSmzIuGxZBO1syDld8=
   file: drush.phar
   on:
-    repo: drush-ops/drush
+   tags: true
+   repo: drush-ops/drush
