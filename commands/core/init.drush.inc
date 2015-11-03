@@ -13,10 +13,18 @@
  */
 function init_drush_command() {
   $items['core-init'] = array(
-    'description' => 'Enrich the bash startup file with completion and aliases. Copy drushrc file to $HOME.',
+    'description' => 'Enrich the bash startup file with completion and aliases. Copy .drushrc file to ~/.drush',
     'aliases' => array('init'),
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'package' => 'core',
+    'global-options' => array('editor', 'bg'),
+    'options' => array(
+      'edit' => 'Open the new config file in an editor.',
+    ),
+    'examples' => array(
+      'drush core-init --edit' => 'Enrich Bash and open drush config file in editor.',
+      'drush core-init --edit --bg' => 'Return to shell prompt as soon as the editor window opens.',
+    ),
   );
   return $items;
 }
@@ -83,6 +91,11 @@ function drush_init_core_init() {
   if ($new_bashrc_contents != $bashrc_contents) {
     file_put_contents($bashrc, $new_bashrc_contents);
     drush_log(dt("Updated bash configuration file !path", array('!path' => $bashrc)), 'ok');
+  }
+
+  if (drush_get_option('edit')) {
+    $exec = drush_get_editor();
+    drush_shell_exec_interactive($exec, $drush_config_file, $drush_config_file);
   }
 }
 
