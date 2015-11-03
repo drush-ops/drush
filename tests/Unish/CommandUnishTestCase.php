@@ -369,6 +369,31 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     return $string;
   }
 
+  /**
+   * Ensure that an expected log message appears in the Drush log.
+   *
+   *     $this->drush('command', array(), array('backend' => NULL));
+   *     $parsed = $this->parse_backend_output($this->getOutput());
+   *     $this->assertLogHasMessage($parsed['log'], "Expected message", 'debug')
+   *
+   * @param $log Parsed log entries from backend invoke
+   * @param $message The expected message that must be contained in
+   *   some log entry's 'message' field.  Substrings will match.
+   * @param $logType The type of log message to look for; all other
+   *   types are ignored. If FALSE (the default), then all log types
+   *   will be searched.
+   */
+  function assertLogHasMessage($log, $message, $logType = FALSE) {
+    foreach ($log as $entry) {
+      if (!$logType || ($entry['type'] == $logType)) {
+        if (strpos($entry['message'], $message) !== FALSE) {
+          return TRUE;
+        }
+      }
+    }
+    $this->assertTrue(FALSE, "Could not find expected message in log: " . $message);
+  }
+
   function drush_major_version() {
     static $major;
 
