@@ -58,7 +58,8 @@ function drush_init_core_init() {
   // the example bashrc file here
   if (!is_file($drush_bashrc)) {
     @copy($example_bashrc, $drush_bashrc);
-    $bashrc_additions = array("%$drush_bashrc%" => "# Include Drush bash customizations\n. $drush_bashrc\n\n");
+    $pattern = basename($drush_bashrc);
+    $bashrc_additions = array("%$pattern%" => "# Include Drush bash customizations\n. $drush_bashrc\n\n");
     drush_log(dt("Copied example Drush bash configuration file to !path", array('!path' => $drush_bashrc)), 'ok');
   }
 
