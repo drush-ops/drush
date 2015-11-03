@@ -174,6 +174,8 @@ function drush_preflight_prepare() {
 
   // Process initial global options such as --debug.
   _drush_preflight_global_options();
+
+  drush_log(dt("Drush preflight prepare loaded autoloader at !autoloader", array('!autoloader' => realpath($vendor_path))));
 }
 
 /**
