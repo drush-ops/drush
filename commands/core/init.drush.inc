@@ -13,9 +13,10 @@
  */
 function init_drush_command() {
   $items['core-init'] = array(
-    'description' => 'Initialize local Drush configuration.',
+    'description' => 'Enrich the bash startup file with completion and aliases. Copy drushrc file to $HOME.',
     'aliases' => array('init'),
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+    'package' => 'core',
   );
   return $items;
 }
