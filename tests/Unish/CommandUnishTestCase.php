@@ -391,7 +391,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
         }
       }
     }
-    $this->assertTrue(FALSE, "Could not find expected message in log: " . $message);
+    $this->fail("Could not find expected message in log: " . $message);
   }
 
   function drush_major_version() {

@@ -21,14 +21,12 @@ class initCommandCase extends CommandUnishTestCase {
     // Next we will test to see if there is evidence that those
     // operations worked.
     $home = getenv("HOME");
-    $this->assertTrue(is_file("$home/.drush/drushrc.php"), "The expected ~/.drush/drushrc.php file does not exist");
-    $this->assertTrue(is_file("$home/.drush/drush.bashrc"), "The expected ~/.drush/drush.bashrc file does not exist");
-    $this->assertTrue(is_file("$home/.bashrc"), "The expected ~/.bashrc file does not exist");
+    $this->assertFileExists("$home/.drush/drushrc.php");
+    $this->assertFileExists("$home/.drush/drush.bashrc");
+    $this->assertFileExists("$home/.bashrc");
 
-    // Non-interactive shells behave differently than interactive login shells,
-    // so we will explicitly source the .bashrc file for our test.
-    $exec = sprintf("bash -c '. %s; alias ddd'", self::escapeshellarg("$home/.bashrc"));
-    $this->execute($exec);
-    $this->assertEquals("alias ddd='drush drupal-directory'", $this->getOutput());
+    // Check to see if the .bashrc file sources our drush.bashrc file.
+    $bashrc_contents = file_get_contents("$home/.bashrc");
+    $this->assertContains('drush.bashrc', $bashrc_contents);
   }
 }
