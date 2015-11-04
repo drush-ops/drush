@@ -6,6 +6,8 @@ branches:
     - 7.x
     - 6.x
     - 5.x
+    # https://github.com/travis-ci/travis-ci/issues/1532#issuecomment-40115887
+    - /^v[0-9]/
 language: php
 php:
 #  See master-fulltest branch for broader PHP version testing.
