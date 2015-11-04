@@ -24,6 +24,17 @@ interface Boot {
    */
   function valid_root($path);
 
+
+  /**
+   * Given a site root directory, determine the exact version of the software.
+   *
+   * @param string $root
+   *   The full path to the site installation, with no trailing slash.
+   * @return string|NULL
+   *   The version string for the current version of the software, e.g. 8.1.3
+   */
+  function get_version($root);
+
   /**
    * Main entrypoint to bootstrap the selected CMS and
    * execute the selected command.
