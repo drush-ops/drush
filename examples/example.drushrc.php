@@ -160,10 +160,10 @@
 
 /**
  * Specify the error handling of recoverable errors (E_RECOVERABLE_ERROR).
- * Defaults to "ignore". Will stop further execution of Drush, when set to "halt"
- * (same behaviour as Drupal core).
+ * Defaults to 1 and will stop execution of Drush.
+ * When set to 0, execution will continue.
  */
-# $options['recoverable-errors-handling'] = 'halt';
+# $options['halt-on-error'] = 0;
 
 /**
  * Specify options to pass to ssh in backend invoke.  The default is to prohibit
