@@ -455,7 +455,8 @@ function _views_drush_view_is_disabled(View $view) {
  * Adds a cache clear option for views.
  */
 function views_drush_cache_clear(&$types) {
-  if (\Drupal::moduleHandler()->moduleExists('views')) {
+  if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)
+      && \Drupal::moduleHandler()->moduleExists('views')) {
     $types['views'] = 'views_invalidate_cache';
   }
 }
