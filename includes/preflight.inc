@@ -314,7 +314,7 @@ function drush_preflight_root() {
   // @todo Drupal code should use DRUSH_DRUPAL_ROOT instead of this constant.
   drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $root);
 
-  // Load the config options from Drupal's /drush and sites/all/drush directories,
+  // Load the config options from Drupal's /drush, ../drush, and sites/all/drush directories,
   // even prior to bootstrapping the root.
   drush_load_config('drupal');
 }

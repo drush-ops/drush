@@ -110,6 +110,7 @@ function _drush_config_file($context, $prefix = NULL, $version = '') {
 
   if ($drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT')) {
     $configs['drupal'] = array(
+      $drupal_root . '/../drush/' . $config_file,
       $drupal_root . '/sites/all/drush/' . $config_file,
       $drupal_root . '/drush/' . $config_file,
     );
