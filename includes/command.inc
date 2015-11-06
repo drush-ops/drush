@@ -905,7 +905,7 @@ function drush_shift() {
  */
 function drush_adjust_args_if_shebang_script(&$args) {
   if (drush_has_bash()) {
-    // The drush script may add --php or --php-options at the
+    // The drush.launcher script may add --php or --php-options at the
     // head of the argument list; skip past those.
     $base_arg_number = 1;
     while (substr($args[$base_arg_number], 0, 5) == '--php') {

@@ -83,5 +83,5 @@ function drush_cache_clear_block() {
  * Clears the render cache entries.
  */
 function drush_cache_clear_render() {
-  \Drupal::cache('render')->deleteAll();
+  Cache::invalidateTags(['rendered']);
 }
