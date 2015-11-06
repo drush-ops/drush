@@ -362,6 +362,9 @@ function drush_valid_root($path) {
 
 /**
  * Tests the currently loaded database credentials to ensure a database connection can be made.
+ *
+ * @return bool
+ *   TRUE if database credentials are valid.
  */
 function drush_valid_db_credentials() {
   try {

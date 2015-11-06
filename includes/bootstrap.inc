@@ -280,9 +280,16 @@ function drush_bootstrap_value($context, $value = null) {
 }
 
 /**
- * Helper function listing phases.
+ * Returns an array that determines what bootstrap phases
+ * are necessary to bootstrap the CMS.
  *
- * For commands that need to iterate through the phases, such as help
+ * @param bool $function_names
+ *   (optional) If TRUE, return an array of method names index by their
+ *   corresponding phase values. Otherwise return an array of phase values.
+ *
+ * @return array
+ *
+ * @see \Drush\Boot\Boot::bootstrap_phases()
  */
 function _drush_bootstrap_phases($function_names = FALSE) {
   $result = array();
@@ -302,8 +309,18 @@ function _drush_bootstrap_phases($function_names = FALSE) {
  * This function will sequentially bootstrap each
  * lower phase up to the phase that has been requested.
  *
- * @param phase
- *   The bootstrap phase to bootstrap to.  @see \Drush\Boot::bootstrap_phases
+ * @param int $phase
+ *   The bootstrap phase to bootstrap to.
+ * @param int $phase_max
+ *   (optional) The maximum level to boot to. This does not have a use in this
+ *   function itself but can be useful for other code called from within this
+ *   function, to know if e.g. a caller is in the process of booting to the
+ *   specified level. If specified, it should never be lower than $phase.
+ *
+ * @return bool
+ *   TRUE if the specified bootstrap phase has completed.
+ *
+ * @see \Drush\Boot\Boot::bootstrap_phases()
  */
 function drush_bootstrap($phase, $phase_max = FALSE) {
   $bootstrap = drush_get_bootstrap_object();
@@ -361,10 +378,10 @@ function drush_bootstrap($phase, $phase_max = FALSE) {
  * http://en.wikipedia.org/wiki/HTTP_referer
  *
  *
- * @param phase
+ * @param int $phase
  *   The bootstrap phase to test
  *
- * @returns
+ * @return bool
  *   TRUE if the specified bootstrap phase has completed.
  */
 function drush_has_boostrapped($phase) {
@@ -384,12 +401,13 @@ function drush_has_boostrapped($phase) {
  * store the result from that execution in a local static. This avoids
  * validating phases multiple times.
  *
- * @param phase
- *   The bootstrap phase to validate to.  @see \Drush\Boot::bootstrap_phases
+ * @param int $phase
+ *   The bootstrap phase to validate to.
  *
- * @return
- *   True if bootstrap is possible, False if the validation failed.
+ * @return bool
+ *   TRUE if bootstrap is possible, FALSE if the validation failed.
  *
+ * @see \Drush\Boot\Boot::bootstrap_phases()
  */
 function drush_bootstrap_validate($phase) {
   $bootstrap = drush_get_bootstrap_object();
@@ -423,8 +441,11 @@ function drush_bootstrap_validate($phase) {
 /**
  * Bootstrap to the specified phase.
  *
- * @param $max_phase_index
+ * @param int $max_phase_index
  *   Only attempt bootstrap to the specified level.
+ *
+ * @return bool
+ *   TRUE if the specified bootstrap phase has completed.
  */
 function drush_bootstrap_to_phase($max_phase_index) {
   // If $max_phase_index is DRUSH_BOOTSTRAP_MAX, then
@@ -464,15 +485,14 @@ function drush_bootstrap_to_phase($max_phase_index) {
 /**
  * Bootstrap to the highest level possible, without triggering any errors.
  *
- * @param $max_phase_index
- *   Only attempt bootstrap to the specified level.
+ * @param int $max_phase_index
+ *   (optional) Only attempt bootstrap to the specified level.
  *
- *  @return int
- *    The maximum phase to which we bootstrapped.
+ * @return int
+ *   The maximum phase to which we bootstrapped.
  */
 function drush_bootstrap_max($max_phase_index = FALSE) {
   $phases = _drush_bootstrap_phases();
-  $phase_index = DRUSH_BOOTSTRAP_DRUSH;
   if (!$max_phase_index) {
     $max_phase_index = count($phases);
   }
