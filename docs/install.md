@@ -26,12 +26,12 @@ Install a site-local Drush
 In addition to the global Drush, it is recommended that Drupal 8 sites are [built using Composer, with Drush listed as a dependency](https://github.com/drupal-composer/drupal-project).   
 
 1. When you run `drush`, the global Drush is called first and then hands execution to the site-local Drush. This gives you the convenience of running `drush` without specifying the full path to the executable, without sacrificing the safety provided by a site-local Drush.
-2. Optional: Copy the examples/drush.wrapper file to your project root and modify to taste. This is a handy launcher script; add --local here to turn off all global configuration locations, and maintain consistency over configuration/aliases/commandfiles for your team.
+2. Optional: Copy the [examples/drush.wrapper](https://github.com/drush-ops/drush/blob/master/examples/drush.wrapper) file to your project root and modify to taste. This is a handy launcher script; add --local here to turn off all global configuration locations, and maintain consistency over configuration/aliases/commandfiles for your team.
 3. Note that if you have multiple Drupal sites on your system, it is possible to use a different version of Drush with each one.
 
 Windows Zip Package
 ----------------------------
-Windows support has improved, but is still lagging. For full functionality, consider running Linux/Unix/OSX via Virtualbox, or other virtual machine platform. [The Vlad virtual machine](https://github.com/hashbangcode/vlad) is popular.
+Windows support has improved, but is still lagging. For full functionality, consider running Linux/Unix/OSX via Virtualbox, or other virtual machine platform. [Drupal VM](http://www.drupalvm.com/) and [Vlad](https://github.com/hashbangcode/vlad) are popular.
 
 * These Windows packages include Drush and its dependencies (including MSys). 
     * [7.0.0 (stable)](https://github.com/drush-ops/drush/releases/download/7.0.0/windows-7.0.0.zip).
