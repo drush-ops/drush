@@ -15,7 +15,7 @@ sudo mv drush.phar /usr/local/bin/drush
 drush init
 ```
     
-* MAMP users, and anyone wishing to launch a non-default PHP, needs to [edit ~/.bashrc so that the right PHP is in front](http://stackoverflow.com/questions/4145667/how-to-override-the-path-of-php-to-use-the-mamp-path/10653443#10653443).
+* MAMP users, and anyone wishing to launch a non-default PHP, needs to [edit ~/.bashrc so that the right PHP is in your $PATH](http://stackoverflow.com/questions/4145667/how-to-override-the-path-of-php-to-use-the-mamp-path/10653443#10653443).
 * If you need to pass custom php.ini values, run `php -d foo=bar drush.phar --php-options=foo=bar`
 * Your shell now has [useful bash aliases and tab completion for command names, site aliases, options, and arguments.](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.bashrc).
 * A [drushrc.php](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.drushrc.php) has been copied to ~/.drush above. Customize it to save typing and standardize options for commands.
