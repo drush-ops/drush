@@ -136,10 +136,13 @@ d="$(dirname "$d")"
 # If we have found drush.complete.sh, then source it.
 if [ -f "$d/drush.complete.sh" ] ; then
   . "$d/drush.complete.sh"
-  #Uncomment these 3 lines to for a prompt that shows Git and Drush status.
-  #if [ "\$(type -t __git_ps1)" ] && [ "\$(type -t __drush_ps1)" ]; then
-  #  PS1='\u@\h \w$(__git_ps1 " (%s)")$(__drush_ps1 "[%s]")\$ '
-  #fi
+
+  # Uncomment these 3 lines to for a prompt that shows Git and Drush status.
+  # Example: msonnabaum@hostname ~/repos/drush (master)[@sitename]$
+  # if [ "\$(type -t __git_ps1)" ] && [ "\$(type -t __drush_ps1)" ]; then
+  #   PS1='\u@\h \w$(__git_ps1 " (%s)")$(__drush_ps1 "[%s]")\$ '
+  # fi
+
 fi
 
 # We extend the cd command to allow convenient

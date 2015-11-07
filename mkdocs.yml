@@ -3,7 +3,6 @@ pages:
 - Home: index.md
 - General:
   - Install: install.md
-  - Configure Drush: configure.md
   - Usage: usage.md
   - Example files: examples.md
   - Cron: cron.md
