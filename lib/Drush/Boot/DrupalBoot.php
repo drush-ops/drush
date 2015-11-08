@@ -458,7 +458,7 @@ abstract class DrupalBoot extends BaseBoot {
    * phase.
    */
   function bootstrap_drupal_database_validate() {
-    if (!drush_valid_db_credentials()) {
+    if (!drush_valid_db_credentials(TRUE)) {
       return drush_bootstrap_error('DRUSH_DRUPAL_DB_ERROR');
     }
     return TRUE;

@@ -448,12 +448,11 @@ function drush_bootstrap_validate($phase) {
  *   TRUE if the specified bootstrap phase has completed.
  */
 function drush_bootstrap_to_phase($max_phase_index) {
-  // If $max_phase_index is DRUSH_BOOTSTRAP_MAX, then
-  // we will bootstrap as far as we can.  drush_bootstrap_max
-  // is different than drush_bootstrap_to_phase in that
-  // it is not an error if DRUSH_BOOTSTRAP_LOGIN is not reached.
   if ($max_phase_index == DRUSH_BOOTSTRAP_MAX) {
-    drush_bootstrap_max();
+    // Bootstrap as far as we can without throwing an error, but log for
+    // debugging purposes.
+    drush_log(dt("Trying to bootstrap as far as we can."), 'debug');
+    drush_bootstrap_max(FALSE, TRUE);
     return TRUE;
   }
 
@@ -487,18 +486,21 @@ function drush_bootstrap_to_phase($max_phase_index) {
  *
  * @param int $max_phase_index
  *   (optional) Only attempt bootstrap to the specified level.
+ * @param bool $log_failure
+ *   (optional) If TRUE, log (with level 'debug') when a bootstrap phase failed
+ *   to validate; otherwise be quiet.
  *
  * @return int
  *   The maximum phase to which we bootstrapped.
  */
-function drush_bootstrap_max($max_phase_index = FALSE) {
-  $phases = _drush_bootstrap_phases();
+function drush_bootstrap_max($max_phase_index = FALSE, $log_failure = FALSE) {
+  $phases = _drush_bootstrap_phases(TRUE);
   if (!$max_phase_index) {
     $max_phase_index = count($phases);
   }
 
-  // Try to bootstrap to the maximum possible level, without generating errors
-  foreach ($phases as $phase_index) {
+  // Try to bootstrap to the maximum possible level, without generating errors.
+  foreach ($phases as $phase_index => $current_phase) {
     if ($phase_index > $max_phase_index) {
       // Stop trying, since we achieved what was specified.
       break;
@@ -510,6 +512,12 @@ function drush_bootstrap_max($max_phase_index = FALSE) {
       }
     }
     else {
+      if ($log_failure) {
+        // drush_bootstrap_validate() only logs successful validations. For us,
+        // knowing what failed can also be important.
+        $previous = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
+        drush_log(dt("Bootstrap phase !function() failed to validate; continuing at !current().", array('!function' => $current_phase, '!current' => $phases[$previous])), 'debug');
+      }
       break;
     }
   }
