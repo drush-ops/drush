@@ -7,7 +7,7 @@ wget https://github.com/drush-ops/drush/releases/download/8.0.0-rc3/drush.phar
 # Test your install.
 php drush.phar core-status
 
-# To be able to run `drush` instead of `php drush.phar` 
+# Rename to `drush` instead of `php drush.phar`. Destination can be anywhere on $PATH. 
 chmod +x drush.phar
 sudo mv drush.phar /usr/local/bin/drush
 
