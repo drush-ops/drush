@@ -62,35 +62,35 @@ before_deploy:
   - test $TRAVIS_BRANCH = master && mkdir s3-unstable && cp drush.phar s3-unstable/drush-unstable.phar
 deploy:
   # http://docs.travis-ci.com/user/deployment/releases/
-  provider: releases
-  api_key:
-    secure: vRtKwJNzm+FXS5VCsaCu5YM4IS02tAdqV4G557HEyVzNgRmSgPWkaHDR/95TnXtZRjmxuTI++rccEj9+jzjknQ9LWkWhl13WiJdZYobnb240f9Ja8g0gs6/r+EEZG2+DTTerK9zicpf51h5hUaE46zObHjSmzIuGxZBO1syDld8=
-  file: drush.phar
-  on:
-   tags: true
-   repo: drush-ops/drush
-   all_branches: true
+  - provider: releases
+    api_key:
+      secure: vRtKwJNzm+FXS5VCsaCu5YM4IS02tAdqV4G557HEyVzNgRmSgPWkaHDR/95TnXtZRjmxuTI++rccEj9+jzjknQ9LWkWhl13WiJdZYobnb240f9Ja8g0gs6/r+EEZG2+DTTerK9zicpf51h5hUaE46zObHjSmzIuGxZBO1syDld8=
+    file: drush.phar
+    on:
+     tags: true
+     repo: drush-ops/drush
+     all_branches: true
   # Latest stable
   # http://docs.travis-ci.com/user/deployment/s3/
-  provider: s3
-  # @weitzman's S3 for now.
-  access_key_id: "AKIAJFNCWLIBISLQYHPA"
-  secret_access_key: $S3-SECRET-ACCESS-KEY
-  bucket: "drush-downloads"
-  skip_cleanup: true
-  local_dir: s3-stable
-  tags: true
-    repo: drush-ops/drush
-    all_branches: true
+  - provider: s3
+    # @weitzman's S3 for now.
+    access_key_id: "AKIAJFNCWLIBISLQYHPA"
+    secret_access_key: $S3-SECRET-ACCESS-KEY
+    bucket: "drush-downloads"
+    skip_cleanup: true
+    local_dir: s3-stable
+    on:
+      repo: drush-ops/drush
+      all_branches: true
   # Latest unstable from master
   # http://docs.travis-ci.com/user/deployment/s3/
-  provider: s3
-  # @weitzman's S3 for now.
-  access_key_id: "AKIAJFNCWLIBISLQYHPA"
-  secret_access_key: $S3-SECRET-ACCESS-KEY
-  bucket: "drush-downloads"
-  skip_cleanup: true
-  local_dir: s3-unstable
-  on: true
-    repo: drush-ops/drush
-    branch: master
+  - provider: s3
+    # @weitzman's S3 for now.
+    access_key_id: "AKIAJFNCWLIBISLQYHPA"
+    secret_access_key: $S3-SECRET-ACCESS-KEY
+    bucket: "drush-downloads"
+    skip_cleanup: true
+    local_dir: s3-unstable
+    on:
+      repo: drush-ops/drush
+      branch: master
