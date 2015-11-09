@@ -37,7 +37,10 @@ env:
     # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=quick-drupal
     # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
   global:
+    # Github deploy
     - secure: VfYokT2CchfuBRJp9/gSwfVGPfsVfkZdDVEuNWEqxww3z4vq+5aLKqoCtPL54E5EIMjhyCE3GVo+biG35Gab1KOVgUs8zD1hAUWA1FPKfMFhoPDfI3ZJC2rX2T1iWK4ZR90pBtcPzS+2OObzTYz8go0PfeSTT6eq69Na1KcNLaE=
+    # For S3
+    - secure: "4hrE8tDV4UOzf9fjHpkk/IyE6Lx79s+0M0d9aIGz5Tbex5YKoF48YeUISSDV8qTvPZkBrVRXpcHCDpG/FAdDpPp/w+BXHA5Xth+dOqTwB6IOJLaeImwsUgHVjrBlHxqQbNUK0qwrLIdWYagUNjtCbCb06kVef2YBdHbgLS0vhCc="
     - UNISH_NO_TIMEOUTS=y
     - UNISH_DB_URL=mysql://root:@127.0.0.1
 before_install: travis_retry composer selfupdate
@@ -52,11 +55,13 @@ script: ${PWD}/unish.sh $PHPUNIT_ARGS
 # Background: https://github.com/drush-ops/drush/pull/1426
 after_success: ${PWD}/tests/testChildren.sh
 
-# http://docs.travis-ci.com/user/deployment/releases/
 before_deploy:
   - curl -LSs https://box-project.github.io/box2/installer.php | php
   - php box.phar build
+  - test $TRAVIS_TAG = true && mkdir s3-stable && cp drush.phar s3-stable/drush.phar
+  - test $TRAVIS_BRANCH = master && mkdir s3-unstable && cp drush.phar s3-unstable/drush-unstable.phar
 deploy:
+  # http://docs.travis-ci.com/user/deployment/releases/
   provider: releases
   api_key:
     secure: vRtKwJNzm+FXS5VCsaCu5YM4IS02tAdqV4G557HEyVzNgRmSgPWkaHDR/95TnXtZRjmxuTI++rccEj9+jzjknQ9LWkWhl13WiJdZYobnb240f9Ja8g0gs6/r+EEZG2+DTTerK9zicpf51h5hUaE46zObHjSmzIuGxZBO1syDld8=
@@ -65,3 +70,27 @@ deploy:
    tags: true
    repo: drush-ops/drush
    all_branches: true
+  # Latest stable
+  # http://docs.travis-ci.com/user/deployment/s3/
+  provider: s3
+  # @weitzman's S3 for now.
+  access_key_id: "AKIAJFNCWLIBISLQYHPA"
+  secret_access_key: $S3-SECRET-ACCESS-KEY
+  bucket: "drush-downloads"
+  skip_cleanup: true
+  local_dir: s3-stable
+  tags: true
+    repo: drush-ops/drush
+    all_branches: true
+  # Latest unstable from master
+  # http://docs.travis-ci.com/user/deployment/s3/
+  provider: s3
+  # @weitzman's S3 for now.
+  access_key_id: "AKIAJFNCWLIBISLQYHPA"
+  secret_access_key: $S3-SECRET-ACCESS-KEY
+  bucket: "drush-downloads"
+  skip_cleanup: true
+  local_dir: s3-unstable
+  on: true
+    repo: drush-ops/drush
+    branch: master
