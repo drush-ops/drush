@@ -984,7 +984,7 @@ function config_config_export_complete() {
  * Command argument complete callback.
  */
 function config_config_pull_complete() {
-
+  return array('values' => array_keys(_drush_sitealias_all_list()));
 }
 
 /**
