@@ -100,6 +100,16 @@ function sqlsync_drush_help_alter(&$command) {
   }
 }
 
+/**
+ * Command argument complete callback.
+ *
+ * @return
+ *  Array of available site aliases.
+ */
+function sql_sql_sync_complete() {
+  return array('values' => array_keys(_drush_sitealias_all_list()));
+}
+
 /*
  * Implements COMMAND hook init.
  */
