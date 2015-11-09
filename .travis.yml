@@ -40,7 +40,7 @@ env:
     # Github deploy
     - secure: VfYokT2CchfuBRJp9/gSwfVGPfsVfkZdDVEuNWEqxww3z4vq+5aLKqoCtPL54E5EIMjhyCE3GVo+biG35Gab1KOVgUs8zD1hAUWA1FPKfMFhoPDfI3ZJC2rX2T1iWK4ZR90pBtcPzS+2OObzTYz8go0PfeSTT6eq69Na1KcNLaE=
     # For S3
-    - secure: "4hrE8tDV4UOzf9fjHpkk/IyE6Lx79s+0M0d9aIGz5Tbex5YKoF48YeUISSDV8qTvPZkBrVRXpcHCDpG/FAdDpPp/w+BXHA5Xth+dOqTwB6IOJLaeImwsUgHVjrBlHxqQbNUK0qwrLIdWYagUNjtCbCb06kVef2YBdHbgLS0vhCc="
+    # - secure: "4hrE8tDV4UOzf9fjHpkk/IyE6Lx79s+0M0d9aIGz5Tbex5YKoF48YeUISSDV8qTvPZkBrVRXpcHCDpG/FAdDpPp/w+BXHA5Xth+dOqTwB6IOJLaeImwsUgHVjrBlHxqQbNUK0qwrLIdWYagUNjtCbCb06kVef2YBdHbgLS0vhCc="
     - UNISH_NO_TIMEOUTS=y
     - UNISH_DB_URL=mysql://root:@127.0.0.1
 before_install: travis_retry composer selfupdate
@@ -87,10 +87,12 @@ deploy:
   - provider: s3
     # @weitzman's S3 for now.
     access_key_id: "AKIAJFNCWLIBISLQYHPA"
-    secret_access_key: $S3-SECRET-ACCESS-KEY
-    bucket: "drush-downloads"
+    secret_access_key:
+      secure: X9qpkhXxTsIcvO/sp0iBXnHKuZm27KJLsHhimDW2uviS+vt62reCeKl+JtGZUGEJWI6fITbyzJ71vy8+Iibpa261ShYVFJWtiG2cfHKPHsu9TdjSi/f0CW7bEA4IHwnLwxhTUH4wMCjIorKkf21UIH6dCb8qo9xexPb65eDfocs=
+    bucket: drush-downloads
     skip_cleanup: true
     local_dir: s3-unstable
     on:
       repo: drush-ops/drush
       branch: master
+

@@ -16,6 +16,7 @@ drush init
 ```
     
 * MAMP users, and anyone wishing to launch a non-default PHP, needs to [edit ~/.bashrc so that the right PHP is in your $PATH](http://stackoverflow.com/questions/4145667/how-to-override-the-path-of-php-to-use-the-mamp-path/10653443#10653443).
+* We have documented [alternative ways to install](docs/install-alternative.md), including [Windows](docs/install-alternative.md#windows).
 * If you need to pass custom php.ini values, run `php -d foo=bar drush.phar --php-options=foo=bar`
 * Your shell now has [useful bash aliases and tab completion for command names, site aliases, options, and arguments.](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.bashrc).
 * A [drushrc.php](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.drushrc.php) has been copied to ~/.drush above. Customize it to save typing and standardize options for commands.
@@ -28,19 +29,6 @@ In addition to the global Drush, it is recommended that Drupal 8 sites are [buil
 1. When you run `drush`, the global Drush is called first and then hands execution to the site-local Drush. This gives you the convenience of running `drush` without specifying the full path to the executable, without sacrificing the safety provided by a site-local Drush.
 2. Optional: Copy the [examples/drush.wrapper](https://github.com/drush-ops/drush/blob/master/examples/drush.wrapper) file to your project root and modify to taste. This is a handy launcher script; add --local here to turn off all global configuration locations, and maintain consistency over configuration/aliases/commandfiles for your team.
 3. Note that if you have multiple Drupal sites on your system, it is possible to use a different version of Drush with each one.
-
-Windows Zip Package
-----------------------------
-Windows support has improved, but is still lagging. For full functionality, consider running Linux/Unix/OSX via Virtualbox, or other virtual machine platform. [Drupal VM](http://www.drupalvm.com/) and [Vlad](https://github.com/hashbangcode/vlad) are popular.
-
-* These Windows packages include Drush and its dependencies (including MSys). 
-    * [7.0.0 (stable)](https://github.com/drush-ops/drush/releases/download/7.0.0/windows-7.0.0.zip).
-    * [6.6.0](https://github.com/drush-ops/drush/releases/download/6.6.0/windows-6.6.0.zip).
-    * [6.0](https://github.com/drush-ops/drush/releases/download/6.0.0/Drush-6.0-2013-08-28-Installer-v1.0.21.msi).
-* Unzip the downloaded file to anywhere thats convenient on your system. 
-* Whenever the documentation or the help text refers to `drush [option] <command>` or something similar, 'drush' may need to be replaced by 'drush.bat'.
-* Most Drush commands will run in a Windows CMD shell or PowerShell, but the Git Bash shell provided by the [Git for Windows](http://msysgit.github.com) installation is the preferred shell in which to run Drush commands.
-* When creating site aliases for Windows remote machines, pay particular attention to information presented in the example.aliases.drushrc.php file, especially when setting values for 'remote-host' and 'os', as these are very important when running Drush rsync and Drush sql-sync commands.
 
 Drupal Compatibility
 -----------------

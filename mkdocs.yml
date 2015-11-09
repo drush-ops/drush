@@ -3,6 +3,7 @@ pages:
 - Home: index.md
 - General:
   - Install: install.md
+  - Install (alternatives): install-alternative.md
   - Usage: usage.md
   - Example files: examples.md
   - Cron: cron.md
