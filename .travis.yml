@@ -58,8 +58,8 @@ after_success: ${PWD}/tests/testChildren.sh
 before_deploy:
   - curl -LSs https://box-project.github.io/box2/installer.php | php
   - php box.phar build
-  - test $TRAVIS_TAG = true && mkdir s3-stable && cp drush.phar s3-stable/drush.phar
-  - test $TRAVIS_BRANCH = master && mkdir s3-unstable && cp drush.phar s3-unstable/drush-unstable.phar
+  - test $TRAVIS_TAG=true && mkdir s3-stable && cp drush.phar s3-stable/drush.phar
+  - test $TRAVIS_BRANCH=master && mkdir s3-unstable && cp drush.phar s3-unstable/drush-unstable.phar
 deploy:
   # http://docs.travis-ci.com/user/deployment/releases/
   - provider: releases
