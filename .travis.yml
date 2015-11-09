@@ -62,6 +62,8 @@ before_deploy:
   - test $TRAVIS_BRANCH=master && mkdir s3-unstable && cp drush.phar s3-unstable/drush-unstable.phar
 deploy:
   # http://docs.travis-ci.com/user/deployment/releases/
+  secret_access_key:
+    secure: X9qpkhXxTsIcvO/sp0iBXnHKuZm27KJLsHhimDW2uviS+vt62reCeKl+JtGZUGEJWI6fITbyzJ71vy8+Iibpa261ShYVFJWtiG2cfHKPHsu9TdjSi/f0CW7bEA4IHwnLwxhTUH4wMCjIorKkf21UIH6dCb8qo9xexPb65eDfocs=
   - provider: releases
     api_key:
       secure: vRtKwJNzm+FXS5VCsaCu5YM4IS02tAdqV4G557HEyVzNgRmSgPWkaHDR/95TnXtZRjmxuTI++rccEj9+jzjknQ9LWkWhl13WiJdZYobnb240f9Ja8g0gs6/r+EEZG2+DTTerK9zicpf51h5hUaE46zObHjSmzIuGxZBO1syDld8=
@@ -75,7 +77,6 @@ deploy:
   - provider: s3
     # @weitzman's S3 for now.
     access_key_id: "AKIAJFNCWLIBISLQYHPA"
-    secret_access_key: $S3-SECRET-ACCESS-KEY
     bucket: "drush-downloads"
     skip_cleanup: true
     local_dir: s3-stable
@@ -87,8 +88,6 @@ deploy:
   - provider: s3
     # @weitzman's S3 for now.
     access_key_id: "AKIAJFNCWLIBISLQYHPA"
-    secret_access_key:
-      secure: X9qpkhXxTsIcvO/sp0iBXnHKuZm27KJLsHhimDW2uviS+vt62reCeKl+JtGZUGEJWI6fITbyzJ71vy8+Iibpa261ShYVFJWtiG2cfHKPHsu9TdjSi/f0CW7bEA4IHwnLwxhTUH4wMCjIorKkf21UIH6dCb8qo9xexPb65eDfocs=
     bucket: drush-downloads
     skip_cleanup: true
     local_dir: s3-unstable
