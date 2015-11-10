@@ -265,7 +265,10 @@ function drush_get_themes($include_hidden = TRUE) {
   foreach ($themes as $key => $theme) {
     if (!$include_hidden) {
       if (isset($theme->info['hidden'])) {
-        unset($themes[$key]);
+        // Don't exclude default or admin theme.
+        if ($key != _drush_theme_default() && $key != _drush_theme_admin()) {
+          unset($themes[$key]);
+        }
       }
     }
   }
