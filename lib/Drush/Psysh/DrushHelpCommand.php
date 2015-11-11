@@ -20,13 +20,15 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Help command.
  *
  * Lists available commands, and gives command-specific help when asked nicely.
+ *
+ * This replaces the PsySH help command to list commands by category.
  */
 class DrushHelpCommand extends BaseCommand {
 
   /**
-   *
+   * Label for PsySH commands.
    */
-  const NON_DRUSH_CATEGORY = 'PsySH commands';
+  const PSYSH_CATEGORY = 'PsySH commands';
 
   /**
    * The currently set subcommand.
@@ -99,7 +101,7 @@ class DrushHelpCommand extends BaseCommand {
           $category = (string) $command->getCategory();
         }
         else {
-          $category = static::NON_DRUSH_CATEGORY;
+          $category = static::PSYSH_CATEGORY;
         }
 
         if (!isset($categories[$category])) {

@@ -48,7 +48,7 @@ function drush_cli_core_cli() {
 }
 
 /**
- * Returns a filtered list of drush commands used for CLI commands.
+ * Returns a filtered list of Drush commands used for CLI commands.
  *
  * @return array
  */
