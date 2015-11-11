@@ -33,16 +33,7 @@ function drush_cli_core_cli() {
   // Add drush commands in the shell.
   $commands = [new DrushHelpCommand()];
 
-  foreach (drush_get_commands() as $name => $config) {
-    // Ignore some commands that don't make sense inside PsySH.
-    if (in_array($name, ['help', 'drush-psysh', 'php-eval', 'core-cli', 'php'])) {
-      continue;
-    }
-    // Don't add hidden commands or aliases.
-    if ($config['hidden'] || $name !== $config['command']) {
-      continue;
-    }
-
+  foreach (_drush_core_cli_get_commands() as $name => $config) {
     $commands[] = new DrushCommand($config);
   }
 
@@ -53,4 +44,24 @@ function drush_cli_core_cli() {
   // spurious error message.
   drush_set_context('DRUSH_EXECUTION_COMPLETED', TRUE);
   $shell->run();
+}
+
+/**
+ * Returns a filtered list of drush commands used for CLI commands.
+ *
+ * @return array
+ */
+function _drush_core_cli_get_commands() {
+  $commands = drush_get_commands();
+  $ignored_commands = ['help', 'drush-psysh', 'php-eval', 'core-cli', 'php'];
+
+  foreach ($commands as $name => $config) {
+    // Ignore some commands that don't make sense inside PsySH, are hidden, or
+    // are aliases.
+    if (in_array($name, $ignored_commands) || !empty($config['hidden']) || ($name !== $config['command'])) {
+      unset($commands[$name]);
+    }
+  }
+
+  return $commands;
 }
