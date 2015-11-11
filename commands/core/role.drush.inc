@@ -267,10 +267,10 @@ function drush_role_perm($action, $rid, $permission = NULL) {
  * @param string $role_name
  * @return RoleBase
  *
- * @see drush_get_class().
+ * @see drush_get_service().
  */
 function drush_role_get_class($role_name = DRUPAL_ANONYMOUS_RID) {
-  return drush_get_class('Drush\Role\Role', func_get_args());
+  return drush_get_service('role', func_get_args());
 }
 
 /**

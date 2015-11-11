@@ -119,6 +119,27 @@ function drush_get_class($class_name, $constructor_args = array(), $variations =
 }
 
 /**
+ * Instantiate a service object for the given service name.
+ *
+ * @param string $service_name
+ *   The name of the service for which it's class will be instantiated.
+ * @param array $constructor_args
+ *   Any additional parameters to be passed to the class constructor.
+ *
+ * @return mixed
+ *   An instantiated object representing the service requested.
+ */
+function drush_get_service($service_name, $constructor_args = array()) {
+  $service_class_name = drush_get_bootstrap_object()->get_service($service_name);
+  if (class_exists($service_class_name)) {
+    $reflectionClass = new ReflectionClass($service_class_name);
+    return $reflectionClass->newInstanceArgs($constructor_args);
+  }
+
+  return drush_set_error('DRUSH_GET_CLASS_ERROR', dt('Unable to load class !class', array('!class' => $service_class_name)));
+}
+
+/**
  * Generate an .ini file. used by archive-dump."
  *
  * @param array $ini

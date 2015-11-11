@@ -4,6 +4,19 @@ namespace Drush\Boot;
 
 class DrupalBoot6 extends DrupalBoot {
 
+  function __construct() {
+    // Add services supported by Drupal 6.
+    $this->add_service('queue', 'Drush\Queue\Queue6');
+    $this->add_service('role', 'Drush\Role\Role6');
+    $this->add_service('sql', 'Drush\Sql\Sql6');
+    // @todo: Switch engines to use services instead of class names?
+    //$this->add_service('status_info', 'Drush\UpdateService\StatusInfoDrupal6');
+    $this->add_service('user', 'Drush\User\User6');
+    $this->add_service('user_single', 'Drush\User\UserSingle6');
+
+    parent::__construct();
+  }
+
   function valid_root($path) {
     if (!empty($path) && is_dir($path) && file_exists($path . '/index.php')) {
       // Drupal 6 root.

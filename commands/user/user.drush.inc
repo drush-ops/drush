@@ -240,10 +240,10 @@ function drush_usersingle_get_class($account) {
  *
  * @return \Drush\User\UserVersion
  *
- * @see drush_get_class().
+ * @see drush_get_service().
  */
 function drush_user_get_class() {
-  return drush_get_class('Drush\User\User');
+  return drush_get_service('user');
 }
 
 /**
