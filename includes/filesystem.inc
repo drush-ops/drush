@@ -729,5 +729,15 @@ function drush_file_append_data($file, $data) {
 }
 
 /**
+ * Return 'TRUE' if one directory is located anywhere inside
+ * the other.
+ */
+function drush_is_nested_directory($base_dir, $test_is_nested) {
+  // Ensure there is always exactly one '/' at the end of $base_dir
+  $base_dir = rtrim($base_dir, '/') . '/';
+  return substr($test_is_nested, 0, strlen($base_dir)) == $base_dir;
+}
+
+/**
  * @} End of "defgroup filesystemfunctions".
  */

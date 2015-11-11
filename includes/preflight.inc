@@ -565,19 +565,17 @@ function drush_preflight_command_dispatch() {
     }
     $local_drush = realpath($local_drush);
     $this_drush = drush_find_drush();
-    // If there is a local drush selected, and it is not the
-    // same drush that is currently running, redispatch to it.
-    // We compare the dirname instead of the full dir + filename
-    // so that the finder / launcher will compare as the "same"
-    // Note that the "wrapper" will be in a different directory
-    // than the launcher; however, the wrapper should set --local,
-    // and therefore will not be considered here due to the
-    // 'empty($is_local)' test above.
-    if (file_exists($local_drush) && (dirname($this_drush) != dirname($local_drush))) {
+    // If there is a local Drush selected, and it is not the
+    // same Drush that is currently running, redispatch to it.
+    // We assume that if the current Drush is nested inside
+    // the current Drupal root (or, more specifically, the
+    // current Drupal root's parent), then it is a site-local Drush.
+    // We avoid redispatching in that instance to prevent an
+    // infinite loop.
+    if (file_exists($local_drush) && !drush_is_nested_directory(dirname($root), $this_drush)) {
       $uri = drush_get_context('DRUSH_SELECTED_URI');
       $aditional_options = array(
         'root' => $root,
-        'local' => TRUE,
       );
       if (!empty($uri)) {
         $aditional_options['uri'] = $uri;
