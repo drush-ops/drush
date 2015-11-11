@@ -23,6 +23,13 @@ Follow the instructions below, or [watch a video by Drupalize.me](https://youtu.
 		
 * [Documentation for composer's require command.](http://getcomposer.org/doc/03-cli.md#require)
 
+Install a .phar from master branch
+----------------------------------
+
+Drush's [master branch](https://github.com/drush-ops/drush/commits/master) is mostly stable.
+
+Follow the normal [installation instructions](http://docs.drush.org/en/master/install/), except change the download URL to [https:/files.drush.org/drush-unstable.phar](https:/files.drush.org/drush-unstable.phar)
+
 Windows
 ------------
 Drush on Windows is not recommended, since it Drush's test suite is not running there ([help wanted](https://github.com/drush-ops/drush/issues/1612)).
