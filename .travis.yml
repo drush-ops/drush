@@ -75,7 +75,7 @@ deploy:
   #- provider: s3
     # @weitzman's S3 for now.
   #  access_key_id: "AKIAJFNCWLIBISLQYHPA"
-  #  bucket: "drush-downloads"
+  #  bucket: "files.drush.org"
   #  skip_cleanup: true
   #  local_dir: s3-stable
   #  on:
@@ -88,7 +88,7 @@ deploy:
     access_key_id: "AKIAJFNCWLIBISLQYHPA"
     secret_access_key:
         secure: X9qpkhXxTsIcvO/sp0iBXnHKuZm27KJLsHhimDW2uviS+vt62reCeKl+JtGZUGEJWI6fITbyzJ71vy8+Iibpa261ShYVFJWtiG2cfHKPHsu9TdjSi/f0CW7bEA4IHwnLwxhTUH4wMCjIorKkf21UIH6dCb8qo9xexPb65eDfocs=
-    bucket: drush-downloads
+    bucket: files.drush.org
     skip_cleanup: true
     local_dir: s3-unstable
     on:
