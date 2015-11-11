@@ -20,6 +20,7 @@ function init_drush_command() {
     'global-options' => array('editor', 'bg'),
     'options' => array(
       'edit' => 'Open the new config file in an editor.',
+      'add-path' => "Always add Drush to the $PATH in the user's .bashrc file, even if it is already in the $PATH. Use --no-add-path to skip updating .bashrc with the Drush $PATH. Default is to update .bashrc only if Drush is not already in the $PATH.",
     ),
     'examples' => array(
       'drush core-init --edit' => 'Enrich Bash and open drush config file in editor.',
@@ -69,11 +70,12 @@ function drush_init_core_init() {
 
   // If Drush is not in the $PATH, then figure out which
   // path to add so that Drush can be found globally.
-  if (!drush_which("drush")) {
-    $drush_path = drush_find_path_to_drush();
-    $drush_path = preg_replace("%^$home/%", '$HOME/', $drush_path);
+  $add_path = drush_get_option('add-path', NULL);
+  if ((!drush_which("drush") || $add_path) && ($add_path !== FALSE)) {
+    $drush_path = drush_find_path_to_drush($home);
+    $drush_path = preg_replace("%^" . preg_quote($home) . "/%", '$HOME/', $drush_path);
 
-    $bashrc_additions["%$drush_path%"] = "# Path to Drush, added by 'drush init'\n\$PATH=\$PATH:$drush_path\n\n";
+    $bashrc_additions["%$drush_path%"] = "# Path to Drush, added by 'drush init'\nexport \$PATH=\"\$PATH:$drush_path\"\n\n";
   }
 
   // Modify the user's bashrc file, adding our customizations.
@@ -126,5 +128,5 @@ function drush_find_path_to_drush($home) {
   }
 
   // Fallback is to use the directory that Drush is in.
-  return dirname(DRUSH_BASE_PATH);
+  return DRUSH_BASE_PATH;
 }
