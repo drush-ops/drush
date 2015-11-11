@@ -20,7 +20,7 @@ function init_drush_command() {
     'global-options' => array('editor', 'bg'),
     'options' => array(
       'edit' => 'Open the new config file in an editor.',
-      'add-path' => "Always add Drush to the $PATH in the user's .bashrc file, even if it is already in the $PATH. Use --no-add-path to skip updating .bashrc with the Drush $PATH. Default is to update .bashrc only if Drush is not already in the $PATH.",
+      'add-path' => "Always add Drush to the \$PATH in the user's .bashrc file, even if it is already in the \$PATH. Use --no-add-path to skip updating .bashrc with the Drush \$PATH. Default is to update .bashrc only if Drush is not already in the \$PATH.",
     ),
     'examples' => array(
       'drush core-init --edit' => 'Enrich Bash and open drush config file in editor.',
