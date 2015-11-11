@@ -2,9 +2,7 @@
 
 /**
  * @file
- * Drush help command.
- *
- * Original author: Justin Hileman
+ * Contains \Drush\Psysh\DrushCommand.
  */
 
 namespace Drush\Psysh;
