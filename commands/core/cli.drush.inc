@@ -34,8 +34,13 @@ function drush_cli_core_cli() {
   // Add drush commands in the shell.
   $commands = [new DrushHelpCommand()];
 
-  foreach (_drush_core_cli_get_commands() as $name => $config) {
-    $commands[] = new DrushCommand($config);
+  foreach (drush_commands_categorize(_drush_core_cli_get_commands()) as $category_data) {
+    $category_title = (string) $category_data['title'];
+    foreach ($category_data['commands'] as $command_config) {
+      $command = new DrushCommand($command_config);
+      $command->setCategory($category_title);
+      $commands[] = $command;
+    }
   }
 
   $shell->addCommands($commands);

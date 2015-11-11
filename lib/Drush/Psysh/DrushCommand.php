@@ -29,7 +29,7 @@ class DrushCommand extends BaseCommand {
   /**
    * @var string
    */
-  private $category;
+  private $category = '';
 
   /**
    * DrushCommand constructor.
@@ -49,23 +49,16 @@ class DrushCommand extends BaseCommand {
    * Get Category of this command.
    */
   public function getCategory() {
-    if (isset($this->category)) {
-      return $this->category;
-    }
+    return $this->category;
+  }
 
-    $category = $this->config['category'];
-    $title = drush_command_invoke_all('drush_help', "meta:$category:title");
-
-    if (!$title) {
-      // If there is no title, then check to see if the
-      // command file is stored in a folder with the same
-      // name as some other command file (e.g. 'core') that
-      // defines a title.
-      $category = basename($this->config['path']);
-      $title = drush_command_invoke_all('drush_help', "meta:$category:title");
-    }
-
-    return $this->category = empty($title) ? 'Other commands' : $title[0];
+  /**
+   * Sets the category title.
+   *
+   * @param string $category_title
+   */
+  public function setCategory($category_title) {
+    $this->category = $category_title;
   }
 
   /**
