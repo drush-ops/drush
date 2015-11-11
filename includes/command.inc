@@ -1049,11 +1049,17 @@ function drush_get_commands($reset = FALSE) {
 
 /**
  * Organize commands into categories. Used by help listing and core-cli.
+ *
+ * @param array $commands
+ *   A commands array as per drush_get_commands().
+ *
+ * @return array $command_categories
+ *   A categorized associative array of commands.
  */
-function drush_commands_categorize($implemented) {
+function drush_commands_categorize($commands) {
   $command_categories = array();
   $category_map = array();
-  foreach ($implemented as $key => $candidate) {
+  foreach ($commands as $key => $candidate) {
     if ((!array_key_exists('is_alias', $candidate) || !$candidate['is_alias']) && !$candidate['hidden']) {
       $category = $candidate['category'];
       // If we have decided to remap a category, remap every command
