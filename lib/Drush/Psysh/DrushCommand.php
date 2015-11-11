@@ -125,11 +125,11 @@ class DrushCommand extends BaseCommand {
    *   the command definition.
    */
   protected function buildDefinitionFromConfig() {
-    $def = [];
+    $definitions = [];
 
     if (isset($this->config['arguments']) && !empty($this->config['arguments'])) {
-
       $required_args = $this->config['required-arguments'];
+
       if ($required_args === FALSE) {
         $required_args = 0;
       }
@@ -137,45 +137,45 @@ class DrushCommand extends BaseCommand {
         $required_args = count($this->config['arguments']);
       }
 
-      foreach ($this->config['arguments'] as $name => $arg) {
-        if (!is_array($arg)) {
-          $arg = array('description' => $arg);
+      foreach ($this->config['arguments'] as $name => $argument) {
+        if (!is_array($argument)) {
+          $argument = ['description' => $argument];
         }
 
-        if (isset($arg['hidden']) && $arg['hidden']) {
+        if (!empty($argument['hidden'])) {
           continue;
         }
 
-        $req = ($required_args-- > 0) ? InputArgument::REQUIRED : InputArgument::OPTIONAL;
+        $input_type = ($required_args-- > 0) ? InputArgument::REQUIRED : InputArgument::OPTIONAL;
 
-        $def[] = new InputArgument($name, $req, $arg['description'], NULL);
+        $definitions[] = new InputArgument($name, $input_type, $argument['description'], NULL);
       }
     }
 
-    if (isset($this->config['options']) && !empty($this->config['options'])) {
-      foreach ($this->config['options'] as $name => $opt) {
-        if (!is_array($opt)) {
-          $opt = array('description' => $opt);
+    if (!empty($this->config['options'])) {
+      foreach ($this->config['options'] as $name => $option) {
+        if (!is_array($option)) {
+          $option = ['description' => $option];
         }
 
-        if (isset($opt['hidden']) && $opt['hidden']) {
+        if (!empty($option['hidden'])) {
           continue;
         }
 
-        // TODO: figure out if there's a way to detect
-        // InputOption::VALUE_NONE (i.e. flags) via the config array.
-        if (isset($opt['value']) && $opt['value'] !== 'optional') {
-          $req = InputOption::VALUE_REQUIRED;
+        // @todo: Figure out if there's a way to detect InputOption::VALUE_NONE
+        // (i.e. flags) via the config array.
+        if (isset($option['value']) && $option['value'] === 'required') {
+          $input_type = InputOption::VALUE_REQUIRED;
         }
         else {
-          $req = InputOption::VALUE_OPTIONAL;
+          $input_type = InputOption::VALUE_OPTIONAL;
         }
 
-        $def[] = new InputOption($name, '', $req, $opt['description']);
+        $definitions[] = new InputOption($name, '', $input_type, $option['description']);
       }
     }
 
-    return $def;
+    return $definitions;
   }
 
   /**
@@ -189,10 +189,10 @@ class DrushCommand extends BaseCommand {
   private function buildHelpFromConfig() {
     $help = wordwrap($this->config['description']);
 
-    $examples = array();
+    $examples = [];
     foreach ($this->config['examples'] as $ex => $def) {
       // Skip empty examples and things with obvious pipes...
-      if ($ex === '' || strpos($ex, '|') !== FALSE) {
+      if (($ex === '') || (strpos($ex, '|') !== FALSE)) {
         continue;
       }
 

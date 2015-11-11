@@ -71,7 +71,7 @@ class DrushHelpCommand extends BaseCommand {
       $output->page($this->getApplication()->get($name)->asText());
     }
     else {
-      $categories = array();
+      $categories = [];
 
       // List available commands.
       $commands = $this->getApplication()->all();
@@ -99,7 +99,7 @@ class DrushHelpCommand extends BaseCommand {
           $category = (string) $command->getCategory();
         }
         else {
-          $category = self::NON_DRUSH_CATEGORY;
+          $category = static::NON_DRUSH_CATEGORY;
         }
 
         if (!isset($categories[$category])) {
