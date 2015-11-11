@@ -86,11 +86,23 @@ class DrushCommand extends BaseCommand {
    * {@inheritdoc}
    */
   protected function execute(InputInterface $input, OutputInterface $output) {
-    // @todo support aliases
     $args = $input->getArguments();
-    $command = array_shift($args);
+    $first = array_shift($args);
 
-    $return = drush_invoke_process('@self', $command, array_values($args), $input->getOptions(), ['backend' => TRUE]);
+    // If the first argument is an alias, assign the next argument as the
+    // command.
+    if (strpos($first, '@') === 0) {
+      $alias = $first;
+      $command = array_shift($args);
+    }
+    // Otherwise, default the alias to '@self' and use the first argument as the
+    // command.
+    else {
+      $alias = '@self';
+      $command = $first;
+    }
+
+    $return = drush_invoke_process($alias, $command, array_values($args), $input->getOptions(), ['backend' => TRUE]);
 
     if ($return['error_status'] > 0) {
       foreach ($return['error_log'] as $error_type => $errors) {

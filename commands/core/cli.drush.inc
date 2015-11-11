@@ -3,6 +3,7 @@
 use Drupal\Component\Assertion\Handle;
 use Drush\Psysh\DrushHelpCommand;
 use Drush\Psysh\DrushCommand;
+use Drush\Psysh\Shell;
 
 /**
  * Implements hook_drush_command().
@@ -21,7 +22,7 @@ function cli_drush_command() {
  * Command callback.
  */
 function drush_cli_core_cli() {
-  $shell = new Psy\Shell();
+  $shell = new Shell();
 
   if (drush_drupal_major_version() >= 8) {
     // Register the assertion handler so exceptions are thrown instead of errors
