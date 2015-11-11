@@ -47,7 +47,6 @@ function help_drush_command() {
         'value' => 'optional',
       ),
       'format' => 'Format to output . Allowed values are: json, var_export, html.',
-      'html' => 'Print help for all commands in HTML format. Deprecated - see --format option.',
       'pipe' => 'A list of available commands, one per line.',
     ),
     'arguments' => array(
@@ -342,10 +341,6 @@ function drush_global_options_command($brief = FALSE) {
 function drush_core_help() {
   $commands = func_get_args();
   $format = drush_get_option('format');
-  // Backwards compatibility for --html option.
-  if (drush_get_option('html')) {
-    $format = 'html';
-  }
 
   if (empty($commands)) {
     // For speed, only bootstrap up to DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION.
