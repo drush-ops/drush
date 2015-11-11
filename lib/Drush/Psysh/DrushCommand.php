@@ -90,7 +90,7 @@ class DrushCommand extends BaseCommand {
     $args = $input->getArguments();
     $command = array_shift($args);
 
-    $return = drush_invoke_process('@self', $command, array_values($args), $input->getOptions());
+    $return = drush_invoke_process('@self', $command, array_values($args), $input->getOptions(), ['backend' => TRUE]);
 
     if ($return['error_status'] > 0) {
       foreach ($return['error_log'] as $error_type => $errors) {
@@ -100,9 +100,7 @@ class DrushCommand extends BaseCommand {
       $output->writeln('');
     }
     else {
-      // @todo If the command is successful drush prints the output, can we stop
-      // that and just write to the output here?
-      //$output->page($return['output']);
+      $output->page(drush_backend_get_result());
     }
   }
 
