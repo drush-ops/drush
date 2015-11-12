@@ -34,7 +34,7 @@ class DrushCommand extends BaseCommand {
   /**
    * DrushCommand constructor.
    *
-   * This accepts the drush command configuration array and does a pretty
+   * This accepts the Drush command configuration array and does a pretty
    * decent job of building a PsySH command proxy for it. Wheee!
    *
    * @param array $config
@@ -93,7 +93,11 @@ class DrushCommand extends BaseCommand {
       $command = $first;
     }
 
-    $return = drush_invoke_process($alias, $command, array_values($args), $input->getOptions(), ['backend' => TRUE]);
+    $options = $input->getOptions();
+    // Force the 'backend' option to TRUE.
+    $options['backend'] = TRUE;
+
+    $return = drush_invoke_process($alias, $command, array_values($args), $options, ['interactive' => TRUE]);
 
     if ($return['error_status'] > 0) {
       foreach ($return['error_log'] as $error_type => $errors) {
@@ -108,7 +112,7 @@ class DrushCommand extends BaseCommand {
   }
 
   /**
-   * Extract drush command aliases from config array.
+   * Extract Drush command aliases from config array.
    *
    * @return array
    *   The command aliases.
@@ -118,7 +122,7 @@ class DrushCommand extends BaseCommand {
   }
 
   /**
-   * Build a command definition from drush command configuration array.
+   * Build a command definition from Drush command configuration array.
    *
    * Currently, adds all non-hidden arguments and options, and makes a decent
    * effort to guess whether an option accepts a value or not. It isn't always
@@ -182,7 +186,7 @@ class DrushCommand extends BaseCommand {
   }
 
   /**
-   * Build a command help from the drush configuration array.
+   * Build a command help from the Drush configuration array.
    *
    * Currently it's a word-wrapped description, plus any examples provided.
    *

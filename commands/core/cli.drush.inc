@@ -31,13 +31,14 @@ function drush_cli_core_cli() {
     $shell->setScopeVariables(['container' => \Drupal::getContainer()]);
   }
 
-  // Add drush commands in the shell.
+  // Add Drush commands to the shell.
   $commands = [new DrushHelpCommand()];
 
   foreach (drush_commands_categorize(_drush_core_cli_get_commands()) as $category_data) {
     $category_title = (string) $category_data['title'];
     foreach ($category_data['commands'] as $command_config) {
       $command = new DrushCommand($command_config);
+      // Set the category label on each.
       $command->setCategory($category_title);
       $commands[] = $command;
     }
