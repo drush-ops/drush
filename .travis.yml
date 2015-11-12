@@ -70,19 +70,8 @@ deploy:
      tags: true
      repo: drush-ops/drush
      all_branches: true
-  # Latest stable
-  # http://docs.travis-ci.com/user/deployment/s3/
-  #- provider: s3
-    # @weitzman's S3 for now.
-  #  access_key_id: "AKIAJFNCWLIBISLQYHPA"
-  #  bucket: "files.drush.org"
-  #  skip_cleanup: true
-  #  local_dir: s3-stable
-  #  on:
-  #    repo: drush-ops/drush
-  #    all_branches: true
   # Latest unstable from master
-  # http://docs.travis-ci.com/user/deployment/s3/
+  #  http://docs.travis-ci.com/user/deployment/s3/
   - provider: s3
     # @weitzman's S3 for now.
     access_key_id: "AKIAJFNCWLIBISLQYHPA"
@@ -94,4 +83,17 @@ deploy:
     on:
       repo: drush-ops/drush
       branch: master
-
+# Latest stable
+  # http://docs.travis-ci.com/user/deployment/s3/
+  - provider: s3
+  # @weitzman's S3 for now.
+    access_key_id: "AKIAJFNCWLIBISLQYHPA"
+    secret_access_key:
+      secure: X9qpkhXxTsIcvO/sp0iBXnHKuZm27KJLsHhimDW2uviS+vt62reCeKl+JtGZUGEJWI6fITbyzJ71vy8+Iibpa261ShYVFJWtiG2cfHKPHsu9TdjSi/f0CW7bEA4IHwnLwxhTUH4wMCjIorKkf21UIH6dCb8qo9xexPb65eDfocs=
+    bucket: "files.drush.org"
+    skip_cleanup: true
+    local_dir: s3-stable
+    on:
+      tags: true
+      repo: drush-ops/drush
+      all_branches: true
