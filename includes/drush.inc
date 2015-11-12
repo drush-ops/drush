@@ -1574,6 +1574,10 @@ function drush_set_error($error, $message = null, $output_label = "") {
   if (is_numeric($error)) {
     $error = 'DRUSH_FRAMEWORK_ERROR';
   }
+  elseif (!is_string($error)) {
+    // Typical case: D8 TranslatableMarkup, implementing MarkupInterface.
+    $error = "$error";
+  }
 
   $message = ($message) ? $message : drush_command_invoke_all('drush_help', 'error:' . $error);
 
