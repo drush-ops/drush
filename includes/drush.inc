@@ -1551,19 +1551,17 @@ function drush_format_size($size) {
 /**
  * Set an error code for the error handling system.
  *
- * @param error
+ * @param \Drupal\Component\Render\MarkupInterface|string $error
  *   A text string identifying the type of error.
- *
- * @param message
- *   Optional. Error message to be logged. If no message is specified, hook_drush_help will be consulted,
- *   using a key of 'error:MY_ERROR_STRING'.
- *
- * @param $output_label
+ * @param null|string $message
+ *   Optional. Error message to be logged. If no message is specified,
+ *   hook_drush_help will be consulted, using a key of 'error:MY_ERROR_STRING'.
+ * @param null|string $output_label
  *   Optional. Label to prepend to the error message.
  *
- * @return
- *   Always returns FALSE, to allow you to return with false in the calling functions,
- *   such as <code>return drush_set_error('DRUSH_FRAMEWORK_ERROR')</code>
+ * @return bool
+ *   Always returns FALSE, to allow returning false in the calling functions,
+ *   such as <code>return drush_set_error('DRUSH_FRAMEWORK_ERROR')</code>.
  */
 function drush_set_error($error, $message = null, $output_label = "") {
   $error_code =& drush_get_context('DRUSH_ERROR_CODE', DRUSH_SUCCESS);
