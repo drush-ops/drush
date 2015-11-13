@@ -27,7 +27,7 @@ class Sqlsqlite extends SqlBase {
    */
   public function createdb($quoted = FALSE) {
     $file = $this->db_spec['database'];
-    if (file_exists($path)) {
+    if (file_exists($file)) {
       drush_log("SQLITE: Deleting existing database '$file'", 'debug');
       drush_delete_dir($file, TRUE);
     }
