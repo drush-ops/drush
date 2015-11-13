@@ -14,6 +14,15 @@ function cli_drush_command() {
     'remote-tty' => TRUE,
     'aliases' => array('php'),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
+    'topics' => array('docs-repl'),
+  );
+  $items['docs-repl'] = array(
+    'description' => 'repl.md',
+    'hidden' => TRUE,
+    'topic' => TRUE,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+    'callback' => 'drush_print_file',
+    'callback arguments' => array(drush_get_context('DOC_PREFIX', DRUSH_BASE_PATH) . '/docs/repl.md'),
   );
   return $items;
 }
