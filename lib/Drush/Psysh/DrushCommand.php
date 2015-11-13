@@ -159,27 +159,49 @@ class DrushCommand extends BaseCommand {
       }
     }
 
-    if (!empty($this->config['options'])) {
-      foreach ($this->config['options'] as $name => $option) {
-        if (!is_array($option)) {
-          $option = ['description' => $option];
-        }
+    // First create all global options.
+    $options = $this->config['options'] + drush_get_global_options();
 
-        if (!empty($option['hidden'])) {
-          continue;
-        }
+    // Add command specific options.
+    $definitions = array_merge($definitions, $this->createInputOptionsFromConfig($options));
 
-        // @todo: Figure out if there's a way to detect InputOption::VALUE_NONE
-        // (i.e. flags) via the config array.
-        if (isset($option['value']) && $option['value'] === 'required') {
-          $input_type = InputOption::VALUE_REQUIRED;
-        }
-        else {
-          $input_type = InputOption::VALUE_OPTIONAL;
-        }
+    return $definitions;
+  }
 
-        $definitions[] = new InputOption($name, '', $input_type, $option['description']);
+  /**
+   * Creates input definitions from command options.
+   *
+   * @param array $options_config
+   *
+   * @return \Symfony\Component\Console\Input\InputInterface[]
+   */
+  protected function createInputOptionsFromConfig(array $options_config) {
+    $definitions = [];
+
+    foreach ($options_config as $name => $option) {
+      // Some commands will conflict.
+      if (in_array($name, ['help', 'command'])) {
+        continue;
       }
+
+      if (!is_array($option)) {
+        $option = ['description' => $option];
+      }
+
+      if (!empty($option['hidden'])) {
+        continue;
+      }
+
+      // @todo: Figure out if there's a way to detect InputOption::VALUE_NONE
+      // (i.e. flags) via the config array.
+      if (isset($option['value']) && $option['value'] === 'required') {
+        $input_type = InputOption::VALUE_REQUIRED;
+      }
+      else {
+        $input_type = InputOption::VALUE_OPTIONAL;
+      }
+
+      $definitions[] = new InputOption($name, !empty($option['short-form']) ? $option['short-form'] : '', $input_type, $option['description']);
     }
 
     return $definitions;
@@ -193,7 +215,7 @@ class DrushCommand extends BaseCommand {
    * @return string
    *   The help string.
    */
-  private function buildHelpFromConfig() {
+  protected function buildHelpFromConfig() {
     $help = wordwrap($this->config['description']);
 
     $examples = [];

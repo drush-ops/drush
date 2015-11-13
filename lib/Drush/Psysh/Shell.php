@@ -9,7 +9,6 @@ namespace Drush\Psysh;
 
 use Psy\Shell as BaseShell;
 use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Input\InputInterface;
 
 class Shell extends BaseShell {
 
