@@ -32,6 +32,13 @@ class DrushCommand extends BaseCommand {
   private $category = '';
 
   /**
+   * PHP reserved keywords.
+   *
+   * @var array
+   */
+  private static $keywords = array('__halt_compiler', 'abstract', 'and', 'array', 'as', 'break', 'callable', 'case', 'catch', 'class', 'clone', 'const', 'continue', 'declare', 'default', 'die', 'do', 'echo', 'else', 'elseif', 'empty', 'enddeclare', 'endfor', 'endforeach', 'endif', 'endswitch', 'endwhile', 'eval', 'exit', 'extends', 'final', 'for', 'foreach', 'function', 'global', 'goto', 'if', 'implements', 'include', 'include_once', 'instanceof', 'insteadof', 'interface', 'isset', 'list', 'namespace', 'new', 'or', 'print', 'private', 'protected', 'public', 'require', 'require_once', 'return', 'static', 'switch', 'throw', 'trait', 'try', 'unset', 'use', 'var', 'while', 'xor');
+
+  /**
    * DrushCommand constructor.
    *
    * This accepts the Drush command configuration array and does a pretty
@@ -118,7 +125,11 @@ class DrushCommand extends BaseCommand {
    *   The command aliases.
    */
   protected function buildAliasesFromConfig() {
-    return !empty($this->config['aliases']) ? $this->config['aliases'] : [];
+    $aliases = !empty($this->config['aliases']) ? $this->config['aliases'] : [];
+
+    return array_filter($aliases, function($alias){
+      return !in_array($alias, static::$keywords);
+    });
   }
 
   /**
