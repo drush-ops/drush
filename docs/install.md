@@ -2,7 +2,7 @@ Install/Upgrade a global Drush
 ---------------
 ```bash    
 # Download latest stable release manually or use code below. See github.com/drush-ops/drush/releases.
-wget https://github.com/drush-ops/drush/releases/download/8.0.0-rc3/drush.phar
+wget https://github.com/drush-ops/drush/releases/download/8.0.0-rc4/drush.phar
 
 # Test your install.
 php drush.phar core-status
