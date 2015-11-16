@@ -404,5 +404,5 @@ function drush_get_token($value = NULL) {
  * Wrapper for _url().
  */
 function drush_url($path = NULL, array $options = array()) {
-  return \Drupal::urlGenerator()->generateFromPath($path, $options);
+  return \Drupal\Core\Url::fromUserInput('/' . $path, $options)->toString();
 }
