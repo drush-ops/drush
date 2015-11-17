@@ -9,7 +9,9 @@
  */
 function druplicon_drush_help_alter(&$command) {
   if ($command['command'] == 'global-options' && $command['#brief'] === FALSE) {
-    $command['options']['druplicon'] = 'Shows the druplicon as glorious ASCII art.';
+    $command['options']['druplicon'] = [
+      'description' => 'Shows the druplicon as glorious ASCII art.',
+    ];
   }
 }
 

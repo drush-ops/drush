@@ -265,7 +265,10 @@ function drush_get_themes($include_hidden = TRUE) {
   foreach ($themes as $key => $theme) {
     if (!$include_hidden) {
       if (isset($theme->info['hidden'])) {
-        unset($themes[$key]);
+        // Don't exclude default or admin theme.
+        if ($key != _drush_theme_default() && $key != _drush_theme_admin()) {
+          unset($themes[$key]);
+        }
       }
     }
   }
@@ -401,5 +404,5 @@ function drush_get_token($value = NULL) {
  * Wrapper for _url().
  */
 function drush_url($path = NULL, array $options = array()) {
-  return \Drupal::urlGenerator()->generateFromPath($path, $options);
+  return \Drupal\Core\Url::fromUserInput('/' . $path, $options)->toString();
 }

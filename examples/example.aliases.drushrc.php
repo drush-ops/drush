@@ -250,6 +250,8 @@
  *   in fact are removed before making a backend invoke call (for example).
  *   These kinds of values are useful in conjunction with shell aliases.  See
  *   `drush topic docs-shell-aliases` for more information on this.
+ * - '#env-vars': An associative array of keys and values that should be set on
+ *    the remote side before invoking drush.
  * - rsync command options have specific requirements in order to
  *   be passed through by Drush. See the comments on the sample below:
  *

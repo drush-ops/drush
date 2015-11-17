@@ -21,6 +21,8 @@ class generateMakeCase extends CommandUnishTestCase {
       'cache' => NULL,
       'strict' => 0, // Don't validate options
     );
+    // Omega requires these core modules.
+    $this->drush('pm-enable', array('block', 'search', 'help'), $options);
     $this->drush('pm-download', array('omega', 'devel'), $options);
     $this->drush('pm-enable', array('omega', 'devel'), $options);
 

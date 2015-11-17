@@ -21,8 +21,6 @@ function core_drush_help($section) {
   switch ($section) {
     case 'meta:core:title':
       return dt("Core Drush commands");
-    case 'drush:help':
-      return dt("Drush provides an extensive help system that describes both drush commands and topics of general interest.  Use `drush help --filter` to present a list of command categories to view, and `drush topic` for a list of topics that go more in-depth on how to use and extend drush.");
     case 'drush:php-script':
       return dt("Runs the given php script(s) after a full Drupal bootstrap. A useful alternative to eval command when your php is lengthy or you can't be bothered to figure out bash quoting. If you plan to share a script with others, consider making a full drush command instead, since that's more self-documenting.  Drush provides commandline options to the script via drush_get_option('option-name'), and commandline arguments can be accessed either via drush_get_arguments(), which returns all arguments in an array, or drush_shift(), which removes the next argument from the list and returns it.");
     case 'drush:rsync':
@@ -71,32 +69,6 @@ function core_drush_help_alter(&$command) {
 function core_drush_command() {
   $items = array();
 
-  $items['help'] = array(
-    'description' => 'Print this help message. See `drush help help` for more options.',
-    'bootstrap' => DRUSH_BOOTSTRAP_NONE, // No bootstrap.
-    'allow-additional-options' => TRUE,
-    'options' => array(
-      'sort' => 'Sort commands in alphabetical order. Drush waits for full bootstrap before printing any commands when this option is used.',
-      'filter' => array(
-        'description' => 'Restrict command list to those commands defined in the specified file. Omit value to choose from a list of names.',
-        'example-value' => 'category',
-        'value' => 'optional',
-      ),
-      'format' => 'Format to output . Allowed values are: json, var_export, html.',
-      'html' => 'Print help for all commands in HTML format. Deprecated - see --format option.',
-      'pipe' => 'A list of available commands, one per line.',
-    ),
-    'arguments' => array(
-      'command' => 'A command name, or command alias.',
-    ),
-    'examples' => array(
-      'drush' => 'List all commands.',
-      'drush --filter=devel_generate' => 'Show only commands defined in devel_generate.drush.inc',
-      'drush help pm-download' => 'Show help for one command.',
-      'drush help dl' => 'Show help for one command using an alias.',
-    ),
-    'topics' => array('docs-readme'),
-  );
   $items['version'] = array(
     'description' => 'Show drush version.',
     'bootstrap' => DRUSH_BOOTSTRAP_NONE, // No bootstrap.
@@ -397,16 +369,6 @@ function core_drush_command() {
   // Add in topics for engines
   $items += drush_get_engine_topics();
   return $items;
-}
-
-/**
- * Command argument complete callback.
- *
- * @return
- *   Array of available command names.
- */
-function core_help_complete() {
-  return array('values' => array_keys(drush_get_commands()));
 }
 
 /**
