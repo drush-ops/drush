@@ -174,6 +174,21 @@ function make_drush_command() {
     'engines' => array('release_info', 'update_status'),
   );
 
+  $items['make-lock'] = array(
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+    'description' => 'Process a makefile and outputs an equivalent makefile with projects version *resolved*. Respects pinned versions.',
+    'arguments' => array(
+      'makefile' => 'Filename of the makefile to use for this build.',
+    ),
+    'options' => array(
+      'result-file' => array(
+        'description' => 'Save to a file. If not provided, the lockfile will be dumped to stdout.',
+        'example-value' => 'platform.lock',
+      ),
+    ),
+    'engines' => array('release_info', 'update_status'),
+  );
+
   // Add docs topic.
   $docs_dir = drush_get_context('DOC_PREFIX', DRUSH_BASE_PATH);
   $items['docs-make'] = array(
@@ -298,8 +313,11 @@ function drush_make($makefile = NULL, $build_path = NULL) {
   }
 
   // Process --lock.
-  if (drush_get_option('lock', FALSE)) {
-    return make_generate_from_makefile(drush_get_option('lock'), $makefile);
+  if ($result_file = drush_get_option('lock', FALSE)) {
+    drush_unset_option('lock');
+    drush_unset_option('no-build');
+    drush_set_option('result-file', $result_file);
+    return drush_invoke('make-lock', $makefile);
   }
 
   // Used by core-quick-drupal command.
