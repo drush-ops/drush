@@ -19,8 +19,8 @@ function ssh_drush_command() {
     'strict-option-handling' => TRUE,
     'examples' => array(
       'drush @mysite ssh' => 'Open an interactive shell on @mysite\'s server.',
-      'drush @prod ssh \'ls /tmp\'' => 'Run "ls /tmp" on @prod site. If @prod is a site list, then ls will be executed on each site.',
-      'drush @prod git pull' => 'Run "git pull" on the Drupal root directory on the @prod site.',
+      'drush @prod ssh ls /tmp' => 'Run "ls /tmp" on @prod site. If @prod is a site list, then ls will be executed on each site.',
+      'drush @prod ssh git pull' => 'Run "git pull" on the Drupal root directory on the @prod site.',
     ),
     'aliases' => array('ssh'),
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
