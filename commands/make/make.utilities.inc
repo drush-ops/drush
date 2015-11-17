@@ -544,7 +544,6 @@ function make_get_data($data_source) {
 function make_apply_defaults(&$info) {
   if (isset($info['defaults'])) {
     $defaults = $info['defaults'];
-    unset($info['defaults']);
 
     foreach ($defaults as $type => $default_data) {
       if (isset($info[$type])) {
