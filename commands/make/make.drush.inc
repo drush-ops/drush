@@ -111,6 +111,10 @@ function make_drush_command() {
         'description' => 'Generate a lockfile for this build and copy it into the codebase (at sites/all/drush/platform.lock). An alternate path (relative to the Drupal root) can also be specified',
         'example-value' => 'sites/all/drush/example.make.lock',
       ),
+      'format' => array(
+        'description' => 'The format for generated lockfiles. Options are "yaml" or "ini". Defaults to "yaml".',
+        'example-value' => 'ini',
+      ),
     ),
     'engines' => array('release_info'),
     'topics' => array('docs-make', 'docs-make-example'),
@@ -128,6 +132,10 @@ function make_drush_command() {
     'options' => array(
       'exclude-versions' => 'Exclude all version numbers (default is include all version numbers) or optionally specify a list of projects to exclude from versioning',
       'include-versions' => 'Include a specific list of projects, while all other projects remain unversioned in the makefile (so implies --exclude-versions)',
+      'format' => array(
+        'description' => 'The format for generated makefile. Options are "yaml" or "ini". Defaults to "yaml".',
+        'example-value' => 'ini',
+      ),
     ),
     'engines' => array('release_info'),
     'aliases' => array('generate-makefile'),
@@ -174,6 +182,10 @@ function make_drush_command() {
         'description' => 'Save to a file. If not provided, the updated makefile will be dumped to stdout.',
         'example-value' => 'updated.make',
       ),
+      'format' => array(
+        'description' => 'The format for generated lockfiles. Options are "yaml" or "ini". Defaults to "yaml".',
+        'example-value' => 'ini',
+      ),
     ),
     'engines' => array('release_info', 'update_status'),
   );
@@ -188,6 +200,10 @@ function make_drush_command() {
       'result-file' => array(
         'description' => 'Save to a file. If not provided, the lockfile will be dumped to stdout.',
         'example-value' => 'platform.lock',
+      ),
+      'format' => array(
+        'description' => 'The format for generated lockfiles. Options are "yaml" or "ini". Defaults to "yaml".',
+        'example-value' => 'ini',
       ),
     ),
     'allow-additional-options' => TRUE,
