@@ -23,6 +23,22 @@ include_once 'make.project.inc';
 include_once 'generate.contents.make.inc';
 
 /**
+ * Implements hook_drush_help().
+ */
+function make_drush_help($section) {
+  switch ($section) {
+    case 'meta:make:title':
+      return dt('Make commands');
+    case 'meta:make:summary':
+      return dt('Manage Drupal codebases using manifests of projects and libraries.');
+    case 'drush:make':
+      return dt('Turns a makefile into a Drupal codebase. For a full description of options and makefile syntax, see docs/make.txt and examples/example.make.');
+    case 'drush:make-generate':
+      return dt('Generate a makefile from the current Drupal site, specifying project version numbers unless not known or otherwise specified. Unversioned projects will be interpreted later by drush make as "most recent stable release"');
+  }
+}
+
+/**
  * Implements hook_drush_command().
  */
 function make_drush_command() {
@@ -177,18 +193,6 @@ function make_drush_command() {
     'callback arguments' => array($docs_dir . '/examples/example.make.yml'),
   );
   return $items;
-}
-
-/**
- * Implements hook_drush_help().
- */
-function make_drush_help($section) {
-  switch ($section) {
-    case 'drush:make':
-      return 'Turns a makefile into a Drupal codebase. For a full description of options and makefile syntax, see docs/make.txt and examples/example.make.';
-    case 'drush:make-generate':
-      return 'Generate a makefile from the current Drupal site, specifying project version numbers unless not known or otherwise specified. Unversioned projects will be interpreted later by drush make as "most recent stable release"';
-  }
 }
 
 /**
