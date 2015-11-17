@@ -307,7 +307,12 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
  */
 function drush_config_export_validate() {
   $destination = drush_get_option('destination');
-  if ($destination !== TRUE && !empty($destination)) {
+  if ($destination === TRUE) {
+    // We create a dir in command callback. No need to validate.
+    return;
+  }
+
+  if (!empty($destination)) {
     $additional = array();
     $values = drush_sitealias_evaluate_path($destination, $additional, TRUE);
     if (!isset($values['path'])) {
