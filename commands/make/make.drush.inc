@@ -107,6 +107,10 @@ function make_drush_command() {
       'shallow-clone' => array(
         'description' => 'For makefile entries which use git for downloading, this option will utilize shallow clones where possible (ie. by using the git-clone\'s depth=1 option). If the "working-copy" option is not desired, this option will significantly speed up makes which involve modules stored in very large git repos. In fact, if "working-copy" option is enabled, this option cannot be used.',
       ),
+      'bundle-lockfile' => array(
+        'description' => 'Generate a lockfile for this build and copy it into the codebase (at sites/all/drush/platform.lock). An alternate path (relative to the Drupal root) can also be specified',
+        'example-value' => 'sites/all/drush/example.make.lock',
+      ),
     ),
     'engines' => array('release_info'),
     'topics' => array('docs-make', 'docs-make-example'),
@@ -313,12 +317,25 @@ function drush_make($makefile = NULL, $build_path = NULL) {
     }
   }
 
-  // Process --lock.
+  // Process --lock and --bundle-lockfile
+  $lockfiles = array();
+  if ($result_file = drush_get_option('bundle-lockfile', FALSE)) {
+    if ($result_file === TRUE) {
+      $result_file = 'sites/all/drush/platform.lock';
+    }
+    $lockfiles[] = $build_path . '/' . $result_file;
+  }
   if ($result_file = drush_get_option('lock', FALSE)) {
-    drush_unset_option('lock');
-    drush_unset_option('no-build');
-    drush_set_option('result-file', $result_file);
-    return drush_invoke('make-lock', $makefile);
+    $lockfiles[] = $result_file;
+  }
+  if (count($lockfiles)) {
+    foreach ($lockfiles as $lockfile) {
+      $result_file = drush_normalize_path($lockfile);
+      drush_mkdir(dirname($result_file), $required = TRUE);
+
+      drush_set_option('result-file', $result_file);
+      drush_invoke('make-lock', $makefile);
+    }
   }
 
   // Used by core-quick-drupal command.
