@@ -416,10 +416,7 @@ function drush_config_export($destination = NULL) {
 
 function _drush_config_export($destination, $destination_dir, $branch) {
   $commit = drush_get_option('commit');
-  $comment = drush_get_option('message', FALSE);
-  if (!$comment) {
-    $comment = "Exported configuration.";
-  }
+  $comment = drush_get_option('message', 'Exported configuration.');
   $storage_filters = drush_config_get_storage_filters();
   if (count(glob($destination_dir . '/*')) > 0) {
     // Retrieve a list of differences between the active and target configuration (if any).
