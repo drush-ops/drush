@@ -186,6 +186,7 @@ function make_drush_command() {
         'example-value' => 'platform.lock',
       ),
     ),
+    'allow-additional-options' => TRUE,
     'engines' => array('release_info', 'update_status'),
   );
 
