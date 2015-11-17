@@ -452,10 +452,10 @@ function _views_drush_view_is_disabled(View $view) {
 }
 
 /**
- * Adds a cache clear option for views.
+ * Implements hook_cache_clear. Adds a cache clear option for views.
  */
-function views_drush_cache_clear(&$types) {
-  if (\Drupal::moduleHandler()->moduleExists('views')) {
+function views_drush_cache_clear(&$types, $include_bootstrapped_types) {
+  if ($include_bootstrapped_types && \Drupal::moduleHandler()->moduleExists('views')) {
     $types['views'] = 'views_invalidate_cache';
   }
 }

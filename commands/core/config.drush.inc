@@ -307,7 +307,12 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
  */
 function drush_config_export_validate() {
   $destination = drush_get_option('destination');
-  if ($destination !== TRUE && !empty($destination)) {
+  if ($destination === TRUE) {
+    // We create a dir in command callback. No need to validate.
+    return;
+  }
+
+  if (!empty($destination)) {
     $additional = array();
     $values = drush_sitealias_evaluate_path($destination, $additional, TRUE);
     if (!isset($values['path'])) {
@@ -411,10 +416,7 @@ function drush_config_export($destination = NULL) {
 
 function _drush_config_export($destination, $destination_dir, $branch) {
   $commit = drush_get_option('commit');
-  $comment = drush_get_option('message', FALSE);
-  if (!$comment) {
-    $comment = "Exported configuration.";
-  }
+  $comment = drush_get_option('message', 'Exported configuration.');
   $storage_filters = drush_config_get_storage_filters();
   if (count(glob($destination_dir . '/*')) > 0) {
     // Retrieve a list of differences between the active and target configuration (if any).
@@ -978,6 +980,13 @@ function config_config_import_complete() {
  */
 function config_config_export_complete() {
   return _drush_config_directories_complete();
+}
+
+/**
+ * Command argument complete callback.
+ */
+function config_config_pull_complete() {
+  return array('values' => array_keys(_drush_sitealias_all_list()));
 }
 
 /**

@@ -303,8 +303,14 @@ function hook_drush_help_alter(&$command) {
 
 /**
  * Add/edit options to cache-clear command.
+ *
+ * @param array $types
+ *   Adjust types as needed. Is passed by reference.
+ *
+ * @param bool $include_bootstrapped_types
+ *   If FALSE, omit types which require a FULL bootstrap.
  */
-function hook_drush_cache_clear(&$types) {
+function hook_drush_cache_clear(&$types, $include_bootstrapped_types) {
   $types['views'] = 'views_invalidate_cache';
 }
 

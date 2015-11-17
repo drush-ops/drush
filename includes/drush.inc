@@ -303,7 +303,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['backup-location']     = array('description' => "Specifies the directory where drush will store backups.", 'example-value' => '/path/to/dir');
     $options['confirm-rollback']    = array('description' => 'Wait for confirmation before doing a rollback when something goes wrong.');
     $options['complete-debug']      = array('hidden' => TRUE, 'description' => "Turn on debug mode forf completion code");
-    $options['php-options']         = array('description' => "Options to pass to `php` when running drush.  Only effective when using the `drush` script.", 'never-propagate' => TRUE, 'example-value' => '-d error_reporting="E_ALL"');
+    $options['php-options']         = array('description' => "Options to pass to `php` when running drush.  Only effective when using the drush.launcher script.", 'never-propagate' => TRUE, 'example-value' => '-d error_reporting="E_ALL"');
     $options['deferred-sanitization'] = array('hidden' => TRUE, 'description' => "Defer calculating the sanitization operations until after the database has been copied. This is done automatically if the source database is remote.");
     $options['remote-host']         = array('hidden' => TRUE, 'description' => 'Remote site to execute drush command on. Managed by site alias.');
     $options['remote-user']         = array('hidden' => TRUE, 'description' => 'User account to use with a remote drush command. Managed by site alias.');
@@ -1551,19 +1551,17 @@ function drush_format_size($size) {
 /**
  * Set an error code for the error handling system.
  *
- * @param error
+ * @param \Drupal\Component\Render\MarkupInterface|string $error
  *   A text string identifying the type of error.
- *
- * @param message
- *   Optional. Error message to be logged. If no message is specified, hook_drush_help will be consulted,
- *   using a key of 'error:MY_ERROR_STRING'.
- *
- * @param $output_label
+ * @param null|string $message
+ *   Optional. Error message to be logged. If no message is specified,
+ *   hook_drush_help will be consulted, using a key of 'error:MY_ERROR_STRING'.
+ * @param null|string $output_label
  *   Optional. Label to prepend to the error message.
  *
- * @return
- *   Always returns FALSE, to allow you to return with false in the calling functions,
- *   such as <code>return drush_set_error('DRUSH_FRAMEWORK_ERROR')</code>
+ * @return bool
+ *   Always returns FALSE, to allow returning false in the calling functions,
+ *   such as <code>return drush_set_error('DRUSH_FRAMEWORK_ERROR')</code>.
  */
 function drush_set_error($error, $message = null, $output_label = "") {
   $error_code =& drush_get_context('DRUSH_ERROR_CODE', DRUSH_SUCCESS);
@@ -1573,6 +1571,10 @@ function drush_set_error($error, $message = null, $output_label = "") {
 
   if (is_numeric($error)) {
     $error = 'DRUSH_FRAMEWORK_ERROR';
+  }
+  elseif (!is_string($error)) {
+    // Typical case: D8 TranslatableMarkup, implementing MarkupInterface.
+    $error = "$error";
   }
 
   $message = ($message) ? $message : drush_command_invoke_all('drush_help', 'error:' . $error);

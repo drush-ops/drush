@@ -186,16 +186,6 @@ function sql_drush_help_alter(&$command) {
 }
 
 /**
- * Command argument complete callback.
- *
- * @return
- *  Array of available site aliases.
- */
-function sql_sql_sync_complete() {
-  return array('values' => array_keys(_drush_sitealias_all_list()));
-}
-
-/**
  * Safely bootstrap Drupal to the point where we can
  * access the database configuration.
  */

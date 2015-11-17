@@ -237,7 +237,7 @@ function drush_cache_clear_types($include_bootstrapped_types = FALSE) {
   drush_include_engine('drupal', 'environment');
 
   // Command files may customize $types as desired.
-  drush_command_invoke_all_ref('drush_cache_clear', $types);
+  drush_command_invoke_all_ref('drush_cache_clear', $types, $include_bootstrapped_types);
 
   return $types;
 }
