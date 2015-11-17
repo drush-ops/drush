@@ -22,6 +22,7 @@ Follow the instructions below, or [watch a video by Drupalize.me](https://youtu.
         COMPOSER_HOME=/opt/drush COMPOSER_BIN_DIR=/usr/local/bin COMPOSER_VENDOR_DIR=/opt/drush/7 composer require drush/drush:7		
 		
 * [Documentation for composer's require command.](http://getcomposer.org/doc/03-cli.md#require)
+* Uninstall with : `composer global remove drush-ops/drush`
 
 Install a .phar from master branch
 ----------------------------------
