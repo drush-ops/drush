@@ -116,7 +116,16 @@ function _drush_core_cli_get_casters() {
     },
     'Drupal\Core\Field\FieldItemListInterface' => function($list_item, $array, $stub, $isNested) {
       if (!$isNested) {
-        $array[Symfony\Component\VarDumper\Caster\Caster::PREFIX_PROTECTED . 'list'] = $list_item->getValue();
+        foreach ($list_item as $delta => $item) {
+          $array[Symfony\Component\VarDumper\Caster\Caster::PREFIX_VIRTUAL . $delta] = $item;
+        }
+      }
+
+      return $array;
+    },
+    'Drupal\Core\Field\FieldItemInterface' => function($item, $array, $stub, $isNested) {
+      if (!$isNested) {
+        $array[Symfony\Component\VarDumper\Caster\Caster::PREFIX_VIRTUAL . 'value'] = $item->getValue();
       }
 
       return $array;
