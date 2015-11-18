@@ -380,12 +380,14 @@ class Project {
    */
   public function getRecommendedOrSupportedRelease() {
     $majors = array();
-    if (!empty($this->parsed['recommended_major']) || $this->parsed['recommended_major'] == 0) {
+
+    $recommended_major = empty($this->parsed['recommended_major']) ? 0 : $this->parsed['recommended_major'];
+    if ($recommended_major != 0) {
       $majors[] = $this->parsed['recommended_major'];
     }
     $supported = explode(',', $this->parsed['supported_majors']);
     foreach ($supported as $v) {
-      if ($v != $this->parsed['recommended_major']) {
+      if ($v != $recommended_major) {
         $majors[] = $v;
       }
     }
