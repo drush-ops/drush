@@ -899,7 +899,7 @@ function drush_core_quick_drupal() {
     }
     if (!empty($makefile)) {
       // Invoke 'drush make $makefile'.
-      $result = drush_invoke_process('@none', 'make', array($makefile, $root));
+      $result = drush_invoke_process('@none', 'make', array($makefile, $root), array('core-quick-drupal' => TRUE));
       if ($result['error_status'] != 0) {
         return drush_set_error('DRUSH_QD_MAKE', 'Could not make; aborting.');
       }
