@@ -507,7 +507,12 @@ class makeMakefileCase extends CommandUnishTestCase {
    */
   function testMakeMoveBuild() {
     // Manually download a module.
-    $this->drush('pm-download', array('cck_signup'), array('destination' => UNISH_SANDBOX . '/sites/all/modules/contrib', 'yes' => NULL));
+    $options = array(
+      'default-major' => 6, // The makefile used below is core = "6.x".
+      'destination' => UNISH_SANDBOX . '/sites/all/modules/contrib',
+      'yes' => NULL,
+    );
+    $this->drush('pm-download', array('cck_signup'), $options);
 
     // Build a make file.
     $config = $this->getMakefile('contrib-destination');
