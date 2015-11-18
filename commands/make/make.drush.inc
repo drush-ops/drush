@@ -331,6 +331,9 @@ function drush_make($makefile = NULL, $build_path = NULL) {
       }
       make_clean_tmp();
     }
+    else {
+      return make_error('MAKE_PROJECTS_FAILED', dt('Drush Make failed to download all projects. See the log above for the specific errors.'));
+    }
   }
 
   // Process --lock and --bundle-lockfile
@@ -611,7 +614,10 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
         $backend_options['#output-label'] = FALSE;
         $backend_options['integrate'] = TRUE;
       }
-      drush_backend_invoke_concurrent($invocations, $common_options, $backend_options, 'make-process', '@none');
+      $results = drush_backend_invoke_concurrent($invocations, $common_options, $backend_options, 'make-process', '@none');
+      if (count($results['error_log'])) {
+        return FALSE;
+      }
     }
   }
   return TRUE;
