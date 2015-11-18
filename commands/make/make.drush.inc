@@ -515,12 +515,11 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
         if ($release === FALSE) {
           return FALSE;
         }
-        $request['project_type'] = $release_info->get($request)->getType();
-
-        if (!isset($project['type'])) {
-          // Translate release_info key for project_type to drush make.
-          $project['type'] = $request['project_type'];
+        // Override default project type with data from update service.
+        if (!isset($info['projects'][$project['name']]['type'])) {
+          $project['type'] = $release_info->get($request)->getType();
         }
+
         if (!isset($project['download'])) {
           $project['download'] = array(
             'type' => 'pm',
