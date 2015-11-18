@@ -31,13 +31,17 @@ function cli_drush_command() {
  * Command callback.
  */
 function drush_cli_core_cli() {
-  $shell = new Shell();
+  $configuration = new \Psy\Configuration();
+  $shell = new Shell($configuration);
 
   if (drush_drupal_major_version() >= 8) {
     // Register the assertion handler so exceptions are thrown instead of errors
     // being triggered. This plays nicer with PsySH.
     Handle::register();
     $shell->setScopeVariables(['container' => \Drupal::getContainer()]);
+
+    // Add Drupal 8 specific casters to the shell configuration.
+    $configuration->addCasters(_drush_core_cli_get_casters());
   }
 
   // Add Drush commands to the shell.
@@ -87,6 +91,55 @@ function _drush_core_cli_get_commands() {
   }
 
   return $commands;
+}
+
+/**
+ * Returns a mapped array of casters for use in the shell.
+ *
+ * These are Symfony VarDumper casters.
+ * See http://symfony.com/doc/current/components/var_dumper/advanced.html#casters
+ * for more information.
+ *
+ * @return array.
+ *   An array of caster callbacks keyed by class or interface.
+ */
+function _drush_core_cli_get_casters() {
+  return [
+    'Drupal\Core\Entity\ContentEntityInterface' => function($entity, $array, $stub, $isNested) {
+      if (!$isNested) {
+        foreach ($entity as $property => $item) {
+          $array[Symfony\Component\VarDumper\Caster\Caster::PREFIX_PROTECTED . $property] = $item;
+        }
+      }
+
+      return $array;
+    },
+    'Drupal\Core\Field\FieldItemListInterface' => function($list_item, $array, $stub, $isNested) {
+      if (!$isNested) {
+        $array[Symfony\Component\VarDumper\Caster\Caster::PREFIX_PROTECTED . 'list'] = $list_item->getValue();
+      }
+
+      return $array;
+    },
+    'Drupal\Core\Config\Entity\ConfigEntityInterface' => function($entity, $array, $stub, $isNested) {
+      if (!$isNested) {
+        foreach ($entity->toArray() as $property => $value) {
+          $array[Symfony\Component\VarDumper\Caster\Caster::PREFIX_PROTECTED . $property] = $value;
+        }
+      }
+
+      return $array;
+    },
+    'Drupal\Core\Config\ConfigBase' => function($config, $array, $stub, $isNested) {
+      if (!$isNested) {
+        foreach ($config->get() as $property => $value) {
+          $array[Symfony\Component\VarDumper\Caster\Caster::PREFIX_VIRTUAL . $property] = $value;
+        }
+      }
+
+      return $array;
+    },
+  ];
 }
 
 /**
