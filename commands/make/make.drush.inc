@@ -349,11 +349,13 @@ function drush_make($makefile = NULL, $build_path = NULL) {
   }
   if (count($lockfiles)) {
     foreach ($lockfiles as $lockfile) {
-      $result_file = drush_normalize_path($lockfile);
-      drush_mkdir(dirname($result_file), $required = TRUE);
-
-      drush_set_option('result-file', $result_file);
+      if ($lockfile !== TRUE) {
+        $result_file = drush_normalize_path($lockfile);
+        drush_mkdir(dirname($result_file), $required = TRUE);
+        drush_set_option('result-file', $result_file);
+      }
       drush_invoke('make-lock', $makefile);
+      drush_unset_option('result-file');
     }
   }
 
