@@ -115,10 +115,6 @@ function make_drush_command() {
         'description' => 'The format for generated lockfiles. Options are "yaml" or "ini". Defaults to "yaml".',
         'example-value' => 'ini',
       ),
-      'core-quick-drupal' => array(
-        'description' => 'Return project info for use by core-quick-drupal.',
-        'hidden' => TRUE,
-      ),
     ),
     'engines' => array('release_info'),
     'topics' => array('docs-make', 'docs-make-example'),
@@ -365,9 +361,7 @@ function drush_make($makefile = NULL, $build_path = NULL) {
 
   // Used by core-quick-drupal command.
   // @see drush_core_quick_drupal().
-  if (drush_get_option('core-quick-drupal', FALSE)) {
-    return $info;
-  }
+  return $info;
 }
 
 /**
