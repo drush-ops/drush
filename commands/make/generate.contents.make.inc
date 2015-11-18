@@ -242,7 +242,7 @@ function make_generate_print($contents, $file = NULL) {
     drush_log(dt("Wrote .make file @file", array('@file' => $file)), 'ok');
   }
   else {
-    drush_make_error('FILE_ERROR', dt("Unable to write .make file !file", array('!file' => $file)));
+    make_error('FILE_ERROR', dt("Unable to write .make file !file", array('!file' => $file)));
   }
 }
 
