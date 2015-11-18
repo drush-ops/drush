@@ -114,11 +114,11 @@
 
 /**
  * By default, Drush will download projects compatible with the current
- * version of Drupal, or, if no Drupal site is specified, then the Drupal-7
+ * version of Drupal, or, if no Drupal site is specified, then the Drupal-8
  * version of the project is downloaded.  Set default-major to select a
  * different default version.
  */
-# $options['default-major'] = 6;
+# $options['default-major'] = 7;
 
 // Clone extensions (modules, themes, etc.) from drupal.org via 'pm-download'.
 # $options['package-handler'] = 'git_drupalorg';

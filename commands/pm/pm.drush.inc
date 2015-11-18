@@ -425,8 +425,8 @@ function pm_drush_command() {
       'select' => "Select the version to download interactively from a list of available releases.",
       'drupal-project-rename' => 'Alternate name for "drupal-x.y" directory when downloading Drupal project. Defaults to "drupal".',
       'default-major' => array(
-        'description' => 'Specify the default major version of modules to download when there is no bootstrapped Drupal site.  Defaults to "7".',
-        'example-value' => '6',
+        'description' => 'Specify the default major version of modules to download when there is no bootstrapped Drupal site.  Defaults to "8".',
+        'example-value' => '7',
       ),
       'skip' => 'Skip automatic downloading of libraries (c.f. devel).',
       'pipe' => 'Returns a list of the names of the extensions (modules and themes) contained in the downloaded projects.',
@@ -1531,7 +1531,7 @@ function pm_parse_version($version, $is_core = FALSE) {
   // If no major version, we have no version at all. Pick a default.
   $drupal_version_default = drush_drupal_major_version();
   if ($core_parts['major'] == '') {
-    $core_parts['major'] = ($drupal_version_default) ? $drupal_version_default : drush_get_option('default-major', 7);
+    $core_parts['major'] = ($drupal_version_default) ? $drupal_version_default : drush_get_option('default-major', 8);
   }
 
   if ($is_core) {
