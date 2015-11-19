@@ -955,7 +955,7 @@ function drush_pm_enable_validate() {
     // with matching names.
     if (!empty($unknown)) {
       $found = array();
-      foreach ($unknown as $key => $name) {
+      foreach ($unknown as $name) {
         drush_log(dt('!extension was not found.', array('!extension' => $name)), 'warning');
         $project = drush_pm_enable_find_project_from_extension($name);
         if (!empty($project)) {
@@ -996,8 +996,8 @@ function drush_pm_enable_validate() {
       $unmet_dependencies = array();
       foreach ($dependencies as $module => $info) {
         if (!empty($info['unmet-dependencies'])) {
-          foreach ($info['unmet-dependencies'] as $unmet_module) {
-            $unmet_project = drush_pm_enable_find_project_from_extension($unmet_module);
+          foreach ($info['unmet-dependencies'] as $unmet) {
+            $unmet_project = (!empty($info['dependencies'][$unmet]['project'])) ? $info['dependencies'][$unmet]['project'] : drush_pm_enable_find_project_from_extension($unmet);
             if (!empty($unmet_project)) {
               $unmet_dependencies[$module][$unmet_project] = $unmet_project;
             }
@@ -1045,7 +1045,8 @@ function drush_pm_enable_validate() {
       }
       elseif (!empty($info['dependencies'])) {
         // Make sure we have an assoc array.
-        $assoc = array_combine($info['dependencies'], $info['dependencies']);
+        $dependencies_list = array_keys($info['dependencies']);
+        $assoc = array_combine($dependencies_list, $dependencies_list);
         $all_dependencies = array_merge($all_dependencies, $assoc);
       }
     }
