@@ -14,7 +14,7 @@ class pmReleaseNotesCase extends Drush_CommandTestCase {
     $expected = <<< EXPECTED
 ------------------------------------------------------------------------------
 > RELEASE NOTES FOR 'DRUPAL' PROJECT, VERSION 7.1:
-> Last updated: May 25, 2011 - 20:21 .
+> Last updated:  May 25, 2011 - 20:59.
 > Security
 ------------------------------------------------------------------------------
 EXPECTED;
