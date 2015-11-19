@@ -26,7 +26,7 @@ if [ "\$(type -t __git_ps1)" ] && [ "\$(type -t __drush_ps1)" ]; then
   GIT_PS1_SHOWUPSTREAM=auto
   # GIT_PS1_SHOWSTASHSTATE=true
   # GIT_PS1_SHOWUNTRACKEDFILES=true
-  # GIT_PS1_SHOWCOLORHINTS=true
+  GIT_PS1_SHOWCOLORHINTS=true
 
   # The following line sets your bash prompt according to this example:
   #
