@@ -337,10 +337,11 @@ projects. Additionally, they may specify a destination:
 
 ### Includes
 
-An array of makefiles to include. Each include may be a local relative path
-to the include makefile directory, a direct URL to the makefile, or from a git repository. Includes
-are appended in order with the source makefile appended last, allowing latter
-makefiles to override the keys/values of former makefiles.
+An array of makefiles to include. Each include may be a local relative path to
+the include makefile directory, a direct URL to the makefile, or from a git
+repository. Includes are appended in order with the source makefile appended
+last, allowing latter makefiles to override the keys/values of former
+makefiles.
 
 **Example:**
 
@@ -358,6 +359,62 @@ makefiles to override the keys/values of former makefiles.
         url: "git@github.com:organisation/repository.git"
         # Branch could be tag or revision, it relies on the standard Drush git download feature.
         branch: "master"          
+
+The `--includes` option is available for most make commands, and allows
+makefiles to be included at build-time.
+
+**Example:**
+
+    # Build from a production makefile, but add development and test projects.
+    $ drush make production.make --includes=dev.make,test.make
+
+
+### Overrides
+
+Similar to `includes`, `overrides` will include content from other makefiles.
+However, the order of precedence is reversed. That is, they override the
+keys/values of the source makefile.
+
+The `--overrides` option is available for most make commands, and allows
+overrides to be included at build-time.
+
+**Example:**
+
+    #production.make:
+    api: 2
+    core: 8.x
+    includes:
+      - core.make
+      - contrib.make
+    projects:
+      custom_feature_A:
+        type: module
+        download:
+          branch: production
+          type: git
+          url: http://github.com/example/custom_feature_A.git
+      custom_feature_B:
+        type: module
+        download:
+          branch: production
+          type: git
+          url: http://github.com/example/custom_feature_B.git
+
+     # Build production code-base.
+     $ drush make production.make
+
+     #testing.make
+     projects:
+       custom_feature_A:
+         download:
+           branch: dev/bug_fix
+       custom_feature_B:
+         download:
+           branch: feature/new_feature
+
+     # Build production code-base using development/feature branches for custom code.
+     $ drush make production.make --overrides=testing.make
+
 
 ### Defaults
 
