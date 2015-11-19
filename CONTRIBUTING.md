@@ -2,7 +2,7 @@ Drush is built by people like you! Please [join us](https://github.com/drush-ops
 
 ## Git and Pull requests
 * Contributions are submitted, reviewed, and accepted using Github pull requests. [Read this article](https://help.github.com/articles/using-pull-requests) for some details. We use the _Fork and Pull_ model, as described there.
-* Optionally, to help keep track of [your assigned issues](https://github.com/dashboard/issues/assigned), simply ask to be added to the contributor team. A maintainer can now assign any issue to you at your request.
+* Optionally, to help keep track of [your assigned issues](https://github.com/dashboard/issues/assigned), simply ask to be added as an [Outside Collaborator](https://github.com/orgs/drush-ops/outside-collaborators). A maintainer can now assign any issue to you at your request.
 * The latest changes are in the `master` branch.
 * Make a new branch for every feature you're working on.
 * Try to make clean commits that are easily readable (including descriptive commit messages!)
