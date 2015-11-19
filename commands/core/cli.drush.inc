@@ -105,49 +105,11 @@ function _drush_core_cli_get_commands() {
  */
 function _drush_core_cli_get_casters() {
   return [
-    'Drupal\Core\Entity\ContentEntityInterface' => function($entity, $array, $stub, $isNested) {
-      if (!$isNested) {
-        foreach ($entity as $property => $item) {
-          $array[Symfony\Component\VarDumper\Caster\Caster::PREFIX_PROTECTED . $property] = $item;
-        }
-      }
-
-      return $array;
-    },
-    'Drupal\Core\Field\FieldItemListInterface' => function($list_item, $array, $stub, $isNested) {
-      if (!$isNested) {
-        foreach ($list_item as $delta => $item) {
-          $array[Symfony\Component\VarDumper\Caster\Caster::PREFIX_VIRTUAL . $delta] = $item;
-        }
-      }
-
-      return $array;
-    },
-    'Drupal\Core\Field\FieldItemInterface' => function($item, $array, $stub, $isNested) {
-      if (!$isNested) {
-        $array[Symfony\Component\VarDumper\Caster\Caster::PREFIX_VIRTUAL . 'value'] = $item->getValue();
-      }
-
-      return $array;
-    },
-    'Drupal\Core\Config\Entity\ConfigEntityInterface' => function($entity, $array, $stub, $isNested) {
-      if (!$isNested) {
-        foreach ($entity->toArray() as $property => $value) {
-          $array[Symfony\Component\VarDumper\Caster\Caster::PREFIX_PROTECTED . $property] = $value;
-        }
-      }
-
-      return $array;
-    },
-    'Drupal\Core\Config\ConfigBase' => function($config, $array, $stub, $isNested) {
-      if (!$isNested) {
-        foreach ($config->get() as $property => $value) {
-          $array[Symfony\Component\VarDumper\Caster\Caster::PREFIX_VIRTUAL . $property] = $value;
-        }
-      }
-
-      return $array;
-    },
+    'Drupal\Core\Entity\ContentEntityInterface' => 'Drush\Psysh\Caster::castContentEntity',
+    'Drupal\Core\Field\FieldItemListInterface' => 'Drush\Psysh\Caster::castFieldItemList',
+    'Drupal\Core\Field\FieldItemInterface' => 'Drush\Psysh\Caster::castFieldItem',
+    'Drupal\Core\Config\Entity\ConfigEntityInterface' => 'Drush\Psysh\Caster::castConfigEntity',
+    'Drupal\Core\Config\ConfigBase' => 'Drush\Psysh\Caster::castConfig',
   ];
 }
 
