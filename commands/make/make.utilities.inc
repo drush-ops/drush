@@ -30,7 +30,7 @@ function make_parse_info_file($makefile) {
 /**
  * Parse makefile recursively.
  */
-function _make_parse_info_file($makefile) {
+function _make_parse_info_file($makefile, $element = 'includes') {
   if (!($data = make_get_data($makefile))) {
     return drush_set_error('MAKE_INVALID_MAKE_FILE', dt('Invalid or empty make file: !makefile', array('!makefile' => $makefile)));
   }
@@ -49,47 +49,54 @@ function _make_parse_info_file($makefile) {
     }
   }
 
-  // Add any makefiles specified on the command line.
-  $include_makefiles = drush_get_option_list('includes', array());
-  drush_unset_option('includes'); // Avoid infinite loop.
-  $info['includes'] = is_array($info['includes']) ? $info['includes'] : array();
-  foreach ($include_makefiles as $include_makefile) {
-    if (!array_search($include_makefile, $info['includes'])) {
-      $info['includes'][] = $include_makefile;
+  // Include any makefiles specified on the command line.
+  if ($include_makefiles = drush_get_option_list('includes', FALSE)) {
+    drush_unset_option('includes'); // Avoid infinite loop.
+    $info['includes'] = is_array($info['includes']) ? $info['includes'] : array();
+    foreach ($include_makefiles as $include_make) {
+      if (!array_search($include_make, $info['includes'])) {
+        $info['includes'][] = $include_make;
+      }
     }
   }
 
-  // Merge includes recursively.
-  if (!empty($info['includes'])) {
-    if (is_array($info['includes'])) {
-      $include_path = dirname($makefile);
+  // Override elements with values from makefiles specified on the command line.
+  if ($overrides = drush_get_option_list('overrides', FALSE)) {
+    drush_unset_option('overrides'); // Avoid infinite loop.
+    $info['overrides'] = is_array($info['overrides']) ? $info['overrides'] : array();
+    foreach ($overrides as $override) {
+      if (!array_search($override, $info['overrides'])) {
+        $info['overrides'][] = $override;
+      }
+    }
+  }
+
+  $info = _make_merge_includes_recursively($info, $makefile);
+  $info = _make_merge_includes_recursively($info, $makefile, 'overrides');
+
+  return $info;
+}
+
+/**
+ * Helper function to merge includes recursively.
+ */
+function _make_merge_includes_recursively($info, $makefile, $element = 'includes') {
+  if (!empty($info[$element])) {
+    if (is_array($info[$element])) {
       $includes = array();
-      foreach ($info['includes'] as $key => $include) {
+      foreach ($info[$element] as $key => $include) {
         if (!empty($include)) {
-          if (is_array($include) && $include['download']['type'] = 'git') {
-            $tmp_dir = make_tmp();
-            make_download_git($include['makefile'], $include['download']['type'], $include['download'], $tmp_dir);
-            $include_makefile = $tmp_dir . '/' . $include['makefile'];
-          }
-          elseif (is_string($include)) {
-            if (make_valid_url($include, TRUE)) {
-              $include_makefile = $include;
-            }
-            elseif (file_exists($include_path . '/' . $include)) {
-              $include_makefile = $include_path . '/' . $include;
-            }
-            elseif (file_exists($include)) {
-              $include_makefile = $include;
-            }
-            else {
-              return make_error('BUILD_ERROR', dt("Include file missing: !include", array('!include' => $include)));
-            }
-          }
-          else {
+          if (!$include_makefile = _make_get_include_path($include, $makefile)) {
             return make_error('BUILD_ERROR', dt("Cannot determine include file location: !include", array('!include' => $include)));
           }
 
-          $info = array_replace_recursive(_make_parse_info_file($include_makefile), $info);
+          if ($element == 'overrides') {
+            $info = array_replace_recursive($info, _make_parse_info_file($include_makefile, $element));
+          }
+          else {
+            $info = array_replace_recursive(_make_parse_info_file($include_makefile), $info);
+          }
+          unset($info[$element][$key]);
           // Move core back to the top of the list, where
           // make_generate_from_makefile() expects it.
           array_reverse($info['projects']);
@@ -102,6 +109,36 @@ function _make_parse_info_file($makefile) {
   make_normalize_info($info);
 
   return $info;
+}
+
+/**
+ * Helper function to determine the proper path for an include makefile.
+ */
+function _make_get_include_path($include, $makefile) {
+  if (is_array($include) && $include['download']['type'] = 'git') {
+    $tmp_dir = make_tmp();
+    make_download_git($include['makefile'], $include['download']['type'], $include['download'], $tmp_dir);
+    $include_makefile = $tmp_dir . '/' . $include['makefile'];
+  }
+  elseif (is_string($include)) {
+    $include_path = dirname($makefile);
+    if (make_valid_url($include, TRUE)) {
+      $include_makefile = $include;
+    }
+    elseif (file_exists($include_path . '/' . $include)) {
+      $include_makefile = $include_path . '/' . $include;
+    }
+    elseif (file_exists($include)) {
+      $include_makefile = $include;
+    }
+    else {
+      return make_error('BUILD_ERROR', dt("Include file missing: !include", array('!include' => $include)));
+    }
+  }
+  else {
+    return FALSE;
+  }
+  return $include_makefile;
 }
 
 /**
