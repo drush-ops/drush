@@ -1030,6 +1030,10 @@ function drush_pm_enable_validate() {
       // Restore DRUSH_AFFIRMATIVE context.
       drush_set_context('DRUSH_AFFIRMATIVE', $drush_affirmative);
       // Refresh module cache after downloading the new modules.
+      if (drush_drupal_major_version() >= 8) {
+        \Drush\Drupal\ExtensionDiscovery::reset();
+        system_list_reset();
+      }
       $extension_info = drush_get_extensions();
       $recheck = TRUE;
     }
