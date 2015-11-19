@@ -119,6 +119,7 @@ function make_drush_command() {
         'description' => 'Return project info for use by core-quick-drupal.',
         'hidden' => TRUE,
       ),
+      'includes' => 'A list of makefiles to include at build-time.',
     ),
     'engines' => array('release_info'),
     'topics' => array('docs-make', 'docs-make-example'),
@@ -154,6 +155,7 @@ function make_drush_command() {
     'options' => array(
       'projects' => $projects,
       'libraries' => $libraries,
+      'includes' => 'A list of makefiles to include at build-time.',
     ),
     'required-arguments' => TRUE,
     'examples' => array(
@@ -190,6 +192,7 @@ function make_drush_command() {
         'description' => 'The format for generated lockfiles. Options are "yaml" or "ini". Defaults to "yaml".',
         'example-value' => 'ini',
       ),
+      'includes' => 'A list of makefiles to include at build-time.',
     ),
     'engines' => array('release_info', 'update_status'),
   );
@@ -209,6 +212,7 @@ function make_drush_command() {
         'description' => 'The format for generated lockfiles. Options are "yaml" or "ini". Defaults to "yaml".',
         'example-value' => 'ini',
       ),
+      'includes' => 'A list of makefiles to include at build-time.',
     ),
     'allow-additional-options' => TRUE,
     'engines' => array('release_info', 'update_status'),

@@ -49,6 +49,16 @@ function _make_parse_info_file($makefile) {
     }
   }
 
+  // Add any makefiles specified on the command line.
+  $include_makefiles = drush_get_option_list('includes', array());
+  drush_unset_option('includes'); // Avoid infinite loop.
+  $info['includes'] = is_array($info['includes']) ? $info['includes'] : array();
+  foreach ($include_makefiles as $include_makefile) {
+    if (!array_search($include_makefile, $info['includes'])) {
+      $info['includes'][] = $include_makefile;
+    }
+  }
+
   // Merge includes recursively.
   if (!empty($info['includes'])) {
     if (is_array($info['includes'])) {
