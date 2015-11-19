@@ -419,7 +419,14 @@ function pm_drush_command() {
     'outputformat' => array(
       'default' => 'table',
       'pipe-format' => 'csv',
-      'field-labels' => array('project' => 'Project', 'version' => 'Release', 'date' => 'Date', 'status' => 'Status'),
+      'field-labels' => array(
+        'project' => 'Project',
+        'version' => 'Release',
+        'date' => 'Date',
+        'status' => 'Status',
+        'release_link' => 'Release link',
+        'download_link' => 'Download link',
+      ),
       'fields-default' => array('project', 'version', 'date', 'status'),
       'fields-pipe' => array('project', 'version', 'date', 'status'),
       'output-data-type' => 'format-table',
@@ -1261,8 +1268,7 @@ function drush_pm_releases() {
 
   $status_url = drush_get_option('source');
 
-  $rows = array();
-  $releases_info = array();
+  $output = array();
   foreach ($requests as $request) {
     $request = pm_parse_request($request, $status_url, $projects);
     $project_name = $request['name'];
@@ -1271,24 +1277,20 @@ function drush_pm_releases() {
       $version = isset($projects[$project_name]) ? $projects[$project_name]['version'] : NULL;
       $releases = $project_release_info->filterReleases($filter, $version);
       foreach ($releases as $key => $release) {
-        $rows[$key] = array(
+        $output["${project_name}-${key}"] = array(
           'project' => $project_name,
           'version' => $release['version'],
           'date' => gmdate('Y-M-d', $release['date']),
           'status' => implode(', ', $release['release_status']),
-        );
+        ) + $release;
       }
-      // Collect parsed update service info to set backend result.
-      $releases_info[$project_name] = $project_release_info->getInfo();
     }
   }
-  if (empty($rows)) {
+  if (empty($output)) {
     return drush_log(dt('No valid projects given.'), 'ok');
   }
-  #TODO# Ask @weitzman about 5a233660560a0
-  drush_backend_set_result($releases_info);
 
-  return $rows;
+  return $output;
 }
 
 /**
