@@ -81,7 +81,9 @@ function _drush_make_generate_makefile_body($projects, $output = array()) {
  *   A makefile on which to base our generated one.
  */
 function make_generate_from_makefile($file, $makefile) {
-  $info = make_parse_info_file($makefile);
+  if (!$info = make_parse_info_file($makefile)) {
+    return drush_set_error('MAKE_GENERATE_FAILED_PARSE', dt('Failed to parse makefile :makefile.', array(':makefile' => $makefile)));
+  }
   $projects = drush_get_option('DRUSH_MAKE_PROJECTS', FALSE);
   if ($projects === FALSE) {
     $projects = make_prepare_projects(FALSE, $info);

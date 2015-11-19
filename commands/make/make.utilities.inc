@@ -72,11 +72,11 @@ function _make_parse_info_file($makefile) {
               $include_makefile = $include;
             }
             else {
-              make_error('BUILD_ERROR', dt("Include file missing: !include", array('!include' => $include)));
+              return make_error('BUILD_ERROR', dt("Include file missing: !include", array('!include' => $include)));
             }
           }
           else {
-            make_error('BUILD_ERROR', dt("Cannot determine include file location: !include", array('!include' => $include)));
+            return make_error('BUILD_ERROR', dt("Cannot determine include file location: !include", array('!include' => $include)));
           }
 
           $info = array_replace_recursive(_make_parse_info_file($include_makefile), $info);
@@ -480,7 +480,7 @@ function make_error($error_code, $message) {
     drush_log("$error_code: $message -- build forced", 'warning');
   }
   else {
-    drush_set_error($error_code, $message);
+    return drush_set_error($error_code, $message);
   }
 }
 
