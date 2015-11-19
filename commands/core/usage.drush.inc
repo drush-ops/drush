@@ -18,6 +18,7 @@ function usage_drush_command() {
   $items['usage-show'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'description' => 'Show Drush usage information that has been logged but not sent.  ' . $disclaimer,
+    'hidden' => TRUE,
     'examples' => array(
       'drush usage-show' => 'Show cached usage statistics.',
       '$options[\'drush_usage_log\']  = TRUE;' => 'Specify in a .drushrc.php file that usage information should be logged locally in a usage statistics file.',
@@ -26,6 +27,7 @@ function usage_drush_command() {
   );
   $items['usage-send'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+    'hidden' => TRUE,
     'description' => 'Send anonymous Drush usage information to statistics logging site.  ' . $disclaimer,
     'examples' => array(
       'drush usage-send' => 'Immediately send cached usage statistics.',
