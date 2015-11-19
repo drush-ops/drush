@@ -55,7 +55,7 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
       'status' => 'enabled',
     );
     foreach ($expected as $key => $value) {
-      $this->assertEquals($expected[$key], $value);
+      $this->assertEquals($output->{$key}, $value);
     }
 
     // Test the testing install profile theme is installed.
