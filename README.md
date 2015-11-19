@@ -41,7 +41,6 @@ Credits
 * Originally developed by [Arto Bendiken](http://bendiken.net) for Drupal 4.7.
 * Redesigned by [Franz Heinzmann](http://unbiskant.org) in May 2007 for Drupal 5.
 * Maintained by [Moshe Weitzman](http://drupal.org/moshe) with much help from
-  Owen Barton, greg.1.anderson, jonhattan, Mark Sonnabaum, Jonathan Hedstrom and
-  [Christopher Gervais](http://drupal.org/u/ergonlogic).
+  the folks listed at https://github.com/orgs/drush-ops/people.
 
 ![Drush Logo](drush_logo-black.png)

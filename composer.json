@@ -13,7 +13,9 @@
     { "name": "Greg Anderson", "email": "greg.1.anderson@greenknowe.org" },
     { "name": "Jonathan Araña Cruz", "email": "jonhattan@faita.net" },
     { "name": "Jonathan Hedstrom", "email": "jhedstrom@gmail.com" },
-    { "name": "Christopher Gervais", "email": "chris@ergonlogic.com" }
+    { "name": "Christopher Gervais", "email": "chris@ergonlogic.com" },
+    { "name": "Dave Reid", "email": "dave@davereid.net" },
+    { "name": "Damian Lee", "email": "damiankloip@googlemail.com" }
   ],
   "support": {
     "forum": "http://drupal.stackexchange.com/questions/tagged/drush",
