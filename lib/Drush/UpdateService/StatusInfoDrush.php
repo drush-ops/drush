@@ -19,6 +19,18 @@ class StatusInfoDrush implements StatusInfoInterface {
   }
 
   /**
+   * Give the chance to alter projects list via hook_update_projects_alter().
+   */
+  function alter(&$projects) {
+    if (drush_drupal_major_version() >= 8) {
+      \Drupal::moduleHandler()->alter('update_projects', $projects);
+    }
+    else {
+      drupal_alter('update_projects', $projects);
+    }
+  }
+
+  /**
    * {@inheritdoc}
    */
   function lastCheck() {
@@ -26,6 +38,7 @@ class StatusInfoDrush implements StatusInfoInterface {
 
     // Iterate all projects and get the time of the older release info.
     $projects = drush_get_projects();
+    $this->alter($projects);
     foreach ($projects as $project_name => $project) {
       $request = pm_parse_request($project_name, NULL, $projects);
       $url = Project::buildFetchUrl($request);
@@ -47,6 +60,7 @@ class StatusInfoDrush implements StatusInfoInterface {
 
     // Clear all caches for the available projects.
     $projects = drush_get_projects();
+    $this->alter($projects);
     foreach ($projects as $project_name => $project) {
       $request = pm_parse_request($project_name, NULL, $projects);
       $release_info->clearCached($request);
@@ -68,6 +82,7 @@ class StatusInfoDrush implements StatusInfoInterface {
         }
       }
     }
+    $this->alter($projects);
     $available = $this->getAvailableReleases($projects);
     $update_info = $this->calculateUpdateStatus($available, $projects);
     return $update_info;
