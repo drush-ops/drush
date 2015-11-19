@@ -602,7 +602,7 @@ class Project {
       $xml = simplexml_import_dom($dom);
 
       // Extract last update time and the notes.
-      $last_updated = $xml->xpath('//div[@class="last-updated"]');
+      $last_updated = $xml->xpath('//div[contains(@class,"views-field-changed")]');
       $last_updated = $last_updated[0]->asXML();
       $notes = $xml->xpath('//div[contains(@class,"field-name-body")]');
       $notes = (!empty($notes)) ? $notes[0]->asXML() : dt("There're no release notes.");
@@ -611,7 +611,7 @@ class Project {
       $header = array();
       $header[] = '<hr>';
       $header[] = dt("> RELEASE NOTES FOR '!name' PROJECT, VERSION !version:", array('!name' => strtoupper($project_name), '!version' => $version));
-      $header[] = dt("> !last_updated.", array('!last_updated' => $last_updated));
+      $header[] = dt("> !last_updated.", array('!last_updated' => trim(drush_html_to_text($last_updated))));
       if ($print_status) {
         $header[] = '> ' . implode(', ', $this->parsed['releases'][$version]['release_status']);
       }
