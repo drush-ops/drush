@@ -344,7 +344,7 @@ function drush_make($makefile = NULL, $build_path = NULL) {
   $lockfiles = array();
   if ($result_file = drush_get_option('bundle-lockfile', FALSE)) {
     if ($result_file === TRUE) {
-      $result_file = 'sites/all/drush/platform.lock';
+      $result_file = 'sites/all/drush/platform.make';
     }
     $lockfiles[] = $build_path . '/' . $result_file;
   }
