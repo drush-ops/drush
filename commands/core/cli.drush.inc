@@ -63,6 +63,18 @@ function drush_cli_core_cli() {
   // run after the user presses ^D.  Mark this command as completed to avoid a
   // spurious error message.
   drush_set_context('DRUSH_EXECUTION_COMPLETED', TRUE);
+
+  // Run the terminate event before the shell is run. Otherwise, if the shell
+  // is forking processes (the default), any child processes will close the
+  // database connection when they are closed. So when we return back to the
+  // parent process after, there is no connection. Call terminate() regardless,
+  // this is a no-op for all DrupalBoot classes except DrupalBoot8. This will be
+  // called after the command in preflight still, but the subscriber instances
+  // are already created from before.
+  if ($bootstrap = drush_get_bootstrap_object()) {
+    $bootstrap->terminate();
+  }
+
   $shell->run();
 }
 
