@@ -4,8 +4,8 @@
 #
 # Example - rename this to .drush_prompt, and in your ~/.bash_profile add:
 #
-#    if [ -f ~/.drush_prompt ] ; then
-#        . ~/.drush_prompt
+#    if [ -f ~/.drush/drush.prompt.sh ] ; then
+#        . ~/.drush/drush.prompt.sh
 #    fi
 #
 # Features:
@@ -20,13 +20,12 @@ if [ "\$(type -t __git_ps1)" ] && [ "\$(type -t __drush_ps1)" ]; then
 
   # Git offers various prompt customization options as well as seen in
   # https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh.
-  # Uncomment any or all of the following lines to enable the corresponding
-  # features:
+  # Adjust the following lines to enable the corresponding features:
   #
-  # GIT_PS1_SHOWDIRTYSTATE=true
+  GIT_PS1_SHOWDIRTYSTATE=true
+  GIT_PS1_SHOWUPSTREAM=auto
   # GIT_PS1_SHOWSTASHSTATE=true
   # GIT_PS1_SHOWUNTRACKEDFILES=true
-  # GIT_PS1_SHOWUPSTREAM=auto
   # GIT_PS1_SHOWCOLORHINTS=true
 
   # The following line sets your bash prompt according to this example:
