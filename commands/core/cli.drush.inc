@@ -75,14 +75,14 @@ function drush_cli_core_cli() {
     $bootstrap->terminate();
   }
 
-  $shell->run();
-
   // To fix the above problem in Drupal 7, the connection can be closed manually.
-  // This will make sure a new connection is created again if/when needed in
-  // registered shutdown functions.
+  // This will make sure a new connection is created again in child loops. So
+  // any shutdown functions will still run ok after the shell has exited.
   if (drush_drupal_major_version() == 7) {
     Database::closeConnection();
   }
+
+  $shell->run();
 }
 
 /**
