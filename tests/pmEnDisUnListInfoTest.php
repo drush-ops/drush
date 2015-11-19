@@ -58,6 +58,18 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
       $this->assertEquals($output->{$key}, $value);
     }
 
+    // Test pm-projectinfo shows some project info.
+    $this->drush('pm-projectinfo', array('devel'), $options);
+    $output = $this->getOutputFromJSON('devel');
+    $expected = array(
+      'label' => 'Devel (devel)',
+      'type' => 'module',
+      'status' => '1',
+    );
+    foreach ($expected as $key => $value) {
+      $this->assertEquals($output->{$key}, $value);
+    }
+
     // Test the testing install profile theme is installed.
     $themeToCheck = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? 'classy' : (UNISH_DRUPAL_MAJOR_VERSION == 7 ? 'bartik' : 'garland');
     $this->assertTrue(in_array($themeToCheck, $list), 'Themes are in the pm-list');

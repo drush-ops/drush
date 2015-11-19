@@ -248,6 +248,39 @@ function pm_drush_command() {
       'output-data-type' => 'format-table',
     ),
   );
+
+  $items['pm-projectinfo'] = array(
+    'description' => 'Show a report of available projects and their extensions.',
+    'arguments' => array(
+      'projects' => 'Optional. A list of installed projects to show.',
+    ),
+    'options' => array(
+      'drush' => 'Optional. Only incude projects that have one or more Drush commands.',
+      'status' => array(
+        'description' => 'Filter by project status. Choices: enabled, disabled. A project is considered enabled when at least one of its extensions is enabled.',
+        'example-value' => 'enabled',
+      ),
+    ),
+    'outputformat' => array(
+      'default' => 'key-value-list',
+      'pipe-format' => 'json',
+      'field-labels' => array(
+        'label'      => 'Name',
+        'type'       => 'Type',
+        'version'    => 'Version',
+        'status'     => 'Status',
+        'extensions' => 'Extensions',
+        'drush'      => 'Drush Commands',
+        'datestamp'  => 'Datestamp',
+        'path'       => 'Path',
+      ),
+      'fields-default' => array('label', 'type', 'version', 'status', 'extensions', 'drush', 'datestamp', 'path'),
+      'fields-pipe' => array('label'),
+      'output-data-type' => 'format-table',
+    ),
+    'aliases' => array('pmpi'),
+  );
+
   // Install command is reserved for the download and enable of projects including dependencies.
   // @see http://drupal.org/node/112692 for more information.
   // $items['install'] = array(
