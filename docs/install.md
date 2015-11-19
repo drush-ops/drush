@@ -1,8 +1,8 @@
 Install/Upgrade a global Drush
 ---------------
 ```bash    
-# Download latest stable release manually or use code below. See github.com/drush-ops/drush/releases.
-wget https://github.com/drush-ops/drush/releases/download/8.0.0-rc4/drush.phar
+# Download latest stable release using the code below or browse to github.com/drush-ops/drush/releases.
+wget http:/files.drush.org/drush.phar
 
 # Test your install.
 php drush.phar core-status
@@ -32,8 +32,8 @@ In addition to the global Drush, it is recommended that Drupal 8 sites are [buil
 
 Drupal Compatibility
 -----------------
-Drush Version | Branch  | PHP | Compatible Drupal versions | Code Status
-------------- | ------  | --- | -------------------------- | -----------
+Drush Version | Drush Branch  | PHP | Compatible Drupal versions | Code Status
+------------- | ---------     | --- | -------------------------- | -----------
 Drush 8       | [master](https://travis-ci.org/drush-ops/drush)  | 5.4.5+ | D6, D7, D8                 | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=master">
 Drush 7       | [7.x](https://travis-ci.org/drush-ops/drush) | 5.3.0+ | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=7.x">
 Drush 6       | [6.x](https://travis-ci.org/drush-ops/drush) | 5.3.0+ | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=6.x">
