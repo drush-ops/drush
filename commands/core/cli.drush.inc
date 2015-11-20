@@ -148,15 +148,33 @@ function _drush_core_cli_get_casters() {
  * @return string.
  */
 function drush_history_path_cli() {
-  $drupal_major_version = drush_drupal_major_version();
-  $drush_core_directory = _drush_core_directory('root', 'path', TRUE);
   $cli_directory = drush_directory_cli();
 
-  $file_name = drush_get_option('version-history', FALSE) ? "drupal-$drupal_major_version" : 'drupal-site-' . md5($drush_core_directory);
+  // If only the Drupal version is being used for the history.
+  if (drush_get_option('version-history', FALSE)) {
+    $drupal_major_version = drush_drupal_major_version();
+    $file_name = "drupal-$drupal_major_version";
+  }
+  // If there is an alias, use that in the site specific name. Otherwise,
+  // use a hash of the root path.
+  else {
+    if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
+      $site = drush_sitealias_get_record($alias);
+      $site_suffix = $site['#name'];
+    }
+    else {
+      $drush_core_directory = _drush_core_directory('root', 'path', TRUE);
+      $site_suffix = md5($drush_core_directory);
+    }
+
+    $file_name = "drupal-site-$site_suffix";
+  }
+
   $full_path = "$cli_directory/$file_name";
 
+  // Output the history path if verbose is enabled.
   if (drush_get_context('DRUSH_VERBOSE')) {
-    drush_print(dt('History: @full_path', ['@full_path' => $full_path]));
+    drush_log(dt('History: @full_path', ['@full_path' => $full_path]), 'info');
   }
 
   return $full_path;
@@ -191,7 +209,7 @@ function drush_directory_cli() {
     }
   }
 
-  return drush_set_error('DRUSH_NO_WRITABLE_CACHE', dt('Drush must have a writable cli directory; please insure that one of the following locations is writable: @locations',
+  return drush_set_error('DRUSH_NO_WRITABLE_CLI', dt('Drush must have a writable cli directory; please insure that one of the following locations is writable: @locations',
     array('@locations' => implode(',', array_keys($cli_locations)))));
 }
 
