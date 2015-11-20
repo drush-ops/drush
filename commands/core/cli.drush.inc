@@ -148,7 +148,7 @@ function _drush_core_cli_get_casters() {
  * @return string.
  */
 function drush_history_path_cli() {
-  $cli_directory = drush_directory_cli();
+  $cli_directory = drush_directory_cache('cli');
 
   // If only the Drupal version is being used for the history.
   if (drush_get_option('version-history', FALSE)) {
@@ -177,36 +177,6 @@ function drush_history_path_cli() {
   }
 
   return $full_path;
-}
-
-/**
- * The path to the global cli directory.
- *
- * @return string
- */
-function drush_directory_cli() {
-  $cli_locations = [];
-
-  $home = drush_server_home();
-
-  if ($home) {
-    $cli_locations[$home] = '.drush/cli';
-  }
-
-  $cli_locations[drush_find_tmp()] = 'drush-' . drush_get_username() . '/cli';
-
-  foreach ($cli_locations as $base => $dir) {
-    if (!empty($base) && is_writable($base)) {
-      $cli_dir = $base . '/' . $dir;
-
-      if (drush_mkdir($cli_dir)) {
-        return $cli_dir;
-      }
-    }
-  }
-
-  return drush_set_error('DRUSH_NO_WRITABLE_CLI', dt('Drush must have a writable cli directory; please insure that one of the following locations is writable: @locations',
-    array('@locations' => implode(',', array_keys($cli_locations)))));
 }
 
 /**
