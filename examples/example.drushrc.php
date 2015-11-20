@@ -299,7 +299,7 @@
 # $command_specific['site-install'] = array('account-name' => 'alice', 'account-pass' => 'secret');
 
 // Use Drupal version specific CLI history instead of per site.
-# $command_specific['core-cli'] = array('version-specific' => TRUE);
+# $command_specific['core-cli'] = array('version-history' => TRUE);
 
 /**
  * Load a drushrc file from the 'drush' folder at the root of the current
