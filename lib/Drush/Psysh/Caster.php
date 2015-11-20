@@ -77,4 +77,19 @@ class Caster {
     return $array;
   }
 
+  /**
+   * Casts \Drupal\Component\DependencyInjection\Container classes.
+   */
+  public static function castContainer($container, $array, $stub, $isNested) {
+    if (!$isNested) {
+      $service_ids = $container->getServiceIds();
+      sort($service_ids);
+      foreach ($service_ids as $service_id) {
+        $array[BaseCaster::PREFIX_VIRTUAL . $service_id] = get_class($container->get($service_id));
+      }
+    }
+
+    return $array;
+  }
+
 }

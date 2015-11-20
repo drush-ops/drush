@@ -138,6 +138,7 @@ function _drush_core_cli_get_casters() {
     'Drupal\Core\Field\FieldItemInterface' => 'Drush\Psysh\Caster::castFieldItem',
     'Drupal\Core\Config\Entity\ConfigEntityInterface' => 'Drush\Psysh\Caster::castConfigEntity',
     'Drupal\Core\Config\ConfigBase' => 'Drush\Psysh\Caster::castConfig',
+    'Drupal\Component\DependencyInjection\Container' => 'Drush\Psysh\Caster::castContainer',
   ];
 }
 
