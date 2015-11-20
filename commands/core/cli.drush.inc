@@ -151,9 +151,15 @@ function drush_history_path_cli() {
   $drupal_major_version = drush_drupal_major_version();
   $drush_core_directory = _drush_core_directory('root', 'path', TRUE);
   $cli_directory = drush_directory_cli();
-  $file_name = drush_get_option('version-history', FALSE) ? "drupal-$drupal_major_version" : 'drupal-site-' . md5($drush_core_directory);
 
-  return "$cli_directory/$file_name";
+  $file_name = drush_get_option('version-history', FALSE) ? "drupal-$drupal_major_version" : 'drupal-site-' . md5($drush_core_directory);
+  $full_path = "$cli_directory/$file_name";
+
+  if (drush_get_context('DRUSH_VERBOSE')) {
+    drush_print(dt('History: @full_path', ['@full_path' => $full_path]));
+  }
+
+  return $full_path;
 }
 
 /**
