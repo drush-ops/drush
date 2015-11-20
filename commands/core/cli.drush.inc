@@ -15,6 +15,9 @@ function cli_drush_command() {
     'aliases' => array('php'),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'topics' => array('docs-repl'),
+    'options' => array(
+      'version-history' => 'Use command history based on Drupal version (Default is per site).',
+    ),
   );
   $items['docs-repl'] = array(
     'description' => 'repl.md',
@@ -31,10 +34,15 @@ function cli_drush_command() {
  * Command callback.
  */
 function drush_cli_core_cli() {
+  $drupal_major_version = drush_drupal_major_version();
   $configuration = new \Psy\Configuration();
+
+  // Set the Drush specific history file path.
+  $configuration->setHistoryFile(drush_history_path_cli());
+
   $shell = new Shell($configuration);
 
-  if (drush_drupal_major_version() >= 8) {
+  if ($drupal_major_version >= 8) {
     // Register the assertion handler so exceptions are thrown instead of errors
     // being triggered. This plays nicer with PsySH.
     Handle::register();
@@ -78,7 +86,7 @@ function drush_cli_core_cli() {
   // To fix the above problem in Drupal 7, the connection can be closed manually.
   // This will make sure a new connection is created again in child loops. So
   // any shutdown functions will still run ok after the shell has exited.
-  if (drush_drupal_major_version() == 7) {
+  if ($drupal_major_version == 7) {
     Database::closeConnection();
   }
 
@@ -130,6 +138,45 @@ function _drush_core_cli_get_casters() {
     'Drupal\Core\Config\Entity\ConfigEntityInterface' => 'Drush\Psysh\Caster::castConfigEntity',
     'Drupal\Core\Config\ConfigBase' => 'Drush\Psysh\Caster::castConfig',
   ];
+}
+
+/**
+ * Returns the file path for the CLI history.
+ *
+ * This can either be site specific (default) or Drupal version specific.
+ *
+ * @return string.
+ */
+function drush_history_path_cli() {
+  $cli_directory = drush_directory_cache('cli');
+
+  // If only the Drupal version is being used for the history.
+  if (drush_get_option('version-history', FALSE)) {
+    $drupal_major_version = drush_drupal_major_version();
+    $file_name = "drupal-$drupal_major_version";
+  }
+  // If there is an alias, use that in the site specific name. Otherwise,
+  // use a hash of the root path.
+  else {
+    if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
+      $site = drush_sitealias_get_record($alias);
+      $site_suffix = $site['#name'];
+    }
+    else {
+      $site_suffix = md5(DRUPAL_ROOT);
+    }
+
+    $file_name = "drupal-site-$site_suffix";
+  }
+
+  $full_path = "$cli_directory/$file_name";
+
+  // Output the history path if verbose is enabled.
+  if (drush_get_context('DRUSH_VERBOSE')) {
+    drush_log(dt('History: @full_path', ['@full_path' => $full_path]), 'info');
+  }
+
+  return $full_path;
 }
 
 /**
