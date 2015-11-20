@@ -163,8 +163,7 @@ function drush_history_path_cli() {
       $site_suffix = $site['#name'];
     }
     else {
-      $drush_core_directory = _drush_core_directory('root', 'path', TRUE);
-      $site_suffix = md5($drush_core_directory);
+      $site_suffix = md5(DRUPAL_ROOT);
     }
 
     $file_name = "drupal-site-$site_suffix";
@@ -202,9 +201,6 @@ function drush_directory_cli() {
 
       if (drush_mkdir($cli_dir)) {
         return $cli_dir;
-      }
-      else {
-        drush_clear_error();
       }
     }
   }
