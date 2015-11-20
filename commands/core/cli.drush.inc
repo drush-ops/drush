@@ -15,6 +15,9 @@ function cli_drush_command() {
     'aliases' => array('php'),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'topics' => array('docs-repl'),
+    'options' => array(
+      'version-history' => 'Use command history based on Drupal version (Default is per site).',
+    ),
   );
   $items['docs-repl'] = array(
     'description' => 'repl.md',
@@ -31,10 +34,15 @@ function cli_drush_command() {
  * Command callback.
  */
 function drush_cli_core_cli() {
+  $drupal_major_version = drush_drupal_major_version();
   $configuration = new \Psy\Configuration();
+
+  // Set the Drush specific history file path.
+  $configuration->setHistoryFile(drush_history_path_cli());
+
   $shell = new Shell($configuration);
 
-  if (drush_drupal_major_version() >= 8) {
+  if ($drupal_major_version >= 8) {
     // Register the assertion handler so exceptions are thrown instead of errors
     // being triggered. This plays nicer with PsySH.
     Handle::register();
@@ -78,7 +86,7 @@ function drush_cli_core_cli() {
   // To fix the above problem in Drupal 7, the connection can be closed manually.
   // This will make sure a new connection is created again in child loops. So
   // any shutdown functions will still run ok after the shell has exited.
-  if (drush_drupal_major_version() == 7) {
+  if ($drupal_major_version == 7) {
     Database::closeConnection();
   }
 
@@ -130,6 +138,55 @@ function _drush_core_cli_get_casters() {
     'Drupal\Core\Config\Entity\ConfigEntityInterface' => 'Drush\Psysh\Caster::castConfigEntity',
     'Drupal\Core\Config\ConfigBase' => 'Drush\Psysh\Caster::castConfig',
   ];
+}
+
+/**
+ * Returns the file path for the CLI history.
+ *
+ * This can either be site specific (default) or Drupal version specific.
+ *
+ * @return string.
+ */
+function drush_history_path_cli() {
+  $drupal_major_version = drush_drupal_major_version();
+  $drush_core_directory = _drush_core_directory('root', 'path', TRUE);
+  $cli_directory = drush_directory_cli();
+  $file_name = drush_get_option('version-history', FALSE) ? "drupal-$drupal_major_version" : 'drupal-site-' . md5($drush_core_directory);
+
+  return "$cli_directory/$file_name";
+}
+
+/**
+ * The path to the global cli directory.
+ *
+ * @return string
+ */
+function drush_directory_cli() {
+  $cli_locations = [];
+
+  $home = drush_server_home();
+
+  if ($home) {
+    $cli_locations[$home] = '.drush/cli';
+  }
+
+  $cli_locations[drush_find_tmp()] = 'drush-' . drush_get_username() . '/cli';
+
+  foreach ($cli_locations as $base => $dir) {
+    if (!empty($base) && is_writable($base)) {
+      $cli_dir = $base . '/' . $dir;
+
+      if (drush_mkdir($cli_dir)) {
+        return $cli_dir;
+      }
+      else {
+        drush_clear_error();
+      }
+    }
+  }
+
+  return drush_set_error('DRUSH_NO_WRITABLE_CACHE', dt('Drush must have a writable cli directory; please insure that one of the following locations is writable: @locations',
+    array('@locations' => implode(',', array_keys($cli_locations)))));
 }
 
 /**
