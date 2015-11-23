@@ -38,7 +38,7 @@ class pmUpdateCode extends CommandUnishTestCase {
       // Make sure that we can still update from the previous release
       // to the current release.
       $core = $this->getPreviousStable("drupal-8");
-      $modules_str = 'unish-8.x-1.2,honeypot-8.x-1.21';
+      $modules_str = 'unish-8.x-1.2,honeypot-8.x-1.19-beta14';
       $this->modules = array('block', 'unish', 'honeypot');
     }
     elseif (UNISH_DRUPAL_MAJOR_VERSION == 7) {
