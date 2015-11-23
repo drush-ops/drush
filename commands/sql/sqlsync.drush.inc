@@ -234,6 +234,7 @@ function drush_sqlsync_sql_sync($source, $destination) {
   else {
     $source_dump_path = drush_get_option('source-dump');
   }
+
   $do_rsync = !drush_get_option('no-sync');
   // Determine path/to/dump on destination.
   if (drush_get_option('target-dump')) {
@@ -254,13 +255,14 @@ function drush_sqlsync_sql_sync($source, $destination) {
     $destination_dump_path = $tmp . '/' . basename($source_dump_path);
     $rsync_options['yes'] = TRUE;  // No need to prompt as destination is a tmp file.
   }
+
   if ($do_rsync) {
     if (!drush_get_option('no-dump')) {
       // Cleanup if this command created the dump file.
       $rsync_options['remove-source-files'] = TRUE;
     }
     $runner = drush_get_runner($source, $destination);
-    $return = drush_invoke_process($runner, 'core-rsync', array("$source:$source_dump_path", "$destination:$destination_dump_path"), $rsync_options);
+    $return = drush_invoke_process($runner, 'core-rsync', array("$source:$source_dump_path", "$destination:$destination_dump_path"), $global_options + $rsync_options);
     drush_log(dt('Copying dump file from Source to Destination.'), 'ok');
     if ($return['error_status']) {
       return drush_set_error('DRUSH_RSYNC_FAILED', dt('core-rsync failed.'));
