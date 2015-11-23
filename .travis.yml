@@ -81,6 +81,7 @@ deploy:
     bucket: files.drush.org
     skip_cleanup: true
     local_dir: s3-unstable
+    detect_encoding: true
     on:
       repo: drush-ops/drush
       branch: master
@@ -94,6 +95,7 @@ deploy:
     bucket: "files.drush.org"
     skip_cleanup: true
     local_dir: s3-stable
+    detect_encoding: true
     on:
       tags: true
       repo: drush-ops/drush
