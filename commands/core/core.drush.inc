@@ -456,14 +456,16 @@ function drush_core_updatedb() {
   }
 
   drush_include_engine('drupal', 'update');
-  if (update_main() === FALSE) {
+  $result = update_main();
+  if ($result === FALSE) {
     return FALSE;
   }
+  elseif ($result > 0) {
+    // Clear all caches in a new process. We just performed major surgery.
+    drush_drupal_cache_clear_all();
 
-  // Clear all caches in a new process. We just performed major surgery.
-  drush_drupal_cache_clear_all();
-
-  drush_log(dt('Finished performing updates.'), 'ok');
+    drush_log(dt('Finished performing updates.'), 'ok');
+  }
 }
 
 /**
