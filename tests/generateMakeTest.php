@@ -71,10 +71,10 @@ EOD;
 core: $major_version
 api: 2
 projects:
-  libraries:
-    subdir: contrib
   drupal: {  }
   devel: {  }
+  libraries:
+    subdir: contrib
   omega: {  }
 EOD;
     $actual = trim(file_get_contents($makefile));
