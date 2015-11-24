@@ -32,14 +32,11 @@ class generateMakeCase extends CommandUnishTestCase {
     $this->drush('generate-makefile', array($makefile), array('exclude-versions' => NULL) + $options);
     $expected = <<<EOD
 core: $major_version
-api: '2'
+api: 2
 projects:
-  drupal:
-    version: ''
-  devel:
-    version: ''
-  omega:
-    version: ''
+  drupal: {  }
+  devel: {  }
+  omega: {  }
 EOD;
     $actual = trim(file_get_contents($makefile));
 
@@ -72,16 +69,13 @@ EOD;
     $this->drush('generate-makefile', array($makefile), array('exclude-versions' => NULL) + $options);
     $expected = <<<EOD
 core: $major_version
-api: '2'
+api: 2
 projects:
   libraries:
     subdir: contrib
-  drupal:
-    version: ''
-  devel:
-    version: ''
-  omega:
-    version: ''
+  drupal: {  }
+  devel: {  }
+  omega: {  }
 EOD;
     $actual = trim(file_get_contents($makefile));
 
