@@ -158,7 +158,7 @@ function make_generate_from_makefile($file, $makefile) {
 /**
  * Generate makefile contents in the appropriate format.
  */
-function make_generate_makefile_contents($projects, $libraries, $core, $defaults) {
+function make_generate_makefile_contents($projects,  $libraries = array(), $core_version = NULL, $defaults = array()) {
   $format = drush_get_option('format', 'yaml');
   $func = "make_generate_makefile_contents_$format";
   if (function_exists($func)) {

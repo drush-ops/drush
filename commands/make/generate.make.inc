@@ -15,7 +15,7 @@ function drush_make_generate($file = NULL) {
   $version_options = _drush_make_generate_get_version_options();
   $all_extensions = drush_get_extensions();
   list($projects, $libraries) = _drush_make_generate_projects($all_extensions, $version_options);
-  $contents = _drush_make_generate_makefile_contents($projects, $libraries);
+  $contents = make_generate_makefile_contents($projects, $libraries);
 
   // Write or print our makefile.
   make_generate_print($contents, $file);
