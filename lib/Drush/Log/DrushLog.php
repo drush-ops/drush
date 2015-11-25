@@ -4,7 +4,14 @@
  * @file
  * Contains \Drush\Log\DrushLog.
  *
- * This
+ * This class is only used to convert logging calls made
+ * inside of Drupal into a logging format that is usable
+ * by Drush.  This code is ONLY usable within the context
+ * of a bootstrapped Drupal 8 site.
+ *
+ * See Drush\Log\Logger for our actuall LoggerInterface
+ * implementation, that does the work of logging messages
+ * that originate from Drush.
  */
 
 namespace Drush\Log;
@@ -21,15 +28,6 @@ use Psr\Log\LoggerInterface;
  * needlessly replaces Psr\Log\LogLevels with Drupal\Core\Logger\RfcLogLevel.
  * Doing this arguably violates the Psr\Log contract,
  * but we can't help that here -- we just need to convert back.
- *
- * The code here is used to convert logging calls made
- * inside of Drupal into a logging format that is usable
- * by Drush.  This code is ONLY usable within the context
- * of a bootstrapped Drupal 8 site.
- *
- * See Drush\Log\Logger for our actuall LoggerInterface
- * implementation, that does the work of logging messages
- * that originate from Drush.
  */
 class DrushLog implements LoggerInterface {
 
