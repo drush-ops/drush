@@ -2,6 +2,8 @@
 
 namespace Drush\Boot;
 
+use \Drush\Log\LogLevel;
+
 abstract class BaseBoot implements Boot {
 
   function __construct() {

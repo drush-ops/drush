@@ -7,6 +7,8 @@
  *   line.
  */
 
+use \Drush\Log\LogLevel;
+
 /**
  * Drupal's update.inc has functions that are in previous update_X.inc files
  * for example, update_check_incompatibility() which can prove useful when
@@ -280,7 +282,7 @@ function drush_get_update_list() {
 function drush_update_finished($success, $results, $operations) {
 
   if (!drush_get_option('cache-clear', TRUE)) {
-    drush_log(dt("Skipping cache-clear operation due to --cache-clear=0 option."), 'warning');
+    drush_log(dt("Skipping cache-clear operation due to --cache-clear=0 option."), LogLevel::WARNING);
   }
   else {
     drupal_flush_all_caches();

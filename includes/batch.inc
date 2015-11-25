@@ -24,6 +24,8 @@
  * implementations.
  */
 
+use \Drush\Log\LogLevel;
+
 /**
  * Class extending ArrayObject to allow the batch API to perform logging when
  * some keys of the array change.

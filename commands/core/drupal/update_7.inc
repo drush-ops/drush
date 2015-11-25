@@ -7,6 +7,8 @@
  *   line.
  */
 
+use \Drush\Log\LogLevel;
+
 /**
  * Global flag to identify update.php run, and so avoid various unwanted
  * operations, such as hook_init() and hook_exit() invokes, css/js preprocessing
@@ -136,7 +138,7 @@ function update_check_requirements() {
         $message .= ' (Currently using ' . $requirement['title'] . ' ' . $requirement['value'] . ')';
       }
       $warnings = TRUE;
-      drupal_set_message($message, 'warning');
+      drupal_set_message($message, LogLevel::WARNING);
     }
   }
   return $warnings;

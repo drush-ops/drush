@@ -1,5 +1,7 @@
 <?php
 
+use \Drush\Log\LogLevel;
+
 /**
  * Command callback. Disable one or more extensions.
  */
@@ -15,7 +17,7 @@ function _drush_pm_disable($args) {
 
   // Discard and set an error for each unknown extension.
   foreach ($unknown as $name) {
-    drush_log('DRUSH_PM_ENABLE_EXTENSION_NOT_FOUND', dt('!extension was not found and will not be disabled.', array('!extension' => $name)), 'warning');
+    drush_log('DRUSH_PM_ENABLE_EXTENSION_NOT_FOUND', dt('!extension was not found and will not be disabled.', array('!extension' => $name)), LogLevel::WARNING);
   }
 
   // Discard already disabled extensions.
@@ -112,12 +114,12 @@ function _drush_pm_uninstall($modules) {
     if (!isset($module_info[$module])) {
       // The module does not exist in the system.
       unset($modules[$key]);
-      drush_log(dt('Module !module was not found and will not be uninstalled.', array('!module' => $module)), 'warning');
+      drush_log(dt('Module !module was not found and will not be uninstalled.', array('!module' => $module)), LogLevel::WARNING);
     }
     else if ($module_info[$module]->status) {
       // The module is enabled.
       unset($modules[$key]);
-      drush_log(dt('!module is not disabled. Use `pm-disable` command before `pm-uninstall`.', array('!module' => $module)), 'warning');
+      drush_log(dt('!module is not disabled. Use `pm-disable` command before `pm-uninstall`.', array('!module' => $module)), LogLevel::WARNING);
     }
     else if ($module_info[$module]->schema_version == -1) { // SCHEMA_UNINSTALLED
       // The module is uninstalled.

@@ -5,12 +5,13 @@
  *   Provides Configuration Management commands.
  */
 
+use \Drush\Log\LogLevel;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\ConfigImporter;
 use Drupal\Core\Config\ConfigException;
 use Drupal\Core\Config\FileStorage;
-use Drush\Config\StorageWrapper;
-use Drush\Config\CoreExtensionFilter;
+use \Drush\Config\StorageWrapper;
+use \Drush\Config\CoreExtensionFilter;
 use Symfony\Component\Yaml\Parser;
 
 /**
@@ -655,7 +656,7 @@ function _drush_config_import(StorageComparer $storage_comparer) {
     Drupal::service('string_translation')
   );
   if ($config_importer->alreadyImporting()) {
-    drush_log('Another request may be synchronizing configuration already.', 'warning');
+    drush_log('Another request may be synchronizing configuration already.', LogLevel::WARNING);
   }
   else{
     try {
@@ -671,7 +672,7 @@ function _drush_config_import(StorageComparer $storage_comparer) {
       // coordinating.
       $message = 'The import failed due for the following reasons:' . "\n";
       $message .= implode("\n", $config_importer->getErrors());
-      
+
       watchdog_exception('config_import', $e);
       return drush_set_error('config_import_fail', $message);
     }

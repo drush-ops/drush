@@ -6,6 +6,8 @@
  *   http://groups.drupal.org/site-archive-format.
  */
 
+use \Drush\Log\LogLevel;
+
 function archive_drush_command() {
   $items['archive-dump'] = array(
     'description' => 'Backup your code, files, and database into a single file.',
@@ -75,7 +77,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
   $sites = array();
   list($aliases, $not_found) = drush_sitealias_resolve_sitespecs(explode(',', $sites_subdirs));
   if (!empty($not_found)) {
-    drush_log(dt("Some site subdirectories are not valid Drupal sites: @list", array("@list" => implode(', ', $not_found))), 'warning');
+    drush_log(dt("Some site subdirectories are not valid Drupal sites: @list", array("@list" => implode(', ', $not_found))), LogLevel::WARNING);
   }
   foreach ($aliases as $key => $alias) {
     $sites[$key] = $alias;
@@ -240,7 +242,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
   foreach ($sites as $key => $alias) {
     $status = drush_invoke_process($alias, 'core-status', array(), array(), array('integrate' => FALSE));
     if (!$status || $status['error_log']) {
-      drush_log(dt('Unable to determine sites directory for !alias', array('!alias' => $key)), 'warning');
+      drush_log(dt('Unable to determine sites directory for !alias', array('!alias' => $key)), LogLevel::WARNING);
     }
 
     // Add the site specific directory to archive.

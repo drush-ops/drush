@@ -4,6 +4,7 @@
  * Drush Make commands.
  */
 
+use \Drush\Log\LogLevel;
 use \Drush\UpdateService\ReleaseInfo;
 
 /**

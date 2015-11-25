@@ -2,6 +2,8 @@
 
 namespace Drush\Sql;
 
+use \Drush\Log\LogLevel;
+
 class Sqlsqlite extends SqlBase {
   public function command() {
     return 'sqlite3';

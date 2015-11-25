@@ -6,7 +6,7 @@ namespace Drush\Log;
  * Additional log levels that Drush uses for historical reasons.
  * Standard log levels should be preferred.
  */
-class LogLevel extends Psr\Log\LogLevel
+class LogLevel extends \Psr\Log\LogLevel
 {
     // Notice that the user is cancelling an operation. Like 'warning'
     const CANCEL = 'cancel';

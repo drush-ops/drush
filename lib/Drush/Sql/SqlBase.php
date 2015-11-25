@@ -2,6 +2,8 @@
 
 namespace Drush\Sql;
 
+use \Drush\Log\LogLevel;
+
 class SqlBase {
 
   // An Drupal style array containing specs for connecting to database.

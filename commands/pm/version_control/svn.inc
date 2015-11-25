@@ -5,6 +5,8 @@
  * Drush pm SVN extension
  */
 
+use \Drush\Log\LogLevel;
+
 class drush_version_control_svn implements drush_version_control {
 
   /**

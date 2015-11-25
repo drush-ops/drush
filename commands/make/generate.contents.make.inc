@@ -4,6 +4,8 @@
  * Functions for the generate makefile command.
  */
 
+use \Drush\Log\LogLevel;
+
 /**
  * Generate the actual contents of the .make file.
  */
@@ -66,7 +68,7 @@ function _drush_make_generate_makefile_body($projects, $output = array()) {
     $string .= "\n";
   }
   if ($custom) {
-    drush_log(dt('Some of the properties in your makefile will have to be manually edited. Please do that now.'), 'warning');
+    drush_log(dt('Some of the properties in your makefile will have to be manually edited. Please do that now.'), LogLevel::WARNING);
   }
   return $string;
 }

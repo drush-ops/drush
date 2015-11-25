@@ -1,5 +1,6 @@
 <?php
 
+use \Drush\Log\LogLevel;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\Html;
 

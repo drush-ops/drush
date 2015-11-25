@@ -1,5 +1,7 @@
 <?php
 
+use \Drush\Log\LogLevel;
+
 /**
  * @defgroup outputfunctions Process output text.
  * @{

@@ -4,6 +4,8 @@
  * @file
  */
 
+use \Drush\Log\LogLevel;
+
 /**
  * Implements hook_drush_help_alter().
  */

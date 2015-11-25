@@ -5,6 +5,8 @@
  *   Functions for executing system commands. (e.g. exec(), system(), ...).
  */
 
+use \Drush\Log\LogLevel;
+
 /**
  * @defgroup commandwrappers Functions to execute commands.
  * @{
@@ -409,7 +411,7 @@ function drush_start_browser($uri = NULL, $sleep = FALSE, $port = FALSE) {
     $hosterror = (gethostbynamel($host) === FALSE);
     $iperror = (ip2long($host) && gethostbyaddr($host) == $host);
     if (!drush_get_context('DRUSH_SIMULATE') && ($hosterror || $iperror)) {
-      drush_log(dt('!host does not appear to be a resolvable hostname or IP, not starting browser. You may need to use the --uri option in your command or site alias to indicate the correct URL of this site.', array('!host' => $host)), 'warning');
+      drush_log(dt('!host does not appear to be a resolvable hostname or IP, not starting browser. You may need to use the --uri option in your command or site alias to indicate the correct URL of this site.', array('!host' => $host)), LogLevel::WARNING);
       return FALSE;
     }
     if ($port) {

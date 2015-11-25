@@ -2,6 +2,8 @@
 
 namespace Drush\Sql;
 
+use \Drush\Log\LogLevel;
+
 class Sqloracle extends SqlBase {
 
   // The way you pass a sql file when issueing a query.

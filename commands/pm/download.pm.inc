@@ -5,6 +5,7 @@
  * pm-download command implementation.
  */
 
+use \Drush\Log\LogLevel;
 use \Drush\UpdateService\ReleaseInfo;
 
 /**
@@ -57,7 +58,7 @@ function drush_pm_download_validate() {
   if (($package_handler != 'wget') && ($variant != 'profile-only')) {
     $new_variant = 'profile-only';
     if ($variant) {
-      drush_log(dt('Variant !variant is incompatible with !ph package-handler.', array('!variant' => $variant, '!ph' => $package_handler)), 'warning');
+      drush_log(dt('Variant !variant is incompatible with !ph package-handler.', array('!variant' => $variant, '!ph' => $package_handler)), LogLevel::WARNING);
     }
   }
   // If we are working on a drupal root, full variant is not an option.
@@ -66,7 +67,7 @@ function drush_pm_download_validate() {
       $new_variant = 'projects';
     }
     if ($variant == 'full') {
-      drush_log(dt('Variant full is not a valid option within a Drupal root.'), 'warning');
+      drush_log(dt('Variant full is not a valid option within a Drupal root.'), LogLevel::WARNING);
     }
   }
 
@@ -201,7 +202,7 @@ function drush_pm_download() {
           drush_delete_dir($request['project_install_location'], TRUE);
         }
         else {
-          drush_log(dt("Skip installation of !project to !dest.", array('!project' => $request['name'], '!dest' => $request['project_install_location'])), 'warning');
+          drush_log(dt("Skip installation of !project to !dest.", array('!project' => $request['name'], '!dest' => $request['project_install_location'])), LogLevel::WARNING);
           continue;
         }
       }

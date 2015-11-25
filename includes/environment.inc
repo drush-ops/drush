@@ -10,6 +10,8 @@
  * @see includes/bootstrap.inc
  */
 
+use \Drush\Log\LogLevel;
+
 /**
  * Log PHP errors to the Drush log. This is in effect until Drupal's error
  * handler takes over.
@@ -36,7 +38,7 @@ function drush_error_handler($errno, $message, $filename, $line, $context) {
     // Bitmask value that constitutes a warning being logged.
     $warning = E_WARNING | E_CORE_WARNING | E_COMPILE_WARNING | E_USER_WARNING;
     if ($errno & $warning) {
-      $type = 'warning';
+      $type = LogLevel::WARNING;
     }
 
     drush_log($message . ' ' . basename($filename) . ':' . $line, $type);

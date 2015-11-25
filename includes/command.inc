@@ -1,5 +1,7 @@
 <?php
 
+use \Drush\Log\LogLevel;
+
 /**
  * @defgroup dispatching Command dispatching functions.
  * @{
@@ -103,7 +105,7 @@ function drush_invoke_process($site_alias_record, $command_name, $commandline_ar
   if (is_array($site_alias_record) && array_key_exists('site-list', $site_alias_record)) {
     list($site_alias_records, $not_found) = drush_sitealias_resolve_sitespecs($site_alias_record['site-list']);
     if (!empty($not_found)) {
-      drush_log(dt("Not found: @list", array("@list" => implode(', ', $not_found))), 'warning');
+      drush_log(dt("Not found: @list", array("@list" => implode(', ', $not_found))), LogLevel::WARNING);
       return FALSE;
     }
     $site_alias_records = drush_sitealias_simplify_names($site_alias_records);
@@ -1666,7 +1668,7 @@ function drush_command_set_command_specific($command_default_options, $command =
           if (!array_key_exists('context', $global_options[$key])) {
             $strict_options_warning =& drush_get_context('DRUSH_STRICT_OPTIONS_WARNING', array());
             if (!array_key_exists($key, $strict_options_warning)) {
-              drush_log(dt("Global option --!option not supported in command-specific options for command !command due to a limitation in strict option handling.", array('!option' => $key, '!command' => $command['command'])), 'warning');
+              drush_log(dt("Global option --!option not supported in command-specific options for command !command due to a limitation in strict option handling.", array('!option' => $key, '!command' => $command['command'])), LogLevel::WARNING);
               $strict_options_warning[$key] = TRUE;
             }
           }

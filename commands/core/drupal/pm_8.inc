@@ -1,5 +1,7 @@
 <?php
 
+use \Drush\Log\LogLevel;
+
 /**
  * Command callback. Drupal 8 does not support disabled modules.
  *
@@ -28,7 +30,7 @@ function _drush_pm_uninstall($extensions) {
   foreach ($extensions as $extension) {
     if (!isset($extension_info[$extension])) {
       unset($extensions[$extension]);
-      drush_log(dt('Extension !extension was not found and will not be uninstalled.', array('!extension' => $extension)), 'warning');
+      drush_log(dt('Extension !extension was not found and will not be uninstalled.', array('!extension' => $extension)), LogLevel::WARNING);
     }
     elseif (in_array($extension, $required)) {
       unset($extensions[$extension]);

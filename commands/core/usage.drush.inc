@@ -6,6 +6,8 @@
  *   to assure that no sensitive data is shared. See http://drupal.org/node/1246738.
  */
 
+use \Drush\Log\LogLevel;
+
 /**
  * To send usage data, add the following to a .drushrc.php file:
  * $options['drush_usage_log'] = TRUE;

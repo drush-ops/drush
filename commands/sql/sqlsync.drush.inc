@@ -1,5 +1,7 @@
 <?php
 
+use \Drush\Log\LogLevel;
+
 /*
  * Notes:
  * - Drush is required on source and dest (except with --no-dump)

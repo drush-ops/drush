@@ -5,7 +5,8 @@
  * The drush API implementation and helpers.
  */
 
-use Drush\Log\Logger;
+use \Drush\Log\Logger;
+use \Drush\Log\LogLevel;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -774,7 +775,7 @@ function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
         // Cache was set just by downloading file to right location.
       }
       elseif (file_exists($cache_file)) {
-        drush_log(dt('!name retrieved from an expired cache since refresh failed.', array('!name' => $cache_file)), 'warning');
+        drush_log(dt('!name retrieved from an expired cache since refresh failed.', array('!name' => $cache_file)), LogLevel::WARNING);
       }
       else {
         $cache_file = FALSE;
@@ -930,11 +931,11 @@ function drush_attempt_mime_content_type($filename) {
         }
       }
       else {
-        drush_log(dt('Unable to read !file.', array('!file' => $filename)), 'warning');
+        drush_log(dt('Unable to read !file.', array('!file' => $filename)), LogLevel::WARNING);
       }
     }
     else {
-      drush_log(dt('Unable to open !file.', array('!file' => $filename)), 'warning');
+      drush_log(dt('Unable to open !file.', array('!file' => $filename)), LogLevel::WARNING);
     }
   }
 
@@ -1292,7 +1293,7 @@ function _drush_log($entry) {
   }
 }
 
-function drush_log_has_errors($types = array('warning', 'error', 'failed')) {
+function drush_log_has_errors($types = array(LogLevel::WARNING, 'error', 'failed')) {
   $log =& drush_get_context('DRUSH_LOG', array());
   foreach ($log as $entry) {
     if (in_array($entry['type'], $types)) {
@@ -1417,7 +1418,7 @@ function _drush_log_drupal_messages() {
           continue;
         }
         elseif (preg_match('/^warning:/i', $error)) {
-          drush_log(preg_replace('/^warning: /i', '', $error), 'warning');
+          drush_log(preg_replace('/^warning: /i', '', $error), LogLevel::WARNING);
         }
         elseif (preg_match('/^notice:/i', $error)) {
           drush_log(preg_replace('/^notice: /i', '', $error), 'notice');

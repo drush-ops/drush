@@ -4,6 +4,8 @@
  * Drush Make processing classes.
  */
 
+use \Drush\Log\LogLevel;
+
 /**
  * The base project class.
  */
@@ -487,7 +489,7 @@ class DrushMakeProject {
           drush_log('All translations downloaded for ' . $this->name, 'ok');
         }
         else {
-          drush_log('Unable to download translations for ' . $this->name . ': ' . implode(', ', $failed), 'warning');
+          drush_log('Unable to download translations for ' . $this->name . ': ' . implode(', ', $failed), LogLevel::WARNING);
         }
       }
     }

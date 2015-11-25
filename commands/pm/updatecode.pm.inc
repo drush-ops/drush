@@ -5,6 +5,8 @@
  * pm-updatecode command implementation.
  */
 
+use \Drush\Log\LogLevel;
+
 /**
  * Command callback. Displays update status info and allows to update installed projects.
  *

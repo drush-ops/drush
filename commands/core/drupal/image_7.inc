@@ -1,5 +1,7 @@
 <?php
 
+use \Drush\Log\LogLevel;
+
 /**
  * @file
  *   Specific functions for a Drupal image handling.

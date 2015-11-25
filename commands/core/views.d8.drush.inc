@@ -5,6 +5,7 @@
  * Drush integration for views.
  */
 
+use \Drush\Log\LogLevel;
 use Drupal\views\Analyzer;
 use Drupal\views\Entity\View;
 use Drupal\views\Views;
@@ -298,7 +299,7 @@ function drush_views_execute($view_name, $display_id = NULL) {
     }
   }
   else {
-    drush_log(dt('No results returned for this view.') ,'warning');
+    drush_log(dt('No results returned for this view.') ,LogLevel::WARNING);
     return NULL;
   }
 }

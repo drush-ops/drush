@@ -4,6 +4,8 @@
  * Download-specific functions for Drush Make.
  */
 
+use \Drush\Log\LogLevel;
+
 /**
  * Downloads the given package to the destination directory.
  *

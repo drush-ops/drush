@@ -5,6 +5,8 @@
  *   Documentation commands providing various topics.
  */
 
+use \Drush\Log\LogLevel;
+
 /**
  * Implementation of hook_drush_help().
  */

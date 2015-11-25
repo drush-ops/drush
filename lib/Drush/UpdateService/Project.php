@@ -2,6 +2,8 @@
 
 namespace Drush\UpdateService;
 
+use \Drush\Log\LogLevel;
+
 /**
  * Representation of a project's release info from the update service.
  */
@@ -584,7 +586,7 @@ class Project {
 
     foreach ($versions as $version) {
       if (!isset($this->parsed['releases'][$version]['release_link'])) {
-        drush_log(dt("Project !project does not have release notes for version !version.", array('!project' => $project_name, '!version' => $version)), 'warning');
+        drush_log(dt("Project !project does not have release notes for version !version.", array('!project' => $project_name, '!version' => $version)), LogLevel::WARNING);
         continue;
       }
 

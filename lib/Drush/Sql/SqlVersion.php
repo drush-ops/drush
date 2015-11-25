@@ -2,6 +2,8 @@
 
 namespace Drush\Sql;
 
+use \Drush\Log\LogLevel;
+
 class SqlVersion {
   /*
    * Determine $db_spec by inspecting the global environment (D6/7) or the DB API (D8+).

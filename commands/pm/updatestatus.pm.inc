@@ -5,6 +5,8 @@
  * pm-updatestatus command implementation.
  */
 
+use \Drush\Log\LogLevel;
+
 /**
  * Command callback. Displays update status info of installed projects.
  *

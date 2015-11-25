@@ -1,5 +1,7 @@
 <?php
 
+use \Drush\Log\LogLevel;
+
 /**
  * Implementation of hook_drush_help().
  */
@@ -58,7 +60,7 @@ function _drush_search_status() {
       $status = $entity->getPlugin()->indexStatus();
       $remaining += $status['remaining'];
       $total += $status['total'];
-    }   
+    }
   }
   elseif (drush_drupal_major_version() == 7) {
     foreach (variable_get('search_active_modules', array('node', 'user')) as $module) {

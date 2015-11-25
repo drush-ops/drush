@@ -6,7 +6,11 @@
  *   which has been modified to allow being run from the command
  *   line.
  */
+
+use \Drush\Log\LogLevel;
+
 define('MAINTENANCE_MODE', 'update');
+
 
 /**
  * Add a column to a database using syntax appropriate for PostgreSQL.
@@ -264,7 +268,7 @@ function update_check_requirements() {
         if (isset($requirement['value']) && $requirement['value']) {
           $message .= ' (Currently using '. $requirement['title'] .' '. $requirement['value'] .')';
         }
-        drush_log($message, 'warning');
+        drush_log($message, LogLevel::WARNING);
       }
     }
   }

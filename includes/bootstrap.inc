@@ -1,5 +1,6 @@
 <?php
 
+use \Drush\Log\LogLevel;
 
 /**
  * No bootstrap.

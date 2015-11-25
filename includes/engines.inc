@@ -5,6 +5,8 @@
  * The drush engines API implementation and helpers.
  */
 
+use \Drush\Log\LogLevel;
+
 /**
  * Obtain all engine types info and normalize with defaults.
  *

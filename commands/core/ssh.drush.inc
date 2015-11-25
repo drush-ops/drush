@@ -6,6 +6,8 @@
 *  SSH, either for an interactive session or to run a shell command.
 */
 
+use \Drush\Log\LogLevel;
+
 function ssh_drush_command() {
   $items['site-ssh'] = array(
     'description' => 'Connect to a Drupal site\'s server via SSH for an interactive session or to run a shell command',

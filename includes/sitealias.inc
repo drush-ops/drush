@@ -9,6 +9,8 @@
  * @see http://drupal.org/node/670460
  */
 
+use \Drush\Log\LogLevel;
+
 /**
  * Check to see if the user specified an alias
  * in an arguement, or via site-set.  If so, return

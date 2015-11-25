@@ -25,7 +25,8 @@
 
 namespace Drush\Log;
 
-use Psr\Log\AbstractLogger;
+use \Drush\Log\LogLevel;
+use \Psr\Log\AbstractLogger;
 
 class Logger extends AbstractLogger {
 
@@ -58,7 +59,7 @@ class Logger extends AbstractLogger {
       $debug = drush_get_context('DRUSH_DEBUG');
 
       switch ($level) {
-        case 'warning' :
+        case LogLevel::WARNING :
         case 'cancel' :
           $type_msg = sprintf($yellow, $level);
           break;

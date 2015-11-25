@@ -12,6 +12,8 @@
  * - Release: a specific release of a project, with associated metadata (from the drupal.org update service).
  */
 
+use \Drush\Log\LogLevel;
+
 /**
  * @defgroup update_status_constants Update Status Constants
  * @{
@@ -798,7 +800,7 @@ function _drush_pm_find_common_path($project_type, $extensions) {
   // Select the first path as the candidate to be the common prefix.
   $extension = array_pop($extensions);
   while (!($path = drupal_get_path($project_type, $extension))) {
-    drush_log(dt('Unknown path for !extension !type.', array('!extension' => $extension, '!type' => $project_type)), 'warning');
+    drush_log(dt('Unknown path for !extension !type.', array('!extension' => $extension, '!type' => $project_type)), LogLevel::WARNING);
     $extension = array_pop($extensions);
   }
 
@@ -996,7 +998,7 @@ function drush_pm_enable_validate() {
     if (!empty($unknown)) {
       $found = array();
       foreach ($unknown as $name) {
-        drush_log(dt('!extension was not found.', array('!extension' => $name)), 'warning');
+        drush_log(dt('!extension was not found.', array('!extension' => $name)), LogLevel::WARNING);
         $project = drush_pm_enable_find_project_from_extension($name);
         if (!empty($project)) {
           $found[] = $project;
@@ -1403,7 +1405,7 @@ function drush_pm_updatecode_postupdate() {
     if ($updates !== FALSE) {
       $default = drupal_get_installed_schema_version($module);
       if (max($updates) > $default) {
-        drush_log(dt("You have pending database updates. Run `drush updatedb` or visit update.php in your browser."), 'warning');
+        drush_log(dt("You have pending database updates. Run `drush updatedb` or visit update.php in your browser."), LogLevel::WARNING);
         break;
       }
     }
@@ -1948,11 +1950,11 @@ function drush_pm_update_lock(&$projects, $projects_to_lock, $projects_to_unlock
   // Warn about ambiguous lock / unlock values
   if ($projects_to_lock == array('1')) {
     $projects_to_lock = array();
-    drush_log(dt('Ignoring --lock with no value.'), 'warning');
+    drush_log(dt('Ignoring --lock with no value.'), LogLevel::WARNING);
   }
   if ($projects_to_unlock == array('1')) {
     $projects_to_unlock = array();
-    drush_log(dt('Ignoring --unlock with no value.'), 'warning');
+    drush_log(dt('Ignoring --unlock with no value.'), LogLevel::WARNING);
   }
 
   // Log if we are going to lock or unlock anything

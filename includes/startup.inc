@@ -9,6 +9,8 @@
  * available.
  */
 
+use \Drush\Log\LogLevel;
+
 /**
  * Get the current enviornment.
  */

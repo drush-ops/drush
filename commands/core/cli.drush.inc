@@ -1,9 +1,10 @@
 <?php
 
+use \Drush\Log\LogLevel;
 use Drupal\Component\Assertion\Handle;
-use Drush\Psysh\DrushHelpCommand;
-use Drush\Psysh\DrushCommand;
-use Drush\Psysh\Shell;
+use \Drush\Psysh\DrushHelpCommand;
+use \Drush\Psysh\DrushCommand;
+use \Drush\Psysh\Shell;
 
 /**
  * Implements hook_drush_command().

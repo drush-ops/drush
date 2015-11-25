@@ -5,6 +5,8 @@
  * Preflight, postflight and shutdown code.
  */
 
+use \Drush\Log\LogLevel;
+
 /**
  * The main Drush function.
  *
@@ -420,7 +422,7 @@ function _drush_preflight_columns() {
         $columns = (int)preg_replace('/\D/', '', $columns_output[4], -1, $columns_count);
       }
       else {
-        drush_log(dt('Drush could not detect the console window width. Set a Windows Environment Variable of COLUMNS to the desired width.'), 'warning');
+        drush_log(dt('Drush could not detect the console window width. Set a Windows Environment Variable of COLUMNS to the desired width.'), LogLevel::WARNING);
       }
     }
 
