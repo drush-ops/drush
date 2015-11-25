@@ -2,11 +2,7 @@
 #
 # Example PS1 prompt.
 #
-# Example - rename this to .drush_prompt, and in your ~/.bash_profile add:
-#
-#    if [ -f ~/.drush/drush.prompt.sh ] ; then
-#        . ~/.drush/drush.prompt.sh
-#    fi
+# Use `drush init` to copy this to ~/.drush/drush.prompt.sh, and source it in ~/.bashrc
 #
 # Features:
 #
