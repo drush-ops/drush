@@ -73,7 +73,7 @@ function drush_init_core_init() {
     copy($example_complete, $drush_complete);
     $pattern = basename($drush_complete);
     $bashrc_additions["%$pattern%"] = "# Include Drush completion.\n. $drush_complete\n\n";
-    drush_log(dt("Copied example Drush prompt file to !path", array('!path' => $drush_complete)), 'ok');
+    drush_log(dt("Copied Drush completion file to !path", array('!path' => $drush_complete)), 'ok');
   }
 
   // If there is no ~/.drush/drush.prompt.sh file, then copy
@@ -109,17 +109,25 @@ function drush_init_core_init() {
     // Only put in the addition if the pattern does not already
     // exist in the bashrc file.
     if (!preg_match($pattern, $new_bashrc_contents)) {
-      $new_bashrc_contents = $addition . $new_bashrc_contents;
+      $new_bashrc_contents = $new_bashrc_contents . $addition;
     }
   }
   if ($new_bashrc_contents != $bashrc_contents) {
-    file_put_contents($bashrc, $new_bashrc_contents);
-    drush_log(dt("Updated bash configuration file !path", array('!path' => $bashrc)), 'ok');
+    if (drush_confirm(dt(implode('', $bashrc_additions) . "Append the above code to !file?", array('!file' => $bashrc)))) {
+      file_put_contents($bashrc, $new_bashrc_contents);
+      drush_log(dt("Updated bash configuration file !path", array('!path' => $bashrc)), 'ok');
+      drush_log(dt("Start a new shell in order to experience the improvements (e.g. `bash`)."), 'ok');
+      if (drush_get_option('edit')) {
+        $exec = drush_get_editor();
+        drush_shell_exec_interactive($exec, $drush_config_file, $drush_config_file);
+      }
+    }
+    else {
+      return drush_user_abort();
+    }
   }
-
-  if (drush_get_option('edit')) {
-    $exec = drush_get_editor();
-    drush_shell_exec_interactive($exec, $drush_config_file, $drush_config_file);
+  else {
+    drush_log(dt('No code added to !path', array('!path' => $bashrc)), 'ok');
   }
 }
 
