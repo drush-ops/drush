@@ -11,8 +11,7 @@
 # Features:
 #
 # Displays Git repository and Drush alias status in your prompt.
-
-if [ "\$(type -t __git_ps1)" ] && [ "\$(type -t __drush_ps1)" ]; then
+if [ -n "$(type -t __git_ps1)" ] && [ "$(type -t __git_ps1)" = function ] && [ "$(type -t __drush_ps1)" ] && [ "$(type -t __drush_ps1)" = function ]; then
 
   # This line enables color hints in your Drush prompt. Modify the below
   # __drush_ps1_colorize_alias() to customize your color theme.
