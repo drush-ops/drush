@@ -55,14 +55,14 @@ function drush_init_core_init() {
   // If there is no ~/.drush/drushrc.php, then copy the
   // example Drush configuration file here
   if (!is_file($drush_config_file)) {
-    @copy($example_configuration, $drush_config_file);
+    copy($example_configuration, $drush_config_file);
     drush_log(dt("Copied example Drush configuration file to !path", array('!path' => $drush_config_file)), 'ok');
   }
 
   // If there is no ~/.drush/drush.bashrc file, then copy
   // the example bashrc file here
   if (!is_file($drush_bashrc)) {
-    @copy($example_bashrc, $drush_bashrc);
+    copy($example_bashrc, $drush_bashrc);
     $pattern = basename($drush_bashrc);
     $bashrc_additions["%$pattern%"] = "# Include Drush bash customizations.\n. $drush_bashrc\n\n";
     drush_log(dt("Copied example Drush bash configuration file to !path", array('!path' => $drush_bashrc)), 'ok');
@@ -79,7 +79,7 @@ function drush_init_core_init() {
   // If there is no ~/.drush/drush.prompt.sh file, then copy
   // the example prompt.sh file here
   if (!is_file($drush_prompt)) {
-    @copy($example_prompt, $drush_prompt);
+    copy($example_prompt, $drush_prompt);
     $pattern = basename($drush_prompt);
     $bashrc_additions["%$pattern%"] = "# Include Drush prompt customizations.\n. $drush_prompt\n\n";
     drush_log(dt("Copied example Drush prompt file to !path", array('!path' => $drush_prompt)), 'ok');
