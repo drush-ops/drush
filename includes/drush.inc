@@ -5,6 +5,9 @@
  * The drush API implementation and helpers.
  */
 
+use Drush\Log\Logger;
+use Psr\Log\LoggerInterface;
+
 /**
  * @name Error status definitions
  * @{
@@ -1246,8 +1249,6 @@ function drush_do_command_redispatch($command, $args = array(), $remote_host = N
  *   types of messages will be assumed to be notices.
  */
 function drush_log($message, $type = 'notice', $error = null) {
-  $log =& drush_get_context('DRUSH_LOG', array());
-  $callback = drush_get_context('DRUSH_LOG_CALLBACK', '_drush_print_log');
   $entry = array(
     'type' => $type,
     'message' => $message,
@@ -1255,10 +1256,40 @@ function drush_log($message, $type = 'notice', $error = null) {
     'memory' => memory_get_usage(),
   );
   $entry['error'] = $error;
-  $log[] = $entry;
-  drush_backend_packet('log', $entry);
 
-  return $callback($entry);
+  return _drush_log($entry);
+}
+
+/**
+ * Future: add some sort of dependency injection to Drush.
+ */
+function _drush_create_default_logger() {
+  $drush_logger = new Logger();
+  drush_set_context('DRUSH_LOG_CALLBACK', $drush_logger);
+}
+
+/**
+ * Call the default logger, or the user's log callback, as
+ * appropriate.
+ */
+function _drush_log($entry) {
+  $callback = drush_get_context('DRUSH_LOG_CALLBACK', '_drush_print_log');
+
+  if ($callback instanceof LoggerInterface) {
+    $context = $entry;
+    $log_level = $entry['type'];
+    $message = $entry['message'];
+    unset($entry['type']);
+    unset($entry['message']);
+
+    $callback->log($log_level, $message, $context);
+  }
+  else {
+    $log =& drush_get_context('DRUSH_LOG', array());
+    $log[] = $entry;
+    drush_backend_packet('log', $entry);
+    return $callback($entry);
+  }
 }
 
 function drush_log_has_errors($types = array('warning', 'error', 'failed')) {
@@ -1285,11 +1316,6 @@ function drush_backend_packet_log($entry, $backend_options) {
     $entry['message'] = implode("\n", (array)$entry['message']);
   }
   $entry['message'] = $entry['message'];
-  $log =& drush_get_context('DRUSH_LOG', array());
-  $log[] = $entry;
-  // Yes, this looks odd, but we might in fact be a backend command
-  // that ran another backend command.
-  drush_backend_packet('log', $entry);
   if (array_key_exists('#output-label', $backend_options)) {
     $entry['message'] = $backend_options['#output-label'] . $entry['message'];
   }
@@ -1297,8 +1323,14 @@ function drush_backend_packet_log($entry, $backend_options) {
   // If integrate is FALSE, then log messages are stored in DRUSH_LOG,
   // but are -not- printed to the console.
   if ($backend_options['integrate']) {
-    $callback = drush_get_context('DRUSH_LOG_CALLBACK', '_drush_print_log');
-    return $callback($entry);
+    _drush_log($entry);
+  }
+  else {
+    $log =& drush_get_context('DRUSH_LOG', array());
+    $log[] = $entry;
+    // Yes, this looks odd, but we might in fact be a backend command
+    // that ran another backend command.
+    drush_backend_packet('log', $entry);
   }
 }
 

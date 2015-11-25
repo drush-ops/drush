@@ -136,6 +136,9 @@ function drush_preflight_prepare() {
   drush_set_context('DRUSH_VENDOR_PATH', dirname($vendor_path));
   drush_set_context('DRUSH_CLASSLOADER', $classloader);
 
+  // Can't log until we have a logger, so we'll create this ASAP.
+  _drush_create_default_logger();
+
   // Terminate immediately unless invoked as a command line script
   if (!drush_verify_cli()) {
     return drush_set_error('DRUSH_REQUIREMENTS_ERROR', dt('Drush is designed to run via the command line.'));
