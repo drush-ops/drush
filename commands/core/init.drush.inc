@@ -56,7 +56,7 @@ function drush_init_core_init() {
   // example Drush configuration file here
   if (!is_file($drush_config_file)) {
     @copy($example_configuration, $drush_config_file);
-    drush_log(dt("Copied example Drush configuration file to !path.", array('!path' => $drush_config_file)), 'ok');
+    drush_log(dt("Copied example Drush configuration file to !path", array('!path' => $drush_config_file)), 'ok');
   }
 
   // If there is no ~/.drush/drush.bashrc file, then copy
@@ -65,7 +65,7 @@ function drush_init_core_init() {
     @copy($example_bashrc, $drush_bashrc);
     $pattern = basename($drush_bashrc);
     $bashrc_additions["%$pattern%"] = "# Include Drush bash customizations.\n. $drush_bashrc\n\n";
-    drush_log(dt("Copied example Drush bash configuration file to !path.", array('!path' => $drush_bashrc)), 'ok');
+    drush_log(dt("Copied example Drush bash configuration file to !path", array('!path' => $drush_bashrc)), 'ok');
   }
 
   // If there is no ~/.drush/drush.complete.sh file, then copy it there
@@ -73,7 +73,7 @@ function drush_init_core_init() {
     copy($example_complete, $drush_complete);
     $pattern = basename($drush_complete);
     $bashrc_additions["%$pattern%"] = "# Include Drush completion.\n. $drush_complete\n\n";
-    drush_log(dt("Copied example Drush prompt file to !path.", array('!path' => $drush_complete)), 'ok');
+    drush_log(dt("Copied example Drush prompt file to !path", array('!path' => $drush_complete)), 'ok');
   }
 
   // If there is no ~/.drush/drush.prompt.sh file, then copy
@@ -82,7 +82,7 @@ function drush_init_core_init() {
     @copy($example_prompt, $drush_prompt);
     $pattern = basename($drush_prompt);
     $bashrc_additions["%$pattern%"] = "# Include Drush prompt customizations.\n. $drush_prompt\n\n";
-    drush_log(dt("Copied example Drush prompt file to !path.", array('!path' => $drush_prompt)), 'ok');
+    drush_log(dt("Copied example Drush prompt file to !path", array('!path' => $drush_prompt)), 'ok');
   }
 
   // Decide whether we want to add our Bash commands to
