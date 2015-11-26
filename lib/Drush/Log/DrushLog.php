@@ -64,7 +64,7 @@ class DrushLog implements LoggerInterface {
       case RfcLogLevel::CRITICAL:
       case RfcLogLevel::EMERGENCY:
       case RfcLogLevel::ERROR:
-        $error_type = 'error';
+        $error_type = LogLevel::ERROR;
         break;
 
       case RfcLogLevel::WARNING:
@@ -75,7 +75,7 @@ class DrushLog implements LoggerInterface {
       case RfcLogLevel::DEBUG:
       case RfcLogLevel::INFO:
       case RfcLogLevel::NOTICE:
-        $error_type = 'notice';
+        $error_type = LogLevel::NOTICE;
         break;
 
       // TODO: Unknown log levels that are not defined
