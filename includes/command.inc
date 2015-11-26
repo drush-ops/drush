@@ -186,7 +186,7 @@ function drush_dispatch($command, $arguments = array()) {
   }
 
   // Add a final log entry, just so a timestamp appears.
-  drush_log(dt('Command dispatch complete'), 'notice');
+  drush_log(dt('Command dispatch complete'), LogLevel::NOTICE);
 
   return $return;
 }

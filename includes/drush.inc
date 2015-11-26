@@ -874,7 +874,7 @@ function _drush_download_file($url, $destination, $overwrite = TRUE) {
 function drush_mime_content_type($filename) {
   $content_type = drush_attempt_mime_content_type($filename);
   if ($content_type) {
-    drush_log(dt('Mime type for !file is !mt', array('!file' => $filename, '!mt' => $content_type)), 'notice');
+    drush_log(dt('Mime type for !file is !mt', array('!file' => $filename, '!mt' => $content_type)), LogLevel::NOTICE);
     return $content_type;
   }
   return drush_set_error('MIME_CONTENT_TYPE_UNKNOWN', dt('Unable to determine mime type for !file.', array('!file' => $filename)));
@@ -1249,7 +1249,7 @@ function drush_do_command_redispatch($command, $args = array(), $remote_host = N
  *   STDERR, which prints to screen (unless you have redirected it). All other
  *   types of messages will be assumed to be notices.
  */
-function drush_log($message, $type = 'notice', $error = null) {
+function drush_log($message, $type = LogLevel::NOTICE, $error = null) {
   $entry = array(
     'type' => $type,
     'message' => $message,
@@ -1421,7 +1421,7 @@ function _drush_log_drupal_messages() {
           drush_log(preg_replace('/^warning: /i', '', $error), LogLevel::WARNING);
         }
         elseif (preg_match('/^notice:/i', $error)) {
-          drush_log(preg_replace('/^notice: /i', '', $error), 'notice');
+          drush_log(preg_replace('/^notice: /i', '', $error), LogLevel::NOTICE);
         }
         elseif (preg_match('/^user warning:/i', $error)) {
           // This is a special case. PHP logs sql errors as 'User Warnings', not errors.

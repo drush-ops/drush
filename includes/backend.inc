@@ -546,7 +546,7 @@ function drush_backend_parse_packets(&$string, &$remainder, $backend_options) {
           $function($entry, $backend_options);
         }
         else {
-          drush_log(dt("Unknown backend packet @packet", array('@packet' => $entry['packet'])), 'notice');
+          drush_log(dt("Unknown backend packet @packet", array('@packet' => $entry['packet'])), LogLevel::NOTICE);
         }
       }
       else {

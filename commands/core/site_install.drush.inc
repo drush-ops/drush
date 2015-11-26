@@ -250,7 +250,7 @@ EOD;
         drush_file_append_data($settingsfile, "\n$chmod\n");
       }
       else {
-        drush_log(dt('Not appending file_chmod_* to @settingsfile as it is not writable.', array('@settingsfile' => $settingsfile)), 'notice');
+        drush_log(dt('Not appending file_chmod_* to @settingsfile as it is not writable.', array('@settingsfile' => $settingsfile)), LogLevel::NOTICE);
       }
     }
 

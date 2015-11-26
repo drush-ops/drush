@@ -595,7 +595,7 @@ class Project {
       $filename = drush_download_file($release_link, drush_tempnam($project_name));
       @$dom = \DOMDocument::loadHTMLFile($filename);
       if ($dom) {
-        drush_log(dt("Successfully parsed and loaded the HTML contained in the release notes' page for !project (!version) project.", array('!project' => $project_name, '!version' => $version)), 'notice');
+        drush_log(dt("Successfully parsed and loaded the HTML contained in the release notes' page for !project (!version) project.", array('!project' => $project_name, '!version' => $version)), LogLevel::NOTICE);
       }
       else {
         drush_log(dt("Error while requesting the release notes page for !project project.", array('!project' => $project_name)), 'error');
