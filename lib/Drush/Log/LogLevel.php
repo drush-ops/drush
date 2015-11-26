@@ -22,7 +22,4 @@ class LogLevel extends \Psr\Log\LogLevel
     // per command (perhaps more if subcommands are executed, though).
     // Like 'notice'.
     const SUCCESS = 'success';
-
-    // synonyms for 'notice'
-    const MESSAGE = 'message'; // Deprecated. Use 'notice'
 }

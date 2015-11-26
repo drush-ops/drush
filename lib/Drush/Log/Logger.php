@@ -70,7 +70,7 @@ class Logger extends AbstractLogger {
         case 'ok' :
         case 'completed' : // Obsolete; only here in case contrib is using it.
         case 'success' :
-        case 'status':
+        case 'status': // Obsolete; only here in case contrib is using it.
           // In quiet mode, suppress progress messages
           if (drush_get_context('DRUSH_QUIET')) {
             return TRUE;
@@ -78,7 +78,7 @@ class Logger extends AbstractLogger {
           $type_msg = sprintf($green, $level);
           break;
         case 'notice' :
-        case 'message' :
+        case 'message' : // Obsolete; only here in case contrib is using it.
         case 'info' :
           if (!$verbose) {
             // print nothing. exit cleanly.
