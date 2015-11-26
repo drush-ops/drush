@@ -24,6 +24,5 @@ class LogLevel extends \Psr\Log\LogLevel
     const SUCCESS = 'success';
 
     // synonyms for 'notice'
-    const STATUS = 'status'; // Deprecated. Use 'notice'
     const MESSAGE = 'message'; // Deprecated. Use 'notice'
 }
