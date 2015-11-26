@@ -664,7 +664,7 @@ function drush_core_cron() {
     $result = \Drupal::service('cron')->run();
   }
   if ($result) {
-    drush_log(dt('Cron run successful.'), 'success');
+    drush_log(dt('Cron run successful.'), LogLevel::SUCCESS);
   }
   else {
     return drush_set_error('DRUSH_CRON_FAILED', dt('Cron run failed.'));

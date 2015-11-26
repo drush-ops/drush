@@ -146,7 +146,7 @@ function drush_cache_command_clear($type = NULL) {
     drush_log(dt("No Drupal site found, only 'drush' cache was cleared."), LogLevel::WARNING);
   }
   else {
-    drush_log(dt("'!name' cache was cleared.", array('!name' => $type)), 'success');
+    drush_log(dt("'!name' cache was cleared.", array('!name' => $type)), LogLevel::SUCCESS);
   }
 }
 

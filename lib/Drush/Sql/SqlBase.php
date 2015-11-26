@@ -74,7 +74,7 @@ class SqlBase {
     // Avoid the php memory of the $output array in drush_shell_exec().
     if (!$return = drush_op_system($cmd)) {
       if ($file) {
-        drush_log(dt('Database dump saved to !path', array('!path' => $file)), 'success');
+        drush_log(dt('Database dump saved to !path', array('!path' => $file)), LogLevel::SUCCESS);
         drush_backend_set_result($file);
       }
     }

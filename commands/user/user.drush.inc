@@ -262,7 +262,7 @@ function drush_user_information($users) {
 function drush_user_block($users = '') {
   $userlist = new UserList($users);
   $userlist->each('block');
-  drush_log(dt('Blocked user(s): !users', array('!users' => $userlist->names())), 'success');
+  drush_log(dt('Blocked user(s): !users', array('!users' => $userlist->names())), LogLevel::SUCCESS);
 }
 
 /**
@@ -271,7 +271,7 @@ function drush_user_block($users = '') {
 function drush_user_unblock($users = '') {
   $userlist = new UserList($users);
   $userlist->each('unblock');
-  drush_log(dt('Unblocked user(s): !users', array('!users' => $userlist->names())), 'success');
+  drush_log(dt('Unblocked user(s): !users', array('!users' => $userlist->names())), LogLevel::SUCCESS);
 }
 
 /**
@@ -282,7 +282,7 @@ function drush_user_add_role($role, $users = '') {
   $role_object = drush_role_get_class($role);
   $userlist = new UserList($users);
   $userlist->each('addRole', array($role_object->rid));
-  drush_log(dt('Added role !role role to !users', array('!role' => $role, '!users' => $userlist->names())),'success');
+  drush_log(dt('Added role !role role to !users', array('!role' => $role, '!users' => $userlist->names())),LogLevel::SUCCESS);
 }
 
 /**
@@ -293,7 +293,7 @@ function drush_user_remove_role($role, $users = '') {
   $role_object = drush_role_get_class($role);
   $userlist = new UserList($users);
   $userlist->each('removeRole', array($role_object->rid));
-  drush_log(dt('Removed !role role from !users', array('!role' => $role, '!users' => $userlist->names())),'success');
+  drush_log(dt('Removed !role role from !users', array('!role' => $role, '!users' => $userlist->names())),LogLevel::SUCCESS);
 }
 
 /**
@@ -345,7 +345,7 @@ function drush_user_cancel($inputs) {
       $account->cancel();
     }
   }
-  drush_log(dt('Cancelled user(s): !users', array('!users' => $userlist->names())),'success');
+  drush_log(dt('Cancelled user(s): !users', array('!users' => $userlist->names())),LogLevel::SUCCESS);
 }
 
 /**
@@ -362,7 +362,7 @@ function drush_user_password($inputs) {
     foreach ($userlist->accounts as $account) {
       $userlist->each('password', array($pass));
     }
-    drush_log(dt('Changed password for !users', array('!users' => $userlist->names())), 'success');
+    drush_log(dt('Changed password for !users', array('!users' => $userlist->names())), LogLevel::SUCCESS);
   }
 }
 

@@ -182,7 +182,7 @@ function drush_views_dev() {
   // Save the new config.
   $config->save();
 
-  drush_log(dt('New views configuration saved.'), 'success');
+  drush_log(dt('New views configuration saved.'), LogLevel::SUCCESS);
 }
 
 /**
@@ -383,7 +383,7 @@ function _views_drush_op($op = '', array $view_names = array()) {
       if ($op_types[$op]['validate']($view)) {
         $function = 'views_' . $op . '_view';
         drush_op($function, $view);
-        drush_log(dt('View: @view has been @action', $tokens), 'success');
+        drush_log(dt('View: @view has been @action', $tokens), LogLevel::SUCCESS);
       }
       else {
         drush_log(dt('View: @view is already @action', $tokens), LogLevel::NOTICE);

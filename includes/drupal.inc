@@ -131,7 +131,7 @@ function _drush_log_update_sql($ret) {
           drush_set_error('DRUPAL_UPDATE_FAILED', $info['query']);
         }
         else {
-          drush_log($info['query'], ($info['success']) ? 'success' : LogLevel::ERROR);
+          drush_log($info['query'], ($info['success']) ? LogLevel::SUCCESS : LogLevel::ERROR);
         }
       }
     }

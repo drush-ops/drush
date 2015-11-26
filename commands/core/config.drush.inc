@@ -488,7 +488,7 @@ function _drush_config_export($destination, $destination_dir, $branch) {
     }
   }
 
-  drush_log(dt('Configuration successfully exported to !target.', array('!target' => $destination_dir)), 'success');
+  drush_log(dt('Configuration successfully exported to !target.', array('!target' => $destination_dir)), LogLevel::SUCCESS);
   drush_backend_set_result($destination_dir);
 
   // Commit and push, or add exported configuration if requested.
@@ -662,7 +662,7 @@ function _drush_config_import(StorageComparer $storage_comparer) {
     try {
       $config_importer->import();
       drush_drupal_cache_clear_all();
-      drush_log('The configuration was imported successfully.', 'success');
+      drush_log('The configuration was imported successfully.', LogLevel::SUCCESS);
     }
     catch (ConfigException $e) {
       // Return a negative result for UI purposes. We do not differentiate

@@ -405,7 +405,7 @@ function update_main() {
         }
       }
       else {
-        drush_log(dt('No database updates for module @module', array('@module' => $module)), 'success');
+        drush_log(dt('No database updates for module @module', array('@module' => $module)), LogLevel::SUCCESS);
       }
     }
     $batch = array(
@@ -421,7 +421,7 @@ function update_main() {
     drush_backend_batch_process('updatedb-batch-process');
   }
   else {
-    drush_log(dt("No database updates required"), 'success');
+    drush_log(dt("No database updates required"), LogLevel::SUCCESS);
   }
 
   return count($pending);
@@ -441,7 +441,7 @@ function _update_do_one($module, $number, &$context) {
   }
 
   $function = $module .'_update_'. $number;
-  drush_log("Executing $function", 'success');
+  drush_log("Executing $function", LogLevel::SUCCESS);
 
   if (function_exists($function)) {
     $ret = $function($context['sandbox']);

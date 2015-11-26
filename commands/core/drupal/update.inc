@@ -161,7 +161,7 @@ function update_main() {
     drush_update_batch($start);
   }
   else {
-    drush_log(dt("No database updates required"), 'success');
+    drush_log(dt("No database updates required"), LogLevel::SUCCESS);
   }
 
   return count($pending) + count($change_summary) + count($post_updates);
@@ -382,6 +382,6 @@ function entity_updates_main() {
     \Drupal::service('state')->set('system.maintenance_mode', FALSE);
   }
   else {
-    drush_log(dt("No entity schema updates required"), 'success');
+    drush_log(dt("No entity schema updates required"), LogLevel::SUCCESS);
   }
 }

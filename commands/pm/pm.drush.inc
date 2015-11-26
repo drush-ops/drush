@@ -2120,7 +2120,7 @@ function drush_pm_extensions_in_project($project) {
         }
       }
     }
-    drush_log(dt($msg, $args), 'success');
+    drush_log(dt($msg, $args), LogLevel::SUCCESS);
     drush_print_pipe(call_user_func_array('array_merge', array_values($found)));
   }
   // Modules and themes can only contain other extensions of the same type.
