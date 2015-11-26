@@ -10,6 +10,7 @@ class LogLevel extends \Psr\Log\LogLevel
 {
     // Things that happen early on.  Like 'notice'
     const BOOTSTRAP = 'bootstrap';
+    const PREFLIGHT = 'preflight';
 
     // Notice that the user is cancelling an operation. Like 'warning'
     const CANCEL = 'cancel';
