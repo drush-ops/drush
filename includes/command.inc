@@ -361,10 +361,10 @@ function _drush_invoke_hooks($command, $args) {
         $all_available_hooks[] = $func . ' [* Defined in ' . $filename . ']';
         $available_rollbacks[] = $func . '_rollback';
         $completed[] = $func;
-        drush_log(dt("Calling hook !hook", array('!hook' => $func)), 'debug');
+        drush_log(dt("Calling hook !hook", array('!hook' => $func)), LogLevel::DEBUG);
         try {
           $result = call_user_func_array($func, $args);
-          drush_log(dt("Returned from hook !hook", array('!hook' => $func)), 'debug');
+          drush_log(dt("Returned from hook !hook", array('!hook' => $func)), LogLevel::DEBUG);
         }
         catch (Exception $e) {
           drush_set_error('DRUSH_EXECUTION_EXCEPTION', (string) $e);
@@ -1490,7 +1490,7 @@ function drush_commandfile_list() {
 }
 
 function _drush_find_commandfiles($phase, $phase_max = FALSE) {
-  drush_log(dt("Find command files for phase !phase (max=!max)", array('!phase' => $phase, '!max' => (string)$phase_max)), 'debug');
+  drush_log(dt("Find command files for phase !phase (max=!max)", array('!phase' => $phase, '!max' => (string)$phase_max)), LogLevel::DEBUG);
   if ($bootstrap = drush_get_bootstrap_object()) {
     $searchpath = $bootstrap->commandfile_searchpaths($phase, $phase_max);
     _drush_add_commandfiles($searchpath, $phase);
@@ -1890,7 +1890,7 @@ function drush_shell_alias_replace($target_site_alias) {
         $alias_value = str_getcsv($alias_value, ' ');
       }
     }
-    drush_log(dt('Shell alias found: !key => !value', array('!key' => $first, '!value' => implode(' ', $alias_value))), 'debug');
+    drush_log(dt('Shell alias found: !key => !value', array('!key' => $first, '!value' => implode(' ', $alias_value))), LogLevel::DEBUG);
     $pos = array_search($first, $argv);
     $number = 1;
     if ($target_site_alias && ($argv[$pos - 1] == $target_site_alias)) {

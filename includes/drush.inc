@@ -696,11 +696,11 @@ function drush_op($callable) {
 
   // Special checking for drush_op('system')
   if ($callable == 'system') {
-    drush_log(dt("Do not call drush_op('system'); use drush_op_system instead"), 'debug');
+    drush_log(dt("Do not call drush_op('system'); use drush_op_system instead"), LogLevel::DEBUG);
   }
 
   if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
-    drush_log(sprintf("Calling %s(%s)", $callable_string, implode(", ", $args_printed)), 'debug');
+    drush_log(sprintf("Calling %s(%s)", $callable_string, implode(", ", $args_printed)), LogLevel::DEBUG);
   }
 
   if (drush_get_context('DRUSH_SIMULATE')) {
@@ -890,7 +890,7 @@ function drush_attempt_mime_content_type($filename) {
     $finfo = new finfo(FILEINFO_MIME_TYPE);
     $content_type = $finfo->file($filename);
     if ($content_type == 'application/octet-stream') {
-      drush_log(dt('Mime type for !file is application/octet-stream.', array('!file' => $filename)), 'debug');
+      drush_log(dt('Mime type for !file is application/octet-stream.', array('!file' => $filename)), LogLevel::DEBUG);
       $content_type = FALSE;
     }
   }
@@ -899,7 +899,7 @@ function drush_attempt_mime_content_type($filename) {
   // archives as octet-stream for other reasons) we'll detect mime types on our
   //  own by examing the file's magic header bytes.
   if (!$content_type) {
-    drush_log(dt('Examining !file headers.', array('!file' => $filename)), 'debug');
+    drush_log(dt('Examining !file headers.', array('!file' => $filename)), LogLevel::DEBUG);
     if ($file = fopen($filename, 'rb')) {
       $first = fread($file, 2);
       fclose($file);
@@ -927,7 +927,7 @@ function drush_attempt_mime_content_type($filename) {
             break;
 
           default:
-            drush_log(dt('Unable to determine mime type from header bytes 0x!hex of !file.', array('!hex' => dechex($data[1]), '!file' => $filename,), 'debug'));
+            drush_log(dt('Unable to determine mime type from header bytes 0x!hex of !file.', array('!hex' => dechex($data[1]), '!file' => $filename,), LogLevel::DEBUG));
         }
       }
       else {
@@ -943,7 +943,7 @@ function drush_attempt_mime_content_type($filename) {
   // the file extension. This is useful if the file has no identificable magic
   // header bytes (for example tarballs).
   if (!$content_type) {
-    drush_log(dt('Examining !file extension.', array('!file' => $filename)), 'debug');
+    drush_log(dt('Examining !file extension.', array('!file' => $filename)), LogLevel::DEBUG);
 
     // Remove querystring from the filename, if present.
     $filename = basename(current(explode('?', $filename, 2)));

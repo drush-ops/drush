@@ -138,10 +138,10 @@ function _drush_usage_log($command, $file) {
   );
   $prequel = (file_exists($file)) ? ",\n" : "";
   if (file_put_contents($file, $prequel . json_encode($record), FILE_APPEND)) {
-    drush_log(dt('Logged command and option names to local cache.'), 'debug');
+    drush_log(dt('Logged command and option names to local cache.'), LogLevel::DEBUG);
   }
   else {
-    drush_log(dt('Failed to log command and option names to local cache.'), 'debug');
+    drush_log(dt('Failed to log command and option names to local cache.'), LogLevel::DEBUG);
   }
 }
 
@@ -159,11 +159,11 @@ function _drush_usage_mongolab($file, $min_size_to_send) {
     $header = 'Content-Type: application/json';
     if (!drush_shell_exec("wget -q -O - --no-check-certificate --timeout=20 --header=\"$header\" --post-data %s %s", $json, $url)) {
       if (!drush_shell_exec("curl -s --connect-timeout 20 --header \"$header\" --data %s %s", $json, $url)) {
-        drush_log(dt('Drush usage statistics failed to post.'), 'debug');
+        drush_log(dt('Drush usage statistics failed to post.'), LogLevel::DEBUG);
         return FALSE;
       }
     }
-    drush_log(dt('Drush usage statistics successfully posted.'), 'debug');
+    drush_log(dt('Drush usage statistics successfully posted.'), LogLevel::DEBUG);
     // Empty the usage.txt file.
     unlink($file);
     return TRUE;

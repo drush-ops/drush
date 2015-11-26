@@ -686,11 +686,11 @@ function drush_get_projects(&$extensions = NULL) {
       else {
         if (is_dir($extension_path . '/CVS') && (!drush_module_exists('cvs_deploy'))) {
           $extension->vcs = 'cvs';
-          drush_log(dt('Extension !extension is fetched from cvs. Ignoring.', array('!extension' => $extension_name)), 'debug');
+          drush_log(dt('Extension !extension is fetched from cvs. Ignoring.', array('!extension' => $extension_name)), LogLevel::DEBUG);
         }
         elseif (is_dir($extension_path . '/.git') && (!drush_module_exists('git_deploy'))) {
           $extension->vcs = 'git';
-          drush_log(dt('Extension !extension is fetched from git. Ignoring.', array('!extension' => $extension_name)), 'debug');
+          drush_log(dt('Extension !extension is fetched from git. Ignoring.', array('!extension' => $extension_name)), LogLevel::DEBUG);
         }
         continue;
       }
@@ -771,7 +771,7 @@ function drush_get_projects(&$extensions = NULL) {
       }
     }
 
-    drush_log(dt('Obtaining !project project path.', array('!project' => $name)), 'debug');
+    drush_log(dt('Obtaining !project project path.', array('!project' => $name)), LogLevel::DEBUG);
     $path = _drush_pm_find_common_path($project['type'], $project['extensions']);
     // Prevent from setting a reserved path. For example it may happen in a case
     // where a module and a theme are declared as part of a same project.
@@ -811,7 +811,7 @@ function _drush_pm_find_common_path($project_type, $extensions) {
     while($extension = array_pop($extensions)) {
       $path2 = drupal_get_path($project_type, $extension);
       if (!$path2) {
-        drush_log(dt('Unknown path for !extension !type.', array('!extension' => $extension, '!type' => $project_type)), 'debug');
+        drush_log(dt('Unknown path for !extension !type.', array('!extension' => $extension, '!type' => $project_type)), LogLevel::DEBUG);
         continue;
       }
       // Option 1: same path.
@@ -1908,7 +1908,7 @@ function drush_pm_include_version_control($directory = '.') {
     $version_control = array_shift($version_controls);
     if (isset($engine_info['engines'][$version_control])) {
       if (!empty($engine_info['engines'][$version_control]['signature'])) {
-        drush_log(dt('Verifying signature for !vcs version control engine.', array('!vcs' => $version_control)), 'debug');
+        drush_log(dt('Verifying signature for !vcs version control engine.', array('!vcs' => $version_control)), LogLevel::DEBUG);
         if (drush_shell_exec($engine_info['engines'][$version_control]['signature'], $directory)) {
           $engine = $version_control;
         }
