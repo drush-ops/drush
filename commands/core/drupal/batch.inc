@@ -181,7 +181,7 @@ function _drush_batch_worker() {
 
     // If we are in progressive mode, break processing after 1 second.
     if (drush_memory_limit() > 0 && (memory_get_usage() * 2) >= drush_memory_limit()) {
-      drush_log(dt("Batch process has consumed in excess of 50% of available memory. Starting new thread"), "batch");
+      drush_log(dt("Batch process has consumed in excess of 50% of available memory. Starting new thread"), LogLevel::BATCH);
       // Record elapsed wall clock time.
       $current_set['elapsed'] = round((microtime(TRUE) - $current_set['start']) * 1000, 2);
       break;

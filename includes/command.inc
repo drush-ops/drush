@@ -434,7 +434,7 @@ function _drush_invoke_hooks($command, $args) {
         if (function_exists($rb_func)) {
           call_user_func_array($rb_func, $args);
           _drush_log_drupal_messages();
-          drush_log(dt("Changes made in !func have been rolled back.", array('!func' => $func)), 'rollback');
+          drush_log(dt("Changes made in !func have been rolled back.", array('!func' => $func)), LogLevel::NOTICE);
         }
       }
     }

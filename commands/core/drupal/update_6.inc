@@ -134,7 +134,7 @@ function update_fix_compatibility() {
     if (update_check_incompatibility($result->name, $result->type)) {
       $incompatible[] = $result->name;
       drush_log(dt("!type !name is incompatible with this release of Drupal, and will be disabled.",
-        array("!type" => $result->type, '!name' => $result->name)), "warning");
+        array("!type" => $result->type, '!name' => $result->name)), LogLevel::WARNING);
     }
   }
   if (!empty($incompatible)) {

@@ -142,7 +142,7 @@ function _drush_search_index() {
       if ($failures == 3) {
         drush_log(dt('Indexing stalled with @number items remaining.', array(
           '@number' => $remaining,
-        )), 'error');
+        )), LogLevel::ERROR);
         return;
       }
     }
