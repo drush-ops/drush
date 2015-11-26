@@ -1584,7 +1584,7 @@ function drush_clear_error() {
 function drush_user_abort($msg = NULL) {
   drush_set_context('DRUSH_USER_ABORT', TRUE);
   drush_set_context('DRUSH_EXIT_CODE', DRUSH_EXITCODE_USER_ABORT);
-  drush_log($msg ? $msg : dt('Cancelled.'), 'cancel');
+  drush_log($msg ? $msg : dt('Cancelled.'), LogLevel::CANCEL);
   return FALSE;
 }
 
