@@ -311,7 +311,7 @@ function _drush_invoke_hooks($command, $args) {
     call_user_func_array($func, $args);
     _drush_log_drupal_messages();
     if (drush_get_error()) {
-      drush_log(dt('The command @command could not be initialized.', array('@command' => $command['command-hook'])), 'error');
+      drush_log(dt('The command @command could not be initialized.', array('@command' => $command['command-hook'])), LogLevel::ERROR);
       return FALSE;
     }
   }

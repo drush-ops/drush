@@ -50,7 +50,7 @@ function _drush_pm_uninstall($extensions) {
         }
       }
       if (count($dependents)) {
-        drush_log(dt('To uninstall !extension, the following extensions must be uninstalled first: !required', array('!extension' => $extension, '!required' => implode(', ', $dependents))), 'error');
+        drush_log(dt('To uninstall !extension, the following extensions must be uninstalled first: !required', array('!extension' => $extension, '!required' => implode(', ', $dependents))), LogLevel::ERROR);
         unset($extensions[$extension]);
       }
     }

@@ -160,7 +160,7 @@ function drush_pm_download() {
     if (!$request['full_project_path']) {
       // Delete the cached update service file since it may be invalid.
       $release_info->clearCached($request);
-      drush_log(dt('Error downloading !name', array('!name' => $request['name']), 'error'));
+      drush_log(dt('Error downloading !name', array('!name' => $request['name']), LogLevel::ERROR));
       continue;
     }
 

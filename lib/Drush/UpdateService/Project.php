@@ -598,7 +598,7 @@ class Project {
         drush_log(dt("Successfully parsed and loaded the HTML contained in the release notes' page for !project (!version) project.", array('!project' => $project_name, '!version' => $version)), LogLevel::NOTICE);
       }
       else {
-        drush_log(dt("Error while requesting the release notes page for !project project.", array('!project' => $project_name)), 'error');
+        drush_log(dt("Error while requesting the release notes page for !project project.", array('!project' => $project_name)), LogLevel::ERROR);
         continue;
       }
       $xml = simplexml_import_dom($dom);

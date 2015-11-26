@@ -401,7 +401,7 @@ function _views_drush_op($op = '', array $view_names = array()) {
   // If we have some unmatched/leftover view names that weren't loaded.
   if (!empty($view_names)) {
     foreach ($view_names as $viewname) {
-      drush_log(dt('View: @view could not be found.', array('@view' => $viewname)), 'error');
+      drush_log(dt('View: @view could not be found.', array('@view' => $viewname)), LogLevel::ERROR);
     }
   }
 

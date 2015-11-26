@@ -39,7 +39,7 @@ class Sqlsqlite extends SqlBase {
     drush_log("SQLITE: creating '$path' for creating '$file'", LogLevel::DEBUG);
     drush_mkdir($path);
     if (!file_exists($path)) {
-      drush_log("SQLITE: Cannot create $path", 'error');
+      drush_log("SQLITE: Cannot create $path", LogLevel::ERROR);
     }
   }
 

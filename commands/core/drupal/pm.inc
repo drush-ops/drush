@@ -134,7 +134,7 @@ function _drush_pm_uninstall($modules) {
         }
       }
       if (count($dependents)) {
-        drush_log(dt('To uninstall !module, the following modules must be uninstalled first: !required', array('!module' => $module, '!required' => implode(', ', $dependents))), 'error');
+        drush_log(dt('To uninstall !module, the following modules must be uninstalled first: !required', array('!module' => $module, '!required' => implode(', ', $dependents))), LogLevel::ERROR);
         unset($modules[$key]);
       }
     }

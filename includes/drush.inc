@@ -1293,7 +1293,7 @@ function _drush_log($entry) {
   }
 }
 
-function drush_log_has_errors($types = array(LogLevel::WARNING, 'error', 'failed')) {
+function drush_log_has_errors($types = array(LogLevel::WARNING, LogLevel::ERROR, 'failed')) {
   $log =& drush_get_context('DRUSH_LOG', array());
   foreach ($log as $entry) {
     if (in_array($entry['type'], $types)) {
@@ -1525,7 +1525,7 @@ function drush_set_error($error, $message = null, $output_label = "") {
 
   $error_log[$error][] = $message;
   if (!drush_backend_packet('set_error', array('error' => $error, 'message' => $message))) {
-    drush_log(($message) ? $output_label . $message : $output_label . $error, 'error', $error);
+    drush_log(($message) ? $output_label . $message : $output_label . $error, LogLevel::ERROR, $error);
   }
 
   return FALSE;

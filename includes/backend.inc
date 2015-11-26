@@ -550,7 +550,7 @@ function drush_backend_parse_packets(&$string, &$remainder, $backend_options) {
         }
       }
       else {
-        drush_log(dt("Malformed backend packet"), 'error');
+        drush_log(dt("Malformed backend packet"), LogLevel::ERROR);
         drush_log(dt("Bad packet: @packet", array('@packet' => print_r($entry, TRUE))), LogLevel::DEBUG);
         drush_log(dt("String is: @str", array('@str' => $packet_data), LogLevel::DEBUG));
       }
