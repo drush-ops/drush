@@ -63,7 +63,7 @@ class Logger extends AbstractLogger {
         case 'cancel' :
           $type_msg = sprintf($yellow, $level);
           break;
-        case 'failed' :
+        case 'failed' : // Obsolete; only here in case contrib is using it.
         case 'error' :
           $type_msg = sprintf($red, $level);
           break;

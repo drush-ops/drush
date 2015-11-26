@@ -15,9 +15,6 @@ class LogLevel extends \Psr\Log\LogLevel
     // Notice that the user is cancelling an operation. Like 'warning'
     const CANCEL = 'cancel';
 
-    // Something did not work. Like 'error'. Deprecated.
-    const FAILED = 'failed'; // Deprecated. Use drush_set_error
-
     // Various 'success' messages.  Like 'notice'
     const OK = 'ok';
     const COMPLETED = 'completed'; // Deprecated: use 'SUCCESS' or drush_set_error

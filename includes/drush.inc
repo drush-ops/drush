@@ -1242,7 +1242,6 @@ function drush_do_command_redispatch($command, $args = array(), $remote_host = N
  *   String containing the message to be logged.
  * @param type
  *   The type of message to be logged. Common types are 'warning', 'error', 'success' and 'notice'.
- *   A type of 'failed' can also be supplied to flag as an 'error'.
  *   A type of 'ok' or 'completed' can also be supplied to flag as a 'success'.
  *   If you want your log messages to print to screen without the user entering
  *   a -v or --verbose flag, use type 'ok', this prints log messages out to
@@ -1293,7 +1292,7 @@ function _drush_log($entry) {
   }
 }
 
-function drush_log_has_errors($types = array(LogLevel::WARNING, LogLevel::ERROR, 'failed')) {
+function drush_log_has_errors($types = array(LogLevel::WARNING, LogLevel::ERROR, LogLevel::FAILED)) {
   $log =& drush_get_context('DRUSH_LOG', array());
   foreach ($log as $entry) {
     if (in_array($entry['type'], $types)) {
