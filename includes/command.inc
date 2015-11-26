@@ -207,7 +207,7 @@ function drush_command() {
   foreach (drush_command_implements("drush_init") as $name) {
     $func = $name . '_drush_init';
     if (drush_get_option('show-invoke')) {
-      drush_log(dt("Calling global init hook: !func", array('!name' => $name, '!func' => $func . '()')), 'bootstrap');
+      drush_log(dt("Calling global init hook: !func", array('!name' => $name, '!func' => $func . '()')), LogLevel::BOOTSTRAP);
     }
     call_user_func_array($func, $args);
     _drush_log_drupal_messages();
@@ -221,7 +221,7 @@ function drush_command() {
     foreach (drush_command_implements('drush_exit') as $name) {
       $func = $name . '_drush_exit';
       if (drush_get_option('show-invoke')) {
-        drush_log(dt("Calling global exit hook: !func", array('!name' => $name, '!func' => $func . '()')), 'bootstrap');
+        drush_log(dt("Calling global exit hook: !func", array('!name' => $name, '!func' => $func . '()')), LogLevel::BOOTSTRAP);
       }
       call_user_func_array($func, $args);
       _drush_log_drupal_messages();
@@ -307,7 +307,7 @@ function _drush_invoke_hooks($command, $args) {
   // has passed or started at the time it was discovered.
   $func = 'drush_' . $hook . '_init';
   if (function_exists($func)) {
-    drush_log(dt("Calling drush command init function: !func", array('!func' => $func)), 'bootstrap');
+    drush_log(dt("Calling drush command init function: !func", array('!func' => $func)), LogLevel::BOOTSTRAP);
     call_user_func_array($func, $args);
     _drush_log_drupal_messages();
     if (drush_get_error()) {
@@ -1599,7 +1599,7 @@ function drush_filename_blacklist() {
 function drush_command_include($command) {
   $include_files = drush_command_get_includes($command);
   foreach($include_files as $filename => $commandfile) {
-    drush_log(dt('Including !filename', array('!filename' => $filename)), 'bootstrap');
+    drush_log(dt('Including !filename', array('!filename' => $filename)), LogLevel::BOOTSTRAP);
     include_once($filename);
   }
 }

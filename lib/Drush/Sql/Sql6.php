@@ -31,12 +31,12 @@ class Sql6 extends SqlVersion {
       require_once './includes/install.'. $type .'.inc';
       $function = $type .'_is_available';
       if (!$function()) {
-        drush_log(dt('!type extension for PHP is not installed. Check your php.ini to see how you can enable it.', array('!type' => $type)), 'bootstrap');
+        drush_log(dt('!type extension for PHP is not installed. Check your php.ini to see how you can enable it.', array('!type' => $type)), LogLevel::BOOTSTRAP);
         return FALSE;
       }
     }
     else {
-      drush_log(dt('!type database type is unsupported.', array('!type' => $type)), 'bootstrap');
+      drush_log(dt('!type database type is unsupported.', array('!type' => $type)), LogLevel::BOOTSTRAP);
       return FALSE;
     }
     return TRUE;

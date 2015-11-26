@@ -521,7 +521,7 @@ abstract class DrupalBoot extends BaseBoot {
   function bootstrap_drupal_database() {
     // We presume that our derived classes will connect and then
     // either fail, or call us via parent::
-    drush_log(dt("Successfully connected to the Drupal database."), 'bootstrap');
+    drush_log(dt("Successfully connected to the Drupal database."), LogLevel::BOOTSTRAP);
   }
 
   /**

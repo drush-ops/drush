@@ -548,7 +548,7 @@ function _drush_sitealias_find_and_load_all_aliases() {
       $aliases = $options = array();
       // silently ignore files we can't include
       if ((@include $filename) === FALSE) {
-        drush_log(dt('Cannot open alias file "!alias", ignoring.', array('!alias' => realpath($filename))), 'bootstrap');
+        drush_log(dt('Cannot open alias file "!alias", ignoring.', array('!alias' => realpath($filename))), LogLevel::BOOTSTRAP);
         continue;
       }
       unset($options['site-aliases']); // maybe unnecessary
@@ -693,7 +693,7 @@ function _drush_sitealias_find_and_load_alias_from_file($aliasname, $alias_files
       $aliases = $options = array();
       // silently ignore files we can't include
       if ((@include $filename) === FALSE) {
-        drush_log(dt('Cannot open alias file "!alias", ignoring.', array('!alias' => realpath($filename))), 'bootstrap');
+        drush_log(dt('Cannot open alias file "!alias", ignoring.', array('!alias' => realpath($filename))), LogLevel::BOOTSTRAP);
         continue;
       }
       unset($options['site-aliases']); // maybe unnecessary
