@@ -1242,7 +1242,7 @@ function drush_do_command_redispatch($command, $args = array(), $remote_host = N
  *   String containing the message to be logged.
  * @param type
  *   The type of message to be logged. Common types are 'warning', 'error', 'success' and 'notice'.
- *   A type of 'ok' or 'completed' can also be supplied to flag as a 'success'.
+ *   A type of 'ok' or 'success' can also be supplied to flag something that worked.
  *   If you want your log messages to print to screen without the user entering
  *   a -v or --verbose flag, use type 'ok', this prints log messages out to
  *   STDERR, which prints to screen (unless you have redirected it). All other

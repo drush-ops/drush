@@ -17,7 +17,6 @@ class LogLevel extends \Psr\Log\LogLevel
 
     // Various 'success' messages.  Like 'notice'
     const OK = 'ok';
-    const COMPLETED = 'completed'; // Deprecated: use 'SUCCESS' or drush_set_error
 
     // Means the command was successful. Should appear at most once
     // per command (perhaps more if subcommands are executed, though).

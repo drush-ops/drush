@@ -68,7 +68,7 @@ class Logger extends AbstractLogger {
           $type_msg = sprintf($red, $level);
           break;
         case 'ok' :
-        case 'completed' :
+        case 'completed' : // Obsolete; only here in case contrib is using it.
         case 'success' :
         case 'status':
           // In quiet mode, suppress progress messages
