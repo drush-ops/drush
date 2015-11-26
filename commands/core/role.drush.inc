@@ -203,7 +203,7 @@ function drush_role_remove_perm($rid, $permissions = NULL) {
     $result = drush_role_perm('remove', $rid, $perm);
     if ($result !== FALSE) {
       $removed_perm = TRUE;
-      drush_log(dt('Removed "!perm" from "!role"', array('!perm' => $perm, '!role' => $result->name)), 'ok');
+      drush_log(dt('Removed "!perm" from "!role"', array('!perm' => $perm, '!role' => $result->name)), LogLevel::OK);
     }
   }
 

@@ -77,7 +77,7 @@ function drush_update_do_one($module, $number, $dependency_map,  &$context) {
       // If the update hook returned a status message (common in batch updates),
       // show it to the user.
       if ($ret['results']['query']) {
-        drush_log($ret['results']['query'], 'ok');
+        drush_log($ret['results']['query'], LogLevel::OK);
       }
 
       $ret['results']['success'] = TRUE;

@@ -336,7 +336,7 @@ function drush_views_analyze() {
       }
     }
 
-    drush_log(dt('A total of @total views were analyzed and @messages problems were found.', array('@total' => count($views), '@messages' => $messages_count)), 'ok');
+    drush_log(dt('A total of @total views were analyzed and @messages problems were found.', array('@total' => count($views), '@messages' => $messages_count)), LogLevel::OK);
     return $messages;
   }
   else {

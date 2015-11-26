@@ -443,7 +443,7 @@ function _drush_config_export($destination, $destination_dir, $branch) {
 
     $config_comparer = new StorageComparer($comparison_source, $target_storage, Drupal::service('config.manager'));
     if (!$config_comparer->createChangelist()->hasChanges()) {
-      return drush_log(dt('There are no changes to export.'), 'ok');
+      return drush_log(dt('There are no changes to export.'), LogLevel::OK);
     }
 
     drush_print("The following configuration changes have been made since the last export:\n");
@@ -614,7 +614,7 @@ function drush_config_import($source = NULL) {
   }
   $config_comparer = new StorageComparer($source_storage, $active_storage, Drupal::service('config.manager'));
   if (!$config_comparer->createChangelist()->hasChanges()) {
-    return drush_log(dt('There are no changes to import.'), 'ok');
+    return drush_log(dt('There are no changes to import.'), LogLevel::OK);
   }
 
   if (drush_get_option('preview', 'list') == 'list') {
@@ -788,7 +788,7 @@ function drush_config_pull($source, $destination) {
     // Use the standard backup directory on Destination.
     'destination' => TRUE,
   );
-  drush_log(dt('Starting to export configuration on Target.'), 'ok');
+  drush_log(dt('Starting to export configuration on Target.'), LogLevel::OK);
   $return = drush_invoke_process($source, 'config-export', array(), $global_options + $export_options, $backend_options);
   if ($return['error_status']) {
     return drush_set_error('DRUSH_CONFIG_PULL_EXPORT_FAILED', dt('Config-export failed.'));
@@ -804,7 +804,7 @@ function drush_config_pull($source, $destination) {
   );
   $label = drush_get_option('label', 'sync');
   $runner = drush_get_runner($source, $destination);
-  drush_log(dt('Starting to rsync configuration from Source to Local.'), 'ok');
+  drush_log(dt('Starting to rsync configuration from Source to Local.'), LogLevel::OK);
   $return = drush_invoke_process($runner, 'core-rsync', array("$source:$export_path", "$destination:%config-$label"), $rsync_options, $backend_options);
   if ($return['error_status']) {
     return drush_set_error('DRUSH_CONFIG_PULL_RSYNC_FAILED', dt('Config-pull rsync failed.'));

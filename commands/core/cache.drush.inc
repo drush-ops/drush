@@ -125,7 +125,7 @@ function drush_cache_clear_pre_validate($type = NULL) {
  */
 function drush_cache_command_clear($type = NULL) {
   if (!drush_get_option('cache-clear', TRUE)) {
-    drush_log(dt("Skipping cache-clear operation due to --cache-clear=0 option."), 'ok');
+    drush_log(dt("Skipping cache-clear operation due to --cache-clear=0 option."), LogLevel::OK);
     return TRUE;
   }
   $types = drush_cache_clear_types(drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
@@ -262,7 +262,7 @@ function drush_cache_clear_drush() {
  */
 function drush_cache_rebuild() {
   if (!drush_get_option('cache-clear', TRUE)) {
-    drush_log(dt("Skipping cache-clear operation due to --cache-clear=0 option."), 'ok');
+    drush_log(dt("Skipping cache-clear operation due to --cache-clear=0 option."), LogLevel::OK);
     return TRUE;
   }
   chdir(DRUPAL_ROOT);
@@ -289,7 +289,7 @@ function drush_cache_rebuild() {
 
   // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it manually.
   drupal_rebuild($autoloader, $request);
-  drush_log(dt('Cache rebuild complete.'), 'ok');
+  drush_log(dt('Cache rebuild complete.'), LogLevel::OK);
 
   // As this command replaces `drush cache-clear all` for Drupal 8 users, clear
   // the Drush cache as well, for consistency with that behavior.

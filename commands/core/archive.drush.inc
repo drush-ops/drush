@@ -292,7 +292,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
     drush_move_dir("{$destination}.gz", $final_destination, $overwrite);
   }
 
-  drush_log(dt('Archive saved to !dest', array('!dest' => $final_destination)), 'ok');
+  drush_log(dt('Archive saved to !dest', array('!dest' => $final_destination)), LogLevel::OK);
   return $final_destination;
 }
 
@@ -402,11 +402,11 @@ function drush_archive_restore($file, $site_id = NULL) {
         else {
           file_put_contents($settingsfile, "\n" . '$db_url = \'' . $db_url . "';\n", FILE_APPEND);
         }
-        drush_log(dt('Drush appended the new database configuration at settings.php. Optionally remove the old configuration manually.'), 'ok');
+        drush_log(dt('Drush appended the new database configuration at settings.php. Optionally remove the old configuration manually.'), LogLevel::OK);
       }
     }
   }
-  drush_log(dt('Archive restored to !dest', array('!dest' => $destination)), 'ok');
+  drush_log(dt('Archive restored to !dest', array('!dest' => $destination)), LogLevel::OK);
 
   return $destination;
 }

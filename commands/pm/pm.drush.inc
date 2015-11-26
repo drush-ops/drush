@@ -1005,9 +1005,9 @@ function drush_pm_enable_validate() {
         }
       }
       if (!empty($found)) {
-        drush_log(dt("The following projects provide some or all of the extensions not found:\n@list", array('@list' => implode("\n", $found))), 'ok');
+        drush_log(dt("The following projects provide some or all of the extensions not found:\n@list", array('@list' => implode("\n", $found))), LogLevel::OK);
         if (drush_get_option('resolve-dependencies')) {
-          drush_log(dt("They are being downloaded."), 'ok');
+          drush_log(dt("They are being downloaded."), LogLevel::OK);
         }
         if ((drush_get_option('resolve-dependencies')) || (drush_confirm("Would you like to download them?"))) {
           $download = $found;
@@ -1018,7 +1018,7 @@ function drush_pm_enable_validate() {
     // Discard already enabled and incompatible extensions.
     foreach ($extensions as $name) {
       if ($extension_info[$name]->status) {
-        drush_log(dt('!extension is already enabled.', array('!extension' => $name)), 'ok');
+        drush_log(dt('!extension is already enabled.', array('!extension' => $name)), LogLevel::OK);
       }
       // Check if the extension is compatible with Drupal core and php version.
       if ($component = drush_extension_check_incompatibility($extension_info[$name])) {
@@ -1053,9 +1053,9 @@ function drush_pm_enable_validate() {
           $unmet_project_list = array_merge($unmet_project_list, $unmet_projects);
           $msgs[] = dt("!module requires !unmet-projects", array('!unmet-projects' => implode(', ', $unmet_projects), '!module' => $module));
         }
-        drush_log(dt("The following projects have unmet dependencies:\n!list", array('!list' => implode("\n", $msgs))), 'ok');
+        drush_log(dt("The following projects have unmet dependencies:\n!list", array('!list' => implode("\n", $msgs))), LogLevel::OK);
         if (drush_get_option('resolve-dependencies')) {
-          drush_log(dt("They are being downloaded."), 'ok');
+          drush_log(dt("They are being downloaded."), LogLevel::OK);
         }
         if (drush_get_option('resolve-dependencies') || drush_confirm(dt("Would you like to download them?"))) {
           $download = array_merge($download, $unmet_project_list);
@@ -1147,7 +1147,7 @@ function drush_pm_enable() {
   // Inform the user which extensions will finally be enabled.
   $extensions = array_merge($modules, $themes);
   if (empty($extensions)) {
-    return drush_log(dt('There were no extensions that could be enabled.'), 'ok');
+    return drush_log(dt('There were no extensions that could be enabled.'), LogLevel::OK);
   }
   else {
     drush_print(dt('The following extensions will be enabled: !extensions', array('!extensions' => implode(', ', $extensions))));
@@ -1173,7 +1173,7 @@ function drush_pm_enable() {
   $role = drush_role_get_class();
   foreach ($result_extensions as $name => $extension) {
     if ($extension->status) {
-      drush_log(dt('!extension was enabled successfully.', array('!extension' => $name)), 'ok');
+      drush_log(dt('!extension was enabled successfully.', array('!extension' => $name)), LogLevel::OK);
       $perms = $role->getModulePerms($name);
       if (!empty($perms)) {
         drush_print(dt('!extension defines the following permissions: !perms', array('!extension' => $name, '!perms' => implode(', ', $perms))));
@@ -1289,7 +1289,7 @@ function drush_pm_releases() {
     }
   }
   if (empty($output)) {
-    return drush_log(dt('No valid projects given.'), 'ok');
+    return drush_log(dt('No valid projects given.'), LogLevel::OK);
   }
 
   return $output;
@@ -1959,10 +1959,10 @@ function drush_pm_update_lock(&$projects, $projects_to_lock, $projects_to_unlock
 
   // Log if we are going to lock or unlock anything
   if (!empty($projects_to_unlock)) {
-    drush_log(dt('Unlocking !projects', array('!projects' => implode(',', $projects_to_unlock))), 'ok');
+    drush_log(dt('Unlocking !projects', array('!projects' => implode(',', $projects_to_unlock))), LogLevel::OK);
   }
   if (!empty($projects_to_lock)) {
-    drush_log(dt('Locking !projects', array('!projects' => implode(',', $projects_to_lock))), 'ok');
+    drush_log(dt('Locking !projects', array('!projects' => implode(',', $projects_to_lock))), LogLevel::OK);
   }
 
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');

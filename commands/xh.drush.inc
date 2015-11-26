@@ -58,7 +58,7 @@ function xh_drush_exit() {
     $xhprof_runs = new XHProfRuns_Default();
     $run_id =  $xhprof_runs->save_run($xhprof_data, $namespace);
     if ($url = xh_link($run_id)) {
-      drush_log(dt('XHProf run saved. View report at !url', array('!url' => $url)), 'ok');
+      drush_log(dt('XHProf run saved. View report at !url', array('!url' => $url)), LogLevel::OK);
     }
   }
 }

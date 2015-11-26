@@ -74,7 +74,7 @@ function drush_pm_download_validate() {
   if (isset($new_variant)) {
     drush_set_option('variant', $new_variant);
     if ($variant) {
-      drush_log(dt('Switching to --variant=!variant.', array('!variant' => $new_variant)), 'ok');
+      drush_log(dt('Switching to --variant=!variant.', array('!variant' => $new_variant)), LogLevel::OK);
     }
   }
 }

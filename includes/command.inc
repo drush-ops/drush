@@ -413,10 +413,10 @@ function _drush_invoke_hooks($command, $args) {
   }
   if (drush_get_option('show-invoke')) {
     // We show all available hooks up to and including the one that failed (or all, if there were no failures)
-    drush_log(dt("Available drush_invoke() hooks for !command: !available", array('!command' => $command['command-hook'], '!available' => "\n" . implode("\n", $all_available_hooks))), 'ok');
+    drush_log(dt("Available drush_invoke() hooks for !command: !available", array('!command' => $command['command-hook'], '!available' => "\n" . implode("\n", $all_available_hooks))), LogLevel::OK);
   }
   if (drush_get_option('show-invoke') && !empty($available_rollbacks)) {
-    drush_log(dt("Available rollback hooks for !command: !rollback", array('!command' => $command['command-hook'], '!rollback' => "\n" . implode("\n", $available_rollbacks))), 'ok');
+    drush_log(dt("Available rollback hooks for !command: !rollback", array('!command' => $command['command-hook'], '!rollback' => "\n" . implode("\n", $available_rollbacks))), LogLevel::OK);
   }
 
   // Something went wrong, we need to undo.

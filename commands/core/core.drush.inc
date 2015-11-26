@@ -435,7 +435,7 @@ function core_drush_engine_drupal() {
  */
 function drush_core_entity_updates() {
   if (drush_get_context('DRUSH_SIMULATE')) {
-    drush_log(dt('entity-updates command does not support --simpulate option.'), 'ok');
+    drush_log(dt('entity-updates command does not support --simpulate option.'), LogLevel::OK);
   }
 
   drush_include_engine('drupal', 'update');
@@ -445,7 +445,7 @@ function drush_core_entity_updates() {
 
   drush_drupal_cache_clear_all();
 
-  drush_log(dt('Finished performing updates.'), 'ok');
+  drush_log(dt('Finished performing updates.'), LogLevel::OK);
 }
 
 /**
@@ -453,7 +453,7 @@ function drush_core_entity_updates() {
  */
 function drush_core_updatedb() {
   if (drush_get_context('DRUSH_SIMULATE')) {
-    drush_log(dt('updatedb command does not support --simulate option.'), 'ok');
+    drush_log(dt('updatedb command does not support --simulate option.'), LogLevel::OK);
     return TRUE;
   }
 
@@ -466,7 +466,7 @@ function drush_core_updatedb() {
     // Clear all caches in a new process. We just performed major surgery.
     drush_drupal_cache_clear_all();
 
-    drush_log(dt('Finished performing updates.'), 'ok');
+    drush_log(dt('Finished performing updates.'), LogLevel::OK);
   }
 }
 
@@ -479,7 +479,7 @@ function drush_core_updatedb_status() {
   drush_include_engine('drupal', 'update');
   list($pending, $start) = updatedb_status();
   if (empty($pending)) {
-    drush_log(dt("No database updates required"), 'ok');
+    drush_log(dt("No database updates required"), LogLevel::OK);
   }
   return $pending;
 }
@@ -1003,7 +1003,7 @@ function _drush_core_qd_cache_uri($uri) {
   }
   $dir = DRUPAL_ROOT . '/drush';
   $target_file = $dir . '/drushrc.php';
-  drush_log(dt("Caching 'uri' !uri in !target", array('!uri' => $server, '!target' => $target_file)), 'ok');
+  drush_log(dt("Caching 'uri' !uri in !target", array('!uri' => $server, '!target' => $target_file)), LogLevel::OK);
   $create_file = TRUE;
   if (file_exists($target_file)) {
     // Don't bother to ask with --use-existing; just

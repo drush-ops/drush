@@ -90,7 +90,7 @@ function _drush_search_status() {
 
 function drush_search_index() {
   drush_op('_drush_search_index');
-  drush_log(dt('The search index has been built.'), 'ok');
+  drush_log(dt('The search index has been built.'), LogLevel::OK);
 }
 
 function _drush_search_index() {
@@ -100,7 +100,7 @@ function _drush_search_index() {
   while ($remaining > 0) {
     $done = $total - $remaining;
     $percent = $done / $total * 100;
-    drush_log(dt(number_format($percent, 2) . '% complete. Remaining items to be indexed: ' . $remaining), 'ok');
+    drush_log(dt(number_format($percent, 2) . '% complete. Remaining items to be indexed: ' . $remaining), LogLevel::OK);
     $eval = "register_shutdown_function('search_update_totals');";
 
     // Use drush_invoke_process() to start subshell. Avoids out of memory issue.
@@ -178,10 +178,10 @@ function drush_search_reindex() {
 
   if (drush_get_option('immediate')) {
     drush_op('_drush_search_index');
-    drush_log(dt('The search index has been rebuilt.'), 'ok');
+    drush_log(dt('The search index has been rebuilt.'), LogLevel::OK);
   }
   else {
-    drush_log(dt('The search index will be rebuilt.'), 'ok');
+    drush_log(dt('The search index will be rebuilt.'), LogLevel::OK);
   }
 }
 
@@ -191,7 +191,7 @@ function drush_search_reindex() {
 function system_node_update_index($node) {
   // Verbose output.
   if (drush_get_context('DRUSH_VERBOSE')) {
-    drush_log(dt('Indexing node !nid.', array('!nid' => $node->nid)), 'ok');
+    drush_log(dt('Indexing node !nid.', array('!nid' => $node->nid)), LogLevel::OK);
   }
 }
 
@@ -202,7 +202,7 @@ function system_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
   if ($op == 'update index') {
     // Verbose output.
     if (drush_get_context('DRUSH_VERBOSE')) {
-      drush_log(dt('Indexing node !nid.', array('!nid' => $node->nid)), 'ok');
+      drush_log(dt('Indexing node !nid.', array('!nid' => $node->nid)), LogLevel::OK);
     }
   }
 }

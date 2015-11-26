@@ -223,7 +223,7 @@ function make_prune_info_file($info, $include_only = array()) {
 
   if ($pruned) {
     // Make it clear to the user what's going on.
-    drush_log(implode("\n", $msg), 'ok');
+    drush_log(implode("\n", $msg), LogLevel::OK);
 
     // Throw an error if these restrictions reduced the make to nothing.
     if (empty($info['projects']) && empty($info['libraries'])) {
@@ -477,7 +477,7 @@ function make_clean_tmp() {
     drush_delete_dir($tmp_dir);
   }
   else {
-    drush_log(dt('Temporary directory: !dir', array('!dir' => $tmp_dir)), 'ok');
+    drush_log(dt('Temporary directory: !dir', array('!dir' => $tmp_dir)), LogLevel::OK);
   }
 }
 
