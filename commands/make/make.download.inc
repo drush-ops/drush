@@ -325,7 +325,7 @@ function make_download_git($name, $type, $download, $download_location) {
         drush_log(dt("Fetched refspec !refspec.", array('!refspec' => $download['refspec'])), 'ok');
 
         if (drush_shell_exec("git checkout FETCH_HEAD")) {
-          drush_log(dt("Checked out FETCH_HEAD."), 'info');
+          drush_log(dt("Checked out FETCH_HEAD."), LogLevel::INFO);
         }
       }
       else {
