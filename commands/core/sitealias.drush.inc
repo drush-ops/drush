@@ -5,8 +5,6 @@
  *   Site alias commands. @see example.drushrc.php for details.
  */
 
-use Drush\Log\LogLevel;
-
 function sitealias_drush_help($section) {
   switch ($section) {
     case 'drush:site-alias':

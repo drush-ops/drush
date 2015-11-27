@@ -5,8 +5,6 @@
  *   Core drush output formats.
  */
 
-use Drush\Log\LogLevel;
-
 /**
  * @return drush_outputformat The selected output format engine
  */

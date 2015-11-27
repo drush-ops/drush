@@ -4,7 +4,6 @@
  *   Engine for the cache commands.
  */
 
-use Drush\Log\LogLevel;
 use Drupal\Core\Cache\Cache;
 
 function _drush_cache_command_get($cid, $bin) {

@@ -1,7 +1,5 @@
 <?php
 
-use Drush\Log\LogLevel;
-
 /**
  * Implements hook_drush_command().
  */

@@ -7,8 +7,6 @@
  *   is called from.
  */
 
-use Drush\Log\LogLevel;
-
 /**
  * Get complete information for all available modules.
  *

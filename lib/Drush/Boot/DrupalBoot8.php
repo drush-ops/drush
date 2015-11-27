@@ -2,7 +2,6 @@
 
 namespace Drush\Boot;
 
-use Drush\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Drupal\Core\DrupalKernel;

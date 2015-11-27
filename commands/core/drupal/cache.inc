@@ -4,8 +4,6 @@
  *   Engine for the cache commands.
  */
 
-use Drush\Log\LogLevel;
-
 function _drush_cache_command_get($cid, $bin) {
   if (is_null($bin)) {
     $bin = _drush_cache_bin_default();

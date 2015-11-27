@@ -5,8 +5,6 @@
  * make-update command implementation.
  */
 
-use Drush\Log\LogLevel;
-
 /**
  * Command callback for make-update.
  */

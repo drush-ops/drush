@@ -2,8 +2,6 @@
 
 namespace Drush\Role;
 
-use Drush\Log\LogLevel;
-
 abstract class RoleBase {
   /**
    * Drupal 6 and Drupal 7:
