@@ -1,6 +1,7 @@
 <?php
 
 use Symfony\Component\Yaml\Yaml;
+use Drush\Log\LogLevel;
 
 /**
  * Implementation of hook_drush_command().
@@ -213,7 +214,7 @@ function drush_variable_set() {
 
   if ($always_set || count($options) == 1 || $match) {
     variable_set($args[0], $value);
-    drush_log(dt('!name was set to !value.', array('!name' => $args[0], '!value' => $display)), 'success');
+    drush_log(dt('!name was set to !value.', array('!name' => $args[0], '!value' => $display)), LogLevel::SUCCESS);
     return '';
   }
   else {
@@ -224,7 +225,7 @@ function drush_variable_set() {
     $choice = $options[$choice];
     $choice = str_replace(' ' . dt('(new variable)'), '', $choice);
     drush_op('variable_set', $choice, $value);
-    drush_log(dt('!name was set to !value', array('!name' => $choice, '!value' => $display)), 'success');
+    drush_log(dt('!name was set to !value', array('!name' => $choice, '!value' => $display)), LogLevel::SUCCESS);
   }
 }
 
@@ -293,7 +294,7 @@ function drush_variable_delete() {
 
   if ((count($options) == 1) && drush_get_context('DRUSH_AFFIRMATIVE')) {
     drush_op('variable_del', $args[0]);
-    drush_log(dt('!name was deleted.', array('!name' => $args[0])), 'success');
+    drush_log(dt('!name was deleted.', array('!name' => $args[0])), LogLevel::SUCCESS);
     return '';
   }
   else {
@@ -301,7 +302,7 @@ function drush_variable_delete() {
     if ($choice !== FALSE) {
       $choice = $options[$choice];
       drush_op('variable_del', $choice);
-      drush_log(dt('!choice was deleted.', array('!choice' => $choice)), 'success');
+      drush_log(dt('!choice was deleted.', array('!choice' => $choice)), LogLevel::SUCCESS);
     }
   }
 }

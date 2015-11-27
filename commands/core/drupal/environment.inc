@@ -9,8 +9,7 @@
 
 use Drupal\Core\Site\Settings;
 use Drupal\Core\StreamWrapper\PrivateStream;
-use Psr\Log\LogLevel;
-
+use Drush\Log\LogLevel;
 
 /**
  * Get complete information for all available modules.
