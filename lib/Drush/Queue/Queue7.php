@@ -2,7 +2,8 @@
 
 namespace Drush\Queue;
 
-use \DrupalQueue;
+use Drush\Log\LogLevel;
+use DrupalQueue;
 
 class Queue7 extends QueueBase {
 
@@ -47,7 +48,7 @@ class Queue7 extends QueueBase {
 
     while ((!$time_limit || time() < $end) && ($item = $queue->claimItem())) {
       try {
-        drush_log(dt('Processing item @id from @name queue.', array('@name' => $name, 'id' => $item->item_id)), 'info');
+        drush_log(dt('Processing item @id from @name queue.', array('@name' => $name, 'id' => $item->item_id)), LogLevel::INFO);
         $function($item->data);
         $queue->deleteItem($item);
         $count++;

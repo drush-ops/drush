@@ -1,10 +1,12 @@
 <?php
 
+use Drush\Log\LogLevel;
+
 /**
  * Install Drupal 6.x
  */
 function drush_core_site_install_version($profile, array $additional_form_options = array()) {
-  drush_log(dt('Starting Drupal installation. This takes a few seconds ...'), 'ok');
+  drush_log(dt('Starting Drupal installation. This takes a few seconds ...'), LogLevel::OK);
   if (!isset($profile)) {
     $profile = 'default';
   }
@@ -71,7 +73,7 @@ function drush_core_site_install_version($profile, array $additional_form_option
   include("'. $drupal_root .'/install.php");';
   drush_shell_exec('php -r %s', $phpcode);
 
-  drush_log(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $account_name, '@pass' => $account_pass)), 'ok');
+  drush_log(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $account_name, '@pass' => $account_pass)), LogLevel::OK);
 }
 
 /**

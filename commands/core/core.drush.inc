@@ -5,6 +5,8 @@
  *   Core drush commands.
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * Implementation of hook_drush_help().
  *
@@ -433,7 +435,7 @@ function core_drush_engine_drupal() {
  */
 function drush_core_entity_updates() {
   if (drush_get_context('DRUSH_SIMULATE')) {
-    drush_log(dt('entity-updates command does not support --simpulate option.'), 'ok');
+    drush_log(dt('entity-updates command does not support --simpulate option.'), LogLevel::OK);
   }
 
   drush_include_engine('drupal', 'update');
@@ -443,7 +445,7 @@ function drush_core_entity_updates() {
 
   drush_drupal_cache_clear_all();
 
-  drush_log(dt('Finished performing updates.'), 'ok');
+  drush_log(dt('Finished performing updates.'), LogLevel::OK);
 }
 
 /**
@@ -451,7 +453,7 @@ function drush_core_entity_updates() {
  */
 function drush_core_updatedb() {
   if (drush_get_context('DRUSH_SIMULATE')) {
-    drush_log(dt('updatedb command does not support --simulate option.'), 'ok');
+    drush_log(dt('updatedb command does not support --simulate option.'), LogLevel::OK);
     return TRUE;
   }
 
@@ -464,7 +466,7 @@ function drush_core_updatedb() {
     // Clear all caches in a new process. We just performed major surgery.
     drush_drupal_cache_clear_all();
 
-    drush_log(dt('Finished performing updates.'), 'ok');
+    drush_log(dt('Finished performing updates.'), LogLevel::OK);
   }
 }
 
@@ -477,7 +479,7 @@ function drush_core_updatedb_status() {
   drush_include_engine('drupal', 'update');
   list($pending, $start) = updatedb_status();
   if (empty($pending)) {
-    drush_log(dt("No database updates required"), 'ok');
+    drush_log(dt("No database updates required"), LogLevel::OK);
   }
   return $pending;
 }
@@ -662,7 +664,7 @@ function drush_core_cron() {
     $result = \Drupal::service('cron')->run();
   }
   if ($result) {
-    drush_log(dt('Cron run successful.'), 'success');
+    drush_log(dt('Cron run successful.'), LogLevel::SUCCESS);
   }
   else {
     return drush_set_error('DRUSH_CRON_FAILED', dt('Cron run failed.'));
@@ -1001,7 +1003,7 @@ function _drush_core_qd_cache_uri($uri) {
   }
   $dir = DRUPAL_ROOT . '/drush';
   $target_file = $dir . '/drushrc.php';
-  drush_log(dt("Caching 'uri' !uri in !target", array('!uri' => $server, '!target' => $target_file)), 'ok');
+  drush_log(dt("Caching 'uri' !uri in !target", array('!uri' => $server, '!target' => $target_file)), LogLevel::OK);
   $create_file = TRUE;
   if (file_exists($target_file)) {
     // Don't bother to ask with --use-existing; just
@@ -1107,7 +1109,7 @@ function drush_core_php_script() {
         $searchpath[] = $path;
       }
     }
-    drush_log(dt('Searching for scripts in ') . implode(',', $searchpath), 'debug');
+    drush_log(dt('Searching for scripts in ') . implode(',', $searchpath), LogLevel::DEBUG);
 
     if (!isset($script)) {
       // List all available scripts.
@@ -1347,7 +1349,7 @@ function drush_core_twig_compile() {
       $relative = str_replace(drush_get_context('DRUSH_DRUPAL_ROOT'). '/', '', $file->filename);
       // @todo Dynamically disable twig debugging since there is no good info there anyway.
       twig_render_template($relative, array('theme_hook_original' => ''));
-      drush_log(dt('Compiled twig template !path', array('!path' => $relative)), 'notice');
+      drush_log(dt('Compiled twig template !path', array('!path' => $relative)), LogLevel::NOTICE);
     }
   }
 }

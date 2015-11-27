@@ -3,7 +3,7 @@
 
 namespace Drush\User;
 
-use \Drupal\user\Entity\User;
+use Drupal\user\Entity\User;
 
 class User8 extends UserVersion {
 

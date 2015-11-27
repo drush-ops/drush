@@ -5,6 +5,8 @@
  * pm-info command implementation.
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * Command callback. Show detailed info for one or more extensions.
  */
@@ -24,7 +26,7 @@ function drush_pm_info() {
       $info = $extension_info[$extension];
     }
     else {
-      drush_log(dt('!extension was not found.', array('!extension' => $extension)), 'warning');
+      drush_log(dt('!extension was not found.', array('!extension' => $extension)), LogLevel::WARNING);
       continue;
     }
     if (drush_extension_get_type($info) == 'module') {

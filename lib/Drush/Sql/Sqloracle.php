@@ -2,6 +2,8 @@
 
 namespace Drush\Sql;
 
+use Drush\Log\LogLevel;
+
 class Sqloracle extends SqlBase {
 
   // The way you pass a sql file when issueing a query.
@@ -24,7 +26,7 @@ class Sqloracle extends SqlBase {
   }
 
   public function createdb_sql($dbname) {
-    return drush_log("Unable to generate CREATE DATABASE sql for $dbname", 'error');
+    return drush_log("Unable to generate CREATE DATABASE sql for $dbname", LogLevel::ERROR);
   }
 
   // @todo $suffix = '.sql';

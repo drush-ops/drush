@@ -1,5 +1,6 @@
 <?php
 
+use Drush\Log\LogLevel;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\Html;
 
@@ -178,7 +179,7 @@ function drush_core_watchdog_show_many($filter = NULL) {
     $table[$row->wid] = (array)$row;
   }
   if (empty($table) && !$tail) {
-    drush_log(dt('No log messages available.'), 'ok');
+    drush_log(dt('No log messages available.'), LogLevel::OK);
     return array();
   }
   else {
@@ -303,7 +304,7 @@ function drush_core_watchdog_delete($arg = NULL) {
       return drush_user_abort();
     }
     drush_db_delete('watchdog');
-    drush_log(dt('All watchdog messages have been deleted.'), 'ok');
+    drush_log(dt('All watchdog messages have been deleted.'), LogLevel::OK);
   }
   else if (is_numeric($arg)) {
     drush_print(dt('Watchdog message #!wid will be deleted.', array('!wid' => $arg)));
@@ -312,7 +313,7 @@ function drush_core_watchdog_delete($arg = NULL) {
     }
     $affected_rows = drush_db_delete('watchdog', 'wid=:wid', array(':wid' => $arg));
     if ($affected_rows == 1) {
-      drush_log(dt('Watchdog message #!wid has been deleted.', array('!wid' => $arg)), 'ok');
+      drush_log(dt('Watchdog message #!wid has been deleted.', array('!wid' => $arg)), LogLevel::OK);
     }
     else {
       return drush_set_error(dt('Watchdog message #!wid does not exist.', array('!wid' => $arg)));
@@ -334,7 +335,7 @@ function drush_core_watchdog_delete($arg = NULL) {
       return drush_user_abort();
     }
     $affected_rows = drush_db_delete('watchdog', $where['where'], $where['args']);
-    drush_log(dt('!affected_rows watchdog messages have been deleted.', array('!affected_rows' => $affected_rows)), 'ok');
+    drush_log(dt('!affected_rows watchdog messages have been deleted.', array('!affected_rows' => $affected_rows)), LogLevel::OK);
   }
 }
 

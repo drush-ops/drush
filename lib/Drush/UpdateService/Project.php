@@ -2,6 +2,8 @@
 
 namespace Drush\UpdateService;
 
+use Drush\Log\LogLevel;
+
 /**
  * Representation of a project's release info from the update service.
  */
@@ -584,7 +586,7 @@ class Project {
 
     foreach ($versions as $version) {
       if (!isset($this->parsed['releases'][$version]['release_link'])) {
-        drush_log(dt("Project !project does not have release notes for version !version.", array('!project' => $project_name, '!version' => $version)), 'warning');
+        drush_log(dt("Project !project does not have release notes for version !version.", array('!project' => $project_name, '!version' => $version)), LogLevel::WARNING);
         continue;
       }
 
@@ -593,10 +595,10 @@ class Project {
       $filename = drush_download_file($release_link, drush_tempnam($project_name));
       @$dom = \DOMDocument::loadHTMLFile($filename);
       if ($dom) {
-        drush_log(dt("Successfully parsed and loaded the HTML contained in the release notes' page for !project (!version) project.", array('!project' => $project_name, '!version' => $version)), 'notice');
+        drush_log(dt("Successfully parsed and loaded the HTML contained in the release notes' page for !project (!version) project.", array('!project' => $project_name, '!version' => $version)), LogLevel::NOTICE);
       }
       else {
-        drush_log(dt("Error while requesting the release notes page for !project project.", array('!project' => $project_name)), 'error');
+        drush_log(dt("Error while requesting the release notes page for !project project.", array('!project' => $project_name)), LogLevel::ERROR);
         continue;
       }
       $xml = simplexml_import_dom($dom);
