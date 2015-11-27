@@ -419,6 +419,8 @@ function update_main() {
   else {
     drush_log(dt("No database updates required"), 'success');
   }
+
+  return count($pending);
 }
 
 /**

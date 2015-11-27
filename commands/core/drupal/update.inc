@@ -123,7 +123,7 @@ function update_main() {
   }
 
   // Print a list of pending updates for this module and get confirmation.
-  if (count($pending) || $change_summary || count($post_updates)) {
+  if (count($pending) || count($change_summary) || count($post_updates)) {
     drush_print(dt('The following updates are pending:'));
     drush_print();
 
@@ -161,6 +161,8 @@ function update_main() {
   else {
     drush_log(dt("No database updates required"), 'success');
   }
+
+  return count($pending) + count($change_summary) + count($post_updates);
 }
 
 function _update_batch_command($id) {
