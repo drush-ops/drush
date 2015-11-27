@@ -4,7 +4,7 @@
  * Drush Make processing classes.
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * The base project class.

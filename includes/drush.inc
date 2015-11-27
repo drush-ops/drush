@@ -5,8 +5,8 @@
  * The drush API implementation and helpers.
  */
 
-use \Drush\Log\Logger;
-use \Drush\Log\LogLevel;
+use Drush\Log\Logger;
+use Drush\Log\LogLevel;
 use Psr\Log\LoggerInterface;
 
 /**

@@ -5,13 +5,13 @@
  *   Provides Configuration Management commands.
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\ConfigImporter;
 use Drupal\Core\Config\ConfigException;
 use Drupal\Core\Config\FileStorage;
-use \Drush\Config\StorageWrapper;
-use \Drush\Config\CoreExtensionFilter;
+use Drush\Config\StorageWrapper;
+use Drush\Config\CoreExtensionFilter;
 use Symfony\Component\Yaml\Parser;
 
 /**

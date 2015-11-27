@@ -1,6 +1,6 @@
 <?php
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * Command callback. Disable one or more extensions.

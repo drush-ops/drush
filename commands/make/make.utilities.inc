@@ -4,9 +4,9 @@
  * General utility functions for Drush Make.
  */
 
-use \Drush\Log\LogLevel;
-use \Drush\Make\Parser\ParserIni;
-use \Drush\Make\Parser\ParserYaml;
+use Drush\Log\LogLevel;
+use Drush\Make\Parser\ParserIni;
+use Drush\Make\Parser\ParserYaml;
 
 /**
  * Helper function to parse a makefile and prune projects.

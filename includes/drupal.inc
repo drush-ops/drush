@@ -5,7 +5,7 @@
  * Utility functions related to Drupal.
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * Loads the Drupal autoloader and returns the instance.

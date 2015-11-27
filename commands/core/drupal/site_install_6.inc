@@ -1,6 +1,6 @@
 <?php
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * Install Drupal 6.x

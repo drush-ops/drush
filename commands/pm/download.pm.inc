@@ -5,8 +5,8 @@
  * pm-download command implementation.
  */
 
-use \Drush\Log\LogLevel;
-use \Drush\UpdateService\ReleaseInfo;
+use Drush\Log\LogLevel;
+use Drush\UpdateService\ReleaseInfo;
 
 /**
  * Implements drush_hook_COMMAND_validate().

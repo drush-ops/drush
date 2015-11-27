@@ -7,7 +7,7 @@
 
 namespace Drush\UpdateService;
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 interface StatusInfoInterface {
 

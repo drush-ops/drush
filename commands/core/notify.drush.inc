@@ -4,7 +4,7 @@
  * Add system notifications as a new drush option.
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * @todo there are no hooks fired after a command errors out.

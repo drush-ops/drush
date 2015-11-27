@@ -11,7 +11,7 @@
  * option in drushrc.php.
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * Indicates that the item should never be removed unless explicitly selected.

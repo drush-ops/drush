@@ -6,7 +6,7 @@
 *  SSH, either for an interactive session or to run a shell command.
 */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 function ssh_drush_command() {
   $items['site-ssh'] = array(

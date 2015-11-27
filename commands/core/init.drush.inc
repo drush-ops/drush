@@ -5,7 +5,7 @@
  *   Set up local Drush configuration.
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * Implementation of hook_drush_command().

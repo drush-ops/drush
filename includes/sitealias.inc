@@ -9,7 +9,7 @@
  * @see http://drupal.org/node/670460
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * Check to see if the user specified an alias

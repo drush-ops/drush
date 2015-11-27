@@ -57,7 +57,7 @@
  * drush_backend_get_result().
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * Identify the JSON encoded output from a command.

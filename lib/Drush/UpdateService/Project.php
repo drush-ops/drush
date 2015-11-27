@@ -2,7 +2,7 @@
 
 namespace Drush\UpdateService;
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * Representation of a project's release info from the update service.

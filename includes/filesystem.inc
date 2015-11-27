@@ -5,7 +5,7 @@
  * Filesystem utilities.
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * @defgroup filesystemfunctions Filesystem convenience functions.

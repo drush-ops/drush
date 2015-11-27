@@ -4,7 +4,7 @@
  *   Drupal 7 engine for the Batch API
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * Main loop for the Drush batch API.

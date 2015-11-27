@@ -5,7 +5,7 @@
  * Drush pm Bazaar extension
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 class drush_version_control_bzr implements drush_version_control {
 

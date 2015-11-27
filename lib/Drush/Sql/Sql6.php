@@ -2,7 +2,7 @@
 
 namespace Drush\Sql;
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 class Sql6 extends SqlVersion {
   public function get_db_spec() {

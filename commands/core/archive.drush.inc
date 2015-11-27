@@ -6,7 +6,7 @@
  *   http://groups.drupal.org/site-archive-format.
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 function archive_drush_command() {
   $items['archive-dump'] = array(

@@ -7,7 +7,7 @@
  *   line.
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * Global flag to identify update.php run, and so avoid various unwanted

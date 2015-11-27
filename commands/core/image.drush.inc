@@ -7,7 +7,7 @@
  *  @todo image-build($field_name, $bundle, $style_name)
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * Implementation of hook_drush_command().

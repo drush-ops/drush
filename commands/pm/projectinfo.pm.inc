@@ -1,6 +1,6 @@
 <?php
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * Implementation of drush_hook_COMMAND_validate().

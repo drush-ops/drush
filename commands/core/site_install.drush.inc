@@ -1,6 +1,6 @@
 <?php
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 function site_install_drush_command() {
   $items['site-install'] = array(

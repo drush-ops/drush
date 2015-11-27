@@ -5,7 +5,7 @@
  * Drush PM Wget extension
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * Validate this package handler can run.

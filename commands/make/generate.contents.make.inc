@@ -4,7 +4,7 @@
  * Functions for the generate makefile command.
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * Generate the actual contents of the .make file.

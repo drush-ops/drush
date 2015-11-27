@@ -5,7 +5,7 @@
  * Drush integration for views.
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 use Drupal\views\Analyzer;
 use Drupal\views\Entity\View;
 use Drupal\views\Views;

@@ -25,8 +25,8 @@
 
 namespace Drush\Log;
 
-use \Drush\Log\LogLevel;
-use \Psr\Log\AbstractLogger;
+use Drush\Log\LogLevel;
+use Psr\Log\AbstractLogger;
 
 class Logger extends AbstractLogger {
 

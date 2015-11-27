@@ -10,7 +10,7 @@
  * @see includes/bootstrap.inc
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * Log PHP errors to the Drush log. This is in effect until Drupal's error

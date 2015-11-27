@@ -2,8 +2,8 @@
 
 namespace Drush\Queue;
 
-use \Drush\Log\LogLevel;
-use \DrupalQueue;
+use Drush\Log\LogLevel;
+use DrupalQueue;
 
 class Queue7 extends QueueBase {
 

@@ -12,7 +12,7 @@
  * - Release: a specific release of a project, with associated metadata (from the drupal.org update service).
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * @defgroup update_status_constants Update Status Constants

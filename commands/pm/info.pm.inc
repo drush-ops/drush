@@ -5,7 +5,7 @@
  * pm-info command implementation.
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * Command callback. Show detailed info for one or more extensions.

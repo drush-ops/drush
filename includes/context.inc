@@ -39,7 +39,7 @@
  *   the matching configuration file through the drush_save_config() function.
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 
 /**

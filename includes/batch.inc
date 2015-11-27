@@ -24,7 +24,7 @@
  * implementations.
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * Class extending ArrayObject to allow the batch API to perform logging when

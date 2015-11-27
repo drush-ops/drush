@@ -5,7 +5,7 @@
  * Drush pm directory copy backup extension
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 class drush_version_control_backup implements drush_version_control {
 

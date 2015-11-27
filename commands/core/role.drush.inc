@@ -1,7 +1,7 @@
 <?php
 
-use \Drush\Log\LogLevel;
-use \Drush\Role\RoleBase;
+use Drush\Log\LogLevel;
+use Drush\Role\RoleBase;
 
 /**
  * Implementation of hook_drush_help().

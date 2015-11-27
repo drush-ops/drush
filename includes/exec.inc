@@ -5,7 +5,7 @@
  *   Functions for executing system commands. (e.g. exec(), system(), ...).
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * @defgroup commandwrappers Functions to execute commands.

@@ -4,8 +4,8 @@
  * Drush Make commands.
  */
 
-use \Drush\Log\LogLevel;
-use \Drush\UpdateService\ReleaseInfo;
+use Drush\Log\LogLevel;
+use Drush\UpdateService\ReleaseInfo;
 
 /**
  * Default localization server for downloading translations.

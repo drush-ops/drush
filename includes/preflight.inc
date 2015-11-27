@@ -5,7 +5,7 @@
  * Preflight, postflight and shutdown code.
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * The main Drush function.

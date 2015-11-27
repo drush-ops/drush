@@ -2,7 +2,7 @@
 
 namespace Drush\Role;
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 abstract class RoleBase {
   /**

@@ -7,7 +7,7 @@
  *   line.
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 /**
  * Drupal's update.inc has functions that are in previous update_X.inc files

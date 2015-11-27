@@ -7,7 +7,7 @@
  *   line.
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 define('MAINTENANCE_MODE', 'update');
 

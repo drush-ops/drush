@@ -4,7 +4,7 @@
  * Functions for the generate makefile command.
  */
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 include_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
 include_once drupal_get_path('module', 'system') . '/system.install';

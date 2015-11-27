@@ -2,7 +2,7 @@
 
 namespace Drush\Boot;
 
-use \Drush\Log\LogLevel;
+use Drush\Log\LogLevel;
 
 abstract class DrupalBoot extends BaseBoot {
 
