@@ -1,35 +1,28 @@
 Install a global Drush via Composer
 ------------------
-Follow the instructions below, or [watch a video by Drupalize.me](https://youtu.be/eAtDaD8xz0Q).		
-		
-1. [Install Composer globally](https://getcomposer.org/doc/00-intro.md#globally).		
+Follow the instructions below, or [watch a video by Drupalize.me](https://youtu.be/eAtDaD8xz0Q).
+
+1. [Install Composer globally](https://getcomposer.org/doc/00-intro.md#globally).
 1. Add composer's `bin` directory to the system path by placing `export PATH="$HOME/.composer/vendor/bin:$PATH"` into your ~/.bash_profile (Mac OS users) or into your ~/.bashrc (Linux users).		
 1. Install latest stable Drush: `composer global require drush/drush`.		
 1. Verify that Drush works: `drush status`				
-		
+
 #### Notes		
-* Update to latest release (per your specification in ~/.composer/composer.json): `composer global update`		
+* Update to latest release (per your specification in ~/.composer/composer.json): `composer global update`
 * Install a specific version of Drush:		
-		
-        # Install a specific version of Drush, e.g. Drush 7.1.0		
-        composer global require drush/drush:7.1.0		
-        		
-        # Install master branch as a git clone. Great for contributing back to Drush project.		
-        composer global require drush/drush:dev-master --prefer-source        		
-		
-* Alternate way to install for all users via Composer:		
-        		
-        COMPOSER_HOME=/opt/drush COMPOSER_BIN_DIR=/usr/local/bin COMPOSER_VENDOR_DIR=/opt/drush/7 composer require drush/drush:7		
-		
+
+        # Install a specific version of Drush, e.g. Drush 7.1.0
+        composer global require drush/drush:7.1.0
+
+        # Install master branch as a git clone. Great for contributing back to Drush project.
+        composer global require drush/drush:dev-master --prefer-source
+
+* Alternate way to install for all users via Composer:
+
+        COMPOSER_HOME=/opt/drush COMPOSER_BIN_DIR=/usr/local/bin COMPOSER_VENDOR_DIR=/opt/drush/7 composer require drush/drush:7
+
 * [Documentation for composer's require command.](http://getcomposer.org/doc/03-cli.md#require)
 * Uninstall with : `composer global remove drush-ops/drush`
-
-Install a .phar from master branch
-----------------------------------
-
-Drush's [master branch](https://github.com/drush-ops/drush/commits/master) is mostly stable.
-
-Follow the normal [installation instructions](http://docs.drush.org/en/master/install/), except change the download URL to [http:/files.drush.org/drush-unstable.phar](https:/files.drush.org/drush-unstable.phar)
 
 Windows
 ------------
