@@ -86,31 +86,11 @@
 # $options['shell-aliases']['dis-all'] = '!drush -y dis `drush pml --status=enabled --type=module --no-core --pipe`';
 # $options['shell-aliases']['self-alias'] = 'site-alias @self --with-db --alias-name=new';
 # $options['shell-aliases']['site-get'] = '@none php-eval "return drush_sitealias_site_get();"';
-
 // Add a 'pm-clone' to simplify git cloning from drupal.org.
 # $options['shell-aliases']['pm-clone'] = 'pm-download --gitusername=YOURUSERNAME --package-handler=git_drupalorg';
 
-// You can create a local cache of all projects checked out using
-// --package-handler=git_drupalorg; this can be faster for repeated
-// downloads, but can be brittle. See: http://randyfay.com/node/119
-# $options['cache'] = TRUE;
-
 // Load a drushrc.php configuration file from the current working directory.
 # $options['config'][] = './drushrc.php';
-// Load a drushrc.php configuration file from the directory sites/all/drush,
-// relative to the current Drupal site.
-# $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
-# if ($root) {
-#   $options['config'][] = $root . "/sites/all/drush/drushrc.php";
-# }
-
-/**
- * Enable logging and periodic upload of anonymized usage statistics. The Drush
- * maintainers use this data to learn which commands and options are most
- * See the usage-show and usage-send commands.
- */
-# $options['drush_usage_log'] = TRUE;
-# $options['drush_usage_send'] = TRUE;
 
 /**
  * By default, Drush will download projects compatible with the current
@@ -254,7 +234,7 @@
 # $options['skip-tables']['common'] = array('migration_*');
 
 /**
- * Override specific entries in Drupal's variable/config system or settings.php
+ * Override specific entries in Drupal's variable system or settings.php (D6/D7 only).
  */
 # $options['variables']['site_name'] = 'My Drupal site';
 # $options['variables']['theme_default'] = 'minnelli';
@@ -301,16 +281,4 @@
 // Use Drupal version specific CLI history instead of per site.
 # $command_specific['core-cli'] = array('version-history' => TRUE);
 
-/**
- * Load a drushrc file from the 'drush' folder at the root of the current
- * git repository.  Example script below by Grayside.  Customize as desired.
- * @see: http://grayside.org/node/93.
- */
-#$repo_dir = drush_get_option('root') ? drush_get_option('root') : getcwd();
-#if (drush_shell_exec('cd %s && git rev-parse --show-toplevel 2> ' . drush_bit_bucket(), $repo_dir)) {
-#  $output = drush_shell_exec_output();
-#  $repo_top = $output[0];
-#  $options['config'] = $repo_top . '/drush/drushrc.php';
-#  $options['include'] = $repo_top . '/drush/commands';
-#  $options['alias-path'] = $repo_top . '/drush/aliases';
-#}
+$
