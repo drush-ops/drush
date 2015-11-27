@@ -18,7 +18,6 @@ The example Drush command, 'make-me-a-sandwich', is stored in the 'sandwich' com
 
 Drush searches for commandfiles in the following locations:
 
--   The "/path/to/drush/commands" folder.
 -   Folders listed in the 'include' option (see `drush topic docs-configuration`).
 -   The system-wide Drush commands folder, e.g. /usr/share/drush/commands
 -   The ".drush" folder in the user's HOME folder.
