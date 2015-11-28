@@ -383,7 +383,7 @@ function drush_config_export($destination = NULL) {
   $branch = FALSE;
   if ($remote) {
     // Get the branch that we're on at the moment
-    $result = drush_shell_cd_and_exec($destination_dir, 'git rev-parse --abbrev-ref HEAD');
+    $result = drush_run('git rev-parse --abbrev-ref HEAD', $destination_dir);
     if (!$result) {
       return drush_set_error('DRUSH_CONFIG_EXPORT_NO_GIT', dt("The drush config-export command requires that the selected configuration directory !dir be under git revision control when using --commit or --push options.", array('!dir' => $destination_dir)));
     }
@@ -496,7 +496,7 @@ function _drush_config_export($destination, $destination_dir, $branch) {
   if ($commit || $remote) {
     // There must be changed files at the destination dir; if there are not, then
     // we will skip the commit-and-push step
-    $result = drush_shell_cd_and_exec($destination_dir, 'git status --porcelain .');
+    $result = drush_run('git status --porcelain .', $destination_dir);
     if (!$result) {
       return drush_set_error('DRUSH_CONFIG_EXPORT_FAILURE', dt("`git status` failed."));
     }
@@ -507,7 +507,7 @@ function _drush_config_export($destination, $destination_dir, $branch) {
         return drush_set_error('DRUSH_CONFIG_EXPORT_FAILURE', dt("`git add -A` failed."));
       }
       $comment_file = drush_save_data_to_temp_file($comment);
-      $result = drush_shell_cd_and_exec($destination_dir, 'git commit --file=%s', $comment_file);
+      $result = drush_run(array('git', 'commit', "--file=$comment_file"), $destination_dir);
       if (!$result) {
         return drush_set_error('DRUSH_CONFIG_EXPORT_FAILURE', dt("`git commit` failed.  Output:\n\n!output", array('!output' => implode("\n", drush_shell_exec_output()))));
       }
@@ -628,7 +628,7 @@ function drush_config_import($source = NULL) {
     $destination_dir = drush_tempdir();
     drush_invoke_process('@self', 'config-export', array(), array('destination' => $destination_dir));
     // @todo Can DiffFormatter produce a CLI pretty diff?
-    drush_shell_exec('diff -x %s -u %s %s', '*.git', $destination_dir, $source_dir);
+    drush_run(array('diff', '-x', '*.git', '-u', $destination_dir, $source_dir));
     $output = drush_shell_exec_output();
     drush_print(implode("\n", $output));
   }
@@ -728,7 +728,7 @@ function drush_config_edit($config_name = '') {
     $existing = new FileStorage(drush_tempdir());
     $existing->write($config_name, $contents);
     // @todo Can DiffFormatter produce a CLI pretty diff?
-    drush_shell_exec('diff -u %s %s', $existing->getFilePath($config_name), $temp_storage->getFilePath($config_name));
+    drush_run(array('diff', '-u', $existing->getFilePath($config_name), $temp_storage->getFilePath($config_name)));
     $output = drush_shell_exec_output();
     drush_print(implode("\n", $output));
 

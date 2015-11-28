@@ -267,13 +267,13 @@ function drush_archive_dump($sites_subdirs = '@self') {
   file_put_contents("{$tmp}/MANIFEST.ini", $contents);
 
   // Add manifest to archive.
-  drush_shell_cd_and_exec($tmp, "$tar --dereference -rf %s %s", $destination, 'MANIFEST.ini');
+  drush_run(array("$tar", "--dereference", "-rf", $destination, 'MANIFEST.ini'), $tmp);
 
   // Ensure that default/default.settings.php is in the archive. This is needed
   // by site-install when restoring a site without any DB.
   // NOTE: Windows tar file replace operation is broken so we have to check if file already exists.
   // Otherwise it will corrupt the archive.
-  $res = drush_shell_cd_and_exec($workdir, "$tar -tf %s %s", $destination, $docroot . '/sites/default/default.settings.php');
+  $res = drush_run(array("$tar", "-tf", $destination, $docroot . '/sites/default/default.settings.php'), $workdir);
   $output = drush_shell_exec_output();
   if (!$res || !isset($output[0]) || empty($output[0])) {
     drush_shell_cd_and_exec($workdir, "$tar --dereference -vrf %s %s", $destination, $docroot . '/sites/default/default.settings.php');
@@ -285,7 +285,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
   }
 
   // Compress the archive
-  drush_shell_exec("gzip --no-name -f %s", $destination);
+  drush_run(array("gzip", "--no-name", "-f", $destination));
 
   // gzip appends .gz unless the name already ends in .gz, .tgz, or .taz.
   if ("{$destination}.gz" != $final_destination) {

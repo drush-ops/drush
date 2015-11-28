@@ -1,5 +1,8 @@
 <?php
 
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\ProcessBuilder;
+
 /**
  * @file
  *   Functions for executing system commands. (e.g. exec(), system(), ...).
@@ -19,6 +22,10 @@ use Drush\Log\LogLevel;
  * (e.g. unlink() and other file system functions) so that can be suppressed
  * if the simulation mode is enabled.
  *
+ * DEPRECATED.  Instead, use a functon that handles escaping the command
+ * arguments and options.  Use only when none of the arguments or options
+ * contain file paths.
+ *
  * @param $exec
  *   The shell command to execute.  Parameters should already be escaped.
  * @return
@@ -35,7 +42,8 @@ function drush_op_system($exec) {
   }
 
   // Throw away output.  Use drush_shell_exec() to capture output.
-  system($exec, $result_code);
+  $process = new Process($exec, NULL, NULL, NULL, 0);
+  $result_code = $process->run();
 
   return $result_code;
 }
@@ -70,6 +78,8 @@ function drush_shell_cd_and_exec($effective_wd, $cmd) {
  * Output is stored and can be retrieved using drush_shell_exec_output().
  * If in simulation mode, no action is taken.
  *
+ * Use drush_run() instead where possible.
+ *
  * @param $cmd
  *   The command to execute. May include placeholders used for sprintf.
  * @param ...
@@ -102,28 +112,18 @@ function drush_get_editor() {
  * @see drush_shell_exec.
  */
 function drush_shell_exec_interactive($cmd) {
-  return _drush_shell_exec(func_get_args(), TRUE);
+  $command = _drush_build_shell_command(func_get_args());
+
+  if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
+    drush_print('Executing: ' . $command, 0, STDERR);
+  }
+  if (!drush_get_context('DRUSH_SIMULATE')) {
+    $result = drush_shell_proc_open($command);
+    return ($result == 0) ? TRUE : FALSE;
+  }
 }
 
-/**
- * Internal function: executes a shell command on the
- * local machine.  This function should not be used
- * in instances where ssh is utilized to execute a
- * command remotely; otherwise, remote operations would
- * fail if executed from a Windows machine to a remote
- * Linux server.
- *
- * @param $args
- *   The command and its arguments.
- * @param $interactive
- *   Whether to run in
- *
- * @return
- *   TRUE on success, FALSE on failure
- *
- * @see drush_shell_exec.
- */
-function _drush_shell_exec($args, $interactive = FALSE) {
+function _drush_build_shell_command($args) {
   // Do not change the command itself, just the parameters.
   for ($x = 1; $x < count($args); $x++) {
     $args[$x] = drush_escapeshellarg($args[$x]);
@@ -140,27 +140,100 @@ function _drush_shell_exec($args, $interactive = FALSE) {
     $command = call_user_func_array('sprintf', $args);
   }
 
+  return $command;
+}
+
+/**
+ * Internal function: executes a shell command on the
+ * local machine.  This function should not be used
+ * in instances where ssh is utilized to execute a
+ * command remotely; otherwise, remote operations would
+ * fail if executed from a Windows machine to a remote
+ * Linux server.
+ *
+ * @param $args
+ *   The command and its arguments.
+ *
+ * @return
+ *   TRUE on success, FALSE on failure
+ *
+ * @see drush_shell_exec.
+ */
+function _drush_shell_exec($args) {
+  $command = _drush_build_shell_command($args);
+  $process = new Process($command);
+  return drush_run_process($process);
+}
+
+/**
+ * Run a command using the Symfony process component.
+ *
+ * @param $args
+ *   string - the command to run, and its arguments (if no escaping is needed)
+ *   array - the command to run and its arguments
+ *      $args[0] - the command to execute
+ *      $args[1] - the first commandline argument
+ *      etc.
+ */
+function drush_run($args, $path = NULL) {
+  if (is_string($args)) {
+    $process = new Process($command);
+    if ($path) {
+      $process->setWorkingDirectory($path);
+    }
+  }
+  else {
+    $process = _drush_build_process($args, $path);
+  }
+  return drush_run_process($process);
+}
+
+/**
+ * Run a command using the Symfony process component.
+ *
+ * @param $args
+ *   $args[0] - the command to execute
+ *   $args[1] - the first commandline argument
+ *   etc.
+ */
+function _drush_build_process(array $args, $path = NULL) {
+  // The first argument is the command; the rest
+  // are the command arguments.
+  $commandPrefix = array_shift($args);
+
+  // Use a Symfony ProcessBuilder to create a Process.
+  $builder = new ProcessBuilder();
+  $builder
+    ->setWorkingDirectory($path)
+    ->setPrefix($commandPrefix)
+    ->setArguments($args);
+  return $builder->getProcess();
+}
+
+/**
+ * Given a Symfony process component, run it the Drush way.
+ *
+ * @param $process
+ *   Symfony Process component to run.
+ */
+function drush_run_process(Process $process) {
   if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
+    $command = $process->getCommandLine();
     drush_print('Executing: ' . $command, 0, STDERR);
   }
   if (!drush_get_context('DRUSH_SIMULATE')) {
-    if ($interactive) {
-      $result = drush_shell_proc_open($command);
-      return ($result == 0) ? TRUE : FALSE;
-    }
-    else {
-      exec($command . ' 2>&1', $output, $result);
-      _drush_shell_exec_output_set($output);
+    $result = $process->run();
+    $output = explode("\n", trim($process->getOutput()));
+    _drush_shell_exec_output_set($output);
 
-      if (drush_get_context('DRUSH_DEBUG')) {
-        foreach ($output as $line) {
-          drush_print($line, 2);
-        }
+    if (drush_get_context('DRUSH_DEBUG')) {
+      foreach ($output as $line) {
+        drush_print($line, 2);
       }
-
-      // Exit code 0 means success.
-      return ($result == 0);
     }
+
+    // Exit code 0 means success.
+    return ($result == 0);
   }
   else {
     return TRUE;
@@ -242,6 +315,7 @@ function drush_shell_proc_open($cmd) {
     drush_print("Calling proc_open($cmd);", 0, STDERR);
   }
   if (!drush_get_context('DRUSH_SIMULATE')) {
+    // TODO: Use 'new Process($cmd, NULL, NULL, NULL, 0)'
     $process = proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
     $proc_status = proc_get_status($process);
     $exit_code = proc_close($process);
