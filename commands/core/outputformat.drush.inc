@@ -234,6 +234,11 @@ function outputformat_drush_engine_outputformat() {
     'list-field-selection-control' => -1,
     'topic-example' => $common_topic_example,
   );
+  $engines['html'] = array(
+    'machine-parsable' => FALSE,
+    'description' => 'An HTML representation',
+    'engine-capabilities' => array('format-table'),
+  );
   return $engines;
 }
 

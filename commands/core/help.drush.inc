@@ -38,7 +38,7 @@ function help_drush_command() {
   $items['help'] = array(
     'description' => 'Print this help message. See `drush help help` for more options.',
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
-    'allow-additional-options' => TRUE,
+    'allow-additional-options' => array('helpsingle'),
     'options' => array(
       'sort' => 'Sort commands in alphabetical order. Drush waits for full bootstrap before printing any commands when this option is used.',
       'filter' => array(
@@ -46,8 +46,6 @@ function help_drush_command() {
         'example-value' => 'category',
         'value' => 'optional',
       ),
-      'format' => 'Format to output . Allowed values are: json, var_export, html.',
-      'pipe' => 'A list of available commands, one per line.',
     ),
     'arguments' => array(
       'command' => 'A command name, or command alias.',
@@ -57,6 +55,14 @@ function help_drush_command() {
       'drush --filter=devel_generate' => 'Show only commands defined in devel_generate.drush.inc',
       'drush help pm-download' => 'Show help for one command.',
       'drush help dl' => 'Show help for one command using an alias.',
+      'drush help --format=html' => 'Show an HTML page detailing all available commands.',
+      'drush help --format=json' => 'All available comamnds, in a machine parseable format.',
+    ),
+    // Use output format system for all formats except the default presentation.
+    'outputformat' => array(
+      'default' => 'table',
+      'field-labels' => array('name' => 'Name', 'description' => 'Description'),
+      'output-data-type' => 'format-table',
     ),
     'topics' => array('docs-readme'),
   );
@@ -80,22 +86,28 @@ function core_help_complete() {
  * Command callback for help command. This is the default command, when none
  * other has been specified.
  */
-function drush_core_help() {
-  if ($commands = func_get_args()) {
-    // Send help for a single command.
+function drush_core_help($name = '') {
+  $format = drush_get_option('format', 'table');
+  if ($name) {
+    // helpsingle command builds output when a command is specified.
     $options = drush_redispatch_get_options();
-    if ($commands[0] != 'help') {
+    if ($name != 'help') {
       unset($options['help']);
     }
-    $return = drush_invoke_process('@self' ,'helpsingle', $commands, $options);
+    $return = drush_invoke_process('@self' ,'helpsingle', func_get_args(), $options);
     drush_backend_set_result($return['object']);
-    // drush_print($return['output']);
     return;
   }
-
-  $format = drush_get_option('format');
-
-  if (empty($commands)) {
+  elseif ($format != 'table') {
+    // Listing all commands so boot as far as possible.
+    drush_bootstrap_max();
+    $implemented = drush_get_commands();
+    ksort($implemented);
+    $command_categories = drush_commands_categorize($implemented);
+    drush_backend_set_result($command_categories);
+    return $command_categories;
+  }
+  else {
     // For speed, only bootstrap up to DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION.
     drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
     $implemented = drush_get_commands();
@@ -129,44 +141,15 @@ function drush_core_help() {
       $command_categories = array($filter_category => $command_categories[$filter_category]);
     }
 
-    if ($format == 'html') {
-      drush_print(drush_help_html_header());
-    }
-
     // Make a fake command section to hold the global options, then print it.
     $global_options_help = drush_global_options_command(TRUE);
     if (!in_array($format, array('html', 'var_export', 'json')) && !drush_get_option('filter')) {
       drush_print_help($global_options_help);
     }
-
-    if ($format == 'json' || $format == 'var_export') {
-      // Print giant array, and set backend_result. We do it this way because this command
-      // isn't yet fully compliant with outputformat system. To do so, we need to deal with
-      // the fact that this command varies output significantly when showing help for one
-      // command versus a listing. We also have oddball HTML format.
-      drush_print(drush_format($command_categories, 'commands'));
-      drush_backend_set_result($command_categories);
-      return NULL;
-    }
-    else {
-      // HTML and CLI command listing (in a table).
-      drush_help_listing_print($command_categories, $format);
-
-      if ($format == 'html') {
-        // Print global options and long-form help for all commands.
-        drush_print(drush_help_html_global_options($global_options_help));
-        drush_print(drush_help_html($visible));
-      }
-    }
-
-    // Newline-delimited list for use by other scripts. Set the --pipe option.
-    if (drush_get_option('pipe')) {
-      drush_print_pipe(implode("\n", array_keys($visible)));
-    }
+    drush_help_listing_print($command_categories, $format);
+    drush_backend_set_result($command_categories);
     return;
   }
-
-  return drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt('Invalid command !command.', array('!command' => implode(" ", $commands))));
 }
 
 // Uncategorize the list of commands. Hiddens have been removed and
@@ -180,7 +163,7 @@ function drush_help_visible($command_categories) {
 }
 
 /**
- * Print CLI table or HTML table listing all commands.
+ * Print CLI table listing all commands.
  */
 function drush_help_listing_print($command_categories, $format) {
   $all_commands = array();
@@ -194,68 +177,30 @@ function drush_help_listing_print($command_categories, $format) {
       $name = $command['aliases'] ? $cmd . ' (' . implode(', ', $command['aliases']) . ')': $cmd;
       $rows[$cmd] = array('name' => $name, 'description' => $command['description']);
     }
-
-    // Vary the output by mode: CLI or HTML
-    if ($format == 'html') {
-      drush_print("<h3>" . $info['title'] . "</h3>");
-      drush_print(drush_help_html_command_list($commands));
-    }
-    else {
-      drush_print($info['title'] . ": (" . $key . ")");
-      drush_print_table($rows, FALSE, array('name' => 20));
-    }
+    drush_print($info['title'] . ": (" . $key . ")");
+    drush_print_table($rows, FALSE, array('name' => 20));
   }
 }
 
 /**
- * Return an HTML page header.
+ * Build a fake command for the purposes of showing examples and options.
  */
-function drush_help_html_header() {
-  return "<html><head><title>Drush help</title><style>dt {font-size: 110%; font-weight: bold}</style></head><body>\n";
-}
+function drush_global_options_command($brief = FALSE) {
+  $global_options_help = array(
+    'description' => 'Execute a drush command. Run `drush help [command]` to view command-specific help.  Run `drush topic` to read even more documentation.',
+    'sections' => array(
+      'options' => 'Global options (see `drush topic core-global-options` for the full list)',
+    ),
+    'options' => drush_get_global_options($brief),
+    'examples' => array(
+      'drush dl cck zen' => 'Download CCK module and Zen theme.',
+      'drush --uri=http://example.com status' => 'Show status command for the example.com multi-site.',
+    ),
+    '#brief' => TRUE,
+  );
+  $global_options_help += drush_command_defaults('global-options', 'global_options', __FILE__);
+  drush_command_invoke_all_ref('drush_help_alter', $global_options_help);
+  ksort($global_options_help['options']);
 
-function drush_help_html_global_options($global_options_help) {
-  // Global options
-  $global_option_rows = drush_format_help_section($global_options_help, 'options');
-  $output =  '<h3>Global Options (see `drush topic core-global-options` for the full list)</h3><table>';
-  foreach ($global_option_rows as $row) {
-    $output .= "<tr>";
-    foreach ($row as $value) {
-      $output .=  "<td>" . htmlspecialchars($value) . "</td>\n";
-    }
-    $output .= "</tr>";
-  }
-  $output .=  "</table>\n";
-
-  return $output;
-}
-
-function drush_help_html_command_list($commands) {
-  // Command table
-  $output =  "<table>\n";
-  foreach ($commands as $key => $command) {
-    $output .=  "  <tr><td><a href=\"#$key\">$key</a></td><td>" . $command['description'] . "</td></tr>\n";
-  }
-  $output .=  "</table>\n";
-
-  return $output;
-}
-
-/**
- * Return an HTML page documenting all available commands and global options.
- */
-function drush_help_html($commands) {
-  // Command details
-  $output =  '<h3>Command detail</h3><dl>';
-  foreach ($commands as $key => $command) {
-    $output .=  "\n<a name=\"$key\"></a><dt>$key</dt><dd><pre>\n";
-    ob_start();
-    drush_show_help($key);
-    $output .= ob_get_clean();
-    $output .=  "</pre></dd>\n";
-  }
-
-  $output .=  "</body></html>\n";
-
-  return $output;
+  return $global_options_help;
 }

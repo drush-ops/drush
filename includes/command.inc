@@ -1338,8 +1338,9 @@ function drush_parse_command() {
     // Special case. Force help command if --help option was specified.
     if (drush_get_option('help')) {
       $arguments = array($command['command']);
-      $command = $implemented['help'];
+      $command = $implemented['helpsingle'];
       $command['arguments'] = $arguments;
+      $command['allow-additional-options'] = TRUE;
     }
     else {
       _drush_prepare_command($command, $arguments);
