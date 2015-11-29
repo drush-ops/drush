@@ -98,21 +98,16 @@ function drush_core_help($name = '') {
     drush_backend_set_result($return['object']);
     return;
   }
-  elseif ($format != 'table') {
-    // Listing all commands so boot as far as possible.
-    drush_bootstrap_max();
-    $implemented = drush_get_commands();
-    ksort($implemented);
-    $command_categories = drush_commands_categorize($implemented);
-    drush_backend_set_result($command_categories);
+
+  // For speed, only bootstrap up to DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION.
+  drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+  $implemented = drush_get_commands();
+  ksort($implemented);
+  $command_categories = drush_commands_categorize($implemented);
+  if ($format != 'table') {
     return $command_categories;
   }
   else {
-    // For speed, only bootstrap up to DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION.
-    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
-    $implemented = drush_get_commands();
-    ksort($implemented);
-    $command_categories = drush_commands_categorize($implemented);
     $visible = drush_help_visible($command_categories);
 
     // If the user specified --filter w/out a value, then
@@ -143,10 +138,10 @@ function drush_core_help($name = '') {
 
     // Make a fake command section to hold the global options, then print it.
     $global_options_help = drush_global_options_command(TRUE);
-    if (!in_array($format, array('html', 'var_export', 'json')) && !drush_get_option('filter')) {
+    if (!drush_get_option('filter')) {
       drush_print_help($global_options_help);
     }
-    drush_help_listing_print($command_categories, $format);
+    drush_help_listing_print($command_categories);
     drush_backend_set_result($command_categories);
     return;
   }
@@ -165,7 +160,7 @@ function drush_help_visible($command_categories) {
 /**
  * Print CLI table listing all commands.
  */
-function drush_help_listing_print($command_categories, $format) {
+function drush_help_listing_print($command_categories) {
   $all_commands = array();
   foreach ($command_categories as $key => $info) {
     // Get the commands in this category.
