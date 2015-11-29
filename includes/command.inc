@@ -833,7 +833,7 @@ function drush_parse_args() {
     }
   }
   // If no arguments are specified, then the command will
-  // be either 'help' or 'version' (the later if --version is specified)
+  // be either 'help' or 'version' (the latter if --version is specified)
   // @todo: it would be handy if one could do `drush @remote st --help` and
   // have that show help for st. Today, that shows --help for help command!
   if (!count($arguments)) {
@@ -1340,8 +1340,9 @@ function drush_parse_command() {
     // Special case. Force help command if --help option was specified.
     if (drush_get_option('help')) {
       $arguments = array($command['command']);
-      $command = $implemented['help'];
+      $command = $implemented['helpsingle'];
       $command['arguments'] = $arguments;
+      $command['allow-additional-options'] = TRUE;
     }
     else {
       _drush_prepare_command($command, $arguments);
@@ -1506,7 +1507,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
       // Assemble a cid specific to the bootstrap phase and searchpaths.
       // Bump $cf_version when making a change to a dev version of Drush
       // that invalidates the commandfile cache.
-      $cf_version = 6;
+      $cf_version = 7;
       $cid = drush_get_cid('commandfiles-' . $phase, array(), array_merge($searchpath, array($cf_version)));
       $command_cache = drush_cache_get($cid);
       if (isset($command_cache->data)) {
