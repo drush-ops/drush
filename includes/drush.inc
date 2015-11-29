@@ -5,6 +5,10 @@
  * The drush API implementation and helpers.
  */
 
+use Drush\Log\Logger;
+use Drush\Log\LogLevel;
+use Psr\Log\LoggerInterface;
+
 /**
  * @name Error status definitions
  * @{
@@ -692,11 +696,11 @@ function drush_op($callable) {
 
   // Special checking for drush_op('system')
   if ($callable == 'system') {
-    drush_log(dt("Do not call drush_op('system'); use drush_op_system instead"), 'debug');
+    drush_log(dt("Do not call drush_op('system'); use drush_op_system instead"), LogLevel::DEBUG);
   }
 
   if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
-    drush_log(sprintf("Calling %s(%s)", $callable_string, implode(", ", $args_printed)), 'debug');
+    drush_log(sprintf("Calling %s(%s)", $callable_string, implode(", ", $args_printed)), LogLevel::DEBUG);
   }
 
   if (drush_get_context('DRUSH_SIMULATE')) {
@@ -771,7 +775,7 @@ function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
         // Cache was set just by downloading file to right location.
       }
       elseif (file_exists($cache_file)) {
-        drush_log(dt('!name retrieved from an expired cache since refresh failed.', array('!name' => $cache_file)), 'warning');
+        drush_log(dt('!name retrieved from an expired cache since refresh failed.', array('!name' => $cache_file)), LogLevel::WARNING);
       }
       else {
         $cache_file = FALSE;
@@ -870,7 +874,7 @@ function _drush_download_file($url, $destination, $overwrite = TRUE) {
 function drush_mime_content_type($filename) {
   $content_type = drush_attempt_mime_content_type($filename);
   if ($content_type) {
-    drush_log(dt('Mime type for !file is !mt', array('!file' => $filename, '!mt' => $content_type)), 'notice');
+    drush_log(dt('Mime type for !file is !mt', array('!file' => $filename, '!mt' => $content_type)), LogLevel::NOTICE);
     return $content_type;
   }
   return drush_set_error('MIME_CONTENT_TYPE_UNKNOWN', dt('Unable to determine mime type for !file.', array('!file' => $filename)));
@@ -886,7 +890,7 @@ function drush_attempt_mime_content_type($filename) {
     $finfo = new finfo(FILEINFO_MIME_TYPE);
     $content_type = $finfo->file($filename);
     if ($content_type == 'application/octet-stream') {
-      drush_log(dt('Mime type for !file is application/octet-stream.', array('!file' => $filename)), 'debug');
+      drush_log(dt('Mime type for !file is application/octet-stream.', array('!file' => $filename)), LogLevel::DEBUG);
       $content_type = FALSE;
     }
   }
@@ -895,7 +899,7 @@ function drush_attempt_mime_content_type($filename) {
   // archives as octet-stream for other reasons) we'll detect mime types on our
   //  own by examing the file's magic header bytes.
   if (!$content_type) {
-    drush_log(dt('Examining !file headers.', array('!file' => $filename)), 'debug');
+    drush_log(dt('Examining !file headers.', array('!file' => $filename)), LogLevel::DEBUG);
     if ($file = fopen($filename, 'rb')) {
       $first = fread($file, 2);
       fclose($file);
@@ -923,15 +927,15 @@ function drush_attempt_mime_content_type($filename) {
             break;
 
           default:
-            drush_log(dt('Unable to determine mime type from header bytes 0x!hex of !file.', array('!hex' => dechex($data[1]), '!file' => $filename,), 'debug'));
+            drush_log(dt('Unable to determine mime type from header bytes 0x!hex of !file.', array('!hex' => dechex($data[1]), '!file' => $filename,), LogLevel::DEBUG));
         }
       }
       else {
-        drush_log(dt('Unable to read !file.', array('!file' => $filename)), 'warning');
+        drush_log(dt('Unable to read !file.', array('!file' => $filename)), LogLevel::WARNING);
       }
     }
     else {
-      drush_log(dt('Unable to open !file.', array('!file' => $filename)), 'warning');
+      drush_log(dt('Unable to open !file.', array('!file' => $filename)), LogLevel::WARNING);
     }
   }
 
@@ -939,7 +943,7 @@ function drush_attempt_mime_content_type($filename) {
   // the file extension. This is useful if the file has no identificable magic
   // header bytes (for example tarballs).
   if (!$content_type) {
-    drush_log(dt('Examining !file extension.', array('!file' => $filename)), 'debug');
+    drush_log(dt('Examining !file extension.', array('!file' => $filename)), LogLevel::DEBUG);
 
     // Remove querystring from the filename, if present.
     $filename = basename(current(explode('?', $filename, 2)));
@@ -1231,23 +1235,20 @@ function drush_do_command_redispatch($command, $args = array(), $remote_host = N
  * This allows you to replace it with custom logging implementations if needed,
  * such as logging to a file or logging to a database (drupal or otherwise).
  *
- * The default callback is the _drush_print_log() function with prints the messages
+ * The default callback is the Drush\Log\Logger class with prints the messages
  * to the shell.
  *
  * @param message
  *   String containing the message to be logged.
  * @param type
  *   The type of message to be logged. Common types are 'warning', 'error', 'success' and 'notice'.
- *   A type of 'failed' can also be supplied to flag as an 'error'.
- *   A type of 'ok' or 'completed' can also be supplied to flag as a 'success'.
+ *   A type of 'ok' or 'success' can also be supplied to flag something that worked.
  *   If you want your log messages to print to screen without the user entering
  *   a -v or --verbose flag, use type 'ok', this prints log messages out to
  *   STDERR, which prints to screen (unless you have redirected it). All other
  *   types of messages will be assumed to be notices.
  */
-function drush_log($message, $type = 'notice', $error = null) {
-  $log =& drush_get_context('DRUSH_LOG', array());
-  $callback = drush_get_context('DRUSH_LOG_CALLBACK', '_drush_print_log');
+function drush_log($message, $type = LogLevel::NOTICE, $error = null) {
   $entry = array(
     'type' => $type,
     'message' => $message,
@@ -1255,13 +1256,43 @@ function drush_log($message, $type = 'notice', $error = null) {
     'memory' => memory_get_usage(),
   );
   $entry['error'] = $error;
-  $log[] = $entry;
-  drush_backend_packet('log', $entry);
 
-  return $callback($entry);
+  return _drush_log($entry);
 }
 
-function drush_log_has_errors($types = array('warning', 'error', 'failed')) {
+/**
+ * Future: add some sort of dependency injection to Drush.
+ */
+function _drush_create_default_logger() {
+  $drush_logger = new Logger();
+  drush_set_context('DRUSH_LOG_CALLBACK', $drush_logger);
+}
+
+/**
+ * Call the default logger, or the user's log callback, as
+ * appropriate.
+ */
+function _drush_log($entry) {
+  $callback = drush_get_context('DRUSH_LOG_CALLBACK');
+
+  if ($callback instanceof LoggerInterface) {
+    $context = $entry;
+    $log_level = $entry['type'];
+    $message = $entry['message'];
+    unset($entry['type']);
+    unset($entry['message']);
+
+    $callback->log($log_level, $message, $context);
+  }
+  elseif ($callback) {
+    $log =& drush_get_context('DRUSH_LOG', array());
+    $log[] = $entry;
+    drush_backend_packet('log', $entry);
+    return $callback($entry);
+  }
+}
+
+function drush_log_has_errors($types = array(LogLevel::WARNING, LogLevel::ERROR, LogLevel::FAILED)) {
   $log =& drush_get_context('DRUSH_LOG', array());
   foreach ($log as $entry) {
     if (in_array($entry['type'], $types)) {
@@ -1285,11 +1316,6 @@ function drush_backend_packet_log($entry, $backend_options) {
     $entry['message'] = implode("\n", (array)$entry['message']);
   }
   $entry['message'] = $entry['message'];
-  $log =& drush_get_context('DRUSH_LOG', array());
-  $log[] = $entry;
-  // Yes, this looks odd, but we might in fact be a backend command
-  // that ran another backend command.
-  drush_backend_packet('log', $entry);
   if (array_key_exists('#output-label', $backend_options)) {
     $entry['message'] = $backend_options['#output-label'] . $entry['message'];
   }
@@ -1297,8 +1323,14 @@ function drush_backend_packet_log($entry, $backend_options) {
   // If integrate is FALSE, then log messages are stored in DRUSH_LOG,
   // but are -not- printed to the console.
   if ($backend_options['integrate']) {
-    $callback = drush_get_context('DRUSH_LOG_CALLBACK', '_drush_print_log');
-    return $callback($entry);
+    _drush_log($entry);
+  }
+  else {
+    $log =& drush_get_context('DRUSH_LOG', array());
+    $log[] = $entry;
+    // Yes, this looks odd, but we might in fact be a backend command
+    // that ran another backend command.
+    drush_backend_packet('log', $entry);
   }
 }
 
@@ -1327,99 +1359,6 @@ function drush_pipe_output() {
   if (!empty($pipe)) {
     drush_print_r($pipe, NULL, FALSE);
   }
-}
-
-/**
- * Display the log message
- *
- * By default, only warnings and errors will be displayed, if 'verbose' is specified, it will also display notices.
- *
- * @param
- *   The associative array for the entry.
- *
- * @return
- *   False in case of an error or failed type, True in all other cases.
- */
-function _drush_print_log($entry) {
-  if (drush_get_context('DRUSH_NOCOLOR')) {
-    $red = "[%s]";
-    $yellow = "[%s]";
-    $green = "[%s]";
-  }
-  else {
-    $red = "\033[31;40m\033[1m[%s]\033[0m";
-    $yellow = "\033[1;33;40m\033[1m[%s]\033[0m";
-    $green = "\033[1;32;40m\033[1m[%s]\033[0m";
-  }
-
-  $verbose = drush_get_context('DRUSH_VERBOSE');
-  $debug = drush_get_context('DRUSH_DEBUG');
-
-  $return = TRUE;
-  switch ($entry['type']) {
-    case 'warning' :
-    case 'cancel' :
-      $type_msg = sprintf($yellow, $entry['type']);
-      break;
-    case 'failed' :
-    case 'error' :
-      $type_msg = sprintf($red, $entry['type']);
-      $return = FALSE;
-      break;
-    case 'ok' :
-    case 'completed' :
-    case 'success' :
-    case 'status':
-      // In quiet mode, suppress progress messages
-      if (drush_get_context('DRUSH_QUIET')) {
-        return TRUE;
-      }
-      $type_msg = sprintf($green, $entry['type']);
-      break;
-    case 'notice' :
-    case 'message' :
-    case 'info' :
-      if (!$verbose) {
-        // print nothing. exit cleanly.
-        return TRUE;
-      }
-      $type_msg = sprintf("[%s]", $entry['type']);
-      break;
-    default :
-      if (!$debug) {
-        // print nothing. exit cleanly.
-        return TRUE;
-      }
-      $type_msg = sprintf("[%s]", $entry['type']);
-      break;
-  }
-
-  // When running in backend mode, log messages are not displayed, as they will
-  // be returned in the JSON encoded associative array.
-  if (drush_get_context('DRUSH_BACKEND')) {
-    return $return;
-  }
-
-  $columns = drush_get_context('DRUSH_COLUMNS', 80);
-
-  $width[1] = 11;
-  // Append timer and memory values.
-  if ($debug) {
-    $timer = sprintf('[%s sec, %s]', round($entry['timestamp']-DRUSH_REQUEST_TIME, 2), drush_format_size($entry['memory']));
-    $entry['message'] = $entry['message'] . ' ' . $timer;
-  }
-
-  $width[0] = ($columns - 11);
-
-  $format = sprintf("%%-%ds%%%ds", $width[0], $width[1]);
-
-  // Place the status message right aligned with the top line of the error message.
-  $message = wordwrap($entry['message'], $width[0]);
-  $lines = explode("\n", $message);
-  $lines[0] = sprintf($format, $lines[0], $type_msg);
-  $message = implode("\n", $lines);
-  drush_print($message, 0, STDERR);
-  return $return;
 }
 
 // Print all timers for the request.
@@ -1478,10 +1417,10 @@ function _drush_log_drupal_messages() {
           continue;
         }
         elseif (preg_match('/^warning:/i', $error)) {
-          drush_log(preg_replace('/^warning: /i', '', $error), 'warning');
+          drush_log(preg_replace('/^warning: /i', '', $error), LogLevel::WARNING);
         }
         elseif (preg_match('/^notice:/i', $error)) {
-          drush_log(preg_replace('/^notice: /i', '', $error), 'notice');
+          drush_log(preg_replace('/^notice: /i', '', $error), LogLevel::NOTICE);
         }
         elseif (preg_match('/^user warning:/i', $error)) {
           // This is a special case. PHP logs sql errors as 'User Warnings', not errors.
@@ -1585,7 +1524,7 @@ function drush_set_error($error, $message = null, $output_label = "") {
 
   $error_log[$error][] = $message;
   if (!drush_backend_packet('set_error', array('error' => $error, 'message' => $message))) {
-    drush_log(($message) ? $output_label . $message : $output_label . $error, 'error', $error);
+    drush_log(($message) ? $output_label . $message : $output_label . $error, LogLevel::ERROR, $error);
   }
 
   return FALSE;
@@ -1644,7 +1583,7 @@ function drush_clear_error() {
 function drush_user_abort($msg = NULL) {
   drush_set_context('DRUSH_USER_ABORT', TRUE);
   drush_set_context('DRUSH_EXIT_CODE', DRUSH_EXITCODE_USER_ABORT);
-  drush_log($msg ? $msg : dt('Cancelled.'), 'cancel');
+  drush_log($msg ? $msg : dt('Cancelled.'), LogLevel::CANCEL);
   return FALSE;
 }
 

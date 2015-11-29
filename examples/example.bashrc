@@ -2,14 +2,14 @@
 #
 # Example bash aliases to improve your Drush experience with bash.
 # Use `drush init` to copy this file to your home directory, rename and
-# customize it to suit, and source it from your ~/.bash_profile file.
+# customize it to suit, and source it from your ~/.bashrc file.
 #
-# Example - rename this to .drush_bashrc, and in your
-# ~/.bash_profile add:
+# Example - rename this to drush.bashrc, and in your
+# ~/.bashrc add:
 #
 #
-#    if [ -f ~/.drush_bashrc ] ; then
-#        . ~/.drush_bashrc
+#    if [ -f ~/.drush/drush.bashrc ] ; then
+#        . ~/.drush/drush.bashrc
 #    fi
 #
 # Features:

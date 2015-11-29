@@ -5,6 +5,7 @@
  *   Provides Configuration Management commands.
  */
 
+use Drush\Log\LogLevel;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\ConfigImporter;
 use Drupal\Core\Config\ConfigException;
@@ -442,7 +443,7 @@ function _drush_config_export($destination, $destination_dir, $branch) {
 
     $config_comparer = new StorageComparer($comparison_source, $target_storage, Drupal::service('config.manager'));
     if (!$config_comparer->createChangelist()->hasChanges()) {
-      return drush_log(dt('There are no changes to export.'), 'ok');
+      return drush_log(dt('There are no changes to export.'), LogLevel::OK);
     }
 
     drush_print("The following configuration changes have been made since the last export:\n");
@@ -487,7 +488,7 @@ function _drush_config_export($destination, $destination_dir, $branch) {
     }
   }
 
-  drush_log(dt('Configuration successfully exported to !target.', array('!target' => $destination_dir)), 'success');
+  drush_log(dt('Configuration successfully exported to !target.', array('!target' => $destination_dir)), LogLevel::SUCCESS);
   drush_backend_set_result($destination_dir);
 
   // Commit and push, or add exported configuration if requested.
@@ -613,7 +614,7 @@ function drush_config_import($source = NULL) {
   }
   $config_comparer = new StorageComparer($source_storage, $active_storage, Drupal::service('config.manager'));
   if (!$config_comparer->createChangelist()->hasChanges()) {
-    return drush_log(dt('There are no changes to import.'), 'ok');
+    return drush_log(dt('There are no changes to import.'), LogLevel::OK);
   }
 
   if (drush_get_option('preview', 'list') == 'list') {
@@ -655,13 +656,13 @@ function _drush_config_import(StorageComparer $storage_comparer) {
     Drupal::service('string_translation')
   );
   if ($config_importer->alreadyImporting()) {
-    drush_log('Another request may be synchronizing configuration already.', 'warning');
+    drush_log('Another request may be synchronizing configuration already.', LogLevel::WARNING);
   }
   else{
     try {
       $config_importer->import();
       drush_drupal_cache_clear_all();
-      drush_log('The configuration was imported successfully.', 'success');
+      drush_log('The configuration was imported successfully.', LogLevel::SUCCESS);
     }
     catch (ConfigException $e) {
       // Return a negative result for UI purposes. We do not differentiate
@@ -671,7 +672,7 @@ function _drush_config_import(StorageComparer $storage_comparer) {
       // coordinating.
       $message = 'The import failed due for the following reasons:' . "\n";
       $message .= implode("\n", $config_importer->getErrors());
-      
+
       watchdog_exception('config_import', $e);
       return drush_set_error('config_import_fail', $message);
     }
@@ -787,7 +788,7 @@ function drush_config_pull($source, $destination) {
     // Use the standard backup directory on Destination.
     'destination' => TRUE,
   );
-  drush_log(dt('Starting to export configuration on Target.'), 'ok');
+  drush_log(dt('Starting to export configuration on Target.'), LogLevel::OK);
   $return = drush_invoke_process($source, 'config-export', array(), $global_options + $export_options, $backend_options);
   if ($return['error_status']) {
     return drush_set_error('DRUSH_CONFIG_PULL_EXPORT_FAILED', dt('Config-export failed.'));
@@ -803,7 +804,7 @@ function drush_config_pull($source, $destination) {
   );
   $label = drush_get_option('label', 'sync');
   $runner = drush_get_runner($source, $destination);
-  drush_log(dt('Starting to rsync configuration from Source to Local.'), 'ok');
+  drush_log(dt('Starting to rsync configuration from Source to Local.'), LogLevel::OK);
   $return = drush_invoke_process($runner, 'core-rsync', array("$source:$export_path", "$destination:%config-$label"), $rsync_options, $backend_options);
   if ($return['error_status']) {
     return drush_set_error('DRUSH_CONFIG_PULL_RSYNC_FAILED', dt('Config-pull rsync failed.'));
@@ -843,7 +844,7 @@ function drush_config_get_object($config_name) {
     return drush_set_error(dt('Config !name does not exist in !source configuration.', array('!name' => $config_name, '!source' => $source)));
   }
   if (empty($data)) {
-    drush_log(dt('Config !name exists but has no data.', array('!name' => $config_name)), 'notice');
+    drush_log(dt('Config !name exists but has no data.', array('!name' => $config_name)), LogLevel::NOTICE);
     return;
   }
   return $data;

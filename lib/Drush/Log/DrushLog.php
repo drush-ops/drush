@@ -3,6 +3,15 @@
 /**
  * @file
  * Contains \Drush\Log\DrushLog.
+ *
+ * This class is only used to convert logging calls made
+ * inside of Drupal into a logging format that is usable
+ * by Drush.  This code is ONLY usable within the context
+ * of a bootstrapped Drupal 8 site.
+ *
+ * See Drush\Log\Logger for our actuall LoggerInterface
+ * implementation, that does the work of logging messages
+ * that originate from Drush.
  */
 
 namespace Drush\Log;
@@ -14,6 +23,11 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Redirects Drupal logging messages to Drush log.
+ *
+ * Note that Drupal extends the LoggerInterface, and
+ * needlessly replaces Psr\Log\LogLevels with Drupal\Core\Logger\RfcLogLevel.
+ * Doing this arguably violates the Psr\Log contract,
+ * but we can't help that here -- we just need to convert back.
  */
 class DrushLog implements LoggerInterface {
 
@@ -50,19 +64,24 @@ class DrushLog implements LoggerInterface {
       case RfcLogLevel::CRITICAL:
       case RfcLogLevel::EMERGENCY:
       case RfcLogLevel::ERROR:
-        $error_type = 'error';
+        $error_type = LogLevel::ERROR;
         break;
 
       case RfcLogLevel::WARNING:
-        $error_type = 'warning';
+        $error_type = LogLevel::WARNING;
         break;
 
+      // TODO: RfcLogLevel::DEBUG should be 'debug' rather than 'notice'?
       case RfcLogLevel::DEBUG:
       case RfcLogLevel::INFO:
       case RfcLogLevel::NOTICE:
-        $error_type = 'notice';
+        $error_type = LogLevel::NOTICE;
         break;
 
+      // TODO: Unknown log levels that are not defined
+      // in Psr\Log\LogLevel SHOULD NOT be used.  See
+      // https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md
+      // We should convert these to 'notice'.
       default:
         $error_type = $level;
         break;

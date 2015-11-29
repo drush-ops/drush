@@ -4,7 +4,8 @@
  * Drush Make commands.
  */
 
-use \Drush\UpdateService\ReleaseInfo;
+use Drush\Log\LogLevel;
+use Drush\UpdateService\ReleaseInfo;
 
 /**
  * Default localization server for downloading translations.
@@ -302,7 +303,7 @@ function drush_make($makefile = NULL, $build_path = NULL) {
   // Build.
   if (!drush_get_option('no-build', FALSE)) {
     $info = make_parse_info_file($makefile);
-    drush_log(dt('Beginning to build !makefile.', array('!makefile' => $makefile)), 'ok');
+    drush_log(dt('Beginning to build !makefile.', array('!makefile' => $makefile)), LogLevel::OK);
 
     // Default contrib destination depends on Drupal core version.
     $core_version = str_replace('.x', '', $info['core'][0]);
@@ -325,7 +326,7 @@ function drush_make($makefile = NULL, $build_path = NULL) {
           drush_print($md5);
         }
         else {
-          drush_log(dt('Build hash: %md5', array('%md5' => $md5)), 'ok');
+          drush_log(dt('Build hash: %md5', array('%md5' => $md5)), LogLevel::OK);
         }
       }
       // Only take final build steps if not in testing mode.
@@ -379,7 +380,7 @@ function drush_make($makefile = NULL, $build_path = NULL) {
  */
 function drush_make_convert($makefile) {
 
-  drush_log(dt('Beginning to convert !makefile.', array('!makefile' => $makefile)), 'ok');
+  drush_log(dt('Beginning to convert !makefile.', array('!makefile' => $makefile)), LogLevel::OK);
 
   $file = $makefile . '.yml';
   $info = make_parse_info_file($makefile);
@@ -390,7 +391,7 @@ function drush_make_convert($makefile) {
   $yaml = $dumper->format($info, array());
 
   if (file_put_contents($file, $yaml)) {
-    drush_log(dt("Wrote make file @file", array('@file' => $file)), 'ok');
+    drush_log(dt("Wrote make file @file", array('@file' => $file)), LogLevel::OK);
     return $file;
   }
   else {

@@ -12,7 +12,7 @@ class initCommandCase extends CommandUnishTestCase {
 
   function testInitCommand() {
     // Call `drush core-init`
-    $this->drush('core-init', array(), array('backend' => NULL, 'add-path' => TRUE));
+    $this->drush('core-init', array(), array('backend' => NULL, 'add-path' => TRUE, 'yes' => NULL));
     $parsed = $this->parse_backend_output($this->getOutput());
     // First test to ensure that the command claimed to have made the expected progress
     $this->assertLogHasMessage($parsed['log'], "Copied example Drush configuration file", 'ok');

@@ -6,7 +6,11 @@
  *   which has been modified to allow being run from the command
  *   line.
  */
+
+use Drush\Log\LogLevel;
+
 define('MAINTENANCE_MODE', 'update');
+
 
 /**
  * Add a column to a database using syntax appropriate for PostgreSQL.
@@ -130,7 +134,7 @@ function update_fix_compatibility() {
     if (update_check_incompatibility($result->name, $result->type)) {
       $incompatible[] = $result->name;
       drush_log(dt("!type !name is incompatible with this release of Drupal, and will be disabled.",
-        array("!type" => $result->type, '!name' => $result->name)), "warning");
+        array("!type" => $result->type, '!name' => $result->name)), LogLevel::WARNING);
     }
   }
   if (!empty($incompatible)) {
@@ -264,7 +268,7 @@ function update_check_requirements() {
         if (isset($requirement['value']) && $requirement['value']) {
           $message .= ' (Currently using '. $requirement['title'] .' '. $requirement['value'] .')';
         }
-        drush_log($message, 'warning');
+        drush_log($message, LogLevel::WARNING);
       }
     }
   }
@@ -401,7 +405,7 @@ function update_main() {
         }
       }
       else {
-        drush_log(dt('No database updates for module @module', array('@module' => $module)), 'success');
+        drush_log(dt('No database updates for module @module', array('@module' => $module)), LogLevel::SUCCESS);
       }
     }
     $batch = array(
@@ -417,8 +421,10 @@ function update_main() {
     drush_backend_batch_process('updatedb-batch-process');
   }
   else {
-    drush_log(dt("No database updates required"), 'success');
+    drush_log(dt("No database updates required"), LogLevel::SUCCESS);
   }
+
+  return count($pending);
 }
 
 /**
@@ -435,7 +441,7 @@ function _update_do_one($module, $number, &$context) {
   }
 
   $function = $module .'_update_'. $number;
-  drush_log("Executing $function", 'success');
+  drush_log("Executing $function", LogLevel::SUCCESS);
 
   if (function_exists($function)) {
     $ret = $function($context['sandbox']);

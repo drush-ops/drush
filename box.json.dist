@@ -1,10 +1,7 @@
 {
   "alias": "drush.phar",
   "chmod": "0755",
-  "compactors": [
-    "Herrera\\Box\\Compactor\\Json",
-    "Herrera\\Box\\Compactor\\Php"
-  ],
+  "compactors": [],
   "directories": ["commands", "docs", "examples", "includes", "lib", "misc"],
   "files": ["drush.api.php", "drush.bat", "drush.complete.sh", "drush.info", "drush.launcher", "drush.php", "drush_logo-black.png", "README.md"],
   "finder": [

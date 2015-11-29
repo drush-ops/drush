@@ -10,7 +10,7 @@
 use Drupal\Core\Site\Settings;
 use Drupal\Core\StreamWrapper\PrivateStream;
 use Drupal\Core\StreamWrapper\PublicStream;
-use Psr\Log\LogLevel;
+use Drush\Log\LogLevel;
 use Drupal\Core\Logger\RfcLogLevel;
 
 /**

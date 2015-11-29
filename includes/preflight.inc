@@ -5,6 +5,8 @@
  * Preflight, postflight and shutdown code.
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * The main Drush function.
  *
@@ -136,6 +138,9 @@ function drush_preflight_prepare() {
   drush_set_context('DRUSH_VENDOR_PATH', dirname($vendor_path));
   drush_set_context('DRUSH_CLASSLOADER', $classloader);
 
+  // Can't log until we have a logger, so we'll create this ASAP.
+  _drush_create_default_logger();
+
   // Terminate immediately unless invoked as a command line script
   if (!drush_verify_cli()) {
     return drush_set_error('DRUSH_REQUIREMENTS_ERROR', dt('Drush is designed to run via the command line.'));
@@ -175,7 +180,7 @@ function drush_preflight_prepare() {
   // Process initial global options such as --debug.
   _drush_preflight_global_options();
 
-  drush_log(dt("Drush preflight prepare loaded autoloader at !autoloader", array('!autoloader' => realpath($vendor_path))), 'preflight');
+  drush_log(dt("Drush preflight prepare loaded autoloader at !autoloader", array('!autoloader' => realpath($vendor_path))), LogLevel::PREFLIGHT);
 }
 
 /**
@@ -209,7 +214,7 @@ function drush_preflight() {
   _drush_preflight_columns();
 
   // Display is tidy now that column width has been handled.
-  drush_log(dt('Starting Drush preflight.'), 'preflight');
+  drush_log(dt('Starting Drush preflight.'), LogLevel::PREFLIGHT);
 
   // Statically define a way to call drush again.
   define('DRUSH_COMMAND', drush_find_drush());
@@ -342,8 +347,8 @@ function drush_preflight_site() {
 
 function _drush_preflight_global_options() {
   // Debug implies verbose
-  drush_set_context('DRUSH_VERBOSE',     drush_get_option(array('verbose', 'debug'), FALSE));
-  drush_set_context('DRUSH_DEBUG', drush_get_option('debug'));
+  drush_set_context('DRUSH_VERBOSE',     drush_get_option(array('verbose', LogLevel::DEBUG), FALSE));
+  drush_set_context('DRUSH_DEBUG', drush_get_option(LogLevel::DEBUG));
   drush_set_context('DRUSH_SIMULATE',    drush_get_option('simulate', FALSE));
 
   // Backend implies affirmative unless negative is explicitly specified
@@ -417,7 +422,7 @@ function _drush_preflight_columns() {
         $columns = (int)preg_replace('/\D/', '', $columns_output[4], -1, $columns_count);
       }
       else {
-        drush_log(dt('Drush could not detect the console window width. Set a Windows Environment Variable of COLUMNS to the desired width.'), 'warning');
+        drush_log(dt('Drush could not detect the console window width. Set a Windows Environment Variable of COLUMNS to the desired width.'), LogLevel::WARNING);
       }
     }
 
@@ -473,7 +478,7 @@ function _drush_find_commandfiles_drush() {
   $include = drush_get_context('DRUSH_INCLUDE', array());
   foreach ($include as $path) {
     if (is_dir($path)) {
-      drush_log('Include ' . $path, 'notice');
+      drush_log('Include ' . $path, LogLevel::NOTICE);
       $searchpath[] = $path;
     }
   }

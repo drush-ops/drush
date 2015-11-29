@@ -1,5 +1,6 @@
 <?php
 
+use Drush\Log\LogLevel;
 use Drupal\Component\Assertion\Handle;
 use Drush\Psysh\DrushHelpCommand;
 use Drush\Psysh\DrushCommand;
@@ -173,7 +174,7 @@ function drush_history_path_cli() {
 
   // Output the history path if verbose is enabled.
   if (drush_get_context('DRUSH_VERBOSE')) {
-    drush_log(dt('History: @full_path', ['@full_path' => $full_path]), 'info');
+    drush_log(dt('History: @full_path', ['@full_path' => $full_path]), LogLevel::INFO);
   }
 
   return $full_path;

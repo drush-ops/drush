@@ -1,5 +1,7 @@
 <?php
 
+use Drush\Log\LogLevel;
+
 /**
  * Command callback. Disable one or more extensions.
  */
@@ -15,7 +17,7 @@ function _drush_pm_disable($args) {
 
   // Discard and set an error for each unknown extension.
   foreach ($unknown as $name) {
-    drush_log('DRUSH_PM_ENABLE_EXTENSION_NOT_FOUND', dt('!extension was not found and will not be disabled.', array('!extension' => $name)), 'warning');
+    drush_log('DRUSH_PM_ENABLE_EXTENSION_NOT_FOUND', dt('!extension was not found and will not be disabled.', array('!extension' => $name)), LogLevel::WARNING);
   }
 
   // Discard already disabled extensions.
@@ -27,7 +29,7 @@ function _drush_pm_disable($args) {
       else {
         unset($themes[$name]);
       }
-      drush_log(dt('!extension is already disabled.', array('!extension' => $name)), 'ok');
+      drush_log(dt('!extension is already disabled.', array('!extension' => $name)), LogLevel::OK);
     }
   }
 
@@ -36,7 +38,7 @@ function _drush_pm_disable($args) {
     $default_theme = drush_theme_get_default();
     if (in_array($default_theme, $themes)) {
       unset($themes[$default_theme]);
-      drush_log(dt('!theme is the default theme and can\'t be disabled.', array('!theme' => $default_theme)), 'ok');
+      drush_log(dt('!theme is the default theme and can\'t be disabled.', array('!theme' => $default_theme)), LogLevel::OK);
     }
   }
 
@@ -55,7 +57,7 @@ function _drush_pm_disable($args) {
         // No message for hidden modules.
         if (!isset($info['hidden'])) {
           $explanation = !empty($info['explanation']) ? ' ' . dt('Reason: !explanation.', array('!explanation' => strip_tags($info['explanation'])))  : '';
-          drush_log(dt('!module is a required module and can\'t be disabled.', array('!module' => $module)) . $explanation, 'ok');
+          drush_log(dt('!module is a required module and can\'t be disabled.', array('!module' => $module)) . $explanation, LogLevel::OK);
         }
       }
     }
@@ -64,7 +66,7 @@ function _drush_pm_disable($args) {
   // Inform the user which extensions will finally be disabled.
   $extensions = array_merge($modules, $themes);
   if (empty($extensions)) {
-    return drush_log(dt('There were no extensions that could be disabled.'), 'ok');
+    return drush_log(dt('There were no extensions that could be disabled.'), LogLevel::OK);
   }
   else {
     drush_print(dt('The following extensions will be disabled: !extensions', array('!extensions' => implode(', ', $extensions))));
@@ -88,7 +90,7 @@ function _drush_pm_disable($args) {
   $problem_extensions = array();
   foreach ($result_extensions as $extension) {
     if (!$extension->status) {
-      drush_log(dt('!extension was disabled successfully.', array('!extension' => $extension->name)), 'ok');
+      drush_log(dt('!extension was disabled successfully.', array('!extension' => $extension->name)), LogLevel::OK);
     }
     else {
       $problem_extensions[] = $extension->name;
@@ -112,17 +114,17 @@ function _drush_pm_uninstall($modules) {
     if (!isset($module_info[$module])) {
       // The module does not exist in the system.
       unset($modules[$key]);
-      drush_log(dt('Module !module was not found and will not be uninstalled.', array('!module' => $module)), 'warning');
+      drush_log(dt('Module !module was not found and will not be uninstalled.', array('!module' => $module)), LogLevel::WARNING);
     }
     else if ($module_info[$module]->status) {
       // The module is enabled.
       unset($modules[$key]);
-      drush_log(dt('!module is not disabled. Use `pm-disable` command before `pm-uninstall`.', array('!module' => $module)), 'warning');
+      drush_log(dt('!module is not disabled. Use `pm-disable` command before `pm-uninstall`.', array('!module' => $module)), LogLevel::WARNING);
     }
     else if ($module_info[$module]->schema_version == -1) { // SCHEMA_UNINSTALLED
       // The module is uninstalled.
       unset($modules[$key]);
-      drush_log(dt('!module is already uninstalled.', array('!module' => $module)), 'ok');
+      drush_log(dt('!module is already uninstalled.', array('!module' => $module)), LogLevel::OK);
     }
     else {
       $dependents = array();
@@ -132,7 +134,7 @@ function _drush_pm_uninstall($modules) {
         }
       }
       if (count($dependents)) {
-        drush_log(dt('To uninstall !module, the following modules must be uninstalled first: !required', array('!module' => $module, '!required' => implode(', ', $dependents))), 'error');
+        drush_log(dt('To uninstall !module, the following modules must be uninstalled first: !required', array('!module' => $module, '!required' => implode(', ', $dependents))), LogLevel::ERROR);
         unset($modules[$key]);
       }
     }
@@ -140,7 +142,7 @@ function _drush_pm_uninstall($modules) {
 
   // Inform the user which modules will finally be uninstalled.
   if (empty($modules)) {
-    return drush_log(dt('There were no modules that could be uninstalled.'), 'ok');
+    return drush_log(dt('There were no modules that could be uninstalled.'), LogLevel::OK);
   }
   else {
     drush_print(dt('The following modules will be uninstalled: !modules', array('!modules' => implode(', ', $modules))));
@@ -154,7 +156,7 @@ function _drush_pm_uninstall($modules) {
 
   // Inform the user of final status.
   foreach ($modules as $module) {
-    drush_log(dt('!module was successfully uninstalled.', array('!module' => $module)), 'ok');
+    drush_log(dt('!module was successfully uninstalled.', array('!module' => $module)), LogLevel::OK);
   }
 }
 
