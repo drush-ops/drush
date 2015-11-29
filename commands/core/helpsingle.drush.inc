@@ -19,6 +19,7 @@ function helpsingle_drush_command() {
     'description' => 'Print help for a single command',
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'allow-additional-options' => TRUE,
+    'hidden' => TRUE,
     'arguments' => array(
       'command' => 'A command name, or command alias.',
     ),
