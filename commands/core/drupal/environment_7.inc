@@ -201,7 +201,7 @@ function drush_module_implements($hook, $sort = FALSE, $reset = FALSE) {
  */
 function drush_module_invoke($module, $hook) {
   $args = func_get_args();
-  return call_user_func_array('module_invoke', $args);  
+  return call_user_func_array('module_invoke', $args);
 }
 
 /**

@@ -1,5 +1,7 @@
 <?php
 
+use Drush\Log\LogLevel;
+
 /**
  * @file
  *
@@ -102,7 +104,7 @@ function drush_early_complete() {
   // We use a distinct --complete-debug option to avoid unwanted debug messages
   // being printed when users use this option for other purposes in the command
   // they are trying to complete.
-  drush_set_option('debug', FALSE);
+  drush_set_option(LogLevel::DEBUG, FALSE);
   if (drush_get_option('complete-debug', FALSE)) {
     drush_set_context('DRUSH_DEBUG', TRUE);
   }

@@ -9,6 +9,8 @@
  * @see http://drupal.org/node/670460
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * Check to see if the user specified an alias
  * in an arguement, or via site-set.  If so, return
@@ -532,7 +534,7 @@ function _drush_sitealias_find_and_load_all_aliases() {
       $aliases = $options = array();
       // silently ignore files we can't include
       if ((@include $filename) === FALSE) {
-        drush_log(dt('Cannot open alias file "!alias", ignoring.', array('!alias' => realpath($filename))), 'bootstrap');
+        drush_log(dt('Cannot open alias file "!alias", ignoring.', array('!alias' => realpath($filename))), LogLevel::BOOTSTRAP);
         continue;
       }
       unset($options['site-aliases']); // maybe unnecessary
@@ -673,7 +675,7 @@ function _drush_sitealias_find_and_load_alias_from_file($aliasname, $alias_files
       $aliases = $options = array();
       // silently ignore files we can't include
       if ((@include $filename) === FALSE) {
-        drush_log(dt('Cannot open alias file "!alias", ignoring.', array('!alias' => realpath($filename))), 'bootstrap');
+        drush_log(dt('Cannot open alias file "!alias", ignoring.', array('!alias' => realpath($filename))), LogLevel::BOOTSTRAP);
         continue;
       }
       unset($options['site-aliases']); // maybe unnecessary
@@ -783,7 +785,7 @@ function _drush_sitealias_add_inherited_values(&$aliases) {
 function _drush_sitealias_add_inherited_values_to_record(&$alias_value) {
   drush_command_invoke_all_ref('drush_sitealias_alter', $alias_value);
   if (isset($alias_value['parent'])) {
-    drush_log(dt("Using deprecated 'parent' element '!parent' in '!name'.", array('!parent' => $alias_value['parent'], '!name' => $alias_value['#name'])), 'debug');
+    drush_log(dt("Using deprecated 'parent' element '!parent' in '!name'.", array('!parent' => $alias_value['parent'], '!name' => $alias_value['#name'])), LogLevel::DEBUG);
     // Fetch and merge in each parent
     foreach (explode(',', $alias_value['parent']) as $parent) {
       $parent_record = drush_sitealias_get_record($parent);

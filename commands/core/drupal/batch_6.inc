@@ -4,6 +4,8 @@
  *   Drupal 6 engine for the Batch API
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * Main loop for the Drush batch API.
  *
@@ -131,7 +133,7 @@ function _drush_batch_worker() {
     // TODO - replace with memory check!
     // If we're in progressive mode, stop after 1 second.
     if ((memory_get_usage() * 2) >= drush_memory_limit()) {
-      drush_log(dt("Batch process has consumed in excess of 50% of available memory. Starting new thread"), "batch");
+      drush_log(dt("Batch process has consumed in excess of 50% of available memory. Starting new thread"), LogLevel::BATCH);
       break;
     }
   }

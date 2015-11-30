@@ -5,6 +5,7 @@
  *   Provides Configuration Management commands.
  */
 
+use Drush\Log\LogLevel;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\ConfigImporter;
 use Drupal\Core\Config\FileStorage;
@@ -411,7 +412,7 @@ function _drush_config_export($destination, $destination_dir, $branch) {
     $active_storage = Drupal::service('config.storage');
     $config_comparer = new StorageComparer($active_storage, $target_storage, Drupal::service('config.manager'));
     if (!$config_comparer->createChangelist()->hasChanges()) {
-      return drush_log(dt('There are no changes to export.'), 'ok');
+      return drush_log(dt('There are no changes to export.'), LogLevel::OK);
     }
 
     drush_print("The following configuration changes have been made since the last export:\n");
@@ -452,7 +453,7 @@ function _drush_config_export($destination, $destination_dir, $branch) {
     }
   }
 
-  drush_log(dt('Configuration successfully exported to !target.', array('!target' => $destination_dir)), 'success');
+  drush_log(dt('Configuration successfully exported to !target.', array('!target' => $destination_dir)), LogLevel::SUCCESS);
   drush_backend_set_result($destination_dir);
 
   // Commit and push, or add exported configuration if requested.
@@ -551,7 +552,7 @@ function drush_config_import($source = NULL) {
   }
   $config_comparer = new StorageComparer($source_storage, $active_storage, Drupal::service('config.manager'));
   if (!$config_comparer->createChangelist()->hasChanges()) {
-    return drush_log(dt('There are no changes to import.'), 'ok');
+    return drush_log(dt('There are no changes to import.'), LogLevel::OK);
   }
 
   if (drush_get_option('preview', 'list') == 'list') {
@@ -593,13 +594,13 @@ function _drush_config_import(StorageComparer $storage_comparer) {
     Drupal::service('string_translation')
   );
   if ($config_importer->alreadyImporting()) {
-    drush_log('Another request may be synchronizing configuration already.', 'warning');
+    drush_log('Another request may be synchronizing configuration already.', LogLevel::WARNING);
   }
   else{
     try {
       $config_importer->import();
       drupal_flush_all_caches();
-      drush_log('The configuration was imported successfully.', 'success');
+      drush_log('The configuration was imported successfully.', LogLevel::SUCCESS);
     }
     catch (ConfigException $e) {
       // Return a negative result for UI purposes. We do not differentiate
@@ -1288,7 +1289,7 @@ function drush_config_get_object($config_name) {
     return drush_set_error(dt('Config !name does not exist in !source configuration.', array('!name' => $config_name, '!source' => $source)));
   }
   if (empty($data)) {
-    drush_log(dt('Config !name exists but has no data.', array('!name' => $config_name)), 'notice');
+    drush_log(dt('Config !name exists but has no data.', array('!name' => $config_name)), LogLevel::NOTICE);
     return;
   }
   return $data;
