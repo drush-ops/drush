@@ -71,16 +71,6 @@ function cache_drush_command() {
     'callback' => 'drush_cache_command_set',
     'aliases' => array('cs'),
   );
-  $items['cache-rebuild'] = array(
-    'description' => 'Rebuild a Drupal 8 site and clear all its caches.',
-    'options' => array(),
-    'arguments' => array(),
-    // Bootstrap to DRUSH_BOOTSTAP_DRUPAL_SITE to pick the correct site.
-    // Further bootstrap is done by the rebuild script.
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
-    'core' => array('8+'),
-    'aliases' => array('cr', 'rebuild'),
-  );
 
   return $items;
 }
@@ -101,9 +91,6 @@ function drush_cache_clear_pre_validate($type = NULL) {
   $types = drush_cache_clear_types(drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
   // Check if the provided type ($type) is a valid cache type.
   if ($type && !array_key_exists($type, $types)) {
-    if ($type === 'all' && drush_drupal_major_version() >= 8) {
-      return drush_set_error(dt('`cache-clear all` is deprecated for Drupal 8 and later. Please use the `cache-rebuild` command instead.'));
-    }
     // If we haven't done a full bootstrap, provide a more
     // specific message with instructions to the user on
     // bootstrapping a Drupal site for more options.
@@ -238,7 +225,7 @@ function drush_cache_clear_types($include_bootstrapped_types = FALSE) {
   drush_include_engine('drupal', 'environment');
 
   // Command files may customize $types as desired.
-  drush_command_invoke_all_ref('drush_cache_clear', $types);
+  drush_command_invoke_all_ref('drush_cache_clear', $types, $include_bootstrapped_types);
 
   return $types;
 }
@@ -254,45 +241,4 @@ function drush_cache_clear_drush() {
   array_map('unlink', array_keys($matches));
 }
 
-/**
- * Rebuild a Drupal 8 site.
- *
- * This is a transpose of core/rebuild.php. Additionally
- * it also clears drush cache and drupal render cache.
- */
-function drush_cache_rebuild() {
-  if (!drush_get_option('cache-clear', TRUE)) {
-    drush_log(dt("Skipping cache-clear operation due to --cache-clear=0 option."), LogLevel::OK);
-    return TRUE;
-  }
-  chdir(DRUPAL_ROOT);
-
-  // Clear the APC cache to ensure APC class loader is reset.
-  if (function_exists('apc_fetch')) {
-    apc_clear_cache('user');
-  }
-
-  $autoloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
-  require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';
-
-  $request = Request::createFromGlobals();
-  // Manually resemble early bootstrap of DrupalKernel::boot().
-  require_once DRUSH_DRUPAL_CORE . '/includes/bootstrap.inc';
-  DrupalKernel::bootEnvironment();
-  // Avoid 'Only variables should be passed by reference'
-  $root  = DRUPAL_ROOT;
-  $site_path = DrupalKernel::findSitePath($request);
-  Settings::initialize($root, $site_path, $autoloader);
-
-  // Use our error handler since _drupal_log_error() depends on an unavailable theme system (ugh).
-  set_error_handler('drush_error_handler');
-
-  // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it manually.
-  drupal_rebuild($autoloader, $request);
-  drush_log(dt('Cache rebuild complete.'), LogLevel::OK);
-
-  // As this command replaces `drush cache-clear all` for Drupal 8 users, clear
-  // the Drush cache as well, for consistency with that behavior.
-  drush_cache_clear_drush();
-}
 
