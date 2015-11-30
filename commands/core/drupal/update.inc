@@ -7,6 +7,8 @@
  *   line.
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * Drupal's update.inc has functions that are in previous update_X.inc files
  * for example, update_check_incompatibility() which can prove useful when
@@ -140,7 +142,7 @@ function update_main() {
     drush_update_batch($start);
   }
   else {
-    drush_log(dt("No database updates required"), 'success');
+    drush_log(dt("No database updates required"), LogLevel::SUCCESS);
   }
 }
 

@@ -1,5 +1,7 @@
 <?php
 
+use Drush\Log\LogLevel;
+
 /**
  * Command callback. Drupal 8 does not support disabled modules.
  *
@@ -28,17 +30,17 @@ function _drush_pm_uninstall($extensions) {
   foreach ($extensions as $extension) {
     if (!isset($extension_info[$extension])) {
       unset($extensions[$extension]);
-      drush_log(dt('Extension !extension was not found and will not be uninstalled.', array('!extension' => $extension)), 'warning');
+      drush_log(dt('Extension !extension was not found and will not be uninstalled.', array('!extension' => $extension)), LogLevel::WARNING);
     }
     elseif (in_array($extension, $required)) {
       unset($extensions[$extension]);
       $info = $extension_info[$extension]->info;
       $explanation = !empty($info['explanation']) ? ' ' . dt('Reason: !explanation.', array('!explanation' => strip_tags($info['explanation'])))  : '';
-      drush_log(dt('!extension is a required extension and can\'t be uninstalled.', array('!extension' => $extension)) . $explanation, 'ok');
+      drush_log(dt('!extension is a required extension and can\'t be uninstalled.', array('!extension' => $extension)) . $explanation, LogLevel::OK);
     }
     elseif (!$extension_info[$extension]->status) {
       unset($extensions[$extension]);
-      drush_log(dt('!extension is already uninstalled.', array('!extension' => $extension)), 'ok');
+      drush_log(dt('!extension is already uninstalled.', array('!extension' => $extension)), LogLevel::OK);
     }
     elseif (drush_extension_get_type($extension_info[$extension]) == 'module') {
       $dependents = array();
@@ -48,7 +50,7 @@ function _drush_pm_uninstall($extensions) {
         }
       }
       if (count($dependents)) {
-        drush_log(dt('To uninstall !extension, the following extensions must be uninstalled first: !required', array('!extension' => $extension, '!required' => implode(', ', $dependents))), 'error');
+        drush_log(dt('To uninstall !extension, the following extensions must be uninstalled first: !required', array('!extension' => $extension, '!required' => implode(', ', $dependents))), LogLevel::ERROR);
         unset($extensions[$extension]);
       }
     }
@@ -58,12 +60,12 @@ function _drush_pm_uninstall($extensions) {
   $default_theme = drush_theme_get_default();
   if (in_array($default_theme, $extensions)) {
     unset($extensions[$default_theme]);
-    drush_log(dt('!theme is the default theme and can\'t be uninstalled.', array('!theme' => $default_theme)), 'ok');
+    drush_log(dt('!theme is the default theme and can\'t be uninstalled.', array('!theme' => $default_theme)), LogLevel::OK);
   }
 
   // Inform the user which extensions will finally be disabled.
   if (empty($extensions)) {
-    return drush_log(dt('There were no extensions that could be uninstalled.'), 'ok');
+    return drush_log(dt('There were no extensions that could be uninstalled.'), LogLevel::OK);
   }
   else {
     drush_print(dt('The following extensions will be uninstalled: !extensions', array('!extensions' => implode(', ', $extensions))));
@@ -82,7 +84,7 @@ function _drush_pm_uninstall($extensions) {
 
   // Inform the user of final status.
   foreach ($extensions as $extension) {
-    drush_log(dt('!extension was successfully uninstalled.', array('!extension' => $extension)), 'ok');
+    drush_log(dt('!extension was successfully uninstalled.', array('!extension' => $extension)), LogLevel::OK);
   }
 }
 

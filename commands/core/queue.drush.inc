@@ -1,5 +1,7 @@
 <?php
 
+use Drush\Log\LogLevel;
+
 /**
  * Implements hook_drush_help().
  */
@@ -80,7 +82,7 @@ function drush_queue_run($queue_name) {
   $start = microtime(TRUE);
   $count = $queue->run($queue_name, $time_limit);
   $elapsed = microtime(TRUE) - $start;
-  drush_log(dt('Processed @count items from the @name queue in @elapsed sec.', array('@count' => $count, '@name' => $queue_name, '@elapsed' => round($elapsed, 2))), drush_get_error() ? 'warning' : 'ok');
+  drush_log(dt('Processed @count items from the @name queue in @elapsed sec.', array('@count' => $count, '@name' => $queue_name, '@elapsed' => round($elapsed, 2))), drush_get_error() ? LogLevel::WARNING : LogLevel::OK);
 }
 
 /**

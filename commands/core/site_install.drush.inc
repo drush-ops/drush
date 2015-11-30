@@ -1,5 +1,7 @@
 <?php
 
+use Drush\Log\LogLevel;
+
 function site_install_drush_command() {
   $items['site-install'] = array(
     'description' => 'Install Drupal along with modules/themes/configuration using the specified install profile.',
@@ -92,7 +94,7 @@ function drush_core_site_install_validate() {
   if ($sites_subdir = drush_get_option('sites-subdir')) {
     $lower = strtolower($sites_subdir);
     if ($sites_subdir != $lower) {
-      drush_log(dt('Only lowercase sites-subdir are valid. Switching to !lower.', array('!lower' => $lower)), 'warning');
+      drush_log(dt('Only lowercase sites-subdir are valid. Switching to !lower.', array('!lower' => $lower)), LogLevel::WARNING);
       drush_set_option('sites-subdir', $lower);
     }
     // Make sure that we will bootstrap to the 'sites-subdir' site.
@@ -248,7 +250,7 @@ EOD;
         drush_file_append_data($settingsfile, "\n$chmod\n");
       }
       else {
-        drush_log(dt('Not appending file_chmod_* to @settingsfile as it is not writable.', array('@settingsfile' => $settingsfile)), 'notice');
+        drush_log(dt('Not appending file_chmod_* to @settingsfile as it is not writable.', array('@settingsfile' => $settingsfile)), LogLevel::NOTICE);
       }
     }
 
