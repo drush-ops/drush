@@ -83,7 +83,7 @@ EOD;
     $this->assertEquals(self::EXIT_SUCCESS, $parsed['error_status']);
     // This assertion shows that `version` was called and that stdin options were respected.
     $this->assertStringStartsWith(' Drush Version ', $parsed['output']);
-    $this->assertEquals('Starting Drush preflight.', $parsed['log'][0]['message']);
+    $this->assertEquals('Starting Drush preflight.', $parsed['log'][1]['message']);
 
     // Check error propogation by requesting an invalid command (missing Drupal site).
     $this->drush('core-cron', array(), array('backend' => NULL), NULL, NULL, self::EXIT_ERROR);
