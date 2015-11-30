@@ -41,13 +41,19 @@ class DrushLog implements LoggerInterface {
   protected $parser;
 
   /**
+   * The logger that messages will be passed through to.
+   */
+  protected $logger;
+
+  /**
    * Constructs a DrushLog object.
    *
    * @param \Drupal\Core\Logger\LogMessageParserInterface $parser
    *   The parser to use when extracting message variables.
    */
-  public function __construct(LogMessageParserInterface $parser) {
+  public function __construct(LogMessageParserInterface $parser, AbstractLogger $logger) {
     $this->parser = $parser;
+    $this->logger = $logger;
   }
 
   /**
@@ -79,7 +85,7 @@ class DrushLog implements LoggerInterface {
         break;
 
       // TODO: Unknown log levels that are not defined
-      // in Psr\Log\LogLevel SHOULD NOT be used.  See
+      // in Psr\Log\LogLevel or Drush\Log\LogLevel SHOULD NOT be used.  See
       // https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md
       // We should convert these to 'notice'.
       default:
@@ -90,7 +96,8 @@ class DrushLog implements LoggerInterface {
     // Populate the message placeholders and then replace them in the message.
     $message_placeholders = $this->parser->parseMessagePlaceholders($message, $context);
     $message = empty($message_placeholders) ? $message : strtr($message, $message_placeholders);
-    drush_log($message, $error_type);
+
+    $this->logger->log($error_type, $message, $context);
   }
 
 }
