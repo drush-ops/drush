@@ -4,6 +4,7 @@
  * General utility functions for Drush Make.
  */
 
+use Drush\Log\LogLevel;
 use Drush\Make\Parser\ParserIni;
 use Drush\Make\Parser\ParserYaml;
 
@@ -83,7 +84,7 @@ function _make_parse_info_file($makefile) {
           // Move core back to the top of the list, where
           // make_generate_from_makefile() expects it.
           array_reverse($info['projects']);
-        }    
+        }
       }
     }
   }
@@ -175,7 +176,7 @@ function make_prune_info_file($info, $include_only = array()) {
 
   if ($pruned) {
     // Make it clear to the user what's going on.
-    drush_log(implode("\n", $msg), 'ok');
+    drush_log(implode("\n", $msg), LogLevel::OK);
 
     // Throw an error if these restrictions reduced the make to nothing.
     if (empty($info['projects']) && empty($info['libraries'])) {
@@ -216,7 +217,7 @@ function make_validate_info_file($info) {
 
   if (!isset($info['api'])) {
     $info['api'] = MAKE_API;
-    drush_log(dt("You need to specify an API version of two in your makefile:\napi = !api", array("!api" => MAKE_API)), 'warning');
+    drush_log(dt("You need to specify an API version of two in your makefile:\napi = !api", array("!api" => MAKE_API)), LogLevel::WARNING);
   }
   elseif ($info['api'] != MAKE_API) {
     make_error('BUILD_ERROR', dt("The specified API attribute is incompatible with this version of Drush Make."));
@@ -429,7 +430,7 @@ function make_clean_tmp() {
     drush_delete_dir($tmp_dir);
   }
   else {
-    drush_log(dt('Temporary directory: !dir', array('!dir' => $tmp_dir)), 'ok');
+    drush_log(dt('Temporary directory: !dir', array('!dir' => $tmp_dir)), LogLevel::OK);
   }
 }
 
@@ -477,7 +478,7 @@ function make_tar($build_path) {
  */
 function make_error($error_code, $message) {
   if (drush_get_option('force-complete')) {
-    drush_log("$error_code: $message -- build forced", 'warning');
+    drush_log("$error_code: $message -- build forced", LogLevel::WARNING);
   }
   else {
     return drush_set_error($error_code, $message);
@@ -552,7 +553,7 @@ function make_apply_defaults(&$info) {
         }
       }
       else {
-        drush_log(dt("Unknown attribute '@type' in defaults array", array('@type' => $type)), 'warning');
+        drush_log(dt("Unknown attribute '@type' in defaults array", array('@type' => $type)), LogLevel::WARNING);
       }
     }
   }
@@ -577,7 +578,7 @@ function _make_is_override_allowed ($option) {
   if ((empty($allow_override)) || ((in_array($option, $allow_override)) && (!in_array('none', $allow_override)))) {
     return TRUE;
   }
-  drush_log(dt("'!option' not allowed; use --allow-override=!option or --allow-override=all to permit", array("!option" => $option)), 'warning');
+  drush_log(dt("'!option' not allowed; use --allow-override=!option or --allow-override=all to permit", array("!option" => $option)), LogLevel::WARNING);
   return FALSE;
 }
 

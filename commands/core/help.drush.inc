@@ -1,5 +1,7 @@
 <?php
 
+use Drush\Log\LogLevel;
+
 /**
  * Implementation of hook_drush_help().
  *
@@ -95,7 +97,7 @@ function drush_show_help($commandstring) {
   $shell_aliases = drush_get_context('shell-aliases', array());
   if (array_key_exists($commandstring, $shell_aliases)) {
     $msg = dt("'@alias-name' is a shell alias.  Its value is: !name. See `drush topic docs-shell-aliases` and `drush shell-alias` for more information.", array('@alias-name' => $commandstring, '!name' => $shell_aliases[$commandstring]));
-    drush_log($msg, 'ok');
+    drush_log($msg, LogLevel::OK);
     return TRUE;
   }
   return drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt('Invalid command !command.', array('!command' => $commandstring)));
@@ -274,7 +276,7 @@ function _drush_format_help_subsection($command, $section, $subsection, $formatt
  */
 function drush_help_section_formatter_options($command, &$help_attributes) {
   if ($help_attributes['label'][0] == '-') {
-    drush_log(dt("Option '!option' of command !command should instead be declared as '!fixed'", array('!option' => $help_attributes['label'], '!command' => $command['command'], '!fixed' => preg_replace('/^--*/', '', $help_attributes['label']))), 'debug');
+    drush_log(dt("Option '!option' of command !command should instead be declared as '!fixed'", array('!option' => $help_attributes['label'], '!command' => $command['command'], '!fixed' => preg_replace('/^--*/', '', $help_attributes['label']))), LogLevel::DEBUG);
   }
   else {
     $help_attributes['label'] = '--' . $help_attributes['label'];

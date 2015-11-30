@@ -5,6 +5,8 @@
  * pm-updatecode command implementation.
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * Command callback. Displays update status info and allows to update installed projects.
  *
@@ -63,7 +65,7 @@ function drush_pm_updatecode() {
 
   // Do no updates in simulated mode.
   if (drush_get_context('DRUSH_SIMULATE')) {
-    return drush_log(dt('No action taken in simulated mode.'), 'ok');
+    return drush_log(dt('No action taken in simulated mode.'), LogLevel::OK);
     return TRUE;
   }
 
@@ -97,10 +99,10 @@ function drush_pm_updatecode() {
   // exit message.
   if (empty($update_info)) {
     if (drush_get_option('security-only')) {
-      return drush_log(dt('No security updates available.'), 'ok');
+      return drush_log(dt('No security updates available.'), LogLevel::OK);
     }
     else {
-      return drush_log(dt('No code updates available.'), 'ok');
+      return drush_log(dt('No code updates available.'), LogLevel::OK);
     }
   }
 

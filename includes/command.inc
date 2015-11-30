@@ -1,5 +1,7 @@
 <?php
 
+use Drush\Log\LogLevel;
+
 /**
  * @defgroup dispatching Command dispatching functions.
  * @{
@@ -103,7 +105,7 @@ function drush_invoke_process($site_alias_record, $command_name, $commandline_ar
   if (is_array($site_alias_record) && array_key_exists('site-list', $site_alias_record)) {
     list($site_alias_records, $not_found) = drush_sitealias_resolve_sitespecs($site_alias_record['site-list']);
     if (!empty($not_found)) {
-      drush_log(dt("Not found: @list", array("@list" => implode(', ', $not_found))), 'warning');
+      drush_log(dt("Not found: @list", array("@list" => implode(', ', $not_found))), LogLevel::WARNING);
       return FALSE;
     }
     $site_alias_records = drush_sitealias_simplify_names($site_alias_records);
@@ -184,7 +186,7 @@ function drush_dispatch($command, $arguments = array()) {
   }
 
   // Add a final log entry, just so a timestamp appears.
-  drush_log(dt('Command dispatch complete'), 'notice');
+  drush_log(dt('Command dispatch complete'), LogLevel::NOTICE);
 
   return $return;
 }
@@ -205,7 +207,7 @@ function drush_command() {
   foreach (drush_command_implements("drush_init") as $name) {
     $func = $name . '_drush_init';
     if (drush_get_option('show-invoke')) {
-      drush_log(dt("Calling global init hook: !func", array('!name' => $name, '!func' => $func . '()')), 'bootstrap');
+      drush_log(dt("Calling global init hook: !func", array('!name' => $name, '!func' => $func . '()')), LogLevel::BOOTSTRAP);
     }
     call_user_func_array($func, $args);
     _drush_log_drupal_messages();
@@ -219,7 +221,7 @@ function drush_command() {
     foreach (drush_command_implements('drush_exit') as $name) {
       $func = $name . '_drush_exit';
       if (drush_get_option('show-invoke')) {
-        drush_log(dt("Calling global exit hook: !func", array('!name' => $name, '!func' => $func . '()')), 'bootstrap');
+        drush_log(dt("Calling global exit hook: !func", array('!name' => $name, '!func' => $func . '()')), LogLevel::BOOTSTRAP);
       }
       call_user_func_array($func, $args);
       _drush_log_drupal_messages();
@@ -305,11 +307,11 @@ function _drush_invoke_hooks($command, $args) {
   // has passed or started at the time it was discovered.
   $func = 'drush_' . $hook . '_init';
   if (function_exists($func)) {
-    drush_log(dt("Calling drush command init function: !func", array('!func' => $func)), 'bootstrap');
+    drush_log(dt("Calling drush command init function: !func", array('!func' => $func)), LogLevel::BOOTSTRAP);
     call_user_func_array($func, $args);
     _drush_log_drupal_messages();
     if (drush_get_error()) {
-      drush_log(dt('The command @command could not be initialized.', array('@command' => $command['command-hook'])), 'error');
+      drush_log(dt('The command @command could not be initialized.', array('@command' => $command['command-hook'])), LogLevel::ERROR);
       return FALSE;
     }
   }
@@ -359,10 +361,10 @@ function _drush_invoke_hooks($command, $args) {
         $all_available_hooks[] = $func . ' [* Defined in ' . $filename . ']';
         $available_rollbacks[] = $func . '_rollback';
         $completed[] = $func;
-        drush_log(dt("Calling hook !hook", array('!hook' => $func)), 'debug');
+        drush_log(dt("Calling hook !hook", array('!hook' => $func)), LogLevel::DEBUG);
         try {
           $result = call_user_func_array($func, $args);
-          drush_log(dt("Returned from hook !hook", array('!hook' => $func)), 'debug');
+          drush_log(dt("Returned from hook !hook", array('!hook' => $func)), LogLevel::DEBUG);
         }
         catch (Exception $e) {
           drush_set_error('DRUSH_EXECUTION_EXCEPTION', (string) $e);
@@ -411,10 +413,10 @@ function _drush_invoke_hooks($command, $args) {
   }
   if (drush_get_option('show-invoke')) {
     // We show all available hooks up to and including the one that failed (or all, if there were no failures)
-    drush_log(dt("Available drush_invoke() hooks for !command: !available", array('!command' => $command['command-hook'], '!available' => "\n" . implode("\n", $all_available_hooks))), 'ok');
+    drush_log(dt("Available drush_invoke() hooks for !command: !available", array('!command' => $command['command-hook'], '!available' => "\n" . implode("\n", $all_available_hooks))), LogLevel::OK);
   }
   if (drush_get_option('show-invoke') && !empty($available_rollbacks)) {
-    drush_log(dt("Available rollback hooks for !command: !rollback", array('!command' => $command['command-hook'], '!rollback' => "\n" . implode("\n", $available_rollbacks))), 'ok');
+    drush_log(dt("Available rollback hooks for !command: !rollback", array('!command' => $command['command-hook'], '!rollback' => "\n" . implode("\n", $available_rollbacks))), LogLevel::OK);
   }
 
   // Something went wrong, we need to undo.
@@ -432,7 +434,7 @@ function _drush_invoke_hooks($command, $args) {
         if (function_exists($rb_func)) {
           call_user_func_array($rb_func, $args);
           _drush_log_drupal_messages();
-          drush_log(dt("Changes made in !func have been rolled back.", array('!func' => $func)), 'rollback');
+          drush_log(dt("Changes made in !func have been rolled back.", array('!func' => $func)), LogLevel::DEBUG);
         }
       }
     }
@@ -1488,7 +1490,7 @@ function drush_commandfile_list() {
 }
 
 function _drush_find_commandfiles($phase, $phase_max = FALSE) {
-  drush_log(dt("Find command files for phase !phase (max=!max)", array('!phase' => $phase, '!max' => (string)$phase_max)), 'debug');
+  drush_log(dt("Find command files for phase !phase (max=!max)", array('!phase' => $phase, '!max' => (string)$phase_max)), LogLevel::DEBUG);
   if ($bootstrap = drush_get_bootstrap_object()) {
     $searchpath = $bootstrap->commandfile_searchpaths($phase, $phase_max);
     _drush_add_commandfiles($searchpath, $phase);
@@ -1597,7 +1599,7 @@ function drush_filename_blacklist() {
 function drush_command_include($command) {
   $include_files = drush_command_get_includes($command);
   foreach($include_files as $filename => $commandfile) {
-    drush_log(dt('Including !filename', array('!filename' => $filename)), 'bootstrap');
+    drush_log(dt('Including !filename', array('!filename' => $filename)), LogLevel::BOOTSTRAP);
     include_once($filename);
   }
 }
@@ -1666,7 +1668,7 @@ function drush_command_set_command_specific($command_default_options, $command =
           if (!array_key_exists('context', $global_options[$key])) {
             $strict_options_warning =& drush_get_context('DRUSH_STRICT_OPTIONS_WARNING', array());
             if (!array_key_exists($key, $strict_options_warning)) {
-              drush_log(dt("Global option --!option not supported in command-specific options for command !command due to a limitation in strict option handling.", array('!option' => $key, '!command' => $command['command'])), 'warning');
+              drush_log(dt("Global option --!option not supported in command-specific options for command !command due to a limitation in strict option handling.", array('!option' => $key, '!command' => $command['command'])), LogLevel::WARNING);
               $strict_options_warning[$key] = TRUE;
             }
           }
@@ -1888,7 +1890,7 @@ function drush_shell_alias_replace($target_site_alias) {
         $alias_value = str_getcsv($alias_value, ' ');
       }
     }
-    drush_log(dt('Shell alias found: !key => !value', array('!key' => $first, '!value' => implode(' ', $alias_value))), 'debug');
+    drush_log(dt('Shell alias found: !key => !value', array('!key' => $first, '!value' => implode(' ', $alias_value))), LogLevel::DEBUG);
     $pos = array_search($first, $argv);
     $number = 1;
     if ($target_site_alias && ($argv[$pos - 1] == $target_site_alias)) {

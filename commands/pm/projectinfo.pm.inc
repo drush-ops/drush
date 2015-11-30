@@ -1,5 +1,7 @@
 <?php
 
+use Drush\Log\LogLevel;
+
 /**
  * Implementation of drush_hook_COMMAND_validate().
  */
@@ -34,7 +36,7 @@ function drush_pm_projectinfo() {
         $result[$name] = $projects[$name];
       }
       else {
-        drush_log(dt('!project was not found.', array('!project' => $name)), 'warning');
+        drush_log(dt('!project was not found.', array('!project' => $name)), LogLevel::WARNING);
         continue;
       }
     }
