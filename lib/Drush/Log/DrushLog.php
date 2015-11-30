@@ -51,7 +51,7 @@ class DrushLog implements LoggerInterface {
    * @param \Drupal\Core\Logger\LogMessageParserInterface $parser
    *   The parser to use when extracting message variables.
    */
-  public function __construct(LogMessageParserInterface $parser, AbstractLogger $logger) {
+  public function __construct(LogMessageParserInterface $parser, LoggerInterface $logger) {
     $this->parser = $parser;
     $this->logger = $logger;
   }
