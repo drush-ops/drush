@@ -5,6 +5,8 @@
  * Drush pm SVN extension
  */
 
+use Drush\Log\LogLevel;
+
 class drush_version_control_svn implements drush_version_control {
 
   /**
@@ -119,7 +121,7 @@ class drush_version_control_svn implements drush_version_control {
         $message = dt("Drush automatic commit: \n") . implode(' ', $_SERVER['argv']);
       }
       if (drush_shell_exec('svn commit '. drush_get_option('svncommitparams') .' -m "'. $message .'" '. $project['full_project_path'])) {
-        drush_log(dt('Project committed to Subversion successfully'), 'ok');
+        drush_log(dt('Project committed to Subversion successfully'), LogLevel::OK);
       }
       else {
         drush_set_error('DRUSH_PM_SVN_COMMIT_PROBLEMS', dt("Problems were encountered committing your changes to Subversion.\nThe specific errors are below:\n!errors", array('!errors' => implode("\n", drush_shell_exec_output()))));

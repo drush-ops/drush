@@ -11,6 +11,8 @@
  * option in drushrc.php.
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * Indicates that the item should never be removed unless explicitly selected.
  *
@@ -70,7 +72,7 @@ function _drush_cache_get_object($bin) {
 function drush_cache_get($cid, $bin = 'default') {
   $ret = _drush_cache_get_object($bin)->get($cid);
   $mess = $ret ? "HIT" : "MISS";
-  drush_log(dt("Cache !mess cid: !cid", array('!mess' => $mess, '!cid' => $cid)), 'debug');
+  drush_log(dt("Cache !mess cid: !cid", array('!mess' => $mess, '!cid' => $cid)), LogLevel::DEBUG);
   return $ret;
 }
 
@@ -113,7 +115,7 @@ function drush_cache_get_multiple(array &$cids, $bin = 'default') {
  */
 function drush_cache_set($cid, $data, $bin = 'default', $expire = DRUSH_CACHE_PERMANENT) {
   $ret = _drush_cache_get_object($bin)->set($cid, $data, $expire);
-  if ($ret) drush_log(dt("Cache SET cid: !cid", array('!cid' => $cid)), 'debug');
+  if ($ret) drush_log(dt("Cache SET cid: !cid", array('!cid' => $cid)), LogLevel::DEBUG);
   return $ret;
 }
 

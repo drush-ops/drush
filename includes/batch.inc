@@ -24,6 +24,8 @@
  * implementations.
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * Class extending ArrayObject to allow the batch API to perform logging when
  * some keys of the array change.
@@ -36,7 +38,7 @@
 class DrushBatchContext extends ArrayObject {
   function offsetSet($name, $value) {
     if ($name == 'message') {
-      drush_log(strip_tags($value), 'ok');
+      drush_log(strip_tags($value), LogLevel::OK);
     }
     elseif ($name == 'error_message') {
       drush_set_error('DRUSH_BATCH_ERROR', strip_tags($value));

@@ -7,6 +7,8 @@
  *  @todo image-build($field_name, $bundle, $style_name)
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * Implementation of hook_drush_command().
  */
@@ -95,7 +97,7 @@ function drush_image_flush($style_name = NULL) {
     foreach (drush_image_styles() as $style_name => $style) {
       drush_image_flush_single($style_name);
     }
-    drush_log(dt('All image styles flushed'), 'success');
+    drush_log(dt('All image styles flushed'), LogLevel::SUCCESS);
   }
   else {
     drush_image_flush_single($style_name);

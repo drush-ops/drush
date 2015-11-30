@@ -1,5 +1,6 @@
 <?php
 
+use Drush\Log\LogLevel;
 
 /**
  * No bootstrap.
@@ -332,7 +333,7 @@ function drush_bootstrap($phase, $phase_max = FALSE) {
     if ($phase_index > $bootstrapped_phase) {
       if ($result = drush_bootstrap_validate($phase_index)) {
         if (method_exists($bootstrap, $current_phase) && !drush_get_error()) {
-          drush_log(dt("Drush bootstrap phase : !function()", array('!function' => $current_phase)), 'bootstrap');
+          drush_log(dt("Drush bootstrap phase : !function()", array('!function' => $current_phase)), LogLevel::BOOTSTRAP);
           $bootstrap->{$current_phase}();
 
           // Reset commandfile cache and find any new command files that are available during this bootstrap phase.
@@ -436,7 +437,7 @@ function drush_bootstrap_to_phase($max_phase_index) {
     return TRUE;
   }
 
-  drush_log(dt("Bootstrap to phase !phase.", array('!phase' => $max_phase_index)), 'bootstrap');
+  drush_log(dt("Bootstrap to phase !phase.", array('!phase' => $max_phase_index)), LogLevel::BOOTSTRAP);
   $phases = _drush_bootstrap_phases();
   $result = TRUE;
 
