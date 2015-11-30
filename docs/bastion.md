@@ -17,7 +17,7 @@ With this alias defintion, you may use commands such as `drush @internal status`
 
 ## Setting up a Bastion server in .ssh/config
 
-If you have access to a server, bastion.company.com, which you can ssh to from the open internet, and if the bastion server can in turn reach the internal server, then it is possible to configure ssh to route all traffic to the internal server through the bastion. The .ssh configuratin file would look something like this:
+If you have access to a server, bastion.company.com, which you can ssh to from the open internet, and if the bastion server can in turn reach the internal server, then it is possible to configure ssh to route all traffic to the internal server through the bastion. The .ssh configuration file would look something like this:
 
 In **.ssh/config:**
 
