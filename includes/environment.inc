@@ -13,12 +13,12 @@
 /**
  * Supported version of Console Table. This is displayed in the manual install help.
  */
-define('DRUSH_TABLE_VERSION', '1.1.3');
+define('DRUSH_TABLE_VERSION', '1.1.5');
 
 /**
  * Base URL for automatic file download of PEAR packages.
  */
-define('DRUSH_PEAR_BASE_URL', 'http://download.pear.php.net/package/');
+define('CONSOLE_TABLE_BASE_URL', 'https://github.com/RobLoach/Console_Table/archive/');
 
 /**
  * Log PHP errors to the Drush log. This is in effect until Drupal's error
@@ -147,7 +147,7 @@ function drush_environment_table_lib() {
       }
 
       // Download and extract Console_Table, and confirm success.
-      if (drush_lib_fetch(DRUSH_PEAR_BASE_URL . 'Console_Table-' . DRUSH_TABLE_VERSION . '.tgz')) {
+      if (drush_lib_fetch(CONSOLE_TABLE_BASE_URL . DRUSH_TABLE_VERSION . '.tar.gz')) {
         // Remove unneccessary package.xml file which ends up in /lib.
         drush_op('unlink', $lib . '/package.xml');
       }

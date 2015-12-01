@@ -211,7 +211,7 @@ function release_info_print_releasenotes($requests, $print_status = TRUE, $tmpfi
       $xml = simplexml_import_dom($dom);
 
       // Extract last update time and the notes.
-      $last_updated = $xml->xpath('//div[@class="last-updated"]');
+      $last_updated = $xml->xpath('//div[contains(@class,"views-field-changed")]');
       $last_updated = $last_updated[0]->asXML();
       $notes = $xml->xpath('//div[contains(@class,"field-name-body")]');
       $notes = $notes[0]->asXML();
@@ -220,7 +220,7 @@ function release_info_print_releasenotes($requests, $print_status = TRUE, $tmpfi
       $header = array();
       $header[] = '<hr>';
       $header[] = dt("> RELEASE NOTES FOR '!name' PROJECT, VERSION !version:", array('!name' => strtoupper($name), '!version' => $version));
-      $header[] = dt("> !last_updated.", array('!last_updated' => $last_updated));
+      $header[] = dt("> !last_updated.", array('!last_updated' => trim(drush_html_to_text($last_updated))));
       if ($print_status) {
         $header[] = '> ' . implode(', ', $project['releases'][$version]['release_status']);
        }
