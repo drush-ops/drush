@@ -114,7 +114,7 @@ function drush_get_class($class_name, $constructor_args = array(), $variations =
       $variant_class_name = $class_name . implode('', array_slice($variations, 0, $i));
       if (class_exists($variant_class_name)) {
         $reflectionClass = new ReflectionClass($variant_class_name);
-        return $reflectionClass->newInstanceArgs($constructor_args);
+        return !empty($constructor_args) ? $reflectionClass->newInstanceArgs($constructor_args) : $reflectionClass->newInstanceArgs();
       }
     }
   }
