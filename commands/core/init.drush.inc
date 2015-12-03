@@ -66,7 +66,7 @@ function drush_init_core_init() {
   if (!is_file($drush_bashrc)) {
     @copy($example_bashrc, $drush_bashrc);
     $pattern = basename($drush_bashrc);
-    $bashrc_additions["%$pattern%"] = "# Include Drush bash customizations.\n. $drush_bashrc\n\n";
+    $bashrc_additions["%$pattern%"] = "# Include Drush bash customizations.\nif command -v drush >/dev/null 2>&1; then\n  source $drush_bashrc\nfi\n";
     drush_log(dt("Copied example Drush bash configuration file to !path.", array('!path' => $drush_bashrc)), LogLevel::OK);
   }
 
@@ -74,7 +74,7 @@ function drush_init_core_init() {
   if (!is_file($drush_complete)) {
     copy($example_complete, $drush_complete);
     $pattern = basename($drush_complete);
-    $bashrc_additions["%$pattern%"] = "# Include Drush completion.\n. $drush_complete\n\n";
+    $bashrc_additions["%$pattern%"] = "# Include Drush completion.\nif command -v drush >/dev/null 2>&1; then\n  source $drush_complete\nfi\n";
     drush_log(dt("Copied example Drush prompt file to !path.", array('!path' => $drush_complete)), LogLevel::OK);
   }
 
@@ -83,7 +83,7 @@ function drush_init_core_init() {
   if (!is_file($drush_prompt)) {
     @copy($example_prompt, $drush_prompt);
     $pattern = basename($drush_prompt);
-    $bashrc_additions["%$pattern%"] = "# Include Drush prompt customizations.\n. $drush_prompt\n\n";
+    $bashrc_additions["%$pattern%"] = "# Include Drush prompt customizations.\nif command -v drush >/dev/null 2>&1; then\n  source $drush_prompt\nfi\n";
     drush_log(dt("Copied example Drush prompt file to !path.", array('!path' => $drush_prompt)), LogLevel::OK);
   }
 
