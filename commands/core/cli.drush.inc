@@ -44,6 +44,10 @@ function drush_cli_core_cli() {
   $shell = new Shell($configuration);
 
   if ($drupal_major_version >= 8) {
+    // Disable zend assertions (on by default). As this will show warnings when
+    // exiting the shell. The below call to Handle::register() will enable
+    // regular assertions.
+    ini_set('zend.assertions', 0);
     // Register the assertion handler so exceptions are thrown instead of errors
     // being triggered. This plays nicer with PsySH.
     Handle::register();
