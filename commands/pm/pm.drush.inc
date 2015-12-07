@@ -2222,7 +2222,7 @@ function drush_pm_inject_info_file_metadata($project_dir, $project_name, $versio
   if (!empty($info_files)) {
     // Construct the string of metadata to append to all the .info files.
     if ($yaml_format) {
-      $info = _drush_pm_generate_info_yaml_metadata($version, $project_name);
+      $info = _drush_pm_generate_info_yaml_metadata($version, $project_name, $datestamp);
     }
     else {
       $info = _drush_pm_generate_info_ini_metadata($version, $project_name, $datestamp);
@@ -2264,7 +2264,7 @@ METADATA;
 /**
  * Generate version information for `.info` files in YAML format.
  */
-function _drush_pm_generate_info_yaml_metadata($version, $project_name) {
+function _drush_pm_generate_info_yaml_metadata($version, $project_name, $datestamp) {
   $matches = array();
   $extra = '';
   if (preg_match('/^((\d+)\.x)-.*/', $version, $matches) && $matches[2] >= 6) {
@@ -2273,13 +2273,12 @@ function _drush_pm_generate_info_yaml_metadata($version, $project_name) {
   if (!drush_get_option('no-gitprojectinfo', FALSE)) {
     $extra = "\nproject: '$project_name'";
   }
-  $time = time();
-  $date = date('Y-m-d');
+  $date = date('Y-m-d', $datestamp);
   $info = <<<METADATA
 
 # Information added by drush on {$date}
 version: '{$version}'{$extra}
-datestamp: {$time}
+datestamp: {$datestamp}
 METADATA;
   return $info;
 }
