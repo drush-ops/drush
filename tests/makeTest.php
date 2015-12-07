@@ -353,7 +353,7 @@ class makeMakefileCase extends CommandUnishTestCase {
 
     $this->assertFileExists(UNISH_SANDBOX . '/test-build/modules/honeypot/honeypot.info.yml');
     $contents = file_get_contents(UNISH_SANDBOX . '/test-build/modules/honeypot/honeypot.info.yml');
-    $this->assertContains('# Information added by drush on ' . date('Y-m-d'), $contents);
+    $this->assertContains('# Information added by drush on 2015-09-03', $contents);
     $this->assertContains("version: '8.x-1.x-dev'", $contents);
     $this->assertContains("project: 'honeypot'", $contents);
   }
