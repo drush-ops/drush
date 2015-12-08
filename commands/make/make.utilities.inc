@@ -31,7 +31,7 @@ function make_parse_info_file($makefile) {
 /**
  * Parse makefile recursively.
  */
-function _make_parse_info_file($makefile, $element = 'includes') {
+function _make_parse_info_file($makefile) {
   if (!($data = make_get_data($makefile))) {
     return drush_set_error('MAKE_INVALID_MAKE_FILE', dt('Invalid or empty make file: !makefile', array('!makefile' => $makefile)));
   }
@@ -84,7 +84,6 @@ function _make_parse_info_file($makefile, $element = 'includes') {
 function _make_merge_includes_recursively($info, $makefile, $element = 'includes') {
   if (!empty($info[$element])) {
     if (is_array($info[$element])) {
-      $includes = array();
       foreach ($info[$element] as $key => $include) {
         if (!empty($include)) {
           if (!$include_makefile = _make_get_include_path($include, $makefile)) {

@@ -749,8 +749,8 @@ function make_move_build($build_path) {
         $overwrite = drush_get_option('overwrite', FALSE) ? FILE_EXISTS_OVERWRITE : FILE_EXISTS_MERGE;
         if (is_dir($destination)) {
           $files = drush_scan_directory($file->filename, '/./', array('.', '..'), 0, FALSE);
-          foreach ($files as $file) {
-            $ret = $ret && drush_copy_dir($file->filename, $destination . DIRECTORY_SEPARATOR . $file->basename, $overwrite);
+          foreach ($files as $sub_file) {
+            $ret = $ret && drush_copy_dir($sub_file->filename, $destination . DIRECTORY_SEPARATOR . $sub_file->basename, $overwrite);
           }
         }
         else {

@@ -370,7 +370,7 @@ function make_download_git($name, $type, $download, $download_location) {
     if (!empty($download['submodule'])) {
       $command = 'git submodule update';
       foreach ($download['submodule'] as $option) {
-        $command .= ' --%s';
+        $command .= sprintf(' --%s', $option);
       }
       if (call_user_func_array('drush_shell_exec', array_merge(array($command), $download['submodule']))) {
         drush_log(dt('Initialized registered submodules.'), LogLevel::OK);

@@ -259,7 +259,6 @@ class DrushMakeProject {
       // Download the patch.
       if ($filename = _make_download_file($info['url'])) {
         $patched = FALSE;
-        $output = '';
         // Test each patch style; -p1 is the default with git. See
         // http://drupal.org/node/1054616
         $patch_levels = array('-p1', '-p0');
@@ -561,7 +560,7 @@ class DrushMakeProject {
     $custom_context = &drush_get_context('custom');
     $original_custom_context_values = $custom_context;
 
-    $info = make_parse_info_file($makefile, TRUE, $this->options);
+    $info = make_parse_info_file($makefile);
     if (!($info = make_validate_info_file($info))) {
       $result = FALSE;
     }
