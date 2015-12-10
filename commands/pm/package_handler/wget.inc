@@ -82,7 +82,10 @@ function package_handler_download_project(&$request, $release) {
 
   // Extract the tarball in place and return the full path to the untarred directory.
   $download_base = dirname($download_path);
-  $tar_file_list = drush_tarball_extract($download_path, $download_base, TRUE);
+  if (!$tar_file_list = drush_tarball_extract($download_path, $download_base, TRUE)) {
+    // An error has been logged.
+    return FALSE;
+  }
   $tar_directory = drush_trim_path($tar_file_list[0]);
 
   return $download_base . '/' . $tar_directory;
@@ -90,11 +93,17 @@ function package_handler_download_project(&$request, $release) {
 
 /**
  * Update a project.
+ *
+ * @return bool
+ *   Success or failure. An error message will be logged.
  */
 function package_handler_update_project(&$request, $release) {
   $download_path = package_handler_download_project($request, $release);
   if ($download_path) {
     return drush_move_dir($download_path, $request['full_project_path']);
+  }
+  else {
+    return FALSE;
   }
 }
 
