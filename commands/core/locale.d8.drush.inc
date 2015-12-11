@@ -40,6 +40,9 @@ function locale_drush_command() {
  * Checks for available translation updates.
  *
  * @see \Drupal\locale\Controller\LocaleController::checkTranslation()
+ *
+ * @todo This can be simplified once https://www.drupal.org/node/2631584 lands
+ *   in Drupal core.
  */
 function drush_locale_check() {
   \Drupal::moduleHandler()->loadInclude('locale', 'inc', 'locale.compare');
@@ -58,15 +61,17 @@ function drush_locale_check() {
 }
 
 /**
- * Updates the available translations.
+ * Imports the available translation updates.
  *
  * @see TranslationStatusForm::buildForm()
  * @see TranslationStatusForm::prepareUpdateData()
  * @see TranslationStatusForm::submitForm()
+ *
+ * @todo This can be simplified once https://www.drupal.org/node/2631584 lands
+ *   in Drupal core.
  */
 function drush_locale_update() {
   $module_handler = \Drupal::moduleHandler();
-  $module_handler->loadInclude('locale', 'compare.inc');
   $module_handler->loadInclude('locale', 'fetch.inc');
   $module_handler->loadInclude('locale', 'bulk.inc');
 
