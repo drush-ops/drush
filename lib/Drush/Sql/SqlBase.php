@@ -143,11 +143,11 @@ class SqlBase {
   public function query($query, $input_file = NULL, $result_file = '') {
     $input_file_original = $input_file;
     if ($input_file && drush_file_is_tarball($input_file)) {
-      if (drush_shell_exec('gunzip %s', $input_file)) {
+      if (drush_shell_exec('gzip -d %s', $input_file)) {
         $input_file = trim($input_file, '.gz');
       }
       else {
-        return drush_set_error(dt('Failed to gunzip input file.'));
+        return drush_set_error(dt('Failed to decompress input file.'));
       }
     }
 
