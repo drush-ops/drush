@@ -666,37 +666,61 @@ function make_move_build($build_path) {
   $tmp_path = make_tmp();
   $ret = TRUE;
   if ($build_path == '.' || (drush_get_option('no-core', FALSE) && file_exists($build_path))) {
-    $info = drush_scan_directory($tmp_path . DIRECTORY_SEPARATOR . '__build__', '/./', array('.', '..'), 0, FALSE, 'filename', 0, TRUE);
-    foreach ($info as $file) {
-      $destination = $build_path . DIRECTORY_SEPARATOR . $file->basename;
-      if (file_exists($destination)) {
-        // To prevent the removal of top-level directories such as 'modules' or
-        // 'themes', descend in a level if the file exists.
-        // TODO: This only protects one level of directories from being removed.
-        $files = drush_scan_directory($file->filename, '/./', array('.', '..'), 0, FALSE);
-        $overwrite = drush_get_option('overwrite', FALSE) ? FILE_EXISTS_OVERWRITE : FILE_EXISTS_MERGE;
-        foreach ($files as $file) {
-          $ret = $ret && drush_copy_dir($file->filename, $destination . DIRECTORY_SEPARATOR . $file->basename, $overwrite);
+    // All modules must have a .info file right? Right?
+    $info = drush_scan_directory($tmp_path . DIRECTORY_SEPARATOR . '__build__', '/.\.info/', array('.', '..'), 0, TRUE, 'name', 0, TRUE);
+
+    // Keys to directory names.
+    $directory_keys = array_keys($info);
+
+    // Top level modules.
+    $tlm = array();
+
+    // Because some modules can contain other modules with .info files we need to do some more clean up of the dir scan.
+    // Iterate through the directory paths and weed out ones that have a parent path that contains a .info file.
+
+    foreach ($info as $file_info) {
+      // Break up the parts of the path.
+      $path_parts = explode(DIRECTORY_SEPARATOR, dirname($file_info->filename));
+      $found = array();
+
+      foreach ($path_parts as $key => $part) {
+        // If the current path part is not a key module directory we can just continue.
+        if (!in_array($part, $directory_keys)) {
+          continue;
         }
+        // We found part of the path in the keys. Log its depth. Keying with the part name as it is possible to have
+        // nested directories of the same name.
+        $found[$part] = $key;
       }
-      else {
-        $ret = $ret && drush_copy_dir($file->filename, $destination);
+
+      // The top most directory index found.
+      $min = min($found);
+      if (array_search($file_info->name, $path_parts) == $min) {
+        $tlm[$file_info->name] = $file_info;
       }
     }
+
+    // Recursively iterate through the directory tree so we are only overwriting the directories that are available
+    // and not removing items outside of what is being built to. We only want to go as deep as the top level modules
+    // (TLM) identified above.
+    $overwrite = drush_get_option('overwrite', FALSE) ? FILE_EXISTS_OVERWRITE : FILE_EXISTS_MERGE;
+    foreach ($tlm as $project_key => $file) {
+      $destination = $build_path . DIRECTORY_SEPARATOR . dirname(str_replace($tmp_path . "/__build__/", "", dirname($file->filename))) . DIRECTORY_SEPARATOR . $file->name;
+      $ret = $ret && drush_copy_dir(dirname($file->filename), $destination, $overwrite);
+    }
+
   }
   else {
     drush_mkdir(dirname($build_path));
     $ret = drush_move_dir($tmp_path . DIRECTORY_SEPARATOR . '__build__', $tmp_path . DIRECTORY_SEPARATOR . basename($build_path), TRUE);
     $ret = $ret && drush_copy_dir($tmp_path . DIRECTORY_SEPARATOR . basename($build_path), $build_path);
   }
-
   // Copying to final destination resets write permissions. Re-apply.
   if (drush_get_option('prepare-install')) {
     $default = $build_path . '/sites/default';
     chmod($default . '/settings.php', 0666);
     chmod($default . '/files', 0777);
   }
-
   if (!$ret) {
     return drush_set_error('MAKE_CANNOT_MOVE_BUILD', dt("Cannot move build into place."));
   }
