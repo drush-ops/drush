@@ -694,7 +694,7 @@ function make_move_build($build_path) {
       }
 
       // The top most directory index found.
-      $min = min($found);
+      $min = !empty($found) ? min($found) : 0;
       if (array_search($file_info->name, $path_parts) == $min) {
         $tlm[$file_info->name] = $file_info;
       }
