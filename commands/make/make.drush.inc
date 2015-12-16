@@ -717,7 +717,11 @@ function make_move_build($build_path) {
     // (TLM) identified above.
     $overwrite = drush_get_option('overwrite', FALSE) ? FILE_EXISTS_OVERWRITE : FILE_EXISTS_MERGE;
     foreach ($tlm as $project_key => $file) {
-      $destination = $build_path . DIRECTORY_SEPARATOR . dirname(str_replace($tmp_path . "/__build__/", "", dirname($file->filename))) . DIRECTORY_SEPARATOR . $file->name;
+      // Todo: This needs to be cleaned up.
+      $destination = $build_path . DIRECTORY_SEPARATOR;
+      $sub_dest = str_replace($tmp_path . "/__build__/", "", $file->filename);
+      $sub_dest_clean = str_replace($file->basename, "", $sub_dest);
+      $destination .= $sub_dest_clean;
       $ret = $ret && drush_copy_dir(dirname($file->filename), $destination, $overwrite);
     }
 
