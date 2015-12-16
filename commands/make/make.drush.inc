@@ -682,10 +682,23 @@ function make_move_build($build_path) {
 
       // Loop through the parts looking for key folder names.
       foreach ($path_parts as $key => $part) {
-        // If the current path part is not a key folder directory we can just continue.
+
+        // If the current path part is not a key directory we can just continue.
         if (!in_array($part, $directory_keys)) {
           continue;
         }
+
+        // Because we can have a profile, theme, library, module, or just empty folder with the same names we need to
+        // Check to see if our found key contains the .info file.
+        $check_parts = array_slice($path_parts, 0, $key + 1);
+        $path = implode(DIRECTORY_SEPARATOR, $check_parts);
+        $full_path = $path . DIRECTORY_SEPARATOR . $path_parts[$key] . ".info";
+
+        // The info file we are looking for is not here.
+        if (!is_file($full_path)) {
+          continue;
+        }
+
         // We found part of the path in the keys. Log its depth. Keying with the part name as it is possible to have
         // nested directories of the same name.
         $found[$part] = $key;
