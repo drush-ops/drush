@@ -8,7 +8,7 @@ Quick start
 
 If you just want to get started quickly, here is a crontab entry that will run cron once every hour at ten minutes after the hour:
 
-    10 * * * * /usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin COLUMNS=72 /usr/local/drush/drush --root=/path/to/your/drupalroot --uri=your.drupalsite.org --quiet cron
+    10 * * * * /usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin COLUMNS=72 /usr/local/bin/drush --root=/path/to/your/drupalroot --uri=your.drupalsite.org --quiet cron
 
 You should set up crontab to run your cron tasks as the same user that runs the web server; for example, if you run your webserver as the user www-data:
 
