@@ -726,7 +726,7 @@ function make_move_build($build_path) {
         $ret = $ret && drush_copy_dir(dirname($file->filename), $destination, $overwrite);
       }
       else {
-        drush_mkdir($destination);
+        drush_mkdir(dirname($destination));
         $ret = $ret && drush_copy_dir(dirname($file->filename), $destination);
       }
     }
