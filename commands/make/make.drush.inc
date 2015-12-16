@@ -722,7 +722,13 @@ function make_move_build($build_path) {
       $sub_dest = str_replace($tmp_path . "/__build__/", "", $file->filename);
       $sub_dest_clean = str_replace($file->basename, "", $sub_dest);
       $destination .= $sub_dest_clean;
-      $ret = $ret && drush_copy_dir(dirname($file->filename), $destination, $overwrite);
+      if (file_exists($destination)) {
+        $ret = $ret && drush_copy_dir(dirname($file->filename), $destination, $overwrite);
+      }
+      else {
+        drush_mkdir($destination);
+        $ret = $ret && drush_copy_dir(dirname($file->filename), $destination);
+      }
     }
 
   }
