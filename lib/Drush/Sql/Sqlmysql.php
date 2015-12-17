@@ -34,6 +34,12 @@ EOT;
     // server, but not the database.  Connect to the built-in database.
     $parameters['database'] = empty($this->db_spec['database']) ? 'information_schema' : $this->db_spec['database'];
 
+    // If we are creating a new database we don't want to include the database
+    // parameter for the mysql statement.
+    if (isset($this->db_spec['new-database']) && $this->db_spec['new-database']) {
+      unset($parameters['database']);
+    }
+
     // Default to unix socket if configured.
     if (!empty($this->db_spec['unix_socket'])) {
       $parameters['socket'] = $this->db_spec['unix_socket'];

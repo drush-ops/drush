@@ -239,11 +239,26 @@ class SqlBase {
    *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
    */
   public function createdb($quoted = FALSE) {
+    $original_spec = $this->db_spec;
     $dbname = $this->db_spec['database'];
     $sql = $this->createdb_sql($dbname);
+
     // Adjust connection to allow for superuser creds if provided.
     $this->su();
-    return $this->query($sql);
+
+    // Set the new-database option to prevent including the database on the
+    // sql connection parameters.
+    $this->db_spec['new-database'] = TRUE;
+
+    // Create the query.
+    $result = $this->query($sql);
+
+    // the su() command can change the database name to an empty string which
+    // can effect further operations. Restore the original db_spec to continue.
+    $this->db_spec = $original_spec;
+
+    // Return the result of the query.
+    return $result;
   }
 
   /**
