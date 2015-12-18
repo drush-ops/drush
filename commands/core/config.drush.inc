@@ -694,7 +694,8 @@ function _drush_config_import_partial(FileStorage $source) {
  * Edit command callback.
  */
 function drush_config_edit($config_name = '') {
-  if (empty($config_name) && $file = drush_get_option('file', FALSE)) {
+  $file = drush_get_option('file', FALSE);
+  if (empty($config_name) && $file) {
     // If not provided, assume config name from the given file.
     $config_name = basename($file, '.yml');
   }
