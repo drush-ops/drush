@@ -127,7 +127,7 @@ function drush_sitealias_simplify_names($site_list) {
 /**
  * Given an array of site specifications, resolve each one in turn and
  * return an array of alias records.  If you only want a single record,
- * it is preferable to simply call drush_sitealias_get_record directly.
+ * it is preferable to simply call drush_sitealias_get_record() directly.
  *
  * @param $site_specifications
  *   One of:
