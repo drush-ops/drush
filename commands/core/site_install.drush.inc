@@ -298,6 +298,12 @@ function drush_core_site_install($profile = NULL) {
       $form_options[$key] = $value;
     }
   }
+
+  // If the profile is not explicitly set, default to the 'minimal' for an issue-free config import.
+  if (empty($profile) && drush_get_option('config')) {
+    $profile = 'minimal';
+  }
+
   drush_include_engine('drupal', 'site_install');
   drush_core_site_install_version($profile, $form_options);
 
