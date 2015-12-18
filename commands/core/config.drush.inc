@@ -806,7 +806,7 @@ function drush_config_pull($source, $destination) {
   );
   $label = drush_get_option('label', 'sync');
   $runner = drush_get_runner($source, $destination);
-  drush_log(dt('Starting to rsync configuration from Source to Local.'), LogLevel::OK);
+  drush_log(dt('Starting to rsync configuration files from !source to !dest.', array('!source' => $source, '!dest' => $destination)), LogLevel::OK);
   $return = drush_invoke_process($runner, 'core-rsync', array("$source:$export_path", "$destination:%config-$label"), $rsync_options, $backend_options);
   if ($return['error_status']) {
     return drush_set_error('DRUSH_CONFIG_PULL_RSYNC_FAILED', dt('Config-pull rsync failed.'));
