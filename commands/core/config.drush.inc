@@ -779,6 +779,7 @@ function drush_config_pull($source, $destination) {
     'strict' => 0,
   );
 
+  // @todo If either call is made interactive, we don't get an $return['object'] back.
   $backend_options = array('interactive' => FALSE);
   if (drush_get_context('DRUSH_SIMULATE')) {
     $backend_options['backend-simulate'] = TRUE;
