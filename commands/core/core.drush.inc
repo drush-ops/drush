@@ -986,7 +986,8 @@ function drush_core_quick_drupal() {
       // Current CLI user is also the web server user, which is for development
       // only. Hence we can safely make the site directory writable. This makes
       // it easier to delete and edit settings.php.
-      @chmod(conf_path(), 0700);
+      $boot = drush_get_bootstrap_object();
+      @chmod($boot->conf_path(), 0700);
       drush_invoke('runserver', array($server));
     }
   }
