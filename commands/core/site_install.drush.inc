@@ -85,6 +85,7 @@ function site_install_drush_help_alter(&$command) {
     else {
       unset($command['options']['writable']);
       unset($command['options']['keep-config']);
+      unset($command['options']['config']);
     }
   }
 }
