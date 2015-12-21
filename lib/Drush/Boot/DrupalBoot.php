@@ -115,9 +115,6 @@ abstract class DrupalBoot extends BaseBoot {
         $searchpath[] = $drupal_root . '/../drush';
         $searchpath[] = $drupal_root . '/drush';
         $searchpath[] = $drupal_root . '/sites/all/drush';
-
-        // Add the drupalboot.drush.inc commandfile.
-        // $searchpath[] = __DIR__;
         break;
       case DRUSH_BOOTSTRAP_DRUPAL_SITE:
         // If we are going to stop bootstrapping at the site, then
