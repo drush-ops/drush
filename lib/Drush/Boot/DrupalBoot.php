@@ -163,8 +163,10 @@ abstract class DrupalBoot extends BaseBoot {
           }
         }
 
-        $searchpath[] = drupal_get_path('theme', drush_theme_get_admin());
-        $searchpath[] = drupal_get_path('theme', drush_theme_get_default());
+        // Check all enabled themes including non-default and non-admin.
+        foreach (drush_theme_list() as $key => $value) {
+          $searchpath[] = drupal_get_path('theme', $key);
+        }
         break;
     }
 
@@ -198,7 +200,7 @@ abstract class DrupalBoot extends BaseBoot {
         }
         return array(
           'bootstrap_errors' => array(
-            'DRUSH_COMMAND_DEPENDENCY_ERROR' => dt('Command !command needs the following module(s) enabled to run: !dependencies.', array(
+            'DRUSH_COMMAND_DEPENDENCY_ERROR' => dt('Command !command needs the following extension(s) enabled to run: !dependencies.', array(
               '!command' => $command_name,
               '!dependencies' => $modules,
             )),

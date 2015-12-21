@@ -218,6 +218,23 @@ function drush_system_modules_form_submit() {
 }
 
 /**
+ * Returns a list of enabled themes. Use drush_get_themes() if you need to rebuild
+ * and include hidden/disabled as well.
+ *
+ * @return array
+ *  A list of themes keyed by name.
+ */
+function drush_theme_list() {
+  $enabled = array();
+  foreach (list_themes() as $key => $info) {
+    if ($info->status) {
+      $enabled[$key] = $info;
+    }
+  }
+  return $enabled;
+}
+
+/**
  * Get complete information for all available themes.
  *
  * We need to set the type for those themes that are not already in the system table.
