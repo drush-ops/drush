@@ -113,9 +113,10 @@ class DrupalBoot8 extends DrupalBoot {
   function bootstrap_drupal_configuration() {
     $this->request = Request::createFromGlobals();
     $classloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
+    // @todo - use Request::create() and then no need to set PHP superglobals
     $this->kernel = DrupalKernel::createFromRequest($this->request, $classloader, 'prod');
 
-    // Unset drupal error handler and restore drush's one.
+    // Unset drupal error handler and restore Drush's one.
     restore_error_handler();
 
     parent::bootstrap_drupal_configuration();
