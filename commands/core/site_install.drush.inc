@@ -57,7 +57,7 @@ function site_install_drush_command() {
       ),
       'writable' => 'Make CMI and other dirs writable by both web and CLI users. Suitable for non Prod environments.',
       'keep-config' => 'Keep CMI directories untouched. This preserves existing configuration.',
-      'config' => 'After installation, override all configuration and UUIDs that were generated during installation with config from this file path.'
+      'config' => 'Update site UUID and then import configuration from this path.'
     ),
     'examples' => array(
       'drush site-install expert --locale=uk' => '(Re)install using the expert install profile. Set default language to Ukrainian.',
@@ -104,11 +104,11 @@ function drush_core_site_install_validate() {
     drush_set_context('DRUSH_SELECTED_URI', 'http://' . $sites_subdir);
   }
 
-  if ($source = drush_get_option('config')) {
-    if (!file_exists($source)) {
+  if ($config = drush_get_option('config')) {
+    if (!file_exists($config)) {
       return drush_set_error('config_import_target', 'The config source directory does not exist.');
     }
-    if (!is_dir($source)) {
+    if (!is_dir($config)) {
       return drush_set_error('config_import_target', 'The config source is not a directory.');
     }
   }
