@@ -1,6 +1,7 @@
 <?php
 
 use Drush\Log\LogLevel;
+use Drupal\Core\Config\FileStorage;
 
 function site_install_drush_command() {
   $items['site-install'] = array(
@@ -55,7 +56,8 @@ function site_install_drush_command() {
         'example-value' => 'directory_name',
       ),
       'writable' => 'Make CMI and other dirs writable by both web and CLI users. Suitable for non Prod environments.',
-      'keep-config' => 'Keep CMI directories untouched. This preserves existing configuration.'
+      'keep-config' => 'Keep CMI directories untouched. This preserves existing configuration.',
+      'config' => 'Update site UUID and then import configuration from this path.'
     ),
     'examples' => array(
       'drush site-install expert --locale=uk' => '(Re)install using the expert install profile. Set default language to Ukrainian.',
@@ -83,6 +85,7 @@ function site_install_drush_help_alter(&$command) {
     else {
       unset($command['options']['writable']);
       unset($command['options']['keep-config']);
+      unset($command['options']['config']);
     }
   }
 }
@@ -99,6 +102,15 @@ function drush_core_site_install_validate() {
     }
     // Make sure that we will bootstrap to the 'sites-subdir' site.
     drush_set_context('DRUSH_SELECTED_URI', 'http://' . $sites_subdir);
+  }
+
+  if ($config = drush_get_option('config')) {
+    if (!file_exists($config)) {
+      return drush_set_error('config_import_target', 'The config source directory does not exist.');
+    }
+    if (!is_dir($config)) {
+      return drush_set_error('config_import_target', 'The config source is not a directory.');
+    }
   }
 }
 
@@ -287,6 +299,21 @@ function drush_core_site_install($profile = NULL) {
       $form_options[$key] = $value;
     }
   }
+
+  // If the profile is not explicitly set, default to the 'minimal' for an issue-free config import.
+  if (empty($profile) && drush_get_option('config')) {
+    $profile = 'minimal';
+  }
+
   drush_include_engine('drupal', 'site_install');
   drush_core_site_install_version($profile, $form_options);
+
+  // Post installation run the configuration import.
+  if ($config = drush_get_option('config')) {
+    // Set the destination site UUID to match the source UUID, to bypass a core fail-safe.
+    $source_storage = new FileStorage($config);
+    drush_op('drush_config_set', 'system.site', 'uuid', $source_storage->read('system.site')['uuid']);
+    // Run a full configuration import.
+    drush_invoke_process('@self', 'config-import', array(), array('source' => $config));
+  }
 }
