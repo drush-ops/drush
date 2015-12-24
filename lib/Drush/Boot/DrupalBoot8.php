@@ -70,7 +70,10 @@ class DrupalBoot8 extends DrupalBoot {
     // channel.
     $container = \Drupal::getContainer();
     $parser = $container->get('logger.log_message_parser');
-    $drushLogger = drush_get_context('DRUSH_LOG_CALLBACK');
+
+    $drushContainer = drush_get_dependency_injection_container();
+    $drushLogger = $drushContainer->get('logger');
+
     $logger = new \Drush\Log\DrushLog($parser, $drushLogger);
     $container->get('logger.factory')->addLogger($logger);
   }
