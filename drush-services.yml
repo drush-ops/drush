@@ -1,0 +1,6 @@
+parameters:
+  some.arbitrary.group:
+    placeholder: 1
+services:
+  logger:
+    class: Drush\Log\Logger

@@ -34,6 +34,8 @@
     "psy/psysh": "~0.6",
     "symfony/yaml": "~2.3|~3.0",
     "symfony/var-dumper": "~2.7|~3.0",
+    "symfony/dependency-injection": "*",
+    "symfony/config": "*",
     "pear/console_table": "~1.3.0"
   },
   "require-dev": {
