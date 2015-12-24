@@ -55,9 +55,7 @@ function site_install_drush_command() {
         'value' => 'required',
         'example-value' => 'directory_name',
       ),
-      'writable' => 'Make CMI and other dirs writable by both web and CLI users. Suitable for non Prod environments.',
-      'keep-config' => 'Keep CMI directories untouched. This preserves existing configuration.',
-      'config' => 'Update site UUID and then import configuration from this path.'
+      'config' => 'A path pointing to a full set of configuration which should be imported after installation.',
     ),
     'examples' => array(
       'drush site-install expert --locale=uk' => '(Re)install using the expert install profile. Set default language to Ukrainian.',
@@ -83,8 +81,6 @@ function site_install_drush_help_alter(&$command) {
       unset($command['options']['clean-url']);
     }
     else {
-      unset($command['options']['writable']);
-      unset($command['options']['keep-config']);
       unset($command['options']['config']);
     }
   }
@@ -212,64 +208,6 @@ function drush_core_pre_site_install($profile = NULL) {
   }
 
   $sql->drop_or_create($db_spec);
-
-  if (drush_drupal_major_version() >= 8) {
-    // Empty out any existing config directories.
-    $directories = array();
-    // Check for alternative format:
-    // @code
-    // $config_directories = array(
-    //   'active' => 'config/active',
-    //   'staging' => 'config/staging',
-    // );
-    // @endcode
-    // @todo update this regex to omit path.
-    // preg_match('/\n\$config_directories[^;]*\'path\' => \'([^\']*)\'.*\'path\' => \'([^\']*)\'/s', file_get_contents($settingsfile), $directories);
-
-    if (empty($directories)) {
-      // Check for canonical format:
-      // @code
-      // $config_directories['active'] = 'config/active';
-      // $config_directories['staging'] = 'config/staging';
-      // @endcode
-      foreach (array('active', 'staging') as $type) {
-        preg_match('/\n\$config_directories[^;]*\'' . $type . '\'\] = \'([^\']*)\'/', file_get_contents($settingsfile), $directory);
-        if (isset($directory[1])) {
-          $directories[$type] = $directory[1];
-        }
-      }
-    }
-    else {
-      $directories['active'] =  $files . '/' . $directories[1];
-      $directories['staging'] =  $files . '/' . $directories[2];
-    }
-
-    if (drush_get_option('keep-config', FALSE) == FALSE) {
-      foreach ($directories as $directory) {
-        if (file_exists($directory)) {
-          drush_delete_dir_contents($directory, TRUE);
-        }
-      }
-    }
-
-    if (drush_get_option('writable')) {
-      if (is_writable($settingsfile)) {
-        $chmod = <<<'EOD'
-// Appended by Drush site-install.
-$settings['file_chmod_directory'] = 0777;
-$settings['file_chmod_file'] = 0777;
-EOD;
-        drush_file_append_data($settingsfile, "\n$chmod\n");
-      }
-      else {
-        drush_log(dt('Not appending file_chmod_* to @settingsfile as it is not writable.', array('@settingsfile' => $settingsfile)), LogLevel::NOTICE);
-      }
-    }
-
-
-    // Remove files/php if needed.
-    drush_delete_dir("$files/php", TRUE);
-  }
 
   return TRUE;
 }
