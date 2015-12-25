@@ -763,7 +763,7 @@ class makeMakefileCase extends CommandUnishTestCase {
    * Test that files without a core attribute are correctly identified.
    */
   public function testNoCoreMakefileParsing() {
-    require __DIR__ . '/../commands/make/make.utilities.inc';
+    require_once __DIR__ . '/../commands/make/make.utilities.inc';
 
     // INI.
     $data = file_get_contents(__DIR__ . '/makefiles/no-core.make');
