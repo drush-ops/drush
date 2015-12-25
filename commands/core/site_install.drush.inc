@@ -55,7 +55,7 @@ function site_install_drush_command() {
         'value' => 'required',
         'example-value' => 'directory_name',
       ),
-      'config' => 'A path pointing to a full set of configuration which should be imported after installation.',
+      'config-dir' => 'A path pointing to a full set of configuration which should be imported after installation.',
     ),
     'examples' => array(
       'drush site-install expert --locale=uk' => '(Re)install using the expert install profile. Set default language to Ukrainian.',
@@ -81,7 +81,7 @@ function site_install_drush_help_alter(&$command) {
       unset($command['options']['clean-url']);
     }
     else {
-      unset($command['options']['config']);
+      unset($command['options']['config-dir']);
     }
   }
 }
@@ -100,7 +100,7 @@ function drush_core_site_install_validate() {
     drush_set_context('DRUSH_SELECTED_URI', 'http://' . $sites_subdir);
   }
 
-  if ($config = drush_get_option('config')) {
+  if ($config = drush_get_option('config-dir')) {
     if (!file_exists($config)) {
       return drush_set_error('config_import_target', 'The config source directory does not exist.');
     }
@@ -239,7 +239,7 @@ function drush_core_site_install($profile = NULL) {
   }
 
   // If the profile is not explicitly set, default to the 'minimal' for an issue-free config import.
-  if (empty($profile) && drush_get_option('config')) {
+  if (empty($profile) && drush_get_option('config-dir')) {
     $profile = 'minimal';
   }
 
@@ -247,7 +247,7 @@ function drush_core_site_install($profile = NULL) {
   drush_core_site_install_version($profile, $form_options);
 
   // Post installation run the configuration import.
-  if ($config = drush_get_option('config')) {
+  if ($config = drush_get_option('config-dir')) {
     // Set the destination site UUID to match the source UUID, to bypass a core fail-safe.
     $source_storage = new FileStorage($config);
     drush_op('drush_config_set', 'system.site', 'uuid', $source_storage->read('system.site')['uuid']);
