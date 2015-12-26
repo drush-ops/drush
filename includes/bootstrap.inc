@@ -879,7 +879,7 @@ function _drush_bootstrap_drupal_configuration() {
          $parts += array('pass' => '', 'port' => '');
          $creds['driver'] = $parts['scheme'];
          $creds['user'] = urldecode($parts['user']);
-         $creds['host'] = $parts['host'];
+         $creds['host'] = urldecode($parts['host']);
          $creds['port'] = $parts['port'];
          $creds['pass'] = urldecode($parts['pass']);
          $creds['name'] = trim($parts['path'], '/');

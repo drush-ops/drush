@@ -465,9 +465,15 @@ function drush_valid_db_credentials() {
           }
           break;
         case 'pgsql':
-          $conn_string = sprintf("host=%s user=%s password=%s dbname=%s", $creds['host'], $creds['user'], $creds['pass'], $creds['name']);
+          $conn_string = sprintf("host=%s dbname=%s", $creds['host'], $creds['name']);
           if (isset($creds['port'])) {
             $conn_string .= ' port=' . $creds['port'];
+          }
+          if (isset($creds['pass'])) {
+            $conn_string .= ' password=' . $creds['pass'];
+          }
+          if (isset($creds['user'])) {
+            $conn_string .= ' user=' . $creds['user'];
           }
           // Copied from d6's database.pgsql.inc:
           // pg_last_error() does not return a useful error message for database
