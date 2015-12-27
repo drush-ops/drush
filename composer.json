@@ -49,7 +49,10 @@
   "autoload": {
     "psr-0": {
       "Drush":        "lib/"
-    }
+    },
+    "files": [
+      "lib/Drush.php"
+    ]
   },
   "autoload-dev": {
     "psr-0": {

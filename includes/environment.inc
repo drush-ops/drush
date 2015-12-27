@@ -614,15 +614,6 @@ function _drush_test_os($os, $os_list_to_check) {
 }
 
 /**
- * Read the drush info file.
- */
-function drush_read_drush_info() {
-  $drush_info_file = dirname(__FILE__) . '/../drush.info';
-
-  return parse_ini_file($drush_info_file);
-}
-
-/**
  * Make a determination whether or not the given
  * host is local or not.
  *

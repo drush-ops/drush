@@ -9,10 +9,6 @@ use Drush\Log\Logger;
 use Drush\Log\LogLevel;
 use Psr\Log\LoggerInterface;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-
 /**
  * @name Error status definitions
  * @{
@@ -1266,57 +1262,13 @@ function drush_log($message, $type = LogLevel::NOTICE, $error = null) {
 }
 
 /**
- * Set up our dependency injection container, and load drush-services.yml.
- */
-function drush_init_dependency_injection_container() {
-  // Set up our dependency injection container
-  $container = new ContainerBuilder();
-  $loader = new YamlFileLoader($container, new FileLocator(dirname(__DIR__)));
-  $loader->load('drush-services.yml');
-
-  // Store our DI container the Drush way. We want to phase these
-  // out over time.
-  drush_set_context('DRUSH_DI_CONTAINER', $container);
-}
-
-/**
- * For legacy code.
- *
- * Old code:
- *    $object = drush_get_context('DRUSH_CLASS_LABEL');
- *
- * Better:
- *    $container = drush_get_dependency_injection_container();
- *    $object = $container->get('label');
- *
- * Best:
- *    Construct instances in drush-services.yml, and inject
- *    references to the class instances they need.
- *
- * Future:
- *    We should have a Drush class that has a `getContainer()` method:
- *    $container = \Drupal::getContainer();
- */
-function drush_get_dependency_injection_container() {
-  return drush_get_context('DRUSH_DI_CONTAINER');
-}
-
-/**
- * Future: add some sort of dependency injection to Drush.
- */
-function _drush_create_default_logger() {
-  drush_init_dependency_injection_container();
-}
-
-/**
  * Call the default logger, or the user's log callback, as
  * appropriate.
  */
 function _drush_log($entry) {
   $callback = drush_get_context('DRUSH_LOG_CALLBACK');
   if (!$callback) {
-    $container = drush_get_dependency_injection_container();
-    $callback = $container->get('logger');
+    $callback = \Drush::logger();
   }
 
   if ($callback instanceof LoggerInterface) {
