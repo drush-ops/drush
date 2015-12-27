@@ -7,6 +7,10 @@
 
 use Drush\Log\LogLevel;
 
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+
 /**
  * The main Drush function.
  *
@@ -138,8 +142,7 @@ function drush_preflight_prepare() {
   drush_set_context('DRUSH_VENDOR_PATH', dirname($vendor_path));
   drush_set_context('DRUSH_CLASSLOADER', $classloader);
 
-  // Can't log until we have a logger, so we'll create this ASAP.
-  _drush_create_default_logger();
+  drush_init_dependency_injection_container();
 
   // Terminate immediately unless invoked as a command line script
   if (!drush_verify_cli()) {
@@ -160,9 +163,11 @@ function drush_preflight_prepare() {
     return; // An error was logged.
   }
 
-  $drush_info = drush_read_drush_info();
-  define('DRUSH_VERSION', $drush_info['drush_version']);
-  $version_parts = explode('.', DRUSH_VERSION);
+  // Set up for backwards-compatibility. New code should call
+  // \Drush::getVersion() and \Drush::getMajorVersion() directly
+  $drush_version = \Drush::getVersion();
+  $version_parts = explode('.', $drush_version);
+  define('DRUSH_VERSION', $drush_version);
   define('DRUSH_MAJOR_VERSION', $version_parts[0]);
   define('DRUSH_MINOR_VERSION', $version_parts[1]);
 
@@ -181,6 +186,19 @@ function drush_preflight_prepare() {
   _drush_preflight_global_options();
 
   drush_log(dt("Drush preflight prepare loaded autoloader at !autoloader", array('!autoloader' => realpath($vendor_path))), LogLevel::PREFLIGHT);
+}
+
+/**
+ * Set up our dependency injection container, and load drush-services.yml.
+ */
+function drush_init_dependency_injection_container() {
+  // Set up our dependency injection container
+  $container = new ContainerBuilder();
+  $loader = new YamlFileLoader($container, new FileLocator(dirname(__DIR__)));
+  $loader->load('drush-services.yml');
+
+  // Store the container in the \Drush object
+  \Drush::setContainer($container);
 }
 
 /**
