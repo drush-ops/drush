@@ -119,24 +119,8 @@ function drush_preflight_prepare() {
     return FALSE;
   }
 
+  // Include our autoloader
   $classloader = require $vendor_path;
-
-  require_once DRUSH_BASE_PATH . '/includes/startup.inc';
-  require_once DRUSH_BASE_PATH . '/includes/bootstrap.inc';
-  require_once DRUSH_BASE_PATH . '/includes/environment.inc';
-  require_once DRUSH_BASE_PATH . '/includes/command.inc';
-  require_once DRUSH_BASE_PATH . '/includes/drush.inc';
-  require_once DRUSH_BASE_PATH . '/includes/engines.inc';
-  require_once DRUSH_BASE_PATH . '/includes/backend.inc';
-  require_once DRUSH_BASE_PATH . '/includes/batch.inc';
-  require_once DRUSH_BASE_PATH . '/includes/context.inc';
-  require_once DRUSH_BASE_PATH . '/includes/sitealias.inc';
-  require_once DRUSH_BASE_PATH . '/includes/exec.inc';
-  require_once DRUSH_BASE_PATH . '/includes/drupal.inc';
-  require_once DRUSH_BASE_PATH . '/includes/output.inc';
-  require_once DRUSH_BASE_PATH . '/includes/cache.inc';
-  require_once DRUSH_BASE_PATH . '/includes/filesystem.inc';
-  require_once DRUSH_BASE_PATH . '/includes/dbtng.inc';
 
   // Stash our vendor path and classloader.
   drush_set_context('DRUSH_VENDOR_PATH', dirname($vendor_path));

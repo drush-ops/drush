@@ -51,7 +51,23 @@
       "Drush":        "lib/"
     },
     "files": [
-      "lib/Drush.php"
+      "lib/Drush.php",
+      "includes/startup.inc",
+      "includes/bootstrap.inc",
+      "includes/environment.inc",
+      "includes/command.inc",
+      "includes/drush.inc",
+      "includes/engines.inc",
+      "includes/backend.inc",
+      "includes/batch.inc",
+      "includes/context.inc",
+      "includes/sitealias.inc",
+      "includes/exec.inc",
+      "includes/drupal.inc",
+      "includes/output.inc",
+      "includes/cache.inc",
+      "includes/filesystem.inc",
+      "includes/dbtng.inc"
     ]
   },
   "autoload-dev": {
