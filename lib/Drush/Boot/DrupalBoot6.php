@@ -2,6 +2,8 @@
 
 namespace Drush\Boot;
 
+use Psr\Log\LoggerInterface;
+
 class DrupalBoot6 extends DrupalBoot {
 
   public function __construct(LoggerInterface $logger) {
