@@ -4,6 +4,7 @@ namespace Drush\Boot;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Psr\Log\LoggerInterface;
 use Drupal\Core\DrupalKernel;
 
 class DrupalBoot8 extends DrupalBoot {
@@ -17,6 +18,10 @@ class DrupalBoot8 extends DrupalBoot {
    * @var \Symfony\Component\HttpFoundation\Request
    */
   protected $request;
+
+  public function __construct(LoggerInterface $logger) {
+    parent::__construct($logger);
+  }
 
   function valid_root($path) {
     if (!empty($path) && is_dir($path) && file_exists($path . '/autoload.php')) {

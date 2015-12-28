@@ -12,7 +12,8 @@ namespace Drush\Boot;
  */
 class EmptyBoot extends BaseBoot {
 
-  function __construct() {
+  public function __construct(LoggerInterface $logger) {
+    parent::__construct($logger);
   }
 
   function valid_root($path) {

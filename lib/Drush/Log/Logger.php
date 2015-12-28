@@ -32,9 +32,12 @@ class Logger extends AbstractLogger {
 
     public function log($level, $message, array $context = array()) {
       // Convert to old $entry array for b/c calls
-      $entry = $context;
-      $entry['type'] = $level;
-      $entry['message'] = $message;
+      $entry = $context + [
+        'type' => $level,
+        'message' => $message,
+        'timestamp' => microtime(TRUE),
+        'memory' => memory_get_usage(),
+      ];
 
       // Drush\Log\Logger should take over all of the responsibilities
       // of drush_log, including caching the log messages and sending

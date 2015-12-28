@@ -890,7 +890,7 @@ function drush_core_quick_drupal() {
   drush_set_option('backend', TRUE);
   drush_set_option('strict', FALSE); // We fail option validation because do so much internal drush_invoke().
   $makefile = drush_get_option('makefile');
-  $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  $root = \Drush::bootstrapManager()->getRoot();
   if (drush_get_option('use-existing', ($root != FALSE))) {
     if (!$root) {
       return drush_set_error('QUICK_DRUPAL_NO_ROOT_SPECIFIED', 'Must specify site with --root when using --use-existing.');
@@ -947,9 +947,9 @@ function drush_core_quick_drupal() {
     drush_set_option('db-url', 'sqlite://' . $base . '/sites/' . strtolower(drush_get_option('sites-subdir', 'default')) . "/$name.sqlite");
   }
   // We have just created a site root where one did not exist before.
-  // We therefore must manually reset DRUSH_SELECTED_DRUPAL_ROOT to
+  // We therefore must manually reset the selected root to
   // our new root, and force a bootstrap to DRUSH_BOOTSTRAP_DRUPAL_ROOT.
-  drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $root);
+  \Drush::bootstrapManager()->setRoot($root);
   if (!drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUPAL_ROOT)) {
     return drush_set_error('QUICK_DRUPAL_ROOT_LOCATE_FAIL', 'Unable to locate Drupal root directory.');
   }
@@ -1306,7 +1306,7 @@ function drush_core_execute() {
   $cmd = implode(' ', $args);
   // If we selected a Drupal site, then cwd to the site root prior to exec
   $cwd = FALSE;
-  if ($selected_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT')) {
+  if ($selected_root = \Drush::bootstrapManager()->getRoot()) {
     if (is_dir($selected_root)) {
       $cwd = getcwd();
       drush_op('chdir', $selected_root);

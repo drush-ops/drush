@@ -142,6 +142,8 @@ function drush_preflight_prepare() {
   drush_set_context('DRUSH_VENDOR_PATH', dirname($vendor_path));
   drush_set_context('DRUSH_CLASSLOADER', $classloader);
 
+  // We need to load our services right away, as we cannot log
+  // or do much else until after this is done.
   drush_init_dependency_injection_container();
 
   // Terminate immediately unless invoked as a command line script
@@ -341,9 +343,8 @@ function drush_preflight_root() {
   if ($root) {
     $root = realpath($root);
   }
-  // @todo This context name should not mention Drupal.
   // @todo Drupal code should use DRUSH_DRUPAL_ROOT instead of this constant.
-  drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $root);
+  \Drush::bootstrapManager()->setRoot($root);
 
   // Load the config options from Drupal's /drush, ../drush, and sites/all/drush directories,
   // even prior to bootstrapping the root.
@@ -586,7 +587,7 @@ function drush_preflight_command_dispatch() {
   }
   $args = drush_get_arguments();
   $command_name = array_shift($args);
-  $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  $root = \Drush::bootstrapManager()->getRoot();
   $local_drush = drush_get_option('drush-script');
   if (empty($local_drush) && !empty($root)) {
     $local_drush = find_wrapper_or_launcher($root);
