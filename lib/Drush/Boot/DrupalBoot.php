@@ -3,6 +3,7 @@
 namespace Drush\Boot;
 
 use Drush\Log\LogLevel;
+use Psr\Log\LoggerInterface;
 
 abstract class DrupalBoot extends BaseBoot {
 
