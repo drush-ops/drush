@@ -180,6 +180,24 @@ class Drush {
   }
 
   /**
+   * Return the Bootstrap Manager.
+   *
+   * @return Drush\Boot\BootstrapManager
+   */
+  public static function bootstrapManager() {
+    return static::service('bootstrap.manager');
+  }
+
+  /**
+   * Return the Bootstrap object.
+   *
+   * @return Drush\Boot\Boot
+   */
+  public static function getBootstrap() {
+    return static::bootstrapManager()->getBootstrap();
+  }
+
+  /**
    * Read the drush info file.
    */
   private static function drush_read_drush_info() {
