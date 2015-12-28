@@ -68,7 +68,7 @@ class Drush {
   /**
    * Return the current Drush version.
    */
-  static public function getVersion() {
+  public static function getVersion() {
     if (!static::$version) {
       $drush_info = static::drush_read_drush_info();
       static::$version = $drush_info['drush_version'];
@@ -76,7 +76,7 @@ class Drush {
     return static::$version;
   }
 
-  static public function getMajorVersion() {
+  public static function getMajorVersion() {
     if (!static::$majorVersion) {
       $drush_version = static::getVersion();
       $version_parts = explode('.', $drush_version);
@@ -85,7 +85,7 @@ class Drush {
     return static::$majorVersion;
   }
 
-  static public function getMinorVersion() {
+  public static function getMinorVersion() {
     if (!static::$minorVersion) {
       $drush_version = static::getVersion();
       $version_parts = explode('.', $drush_version);
@@ -97,7 +97,7 @@ class Drush {
   /**
    * Load a new set of services
    */
-  public function loadServices($servicesFile) {
+  public static function loadServices($servicesFile) {
     // Set up our dependency injection container.
     $container = new ContainerBuilder();
     // Add a compiler pass: any Boot object tagged 'bootstrap.boot' will
