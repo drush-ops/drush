@@ -32,26 +32,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Better:
  *   $object = \Drush::service('label');
  *
- *   function hook_do_stuff() {
- *     $lock = lock()->acquire('stuff_lock');
- *     // ...
- *   }
  * @endcode
  */
 class Drush {
-
-  /**
-   * We should consider moving our VERSION constant here,
-   * to follow the style used in Drupal 8.  For now, we read
-   * our version information from the drush.info file.
-   *
-   * Do any external clients try to read this file?  With
-   * a class constant, any code that includes autoload.php
-   * may reference \Drush::VERSION.  The way we have implemented
-   * it here allows \Drush::getVersion(), or direct parsing
-   * of drush.info, which is better for backwards compatibility.
-   */
-  //const VERSION = '8.0.0-dev';
 
   /**
    * The version of Drush from the drush.info file, or FALSE if not read yet.
