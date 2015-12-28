@@ -7,10 +7,6 @@
 
 use Drush\Log\LogLevel;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-
 /**
  * The main Drush function.
  *
@@ -144,7 +140,8 @@ function drush_preflight_prepare() {
 
   // We need to load our services right away, as we cannot log
   // or do much else until after this is done.
-  drush_init_dependency_injection_container();
+  $servicesFile = dirname(__DIR__) . "/drush-services.yml";
+  \Drush::loadServices($servicesFile);
 
   // Terminate immediately unless invoked as a command line script
   if (!drush_verify_cli()) {
@@ -188,19 +185,6 @@ function drush_preflight_prepare() {
   _drush_preflight_global_options();
 
   drush_log(dt("Drush preflight prepare loaded autoloader at !autoloader", array('!autoloader' => realpath($vendor_path))), LogLevel::PREFLIGHT);
-}
-
-/**
- * Set up our dependency injection container, and load drush-services.yml.
- */
-function drush_init_dependency_injection_container() {
-  // Set up our dependency injection container
-  $container = new ContainerBuilder();
-  $loader = new YamlFileLoader($container, new FileLocator(dirname(__DIR__)));
-  $loader->load('drush-services.yml');
-
-  // Store the container in the \Drush object
-  \Drush::setContainer($container);
 }
 
 /**
