@@ -5,8 +5,14 @@
  * Contains \Drush.
  */
 
-use Drupal\Core\DependencyInjection\ContainerNotInitializedException;
+use Drush\Symfony\BootstrapCompilerPass;
+
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+
+use Drupal\Core\DependencyInjection\ContainerNotInitializedException;
 
 /**
  * Static Service Container wrapper.
@@ -46,6 +52,13 @@ class Drush {
   protected static $minorVersion = FALSE;
 
   /**
+   * The list of service files
+   *
+   * @var string[]
+   */
+  protected static $servicesFiles = [];
+
+  /**
    * The currently active container object, or NULL if not initialized yet.
    *
    * @var \Symfony\Component\DependencyInjection\ContainerInterface|null
@@ -82,12 +95,38 @@ class Drush {
   }
 
   /**
+   * Load a new set of services
+   */
+  public function loadServices($servicesFile) {
+    // Set up our dependency injection container.
+    $container = new ContainerBuilder();
+    // Add a compiler pass: any Boot object tagged 'bootstrap.boot' will
+    // be added to the BootstrapManager.
+    $container->addCompilerPass(new BootstrapCompilerPass());
+
+    // Remember this file, in case we need it again.
+    static::$servicesFiles[] = $servicesFile;
+
+    foreach (static::$servicesFiles as $file) {
+      $loader = new YamlFileLoader($container, new FileLocator(dirname($file)));
+      $loader->load(basename($file));
+    }
+
+    // Note: this freezes our container, preventing us from adding any further
+    // services to it.  We need to rebuild it if we add any more service files.
+    $container->compile();
+
+    // Store the container in the \Drush object
+    static::setContainer($container);
+  }
+
+  /**
    * Sets a new global container.
    *
    * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
    *   A new container instance to replace the current.
    */
-  public static function setContainer(ContainerInterface $container) {
+  protected static function setContainer(ContainerInterface $container) {
     static::$container = $container;
   }
 

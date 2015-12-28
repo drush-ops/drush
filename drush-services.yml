@@ -22,19 +22,21 @@ services:
   bootstrap.manager:
     class: Drush\Boot\BootstrapManager
     arguments: ['@bootstrap.default', '@logger']
-    calls:
-      - [add, ["@bootstrap.drupal8"]]
-      - [add, ["@bootstrap.drupal7"]]
-      - [add, ["@bootstrap.drupal6"]]
   bootstrap.default:
     class: Drush\Boot\EmptyBoot
     arguments: ['@logger']
   bootstrap.drupal8:
     class: Drush\Boot\DrupalBoot8
     arguments: ['@logger']
+    tags:
+      -  { name: bootstrap.boot }
   bootstrap.drupal7:
     class: Drush\Boot\DrupalBoot7
     arguments: ['@logger']
+    tags:
+      -  { name: bootstrap.boot }
   bootstrap.drupal6:
     class: Drush\Boot\DrupalBoot6
     arguments: ['@logger']
+    tags:
+      -  { name: bootstrap.boot }
