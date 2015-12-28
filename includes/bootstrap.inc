@@ -109,45 +109,6 @@ define('DRUSH_BOOTSTRAP_DRUPAL_FULL', 5);
  */
 define('DRUSH_BOOTSTRAP_DRUPAL_LOGIN', 6);
 
-
-/**
- * Look up the best bootstrap class for the given location
- * from the set of available candidates.
- */
-function drush_bootstrap_class_for_root($root) {
-  return \Drush::bootstrapManager()->bootstrap_class_for_root($root);
-}
-
-/**
- * Select the bootstrap class to use.  If this is called multiple
- * times, the bootstrap class returned might change on subsequent
- * calls, if the root directory changes.  Once the bootstrap object
- * starts changing the state of the system, however, it will
- * be 'latched', and further calls to drush_select_bootstrap_class()
- * will always return the same object.
- */
-function drush_select_bootstrap_class() {
-  return \Drush::bootstrapManager()->select_bootstrap_class();
-}
-
-/**
- * Don't allow the bootstrap object to change once we start bootstrapping
- */
-function drush_latch_bootstrap_object($bootstrap) {
-  return \Drush::bootstrapManager()->latch($bootstrap);
-}
-
-/**
- * Get the appropriate bootstrap object.  We'll search for a new
- * bootstrap object every time someone asks for one until we start
- * bootstrapping; then we'll returned the same cached one every time.
- *
- * @return \Drush\Boot\Boot
- */
-function drush_get_bootstrap_object() {
-  return \Drush::getBootstrap();
-}
-
 /**
  * Find the URI that has been selected by the cwd
  * if it was not previously set via the --uri / -l option
@@ -201,7 +162,7 @@ function drush_bootstrap_value($context, $value = null) {
 function _drush_bootstrap_phases($function_names = FALSE) {
   $result = array();
 
-  if ($bootstrap = drush_get_bootstrap_object()) {
+  if ($bootstrap = \Drush::getBootstrap()) {
     $result = $bootstrap->bootstrap_phases();
     if (!$function_names) {
       $result = array_keys($result);
@@ -230,7 +191,7 @@ function _drush_bootstrap_phases($function_names = FALSE) {
  * @see \Drush\Boot\Boot::bootstrap_phases()
  */
 function drush_bootstrap($phase, $phase_max = FALSE) {
-  $bootstrap = drush_get_bootstrap_object();
+  $bootstrap = \Drush::getBootstrap();
   $phases = _drush_bootstrap_phases(TRUE);
   $result = TRUE;
 
@@ -244,7 +205,7 @@ function drush_bootstrap($phase, $phase_max = FALSE) {
   // Once we start bootstrapping past the DRUSH_BOOTSTRAP_DRUSH phase, we
   // will latch the bootstrap object, and prevent it from changing.
   if ($phase > DRUSH_BOOTSTRAP_DRUSH) {
-    drush_latch_bootstrap_object($bootstrap);
+    \Drush::bootstrapManager()->latch($bootstrap);
   }
 
   drush_set_context('DRUSH_BOOTSTRAPPING', TRUE);
@@ -317,7 +278,7 @@ function drush_has_boostrapped($phase) {
  * @see \Drush\Boot\Boot::bootstrap_phases()
  */
 function drush_bootstrap_validate($phase) {
-  $bootstrap = drush_get_bootstrap_object();
+  $bootstrap = \Drush::getBootstrap();
   $phases = _drush_bootstrap_phases(TRUE);
   static $result_cache = array();
 

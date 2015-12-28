@@ -363,8 +363,8 @@ function drush_locate_root($start_path = NULL) {
  *   The relative path to common.inc (varies by Drupal version), or FALSE if not
  *   a Drupal root.
  */
-function drush_valid_root($path) {
-  $bootstrap_class = drush_bootstrap_class_for_root($path);
+function drush_valid_root($root) {
+  $bootstrap_class = \Drush::bootstrapManager()->bootstrapObjectForRoot($root);
   return $bootstrap_class != NULL;
 }
 
