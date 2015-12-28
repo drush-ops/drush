@@ -96,14 +96,14 @@ class BootstrapManager {
     if ($this->bootstrap) {
       return $this->bootstrap;
     }
-    return $this->select_bootstrap_class();
+    return $this->selectBootstrapClass();
   }
 
   /**
    * Look up the best bootstrap class for the given location
    * from the set of available candidates.
    */
-  function bootstrap_class_for_root($path) {
+  public function bootstrapObjectForRoot($path) {
     foreach ($this->bootstrapCandidates as $candidate) {
       if ($candidate->valid_root($path)) {
         return $candidate;
@@ -117,13 +117,13 @@ class BootstrapManager {
    * times, the bootstrap class returned might change on subsequent
    * calls, if the root directory changes.  Once the bootstrap object
    * starts changing the state of the system, however, it will
-   * be 'latched', and further calls to drush_select_bootstrap_class()
+   * be 'latched', and further calls to \Drush::getBootstrap()
    * will always return the same object.
    */
-  function select_bootstrap_class() {
+  protected function selectBootstrapClass() {
     // Once we have selected a Drupal root, we will reduce our bootstrap
     // candidates down to just the one used to select this site root.
-    $bootstrap = $this->bootstrap_class_for_root($this->root);
+    $bootstrap = $this->bootstrapObjectForRoot($this->root);
     // If we have not found a bootstrap class by this point,
     // then return our default bootstrap object.  The default bootstrap object
     // should pass through all calls without doing anything that

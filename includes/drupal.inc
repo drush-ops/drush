@@ -38,7 +38,7 @@ function drush_drupal_version($drupal_root = NULL) {
 
   if (!$version) {
     if (($drupal_root != NULL) || ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT'))) {
-      $bootstrap = drush_bootstrap_class_for_root($drupal_root);
+      $bootstrap = \Drush::bootstrapManager()->bootstrapObjectForRoot($drupal_root);
       if ($bootstrap) {
         $version = $bootstrap->get_version($drupal_root);
       }
