@@ -133,7 +133,7 @@ class Drush {
    * are allowed to add extensions, and extensions must be added
    * before we compile the container.
    */
-  function addBootstrapManagerReferences() {
+  public static function addBootstrapManagerReferences() {
       if (static::hasService('bootstrap.manager')) {
       $bootstrapManager = static::service('bootstrap.manager');
       $taggedServices = static::$container->findTaggedServiceIds(
