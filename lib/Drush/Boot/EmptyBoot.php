@@ -2,6 +2,8 @@
 
 namespace Drush\Boot;
 
+use Psr\Log\LoggerInterface;
+
 /**
  * This is a do-nothing 'Boot' class that is used when there
  * is no site at --root, or when no root is specified.
@@ -12,7 +14,8 @@ namespace Drush\Boot;
  */
 class EmptyBoot extends BaseBoot {
 
-  function __construct() {
+  public function __construct(LoggerInterface $logger) {
+    parent::__construct($logger);
   }
 
   function valid_root($path) {
