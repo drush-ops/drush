@@ -7,6 +7,13 @@
 
 use Drush\Log\LogLevel;
 
+use Drush\Symfony\BootstrapCompilerPass;
+
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+
 /**
  * The main Drush function.
  *
@@ -140,8 +147,7 @@ function drush_preflight_prepare() {
 
   // We need to load our services right away, as we cannot log
   // or do much else until after this is done.
-  $servicesFile = dirname(__DIR__) . "/drush-services.yml";
-  \Drush::loadServices($servicesFile);
+  drush_init_dependency_injection_container();
 
   // Terminate immediately unless invoked as a command line script
   if (!drush_verify_cli()) {
@@ -185,6 +191,34 @@ function drush_preflight_prepare() {
   _drush_preflight_global_options();
 
   drush_log(dt("Drush preflight prepare loaded autoloader at !autoloader", array('!autoloader' => realpath($vendor_path))), LogLevel::PREFLIGHT);
+}
+
+/**
+ * Set up our dependency injection container, and load drush-services.yml.
+ */
+function drush_init_dependency_injection_container() {
+  $servicesFile = dirname(__DIR__) . "/drush-services.yml";
+
+  // Set up our dependency injection container.
+  $container = new ContainerBuilder();
+
+  // Add a compiler pass: any Boot object tagged 'bootstrap.boot' will
+  // be added to the BootstrapManager.
+  //$container->addCompilerPass(new BootstrapCompilerPass());
+
+  $loader = new YamlFileLoader($container, new FileLocator(dirname($servicesFile)));
+  $loader->load(basename($servicesFile));
+
+  // Note: this freezes our container, preventing us from adding any further
+  // services to it.
+  // $container->compile();
+
+  // Store the container in the \Drush object
+  \Drush::setContainer($container);
+
+  // We are not ready to compile yet, so we will manually find
+  // all of our 'bootstrap.boot' objects and add them to the container
+  \Drush::addBootstrapManagerReferences();
 }
 
 /**

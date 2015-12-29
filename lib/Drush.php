@@ -8,10 +8,6 @@
 use Drush\Symfony\BootstrapCompilerPass;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-
 use Drupal\Core\DependencyInjection\ContainerNotInitializedException;
 
 /**
@@ -52,13 +48,6 @@ class Drush {
   protected static $minorVersion = FALSE;
 
   /**
-   * The list of service files
-   *
-   * @var string[]
-   */
-  protected static $servicesFiles = [];
-
-  /**
    * The currently active container object, or NULL if not initialized yet.
    *
    * @var \Symfony\Component\DependencyInjection\ContainerInterface|null
@@ -95,38 +84,12 @@ class Drush {
   }
 
   /**
-   * Load a new set of services
-   */
-  public static function loadServices($servicesFile) {
-    // Set up our dependency injection container.
-    $container = new ContainerBuilder();
-    // Add a compiler pass: any Boot object tagged 'bootstrap.boot' will
-    // be added to the BootstrapManager.
-    $container->addCompilerPass(new BootstrapCompilerPass());
-
-    // Remember this file, in case we need it again.
-    static::$servicesFiles[] = $servicesFile;
-
-    foreach (static::$servicesFiles as $file) {
-      $loader = new YamlFileLoader($container, new FileLocator(dirname($file)));
-      $loader->load(basename($file));
-    }
-
-    // Note: this freezes our container, preventing us from adding any further
-    // services to it.  We need to rebuild it if we add any more service files.
-    $container->compile();
-
-    // Store the container in the \Drush object
-    static::setContainer($container);
-  }
-
-  /**
    * Sets a new global container.
    *
    * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
    *   A new container instance to replace the current.
    */
-  protected static function setContainer(ContainerInterface $container) {
+  public static function setContainer(ContainerInterface $container) {
     static::$container = $container;
   }
 
@@ -160,6 +123,28 @@ class Drush {
     return static::$container !== NULL;
   }
 
+  /**
+   * Look for all of the services tagged 'bootstrap.boot', and
+   * add them to the bootstrap manager.
+   *
+   * This replaces the BootstrapCompilerPass, because we need
+   * to set up these references before we compile the container.
+   * Reason: we bootstrap in order to find modules, and modules
+   * are allowed to add extensions, and extensions must be added
+   * before we compile the container.
+   */
+  function addBootstrapManagerReferences() {
+      if (static::hasService('bootstrap.manager')) {
+      $bootstrapManager = static::service('bootstrap.manager');
+      $taggedServices = static::$container->findTaggedServiceIds(
+        'bootstrap.boot'
+      );
+      foreach ($taggedServices as $id => $tags) {
+        $boot = static::service($id);
+        $bootstrapManager->add($boot);
+      }
+    }
+  }
 
   /**
    * Retrieves a service from the container.
