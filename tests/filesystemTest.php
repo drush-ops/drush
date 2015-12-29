@@ -13,19 +13,20 @@ class FilesystemCase extends CommandUnishTestCase {
     if ($this->is_windows()) {
       $this->markTestSkipped("s-bit test doesn't apply on Windows.");
     }
-    if (UNISH_USERGROUP === NULL) {
+    $user_group = getenv('UNISH_USERGROUP');
+    if (empty($user_group)) {
       $this->markTestSkipped("s-bit test skipped because of UNISH_USERGROUP was not set.");
     }
 
     $dest = UNISH_SANDBOX . '/test-filesystem-sbit';
     mkdir($dest);
-    chgrp($dest, UNISH_USERGROUP);
+    chgrp($dest, $user_group);
     chmod($dest, 02755); // rwxr-sr-x
 
     $this->drush('pm-download', array('devel'), array('cache' => NULL, 'skip' => NULL, 'destination' => $dest));
 
     $group = posix_getgrgid(filegroup($dest . '/devel/README.txt'));
-    $this->assertEquals($group['name'], UNISH_USERGROUP, 'Group is preserved.');
+    $this->assertEquals($group['name'], $user_group, 'Group is preserved.');
 
     $perms = fileperms($dest . '/devel') & 02000;
     $this->assertEquals($perms, 02000, 's-bit is preserved.');
