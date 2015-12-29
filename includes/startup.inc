@@ -243,7 +243,7 @@ function drush_startup($argv) {
     // directory as it often includes the drive letter. If we get the same
     // result from dirname() twice in a row, then we know we're at the root.
     $last = '';
-    while (!empty($c) && ($c != $last) && file_exists("$c/index.php")) {
+    while (!empty($c) && ($c != $last)) {
       $found_script = find_wrapper_or_launcher($c);
       if ($found_script) {
         chdir($c);
