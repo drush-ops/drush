@@ -5,7 +5,8 @@ php:
   - 5.5
   - 7.0
 
-sudo: true
+sudo: required
+dist: trusty
 
 env:
   matrix:
