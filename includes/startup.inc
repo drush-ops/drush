@@ -299,6 +299,15 @@ function drush_startup($argv) {
     putenv("DRUSH_SHELL_PID=" . posix_getppid());
   }
 
+  // Normalize the slashes in the path before executing it. Surround with
+  // quotes in case of spaces in the path. We do not use _drush_convert_path
+  // here because we are trying to keep the finder as lightweight as possible.
+  $found_script = '"' . str_replace('\\', '/', $found_script) . '"';
+
+  // Allow Windows users to specify which program will run the .launcher file.
+  if ($prefix = getenv('DRUSH_SHELL_PREFIX')) {
+    $found_script = $prefix . $found_script;
+  }
 
   // Emit a message in debug mode advertising the location of the
   // script we found.
