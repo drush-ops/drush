@@ -1291,7 +1291,7 @@ function _drush_backend_get_stdin() {
       return FALSE;
     }
   }
-  stream_set_blocking($fp, FALSE);
+  stream_set_blocking($fp, TRUE);
   $string = stream_get_contents($fp);
   fclose($fp);
   if (trim($string)) {
