@@ -228,7 +228,7 @@ function drush_startup($argv) {
   //
   if (empty($found_script)) {
     if (is_file(".drush-use")) {
-      $found_script = file_get_contents(".drush-use");
+      $found_script = trim(file_get_contents(".drush-use"));
     }
   }
 
