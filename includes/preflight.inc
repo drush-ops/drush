@@ -252,7 +252,7 @@ function drush_preflight() {
   _drush_find_commandfiles_drush();
 
   // Look up the alias identifier that the user wants to use,
-  // either via an arguement or via 'site-set'.
+  // either via an argument or via 'site-set'.
   $target_alias = drush_sitealias_check_arg_and_site_set();
 
   // Process the site alias that specifies which instance
