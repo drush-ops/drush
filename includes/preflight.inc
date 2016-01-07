@@ -288,6 +288,14 @@ function drush_preflight() {
 
   // Fail if we could not find the selected site alias.
   if ($target_alias && empty($alias_record)) {
+    // We will automatically un-set the site-set alias if it could not be found.
+    // Otherwise, we'd be stuck -- the user would only be able to execute Drush
+    // commands again after `drush @none site-set @none`, and most folks would
+    // have a hard time figuring that out.
+    $site_env = drush_sitealias_site_get();
+    if ($site_env == $target_alias) {
+      drush_sitealias_site_clear();
+    }
     return drush_set_error('DRUSH_BOOTSTRAP_NO_ALIAS', dt("Could not find the alias !alias", array('!alias' => $target_alias)));
   }
 
