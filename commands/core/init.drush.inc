@@ -62,11 +62,11 @@ function drush_init_core_init() {
   }
 
   // If there is no ~/.drush/drush.bashrc file, then copy
-  // the example bashrc file here
+  // the example bashrc file there
   if (!is_file($drush_bashrc)) {
     copy($example_bashrc, $drush_bashrc);
     $pattern = basename($drush_bashrc);
-    $bashrc_additions["%$pattern%"] = "# Include Drush bash customizations.\n. $drush_bashrc\n\n";
+    $bashrc_additions["%$pattern%"] = "# Include Drush bash customizations.\n". drush_bash_addition($drush_bashrc);
     drush_log(dt("Copied example Drush bash configuration file to !path", array('!path' => $drush_bashrc)), LogLevel::OK);
   }
 
@@ -74,7 +74,7 @@ function drush_init_core_init() {
   if (!is_file($drush_complete)) {
     copy($example_complete, $drush_complete);
     $pattern = basename($drush_complete);
-    $bashrc_additions["%$pattern%"] = "# Include Drush completion.\n. $drush_complete\n\n";
+    $bashrc_additions["%$pattern%"] = "# Include Drush completion.\n". drush_bash_addition($drush_complete);
     drush_log(dt("Copied Drush completion file to !path", array('!path' => $drush_complete)), LogLevel::OK);
   }
 
@@ -83,7 +83,7 @@ function drush_init_core_init() {
   if (!is_file($drush_prompt)) {
     copy($example_prompt, $drush_prompt);
     $pattern = basename($drush_prompt);
-    $bashrc_additions["%$pattern%"] = "# Include Drush prompt customizations.\n. $drush_prompt\n\n";
+    $bashrc_additions["%$pattern%"] = "# Include Drush prompt customizations.\n". drush_bash_addition($drush_prompt);
     drush_log(dt("Copied example Drush prompt file to !path", array('!path' => $drush_prompt)), LogLevel::OK);
   }
 
@@ -116,7 +116,7 @@ function drush_init_core_init() {
   }
   if ($new_bashrc_contents != $bashrc_contents) {
     if (drush_confirm(dt(implode('', $bashrc_additions) . "Append the above code to !file?", array('!file' => $bashrc)))) {
-      file_put_contents($bashrc, $new_bashrc_contents);
+      file_put_contents($bashrc, "\n\n". $new_bashrc_contents);
       drush_log(dt("Updated bash configuration file !path", array('!path' => $bashrc)), LogLevel::OK);
       drush_log(dt("Start a new shell in order to experience the improvements (e.g. `bash`)."), LogLevel::OK);
       if (drush_get_option('edit')) {
@@ -160,4 +160,14 @@ function drush_find_path_to_drush($home) {
 
   // Fallback is to use the directory that Drush is in.
   return DRUSH_BASE_PATH;
+}
+
+function drush_bash_addition($file) {
+  return <<<EOD
+if [ -f "$file" ] ; then
+  source $file
+fi
+
+
+EOD;
 }
