@@ -274,6 +274,15 @@ function drush_preflight() {
   // that might allow us to find our alias record now
   if (empty($alias_record)) {
     $alias_record = _drush_sitealias_set_context_by_name($target_alias);
+    if (empty($alias_record)) {
+      $site_env = drush_sitealias_site_get();
+      if (!empty($site_env)) {
+        $alias_record = _drush_sitealias_set_context_by_name($site_env);
+        if (empty($alias_record)) {
+          drush_log(dt("Could not find the site selected via site-set, !alias. Use `drush site-set @none` to clear.", array('!alias' => $site_env)));
+        }
+      }
+    }
 
     // If the site alias settings changed late in the preflight,
     // then run the preflight for the root and site contexts again.
