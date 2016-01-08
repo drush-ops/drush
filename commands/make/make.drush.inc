@@ -731,6 +731,30 @@ function make_move_build($build_path) {
       }
     }
 
+    // Libraries don't need special sauce.
+    // Support the following paths
+    //  - sites/xyz/libraries
+    //  - profiles/profilename/libraries
+    $info_lib = glob($tmp_path . DIRECTORY_SEPARATOR . '__build__' . '/*\/*/libraries/*', GLOB_ONLYDIR);
+    foreach ($info_lib as $dir) {
+      $destination = $build_path . str_replace($tmp_path . DIRECTORY_SEPARATOR . '__build__', '', $dir);
+      if (is_dir($destination)) {
+        $overwrite = drush_get_option('overwrite', FALSE) ? FILE_EXISTS_OVERWRITE : FILE_EXISTS_MERGE;
+        if ($overwrite) {
+          $files = drush_scan_directory($dir, '/./', array('.', '..'), 0, FALSE);
+          foreach ($files as $file) {
+            $ret = $ret && drush_copy_dir($file->filename, $destination . DIRECTORY_SEPARATOR . $file->basename, $overwrite);
+          }
+        }
+        else {
+          $ret = $ret && drush_copy_dir($dir, $destination);
+        }
+      }
+      else {
+        $ret = $ret && drush_copy_dir($dir, $destination);
+      }
+    }
+
   }
   else {
     drush_mkdir(dirname($build_path));
