@@ -117,7 +117,7 @@ if [ -z "$d" ]; then
   d=$(alias drush | cut -f 2 -d '=' | sed "s/'//g")
 fi
 # Test that drush is an executable.
-[ -x "$d" ] || exit 0
+[ -x "$d" ] || return
 
 # If the file found is a symlink, resolve to the actual file.
 if [ -h "$d" ] ; then
