@@ -127,6 +127,7 @@ function config_drush_command() {
       'source' => 'An arbitrary directory that holds the configuration files. An alternative to label argument',
       'partial' => 'Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted).',
       'skip-modules' => 'A list of modules to ignore during import (e.g. to avoid disabling dev-only modules that are not enabled in the imported configuration).',
+      'force' => 'Override the existing site UUID to allow import of a configuration into an existing site (eg. to allow configuration of a site without the import of a database such as in an automated testing environment).',
     ),
     'global-options' => array(
       'cache-clear',
@@ -134,6 +135,7 @@ function config_drush_command() {
     'core' => array('8+'),
     'examples' => array(
       'drush config-import --skip-modules=devel' => 'Import configuration; do not enable or disable the devel module, regardless of whether or not it appears in the imported list of enabled modules.',
+      'drush config-import --force' => 'Import configuration; force update the destination site UUID to allow importing of a configuration over an existing site.',
     ),
     'aliases' => array('cim'),
   );
@@ -633,6 +635,10 @@ function drush_config_import($source = NULL) {
     drush_print(implode("\n", $output));
   }
 
+  if (drush_get_option('force', FALSE) && drush_confirm(dt('Override the destination site UUID?'))) {
+    drush_op('_drush_config_import_site_uuid', $config_comparer);
+  }
+
   if (drush_confirm(dt('Import the listed configuration changes?'))) {
     if (drush_get_option('partial')) {
       // Partial imports require different processing.
@@ -687,6 +693,17 @@ function _drush_config_import_partial(FileStorage $source) {
   $active_storage = Drupal::service('config.storage');
   foreach ($source->listAll() as $name) {
     $active_storage->write($name, $source->read($name));
+  }
+}
+
+/**
+ * Replaces a destination site's UUID with the value in the source config.
+ */
+function _drush_config_import_site_uuid(StorageComparer $storage_comparer) {
+  if (!$storage_comparer->validateSiteUuid()) {
+    // Set the destination site UUID to match the source UUID.
+    drush_op('drush_config_set', 'system.site', 'uuid', $storage_comparer->getSourceStorage()->read('system.site')['uuid']);
+    $storage_comparer->reset();
   }
 }
 
