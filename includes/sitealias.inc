@@ -21,6 +21,7 @@ use Drush\Log\LogLevel;
  */
 function drush_sitealias_check_arg_and_site_set() {
   $args = drush_get_arguments();
+  $target_alias = FALSE;
 
   // Test to see if the first arg is a valid alias identifier.
   // If the first arguement is a well-formed identifier, but we
@@ -29,24 +30,18 @@ function drush_sitealias_check_arg_and_site_set() {
     // Pop the alias off the arguments list first thing.
     $target_alias = array_shift($args);
     drush_set_arguments($args);
-    // Record the user's desired target alias name
+  }
+  else {
+    // If the user did not specify an alias via an argument,
+    // check to see if a site env was set.
+    $target_alias = drush_sitealias_site_get();
+  }
+
+  // Record the user's desired target alias name
+  if ($target_alias) {
     drush_set_context('DRUSH_TARGET_SITE_ALIAS', $target_alias);
-    return $target_alias;
   }
-  // If the user did not specify an alias via an argument,
-  // check to see if a site env was set.  For the site env,
-  // we insist on being able to find the alias record, or
-  // we will silently ignore
-  $site_env = drush_sitealias_site_get();
-  if ($site_env) {
-    $site_alias_settings = drush_sitealias_get_record($site_env);
-    if (!empty($site_alias_settings)) {
-      drush_set_context('DRUSH_TARGET_SITE_ALIAS', $site_env);
-      return $site_env;
-    }
-  }
-  // Return an empty array to indicate that no site alias was specified.
-  return FALSE;
+  return $target_alias;
 }
 
 /**
@@ -2147,6 +2142,16 @@ function drush_sitealias_site_get() {
   else {
     return FALSE;
   }
+}
+
+/**
+ * Un-set the currently use'd site alias.
+ */
+function drush_sitealias_site_clear() {
+  if ($filename = drush_sitealias_get_envar_filename()) {
+    return drush_delete_dir($filename);
+  }
+  return FALSE;
 }
 
 /**
