@@ -53,17 +53,17 @@
  *
  * DRUSH WRAPPER
  *
- * - The "drush" script that the user optionally copies and edits.
+ * - The drush.wrapper script that the user optionally copies and edits.
  * - Its goal is to allow the user to add options when --local is in use
  *
- * The Drush "wrapper" is found in examples/drush, and may optionally
+ * The Drush "wrapper" is found at examples/drush.wrapper, and may optionally
  * be copied to __ROOT__ by the user.  It may be named either
  * "drush" or "drush.wrapper".  It will call the "Drush launcher"
  * for the same site that it is located in.  It adds the --local flag; the
  * user is encouraged to add other options to the "Drush wrapper", e.g. to set
  * the location where aliases and global commandfiles can be found.
  * The Drush "finder" script always calls the "Drush wrapper" if it exists;
- * however, if the user does not want to customize the eary options of
+ * however, if the user does not want to customize the early options of
  * the site-local Drush (site-alias locations, etc.), then the wrapper does not
  * need to be used.
  *
@@ -84,7 +84,7 @@
  *                       __DRUSH__/drush                     (source)
  *
  *   "Drush wrapper"  :  __ROOT__/drush                      (copied by user)
- *                       __DRUSH__/examples/drush            (source)
+ *                       __DRUSH__/examples/drush.wrapper    (source)
  *
  *   "Drush launcher" :  __ROOT__/vendor/bin/drush.launcher  (composer install)
  *                       __DRUSH__/drush.launcher            (source)
