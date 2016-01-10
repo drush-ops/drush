@@ -45,8 +45,7 @@ function _drush_cache_clear_types($include_bootstrapped_types) {
   if ($include_bootstrapped_types) {
     $types += array(
       'theme-registry' => 'drush_cache_clear_theme_registry',
-      'menu' => 'drush_cache_clear_menu',
-      'router' => 'drush_cache_clear_menu',
+      'router' => 'drush_cache_clear_router',
       'css-js' => 'drush_cache_clear_css_js',
       'module-list' => 'drush_get_modules',
       'theme-list' => 'drush_get_themes',
@@ -60,7 +59,7 @@ function drush_cache_clear_theme_registry() {
   \Drupal::service('theme.registry')->reset();
 }
 
-function drush_cache_clear_menu() {
+function drush_cache_clear_router() {
   /** @var \Drupal\Core\Routing\RouteBuilderInterface $router_builder */
   $router_builder = \Drupal::service('router.builder');
   $router_builder->rebuild;
