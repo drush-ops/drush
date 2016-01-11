@@ -47,6 +47,10 @@ EOT;
       $parameters['port'] = $this->db_spec['port'];
     }
 
+    if (!empty($this->db_spec['pdo']['unix_socket'])) {
+      $parameters['socket'] = $this->db_spec['pdo']['unix_socket'];
+    }
+
     return $this->params_to_options($parameters);
   }
 
