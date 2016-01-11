@@ -287,5 +287,3 @@
 
 // Use Drupal version specific CLI history instead of per site.
 # $command_specific['core-cli'] = array('version-history' => TRUE);
-
-$
