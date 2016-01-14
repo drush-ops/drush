@@ -64,7 +64,7 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
     global $user;
 
     while (!$finished) {
-      $data = drush_invoke_process('@self', $command, $args, array($batch['id'], '-u', drush_user_get_class()->getCurrentUserAsSingle()->id()));
+      $data = drush_invoke_process('@self', $command, $args, array('user' => drush_user_get_class()->getCurrentUserAsSingle()->id()));
 
       $finished = drush_get_error() || !$data || (isset($data['context']['drush_batch_process_finished']) && $data['context']['drush_batch_process_finished'] == TRUE);
     }
