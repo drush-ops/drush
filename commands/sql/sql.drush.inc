@@ -77,7 +77,8 @@ function sql_drush_command() {
         ),
       ),
     'examples' => array(
-      '`drush sql-connect` < example.sql' => 'Import sql statements from a file into the current database.',
+      '`drush sql-connect` < example.sql' => 'Bash: Import SQL statements from a file into the current database.',
+      'eval (drush sql-connect) < example.sql' => 'Fish: Import SQL statements from a file into the current database.',
     ),
   );
   $items['sql-create'] = array(
