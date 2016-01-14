@@ -251,6 +251,7 @@ function drush_core_site_install($profile = NULL) {
     // Set the destination site UUID to match the source UUID, to bypass a core fail-safe.
     $source_storage = new FileStorage($config);
     drush_op('drush_config_set', 'system.site', 'uuid', $source_storage->read('system.site')['uuid']);
+    drush_op('drush_config_set', 'shortcut.set.default', 'uuid', $source_storage->read('shortcut.set.default')['uuid']);
     // Run a full configuration import.
     drush_invoke_process('@self', 'config-import', array(), array('source' => $config));
   }
