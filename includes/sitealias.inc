@@ -226,6 +226,8 @@ function drush_sitealias_get_record($alias, $alias_context = NULL) {
         $path = drush_sitealias_local_site_path($alias_record);
         if ($path) {
           $cached_alias_record = drush_sitealias_lookup_alias_by_path($path);
+          // Don't overrite keys which have already been negotiated.
+          unset($cached_alias_record['#name'], $cached_alias_record['root'], $cached_alias_record['uri']);
           $alias_record = array_merge($alias_record, $cached_alias_record);
         }
       }
@@ -1705,8 +1707,8 @@ function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
       drush_sitealias_cache_alias_by_path($site_alias_settings);
       if (empty($prefix)) {
         // Create an alias '@self'
-        _drush_sitealias_cache_alias('@self', $site_alias_settings);
-        // change the selected site to match the new --root and --uri, if any were set
+        drush_sitealias_create_self_alias();
+        // Change the selected site to match the new --root and --uri, if any were set.
         _drush_preflight_root_uri();
       }
       return $site_alias_settings;
