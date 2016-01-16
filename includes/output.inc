@@ -1,6 +1,7 @@
 <?php
 
 use Drush\Log\LogLevel;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
  * @defgroup outputfunctions Process output text.
@@ -37,7 +38,7 @@ function drush_print($message = '', $indent = 0, $handle = NULL, $newline = TRUE
     fwrite($handle, $msg);
   }
   else {
-    print $msg;
+    (new ConsoleOutput)->writeln($msg);
   }
 }
 
