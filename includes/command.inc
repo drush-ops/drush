@@ -691,12 +691,12 @@ function _drush_flatten_options($options) {
 function drush_redispatch_get_options() {
   // Start off by taking everything from the site alias and command line
   // ('cli' context)
-  $options = drush_get_context('cli');
+  $cli_context = drush_get_context('cli');
   // local php settings should not override sitealias settings
-  unset($options['php']);
-  unset($options['php-options']);
-  // Add in command-specific and alias options, but for global options only.
-  $options_soup = drush_get_context('specific') + drush_get_context('alias');
+  unset($cli_context['php']);
+  unset($cli_context['php-options']);
+  // cli overrides and command specific
+  $options_soup = $cli_context + drush_get_context('specific') + drush_get_context('alias');
   $global_option_list = drush_get_global_options(FALSE);
   foreach ($options_soup as $key => $value) {
     if (array_key_exists($key, $global_option_list)) {
