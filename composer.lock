@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c27d3aee74e187e21786fe92e1f3ef90",
-    "content-hash": "09dbbe99f14010908e30e6d7afacd010",
+    "hash": "623b1b9885e6668dc70e6a3726212bfb",
+    "content-hash": "b6e8f826a6964fbc5f0045a2b7e587dc",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -180,20 +180,20 @@
         },
         {
             "name": "pear/console_table",
-            "version": "dev-php7-support",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ec-europa/Console_Table.git",
-                "reference": "e9ccefc406362dcafbb188b4e0766ea215f2cfbe"
+                "url": "https://github.com/pear/Console_Table.git",
+                "reference": "95607d141c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ec-europa/Console_Table/zipball/e9ccefc406362dcafbb188b4e0766ea215f2cfbe",
-                "reference": "e9ccefc406362dcafbb188b4e0766ea215f2cfbe",
+                "url": "https://api.github.com/repos/pear/Console_Table/zipball/95607d141c909ccebfc5d631652dd1ca4faa8331",
+                "reference": "95607d141c",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.1.2"
+                "php": ">=5.2.0"
             },
             "suggest": {
                 "pear/Console_Color2": ">=0.1.2"
@@ -234,7 +234,7 @@
                 "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Console_Table",
                 "source": "https://github.com/pear/Console_Table"
             },
-            "time": "2016-01-15 10:24:49"
+            "time": "2016-01-19 08:32:40"
         },
         {
             "name": "psr/log",

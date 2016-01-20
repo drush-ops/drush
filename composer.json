@@ -34,7 +34,7 @@
     "psy/psysh": "~0.6",
     "symfony/yaml": "2.7.*",
     "symfony/var-dumper": "^2.6.3",
-    "pear/console_table": "dev-php7-support"
+    "pear/console_table": "dev-master#95607d141c"
   },
   "require-dev": {
     "phpunit/phpunit": "4.*",
@@ -46,9 +46,9 @@
   },
   "repositories": [
       {
-          "_comment": "Fork of pear/console_table that provides PHP 7 compatibility. See PR #13.",
+          "_comment": "Packagist currently links to a fork of Console_Table rather than the canonical source.",
           "type": "vcs",
-          "url": "git@github.com:ec-europa/Console_Table"
+          "url": "git@github.com:pear/Console_Table"
       }
   ],
   "autoload": {
