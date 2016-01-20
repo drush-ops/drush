@@ -760,14 +760,11 @@ function _drush_core_config_php_ini_files() {
     }
   }
   foreach (array(DRUSH_BASE_PATH, '/etc/drush', drush_server_home() . '/.drush') as $ini_dir) {
-    if (file_exists($ini_dir . "/php.ini")) {
-      $ini_files[] = realpath($ini_dir . "/php.ini");
-    }
     if (file_exists($ini_dir . "/drush.ini")) {
       $ini_files[] = realpath($ini_dir . "/drush.ini");
     }
   }
-  return $ini_files;
+  return array_unique($ini_files);
 }
 
 function _drush_core_config_bash_files() {
