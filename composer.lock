@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "623b1b9885e6668dc70e6a3726212bfb",
-    "content-hash": "b6e8f826a6964fbc5f0045a2b7e587dc",
+    "hash": "92bcde80a40d43f90efba6be244573d6",
+    "content-hash": "0af55007c0a85dc779e0db01c90f40f4",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -180,16 +180,16 @@
         },
         {
             "name": "pear/console_table",
-            "version": "dev-master",
+            "version": "v1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pear/Console_Table.git",
-                "reference": "95607d141c"
+                "reference": "64100b9ee81852f4fa17823e55d0b385a544f976"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pear/Console_Table/zipball/95607d141c909ccebfc5d631652dd1ca4faa8331",
-                "reference": "95607d141c",
+                "url": "https://api.github.com/repos/pear/Console_Table/zipball/64100b9ee81852f4fa17823e55d0b385a544f976",
+                "reference": "64100b9ee81852f4fa17823e55d0b385a544f976",
                 "shasum": ""
             },
             "require": {
@@ -204,6 +204,7 @@
                     "Table.php"
                 ]
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-2-Clause"
             ],
@@ -230,11 +231,7 @@
             "keywords": [
                 "console"
             ],
-            "support": {
-                "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Console_Table",
-                "source": "https://github.com/pear/Console_Table"
-            },
-            "time": "2016-01-19 08:32:40"
+            "time": "2016-01-21 16:14:31"
         },
         {
             "name": "psr/log",
@@ -1533,9 +1530,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "pear/console_table": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
