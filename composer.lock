@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "160e694a860dd8b012104bae69cd2d75",
-    "content-hash": "345215a79dc35e20c5858b0a05b0aba6",
+    "hash": "92bcde80a40d43f90efba6be244573d6",
+    "content-hash": "0af55007c0a85dc779e0db01c90f40f4",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -180,20 +180,20 @@
         },
         {
             "name": "pear/console_table",
-            "version": "1.2.1",
+            "version": "v1.3.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/RobLoach/Console_Table.git",
-                "reference": "10d89fbbe533351dcfe5dc1e84de25d9a8395950"
+                "url": "https://github.com/pear/Console_Table.git",
+                "reference": "64100b9ee81852f4fa17823e55d0b385a544f976"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/RobLoach/Console_Table/zipball/10d89fbbe533351dcfe5dc1e84de25d9a8395950",
-                "reference": "10d89fbbe533351dcfe5dc1e84de25d9a8395950",
+                "url": "https://api.github.com/repos/pear/Console_Table/zipball/64100b9ee81852f4fa17823e55d0b385a544f976",
+                "reference": "64100b9ee81852f4fa17823e55d0b385a544f976",
                 "shasum": ""
             },
             "require": {
-                "php": ">=4.3.10"
+                "php": ">=5.2.0"
             },
             "suggest": {
                 "pear/Console_Color2": ">=0.1.2"
@@ -231,7 +231,7 @@
             "keywords": [
                 "console"
             ],
-            "time": "2014-10-27 10:04:49"
+            "time": "2016-01-21 16:14:31"
         },
         {
             "name": "psr/log",
@@ -464,16 +464,16 @@
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v2.8.1",
+            "version": "v2.8.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "f943f29ae69c42511a2d85adee9d13d835b5c803"
+                "reference": "ab94426d127ad9e95433778a3a451fe9d18f3d6b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/f943f29ae69c42511a2d85adee9d13d835b5c803",
-                "reference": "f943f29ae69c42511a2d85adee9d13d835b5c803",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/ab94426d127ad9e95433778a3a451fe9d18f3d6b",
+                "reference": "ab94426d127ad9e95433778a3a451fe9d18f3d6b",
                 "shasum": ""
             },
             "require": {
@@ -523,20 +523,20 @@
                 "debug",
                 "dump"
             ],
-            "time": "2015-12-05 11:09:21"
+            "time": "2016-01-07 13:38:40"
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.7.8",
+            "version": "v2.7.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "1d96518eb7775ba42704652dff32269236c5adb4"
+                "reference": "a91e8af3dcde226e00be2e1c068764eef7b4c153"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/1d96518eb7775ba42704652dff32269236c5adb4",
-                "reference": "1d96518eb7775ba42704652dff32269236c5adb4",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/a91e8af3dcde226e00be2e1c068764eef7b4c153",
+                "reference": "a91e8af3dcde226e00be2e1c068764eef7b4c153",
                 "shasum": ""
             },
             "require": {
@@ -572,7 +572,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2015-12-26 13:37:43"
+            "time": "2016-01-13 10:26:43"
         }
     ],
     "packages-dev": [
@@ -1480,16 +1480,16 @@
         },
         {
             "name": "symfony/process",
-            "version": "v2.7.8",
+            "version": "v2.7.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "a3fb8f4c4afc4f1b285de5df07e568602934f525"
+                "reference": "0570b9ca51135ee7da0f19239eaf7b07ffb87034"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/a3fb8f4c4afc4f1b285de5df07e568602934f525",
-                "reference": "a3fb8f4c4afc4f1b285de5df07e568602934f525",
+                "url": "https://api.github.com/repos/symfony/process/zipball/0570b9ca51135ee7da0f19239eaf7b07ffb87034",
+                "reference": "0570b9ca51135ee7da0f19239eaf7b07ffb87034",
                 "shasum": ""
             },
             "require": {
@@ -1525,7 +1525,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2015-12-23 11:03:39"
+            "time": "2016-01-06 09:57:37"
         }
     ],
     "aliases": [],
