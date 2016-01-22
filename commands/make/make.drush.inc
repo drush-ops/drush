@@ -149,9 +149,10 @@ function make_drush_command() {
 
   $items['make-convert'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
-    'description' => 'Convert a legacy makefile into YAML format.',
+    'description' => 'Convert a legacy makefile into another format.',
     'arguments' => array(
       'makefile' => 'Filename of the makefile to convert.',
+      'format' => 'The format to which the make file should be converted. Accepted values include "composer.json" and "yml".'
     ),
     'options' => array(
       'projects' => $projects,
@@ -160,7 +161,8 @@ function make_drush_command() {
     ),
     'required-arguments' => TRUE,
     'examples' => array(
-      'drush make-convert example.make' => 'Convert example.make to example.make.yml',
+      'drush make-convert example.make yml' => 'Convert example.make to example.make.yml',
+      'drush make-convert example.make composer.json' => 'Convert example.make to composer.json',
     ),
   );
 
@@ -376,27 +378,150 @@ function drush_make($makefile = NULL, $build_path = NULL) {
 }
 
 /**
- * Command callback; convert ini makefile to YAML.
+ * Command callback; convert ini makefile to another format.
  */
-function drush_make_convert($makefile) {
-
-  drush_log(dt('Beginning to convert !makefile.', array('!makefile' => $makefile)), LogLevel::OK);
-
-  $file = $makefile . '.yml';
+function drush_make_convert($makefile, $format) {
   $info = make_parse_info_file($makefile);
+
+  switch ($format) {
+    case 'yml':
+      $output = drush_convert_yml($info);
+
+      break;
+
+    case 'composer.json':
+      $output = drush_convert_composer($info);
+
+      break;
+  }
+
+  drush_print($output);
+}
+
+/**
+ * Converts a drush info array to a YAML array.
+ *
+ * @param array $info
+ *   A drush make info array.
+ *
+ * @return string
+ *   A yaml encoded info array.
+ */
+function drush_convert_yml($info) {
   // Remove incorrect value.
   unset($info['format']);
 
   $dumper = drush_load_engine('outputformat', 'yaml');
-  $yaml = $dumper->format($info, array());
+  $output = $dumper->format($info, array());
 
-  if (file_put_contents($file, $yaml)) {
-    drush_log(dt("Wrote make file @file", array('@file' => $file)), LogLevel::OK);
-    return $file;
+  return $output;
+}
+
+/**
+ * Converts a drush info array to a composer.json array.
+ *
+ * @param array $info
+ *   A drush make info array.
+ *
+ * @return string
+ *   A json encoded composer.json schema object.
+ */
+function drush_convert_composer($info) {
+  // Add default projects.
+  $projects = array(
+    'composer/installers' => '^1.0.20',
+    'cweagans/composer-patches' => '~1.0',
+  );
+  $patches = array();
+
+
+  // Iterate over projects, populating composer-friendly array.
+  foreach ($info['projects'] as $project_name => $project) {
+    switch ($project['type']) {
+      case 'core':
+        $projects['drupal/core'] = str_replace('x', '*', $project['version']);
+        break;
+      case 'module':
+      case 'profile':
+      case 'theme':
+        $package_name = "drupal/$project_name";
+
+        // Typical specified version with major version . "x" removed.
+        if (!empty($project['version'])) {
+          $project_version = str_replace('x', '0', $project['version']);
+          $projects[$package_name] = $project_version;
+        }
+        elseif (!empty($project['download'])) {
+          switch ($project['download']['type']) {
+            case 'git':
+
+              if (!empty($project['download']['branch'])) {
+                // @todo Determine if '0' will always be correct.
+                $projects[$package_name] = str_replace('x', '0', $project['download']['branch']);
+                if (!empty($project['download']['revision'])) {
+                  $projects[$package_name] .= '#' . $project['download']['revision'];
+                }
+              }
+              break;
+          }
+        }
+
+        if (!empty($project['patch'])) {
+          foreach($project['patch'] as $key => $patch) {
+            $patch_description = "Enter $project_name patch #$key description here";
+            $patches[$package_name][$patch_description] = $patch;
+          }
+        }
+
+        break;
+    }
   }
-  else {
-    make_error('FILE_ERROR', dt("Unable to write file !file", array('!file' => $file)));
+
+  foreach ($info['libraries'] as $library_name => $library) {
+    switch($library['type']) {
+      case 'git':
+        if (!empty($project['download']['branch'])) {
+          if (!empty($project['download']['revision'])) {
+            $projects[$library_name] .= '#' . $project['download']['revision'];
+          }
+        }
+        break;
+
+      default:
+        $projects[$library_name] = 'Enter correct library name and version number';
+        break;
+    }
   }
+
+  if (empty($projects['drupal/core'])) {
+    $projects['drupal/core'] = str_replace('x', '*', $info['core']);
+  }
+
+  $output = array(
+    'name' => 'Enter name here',
+    'description' => 'Enter description here',
+    'type' => 'project',
+    'repositories' => array(
+      array('type' => 'composer', 'url' => 'https://packagist.drupal-composer.org'),
+    ),
+    'require' => $projects,
+    'minimum-stability' => 'dev',
+    'prefer-stable' => TRUE,
+    'extra' => array(
+      'installer-paths' => array(
+        'core' => array('type:drupal-core'),
+        'docroot/modules/contrib/{$name}' => array('type:drupal-module'),
+        'docroot/profiles/contrib/{$name}' => array('type:drupal-profile'),
+        'docroot/themes/contrib/{$name}' => array('type:drupal-theme'),
+        'drush/contrib/{$name}' => array('type:drupal-drush'),
+      ),
+      'patches' => $patches,
+    ),
+  );
+
+  $output = json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+  return $output;
 }
 
 /**
