@@ -250,9 +250,9 @@ function drush_sqlsync_sql_sync($source, $destination) {
   else {
     $tmp = '/tmp'; // Our fallback plan.
     drush_log(dt('Starting to discover temporary files directory on Destination.'), LogLevel::OK);
-    $return = drush_invoke_process($destination, 'php-eval', array('return drush_find_tmp();'), array(), array('integrate' => FALSE, 'override-simulated' => TRUE));
-    if (!$return['error_status']) {
-      $tmp = $return['object'];
+    $return = drush_invoke_process($destination, 'core-status', array(), array(), array('integrate' => FALSE, 'override-simulated' => TRUE));
+    if (!$return['error_status'] && isset($return['object']['drush-temp'])) {
+      $tmp = $return['object']['drush-temp'];
     }
     $destination_dump_path = $tmp . '/' . basename($source_dump_path);
     $rsync_options['yes'] = TRUE;  // No need to prompt as destination is a tmp file.
