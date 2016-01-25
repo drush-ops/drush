@@ -44,6 +44,7 @@ function sqlsync_drush_command() {
       // 'no-cache' => 'Do not cache the sql-dump file.',
       'no-dump' => 'Do not dump the sql database; always use an existing dump file.',
       'no-sync' => 'Do not rsync the database dump file from source to target.',
+      'runner' => 'Where to run the rsync command; defaults to the local site. Can also be "source" or "destination".',
       'source-db-url' => 'Database specification for source system to dump from.',
       'source-remote-port' => 'Override sql database port number in source-db-url. Optional.',
       'source-remote-host' => 'Remote machine to run sql-dump file on. Optional; default is local machine.',
@@ -263,7 +264,7 @@ function drush_sqlsync_sql_sync($source, $destination) {
       // Cleanup if this command created the dump file.
       $rsync_options['remove-source-files'] = TRUE;
     }
-    $runner = drush_get_runner($source_settings, $destination_settings);
+    $runner = drush_get_runner($source_settings, $destination_settings, drush_get_option('runner', FALSE));
     // Since core-rsync is a strict-handling command and drush_invoke_process() puts options at end, we can't send along cli options to rsync.
     // Alternatively, add options like --ssh-options to a site alias (usually on the machine that initiates the sql-sync).
     $return = drush_invoke_process($runner, 'core-rsync', array("$source:$source_dump_path", "$destination:$destination_dump_path"), $rsync_options);
