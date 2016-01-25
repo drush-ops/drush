@@ -263,7 +263,7 @@ function drush_sqlsync_sql_sync($source, $destination) {
       // Cleanup if this command created the dump file.
       $rsync_options['remove-source-files'] = TRUE;
     }
-    $runner = drush_get_runner($source, $destination);
+    $runner = drush_get_runner($source_settings, $destination_settings);
     // Since core-rsync is a strict-handling command and drush_invoke_process() puts options at end, we can't send along cli options to rsync.
     // Alternatively, add options like --ssh-options to a site alias (usually on the machine that initiates the sql-sync).
     $return = drush_invoke_process($runner, 'core-rsync', array("$source:$source_dump_path", "$destination:$destination_dump_path"), $rsync_options);

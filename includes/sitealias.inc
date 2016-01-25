@@ -1115,7 +1115,7 @@ function drush_sitealias_resolve_path_references(&$alias_record, $test_string = 
   }
   $project_list = implode(',', $project_array);
 
-  if (!empty($project_array)) {
+  if (!empty($project_array) || !isset($alias_record['root'])) {
     // Optimization:  if we're already bootstrapped to the
     // site specified by $alias_record, then we can just
     // call _core_site_status_table() rather than use backend invoke.
@@ -1934,7 +1934,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
     drush_sitealias_set_alias_context($site_alias_settings);
 
     // Use 'remote-host' from settings if available; otherwise site is local
-    if (array_key_exists('remote-host', $site_alias_settings) && !drush_is_local_host($site_alias_settings['remote-host'])) {
+    if (drush_sitealias_is_remote_site($site_alias_settings)) {
       $machine = drush_remote_host($site_alias_settings);
     }
     else {
@@ -2027,7 +2027,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
   if (array_key_exists('root', $site_alias_settings)) {
     $drupal_root = $site_alias_settings['root'];
   }
-  else {
+  elseif (!drush_sitealias_is_remote_site($site_alias_settings)) {
     drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
     $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
   }
@@ -2280,18 +2280,26 @@ function drush_sitealias_get_root($alias_record) {
  * @return mixed
  */
 function drush_get_runner($source, $destination) {
+  if (is_string($source)) {
+    $source = drush_sitealiase_get_record($site);
+  }
+  if (is_string($destination)) {
+    $source = drush_sitealiase_get_record($destination);
+  }
 // Try run to rsync locally so that aliases always resolve. https://github.com/drush-ops/drush/issues/668
 // Return @self when possible instead of $source or $destination so that @self in a core-rsync argument resolves properly.
-  if (drush_sitealias_is_remote_site($source) === FALSE) {
-    $runner = '@self';
+  if (drush_sitealias_is_remote_site($source) && drush_sitealias_is_remote_site($destination)) {
+    // Both are remote. Now that rsync can handle both aliases being
+    // remote sites, only do the optimized remote execution when the
+    // alias explitily allows it.
+    if (array_key_exists('#remote-rsync', $destination)) {
+      return "@" . $destination['#name'];
+    }
+    if (array_key_exists('#remote-rsync', $source)) {
+      return "@" . $source['#name'];
+    }
   }
-  elseif (drush_sitealias_is_remote_site($destination) === FALSE) {
-    $runner = '@self';
-  }
-  else {
-    // Both are remote. Arbitrarily run rsync on destination. Aliases must be defined there (for now).
-    // @todo Add an option for choosing runner? Resolve aliases before rsync?
-    $runner = $destination;
-  }
-  return $runner;
+  // Default to running rsync locally. When in doubt, local is best, because
+  // we can always resolve aliases here.
+  return '@self';
 }
