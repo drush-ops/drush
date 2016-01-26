@@ -195,6 +195,7 @@ function config_drush_command() {
     'options' => array(
       'safe' => 'Validate that there are no git uncommitted changes before proceeding',
       'label' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'sync'",
+      'runner' => 'Where to run the rsync command; defaults to the local site. Can also be "source" or "destination".',
     ),
     'topics' => array('docs-aliases', 'docs-config-exporting'),
   );
@@ -805,7 +806,7 @@ function drush_config_pull($source, $destination) {
     'delete' => TRUE,
   );
   $label = drush_get_option('label', 'sync');
-  $runner = drush_get_runner($source, $destination);
+  $runner = drush_get_runner($source, $destination, drush_get_option('runner', FALSE));
   drush_log(dt('Starting to rsync configuration files from !source to !dest.', array('!source' => $source, '!dest' => $destination)), LogLevel::OK);
   $return = drush_invoke_process($runner, 'core-rsync', array("$source:$export_path", "$destination:%config-$label"), $rsync_options, $backend_options);
   if ($return['error_status']) {
