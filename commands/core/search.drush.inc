@@ -100,7 +100,7 @@ function _drush_search_index() {
   while ($remaining > 0) {
     $done = $total - $remaining;
     $percent = $done / $total * 100;
-    drush_log(dt(number_format($percent, 2) . '% complete. Remaining items to be indexed: ' . $remaining), LogLevel::OK);
+    drush_log(dt('!percent complete. Remaining items to be indexed: !count', array('!percent' => number_format($percent, 2), '!count' => $remaining)), LogLevel::OK);
     $eval = "register_shutdown_function('search_update_totals');";
 
     // Use drush_invoke_process() to start subshell. Avoids out of memory issue.
