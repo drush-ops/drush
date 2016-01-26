@@ -10,6 +10,7 @@ use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\ConfigImporter;
 use Drupal\Core\Config\ConfigException;
 use Drupal\Core\Config\FileStorage;
+use Drupal\Core\Site\Settings;
 use Drush\Config\StorageWrapper;
 use Drush\Config\CoreExtensionFilter;
 use Symfony\Component\Yaml\Parser;
@@ -258,6 +259,11 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
 
   if (!isset($data)) {
     return drush_set_error('DRUSH_CONFIG_ERROR', dt('No config value specified.'));
+  }
+
+  // If configuration is in read-only mode, bail with a useful error message.
+  if (Settings::get('config_readonly', FALSE)) {
+    return drush_set_error(dt("Config edit is not allowed while \$settings['config_readonly'] is enabled."));
   }
 
   $config = Drupal::configFactory()->getEditable($config_name);
@@ -699,6 +705,11 @@ function drush_config_edit($config_name = '') {
   if (empty($config_name) && $file) {
     // If not provided, assume config name from the given file.
     $config_name = basename($file, '.yml');
+  }
+
+  // If configuration is in read-only mode, bail with a useful error message.
+  if (Settings::get('config_readonly', FALSE)) {
+    return drush_set_error(dt("Config edit is not allowed while \$settings['config_readonly'] is enabled."));
   }
 
   // Identify and validate input.
