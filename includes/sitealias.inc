@@ -2277,6 +2277,8 @@ function drush_sitealias_get_root($alias_record) {
  *
  * @param $source
  * @param $destination
+ * @param $runner Where to run the rsync operation: 'destination', 'source',
+ *   'auto' ('destination' if both are remote, otherwise '@self') or FALSE (@self)
  * @return mixed
  */
 function drush_get_runner($source, $destination, $runner = FALSE) {
