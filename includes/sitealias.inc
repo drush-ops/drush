@@ -1583,6 +1583,7 @@ function drush_sitealias_site_dir_from_filename($site_settings_file) {
  */
 function drush_sitealias_uri_to_site_dir($uri, $site_root = NULL) {
   $uri = str_replace('http://', '', $uri);
+  $uri = str_replace('https://', '', $uri);
   if (drush_is_windows()) {
     // Handle absolute paths on windows
     $uri = str_replace(array(':/', ':\\'), array('.', '.'), $uri);
