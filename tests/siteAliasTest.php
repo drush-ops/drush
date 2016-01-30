@@ -165,6 +165,31 @@ EOD;
   }
 
   /**
+   * Ensure that a --uri on CLI overrides on provided by site alias during a backend invoke.
+   */
+  public function testBackendHonorsAliasOverride() {
+    if (UNISH_DRUPAL_MAJOR_VERSION == 6) {
+      $this->markTestSkipped("Sites.php not available in Drupal 6 core.");
+    }
+
+    // Test a standard remote dispatch.
+    $this->drush('core-status', array(), array('uri' => 'http://example.com', 'simulate' => NULL), 'user@server/path/to/drupal#sitename');
+    $this->assertContains('--uri=http://example.com', $this->getOutput());
+
+    // Test a local-handling command which uses drush_redispatch_get_options().
+    $this->drush('browse', array(), array('uri' => 'http://example.com', 'simulate' => NULL), 'user@server/path/to/drupal#sitename');
+    $this->assertContains('--uri=http://example.com', $this->getOutput());
+
+    // Test a command which uses drush_invoke_process('@self') internally.
+    $sites = $this->setUpDrupal(1, TRUE);
+    $name = key($sites);
+    $sites_php = "\n\$sites['example.com'] = '$name';";
+    file_put_contents($sites[$name]['root'] . '/sites/sites.php', $sites_php, FILE_APPEND);
+    $this->drush('pm-updatecode', array(), array('uri' => 'http://example.com', 'no' => NULL, 'no-core' => NULL, 'verbose' => NULL), '@' . $name);
+    $this->assertContains('--uri=http://example.com', $this->getErrorOutput());
+  }
+
+  /**
    * Test to see if we can access aliases defined inside of
    * a provided Drupal root in various locations where they
    * may be stored.

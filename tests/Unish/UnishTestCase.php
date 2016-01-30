@@ -283,10 +283,6 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
       foreach ($sites_subdirs as $subdir) {
         $this->fetchInstallDrupal($subdir, $install, $version_string, $profile);
       }
-      // Write an empty sites.php if we are on D8+. Needed for multi-site.
-      if ($major_version >= 8 && !file_exists($root . '/sites/sites.php')) {
-        copy($root . '/sites/example.sites.php', $root . '/sites/sites.php');
-      }
       $options = array(
         'destination' => $source,
         'root' => $root,
@@ -296,6 +292,11 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
       if ($install) {
         $this->drush('archive-dump', array('@sites'), $options);
       }
+    }
+    // Write an empty sites.php if we are on D7+. Needed for multi-site on D8 and
+    // used on D7 in \Unish\saCase::testBackendHonorsAliasOverride.
+    if ($major_version >= 7 && !file_exists($root . '/sites/sites.php')) {
+      copy($root . '/sites/example.sites.php', $root . '/sites/sites.php');
     }
 
     // Stash details about each site.
