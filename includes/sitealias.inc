@@ -1115,7 +1115,7 @@ function drush_sitealias_resolve_path_references(&$alias_record, $test_string = 
   }
   $project_list = implode(',', $project_array);
 
-  if (!empty($project_array) || !isset($alias_record['root'])) {
+  if (!empty($project_array)) {
     // Optimization:  if we're already bootstrapped to the
     // site specified by $alias_record, then we can just
     // call _core_site_status_table() rather than use backend invoke.
