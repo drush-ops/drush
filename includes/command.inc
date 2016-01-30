@@ -657,6 +657,28 @@ function _drush_get_command_options($command) {
 }
 
 /**
+ * Return the list of all of the options for the given
+ * command record including options provided by engines and additional-options.
+ */
+function drush_get_command_options_extended($command) {
+  drush_merge_engine_data($command);
+
+  // Start out with just the options in the current command record.
+  $options = _drush_get_command_options($command);
+  // If 'allow-additional-options' contains a list of command names,
+  // then union together all of the options from all of the commands.
+  if (is_array($command['allow-additional-options'])) {
+    $implemented = drush_get_commands();
+    foreach ($command['allow-additional-options'] as $subcommand_name) {
+      if (array_key_exists($subcommand_name, $implemented)) {
+        $options = array_merge($options, _drush_get_command_options($implemented[$subcommand_name]));
+      }
+    }
+  }
+  return $options;
+}
+
+/**
  * Return the array keys of $options, plus any 'short-form'
  * representations that may appear in the option's value.
  */
@@ -711,9 +733,7 @@ function drush_redispatch_get_options() {
   // in order for any option that is directly related to the current command
   $command = drush_parse_command();
   if (is_array($command)) {
-    foreach ($command['options'] as $key => $value) {
-      // Strip leading --
-      $key = ltrim($key, '-');
+    foreach (drush_get_command_options_extended($command) as $key => $value) {
       $value = drush_get_option($key);
       if (isset($value)) {
         $options[$key] = $value;
