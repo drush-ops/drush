@@ -2283,10 +2283,10 @@ function drush_sitealias_get_root($alias_record) {
  */
 function drush_get_runner($source, $destination, $runner = FALSE) {
   if (is_string($source)) {
-    $source = drush_sitealiase_get_record($site);
+    $source = drush_sitealias_get_record($site);
   }
   if (is_string($destination)) {
-    $source = drush_sitealiase_get_record($destination);
+    $source = drush_sitealias_get_record($destination);
   }
 
   // If both sites are remote, and --runner=auto, then we'll use the destination site.
