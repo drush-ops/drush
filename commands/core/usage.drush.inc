@@ -110,20 +110,7 @@ function _drush_usage_get_file($required = FALSE) {
 }
 
 function _drush_usage_log($command, $file) {
-  drush_merge_engine_data($command);
-
-  // Start out with just the options in the current command record.
-  $options = _drush_get_command_options($command);
-  // If 'allow-additional-options' contains a list of command names,
-  // then union together all of the options from all of the commands.
-  if (is_array($command['allow-additional-options'])) {
-    $implemented = drush_get_commands();
-    foreach ($command['allow-additional-options'] as $subcommand_name) {
-      if (array_key_exists($subcommand_name, $implemented)) {
-        $options = array_merge($options, _drush_get_command_options($implemented[$subcommand_name]));
-      }
-    }
-  }
+  $options = drush_get_command_options_extended();
 
   $used = drush_get_merged_options();
   $command_specific = array_intersect(array_keys($used), array_keys($options));
