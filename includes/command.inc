@@ -711,6 +711,7 @@ function _drush_flatten_options($options) {
  *   An associative array of option key => value pairs.
  */
 function drush_redispatch_get_options() {
+  $options = array();
   // Start off by taking everything from the site alias and command line
   // ('cli' context)
   $cli_context = drush_get_context('cli');
