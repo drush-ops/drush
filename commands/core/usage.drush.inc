@@ -110,7 +110,7 @@ function _drush_usage_get_file($required = FALSE) {
 }
 
 function _drush_usage_log($command, $file) {
-  $options = drush_get_command_options_extended();
+  $options = drush_get_command_options_extended($command);
 
   $used = drush_get_merged_options();
   $command_specific = array_intersect(array_keys($used), array_keys($options));
