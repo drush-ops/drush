@@ -19,7 +19,7 @@ class DrupalBoot8 extends DrupalBoot {
   protected $request;
 
   function valid_root($path) {
-    if (!empty($path) && is_dir($path) && file_exists($path . '/index.php')) {
+    if (!empty($path) && is_dir($path) && file_exists($path . '/autoload.php')) {
       // Additional check for the presence of core/composer.json to
       // grant it is not a Drupal 7 site with a base folder named "core".
       $candidate = 'core/includes/common.inc';
