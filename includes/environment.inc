@@ -376,27 +376,21 @@ function drush_valid_root($path) {
  * @return bool
  *   TRUE if database credentials are valid.
  */
-function drush_valid_db_credentials($log_errors = FALSE) {
+function drush_valid_db_credentials() {
   try {
     $sql = drush_sql_get_class();
     if (!$sqlVersion = drush_sql_get_version()) {
-      if ($log_errors) {
-        drush_log(dt('While checking DB credentials, could not instantiate SQLVersion class.', array()), 'error');
-      }
+      drush_log(dt('While checking DB credentials, could not instantiate SQLVersion class.'), 'debug');
       return FALSE;
     }
     if (!$sqlVersion->valid_credentials($sql->db_spec())) {
-      if ($log_errors) {
-        drush_log(dt('DB credentials are invalid.', array()), 'error');
-      }
+      drush_log(dt('DB credentials are invalid.'), 'debug');
       return FALSE;
     }
     return $sql->query('SELECT 1;');
   }
   catch (Exception $e) {
-    if ($log_errors) {
-      drush_log(dt('Checking DB credentials yielded error: @e', array('@e' => $e->getMessage())), 'error');
-    }
+    drush_log(dt('Checking DB credentials yielded error: @e', array('@e' => $e->getMessage())), 'debug');
     return FALSE;
   }
 }

@@ -453,7 +453,7 @@ function drush_bootstrap_to_phase($max_phase_index) {
     // Bootstrap as far as we can without throwing an error, but log for
     // debugging purposes.
     drush_log(dt("Trying to bootstrap as far as we can."), 'debug');
-    drush_bootstrap_max(FALSE, TRUE);
+    drush_bootstrap_max();
     return TRUE;
   }
 
@@ -487,14 +487,11 @@ function drush_bootstrap_to_phase($max_phase_index) {
  *
  * @param int $max_phase_index
  *   (optional) Only attempt bootstrap to the specified level.
- * @param bool $log_failure
- *   (optional) If TRUE, log (with level 'debug') when a bootstrap phase failed
- *   to validate; otherwise be quiet.
  *
  * @return int
  *   The maximum phase to which we bootstrapped.
  */
-function drush_bootstrap_max($max_phase_index = FALSE, $log_failure = FALSE) {
+function drush_bootstrap_max($max_phase_index = FALSE) {
   $phases = _drush_bootstrap_phases(TRUE);
   if (!$max_phase_index) {
     $max_phase_index = count($phases);
@@ -513,12 +510,10 @@ function drush_bootstrap_max($max_phase_index = FALSE, $log_failure = FALSE) {
       }
     }
     else {
-      if ($log_failure) {
-        // drush_bootstrap_validate() only logs successful validations. For us,
-        // knowing what failed can also be important.
-        $previous = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
-        drush_log(dt("Bootstrap phase !function() failed to validate; continuing at !current().", array('!function' => $current_phase, '!current' => $phases[$previous])), 'debug');
-      }
+      // drush_bootstrap_validate() only logs successful validations. For us,
+      // knowing what failed can also be important.
+      $previous = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
+      drush_log(dt("Bootstrap phase !function() failed to validate; continuing at !current().", array('!function' => $current_phase, '!current' => $phases[$previous])), 'debug');
       break;
     }
   }
