@@ -18,6 +18,10 @@ class LogLevel extends \Psr\Log\LogLevel
     // Various 'success' messages.  Like 'notice'
     const OK = 'ok';
 
+    // Highly verbose messages that are not always interesting.
+    // Displayed only when --debug and --verbose specified together.
+    const DEBUG_NOTIFY = 'debugnotify';
+
     // Means the command was successful. Should appear at most once
     // per command (perhaps more if subcommands are executed, though).
     // Like 'notice'.

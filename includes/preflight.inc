@@ -355,9 +355,12 @@ function drush_preflight_site() {
 
 function _drush_preflight_global_options() {
   // Debug implies verbose
-  drush_set_context('DRUSH_VERBOSE',     drush_get_option(array('verbose', LogLevel::DEBUG), FALSE));
-  drush_set_context('DRUSH_DEBUG', drush_get_option(LogLevel::DEBUG));
-  drush_set_context('DRUSH_SIMULATE',    drush_get_option('simulate', FALSE));
+  $verbose = drush_get_option('verbose', FALSE);
+  $debug = drush_get_option('debug', FALSE);
+  drush_set_context('DRUSH_VERBOSE',      $verbose || $debug);
+  drush_set_context('DRUSH_DEBUG',        $debug);
+  drush_set_context('DRUSH_DEBUG_NOTIFY', $verbose && $debug);
+  drush_set_context('DRUSH_SIMULATE',     drush_get_option('simulate', FALSE));
 
   // Backend implies affirmative unless negative is explicitly specified
   drush_set_context('DRUSH_NEGATIVE',    drush_get_option('no', FALSE));
