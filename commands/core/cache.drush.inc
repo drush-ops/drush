@@ -143,7 +143,7 @@ function drush_cache_command_clear($type = NULL) {
   // Require a full bootstrap unless we are just clearing the Drush cache.
   // This will give more consistent error messages when a site cannot be found.
   if ($type != 'drush') {
-    if (!drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+    if (!drush_require_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
       return drush_set_error('DRUSH_CC_COULD_NOT_BOOTSTRAP', dt("The cache could not be cleared, because the Drupal site could not be bootstrapped."));
     }
   }

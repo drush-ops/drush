@@ -378,6 +378,8 @@ function drush_bootstrap($phase, $phase_max = FALSE) {
  * fix it. Take a deep breath, and smile. See
  * http://en.wikipedia.org/wiki/HTTP_referer
  *
+ * IMPORTANT: If a command requires a certain bootstrap level in order to
+ * continue, then drush_require_bootstrap() should be used instead.
  *
  * @param int $phase
  *   The bootstrap phase to test
@@ -389,6 +391,26 @@ function drush_has_boostrapped($phase) {
   $phase_index = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
 
   return isset($phase_index) && ($phase_index >= $phase);
+}
+
+/**
+ * Require a certain minimum bootstrap in order to continue.  If the
+ * requested level has not been met, then any bootstrap errors that
+ * prevented us from bootstrapping farther will be displayed.
+ *
+ * Usage:
+ *
+ *    if (!drush_require_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+ *      return drush_set_error('DRUSH_SOMETHING_WRONG', dt("I could not do what I was trying to do."));
+ *    }
+ */
+function drush_require_bootstrap($phase) {
+  $result = drush_has_boostrapped($phase);
+  if (!$result) {
+    $bootstrap = drush_get_bootstrap_object();
+    $bootstrap->report_bootstrap_errors();
+  }
+  return $result;
 }
 
 /**
