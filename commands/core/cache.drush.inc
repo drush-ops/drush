@@ -140,14 +140,17 @@ function drush_cache_command_clear($type = NULL) {
       return drush_user_abort();
     }
   }
+  // Require a full bootstrap unless we are just clearing the Drush cache.
+  // This will give more consistent error messages when a site cannot be found.
+  if ($type != 'drush') {
+    drush_bootstrap_max(); // bootstrap quietly - drush_bootstrap may fail ungracefully
+    if (!drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+      return drush_set_error('DRUSH_CC_COULD_NOT_BOOTSTRAP', dt("The cache could not be cleared, because the Drupal site could not be bootstrapped."));
+    }
+  }
   // Do it.
   drush_op($types[$type]);
-  if ($type == 'all' && !drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
-    drush_log(dt("No Drupal site found, only 'drush' cache was cleared."), LogLevel::WARNING);
-  }
-  else {
-    drush_log(dt("'!name' cache was cleared.", array('!name' => $type)), LogLevel::SUCCESS);
-  }
+  drush_log(dt("'!name' cache was cleared.", array('!name' => $type)), LogLevel::SUCCESS);
 }
 
 /**

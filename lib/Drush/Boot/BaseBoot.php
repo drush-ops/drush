@@ -36,11 +36,15 @@ abstract class BaseBoot implements Boot {
     elseif (!empty($args)) {
       drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The drush command '!args' could not be found.  Run `drush cache-clear drush` to clear the commandfile cache if you have installed new extensions.", array('!args' => $args)));
     }
+  }
+
+  function report_bootstrap_errors() {
     // Set errors that occurred in the bootstrap phases.
     $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS', array());
     foreach ($errors as $code => $message) {
       drush_set_error($code, $message);
     }
+    drush_set_context('DRUSH_BOOTSTRAP_ERRORS', array());
   }
 
   function bootstrap_and_dispatch() {
@@ -96,5 +100,10 @@ abstract class BaseBoot implements Boot {
    * {@inheritdoc}
    */
   public function terminate() {
+    // If we exited with an error, then report any bootstrap errors
+    // that may not have been reported before.
+    if (drush_get_error() != DRUSH_SUCCESS) {
+      $this->report_bootstrap_errors();
+    }
   }
 }
