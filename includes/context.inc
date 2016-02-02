@@ -117,7 +117,7 @@ function _drush_config_file($context, $prefix = NULL, $version = '') {
       $drupal_root . '/drush/' . $config_file,
     );
 
-    if ($conf_path = drush_get_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', 'sites/default')) {
+    if ($conf_path = drush_get_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH')) {
       $site_path = $drupal_root . '/' . $conf_path;
       $configs['site'] = $site_path . "/" . $config_file;
     }
