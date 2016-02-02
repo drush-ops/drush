@@ -404,6 +404,15 @@ abstract class DrupalBoot extends BaseBoot {
    */
   function bootstrap_do_drupal_site() {
     $drush_uri = drush_get_context('DRUSH_SELECTED_URI');
+
+    // If drush_load_config('site') picked up an uri option in
+    // sites/foo/drushrc.php, update and fix $SERVER.
+    $uri_option = drush_get_context_options('uri');
+    if (!empty($uri_option['site'])) {
+      $drush_uri = $uri_option['site'];
+      $this->bootstrap_drupal_site_setup_server_global($drush_uri);
+    }
+
     drush_set_context('DRUSH_URI', $drush_uri);
     $site = drush_set_context('DRUSH_DRUPAL_SITE', drush_bootstrap_value('site'));
     $conf_path = drush_set_context('DRUSH_DRUPAL_SITE_ROOT', drush_bootstrap_value('conf_path'));
