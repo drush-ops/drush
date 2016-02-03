@@ -187,7 +187,7 @@ function dt($string, $args = array()) {
  * will flip the array twice to filter on the key.
  */
 function find_legacy_dt_args($args) {
-  $legacy_args = [];
+  $legacy_args = array();
   foreach ($args as $arg => $replacement) {
     if ($arg[0] == '!') {
       $legacy_args[$arg] = $replacement;
