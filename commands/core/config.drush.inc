@@ -10,6 +10,7 @@ use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\ConfigImporter;
 use Drupal\Core\Config\ConfigException;
 use Drupal\Core\Config\FileStorage;
+use Drupal\Component\Utility\NestedArray;
 use Drush\Config\StorageWrapper;
 use Drush\Config\CoreExtensionFilter;
 use Symfony\Component\Yaml\Parser;
@@ -862,11 +863,16 @@ function drush_config_get_object($config_name) {
  *   The config key.
  */
 function drush_config_get_value($config_name, $key) {
-  $config = Drupal::config($config_name);
-  if ($config->isNew()) {
-    return drush_set_error(dt('Config !name does not exist', array('!name' => $config_name)));
+  $data = drush_config_get_object($config_name);
+  $parts = explode('.', $key);
+  if (count($parts) == 1) {
+    $value =  isset($data[$key]) ? $data[$key] : NULL;
   }
-  $value = $config->get($key);
+  else {
+    $value = NestedArray::getValue($data, $parts, $key_exists);
+    $value = $key_exists ? $value : NULL;
+  }
+
   $returns[$config_name . ':' . $key] = $value;
 
   if ($value === NULL) {
