@@ -121,6 +121,7 @@ function make_drush_command() {
         'hidden' => TRUE,
       ),
       'includes' => 'A list of makefiles to include at build-time.',
+      'overrides' => 'A list of makefiles to that can override values in other makefiles.',
     ),
     'engines' => array('release_info'),
     'topics' => array('docs-make', 'docs-make-example'),
