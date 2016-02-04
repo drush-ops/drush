@@ -51,6 +51,7 @@ before_install:
 install: travis_retry composer install --no-interaction
 
 before_script:
+  - phpenv config-rm xdebug.ini
   - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
   - export UNISH_DRUSH="${PWD}/drush"
 
