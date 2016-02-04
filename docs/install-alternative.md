@@ -1,6 +1,6 @@
 Install a global Drush via Composer
 ------------------
-Follow the instructions below, or [watch a video by Drupalize.me](https://youtu.be/eAtDaD8xz0Q).
+To install Drush globally for a single user follow the instructions below, or [watch a video by Drupalize.me](https://youtu.be/eAtDaD8xz0Q). 
 
 1. [Install Composer globally](https://getcomposer.org/doc/00-intro.md#globally).
 1. Add composer's `bin` directory to the system path by placing `export PATH="$HOME/.composer/vendor/bin:$PATH"` into your ~/.bash_profile (Mac OS users) or into your ~/.bashrc (Linux users).		
@@ -17,12 +17,59 @@ Follow the instructions below, or [watch a video by Drupalize.me](https://youtu.
         # Install master branch as a git clone. Great for contributing back to Drush project.
         composer global require drush/drush:dev-master --prefer-source
 
-* Alternate way to install for all users via Composer:
-
-        COMPOSER_HOME=/opt/drush COMPOSER_BIN_DIR=/usr/local/bin COMPOSER_VENDOR_DIR=/opt/drush/7 composer require drush/drush:7
-
 * [Documentation for composer's require command.](http://getcomposer.org/doc/03-cli.md#require)
 * Uninstall with : `composer global remove drush/drush`
+
+Install Drush for all users via Composer
+------------
+If you need a common Drush install available for all users on a system, follow the composer install steps below.
+
+1. [Install Composer globally](https://getcomposer.org/doc/00-intro.md#globally).
+1. Create and/or navigate to a directory path for the single composer drush install. In this example we are going to install drush version 7.x
+
+        sudo mkdir --parents /opt/drush/7.x
+        cd /opt/drush/7.x
+
+1. Initialise a new composer project that requires drush. Here you may also specify the version of drush you wish to use for all users. In this example we specify drush version 6.x
+
+        sudo composer init --require=drush/drush:7.* -n
+
+1. Configure the path composer should use for the drush library's executables or its 'bin' directory. Choose a directory path that is used in the `$PATH` configuration for all users, for example `/usr/local/bin`
+
+        sudo composer config bin-dir /usr/local/bin
+
+1. Now run the composer install command. A `composer.json` file containing each of the configurations we just did will be used to install drush at the version and location we just specified.
+
+        sudo composer install
+
+1. Finally, if you are using bash you can enable bash command completion for all users by simply symlinking the `drush.complete.sh` shell script into the correct location.
+
+        sudo ln -s /usr/local/bin/drush.complete.sh \
+          /etc/bash_completion.d/drush
+
+**Important Tip:** When installing *drush 6.x* there are *dependencies not managed by composer* that will require download on first run. You
+should execute drush as a privelged user once after install (run `sudo drush --version`) to allow download of those libraries.
+
+### Updates
+
+Use composer to update the drush library just as you would with any other composer managed project.
+
+1. Navigate to the drush install directory path. This is the path where your `composer.json` file for the drush install was created.
+
+        cd /opt/drush/7.x
+
+1. Run composer update
+
+        sudo composer update
+
+After composer update completes, the binaries and library will be updated for all users.
+
+### Major Version Upgrade
+
+If upgrading to a new major version, simply create a new directory path for the new major version number and follow the same steps shown above. The binaries for drush will be overwritten with the new major version.
+
+In this way you can even switch forward or back between major versions if required.
+
 
 Windows
 ------------
