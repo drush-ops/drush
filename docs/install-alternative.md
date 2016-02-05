@@ -68,9 +68,15 @@ After composer update completes, the binaries and library will be updated for al
 
 ### Major Version Upgrade
 
-If upgrading to a new major version, simply create a new directory path for the new major version number and follow the same steps shown above. The binaries for drush will be overwritten with the new major version.
+If upgrading to a new major version the steps are the same, with one addition:
 
-In this way you can even switch forward or back between major versions if required.
+1. Remove the existing symlinks to drush [vendor binaries][composer vendor binaries]. From our example above these would be located in the `bin-dir` path `/usr/local/bin`:
+
+        sudo rm -i /usr/local/bin/drush*
+
+1. Follow the steps shown above, starting with creation of a new directory path for the new major version number.
+
+**Important Tip:** At the time of writing composer will warn you if it cannot create vendor binaries due to a name conflict with an existing file. Community contributions to composer coming soon will allow you to force the overwrite of existing vendor binaries during an install or update.
 
 [composer package version]: https://getcomposer.org/doc/articles/versions.md
 [composer install global]: https://getcomposer.org/doc/00-intro.md#globally
