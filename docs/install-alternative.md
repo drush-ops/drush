@@ -2,7 +2,7 @@ Install a global Drush via Composer
 ------------------
 To install Drush globally for a single user follow the instructions below, or [watch a video by Drupalize.me](https://youtu.be/eAtDaD8xz0Q).
 
-1. [Install Composer globally](https://getcomposer.org/doc/00-intro.md#globally).
+1. [Install Composer globally][composer install global].
 1. Add composer's `bin` directory to the system path by placing `export PATH="$HOME/.composer/vendor/bin:$PATH"` into your ~/.bash_profile (Mac OS users) or into your ~/.bashrc (Linux users).
 1. Install latest stable Drush: `composer global require drush/drush`.
 1. Verify that Drush works: `drush status`
@@ -24,25 +24,27 @@ Install Drush for all users via Composer
 ------------
 If you need a common Drush install available for all users on a system, follow the composer install steps below.
 
-1. [Install Composer globally](https://getcomposer.org/doc/00-intro.md#globally).
+1. [Install Composer globally][composer install global].
 1. Create and/or navigate to a directory path for the single composer drush install. In this example we are going to install drush version 7.x
 
         sudo mkdir --parents /opt/drush/7.x
         cd /opt/drush/7.x
 
-1. Initialise a new composer project that requires drush. Here you may also specify the version of drush you wish to use for all users. In this example we specify drush version 6.x
+1. Initialise a new composer project that requires drush. Here you may also specify the drush [package version][composer package version] you wish composer to install. In this example we specify drush version 7.x with the [package version][composer package version] string `7.*`
 
         sudo composer init --require=drush/drush:7.* -n
 
-1. Configure the path composer should use for the drush library's executables or its 'bin' directory. Choose a directory path that is used in the `$PATH` configuration for all users, for example `/usr/local/bin`
+1. Configure the path composer should use for the drush package's [vendor binaries][composer vendor binaries] or command-line scripts. Choose a directory path that is used in the `$PATH` configuration for all users, for example `/usr/local/bin`:
 
         sudo composer config bin-dir /usr/local/bin
 
-1. Now run the composer install command. A `composer.json` file containing each of the configurations we just did will be used to install drush at the version and location we just specified.
+1. Now run the `composer install` command. A `composer.json` file containing each of the configurations we just did has been created.
 
         sudo composer install
 
-1. Finally, if you are using bash you can enable bash command completion for all users by simply symlinking the `drush.complete.sh` shell script into the correct location.
+    The `composer.json` file tells composer to install (or update) drush at the [package version][composer package version] we specified and to put the [vendor binaries][composer vendor binaries] where all users can access them.
+
+1. Lastly, if you are using bash with command completion you can enable drush completion for all users by simply symlinking the `drush.complete.sh` shell script into the correct location.
 
         sudo ln -s /usr/local/bin/drush.complete.sh \
           /etc/bash_completion.d/drush
@@ -50,7 +52,7 @@ If you need a common Drush install available for all users on a system, follow t
 **Important Tip:** When installing *drush 6.x* there are *dependencies not managed by composer* that will require download on first run. You
 should execute drush as a privelged user once after install (run `sudo drush --version`) to allow download of those libraries.
 
-### Updates
+### Getting Updates
 
 Use composer to update the drush library just as you would with any other composer managed project.
 
@@ -70,6 +72,9 @@ If upgrading to a new major version, simply create a new directory path for the 
 
 In this way you can even switch forward or back between major versions if required.
 
+[composer package version]: https://getcomposer.org/doc/articles/versions.md
+[composer install global]: https://getcomposer.org/doc/00-intro.md#globally
+[composer vendor binaries]: https://getcomposer.org/doc/articles/vendor-binaries.md
 
 Windows
 ------------
