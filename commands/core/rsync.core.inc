@@ -184,21 +184,25 @@ function _drush_build_rsync_options($additional_options, $include_settings_is_de
     $options .= ' --stats --progress';
   }
 
-  // Check if the user has set $options['rsync-version'] to enable rsync legacy version support.
-  // Drush was written for rsync 2.6.9 or later, so assume that version if nothing was explicitly set.
-  $rsync_version = drush_get_option(array('rsync-version','source-rsync-version','target-rsync-version'), '2.6.9');
+  if (_drush_rsync_option_exists('remove-source-files', $additional_options)) {
+    // Check if the user has set $options['rsync-version'] to enable rsync legacy version support.
+    // Drush was written for rsync 2.6.9 or later, so assume that version if nothing was explicitly set.
+    $rsync_version = drush_get_option(array('rsync-version','source-rsync-version','target-rsync-version'), '2.6.9');
+
+    // Downgrade some options for older versions of rsync
+    if (version_compare($rsync_version, '2.6.4', '<')) {
+      drush_log('Rsync does not support --remove-sent-files prior to version 2.6.4; some temporary files may remain undeleted.', LogLevel::WARNING);
+    }
+    elseif (version_compare($rsync_version, '2.6.9', '<')) {
+      $options .= '--remove-sent-files';
+    }
+    else {
+      $options .= '--remove-source-files';
+    }
+  }
+
   $options_to_exclude = array('ssh-options');
   foreach ($additional_options as $test_option => $value) {
-    // Downgrade some options for older versions of rsync
-    if ($test_option == 'remove-source-files') {
-      if (version_compare($rsync_version, '2.6.4', '<')) {
-        $test_option = NULL;
-        drush_log('Rsync does not support --remove-sent-files prior to version 2.6.4; some temporary files may remain undeleted.', LogLevel::WARNING);
-      }
-      elseif (version_compare($rsync_version, '2.6.9', '<')) {
-        $test_option = 'remove-sent-files';
-      }
-    }
     if ((isset($test_option)) && !in_array($test_option, $options_to_exclude) && (isset($value)  && !is_array($value))) {
       if (($value === TRUE) || (!isset($value))) {
         $options .= " --$test_option";
