@@ -191,7 +191,13 @@ function drush_search_reindex() {
 function system_node_update_index($node) {
   // Verbose output.
   if (drush_get_context('DRUSH_VERBOSE')) {
-    drush_log(dt('Indexing node !nid.', array('!nid' => $node->nid)), LogLevel::OK);
+    $nid = $node->nid;
+    if (is_object($nid)) {
+      // In D8, this is a FieldItemList.
+      $nid = $nid->value;
+    }
+
+    drush_log(dt('Indexing node !nid.', array('!nid' => $nid)), LogLevel::OK);
   }
 }
 
