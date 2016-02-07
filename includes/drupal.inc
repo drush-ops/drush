@@ -5,6 +5,8 @@
  * Utility functions related to Drupal.
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * Loads the Drupal autoloader and returns the instance.
  */
@@ -36,29 +38,9 @@ function drush_drupal_version($drupal_root = NULL) {
 
   if (!$version) {
     if (($drupal_root != NULL) || ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT'))) {
-      // Try and find D8.
-      if (file_exists($drupal_root . '/autoload.php')) {
-        // Load the autoloader so we can access the class constants.
-        drush_drupal_load_autoloader($drupal_root);
-        // Drush depends on bootstrap being loaded at this point.
-        require_once $drupal_root .'/core/includes/bootstrap.inc';
-        if (defined('Drupal::VERSION')) {
-          $version = Drupal::VERSION;
-        }
-      }
-      else {
-        // D7 stores VERSION in bootstrap.inc.
-        // D6 and below does it in system.module.
-        $version_constant_paths = array('/includes/bootstrap.inc', '/modules/system/system.module');
-        foreach ($version_constant_paths as $path) {
-          if (file_exists($drupal_root . $path)) {
-            require_once $drupal_root . $path;
-            if (defined('VERSION')) {
-              $version = VERSION;
-              break;
-            }
-          }
-        }
+      $bootstrap = drush_bootstrap_class_for_root($drupal_root);
+      if ($bootstrap) {
+        $version = $bootstrap->get_version($drupal_root);
       }
     }
   }
@@ -149,7 +131,7 @@ function _drush_log_update_sql($ret) {
           drush_set_error('DRUPAL_UPDATE_FAILED', $info['query']);
         }
         else {
-          drush_log($info['query'], ($info['success']) ? 'success' : 'error');
+          drush_log($info['query'], ($info['success']) ? LogLevel::SUCCESS : LogLevel::ERROR);
         }
       }
     }

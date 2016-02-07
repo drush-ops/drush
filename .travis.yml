@@ -1,15 +1,9 @@
 # Configuration file for unit test runner at http://travis-ci.org/#!/drush-ops/drush
-# whitelist
-branches:
-  only:
-    - master
-    - 7.x
-    - 6.x
-    - 5.x
 language: php
 php:
 #  See master-fulltest branch for broader PHP version testing.
   - 5.5
+  - 7.0
 
 # http://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure/
 sudo: false
@@ -44,13 +38,20 @@ env:
     # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=quick-drupal
     # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
   global:
+    # Github deploy
     - secure: VfYokT2CchfuBRJp9/gSwfVGPfsVfkZdDVEuNWEqxww3z4vq+5aLKqoCtPL54E5EIMjhyCE3GVo+biG35Gab1KOVgUs8zD1hAUWA1FPKfMFhoPDfI3ZJC2rX2T1iWK4ZR90pBtcPzS+2OObzTYz8go0PfeSTT6eq69Na1KcNLaE=
     - UNISH_NO_TIMEOUTS=y
     - UNISH_DB_URL=mysql://root:@127.0.0.1
-before_install: travis_retry composer selfupdate
+
+before_install:
+  - echo 'mbstring.http_input = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - echo 'mbstring.http_output = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - travis_retry composer selfupdate
+
 install: travis_retry composer install --no-interaction
 
 before_script:
+  - phpenv config-rm xdebug.ini
   - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
   - export UNISH_DRUSH="${PWD}/drush"
 
@@ -58,3 +59,49 @@ script: ${PWD}/unish.sh $PHPUNIT_ARGS
 
 # Background: https://github.com/drush-ops/drush/pull/1426
 after_success: ${PWD}/tests/testChildren.sh
+
+before_deploy:
+  - gem install mime-types -v 2.6.2 # https://github.com/travis-ci/travis-ci/issues/5145
+  - curl -LSs https://box-project.github.io/box2/installer.php | php
+  - php box.phar build
+  - test $TRAVIS_TAG=true && mkdir s3-stable && cp drush.phar s3-stable/drush.phar
+  - test $TRAVIS_BRANCH=master && mkdir s3-unstable && cp drush.phar s3-unstable/drush-unstable.phar
+deploy:
+  # http://docs.travis-ci.com/user/deployment/releases/
+  - provider: releases
+    api_key:
+      secure: vRtKwJNzm+FXS5VCsaCu5YM4IS02tAdqV4G557HEyVzNgRmSgPWkaHDR/95TnXtZRjmxuTI++rccEj9+jzjknQ9LWkWhl13WiJdZYobnb240f9Ja8g0gs6/r+EEZG2+DTTerK9zicpf51h5hUaE46zObHjSmzIuGxZBO1syDld8=
+    file: drush.phar
+    on:
+     tags: true
+     repo: drush-ops/drush
+     all_branches: true
+  # Latest unstable from master
+  #  http://docs.travis-ci.com/user/deployment/s3/
+  - provider: s3
+    # @weitzman's S3 for now.
+    access_key_id: "AKIAJFNCWLIBISLQYHPA"
+    secret_access_key:
+        secure: X9qpkhXxTsIcvO/sp0iBXnHKuZm27KJLsHhimDW2uviS+vt62reCeKl+JtGZUGEJWI6fITbyzJ71vy8+Iibpa261ShYVFJWtiG2cfHKPHsu9TdjSi/f0CW7bEA4IHwnLwxhTUH4wMCjIorKkf21UIH6dCb8qo9xexPb65eDfocs=
+    bucket: files.drush.org
+    skip_cleanup: true
+    local_dir: s3-unstable
+    detect_encoding: true
+    on:
+      repo: drush-ops/drush
+      branch: master
+# Latest stable
+  # http://docs.travis-ci.com/user/deployment/s3/
+  - provider: s3
+  # @weitzman's S3 for now.
+    access_key_id: "AKIAJFNCWLIBISLQYHPA"
+    secret_access_key:
+      secure: X9qpkhXxTsIcvO/sp0iBXnHKuZm27KJLsHhimDW2uviS+vt62reCeKl+JtGZUGEJWI6fITbyzJ71vy8+Iibpa261ShYVFJWtiG2cfHKPHsu9TdjSi/f0CW7bEA4IHwnLwxhTUH4wMCjIorKkf21UIH6dCb8qo9xexPb65eDfocs=
+    bucket: "files.drush.org"
+    skip_cleanup: true
+    local_dir: s3-stable
+    detect_encoding: true
+    on:
+      tags: true
+      repo: drush-ops/drush
+      branch: master

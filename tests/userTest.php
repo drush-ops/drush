@@ -94,7 +94,8 @@ class userCase extends CommandUnishTestCase {
     $this->assertContains('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
     $browser = FALSE;
     foreach ($parsed['log'] as $key => $log) {
-      if (strpos($log['message'], 'Opening browser unish at http://') === 0) {
+      // Regarding 'strip_tags', see https://github.com/drush-ops/drush/issues/1637
+      if (strpos(strip_tags($log['message']), 'Opening browser unish at http://') === 0) {
         $browser = TRUE;
       }
     }

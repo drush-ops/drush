@@ -2,6 +2,8 @@
 
 namespace Drush\Sql;
 
+use Drush\Log\LogLevel;
+
 class SqlBase {
 
   // An Drupal style array containing specs for connecting to database.
@@ -72,7 +74,7 @@ class SqlBase {
     // Avoid the php memory of the $output array in drush_shell_exec().
     if (!$return = drush_op_system($cmd)) {
       if ($file) {
-        drush_log(dt('Database dump saved to !path', array('!path' => $file)), 'success');
+        drush_log(dt('Database dump saved to !path', array('!path' => $file)), LogLevel::SUCCESS);
         drush_backend_set_result($file);
       }
     }
@@ -141,11 +143,11 @@ class SqlBase {
   public function query($query, $input_file = NULL, $result_file = '') {
     $input_file_original = $input_file;
     if ($input_file && drush_file_is_tarball($input_file)) {
-      if (drush_shell_exec('gunzip %s', $input_file)) {
+      if (drush_shell_exec('gzip -d %s', $input_file)) {
         $input_file = trim($input_file, '.gz');
       }
       else {
-        return drush_set_error(dt('Failed to gunzip input file.'));
+        return drush_set_error(dt('Failed to decompress input file.'));
       }
     }
 
@@ -174,7 +176,7 @@ class SqlBase {
     // but the sql query itself is stored in a temp file and not displayed.
     // We show the query when --debug is used and this function created the temp file.
     if ((drush_get_context('DRUSH_DEBUG') || drush_get_context('DRUSH_SIMULATE')) && empty($input_file_original)) {
-      drush_log('sql-query: ' . $query, 'status');
+      drush_log('sql-query: ' . $query, LogLevel::NOTICE);
     }
 
     $success = drush_shell_exec($exec);

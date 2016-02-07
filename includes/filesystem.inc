@@ -391,6 +391,16 @@ function drush_mkdir($path, $required = TRUE) {
   }
 }
 
+/*
+ * Determine if program exists on user's PATH.
+ *
+ * @return bool
+ */
+function drush_program_exists($program) {
+  $bucket = drush_bit_bucket();
+  return drush_op_system("command -v $program >$bucket 2>&1") === 0 ? TRUE : FALSE;
+}
+
 /**
  * Save a string to a temporary file. Does not depend on Drupal's API.
  * The temporary file will be automatically deleted when drush exits.
@@ -716,6 +726,16 @@ function drush_file_append_data($file, $data) {
     return FALSE;
   }
   return TRUE;
+}
+
+/**
+ * Return 'TRUE' if one directory is located anywhere inside
+ * the other.
+ */
+function drush_is_nested_directory($base_dir, $test_is_nested) {
+  // Ensure there is always exactly one '/' at the end of $base_dir
+  $base_dir = rtrim($base_dir, '/') . '/';
+  return substr($test_is_nested, 0, strlen($base_dir)) == $base_dir;
 }
 
 /**

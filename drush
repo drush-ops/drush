@@ -1,131 +1,115 @@
-#!/usr/bin/env sh
-#
-# This script is a simple wrapper that will run Drush with the most appropriate
-# php executable it can find.
-#
-# Solaris users: Add /usr/xpg4/bin to the head of your PATH
-#
+#!/usr/bin/env php
+<?php
 
-# Get the absolute path of this executable
-SELF_DIRNAME="`dirname -- "$0"`"
-SELF_PATH="`cd -P -- "$SELF_DIRNAME" && pwd -P`/`basename -- "$0"`"
+/**
+ * This is the Drush "finder" script, which is one part of the
+ * Drush dispatching chain.  This is the script that
+ * should appear in your global $PATH, or, if using Composer
+ * (as usually the case), will be found in your vendor/bin directory.
+ *
+ *
+ * - Never copy this script to your site root. Copy examples/drush instead.
+ *
+ * - Never copy this script to a directory other than its install directory.
+ * Symlink to it instead.
+ *
+ *
+ * OVERVIEW OF DRUSH FINDER / WRAPPER / LAUNCHER SCRIPTS
+ *
+ * When the user types "drush", up to three scripts might be
+ * involved in the initial launch:
+ *
+ *   "drush finder" -> "drush wrapper" -> "drush launcher".
+ *
+ * Brief description of each:
+ *
+ *  - Drush finder:   Finds the right Drush script and calls it.
+ *  - Drush wrapper:  Contains user customizations to options.
+ *  - Drush launcher: Excutes drush.php.
+ *
+ * A full explanation of each script follows.
+ *
+ *
+ * DRUSH FINDER
+ *
+ * - The "drush" script on the user's global $PATH
+ * - It's goal is to find the correct site-local Drush to run.
+ *
+ * The Drush finder will locate the correct site-local Drush to use
+ * by examining:
+ *
+ *   a) The --root option
+ *   b) The site set via `drush site set` in the current terminal
+ *   c) The cwd
+ *
+ * If no site-local Drush is found, then the global Drush will be
+ * used.  The Drush finder assumes that the global Drush is the
+ * "Drush launcher" found in the same directory as the Drush finder itself.
+ *
+ * If a site-local Drush is found, then the Drush finder will call
+ * either the "Drush wrapper", if it exists, or the "Drush launcher" if
+ * there is no wrapper script.
+ *
+ *
+ * DRUSH WRAPPER
+ *
+ * - The drush.wrapper script that the user optionally copies and edits.
+ * - Its goal is to allow the user to add options when --local is in use
+ *
+ * The Drush "wrapper" is found at examples/drush.wrapper, and may optionally
+ * be copied to __ROOT__ by the user.  It may be named either
+ * "drush" or "drush.wrapper".  It will call the "Drush launcher"
+ * for the same site that it is located in.  It adds the --local flag; the
+ * user is encouraged to add other options to the "Drush wrapper", e.g. to set
+ * the location where aliases and global commandfiles can be found.
+ * The Drush "finder" script always calls the "Drush wrapper" if it exists;
+ * however, if the user does not want to customize the early options of
+ * the site-local Drush (site-alias locations, etc.), then the wrapper does not
+ * need to be used.
+ *
+ *
+ * DRUSH LAUNCHER
+ *
+ * - The "drush.launcher" script in vendor/bin
+ * - The bash script formerly called "drush"
+ *
+ * The "Drush launcher" is the traditional script that identifies PHP and
+ * sets up to call drush.php.  It is called by the "Drush wrapper", or
+ * directly by the "Drush launcher" if there is no "Drush wrapper" in use.
+ *
+ *
+ * LOCATIONS FOR THESE SCRIPTS
+ *
+ *   "Drush finder"   :  __ROOT__/vendor/bin/drush           (composer install)
+ *                       __DRUSH__/drush                     (source)
+ *
+ *   "Drush wrapper"  :  __ROOT__/drush                      (copied by user)
+ *                       __DRUSH__/examples/drush.wrapper    (source)
+ *
+ *   "Drush launcher" :  __ROOT__/vendor/bin/drush.launcher  (composer install)
+ *                       __DRUSH__/drush.launcher            (source)
+ *
+ *
+ * BACKEND CALL DISPATCHING
+ *
+ * Backend calls are typically set up to call the "drush" script in the $PATH,
+ * or perhaps some might call __ROOT__/vendor/bin/drush directly, by way
+ * of the "drush-script" element in a site alias.  In either event, this is
+ * the "drush finder" script.
+ *
+ * The backend call will always set --root.  The "Drush finder" script
+ * always favors the site-local Drush stored with the site indicated by the
+ * --root option, if it exists.  If there is no site-local Drush, then the
+ * "Drush finder" will behave as usual (i.e., it will end up calling the
+ * "Drush launcher" located next to it).
+ *
+ * This should always get you the correct "Drush" for local and remote calls.
+ * Note that it is also okay for aliases to specify a path directly to
+ * drush.launcher, in instances where it is known that a recent version of
+ * Drush is installed on the remote end.
+ */
 
-# Decide if we are running a Unix shell on Windows
-if `which uname > /dev/null 2>&1`; then
-  case "`uname -a`" in
-    CYGWIN*)
-      CYGWIN=1 ;;
-    MINGW*)
-      MINGW=1 ;;
-  esac
-fi
-
-# Resolve symlinks - this is the equivalent of "readlink -f", but also works with non-standard OS X readlink.
-while [ -h "$SELF_PATH" ]; do
-    # 1) cd to directory of the symlink
-    # 2) cd to the directory of where the symlink points
-    # 3) Get the pwd
-    # 4) Append the basename
-    DIR="`dirname -- "$SELF_PATH"`"
-    SYM="`readlink "$SELF_PATH"`"
-    SYM_DIRNAME="`dirname -- "$SYM"`"
-    SELF_PATH="`cd "$DIR" && cd "$SYM_DIRNAME" && pwd`/`basename -- "$SYM"`"
-done
-
-# If not exported, try to determine and export the number of columns.
-# We do not want to run `tput cols` if $TERM is empty, "unknown", or "dumb", because
-# if we do, tput will output an undesirable error message to stderr.  If
-# we redirect stderr in any way, e.g. `tput cols 2>/dev/null`, then the
-# error message is suppressed, but tput cols becomes confused about the
-# terminal and prints out the default value (80).
-if [ -z $COLUMNS ] && [ -n "$TERM" ] && [ "$TERM" != dumb ] && [ "$TERM" != unknown ] && [ -n "`which tput`" ] ; then
-  # Note to cygwin/mingw/msys users: install the ncurses package to get tput command.
-  # Note to mingw/msys users: there is no precompiled ncurses package.
-  if COLUMNS="`tput cols`"; then
-    export COLUMNS
-  fi
-fi
-
-if [ -n "$DRUSH_PHP" ] ; then
-  # Use the DRUSH_PHP environment variable if it is available.
-  php="$DRUSH_PHP"
-else
-  # On MSYSGIT, we need to use "php", not the full path to php
-  if [ -n "$MINGW" ] ; then
-    php="php"
-  else
-    # Default to using the php that we find on the PATH.
-    # We check for a command line (cli) version of php, and if found use that.
-    # Note that we need the full path to php here for Dreamhost, which behaves oddly.  See http://drupal.org/node/662926
-    php="`which php-cli 2>/dev/null`"
-
-    if [ ! -x "$php" ]; then
-      php="`which php 2>/dev/null`"
-    fi
-
-    if [ ! -x "$php" ]; then
-      echo "ERROR: can't find php."; exit 1
-    fi
-  fi
-fi
-
-# Build the path to drush.php.
-SCRIPT_PATH="`dirname "$SELF_PATH"`/drush.php"
-if [ -n "$CYGWIN" ] ; then
-  # try to determine if we are running cygwin port php or Windows native php:
-  if [ -n "`"$php" -i | grep -E '^System => Windows'`" ]; then
-    SCRIPT_PATH="`cygpath -w -a -- "$SCRIPT_PATH"`"
-  else
-    SCRIPT_PATH="`cygpath -u -a -- "$SCRIPT_PATH"`"
-  fi
-fi
-
-# Check to see if the user has provided a php.ini file or drush.ini file in any conf dir
-# Last found wins, so search in reverse priority order
-for conf_dir in "`dirname "$SELF_PATH"`" /etc/drush "$HOME/.drush" ; do
-  if [ ! -d "$conf_dir" ] ; then
-    continue
-  fi
-  # Handle paths that don't start with a drive letter on MinGW shell. Equivalent to cygpath on Cygwin.
-  if [ -n "$MINGW" ] ; then
-    conf_dir=`sh -c "cd \"$conf_dir\"; pwd -W"`
-  fi
-  if [ -f "$conf_dir/php.ini" ] ; then
-    drush_php_ini="$conf_dir/php.ini"
-  fi
-  if [ -f "$conf_dir/drush.ini" ] ; then
-    drush_php_override="$conf_dir/drush.ini"
-  fi
-done
-# If the PHP_INI environment variable is specified, then tell
-# php to use the php.ini file that it specifies.
-if [ -n "$PHP_INI" ] ; then
-  drush_php_ini="$PHP_INI"
-fi
-# If the DRUSH_INI environment variable is specified, then
-# extract all ini variable assignments from it and convert
-# them into php '-d' options. These will override similarly-named
-# options in the php.ini file
-if [ -n "$DRUSH_INI" ] ; then
-  drush_php_override="$DRUSH_INI"
-fi
-
-# Add in the php file location and/or the php override variables as appropriate
-if [ -n "$drush_php_ini" ] ; then
-  php_options="--php-ini $drush_php_ini"
-fi
-if [ -n "$drush_php_override" ] ; then
-  php_options=`grep '^[a-z_A-Z0-9.]\+ *=' $drush_php_override | sed -e 's|\([^ =]*\) *= *\(.*\)|\1="\2"|' -e 's| ||g' -e 's|^|-d |' | tr '\n\r' '  '`
-fi
-# If the PHP_OPTIONS environment variable is specified, then
-# its contents will be passed to php on the command line as
-# additional options to use.
-if [ -n "$PHP_OPTIONS" ] ; then
-  php_options="$php_options $PHP_OPTIONS"
-fi
-
-# Pass in the path to php so that drush knows which one to use if it
-# re-launches itself to run subcommands.  We will also pass in the php options.
-# Important note: Any options added here must be removed  when Drush processes
-# a #! (shebang) script.  @see drush_adjust_args_if_shebang_script()
-exec "$php" $php_options "$SCRIPT_PATH" --php="$php" --php-options="$php_options" "$@"
+if (!function_exists("drush_startup")) {
+  include __DIR__ . '/includes/startup.inc';
+}
+drush_startup($argv);

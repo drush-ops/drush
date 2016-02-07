@@ -13,7 +13,7 @@ function browse_drush_command() {
       'path' => 'Path to open. If omitted, the site front page will be opened.',
     ),
     'options' => array(
-      'browser' => 'Specify a particular browser (defaults to operating system default). Set to 0 to suppress opening a browser.',
+      'browser' => 'Specify a particular browser (defaults to operating system default). Use --no-brower to suppress opening a browser.',
       'redirect-port' => 'The port that the web server is redirected to (e.g. when running within a Vagrant environment)',
     ),
     'examples' => array(

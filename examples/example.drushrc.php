@@ -59,7 +59,7 @@
  * affects the loading of Drush configuration files.
  */
 
-// Specify a particular multisite.
+// Specify the base_url that should be used when generating links
 # $options['l'] = 'http://example.com/subdir';
 
 // Specify your Drupal core base directory (useful if you use symlinks).
@@ -77,6 +77,7 @@
  */
 # $options['shell-aliases']['pull'] = '!git pull'; // We've all done it.
 # $options['shell-aliases']['pulldb'] = '!git pull && drush updatedb';
+# $options['shell-aliases']['cpull'] = 'config-pull @example.prod @self --label=vcs';
 # $options['shell-aliases']['noncore'] = 'pm-list --no-core';
 # $options['shell-aliases']['wipe'] = 'cache-clear all';
 # $options['shell-aliases']['unsuck'] = 'pm-disable -y overlay,dashboard';
@@ -85,39 +86,19 @@
 # $options['shell-aliases']['dis-all'] = '!drush -y dis `drush pml --status=enabled --type=module --no-core --pipe`';
 # $options['shell-aliases']['self-alias'] = 'site-alias @self --with-db --alias-name=new';
 # $options['shell-aliases']['site-get'] = '@none php-eval "return drush_sitealias_site_get();"';
-
 // Add a 'pm-clone' to simplify git cloning from drupal.org.
 # $options['shell-aliases']['pm-clone'] = 'pm-download --gitusername=YOURUSERNAME --package-handler=git_drupalorg';
 
-// You can create a local cache of all projects checked out using
-// --package-handler=git_drupalorg; this can be faster for repeated
-// downloads, but can be brittle. See: http://randyfay.com/node/119
-# $options['cache'] = TRUE;
-
 // Load a drushrc.php configuration file from the current working directory.
 # $options['config'][] = './drushrc.php';
-// Load a drushrc.php configuration file from the directory sites/all/drush,
-// relative to the current Drupal site.
-# $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
-# if ($root) {
-#   $options['config'][] = $root . "/sites/all/drush/drushrc.php";
-# }
-
-/**
- * Enable logging and periodic upload of anonymized usage statistics. The Drush
- * maintainers use this data to learn which commands and options are most
- * See the usage-show and usage-send commands.
- */
-# $options['drush_usage_log'] = TRUE;
-# $options['drush_usage_send'] = TRUE;
 
 /**
  * By default, Drush will download projects compatible with the current
- * version of Drupal, or, if no Drupal site is specified, then the Drupal-7
+ * version of Drupal, or, if no Drupal site is specified, then the Drupal-8
  * version of the project is downloaded.  Set default-major to select a
  * different default version.
  */
-# $options['default-major'] = 6;
+# $options['default-major'] = 7;
 
 // Clone extensions (modules, themes, etc.) from drupal.org via 'pm-download'.
 # $options['package-handler'] = 'git_drupalorg';
@@ -176,6 +157,13 @@
  * path to your php.ini file.
  */
 # $options['php-notices'] = 'warning';
+
+/**
+ * Specify the error handling of recoverable errors (E_RECOVERABLE_ERROR).
+ * Defaults to 1 and will stop execution of Drush.
+ * When set to 0, execution will continue.
+ */
+# $options['halt-on-error'] = 0;
 
 /**
  * Specify options to pass to ssh in backend invoke.  The default is to prohibit
@@ -253,7 +241,7 @@
 # $options['skip-tables']['common'] = array('migration_*');
 
 /**
- * Override specific entries in Drupal's variable/config system or settings.php
+ * Override specific entries in Drupal's variable system or settings.php (D6/D7 only).
  */
 # $options['variables']['site_name'] = 'My Drupal site';
 # $options['variables']['theme_default'] = 'minnelli';
@@ -297,16 +285,5 @@
 // Set a predetermined username and password when using site-install.
 # $command_specific['site-install'] = array('account-name' => 'alice', 'account-pass' => 'secret');
 
-/**
- * Load a drushrc file from the 'drush' folder at the root of the current
- * git repository.  Example script below by Grayside.  Customize as desired.
- * @see: http://grayside.org/node/93.
- */
-#$repo_dir = drush_get_option('root') ? drush_get_option('root') : getcwd();
-#if (drush_shell_exec('cd %s && git rev-parse --show-toplevel 2> ' . drush_bit_bucket(), $repo_dir)) {
-#  $output = drush_shell_exec_output();
-#  $repo_top = $output[0];
-#  $options['config'] = $repo_top . '/drush/drushrc.php';
-#  $options['include'] = $repo_top . '/drush/commands';
-#  $options['alias-path'] = $repo_top . '/drush/aliases';
-#}
+// Use Drupal version specific CLI history instead of per site.
+# $command_specific['core-cli'] = array('version-history' => TRUE);

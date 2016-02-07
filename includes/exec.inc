@@ -5,6 +5,8 @@
  *   Functions for executing system commands. (e.g. exec(), system(), ...).
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * @defgroup commandwrappers Functions to execute commands.
  * @{
@@ -163,6 +165,15 @@ function _drush_shell_exec($args, $interactive = FALSE) {
   else {
     return TRUE;
   }
+}
+
+/**
+ * Determine whether 'which $command' can find
+ * a command on this system.
+ */
+function drush_which($command) {
+  exec("which $command 2>&1", $output, $result);
+  return ($result == 0);
 }
 
 /**
@@ -347,38 +358,6 @@ function _drush_escapeshellarg_windows($arg, $raw = FALSE) {
 }
 
 /**
- * Linux version of escapeshellarg().
- *
- * This is intended to work the same way that escapeshellarg() does on
- * Linux.  If we need to escape a string that will be used remotely on
- * a Linux system, then we need our own implementation of escapeshellarg,
- * because the Windows version behaves differently.
- */
-function _drush_escapeshellarg_linux($arg, $raw = FALSE) {
-  // For single quotes existing in the string, we will "exit"
-  // single-quote mode, add a \' and then "re-enter"
-  // single-quote mode.  The result of this is that
-  // 'quote' becomes '\''quote'\''
-  $arg = preg_replace('/\'/', '\'\\\'\'', $arg);
-
-  // Replace "\t", "\n", "\r", "\0", "\x0B" with a whitespace.
-  // Note that this replacement makes Drush's escapeshellarg work differently
-  // than the built-in escapeshellarg in PHP on Linux, as these characters
-  // usually are NOT replaced. However, this was done deliberately to be more
-  // conservative when running _drush_escapeshellarg_linux on Windows
-  // (this can happen when generating a command to run on a remote Linux server.)
-  $arg = str_replace(array("\t", "\n", "\r", "\0", "\x0B"), ' ', $arg);
-
-  // Only wrap with quotes when needed.
-  if(!$raw) {
-    // Add surrounding quotes.
-    $arg = "'" . $arg . "'";
-  }
-
-  return $arg;
-}
-
-/**
  * Stores output for the most recent shell command.
  * This should only be run from drush_shell_exec().
  *
@@ -417,7 +396,7 @@ function drush_start_browser($uri = NULL, $sleep = FALSE, $port = FALSE) {
     // We can only open a browser if we have a DISPLAY environment variable on
     // POSIX or are running Windows or OS X.
     if (!drush_get_context('DRUSH_SIMULATE') && !getenv('DISPLAY') && !drush_is_windows() && !drush_is_osx()) {
-      drush_log(dt('No graphical display appears to be available, not starting browser.'), 'notice');
+      drush_log(dt('No graphical display appears to be available, not starting browser.'), LogLevel::NOTICE);
       return FALSE;
     }
     $host = parse_url($uri, PHP_URL_HOST);
@@ -432,7 +411,7 @@ function drush_start_browser($uri = NULL, $sleep = FALSE, $port = FALSE) {
     $hosterror = (gethostbynamel($host) === FALSE);
     $iperror = (ip2long($host) && gethostbyaddr($host) == $host);
     if (!drush_get_context('DRUSH_SIMULATE') && ($hosterror || $iperror)) {
-      drush_log(dt('!host does not appear to be a resolvable hostname or IP, not starting browser. You may need to use the --uri option in your command or site alias to indicate the correct URL of this site.', array('!host' => $host)), 'warning');
+      drush_log(dt('!host does not appear to be a resolvable hostname or IP, not starting browser. You may need to use the --uri option in your command or site alias to indicate the correct URL of this site.', array('!host' => $host)), LogLevel::WARNING);
       return FALSE;
     }
     if ($port) {

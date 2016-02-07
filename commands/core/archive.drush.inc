@@ -6,6 +6,8 @@
  *   http://groups.drupal.org/site-archive-format.
  */
 
+use Drush\Log\LogLevel;
+
 function archive_drush_command() {
   $items['archive-dump'] = array(
     'description' => 'Backup your code, files, and database into a single file.',
@@ -16,7 +18,7 @@ function archive_drush_command() {
       'description' => 'Describe the archive contents.',
       'tags' => 'Add tags to the archive manifest. Delimit multiple by commas.',
       'destination' => 'The full path and filename in which the archive should be stored. If omitted, it will be saved to the drush-backups directory and a filename will be generated.',
-      'overwrite' => 'Do not fail if the destination file exists; overwrite it instead.',
+      'overwrite' => 'Do not fail if the destination file exists; overwrite it instead. Default is --no-overwrite.',
       'generator' => 'The generator name to store in the MANIFEST file. The default is "Drush archive-dump".',
       'generatorversion' => 'The generator version number to store in the MANIFEST file. The default is ' . DRUSH_VERSION . '.',
       'pipe' => 'Only print the destination of the archive. Useful for scripts that don\'t pass --destination.',
@@ -50,7 +52,7 @@ function archive_drush_command() {
       ),
       'db-su' => 'Account to use when creating the new database. Optional.',
       'db-su-pw' => 'Password for the "db-su" account. Optional.',
-      'overwrite' => 'Allow drush to overwrite any files in the destination.',
+      'overwrite' => 'Allow drush to overwrite any files in the destination. Default is --no-overwrite.',
       'tar-options' => 'Options passed thru to the tar command.',
     ),
     'examples' => array(
@@ -75,7 +77,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
   $sites = array();
   list($aliases, $not_found) = drush_sitealias_resolve_sitespecs(explode(',', $sites_subdirs));
   if (!empty($not_found)) {
-    drush_log(dt("Some site subdirectories are not valid Drupal sites: @list", array("@list" => implode(', ', $not_found))), 'warning');
+    drush_log(dt("Some site subdirectories are not valid Drupal sites: @list", array("@list" => implode(', ', $not_found))), LogLevel::WARNING);
   }
   foreach ($aliases as $key => $alias) {
     $sites[$key] = $alias;
@@ -85,7 +87,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
     }
     else {
       $sites[$key]['databases'] = array();
-      drush_log(dt('DB definition not found for !alias', array('!alias' => $key)), 'notice');
+      drush_log(dt('DB definition not found for !alias', array('!alias' => $key)), LogLevel::NOTICE);
     }
   }
 
@@ -240,7 +242,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
   foreach ($sites as $key => $alias) {
     $status = drush_invoke_process($alias, 'core-status', array(), array(), array('integrate' => FALSE));
     if (!$status || $status['error_log']) {
-      drush_log(dt('Unable to determine sites directory for !alias', array('!alias' => $key)), 'warning');
+      drush_log(dt('Unable to determine sites directory for !alias', array('!alias' => $key)), LogLevel::WARNING);
     }
 
     // Add the site specific directory to archive.
@@ -290,7 +292,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
     drush_move_dir("{$destination}.gz", $final_destination, $overwrite);
   }
 
-  drush_log(dt('Archive saved to !dest', array('!dest' => $final_destination)), 'ok');
+  drush_log(dt('Archive saved to !dest', array('!dest' => $final_destination)), LogLevel::OK);
   return $final_destination;
 }
 
@@ -400,11 +402,11 @@ function drush_archive_restore($file, $site_id = NULL) {
         else {
           file_put_contents($settingsfile, "\n" . '$db_url = \'' . $db_url . "';\n", FILE_APPEND);
         }
-        drush_log(dt('Drush appended the new database configuration at settings.php. Optionally remove the old configuration manually.'), 'ok');
+        drush_log(dt('Drush appended the new database configuration at settings.php. Optionally remove the old configuration manually.'), LogLevel::OK);
       }
     }
   }
-  drush_log(dt('Archive restored to !dest', array('!dest' => $destination)), 'ok');
+  drush_log(dt('Archive restored to !dest', array('!dest' => $destination)), LogLevel::OK);
 
   return $destination;
 }

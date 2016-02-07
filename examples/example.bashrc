@@ -1,23 +1,23 @@
 # -*- mode: shell-script; mode: flyspell-prog; ispell-local-dictionary: "american" -*-
 #
-# Example bash aliases to improve your drush experience with bash.
-# Copy this file to your home directory, rename and customize it to
-# suit, and source it from your ~/.bash_profile file.
+# Example bash aliases to improve your Drush experience with bash.
+# Use `drush init` to copy this file to your home directory, rename and
+# customize it to suit, and source it from your ~/.bashrc file.
 #
-# Example - rename this to .drush_bashrc, and in your
-# ~/.bash_profile add:
+# Example - rename this to drush.bashrc, and in your
+# ~/.bashrc add:
 #
 #
-#    if [ -f ~/.drush_bashrc ] ; then
-#        . ~/.drush_bashrc
+#    if [ -f ~/.drush/drush.bashrc ] ; then
+#        . ~/.drush/drush.bashrc
 #    fi
 #
 # Features:
 #
 # Finds and sources drush.complete.sh from your drush directory,
-# enabling autocompletion for drush commands.
+# enabling autocompletion for Drush commands.
 #
-# Creates aliases to common drush commands that work in a global context:
+# Creates aliases to common Drush commands that work in a global context:
 #
 #       dr               - drush
 #       ddd              - drush drupal-directory
@@ -28,9 +28,10 @@
 #       st               - drush core-status
 #       use              - drush site-set
 #
-# Aliases for drush commands that work on the current drupal site:
+# Aliases for Drush commands that work on the current drupal site:
 #
 #       cc               - drush cache-clear
+#       cr               - drush cache-rebuild
 #       cca              - drush cache-clear all
 #       dis              - drush pm-disable
 #       en               - drush pm-enable
@@ -43,7 +44,7 @@
 #       updb             - drush updatedb
 #       q                - drush sql-query
 #
-# Provides several common shell commands to work better with drush:
+# Provides several common shell commands to work better with Drush:
 #
 #       ddd @dev         - print the path to the root directory of @dev
 #       cdd @dev         - change the current working directory to @dev
@@ -71,10 +72,10 @@
 #       git               - gitd
 #
 # These standard commands behave exactly the same as they always
-# do, unless a drush site specification such as @dev or @live:%files
+# do, unless a Drush site specification such as @dev or @live:%files
 # is used in one of the arguments.
 
-# Aliases for common drush commands that work in a global context.
+# Aliases for common Drush commands that work in a global context.
 alias dr='drush'
 alias ddd='drush drupal-directory'
 alias dl='drush pm-download'
@@ -84,8 +85,9 @@ alias lsa='drush site-alias --local-only'
 alias st='drush core-status'
 alias use='drush site-set'
 
-# Aliases for drush commands that work on the current drupal site
+# Aliases for Drush commands that work on the current drupal site
 alias cc='drush cache-clear'
+alias cr='drush cache-rebuild'
 alias cca='drush cache-clear all'
 alias dis='drush pm-disable'
 alias en='drush pm-enable'
@@ -108,14 +110,14 @@ alias q='drush sql-query'
 # alias ssh='dssh'
 # alias git='gitd'
 
-# Find the drush executable and test it.
+# Find the Drush executable and test it.
 d=$(which drush)
 # If no program is found try an alias.
 if [ -z "$d" ]; then
   d=$(alias drush | cut -f 2 -d '=' | sed "s/'//g")
 fi
 # Test that drush is an executable.
-[ -x "$d" ] || exit 0
+[ -x "$d" ] || return
 
 # If the file found is a symlink, resolve to the actual file.
 if [ -h "$d" ] ; then
@@ -129,7 +131,7 @@ if [ -h "$d" ] ; then
   fi
 fi
 
-# Get the directory that drush is stored in.
+# Get the directory that Drush is stored in.
 d="$(dirname "$d")"
 # If we have found drush.complete.sh, then source it.
 if [ -f "$d/drush.complete.sh" ] ; then

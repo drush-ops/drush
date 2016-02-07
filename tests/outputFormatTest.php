@@ -53,13 +53,13 @@ class outputFormatCase extends CommandUnishTestCase {
     $unish_tmp = UNISH_TMP; // Need local variable.
     return array(
       array(
-        'name' => 'Status test - drush version / list',
+        'name' => 'Status test - drush script / list',
         'command' => 'core-status',
-        'args' => array('drush version'),
+        'args' => array('drush script'),
         'options' => array(),
         'format' => 'list',
-        'output_filter' => array('/[0-9]+\.[0-9]+[a-zA-Z0-9-]*/' => '0.0-dev',),
-        'expected' => '0.0-dev',
+        'output_filter' => array('#/.*drush.php#' => 'drush.php',),
+        'expected' => 'drush.php',
       ),
 //      array(
 //        'name' => 'Status test - drush / ini',
@@ -78,7 +78,7 @@ class outputFormatCase extends CommandUnishTestCase {
         'options' => array(),
         'format' => 'var_export',
         'output_filter' => array(
-          '/[0-9]+\.[0-9]+[a-zA-Z0-9-]*/' => '0.0-dev',
+          "/[0-9]+\.[0-9]+[^']*/" => '0.0-dev',
           '#/.*/etc/drush#' => '/etc/drush',
           "/'drush-script' => '.*drush.php'/" => "'drush-script' => 'drush.php'",
         ),
@@ -99,7 +99,8 @@ class outputFormatCase extends CommandUnishTestCase {
         'options' => array(),
         'format' => 'key-value',
         'output_filter' => array(
-          '/[0-9]+\.[0-9]+[a-zA-Z0-9-]*/' => '0.0-dev', '#/.*/etc/drush#' => '/etc/drush',
+          "/[0-9]+\.[0-9]+[a-z0-9\.-]*/" => '0.0-dev',
+          '#/.*/etc/drush#' => '/etc/drush',
           "/(Drush script *:  ).*drush.php/" => "Drush script:  drush.php",
         ),
         'expected' => "Drush script:  drush.php

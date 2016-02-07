@@ -13,14 +13,14 @@ function ssh_drush_command() {
       'bash' => 'Bash to execute on target. Optional, except when site-alias is a list.',
     ),
     'options' => array(
-      'cd' => "Directory to change to. Use a full path, TRUE for the site's Drupal root directory, or FALSE for the remote user's home directory. Defaults to the Drupal root.",
+      'cd' => "Directory to change to. Use a full path, TRUE for the site's Drupal root directory, or --no-cd for the ssh default (usually the remote user's home directory). Defaults to the Drupal root.",
     ) + drush_shell_exec_proc_build_options(),
     'handle-remote-commands' => TRUE,
     'strict-option-handling' => TRUE,
     'examples' => array(
       'drush @mysite ssh' => 'Open an interactive shell on @mysite\'s server.',
-      'drush @prod ssh \'ls /tmp\'' => 'Run "ls /tmp" on @prod site. If @prod is a site list, then ls will be executed on each site.',
-      'drush @prod git pull' => 'Run "git pull" on the Drupal root directory on the @prod site.',
+      'drush @prod ssh ls /tmp' => 'Run "ls /tmp" on @prod site. If @prod is a site list, then ls will be executed on each site.',
+      'drush @prod ssh git pull' => 'Run "git pull" on the Drupal root directory on the @prod site.',
     ),
     'aliases' => array('ssh'),
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
@@ -44,15 +44,9 @@ function drush_ssh_site_ssh($command = NULL) {
   }
   $command = implode(' ', $args);
   if (!$alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
-    return drush_set_error('DRUSH_MISSING_TARGET_ALIAS', 'A remote site alias is required. The way you call ssh command has changed to `drush @alias ssh`.');
+    return drush_set_error('DRUSH_MISSING_TARGET_ALIAS', 'A site alias is required. The way you call ssh command has changed to `drush @alias ssh`.');
   }
   $site = drush_sitealias_get_record($alias);
-  // We only accept remote aliases.
-  if (empty($site['remote-host'])) {
-    drush_set_error('DRUSH_SITE_SSH_REMOTE_ALIAS_REQUIRED', dt('@alias does not specify a remote-host.', array('@alias' => $alias)));
-    return;
-  }
-
   // If we have multiple sites, run ourselves on each one. Set context back when done.
   if (isset($site['site-list'])) {
     if (empty($command)) {
@@ -67,6 +61,13 @@ function drush_ssh_site_ssh($command = NULL) {
     return;
   }
 
+  if (!drush_sitealias_is_remote_site($alias)) {
+    // Local sites run their bash without SSH.
+    $return = drush_invoke_process('@self', 'core-execute', array($command), array('escape' => FALSE));
+    return $return['object'];
+  }
+
+  // We have a remote site - build ssh command and run.
   $interactive = FALSE;
   $cd = drush_get_option('cd', TRUE);
   if (empty($command)) {

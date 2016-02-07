@@ -14,9 +14,22 @@ class Sqlpgsql extends SqlBase {
 
   private function password_file() {
     if (!isset($password_file) && isset($this->db_spec['password'])) {
-      $host = empty($this->db_spec['host']) ? 'localhost' : $this->db_spec['host'];
-      $port = empty($this->db_spec['port']) ? '5432' : $this->db_spec['port'];
-      $pgpass_contents = "{$host}:{$port}:*:{$this->db_spec['username']}:{$this->db_spec['password']}";
+      $pgpass_parts = array(
+        empty($this->db_spec['host']) ? 'localhost' : $this->db_spec['host'],
+        empty($this->db_spec['port']) ? '5432' : $this->db_spec['port'],
+        // Database
+        '*',
+        $this->db_spec['username'],
+        $this->db_spec['password']
+      );
+      // Escape colon and backslash characters in entries.
+      // @see http://www.postgresql.org/docs/9.1/static/libpq-pgpass.html
+      array_walk($pgpass_parts, function (&$part) {
+        // The order of the replacements is important so that backslashes are
+        // not replaced twice.
+        $part = str_replace(array('\\', ':'), array('\\\\', '\:'), $part);
+      });
+      $pgpass_contents = implode(':', $pgpass_parts);
       $password_file = drush_save_data_to_temp_file($pgpass_contents);
       chmod($password_file, 0600);
     }

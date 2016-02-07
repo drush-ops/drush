@@ -77,7 +77,8 @@ function sql_drush_command() {
         ),
       ),
     'examples' => array(
-      '`drush sql-connect` < example.sql' => 'Import sql statements from a file into the current database.',
+      '`drush sql-connect` < example.sql' => 'Bash: Import SQL statements from a file into the current database.',
+      'eval (drush sql-connect) < example.sql' => 'Fish: Import SQL statements from a file into the current database.',
     ),
   );
   $items['sql-create'] = array(
@@ -183,16 +184,6 @@ function sql_drush_help_alter(&$command) {
       unset($command['options']['target']['hidden']);
     }
   }
-}
-
-/**
- * Command argument complete callback.
- *
- * @return
- *  Array of available site aliases.
- */
-function sql_sql_sync_complete() {
-  return array('values' => array_keys(_drush_sitealias_all_list()));
 }
 
 /**

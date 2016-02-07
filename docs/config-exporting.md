@@ -1,6 +1,6 @@
 # Exporting and Importing Configuration
 
-Drush provides commands to export and import the configuration files
+Drush provides commands to export, transfer, and import configuration files
 to and from a Drupal 8 site.  Configuration can be altered by different
 methods in order to provide different behaviors in different environments;
 for example, a development server might be configured slightly differently
@@ -39,7 +39,7 @@ you can use Drush configuration filters.
 ## Ignoring Development Modules
 
 If you have a certain list of modules that should only be enabled on
-the deveopment or staging server, then this may be done with the
+the development or staging server, then this may be done with the
 built-in `--skip-modules` option in the config-export and config-import
 commands.
 

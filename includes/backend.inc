@@ -57,6 +57,8 @@
  * drush_backend_get_result().
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * Identify the JSON encoded output from a command.
  *
@@ -544,13 +546,13 @@ function drush_backend_parse_packets(&$string, &$remainder, $backend_options) {
           $function($entry, $backend_options);
         }
         else {
-          drush_log(dt("Unknown backend packet @packet", array('@packet' => $entry['packet'])), 'notice');
+          drush_log(dt("Unknown backend packet @packet", array('@packet' => $entry['packet'])), LogLevel::NOTICE);
         }
       }
       else {
-        drush_log(dt("Malformed backend packet"), 'error');
-        drush_log(dt("Bad packet: @packet", array('@packet' => print_r($entry, TRUE))), 'debug');
-        drush_log(dt("String is: @str", array('@str' => $packet_data), 'debug'));
+        drush_log(dt("Malformed backend packet"), LogLevel::ERROR);
+        drush_log(dt("Bad packet: @packet", array('@packet' => print_r($entry, TRUE))), LogLevel::DEBUG);
+        drush_log(dt("String is: @str", array('@str' => $packet_data), LogLevel::DEBUG));
       }
     }
     $string = preg_replace("/$packet_regex/s", '', $string);
@@ -757,7 +759,7 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
       $site_record_to_dispatch = '';
     }
     if (array_key_exists('backend-simulate', $backend_options)) {
-      $commandline_options['simulate'] = TRUE;
+      $drush_global_options['simulate'] = TRUE;
     }
     $site_record += array('path-aliases' => array(), '#env-vars' => array());
     $site_record['path-aliases'] += array(
@@ -826,6 +828,8 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     $command_options = $item['command-options'];
     $drush_global_options = $item['drush-global-options'];
     $backend_options = $item['backend-options'];
+    $is_remote = array_key_exists('remote-host', $site_record);
+    $is_different_site = $is_remote || (isset($site_record['root']) && ($site_record['root'] != drush_get_context('DRUSH_DRUPAL_SITE_ROOT')));
     $os = drush_os($site_record);
     // If the caller did not pass in a specific path to drush, then we will
     // use a default value.  For commands that are being executed on the same
@@ -833,9 +837,12 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     // that is running right now.  For remote commands, we will run a wrapper
     // script instead of drush.php -- drush.bat on Windows, or drush on Linux.
     $drush_path = $site_record['path-aliases']['%drush-script'];
+    if (!$drush_path && !$is_remote && $is_different_site) {
+      $drush_path = find_wrapper_or_launcher($site_record['root']);
+    }
     $env_vars = $site_record['#env-vars'];
     $php = array_key_exists('php', $site_record) ? $site_record['php'] : (array_key_exists('php', $command_options) ? $command_options['php'] : NULL);
-    $drush_command_path = drush_build_drush_command($drush_path, $php, $os, array_key_exists('remote-host', $site_record), $env_vars);
+    $drush_command_path = drush_build_drush_command($drush_path, $php, $os, $is_remote, $env_vars);
     $cmd = _drush_backend_generate_command($site_record, $drush_command_path . " " . _drush_backend_argument_string($drush_global_options, $os) . " " . $site_record_to_dispatch . " " . $command, $args, $commandline_options, $backend_options) . ' 2>&1';
     $cmds[$site] = array(
       'cmd' => $cmd,
@@ -1127,7 +1134,7 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
   $ssh_options = $site_record['ssh-options'];
   $os = drush_os($site_record);
 
-  if (array_key_exists('#check-local', $site_record) && drush_is_local_host($hostname)) {
+  if (drush_is_local_host($hostname)) {
     $hostname = null;
   }
 

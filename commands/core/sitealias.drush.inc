@@ -387,6 +387,7 @@ function drush_sitealias_site_set($site = '@none') {
       elseif (drush_mkdir(dirname($filename), TRUE)) {
         if (file_put_contents($filename, $site)) {
           drush_print($success_message);
+          drush_log(dt("Site information stored in !file", array('!file' => $filename)));
         }
       }
     }

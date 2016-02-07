@@ -45,7 +45,7 @@ function _drush_cache_clear_types($include_bootstrapped_types) {
   if ($include_bootstrapped_types) {
     $types += array(
       'theme-registry' => 'drush_cache_clear_theme_registry',
-      'menu' => 'drush_cache_clear_menu',
+      'router' => 'drush_cache_clear_router',
       'css-js' => 'drush_cache_clear_css_js',
       'module-list' => 'drush_get_modules',
       'theme-list' => 'drush_get_themes',
@@ -59,10 +59,10 @@ function drush_cache_clear_theme_registry() {
   \Drupal::service('theme.registry')->reset();
 }
 
-function drush_cache_clear_menu() {
-  /** @var \Drupal\Core\Menu\MenuLinkManagerInterface $menu_link_manager */
-  $menu_link_manager = \Drupal::service('plugin.manager.menu.link');
-  return $menu_link_manager->rebuild();
+function drush_cache_clear_router() {
+  /** @var \Drupal\Core\Routing\RouteBuilderInterface $router_builder */
+  $router_builder = \Drupal::service('router.builder');
+  $router_builder->rebuild;
 }
 
 function drush_cache_clear_css_js() {
@@ -83,5 +83,5 @@ function drush_cache_clear_block() {
  * Clears the render cache entries.
  */
 function drush_cache_clear_render() {
-  \Drupal::cache('render')->deleteAll();
+  Cache::invalidateTags(['rendered']);
 }

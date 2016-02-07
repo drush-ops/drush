@@ -4,7 +4,8 @@
  * Drush Make commands.
  */
 
-use \Drush\UpdateService\ReleaseInfo;
+use Drush\Log\LogLevel;
+use Drush\UpdateService\ReleaseInfo;
 
 /**
  * Default localization server for downloading translations.
@@ -21,6 +22,22 @@ include_once 'make.utilities.inc';
 include_once 'make.download.inc';
 include_once 'make.project.inc';
 include_once 'generate.contents.make.inc';
+
+/**
+ * Implements hook_drush_help().
+ */
+function make_drush_help($section) {
+  switch ($section) {
+    case 'meta:make:title':
+      return dt('Make commands');
+    case 'meta:make:summary':
+      return dt('Manage Drupal codebases using manifests of projects and libraries.');
+    case 'drush:make':
+      return dt('Turns a makefile into a Drupal codebase. For a full description of options and makefile syntax, see docs/make.txt and examples/example.make.');
+    case 'drush:make-generate':
+      return dt('Generate a makefile from the current Drupal site, specifying project version numbers unless not known or otherwise specified. Unversioned projects will be interpreted later by drush make as "most recent stable release"');
+  }
+}
 
 /**
  * Implements hook_drush_command().
@@ -91,6 +108,20 @@ function make_drush_command() {
       'shallow-clone' => array(
         'description' => 'For makefile entries which use git for downloading, this option will utilize shallow clones where possible (ie. by using the git-clone\'s depth=1 option). If the "working-copy" option is not desired, this option will significantly speed up makes which involve modules stored in very large git repos. In fact, if "working-copy" option is enabled, this option cannot be used.',
       ),
+      'bundle-lockfile' => array(
+        'description' => 'Generate a lockfile for this build and copy it into the codebase (at sites/all/drush/platform.lock). An alternate path (relative to the Drupal root) can also be specified',
+        'example-value' => 'sites/all/drush/example.make.lock',
+      ),
+      'format' => array(
+        'description' => 'The format for generated lockfiles. Options are "yaml" or "ini". Defaults to "yaml".',
+        'example-value' => 'ini',
+      ),
+      'core-quick-drupal' => array(
+        'description' => 'Return project info for use by core-quick-drupal.',
+        'hidden' => TRUE,
+      ),
+      'includes' => 'A list of makefiles to include at build-time.',
+      'overrides' => 'A list of makefiles to that can override values in other makefiles.',
     ),
     'engines' => array('release_info'),
     'topics' => array('docs-make', 'docs-make-example'),
@@ -108,6 +139,10 @@ function make_drush_command() {
     'options' => array(
       'exclude-versions' => 'Exclude all version numbers (default is include all version numbers) or optionally specify a list of projects to exclude from versioning',
       'include-versions' => 'Include a specific list of projects, while all other projects remain unversioned in the makefile (so implies --exclude-versions)',
+      'format' => array(
+        'description' => 'The format for generated makefile. Options are "yaml" or "ini". Defaults to "yaml".',
+        'example-value' => 'ini',
+      ),
     ),
     'engines' => array('release_info'),
     'aliases' => array('generate-makefile'),
@@ -122,6 +157,7 @@ function make_drush_command() {
     'options' => array(
       'projects' => $projects,
       'libraries' => $libraries,
+      'includes' => 'A list of makefiles to include at build-time.',
     ),
     'required-arguments' => TRUE,
     'examples' => array(
@@ -154,7 +190,33 @@ function make_drush_command() {
         'description' => 'Save to a file. If not provided, the updated makefile will be dumped to stdout.',
         'example-value' => 'updated.make',
       ),
+      'format' => array(
+        'description' => 'The format for generated lockfiles. Options are "yaml" or "ini". Defaults to "yaml".',
+        'example-value' => 'ini',
+      ),
+      'includes' => 'A list of makefiles to include at build-time.',
     ),
+    'engines' => array('release_info', 'update_status'),
+  );
+
+  $items['make-lock'] = array(
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+    'description' => 'Process a makefile and outputs an equivalent makefile with projects version *resolved*. Respects pinned versions.',
+    'arguments' => array(
+      'makefile' => 'Filename of the makefile to use for this build.',
+    ),
+    'options' => array(
+      'result-file' => array(
+        'description' => 'Save to a file. If not provided, the lockfile will be dumped to stdout.',
+        'example-value' => 'platform.lock',
+      ),
+      'format' => array(
+        'description' => 'The format for generated lockfiles. Options are "yaml" or "ini". Defaults to "yaml".',
+        'example-value' => 'ini',
+      ),
+      'includes' => 'A list of makefiles to include at build-time.',
+    ),
+    'allow-additional-options' => TRUE,
     'engines' => array('release_info', 'update_status'),
   );
 
@@ -177,18 +239,6 @@ function make_drush_command() {
     'callback arguments' => array($docs_dir . '/examples/example.make.yml'),
   );
   return $items;
-}
-
-/**
- * Implements hook_drush_help().
- */
-function make_drush_help($section) {
-  switch ($section) {
-    case 'drush:make':
-      return 'Turns a makefile into a Drupal codebase. For a full description of options and makefile syntax, see docs/make.txt and examples/example.make.';
-    case 'drush:make-generate':
-      return 'Generate a makefile from the current Drupal site, specifying project version numbers unless not known or otherwise specified. Unversioned projects will be interpreted later by drush make as "most recent stable release"';
-  }
 }
 
 /**
@@ -254,7 +304,7 @@ function drush_make($makefile = NULL, $build_path = NULL) {
   // Build.
   if (!drush_get_option('no-build', FALSE)) {
     $info = make_parse_info_file($makefile);
-    drush_log(dt('Beginning to build !makefile.', array('!makefile' => $makefile)), 'ok');
+    drush_log(dt('Beginning to build !makefile.', array('!makefile' => $makefile)), LogLevel::OK);
 
     // Default contrib destination depends on Drupal core version.
     $core_version = str_replace('.x', '', $info['core'][0]);
@@ -277,7 +327,7 @@ function drush_make($makefile = NULL, $build_path = NULL) {
           drush_print($md5);
         }
         else {
-          drush_log(dt('Build hash: %md5', array('%md5' => $md5)), 'ok');
+          drush_log(dt('Build hash: %md5', array('%md5' => $md5)), LogLevel::OK);
         }
       }
       // Only take final build steps if not in testing mode.
@@ -291,16 +341,39 @@ function drush_make($makefile = NULL, $build_path = NULL) {
       }
       make_clean_tmp();
     }
+    else {
+      return make_error('MAKE_PROJECTS_FAILED', dt('Drush Make failed to download all projects. See the log above for the specific errors.'));
+    }
   }
 
-  // Process --lock.
-  if (drush_get_option('lock', FALSE)) {
-    return make_generate_from_makefile(drush_get_option('lock'), $makefile);
+  // Process --lock and --bundle-lockfile
+  $lockfiles = array();
+  if ($result_file = drush_get_option('bundle-lockfile', FALSE)) {
+    if ($result_file === TRUE) {
+      $result_file = 'sites/all/drush/platform.make';
+    }
+    $lockfiles[] = $build_path . '/' . $result_file;
+  }
+  if ($result_file = drush_get_option('lock', FALSE)) {
+    $lockfiles[] = $result_file;
+  }
+  if (count($lockfiles)) {
+    foreach ($lockfiles as $lockfile) {
+      if ($lockfile !== TRUE) {
+        $result_file = drush_normalize_path($lockfile);
+        drush_mkdir(dirname($result_file), $required = TRUE);
+        drush_set_option('result-file', $result_file);
+      }
+      drush_invoke('make-lock', $makefile);
+      drush_unset_option('result-file');
+    }
   }
 
   // Used by core-quick-drupal command.
   // @see drush_core_quick_drupal().
-  return $info;
+  if (drush_get_option('core-quick-drupal', FALSE)) {
+    return $info;
+  }
 }
 
 /**
@@ -308,7 +381,7 @@ function drush_make($makefile = NULL, $build_path = NULL) {
  */
 function drush_make_convert($makefile) {
 
-  drush_log(dt('Beginning to convert !makefile.', array('!makefile' => $makefile)), 'ok');
+  drush_log(dt('Beginning to convert !makefile.', array('!makefile' => $makefile)), LogLevel::OK);
 
   $file = $makefile . '.yml';
   $info = make_parse_info_file($makefile);
@@ -319,7 +392,7 @@ function drush_make_convert($makefile) {
   $yaml = $dumper->format($info, array());
 
   if (file_put_contents($file, $yaml)) {
-    drush_log(dt("Wrote make file @file", array('@file' => $file)), 'ok');
+    drush_log(dt("Wrote make file @file", array('@file' => $file)), LogLevel::OK);
     return $file;
   }
   else {
@@ -456,12 +529,11 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
         if ($release === FALSE) {
           return FALSE;
         }
-        $request['project_type'] = $release_info->get($request)->getType();
-
-        if (!isset($project['type'])) {
-          // Translate release_info key for project_type to drush make.
-          $project['type'] = $request['project_type'];
+        // Override default project type with data from update service.
+        if (!isset($info['projects'][$project['name']]['type'])) {
+          $project['type'] = $release_info->get($request)->getType();
         }
+
         if (!isset($project['download'])) {
           $project['download'] = array(
             'type' => 'pm',
@@ -555,7 +627,10 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
         $backend_options['#output-label'] = FALSE;
         $backend_options['integrate'] = TRUE;
       }
-      drush_backend_invoke_concurrent($invocations, $common_options, $backend_options, 'make-process', '@none');
+      $results = drush_backend_invoke_concurrent($invocations, $common_options, $backend_options, 'make-process', '@none');
+      if (count($results['error_log'])) {
+        return FALSE;
+      }
     }
   }
   return TRUE;

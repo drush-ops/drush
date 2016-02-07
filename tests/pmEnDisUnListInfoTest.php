@@ -26,15 +26,25 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
     $options = $options_no_pipe + array(
       'pipe' => NULL,
     );
+
+    // Test pm-download downloads a module and pm-list lists it.
     $this->drush('pm-download', array('devel'), $options);
     $this->drush('pm-list', array(), $options + array('no-core' => NULL, 'status' => 'disabled,not installed'));
     $out = $this->getOutput();
     $list = $this->getOutputAsList();
     $this->assertTrue(in_array('devel', $list));
 
+    // Test pm-enable enables a module and shows the permissions it provides.
     $this->drush('pm-enable', array('devel'), $options_no_pipe);
     $output = $this->getOutput();
     $this->assertContains('access devel information', $output);
+
+    // Test pm-list shows the module as enabled.
+    $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
+    $list = $this->getOutputAsList();
+    $this->assertTrue(in_array('devel', $list));
+
+    // Test pm-info shows some module info.
     $this->drush('pm-info', array('devel'), $options);
     $output = $this->getOutputFromJSON('devel');
     $expected = array(
@@ -45,27 +55,38 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
       'status' => 'enabled',
     );
     foreach ($expected as $key => $value) {
-      $this->assertEquals($expected[$key], $value);
+      $this->assertEquals($output->{$key}, $value);
     }
 
-    $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
-    $list = $this->getOutputAsList();
-    $this->assertTrue(in_array('devel', $list));
-    // In D7, the testing profile uses 'bartik', whereas in D8, 'classy' is used.
+    // Test pm-projectinfo shows some project info.
+    $this->drush('pm-projectinfo', array('devel'), $options);
+    $output = $this->getOutputFromJSON('devel');
+    $expected = array(
+      'label' => 'Devel (devel)',
+      'type' => 'module',
+      'status' => '1',
+    );
+    foreach ($expected as $key => $value) {
+      $this->assertEquals($output->{$key}, $value);
+    }
+
+    // Test the testing install profile theme is installed.
     $themeToCheck = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? 'classy' : (UNISH_DRUPAL_MAJOR_VERSION == 7 ? 'bartik' : 'garland');
     $this->assertTrue(in_array($themeToCheck, $list), 'Themes are in the pm-list');
 
-    if (UNISH_DRUPAL_MAJOR_VERSION <= 7) {
-      $path = UNISH_DRUPAL_MAJOR_VERSION == 7 ? 'devel/settings' : 'admin/settings/devel';
-      $this->drush('sql-query', array("SELECT path FROM menu_router WHERE path = '$path';"), array('root' => $this->webroot(), 'uri' => key($sites)));
-      $list = $this->getOutputAsList();
-      $this->assertTrue(in_array($path, $list), 'Cache was cleared after modules were enabled');
-    }
+    // Test cache was cleared after enabling a module.
+    $table = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? 'router' : 'menu_router';
+    $path = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? '/admin/config/development/devel' : (UNISH_DRUPAL_MAJOR_VERSION == 7 ? 'devel/settings' : 'admin/settings/devel');
+    $this->drush('sql-query', array("SELECT path FROM $table WHERE path = '$path';"), array('root' => $this->webroot(), 'uri' => key($sites)));
+    $list = $this->getOutputAsList();
+    $this->assertTrue(in_array($path, $list), 'Cache was cleared after modules were enabled');
 
+    // Test pm-list filtering.
     $this->drush('pm-list', array(), $options + array('package' => 'Core'));
     $list = $this->getOutputAsList();
     $this->assertFalse(in_array('devel', $list), 'Devel is not part of core package');
 
+    // Test module disabling.
     if (UNISH_DRUPAL_MAJOR_VERSION <= 7) {
       $this->drush('pm-disable', array('devel'), $options);
       $this->drush('pm-list', array(), $options + array('status' => 'disabled'));
@@ -73,29 +94,36 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
       $this->assertTrue(in_array('devel', $list));
     }
 
+    // Test module uninstall.
     $this->drush('pm-uninstall', array('devel'), $options);
     $this->drush('pm-list', array(), $options + array('status' => 'not installed', 'type' => 'module'));
     $list = $this->getOutputAsList();
     $this->assertTrue(in_array('devel', $list));
 
     // Test pm-enable is able to download dependencies.
-    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
-      $this->markTestSkipped("pathauto does not have a release for Drupal 8 yet.");
+    // @todo pathauto has no usable D8 release yet.
+    if (UNISH_DRUPAL_MAJOR_VERSION <=7) {
+      $this->drush('pm-download', array('pathauto'), $options);
+      $this->drush('pm-enable', array('pathauto'), $options + array('resolve-dependencies' => TRUE));
+      $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
+      $list = $this->getOutputAsList();
+      $this->assertTrue(in_array('token', $list));
     }
-
-    $this->drush('pm-download', array('pathauto'), $options);
-    $this->drush('pm-enable', array('pathauto'), $options + array('resolve-dependencies' => TRUE));
-    $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
-    $list = $this->getOutputAsList();
-    $this->assertTrue(in_array('token', $list));
 
     // Test that pm-enable downloads missing projects and dependencies.
-    $this->drush('pm-enable', array('views'), $options + array('resolve-dependencies' => TRUE));
+    $this->drush('pm-enable', array('panels'), $options + array('resolve-dependencies' => TRUE));
     $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
     $list = $this->getOutputAsList();
-    if (UNISH_DRUPAL_MAJOR_VERSION == 6) {
-      $this->markTestSkipped("Drupal 6 Views does not depend on CTools.");
-    }
     $this->assertTrue(in_array('ctools', $list));
+
+    // Test that pm-enable downloads missing projects
+    // and dependencies with project namespace (date:date_popup).
+    if (UNISH_DRUPAL_MAJOR_VERSION == 7) {
+      $this->drush('pm-enable', array('date_datepicker_inline'), $options + array('resolve-dependencies' => TRUE));
+      $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
+      $list = $this->getOutputAsList();
+      $this->assertTrue(in_array('date_popup', $list));
+    }
+
   }
 }

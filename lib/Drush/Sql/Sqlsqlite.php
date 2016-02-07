@@ -2,6 +2,8 @@
 
 namespace Drush\Sql;
 
+use Drush\Log\LogLevel;
+
 class Sqlsqlite extends SqlBase {
   public function command() {
     return 'sqlite3';
@@ -26,13 +28,18 @@ class Sqlsqlite extends SqlBase {
    *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
    */
   public function createdb($quoted = FALSE) {
-    // Make sure sqlite can create file
     $file = $this->db_spec['database'];
+    if (file_exists($file)) {
+      drush_log("SQLITE: Deleting existing database '$file'", LogLevel::DEBUG);
+      drush_delete_dir($file, TRUE);
+    }
+
+    // Make sure sqlite can create file
     $path = dirname($file);
-    drush_log("SQLITE: creating '$path' for creating '$file'", 'debug');
+    drush_log("SQLITE: creating '$path' for creating '$file'", LogLevel::DEBUG);
     drush_mkdir($path);
     if (!file_exists($path)) {
-      drush_log("SQLITE: Cannot create $path", 'error');
+      drush_log("SQLITE: Cannot create $path", LogLevel::ERROR);
     }
   }
 

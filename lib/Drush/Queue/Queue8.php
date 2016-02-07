@@ -2,6 +2,7 @@
 
 namespace Drush\Queue;
 
+use Drush\Log\LogLevel;
 use Drupal\Core\Queue\QueueWorkerManager;
 use Drupal\Core\Queue\SuspendQueueException;
 
@@ -52,7 +53,7 @@ class Queue8 extends QueueBase {
 
     while ((!$time_limit || time() < $end) && ($item = $queue->claimItem())) {
       try {
-        drush_log(dt('Processing item @id from @name queue.', array('@name' => $name, 'id' => $item->item_id)), 'info');
+        drush_log(dt('Processing item @id from @name queue.', array('@name' => $name, 'id' => $item->item_id)), LogLevel::INFO);
         $worker->processItem($item->data);
         $queue->deleteItem($item);
         $count++;

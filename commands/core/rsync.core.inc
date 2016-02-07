@@ -1,5 +1,7 @@
 <?php
 
+use Drush\Log\LogLevel;
+
 /*
  * Implements COMMAND hook init.
  */
@@ -56,6 +58,13 @@ function drush_core_rsync($source, $destination, $additional_options = array()) 
     }
   }
 
+  // Next, check to see if both the source and the destination are remote.
+  // If so, then we'll process this as an rsync from source to local,
+  // followed by an rsync from local to the destination.
+  if (drush_sitealias_is_remote_site($source_settings) && drush_sitealias_is_remote_site($destination_settings)) {
+    return _drush_core_rsync_both_remote($source, $destination, $additional_options, $source_path);
+  }
+
   // Exclude settings is the default only when both the source and
   // the destination are aliases or site names.  Therefore, include
   // settings will be the default whenever either the source or the
@@ -72,6 +81,7 @@ function drush_core_rsync($source, $destination, $additional_options = array()) 
     }
   }
 
+  drush_backend_set_result($destination_path);
   // Go ahead and call rsync with the paths we determined
   return drush_core_exec_rsync($source_path, $destination_path, $options);
 }
@@ -183,7 +193,7 @@ function _drush_build_rsync_options($additional_options, $include_settings_is_de
     if ($test_option == 'remove-source-files') {
       if (version_compare($rsync_version, '2.6.4', '<')) {
         $test_option = NULL;
-        drush_log('Rsync does not support --remove-sent-files prior to version 2.6.4; some temporary files may remain undeleted.', 'warning');
+        drush_log('Rsync does not support --remove-sent-files prior to version 2.6.4; some temporary files may remain undeleted.', LogLevel::WARNING);
       }
       elseif (version_compare($rsync_version, '2.6.9', '<')) {
         $test_option = 'remove-sent-files';
@@ -209,4 +219,69 @@ function _drush_rsync_option_exists($option, $additional_options) {
   else {
     return drush_get_option($option, FALSE);
   }
+}
+
+/**
+ * Handle an rsync operation from a remote site to a remote
+ * site by first rsync'ing to a local location, and then
+ * copying that location to its final destination.
+ */
+function _drush_core_rsync_both_remote($source, $destination, $additional_options, $source_path) {
+  $options = $additional_options + drush_redispatch_get_options();
+
+  // Make a temporary directory to copy to.  There are three
+  // cases to consider:
+  //
+  // 1. rsync @src:file.txt @dest:location
+  // 2. rsync @src:dir @dest:location
+  // 3. rsync @src:dir/ @dest:location
+  //
+  // We will explain each of these in turn.
+  //
+  // 1. Copy a single file.  We'll split this up like so:
+  //
+  //    rsync @src:file.txt /tmp/tmpdir
+  //    rsync /tmp/tmpdir/file.txt @dest:location
+  //
+  // Since /tmp/tmpdir is empty, we could also rsync from
+  // '/tmp/tmpdir/' if we wished.
+  //
+  // 2. Copy a directory. A directory with the same name
+  // is copied to the destination.  We'll split this up like so:
+  //
+  //    rsync @src:dir /tmp/tmpdir
+  //    rsync /tmp/tmpdir/dir @dest:location
+  //
+  // The result is that everything in 'dir' is copied to @dest,
+  // and ends up in 'location/dir'.
+  //
+  // 3. Copy the contents of a directory.  We will split this
+  // up as follows:
+  //
+  //    rsync @src:dir/ /tmp/tmpdir
+  //    rsync /tmp/tmpdir/ @dest:location
+  //
+  // After the first rsync, everything in 'dir' will end up in
+  // tmpdir.  The second rsync copies everything in tmpdir to
+  // @dest:location without creating an encapsulating folder
+  // in the destination (i.e. there is no 'tmpdir' in the destination).
+  //
+  // All three of these cases need to be handled correctly in order
+  // to ensure the correct results.  In all cases, though, the first
+  // rsync always copies to $tmpDir, and the second rsync always
+  // copies from $tmpDir/basename($source_path).  So, the actual logic
+  // comes out to be much simpler than the analysis.
+  $putInTmpPath = drush_tempdir();
+  $getFromTmpPath = "$putInTmpPath/" . basename($source_path);
+
+  // Copy from the source to the temporary location. Exit on failure.
+  $values = drush_invoke_process('@self', 'core-rsync', array($source, $putInTmpPath), $options);
+  if ($values['error'] != 0) {
+    return FALSE;
+  }
+
+  // Copy from the temporary location to the final destination.
+  $values = drush_invoke_process('@self', 'core-rsync', array($getFromTmpPath, $destination), $options);
+
+  return $values['error'] == 0;
 }

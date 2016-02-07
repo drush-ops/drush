@@ -1,5 +1,6 @@
 <?php
 
+use Drush\Log\LogLevel;
 use Drush\Role\RoleBase;
 
 /**
@@ -125,7 +126,7 @@ function drush_role_create($rid, $role_name = '') {
   $role = drush_role_get_class();
   $result = $role->role_create($rid, $role_name);
   if ($result !== FALSE) {
-    drush_log(dt('Created "!role"', array('!role' => $rid)), 'success');
+    drush_log(dt('Created "!role"', array('!role' => $rid)), LogLevel::SUCCESS);
   }
   return $result;
 }
@@ -140,7 +141,7 @@ function drush_role_delete($rid) {
   }
   $result = $role->delete();
   if ($result !== FALSE) {
-    drush_log(dt('Deleted "!role"', array('!role' => $rid)), 'success');
+    drush_log(dt('Deleted "!role"', array('!role' => $rid)), LogLevel::SUCCESS);
   }
   return $result;
 }
@@ -168,7 +169,7 @@ function drush_role_add_perm($rid, $permissions = NULL) {
     $result = drush_role_perm('add', $rid, $perm);
     if ($result !== FALSE) {
       $added_perm = TRUE;
-      drush_log(dt('Added "!perm" to "!role"', array('!perm' => $perm, '!role' => $result->name)), 'success');
+      drush_log(dt('Added "!perm" to "!role"', array('!perm' => $perm, '!role' => $result->name)), LogLevel::SUCCESS);
     }
   }
 
@@ -202,7 +203,7 @@ function drush_role_remove_perm($rid, $permissions = NULL) {
     $result = drush_role_perm('remove', $rid, $perm);
     if ($result !== FALSE) {
       $removed_perm = TRUE;
-      drush_log(dt('Removed "!perm" from "!role"', array('!perm' => $perm, '!role' => $result->name)), 'ok');
+      drush_log(dt('Removed "!perm" from "!role"', array('!perm' => $perm, '!role' => $result->name)), LogLevel::OK);
     }
   }
 
