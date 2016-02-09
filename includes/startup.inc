@@ -30,6 +30,21 @@ function drush_env() {
   // variable values using 'printenv'.
   if (empty($env)) {
     exec('printenv', $env_items);
+
+    // Exported bash functions contain newlines in the
+    // printenv output. If any are present this causes
+    // the array items to no longer contain key=value
+    // with new indices for every line in the function.
+    // Linux printenv has a flag -0 which delimits vars
+    // by an ASCII NUL instead of newlines to account
+    // for this problem, though other systems (OS X)
+    // printenv do not have this option. We filter
+    // the resulting array for any functions, concat
+    // each into a contiguous string and merge the
+    // resulting array; the end result having bash
+    // functions take up one array index each.
+    $env_items = drush_env_fix_bash_functions($env_items);
+
     foreach ($env_items as $item) {
       // Each $item is 'key=value' or just 'key'.
       // If $item has no value, then explode will return
@@ -42,6 +57,69 @@ function drush_env() {
   }
 
   return $env;
+}
+
+/**
+ * Maintains an array of bash functions from printenv, each
+ * function contained to only one string in the array.
+ *
+ * @param string $str_func Contains an entire bash func.
+ *
+ * @return array The current state of the func array.
+ */
+function drush_env_static_arr_func($str_func) {
+  static $arr_func = [];
+
+  if (!is_null($str_func)) {
+    array_push($arr_func, $str_func);
+  }
+
+  return $arr_func;
+}
+
+/**
+ * Filters a printenv array for any bash functions, concat
+ * each into a contiguous string and merge the resulting
+ * array; the end result having bash functions take up one
+ * array index each.
+ *
+ * @param array $env The printenv exec result array.
+ *
+ * @return array A cleaned printenv array.
+ */
+function drush_env_fix_bash_functions($env) {
+  // Filters the array, removing indices which contain
+  // partial functions while building a contiguous string
+  // for each function.
+  $env = array_filter($env, function($item) {
+    static $in_func = false;
+    static $str_func = '';
+
+    if ($in_func) {
+      $str_func .= "\n$item";
+      if (preg_match('/^}$/', $item)) {
+        $in_func = false;
+        drush_env_static_arr_func($str_func);
+        $str_func = '';
+      }
+      return false;
+    }
+
+    if (preg_match('/^BASH_FUNC_/', $item)) {
+      $in_func = true;
+      $str_func = $item;
+      return false;
+    }
+
+    return true;
+  });
+
+  // Merge the cleaned array with the array of contiguous
+  // function strings.
+  $env = array_merge($env, drush_env_static_arr_func(null));
+
+  // Return the merged array with its indices reformed.
+  return array_values($env);
 }
 
 /**
