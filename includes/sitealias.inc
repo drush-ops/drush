@@ -88,15 +88,15 @@ function drush_sitealias_check_site_env() {
  * Check to see if a '@self' record was created during bootstrap.
  * If not, make one now.
  */
-function drush_sitealias_create_self_alias($fallback_site_record = array()) {
-  $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
-  $uri = drush_get_context('DRUSH_SELECTED_URI');
-  // Create an alias '@self'
-  if (!empty($drupal_root) && !empty($uri)) {
-    _drush_sitealias_cache_alias('@self', array('root' => $drupal_root, 'uri' => $uri));
-  }
-  elseif (!empty($fallback_site_record['root']) && !empty($fallback_site_record['uri'])) {
-    _drush_sitealias_cache_alias('@self', $fallback_site_record);
+function drush_sitealias_create_self_alias() {
+  $self_record = drush_sitealias_get_record('@self');
+  if (!array_key_exists('root', $self_record) && !array_key_exists('remote-host', $self_record)) {
+    $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+    $uri = drush_get_context('DRUSH_SELECTED_URI');
+    if (!empty($drupal_root) && !empty($uri)) {
+      // Create an alias '@self'
+      _drush_sitealias_cache_alias('@self', array('root' => $drupal_root, 'uri' => $uri));
+    }
   }
 }
 
@@ -1708,7 +1708,7 @@ function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
       drush_sitealias_cache_alias_by_path($site_alias_settings);
       if (empty($prefix)) {
         // Create an alias '@self'
-        drush_sitealias_create_self_alias($site_alias_settings);
+        _drush_sitealias_cache_alias('@self', $site_alias_settings);
         // Change the selected site to match the new --root and --uri, if any were set.
         _drush_preflight_root_uri();
       }
