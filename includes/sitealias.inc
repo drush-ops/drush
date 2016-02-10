@@ -1707,7 +1707,14 @@ function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
       drush_sitealias_set_alias_context($site_alias_settings, $prefix);
       drush_sitealias_cache_alias_by_path($site_alias_settings);
       if (empty($prefix)) {
+
         // Create an alias '@self'
+        // Allow 'uri' from the commandline to override
+        $drush_uri = drush_get_option(array('uri', 'l'), FALSE);
+        if ($drush_uri) {
+          $site_alias_settings['uri'] = $drush_uri;
+        }
+
         _drush_sitealias_cache_alias('@self', $site_alias_settings);
         // Change the selected site to match the new --root and --uri, if any were set.
         _drush_preflight_root_uri();
