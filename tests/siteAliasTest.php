@@ -187,6 +187,31 @@ EOD;
     file_put_contents($sites[$name]['root'] . '/sites/sites.php', $sites_php, FILE_APPEND);
     $this->drush('pm-updatecode', array(), array('uri' => 'http://example.com', 'no' => NULL, 'no-core' => NULL, 'verbose' => NULL), '@' . $name);
     $this->assertContains('--uri=http://example.com', $this->getErrorOutput());
+
+    // Test a remote alias that does not have a 'root' element
+    $aliasPath = UNISH_SANDBOX . '/site-alias-directory';
+    @mkdir($aliasPath);
+    $aliasContents = <<<EOD
+  <?php
+  // Written by Unish. This file is safe to delete.
+  \$aliases['rootlessremote'] = array(
+    'uri' => 'remoteuri',
+    'remote-host' => 'exampleisp.com',
+    'remote-user' => 'www-admin',
+  );
+EOD;
+    file_put_contents("$aliasPath/rootlessremote.aliases.drushrc.php", $aliasContents);
+    $this->drush('core-status', array(), array('uri' => 'http://example.com', 'simulate' => NULL, 'alias-path' => $aliasPath), '@rootlessremote');
+    $output = $this->getOutput();
+    $this->assertContains(' ssh ', $output);
+    $this->assertContains('--uri=http://example.com', $output);
+
+    // Test a remote alias that does not have a 'root' element with cwd inside a Drupal root directory
+    $root = $this->webroot();
+    $this->drush('core-status', array(), array('uri' => 'http://example.com', 'simulate' => NULL, 'alias-path' => $aliasPath), '@rootlessremote', $root);
+    $output = $this->getOutput();
+    $this->assertContains(' ssh ', $output);
+    $this->assertContains('--uri=http://example.com', $output);
   }
 
   /**
