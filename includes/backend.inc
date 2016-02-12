@@ -1034,8 +1034,8 @@ function _drush_backend_invoke($cmds, $common_backend_options = array(), $contex
 
       if ($proc['output']) {
         $values = drush_backend_parse_output($proc['output'], $proc['backend-options'], $proc['outputted']);
-        $values['site'] = $site;
         if (is_array($values)) {
+          $values['site'] = $site;
           if (empty($ret)) {
             $ret = $values;
           }
