@@ -301,30 +301,30 @@ function drush_field_info($type = NULL) {
   switch ($type) {
     case 'fields':
       drush_hide_output_fields(array('type-name', 'widget', 'widgets'));
-      $info = field_info_fields();
-      foreach ($info as $field_name => $field) {
+      /** @var \Drupal\field\FieldStorageConfigInterface[] $field_storages */
+      $field_storages = \Drupal::entityTypeManager()->getStorage('field_storage_config')->loadMultiple();
+      foreach ($field_storages as $field_name => $field_storage) {
         $bundle_strs = array();
-        foreach ($field['bundles'] as $entity_type => $bundles) {
-          $bundle_strs += $bundles;
+        foreach ($field_storage->getBundles() as $entity_type => $bundles) {
+          $bundle_strs[] = $bundles;
         }
         $result[$field_name] = array(
           'field-name' => $field_name,
-          'type' => $field['type'],
-          'bundle' => $bundle_strs,
+          'type' => $field_storage->getType(),
+          'bundle' => implode(' ', $bundle_strs),
         );
       }
       break;
     case 'types':
       drush_hide_output_fields(array('field-name', 'type', 'bundle'));
-      $info = field_info_field_types();
-      module_load_include('inc', 'field_ui', 'field_ui.admin');
-      $widgets = field_info_widget_types();
+      $info = \Drupal::service('plugin.manager.field.field_type')->getDefinitions();
+      /** @var \Drupal\Core\Field\WidgetPluginManager $manager */
+      $manager = \Drupal::service('plugin.manager.field.widget');
       foreach ($info as $type_name => $type) {
-        $widgets = field_ui_widget_type_options($type_name);
         $result[$type_name] = array(
           'type-name' => $type_name,
           'widget' => $type['default_widget'],
-          'widgets' => $widgets,
+          'widgets' => implode(' ', array_keys($manager->getOptions($type_name))),
         );
       }
       break;
