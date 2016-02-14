@@ -129,7 +129,13 @@ function drush_core_pre_site_install($profile = NULL) {
   if ($dir = drush_get_option('sites-subdir')) {
     $sites_subdir = "sites/$dir";
   }
-  $conf_path = $sites_subdir;
+  if ($sites_subdir) {
+    $conf_path = $sites_subdir;
+  }
+  else {
+    $conf_path = 'sites/default';
+  }
+
   // Handle the case where someuse uses --variables to set the file public path. Won't work on D8+.
   $files = !empty($GLOBALS['conf']['files_public_path']) ? $GLOBALS['conf']['files_public_path'] : "$conf_path/files";
   $settingsfile = "$conf_path/settings.php";
@@ -137,6 +143,9 @@ function drush_core_pre_site_install($profile = NULL) {
   $default = realpath($alias_record['root'] . '/sites/default');
   $sitesfile_write = drush_drupal_major_version() >= 8 && $conf_path != $default && !file_exists($sitesfile);
 
+  if (!file_exists($conf_path)) {
+    $msg[] = dt('create a @default directory', array('@default' => $conf_path));
+  }
   if (!file_exists($settingsfile)) {
     $msg[] = dt('create a @settingsfile file', array('@settingsfile' => $settingsfile));
   }
