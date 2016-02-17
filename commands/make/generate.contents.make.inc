@@ -94,13 +94,13 @@ function make_generate_from_makefile($file, $makefile) {
     }
   }
 
-  $defaults = $info['defaults'];
+  $defaults = isset($info['defaults']) ? $info['defaults'] : array();
   $core = current($projects);
   $core = $core['core'];
   foreach ($projects as $name => $project) {
     // If a specific revision was requested, do not set the version.
     if (!isset($project['revision'])) {
-      $projects[$name]['version'] = $project['download']['full_version'];
+      $projects[$name]['version'] = isset($project['download']['full_version']) ? $project['download']['full_version'] : '';
       if ($project['type'] != 'core' && strpos($projects[$name]['version'], $project['core']) === 0) {
         $projects[$name]['version'] = substr($projects[$name]['version'], strlen($project['core'] . '-'));
       }
@@ -141,7 +141,7 @@ function make_generate_from_makefile($file, $makefile) {
 
   $libraries = drush_get_option('DRUSH_MAKE_LIBRARIES', FALSE);
   if ($libraries === FALSE) {
-    $libraries = $info['libraries'];
+    $libraries = isset($info['libraries']) ? $info['libraries'] : array();
   }
   if (is_array($libraries)) {
     foreach ($libraries as $name => $library) {
