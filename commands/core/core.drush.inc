@@ -435,7 +435,7 @@ function core_drush_engine_drupal() {
  */
 function drush_core_entity_updates() {
   if (drush_get_context('DRUSH_SIMULATE')) {
-    drush_log(dt('entity-updates command does not support --simpulate option.'), LogLevel::OK);
+    drush_log(dt('entity-updates command does not support --simulate option.'), LogLevel::OK);
   }
 
   drush_include_engine('drupal', 'update');
