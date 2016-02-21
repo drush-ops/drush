@@ -32,8 +32,8 @@
     "php": ">=5.4.5",
     "psr/log": "~1.0",
     "psy/psysh": "~0.6",
-    "symfony/yaml": "2.7.*",
-    "symfony/var-dumper": "^2.6.3",
+    "symfony/yaml": "~2.3|~3.0",
+    "symfony/var-dumper": "~2.7|~3.0",
     "pear/console_table": "~1.3.0"
   },
   "require-dev": {
