@@ -7,6 +7,13 @@
 
 use Drush\Log\LogLevel;
 
+use Drush\Symfony\BootstrapCompilerPass;
+
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+
 /**
  * The main Drush function.
  *
@@ -71,7 +78,7 @@ function drush_main() {
   // the bootstrap object returned from drush_preflight().  This will
   // require some adjustments to Drush bootstrapping.
   // See: https://github.com/drush-ops/drush/pull/1303
-  if ($bootstrap = drush_get_bootstrap_object()) {
+  if ($bootstrap = \Drush::getBootstrap()) {
     $bootstrap->terminate();
   }
   drush_postflight();
@@ -117,6 +124,9 @@ function drush_preflight_prepare() {
 
   $classloader = require $vendor_path;
 
+  // These could be loaded by the autoloader, but that would not
+  // necessarily be advantageous.
+  // See https://github.com/drush-ops/drush/pull/1884#issuecomment-167439930
   require_once DRUSH_BASE_PATH . '/includes/startup.inc';
   require_once DRUSH_BASE_PATH . '/includes/bootstrap.inc';
   require_once DRUSH_BASE_PATH . '/includes/environment.inc';
@@ -138,8 +148,9 @@ function drush_preflight_prepare() {
   drush_set_context('DRUSH_VENDOR_PATH', dirname($vendor_path));
   drush_set_context('DRUSH_CLASSLOADER', $classloader);
 
-  // Can't log until we have a logger, so we'll create this ASAP.
-  _drush_create_default_logger();
+  // We need to load our services right away, as we cannot log
+  // or do much else until after this is done.
+  drush_init_dependency_injection_container();
 
   // Terminate immediately unless invoked as a command line script
   if (!drush_verify_cli()) {
@@ -160,9 +171,11 @@ function drush_preflight_prepare() {
     return; // An error was logged.
   }
 
-  $drush_info = drush_read_drush_info();
-  define('DRUSH_VERSION', $drush_info['drush_version']);
-  $version_parts = explode('.', DRUSH_VERSION);
+  // Set up for backwards-compatibility. New code should call
+  // \Drush::getVersion() and \Drush::getMajorVersion() directly
+  $drush_version = \Drush::getVersion();
+  $version_parts = explode('.', $drush_version);
+  define('DRUSH_VERSION', $drush_version);
   define('DRUSH_MAJOR_VERSION', $version_parts[0]);
   define('DRUSH_MINOR_VERSION', $version_parts[1]);
 
@@ -181,6 +194,34 @@ function drush_preflight_prepare() {
   _drush_preflight_global_options();
 
   drush_log(dt("Drush preflight prepare loaded autoloader at !autoloader", array('!autoloader' => realpath($vendor_path))), LogLevel::PREFLIGHT);
+}
+
+/**
+ * Set up our dependency injection container, and load drush-services.yml.
+ */
+function drush_init_dependency_injection_container() {
+  $servicesFile = dirname(__DIR__) . "/drush-services.yml";
+
+  // Set up our dependency injection container.
+  $container = new ContainerBuilder();
+
+  // Add a compiler pass: any Boot object tagged 'bootstrap.boot' will
+  // be added to the BootstrapManager.
+  //$container->addCompilerPass(new BootstrapCompilerPass());
+
+  $loader = new YamlFileLoader($container, new FileLocator(dirname($servicesFile)));
+  $loader->load(basename($servicesFile));
+
+  // Note: this freezes our container, preventing us from adding any further
+  // services to it.
+  // $container->compile();
+
+  // Store the container in the \Drush object
+  \Drush::setContainer($container);
+
+  // We are not ready to compile yet, so we will manually find
+  // all of our 'bootstrap.boot' objects and add them to the container
+  \Drush::addBootstrapManagerReferences();
 }
 
 /**
@@ -309,7 +350,7 @@ function drush_preflight() {
   drush_set_environment_vars($alias_record);
 
   // Select the bootstrap object and return it.
-  return drush_select_bootstrap_class();
+  return \Drush::bootstrapManager()->getBootstrap();
 }
 
 /**
@@ -323,9 +364,8 @@ function drush_preflight_root() {
   if ($root) {
     $root = realpath($root);
   }
-  // @todo This context name should not mention Drupal.
   // @todo Drupal code should use DRUSH_DRUPAL_ROOT instead of this constant.
-  drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $root);
+  \Drush::bootstrapManager()->setRoot($root);
 
   // Load the config options from Drupal's /drush, ../drush, and sites/all/drush directories,
   // even prior to bootstrapping the root.
@@ -568,7 +608,7 @@ function drush_preflight_command_dispatch() {
   }
   $args = drush_get_arguments();
   $command_name = array_shift($args);
-  $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  $root = \Drush::bootstrapManager()->getRoot();
   $local_drush = drush_get_option('drush-script');
   if (empty($local_drush) && !empty($root)) {
     $local_drush = find_wrapper_or_launcher($root);
