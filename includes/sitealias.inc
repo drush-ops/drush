@@ -91,7 +91,7 @@ function drush_sitealias_check_site_env() {
 function drush_sitealias_create_self_alias() {
   $self_record = drush_sitealias_get_record('@self');
   if (!array_key_exists('root', $self_record) && !array_key_exists('remote-host', $self_record)) {
-    $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+    $drupal_root = \Drush::bootstrapManager()->getRoot();
     $uri = drush_get_context('DRUSH_SELECTED_URI');
     if (!empty($drupal_root) && !empty($uri)) {
       // Create an alias '@self'
@@ -403,7 +403,7 @@ function drush_sitealias_alias_path($alias_path_context = NULL) {
 
   // If the user defined the root of a drupal site, then also
   // look for alias files in /drush and /sites/all/drush.
-  $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  $drupal_root = \Drush::bootstrapManager()->getRoot();
   if (!empty($drupal_root)) {
     $site_paths[] = drush_sitealias_alias_base_directory($drupal_root . '/../drush');
     $site_paths[] = drush_sitealias_alias_base_directory($drupal_root . '/drush');
@@ -666,7 +666,7 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
       }
     }
     else {
-      $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+      $drupal_root = \Drush::bootstrapManager()->getRoot();
     }
     if (isset($drupal_root) && !is_array($drupal_root)) {
       drush_sitealias_create_sites_alias($drupal_root);
@@ -1081,7 +1081,7 @@ function drush_sitealias_bootstrapped_site_name() {
     $site_name = $self_record['#name'];
   }
   if (!isset($site_name) || ($site_name == '@self')) {
-    $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+    $drupal_root = \Drush::bootstrapManager()->getRoot();
     if (isset($drupal_root)) {
       $drupal_uri = drush_get_context('DRUSH_SELECTED_URI', 'default');
       $drupal_uri = str_replace('http://', '', $drupal_uri);
@@ -1530,7 +1530,7 @@ function _drush_sitealias_find_record_for_local_site($alias, $drupal_root = NULL
   }
 
   if (!isset($drupal_root)) {
-    $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+    $drupal_root = \Drush::bootstrapManager()->getRoot();
   }
 
   if (!empty($drupal_root)) {
