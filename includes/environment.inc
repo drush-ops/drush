@@ -28,7 +28,7 @@ function drush_error_handler($errno, $message, $filename, $line, $context) {
   if ($errno & error_reporting()) {
     // By default we log notices.
     $type = drush_get_option('php-notices', 'notice');
-    $halt_on_error = drush_get_option('halt-on-error', TRUE);
+    $halt_on_error = drush_get_option('halt-on-error', (drush_drupal_major_version() != 6));
 
     // Bitmask value that constitutes an error needing to be logged.
     $error = E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR;
@@ -45,6 +45,7 @@ function drush_error_handler($errno, $message, $filename, $line, $context) {
     drush_log($message . ' ' . basename($filename) . ':' . $line, $type);
 
     if ($errno == E_RECOVERABLE_ERROR && $halt_on_error) {
+      drush_log(dt('E_RECOVERABLE_ERROR encountered; aborting. To ignore recoverable errors, run again with --no-halt-on-error'), 'error');
       exit(DRUSH_APPLICATION_ERROR);
     }
 
