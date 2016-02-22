@@ -676,19 +676,14 @@ function drush_get_projects(&$extensions = NULL) {
 
     // Obtain the project name. It is not available in this cases:
     //   1. the extension is part of drupal core.
-    //   2. the project was checked out from CVS/git and cvs_deploy/git_deploy
-    //      is not installed.
+    //   2. the project was checked out from git and git_deploy is not installed.
     //   3. it is not a project hosted in drupal.org.
     if (empty($extension->info['project'])) {
       if (isset($extension->info['version']) && ($extension->info['version'] == drush_drupal_version())) {
         $project = 'drupal';
       }
       else {
-        if (is_dir($extension_path . '/CVS') && (!drush_module_exists('cvs_deploy'))) {
-          $extension->vcs = 'cvs';
-          drush_log(dt('Extension !extension is fetched from cvs. Ignoring.', array('!extension' => $extension_name)), LogLevel::DEBUG);
-        }
-        elseif (is_dir($extension_path . '/.git') && (!drush_module_exists('git_deploy'))) {
+        if (is_dir($extension_path . '/.git') && (!drush_module_exists('git_deploy'))) {
           $extension->vcs = 'git';
           drush_log(dt('Extension !extension is fetched from git. Ignoring.', array('!extension' => $extension_name)), LogLevel::DEBUG);
         }

@@ -35,7 +35,7 @@ class drush_version_control_backup implements drush_version_control {
           return TRUE;
         }
       }
-      // cvs or git.
+      // git.
       elseif (drush_copy_dir($project['full_project_path'], $backup_target)) {
         return TRUE;
       }
