@@ -48,7 +48,7 @@ class drush_version_control_svn implements drush_version_control {
    * Implementation of rollback().
    */
   public function rollback($project) {
-    if (drush_shell_exec('svn revert '. drush_get_option('svnrevertparams') .' '. $project['full_project_path'])) {
+    if (drush_shell_exec('svn revert -R'. drush_get_option('svnrevertparams') .' '. $project['full_project_path'])) {
       $output = drush_shell_exec_output();
       if (!empty($output)) {
         return drush_set_error('DRUSH_PM_SVN_LOCAL_CHANGES', dt("The SVN working copy at !path appears to have uncommitted changes (see below). Please commit or revert these changes before continuing:\n!output", array('!path' => $project['full_project_path'], '!output' => implode("\n", $output))));
