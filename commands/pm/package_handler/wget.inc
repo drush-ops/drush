@@ -100,7 +100,7 @@ function package_handler_download_project(&$request, $release) {
 function package_handler_update_project(&$request, $release) {
   $download_path = package_handler_download_project($request, $release);
   if ($download_path) {
-    return drush_move_dir($download_path, $request['full_project_path']);
+    return drush_move_dir($download_path, $request['full_project_path'], TRUE);
   }
   else {
     return FALSE;
