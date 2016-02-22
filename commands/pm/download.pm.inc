@@ -198,37 +198,18 @@ function drush_pm_download() {
     if ($version_control->engine == 'backup') {
       // Check if install location already exists.
       if (is_dir($request['project_install_location'])) {
-        if (drush_confirm(dt('Install location !location already exists. Do you want to overwrite it?', array('!location' => $request['project_install_location'])))) {
-          drush_delete_dir($request['project_install_location'], TRUE);
-        }
-        else {
+        if (!drush_confirm(dt('Install location !location already exists. Do you want to overwrite it?', array('!location' => $request['project_install_location'])))) {
           drush_log(dt("Skip installation of !project to !dest.", array('!project' => $request['name'], '!dest' => $request['project_install_location'])), LogLevel::WARNING);
           continue;
         }
       }
     }
-    else {
-      // Find and unlink all files but the ones in the vcs control directories.
-      $skip_list = array('.', '..');
-      $skip_list = array_merge($skip_list, drush_version_control_reserved_files());
-      drush_scan_directory($request['project_install_location'], '/.*/', $skip_list, 'unlink', TRUE, 'filename', 0, TRUE);
-    }
 
     // Copy the project to the install location.
-    if (drush_op('_drush_recursive_copy', $request['full_project_path'], $request['project_install_location'])) {
+    if (drush_copy_dir($request['full_project_path'], $request['project_install_location'], FILE_EXISTS_OVERWRITE)) {
       drush_log(dt("Project !project (!version) downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $request['project_install_location'])), LogLevel::SUCCESS);
       // Adjust full_project_path to the final project location.
       $request['full_project_path'] = $request['project_install_location'];
-
-      // If the version control engine is a proper vcs we also need to remove
-      // orphan directories.
-      if ($version_control->engine != 'backup') {
-        $empty_dirs = drush_find_empty_directories($request['full_project_path'], $version_control->reserved_files());
-        foreach ($empty_dirs as $empty_dir) {
-          // Some VCS files are read-only on Windows (e.g., .svn/entries).
-          drush_delete_dir($empty_dir, TRUE);
-        }
-      }
 
       // Post download actions.
       package_handler_post_download($request, $release);
