@@ -10,6 +10,22 @@ namespace Unish;
  */
 class generateMakeCase extends CommandUnishTestCase {
   function testGenerateMake() {
+    return $this->_testGenerateMake('devel', 'bootstrap');
+  }
+
+  function testGenerateMakeOmega() {
+    # TODO: Don't skip this test by default once the underlying issue is resolved.
+    # See: https://github.com/drush-ops/drush/issues/2030
+    $run_omega_make_test = getenv("DRUSH_TEST_MAKE_OMEGA");
+    if ($run_omega_make_test) {
+      return $this->_testGenerateMake('devel', 'omega');
+    }
+    else {
+      $this->markTestSkipped('Set `DRUSH_TEST_MAKE_OMEGA=1`, in order to run this test. See: https://github.com/drush-ops/drush/issues/2028');
+    }
+  }
+
+  function _testGenerateMake($module, $theme) {
     $sites = $this->setUpDrupal(1, TRUE);
     $major_version = UNISH_DRUPAL_MAJOR_VERSION . '.x';
 
@@ -23,8 +39,8 @@ class generateMakeCase extends CommandUnishTestCase {
     );
     // Omega requires these core modules.
     $this->drush('pm-enable', array('block', 'search', 'help'), $options);
-    $this->drush('pm-download', array('omega', 'devel'), $options);
-    $this->drush('pm-enable', array('omega', 'devel'), $options);
+    $this->drush('pm-download', array($theme, $module), $options);
+    $this->drush('pm-enable', array($theme, $module), $options);
 
     $makefile = UNISH_SANDBOX . '/dev.make.yml';
 
@@ -35,8 +51,8 @@ core: $major_version
 api: 2
 projects:
   drupal: {  }
-  devel: {  }
-  omega: {  }
+  $module: {  }
+  $theme: {  }
 EOD;
     $actual = trim(file_get_contents($makefile));
 
@@ -53,9 +69,9 @@ api = 2
 ; Core
 projects[] = "drupal"
 ; Modules
-projects[] = "devel"
+projects[] = "$module"
 ; Themes
-projects[] = "omega"
+projects[] = "$theme"
 EOD;
     $actual = trim(file_get_contents($makefile));
 
@@ -72,10 +88,10 @@ core: $major_version
 api: 2
 projects:
   drupal: {  }
-  devel: {  }
+  $module: {  }
   libraries:
     subdir: contrib
-  omega: {  }
+  $theme: {  }
 EOD;
     $actual = trim(file_get_contents($makefile));
 
@@ -92,11 +108,11 @@ api = 2
 ; Core
 projects[] = "drupal"
 ; Modules
-projects[] = "devel"
+projects[] = "$module"
 projects[libraries][subdir] = "contrib"
 
 ; Themes
-projects[] = "omega"
+projects[] = "$theme"
 EOD;
     $actual = trim(file_get_contents($makefile));
 
@@ -105,6 +121,6 @@ EOD;
     // Generate a makefile with version numbers (in .ini format).
     $this->drush('generate-makefile', array($makefile), array('format' => 'ini') + $options);
     $actual = file_get_contents($makefile);
-    $this->assertContains('projects[devel][version] = "', $actual);
+    $this->assertContains('projects[' . $module . '][version] = "', $actual);
   }
 }
