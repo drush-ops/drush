@@ -12,7 +12,7 @@ php drush.phar core-status
 chmod +x drush.phar
 sudo mv drush.phar /usr/local/bin/drush
 
-# Enrich the bash startup file with completion and aliases.
+# Optional. Enrich the bash startup file with completion and aliases.
 drush init
 ```
     
@@ -25,7 +25,7 @@ drush init
 
 Install a site-local Drush
 -----------------
-In addition to the global Drush, it is recommended that Drupal 8 sites are [built using Composer, with Drush listed as a dependency](https://github.com/drupal-composer/drupal-project).   
+In addition to the global Drush, it is recommended that Drupal 8 sites be [built using Composer, with Drush listed as a dependency](https://github.com/drupal-composer/drupal-project).
 
 1. When you run `drush`, the global Drush is called first and then hands execution to the site-local Drush. This gives you the convenience of running `drush` without specifying the full path to the executable, without sacrificing the safety provided by a site-local Drush.
 2. Optional: Copy the [examples/drush.wrapper](https://github.com/drush-ops/drush/blob/master/examples/drush.wrapper) file to your project root and modify to taste. This is a handy launcher script; add --local here to turn off all global configuration locations, and maintain consistency over configuration/aliases/commandfiles for your team.
