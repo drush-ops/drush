@@ -85,7 +85,8 @@ class Caster {
       $service_ids = $container->getServiceIds();
       sort($service_ids);
       foreach ($service_ids as $service_id) {
-        $array[BaseCaster::PREFIX_VIRTUAL . $service_id] = get_class($container->get($service_id));
+        $service = $container->get($service_id);
+        $array[BaseCaster::PREFIX_VIRTUAL . $service_id] = is_object($service) ? get_class($service) : $service;
       }
     }
 
