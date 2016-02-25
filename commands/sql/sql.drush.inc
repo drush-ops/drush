@@ -427,7 +427,7 @@ function drush_sql_query($query = NULL) {
 }
 
 /**
- * Drops all tables in the database.
+ * Command callback. Drops all tables in the database.
  */
 function drush_sql_drop() {
   drush_sql_bootstrap_further();
@@ -440,6 +440,9 @@ function drush_sql_drop() {
   return $sql->drop($tables);
 }
 
+/**
+ * Command callback. Launches console a DB backend.
+ */
 function drush_sql_cli() {
   drush_sql_bootstrap_further();
   $sql = drush_sql_get_class();
