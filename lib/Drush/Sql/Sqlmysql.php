@@ -100,6 +100,7 @@ EOT;
     $ignores = array();
     $skip_tables  = array_merge($structure_tables, $skip_tables);
     $data_only = drush_get_option('data-only');
+    $no_data = drush_get_option('no-data');
     // The ordered-dump option is only supported by MySQL for now.
     // @todo add documention once a hook for drush_get_option_help() is available.
     // @see drush_get_option_help() in drush.inc
@@ -115,6 +116,9 @@ EOT;
     $extra = ' --no-autocommit --single-transaction --opt -Q';
     if (isset($data_only)) {
       $extra .= ' --no-create-info';
+    }
+    elseif (isset($no_data)) {
+      $extra .= ' --no-data';
     }
     if (isset($ordered_dump)) {
       $extra .= ' --skip-extended-insert --order-by-primary';

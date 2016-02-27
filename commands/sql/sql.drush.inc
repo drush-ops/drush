@@ -116,6 +116,7 @@ function sql_drush_command() {
       'tables-list' => 'A comma-separated list of tables to transfer. Optional.',
       'create-db' => array('hidden' => TRUE, 'description' => 'Omit DROP TABLE statements. Postgres and Oracle only.  Used by sql-sync, since including the DROP TABLE statements interfere with the import when the database is created.'),
       'data-only' => 'Dump data without statements to create any of the schema.',
+      'no-data' => 'Dump statements to create scheme without any data. Mysql only.',
       'ordered-dump' => 'Order by primary key and add line breaks for efficient diff in revision control. Slows down the dump. Mysql only.',
       'gzip' => 'Compress the dump using the gzip program which must be in your $PATH.',
     ) + $options + $db_url,
