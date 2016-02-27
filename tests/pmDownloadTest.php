@@ -77,7 +77,7 @@ class pmDownloadCase extends CommandUnishTestCase {
     $items = $this->getOutputAsList();
     $output = $this->getOutput();
      // 6 items are: Select message + Cancel + 3 versions.
-    $this->assertEquals(5, count($items), '--select offerred 3 options.');
+    $this->assertEquals(4, count($items), '--select offerred 3 options.');
     $this->assertContains('6.x-1.x-dev', $output, 'Dev release was shown by --select.');
 
     // --select --dev. Specify 6.x since that has so many releases.
