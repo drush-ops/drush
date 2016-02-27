@@ -48,6 +48,7 @@ function watchdog_drush_command() {
     'options' => array(
       'count' => 'The number of messages to show. Defaults to 10.',
       'severity' => 'Restrict to messages of a given severity level.',
+      'severity-range' => 'When matching by severity, include messages of the given level or any more severe level (by default, matches exact level).',
       'type' => 'Restrict to messages of a given type.',
       'tail' => 'Continuously show new watchdog messages until interrupted.',
       'sleep-delay' => 'To be used in conjunction with --tail. This is the number of seconds to wait between each poll to the database. Delay is 1 second by default.',
@@ -78,6 +79,7 @@ function watchdog_drush_command() {
     'drupal dependencies' => array('dblog'),
     'options' => array(
       'severity' => 'Delete messages of a given severity level.',
+      'severity-range' => 'When matching by severity, include messages of the given level or any more severe level (by default, matches exact level).',
       'type' => 'Delete messages of a given type.',
     ),
     'examples' => array(
@@ -383,7 +385,12 @@ function core_watchdog_query($type = NULL, $severity = NULL, $filter = NULL, $cr
       $msg = "Unknown severity level: !severity.\nValid severity levels are: !levels.";
       return drush_set_error(dt($msg, array('!severity' => $severity, '!levels' => implode(', ', $levels))));
     }
-    $conditions[] = 'severity = :severity';
+    if (drush_get_option('severity-range')) {
+      $conditions[] = 'severity <= :severity';
+    }
+    else {
+      $conditions[] = 'severity = :severity';
+    }
     $args[':severity'] = $level;
   }
   if ($filter) {
