@@ -213,6 +213,7 @@ function core_drush_command() {
       'drush php-eval \'variable_set("hello", "world");\'' => 'Sets the hello variable using Drupal API.',
       'drush php-eval \'$node = node_load(1); print $node->title;\'' => 'Loads node with nid 1 and then prints its title.',
       'drush php-eval "file_unmanaged_copy(\'$HOME/Pictures/image.jpg\', \'public://image.jpg\');"' => 'Copies a file whose path is determined by an environment\'s variable. Note the use of double quotes so the variable $HOME gets replaced by its value.',
+      'drush php-eval "node_access_rebuild();"' => 'Rebuild node access permissions.',
     ),
     'arguments' => array(
       'code' => 'PHP code',
