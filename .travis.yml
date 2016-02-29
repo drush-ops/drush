@@ -10,6 +10,8 @@ sudo: false
 
 env:
   matrix:
+#D6
+    - UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--group=base
 #D7
     - UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=make
     - UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=base
