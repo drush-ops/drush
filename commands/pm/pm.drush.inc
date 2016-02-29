@@ -2148,52 +2148,6 @@ function drush_pm_extensions_in_project($project) {
 }
 
 /**
- * Return an array of empty directories.
- *
- * Walk a directory and return an array of subdirectories that are empty. Will
- * return the given directory if it's empty.
- * If a list of items to exclude is provided, subdirectories will be condidered
- * empty even if they include any of the items in the list.
- *
- * @param string $dir
- *   Path to the directory to work in.
- * @param array $exclude
- *   Array of files or directory to exclude in the check.
- *
- * @return array
- *   A list of directory paths that are empty. A directory is deemed to be empty
- *   if it only contains excluded files or directories.
- */
-function drush_find_empty_directories($dir, $exclude = array()) {
-  // Skip files.
-  if (!is_dir($dir)) {
-    return array();
-  }
-  $to_exclude = array_merge(array('.', '..'), $exclude);
-  $empty_dirs = array();
-  $dir_is_empty = TRUE;
-  foreach (scandir($dir) as $file) {
-    // Skip excluded directories.
-    if (in_array($file, $to_exclude)) {
-      continue;
-    }
-    // Recurse into sub-directories to find potentially empty ones.
-    $subdir = $dir . '/' . $file;
-    $empty_dirs += drush_find_empty_directories($subdir, $exclude);
-    // $empty_dir will not contain $subdir, if it is a file or if the
-    // sub-directory is not empty. $subdir is only set if it is empty.
-    if (!isset($empty_dirs[$subdir])) {
-      $dir_is_empty = FALSE;
-    }
-  }
-
-  if ($dir_is_empty) {
-    $empty_dirs[$dir] = $dir;
-  }
-  return $empty_dirs;
-}
-
-/**
  * Inject metadata into all .info files for a given project.
  *
  * @param string $project_dir
