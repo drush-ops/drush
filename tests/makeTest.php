@@ -511,6 +511,7 @@ class makeMakefileCase extends CommandUnishTestCase {
       'default-major' => 6, // The makefile used below is core = "6.x".
       'destination' => UNISH_SANDBOX . '/sites/all/modules/contrib',
       'yes' => NULL,
+      'dev' => NULL,
     );
     $this->drush('pm-download', array('cck_signup'), $options);
 
