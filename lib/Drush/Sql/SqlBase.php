@@ -61,6 +61,9 @@ class SqlBase {
     $table_selection = $this->get_expanded_table_selection();
     $file = $this->dumpFile($file);
     $cmd = $this->dumpCmd($table_selection);
+    if ($extra = drush_get_option('extra', $this->query_extra)) {
+      $cmd .= " $extra";
+    }
     // Gzip the output from dump command(s) if requested.
     if (drush_get_option('gzip')) {
       $cmd .= ' | gzip -f';
