@@ -90,7 +90,7 @@ class StatusInfoDrush implements StatusInfoInterface {
         continue;
       }
       drush_log(dt('Checking available update data for !project.', array('!project' => $project['label'])), LogLevel::OK);
-      $request = pm_parse_request($project_name, NULL, $project_name);
+      $request = pm_parse_request($project_name, NULL, $projects);
       $project_release_info = $release_info->get($request);
       if ($project_release_info) {
         $available[$project_name] = $project_release_info;
