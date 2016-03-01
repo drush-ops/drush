@@ -72,21 +72,21 @@ class pmDownloadCase extends CommandUnishTestCase {
       'select' => NULL,
       'choice' => 0, // Cancel.
     );
-    // --select. Specify 6.x since that has so many releases.
-    $this->drush('pm-download', array('devel-6.x'), $options, NULL, NULL, CommandUnishTestCase::UNISH_EXITCODE_USER_ABORT);
+    // --select. Specify 5.x since that is frozen and not subjected to "unsupported" hyjinx on drupal.org
+    $this->drush('pm-download', array('devel-5.x'), $options, NULL, NULL, CommandUnishTestCase::UNISH_EXITCODE_USER_ABORT);
     $items = $this->getOutputAsList();
     $output = $this->getOutput();
      // 6 items are: Select message + Cancel + 3 versions.
     $this->assertEquals(5, count($items), '--select offerred 3 options.');
-    $this->assertContains('6.x-1.x-dev', $output, 'Dev release was shown by --select.');
+    $this->assertContains('5.x-1.x-dev', $output, 'Dev release was shown by --select.');
 
     // --select --dev. Specify 6.x since that has so many releases.
-    $this->drush('pm-download', array('devel-6.x'), $options + array('dev' => NULL), NULL, NULL, CommandUnishTestCase::UNISH_EXITCODE_USER_ABORT);
+    $this->drush('pm-download', array('devel-5.x'), $options + array('dev' => NULL), NULL, NULL, CommandUnishTestCase::UNISH_EXITCODE_USER_ABORT);
     $items = $this->getOutputAsList();
     $output = $this->getOutput();
     // 12 items are: Select message + Cancel + 1 option.
     $this->assertEquals(3, count($items), '--select --dev expected to offer only one option.');
-    $this->assertContains('6.x-1.x-dev', $output, 'Assure that --dev lists the only dev release.');
+    $this->assertContains('5.x-1.x-dev', $output, 'Assure that --dev lists the only dev release.');
 
     // --select --all. Specify 5.x since this is frozen.
     $this->drush('pm-download', array('devel-5.x'), $options + array('all' => NULL), NULL, NULL, CommandUnishTestCase::UNISH_EXITCODE_USER_ABORT);
