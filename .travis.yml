@@ -52,8 +52,11 @@ matrix:
   exclude:
     - php: 7.0
       env: UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--group=base
+    - php: 7.0
       env: UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--group=commands
+    - php: 7.0
       env: UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--group=pm
+    - php: 7.0
       env: UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
 
 
