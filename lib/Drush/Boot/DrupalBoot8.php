@@ -8,6 +8,19 @@ use Drupal\Core\DrupalKernel;
 
 class DrupalBoot8 extends DrupalBoot {
 
+  function __construct() {
+    // Add services supported by Drupal 8.
+    $this->add_service('queue', 'Drush\Queue\Queue8');
+    $this->add_service('role', 'Drush\Role\Role8');
+    $this->add_service('sql', 'Drush\Sql\Sql8');
+    // @todo: Switch engines to use services instead of class names?
+    //$this->add_service('status_info', 'Drush\UpdateService\StatusInfoDrupal8');
+    $this->add_service('user', 'Drush\User\User8');
+    $this->add_service('user_single', 'Drush\User\UserSingle8');
+
+    parent::__construct();
+  }
+
   /**
    * @var \Drupal\Core\DrupalKernelInterface
    */

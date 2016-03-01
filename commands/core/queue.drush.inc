@@ -64,7 +64,7 @@ function drush_queue_run_validate($queue_name) {
  * Return the appropriate queue class.
  */
 function drush_queue_get_class() {
-  return drush_get_class('Drush\Queue\Queue');
+  return drush_get_service('queue');
 }
 
 /**

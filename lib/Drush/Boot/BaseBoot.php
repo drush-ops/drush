@@ -5,6 +5,16 @@ namespace Drush\Boot;
 use Drush\Log\LogLevel;
 
 abstract class BaseBoot implements Boot {
+  /**
+   * A list of Drush services provide by this CMS.
+   *
+   * Some commands may require certain services, such as the "sql" service for
+   * executing the "sql-cli" command. Each service is keyed by it's unique name
+   * and has the value of the fully qualified class name.
+   *
+   * @var array
+   */
+  protected $services = array();
 
   function __construct() {
   }
@@ -22,6 +32,18 @@ abstract class BaseBoot implements Boot {
     drush_enforce_requirement_bootstrap_phase($command);
     drush_enforce_requirement_core($command);
     drush_enforce_requirement_drush_dependencies($command);
+  }
+
+  function get_services() {
+    return $this->services;
+  }
+
+  function get_service($service_name) {
+    return isset($this->services[$service_name]) ? $this->services[$service_name] : FALSE;
+  }
+
+  function add_service($service_name, $class_name) {
+    $this->services[$service_name] = $class_name;
   }
 
   function report_command_error($command) {

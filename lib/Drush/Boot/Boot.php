@@ -91,6 +91,43 @@ interface Boot {
   function enforce_requirement(&$command);
 
   /**
+   * Get a list of Drush services supported by this CMS.
+   *
+   * Services are a mapping from named string to control classes. Examples
+   * include the diffent Sql, Batch, and User classes used in Drupal 7/8.
+   *
+   * @see Drush\Boot\Boot::add_service()
+   *
+   * @return array
+   */
+  function get_services();
+
+  /**
+   * Given a service name, return a single service class name.
+   *
+   * @param string $service_name
+   *   The name of the service whose class is being retrieved.
+   *
+   * @return string|FALSE
+   */
+  function get_service($service_name);
+
+  /**
+   * Add a Drush service supported by this CMS.
+   *
+   * Services are typically registered upon the instantiation of a boot class in
+   * its constructor.
+   *
+   * @see Drush\Boot\Boot::get_services()
+   *
+   * @param string $service_name
+   *   The name of the service being registered.
+   * @param string $class_name
+   *   The fully qualified class name for the given service.
+   */
+  function add_service($service_name, $class_name);
+
+  /**
    * Called by Drush if a command is not found, or if the
    * command was found, but did not meet requirements.
    *

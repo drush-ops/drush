@@ -598,7 +598,7 @@ function drush_sql_get_class($db_spec = NULL) {
  * @return Drush\Sql\SqlVersion
  */
 function drush_sql_get_version() {
-  return drush_get_class('Drush\Sql\Sql', array(), array(drush_drupal_major_version())) ?: NULL;
+  return drush_get_service('sql');
 }
 
 /**
