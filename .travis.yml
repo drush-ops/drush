@@ -51,7 +51,8 @@ env:
 matrix:
   exclude:
     - php: 7.0
-      env: UNISH_DRUPAL_MAJOR_VERSION=6
+        env: UNISH_DRUPAL_MAJOR_VERSION=6
+
 
 before_install:
   - echo 'mbstring.http_input = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
