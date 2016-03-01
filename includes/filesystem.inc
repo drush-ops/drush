@@ -394,11 +394,13 @@ function drush_mkdir($path, $required = TRUE) {
 /*
  * Determine if program exists on user's PATH.
  *
- * @return bool
+ * @return bool|null
  */
 function drush_program_exists($program) {
-  $bucket = drush_bit_bucket();
-  return drush_op_system("command -v $program >$bucket 2>&1") === 0 ? TRUE : FALSE;
+  if (drush_has_bash()) {
+    $bucket = drush_bit_bucket();
+    return drush_op_system("command -v $program >$bucket 2>&1") === 0 ? TRUE : FALSE;
+  }
 }
 
 /**
