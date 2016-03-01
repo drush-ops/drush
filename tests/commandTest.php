@@ -90,6 +90,12 @@ class commandCase extends CommandUnishTestCase {
       'uri' => $uri,
       'cache' => NULL,
     );
+    // All 6.x contrib modules are 'unsupported', so just download the
+    // second presented option (the first being the 'dev' version).
+    if (UNISH_DRUPAL_MAJOR_VERSION == 6) {
+      $options['select'] = NULL;
+      $options['choice'] = 2;
+    }
     $this->drush('pm-download', array('devel'), $options);
     $options += array(
       'backend' => NULL, // To obtain and parse the error log.
