@@ -1181,8 +1181,16 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
       $command = implode(' ', array_filter($ssh_cmd, 'strlen'));
     }
   }
-
-  return $command;
+  // Depending on the command structure (whitespaced directories), on Windows you need to enclose everything into double quotes
+  // @see https://bugs.php.net/bug.php?id=49139
+  // @see https://bugs.php.net/bug.php?id=60181
+  if (drush_is_windows($os)) {
+    return '"' . $command . '"';
+  } 
+  else {
+    return $command;
+  }
+  
 }
 
 /**
