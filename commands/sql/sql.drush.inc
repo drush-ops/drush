@@ -101,6 +101,7 @@ function sql_drush_command() {
     'examples' => array(
       'drush sql-dump --result-file=../18.sql' => 'Save SQL dump to the directory above Drupal root.',
       'drush sql-dump --skip-tables-key=common' => 'Skip standard tables. @see example.drushrc.php',
+      'drush sql-dump --extra=--no-data' => 'Pass extra option to SQL dump command.',
     ),
     'options' => array(
       'result-file' => array(
