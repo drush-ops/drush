@@ -50,7 +50,7 @@ env:
 
 matrix:
   exclude:
-    php: 7.0
+    - php: 7.0
       env: UNISH_DRUPAL_MAJOR_VERSION=6
 
 before_install:
