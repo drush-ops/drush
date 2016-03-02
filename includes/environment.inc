@@ -743,13 +743,6 @@ function drush_get_extensions($include_hidden = TRUE) {
       $extensions[$name]->info['package'] = dt('Other');
     }
   }
-$non_core = array();
-foreach ($extensions as $name => $extension) {
-  if ($extension->origin != 'core') {
-    $non_core[$name] = $extension;
-  }
-}
-#drush_print_r($non_core);
   return $extensions;
 }
 
