@@ -71,11 +71,11 @@ function sql_drush_command() {
     'description' => 'A string for connecting to the DB.',
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'options' => $options + $db_url + array(
-        'extra' => array(
-          'description' => 'Add custom options to the mysql command.',
-          'example-value' => '--skip-column-names',
-        ),
+      'extra' => array(
+        'description' => 'Add custom options to the connect string.',
+        'example-value' => '--skip-column-names',
       ),
+    ),
     'examples' => array(
       '`drush sql-connect` < example.sql' => 'Bash: Import SQL statements from a file into the current database.',
       'eval (drush sql-connect) < example.sql' => 'Fish: Import SQL statements from a file into the current database.',
@@ -101,6 +101,7 @@ function sql_drush_command() {
     'examples' => array(
       'drush sql-dump --result-file=../18.sql' => 'Save SQL dump to the directory above Drupal root.',
       'drush sql-dump --skip-tables-key=common' => 'Skip standard tables. @see example.drushrc.php',
+      'drush sql-dump --extra=--no-data' => 'Pass extra option to dump command.',
     ),
     'options' => array(
       'result-file' => array(
@@ -118,6 +119,7 @@ function sql_drush_command() {
       'data-only' => 'Dump data without statements to create any of the schema.',
       'ordered-dump' => 'Order by primary key and add line breaks for efficient diff in revision control. Slows down the dump. Mysql only.',
       'gzip' => 'Compress the dump using the gzip program which must be in your $PATH.',
+      'extra' => 'Add custom options to the dump command.',
     ) + $options + $db_url,
   );
   $items['sql-query'] = array(
@@ -139,7 +141,7 @@ function sql_drush_command() {
       ),
       'file' => 'Path to a file containing the SQL to be run. Gzip files are accepted.',
       'extra' => array(
-        'description' => 'Add custom options to the mysql command.',
+        'description' => 'Add custom options to the database connection command.',
         'example-value' => '--skip-column-names',
       ),
       'db-prefix' => 'Enable replacement of braces in your query.',
