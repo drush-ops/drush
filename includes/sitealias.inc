@@ -2296,7 +2296,7 @@ function drush_get_runner($source, $destination, $runner = FALSE) {
     $source = drush_sitealias_get_record($site);
   }
   if (is_string($destination)) {
-    $source = drush_sitealias_get_record($destination);
+    $destination = drush_sitealias_get_record($destination);
   }
 
   // If both sites are remote, and --runner=auto, then we'll use the destination site.
