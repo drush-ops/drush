@@ -26,17 +26,9 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
     $options = $options_no_pipe + array(
       'pipe' => NULL,
     );
-    $extra_dl_options = array();
-    // All 6.x contrib modules are 'unsupported', so just download the
-    // second presented option (the first being the 'dev' version).
-    if (UNISH_DRUPAL_MAJOR_VERSION == 6) {
-      $extra_dl_options['select'] = NULL;
-      $extra_dl_options['choice'] = 2;
-    }
-
 
     // Test pm-download downloads a module and pm-list lists it.
-    $this->drush('pm-download', array('devel'), $options + $extra_dl_options);
+    $this->drush('pm-download', array('devel'), $options);
     $this->drush('pm-list', array(), $options + array('no-core' => NULL, 'status' => 'disabled,not installed'));
     $out = $this->getOutput();
     $list = $this->getOutputAsList();
@@ -110,9 +102,9 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
 
     // Test pm-enable is able to download dependencies.
     // @todo pathauto has no usable D8 release yet.
-    // Drupal 6 has no stable releases any longer, so resolve-dependencies are inconvenient to test.
+    // Also, Drupal 6 has no stable releases any longer, so resolve-dependencies are inconvenient to test.
     if (UNISH_DRUPAL_MAJOR_VERSION ==7) {
-      $this->drush('pm-download', array('pathauto'), $options + $extra_dl_options);
+      $this->drush('pm-download', array('pathauto'), $options);
       $this->drush('pm-enable', array('pathauto'), $options + array('resolve-dependencies' => TRUE));
       $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
       $list = $this->getOutputAsList();
