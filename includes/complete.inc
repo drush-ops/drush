@@ -253,7 +253,7 @@ function drush_complete_process_argv() {
   drush_sitealias_check_arg();
   drush_sitealias_check_site_env();
   // We might have just changed our root--re-select the bootstrap object to use
-  $bootstrap = \Drush::bootstrapManager()->getBootstrap();
+  $bootstrap = \Drush::bootstrapManager()->bootstrap();
 
   // Return the new argv for easy reference.
   return $argv;

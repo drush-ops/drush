@@ -198,7 +198,7 @@ function drush_module_enable($modules) {
   drush_module_install($modules);
 
   // Our logger got blown away during the container rebuild above.
-  $boot = \Drush::bootstrapManager()->getBootstrap();
+  $boot = \Drush::bootstrapManager()->bootstrap();
   $boot->add_logger();
 
   // Flush all caches. No longer needed in D8 per https://github.com/drush-ops/drush/issues/1207

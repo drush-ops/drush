@@ -200,8 +200,8 @@ class Drush {
    *
    * @return Drush\Boot\Boot
    */
-  public static function getBootstrap() {
-    return static::bootstrapManager()->getBootstrap();
+  public static function bootstrap() {
+    return static::bootstrapManager()->bootstrap();
   }
 
   /**

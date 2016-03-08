@@ -80,7 +80,7 @@ function drush_cli_core_cli() {
   // command in preflight still, but the subscriber instances are already
   // created from before. Call terminate() regardless, this is a no-op for all
   // DrupalBoot classes except DrupalBoot8.
-  if ($bootstrap = \Drush::getBootstrap()) {
+  if ($bootstrap = \Drush::bootstrap()) {
     $bootstrap->terminate();
   }
 

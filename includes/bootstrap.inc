@@ -162,7 +162,7 @@ function drush_bootstrap_value($context, $value = null) {
 function _drush_bootstrap_phases($function_names = FALSE) {
   $result = array();
 
-  if ($bootstrap = \Drush::getBootstrap()) {
+  if ($bootstrap = \Drush::bootstrap()) {
     $result = $bootstrap->bootstrap_phases();
     if (!$function_names) {
       $result = array_keys($result);
@@ -191,7 +191,7 @@ function _drush_bootstrap_phases($function_names = FALSE) {
  * @see \Drush\Boot\Boot::bootstrap_phases()
  */
 function drush_bootstrap($phase, $phase_max = FALSE) {
-  $bootstrap = \Drush::getBootstrap();
+  $bootstrap = \Drush::bootstrap();
   $phases = _drush_bootstrap_phases(TRUE);
   $result = TRUE;
 
@@ -278,7 +278,7 @@ function drush_has_boostrapped($phase) {
  * @see \Drush\Boot\Boot::bootstrap_phases()
  */
 function drush_bootstrap_validate($phase) {
-  $bootstrap = \Drush::getBootstrap();
+  $bootstrap = \Drush::bootstrap();
   $phases = _drush_bootstrap_phases(TRUE);
   static $result_cache = array();
 

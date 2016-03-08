@@ -78,7 +78,7 @@ function drush_main() {
   // the bootstrap object returned from drush_preflight().  This will
   // require some adjustments to Drush bootstrapping.
   // See: https://github.com/drush-ops/drush/pull/1303
-  if ($bootstrap = \Drush::getBootstrap()) {
+  if ($bootstrap = \Drush::bootstrap()) {
     $bootstrap->terminate();
   }
   drush_postflight();
@@ -347,7 +347,7 @@ function drush_preflight() {
   drush_set_environment_vars($alias_record);
 
   // Select the bootstrap object and return it.
-  return \Drush::bootstrapManager()->getBootstrap();
+  return \Drush::bootstrapManager()->bootstrap();
 }
 
 /**

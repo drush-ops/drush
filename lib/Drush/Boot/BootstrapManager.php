@@ -92,7 +92,7 @@ class BootstrapManager {
    * bootstrapping; otherwise, it will be whichever bootstrap
    * object is best for the selected root.
    */
-  public function getBootstrap() {
+  public function bootstrap() {
     if ($this->bootstrap) {
       return $this->bootstrap;
     }
@@ -117,7 +117,7 @@ class BootstrapManager {
    * times, the bootstrap class returned might change on subsequent
    * calls, if the root directory changes.  Once the bootstrap object
    * starts changing the state of the system, however, it will
-   * be 'latched', and further calls to \Drush::getBootstrap()
+   * be 'latched', and further calls to \Drush::bootstrap()
    * will always return the same object.
    */
   protected function selectBootstrapClass() {
