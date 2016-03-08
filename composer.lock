@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "127396b0df943c704773f45cd4bb8779",
-    "content-hash": "26ef08b3386038278818100367844c93",
+    "hash": "44f6c4a2cd3c35e4996480d73870d1ac",
+    "content-hash": "9be3bdd59217ee9c0852b4ef0de6d854",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -458,16 +458,16 @@
         },
         {
             "name": "symfony/dependency-injection",
-            "version": "v2.7.10",
+            "version": "v2.7.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dependency-injection.git",
-                "reference": "157326648175d52326cd9b9e5f4fef207dc447f9"
+                "reference": "af284e795ec8a08c80d1fc47518fd23004b89847"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/157326648175d52326cd9b9e5f4fef207dc447f9",
-                "reference": "157326648175d52326cd9b9e5f4fef207dc447f9",
+                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/af284e795ec8a08c80d1fc47518fd23004b89847",
+                "reference": "af284e795ec8a08c80d1fc47518fd23004b89847",
                 "shasum": ""
             },
             "require": {
@@ -495,10 +495,7 @@
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\DependencyInjection\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -516,7 +513,7 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "https://symfony.com",
-            "time": "2016-02-28 16:34:40"
+            "time": "2015-10-27 15:38:06"
         },
         {
             "name": "symfony/filesystem",
