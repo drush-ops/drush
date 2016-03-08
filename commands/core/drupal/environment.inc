@@ -226,7 +226,7 @@ function drush_module_disable($modules) {
 function drush_module_uninstall($modules) {
   \Drupal::service('module_installer')->uninstall($modules);
   // Our logger got blown away during the container rebuild above.
-  $boot = \Drush::bootstrapManager()->getBootstrap();
+  $boot = \Drush::bootstrapManager()->bootstrap();
   $boot->add_logger();
 }
 
@@ -319,7 +319,7 @@ function drush_theme_disable($themes) {
 function drush_theme_uninstall($themes) {
   \Drupal::service('theme_handler')->uninstall($themes);
   // Our logger got blown away during the container rebuild above.
-  $boot = \Drush::bootstrapManager()->getBootstrap();
+  $boot = \Drush::bootstrapManager()->bootstrap();
   $boot->add_logger();
 }
 
