@@ -6,6 +6,7 @@ branches:
     - 7.x
     - 6.x
     - 5.x
+    - /^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+.*$/
 language: php
 php:
 #  See master-fulltest branch for broader PHP version testing.
