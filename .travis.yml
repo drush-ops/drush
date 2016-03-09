@@ -1,4 +1,11 @@
 # Configuration file for unit test runner at http://travis-ci.org/#!/drush-ops/drush
+branches:
+  only:
+    - master
+    - 8.x
+    - 7.x
+    - 6.x
+    - 5.x
 language: php
 php:
 #  See master-fulltest branch for broader PHP version testing.
