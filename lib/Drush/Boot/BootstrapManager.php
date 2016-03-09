@@ -3,8 +3,11 @@
 namespace Drush\Boot;
 
 use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 
-class BootstrapManager {
+class BootstrapManager implements LoggerAwareInterface {
+  use LoggerAwareTrait;
 
   /**
    * @var Drush\Boot\Boot[]
@@ -22,11 +25,6 @@ class BootstrapManager {
   protected $bootstrap;
 
   /**
-   * @var Psr\Log\LoggerInterface
-   */
-  protected $logger;
-
-  /**
    * @var string
    */
   protected $root;
@@ -42,12 +40,9 @@ class BootstrapManager {
    * @param Boot
    *   The default bootstrap object to use when there are
    *   no viable candidates to use (e.g. no selected site)
-   * @param LoggerInterface
-   *   The logger
    */
-  public function __construct(Boot $default, LoggerInterface $logger) {
+  public function __construct(Boot $default) {
     $this->defaultBootstrapObject = $default;
-    $this->logger = $logger;
   }
 
   /**
@@ -117,7 +112,7 @@ class BootstrapManager {
    * times, the bootstrap class returned might change on subsequent
    * calls, if the root directory changes.  Once the bootstrap object
    * starts changing the state of the system, however, it will
-   * be 'latched', and further calls to \Drush::bootstrap()
+   * be 'latched', and further calls to \Drush::bootstrapf()
    * will always return the same object.
    */
   protected function selectBootstrapClass() {

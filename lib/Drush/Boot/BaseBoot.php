@@ -4,13 +4,14 @@ namespace Drush\Boot;
 
 use Drush\Log\LogLevel;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 
-abstract class BaseBoot implements Boot {
 
-  protected $logger;
+abstract class BaseBoot implements Boot, LoggerAwareInterface {
+  use LoggerAwareTrait;
 
-  function __construct(LoggerInterface $logger) {
-    $this->logger = $logger;
+  function __construct() {
   }
 
   function valid_root($path) {

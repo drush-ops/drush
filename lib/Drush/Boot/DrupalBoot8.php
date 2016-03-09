@@ -19,10 +19,6 @@ class DrupalBoot8 extends DrupalBoot {
    */
   protected $request;
 
-  public function __construct(LoggerInterface $logger) {
-    parent::__construct($logger);
-  }
-
   function valid_root($path) {
     if (!empty($path) && is_dir($path) && file_exists($path . '/autoload.php')) {
       // Additional check for the presence of core/composer.json to

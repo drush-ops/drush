@@ -6,10 +6,6 @@ use Psr\Log\LoggerInterface;
 
 class DrupalBoot7 extends DrupalBoot {
 
-  public function __construct(LoggerInterface $logger) {
-    parent::__construct($logger);
-  }
-
   function valid_root($path) {
     if (!empty($path) && is_dir($path) && file_exists($path . '/index.php')) {
       // Drupal 7 root.

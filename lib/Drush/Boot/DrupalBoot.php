@@ -7,10 +7,6 @@ use Psr\Log\LoggerInterface;
 
 abstract class DrupalBoot extends BaseBoot {
 
-  function __construct(LoggerInterface $logger) {
-    parent::__construct($logger);
-  }
-
   function valid_root($path) {
   }
 

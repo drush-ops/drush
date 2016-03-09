@@ -5,10 +5,7 @@
  * Contains \Drush.
  */
 
-use Drush\Symfony\BootstrapCompilerPass;
-
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\DependencyInjection\ContainerNotInitializedException;
+use League\Container\ContainerInterface;
 
 /**
  * Static Service Container wrapper.
@@ -50,7 +47,7 @@ class Drush {
   /**
    * The currently active container object, or NULL if not initialized yet.
    *
-   * @var \Symfony\Component\DependencyInjection\ContainerInterface|null
+   * @var League\Container\ContainerInterface|null
    */
   protected static $container;
 
@@ -86,7 +83,7 @@ class Drush {
   /**
    * Sets a new global container.
    *
-   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   * @param League\Container\Container $container
    *   A new container instance to replace the current.
    */
   public static function setContainer(ContainerInterface $container) {
@@ -103,13 +100,13 @@ class Drush {
   /**
    * Returns the currently active global container.
    *
-   * @return \Symfony\Component\DependencyInjection\ContainerInterface|null
+   * @return League\Container\Container|null
    *
-   * @throws \Drupal\Core\DependencyInjection\ContainerNotInitializedException
+   * @throws RuntimeException
    */
   public static function getContainer() {
     if (static::$container === NULL) {
-      throw new ContainerNotInitializedException('\Drush::$container is not initialized yet. \Drupal::setContainer() must be called with a real container.');
+      throw new \RuntimeException('\Drush::$container is not initialized yet. \Drupal::setContainer() must be called with a real container.');
     }
     return static::$container;
   }
@@ -121,29 +118,6 @@ class Drush {
    */
   public static function hasContainer() {
     return static::$container !== NULL;
-  }
-
-  /**
-   * Look for all of the services tagged 'bootstrap.boot', and
-   * add them to the bootstrap manager.
-   *
-   * This replaces the BootstrapCompilerPass, because we need
-   * to set up these references before we compile the container.
-   * Reason: we bootstrap in order to find modules, and modules
-   * are allowed to add extensions, and extensions must be added
-   * before we compile the container.
-   */
-  public static function addBootstrapManagerReferences() {
-      if (static::hasService('bootstrap.manager')) {
-      $bootstrapManager = static::service('bootstrap.manager');
-      $taggedServices = static::$container->findTaggedServiceIds(
-        'bootstrap.boot'
-      );
-      foreach ($taggedServices as $id => $tags) {
-        $boot = static::service($id);
-        $bootstrapManager->add($boot);
-      }
-    }
   }
 
   /**
@@ -212,5 +186,4 @@ class Drush {
 
     return parse_ini_file($drush_info_file);
   }
-
 }

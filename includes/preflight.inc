@@ -7,12 +7,7 @@
 
 use Drush\Log\LogLevel;
 
-use Drush\Symfony\BootstrapCompilerPass;
-
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use League\Container\Container;
 
 /**
  * The main Drush function.
@@ -197,28 +192,27 @@ function drush_preflight_prepare() {
  * Set up our dependency injection container, and load drush-services.yml.
  */
 function drush_init_dependency_injection_container() {
-  $servicesFile = dirname(__DIR__) . "/drush-services.yml";
 
   // Set up our dependency injection container.
-  $container = new ContainerBuilder();
+  $container = new Container();
 
-  // Add a compiler pass: any Boot object tagged 'bootstrap.boot' will
-  // be added to the BootstrapManager.
-  //$container->addCompilerPass(new BootstrapCompilerPass());
+  $container->share('logger', 'Drush\Log\Logger');
+  $container->share('bootstrap.default', 'Drush\Boot\EmptyBoot');
+  $container->share('bootstrap.drupal6', 'Drush\Boot\DrupalBoot6');
+  $container->share('bootstrap.drupal7', 'Drush\Boot\DrupalBoot7');
+  $container->share('bootstrap.drupal8', 'Drush\Boot\DrupalBoot8');
+  $container->share('bootstrap.manager', 'Drush\Boot\BootstrapManager')
+    ->withArgument('bootstrap.default');
+  $container->extend('bootstrap.manager')
+    ->withMethodCall('add', ['bootstrap.drupal6'])
+    ->withMethodCall('add', ['bootstrap.drupal7'])
+    ->withMethodCall('add', ['bootstrap.drupal8']);
 
-  $loader = new YamlFileLoader($container, new FileLocator(dirname($servicesFile)));
-  $loader->load(basename($servicesFile));
-
-  // Note: this freezes our container, preventing us from adding any further
-  // services to it.
-  // $container->compile();
+  $container->inflector('Psr\Log\LoggerAwareInterface')
+          ->invokeMethod('setLogger', ['logger']);
 
   // Store the container in the \Drush object
   \Drush::setContainer($container);
-
-  // We are not ready to compile yet, so we will manually find
-  // all of our 'bootstrap.boot' objects and add them to the container
-  \Drush::addBootstrapManagerReferences();
 }
 
 /**

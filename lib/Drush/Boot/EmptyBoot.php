@@ -14,10 +14,6 @@ use Psr\Log\LoggerInterface;
  */
 class EmptyBoot extends BaseBoot {
 
-  public function __construct(LoggerInterface $logger) {
-    parent::__construct($logger);
-  }
-
   function valid_root($path) {
     return FALSE;
   }
