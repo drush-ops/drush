@@ -500,7 +500,7 @@ function _core_site_credentials($right_margin = 0) {
 function _core_path_aliases($project = '') {
   $paths = array();
   $site_wide = drush_drupal_sitewide_directory();
-  $boot = drush_get_bootstrap_object();
+  $boot = \Drush::bootstrap();
   if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
     $paths['%root'] = $drupal_root;
     if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
@@ -564,7 +564,7 @@ function _core_site_status_table($project = '') {
   $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
   if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
     $status_table['drupal-version'] = drush_drupal_version();
-    $boot_object = drush_get_bootstrap_object();
+    $boot_object = \Drush::bootstrap();
     $conf_dir = $boot_object->conf_path();
     $settings_file = "$conf_dir/settings.php";
     $status_table['drupal-settings-file'] = file_exists($settings_file) ? $settings_file : '';
@@ -890,7 +890,7 @@ function drush_core_quick_drupal() {
   drush_set_option('backend', TRUE);
   drush_set_option('strict', FALSE); // We fail option validation because do so much internal drush_invoke().
   $makefile = drush_get_option('makefile');
-  $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  $root = \Drush::bootstrapManager()->getRoot();
   if (drush_get_option('use-existing', ($root != FALSE))) {
     if (!$root) {
       return drush_set_error('QUICK_DRUPAL_NO_ROOT_SPECIFIED', 'Must specify site with --root when using --use-existing.');
@@ -947,9 +947,9 @@ function drush_core_quick_drupal() {
     drush_set_option('db-url', 'sqlite://' . $base . '/sites/' . strtolower(drush_get_option('sites-subdir', 'default')) . "/$name.sqlite");
   }
   // We have just created a site root where one did not exist before.
-  // We therefore must manually reset DRUSH_SELECTED_DRUPAL_ROOT to
+  // We therefore must manually reset the selected root to
   // our new root, and force a bootstrap to DRUSH_BOOTSTRAP_DRUPAL_ROOT.
-  drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $root);
+  \Drush::bootstrapManager()->setRoot($root);
   if (!drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUPAL_ROOT)) {
     return drush_set_error('QUICK_DRUPAL_ROOT_LOCATE_FAIL', 'Unable to locate Drupal root directory.');
   }
@@ -990,7 +990,7 @@ function drush_core_quick_drupal() {
       // Current CLI user is also the web server user, which is for development
       // only. Hence we can safely make the site directory writable. This makes
       // it easier to delete and edit settings.php.
-      $boot = drush_get_bootstrap_object();
+      $boot = \Drush::bootstrap();
       @chmod($boot->conf_path(), 0700);
       drush_invoke_process(array('root' => $root, 'uri' => $server_uri), 'runserver', array($server));
     }
@@ -1306,7 +1306,7 @@ function drush_core_execute() {
   $cmd = implode(' ', $args);
   // If we selected a Drupal site, then cwd to the site root prior to exec
   $cwd = FALSE;
-  if ($selected_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT')) {
+  if ($selected_root = \Drush::bootstrapManager()->getRoot()) {
     if (is_dir($selected_root)) {
       $cwd = getcwd();
       drush_op('chdir', $selected_root);
@@ -1345,7 +1345,7 @@ function drush_core_twig_compile() {
   require_once DRUSH_DRUPAL_CORE . "/themes/engines/twig/twig.engine";
   // Scan all enabled modules and themes.
   // @todo Refactor to not reuse commandfile paths directly.
-  $boot = drush_get_bootstrap_object();
+  $boot = \Drush::bootstrap();
   $searchpaths = $boot->commandfile_searchpaths(DRUSH_BOOTSTRAP_DRUPAL_FULL);
   $searchpaths[] = drupal_get_path('theme', drush_theme_get_default());;
   $searchpaths[] = drupal_get_path('theme', drush_theme_get_admin());

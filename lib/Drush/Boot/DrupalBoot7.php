@@ -2,6 +2,8 @@
 
 namespace Drush\Boot;
 
+use Psr\Log\LoggerInterface;
+
 class DrupalBoot7 extends DrupalBoot {
 
   function valid_root($path) {

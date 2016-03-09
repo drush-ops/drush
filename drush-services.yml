@@ -1,0 +1,42 @@
+#
+# Drush services
+#
+# This file defines the core Drush service classes.
+#
+services:
+  #
+  # logger:
+  #   Write messages to the error log.  Note that the Drush logger conforms
+  #   to the Psr/Log standard, but has been enhanced to support backend
+  #   invoke (the remote end can write logs to the initiating end in real
+  #   time, and still return structured results at the end.)
+  #
+  logger:
+    class: Drush\Log\Logger
+  #
+  # bootstrap.manager:
+  #   The bootstrap manager is responsible for keeping track of the bootstrap
+  #   objects that know how to bootstrap different frameworks.  Drush will have
+  #   a mechanism for this to be extended, e.g. by Backdrop.
+  #
+  bootstrap.manager:
+    class: Drush\Boot\BootstrapManager
+    arguments: ['@bootstrap.default', '@logger']
+  bootstrap.default:
+    class: Drush\Boot\EmptyBoot
+    arguments: ['@logger']
+  bootstrap.drupal8:
+    class: Drush\Boot\DrupalBoot8
+    arguments: ['@logger']
+    tags:
+      -  { name: bootstrap.boot }
+  bootstrap.drupal7:
+    class: Drush\Boot\DrupalBoot7
+    arguments: ['@logger']
+    tags:
+      -  { name: bootstrap.boot }
+  bootstrap.drupal6:
+    class: Drush\Boot\DrupalBoot6
+    arguments: ['@logger']
+    tags:
+      -  { name: bootstrap.boot }
