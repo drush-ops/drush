@@ -110,139 +110,6 @@ define('DRUSH_BOOTSTRAP_DRUPAL_FULL', 5);
 define('DRUSH_BOOTSTRAP_DRUPAL_LOGIN', 6);
 
 /**
- * Return the list of bootstrap objects that are available for
- * initializing a CMS with Drush.  We insure that any given candidate
- * class is instantiated only once.
- *
- * @return \Drush\Boot\Boot[]
- */
-function drush_get_bootstrap_candidates() {
-  $candidate_classes = drush_get_bootstrap_candidate_classnames();
-
-  $cache =& drush_get_context('DRUSH_BOOTSTRAP_CANDIDATE_OBJECTS');
-
-  $result = array();
-  foreach($candidate_classes as $candidate_class) {
-    if (array_key_exists($candidate_class, $cache)) {
-      $result[$candidate_class] = $cache[$candidate_class];
-    }
-    else {
-      $result[$candidate_class] = new $candidate_class;
-    }
-  }
-
-  $cache = $result;
-  return $result;
-}
-
-/**
- * Find the list of bootstrap classnames available for initializing a
- * CMS with Drush.
- *
- * @return array
- */
-function drush_get_bootstrap_candidate_classnames() {
-  // Give all commandfiles a chance to return candidates.  They should
-  // return STRINGS with the class name of the bootstrap object they provide.
-  $candidates = drush_command_invoke_all('bootstrap_candidates');
-  // If a bootstrap class was specified on the command line, consider it first.
-  $bootstrap_class = drush_get_option('bootstrap_class', FALSE);
-  if ($bootstrap_class) {
-    array_unshift($candidates, $bootstrap_class);
-  }
-  // Add candidate bootstrap classes for Drupal
-  foreach (array('8', '7', '6') as $version) {
-    $drupal_bootstrap_class = 'Drush\Boot\DrupalBoot' . $version;
-    $candidates[] = $drupal_bootstrap_class;
-  }
-  // Always consider our default bootstrap class last.
-  $candidates[] = 'Drush\Boot\EmptyBoot';
-
-  return $candidates;
-}
-
-/**
- * Look up the best bootstrap class for the given location
- * from the set of available candidates.
- */
-function drush_bootstrap_class_for_root($path) {
-  drush_load_bootstrap_commandfile_at_path($path);
-  $candidates = drush_get_bootstrap_candidates();
-  foreach ($candidates as $candidate) {
-    if ($candidate->valid_root($path)) {
-      return $candidate;
-    }
-  }
-  return NULL;
-}
-
-/**
- * Check to see if there is a bootstrap class available
- * at the specified location; if there is, load it.
- */
-function drush_load_bootstrap_commandfile_at_path($path) {
-  static $paths = array();
-
-  if (!empty($path) && (!array_key_exists($path, $paths))) {
-    $paths[$path] = TRUE;
-    // Check to see if we have any bootstrap classes in this location.
-    $bootstrap_class_dir = $path . '/drush/bootstrap';
-    if (is_dir($bootstrap_class_dir)) {
-      _drush_add_commandfiles(array($bootstrap_class_dir), DRUSH_BOOTSTRAP_NONE);
-    }
-  }
-}
-
-/**
- * Select the bootstrap class to use.  If this is called multiple
- * times, the bootstrap class returned might change on subsequent
- * calls, if the root directory changes.  Once the bootstrap object
- * starts changing the state of the system, however, it will
- * be 'latched', and further calls to drush_select_bootstrap_class()
- * will always return the same object.
- */
-function drush_select_bootstrap_class() {
-  $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
-
-  // Once we have selected a Drupal root, we will reduce our bootstrap
-  // candidates down to just the one used to select this site root.
-  $bootstrap = drush_bootstrap_class_for_root($root);
-  // If we have not found a bootstrap class by this point,
-  // then take the last one and use it.  This should be our
-  // default bootstrap class.  The default bootstrap class
-  // should pass through all calls without doing anything that
-  // changes state in a CMS-specific way.
-  if ($bootstrap == NULL) {
-    $candidates = drush_get_bootstrap_candidates();
-    $bootstrap = array_pop($candidates);
-  }
-
-  return $bootstrap;
-}
-
-/**
- * Don't allow the bootstrap object to change once we start bootstrapping
- */
-function drush_latch_bootstrap_object($bootstrap) {
-  drush_set_context('DRUSH_BOOTSTRAP_OBJECT', $bootstrap);
-}
-
-/**
- * Get the appropriate bootstrap object.  We'll search for a new
- * bootstrap object every time someone asks for one until we start
- * bootstrapping; then we'll returned the same cached one every time.
- *
- * @return \Drush\Boot\Boot
- */
-function drush_get_bootstrap_object() {
-  $bootstrap = drush_get_context('DRUSH_BOOTSTRAP_OBJECT', FALSE);
-  if (!$bootstrap) {
-    $bootstrap = drush_select_bootstrap_class();
-  }
-  return $bootstrap;
-}
-
-/**
  * Find the URI that has been selected by the cwd
  * if it was not previously set via the --uri / -l option
  */
@@ -295,7 +162,7 @@ function drush_bootstrap_value($context, $value = null) {
 function _drush_bootstrap_phases($function_names = FALSE) {
   $result = array();
 
-  if ($bootstrap = drush_get_bootstrap_object()) {
+  if ($bootstrap = \Drush::bootstrap()) {
     $result = $bootstrap->bootstrap_phases();
     if (!$function_names) {
       $result = array_keys($result);
@@ -324,7 +191,7 @@ function _drush_bootstrap_phases($function_names = FALSE) {
  * @see \Drush\Boot\Boot::bootstrap_phases()
  */
 function drush_bootstrap($phase, $phase_max = FALSE) {
-  $bootstrap = drush_get_bootstrap_object();
+  $bootstrap = \Drush::bootstrap();
   $phases = _drush_bootstrap_phases(TRUE);
   $result = TRUE;
 
@@ -338,7 +205,7 @@ function drush_bootstrap($phase, $phase_max = FALSE) {
   // Once we start bootstrapping past the DRUSH_BOOTSTRAP_DRUSH phase, we
   // will latch the bootstrap object, and prevent it from changing.
   if ($phase > DRUSH_BOOTSTRAP_DRUSH) {
-    drush_latch_bootstrap_object($bootstrap);
+    \Drush::bootstrapManager()->latch($bootstrap);
   }
 
   drush_set_context('DRUSH_BOOTSTRAPPING', TRUE);
@@ -411,7 +278,7 @@ function drush_has_boostrapped($phase) {
  * @see \Drush\Boot\Boot::bootstrap_phases()
  */
 function drush_bootstrap_validate($phase) {
-  $bootstrap = drush_get_bootstrap_object();
+  $bootstrap = \Drush::bootstrap();
   $phases = _drush_bootstrap_phases(TRUE);
   static $result_cache = array();
 

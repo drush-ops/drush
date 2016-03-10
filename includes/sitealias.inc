@@ -88,15 +88,15 @@ function drush_sitealias_check_site_env() {
  * Check to see if a '@self' record was created during bootstrap.
  * If not, make one now.
  */
-function drush_sitealias_create_self_alias($fallback_site_record = array()) {
-  $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
-  $uri = drush_get_context('DRUSH_SELECTED_URI');
-  // Create an alias '@self'
-  if (!empty($drupal_root) && !empty($uri)) {
-    _drush_sitealias_cache_alias('@self', array('root' => $drupal_root, 'uri' => $uri));
-  }
-  elseif (!empty($fallback_site_record['root']) && !empty($fallback_site_record['uri'])) {
-    _drush_sitealias_cache_alias('@self', $fallback_site_record);
+function drush_sitealias_create_self_alias() {
+  $self_record = drush_sitealias_get_record('@self');
+  if (!array_key_exists('root', $self_record) && !array_key_exists('remote-host', $self_record)) {
+    $drupal_root = \Drush::bootstrapManager()->getRoot();
+    $uri = drush_get_context('DRUSH_SELECTED_URI');
+    if (!empty($drupal_root) && !empty($uri)) {
+      // Create an alias '@self'
+      _drush_sitealias_cache_alias('@self', array('root' => $drupal_root, 'uri' => $uri));
+    }
   }
 }
 
@@ -403,7 +403,7 @@ function drush_sitealias_alias_path($alias_path_context = NULL) {
 
   // If the user defined the root of a drupal site, then also
   // look for alias files in /drush and /sites/all/drush.
-  $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  $drupal_root = \Drush::bootstrapManager()->getRoot();
   if (!empty($drupal_root)) {
     $site_paths[] = drush_sitealias_alias_base_directory($drupal_root . '/../drush');
     $site_paths[] = drush_sitealias_alias_base_directory($drupal_root . '/drush');
@@ -666,7 +666,7 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
       }
     }
     else {
-      $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+      $drupal_root = \Drush::bootstrapManager()->getRoot();
     }
     if (isset($drupal_root) && !is_array($drupal_root)) {
       drush_sitealias_create_sites_alias($drupal_root);
@@ -1081,7 +1081,7 @@ function drush_sitealias_bootstrapped_site_name() {
     $site_name = $self_record['#name'];
   }
   if (!isset($site_name) || ($site_name == '@self')) {
-    $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+    $drupal_root = \Drush::bootstrapManager()->getRoot();
     if (isset($drupal_root)) {
       $drupal_uri = drush_get_context('DRUSH_SELECTED_URI', 'default');
       $drupal_uri = str_replace('http://', '', $drupal_uri);
@@ -1530,7 +1530,7 @@ function _drush_sitealias_find_record_for_local_site($alias, $drupal_root = NULL
   }
 
   if (!isset($drupal_root)) {
-    $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+    $drupal_root = \Drush::bootstrapManager()->getRoot();
   }
 
   if (!empty($drupal_root)) {
@@ -1707,8 +1707,15 @@ function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
       drush_sitealias_set_alias_context($site_alias_settings, $prefix);
       drush_sitealias_cache_alias_by_path($site_alias_settings);
       if (empty($prefix)) {
+
         // Create an alias '@self'
-        drush_sitealias_create_self_alias($site_alias_settings);
+        // Allow 'uri' from the commandline to override
+        $drush_uri = drush_get_option(array('uri', 'l'), FALSE);
+        if ($drush_uri) {
+          $site_alias_settings['uri'] = $drush_uri;
+        }
+
+        _drush_sitealias_cache_alias('@self', $site_alias_settings);
         // Change the selected site to match the new --root and --uri, if any were set.
         _drush_preflight_root_uri();
       }
@@ -2289,7 +2296,7 @@ function drush_get_runner($source, $destination, $runner = FALSE) {
     $source = drush_sitealias_get_record($site);
   }
   if (is_string($destination)) {
-    $source = drush_sitealias_get_record($destination);
+    $destination = drush_sitealias_get_record($destination);
   }
 
   // If both sites are remote, and --runner=auto, then we'll use the destination site.

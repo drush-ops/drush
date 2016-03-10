@@ -80,7 +80,7 @@ function drush_cli_core_cli() {
   // command in preflight still, but the subscriber instances are already
   // created from before. Call terminate() regardless, this is a no-op for all
   // DrupalBoot classes except DrupalBoot8.
-  if ($bootstrap = drush_get_bootstrap_object()) {
+  if ($bootstrap = \Drush::bootstrap()) {
     $bootstrap->terminate();
   }
 
@@ -138,6 +138,7 @@ function _drush_core_cli_get_casters() {
     'Drupal\Core\Field\FieldItemInterface' => 'Drush\Psysh\Caster::castFieldItem',
     'Drupal\Core\Config\Entity\ConfigEntityInterface' => 'Drush\Psysh\Caster::castConfigEntity',
     'Drupal\Core\Config\ConfigBase' => 'Drush\Psysh\Caster::castConfig',
+    'Drupal\Component\DependencyInjection\Container' => 'Drush\Psysh\Caster::castContainer',
   ];
 }
 

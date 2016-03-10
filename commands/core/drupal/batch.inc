@@ -149,7 +149,13 @@ function _drush_batch_worker() {
       // Magic wrap to catch changes to 'message' key.
       $batch_context = new DrushBatchContext($batch_context);
 
+      // Tolerate recoverable errors.
+      // See https://github.com/drush-ops/drush/issues/1930
+      $halt_on_error = drush_get_option('halt-on-error', TRUE);
+      drush_set_option('halt-on-error', FALSE);
       call_user_func_array($function, array_merge($args, array(&$batch_context)));
+      drush_set_option('halt-on-error', $halt_on_error);
+
       $finished = $batch_context['finished'];
       if ($finished >= 1) {
         // Make sure this step is not counted twice when computing $current.

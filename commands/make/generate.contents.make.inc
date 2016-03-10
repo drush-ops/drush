@@ -94,13 +94,13 @@ function make_generate_from_makefile($file, $makefile) {
     }
   }
 
-  $defaults = $info['defaults'];
+  $defaults = isset($info['defaults']) ? $info['defaults'] : array();
   $core = current($projects);
   $core = $core['core'];
   foreach ($projects as $name => $project) {
     // If a specific revision was requested, do not set the version.
     if (!isset($project['revision'])) {
-      $projects[$name]['version'] = $project['download']['full_version'];
+      $projects[$name]['version'] = isset($project['download']['full_version']) ? $project['download']['full_version'] : '';
       if ($project['type'] != 'core' && strpos($projects[$name]['version'], $project['core']) === 0) {
         $projects[$name]['version'] = substr($projects[$name]['version'], strlen($project['core'] . '-'));
       }
@@ -109,6 +109,10 @@ function make_generate_from_makefile($file, $makefile) {
       unset($projects[$name]['version']);
     }
     $projects[$name]['_type'] = $project['type'];
+
+    if ($project['download']['type'] == 'git') {
+      drush_make_resolve_git_refs($projects[$name]);
+    }
 
     // Don't clutter the makefile with defaults
     if (is_array($defaults)) {
@@ -141,12 +145,16 @@ function make_generate_from_makefile($file, $makefile) {
 
   $libraries = drush_get_option('DRUSH_MAKE_LIBRARIES', FALSE);
   if ($libraries === FALSE) {
-    $libraries = $info['libraries'];
+    $libraries = isset($info['libraries']) ? $info['libraries'] : array();
   }
   if (is_array($libraries)) {
     foreach ($libraries as $name => $library) {
       $libraries[$name]['type'] = 'library';
       $libraries[$name]['_type'] = 'librarie';
+
+      if ($library['download']['type'] == 'git') {
+        drush_make_resolve_git_refs($libraries[$name]);
+      }
     }
   }
 
@@ -155,6 +163,61 @@ function make_generate_from_makefile($file, $makefile) {
   // Write or print our makefile.
   $file = $file !== TRUE ? $file : NULL;
   make_generate_print($contents, $file);
+}
+
+/**
+ * Resolve branches and revisions for git-based projects.
+ */
+function drush_make_resolve_git_refs(&$project) {
+  if (!isset($project['download']['branch'])) {
+    $project['download']['branch'] = drush_make_resolve_git_branch($project);
+  }
+  if (!isset($project['download']['revision'])) {
+    $project['download']['revision'] = drush_make_resolve_git_revision($project);
+  }
+}
+
+/**
+ * Resolve branch for a git-based project.
+ */
+function drush_make_resolve_git_branch($project) {
+  drush_log(dt('Resolving default branch for repo at: :repo', array(':repo' => $project['download']['url'])));
+  if (drush_shell_exec("git ls-remote %s HEAD", $project['download']['url'])) {
+    $head_output = drush_shell_exec_output();
+    list($head_commit) = explode("\t", $head_output[0]);
+
+    drush_log(dt('Scanning branches in repo at: :repo', array(':repo' => $project['download']['url'])));
+    drush_shell_exec("git ls-remote --heads %s", $project['download']['url']);
+    $heads_output = drush_shell_exec_output();
+    $branches = array();
+    foreach ($heads_output as $key => $head) {
+      list($commit, $ref) = explode("\t", $head);
+      $branches[$commit] = explode("/", $ref)[2];
+    }
+
+    $branch = $branches[$head_commit];
+    drush_log(dt('Resolved git branch to: :branch', array(':branch' => $branch)));
+    return $branch;
+  }
+  else {
+    drush_log(dt('Could not resolve branch for `:project` using git repo at :repo', array(':project' => $project['name'], ':repo' => $project['download']['url'])), 'warning');
+  }
+}
+
+/**
+ * Resolve revision for a git-based project.
+ */
+function drush_make_resolve_git_revision($project) {
+  drush_log(dt('Resolving head commit on `:branch` branch for repo at: :repo', array(':branch' => $project['download']['branch'], ':repo' => $project['download']['url'])));
+  if (drush_shell_exec("git ls-remote %s %s", $project['download']['url'], $project['download']['branch'])) {
+    $head_output = drush_shell_exec_output();
+    list($revision) = explode("\t", $head_output[0]);
+    drush_log(dt('Resolved git revision to: :revision', array(':revision' => $revision)));
+    return $revision;
+  }
+  else {
+    drush_log(dt('Could not resolve head commit for `:project` using git repo at :repo', array(':project' => $project['name'], ':repo' => $project['download']['url'])), 'warning');
+  }
 }
 
 /**

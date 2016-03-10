@@ -1,4 +1,12 @@
 # Configuration file for unit test runner at http://travis-ci.org/#!/drush-ops/drush
+branches:
+  only:
+    - master
+    - 8.x
+    - 7.x
+    - 6.x
+    - 5.x
+    - /^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+.*$/
 language: php
 php:
 #  See master-fulltest branch for broader PHP version testing.
@@ -10,6 +18,11 @@ sudo: false
 
 env:
   matrix:
+#D6
+    - UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--group=base
+    - UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--group=commands
+    - UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--group=pm
+    - UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
 #D7
     - UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=make
     - UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=base
@@ -43,6 +56,18 @@ env:
     - UNISH_NO_TIMEOUTS=y
     - UNISH_DB_URL=mysql://root:@127.0.0.1
 
+matrix:
+  exclude:
+    - php: 7.0
+      env: UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--group=base
+    - php: 7.0
+      env: UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--group=commands
+    - php: 7.0
+      env: UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--group=pm
+    - php: 7.0
+      env: UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
+
+
 before_install:
   - echo 'mbstring.http_input = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo 'mbstring.http_output = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
@@ -51,6 +76,7 @@ before_install:
 install: travis_retry composer install --no-interaction
 
 before_script:
+  - phpenv config-rm xdebug.ini
   - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
   - export UNISH_DRUSH="${PWD}/drush"
 

@@ -108,7 +108,7 @@ function unish_init() {
  *
  * @see drush_delete_dir()
  */
-function unish_file_delete_recursive($dir, $force = FALSE, $follow_symlinks = FALSE) {
+function unish_file_delete_recursive($dir, $force = TRUE, $follow_symlinks = FALSE) {
   // Do not delete symlinked files, only unlink symbolic links
   if (is_link($dir) && !$follow_symlinks) {
     return unlink($dir);

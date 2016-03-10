@@ -119,6 +119,9 @@ EOT;
     if (isset($ordered_dump)) {
       $extra .= ' --skip-extended-insert --order-by-primary';
     }
+    if ($option = drush_get_option('extra', $this->query_extra)) {
+      $extra .= " $option";
+    }
     $exec .= $extra;
 
     if (!empty($tables)) {

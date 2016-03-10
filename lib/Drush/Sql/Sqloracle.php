@@ -84,6 +84,9 @@ class Sqloracle extends SqlBase {
       $exec .= ' tables="(' . implode(',', $tables) . ')"';
     }
     $exec .= ' owner=' . $this->db_spec['username'];
+    if ($option = drush_get_option('extra', $this->query_extra)) {
+      $exec .= " $option";
+    }
     return array($exec, $file);
   }
 }

@@ -2,19 +2,6 @@
 
 use Drush\Log\LogLevel;
 
-/*
- * Notes:
- * - Drush is required on source and dest (except with --no-dump)
- * - Source and Dest can both be remote. Convenient.
- * - No special handling for multiple targets. Use --no-dump.
- * - We could move the sanitize confirmations earlier if desired.
- * - A bit tricky to know where to put your drushrc/alias customizations. Can be local, $source, or $destination. Just add docs?
- * - No longer optimizing for efficient rsync. We could add this back if desired.
- *   -- Always use gzip during sql-dump. Don't use --ordered-dump.
- *   -- No more 24-hour freshness check for a team of devs.
- * - Can we now simplify anything in sitealias.inc or backend.inc?
- */
-
 /**
  * Implementation of hook_drush_command().
  */

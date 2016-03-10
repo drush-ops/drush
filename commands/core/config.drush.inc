@@ -445,10 +445,10 @@ function _drush_config_export($destination, $destination_dir, $branch) {
 
     $config_comparer = new StorageComparer($comparison_source, $target_storage, Drupal::service('config.manager'));
     if (!$config_comparer->createChangelist()->hasChanges()) {
-      return drush_log(dt('There are no changes to export.'), LogLevel::OK);
+      return drush_log(dt('The active configuration is identical to the configuration in the export directory (!target).', array('!target' => $destination_dir)), LogLevel::OK);
     }
 
-    drush_print("The following configuration changes have been made since the last export:\n");
+    drush_print("Differences of the active config to the export directory:\n");
     $change_list = array();
     foreach ($config_comparer->getAllCollectionNames() as $collection) {
       $change_list[$collection] = $config_comparer->getChangelist(NULL, $collection);
@@ -463,7 +463,7 @@ function _drush_config_export($destination, $destination_dir, $branch) {
     }
     $comment .= "\n\n$output";
 
-    if (!$commit && !drush_confirm(dt('The .yml files in your export directory (!target) will be deleted.', array('!target' => $destination_dir)))) {
+    if (!$commit && !drush_confirm(dt('The .yml files in your export directory (!target) will be deleted and replaced with the active config.', array('!target' => $destination_dir)))) {
       return drush_user_abort();
     }
     // Only delete .yml files, and not .htaccess or .git.

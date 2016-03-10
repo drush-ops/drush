@@ -1,0 +1,8 @@
+core: 7.x
+api: 2
+projects:
+  drupal:
+    version: '7.42'
+    type: core
+  atom:
+    version: 1.0-beta1

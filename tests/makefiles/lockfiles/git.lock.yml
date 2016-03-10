@@ -1,0 +1,12 @@
+core: 7.x
+api: 2
+projects:
+  drupal:
+    version: '7.42'
+    type: core
+  atom:
+    download:
+      url: 'https://git.drupal.org/project/atom.git'
+      type: git
+      branch: 7.x-1.x
+      revision: a9e05aa6e6c45641a0b56dbeb55ede35f51ae3e1

@@ -102,7 +102,8 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
 
     // Test pm-enable is able to download dependencies.
     // @todo pathauto has no usable D8 release yet.
-    if (UNISH_DRUPAL_MAJOR_VERSION <=7) {
+    // Also, Drupal 6 has no stable releases any longer, so resolve-dependencies are inconvenient to test.
+    if (UNISH_DRUPAL_MAJOR_VERSION ==7) {
       $this->drush('pm-download', array('pathauto'), $options);
       $this->drush('pm-enable', array('pathauto'), $options + array('resolve-dependencies' => TRUE));
       $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
@@ -110,11 +111,13 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
       $this->assertTrue(in_array('token', $list));
     }
 
-    // Test that pm-enable downloads missing projects and dependencies.
-    $this->drush('pm-enable', array('panels'), $options + array('resolve-dependencies' => TRUE));
-    $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
-    $list = $this->getOutputAsList();
-    $this->assertTrue(in_array('ctools', $list));
+    if (UNISH_DRUPAL_MAJOR_VERSION !=6) {
+      // Test that pm-enable downloads missing projects and dependencies.
+      $this->drush('pm-enable', array('panels'), $options + array('resolve-dependencies' => TRUE));
+      $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
+      $list = $this->getOutputAsList();
+      $this->assertTrue(in_array('ctools', $list));
+    }
 
     // Test that pm-enable downloads missing projects
     // and dependencies with project namespace (date:date_popup).
