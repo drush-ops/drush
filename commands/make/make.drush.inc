@@ -395,8 +395,14 @@ function drush_make_convert($source) {
       $info = make_parse_info_file($source);
       break;
     case 'lock':
-      $composer_info = json_decode(make_get_data($source), TRUE);
-      $info = drush_make_convert_composer_to_make($composer_info);
+      $composer_json_file = str_replace('lock', 'json', $source);
+      if (!file_exists($composer_json_file)) {
+        drush_print('Please ensure that a composer.json file is in the same directory as the specified composer.lock file.');
+        return FALSE;
+      }
+      $composer_json = json_decode(make_get_data($composer_json_file), TRUE);
+      $composer_lock = json_decode(make_get_data($source), TRUE);
+      $info = drush_make_convert_composer_to_make($composer_lock, $composer_json);
       break;
     case 'json':
       drush_print('Please use composer.lock instead of composer.json as source for conversion.');
@@ -412,12 +418,10 @@ function drush_make_convert($source) {
 
     case 'make':
       foreach ($info['projects'] as $key => $project) {
-        if ($info['projects'][$key]['type'] == 'library') {
-          $info['projects'][$key]['_type'] = 'librarie';
-        }
-        else {
-          $info['projects'][$key]['_type'] = $info['projects'][$key]['type'];
-        }
+        $info['projects'][$key]['_type'] = $info['projects'][$key]['type'];
+      }
+      foreach ($info['libraries'] as $key => $library) {
+        $info['libraries'][$key]['_type'] = 'librarie';
       }
       $output = _drush_make_generate_makefile_contents($info['projects'], $info['libraries'], $info['core'], $info['defaults']);
       $output .= "\n; No third party libraries were added to the make file. This must be added manually.";
@@ -538,15 +542,19 @@ function drush_make_format_composer($info) {
 }
 
 /**
- * @param $project
+ * Converts a make file project array into a composer project version string.
  *
- * @return mixed|string
+ * @param array $original_project
+ *   A project dependency, as defined in a make file.
+ *
+ * @return string
+ *   The project version, in composer syntax.
+ *
  */
 function drush_make_convert_project_to_composer($original_project) {
   // Typical specified version with major version "x" removed.
   if (!empty($original_project['version'])) {
-    $project_version = str_replace('x', '0', $original_project['version']);
-    $project = $project_version;
+    $version = str_replace('x', '0', $original_project['version']);
   }
   // Git branch or revision.
   elseif (!empty($original_project['download'])) {
@@ -554,36 +562,39 @@ function drush_make_convert_project_to_composer($original_project) {
       case 'git':
         if (!empty($original_project['download']['branch'])) {
           // @todo Determine if '0' will always be correct.
-          $project = str_replace('x', '0', $original_project['download']['branch']);
+          $version = str_replace('x', '0', $original_project['download']['branch']);
         }
         if (!empty($original_project['download']['tag'])) {
           // @todo Determine if '0' will always be correct.
-          $project = str_replace('x', '0', $original_project['download']['tag']);
+          $version = str_replace('x', '0', $original_project['download']['tag']);
         }
         if (!empty($project['download']['revision'])) {
-          $project .= '#' . $original_project['download']['revision'];
+          $version .= '#' . $original_project['download']['revision'];
         }
         break;
 
       default:
-        $project = 'Enter correct project name and version number';
+        $version = 'Enter correct project name and version number';
         break;
     }
   }
 
-  return $project;
+  return $version;
 }
 
 /**
  * Converts a composer.lock array into a traditional drush make array.
  *
- * @param array $composer_info
+ * @param array $composer_lock
  *   An array of composer.lock data.
  *
- * @return array
- *   A traditional drush make info array.
+ * @param array $composer_json
+ *   An array of composer.json data.
+ *
+ * @return array A traditional drush make info array.
+ * A traditional drush make info array.
  */
-function drush_make_convert_composer_to_make($composer_info) {
+function drush_make_convert_composer_to_make($composer_lock, $composer_json) {
   $info = array(
     'api' => 2,
     'defaults' => array(
@@ -602,8 +613,8 @@ function drush_make_convert_composer_to_make($composer_info) {
   $themes = array();
   $profiles = array();
   $libraries = array();
-  foreach ($composer_info['packages'] as $key => $package) {
-    if (strpos($package['name'], 'drupal/') === 0 && $package['type'] != 'library') {
+  foreach ($composer_lock['packages'] as $key => $package) {
+    if (strpos($package['name'], 'drupal/') === 0 && in_array($package['type'], array('drupal-core', 'drupal-theme', 'drupal-module', 'drupal-profile'))) {
       $project_name = str_replace('drupal/', '', $package['name']);
 
       switch ($package['type']) {
@@ -625,9 +636,6 @@ function drush_make_convert_composer_to_make($composer_info) {
           $group =& $profiles;
           $group[$project_name]['type'] = 'profile';
           break;
-        default:
-          // This continues the foreach above the switch statement.
-          continue 2;
       }
 
       $group[$project_name]['download']['type'] = 'git';
@@ -644,6 +652,9 @@ function drush_make_convert_composer_to_make($composer_info) {
         }
         $group[$project_name]['download']['revision'] = $package['source']['reference'];
       }
+      elseif ($package['type'] == 'drupal-core') {
+        $group[$project_name]['download']['tag'] = $package['version'];
+      }
       else {
         // Make tag versioning drupal-friendly. 8.1.0-alpha1 => 8.x-1.0-alpha1.
         $major_version = substr($package['version'], 0 ,1);
@@ -657,23 +668,20 @@ function drush_make_convert_composer_to_make($composer_info) {
         }
       }
     }
-    // @todo Include other libraries without including recursive dependencies.
-    // At present, this snippet would include too many dependencies.
-    // Possibly cross references with require array in composer.json.
-    /*
-    elseif (!in_array($package['type'], array('composer-plugin', 'metapackage'))) {
+    // Include any non-drupal libraries that exist in both .lock and .json.
+    elseif (!in_array($package['type'], array('composer-plugin', 'metapackage'))
+      && array_key_exists($package['name'], $composer_json['require'])) {
       $project_name = $package['name'];
-      $info['libraries'][$project_name]['type'] = 'library';
-      $info['libraries'][$project_name]['download']['type'] = 'git';
-      $info['libraries'][$project_name]['download']['branch'] = $package['version'];
-      $info['libraries'][$project_name]['download']['revision'] = $package['source']['reference'];
+      $libraries[$project_name]['type'] = 'library';
+      $libraries[$project_name]['download']['type'] = 'git';
+      $libraries[$project_name]['download']['url'] = $package['source']['url'];
+      $libraries[$project_name]['download']['branch'] = $package['version'];
+      $libraries[$project_name]['download']['revision'] = $package['source']['reference'];
     }
-    */
   }
 
   $info['projects'] = $core + $modules + $themes;
-  $info['libraries'] += $libraries;
-  ksort($info);
+  $info['libraries'] = $libraries;
 
   return $info;
 }
