@@ -21,8 +21,12 @@ class generateMakeCase extends CommandUnishTestCase {
       'cache' => NULL,
       'strict' => 0, // Don't validate options
     );
-    $this->drush('pm-download', array('omega', 'devel'), $options);
-    $this->drush('pm-enable', array('omega', 'devel'), $options);
+    $dl_options = array();
+    if (UNISH_DRUPAL_MAJOR_VERSION == 6) {
+      $dl_options = array('dev' => NULL);
+    }
+    $this->drush('pm-download', array('zen', 'devel'), $options + $dl_options);
+    $this->drush('pm-enable', array('zen', 'devel'), $options);
 
     $makefile = UNISH_SANDBOX . '/dev.make';
 
@@ -38,7 +42,7 @@ projects[] = "drupal"
 ; Modules
 projects[] = "devel"
 ; Themes
-projects[] = "omega"
+projects[] = "zen"
 EOD;
     $actual = trim(file_get_contents($makefile));
 
@@ -46,7 +50,7 @@ EOD;
 
     // Download a module to a 'contrib' directory to test the subdir feature
     mkdir($this->webroot() + '/sites/all/modules/contrib');
-    $this->drush('pm-download', array('libraries'), array('destination' => 'sites/all/modules/contrib') + $options);
+    $this->drush('pm-download', array('libraries'), array('destination' => 'sites/all/modules/contrib') + $options + $dl_options);
     $this->drush('pm-enable', array('libraries'), $options);
     $this->drush('generate-makefile', array($makefile), array('exclude-versions' => NULL) + $options);
     $expected = <<<EOD
@@ -61,7 +65,7 @@ projects[] = "devel"
 projects[libraries][subdir] = "contrib"
 
 ; Themes
-projects[] = "omega"
+projects[] = "zen"
 EOD;
     $actual = trim(file_get_contents($makefile));
 
