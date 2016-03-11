@@ -384,10 +384,11 @@ function drush_make_convert($source) {
   // Load source data.
   $source_format = pathinfo($source, PATHINFO_EXTENSION);
 
-  if ($source_format == $dest_format) {
+  if ($source_format == $dest_format || $source_format == 'lock' && $dest_format == 'composer') {
     drush_print('The source format cannot be the same as the destination format.');
   }
 
+  // Obtain drush make $info array, converting if necessary.
   switch ($source_format) {
     case 'make':
     case 'yml':
@@ -410,10 +411,11 @@ function drush_make_convert($source) {
       break;
   }
 
+  // Output into destination formation.
   switch ($dest_format) {
     case 'yml':
     case 'yaml':
-      $output = drush_make_format_yml($info);
+      $output = drush_make_convert_make_to_yml($info);
       break;
 
     case 'make':
@@ -424,12 +426,11 @@ function drush_make_convert($source) {
         $info['libraries'][$key]['_type'] = 'librarie';
       }
       $output = _drush_make_generate_makefile_contents($info['projects'], $info['libraries'], $info['core'], $info['defaults']);
-      $output .= "\n; No third party libraries were added to the make file. This must be added manually.";
 
       break;
 
     case 'composer':
-      $output = drush_make_format_composer($info);
+      $output = drush_make_convert_make_to_composer($info);
       break;
   }
 
@@ -445,7 +446,7 @@ function drush_make_convert($source) {
  * @return string
  *   A yaml encoded info array.
  */
-function drush_make_format_yml($info) {
+function drush_make_convert_make_to_yml($info) {
   // Remove incorrect value.
   unset($info['format']);
 
@@ -471,12 +472,17 @@ function drush_make_format_yml($info) {
  * @return string
  *   A json encoded composer.json schema object.
  */
-function drush_make_format_composer($info) {
+function drush_make_convert_make_to_composer($info) {
+  $core_major_version = substr($info['core'], 0, 1);
+  $core_project_name = $core_major_version == 7 ? 'drupal/drupal' : 'drupal/core';
+
   // Add default projects.
   $projects = array(
     'composer/installers' => '^1.0.20',
     'cweagans/composer-patches' => '~1.0',
+    $core_project_name => str_replace('x', '*', $info['core']),
   );
+
   $patches = array();
 
   // Iterate over projects, populating composer-friendly array.
@@ -486,11 +492,10 @@ function drush_make_format_composer($info) {
         $project['name'] = 'drupal/core';
         $projects[$project['name']] = str_replace('x', '*', $project['version']);
         break;
-      case 'module':
-      case 'profile':
-      case 'theme':
+
+      default:
         $project['name'] = "drupal/$project_name";
-        $projects[$project['name']] = drush_make_convert_project_to_composer($project);
+        $projects[$project['name']] = drush_make_convert_project_to_composer($project, $core_major_version);
         break;
     }
 
@@ -504,14 +509,11 @@ function drush_make_format_composer($info) {
   }
 
   // Iterate over libraries, populating composer-friendly array.
-  foreach ($info['libraries'] as $library_name => $library) {
-    $library_name = 'Verify project name: ' . $library_name;
-    $projects[$library_name] = drush_make_convert_project_to_composer($library);
-  }
-
-  // Add drupal core if it was not in the list of projects.
-  if (empty($projects['drupal/core'])) {
-    $projects['drupal/core'] = str_replace('x', '*', $info['core']);
+  if (!empty($info['libraries'])) {
+    foreach ($info['libraries'] as $library_name => $library) {
+      $library_name = 'Verify project name: ' . $library_name;
+      $projects[$library_name] = drush_make_convert_project_to_composer($library);
+    }
   }
 
   $output = array(
@@ -547,11 +549,14 @@ function drush_make_format_composer($info) {
  * @param array $original_project
  *   A project dependency, as defined in a make file.
  *
+ * @param string $core_major_version
+ *   The major core version. E.g., 6, 7, 8, etc.
+ *
  * @return string
  *   The project version, in composer syntax.
  *
  */
-function drush_make_convert_project_to_composer($original_project) {
+function drush_make_convert_project_to_composer($original_project, $core_major_version) {
   // Typical specified version with major version "x" removed.
   if (!empty($original_project['version'])) {
     $version = str_replace('x', '0', $original_project['version']);
@@ -579,6 +584,8 @@ function drush_make_convert_project_to_composer($original_project) {
     }
   }
 
+  $version = "$core_major_version." . $version;
+
   return $version;
 }
 
@@ -596,6 +603,7 @@ function drush_make_convert_project_to_composer($original_project) {
  */
 function drush_make_convert_composer_to_make($composer_lock, $composer_json) {
   $info = array(
+    'core' => array(),
     'api' => 2,
     'defaults' => array(
       'projects' => array(
@@ -622,7 +630,7 @@ function drush_make_convert_composer_to_make($composer_lock, $composer_json) {
           $project_name = 'drupal';
           $group =& $core;
           $group[$project_name]['type'] = 'core';
-          $info['core'] = substr($package['version'], 0, 1);
+          $info['core'] = substr($package['version'], 0, 1) . '.x';
           break;
         case 'drupal-theme':
           $group =& $themes;
@@ -653,7 +661,13 @@ function drush_make_convert_composer_to_make($composer_lock, $composer_json) {
         $group[$project_name]['download']['revision'] = $package['source']['reference'];
       }
       elseif ($package['type'] == 'drupal-core') {
-        $group[$project_name]['download']['tag'] = $package['version'];
+        // For 7.x tags, replace 7.xx.0 with 7.xx.
+        if ($info['core'] == '7.x') {
+          $group[$project_name]['download']['tag']= substr($package['version'], 0, 4);
+        }
+        else {
+          $group[$project_name]['download']['tag'] = $package['version'];
+        }
       }
       else {
         // Make tag versioning drupal-friendly. 8.1.0-alpha1 => 8.x-1.0-alpha1.
