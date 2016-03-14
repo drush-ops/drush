@@ -1,0 +1,18 @@
+core: 7.x
+api: '2'
+projects:
+  wysiwyg:
+    version: '2.1'
+    patch:
+      - 'http://drupal.org/files/0001-feature.inc-from-624018-211.patch'
+      - patches-local-test-wysiwyg.patch
+  features:
+    version: 1.0-beta4
+    patch:
+      - 'http://drupal.org/files/issues/features-drush-backend-invoke-25.patch'
+  context:
+    version: 3.0-beta2
+    patch:
+      - 'http://drupal.org/files/issues/custom_blocks_arent_editable-make.patch'
+      - 'http://drupal.org/files/issues/661094-context-permissions.patch'
+
