@@ -120,7 +120,7 @@ function drush_core_runserver($uri = NULL) {
   }
 
   drush_print(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site !site!user...', array('!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $path, '!site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'), '!user' => $user_message)));
-  // Start php 5.4 builtin server.
+  // Start php built-in server.
   // Store data used by runserver-prepend.php in the shell environment.
   foreach ($env as $key => $value) {
     putenv($key . '=' . $value);

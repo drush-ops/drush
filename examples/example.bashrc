@@ -297,7 +297,7 @@ function dssh() {
 }
 
 # Drush checks the current PHP version to ensure compatibility, and fails with
-# an error if less than the supported minimum (currently 5.4.5). If you would
+# an error if less than the supported minimum (currently 5.5.0). If you would
 # like to try to run Drush on a lower version of PHP, you can un-comment the
 # line below to skip this check. Note, however, that this is un-supported.
 
