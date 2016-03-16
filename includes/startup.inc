@@ -193,11 +193,15 @@ function drush_startup($argv) {
           $VAR = "ROOT";
           break;
 
+        case "-dv":
+        case "-vd":
         case "--debug":
         case "-d":
           $DEBUG = TRUE;
           break;
 
+        case "-dv":
+        case "-vd":
         case "--verbose":
         case "-v":
           $VERBOSE = TRUE;
