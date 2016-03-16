@@ -40,6 +40,7 @@ function runserver_drush_command() {
       'user' => 'If opening a web browser, automatically log in as this user (user ID or username). Default is to log in as uid 1.',
       'browser' => 'If opening a web browser, which browser to user (defaults to operating system default). Use --no-browser to avoid opening a browser.',
       'dns' => 'Resolve hostnames/IPs using DNS/rDNS (if possible) to determine binding IPs and/or human friendly hostnames for URLs and browser.',
+      'runserver-prepend' => 'Overrides the default runserver-prepend file with a user defined one.',
     ),
     'aliases' => array('rs'),
     'examples' => array(
@@ -132,7 +133,11 @@ function drush_core_runserver($uri = NULL) {
   }
   // Start the server using 'php -S'.
   $php = drush_get_option('php', 'php');
-  if (drush_drupal_major_version() >=8) {
+  $runserver_prepend = drush_get_option('runserver-prepend', '');
+  if ($runserver_prepend) {
+    $extra = " ${runserver_prepend}";
+  }
+  elseif (drush_drupal_major_version() >=8) {
     $extra = ' "' . __DIR__ . '/d8-rs-router.php"';
   }
   else {
