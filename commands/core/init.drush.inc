@@ -98,7 +98,7 @@ function drush_init_core_init() {
     $drush_path = drush_find_path_to_drush($home);
     $drush_path = preg_replace("%^" . preg_quote($home) . "/%", '$HOME/', $drush_path);
 
-    $bashrc_additions["%$drush_path%"] = "# Path to Drush, added by 'drush init'.\nexport \$PATH=\"\$PATH:$drush_path\"\n\n";
+    $bashrc_additions["%$drush_path%"] = "# Path to Drush, added by 'drush init'.\nexport PATH=\"\$PATH:$drush_path\"\n\n";
   }
 
   // Modify the user's bashrc file, adding our customizations.
