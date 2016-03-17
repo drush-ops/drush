@@ -258,8 +258,6 @@ function drush_preflight() {
     _drush_preflight_alias_path();
   }
   if (!drush_get_option('local')) {
-    // Load a drushrc.php file in the drush.php's directory.
-    drush_load_config('drush');
 
     // Load a drushrc.php file in the $ETC_PREFIX/etc/drush directory.
     drush_load_config('system');
@@ -483,8 +481,6 @@ function _drush_preflight_alias_path() {
   $default_prefix_configuration = drush_is_windows() ? getenv('ALLUSERSPROFILE') . '/Drush' : '';
   $site_wide_configuration_dir = drush_get_context('ETC_PREFIX', $default_prefix_configuration) . '/etc/drush';
   $alias_path[] = drush_sitealias_alias_base_directory($site_wide_configuration_dir);
-
-  $alias_path[] = drush_sitealias_alias_base_directory(dirname(__FILE__) . '/..');
 
   $server_home = drush_server_home();
   if (isset($server_home)) {

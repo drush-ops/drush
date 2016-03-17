@@ -229,8 +229,7 @@ function core_drush_command() {
   $items['php-script'] = array(
     'description' => "Run php script(s).",
     'examples' => array(
-      'drush php-script scratch' => 'Run scratch.php script. See commands/core directory.',
-      'drush php-script example --script-path=/path/to/scripts:/another/path' => 'Run script from specified paths',
+      'drush php-script example --script-path=/path/to/scripts:/another/path' => 'Run a script named example.php from specified paths',
       'drush php-script' => 'List all available scripts.',
       '' => '',
       "#!/usr/bin/env drush\n<?php\nvariable_set('key', drush_shift());" => "Execute php code with a full Drupal bootstrap directly from a shell script.",
@@ -1105,7 +1104,6 @@ function drush_core_php_script() {
   }
   else {
     // Array of paths to search for scripts
-    $searchpath['DIR'] = dirname(__FILE__);
     $searchpath['cwd'] = drush_cwd();
 
     // Additional script paths, specified by 'script-path' option
