@@ -138,9 +138,6 @@ function _drush_config_file($context, $prefix = NULL, $version = '') {
   // In the system wide configuration folder.
   $configs['system'] = drush_get_context('DRUSH_SITE_WIDE_CONFIGURATION') . '/' . $config_file;
 
-  // in the drush installation folder
-  $configs['drush'] = dirname(__FILE__) . '/../' . $config_file;
-
   return empty($configs[$context]) ? '' : $configs[$context];
 }
 
