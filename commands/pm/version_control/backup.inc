@@ -12,30 +12,36 @@ class drush_version_control_backup implements drush_version_control {
   /**
    * Implementation of pre_update().
    */
-  public function pre_update(&$project, $items_to_test = array()) {
+  public function pre_update(&$project, $items_to_test = array('' => 1)) {
     if (drush_get_option('no-backup', FALSE)) {
       return TRUE;
     }
     if ($backup_target = $this->prepare_backup_dir()) {
       if ($project['project_type'] != 'core') {
         $backup_target .= '/' . $project['project_type'] . 's';
-        drush_mkdir($backup_target);
       }
       $backup_target .= '/'. $project['name'];
+      $backup_source = $project['full_project_path'];
       // Save for rollback or notifications.
       $project['backup_target'] = $backup_target;
+      $ok = TRUE;
 
-      // Move or copy to backup target based in package-handler.
-      if (drush_get_option('package-handler', 'wget') == 'wget') {
-        if (drush_move_dir($project['full_project_path'], $backup_target)) {
-          return TRUE;
+      foreach (array_keys($items_to_test) as $file) {
+        drush_mkdir(dirname("$backup_target/$file"));
+        // Move or copy to backup target based on package-handler.
+        if (drush_get_option('package-handler', 'wget') == 'wget') {
+          $ok = $ok && drush_move_dir("$backup_source/$file", "$backup_target/$file");
+        }
+        // git.
+        else {
+          $ok = $ok && drush_copy_dir("$backup_source/$file", "$backup_target/$file");
         }
       }
-      // git.
-      elseif (drush_copy_dir($project['full_project_path'], $backup_target)) {
-        return TRUE;
+
+      if (!$ok) {
+        return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('Failed to backup project directory !project to !backup_target', array('!project' => $backup_source, '!backup_target' => $backup_target)));
       }
-      return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('Failed to backup project directory !project to !backup_target', array('!project' => $project['full_project_path'], '!backup_target' => $backup_target)));
+      return TRUE;
     }
   }
 
