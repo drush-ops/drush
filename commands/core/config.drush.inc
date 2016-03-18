@@ -165,9 +165,6 @@ function config_drush_command() {
     'arguments' => array(
       'config-name' => 'The config object name, for example "system.site".',
     ),
-    'options' => array(
-      'file' => 'Import from a file instead of interactively editing a given config.',
-    ),
     'global-options' => array('editor', 'bg'),
     'examples' => array(
       'drush config-edit image.style.large' => 'Edit the image style configurations.',
@@ -696,12 +693,6 @@ function _drush_config_import_partial(FileStorage $source) {
  * Edit command callback.
  */
 function drush_config_edit($config_name = '') {
-  $file = drush_get_option('file', FALSE);
-  if (empty($config_name) && $file) {
-    // If not provided, assume config name from the given file.
-    $config_name = basename($file, '.yml');
-  }
-
   // Identify and validate input.
   if ($config_name) {
     $config = Drupal::configFactory()->getEditable($config_name);
@@ -724,29 +715,13 @@ function drush_config_edit($config_name = '') {
   $active_storage = $config->getStorage();
   $contents = $active_storage->read($config_name);
 
+  // Write tmp YAML file for editing
   $temp_storage = new FileStorage(drush_tempdir());
-  if ($file) {
-    $temp_storage->write($config_name, \Symfony\Component\Yaml\Yaml::parse(file_get_contents($file)));
-    // Show difference.
-    $existing = new FileStorage(drush_tempdir());
-    $existing->write($config_name, $contents);
-    // @todo Can DiffFormatter produce a CLI pretty diff?
-    drush_shell_exec('diff -u %s %s', $existing->getFilePath($config_name), $temp_storage->getFilePath($config_name));
-    $output = drush_shell_exec_output();
-    drush_print(implode("\n", $output));
+  $temp_storage->write($config_name, $contents);
 
-    if (!drush_confirm(dt('Keep these changes?'))) {
-      return drush_user_abort(dt('Config not edited.'));
-    }
-  }
-  else {
-    // Write tmp YAML file for editing.
-    $temp_storage->write($config_name, $contents);
-
-    // $filepath = drush_save_data_to_temp_file();
-    $exec = drush_get_editor();
-    drush_shell_exec_interactive($exec, $temp_storage->getFilePath($config_name));
-  }
+  // $filepath = drush_save_data_to_temp_file();
+  $exec = drush_get_editor();
+  drush_shell_exec_interactive($exec, $temp_storage->getFilePath($config_name));
 
   // Perform import operation if user did not immediately exit editor.
   if (!drush_get_option('bg', FALSE)) {

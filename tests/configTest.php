@@ -93,25 +93,6 @@ class ConfigCase extends CommandUnishTestCase {
     $this->assertContains('tracker', $contents);
   }
 
-  /**
-   * Tests editing config from a file (not interactively).
-   */
-  public function testConfigEdit() {
-    // Write out edits to a file.
-    $config = "name: 'TEST NAME'\nmail: test@testmail.example.org";
-    $path = UNISH_SANDBOX . '/system.site.yml';
-    file_put_contents($path, $config);
-
-    $options = $this->options();
-    $options += array(
-      'file' => $path,
-      'yes' => NULL,
-    );
-    $this->drush('config-edit', array(), $options);
-    $this->drush('config-get', array('system.site'), $this->options());
-    $this->assertEquals($config, $this->getOutput());
-  }
-
   function options() {
     return array(
       'yes' => NULL,
