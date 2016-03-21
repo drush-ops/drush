@@ -33,11 +33,11 @@ In addition to the global Drush, it is recommended that Drupal 8 sites be [built
 
 Drupal Compatibility
 -----------------
-Drush Version | Drush Branch  | PHP | Compatible Drupal versions | Code Status
-------------- | ---------     | --- | -------------------------- | -----------
-Drush 9       | [master](https://travis-ci.org/drush-ops/drush)  | 5.5+ | D7, D8                 | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=master">
-Drush 8       | [8.x](https://travis-ci.org/drush-ops/drush)  | 5.4.5+ | D6, D7, D8                 | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=8.x">
-Drush 7       | [7.x](https://travis-ci.org/drush-ops/drush) | 5.3.0+ | D6, D7                     | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=7.x">
-Drush 6       | [6.x](https://travis-ci.org/drush-ops/drush) | 5.3.0+ | D6, D7                     | Unsupported
-Drush 5       | [5.x](https://travis-ci.org/drush-ops/drush) | 5.2.0+ | D6, D7                     | Unsupported
+Version / branch | PHP | Drupal compatibility | Code Status | Main changes
+------------- | --- | -------------------------- | ------------ | -----------
+Drush 9 / [master](https://travis-ci.org/drush-ops/drush)  | 5.5+ | D7, D8  | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=master"> | TBD
+Drush 8 / [8.x](https://travis-ci.org/drush-ops/drush)  | 5.4.5+ | D6, D7, D8 | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=8.x"> | TBD
+Drush 7 / [7.x](https://travis-ci.org/drush-ops/drush) | 5.3.0+ | D6, D7 | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=7.x"> | D8 support
+Drush 6 / [6.x](https://travis-ci.org/drush-ops/drush) | 5.3.0+ | D6, D7 | Unsupported | Ouput formats.
+Drush 5 / [5.x](https://travis-ci.org/drush-ops/drush) | 5.2.0+ | D6, D7 | Unsupported | TBD
 
