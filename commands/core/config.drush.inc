@@ -123,15 +123,16 @@ function config_drush_command() {
     ),
     'options' => array(
       'preview' => array(
-        'description' => 'Format for displaying proposed changes. Recognized values: list, diff. Defaults to list',
+        'description' => 'Format for displaying proposed changes. Recognized values: list, diff. Defaults to list.',
         'example-value' => 'list',
       ),
-      'source' => 'An arbitrary directory that holds the configuration files. An alternative to label argument',
-      'partial' => 'Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted).',
+      'source' => array(
+        'description' => 'An arbitrary directory that holds the configuration files. An alternative to label argument',
+      ),
+      'partial' => array(
+        'description' => 'Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted).',
+      ),
       'skip-modules' => 'A list of modules to ignore during import (e.g. to avoid disabling dev-only modules that are not enabled in the imported configuration).',
-    ),
-    'global-options' => array(
-      'cache-clear',
     ),
     'core' => array('8+'),
     'examples' => array(
@@ -167,6 +168,7 @@ function config_drush_command() {
       'config-name' => 'The config object name, for example "system.site".',
     ),
     'global-options' => array('editor', 'bg'),
+    'allow-additional-options' => array('config-import'),
     'examples' => array(
       'drush config-edit image.style.large' => 'Edit the image style configurations.',
       'drush config-edit' => 'Choose a config file to edit.',
@@ -200,6 +202,17 @@ function config_drush_command() {
   );
 
   return $items;
+}
+
+/**
+ * Implements hook_drush_help_alter().
+ */
+function config_drush_help_alter(&$command) {
+  // Hide additional-options which are for internal use only.
+  if ($command['command'] == 'config-edit') {
+    $command['options']['source']['hidden'] = TRUE;
+    $command['options']['partial']['hidden'] = TRUE;
+  }
 }
 
 /**
@@ -712,7 +725,8 @@ function drush_config_edit($config_name = '') {
   $contents = $active_storage->read($config_name);
 
   // Write tmp YAML file for editing
-  $temp_storage = new FileStorage(drush_tempdir());
+  $temp_dir = drush_tempdir();
+  $temp_storage = new FileStorage($temp_dir);
   $temp_storage->write($config_name, $contents);
 
   $exec = drush_get_editor();
@@ -720,15 +734,9 @@ function drush_config_edit($config_name = '') {
 
   // Perform import operation if user did not immediately exit editor.
   if (!drush_get_option('bg', FALSE)) {
-    $new_data = $temp_storage->read($config_name);
-    $temp_storage->delete($config_name);
-    $new_storage = new StorageReplaceDataWrapper($active_storage);
-    $new_storage->replaceData($config_name, $new_data);
-    /** @var \Drupal\Core\Config\ConfigManagerInterface $config_manager */
-    $config_manager = Drupal::service('config.manager');
-    $storage_comparer = new StorageComparer($new_storage, $active_storage, $config_manager);
-    $storage_comparer->createChangelist();
-    return drush_op('_drush_config_import', $storage_comparer);
+    $options = drush_redispatch_get_options() + array('partial' => TRUE, 'source' => $temp_dir);
+    $backend_options = array('interactive' => TRUE);
+    return (bool) drush_invoke_process('@self', 'config-import', array(), $options, $backend_options);
   }
 }
 
