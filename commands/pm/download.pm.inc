@@ -264,18 +264,18 @@ function drush_pm_download() {
  * Implementation of hook_drush_pm_download_destination_alter().
  *
  * Built-in download-destination-alter hook. This particular version of
- * the hook will move modules that contain only drush commands to
+ * the hook will move modules that contain only Drush commands to
  * /usr/share/drush/commands if it exists, or $HOME/.drush if the
  * site-wide location does not exist.
  */
 function pm_drush_pm_download_destination_alter(&$request, $release) {
-  // A module is a pure drush command if it has no .module and contain
-  // .drush.inc files.  Skip this test for drush itself, though; we do
-  // not want to download drush to the ~/.drush folder.
+  // A module is a pure drush command if it has no .info.yml and contain
+  // .drush.inc files.  Skip this test for Drush itself, though; we do
+  // not want to download Drush to the ~/.drush folder.
   if (in_array($request['project_type'], array('module', 'utility')) && ($request['name'] != 'drush')) {
     $drush_command_files = drush_scan_directory($request['full_project_path'], '/.*\.drush.inc/');
     if (!empty($drush_command_files)) {
-      $module_files = drush_scan_directory($request['full_project_path'], '/.*\.module/');
+      $module_files = drush_scan_directory($request['full_project_path'], '/.*\.info.yml/');
       if (empty($module_files)) {
         $install_dir = drush_get_context('DRUSH_SITE_WIDE_COMMANDFILES');
         if (!is_dir($install_dir) || !is_writable($install_dir)) {
@@ -290,8 +290,8 @@ function pm_drush_pm_download_destination_alter(&$request, $release) {
           $request['project_install_location'] = $install_dir;
         }
       }
-      // We need to clear the drush commandfile cache so that
-      // our newly-downloaded drush extension commandfiles can be found.
+      // We need to clear the Drush commandfile cache so that
+      // our newly-downloaded Drush extension commandfiles can be found.
       drush_cache_clear_all();
     }
   }
