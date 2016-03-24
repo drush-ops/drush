@@ -201,7 +201,9 @@ function drush_core_pre_site_install($profile = NULL) {
   define('MAINTENANCE_MODE', 'install');
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
 
-  $sql->drop_or_create($db_spec);
+  if (!$sql->drop_or_create($db_spec)) {
+    return drush_set_error(dt('Failed to create database: @error', array('@error' => implode(drush_shell_exec_output()))));
+  }
 
   return TRUE;
 }
