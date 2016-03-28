@@ -477,21 +477,10 @@ function drush_sql_sanitize() {
     return drush_user_abort();
   }
 
-  $sanitize_query = '';
-  foreach($options as $id => $data) {
-    // Enable prefix processing when db-prefix option is used.
-    if (drush_get_option('db-prefix')) {
-      if (drush_drupal_major_version() >= 7) {
-        $data['query'] = Database::getConnection()->prefixTables($data['query']);
-      }
-      else {
-        $data['query'] = db_prefix_tables($data['query']);
-      }
-    }
-    $sanitize_query .= $data['query'] . " ";
-  }
+  $sanitize_query = explode(' ', $options);
   if ($sanitize_query) {
     $sql = drush_sql_get_class();
+    $sanitize_query = $sql->query_prefix($sanitize_query);
     return $sql->query($sanitize_query);
   }
 }
@@ -624,12 +613,7 @@ function drush_sql_get_version() {
 function sql_drush_sql_sync_sanitize($site) {
   $site_settings = drush_sitealias_get_record($site);
   $databases = sitealias_get_databases_from_record($site_settings);
-  if (drush_get_option('db-prefix') || !empty($databases['default']['default']['prefix'])) {
-    $wrap_table_name = TRUE;
-  }
-  else {
-    $wrap_table_name = FALSE;
-  }
+  $wrap_table_name = (bool) drush_get_option('db-prefix');
   $user_table_updates = array();
   $message_list = array();
 
