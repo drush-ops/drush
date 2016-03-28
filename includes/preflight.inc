@@ -9,6 +9,7 @@ use Drush\Log\LogLevel;
 
 use League\Container\Container;
 
+
 /**
  * The main Drush function.
  *
@@ -140,6 +141,14 @@ function drush_preflight_prepare() {
   drush_set_context('DRUSH_VENDOR_PATH', dirname($vendor_path));
   drush_set_context('DRUSH_CLASSLOADER', $classloader);
 
+  // Set up for backwards-compatibility. New code should call
+  // \Drush::getVersion() and \Drush::getMajorVersion() directly
+  $drush_version = \Drush::getVersion();
+  $version_parts = explode('.', $drush_version);
+  define('DRUSH_VERSION', $drush_version);
+  define('DRUSH_MAJOR_VERSION', $version_parts[0]);
+  define('DRUSH_MINOR_VERSION', $version_parts[1]);
+
   // We need to load our services right away, as we cannot log
   // or do much else until after this is done.
   drush_init_dependency_injection_container();
@@ -158,14 +167,6 @@ function drush_preflight_prepare() {
   if (!$return = _drush_environment_check_php_ini()) {
     return; // An error was logged.
   }
-
-  // Set up for backwards-compatibility. New code should call
-  // \Drush::getVersion() and \Drush::getMajorVersion() directly
-  $drush_version = \Drush::getVersion();
-  $version_parts = explode('.', $drush_version);
-  define('DRUSH_VERSION', $drush_version);
-  define('DRUSH_MAJOR_VERSION', $version_parts[0]);
-  define('DRUSH_MINOR_VERSION', $version_parts[1]);
 
   define('DRUSH_REQUEST_TIME', microtime(TRUE));
 
@@ -188,7 +189,6 @@ function drush_preflight_prepare() {
  * Set up our dependency injection container, and load drush-services.yml.
  */
 function drush_init_dependency_injection_container() {
-
   // Set up our dependency injection container.
   $container = new Container();
 
@@ -203,9 +203,11 @@ function drush_init_dependency_injection_container() {
     ->withMethodCall('add', ['bootstrap.drupal6'])
     ->withMethodCall('add', ['bootstrap.drupal7'])
     ->withMethodCall('add', ['bootstrap.drupal8']);
-
+  $container->share('application', 'Symfony\Component\Console\Application')
+    ->withArgument('Drush Commandline Tool')
+    ->withArgument(\Drush::getVersion());
   $container->inflector('Psr\Log\LoggerAwareInterface')
-          ->invokeMethod('setLogger', ['logger']);
+    ->invokeMethod('setLogger', ['logger']);
 
   // Store the container in the \Drush object
   \Drush::setContainer($container);
