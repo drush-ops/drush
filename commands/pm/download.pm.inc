@@ -275,7 +275,7 @@ function pm_drush_pm_download_destination_alter(&$request, $release) {
   if (in_array($request['project_type'], array('module', 'utility')) && ($request['name'] != 'drush')) {
     $drush_command_files = drush_scan_directory($request['full_project_path'], '/.*\.drush.inc/');
     if (!empty($drush_command_files)) {
-      $module_files = drush_scan_directory($request['full_project_path'], '/.*\.info.yml/');
+      $module_files = drush_scan_directory($request['full_project_path'], '/.*\.info/');
       if (empty($module_files)) {
         $install_dir = drush_get_context('DRUSH_SITE_WIDE_COMMANDFILES');
         if (!is_dir($install_dir) || !is_writable($install_dir)) {
