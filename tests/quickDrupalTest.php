@@ -65,7 +65,7 @@ class quickDrupalCase extends CommandUnishTestCase {
         'options'  => array(
           'skip' => NULL, // for speed up enable of devel module.
           'browser' => 0,
-          'profile' => UNISH_DRUPAL_MAJOR_VERSION == 6 ? 'standard' : 'testing',
+          'profile' => 'testing',
         ),
       ),
     );

@@ -265,7 +265,7 @@ abstract class DrupalBoot extends BaseBoot {
 
     $version = drush_drupal_version($drupal_root);
     $major_version = drush_drupal_major_version($drupal_root);
-    if ($major_version <= 5) {
+    if ($major_version <= 6) {
       return drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', array('!drush_version' => DRUSH_VERSION, '!major_version' => $major_version)));
     }
 
@@ -435,8 +435,7 @@ abstract class DrupalBoot extends BaseBoot {
     global $conf;
 
     $override = array(
-      'dev_query' => FALSE, // Force Drupal6 not to store queries since we are not outputting them.
-      'cron_safe_threshold' => 0, // Don't run poormanscron during Drush request (D7+).
+      'cron_safe_threshold' => 0, // Don't run poormanscron during Drush request (D7).
     );
 
     $current_override = drush_get_option_list('variables');

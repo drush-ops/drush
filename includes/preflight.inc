@@ -186,6 +186,8 @@ function drush_preflight_prepare() {
 
 /**
  * Set up our dependency injection container, and load drush-services.yml.
+ *
+ * The Drupal6 boot service is needed in order to show the D6 deprecation message.
  */
 function drush_init_dependency_injection_container() {
 
@@ -349,7 +351,6 @@ function drush_preflight_root() {
   if ($root) {
     $root = realpath($root);
   }
-  // @todo Drupal code should use DRUSH_DRUPAL_ROOT instead of this constant.
   \Drush::bootstrapManager()->setRoot($root);
 
   // Load the config options from Drupal's /drush, ../drush, and sites/all/drush directories,

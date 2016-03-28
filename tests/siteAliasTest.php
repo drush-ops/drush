@@ -168,10 +168,6 @@ EOD;
    * Ensure that a --uri on CLI overrides on provided by site alias during a backend invoke.
    */
   public function testBackendHonorsAliasOverride() {
-    if (UNISH_DRUPAL_MAJOR_VERSION == 6) {
-      $this->markTestSkipped("Sites.php not available in Drupal 6 core.");
-    }
-
     // Test a standard remote dispatch.
     $this->drush('core-status', array(), array('uri' => 'http://example.com', 'simulate' => NULL), 'user@server/path/to/drupal#sitename');
     $this->assertContains('--uri=http://example.com', $this->getOutput());

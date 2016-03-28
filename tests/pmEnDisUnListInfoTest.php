@@ -103,7 +103,7 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
     // Test pm-enable is able to download dependencies.
     // @todo pathauto has no usable D8 release yet.
     // Also, Drupal 6 has no stable releases any longer, so resolve-dependencies are inconvenient to test.
-    if (UNISH_DRUPAL_MAJOR_VERSION ==7) {
+    if (UNISH_DRUPAL_MAJOR_VERSION == 7) {
       $this->drush('pm-download', array('pathauto'), $options);
       $this->drush('pm-enable', array('pathauto'), $options + array('resolve-dependencies' => TRUE));
       $this->drush('pm-list', array(), $options + array('status' => 'enabled'));

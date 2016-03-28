@@ -318,10 +318,6 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     $options = array();
     $site = "$root/sites/$uri";
 
-    if (substr($version_string, 0, 1) == 6 && $this->db_driver(UNISH_DB_URL) == 'sqlite') {
-      // Validate
-      $this->markTestSkipped("Drupal 6 does not support SQLite.");
-    }
     if ($version_string == 8) {
       // We want to track Drupal 8 very closely.
       $version_string = '8.0.x';

@@ -243,7 +243,7 @@
 # $options['skip-tables']['common'] = array('migration_*');
 
 /**
- * Override specific entries in Drupal's variable system or settings.php (D6/D7 only).
+ * Override specific entries in Drupal's variable system or settings.php (D7 only).
  */
 # $options['variables']['site_name'] = 'My Drupal site';
 # $options['variables']['theme_default'] = 'minnelli';

@@ -24,7 +24,7 @@ function site_install_drush_command() {
       // block in the profile's info YAML file.
       // See https://www.drupal.org/node/2210443 for more information.
       'profile' => 'The install profile you wish to run. Defaults to \'default\' in D6, \'standard\' in D7+, unless an install profile is marked as exclusive (or as a distribution in D8+ terminology) in which case that is used.',
-      'key=value...' => 'Any additional settings you wish to pass to the profile. Fully supported on D7+, partially supported on D6 (single step configure forms only). The key is in the form [form name].[parameter name] on D7 or just [parameter name] on D6.',
+      'key=value...' => 'Any additional settings you wish to pass to the profile. The key is in the form [form name].[parameter name].',
     ),
     'options' => array(
       'db-url' => array(
@@ -199,13 +199,7 @@ function drush_core_pre_site_install($profile = NULL) {
 
   // We need to be at least at DRUSH_BOOTSTRAP_DRUPAL_SITE to select the site uri to install to
   define('MAINTENANCE_MODE', 'install');
-  if (drush_drupal_major_version() == 6) {
-    // The Drupal 6 installer needs to bootstrap up to the specified site.
-    drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
-  }
-  else {
-    drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
-  }
+  drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
 
   $sql->drop_or_create($db_spec);
 
