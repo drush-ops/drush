@@ -16,6 +16,7 @@ class ConfigCase extends CommandUnishTestCase {
 
     if (!$this->getSites()) {
       $this->setUpDrupal(1, TRUE);
+      $this->drush('pm-enable', array('config'), $this->options());
     }
   }
 

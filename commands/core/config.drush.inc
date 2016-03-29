@@ -32,6 +32,7 @@ function config_drush_help($section) {
  * Implementation of hook_drush_command().
  */
 function config_drush_command() {
+  $deps = array('drupal dependencies' => 'config');
   $items['config-get'] = array(
     'description' => 'Display a config value, or a whole configuration object.',
     'arguments' => array(
@@ -116,7 +117,7 @@ function config_drush_command() {
     ),
   );
 
-  $items['config-import'] = array(
+  $items['config-import'] = $deps + array(
     'description' => 'Import config from a config directory.',
     'arguments' => array(
       'label' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'sync'",
