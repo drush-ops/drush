@@ -463,8 +463,8 @@ function drush_sql_sanitize() {
   }
 
   drush_command_invoke_all('drush_sql_sync_sanitize', 'default');
-  $options = drush_get_context('post-sync-ops');
-  if (!empty($options)) {
+  $operations = drush_get_context('post-sync-ops');
+  if (!empty($operations)) {
     if (!drush_get_context('DRUSH_SIMULATE')) {
       $messages = _drush_sql_get_post_sync_messages();
       if ($messages) {
@@ -472,26 +472,16 @@ function drush_sql_sanitize() {
         drush_print($messages);
       }
     }
+    $queries = array_column($operations, 'query');
+    $sanitize_query = implode(" ", $queries);
   }
   if (!drush_confirm(dt('Do you really want to sanitize the current database?'))) {
     return drush_user_abort();
   }
 
-  $sanitize_query = '';
-  foreach($options as $id => $data) {
-    // Enable prefix processing when db-prefix option is used.
-    if (drush_get_option('db-prefix')) {
-      if (drush_drupal_major_version() >= 7) {
-        $data['query'] = Database::getConnection()->prefixTables($data['query']);
-      }
-      else {
-        $data['query'] = db_prefix_tables($data['query']);
-      }
-    }
-    $sanitize_query .= $data['query'] . " ";
-  }
   if ($sanitize_query) {
     $sql = drush_sql_get_class();
+    $sanitize_query = $sql->query_prefix($sanitize_query);
     return $sql->query($sanitize_query);
   }
 }
@@ -536,17 +526,14 @@ function drush_sql_register_post_sync_op($id, $message, $query = NULL) {
  *   All post-sync operation messages concatenated together.
  */
 function _drush_sql_get_post_sync_messages() {
-  $messages = FALSE;
-
-  $options = drush_get_context('post-sync-ops');
-  if (!empty($options)) {
+  $messages = '';
+  $operations = drush_get_context('post-sync-ops');
+  if (!empty($operations)) {
     $messages = dt('The following operations will be done on the target database:') . "\n";
 
-    foreach($options as $id => $data) {
-      $messages .= "  * " . $data['message'] . "\n";
-    }
+    $bullets = array_column($operations, 'message');
+    $messages .= " * " . implode("\n * ", $bullets) . "\n";
   }
-
   return $messages;
 }
 
@@ -624,12 +611,7 @@ function drush_sql_get_version() {
 function sql_drush_sql_sync_sanitize($site) {
   $site_settings = drush_sitealias_get_record($site);
   $databases = sitealias_get_databases_from_record($site_settings);
-  if (drush_get_option('db-prefix') || !empty($databases['default']['default']['prefix'])) {
-    $wrap_table_name = TRUE;
-  }
-  else {
-    $wrap_table_name = FALSE;
-  }
+  $wrap_table_name = (bool) drush_get_option('db-prefix');
   $user_table_updates = array();
   $message_list = array();
 
