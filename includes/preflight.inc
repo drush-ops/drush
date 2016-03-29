@@ -8,7 +8,7 @@
 use Drush\Log\LogLevel;
 
 use League\Container\Container;
-
+use Symfony\Component\Console\Input\InputOption;
 
 /**
  * The main Drush function.
@@ -26,8 +26,10 @@ use League\Container\Container;
  *   Whatever the given command returns.
  */
 function drush_main() {
-  // Load Drush core include files, and parse command line arguments.
-  if (drush_preflight_prepare() === FALSE) {
+  // Load Drush core include files, create the container and
+  // parse commandline arguments
+  $container = drush_preflight_prepare();
+  if ($container === FALSE) {
     return(1);
   }
   // Start code coverage collection.
@@ -62,12 +64,20 @@ function drush_main() {
       }
     }
     else {
+      // Get the application and run it.
+      // TODO: We need a new way to handle @alias arguments,
+      // remote command dispatching, bootstrapping, etc.
+      $application = $container->get('application');
+      $application->run();
+
+      /*
       // Do any necessary preprocessing operations on the command,
       // perhaps handling immediately.
       $command_handled = drush_preflight_command_dispatch();
       if (!$command_handled) {
         $return = $bootstrap->bootstrap_and_dispatch();
       }
+      */
     }
   }
   // TODO: Get rid of global variable access here, and just trust
@@ -151,7 +161,17 @@ function drush_preflight_prepare() {
 
   // We need to load our services right away, as we cannot log
   // or do much else until after this is done.
-  drush_init_dependency_injection_container();
+  $container = drush_init_dependency_injection_container();
+
+  // TODO: Where will we get our list of built-in annotation commands?
+  // Maybe list the contents of lib/Drush/Commands?  We probably want
+  // to support placing the commands in subfolders.
+  $commandFileClassNames = [
+    \Drush\Commands\InitCommand::class,
+  ];
+
+  // Add our annotation commands to the application.
+  drush_init_annotation_commands($container, $commandFileClassNames);
 
   // Terminate immediately unless invoked as a command line script
   if (!drush_verify_cli()) {
@@ -176,6 +196,8 @@ function drush_preflight_prepare() {
   // Set an error handler and a shutdown function
   set_error_handler('drush_error_handler');
   register_shutdown_function('drush_shutdown');
+
+  // TODO: Remove drush_parse_args
   // We need some global options/arguments processed at this early stage.
   drush_parse_args();
 
@@ -183,6 +205,8 @@ function drush_preflight_prepare() {
   _drush_preflight_global_options();
 
   drush_log(dt("Drush preflight prepare loaded autoloader at !autoloader", array('!autoloader' => realpath($vendor_path))), LogLevel::PREFLIGHT);
+
+  return $container;
 }
 
 /**
@@ -203,14 +227,76 @@ function drush_init_dependency_injection_container() {
     ->withMethodCall('add', ['bootstrap.drupal6'])
     ->withMethodCall('add', ['bootstrap.drupal7'])
     ->withMethodCall('add', ['bootstrap.drupal8']);
+  $container->share('globalOptionsEventListener', \Drush\Command\GlobalOptionsEventListener::class);
+  $container->share('eventDispatcher', \Symfony\Component\EventDispatcher\EventDispatcher::class)
+      ->withMethodCall('addSubscriber', ['globalOptionsEventListener']);
   $container->share('application', 'Symfony\Component\Console\Application')
     ->withArgument('Drush Commandline Tool')
-    ->withArgument(\Drush::getVersion());
+    ->withArgument(\Drush::getVersion())
+    ->withMethodCall('setDispatcher', ['eventDispatcher']);
+  $container->share('commandFactory', 'Consolidation\AnnotationCommand\AnnotationCommandFactory');
   $container->inflector('Psr\Log\LoggerAwareInterface')
     ->invokeMethod('setLogger', ['logger']);
 
   // Store the container in the \Drush object
   \Drush::setContainer($container);
+
+  return $container;
+}
+
+// TODO: Where should this go?
+function drush_init_global_options($application) {
+  $definition = $application->getDefinition();
+
+  // TODO: We should make a better way to manage global options
+  $globalOptions = drush_get_global_options();
+
+  foreach ($globalOptions as $option => $info) {
+    $info += [
+      'short-form' => null,
+    ];
+    $description = $info['description'];
+    $default = null;
+    $mode = InputOption::VALUE_NONE;
+    if (array_key_exists('example-value', $info)) {
+      $mode = InputOption::VALUE_REQUIRED;
+      // TODO: at the moment, global options do not know their default values,
+      // but if they did, it would look like this:
+      if (array_key_exists('example-value', $info)) {
+        $default = $info['default-value'];
+        $mode = InputOption::VALUE_OPTIONAL;
+      }
+    }
+    // TODO: Any need to make use of InputOption::VALUE_IS_ARRAY?
+
+    $definition->addOption(
+        new InputOption("--$option", $info['short-form'], $mode, $description, $default)
+    );
+
+    // TODO: If the default is TRUE, add a --no alias option.
+    if ($default === TRUE) {
+      $definition->addOption(
+          new InputOption("--no-$option", null, $mode, "Negation of --$option.", FALSE)
+      );
+    }
+  }
+}
+
+function drush_init_annotation_commands($container, $commandFileClassNames) {
+  $application = $container->get('application');
+  $commandFactory = $container->get('commandFactory');
+  foreach ($commandFileClassNames as $className) {
+    $classAlias = str_replace('\\', '', $className);
+
+    // Add and fetch our class from the container to apply the inductors
+    $container->share($classAlias, $className);
+    $commandFileInstance = $container->get($classAlias);
+    $commandList = $commandFactory->createCommandsFromClass($commandFileInstance);
+    foreach ($commandList as $command) {
+        $application->add($command);
+    }
+  }
+  drush_init_global_options($application);
 }
 
 /**

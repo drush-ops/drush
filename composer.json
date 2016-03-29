@@ -36,6 +36,7 @@
     "symfony/var-dumper": "~2.7|~3.0",
     "league/container": "~2",
     "consolidation/annotation-command": "~0.3",
+    "symfony/event-dispatcher": "~2.7|~3.0",
     "symfony/config": "~2.2",
     "pear/console_table": "~1.3.0"
   },
