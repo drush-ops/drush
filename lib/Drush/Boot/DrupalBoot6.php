@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ *   This file is required for recognizing a D6 root and showing deprecation error.
+ */
+
 namespace Drush\Boot;
 
 use Psr\Log\LoggerInterface;

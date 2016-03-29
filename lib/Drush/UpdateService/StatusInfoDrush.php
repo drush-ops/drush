@@ -192,7 +192,6 @@ class StatusInfoDrush implements StatusInfoInterface {
    *
    * This is a stripped down version of update_calculate_project_status().
    * That function has the same logic in Drupal 6,7,8.
-   * Note: in Drupal 6 this is part of update_calculate_project_data().
    *
    * @see update_calculate_project_status().
    */

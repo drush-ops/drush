@@ -359,9 +359,8 @@ function drush_locate_root($start_path = NULL) {
  * @param string
  *   Path to check.
  *
- * @return string
- *   The relative path to common.inc (varies by Drupal version), or FALSE if not
- *   a Drupal root.
+ * @return bool
+ *   True if the provided path is a valid Drupal root.
  */
 function drush_valid_root($root) {
   $bootstrap_class = \Drush::bootstrapManager()->bootstrapObjectForRoot($root);

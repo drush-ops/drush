@@ -35,6 +35,9 @@ services:
     arguments: ['@logger']
     tags:
       -  { name: bootstrap.boot }
+  #
+  # This service is needed in order to show the D6 deprecation message.
+  #
   bootstrap.drupal6:
     class: Drush\Boot\DrupalBoot6
     arguments: ['@logger']

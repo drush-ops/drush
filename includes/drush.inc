@@ -49,8 +49,8 @@ define('DRUSH_CACHE_LIFETIME_DEFAULT', 86400);
  * Include a file, selecting a version specific file if available.
  *
  * For example, if you pass the path "/var/drush" and the name
- * "update" when bootstrapped on a Drupal 6 site it will first check for
- * the presence of "/var/drush/update_6.inc" in include it if exists. If this
+ * "update" when bootstrapped on a Drupal 8 site it will first check for
+ * the presence of "/var/drush/update_8.inc" in include it if exists. If this
  * file does NOT exist it will proceed and check for "/var/drush/update.inc".
  * If neither file exists, it will return FALSE.
  *

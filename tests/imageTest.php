@@ -10,10 +10,6 @@ namespace Unish;
 class ImageCase extends CommandUnishTestCase {
 
   function testImage() {
-    if (UNISH_DRUPAL_MAJOR_VERSION == 6) {
-      $this->markTestSkipped("Image styles not available in Drupal 6 core.");
-    }
-
     $sites = $this->setUpDrupal(1, TRUE, UNISH_DRUPAL_MAJOR_VERSION, 'standard');
     $options = array(
       'yes' => NULL,
