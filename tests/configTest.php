@@ -67,9 +67,10 @@ class ConfigCase extends CommandUnishTestCase {
     // Similar, but this time via --partial option.
     $contents = file_get_contents($system_site_yml);
     $contents = preg_replace('/front: .*/', 'front: unish partial', $contents);
-    $partial_path = UNISH_SANDBOX . '/system.site.yml';
-    $contents = file_put_contents($partial_path, $contents);
-    $this->drush('config-import', array(), $options + array('partial' => $partial_path));
+    $partial_path = UNISH_SANDBOX . '/partial';
+    mkdir($partial_path);
+    $contents = file_put_contents($partial_path. '/system.site.yml', $contents);
+    $this->drush('config-import', array(), $options + array('partial' => NULL, 'source' => $partial_path));
     $this->drush('config-get', array('system.site', 'page'), $options + array('format' => 'json'));
     $page = $this->getOutputFromJSON('system.site:page');
     $this->assertContains('unish partial', $page->front, '--partial was successfully imported.');
