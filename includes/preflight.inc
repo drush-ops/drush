@@ -257,6 +257,14 @@ function drush_init_global_options($application) {
     $info += [
       'short-form' => null,
     ];
+    // TODO: We can't register options that Symfony has already registered,
+    // but we need a better way than this.
+    if (array_key_exists('symfony-conflict', $info)) {
+      continue;
+    }
+    if ($info['short-form'] == 'n') {
+      $info['short-form'] = null;
+    }
     $description = $info['description'];
     $default = null;
     $mode = InputOption::VALUE_NONE;
