@@ -482,7 +482,10 @@ function drush_sql_sanitize() {
   if ($sanitize_query) {
     $sql = drush_sql_get_class();
     $sanitize_query = $sql->query_prefix($sanitize_query);
-    return $sql->query($sanitize_query);
+    $result = $sql->query($sanitize_query);
+    if (!$result) {
+      return drush_set_error('DRUSH_SQL_NO_QUERY', dt('Sanitize query failed.'));
+    }
   }
 }
 
