@@ -262,7 +262,7 @@ function drush_init_global_options($application) {
       $mode = InputOption::VALUE_REQUIRED;
       // TODO: at the moment, global options do not know their default values,
       // but if they did, it would look like this:
-      if (array_key_exists('example-value', $info)) {
+      if (array_key_exists('default-value', $info)) {
         $default = $info['default-value'];
         $mode = InputOption::VALUE_OPTIONAL;
       }
