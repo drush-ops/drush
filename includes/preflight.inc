@@ -233,7 +233,8 @@ function drush_init_dependency_injection_container() {
   $container->share('application', 'Symfony\Component\Console\Application')
     ->withArgument('Drush Commandline Tool')
     ->withArgument(\Drush::getVersion())
-    ->withMethodCall('setDispatcher', ['eventDispatcher']);
+    ->withMethodCall('setDispatcher', ['eventDispatcher'])
+    ->withMethodCall('setAutoExit', [false]);
   $container->share('commandFactory', 'Consolidation\AnnotationCommand\AnnotationCommandFactory');
   $container->inflector('Psr\Log\LoggerAwareInterface')
     ->invokeMethod('setLogger', ['logger']);
