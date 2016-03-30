@@ -93,7 +93,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface {
       $args = drush_get_arguments();
       if (count($args)) {
         $name = $args[0];
-        if ($application->find($name)) {
+        if ($this->hasRegisteredSymfonyCommand($application, $name)) {
           $command_found = true;
           $application->run();
         }
@@ -112,6 +112,16 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface {
     }
 
     return $return;
+  }
+
+  protected function hasRegisteredSymfonyCommand($application, $name) {
+    try {
+      $application->find($name);
+      return true;
+    }
+    catch (\InvalidArgumentException $e) {
+      return false;
+    }
   }
 
   /**
