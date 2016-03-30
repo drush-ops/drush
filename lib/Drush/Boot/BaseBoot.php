@@ -71,11 +71,6 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface {
             // Dispatch the command(s).
             $return = drush_dispatch($command);
 
-            // Prevent a '1' at the end of the output.
-            if ($return === TRUE) {
-              $return = '';
-            }
-
             if (drush_get_context('DRUSH_DEBUG') && !drush_get_context('DRUSH_QUIET')) {
               // @todo Create version independant wrapper around Drupal timers. Use it.
               drush_print_timers();
@@ -89,11 +84,33 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface {
       }
     }
 
+    // TODO: If we could not find a legacy Drush command, try running a
+    // command via the Symfony application. See also drush_main() in preflight.inc;
+    // ultimately, the Symfony application should be called from there.
+    if (!$command_found && isset($command)) {
+      $container = \Drush::getContainer();
+      $application = $container->get('application');
+      $args = drush_get_arguments();
+      if (count($args)) {
+        $name = $args[0];
+        if ($application->find($name)) {
+          $command_found = true;
+          $application->run();
+        }
+      }
+    }
+
     if (!$command_found) {
       // If we reach this point, command doesn't fit requirements or we have not
       // found either a valid or matching command.
       $this->report_command_error($command);
     }
+
+    // Prevent a '1' at the end of the output.
+    if ($return === TRUE) {
+      $return = '';
+    }
+
     return $return;
   }
 

@@ -64,6 +64,10 @@ function drush_main() {
       }
     }
     else {
+      // TODO: If 'DRUSH_SYMFONY' is set, then disable the legacy command
+      // runner, and use only the Symfony Application.  n.b. the legacy runner
+      // will also try to run commands via the Symfony Application runner if
+      // it cannot find a matching legacy Drush command.
       if (getenv('DRUSH_SYMFONY')) {
         // Get the application and run it.
         // TODO: We need a new way to handle @alias arguments,
