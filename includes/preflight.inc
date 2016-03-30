@@ -64,20 +64,21 @@ function drush_main() {
       }
     }
     else {
-      // Get the application and run it.
-      // TODO: We need a new way to handle @alias arguments,
-      // remote command dispatching, bootstrapping, etc.
-      $application = $container->get('application');
-      $application->run();
-
-      /*
-      // Do any necessary preprocessing operations on the command,
-      // perhaps handling immediately.
-      $command_handled = drush_preflight_command_dispatch();
-      if (!$command_handled) {
-        $return = $bootstrap->bootstrap_and_dispatch();
+      if (getenv('DRUSH_SYMFONY')) {
+        // Get the application and run it.
+        // TODO: We need a new way to handle @alias arguments,
+        // remote command dispatching, bootstrapping, etc.
+        $application = $container->get('application');
+        $application->run();
       }
-      */
+      else {
+        // Do any necessary preprocessing operations on the command,
+        // perhaps handling immediately.
+        $command_handled = drush_preflight_command_dispatch();
+        if (!$command_handled) {
+          $return = $bootstrap->bootstrap_and_dispatch();
+        }
+      }
     }
   }
   // TODO: Get rid of global variable access here, and just trust
