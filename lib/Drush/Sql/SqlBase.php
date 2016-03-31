@@ -215,11 +215,21 @@ class SqlBase {
     return $query;
   }
 
+  /**
+   * Drop specified database.
+   *
+   * @param array $tables
+   *   An array of table names
+   * @return boolean
+   *   True if successful, FALSE if failed.
+   */
   public function drop($tables) {
+    $return = TRUE;
     if ($tables) {
       $sql = 'DROP TABLE '. implode(', ', $tables);
-      return $this->query($sql);
+      $return = $this->query($sql);
     }
+    return $return;
   }
 
   /**
@@ -256,10 +266,10 @@ class SqlBase {
    */
   public function drop_or_create() {
     if ($this->db_exists()) {
-      $this->drop($this->listTables());
+      return $this->drop($this->listTables());
     }
     else {
-      $this->createdb();
+      return $this->createdb();
     }
   }
 
