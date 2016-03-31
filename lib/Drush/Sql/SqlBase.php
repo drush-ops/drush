@@ -220,14 +220,16 @@ class SqlBase {
    *
    * @param array $tables
    *   An array of table names
-   * @return boolean|null
-   *   True if successful, FALSE if failed, NULL if nothing to do.
+   * @return boolean
+   *   True if successful, FALSE if failed.
    */
   public function drop($tables) {
+    $return = TRUE;
     if ($tables) {
       $sql = 'DROP TABLE '. implode(', ', $tables);
-      return $this->query($sql);
+      $return = $this->query($sql);
     }
+    return $return;
   }
 
   /**
