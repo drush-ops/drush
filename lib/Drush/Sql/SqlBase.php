@@ -330,7 +330,7 @@ class SqlBase {
   /**
    * Extract the name of all existing tables in the given database.
    *
-   * @return array
+   * @return array|null
    *   An array of table names which exist in the current database.
    */
   public function listTables() {}
