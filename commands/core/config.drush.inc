@@ -162,7 +162,7 @@ function config_drush_command() {
   );
 
   $items['config-edit'] = array(
-    'description' => 'Open a config file in a text editor. Edits are imported into active configration after closing editor.',
+    'description' => 'Open a config file in a text editor. Edits are imported into active configuration after closing editor.',
     'core' => array('8+'),
     'aliases' => array('cedit'),
     'arguments' => array(
