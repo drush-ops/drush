@@ -9,6 +9,7 @@ use Drush\Log\LogLevel;
 
 use League\Container\Container;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\StringInput;
 use Robo\Container\RoboContainer;
 
 /**
@@ -218,14 +219,24 @@ function drush_preflight_prepare() {
 /**
  * Set up our dependency injection container, and load drush-services.yml.
  */
-function drush_init_dependency_injection_container() {
+function drush_init_dependency_injection_container($input = null, $output = null) {
   // Set up our dependency injection container.
   $container = new Container();
+
+  // Create default input and output objects if they were not provided
+  if (!$input) {
+      $input = new StringInput('');
+  }
+  if (!$output) {
+      $output = new \Symfony\Component\Console\Output\ConsoleOutput();
+  }
+  $container->add('input', $input);
+  $container->add('output', $output);
 
   // Set up Robo's dependency injection container, and configure it as a delegate
   $roboContainer = new RoboContainer();
   $roboContainer->add('roboContainer', $roboContainer);
-  \Robo\Runner::configureContainer($roboContainer);
+  \Robo\Runner::configureContainer($roboContainer, $input, $output);
   \Robo\Runner::addServiceProviders($roboContainer);
   $container->delegate($roboContainer);
   \Robo\Runner::addInflectors($container);
@@ -256,6 +267,7 @@ function drush_init_dependency_injection_container() {
 
   // Store the container in the \Drush object
   \Drush::setContainer($container);
+  \Robo\Config::setContainer($container);
 
   return $container;
 }

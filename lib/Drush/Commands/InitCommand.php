@@ -76,7 +76,7 @@ class InitCommand extends \Robo\Tasks
         ->textFromFile($example_bashrc)
         ->addToCollection($collection);
       $pattern = basename($drush_bashrc);
-      $bashrc_additions["%$pattern%"] = "# Include Drush bash customizations.\n". $this->bashAddition($drush_bashrc);
+      $taskUpdateBashrc->appendUnlessMatches($pattern, "# Include Drush bash customizations.\n". $this->bashAddition($drush_bashrc));
     }
 
     // If there is no ~/.drush/drush.complete.sh file, then copy it there
@@ -110,7 +110,7 @@ class InitCommand extends \Robo\Tasks
 
     $openEditor = FALSE;
     if ($taskUpdateBashrc->wouldChange()) {
-      if (drush_confirm(dt(implode('', $bashrc_additions) . "Append the above code to !file?", array('!file' => $bashrc)))) {
+      if (drush_confirm(dt("Modify !file to include Drush configuration files?", array('!file' => $bashrc)))) {
         $collection->add($taskUpdateBashrc);
         drush_log(dt("Updated bash configuration file !path", array('!path' => $bashrc)), LogLevel::OK);
         drush_log(dt("Start a new shell in order to experience the improvements (e.g. `bash`)."), LogLevel::OK);
