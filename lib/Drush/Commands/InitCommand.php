@@ -76,7 +76,7 @@ class InitCommand extends \Robo\Tasks
         ->textFromFile($example_bashrc)
         ->addToCollection($collection);
       $pattern = basename($drush_bashrc);
-      $taskUpdateBashrc->appendUnlessMatches($pattern, "# Include Drush bash customizations.\n". $this->bashAddition($drush_bashrc));
+      $taskUpdateBashrc->appendUnlessMatches("#$pattern#", "# Include Drush bash customizations.\n". $this->bashAddition($drush_bashrc));
     }
 
     // If there is no ~/.drush/drush.complete.sh file, then copy it there
@@ -85,7 +85,7 @@ class InitCommand extends \Robo\Tasks
         ->textFromFile($example_complete)
         ->addToCollection($collection);
       $pattern = basename($drush_complete);
-      $taskUpdateBashrc->appendUnlessMatches($pattern, "# Include Drush completion.\n". $this->bashAddition($drush_complete));
+      $taskUpdateBashrc->appendUnlessMatches("#$pattern#", "# Include Drush completion.\n". $this->bashAddition($drush_complete));
     }
 
     // If there is no ~/.drush/drush.prompt.sh file, then copy
@@ -95,7 +95,7 @@ class InitCommand extends \Robo\Tasks
         ->textFromFile($example_prompt)
         ->addToCollection($collection);
       $pattern = basename($drush_prompt);
-      $taskUpdateBashrc->appendUnlessMatches($pattern, "# Include Drush prompt customizations.\n". $this->bashAddition($drush_prompt));
+      $taskUpdateBashrc->appendUnlessMatches("#$pattern#", "# Include Drush prompt customizations.\n". $this->bashAddition($drush_prompt));
     }
 
     // If Drush is not in the $PATH, then figure out which
@@ -104,8 +104,8 @@ class InitCommand extends \Robo\Tasks
     if ((!drush_which("drush") || $add_path) && ($add_path !== FALSE)) {
       $drush_path = $this->findPathToDrush($home);
       $drush_path = preg_replace("%^" . preg_quote($home) . "/%", '$HOME/', $drush_path);
-      $pattern = "%$drush_path%";
-      $taskUpdateBashrc->appendUnlessMatches($pattern, "# Path to Drush, added by 'drush init'.\nexport PATH=\"\$PATH:$drush_path\"\n\n");
+      $pattern = "$drush_path";
+      $taskUpdateBashrc->appendUnlessMatches("#$pattern#", "# Path to Drush, added by 'drush init'.\nexport PATH=\"\$PATH:$drush_path\"\n\n");
     }
 
     $openEditor = FALSE;
