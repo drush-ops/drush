@@ -9,6 +9,7 @@ use Drush\Log\LogLevel;
 
 use League\Container\Container;
 use Symfony\Component\Console\Input\InputOption;
+use Robo\Container\RoboContainer;
 
 /**
  * The main Drush function.
@@ -221,6 +222,15 @@ function drush_init_dependency_injection_container() {
   // Set up our dependency injection container.
   $container = new Container();
 
+  // Set up Robo's dependency injection container, and configure it as a delegate
+  $roboContainer = new RoboContainer();
+  $roboContainer->add('roboContainer', $roboContainer);
+  \Robo\Runner::configureContainer($roboContainer);
+  \Robo\Runner::addServiceProviders($roboContainer);
+  $container->delegate($roboContainer);
+  \Robo\Runner::addInflectors($container);
+
+  $container->add('container', $container);
   $container->share('logger', 'Drush\Log\Logger');
   $container->share('bootstrap.default', 'Drush\Boot\EmptyBoot');
   $container->share('bootstrap.drupal6', 'Drush\Boot\DrupalBoot6');
@@ -488,6 +498,11 @@ function _drush_preflight_global_options() {
   drush_set_context('DRUSH_DEBUG',        $debug);
   drush_set_context('DRUSH_DEBUG_NOTIFY', $verbose && $debug);
   drush_set_context('DRUSH_SIMULATE',     drush_get_option('simulate', FALSE));
+
+  // Copy the simulated option to the RoboContainer.
+  // TODO: Long-term there should be a better way to do this (e.g. via an event listener)
+  $roboContainer = \Drush::service('roboContainer');
+  $roboContainer->setSimulated(drush_get_context('DRUSH_SIMULATE'));
 
   // Backend implies affirmative unless negative is explicitly specified
   drush_set_context('DRUSH_NEGATIVE',    drush_get_option('no', FALSE));

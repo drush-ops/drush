@@ -8,7 +8,7 @@ namespace Drush\Commands;
 
 use Drush\Log\LogLevel;
 
-class InitCommand
+class InitCommand extends \Robo\Tasks
 {
   /**
    * Initialize local Drush configuration
@@ -46,47 +46,57 @@ class InitCommand
     $example_complete = DRUSH_BASE_PATH . "/drush.complete.sh";
     $bashrc_additions = array();
 
+    $collection = $this->collection();
+
     // Create a ~/.drush directory if it does not yet exist
-    if (!is_dir($drush_config_dir)) {
-      drush_mkdir($drush_config_dir);
-    }
+    $this->taskFileSystemStack()
+        ->mkdir($drush_config_dir)
+        ->addToCollection($collection);
 
     // If there is no ~/.drush/drushrc.php, then copy the
     // example Drush configuration file here
     if (!is_file($drush_config_file)) {
-      copy($example_configuration, $drush_config_file);
-      drush_log(dt("Copied example Drush configuration file to !path", array('!path' => $drush_config_file)), LogLevel::OK);
+      $this->taskWriteToFile($drush_config_file)
+        ->textFromFile($example_configuration)
+        ->addToCollection($collection);
     }
+
+    // Decide whether we want to add our Bash commands to
+    // ~/.bashrc or ~/.bash_profile, and create a task to
+    // update it with includes of the various files we write,
+    // as needed.
+    $bashrc = $this->findBashrc($home);
+    $taskUpdateBashrc = $this->taskWriteToFile($bashrc)
+      ->append();
 
     // If there is no ~/.drush/drush.bashrc file, then copy
     // the example bashrc file there
     if (!is_file($drush_bashrc)) {
-      copy($example_bashrc, $drush_bashrc);
+      $this->taskWriteToFile($drush_bashrc)
+        ->textFromFile($example_bashrc)
+        ->addToCollection($collection);
       $pattern = basename($drush_bashrc);
       $bashrc_additions["%$pattern%"] = "# Include Drush bash customizations.\n". $this->bashAddition($drush_bashrc);
-      drush_log(dt("Copied example Drush bash configuration file to !path", array('!path' => $drush_bashrc)), LogLevel::OK);
     }
 
     // If there is no ~/.drush/drush.complete.sh file, then copy it there
     if (!is_file($drush_complete)) {
-      copy($example_complete, $drush_complete);
+      $this->taskWriteToFile($drush_complete)
+        ->textFromFile($example_complete)
+        ->addToCollection($collection);
       $pattern = basename($drush_complete);
-      $bashrc_additions["%$pattern%"] = "# Include Drush completion.\n". $this->bashAddition($drush_complete);
-      drush_log(dt("Copied Drush completion file to !path", array('!path' => $drush_complete)), LogLevel::OK);
+      $taskUpdateBashrc->appendUnlessMatches($pattern, "# Include Drush completion.\n". $this->bashAddition($drush_complete));
     }
 
     // If there is no ~/.drush/drush.prompt.sh file, then copy
     // the example prompt.sh file here
     if (!is_file($drush_prompt)) {
-      copy($example_prompt, $drush_prompt);
+      $this->taskWriteToFile($drush_prompt)
+        ->textFromFile($example_prompt)
+        ->addToCollection($collection);
       $pattern = basename($drush_prompt);
-      $bashrc_additions["%$pattern%"] = "# Include Drush prompt customizations.\n". $this->bashAddition($drush_prompt);
-      drush_log(dt("Copied example Drush prompt file to !path", array('!path' => $drush_prompt)), LogLevel::OK);
+      $taskUpdateBashrc->appendUnlessMatches($pattern, "# Include Drush prompt customizations.\n". $this->bashAddition($drush_prompt));
     }
-
-    // Decide whether we want to add our Bash commands to
-    // ~/.bashrc or ~/.bash_profile
-    $bashrc = $this->findBashrc($home);
 
     // If Drush is not in the $PATH, then figure out which
     // path to add so that Drush can be found globally.
@@ -94,32 +104,17 @@ class InitCommand
     if ((!drush_which("drush") || $add_path) && ($add_path !== FALSE)) {
       $drush_path = $this->findPathToDrush($home);
       $drush_path = preg_replace("%^" . preg_quote($home) . "/%", '$HOME/', $drush_path);
-
-      $bashrc_additions["%$drush_path%"] = "# Path to Drush, added by 'drush init'.\nexport PATH=\"\$PATH:$drush_path\"\n\n";
+      $pattern = "%$drush_path%";
+      $taskUpdateBashrc->appendUnlessMatches($pattern, "# Path to Drush, added by 'drush init'.\nexport PATH=\"\$PATH:$drush_path\"\n\n");
     }
 
-    // Modify the user's bashrc file, adding our customizations.
-    $bashrc_contents = "";
-    if (file_exists($bashrc)) {
-      $bashrc_contents = file_get_contents($bashrc);
-    }
-    $new_bashrc_contents = $bashrc_contents;
-    foreach ($bashrc_additions as $pattern => $addition) {
-      // Only put in the addition if the pattern does not already
-      // exist in the bashrc file.
-      if (!preg_match($pattern, $new_bashrc_contents)) {
-        $new_bashrc_contents = $new_bashrc_contents . $addition;
-      }
-    }
-    if ($new_bashrc_contents != $bashrc_contents) {
+    $openEditor = FALSE;
+    if ($taskUpdateBashrc->wouldChange()) {
       if (drush_confirm(dt(implode('', $bashrc_additions) . "Append the above code to !file?", array('!file' => $bashrc)))) {
-        file_put_contents($bashrc, "\n\n". $new_bashrc_contents);
+        $collection->add($taskUpdateBashrc);
         drush_log(dt("Updated bash configuration file !path", array('!path' => $bashrc)), LogLevel::OK);
         drush_log(dt("Start a new shell in order to experience the improvements (e.g. `bash`)."), LogLevel::OK);
-        if ($options['edit']) {
-          $exec = drush_get_editor();
-          drush_shell_exec_interactive($exec, $drush_config_file, $drush_config_file);
-        }
+        $openEditor = $options['edit'];
       }
       else {
         return drush_user_abort();
@@ -128,6 +123,14 @@ class InitCommand
     else {
       drush_log(dt('No code added to !path', array('!path' => $bashrc)), LogLevel::OK);
     }
+    $result = $collection->run();
+
+    if ($result->wasSuccessful() && $openEditor) {
+      $exec = drush_get_editor();
+      drush_shell_exec_interactive($exec, $drush_config_file, $drush_config_file);
+    }
+
+    return $result;
   }
 
   /**
