@@ -242,7 +242,11 @@ function drush_init_dependency_injection_container($input = null, $output = null
   \Robo\Runner::addInflectors($container);
 
   $container->add('container', $container);
-  $container->share('logger', 'Drush\Log\Logger');
+
+  $container->share('logStyler', \Robo\Log\RoboLogStyle::class);
+  $container->share('logger', 'Drush\Log\Logger')
+    ->withArgument('output')
+    ->withMethodCall('setLogOutputStyler', ['logStyler']);
   $container->share('bootstrap.default', 'Drush\Boot\EmptyBoot');
   $container->share('bootstrap.drupal6', 'Drush\Boot\DrupalBoot6');
   $container->share('bootstrap.drupal7', 'Drush\Boot\DrupalBoot7');

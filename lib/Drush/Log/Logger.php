@@ -27,8 +27,14 @@ namespace Drush\Log;
 
 use Drush\Log\LogLevel;
 use Psr\Log\AbstractLogger;
+use Robo\Log\RoboLogger;
+use  Symfony\Component\Console\Output\OutputInterface;
 
-class Logger extends AbstractLogger {
+class Logger extends RoboLogger {
+
+    public function __construct(OutputInterface $output) {
+      parent::__construct($output);
+    }
 
     public function log($level, $message, array $context = array()) {
       // Convert to old $entry array for b/c calls
@@ -84,6 +90,7 @@ class Logger extends AbstractLogger {
             return TRUE;
           }
           $type_msg = sprintf($green, $level);
+          $level = LogLevel::NOTICE;
           break;
         case LogLevel::NOTICE :
           $type_msg = sprintf("[%s]", $level);
@@ -95,6 +102,7 @@ class Logger extends AbstractLogger {
             return TRUE;
           }
           $type_msg = sprintf("[%s]", $level);
+          $level = LogLevel::INFO;
           break;
         case LogLevel::DEBUG_NOTIFY :
           $level = LogLevel::DEBUG; // Report 'debug', handle like 'preflight'
@@ -104,6 +112,7 @@ class Logger extends AbstractLogger {
             return TRUE;
           }
           $type_msg = sprintf("[%s]", $level);
+          $level = LogLevel::DEBUG;
           break;
         case LogLevel::BOOTSTRAP :
         case LogLevel::DEBUG :
@@ -113,6 +122,7 @@ class Logger extends AbstractLogger {
             return TRUE;
           }
           $type_msg = sprintf("[%s]", $level);
+          $level = LogLevel::DEBUG;
           break;
       }
 
@@ -131,18 +141,26 @@ class Logger extends AbstractLogger {
         $entry['message'] = $entry['message'] . ' ' . $timer;
       }
 
+/*
+      // Drush-styled output
+
+      $message = $this->interpolate(
+          $entry['message'],
+          $this->getLogOutputStyler()->style($context)
+      );
+
       $width[0] = ($columns - 11);
 
       $format = sprintf("%%-%ds%%%ds", $width[0], $width[1]);
 
       // Place the status message right aligned with the top line of the error message.
-      $message = wordwrap($entry['message'], $width[0]);
+      $message = wordwrap($message, $width[0]);
       $lines = explode("\n", $message);
       $lines[0] = sprintf($format, $lines[0], $type_msg);
       $message = implode("\n", $lines);
-      drush_print($message, 0, STDERR);
-
+      $this->getErrorStreamWrapper()->writeln($message);
+*/
+      // Robo-styled output
+      parent::log($level, $message, $context);
     }
-
-
 }
