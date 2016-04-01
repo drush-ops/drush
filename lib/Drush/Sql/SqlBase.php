@@ -254,7 +254,7 @@ class SqlBase {
    */
   public function createdb($quoted = FALSE) {
     $dbname = $this->db_spec['database'];
-    $sql = $this->createdb_sql($dbname);
+    $sql = $this->createdb_sql($dbname, $quoted);
     // Adjust connection to allow for superuser creds if provided.
     $this->su();
     return $this->query($sql);
