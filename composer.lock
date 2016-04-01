@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codegyre/Robo.git",
-                "reference": "418019213f99be5fd424e2f871c5a5d6cf7bcadd"
+                "reference": "6789af6313755013ff73f05dc1c71631d93333b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codegyre/Robo/zipball/418019213f99be5fd424e2f871c5a5d6cf7bcadd",
-                "reference": "418019213f99be5fd424e2f871c5a5d6cf7bcadd",
+                "url": "https://api.github.com/repos/Codegyre/Robo/zipball/6789af6313755013ff73f05dc1c71631d93333b7",
+                "reference": "6789af6313755013ff73f05dc1c71631d93333b7",
                 "shasum": ""
             },
             "require": {
@@ -67,7 +67,7 @@
                 }
             ],
             "description": "Modern task runner",
-            "time": "2016-04-01 22:30:29"
+            "time": "2016-04-01 23:31:03"
         },
         {
             "name": "consolidation/annotation-command",
