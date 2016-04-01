@@ -86,6 +86,8 @@ class Logger extends AbstractLogger {
           $type_msg = sprintf($green, $level);
           break;
         case LogLevel::NOTICE :
+          $type_msg = sprintf("[%s]", $level);
+          break;
         case 'message' : // Obsolete; only here in case contrib is using it.
         case LogLevel::INFO :
           if (!$verbose) {
