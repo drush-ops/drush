@@ -645,7 +645,7 @@ function _drush_find_commandfiles_drush() {
   $include = drush_get_context('DRUSH_INCLUDE', array());
   foreach ($include as $path) {
     if (is_dir($path)) {
-      drush_log('Include ' . $path, LogLevel::NOTICE);
+      drush_log('Include ' . $path, LogLevel::INFO);
       $searchpath[] = $path;
     }
   }

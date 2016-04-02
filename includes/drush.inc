@@ -875,7 +875,7 @@ function _drush_download_file($url, $destination, $overwrite = TRUE) {
 function drush_mime_content_type($filename) {
   $content_type = drush_attempt_mime_content_type($filename);
   if ($content_type) {
-    drush_log(dt('Mime type for !file is !mt', array('!file' => $filename, '!mt' => $content_type)), LogLevel::NOTICE);
+    drush_log(dt('Mime type for !file is !mt', array('!file' => $filename, '!mt' => $content_type)), LogLevel::INFO);
     return $content_type;
   }
   return drush_set_error('MIME_CONTENT_TYPE_UNKNOWN', dt('Unable to determine mime type for !file.', array('!file' => $filename)));
@@ -1245,11 +1245,11 @@ function drush_do_command_redispatch($command, $args = array(), $remote_host = N
  *   The type of message to be logged. Common types are 'warning', 'error', 'success' and 'notice'.
  *   A type of 'ok' or 'success' can also be supplied to flag something that worked.
  *   If you want your log messages to print to screen without the user entering
- *   a -v or --verbose flag, use type 'ok', this prints log messages out to
+ *   a -v or --verbose flag, use type 'ok' or 'notice', this prints log messages out to
  *   STDERR, which prints to screen (unless you have redirected it). All other
- *   types of messages will be assumed to be notices.
+ *   types of messages will be assumed to be info.
  */
-function drush_log($message, $type = LogLevel::NOTICE, $error = null) {
+function drush_log($message, $type = LogLevel::INFO, $error = null) {
   $entry = array(
     'type' => $type,
     'message' => $message,

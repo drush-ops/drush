@@ -386,7 +386,7 @@ function _views_drush_op($op = '', array $view_names = array()) {
         drush_log(dt('View: @view has been @action', $tokens), LogLevel::SUCCESS);
       }
       else {
-        drush_log(dt('View: @view is already @action', $tokens), LogLevel::NOTICE);
+        drush_log(dt('View: @view is already @action', $tokens), LogLevel::INFO);
       }
       // Remove this view from the viewnames input list.
       unset($view_names[$view->id()]);
