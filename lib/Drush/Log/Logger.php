@@ -141,11 +141,12 @@ class Logger extends RoboLogger {
         $entry['message'] = $entry['message'] . ' ' . $timer;
       }
 
+      $message = $entry['message'];
 /*
       // Drush-styled output
 
       $message = $this->interpolate(
-          $entry['message'],
+          $message,
           $this->getLogOutputStyler()->style($context)
       );
 

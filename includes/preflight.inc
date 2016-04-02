@@ -10,6 +10,7 @@ use Drush\Log\LogLevel;
 use League\Container\Container;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Output\OutputInterface;
 use Robo\Container\RoboContainer;
 
 /**
@@ -515,11 +516,6 @@ function _drush_preflight_global_options() {
   drush_set_context('DRUSH_DEBUG_NOTIFY', $verbose && $debug);
   drush_set_context('DRUSH_SIMULATE',     drush_get_option('simulate', FALSE));
 
-  // Copy the simulated option to the RoboContainer.
-  // TODO: Long-term there should be a better way to do this (e.g. via an event listener)
-  $roboContainer = \Drush::service('roboContainer');
-  $roboContainer->setSimulated(drush_get_context('DRUSH_SIMULATE'));
-
   // Backend implies affirmative unless negative is explicitly specified
   drush_set_context('DRUSH_NEGATIVE',    drush_get_option('no', FALSE));
   drush_set_context('DRUSH_AFFIRMATIVE', drush_get_option(array('yes', 'pipe'), FALSE) || (drush_get_context('DRUSH_BACKEND') && !drush_get_context('DRUSH_NEGATIVE')));
@@ -539,6 +535,22 @@ function _drush_preflight_global_options() {
     $nocolor = !($colors === FALSE || (is_numeric($colors) && $colors >= 3));
   }
   drush_set_context('DRUSH_NOCOLOR', $nocolor);
+
+  // Copy the simulated option to the RoboContainer.
+  // TODO: Long-term there should be a better way to do this (e.g. via an event listener)
+  $roboContainer = \Drush::service('roboContainer');
+  $roboContainer->setSimulated(drush_get_context('DRUSH_SIMULATE'));
+
+  // Copy the output verbosity into the output object
+  $verbosity = OutputInterface::VERBOSITY_NORMAL;
+  if (drush_get_context('DRUSH_VERBOSE')) {
+    $verbosity = OutputInterface::VERBOSITY_VERBOSE;
+  }
+  if (drush_get_context('DRUSH_DEBUG')) {
+    $verbosity = OutputInterface::VERBOSITY_DEBUG;
+  }
+  $output = \Drush::service('output');
+  $output->setVerbosity($verbosity);
 }
 
 /**

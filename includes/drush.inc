@@ -1270,7 +1270,6 @@ function _drush_log($entry) {
   if (!$callback) {
     $callback = \Drush::logger();
   }
-
   if ($callback instanceof LoggerInterface) {
     $context = $entry;
     $log_level = $entry['type'];
