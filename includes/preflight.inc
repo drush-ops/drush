@@ -175,7 +175,7 @@ function drush_preflight_prepare() {
   // Maybe list the contents of lib/Drush/Commands?  We probably want
   // to support placing the commands in subfolders.
   $commandFileClassNames = [
-    \Drush\Commands\InitCommand::class,
+    \Drush\Command\InitCommand::class,
   ];
 
   // Add our annotation commands to the application.

@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Commands;
+namespace Drush\Command;
 
 /**
  * @file
