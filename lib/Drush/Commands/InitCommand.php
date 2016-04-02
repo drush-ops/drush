@@ -92,7 +92,7 @@ class InitCommand extends \Robo\Tasks
           ->textFromFile($sourceFile)
           ->addToCollection($collection);
         $description = $drushBashFileDescriptions[$destFile];
-        $collection->progressMessage('Copied {description} to {path}', ['description' => $description, 'path' => $destFile]);
+        $collection->progressMessage('Copied {description} to {path}', ['description' => $description, 'path' => $destFile], LogLevel::OK);
         $pattern = basename($destFile);
         $taskUpdateBashrc->appendUnlessMatches("#$pattern#", "# Include $description.\n". $this->bashAddition($destFile));
       }
