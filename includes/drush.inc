@@ -1416,7 +1416,10 @@ function _drush_log_drupal_messages() {
           drush_log(preg_replace('/^warning: /i', '', $error), LogLevel::WARNING);
         }
         elseif (preg_match('/^notice:/i', $error)) {
-          drush_log(preg_replace('/^notice: /i', '', $error), LogLevel::NOTICE);
+          // Drush LogLevel::NOTICE is printed all the time; we map
+          // watchdog notices to LogLevel::INFO, which are only
+          // printed in verbose mode.
+          drush_log(preg_replace('/^notice: /i', '', $error), LogLevel::INFO);
         }
         elseif (preg_match('/^user warning:/i', $error)) {
           // This is a special case. PHP logs sql errors as 'User Warnings', not errors.
