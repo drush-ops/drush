@@ -36,6 +36,7 @@
     "symfony/var-dumper": "~2.7|~3.0",
     "league/container": "~2",
     "codegyre/robo": "dev-master",
+    "consolidation/output-formatters": "^0.1.0",
     "symfony/console": "2.7.*",
     "symfony/event-dispatcher": "2.7.*",
     "symfony/config": "~2.2",

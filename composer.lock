@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "173402d2cf6e7e3ed65e83eed685cad9",
-    "content-hash": "0c39873ecf6575eee924496e1a938dd4",
+    "hash": "4fcc6a347a02f6fa5cb69b0501286963",
+    "content-hash": "24c4ef4ac83411b5f168886b39c8e69d",
     "packages": [
         {
             "name": "codegyre/robo",
@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codegyre/Robo.git",
-                "reference": "6789af6313755013ff73f05dc1c71631d93333b7"
+                "reference": "37a037bac4cc3254055deb42bb5d6231a1edf162"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codegyre/Robo/zipball/6789af6313755013ff73f05dc1c71631d93333b7",
-                "reference": "6789af6313755013ff73f05dc1c71631d93333b7",
+                "url": "https://api.github.com/repos/Codegyre/Robo/zipball/37a037bac4cc3254055deb42bb5d6231a1edf162",
+                "reference": "37a037bac4cc3254055deb42bb5d6231a1edf162",
                 "shasum": ""
             },
             "require": {
@@ -67,20 +67,20 @@
                 }
             ],
             "description": "Modern task runner",
-            "time": "2016-04-01 23:31:03"
+            "time": "2016-04-04 18:13:39"
         },
         {
             "name": "consolidation/annotation-command",
-            "version": "0.3.0",
+            "version": "0.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation-org/annotation-command.git",
-                "reference": "9656d42368bb3bcbc0b4c959352e058f99502b59"
+                "reference": "e86a45f723e0b81dd11828196a8602c359e876bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation-org/annotation-command/zipball/9656d42368bb3bcbc0b4c959352e058f99502b59",
-                "reference": "9656d42368bb3bcbc0b4c959352e058f99502b59",
+                "url": "https://api.github.com/repos/consolidation-org/annotation-command/zipball/e86a45f723e0b81dd11828196a8602c359e876bf",
+                "reference": "e86a45f723e0b81dd11828196a8602c359e876bf",
                 "shasum": ""
             },
             "require": {
@@ -115,7 +115,7 @@
                 }
             ],
             "description": "Initialize Symfony Console commands from annotated command class methods.",
-            "time": "2016-03-28 21:17:48"
+            "time": "2016-04-04 23:13:19"
         },
         {
             "name": "consolidation/log",
@@ -163,6 +163,52 @@
             ],
             "description": "Improved Psr-3 / Psr\\Log logger based on Symfony Console components.",
             "time": "2016-03-23 23:46:42"
+        },
+        {
+            "name": "consolidation/output-formatters",
+            "version": "0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/consolidation-org/output-formatters.git",
+                "reference": "7ff2aca91eeddf863986c6fccd581ef50759fbfe"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/consolidation-org/output-formatters/zipball/7ff2aca91eeddf863986c6fccd581ef50759fbfe",
+                "reference": "7ff2aca91eeddf863986c6fccd581ef50759fbfe",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0",
+                "symfony/console": "~2.5|~3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*",
+                "squizlabs/php_codesniffer": "2.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Consolidation\\OutputFormatters\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Greg Anderson",
+                    "email": "greg.1.anderson@greenknowe.org"
+                }
+            ],
+            "description": "Format text by applying transformations provided by plug-in formatters.",
+            "time": "2016-04-04 23:36:04"
         },
         {
             "name": "container-interop/container-interop",

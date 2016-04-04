@@ -9,6 +9,7 @@ use Drush\Log\LogLevel;
 
 use League\Container\Container;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Robo\Container\RoboContainer;
@@ -176,6 +177,7 @@ function drush_preflight_prepare() {
   // to support placing the commands in subfolders.
   $commandFileClassNames = [
     \Drush\Command\InitCommand::class,
+    \Drush\Command\EvalCommand::class,
   ];
 
   // Add our annotation commands to the application.
@@ -266,7 +268,13 @@ function drush_init_dependency_injection_container($input = null, $output = null
     ->withArgument(\Drush::getVersion())
     ->withMethodCall('setDispatcher', ['eventDispatcher'])
     ->withMethodCall('setAutoExit', [false]);
-  $container->share('commandFactory', 'Consolidation\AnnotationCommand\AnnotationCommandFactory');
+  $container->share('formatterManager', 'Consolidation\OutputFormatters\FormatterManager');
+  $container->share('hookManager', 'Consolidation\AnnotationCommand\HookManager');
+  $container->share('commandProcessor', 'Consolidation\AnnotationCommand\CommandProcessor')
+    ->withArgument('hookManager')
+    ->withMethodCall('setFormatterManager', ['formatterManager']);
+  $container->share('commandFactory', 'Consolidation\AnnotationCommand\AnnotationCommandFactory')
+    ->withMethodCall('setCommandProcessor', ['commandProcessor']);
   $container->inflector('Psr\Log\LoggerAwareInterface')
     ->invokeMethod('setLogger', ['logger']);
 
