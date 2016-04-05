@@ -51,7 +51,23 @@ if [ -n "$DRUSH_PHP" ] ; then
   # Use the DRUSH_PHP environment variable if it is available.
   php="$DRUSH_PHP"
 else
-  php="php"
+  # On MSYSGIT, we need to use "php", not the full path to php
+  if [ -n "$MINGW" ] ; then
+    php="php"
+  else
+    # Default to using the php that we find on the PATH.
+    # We check for a command line (cli) version of php, and if found use that.
+    # Note that we need the full path to php here for Dreamhost, which behaves oddly.  See http://drupal.org/node/662926
+    php="`which php-cli 2>/dev/null`"
+
+    if [ ! -x "$php" ]; then
+      php="`which php 2>/dev/null`"
+    fi
+
+    if [ ! -x "$php" ]; then
+      echo "ERROR: can't find php."; exit 1
+    fi
+  fi
 fi
 
 # Build the path to drush.php.
@@ -109,18 +125,8 @@ if [ -n "$PHP_OPTIONS" ] ; then
   php_options="$php_options $PHP_OPTIONS"
 fi
 
-# Add the --php-options prefix to $php_options if it is not empty
-if [ -n "$php_options" ] ; then
-  php_options="--php-options=\"$php_options\""
-fi
-
-phppath=
-if [ "$php" != "php" ] ; then
-  phppath="--php=\"$php\""
-fi
-
 # Pass in the path to php so that drush knows which one to use if it
 # re-launches itself to run subcommands.  We will also pass in the php options.
 # Important note: Any options added here must be removed  when Drush processes
 # a #! (shebang) script.  @see drush_adjust_args_if_shebang_script()
-exec "$php" $php_options "$SCRIPT_PATH" $phppath $php_options "$@"
+exec "$php" $php_options "$SCRIPT_PATH" --php="$php" --php-options="$php_options" "$@"

@@ -77,7 +77,8 @@ function drush_main() {
         // TODO: We need a new way to handle @alias arguments,
         // remote command dispatching, bootstrapping, etc.
         $application = $container->get('application');
-        $application->run();
+        $input = drush_symfony_input();
+        $application->run($input);
       }
       else {
         // Do any necessary preprocessing operations on the command,
@@ -107,6 +108,19 @@ function drush_main() {
   // After this point the drush_shutdown function will run,
   // exiting with the correct exit code.
   return $return;
+}
+
+function drush_symfony_input() {
+  // Symfony ArgvInput is touchy; fix up the args.
+  $argv = $_SERVER['argv'];
+  $scriptname = array_shift($argv);
+  // Get rid of --php= and --php-options=
+  while (strpos($argv[0], '--php') === 0) {
+    array_shift($argv);
+  }
+  array_unshift($argv, $scriptname);
+
+  return new ArgvInput($argv);
 }
 
 /**

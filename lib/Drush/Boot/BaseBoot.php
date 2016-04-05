@@ -96,7 +96,8 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface {
         $name = $args[0];
         if ($this->hasRegisteredSymfonyCommand($application, $name)) {
           $command_found = true;
-          $application->run();
+          $input = drush_symfony_input();
+          $application->run($input);
         }
       }
     }
