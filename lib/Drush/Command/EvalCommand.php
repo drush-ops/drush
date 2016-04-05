@@ -12,7 +12,7 @@ class EvalCommand
    * Evaluate arbitrary php code after bootstrapping Drupal (if available).
    *
    * @param string $php Code to execute.
-   * @aliases core-eval, eval, ev
+   * @aliases php-eval, eval, ev
    * @usage php-eval 'variable_set("hello", "world");'
    *   Sets the hello variable using Drupal API.
    * @usage php-eval '$node = node_load(1); return $node->title;'
