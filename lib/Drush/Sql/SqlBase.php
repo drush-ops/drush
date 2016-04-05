@@ -247,8 +247,7 @@ class SqlBase {
    * Create a new database.
    *
    * @param boolean $quoted
-   *   Quote the database name. Mysql uses backticks to quote which can cause problems
-   *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
+   *   Quote the database name.
    * @return boolean
    *   True if successful, FALSE otherwise.
    */
