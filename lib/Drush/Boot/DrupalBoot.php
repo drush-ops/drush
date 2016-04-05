@@ -497,6 +497,13 @@ abstract class DrupalBoot extends BaseBoot {
       if (!is_array($prefix)) {
         $prefix = array('default' => $prefix);
       }
+      // Remove any reference to Schema.
+      foreach ($prefix as &$table_prefix) {
+	if (strpos($table_prefix, '.')) {
+          list(,$table_prefix) = explode('.', $table_prefix);
+        }
+      }
+      $prefix = array_filter($prefix);
       $tables = $sql->listTables();
       foreach ((array)$required_tables as $required_table) {
         $prefix_key = array_key_exists($required_table, $prefix) ? $required_table : 'default';
