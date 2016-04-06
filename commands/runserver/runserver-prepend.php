@@ -66,3 +66,13 @@ function runserver_env($key) {
     return getenv($key);
   }
 }
+
+$url = parse_url($_SERVER["REQUEST_URI"]);
+if (file_exists('.' . $url['path'])) {
+  // Serve the requested resource as-is.
+  return FALSE;
+}
+
+// Include the main index.php and let core take over.
+// n.b. Drush sets the cwd to the Drupal root during bootstrap.
+include 'index.php';
