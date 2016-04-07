@@ -452,7 +452,7 @@ function drush_sql_cli() {
 }
 
 /**
- * Command callback. Run's the sanitization operations on the current database.
+ * Command callback. Runs the sanitization operations on the current database.
  *
  * @see hook_drush_sql_sync_sanitize() for adding custom sanitize routines.
  */
@@ -594,14 +594,14 @@ function drush_sql_get_version() {
 }
 
 /**
- * Implements hook_sql_drush_sql_sync_sanitize.
+ * Implements hook_drush_sql_sync_sanitize().
  *
  * Sanitize usernames, passwords, and sessions when the --sanitize option is used.
  * It is also an example of how to write a database sanitizer for sql sync.
  *
  * To write your own sync hook function, define mymodule_drush_sql_sync_sanitize()
- * and follow the form of this function to add your own database
- * sanitization operations via the register post-sync op function;
+ * in mymodule.drush.inc and follow the form of this function to add your own
+ * database sanitization operations via the register post-sync op function;
  * @see drush_sql_register_post_sync_op().  This is the only thing that the
  * sync hook function needs to do; sql-sync takes care of the rest.
  *
