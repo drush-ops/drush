@@ -1194,9 +1194,8 @@ function _drush_core_eval_shebang_script($script_filename) {
   return $found;
 }
 
-
 /**
- * Process sets from the specified batch.
+ * Command callback. Process sets from the specified batch.
  *
  * This is the default batch processor that will be used if the $command parameter
  * to drush_backend_batch_process() has not been specified.
@@ -1206,7 +1205,7 @@ function drush_core_batch_process($id) {
 }
 
 /**
- * Process outstanding updates during updatedb.
+ * Command callback. Process outstanding updates during updatedb.
  *
  * This is a batch processing command that makes use of the drush_backend_invoke
  * api.
