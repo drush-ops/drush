@@ -6,8 +6,9 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
-class BootstrapManager implements LoggerAwareInterface {
-  use LoggerAwareTrait;
+use Consolidation\Bootstrap\BootstrapManager as ConsolidationBootstrapManager;
+
+class BootstrapManager extends ConsolidationBootstrapManager {
 
   /**
    * @var Drush\Boot\Boot[]

@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4fcc6a347a02f6fa5cb69b0501286963",
-    "content-hash": "24c4ef4ac83411b5f168886b39c8e69d",
+    "hash": "fffa01d48145910ee1509c16efd8a967",
+    "content-hash": "bd7a71aeb30a6dd9e43a8de6c9af11e2",
     "packages": [
         {
             "name": "codegyre/robo",
@@ -13,17 +13,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codegyre/Robo.git",
-                "reference": "37a037bac4cc3254055deb42bb5d6231a1edf162"
+                "reference": "55bddda6a87a2f09456cda3f5a6f401816bf7c9c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codegyre/Robo/zipball/37a037bac4cc3254055deb42bb5d6231a1edf162",
-                "reference": "37a037bac4cc3254055deb42bb5d6231a1edf162",
+                "url": "https://api.github.com/repos/Codegyre/Robo/zipball/55bddda6a87a2f09456cda3f5a6f401816bf7c9c",
+                "reference": "55bddda6a87a2f09456cda3f5a6f401816bf7c9c",
                 "shasum": ""
             },
             "require": {
-                "consolidation/annotation-command": "~0.3",
+                "consolidation/annotation-command": "~0.5",
                 "consolidation/log": "~1",
+                "consolidation/output-formatters": "~0.1",
                 "league/container": "~2.2",
                 "php": ">=5.5.0",
                 "symfony/console": "~2.5|~3.0",
@@ -67,20 +68,20 @@
                 }
             ],
             "description": "Modern task runner",
-            "time": "2016-04-04 18:13:39"
+            "time": "2016-04-07 01:27:02"
         },
         {
             "name": "consolidation/annotation-command",
-            "version": "0.4.3",
+            "version": "0.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation-org/annotation-command.git",
-                "reference": "7d156c291d94790085d546b30844676264a1d98a"
+                "reference": "96a43474a3a73ac877f5bf1f93ce03f609a992ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation-org/annotation-command/zipball/7d156c291d94790085d546b30844676264a1d98a",
-                "reference": "7d156c291d94790085d546b30844676264a1d98a",
+                "url": "https://api.github.com/repos/consolidation-org/annotation-command/zipball/96a43474a3a73ac877f5bf1f93ce03f609a992ac",
+                "reference": "96a43474a3a73ac877f5bf1f93ce03f609a992ac",
                 "shasum": ""
             },
             "require": {
@@ -115,7 +116,54 @@
                 }
             ],
             "description": "Initialize Symfony Console commands from annotated command class methods.",
-            "time": "2016-04-05 00:37:14"
+            "time": "2016-04-06 17:16:46"
+        },
+        {
+            "name": "consolidation/bootstrap",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/consolidation-org/bootstrap.git",
+                "reference": "abdd73333a6d29ae119ed4a489c21104e5663688"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/consolidation-org/bootstrap/zipball/abdd73333a6d29ae119ed4a489c21104e5663688",
+                "reference": "abdd73333a6d29ae119ed4a489c21104e5663688",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0",
+                "psr/log": "~1.0",
+                "symfony/console": "~2.5|~3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*",
+                "squizlabs/php_codesniffer": "2.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Consolidation\\Bootstrap\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Greg Anderson",
+                    "email": "greg.1.anderson@greenknowe.org"
+                }
+            ],
+            "description": "Locate and bootstrap components needed to run code from a framework.",
+            "time": "2016-04-06 13:51:25"
         },
         {
             "name": "consolidation/log",
@@ -166,16 +214,16 @@
         },
         {
             "name": "consolidation/output-formatters",
-            "version": "0.1.1",
+            "version": "0.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation-org/output-formatters.git",
-                "reference": "7ff2aca91eeddf863986c6fccd581ef50759fbfe"
+                "reference": "d4b81604971d343e4b4b36f889161731f9db6e0c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation-org/output-formatters/zipball/7ff2aca91eeddf863986c6fccd581ef50759fbfe",
-                "reference": "7ff2aca91eeddf863986c6fccd581ef50759fbfe",
+                "url": "https://api.github.com/repos/consolidation-org/output-formatters/zipball/d4b81604971d343e4b4b36f889161731f9db6e0c",
+                "reference": "d4b81604971d343e4b4b36f889161731f9db6e0c",
                 "shasum": ""
             },
             "require": {
@@ -208,7 +256,7 @@
                 }
             ],
             "description": "Format text by applying transformations provided by plug-in formatters.",
-            "time": "2016-04-04 23:36:04"
+            "time": "2016-04-07 05:10:03"
         },
         {
             "name": "container-interop/container-interop",
@@ -2037,7 +2085,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "codegyre/robo": 20
+        "codegyre/robo": 20,
+        "consolidation/bootstrap": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
