@@ -290,7 +290,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     }
     if ($version_string == 8) {
       // We want to track Drupal 8 very closely.
-      $version_string = '8.0.x';
+      $version_string = '8.1.x';
       $options['no-md5'] = NULL;
     }
 
