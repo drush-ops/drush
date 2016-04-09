@@ -186,16 +186,9 @@ function drush_preflight_prepare() {
   // or do much else until after this is done.
   $container = drush_init_dependency_injection_container();
 
-  // TODO: Where will we get our list of built-in annotation commands?
-  // Maybe list the contents of lib/Drush/Commands?  We probably want
-  // to support placing the commands in subfolders.
-  $commandFileClassNames = [
-    \Drush\Command\InitCommand::class,
-    \Drush\Command\EvalCommand::class,
-  ];
-
-  // Add our annotation commands to the application.
-  drush_init_annotation_commands($container, $commandFileClassNames);
+  // Add our core annotation command files to the application.
+  drush_init_annotation_commands($container);
+  drush_init_application_global_options($container);
 
   // Terminate immediately unless invoked as a command line script
   if (!drush_verify_cli()) {
@@ -282,6 +275,9 @@ function drush_init_dependency_injection_container($input = null, $output = null
     ->withArgument(\Drush::getVersion())
     ->withMethodCall('setDispatcher', ['eventDispatcher'])
     ->withMethodCall('setAutoExit', [false]);
+  $container->share('commandDiscovery', 'Consolidation\AnnotationCommand\CommandFileDiscovery')
+    ->withMethodCall('addSearchLocation', ['CommandFiles'])
+    ->withMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
   $container->share('formatterManager', 'Consolidation\OutputFormatters\FormatterManager');
   $container->share('hookManager', 'Consolidation\AnnotationCommand\HookManager');
   $container->share('commandProcessor', 'Consolidation\AnnotationCommand\CommandProcessor')
@@ -300,7 +296,8 @@ function drush_init_dependency_injection_container($input = null, $output = null
 }
 
 // TODO: Where should this go?
-function drush_init_global_options($application) {
+function drush_init_application_global_options($container) {
+  $application = $container->get('application');
   $definition = $application->getDefinition();
 
   // TODO: We should make a better way to manage global options
@@ -345,10 +342,17 @@ function drush_init_global_options($application) {
   }
 }
 
-function drush_init_annotation_commands($container, $commandFileClassNames) {
+function drush_init_annotation_commands($container) {
+  $application = $container->get('application');
+  $discovery = $container->get('commandDiscovery');
+  $commandFiles = $discovery->discover(DRUSH_BASE_PATH . '/lib/Drush', '\Drush');
+  drush_init_register_command_files($container, $commandFiles);
+}
+
+function drush_init_register_command_files($container, $commandFiles) {
   $application = $container->get('application');
   $commandFactory = $container->get('commandFactory');
-  foreach ($commandFileClassNames as $className) {
+  foreach ($commandFiles as $sourcePath => $className) {
     $classAlias = str_replace('\\', '', $className);
 
     // Add and fetch our class from the container to apply the inductors
@@ -359,7 +363,6 @@ function drush_init_annotation_commands($container, $commandFileClassNames) {
         $application->add($command);
     }
   }
-  drush_init_global_options($application);
 }
 
 /**

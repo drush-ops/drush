@@ -106,13 +106,17 @@ abstract class DrupalBoot extends BaseBoot {
       $phase_max = $phase;
     }
 
-    $searchpath = array();
+    $container = \Drush::getContainer();
+    $discovery = $container->get('commandDiscovery');
+    $commandFiles = [];
+    $searchpath = [];
     switch ($phase) {
       case DRUSH_BOOTSTRAP_DRUPAL_ROOT:
         $drupal_root = \Drush::bootstrapManager()->getRoot();
         $searchpath[] = $drupal_root . '/../drush';
         $searchpath[] = $drupal_root . '/drush';
         $searchpath[] = $drupal_root . '/sites/all/drush';
+        $commandFiles = $discovery->discover($searchpath, '\Drupal');
         break;
       case DRUSH_BOOTSTRAP_DRUPAL_SITE:
         // If we are going to stop bootstrapping at the site, then
@@ -141,6 +145,7 @@ abstract class DrupalBoot extends BaseBoot {
           }
 
           $searchpath = array_merge($searchpath, $this->contrib_themes_paths());
+          $commandFiles = $discovery->discoverNamespaced($searchpath, '\Drupal');
         }
         break;
       case DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION:
@@ -165,8 +170,11 @@ abstract class DrupalBoot extends BaseBoot {
         foreach (drush_theme_list() as $key => $value) {
           $searchpath[] = drupal_get_path('theme', $key);
         }
+        $commandFiles = $discovery->discoverNamespaced($searchpath, '\Drupal');
         break;
     }
+    // A little inelegant, but will do for now.
+    drush_init_register_command_files($container, $commandFiles);
 
     return $searchpath;
   }
