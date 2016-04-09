@@ -37,7 +37,6 @@
     "league/container": "~2",
     "codegyre/robo": "dev-master",
     "consolidation/output-formatters": "^0.1.0",
-    "consolidation/bootstrap": "dev-master",
     "symfony/console": "2.7.*",
     "symfony/event-dispatcher": "2.7.*",
     "symfony/config": "~2.2",

@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "fffa01d48145910ee1509c16efd8a967",
-    "content-hash": "bd7a71aeb30a6dd9e43a8de6c9af11e2",
+    "hash": "4fcc6a347a02f6fa5cb69b0501286963",
+    "content-hash": "24c4ef4ac83411b5f168886b39c8e69d",
     "packages": [
         {
             "name": "codegyre/robo",
@@ -118,53 +118,6 @@
             ],
             "description": "Initialize Symfony Console commands from annotated command class methods.",
             "time": "2016-04-09 05:24:19"
-        },
-        {
-            "name": "consolidation/bootstrap",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/consolidation-org/bootstrap.git",
-                "reference": "abdd73333a6d29ae119ed4a489c21104e5663688"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/consolidation-org/bootstrap/zipball/abdd73333a6d29ae119ed4a489c21104e5663688",
-                "reference": "abdd73333a6d29ae119ed4a489c21104e5663688",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.5.0",
-                "psr/log": "~1.0",
-                "symfony/console": "~2.5|~3.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.*",
-                "squizlabs/php_codesniffer": "2.*"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Consolidation\\Bootstrap\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Greg Anderson",
-                    "email": "greg.1.anderson@greenknowe.org"
-                }
-            ],
-            "description": "Locate and bootstrap components needed to run code from a framework.",
-            "time": "2016-04-06 13:51:25"
         },
         {
             "name": "consolidation/log",
@@ -2086,8 +2039,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "codegyre/robo": 20,
-        "consolidation/bootstrap": 20
+        "codegyre/robo": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
