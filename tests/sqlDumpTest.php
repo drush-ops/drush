@@ -91,7 +91,7 @@ EOD;
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('batch', $full_dump_file);
+    $this->assertContains('queue', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertNotContains('history', $full_dump_file);
     // Repeat control test:  options not recovered in absence of an alias.
@@ -110,7 +110,7 @@ EOD;
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('batch', $full_dump_file);
+    $this->assertContains('queue', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertNotContains('history', $full_dump_file);
   }
