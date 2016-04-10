@@ -50,7 +50,7 @@
     "psr-0": {
       "Drush":        "lib/"
     },
-    "files": [
+    "classmap": [
       "lib/Drush.php"
     ]
   },
