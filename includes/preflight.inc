@@ -275,15 +275,15 @@ function drush_init_dependency_injection_container($input = null, $output = null
     ->withArgument(\Drush::getVersion())
     ->withMethodCall('setDispatcher', ['eventDispatcher'])
     ->withMethodCall('setAutoExit', [false]);
-  $container->share('commandDiscovery', 'Consolidation\AnnotationCommand\CommandFileDiscovery')
+  $container->share('commandDiscovery', 'Consolidation\AnnotatedCommand\CommandFileDiscovery')
     ->withMethodCall('addSearchLocation', ['CommandFiles'])
     ->withMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
   $container->share('formatterManager', 'Consolidation\OutputFormatters\FormatterManager');
-  $container->share('hookManager', 'Consolidation\AnnotationCommand\HookManager');
-  $container->share('commandProcessor', 'Consolidation\AnnotationCommand\CommandProcessor')
+  $container->share('hookManager', 'Consolidation\AnnotatedCommand\HookManager');
+  $container->share('commandProcessor', 'Consolidation\AnnotatedCommand\CommandProcessor')
     ->withArgument('hookManager')
     ->withMethodCall('setFormatterManager', ['formatterManager']);
-  $container->share('commandFactory', 'Consolidation\AnnotationCommand\AnnotationCommandFactory')
+  $container->share('commandFactory', 'Consolidation\AnnotatedCommand\AnnotatedCommandFactory')
     ->withMethodCall('setCommandProcessor', ['commandProcessor']);
   $container->inflector('Psr\Log\LoggerAwareInterface')
     ->invokeMethod('setLogger', ['logger']);
