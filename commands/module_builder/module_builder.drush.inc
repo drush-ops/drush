@@ -521,12 +521,14 @@ function drush_module_builder_build_component($commands, $component_type, $compo
     // remaining, take one of those.
     if (!$user_specified && $property_info['required'] && $plain_commands) {
       $value = array_shift($plain_commands);
+      $user_specified = TRUE;
     }
 
     // If the property has a prefix, and the commands included that prefix,
     // then take the commands for that prefix.
     if (!$user_specified && isset($property_info['command_prefix']) && !empty($prefixed_commands[$property_info['command_prefix']])) {
       $value = $prefixed_commands[$property_info['command_prefix']];
+      $user_specified = TRUE;
     }
 
     // If the property can be set with a command-line option, check that.
@@ -534,6 +536,7 @@ function drush_module_builder_build_component($commands, $component_type, $compo
       $drush_option_value = drush_get_option($property_info['drush_option']);
       if (!empty($drush_option_value)) {
         $value = $drush_option_value;
+        $user_specified = TRUE;
       }
     }
 
@@ -541,6 +544,7 @@ function drush_module_builder_build_component($commands, $component_type, $compo
     if ($property_info['format'] == 'boolean') {
       if (isset($boolean_commands[$property_name])) {
         $value = TRUE;
+        $user_specified = TRUE;
       }
     }
 
