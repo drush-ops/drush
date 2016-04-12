@@ -78,7 +78,7 @@ function drush_locale_update() {
   $langcodes = [];
   foreach (locale_translation_get_status() as $project_id => $project) {
     foreach ($project as $langcode => $project_info) {
-      if (!empty($project_info->type)) {
+      if (!empty($project_info->type) && !in_array($langcode, $langcodes)) {
         $langcodes[] = $langcode;
       }
     }
