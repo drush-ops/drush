@@ -1,6 +1,13 @@
 <?php
 
+/**
+ * @file
+ *   This file is required for recognizing a D6 root and showing deprecation error.
+ */
+
 namespace Drush\Boot;
+
+use Psr\Log\LoggerInterface;
 
 class DrupalBoot6 extends DrupalBoot {
 
@@ -14,6 +21,16 @@ class DrupalBoot6 extends DrupalBoot {
       $candidate = 'includes/common.inc';
       if (file_exists($path . '/' . $candidate) && file_exists($path . '/misc/drupal.js') && !file_exists($path . '/modules/field/field.module')) {
         return $candidate;
+      }
+    }
+  }
+
+  function get_version($drupal_root) {
+    $path = $drupal_root . '/modules/system/system.module';
+    if (is_file($path)) {
+      require_once $path;
+      if (defined('VERSION')) {
+        return VERSION;
       }
     }
   }
@@ -47,6 +64,7 @@ class DrupalBoot6 extends DrupalBoot {
 
   function bootstrap_drupal_core($drupal_root) {
     define('DRUPAL_ROOT', $drupal_root);
+    require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
     $core = DRUPAL_ROOT;
 
     return $core;

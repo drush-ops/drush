@@ -57,6 +57,8 @@
  * drush_backend_get_result().
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * Identify the JSON encoded output from a command.
  *
@@ -544,13 +546,13 @@ function drush_backend_parse_packets(&$string, &$remainder, $backend_options) {
           $function($entry, $backend_options);
         }
         else {
-          drush_log(dt("Unknown backend packet @packet", array('@packet' => $entry['packet'])), 'notice');
+          drush_log(dt("Unknown backend packet @packet", array('@packet' => $entry['packet'])), LogLevel::NOTICE);
         }
       }
       else {
-        drush_log(dt("Malformed backend packet"), 'error');
-        drush_log(dt("Bad packet: @packet", array('@packet' => print_r($entry, TRUE))), 'debug');
-        drush_log(dt("String is: @str", array('@str' => $packet_data), 'debug'));
+        drush_log(dt("Malformed backend packet"), LogLevel::ERROR);
+        drush_log(dt("Bad packet: @packet", array('@packet' => print_r($entry, TRUE))), LogLevel::DEBUG);
+        drush_log(dt("String is: @str", array('@str' => $packet_data), LogLevel::DEBUG));
       }
     }
     $string = preg_replace("/$packet_regex/s", '', $string);
@@ -757,7 +759,7 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
       $site_record_to_dispatch = '';
     }
     if (array_key_exists('backend-simulate', $backend_options)) {
-      $commandline_options['simulate'] = TRUE;
+      $drush_global_options['simulate'] = TRUE;
     }
     $site_record += array('path-aliases' => array(), '#env-vars' => array());
     $site_record['path-aliases'] += array(
@@ -827,7 +829,10 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     $drush_global_options = $item['drush-global-options'];
     $backend_options = $item['backend-options'];
     $is_remote = array_key_exists('remote-host', $site_record);
-    $is_different_site = $is_remote || (isset($site_record['root']) && ($site_record['root'] != drush_get_context('DRUSH_DRUPAL_SITE_ROOT')));
+    $is_different_site =
+      $is_remote ||
+      (isset($site_record['root']) && ($site_record['root'] != drush_get_context('DRUSH_DRUPAL_ROOT'))) ||
+      (isset($site_record['uri']) && ($site_record['uri'] != drush_get_context('DRUSH_SELECTED_URI')));
     $os = drush_os($site_record);
     // If the caller did not pass in a specific path to drush, then we will
     // use a default value.  For commands that are being executed on the same
@@ -1032,8 +1037,8 @@ function _drush_backend_invoke($cmds, $common_backend_options = array(), $contex
 
       if ($proc['output']) {
         $values = drush_backend_parse_output($proc['output'], $proc['backend-options'], $proc['outputted']);
-        $values['site'] = $site;
         if (is_array($values)) {
+          $values['site'] = $site;
           if (empty($ret)) {
             $ret = $values;
           }

@@ -391,6 +391,18 @@ function drush_mkdir($path, $required = TRUE) {
   }
 }
 
+/*
+ * Determine if program exists on user's PATH.
+ *
+ * @return bool|null
+ */
+function drush_program_exists($program) {
+  if (drush_has_bash()) {
+    $bucket = drush_bit_bucket();
+    return drush_op_system("command -v $program >$bucket 2>&1") === 0 ? TRUE : FALSE;
+  }
+}
+
 /**
  * Save a string to a temporary file. Does not depend on Drupal's API.
  * The temporary file will be automatically deleted when drush exits.
@@ -666,6 +678,9 @@ function drush_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $c
   $key = (in_array($key, array('filename', 'basename', 'name')) ? $key : 'filename');
   $files = array();
 
+  // Exclude Bower and Node directories.
+  $nomask = array_merge($nomask, array('node_modules', 'bower_components'));
+
   if (is_string($dir) && is_dir($dir) && $handle = opendir($dir)) {
     while (FALSE !== ($file = readdir($handle))) {
       if (!in_array($file, $nomask) && (($include_dot_files && (!preg_match("/\.\+/",$file))) || ($file[0] != '.'))) {
@@ -716,6 +731,16 @@ function drush_file_append_data($file, $data) {
     return FALSE;
   }
   return TRUE;
+}
+
+/**
+ * Return 'TRUE' if one directory is located anywhere inside
+ * the other.
+ */
+function drush_is_nested_directory($base_dir, $test_is_nested) {
+  // Ensure there is always exactly one '/' at the end of $base_dir
+  $base_dir = rtrim($base_dir, '/') . '/';
+  return substr($test_is_nested, 0, strlen($base_dir)) == $base_dir;
 }
 
 /**

@@ -1,0 +1,8 @@
+api: 2
+core: 7
+
+projects:
+  drupal:
+    version: 7.42
+  atom:
+    version: ~

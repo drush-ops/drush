@@ -1,9 +1,12 @@
 site_name: Drush docs
+theme: readthedocs
+repo_url: https://github.com/drush-ops/drush
+include_search: true
 pages:
 - Home: index.md
 - General:
   - Install: install.md
-  - Configure Drush: configure.md
+  - Install (alternatives): install-alternative.md
   - Usage: usage.md
   - Example files: examples.md
   - Cron: cron.md
@@ -18,8 +21,3 @@ pages:
   - Command Authoring: commands.md
   - Bootstrap: bootstrap.md
   - Context system: context.md
-theme: readthedocs
-site_author: ""
-repo_url: https://github.com/drush-ops/drush
-include_search: true
-#use_directory_urls: false

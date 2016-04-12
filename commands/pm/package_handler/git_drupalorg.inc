@@ -5,6 +5,8 @@
  * Drush PM drupal.org Git extension.
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * Validate this package handler can run.
  */
@@ -29,7 +31,7 @@ function package_handler_validate() {
   if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
     drush_include_engine('drupal', 'environment');
     if (!drush_get_option('gitinfofile') && !drush_module_exists('git_deploy')) {
-      drush_log(dt('git package handler needs git_deploy module enabled to work properly.'), 'warning');
+      drush_log(dt('git package handler needs git_deploy module enabled to work properly.'), LogLevel::WARNING);
     }
   }
 

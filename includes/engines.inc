@@ -5,6 +5,8 @@
  * The drush engines API implementation and helpers.
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * Obtain all engine types info and normalize with defaults.
  *
@@ -162,7 +164,7 @@ function drush_get_command_engine_config($command, $engine_type, $metadata = arr
  * Loaded engines are stored as a context.
  */
 function drush_load_command_engine($command, $engine_type, $metadata = array()) {
-  drush_log(dt("Loading !engine engine.", array('!engine' => $engine_type), 'bootstrap'));
+  drush_log(dt("Loading !engine engine.", array('!engine' => $engine_type), LogLevel::BOOTSTRAP));
 
   $config = drush_get_command_engine_config($command, $engine_type, $metadata);
   $engine_info = drush_get_engines($engine_type);

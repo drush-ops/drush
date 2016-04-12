@@ -15,14 +15,9 @@ Resources
 
 Support
 -----------
-
-Please take a moment to review the rest of the information in this file before
-pursuing one of the support options below.
-
 * Post support requests to [Drupal Answers](http://drupal.stackexchange.com/questions/tagged/drush).
-* Bug reports and feature requests should be reported in the [GitHub Drush Issue Queue](https://github.com/drush-ops/drush/issues).
+* Report bugs and request features in the [GitHub Drush Issue Queue](https://github.com/drush-ops/drush/issues).
 * Use pull requests (PRs) to contribute to Drush.
-* It is still possible to search the old issue queue on Drupal.org for [fixed bugs](https://drupal.org/project/issues/search/drush?status%5B%5D=7&categories%5B%5D=bug), [unmigrated issues](https://drupal.org/project/issues/search/drush?status%5B%5D=5&issue_tags=needs+migration), [unmigrated bugs](https://drupal.org/project/issues/search/drush?status%5B%5D=5&categories%5B%5D=bug&issue_tags=needs+migration), and so on.
 
 FAQ
 ------
@@ -46,7 +41,6 @@ Credits
 * Originally developed by [Arto Bendiken](http://bendiken.net) for Drupal 4.7.
 * Redesigned by [Franz Heinzmann](http://unbiskant.org) in May 2007 for Drupal 5.
 * Maintained by [Moshe Weitzman](http://drupal.org/moshe) with much help from
-  Owen Barton, greg.1.anderson, jonhattan, Mark Sonnabaum, Jonathan Hedstrom and
-  [Christopher Gervais](http://drupal.org/u/ergonlogic).
+  the folks listed at https://github.com/orgs/drush-ops/people.
 
 ![Drush Logo](drush_logo-black.png)

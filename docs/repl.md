@@ -1,0 +1,1 @@
+You can then use an interactive PHP REPL with your bootstrapped site (remote or local). It’s a Drupal code playground. You can do quick code experimentation, grab some data, or run Drush commands. This can also help with debugging certain issues. See [this blog post](http://blog.damiankloip.net/2015/drush-php) for an introduction. Run `help` for a list of commands. 

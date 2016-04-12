@@ -1,0 +1,26 @@
+{
+  "alias": "drush.phar",
+  "chmod": "0755",
+  "compactors": [],
+  "directories": ["commands", "docs", "examples", "includes", "lib", "misc"],
+  "files": ["drush.api.php", "drush.bat", "drush.complete.sh", "drush.info", "drush.launcher", "drush.php", "drush_logo-black.png", "README.md"],
+  "finder": [
+    {
+      "name": "*.php",
+      "exclude": [
+        "phing",
+        "test",
+        "tests",
+        "Test",
+        "Tests",
+        "Tester"
+      ],
+      "in": "vendor"
+    }
+  ],
+  "git-commit": "git-commit",
+  "git-version": "git-version",
+  "output": "drush.phar",
+  "main": "drush",
+  "stub": true
+}

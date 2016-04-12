@@ -10,7 +10,7 @@
 use Drupal\Core\Site\Settings;
 use Drupal\Core\StreamWrapper\PrivateStream;
 use Drupal\Core\StreamWrapper\PublicStream;
-use Psr\Log\LogLevel;
+use Drush\Log\LogLevel;
 use Drupal\Core\Logger\RfcLogLevel;
 
 /**
@@ -85,7 +85,7 @@ function drush_check_module_dependencies($modules, $module_info) {
       }
     }
     $status[$key]['unmet-dependencies'] = $unmet_dependencies;
-    $status[$key]['dependencies'] = array_keys($dependencies);
+    $status[$key]['dependencies'] = $dependencies;
   }
 
   return $status;
@@ -198,7 +198,7 @@ function drush_module_enable($modules) {
   drush_module_install($modules);
 
   // Our logger got blown away during the container rebuild above.
-  $boot = drush_select_bootstrap_class();
+  $boot = \Drush::bootstrapManager()->bootstrap();
   $boot->add_logger();
 
   // Flush all caches. No longer needed in D8 per https://github.com/drush-ops/drush/issues/1207
@@ -226,7 +226,7 @@ function drush_module_disable($modules) {
 function drush_module_uninstall($modules) {
   \Drupal::service('module_installer')->uninstall($modules);
   // Our logger got blown away during the container rebuild above.
-  $boot = drush_select_bootstrap_class();
+  $boot = \Drush::bootstrapManager()->bootstrap();
   $boot->add_logger();
 }
 
@@ -253,6 +253,18 @@ function drush_module_invoke_all($hook) {
 }
 
 /**
+ * Returns a list of enabled themes. Use drush_get_themes() if you need to rebuild
+ * and include hidden as well.
+ *
+ * @return array
+ *  A list of themes keyed by name.
+ */
+function drush_theme_list() {
+  $theme_handler = \Drupal::service('theme_handler');
+  return $theme_handler->listInfo();
+}
+
+/**
  * Get complete information for all available themes.
  *
  * @param $include_hidden
@@ -265,7 +277,10 @@ function drush_get_themes($include_hidden = TRUE) {
   foreach ($themes as $key => $theme) {
     if (!$include_hidden) {
       if (isset($theme->info['hidden'])) {
-        unset($themes[$key]);
+        // Don't exclude default or admin theme.
+        if ($key != _drush_theme_default() && $key != _drush_theme_admin()) {
+          unset($themes[$key]);
+        }
       }
     }
   }
@@ -304,7 +319,7 @@ function drush_theme_disable($themes) {
 function drush_theme_uninstall($themes) {
   \Drupal::service('theme_handler')->uninstall($themes);
   // Our logger got blown away during the container rebuild above.
-  $boot = drush_select_bootstrap_class();
+  $boot = \Drush::bootstrapManager()->bootstrap();
   $boot->add_logger();
 }
 
@@ -401,5 +416,5 @@ function drush_get_token($value = NULL) {
  * Wrapper for _url().
  */
 function drush_url($path = NULL, array $options = array()) {
-  return \Drupal::urlGenerator()->generateFromPath($path, $options);
+  return \Drupal\Core\Url::fromUserInput('/' . $path, $options)->toString();
 }

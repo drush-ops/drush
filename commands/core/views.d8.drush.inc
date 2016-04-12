@@ -5,6 +5,7 @@
  * Drush integration for views.
  */
 
+use Drush\Log\LogLevel;
 use Drupal\views\Analyzer;
 use Drupal\views\Entity\View;
 use Drupal\views\Views;
@@ -181,7 +182,7 @@ function drush_views_dev() {
   // Save the new config.
   $config->save();
 
-  drush_log(dt('New views configuration saved.'), 'success');
+  drush_log(dt('New views configuration saved.'), LogLevel::SUCCESS);
 }
 
 /**
@@ -298,7 +299,7 @@ function drush_views_execute($view_name, $display_id = NULL) {
     }
   }
   else {
-    drush_log(dt('No results returned for this view.') ,'warning');
+    drush_log(dt('No results returned for this view.') ,LogLevel::WARNING);
     return NULL;
   }
 }
@@ -335,7 +336,7 @@ function drush_views_analyze() {
       }
     }
 
-    drush_log(dt('A total of @total views were analyzed and @messages problems were found.', array('@total' => count($views), '@messages' => $messages_count)), 'ok');
+    drush_log(dt('A total of @total views were analyzed and @messages problems were found.', array('@total' => count($views), '@messages' => $messages_count)), LogLevel::OK);
     return $messages;
   }
   else {
@@ -382,10 +383,10 @@ function _views_drush_op($op = '', array $view_names = array()) {
       if ($op_types[$op]['validate']($view)) {
         $function = 'views_' . $op . '_view';
         drush_op($function, $view);
-        drush_log(dt('View: @view has been @action', $tokens), 'success');
+        drush_log(dt('View: @view has been @action', $tokens), LogLevel::SUCCESS);
       }
       else {
-        drush_log(dt('View: @view is already @action', $tokens), 'notice');
+        drush_log(dt('View: @view is already @action', $tokens), LogLevel::NOTICE);
       }
       // Remove this view from the viewnames input list.
       unset($view_names[$view->id()]);
@@ -400,7 +401,7 @@ function _views_drush_op($op = '', array $view_names = array()) {
   // If we have some unmatched/leftover view names that weren't loaded.
   if (!empty($view_names)) {
     foreach ($view_names as $viewname) {
-      drush_log(dt('View: @view could not be found.', array('@view' => $viewname)), 'error');
+      drush_log(dt('View: @view could not be found.', array('@view' => $viewname)), LogLevel::ERROR);
     }
   }
 
@@ -452,10 +453,10 @@ function _views_drush_view_is_disabled(View $view) {
 }
 
 /**
- * Adds a cache clear option for views.
+ * Implements hook_cache_clear. Adds a cache clear option for views.
  */
-function views_drush_cache_clear(&$types) {
-  if (\Drupal::moduleHandler()->moduleExists('views')) {
+function views_drush_cache_clear(&$types, $include_bootstrapped_types) {
+  if ($include_bootstrapped_types && \Drupal::moduleHandler()->moduleExists('views')) {
     $types['views'] = 'views_invalidate_cache';
   }
 }

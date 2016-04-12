@@ -39,6 +39,8 @@
  *   the matching configuration file through the drush_save_config() function.
  */
 
+use Drush\Log\LogLevel;
+
 
 /**
  * Return a list of the valid drush context names.
@@ -108,8 +110,9 @@ function _drush_config_file($context, $prefix = NULL, $version = '') {
     }
   }
 
-  if ($drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT')) {
+  if ($drupal_root = \Drush::bootstrapManager()->getRoot()) {
     $configs['drupal'] = array(
+      $drupal_root . '/../drush/' . $config_file,
       $drupal_root . '/sites/all/drush/' . $config_file,
       $drupal_root . '/drush/' . $config_file,
     );
@@ -135,9 +138,6 @@ function _drush_config_file($context, $prefix = NULL, $version = '') {
   // In the system wide configuration folder.
   $configs['system'] = drush_get_context('DRUSH_SITE_WIDE_CONFIGURATION') . '/' . $config_file;
 
-  // in the drush installation folder
-  $configs['drush'] = dirname(__FILE__) . '/../' . $config_file;
-
   return empty($configs[$context]) ? '' : $configs[$context];
 }
 
@@ -154,10 +154,10 @@ function drush_load_config_file($context, $config_list) {
   foreach ((array)$config_list as $config) {
     if (file_exists($config)) {
       $options = $aliases = $command_specific = $override = array();
-      drush_log(dt('Loading drushrc "!config" into "!context" scope.', array('!config' => realpath($config), '!context' => $context)), 'bootstrap');
+      drush_log(dt('Loading drushrc "!config" into "!context" scope.', array('!config' => realpath($config), '!context' => $context)), LogLevel::BOOTSTRAP);
       $ret = @include_once($config);
       if ($ret === FALSE) {
-        drush_log(dt('Cannot open drushrc "!config", ignoring.', array('!config' => realpath($config))), 'warning');
+        drush_log(dt('Cannot open drushrc "!config", ignoring.', array('!config' => realpath($config))), LogLevel::WARNING);
         return FALSE;
       }
       if (!empty($options) || !empty($aliases) || !empty($command_specific) || !empty($override)) {
@@ -562,10 +562,14 @@ function drush_get_merged_prefixed_options($prefix) {
 function _drush_get_option($option, $context) {
   if (is_array($option)) {
     foreach ($option as $current) {
-      if (array_key_exists($current, $context)) {
-        return $context[$current];
+      $current_value = _drush_get_option($current, $context);
+      if (isset($current_value)) {
+        return $current_value;
       }
     }
+  }
+  elseif (array_key_exists('no-' . $option, $context)) {
+    return FALSE;
   }
   elseif (array_key_exists($option, $context)) {
     return $context[$option];

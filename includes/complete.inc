@@ -1,5 +1,7 @@
 <?php
 
+use Drush\Log\LogLevel;
+
 /**
  * @file
  *
@@ -102,7 +104,7 @@ function drush_early_complete() {
   // We use a distinct --complete-debug option to avoid unwanted debug messages
   // being printed when users use this option for other purposes in the command
   // they are trying to complete.
-  drush_set_option('debug', FALSE);
+  drush_set_option(LogLevel::DEBUG, FALSE);
   if (drush_get_option('complete-debug', FALSE)) {
     drush_set_context('DRUSH_DEBUG', TRUE);
   }
@@ -250,8 +252,8 @@ function drush_complete_process_argv() {
   // Check for and record any site alias.
   drush_sitealias_check_arg();
   drush_sitealias_check_site_env();
-  // We might have just changed our root--run drush_select_bootstrap_class() again.
-  $bootstrap = drush_select_bootstrap_class();
+  // We might have just changed our root--re-select the bootstrap object to use
+  $bootstrap = \Drush::bootstrapManager()->bootstrap();
 
   // Return the new argv for easy reference.
   return $argv;

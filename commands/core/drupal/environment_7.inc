@@ -77,7 +77,7 @@ function drush_check_module_dependencies($modules, $module_info) {
       }
     }
     $status[$key]['unmet-dependencies'] = $unmet_dependencies;
-    $status[$key]['dependencies'] = array_keys($dependencies);
+    $status[$key]['dependencies'] = $dependencies;
   }
 
   return $status;
@@ -201,7 +201,7 @@ function drush_module_implements($hook, $sort = FALSE, $reset = FALSE) {
  */
 function drush_module_invoke($module, $hook) {
   $args = func_get_args();
-  return call_user_func_array('module_invoke', $args);  
+  return call_user_func_array('module_invoke', $args);
 }
 
 /**
@@ -211,6 +211,23 @@ function drush_module_invoke($module, $hook) {
 function drush_module_invoke_all($hook) {
   $args = func_get_args();
   return call_user_func_array('module_invoke_all', $args);
+}
+
+/**
+ * Returns a list of enabled themes. Use drush_get_themes() if you need to rebuild
+ * and include hidden/disabled as well.
+ *
+ * @return array
+ *  A list of themes keyed by name.
+ */
+function drush_theme_list() {
+  $enabled = array();
+  foreach (list_themes() as $key => $info) {
+    if ($info->status) {
+      $enabled[$key] = $info;
+    }
+  }
+  return $enabled;
 }
 
 /**

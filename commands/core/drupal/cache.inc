@@ -50,15 +50,9 @@ function _drush_cache_clear_types($include_bootstrapped_types) {
       'module-list' => 'drush_get_modules',
       'theme-list' => 'drush_get_themes',
     );
-  }
-  $drupal_version = drush_drupal_major_version();
-
-  if ($drupal_version >= 7) {
-    $types['registry'] = 'registry_update';
-  }
-  elseif ($drupal_version == 6 && function_exists('module_exists') && module_exists('autoload')) {
-    // TODO: move this to autoload module.
-    $types['registry'] = 'autoload_registry_update';
+    if (drush_drupal_major_version() == 7) {
+      $types['registry'] = 'registry_update';
+    }
   }
 
   return $types;

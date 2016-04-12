@@ -19,7 +19,6 @@ class cacheCommandCase extends CommandUnishTestCase {
     $options = $this->getOptions();
     // Test the cache get command.
     $inputs = array(
-      6 => array('variables', NULL),
       7 => array('schema', NULL),
       8 => array('system.date', 'config'),
     );
