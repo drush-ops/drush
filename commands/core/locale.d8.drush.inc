@@ -23,10 +23,12 @@ function locale_drush_help($section) {
 function locale_drush_command() {
   $items['locale-check'] = [
     'description' => 'Checks for available translation updates.',
+    'drupal dependencies' => ['locale'],
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
   ];
   $items['locale-update'] = [
     'description' => 'Updates the available translations.',
+    'drupal dependencies' => ['locale'],
     'options' => [
       'langcodes' => 'A comma-separated list of language codes to update. If omitted, all translations will be updated.'
     ],
