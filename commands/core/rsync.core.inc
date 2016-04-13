@@ -194,10 +194,10 @@ function _drush_build_rsync_options($additional_options, $include_settings_is_de
       drush_log('Rsync does not support --remove-sent-files prior to version 2.6.4; some temporary files may remain undeleted.', LogLevel::WARNING);
     }
     elseif (version_compare($rsync_version, '2.6.9', '<')) {
-      $options .= '--remove-sent-files';
+      $options .= ' --remove-sent-files';
     }
     else {
-      $options .= '--remove-source-files';
+      $options .= ' --remove-source-files';
     }
   }
 
