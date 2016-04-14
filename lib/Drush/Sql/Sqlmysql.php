@@ -2,6 +2,8 @@
 
 namespace Drush\Sql;
 
+use PDO;
+
 class Sqlmysql extends SqlBase {
 
   public function command() {
@@ -49,6 +51,26 @@ EOT;
 
     if (!empty($this->db_spec['pdo']['unix_socket'])) {
       $parameters['socket'] = $this->db_spec['pdo']['unix_socket'];
+    }
+
+    if (!empty($this->db_spec['pdo'][PDO::MYSQL_ATTR_SSL_CA])) {
+      $parameters['ssl-ca'] = $this->db_spec['pdo'][PDO::MYSQL_ATTR_SSL_CA];
+    }
+
+    if (!empty($this->db_spec['pdo'][PDO::MYSQL_ATTR_SSL_CAPATH])) {
+      $parameters['ssl-capath'] = $this->db_spec['pdo'][PDO::MYSQL_ATTR_SSL_CAPATH];
+    }
+
+    if (!empty($this->db_spec['pdo'][PDO::MYSQL_ATTR_SSL_CERT])) {
+      $parameters['ssl-cert'] = $this->db_spec['pdo'][PDO::MYSQL_ATTR_SSL_CERT];
+    }
+
+    if (!empty($this->db_spec['pdo'][PDO::MYSQL_ATTR_SSL_CIPHER])) {
+      $parameters['ssl-cipher'] = $this->db_spec['pdo'][PDO::MYSQL_ATTR_SSL_CIPHER];
+    }
+
+    if (!empty($this->db_spec['pdo'][PDO::MYSQL_ATTR_SSL_KEY])) {
+      $parameters['ssl-key'] = $this->db_spec['pdo'][PDO::MYSQL_ATTR_SSL_KEY];
     }
 
     return $this->params_to_options($parameters);
