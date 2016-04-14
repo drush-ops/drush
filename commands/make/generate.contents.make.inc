@@ -135,10 +135,16 @@ function make_generate_from_makefile($file, $makefile) {
     if (!(isset($project['download']['type'])) || ($project['download']['type'] == 'pm')) {
       unset($projects[$name]['download']); // PM is the default
     }
-    $ignore = array('build_path', 'contrib_destination', 'core', 'location', 'make_directory', 'l10n_url', 'download_type');
+    $ignore = array('build_path', 'contrib_destination', 'core', 'make_directory', 'l10n_url', 'download_type');
     foreach ($ignore as $key) {
       unset($projects[$name][$key]);
     }
+
+    // Remove the location if it's the default.
+    if ($projects[$name]['location'] == 'https://updates.drupal.org/release-history') {
+      unset($projects[$name]['location']);
+    }
+
     // Remove empty entries (e.g. 'directory_name')
     $projects[$name] = _make_generate_array_filter($projects[$name]);
   }
