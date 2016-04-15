@@ -122,7 +122,7 @@ Default is 'all' if writing new files, 'code' if appending to file or outputting
   );
 
   $items['mb-list'] = array(
-    'callback' => 'drush_module_builder_callback_hook_list',
+    'callback' => 'drush_module_builder_callback_data_list',
     'description' => "List the hooks module_builder knows about.",
     'arguments' => array(
       'modules' => '(optional) Names of modules, separated by spaces.',
@@ -838,9 +838,9 @@ function drush_module_builder_callback_hook_download() {
 }
 
 /**
- * Callback to list known hooks.
+ * Callback to list stored data on components.
  */
-function drush_module_builder_callback_hook_list() {
+function drush_module_builder_callback_data_list() {
   $commands = func_get_args();
 
   // Get our task handler, which checks hook data is ready.
@@ -874,6 +874,7 @@ function drush_module_builder_callback_hook_list() {
     drush_print(t("No hooks found for the specified files."));
   }
 
+  drush_print("Hooks:");
   foreach ($data_requested as $file => $hooks) {
     drush_print("Group $file:", 2);
     foreach ($hooks as $key => $hook) {
@@ -898,9 +899,26 @@ function drush_module_builder_callback_hook_list() {
     }
   }
 
+  if (drush_drupal_major_version() == 8) {
+    try {
+      $mb_task_handler_report_plugins = \DrupalCodeBuilder\Factory::getTask('ReportPluginData');
+    }
+    catch (\DrupalCodeBuilder\Exception\SanityException $e) {
+      module_builder_handle_sanity_exception($e);
+      return;
+    }
+
+    $data = $mb_task_handler_report_plugins->listPluginData();
+
+    drush_print("Plugins:");
+    foreach ($data as $plugin_type_id => $plugin_type_data) {
+      drush_print($plugin_type_id, 2);
+    }
+  }
+
   $hooks_directory = \DrupalCodeBuilder\Factory::getEnvironment()->getHooksDirectory();
-  drush_print(t("Hook data retrieved from @dir.", array('@dir' => $hooks_directory)));
-  drush_print(t("Hook data was processed on @time.", array(
+  drush_print(t("Component data retrieved from @dir.", array('@dir' => $hooks_directory)));
+  drush_print(t("Component data was processed on @time.", array(
     '@time' => date(DATE_RFC822, $time),
   )));
 }
