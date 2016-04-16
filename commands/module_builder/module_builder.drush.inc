@@ -48,6 +48,8 @@ function module_builder_drush_command() {
         "Use the 'routes:' marker to separate this from prior commands, eg 'mymodule hook_a hook_b routes: module/path module/otherpath'.",
       'perms:' => "Permission names, separated by spaces. " . "\n" .
         "Use the 'perms:' marker to separate this from prior commands, eg 'mymodule hook_a hook_b perms: 'administer my module''. Quote strings that contain spaces.",
+      'theme:' => "Theme hooks, without the initial 'theme_', separated by spaces. " . "\n" .
+        "Use the 'theme:' marker to separate this from prior commands, eg 'mymodule hook_a hook_b perms: my_themable'.",
       'services:' => "IDs of services, separated by spaces. " . "\n",
       'settings_form!' => "Add this argument to add a settings form to the module.",
       'api!' => "Add this argument to add an api.php file to the module.",
@@ -173,6 +175,7 @@ function module_builder_handle_sanity_exception($e) {
  *  $drush mb machine_name hookA hookB hookC
  *    perms: permission_name
  *    routes: path/to/thing another/path
+ *    theme: my_themeable another_themeable
  *    readme! settings-form! tests!
  * Hook names may be short or long, e.g. both 'help' and 'hook_help' are
  * allowed. Parameters ending in a ':' are markers, which introduce a new type
@@ -251,6 +254,9 @@ function drush_module_builder_callback_build_module() {
     ),
     'plugins' => array(
       'command_prefix' => 'plugins',
+    ),
+    'theme_hooks' => array(
+      'command_prefix' => 'theme',
     ),
     'router_items' => array(
       'command_prefix' => 'routes',
