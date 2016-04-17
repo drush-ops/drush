@@ -555,6 +555,22 @@ function drush_module_builder_build_component($commands, $component_type, $compo
       }
     }
 
+    // Process compound properties into the expected format.
+    if ($property_info['format'] == 'compound') {
+      // For now, a compound property is input in direct mode as a flat array,
+      // where we take each array element to be the first child property.
+      $child_properties = $property_info['properties'];
+      $first_child_property = array_shift(array_keys($child_properties));
+
+      $items = [];
+      foreach ($value as $single_value) {
+        $items[][$first_child_property] = $single_value;
+        // Defaults for other child properties will be filled in by the
+        // process stage.
+      }
+      $value = $items;
+    }
+
     // If we're not in interactive mode, there's nothing more to do for this
     // command other than use the default value. That's already set in the
     // component data.
@@ -588,6 +604,9 @@ function drush_module_builder_build_component($commands, $component_type, $compo
           $prompt .= ' ' . "(y/n)";
           // Set the default.
           $default = empty($default) ? 'n' : 'y';
+          break;
+        case 'compound':
+          $prompt = "Enter the {$property_info['label']}, as a space separated list";
           break;
         default:
           $prompt = "Enter the {$property_info['label']}";
@@ -624,6 +643,24 @@ function drush_module_builder_build_component($commands, $component_type, $compo
     // Split up the value if it should be an array.
     if ($property_info['format'] == 'array' && !is_array($value)) {
       $value = preg_split('/\s+/', $value, -1,  PREG_SPLIT_NO_EMPTY);
+    }
+
+    // Process compound properties into the expected format.
+    if ($property_info['format'] == 'compound' && !is_array($value)) {
+      $value = preg_split('/\s+/', $value, -1,  PREG_SPLIT_NO_EMPTY);
+
+      // For now, a compound property is input in direct mode as a flat array,
+      // where we take each array element to be the first child property.
+      $child_properties = $property_info['properties'];
+      $first_child_property = array_shift(array_keys($child_properties));
+
+      $items = [];
+      foreach ($value as $single_value) {
+        $items[][$first_child_property] = $single_value;
+        // Defaults for other child properties will be filled in by the
+        // process stage.
+      }
+      $value = $items;
     }
 
     // Perform any processing specific to drush.
