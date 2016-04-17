@@ -465,10 +465,11 @@ function drush_module_builder_build_component($commands, $component_type, $compo
   //  - plain commands
   //  - a nested array of prefixed commands
   //  - an array of boolean flags.
-  // E.g. given 'foo bar hooks: biz presets: bax', we want:
+  // E.g. given 'foo bar hooks: biz presets: bax qux!', we want:
   //  - $commands as just 'foo bar'
   //  - hooks as 'biz'
   //  - presets as 'bax'
+  //  - boolean flags as 'qux'
   $plain_commands     = array();
   $prefixed_commands  = array();
   $boolean_commands   = array();
