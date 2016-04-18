@@ -28,6 +28,7 @@
   "require": {
     "php": ">=5.3.0",
     "psr/log": "~1.0",
+    "consolidation/annotated-command": "~0.8",
     "d11wtq/boris": "~1.0",
     "symfony/yaml": "~2.2",
     "symfony/var-dumper": "^2.6.3",
