@@ -1056,18 +1056,20 @@ function drush_get_commands($reset = FALSE) {
         }
 
         $commands[$key] = $command;
-        // For every alias, make a copy of the command and store it in the command list
-        // using the alias as a key
-        if (isset($command['aliases']) && count($command['aliases'])) {
-          foreach ($command['aliases'] as $alias) {
-            $commands[$alias] = $command;
-            $commands[$alias]['is_alias'] = TRUE;
-          }
-        }
       }
     }
   }
-
+  $commands = array_merge($commands, annotationcommand_adapter_commands());
+  foreach ($commands as $command) {
+    // For every alias, make a copy of the command and store it in the command list
+    // using the alias as a key
+    if (isset($command['aliases']) && count($command['aliases'])) {
+      foreach ($command['aliases'] as $alias) {
+        $commands[$alias] = $command;
+        $commands[$alias]['is_alias'] = TRUE;
+      }
+    }
+  }
   return $commands;
 }
 
@@ -1517,6 +1519,7 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
   if ($bootstrap = drush_get_bootstrap_object()) {
     $searchpath = $bootstrap->commandfile_searchpaths($phase, $phase_max);
     _drush_add_commandfiles($searchpath, $phase);
+    annotationcommand_adapter_discover($searchpath);
   }
 }
 
