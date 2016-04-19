@@ -1519,7 +1519,7 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
   if ($bootstrap = drush_get_bootstrap_object()) {
     $searchpath = $bootstrap->commandfile_searchpaths($phase, $phase_max);
     _drush_add_commandfiles($searchpath, $phase);
-    annotationcommand_adapter_discover($searchpath);
+    annotationcommand_adapter_discover($searchpath, $phase, $phase_max);
   }
 }
 
