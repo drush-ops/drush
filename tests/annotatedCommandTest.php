@@ -62,6 +62,15 @@ class annotatedCommandCase extends CommandUnishTestCase {
     $this->drush('my-cat', array('bet', 'alpha'), $options + ['flip' => NULL], NULL, NULL, self::EXIT_SUCCESS);
     $output = $this->getOutput();
     $this->assertEquals('alphabet', $output);
+
+    // Disable the woot module to avoid cross-contamination of the Drupal
+    // test site's database.
+    if (UNISH_DRUPAL_MAJOR_VERSION == 8) {
+      $this->drush('pm-uninstall', array('woot'), $options, NULL, NULL, self::EXIT_SUCCESS);
+    }
+    else {
+      $this->drush('pm-disable', array('woot'), $options, NULL, NULL, self::EXIT_SUCCESS);
+    }
   }
 
   public function setupModulesForDrupal8($root) {
