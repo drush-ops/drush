@@ -71,6 +71,8 @@ class annotatedCommandCase extends CommandUnishTestCase {
     else {
       $this->drush('pm-disable', array('woot'), $options, NULL, NULL, self::EXIT_SUCCESS);
     }
+    // Also kill the Drush cache so that our 'woot' command is not cached.
+    $this->drush('cache-clear', array('drush'), $options, NULL, NULL, self::EXIT_SUCCESS);
   }
 
   public function setupModulesForDrupal8($root) {

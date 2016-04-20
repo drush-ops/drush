@@ -68,37 +68,39 @@ function annotationcommand_adapter_get_commands($annotation_commandfiles) {
   //   'modules/default_content/src/CliTools/DefaultContentCommands.php' =>
   //   '\\Drupal\\default_content\\CliTools\\DefaultContentCommands',
   foreach ($annotation_commandfiles as $commandfile_path => $commandfile_class) {
-    include_once $commandfile_path;
-    $commandhandler = new $commandfile_class;
-    $commandinfo_list = $factory->getCommandInfoListFromClass($commandhandler);
+    if (file_exists($commandfile_path)) {
+      include_once $commandfile_path;
+      $commandhandler = new $commandfile_class;
+      $commandinfo_list = $factory->getCommandInfoListFromClass($commandhandler);
 
-    foreach ($commandinfo_list as $commandinfo) {
-      $command_name = strtolower($commandinfo->getName());
-      $command_name = str_replace(':', '-', $command_name);
-      $commandfile = ''; // what value should this take?
-      $command = [
-        'name' => $command_name,
-        'callback' => [$commandhandler, $commandinfo->getMethodName()],
-        'options' => [],
-        'arguments' => [],
-        'description' => $commandinfo->getDescription(),
-        'examples' => $commandinfo->getExampleUsages(),
-        'aliases' => $commandinfo->getAliases(),
-        'add-options-to-arguments' => TRUE,
-      ];
-      $required_arguments = 0;
-      foreach ($commandinfo->getArguments() as $arg => $default) {
-        $command['arguments'][$arg] = $commandinfo->getArgumentDescription($arg);
-        if (!isset($default)) {
-          ++$required_arguments;
+      foreach ($commandinfo_list as $commandinfo) {
+        $command_name = strtolower($commandinfo->getName());
+        $command_name = str_replace(':', '-', $command_name);
+        $commandfile = ''; // what value should this take?
+        $command = [
+          'name' => $command_name,
+          'callback' => [$commandhandler, $commandinfo->getMethodName()],
+          'options' => [],
+          'arguments' => [],
+          'description' => $commandinfo->getDescription(),
+          'examples' => $commandinfo->getExampleUsages(),
+          'aliases' => $commandinfo->getAliases(),
+          'add-options-to-arguments' => TRUE,
+        ];
+        $required_arguments = 0;
+        foreach ($commandinfo->getArguments() as $arg => $default) {
+          $command['arguments'][$arg] = $commandinfo->getArgumentDescription($arg);
+          if (!isset($default)) {
+            ++$required_arguments;
+          }
         }
+        $command['required-arguments'] = $required_arguments;
+        foreach ($commandinfo->getOptions() as $option => $default) {
+          $command['options'][$option] = $commandinfo->getOptionDescription($option);
+        }
+        $command += drush_command_defaults($command_name, $commandfile, $commandfile_path);
+        $commands[$command_name] = $command;
       }
-      $command['required-arguments'] = $required_arguments;
-      foreach ($commandinfo->getOptions() as $option => $default) {
-        $command['options'][$option] = $commandinfo->getOptionDescription($option);
-      }
-      $command += drush_command_defaults($command_name, $commandfile, $commandfile_path);
-      $commands[$command_name] = $command;
     }
   }
   return $commands;
