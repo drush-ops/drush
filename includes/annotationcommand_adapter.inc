@@ -20,8 +20,8 @@ function annotationcommand_adapter_get_discovery() {
  * @see drush_get_commands()
  */
 function annotationcommand_adapter_commands() {
-  $commands = drush_get_context('DRUSH_ANNOTATED_COMMANDS');
-  return $commands;
+  $annotation_commandfiles = drush_get_context('DRUSH_ANNOTATED_COMMANDFILES');
+  return annotationcommand_adapter_get_commands($annotation_commandfiles);
 }
 
 /**
@@ -32,15 +32,38 @@ function annotationcommand_adapter_discover($searchpath, $phase = false, $phase_
   if (empty($searchpath)) {
     return;
   }
-  // Check to see if this is the Drush searchpath for instances where we are
-  // NOT going to do a full bootstrap (e.g. when running a help command)
-  if (($phase == DRUSH_BOOTSTRAP_DRUPAL_SITE) && ($phase_max < DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
-    $searchpath = annotationcommand_adapter_refine_searchpaths($searchpath);
+  $annotation_commandfiles = [];
+  // Assemble a cid specific to the bootstrap phase and searchpaths.
+  // Bump $cf_version when making a change to a dev version of Drush
+  // that invalidates the commandfile cache.
+  $cf_version = 1;
+  $cid = drush_get_cid('annotationfiles-' . $phase, array(), array_merge($searchpath, array($cf_version)));
+  $command_cache = drush_cache_get($cid);
+  if (isset($command_cache->data)) {
+    $annotation_commandfiles = $command_cache->data;
   }
-  $commands = drush_get_context('DRUSH_ANNOTATED_COMMANDS');
+  else {
+    // Check to see if this is the Drush searchpath for instances where we are
+    // NOT going to do a full bootstrap (e.g. when running a help command)
+    if (($phase == DRUSH_BOOTSTRAP_DRUPAL_SITE) && ($phase_max < DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+      $searchpath = annotationcommand_adapter_refine_searchpaths($searchpath);
+    }
+    $discovery = annotationcommand_adapter_get_discovery();
+    $annotation_commandfiles = $discovery->discoverNamespaced($searchpath, '\Drupal');
+    drush_cache_set($cid, $annotation_commandfiles);
+  }
+  drush_set_context(
+    'DRUSH_ANNOTATED_COMMANDFILES',
+    array_merge(
+      drush_get_context('DRUSH_ANNOTATED_COMMANDFILES'),
+      $annotation_commandfiles
+    )
+  );
+}
+
+function annotationcommand_adapter_get_commands($annotation_commandfiles) {
   $factory = new AnnotatedCommandFactory();
-  $discovery = annotationcommand_adapter_get_discovery();
-  $annotation_commandfiles = $discovery->discoverNamespaced($searchpath, '\Drupal');
+  $commands = [];
   // This will give us a list containing something akin to:
   //   'modules/default_content/src/CliTools/DefaultContentCommands.php' =>
   //   '\\Drupal\\default_content\\CliTools\\DefaultContentCommands',
@@ -78,7 +101,7 @@ function annotationcommand_adapter_discover($searchpath, $phase = false, $phase_
       $commands[$command_name] = $command;
     }
   }
-  drush_set_context('DRUSH_ANNOTATED_COMMANDS', $commands);
+  return $commands;
 }
 
 /**
