@@ -61,6 +61,7 @@ function annotationcommand_adapter_discover($searchpath, $phase = false, $phase_
         'description' => $commandinfo->getDescription(),
         'examples' => $commandinfo->getExampleUsages(),
         'aliases' => $commandinfo->getAliases(),
+        'add-options-to-arguments' => TRUE,
       ];
       $required_arguments = 0;
       foreach ($commandinfo->getArguments() as $arg => $default) {

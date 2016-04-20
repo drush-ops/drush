@@ -181,8 +181,15 @@ function drush_dispatch($command, $arguments = array()) {
     // remote commands and other redispatches.
     drush_preflight_tilde_expansion($command);
 
+    // Get the arguments for this command. Add the options
+    // on the end if this is that kind of command.
+    $args = $command['arguments'];
+    if ($command['add-options-to-arguments']) {
+      $args[] = drush_get_merged_options();
+    }
+
     // Call the callback function of the active command.
-    $return = call_user_func_array($command['callback'], $command['arguments']);
+    $return = call_user_func_array($command['callback'], $args);
   }
 
   // Add a final log entry, just so a timestamp appears.
@@ -1202,6 +1209,7 @@ function drush_command_defaults($key, $commandfile, $path) {
     'topics' => array(),
     'hidden' => FALSE,
     'category' => $commandfile,
+    'add-options-to-arguments' => FALSE,
   );
   // We end up here, setting the defaults for a command, when
   // called from drush_get_global_options().  Early in the Drush
