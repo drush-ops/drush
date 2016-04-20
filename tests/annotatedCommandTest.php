@@ -27,15 +27,23 @@ class annotatedCommandCase extends CommandUnishTestCase {
     // Enable out module. This will also clear the commandfile cache.
     $this->drush('pm-enable', array('woot'), $options, NULL, NULL, self::EXIT_SUCCESS);
 
+    // drush woot --help
     $this->drush('woot', array(), $options + ['help' => NULL], NULL, NULL, self::EXIT_SUCCESS);
     $output = $this->getOutput();
     $this->assertContains('Woot mightily.', $output);
     $this->assertContains('Aliases: wt', $output);
 
+    // drush help woot
+    $this->drush('help', array('woot'), $options, NULL, NULL, self::EXIT_SUCCESS);
+    $output = $this->getOutput();
+    $this->assertContains('Woot mightily.', $output);
+
+    // drush woot
     $this->drush('woot', array(), $options, NULL, NULL, self::EXIT_SUCCESS);
     $output = $this->getOutput();
     $this->assertEquals('Woot!', $output);
 
+    // drush my-cat --help
     $this->drush('my-cat', array(), $options + ['help' => NULL], NULL, NULL, self::EXIT_SUCCESS);
     $output = $this->getOutput();
     $this->assertContains('This is the my-cat command', $output);
@@ -45,10 +53,15 @@ class annotatedCommandCase extends CommandUnishTestCase {
     $this->assertContains('Whether or not the second parameter', $output);
     $this->assertContains('Aliases: c', $output);
 
+    // drush help my-cat
+    $this->drush('help', array('my-cat'), $options, NULL, NULL, self::EXIT_SUCCESS);
+    $output = $this->getOutput();
+    $this->assertContains('This is the my-cat command', $output);
+
+    // drush my-cat bet alpha --flip
     $this->drush('my-cat', array('bet', 'alpha'), $options + ['flip' => NULL], NULL, NULL, self::EXIT_SUCCESS);
     $output = $this->getOutput();
     $this->assertEquals('alphabet', $output);
-
   }
 
   public function setupModulesForDrupal8($root) {

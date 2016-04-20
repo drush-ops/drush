@@ -90,7 +90,11 @@ function annotationcommand_adapter_refine_searchpaths($searchpath) {
   $result = [];
   foreach ($searchpath as $path) {
     $max_depth = TRUE;
-    $locations = drush_scan_directory($path, '/.*\.info.yml$/', ['.', '..'], false, $max_depth);
+    $pattern = '/.*\.info$/';
+    if (drush_drupal_major_version() > 7) {
+      $pattern = '/.*\.info.yml$/';
+    }
+    $locations = drush_scan_directory($path, $pattern, ['.', '..'], false, $max_depth);
 
     // Search for any directory that might be a module or theme (contains
     // a *.info or a *.info.yml file)
