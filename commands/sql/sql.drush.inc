@@ -103,18 +103,12 @@ function sql_drush_command() {
       'drush sql-dump --skip-tables-key=common' => 'Skip standard tables. @see example.drushrc.php',
       'drush sql-dump --extra=--no-data' => 'Pass extra option to dump command.',
     ),
-    'options' => array(
+    'options' => drush_sql_get_table_selection_options() + array(
       'result-file' => array(
         'description' => 'Save to a file. The file should be relative to Drupal root. If --result-file is provided with no value, then date based filename will be created under ~/drush-backups directory.',
         'example-value' => '/path/to/file',
         'value' => 'optional',
       ),
-      'skip-tables-key' => 'A key in the $skip_tables array. @see example.drushrc.php. Optional.',
-      'structure-tables-key' => 'A key in the $structure_tables array. @see example.drushrc.php. Optional.',
-      'tables-key' => 'A key in the $tables array. Optional.',
-      'skip-tables-list' => 'A comma-separated list of tables to exclude completely. Optional.',
-      'structure-tables-list' => 'A comma-separated list of tables to include for structure, but not data. Optional.',
-      'tables-list' => 'A comma-separated list of tables to transfer. Optional.',
       'create-db' => array('hidden' => TRUE, 'description' => 'Omit DROP TABLE statements. Postgres and Oracle only.  Used by sql-sync, since including the DROP TABLE statements interfere with the import when the database is created.'),
       'data-only' => 'Dump data without statements to create any of the schema.',
       'ordered-dump' => 'Order by primary key and add line breaks for efficient diff in revision control. Slows down the dump. Mysql only.',
@@ -290,6 +284,17 @@ function drush_sql_get_table_selection() {
   $tables = _drush_sql_get_raw_table_list('tables');
 
   return array('skip' => $skip_tables, 'structure' => $structure_tables, 'tables' => $tables);
+}
+
+function drush_sql_get_table_selection_options() {
+  return array(
+    'skip-tables-key' => 'A key in the $skip_tables array. @see example.drushrc.php. Optional.',
+    'structure-tables-key' => 'A key in the $structure_tables array. @see example.drushrc.php. Optional.',
+    'tables-key' => 'A key in the $tables array. Optional.',
+    'skip-tables-list' => 'A comma-separated list of tables to exclude completely. Optional.',
+    'structure-tables-list' => 'A comma-separated list of tables to include for structure, but not data. Optional.',
+    'tables-list' => 'A comma-separated list of tables to transfer. Optional.',
+  );
 }
 
 /**
