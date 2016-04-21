@@ -20,13 +20,7 @@ function sqlsync_drush_command() {
       'target' => 'A site-alias or the name of a subdirectory within /sites whose database you want to replace.',
     ),
     'required-arguments' => TRUE,
-    'options' => array(
-      'skip-tables-key' => 'A key in the $skip_tables array. See example.drushrc.php. Optional.',
-      'skip-tables-list' => 'A comma-separated list of tables to exclude completely. Optional.',
-      'structure-tables-key' => 'A key in the $structure_tables array. See example.drushrc.php. Optional.',
-      'structure-tables-list' => 'A comma-separated list of tables to include for structure, but not data. Optional.',
-      'tables-key' => 'A key in the $tables array. Optional.',
-      'tables-list' => 'A comma-separated list of tables to transfer. Optional.',
+    'options' => drush_sql_get_table_selection_options() + array(
       // 'cache' => 'Skip dump if result file exists and is less than "cache" hours old. Optional; default is 24 hours.',
       // 'no-cache' => 'Do not cache the sql-dump file.',
       'no-dump' => 'Do not dump the sql database; always use an existing dump file.',
