@@ -63,6 +63,12 @@ class annotatedCommandCase extends CommandUnishTestCase {
     $output = $this->getOutput();
     $this->assertEquals('alphabet', $output);
 
+    // drush woot --help with the 'woot' module ignored
+    $this->drush('woot', array(), $options + ['help' => NULL, 'ignored-modules' => 'woot'], NULL, NULL, self::EXIT_ERROR);
+
+    // drush my-cat bet alpha --flip
+    $this->drush('my-cat', array('bet', 'alpha'), $options + ['flip' => NULL, 'ignored-modules' => 'woot'], NULL, NULL, self::EXIT_ERROR);
+
     // Disable the woot module to avoid cross-contamination of the Drupal
     // test site's database.
     if (UNISH_DRUPAL_MAJOR_VERSION == 8) {

@@ -21,6 +21,14 @@ function annotationcommand_adapter_get_discovery() {
  */
 function annotationcommand_adapter_commands() {
   $annotation_commandfiles = drush_get_context('DRUSH_ANNOTATED_COMMANDFILES');
+  // Remove any entry in the commandfiles list from an ignored module.
+  $ignored = implode('|', drush_get_option_list('ignored-modules'));
+  $regex = "#/(modules|themes|profiles)(/|/.*/)($ignored)/#";
+  foreach ($annotation_commandfiles as $key => $path) {
+    if (preg_match($regex, $path)) {
+      unset($annotation_commandfiles[$key]);
+    }
+  }
   return annotationcommand_adapter_get_commands($annotation_commandfiles);
 }
 
