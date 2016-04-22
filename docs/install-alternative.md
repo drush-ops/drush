@@ -57,13 +57,15 @@ composer install
 
     The `composer.json` file tells composer to install (or update) Drush at the [package version][composer package version] we specified and to put the [vendor binaries][composer vendor binaries] where all users can access them.
 
-1. Lastly, if you are using bash with command completion you can enable Drush completion for all users by simply symlinking the `drush.complete.sh` shell script into the correct location.
 
-        sudo ln -s /usr/local/bin/drush.complete.sh \
-          /etc/bash_completion.d/drush
+### Command Completion
 
-**Important Tip:** When installing *Drush 6.x* there are *dependencies not managed by composer* that will require download on first run. You
-should execute Drush as a privelged user once after install (run `sudo drush --version`) to allow download of those libraries.
+Drush provides the `drush init` command to add command completion and shell prompt scripts into a users bash configuration. You can enable this though for all users immediately, without requiring them to run `drush init`.
+
+Enable Drush completion for all users by symlinking the `drush.complete.sh` shell script into the correct location.
+
+    sudo ln -s /usr/local/bin/drush.complete.sh \
+      /etc/bash_completion.d/drush
 
 ### Getting Updates
 
