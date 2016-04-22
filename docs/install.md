@@ -15,7 +15,7 @@ sudo mv drush /usr/local/bin
 # Optional. Enrich the bash startup file with completion and aliases.
 drush init
 ```
-    
+
 * MAMP users, and anyone wishing to launch a non-default PHP, needs to [edit ~/.bashrc so that the right PHP is in your $PATH](http://stackoverflow.com/questions/4145667/how-to-override-the-path-of-php-to-use-the-mamp-path/10653443#10653443).
 * We have documented [alternative ways to install](http://docs.drush.org/en/master/install-alternative/), including [Windows](http://docs.drush.org/en/master/install-alternative/#windows).
 * If you need to pass custom php.ini values, run `php -d foo=bar drush.phar --php-options=foo=bar`
