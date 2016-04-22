@@ -22,7 +22,20 @@ To install Drush globally for a single user follow the instructions below, or [w
 
 Install Drush for all users via Composer
 ------------
-If you need a common Drush install available for all users on a system, follow the composer install steps below.
+If you need Drush installed for all users on a system using composer, follow the install steps below.
+
+### Commands Only
+
+Just want the commands? Here you go then. Run these shell commands as a privelged user with write access to `/opt` and `/usr/local/bin` or prefix with `sudo`.
+
+```sh
+cd /opt/drush-8.x
+composer init --require=drush/drush:8.* -n
+composer config bin-dir /usr/local/bin
+composer install
+```
+
+### Steps Explained
 
 1. [Install Composer globally][composer install global].
 1. Create and/or navigate to a directory path for the single composer Drush install. In this example we are going to install Drush version 7.x
