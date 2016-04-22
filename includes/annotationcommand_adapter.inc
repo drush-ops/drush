@@ -82,8 +82,9 @@ function annotationcommand_adapter_get_commands($annotation_commandfiles) {
       $commandinfo_list = $factory->getCommandInfoListFromClass($commandhandler);
 
       foreach ($commandinfo_list as $commandinfo) {
+        $aliases = $commandinfo->getAliases();
         $command_name = strtolower($commandinfo->getName());
-        $command_name = str_replace(':', '-', $command_name);
+        $aliases[] = str_replace(':', '-', $command_name);
         $commandfile = ''; // what value should this take?
         $command = [
           'name' => $command_name,
@@ -92,19 +93,19 @@ function annotationcommand_adapter_get_commands($annotation_commandfiles) {
           'arguments' => [],
           'description' => $commandinfo->getDescription(),
           'examples' => $commandinfo->getExampleUsages(),
-          'aliases' => $commandinfo->getAliases(),
+          'aliases' => $aliases,
           'add-options-to-arguments' => TRUE,
         ];
         $required_arguments = 0;
-        foreach ($commandinfo->getArguments() as $arg => $default) {
-          $command['arguments'][$arg] = $commandinfo->getArgumentDescription($arg);
+        foreach ($commandinfo->arguments()->getValues() as $arg => $default) {
+          $command['arguments'][$arg] = $commandinfo->arguments()->getDescription($arg);
           if (!isset($default)) {
             ++$required_arguments;
           }
         }
         $command['required-arguments'] = $required_arguments;
-        foreach ($commandinfo->getOptions() as $option => $default) {
-          $command['options'][$option] = $commandinfo->getOptionDescription($option);
+        foreach ($commandinfo->options()->getValues() as $option => $default) {
+          $command['options'][$option] = $commandinfo->options()->getDescription($option);
         }
         $command += drush_command_defaults($command_name, $commandfile, $commandfile_path);
         $commands[$command_name] = $command;
