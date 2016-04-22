@@ -38,14 +38,14 @@ composer install
 ### Steps Explained
 
 1. [Install Composer globally][composer install global].
-1. Create and/or navigate to a directory path for the single composer Drush install. In this example we are going to install Drush version 7.x
+1. Create and/or navigate to a directory path for the single composer Drush install. In this example we are going to install Drush version 8.x
 
-        sudo mkdir --parents /opt/drush/7.x
-        cd /opt/drush/7.x
+        mkdir --parents /opt/drush-8.x
+        cd /opt/drush-8.x
 
-1. Initialise a new composer project that requires Drush. Here you may also specify the Drush [package version][composer package version] you wish composer to install. In this example we specify Drush version 7.x with the [package version][composer package version] string `7.*`
+1. Initialise a new composer project that requires Drush. Here you may also specify the Drush [package version][composer package version] you wish composer to install. In this example we specify Drush version 8.x with the [package version][composer package version] string `8.*`
 
-        sudo composer init --require=drush/drush:7.* -n
+        composer init --require=drush/drush:8.* -n
 
 1. Configure the path composer should use for the Drush package's [vendor binaries][composer vendor binaries] or command-line scripts. Choose a directory path that is used in the `$PATH` configuration for all users, for example `/usr/local/bin`:
 
@@ -73,7 +73,7 @@ Use composer to update the Drush library just as you would with any other compos
 
 1. Navigate to the Drush install directory path. This is the path where your `composer.json` file for the Drush install was created.
 
-        cd /opt/drush/7.x
+        cd /opt/drush-8.x
 
 1. Run composer update
 
@@ -90,6 +90,9 @@ If upgrading to a new major version the steps are the same, with one addition:
         sudo rm -i /usr/local/bin/drush*
 
 1. Follow the steps shown above, starting with creation of a new directory path for the new major version number.
+
+        mkdir --parents /opt/drush-9.x
+        cd /opt/drush-9.x
 
 **Important Tip:** At the time of writing composer will warn you if it cannot create vendor binaries due to a name conflict with an existing file. Community contributions to composer coming soon will allow you to force the overwrite of existing vendor binaries during an install or update.
 
