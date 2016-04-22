@@ -49,11 +49,11 @@ composer install
 
 1. Configure the path composer should use for the Drush package's [vendor binaries][composer vendor binaries] or command-line scripts. Choose a directory path that is used in the `$PATH` configuration for all users, for example `/usr/local/bin`:
 
-        sudo composer config bin-dir /usr/local/bin
+        composer config bin-dir /usr/local/bin
 
 1. Now run the `composer install` command. A `composer.json` file containing each of the configurations we just did has been created.
 
-        sudo composer install
+        composer install
 
     The `composer.json` file tells composer to install (or update) Drush at the [package version][composer package version] we specified and to put the [vendor binaries][composer vendor binaries] where all users can access them.
 
@@ -71,7 +71,7 @@ Enable Drush completion for all users by symlinking the `drush.complete.sh` shel
 
 Use composer to update the Drush library just as you would with any other composer managed project.
 
-1. Navigate to the Drush install directory path. This is the path where your `composer.json` file for the Drush install was created.
+1. Navigate to the Drush install directory path. This is the path where your `composer.json` file for the Drush composer install was created.
 
         cd /opt/drush-8.x
 
@@ -85,9 +85,9 @@ After composer update completes, the binaries and library will be updated for al
 
 If upgrading to a new major version the steps are the same, with one addition:
 
-1. Remove the existing symlinks to Drush [vendor binaries][composer vendor binaries]. From our example above these would be located in the `bin-dir` path `/usr/local/bin`:
+1. Remove the existing symlinks to Drush [vendor binaries][composer vendor binaries]. From our example above these would be located in the `bin-dir` path `/usr/local/bin` and point to a path starting with `/opt/drush*`:
 
-        sudo rm -i /usr/local/bin/drush*
+        find /usr/local/bin -lname '/opt/drush*' -exec unlink \{\} \;
 
 1. Follow the steps shown above, starting with creation of a new directory path for the new major version number.
 
