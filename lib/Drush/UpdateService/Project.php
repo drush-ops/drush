@@ -305,7 +305,7 @@ class Project {
    *
    * @return array|bool
    */
-  private static function getBestRelease(array $releases) {
+  public static function getBestRelease(array $releases) {
     if (empty($releases)) {
       return FALSE;
     }
