@@ -17,12 +17,7 @@ class annotatedCommandCase extends CommandUnishTestCase {
     );
 
     // Copy the 'woot' module over to the Drupal site we just set up.
-    if (UNISH_DRUPAL_MAJOR_VERSION == 8) {
-      $this->setupModulesForDrupal8($root);
-    }
-    else {
-      $this->setupModulesForDrupal6and7($root);
-    }
+    $this->setupModulesForTests($root);
 
     // Enable out module. This will also clear the commandfile cache.
     $this->drush('pm-enable', array('woot'), $options, NULL, NULL, self::EXIT_SUCCESS);
@@ -81,18 +76,13 @@ class annotatedCommandCase extends CommandUnishTestCase {
     $this->drush('cache-clear', array('drush'), $options, NULL, NULL, self::EXIT_SUCCESS);
   }
 
-  public function setupModulesForDrupal8($root) {
-    $woot8Module = __DIR__ . '/resources/modules/d8/woot';
-    $modulesDir = "$root/modules";
-    \symlink($woot8Module, "$modulesDir/woot");
-  }
-
-  public function setupModulesForDrupal6and7($root) {
-    $wootModule = __DIR__ . '/resources/modules/d7/woot';
-    $woot8Module = __DIR__ . '/resources/modules/d8/woot';
+  public function setupModulesForTests($root) {
+    $wootModule = __DIR__ . '/resources/modules/d' . UNISH_DRUPAL_MAJOR_VERSION . '/woot';
     $modulesDir = "$root/sites/all/modules";
+    $this->mkdir($modulesDir);
     \symlink($wootModule, "$modulesDir/woot");
-    if (!file_exists("$wootModule/Command/WootCommands.php")) {
+    if ((UNISH_DRUPAL_MAJOR_VERSION < 8) && !file_exists("$wootModule/Command/WootCommands.php")) {
+      $woot8Module = __DIR__ . '/resources/modules/d8/woot';
       \symlink("$woot8Module/src/Command/WootCommands.php", "$wootModule/Command/WootCommands.php");
     }
   }
