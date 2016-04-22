@@ -25,16 +25,16 @@ Install Drush for all users via Composer
 If you need a common Drush install available for all users on a system, follow the composer install steps below.
 
 1. [Install Composer globally][composer install global].
-1. Create and/or navigate to a directory path for the single composer drush install. In this example we are going to install drush version 7.x
+1. Create and/or navigate to a directory path for the single composer Drush install. In this example we are going to install Drush version 7.x
 
         sudo mkdir --parents /opt/drush/7.x
         cd /opt/drush/7.x
 
-1. Initialise a new composer project that requires drush. Here you may also specify the drush [package version][composer package version] you wish composer to install. In this example we specify drush version 7.x with the [package version][composer package version] string `7.*`
+1. Initialise a new composer project that requires Drush. Here you may also specify the Drush [package version][composer package version] you wish composer to install. In this example we specify Drush version 7.x with the [package version][composer package version] string `7.*`
 
         sudo composer init --require=drush/drush:7.* -n
 
-1. Configure the path composer should use for the drush package's [vendor binaries][composer vendor binaries] or command-line scripts. Choose a directory path that is used in the `$PATH` configuration for all users, for example `/usr/local/bin`:
+1. Configure the path composer should use for the Drush package's [vendor binaries][composer vendor binaries] or command-line scripts. Choose a directory path that is used in the `$PATH` configuration for all users, for example `/usr/local/bin`:
 
         sudo composer config bin-dir /usr/local/bin
 
@@ -42,21 +42,21 @@ If you need a common Drush install available for all users on a system, follow t
 
         sudo composer install
 
-    The `composer.json` file tells composer to install (or update) drush at the [package version][composer package version] we specified and to put the [vendor binaries][composer vendor binaries] where all users can access them.
+    The `composer.json` file tells composer to install (or update) Drush at the [package version][composer package version] we specified and to put the [vendor binaries][composer vendor binaries] where all users can access them.
 
-1. Lastly, if you are using bash with command completion you can enable drush completion for all users by simply symlinking the `drush.complete.sh` shell script into the correct location.
+1. Lastly, if you are using bash with command completion you can enable Drush completion for all users by simply symlinking the `drush.complete.sh` shell script into the correct location.
 
         sudo ln -s /usr/local/bin/drush.complete.sh \
           /etc/bash_completion.d/drush
 
-**Important Tip:** When installing *drush 6.x* there are *dependencies not managed by composer* that will require download on first run. You
-should execute drush as a privelged user once after install (run `sudo drush --version`) to allow download of those libraries.
+**Important Tip:** When installing *Drush 6.x* there are *dependencies not managed by composer* that will require download on first run. You
+should execute Drush as a privelged user once after install (run `sudo drush --version`) to allow download of those libraries.
 
 ### Getting Updates
 
-Use composer to update the drush library just as you would with any other composer managed project.
+Use composer to update the Drush library just as you would with any other composer managed project.
 
-1. Navigate to the drush install directory path. This is the path where your `composer.json` file for the drush install was created.
+1. Navigate to the Drush install directory path. This is the path where your `composer.json` file for the Drush install was created.
 
         cd /opt/drush/7.x
 
@@ -70,7 +70,7 @@ After composer update completes, the binaries and library will be updated for al
 
 If upgrading to a new major version the steps are the same, with one addition:
 
-1. Remove the existing symlinks to drush [vendor binaries][composer vendor binaries]. From our example above these would be located in the `bin-dir` path `/usr/local/bin`:
+1. Remove the existing symlinks to Drush [vendor binaries][composer vendor binaries]. From our example above these would be located in the `bin-dir` path `/usr/local/bin`:
 
         sudo rm -i /usr/local/bin/drush*
 
