@@ -52,7 +52,7 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
     // Store the batch.
     if (drush_drupal_major_version() >= 8) {
       /** @var \Drupal\Core\Batch\BatchStorage $batch_storage */
-      $batch_storage = Drupal::service('batch.storage');
+      $batch_storage = \Drupal::service('batch.storage');
       $batch_storage->create($batch);
     }
     else {
@@ -242,7 +242,7 @@ function _drush_batch_finished() {
         $queue = _batch_queue($batch_set);
         $operations = $queue->getAllItems();
         $elapsed = $batch_set['elapsed'] / 1000;
-        $elapsed = drush_drupal_major_version() >=8 ? Drupal::service('date.formatter')->formatInterval($elapsed) : format_interval($elapsed);
+        $elapsed = drush_drupal_major_version() >=8 ? \Drupal::service('date.formatter')->formatInterval($elapsed) : format_interval($elapsed);
         $batch_set['finished']($batch_set['success'], $batch_set['results'], $operations, $elapsed);
       }
     }
@@ -251,7 +251,7 @@ function _drush_batch_finished() {
   // Clean up the batch table and unset the static $batch variable.
   if (drush_drupal_major_version() >= 8) {
     /** @var \Drupal\Core\Batch\BatchStorage $batch_storage */
-    $batch_storage = Drupal::service('batch.storage');
+    $batch_storage = \Drupal::service('batch.storage');
     $batch_storage->delete($batch['id']);
   }
   else {
@@ -278,7 +278,7 @@ function _drush_batch_shutdown() {
  if ($batch = batch_get()) {
    if (drush_drupal_major_version() >= 8) {
      /** @var \Drupal\Core\Batch\BatchStorage $batch_storage */
-     $batch_storage = Drupal::service('batch.storage');
+     $batch_storage = \Drupal::service('batch.storage');
      $batch_storage->update($batch);
    }
    else {
