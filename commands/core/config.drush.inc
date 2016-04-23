@@ -455,8 +455,7 @@ function _drush_config_export($destination, $destination_dir, $branch) {
       }
     }
 
-    $config_comparer = new StorageComparer($comparison_source, 
-      $target_storage, \Drupal::service('config.manager'));
+    $config_comparer = new StorageComparer($comparison_source, $target_storage, \Drupal::service('config.manager'));
     if (!$config_comparer->createChangelist()->hasChanges()) {
       return drush_log(dt('The active configuration is identical to the configuration in the export directory (!target).', array('!target' => $destination_dir)), LogLevel::OK);
     }
