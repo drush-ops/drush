@@ -279,7 +279,7 @@ function drush_init_dependency_injection_container($input = null, $output = null
     ->withMethodCall('addSearchLocation', ['CommandFiles'])
     ->withMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
   $container->share('formatterManager', 'Consolidation\OutputFormatters\FormatterManager');
-  $container->share('hookManager', 'Consolidation\AnnotatedCommand\HookManager');
+  $container->share('hookManager', 'Consolidation\AnnotatedCommand\Hooks\HookManager');
   $container->share('commandProcessor', 'Consolidation\AnnotatedCommand\CommandProcessor')
     ->withArgument('hookManager')
     ->withMethodCall('setFormatterManager', ['formatterManager']);
