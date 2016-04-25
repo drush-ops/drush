@@ -137,7 +137,7 @@ function drush_core_runserver($uri = NULL) {
   else {
     $extra = ' --define auto_prepend_file="' . __DIR__ . '/runserver-prepend.php"';
   }
-  $root = \Drush::bootstrapManager()->getRoot();
+  $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
   drush_shell_exec_interactive('cd %s && %s -S ' . $addr . ':' . $uri['port']. $extra, $root, drush_get_option('php', 'php'));
 }
 
