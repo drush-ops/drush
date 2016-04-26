@@ -2,7 +2,7 @@ Install a global Drush via Composer
 ------------------
 To install Drush globally for a single user follow the instructions below, or [watch a video by Drupalize.me](https://youtu.be/eAtDaD8xz0Q).
 
-1. [Install Composer globally][composer install global].
+1. [Install Composer globally][].
 1. Add composer's `bin` directory to the system path by placing `export PATH="$HOME/.composer/vendor/bin:$PATH"` into your ~/.bash_profile (Mac OS users) or into your ~/.bashrc (Linux users).
 1. Install latest stable Drush: `composer global require drush/drush`.
 1. Verify that Drush works: `drush status`
@@ -17,12 +17,12 @@ To install Drush globally for a single user follow the instructions below, or [w
         # Install master branch as a git clone. Great for contributing back to Drush project.
         composer global require drush/drush:dev-master --prefer-source
 
-* [Documentation for composer's require command.](http://getcomposer.org/doc/03-cli.md#require)
+* [Documentation for composer's require command](http://getcomposer.org/doc/03-cli.md#require).
 * Uninstall with : `composer global remove drush/drush`
 
 Install Drush for all users via Composer
 ------------
-If you need Drush installed for all users on a system using composer, follow the install steps below.
+If you need Drush installed for all users on a system using Composer, [install Composer globally][] then follow the steps below.
 
 **Important:** Run these shell commands as a privelged user with write access to `/opt` and `/usr/local/bin` or prefix with `sudo`.
 
@@ -63,7 +63,7 @@ cd /opt/drush-9.x
 
 **Important:** At the time of writing composer will warn you if it cannot create [vendor binaries][] due to a name conflict with an existing file. 
 
-[composer install global]: https://getcomposer.org/doc/00-intro.md#globally
+[Install Composer globally]: https://getcomposer.org/doc/00-intro.md#globally
 [vendor binaries]: https://getcomposer.org/doc/articles/vendor-binaries.md
 
 Windows
