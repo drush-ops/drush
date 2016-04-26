@@ -71,7 +71,7 @@ function package_handler_download_project(&$request, $release) {
 
   // Check Md5 hash.
   if (!drush_get_option('no-md5')) {
-    if (drush_op('md5_file', $download_path) != $release['mdhash'] && !drush_get_context('DRUSH_SIMULATE')) {
+    if (drush_op('md5_file', $download_path) !== $release['mdhash'] && !drush_get_context('DRUSH_SIMULATE')) {
       drush_delete_dir(drush_download_file_name($download_link, TRUE));
       return drush_set_error('DRUSH_PM_FILE_CORRUPT', dt('File !filename is corrupt (wrong md5 checksum).', array('!filename' => $filename)));
     }

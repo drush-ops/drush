@@ -36,12 +36,12 @@ function role_drush_command() {
   $items['role-create'] = array(
     'description' => 'Create a new role.',
     'examples' => array(
-      "drush role-create 'test role'" => "Create a new role 'test role' on D6 or D7; auto-assign the rid. On D8, 'test role' is the rid, and the human-readable name is set to 'Test role'.",
-      "drush role-create 'test role' 'Test role'" => "Create a new role with a machine name of 'test role', and a human-readable name of 'Test role'. On D6 and D7, behaves as the previous example."
+      "drush role-create 'test role'" => "Create a new role 'test role' on D7; auto-assign the rid. On D8, 'test role' is the rid, and the human-readable name is set to 'Test role'.",
+      "drush role-create 'test role' 'Test role'" => "Create a new role with a machine name of 'test role', and a human-readable name of 'Test role'. On D7, behaves as the previous example."
     ),
     'arguments' => array(
       'machine name' => 'The symbolic machine name for the role. Required.',
-      'human-readable name' => 'A descriptive name for the role. Optional; Drupal 8 only.  Ignored in D6 and D7.',
+      'human-readable name' => 'A descriptive name for the role. Optional; Drupal 8 only.  Ignored in D7.',
     ),
     'aliases' => array('rcrt'),
   );
@@ -51,7 +51,7 @@ function role_drush_command() {
       "drush role-delete 'test role'" => "Delete the role 'test role'.",
     ),
     'arguments' => array(
-      'machine name' => 'The symbolic machine name for the role. Required.  In D6 and D7, this may also be a numeric role ID.',
+      'machine name' => 'The symbolic machine name for the role. Required.  In D7, this may also be a numeric role ID.',
     ),
     'aliases' => array('rdel'),
   );

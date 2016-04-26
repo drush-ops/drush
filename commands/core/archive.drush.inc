@@ -14,7 +14,8 @@ function archive_drush_command() {
     'arguments' => array(
       'sites' => 'Optional. Site specifications, delimited by commas. Typically, list subdirectory name(s) under /sites.',
     ),
-    'options' => array(
+    // Most options on sql-dump should not be shown, so just offer a subset.
+    'options' => drush_sql_get_table_selection_options() + array(
       'description' => 'Describe the archive contents.',
       'tags' => 'Add tags to the archive manifest. Delimit multiple by commas.',
       'destination' => 'The full path and filename in which the archive should be stored. If omitted, it will be saved to the drush-backups directory and a filename will be generated.',

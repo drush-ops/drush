@@ -2,19 +2,6 @@
 
 use Drush\Log\LogLevel;
 
-/*
- * Notes:
- * - Drush is required on source and dest (except with --no-dump)
- * - Source and Dest can both be remote. Convenient.
- * - No special handling for multiple targets. Use --no-dump.
- * - We could move the sanitize confirmations earlier if desired.
- * - A bit tricky to know where to put your drushrc/alias customizations. Can be local, $source, or $destination. Just add docs?
- * - No longer optimizing for efficient rsync. We could add this back if desired.
- *   -- Always use gzip during sql-dump. Don't use --ordered-dump.
- *   -- No more 24-hour freshness check for a team of devs.
- * - Can we now simplify anything in sitealias.inc or backend.inc?
- */
-
 /**
  * Implementation of hook_drush_command().
  */
@@ -33,21 +20,19 @@ function sqlsync_drush_command() {
       'target' => 'A site-alias or the name of a subdirectory within /sites whose database you want to replace.',
     ),
     'required-arguments' => TRUE,
-    'options' => array(
-      'skip-tables-key' => 'A key in the $skip_tables array. See example.drushrc.php. Optional.',
-      'skip-tables-list' => 'A comma-separated list of tables to exclude completely. Optional.',
-      'structure-tables-key' => 'A key in the $structure_tables array. See example.drushrc.php. Optional.',
-      'structure-tables-list' => 'A comma-separated list of tables to include for structure, but not data. Optional.',
-      'tables-key' => 'A key in the $tables array. Optional.',
-      'tables-list' => 'A comma-separated list of tables to transfer. Optional.',
+    'options' => drush_sql_get_table_selection_options() + array(
       // 'cache' => 'Skip dump if result file exists and is less than "cache" hours old. Optional; default is 24 hours.',
       // 'no-cache' => 'Do not cache the sql-dump file.',
       'no-dump' => 'Do not dump the sql database; always use an existing dump file.',
       'no-sync' => 'Do not rsync the database dump file from source to target.',
+      'runner' => 'Where to run the rsync command; defaults to the local site. Can also be "source" or "destination".',
       'source-db-url' => 'Database specification for source system to dump from.',
       'source-remote-port' => 'Override sql database port number in source-db-url. Optional.',
       'source-remote-host' => 'Remote machine to run sql-dump file on. Optional; default is local machine.',
-      'source-dump' => 'The destination for the dump file, or the path to the dump file when --no-dump is specified.',
+      'source-dump' => array(
+        'description' => 'The destination for the dump file, or the path to the dump file when --no-dump is specified.',
+        'example-value' => '/dumpdir/db.sql',
+      ),
       'source-database' => 'A key in the $db_url (D6) or $databases (D7+) array which provides the data.',
       'source-target' => array(
         'description' => 'A key within the SOURCE database identifying a particular server in the database group.',
@@ -59,7 +44,10 @@ function sqlsync_drush_command() {
       'target-db-url' => '',
       'target-remote-port' => '',
       'target-remote-host' => '',
-      'target-dump' => 'A path for saving the dump file on target. Mandatory when using --no-sync.',
+      'target-dump' => array(
+        'description' => 'A path for saving the dump file on target. Mandatory when using --no-sync.',
+        'example-value' => '/dumpdir/db.sql.gz',
+      ),
       'target-database' => 'A key in the $db_url (D6) or $databases (D7+) array which shall receive the data.',
       'target-target' => array(
         'description' => 'Oy. A key within the TARGET database identifying a particular server in the database group.',
@@ -250,9 +238,9 @@ function drush_sqlsync_sql_sync($source, $destination) {
   else {
     $tmp = '/tmp'; // Our fallback plan.
     drush_log(dt('Starting to discover temporary files directory on Destination.'), LogLevel::OK);
-    $return = drush_invoke_process($destination, 'php-eval', array('return drush_find_tmp();'), array(), array('integrate' => FALSE, 'override-simulated' => TRUE));
-    if (!$return['error_status']) {
-      $tmp = $return['object'];
+    $return = drush_invoke_process($destination, 'core-status', array(), array(), array('integrate' => FALSE, 'override-simulated' => TRUE));
+    if (!$return['error_status'] && isset($return['object']['drush-temp'])) {
+      $tmp = $return['object']['drush-temp'];
     }
     $destination_dump_path = $tmp . '/' . basename($source_dump_path);
     $rsync_options['yes'] = TRUE;  // No need to prompt as destination is a tmp file.
@@ -263,7 +251,7 @@ function drush_sqlsync_sql_sync($source, $destination) {
       // Cleanup if this command created the dump file.
       $rsync_options['remove-source-files'] = TRUE;
     }
-    $runner = drush_get_runner($source, $destination);
+    $runner = drush_get_runner($source_settings, $destination_settings, drush_get_option('runner', FALSE));
     // Since core-rsync is a strict-handling command and drush_invoke_process() puts options at end, we can't send along cli options to rsync.
     // Alternatively, add options like --ssh-options to a site alias (usually on the machine that initiates the sql-sync).
     $return = drush_invoke_process($runner, 'core-rsync', array("$source:$source_dump_path", "$destination:$destination_dump_path"), $rsync_options);

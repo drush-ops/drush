@@ -21,7 +21,7 @@ class Sqlsqlsrv extends SqlBase {
       return ' -S ' . $host . ' -d ' . $database;
     }
     else {
-      return ' -S ' . $host . ' -d ' . $database . ' -U ' . $this->db_spec['username'] . ' -P ' . $this->db_spec['password'];    
+      return ' -S ' . $host . ' -d ' . $database . ' -U ' . $this->db_spec['username'] . ' -P ' . $this->db_spec['password'];
     }
   }
 
@@ -55,6 +55,9 @@ class Sqlsqlsrv extends SqlBase {
       $file = $this->db_spec['database'] . '_' . date('Ymd_His') . '.bak';
     }
     $exec = "sqlcmd -U \"" . $this->db_spec['username'] . "\" -P \"" . $this->db_spec['password'] . "\" -S \"" . $this->db_spec['host'] . "\" -Q \"BACKUP DATABASE [" . $this->db_spec['database'] . "] TO DISK='" . $file . "'\"";
+    if ($option = drush_get_option('extra', $this->query_extra)) {
+      $exec .= " $option";
+    }
     return array($exec, $file);
   }
 

@@ -76,8 +76,8 @@ class pmDownloadCase extends CommandUnishTestCase {
     $this->drush('pm-download', array('devel-6.x'), $options, NULL, NULL, CommandUnishTestCase::UNISH_EXITCODE_USER_ABORT);
     $items = $this->getOutputAsList();
     $output = $this->getOutput();
-     // 6 items are: Select message + Cancel + 3 versions.
-    $this->assertEquals(5, count($items), '--select offerred 3 options.');
+     // 4 items are: Select message + Cancel + 2 versions.
+    $this->assertEquals(4, count($items), '--select offerred 2 options.');
     $this->assertContains('6.x-1.x-dev', $output, 'Dev release was shown by --select.');
 
     // --select --dev. Specify 6.x since that has so many releases.

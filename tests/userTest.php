@@ -31,7 +31,7 @@ class userCase extends CommandUnishTestCase {
   function testBlockUnblock() {
     $this->drush('user-block', array(self::NAME), $this->options());
     $this->drush('user-information', array(self::NAME), $this->options() + array('format' => 'json'));
-    $uid = UNISH_DRUPAL_MAJOR_VERSION == 6 ? 3 : 2;
+    $uid = 2;
     $output = $this->getOutputFromJSON($uid);
     $this->assertEquals(0, $output->{self::$status_prop}, 'User is blocked.');
 
@@ -47,8 +47,8 @@ class userCase extends CommandUnishTestCase {
     $this->drush('role-create', array('test role'), $this->options());
     $this->drush('user-add-role', array('test role', self::NAME), $this->options());
     $this->drush('user-information', array(self::NAME), $this->options() + array('format' => 'json'));
-     $uid = UNISH_DRUPAL_MAJOR_VERSION == 6 ? 3 : 2;
-     $output = $this->getOutputFromJSON($uid);
+    $uid = 2;
+    $output = $this->getOutputFromJSON($uid);
     $expected = array(self::$authenticated, 'test role');
     $this->assertEquals($expected, array_values((array)$output->roles), 'User has test role.');
 
@@ -64,11 +64,7 @@ class userCase extends CommandUnishTestCase {
     $newpass = 'newpass';
     $name = self::NAME;
     $this->drush('user-password', array(self::NAME), $this->options() + array('password' => $newpass));
-    // user_authenticate() is more complex in D6 so skip it.
     switch (UNISH_DRUPAL_MAJOR_VERSION) {
-      case 6:
-        $this->markTestSkipped('Drupal 6 authentication too complex for testing.');
-        break;
       case 7:
         $eval = "return user_authenticate('$name', '$newpass')";
         break;
@@ -101,15 +97,12 @@ class userCase extends CommandUnishTestCase {
     }
     $this->assertEquals($browser, TRUE, 'Correct browser opened at correct URL');
     // Check specific user and path argument.
-     $uid = UNISH_DRUPAL_MAJOR_VERSION == 6 ? 3 : 2;
+    $uid = 2;
     $this->drush('user-login', array(self::NAME, 'node/add'), $user_login_options);
     $output = $this->getOutput();
     $url = parse_url($output);
     // user_pass_reset_url encodes the URL in D6, but not in D7 or D8
     $query = $url['query'];
-    if (UNISH_DRUPAL_MAJOR_VERSION < 7) {
-      $query = urldecode($query);
-    }
     $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with user argument returned a valid reset URL');
     $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
     // Check path used as only argument when using uid option.
@@ -118,9 +111,6 @@ class userCase extends CommandUnishTestCase {
     $url = parse_url($output);
     $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
     $query = $url['query'];
-    if (UNISH_DRUPAL_MAJOR_VERSION < 7) {
-      $query = urldecode($query);
-    }
     $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
   }
 
@@ -158,7 +148,7 @@ class userCase extends CommandUnishTestCase {
   function UserCreate() {
     $this->drush('user-create', array(self::NAME), $this->options() + array('password' => 'password', 'mail' => "example@example.com"));
     $this->drush('user-information', array(self::NAME), $this->options() + array('format' => 'json'));
-    $uid = UNISH_DRUPAL_MAJOR_VERSION == 6 ? 3 : 2;
+    $uid = 2;
     $output = $this->getOutputFromJSON($uid);
     $this->assertEquals('example@example.com', $output->mail);
     $this->assertEquals(self::NAME, $output->name);

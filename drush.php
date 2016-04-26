@@ -3,9 +3,9 @@
 
 /**
  * @file
- * drush is a PHP script implementing a command line shell for Drupal.
+ * Drush is a PHP script implementing a command line shell for Drupal.
  *
- * @requires PHP CLI 5.4.5, or newer.
+ * @requires PHP CLI 5.5.0, or newer.
  */
 
 require __DIR__ . '/includes/preflight.inc';

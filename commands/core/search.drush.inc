@@ -100,7 +100,7 @@ function _drush_search_index() {
   while ($remaining > 0) {
     $done = $total - $remaining;
     $percent = $done / $total * 100;
-    drush_log(dt(number_format($percent, 2) . '% complete. Remaining items to be indexed: ' . $remaining), LogLevel::OK);
+    drush_log(dt('!percent complete. Remaining items to be indexed: !count', array('!percent' => number_format($percent, 2), '!count' => $remaining)), LogLevel::OK);
     $eval = "register_shutdown_function('search_update_totals');";
 
     // Use drush_invoke_process() to start subshell. Avoids out of memory issue.
@@ -191,7 +191,13 @@ function drush_search_reindex() {
 function system_node_update_index($node) {
   // Verbose output.
   if (drush_get_context('DRUSH_VERBOSE')) {
-    drush_log(dt('Indexing node !nid.', array('!nid' => $node->nid)), LogLevel::OK);
+    $nid = $node->nid;
+    if (is_object($nid)) {
+      // In D8, this is a FieldItemList.
+      $nid = $nid->value;
+    }
+
+    drush_log(dt('Indexing node !nid.', array('!nid' => $nid)), LogLevel::OK);
   }
 }
 

@@ -187,7 +187,7 @@ function dt($string, $args = array()) {
  * will flip the array twice to filter on the key.
  */
 function find_legacy_dt_args($args) {
-  $legacy_args = [];
+  $legacy_args = array();
   foreach ($args as $arg => $replacement) {
     if ($arg[0] == '!') {
       $legacy_args[$arg] = $replacement;
@@ -733,12 +733,7 @@ function drush_print_file($file) {
  * @ingroup php_wrappers
  */
 function drush_json_encode($var) {
-  if (version_compare(phpversion(), '5.4.0', '>=')) {
-    $json = json_encode($var, JSON_PRETTY_PRINT);
-  }
-  else {
-    $json = json_encode($var);
-  }
+  $json = json_encode($var, JSON_PRETTY_PRINT);
   // json_encode() does not escape <, > and &, so we do it with str_replace().
   return str_replace(array('<', '>', '&'), array('\u003c', '\u003e', '\u0026'), $json);
 }

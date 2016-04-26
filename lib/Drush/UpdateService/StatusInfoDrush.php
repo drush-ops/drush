@@ -91,7 +91,7 @@ class StatusInfoDrush implements StatusInfoInterface {
       }
       drush_log(dt('Checking available update data for !project.', array('!project' => $project['label'])), LogLevel::OK);
       $request = $project_name . (isset($project['core']) ? '-' . $project['core'] : '');
-      $request = pm_parse_request($request, NULL, $project_name);
+      $request = pm_parse_request($request, NULL, $projects);
       $project_release_info = $release_info->get($request);
       if ($project_release_info) {
         $available[$project_name] = $project_release_info;
@@ -193,7 +193,6 @@ class StatusInfoDrush implements StatusInfoInterface {
    *
    * This is a stripped down version of update_calculate_project_status().
    * That function has the same logic in Drupal 6,7,8.
-   * Note: in Drupal 6 this is part of update_calculate_project_data().
    *
    * @see update_calculate_project_status().
    */

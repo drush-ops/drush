@@ -3,11 +3,9 @@
 namespace Drush\Boot;
 
 use Drush\Log\LogLevel;
+use Psr\Log\LoggerInterface;
 
 abstract class DrupalBoot extends BaseBoot {
-
-  function __construct() {
-  }
 
   function valid_root($path) {
   }
@@ -111,13 +109,10 @@ abstract class DrupalBoot extends BaseBoot {
     $searchpath = array();
     switch ($phase) {
       case DRUSH_BOOTSTRAP_DRUPAL_ROOT:
-        $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+        $drupal_root = \Drush::bootstrapManager()->getRoot();
         $searchpath[] = $drupal_root . '/../drush';
         $searchpath[] = $drupal_root . '/drush';
         $searchpath[] = $drupal_root . '/sites/all/drush';
-
-        // Add the drupalboot.drush.inc commandfile.
-        // $searchpath[] = __DIR__;
         break;
       case DRUSH_BOOTSTRAP_DRUPAL_SITE:
         // If we are going to stop bootstrapping at the site, then
@@ -166,8 +161,10 @@ abstract class DrupalBoot extends BaseBoot {
           }
         }
 
-        $searchpath[] = drupal_get_path('theme', drush_theme_get_admin());
-        $searchpath[] = drupal_get_path('theme', drush_theme_get_default());
+        // Check all enabled themes including non-default and non-admin.
+        foreach (drush_theme_list() as $key => $value) {
+          $searchpath[] = drupal_get_path('theme', $key);
+        }
         break;
     }
 
@@ -201,7 +198,7 @@ abstract class DrupalBoot extends BaseBoot {
         }
         return array(
           'bootstrap_errors' => array(
-            'DRUSH_COMMAND_DEPENDENCY_ERROR' => dt('Command !command needs the following module(s) enabled to run: !dependencies.', array(
+            'DRUSH_COMMAND_DEPENDENCY_ERROR' => dt('Command !command needs the following extension(s) enabled to run: !dependencies.', array(
               '!command' => $command_name,
               '!dependencies' => $modules,
             )),
@@ -257,7 +254,7 @@ abstract class DrupalBoot extends BaseBoot {
    * context and DRUPAL_ROOT constant if it is considered a valid option.
    */
   function bootstrap_drupal_root_validate() {
-    $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+    $drupal_root = \Drush::bootstrapManager()->getRoot();
 
     if (empty($drupal_root)) {
       return drush_bootstrap_error('DRUSH_NO_DRUPAL_ROOT', dt("A Drupal installation directory could not be found"));
@@ -268,7 +265,7 @@ abstract class DrupalBoot extends BaseBoot {
 
     $version = drush_drupal_version($drupal_root);
     $major_version = drush_drupal_major_version($drupal_root);
-    if ($major_version <= 5) {
+    if ($major_version <= 6) {
       return drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', array('!drush_version' => DRUSH_VERSION, '!major_version' => $major_version)));
     }
 
@@ -310,7 +307,7 @@ abstract class DrupalBoot extends BaseBoot {
 
     _drush_preflight_global_options();
 
-    drush_log(dt("Initialized Drupal !version root directory at !drupal_root", array("!version" => $version, '!drupal_root' => $drupal_root)), LogLevel::BOOTSTRAP);
+    $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal !version root directory at !drupal_root", array("!version" => $version, '!drupal_root' => $drupal_root)));
   }
 
   /**
@@ -409,7 +406,7 @@ abstract class DrupalBoot extends BaseBoot {
     $site = drush_set_context('DRUSH_DRUPAL_SITE', drush_bootstrap_value('site'));
     $conf_path = drush_set_context('DRUSH_DRUPAL_SITE_ROOT', drush_bootstrap_value('conf_path'));
 
-    drush_log(dt("Initialized Drupal site !site at !site_root", array('!site' => $site, '!site_root' => $conf_path)), LogLevel::BOOTSTRAP);
+    $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal site !site at !site_root", array('!site' => $site, '!site_root' => $conf_path)));
 
     _drush_preflight_global_options();
   }
@@ -438,8 +435,7 @@ abstract class DrupalBoot extends BaseBoot {
     global $conf;
 
     $override = array(
-      'dev_query' => FALSE, // Force Drupal6 not to store queries since we are not outputting them.
-      'cron_safe_threshold' => 0, // Don't run poormanscron during Drush request (D7+).
+      'cron_safe_threshold' => 0, // Don't run poormanscron during Drush request (D7).
     );
 
     $current_override = drush_get_option_list('variables');
@@ -521,7 +517,7 @@ abstract class DrupalBoot extends BaseBoot {
   function bootstrap_drupal_database() {
     // We presume that our derived classes will connect and then
     // either fail, or call us via parent::
-    drush_log(dt("Successfully connected to the Drupal database."), LogLevel::BOOTSTRAP);
+    $this->logger->log(LogLevel::BOOTSTRAP, dt("Successfully connected to the Drupal database."));
   }
 
   /**

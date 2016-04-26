@@ -21,6 +21,7 @@ use Drush\Log\LogLevel;
  */
 function drush_sitealias_check_arg_and_site_set() {
   $args = drush_get_arguments();
+  $target_alias = FALSE;
 
   // Test to see if the first arg is a valid alias identifier.
   // If the first arguement is a well-formed identifier, but we
@@ -29,24 +30,18 @@ function drush_sitealias_check_arg_and_site_set() {
     // Pop the alias off the arguments list first thing.
     $target_alias = array_shift($args);
     drush_set_arguments($args);
-    // Record the user's desired target alias name
+  }
+  else {
+    // If the user did not specify an alias via an argument,
+    // check to see if a site env was set.
+    $target_alias = drush_sitealias_site_get();
+  }
+
+  // Record the user's desired target alias name
+  if ($target_alias) {
     drush_set_context('DRUSH_TARGET_SITE_ALIAS', $target_alias);
-    return $target_alias;
   }
-  // If the user did not specify an alias via an argument,
-  // check to see if a site env was set.  For the site env,
-  // we insist on being able to find the alias record, or
-  // we will silently ignore
-  $site_env = drush_sitealias_site_get();
-  if ($site_env) {
-    $site_alias_settings = drush_sitealias_get_record($site_env);
-    if (!empty($site_alias_settings)) {
-      drush_set_context('DRUSH_TARGET_SITE_ALIAS', $site_env);
-      return $site_env;
-    }
-  }
-  // Return an empty array to indicate that no site alias was specified.
-  return FALSE;
+  return $target_alias;
 }
 
 /**
@@ -96,7 +91,7 @@ function drush_sitealias_check_site_env() {
 function drush_sitealias_create_self_alias() {
   $self_record = drush_sitealias_get_record('@self');
   if (!array_key_exists('root', $self_record) && !array_key_exists('remote-host', $self_record)) {
-    $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+    $drupal_root = \Drush::bootstrapManager()->getRoot();
     $uri = drush_get_context('DRUSH_SELECTED_URI');
     if (!empty($drupal_root) && !empty($uri)) {
       // Create an alias '@self'
@@ -127,7 +122,7 @@ function drush_sitealias_simplify_names($site_list) {
 /**
  * Given an array of site specifications, resolve each one in turn and
  * return an array of alias records.  If you only want a single record,
- * it is preferable to simply call drush_sitealias_get_record directly.
+ * it is preferable to simply call drush_sitealias_get_record() directly.
  *
  * @param $site_specifications
  *   One of:
@@ -231,6 +226,8 @@ function drush_sitealias_get_record($alias, $alias_context = NULL) {
         $path = drush_sitealias_local_site_path($alias_record);
         if ($path) {
           $cached_alias_record = drush_sitealias_lookup_alias_by_path($path);
+          // Don't overrite keys which have already been negotiated.
+          unset($cached_alias_record['#name'], $cached_alias_record['root'], $cached_alias_record['uri']);
           $alias_record = array_merge($alias_record, $cached_alias_record);
         }
       }
@@ -406,7 +403,7 @@ function drush_sitealias_alias_path($alias_path_context = NULL) {
 
   // If the user defined the root of a drupal site, then also
   // look for alias files in /drush and /sites/all/drush.
-  $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  $drupal_root = \Drush::bootstrapManager()->getRoot();
   if (!empty($drupal_root)) {
     $site_paths[] = drush_sitealias_alias_base_directory($drupal_root . '/../drush');
     $site_paths[] = drush_sitealias_alias_base_directory($drupal_root . '/drush');
@@ -635,7 +632,7 @@ function _drush_sitealias_find_alias_files($aliasname = NULL, $alias_path_contex
   foreach ($alias_path as $path) {
     // Find all of the matching files in this location
     foreach ($alias_files as $file_pattern_to_search_for) {
-      drush_log(dt('Scanning into @path for @pattern', array('@path' => $path, '@pattern' => $file_pattern_to_search_for)), LogLevel::DEBUG);
+      drush_log(dt('Scanning into @path for @pattern', array('@path' => $path, '@pattern' => $file_pattern_to_search_for)), LogLevel::DEBUG_NOTIFY);
       $alias_files_to_consider = array_merge($alias_files_to_consider, array_keys(drush_scan_directory($path, $file_pattern_to_search_for, $blacklist, 0, TRUE)));
     }
   }
@@ -669,7 +666,7 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
       }
     }
     else {
-      $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+      $drupal_root = \Drush::bootstrapManager()->getRoot();
     }
     if (isset($drupal_root) && !is_array($drupal_root)) {
       drush_sitealias_create_sites_alias($drupal_root);
@@ -1084,7 +1081,7 @@ function drush_sitealias_bootstrapped_site_name() {
     $site_name = $self_record['#name'];
   }
   if (!isset($site_name) || ($site_name == '@self')) {
-    $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+    $drupal_root = \Drush::bootstrapManager()->getRoot();
     if (isset($drupal_root)) {
       $drupal_uri = drush_get_context('DRUSH_SELECTED_URI', 'default');
       $drupal_uri = str_replace('http://', '', $drupal_uri);
@@ -1533,7 +1530,7 @@ function _drush_sitealias_find_record_for_local_site($alias, $drupal_root = NULL
   }
 
   if (!isset($drupal_root)) {
-    $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+    $drupal_root = \Drush::bootstrapManager()->getRoot();
   }
 
   if (!empty($drupal_root)) {
@@ -1588,6 +1585,7 @@ function drush_sitealias_site_dir_from_filename($site_settings_file) {
  */
 function drush_sitealias_uri_to_site_dir($uri, $site_root = NULL) {
   $uri = str_replace('http://', '', $uri);
+  $uri = str_replace('https://', '', $uri);
   if (drush_is_windows()) {
     // Handle absolute paths on windows
     $uri = str_replace(array(':/', ':\\'), array('.', '.'), $uri);
@@ -1709,9 +1707,16 @@ function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
       drush_sitealias_set_alias_context($site_alias_settings, $prefix);
       drush_sitealias_cache_alias_by_path($site_alias_settings);
       if (empty($prefix)) {
+
         // Create an alias '@self'
+        // Allow 'uri' from the commandline to override
+        $drush_uri = drush_get_option(array('uri', 'l'), FALSE);
+        if ($drush_uri) {
+          $site_alias_settings['uri'] = $drush_uri;
+        }
+
         _drush_sitealias_cache_alias('@self', $site_alias_settings);
-        // change the selected site to match the new --root and --uri, if any were set
+        // Change the selected site to match the new --root and --uri, if any were set.
         _drush_preflight_root_uri();
       }
       return $site_alias_settings;
@@ -1939,7 +1944,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
     drush_sitealias_set_alias_context($site_alias_settings);
 
     // Use 'remote-host' from settings if available; otherwise site is local
-    if (array_key_exists('remote-host', $site_alias_settings) && !drush_is_local_host($site_alias_settings['remote-host'])) {
+    if (drush_sitealias_is_remote_site($site_alias_settings)) {
       $machine = drush_remote_host($site_alias_settings);
     }
     else {
@@ -2032,7 +2037,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
   if (array_key_exists('root', $site_alias_settings)) {
     $drupal_root = $site_alias_settings['root'];
   }
-  else {
+  elseif (!drush_sitealias_is_remote_site($site_alias_settings)) {
     drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
     $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
   }
@@ -2147,6 +2152,16 @@ function drush_sitealias_site_get() {
   else {
     return FALSE;
   }
+}
+
+/**
+ * Un-set the currently use'd site alias.
+ */
+function drush_sitealias_site_clear() {
+  if ($filename = drush_sitealias_get_envar_filename()) {
+    return drush_delete_dir($filename);
+  }
+  return FALSE;
 }
 
 /**
@@ -2272,22 +2287,34 @@ function drush_sitealias_get_root($alias_record) {
  *
  * @param $source
  * @param $destination
+ * @param $runner Where to run the rsync operation: 'destination', 'source',
+ *   'auto' ('destination' if both are remote, otherwise '@self') or FALSE (@self)
  * @return mixed
  */
-function drush_get_runner($source, $destination) {
-// Try run to rsync locally so that aliases always resolve. https://github.com/drush-ops/drush/issues/668
-  if (drush_sitealias_is_remote_site($source) === FALSE) {
-    $runner = $source;
-    return $runner;
+function drush_get_runner($source, $destination, $runner = FALSE) {
+  if (is_string($source)) {
+    $source = drush_sitealias_get_record($site);
   }
-  elseif (drush_sitealias_is_remote_site($destination) === FALSE) {
-    $runner = $destination;
-    return $runner;
+  if (is_string($destination)) {
+    $destination = drush_sitealias_get_record($destination);
   }
-  else {
-    // Both are remote. Arbitrarily run rsync on destination. Aliases must be defined there (for now).
-    // @todo Add an option for choosing runner? Resolve aliases before rsync?
-    $runner = $destination;
-    return $runner;
+
+  // If both sites are remote, and --runner=auto, then we'll use the destination site.
+  if (drush_sitealias_is_remote_site($source) && drush_sitealias_is_remote_site($destination)) {
+    if ($runner == 'auto') {
+      $runner = 'destination';
+    }
   }
+
+  // If the user explicitly requests a remote site, then return the selected one.
+  if ($runner == 'destination') {
+    return "@" . $destination['#name'];
+  }
+  if ($runner == 'source') {
+    return "@" . $source['#name'];
+  }
+
+  // Default to running rsync locally. When in doubt, local is best, because
+  // we can always resolve aliases here.
+  return '@self';
 }

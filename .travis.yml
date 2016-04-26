@@ -1,4 +1,12 @@
 # Configuration file for unit test runner at http://travis-ci.org/#!/drush-ops/drush
+branches:
+  only:
+    - master
+    - 8.x
+    - 7.x
+    - 6.x
+    - 5.x
+    - /^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+.*$/
 language: php
 php:
 #  See master-fulltest branch for broader PHP version testing.
@@ -51,6 +59,7 @@ before_install:
 install: travis_retry composer install --no-interaction
 
 before_script:
+  - phpenv config-rm xdebug.ini
   - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
   - export UNISH_DRUSH="${PWD}/drush"
 

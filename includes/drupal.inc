@@ -38,7 +38,7 @@ function drush_drupal_version($drupal_root = NULL) {
 
   if (!$version) {
     if (($drupal_root != NULL) || ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT'))) {
-      $bootstrap = drush_bootstrap_class_for_root($drupal_root);
+      $bootstrap = \Drush::bootstrapManager()->bootstrapObjectForRoot($drupal_root);
       if ($bootstrap) {
         $version = $bootstrap->get_version($drupal_root);
       }
@@ -78,7 +78,7 @@ function drush_drupal_major_version($drupal_root = NULL) {
 function system_watchdog($log_entry) {
   // Transform non informative severity levels to 'error' for compatibility with _drush_print_log.
   // Other severity levels are coincident with the ones we use in drush.
-  if (drush_drupal_major_version() >= 6 && $log_entry['severity'] <= 2) {
+  if ($log_entry['severity'] <= 2) {
     $severity = 'error';
   }
   else {

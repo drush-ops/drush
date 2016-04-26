@@ -120,7 +120,7 @@ function drush_core_runserver($uri = NULL) {
   }
 
   drush_print(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site !site!user...', array('!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $path, '!site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'), '!user' => $user_message)));
-  // Start php 5.4 builtin server.
+  // Start php built-in server.
   // Store data used by runserver-prepend.php in the shell environment.
   foreach ($env as $key => $value) {
     putenv($key . '=' . $value);
@@ -131,14 +131,14 @@ function drush_core_runserver($uri = NULL) {
     drush_start_browser($browse, 2);
   }
   // Start the server using 'php -S'.
-  $php = drush_get_option('php', 'php');
   if (drush_drupal_major_version() >=8) {
     $extra = ' "' . __DIR__ . '/d8-rs-router.php"';
   }
   else {
     $extra = ' --define auto_prepend_file="' . __DIR__ . '/runserver-prepend.php"';
   }
-  drush_shell_exec_interactive($php . ' -S ' . $addr . ':' . $uri['port'] . $extra);
+  $root = \Drush::bootstrapManager()->getRoot();
+  drush_shell_exec_interactive('cd %s && %s -S ' . $addr . ':' . $uri['port']. $extra, $root, drush_get_option('php', 'php'));
 }
 
 /**

@@ -40,6 +40,10 @@ class Sqlsqlite extends SqlBase {
     drush_mkdir($path);
     if (!file_exists($path)) {
       drush_log("SQLITE: Cannot create $path", LogLevel::ERROR);
+      return FALSE;
+    }
+    else {
+      return TRUE;
     }
   }
 
@@ -87,6 +91,9 @@ class Sqlsqlite extends SqlBase {
     // Postgres or MySQL equivalents. We may be able to fake some in the
     // future, but for now, let's just support simple dumps.
     $exec .= ' ".dump"';
+    if ($option = drush_get_option('extra', $this->query_extra)) {
+      $exec .= " $option";
+    }
     return $exec;
   }
 

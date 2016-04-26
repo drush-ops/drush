@@ -32,9 +32,12 @@ class Logger extends AbstractLogger {
 
     public function log($level, $message, array $context = array()) {
       // Convert to old $entry array for b/c calls
-      $entry = $context;
-      $entry['type'] = $level;
-      $entry['message'] = $message;
+      $entry = $context + [
+        'type' => $level,
+        'message' => $message,
+        'timestamp' => microtime(TRUE),
+        'memory' => memory_get_usage(),
+      ];
 
       // Drush\Log\Logger should take over all of the responsibilities
       // of drush_log, including caching the log messages and sending
@@ -42,7 +45,9 @@ class Logger extends AbstractLogger {
       // TODO: move these implementations inside this class.
       $log =& drush_get_context('DRUSH_LOG', array());
       $log[] = $entry;
-      drush_backend_packet('log', $entry);
+      if ($level != LogLevel::DEBUG_NOTIFY) {
+        drush_backend_packet('log', $entry);
+      }
 
       if (drush_get_context('DRUSH_NOCOLOR')) {
         $red = "[%s]";
@@ -57,19 +62,22 @@ class Logger extends AbstractLogger {
 
       $verbose = drush_get_context('DRUSH_VERBOSE');
       $debug = drush_get_context('DRUSH_DEBUG');
+      $debugnotify = drush_get_context('DRUSH_DEBUG_NOTIFY');
 
       switch ($level) {
         case LogLevel::WARNING :
-        case 'cancel' :
+        case LogLevel::CANCEL :
           $type_msg = sprintf($yellow, $level);
           break;
         case 'failed' : // Obsolete; only here in case contrib is using it.
-        case 'error' :
+        case LogLevel::EMERGENCY : // Not used by Drush
+        case LogLevel::ALERT : // Not used by Drush
+        case LogLevel::ERROR :
           $type_msg = sprintf($red, $level);
           break;
-        case 'ok' :
+        case LogLevel::OK :
         case 'completed' : // Obsolete; only here in case contrib is using it.
-        case 'success' :
+        case LogLevel::SUCCESS :
         case 'status': // Obsolete; only here in case contrib is using it.
           // In quiet mode, suppress progress messages
           if (drush_get_context('DRUSH_QUIET')) {
@@ -77,15 +85,26 @@ class Logger extends AbstractLogger {
           }
           $type_msg = sprintf($green, $level);
           break;
-        case 'notice' :
+        case LogLevel::NOTICE :
         case 'message' : // Obsolete; only here in case contrib is using it.
-        case 'info' :
+        case LogLevel::INFO :
           if (!$verbose) {
             // print nothing. exit cleanly.
             return TRUE;
           }
           $type_msg = sprintf("[%s]", $level);
           break;
+        case LogLevel::DEBUG_NOTIFY :
+          $level = LogLevel::DEBUG; // Report 'debug', handle like 'preflight'
+        case LogLevel::PREFLIGHT :
+          if (!$debugnotify) {
+            // print nothing unless --debug AND --verbose. exit cleanly.
+            return TRUE;
+          }
+          $type_msg = sprintf("[%s]", $level);
+          break;
+        case LogLevel::BOOTSTRAP :
+        case LogLevel::DEBUG :
         default :
           if (!$debug) {
             // print nothing. exit cleanly.

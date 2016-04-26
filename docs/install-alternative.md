@@ -4,12 +4,12 @@ Follow the instructions below, or [watch a video by Drupalize.me](https://youtu.
 
 1. [Install Composer globally](https://getcomposer.org/doc/00-intro.md#globally).
 1. Add composer's `bin` directory to the system path by placing `export PATH="$HOME/.composer/vendor/bin:$PATH"` into your ~/.bash_profile (Mac OS users) or into your ~/.bashrc (Linux users).		
-1. Install latest stable Drush: `composer global require drush/drush`.		
-1. Verify that Drush works: `drush status`				
+1. Install latest stable Drush: `composer global require drush/drush`.
+1. Verify that Drush works: `drush status`
 
-#### Notes		
+#### Notes
 * Update to latest release (per your specification in ~/.composer/composer.json): `composer global update`
-* Install a specific version of Drush:		
+* Install a specific version of Drush:
 
         # Install a specific version of Drush, e.g. Drush 7.1.0
         composer global require drush/drush:7.1.0

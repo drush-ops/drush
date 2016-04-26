@@ -198,7 +198,7 @@ function drush_module_enable($modules) {
   drush_module_install($modules);
 
   // Our logger got blown away during the container rebuild above.
-  $boot = drush_select_bootstrap_class();
+  $boot = \Drush::bootstrapManager()->bootstrap();
   $boot->add_logger();
 
   // Flush all caches. No longer needed in D8 per https://github.com/drush-ops/drush/issues/1207
@@ -226,7 +226,7 @@ function drush_module_disable($modules) {
 function drush_module_uninstall($modules) {
   \Drupal::service('module_installer')->uninstall($modules);
   // Our logger got blown away during the container rebuild above.
-  $boot = drush_select_bootstrap_class();
+  $boot = \Drush::bootstrapManager()->bootstrap();
   $boot->add_logger();
 }
 
@@ -250,6 +250,18 @@ function drush_module_invoke_all($hook) {
   // Remove $hook from the arguments.
   array_shift($args);
   return Drupal::moduleHandler()->invokeAll($hook, $args);
+}
+
+/**
+ * Returns a list of enabled themes. Use drush_get_themes() if you need to rebuild
+ * and include hidden as well.
+ *
+ * @return array
+ *  A list of themes keyed by name.
+ */
+function drush_theme_list() {
+  $theme_handler = \Drupal::service('theme_handler');
+  return $theme_handler->listInfo();
 }
 
 /**
@@ -307,7 +319,7 @@ function drush_theme_disable($themes) {
 function drush_theme_uninstall($themes) {
   \Drupal::service('theme_handler')->uninstall($themes);
   // Our logger got blown away during the container rebuild above.
-  $boot = drush_select_bootstrap_class();
+  $boot = \Drush::bootstrapManager()->bootstrap();
   $boot->add_logger();
 }
 

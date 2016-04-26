@@ -340,8 +340,8 @@ projects. Additionally, they may specify a destination:
 An array of makefiles to include. Each include may be a local relative path to
 the include makefile directory, a direct URL to the makefile, or from a git
 repository. Includes are appended in order with the source makefile appended
-last, allowing latter makefiles to override the keys/values of former
-makefiles.
+last. As a result, values in the source makefile take precedence over those in
+includes. Use `overrides` for the reverse order of precedence.
 
 **Example:**
 
@@ -380,7 +380,7 @@ overrides to be included at build-time.
 
 **Example:**
 
-    #production.make:
+    #production.make.yml:
     api: 2
     core: 8.x
     includes:
@@ -401,7 +401,7 @@ overrides to be included at build-time.
           url: http://github.com/example/custom_feature_B.git
 
      # Build production code-base.
-     $ drush make production.make
+     $ drush make production.make.yml
 
      #testing.make
      projects:
@@ -413,7 +413,7 @@ overrides to be included at build-time.
            branch: feature/new_feature
 
      # Build production code-base using development/feature branches for custom code.
-     $ drush make production.make --overrides=testing.make
+     $ drush make /path/to/production.make --overrides=http://url/of/testing.make
 
 
 ### Defaults

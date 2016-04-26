@@ -28,9 +28,10 @@ function drush_error_handler($errno, $message, $filename, $line, $context) {
   if ($errno & error_reporting()) {
     // By default we log notices.
     $type = drush_get_option('php-notices', 'notice');
+    $halt_on_error = drush_get_option('halt-on-error', (drush_drupal_major_version() != 6));
 
     // Bitmask value that constitutes an error needing to be logged.
-    $error = E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR;
+    $error = E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR;
     if ($errno & $error) {
       $type = 'error';
     }
@@ -42,6 +43,11 @@ function drush_error_handler($errno, $message, $filename, $line, $context) {
     }
 
     drush_log($message . ' ' . basename($filename) . ':' . $line, $type);
+
+    if ($errno == E_RECOVERABLE_ERROR && $halt_on_error) {
+      drush_log(dt('E_RECOVERABLE_ERROR encountered; aborting. To ignore recoverable errors, run again with --no-halt-on-error'), 'error');
+      exit(DRUSH_APPLICATION_ERROR);
+    }
 
     return TRUE;
   }
@@ -193,7 +199,7 @@ function drush_site_path($path = NULL) {
   else {
     // Move up dir by dir and check each.
     // Stop if we get to a Drupal root.   We don't care
-    // if it is DRUSH_SELECTED_DRUPAL_ROOT or some other root.
+    // if it is the selected or some other root.
     while (($path = _drush_shift_path_up($path)) && !drush_valid_root($path)) {
       if (file_exists($path . '/settings.php')) {
         $site_path = $path;
@@ -202,7 +208,7 @@ function drush_site_path($path = NULL) {
     }
   }
 
-  $site_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  $site_root = \Drush::bootstrapManager()->getRoot();
   if (file_exists($site_root . '/sites/sites.php')) {
     $sites = array();
     // This will overwrite $sites with the desired mappings.
@@ -236,7 +242,7 @@ function drush_site_path($path = NULL) {
  */
 function drush_site_dir_lookup_from_hostname($hostname, $site_root = NULL) {
   if (!isset($site_root)) {
-    $site_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+    $site_root = \Drush::bootstrapManager()->getRoot();
   }
   if (!empty($site_root) && file_exists($site_root . '/sites/sites.php')) {
     $sites = array();
@@ -263,7 +269,7 @@ function drush_site_dir_lookup_from_hostname($hostname, $site_root = NULL) {
  * (drushrc.php) stored with the site's drush folders might not be found.
  */
 function drush_conf_path($server_uri, $require_settings = TRUE) {
-  $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  $drupal_root = \Drush::bootstrapManager()->getRoot();
   if(empty($drupal_root) || empty($server_uri)) {
     return NULL;
   }
@@ -353,30 +359,38 @@ function drush_locate_root($start_path = NULL) {
  * @param string
  *   Path to check.
  *
- * @return string
- *   The relative path to common.inc (varies by Drupal version), or FALSE if not
- *   a Drupal root.
+ * @return bool
+ *   True if the provided path is a valid Drupal root.
  */
-function drush_valid_root($path) {
-  $bootstrap_class = drush_bootstrap_class_for_root($path);
+function drush_valid_root($root) {
+  $bootstrap_class = \Drush::bootstrapManager()->bootstrapObjectForRoot($root);
   return $bootstrap_class != NULL;
 }
 
 /**
  * Tests the currently loaded database credentials to ensure a database connection can be made.
+ *
+ * @param bool $log_errors
+ *   (optional) If TRUE, log error conditions; otherwise be quiet.
+ *
+ * @return bool
+ *   TRUE if database credentials are valid.
  */
 function drush_valid_db_credentials() {
   try {
     $sql = drush_sql_get_class();
     if (!$sqlVersion = drush_sql_get_version()) {
+      drush_log(dt('While checking DB credentials, could not instantiate SQLVersion class.'), 'debug');
       return FALSE;
     }
     if (!$sqlVersion->valid_credentials($sql->db_spec())) {
+      drush_log(dt('DB credentials are invalid.'), 'debug');
       return FALSE;
     }
     return $sql->query('SELECT 1;');
   }
   catch (Exception $e) {
+    drush_log(dt('Checking DB credentials yielded error: @e', array('@e' => $e->getMessage())), 'debug');
     return FALSE;
   }
 }
@@ -596,15 +610,6 @@ function _drush_test_os($os, $os_list_to_check) {
     }
   }
   return FALSE;
-}
-
-/**
- * Read the drush info file.
- */
-function drush_read_drush_info() {
-  $drush_info_file = dirname(__FILE__) . '/../drush.info';
-
-  return parse_ini_file($drush_info_file);
 }
 
 /**

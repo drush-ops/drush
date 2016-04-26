@@ -4,7 +4,7 @@ namespace Drush\Role;
 
 abstract class RoleBase {
   /**
-   * Drupal 6 and Drupal 7:
+   * Drupal 7:
    *   'rid' is numeric
    *   'name' is machine name (e.g. 'anonymous user')
    *

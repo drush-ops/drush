@@ -62,12 +62,15 @@ class DrushBatchContext extends ArrayObject {
  * This function is a drop in replacement for the existing batch_process()
  * function of Drupal.
  *
- * @param command
- *   The command to call for the back end process. By default this will be
- *   the 'backend-process' command, but some commands such as updatedb will
+ * @param string $command
+ *   (optional) The command to call for the back end process. By default this will be
+ *   the 'batch-process' command, but some commands such as updatedb will
  *   have special initialization requirements, and will need to define and
  *   use their own command.
- *
+ * @param array $args
+ *   (optional)
+ * @param array $options
+ *   (optional)
  */
 function drush_backend_batch_process($command = 'batch-process', $args = array(), $options = array()) {
   // Command line options to pass to the command.
@@ -85,6 +88,9 @@ function drush_backend_batch_process($command = 'batch-process', $args = array()
  *
  * The command called needs to call this function after it's special bootstrap
  * requirements have been taken care of.
+ *
+ * @param int $id
+ *   The batch ID of the batch being processed.
  */
 function drush_batch_command($id) {
   include_once(DRUSH_DRUPAL_CORE . '/includes/batch.inc');

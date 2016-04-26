@@ -100,7 +100,9 @@ function _make_merge_includes_recursively($info, $makefile, $element = 'includes
           unset($info[$element][$key]);
           // Move core back to the top of the list, where
           // make_generate_from_makefile() expects it.
-          array_reverse($info['projects']);
+          if (!empty($info['projects'])) {
+            array_reverse($info['projects']);
+          }
         }
       }
     }

@@ -7,6 +7,8 @@
 
 use Drush\Log\LogLevel;
 
+use League\Container\Container;
+
 /**
  * The main Drush function.
  *
@@ -71,7 +73,7 @@ function drush_main() {
   // the bootstrap object returned from drush_preflight().  This will
   // require some adjustments to Drush bootstrapping.
   // See: https://github.com/drush-ops/drush/pull/1303
-  if ($bootstrap = drush_get_bootstrap_object()) {
+  if ($bootstrap = \Drush::bootstrap()) {
     $bootstrap->terminate();
   }
   drush_postflight();
@@ -110,7 +112,7 @@ function drush_preflight_prepare() {
     $vendor_path = $global_vendor_path;
   }
   else {
-    $msg = "Unable to load autoload.php. Drush now requires Composer in order to install its dependencies and autoload classes. Please see README.md\n";
+    $msg = "Unable to load autoload.php. Run composer install to fetch dependencies and write this file (http://docs.drush.org/en/master/install-alternative/). Or if you prefer, use the drush.phar which already has depdencies included (http://docs.drush.org/en/master/install).\n";
     fwrite(STDERR, $msg);
     return FALSE;
   }
@@ -138,8 +140,9 @@ function drush_preflight_prepare() {
   drush_set_context('DRUSH_VENDOR_PATH', dirname($vendor_path));
   drush_set_context('DRUSH_CLASSLOADER', $classloader);
 
-  // Can't log until we have a logger, so we'll create this ASAP.
-  _drush_create_default_logger();
+  // We need to load our services right away, as we cannot log
+  // or do much else until after this is done.
+  drush_init_dependency_injection_container();
 
   // Terminate immediately unless invoked as a command line script
   if (!drush_verify_cli()) {
@@ -147,11 +150,7 @@ function drush_preflight_prepare() {
   }
 
   // Check supported version of PHP.
-  // Note: If this is adjusted, check other code that compares
-  // PHP_VERSION, such as drush_json_encode(), runserver/runserver.drush.inc, and also
-  // adjust _drush_environment_check_php_ini() and the php_prohibited_options
-  // list in the drush script.  See http://drupal.org/node/1748228
-  define('DRUSH_MINIMUM_PHP', '5.4.5');
+  define('DRUSH_MINIMUM_PHP', '5.5.0');
   if (version_compare(phpversion(), DRUSH_MINIMUM_PHP) < 0 && !getenv('DRUSH_NO_MIN_PHP')) {
     return drush_set_error('DRUSH_REQUIREMENTS_ERROR', dt('Your command line PHP installation is too old. Drush requires at least PHP !version. To suppress this check, set the environment variable DRUSH_NO_MIN_PHP=1', array('!version' => DRUSH_MINIMUM_PHP)));
   }
@@ -160,9 +159,11 @@ function drush_preflight_prepare() {
     return; // An error was logged.
   }
 
-  $drush_info = drush_read_drush_info();
-  define('DRUSH_VERSION', $drush_info['drush_version']);
-  $version_parts = explode('.', DRUSH_VERSION);
+  // Set up for backwards-compatibility. New code should call
+  // \Drush::getVersion() and \Drush::getMajorVersion() directly
+  $drush_version = \Drush::getVersion();
+  $version_parts = explode('.', $drush_version);
+  define('DRUSH_VERSION', $drush_version);
   define('DRUSH_MAJOR_VERSION', $version_parts[0]);
   define('DRUSH_MINOR_VERSION', $version_parts[1]);
 
@@ -181,6 +182,35 @@ function drush_preflight_prepare() {
   _drush_preflight_global_options();
 
   drush_log(dt("Drush preflight prepare loaded autoloader at !autoloader", array('!autoloader' => realpath($vendor_path))), LogLevel::PREFLIGHT);
+}
+
+/**
+ * Set up our dependency injection container, and load drush-services.yml.
+ *
+ * The Drupal6 boot service is needed in order to show the D6 deprecation message.
+ */
+function drush_init_dependency_injection_container() {
+
+  // Set up our dependency injection container.
+  $container = new Container();
+
+  $container->share('logger', 'Drush\Log\Logger');
+  $container->share('bootstrap.default', 'Drush\Boot\EmptyBoot');
+  $container->share('bootstrap.drupal6', 'Drush\Boot\DrupalBoot6');
+  $container->share('bootstrap.drupal7', 'Drush\Boot\DrupalBoot7');
+  $container->share('bootstrap.drupal8', 'Drush\Boot\DrupalBoot8');
+  $container->share('bootstrap.manager', 'Drush\Boot\BootstrapManager')
+    ->withArgument('bootstrap.default');
+  $container->extend('bootstrap.manager')
+    ->withMethodCall('add', ['bootstrap.drupal6'])
+    ->withMethodCall('add', ['bootstrap.drupal7'])
+    ->withMethodCall('add', ['bootstrap.drupal8']);
+
+  $container->inflector('Psr\Log\LoggerAwareInterface')
+          ->invokeMethod('setLogger', ['logger']);
+
+  // Store the container in the \Drush object
+  \Drush::setContainer($container);
 }
 
 /**
@@ -230,8 +260,6 @@ function drush_preflight() {
     _drush_preflight_alias_path();
   }
   if (!drush_get_option('local')) {
-    // Load a drushrc.php file in the drush.php's directory.
-    drush_load_config('drush');
 
     // Load a drushrc.php file in the $ETC_PREFIX/etc/drush directory.
     drush_load_config('system');
@@ -252,7 +280,7 @@ function drush_preflight() {
   _drush_find_commandfiles_drush();
 
   // Look up the alias identifier that the user wants to use,
-  // either via an arguement or via 'site-set'.
+  // either via an argument or via 'site-set'.
   $target_alias = drush_sitealias_check_arg_and_site_set();
 
   // Process the site alias that specifies which instance
@@ -288,6 +316,14 @@ function drush_preflight() {
 
   // Fail if we could not find the selected site alias.
   if ($target_alias && empty($alias_record)) {
+    // We will automatically un-set the site-set alias if it could not be found.
+    // Otherwise, we'd be stuck -- the user would only be able to execute Drush
+    // commands again after `drush @none site-set @none`, and most folks would
+    // have a hard time figuring that out.
+    $site_env = drush_sitealias_site_get();
+    if ($site_env == $target_alias) {
+      drush_sitealias_site_clear();
+    }
     return drush_set_error('DRUSH_BOOTSTRAP_NO_ALIAS', dt("Could not find the alias !alias", array('!alias' => $target_alias)));
   }
 
@@ -301,7 +337,7 @@ function drush_preflight() {
   drush_set_environment_vars($alias_record);
 
   // Select the bootstrap object and return it.
-  return drush_select_bootstrap_class();
+  return \Drush::bootstrapManager()->bootstrap();
 }
 
 /**
@@ -315,9 +351,7 @@ function drush_preflight_root() {
   if ($root) {
     $root = realpath($root);
   }
-  // @todo This context name should not mention Drupal.
-  // @todo Drupal code should use DRUSH_DRUPAL_ROOT instead of this constant.
-  drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $root);
+  \Drush::bootstrapManager()->setRoot($root);
 
   // Load the config options from Drupal's /drush, ../drush, and sites/all/drush directories,
   // even prior to bootstrapping the root.
@@ -347,9 +381,12 @@ function drush_preflight_site() {
 
 function _drush_preflight_global_options() {
   // Debug implies verbose
-  drush_set_context('DRUSH_VERBOSE',     drush_get_option(array('verbose', LogLevel::DEBUG), FALSE));
-  drush_set_context('DRUSH_DEBUG', drush_get_option(LogLevel::DEBUG));
-  drush_set_context('DRUSH_SIMULATE',    drush_get_option('simulate', FALSE));
+  $verbose = drush_get_option('verbose', FALSE);
+  $debug = drush_get_option('debug', FALSE);
+  drush_set_context('DRUSH_VERBOSE',      $verbose || $debug);
+  drush_set_context('DRUSH_DEBUG',        $debug);
+  drush_set_context('DRUSH_DEBUG_NOTIFY', $verbose && $debug);
+  drush_set_context('DRUSH_SIMULATE',     drush_get_option('simulate', FALSE));
 
   // Backend implies affirmative unless negative is explicitly specified
   drush_set_context('DRUSH_NEGATIVE',    drush_get_option('no', FALSE));
@@ -445,8 +482,6 @@ function _drush_preflight_alias_path() {
   $default_prefix_configuration = drush_is_windows() ? getenv('ALLUSERSPROFILE') . '/Drush' : '';
   $site_wide_configuration_dir = drush_get_context('ETC_PREFIX', $default_prefix_configuration) . '/etc/drush';
   $alias_path[] = drush_sitealias_alias_base_directory($site_wide_configuration_dir);
-
-  $alias_path[] = drush_sitealias_alias_base_directory(dirname(__FILE__) . '/..');
 
   $server_home = drush_server_home();
   if (isset($server_home)) {
@@ -557,7 +592,7 @@ function drush_preflight_command_dispatch() {
   }
   $args = drush_get_arguments();
   $command_name = array_shift($args);
-  $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  $root = \Drush::bootstrapManager()->getRoot();
   $local_drush = drush_get_option('drush-script');
   if (empty($local_drush) && !empty($root)) {
     $local_drush = find_wrapper_or_launcher($root);

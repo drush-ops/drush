@@ -49,8 +49,8 @@ define('DRUSH_CACHE_LIFETIME_DEFAULT', 86400);
  * Include a file, selecting a version specific file if available.
  *
  * For example, if you pass the path "/var/drush" and the name
- * "update" when bootstrapped on a Drupal 6 site it will first check for
- * the presence of "/var/drush/update_6.inc" in include it if exists. If this
+ * "update" when bootstrapped on a Drupal 8 site it will first check for
+ * the presence of "/var/drush/update_8.inc" in include it if exists. If this
  * file does NOT exist it will proceed and check for "/var/drush/update.inc".
  * If neither file exists, it will return FALSE.
  *
@@ -308,6 +308,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['confirm-rollback']    = array('description' => 'Wait for confirmation before doing a rollback when something goes wrong.');
     $options['complete-debug']      = array('hidden' => TRUE, 'description' => "Turn on debug mode forf completion code");
     $options['php-options']         = array('description' => "Options to pass to `php` when running drush.  Only effective when using the drush.launcher script.", 'never-propagate' => TRUE, 'example-value' => '-d error_reporting="E_ALL"');
+    $options['halt-on-error']       = array('propagate-cli-value' => TRUE, 'description' => "Controls error handling of recoverable errors (E_RECOVERABLE_ERROR). --halt-on-error=1: Execution is halted. --halt-on-error=0: Drush execution continues");
     $options['deferred-sanitization'] = array('hidden' => TRUE, 'description' => "Defer calculating the sanitization operations until after the database has been copied. This is done automatically if the source database is remote.");
     $options['remote-host']         = array('hidden' => TRUE, 'description' => 'Remote site to execute drush command on. Managed by site alias.');
     $options['remote-user']         = array('hidden' => TRUE, 'description' => 'User account to use with a remote drush command. Managed by site alias.');
@@ -801,7 +802,7 @@ function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
  */
 function drush_download_file_name($url) {
   if ($cache_dir = drush_directory_cache('download')) {
-    $cache_name = str_replace(array(':', '/', '?', '='), '-', $url);
+    $cache_name = str_replace(array(':', '/', '?', '=', '\\'), '-', $url);
     return $cache_dir . "/" . $cache_name;
   }
   else {
@@ -1261,19 +1262,14 @@ function drush_log($message, $type = LogLevel::NOTICE, $error = null) {
 }
 
 /**
- * Future: add some sort of dependency injection to Drush.
- */
-function _drush_create_default_logger() {
-  $drush_logger = new Logger();
-  drush_set_context('DRUSH_LOG_CALLBACK', $drush_logger);
-}
-
-/**
  * Call the default logger, or the user's log callback, as
  * appropriate.
  */
 function _drush_log($entry) {
   $callback = drush_get_context('DRUSH_LOG_CALLBACK');
+  if (!$callback) {
+    $callback = \Drush::logger();
+  }
 
   if ($callback instanceof LoggerInterface) {
     $context = $entry;
