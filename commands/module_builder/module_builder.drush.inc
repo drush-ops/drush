@@ -555,8 +555,9 @@ function drush_module_builder_build_component($commands, $component_type, $compo
       }
     }
 
-    // Process compound properties into the expected format.
-    if ($property_info['format'] == 'compound') {
+    // Process direct mode values for compound properties into the expected
+    // format.
+    if ($user_specified && ($property_info['format'] == 'compound')) {
       // For now, a compound property is input in direct mode as a flat array,
       // where we take each array element to be the first child property.
       $child_properties = $property_info['properties'];
