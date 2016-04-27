@@ -42,12 +42,12 @@ function module_builder_drush_command() {
       'hooks' => "Short names of hooks, separated by spaces.",
       'presets:' => "Names of preset groups of hooks, e.g., 'block'." . "\n" .
         "Use the 'presets:' marker to separate this from prior commands, eg 'mymodule hook_a hook_b presets: block'.",
-      'plugins:' => "Names of plugin types, using the suffix of the plugin manager service ID, e.g., 'block'." . "\n" .
-        "Use the 'plugins:' marker to separate this from prior commands, eg 'mymodule hook_a hook_b plugins: block'.",
+      'plugins:' => "Plugin types and names concatenated with a '-'. The plugin type is the suffix of the plugin manager service ID, e.g., 'block'." . "\n" .
+        "Use the 'plugins:' marker to separate this from prior commands. Example: 'mymodule hook_a hook_b plugins: block-alpha block-beta'.",
       'routes:' => "Menu paths, separated by spaces. " . "\n" .
         "Use the 'routes:' marker to separate this from prior commands, eg 'mymodule hook_a hook_b routes: module/path module/otherpath'.",
-      'perms:' => "Permission names, separated by spaces. " . "\n" .
-        "Use the 'perms:' marker to separate this from prior commands, eg 'mymodule hook_a hook_b perms: 'administer my module''. Quote strings that contain spaces.",
+      'perms:' => "Permission names, separated by spaces. Optionally, the description can be appended with a '-' in between." . "\n" .
+        "Use the 'perms:' marker to separate this from prior commands, eg 'mymodule hook_a hook_b perms: 'administer my module' 'access my module-Access my Module description'. Quote strings that contain spaces.",
       'theme:' => "Theme hooks, without the initial 'theme_', separated by spaces. " . "\n" .
         "Use the 'theme:' marker to separate this from prior commands, eg 'mymodule hook_a hook_b perms: my_themable'.",
       'services:' => "IDs of services, separated by spaces. " . "\n",
@@ -558,14 +558,24 @@ function drush_module_builder_build_component($commands, $component_type, $compo
     // Process direct mode values for compound properties into the expected
     // format.
     if ($user_specified && ($property_info['format'] == 'compound')) {
-      // For now, a compound property is input in direct mode as a flat array,
-      // where we take each array element to be the first child property.
-      $child_properties = $property_info['properties'];
-      $first_child_property = array_shift(array_keys($child_properties));
+      // A compound property in direct input mode is split up on the '-'
+      // character, and the pieces are taken in order for the child properties.
+      // So for example, for plugins, 'block-alpha' means:
+      //  - plugin_type: block
+      //  - plugin_name: alpha
+      $child_property_names = array_keys($property_info['properties']);
 
       $items = [];
       foreach ($value as $single_value) {
-        $items[][$first_child_property] = $single_value;
+        $item = [];
+
+        $value_pieces = explode('-', $single_value);
+        while ($piece = array_shift($value_pieces)) {
+          $child_property_name = array_shift($child_property_names);
+          $item[$child_property_name] = $piece;
+        }
+
+        $items[] = $item;
         // Defaults for other child properties will be filled in by the
         // process stage.
       }
@@ -577,69 +587,46 @@ function drush_module_builder_build_component($commands, $component_type, $compo
     // component data.
 
     if (!$user_specified && $interactive) {
-      // Show the user the available options, unless told not to.
-      $numeric_options = FALSE;
-      if (isset($property_info['options']) && empty($property_info['drush_no_option_list'])) {
-        $numeric_options = TRUE;
-        $option_by_index = array();
-        $i = 1;
-        foreach ($property_info['options'] as $option => $label) {
-          $option_by_index[$i] = $option;
-          drush_print("[$i] $option: $label", 2);
-
-          $i++;
-        }
-      }
+      // Prompt the user for a property we've not already got user input for.
 
       // Turn empty defaults into a value that Drush won't output.
       $default = empty($component_data[$property_name]) ? NULL : $component_data[$property_name];
 
-      // Make a prompt string, letting the user know if the input is optional
-      // so they don't waste time typing.
-      switch ($property_info['format']) {
-        case 'array':
-          $prompt = "Enter the {$property_info['label']}, as a space separated list";
-          break;
-        case 'boolean':
-          $prompt = "Do you want a {$property_info['label']}";
-          $prompt .= ' ' . "(y/n)";
-          // Set the default.
-          $default = empty($default) ? 'n' : 'y';
-          break;
-        case 'compound':
-          $prompt = "Enter the {$property_info['label']}, as a space separated list";
-          break;
-        default:
-          $prompt = "Enter the {$property_info['label']}";
-      }
-      if (empty($property_info['required']) && empty($component_data[$property_name])) {
-        $prompt .= ' ' . "(optional)";
-      }
+      if ($property_info['format'] == 'compound') {
+        // For compound properties, allow the user to enter as many items as
+        // they like, prompting for all the child properties for each item.
+        // Entering an empty value for the first child property ends the
+        // handling of the compound property.
+        $delta = 0;
+        $child_property_names = array_keys($property_info['properties']);
+        while (TRUE) {
+          foreach ($property_info['properties'] as $child_property_name => &$child_property_info) {
+            // Override the required property of the first child property, so
+            // the user can leave it empty and break out of this loop.
+            $first_child = ($child_property_name == $child_property_names[0]);
 
-      $value = drush_prompt($prompt, $default, $property_info['required']);
+            // Add the parent label so we can use it in prompts.
+            $child_property_info['parent_label'] = $property_info['label'];
 
-      // Callback to convert a value given as an index in a list of options into
-      // the actual option value.
-      $convert_index_to_value_callback = function($item) use ($option_by_index) {
-        if (is_numeric($item)) {
-          return $option_by_index[$item];
-        }
-        else {
-          return $item;
-        }
-      };
+            $child_value = module_builder_drush_interactive_prompt($child_property_name, $child_property_info, $component_data[$child_property_name], $default, $first_child);
 
-      // Convert a numeric option index value into the actual option value.
-      if ($numeric_options) {
-        // We have either an array of values or a single one.
-        if (is_array($value)) {
-          $value = array_map($convert_index_to_value_callback, $value);
+            // If the first property is empty, stop collecting child items.
+            if ($first_child && empty($child_value)) {
+              // Bail on both the while and the foreach loops: XKCD dinosaur!
+              goto endcompound;
+            }
+
+            $value[$delta][$child_property_name] = $child_value;
+          }
+
+          $delta++;
         }
-        else {
-          $value = $convert_index_to_value_callback($value);
-        }
+        endcompound:
       }
-    }
+      else {
+        $value = module_builder_drush_interactive_prompt($property_name, $property_info, $component_data, $default);
+      }
+    } // End interactive.
 
     // Split up the value if it should be an array.
     if ($property_info['format'] == 'array' && !is_array($value)) {
@@ -687,6 +674,98 @@ function drush_module_builder_build_component($commands, $component_type, $compo
   foreach ($files as $filename => $code) {
     module_builder_drush_output_code($component_dir, $filename, $code);
   }
+}
+
+/**
+ * Prompt the user for a single value.
+ *
+ * This can be used recursively for child properties.
+ *
+ * @param $property_name
+ *  The name of the property to prompt for.
+ * @param $property_info
+ *  The info array for a single component property.
+ * @param $component_data
+ *  The component data array, or a sub-array of it, such that the property's
+ *  value will be placed in the top level of this array.
+ * @param $default
+ *  The default value for the property.
+ * @param $first_child
+ *  (optional) If the property is a child property, TRUE to indicate it's the
+ *  first of the children. Defaults to FALSE.
+ *
+ * @return
+ *  The value obtained from the user.
+ */
+function module_builder_drush_interactive_prompt($property_name, $property_info, $component_data, $default, $first_child = FALSE) {
+  // Show the user the available options, unless told not to.
+  $numeric_options = FALSE;
+  if (isset($property_info['options']) && empty($property_info['drush_no_option_list'])) {
+    $numeric_options = TRUE;
+    $option_by_index = array();
+    $i = 1;
+    foreach ($property_info['options'] as $option => $label) {
+      $option_by_index[$i] = $option;
+      drush_print("[$i] $option: $label", 2);
+
+      $i++;
+    }
+  }
+
+  // Make a prompt string, letting the user know if the input is optional
+  // so they don't waste time typing.
+  switch ($property_info['format']) {
+    case 'array':
+      $prompt = "Enter the {$property_info['label']}, as a space separated list";
+      break;
+    case 'boolean':
+      $prompt = "Do you want a {$property_info['label']}";
+      $prompt .= ' ' . "(y/n)";
+      // Set the default.
+      $default = empty($default) ? 'n' : 'y';
+      break;
+    case 'string':
+      $prompt = "Enter the {$property_info['label']}";
+  }
+  if (empty($property_info['required']) && empty($component_data[$property_name])) {
+    $prompt .= ' ' . "(optional)";
+  }
+  if ($first_child) {
+    $prompt .= ' ' . "(leave blank to finish entering {$property_info['parent_label']})";
+  }
+
+  // Hack the 'required' property for first child, so the user can enter an
+  // empty string and exit the child properties loop.
+  $required = $property_info['required'];
+  if ($first_child) {
+    $required = FALSE;
+  }
+
+  $value = drush_prompt($prompt, $default, $required);
+
+  // Callback to convert a value given as an index in a list of options into
+  // the actual option value.
+  $convert_index_to_value_callback = function($item) use ($option_by_index) {
+    if (is_numeric($item)) {
+      return $option_by_index[$item];
+    }
+    else {
+      return $item;
+    }
+  };
+
+  // Convert a numeric option index value into the actual option value.
+  if ($numeric_options) {
+    // We have either an array of values or a single one.
+    if (is_array($value)) {
+      $value = array_map($convert_index_to_value_callback, $value);
+    }
+    else {
+      $value = $convert_index_to_value_callback($value);
+    }
+  }
+
+  return $value;
 }
 
 /**
