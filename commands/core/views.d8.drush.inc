@@ -374,7 +374,7 @@ function _views_drush_op($op = '', array $view_names = array()) {
     return drush_set_error(dt('Invalid op type'));
   }
 
-  $view_names = MapArray::copyValuesToKeys($view_names);
+  $view_names = array_combine($view_names, $view_names);
 
   if ($views = Drupal::entityManager()->getStorage('view')->loadMultiple($view_names)) {
     foreach ($views as $view) {
