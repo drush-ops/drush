@@ -69,6 +69,7 @@ abstract class DrupalBoot extends BaseBoot {
   function enforce_requirement(&$command) {
     parent::enforce_requirement($command);
     $this->drush_enforce_requirement_drupal_dependencies($command);
+    $this->drush_enforce_requirement_composer_autoloader($command);
   }
 
   function report_command_error($command) {
