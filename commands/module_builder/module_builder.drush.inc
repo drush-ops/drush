@@ -42,8 +42,8 @@ function module_builder_drush_command() {
       'hooks' => "Short names of hooks, separated by spaces.",
       'presets:' => "Names of preset groups of hooks, e.g., 'block'." . "\n" .
         "Use the 'presets:' marker to separate this from prior commands, eg 'mymodule hook_a hook_b presets: block'.",
-      'plugins:' => "Names of plugin types, using the suffix of the plugin manager service ID, e.g., 'block'." . "\n" .
-        "Use the 'plugins:' marker to separate this from prior commands, eg 'mymodule hook_a hook_b plugins: block'.",
+      'plugins:' => "Plugin types and names concatenated with a '-'. The plugin type is the suffix of the plugin manager service ID, e.g., 'block'." . "\n" .
+        "Use the 'plugins:' marker to separate this from prior commands. Example: 'mymodule hook_a hook_b plugins: block-alpha block-beta'.",
       'routes:' => "Menu paths, separated by spaces. " . "\n" .
         "Use the 'routes:' marker to separate this from prior commands, eg 'mymodule hook_a hook_b routes: module/path module/otherpath'.",
       'perms:' => "Permission names, separated by spaces. Optionally, the description can be appended with a '-' in between." . "\n" .
