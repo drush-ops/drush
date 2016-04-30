@@ -75,6 +75,9 @@ function drush_main() {
     $bootstrap->terminate();
   }
   drush_postflight();
+  if (is_object($return)) {
+    $return = 0;
+  }
 
   // How strict are we?  If we are very strict, turn 'ok' into 'error'
   // if there are any warnings in the log.

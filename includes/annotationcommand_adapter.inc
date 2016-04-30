@@ -7,12 +7,60 @@
 
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Consolidation\AnnotatedCommand\AnnotatedCommandFactory;
+use Consolidation\AnnotatedCommand\CommandProcessor;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Consolidation\OutputFormatters\FormatterManager;
+use Consolidation\OutputFormatters\FormatterOptions;
 
-/**
- * TODO: maybe configure and cache the CommandFileDiscovery class?
- */
+use Symfony\Component\Console\Output\ConsoleOutput;
+
+// We could use a DI container just to fix these
+// static factory functions. (Presently, the master branch
+// uses a DI container, but the 8.x branch does not.)
+
 function annotationcommand_adapter_get_discovery() {
-  return new CommandFileDiscovery();
+  static $discovery;
+  if (!isset($discovery)) {
+    $discovery = new CommandFileDiscovery();
+  }
+  return $discovery;
+}
+
+function annotationcommand_adapter_get_factory() {
+  static $factory;
+  if (!isset($factory)) {
+    $factory = new AnnotatedCommandFactory();
+  }
+  return $factory;
+}
+
+function annotatedcomand_adapter_get_formatter() {
+  static $formatter;
+  if (!isset($formatter)) {
+    $formatter = new FormatterManager();
+  }
+  return $formatter;
+}
+
+function annotatedcomand_adapter_backend_result($structured_data, $args)
+{
+  $return = drush_backend_get_result();
+  if (empty($return)) {
+    drush_backend_set_result($structured_output);
+  }
+}
+
+function annotationcommand_adapter_get_processor() {
+  static $processor;
+  if (!isset($processor)) {
+    $hook_manager = new HookManager();
+    // AlterResultInterface
+    $resultAlterer =
+    $hook_manager->add('*', 'post-alter', 'annotatedcomand_adapter_backend_result');
+    $processor = new CommandProcessor($hook_manager);
+    $processor->setFormatterManager(annotatedcomand_adapter_get_formatter());
+  }
+  return $processor;
 }
 
 /**
@@ -69,8 +117,33 @@ function annotationcommand_adapter_discover($searchpath, $phase = false, $phase_
   );
 }
 
+function annotationcommand_adapter_process_command() {
+  $commandprocessor = annotationcommand_adapter_get_processor();
+  $args = func_get_args();
+  $command = drush_get_command();
+  $default_options = $command['consolidation-option-defaults'];
+  if (!empty($default_options)) {
+    $command_options = array_pop($args);
+    $args[] = $command_options + $default_options;
+  }
+
+  $output = new ConsoleOutput();
+  $names = array_merge([$command['command']], $command['aliases']);
+
+  // n.b.: backend result is set by a post-alter hook.
+  $result = $commandprocessor->process(
+    $output,
+    $names,
+    $command['annotated-command-callback'],
+    $command['annotations'],
+    $args
+  );
+
+  return $result;
+}
+
 function annotationcommand_adapter_get_commands($annotation_commandfiles) {
-  $factory = new AnnotatedCommandFactory();
+  $factory = annotationcommand_adapter_get_factory();
   $commands = [];
   // This will give us a list containing something akin to:
   //   'modules/default_content/src/CliTools/DefaultContentCommands.php' =>
@@ -88,13 +161,17 @@ function annotationcommand_adapter_get_commands($annotation_commandfiles) {
         $commandfile = ''; // what value should this take?
         $command = [
           'name' => $command_name,
-          'callback' => [$commandhandler, $commandinfo->getMethodName()],
+          //'callback' => [$commandhandler, $commandinfo->getMethodName()],
+          'callback' => 'annotationcommand_adapter_process_command',
+          'annotated-command-callback' => [$commandhandler, $commandinfo->getMethodName()],
           'options' => [],
           'arguments' => [],
           'description' => $commandinfo->getDescription(),
           'examples' => $commandinfo->getExampleUsages(),
           'aliases' => $aliases,
           'add-options-to-arguments' => TRUE,
+          'consolidation-output-formatters' => TRUE,
+          'consolidation-option-defaults' => $commandinfo->options()->getValues(),
         ];
         $required_arguments = 0;
         foreach ($commandinfo->arguments()->getValues() as $arg => $default) {
@@ -105,7 +182,22 @@ function annotationcommand_adapter_get_commands($annotation_commandfiles) {
         }
         $command['required-arguments'] = $required_arguments;
         foreach ($commandinfo->options()->getValues() as $option => $default) {
-          $command['options'][$option] = $commandinfo->options()->getDescription($option);
+          $description = $commandinfo->options()->getDescription($option);
+          $command['options'][$option] = ['description' => $description];
+          if (!empty($default)) {
+            $command['options'][$option]['example-value'] = $default;
+          }
+          $fn = 'annotationcommand_adapter_alter_option_description_' . $option;
+          if (function_exists($fn)) {
+            $command['options'][$option] = $fn($command['options'][$option], $commandinfo, $default);
+          }
+        }
+        // If the command has a '@return' annotation, then
+        // remember information we will need to use the output formatter.
+        $returnType = $commandinfo->getReturnType();
+        if (isset($returnType)) {
+          $command['annotations'] = $commandinfo->getAnnotations();
+          $command['return-type'] = $returnType;
         }
         $command += drush_command_defaults($command_name, $commandfile, $commandfile_path);
         $commands[$command_name] = $command;
@@ -113,6 +205,29 @@ function annotationcommand_adapter_get_commands($annotation_commandfiles) {
     }
   }
   return $commands;
+}
+
+function annotationcommand_adapter_alter_option_description_format($option_help, $commandinfo, $default) {
+  $formatterManager = annotatedcomand_adapter_get_formatter();
+  $return_type = $commandinfo->getReturnType();
+  if (!empty($return_type)) {
+    $available_formats = $formatterManager->validFormats($return_type);
+    $option_help['description'] = dt('Select output format. Available: !formats.', array('!formats' => implode(', ', $available_formats)));
+    if (!empty($default)) {
+      $option_help['description'] .= dt(' Default is !default.', array('!default' => $default));
+    }
+  }
+  return $option_help;
+}
+
+function annotationcommand_adapter_alter_option_description_fields($option_help, $commandinfo, $default) {
+  $formatOptions = new FormatterOptions($commandinfo->getAnnotations());
+  $field_labels = $formatOptions->get(FormatterOptions::FIELD_LABELS);
+  $default_fields = $formatOptions->get(FormatterOptions::DEFAULT_FIELDS, [], array_keys($field_labels));
+  $available_fields = array_keys($field_labels);
+  $option_help['example-value'] = implode(', ', $default_fields);
+  $option_help['description'] = dt('Fields to output. All available fields are: !available.', array('!available' => implode(', ', $available_fields)));
+  return $option_help;
 }
 
 /**

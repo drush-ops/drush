@@ -64,8 +64,52 @@ class annotatedCommandCase extends CommandUnishTestCase {
     // drush my-cat bet alpha --flip
     $this->drush('my-cat', array('bet', 'alpha'), $options + ['flip' => NULL, 'ignored-modules' => 'woot'], NULL, NULL, self::EXIT_ERROR);
 
+    $this->drush('try-formatters', array(), $options, NULL, NULL, self::EXIT_SUCCESS);
+    $output = $this->getOutput();
+    $expected = <<<EOT
++------+------+-------+
+| I    | II   | III   |
++------+------+-------+
+| One  | Two  | Three |
+| Eins | Zwei | Drei  |
+| Ichi | Ni   | San   |
+| Uno  | Dos  | Tres  |
++------+------+-------+
+EOT;
+    $this->assertEquals($expected, $output);
+
+    $this->drush('try-formatters --format=yaml --fields=III,II', array(), $options, NULL, NULL, self::EXIT_SUCCESS);
+    $output = $this->getOutput();
+    $expected = <<<EOT
+en:
+  third: Three
+  second: Two
+de:
+  third: Drei
+  second: Zwei
+jp:
+  third: San
+  second: Ni
+es:
+  third: Tres
+  second: Dos
+EOT;
+    $this->assertEquals($expected, $output);
+
+    // drush try-formatters --help
+    $this->drush('try-formatters', array(), $options + ['help' => NULL], NULL, NULL, self::EXIT_SUCCESS);
+    $output = $this->getOutput();
+    $this->assertContains('Demonstrate formatters', $output);
+    $this->assertContains('try:formatters --fields=first,third', $output);
+    $this->assertContains('try:formatters --fields=III,II', $output);
+    $this->assertContains('--fields=<first, second, third>', $output);
+    $this->assertContains('Fields to output. All available', $output);
+    $this->assertContains('--format=<table>', $output);
+    $this->assertContains('Select output format. Available:', $output);
+    $this->assertContains('Aliases: try-formatters', $output);
+
     // Disable the woot module to avoid cross-contamination of the Drupal
-    // test site's database.
+    // test site's database. (not necessary?)
     if (UNISH_DRUPAL_MAJOR_VERSION == 8) {
       $this->drush('pm-uninstall', array('woot'), $options, NULL, NULL, self::EXIT_SUCCESS);
     }

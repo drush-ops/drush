@@ -1210,6 +1210,7 @@ function drush_command_defaults($key, $commandfile, $path) {
     'hidden' => FALSE,
     'category' => $commandfile,
     'add-options-to-arguments' => FALSE,
+    'consolidation-output-formatters' => FALSE,
   );
   // We end up here, setting the defaults for a command, when
   // called from drush_get_global_options().  Early in the Drush
