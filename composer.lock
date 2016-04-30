@@ -4,9 +4,56 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5a87d11e2cfb3ed4a38350a4e8713140",
-    "content-hash": "e2c89def507ae7cd403a03ed868126b5",
+    "hash": "da4e6683e1074f3378fbce6618565149",
+    "content-hash": "6081e61afce57ffc1191fadc5a5c0ada",
     "packages": [
+        {
+            "name": "consolidation/output-formatters",
+            "version": "1.0.0-beta5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/consolidation-org/output-formatters.git",
+                "reference": "777f0a58b2ecdcff7c1bd2f2c444c8256068a0a7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/consolidation-org/output-formatters/zipball/777f0a58b2ecdcff7c1bd2f2c444c8256068a0a7",
+                "reference": "777f0a58b2ecdcff7c1bd2f2c444c8256068a0a7",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0",
+                "symfony/console": "~2.5|~3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*",
+                "satooshi/php-coveralls": "^1.0",
+                "squizlabs/php_codesniffer": "2.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Consolidation\\OutputFormatters\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Greg Anderson",
+                    "email": "greg.1.anderson@greenknowe.org"
+                }
+            ],
+            "description": "Format text by applying transformations provided by plug-in formatters.",
+            "time": "2016-04-29 22:31:04"
+        },
         {
             "name": "dnoegel/php-xdg-base-dir",
             "version": "0.1",
@@ -1531,16 +1578,16 @@
         },
         {
             "name": "symfony/process",
-            "version": "v2.7.11",
+            "version": "v2.7.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "19beeea4abd3b1566a1e6cdb15f72d0bae2e1fff"
+                "reference": "a49e4c67a6a52e9c5bce1f28d9ea8618f36a43d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/19beeea4abd3b1566a1e6cdb15f72d0bae2e1fff",
-                "reference": "19beeea4abd3b1566a1e6cdb15f72d0bae2e1fff",
+                "url": "https://api.github.com/repos/symfony/process/zipball/a49e4c67a6a52e9c5bce1f28d9ea8618f36a43d0",
+                "reference": "a49e4c67a6a52e9c5bce1f28d9ea8618f36a43d0",
                 "shasum": ""
             },
             "require": {
@@ -1576,12 +1623,14 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2016-03-17 11:37:14"
+            "time": "2016-04-12 11:52:58"
         }
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "consolidation/output-formatters": 10
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
