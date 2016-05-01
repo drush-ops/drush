@@ -743,7 +743,8 @@ function module_builder_drush_interactive_prompt($property_name, $property_info,
 
   $value = drush_prompt($prompt, $default, $required);
 
-  // Split a space-separated list into an array.
+  // Split a space-separated list into an array now rather than later, so the
+  // numeric options can be converted.
   if ($property_info['format'] == 'array') {
     $value = preg_split('@\s+@', $value);
   }
