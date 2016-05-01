@@ -572,6 +572,13 @@ function drush_module_builder_build_component($commands, $component_type, $compo
         $value_pieces = explode('-', $single_value);
         while ($piece = array_shift($value_pieces)) {
           $child_property_name = array_shift($child_property_names);
+
+          // Split array properties on a comma.
+          // TODO: either document this or rethink it.
+          if ($property_info['properties'][$child_property_name]['format'] == 'array') {
+            $piece = explode(',', $piece);
+          }
+
           $item[$child_property_name] = $piece;
         }
 
