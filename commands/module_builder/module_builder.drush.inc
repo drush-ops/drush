@@ -743,6 +743,11 @@ function module_builder_drush_interactive_prompt($property_name, $property_info,
 
   $value = drush_prompt($prompt, $default, $required);
 
+  // Split a space-separated list into an array.
+  if ($property_info['format'] == 'array') {
+    $value = preg_split('@\s+@', $value);
+  }
+
   // Callback to convert a value given as an index in a list of options into
   // the actual option value.
   $convert_index_to_value_callback = function($item) use ($option_by_index) {
