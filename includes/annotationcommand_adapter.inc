@@ -42,11 +42,10 @@ function annotatedcomand_adapter_get_formatter() {
   return $formatter;
 }
 
-function annotatedcomand_adapter_backend_result($structured_data, $args)
-{
+function annotatedcomand_adapter_backend_result($structured_data) {
   $return = drush_backend_get_result();
   if (empty($return)) {
-    drush_backend_set_result($structured_output);
+    drush_backend_set_result($structured_data);
   }
 }
 
@@ -56,7 +55,7 @@ function annotationcommand_adapter_get_processor() {
     $hook_manager = new HookManager();
     // AlterResultInterface
     $resultAlterer =
-    $hook_manager->add('*', 'post-alter', 'annotatedcomand_adapter_backend_result');
+    $hook_manager->add('*', HookManager::EXTRACT_OUTPUT, 'annotatedcomand_adapter_backend_result');
     $processor = new CommandProcessor($hook_manager);
     $processor->setFormatterManager(annotatedcomand_adapter_get_formatter());
   }

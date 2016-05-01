@@ -96,6 +96,14 @@ es:
 EOT;
     $this->assertEquals($expected, $output);
 
+    $this->drush('try-formatters', array(), $options + ['backend' => NULL]);
+    $parsed = $this->parse_backend_output($this->getOutput());
+    $data = $parsed['object'];
+    $expected = <<<EOT
+{"en":{"first":"One","second":"Two","third":"Three"},"de":{"first":"Eins","second":"Zwei","third":"Drei"},"jp":{"first":"Ichi","second":"Ni","third":"San"},"es":{"first":"Uno","second":"Dos","third":"Tres"}}
+EOT;
+    $this->assertEquals($expected, json_encode($data));
+
     // drush try-formatters --help
     $this->drush('try-formatters', array(), $options + ['help' => NULL], NULL, NULL, self::EXIT_SUCCESS);
     $output = $this->getOutput();
