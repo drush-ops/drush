@@ -353,8 +353,6 @@ function drush_init_annotation_commands($container) {
 }
 
 function drush_init_register_command_files($container, $commandFiles) {
-  $application = $container->get('application');
-  $commandFactory = $container->get('commandFactory');
   foreach ($commandFiles as $sourcePath => $className) {
     if (!class_exists($className)) {
       include $sourcePath;
@@ -363,17 +361,36 @@ function drush_init_register_command_files($container, $commandFiles) {
     // Add and fetch our class from the container to apply the inductors
     $container->share($classAlias, $className);
     $commandFileInstance = $container->get($classAlias);
-    $commandList = $commandFactory->createCommandsFromClass($commandFileInstance);
-    foreach ($commandList as $command) {
-      $commandName = $command->getName();
-      $drushAlias = strtr($commandName, ':', '-');
-      if ($commandName != $drushAlias) {
-        $aliases = $command->getAliases();
-        $command->setAliases(array_unique(array_merge($aliases, [$drushAlias])));
-      }
-      $application->add($command);
-    }
+    drush_add_command_instance($container, $commandFileInstance);
   }
+}
+
+function drush_add_command_instance($container, $commandInstance) {
+  if ($commandInstance instanceof Symfony\Component\Console\Command\Command) {
+    drush_add_command_to_application($container, $commandInstance);
+    return;
+  }
+  drush_create_commands_from_command_instance($container, $commandInstance);
+}
+
+function drush_create_commands_from_command_instance($container, $commandInstance) {
+  $application = $container->get('application');
+  $commandFactory = $container->get('commandFactory');
+  $commandList = $commandFactory->createCommandsFromClass($commandInstance);
+  foreach ($commandList as $command) {
+    drush_add_command_to_application($container, $command);
+  }
+}
+
+function drush_add_command_to_application($container, $command) {
+  $application = $container->get('application');
+  $commandName = $command->getName();
+  $drushAlias = strtr($commandName, ':', '-');
+  if ($commandName != $drushAlias) {
+    $aliases = $command->getAliases();
+    $command->setAliases(array_unique(array_merge($aliases, [$drushAlias])));
+  }
+  $application->add($command);
 }
 
 /**

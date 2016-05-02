@@ -135,6 +135,26 @@ class DrupalBoot8 extends DrupalBoot {
     }
 
     parent::bootstrap_drupal_full();
+
+    // After we fully bootstrap, we will check and see if any modules have
+    // a paramter in the module's services.yml file MODULENAME.commands
+    // that stipulates the services that contain commands.
+    $ignored_modules = drush_get_option_list('ignored-modules', array());
+    $container = \Drupal::getContainer();
+    foreach (array_diff(drush_module_list(), $ignored_modules) as $module) {
+      // Check for commands declared via a module's services.yml file
+      $parameterName = $module . '.commands';
+      if ($container->hasParameter($parameterName)) {
+        $commandfileClasses = $container->getParameter($parameterName);
+        if (!is_array($commandfileClasses)) {
+          $commandfileClasses = [$commandfileClasses];
+        }
+        foreach ((array)$commandfileClasses as $commandfileClass) {
+          $service = $container->get((string)$commandfileClass);
+          drush_add_command_instance(\Drush::getContainer(), $service);
+        }
+      }
+    }
   }
 
   /**

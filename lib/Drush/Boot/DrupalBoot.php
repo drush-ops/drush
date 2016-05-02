@@ -145,7 +145,11 @@ abstract class DrupalBoot extends BaseBoot {
           }
 
           $searchpath = array_merge($searchpath, $this->contrib_themes_paths());
-          $commandFiles = $discovery->discoverNamespaced($searchpath, '\Drupal');
+          // Drupal 8 uses the modules' services files to find commandfiles. Should we allow
+          // redundant find-module-by-location for Drupal 8?  (Maybe not.)
+          if (DRUSH_DRUPAL_MAJOR_VERSION < 8) {
+            $commandFiles = $discovery->discoverNamespaced($searchpath, '\Drupal');
+          }
         }
         break;
       case DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION:
@@ -170,7 +174,11 @@ abstract class DrupalBoot extends BaseBoot {
         foreach (drush_theme_list() as $key => $value) {
           $searchpath[] = drupal_get_path('theme', $key);
         }
-        $commandFiles = $discovery->discoverNamespaced($searchpath, '\Drupal');
+        // Drupal 8 uses the modules' services files to find commandfiles. Should we allow
+        // redundant find-module-by-location for Drupal 8?  (Maybe not.)
+        if (DRUSH_DRUPAL_MAJOR_VERSION < 8) {
+          $commandFiles = $discovery->discoverNamespaced($searchpath, '\Drupal');
+        }
         break;
     }
     // A little inelegant, but will do for now.
