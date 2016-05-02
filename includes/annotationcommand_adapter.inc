@@ -142,7 +142,6 @@ function annotationcommand_adapter_process_command() {
 }
 
 function annotationcommand_adapter_get_commands($annotation_commandfiles) {
-  $factory = annotationcommand_adapter_get_factory();
   $commands = [];
   // This will give us a list containing something akin to:
   //   'modules/default_content/src/CliTools/DefaultContentCommands.php' =>
@@ -151,58 +150,68 @@ function annotationcommand_adapter_get_commands($annotation_commandfiles) {
     if (file_exists($commandfile_path)) {
       include_once $commandfile_path;
       $commandhandler = new $commandfile_class;
-      $commandinfo_list = $factory->getCommandInfoListFromClass($commandhandler);
-
-      foreach ($commandinfo_list as $commandinfo) {
-        $aliases = $commandinfo->getAliases();
-        $command_name = strtolower($commandinfo->getName());
-        $aliases[] = str_replace(':', '-', $command_name);
-        $commandfile = ''; // what value should this take?
-        $command = [
-          'name' => $command_name,
-          //'callback' => [$commandhandler, $commandinfo->getMethodName()],
-          'callback' => 'annotationcommand_adapter_process_command',
-          'annotated-command-callback' => [$commandhandler, $commandinfo->getMethodName()],
-          'options' => [],
-          'arguments' => [],
-          'description' => $commandinfo->getDescription(),
-          'examples' => $commandinfo->getExampleUsages(),
-          'aliases' => $aliases,
-          'add-options-to-arguments' => TRUE,
-          'consolidation-output-formatters' => TRUE,
-          'consolidation-option-defaults' => $commandinfo->options()->getValues(),
-        ];
-        $required_arguments = 0;
-        foreach ($commandinfo->arguments()->getValues() as $arg => $default) {
-          $command['arguments'][$arg] = $commandinfo->arguments()->getDescription($arg);
-          if (!isset($default)) {
-            ++$required_arguments;
-          }
-        }
-        $command['required-arguments'] = $required_arguments;
-        foreach ($commandinfo->options()->getValues() as $option => $default) {
-          $description = $commandinfo->options()->getDescription($option);
-          $command['options'][$option] = ['description' => $description];
-          if (!empty($default)) {
-            $command['options'][$option]['example-value'] = $default;
-          }
-          $fn = 'annotationcommand_adapter_alter_option_description_' . $option;
-          if (function_exists($fn)) {
-            $command['options'][$option] = $fn($command['options'][$option], $commandinfo, $default);
-          }
-        }
-        // If the command has a '@return' annotation, then
-        // remember information we will need to use the output formatter.
-        $returnType = $commandinfo->getReturnType();
-        if (isset($returnType)) {
-          $command['annotations'] = $commandinfo->getAnnotations();
-          $command['return-type'] = $returnType;
-        }
-        $command += drush_command_defaults($command_name, $commandfile, $commandfile_path);
-        $commands[$command_name] = $command;
-      }
+      $commands_for_this_commandhandler = annotationcommand_adapter_get_commands_for_commandhandler($commandhandler);
+      $commands = array_merge($commands, $commands_for_this_commandhandler);
     }
   }
+  return $commands;
+}
+
+function annotationcommand_adapter_get_commands_for_commandhandler($commandhandler) {
+  $factory = annotationcommand_adapter_get_factory();
+  $commands = [];
+
+  $commandinfo_list = $factory->getCommandInfoListFromClass($commandhandler);
+
+  foreach ($commandinfo_list as $commandinfo) {
+    $aliases = $commandinfo->getAliases();
+    $command_name = strtolower($commandinfo->getName());
+    $aliases[] = str_replace(':', '-', $command_name);
+    $commandfile = ''; // what value should this take?
+    $command = [
+      'name' => $command_name,
+      //'callback' => [$commandhandler, $commandinfo->getMethodName()],
+      'callback' => 'annotationcommand_adapter_process_command',
+      'annotated-command-callback' => [$commandhandler, $commandinfo->getMethodName()],
+      'options' => [],
+      'arguments' => [],
+      'description' => $commandinfo->getDescription(),
+      'examples' => $commandinfo->getExampleUsages(),
+      'aliases' => $aliases,
+      'add-options-to-arguments' => TRUE,
+      'consolidation-output-formatters' => TRUE,
+      'consolidation-option-defaults' => $commandinfo->options()->getValues(),
+    ];
+    $required_arguments = 0;
+    foreach ($commandinfo->arguments()->getValues() as $arg => $default) {
+      $command['arguments'][$arg] = $commandinfo->arguments()->getDescription($arg);
+      if (!isset($default)) {
+        ++$required_arguments;
+      }
+    }
+    $command['required-arguments'] = $required_arguments;
+    foreach ($commandinfo->options()->getValues() as $option => $default) {
+      $description = $commandinfo->options()->getDescription($option);
+      $command['options'][$option] = ['description' => $description];
+      if (!empty($default)) {
+        $command['options'][$option]['example-value'] = $default;
+      }
+      $fn = 'annotationcommand_adapter_alter_option_description_' . $option;
+      if (function_exists($fn)) {
+        $command['options'][$option] = $fn($command['options'][$option], $commandinfo, $default);
+      }
+    }
+    // If the command has a '@return' annotation, then
+    // remember information we will need to use the output formatter.
+    $returnType = $commandinfo->getReturnType();
+    if (isset($returnType)) {
+      $command['annotations'] = $commandinfo->getAnnotations();
+      $command['return-type'] = $returnType;
+    }
+    $command += drush_command_defaults($command_name, $commandfile, $commandfile_path);
+    $commands[$command_name] = $command;
+  }
+
   return $commands;
 }
 
