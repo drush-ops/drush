@@ -275,11 +275,13 @@ function drush_init_dependency_injection_container($input = null, $output = null
     ->withArgument(\Drush::getVersion())
     ->withMethodCall('setDispatcher', ['eventDispatcher'])
     ->withMethodCall('setAutoExit', [false]);
-  $container->share('commandDiscovery', 'Consolidation\AnnotatedCommand\CommandFileDiscovery')
-    ->withMethodCall('addSearchLocation', ['CommandFiles'])
-    ->withMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
+  $container->share('commandDiscovery', 'Consolidation\AnnotatedCommand\CommandFileDiscovery');
+//    ->withMethodCall('addSearchLocation', ['CommandFiles'])
+//    ->withMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
   $container->share('formatterManager', 'Consolidation\OutputFormatters\FormatterManager');
-  $container->share('hookManager', 'Consolidation\AnnotatedCommand\Hooks\HookManager');
+  $container->share('backendResultSetter', 'Drush\Backend\BackendResultSetter');
+  $container->share('hookManager', 'Consolidation\AnnotatedCommand\Hooks\HookManager')
+      ->withMethodCall('addOutputExtractor', ['backendResultSetter']);
   $container->share('commandProcessor', 'Consolidation\AnnotatedCommand\CommandProcessor')
     ->withArgument('hookManager')
     ->withMethodCall('setFormatterManager', ['formatterManager']);
@@ -294,6 +296,7 @@ function drush_init_dependency_injection_container($input = null, $output = null
 
   return $container;
 }
+
 
 // TODO: Where should this go?
 function drush_init_application_global_options($container) {
@@ -353,14 +356,22 @@ function drush_init_register_command_files($container, $commandFiles) {
   $application = $container->get('application');
   $commandFactory = $container->get('commandFactory');
   foreach ($commandFiles as $sourcePath => $className) {
+    if (!class_exists($className)) {
+      include $sourcePath;
+    }
     $classAlias = str_replace('\\', '', $className);
-
     // Add and fetch our class from the container to apply the inductors
     $container->share($classAlias, $className);
     $commandFileInstance = $container->get($classAlias);
     $commandList = $commandFactory->createCommandsFromClass($commandFileInstance);
     foreach ($commandList as $command) {
-        $application->add($command);
+      $commandName = $command->getName();
+      $drushAlias = strtr($commandName, ':', '-');
+      if ($commandName != $drushAlias) {
+        $aliases = $command->getAliases();
+        $command->setAliases(array_unique(array_merge($aliases, [$drushAlias])));
+      }
+      $application->add($command);
     }
   }
 }
