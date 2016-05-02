@@ -77,26 +77,27 @@
         },
         {
             "name": "consolidation/annotated-command",
-            "version": "1.0.0-beta1",
+            "version": "1.0.0-beta8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation-org/annotated-command.git",
-                "reference": "ec0e89155f8be1493c1d031e63641b2f4bfcc0ee"
+                "reference": "20bdd9dfe01ce283a210b40479dbc13967a5025f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation-org/annotated-command/zipball/ec0e89155f8be1493c1d031e63641b2f4bfcc0ee",
-                "reference": "ec0e89155f8be1493c1d031e63641b2f4bfcc0ee",
+                "url": "https://api.github.com/repos/consolidation-org/annotated-command/zipball/20bdd9dfe01ce283a210b40479dbc13967a5025f",
+                "reference": "20bdd9dfe01ce283a210b40479dbc13967a5025f",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.0",
+                "php": ">=5.4.0",
                 "phpdocumentor/reflection-docblock": "~2",
                 "psr/log": "~1.0",
                 "symfony/console": "~2.5|~3.0",
                 "symfony/finder": "~2.5|~3.0"
             },
             "require-dev": {
+                "consolidation/output-formatters": "~1.0.0-beta3",
                 "phpunit/phpunit": "4.*",
                 "satooshi/php-coveralls": "^1.0",
                 "squizlabs/php_codesniffer": "2.*"
@@ -123,7 +124,7 @@
                 }
             ],
             "description": "Initialize Symfony Console commands from annotated command class methods.",
-            "time": "2016-04-25 05:50:42"
+            "time": "2016-05-01 13:57:40"
         },
         {
             "name": "consolidation/log",
@@ -174,16 +175,16 @@
         },
         {
             "name": "consolidation/output-formatters",
-            "version": "1.0.0-beta1",
+            "version": "1.0.0-beta5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation-org/output-formatters.git",
-                "reference": "cf369a2ebba04c6c63033abdecd39de857b517be"
+                "reference": "777f0a58b2ecdcff7c1bd2f2c444c8256068a0a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation-org/output-formatters/zipball/cf369a2ebba04c6c63033abdecd39de857b517be",
-                "reference": "cf369a2ebba04c6c63033abdecd39de857b517be",
+                "url": "https://api.github.com/repos/consolidation-org/output-formatters/zipball/777f0a58b2ecdcff7c1bd2f2c444c8256068a0a7",
+                "reference": "777f0a58b2ecdcff7c1bd2f2c444c8256068a0a7",
                 "shasum": ""
             },
             "require": {
@@ -217,7 +218,7 @@
                 }
             ],
             "description": "Format text by applying transformations provided by plug-in formatters.",
-            "time": "2016-04-25 05:56:23"
+            "time": "2016-04-29 22:31:04"
         },
         {
             "name": "container-interop/container-interop",
@@ -697,16 +698,16 @@
         },
         {
             "name": "symfony/config",
-            "version": "v2.8.4",
+            "version": "v2.8.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "5273f4724dc5288fe7a33cb08077ab9852621f2c"
+                "reference": "edbbcf33cffa2a85104fc80de8dc052cc51596bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/5273f4724dc5288fe7a33cb08077ab9852621f2c",
-                "reference": "5273f4724dc5288fe7a33cb08077ab9852621f2c",
+                "url": "https://api.github.com/repos/symfony/config/zipball/edbbcf33cffa2a85104fc80de8dc052cc51596bb",
+                "reference": "edbbcf33cffa2a85104fc80de8dc052cc51596bb",
                 "shasum": ""
             },
             "require": {
@@ -746,20 +747,20 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2016-03-04 07:54:35"
+            "time": "2016-04-20 18:52:26"
         },
         {
             "name": "symfony/console",
-            "version": "v2.7.11",
+            "version": "v2.7.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "6100a40569b2be1b6aba1cc6a92fe6cb71024fc8"
+                "reference": "dfb9d26a4dd62fc9389c42196cf4a087400948b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/6100a40569b2be1b6aba1cc6a92fe6cb71024fc8",
-                "reference": "6100a40569b2be1b6aba1cc6a92fe6cb71024fc8",
+                "url": "https://api.github.com/repos/symfony/console/zipball/dfb9d26a4dd62fc9389c42196cf4a087400948b8",
+                "reference": "dfb9d26a4dd62fc9389c42196cf4a087400948b8",
                 "shasum": ""
             },
             "require": {
@@ -805,20 +806,20 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2016-03-09 16:30:49"
+            "time": "2016-04-20 06:32:07"
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v2.7.11",
+            "version": "v2.7.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "b7c955d4a2fa79fca9caccdaaa5434e3799e3b51"
+                "reference": "e86b8282381f4fa7732f3847e152c01a32d721d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/b7c955d4a2fa79fca9caccdaaa5434e3799e3b51",
-                "reference": "b7c955d4a2fa79fca9caccdaaa5434e3799e3b51",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/e86b8282381f4fa7732f3847e152c01a32d721d7",
+                "reference": "e86b8282381f4fa7732f3847e152c01a32d721d7",
                 "shasum": ""
             },
             "require": {
@@ -865,7 +866,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2016-03-06 17:01:13"
+            "time": "2016-04-04 17:08:16"
         },
         {
             "name": "symfony/filesystem",
@@ -1026,16 +1027,16 @@
         },
         {
             "name": "symfony/process",
-            "version": "v2.7.11",
+            "version": "v2.7.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "19beeea4abd3b1566a1e6cdb15f72d0bae2e1fff"
+                "reference": "a49e4c67a6a52e9c5bce1f28d9ea8618f36a43d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/19beeea4abd3b1566a1e6cdb15f72d0bae2e1fff",
-                "reference": "19beeea4abd3b1566a1e6cdb15f72d0bae2e1fff",
+                "url": "https://api.github.com/repos/symfony/process/zipball/a49e4c67a6a52e9c5bce1f28d9ea8618f36a43d0",
+                "reference": "a49e4c67a6a52e9c5bce1f28d9ea8618f36a43d0",
                 "shasum": ""
             },
             "require": {
@@ -1071,7 +1072,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2016-03-17 11:37:14"
+            "time": "2016-04-12 11:52:58"
         },
         {
             "name": "symfony/var-dumper",

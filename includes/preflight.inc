@@ -275,9 +275,9 @@ function drush_init_dependency_injection_container($input = null, $output = null
     ->withArgument(\Drush::getVersion())
     ->withMethodCall('setDispatcher', ['eventDispatcher'])
     ->withMethodCall('setAutoExit', [false]);
-  $container->share('commandDiscovery', 'Consolidation\AnnotatedCommand\CommandFileDiscovery');
-//    ->withMethodCall('addSearchLocation', ['CommandFiles'])
-//    ->withMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
+  $container->share('commandDiscovery', 'Consolidation\AnnotatedCommand\CommandFileDiscovery')
+    ->withMethodCall('addSearchLocation', ['CommandFiles'])
+    ->withMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
   $container->share('formatterManager', 'Consolidation\OutputFormatters\FormatterManager');
   $container->share('backendResultSetter', 'Drush\Backend\BackendResultSetter');
   $container->share('hookManager', 'Consolidation\AnnotatedCommand\Hooks\HookManager')
