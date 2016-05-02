@@ -76,7 +76,9 @@ function annotationcommand_adapter_commands() {
       unset($annotation_commandfiles[$key]);
     }
   }
-  return annotationcommand_adapter_get_commands($annotation_commandfiles);
+  $commands = annotationcommand_adapter_get_commands($annotation_commandfiles);
+  $module_service_commands = drush_get_context('DRUSH_MODULE_SERVICE_COMMANDS');
+  return array_merge($commands, $module_service_commands);
 }
 
 /**
@@ -85,6 +87,9 @@ function annotationcommand_adapter_commands() {
  */
 function annotationcommand_adapter_discover($searchpath, $phase = false, $phase_max = false) {
   if (empty($searchpath)) {
+    return;
+  }
+  if (($phase >= DRUSH_BOOTSTRAP_DRUPAL_SITE) && (drush_drupal_major_version() >= 8)) {
     return;
   }
   $annotation_commandfiles = [];
@@ -150,14 +155,20 @@ function annotationcommand_adapter_get_commands($annotation_commandfiles) {
     if (file_exists($commandfile_path)) {
       include_once $commandfile_path;
       $commandhandler = new $commandfile_class;
-      $commands_for_this_commandhandler = annotationcommand_adapter_get_commands_for_commandhandler($commandhandler);
+      $commands_for_this_commandhandler = annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path);
       $commands = array_merge($commands, $commands_for_this_commandhandler);
     }
   }
   return $commands;
 }
 
-function annotationcommand_adapter_get_commands_for_commandhandler($commandhandler) {
+function annotationcommand_adapter_cache_module_service_commands($commandhandler, $commandfile_path = '') {
+  $module_service_commands = drush_get_context('DRUSH_MODULE_SERVICE_COMMANDS');
+  $commands = annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path);
+  drush_set_context('DRUSH_MODULE_SERVICE_COMMANDS', array_merge($commands, $module_service_commands));
+}
+
+function annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path) {
   $factory = annotationcommand_adapter_get_factory();
   $commands = [];
 
