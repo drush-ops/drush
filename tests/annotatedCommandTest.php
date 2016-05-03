@@ -123,9 +123,17 @@ EOT;
     // TODO: Symfony Console does not print alias info like this
     // $this->assertContains('Aliases: try-formatters', $output);
 
+    // If we are running Drupal version 8 or later, then also check to
+    // see if the demo:greet command is available.
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
+        $this->drush('demo:greet symfony', array(), $options, NULL, NULL, self::EXIT_SUCCESS);
+        $output = $this->getOutput();
+        $this->assertEquals('Hello symfony', $output);
+    }
+
     // Disable the woot module to avoid cross-contamination of the Drupal
     // test site's database. (not necessary?)
-    if (UNISH_DRUPAL_MAJOR_VERSION == 8) {
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
       $this->drush('pm-uninstall', array('woot'), $options, NULL, NULL, self::EXIT_SUCCESS);
     }
     else {
