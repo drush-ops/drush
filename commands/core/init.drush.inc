@@ -49,6 +49,16 @@ function drush_init_core_init() {
   $example_complete = DRUSH_BASE_PATH . "/drush.complete.sh";
   $bashrc_additions = array();
 
+  // If Drush is not in the $PATH, then figure out which
+  // path to add so that Drush can be found globally.
+  $add_path = drush_get_option('add-path', NULL);
+  if ((!drush_which("drush") || $add_path) && ($add_path !== FALSE)) {
+    $drush_path = drush_find_path_to_drush($home);
+    $drush_path = preg_replace("%^" . preg_quote($home) . "/%", '$HOME/', $drush_path);
+
+    $bashrc_additions["%$drush_path%"] = "# Path to Drush, added by 'drush init'.\nexport PATH=\"\$PATH:$drush_path\"\n\n";
+  }
+
   // Create a ~/.drush directory if it does not yet exist
   if (!is_dir($drush_config_dir)) {
     drush_mkdir($drush_config_dir);
@@ -90,16 +100,6 @@ function drush_init_core_init() {
   // Decide whether we want to add our Bash commands to
   // ~/.bashrc or ~/.bash_profile
   $bashrc = drush_init_find_bashrc($home);
-
-  // If Drush is not in the $PATH, then figure out which
-  // path to add so that Drush can be found globally.
-  $add_path = drush_get_option('add-path', NULL);
-  if ((!drush_which("drush") || $add_path) && ($add_path !== FALSE)) {
-    $drush_path = drush_find_path_to_drush($home);
-    $drush_path = preg_replace("%^" . preg_quote($home) . "/%", '$HOME/', $drush_path);
-
-    $bashrc_additions["%$drush_path%"] = "# Path to Drush, added by 'drush init'.\nexport PATH=\"\$PATH:$drush_path\"\n\n";
-  }
 
   // Modify the user's bashrc file, adding our customizations.
   $bashrc_contents = "";
