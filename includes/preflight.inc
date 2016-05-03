@@ -365,7 +365,7 @@ function drush_init_register_command_files($container, $commandFiles) {
   }
 }
 
-function drush_add_command_instance($container, $commandInstance) {
+function drush_add_command_instance($container, $commandInstance, $includeAllPublicMethods = true) {
   if ($commandInstance instanceof Symfony\Component\Console\Command\Command) {
     drush_add_command_to_application($container, $commandInstance);
     return;
@@ -373,10 +373,10 @@ function drush_add_command_instance($container, $commandInstance) {
   drush_create_commands_from_command_instance($container, $commandInstance);
 }
 
-function drush_create_commands_from_command_instance($container, $commandInstance) {
+function drush_create_commands_from_command_instance($container, $commandInstance, $includeAllPublicMethods = true) {
   $application = $container->get('application');
   $commandFactory = $container->get('commandFactory');
-  $commandList = $commandFactory->createCommandsFromClass($commandInstance);
+  $commandList = $commandFactory->createCommandsFromClass($commandInstance, $includeAllPublicMethods);
   foreach ($commandList as $command) {
     drush_add_command_to_application($container, $command);
   }

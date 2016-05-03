@@ -151,7 +151,7 @@ class DrupalBoot8 extends DrupalBoot {
         }
         foreach ((array)$commandfileClasses as $commandfileClass) {
           $service = $container->get((string)$commandfileClass);
-          drush_add_command_instance(\Drush::getContainer(), $service);
+          drush_add_command_instance(\Drush::getContainer(), $service, false);
         }
       }
     }
