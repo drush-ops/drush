@@ -164,16 +164,16 @@ function annotationcommand_adapter_get_commands($annotation_commandfiles) {
 
 function annotationcommand_adapter_cache_module_service_commands($commandhandler, $commandfile_path) {
   $module_service_commands = drush_get_context('DRUSH_MODULE_SERVICE_COMMANDS');
-  $commands = annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path);
+  $commands = annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path, false);
   drush_set_context('DRUSH_MODULE_SERVICE_COMMANDS', array_merge($commands, $module_service_commands));
 }
 
-function annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path) {
+function annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path, $includeAllPublicMethods = true) {
   $factory = annotationcommand_adapter_get_factory();
   $commands = [];
   $commandfile = basename($commandfile_path, '.php');
 
-  $commandinfo_list = $factory->getCommandInfoListFromClass($commandhandler);
+  $commandinfo_list = $factory->getCommandInfoListFromClass($commandhandler, $includeAllPublicMethods);
 
   foreach ($commandinfo_list as $commandinfo) {
     $aliases = $commandinfo->getAliases();
