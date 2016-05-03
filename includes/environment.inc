@@ -857,8 +857,8 @@ function drush_get_drupal_core_compatibility() {
   if (defined('DRUPAL_CORE_COMPATIBILITY')) {
     return DRUPAL_CORE_COMPATIBILITY;
   }
-  elseif (defined('Drupal::CORE_COMPATIBILITY')) {
-    return Drupal::CORE_COMPATIBILITY;
+  elseif (defined('\Drupal::CORE_COMPATIBILITY')) {
+    return \Drupal::CORE_COMPATIBILITY;
   }
 }
 

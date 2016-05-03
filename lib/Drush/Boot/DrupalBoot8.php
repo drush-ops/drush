@@ -37,7 +37,7 @@ class DrupalBoot8 extends DrupalBoot {
     drush_drupal_load_autoloader($drupal_root);
     // Drush depends on bootstrap being loaded at this point.
     require_once $drupal_root .'/core/includes/bootstrap.inc';
-    if (defined('Drupal::VERSION')) {
+    if (defined('\Drupal::VERSION')) {
       return \Drupal::VERSION;
     }
   }

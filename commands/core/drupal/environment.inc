@@ -249,7 +249,7 @@ function drush_module_invoke_all($hook) {
   $args = func_get_args();
   // Remove $hook from the arguments.
   array_shift($args);
-  return Drupal::moduleHandler()->invokeAll($hook, $args);
+  return \Drupal::moduleHandler()->invokeAll($hook, $args);
 }
 
 /**

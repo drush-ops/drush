@@ -273,7 +273,7 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
     return drush_set_error('DRUSH_CONFIG_ERROR', dt('No config value specified.'));
   }
 
-  $config = Drupal::configFactory()->getEditable($config_name);
+  $config = \Drupal::configFactory()->getEditable($config_name);
   // Check to see if config key already exists.
   if ($config->get($key) === NULL) {
     $new_key = TRUE;
@@ -437,7 +437,7 @@ function _drush_config_export($destination, $destination_dir, $branch) {
     // Retrieve a list of differences between the active and target configuration (if any).
     $target_storage = new FileStorage($destination_dir);
     /** @var \Drupal\Core\Config\StorageInterface $active_storage */
-    $active_storage = Drupal::service('config.storage');
+    $active_storage = \Drupal::service('config.storage');
     $comparison_source = $active_storage;
 
     // If the output is being filtered, then write a temporary copy before doing
@@ -455,7 +455,7 @@ function _drush_config_export($destination, $destination_dir, $branch) {
       }
     }
 
-    $config_comparer = new StorageComparer($comparison_source, $target_storage, Drupal::service('config.manager'));
+    $config_comparer = new StorageComparer($comparison_source, $target_storage, \Drupal::service('config.manager'));
     if (!$config_comparer->createChangelist()->hasChanges()) {
       return drush_log(dt('The active configuration is identical to the configuration in the export directory (!target).', array('!target' => $destination_dir)), LogLevel::OK);
     }
@@ -483,7 +483,7 @@ function _drush_config_export($destination, $destination_dir, $branch) {
   }
 
   // Write all .yml files.
-  $source_storage = Drupal::service('config.storage');
+  $source_storage = \Drupal::service('config.storage');
   $destination_storage = new FileStorage($destination_dir);
   // If there are any filters, then attach them to the destination storage
   if (!empty($storage_filters)) {
@@ -606,7 +606,7 @@ function drush_config_import($source = NULL) {
 
   // Determine $source_storage in partial and non-partial cases.
   /** @var \Drupal\Core\Config\StorageInterface $active_storage */
-  $active_storage = Drupal::service('config.storage');
+  $active_storage = \Drupal::service('config.storage');
   if (drush_get_option('partial')) {
     $source_storage = new StorageReplaceDataWrapper($active_storage);
     $file_storage = new FileStorage($source_dir);
@@ -628,7 +628,7 @@ function drush_config_import($source = NULL) {
   }
 
   /** @var \Drupal\Core\Config\ConfigManagerInterface $config_manager */
-  $config_manager = Drupal::service('config.manager');
+  $config_manager = \Drupal::service('config.manager');
   $storage_comparer = new StorageComparer($source_storage, $active_storage, $config_manager);
 
 
@@ -667,14 +667,14 @@ function drush_config_import($source = NULL) {
 function _drush_config_import(StorageComparer $storage_comparer) {
   $config_importer = new ConfigImporter(
     $storage_comparer,
-    Drupal::service('event_dispatcher'),
-    Drupal::service('config.manager'),
-    Drupal::lock(),
-    Drupal::service('config.typed'),
-    Drupal::moduleHandler(),
-    Drupal::service('module_installer'),
-    Drupal::service('theme_handler'),
-    Drupal::service('string_translation')
+    \Drupal::service('event_dispatcher'),
+    \Drupal::service('config.manager'),
+    \Drupal::lock(),
+    \Drupal::service('config.typed'),
+    \Drupal::moduleHandler(),
+    \Drupal::service('module_installer'),
+    \Drupal::service('theme_handler'),
+    \Drupal::service('string_translation')
   );
   if ($config_importer->alreadyImporting()) {
     drush_log('Another request may be synchronizing configuration already.', LogLevel::WARNING);
@@ -705,7 +705,7 @@ function _drush_config_import(StorageComparer $storage_comparer) {
 function drush_config_edit($config_name = '') {
   // Identify and validate input.
   if ($config_name) {
-    $config = Drupal::configFactory()->get($config_name);
+    $config = \Drupal::configFactory()->get($config_name);
     if ($config->isNew()) {
       return drush_set_error(dt('Config !name does not exist', array('!name' => $config_name)));
     }
@@ -718,7 +718,7 @@ function drush_config_edit($config_name = '') {
     }
     else {
       $config_name = $config_names[$choice];
-      $config = Drupal::configFactory()->get($config_name);
+      $config = \Drupal::configFactory()->get($config_name);
     }
   }
 
