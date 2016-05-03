@@ -374,9 +374,9 @@ function _views_drush_op($op = '', array $view_names = array()) {
     return drush_set_error(dt('Invalid op type'));
   }
 
-  $view_names = MapArray::copyValuesToKeys($view_names);
+  $view_names = array_combine($view_names, $view_names);
 
-  if ($views = \Drupal::entityManager()->getStorageController('view')->loadMultiple($view_names)) {
+  if ($views = \Drupal::entityManager()->getStorage('view')->loadMultiple($view_names)) {
     foreach ($views as $view) {
       $tokens = array('@view' => $view->id(), '@action' => $op_types[$op]['action']);
 
@@ -483,5 +483,5 @@ function views_views_disable_complete() {
  */
 function _drush_views_complete() {
   drush_bootstrap_max();
-  return array('values' => array_keys(\Drupal::entityManager()->getStorageController('view')->loadMultiple()));
+  return array('values' => array_keys(\Drupal::entityManager()->getStorage('view')->loadMultiple()));
 }
