@@ -149,7 +149,9 @@ class DrupalBoot8 extends DrupalBoot {
         }
         foreach ((array)$commandfileClasses as $commandfileClass) {
           $service = $container->get((string)$commandfileClass);
-          annotationcommand_adapter_cache_module_service_commands($service);
+          $reflectionClass = new \ReflectionClass($service);
+          $commandfile = basename($reflectionClass->getFileName(), '.php');
+          annotationcommand_adapter_cache_module_service_commands($service, $commandfile);
         }
       }
     }

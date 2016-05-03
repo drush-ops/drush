@@ -162,7 +162,7 @@ function annotationcommand_adapter_get_commands($annotation_commandfiles) {
   return $commands;
 }
 
-function annotationcommand_adapter_cache_module_service_commands($commandhandler, $commandfile_path = '') {
+function annotationcommand_adapter_cache_module_service_commands($commandhandler, $commandfile_path) {
   $module_service_commands = drush_get_context('DRUSH_MODULE_SERVICE_COMMANDS');
   $commands = annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path);
   drush_set_context('DRUSH_MODULE_SERVICE_COMMANDS', array_merge($commands, $module_service_commands));
@@ -171,19 +171,24 @@ function annotationcommand_adapter_cache_module_service_commands($commandhandler
 function annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path) {
   $factory = annotationcommand_adapter_get_factory();
   $commands = [];
+  $commandfile = basename($commandfile_path, '.php');
 
   $commandinfo_list = $factory->getCommandInfoListFromClass($commandhandler);
 
   foreach ($commandinfo_list as $commandinfo) {
     $aliases = $commandinfo->getAliases();
     $command_name = strtolower($commandinfo->getName());
-    $aliases[] = str_replace(':', '-', $command_name);
-    $commandfile = ''; // what value should this take?
+    $standard_alias = str_replace(':', '-', $command_name);
+    if ($command_name != $standard_alias) {
+      $aliases[] = $standard_alias;
+    }
     $command = [
       'name' => $command_name,
       //'callback' => [$commandhandler, $commandinfo->getMethodName()],
       'callback' => 'annotationcommand_adapter_process_command',
       'annotated-command-callback' => [$commandhandler, $commandinfo->getMethodName()],
+      'commandfile' => $commandfile,
+      'category' => $commandfile,
       'options' => [],
       'arguments' => [],
       'description' => $commandinfo->getDescription(),
