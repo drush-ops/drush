@@ -1,21 +1,21 @@
 Install/Upgrade a global Drush
 ---------------
-```bash    
+```sh
 # Download latest stable release using the code below or browse to github.com/drush-ops/drush/releases.
-wget http://files.drush.org/drush.phar
-# Or use our upcoming release: wget http://files.drush.org/drush-unstable.phar  
+php -r "readfile('http://files.drush.org/drush.phar');" > drush
+# Or use our upcoming release: php -r "readfile('http://files.drush.org/drush-unstable.phar');" > drush
 
 # Test your install.
-php drush.phar core-status
+php drush core-status
 
-# Rename to `drush` instead of `php drush.phar`. Destination can be anywhere on $PATH. 
-chmod +x drush.phar
-sudo mv drush.phar /usr/local/bin/drush
+# Make `drush` executable as a command from anywhere. Destination can be anywhere on $PATH.
+chmod +x drush
+sudo mv drush /usr/local/bin
 
 # Optional. Enrich the bash startup file with completion and aliases.
 drush init
 ```
-    
+
 * MAMP users, and anyone wishing to launch a non-default PHP, needs to [edit ~/.bashrc so that the right PHP is in your $PATH](http://stackoverflow.com/questions/4145667/how-to-override-the-path-of-php-to-use-the-mamp-path/10653443#10653443).
 * We have documented [alternative ways to install](http://docs.drush.org/en/master/install-alternative/), including [Windows](http://docs.drush.org/en/master/install-alternative/#windows).
 * If you need to pass custom php.ini values, run `php -d foo=bar drush.phar --php-options=foo=bar`
