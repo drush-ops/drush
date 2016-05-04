@@ -56,10 +56,6 @@ class FindCommandsCompilerPass implements CompilerPassInterface
             $this->storageClassId
         );
 
-        if ($container->has('woot.manager')) {
-          drush_log(dt("container has a woot.manager!"), LogLevel::DEBUG);
-        }
-
         $taggedServices = $container->findTaggedServiceIds(
             $this->tagId
         );

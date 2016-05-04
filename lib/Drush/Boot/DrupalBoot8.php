@@ -5,8 +5,8 @@ namespace Drush\Boot;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Psr\Log\LoggerInterface;
-//use Drupal\Core\DrupalKernel;
-use Drush\Drupal\DrupalKernel;
+use Drupal\Core\DrupalKernel;
+use Drush\Drupal\DrupalKernel as DrushDrupalKernel;
 use Drush\Drupal\DrushServiceModfier;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -120,7 +120,13 @@ class DrupalBoot8 extends DrupalBoot {
     $this->request = Request::createFromGlobals();
     $classloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
     // @todo - use Request::create() and then no need to set PHP superglobals
-    $this->kernel = DrupalKernel::createFromRequest($this->request, $classloader, 'prod');
+    $kernelClass = new \ReflectionClass('\Drupal\Core\DrupalKernel');
+    if ($kernelClass->hasMethod('addServiceModifier')) {
+      $this->kernel = DrupalKernel::createFromRequest($this->request, $classloader, 'prod');
+    }
+    else {
+      $this->kernel = DrushDrupalKernel::createFromRequest($this->request, $classloader, 'prod');
+    }
     // @see Drush\Drupal\DrupalKernel::addServiceModifier()
     $this->kernel->addServiceModifier(new DrushServiceModfier());
 
