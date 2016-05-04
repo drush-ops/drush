@@ -7,6 +7,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * This is a literal copy of the example Symfony Console command
+ * from the documentation.
+ *
+ * See: http://symfony.com/doc/2.7/components/console/introduction.html#creating-a-basic-command
+ */
 class GreetCommand extends Command
 {
     protected function configure()

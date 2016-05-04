@@ -1,7 +1,6 @@
 <?php
 namespace Drush\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Drush\Log\LogLevel;
 
 /**
@@ -9,10 +8,9 @@ use Drush\Log\LogLevel;
  * Drupal Kernel is booted.
  */
 class ServiceCommandlist {
-    /** @var Symfony\Console\Command\Command[] */
     protected $commandList = [];
 
-    public function addCommandReference(Command $command)
+    public function addCommandReference($command)
     {
         drush_log(dt("add command reference"), LogLevel::DEBUG);
         $this->commandList[] = $command;
