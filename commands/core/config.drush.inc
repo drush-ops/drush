@@ -32,7 +32,7 @@ function config_drush_help($section) {
  * Implementation of hook_drush_command().
  */
 function config_drush_command() {
-  $deps = array('drupal dependencies' => arraym);
+  $deps = array('drupal dependencies' => array('config'));
   $items['config-get'] = array(
     'description' => 'Display a config value, or a whole configuration object.',
     'arguments' => array(
