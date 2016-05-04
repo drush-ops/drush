@@ -32,7 +32,7 @@ function config_drush_help($section) {
  * Implementation of hook_drush_command().
  */
 function config_drush_command() {
-  $deps = array('drupal dependencies' => 'config');
+  $deps = array('drupal dependencies' => arraym);
   $items['config-get'] = array(
     'description' => 'Display a config value, or a whole configuration object.',
     'arguments' => array(
@@ -161,7 +161,7 @@ function config_drush_command() {
     ),
   );
 
-  $items['config-edit'] = array(
+  $items['config-edit'] = $deps + array(
     'description' => 'Open a config file in a text editor. Edits are imported into active configuration after closing editor.',
     'core' => array('8+'),
     'aliases' => array('cedit'),
