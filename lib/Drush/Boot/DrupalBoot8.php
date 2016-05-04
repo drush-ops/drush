@@ -145,8 +145,14 @@ class DrupalBoot8 extends DrupalBoot {
 
     parent::bootstrap_drupal_full();
 
+    // This appears to be necessary; I'm not sure if, perhaps, we might
+    // be able to move the code below to some point after some later container
+    // rebuild (if available).
     drush_log(dt('Rebuild the container.'), LogLevel::DEBUG);
     $this->kernel->rebuildContainer();
+
+    // Get a list of the modules to ignore
+    $ignored_modules = drush_get_option_list('ignored-modules', array());
 
     // We have to get the service command list from the container, because
     // it is constructed in an indirect way during the container initialization.
@@ -156,9 +162,29 @@ class DrupalBoot8 extends DrupalBoot {
 //  annotationcommand_adapter_cache_module_service_commands($service, $commandfile);
     $serviceCommandlist = $container->get('drush.service.consolecommands');
     foreach ($serviceCommandlist->getCommandList() as $command) {
-      drush_log(dt('Add a command: !name', ['!name' => $command->getName()]), LogLevel::DEBUG);
-      drush_add_command_to_application(\Drush::getContainer(), $command);
+      if (!$this->commandIgnored($command, $ignored_modules)) {
+        drush_log(dt('Add a command: !name', ['!name' => $command->getName()]), LogLevel::DEBUG);
+        drush_add_command_to_application(\Drush::getContainer(), $command);
+      }
     }
+    // Do the same thing with the annotation commands.
+    $serviceCommandlist = $container->get('drush.service.consolidationcommands');
+    foreach ($serviceCommandlist->getCommandList() as $commandhandler) {
+      if (!$this->commandIgnored($commandhandler, $ignored_modules)) {
+        drush_log(dt('Add a commandhandler: !name', ['!name' => get_class($commandhandler)]), LogLevel::DEBUG);
+        drush_create_commands_from_command_instance(\Drush::getContainer(), $commandhandler);
+      }
+    }
+  }
+
+  public function commandIgnored($command, $ignored_modules) {
+    if (empty($ignored_modules)) {
+      return false;
+    }
+    $ignored_regex = '#\\\\(' . implode('|', $ignored_modules) . ')\\\\#';
+    $class = new \ReflectionClass($command);
+    $commandNamespace = $class->getNamespaceName();
+    return preg_match($ignored_regex, $commandNamespace);
   }
 
   /**
