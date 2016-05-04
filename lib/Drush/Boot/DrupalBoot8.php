@@ -4,7 +4,13 @@ namespace Drush\Boot;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Drupal\Core\DrupalKernel;
+use Psr\Log\LoggerInterface;
+//use Drupal\Core\DrupalKernel;
+use Drush\Drupal\DrupalKernel;
+use Drush\Drupal\DrushServiceModfier;
+use Symfony\Component\DependencyInjection\Reference;
+
+use Drush\Log\LogLevel;
 
 class DrupalBoot8 extends DrupalBoot {
 
@@ -115,6 +121,8 @@ class DrupalBoot8 extends DrupalBoot {
     $classloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
     // @todo - use Request::create() and then no need to set PHP superglobals
     $this->kernel = DrupalKernel::createFromRequest($this->request, $classloader, 'prod');
+    // @see Drush\Drupal\DrupalKernel::addServiceModifier()
+    $this->kernel->addServiceModifier(new DrushServiceModfier());
 
     // Unset drupal error handler and restore Drush's one.
     restore_error_handler();
@@ -123,37 +131,33 @@ class DrupalBoot8 extends DrupalBoot {
   }
 
   function bootstrap_drupal_full() {
-    if (!drush_get_context('DRUSH_QUIET', FALSE)) {
-      ob_start();
-    }
+    drush_log(dt('About to bootstrap the Drupal 8 Kernel.'), LogLevel::DEBUG);
+    // TODO: do we need to do ob_start any longer?
+//    if (!drush_get_context('DRUSH_QUIET', FALSE)) {
+//      ob_start();
+//    }
     $this->kernel->boot();
     $this->kernel->prepareLegacyRequest($this->request);
-    if (!drush_get_context('DRUSH_QUIET', FALSE)) {
-      ob_end_clean();
-    }
+//    if (!drush_get_context('DRUSH_QUIET', FALSE)) {
+//      ob_end_clean();
+//    }
+    drush_log(dt('Finished bootstraping the Drupal 8 Kernel.'), LogLevel::DEBUG);
 
     parent::bootstrap_drupal_full();
 
-    // After we fully bootstrap, we will check and see if any modules have
-    // a paramter in the module's services.yml file MODULENAME.commands
-    // that stipulates the services that contain commands.
-    $ignored_modules = drush_get_option_list('ignored-modules', array());
+    drush_log(dt('Rebuild the container.'), LogLevel::DEBUG);
+    $this->kernel->rebuildContainer();
+
+    // We have to get the service command list from the container, because
+    // it is constructed in an indirect way during the container initialization.
+    // The upshot is that the list of console commands is not available
+    // until after $kernel->boot() is called.
     $container = \Drupal::getContainer();
-    foreach (array_diff(drush_module_list(), $ignored_modules) as $module) {
-      // Check for commands declared via a module's services.yml file
-      $parameterName = $module . '.commands';
-      if ($container->hasParameter($parameterName)) {
-        $commandfileClasses = $container->getParameter($parameterName);
-        if (!is_array($commandfileClasses)) {
-          $commandfileClasses = [$commandfileClasses];
-        }
-        foreach ((array)$commandfileClasses as $commandfileClass) {
-          $service = $container->get((string)$commandfileClass);
-          $reflectionClass = new \ReflectionClass($service);
-          $commandfile = basename($reflectionClass->getFileName(), '.php');
-          annotationcommand_adapter_cache_module_service_commands($service, $commandfile);
-        }
-      }
+//  annotationcommand_adapter_cache_module_service_commands($service, $commandfile);
+    $serviceCommandlist = $container->get('drush.service.consolecommands');
+    foreach ($serviceCommandlist->getCommandList() as $command) {
+      drush_log(dt('Add a command: !name', ['!name' => $command->getName()]), LogLevel::DEBUG);
+      drush_add_command_to_application(\Drush::getContainer(), $command);
     }
   }
 
