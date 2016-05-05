@@ -1655,8 +1655,6 @@ function pm_parse_version($version, $is_core = FALSE) {
  *   Array with all parts of the request info.
  */
 function pm_parse_request($request_string, $status_url = NULL, &$projects = array()) {
-  $request = array();
-
   // Split $request_string in project name and version. Note that hyphens (-)
   // are permitted in project names (ex: field-conditional-state).
   // We use a regex to split the string. The pattern used matches a string
