@@ -165,12 +165,11 @@ class DrupalBoot8 extends DrupalBoot {
     // The upshot is that the list of console commands is not available
     // until after $kernel->boot() is called.
     $container = \Drupal::getContainer();
-//  annotationcommand_adapter_cache_module_service_commands($service, $commandfile);
     $serviceCommandlist = $container->get('drush.service.consolecommands');
     foreach ($serviceCommandlist->getCommandList() as $command) {
       if (!$this->commandIgnored($command, $ignored_modules)) {
         drush_log(dt('Add a command: !name', ['!name' => $command->getName()]), LogLevel::DEBUG);
-        drush_add_command_to_application(\Drush::getContainer(), $command);
+        annotationcommand_adapter_cache_module_console_commands($command);
       }
     }
     // Do the same thing with the annotation commands.
@@ -178,7 +177,7 @@ class DrupalBoot8 extends DrupalBoot {
     foreach ($serviceCommandlist->getCommandList() as $commandhandler) {
       if (!$this->commandIgnored($commandhandler, $ignored_modules)) {
         drush_log(dt('Add a commandhandler: !name', ['!name' => get_class($commandhandler)]), LogLevel::DEBUG);
-        drush_create_commands_from_command_instance(\Drush::getContainer(), $commandhandler);
+        annotationcommand_adapter_cache_module_service_commands($commandhandler);
       }
     }
   }

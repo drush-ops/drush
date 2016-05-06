@@ -11,6 +11,7 @@ use Consolidation\AnnotatedCommand\CommandProcessor;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\FormatterOptions;
+use Symfony\Component\Console\Input\ArrayInput;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -55,7 +56,7 @@ function annotationcommand_adapter_get_processor() {
     $hook_manager = new HookManager();
     // AlterResultInterface
     $resultAlterer =
-    $hook_manager->add('*', HookManager::EXTRACT_OUTPUT, 'annotatedcomand_adapter_backend_result');
+    $hook_manager->add('annotatedcomand_adapter_backend_result', HookManager::EXTRACT_OUTPUT);
     $processor = new CommandProcessor($hook_manager);
     $processor->setFormatterManager(annotatedcomand_adapter_get_formatter());
   }
@@ -121,15 +122,58 @@ function annotationcommand_adapter_discover($searchpath, $phase = false, $phase_
   );
 }
 
-function annotationcommand_adapter_process_command() {
-  $commandprocessor = annotationcommand_adapter_get_processor();
+function annotationcommand_adapter_run_console_command() {
   $args = func_get_args();
   $command = drush_get_command();
-  $default_options = $command['consolidation-option-defaults'];
-  if (!empty($default_options)) {
-    $command_options = array_pop($args);
-    $args[] = $command_options + $default_options;
+
+  $console_command = $command['drush-console-command'];
+  // TODO: Build an appropriate input object
+  $input = annotationcommand_adapter_build_input($console_command, $args);
+  $output = new ConsoleOutput();
+  $result = $console_command->run($input, $output);
+
+  return $result;
+}
+
+function annotationcommand_adapter_build_input($console_command, $userArgs) {
+  $args = [];
+  $defaultOptions = [];
+  $definition = $console_command->getDefinition();
+  $inputArguments = $definition->getArguments();
+  foreach ($inputArguments as $key => $inputOption) {
+    $value = array_shift($userArgs);
+    if (!isset($value)) {
+      $value = $inputOption->getDefault();
+    }
+    $args[$key] = $value;
   }
+  $inputOptions = $definition->getOptions();
+  foreach ($inputOptions as $option => $inputOption) {
+    $defaultOptions[$option] = $inputOption->getDefault();
+  }
+  foreach ($defaultOptions as $option => $value) {
+    $args["--$option"] = drush_get_option($option, $value);
+  }
+  // TODO: Need to add global options. Note that ArrayInput is validated.
+  $input = new ArrayInput($args, $definition);
+  return $input;
+}
+
+function annotationcommand_adapter_process_command() {
+  $userArgs = func_get_args();
+  $commandprocessor = annotationcommand_adapter_get_processor();
+  $command = drush_get_command();
+  $args = [];
+  foreach ($command['consolidation-arg-defaults'] as $key => $default) {
+    $value = array_shift($userArgs);
+    if (!isset($value)) {
+      $value = $default;
+    }
+    $args[$key] = $value;
+  }
+  $default_options = $command['consolidation-option-defaults'];
+  $options = drush_redispatch_get_options() + $default_options;
+  $args[] = $options;
 
   $output = new ConsoleOutput();
   $names = array_merge([$command['command']], $command['aliases']);
@@ -162,10 +206,66 @@ function annotationcommand_adapter_get_commands($annotation_commandfiles) {
   return $commands;
 }
 
-function annotationcommand_adapter_cache_module_service_commands($commandhandler, $commandfile_path) {
+function annotationcommand_adapter_cache_module_console_commands($console_command, $commandfile_path = null) {
+  if (!isset($commandfile_path)) {
+    $class = new \ReflectionClass($console_command);
+    $commandfile_path = $class->getFileName();
+  }
+  $module_service_commands = drush_get_context('DRUSH_MODULE_SERVICE_COMMANDS');
+  $commands = annotationcommand_adapter_get_command_for_console_command($console_command, $commandfile_path);
+  drush_set_context('DRUSH_MODULE_SERVICE_COMMANDS', array_merge($commands, $module_service_commands));
+}
+
+function annotationcommand_adapter_cache_module_service_commands($commandhandler, $commandfile_path = null) {
+  if (!isset($commandfile_path)) {
+    $class = new \ReflectionClass($commandhandler);
+    $commandfile_path = $class->getFileName();
+  }
   $module_service_commands = drush_get_context('DRUSH_MODULE_SERVICE_COMMANDS');
   $commands = annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path, false);
   drush_set_context('DRUSH_MODULE_SERVICE_COMMANDS', array_merge($commands, $module_service_commands));
+}
+
+function annotationcommand_adapter_get_command_for_console_command($console_command, $commandfile_path) {
+  $commands = [];
+  $commandfile = basename($commandfile_path, '.php');
+  $factory = annotationcommand_adapter_get_factory();
+  $inputDefinition = $console_command->getDefinition();
+  $inputArguments = $inputDefinition->getArguments();
+  $inputOptions = $inputDefinition->getOptions();
+  $aliases = $console_command->getAliases();
+  $command_name = strtolower($console_command->getName());
+  $standard_alias = str_replace(':', '-', $command_name);
+  if ($command_name != $standard_alias) {
+    $aliases[] = $standard_alias;
+  }
+  $command = [
+    'name' => $command_name,
+    'callback' => 'annotationcommand_adapter_run_console_command',
+    'drush-console-command' => $console_command,
+    'commandfile' => $commandfile,
+    'category' => $commandfile,
+    'options' => [],
+    'arguments' => [],
+    'description' => $console_command->getDescription(),
+    'examples' => $console_command->getUsages(),
+    'aliases' => $aliases,
+  ];
+  foreach ($inputArguments as $arg => $inputArg) {
+    $command['arguments'][$arg] = $inputArg->getDescription();
+  }
+  $command['required-arguments'] = $inputDefinition->getArgumentRequiredCount();
+  foreach ($inputOptions as $option => $inputOption) {
+    $description = $inputOption->getDescription();
+    $default = $inputOption->getDefault();
+    $command['options'][$option] = ['description' => $description];
+    if (!empty($default)) {
+      $command['options'][$option]['example-value'] = $default;
+    }
+  }
+  $command += drush_command_defaults($command_name, $commandfile, $commandfile_path);
+  $commands[$command_name] = $command;
+  return $commands;
 }
 
 function annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path, $includeAllPublicMethods = true) {
@@ -197,6 +297,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       'add-options-to-arguments' => TRUE,
       'consolidation-output-formatters' => TRUE,
       'consolidation-option-defaults' => $commandinfo->options()->getValues(),
+      'consolidation-arg-defaults' => $commandinfo->arguments()->getValues(),
     ];
     $required_arguments = 0;
     foreach ($commandinfo->arguments()->getValues() as $arg => $default) {
