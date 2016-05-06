@@ -139,23 +139,17 @@ class DrupalBoot8 extends DrupalBoot {
   function bootstrap_drupal_full() {
     drush_log(dt('About to bootstrap the Drupal 8 Kernel.'), LogLevel::DEBUG);
     // TODO: do we need to do ob_start any longer?
-//    if (!drush_get_context('DRUSH_QUIET', FALSE)) {
-//      ob_start();
-//    }
+    if (!drush_get_context('DRUSH_QUIET', FALSE)) {
+      ob_start();
+    }
     $this->kernel->boot();
     $this->kernel->prepareLegacyRequest($this->request);
-//    if (!drush_get_context('DRUSH_QUIET', FALSE)) {
-//      ob_end_clean();
-//    }
+    if (!drush_get_context('DRUSH_QUIET', FALSE)) {
+      ob_end_clean();
+    }
     drush_log(dt('Finished bootstraping the Drupal 8 Kernel.'), LogLevel::DEBUG);
 
     parent::bootstrap_drupal_full();
-
-    // This appears to be necessary; I'm not sure if, perhaps, we might
-    // be able to move the code below to some point after some later container
-    // rebuild (if available).
-    drush_log(dt('Rebuild the container.'), LogLevel::DEBUG);
-    $this->kernel->rebuildContainer();
 
     // Get a list of the modules to ignore
     $ignored_modules = drush_get_option_list('ignored-modules', array());
