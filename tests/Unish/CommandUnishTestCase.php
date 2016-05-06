@@ -386,12 +386,30 @@ abstract class CommandUnishTestCase extends UnishTestCase {
   function assertLogHasMessage($log, $message, $logType = FALSE) {
     foreach ($log as $entry) {
       if (!$logType || ($entry['type'] == $logType)) {
-        if (strpos($entry['message'], $message) !== FALSE) {
+        $logMessage = $this->getLogMessage($entry);
+        if (strpos($logMessage, $message) !== FALSE) {
           return TRUE;
         }
       }
     }
     $this->fail("Could not find expected message in log: " . $message);
+  }
+
+  protected function getLogMessage($entry) {
+    return $this->interpolate($entry['message'], $entry);
+  }
+
+  protected function interpolate($message, array $context)
+  {
+      // build a replacement array with braces around the context keys
+      $replace = array();
+      foreach ($context as $key => $val) {
+          if (!is_array($val) && (!is_object($val) || method_exists($val, '__toString'))) {
+              $replace[sprintf('{%s}', $key)] = $val;
+          }
+      }
+      // interpolate replacement values into the message and return
+      return strtr($message, $replace);
   }
 
   function drush_major_version() {

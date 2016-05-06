@@ -534,7 +534,7 @@ class DrushMakeProject {
   function recurse($path) {
     if (!$this->do_recursion || drush_get_option('no-recursion')) {
       drush_log(dt("Preventing recursive makefile parsing for !project",
-                array("!project" => $this->name)), LogLevel::NOTICE);
+                array("!project" => $this->name)), LogLevel::INFO);
       return TRUE;
     }
     $candidates = array(

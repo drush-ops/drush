@@ -104,10 +104,11 @@ function drush_early_complete() {
   // We use a distinct --complete-debug option to avoid unwanted debug messages
   // being printed when users use this option for other purposes in the command
   // they are trying to complete.
-  drush_set_option(LogLevel::DEBUG, FALSE);
+  drush_set_option('debug', FALSE);
   if (drush_get_option('complete-debug', FALSE)) {
-    drush_set_context('DRUSH_DEBUG', TRUE);
+    drush_set_option('debug', TRUE);
   }
+  _drush_preflight_global_options();
   // Set up as if we were running the command, and attempt to parse.
   $argv = drush_complete_process_argv();
   if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {

@@ -396,7 +396,7 @@ function drush_start_browser($uri = NULL, $sleep = FALSE, $port = FALSE) {
     // We can only open a browser if we have a DISPLAY environment variable on
     // POSIX or are running Windows or OS X.
     if (!drush_get_context('DRUSH_SIMULATE') && !getenv('DISPLAY') && !drush_is_windows() && !drush_is_osx()) {
-      drush_log(dt('No graphical display appears to be available, not starting browser.'), LogLevel::NOTICE);
+      drush_log(dt('No graphical display appears to be available, not starting browser.'), LogLevel::INFO);
       return FALSE;
     }
     $host = parse_url($uri, PHP_URL_HOST);

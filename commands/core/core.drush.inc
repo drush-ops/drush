@@ -1351,7 +1351,7 @@ function drush_core_twig_compile() {
       $relative = str_replace(drush_get_context('DRUSH_DRUPAL_ROOT'). '/', '', $file->filename);
       // @todo Dynamically disable twig debugging since there is no good info there anyway.
       twig_render_template($relative, array('theme_hook_original' => ''));
-      drush_log(dt('Compiled twig template !path', array('!path' => $relative)), LogLevel::NOTICE);
+      drush_log(dt('Compiled twig template !path', array('!path' => $relative)), LogLevel::INFO);
     }
   }
 }
