@@ -12,3 +12,7 @@ services:
     class: Drupal\woot\Command\GreetCommand
     tags:
       -  { name: console.command }
+  annotated_greet.command:
+    class: Drupal\woot\Command\AnnotatedGreetCommand
+    tags:
+      -  { name: console.command }
