@@ -142,6 +142,7 @@ class DrupalBoot8 extends DrupalBoot {
     if (!drush_get_context('DRUSH_QUIET', FALSE)) {
       ob_start();
     }
+    $this->kernel->invalidateContainer();
     $this->kernel->boot();
     $this->kernel->prepareLegacyRequest($this->request);
     if (!drush_get_context('DRUSH_QUIET', FALSE)) {
