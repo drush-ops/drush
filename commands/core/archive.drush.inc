@@ -88,7 +88,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
     }
     else {
       $sites[$key]['databases'] = array();
-      drush_log(dt('DB definition not found for !alias', array('!alias' => $key)), LogLevel::NOTICE);
+      drush_log(dt('DB definition not found for !alias', array('!alias' => $key)), LogLevel::INFO);
     }
   }
 

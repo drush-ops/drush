@@ -55,7 +55,7 @@ class Commandfiles implements CommandfilesInterface {
 	      else {
 		    // Signal that we should try again on
 		    // the next bootstrap phase.
-		    $this->deferred[$module] = $commandfile; 	
+		    $this->deferred[$module] = $commandfile;
 	      }
 	    }
 	    if ($load_command) {

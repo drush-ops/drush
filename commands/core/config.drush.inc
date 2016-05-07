@@ -832,7 +832,7 @@ function drush_config_get_object($config_name) {
     return drush_set_error(dt('Config !name does not exist in !source configuration.', array('!name' => $config_name, '!source' => $source)));
   }
   if (empty($data)) {
-    drush_log(dt('Config !name exists but has no data.', array('!name' => $config_name)), LogLevel::NOTICE);
+    drush_log(dt('Config !name exists but has no data.', array('!name' => $config_name)), LogLevel::INFO);
     return;
   }
   return $data;

@@ -53,6 +53,9 @@ class Drush {
 
   /**
    * Return the current Drush version.
+   *
+   * n.b. Called before the DI container is initialized.
+   * Do not log, etc. here.
    */
   public static function getVersion() {
     if (!static::$version) {

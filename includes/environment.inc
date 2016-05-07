@@ -27,7 +27,7 @@ function drush_error_handler($errno, $message, $filename, $line, $context) {
   // drush_errors_on() and drush_errors_off().
   if ($errno & error_reporting()) {
     // By default we log notices.
-    $type = drush_get_option('php-notices', 'notice');
+    $type = drush_get_option('php-notices', LogLevel::INFO);
     $halt_on_error = drush_get_option('halt-on-error', (drush_drupal_major_version() != 6));
 
     // Bitmask value that constitutes an error needing to be logged.
