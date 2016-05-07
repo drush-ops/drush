@@ -135,15 +135,7 @@ EOT;
         $this->assertEquals('Hello symfony', $output);
     }
 
-    // Disable the woot module to avoid cross-contamination of the Drupal
-    // test site's database. (not necessary?)
-    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
-      $this->drush('pm-uninstall', array('woot'), $options, NULL, NULL, self::EXIT_SUCCESS);
-    }
-    else {
-      $this->drush('pm-disable', array('woot'), $options, NULL, NULL, self::EXIT_SUCCESS);
-    }
-    // Also kill the Drush cache so that our 'woot' command is not cached.
+    // Clear the Drush cache so that our 'woot' command is not cached.
     $this->drush('cache-clear', array('drush'), $options, NULL, NULL, self::EXIT_SUCCESS);
   }
 
