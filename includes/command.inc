@@ -181,8 +181,15 @@ function drush_dispatch($command, $arguments = array()) {
     // remote commands and other redispatches.
     drush_preflight_tilde_expansion($command);
 
+    // Get the arguments for this command. Add the options
+    // on the end if this is that kind of command.
+    $args = $command['arguments'];
+    if ($command['add-options-to-arguments']) {
+      $args[] = drush_get_merged_options();
+    }
+
     // Call the callback function of the active command.
-    $return = call_user_func_array($command['callback'], $command['arguments']);
+    $return = call_user_func_array($command['callback'], $args);
   }
 
   // Add a final log entry, just so a timestamp appears.
@@ -1056,18 +1063,20 @@ function drush_get_commands($reset = FALSE) {
         }
 
         $commands[$key] = $command;
-        // For every alias, make a copy of the command and store it in the command list
-        // using the alias as a key
-        if (isset($command['aliases']) && count($command['aliases'])) {
-          foreach ($command['aliases'] as $alias) {
-            $commands[$alias] = $command;
-            $commands[$alias]['is_alias'] = TRUE;
-          }
-        }
       }
     }
   }
-
+  $commands = array_merge($commands, annotationcommand_adapter_commands());
+  foreach ($commands as $command) {
+    // For every alias, make a copy of the command and store it in the command list
+    // using the alias as a key
+    if (isset($command['aliases']) && count($command['aliases'])) {
+      foreach ($command['aliases'] as $alias) {
+        $commands[$alias] = $command;
+        $commands[$alias]['is_alias'] = TRUE;
+      }
+    }
+  }
   return $commands;
 }
 
@@ -1200,6 +1209,10 @@ function drush_command_defaults($key, $commandfile, $path) {
     'topics' => array(),
     'hidden' => FALSE,
     'category' => $commandfile,
+    'add-options-to-arguments' => FALSE,
+    'consolidation-output-formatters' => FALSE,
+    'annotated-command-callback' => '',
+    'annotations' => [],
   );
   // We end up here, setting the defaults for a command, when
   // called from drush_get_global_options().  Early in the Drush
@@ -1517,6 +1530,7 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
   if ($bootstrap = drush_get_bootstrap_object()) {
     $searchpath = $bootstrap->commandfile_searchpaths($phase, $phase_max);
     _drush_add_commandfiles($searchpath, $phase);
+    annotationcommand_adapter_discover($searchpath, $phase, $phase_max);
   }
 }
 

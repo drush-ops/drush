@@ -75,6 +75,9 @@ function drush_main() {
     $bootstrap->terminate();
   }
   drush_postflight();
+  if (is_object($return)) {
+    $return = 0;
+  }
 
   // How strict are we?  If we are very strict, turn 'ok' into 'error'
   // if there are any warnings in the log.
@@ -120,6 +123,7 @@ function drush_preflight_prepare() {
   require_once DRUSH_BASE_PATH . '/includes/startup.inc';
   require_once DRUSH_BASE_PATH . '/includes/bootstrap.inc';
   require_once DRUSH_BASE_PATH . '/includes/environment.inc';
+  require_once DRUSH_BASE_PATH . '/includes/annotationcommand_adapter.inc';
   require_once DRUSH_BASE_PATH . '/includes/command.inc';
   require_once DRUSH_BASE_PATH . '/includes/drush.inc';
   require_once DRUSH_BASE_PATH . '/includes/engines.inc';
