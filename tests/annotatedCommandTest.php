@@ -80,7 +80,7 @@ class annotatedCommandCase extends CommandUnishTestCase {
   Uno    Dos    Tres
  ------ ------ -------
 EOT;
-    $this->assertEquals($expected, $output);
+    $this->assertEquals(trim($expected), trim($output));
 
     $this->drush('try-formatters --format=yaml --fields=III,II', array(), $options, NULL, NULL, self::EXIT_SUCCESS);
     $output = $this->getOutput();
