@@ -67,16 +67,16 @@ class annotatedCommandCase extends CommandUnishTestCase {
     $this->drush('try-formatters', array(), $options, NULL, NULL, self::EXIT_SUCCESS);
     $output = $this->getOutput();
     $expected = <<<EOT
-+------+------+-------+
-| I    | II   | III   |
-+------+------+-------+
-| One  | Two  | Three |
-| Eins | Zwei | Drei  |
-| Ichi | Ni   | San   |
-| Uno  | Dos  | Tres  |
-+------+------+-------+
+ ------ ------ -------
+  I      II     III
+ ------ ------ -------
+  One    Two    Three
+  Eins   Zwei   Drei
+  Ichi   Ni     San
+  Uno    Dos    Tres
+ ------ ------ -------
 EOT;
-    $this->assertEquals($expected, $output);
+    $this->assertEquals(trim(preg_replace('#[ \n]+#', ' ', $expected)), trim(preg_replace('#[ \n]+#', ' ', $output)));
 
     $this->drush('try-formatters --format=yaml --fields=III,II', array(), $options, NULL, NULL, self::EXIT_SUCCESS);
     $output = $this->getOutput();

@@ -60,16 +60,16 @@
         },
         {
             "name": "consolidation/output-formatters",
-            "version": "1.0.0-beta5",
+            "version": "1.0.0-beta6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation-org/output-formatters.git",
-                "reference": "777f0a58b2ecdcff7c1bd2f2c444c8256068a0a7"
+                "reference": "752d678cb047bb609656f5dcd913b5b9e890c396"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation-org/output-formatters/zipball/777f0a58b2ecdcff7c1bd2f2c444c8256068a0a7",
-                "reference": "777f0a58b2ecdcff7c1bd2f2c444c8256068a0a7",
+                "url": "https://api.github.com/repos/consolidation-org/output-formatters/zipball/752d678cb047bb609656f5dcd913b5b9e890c396",
+                "reference": "752d678cb047bb609656f5dcd913b5b9e890c396",
                 "shasum": ""
             },
             "require": {
@@ -103,7 +103,7 @@
                 }
             ],
             "description": "Format text by applying transformations provided by plug-in formatters.",
-            "time": "2016-04-29 22:31:04"
+            "time": "2016-05-07 04:50:17"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
