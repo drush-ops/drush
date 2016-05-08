@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5bd57ac012915f836165419817f9cf4f",
-    "content-hash": "cf07eeece6d4d8decc73cc6b01f8ad80",
+    "hash": "00fe3eed3112a99ae89c3aeb9ce3897c",
+    "content-hash": "cb246b3591178af7819e982fea8dcc99",
     "packages": [
         {
             "name": "codegyre/robo",
@@ -175,16 +175,16 @@
         },
         {
             "name": "consolidation/output-formatters",
-            "version": "1.0.0-beta5",
+            "version": "1.0.0-beta6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation-org/output-formatters.git",
-                "reference": "777f0a58b2ecdcff7c1bd2f2c444c8256068a0a7"
+                "reference": "752d678cb047bb609656f5dcd913b5b9e890c396"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation-org/output-formatters/zipball/777f0a58b2ecdcff7c1bd2f2c444c8256068a0a7",
-                "reference": "777f0a58b2ecdcff7c1bd2f2c444c8256068a0a7",
+                "url": "https://api.github.com/repos/consolidation-org/output-formatters/zipball/752d678cb047bb609656f5dcd913b5b9e890c396",
+                "reference": "752d678cb047bb609656f5dcd913b5b9e890c396",
                 "shasum": ""
             },
             "require": {
@@ -218,7 +218,7 @@
                 }
             ],
             "description": "Format text by applying transformations provided by plug-in formatters.",
-            "time": "2016-04-29 22:31:04"
+            "time": "2016-05-07 04:50:17"
         },
         {
             "name": "container-interop/container-interop",
@@ -2045,7 +2045,7 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "beta",
     "stability-flags": {
         "codegyre/robo": 10,
         "consolidation/annotated-command": 10,
