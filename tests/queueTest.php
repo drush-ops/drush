@@ -45,5 +45,17 @@ class QueueCase extends CommandUnishTestCase {
     $output = trim($this->getOutput());
     $parts = explode(",", $output);
     $this->assertEquals(str_replace('%items', 0, $expected), $output, 'Queue item processed.');
+
+    // Add another item to the queue and make sure it was deleted.
+    $this->drush('php-script', array('queue_script-D' . UNISH_DRUPAL_MAJOR_VERSION), $options + array('script-path' => dirname(__FILE__) . '/resources'));
+    $this->drush('queue-list', array(), $options + array('pipe' => TRUE));
+    $output = trim($this->getOutput());
+    $this->assertEquals(str_replace('%items', 1, $expected), $output, 'Item was successfully added to the queue.');
+
+    $this->drush('queue-delete', array('aggregator_feeds'), $options);
+
+    $this->drush('queue-list', array(), $options + array('pipe' => TRUE));
+    $output = trim($this->getOutput());
+    $this->assertEquals(str_replace('%items', 0, $expected), $output, 'Queue was successfully deleted.');
   }
 }
