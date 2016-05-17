@@ -117,7 +117,7 @@ function config_drush_command() {
     ),
   );
 
-  $items['config-import'] = $deps + array(
+  $items['config-import'] = array(
     'description' => 'Import config from a config directory.',
     'arguments' => array(
       'label' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'sync'",
@@ -549,6 +549,11 @@ function _drush_config_export($destination, $destination_dir, $branch) {
 }
 
 function drush_config_import_validate() {
+  drush_include_engine('drupal', 'environment');
+  if (drush_get_option('partial') && !drush_module_exists('config')) {
+    return drush_set_error('config_import_partial', 'Enable the config module in order to use the --partial option.');
+  }
+  
   if ($source = drush_get_option('source')) {
     if (!file_exists($source)) {
       return drush_set_error('config_import_target', 'The source directory does not exist.');
