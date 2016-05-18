@@ -33,9 +33,9 @@ function make_download_pm($name, $type, $download, $download_location) {
     'yes' => TRUE,
     'package-handler' => 'wget',
     'source' => $download['status url'],
-    // This is only relevant for profiles, but we always want the variant to
+    // This is only relevant for profiles, but we generally want the variant to
     // be 'profile-only' so we don't end up with extra copies of core.
-    'variant' => $type == 'core' ? 'full' : 'profile-only',
+    'variant' => $type == 'core' ? 'full' : $download['variant'],
     'cache' => TRUE,
   );
   if ($type == 'core') {
