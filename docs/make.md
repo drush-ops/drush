@@ -192,6 +192,13 @@ Do not use both types of declarations for a single project in your makefile.
           - es
           - fr
 
+- `do_recursion`
+
+  Recursively build an included makefile. Defaults to 'true'. 
+
+        do_recursion: false
+
+
 ### Project download options
 
   Use an alternative download method instead of retrieval through update XML.
@@ -476,6 +483,7 @@ setting the corresponding key to NULL:
 
 Recursion
 ---------
+
 If a project that is part of a build contains a `.make.yml` itself, Drush make will
 automatically parse it and recurse into a derivative build.
 
@@ -507,18 +515,32 @@ directory. Subdirectories will be ignored.
 
 **Build a full Drupal site with the Managing News install profile:**
 
-    core = 6.x
+    core: 6.x
+    api: 2
     projects:
       - drupal
       - managingnews
 
 ** Use a distribution as core **
 
-    core = 7.x
+    core: 7.x
+    api: 2
     projects:
       commerce_kickstart:
         type: "core"
         version: "7.x-1.19"
+
+This behavior can be overridden globally using the `--no-recursion` option, or on a project-by-project basis by setting the `do_recursion` project parameter to 'false' in a makefile:
+
+    core: 7.x
+    api: 2
+    projects:
+      drupal:
+        type: core
+      hostmaster:
+        type: profile
+        do_recursion: false
+
 
 Testing
 -------
