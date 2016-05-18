@@ -313,7 +313,7 @@ class makeMakefileCase extends CommandUnishTestCase {
     // Test cck_signup.info file.
     $this->assertFileExists(UNISH_SANDBOX . '/test-build/sites/all/modules/cck_signup/cck_signup.info');
     $contents = file_get_contents(UNISH_SANDBOX . '/test-build/sites/all/modules/cck_signup/cck_signup.info');
-    $this->assertContains('; Information added by drush on 2011-07-26', $contents);
+    $this->assertContains('; Information added by drush on 2011-07-27', $contents);
     $this->assertContains('version = "2fe932c"', $contents);
     $this->assertContains('project = "cck_signup"', $contents);
 
