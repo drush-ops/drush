@@ -198,6 +198,17 @@ Do not use both types of declarations for a single project in your makefile.
 
         do_recursion: false
 
+- `variant`
+
+  Which type of tarball to download for profiles. Valid options include:
+    - 'full': complete distro including Drupal core, e.g. `distro_name-core.tar.gz`
+    - 'projects': the fully built profile, projects defined drupal-org.make, etc., e.g. `distro_name-no-core.tar.gz`
+    - 'profile-only' (just the bare profile, e.g. `distro_name.tar.gz`).
+  Defaults to 'profile-only'. When using 'projects', `do_recursion: false` will be necessary to avoid recursively making any makefiles included in the profile.
+
+        variant: projects
+
+
 
 ### Project download options
 
