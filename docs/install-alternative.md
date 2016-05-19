@@ -3,7 +3,16 @@ Install a global Drush via Composer
 To install Drush globally for a single user follow the instructions below, or [watch a video by Drupalize.me](https://youtu.be/eAtDaD8xz0Q).
 
 1. [Install Composer globally][].
-1. Add composer's `bin` directory to the system path by placing `export PATH="$HOME/.composer/vendor/bin:$PATH"` into your ~/.bash_profile (Mac OS users) or into your ~/.bashrc (Linux users).
+1. Add shell aliases. 
+
+    - If you use bash shell, for each user, add composer's `bin` directory to the system path by placing this into your ~/.bash_profile (Mac OS users) or into your ~/.bashrc (Linux users):
+    
+   ` # export PATH="$HOME/.composer/vendor/bin:$PATH"`
+
+    - For fish shell, for each user, use:
+
+    `# set --universal fish_user_paths $fish_user_paths $HOME/.composer/vendor/bin`
+
 1. Install latest stable Drush: `composer global require drush/drush`.
 1. Verify that Drush works: `drush status`
 
@@ -19,6 +28,7 @@ To install Drush globally for a single user follow the instructions below, or [w
 
 * [Documentation for composer's require command](http://getcomposer.org/doc/03-cli.md#require).
 * Uninstall with : `composer global remove drush/drush`
+* Optional fish shell theme: [fishy-drupal](https://github.com/oh-my-fish/theme-fishy-drupal) works with Drush, inside the Oh My Fish! Fishshell Framework.
 
 Install Drush for all users via Composer
 ------------
