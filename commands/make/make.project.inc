@@ -71,6 +71,10 @@ class DrushMakeProject {
     if (!empty($this->options['working-copy'])) {
       $this->download['working-copy'] = TRUE;
     }
+    // Don't recurse when we're using a pre-built profile tarball.
+    if ($this->variant == 'projects') {
+      $this->do_recursion = FALSE;
+    }
   }
 
   /**
