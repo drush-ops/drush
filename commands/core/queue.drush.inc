@@ -46,7 +46,7 @@ function queue_drush_command() {
   $items['queue-delete'] = array(
     'description' => 'Delete all items in a specific queue',
     'arguments' => array(
-      'queue_name' => 'The name of the queue to get a count for, as defined in either hook_queue_info or hook_cron_queue_info.',
+      'queue_name' => 'The name of the queue to delete all items for, as defined in either hook_queue_info or hook_cron_queue_info.',
     ),
     'required-arguments' => TRUE,
   );
