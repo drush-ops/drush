@@ -30,7 +30,7 @@ Fully initialize Drupal. This is analogous to the DRUPAL\_BOOTSTRAP\_FULL bootst
 
 DRUSH\_BOOTSTRAP\_DRUPAL\_LOGIN
 -------------------------------
-Log in to the initialiazed Drupal site. This bootstrap phase is used after the site has been fully bootstrapped. This is the default bootstrap phase all commands will try to reach, unless otherwise specified. This phase will log you in to the drupal site with the username or user ID specified by the --user/ -u option. Use this bootstrap phase for your command if you need to have access to information for a specific user, such as listing nodes that might be different based on who is logged in.
+Log in to the initialiazed Drupal site. This bootstrap phase is used after the site has been fully bootstrapped. This is the default bootstrap phase all commands will try to reach, unless otherwise specified. This phase will log you in to the drupal site with the username or user ID specified by the --user/ -u option(defaults to 0, anonymous). Use this bootstrap phase for your command if you need to have access to information for a specific user, such as listing nodes that might be different based on who is logged in.
 
 DRUSH\_BOOTSTRAP\_MAX
 ---------------------
