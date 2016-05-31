@@ -24,7 +24,7 @@ Install Drush for all users via Composer
 ------------
 If you need Drush installed for all users on a system using Composer, [install Composer globally][] then follow the steps below.
 
-**Important:** Run these shell commands as a privelged user with write access to `/opt` and `/usr/local/bin` or prefix with `sudo`.
+**Important:** Run these shell commands as a privileged user with write access to `/opt` and `/usr/local/bin` or prefix with `sudo`.
 
 ```sh
 # Create and/or navigate to a path for the single Composer Drush install.
