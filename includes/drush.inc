@@ -1266,6 +1266,7 @@ function drush_log($message, $type = LogLevel::NOTICE, $error = null) {
  */
 function _drush_create_default_logger() {
   $drush_logger = new Logger();
+  drush_set_context('DRUSH_LOGGER', $drush_logger);
   drush_set_context('DRUSH_LOG_CALLBACK', $drush_logger);
 }
 
@@ -1277,13 +1278,7 @@ function _drush_log($entry) {
   $callback = drush_get_context('DRUSH_LOG_CALLBACK');
 
   if ($callback instanceof LoggerInterface) {
-    $context = $entry;
-    $log_level = $entry['type'];
-    $message = $entry['message'];
-    unset($entry['type']);
-    unset($entry['message']);
-
-    $callback->log($log_level, $message, $context);
+    _drush_log_to_logger($callback, $entry);
   }
   elseif ($callback) {
     $log =& drush_get_context('DRUSH_LOG', array());
@@ -1291,6 +1286,25 @@ function _drush_log($entry) {
     drush_backend_packet('log', $entry);
     return $callback($entry);
   }
+}
+
+// Maintain compatibility with extensions that hook into
+// DRUSH_LOG_CALLBACK (e.g. drush_ctex_bonus)
+function _drush_print_log($entry) {
+  $drush_logger = drush_get_context('DRUSH_LOGGER');
+  if ($drush_logger) {
+    _drush_log_to_logger($drush_logger, $entry);
+  }
+}
+
+function _drush_log_to_logger($logger, $entry) {
+    $context = $entry;
+    $log_level = $entry['type'];
+    $message = $entry['message'];
+    unset($entry['type']);
+    unset($entry['message']);
+
+    $logger->log($log_level, $message, $context);
 }
 
 function drush_log_has_errors($types = array(LogLevel::WARNING, LogLevel::ERROR, LogLevel::FAILED)) {
