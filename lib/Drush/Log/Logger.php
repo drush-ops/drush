@@ -27,13 +27,30 @@ namespace Drush\Log;
 
 use Drush\Log\LogLevel;
 use Psr\Log\AbstractLogger;
-use Robo\Log\RoboLogger;
+use Consolidation\Log\Logger as BaseLogger;
+use Robo\Log\RoboLogLevel;
 use  Symfony\Component\Console\Output\OutputInterface;
 
-class Logger extends RoboLogger {
+class Logger extends BaseLogger {
 
     public function __construct(OutputInterface $output) {
-      parent::__construct($output);
+
+      $verbosityOverrides = [
+        // The first 3 lines are kept for backwards compatibility, as thsi class was extending RoboLogger beforehand
+        RoboLogLevel::SIMULATED_ACTION => OutputInterface::VERBOSITY_NORMAL, // Default is "verbose"
+        LogLevel::NOTICE => OutputInterface::VERBOSITY_NORMAL, // Default is "verbose"
+        LogLevel::INFO => OutputInterface::VERBOSITY_VERBOSE, // Default is "very verbose"
+        // then we define verbosity levels for the custom log levels used by Drush
+        LogLevel::BOOTSTRAP => OutputInterface::VERBOSITY_VERBOSE,
+        LogLevel::PREFLIGHT => OutputInterface::VERBOSITY_VERBOSE,
+        LogLevel::CANCEL => OutputInterface::VERBOSITY_NORMAL,
+        LogLevel::OK => OutputInterface::VERBOSITY_VERBOSE,
+        LogLevel::DEBUG_NOTIFY => OutputInterface::VERBOSITY_DEBUG,
+        LogLevel::SUCCESS => OutputInterface::VERBOSITY_VERBOSE,
+        LogLevel::BATCH => OutputInterface::VERBOSITY_VERBOSE,
+      ];
+
+      parent::__construct($output, $verbosityOverrides);
     }
 
     public function log($level, $message, array $context = array()) {
