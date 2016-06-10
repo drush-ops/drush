@@ -753,7 +753,12 @@ function module_builder_drush_interactive_prompt($property_name, $property_info,
   // Split a space-separated list into an array now rather than later, so the
   // numeric options can be converted.
   if ($property_info['format'] == 'array') {
-    $value = preg_split('@\s+@', $value);
+    if (empty($value)) {
+      $value = [];
+    }
+    else {
+      $value = preg_split('@\s+@', $value);
+    }
   }
 
   // Callback to convert a value given as an index in a list of options into
