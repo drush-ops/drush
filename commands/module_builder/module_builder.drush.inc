@@ -615,7 +615,7 @@ function drush_module_builder_build_component($commands, $component_type, $compo
             // Add the parent label so we can use it in prompts.
             $child_property_info['parent_label'] = $property_info['label'];
 
-            $child_value = module_builder_drush_interactive_prompt($child_property_name, $child_property_info, $component_data[$child_property_name], $default, $first_child);
+            $child_value = module_builder_drush_interactive_prompt($child_property_name, $child_property_info, $component_data[$child_property_name], $default, $delta, $first_child);
 
             // If the first property is empty, stop collecting child items.
             if ($first_child && empty($child_value)) {
@@ -697,6 +697,9 @@ function drush_module_builder_build_component($commands, $component_type, $compo
  *  value will be placed in the top level of this array.
  * @param $default
  *  The default value for the property.
+ * @param $delta
+ *  (optional) If the property is a child property, the delta of the current
+ *  component.
  * @param $first_child
  *  (optional) If the property is a child property, TRUE to indicate it's the
  *  first of the children. Defaults to FALSE.
@@ -704,7 +707,7 @@ function drush_module_builder_build_component($commands, $component_type, $compo
  * @return
  *  The value obtained from the user.
  */
-function module_builder_drush_interactive_prompt($property_name, $property_info, $component_data, $default, $first_child = FALSE) {
+function module_builder_drush_interactive_prompt($property_name, $property_info, $component_data, $default, $delta = NULL, $first_child = FALSE) {
   // Show the user the available options, unless told not to.
   $numeric_options = FALSE;
   if (isset($property_info['options']) && empty($property_info['drush_no_option_list'])) {
@@ -717,6 +720,13 @@ function module_builder_drush_interactive_prompt($property_name, $property_info,
 
       $i++;
     }
+  }
+
+  // If this is the first child of a compound component, introduce the current
+  // delta.
+  if ($first_child) {
+    $human_delta = $delta + 1;
+    drush_print("{$property_info['parent_label']}: $human_delta");
   }
 
   // Make a prompt string, letting the user know if the input is optional
@@ -746,6 +756,11 @@ function module_builder_drush_interactive_prompt($property_name, $property_info,
   $required = $property_info['required'];
   if ($first_child) {
     $required = FALSE;
+  }
+
+  // Indent child properties to make the structure clearer.
+  if (!is_null($delta)) {
+    $prompt = '  ' . $prompt;
   }
 
   $value = drush_prompt($prompt, $default, $required);
