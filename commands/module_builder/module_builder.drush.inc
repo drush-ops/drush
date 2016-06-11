@@ -150,9 +150,12 @@ Default is 'all' if writing new files, 'code' if appending to file or outputting
 function module_builder_drush_help($section) {
   switch ($section) {
     case 'drush:mb-build':
-      return dt('Generates and optionally writes module code with the specified hooks. ' .
-        'By default this runs in interactive mode, and will prompt you for each ' .
-        "of the module's properties. Use the --noi option to use as a single command.");
+      return dt("Generates and optionally writes module code with the specified components.\n" .
+        "This can run in one of two modes:\n" .
+        " - Interactive mode: You are presented with a prompt for each value. " .
+        "This is the default mode.\n" .
+        " - Direct mode: Enter all values as a single command. Enable this with the --noi option.\n" .
+        "Interactive mode will accept any direct mode-style parameters passed in on the initial command.");
   }
 }
 
