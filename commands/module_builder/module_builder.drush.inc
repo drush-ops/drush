@@ -42,11 +42,18 @@ function module_builder_drush_command() {
       'hooks' => "Short names of hooks, separated by spaces.",
       'presets:' => "Names of preset groups of hooks, e.g., 'block'." . "\n" .
         "Use the 'presets:' marker to separate this from prior commands, eg 'mymodule hook_a hook_b presets: block'.",
-      'plugins:' => "Plugin types and names concatenated with a '-'. The plugin type is the suffix of the plugin manager service ID, e.g., 'block'." . "\n" .
-        "Use the 'plugins:' marker to separate this from prior commands. Example: 'mymodule hook_a hook_b plugins: block-alpha block-beta'.",
+      'plugins:' => "Sets of properties for one ore more plugins. " .
+        "Each set is separated with a ':', and contains: \n" .
+        " - the plugin type (this is the suffix of the plugin manager service ID)\n" .
+        " - the plugin name\n" .
+        " - (optional) a list of comma-separated service IDs to be injected into the plugin.\n" .
+        "Use the 'plugins:' marker to separate this from prior commands. Example: 'mymodule hook_a hook_b plugins: block alpha : block beta current_user'.",
       'routes:' => "Menu paths, separated by spaces. " . "\n" .
         "Use the 'routes:' marker to separate this from prior commands, eg 'mymodule hook_a hook_b routes: module/path module/otherpath'.",
-      'perms:' => "Permission names, separated by spaces. Optionally, the description can be appended with a '-' in between." . "\n" .
+      'perms:' => "Sets of properties for one or more permissions. " .
+        "Each set is separated with a ':', and contains: \n" .
+        " - the permission machine name\n" .
+        " - (optional) the permission description\n" .
         "Use the 'perms:' marker to separate this from prior commands, eg 'mymodule hook_a hook_b perms: 'administer my module' 'access my module-Access my Module description'. Quote strings that contain spaces.",
       'theme:' => "Theme hooks, without the initial 'theme_', separated by spaces. " . "\n" .
         "Use the 'theme:' marker to separate this from prior commands, eg 'mymodule hook_a hook_b perms: my_themable'.",
@@ -474,7 +481,7 @@ function drush_module_builder_build_component($commands, $component_type, $compo
   $prefixed_commands  = array();
   $boolean_commands   = array();
   foreach ($commands as $command) {
-    if (substr($command, -1) == ':') {
+    if (strlen($command) > 1 && substr($command, -1) == ':') {
       // This is a preset marker.
       $prefix_marker = substr($command, 0, -1);
 
@@ -558,35 +565,40 @@ function drush_module_builder_build_component($commands, $component_type, $compo
     // Process direct mode values for compound properties into the expected
     // format.
     if ($user_specified && ($property_info['format'] == 'compound')) {
-      // A compound property in direct input mode is split up on the '-'
-      // character, and the pieces are taken in order for the child properties.
-      // So for example, for plugins, 'block-alpha' means:
-      //  - plugin_type: block
-      //  - plugin_name: alpha
+      // A compound property in direct input mode uses a ':' to separate the
+      // different child items. So for example:
+      //   plugins: block alpha : block beta
       $child_property_names = array_keys($property_info['properties']);
 
-      $items = [];
-      foreach ($value as $single_value) {
-        $item = [];
+      $child_items = [];
+      $delta = 0;
+      foreach ($value as $child_value) {
+        if ($child_value == ':') {
+          // This starts a new delta.
+          $delta++;
 
-        $value_pieces = explode('-', $single_value);
-        while ($piece = array_shift($value_pieces)) {
-          $child_property_name = array_shift($child_property_names);
+          // Restore the list of child property names.
+          $child_property_names = array_keys($property_info['properties']);
 
-          // Split array properties on a comma.
-          // TODO: either document this or rethink it.
-          if ($property_info['properties'][$child_property_name]['format'] == 'array') {
-            $piece = explode(',', $piece);
-          }
-
-          $item[$child_property_name] = $piece;
+          // Move on to the next single value.
+          continue;
         }
 
-        $items[] = $item;
+        // Still here: take the value.
+        $child_property_name = array_shift($child_property_names);
+
+        // Split array properties on a comma.
+        // TODO: either document this or rethink it.
+        if ($property_info['properties'][$child_property_name]['format'] == 'array') {
+          $child_value = explode(',', $child_value);
+        }
+
+        $child_items[$delta][$child_property_name] = $child_value;
         // Defaults for other child properties will be filled in by the
         // process stage.
       }
-      $value = $items;
+
+      $value = $child_items;
     }
 
     // If we're not in interactive mode, there's nothing more to do for this
