@@ -265,6 +265,9 @@ function drush_module_builder_callback_build_module() {
     'plugins' => array(
       'command_prefix' => 'plugins',
     ),
+    'forms' => array(
+      'command_prefix' => 'forms',
+    ),
     'theme_hooks' => array(
       'command_prefix' => 'theme',
     ),
