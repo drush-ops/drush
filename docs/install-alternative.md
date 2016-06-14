@@ -3,7 +3,7 @@ Install a global Drush via Composer
 To install Drush globally for a single user follow the instructions below, or [watch a video by Drupalize.me](https://youtu.be/eAtDaD8xz0Q).
 
 1. [Install Composer globally][].
-1. Add composer's `bin` directory to the system path by placing `export PATH="$HOME/.composer/vendor/bin:$PATH"` into your ~/.bash_profile (Mac OS users) or into your ~/.bashrc (Linux users).
+1. Add composer's `bin` directory to the system path by placing `export PATH="$HOME/.config/composer/vendor/bin:$PATH"` into your ~/.bash_profile (Mac OS users) or into your ~/.bashrc (Linux users).
 1. Install latest stable Drush: `composer global require drush/drush`.
 1. Verify that Drush works: `drush status`
 
