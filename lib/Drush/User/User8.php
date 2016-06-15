@@ -11,7 +11,7 @@ class User8 extends UserVersion {
    * {inheritdoc}
    */
   public function create($properties) {
-    $account = entity_create('user', $properties);
+    $account = User::create($properties);
     $account->save();
     return new UserSingle8($account);
   }
