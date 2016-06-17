@@ -631,10 +631,29 @@ function drush_module_builder_build_component($commands, $component_type, $compo
         $delta = 0;
         $child_property_names = array_keys($property_info['properties']);
         while (TRUE) {
+          // Initialize a new child item so a default value can be placed
+          // into it.
+          $value[$delta] = [];
+
           foreach ($property_info['properties'] as $child_property_name => &$child_property_info) {
-            // Override the required property of the first child property, so
-            // the user can leave it empty and break out of this loop.
+            // Prepare the child property so we get defaults.
+            // (The call to prepare the compound property will have already
+            // filled in defaults, but it's safe to call this again.)
+            $mb_task_handler_generate->prepareComponentDataProperty($child_property_name, $child_property_info, $value[$delta]);
+
+            // Turn empty defaults into a value that Drush won't output.
+            $default = empty($value[$delta][$child_property_name]) ? NULL : $value[$delta][$child_property_name];
+
+            // The first child property gets special treatment: don't propose a
+            // default for it, and force it to be non-required. This is because
+            // otherwise it would be impossible to leave the loop of collecting
+            // child items, as leaving this property empty is the way for the
+            // user to cause that.
             $first_child = ($child_property_name == $child_property_names[0]);
+
+            if ($first_child) {
+              $default = '';
+            }
 
             // Add the parent label so we can use it in prompts.
             $child_property_info['parent_label'] = $property_info['label'];
@@ -644,6 +663,10 @@ function drush_module_builder_build_component($commands, $component_type, $compo
             // If the first property is empty, stop collecting child items.
             if ($first_child && empty($child_value)) {
               // Bail on both the while and the foreach loops: XKCD dinosaur!
+              // Remove the child item we created for this delta, as nothing's
+              // been put in it.
+              unset($value[$delta]);
+
               goto endcompound;
             }
 
