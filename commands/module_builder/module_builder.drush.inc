@@ -88,6 +88,7 @@ Default is 'all' if writing new files, 'code' if appending to file or outputting
       'dep' => 'Dependencies, separated by spaces, eg "forum views".',
       'package' => 'Module package.',
       'parent' => "Name of a module folder to place this new module into; use if this module is to be added to an existing package. Use '.' for the current working directory.",
+      'skip' => "Developer option: specifies a comma-separate list of property names to skip prompting for in interactive mode.",
     ),
     'examples' => array(
       'drush mb my_module menu cron nodeapi' =>
@@ -473,6 +474,11 @@ function drush_module_builder_build_component($commands, $component_type, $compo
     }
   }
   $component_data_info = array_merge_recursive($component_data_info, $component_info_drush_extra);
+
+  // Developer option: skip specified properties. This allows quicker manual
+  // testing of interactive mode.
+  $skip = array_fill_keys(explode(',', drush_get_option('skip')), TRUE);
+  $component_data_info = array_diff_key($component_data_info, $skip);
 
   // Split the commands array into:
   //  - plain commands
