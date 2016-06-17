@@ -93,4 +93,15 @@ class Caster {
     return $array;
   }
 
+  /**
+   * Casts \Drupal\Component\Render\MarkupInterface classes.
+   */
+  public static function castMarkup($markup, $array, $stub, $isNested) {
+    if (!$isNested) {
+      $array[BaseCaster::PREFIX_VIRTUAL . 'markup'] = (string) $markup;
+    }
+
+    return $array;
+  }
+
 }
