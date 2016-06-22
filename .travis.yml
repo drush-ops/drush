@@ -60,7 +60,8 @@ install: travis_retry composer install --no-interaction
 
 before_script:
   - phpenv config-rm xdebug.ini
-  - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
+  - echo 'sendmail_path = /bin/true' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  # - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
   - export UNISH_DRUSH="${PWD}/drush"
 
 script: ${PWD}/unish.sh $PHPUNIT_ARGS
