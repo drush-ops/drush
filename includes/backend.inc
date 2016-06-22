@@ -1091,6 +1091,8 @@ function drush_backend_generate_sitealias($backend_options) {
  *      Optional. A remote host to execute the drush command on.
  *   'remote-user'
  *      Optional. Defaults to the current user. If you specify this, you can choose which module to send.
+ *   'local-host'
+ *      Optional. If == gethostname(), then force local operation of command.
  *   'ssh-options'
  *      Optional.  Defaults to "-o PasswordAuthentication=no"
  *   '#env-vars'
@@ -1125,6 +1127,7 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
   $site_record += array(
     'remote-host' => NULL,
     'remote-user' => NULL,
+    'local-host' => NULL,
     'ssh-options' => NULL,
     'path-aliases' => array(),
   );
@@ -1137,7 +1140,7 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
   $ssh_options = $site_record['ssh-options'];
   $os = drush_os($site_record);
 
-  if (drush_is_local_host($hostname)) {
+  if (isset($site_record['local-host']) ? $site_record['local-host'] === gethostname() : drush_is_local_host($hostname)) {
     $hostname = null;
   }
 
