@@ -44,6 +44,11 @@ function drush_drupal_version($drupal_root = NULL) {
       }
     }
   }
+
+  if ($drush_version = drush_get_context('DRUSH_DRUPAL_VERSION')) {
+    $version = $drush_version;
+  }
+
   return $version;
 }
 
