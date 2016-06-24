@@ -15,6 +15,8 @@ function drush_make_update($makefile = NULL) {
   make_prepare_projects(FALSE, $info);
   $make_projects = drush_get_option('DRUSH_MAKE_PROJECTS', FALSE);
 
+  drush_set_option('check-unsupported', TRUE);
+
   // Pick projects coming from drupal.org and adjust its structure
   // to feed update_status engine.
   // We provide here some heuristics to determine if a git clone comes

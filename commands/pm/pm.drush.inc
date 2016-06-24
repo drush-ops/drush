@@ -1718,6 +1718,7 @@ function pm_drush_engine_type_info() {
       'options' => array(
         'update-backend' => 'Backend to obtain available updates.',
         'check-disabled' => 'Check for updates of disabled modules and themes.',
+        'check-unsupported' => 'Check for updates of unsupported modules and themes.',
         'security-only'  => 'Only update modules that have security updates available.',
       ),
       'combine-help' => TRUE,

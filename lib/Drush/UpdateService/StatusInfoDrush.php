@@ -178,7 +178,9 @@ class StatusInfoDrush implements StatusInfoInterface {
           $project_status = DRUSH_UPDATESTATUS_REVOKED;
           break;
         case 'unsupported':
-          $project_status = DRUSH_UPDATESTATUS_NOT_SUPPORTED;
+          if (!drush_get_option('check-unsupported', FALSE)) {
+            $project_status = DRUSH_UPDATESTATUS_NOT_SUPPORTED;
+          }
           break;
         case 'unknown':
           $project_status = DRUSH_UPDATESTATUS_UNKNOWN;
@@ -198,6 +200,7 @@ class StatusInfoDrush implements StatusInfoInterface {
    */
   private function calculateProjectUpdateStatus($project_release_info, &$project_data) {
     $available = $project_release_info->getInfo();
+    $check_unsupported = drush_get_option('check-unsupported', FALSE);
 
     /**
      * Here starts the code adapted from update_calculate_project_status().
@@ -230,8 +233,13 @@ class StatusInfoDrush implements StatusInfoInterface {
       // format. Therefore, we know the current release is unsupported since
       // its major version was not in the 'supported_majors' list. We should
       // find the best release from the recommended major version.
-      $target_major = $available['recommended_major'];
-      $project_data['status'] = DRUSH_UPDATESTATUS_NOT_SUPPORTED;
+      if ($check_unsupported) {
+        $target_major = $existing_major;
+      }
+      else {
+        $target_major = $available['recommended_major'];
+        $project_data['status'] = DRUSH_UPDATESTATUS_NOT_SUPPORTED;
+      }
     }
     elseif (isset($available['default_major'])) {
       // Older release history XML file without recommended, so recommend
@@ -266,7 +274,8 @@ class StatusInfoDrush implements StatusInfoInterface {
           $project_data['status'] = DRUSH_UPDATESTATUS_REVOKED;
         }
         elseif (isset($release['terms']['Release type']) &&
-                in_array('Unsupported', $release['terms']['Release type'])) {
+                in_array('Unsupported', $release['terms']['Release type']) &&
+                !$check_unsupported) {
           $project_data['status'] = DRUSH_UPDATESTATUS_NOT_SUPPORTED;
         }
       }
@@ -370,7 +379,7 @@ class StatusInfoDrush implements StatusInfoInterface {
     // Bail out early.
     if (!isset($project_data['recommended'])) {
       $project_data['status'] = DRUSH_UPDATESTATUS_UNKNOWN;
-      $project_data['reason'] = t('No available releases found');
+      $project_data['reason'] = dt('No available releases found');
       return;
     }
 
