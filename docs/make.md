@@ -371,12 +371,12 @@ includes. Use `overrides` for the reverse order of precedence.
       # A remote-hosted file.
       - "http://www.example.com/remote.make"
       # A file on a git repository.
-      makefile: "example_dir/example.make"
-      download:
-        type: "git"
-        url: "git@github.com:organisation/repository.git"
-        # Branch could be tag or revision, it relies on the standard Drush git download feature.
-        branch: "master"          
+      - makefile: "example_dir/example.make"
+        download:
+          type: "git"
+          url: "git@github.com:organisation/repository.git"
+          # Branch could be tag or revision, it relies on the standard Drush git download feature.
+          branch: "master"          
 
 The `--includes` option is available for most make commands, and allows
 makefiles to be included at build-time.
