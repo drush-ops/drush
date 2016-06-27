@@ -155,7 +155,8 @@ function make_drush_command() {
       'makefile' => 'Filename of the makefile to convert.',
     ),
     'options' => array(
-      'format' => 'The format to which the make file should be converted. Accepted values include make, composer, and yml.'
+      'format' => 'The format to which the make file should be converted. Accepted values include make, composer, and yml.',
+      'sort' => 'Sorts project and libraries alphabetically when converting.',
     ),
     'required-arguments' => TRUE,
     'examples' => array(
@@ -410,6 +411,12 @@ function drush_make_convert($source) {
       drush_print('Please use composer.lock instead of composer.json as source for conversion.');
       return FALSE;
       break;
+  }
+
+  $sort = drush_get_option('sort');
+  if ($sort) {
+    ksort($info['projects']);
+    ksort($info['libraries']);
   }
 
   // Output into destination formation.
