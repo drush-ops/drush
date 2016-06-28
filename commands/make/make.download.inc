@@ -134,7 +134,7 @@ function make_download_file_unpack($filename, $download_location, $name, $subtre
       }
     }
 
-    $success = drush_move_dir($tmp_location, $download_location, TRUE);
+    $success = drush_move_dir($tmp_location, $download_location, FILE_EXISTS_MERGE);
 
     // Remove the tarball.
     if (file_exists($filename)) {
@@ -151,7 +151,7 @@ function make_download_file_unpack($filename, $download_location, $name, $subtre
     // The destination directory has already been created by
     // findDownloadLocation().
     $destination = $download_location . ($name ? '/' . $name : '');
-    $success = drush_move_dir($filename, $destination, TRUE);
+    $success = drush_move_dir($filename, $destination, FILE_EXISTS_MERGE);
   }
   return $success ? $download_location : FALSE;
 }
@@ -165,14 +165,14 @@ function _make_download_file_move($tmp_path, $filename, $download_location, $sub
   if (count($lines) == 1) {
     $directory = array_shift($lines);
     if ($directory->basename != $main_directory) {
-      drush_move_dir($directory->filename, $tmp_path . DIRECTORY_SEPARATOR . $main_directory, TRUE);
+      drush_move_dir($directory->filename, $tmp_path . DIRECTORY_SEPARATOR . $main_directory, FILE_EXISTS_OVERWRITE);
     }
     drush_copy_dir($tmp_path . DIRECTORY_SEPARATOR . $main_directory . DIRECTORY_SEPARATOR . $subtree, $download_location, FILE_EXISTS_OVERWRITE);
     drush_delete_dir($tmp_path, TRUE);
   }
   elseif (count($lines) > 1) {
     drush_delete_dir($download_location, TRUE);
-    drush_move_dir($tmp_path . DIRECTORY_SEPARATOR . $subtree, $download_location, TRUE);
+    drush_move_dir($tmp_path . DIRECTORY_SEPARATOR . $subtree, $download_location, FILE_EXISTS_OVERWRITE);
   }
 
   // Remove the tarball.

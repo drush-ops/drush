@@ -86,7 +86,7 @@ function drush_sync_via_http_pre_sql_sync($source = NULL, $destination = NULL) {
  *
  * Optionaly uses user authentication, using either wget or curl, as available.
  */
-function _drush_sync_via_http_download_file($url, $user = FALSE, $password = FALSE, $destination = FALSE, $overwrite = TRUE) {
+function _drush_sync_via_http_download_file($url, $user = FALSE, $password = FALSE, $destination = FALSE, $overwrite = FILE_EXISTS_OVERWRITE) {
   static $use_wget;
   if ($use_wget === NULL) {
     $use_wget = drush_shell_exec('which wget');

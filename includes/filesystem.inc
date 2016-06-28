@@ -299,17 +299,20 @@ function _drush_recursive_copy($src, $dest) {
  *   $src = "/b/a" and $dest = "/c/a".  To move "a" to "/c" and rename
  *   it to "d", then $dest = "/c/d" (just like php rename function).
  * @param $overwrite
- *   If TRUE, the destination will be deleted if it exists.
+ *   Action to take if destination already exists.
+ *     - FILE_EXISTS_OVERWRITE - completely removes existing directory.
+ *     - FILE_EXISTS_ABORT - aborts the operation.
+ *     - FILE_EXISTS_MERGE - Leaves existing files and directories in place.
  * @return
  *   TRUE on success, FALSE on failure.
  */
-function drush_move_dir($src, $dest, $overwrite = FALSE) {
+function drush_move_dir($src, $dest, $overwrite = FILE_EXISTS_ABORT) {
   // Preflight based on $overwrite if $dest exists.
   if (file_exists($dest)) {
-    if ($overwrite) {
+    if ($overwrite == FILE_EXISTS_OVERWRITE) {
       drush_op('drush_delete_dir', $dest, TRUE);
     }
-    else {
+    else if ($overwrite == FILE_EXISTS_ABORT) {
       return drush_set_error('DRUSH_DESTINATION_EXISTS', dt('Destination directory !dest already exists.', array('!dest' => $dest)));
     }
   }
@@ -333,7 +336,7 @@ function drush_move_dir($src, $dest, $overwrite = FALSE) {
 
   // If 'rename' fails, then we will use copy followed
   // by a delete of the source.
-  if (drush_copy_dir($src, $dest)) {
+  if (drush_copy_dir($src, $dest, $overwrite)) {
     drush_op('drush_delete_dir', $src, TRUE);
     return TRUE;
   }
