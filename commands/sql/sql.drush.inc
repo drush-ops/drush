@@ -619,7 +619,7 @@ function drush_sql_get_version() {
 function sql_drush_sql_sync_sanitize($site) {
   $site_settings = drush_sitealias_get_record($site);
   $databases = sitealias_get_databases_from_record($site_settings);
-  $major_version = drush_drupal_major_version($site_settings['root']);
+  $major_version = drush_drupal_major_version();
   $wrap_table_name = (bool) drush_get_option('db-prefix');
   $user_table_updates = array();
   $message_list = array();
