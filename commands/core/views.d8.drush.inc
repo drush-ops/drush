@@ -159,9 +159,6 @@ function drush_views_dev() {
     'ui.show.sql_query.where' => 'above',
     'ui.show.performance_statistics' => TRUE,
     'ui.show.additional_queries' => TRUE,
-    'debug.output' => TRUE,
-    'debug.region' => 'message',
-    'ui.show.display_embed' => TRUE,
   );
 
   $config = \Drupal::configFactory()->getEditable('views.settings');
