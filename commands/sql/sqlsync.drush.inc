@@ -202,7 +202,7 @@ function drush_sqlsync_sql_sync($source, $destination) {
     }
   }
 
-  // Perform sql-dump on source unless told othrwise.
+  // Perform sql-dump on source unless told otherwise.
   $options = $global_options + $source_options + array(
     'gzip' => TRUE,
     'result-file' => drush_get_option('source-dump', TRUE),
