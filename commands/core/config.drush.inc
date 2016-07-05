@@ -178,6 +178,16 @@ function config_drush_command() {
     ),
   );
 
+  $items['config-delete'] = array(
+    'description' => 'Delete a configuration object.',
+    'core' => array('8+'),
+    'aliases' => array('cdel'),
+    'arguments' => array(
+        'config-name' => 'The config object name, for example "system.site".',
+    ),
+    'required arguments'
+  );
+
   $items['config-pull'] = array(
     'description' => 'Export and transfer config from one environment to another.',
     // 'core' => array('8+'), Operates on remote sites so not possible to declare this locally.
@@ -252,6 +262,22 @@ function drush_config_get($config_name, $key = NULL) {
   }
   else {
     return drush_config_get_value($config_name, $key);
+  }
+}
+
+/**
+ * Config delete command callback.
+ *
+ * @param $config_name
+ *   The config name.
+ */
+function drush_config_delete($config_name) {
+  $config =\Drupal::service('config.factory')->getEditable($config_name);
+  if ($config->isNew()) {
+    return drush_set_error('DRUSH_CONFIG_ERROR', 'Configuration name not recognized. Use config-list to see all names.');
+  }
+  else {
+    $config->delete();
   }
 }
 
