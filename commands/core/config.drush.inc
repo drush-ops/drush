@@ -813,7 +813,7 @@ function drush_config_pull($source, $destination) {
     return drush_set_error('DRUSH_CONFIG_PULL_EXPORT_FAILED', dt('Config-export failed.'));
   }
   else {
-    // Trailing slash assures that transer files and not the containing dir.
+    // Trailing slash assures that transfer files and not the containing dir.
     $export_path = $return['object'] . '/';
   }
 
