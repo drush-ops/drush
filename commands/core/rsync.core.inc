@@ -53,7 +53,6 @@ function drush_core_rsync($source, $destination, $additional_options = array()) 
   if (!drush_get_context('DRUSH_SIMULATE')) {
     drush_print(dt("You will delete files in !target and replace with data from !source", array('!source' => $source_path, '!target' => $destination_path)));
     if (!drush_confirm(dt('Do you really want to continue?'))) {
-      // was: return drush_set_error('CORE_SYNC_ABORT', 'Aborting.');
       return drush_user_abort();
     }
   }
