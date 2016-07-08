@@ -23,7 +23,7 @@
     <!-- <var name="UNISH_DB_URL" value="sqlite://none/of/this/matters"/> -->
 
     <!--User must have write permissions to this directory.-->
-    <!--If not supplied, defaults to sys_get_tmp_dir().-->
+    <!--If not supplied, defaults to sys_get_temp_dir().-->
     <!-- <var name="UNISH_TMP" value="/tmp"/> -->
 
     <!--Uncomment the line below if your path to drush differs from `which drush`. Use absolute path.-->
