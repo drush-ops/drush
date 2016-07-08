@@ -134,6 +134,9 @@ class DrupalBoot8 extends DrupalBoot {
     // Unset drupal error handler and restore Drush's one.
     restore_error_handler();
 
+    // Disable automated cron if the module is enabled.
+    $GLOBALS['config']['automated_cron.settings']['interval'] = 0;
+
     parent::bootstrap_drupal_configuration();
   }
 
