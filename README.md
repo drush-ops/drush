@@ -42,7 +42,7 @@ Credits
 * Redesigned by [Franz Heinzmann](http://unbiskant.org) in May 2007 for Drupal 5.
 * Maintained by [Moshe Weitzman](http://drupal.org/moshe) with much help from
   the folks listed at https://github.com/orgs/drush-ops/people.
-* Thanks to [Jetbrains](https://www.jetbrains.com) for [supporting this project and open source software](https://www.jetbrains.com/buy/opensource/).
+* Thanks to [JetBrains](https://www.jetbrains.com) for [supporting this project and open source software](https://www.jetbrains.com/buy/opensource/).
 
 ![Drush Logo](drush_logo-black.png)
-![PhpStorm Logo](misc/icon_PhpStorm.png)
+[![PhpStorm Logo](misc/icon_PhpStorm.png)](https://www.jetbrains.com/phpstorm/)
