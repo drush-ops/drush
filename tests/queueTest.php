@@ -120,6 +120,16 @@ class QueueCase extends CommandUnishTestCase {
     $this->drush('queue-run', array('woot_requeue_exception'), $options);
 
     // Check that the item was processed after being requeued once.
+    // Here is the detailed workflow of what the above command did.
+    // 1. Drush calls drush queue-run woot_requeue_exception.
+    // 2. Drush claims the item. The worker sets a state variable (see below)
+    // and throws the RequeueException.
+    // 3. Drush catches the exception and puts it back in the queue.
+    // 4. Drush claims the next item, which is the one that we just requeued.
+    // 5. The worker finds the state variable, so it does not throw the
+    // RequeueException this time (see below).
+    // 6. Drush removes the item from the queue.
+    // 7. Command finishes. The queue is empty.
     $this->drush('queue-list', array(), $options + array('pipe' => TRUE));
     $output = trim($this->getOutput());
     $this->assertEquals(str_replace('%items', 0, $expected), $output, 'Queue item processed after being requeued.');
