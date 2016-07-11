@@ -4,6 +4,7 @@ namespace Drush\Queue;
 
 use Drush\Log\LogLevel;
 use Drupal\Core\Queue\QueueWorkerManager;
+use Drupal\Core\Queue\RequeueException;
 use Drupal\Core\Queue\SuspendQueueException;
 
 class Queue8 extends QueueBase {
@@ -57,6 +58,10 @@ class Queue8 extends QueueBase {
         $worker->processItem($item->data);
         $queue->deleteItem($item);
         $count++;
+      }
+      catch (RequeueException $e) {
+        // The worker requested the task to be immediately requeued.
+        $queue->releaseItem($item);
       }
       catch (SuspendQueueException $e) {
         // If the worker indicates there is a problem with the whole queue,
