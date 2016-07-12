@@ -322,11 +322,6 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
       // Validate
       $this->markTestSkipped("Drupal 6 does not support SQLite.");
     }
-    if ($version_string == 8) {
-      // We want to track Drupal 8 very closely.
-      $version_string = '8.0.x';
-      $options['no-md5'] = NULL;
-    }
 
     // Download Drupal if not already present.
     if (!file_exists($root)) {
