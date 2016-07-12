@@ -234,8 +234,10 @@ function drush_core_site_install($profile = NULL) {
     }
   }
 
-  // If the profile is not explicitly set, default to the 'minimal' for an issue-free config import.
-  if (empty($profile) && drush_get_option('config-dir')) {
+  // --config-dir fails with Standard profile and any other one that carries content entities.
+  // Force to minimal install profile. 
+  if (drush_get_option('config-dir')) {
+    drush_log(dt("Using 'minimal' install profile since --config-dir option was provided.", 'ok'));
     $profile = 'minimal';
   }
 
