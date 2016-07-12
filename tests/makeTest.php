@@ -133,7 +133,7 @@ class makeMakefileCase extends CommandUnishTestCase {
         'name'     => 'gzip',
         'makefile' => 'gzip.make',
         'build'    => TRUE,
-        'md5'      => '526332db5456847c316cad7dc6d496f8',
+        'md5'      => '25b514df18a87b655437388af083e22c',
         'options'  => array('no-core' => NULL),
       ),
       'ignore-checksums' => array(
