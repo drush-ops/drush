@@ -619,6 +619,7 @@ function drush_sql_get_version() {
 function sql_drush_sql_sync_sanitize($site) {
   $site_settings = drush_sitealias_get_record($site);
   $databases = sitealias_get_databases_from_record($site_settings);
+  $major_version = drush_drupal_major_version();
   $wrap_table_name = (bool) drush_get_option('db-prefix');
   $user_table_updates = array();
   $message_list = array();
@@ -626,7 +627,6 @@ function sql_drush_sql_sync_sanitize($site) {
   // Sanitize passwords.
   $newpassword = drush_get_option(array('sanitize-password', 'destination-sanitize-password'), 'password');
   if ($newpassword != 'no' && $newpassword !== 0) {
-    $major_version = drush_drupal_major_version();
     $pw_op = "";
 
     // In Drupal 6, passwords are hashed via the MD5 algorithm.
