@@ -596,6 +596,12 @@ class makeMakefileCase extends CommandUnishTestCase {
   }
 
   function testMakeRecursionOverride() {
+    // @todo This is skipped for now since the test relies on sourceforge.
+    // It can be replaced if a suitable module that installs projects (not
+    // libraries, which aren't properly overridable).
+    $this->markTestSkipped('skipping recursion-override test');
+    return;
+
     // Silently skip file extraction test if unzip is not installed.
     exec('which unzip', $output, $whichUnzipErrorCode);
     if (!$whichUnzipErrorCode) {
