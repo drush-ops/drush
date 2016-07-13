@@ -112,8 +112,10 @@ function drush_core_site_install_validate() {
 
 /**
  * Perform setup tasks for installation.
+ * @return bool
+ * @throws \Drush\Sql\SqlException
  */
-function drush_core_pre_site_install($profile = NULL) {
+function drush_core_pre_site_install() {
   $sql = drush_sql_get_class();
   if (!$db_spec = $sql->db_spec()) {
     drush_set_error(dt('Could not determine database connection parameters. Pass --db-url option.'));
@@ -130,8 +132,6 @@ function drush_core_pre_site_install($profile = NULL) {
     $sites_subdir = "sites/$dir";
   }
   $conf_path = $sites_subdir;
-  // Handle the case where someuse uses --variables to set the file public path. Won't work on D8+.
-  $files = !empty($GLOBALS['conf']['files_public_path']) ? $GLOBALS['conf']['files_public_path'] : "$conf_path/files";
   $settingsfile = "$conf_path/settings.php";
   $sitesfile = "sites/sites.php";
   $default = realpath($alias_record['root'] . '/sites/default');
@@ -201,7 +201,7 @@ function drush_core_pre_site_install($profile = NULL) {
   define('MAINTENANCE_MODE', 'install');
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
 
-  if (!$sql->drop_or_create($db_spec)) {
+  if (!$sql->drop_or_create()) {
     return drush_set_error(dt('Failed to create database: @error', array('@error' => implode(drush_shell_exec_output()))));
   }
 
@@ -235,7 +235,7 @@ function drush_core_site_install($profile = NULL) {
   }
 
   // --config-dir fails with Standard profile and any other one that carries content entities.
-  // Force to minimal install profile. 
+  // Force to minimal install profile.
   if (drush_get_option('config-dir')) {
     drush_log(dt("Using 'minimal' install profile since --config-dir option was provided.", 'ok'));
     $profile = 'minimal';
