@@ -256,7 +256,7 @@ function drush_module_invoke_all($hook) {
  * Returns a list of enabled themes. Use drush_get_themes() if you need to rebuild
  * and include hidden as well.
  *
- * @return array
+ * @return \Drupal\Core\Extension\Extension[]
  *  A list of themes keyed by name.
  */
 function drush_theme_list() {

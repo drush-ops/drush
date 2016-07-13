@@ -1341,11 +1341,21 @@ function drush_core_execute() {
 function drush_core_twig_compile() {
   require_once DRUSH_DRUPAL_CORE . "/themes/engines/twig/twig.engine";
   // Scan all enabled modules and themes.
-  // @todo Refactor to not reuse commandfile paths directly.
-  $boot = \Drush::bootstrap();
-  $searchpaths = $boot->commandfile_searchpaths(DRUSH_BOOTSTRAP_DRUPAL_FULL);
-  $searchpaths[] = drupal_get_path('theme', drush_theme_get_default());;
-  $searchpaths[] = drupal_get_path('theme', drush_theme_get_admin());
+  // @todo refactor since \Drush\Boot\DrupalBoot::commandfile_searchpaths is similar.
+  $ignored_modules = drush_get_option_list('ignored-modules', array());
+  $cid = drush_cid_install_profile();
+  if ($cached = drush_cache_get($cid)) {
+    $ignored_modules[] = $cached->data;
+  }
+  foreach (array_diff(drush_module_list(), $ignored_modules) as $module) {
+    $searchpaths[] = drupal_get_path('module', $module);
+  }
+
+  $themes = drush_theme_list();
+  foreach ($themes as $name => $theme) {
+    $searchpaths[] = $theme->getPath();
+  }
+  
   foreach ($searchpaths as $searchpath) {
     foreach ($file = drush_scan_directory($searchpath, '/\.html.twig/', array('tests')) as $file) {
       $relative = str_replace(drush_get_context('DRUSH_DRUPAL_ROOT'). '/', '', $file->filename);
