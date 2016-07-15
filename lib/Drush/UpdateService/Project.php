@@ -330,7 +330,7 @@ class Project {
   private function searchReleases($key, $value) {
     $releases = array();
     foreach ($this->parsed['releases'] as $version => $release) {
-      if ($release['status'] == 'published' && isset($release[$key]) && $release[$key] == $value) {
+      if ($release['status'] == 'published' && isset($release[$key]) && $release[$key] === $value) {
         $releases[$version] = $release;
       }
     }
