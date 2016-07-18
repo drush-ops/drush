@@ -13,7 +13,7 @@ class DrupalKernel extends DrupalDrupalKernel {
   /**
    * @inheritdoc
    */
-  public static function createFromRequest(Request $request, $class_loader, $environment, $allow_dumping = TRUE) {
+  public static function createFromRequest(Request $request, $class_loader, $environment, $allow_dumping = TRUE, $app_root = NULL) {
     drush_log(dt("Create from request"), LogLevel::DEBUG);
     $kernel = new static($environment, $class_loader, $allow_dumping);
     static::bootEnvironment();
