@@ -269,13 +269,14 @@ function drush_pm_download() {
  * site-wide location does not exist.
  */
 function pm_drush_pm_download_destination_alter(&$request, $release) {
-  // A module is a pure drush command if it has no .info.yml and contain
+  // A module is a pure Drush command if it has no .info.yml (8+) and contains no
   // .drush.inc files.  Skip this test for Drush itself, though; we do
   // not want to download Drush to the ~/.drush folder.
   if (in_array($request['project_type'], array('module', 'utility')) && ($request['name'] != 'drush')) {
     $drush_command_files = drush_scan_directory($request['full_project_path'], '/.*\.drush.inc/');
     if (!empty($drush_command_files)) {
-      $module_files = drush_scan_directory($request['full_project_path'], '/.*\.info/');
+      $pattern = drush_drupal_major_version() >= 8 ? '/.*\.info/' : '/.*\.module/';
+      $module_files = drush_scan_directory($request['full_project_path'], $pattern);
       if (empty($module_files)) {
         $install_dir = drush_get_context('DRUSH_SITE_WIDE_COMMANDFILES');
         if (!is_dir($install_dir) || !is_writable($install_dir)) {
