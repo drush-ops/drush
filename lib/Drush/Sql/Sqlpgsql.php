@@ -121,7 +121,7 @@ class Sqlpgsql extends SqlBase {
     if (isset($data_only)) {
       $extra .= ' --data-only';
     }
-    if ($option = drush_get_option('extra', $this->query_extra)) {
+    if ($option = drush_get_option('extra')) {
       $extra .= " $option";
     }
     $exec .= $extra;
