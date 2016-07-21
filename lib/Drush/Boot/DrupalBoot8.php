@@ -123,10 +123,10 @@ class DrupalBoot8 extends DrupalBoot {
     // @todo - use Request::create() and then no need to set PHP superglobals
     $kernelClass = new \ReflectionClass('\Drupal\Core\DrupalKernel');
     if ($kernelClass->hasMethod('addServiceModifier')) {
-      $this->kernel = DrupalKernel::createFromRequest($this->request, $classloader, 'prod');
+      $this->kernel = DrupalKernel::createFromRequest($this->request, $classloader, 'prod', DRUPAL_ROOT);
     }
     else {
-      $this->kernel = DrushDrupalKernel::createFromRequest($this->request, $classloader, 'prod');
+      $this->kernel = DrushDrupalKernel::createFromRequest($this->request, $classloader, 'prod', DRUPAL_ROOT);
     }
     // @see Drush\Drupal\DrupalKernel::addServiceModifier()
     $this->kernel->addServiceModifier(new DrushServiceModfier());
