@@ -1118,6 +1118,21 @@ function drush_module_builder_callback_data_list() {
     foreach ($data as $plugin_type_id => $plugin_type_data) {
       drush_print($plugin_type_id, 2);
     }
+
+    try {
+      $mb_task_handler_report_services = \DrupalCodeBuilder\Factory::getTask('ReportServiceData');
+    }
+    catch (\DrupalCodeBuilder\Exception\SanityException $e) {
+      module_builder_handle_sanity_exception($e);
+      return;
+    }
+
+    $data = $mb_task_handler_report_services->listServiceData();
+
+    drush_print("Services:");
+    foreach ($data as $service_id => $service_info) {
+      drush_print($service_id, 2);
+    }
   }
 
   $hooks_directory = \DrupalCodeBuilder\Factory::getEnvironment()->getHooksDirectory();
