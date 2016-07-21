@@ -1114,7 +1114,7 @@ function drush_module_builder_callback_data_list() {
 
     $data = $mb_task_handler_report_plugins->listPluginData();
 
-    drush_print("Plugins:");
+    drush_print("Plugins types:");
     foreach ($data as $plugin_type_id => $plugin_type_data) {
       drush_print($plugin_type_id, 2);
     }
