@@ -744,9 +744,7 @@ function drush_module_builder_build_component($commands, $component_type, $compo
   $component_dir = module_builder_get_component_folder($component_type, $component_data['root_name']);
 
   // Finally, output the files!
-  foreach ($files as $filename => $code) {
-    module_builder_drush_output_code($component_dir, $filename, $code);
-  }
+  module_builder_drush_output_code($component_dir, $files);
 }
 
 /**
@@ -977,24 +975,45 @@ function module_builder_get_component_folder($component_type, $component_name) {
  * @param $component_dir
  *  The base folder for the component. May or may not exist.
  * @param $filename
- *  The filename to write, relative to the $component_dir.
- * @param code
- *  The text to write to the file.
+ *  The array of files to write. Keys are filenames relative to the
+ *  $component_dir, values are strings for the file contents.
  */
-function module_builder_drush_output_code($component_dir, $filename, $code) {
-  // Output to terminal
-  if (!drush_get_option('quiet')) {
-    drush_print("Proposed $filename:");
-    drush_print_r($code);
+function module_builder_drush_output_code($component_dir, $files) {
+  // Determine whether to output to terminal.
+  $output_to_terminal = !drush_get_option('quiet');
+
+  if ($output_to_terminal) {
+    foreach ($files as $filename => $code) {
+      drush_print("Proposed $filename:");
+      drush_print_r($code);
+    }
   }
 
-  $write = drush_get_option('write');
-
-  // Write to file
+  // Determine whether to write files.
+  // Determine whether to write this file.
   // Add to file option implies write.
   // Write & go option implies write.
-  if (drush_get_option(array('write', 'add', 'go'))) {
+  $write_files = drush_get_option(array('write', 'add', 'go'));
+
+  // If the options don't tell us to write, and we're in interactive mode,
+  // prompt the user for whether to write files.
+  if (!$write_files && module_builder_determine_interactive_mode()) {
+    $write_files = drush_confirm("Write code files? (Use the --write option to skip this prompt.)");
+  }
+
+  // If we're not writing files, we're done.
+  if (!$write_files) {
+    return;
+  }
+
+  $files_exist = [];
+  foreach ($files as $filename => $code) {
     $filepath = $component_dir . '/' . $filename;
+    if (file_exists($filepath)) {
+      if (!drush_confirm(dt('File ' . $filename . ' exists. Overwrite this file?'))) {
+        continue;
+      }
+    }
 
     // Because the filename part can contain subdirectories, check these exist
     // too.
@@ -1013,18 +1032,12 @@ function module_builder_drush_output_code($component_dir, $filename, $code) {
 
     // Add to file option.
     // If the file doesn't exist, we skip this and silently write it anyway.
+    // TODO: add to file option is a bit broken these days anyway.
     if (drush_get_option('add') && file_exists($filepath)) {
       $fh = fopen($filepath, 'a');
       fwrite($fh, $code);
       fclose($fh);
-      return;
-    }
-
-    // If the file exists, ask for whether to overwrite.
-    if (file_exists($filepath)) {
-      if (!drush_confirm(dt('File ' . $filename . ' exists. Do you really want to overwrite?'))) {
-        return;
-      }
+      continue;
     }
 
     file_put_contents($filepath, $code);
