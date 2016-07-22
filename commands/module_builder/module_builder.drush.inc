@@ -180,6 +180,25 @@ function module_builder_handle_sanity_exception($e) {
 }
 
 /**
+ * Determines which mode we are in: interactive or direct.
+ *
+ * @return
+ *  TRUE if we are in interactive mode, FALSE for direct.
+ */
+function module_builder_determine_interactive_mode() {
+  // Interactive mode is the default, overridden by the non-interactive option.
+  $interactive = !drush_get_option(array('non-interactive', 'noi'));
+
+  // This is a shortcut for developing, if you have --noi forced in your drush
+  // config and need to switch back to interactive for testing.
+  if (drush_get_option(array('interactive'))) {
+    $interactive = TRUE;
+  }
+
+  return $interactive;
+}
+
+/**
  * Module builder drush command callback.
  *
  * Form:
