@@ -25,7 +25,7 @@ function drush_get_modules($include_hidden = TRUE) {
   $modules = system_rebuild_module_data();
 
   foreach ($modules as $key => $module) {
-    if ((!$include_hidden) && (isset($module->info['hidden']))) {
+    if ((!$include_hidden) && (!empty($module->info['hidden']))) {
       unset($modules[$key]);
     }
     else {
