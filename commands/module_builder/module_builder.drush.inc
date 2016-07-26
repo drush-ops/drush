@@ -776,6 +776,9 @@ function module_builder_drush_interactive_prompt($property_name, $property_info,
   $numeric_options = FALSE;
   if (isset($property_info['options']) && empty($property_info['drush_no_option_list'])) {
     $numeric_options = TRUE;
+
+    drush_print("Select from the following options. Enter either option index number or their value.");
+
     $option_by_index = array();
     $i = 1;
     foreach ($property_info['options'] as $option => $label) {
