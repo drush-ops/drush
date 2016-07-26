@@ -787,6 +787,10 @@ function module_builder_drush_interactive_prompt($property_name, $property_info,
 
       $i++;
     }
+
+    if (!empty($property_info['options_allow_other'])) {
+      drush_print("[...] Values not on this list may also be entered.", 2);
+    }
   }
 
   // If this is the first child of a compound component, introduce the current
