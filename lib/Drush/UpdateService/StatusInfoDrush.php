@@ -33,8 +33,8 @@ class StatusInfoDrush implements StatusInfoInterface {
       $url = Project::buildFetchUrl($request);
       $cache_file = drush_download_file_name($url);
       if (file_exists($cache_file)) {
-        $ctime = filectime($cache_file);
-        $older = (!$older) ? $ctime : min($ctime, $older);
+        $mtime = filemtime($cache_file);
+        $older = (!$older) ? $mtime : min($mtime, $older);
       }
     }
 
