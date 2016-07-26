@@ -9,6 +9,10 @@ class pmDownloadCase extends CommandUnishTestCase {
   public function testPmDownload() {
     $this->drush('pm-download', array('devel'), array('cache' => NULL, 'skip' => NULL)); // No FirePHP
     $this->assertFileExists(UNISH_SANDBOX . '/devel/README.txt');
+
+    $this->drush('pm-download', array('drupal-7.500'), array('backend' => NULL), NULL, NULL, self::EXIT_ERROR);
+    $parsed = $this->parse_backend_output($this->getOutput());
+    $this->assertArrayHasKey('DRUSH_PM_COULD_NOT_FIND_VERSION', $parsed['error_log']);
   }
 
   // @todo Test pure drush commandfile projects. They get special destination.
