@@ -799,7 +799,7 @@ function drush_preflight_command_dispatch() {
   $values = NULL;
   if (!empty($root) && !empty($local_drush) && empty($is_local)) {
     if (!drush_is_absolute_path($local_drush)) {
-      $local_drush = $root . '/' . $local_drush;
+      $local_drush = $root . DIRECTORY_SEPARATOR . $local_drush;
     }
     $local_drush = realpath($local_drush);
     $this_drush = drush_find_drush();
