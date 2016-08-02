@@ -454,7 +454,7 @@ function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, 
       $drush_path = DRUSH_COMMAND;
     }
     else {
-      $drush_path = drush_is_windows($os) ? 'drush.bat' : 'drush';
+      $drush_path = 'drush'; // drush_is_windows($os) ? 'drush.bat' : 'drush';
     }
   }
   // If the path to drush points to drush.php, then we will need to

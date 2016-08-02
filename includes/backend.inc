@@ -838,7 +838,7 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     // use a default value.  For commands that are being executed on the same
     // machine, we will use DRUSH_COMMAND, which is the path to the drush.php
     // that is running right now.  For remote commands, we will run a wrapper
-    // script instead of drush.php -- drush.bat on Windows, or drush on Linux.
+    // script instead of drush.php called drush.
     $drush_path = $site_record['path-aliases']['%drush-script'];
     if (!$drush_path && !$is_remote && $is_different_site) {
       $drush_path = find_wrapper_or_launcher($site_record['root']);

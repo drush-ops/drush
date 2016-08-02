@@ -3,7 +3,7 @@
   "chmod": "0755",
   "compactors": [],
   "directories": ["commands", "docs", "examples", "includes", "lib", "misc"],
-  "files": ["drush.api.php", "drush.bat", "drush.complete.sh", "drush.info", "drush.launcher", "drush.php", "drush_logo-black.png", "README.md"],
+  "files": ["drush.api.php", "drush.complete.sh", "drush.info", "drush.launcher", "drush.php", "drush_logo-black.png", "README.md"],
   "finder": [
     {
       "name": "*.php",
