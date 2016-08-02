@@ -57,10 +57,10 @@ function drush_env() {
  * directory, or in vendor/bin.
  */
 function find_wrapper_or_launcher($location) {
-  if (file_exists("$location/index.php")) {
+  if (file_exists($location. DIRECTORY_SEPARATOR. 'index.php')) {
     return find_wrapper_or_launcher_in_vicinity($location);
   }
-  return find_wrapper_or_launcher_in_specific_locations($location, ["", "vendor/bin"]);
+  return find_wrapper_or_launcher_in_specific_locations($location, ["", 'vendor'. DIRECTORY_SEPARATOR. 'bin']);
 }
 
 /**
@@ -74,22 +74,24 @@ function find_wrapper_or_launcher($location) {
  * 'examples/drush' for details.
  */
 function find_wrapper_or_launcher_in_vicinity($location) {
+  $sep = DIRECTORY_SEPARATOR;
   $drush_locations = [
     "",
-    "vendor/bin/",
-    "../vendor/bin/",
-    "sites/all/vendor/bin/",
-    "sites/all/vendor/drush/drush/",
-    "sites/all/drush/drush/",
-    "drush/drush/",
+    "vendor{$sep}bin/",
+    "..{$sep}vendor{$sep}bin{$sep}",
+    "sites{$sep}all{$sep}vendor{$sep}bin{$sep}",
+    "sites{$sep}all{$sep}vendor{$sep}drush{$sep}drush{$sep}",
+    "sites{$sep}all{$sep}drush{$sep}drush{$sep}",
+    "drush{$sep}drush{$sep}",
   ];
 
   return find_wrapper_or_launcher_in_specific_locations($location, $drush_locations);
 }
 
 function find_wrapper_or_launcher_in_specific_locations($location, $drush_locations) {
+  $sep = DIRECTORY_SEPARATOR;
   foreach ($drush_locations as $d) {
-    $found_script = find_wrapper_or_launcher_at_location("$location/$d");
+    $found_script = find_wrapper_or_launcher_at_location("$location$sep$d");
     if (!empty($found_script)) {
       return $found_script;
     }
@@ -108,13 +110,14 @@ function find_wrapper_or_launcher_in_specific_locations($location, $drush_locati
  * 'drush' at the site root.
  */
 function find_wrapper_or_launcher_at_location($location) {
+  $sep = DIRECTORY_SEPARATOR;
   // Sanity-check: empty $location means that we should search
   // at the cwd, not at the root of the filesystem.
   if (empty($location)) {
     $location = ".";
   }
   foreach (array('.launcher', '.wrapper', '') as $suffix) {
-    $check_location = "$location/drush$suffix";
+    $check_location = "$location{$sep}drush$suffix";
     if (is_file($check_location)) {
       return $check_location;
     }
@@ -161,9 +164,10 @@ function _drush_escapeshellarg_linux($arg, $raw = FALSE) {
  * script to use, and executes it with process replacement.
  */
 function drush_startup($argv) {
+  $sep = DIRECTORY_SEPARATOR;
   $found_script = "";
   $home = getenv("HOME");
-  $use_dir = "$home/.drush/use";
+  $use_dir = "$home{$sep}.drush{$sep}use";
 
   // Get the arguments for the command.  Shift off argv[0],
   // which contains the name of this script.
@@ -238,8 +242,8 @@ function drush_startup($argv) {
   // In either event, the appropriate 'drush.launcher' should be right next
   // to this script (stored in the same directory).
   if (empty($found_script) && $NONE) {
-    if (is_file(dirname(__DIR__) . "/drush.launcher")) {
-      $found_script = dirname(__DIR__) . "/drush.launcher";
+    if (is_file(dirname(__DIR__) . "{$sep}drush.launcher")) {
+      $found_script = dirname(__DIR__) . "{$sep}drush.launcher";
     }
     else {
       fwrite(STDERR, "Could not find drush.launcher in " . dirname(__DIR__) . ". Check your installation.\n");
@@ -304,8 +308,8 @@ function drush_startup($argv) {
     // called "drush", we have probably found a Drush install directory,
     // not a site root.  Adjust appropriately.  Note that this
     // also catches the case where a drush "finder" script finds itself.
-    if (is_file(dirname($found_script) . "/drush.launcher")) {
-      $found_script = dirname($found_script) . "/drush.launcher";
+    if (is_file(dirname($found_script) . "{$sep}drush.launcher")) {
+      $found_script = dirname($found_script) . "{$sep}drush.launcher";
     }
   }
 
@@ -313,7 +317,7 @@ function drush_startup($argv) {
   // In that case, there should always be a drush.launcher in
   // the same directory this script is stored in; use that.
   if (empty($found_script)) {
-    $found_script = dirname(__DIR__) . "/drush.launcher";
+    $found_script = dirname(__DIR__) . "{$sep}drush.launcher";
     if (!is_executable($found_script)) {
       // Can't execute the found launcher, so proceed with the current drush,
       // bypassing the Bash niceties of the launcher.
@@ -321,7 +325,7 @@ function drush_startup($argv) {
       if ($DEBUG) {
         fwrite(STDERR, "Phar detected. Proceeding to drush_main().");
       }
-      require __DIR__ . '/preflight.inc';
+      require __DIR__ . "{$sep}preflight.inc";
       exit(drush_main());
     }
   }
