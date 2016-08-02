@@ -25,7 +25,6 @@
     "drush",
     "drush.launcher",
     "drush.php",
-    "drush.bat",
     "drush.complete.sh"
   ],
   "require": {
