@@ -318,7 +318,8 @@ function drush_startup($argv) {
   // the same directory this script is stored in; use that.
   if (empty($found_script)) {
     $found_script = dirname(__DIR__) . "{$sep}drush.launcher";
-    if (!is_executable($found_script)) {
+    // Phar clause added due to https://github.com/drush-ops/drush/pull/2246
+    if (!is_executable($found_script) || class_exists('Phar') && Phar::running()) {
       // Can't execute the found launcher, so proceed with the current drush,
       // bypassing the Bash niceties of the launcher.
       // Emit a message in debug mode advertising how we proceeded.
