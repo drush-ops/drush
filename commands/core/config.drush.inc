@@ -820,6 +820,7 @@ function drush_config_pull($source, $destination) {
   $rsync_options = array(
     'remove-source-files' => TRUE,
     'delete' => TRUE,
+    'exclude' => '.htaccess',
     'yes' => TRUE,  // No need to prompt as destination is always the target config directory.
   );
   $label = drush_get_option('label', 'sync');
