@@ -313,21 +313,20 @@ function drush_startup($argv) {
     }
   }
 
-  // Didn't find any site-local Drush, or @use'd Drush?
-  // In that case, there should always be a drush.launcher in
-  // the same directory this script is stored in; use that.
+  // A Phar can't use the Bash niceties of the Launcher so just proceed to drush_main().
+  if (class_exists('Phar') && Phar::running()) {
+    drush_run_main($DEBUG, $sep, "Phar detected. Proceeding to drush_main().");
+  }
+
+  // Didn't find any site-local Drush, or @use'd Drush, or Phar.
+  // There should be a drush.launcher in same directory as this script.
   if (empty($found_script)) {
     $found_script = dirname(__DIR__) . "{$sep}drush.launcher";
     // Phar clause added due to https://github.com/drush-ops/drush/pull/2246
-    if (!is_executable($found_script) || class_exists('Phar') && Phar::running()) {
+    if (!is_executable($found_script)) {
       // Can't execute the found launcher, so proceed with the current drush,
       // bypassing the Bash niceties of the launcher.
-      // Emit a message in debug mode advertising how we proceeded.
-      if ($DEBUG) {
-        fwrite(STDERR, "Phar detected. Proceeding to drush_main().");
-      }
-      require __DIR__ . "{$sep}preflight.inc";
-      exit(drush_main());
+      drush_run_main($DEBUG, $sep, 'No executable launcher found. Proceeding to drush_main()."');
     }
   }
 
@@ -377,4 +376,24 @@ function drush_startup($argv) {
     $exit_code = proc_close($process);
     exit($proc_status["running"] ? $exit_code : $proc_status["exitcode"] );
   }
+}
+
+/**
+ * Run drush_main() and then exit. Used when we cannot hand over execution to
+ * the launcher.
+ *
+ * @param bool $DEBUG
+ *   Are we in debug mode
+ * @param string $sep
+ *   Directory separator
+ * @param string $msg
+ *   Debug message to log before running drush_main()
+ */
+function drush_run_main($DEBUG, $sep, $msg) {
+// Emit a message in debug mode advertising how we proceeded.
+  if ($DEBUG) {
+    fwrite(STDERR, $msg. "\n");
+  }
+  require __DIR__ . "{$sep}preflight.inc";
+  exit(drush_main());
 }
