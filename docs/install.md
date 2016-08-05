@@ -2,15 +2,15 @@ Install/Upgrade a global Drush
 ---------------
 ```sh
 # Download latest stable release using the code below or browse to github.com/drush-ops/drush/releases.
-php -r "readfile('http://files.drush.org/drush.phar');" > drush
-# Or use our upcoming release: php -r "readfile('http://files.drush.org/drush-unstable.phar');" > drush
+php -r "readfile('http://files.drush.org/drush.phar');" > /tmp/drush
+# Or use our upcoming release: php -r "readfile('http://files.drush.org/drush-unstable.phar');" > /tmp/drush
 
 # Test your install.
-php drush core-status
+php /tmp/drush core-status
 
 # Make `drush` executable as a command from anywhere. Destination can be anywhere on $PATH.
-chmod +x drush
-sudo mv drush /usr/local/bin
+chmod +x /tmp/drush
+sudo mv /tmp/drush /usr/local/bin
 
 # Optional. Enrich the bash startup file with completion and aliases.
 drush init
