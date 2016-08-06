@@ -88,7 +88,12 @@ EOT;
     $sql[] = sprintf('CREATE DATABASE %s /*!40100 DEFAULT CHARACTER SET utf8 */;', $dbname);
     $db_superuser = drush_get_option('db-su');
     if (isset($db_superuser)) {
-      $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO \'%s\'@\'%%\'', $dbname, $this->db_spec['username']);
+      // - For a localhost database, create a localhost user.  This is important for security.
+      //   localhost is special and only allows local Unix socket file connections.
+      // - If the database is on a remote server, create a wilcard user with %.
+      //   We can't easily know what IP adderss or hostname would represent our server.
+      $domain = ($this->db_spec['host'] == 'localhost') ? 'localhost' : '%';
+      $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO \'%s\'@\'%s\'', $dbname, $this->db_spec['username'], $domain);
       $sql[] = sprintf("IDENTIFIED BY '%s';", $this->db_spec['password']);
       $sql[] = 'FLUSH PRIVILEGES;';
     }
