@@ -7,3 +7,5 @@ drush.phar
 *youngj-httpserver*
 #The mkdocs output directory.
 site
+# IDE config
+.idea/
