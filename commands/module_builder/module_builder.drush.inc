@@ -734,9 +734,6 @@ function drush_module_builder_build_component($commands, $component_type, $compo
     $component_data[$property_name] = $value;
   }
 
-  // Perform any final processing on the component data.
-  // This prepares data, for example expands options such as hook presets.
-  $mb_task_handler_generate->processComponentData($component_data_info, $component_data);
 
   // Generate the component.
   $files = $mb_task_handler_generate->generateComponent($component_data);
