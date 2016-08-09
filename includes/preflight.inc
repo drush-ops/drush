@@ -7,12 +7,12 @@
 
 use Drush\Log\LogLevel;
 
+use Robo\Robo;
 use League\Container\Container;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
-use Robo\Container\RoboContainer;
 
 /**
  * The main Drush function.
@@ -232,9 +232,6 @@ function drush_preflight_prepare() {
  * The Drupal6 boot service is needed in order to show the D6 deprecation message.
  */
 function drush_init_dependency_injection_container($input = null, $output = null) {
-  // Set up our dependency injection container.
-  $container = new Container();
-
   // Create default input and output objects if they were not provided
   if (!$input) {
       $input = new StringInput('');
@@ -242,23 +239,16 @@ function drush_init_dependency_injection_container($input = null, $output = null
   if (!$output) {
       $output = new \Symfony\Component\Console\Output\ConsoleOutput();
   }
-  $container->add('input', $input);
-  $container->add('output', $output);
-
-  // Set up Robo's dependency injection container, and configure it as a delegate
-  $roboContainer = new RoboContainer();
-  $roboContainer->add('roboContainer', $roboContainer);
-  \Robo\Runner::configureContainer($roboContainer, $input, $output);
-  \Robo\Runner::addServiceProviders($roboContainer);
-  $container->delegate($roboContainer);
-  \Robo\Runner::addInflectors($container);
-
+  // Set up our dependency injection container.
+  $container = \Robo\Robo::createDefaultContainer($input, $output);
   $container->add('container', $container);
 
+  // Set up Robo's dependency injection container, and configure it as a delegate
   $container->share('logStyler', \Robo\Log\RoboLogStyle::class);
   $container->share('logger', 'Drush\Log\Logger')
     ->withArgument('output')
     ->withMethodCall('setLogOutputStyler', ['logStyler']);
+
   $container->share('bootstrap.default', 'Drush\Boot\EmptyBoot');
   $container->share('bootstrap.drupal6', 'Drush\Boot\DrupalBoot6');
   $container->share('bootstrap.drupal7', 'Drush\Boot\DrupalBoot7');
@@ -269,9 +259,9 @@ function drush_init_dependency_injection_container($input = null, $output = null
     ->withMethodCall('add', ['bootstrap.drupal6'])
     ->withMethodCall('add', ['bootstrap.drupal7'])
     ->withMethodCall('add', ['bootstrap.drupal8']);
-  $container->share('globalOptionsEventListener', \Drush\Command\GlobalOptionsEventListener::class);
+  $container->share('drushGlobalOptionsEventListener', \Drush\Command\GlobalOptionsEventListener::class);
   $container->share('eventDispatcher', \Symfony\Component\EventDispatcher\EventDispatcher::class)
-      ->withMethodCall('addSubscriber', ['globalOptionsEventListener']);
+      ->withMethodCall('addSubscriber', ['drushGlobalOptionsEventListener']);
   $container->share('application', 'Symfony\Component\Console\Application')
     ->withArgument('Drush Commandline Tool')
     ->withArgument(\Drush::getVersion())
@@ -292,9 +282,14 @@ function drush_init_dependency_injection_container($input = null, $output = null
   $container->inflector('Psr\Log\LoggerAwareInterface')
     ->invokeMethod('setLogger', ['logger']);
 
+  // The inflectors of the delegate are not automatically
+  // available to the primary container; we must add them
+  // here as well.
+  \Robo\Robo::addInflectors($container);
+
   // Store the container in the \Drush object
   \Drush::setContainer($container);
-  \Robo\Config::setContainer($container);
+  \Robo\Robo::setContainer($container);
 
   return $container;
 }
@@ -590,10 +585,10 @@ function _drush_preflight_global_options() {
   }
   drush_set_context('DRUSH_NOCOLOR', $nocolor);
 
-  // Copy the simulated option to the RoboContainer.
+  // Copy the simulated option to the Robo configuration object.
   // TODO: Long-term there should be a better way to do this (e.g. via an event listener)
-  $roboContainer = \Drush::service('roboContainer');
-  $roboContainer->setSimulated(drush_get_context('DRUSH_SIMULATE'));
+  $config = \Drush::service('config');
+  $config->setSimulated(drush_get_context('DRUSH_SIMULATE'));
 
   // Copy the output verbosity into the output object
   $verbosity = OutputInterface::VERBOSITY_NORMAL;

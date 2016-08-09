@@ -70,10 +70,14 @@ class Logger extends RoboLogger {
       $debug = drush_get_context('DRUSH_DEBUG');
       $debugnotify = drush_get_context('DRUSH_DEBUG_NOTIFY');
 
+      // Save the original level in the context name, then
+      // map it to a standard log level.
+      $context['name'] = $level;
       switch ($level) {
         case LogLevel::WARNING :
         case LogLevel::CANCEL :
           $type_msg = sprintf($yellow, $level);
+          $level = LogLevel::WARNING;
           break;
         case 'failed' : // Obsolete; only here in case contrib is using it.
         case LogLevel::EMERGENCY : // Not used by Drush
