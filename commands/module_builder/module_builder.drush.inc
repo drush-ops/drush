@@ -25,7 +25,8 @@ function module_builder_drush_init() {
  */
 function module_builder_drush_init_helper() {
   // Set up the MB factory.
-  \DrupalCodeBuilder\Factory::setEnvironmentClass('Drush', drush_drupal_version());
+  \DrupalCodeBuilder\Factory::setEnvironmentLocalClass('Drush')
+    ->setCoreVersionNumber(drush_drupal_version());
 }
 
 /**
