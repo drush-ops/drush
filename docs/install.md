@@ -2,7 +2,7 @@ Install/Upgrade a global Drush
 ---------------
 ```sh
 # Download latest stable release using the code below or browse to github.com/drush-ops/drush/releases.
-php -r "readfile('http://files.drush.org/drush.phar');" > drush
+php -r "readfile('https://files.drush.org/drush.phar');" > drush
 # Or use our upcoming release: php -r "readfile('http://files.drush.org/drush-unstable.phar');" > drush
 
 # Test your install.
