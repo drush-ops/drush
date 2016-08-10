@@ -243,8 +243,6 @@ function drush_init_dependency_injection_container($input = null, $output = null
   $container = \Robo\Robo::createDefaultContainer($input, $output);
   $container->add('container', $container);
 
-  // Set up Robo's dependency injection container, and configure it as a delegate
-  $container->share('logStyler', \Robo\Log\RoboLogStyle::class);
   $container->share('logger', 'Drush\Log\Logger')
     ->withArgument('output')
     ->withMethodCall('setLogOutputStyler', ['logStyler']);
@@ -259,8 +257,10 @@ function drush_init_dependency_injection_container($input = null, $output = null
     ->withMethodCall('add', ['bootstrap.drupal6'])
     ->withMethodCall('add', ['bootstrap.drupal7'])
     ->withMethodCall('add', ['bootstrap.drupal8']);
+
   $container->share('drushGlobalOptionsEventListener', \Drush\Command\GlobalOptionsEventListener::class);
   $container->share('eventDispatcher', \Symfony\Component\EventDispatcher\EventDispatcher::class)
+      ->withMethodCall('addSubscriber', ['globalOptionsEventListener'])
       ->withMethodCall('addSubscriber', ['drushGlobalOptionsEventListener']);
   $container->share('application', 'Symfony\Component\Console\Application')
     ->withArgument('Drush Commandline Tool')
@@ -270,15 +270,11 @@ function drush_init_dependency_injection_container($input = null, $output = null
   $container->share('commandDiscovery', 'Consolidation\AnnotatedCommand\CommandFileDiscovery')
     ->withMethodCall('addSearchLocation', ['CommandFiles'])
     ->withMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
-  $container->share('formatterManager', 'Consolidation\OutputFormatters\FormatterManager');
+
   $container->share('backendResultSetter', 'Drush\Backend\BackendResultSetter');
   $container->share('hookManager', 'Consolidation\AnnotatedCommand\Hooks\HookManager')
       ->withMethodCall('addOutputExtractor', ['backendResultSetter']);
-  $container->share('commandProcessor', 'Consolidation\AnnotatedCommand\CommandProcessor')
-    ->withArgument('hookManager')
-    ->withMethodCall('setFormatterManager', ['formatterManager']);
-  $container->share('commandFactory', 'Consolidation\AnnotatedCommand\AnnotatedCommandFactory')
-    ->withMethodCall('setCommandProcessor', ['commandProcessor']);
+
   $container->inflector('Psr\Log\LoggerAwareInterface')
     ->invokeMethod('setLogger', ['logger']);
 
