@@ -45,25 +45,23 @@ class InitCommandFile extends \Robo\Tasks
     $example_prompt = $examples_dir . "/example.prompt.sh";
     $example_complete = DRUSH_BASE_PATH . "/drush.complete.sh";
 
-    $collection = $this->collection();
+    $collection = $this->collectionBuilder();
 
     // Create a ~/.drush directory if it does not yet exist
-    $this->taskFileSystemStack()
-        ->mkdir($drush_config_dir)
-        ->addToCollection($collection);
+    $collection->taskFilesystemStack()
+        ->mkdir($drush_config_dir);
 
     // If there is no ~/.drush/drushrc.php, then copy the
     // example Drush configuration file here
     if (!is_file($drush_config_file)) {
-      $this->taskWriteToFile($drush_config_file)
-        ->textFromFile($example_configuration)
-        ->addToCollection($collection);
+      $collection->taskWriteToFile($drush_config_file)
+        ->textFromFile($example_configuration);
     }
 
     // Decide whether we want to add our Bash commands to
     // ~/.bashrc or ~/.bash_profile, and create a task to
     // update it with includes of the various files we write,
-    // as needed.
+    // as needed.  If it is, then we will add it to the collection.
     $bashrc = $this->findBashrc($home);
     $taskUpdateBashrc = $this->taskWriteToFile($bashrc)
       ->append();
@@ -88,9 +86,8 @@ class InitCommandFile extends \Robo\Tasks
       // If the destination file does not exist, then
       // copy the example file there.
       if (!is_file($destFile)) {
-        $this->taskWriteToFile($destFile)
-          ->textFromFile($sourceFile)
-          ->addToCollection($collection);
+        $collection->taskWriteToFile($destFile)
+          ->textFromFile($sourceFile);
         $description = $drushBashFileDescriptions[$destFile];
         $collection->progressMessage('Copied {description} to {path}', ['description' => $description, 'path' => $destFile], LogLevel::OK);
         $pattern = basename($destFile);
@@ -111,7 +108,7 @@ class InitCommandFile extends \Robo\Tasks
     $openEditor = FALSE;
     if ($taskUpdateBashrc->wouldChange()) {
       if (drush_confirm(dt("Modify !file to include Drush configuration files?", array('!file' => $bashrc)))) {
-        $collection->add($taskUpdateBashrc);
+        $collection->addTask($taskUpdateBashrc);
         $collection->progressMessage('Updated bash configuration file {path}', ['path' => $bashrc], LogLevel::OK);
         $collection->progressMessage('Start a new shell in order to experience the improvements (e.g. `{shell}`).', ['shell' => 'bash'], LogLevel::OK);
         $openEditor = $options['edit'];
