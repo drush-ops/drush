@@ -15,7 +15,7 @@ values, and how to make more complex changes.
 
 It is not necessary to alter the configuration system values to 
 make simple value changes to configuration variables, as this may be
-done by the configuration override system.
+done by the [configuration override system](https://www.drupal.org/node/1928898).
 
 The configuration override system allows you to change configuration
 values for a given instance of a site (e.g. the development server) by
@@ -24,11 +24,6 @@ For example, to change the name of a local development site:
 ```
 $config['system.site']['name'] = 'Local Install of Awesome Widgets, Inc.';
 ```
-If you wish to change configuration values in code rather than in
-your settings.php file, it is also possible to alter configuration
-values in module hooks.   See the [configuration override system](https://www.drupal.org/node/1928898)
-documentation for details.
-
 Note that the configuration override system is a Drupal feature, not
 a Drush feature. It should be the preferred method for changing
 configuration values on a per-environment basis; however, it does not
@@ -56,3 +51,11 @@ will not cause it to be disabled again.  Similarly, if you make changes
 to configuration on the development environment and export them, then
 the devel module will not be listed in the exports.
 
+## More Complex Adjustments
+
+Drush allows more complex changes to the configuration data to be made
+via the configuration filter mechanism.  In order to do this, you must
+write some code inside a Drush extension.
+
+See [Drupal Configuration Filtering](config-filter.md) for more information
+on how to do this.
