@@ -42,7 +42,7 @@ use Drupal\Core\Config\StorageInterface;
  * are the module names to exclude from import / export, as
  * described above.
  */
-class CoreExtensionFilter implements StorageFilter {
+class CoreExtensionFilter extends StorageFilterBase implements StorageFilterInterface {
 
   protected $adjustments;
 
@@ -58,7 +58,14 @@ class CoreExtensionFilter implements StorageFilter {
     return $this->filterOutIgnored($data, $active_storage->read($name));
   }
 
-  public function filterWrite($name, array $data, StorageInterface $storage) {
+  public function filterReadMultiple(array $names, array $data) {
+    if (in_array('core.extension', $names)) {
+      $data['core.extension'] = $this->filterRead('core.extension', $data['core.extension']);
+    }
+    return $data;
+  }
+
+  public function filterWrite($name, array $data, StorageInterface $storage = NULL) {
     if ($name != 'core.extension') {
       return $data;
     }
@@ -78,4 +85,5 @@ class CoreExtensionFilter implements StorageFilter {
     return $data;
 
   }
+
 }

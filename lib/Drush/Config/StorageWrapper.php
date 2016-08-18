@@ -17,6 +17,12 @@ class StorageWrapper implements StorageInterface {
    * @var \Drupal\Core\Config\StorageInterface
    */
   protected $storage;
+
+  /**
+   * The storage filters.
+   *
+   * @var \Drush\Config\StorageFilterInterface[]
+   */
   protected $filters;
 
   /**
@@ -31,7 +37,11 @@ class StorageWrapper implements StorageInterface {
    * {@inheritdoc}
    */
   public function exists($name) {
-    return $this->storage->exists($name);
+    $exists = $this->storage->exists($name);
+    foreach ($this->filters as $filter) {
+      $exists = $filter->filterExists($name, $exists);
+    }
+    return $exists;
   }
 
   /**
@@ -39,11 +49,9 @@ class StorageWrapper implements StorageInterface {
    */
   public function read($name) {
     $data = $this->storage->read($name);
-
     foreach ($this->filters as $filter) {
       $data = $filter->filterRead($name, $data);
     }
-
     return $data;
   }
 
@@ -51,17 +59,11 @@ class StorageWrapper implements StorageInterface {
    * {@inheritdoc}
    */
   public function readMultiple(array $names) {
-    $dataList = $this->storage->readMultiple($names);
-    $result = array();
-
-    foreach ($dataList as $name => $data) {
-      foreach ($this->filters as $filter) {
-        $data = $filter->filterRead($name, $data);
-      }
-      $result[$name] = $data;
+    $data = $this->storage->readMultiple($names);
+    foreach ($this->filters as $filter) {
+      $data = $filter->filterReadMultiple($names, $data);
     }
-
-    return $result;
+    return $data;
   }
 
   /**
@@ -71,22 +73,39 @@ class StorageWrapper implements StorageInterface {
     foreach ($this->filters as $filter) {
       $data = $filter->filterWrite($name, $data, $this->storage);
     }
-
-    return $this->storage->write($name, $data);
+    if ($data) {
+      return $this->storage->write($name, $data);
+    }
+    // The data was not written, but it is not an error.
+    return TRUE;
   }
 
   /**
    * {@inheritdoc}
    */
   public function delete($name) {
-    return $this->storage->delete($name);
+    $success = TRUE;
+    foreach ($this->filters as $filter) {
+      $success = $filter->filterDelete($name, $success);
+    }
+    if ($success) {
+      $success = $this->storage->delete($name);
+    }
+    return $success;
   }
 
   /**
    * {@inheritdoc}
    */
   public function rename($name, $new_name) {
-    return $this->storage->rename($name, $new_name);
+    $success = TRUE;
+    foreach ($this->filters as $filter) {
+      $success = $filter->filterRename($name, $new_name, $success);
+    }
+    if ($success) {
+      $success = $this->storage->rename($name, $new_name);
+    }
+    return $success;
   }
 
   /**
@@ -107,35 +126,60 @@ class StorageWrapper implements StorageInterface {
    * {@inheritdoc}
    */
   public function listAll($prefix = '') {
-    return $this->storage->listAll($prefix);
+    $data = $this->storage->listAll($prefix);
+    foreach ($this->filters as $filter) {
+      $data = $filter->filterListAll($prefix, $data);
+    }
+    return $data;
   }
 
   /**
    * {@inheritdoc}
    */
   public function deleteAll($prefix = '') {
-    return $this->storage->deleteAll($prefix);
+    $delete = TRUE;
+    foreach ($this->filters as $filter) {
+      $delete = $filter->filterDeleteAll($prefix, $delete);
+    }
+    if ($delete) {
+      $delete = $this->storage->deleteAll($prefix);
+    }
+    return $delete;
   }
 
   /**
    * {@inheritdoc}
    */
   public function createCollection($collection) {
-    return $this->storage->createCollection($collection);
+    $filters = [];
+    foreach ($this->filters as $filter) {
+      if ($filter = $filter->filterCreateCollection($collection)) {
+        $filters[] = $filter;
+      }
+    }
+    return new static($this->storage->createCollection($collection), $filters);
   }
 
   /**
    * {@inheritdoc}
    */
   public function getAllCollectionNames() {
-    return $this->storage->getAllCollectionNames();
+    $collections = $this->storage->getAllCollectionNames();
+    foreach ($this->filters as $filter) {
+      $collections = $filter->filterGetAllCollectionNames($collections);
+    }
+    return $collections;
   }
 
   /**
    * {@inheritdoc}
    */
   public function getCollectionName() {
-    return $this->storage->getCollectionName();
+    $collection = $this->storage->getCollectionName();
+    foreach ($this->filters as $filter) {
+      $collection = $filter->filterGetCollectionName($collection);
+    }
+    return $collection;
   }
 
 }
