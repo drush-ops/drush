@@ -6,6 +6,7 @@
  */
 
 use Drush\Log\LogLevel;
+use Webmozart\PathUtil\Path;
 
 use Robo\Robo;
 use League\Container\Container;
