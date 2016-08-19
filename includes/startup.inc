@@ -126,6 +126,26 @@ function find_wrapper_or_launcher_at_location($location) {
 }
 
 /**
+ * Determine whether current OS is a Windows variant.
+ */
+function drush_is_windows() {
+  return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+}
+
+function drush_escapeshellarg($arg, $os = NULL, $raw = FALSE) {
+  // Short-circuit escaping for simple params (keep stuff readable)
+  if (preg_match('|^[a-zA-Z0-9.:/_-]*$|', $arg)) {
+    return $arg;
+  }
+  elseif (drush_is_windows($os)) {
+    return _drush_escapeshellarg_windows($arg, $raw);
+  }
+  else {
+    return _drush_escapeshellarg_linux($arg, $raw);
+  }
+}
+
+/**
  * Linux version of escapeshellarg().
  *
  * This is intended to work the same way that escapeshellarg() does on
@@ -152,6 +172,28 @@ function _drush_escapeshellarg_linux($arg, $raw = FALSE) {
   if(!$raw) {
     // Add surrounding quotes.
     $arg = "'" . $arg . "'";
+  }
+
+  return $arg;
+}
+
+/**
+ * Windows version of escapeshellarg().
+ */
+function _drush_escapeshellarg_windows($arg, $raw = FALSE) {
+  // Double up existing backslashes
+  $arg = preg_replace('/\\\/', '\\\\\\\\', $arg);
+
+  // Double up double quotes
+  $arg = preg_replace('/"/', '""', $arg);
+
+  // Double up percents.
+  $arg = preg_replace('/%/', '%%', $arg);
+
+  // Only wrap with quotes when needed.
+  if(!$raw) {
+    // Add surrounding quotes.
+    $arg = '"' . $arg . '"';
   }
 
   return $arg;
@@ -313,8 +355,9 @@ function drush_startup($argv) {
     }
   }
 
-  // A Phar can't use the Bash niceties of the Launcher so just proceed to drush_main().
-  if (class_exists('Phar') && Phar::running()) {
+  // Didn't find any site-local Drush, or @use'd Drush.
+  // If a Phar finds itself (https://github.com/drush-ops/drush/pull/2246), skip the Bash niceties of the launcher and proceed to drush_main().
+  if (!empty($found_script) && class_exists('Phar')  && $found_script == Phar::running(FALSE)) {
     drush_run_main($DEBUG, $sep, "Phar detected. Proceeding to drush_main().");
   }
 
@@ -322,11 +365,16 @@ function drush_startup($argv) {
   // There should be a drush.launcher in same directory as this script.
   if (empty($found_script)) {
     $found_script = dirname(__DIR__) . "{$sep}drush.launcher";
-    // Phar clause added due to https://github.com/drush-ops/drush/pull/2246
-    if (!is_executable($found_script)) {
-      // Can't execute the found launcher, so proceed with the current drush,
-      // bypassing the Bash niceties of the launcher.
-      drush_run_main($DEBUG, $sep, 'No executable launcher found. Proceeding to drush_main()."');
+  }
+
+  if (drush_is_windows()) {
+    // Sometimes we found launcher in /bin, and sometimes not. Adjust accordingly.
+    if (strpos($found_script, 'bin')) {
+      $found_script = dirname($found_script). $sep. 'drush.php.bat';
+    }
+    else {
+      array_unshift($arguments, dirname($found_script). $sep. 'drush.php');
+      $found_script = 'php';
     }
   }
 
@@ -370,7 +418,7 @@ function drush_startup($argv) {
     exit(1);
   }
   else {
-    $escaped_args = array_map(function($item) { return _drush_escapeshellarg_linux($item); }, $arguments);
+    $escaped_args = array_map(function($item) { return drush_escapeshellarg($item); }, $arguments);
     $process = proc_open($found_script . ' ' . implode(' ', $escaped_args), array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
     $proc_status = proc_get_status($process);
     $exit_code = proc_close($process);

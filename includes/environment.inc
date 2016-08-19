@@ -507,16 +507,6 @@ function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, 
 }
 
 /**
- * Check if the operating system is Windows.
- * This will return TRUE under DOS, Powershell
- * Cygwin and MSYSGIT shells, so test for the
- * Windows variant FIRST if you care.
- */
-function drush_is_windows($os = NULL) {
-  return _drush_test_os($os, array("WIN","CYGWIN","CWRSYNC","MINGW"));
-}
-
-/**
  * Check if the operating system is Winodws
  * running some variant of cygwin -- either
  * Cygwin or the MSYSGIT shell.  If you care
