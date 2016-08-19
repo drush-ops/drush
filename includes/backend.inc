@@ -829,7 +829,10 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     $drush_global_options = $item['drush-global-options'];
     $backend_options = $item['backend-options'];
     $is_remote = array_key_exists('remote-host', $site_record);
-    $is_different_site = $is_remote || (isset($site_record['root']) && ($site_record['root'] != drush_get_context('DRUSH_DRUPAL_SITE_ROOT')));
+    $is_different_site =
+      $is_remote ||
+      (isset($site_record['root']) && ($site_record['root'] != drush_get_context('DRUSH_DRUPAL_ROOT'))) ||
+      (isset($site_record['uri']) && ($site_record['uri'] != drush_get_context('DRUSH_SELECTED_URI')));
     $os = drush_os($site_record);
     // If the caller did not pass in a specific path to drush, then we will
     // use a default value.  For commands that are being executed on the same

@@ -306,16 +306,17 @@ function pm_drush_pm_download_destination_alter(&$request, $release) {
  * @return String the candidate destination if it exists.
  */
 function _pm_download_destination_lookup($type, $drupal_root, $sitepath, $create = FALSE) {
-  if ($type == 'theme engine') {
-    $destination = 'themes/engines';
-  }
   // Profiles in Drupal < 8
-  elseif (($type == 'profile') && (drush_drupal_major_version() < 8)) {
+  if (($type == 'profile') && (drush_drupal_major_version() < 8)) {
     $destination = 'profiles';
   }
   // Type: module, theme or profile.
   else {
-    $destination = $type . 's';
+    if ($type == 'theme engine') {
+      $destination = 'themes/engines';
+    } else {
+      $destination = $type . 's';
+    }
     // Prefer /contrib if it exists.
     if ($sitepath) {
       $destination = $sitepath . '/' . $destination;
