@@ -7,6 +7,8 @@
  *   line.
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * Global flag to identify update.php run, and so avoid various unwanted
  * operations, such as hook_init() and hook_exit() invokes, css/js preprocessing
@@ -75,7 +77,7 @@ function drush_update_do_one($module, $number, $dependency_map,  &$context) {
       // If the update hook returned a status message (common in batch updates),
       // show it to the user.
       if ($ret['results']['query']) {
-        drush_log($ret['results']['query'], 'ok');
+        drush_log($ret['results']['query'], LogLevel::OK);
       }
 
       $ret['results']['success'] = TRUE;
@@ -130,13 +132,13 @@ function update_check_requirements() {
 
   // If there are issues, report them.
   foreach ($requirements as $requirement) {
-    if (isset($requirement['severity']) && $requirement['severity'] != REQUIREMENT_OK) {
+    if (isset($requirement['severity']) && $requirement['severity'] > REQUIREMENT_OK) {
       $message = isset($requirement['description']) ? $requirement['description'] : '';
       if (isset($requirement['value']) && $requirement['value']) {
         $message .= ' (Currently using ' . $requirement['title'] . ' ' . $requirement['value'] . ')';
       }
       $warnings = TRUE;
-      drupal_set_message($message, 'warning');
+      drupal_set_message($message, LogLevel::WARNING);
     }
   }
   return $warnings;
@@ -233,8 +235,10 @@ function update_main() {
     drush_update_batch($start);
   }
   else {
-    drush_log(dt("No database updates required"), 'success');
+    drush_log(dt("No database updates required"), LogLevel::SUCCESS);
   }
+
+  return count($pending);
 }
 
 function _update_batch_command($id) {

@@ -35,12 +35,22 @@ class SqlDumpTest extends CommandUnishTestCase {
       'root' => $root,
       'uri' => $uri,
     );
+
+    // Test --extra option
+    if ($this->db_driver() == 'mysql') {
+      $this->drush('sql-dump', array(), array_merge($options, $site_selection_options, array('extra' => '--skip-add-drop-table')));
+      $this->assertFileExists($full_dump_file_path);
+      $full_dump_file = file_get_contents($full_dump_file_path);
+      $this->assertNotContains('DROP TABLE IF EXISTS', $full_dump_file);
+    }
+
+
     // First, do a test without any aliases, and dump the whole database
     $this->drush('sql-dump', array(), array_merge($options, $site_selection_options));
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('batch', $full_dump_file);
+    $this->assertContains('queue', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertNotContains('history', $full_dump_file);
     // Next, set up an alias file and run a couple of simulated
@@ -52,7 +62,7 @@ class SqlDumpTest extends CommandUnishTestCase {
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('batch', $full_dump_file);
+    $this->assertContains('queue', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertContains('history', $full_dump_file);
 
@@ -81,7 +91,7 @@ EOD;
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('batch', $full_dump_file);
+    $this->assertContains('queue', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertNotContains('history', $full_dump_file);
     // Repeat control test:  options not recovered in absence of an alias.
@@ -90,7 +100,7 @@ EOD;
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('batch', $full_dump_file);
+    $this->assertContains('queue', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertContains('history', $full_dump_file);
     // Now run yet with @self, and test to see that Drush can recover the option
@@ -100,7 +110,7 @@ EOD;
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('batch', $full_dump_file);
+    $this->assertContains('queue', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertNotContains('history', $full_dump_file);
   }

@@ -5,7 +5,8 @@
  * pm-download command implementation.
  */
 
-use \Drush\UpdateService\ReleaseInfo;
+use Drush\Log\LogLevel;
+use Drush\UpdateService\ReleaseInfo;
 
 /**
  * Implements drush_hook_COMMAND_validate().
@@ -57,7 +58,7 @@ function drush_pm_download_validate() {
   if (($package_handler != 'wget') && ($variant != 'profile-only')) {
     $new_variant = 'profile-only';
     if ($variant) {
-      drush_log(dt('Variant !variant is incompatible with !ph package-handler.', array('!variant' => $variant, '!ph' => $package_handler)), 'warning');
+      drush_log(dt('Variant !variant is incompatible with !ph package-handler.', array('!variant' => $variant, '!ph' => $package_handler)), LogLevel::WARNING);
     }
   }
   // If we are working on a drupal root, full variant is not an option.
@@ -66,14 +67,14 @@ function drush_pm_download_validate() {
       $new_variant = 'projects';
     }
     if ($variant == 'full') {
-      drush_log(dt('Variant full is not a valid option within a Drupal root.'), 'warning');
+      drush_log(dt('Variant full is not a valid option within a Drupal root.'), LogLevel::WARNING);
     }
   }
 
   if (isset($new_variant)) {
     drush_set_option('variant', $new_variant);
     if ($variant) {
-      drush_log(dt('Switching to --variant=!variant.', array('!variant' => $new_variant)), 'ok');
+      drush_log(dt('Switching to --variant=!variant.', array('!variant' => $new_variant)), LogLevel::OK);
     }
   }
 }
@@ -159,7 +160,7 @@ function drush_pm_download() {
     if (!$request['full_project_path']) {
       // Delete the cached update service file since it may be invalid.
       $release_info->clearCached($request);
-      drush_log(dt('Error downloading !name', array('!name' => $request['name']), 'error'));
+      drush_log(dt('Error downloading !name', array('!name' => $request['name']), LogLevel::ERROR));
       continue;
     }
 
@@ -201,7 +202,7 @@ function drush_pm_download() {
           drush_delete_dir($request['project_install_location'], TRUE);
         }
         else {
-          drush_log(dt("Skip installation of !project to !dest.", array('!project' => $request['name'], '!dest' => $request['project_install_location'])), 'warning');
+          drush_log(dt("Skip installation of !project to !dest.", array('!project' => $request['name'], '!dest' => $request['project_install_location'])), LogLevel::WARNING);
           continue;
         }
       }
@@ -215,7 +216,7 @@ function drush_pm_download() {
 
     // Copy the project to the install location.
     if (drush_op('_drush_recursive_copy', $request['full_project_path'], $request['project_install_location'])) {
-      drush_log(dt("Project !project (!version) downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $request['project_install_location'])), 'success');
+      drush_log(dt("Project !project (!version) downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $request['project_install_location'])), LogLevel::SUCCESS);
       // Adjust full_project_path to the final project location.
       $request['full_project_path'] = $request['project_install_location'];
 
@@ -263,18 +264,19 @@ function drush_pm_download() {
  * Implementation of hook_drush_pm_download_destination_alter().
  *
  * Built-in download-destination-alter hook. This particular version of
- * the hook will move modules that contain only drush commands to
+ * the hook will move modules that contain only Drush commands to
  * /usr/share/drush/commands if it exists, or $HOME/.drush if the
  * site-wide location does not exist.
  */
 function pm_drush_pm_download_destination_alter(&$request, $release) {
-  // A module is a pure drush command if it has no .module and contain
-  // .drush.inc files.  Skip this test for drush itself, though; we do
-  // not want to download drush to the ~/.drush folder.
+  // A module is a pure Drush command if it has no .info.yml (8+) and contains no
+  // .drush.inc files.  Skip this test for Drush itself, though; we do
+  // not want to download Drush to the ~/.drush folder.
   if (in_array($request['project_type'], array('module', 'utility')) && ($request['name'] != 'drush')) {
     $drush_command_files = drush_scan_directory($request['full_project_path'], '/.*\.drush.inc/');
     if (!empty($drush_command_files)) {
-      $module_files = drush_scan_directory($request['full_project_path'], '/.*\.module/');
+      $pattern = drush_drupal_major_version() >= 8 ? '/.*\.info/' : '/.*\.module/';
+      $module_files = drush_scan_directory($request['full_project_path'], $pattern);
       if (empty($module_files)) {
         $install_dir = drush_get_context('DRUSH_SITE_WIDE_COMMANDFILES');
         if (!is_dir($install_dir) || !is_writable($install_dir)) {
@@ -289,8 +291,8 @@ function pm_drush_pm_download_destination_alter(&$request, $release) {
           $request['project_install_location'] = $install_dir;
         }
       }
-      // We need to clear the drush commandfile cache so that
-      // our newly-downloaded drush extension commandfiles can be found.
+      // We need to clear the Drush commandfile cache so that
+      // our newly-downloaded Drush extension commandfiles can be found.
       drush_cache_clear_all();
     }
   }
@@ -304,16 +306,17 @@ function pm_drush_pm_download_destination_alter(&$request, $release) {
  * @return String the candidate destination if it exists.
  */
 function _pm_download_destination_lookup($type, $drupal_root, $sitepath, $create = FALSE) {
-  if ($type == 'theme engine') {
-    $destination = 'themes/engines';
-  }
   // Profiles in Drupal < 8
-  elseif (($type == 'profile') && (drush_drupal_major_version() < 8)) {
+  if (($type == 'profile') && (drush_drupal_major_version() < 8)) {
     $destination = 'profiles';
   }
   // Type: module, theme or profile.
   else {
-    $destination = $type . 's';
+    if ($type == 'theme engine') {
+      $destination = 'themes/engines';
+    } else {
+      $destination = $type . 's';
+    }
     // Prefer /contrib if it exists.
     if ($sitepath) {
       $destination = $sitepath . '/' . $destination;

@@ -4,6 +4,7 @@
  * General utility functions for Drush Make.
  */
 
+use Drush\Log\LogLevel;
 use Drush\Make\Parser\ParserIni;
 use Drush\Make\Parser\ParserYaml;
 
@@ -30,7 +31,7 @@ function make_parse_info_file($makefile) {
 /**
  * Parse makefile recursively.
  */
-function _make_parse_info_file($makefile) {
+function _make_parse_info_file($makefile, $element = 'includes') {
   if (!($data = make_get_data($makefile))) {
     return drush_set_error('MAKE_INVALID_MAKE_FILE', dt('Invalid or empty make file: !makefile', array('!makefile' => $makefile)));
   }
@@ -49,41 +50,60 @@ function _make_parse_info_file($makefile) {
     }
   }
 
-  // Merge includes recursively.
-  if (!empty($info['includes'])) {
-    if (is_array($info['includes'])) {
-      $include_path = dirname($makefile);
+  // Include any makefiles specified on the command line.
+  if ($include_makefiles = drush_get_option_list('includes', FALSE)) {
+    drush_unset_option('includes'); // Avoid infinite loop.
+    $info['includes'] = is_array($info['includes']) ? $info['includes'] : array();
+    foreach ($include_makefiles as $include_make) {
+      if (!array_search($include_make, $info['includes'])) {
+        $info['includes'][] = $include_make;
+      }
+    }
+  }
+
+  // Override elements with values from makefiles specified on the command line.
+  if ($overrides = drush_get_option_list('overrides', FALSE)) {
+    drush_unset_option('overrides'); // Avoid infinite loop.
+    $info['overrides'] = is_array($info['overrides']) ? $info['overrides'] : array();
+    foreach ($overrides as $override) {
+      if (!array_search($override, $info['overrides'])) {
+        $info['overrides'][] = $override;
+      }
+    }
+  }
+
+  $info = _make_merge_includes_recursively($info, $makefile);
+  $info = _make_merge_includes_recursively($info, $makefile, 'overrides');
+
+  return $info;
+}
+
+/**
+ * Helper function to merge includes recursively.
+ */
+function _make_merge_includes_recursively($info, $makefile, $element = 'includes') {
+  if (!empty($info[$element])) {
+    if (is_array($info[$element])) {
       $includes = array();
-      foreach ($info['includes'] as $key => $include) {
+      foreach ($info[$element] as $key => $include) {
         if (!empty($include)) {
-          if (is_array($include) && $include['download']['type'] = 'git') {
-            $tmp_dir = make_tmp();
-            make_download_git($include['makefile'], $include['download']['type'], $include['download'], $tmp_dir);
-            $include_makefile = $tmp_dir . '/' . $include['makefile'];
-          }
-          elseif (is_string($include)) {
-            if (make_valid_url($include, TRUE)) {
-              $include_makefile = $include;
-            }
-            elseif (file_exists($include_path . '/' . $include)) {
-              $include_makefile = $include_path . '/' . $include;
-            }
-            elseif (file_exists($include)) {
-              $include_makefile = $include;
-            }
-            else {
-              make_error('BUILD_ERROR', dt("Include file missing: !include", array('!include' => $include)));
-            }
-          }
-          else {
-            make_error('BUILD_ERROR', dt("Cannot determine include file location: !include", array('!include' => $include)));
+          if (!$include_makefile = _make_get_include_path($include, $makefile)) {
+            return make_error('BUILD_ERROR', dt("Cannot determine include file location: !include", array('!include' => $include)));
           }
 
-          $info = array_replace_recursive(_make_parse_info_file($include_makefile), $info);
+          if ($element == 'overrides') {
+            $info = array_replace_recursive($info, _make_parse_info_file($include_makefile, $element));
+          }
+          else {
+            $info = array_replace_recursive(_make_parse_info_file($include_makefile), $info);
+          }
+          unset($info[$element][$key]);
           // Move core back to the top of the list, where
           // make_generate_from_makefile() expects it.
-          array_reverse($info['projects']);
-        }    
+          if (!empty($info['projects'])) {
+            array_reverse($info['projects']);
+          }
+        }
       }
     }
   }
@@ -92,6 +112,36 @@ function _make_parse_info_file($makefile) {
   make_normalize_info($info);
 
   return $info;
+}
+
+/**
+ * Helper function to determine the proper path for an include makefile.
+ */
+function _make_get_include_path($include, $makefile) {
+  if (is_array($include) && $include['download']['type'] = 'git') {
+    $tmp_dir = make_tmp();
+    make_download_git($include['makefile'], $include['download']['type'], $include['download'], $tmp_dir);
+    $include_makefile = $tmp_dir . '/' . $include['makefile'];
+  }
+  elseif (is_string($include)) {
+    $include_path = dirname($makefile);
+    if (make_valid_url($include, TRUE)) {
+      $include_makefile = $include;
+    }
+    elseif (file_exists($include_path . '/' . $include)) {
+      $include_makefile = $include_path . '/' . $include;
+    }
+    elseif (file_exists($include)) {
+      $include_makefile = $include;
+    }
+    else {
+      return make_error('BUILD_ERROR', dt("Include file missing: !include", array('!include' => $include)));
+    }
+  }
+  else {
+    return FALSE;
+  }
+  return $include_makefile;
 }
 
 /**
@@ -175,7 +225,7 @@ function make_prune_info_file($info, $include_only = array()) {
 
   if ($pruned) {
     // Make it clear to the user what's going on.
-    drush_log(implode("\n", $msg), 'ok');
+    drush_log(implode("\n", $msg), LogLevel::OK);
 
     // Throw an error if these restrictions reduced the make to nothing.
     if (empty($info['projects']) && empty($info['libraries'])) {
@@ -216,7 +266,7 @@ function make_validate_info_file($info) {
 
   if (!isset($info['api'])) {
     $info['api'] = MAKE_API;
-    drush_log(dt("You need to specify an API version of two in your makefile:\napi = !api", array("!api" => MAKE_API)), 'warning');
+    drush_log(dt("You need to specify an API version of two in your makefile:\napi = !api", array("!api" => MAKE_API)), LogLevel::WARNING);
   }
   elseif ($info['api'] != MAKE_API) {
     make_error('BUILD_ERROR', dt("The specified API attribute is incompatible with this version of Drush Make."));
@@ -301,7 +351,7 @@ function make_validate_info_file($info) {
             }
             // Prevent malicious attempts to access other areas of the
             // filesystem.
-            elseif (in_array($attribute, array('contrib-destination', 'directory_name')) && !make_safe_path($value)) {
+            elseif (in_array($attribute, array('contrib_destination', 'directory_name')) && !make_safe_path($value)) {
               $args = array(
                 '!path' => $value,
                 '!attribute' => $attribute,
@@ -429,7 +479,7 @@ function make_clean_tmp() {
     drush_delete_dir($tmp_dir);
   }
   else {
-    drush_log(dt('Temporary directory: !dir', array('!dir' => $tmp_dir)), 'ok');
+    drush_log(dt('Temporary directory: !dir', array('!dir' => $tmp_dir)), LogLevel::OK);
   }
 }
 
@@ -477,10 +527,10 @@ function make_tar($build_path) {
  */
 function make_error($error_code, $message) {
   if (drush_get_option('force-complete')) {
-    drush_log("$error_code: $message -- build forced", 'warning');
+    drush_log("$error_code: $message -- build forced", LogLevel::WARNING);
   }
   else {
-    drush_set_error($error_code, $message);
+    return drush_set_error($error_code, $message);
   }
 }
 
@@ -544,7 +594,6 @@ function make_get_data($data_source) {
 function make_apply_defaults(&$info) {
   if (isset($info['defaults'])) {
     $defaults = $info['defaults'];
-    unset($info['defaults']);
 
     foreach ($defaults as $type => $default_data) {
       if (isset($info[$type])) {
@@ -553,7 +602,7 @@ function make_apply_defaults(&$info) {
         }
       }
       else {
-        drush_log(dt("Unknown attribute '@type' in defaults array", array('@type' => $type)), 'warning');
+        drush_log(dt("Unknown attribute '@type' in defaults array", array('@type' => $type)), LogLevel::WARNING);
       }
     }
   }
@@ -578,7 +627,7 @@ function _make_is_override_allowed ($option) {
   if ((empty($allow_override)) || ((in_array($option, $allow_override)) && (!in_array('none', $allow_override)))) {
     return TRUE;
   }
-  drush_log(dt("'!option' not allowed; use --allow-override=!option or --allow-override=all to permit", array("!option" => $option)), 'warning');
+  drush_log(dt("'!option' not allowed; use --allow-override=!option or --allow-override=all to permit", array("!option" => $option)), LogLevel::WARNING);
   return FALSE;
 }
 
@@ -607,14 +656,43 @@ function _get_working_copy_option($download) {
  *   Returns parsed data if it matches any known format.
  */
 function _make_determine_format($data) {
-  // Test INI first.
+  // Most .make files will have a `core` attribute. Use this to determine
+  // the format.
+  if (preg_match('/^\s*core:/m', $data)) {
+    $parsed = ParserYaml::parse($data);
+    $parsed['format'] = 'yaml';
+    return $parsed;
+  }
+  elseif (preg_match('/^\s*core\s*=/m', $data)) {
+    $parsed = ParserIni::parse($data);
+    $parsed['format'] = 'ini';
+    return $parsed;
+  }
+
+  // If the .make file did not have a core attribute, it is being included
+  // by another .make file. Test YAML first to avoid segmentation faults from
+  // preg_match in INI parser.
+  $yaml_parse_exception = FALSE;
+  try {
+    if ($parsed = ParserYaml::parse($data)) {
+      $parsed['format'] = 'yaml';
+      return $parsed;
+    }
+  }
+  catch (\Symfony\Component\Yaml\Exception\ParseException $e) {
+    // Note that an exception was thrown, and display after .ini parsing.
+    $yaml_parse_exception = $e;
+  }
+
+  // Try INI format.
   if ($parsed = ParserIni::parse($data)) {
     $parsed['format'] = 'ini';
     return $parsed;
   }
-  elseif ($parsed = ParserYaml::parse($data)) {
-    $parsed['format'] = 'yaml';
-    return $parsed;
+
+  if ($yaml_parse_exception) {
+    throw $e;
   }
+
   return drush_set_error('MAKE_STDIN_ERROR', dt('Unknown make file format'));
 }

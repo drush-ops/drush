@@ -10,6 +10,8 @@
 
 namespace Drush\UpdateService;
 
+use Drush\Log\LogLevel;
+
 /**
  * Release info engine class.
  */
@@ -162,7 +164,7 @@ class ReleaseInfo {
         if ($select == 'never') {
           return drush_set_error('DRUSH_PM_NO_STABLE_RELEASE', $message);
         }
-        drush_log($message, 'warning');
+        drush_log($message, LogLevel::WARNING);
         if ($select == 'ignore') {
           return NULL;
         }

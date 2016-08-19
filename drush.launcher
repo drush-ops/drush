@@ -1,0 +1,132 @@
+#!/usr/bin/env sh
+#
+# This script is a simple launcher that will run Drush with the most appropriate
+# php executable it can find.  In most cases, the 'drush' script should be
+# called first; it will in turn launch this script.
+#
+# Solaris users: Add /usr/xpg4/bin to the head of your PATH
+#
+
+# Get the absolute path of this executable
+SELF_DIRNAME="`dirname -- "$0"`"
+SELF_PATH="`cd -P -- "$SELF_DIRNAME" && pwd -P`/`basename -- "$0"`"
+
+# Decide if we are running a Unix shell on Windows
+if `which uname > /dev/null 2>&1`; then
+  case "`uname -a`" in
+    CYGWIN*)
+      CYGWIN=1 ;;
+    MINGW*)
+      MINGW=1 ;;
+  esac
+fi
+
+# Resolve symlinks - this is the equivalent of "readlink -f", but also works with non-standard OS X readlink.
+while [ -h "$SELF_PATH" ]; do
+    # 1) cd to directory of the symlink
+    # 2) cd to the directory of where the symlink points
+    # 3) Get the pwd
+    # 4) Append the basename
+    DIR="`dirname -- "$SELF_PATH"`"
+    SYM="`readlink "$SELF_PATH"`"
+    SYM_DIRNAME="`dirname -- "$SYM"`"
+    SELF_PATH="`cd "$DIR" && cd "$SYM_DIRNAME" && pwd`/`basename -- "$SYM"`"
+done
+
+# If not exported, try to determine and export the number of columns.
+# We do not want to run `tput cols` if $TERM is empty, "unknown", or "dumb", because
+# if we do, tput will output an undesirable error message to stderr.  If
+# we redirect stderr in any way, e.g. `tput cols 2>/dev/null`, then the
+# error message is suppressed, but tput cols becomes confused about the
+# terminal and prints out the default value (80).
+if [ -z $COLUMNS ] && [ -n "$TERM" ] && [ "$TERM" != dumb ] && [ "$TERM" != unknown ] && [ -n "`which tput`" ] ; then
+  # Note to cygwin/mingw/msys users: install the ncurses package to get tput command.
+  # Note to mingw/msys users: there is no precompiled ncurses package.
+  if COLUMNS="`tput cols`"; then
+    export COLUMNS
+  fi
+fi
+
+if [ -n "$DRUSH_PHP" ] ; then
+  # Use the DRUSH_PHP environment variable if it is available.
+  php="$DRUSH_PHP"
+else
+  # On MSYSGIT, we need to use "php", not the full path to php
+  if [ -n "$MINGW" ] ; then
+    php="php"
+  else
+    # Default to using the php that we find on the PATH.
+    # We check for a command line (cli) version of php, and if found use that.
+    # Note that we need the full path to php here for Dreamhost, which behaves oddly.  See http://drupal.org/node/662926
+    php="`which php-cli 2>/dev/null`"
+
+    if [ ! -x "$php" ]; then
+      php="`which php 2>/dev/null`"
+    fi
+
+    if [ ! -x "$php" ]; then
+      echo "ERROR: can't find php."; exit 1
+    fi
+  fi
+fi
+
+# Build the path to drush.php.
+SCRIPT_PATH="`dirname "$SELF_PATH"`/drush.php"
+if [ -n "$CYGWIN" ] ; then
+  # try to determine if we are running cygwin port php or Windows native php:
+  if [ -n "`"$php" -i | grep -E '^System => Windows'`" ]; then
+    SCRIPT_PATH="`cygpath -w -a -- "$SCRIPT_PATH"`"
+  else
+    SCRIPT_PATH="`cygpath -u -a -- "$SCRIPT_PATH"`"
+  fi
+fi
+
+# Check to see if the user has provided a php.ini file or drush.ini file in any conf dir
+# Last found wins, so search in reverse priority order
+for conf_dir in "`dirname "$SELF_PATH"`" /etc/drush "$HOME/.drush" ; do
+  if [ ! -d "$conf_dir" ] ; then
+    continue
+  fi
+  # Handle paths that don't start with a drive letter on MinGW shell. Equivalent to cygpath on Cygwin.
+  if [ -n "$MINGW" ] ; then
+    conf_dir=`sh -c "cd \"$conf_dir\"; pwd -W"`
+  fi
+  if [ -f "$conf_dir/php.ini" ] ; then
+    drush_php_ini="$conf_dir/php.ini"
+  fi
+  if [ -f "$conf_dir/drush.ini" ] ; then
+    drush_php_override="$conf_dir/drush.ini"
+  fi
+done
+# If the PHP_INI environment variable is specified, then tell
+# php to use the php.ini file that it specifies.
+if [ -n "$PHP_INI" ] ; then
+  drush_php_ini="$PHP_INI"
+fi
+# If the DRUSH_INI environment variable is specified, then
+# extract all ini variable assignments from it and convert
+# them into php '-d' options. These will override similarly-named
+# options in the php.ini file
+if [ -n "$DRUSH_INI" ] ; then
+  drush_php_override="$DRUSH_INI"
+fi
+
+# Add in the php file location and/or the php override variables as appropriate
+if [ -n "$drush_php_ini" ] ; then
+  php_options="--php-ini $drush_php_ini"
+fi
+if [ -n "$drush_php_override" ] ; then
+  php_options=`grep '^[a-z_A-Z0-9.]\+ *=' $drush_php_override | sed -e 's|\([^ =]*\) *= *\(.*\)|\1="\2"|' -e 's| ||g' -e 's|^|-d |' | tr '\n\r' '  '`
+fi
+# If the PHP_OPTIONS environment variable is specified, then
+# its contents will be passed to php on the command line as
+# additional options to use.
+if [ -n "$PHP_OPTIONS" ] ; then
+  php_options="$php_options $PHP_OPTIONS"
+fi
+
+# Pass in the path to php so that drush knows which one to use if it
+# re-launches itself to run subcommands.  We will also pass in the php options.
+# Important note: Any options added here must be removed  when Drush processes
+# a #! (shebang) script.  @see drush_adjust_args_if_shebang_script()
+exec "$php" $php_options "$SCRIPT_PATH" --php="$php" --php-options="$php_options" "$@"

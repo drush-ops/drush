@@ -1,0 +1,33 @@
+<?php
+
+/**
+ * @file
+ * Contains woot.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function woot_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the woot module.
+    case 'help.page.woot':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Woot Mightily.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function woot_theme() {
+  $theme = [];
+
+  return $theme;
+}

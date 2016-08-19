@@ -24,7 +24,6 @@ class pmUpdateStatus extends CommandUnishTestCase {
    * We choose to setup a Drupal 7 environment for convenience:
    *  - It has modules in each maintenance status
    *    and they're not willing to change in short
-   *  - Drupal 6 will start to be unsupported at some point
    *  - Drupal 8 still has not enough variety to cover the tests
    */
   function setUp() {

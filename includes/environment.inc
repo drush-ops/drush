@@ -10,6 +10,8 @@
  * @see includes/bootstrap.inc
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * Log PHP errors to the Drush log. This is in effect until Drupal's error
  * handler takes over.
@@ -25,10 +27,11 @@ function drush_error_handler($errno, $message, $filename, $line, $context) {
   // drush_errors_on() and drush_errors_off().
   if ($errno & error_reporting()) {
     // By default we log notices.
-    $type = drush_get_option('php-notices', 'notice');
+    $type = drush_get_option('php-notices', LogLevel::INFO);
+    $halt_on_error = drush_get_option('halt-on-error', (drush_drupal_major_version() != 6));
 
     // Bitmask value that constitutes an error needing to be logged.
-    $error = E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR;
+    $error = E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR;
     if ($errno & $error) {
       $type = 'error';
     }
@@ -36,10 +39,15 @@ function drush_error_handler($errno, $message, $filename, $line, $context) {
     // Bitmask value that constitutes a warning being logged.
     $warning = E_WARNING | E_CORE_WARNING | E_COMPILE_WARNING | E_USER_WARNING;
     if ($errno & $warning) {
-      $type = 'warning';
+      $type = LogLevel::WARNING;
     }
 
     drush_log($message . ' ' . basename($filename) . ':' . $line, $type);
+
+    if ($errno == E_RECOVERABLE_ERROR && $halt_on_error) {
+      drush_log(dt('E_RECOVERABLE_ERROR encountered; aborting. To ignore recoverable errors, run again with --no-halt-on-error'), 'error');
+      exit(DRUSH_APPLICATION_ERROR);
+    }
 
     return TRUE;
   }
@@ -100,7 +108,7 @@ function _drush_environment_check_php_ini() {
     }
   }
   if (!empty($prohibited_list)) {
-    drush_log(dt('The following restricted PHP modes have non-empty values: !prohibited_list. This configuration is incompatible with drush.  !php_ini_msg', array('!prohibited_list' => implode(' and ', $prohibited_list), '!php_ini_msg' => _drush_php_ini_loaded_file_message())), 'error');
+    drush_log(dt('The following restricted PHP modes have non-empty values: !prohibited_list. This configuration is incompatible with drush.  !php_ini_msg', array('!prohibited_list' => implode(' and ', $prohibited_list), '!php_ini_msg' => _drush_php_ini_loaded_file_message())), LogLevel::ERROR);
   }
 
   return TRUE;
@@ -191,7 +199,7 @@ function drush_site_path($path = NULL) {
   else {
     // Move up dir by dir and check each.
     // Stop if we get to a Drupal root.   We don't care
-    // if it is DRUSH_SELECTED_DRUPAL_ROOT or some other root.
+    // if it is the selected or some other root.
     while (($path = _drush_shift_path_up($path)) && !drush_valid_root($path)) {
       if (file_exists($path . '/settings.php')) {
         $site_path = $path;
@@ -200,7 +208,7 @@ function drush_site_path($path = NULL) {
     }
   }
 
-  $site_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  $site_root = \Drush::bootstrapManager()->getRoot();
   if (file_exists($site_root . '/sites/sites.php')) {
     $sites = array();
     // This will overwrite $sites with the desired mappings.
@@ -234,7 +242,7 @@ function drush_site_path($path = NULL) {
  */
 function drush_site_dir_lookup_from_hostname($hostname, $site_root = NULL) {
   if (!isset($site_root)) {
-    $site_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+    $site_root = \Drush::bootstrapManager()->getRoot();
   }
   if (!empty($site_root) && file_exists($site_root . '/sites/sites.php')) {
     $sites = array();
@@ -261,7 +269,7 @@ function drush_site_dir_lookup_from_hostname($hostname, $site_root = NULL) {
  * (drushrc.php) stored with the site's drush folders might not be found.
  */
 function drush_conf_path($server_uri, $require_settings = TRUE) {
-  $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  $drupal_root = \Drush::bootstrapManager()->getRoot();
   if(empty($drupal_root) || empty($server_uri)) {
     return NULL;
   }
@@ -351,30 +359,38 @@ function drush_locate_root($start_path = NULL) {
  * @param string
  *   Path to check.
  *
- * @return string
- *   The relative path to common.inc (varies by Drupal version), or FALSE if not
- *   a Drupal root.
+ * @return bool
+ *   True if the provided path is a valid Drupal root.
  */
-function drush_valid_root($path) {
-  $bootstrap_class = drush_bootstrap_class_for_root($path);
+function drush_valid_root($root) {
+  $bootstrap_class = \Drush::bootstrapManager()->bootstrapObjectForRoot($root);
   return $bootstrap_class != NULL;
 }
 
 /**
  * Tests the currently loaded database credentials to ensure a database connection can be made.
+ *
+ * @param bool $log_errors
+ *   (optional) If TRUE, log error conditions; otherwise be quiet.
+ *
+ * @return bool
+ *   TRUE if database credentials are valid.
  */
 function drush_valid_db_credentials() {
   try {
     $sql = drush_sql_get_class();
     if (!$sqlVersion = drush_sql_get_version()) {
+      drush_log(dt('While checking DB credentials, could not instantiate SQLVersion class.'), 'debug');
       return FALSE;
     }
     if (!$sqlVersion->valid_credentials($sql->db_spec())) {
+      drush_log(dt('DB credentials are invalid.'), 'debug');
       return FALSE;
     }
     return $sql->query('SELECT 1;');
   }
   catch (Exception $e) {
+    drush_log(dt('Checking DB credentials yielded error: @e', array('@e' => $e->getMessage())), 'debug');
     return FALSE;
   }
 }
@@ -426,19 +442,19 @@ function drush_verify_cli() {
 }
 
 /**
- * Build a drush command suitable for use for drush to call itself
+ * Build a drush command suitable for use for Drush to call itself
  * e.g. in backend_invoke.
  */
 function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, $remote_command = FALSE, $environment_variables = array()) {
   $os = _drush_get_os($os);
   $additional_options = '';
   $prefix = '';
-  if (!isset($drush_path)) {
+  if (!$drush_path) {
     if (!$remote_command) {
       $drush_path = DRUSH_COMMAND;
     }
     else {
-      $drush_path = drush_is_windows($os) ? 'drush.bat' : 'drush';
+      $drush_path = 'drush'; // drush_is_windows($os) ? 'drush.bat' : 'drush';
     }
   }
   // If the path to drush points to drush.php, then we will need to
@@ -597,15 +613,6 @@ function _drush_test_os($os, $os_list_to_check) {
 }
 
 /**
- * Read the drush info file.
- */
-function drush_read_drush_info() {
-  $drush_info_file = dirname(__FILE__) . '/../drush.info';
-
-  return parse_ini_file($drush_info_file);
-}
-
-/**
  * Make a determination whether or not the given
  * host is local or not.
  *
@@ -615,30 +622,16 @@ function drush_read_drush_info() {
  *   True if the host is local.
  */
 function drush_is_local_host($host) {
-  // In order for this to work right, you must use 'localhost' or '127.0.0.1'
-  // or the machine returned by 'uname -n' for your 'remote-host' entry in
-  // your site alias.
-  if (($host == 'localhost') || ($host == '127.0.0.1')) {
+  // Check to see if the provided host is "local".
+  // @see hook_drush_sitealias_alter() in drush.api.php.
+  if (
+    ($host == 'localhost') ||
+    ($host == '127.0.0.1')
+  ) {
     return TRUE;
   }
 
-  // We'll start out by asking for uname -n via php_uname, since
-  // that is most portable.  On Linux, uname -n returns the contents of
-  // /etc/hostname, which, according to `man hostname`, should never
-  // contain the fqdn.  We will therefore also try `hostname -f`, and
-  // see if we can get the fqdn from that.
-  $uname = php_uname('n');
-  if ((strpos($uname,'.') === FALSE) && (!drush_is_windows())) {
-    $hostname = exec('hostname -f');
-    if (!empty($hostname)) {
-      $uname = $hostname;
-    }
-  }
-  // We will require an exact match if we have the fqdn for this
-  // host; if we only have the short name, then we will consider it
-  // to be a match if it matches the first part of the remote-host
-  // item (up to the first dot).
-  return (strpos($uname,'.') !== FALSE) ? ($host == $uname) : substr($host . '.',0,strlen($uname)+1) == $uname . '.';
+  return FALSE;
 }
 
 /**
@@ -733,7 +726,7 @@ function drush_get_extensions($include_hidden = TRUE) {
       $extensions[$name]->label = $extension->info['name'].' ('.$name.')';
     }
     else {
-      drush_log(dt("Extension !name provides no human-readable name in .info file.", array('!name' => $name), 'debug'));
+      drush_log(dt("Extension !name provides no human-readable name in .info file.", array('!name' => $name), LogLevel::DEBUG));
       $extensions[$name]->label = $name.' ('.$name.')';
     }
     if (empty($extension->info['package'])) {
@@ -864,8 +857,8 @@ function drush_get_drupal_core_compatibility() {
   if (defined('DRUPAL_CORE_COMPATIBILITY')) {
     return DRUPAL_CORE_COMPATIBILITY;
   }
-  elseif (defined('Drupal::CORE_COMPATIBILITY')) {
-    return Drupal::CORE_COMPATIBILITY;
+  elseif (defined('\Drupal::CORE_COMPATIBILITY')) {
+    return \Drupal::CORE_COMPATIBILITY;
   }
 }
 

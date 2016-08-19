@@ -1,5 +1,7 @@
 <?php
 
+use Drush\Log\LogLevel;
+
 /**
  * @file
  *   Specific functions for a Drupal image handling.
@@ -19,7 +21,7 @@ function drush_image_style_load($style_name) {
 function drush_image_flush_single($style_name) {
   if ($style = drush_image_style_load($style_name)) {
     $style->flush();
-    drush_log(dt('Image style !style_name flushed', array('!style_name' => $style_name)), 'success');
+    drush_log(dt('Image style !style_name flushed', array('!style_name' => $style_name)), LogLevel::SUCCESS);
   }
 }
 

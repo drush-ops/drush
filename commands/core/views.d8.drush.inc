@@ -5,6 +5,7 @@
  * Drush integration for views.
  */
 
+use Drush\Log\LogLevel;
 use Drupal\views\Analyzer;
 use Drupal\views\Entity\View;
 use Drupal\views\Views;
@@ -158,9 +159,6 @@ function drush_views_dev() {
     'ui.show.sql_query.where' => 'above',
     'ui.show.performance_statistics' => TRUE,
     'ui.show.additional_queries' => TRUE,
-    'debug.output' => TRUE,
-    'debug.region' => 'message',
-    'ui.show.display_embed' => TRUE,
   );
 
   $config = \Drupal::configFactory()->getEditable('views.settings');
@@ -181,7 +179,7 @@ function drush_views_dev() {
   // Save the new config.
   $config->save();
 
-  drush_log(dt('New views configuration saved.'), 'success');
+  drush_log(dt('New views configuration saved.'), LogLevel::SUCCESS);
 }
 
 /**
@@ -193,7 +191,7 @@ function drush_views_list() {
 
   $format = drush_get_option('format', FALSE);
 
-  $views = Drupal::entityManager()->getStorage('view')->loadMultiple();
+  $views = \Drupal::entityManager()->getStorage('view')->loadMultiple();
 
   // Get the --name option.
   $name = array_filter(drush_get_option_list('name'));
@@ -298,7 +296,7 @@ function drush_views_execute($view_name, $display_id = NULL) {
     }
   }
   else {
-    drush_log(dt('No results returned for this view.') ,'warning');
+    drush_log(dt('No results returned for this view.') ,LogLevel::WARNING);
     return NULL;
   }
 }
@@ -312,10 +310,10 @@ function drush_views_analyze() {
 
   $format = drush_get_option('format', FALSE);
 
-  $views = Drupal::entityManager()->getStorage('view')->loadMultiple();
+  $views = \Drupal::entityManager()->getStorage('view')->loadMultiple();
 
   if (!empty($views)) {
-    $analyzer = Drupal::service('views.analyzer');
+    $analyzer = \Drupal::service('views.analyzer');
     foreach ($views as $view_name => $view) {
       $view = $view->getExecutable();
 
@@ -335,7 +333,7 @@ function drush_views_analyze() {
       }
     }
 
-    drush_log(dt('A total of @total views were analyzed and @messages problems were found.', array('@total' => count($views), '@messages' => $messages_count)), 'ok');
+    drush_log(dt('A total of @total views were analyzed and @messages problems were found.', array('@total' => count($views), '@messages' => $messages_count)), LogLevel::OK);
     return $messages;
   }
   else {
@@ -373,19 +371,19 @@ function _views_drush_op($op = '', array $view_names = array()) {
     return drush_set_error(dt('Invalid op type'));
   }
 
-  $view_names = MapArray::copyValuesToKeys($view_names);
+  $view_names = array_combine($view_names, $view_names);
 
-  if ($views = Drupal::entityManager()->getStorageController('view')->loadMultiple($view_names)) {
+  if ($views = \Drupal::entityManager()->getStorage('view')->loadMultiple($view_names)) {
     foreach ($views as $view) {
       $tokens = array('@view' => $view->id(), '@action' => $op_types[$op]['action']);
 
       if ($op_types[$op]['validate']($view)) {
         $function = 'views_' . $op . '_view';
         drush_op($function, $view);
-        drush_log(dt('View: @view has been @action', $tokens), 'success');
+        drush_log(dt('View: @view has been @action', $tokens), LogLevel::SUCCESS);
       }
       else {
-        drush_log(dt('View: @view is already @action', $tokens), 'notice');
+        drush_log(dt('View: @view is already @action', $tokens), LogLevel::INFO);
       }
       // Remove this view from the viewnames input list.
       unset($view_names[$view->id()]);
@@ -400,7 +398,7 @@ function _views_drush_op($op = '', array $view_names = array()) {
   // If we have some unmatched/leftover view names that weren't loaded.
   if (!empty($view_names)) {
     foreach ($view_names as $viewname) {
-      drush_log(dt('View: @view could not be found.', array('@view' => $viewname)), 'error');
+      drush_log(dt('View: @view could not be found.', array('@view' => $viewname)), LogLevel::ERROR);
     }
   }
 
@@ -452,10 +450,10 @@ function _views_drush_view_is_disabled(View $view) {
 }
 
 /**
- * Adds a cache clear option for views.
+ * Implements hook_cache_clear. Adds a cache clear option for views.
  */
-function views_drush_cache_clear(&$types) {
-  if (\Drupal::moduleHandler()->moduleExists('views')) {
+function views_drush_cache_clear(&$types, $include_bootstrapped_types) {
+  if ($include_bootstrapped_types && \Drupal::moduleHandler()->moduleExists('views')) {
     $types['views'] = 'views_invalidate_cache';
   }
 }
@@ -482,5 +480,5 @@ function views_views_disable_complete() {
  */
 function _drush_views_complete() {
   drush_bootstrap_max();
-  return array('values' => array_keys(Drupal::entityManager()->getStorageController('view')->loadMultiple()));
+  return array('values' => array_keys(\Drupal::entityManager()->getStorage('view')->loadMultiple()));
 }

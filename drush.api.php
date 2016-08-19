@@ -203,6 +203,22 @@ function hook_drush_command_alter(&$command) {
 }
 
 /**
+ * Adjust the contents of a site alias.
+ */
+function hook_drush_sitealias_alter(&$alias_record) {
+  // If the alias is "remote", but the remote site is
+  // the system this command is running on, convert the
+  // alias record to a local alias.
+  if (isset($alias_record['remote-host'])) {
+    $uname = php_uname('n');
+    if ($alias_record['remote-host'] == $uname) {
+      unset($alias_record['remote-host']);
+      unset($alias_record['remote-user']);
+    }
+  }
+}
+
+/**
  * Take action after a project has been downloaded.
  */
 function hook_drush_pm_post_download($project, $release) {
@@ -264,9 +280,10 @@ function drush_hook_pre_pm_enable() {
  * @see sql_drush_sql_sync_sanitize()
  */
 function hook_drush_sql_sync_sanitize($source) {
+  $table = drush_get_option('db-prefix') ? '{users}' : 'users';
   drush_sql_register_post_sync_op('my-sanitize-id',
     dt('Reset passwords and email addresses in user table.'),
-    "UPDATE users SET pass = MD5('password'), mail = concat('user+', uid, '@localhost') WHERE uid > 0;");
+    "UPDATE $table SET pass = MD5('password'), mail = concat('user+', uid, '@localhost') WHERE uid > 0;");
 }
 
 /**
@@ -287,8 +304,14 @@ function hook_drush_help_alter(&$command) {
 
 /**
  * Add/edit options to cache-clear command.
+ *
+ * @param array $types
+ *   Adjust types as needed. Is passed by reference.
+ *
+ * @param bool $include_bootstrapped_types
+ *   If FALSE, omit types which require a FULL bootstrap.
  */
-function hook_drush_cache_clear(&$types) {
+function hook_drush_cache_clear(&$types, $include_bootstrapped_types) {
   $types['views'] = 'views_invalidate_cache';
 }
 

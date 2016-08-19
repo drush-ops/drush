@@ -71,13 +71,14 @@ function sql_drush_command() {
     'description' => 'A string for connecting to the DB.',
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'options' => $options + $db_url + array(
-        'extra' => array(
-          'description' => 'Add custom options to the mysql command.',
-          'example-value' => '--skip-column-names',
-        ),
+      'extra' => array(
+        'description' => 'Add custom options to the connect string.',
+        'example-value' => '--skip-column-names',
       ),
+    ),
     'examples' => array(
-      '`drush sql-connect` < example.sql' => 'Import sql statements from a file into the current database.',
+      '`drush sql-connect` < example.sql' => 'Bash: Import SQL statements from a file into the current database.',
+      'eval (drush sql-connect) < example.sql' => 'Fish: Import SQL statements from a file into the current database.',
     ),
   );
   $items['sql-create'] = array(
@@ -100,23 +101,19 @@ function sql_drush_command() {
     'examples' => array(
       'drush sql-dump --result-file=../18.sql' => 'Save SQL dump to the directory above Drupal root.',
       'drush sql-dump --skip-tables-key=common' => 'Skip standard tables. @see example.drushrc.php',
+      'drush sql-dump --extra=--no-data' => 'Pass extra option to dump command.',
     ),
-    'options' => array(
+    'options' => drush_sql_get_table_selection_options() + array(
       'result-file' => array(
         'description' => 'Save to a file. The file should be relative to Drupal root. If --result-file is provided with no value, then date based filename will be created under ~/drush-backups directory.',
         'example-value' => '/path/to/file',
         'value' => 'optional',
       ),
-      'skip-tables-key' => 'A key in the $skip_tables array. @see example.drushrc.php. Optional.',
-      'structure-tables-key' => 'A key in the $structure_tables array. @see example.drushrc.php. Optional.',
-      'tables-key' => 'A key in the $tables array. Optional.',
-      'skip-tables-list' => 'A comma-separated list of tables to exclude completely. Optional.',
-      'structure-tables-list' => 'A comma-separated list of tables to include for structure, but not data. Optional.',
-      'tables-list' => 'A comma-separated list of tables to transfer. Optional.',
       'create-db' => array('hidden' => TRUE, 'description' => 'Omit DROP TABLE statements. Postgres and Oracle only.  Used by sql-sync, since including the DROP TABLE statements interfere with the import when the database is created.'),
       'data-only' => 'Dump data without statements to create any of the schema.',
       'ordered-dump' => 'Order by primary key and add line breaks for efficient diff in revision control. Slows down the dump. Mysql only.',
       'gzip' => 'Compress the dump using the gzip program which must be in your $PATH.',
+      'extra' => 'Add custom options to the dump command.',
     ) + $options + $db_url,
   );
   $items['sql-query'] = array(
@@ -138,7 +135,7 @@ function sql_drush_command() {
       ),
       'file' => 'Path to a file containing the SQL to be run. Gzip files are accepted.',
       'extra' => array(
-        'description' => 'Add custom options to the mysql command.',
+        'description' => 'Add custom options to the database connection command.',
         'example-value' => '--skip-column-names',
       ),
       'db-prefix' => 'Enable replacement of braces in your query.',
@@ -183,16 +180,6 @@ function sql_drush_help_alter(&$command) {
       unset($command['options']['target']['hidden']);
     }
   }
-}
-
-/**
- * Command argument complete callback.
- *
- * @return
- *  Array of available site aliases.
- */
-function sql_sql_sync_complete() {
-  return array('values' => array_keys(_drush_sitealias_all_list()));
 }
 
 /**
@@ -262,7 +249,7 @@ function drush_sql_create() {
     }
   }
 
-  return $sql->createdb();
+  return $sql->createdb(TRUE);
 }
 
 
@@ -297,6 +284,17 @@ function drush_sql_get_table_selection() {
   $tables = _drush_sql_get_raw_table_list('tables');
 
   return array('skip' => $skip_tables, 'structure' => $structure_tables, 'tables' => $tables);
+}
+
+function drush_sql_get_table_selection_options() {
+  return array(
+    'skip-tables-key' => 'A key in the $skip_tables array. @see example.drushrc.php. Optional.',
+    'structure-tables-key' => 'A key in the $structure_tables array. @see example.drushrc.php. Optional.',
+    'tables-key' => 'A key in the $tables array. Optional.',
+    'skip-tables-list' => 'A comma-separated list of tables to exclude completely. Optional.',
+    'structure-tables-list' => 'A comma-separated list of tables to include for structure, but not data. Optional.',
+    'tables-list' => 'A comma-separated list of tables to transfer. Optional.',
+  );
 }
 
 /**
@@ -436,7 +434,7 @@ function drush_sql_query($query = NULL) {
 }
 
 /**
- * Drops all tables in the database.
+ * Command callback. Drops all tables in the database.
  */
 function drush_sql_drop() {
   drush_sql_bootstrap_further();
@@ -449,6 +447,9 @@ function drush_sql_drop() {
   return $sql->drop($tables);
 }
 
+/**
+ * Command callback. Launches console a DB backend.
+ */
 function drush_sql_cli() {
   drush_sql_bootstrap_further();
   $sql = drush_sql_get_class();
@@ -456,7 +457,7 @@ function drush_sql_cli() {
 }
 
 /**
- * Command callback. Run's the sanitization operations on the current database.
+ * Command callback. Runs the sanitization operations on the current database.
  *
  * @see hook_drush_sql_sync_sanitize() for adding custom sanitize routines.
  */
@@ -467,8 +468,8 @@ function drush_sql_sanitize() {
   }
 
   drush_command_invoke_all('drush_sql_sync_sanitize', 'default');
-  $options = drush_get_context('post-sync-ops');
-  if (!empty($options)) {
+  $operations = drush_get_context('post-sync-ops');
+  if (!empty($operations)) {
     if (!drush_get_context('DRUSH_SIMULATE')) {
       $messages = _drush_sql_get_post_sync_messages();
       if ($messages) {
@@ -476,27 +477,20 @@ function drush_sql_sanitize() {
         drush_print($messages);
       }
     }
+    $queries = array_column($operations, 'query');
+    $sanitize_query = implode(" ", $queries);
   }
   if (!drush_confirm(dt('Do you really want to sanitize the current database?'))) {
     return drush_user_abort();
   }
 
-  $sanitize_query = '';
-  foreach($options as $id => $data) {
-    // Enable prefix processing when db-prefix option is used.
-    if (drush_get_option('db-prefix')) {
-      if (drush_drupal_major_version() >= 7) {
-        $data['query'] = Database::getConnection()->prefixTables($data['query']);
-      }
-      else {
-        $data['query'] = db_prefix_tables($data['query']);
-      }
-    }
-    $sanitize_query .= $data['query'] . " ";
-  }
   if ($sanitize_query) {
     $sql = drush_sql_get_class();
-    return $sql->query($sanitize_query);
+    $sanitize_query = $sql->query_prefix($sanitize_query);
+    $result = $sql->query($sanitize_query);
+    if (!$result) {
+      return drush_set_error('DRUSH_SQL_NO_QUERY', dt('Sanitize query failed.'));
+    }
   }
 }
 
@@ -540,17 +534,14 @@ function drush_sql_register_post_sync_op($id, $message, $query = NULL) {
  *   All post-sync operation messages concatenated together.
  */
 function _drush_sql_get_post_sync_messages() {
-  $messages = FALSE;
+  $messages = '';
+  $operations = drush_get_context('post-sync-ops');
+  if (!empty($operations)) {
+    $messages = dt('The following operations will be done on the target database:') . "\n";
 
-  $options = drush_get_context('post-sync-ops');
-  if (!empty($options)) {
-    $messages = dt('The following post-sync operations will be done on the destination:') . "\n";
-
-    foreach($options as $id => $data) {
-      $messages .= "  * " . $data['message'] . "\n";
-    }
+    $bullets = array_column($operations, 'message');
+    $messages .= " * " . implode("\n * ", $bullets) . "\n";
   }
-
   return $messages;
 }
 
@@ -570,8 +561,10 @@ function drush_sql_get_class($db_spec = NULL) {
   $target = drush_get_option('target', 'default');
 
   // Try a few times to quickly get $db_spec.
-  if ($db_spec) {
-    return drush_get_class(array('Drush\Sql\Sql', 'Drupal\Driver\Database\\' .  $db_spec['driver'] . '\Drush'), array($db_spec), array($db_spec['driver']));
+  if (!empty($db_spec)) {
+    if (!empty($db_spec['driver'])) {
+      return drush_get_class(array('Drush\Sql\Sql', 'Drupal\Driver\Database\\' .  $db_spec['driver'] . '\Drush'), array($db_spec), array($db_spec['driver']));
+    }
   }
   elseif ($url = drush_get_option('db-url')) {
     $url =  is_array($url) ? $url[$database] : $url;
@@ -606,14 +599,14 @@ function drush_sql_get_version() {
 }
 
 /**
- * Implements hook_sql_drush_sql_sync_sanitize.
+ * Implements hook_drush_sql_sync_sanitize().
  *
  * Sanitize usernames, passwords, and sessions when the --sanitize option is used.
  * It is also an example of how to write a database sanitizer for sql sync.
  *
  * To write your own sync hook function, define mymodule_drush_sql_sync_sanitize()
- * and follow the form of this function to add your own database
- * sanitization operations via the register post-sync op function;
+ * in mymodule.drush.inc and follow the form of this function to add your own
+ * database sanitization operations via the register post-sync op function;
  * @see drush_sql_register_post_sync_op().  This is the only thing that the
  * sync hook function needs to do; sql-sync takes care of the rest.
  *
@@ -626,19 +619,14 @@ function drush_sql_get_version() {
 function sql_drush_sql_sync_sanitize($site) {
   $site_settings = drush_sitealias_get_record($site);
   $databases = sitealias_get_databases_from_record($site_settings);
-  if (drush_get_option('db-prefix') || !empty($databases['default']['default']['prefix'])) {
-    $wrap_table_name = TRUE;
-  }
-  else {
-    $wrap_table_name = FALSE;
-  }
+  $major_version = drush_drupal_major_version();
+  $wrap_table_name = (bool) drush_get_option('db-prefix');
   $user_table_updates = array();
   $message_list = array();
 
   // Sanitize passwords.
   $newpassword = drush_get_option(array('sanitize-password', 'destination-sanitize-password'), 'password');
   if ($newpassword != 'no' && $newpassword !== 0) {
-    $major_version = drush_drupal_major_version();
     $pw_op = "";
 
     // In Drupal 6, passwords are hashed via the MD5 algorithm.

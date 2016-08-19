@@ -1,14 +1,60 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drush\Log\DrushLog.
+ *
+ * This class is only used to convert logging calls made
+ * inside of Drupal into a logging format that is usable
+ * by Drush.  This code is ONLY usable within the context
+ * of a bootstrapped Drupal 8 site.
+ *
+ * See Drush\Log\Logger for our actuall LoggerInterface
+ * implementation, that does the work of logging messages
+ * that originate from Drush.
+ */
+
 namespace Drush\Log;
 
+use Drupal\Core\Logger\LogMessageParserInterface;
+use Drupal\Core\Logger\RfcLoggerTrait;
+use Drupal\Core\Logger\RfcLogLevel;
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
-use Psr\Log\LoggerTrait;
 
+/**
+ * Redirects Drupal logging messages to Drush log.
+ *
+ * Note that Drupal extends the LoggerInterface, and
+ * needlessly replaces Psr\Log\LogLevels with Drupal\Core\Logger\RfcLogLevel.
+ * Doing this arguably violates the Psr\Log contract,
+ * but we can't help that here -- we just need to convert back.
+ */
 class DrushLog implements LoggerInterface {
 
-  use LoggerTrait;
+  use RfcLoggerTrait;
+
+  /**
+   * The message's placeholders parser.
+   *
+   * @var \Drupal\Core\Logger\LogMessageParserInterface
+   */
+  protected $parser;
+
+  /**
+   * The logger that messages will be passed through to.
+   */
+  protected $logger;
+
+  /**
+   * Constructs a DrushLog object.
+   *
+   * @param \Drupal\Core\Logger\LogMessageParserInterface $parser
+   *   The parser to use when extracting message variables.
+   */
+  public function __construct(LogMessageParserInterface $parser, LoggerInterface $logger) {
+    $this->parser = $parser;
+    $this->logger = $logger;
+  }
 
   /**
    * {@inheritdoc}
@@ -20,28 +66,38 @@ class DrushLog implements LoggerInterface {
     // and they should cause Drush to exit or panic. Not sure how to handle this,
     // though.
     switch ($level) {
-      case LogLevel::ALERT:
-      case LogLevel::CRITICAL:
-      case LogLevel::EMERGENCY:
-      case LogLevel::ERROR:
-        $error_type = 'error';
+      case RfcLogLevel::ALERT:
+      case RfcLogLevel::CRITICAL:
+      case RfcLogLevel::EMERGENCY:
+      case RfcLogLevel::ERROR:
+        $error_type = LogLevel::ERROR;
         break;
 
-      case LogLevel::WARNING:
-        $error_type = 'warning';
+      case RfcLogLevel::WARNING:
+        $error_type = LogLevel::WARNING;
         break;
 
-      case LogLevel::DEBUG:
-      case LogLevel::INFO:
-      case LogLevel::NOTICE:
-        $error_type = 'notice';
+      // TODO: RfcLogLevel::DEBUG should be 'debug' rather than 'notice'?
+      case RfcLogLevel::DEBUG:
+      case RfcLogLevel::INFO:
+      case RfcLogLevel::NOTICE:
+        $error_type = LogLevel::NOTICE;
         break;
 
+      // TODO: Unknown log levels that are not defined
+      // in Psr\Log\LogLevel or Drush\Log\LogLevel SHOULD NOT be used.  See
+      // https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md
+      // We should convert these to 'notice'.
       default:
         $error_type = $level;
         break;
     }
-    drush_log($message, $error_type);
+
+    // Populate the message placeholders and then replace them in the message.
+    $message_placeholders = $this->parser->parseMessagePlaceholders($message, $context);
+    $message = empty($message_placeholders) ? $message : strtr($message, $message_placeholders);
+
+    $this->logger->log($error_type, $message, $context);
   }
 
 }

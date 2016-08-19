@@ -6,7 +6,7 @@ use Drupal\user\Entity\Role;
 
 class Role8 extends Role7 {
   public function role_create($role_machine_name, $role_human_readable_name = '') {
-    // In D6 and D7, when we create a new role, the role
+    // In D7, when we create a new role, the role
     // machine name is specified, and the numeric rid is
     // auto-assigned (next available id); in D8, when we
     // create a new role, we need to specify both the rid,

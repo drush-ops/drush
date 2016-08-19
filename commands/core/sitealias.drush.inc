@@ -60,7 +60,8 @@ function sitealias_drush_command() {
     'aliases' => array('use'),
     'examples' => array(
       'drush site-set @dev' => 'Set the current session to use the @dev alias.',
-      'drush site-set user@server/path/to/drupal#sitename' => 'Set the current session to use a site specification.',
+      'drush site-set user@server/path/to/drupal#sitename' => 'Set the current session to use a remote site via site specification.',
+      'drush site-set /path/to/drupal#sitename' => 'Set the current session to use a local site via site specification.',
       'drush site-set -' => 'Go back to the previously-set site (like `cd -`).',
       'drush site-set' => 'Without an argument, any existing site becomes unset.',
     ),
@@ -386,6 +387,7 @@ function drush_sitealias_site_set($site = '@none') {
       elseif (drush_mkdir(dirname($filename), TRUE)) {
         if (file_put_contents($filename, $site)) {
           drush_print($success_message);
+          drush_log(dt("Site information stored in !file", array('!file' => $filename)));
         }
       }
     }

@@ -56,12 +56,19 @@ EOD;
    * General handling of site aliases will be in sitealiasTest.php.
    */
   function testOrigin() {
-    $exec = sprintf('%s %s version arg1 arg2 --simulate --ssh-options=%s 2>/dev/null | grep ssh', UNISH_DRUSH, self::escapeshellarg('user@server/path/to/drupal#sitename'), self::escapeshellarg('-i mysite_dsa'));
+    $site_specification = 'user@server/path/to/drupal#sitename';
+    $exec = sprintf('%s %s version arg1 arg2 --simulate --ssh-options=%s 2>/dev/null | grep ssh', UNISH_DRUSH, self::escapeshellarg($site_specification), self::escapeshellarg('-i mysite_dsa'));
     $this->execute($exec);
     $bash = $this->escapeshellarg('drush  --uri=sitename --root=/path/to/drupal  version arg1 arg2 2>&1');
     $expected = "Simulating backend invoke: ssh -i mysite_dsa user@server $bash 2>&1";
     $output = $this->getOutput();
     $this->assertEquals($expected, $output, 'Expected ssh command was built');
+
+    // Assure that arguments and options are passed along to a command thats not recognized locally.
+    $this->drush('non-existent-command', array('foo'), array('bar' => 'baz', 'simulate' => NULL), $site_specification);
+    $output = $this->getOutput();
+    $this->assertContains('foo', $output);
+    $this->assertContains('--bar=baz', $output);
   }
 
   /**
@@ -83,7 +90,7 @@ EOD;
     $this->assertEquals(self::EXIT_SUCCESS, $parsed['error_status']);
     // This assertion shows that `version` was called and that stdin options were respected.
     $this->assertStringStartsWith(' Drush Version ', $parsed['output']);
-    $this->assertEquals('Starting Drush preflight.', $parsed['log'][0]['message']);
+    $this->assertEquals('Starting Drush preflight.', $parsed['log'][1]['message']);
 
     // Check error propogation by requesting an invalid command (missing Drupal site).
     $this->drush('core-cron', array(), array('backend' => NULL), NULL, NULL, self::EXIT_ERROR);

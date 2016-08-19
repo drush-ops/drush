@@ -7,6 +7,8 @@
 
 namespace Drush\UpdateService;
 
+use Drush\Log\LogLevel;
+
 class StatusInfoDrush implements StatusInfoInterface {
 
   /**
@@ -77,7 +79,7 @@ class StatusInfoDrush implements StatusInfoInterface {
    * Obtains release info for projects.
    */
   private function getAvailableReleases($projects) {
-    drush_log(dt('Checking available update data ...'), 'ok');
+    drush_log(dt('Checking available update data ...'), LogLevel::OK);
 
     $release_info = drush_include_engine('release_info', 'updatexml');
 
@@ -87,8 +89,9 @@ class StatusInfoDrush implements StatusInfoInterface {
       if ($project_name != 'drupal' && !isset($project['path'])) {
         continue;
       }
-      drush_log(dt('Checking available update data for !project.', array('!project' => $project['label'])), 'ok');
-      $request = pm_parse_request($project_name, NULL, $project_name);
+      drush_log(dt('Checking available update data for !project.', array('!project' => $project['label'])), LogLevel::OK);
+      $request = $project_name . (isset($project['core']) ? '-' . $project['core'] : '');
+      $request = pm_parse_request($request, NULL, $projects);
       $project_release_info = $release_info->get($request);
       if ($project_release_info) {
         $available[$project_name] = $project_release_info;
@@ -190,7 +193,6 @@ class StatusInfoDrush implements StatusInfoInterface {
    *
    * This is a stripped down version of update_calculate_project_status().
    * That function has the same logic in Drupal 6,7,8.
-   * Note: in Drupal 6 this is part of update_calculate_project_data().
    *
    * @see update_calculate_project_status().
    */
