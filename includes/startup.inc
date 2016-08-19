@@ -357,7 +357,7 @@ function drush_startup($argv) {
 
   // Didn't find any site-local Drush, or @use'd Drush.
   // If a Phar finds itself (https://github.com/drush-ops/drush/pull/2246), skip the Bash niceties of the launcher and proceed to drush_main().
-  if (class_exists('Phar') && $found_script == Phar::running(FALSE)) {
+  if (!empty($found_script) && class_exists('Phar')  && $found_script == Phar::running(FALSE)) {
     drush_run_main($DEBUG, $sep, "Phar detected. Proceeding to drush_main().");
   }
 
