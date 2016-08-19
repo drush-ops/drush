@@ -11,7 +11,7 @@ class BrowseCommands {
    * @todo 'bootstrap' => DRUSH_BOOTSTRAP_NONE
    * @todo 'handle-remote-commands' => TRUE
    *
-   * @param string $path Path to open. If omitted, the site front page will be opened.
+   * @param string|null $path Path to open. If omitted, the site front page will be opened.
    * @option string $browser Specify a particular browser (defaults to operating system default). Use --no-browser to suppress opening a browser.
    * @option integer $redirect-port The port that the web server is redirected to (e.g. when running within a Vagrant environment).
    * @usage drush browse
