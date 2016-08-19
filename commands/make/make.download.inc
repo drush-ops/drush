@@ -4,6 +4,8 @@
  * Download-specific functions for Drush Make.
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * Downloads the given package to the destination directory.
  *
@@ -31,9 +33,9 @@ function make_download_pm($name, $type, $download, $download_location) {
     'yes' => TRUE,
     'package-handler' => 'wget',
     'source' => $download['status url'],
-    // This is only relevant for profiles, but we always want the variant to
+    // This is only relevant for profiles, but we generally want the variant to
     // be 'profile-only' so we don't end up with extra copies of core.
-    'variant' => $type == 'core' ? 'full' : 'profile-only',
+    'variant' => $type == 'core' ? 'full' : $download['variant'],
     'cache' => TRUE,
   );
   if ($type == 'core') {
@@ -54,7 +56,7 @@ function make_download_pm($name, $type, $download, $download_location) {
   if (empty($return['error_log'])) {
     // @todo Report the URL we used for download. See
     // http://drupal.org/node/1452672.
-    drush_log(dt('@project downloaded.', array('@project' => $full_project_version)), 'ok');
+    drush_log(dt('@project downloaded.', array('@project' => $full_project_version)), LogLevel::OK);
   }
 }
 
@@ -69,7 +71,7 @@ function make_download_file($name, $type, $download, $download_location, $cache_
     if (!drush_get_option('ignore-checksums') && !_make_verify_checksums($download, $filename)) {
       return FALSE;
     }
-    drush_log(dt('@project downloaded from @url.', array('@project' => $name, '@url' => $download['url'])), 'ok');
+    drush_log(dt('@project downloaded from @url.', array('@project' => $name, '@url' => $download['url'])), LogLevel::OK);
     $download_filename = isset($download['filename']) ? $download['filename'] : '';
     $subtree = isset($download['subtree']) ? $download['subtree'] : NULL;
     return make_download_file_unpack($filename, $download_location, $download_filename, $subtree);
@@ -200,7 +202,7 @@ function make_download_get($name, $type, $download, $download_location) {
  */
 function make_download_copy($name, $type, $download, $download_location) {
     if ($folder = _make_download_copy($download['url'])) {
-        drush_log(dt('@project copied from @url.', array('@project' => $name, '@url' => $download['url'])), 'ok');
+        drush_log(dt('@project copied from @url.', array('@project' => $name, '@url' => $download['url'])), LogLevel::OK);
         return drush_copy_dir($folder, $download_location, FILE_EXISTS_OVERWRITE);
     }
     make_error('COPY_ERROR', dt('Unable to copy @project from @url.', array('@project' => $name, '@url' => $download['url'])));
@@ -309,7 +311,7 @@ function make_download_git($name, $type, $download, $download_location) {
     return FALSE;
   }
 
-  drush_log(dt('@project cloned from @url.', array('@project' => $name, '@url' => $url)), 'ok');
+  drush_log(dt('@project cloned from @url.', array('@project' => $name, '@url' => $url)), LogLevel::OK);
 
   if ($checkout_after_clone) {
     // Get the current directory (so we can move back later).
@@ -320,10 +322,10 @@ function make_download_git($name, $type, $download, $download_location) {
     // We want to use the most specific target possible, so first try a refspec.
     if (!empty($download['refspec'])) {
       if (drush_shell_exec("git fetch %s %s", $url, $download['refspec'])) {
-        drush_log(dt("Fetched refspec !refspec.", array('!refspec' => $download['refspec'])), 'ok');
+        drush_log(dt("Fetched refspec !refspec.", array('!refspec' => $download['refspec'])), LogLevel::OK);
 
         if (drush_shell_exec("git checkout FETCH_HEAD")) {
-          drush_log(dt("Checked out FETCH_HEAD."), 'info');
+          drush_log(dt("Checked out FETCH_HEAD."), LogLevel::INFO);
         }
       }
       else {
@@ -335,7 +337,7 @@ function make_download_git($name, $type, $download, $download_location) {
     elseif (!empty($download['tag'])) {
       // @TODO: change checkout to refs path.
       if (drush_shell_exec("git checkout %s", 'refs/tags/' . $download['tag'])) {
-        drush_log(dt("Checked out tag @tag.", array('@tag' => $download['tag'])), 'ok');
+        drush_log(dt("Checked out tag @tag.", array('@tag' => $download['tag'])), LogLevel::OK);
       }
       else {
         make_error('DOWNLOAD_ERROR', dt("Unable to check out tag @tag.", array('@tag' => $download['tag'])));
@@ -345,7 +347,7 @@ function make_download_git($name, $type, $download, $download_location) {
     // If there wasn't a tag, try a specific revision hash.
     elseif (!empty($download['revision'])) {
       if (drush_shell_exec("git checkout %s", $download['revision'])) {
-        drush_log(dt("Checked out revision @revision.", array('@revision' => $download['revision'])), 'ok');
+        drush_log(dt("Checked out revision @revision.", array('@revision' => $download['revision'])), LogLevel::OK);
       }
       else {
         make_error('DOWNLOAD_ERROR', dt("Unable to checkout revision @revision", array('@revision' => $download['revision'])));
@@ -355,10 +357,10 @@ function make_download_git($name, $type, $download, $download_location) {
     // If not, see if we at least have a branch.
     elseif (!empty($download['branch'])) {
       if (drush_shell_exec("git checkout %s", $download['branch']) && (trim(implode(drush_shell_exec_output())) != '')) {
-        drush_log(dt("Checked out branch @branch.", array('@branch' => $download['branch'])), 'ok');
+        drush_log(dt("Checked out branch @branch.", array('@branch' => $download['branch'])), LogLevel::OK);
       }
       elseif (drush_shell_exec("git checkout -b %s %s", $download['branch'], 'origin/' . $download['branch'])) {
-        drush_log(dt('Checked out branch origin/@branch.', array('@branch' => $download['branch'])), 'ok');
+        drush_log(dt('Checked out branch origin/@branch.', array('@branch' => $download['branch'])), LogLevel::OK);
       }
       else {
         make_error('DOWNLOAD_ERROR', dt('Unable to check out branch @branch.', array('@branch' => $download['branch'])));
@@ -371,7 +373,7 @@ function make_download_git($name, $type, $download, $download_location) {
         $command .= ' --%s';
       }
       if (call_user_func_array('drush_shell_exec', array_merge(array($command), $download['submodule']))) {
-        drush_log(dt('Initialized registered submodules.'), 'ok');
+        drush_log(dt('Initialized registered submodules.'), LogLevel::OK);
       }
       else {
         make_error('DOWNLOAD_ERROR', dt('Unable to initialize submodules.'));
@@ -422,7 +424,7 @@ function make_download_bzr($name, $type, $download, $download_location) {
     }
     array_unshift($args, $command);
     if (call_user_func_array('drush_shell_exec', $args)) {
-      drush_log(dt('@project downloaded from @url.', array('@project' => $name, '@url' => $download['url'])), 'ok');
+      drush_log(dt('@project downloaded from @url.', array('@project' => $name, '@url' => $download['url'])), LogLevel::OK);
       drush_copy_dir($tmp_location, $download_location, FILE_EXISTS_OVERWRITE);
       return dirname($download_location);
     }
@@ -488,7 +490,7 @@ function make_download_svn($name, $type, $download, $download_location) {
         '@command' => $command,
         '@url' => $download['url'],
       );
-      drush_log(dt('@project @command from @url.', $args), 'ok');
+      drush_log(dt('@project @command from @url.', $args), LogLevel::OK);
       return $download_location;
     }
     else {

@@ -94,7 +94,7 @@ class commandCase extends CommandUnishTestCase {
     $options += array(
       'backend' => NULL, // To obtain and parse the error log.
     );
-    $this->drush('devel-download', array(), $options, NULL, NULL, self::EXIT_ERROR);
+    $this->drush('devel-reinstall', array(), $options, NULL, NULL, self::EXIT_ERROR);
     $parsed = $this->parse_backend_output($this->getOutput());
     $this->assertArrayHasKey("DRUSH_COMMAND_DEPENDENCY_ERROR", $parsed['error_log']);
   }

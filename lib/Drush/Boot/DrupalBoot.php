@@ -2,15 +2,22 @@
 
 namespace Drush\Boot;
 
-abstract class DrupalBoot extends BaseBoot {
+use Drush\Log\LogLevel;
+use Psr\Log\LoggerInterface;
 
-  function __construct() {
-  }
+abstract class DrupalBoot extends BaseBoot {
 
   function valid_root($path) {
   }
 
+  function get_version($drupal_root) {
+  }
+
   function get_profile() {
+  }
+
+  function conf_path($require_settings = TRUE, $reset = FALSE) {
+    return conf_path($require_settings = TRUE, $reset = FALSE);
   }
 
   /**
@@ -99,16 +106,17 @@ abstract class DrupalBoot extends BaseBoot {
       $phase_max = $phase;
     }
 
-    $searchpath = array();
+    $container = \Drush::getContainer();
+    $discovery = $container->get('commandDiscovery');
+    $commandFiles = [];
+    $searchpath = [];
     switch ($phase) {
       case DRUSH_BOOTSTRAP_DRUPAL_ROOT:
-        $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+        $drupal_root = \Drush::bootstrapManager()->getRoot();
         $searchpath[] = $drupal_root . '/../drush';
         $searchpath[] = $drupal_root . '/drush';
         $searchpath[] = $drupal_root . '/sites/all/drush';
-
-        // Add the drupalboot.drush.inc commandfile.
-        // $searchpath[] = __DIR__;
+        $commandFiles = $discovery->discover($searchpath, '\Drupal');
         break;
       case DRUSH_BOOTSTRAP_DRUPAL_SITE:
         // If we are going to stop bootstrapping at the site, then
@@ -137,6 +145,11 @@ abstract class DrupalBoot extends BaseBoot {
           }
 
           $searchpath = array_merge($searchpath, $this->contrib_themes_paths());
+          // Drupal 8 uses the modules' services files to find commandfiles. Should we allow
+          // redundant find-module-by-location for Drupal 8?  (Maybe not.)
+          if (drush_drupal_major_version() < 8) {
+            $commandFiles = $discovery->discoverNamespaced($searchpath, '\Drupal');
+          }
         }
         break;
       case DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION:
@@ -157,10 +170,19 @@ abstract class DrupalBoot extends BaseBoot {
           }
         }
 
-        $searchpath[] = drupal_get_path('theme', drush_theme_get_admin());
-        $searchpath[] = drupal_get_path('theme', drush_theme_get_default());
+        // Check all enabled themes including non-default and non-admin.
+        foreach (drush_theme_list() as $key => $value) {
+          $searchpath[] = drupal_get_path('theme', $key);
+        }
+        // Drupal 8 uses the modules' services files to find commandfiles. Should we allow
+        // redundant find-module-by-location for Drupal 8?  (Maybe not.)
+        if (drush_drupal_major_version() < 8) {
+          $commandFiles = $discovery->discoverNamespaced($searchpath, '\Drupal');
+        }
         break;
     }
+    // A little inelegant, but will do for now.
+    drush_init_register_command_files($container, $commandFiles);
 
     return $searchpath;
   }
@@ -192,7 +214,7 @@ abstract class DrupalBoot extends BaseBoot {
         }
         return array(
           'bootstrap_errors' => array(
-            'DRUSH_COMMAND_DEPENDENCY_ERROR' => dt('Command !command needs the following module(s) enabled to run: !dependencies.', array(
+            'DRUSH_COMMAND_DEPENDENCY_ERROR' => dt('Command !command needs the following extension(s) enabled to run: !dependencies.', array(
               '!command' => $command_name,
               '!dependencies' => $modules,
             )),
@@ -248,7 +270,7 @@ abstract class DrupalBoot extends BaseBoot {
    * context and DRUPAL_ROOT constant if it is considered a valid option.
    */
   function bootstrap_drupal_root_validate() {
-    $drupal_root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+    $drupal_root = \Drush::bootstrapManager()->getRoot();
 
     if (empty($drupal_root)) {
       return drush_bootstrap_error('DRUSH_NO_DRUPAL_ROOT', dt("A Drupal installation directory could not be found"));
@@ -259,11 +281,11 @@ abstract class DrupalBoot extends BaseBoot {
 
     $version = drush_drupal_version($drupal_root);
     $major_version = drush_drupal_major_version($drupal_root);
-    if ($major_version <= 5) {
+    if ($major_version <= 6) {
       return drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', array('!drush_version' => DRUSH_VERSION, '!major_version' => $major_version)));
     }
 
-    drush_bootstrap_value('drupal_root', realpath($drupal_root));
+    drush_bootstrap_value('drupal_root', $drupal_root);
     define('DRUSH_DRUPAL_SIGNATURE', $signature);
 
     return TRUE;
@@ -301,7 +323,7 @@ abstract class DrupalBoot extends BaseBoot {
 
     _drush_preflight_global_options();
 
-    drush_log(dt("Initialized Drupal !version root directory at !drupal_root", array("!version" => $version, '!drupal_root' => $drupal_root)));
+    $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal !version root directory at !drupal_root", array("!version" => $version, '!drupal_root' => $drupal_root)));
   }
 
   /**
@@ -380,7 +402,7 @@ abstract class DrupalBoot extends BaseBoot {
   function bootstrap_drupal_site_validate_settings_present() {
     $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
 
-    $conf_path = drush_bootstrap_value('conf_path', \conf_path(TRUE, TRUE));
+    $conf_path = drush_bootstrap_value('conf_path', $this->conf_path(TRUE, TRUE));
     $conf_file = "$conf_path/settings.php";
     if (!file_exists($conf_file)) {
       return drush_bootstrap_error('DRUPAL_SITE_SETTINGS_NOT_FOUND', dt("Could not find a Drupal settings.php file at !file.",
@@ -400,7 +422,7 @@ abstract class DrupalBoot extends BaseBoot {
     $site = drush_set_context('DRUSH_DRUPAL_SITE', drush_bootstrap_value('site'));
     $conf_path = drush_set_context('DRUSH_DRUPAL_SITE_ROOT', drush_bootstrap_value('conf_path'));
 
-    drush_log(dt("Initialized Drupal site !site at !site_root", array('!site' => $site, '!site_root' => $conf_path)));
+    $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal site !site at !site_root", array('!site' => $site, '!site_root' => $conf_path)));
 
     _drush_preflight_global_options();
   }
@@ -429,8 +451,7 @@ abstract class DrupalBoot extends BaseBoot {
     global $conf;
 
     $override = array(
-      'dev_query' => FALSE, // Force Drupal6 not to store queries since we are not outputting them.
-      'cron_safe_threshold' => 0, // Don't run poormanscron during Drush request (D7+).
+      'cron_safe_threshold' => 0, // Don't run poormanscron during Drush request (D7).
     );
 
     $current_override = drush_get_option_list('variables');
@@ -512,7 +533,7 @@ abstract class DrupalBoot extends BaseBoot {
   function bootstrap_drupal_database() {
     // We presume that our derived classes will connect and then
     // either fail, or call us via parent::
-    drush_log(dt("Successfully connected to the Drupal database."), 'bootstrap');
+    $this->logger->log(LogLevel::BOOTSTRAP, dt("Successfully connected to the Drupal database."));
   }
 
   /**

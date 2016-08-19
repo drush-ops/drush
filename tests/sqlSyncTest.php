@@ -33,20 +33,6 @@ class sqlSyncTest extends CommandUnishTestCase {
     $sites = $this->setUpDrupal(2, TRUE);
     return $this->localSqlSync();
   }
-  /**
-   * Do the same test as above, but use Drupal 6 sites instead of Drupal 7.
-   */
-  public function testLocalSqlSyncD6() {
-    if (UNISH_DRUPAL_MAJOR_VERSION != 6) {
-      $this->markTestSkipped('This test class is designed for Drupal 6.');
-      return;
-    }
-
-    chdir(UNISH_TMP); // Avoids perm denied Windows error.
-    $this->setUpBeforeClass();
-    $sites = $this->setUpDrupal(2, TRUE, '6');
-    return $this->localSqlSync();
-  }
 
   public function localSqlSync() {
     // Create a user in the staging site
@@ -97,7 +83,7 @@ class sqlSyncTest extends CommandUnishTestCase {
       'sanitize' => NULL,
       'yes' => NULL,
       'sanitize-email' => 'user@mysite.org',
-      // Test wildcards expansion from within sql-sync. Also avoid D8 persisten entity cache.
+      // Test wildcards expansion from within sql-sync. Also avoid D8 persistent entity cache.
       'structure-tables-list' => 'cache,cache*',
     );
     $this->drush('sql-sync', array('@stage', '@dev'), $sync_options);

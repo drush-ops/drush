@@ -2,6 +2,8 @@
 
 namespace Drush\Boot;
 
+use Psr\Log\LoggerInterface;
+
 class DrupalBoot7 extends DrupalBoot {
 
   function valid_root($path) {
@@ -11,6 +13,16 @@ class DrupalBoot7 extends DrupalBoot {
       $candidate = 'includes/common.inc';
       if (file_exists($path . '/' . $candidate) && file_exists($path . '/misc/drupal.js') && file_exists($path . '/modules/field/field.module')) {
         return $candidate;
+      }
+    }
+  }
+
+  function get_version($drupal_root) {
+    $path = $drupal_root . '/includes/bootstrap.inc';
+    if (is_file($path)) {
+      require_once $path;
+      if (defined('VERSION')) {
+        return VERSION;
       }
     }
   }
@@ -30,20 +42,21 @@ class DrupalBoot7 extends DrupalBoot {
 
   function contrib_modules_paths() {
     return array(
-      conf_path() . '/modules',
+      $this->conf_path() . '/modules',
       'sites/all/modules',
     );
   }
 
   function contrib_themes_paths() {
     return array(
-      conf_path() . '/themes',
+      $this->conf_path() . '/themes',
       'sites/all/themes',
     );
   }
 
   function bootstrap_drupal_core($drupal_root) {
     define('DRUPAL_ROOT', $drupal_root);
+    require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
     $core = DRUPAL_ROOT;
 
     return $core;

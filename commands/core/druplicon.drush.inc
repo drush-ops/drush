@@ -9,7 +9,9 @@
  */
 function druplicon_drush_help_alter(&$command) {
   if ($command['command'] == 'global-options' && $command['#brief'] === FALSE) {
-    $command['options']['druplicon'] = 'Shows the druplicon as glorious ASCII art.';
+    $command['options']['druplicon'] = [
+      'description' => 'Shows the druplicon as glorious ASCII art.',
+    ];
   }
 }
 
@@ -18,7 +20,7 @@ function druplicon_drush_help_alter(&$command) {
  */
 function druplicon_drush_exit() {
   if (drush_get_option('druplicon')) {
-    $misc_dir = realpath(dirname(__FILE__)) . '/../../misc';
+    $misc_dir = DRUSH_BASE_PATH . '/misc';
     if (drush_get_context('DRUSH_NOCOLOR')) {
       $content = file_get_contents($misc_dir . '/druplicon-no_color.txt');
     }

@@ -3,7 +3,7 @@
   "description": "Drush is a command line shell and scripting interface for Drupal, a veritable Swiss Army knife designed to make life easier for those of us who spend some of our working hours hacking away at the command prompt.",
   "homepage": "http://www.drush.org",
   "license": "GPL-2.0+",
-  "minimum-stability": "stable",
+  "minimum-stability": "beta",
   "prefer-stable": true,
   "authors": [
     { "name": "Moshe Weitzman", "email": "weitzman@tejasa.com" },
@@ -13,7 +13,9 @@
     { "name": "Greg Anderson", "email": "greg.1.anderson@greenknowe.org" },
     { "name": "Jonathan Araña Cruz", "email": "jonhattan@faita.net" },
     { "name": "Jonathan Hedstrom", "email": "jhedstrom@gmail.com" },
-    { "name": "Christopher Gervais", "email": "chris@ergonlogic.com" }
+    { "name": "Christopher Gervais", "email": "chris@ergonlogic.com" },
+    { "name": "Dave Reid", "email": "dave@davereid.net" },
+    { "name": "Damian Lee", "email": "damiankloip@googlemail.com" }
   ],
   "support": {
     "forum": "http://drupal.stackexchange.com/questions/tagged/drush",
@@ -21,28 +23,41 @@
   },
   "bin": [
     "drush",
+    "drush.launcher",
     "drush.php",
-    "drush.bat",
     "drush.complete.sh"
   ],
   "require": {
-    "php": ">=5.4.5",
-    "psy/psysh": "~0.5",
-    "symfony/yaml": "~2.2",
-    "symfony/var-dumper": "^2.6.3",
-    "pear/console_table": "~1.2.0"
+    "php": ">=5.5.0",
+    "psr/log": "~1.0",
+    "psy/psysh": "~0.6",
+    "symfony/yaml": "~2.3|~3.0",
+    "symfony/var-dumper": "~2.7|~3.0",
+    "league/container": "~2",
+    "consolidation/robo": "dev-master",
+    "consolidation/annotated-command": "~1",
+    "consolidation/output-formatters": "~1",
+    "symfony/console": "2.7.*",
+    "symfony/event-dispatcher": "2.7.*",
+    "symfony/config": "~2.2",
+    "pear/console_table": "~1.3.0",
+    "webmozart/path-util": "~2"
   },
   "require-dev": {
-    "phpunit/phpunit": ">=3.5",
-    "symfony/process": "2.4.5"
+    "phpunit/phpunit": "4.*",
+    "symfony/process": "2.7.*"
   },
   "suggest": {
+      "ext-pcntl": "*",
       "drush/config-extra": "Provides configuration workflow commands, such as config-merge."
   },
   "autoload": {
     "psr-0": {
       "Drush":        "lib/"
-    }
+    },
+    "classmap": [
+      "lib/Drush.php"
+    ]
   },
   "autoload-dev": {
     "psr-0": {
@@ -51,7 +66,7 @@
   },
   "extra": {
     "branch-alias": {
-        "dev-master": "8.0.x-dev"
+        "dev-master": "9.0.x-dev"
     }
   }
 }

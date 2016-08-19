@@ -1,5 +1,6 @@
 <?php
 
+use Drush\Log\LogLevel;
 use Drupal\Core\DrupalKernel;
 use Drupal\Core\Site\Settings;
 use Symfony\Component\HttpFoundation\Request;
@@ -124,7 +125,7 @@ function drush_cache_clear_pre_validate($type = NULL) {
  */
 function drush_cache_command_clear($type = NULL) {
   if (!drush_get_option('cache-clear', TRUE)) {
-    drush_log(dt("Skipping cache-clear operation due to --cache-clear=0 option."), 'ok');
+    drush_log(dt("Skipping cache-clear operation due to --cache-clear=0 option."), LogLevel::OK);
     return TRUE;
   }
   $types = drush_cache_clear_types(drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
@@ -142,10 +143,10 @@ function drush_cache_command_clear($type = NULL) {
   // Do it.
   drush_op($types[$type]);
   if ($type == 'all' && !drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
-    drush_log(dt("No Drupal site found, only 'drush' cache was cleared."), 'warning');
+    drush_log(dt("No Drupal site found, only 'drush' cache was cleared."), LogLevel::WARNING);
   }
   else {
-    drush_log(dt("'!name' cache was cleared.", array('!name' => $type)), 'success');
+    drush_log(dt("'!name' cache was cleared.", array('!name' => $type)), LogLevel::SUCCESS);
   }
 }
 
@@ -237,7 +238,7 @@ function drush_cache_clear_types($include_bootstrapped_types = FALSE) {
   drush_include_engine('drupal', 'environment');
 
   // Command files may customize $types as desired.
-  drush_command_invoke_all_ref('drush_cache_clear', $types);
+  drush_command_invoke_all_ref('drush_cache_clear', $types, $include_bootstrapped_types);
 
   return $types;
 }
@@ -261,7 +262,7 @@ function drush_cache_clear_drush() {
  */
 function drush_cache_rebuild() {
   if (!drush_get_option('cache-clear', TRUE)) {
-    drush_log(dt("Skipping cache-clear operation due to --cache-clear=0 option."), 'ok');
+    drush_log(dt("Skipping cache-clear operation due to --cache-clear=0 option."), LogLevel::OK);
     return TRUE;
   }
   chdir(DRUPAL_ROOT);
@@ -288,7 +289,7 @@ function drush_cache_rebuild() {
 
   // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it manually.
   drupal_rebuild($autoloader, $request);
-  drush_log(dt('Cache rebuild complete.'), 'ok');
+  drush_log(dt('Cache rebuild complete.'), LogLevel::OK);
 
   // As this command replaces `drush cache-clear all` for Drupal 8 users, clear
   // the Drush cache as well, for consistency with that behavior.

@@ -43,8 +43,8 @@
 /**
  * Implements hook_drush_help_alter().
  *
- * When a hook extends a command with additional options, it must 
- * implement help alter and declare the option(s).  Doing so will add 
+ * When a hook extends a command with additional options, it must
+ * implement help alter and declare the option(s).  Doing so will add
  * the option to the help text for the modified command, and will also
  * allow the new option to be specified on the command line.  Without
  * this, Drush will fail with an error when a user attempts to use
@@ -83,7 +83,7 @@ function drush_sync_via_http_pre_sql_sync($source = NULL, $destination = NULL) {
 
 /**
  * Downloads a files.
- * 
+ *
  * Optionaly uses user authentication, using either wget or curl, as available.
  */
 function _drush_sync_via_http_download_file($url, $user = FALSE, $password = FALSE, $destination = FALSE, $overwrite = TRUE) {

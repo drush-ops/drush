@@ -1,5 +1,7 @@
 <?php
 
+use Drush\Log\LogLevel;
+
 /**
  * @file
  *
@@ -104,8 +106,9 @@ function drush_early_complete() {
   // they are trying to complete.
   drush_set_option('debug', FALSE);
   if (drush_get_option('complete-debug', FALSE)) {
-    drush_set_context('DRUSH_DEBUG', TRUE);
+    drush_set_option('debug', TRUE);
   }
+  _drush_preflight_global_options();
   // Set up as if we were running the command, and attempt to parse.
   $argv = drush_complete_process_argv();
   if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
@@ -250,8 +253,8 @@ function drush_complete_process_argv() {
   // Check for and record any site alias.
   drush_sitealias_check_arg();
   drush_sitealias_check_site_env();
-  // We might have just changed our root--run drush_select_bootstrap_class() again.
-  $bootstrap = drush_select_bootstrap_class();
+  // We might have just changed our root--re-select the bootstrap object to use
+  $bootstrap = \Drush::bootstrapManager()->bootstrap();
 
   // Return the new argv for easy reference.
   return $argv;

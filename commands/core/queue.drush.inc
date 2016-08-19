@@ -1,5 +1,7 @@
 <?php
 
+use Drush\Log\LogLevel;
+
 /**
  * Implements hook_drush_help().
  */
@@ -41,6 +43,13 @@ function queue_drush_command() {
       'output-data-type' => 'format-table',
     ),
   );
+  $items['queue-delete'] = array(
+    'description' => 'Delete all items in a specific queue',
+    'arguments' => array(
+      'queue_name' => 'The name of the queue to delete all items for, as defined in either hook_queue_info or hook_cron_queue_info.',
+    ),
+    'required-arguments' => TRUE,
+  );
 
   return $items;
 }
@@ -80,7 +89,7 @@ function drush_queue_run($queue_name) {
   $start = microtime(TRUE);
   $count = $queue->run($queue_name, $time_limit);
   $elapsed = microtime(TRUE) - $start;
-  drush_log(dt('Processed @count items from the @name queue in @elapsed sec.', array('@count' => $count, '@name' => $queue_name, '@elapsed' => round($elapsed, 2))), drush_get_error() ? 'warning' : 'ok');
+  drush_log(dt('Processed @count items from the @name queue in @elapsed sec.', array('@count' => $count, '@name' => $queue_name, '@elapsed' => round($elapsed, 2))), drush_get_error() ? LogLevel::WARNING : LogLevel::OK);
 }
 
 /**
@@ -91,3 +100,31 @@ function drush_queue_list() {
   return $queue->listQueues();
 }
 
+/**
+ * Validation callback for drush queue-delete.
+ */
+function drush_queue_delete_validate($queue_name) {
+  try {
+    $queue = drush_queue_get_class();
+    $queue->getInfo($queue_name);
+  }
+  catch (\Drush\Queue\QueueException $exception) {
+    return drush_set_error('DRUSH_QUEUE_DELETE_VALIDATION_ERROR', $exception->getMessage());
+  }
+}
+
+/**
+ * Command callback for drush queue-delete.
+ *
+ * @param $queue_name
+ *   Arbitrary string. The name of the queue to work with.
+ *
+ * @return int
+ */
+function drush_queue_delete($queue_name) {
+  $drush_queue = drush_queue_get_class();
+  $queue = $drush_queue->getQueue($queue_name);
+  $queue->deleteQueue();
+
+  drush_log(dt('All items in @name queue deleted.', array('@name' => $queue_name)), LogLevel::OK);
+}

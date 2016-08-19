@@ -4,6 +4,8 @@
  * Functions for the generate makefile command.
  */
 
+use Drush\Log\LogLevel;
+
 /**
  * Generate the actual contents of the .make file.
  */
@@ -66,7 +68,7 @@ function _drush_make_generate_makefile_body($projects, $output = array()) {
     $string .= "\n";
   }
   if ($custom) {
-    drush_log(dt('Some of the properties in your makefile will have to be manually edited. Please do that now.'), 'warning');
+    drush_log(dt('Some of the properties in your makefile will have to be manually edited. Please do that now.'), LogLevel::WARNING);
   }
   return $string;
 }
@@ -81,7 +83,9 @@ function _drush_make_generate_makefile_body($projects, $output = array()) {
  *   A makefile on which to base our generated one.
  */
 function make_generate_from_makefile($file, $makefile) {
-  $info = make_parse_info_file($makefile);
+  if (!$info = make_parse_info_file($makefile)) {
+    return drush_set_error('MAKE_GENERATE_FAILED_PARSE', dt('Failed to parse makefile :makefile.', array(':makefile' => $makefile)));
+  }
   $projects = drush_get_option('DRUSH_MAKE_PROJECTS', FALSE);
   if ($projects === FALSE) {
     $projects = make_prepare_projects(FALSE, $info);
@@ -90,13 +94,13 @@ function make_generate_from_makefile($file, $makefile) {
     }
   }
 
-  $defaults = $info['defaults'];
+  $defaults = isset($info['defaults']) ? $info['defaults'] : array();
   $core = current($projects);
   $core = $core['core'];
   foreach ($projects as $name => $project) {
     // If a specific revision was requested, do not set the version.
     if (!isset($project['revision'])) {
-      $projects[$name]['version'] = $project['download']['full_version'];
+      $projects[$name]['version'] = isset($project['download']['full_version']) ? $project['download']['full_version'] : '';
       if ($project['type'] != 'core' && strpos($projects[$name]['version'], $project['core']) === 0) {
         $projects[$name]['version'] = substr($projects[$name]['version'], strlen($project['core'] . '-'));
       }
@@ -105,6 +109,10 @@ function make_generate_from_makefile($file, $makefile) {
       unset($projects[$name]['version']);
     }
     $projects[$name]['_type'] = $project['type'];
+
+    if ($project['download']['type'] == 'git') {
+      drush_make_resolve_git_refs($projects[$name]);
+    }
 
     // Don't clutter the makefile with defaults
     if (is_array($defaults)) {
@@ -127,30 +135,137 @@ function make_generate_from_makefile($file, $makefile) {
     if (!(isset($project['download']['type'])) || ($project['download']['type'] == 'pm')) {
       unset($projects[$name]['download']); // PM is the default
     }
-    $ignore = array('build_path', 'contrib_destination', 'core', 'location', 'make_directory', 'l10n_url', 'download_type');
+    $ignore = array('build_path', 'contrib_destination', 'core', 'make_directory', 'l10n_url', 'download_type');
     foreach ($ignore as $key) {
       unset($projects[$name][$key]);
     }
+
+    // Remove the location if it's the default.
+    if ($projects[$name]['location'] == 'https://updates.drupal.org/release-history') {
+      unset($projects[$name]['location']);
+    }
+
     // Remove empty entries (e.g. 'directory_name')
     $projects[$name] = _make_generate_array_filter($projects[$name]);
   }
 
   $libraries = drush_get_option('DRUSH_MAKE_LIBRARIES', FALSE);
   if ($libraries === FALSE) {
-    $libraries = $info['libraries'];
+    $libraries = isset($info['libraries']) ? $info['libraries'] : array();
   }
   if (is_array($libraries)) {
     foreach ($libraries as $name => $library) {
       $libraries[$name]['type'] = 'library';
       $libraries[$name]['_type'] = 'librarie';
+
+      if ($library['download']['type'] == 'git') {
+        drush_make_resolve_git_refs($libraries[$name]);
+      }
     }
   }
 
-  $contents = _drush_make_generate_makefile_contents($projects, $libraries, $core, $defaults);
+  $contents = make_generate_makefile_contents($projects, $libraries, $core, $defaults);
 
   // Write or print our makefile.
   $file = $file !== TRUE ? $file : NULL;
   make_generate_print($contents, $file);
+}
+
+/**
+ * Resolve branches and revisions for git-based projects.
+ */
+function drush_make_resolve_git_refs(&$project) {
+  if (!isset($project['download']['branch'])) {
+    $project['download']['branch'] = drush_make_resolve_git_branch($project);
+  }
+  if (!isset($project['download']['revision'])) {
+    $project['download']['revision'] = drush_make_resolve_git_revision($project);
+  }
+}
+
+/**
+ * Resolve branch for a git-based project.
+ */
+function drush_make_resolve_git_branch($project) {
+  drush_log(dt('Resolving default branch for repo at: :repo', array(':repo' => $project['download']['url'])));
+  if (drush_shell_exec("git ls-remote %s HEAD", $project['download']['url'])) {
+    $head_output = drush_shell_exec_output();
+    list($head_commit) = explode("\t", $head_output[0]);
+
+    drush_log(dt('Scanning branches in repo at: :repo', array(':repo' => $project['download']['url'])));
+    drush_shell_exec("git ls-remote --heads %s", $project['download']['url']);
+    $heads_output = drush_shell_exec_output();
+    $branches = array();
+    foreach ($heads_output as $key => $head) {
+      list($commit, $ref) = explode("\t", $head);
+      $branches[$commit] = explode("/", $ref)[2];
+    }
+
+    $branch = $branches[$head_commit];
+    drush_log(dt('Resolved git branch to: :branch', array(':branch' => $branch)));
+    return $branch;
+  }
+  else {
+    drush_log(dt('Could not resolve branch for `:project` using git repo at :repo', array(':project' => $project['name'], ':repo' => $project['download']['url'])), 'warning');
+  }
+}
+
+/**
+ * Resolve revision for a git-based project.
+ */
+function drush_make_resolve_git_revision($project) {
+  drush_log(dt('Resolving head commit on `:branch` branch for repo at: :repo', array(':branch' => $project['download']['branch'], ':repo' => $project['download']['url'])));
+  if (drush_shell_exec("git ls-remote %s %s", $project['download']['url'], $project['download']['branch'])) {
+    $head_output = drush_shell_exec_output();
+    list($revision) = explode("\t", $head_output[0]);
+    drush_log(dt('Resolved git revision to: :revision', array(':revision' => $revision)));
+    return $revision;
+  }
+  else {
+    drush_log(dt('Could not resolve head commit for `:project` using git repo at :repo', array(':project' => $project['name'], ':repo' => $project['download']['url'])), 'warning');
+  }
+}
+
+/**
+ * Generate makefile contents in the appropriate format.
+ */
+function make_generate_makefile_contents($projects,  $libraries = array(), $core = NULL, $defaults = array()) {
+  $format = drush_get_option('format', 'yaml');
+  $func = "make_generate_makefile_contents_$format";
+  if (function_exists($func)) {
+    $contents = call_user_func($func, $projects, $libraries, $core, $defaults);
+  }
+  else {
+    return drush_set_error('MAKE_UNKNOWN_OUTPUT_FORMAT', dt('Generating makefiles in the :format output format is not yet supported. Implement :func() to add such support.', array(':format' => $format, ':func' => $func)));
+  }
+  return $contents;
+}
+
+/**
+ * Generate makefile contents in (legacy) INI format.
+ */
+function make_generate_makefile_contents_ini($projects, $libraries, $core, $defaults) {
+  return _drush_make_generate_makefile_contents($projects, $libraries, $core, $defaults);
+}
+
+/**
+ * Generate makefile contents in YAML format.
+ */
+function make_generate_makefile_contents_yaml($projects, $libraries, $core, $defaults) {
+  $info = array(
+    'core' => $core,
+    'api' => MAKE_API,
+    'defaults' => $defaults,
+    'projects' => $projects,
+    'libraries' => $libraries,
+  );
+
+  $info = _make_generate_array_filter($info);
+  $info = _make_generate_array_filter_key('_type', $info);
+  $dumper = drush_load_engine('outputformat', 'yaml');
+  $yaml = $dumper->format($info, array());
+
+  return $yaml;
 }
 
 /**
@@ -170,6 +285,21 @@ function _make_generate_array_filter($haystack) {
 }
 
 /**
+ * Helper function to recursively remove elements matching a specific key from an array.
+ */
+function _make_generate_array_filter_key($needle, $haystack) {
+  foreach ($haystack as $key => $value) {
+    if ($key === $needle) {
+      unset($haystack[$key]);
+    }
+    elseif (is_array($value)) {
+      $haystack[$key] = _make_generate_array_filter_key($needle, $haystack[$key]);
+    }
+  }
+  return $haystack;
+}
+
+/**
  * Print the generated makefile to the terminal, or write it to a file.
  *
  * @param $contents
@@ -182,10 +312,10 @@ function make_generate_print($contents, $file = NULL) {
     drush_print($contents);
   }
   elseif (file_put_contents($file, $contents)) {
-    drush_log(dt("Wrote .make file @file", array('@file' => $file)), 'ok');
+    drush_log(dt("Wrote .make file @file", array('@file' => $file)), LogLevel::OK);
   }
   else {
-    drush_make_error('FILE_ERROR', dt("Unable to write .make file !file", array('!file' => $file)));
+    make_error('FILE_ERROR', dt("Unable to write .make file !file", array('!file' => $file)));
   }
 }
 

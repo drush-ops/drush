@@ -236,7 +236,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     $hide_stderr = FALSE;
     $cmd[] = UNISH_DRUSH;
 
-    // insert global options
+    // Insert global options.
     foreach ($options as $key => $value) {
       if (in_array($key, $global_option_list)) {
         unset($options[$key]);
@@ -269,11 +269,11 @@ abstract class CommandUnishTestCase extends UnishTestCase {
       }
     }
 
-    // insert site specification and drush command
+    // Insert site specification and drush command.
     $cmd[] = empty($site_specification) ? NULL : self::escapeshellarg($site_specification);
     $cmd[] = $command;
 
-    // insert drush command arguments
+    // Insert drush command arguments.
     foreach ($args as $arg) {
       $cmd[] = self::escapeshellarg($arg);
     }
@@ -292,7 +292,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
       $cmd[] = '2>' . $this->bit_bucket();
     }
     $exec = array_filter($cmd, 'strlen'); // Remove NULLs
-    // set sendmail_path to 'true' to disable any outgoing emails
+    // Set sendmail_path to 'true' to disable any outgoing emails
     // that tests might cause Drupal to send.
     $php_options = (array_key_exists('PHP_OPTIONS', $env)) ? $env['PHP_OPTIONS'] . " " : "";
     // @todo The PHP Options below are not yet honored by execute(). See .travis.yml for an alternative way.
@@ -374,6 +374,49 @@ abstract class CommandUnishTestCase extends UnishTestCase {
       }
     }
     return $string;
+  }
+
+  /**
+   * Ensure that an expected log message appears in the Drush log.
+   *
+   *     $this->drush('command', array(), array('backend' => NULL));
+   *     $parsed = $this->parse_backend_output($this->getOutput());
+   *     $this->assertLogHasMessage($parsed['log'], "Expected message", 'debug')
+   *
+   * @param $log Parsed log entries from backend invoke
+   * @param $message The expected message that must be contained in
+   *   some log entry's 'message' field.  Substrings will match.
+   * @param $logType The type of log message to look for; all other
+   *   types are ignored. If FALSE (the default), then all log types
+   *   will be searched.
+   */
+  function assertLogHasMessage($log, $message, $logType = FALSE) {
+    foreach ($log as $entry) {
+      if (!$logType || ($entry['type'] == $logType)) {
+        $logMessage = $this->getLogMessage($entry);
+        if (strpos($logMessage, $message) !== FALSE) {
+          return TRUE;
+        }
+      }
+    }
+    $this->fail("Could not find expected message in log: " . $message);
+  }
+
+  protected function getLogMessage($entry) {
+    return $this->interpolate($entry['message'], $entry);
+  }
+
+  protected function interpolate($message, array $context)
+  {
+      // build a replacement array with braces around the context keys
+      $replace = array();
+      foreach ($context as $key => $val) {
+          if (!is_array($val) && (!is_object($val) || method_exists($val, '__toString'))) {
+              $replace[sprintf('{%s}', $key)] = $val;
+          }
+      }
+      // interpolate replacement values into the message and return
+      return strtr($message, $replace);
   }
 
   function drush_major_version() {

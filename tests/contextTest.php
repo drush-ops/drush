@@ -23,15 +23,17 @@ class contextCase extends CommandUnishTestCase {
       'custom' => UNISH_SANDBOX,
       'site' =>  $this->site,
       'drupal' => $this->webroot() . '/sites/all/drush',
+      'drupal-parent' => dirname($this->webroot()) . '/drush',
       'user' => $this->home,
       'home.drush' => $this->home . '/.drush',
       'system' => UNISH_SANDBOX . '/etc/drush',
-      // We don't want to write a file into drush dir since it is not in the sandbox.
-      // 'drush' => dirname(realpath(UNISH_DRUSH)),
     );
     // Run each path through realpath() since the paths we'll compare against
     // will have already run through drush_load_config_file().
-    foreach ($this->paths as $key => $path) $this->paths[$key] = realpath($path);
+    foreach ($this->paths as $key => $path) {
+      @mkdir($path);
+      $this->paths[$key] = realpath($path);
+    }
   }
 
   /**

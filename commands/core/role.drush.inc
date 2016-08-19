@@ -1,5 +1,6 @@
 <?php
 
+use Drush\Log\LogLevel;
 use Drush\Role\RoleBase;
 
 /**
@@ -35,12 +36,12 @@ function role_drush_command() {
   $items['role-create'] = array(
     'description' => 'Create a new role.',
     'examples' => array(
-      "drush role-create 'test role'" => "Create a new role 'test role' on D6 or D7; auto-assign the rid. On D8, 'test role' is the rid, and the human-readable name is set to 'Test role'.",
-      "drush role-create 'test role' 'Test role'" => "Create a new role with a machine name of 'test role', and a human-readable name of 'Test role'. On D6 and D7, behaves as the previous example."
+      "drush role-create 'test role'" => "Create a new role 'test role' on D7; auto-assign the rid. On D8, 'test role' is the rid, and the human-readable name is set to 'Test role'.",
+      "drush role-create 'test role' 'Test role'" => "Create a new role with a machine name of 'test role', and a human-readable name of 'Test role'. On D7, behaves as the previous example."
     ),
     'arguments' => array(
       'machine name' => 'The symbolic machine name for the role. Required.',
-      'human-readable name' => 'A descriptive name for the role. Optional; Drupal 8 only.  Ignored in D6 and D7.',
+      'human-readable name' => 'A descriptive name for the role. Optional; Drupal 8 only.  Ignored in D7.',
     ),
     'aliases' => array('rcrt'),
   );
@@ -50,7 +51,7 @@ function role_drush_command() {
       "drush role-delete 'test role'" => "Delete the role 'test role'.",
     ),
     'arguments' => array(
-      'machine name' => 'The symbolic machine name for the role. Required.  In D6 and D7, this may also be a numeric role ID.',
+      'machine name' => 'The symbolic machine name for the role. Required.  In D7, this may also be a numeric role ID.',
     ),
     'aliases' => array('rdel'),
   );
@@ -125,7 +126,7 @@ function drush_role_create($rid, $role_name = '') {
   $role = drush_role_get_class();
   $result = $role->role_create($rid, $role_name);
   if ($result !== FALSE) {
-    drush_log(dt('Created "!role"', array('!role' => $rid)), 'success');
+    drush_log(dt('Created "!role"', array('!role' => $rid)), LogLevel::SUCCESS);
   }
   return $result;
 }
@@ -140,7 +141,7 @@ function drush_role_delete($rid) {
   }
   $result = $role->delete();
   if ($result !== FALSE) {
-    drush_log(dt('Deleted "!role"', array('!role' => $rid)), 'success');
+    drush_log(dt('Deleted "!role"', array('!role' => $rid)), LogLevel::SUCCESS);
   }
   return $result;
 }
@@ -168,7 +169,7 @@ function drush_role_add_perm($rid, $permissions = NULL) {
     $result = drush_role_perm('add', $rid, $perm);
     if ($result !== FALSE) {
       $added_perm = TRUE;
-      drush_log(dt('Added "!perm" to "!role"', array('!perm' => $perm, '!role' => $result->name)), 'success');
+      drush_log(dt('Added "!perm" to "!role"', array('!perm' => $perm, '!role' => $result->name)), LogLevel::SUCCESS);
     }
   }
 
@@ -202,7 +203,7 @@ function drush_role_remove_perm($rid, $permissions = NULL) {
     $result = drush_role_perm('remove', $rid, $perm);
     if ($result !== FALSE) {
       $removed_perm = TRUE;
-      drush_log(dt('Removed "!perm" from "!role"', array('!perm' => $perm, '!role' => $result->name)), 'ok');
+      drush_log(dt('Removed "!perm" from "!role"', array('!perm' => $perm, '!role' => $result->name)), LogLevel::OK);
     }
   }
 

@@ -35,7 +35,7 @@ if (!function_exists('filter_init')) {
 if (!function_exists('system_watchdog')) {
   // Check function_exists as a safety net in case it is added in future.
   function system_watchdog($log_entry = array()) {
-    // Drupal <= 7.x defines VERSION. Drupal 8 defines Drupal::VERSION instead.
+    // Drupal <= 7.x defines VERSION. Drupal 8 defines \Drupal::VERSION instead.
     if (defined('VERSION')) {
       $uid = $log_entry['user']->uid;
     }
