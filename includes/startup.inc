@@ -420,7 +420,14 @@ function drush_startup($argv) {
   else {
     $escaped_args = array_map(function($item) { return drush_escapeshellarg($item); }, $arguments);
     // Double quotes around $found_script as it can contain spaces.
-    $process = proc_open('"'. $found_script. '" '. implode(' ', $escaped_args), array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
+    $cmd = drush_escapeshellarg($found_script). ' '. implode(' ', $escaped_args);
+    if (drush_is_windows()) {
+      // Windows requires double quotes around whole command.
+      // @see https://bugs.php.net/bug.php?id=49139
+      // @see https://bugs.php.net/bug.php?id=60181
+      $cmd = '"'. $cmd. '"';
+    }
+    $process = proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
     $proc_status = proc_get_status($process);
     $exit_code = proc_close($process);
     exit($proc_status["running"] ? $exit_code : $proc_status["exitcode"] );

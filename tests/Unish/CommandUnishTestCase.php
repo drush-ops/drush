@@ -166,14 +166,16 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     $this->tick();
 
     // Apply the environment variables we need for our test to the head of the
-    // command. Process does have an $env argument, but it replaces the entire
+    // command (excludes Windows). Process does have an $env argument, but it replaces the entire
     // environment with the one given. This *could* be used for ensuring the
     // test ran with a clean environment, but it also makes tests fail hard on
     // Travis, for unknown reasons.
     // @see https://github.com/drush-ops/drush/pull/646
     $prefix = '';
-    foreach ($env as $env_name => $env_value) {
-      $prefix .= $env_name . '=' . self::escapeshellarg($env_value) . ' ';
+    if(!$this->is_windows()) {
+      foreach ($env as $env_name => $env_value) {
+        $prefix .= $env_name . '=' . self::escapeshellarg($env_value) . ' ';
+      }
     }
     $this->log("Executing: $prefix$command", 'warning');
 
@@ -288,6 +290,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     $exec = array_filter($cmd, 'strlen'); // Remove NULLs
     // Set sendmail_path to 'true' to disable any outgoing emails
     // that tests might cause Drupal to send.
+
     $php_options = (array_key_exists('PHP_OPTIONS', $env)) ? $env['PHP_OPTIONS'] . " " : "";
     $env['PHP_OPTIONS'] = "${php_options}-d sendmail_path='true'";
     $return = $this->execute(implode(' ', $exec), $expected_return, $cd, $env);
@@ -353,14 +356,14 @@ abstract class CommandUnishTestCase extends UnishTestCase {
   function parse_backend_output($string) {
     $regex = sprintf(UNISH_BACKEND_OUTPUT_DELIMITER, '(.*)');
     preg_match("/$regex/s", $string, $match);
-    if ($match[1]) {
+    if (isset($match[1])) {
       // we have our JSON encoded string
       $output = $match[1];
       // remove the match we just made and any non printing characters
       $string = trim(str_replace(sprintf(UNISH_BACKEND_OUTPUT_DELIMITER, $match[1]), '', $string));
     }
 
-    if ($output) {
+    if (!empty($output)) {
       $data = json_decode($output, TRUE);
       if (is_array($data)) {
         return $data;
