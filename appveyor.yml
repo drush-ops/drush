@@ -1,6 +1,7 @@
 build: false
 shallow_clone: true
 platform: 'x86'
+clone_folder: C:\projects\drush
 branches:
   only:
     - appveyor
@@ -63,7 +64,7 @@ environment:
       UNISH_NO_TIMEOUTS: y
       UNISH_DB_URL: "mysql://root:Password12!@localhost"
       UNISH_TMP: c:\drush_temp
-      UNISH_DRUSH: %APPVEYOR_BUILD_FOLDER%\dr.bat
+      UNISH_DRUSH: C:\projects\drush\dr.bat
 
   matrix:
   - UNISH_DRUPAL_MAJOR_VERSION: 7
