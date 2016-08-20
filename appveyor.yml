@@ -55,9 +55,6 @@ test_script:
   - php -r "$a = new PDO('mysql:YourDatabase;host=localhost', 'root', 'Password12!'); foreach($a->query('SHOW DATABASES;') as $row) print_r($row);"
   - phpunit --configuration tests %PHPUNIT_ARGS%
 
-cache:
-  - c:\drush_temp
-
 # environment variables
 environment:
   global:
