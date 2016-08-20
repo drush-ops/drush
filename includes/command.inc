@@ -185,9 +185,6 @@ function drush_dispatch($command, $arguments = array()) {
     // Get the arguments for this command. Add the options
     // on the end if this is that kind of command.
     $args = $command['arguments'];
-    if ($command['add-options-to-arguments']) {
-      $args[] = drush_get_merged_options();
-    }
 
     // Call the callback function of the active command.
     $return = call_user_func_array($command['callback'], $args);

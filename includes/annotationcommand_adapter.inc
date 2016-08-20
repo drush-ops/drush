@@ -173,7 +173,12 @@ function annotationcommand_adapter_process_command() {
   }
   $default_options = $command['consolidation-option-defaults'];
   $options = drush_redispatch_get_options() + $default_options;
-  $args[] = $options;
+
+  $options += drush_get_merged_options();
+
+  if ($command['add-options-to-arguments']) {
+    $args[] = $options;
+  }
 
   $output = new ConsoleOutput();
   $names = array_merge([$command['command']], $command['aliases']);
@@ -328,7 +333,6 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
     $command += drush_command_defaults($command_name, $commandfile, $commandfile_path);
     $commands[$command_name] = $command;
   }
-
   return $commands;
 }
 
