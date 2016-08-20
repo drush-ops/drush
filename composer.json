@@ -27,8 +27,13 @@
     "drush.php",
     "drush.complete.sh"
   ],
+  "config": {
+    "platform": {
+      "php": "5.6.0"
+    }
+  },
   "require": {
-    "php": ">=5.5.0",
+    "php": ">=5.6.0",
     "psr/log": "~1.0",
     "psy/psysh": "~0.6",
     "symfony/yaml": "~2.3|~3.0",
