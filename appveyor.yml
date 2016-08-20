@@ -24,10 +24,14 @@ install:
   - cinst -y php
   - cd c:\tools\php
   - copy php.ini-production php.ini
+
   - echo extension_dir=ext >> php.ini
   - echo extension=php_openssl.dll >> php.ini
   - echo date.timezone="UTC" >> php.ini
   - echo variables_order="EGPCS" >> php.ini #Debugging related to https://github.com/drush-ops/drush/pull/646. May be unneeded.
+  - echo mbstring.http_input=pass >> php.ini
+  - echo mbstring.http_output=pass >> php.ini
+  - echo sendmail_path=nul >> php.ini
   - echo extension=php_mbstring.dll >> php.ini
   - echo extension=php_curl.dll >> php.ini
   - echo extension=php_pdo_mysql.dll >> php.ini
@@ -50,9 +54,6 @@ services:
   - mysql
 
 test_script:
-  - mysql -uroot -pPassword12! -hlocalhost -e "create database YourDatabase;"
-  #- mysql -uroot -pPassword12! -hlocalhost -e "SHOW DATABASES;"
-  - php -r "$a = new PDO('mysql:YourDatabase;host=localhost', 'root', 'Password12!'); foreach($a->query('SHOW DATABASES;') as $row) print_r($row);"
   - phpunit --configuration tests %PHPUNIT_ARGS%
 
 # environment variables
