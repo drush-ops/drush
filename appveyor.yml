@@ -63,6 +63,7 @@ environment:
       UNISH_NO_TIMEOUTS: y
       UNISH_DB_URL: "mysql://root:Password12!@localhost"
       UNISH_TMP: c:\drush_temp
+      UNISH_DRUSH: %APPVEYOR_BUILD_FOLDER%\dr.bat
 
   matrix:
   - UNISH_DRUPAL_MAJOR_VERSION: 7
