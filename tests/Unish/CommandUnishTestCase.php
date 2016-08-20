@@ -157,7 +157,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    * @param sting cd
    *   The directory to run the command in.
    * @param array $env
-   *  @todo: Not implemented yet. Ineriting environment is hard - http://stackoverflow.com/questions/3780866/why-is-my-env-empty.
+   *  @todo: Not fully implemented yet. Ineriting environment is hard - http://stackoverflow.com/questions/3780866/why-is-my-env-empty.
    *         @see drush_env().
    *  Extra environment variables.
    * @param string $input
@@ -176,7 +176,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     // Travis, for unknown reasons.
     // @see https://github.com/drush-ops/drush/pull/646
     $prefix = '';
-    if(!$this->is_windows()) {
+    if($env && !$this->is_windows()) {
       foreach ($env as $env_name => $env_value) {
         $prefix .= $env_name . '=' . self::escapeshellarg($env_value) . ' ';
       }
