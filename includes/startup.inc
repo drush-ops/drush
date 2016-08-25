@@ -208,6 +208,7 @@ function _drush_escapeshellarg_windows($arg, $raw = FALSE) {
 function drush_startup($argv) {
   $sep = DIRECTORY_SEPARATOR;
   $found_script = "";
+  $cwd = getcwd();
   $home = getenv("HOME");
   $use_dir = "$home{$sep}.drush{$sep}use";
 
@@ -427,7 +428,7 @@ function drush_startup($argv) {
       // @see https://bugs.php.net/bug.php?id=60181
       $cmd = '"'. $cmd. '"';
     }
-    $process = proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
+    $process = proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes, $cwd);
     $proc_status = proc_get_status($process);
     $exit_code = proc_close($process);
     exit($proc_status["running"] ? $exit_code : $proc_status["exitcode"] );
