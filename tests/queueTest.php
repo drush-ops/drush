@@ -48,44 +48,6 @@ class QueueCase extends CommandUnishTestCase {
   }
 
   /**
-   * Tests the queue-delete command.
-   */
-  public function testQueueDelete() {
-    if (UNISH_DRUPAL_MAJOR_VERSION == 6) {
-      $this->markTestSkipped("Queue API not available in Drupal 6.");
-    }
-
-    if (UNISH_DRUPAL_MAJOR_VERSION == 7) {
-      $expected = 'aggregator_feeds,%items,SystemQueue';
-    }
-    else {
-      $expected = 'aggregator_feeds,%items,Drupal\Core\Queue\DatabaseQueue';
-    }
-
-    $sites = $this->setUpDrupal(1, TRUE);
-    $options = array(
-      'yes' => NULL,
-      'root' => $this->webroot(),
-      'uri' => key($sites),
-    );
-
-    // Enable aggregator since it declares a queue.
-    $this->drush('pm-enable', array('aggregator'), $options);
-
-    // Add another item to the queue and make sure it was deleted.
-    $this->drush('php-script', array('queue_script-D' . UNISH_DRUPAL_MAJOR_VERSION), $options + array('script-path' => dirname(__FILE__) . '/resources'));
-    $this->drush('queue-list', array(), $options + array('pipe' => TRUE));
-    $output = trim($this->getOutput());
-    $this->assertEquals(str_replace('%items', 1, $expected), $output, 'Item was successfully added to the queue.');
-
-    $this->drush('queue-delete', array('aggregator_feeds'), $options);
-
-    $this->drush('queue-list', array(), $options + array('pipe' => TRUE));
-    $output = trim($this->getOutput());
-    $this->assertEquals(str_replace('%items', 0, $expected), $output, 'Queue was successfully deleted.');
-  }
-
-  /**
    * Tests the RequeueException.
    */
   public function testRequeueException() {
