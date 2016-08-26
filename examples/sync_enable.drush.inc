@@ -71,6 +71,7 @@
  */
 function sync_enable_drush_help_alter(&$command) {
   if ($command['command'] == 'sql-sync') {
+    $command['options']['updb']  = "Apply database updates on the target database after the sync operation has completed.";
     $command['options']['enable']  = "Enable the specified modules in the target database after the sync operation has completed.";
     $command['options']['disable'] = "Disable the specified modules in the target database after the sync operation has completed.";
     $command['options']['permission'] = "Add or remove permissions from a role in the target database after the sync operation has completed. The value of this option must be an array, so it may only be specified in a site alias record or drush configuration file.  See `drush topic docs-example-sync-extension`.";
@@ -86,6 +87,11 @@ function sync_enable_drush_help_alter(&$command) {
  * each module.
  */
 function drush_sync_enable_post_sql_sync($source = NULL, $destination = NULL) {
+  $updb = drush_get_option('updb', FALSE);
+  if ($updb) {
+    drush_log('Run database updates', 'ok');
+    drush_invoke_process($destination, 'updatedb', array(), array('yes' => TRUE));
+  }
   $modules_to_enable = drush_get_option_list('enable');
   if (!empty($modules_to_enable)) {
     drush_log(dt("Enable !modules post-sql-sync", array('!modules' => implode(',', $modules_to_enable))), 'ok');
