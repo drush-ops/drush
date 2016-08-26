@@ -2,9 +2,14 @@ build: false
 shallow_clone: true
 platform: 'x86'
 clone_folder: C:\projects\drush
+matrix:
+  allow_failures:
+    # Don't record a failure until we have a passing test suite.
+    - UNISH_NO_TIMEOUTS: y
 branches:
   only:
-    - appveyor
+    - master
+    - 8.x
 
 init:
   #https://github.com/composer/composer/blob/master/appveyor.yml
