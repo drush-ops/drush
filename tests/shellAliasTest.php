@@ -121,8 +121,8 @@ class shellAliasesCase extends CommandUnishTestCase {
       'config' => UNISH_SANDBOX,
     );
     $this->drush('echosimple', array(), $options);
-    // Windows command shell actually prints quotes. See http://drupal.org/node/1452944.
-    $expected = $this->is_windows() ? '"@none"' : '@none';
+    // Windows command shell prints quotes (but not always?). See http://drupal.org/node/1452944.
+    $expected = '@none';
     $output = $this->getOutput();
     $this->assertEquals($expected, $output);
   }
@@ -147,8 +147,8 @@ class shellAliasesCase extends CommandUnishTestCase {
       'alias-path' => UNISH_SANDBOX,
     );
     $this->drush('echotest', array(), $options, '@myalias');
-    // Windows command shell actually prints quotes. See http://drupal.org/node/1452944.
-    $expected = $this->is_windows() ? '"@myalias"' : '@myalias';
+    // Windows command shell prints quotes (not always?). See http://drupal.org/node/1452944.
+    $expected = '@myalias';
     $expected .= ' /path/to/drupal /srv/data/mypath';
     $output = $this->getOutput();
     $this->assertEquals($expected, $output);

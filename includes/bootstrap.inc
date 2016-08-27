@@ -117,6 +117,11 @@ function _drush_bootstrap_selected_uri() {
   $uri = drush_get_context('DRUSH_SELECTED_URI');
   if (empty($uri)) {
     $site_path = drush_site_path();
+    drush_log('site path is: ' . var_export($site_path, TRUE));
+    if ($site_path) {
+      $site_path = _drush_convert_path($site_path);
+    }
+    drush_log('new site path is: ' . var_export($site_path, TRUE));
     $elements = explode('/', $site_path);
     $current = array_pop($elements);
     if (!$current) {
@@ -124,6 +129,7 @@ function _drush_bootstrap_selected_uri() {
     }
     $uri = 'http://'. $current;
     $uri = drush_set_context('DRUSH_SELECTED_URI', $uri);
+    drush_log('uri is: ' . var_export($uri, TRUE));
     drush_sitealias_create_self_alias();
   }
 

@@ -1,6 +1,5 @@
 #!/usr/bin/env php
 <?php
-
 /**
  * @file
  * Drush is a PHP script implementing a command line shell for Drupal.

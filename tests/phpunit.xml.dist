@@ -11,7 +11,7 @@
   </testsuites>
 
   <php>
-    <!-- These variables may alternatively be set as bash environment variables. -->
+    <!-- These variables may alternatively be set as environment variables. -->
 
     <!-- Drupal major version to run tests over -->
     <!-- <var name="UNISH_DRUPAL_MAJOR_VERSION" value="8"/> -->
