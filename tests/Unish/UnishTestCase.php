@@ -99,7 +99,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   public static function is_windows() {
-    return (strtoupper(substr(PHP_OS, 0, 3)) == "WIN");
+    return strtoupper(substr(PHP_OS, 0, 3)) == "WIN";
   }
 
   public static function get_tar_executable() {

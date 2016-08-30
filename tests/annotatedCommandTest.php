@@ -143,10 +143,10 @@ EOT;
     $wootModule = __DIR__ . '/resources/modules/d' . UNISH_DRUPAL_MAJOR_VERSION . '/woot';
     $modulesDir = "$root/sites/all/modules";
     $this->mkdir($modulesDir);
-    \symlink($wootModule, "$modulesDir/woot");
+    $this->recursive_copy($wootModule, $modulesDir);
     if ((UNISH_DRUPAL_MAJOR_VERSION < 8) && !file_exists("$wootModule/Command/WootCommands.php")) {
       $woot8Module = __DIR__ . '/resources/modules/d8/woot';
-      \symlink("$woot8Module/src/Command/WootCommands.php", "$wootModule/Command/WootCommands.php");
+      $this->recursive_copy("$woot8Module/src/Command/WootCommands.php", "$wootModule/Command/WootCommands.php");
     }
   }
 }
