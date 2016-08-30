@@ -13,5 +13,5 @@ libraries[vegas][download][type] = "get"
 libraries[vegas][download][url] = "https://github.com/jaysalvat/vegas/zipball/v1.2"
 
 libraries[autopager][download][type] = "get"
-libraries[autopager][download][url] = "https://jquery-autopager.googlecode.com/files/jquery.autopager-1.0.0.js"
+libraries[autopager][download][url] = "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/jquery-autopager/jquery.autopager-1.0.0.js"
 libraries[autopager][directory_name] = "autopager"
