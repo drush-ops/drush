@@ -48,7 +48,8 @@ function unish_init() {
     $unish_drush = isset($_SERVER['UNISH_DRUSH']) ? $_SERVER['UNISH_DRUSH'] : NULL;
     $unish_drush = isset($GLOBALS['UNISH_DRUSH']) ? $GLOBALS['UNISH_DRUSH'] : $unish_drush;
     if (empty($unish_drush)) {
-      $unish_drush =  dirname(__DIR__) . DIRECTORY_SEPARATOR . \Unish\UnitUnishTestCase::is_windows() ? 'dr.bat' : 'drush';
+      $script = \Unish\UnitUnishTestCase::is_windows() ? 'dr.bat' : 'drush';
+      $unish_drush =  dirname(__DIR__) . DIRECTORY_SEPARATOR . $script;
     }
     define('UNISH_DRUSH', $unish_drush);
   }
