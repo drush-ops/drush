@@ -157,7 +157,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    * @param sting cd
    *   The directory to run the command in.
    * @param array $env
-   *  @todo: Not fully implemented yet. Ineriting environment is hard - http://stackoverflow.com/questions/3780866/why-is-my-env-empty.
+   *  @todo: Not fully implemented yet. Inheriting environment is hard - http://stackoverflow.com/questions/3780866/why-is-my-env-empty.
    *         @see drush_env().
    *  Extra environment variables.
    * @param string $input
@@ -181,7 +181,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
         $prefix .= $env_name . '=' . self::escapeshellarg($env_value) . ' ';
       }
     }
-    $this->log("Executing: $prefix$command", 'warning');
+    $this->log("Executing: $command", 'warning');
 
     try {
       // Process uses a default timeout of 60 seconds, set it to 0 (none).

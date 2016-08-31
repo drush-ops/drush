@@ -76,7 +76,7 @@ EOD;
     $output = $this->getOutput();
     $actuals = json_decode(trim($output));
     $this->assertEquals('WORKING_CASE', $actuals->env_test);
-    $this->assertEquals('{foo:[bar:{key:"val"},bar2:{key:"long val"}]}', $actuals->env_test2);
+    $this->assertEquals(self::escapeshellarg('{foo:[bar:{key:"val"},bar2:{key:"long val"}]}'), $actuals->env_test2);
     $eval = 'print getenv("DRUSH_ENV_TEST3");';
     $this->drush('unit-eval', array($eval), $options, '@env-test');
     $output = $this->getOutput();
@@ -87,6 +87,8 @@ EOD;
   /**
    * Test to see if rsync @site:%files calculates the %files path correctly.
    * This tests the non-optimized code path in drush_sitealias_resolve_path_references.
+   *
+   * @todo This test does not appear to accomplish its goal.
    */
   function testRsyncBothRemote() {
     $aliasPath = UNISH_SANDBOX . '/site-alias-directory';
@@ -118,7 +120,7 @@ EOD;
     $output = $this->getOutput();
     $level = $this->log_level();
     $pattern = in_array($level, array('verbose', 'debug')) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress --yes %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz --yes %s /tmp);";
-    $expected = sprintf($pattern, UNISH_SANDBOX . "/web/sites/$site/files");
+    $expected = sprintf($pattern, UNISH_SANDBOX . "/web/sites/default/files");
 
 
     // Expected ouput:
