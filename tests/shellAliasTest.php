@@ -108,7 +108,8 @@ class shellAliasesCase extends CommandUnishTestCase {
     );
     $this->drush('pull', array('origin'), $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
     // $expected might be different on non unix platforms. We shall see.
-    $expected = "Calling proc_open(ssh  user@server 'cd /path/to/drupal && git pull origin --rebase');";
+    $exec = self::escapeshellarg('cd /path/to/drupal && git pull origin --rebase');
+    $expected = "Calling proc_open(ssh  user@server $exec);";
     $output = $this->getOutput();
     $this->assertEquals($expected, $output, 'Expected remote shell alias to a bash command was built');
   }

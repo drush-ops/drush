@@ -20,27 +20,28 @@ class annotatedCommandCase extends CommandUnishTestCase {
     $this->setupModulesForTests($root);
 
     // Enable out module. This will also clear the commandfile cache.
-    $this->drush('pm-enable', array('woot'), $options, NULL, NULL, self::EXIT_SUCCESS);
+    $this->drush('pm-enable', array('woot'), $options);
 
     // drush woot --help
-    $this->drush('woot', array(), $options + ['help' => NULL], NULL, NULL, self::EXIT_SUCCESS);
+    $this->drush('woot', array(), $options + ['help' => NULL]);
     $output = $this->getOutput();
     $this->assertContains('Woot mightily.', $output);
     // TODO: Symfony Console does not print alias info like this
     // $this->assertContains('Aliases: wt', $output);
 
     // drush help woot. TODO: drush help does not find annotated commands yet
-//    $this->drush('help', array('woot'), $options, NULL, NULL, self::EXIT_SUCCESS);
+//    $this->drush('help', array('woot'), $options);
 //    $output = $this->getOutput();
 //    $this->assertContains('Woot mightily.', $output);
 
+
     // drush woot
-    $this->drush('woot', array(), $options, NULL, NULL, self::EXIT_SUCCESS);
+    $this->drush('woot', array(), $options);
     $output = $this->getOutput();
     $this->assertEquals('Woot!', $output);
 
     // drush my-cat --help
-    $this->drush('my-cat', array(), $options + ['help' => NULL], NULL, NULL, self::EXIT_SUCCESS);
+    $this->drush('my-cat', array(), $options + ['help' => NULL]);
     $output = $this->getOutput();
     // TODO: the command description does not appear in the help text yet
     //$this->assertContains('This is the my-cat command', $output);
@@ -52,13 +53,19 @@ class annotatedCommandCase extends CommandUnishTestCase {
     // $this->assertContains('Aliases: c', $output);
 
     // drush help my-cat
+<<<<<<< HEAD
     // TODO: help cannot find annotated commands yet
     //$this->drush('help', array('my-cat'), $options, NULL, NULL, self::EXIT_SUCCESS);
     //$output = $this->getOutput();
     //$this->assertContains('This is the my-cat command', $output);
+=======
+    $this->drush('help', array('my-cat'), $options);
+    $output = $this->getOutput();
+    $this->assertContains('This is the my-cat command', $output);
+>>>>>>> cdc8a6d... A few Windows related fixes.
 
     // drush my-cat bet alpha --flip
-    $this->drush('my-cat', array('bet', 'alpha'), $options + ['flip' => NULL], NULL, NULL, self::EXIT_SUCCESS);
+    $this->drush('my-cat', array('bet', 'alpha'), $options + ['flip' => NULL]);
     $output = $this->getOutput();
     $this->assertEquals('alphabet', $output);
 
@@ -68,7 +75,7 @@ class annotatedCommandCase extends CommandUnishTestCase {
     // drush my-cat bet alpha --flip
     $this->drush('my-cat', array('bet', 'alpha'), $options + ['flip' => NULL, 'ignored-modules' => 'woot'], NULL, NULL, self::EXIT_ERROR);
 
-    $this->drush('try-formatters', array(), $options, NULL, NULL, self::EXIT_SUCCESS);
+    $this->drush('try-formatters', array(), $options);
     $output = $this->getOutput();
     $expected = <<<EOT
  ------ ------ -------
@@ -141,12 +148,8 @@ EOT;
 
   public function setupModulesForTests($root) {
     $wootModule = __DIR__ . '/resources/modules/d' . UNISH_DRUPAL_MAJOR_VERSION . '/woot';
-    $modulesDir = "$root/sites/all/modules";
-    $this->mkdir($modulesDir);
-    $this->recursive_copy($wootModule, $modulesDir);
-    if ((UNISH_DRUPAL_MAJOR_VERSION < 8) && !file_exists("$wootModule/Command/WootCommands.php")) {
-      $woot8Module = __DIR__ . '/resources/modules/d8/woot';
-      $this->recursive_copy("$woot8Module/src/Command/WootCommands.php", "$wootModule/Command/WootCommands.php");
-    }
+    $targetDir = $root . DIRECTORY_SEPARATOR . $this->drupalSitewideDirectory() . '/modules/woot';
+    $this->mkdir($targetDir);
+    $this->recursive_copy($wootModule, $targetDir);
   }
 }
