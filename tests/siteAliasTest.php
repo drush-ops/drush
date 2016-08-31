@@ -76,7 +76,7 @@ EOD;
     $output = $this->getOutput();
     $actuals = json_decode(trim($output));
     $this->assertEquals('WORKING_CASE', $actuals->env_test);
-    $this->assertEquals(self::escapeshellarg('{foo:[bar:{key:"val"},bar2:{key:"long val"}]}'), $actuals->env_test2);
+    $this->assertEquals('{foo:[bar:{key:"val"},bar2:{key:"long val"}]}', $actuals->env_test2);
     $eval = 'print getenv("DRUSH_ENV_TEST3");';
     $this->drush('unit-eval', array($eval), $options, '@env-test');
     $output = $this->getOutput();
