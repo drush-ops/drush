@@ -53,16 +53,10 @@ class annotatedCommandCase extends CommandUnishTestCase {
     // $this->assertContains('Aliases: c', $output);
 
     // drush help my-cat
-<<<<<<< HEAD
     // TODO: help cannot find annotated commands yet
-    //$this->drush('help', array('my-cat'), $options, NULL, NULL, self::EXIT_SUCCESS);
+    //$this->drush('help', array('my-cat'), $options);
     //$output = $this->getOutput();
     //$this->assertContains('This is the my-cat command', $output);
-=======
-    $this->drush('help', array('my-cat'), $options);
-    $output = $this->getOutput();
-    $this->assertContains('This is the my-cat command', $output);
->>>>>>> cdc8a6d... A few Windows related fixes.
 
     // drush my-cat bet alpha --flip
     $this->drush('my-cat', array('bet', 'alpha'), $options + ['flip' => NULL]);
