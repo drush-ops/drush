@@ -145,6 +145,6 @@ class drushScriptCase extends CommandUnishTestCase {
 
     $output = $this->getOutput();
     list($key, $value) = explode(": ", $output);
-    return trim($value);
+    return trim($value, "'");
   }
 }

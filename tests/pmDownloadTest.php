@@ -46,8 +46,7 @@ class pmDownloadCase extends CommandUnishTestCase {
 
     // If we are in site specific dir, then download belongs there.
     $path_stage = "$root/sites/$uri";
-    // gets created by --use-site-dir above,
-    // mkdir("$path_stage/modules");
+    // dir gets created by --use-site-dir above,
     $options = $devel_options;
     $this->drush('pm-download', array('devel'), $options, NULL, $path_stage);
     $this->assertFileExists($path_stage . '/modules/devel/README.txt');
