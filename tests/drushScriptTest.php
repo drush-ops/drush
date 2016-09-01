@@ -133,15 +133,12 @@ class drushScriptCase extends CommandUnishTestCase {
    * will return results other than UNISH_DRUSH in the
    * presence of a site-local Drush.
    */
-  function getDrushLocation($options = array(), $site_specification = NULL, $env = array()) {
+  function getDrushLocation($options = array()) {
     $options += array(
       'format' => 'yaml',
       'verbose' => NULL,
     );
-    $cd = NULL;
-    $expected_return = self::EXIT_SUCCESS;
-    $suffix = NULL;
-    $result = $this->drush('status', array('Drush script'), $options, $site_specification, $cd, $expected_return, $suffix, $env);
+    $result = $this->drush('status', array('Drush script'), $options);
 
     $output = $this->getOutput();
     list($key, $value) = explode(": ", $output);
