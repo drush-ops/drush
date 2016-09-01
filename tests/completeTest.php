@@ -21,8 +21,12 @@ class completeCase extends CommandUnishTestCase {
     file_put_contents(UNISH_SANDBOX . '/drushrc.php', trim($contents));
   }
 
+  
+
   public function testComplete() {
-    // $this->markTestSkipped('@todo Bootstrap refactor has broken this.');
+    if ($this->is_windows()) {
+      $this->markTestSkipped('Complete tests not fully working nor needed on Windows.');
+    }
 
     // We copy our completetest commandfile into our path.
     // We cannot use --include since complete deliberately avoids drush
@@ -114,10 +118,6 @@ class completeCase extends CommandUnishTestCase {
     $this->verifyComplete('aaaaaaaard a', 'aardvark', 'aardwolf');
     // Site alias + command + regular argument.
     // Note: this is checked implicitly by the argument cache testing above.
-
-    if ($this->is_windows()) {
-      $this->markTestSkipped('Complete tests not fully working nor needed on Windows.');
-    }
 
     // Site alias + command + file/directory argument tests.
     // Current directory substrings.
