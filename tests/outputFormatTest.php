@@ -5,6 +5,7 @@ namespace Unish;
 /**
  *   Tests for outputformat.drush.inc
  */
+use Webmozart\PathUtil\Path;
 
 /**
  * @todo, Consider removing these tests now that we have outputFormatUnitCase.
@@ -51,6 +52,7 @@ class outputFormatCase extends CommandUnishTestCase {
 
   public function getDataForDrupal() {
     $unish_tmp = UNISH_TMP; // Need local variable.
+    $drush_script = Path::join(UNISH_DRUSH, '../drush.php');
     return array(
       array(
         'name' => 'Status test - drush script / list',
@@ -58,8 +60,8 @@ class outputFormatCase extends CommandUnishTestCase {
         'args' => array('drush script'),
         'options' => array(),
         'format' => 'list',
-        'output_filter' => array('#/.*drush.php#' => 'drush.php',),
-        'expected' => 'drush.php',
+        'output_filter' => array(),
+        'expected' => $drush_script,
       ),
 //      array(
 //        'name' => 'Status test - drush / ini',
@@ -80,10 +82,10 @@ class outputFormatCase extends CommandUnishTestCase {
         'output_filter' => array(
           "/[0-9]+\.[0-9]+[^']*/" => '0.0-dev',
           '#/.*/etc/drush#' => '/etc/drush',
-          "/'drush-script' => '.*drush.php'/" => "'drush-script' => 'drush.php'",
+          // "/'drush-script' => '.*drush.php'/" => "'drush-script' => 'drush.php'",
         ),
         'expected' => "array(
-  'drush-script' => 'drush.php',
+  'drush-script' => '$drush_script',
   'drush-version' => '0.0-dev',
   'drush-temp' => '$unish_tmp',
   'drush-conf' => array(),
