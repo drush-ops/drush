@@ -1,6 +1,7 @@
 <?php
 
 use Drush\Log\LogLevel;
+use Webmozart\PathUtil\Path;
 
 /**
  * @defgroup dispatching Command dispatching functions.
@@ -1561,7 +1562,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
             // Only try to bootstrap modules that we have never seen before.
             if (!array_key_exists($module, $evaluated) && file_exists($filename)) {
               $evaluated[$module] = TRUE;
-              $list[$module] = $filename;
+              $list[$module] = Path::canonicalize($filename);
             }
           }
         }
