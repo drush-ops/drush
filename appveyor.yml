@@ -21,8 +21,6 @@ install:
   - SET PATH=C:\Program Files\curl;%PATH%
   #which is only needed by the test suite.
   - cinst -y which
-  # Needed by test suite for testMakeBZ2
-  - cinst -y  7zip.commandline
   - SET PATH=C:\Program Files\which;%PATH%
   - git clone -q https://github.com/acquia/DevDesktopCommon.git #For tar, cksum, ...
   - SET PATH=%APPVEYOR_BUILD_FOLDER%/DevDesktopCommon/bintools-win/msys/bin;%PATH%
