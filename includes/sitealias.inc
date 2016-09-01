@@ -2107,7 +2107,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
  * Option keys used for site selection.
  */
 function drush_sitealias_site_selection_keys() {
-  return array('remote-host', 'remote-user', 'winrs-password', 'ssh-options', '#name', 'os');
+  return array('remote-host', 'remote-user', 'ssh-options', '#name', 'os');
 }
 
 
