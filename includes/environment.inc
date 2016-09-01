@@ -11,6 +11,7 @@
  */
 
 use Drush\Log\LogLevel;
+use Webmozart\PathUtil\Path;
 
 /**
  * Log PHP errors to the Drush log. This is in effect until Drupal's error
@@ -420,11 +421,7 @@ function drush_valid_db_credentials() {
  */
 function drush_find_drush() {
   $drush = realpath($_SERVER['argv']['0']);
-  // TODO: On Windows, if we leave $drush as-is, then callbacks will
-  // be done just as we were called by the batch file:  php.exe C:\path\drush.php
-  // We could also convert drush.php to drush.bat to run the batch file again,
-  // but this works just as well.
-  return $drush;
+  return Path::canonicalize($drush);
 }
 
 /**
