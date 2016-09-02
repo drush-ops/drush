@@ -1,6 +1,7 @@
 <?php
 
 namespace Unish;
+use Webmozart\PathUtil\Path;
 
 /**
  * Tests for the 'drush' script itself
@@ -32,9 +33,11 @@ class drushScriptCase extends CommandUnishTestCase {
     // files to allow us to bootstrap to the DRUPAL_ROOT phase.
     $this->setUpDrupal(1, TRUE);
 
+    $globalDrushDotPhp = Path::join(UNISH_DRUSH, '../drush.php');
+
     // Control: test `drush --root ` ... with no site-local Drush
     $drush_location = $this->getDrushLocation();
-    $this->assertEquals(dirname(UNISH_DRUSH) . DIRECTORY_SEPARATOR. 'drush.php', $drush_location);
+    $this->assertEquals($globalDrushDotPhp, $drush_location);
 
     // We will try copying a site-local Drush to
     // all of the various locations the 'drush finder'
@@ -77,7 +80,7 @@ class drushScriptCase extends CommandUnishTestCase {
     $drush_root = $this->create_site_local_drush($mysterious_location);
     // We should not find the site-local Drush without a Drush wrapper.
     $drush_location = $this->getDrushLocation(array('root' => $this->webroot()));
-    $this->assertEquals(dirname(UNISH_DRUSH). DIRECTORY_SEPARATOR. 'drush.php', $drush_location);
+    $this->assertEquals($globalDrushDotPhp, $drush_location);
     $this->createDrushWrapper($mysterious_location);
     // Now that there is a Drush wrapper, we should be able to find the site-local Drush.
     $drush_location = $this->getDrushLocation(array('root' => $this->webroot()));
