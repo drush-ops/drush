@@ -53,6 +53,7 @@ class outputFormatCase extends CommandUnishTestCase {
   public function getDataForDrupal() {
     $unish_tmp = UNISH_TMP; // Need local variable.
     $drush_script = Path::join(UNISH_DRUSH, '../drush.php');
+    $etc_drush = Path::join(UNISH_SANDBOX, 'etc/drush'). DIRECTORY_SEPARATOR;
     return array(
       array(
         'name' => 'Status test - drush script / list',
@@ -81,7 +82,7 @@ class outputFormatCase extends CommandUnishTestCase {
         'format' => 'var_export',
         'output_filter' => array(
           "/[0-9]+\.[0-9]+[^']*/" => '0.0-dev',
-          '#/.*/etc/drush#' => '/etc/drush',
+          // '#/.*/etc/drush#' => '/etc/drush',
           // "/'drush-script' => '.*drush.php'/" => "'drush-script' => 'drush.php'",
         ),
         'expected' => "array(
@@ -90,7 +91,7 @@ class outputFormatCase extends CommandUnishTestCase {
   'drush-temp' => '$unish_tmp',
   'drush-conf' => array(),
   'drush-alias-files' => array(
-    '/etc/drush/dev.alias.drushrc.php',
+    '{$etc_drush}dev.alias.drushrc.php',
   ),
 )",
       ),
@@ -102,14 +103,14 @@ class outputFormatCase extends CommandUnishTestCase {
         'format' => 'key-value',
         'output_filter' => array(
           "/[0-9]+\.[0-9]+[a-z0-9\.-]*/" => '0.0-dev',
-          '#/.*/etc/drush#' => '/etc/drush',
+          // '#/.*/etc/drush#' => '/etc/drush',
           "/(Drush script *:  ).*drush.php/" => "Drush script:  drush.php",
         ),
         'expected' => "Drush script:  drush.php
  Drush version          :  0.0-dev
  Drush temp directory   :  $unish_tmp
  Drush configuration    :
- Drush alias files      :  /etc/drush/dev.alias.drushrc.php",
+ Drush alias files      :  {$etc_drush}dev.alias.drushrc.php",
       ),
       /*
         core-requirements is a little hard to test, because the
