@@ -1317,6 +1317,13 @@ function drush_stream_get_contents($handle, $timeout_seconds = 0.5) {
   while (true) {
     $starttime = microtime(true);
 
+    $metadata = stream_get_meta_data($handle);
+
+    // Return what we've read if we get EOF or go over the timeout.
+    if ($metadata['eof'] === TRUE || $time_used >= $timeout_seconds) {
+      return $ret;
+    }
+
     // Attempt to read one byte.
     $new = stream_get_contents($handle, 1);
     $endtime = microtime(true);
@@ -1326,15 +1333,5 @@ function drush_stream_get_contents($handle, $timeout_seconds = 0.5) {
       $ret .= $new;
     }
     $time_used = $endtime - $starttime;
-
-    // If we didn't manage to read a byte or if we are past the timeout, finish
-    // the loop.
-    if (($time_used >= $timeout_seconds) ||
-        !is_string($new) ||
-        (is_string($new) && strlen($new) < 1)) {
-      break;
-    }
   }
-
-  return $ret;
 }
