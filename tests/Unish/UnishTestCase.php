@@ -169,7 +169,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     $arg = preg_replace('/"/', '""', $arg);
 
     // Double up percents.
-    // $arg = preg_replace('/%/', '%%', $arg);
+    $arg = preg_replace('/%/', '%%', $arg);
 
     // Add surrounding quotes.
     $arg = '"' . $arg . '"';
