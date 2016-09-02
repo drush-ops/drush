@@ -420,8 +420,10 @@ function drush_valid_db_credentials() {
  * @see DRUSH_COMMAND
  */
 function drush_find_drush() {
-  $drush = realpath($_SERVER['argv']['0']);
-  return Path::canonicalize($drush);
+  if ($drush = realpath($_SERVER['argv']['0'])) {
+    return Path::canonicalize($drush);
+  }
+  return FALSE;
 }
 
 /**
