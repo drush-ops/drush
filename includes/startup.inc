@@ -188,7 +188,7 @@ function _drush_escapeshellarg_windows($arg, $raw = FALSE) {
   $arg = preg_replace('/"/', '""', $arg);
 
   // Double up percents.
-  $arg = preg_replace('/%/', '%%', $arg);
+  // $arg = preg_replace('/%/', '%%', $arg);
 
   // Only wrap with quotes when needed.
   if(!$raw) {
