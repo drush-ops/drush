@@ -173,7 +173,12 @@ function annotationcommand_adapter_process_command() {
   }
   $default_options = $command['consolidation-option-defaults'];
   $options = drush_redispatch_get_options() + $default_options;
-  $args[] = $options;
+
+  $options += drush_get_merged_options();
+
+  if ($command['add-options-to-arguments']) {
+    $args[] = $options;
+  }
 
   $output = new ConsoleOutput();
   $names = array_merge([$command['command']], $command['aliases']);
@@ -282,6 +287,10 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
     if ($command_name != $standard_alias) {
       $aliases[] = $standard_alias;
     }
+    $handle_remote_commands = $commandinfo->getAnnotation('handle-remote-commands') == 'true';
+    if ($bootstrap = $commandinfo->getAnnotation('bootstrap')) {
+      $bootstrap = constant($bootstrap);
+    }
     $command = [
       'name' => $command_name,
       //'callback' => [$commandhandler, $commandinfo->getMethodName()],
@@ -293,6 +302,8 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       'arguments' => [],
       'description' => $commandinfo->getDescription(),
       'examples' => $commandinfo->getExampleUsages(),
+      'bootstrap' => $bootstrap,
+      'handle-remote-commands' => $handle_remote_commands,
       'aliases' => $aliases,
       'add-options-to-arguments' => TRUE,
       'consolidation-output-formatters' => TRUE,
@@ -328,7 +339,6 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
     $command += drush_command_defaults($command_name, $commandfile, $commandfile_path);
     $commands[$command_name] = $command;
   }
-
   return $commands;
 }
 

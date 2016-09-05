@@ -185,9 +185,6 @@ function drush_dispatch($command, $arguments = array()) {
     // Get the arguments for this command. Add the options
     // on the end if this is that kind of command.
     $args = $command['arguments'];
-    if ($command['add-options-to-arguments']) {
-      $args[] = drush_get_merged_options();
-    }
 
     // Call the callback function of the active command.
     $return = call_user_func_array($command['callback'], $args);
@@ -1544,7 +1541,7 @@ function _drush_add_commandfiles($searchpath, $phase = NULL, $reset = FALSE) {
       // Assemble a cid specific to the bootstrap phase and searchpaths.
       // Bump $cf_version when making a change to a dev version of Drush
       // that invalidates the commandfile cache.
-      $cf_version = 7;
+      $cf_version = 8;
       $cid = drush_get_cid('commandfiles-' . $phase, array(), array_merge($searchpath, array($cf_version)));
       $command_cache = drush_cache_get($cid);
       if (isset($command_cache->data)) {
