@@ -1,5 +1,6 @@
 <?php
 
+use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 use Drush\Log\LogLevel;
 
 /**
@@ -504,9 +505,12 @@ function drush_complete_rebuild_arguments($command) {
   drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
   $commands = drush_get_commands();
   $command_info = $commands[$command];
-  if (!empty($command_info['annotation-command-callback'])) {
-    $commandInfo = new CommandInfo($class, $command);
-
+  if ($callback = $command_info['annotated-command-callback']) {
+    list($classname, $method) = $callback;
+    $commandInfo = new CommandInfo($classname, $method);
+    if ($callable = $commandInfo->getAnnotation('complete')) {
+      $result = call_user_func($callable);
+    }
   }
   else {
     $hook = str_replace("-", "_", $command_info['command-hook']);

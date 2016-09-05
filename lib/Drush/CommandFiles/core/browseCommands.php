@@ -22,6 +22,7 @@ class BrowseCommands {
    *   Open Firefox web browser to the path 'admin'.
    * @bootstrap DRUSH_BOOTSTRAP_NONE
    * @handle-remote-commands true
+   * @complete \Drush\CommandFiles\Core\BrowseCommands::complete
    */
   public function browse($path = '', $options = ['browser' => NULL, 'redirect-port' => NULL]) {
     // Redispatch if called against a remote-host so a browser is started on the
@@ -48,5 +49,12 @@ class BrowseCommands {
 
     drush_start_browser($link);
     return $link;
+  }
+
+  /*
+   * An argument completion provider
+   */
+  static function complete() {
+    return ['values' => ['admin', 'admin/content', 'admin/reports', 'admin/structure', 'admin/people', 'admin/modules', 'admin/config']];
   }
 }
