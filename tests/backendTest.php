@@ -57,12 +57,12 @@ EOD;
    */
   function testOrigin() {
     $site_specification = 'user@server/path/to/drupal#sitename';
-    $exec = sprintf('%s %s version arg1 arg2 --simulate --ssh-options=%s 2>/dev/null | grep ssh', UNISH_DRUSH, self::escapeshellarg($site_specification), self::escapeshellarg('-i mysite_dsa'));
+    $exec = sprintf('%s %s version arg1 arg2 --simulate --ssh-options=%s 2>%s', UNISH_DRUSH, self::escapeshellarg($site_specification), self::escapeshellarg('-i mysite_dsa'), self::escapeshellarg($this->bit_bucket()));
     $this->execute($exec);
     $bash = $this->escapeshellarg('drush  --uri=sitename --root=/path/to/drupal  version arg1 arg2 2>&1');
     $expected = "Simulating backend invoke: ssh -i mysite_dsa user@server $bash 2>&1";
     $output = $this->getOutput();
-    $this->assertEquals($expected, $output, 'Expected ssh command was built');
+    $this->assertContains($expected, $output, 'Expected ssh command was built');
 
     // Assure that arguments and options are passed along to a command thats not recognized locally.
     $this->drush('non-existent-command', array('foo'), array('bar' => 'baz', 'simulate' => NULL), $site_specification);
@@ -80,8 +80,8 @@ EOD;
   */
   function testTarget() {
     $stdin = json_encode(array('filter'=>'sql'));
-    $exec = sprintf('echo %s | %s version --backend 2>/dev/null', self::escapeshellarg($stdin), UNISH_DRUSH);
-    $this->execute($exec);
+    $exec = sprintf('%s version --backend 2>%s', UNISH_DRUSH, self::escapeshellarg($this->bit_bucket()));
+    $this->execute($exec, self::EXIT_SUCCESS, NULL, NULL, $stdin);
     $parsed = $this->parse_backend_output($this->getOutput());
     $this->assertTrue((bool) $parsed, 'Successfully parsed backend output');
     $this->assertArrayHasKey('log', $parsed);

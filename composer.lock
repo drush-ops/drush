@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "28e49438fef1ce9e8649e08c6a0e0e18",
-    "content-hash": "c8418d1ddf7d13e62edd7cb20f775d98",
+    "hash": "7d44836abcab31b15a5fa52f6de174a0",
+    "content-hash": "49774108d1a69152f6c903e20b368ebf",
     "packages": [
         {
             "name": "consolidation/annotated-command",
-            "version": "1.2.1",
+            "version": "1.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation-org/annotated-command.git",
-                "reference": "296b4f507b1e184a28c9969bc7ae779f689db5ee"
+                "reference": "6d6bacf27893d265d6b71e7c2fa2da661ce891c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation-org/annotated-command/zipball/296b4f507b1e184a28c9969bc7ae779f689db5ee",
-                "reference": "296b4f507b1e184a28c9969bc7ae779f689db5ee",
+                "url": "https://api.github.com/repos/consolidation-org/annotated-command/zipball/6d6bacf27893d265d6b71e7c2fa2da661ce891c4",
+                "reference": "6d6bacf27893d265d6b71e7c2fa2da661ce891c4",
                 "shasum": ""
             },
             "require": {
@@ -26,6 +26,7 @@
                 "phpdocumentor/reflection-docblock": "^2.0|^3.0.2",
                 "psr/log": "~1.0",
                 "symfony/console": "~2.5|~3.0",
+                "symfony/event-dispatcher": "~2.5|~3.0",
                 "symfony/finder": "~2.5|~3.0"
             },
             "require-dev": {
@@ -56,7 +57,7 @@
                 }
             ],
             "description": "Initialize Symfony Console commands from annotated command class methods.",
-            "time": "2016-08-02 21:49:35"
+            "time": "2016-08-19 22:56:42"
         },
         {
             "name": "consolidation/output-formatters",
@@ -1942,5 +1943,8 @@
     "platform": {
         "php": ">=5.4.5"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "platform-overrides": {
+        "php": "5.4.5"
+    }
 }

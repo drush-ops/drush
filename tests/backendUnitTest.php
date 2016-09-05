@@ -10,6 +10,10 @@ class backendUnitCase extends UnitUnishTestCase {
    *     to invoke a non-blocking process.
    */
   function testBackendFork() {
+    if (self::is_windows()) {
+      $this->markTestSkipped('Fork tests not a priority on Windows.');
+    }
+
     // Ensure that file that will be created by forked process does not exist
     // before invocation.
     $test_file = UNISH_SANDBOX . '/fork_test.txt';

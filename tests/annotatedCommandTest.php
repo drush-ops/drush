@@ -20,26 +20,26 @@ class annotatedCommandCase extends CommandUnishTestCase {
     $this->setupModulesForTests($root);
 
     // Enable out module. This will also clear the commandfile cache.
-    $this->drush('pm-enable', array('woot'), $options, NULL, NULL, self::EXIT_SUCCESS);
+    $this->drush('pm-enable', array('woot'), $options);
 
     // drush woot --help
-    $this->drush('woot', array(), $options + ['help' => NULL], NULL, NULL, self::EXIT_SUCCESS);
+    $this->drush('woot', array(), $options + ['help' => NULL]);
     $output = $this->getOutput();
     $this->assertContains('Woot mightily.', $output);
     $this->assertContains('Aliases: wt', $output);
 
     // drush help woot
-    $this->drush('help', array('woot'), $options, NULL, NULL, self::EXIT_SUCCESS);
+    $this->drush('help', array('woot'), $options);
     $output = $this->getOutput();
     $this->assertContains('Woot mightily.', $output);
 
     // drush woot
-    $this->drush('woot', array(), $options, NULL, NULL, self::EXIT_SUCCESS);
+    $this->drush('woot', array(), $options);
     $output = $this->getOutput();
     $this->assertEquals('Woot!', $output);
 
     // drush my-cat --help
-    $this->drush('my-cat', array(), $options + ['help' => NULL], NULL, NULL, self::EXIT_SUCCESS);
+    $this->drush('my-cat', array(), $options + ['help' => NULL]);
     $output = $this->getOutput();
     $this->assertContains('This is the my-cat command', $output);
     $this->assertContains('bet alpha --flip', $output);
@@ -49,12 +49,12 @@ class annotatedCommandCase extends CommandUnishTestCase {
     $this->assertContains('Aliases: c', $output);
 
     // drush help my-cat
-    $this->drush('help', array('my-cat'), $options, NULL, NULL, self::EXIT_SUCCESS);
+    $this->drush('help', array('my-cat'), $options);
     $output = $this->getOutput();
     $this->assertContains('This is the my-cat command', $output);
 
     // drush my-cat bet alpha --flip
-    $this->drush('my-cat', array('bet', 'alpha'), $options + ['flip' => NULL], NULL, NULL, self::EXIT_SUCCESS);
+    $this->drush('my-cat', array('bet', 'alpha'), $options + ['flip' => NULL]);
     $output = $this->getOutput();
     $this->assertEquals('alphabet', $output);
 
@@ -64,7 +64,7 @@ class annotatedCommandCase extends CommandUnishTestCase {
     // drush my-cat bet alpha --flip
     $this->drush('my-cat', array('bet', 'alpha'), $options + ['flip' => NULL, 'ignored-modules' => 'woot'], NULL, NULL, self::EXIT_ERROR);
 
-    $this->drush('try-formatters', array(), $options, NULL, NULL, self::EXIT_SUCCESS);
+    $this->drush('try-formatters', array(), $options);
     $output = $this->getOutput();
     $expected = <<<EOT
  ------ ------ -------
@@ -134,12 +134,8 @@ EOT;
 
   public function setupModulesForTests($root) {
     $wootModule = __DIR__ . '/resources/modules/d' . UNISH_DRUPAL_MAJOR_VERSION . '/woot';
-    $modulesDir = "$root/sites/all/modules";
-    $this->mkdir($modulesDir);
-    \symlink($wootModule, "$modulesDir/woot");
-    if ((UNISH_DRUPAL_MAJOR_VERSION < 8) && !file_exists("$wootModule/Command/WootCommands.php")) {
-      $woot8Module = __DIR__ . '/resources/modules/d8/woot';
-      \symlink("$woot8Module/src/Command/WootCommands.php", "$wootModule/Command/WootCommands.php");
-    }
+    $targetDir = $root . DIRECTORY_SEPARATOR . $this->drupalSitewideDirectory() . '/modules/woot';
+    $this->mkdir($targetDir);
+    $this->recursive_copy($wootModule, $targetDir);
   }
 }

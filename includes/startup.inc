@@ -188,7 +188,7 @@ function _drush_escapeshellarg_windows($arg, $raw = FALSE) {
   $arg = preg_replace('/"/', '""', $arg);
 
   // Double up percents.
-  $arg = preg_replace('/%/', '%%', $arg);
+  // $arg = preg_replace('/%/', '%%', $arg);
 
   // Only wrap with quotes when needed.
   if(!$raw) {
@@ -208,6 +208,7 @@ function _drush_escapeshellarg_windows($arg, $raw = FALSE) {
 function drush_startup($argv) {
   $sep = DIRECTORY_SEPARATOR;
   $found_script = "";
+  $cwd = getcwd();
   $home = getenv("HOME");
   $use_dir = "$home{$sep}.drush{$sep}use";
 
@@ -419,7 +420,15 @@ function drush_startup($argv) {
   }
   else {
     $escaped_args = array_map(function($item) { return drush_escapeshellarg($item); }, $arguments);
-    $process = proc_open($found_script . ' ' . implode(' ', $escaped_args), array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
+    // Double quotes around $found_script as it can contain spaces.
+    $cmd = drush_escapeshellarg($found_script). ' '. implode(' ', $escaped_args);
+    if (drush_is_windows()) {
+      // Windows requires double quotes around whole command.
+      // @see https://bugs.php.net/bug.php?id=49139
+      // @see https://bugs.php.net/bug.php?id=60181
+      $cmd = '"'. $cmd. '"';
+    }
+    $process = proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes, $cwd);
     $proc_status = proc_get_status($process);
     $exit_code = proc_close($process);
     exit($proc_status["running"] ? $exit_code : $proc_status["exitcode"] );

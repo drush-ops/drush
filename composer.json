@@ -27,6 +27,11 @@
     "drush.php",
     "drush.complete.sh"
   ],
+  "config": {
+    "platform": {
+      "php": "5.4.5"
+    }
+  },
   "require": {
     "php": ">=5.4.5",
     "psr/log": "~1.0",

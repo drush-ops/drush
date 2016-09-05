@@ -11,6 +11,7 @@
  */
 
 use Drush\Log\LogLevel;
+use Webmozart\PathUtil\Path;
 
 /**
  * Log PHP errors to the Drush log. This is in effect until Drupal's error
@@ -168,10 +169,11 @@ function _drush_shift_path_up($path) {
   if (empty($path)) {
     return FALSE;
   }
-  $path = explode('/', $path);
+  $path = explode(DIRECTORY_SEPARATOR, $path);
   // Move one directory up.
   array_pop($path);
-  return implode('/', $path);
+  return implode(DIRECTORY_SEPARATOR, $path);
+  // return dirname($path);
 }
 
 /**
@@ -419,12 +421,10 @@ function drush_valid_db_credentials() {
  * @see DRUSH_COMMAND
  */
 function drush_find_drush() {
-  $drush = realpath($_SERVER['argv']['0']);
-  // TODO: On Windows, if we leave $drush as-is, then callbacks will
-  // be done just as we were called by the batch file:  php.exe C:\path\drush.php
-  // We could also convert drush.php to drush.bat to run the batch file again,
-  // but this works just as well.
-  return $drush;
+  if ($drush = realpath($_SERVER['argv']['0'])) {
+    return Path::canonicalize($drush);
+  }
+  return FALSE;
 }
 
 /**
