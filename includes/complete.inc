@@ -503,8 +503,15 @@ function drush_complete_rebuild_arguments($command) {
   // the bootstrap level, and perhaps bootstrap higher in extraordinary cases.
   drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
   $commands = drush_get_commands();
-  $hook = str_replace("-", "_", $commands[$command]['command-hook']);
-  $result = drush_command_invoke_all($hook . '_complete');
+  $command_info = $commands[$command];
+  if (!empty($command_info['annotation-command-callback'])) {
+    $commandInfo = new CommandInfo($class, $command);
+
+  }
+  else {
+    $hook = str_replace("-", "_", $command_info['command-hook']);
+    $result = drush_command_invoke_all($hook . '_complete');
+  }
   if (isset($result['values'])) {
     // We add a space following all completes. Eventually there may be some
     // items (e.g. comma separated arguments) where we don't add a space.
