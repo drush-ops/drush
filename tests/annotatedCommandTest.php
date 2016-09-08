@@ -22,6 +22,9 @@ class annotatedCommandCase extends CommandUnishTestCase {
     // Enable out module. This will also clear the commandfile cache.
     $this->drush('pm-enable', array('woot'), $options);
 
+    // In theory this is not necessary, but this test keeps failing.
+    $this->drush('cc', array('drush'), $options);
+
     // drush woot --help
     $this->drush('woot', array(), $options + ['help' => NULL]);
     $output = $this->getOutput();
