@@ -145,5 +145,10 @@ EOT;
     $targetDir = $root . DIRECTORY_SEPARATOR . $this->drupalSitewideDirectory() . '/modules/woot';
     $this->mkdir($targetDir);
     $this->recursive_copy($wootModule, $targetDir);
+
+    if (UNISH_DRUPAL_MAJOR_VERSION < 8) {
+        $d8wootModuleCommandFile = __DIR__ . '/resources/modules/d8/woot/src/Command/WootCommands.php';
+        \copy($d8wootModuleCommandFile, $targetDir . '/Command/WootCommands.php');
+    }
   }
 }
