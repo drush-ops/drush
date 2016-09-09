@@ -30,10 +30,24 @@ abstract class RoleBase {
    */
   public function __construct($rid = DRUPAL_ANONYMOUS_RID) {
     $this->roles = user_roles();
-    if (!is_numeric($rid)) {
+
+    // If we can't find the ID, assume we were given the name.
+    if (!isset($this->roles[$rid])) {
       $role_name = $rid;
-      if (in_array($role_name, $this->roles)) {
-        $rid = array_search($role_name, $this->roles);
+      if (is_object(array_values($this->roles)[0])) {
+        // D8+: The roles are objects.
+        foreach($this->roles as $key => $role) {
+          if ($role->label() == $role_name) {
+            $rid = $key;
+            break;
+          }
+        }
+      }
+      else {
+        // D7-: The roles are strings.
+        if (in_array($role_name, $this->roles)) {
+          $rid = array_search($role_name, $this->roles);
+        }
       }
     }
 
