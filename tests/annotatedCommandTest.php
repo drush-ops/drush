@@ -151,6 +151,7 @@ EOT;
     $wootModule = __DIR__ . '/resources/modules/d' . UNISH_DRUPAL_MAJOR_VERSION . '/woot';
     $targetDir = $root . DIRECTORY_SEPARATOR . $this->drupalSitewideDirectory() . '/modules/woot';
     $this->mkdir($targetDir);
-    $this->recursive_copy($wootModule, $targetDir);
+    $result = $this->recursive_copy($wootModule, $targetDir);
+    $this->assertEquals(true, $result);
   }
 }
