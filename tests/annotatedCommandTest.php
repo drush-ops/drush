@@ -26,6 +26,9 @@ class annotatedCommandCase extends CommandUnishTestCase {
     } else {
         $commandFile = $targetDir . "/Command/WootCommands.php";
     }
+    $this->assertFileExists(dirname(dirname(dirname($commandFile))));
+    $this->assertFileExists(dirname(dirname($commandFile)));
+    $this->assertFileExists(dirname($commandFile));
     $this->assertFileExists($commandFile);
 
     // Enable out module. This will also clear the commandfile cache.
