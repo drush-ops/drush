@@ -240,7 +240,8 @@ function drush_init_dependency_injection_container($input = null, $output = null
       $output = new \Symfony\Component\Console\Output\ConsoleOutput();
   }
   // Set up our dependency injection container.
-  $container = \Robo\Robo::createDefaultContainer($input, $output);
+  $container = new \League\Container\Container();
+  \Robo\Robo::configureContainer($container, $input, $output);
   $container->add('container', $container);
 
   $container->share('logger', 'Drush\Log\Logger')
