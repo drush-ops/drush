@@ -150,13 +150,7 @@ EOT;
   public function setupModulesForTests($root) {
     $wootModule = __DIR__ . '/resources/modules/d' . UNISH_DRUPAL_MAJOR_VERSION . '/woot';
     $targetDir = $root . DIRECTORY_SEPARATOR . $this->drupalSitewideDirectory() . '/modules/woot';
-    // Strange error with recursive copy and php 5.4 on Travis -- but
-    // symlink does not work with Windows.
-    if (UnishTestCase::is_windows()) {
-        $this->mkdir($targetDir);
-        $this->recursive_copy($wootModule, $targetDir);
-    } else {
-        \symlink($wootModule, $targetDir);
-    }
+    $this->mkdir($targetDir);
+    $this->recursive_copy($wootModule, $targetDir);
   }
 }

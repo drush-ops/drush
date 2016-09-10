@@ -225,29 +225,18 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
 
   public function recursive_copy($src, $dst) {
     $dir = opendir($src);
-    if ($dir === false) {
-      return "recursive_copy could not read the directory listing at $src";
-    }
-    if (!$this->mkdir($dst)) {
-      return "recursive_copy could not create a directory at $dst";
-    }
+    $this->mkdir($dst);
     while(false !== ( $file = readdir($dir)) ) {
       if (( $file != '.' ) && ( $file != '..' )) {
         if ( is_dir($src . '/' . $file) ) {
-          $result = $this->recursive_copy($src . '/' . $file,$dst . '/' . $file);
-          if ($result !== true) {
-            return $result;
-          }
+          $this->recursive_copy($src . '/' . $file,$dst . '/' . $file);
         }
         else {
-          if (!copy($src . '/' . $file,$dst . '/' . $file)) {
-            return "recursive_copy could not copy from $src/$file to $dst/$file";
-          }
+          copy($src . '/' . $file,$dst . '/' . $file);
         }
       }
     }
     closedir($dir);
-    return true;
   }
 
   function webroot() {
