@@ -8,6 +8,7 @@
 use Drush\Log\LogLevel;
 
 use Robo\Robo;
+use Robo\Contract\BuilderAwareInterface;
 use League\Container\Container;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -355,6 +356,10 @@ function drush_init_register_command_files($container, $commandFiles) {
     // Add and fetch our class from the container to apply the inductors
     $container->share($classAlias, $className);
     $commandFileInstance = $container->get($classAlias);
+    if ($commandFileInstance instanceof BuilderAwareInterface) {
+        $builder = $container->get('collectionBuilder', [$commandFileInstance]);
+        $commandFileInstance->setBuilder($builder);
+    }
     drush_add_command_instance($container, $commandFileInstance);
   }
 }
