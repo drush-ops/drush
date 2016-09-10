@@ -19,6 +19,15 @@ class annotatedCommandCase extends CommandUnishTestCase {
     // Copy the 'woot' module over to the Drupal site we just set up.
     $this->setupModulesForTests($root);
 
+    // These are not good asserts, but for the purposes of isolation....
+    $targetDir = $root . DIRECTORY_SEPARATOR . $this->drupalSitewideDirectory() . '/modules/woot';
+    if (UNISH_DRUPAL_MAJOR_VERSION == 8) {
+        $commandFile = $targetDir . "/src/Command/WootCommands.php";
+    } else {
+        $commandFile = $targetDir . "/Command/WootCommands.php";
+    }
+    $this->assertFileExists($commandFile);
+
     // Enable out module. This will also clear the commandfile cache.
     $this->drush('pm-enable', array('woot'), $options);
 
