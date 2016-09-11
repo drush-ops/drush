@@ -342,6 +342,7 @@ function drush_init_application_global_options($container) {
 
 function drush_init_annotation_commands($container) {
   $application = $container->get('application');
+  /** @var \Consolidation\AnnotatedCommand\CommandFileDiscovery */
   $discovery = $container->get('commandDiscovery');
   $commandFiles = $discovery->discover(DRUSH_BASE_PATH . '/lib/Drush', '\Drush');
   drush_init_register_command_files($container, $commandFiles);
