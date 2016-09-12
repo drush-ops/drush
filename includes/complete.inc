@@ -456,7 +456,7 @@ function drush_complete_rebuild() {
   $complete = array();
   // Bootstrap to the site level (if possible) - commands may need to check
   // the bootstrap level, and perhaps bootstrap higher in extraordinary cases.
-  drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_FULL);
+  drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
   $commands = drush_get_commands();
   foreach ($commands as $command_name => $command) {
     // Add command options and suboptions.
