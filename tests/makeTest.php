@@ -662,6 +662,11 @@ class makeMakefileCase extends CommandUnishTestCase {
   }
 
   function testMakeSvn() {
+    // @todo The svn repository used in `makefiles/svn.make` no longer exists.
+    // This can be re-added if a suitable replacement repository is found.
+    $this->markTestSkipped('Skipping SVN test');
+    return;
+
     // Silently skip svn test if svn is not installed.
     exec('which svn', $output, $whichSvnErrorCode);
     if (!$whichSvnErrorCode) {

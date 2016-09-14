@@ -132,7 +132,7 @@ function update_check_requirements() {
 
   // If there are issues, report them.
   foreach ($requirements as $requirement) {
-    if (isset($requirement['severity']) && $requirement['severity'] != REQUIREMENT_OK) {
+    if (isset($requirement['severity']) && $requirement['severity'] > REQUIREMENT_OK) {
       $message = isset($requirement['description']) ? $requirement['description'] : '';
       if (isset($requirement['value']) && $requirement['value']) {
         $message .= ' (Currently using ' . $requirement['title'] . ' ' . $requirement['value'] . ')';
