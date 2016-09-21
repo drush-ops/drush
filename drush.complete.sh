@@ -1,9 +1,15 @@
 # BASH completion script for Drush.
 #
 # Place this in your /etc/bash_completion.d/ directory or source it from your
-# ~/.bash_completion or ~/.bash_profile files.  Alternatively, source
-# examples/example.bashrc instead, as it will automatically find and source
-# this file.
+# ~/.bash_completion or ~/.bash_profile files.
+#
+# If you don't have the ~/.bash_completion file, create the file and put inside:
+# source /path/to/drush/drush.complete.sh
+# Save the file and  execute the following command:
+# source ~/.bash_completion
+#
+# Alternatively, source examples/example.bashrc instead, as it will
+# automatically find and source this file.
 #
 # If you're using ZSH instead of BASH, add the following to your ~/.zshrc file
 # and source it.
