@@ -5,7 +5,7 @@
 #
 # If you don't have the ~/.bash_completion file, create the file and put inside:
 # source /path/to/drush/drush.complete.sh
-# Save the file and  execute the following command:
+# Save the file and execute the following command:
 # source ~/.bash_completion
 #
 # Alternatively, source examples/example.bashrc instead, as it will
