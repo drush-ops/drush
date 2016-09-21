@@ -70,7 +70,7 @@ class makeMakefileCase extends CommandUnishTestCase {
         'name'     => 'bzip2 single file',
         'makefile' => 'bz2-singlefile.make',
         'build'    => TRUE,
-        'md5'      => '4f9d57f6caaf6ece0526d867327621cc',
+        'md5'      => '05a0ecad1ecc3de4845f06ca6272c6f4',
         'options'  => array('no-core' => NULL),
       ),
       'contrib-destination' => array(
