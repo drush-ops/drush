@@ -6,6 +6,7 @@
  */
 
 use League\Container\ContainerInterface;
+use SebastianBergmann\Version;
 
 /**
  * Static Service Container wrapper.
@@ -60,7 +61,8 @@ class Drush {
   public static function getVersion() {
     if (!static::$version) {
       $drush_info = static::drush_read_drush_info();
-      static::$version = $drush_info['drush_version'];
+      $instance = new Version($drush_info['drush_version'], DRUSH_BASE_PATH);
+      static::$version = $instance->getversion();
     }
     return static::$version;
   }

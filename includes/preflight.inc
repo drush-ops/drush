@@ -175,13 +175,20 @@ function drush_preflight_prepare() {
   drush_set_context('DRUSH_VENDOR_PATH', dirname($vendor_path));
   drush_set_context('DRUSH_CLASSLOADER', $classloader);
 
-  // Set up for backwards-compatibility. New code should call
-  // \Drush::getVersion() and \Drush::getMajorVersion() directly
-  $drush_version = \Drush::getVersion();
-  $version_parts = explode('.', $drush_version);
-  define('DRUSH_VERSION', $drush_version);
-  define('DRUSH_MAJOR_VERSION', $version_parts[0]);
-  define('DRUSH_MINOR_VERSION', $version_parts[1]);
+  /*
+   * @deprecated. Use \Drush::getVersion().
+   */
+  define('DRUSH_VERSION', \Drush::getVersion());
+
+  /*
+   * @deprecated. Use \Drush::getMajorVersion().
+   */
+  define('DRUSH_MAJOR_VERSION', Drush::getMajorVersion());
+
+  /*
+   * @deprecated. Use \Drush::getMinorVersion().
+   */
+  define('DRUSH_MINOR_VERSION', Drush::getMinorVersion());
 
   // We need to load our services right away, as we cannot log
   // or do much else until after this is done.
