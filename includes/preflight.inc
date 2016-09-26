@@ -249,7 +249,8 @@ function drush_init_dependency_injection_container($input = null, $output = null
   }
   // Set up our dependency injection container.
   $container = new \League\Container\Container();
-  \Robo\Robo::configureContainer($container, $input, $output);
+  $roboConfig = new \Robo\Config(); // TODO: make a global Drush config class derived from \Robo\Config. Then use $drushConfig here instead of $roboConfig
+  \Robo\Robo::configureContainer($container, $roboConfig, $input, $output);
   $container->add('container', $container);
 
   $container->share('logger', 'Drush\Log\Logger')
