@@ -6,6 +6,7 @@
  */
 
 use Drush\Log\LogLevel;
+use SebastianBergmann\Version;
 
 /**
  * Implementation of hook_drush_help().
@@ -610,7 +611,7 @@ function _core_site_status_table($project = '') {
     $status_table['php-conf'] = $php_ini_files;
   }
   $status_table['drush-script'] = DRUSH_COMMAND;
-  $status_table['drush-version'] = DRUSH_VERSION;
+  $status_table['drush-version'] = Drush::getVersion();
   $status_table['drush-temp'] = drush_find_tmp();
   $status_table['drush-conf'] = drush_flatten_array(drush_get_context_options('context-path', ''));
   $alias_files = _drush_sitealias_find_alias_files();
@@ -1280,7 +1281,7 @@ function drush_core_drupal_directory($target = 'root') {
  * Called for `drush version` or `drush --version`
  */
 function drush_core_version() {
-  return DRUSH_VERSION;
+  return Drush::getVersion();
 }
 
 /**
