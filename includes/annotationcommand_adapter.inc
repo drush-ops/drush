@@ -10,7 +10,7 @@ use Consolidation\AnnotatedCommand\AnnotatedCommandFactory;
 use Consolidation\AnnotatedCommand\CommandProcessor;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\FormatterManager;
-use Consolidation\OutputFormatters\FormatterOptions;
+use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Symfony\Component\Console\Input\ArrayInput;
 use Consolidation\AnnotatedCommand\AnnotationData;
 
@@ -40,6 +40,8 @@ function annotatedcomand_adapter_get_formatter() {
   static $formatter;
   if (!isset($formatter)) {
     $formatter = new FormatterManager();
+    $formatter->addDefaultFormatters();
+    $formatter->addDefaultSimplifiers();
   }
   return $formatter;
 }
@@ -357,7 +359,7 @@ function annotationcommand_adapter_alter_option_description_format($option_help,
 }
 
 function annotationcommand_adapter_alter_option_description_fields($option_help, $commandinfo, $default) {
-  $formatOptions = new FormatterOptions($commandinfo->getAnnotations());
+  $formatOptions = new FormatterOptions($commandinfo->getAnnotations()->getArrayCopy());
   $field_labels = $formatOptions->get(FormatterOptions::FIELD_LABELS);
   $default_fields = $formatOptions->get(FormatterOptions::DEFAULT_FIELDS, [], array_keys($field_labels));
   $available_fields = array_keys($field_labels);
