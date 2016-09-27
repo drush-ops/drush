@@ -2,6 +2,7 @@
 
 use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
+use Consolidation\AnnotatedCommand\AnnotationData;
 
 /**
  * @defgroup dispatching Command dispatching functions.
@@ -1210,7 +1211,7 @@ function drush_command_defaults($key, $commandfile, $path) {
     'add-options-to-arguments' => FALSE,
     'consolidation-output-formatters' => FALSE,
     'annotated-command-callback' => '',
-    'annotations' => [],
+    'annotations' => new AnnotationData(),
   );
   // We end up here, setting the defaults for a command, when
   // called from drush_get_global_options().  Early in the Drush

@@ -12,6 +12,7 @@ use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\FormatterOptions;
 use Symfony\Component\Console\Input\ArrayInput;
+use Consolidation\AnnotatedCommand\AnnotationData;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -329,11 +330,11 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
         $command['options'][$option] = $fn($command['options'][$option], $commandinfo, $default);
       }
     }
+    $command['annotations'] = $commandinfo->getAnnotations();
     // If the command has a '@return' annotation, then
     // remember information we will need to use the output formatter.
     $returnType = $commandinfo->getReturnType();
     if (isset($returnType)) {
-      $command['annotations'] = $commandinfo->getAnnotations();
       $command['return-type'] = $returnType;
     }
     $command += drush_command_defaults($command_name, $commandfile, $commandfile_path);
