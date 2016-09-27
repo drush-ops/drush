@@ -9,19 +9,20 @@
     "packages": [
         {
             "name": "consolidation/annotated-command",
-            "version": "2.0.0-beta8",
+            "version": "2.0.0-rc5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/annotated-command.git",
-                "reference": "2c2ae1ac7b89af662fcbcb898dc51ad2b5b89b60"
+                "reference": "f3dcc081c0b121bfb7b956f9510d3954d96a051d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/2c2ae1ac7b89af662fcbcb898dc51ad2b5b89b60",
-                "reference": "2c2ae1ac7b89af662fcbcb898dc51ad2b5b89b60",
+                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/f3dcc081c0b121bfb7b956f9510d3954d96a051d",
+                "reference": "f3dcc081c0b121bfb7b956f9510d3954d96a051d",
                 "shasum": ""
             },
             "require": {
+                "consolidation/output-formatters": "^2.0.0-rc1",
                 "php": ">=5.4.0",
                 "phpdocumentor/reflection-docblock": "^2.0|^3.0.2",
                 "psr/log": "~1.0",
@@ -30,13 +31,9 @@
                 "symfony/finder": "~2.5|~3.0"
             },
             "require-dev": {
-                "consolidation/output-formatters": "^2.0.0-beta6",
                 "phpunit/phpunit": "4.*",
                 "satooshi/php-coveralls": "^1.0",
                 "squizlabs/php_codesniffer": "2.*"
-            },
-            "suggest": {
-                "consolidation/output-formatters": "Format text by applying transformations provided by plug-in formatters."
             },
             "type": "library",
             "extra": {
@@ -60,7 +57,7 @@
                 }
             ],
             "description": "Initialize Symfony Console commands from annotated command class methods.",
-            "time": "2016-09-26 04:52:45"
+            "time": "2016-09-27 22:22:17"
         },
         {
             "name": "consolidation/log",
@@ -111,16 +108,16 @@
         },
         {
             "name": "consolidation/output-formatters",
-            "version": "2.0.0-beta7",
+            "version": "2.0.0-rc1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/output-formatters.git",
-                "reference": "e38a631b56e31b996e621bf87a3e06c59bc29b8f"
+                "reference": "ac443d1eee4a31727b425c27c4280afdd9277100"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/output-formatters/zipball/e38a631b56e31b996e621bf87a3e06c59bc29b8f",
-                "reference": "e38a631b56e31b996e621bf87a3e06c59bc29b8f",
+                "url": "https://api.github.com/repos/consolidation/output-formatters/zipball/ac443d1eee4a31727b425c27c4280afdd9277100",
+                "reference": "ac443d1eee4a31727b425c27c4280afdd9277100",
                 "shasum": ""
             },
             "require": {
@@ -155,7 +152,7 @@
                 }
             ],
             "description": "Format text by applying transformations provided by plug-in formatters.",
-            "time": "2016-09-23 21:25:10"
+            "time": "2016-09-27 00:42:51"
         },
         {
             "name": "consolidation/robo",
@@ -163,18 +160,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/Robo.git",
-                "reference": "bf6fec8bd48931e0ae3e7db8c566adafe5c3a4f3"
+                "reference": "11330bc9259117c2e6e9608b33658841619fd857"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/Robo/zipball/bf6fec8bd48931e0ae3e7db8c566adafe5c3a4f3",
-                "reference": "bf6fec8bd48931e0ae3e7db8c566adafe5c3a4f3",
+                "url": "https://api.github.com/repos/consolidation/Robo/zipball/11330bc9259117c2e6e9608b33658841619fd857",
+                "reference": "11330bc9259117c2e6e9608b33658841619fd857",
                 "shasum": ""
             },
             "require": {
-                "consolidation/annotated-command": "^2.0.0-beta3",
+                "consolidation/annotated-command": "^2.0.0-rc2",
                 "consolidation/log": "~1",
-                "consolidation/output-formatters": "^2.0.0-beta3",
+                "consolidation/output-formatters": "^2.0.0-rc1",
                 "league/container": "^2.2",
                 "php": ">=5.5.0",
                 "symfony/console": "~2.5|~3.0",
@@ -229,7 +226,7 @@
                 }
             ],
             "description": "Modern task runner",
-            "time": "2016-09-26 05:14:22"
+            "time": "2016-09-27 18:35:43"
         },
         {
             "name": "container-interop/container-interop",

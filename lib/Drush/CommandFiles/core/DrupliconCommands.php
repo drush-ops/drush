@@ -7,7 +7,7 @@ class DrupliconCommands {
    * Print druplicon as post-command output.
    *
    * @hook post-command *
-   * @option druplicon Shows the druplicon as glorious ASCII art.
+   * @option $druplicon Shows the druplicon as glorious ASCII art.
    */
   public function druplicon() {
     if (drush_get_option('druplicon')) {
@@ -21,5 +21,4 @@ class DrupliconCommands {
       drush_print($content);
     }
   }
-
 }

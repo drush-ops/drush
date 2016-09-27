@@ -97,6 +97,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface {
         if ($this->hasRegisteredSymfonyCommand($application, $name)) {
           $command_found = true;
           $input = drush_symfony_input();
+          $this->logger->log(LogLevel::BOOTSTRAP, dt("Dispatching with Symfony application as a fallback, since no native Drush command was found. (Set DRUSH_SYMFONY environment variable to skip Drush dispatch.)"));
           $application->run($input);
         }
       }

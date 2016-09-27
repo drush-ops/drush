@@ -74,6 +74,8 @@ function drush_main() {
       // will also try to run commands via the Symfony Application runner if
       // it cannot find a matching legacy Drush command.
       if (getenv('DRUSH_SYMFONY')) {
+        drush_log(dt("Dispatching directly with Symfony application (DRUSH_SYMFONY set)"), LogLevel::BOOTSTRAP);
+
         // Get the application and run it.
         // TODO: We need a new way to handle @alias arguments,
         // remote command dispatching, bootstrapping, etc.
@@ -86,6 +88,7 @@ function drush_main() {
         // perhaps handling immediately.
         $command_handled = drush_preflight_command_dispatch();
         if (!$command_handled) {
+          drush_log(dt("Dispatching using Drush bootstrap_and_dispatch"), LogLevel::BOOTSTRAP);
           $return = $bootstrap->bootstrap_and_dispatch();
         }
       }
@@ -229,7 +232,7 @@ function drush_preflight_prepare() {
   // Process initial global options such as --debug.
   _drush_preflight_global_options();
 
-  drush_log(dt("Drush preflight prepare loaded autoloader at !autoloader", array('!autoloader' => realpath($vendor_path))), LogLevel::PREFLIGHT);
+  drush_log(dt("Drush preflight prepare loaded autoloader at !autoloader", array('!autoloader' => realpath($vendor_path))), LogLevel::BOOTSTRAP);
 
   return $container;
 }
@@ -384,6 +387,7 @@ function drush_add_command_instance($container, $commandInstance, $includeAllPub
 function drush_create_commands_from_command_instance($container, $commandInstance, $includeAllPublicMethods = true) {
   $application = $container->get('application');
   $commandFactory = $container->get('commandFactory');
+  $commandFactory->setIncludeAllPublicMethods(false);
   $commandList = $commandFactory->createCommandsFromClass($commandInstance, $includeAllPublicMethods);
   foreach ($commandList as $command) {
     drush_add_command_to_application($container, $command);
@@ -432,7 +436,7 @@ function drush_preflight() {
   _drush_preflight_columns();
 
   // Display is tidy now that column width has been handled.
-  drush_log(dt('Starting Drush preflight.'), LogLevel::PREFLIGHT);
+  drush_log(dt('Starting Drush preflight.'), LogLevel::BOOTSTRAP);
 
   // Statically define a way to call drush again.
   define('DRUSH_COMMAND', drush_find_drush());
