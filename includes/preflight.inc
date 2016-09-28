@@ -253,7 +253,10 @@ function drush_init_dependency_injection_container($input = null, $output = null
   // Set up our dependency injection container.
   $container = new \League\Container\Container();
   $roboConfig = new \Robo\Config(); // TODO: make a global Drush config class derived from \Robo\Config. Then use $drushConfig here instead of $roboConfig
-  \Robo\Robo::configureContainer($container, $roboConfig, $input, $output);
+
+  $application = new \Symfony\Component\Console\Application('Drush Commandline Tool', \Drush::getVersion());
+
+  \Robo\Robo::configureContainer($container, $roboConfig, $input, $output, $application);
   $container->add('container', $container);
 
   $container->share('logger', 'Drush\Log\Logger')
@@ -275,11 +278,6 @@ function drush_init_dependency_injection_container($input = null, $output = null
   $container->share('eventDispatcher', \Symfony\Component\EventDispatcher\EventDispatcher::class)
       ->withMethodCall('addSubscriber', ['globalOptionsEventListener'])
       ->withMethodCall('addSubscriber', ['drushGlobalOptionsEventListener']);
-  $container->share('application', 'Symfony\Component\Console\Application')
-    ->withArgument('Drush Commandline Tool')
-    ->withArgument(\Drush::getVersion())
-    ->withMethodCall('setDispatcher', ['eventDispatcher'])
-    ->withMethodCall('setAutoExit', [false]);
   $container->share('commandDiscovery', 'Consolidation\AnnotatedCommand\CommandFileDiscovery')
     ->withMethodCall('addSearchLocation', ['CommandFiles'])
     ->withMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
