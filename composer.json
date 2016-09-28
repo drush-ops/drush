@@ -39,7 +39,7 @@
     "symfony/yaml": "~2.3|~3.0",
     "symfony/var-dumper": "~2.7|~3.0",
     "league/container": "~2",
-    "consolidation/robo": "dev-master",
+    "consolidation/robo": "dev-container-config",
     "consolidation/annotated-command": "~2",
     "consolidation/output-formatters": "~2",
     "symfony/console": "2.7.*",
