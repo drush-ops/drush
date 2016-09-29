@@ -8,7 +8,9 @@ namespace Unish;
 class VendorVersionTest extends UnishTestCase {
 
   /**
-   * Tests for specific vendor versions.
+   * Tests for specific phpdocumentor/reflection-docblock versions.
+   *
+   * The version should be 2.x.
    */
   public function testReflectionDocBlockVersion() {
     $passed = FALSE;
@@ -23,7 +25,7 @@ class VendorVersionTest extends UnishTestCase {
     }
 
     if($passed == FALSE) {
-      $this->fail('PHPDocumentor is not the right version');
+      $this->fail('Wrong phpdocumentor/reflection-docblock version. Version should be 2.x.');
     }
   }
 }
