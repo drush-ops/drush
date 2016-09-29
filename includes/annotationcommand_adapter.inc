@@ -281,9 +281,11 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
   $commands = [];
   $commandfile = basename($commandfile_path, '.php');
 
-  $commandinfo_list = $factory->getCommandInfoListFromClass($commandhandler, $includeAllPublicMethods);
+  $commandinfo_list = $factory->getCommandInfoListFromClass($commandhandler);
 
   foreach ($commandinfo_list as $commandinfo) {
+    // Register all of the hooks
+    $factory->registerCommandHook($commandinfo, $commandhandler);
     $aliases = $commandinfo->getAliases();
     $command_name = strtolower($commandinfo->getName());
     $standard_alias = str_replace(':', '-', $command_name);
@@ -291,6 +293,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       $aliases[] = $standard_alias;
     }
     $handle_remote_commands = $commandinfo->getAnnotation('handle-remote-commands') == 'true';
+    // TODO: if there is no 'bootstrap' annotation, maybe we should default to NONE instead of FULL?
     if ($bootstrap = $commandinfo->getAnnotation('bootstrap')) {
       $bootstrap = constant($bootstrap);
     }

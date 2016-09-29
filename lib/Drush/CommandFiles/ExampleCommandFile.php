@@ -42,7 +42,7 @@ class ExampleCommandFile
     /**
      * Demonstrate an alter hook with an option
      *
-     * @hook alter example:formatters
+     * @hook alter example:table
      * @option $french Add a row with French numbers.
      * @usage example:formatters --french
      */
