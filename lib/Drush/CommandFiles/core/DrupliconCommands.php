@@ -9,8 +9,8 @@ class DrupliconCommands {
    * @hook post-command *
    * @option $druplicon Shows the druplicon as glorious ASCII art.
    */
-  public function druplicon() {
-    if (drush_get_option('druplicon')) {
+  public function druplicon($result, $argsAndOptions, $annotationData) {
+    if ($argsAndOptions['options']['druplicon']) {
       $misc_dir = DRUSH_BASE_PATH . '/misc';
       if (drush_get_context('DRUSH_NOCOLOR')) {
         $content = file_get_contents($misc_dir . '/druplicon-no_color.txt');
