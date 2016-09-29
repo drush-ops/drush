@@ -299,6 +299,7 @@ function drush_command() {
  * @see drush_invoke() and @see drush_invoke_process()
  */
 function _drush_invoke_hooks($command, $args) {
+  $return = null;
   // If someone passed a standalone arg, convert it to a single-element array
   if (!is_array($args)) {
     $args = array($args);
@@ -325,14 +326,43 @@ function _drush_invoke_hooks($command, $args) {
     }
   }
 
+  // We will adapt and call as many of the annotated command hooks as we can.
+  // The following command hooks are not supported in Drush 8.x:
+  //   - Command Event: not called (requires CommandEvent object)
+  //   - Option: called elsewhere
+  //   - Initialize: not called (requires Input and Output objects)
+  //   - Interact: not called (requires Input and Output objects)
+  //   - Status: not called
+  //   - Extract not called
+  // The hooks that are called include:
+  //   - Validate (attempts to change args and options ignored)
+  //   - Command
+  //   - Process
+  //   - Alter
+
+  $names = annotationcommand_adapter_command_names($command);
+  $combinedArgsAndOptions = $args;
+  $combinedArgsAndOptions['options'] = drush_get_merged_options();
+  $annotationData = $command['annotations'];
+
   $rollback = FALSE;
   $completed = array();
   $available_rollbacks = array();
   $all_available_hooks = array();
 
   // Iterate through the different hook variations
-  $variations = array($hook . "_pre_validate", $hook . "_validate", "pre_$hook", $hook, "post_$hook");
-  foreach ($variations as $var_hook) {
+  $variations = array(
+    'pre_validate' => $hook . "_pre_validate",
+    'validate' => $hook . "_validate",
+    'pre_command' => "pre_$hook",
+    'command' => $hook,
+    'post_command' => "post_$hook"
+  );
+  foreach ($variations as $hook_phase => $var_hook) {
+
+    $adapterHookFunction = 'annotationcommand_adapter_call_hook_' . $hook_phase;
+    $adapterHookFunction($names, $combinedArgsAndOptions, $annotationData, $return);
+
     // Get the list of command files.
     // We re-fetch the list every time through
     // the loop in case one of the hook function

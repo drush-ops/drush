@@ -32,6 +32,8 @@ function annotationcommand_adapter_get_factory() {
   static $factory;
   if (!isset($factory)) {
     $factory = new AnnotatedCommandFactory();
+    $factory->commandProcessor()->hookManager()->add('annotatedcomand_adapter_backend_result', HookManager::EXTRACT_OUTPUT);
+    $factory->commandProcessor()->setFormatterManager(annotatedcomand_adapter_get_formatter());
   }
   return $factory;
 }
@@ -54,16 +56,8 @@ function annotatedcomand_adapter_backend_result($structured_data) {
 }
 
 function annotationcommand_adapter_get_processor() {
-  static $processor;
-  if (!isset($processor)) {
-    $hook_manager = new HookManager();
-    // AlterResultInterface
-    $resultAlterer =
-    $hook_manager->add('annotatedcomand_adapter_backend_result', HookManager::EXTRACT_OUTPUT);
-    $processor = new CommandProcessor($hook_manager);
-    $processor->setFormatterManager(annotatedcomand_adapter_get_formatter());
-  }
-  return $processor;
+  $factory = annotationcommand_adapter_get_factory();
+  return $factory->commandProcessor();
 }
 
 /**
@@ -180,11 +174,11 @@ function annotationcommand_adapter_process_command() {
   $options += drush_get_merged_options();
 
   if ($command['add-options-to-arguments']) {
-    $args[] = $options;
+    $args['options'] = $options;
   }
 
   $output = new ConsoleOutput();
-  $names = array_merge([$command['command']], $command['aliases']);
+  $names = annotationcommand_adapter_command_names($command);
 
   // n.b.: backend result is set by a post-alter hook.
   $result = $commandprocessor->process(
@@ -356,17 +350,8 @@ function annotationcommand_adapter_add_hook_options(&$command)
   // commandfiles in -- we can load extensions late, and still have
   // the extension hook a core command, or have an early-loaded global
   // extension hook a late-loaded extension (e.g. attached to a module).
-  $names = array_merge(
-    [$command['name']],
-    $command['aliases']
-  );
-  if (isset($command['annotated-command-callback'])) {
-    $commandHandler = $command['annotated-command-callback'][0];
-    $reflectionClass = new \ReflectionClass($commandHandler);
-    $commandFileClass = $reflectionClass->getName();
-    $names[] = $commandFileClass;
-  }
-  $names[] = '*';
+  $names = annotationcommand_adapter_command_names($command);
+  $names[] = '*'; // we are missing annotations here; maybe we just don't support that? (TODO later, maybe)
   $factory = annotationcommand_adapter_get_factory();
   $extraOptions = $factory->hookManager()->getHookOptions($names);
   foreach ($extraOptions as $commandinfo) {
@@ -381,6 +366,55 @@ function annotationcommand_adapter_add_hook_options(&$command)
         $command['options'][$option] = $fn($command['options'][$option], $commandinfo, $default);
       }
     }
+  }
+}
+
+function annotationcommand_adapter_command_names($command)
+{
+  $names = array_merge(
+    [$command['name']],
+    $command['aliases']
+  );
+  if (!empty($command['annotated-command-callback'])) {
+    $commandHandler = $command['annotated-command-callback'][0];
+    $reflectionClass = new \ReflectionClass($commandHandler);
+    $commandFileClass = $reflectionClass->getName();
+    $names[] = $commandFileClass;
+  }
+  return $names;
+}
+
+function annotationcommand_adapter_call_hook_pre_validate($names, $combinedArgsAndOptions, $annotationData)
+{
+
+}
+
+function annotationcommand_adapter_call_hook_validate($names, $combinedArgsAndOptions, $annotationData)
+{
+
+}
+
+function annotationcommand_adapter_call_hook_pre_command($names, $combinedArgsAndOptions, $annotationData)
+{
+
+}
+
+function annotationcommand_adapter_call_hook_command($names, $combinedArgsAndOptions, $annotationData)
+{
+
+}
+
+function annotationcommand_adapter_call_hook_post_command($names, $combinedArgsAndOptions, $annotationData, $return)
+{
+  $factory = annotationcommand_adapter_get_factory();
+  $hookManager = $factory->hookManager();
+
+  $hooks = $hookManager->getHooks($names, [HookManager::POST_COMMAND_HOOK], $annotationData);
+
+  // The annotated command library will let the post-command hook alter the result.
+  // We currently do not allow that here. (TODO later?)
+  foreach ((array)$hooks as $hook) {
+    $hook($return, $combinedArgsAndOptions, $annotationData);
   }
 }
 
