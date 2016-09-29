@@ -38,6 +38,8 @@ function drush_print($message = '', $indent = 0, $handle = NULL, $newline = TRUE
   }
   else {
     print $msg;
+    //$output = \Drush::service('output');
+    //$output->write($msg);
   }
 }
 

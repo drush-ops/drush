@@ -74,6 +74,8 @@ function drush_main() {
       // will also try to run commands via the Symfony Application runner if
       // it cannot find a matching legacy Drush command.
       if (getenv('DRUSH_SYMFONY')) {
+        drush_log(dt("Dispatching directly with Symfony application (DRUSH_SYMFONY set)"), LogLevel::BOOTSTRAP);
+
         // Get the application and run it.
         // TODO: We need a new way to handle @alias arguments,
         // remote command dispatching, bootstrapping, etc.
@@ -86,6 +88,7 @@ function drush_main() {
         // perhaps handling immediately.
         $command_handled = drush_preflight_command_dispatch();
         if (!$command_handled) {
+          drush_log(dt("Dispatching using Drush bootstrap_and_dispatch"), LogLevel::BOOTSTRAP);
           $return = $bootstrap->bootstrap_and_dispatch();
         }
       }
@@ -229,13 +232,13 @@ function drush_preflight_prepare() {
   // Process initial global options such as --debug.
   _drush_preflight_global_options();
 
-  drush_log(dt("Drush preflight prepare loaded autoloader at !autoloader", array('!autoloader' => realpath($vendor_path))), LogLevel::PREFLIGHT);
+  drush_log(dt("Drush preflight prepare loaded autoloader at !autoloader", array('!autoloader' => realpath($vendor_path))), LogLevel::BOOTSTRAP);
 
   return $container;
 }
 
 /**
- * Set up our dependency injection container, and load drush-services.yml.
+ * Set up our dependency injection container.
  *
  * The Drupal6 boot service is needed in order to show the D6 deprecation message.
  */
@@ -249,13 +252,25 @@ function drush_init_dependency_injection_container($input = null, $output = null
   }
   // Set up our dependency injection container.
   $container = new \League\Container\Container();
-  \Robo\Robo::configureContainer($container, $input, $output);
+  $roboConfig = new \Robo\Config(); // TODO: make a global Drush config class derived from \Robo\Config. Then use $drushConfig here instead of $roboConfig
+
+  $application = new \Symfony\Component\Console\Application('Drush Commandline Tool', \Drush::getVersion());
+
+  \Robo\Robo::configureContainer($container, $application, $roboConfig, $input, $output);
   $container->add('container', $container);
 
+  // Override Robo's logger with our own
   $container->share('logger', 'Drush\Log\Logger')
     ->withArgument('output')
     ->withMethodCall('setLogOutputStyler', ['logStyler']);
 
+  // Override Robo's formatter manager with our own
+  // Placeholder: not sure that we'll use this.
+  $container->share('formatterManager', \Drush\Formatters\DrushFormatterManager::class)
+      ->withMethodCall('addDefaultFormatters', [])
+      ->withMethodCall('addDefaultSimplifiers', []);
+
+  // Add some of our own objects to the container
   $container->share('bootstrap.default', 'Drush\Boot\EmptyBoot');
   $container->share('bootstrap.drupal6', 'Drush\Boot\DrupalBoot6');
   $container->share('bootstrap.drupal7', 'Drush\Boot\DrupalBoot7');
@@ -267,34 +282,24 @@ function drush_init_dependency_injection_container($input = null, $output = null
     ->withMethodCall('add', ['bootstrap.drupal7'])
     ->withMethodCall('add', ['bootstrap.drupal8']);
 
-  $container->share('drushGlobalOptionsEventListener', \Drush\Command\GlobalOptionsEventListener::class);
-  $container->share('eventDispatcher', \Symfony\Component\EventDispatcher\EventDispatcher::class)
-      ->withMethodCall('addSubscriber', ['globalOptionsEventListener'])
-      ->withMethodCall('addSubscriber', ['drushGlobalOptionsEventListener']);
-  $container->share('application', 'Symfony\Component\Console\Application')
-    ->withArgument('Drush Commandline Tool')
-    ->withArgument(\Drush::getVersion())
-    ->withMethodCall('setDispatcher', ['eventDispatcher'])
-    ->withMethodCall('setAutoExit', [false]);
+  // Robo does not manage the command discovery object in the container,
+  // but we will register and configure one for our use.
   $container->share('commandDiscovery', 'Consolidation\AnnotatedCommand\CommandFileDiscovery')
     ->withMethodCall('addSearchLocation', ['CommandFiles'])
     ->withMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
 
-  $container->share('backendResultSetter', 'Drush\Backend\BackendResultSetter');
-  $container->share('hookManager', 'Consolidation\AnnotatedCommand\Hooks\HookManager')
-      ->withMethodCall('addOutputExtractor', ['backendResultSetter']);
-
-  $container->inflector('Psr\Log\LoggerAwareInterface')
-    ->invokeMethod('setLogger', ['logger']);
-
-  // The inflectors of the delegate are not automatically
-  // available to the primary container; we must add them
-  // here as well.
-  \Robo\Robo::addInflectors($container);
-
   // Store the container in the \Drush object
   \Drush::setContainer($container);
   \Robo\Robo::setContainer($container);
+
+  // Add our own callback to the hook manager
+  $hookManager = $container->get('hookManager');
+  $hookManager->addOutputExtractor(new Drush\Backend\BackendResultSetter());
+
+  // It is necessary to set the dispatcher when using configureContainer
+  $eventDispatcher = $container->get('eventDispatcher');
+  $eventDispatcher->addSubscriber(new \Drush\Command\GlobalOptionsEventListener());
+  $application->setDispatcher($eventDispatcher);
 
   return $container;
 }
@@ -383,6 +388,7 @@ function drush_add_command_instance($container, $commandInstance, $includeAllPub
 function drush_create_commands_from_command_instance($container, $commandInstance, $includeAllPublicMethods = true) {
   $application = $container->get('application');
   $commandFactory = $container->get('commandFactory');
+  $commandFactory->setIncludeAllPublicMethods(false);
   $commandList = $commandFactory->createCommandsFromClass($commandInstance, $includeAllPublicMethods);
   foreach ($commandList as $command) {
     drush_add_command_to_application($container, $command);
@@ -431,7 +437,7 @@ function drush_preflight() {
   _drush_preflight_columns();
 
   // Display is tidy now that column width has been handled.
-  drush_log(dt('Starting Drush preflight.'), LogLevel::PREFLIGHT);
+  drush_log(dt('Starting Drush preflight.'), LogLevel::BOOTSTRAP);
 
   // Statically define a way to call drush again.
   define('DRUSH_COMMAND', drush_find_drush());
