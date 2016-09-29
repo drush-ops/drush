@@ -10,7 +10,7 @@ use Drush\Log\LogLevel;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 
-class ExampleCommandFile extends \Robo\Tasks
+class ExampleCommandFile
 {
     /**
      * Demonstrate Robo formatters.  Default format is 'table'.
@@ -28,7 +28,7 @@ class ExampleCommandFile extends \Robo\Tasks
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function exampleFormatters($options = ['format' => 'table', 'fields' => ''])
+    public function exampleTable($options = ['format' => 'table', 'fields' => ''])
     {
         $outputData = [
             'en' => [ 'first' => 'One',  'second' => 'Two',  'third' => 'Three' ],
@@ -42,7 +42,7 @@ class ExampleCommandFile extends \Robo\Tasks
     /**
      * Demonstrate an alter hook with an option
      *
-     * @hook alter example:formatters
+     * @hook alter example:table
      * @option $french Add a row with French numbers.
      * @usage example:formatters --french
      */
