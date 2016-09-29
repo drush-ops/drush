@@ -161,6 +161,9 @@ function drush_dispatch($command, $arguments = array()) {
       _drush_prepare_command($command, $arguments);
     }
 
+    // Merge in the options added by hooks
+    annotationcommand_adapter_add_hook_options($command);
+
     // Add command-specific options, if applicable.
     drush_command_default_options($command);
 
@@ -546,6 +549,7 @@ function drush_handle_command_output($command, $structured_output) {
  * record. Also verify that required options are present.
  */
 function _drush_verify_cli_options($command) {
+
   // Start out with just the options in the current command record.
   $options = _drush_get_command_options($command);
   // Skip all tests if the command is marked to allow anything.

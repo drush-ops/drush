@@ -52,39 +52,7 @@ function drush_core_helpsingle($commandstring) {
   if (array_key_exists($commandstring, $commands)) {
     $command = $commands[$commandstring];
 
-
-    // Get options added by hooks.  We postpone doing this until the
-    // last minute rather than doing it when processing commandfiles
-    // so that we do not need to worry about what order we process the
-    // commandfiles in -- we can load extensions late, and still have
-    // the extension hook a core command, or have an early-loaded global
-    // extension hook a late-loaded extension (e.g. attached to a module).
-    $names = array_merge(
-      [$command['name']],
-      $command['aliases']
-    );
-    if (isset($command['annotated-command-callback'])) {
-      $commandHandler = $command['annotated-command-callback'][0];
-      $reflectionClass = new \ReflectionClass($commandHandler);
-      $commandFileClass = $reflectionClass->getName();
-      $names[] = $commandFileClass;
-    }
-    $names[] = '*';
-    $factory = annotationcommand_adapter_get_factory();
-    $extraOptions = $factory->hookManager()->getHookOptions($names);
-    foreach ($extraOptions as $commandinfo) {
-      foreach ($commandinfo->options()->getValues() as $option => $default) {
-        $description = $commandinfo->options()->getDescription($option);
-        $command['options'][$option] = ['description' => $description];
-        if (!empty($default)) {
-          $command['options'][$option]['example-value'] = $default;
-        }
-        $fn = 'annotationcommand_adapter_alter_option_description_' . $option;
-        if (function_exists($fn)) {
-          $command['options'][$option] = $fn($command['options'][$option], $commandinfo, $default);
-        }
-      }
-    }
+    annotationcommand_adapter_add_hook_options($command);
 
     drush_print_help($command);
     return TRUE;
