@@ -679,6 +679,32 @@ function drush_make_convert_project_to_composer($original_project, $core_major_v
 }
 
 /**
+ * Converts a drush info array to a YAML array.
+ *
+ * @param array $info
+ *   A drush make info array.
+ *
+ * @return string
+ *   A yaml encoded info array.
+ */
+function drush_make_convert_make_to_yml($info) {
+  // Remove incorrect value.
+  unset($info['format']);
+
+  // Replace "*" with "~" for project versions.
+  foreach ($info['projects'] as $key => $project) {
+    if ($project['version'] == '*') {
+      $info['projects'][$key]['version'] = '~';
+    }
+  }
+
+  $dumper = drush_load_engine('outputformat', 'yaml');
+  $output = $dumper->format($info, array());
+
+  return $output;
+}
+
+/**
  * Drush callback: hidden file to process an individual project.
  *
  * @param string $directory
