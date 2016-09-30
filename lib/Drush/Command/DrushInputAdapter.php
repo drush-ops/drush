@@ -29,11 +29,19 @@ class DrushInputAdapter implements InputInterface {
     protected $options;
     protected $interactive;
 
-    public function __construct($arguments, $options, $interactive = true)
+    public function __construct($arguments, $options, $command = false, $interactive = true)
     {
         $this->arguments = $arguments;
         $this->options = $options;
 
+        // If a command name is provided as a parameter, then push
+        // it onto the front of the arguments list as a service
+        if ($command) {
+            $this->arguments = array_merge(
+                [ 'command' => $command ],
+                $this->arguments
+            );
+        }
         // Is it interactive, or is it not interactive?
         // Call drush_get_option() here if value not passed in?
         $this->interactive = $interactive;

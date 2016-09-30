@@ -350,7 +350,7 @@ function _drush_invoke_hooks($command, $args) {
   annotationcommand_adapter_add_hook_options($command);
   $annotationData = $command['annotations'];
 
-  $input = new DrushInputAdapter($args, annotationcommand_adapter_get_options($command));
+  $input = new DrushInputAdapter($args, annotationcommand_adapter_get_options($command), $command['command']);
   $output = new DrushOutputAdapter();
   $commandData = new CommandData(
     $annotationData,

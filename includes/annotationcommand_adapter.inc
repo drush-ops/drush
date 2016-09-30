@@ -182,7 +182,7 @@ function annotationcommand_adapter_process_command() {
     $args[$key] = $value;
   }
 
-  $input = new DrushInputAdapter($args, annotationcommand_adapter_get_options($command));
+  $input = new DrushInputAdapter($args, annotationcommand_adapter_get_options($command), $command['command']);
   $output = new DrushOutputAdapter();
   $annotationData = $command['annotations'];
   $commandData = new CommandData(
@@ -191,7 +191,6 @@ function annotationcommand_adapter_process_command() {
     $output
   );
   $commandData->setIncludeOptionsInArgs($command['add-options-to-arguments']);
-
   $names = annotationcommand_adapter_command_names($command);
 
   // n.b.: backend result is set by a post-alter hook.
