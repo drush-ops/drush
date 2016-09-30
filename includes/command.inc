@@ -161,7 +161,9 @@ function drush_dispatch($command, $arguments = array()) {
       _drush_prepare_command($command, $arguments);
     }
 
-    // Merge in the options added by hooks
+    // Merge in the options added by hooks.  We need this
+    // for validation, but this $command is just going to
+    // get thrown away, so we'll have to do this again later.
     annotationcommand_adapter_add_hook_options($command);
 
     // Add command-specific options, if applicable.
@@ -342,7 +344,9 @@ function _drush_invoke_hooks($command, $args) {
 
   $names = annotationcommand_adapter_command_names($command);
   $combinedArgsAndOptions = $args;
-  $combinedArgsAndOptions['options'] = drush_get_merged_options();
+  // Merge in the options added by hooks (again)
+  annotationcommand_adapter_add_hook_options($command);
+  $combinedArgsAndOptions['options'] = annotationcommand_adapter_get_options($command);
   $annotationData = $command['annotations'];
 
   $rollback = FALSE;

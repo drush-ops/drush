@@ -156,10 +156,20 @@ function annotationcommand_adapter_build_input($console_command, $userArgs) {
   return $input;
 }
 
+function annotationcommand_adapter_get_options($command) {
+  $default_options = isset($command['consolidation-option-defaults']) ? $command['consolidation-option-defaults'] : [];
+  $options = drush_redispatch_get_options() + $default_options;
+
+  $options += drush_get_merged_options();
+
+  return $options;
+}
+
 function annotationcommand_adapter_process_command() {
   $userArgs = func_get_args();
   $commandprocessor = annotationcommand_adapter_get_processor();
   $command = drush_get_command();
+  annotationcommand_adapter_add_hook_options($command);
   $args = [];
   foreach ($command['consolidation-arg-defaults'] as $key => $default) {
     $value = array_shift($userArgs);
@@ -168,10 +178,7 @@ function annotationcommand_adapter_process_command() {
     }
     $args[$key] = $value;
   }
-  $default_options = $command['consolidation-option-defaults'];
-  $options = drush_redispatch_get_options() + $default_options;
-
-  $options += drush_get_merged_options();
+  $options = annotationcommand_adapter_get_options($command);
 
   if ($command['add-options-to-arguments']) {
     $args['options'] = $options;
@@ -355,6 +362,10 @@ function annotationcommand_adapter_add_hook_options(&$command)
   $factory = annotationcommand_adapter_get_factory();
   $extraOptions = $factory->hookManager()->getHookOptions($names);
   foreach ($extraOptions as $commandinfo) {
+    if (!isset($command['consolidation-option-defaults'])) {
+      $command['consolidation-option-defaults'] = array();
+    }
+    $command['consolidation-option-defaults'] += $commandinfo->options()->getValues();
     foreach ($commandinfo->options()->getValues() as $option => $default) {
       $description = $commandinfo->options()->getDescription($option);
       $command['options'][$option] = ['description' => $description];

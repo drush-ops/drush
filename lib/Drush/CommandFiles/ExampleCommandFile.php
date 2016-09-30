@@ -28,7 +28,7 @@ class ExampleCommandFile
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function exampleTable($options = ['format' => 'table', 'fields' => ''])
+    public function exampleTable($options = ['format' => 'table', 'fields' => '', 'other' => 'interesting'])
     {
         $outputData = [
             'en' => [ 'first' => 'One',  'second' => 'Two',  'third' => 'Three' ],
