@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7c8ff550e69be005380ad22e03aae15f",
-    "content-hash": "4757820550d13367962900b56f0db53a",
+    "hash": "6438a4c09743cb2cf614b223a83c10f4",
+    "content-hash": "01ca732d8e43306efe4bcfc98597f420",
     "packages": [
         {
             "name": "consolidation/annotated-command",
-            "version": "dev-master",
+            "version": "2.0.0-rc7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/annotated-command.git",
-                "reference": "534a4a4fadf3d8a48ac95bae88d131b8d6712806"
+                "reference": "c0326c5a47c7cc17363c84cbaeef001be4564576"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/534a4a4fadf3d8a48ac95bae88d131b8d6712806",
-                "reference": "534a4a4fadf3d8a48ac95bae88d131b8d6712806",
+                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/c0326c5a47c7cc17363c84cbaeef001be4564576",
+                "reference": "c0326c5a47c7cc17363c84cbaeef001be4564576",
                 "shasum": ""
             },
             "require": {
@@ -57,7 +57,7 @@
                 }
             ],
             "description": "Initialize Symfony Console commands from annotated command class methods.",
-            "time": "2016-09-30 18:36:17"
+            "time": "2016-09-30 22:32:23"
         },
         {
             "name": "consolidation/log",
@@ -108,16 +108,16 @@
         },
         {
             "name": "consolidation/output-formatters",
-            "version": "2.0.0-rc2",
+            "version": "2.0.0-rc3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/output-formatters.git",
-                "reference": "e5cc7eaf4a82f03b2c1b7577abc4245665626236"
+                "reference": "8458e131521236e215114d4964f7595afe386d88"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/output-formatters/zipball/e5cc7eaf4a82f03b2c1b7577abc4245665626236",
-                "reference": "e5cc7eaf4a82f03b2c1b7577abc4245665626236",
+                "url": "https://api.github.com/repos/consolidation/output-formatters/zipball/8458e131521236e215114d4964f7595afe386d88",
+                "reference": "8458e131521236e215114d4964f7595afe386d88",
                 "shasum": ""
             },
             "require": {
@@ -152,26 +152,26 @@
                 }
             ],
             "description": "Format text by applying transformations provided by plug-in formatters.",
-            "time": "2016-09-28 05:47:28"
+            "time": "2016-09-30 22:38:56"
         },
         {
             "name": "consolidation/robo",
-            "version": "dev-hook-apis",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/Robo.git",
-                "reference": "38b11bab144a492d9ab26c5d23cc761bfd2d79b8"
+                "reference": "890a2994d5f0f51133f2301aa54518f062529ec6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/Robo/zipball/38b11bab144a492d9ab26c5d23cc761bfd2d79b8",
-                "reference": "38b11bab144a492d9ab26c5d23cc761bfd2d79b8",
+                "url": "https://api.github.com/repos/consolidation/Robo/zipball/890a2994d5f0f51133f2301aa54518f062529ec6",
+                "reference": "890a2994d5f0f51133f2301aa54518f062529ec6",
                 "shasum": ""
             },
             "require": {
-                "consolidation/annotated-command": "dev-master",
+                "consolidation/annotated-command": "^2.0.0-rc7",
                 "consolidation/log": "~1",
-                "consolidation/output-formatters": "^2.0.0-rc1",
+                "consolidation/output-formatters": "^2.0.0-rc3",
                 "league/container": "^2.2",
                 "php": ">=5.5.0",
                 "symfony/console": "~2.5|~3.0",
@@ -226,7 +226,7 @@
                 }
             ],
             "description": "Modern task runner",
-            "time": "2016-09-30 20:23:46"
+            "time": "2016-09-30 22:52:25"
         },
         {
             "name": "container-interop/container-interop",
@@ -2164,8 +2164,7 @@
     "aliases": [],
     "minimum-stability": "beta",
     "stability-flags": {
-        "consolidation/robo": 20,
-        "consolidation/annotated-command": 20
+        "consolidation/robo": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
