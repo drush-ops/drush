@@ -13,6 +13,9 @@ use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Symfony\Component\Console\Input\ArrayInput;
 use Consolidation\AnnotatedCommand\AnnotationData;
+use Consolidation\AnnotatedCommand\CommandData;
+use Drush\Command\DrushInputAdapter;
+use Drush\Command\DrushOutputAdapter;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -178,13 +181,17 @@ function annotationcommand_adapter_process_command() {
     }
     $args[$key] = $value;
   }
-  $options = annotationcommand_adapter_get_options($command);
 
-  if ($command['add-options-to-arguments']) {
-    $args['options'] = $options;
-  }
+  $input = new DrushInputAdapter($args, annotationcommand_adapter_get_options($command));
+  $output = new DrushOutputAdapter();
+  $annotationData = $command['annotations'];
+  $commandData = new CommandData(
+    $annotationData,
+    $input,
+    $output
+  );
+  $commandData->setIncludeOptionsInArgs($command['add-options-to-arguments']);
 
-  $output = new ConsoleOutput();
   $names = annotationcommand_adapter_command_names($command);
 
   // n.b.: backend result is set by a post-alter hook.
@@ -192,8 +199,7 @@ function annotationcommand_adapter_process_command() {
     $output,
     $names,
     $command['annotated-command-callback'],
-    $command['annotations'],
-    $args
+    $commandData
   );
 
   return $result;
@@ -206,13 +212,22 @@ function annotationcommand_adapter_get_commands($annotation_commandfiles) {
   //   '\\Drupal\\default_content\\CliTools\\DefaultContentCommands',
   foreach ($annotation_commandfiles as $commandfile_path => $commandfile_class) {
     if (file_exists($commandfile_path)) {
-      include_once $commandfile_path;
-      $commandhandler = new $commandfile_class;
+      $commandhandler = annotationcommand_adapter_create_commandfile_instance($commandfile_path, $commandfile_class);
       $commands_for_this_commandhandler = annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path);
       $commands = array_merge($commands, $commands_for_this_commandhandler);
     }
   }
   return $commands;
+}
+
+function annotationcommand_adapter_create_commandfile_instance($commandfile_path, $commandfile_class) {
+  $cache =& drush_get_context('DRUSH_ANNOTATION_COMMANDFILE_INSTANCES');
+  if (!isset($cache[$commandfile_path])) {
+    include_once $commandfile_path;
+    $commandhandler = new $commandfile_class;
+    $cache[$commandfile_path] = $commandhandler;
+  }
+  return $cache[$commandfile_path];
 }
 
 function annotationcommand_adapter_cache_module_console_commands($console_command, $commandfile_path = null) {
@@ -278,6 +293,10 @@ function annotationcommand_adapter_get_command_for_console_command($console_comm
 }
 
 function annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path, $includeAllPublicMethods = true) {
+  $cache =& drush_get_context('DRUSH_ANNOTATION_COMMANDS_FOR_COMMANDFILE');
+  if (isset($cache[$commandfile_path])) {
+    return $cache[$commandfile_path];
+  }
   $factory = annotationcommand_adapter_get_factory();
   $commands = [];
   $commandfile = basename($commandfile_path, '.php');
@@ -346,6 +365,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
     $command += drush_command_defaults($command_name, $commandfile, $commandfile_path);
     $commands[$command_name] = $command;
   }
+  $cache[$commandfile_path] = $commands;
   return $commands;
 }
 
@@ -395,27 +415,27 @@ function annotationcommand_adapter_command_names($command)
   return $names;
 }
 
-function annotationcommand_adapter_call_hook_pre_validate($names, $combinedArgsAndOptions, $annotationData)
+function annotationcommand_adapter_call_hook_pre_validate($names, CommandData $commandData)
 {
 
 }
 
-function annotationcommand_adapter_call_hook_validate($names, $combinedArgsAndOptions, $annotationData)
+function annotationcommand_adapter_call_hook_validate($names, CommandData $commandData)
 {
 
 }
 
-function annotationcommand_adapter_call_hook_pre_command($names, $combinedArgsAndOptions, $annotationData)
+function annotationcommand_adapter_call_hook_pre_command($names, CommandData $commandData)
 {
 
 }
 
-function annotationcommand_adapter_call_hook_command($names, $combinedArgsAndOptions, $annotationData)
+function annotationcommand_adapter_call_hook_command($names, CommandData $commandData)
 {
 
 }
 
-function annotationcommand_adapter_call_hook_post_command($names, $combinedArgsAndOptions, $annotationData, $return)
+function annotationcommand_adapter_call_hook_post_command($names, CommandData $commandData, $return)
 {
   $factory = annotationcommand_adapter_get_factory();
   $hookManager = $factory->hookManager();
@@ -425,7 +445,7 @@ function annotationcommand_adapter_call_hook_post_command($names, $combinedArgsA
   // The annotated command library will let the post-command hook alter the result.
   // We currently do not allow that here. (TODO later?)
   foreach ((array)$hooks as $hook) {
-    $hook($return, $combinedArgsAndOptions, $annotationData);
+    $hook($return, $commandData);
   }
 }
 

@@ -10,6 +10,8 @@ use Drush\Log\LogLevel;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 
+use Consolidation\AnnotatedCommand\CommandData;
+
 class ExampleCommandFile
 {
     /**
@@ -28,7 +30,7 @@ class ExampleCommandFile
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function exampleTable($options = ['format' => 'table', 'fields' => '', 'other' => 'interesting'])
+    public function exampleTable($options = ['format' => 'table', 'fields' => ''])
     {
         $outputData = [
             'en' => [ 'first' => 'One',  'second' => 'Two',  'third' => 'Three' ],
@@ -46,9 +48,9 @@ class ExampleCommandFile
      * @option $french Add a row with French numbers.
      * @usage example:formatters --french
      */
-    public function alterFormatters($result, array $args, AnnotationData $annotationData)
+    public function alterFormatters($result, CommandData $commandData)
     {
-        if ($args['options']['french']) {
+        if ($commandData->input()->getOption('french')) {
             $result['fr'] = [ 'first' => 'Un',  'second' => 'Deux',  'third' => 'Trois'  ];
         }
 

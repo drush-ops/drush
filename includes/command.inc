@@ -3,6 +3,9 @@
 use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 use Consolidation\AnnotatedCommand\AnnotationData;
+use Drush\Command\DrushInputAdapter;
+use Drush\Command\DrushOutputAdapter;
+use Consolidation\AnnotatedCommand\CommandData;
 
 /**
  * @defgroup dispatching Command dispatching functions.
@@ -343,11 +346,19 @@ function _drush_invoke_hooks($command, $args) {
   //   - Alter
 
   $names = annotationcommand_adapter_command_names($command);
-  $combinedArgsAndOptions = $args;
   // Merge in the options added by hooks (again)
   annotationcommand_adapter_add_hook_options($command);
-  $combinedArgsAndOptions['options'] = annotationcommand_adapter_get_options($command);
   $annotationData = $command['annotations'];
+
+  $input = new DrushInputAdapter($args, annotationcommand_adapter_get_options($command));
+  $output = new DrushOutputAdapter();
+  $commandData = new CommandData(
+    $annotationData,
+    $input,
+    $output,
+    false,
+    false
+  );
 
   $rollback = FALSE;
   $completed = array();
@@ -365,7 +376,7 @@ function _drush_invoke_hooks($command, $args) {
   foreach ($variations as $hook_phase => $var_hook) {
 
     $adapterHookFunction = 'annotationcommand_adapter_call_hook_' . $hook_phase;
-    $adapterHookFunction($names, $combinedArgsAndOptions, $annotationData, $return);
+    $adapterHookFunction($names, $commandData, $return);
 
     // Get the list of command files.
     // We re-fetch the list every time through
@@ -1249,7 +1260,7 @@ function drush_command_defaults($key, $commandfile, $path) {
     'add-options-to-arguments' => FALSE,
     'consolidation-output-formatters' => FALSE,
     'annotated-command-callback' => '',
-    'annotations' => new AnnotationData(),
+    'annotations' => new AnnotationData(['command' => $key]),
   );
   // We end up here, setting the defaults for a command, when
   // called from drush_get_global_options().  Early in the Drush
