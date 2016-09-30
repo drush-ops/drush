@@ -1,0 +1,53 @@
+{
+    "name": "Enter project name here",
+    "description": "Enter project description here",
+    "type": "project",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packagist.drupal-composer.org"
+        }
+    ],
+    "require": {
+        "composer/installers": "^1.0.20",
+        "cweagans/composer-patches": "~1.0",
+        "drupal/drupal": "7.*",
+        "drupal/wysiwyg": "7.2.1",
+        "drupal/features": "7.1.0-beta4",
+        "drupal/context": "7.3.0-beta2"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "installer-paths": {
+            "core": [
+                "type:drupal-core"
+            ],
+            "docroot/modules/contrib/{$name}": [
+                "type:drupal-module"
+            ],
+            "docroot/profiles/contrib/{$name}": [
+                "type:drupal-profile"
+            ],
+            "docroot/themes/contrib/{$name}": [
+                "type:drupal-theme"
+            ],
+            "drush/contrib/{$name}": [
+                "type:drupal-drush"
+            ]
+        },
+        "patches": {
+            "drupal/wysiwyg": {
+                "Enter drupal/wysiwyg patch #0 description here": "http://drupal.org/files/0001-feature.inc-from-624018-211.patch",
+                "Enter drupal/wysiwyg patch #1 description here": "patches-local-test-wysiwyg.patch"
+            },
+            "drupal/features": {
+                "Enter drupal/features patch #0 description here": "http://drupal.org/files/issues/features-drush-backend-invoke-25.patch"
+            },
+            "drupal/context": {
+                "Enter drupal/context patch #0 description here": "http://drupal.org/files/issues/custom_blocks_arent_editable-make.patch",
+                "Enter drupal/context patch #1 description here": "http://drupal.org/files/issues/661094-context-permissions.patch"
+            }
+        }
+    }
+}
