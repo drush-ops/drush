@@ -414,38 +414,130 @@ function annotationcommand_adapter_command_names($command)
   return $names;
 }
 
-function annotationcommand_adapter_call_hook_pre_validate($names, CommandData $commandData)
-{
-
-}
-
-function annotationcommand_adapter_call_hook_validate($names, CommandData $commandData)
-{
-
-}
-
-function annotationcommand_adapter_call_hook_pre_command($names, CommandData $commandData)
-{
-
-}
-
-function annotationcommand_adapter_call_hook_command($names, CommandData $commandData)
-{
-
-}
-
-function annotationcommand_adapter_call_hook_post_command($names, CommandData $commandData, $return)
+function annotationcommand_adapter_call_initialize($names, CommandData $commandData)
 {
   $factory = annotationcommand_adapter_get_factory();
   $hookManager = $factory->hookManager();
 
-  $hooks = $hookManager->getHooks($names, [HookManager::POST_COMMAND_HOOK], $annotationData);
+  $hooks = $hookManager->getHooks(
+    $names,
+    [
+      HookManager::PRE_INITIALIZE,
+      HookManager::INITIALIZE,
+      HookManager::POST_INITIALIZE,
+    ],
+    $commandData->annotationData()
+  );
 
-  // The annotated command library will let the post-command hook alter the result.
-  // We currently do not allow that here. (TODO later?)
   foreach ((array)$hooks as $hook) {
-    $hook($return, $commandData);
+    $hook($commandData->input(), $commandData->annotationData());
   }
+}
+
+function annotationcommand_adapter_call_hook_pre_validate($names, CommandData $commandData)
+{
+  return annotationcommand_adapter_call_validate_interface(
+    $names,
+    [
+      HookManager::PRE_ARGUMENT_VALIDATOR,
+    ],
+    $commandData
+  );
+}
+
+function annotationcommand_adapter_call_hook_validate($names, CommandData $commandData)
+{
+  return annotationcommand_adapter_call_validate_interface(
+    $names,
+    [
+      HookManager::ARGUMENT_VALIDATOR,
+    ],
+    $commandData
+  );
+}
+
+function annotationcommand_adapter_call_hook_pre_command($names, CommandData $commandData)
+{
+  return annotationcommand_adapter_call_validate_interface(
+    $names,
+    [
+      HookManager::PRE_COMMAND_HOOK,
+    ],
+    $commandData
+  );
+}
+
+function annotationcommand_adapter_call_hook_command($names, CommandData $commandData)
+{
+  return annotationcommand_adapter_call_validate_interface(
+    $names,
+    [
+      HookManager::COMMAND_HOOK,
+    ],
+    $commandData
+  );
+}
+
+function annotationcommand_adapter_call_hook_post_command($names, CommandData $commandData, $return)
+{
+  return annotationcommand_adapter_call_process_interface(
+    $names,
+    [
+      HookManager::POST_COMMAND_HOOK,
+    ],
+    $commandData,
+    $return
+  );
+}
+
+function annotationcommand_adapter_call_hook_process_and_alter($names, $commandData, $return)
+{
+  return annotationcommand_adapter_call_process_interface(
+    $names,
+    [
+      HookManager::PRE_PROCESS_RESULT,
+      HookManager::PROCESS_RESULT,
+      HookManager::POST_PROCESS_RESULT,
+      HookManager::PRE_ALTER_RESULT,
+      HookManager::ALTER_RESULT,
+      HookManager::POST_ALTER_RESULT,
+    ],
+    $commandData,
+    $return
+  );
+}
+
+function annotationcommand_adapter_call_process_interface($names, $hooks, CommandData $commandData, $return)
+{
+  $factory = annotationcommand_adapter_get_factory();
+  $hookManager = $factory->hookManager();
+
+  $hooks = $hookManager->getHooks($names, $hooks, $commandData->annotationData());
+
+  foreach ((array)$hooks as $hook) {
+    $result = $hook($return, $commandData);
+    if (isset($result)) {
+      $return = $result;
+    }
+  }
+  return $return;
+}
+
+function annotationcommand_adapter_call_validate_interface($names, $hooks, CommandData $commandData)
+{
+  $factory = annotationcommand_adapter_get_factory();
+  $hookManager = $factory->hookManager();
+
+  $hooks = $hookManager->getHooks($names, $hooks, $annotationData);
+
+  foreach ((array)$hooks as $hook) {
+    $validated = $hook($commandData);
+    // TODO: if $validated is a CommandError, maybe the best thing to do is 'return drush_set_error()'?
+    if (is_object($validated) || ($validated === false)) {
+      return $validated;
+    }
+  }
+  return true;
 }
 
 function annotationcommand_adapter_alter_option_description_format($option_help, $commandinfo, $default) {

@@ -334,16 +334,16 @@ function _drush_invoke_hooks($command, $args) {
   // We will adapt and call as many of the annotated command hooks as we can.
   // The following command hooks are not supported in Drush 8.x:
   //   - Command Event: not called (requires CommandEvent object)
-  //   - Option: called elsewhere
-  //   - Initialize: not called (requires Input and Output objects)
-  //   - Interact: not called (requires Input and Output objects)
-  //   - Status: not called
-  //   - Extract not called
+  //   - Option: Equivalent functionality supported in annotationcommand_adapter.inc
+  //   - Interact: not called (We don't use SymfonyStyle in 8.x at the moment)
+  //   - Status: not called - probably not needed?
+  //   - Extract not called - probably not needed?
   // The hooks that are called include:
-  //   - Validate (attempts to change args and options ignored)
-  //   - Command
-  //   - Process
-  //   - Alter
+  //   - Pre-initialize, initialize and post-initialize
+  //   - Pre-validate and validate
+  //   - Pre-command, command and post-command
+  //   - Pre-process, process and post-process
+  //   - Pre-alter, alter and post-alter
 
   $names = annotationcommand_adapter_command_names($command);
   // Merge in the options added by hooks (again)
@@ -359,6 +359,8 @@ function _drush_invoke_hooks($command, $args) {
     false,
     false
   );
+
+  annotationcommand_adapter_call_initialize($names, $commandData);
 
   $rollback = FALSE;
   $completed = array();
@@ -447,6 +449,7 @@ function _drush_invoke_hooks($command, $args) {
     if ($var_hook == $hook) {
       $return = $accumulated_result;
       if (isset($return)) {
+        annotationcommand_adapter_call_hook_process_and_alter($names, $commandData, $return);
         drush_handle_command_output($command, $return);
       }
     }
