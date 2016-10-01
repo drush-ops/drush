@@ -10,7 +10,7 @@ class DrupliconCommands {
    * Print druplicon as post-command output.
    *
    * @hook post-command *
-   * @option $druplicon Shows the druplicon as glorious ASCII art.
+   * @option druplicon Shows the druplicon as glorious ASCII art.
    */
   public function druplicon($result, CommandData $commandData) {
     // If one command does a drush_invoke to another command,
