@@ -45,7 +45,7 @@ class ExampleCommandFile
      * Demonstrate an alter hook with an option
      *
      * @hook alter example:table
-     * @option $french Add a row with French numbers.
+     * @option french Add a row with French numbers.
      * @usage example:formatters --french
      */
     public function alterFormatters($result, CommandData $commandData)
