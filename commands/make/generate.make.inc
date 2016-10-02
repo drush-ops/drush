@@ -160,7 +160,7 @@ function _drush_make_generate_add_patch_files(&$project, $location) {
   if (is_file($patchfile)) {
     foreach (file($patchfile) as $line) {
       if (substr($line, 0, 2) == '- ') {
-        $project['patches'][] = trim(substr($line, 2));
+        $project['patch'][] = trim(substr($line, 2));
       }
     }
   }
