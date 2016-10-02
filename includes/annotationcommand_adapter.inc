@@ -19,10 +19,11 @@ use Drush\Command\DrushOutputAdapter;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
 
-// We could use a DI container just to fix these
-// static factory functions. (Presently, the master branch
-// uses a DI container, but the 8.x branch does not.)
-
+/**
+ * Cache the command file discovery object. Drush 9 uses dependency injection.
+ *
+ * @return CommandFileDiscovery
+ */
 function annotationcommand_adapter_get_discovery() {
   static $discovery;
   if (!isset($discovery)) {
@@ -31,36 +32,53 @@ function annotationcommand_adapter_get_discovery() {
   return $discovery;
 }
 
+/**
+ * Initialize and cache the command factory. Drush 9 uses dependency injection.
+ *
+ * @return AnnotatedCommandFactory
+ */
 function annotationcommand_adapter_get_factory() {
   static $factory;
   if (!isset($factory)) {
     $factory = new AnnotatedCommandFactory();
     $factory->commandProcessor()->hookManager()->add('annotatedcomand_adapter_backend_result', HookManager::EXTRACT_OUTPUT);
-    $factory->commandProcessor()->setFormatterManager(annotatedcomand_adapter_get_formatter());
+    $formatter = new FormatterManager();
+    $formatter->addDefaultFormatters();
+    $formatter->addDefaultSimplifiers();
+    $factory->commandProcessor()->setFormatterManager($formatter);
   }
   return $factory;
 }
 
-function annotatedcomand_adapter_get_formatter() {
-  static $formatter;
-  if (!isset($formatter)) {
-    $formatter = new FormatterManager();
-    $formatter->addDefaultFormatters();
-    $formatter->addDefaultSimplifiers();
-  }
-  return $formatter;
+/**
+ * Fetch the command processor from the factory.
+ *
+ * @return AnnotatedCommandFactory
+ */
+function annotationcommand_adapter_get_processor() {
+  $factory = annotationcommand_adapter_get_factory();
+  return $factory->commandProcessor();
 }
 
+/**
+ * Fetch the formatter manager from the command processor
+ *
+ * @return FormatterManager
+ */
+function annotatedcomand_adapter_get_formatter() {
+  $commandProcessor = annotationcommand_adapter_get_processor();
+  return $commandProcessor->formatterManager();
+}
+
+/**
+ * Callback function called by HookManager::EXTRACT_OUTPUT to set
+ * the backend result.
+ */
 function annotatedcomand_adapter_backend_result($structured_data) {
   $return = drush_backend_get_result();
   if (empty($return)) {
     drush_backend_set_result($structured_data);
   }
-}
-
-function annotationcommand_adapter_get_processor() {
-  $factory = annotationcommand_adapter_get_factory();
-  return $factory->commandProcessor();
 }
 
 /**
@@ -122,6 +140,14 @@ function annotationcommand_adapter_discover($searchpath, $phase = false, $phase_
   );
 }
 
+/**
+ * This function is set as the $command['callback'] for Symfony Console commands
+ * e.g. those provided by Drupal 8 modules.  Note that Drush 9 calls these with
+ * Symfony's Application::run() method, but Drush 8 continues to use the
+ * legacy Drush command dispatcher for all commands.
+ *
+ * @return bolean false if command failed (expect drush_set_error was called in this case)
+ */
 function annotationcommand_adapter_run_console_command() {
   $args = func_get_args();
   $command = drush_get_command();
@@ -135,6 +161,9 @@ function annotationcommand_adapter_run_console_command() {
   return $result;
 }
 
+/**
+ * TODO: This could probably just be a DrushInputAdapter now.
+ */
 function annotationcommand_adapter_build_input($console_command, $userArgs) {
   $args = [];
   $defaultOptions = [];
@@ -159,6 +188,12 @@ function annotationcommand_adapter_build_input($console_command, $userArgs) {
   return $input;
 }
 
+/**
+ * Collect all of the options defined in every relevant context, and
+ * merge them together to form the options array.
+ *
+ * @return array
+ */
 function annotationcommand_adapter_get_options($command) {
   $default_options = isset($command['consolidation-option-defaults']) ? $command['consolidation-option-defaults'] : [];
   $options = drush_redispatch_get_options() + $default_options;
@@ -168,6 +203,14 @@ function annotationcommand_adapter_get_options($command) {
   return $options;
 }
 
+/**
+ * This function is set as the $command['callback'] for commands that have
+ * been converted to annotated commands.  Note that Drush 9 calls these with
+ * Symfony's Application::run() method, but Drush 8 continues to use the
+ * legacy Drush command dispatcher for all commands.
+ *
+ * @return bolean false if command failed (expect drush_set_error was called in this case)
+ */
 function annotationcommand_adapter_process_command() {
   $userArgs = func_get_args();
   $commandprocessor = annotationcommand_adapter_get_processor();
@@ -204,6 +247,14 @@ function annotationcommand_adapter_process_command() {
   return $result;
 }
 
+/**
+ * Internal function called by annotationcommand_adapter_commands, which
+ * is called by drush_get_commands().
+ *
+ * @param array $annotation_commandfiles path => class mapping
+ *
+ * @return object[]
+ */
 function annotationcommand_adapter_get_commands($annotation_commandfiles) {
   $commands = [];
   // This will give us a list containing something akin to:
@@ -219,6 +270,14 @@ function annotationcommand_adapter_get_commands($annotation_commandfiles) {
   return $commands;
 }
 
+/**
+ * Create and cache a commandfile instance.
+ *
+ * @param string $commandfile_path Path to the commandfile implementation
+ * @param string $commandfile_class Namespace and class of the commandfile object
+ *
+ * @return object
+ */
 function annotationcommand_adapter_create_commandfile_instance($commandfile_path, $commandfile_class) {
   $cache =& drush_get_context('DRUSH_ANNOTATION_COMMANDFILE_INSTANCES');
   if (!isset($cache[$commandfile_path])) {
@@ -229,6 +288,9 @@ function annotationcommand_adapter_create_commandfile_instance($commandfile_path
   return $cache[$commandfile_path];
 }
 
+/**
+ * TODO: document
+ */
 function annotationcommand_adapter_cache_module_console_commands($console_command, $commandfile_path = null) {
   if (!isset($commandfile_path)) {
     $class = new \ReflectionClass($console_command);
@@ -239,6 +301,9 @@ function annotationcommand_adapter_cache_module_console_commands($console_comman
   drush_set_context('DRUSH_MODULE_SERVICE_COMMANDS', array_merge($commands, $module_service_commands));
 }
 
+/**
+ * TODO: document
+ */
 function annotationcommand_adapter_cache_module_service_commands($commandhandler, $commandfile_path = null) {
   if (!isset($commandfile_path)) {
     $class = new \ReflectionClass($commandhandler);
@@ -249,6 +314,14 @@ function annotationcommand_adapter_cache_module_service_commands($commandhandler
   drush_set_context('DRUSH_MODULE_SERVICE_COMMANDS', array_merge($commands, $module_service_commands));
 }
 
+/**
+ * Convert a Symfony Console command into a Drush $command record
+ *
+ * @param Symfony\Component\Console\Command\Command $console_command The Symfony Console command to convert
+ * @param string $commandfile_path Path to console command file
+ *
+ * @return array Drush $command record
+ */
 function annotationcommand_adapter_get_command_for_console_command($console_command, $commandfile_path) {
   $commands = [];
   $commandfile = basename($commandfile_path, '.php');
@@ -291,6 +364,15 @@ function annotationcommand_adapter_get_command_for_console_command($console_comm
   return $commands;
 }
 
+/**
+ * Convert an annotated command command handler object into a Drush $command record.
+ *
+ * @param object $commandhandler Command handler object
+ * @param string $commandfile_path
+ * @param boolean $includeAllPublicMethods TODO remove this, make it 'false' always
+ *
+ * @return array Drush $command record
+ */
 function annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path, $includeAllPublicMethods = true) {
   $cache =& drush_get_context('DRUSH_ANNOTATION_COMMANDS_FOR_COMMANDFILE');
   if (isset($cache[$commandfile_path])) {
@@ -368,6 +450,12 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
   return $commands;
 }
 
+/**
+ * Modify a $command record, adding option definitions defined by any
+ * command hook.
+ *
+ * @param array $command Drush command record to modify
+ */
 function annotationcommand_adapter_add_hook_options(&$command)
 {
   // Get options added by hooks.  We postpone doing this until the
@@ -399,6 +487,13 @@ function annotationcommand_adapter_add_hook_options(&$command)
   }
 }
 
+/**
+ * Build all of the name variants for a Drush $command record
+ *
+ * @param array $command Drush command record
+ *
+ * @return string[]
+ */
 function annotationcommand_adapter_command_names($command)
 {
   $names = array_merge(
@@ -414,6 +509,15 @@ function annotationcommand_adapter_command_names($command)
   return $names;
 }
 
+/**
+ * Convert from an old-style Drush initialize hook into annotated-command hooks.
+ * @see _drush_invoke_hooks().
+ *
+ * @param string[] $names All of the applicable names for the command being hooked
+ * @param CommandData $commandData All of the parameter data associated with the
+ *   current command invokation, including the InputInterface, OutputInterface
+ *   and AnnotationData
+ */
 function annotationcommand_adapter_call_initialize($names, CommandData $commandData)
 {
   $factory = annotationcommand_adapter_get_factory();
@@ -434,6 +538,17 @@ function annotationcommand_adapter_call_initialize($names, CommandData $commandD
   }
 }
 
+/**
+ * Convert from an old-style Drush pre-validate hook into annotated-command hooks.
+ * @see _drush_invoke_hooks().
+ *
+ * @param string[] $names All of the applicable names for the command being hooked
+ * @param CommandData $commandData All of the parameter data associated with the
+ *   current command invokation, including the InputInterface, OutputInterface
+ *   and AnnotationData
+ *
+ * @return boolean|object
+ */
 function annotationcommand_adapter_call_hook_pre_validate($names, CommandData $commandData)
 {
   return annotationcommand_adapter_call_validate_interface(
@@ -445,6 +560,17 @@ function annotationcommand_adapter_call_hook_pre_validate($names, CommandData $c
   );
 }
 
+/**
+ * Convert from an old-style Drush validate hook into annotated-command hooks.
+ * @see _drush_invoke_hooks().
+ *
+ * @param string[] $names All of the applicable names for the command being hooked
+ * @param CommandData $commandData All of the parameter data associated with the
+ *   current command invokation, including the InputInterface, OutputInterface
+ *   and AnnotationData
+ *
+ * @return boolean|object
+ */
 function annotationcommand_adapter_call_hook_validate($names, CommandData $commandData)
 {
   return annotationcommand_adapter_call_validate_interface(
@@ -456,6 +582,17 @@ function annotationcommand_adapter_call_hook_validate($names, CommandData $comma
   );
 }
 
+/**
+ * Convert from an old-style Drush pre-command hook into annotated-command hooks.
+ * @see _drush_invoke_hooks().
+ *
+ * @param string[] $names All of the applicable names for the command being hooked
+ * @param CommandData $commandData All of the parameter data associated with the
+ *   current command invokation, including the InputInterface, OutputInterface
+ *   and AnnotationData
+ *
+ * @return boolean|object
+ */
 function annotationcommand_adapter_call_hook_pre_command($names, CommandData $commandData)
 {
   return annotationcommand_adapter_call_validate_interface(
@@ -467,6 +604,17 @@ function annotationcommand_adapter_call_hook_pre_command($names, CommandData $co
   );
 }
 
+/**
+ * Convert from an old-style Drush 'command' hook into annotated-command hooks.
+ * @see _drush_invoke_hooks().
+ *
+ * @param string[] $names All of the applicable names for the command being hooked
+ * @param CommandData $commandData All of the parameter data associated with the
+ *   current command invokation, including the InputInterface, OutputInterface
+ *   and AnnotationData
+ *
+ * @return boolean|object
+ */
 function annotationcommand_adapter_call_hook_command($names, CommandData $commandData)
 {
   return annotationcommand_adapter_call_validate_interface(
@@ -478,6 +626,18 @@ function annotationcommand_adapter_call_hook_command($names, CommandData $comman
   );
 }
 
+/**
+ * Convert from an old-style Drush post-command hook into annotated-command hooks.
+ * @see _drush_invoke_hooks().
+ *
+ * @param string[] $names All of the applicable names for the command being hooked
+ * @param CommandData $commandData All of the parameter data associated with the
+ *   current command invokation, including the InputInterface, OutputInterface
+ *   and AnnotationData
+ * @param mixed $return The return value of the command being executed
+ *
+ * @return mixed The altered command return value
+ */
 function annotationcommand_adapter_call_hook_post_command($names, CommandData $commandData, $return)
 {
   return annotationcommand_adapter_call_process_interface(
@@ -490,6 +650,19 @@ function annotationcommand_adapter_call_hook_post_command($names, CommandData $c
   );
 }
 
+/**
+ * After the primary Drush command hook is called, call all of the annotated-command
+ * process and alter hooks.
+ * @see _drush_invoke_hooks().
+ *
+ * @param string[] $names All of the applicable names for the command being hooked
+ * @param CommandData $commandData All of the parameter data associated with the
+ *   current command invokation, including the InputInterface, OutputInterface
+ *   and AnnotationData
+ * @param mixed $return The return value of the command being executed
+ *
+ * @return mixed The altered command return value
+ */
 function annotationcommand_adapter_call_hook_process_and_alter($names, $commandData, $return)
 {
   return annotationcommand_adapter_call_process_interface(
@@ -507,6 +680,19 @@ function annotationcommand_adapter_call_hook_process_and_alter($names, $commandD
   );
 }
 
+/**
+ * Given a list of hooks that conform to the interface ProcessResultInterface,
+ * call them and return the result.
+ *
+ * @param string[] $names All of the applicable names for the command being hooked
+ * @param string[] $hooks All of the HookManager hooks that should be called
+ * @param CommandData $commandData All of the parameter data associated with the
+ *   current command invokation, including the InputInterface, OutputInterface
+ *   and AnnotationData
+ * @param mixed $return The return value of the command being executed
+ *
+ * @return mixed The altered command return value
+ */
 function annotationcommand_adapter_call_process_interface($names, $hooks, CommandData $commandData, $return)
 {
   $factory = annotationcommand_adapter_get_factory();
@@ -523,6 +709,18 @@ function annotationcommand_adapter_call_process_interface($names, $hooks, Comman
   return $return;
 }
 
+/**
+ * Given a list of hooks that conform to the interface ValidatorInterface,
+ * call them and return the result.
+ *
+ * @param string[] $names All of the applicable names for the command being hooked
+ * @param string[] $hooks All of the HookManager hooks that should be called
+ * @param CommandData $commandData All of the parameter data associated with the
+ *   current command invokation, including the InputInterface, OutputInterface
+ *   and AnnotationData
+ *
+ * @return boolean|object
+ */
 function annotationcommand_adapter_call_validate_interface($names, $hooks, CommandData $commandData)
 {
   $factory = annotationcommand_adapter_get_factory();
@@ -540,6 +738,9 @@ function annotationcommand_adapter_call_validate_interface($names, $hooks, Comma
   return true;
 }
 
+/**
+ * TODO: Document
+ */
 function annotationcommand_adapter_alter_option_description_format($option_help, $commandinfo, $default) {
   $formatterManager = annotatedcomand_adapter_get_formatter();
   $return_type = $commandinfo->getReturnType();
@@ -553,6 +754,9 @@ function annotationcommand_adapter_alter_option_description_format($option_help,
   return $option_help;
 }
 
+/**
+ * TODO: Document
+ */
 function annotationcommand_adapter_alter_option_description_fields($option_help, $commandinfo, $default) {
   $formatOptions = new FormatterOptions($commandinfo->getAnnotations()->getArrayCopy());
   $field_labels = $formatOptions->get(FormatterOptions::FIELD_LABELS);
