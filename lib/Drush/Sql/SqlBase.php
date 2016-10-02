@@ -16,7 +16,7 @@ class SqlBase {
   public $query_file = '<';
 
   /**
-   * Typically, SqlBase objects are contructed via drush_sql_get_class().
+   * Typically, SqlBase objects are constructed via drush_sql_get_class().
    */
   public function __construct($db_spec = NULL) {
     $this->db_spec = $db_spec;

@@ -144,7 +144,7 @@ function drush_sqlsync_sql_sync_validate($source, $destination) {
     }
     return drush_set_error('DRUSH_DATABASE_NOT_FOUND', dt('Error: no database record could be found for target !destination', array('!destination' => $destination)));
   }
-  if drush_sitealias_convert_db_spec_to_db_url($source_db_spec) == drush_sitealias_convert_db_spec_to_db_url($target_db_spec) && !drush_get_context('DRUSH_SIMULATE')) {
+  if (drush_sitealias_convert_db_spec_to_db_url($source_db_spec) == drush_sitealias_convert_db_spec_to_db_url($target_db_spec) && !drush_get_context('DRUSH_SIMULATE')) {
     return drush_set_error('DRUSH_SAME_DATABASE', dt('Source and target databases are the same; please sync to a different target.'));
   }
 
