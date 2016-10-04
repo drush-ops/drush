@@ -1,13 +1,14 @@
 <?php
 namespace Drush\CommandFiles\core;
 
-use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Consolidation\OutputFormatters\StructuredData\AssociativeList;
 
 class ShellAliasCommands {
 
   /**
    * Print all known shell alias records.
    *
+   * @command shell-alias
    * @param string|null $alias 'Shell alias to print',
    * * @field-labels
    *   first: Name
@@ -21,15 +22,15 @@ class ShellAliasCommands {
    * @aliases sha
    * @todo not used in 9.x @complete \Drush\CommandFiles\core\ShellAliasCommands::complete
    *
-   * @return Consolidation\OutputFormatters\StructuredData\RowsOfFields
+   * @return Consolidation\OutputFormatters\StructuredData\AssociativeList
    */
   public function shellalias($alias = FALSE, $options = ['format' => 'table']) {
     $shell_aliases = drush_get_context('shell-aliases', array());
     if (!$alias) {
-      return new RowsOfFields($shell_aliases);
+      return new AssociativeList($shell_aliases);
     }
     elseif (isset($shell_aliases[$alias])) {
-      return new RowsOfFields(array($alias => $shell_aliases[$alias]));
+      return new AssociativeList(array($alias => $shell_aliases[$alias]));
     }
   }
 
