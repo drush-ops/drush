@@ -130,6 +130,11 @@ drush_invoke("version", $arg);
       'ignore' => 'cron,http requests,update,update_core,trusted_host_patterns', // no network access when running in tests, so ignore these
       'strict' => 0, // invoke from script: do not verify options
     );
+    // Drupal 6 has reached EOL, so we will always get errors for 'update_contrib';
+    // therefore, we ignore it for this release.
+    if (UNISH_DRUPAL_MAJOR_VERSION < 7) {
+      $options['ignore'] .= ',update_contrib';
+    }
     // Verify that there are no severity 2 items in the status report
     $this->drush('core-requirements', array(), $options + array('severity' => '2'));
     $output = $this->getOutput();

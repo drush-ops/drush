@@ -183,6 +183,19 @@ class ReleaseInfo {
     }
     $releases = $project_release_info->filterReleases($filter, $version);
 
+    // Special checking: Drupal 6 is EOL, so there are no stable
+    // releases for ANY contrib project. In this case, we'll default
+    // to the best release, unless the user specified --select.
+    $version_major = drush_drupal_major_version();
+    if (($select != 'always') && ($version_major < 7)) {
+      $bestRelease = Project::getBestRelease($releases);
+      if (!empty($bestRelease)) {
+        $message = dt('Drupal !major has reached EOL, so there are no stable releases for any contrib projects. Selected the best release, !project.', array('!major' => $version_major, '!project' => $bestRelease['name']));
+        drush_log($message, LogLevel::WARNING);
+        return $bestRelease;
+      }
+    }
+
     $options = array();
     foreach($releases as $release) {
       $options[$release['version']] = array($release['version'], '-', gmdate('Y-M-d', $release['date']), '-', implode(', ', $release['release_status']));
