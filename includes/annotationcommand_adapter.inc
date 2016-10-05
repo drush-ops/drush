@@ -396,7 +396,8 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       $aliases[] = $standard_alias;
     }
     $handle_remote_commands = $commandinfo->getAnnotation('handle-remote-commands') == 'true';
-    // TODO: if there is no 'bootstrap' annotation, maybe we should default to NONE instead of FULL?
+    // If there is no 'bootstrap' annotation, default to NONE.
+    $bootstrap = DRUSH_BOOTSTRAP_NONE;
     if ($bootstrap = $commandinfo->getAnnotation('bootstrap')) {
       $bootstrap = constant($bootstrap);
     }
