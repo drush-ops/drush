@@ -5,13 +5,13 @@
  * Preflight, postflight and shutdown code.
  */
 
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Log\LogLevel;
-
-use Robo\Robo;
-use Robo\Contract\BuilderAwareInterface;
 use League\Container\Container;
-use Symfony\Component\Console\Input\InputOption;
+use Robo\Contract\BuilderAwareInterface;
+use Robo\Robo;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -269,7 +269,7 @@ function drush_init_dependency_injection_container($input = null, $output = null
     ->withMethodCall('setLogOutputStyler', ['logStyler']);
 
   // Override Robo's formatter manager with our own
-  // Placeholder: not sure that we'll use this.
+  // @todo not sure that we'll use this. Maybe remove it.
   $container->share('formatterManager', \Drush\Formatters\DrushFormatterManager::class)
       ->withMethodCall('addDefaultFormatters', [])
       ->withMethodCall('addDefaultSimplifiers', []);
@@ -299,6 +299,11 @@ function drush_init_dependency_injection_container($input = null, $output = null
   // Add our own callback to the hook manager
   $hookManager = $container->get('hookManager');
   $hookManager->addOutputExtractor(new Drush\Backend\BackendResultSetter());
+  // @todo: do we need both backend result setters? The one below should be removed at some point.
+  $hookManager->add('annotatedcomand_adapter_backend_result', HookManager::EXTRACT_OUTPUT);
+
+  $factory = $container->get('commandFactory');
+  $factory->setIncludeAllPublicMethods(false);
 
   // It is necessary to set the dispatcher when using configureContainer
   $eventDispatcher = $container->get('eventDispatcher');

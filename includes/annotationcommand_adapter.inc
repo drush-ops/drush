@@ -20,7 +20,8 @@ use Drush\Command\DrushOutputAdapter;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
- * Cache the command file discovery object. TODO: use dependency injection.
+ * Cache the command file discovery object.
+ * @todo There probably isn't any need to cache this object.
  *
  * @return CommandFileDiscovery
  */
@@ -33,30 +34,12 @@ function annotationcommand_adapter_get_discovery() {
 }
 
 /**
- * Initialize and cache the command factory. TODO: use dependency injection.
- *
- * @return AnnotatedCommandFactory
- */
-function annotationcommand_adapter_get_factory() {
-  static $factory;
-  if (!isset($factory)) {
-    $factory = new AnnotatedCommandFactory();
-    $factory->commandProcessor()->hookManager()->add('annotatedcomand_adapter_backend_result', HookManager::EXTRACT_OUTPUT);
-    $formatter = new FormatterManager();
-    $formatter->addDefaultFormatters();
-    $formatter->addDefaultSimplifiers();
-    $factory->commandProcessor()->setFormatterManager($formatter);
-  }
-  return $factory;
-}
-
-/**
  * Fetch the command processor from the factory.
  *
  * @return AnnotatedCommandFactory
  */
 function annotationcommand_adapter_get_processor() {
-  $factory = annotationcommand_adapter_get_factory();
+  $factory = \Drush::commandFactory();
   return $factory->commandProcessor();
 }
 
@@ -312,7 +295,7 @@ function annotationcommand_adapter_cache_module_service_commands($commandhandler
     $commandfile_path = $class->getFileName();
   }
   $module_service_commands = drush_get_context('DRUSH_MODULE_SERVICE_COMMANDS');
-  $commands = annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path, false);
+  $commands = annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path);
   drush_set_context('DRUSH_MODULE_SERVICE_COMMANDS', array_merge($commands, $module_service_commands));
 }
 
@@ -327,7 +310,7 @@ function annotationcommand_adapter_cache_module_service_commands($commandhandler
 function annotationcommand_adapter_get_command_for_console_command($console_command, $commandfile_path) {
   $commands = [];
   $commandfile = basename($commandfile_path, '.php');
-  $factory = annotationcommand_adapter_get_factory();
+  $factory = \Drush::commandFactory();
   $inputDefinition = $console_command->getDefinition();
   $inputArguments = $inputDefinition->getArguments();
   $inputOptions = $inputDefinition->getOptions();
@@ -375,20 +358,24 @@ function annotationcommand_adapter_get_command_for_console_command($console_comm
  *
  * @return array Drush $command record
  */
-function annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path, $includeAllPublicMethods = true) {
+function annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path) {
   $cache =& drush_get_context('DRUSH_ANNOTATION_COMMANDS_FOR_COMMANDFILE');
   if (isset($cache[$commandfile_path])) {
     return $cache[$commandfile_path];
   }
-  $factory = annotationcommand_adapter_get_factory();
+  $factory = \Drush::commandFactory();
   $commands = [];
   $commandfile = basename($commandfile_path, '.php');
 
   $commandinfo_list = $factory->getCommandInfoListFromClass($commandhandler);
 
   foreach ($commandinfo_list as $commandinfo) {
-    // Register all of the hooks
     $factory->registerCommandHook($commandinfo, $commandhandler);
+    // Skip anything that is not a command
+    if (!AnnotatedCommandFactory::isCommandMethod($commandinfo, false)) {
+      continue;
+    }
+
     $aliases = $commandinfo->getAliases();
     $command_name = strtolower($commandinfo->getName());
     $standard_alias = str_replace(':', '-', $command_name);
@@ -472,7 +459,7 @@ function annotationcommand_adapter_add_hook_options(&$command)
   // extension hook a late-loaded extension (e.g. attached to a module).
   $names = annotationcommand_adapter_command_names($command);
   $names[] = '*'; // we are missing annotations here; maybe we just don't support that? (TODO later, maybe)
-  $factory = annotationcommand_adapter_get_factory();
+  $factory = \Drush::commandFactory();
   $extraOptions = $factory->hookManager()->getHookOptions($names);
   foreach ($extraOptions as $commandinfo) {
     if (!isset($command['consolidation-option-defaults'])) {
@@ -503,7 +490,7 @@ function annotationcommand_adapter_add_hook_options(&$command)
 function annotationcommand_adapter_command_names($command)
 {
   $names = array_merge(
-    [$command['name']],
+    [$command['command']],
     $command['aliases']
   );
   if (!empty($command['annotated-command-callback'])) {
@@ -526,7 +513,7 @@ function annotationcommand_adapter_command_names($command)
  */
 function annotationcommand_adapter_call_initialize($names, CommandData $commandData)
 {
-  $factory = annotationcommand_adapter_get_factory();
+  $factory = \Drush::commandFactory();
   $hookManager = $factory->hookManager();
 
   $hooks = $hookManager->getHooks(
@@ -540,7 +527,9 @@ function annotationcommand_adapter_call_initialize($names, CommandData $commandD
   );
 
   foreach ((array)$hooks as $hook) {
-    $hook($commandData->input(), $commandData->annotationData());
+    if (!is_object($hook)) {
+      $hook($commandData->input(), $commandData->annotationData());
+    }
   }
 }
 
@@ -701,12 +690,16 @@ function annotationcommand_adapter_call_hook_process_and_alter($names, $commandD
  */
 function annotationcommand_adapter_call_process_interface($names, $hooks, CommandData $commandData, $return)
 {
-  $factory = annotationcommand_adapter_get_factory();
+  $factory = \Drush::commandFactory();
   $hookManager = $factory->hookManager();
 
   $hooks = $hookManager->getHooks($names, $hooks, $commandData->annotationData());
 
   foreach ((array)$hooks as $hook) {
+    // @todo: $hook might be a ProcessResultInterface object. Support those?
+    if (is_object($hook)) {
+      continue;
+    }
     $result = $hook($return, $commandData);
     if (isset($result)) {
       $return = $result;
@@ -729,12 +722,17 @@ function annotationcommand_adapter_call_process_interface($names, $hooks, Comman
  */
 function annotationcommand_adapter_call_validate_interface($names, $hooks, CommandData $commandData)
 {
-  $factory = annotationcommand_adapter_get_factory();
+  $factory = \Drush::commandFactory();
   $hookManager = $factory->hookManager();
+  $annotationData = $commandData->annotationData();
 
   $hooks = $hookManager->getHooks($names, $hooks, $annotationData);
 
   foreach ((array)$hooks as $hook) {
+    // @todo: $hook might be a ValidatorInterface object. Support those?
+    if (is_object($hook)) {
+      continue;
+    }
     $validated = $hook($commandData);
     // TODO: if $validated is a CommandError, maybe the best thing to do is 'return drush_set_error()'?
     if (is_object($validated) || ($validated === false)) {

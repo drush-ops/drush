@@ -176,6 +176,15 @@ class Drush {
   }
 
   /**
+   * Return command factory
+   *
+   * @return \Consolidation\AnnotatedCommand\AnnotatedCommandFactory
+   */
+  public static function commandFactory() {
+    return static::service('commandFactory');
+  }
+
+  /**
    * Return the Drush logger object.
    *
    * @return LoggerInterface
