@@ -13,7 +13,8 @@ class ShellAliasCommands {
    * * @field-labels
    *   first: Name
    *   second: Code
-   * @default-string-field first
+   * @default-string-field code
+   * @table-style compact
    * @usage drush shell-alias
    *   'List all alias records known to drush.'
    * @usage drush shell-alias pull
