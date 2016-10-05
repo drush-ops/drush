@@ -332,7 +332,7 @@ function _drush_invoke_hooks($command, $args) {
   }
 
   // We will adapt and call as many of the annotated command hooks as we can.
-  // The following command hooks are not supported in Drush 8.x:
+  // The following command hooks are not presently supported in the legacy dispatcher:
   //   - Command Event: not called (requires CommandEvent object)
   //   - Option: Equivalent functionality supported in annotationcommand_adapter.inc
   //   - Interact: not called (We don't use SymfonyStyle in 8.x at the moment)

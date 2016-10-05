@@ -20,7 +20,7 @@ use Drush\Command\DrushOutputAdapter;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
- * Cache the command file discovery object. Drush 9 uses dependency injection.
+ * Cache the command file discovery object. TODO: use dependency injection.
  *
  * @return CommandFileDiscovery
  */
@@ -33,7 +33,7 @@ function annotationcommand_adapter_get_discovery() {
 }
 
 /**
- * Initialize and cache the command factory. Drush 9 uses dependency injection.
+ * Initialize and cache the command factory. TODO: use dependency injection.
  *
  * @return AnnotatedCommandFactory
  */
@@ -142,9 +142,9 @@ function annotationcommand_adapter_discover($searchpath, $phase = false, $phase_
 
 /**
  * This function is set as the $command['callback'] for Symfony Console commands
- * e.g. those provided by Drupal 8 modules.  Note that Drush 9 calls these with
- * Symfony's Application::run() method, but Drush 8 continues to use the
- * legacy Drush command dispatcher for all commands.
+ * e.g. those provided by Drupal 8 modules.  When the DRUSH_SYMFONY environment
+ * variable is set, these will be called via Symfony's Application::run() method.
+ * Otherwise, the legacy Drush command dispatcher will be used for all commands.
  *
  * @return bolean false if command failed (expect drush_set_error was called in this case)
  */
@@ -205,9 +205,9 @@ function annotationcommand_adapter_get_options($command) {
 
 /**
  * This function is set as the $command['callback'] for commands that have
- * been converted to annotated commands.  Note that Drush 9 calls these with
- * Symfony's Application::run() method, but Drush 8 continues to use the
- * legacy Drush command dispatcher for all commands.
+ * been converted to annotated commands.  When the DRUSH_SYMFONY environment
+ * variable is set, these will be called via Symfony's Application::run() method.
+ * Otherwise, the legacy Drush command dispatcher will be used for all commands.
  *
  * @return bolean false if command failed (expect drush_set_error was called in this case)
  */
