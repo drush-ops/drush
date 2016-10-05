@@ -446,6 +446,9 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
     if (isset($returnType)) {
       $command['return-type'] = $returnType;
     }
+    if ($commandinfo->getAnnotation('allow-additional-options') !== null) {
+      $command['allow-additional-options'] = TRUE;
+    }
     $command += drush_command_defaults($command_name, $commandfile, $commandfile_path);
     $commands[$command_name] = $command;
   }
