@@ -279,10 +279,12 @@ function annotationcommand_adapter_get_commands($annotation_commandfiles) {
  * @return object
  */
 function annotationcommand_adapter_create_commandfile_instance($commandfile_path, $commandfile_class) {
+  $runner = \Drush::runner();
+  $app = \Drush::service('application');
   $cache =& drush_get_context('DRUSH_ANNOTATION_COMMANDFILE_INSTANCES');
   if (!isset($cache[$commandfile_path])) {
     include_once $commandfile_path;
-    $commandhandler = new $commandfile_class;
+    $commandhandler = $runner->registerCommandClass($app, $commandfile_class);
     $cache[$commandfile_path] = $commandhandler;
   }
   return $cache[$commandfile_path];

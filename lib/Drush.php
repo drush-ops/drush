@@ -53,6 +53,13 @@ class Drush {
   protected static $container;
 
   /**
+   * The Robo Runner -- manages and constructs all commandfile classes
+   *
+   * @var \Robo\Runner
+   */
+  protected static $runner;
+
+  /**
    * Return the current Drush version.
    *
    * n.b. Called before the DI container is initialized.
@@ -123,6 +130,18 @@ class Drush {
    */
   public static function hasContainer() {
     return static::$container !== NULL;
+  }
+
+  /**
+   * Return the Robo runner.
+   *
+   * @return \Robo\Runner
+   */
+  public static function runner() {
+    if (!isset(static::$runner)) {
+      static::$runner = new \Robo\Runner();
+    }
+    return static::$runner;
   }
 
   /**
