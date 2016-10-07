@@ -66,9 +66,9 @@ class drushScriptCase extends CommandUnishTestCase {
       $drush_location = $this->getDrushLocation(array('root' => $this->webroot()));
       $this->assertEquals(realpath($drush_root . '/drush.php'), realpath($drush_location));
       // Test to see if --local was added
-      $result = $this->drush('ev', array('return drush_get_option("local");'), array('root' => $this->webroot()));
+      $result = $this->drush('ev', array('var_export(drush_get_option("local"));'), array('root' => $this->webroot()));
       $output = $this->getOutput();
-      $this->assertEquals("TRUE", $output);
+      $this->assertEquals("true", $output);
 
       // Get rid of the symlink and site-local Drush we created
       $this->remove_site_local_drush($drush_base);

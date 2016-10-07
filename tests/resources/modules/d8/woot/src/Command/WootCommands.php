@@ -12,6 +12,7 @@ class WootCommands
     /**
      * Woot mightily.
      *
+     * @command woot
      * @aliases wt
      */
     public function woot()
@@ -25,6 +26,7 @@ class WootCommands
      * This command will concatinate two parameters. If the --flip flag
      * is provided, then the result is the concatination of two and one.
      *
+     * @command my-cat
      * @param string $one The first parameter.
      * @param string $two The other parameter.
      * @option boolean $flip Whether or not the second parameter should come first in the result.
@@ -43,6 +45,7 @@ class WootCommands
     /**
      * Demonstrate formatters.  Default format is 'table'.
      *
+     * @command try:formatters
      * @field-labels
      *   first: I
      *   second: II
@@ -51,7 +54,7 @@ class WootCommands
      * @usage try:formatters --format=csv
      * @usage try:formatters --fields=first,third
      * @usage try:formatters --fields=III,II
-     * @return Consolidation\OutputFormatters\StructuredData\RowsOfFields
+     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function tryFormatters($options = ['format' => 'table', 'fields' => ''])
     {

@@ -17,6 +17,7 @@ class ExampleCommandFile
     /**
      * Demonstrate Robo formatters.  Default format is 'table'.
      *
+     * @command example-table
      * @field-labels
      *   first: I
      *   second: II
@@ -44,7 +45,7 @@ class ExampleCommandFile
     /**
      * Demonstrate an alter hook with an option
      *
-     * @hook alter example:table
+     * @hook alter example-table
      * @option french Add a row with French numbers.
      * @usage example:formatters --french
      */

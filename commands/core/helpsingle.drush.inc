@@ -41,12 +41,19 @@ function drush_core_helpsingle($commandstring) {
   if (!array_key_exists($commandstring, $commands)) {
     // If the command cannot be found, then bootstrap so that
     // additional commands will be brought in.
-    // For speed, only bootstrap up to DRUSH_BOOTSTRAP_DRUPAL_SITE.
-    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
+    // TODO: We need to do a full bootstrap in order to find module service
+    // commands. We only need to do this for Drupal 8, though; 7 and earlier
+    // can stop at DRUSH_BOOTSTRAP_DRUPAL_SITE. Perhaps we could use command
+    // caching to avoid bootstrapping, if we have collected the commands for
+    // this site once already.
+    drush_bootstrap_max();
     $commands = drush_get_commands();
   }
   if (array_key_exists($commandstring, $commands)) {
     $command = $commands[$commandstring];
+
+    annotationcommand_adapter_add_hook_options($command);
+
     drush_print_help($command);
     return TRUE;
   }

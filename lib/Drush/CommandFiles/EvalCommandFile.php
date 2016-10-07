@@ -11,8 +11,9 @@ class EvalCommandFile
   /**
    * Evaluate arbitrary php code after bootstrapping Drupal (if available).
    *
+   * @command php-eval
    * @param string $php Code to execute.
-   * @aliases php-eval, eval, ev
+   * @aliases eval, ev
    * @usage php-eval 'variable_set("hello", "world");'
    *   Sets the hello variable using Drupal API.
    * @usage php-eval '$node = node_load(1); return $node->title;'
@@ -24,6 +25,8 @@ class EvalCommandFile
    * @usage php-eval "node_access_rebuild();"
    *   Rebuild node access permissions.
    * @default-format var_export
+   * @bootstrap DRUSH_BOOTSTRAP_MAX
+   * @allow-additional-options true
    */
   public function phpEval($php, $options =
     [
