@@ -383,6 +383,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       $aliases[] = $standard_alias;
     }
     $handle_remote_commands = $commandinfo->getAnnotation('handle-remote-commands') == 'true';
+    $hidden = $commandinfo->getAnnotation('hidden') == 'true';
     // If there is no 'bootstrap' annotation, default to NONE.
     $bootstrap = DRUSH_BOOTSTRAP_NONE;
     if ($bootstrap = $commandinfo->getAnnotation('bootstrap')) {
@@ -401,6 +402,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       'examples' => $commandinfo->getExampleUsages(),
       'bootstrap' => $bootstrap,
       'handle-remote-commands' => $handle_remote_commands,
+      'hidden' => $hidden,
       'aliases' => $aliases,
       'add-options-to-arguments' => TRUE,
       'consolidation-output-formatters' => TRUE,
