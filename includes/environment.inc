@@ -134,7 +134,7 @@ function drush_cwd() {
   }
 
   // Convert windows paths.
-  $path = _drush_convert_path($path);
+  $path = Path::canonicalize($path);
 
   // Save original working dir case some command wants it.
   drush_set_context('DRUSH_OLDCWD', $path);
@@ -628,21 +628,7 @@ function drush_is_local_host($host) {
  * Return the user's home directory.
  */
 function drush_server_home() {
-  // Cannot use $_SERVER superglobal since that's empty during UnitUnishTestCase
-  // getenv('HOME') isn't set on Windows and generates a Notice.
-  $home = getenv('HOME');
-  if (!empty($home)) {
-    // home should never end with a trailing slash.
-    $home = rtrim($home, '/');
-  }
-  elseif (!empty($_SERVER['HOMEDRIVE']) && !empty($_SERVER['HOMEPATH'])) {
-    // home on windows
-    $home = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'];
-    // If HOMEPATH is a root directory the path can end with a slash. Make sure
-    // that doesn't happen.
-    $home = rtrim($home, '\\/');
-  }
-  return empty($home) ? NULL : $home;
+  return Path::getHomeDirectory();
 }
 
 /**
