@@ -2,6 +2,10 @@
 
 use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
+use Consolidation\AnnotatedCommand\AnnotationData;
+use Drush\Command\DrushInputAdapter;
+use Drush\Command\DrushOutputAdapter;
+use Consolidation\AnnotatedCommand\CommandData;
 
 /**
  * @defgroup dispatching Command dispatching functions.
@@ -160,6 +164,11 @@ function drush_dispatch($command, $arguments = array()) {
       _drush_prepare_command($command, $arguments);
     }
 
+    // Merge in the options added by hooks.  We need this
+    // for validation, but this $command is just going to
+    // get thrown away, so we'll have to do this again later.
+    annotationcommand_adapter_add_hook_options($command);
+
     // Add command-specific options, if applicable.
     drush_command_default_options($command);
 
@@ -182,8 +191,12 @@ function drush_dispatch($command, $arguments = array()) {
     // remote commands and other redispatches.
     drush_preflight_tilde_expansion($command);
 
+    // Get the arguments for this command. Add the options
+    // on the end if this is that kind of command.
+    $args = $command['arguments'];
+
     // Call the callback function of the active command.
-    $return = call_user_func_array($command['callback'], $command['arguments']);
+    $return = call_user_func_array($command['callback'], $args);
   }
 
   // Add a final log entry, just so a timestamp appears.
@@ -291,6 +304,7 @@ function drush_command() {
  * @see drush_invoke() and @see drush_invoke_process()
  */
 function _drush_invoke_hooks($command, $args) {
+  $return = null;
   // If someone passed a standalone arg, convert it to a single-element array
   if (!is_array($args)) {
     $args = array($args);
@@ -317,14 +331,55 @@ function _drush_invoke_hooks($command, $args) {
     }
   }
 
+  // We will adapt and call as many of the annotated command hooks as we can.
+  // The following command hooks are not presently supported in the legacy dispatcher:
+  //   - Command Event: not called (requires CommandEvent object)
+  //   - Option: Equivalent functionality supported in annotationcommand_adapter.inc
+  //   - Interact: not called (We don't use SymfonyStyle in 8.x at the moment)
+  //   - Status: not called - probably not needed?
+  //   - Extract not called - probably not needed?
+  // The hooks that are called include:
+  //   - Pre-initialize, initialize and post-initialize
+  //   - Pre-validate and validate
+  //   - Pre-command, command and post-command
+  //   - Pre-process, process and post-process
+  //   - Pre-alter, alter and post-alter
+
+  $names = annotationcommand_adapter_command_names($command);
+  // Merge in the options added by hooks (again)
+  annotationcommand_adapter_add_hook_options($command);
+  $annotationData = $command['annotations'];
+
+  $input = new DrushInputAdapter($args, annotationcommand_adapter_get_options($command), $command['command']);
+  $output = new DrushOutputAdapter();
+  $commandData = new CommandData(
+    $annotationData,
+    $input,
+    $output,
+    false,
+    false
+  );
+
+  annotationcommand_adapter_call_initialize($names, $commandData);
+
   $rollback = FALSE;
   $completed = array();
   $available_rollbacks = array();
   $all_available_hooks = array();
 
   // Iterate through the different hook variations
-  $variations = array($hook . "_pre_validate", $hook . "_validate", "pre_$hook", $hook, "post_$hook");
-  foreach ($variations as $var_hook) {
+  $variations = array(
+    'pre_validate' => $hook . "_pre_validate",
+    'validate' => $hook . "_validate",
+    'pre_command' => "pre_$hook",
+    'command' => $hook,
+    'post_command' => "post_$hook"
+  );
+  foreach ($variations as $hook_phase => $var_hook) {
+
+    $adapterHookFunction = 'annotationcommand_adapter_call_hook_' . $hook_phase;
+    $adapterHookFunction($names, $commandData, $return);
+
     // Get the list of command files.
     // We re-fetch the list every time through
     // the loop in case one of the hook function
@@ -394,6 +449,7 @@ function _drush_invoke_hooks($command, $args) {
     if ($var_hook == $hook) {
       $return = $accumulated_result;
       if (isset($return)) {
+        annotationcommand_adapter_call_hook_process_and_alter($names, $commandData, $return);
         drush_handle_command_output($command, $return);
       }
     }
@@ -541,6 +597,7 @@ function drush_handle_command_output($command, $structured_output) {
  * record. Also verify that required options are present.
  */
 function _drush_verify_cli_options($command) {
+
   // Start out with just the options in the current command record.
   $options = _drush_get_command_options($command);
   // Skip all tests if the command is marked to allow anything.
@@ -1057,18 +1114,20 @@ function drush_get_commands($reset = FALSE) {
         }
 
         $commands[$key] = $command;
-        // For every alias, make a copy of the command and store it in the command list
-        // using the alias as a key
-        if (isset($command['aliases']) && count($command['aliases'])) {
-          foreach ($command['aliases'] as $alias) {
-            $commands[$alias] = $command;
-            $commands[$alias]['is_alias'] = TRUE;
-          }
-        }
       }
     }
   }
-
+  $commands = array_merge($commands, annotationcommand_adapter_commands());
+  foreach ($commands as $command) {
+    // For every alias, make a copy of the command and store it in the command list
+    // using the alias as a key
+    if (isset($command['aliases']) && count($command['aliases'])) {
+      foreach ($command['aliases'] as $alias) {
+        $commands[$alias] = $command;
+        $commands[$alias]['is_alias'] = TRUE;
+      }
+    }
+  }
   return $commands;
 }
 
@@ -1201,6 +1260,10 @@ function drush_command_defaults($key, $commandfile, $path) {
     'topics' => array(),
     'hidden' => FALSE,
     'category' => $commandfile,
+    'add-options-to-arguments' => FALSE,
+    'consolidation-output-formatters' => FALSE,
+    'annotated-command-callback' => '',
+    'annotations' => new AnnotationData(['command' => $key]),
   );
   // We end up here, setting the defaults for a command, when
   // called from drush_get_global_options().  Early in the Drush
@@ -1518,6 +1581,7 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
   if ($bootstrap = \Drush::bootstrap()) {
     $searchpath = $bootstrap->commandfile_searchpaths($phase, $phase_max);
     _drush_add_commandfiles($searchpath, $phase);
+    annotationcommand_adapter_discover($searchpath, $phase, $phase_max);
   }
 }
 

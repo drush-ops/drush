@@ -27,8 +27,8 @@ class DrupliconCommands {
     if ($commandName == 'helpsingle') {
       return;
     }
-    drush_log(dt('Displaying Druplicon for "!command" command.', array('!command' => $commandName)));
     if ($commandData->input()->getOption('druplicon')) {
+      drush_log(dt('Displaying Druplicon for "!command" command.', array('!command' => $commandName)));
       $misc_dir = DRUSH_BASE_PATH . '/misc';
       if (drush_get_context('DRUSH_NOCOLOR')) {
         $content = file_get_contents($misc_dir . '/druplicon-no_color.txt');
@@ -36,6 +36,7 @@ class DrupliconCommands {
       else {
         $content = file_get_contents($misc_dir . '/druplicon-color.txt');
       }
+      // @todo: `$commandData->output->writeln($content)` after $output hooked up to backend invoke
       drush_print($content);
     }
   }

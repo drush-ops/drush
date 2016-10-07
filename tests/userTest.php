@@ -74,7 +74,7 @@ class userCase extends CommandUnishTestCase {
     }
     $this->drush('php-eval', array($eval), $this->options());
     $output = $this->getOutput();
-    $this->assertEquals("'2'", $output, 'User can login with new password.');
+    $this->assertEquals("2", $output, 'User can login with new password.');
   }
 
    function testUserLogin() {

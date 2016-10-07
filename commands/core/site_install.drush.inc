@@ -225,7 +225,7 @@ function drush_core_site_install($profile = NULL) {
   drush_include_engine('drupal', 'site_install');
   drush_core_site_install_version($profile, $form_options);
 
-  // Post installation run the configuration import.
+  // Post installation, run the configuration import.
   if ($config = drush_get_option('config-dir')) {
     // Set the destination site UUID to match the source UUID, to bypass a core fail-safe.
     $source_storage = new FileStorage($config);

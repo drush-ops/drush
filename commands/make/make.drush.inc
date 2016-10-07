@@ -155,7 +155,7 @@ function make_drush_command() {
       'makefile' => 'Filename of the makefile to convert.',
     ),
     'options' => array(
-      'format' => 'The format to which the make file should be converted. Accepted values include make, composer, and yml.'
+      'format' => 'The format to which the make file should be converted. Accepted values include make, composer, and yml.',
     ),
     'required-arguments' => TRUE,
     'examples' => array(

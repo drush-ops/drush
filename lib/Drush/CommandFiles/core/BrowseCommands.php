@@ -6,6 +6,7 @@ class BrowseCommands {
   /**
    * Display a link to a given path or open link in a browser.
    *
+   * @command browse
    * @todo Document new @handle-remote-commands and @bootstrap annotations.
    *
    * @param string|null $path Path to open. If omitted, the site front page will be opened.
@@ -29,7 +30,7 @@ class BrowseCommands {
     $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
     if (drush_sitealias_is_remote_site($alias)) {
       $site_record = drush_sitealias_get_record($alias);
-      $return = drush_invoke_process($site_record, 'browse', func_get_args(), drush_redispatch_get_options(), array('integrate' => TRUE));
+      $return = drush_invoke_process($site_record, 'browse', [$path], drush_redispatch_get_options(), array('integrate' => TRUE));
       if ($return['error_status']) {
         return drush_set_error('Unable to execute browse command on remote alias.');
       }
