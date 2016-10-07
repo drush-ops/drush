@@ -15,11 +15,9 @@ class InitCommandFile extends \Robo\Tasks
    *
    * @command core-init
    *
-   * Enrich the bash startup file with completion and aliases.
-   * Copy .drushrc file to ~/.drush
+   * @todo: @global-options
    *
-   * @todo: '@package core', @global-options, replacement mechanism for 'bootstrap'
-   *
+   * @description Enrich the bash startup file with completion and aliases.
    * @option $edit Open the new config file in an editor.
    * @option $add-path Always add Drush to the \$PATH in the user's .bashrc
    *   file, even if it is already in the \$PATH. Use --no-add-path to skip
