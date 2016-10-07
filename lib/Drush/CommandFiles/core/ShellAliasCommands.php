@@ -19,9 +19,9 @@ class ShellAliasCommands {
    *   'List all alias records known to drush.'
    * @usage drush shell-alias pull
    *   Print the value of the shell alias 'pull'.
-   * @todo not used in 9.x @bootstrap DRUSH_BOOTSTRAP_NONE
    * @aliases sha
-   * @todo not used in 9.x @complete \Drush\CommandFiles\core\ShellAliasCommands::complete
+   * @todo AnnotatedCommands not yet discovered in drush_get_commands so no completion.
+   * @complete \Drush\CommandFiles\core\ShellAliasCommands::complete
    *
    * @return Consolidation\OutputFormatters\StructuredData\AssociativeList
    */
