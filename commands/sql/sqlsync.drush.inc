@@ -1,6 +1,7 @@
 <?php
 
 use Drush\Log\LogLevel;
+use Webmozart\PathUtil\Path;
 
 /**
  * Implementation of hook_drush_command().
@@ -242,7 +243,7 @@ function drush_sqlsync_sql_sync($source, $destination) {
     if (!$return['error_status'] && isset($return['object']['drush-temp'])) {
       $tmp = $return['object']['drush-temp'];
     }
-    $destination_dump_path = $tmp . '/' . basename($source_dump_path);
+    $destination_dump_path = Path::join($tmp, basename($source_dump_path));
     $rsync_options['yes'] = TRUE;  // No need to prompt as destination is a tmp file.
   }
 
