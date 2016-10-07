@@ -1,10 +1,5 @@
 <?php
-namespace Drush\CommandFiles;
-
-/**
- * @file
- *   Set up local Drush configuration.
- */
+namespace Drush\CommandFiles\core;
 
 use Drush\Log\LogLevel;
 
