@@ -15,7 +15,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 class ExampleCommandFile
 {
     /**
-     * Demonstrate Robo formatters.  Default format is 'table'.
+     * Demonstrate output formatters.  Default format is 'table'.
      *
      * @command example-table
      * @field-labels
@@ -28,6 +28,7 @@ class ExampleCommandFile
      * @usage example:formatters --fields=first,third
      * @usage example:formatters --fields=III,II
      * @aliases tf
+     * @hidden true
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
