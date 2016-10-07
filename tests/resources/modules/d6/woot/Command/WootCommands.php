@@ -12,7 +12,6 @@ class WootCommands
     /**
      * Woot mightily.
      *
-     * @command woot
      * @aliases wt
      */
     public function woot()
@@ -26,7 +25,6 @@ class WootCommands
      * This command will concatinate two parameters. If the --flip flag
      * is provided, then the result is the concatination of two and one.
      *
-     * @command my-cat
      * @param string $one The first parameter.
      * @param string $two The other parameter.
      * @option boolean $flip Whether or not the second parameter should come first in the result.
@@ -45,7 +43,6 @@ class WootCommands
     /**
      * Demonstrate formatters.  Default format is 'table'.
      *
-     * @command try:formatters
      * @field-labels
      *   first: I
      *   second: II

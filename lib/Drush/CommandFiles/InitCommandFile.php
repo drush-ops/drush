@@ -13,6 +13,8 @@ class InitCommandFile extends \Robo\Tasks
   /**
    * Initialize local Drush configuration
    *
+   * @command core-init
+   *
    * Enrich the bash startup file with completion and aliases.
    * Copy .drushrc file to ~/.drush
    *
@@ -23,7 +25,7 @@ class InitCommandFile extends \Robo\Tasks
    *   file, even if it is already in the \$PATH. Use --no-add-path to skip
    *   updating .bashrc with the Drush \$PATH. Default is to update .bashrc
    *   only if Drush is not already in the \$PATH.
-   * @aliases core-init, init
+   * @aliases init
    * @usage core-init --edit
    *   Enrich Bash and open drush config file in editor.
    * @usage core-init --edit --bg
