@@ -7,7 +7,6 @@ class BrowseCommands {
    * Display a link to a given path or open link in a browser.
    *
    * @command browse
-   * @todo Document new @handle-remote-commands and @bootstrap annotations.
    *
    * @param string|null $path Path to open. If omitted, the site front page will be opened.
    * @option string $browser Specify a particular browser (defaults to operating system default). Use --no-browser to suppress opening a browser.
@@ -20,9 +19,8 @@ class BrowseCommands {
    *   Open a browser to the web site specified in a site alias.
    * @usage drush browse --browser=firefox admin
    *   Open Firefox web browser to the path 'admin'.
-   * @todo not used AFAIK @bootstrap DRUSH_BOOTSTRAP_NONE
-   * @todo not used @handle-remote-commands true
    * @complete \Drush\CommandFiles\core\BrowseCommands::complete
+   * @handle-remote-commands true
    */
   public function browse($path = '', $options = ['browser' => NULL]) {
     // Redispatch if called against a remote-host so a browser is started on the
