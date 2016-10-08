@@ -10,17 +10,17 @@ class BootstrapManager implements LoggerAwareInterface {
   use LoggerAwareTrait;
 
   /**
-   * @var Drush\Boot\Boot[]
+   * @var \Drush\Boot\Boot[]
    */
   protected $bootstrapCandidates = [];
 
   /**
-   * @var Drush\Boot\Boot
+   * @var \Drush\Boot\Boot
    */
   protected $defaultBootstrapObject;
 
   /**
-   * @var Drush\Boot\Boot
+   * @var \Drush\Boot\Boot
    */
   protected $bootstrap;
 
@@ -37,7 +37,7 @@ class BootstrapManager implements LoggerAwareInterface {
   /**
    * Constructor.
    *
-   * @param Boot
+   * @param \Drush\Boot\Boot
    *   The default bootstrap object to use when there are
    *   no viable candidates to use (e.g. no selected site)
    */
@@ -48,7 +48,7 @@ class BootstrapManager implements LoggerAwareInterface {
   /**
    * Add a bootstrap object to the list of candidates
    *
-   * @param Boot|Array
+   * @param \Drush\Boot\Boot|Array
    *   List of boot candidates
    */
   public function add($candidateList) {
@@ -86,6 +86,8 @@ class BootstrapManager implements LoggerAwareInterface {
    * be the latched bootstrap object if we have started
    * bootstrapping; otherwise, it will be whichever bootstrap
    * object is best for the selected root.
+   *
+   * @return \Drush\Boot\Boot
    */
   public function bootstrap() {
     if ($this->bootstrap) {
@@ -97,6 +99,8 @@ class BootstrapManager implements LoggerAwareInterface {
   /**
    * Look up the best bootstrap class for the given location
    * from the set of available candidates.
+   *
+   * @return \Drush\Boot\Boot
    */
   public function bootstrapObjectForRoot($path) {
     foreach ($this->bootstrapCandidates as $candidate) {
