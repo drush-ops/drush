@@ -10,22 +10,22 @@ class ShellAliasCommands {
    *
    * @command shell-alias
    * @param string|null $alias 'Shell alias to print',
-   * * @field-labels
+   * @field-labels
    *   first: Name
    *   second: Code
-   * @default-string-field code
+   * @default-string-field second
    * @table-style compact
    * @usage drush shell-alias
-   *   'List all alias records known to drush.'
+   *   'List all shell aliases known to Drush.'
    * @usage drush shell-alias pull
    *   Print the value of the shell alias 'pull'.
-   * @todo not used in 9.x @bootstrap DRUSH_BOOTSTRAP_NONE
    * @aliases sha
-   * @todo not used in 9.x @complete \Drush\CommandFiles\core\ShellAliasCommands::complete
+   * @todo completion not yet working for Annotated commands.
+   * @complete \Drush\CommandFiles\core\ShellAliasCommands::complete
    *
-   * @return Consolidation\OutputFormatters\StructuredData\AssociativeList
+   * @return \Consolidation\OutputFormatters\StructuredData\AssociativeList
    */
-  public function shellalias($alias = FALSE, $options = ['format' => 'table']) {
+  public function shellalias($alias = NULL, $options = ['format' => 'table']) {
     $shell_aliases = drush_get_context('shell-aliases', array());
     if (!$alias) {
       return new AssociativeList($shell_aliases);
