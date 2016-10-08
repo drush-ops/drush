@@ -197,12 +197,16 @@ function drush_shell_proc_build($site, $command = '', $cd = NULL, $interactive =
   // Build up the command. TODO: We maybe refactor this soon.
   $hostname = drush_remote_host($site);
   $ssh_options = drush_sitealias_get_option($site, 'ssh-options', "-o PasswordAuthentication=no");
+  $ssh_term = drush_sitealias_get_option($site, 'ssh-term', '');
+  if (!empty($ssh_term)) {
+    $ssh_term = 'env TERM=' . $ssh_term . ' ';
+  }
   $os = drush_os($site);
   if (drush_sitealias_get_option($site, 'tty') || $interactive) {
     $ssh_options .= ' -t';
   }
 
-  $cmd = "ssh " . $ssh_options . " " . $hostname;
+  $cmd = $ssh_term . "ssh " . $ssh_options . " " . $hostname;
 
   if ($cd === TRUE) {
     if (array_key_exists('root', $site)) {
@@ -257,6 +261,7 @@ function drush_shell_proc_open($cmd) {
 function drush_shell_exec_proc_build_options() {
   return array(
    'ssh-options' => 'A string of extra options that will be passed to the ssh command (e.g. "-p 100")',
+    'ssh-term' => 'The terminal environment type to request for an interactive ssh tty (e.g. "xterm").',
     'tty' => 'Create a tty (e.g. to run an interactive program).',
     'escaped' => 'Command string already escaped; do not add additional quoting.',
   );

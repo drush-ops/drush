@@ -210,6 +210,11 @@
  *   standard port, alternative identity file, or alternative
  *   authentication method, ssh-options can contain a string of extra
  *   options that are used with the ssh command, eg "-p 100"
+ * - 'ssh-term': Set the terminal environment to request for an interactive SSH 
+ *   tty. This can be useful if the target machine does not recognise your
+ *   current local terminal environment type. This can be recognised by a
+ *   disconnect with the hint 'Try requesting a different terminal environment'.
+ *   In case of an error some options to try are: 'xterm' or 'vt220'.
  * - 'parent': Deprecated.  See "altering aliases", below.
  * - 'path-aliases': An array of aliases for common rsync targets.
  *   Relative aliases are always taken from the Drupal root.

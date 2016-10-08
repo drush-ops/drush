@@ -174,6 +174,15 @@
  */
 # $options['ssh-options'] = '-o PasswordAuthentication=no';
 
+/**
+ * Set a different terminal environment for the interactive SSH tty. 
+ * This can by handy in case a target machine does not accept your local 
+ * terminal environment. This problem can be recognised by a disconnect and the
+ * hint: 'Try requesting a different terminal environment'.
+ * Good options to try are 'xterm' and 'vt220'.
+ */
+# $options['ssh-term'] = 'xterm';
+
 // Set 'remote-os' to 'Windows' to make Drush use Windows shell escape rules
 // for remote sites that do not have an 'os' item set.
 # $options['remote-os'] = 'Linux';

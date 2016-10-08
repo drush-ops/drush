@@ -1068,6 +1068,7 @@ function drush_backend_generate_sitealias($backend_options) {
     'remote-host' => NULL,
     'remote-user' => NULL,
     'ssh-options' => NULL,
+    'ssh-term' => NULL,
     'drush-script' => NULL,
     'env-vars' => NULL
   );
@@ -1075,6 +1076,7 @@ function drush_backend_generate_sitealias($backend_options) {
     'remote-host' => $backend_options['remote-host'],
     'remote-user' => $backend_options['remote-user'],
     'ssh-options' => $backend_options['ssh-options'],
+    'ssh-term' => $backend_options['ssh-term'],
     '#env-vars' => $backend_options['env-vars'],
     'path-aliases' => array(
       '%drush-script' => $backend_options['drush-script'],
@@ -1093,6 +1095,8 @@ function drush_backend_generate_sitealias($backend_options) {
  *      Optional. Defaults to the current user. If you specify this, you can choose which module to send.
  *   'ssh-options'
  *      Optional.  Defaults to "-o PasswordAuthentication=no"
+ *   'ssh-term'
+ *      Optional. Default is empty and thus your local terminal environment will be requested.
  *   '#env-vars'
  *      Optional. An associative array of environmental variables to prefix the Drush command with.
  *   'path-aliases'
@@ -1126,6 +1130,7 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
     'remote-host' => NULL,
     'remote-user' => NULL,
     'ssh-options' => NULL,
+    'ssh-term' => NULL,
     'path-aliases' => array(),
   );
   $backend_options += array(
@@ -1135,6 +1140,8 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
   $hostname = $site_record['remote-host'];
   $username = $site_record['remote-user'];
   $ssh_options = $site_record['ssh-options'];
+  $ssh_term = $site_record['ssh-term'];
+
   $os = drush_os($site_record);
 
   if (drush_is_local_host($hostname)) {
@@ -1162,6 +1169,9 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
     $ssh_options = $site_record['ssh-options'];
     $ssh_options = (isset($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
 
+    if ($backend_options['#tty'] && $ssh_term) {
+      $ssh_cmd[] = "env TERM=" . $ssh_term;
+    }
     $ssh_cmd[] = "ssh";
     $ssh_cmd[] = $ssh_options;
     if ($backend_options['#tty']) {

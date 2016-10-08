@@ -37,7 +37,7 @@ function sitealias_drush_command() {
       'variable-name' => 'aliases',
       'hide-empty-fields' => TRUE,
       'private-fields' => 'password',
-      'field-labels' => array('#name' => 'Name', 'root' => 'Root', 'uri' => 'URI', 'remote-host' => 'Host', 'remote-user' => 'User', 'remote-port' => 'Port', 'os' => 'OS', 'ssh-options' => 'SSH options', 'php' => 'PHP'),
+      'field-labels' => array('#name' => 'Name', 'root' => 'Root', 'uri' => 'URI', 'remote-host' => 'Host', 'remote-user' => 'User', 'remote-port' => 'Port', 'os' => 'OS', 'ssh-options' => 'SSH options', 'ssh-term' => 'SSH tty terminal type', 'php' => 'PHP'),
       'fields-default' => array('#name', 'root', 'uri', 'remote-host', 'remote-user'),
       'field-mappings' => array('name' => '#name'),
       'output-data-type' => 'format-table',
