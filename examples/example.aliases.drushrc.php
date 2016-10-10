@@ -268,16 +268,7 @@
  *     // will not work).
  *     'delete' => TRUE,
  *
- *     // wrapping an option's value in "" preserves inner '' on output;
- *     // but is not always required.
- *     'exclude' => "'*.gz'",
- *
- *     // cannot add multiple options of same key; each key overwrites
- *     // the previous key's value. This 'exclude' option will overwrite
- *     // the previous one above.
- *     'exclude' => '*.sql',
- *
- *     // if you need multiple exludes, use an rsync exclude file
+ *     // if you need multiple excludes, use an rsync exclude file
  *     'exclude-from' => "'/etc/rsync/exclude.rules'",
  *
  *     // filter options with white space must be wrapped in "" to preserve
