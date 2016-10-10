@@ -412,7 +412,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
     $required_arguments = 0;
     foreach ($commandinfo->arguments()->getValues() as $arg => $default) {
       $command['arguments'][$arg] = $commandinfo->arguments()->getDescription($arg);
-      if (!isset($default)) {
+      if (!$commandinfo->arguments()->hasDefault($arg)) {
         ++$required_arguments;
       }
     }

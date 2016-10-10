@@ -181,7 +181,7 @@ class ViewsCommands {
    *
    * @todo @return. We return an integer for --count, a string for --rendered, and otherwise an array of View objects.
    */
-  public function execute($view = '', $display = NULL, $view_args = NULL, $options = ['count' => 0, 'rendered' => 0, 'show-admin-links' => 0]) {
+  public function execute($view, $display = NULL, $view_args = NULL, $options = ['count' => 0, 'rendered' => 0, 'show-admin-links' => 0]) {
 
     $view = Views::getView($view);
 
