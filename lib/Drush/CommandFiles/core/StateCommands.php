@@ -17,10 +17,9 @@ class StateCommands {
    *   Displays last cron run timestamp
    * @aliases sget
    * @field-labels
-   *   first: Key
-   *   second: Value
-   * @default-string-field second
-   * @table-style compact
+   *   key: Key
+   *   value: Value
+   * @default-fields value
    *
    * @return \Consolidation\OutputFormatters\StructuredData\AssociativeList
    */
