@@ -6,6 +6,13 @@
  */
 
 /**
+ * Constants determining how to treat mysql views when listing tables.
+ */
+define('DRUSH_MYSQL_VIEWS_INCLUDE', 0);
+define('DRUSH_MYSQL_VIEWS_EXCLUDE', 1);
+define('DRUSH_MYSQL_VIEWS_ONLY', 2);
+
+/**
  * Implementation of hook_drush_help().
  */
 function sql_drush_help($section) {
@@ -459,6 +466,17 @@ function drush_sql_get_expanded_table_selection($db_spec, $site_record = NULL) {
   if (isset($table_selection['tables'])) {
     $table_selection['tables'] = _drush_sql_expand_and_filter_tables($table_selection['tables'], $db_tables);
   }
+  // Handle mysql views. These will cause errors if the "CREATE VIEW ..."
+  // sql is executed before any referenced tables are defined, so we here
+  // ensure that all views are dumped at the end of the file.
+  if (_drush_sql_get_scheme($db_spec) == 'mysql') {
+    // Get a list of all views defined in the database.
+    $db_views = _drush_sql_get_db_table_list($db_spec, $site_record, DRUSH_MYSQL_VIEWS_ONLY);
+    // Remove any that were already specified in the table selection.
+    $db_views = array_diff($db_views, $table_selection['skip'], $table_selection['structure'], $table_selection['tables']);
+    // Now put at end of structure-tables list so they are created last.
+    $table_selection['structure'] = array_merge($table_selection['structure'], $db_views);
+  }
   return $table_selection;
 }
 
@@ -773,10 +791,14 @@ function _drush_sql_get_raw_table_list($option_name) {
  *   For D5/D6, a $db_url. For D7, a target in the default DB connection.
  * @param $site_record
  *   Necessary for remote database.
+ * @param $views
+ *   Specify how to handle mysql views (mysql only). One of
+ *   DRUSH_MYSQL_VIEWS_INCLUDE, DRUSH_MYSQL_VIEWS_EXCLUDE
+ *   or DRUSH_MYSQL_VIEWS_ONLY.
  * @return array
  *   An array of table names which exist in the current database.
  */
-function _drush_sql_get_db_table_list($db_spec, $site_record = NULL) {
+function _drush_sql_get_db_table_list($db_spec, $site_record = NULL, $views = DRUSH_MYSQL_VIEWS_INCLUDE) {
   $target_site = '@self';
   if (isset($site_record)) {
     $target_site = $site_record;
@@ -799,6 +821,18 @@ function _drush_sql_get_db_table_list($db_spec, $site_record = NULL) {
     case 'oracle':
       $query = "SELECT TABLE_NAME FROM USER_TABLES WHERE TABLE_NAME NOT IN ('BLOBS','LONG_IDENTIFIERS')";
       $suffix = '.sql';
+      break;
+    case 'mysql':
+      switch ($views) {
+        case DRUSH_MYSQL_VIEWS_ONLY:
+          $query = "SHOW FULL TABLES WHERE table_type = 'VIEW'";
+          break;
+        case DRUSH_MYSQL_VIEWS_EXCLUDE:
+          $query = "SHOW FULL TABLES WHERE table_type != 'VIEW'";
+          break;
+        default:
+          $query = "SHOW TABLES";
+      }
       break;
     default:
       $query = 'SHOW TABLES';
@@ -843,6 +877,13 @@ function _drush_sql_get_db_table_list($db_spec, $site_record = NULL) {
       array_pop($tables_raw);
       array_pop($tables_raw);
       $tables = $tables_raw;
+    }
+    elseif ($scheme == 'mysql' && $views != DRUSH_MYSQL_VIEWS_INCLUDE) {
+      array_shift($tables_raw);
+      foreach ($tables_raw as $table_entry) {
+        list($table) = explode("\t", $table_entry);
+        $tables[] = $table;
+      }
     }
     else {
       // Shift off the header of the column of data returned.
