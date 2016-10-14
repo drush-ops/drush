@@ -85,7 +85,7 @@ class ViewsCommands {
    *
    * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
    */
-  public function vlist($options = ['name' => '', 'tags' => '', 'status' => NULL]) {
+  public function vlist($options = ['name' => '', 'tags' => '', 'status' => NULL, 'format' => 'table', 'fields' => '']) {
     $disabled_views = array();
     $enabled_views = array();
 
