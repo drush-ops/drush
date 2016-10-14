@@ -275,7 +275,7 @@ function drush_cache_rebuild() {
   $autoloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
   require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';
 
-  $request = Request::createFromGlobals();
+  $request = Request::create('/');
   // Manually resemble early bootstrap of DrupalKernel::boot().
   require_once DRUSH_DRUPAL_CORE . '/includes/bootstrap.inc';
   DrupalKernel::bootEnvironment();
