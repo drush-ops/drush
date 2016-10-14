@@ -20,7 +20,7 @@ user="{$this->db_spec['username']}"
 password="{$this->db_spec['password']}"
 EOT;
 
-      $file = drush_save_data_to_temp_file($contents, NULL, 0700);
+      $file = drush_save_data_to_temp_file($contents, NULL, 0600);
       $parameters['defaults-file'] = $file;
     }
     else {
