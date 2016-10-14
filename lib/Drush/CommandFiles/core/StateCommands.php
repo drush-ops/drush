@@ -51,7 +51,8 @@ class StateCommands {
     $value = $options['value'] ?: $value;
 
     if (!isset($value)) {
-      return drush_set_error('DRUSH_STATE_ERROR', dt('No state value specified.'));
+      throw new \Exception(dt('No state value specified.'));
+      return NULL;
     }
 
     // Special flag indicating that the value has been passed via STDIN.
