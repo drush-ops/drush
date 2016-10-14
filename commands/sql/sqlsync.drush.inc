@@ -68,6 +68,7 @@ function sqlsync_drush_command() {
       ),
       // 'no-ordered-dump' => 'Do not pass --ordered-dump to sql-dump.  sql-sync orders the dumpfile by default in order to increase the efficiency of rsync.',
       'sanitize' => 'Obscure email addresses and reset passwords in the user table post-sync.',
+      'rsync-version' => 'Set to the version of rsync you are using to signal Drush to go into backwards-compatibility mode when using very old versions of rsync. For example, --rsync-version=2.6.8 or earlier will cause Drush to avoid the --remove-source-files flag.',
     ),
     'sub-options' => array(
       'sanitize' => drupal_sanitize_options() + array(
@@ -250,7 +251,19 @@ function drush_sqlsync_sql_sync($source, $destination) {
   if ($do_rsync) {
     if (!drush_get_option('no-dump')) {
       // Cleanup if this command created the dump file.
-      $rsync_options['remove-source-files'] = TRUE;
+
+      // Check if the user has set $options['rsync-version'] to enable rsync legacy version support.
+      // Drush was written for rsync 2.6.9 or later, so assume that version if nothing was explicitly set.
+      $rsync_version = drush_get_option(array('rsync-version','source-rsync-version','target-rsync-version'), '2.6.9');
+      if (version_compare($rsync_version, '2.6.4', '<')) {
+        drush_log('Rsync does not support --remove-sent-files prior to version 2.6.4; some temporary files may remain undeleted.', LogLevel::WARNING);
+      }
+      elseif (version_compare($rsync_version, '2.6.9', '<')) {
+        $rsync_options['remove-sent-files'] = TRUE;
+      }
+      else {
+        $rsync_options['remove-source-files'] = TRUE;
+      }
     }
     $runner = drush_get_runner($source_settings, $destination_settings, drush_get_option('runner', FALSE));
     // Since core-rsync is a strict-handling command and drush_invoke_process() puts options at end, we can't send along cli options to rsync.
