@@ -80,7 +80,7 @@ function _make_parse_info_file($makefile) {
             make_error('BUILD_ERROR', dt("Cannot determine include file location: !include", array('!include' => $include)));
           }
 
-          $info = array_replace_recursive(_make_parse_info_file($include_makefile), $info);
+          $info = array_replace_recursive(_make_parse_info_file($info, $include_makefile));
           // Move core back to the top of the list, where
           // make_generate_from_makefile() expects it.
           array_reverse($info['projects']);
