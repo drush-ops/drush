@@ -500,16 +500,16 @@ function _drush_bootstrap_drush() {
   // Check to see if we 'use'd a site alias with site-set
   drush_sitealias_check_site_env();
 
-  // If an alias was not created by drush_sitealias_check_arg()
-  // or drush_sitealias_check_site_env(), make one now.
-  drush_sitealias_create_self_alias();
-
   // Load the config options from Drupal's /drush and sites/all/drush directories,
   // even prior to bootstrapping the root.
   drush_load_config('drupal');
 
   // Similarly, load the Drupal site configuration options upfront.
   drush_load_config('site');
+
+  // If an alias was not created by drush_sitealias_check_arg()
+  // or drush_sitealias_check_site_env(), make one now.
+  drush_sitealias_create_self_alias();
 
   // If applicable swaps in shell alias value (or executes it).
   drush_shell_alias_replace();
