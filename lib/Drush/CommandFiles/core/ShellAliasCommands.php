@@ -33,6 +33,9 @@ class ShellAliasCommands {
     elseif (isset($shell_aliases[$alias])) {
       return new AssociativeList(array($alias => $shell_aliases[$alias]));
     }
+    else {
+      throw new \Exception(dt('Shell alias not found.'));
+    }
   }
 
   /*
