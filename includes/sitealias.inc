@@ -1913,7 +1913,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
     drush_sitealias_set_alias_context($site_alias_settings);
 
     // Use 'remote-host' from settings if available; otherwise site is local
-    if (array_key_exists('remote-host', $site_alias_settings) && !drush_is_local_host($site_alias_settings['remote-host'])) {
+    if (array_key_exists('remote-host', $site_alias_settings)) {
       $machine = drush_remote_host($site_alias_settings);
     }
     else {
