@@ -1066,7 +1066,7 @@ function make_move_build($build_path) {
   }
   else {
     drush_mkdir(dirname($build_path));
-    $ret = drush_move_dir($tmp_path . DIRECTORY_SEPARATOR . '__build__', $tmp_path . DIRECTORY_SEPARATOR . basename($build_path), TRUE);
+    $ret = drush_move_dir($tmp_path . DIRECTORY_SEPARATOR . '__build__', $tmp_path . DIRECTORY_SEPARATOR . basename($build_path), FILE_EXISTS_OVERWRITE);
     $ret = $ret && drush_copy_dir($tmp_path . DIRECTORY_SEPARATOR . basename($build_path), $build_path);
   }
 

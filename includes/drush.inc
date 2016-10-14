@@ -772,7 +772,7 @@ function drush_download_file($url, $destination = FALSE, $cache_duration = 0) {
       drush_log(dt('!name retrieved from cache.', array('!name' => $cache_file)));
     }
     else {
-      if (_drush_download_file($url, $cache_file, TRUE)) {
+      if (_drush_download_file($url, $cache_file, FILE_EXISTS_OVERWRITE)) {
         // Cache was set just by downloading file to right location.
       }
       elseif (file_exists($cache_file)) {
@@ -834,7 +834,7 @@ function _drush_is_url($url) {
  *   The path to the downloaded file, or FALSE if the file could not be
  *   downloaded.
  */
-function _drush_download_file($url, $destination, $overwrite = TRUE) {
+function _drush_download_file($url, $destination, $overwrite = FILE_EXISTS_OVERWRITE) {
   static $use_wget;
   if ($use_wget === NULL) {
     $use_wget = drush_shell_exec('wget --version');

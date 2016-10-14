@@ -153,7 +153,7 @@ function drush_archive_dump($sites_subdirs = '@self') {
   // (unless --overwrite) in a writable directory (and a writable file if
   // it exists). We check all this up front to avoid failing after a long
   // dump process.
-  $overwrite = drush_get_option('overwrite');
+  $overwrite = drush_get_option('overwrite') ? FILE_EXISTS_OVERWRITE : FILE_EXISTS_ABORT;
   $dest_dir = dirname($final_destination);
   $dt_args = array('!file' => $final_destination, '!dir' => $dest_dir);
   if (is_dir($final_destination)) {
@@ -342,10 +342,11 @@ function drush_archive_restore($file, $site_id = NULL) {
   $first = array_shift($ini_tmp);
   $docroot = basename($first['docroot']);
   $destination = drush_get_option('destination', realpath('.') . "/$docroot");
+  $overwrite = drush_get_option('overwrite') ? FILE_EXISTS_OVERWRITE : FILE_EXISTS_ABORT;
 
   if ($ini['Global']['archiveformat'] == 'platform') {
     // Move the whole platform in-place at once.
-    if (!drush_move_dir("$tmp/$docroot", $destination, drush_get_option('overwrite'))) {
+    if (!drush_move_dir("$tmp/$docroot", $destination, $overwrite)) {
       return drush_set_error('DRUSH_ARCHIVE_UNABLE_TO_RESTORE_FILES', dt('Unable to restore platform to !dest', array('!dest' => $destination)));
     }
   }
@@ -359,7 +360,7 @@ function drush_archive_restore($file, $site_id = NULL) {
       $site_destination = $destination . '/' . $site['sitedir'];
       // Restore site, in case not already done above.
       if ($ini['Global']['archiveformat'] == 'site') {
-        if (!drush_move_dir("$tmp/$docroot/" . $site['sitedir'], $site_destination, drush_get_option('overwrite'))) {
+        if (!drush_move_dir("$tmp/$docroot/" . $site['sitedir'], $site_destination, $overwrite)) {
           return drush_set_error('DRUSH_ARCHIVE_UNABLE_TO_RESTORE_FILES', dt('Unable to restore site to !dest', array('!dest' => $site_destination)));
         }
       }
