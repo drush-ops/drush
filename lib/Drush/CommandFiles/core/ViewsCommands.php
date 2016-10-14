@@ -6,9 +6,12 @@ use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Log\LogLevel;
 use Drupal\views\Views;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 
-class ViewsCommands {
+class ViewsCommands implements LoggerAwareInterface {
 
+  use LoggerAwareTrait;
 
   /**
    * Set several Views settings to more developer-oriented values.
@@ -44,7 +47,7 @@ class ViewsCommands {
       elseif (is_string($value)) {
         $value = "\"$value\"";
       }
-      drush_log(dt('!setting set to !value', array(
+      $this->logger->log(LogLevel::SUCCESS, dt('!setting set to !value', array(
         '!setting' => $setting,
         '!value' => $value
       )));
@@ -53,7 +56,7 @@ class ViewsCommands {
     // Save the new config.
     $config->save();
 
-    drush_log(dt('New views configuration saved.'), LogLevel::SUCCESS);
+    $this->logger->log(LogLevel::SUCCESS, (dt('New views configuration saved.')));
   }
 
   /**
@@ -72,7 +75,6 @@ class ViewsCommands {
    *   Show a list of views tagged with 'tag1' or 'tag2'.
    * @usage drush vl --status=enabled
    *   Show a list of enabled views.
-   * @todo Column headers still not displaying.
    * @table-style default
    * @field-labels
    *   machine-name: Machine name
@@ -102,9 +104,9 @@ class ViewsCommands {
     // Get the --status option. Store user input apart to reuse it after.
     $status = $options['status'];
 
-    // Throw an error if it's an invalid status.
+    // @todo See https://github.com/consolidation/annotated-command/issues/53
     if ($status && !in_array($status, array('enabled', 'disabled'))) {
-      return drush_set_error(dt('Invalid status: @status. Available options are "enabled" or "disabled"', array('@status' => $status)));
+      throw new \Exception(dt('Invalid status: @status. Available options are "enabled" or "disabled"', array('@status' => $status)));
     }
 
     // Setup a row for each view.
@@ -150,12 +152,12 @@ class ViewsCommands {
       return new RowsOfFields($rows);
     }
     else {
-      drush_log(dt('No views found.', 'ok'));
+      $this->logger->log(LogLevel::OK, dt('No views found.'));
     }
   }
 
   /**
-   * Execute a view and show the results.
+   * Execute a view and show a count of the results, or the rendered HTML.
    *
    * @command views-execute
    *
@@ -179,7 +181,7 @@ class ViewsCommands {
    * @validate-entity-load view
    * @aliases vex
    *
-   * @todo @return. We return an integer for --count, a string for --rendered, and otherwise an array of View objects.
+   * @return string
    */
   public function execute($view, $display = NULL, $view_args = NULL, $options = ['count' => 0, 'rendered' => 0, 'show-admin-links' => 0]) {
 
@@ -191,23 +193,20 @@ class ViewsCommands {
     $view->execute();
 
     if ($options['count']) {
-      // drush_set_default_outputformat('string');
-      return count($view->result);
+      drush_backend_set_result(count($view->result));
+      drush_print(count($view->result));
+      return NULL;
     }
     elseif (!empty($view->result)) {
       if ($options['rendered']) {
-        // drush_set_default_outputformat('string');
         // Don't show admin links in markup by default.
         $view->hide_admin_links = !$options['show-admin-links'];
         $build = $view->preview();
         return \Drupal::service('renderer')->renderPlain($build);
       }
-      else {
-        return $view->result;
-      }
     }
     else {
-      drush_log(dt('No results returned for this view.'), LogLevel::WARNING);
+      $this->logger->log(LogLevel::WARNING, dt('No results returned for this view.'));
       return NULL;
     }
   }
@@ -243,11 +242,11 @@ class ViewsCommands {
         }
       }
 
-      drush_log(dt('A total of @total views were analyzed and @messages problems were found.', array('@total' => count($views), '@messages' => $messages_count)), LogLevel::OK);
+      $this->logger->log(LogLevel::OK, dt('A total of @total views were analyzed and @messages problems were found.', array('@total' => count($views), '@messages' => $messages_count));
       return new RowsOfFields($rows);
     }
     else {
-      drush_log(dt('There are no views to analyze'), LogLevel::OK);
+      $this->logger->log(LogLevel::OK, dt('There are no views to analyze'));
     }
   }
 
@@ -256,7 +255,6 @@ class ViewsCommands {
    *
    * @command views-enable
    * @param string $views A comma delimited list of view names.
-   * @todo Good use of validation annotation, including using its value as entity-type?
    * @validate-entity-load view
    * @usage drush ven frontpage,taxonomy_term
    *   Enable the frontpage and taxonomy_term views.
@@ -272,7 +270,7 @@ class ViewsCommands {
         $view->save();
       }
     }
-    drush_log(dt('!str enabled.', ['!str' => implode(', ', $view_names)]), LogLevel::OK);
+    $this->logger->log(LogLevel::OK, dt('!str enabled.', ['!str' => implode(', ', $view_names)]));
   }
 
   /**
@@ -295,13 +293,12 @@ class ViewsCommands {
         $view->save();
       }
     }
-    drush_log(dt('!str disabled.', ['!str' => implode(', ', $view_names)]), LogLevel::OK);
+    $this->logger->log(LogLevel::OK, dt('!str disabled.', ['!str' => implode(', ', $view_names)]));
   }
 
   /**
    * Validate that passed View names are valid.
    *
-   * @todo This hook stopped working for some reason.
    * @hook validate @validate-entity-load
    * @param \Consolidation\AnnotatedCommand\CommandData $commandData
    * @return \Consolidation\AnnotatedCommand\CommandError|null
