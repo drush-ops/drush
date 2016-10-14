@@ -81,7 +81,7 @@ using Compser, consider trying MANUAL INSTALLATION. It is not too hard.
 1. To install Drush
    1. Version 6.x (stable):
 
-      composer global require drush/drush:6.*
+      composer global require drush/drush:6.x
 
    1. Version 7.x (dev) which is required for Drupal 8:
 
