@@ -179,6 +179,19 @@ function user_drush_command() {
         'Set the password for the username someuser. @see xkcd.com/936',
     ),
   );
+  $items['user-edit'] = array(
+    'description' => 'Edit the user account with the specified name.',
+    'aliases' => array('uedt'),
+    'arguments' => array(
+      'name' => 'The name of the account to modify.'
+    ),
+    'required-arguments' => TRUE,
+    'options' => array(),
+    'examples' => array(
+      'drush user-edit someuser --mail="user@example.org" --pass="new-password" --someotherfield="new value")' =>
+        'Sets the mail, pass and someotherfield values for the username someuser.',
+    ),
+  );
   $items['user-login'] = array(
     'description' => 'Display a one time login link for the given user account (defaults to uid 1).',
     'aliases' => array('uli'),
@@ -417,6 +430,48 @@ function drush_user_password($name) {
   }
   else {
     drush_set_error("The user account with the name " . $name . " could not be loaded.");
+  }
+}
+
+/**
+ * Edits the account with the given username
+ */
+function drush_user_edit($name) {
+  // Load the user first:
+  if (drush_drupal_major_version() >= 7) {
+    $user = user_load_by_name($name);
+  }
+  else {
+    $user = user_load(array('name' => $name));
+  }
+  
+  // Set error and return on failure:
+  if ($user === FALSE) {
+    drush_set_error("The user account with the name " . $name . " could not be loaded.");
+    return;
+  }
+ 
+  // Skip on simulation:
+  if (drush_get_context('DRUSH_SIMULATE')) {
+    return;
+  }
+  
+  // Otherwise update user:
+  // cli: Passed as --option=value to the command line (see: drush_context_names())
+  $fields_to_update = drush_get_context('cli');
+
+  if (drush_drupal_major_version() >= 8) {
+    foreach ($fields_to_update as $key => $value) {
+      $user->{$key} = $value;
+    }
+    $user_object = $user->save();
+  }
+  else {
+    $user_object = user_save($user, $fields_to_update);
+  }
+
+  if ($user_object === FALSE) {
+    drush_set_error("Could not update the user account with the name " . $name . "!");
   }
 }
 
