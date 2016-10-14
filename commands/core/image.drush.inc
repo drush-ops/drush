@@ -48,17 +48,6 @@ function image_drush_command() {
 }
 
 /**
- * Implements hook_drush_help_alter().
- */
-function image_drush_help_alter(&$command) {
-  // Drupal 8+ customizations.
-  if ($command['command'] == 'image-derive' && drush_drupal_major_version() >= 8) {
-    unset($command['examples']);
-    $command['examples']['drush image-derive thumbnail core/themes/bartik/logo.png'] = 'Save thumbnail sized derivative of logo image.';
-  }
-}
-
-/**
  * Command argument complete callback.
  *
  * @return

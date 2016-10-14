@@ -13,16 +13,7 @@ function site_install_drush_command() {
       // @endcode
       // line in the profile's info file.
       // See https://www.drupal.org/node/1022020 for more information.
-      //
-      // In Drupal 8 you can turn your installation profile into a distribution
-      // by providing a
-      // @code
-      //   distribution:
-      //     name: 'Distribution name'
-      // @endcode
-      // block in the profile's info YAML file.
-      // See https://www.drupal.org/node/2210443 for more information.
-      'profile' => 'The install profile you wish to run. Defaults to \'default\' in D6, \'standard\' in D7+, unless an install profile is marked as exclusive (or as a distribution in D8+ terminology) in which case that is used.',
+      'profile' => 'The install profile you wish to run. Defaults to \'default\' in D6, \'standard\' in D7+, unless an install profile is marked as exclusive, in which case that is used.',
       'key=value...' => 'Any additional settings you wish to pass to the profile. Fully supported on D7+, partially supported on D6 (single step configure forms only). The key is in the form [form name].[parameter name] on D7 or just [parameter name] on D6.',
     ),
     'options' => array(
@@ -200,64 +191,6 @@ function drush_core_pre_site_install($profile = NULL) {
   }
 
   $sql->drop_or_create($db_spec);
-
-  if (drush_drupal_major_version() >= 8) {
-    // Empty out any existing config directories.
-    $directories = array();
-    // Check for alternative format:
-    // @code
-    // $config_directories = array(
-    //   'active' => 'config/active',
-    //   'staging' => 'config/staging',
-    // );
-    // @endcode
-    // @todo update this regex to omit path.
-    // preg_match('/\n\$config_directories[^;]*\'path\' => \'([^\']*)\'.*\'path\' => \'([^\']*)\'/s', file_get_contents($settingsfile), $directories);
-
-    if (empty($directories)) {
-      // Check for canonical format:
-      // @code
-      // $config_directories['active'] = 'config/active';
-      // $config_directories['staging'] = 'config/staging';
-      // @endcode
-      foreach (array('active', 'staging') as $type) {
-        preg_match('/\n\$config_directories[^;]*\'' . $type . '\'\] = \'([^\']*)\'/', file_get_contents($settingsfile), $directory);
-        if (isset($directory[1])) {
-          $directories[$type] = $directory[1];
-        }
-      }
-    }
-    else {
-      $directories['active'] =  $files . '/' . $directories[1];
-      $directories['staging'] =  $files . '/' . $directories[2];
-    }
-
-    if (drush_get_option('keep-config', FALSE) == FALSE) {
-      foreach ($directories as $directory) {
-        if (file_exists($directory)) {
-          drush_delete_dir_contents($directory, TRUE);
-        }
-      }
-    }
-
-    if (drush_get_option('writable')) {
-      if (is_writable($settingsfile)) {
-        $chmod = <<<'EOD'
-// Appended by Drush site-install.
-$settings['file_chmod_directory'] = 0777;
-$settings['file_chmod_file'] = 0777;
-EOD;
-        drush_file_append_data($settingsfile, "\n$chmod\n");
-      }
-      else {
-        drush_log(dt('Not appending file_chmod_* to @settingsfile as it is not writable.', array('@settingsfile' => $settingsfile)), LogLevel::NOTICE);
-      }
-    }
-
-
-    // Remove files/php if needed.
-    drush_delete_dir("$files/php", TRUE);
-  }
 
   return TRUE;
 }
