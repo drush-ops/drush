@@ -16,15 +16,12 @@ class StateCommands {
    * @usage drush state-get system.cron_last
    *   Displays last cron run timestamp
    * @aliases sget
-   * @field-labels
-   *   key: Key
-   *   value: Value
-   * @default-fields value
    *
    * @return \Consolidation\OutputFormatters\StructuredData\AssociativeList
    */
-  public function get($key) {
-    return new AssociativeList([$key => \Drupal::state()->get($key)]);
+  public function get($key, $options = ['format' => 'string', 'fields' => '']) {
+    $value = \Drupal::state()->get($key);
+    return new AssociativeList([$key => $value]);
   }
 
   /**
