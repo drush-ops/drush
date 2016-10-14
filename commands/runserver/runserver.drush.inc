@@ -136,7 +136,7 @@ function drush_core_runserver($uri = NULL) {
     $extra = ' "' . __DIR__ . '/d8-rs-router.php"';
   }
   else {
-    $extra = ' --define auto_prepend_file="' . __DIR__ . '/runserver-prepend.php"';
+    $extra = ' "' . __DIR__ . '/runserver-prepend.php"';
   }
   drush_shell_exec_interactive($php . ' -S ' . $addr . ':' . $uri['port'] . $extra);
 }
