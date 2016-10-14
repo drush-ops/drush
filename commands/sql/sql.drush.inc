@@ -249,7 +249,7 @@ function drush_sql_create() {
     }
   }
 
-  return $sql->createdb();
+  return $sql->createdb(TRUE);
 }
 
 
