@@ -12,6 +12,9 @@ abstract class BaseBoot implements Boot {
   function valid_root($path) {
   }
 
+  function get_version($root) {
+  }
+
   function command_defaults() {
   }
 
