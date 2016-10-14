@@ -115,7 +115,12 @@ function update_main() {
   $pending = update_get_update_list();
 
   // Pending hook_post_update_X() implementations.
-  $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateInformation();
+  try {
+    $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateInformation();
+  }
+  catch (\Exception $e) {
+    $post_updates = array();
+  }
 
   $start = array();
 
@@ -210,7 +215,12 @@ function drush_update_batch() {
   }
 
   // Apply post update hooks.
-  $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateFunctions();
+  try {
+    $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateFunctions();
+  }
+  catch (\Exception $e) {
+    $post_updates = array();
+  }
   if ($post_updates) {
     $operations[] = ['drush_drupal_cache_clear_all', []];
     foreach ($post_updates as $function) {
