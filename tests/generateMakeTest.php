@@ -78,8 +78,18 @@ EOD;
     $this->assertEquals($expected, $actual);
 
     // Download a module to a 'contrib' directory to test the subdir feature
-    mkdir($this->webroot() + '/sites/all/modules/contrib');
     $this->drush('pm-download', array('libraries'), array('destination' => 'sites/all/modules/contrib') + $options);
+
+    // Temporary work-around to get tests passing, pending resolution of
+    // https://www.drupal.org/node/2557419
+    if ($major_version == '8.x') {
+      $libraries_dir = $this->webroot() . '/sites/all/modules/contrib/libraries/';
+      $patch_url = 'https://www.drupal.org/files/issues/libraries-2557419.patch';
+      $this->execute('wget -O tmp.patch ' . $patch_url, 0, $libraries_dir);
+      $this->execute('patch -p1 < tmp.patch', 0, $libraries_dir);
+      $this->execute('rm tmp.patch', 0, $libraries_dir);
+    }
+
     $this->drush('pm-enable', array('libraries'), $options);
     $makefile = UNISH_SANDBOX . '/dev.make.yml';
     $this->drush('generate-makefile', array($makefile), array('exclude-versions' => NULL) + $options);
