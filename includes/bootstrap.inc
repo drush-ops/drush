@@ -1021,6 +1021,16 @@ function drush_bootstrap_value($context, $value = null) {
 function drush_bootstrap_prepare() {
   define('DRUSH_BASE_PATH', dirname(dirname(__FILE__)));
 
+  // If Drush was installed with composer, load autoload.php.
+  $local_vendor_path = DRUSH_BASE_PATH . '/vendor/autoload.php';
+  $global_vendor_path = DRUSH_BASE_PATH . '/../../../vendor/autoload.php';
+  if (file_exists($local_vendor_path)) {
+    require_once $local_vendor_path;
+  }
+  elseif (file_exists($global_vendor_path)) {
+    require_once $global_vendor_path;
+  }
+
   require_once DRUSH_BASE_PATH . '/includes/environment.inc';
   require_once DRUSH_BASE_PATH . '/includes/command.inc';
   require_once DRUSH_BASE_PATH . '/includes/drush.inc';
