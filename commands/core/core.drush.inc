@@ -68,6 +68,9 @@ function core_drush_command() {
   $items['updatedb'] = array(
     'description' => 'Apply any database updates required (as with running update.php).',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
+    'options' => array(
+      'skip-cache-clear' => 'Do not clear all Drupal caches after update.',
+    ),
     'aliases' => array('updb'),
   );
   $items['core-config'] = array(
@@ -398,8 +401,10 @@ function drush_core_updatedb() {
     return FALSE;
   }
 
-  // Clear all caches in a new process. We just performed major surgery.
-  drush_invoke_process('@self', 'cache-clear', array('all'));
+  if (!drush_get_option('skip-cache-clear', FALSE)) {
+    // Clear all caches in a new process. We just performed major surgery.
+    drush_invoke_process('@self', 'cache-clear', array('all'));
+  }
 
   drush_log(dt('Finished performing updates.'), 'ok');
 }
