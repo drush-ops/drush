@@ -318,6 +318,15 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
   );
 
+  $items['drush-directory'] = array(
+    'description' => 'Return the filesystem path of the currently running drush.',
+    'examples' => array(
+      'cd `drush drush-directory`' => 'Navigate into the drush directory',
+    ),
+    'aliases' => array('drush-dir'),
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+  );
+
   $items['batch-process'] = array(
     'description' => 'Process operations in the specified batch set',
     'hidden' => TRUE,
@@ -1278,6 +1287,19 @@ function drush_core_drupal_directory($target = 'root') {
   else {
     return drush_set_error('DRUSH_TARGET_NOT_FOUND', dt("Target '!target' not found.", array('!target' => $target)));
   }
+}
+
+/**
+ * Command callback.
+ */
+function drush_core_drush_directory() {
+  $path = realpath(__DIR__ . '/../..');
+
+  if ($path === FALSE) {
+    return drush_set_error('CORE_EXECUTE_FAILED', dt("The command !command failed.", array('!command' => 'drush-directory')));
+  }
+
+  return $path;
 }
 
 /**
