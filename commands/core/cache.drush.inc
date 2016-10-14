@@ -200,6 +200,14 @@ function drush_cache_set_prepare_data($data) {
     $data = file_get_contents("php://stdin");
   }
 
+  // Convert the "expire" argument to a valid value for Drupal's cache_set().
+  if ($expire == 'CACHE_TEMPORARY') {
+    $expire = CACHE_TEMPORARY;
+  }
+  if ($expire == 'CACHE_PERMANENT') {
+    $expire = CACHE_PERMANENT;
+  }
+
   // Now, we parse the object.
   switch (drush_get_option('format', 'string')) {
     case 'json':
