@@ -878,7 +878,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
 
   // Process all projects concurrently using make-process.
   if (isset($projects['contrib'])) {
-    $concurrency = drush_get_option('concurrency', 1);
+    $concurrency = drush_get_option('concurrency', 4);
     // Generate $concurrency sub-processes to do the actual work.
     $invocations = array();
     $thread = 0;
