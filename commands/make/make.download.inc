@@ -157,37 +157,6 @@ function make_download_file_unpack($filename, $download_location, $name, $subtre
 }
 
 /**
- * Move a downloaded and unpacked file or directory into place.
- */
-function _make_download_file_move($tmp_path, $filename, $download_location, $subtree = NULL) {
-  $lines = drush_scan_directory($tmp_path, '/./', array('.', '..'), 0, FALSE, 'filename', 0, TRUE);
-  $main_directory = basename($download_location);
-  if (count($lines) == 1) {
-    $directory = array_shift($lines);
-    if ($directory->basename != $main_directory) {
-      drush_move_dir($directory->filename, $tmp_path . DIRECTORY_SEPARATOR . $main_directory, TRUE);
-    }
-    drush_copy_dir($tmp_path . DIRECTORY_SEPARATOR . $main_directory . DIRECTORY_SEPARATOR . $subtree, $download_location, FILE_EXISTS_OVERWRITE);
-    drush_delete_dir($tmp_path, TRUE);
-  }
-  elseif (count($lines) > 1) {
-    drush_delete_dir($download_location, TRUE);
-    drush_move_dir($tmp_path . DIRECTORY_SEPARATOR . $subtree, $download_location, TRUE);
-  }
-
-  // Remove the tarball.
-  if (file_exists($filename)) {
-    drush_delete_dir($filename, TRUE);
-  }
-
-  if (file_exists($tmp_path)) {
-    drush_delete_dir($tmp_path, TRUE);
-  }
-  return TRUE;
-}
-
-
-/**
  * For backwards compatibility.
  */
 function make_download_get($name, $type, $download, $download_location) {

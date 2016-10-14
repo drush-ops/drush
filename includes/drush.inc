@@ -1262,6 +1262,15 @@ function drush_log($message, $type = LogLevel::INFO, $error = null) {
 }
 
 /**
+ * Future: add some sort of dependency injection to Drush.
+ */
+function _drush_create_default_logger() {
+  $drush_logger = new Logger();
+  drush_set_context('DRUSH_LOGGER', $drush_logger);
+  drush_set_context('DRUSH_LOG_CALLBACK', $drush_logger);
+}
+
+/**
  * Call the default logger, or the user's log callback, as
  * appropriate.
  */

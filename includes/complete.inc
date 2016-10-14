@@ -1,6 +1,7 @@
 <?php
 
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
+use Drush\Log\LogLevel;
 
 /**
  * @file

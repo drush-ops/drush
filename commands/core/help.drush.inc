@@ -98,9 +98,9 @@ function drush_core_help($name = '') {
     drush_backend_set_result($return['object']);
     return;
   }
-
-  // For speed, only bootstrap up to DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION.
-  drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+  
+  drush_bootstrap_max();
+  drush_get_commands(true);
   $implemented = drush_get_commands();
   ksort($implemented);
   $command_categories = drush_commands_categorize($implemented);

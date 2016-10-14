@@ -1,10 +1,5 @@
 <?php
-namespace Drush\CommandFiles;
-
-/**
- * @file
- *   Set up local Drush configuration.
- */
+namespace Drush\CommandFiles\core;
 
 use Drush\Log\LogLevel;
 
@@ -13,17 +8,17 @@ class InitCommandFile extends \Robo\Tasks
   /**
    * Initialize local Drush configuration
    *
-   * Enrich the bash startup file with completion and aliases.
-   * Copy .drushrc file to ~/.drush
+   * @command core-init
    *
-   * @todo: '@package core', @global-options, replacement mechanism for 'bootstrap'
+   * @todo: @global-options
    *
+   * @description Enrich the bash startup file with completion and aliases.
    * @option $edit Open the new config file in an editor.
    * @option $add-path Always add Drush to the \$PATH in the user's .bashrc
    *   file, even if it is already in the \$PATH. Use --no-add-path to skip
    *   updating .bashrc with the Drush \$PATH. Default is to update .bashrc
    *   only if Drush is not already in the \$PATH.
-   * @aliases core-init, init
+   * @aliases init
    * @usage core-init --edit
    *   Enrich Bash and open drush config file in editor.
    * @usage core-init --edit --bg

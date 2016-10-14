@@ -3,6 +3,7 @@
 namespace Drush\Sql;
 
 use Drush\Log\LogLevel;
+use Webmozart\PathUtil\Path;
 
 class SqlBase {
 
@@ -116,7 +117,7 @@ class SqlBase {
         if (empty($backup_dir)) {
           $backup_dir = drush_find_tmp();
         }
-        $file = $backup_dir . '/@DATABASE_@DATE.sql';
+        $file = Path::join($backup_dir, '@DATABASE_@DATE.sql');
       }
       $file = str_replace(array('@DATABASE', '@DATE'), array($database, gmdate('Ymd_His')), $file);
     }
@@ -247,7 +248,8 @@ class SqlBase {
    * Create a new database.
    *
    * @param boolean $quoted
-   *   Quote the database name.
+   *   Quote the database name. Mysql uses backticks to quote which can cause problems
+   *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
    * @return boolean
    *   True if successful, FALSE otherwise.
    */
