@@ -28,7 +28,7 @@ class ExampleCommandFile
      * @usage example:formatters --fields=first,third
      * @usage example:formatters --fields=III,II
      * @aliases tf
-     * @hidden true
+     * @hidden
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */

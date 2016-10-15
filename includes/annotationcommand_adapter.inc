@@ -129,7 +129,7 @@ function annotationcommand_adapter_discover($searchpath, $phase = false, $phase_
  * variable is set, these will be called via Symfony's Application::run() method.
  * Otherwise, the legacy Drush command dispatcher will be used for all commands.
  *
- * @return bolean false if command failed (expect drush_set_error was called in this case)
+ * @return bool false if command failed (expect drush_set_error was called in this case)
  */
 function annotationcommand_adapter_run_console_command() {
   $args = func_get_args();
@@ -383,7 +383,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       $aliases[] = $standard_alias;
     }
     $handle_remote_commands = strtolower($commandinfo->getAnnotation('handle-remote-commands')) == 'true';
-    $hidden = strtolower($commandinfo->getAnnotation('hidden')) == 'true';
+    $hidden = $commandinfo->hasAnnotation('hidden');
     // If there is no 'bootstrap' annotation, default to NONE.
     $bootstrap = DRUSH_BOOTSTRAP_NONE;
     if ($bootstrap = $commandinfo->getAnnotation('bootstrap')) {
@@ -412,7 +412,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
     $required_arguments = 0;
     foreach ($commandinfo->arguments()->getValues() as $arg => $default) {
       $command['arguments'][$arg] = $commandinfo->arguments()->getDescription($arg);
-      if (!isset($default)) {
+      if (!$commandinfo->arguments()->hasDefault($arg)) {
         ++$required_arguments;
       }
     }
@@ -426,6 +426,9 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       $fn = 'annotationcommand_adapter_alter_option_description_' . $option;
       if (function_exists($fn)) {
         $command['options'][$option] = $fn($command['options'][$option], $commandinfo, $default);
+      }
+      if ($commandinfo->getAnnotation('hidden-option') == $option) {
+        $command['options'][$option]['hidden'] = TRUE;
       }
     }
     $command['annotations'] = $commandinfo->getAnnotations();
@@ -473,6 +476,9 @@ function annotationcommand_adapter_add_hook_options(&$command)
       $command['options'][$option] = ['description' => $description];
       if (!empty($default)) {
         $command['options'][$option]['example-value'] = $default;
+      }
+      if ($commandinfo->getAnnotation('hidden-option') == $option) {
+        $command['options'][$option]['hidden'] = TRUE;
       }
       $fn = 'annotationcommand_adapter_alter_option_description_' . $option;
       if (function_exists($fn)) {
