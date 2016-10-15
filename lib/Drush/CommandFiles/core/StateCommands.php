@@ -33,8 +33,8 @@ class StateCommands {
    * @param string $key The state key, for example: system.cron_last.
    * @param mixed $value The value to assign to the state key. Use '-' to read from STDIN.
    * @option input-format Type for the value. Defaults to 'auto'. Other recognized values: string, integer float, boolean, json, yaml.
-   * @todo use a hidden option when available.
    * @option value For internal use only.
+   * @hidden-option value
    * @usage drush state-set system.cron_last 1406682882 --input-format=integer
    *  Sets a timestamp for last cron run.
    * @usage php -r "print json_encode(array(\'drupal\', \'simpletest\'));"  | drush state-set --input-format=json foo.name -
