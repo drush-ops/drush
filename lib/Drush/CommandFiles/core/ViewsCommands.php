@@ -174,7 +174,7 @@ class ViewsCommands extends DrushCommands {
    *   Show the rendered HTML of my_view:page_1 where the first two contextual filter values are 3 and 'foo' respectively.
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    * @complete \Drush\CommandFiles\core\ViewsCommands::complete
-   * @validate-entity-load view
+   * @validate-entity-load view views
    * @aliases vex
    *
    * @return string
@@ -249,7 +249,7 @@ class ViewsCommands extends DrushCommands {
    *
    * @command views-enable
    * @param string $views A comma delimited list of view names.
-   * @validate-entity-load view
+   * @validate-entity-load view views
    * @usage drush ven frontpage,taxonomy_term
    *   Enable the frontpage and taxonomy_term views.
    * @complete \Drush\CommandFiles\core\ViewsCommands::complete
@@ -271,7 +271,7 @@ class ViewsCommands extends DrushCommands {
    * Disable the specified views.
    *
    * @command views-disable
-   * @validate-entity-load view
+   * @validate-entity-load view views
    * @param string $views A comma delimited list of view names.
    * @usage drush vdis frontpage taxonomy_term
    *   Disable the frontpage and taxonomy_term views.
@@ -297,10 +297,10 @@ class ViewsCommands extends DrushCommands {
    * @param \Consolidation\AnnotatedCommand\CommandData $commandData
    * @return \Consolidation\AnnotatedCommand\CommandError|null
    */
-  protected function validate(CommandData $commandData) {
-    // Get entity type ('view) from the value of the @validate-entity-load annotation
-    $names = _convert_csv_to_array($commandData->input()->getArgument('views'));
-    $loaded = \Drupal::entityTypeManager()->getStorage('view')->loadMultiple($names);
+  public function validate_entity_load(CommandData $commandData) {
+    list($entity_type, $arg_name) = explode(' ', $commandData->annotationData()->get('validate-entity-load', NULL));
+    $names = _convert_csv_to_array($commandData->input()->getArgument($arg_name));
+    $loaded = \Drupal::entityTypeManager()->getStorage($entity_type)->loadMultiple($names);
     if ($missing = array_diff($names, array_keys($loaded))) {
       $msg = dt('Unable to load Views: !str', ['!str' => implode(', ', $missing)]);
       return new CommandError($msg);
