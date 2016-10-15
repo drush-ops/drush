@@ -765,7 +765,7 @@ function annotationcommand_adapter_alter_option_description_format($option_help,
  */
 function annotationcommand_adapter_alter_option_description_fields($option_help, $commandinfo, $default) {
   $formatOptions = new FormatterOptions($commandinfo->getAnnotations()->getArrayCopy());
-  $field_labels = $formatOptions->get(FormatterOptions::FIELD_LABELS);
+  $field_labels = $formatOptions->get(FormatterOptions::FIELD_LABELS, [], '');
   $default_fields = $formatOptions->get(FormatterOptions::DEFAULT_FIELDS, [], array_keys($field_labels));
   $available_fields = array_keys($field_labels);
   $option_help['example-value'] = implode(', ', $default_fields);
