@@ -774,7 +774,8 @@ function annotationcommand_adapter_alter_option_description_fields($option_help,
   $field_labels = $formatOptions->get(FormatterOptions::FIELD_LABELS, [], '');
   $default_fields = $formatOptions->get(FormatterOptions::DEFAULT_FIELDS, [], array_keys($field_labels));
   $available_fields = array_keys($field_labels);
-  $option_help['example-value'] = implode(', ', $default_fields);
+  // @todo silencing a notice that will likely be fixed on views-list fixes https://github.com/consolidation/output-formatters/issues/35
+  $option_help['example-value'] = @implode(', ', $default_fields);
   $option_help['description'] = dt('Fields to output. All available fields are: !available.', array('!available' => implode(', ', $available_fields)));
   return $option_help;
 }

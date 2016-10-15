@@ -164,17 +164,14 @@ class ViewsCommands extends DrushCommands {
    * @param string $display The display ID to execute. If none specified, the default display will be used.
    * @param string $view_args A comma delimited list of values, corresponding to contextual filters.
    * @option count Display a count of the results instead of each row.
-   * @option rendered Return the results as rendered HTML output for the display.
    * @option show-admin-links Show contextual admin links in the rendered markup.
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
-   * @usage drush vl
-   *   Show a list of all available views.
-   * @usage drush vl --name=blog
-   *   Show a list of views which names contain 'blog'.
-   * @usage drush vl --tags=tag1,tag2
-   *   Show a list of views tagged with 'tag1' or 'tag2'.
-   * @usage drush vl --status=enabled
-   *   Show a list of enabled views.
+   * @usage drush views-execute my_view
+   *   Show the rendered HTML for the default display for the my_view View.
+   * @usage drush views-execute my_view page_1 3 --count
+   *   Show a count of my_view:page_1 where the first contextual filter value is 3.
+   * @usage drush views-execute my_view page_1 3,foo
+   *   Show the rendered HTML of my_view:page_1 where the first two contextual filter values are 3 and 'foo' respectively.
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    * @complete \Drush\CommandFiles\core\ViewsCommands::complete
    * @validate-entity-load view
@@ -182,7 +179,7 @@ class ViewsCommands extends DrushCommands {
    *
    * @return string
    */
-  public function execute($view, $display = NULL, $view_args = NULL, $options = ['count' => 0, 'rendered' => 0, 'show-admin-links' => 0]) {
+  public function execute($view, $display = NULL, $view_args = NULL, $options = ['count' => 0, 'show-admin-links' => 0]) {
 
     $view = Views::getView($view);
 
@@ -191,22 +188,20 @@ class ViewsCommands extends DrushCommands {
     $view->preExecute(_convert_csv_to_array($view_args));
     $view->execute();
 
-    if ($options['count']) {
+    if (empty($view->result)) {
+      $this->logger->log(LogLevel::WARNING, dt('No results returned for this view.'));
+      return NULL;
+    }
+    elseif ($options['count']) {
       drush_backend_set_result(count($view->result));
       drush_print(count($view->result));
       return NULL;
     }
-    elseif (!empty($view->result)) {
-      if ($options['rendered']) {
-        // Don't show admin links in markup by default.
-        $view->hide_admin_links = !$options['show-admin-links'];
-        $build = $view->preview();
-        return \Drupal::service('renderer')->renderPlain($build);
-      }
-    }
     else {
-      $this->logger->log(LogLevel::WARNING, dt('No results returned for this view.'));
-      return NULL;
+      // Don't show admin links in markup by default.
+      $view->hide_admin_links = !$options['show-admin-links'];
+      $build = $view->preview();
+      return (string) \Drupal::service('renderer')->renderPlain($build);
     }
   }
 
