@@ -80,6 +80,7 @@ class ViewsCommands extends DrushCommands {
    *   description: Description
    *   status: Status
    *   tag: Tag
+   * @default-fields machine-name,label,description,status
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    * @aliases vl
    *
@@ -124,7 +125,7 @@ class ViewsCommands extends DrushCommands {
       }
 
       $row = array(
-        'name' => $view->id(),
+        'machine-name' => $view->id(),
         'label' => $view->label(),
         'description' =>  $view->get('description'),
         'status' =>  $view->status() ? dt('Enabled') : dt('Disabled'),
