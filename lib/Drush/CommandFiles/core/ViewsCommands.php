@@ -8,6 +8,7 @@ use Drush\CommandFiles\DrushCommands;
 use Drush\Log\LogLevel;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Drupal\views\Views;
 
 class ViewsCommands extends DrushCommands {
   /**
