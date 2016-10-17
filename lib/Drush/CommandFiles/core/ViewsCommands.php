@@ -4,14 +4,12 @@ namespace Drush\CommandFiles\core;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drush\CommandFiles\DrushCommands;
 use Drush\Log\LogLevel;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
-class ViewsCommands implements LoggerAwareInterface {
-
-  use LoggerAwareTrait;
-
+class ViewsCommands extends DrushCommands {
   /**
    * Set several Views settings to more developer-oriented values.
    *

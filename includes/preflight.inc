@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Webmozart\PathUtil\Path;
 
 /**
  * The main Drush function.
@@ -366,6 +367,8 @@ function drush_init_annotation_commands($container) {
   /** @var \Consolidation\AnnotatedCommand\CommandFileDiscovery */
   $discovery = $container->get('commandDiscovery');
   $commandFiles = $discovery->discover(DRUSH_BASE_PATH . '/lib/Drush', '\Drush');
+  $base_class = Path::join(DRUSH_BASE_PATH, 'lib/Drush/CommandFiles/DrushCommands.php');
+  unset($commandFiles[$base_class]);
   drush_init_register_command_files($container, $commandFiles);
 }
 
