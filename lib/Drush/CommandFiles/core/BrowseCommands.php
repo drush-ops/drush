@@ -1,7 +1,9 @@
 <?php
 namespace Drush\CommandFiles\core;
 
-class BrowseCommands {
+use Drush\CommandFiles\DrushCommands;
+
+class BrowseCommands extends DrushCommands {
 
   /**
    * Display a link to a given path or open link in a browser.

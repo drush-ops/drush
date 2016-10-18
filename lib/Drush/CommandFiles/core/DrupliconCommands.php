@@ -2,8 +2,9 @@
 namespace Drush\CommandFiles\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use Drush\CommandFiles\DrushCommands;
 
-class DrupliconCommands {
+class DrupliconCommands extends DrushCommands {
   protected $printed = false;
 
   /**
@@ -30,7 +31,7 @@ class DrupliconCommands {
       return;
     }
     if ($commandData->input()->getOption('druplicon')) {
-      drush_log(dt('Displaying Druplicon for "!command" command.', array('!command' => $commandName)));
+      $this->logger()->debug(dt('Displaying Druplicon for "!command" command.', array('!command' => $commandName)));
       $misc_dir = DRUSH_BASE_PATH . '/misc';
       if (drush_get_context('DRUSH_NOCOLOR')) {
         $content = file_get_contents($misc_dir . '/druplicon-no_color.txt');
