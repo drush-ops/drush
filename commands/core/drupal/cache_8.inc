@@ -62,7 +62,7 @@ function drush_cache_clear_theme_registry() {
 function drush_cache_clear_router() {
   /** @var \Drupal\Core\Routing\RouteBuilderInterface $router_builder */
   $router_builder = \Drupal::service('router.builder');
-  $router_builder->rebuild;
+  $router_builder->rebuild();
 }
 
 function drush_cache_clear_css_js() {
