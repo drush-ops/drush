@@ -31,13 +31,13 @@ abstract class DrushCommands implements
   }
 
   /**
-   * Override Robo's IO function with our custom style.
+   * @todo Override Robo's IO function with our custom style.
    */
-//  protected function io()
-//  {
+  protected function io()
+  {
 //    if (!$this->io) {
 //      $this->io = new TerminusStyle($this->input(), $this->output());
 //    }
-//    return $this->io;
-//  }
+    return $this->io;
+  }
 }
