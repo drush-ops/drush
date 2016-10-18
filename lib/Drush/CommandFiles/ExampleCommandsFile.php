@@ -12,7 +12,7 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 
 use Consolidation\AnnotatedCommand\CommandData;
 
-class ExampleCommandFile
+class ExampleCommandsFile extends DrushCommands
 {
     /**
      * Demonstrate output formatters.  Default format is 'table'.
