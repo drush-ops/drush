@@ -638,7 +638,11 @@ function drush_is_local_host($host) {
  * Return the user's home directory.
  */
 function drush_server_home() {
-  return Path::getHomeDirectory();
+  try {
+    return Path::getHomeDirectory();
+  } catch (Exception $e) {
+    return NULL;
+  }
 }
 
 /**
