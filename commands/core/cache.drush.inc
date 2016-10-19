@@ -276,6 +276,8 @@ function drush_cache_rebuild() {
   require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';
 
   $request = Request::createFromGlobals();
+  // Ensure that the HTTP method is set, which does not happen with Request::createFromGlobals().
+  $request->setMethod('GET');
   // Manually resemble early bootstrap of DrupalKernel::boot().
   require_once DRUSH_DRUPAL_CORE . '/includes/bootstrap.inc';
   DrupalKernel::bootEnvironment();
