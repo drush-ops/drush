@@ -726,6 +726,7 @@ function annotationcommand_adapter_call_validate_interface($names, $hooks, Comma
   $factory = annotationcommand_adapter_get_factory();
   $hookManager = $factory->hookManager();
 
+  $annotationData = $commandData->annotationData();
   $hooks = $hookManager->getHooks($names, $hooks, $annotationData);
 
   foreach ((array)$hooks as $hook) {
