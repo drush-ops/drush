@@ -497,7 +497,7 @@ function annotationcommand_adapter_add_hook_options(&$command)
 function annotationcommand_adapter_command_names($command)
 {
   $names = array_merge(
-    [$command['name']],
+    [$command['command']],
     $command['aliases']
   );
   if (!empty($command['annotated-command-callback'])) {
