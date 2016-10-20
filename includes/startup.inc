@@ -128,7 +128,12 @@ function find_wrapper_or_launcher_at_location($location) {
 /**
  * Determine whether current OS is a Windows variant.
  */
-function drush_is_windows($os = PHP_OS) {
+function drush_is_windows($os = NULL) {
+  if (!$os) {
+    // cannot use PHP_OS as default value
+    $os = PHP_OS;
+  }
+  
   return strtoupper(substr($os, 0, 3)) === 'WIN';
 }
 
