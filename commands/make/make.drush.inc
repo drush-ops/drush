@@ -159,9 +159,9 @@ function make_drush_command() {
     ),
     'required-arguments' => TRUE,
     'examples' => array(
-      'drush make-convert example.make --format=yml' => 'Convert example.make to example.make.yml',
-      'drush make-convert example.make --format=composer' => 'Convert example.make to composer.json',
-      'drush make-convert composer.lock --format=make' => 'Convert composer.lock example.make',
+      'drush make-convert example.make --format=composer  > composer.json' => 'Convert example.make to composer.json',
+      'drush make-convert example.make --format=yml > example.make.yml' => 'Convert example.make to example.make.yml',
+      'drush make-convert composer.lock --format=make > example.make' => 'Convert composer.lock example.make',
     ),
   );
 
