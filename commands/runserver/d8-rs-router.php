@@ -17,9 +17,6 @@ if (file_exists('.' . $url['path'])) {
   return FALSE;
 }
 
-// Populate the "q" query key with the path, skip the leading slash.
-$_GET['q'] = $_REQUEST['q'] = substr($url['path'], 1);
-
 // We set the base_url so that Drupal generates correct URLs for runserver
 // (e.g. http://127.0.0.1:8888/...), but can still select and serve a specific
 // site in a multisite configuration (e.g. http://mysite.com/...).
