@@ -211,7 +211,7 @@ class DrushMakeProject {
    * Determine the location to download project to.
    */
   function findDownloadLocation() {
-    $this->path = $this->generatePath();
+    $this->path = $this->generatePath(FALSE);
     $this->project_directory = !empty($this->directory_name) ? $this->directory_name : $this->name;
     $this->download_location = $this->path . '/' . $this->project_directory;
     // This directory shouldn't exist yet -- if it does, stop,
