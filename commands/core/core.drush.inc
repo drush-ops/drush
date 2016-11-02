@@ -107,11 +107,6 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
     'core' => array('8+'),
   );
-  $items['twig-compile'] = array(
-    'description' => 'Compile all Twig template(s).',
-    'aliases' => array('twigc'),
-    'core' => array('8+'),
-  );
   $items['updatedb-status'] = array(
     'description' => 'List any pending database updates.',
     'outputformat' => array(
@@ -1340,39 +1335,6 @@ function drush_core_execute() {
     return drush_set_error('CORE_EXECUTE_FAILED', dt("Command !command failed.", array('!command' => $cmd)));
   }
   return $result;
-}
-
-function drush_core_twig_compile() {
-  require_once DRUSH_DRUPAL_CORE . "/themes/engines/twig/twig.engine";
-  // Scan all enabled modules and themes.
-  // @todo refactor since \Drush\Boot\DrupalBoot::commandfile_searchpaths is similar.
-  $ignored_modules = drush_get_option_list('ignored-modules', array());
-  $cid = drush_cid_install_profile();
-  if ($cached = drush_cache_get($cid)) {
-    $ignored_modules[] = $cached->data;
-  }
-  foreach (array_diff(drush_module_list(), $ignored_modules) as $module) {
-    $searchpaths[] = drupal_get_path('module', $module);
-  }
-
-  $themes = drush_theme_list();
-  foreach ($themes as $name => $theme) {
-    $searchpaths[] = $theme->getPath();
-  }
-
-  foreach ($searchpaths as $searchpath) {
-    foreach ($file = drush_scan_directory($searchpath, '/\.html.twig/', array('tests')) as $file) {
-      $relative = str_replace(drush_get_context('DRUSH_DRUPAL_ROOT'). '/', '', $file->filename);
-      // @todo Dynamically disable twig debugging since there is no good info there anyway.
-      $twig = \Drupal::service('twig');
-      $cls = $twig->getTemplateClass($relative);
-      $key = $twig->getCache()->generateKey($relative, $cls);
-      $content = $twig->compileSource($twig->getLoader()->getSource($relative), $relative);
-      $twig->getCache()->write($key, $content);
-
-      drush_log(dt('Compiled twig template !path', array('!path' => $relative)), LogLevel::INFO);
-    }
-  }
 }
 
 /**
