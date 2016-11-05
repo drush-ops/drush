@@ -28,6 +28,7 @@ class ExampleCommands extends DrushCommands
      * @usage example-table --fields=first,third
      * @usage example-table --fields=III,II
      * @aliases tf
+     * @hidden
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
