@@ -12,7 +12,7 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 
 use Consolidation\AnnotatedCommand\CommandData;
 
-class ExampleCommandsFile extends DrushCommands
+class ExampleCommands extends DrushCommands
 {
     /**
      * Demonstrate output formatters.  Default format is 'table'.
@@ -23,12 +23,11 @@ class ExampleCommandsFile extends DrushCommands
      *   second: II
      *   third: III
      * @default-string-field second
-     * @usage example:formatters --format=yaml
-     * @usage example:formatters --format=csv
-     * @usage example:formatters --fields=first,third
-     * @usage example:formatters --fields=III,II
+     * @usage example-table --format=yaml
+     * @usage example-table --format=csv
+     * @usage example-table --fields=first,third
+     * @usage example-table --fields=III,II
      * @aliases tf
-     * @hidden
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
@@ -48,7 +47,7 @@ class ExampleCommandsFile extends DrushCommands
      *
      * @hook alter example-table
      * @option french Add a row with French numbers.
-     * @usage example:formatters --french
+     * @usage example-table --french
      */
     public function alterFormatters($result, CommandData $commandData)
     {
