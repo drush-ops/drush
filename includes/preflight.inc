@@ -739,6 +739,9 @@ function _drush_preflight_uri() {
 }
 
 function _drush_find_commandfiles_drush() {
+  // Core commands shipping with Drush
+  $searchpath[] = dirname(__FILE__) . '/../commands/';
+
   // User commands, specified by 'include' option
   $include = drush_get_context('DRUSH_INCLUDE', array());
   foreach ($include as $path) {
@@ -762,14 +765,8 @@ function _drush_find_commandfiles_drush() {
     }
   }
 
-  // Core commands shipping with Drush
-  $drushCoreSearchpath[] = dirname(__DIR__) . '/commands/';
-
-  // Make sure search path is unique
-  $searchpath = array_unique($searchpath);
-
   // @todo the zero parameter is a bit weird here. It's $phase.
-  _drush_add_commandfiles($drushCoreSearchpath + $searchpath, 0);
+  _drush_add_commandfiles($searchpath, 0);
 
   // Also discover Drush's own annotation commands.
   $discovery = annotationcommand_adapter_get_discovery();
