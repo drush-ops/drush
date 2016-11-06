@@ -29,6 +29,10 @@ function annotationcommand_adapter_get_discovery() {
   static $discovery;
   if (!isset($discovery)) {
     $discovery = new CommandFileDiscovery();
+    $discovery
+      ->addSearchLocation('Commands')
+      ->addSearchLocation('CommandFiles')
+      ->setSearchPattern('#.*(Commands|CommandFile).php$#');
   }
   return $discovery;
 }
@@ -370,7 +374,9 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
   $commandinfo_list = $factory->getCommandInfoListFromClass($commandhandler);
 
   foreach ($commandinfo_list as $commandinfo) {
-    $factory->registerCommandHook($commandinfo, $commandhandler);
+    // Hooks are automatically registered when the commandhandler is
+    // created via registerCommandClass(), so we don't need to do it again here.
+    // $factory->registerCommandHook($commandinfo, $commandhandler);
     // Skip anything that is not a command
     if (!AnnotatedCommandFactory::isCommandMethod($commandinfo, false)) {
       continue;

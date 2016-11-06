@@ -561,6 +561,18 @@ function drush_preflight_root() {
   // Load the config options from Drupal's /drush, ../drush, and sites/all/drush directories,
   // even prior to bootstrapping the root.
   drush_load_config('drupal');
+
+  // Search for commandfiles in the root locations
+  $discovery = annotationcommand_adapter_get_discovery();
+  $searchpath = [dirname($root) . '/drush', "$root/drush", "$root/sites/all/drush"];
+  $drush_root_extensions = $discovery->discover($searchpath, '\Drush');
+  drush_set_context(
+    'DRUSH_ANNOTATED_COMMANDFILES',
+    array_merge(
+      drush_get_context('DRUSH_ANNOTATED_COMMANDFILES'),
+      $drush_root_extensions
+    )
+  );
 }
 
 function drush_preflight_site() {
@@ -727,9 +739,6 @@ function _drush_preflight_uri() {
 }
 
 function _drush_find_commandfiles_drush() {
-  // Core commands shipping with Drush
-  $searchpath[] = dirname(__FILE__) . '/../commands/';
-
   // User commands, specified by 'include' option
   $include = drush_get_context('DRUSH_INCLUDE', array());
   foreach ($include as $path) {
@@ -753,13 +762,23 @@ function _drush_find_commandfiles_drush() {
     }
   }
 
+  // Core commands shipping with Drush
+  $drushCoreSearchpath[] = dirname(__DIR__) . '/commands/';
+
+  // Make sure search path is unique
+  $searchpath = array_unique($searchpath);
+
   // @todo the zero parameter is a bit weird here. It's $phase.
-  _drush_add_commandfiles($searchpath, 0);
+  _drush_add_commandfiles($drushCoreSearchpath + $searchpath, 0);
 
   // Also discover Drush's own annotation commands.
   $discovery = annotationcommand_adapter_get_discovery();
-  $discovery->addSearchLocation('CommandFiles')->setSearchPattern('#.*(Commands|CommandFile).php$#');
   $annotation_commandfiles = $discovery->discover(DRUSH_BASE_PATH . '/lib/Drush', '\Drush');
+
+  // And, finally, search for commandfiles in the $searchpath
+  $global_drush_extensions = $discovery->discover($searchpath, '\Drush');
+  $annotation_commandfiles += $global_drush_extensions;
+
   drush_set_context('DRUSH_ANNOTATED_COMMANDFILES', $annotation_commandfiles);
 }
 
