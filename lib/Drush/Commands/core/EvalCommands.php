@@ -1,12 +1,12 @@
 <?php
-namespace Drush\CommandFiles\core;
+namespace Drush\Commands\core;
 
 /**
  * @file
  *   Evaluate PHP code.
  */
 
-class EvalCommandFile
+class EvalCommands
 {
   /**
    * Evaluate arbitrary php code after bootstrapping Drupal (if available).

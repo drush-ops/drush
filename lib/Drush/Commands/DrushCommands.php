@@ -1,6 +1,6 @@
 <?php
 
-namespace Drush\CommandFiles;
+namespace Drush\Commands;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;

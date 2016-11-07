@@ -1,9 +1,9 @@
 <?php
-namespace Drush\CommandFiles\core;
+namespace Drush\Commands\core;
 
 use Drush\Log\LogLevel;
 
-class InitCommandFile extends \Robo\Tasks
+class InitCommands extends \Robo\Tasks
 {
   /**
    * Initialize local Drush configuration

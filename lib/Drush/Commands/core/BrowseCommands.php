@@ -1,7 +1,7 @@
 <?php
-namespace Drush\CommandFiles\core;
+namespace Drush\Commands\core;
 
-use Drush\CommandFiles\DrushCommands;
+use Drush\Commands\DrushCommands;
 
 class BrowseCommands extends DrushCommands {
 
@@ -21,7 +21,7 @@ class BrowseCommands extends DrushCommands {
    *   Open a browser to the web site specified in a site alias.
    * @usage drush browse --browser=firefox admin
    *   Open Firefox web browser to the path 'admin'.
-   * @complete \Drush\CommandFiles\core\BrowseCommands::complete
+   * @complete \Drush\Commands\core\BrowseCommands::complete
    * @handle-remote-commands true
    */
   public function browse($path = '', $options = ['browser' => NULL]) {

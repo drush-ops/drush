@@ -1,7 +1,6 @@
 <?php
-namespace Drupal\woot\Command;
+namespace Drupal\woot\Commands;
 
-use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -9,20 +8,32 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * This is an annotated version of the example Symfony Console command
+ * This is a literal copy of the example Symfony Console command
  * from the documentation.
  *
  * See: http://symfony.com/doc/2.7/components/console/introduction.html#creating-a-basic-command
  */
-class AnnotatedGreetCommand extends AnnotatedCommand
+class GreetCommand extends Command
 {
-    /**
-     * Greet someone
-     *
-     * @command annotated:greet
-     * @arg string $name Who do you want to greet?
-     * @option boolean $yell If set, the task will yell in uppercase letters
-     */
+    protected function configure()
+    {
+        $this
+            ->setName('demo:greet')
+            ->setDescription('Greet someone')
+            ->addArgument(
+                'name',
+                InputArgument::OPTIONAL,
+                'Who do you want to greet?'
+            )
+            ->addOption(
+               'yell',
+               null,
+               InputOption::VALUE_NONE,
+               'If set, the task will yell in uppercase letters'
+            )
+        ;
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drush\CommandFiles\core;
+namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\AssociativeList;
 

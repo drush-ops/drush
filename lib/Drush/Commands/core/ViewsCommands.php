@@ -1,10 +1,10 @@
 <?php
-namespace Drush\CommandFiles\core;
+namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-use Drush\CommandFiles\DrushCommands;
+use Drush\Commands\DrushCommands;
 use Drush\Log\LogLevel;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -173,7 +173,7 @@ class ViewsCommands extends DrushCommands {
    * @usage drush views-execute my_view page_1 3,foo
    *   Show the rendered HTML of my_view:page_1 where the first two contextual filter values are 3 and 'foo' respectively.
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
-   * @complete \Drush\CommandFiles\core\ViewsCommands::complete
+   * @complete \Drush\Commands\core\ViewsCommands::complete
    * @validate-entity-load view views
    * @aliases vex
    *
@@ -252,7 +252,7 @@ class ViewsCommands extends DrushCommands {
    * @validate-entity-load view views
    * @usage drush ven frontpage,taxonomy_term
    *   Enable the frontpage and taxonomy_term views.
-   * @complete \Drush\CommandFiles\core\ViewsCommands::complete
+   * @complete \Drush\Commands\core\ViewsCommands::complete
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    * @aliases ven
    */
@@ -275,7 +275,7 @@ class ViewsCommands extends DrushCommands {
    * @param string $views A comma delimited list of view names.
    * @usage drush vdis frontpage taxonomy_term
    *   Disable the frontpage and taxonomy_term views.
-   * @complete \Drush\CommandFiles\core\ViewsCommands::complete
+   * @complete \Drush\Commands\core\ViewsCommands::complete
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    * @aliases vdis
    */

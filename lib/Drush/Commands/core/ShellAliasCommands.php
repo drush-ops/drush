@@ -1,5 +1,5 @@
 <?php
-namespace Drush\CommandFiles\core;
+namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\AssociativeList;
 
@@ -21,7 +21,7 @@ class ShellAliasCommands {
    *   Print the value of the shell alias 'pull'.
    * @aliases sha
    * @todo completion not yet working for Annotated commands.
-   * @complete \Drush\CommandFiles\core\ShellAliasCommands::complete
+   * @complete \Drush\Commands\core\ShellAliasCommands::complete
    *
    * @return \Consolidation\OutputFormatters\StructuredData\AssociativeList
    */
