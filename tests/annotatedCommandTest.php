@@ -6,6 +6,23 @@ namespace Unish;
  * @group base
  */
 class annotatedCommandCase extends CommandUnishTestCase {
+
+  public function testGlobal() {
+    $globalExtensions = $this->setupGlobalExtensionsForTests();
+
+    $options = array(
+      'include' => $globalExtensions,
+    );
+
+    // We modified the set of available Drush commands; we need to clear the Drush command cache
+    $this->drush('cc', array('drush'), $options);
+
+    // drush woot
+    $this->drush('foobar', array(), $options);
+    $output = $this->getOutput();
+    $this->assertEquals('baz', $output);
+  }
+
   public function testExecute() {
     $sites = $this->setUpDrupal(1, TRUE);
     $uri = key($sites);
@@ -146,6 +163,14 @@ EOT;
 
     // Clear the Drush cache so that our 'woot' command is not cached.
     $this->drush('cache-clear', array('drush'), $options, NULL, NULL, self::EXIT_SUCCESS);
+  }
+
+  public function setupGlobalExtensionsForTests() {
+    $globalExtension = __DIR__ . '/resources/global-includes';
+    $targetDir = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'global-includes';
+    $this->mkdir($targetDir);
+    $this->recursive_copy($globalExtension, $targetDir);
+    return $targetDir;
   }
 
   public function setupModulesForTests($root) {
