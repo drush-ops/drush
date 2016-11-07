@@ -10,14 +10,22 @@ class annotatedCommandCase extends CommandUnishTestCase {
   public function testGlobal() {
     $globalExtensions = $this->setupGlobalExtensionsForTests();
 
-    $options = array(
-      'include' => $globalExtensions,
-    );
+    $options = [];
 
     // We modified the set of available Drush commands; we need to clear the Drush command cache
     $this->drush('cc', array('drush'), $options);
 
-    // drush woot
+    // drush foobar
+    $options['include'] = "$globalExtensions";
+    $this->drush('foobar', array(), $options);
+    $output = $this->getOutput();
+    $this->assertEquals('baz', $output);
+
+    // Clear the Drush command cache again and test again with new includes
+    $this->drush('cc', array('drush'), $options);
+
+    // drush foobar again, except include the 'Commands' folder when passing --include
+    $options['include'] = "$globalExtensions/Commands";
     $this->drush('foobar', array(), $options);
     $output = $this->getOutput();
     $this->assertEquals('baz', $output);

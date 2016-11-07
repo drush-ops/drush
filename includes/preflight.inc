@@ -773,6 +773,15 @@ function _drush_find_commandfiles_drush() {
   $annotation_commandfiles = $discovery->discover(DRUSH_BASE_PATH . '/lib/Drush', '\Drush');
 
   // And, finally, search for commandfiles in the $searchpath
+  $searchpath = array_map(
+    function ($item) {
+      if (strtolower(basename($item)) == 'commands') {
+        return dirname($item);
+      }
+      return $item;
+    },
+    $searchpath
+  );
   $global_drush_extensions = $discovery->discover($searchpath, '\Drush');
   $annotation_commandfiles += $global_drush_extensions;
 
