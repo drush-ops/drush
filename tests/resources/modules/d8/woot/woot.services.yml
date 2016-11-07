@@ -11,8 +11,8 @@ services:
   greet.command:
     class: Drupal\woot\Commands\GreetCommand
     tags:
-      -  { name: console.command }
+      -  { name: drush.command }
   annotated_greet.command:
     class: Drupal\woot\Commands\AnnotatedGreetCommand
     tags:
-      -  { name: console.command }
+      -  { name: drush.command }
