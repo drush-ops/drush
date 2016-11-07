@@ -1,8 +1,8 @@
 <?php
-namespace Drush\CommandFiles\core;
+namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
-use Drush\CommandFiles\DrushCommands;
+use Drush\Commands\DrushCommands;
 
 class DrupliconCommands extends DrushCommands {
   protected $printed = false;

@@ -30,9 +30,9 @@ function annotationcommand_adapter_get_discovery() {
   if (!isset($discovery)) {
     $discovery = new CommandFileDiscovery();
     $discovery
-      ->addSearchLocation('Commands')
-      ->addSearchLocation('CommandFiles')
-      ->setSearchPattern('#.*(Commands|CommandFile).php$#');
+      ->setIncludeFilesAtBase(false)
+      ->setSearchLocations(['Commands'])
+      ->setSearchPattern('#.*Commands.php$#');
   }
   return $discovery;
 }
