@@ -6,6 +6,31 @@ namespace Unish;
  * @group base
  */
 class annotatedCommandCase extends CommandUnishTestCase {
+
+  public function testGlobal() {
+    $globalExtensions = $this->setupGlobalExtensionsForTests();
+
+    $options = [];
+
+    // We modified the set of available Drush commands; we need to clear the Drush command cache
+    $this->drush('cc', array('drush'), $options);
+
+    // drush foobar
+    $options['include'] = "$globalExtensions";
+    $this->drush('foobar', array(), $options);
+    $output = $this->getOutput();
+    $this->assertEquals('baz', $output);
+
+    // Clear the Drush command cache again and test again with new includes
+    $this->drush('cc', array('drush'), $options);
+
+    // drush foobar again, except include the 'Commands' folder when passing --include
+    $options['include'] = "$globalExtensions/Commands";
+    $this->drush('foobar', array(), $options);
+    $output = $this->getOutput();
+    $this->assertEquals('baz', $output);
+  }
+
   public function testExecute() {
     $sites = $this->setUpDrupal(1, TRUE);
     $uri = key($sites);
@@ -22,9 +47,9 @@ class annotatedCommandCase extends CommandUnishTestCase {
     // These are not good asserts, but for the purposes of isolation....
     $targetDir = $root . DIRECTORY_SEPARATOR . $this->drupalSitewideDirectory() . '/modules/woot';
     if (UNISH_DRUPAL_MAJOR_VERSION == 8) {
-        $commandFile = $targetDir . "/src/Command/WootCommands.php";
+        $commandFile = $targetDir . "/src/Commands/WootCommands.php";
     } else {
-        $commandFile = $targetDir . "/Command/WootCommands.php";
+        $commandFile = $targetDir . "/Commands/WootCommands.php";
     }
     $this->assertFileExists(dirname(dirname(dirname($commandFile))));
     $this->assertFileExists(dirname(dirname($commandFile)));
@@ -145,6 +170,14 @@ EOT;
 
     // Flush the Drush cache so that our 'woot' command is not cached.
     $this->drush('cache-clear', array('drush'), $options, NULL, NULL, self::EXIT_SUCCESS);
+  }
+
+  public function setupGlobalExtensionsForTests() {
+    $globalExtension = __DIR__ . '/resources/global-includes';
+    $targetDir = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'global-includes';
+    $this->mkdir($targetDir);
+    $this->recursive_copy($globalExtension, $targetDir);
+    return $targetDir;
   }
 
   public function setupModulesForTests($root) {
