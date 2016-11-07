@@ -5,14 +5,14 @@ services:
     tags:
       -  { name: consolidation.commandhandler }
   woot.command:
-    class: Drupal\woot\Command\WootCommands
+    class: Drupal\woot\Commands\WootCommands
     tags:
       -  { name: consolidation.commandhandler }
   greet.command:
-    class: Drupal\woot\Command\GreetCommand
+    class: Drupal\woot\Commands\GreetCommand
     tags:
-      -  { name: console.command }
+      -  { name: drush.command }
   annotated_greet.command:
-    class: Drupal\woot\Command\AnnotatedGreetCommand
+    class: Drupal\woot\Commands\AnnotatedGreetCommand
     tags:
-      -  { name: console.command }
+      -  { name: drush.command }
