@@ -6,7 +6,7 @@ namespace Drush\Commands\core;
  *   Evaluate PHP code.
  */
 
-class EvalCommandFile
+class EvalCommands
 {
   /**
    * Evaluate arbitrary php code after bootstrapping Drupal (if available).

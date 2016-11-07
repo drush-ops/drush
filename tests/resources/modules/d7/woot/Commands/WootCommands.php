@@ -1,5 +1,5 @@
 <?php
-namespace Drupal\woot\Command;
+namespace Drupal\woot\Commands;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 
