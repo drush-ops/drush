@@ -95,6 +95,12 @@ class DrushLog implements LoggerInterface {
 
     // Populate the message placeholders and then replace them in the message.
     $message_placeholders = $this->parser->parseMessagePlaceholders($message, $context);
+
+    // Filter out any placeholders that can not be cast to strings.
+    $message_placeholders = array_filter($message_placeholders, function ($element) {
+      return is_scalar($element) || is_callable([$element, '__toString']);
+    });
+
     $message = empty($message_placeholders) ? $message : strtr($message, $message_placeholders);
 
     $this->logger->log($error_type, $message, $context);
