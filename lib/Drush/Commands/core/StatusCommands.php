@@ -48,7 +48,7 @@ class StatusCommands {
    *   files-path: File directory path
    *   temp-path: Temporary file directory path
    *   %paths: Other paths
-   *
+   * @bootstrap DRUSH_BOOTSTRAP_MAX
    * @topics docs-readme
    */
   public function status($options = ['project' => '', 'format' => 'table', 'fields' => '', 'include-field-labels' => true]) {
