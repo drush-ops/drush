@@ -47,7 +47,7 @@ class SqlConnectCase extends CommandUnishTestCase {
     $this->assertContains('1', $output);
 
     // Run 'core-status' and insure that we can bootstrap Drupal.
-    $this->drush('core-status', array("Drupal bootstrap"), $options);
+    $this->drush('core-status', array(), $options + ['fields' => 'bootstrap']);
     $output = $this->getOutput();
     $this->assertContains('Successful', $output);
 
@@ -61,7 +61,7 @@ class SqlConnectCase extends CommandUnishTestCase {
 
     // We should still be able to run 'core-status' without getting an
     // error, although Drupal should not bootstrap any longer.
-    $this->drush('core-status', array("Drupal bootstrap"), $options);
+    $this->drush('core-status', array(), $options + ['fields' => 'bootstrap']);
     $output = $this->getOutput();
     $this->assertNotContains('Successful', $output);
   }
