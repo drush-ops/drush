@@ -51,7 +51,7 @@ class StatusCommands {
    *
    * @topics docs-readme
    */
-  public function status($options = ['project' => '', 'format' => 'table', 'fields' => '']) {
+  public function status($options = ['project' => '', 'format' => 'table', 'fields' => '', 'include-field-labels' => true]) {
     $data = _core_site_status_table($options['project']);
 
     $result = new AssociativeList($data);
