@@ -81,8 +81,8 @@
 # $options['shell-aliases']['noncore'] = 'pm-list --no-core';
 # $options['shell-aliases']['wipe'] = 'cache-clear all';
 # $options['shell-aliases']['unsuck'] = 'pm-disable -y overlay,dashboard';
-# $options['shell-aliases']['offline'] = 'variable-set -y --always-set maintenance_mode 1';
-# $options['shell-aliases']['online'] = 'variable-delete -y --exact maintenance_mode';
+# $options['shell-aliases']['offline'] = 'drush sset system.maintenance_mode 1 --input-format=integer';
+# $options['shell-aliases']['online'] = 'drush sset system.maintenance_mode 0 --input-format=integer';
 # $options['shell-aliases']['dis-all'] = '!drush -y dis `drush pml --status=enabled --type=module --no-core --pipe`';
 # $options['shell-aliases']['self-alias'] = 'site-alias @self --with-db --alias-name=new';
 # $options['shell-aliases']['site-get'] = '@none php-eval "return drush_sitealias_site_get();"';
