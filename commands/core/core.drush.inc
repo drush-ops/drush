@@ -140,42 +140,6 @@ function core_drush_command() {
     ),
     'aliases' => array('conf', 'config'),
   );
-  $items['core-status'] = array(
-    'description' => 'Provides a birds-eye view of the current Drupal installation, if any.',
-    'bootstrap' => DRUSH_BOOTSTRAP_MAX,
-    'aliases' => array('status', 'st'),
-    'examples' => array(
-      'drush core-status version' => 'Show all status lines that contain version information.',
-      'drush core-status --pipe' => 'A list key=value items separated by line breaks.',
-      'drush core-status drush-version --pipe' => 'Emit just the drush version with no label.',
-      'drush core-status config-sync --pipe' => 'Emit just the sync Config directory with no label.',
-    ),
-    'arguments' => array(
-      'item' => 'Optional.  The status item line(s) to display.',
-    ),
-    'options' => array(
-      'show-passwords' => 'Show database password.  Defaults to --no-show-passwords.',
-      'full' => 'Show all file paths and drush aliases in the report, even if there are a lot.',
-      'project' => array(
-        'description' => 'One or more projects that should be added to the path list',
-        'example-value' => 'foo,bar',
-      ),
-    ),
-    'outputformat' => array(
-      'default' => 'key-value',
-      'pipe-format' => 'json',
-      'field-labels' => array('drupal-version' => 'Drupal version', 'uri' => 'Site URI', 'db-driver' => 'Database driver', 'db-hostname' => 'Database hostname', 'db-port' => 'Database port', 'db-username' => 'Database username', 'db-password' => 'Database password', 'db-name' => 'Database name', 'db-status' => 'Database', 'bootstrap' => 'Drupal bootstrap', 'user' => 'Drupal user', 'theme' => 'Default theme', 'admin-theme' => 'Administration theme', 'php-bin' => 'PHP executable', 'php-conf' => 'PHP configuration', 'php-os' => 'PHP OS', 'drush-script' => 'Drush script', 'drush-version' => 'Drush version', 'drush-temp' => 'Drush temp directory', 'drush-conf' => 'Drush configuration', 'drush-alias-files' => 'Drush alias files', 'install-profile' => 'Install profile', 'root' => 'Drupal root', 'drupal-settings-file' => 'Drupal Settings File', 'site-path' => 'Site path', 'root' => 'Drupal root', 'site' => 'Site path', 'themes' => 'Themes path', 'modules' => 'Modules path', 'files' => 'File directory path', 'private' => 'Private file directory path', 'temp' => 'Temporary file directory path', 'config-sync' => 'Sync config path', 'files-path' => 'File directory path', 'temp-path' => 'Temporary file directory path', '%paths' => 'Other paths'),
-      'formatted-filter' => '_drush_core_status_format_table_data',
-      'private-fields' => 'db-password',
-      'simplify-single' => TRUE,
-      'table-metadata' => array(
-        'list-separator' => ' ',
-      ),
-      'output-data-type' => 'format-list',
-    ),
-    'topics' => array('docs-readme'),
-  );
-
   $items['core-requirements'] = array(
     'description' => 'Provides information about things that may be wrong in your Drupal installation, if any.',
     'aliases' => array('status-report','rq'),
@@ -834,32 +798,6 @@ function drush_core_requirements() {
   return $requirements;
 }
 
-/**
- * Command callback. Provides a birds-eye view of the current Drupal
- * installation.
- */
-function drush_core_status() {
-  $status_table = _core_site_status_table(drush_get_option('project',''));
-  // If args are specified, filter out any entry that is not named
-  // (in other words, only show lines named by one of the arg values)
-  $args = func_get_args();
-  if (!empty($args)) {
-    $field_list = $args;
-    $metadata = drush_get_command_format_metadata('core-status');
-    foreach ($metadata['field-labels'] as $field_key => $field_label) {
-      if (_drush_core_is_named_in_array($field_label, $args)) {
-        $field_list[] = $field_key;
-      }
-    }
-    foreach ($status_table as $key => $value) {
-      if (!_drush_core_is_named_in_array($key, $field_list)) {
-        unset($status_table[$key]);
-      }
-    }
-  }
-  return $status_table;
-}
-
 // Command callback. Show all global options. Exposed via topic command.
 function drush_core_global_options() {
   drush_print(dt('These options are applicable to most drush commands. Most options can be disabled by using --no-option (i.e. --no-debug to disable --debug.)'));
@@ -1359,7 +1297,7 @@ function drush_core_twig_compile() {
   foreach ($themes as $name => $theme) {
     $searchpaths[] = $theme->getPath();
   }
-  
+
   foreach ($searchpaths as $searchpath) {
     foreach ($file = drush_scan_directory($searchpath, '/\.html.twig/', array('tests')) as $file) {
       $relative = str_replace(drush_get_context('DRUSH_DRUPAL_ROOT'). '/', '', $file->filename);
