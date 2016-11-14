@@ -213,7 +213,7 @@ function annotationcommand_adapter_process_command() {
   }
 
   $input = new DrushInputAdapter($args, annotationcommand_adapter_get_options($command), $command['command']);
-  $output = new DrushOutputAdapter();
+  $output = new ConsoleOutput();
   $annotationData = $command['annotations'];
   $commandData = new CommandData(
     $annotationData,

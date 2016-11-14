@@ -9,6 +9,7 @@ namespace Drush\Commands;
 use Drush\Log\LogLevel;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Consolidation\OutputFormatters\Options\FormatterOptions;
 
 use Consolidation\AnnotatedCommand\CommandData;
 
@@ -34,13 +35,29 @@ class ExampleCommands extends DrushCommands
      */
     public function exampleTable($options = ['format' => 'table', 'fields' => ''])
     {
-        $outputData = [
+        $tableData = [
             'en' => [ 'first' => 'One',  'second' => 'Two',  'third' => 'Three' ],
             'de' => [ 'first' => 'Eins', 'second' => 'Zwei', 'third' => 'Drei'  ],
             'jp' => [ 'first' => 'Ichi', 'second' => 'Ni',   'third' => 'San'   ],
             'es' => [ 'first' => 'Uno',  'second' => 'Dos',  'third' => 'Tres'  ],
         ];
-        return new RowsOfFields($outputData);
+        $data = new RowsOfFields($tableData);
+
+        // Add a render function to transform cell data when the output
+        // format is a table, or similar.  This allows us to add color
+        // information to the output without modifying the data cells when
+        // using yaml or json output formats.
+        $data->addRendererFunction(
+            // n.b. There is a fourth parameter $rowData that may be added here.
+            function ($key, $cellData, FormatterOptions $options, $rowData) {
+                if ($key == 'first') {
+                    return "<comment>$cellData</>";
+                }
+                return $cellData;
+            }
+        );
+
+        return $data;
     }
 
     /**
