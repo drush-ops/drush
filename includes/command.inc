@@ -4,8 +4,8 @@ use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drush\Command\DrushInputAdapter;
-use Drush\Command\DrushOutputAdapter;
 use Consolidation\AnnotatedCommand\CommandData;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
  * @defgroup dispatching Command dispatching functions.
@@ -351,7 +351,7 @@ function _drush_invoke_hooks($command, $args) {
   $annotationData = $command['annotations'];
 
   $input = new DrushInputAdapter($args, annotationcommand_adapter_get_options($command), $command['command']);
-  $output = new DrushOutputAdapter();
+  $output = new ConsoleOutput();
   $commandData = new CommandData(
     $annotationData,
     $input,
