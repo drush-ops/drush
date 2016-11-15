@@ -2,7 +2,7 @@
 
 namespace Drush\Commands\core;
 
-use Consolidation\OutputFormatters\StructuredData\AssociativeList;
+use Consolidation\OutputFormatters\StructuredData\PropertyList;
 
 class StateCommands {
 
@@ -17,11 +17,11 @@ class StateCommands {
    *   Displays last cron run timestamp
    * @aliases sget
    *
-   * @return \Consolidation\OutputFormatters\StructuredData\AssociativeList
+   * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
    */
   public function get($key, $options = ['format' => 'string', 'fields' => '']) {
     $value = \Drupal::state()->get($key);
-    return new AssociativeList([$key => $value]);
+    return new PropertyList([$key => $value]);
   }
 
   /**
