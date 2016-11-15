@@ -1,7 +1,7 @@
 <?php
 namespace Drush\Commands\core;
 
-use Consolidation\OutputFormatters\StructuredData\AssociativeList;
+use Consolidation\OutputFormatters\StructuredData\PropertyList;
 
 class ShellAliasCommands {
 
@@ -23,15 +23,15 @@ class ShellAliasCommands {
    * @todo completion not yet working for Annotated commands.
    * @complete \Drush\Commands\core\ShellAliasCommands::complete
    *
-   * @return \Consolidation\OutputFormatters\StructuredData\AssociativeList
+   * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
    */
   public function shellalias($alias = NULL, $options = ['format' => 'table']) {
     $shell_aliases = drush_get_context('shell-aliases', array());
     if (!$alias) {
-      return new AssociativeList($shell_aliases);
+      return new PropertyList($shell_aliases);
     }
     elseif (isset($shell_aliases[$alias])) {
-      return new AssociativeList(array($alias => $shell_aliases[$alias]));
+      return new PropertyList(array($alias => $shell_aliases[$alias]));
     }
     else {
       throw new \Exception(dt('Shell alias not found.'));
