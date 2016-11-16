@@ -7,13 +7,14 @@
 
 namespace Drush\Commands\core;
 
+use Drush\Commands\DrushCommands;
 use Drush\Log\LogLevel;
 use Drush\Psysh\DrushCommand;
 use Drush\Psysh\DrushHelpCommand;
 use Drupal\Component\Assertion\Handle;
 use Drush\Psysh\Shell;
 
-class CliCommands {
+class CliCommands extends DrushCommands {
 
   /**
    * @command core-cli
