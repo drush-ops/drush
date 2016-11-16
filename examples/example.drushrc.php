@@ -77,21 +77,30 @@
  */
 # $options['shell-aliases']['pull'] = '!git pull'; // We've all done it.
 # $options['shell-aliases']['pulldb'] = '!git pull && drush updatedb';
-# $options['shell-aliases']['cpull'] = 'config-pull @example.prod @self --label=vcs';
 # $options['shell-aliases']['noncore'] = 'pm-list --no-core';
-# $options['shell-aliases']['wipe'] = 'cache-clear all';
-# $options['shell-aliases']['unsuck'] = 'pm-disable -y overlay,dashboard';
-# $options['shell-aliases']['offline'] = 'variable-set -y --always-set maintenance_mode 1';
-# $options['shell-aliases']['online'] = 'variable-delete -y --exact maintenance_mode';
-# $options['shell-aliases']['dis-all'] = '!drush -y dis `drush pml --status=enabled --type=module --no-core --pipe`';
 # $options['shell-aliases']['self-alias'] = 'site-alias @self --with-db --alias-name=new';
 # $options['shell-aliases']['site-get'] = '@none php-eval "return drush_sitealias_site_get();"';
 // Add a 'pm-clone' to simplify git cloning from drupal.org.
 # $options['shell-aliases']['pm-clone'] = 'pm-download --gitusername=YOURUSERNAME --package-handler=git_drupalorg';
 // Save a sanitized sql dump. Customize alias names and --result-file.
-# $options['shell-aliases']['pm-clone'] = 'drush sql-sync @source @temp --sanitize && drush @temp sql-dump --result-file=/example && drush @temp sql-drop';
+# $options['shell-aliases']['sql-transfer'] = 'drush sql-sync @source @temp --sanitize && drush @temp sql-dump --result-file=/example && drush @temp sql-drop';
 
-// Load a drushrc.php configuration file from the current working directory.
+# Drupal 8.
+# $options['shell-aliases']['offline'] = 'drush sset system.maintenance_mode 1 --input-format=integer';
+# $options['shell-aliases']['online'] = 'drush sset system.maintenance_mode 0 --input-format=integer';
+# $options['shell-aliases']['cpull'] = 'config-pull @example.prod @self --label=vcs';
+# $options['shell-aliases']['wipe'] = 'cache-rebuild';
+
+#Drupal 7 (and 6).
+# $options['shell-aliases']['offline'] = 'variable-set -y --always-set maintenance_mode 1';
+# $options['shell-aliases']['online'] = 'variable-delete -y --exact maintenance_mode';
+# $options['shell-aliases']['wipe'] = 'cache-clear all';
+# $options['shell-aliases']['dis-all'] = '!drush -y dis `drush pml --status=enabled --type=module --no-core --pipe`';
+# $options['shell-aliases']['unsuck'] = 'pm-disable -y overlay,dashboard';
+
+/**
+ * Load a drushrc.php configuration file from the current working directory.
+ */
 # $options['config'][] = './drushrc.php';
 
 /**
