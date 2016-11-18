@@ -271,6 +271,13 @@ function drush_cache_rebuild() {
   if (function_exists('apc_fetch')) {
     apc_clear_cache('user');
   }
+  // Clear user cache for all major platforms.
+  $user_caches = [
+    'apcu_clear_cache',
+    'wincache_ucache_clear',
+    'xcache_clear_cache',
+  ];
+  array_walk(array_filter($user_caches, 'is_callable'), 'call_user_func');
 
   $autoloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
   require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';
