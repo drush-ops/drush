@@ -79,7 +79,7 @@ class StatusCommands {
   public function adjustStatusOptions(CommandData $commandData) {
     $input = $commandData->input();
     $args = $input->getArguments();
-    if (isset($args['filter'])) {
+    if (!empty($args['filter'])) {
       $input->setOption('fields', '*' . $args['filter'] . '*');
     }
   }
