@@ -9,20 +9,20 @@
     "packages": [
         {
             "name": "consolidation/annotated-command",
-            "version": "2.1.0",
+            "version": "2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/annotated-command.git",
-                "reference": "1f3ca24774f770d6b948398cd1cf57b93bd8513f"
+                "reference": "56ce59c1097caccf5957088f755cc3c7de4c8f59"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/1f3ca24774f770d6b948398cd1cf57b93bd8513f",
-                "reference": "1f3ca24774f770d6b948398cd1cf57b93bd8513f",
+                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/56ce59c1097caccf5957088f755cc3c7de4c8f59",
+                "reference": "56ce59c1097caccf5957088f755cc3c7de4c8f59",
                 "shasum": ""
             },
             "require": {
-                "consolidation/output-formatters": "^3.1",
+                "consolidation/output-formatters": "^3.1.3",
                 "php": ">=5.4.0",
                 "phpdocumentor/reflection-docblock": "^2.0|^3.0.2",
                 "psr/log": "~1",
@@ -57,7 +57,7 @@
                 }
             ],
             "description": "Initialize Symfony Console commands from annotated command class methods.",
-            "time": "2016-11-18 17:56:41"
+            "time": "2016-11-19 00:41:43"
         },
         {
             "name": "consolidation/log",

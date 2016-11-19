@@ -2,8 +2,12 @@
 
 namespace Drush\Commands\core;
 
+use Consolidation\AnnotatedCommand\AnnotationData;
+use Symfony\Component\Console\Input\InputInterface;
+
 use Consolidation\OutputFormatters\StructuredData\AssociativeList;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
+use Consolidation\AnnotatedCommand\CommandData;
 
 class StatusCommands {
 
@@ -48,10 +52,11 @@ class StatusCommands {
    *   files-path: File directory path
    *   temp-path: Temporary file directory path
    *   %paths: Other paths
+   * @pipe-format json
    * @bootstrap DRUSH_BOOTSTRAP_MAX
    * @topics docs-readme
    */
-  public function status($options = ['project' => '', 'format' => 'table', 'fields' => '', 'include-field-labels' => true]) {
+  public function status($filter = '', $options = ['project' => '', 'format' => 'table', 'fields' => '', 'include-field-labels' => true]) {
     $data = _core_site_status_table($options['project']);
 
     $result = new AssociativeList($data);
@@ -66,5 +71,16 @@ class StatusCommands {
           return implode("\n", $cellData);
       }
       return $cellData;
+  }
+
+  /**
+   * @hook pre-command core-status
+   */
+  public function adjustStatusOptions(CommandData $commandData) {
+    $input = $commandData->input();
+    $args = $input->getArguments();
+    if (isset($args['filter'])) {
+      $input->setOption('fields', '*' . $args['filter'] . '*');
+    }
   }
 }
