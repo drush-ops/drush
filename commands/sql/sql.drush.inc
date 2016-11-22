@@ -702,8 +702,8 @@ function sql_drush_sql_sync_sanitize($site) {
 
   // Perform Drupal 8 field sanitation.
   if ($major_version >= 8 ) {
-    require __DIR__ . '/Sanitizer.php';
-    $sanitizer = new \Drupal\sanitize\Sanitizer($site);
+    require __DIR__ . '/Sanitize.php';
+    $sanitizer = new \Drush\Command\Sanitize($site);
     $sanitizer->sanitize();
   }
 }

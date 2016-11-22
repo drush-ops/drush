@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\sanitize;
+namespace Drush\Command;
 
 use Drupal\Component\Utility\Random;
 use Drupal\Core\Database\Database;
@@ -10,7 +10,7 @@ use Drupal\Core\Database\Database;
  *
  * @package Drupal\sanitize
  */
-class Sanitizer {
+class Sanitize {
 
   /**
    * @var string
