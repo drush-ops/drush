@@ -1,16 +1,18 @@
 <?php
 
-namespace Drush\Command;
+namespace Drush\Commands\core;
+
 
 use Drupal\Component\Utility\Random;
 use Drupal\Core\Database\Database;
+use Drush\Commands\DrushCommands;
 
 /**
  * Class Sanitizer.
  *
  * @package Drupal\sanitize
  */
-class Sanitize {
+class SanitizeCommands extends DrushCommands {
 
   /**
    * @var string
@@ -32,6 +34,8 @@ class Sanitize {
   public function __construct($site) {
     $this->site = $site;
     $this->setWrap();
+
+    parent::__construct();
   }
 
   /**
