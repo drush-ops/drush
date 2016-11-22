@@ -2,7 +2,6 @@
 
 namespace Drush\Commands\core;
 
-
 use Drupal\Component\Utility\Random;
 use Drupal\Core\Database\Database;
 use Drush\Commands\DrushCommands;
@@ -26,13 +25,20 @@ class SanitizeCommands extends DrushCommands {
   protected $wrap;
 
   /**
+   * @var int
+   *   The major Drupal version. E.g., 8.
+   */
+  protected $majorVersion;
+
+  /**
    * Sanitizer constructor.
    *
    * @param string $site
    *   The site. I.e., the value of -l or --uri flags for drush.
    */
-  public function __construct($site) {
+  public function __construct($site, $major_version) {
     $this->site = $site;
+    $this->majorVersion = $major_version;
     $this->setWrap();
 
     parent::__construct();
@@ -49,8 +55,12 @@ class SanitizeCommands extends DrushCommands {
    * Runs all sanitizing methods.
    */
   public function sanitize() {
-    $this->sanitizeComments();
-    $this->sanitizeUsers();
+    $this->sanitizeSessions();
+
+    if ($this->majorVersion == 8) {
+      $this->sanitizeComments();
+      $this->sanitizeUsers();
+    }
   }
 
   /**
@@ -131,6 +141,16 @@ class SanitizeCommands extends DrushCommands {
     $table_name_wrapped = $this->wrapTableName($table);
     $sql = "UPDATE $table_name_wrapped SET $column='$value';";
     drush_sql_register_post_sync_op($table.$column, dt("Replaces all values in $table table with the same random long string."), $sql);
+  }
+
+  /**
+   * Truncates the session table.
+   */
+  public function sanitizeSessions() {
+    // Seems quite portable (SQLite?) - http://en.wikipedia.org/wiki/Truncate_(SQL)
+    $table_name = $this->wrapTableName('sessions');
+    $sql_sessions = "TRUNCATE TABLE $table_name;";
+    drush_sql_register_post_sync_op('sessions', dt('Truncate Drupal\'s sessions table'), $sql_sessions);
   }
 
   /**

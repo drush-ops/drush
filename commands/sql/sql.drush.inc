@@ -692,18 +692,7 @@ function sql_drush_sql_sync_sanitize($site) {
     drush_sql_register_post_sync_op('user-email', dt('Reset !message in !table table', array('!message' => implode(' and ', $message_list), '!table' => $table)), $sanitize_query);
   }
 
-  // Seems quite portable (SQLite?) - http://en.wikipedia.org/wiki/Truncate_(SQL)
-  $table = 'sessions';
-  if ($wrap_table_name) {
-    $table = "{{$table}}";
-  }
-  $sql_sessions = "TRUNCATE TABLE {$table};";
-  drush_sql_register_post_sync_op('sessions', dt('Truncate Drupal\'s sessions table'), $sql_sessions);
-
-  // Perform Drupal 8 field sanitation.
-  if ($major_version >= 8 ) {
-    require __DIR__ . '/Sanitize.php';
-    $sanitizer = new \Drush\Command\Sanitize($site);
-    $sanitizer->sanitize();
-  }
+  require __DIR__ . '/Sanitize.php';
+  $sanitizer = new \Drush\Commands\core\SanitizeCommands($site, $major_version);
+  $sanitizer->sanitize();
 }
