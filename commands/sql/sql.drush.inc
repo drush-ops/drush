@@ -164,9 +164,13 @@ function sql_drush_command() {
     'drush dependencies' => array('sqlsync'),
     'options' => drupal_sanitize_options() + array(
       'db-prefix' => 'Enable replacement of braces in sanitize queries.',
-      'whitelist-fields' => 'Exempt these fields from sanitizing',
+      'whitelist-fields' => 'Exempt these fields from sanitizing.',
     ) + $db_url,
     'aliases' => array('sqlsan'),
+    'examples' => array(
+      'drush sql-sanitize --sanitize-password=no' => "Sanitize database without modifying any passwords.",
+      'drush sql-sanitize --whitelist-fields=field_biography,field_phone_number' => "Sanitizes database but exempts two user fields from modification.",
+    ),
   );
   return $items;
 }
