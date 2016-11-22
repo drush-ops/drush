@@ -82,12 +82,8 @@ class SanitizeCommands extends DrushCommands {
           continue;
         }
 
-        $current = drush_get_context('DRUSH_SIMULATE');
-        drush_set_context('DRUSH_SIMULATE', FALSE);
-        $success = $this->query("SELECT data FROM config WHERE name = 'field.field.user.user.$field_name';");
-        $output = drush_shell_exec_output();
+        $output = $this->query("SELECT data FROM config WHERE name = 'field.field.user.user.$field_name';");
         $field_config = unserialize($output[0]);
-        drush_set_context('DRUSH_SIMULATE', $current);
         $field_type = $field_config['field_type'];
         $randomizer = new Random();
 
@@ -157,6 +153,12 @@ class SanitizeCommands extends DrushCommands {
    * Sanitizes comments_field_data table.
    */
   public function sanitizeComments() {
+
+    $comments_enabled = $this->query("SHOW TABLES LIKE 'comment_field_data';");
+    if (!$comments_enabled) {
+      return;
+    }
+
     $comments_table = $this->wrapTableName('comment_field_data');
     $sql_comments = "UPDATE $comments_table SET name='Anonymous', mail='', homepage='http://example.com' WHERE uid = 0;";
     drush_sql_register_post_sync_op('anon_comments', dt('Remove names and email addresses from anonymous user comments.'), $sql_comments);
@@ -186,6 +188,25 @@ class SanitizeCommands extends DrushCommands {
   }
 
   /**
+   * Executes a sql command using drush sqlq and returns the output.
+   *
+   * @param string $query
+   *   The SQL query to execute. Must end in a semicolon!
+   *
+   * @return string
+   *   The output of the query.
+   */
+  protected function query($query) {
+    $current = drush_get_context('DRUSH_SIMULATE');
+    drush_set_context('DRUSH_SIMULATE', FALSE);
+    $success = $this->executeQuery($query);
+    $output = drush_shell_exec_output();
+    drush_set_context('DRUSH_SIMULATE', $current);
+
+    return $output;
+  }
+
+  /**
    * Executes a sql command using drush sqlq.
    *
    * Command output can be grabbed using drush_shell_exec_output().
@@ -198,7 +219,7 @@ class SanitizeCommands extends DrushCommands {
    *
    * @throws \Drush\Sql\SqlException
    */
-  protected function query($query) {
+  protected function executeQuery($query) {
     // Enable prefix processing when db-prefix option is used.
     if (drush_get_option('db-prefix')) {
       $query = Database::getConnection()->prefixTables($query);

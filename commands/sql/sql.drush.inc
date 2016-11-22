@@ -159,7 +159,7 @@ function sql_drush_command() {
     'remote-tty' => TRUE,
   );
   $items['sql-sanitize'] = array(
-    'description' => "Run sanitization operations on the current database.",
+    'description' => "Run sanitation operations on the current database.",
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'drush dependencies' => array('sqlsync'),
     'options' => drupal_sanitize_options() + array(
