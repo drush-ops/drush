@@ -389,6 +389,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       $aliases[] = $standard_alias;
     }
     $handle_remote_commands = strtolower($commandinfo->getAnnotation('handle-remote-commands')) == 'true';
+    $remote_tty = $commandinfo->getAnnotation('remote-tty');
     $hidden = $commandinfo->hasAnnotation('hidden');
     // If there is no 'bootstrap' annotation, default to NONE.
     $bootstrap = DRUSH_BOOTSTRAP_NONE;
@@ -408,6 +409,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       'examples' => $commandinfo->getExampleUsages(),
       'bootstrap' => $bootstrap,
       'handle-remote-commands' => $handle_remote_commands,
+      'remote-tty' => $remote_tty,
       'hidden' => $hidden,
       'aliases' => $aliases,
       'add-options-to-arguments' => TRUE,

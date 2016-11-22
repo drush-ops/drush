@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drush\Commands\core\CliCommands.
- */
-
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
@@ -13,6 +8,7 @@ use Drush\Psysh\DrushCommand;
 use Drush\Psysh\DrushHelpCommand;
 use Drupal\Component\Assertion\Handle;
 use Drush\Psysh\Shell;
+use Psy\Configuration;
 
 class CliCommands extends DrushCommands {
 
@@ -23,10 +19,12 @@ class CliCommands extends DrushCommands {
    * @bootstrap DRUSH_BOOTSTRAP_MAX
    * @option $version-history Use command history based on Drupal version
    *   (Default is per site).
+   * @topic docs-repl
+   * @remote-tty
    */
   public function cli(array $options = ['version-history' => FALSE]) {
     $drupal_major_version = drush_drupal_major_version();
-    $configuration = new \Psy\Configuration();
+    $configuration = new Configuration();
 
     // Set the Drush specific history file path.
     $configuration->setHistoryFile($this->historyPath($options));
