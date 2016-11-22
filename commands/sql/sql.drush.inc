@@ -164,6 +164,7 @@ function sql_drush_command() {
     'drush dependencies' => array('sqlsync'),
     'options' => drupal_sanitize_options() + array(
       'db-prefix' => 'Enable replacement of braces in sanitize queries.',
+      'whitelist-fields' => 'Exempt these fields from sanitizing',
     ) + $db_url,
     'aliases' => array('sqlsan'),
   );
@@ -698,4 +699,11 @@ function sql_drush_sql_sync_sanitize($site) {
   }
   $sql_sessions = "TRUNCATE TABLE {$table};";
   drush_sql_register_post_sync_op('sessions', dt('Truncate Drupal\'s sessions table'), $sql_sessions);
+
+  // Perform Drupal 8 field sanitation.
+  if ($major_version >= 8 ) {
+    require __DIR__ . '/Sanitizer.php';
+    $sanitizer = new \Drupal\sanitize\Sanitizer($site);
+    $sanitizer->sanitize();
+  }
 }
