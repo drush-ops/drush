@@ -59,7 +59,7 @@ class SanitizeCommands extends DrushCommands {
 
     if ($this->majorVersion == 8) {
       $this->sanitizeComments();
-      $this->sanitizeUsers();
+      $this->sanitizeUserFields();
     }
   }
 
@@ -69,7 +69,7 @@ class SanitizeCommands extends DrushCommands {
    * We've got to do a good bit of SQL-foo here because Drupal services are
    * not yet available.
    */
-  public function sanitizeUsers() {
+  public function sanitizeUserFields() {
     /** @var SqlBase $sql_class */
     $sql_class = drush_sql_get_class();
     $tables = $sql_class->listTables();
