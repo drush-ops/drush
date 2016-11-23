@@ -16,10 +16,10 @@ class CliCommands extends DrushCommands {
    * @command core-cli
    * @description Open an interactive shell on a Drupal site.
    * @aliases php
-   * @bootstrap DRUSH_BOOTSTRAP_MAX
+   * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    * @option $version-history Use command history based on Drupal version
    *   (Default is per site).
-   * @topic docs-repl
+   * @topics docs-repl
    * @remote-tty
    */
   public function cli(array $options = ['version-history' => FALSE]) {
@@ -142,10 +142,16 @@ class CliCommands extends DrushCommands {
    */
   protected function historyPath(array $options) {
     $cli_directory = drush_directory_cache('cli');
+    $drupal_major_version = drush_drupal_major_version();
 
+    // If there is no drupal version (and thus no root). Just use the current
+    // path.
+    // @todo Could use a global file within drush?
+    if (!$drupal_major_version) {
+      $file_name = 'global-' . md5(drush_cwd());
+    }
     // If only the Drupal version is being used for the history.
-    if ($options['version-history']) {
-      $drupal_major_version = drush_drupal_major_version();
+    else if ($options['version-history']) {
       $file_name = "drupal-$drupal_major_version";
     }
     // If there is an alias, use that in the site specific name. Otherwise,
@@ -156,7 +162,8 @@ class CliCommands extends DrushCommands {
         $site_suffix = $site['#name'];
       }
       else {
-        $site_suffix = md5(DRUPAL_ROOT);
+        $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+        $site_suffix = md5($drupal_root);
       }
 
       $file_name = "drupal-site-$site_suffix";
