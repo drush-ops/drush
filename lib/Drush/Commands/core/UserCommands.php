@@ -3,6 +3,7 @@ namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
+use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
 use Drush\Log\LogLevel;
@@ -44,7 +45,7 @@ class UserCommands extends DrushCommands {
    *   langcode: Language code
    *   uuid: Uuid
    * @table-style default
-   * @default-fields uid,name,mail,user_status
+   * @default-fields uid,name,mail,roles,user_status
    * @todo --pipe not showing csv
    * @pipe-format csv
    * // @todo csv the roles cell with a renderer. also add to fields-default
@@ -54,7 +55,17 @@ class UserCommands extends DrushCommands {
   public function information($names = '', $options = ['format' => 'table', 'fields' => '']) {
     $userlist = new UserList($names);
     $info = $userlist->each('info');
-    return new RowsOfFields($info);
+    $result = new RowsOfFields($info);
+    $result->addRendererFunction([$this, 'renderRolesCell']);
+    return $result;
+  }
+
+  public function renderRolesCell($key, $cellData, FormatterOptions $options)
+  {
+    if (is_array($cellData)) {
+      return implode("\n", $cellData);
+    }
+    return $cellData;
   }
 
   /**
