@@ -24,13 +24,6 @@ sudo: false
 
 env:
   matrix:
-#D7
-    - UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=make
-    - UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=base
-    - UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=commands
-    - UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=pm
-    - UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=quick-drupal
-    - UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
 #D8
     - UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--group=make
     - UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--group=base

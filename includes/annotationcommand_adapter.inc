@@ -641,7 +641,7 @@ function annotationcommand_adapter_call_hook_command($names, CommandData $comman
  *
  * @param string[] $names All of the applicable names for the command being hooked
  * @param CommandData $commandData All of the parameter data associated with the
- *   current command invokation, including the InputInterface, OutputInterface
+ *   current command invocation, including the InputInterface, OutputInterface
  *   and AnnotationData
  * @param mixed $return The return value of the command being executed
  *

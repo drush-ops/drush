@@ -63,7 +63,7 @@ class userCase extends CommandUnishTestCase {
   function testUserPassword() {
     $newpass = 'newpass';
     $name = self::NAME;
-    $this->drush('user-password', array(self::NAME), $this->options() + array('password' => $newpass));
+    $this->drush('user-password', array(self::NAME, $newpass), $this->options());
     switch (UNISH_DRUPAL_MAJOR_VERSION) {
       case 7:
         $eval = "return user_authenticate('$name', '$newpass')";
@@ -86,7 +86,7 @@ class userCase extends CommandUnishTestCase {
     // Collect full logs so we can check browser.
     $this->drush('user-login', array(), $user_login_options + array('backend' => NULL));
     $parsed = $this->parse_backend_output($this->getOutput());
-    $url = parse_url($parsed['output']);
+    $url = parse_url($parsed['object'][1]);
     $this->assertContains('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
     $browser = FALSE;
     foreach ($parsed['log'] as $key => $log) {
@@ -106,7 +106,7 @@ class userCase extends CommandUnishTestCase {
     $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with user argument returned a valid reset URL');
     $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
     // Check path used as only argument when using uid option.
-    $this->drush('user-login', array('node/add'), $user_login_options + array('uid' => $uid));
+    $this->drush('user-login', array(self::NAME, 'node/add'), $user_login_options);
     $output = $this->getOutput();
     $url = parse_url($output);
     $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
