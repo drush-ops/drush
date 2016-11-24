@@ -13,6 +13,18 @@ use Psy\Configuration;
 class CliCommands extends DrushCommands {
 
   /**
+   * @command docs-repl
+   * @description repl.md
+   * @bootstrap DRUSH_BOOTSTRAP_NONE
+   * @hidden
+   * @topic
+   */
+  public function docs() {
+    $file = drush_get_context('DOC_PREFIX', DRUSH_BASE_PATH) . '/docs/repl.md';
+    drush_print_file($file);
+  }
+
+  /**
    * @command core-cli
    * @description Open an interactive shell on a Drupal site.
    * @aliases php
