@@ -567,8 +567,8 @@ abstract class DrupalBoot extends BaseBoot {
    */
   function bootstrap_drupal_login() {
     $uid_or_name = drush_set_context('DRUSH_USER', drush_get_option('user', 0));
-    if (!$account = user_load_by_uid($uid_or_name)) {
-      if (!$account = user_load_by_name($uid_or_name)) {
+    if (!$account = \user_load_by_uid($uid_or_name)) {
+      if (!$account = \user_load_by_name($uid_or_name)) {
         if (is_numeric($uid_or_name)) {
           $message = dt('Could not login with user ID !user.', array('!user' => $uid_or_name));
           if ($uid_or_name === 0) {

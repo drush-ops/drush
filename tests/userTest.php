@@ -9,21 +9,10 @@ namespace Unish;
 class userCase extends CommandUnishTestCase {
 
   const NAME = 'example';
-  private static $authenticated;
-  private static $status_prop;
 
   function setUp() {
     if (!$this->getSites()) {
       $this->setUpDrupal(1, TRUE);
-      self::$authenticated = 'authenticated';
-      self::$status_prop = 'status';
-      if (UNISH_DRUPAL_MAJOR_VERSION < 8) {
-        self::$authenticated .= ' user';
-      }
-      else {
-        self::$status_prop = 'user_status';
-      }
-
       $this->userCreate();
     }
   }
@@ -33,13 +22,13 @@ class userCase extends CommandUnishTestCase {
     $this->drush('user-information', array(self::NAME), $this->options() + array('format' => 'json'));
     $uid = 2;
     $output = $this->getOutputFromJSON($uid);
-    $this->assertEquals(0, $output->{self::$status_prop}, 'User is blocked.');
+    $this->assertEquals(0, $output->user_status, 'User is blocked.');
 
     // user-unblock
     $this->drush('user-unblock', array(self::NAME), $this->options());
     $this->drush('user-information', array(self::NAME), $this->options() + array('format' => 'json'));
     $output = $this->getOutputFromJSON($uid);
-    $this->assertEquals(1, $output->{self::$status_prop}, 'User is unblocked.');
+    $this->assertEquals(1, $output->user_status, 'User is unblocked.');
   }
 
    function testUserRole() {
@@ -49,14 +38,14 @@ class userCase extends CommandUnishTestCase {
     $this->drush('user-information', array(self::NAME), $this->options() + array('format' => 'json'));
     $uid = 2;
     $output = $this->getOutputFromJSON($uid);
-    $expected = array(self::$authenticated, 'test role');
+    $expected = array('authenticated', 'test role');
     $this->assertEquals($expected, array_values((array)$output->roles), 'User has test role.');
 
     // user-remove-role
     $this->drush('user-remove-role', array('test role', self::NAME), $this->options());
     $this->drush('user-information', array(self::NAME), $this->options() + array('format' => 'json'));
     $output = $this->getOutputFromJSON($uid);
-    $expected = array(self::$authenticated);
+    $expected = array('authenticated');
     $this->assertEquals($expected, array_values((array)$output->roles), 'User removed test role.');
   }
 
@@ -64,14 +53,7 @@ class userCase extends CommandUnishTestCase {
     $newpass = 'newpass';
     $name = self::NAME;
     $this->drush('user-password', array(self::NAME, $newpass), $this->options());
-    switch (UNISH_DRUPAL_MAJOR_VERSION) {
-      case 7:
-        $eval = "return user_authenticate('$name', '$newpass')";
-        break;
-      case 8:
-        $eval = "return \\Drupal::service('user.auth')->authenticate('$name', '$newpass');";
-        break;
-    }
+    $eval = "return \\Drupal::service('user.auth')->authenticate('$name', '$newpass');";
     $this->drush('php-eval', array($eval), $this->options());
     $output = $this->getOutput();
     $this->assertEquals("2", $output, 'User can login with new password.');
@@ -101,7 +83,6 @@ class userCase extends CommandUnishTestCase {
     $this->drush('user-login', array(self::NAME, 'node/add'), $user_login_options);
     $output = $this->getOutput();
     $url = parse_url($output);
-    // user_pass_reset_url encodes the URL in D6, but not in D7 or D8
     $query = $url['query'];
     $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with user argument returned a valid reset URL');
     $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
@@ -152,8 +133,8 @@ class userCase extends CommandUnishTestCase {
     $output = $this->getOutputFromJSON($uid);
     $this->assertEquals('example@example.com', $output->mail);
     $this->assertEquals(self::NAME, $output->name);
-    $this->assertEquals(1, $output->{self::$status_prop}, 'Newly created user is Active.');
-    $expected = array(self::$authenticated);
+    $this->assertEquals(1, $output->user_status, 'Newly created user is Active.');
+    $expected = array('authenticated');
     $this->assertEquals($expected, array_values((array)$output->roles), 'Newly created user has one role.');
   }
 
