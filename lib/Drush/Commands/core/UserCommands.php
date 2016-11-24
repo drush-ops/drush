@@ -5,9 +5,9 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\user\Entity\User;
 use Drush\Commands\DrushCommands;
 use Drush\Log\LogLevel;
-use Drush\User\UserList;
 
 class UserCommands extends DrushCommands {
 
@@ -17,10 +17,16 @@ class UserCommands extends DrushCommands {
    * @command user-information
    *
    * @param string $names A comma delimited list of user names.
+   * @option $uid A comma delimited list of user ids to lookup (an alternative to names).
+   * @option $mail A comma delimited list of emails to lookup (an alternative to names).
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    * @aliases uinf
    * @usage drush user-information someguy,somegal
    *   Display information about the someguy and somegal user accounts.
+   * @usage drush user-information --mail=someguy@somegal.com
+   *   Display information for a given email account.
+   * @usage drush user-information --uid=5
+   *   Display information for a given user id.
    * @field-labels
    *   uid: User ID
    *   name: User name
@@ -51,10 +57,36 @@ class UserCommands extends DrushCommands {
    *
    * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
    */
-  public function information($names = '', $options = ['format' => 'table', 'fields' => '']) {
-    $userlist = new UserList($names);
-    $info = $userlist->each('info');
-    $result = new RowsOfFields($info);
+  public function information($names = '', $options = ['format' => 'table', 'uid' => '', 'mail' => '', 'fields' => '']) {
+    $accounts = [];
+    if ($mails = _convert_csv_to_array($options['mail'])) {
+      foreach ($mails as $mail) {
+        if ($account = user_load_by_mail($mail)) {
+          $accounts[$account->id()] = $account;
+        }
+      }
+    }
+    if ($uids = _convert_csv_to_array($options['uid'])) {
+      if ($loaded = User::loadMultiple($uids)) {
+        $accounts += $loaded;
+      }
+    }
+    if ($names = _convert_csv_to_array($names)) {
+      foreach ($names as $name) {
+        if ($account = user_load_by_name($name)) {
+          $accounts[$account->id()] = $account;
+        }
+      }
+    }
+    if (empty($accounts)) {
+      throw new \Exception(dt('Unable to find a matching user'));
+    }
+
+    foreach ($accounts as $id => $account) {
+      $outputs[$id] = $this->info_array($account);
+    }
+
+    $result = new RowsOfFields($outputs);
     $result->addRendererFunction([$this, 'renderRolesCell']);
     return $result;
   }
@@ -78,12 +110,19 @@ class UserCommands extends DrushCommands {
    * @usage drush user-block user3
    *   Block the users whose name is user3
    */
-  public function block($names = '') {
-    $userlist = new UserList($names);
-    $userlist->each('block');
-    $this->logger->log(LogLevel::SUCCESS, dt('Blocked user(s): !users', array(
-      '!users' => $userlist->names(),
-    )));
+  public function block($names) {
+    if ($names = _convert_csv_to_array($names)) {
+      foreach ($names as $name) {
+        if ($account = user_load_by_name($name)) {
+          $account->block();
+          $account->save();
+          $this->logger->log(LogLevel::SUCCESS, dt('Blocked user(s): !user', array('!user' => $name)));
+        }
+        else {
+          $this->logger->log(LogLevel::WARNING, dt('Unable to load user: !user', array('!user' => $name)));
+        }
+      }
+    }
   }
 
   /**
@@ -97,12 +136,19 @@ class UserCommands extends DrushCommands {
    * @usage drush user-unblock user3
    *   Unblock the users with name user3
    */
-  public function unblock($names = '') {
-    $userlist = new UserList($names);
-    $userlist->each('unblock');
-    $this->logger->log(LogLevel::SUCCESS, dt('Unblocked user(s): !users', array(
-      '!users' => $userlist->names(),
-    )));
+  public function unblock($names) {
+    if ($names = _convert_csv_to_array($names)) {
+      foreach ($names as $name) {
+        if ($account = user_load_by_name($name)) {
+          $account->activate();
+          $account->save();
+          $this->logger->log(LogLevel::SUCCESS, dt('Unblocked user(s): !user', array('!user' => $name)));
+        }
+        else {
+          $this->logger->log(LogLevel::WARNING, dt('Unable to load user: !user', array('!user' => $name)));
+        }
+      }
+    }
   }
 
   /**
@@ -118,14 +164,24 @@ class UserCommands extends DrushCommands {
    * @usage drush user-add-role "power user" user3
    *   Add the "power user" role to user3
    */
-  public function addRole($role, $names = '') {
+  public function addRole($role, $names) {
     // If role is not found, an exception gets thrown and handled by command invoke.
     $role_object = drush_role_get_class($role);
-    $userlist = new UserList($names);
-    $userlist->each('addRole', array($role_object->rid));
-    $this->logger->log(LogLevel::SUCCESS, dt('Added !role role to !users', array(
-      '!users' => $userlist->names(),
-    )));
+    if ($names = _convert_csv_to_array($names)) {
+      foreach ($names as $name) {
+        if ($account = user_load_by_name($name)) {
+          $account->addRole($role_object->rid);
+          $account->save();
+          $this->logger->log(LogLevel::SUCCESS, dt('Added !role role to !user', array(
+            '!role' => $role,
+            '!user' => $name,
+          )));
+        }
+        else {
+          $this->logger->log(LogLevel::WARNING, dt('Unable to load user: !user', array('!user' => $name)));
+        }
+      }
+    }
   }
 
   /**
@@ -141,14 +197,24 @@ class UserCommands extends DrushCommands {
    * @usage drush user-remove-role "power user" user3
    *   Remove the "power user" role from user3
    */
-  public function removeRole($role, $names = '') {
+  public function removeRole($role, $names) {
     // If role is not found, an exception gets thrown and handled by command invoke.
     $role_object = drush_role_get_class($role);
-    $userlist = new UserList($names);
-    $userlist->each('removeRole', array($role_object->rid));
-    $this->logger->log(LogLevel::SUCCESS, dt('Removed user(s): !users', array(
-      '!users' => $userlist->names(),
-    )));
+    if ($names = _convert_csv_to_array($names)) {
+      foreach ($names as $name) {
+        if ($account = user_load_by_name($name)) {
+          $account->removeRole($role_object->rid);
+          $account->save();
+          $this->logger->log(LogLevel::SUCCESS, dt('Removed !role role from !user', array(
+            '!role' => $role,
+            '!user' => $name,
+          )));
+        }
+        else {
+          $this->logger->log(LogLevel::WARNING, dt('Unable to load user: !user', array('!user' => $name)));
+        }
+      }
+    }
   }
 
   /**
@@ -165,7 +231,6 @@ class UserCommands extends DrushCommands {
    *   Create a new user account with the name newuser, the email address person@example.com, and the password letmein
    */
   public function create($name, $options = ['password' => '', 'mail' => '']) {
-    $userversion = drush_user_get_class();
     $new_user = array(
       'name' => $name,
       'pass' => $options['password'],
@@ -174,8 +239,9 @@ class UserCommands extends DrushCommands {
       'status' => 1,
     );
     if (!drush_get_context('DRUSH_SIMULATE')) {
-      if ($account = $userversion->create($new_user)) {
-        drush_backend_set_result($account->info());
+      if ($account = User::create($new_user)) {
+        $account->save();
+        drush_backend_set_result($this->info_array($account));
         $this->logger()->log(LogLevel::SUCCESS, dt('Created a new user with uid !uid', array('!uid' => $account->id())));
       }
       else {
@@ -190,14 +256,13 @@ class UserCommands extends DrushCommands {
    * @hook validate user-create
    */
   public function createValidate(CommandData $commandData) {
-    $userversion = drush_user_get_class();
     if ($mail = $commandData->input()->getOption('mail')) {
-      if ($userversion->load_by_mail($mail)) {
+      if (user_load_by_mail($mail)) {
         throw new \Exception(dt('There is already a user account with the email !mail', array('!mail' => $mail)));
       }
     }
     $name = $commandData->input()->getArgument('name');
-    if ($userversion->load_by_name($name)) {
+    if (user_load_by_name($name)) {
       throw new \Exception((dt('There is already a user account with the name !name', array('!name' => $name))));
     }
   }
@@ -217,16 +282,23 @@ class UserCommands extends DrushCommands {
    *   Cancel the user account with the name username and delete all content created by that user.
    */
   public function cancel($names, $options = ['delete-account' => FALSE]) {
-    $userlist = new UserList($names);
-    foreach ($userlist->accounts as $account) {
-      if ($options['delete-content'] && drush_drupal_major_version() >= 7) {
-        $this->logger()->log(LogLevel::OK, dt('All content created by !name will be deleted.', array('!name' => $account->getUsername())));
-      }
-      if (drush_confirm('Cancel user account?: ')) {
-        $account->cancel();
+    if ($names = _convert_csv_to_array($names)) {
+      foreach ($names as $name) {
+        if ($account = user_load_by_name($name)) {
+          if ($options['delete-content']) {
+            $this->logger()->log(LogLevel::OK, dt('All content created by !name will be deleted.', array('!name' => $account->getUsername())));
+          }
+          if (drush_confirm('Cancel user account?: ')) {
+            $account->cancel();
+            $this->logger()->log(LogLevel::SUCCESS, dt('Cancelled user: !user', array('!user' => $name)));
+          }
+
+        }
+        else {
+          $this->logger->log(LogLevel::WARNING, dt('Unable to load user: !user', array('!user' => $name)));
+        }
       }
     }
-    $this->logger()->log(LogLevel::SUCCESS, dt('Cancelled user(s): !users', array('!users' => $userlist->names())));
   }
 
   /**
@@ -242,12 +314,16 @@ class UserCommands extends DrushCommands {
    *   Set the password for the username someuser. @see xkcd.com/936
    */
   public function password($name, $password, $options = ['password' => '']) {
-    $userlist = new UserList($name);
-    if (!drush_get_context('DRUSH_SIMULATE')) {
-      foreach ($userlist->accounts as $account) {
-        $userlist->each('password', array($password));
+    if ($account = user_load_by_name($name)) {
+      if (!drush_get_context('DRUSH_SIMULATE')) {
+        $account->setpassword($password);
+        $account->save();
+        $this->logger()
+          ->log(LogLevel::SUCCESS, dt('Changed password for !name.', array('!name' => $name)));
       }
-      $this->logger()->log(LogLevel::SUCCESS, dt('Changed password for !name.', array('!name' => $userlist->names())));
+    }
+    else {
+      throw new \Exception(dt('Unable to load user: !user', array('!user' => $name)));
     }
   }
 
@@ -279,7 +355,7 @@ class UserCommands extends DrushCommands {
         throw new \Exception('Unable to execute user login.');
       }
       else {
-        // Prior versions of Drupal returned a string so cast to an array if needed.
+        // Prior versions of Drupal returned an array so cast to an string if needed.
         $links = is_string($return['object']) ? array($return['object']) : $return['object'];
       }
     }
@@ -290,16 +366,22 @@ class UserCommands extends DrushCommands {
         return FALSE;
       }
 
-      $userlist = new UserList($name);
-      $links = $userlist->each('passResetUrl', array($path));
+      if ($name == 1) {
+        $account = User::load(1);
+      }
+      elseif (!$account = user_load_by_name($name)) {
+        throw new \Exception(dt('Unable to load user: !user', array('!user' => $name)));
+      }
+      $link = user_pass_reset_url($account);
+      if ($path) {
+        $link .= '?destination=' . $path;
+      }
     }
     $port = drush_get_option('redirect-port', FALSE);
-    // There is almost always only one link so pick the first one for display and browser.
-    // The full array is sent on backend calls.
-    $first = current($links);
-    drush_start_browser($first, FALSE, $port);
-    drush_backend_set_result($links);
-    return $first;
+    drush_start_browser($link, FALSE, $port);
+    // Use an array for backwards compat.
+    drush_backend_set_result([$link]);
+    return $link;
   }
 
   /**
@@ -315,4 +397,30 @@ class UserCommands extends DrushCommands {
     return array('values' => array_keys($roles));
   }
 
+  /**
+   * A flatter and simpler array presentation of a Drupal $user object.
+   *
+   * @param $account A user account
+   * @return array
+   */
+  public function info_array($account) {
+    return array(
+      'uid' => $account->id(),
+      'name' => $account->getUsername(),
+      'password' => $account->getPassword(),
+      'mail' => $account->getEmail(),
+      'user_created' => $account->getCreatedTime(),
+      'created' => format_date($account->getCreatedTime()),
+      'user_access' => $account->getLastAccessedTime(),
+      'access' => format_date($account->getLastAccessedTime()),
+      'user_login' => $account->getLastLoginTime(),
+      'login' => format_date($account->getLastLoginTime()),
+      'user_status' => $account->get('status')->value,
+      'status' => $account->isActive() ? 'active' : 'blocked',
+      'timezone' => $account->getTimeZone(),
+      'roles' => $account->getRoles(),
+      'langcode' => $account->getPreferredLangcode(),
+      'uuid' => $account->uuid->value,
+    );
+  }
 }
