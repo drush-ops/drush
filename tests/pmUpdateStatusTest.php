@@ -27,6 +27,10 @@ class pmUpdateStatus extends CommandUnishTestCase {
    *  - Drupal 8 still has not enough variety to cover the tests
    */
   function setUp() {
+
+    // @todo.
+    $this->markTestSkipped('Needs port to Drupal 8.');
+
     $sites = $this->setUpDrupal(1, TRUE, "7.30");
     $options = array(
       'root' => $this->webroot(),
