@@ -555,7 +555,7 @@ function _core_site_status_table($project = '') {
             if ($phase > DRUSH_BOOTSTRAP_DRUPAL_FULL) {
               $status_table['bootstrap'] = dt('Successful');
               if ($phase == DRUSH_BOOTSTRAP_DRUPAL_LOGIN) {
-                $status_table['user'] = drush_user_get_class()->getCurrentUserAsSingle()->getUsername();
+                $status_table['user'] = \Drupal::currentUser()->getAccountName();
               }
             }
           }
