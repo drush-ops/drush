@@ -355,8 +355,7 @@ class UserCommands extends DrushCommands {
         throw new \Exception('Unable to execute user login.');
       }
       else {
-        // Prior versions of Drupal returned an array so cast to an string if needed.
-        $links = is_string($return['object']) ? array($return['object']) : $return['object'];
+        $link = is_string($return['object']) ?: current($return['object']);
       }
     }
     else {
@@ -380,7 +379,7 @@ class UserCommands extends DrushCommands {
     $port = drush_get_option('redirect-port', FALSE);
     drush_start_browser($link, FALSE, $port);
     // Use an array for backwards compat.
-    drush_backend_set_result([$link]);
+    drush_backend_set_result([$account->id() => $link]);
     return $link;
   }
 

@@ -68,7 +68,7 @@ class userCase extends CommandUnishTestCase {
     // Collect full logs so we can check browser.
     $this->drush('user-login', array(), $user_login_options + array('backend' => NULL));
     $parsed = $this->parse_backend_output($this->getOutput());
-    $url = parse_url($parsed['object'][0]);
+    $url = parse_url(current($parsed['object']));
     $this->assertContains('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
     $browser = FALSE;
     foreach ($parsed['log'] as $key => $log) {
