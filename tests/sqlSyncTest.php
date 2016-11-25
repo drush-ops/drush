@@ -55,12 +55,12 @@ class sqlSyncTest extends CommandUnishTestCase {
     $this->drush('sql-sync', array('@stage', '@dev'), $sync_options);
 
     // Confirm that the sample user has the correct email address on the staging site
-    $this->drush('user-information', array($name), $options + array('pipe' => NULL));
+    $this->drush('user-information', array($name), $options + array('format' => 'csv', 'include-field-labels' => 0, 'strict' => 0));
     $output = $this->getOutput();
     $row  = str_getcsv($output);
-    $uid = $row[1];
+    $uid = $row[0];
     $this->assertEquals($mail, $row[2], 'email address is unchanged on source site.');
-    $this->assertEquals($name, $row[0]);
+    $this->assertEquals($name, $row[1]);
 
     $options = array(
       'root' => $this->webroot(),
@@ -68,12 +68,12 @@ class sqlSyncTest extends CommandUnishTestCase {
       'yes' => NULL,
     );
     // Confirm that the sample user's email address has been sanitized on the dev site
-    $this->drush('user-information', array($name), $options + array('pipe' => NULL));
+    $this->drush('user-information', array($name), $options + array('format' => 'csv', 'include-field-labels' => 0, 'strict' => 0));
     $output = $this->getOutput();
     $row  = str_getcsv($output);
-    $uid = $row[1];
+    $uid = $row[0];
     $this->assertEquals("user+$uid@localhost.localdomain", $row[2], 'email address was sanitized on destination site.');
-    $this->assertEquals($name, $row[0]);
+    $this->assertEquals($name, $row[1]);
 
     // @todo Confirm that the role_permissions table no longer exists in dev site (i.e. wildcard expansion works in sql-sync).
     // $this->drush('sql-query', array('SELECT * FROM role_permission'), $options, NULL, NULL, self::EXIT_ERROR);
@@ -94,11 +94,11 @@ class sqlSyncTest extends CommandUnishTestCase {
       'yes' => NULL,
     );
     // Confirm that the sample user's email address has been sanitized on the dev site
-    $this->drush('user-information', array($name), $options + array('pipe' => NULL));
+    $this->drush('user-information', array($name), $options + array('format' => 'csv', 'include-field-labels' => 0, 'strict' => 0));
     $output = $this->getOutput();
     $row  = str_getcsv($output);
-    $uid = $row[1];
+    $uid = $row[0];
     $this->assertEquals("user@mysite.org", $row[2], 'email address was sanitized (fixed email) on destination site.');
-    $this->assertEquals($name, $row[0]);
+    $this->assertEquals($name, $row[1]);
   }
 }

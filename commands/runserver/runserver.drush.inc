@@ -110,13 +110,15 @@ function drush_core_runserver($uri = NULL) {
 
   // We log in with the specified user ID (if set) via the password reset URL.
   $user_message = '';
-  $usersingle = drush_user_get_class()->getCurrentUserAsSingle();
-  if ($usersingle->id()) {
-    $browse = $usersingle->passResetUrl($path);
-    $user_message = ', logged in as ' . $usersingle->getUsername();
+  if ($account = \Drupal::currentUser()) {
+    $link = user_pass_reset_url($account);
+    if ($path) {
+      $link .= '?destination=' . $path;
+    }
+    $user_message = ', logged in as ' . \Drupal::currentUser()->getAccountName();
   }
   else {
-    $browse = drush_url($path);
+    $link = drush_url($path);
   }
 
   drush_print(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site !site!user...', array('!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $path, '!site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'), '!user' => $user_message)));
@@ -128,7 +130,7 @@ function drush_core_runserver($uri = NULL) {
   if (!empty($uri['path'])) {
     // Start a browser if desired. Include a 2 second delay to allow the
     // server to come up.
-    drush_start_browser($browse, 2);
+    drush_start_browser($link, 2);
   }
   // Start the server using 'php -S'.
   if (drush_drupal_major_version() >=8) {
