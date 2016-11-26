@@ -15,6 +15,8 @@ class StatusCommands {
    * @command core-status
    * @aliases status, st
    *
+   * @table-style compact
+   * @list-delimiter :
    * @field-labels
    *   drupal-version: Drupal version
    *   uri: Site URI
