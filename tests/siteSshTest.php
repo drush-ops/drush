@@ -46,16 +46,16 @@ class siteSshCase extends CommandUnishTestCase {
   /**
   * Test drush ssh with multiple arguments (preferred form).
   */
-//  public function testSshMultipleArgs() {
-//    $options = array(
-//      'cd' => '0',
-//      'simulate' => NULL,
-//    );
-//    $this->drush('ssh', array('ls', '/path1', '/path2'), $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
-//    $output = $this->getOutput();
-//    $expected = sprintf('Calling proc_open(ssh -o PasswordAuthentication=no %s@%s %s);', self::escapeshellarg('user'), self::escapeshellarg('server'), self::escapeshellarg('ls /path1 /path2'));
-//    $this->assertEquals($expected, $output);
-//  }
+  public function testSshMultipleArgs() {
+    $options = array(
+      'cd' => '0',
+      'simulate' => NULL,
+    );
+    $this->drush('ssh', array('ls', '/path1', '/path2'), $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
+    $output = $this->getOutput();
+    $expected = sprintf('Calling proc_open(ssh -o PasswordAuthentication=no %s@%s %s);', self::escapeshellarg('user'), self::escapeshellarg('server'), self::escapeshellarg('ls /path1 /path2'));
+    $this->assertEquals($expected, $output);
+  }
 
   /**
    * Test drush ssh with multiple arguments (legacy form).
