@@ -744,7 +744,7 @@ function _drush_core_config_php_ini_files() {
 function _drush_core_config_bash_files() {
   $bash_files = array();
   $home = drush_server_home();
-  if ($bashrc = drush_init_find_bashrc($home)) {
+  if ($bashrc = drush_core_find_bashrc($home)) {
     $bash_files[] = $bashrc;
   }
   $prompt = $home . '/.drush/drush.prompt.sh';
@@ -752,6 +752,16 @@ function _drush_core_config_bash_files() {
     $bash_files[] = $prompt;
   }
   return $bash_files;
+}
+
+/**
+ * Determine which .bashrc file is best to use on this platform.
+ *
+ * TODO: Also exists as InitCommands::findBashrc. Decide on class-based
+ * way to share code like this.
+ */
+function drush_core_find_bashrc($home) {
+  return $home . "/.bashrc";
 }
 
 /**
