@@ -388,8 +388,8 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
     if ($command_name != $standard_alias) {
       $aliases[] = $standard_alias;
     }
-    $handle_remote_commands = strtolower($commandinfo->getAnnotation('handle-remote-commands')) == 'true';
-    $strict_option_handling = $commandinfo->hasAnnotation('strict_option_handling');
+    $handle_remote_commands = $commandinfo->hasAnnotation('handle-remote-commands');
+    $strict_option_handling = $commandinfo->hasAnnotation('strict-option-handling');
     $hidden = $commandinfo->hasAnnotation('hidden');
     // If there is no 'bootstrap' annotation, default to NONE.
     $bootstrap = DRUSH_BOOTSTRAP_NONE;
