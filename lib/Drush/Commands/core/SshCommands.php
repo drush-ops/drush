@@ -11,12 +11,12 @@ class SshCommands extends DrushCommands {
    *
    * @command site-ssh
    * @param string $bash Bash to execute on target. Optional, except when site-alias is a list.
-   * @option cd Directory to change to. Use a full path, TRUE for the site's Drupal root directory, or --no-cd for the ssh default (usually the remote user's home directory). Defaults to the Drupal root.
+   * @option cd Directory to change to if Drupal root is not desired (the default). Value should be a full path, or --no-cd for the ssh default (usually the remote user's home directory).
    * @handle-remote-commands
    * @strict-option-handling
    * @usage drush @mysite ssh
    *   Open an interactive shell on @mysite's server.
-   * @usage drush @prod ssh "ls /tmp"
+   * @usage drush @prod ssh ls /tmp
    *   Run "ls /tmp" on @prod site. If @prod is a site list, then ls will be executed on each site.
    * @usage drush @prod ssh git pull
    *   Run "git pull" on the Drupal root directory on the @prod site.
