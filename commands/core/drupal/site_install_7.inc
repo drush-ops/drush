@@ -9,10 +9,14 @@ function drush_core_site_install_version($profile, array $additional_form_option
   require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
 
   if (!isset($profile)) {
+    global $conf;
     require_once DRUSH_DRUPAL_CORE . '/includes/file.inc';
     require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
     require_once DRUSH_DRUPAL_CORE . '/includes/common.inc';
     require_once DRUSH_DRUPAL_CORE . '/includes/module.inc';
+    require_once DRUSH_DRUPAL_CORE . '/includes/cache.inc';
+    require_once DRUSH_DRUPAL_CORE . '/includes/cache-install.inc';
+    $conf['cache_default_class'] = 'DrupalFakeCache';
 
     // If there is an installation profile that is marked as exclusive, use that
     // one.
