@@ -94,7 +94,7 @@ class EditCommands extends DrushCommands {
     return array_merge($php_header, $php, $bash_header, $bash, $rcs_header, $rcs, $aliases_header, $aliases, $drupal_header, $drupal);
   }
 
-  public function php_ini_files() {
+  static public function php_ini_files() {
     $ini_files = array();
     $ini_files[] = php_ini_loaded_file();
     if ($drush_ini = getenv('DRUSH_INI')) {
@@ -110,7 +110,7 @@ class EditCommands extends DrushCommands {
     return array_unique($ini_files);
   }
 
-  public function bash_files() {
+  static public function bash_files() {
     $bash_files = array();
     $home = drush_server_home();
     if ($bashrc = $this->find_bashrc($home)) {

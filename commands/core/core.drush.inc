@@ -5,6 +5,7 @@
  *   Core drush commands.
  */
 
+use Drush\Commands\core\EditCommands;
 use Drush\Log\LogLevel;
 use SebastianBergmann\Version;
 
@@ -528,7 +529,7 @@ function _core_site_status_table($project = '') {
     $status_table['php-bin'] = $php_bin;
   }
   $status_table['php-os'] = PHP_OS;
-  if ($php_ini_files = _drush_core_config_php_ini_files()) {
+  if ($php_ini_files = EditCommands::php_ini_files()) {
     $status_table['php-conf'] = $php_ini_files;
   }
   $status_table['drush-script'] = DRUSH_COMMAND;
