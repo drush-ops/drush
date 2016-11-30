@@ -25,12 +25,12 @@ sudo: false
 env:
   matrix:
 #D8
-    - UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--group=make
-    - UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--group=base
-    - UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--group=commands
-    - UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--group=pm
-    - UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--group=quick-drupal
-    - UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal TEST_CHILDREN="drush-ops/config-extra"
+    - PHPUNIT_ARGS=--group=make
+    - PHPUNIT_ARGS=--group=base
+    - PHPUNIT_ARGS=--group=commands
+    - PHPUNIT_ARGS=--group=pm
+    - PHPUNIT_ARGS=--group=quick-drupal
+    - PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal TEST_CHILDREN="drush-ops/config-extra"
 
     # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=make
     # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=base
