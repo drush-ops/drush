@@ -3,6 +3,7 @@ namespace Drush\Commands\core;
 
 use Drupal;
 use Drush\Commands\DrushCommands;
+use Drush\Log\LogLevel;
 
 class CoreCommands extends DrushCommands {
 
@@ -17,7 +18,7 @@ class CoreCommands extends DrushCommands {
   public function cron() {
     $result = Drupal::service('cron')->run();
     if ($result) {
-      $this->io()->success('Cron run successful.');
+      $this->logger()->log('Cron run successful.', LogLevel::SUCCESS);
     }
     else {
       throw new \Exception(dt('Cron run failed.'));
