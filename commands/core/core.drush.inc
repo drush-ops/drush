@@ -7,7 +7,6 @@
 
 use Drush\Commands\core\EditCommands;
 use Drush\Log\LogLevel;
-use SebastianBergmann\Version;
 
 /**
  * Implementation of hook_drush_help().
@@ -113,38 +112,6 @@ function core_drush_command() {
       'output-data-type' => 'format-table',
     ),
     'aliases' => array('updbst'),
-  );
-  $items['core-requirements'] = array(
-    'description' => 'Provides information about things that may be wrong in your Drupal installation, if any.',
-    'aliases' => array('status-report','rq'),
-    'examples' => array(
-      'drush core-requirements' => 'Show all status lines from the Status Report admin page.',
-      'drush core-requirements --severity=2' => 'Show only the red lines from the Status Report admin page.',
-      'drush core-requirements --pipe' => 'Print out a short report in JSON format, where severity 2=error, 1=warning, and 0/-1=OK',
-    ),
-    'options' => array(
-      'severity' => array(
-        'description' => 'Only show status report messages with a severity greater than or equal to the specified value.',
-        'value' => 'required',
-        'example-value' => '3',
-      ),
-      'ignore' => 'Comma-separated list of requirements to remove from output. Run with --pipe to see key values to use.',
-    ),
-    'outputformat' => array(
-      'default' => 'table',
-      'pipe-format' => 'json',
-      'field-labels' => array('title' => 'Title', 'severity' => 'Severity', 'sid' => 'SID', 'description' => 'Description', 'value' => 'Summary', 'reason' => 'Reason', 'weight' => 'Weight'),
-      'fields-default' => array('title', 'severity', 'description'),
-      'column-widths' => array('severity' => 8),
-      'concatenate-columns' => array('description' => array('value', 'description')),
-      'strip-tags' => TRUE,
-      'ini-item' => 'sid',
-      'key-value-item' => 'severity',
-      'list-metadata' => array(
-        'list-item' => 'severity',
-      ),
-      'output-data-type' => 'format-table',
-    ),
   );
   $items['php-eval'] = array(
     'description' => 'Evaluate arbitrary php code after bootstrapping Drupal (if available).',
@@ -580,50 +547,6 @@ function _drush_core_status_format_table_data($output, $metadata) {
     }
   }
   return $output;
-}
-
-/**
- * Command callback. Provides information from the 'Status Reports' admin page.
- */
-function drush_core_requirements() {
-  include_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
-  $severities = array(
-    REQUIREMENT_INFO => t('Info'),
-    REQUIREMENT_OK => t('OK'),
-    REQUIREMENT_WARNING => t('Warning'),
-    REQUIREMENT_ERROR => t('Error'),
-  );
-
-  drupal_load_updates();
-
-  drush_include_engine('drupal', 'environment');
-  $requirements = drush_module_invoke_all('requirements', 'runtime');
-  // If a module uses "$requirements[] = " instead of
-  // "$requirements['label'] = ", then build a label from
-  // the title.
-  foreach($requirements as $key => $info) {
-    if (is_numeric($key)) {
-      unset($requirements[$key]);
-      $new_key = strtolower(str_replace(' ', '_', $info['title']));
-      $requirements[$new_key] = $info;
-    }
-  }
-  $ignore_requirements = drush_get_option_list('ignore');
-  foreach ($ignore_requirements as $ignore) {
-    unset($requirements[$ignore]);
-  }
-  ksort($requirements);
-
-  $min_severity = drush_get_option('severity', -1);
-  foreach($requirements as $key => $info) {
-    $severity = array_key_exists('severity', $info) ? $info['severity'] : -1;
-    $requirements[$key]['sid'] = $severity;
-    $requirements[$key]['severity'] = $severities[$severity];
-    if ($severity < $min_severity) {
-      unset($requirements[$key]);
-    }
-  }
-  return $requirements;
 }
 
 // Command callback. Show all global options. Exposed via topic command.
