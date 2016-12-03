@@ -14,14 +14,13 @@ class CliCommands extends DrushCommands {
 
   /**
    * @command docs-repl
-   * @description repl.md
+   * @description Drush's PHP Shell
    * @bootstrap DRUSH_BOOTSTRAP_NONE
    * @hidden
    * @topic
    */
   public function docs() {
-    $file = drush_get_context('DOC_PREFIX', DRUSH_BASE_PATH) . '/docs/repl.md';
-    drush_print_file($file);
+    drush_print_file(DRUSH_BASE_PATH. '/docs/repl.md');
   }
 
   /**
