@@ -45,18 +45,6 @@ function core_drush_help($section) {
 }
 
 /**
- * Implements hook_drush_help_alter().
- */
-function core_drush_help_alter(&$command) {
-  // Drupal 8+ only options.
-  if (drush_drupal_major_version() < 8) {
-    if ($command['commandfile'] == 'core' && $command['command'] == 'updatedb') {
-      unset($command['options']['entity-updates']);
-    }
-  }
-}
-
-/**
  * Implementation of hook_drush_command().
  *
  * In this hook, you specify which commands your
@@ -84,34 +72,6 @@ function core_drush_command() {
       'label' => 'Drush Version',
       'output-data-type' => 'format-single',
     ),
-  );
-  $items['updatedb'] = array(
-    'description' => 'Apply any database updates required (as with running update.php).',
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
-    'global-options' => array(
-      'cache-clear',
-    ),
-    'options' => array(
-      'entity-updates' => 'Run automatic entity schema updates at the end of any update hooks. Defaults to --no-entity-updates.',
-    ),
-    'aliases' => array('updb'),
-  );
-  $items['entity-updates'] = array(
-    'description' => 'Apply pending entity schema updates.',
-    'aliases' => array('entup'),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
-    'core' => array('8+'),
-  );
-  $items['updatedb-status'] = array(
-    'description' => 'List any pending database updates.',
-    'outputformat' => array(
-      'default' => 'table',
-      'pipe-format' => 'csv',
-      'field-labels' => array('module' => 'Module', 'update_id' => 'Update ID', 'description' => 'Description'),
-      'fields-default' => array('module', 'update_id', 'description'),
-      'output-data-type' => 'format-table',
-    ),
-    'aliases' => array('updbst'),
   );
   $items['php-eval'] = array(
     'description' => 'Evaluate arbitrary php code after bootstrapping Drupal (if available).',
@@ -304,60 +264,6 @@ function core_drush_engine_drupal() {
 /**
  * @} End of "Engine types".
  */
-
-/**
- * Command handler. Apply pending entity schema updates.
- */
-function drush_core_entity_updates() {
-  if (drush_get_context('DRUSH_SIMULATE')) {
-    drush_log(dt('entity-updates command does not support --simulate option.'), LogLevel::OK);
-  }
-
-  drush_include_engine('drupal', 'update');
-  if (entity_updates_main() === FALSE) {
-    return FALSE;
-  }
-
-  drush_drupal_cache_clear_all();
-
-  drush_log(dt('Finished performing updates.'), LogLevel::OK);
-}
-
-/**
- * Command handler. Execute update.php code from drush.
- */
-function drush_core_updatedb() {
-  if (drush_get_context('DRUSH_SIMULATE')) {
-    drush_log(dt('updatedb command does not support --simulate option.'), LogLevel::OK);
-    return TRUE;
-  }
-
-  drush_include_engine('drupal', 'update');
-  $result = update_main();
-  if ($result === FALSE) {
-    return FALSE;
-  }
-  elseif ($result > 0) {
-    // Clear all caches in a new process. We just performed major surgery.
-    drush_drupal_cache_clear_all();
-
-    drush_log(dt('Finished performing updates.'), LogLevel::OK);
-  }
-}
-
-/**
- * Command handler. List pending DB updates.
- */
-function drush_core_updatedb_status() {
-  require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
-  drupal_load_updates();
-  drush_include_engine('drupal', 'update');
-  list($pending, $start) = updatedb_status();
-  if (empty($pending)) {
-    drush_log(dt("No database updates required"), LogLevel::OK);
-  }
-  return $pending;
-}
 
 function _core_site_credentials($right_margin = 0) {
   // Leave some space on the right so that we can put the result into the
