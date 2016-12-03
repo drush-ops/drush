@@ -225,18 +225,6 @@ function core_drush_command() {
     // Therefore we bootstrap to _FULL in commands/core/drupal/update.inc.
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
   );
-  $items['core-global-options'] = array(
-    'description' => 'All global options',
-    'hidden' => TRUE,
-    'topic' => TRUE,
-    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
-    'outputformat' => array(
-      'default' => 'table',
-      'pipe-format' => 'csv',
-      'field-labels' => array('label' => 'Label', 'description' => 'Description'),
-      'output-data-type' => 'format-table',
-    ),
-  );
   $items['core-quick-drupal'] = array(
     'description' => 'Download, install, serve and login to Drupal with minimal configuration and dependencies.',
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
@@ -547,14 +535,6 @@ function _drush_core_status_format_table_data($output, $metadata) {
     }
   }
   return $output;
-}
-
-// Command callback. Show all global options. Exposed via topic command.
-function drush_core_global_options() {
-  drush_print(dt('These options are applicable to most drush commands. Most options can be disabled by using --no-option (i.e. --no-debug to disable --debug.)'));
-  drush_print();
-  $fake = drush_global_options_command(FALSE);
-  return drush_format_help_section($fake, 'options');
 }
 
 function _drush_core_is_named_in_array($key, $the_array) {
