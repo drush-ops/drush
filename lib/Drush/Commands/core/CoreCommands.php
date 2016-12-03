@@ -220,5 +220,31 @@ class CoreCommands extends DrushCommands {
     }
   }
 
+  /**
+   * All global options.
+   *
+   * @command core-global-options
+   * @hidden
+   * @topic
+   * @bootstrap DRUSH_BOOTSTRAP_NONE
+   *
+   * @field-labels
+   *   name: Name
+   *   description: Description
+   * @default-fields name,description
+   */
+  public function global_options($options = ['format' => 'table', 'fields' => '', 'include-field-labels' => FALSE]) {
+    drush_print(dt('These options are applicable to most Drush commands. Most options can be disabled by using --no-option (i.e. --no-debug to disable --debug.)'));
+    drush_print();
+    $fake = drush_global_options_command(FALSE);
+    foreach ($fake['options'] as $key => $values) {
+      $rows[] = [
+        'name' => '--'. $key,
+        'description' => $values['description'],
+      ];
+    }
+    return new RowsOfFields($rows);
+  }
+
 
 }

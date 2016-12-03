@@ -3,13 +3,14 @@
 namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
+use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputInterface;
 
 use Consolidation\OutputFormatters\StructuredData\AssociativeList;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\AnnotatedCommand\CommandData;
 
-class StatusCommands {
+class StatusCommands extends DrushCommands {
 
   /**
    * @command core-status
