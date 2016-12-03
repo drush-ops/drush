@@ -80,6 +80,21 @@ EOD;
    * Assure that all possible config files get loaded.
    */
   function testConfigSearchPaths() {
+    // First test `drush status --format=json --fields=drush-conf
+    $options = array(
+      'format' => 'json',
+      'fields' => 'drush-conf',
+      'config' => UNISH_SANDBOX,
+      'root' => $this->webroot(),
+      'uri' => key($this->getSites())
+    );
+    $this->drush('core-status', array(), $options);
+    $loaded = $this->getOutputFromJSON('drush-conf');
+    $loaded = array_map(array(&$this, 'convert_path'), $loaded);
+    $this->assertSame($this->written, $loaded);
+
+/*
+    // Next test `drush status --pipe 'Drush configuration'`
     $options = array(
       'pipe' => NULL,
       'config' => UNISH_SANDBOX,
@@ -90,6 +105,7 @@ EOD;
     $loaded = $this->getOutputFromJSON('drush-conf');
     $loaded = array_map(array(&$this, 'convert_path'), $loaded);
     $this->assertSame($this->written, $loaded);
+*/
   }
 
   /**
@@ -116,6 +132,16 @@ EOD;
       file_put_contents($file, $contents);
     }
 
+    $this->drush('core-status', array(), array('format' => 'json', 'fields' => 'drush-conf'));
+    $loaded = $this->getOutputFromJSON('drush-conf');
+    // Next 2 lines needed for Windows compatibility.
+    $loaded = array_map(array(&$this, 'convert_path'), $loaded);
+    $files = array_map(array(&$this, 'convert_path'), $files);
+    $this->assertTrue(in_array($files[0], $loaded), 'Loaded a version-specific config file.');
+    $this->assertFalse(in_array($files[1], $loaded), 'Did not load a mismatched version-specific config file.');
+
+/*
+    // Also try it the old way
     $this->drush('core-status', array('Drush configuration'), array('pipe' => NULL));
     $loaded = $this->getOutputFromJSON('drush-conf');
     // Next 2 lines needed for Windows compatibility.
@@ -123,6 +149,7 @@ EOD;
     $files = array_map(array(&$this, 'convert_path'), $files);
     $this->assertTrue(in_array($files[0], $loaded), 'Loaded a version-specific config file.');
     $this->assertFalse(in_array($files[1], $loaded), 'Did not load a mismatched version-specific config file.');
+*/
   }
 
   /**

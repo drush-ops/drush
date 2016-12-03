@@ -213,7 +213,7 @@ function annotationcommand_adapter_process_command() {
   }
 
   $input = new DrushInputAdapter($args, annotationcommand_adapter_get_options($command), $command['command']);
-  $output = new DrushOutputAdapter();
+  $output = new ConsoleOutput();
   $annotationData = $command['annotations'];
   $commandData = new CommandData(
     $annotationData,
@@ -388,9 +388,6 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
     if ($command_name != $standard_alias) {
       $aliases[] = $standard_alias;
     }
-    $handle_remote_commands = strtolower($commandinfo->getAnnotation('handle-remote-commands')) == 'true';
-    $remote_tty = $commandinfo->getAnnotation('remote-tty');
-    $hidden = $commandinfo->hasAnnotation('hidden');
     // If there is no 'bootstrap' annotation, default to NONE.
     $bootstrap = DRUSH_BOOTSTRAP_NONE;
     if ($bootstrap = $commandinfo->getAnnotation('bootstrap')) {
@@ -408,10 +405,13 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       'description' => $commandinfo->getDescription(),
       'examples' => $commandinfo->getExampleUsages(),
       'bootstrap' => $bootstrap,
-      'handle-remote-commands' => $handle_remote_commands,
-      'remote-tty' => $remote_tty,
-      'hidden' => $hidden,
+      'remote_tty' => $commandinfo->hasAnnotation('remote-tty'),
+      'handle-remote-commands' => $commandinfo->hasAnnotation('handle-remote-commands'),
+      'strict_option_handling' => $commandinfo->hasAnnotation('strict-option-handling'),
+      'hidden' => $commandinfo->hasAnnotation('hidden'),
       'aliases' => $aliases,
+      'topic' => $commandinfo->hasAnnotation('topic'),
+      'topics' => _convert_csv_to_array($commandinfo->getAnnotation('topics')),
       'add-options-to-arguments' => TRUE,
       'consolidation-output-formatters' => TRUE,
       'consolidation-option-defaults' => $commandinfo->options()->getValues(),
@@ -643,7 +643,7 @@ function annotationcommand_adapter_call_hook_command($names, CommandData $comman
  *
  * @param string[] $names All of the applicable names for the command being hooked
  * @param CommandData $commandData All of the parameter data associated with the
- *   current command invokation, including the InputInterface, OutputInterface
+ *   current command invocation, including the InputInterface, OutputInterface
  *   and AnnotationData
  * @param mixed $return The return value of the command being executed
  *

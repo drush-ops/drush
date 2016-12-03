@@ -52,6 +52,9 @@ class quickDrupalCase extends CommandUnishTestCase {
   }
 
   function testQuickDrupal() {
+    // @todo.
+    $this->markTestSkipped('Needs port to Drupal 8.');
+    
     $this->runQuickDrupalTest('devel');
   }
 

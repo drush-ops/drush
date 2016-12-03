@@ -59,7 +59,7 @@ class shellAliasesCase extends CommandUnishTestCase {
     );
     $this->drush('glopts', array(), $options);
     $output = $this->getOutput();
-    $this->assertContains('These options are applicable to most drush commands.', $output, 'Successfully executed local shell alias to drush command');
+    $this->assertContains('These options are applicable to most Drush commands.', $output, 'Successfully executed local shell alias to drush command');
   }
 
   /**

@@ -234,7 +234,8 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     *   An exit code.
     */
   function drush($command, array $args = array(), array $options = array(), $site_specification = NULL, $cd = NULL, $expected_return = self::EXIT_SUCCESS, $suffix = NULL, $env = array()) {
-    $global_option_list = array('simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'backend');
+    // cd is added for the benefit of siteSshTest which tests a strict command.
+    $global_option_list = array('simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'backend', 'cd');
     $hide_stderr = FALSE;
     $cmd[] = UNISH_DRUSH;
 

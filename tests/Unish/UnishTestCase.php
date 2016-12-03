@@ -296,8 +296,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         $this->drush('archive-dump', array('@sites'), $options);
       }
     }
-    // Write an empty sites.php if we are on D7+. Needed for multi-site on D8 and
-    // used on D7 in \Unish\saCase::testBackendHonorsAliasOverride.
+    // Write an empty sites.php. Needed for multi-site on D8.
     if ($major_version >= 7 && !file_exists($root . '/sites/sites.php')) {
       copy($root . '/sites/example.sites.php', $root . '/sites/sites.php');
     }
@@ -336,7 +335,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         'cache' => NULL,
       );
       $this->drush('pm-download', array("drupal-$version_string"), $options);
-      // @todo This path is not proper in D8.
+      // @todo This path is a bit legacy in D8.
       mkdir($root . '/sites/all/drush', 0777, TRUE);
     }
 

@@ -140,8 +140,9 @@ class drushScriptCase extends CommandUnishTestCase {
     $options += array(
       'format' => 'yaml',
       'verbose' => NULL,
+      'fields' => 'drush-script',
     );
-    $result = $this->drush('status', array('Drush script'), $options);
+    $result = $this->drush('status', [], $options);
 
     $output = $this->getOutput();
     list($key, $value) = explode(": ", $output);

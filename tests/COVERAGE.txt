@@ -53,7 +53,6 @@ state: NONE
 ssh: GOOD
 topic
 usage-*
-variable-*: GOOD
 watchdog-*: GOOD
 
 user-*: GOOD.
@@ -74,7 +73,7 @@ context: FAIR. Many functions implicitly tested. Option merging (config, include
 drush: NONE.
 environment
 sitealias. FAIR. Explicit test for alias lists. Single aliases implicitly tested by contextTest.  Option propagation tested by backendTest.  Option recovery for @self alias tested by sqlDumpTest.
-dbtng: Good. Implicit by variable-*.
+dbtng: Fair. Used to be implicit by variable-*.
 drupal
 exec: GOOD: Implicitly tested all over.
 filesystem

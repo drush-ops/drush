@@ -174,7 +174,7 @@ function drush_core_pre_site_install() {
   // Write an empty sites.php if we are on D8 and using multi-site.
   if ($sitesfile_write) {
     if (!drush_op('copy', 'sites/example.sites.php', $sitesfile) && !drush_get_context('DRUSH_SIMULATE')) {
-      return drush_set_error(dt('Failed to copy sites/sites.php to @sitesfile', array('@sitesfile' => $sitesfile)));
+      return drush_set_error(dt('Failed to copy sites/example.sites.php to @sitesfile', array('@sitesfile' => $sitesfile)));
     }
   }
 
