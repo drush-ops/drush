@@ -405,6 +405,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       'description' => $commandinfo->getDescription(),
       'examples' => $commandinfo->getExampleUsages(),
       'bootstrap' => $bootstrap,
+      'remote_tty' => $commandinfo->hasAnnotation('remote-tty'),
       'handle-remote-commands' => $commandinfo->hasAnnotation('handle-remote-commands'),
       'strict_option_handling' => $commandinfo->hasAnnotation('strict-option-handling'),
       'hidden' => $commandinfo->hasAnnotation('hidden'),
