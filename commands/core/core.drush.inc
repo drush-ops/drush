@@ -5,8 +5,8 @@
  *   Core drush commands.
  */
 
+use Drush\Commands\core\EditCommands;
 use Drush\Log\LogLevel;
-use SebastianBergmann\Version;
 
 /**
  * Implementation of hook_drush_help().
@@ -85,11 +85,6 @@ function core_drush_command() {
       'output-data-type' => 'format-single',
     ),
   );
-  $items['core-cron'] = array(
-    'description' => 'Run all cron hooks in all active modules for specified site.',
-    'aliases' => array('cron'),
-    'topics' => array('docs-cron'),
-  );
   $items['updatedb'] = array(
     'description' => 'Apply any database updates required (as with running update.php).',
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
@@ -107,11 +102,6 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
     'core' => array('8+'),
   );
-  $items['twig-compile'] = array(
-    'description' => 'Compile all Twig template(s).',
-    'aliases' => array('twigc'),
-    'core' => array('8+'),
-  );
   $items['updatedb-status'] = array(
     'description' => 'List any pending database updates.',
     'outputformat' => array(
@@ -122,55 +112,6 @@ function core_drush_command() {
       'output-data-type' => 'format-table',
     ),
     'aliases' => array('updbst'),
-  );
-  $items['core-config'] = array(
-    'description' => 'Edit drushrc, site alias, and Drupal settings.php files.',
-    'bootstrap' => DRUSH_BOOTSTRAP_MAX,
-    'arguments' => array(
-      'filter' => 'A substring for filtering the list of files. Omit this argument to choose from loaded files.',
-    ),
-    'global-options' => array('editor', 'bg'),
-    'examples' => array(
-      'drush core-config' => 'Pick from a list of config/alias/settings files. Open selected in editor.',
-      'drush --bg core-config' => 'Return to shell prompt as soon as the editor window opens.',
-      'drush core-config etc' => 'Edit the global configuration file.',
-      'drush core-config demo.alia' => 'Edit a particular alias file.',
-      'drush core-config sett' => 'Edit settings.php for the current Drupal site.',
-      'drush core-config --choice=2' => 'Edit the second file in the choice list.',
-    ),
-    'aliases' => array('conf', 'config'),
-  );
-  $items['core-requirements'] = array(
-    'description' => 'Provides information about things that may be wrong in your Drupal installation, if any.',
-    'aliases' => array('status-report','rq'),
-    'examples' => array(
-      'drush core-requirements' => 'Show all status lines from the Status Report admin page.',
-      'drush core-requirements --severity=2' => 'Show only the red lines from the Status Report admin page.',
-      'drush core-requirements --pipe' => 'Print out a short report in JSON format, where severity 2=error, 1=warning, and 0/-1=OK',
-    ),
-    'options' => array(
-      'severity' => array(
-        'description' => 'Only show status report messages with a severity greater than or equal to the specified value.',
-        'value' => 'required',
-        'example-value' => '3',
-      ),
-      'ignore' => 'Comma-separated list of requirements to remove from output. Run with --pipe to see key values to use.',
-    ),
-    'outputformat' => array(
-      'default' => 'table',
-      'pipe-format' => 'json',
-      'field-labels' => array('title' => 'Title', 'severity' => 'Severity', 'sid' => 'SID', 'description' => 'Description', 'value' => 'Summary', 'reason' => 'Reason', 'weight' => 'Weight'),
-      'fields-default' => array('title', 'severity', 'description'),
-      'column-widths' => array('severity' => 8),
-      'concatenate-columns' => array('description' => array('value', 'description')),
-      'strip-tags' => TRUE,
-      'ini-item' => 'sid',
-      'key-value-item' => 'severity',
-      'list-metadata' => array(
-        'list-item' => 'severity',
-      ),
-      'output-data-type' => 'format-table',
-    ),
   );
   $items['php-eval'] = array(
     'description' => 'Evaluate arbitrary php code after bootstrapping Drupal (if available).',
@@ -261,25 +202,6 @@ function core_drush_command() {
     ),
     'aliases' => array('rsync'),
     'topics' => array('docs-aliases'),
-  );
-  $items['drupal-directory'] = array(
-    'description' => 'Return the filesystem path for modules/themes and other key folders.',
-    'arguments' => array(
-      'target' => 'A module/theme name, or special names like root, files, private, or an alias : path alias string such as @alias:%files. Defaults to root.',
-    ),
-    'options' => array(
-      'component' => "The portion of the evaluated path to return.  Defaults to 'path'; 'name' returns the site alias of the target.",
-      'local-only' => "Reject any target that specifies a remote site.",
-    ),
-    'examples' => array(
-      'cd `drush dd devel`' => 'Navigate into the devel module directory',
-      'cd `drush dd` ' => 'Navigate to the root of your Drupal site',
-      'cd `drush dd files`' => 'Navigate to the files directory.',
-      'drush dd @alias:%files' => 'Print the path to the files directory on the site @alias.',
-      'edit `drush dd devel`/devel.module' => "Open devel module in your editor (customize 'edit' for your editor)",
-    ),
-    'aliases' => array('dd'),
-    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
   );
 
   $items['batch-process'] = array(
@@ -574,7 +496,7 @@ function _core_site_status_table($project = '') {
     $status_table['php-bin'] = $php_bin;
   }
   $status_table['php-os'] = PHP_OS;
-  if ($php_ini_files = _drush_core_config_php_ini_files()) {
+  if ($php_ini_files = EditCommands::php_ini_files()) {
     $status_table['php-conf'] = $php_ini_files;
   }
   $status_table['drush-script'] = DRUSH_COMMAND;
@@ -625,187 +547,6 @@ function _drush_core_status_format_table_data($output, $metadata) {
     }
   }
   return $output;
-}
-
-/**
- * Command callback. Runs all cron hooks.
- */
-function drush_core_cron() {
-  if (drush_drupal_major_version() < 8) {
-    $result = drupal_cron_run();
-  }
-  else {
-    $result = \Drupal::service('cron')->run();
-  }
-  if ($result) {
-    drush_log(dt('Cron run successful.'), LogLevel::SUCCESS);
-  }
-  else {
-    return drush_set_error('DRUSH_CRON_FAILED', dt('Cron run failed.'));
-  }
-}
-
-/**
- * Command callback. Edit drushrc and alias files.
- */
-function drush_core_config($filter = NULL) {
-  $all = drush_core_config_load();
-
-  // Apply any filter that was supplied.
-  if ($filter) {
-    foreach ($all as $key => $file) {
-      if (strpos($file, $filter) === FALSE) {
-        unset($all[$key]);
-      }
-    }
-  }
-  $all = drush_map_assoc(array_values($all));
-
-  $exec = drush_get_editor();
-  if (count($all) == 1) {
-    $filepath = current($all);
-  }
-  else {
-    $choice = drush_choice($all, 'Enter a number to choose which file to edit.', '!key');
-    if (!$choice) {
-      return drush_user_abort();
-    }
-    $filepath = $all[$choice];
-  }
-  return drush_shell_exec_interactive($exec, $filepath, $filepath);
-}
-
-/**
- * Command argument complete callback.
- *
- * @return
- *   Array of available configuration files for editing.
- */
-function core_core_config_complete() {
-  return array('values' => drush_core_config_load(FALSE));
-}
-
-function drush_core_config_load($headers = TRUE) {
-  $php_header = $php = $rcs_header = $rcs = $aliases_header = $aliases = $drupal_header = $drupal = array();
-  $php = _drush_core_config_php_ini_files();
-  if (!empty($php)) {
-    if ($headers) {
-      $php_header = array('phpini' => '-- PHP ini files --');
-    }
-  }
-
-  $bash = _drush_core_config_bash_files();
-  if (!empty($bash)) {
-    if ($headers) {
-      $bash_header = array('bash' => '-- Bash files --');
-    }
-  }
-
-  drush_sitealias_load_all();
-  if ($rcs = drush_get_context_options('context-path', TRUE)) {
-    if ($headers) {
-      $rcs_header = array('drushrc' => '-- Drushrc --');
-    }
-  }
-  if ($aliases = drush_get_context('drush-alias-files')) {
-    if ($headers) {
-      $aliases_header = array('aliases' => '-- Aliases --');
-    }
-  }
-  if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
-    $drupal[] = realpath($site_root . '/settings.php');
-    if (file_exists($site_root . '/settings.local.php')) {
-      $drupal[] = realpath($site_root . '/settings.local.php');
-    }
-    $drupal[] = realpath(DRUPAL_ROOT . '/.htaccess');
-    if ($headers) {
-      $drupal_header = array('drupal' => '-- Drupal --');
-    }
-  }
-  return array_merge($php_header, $php, $bash_header, $bash, $rcs_header, $rcs, $aliases_header, $aliases, $drupal_header, $drupal);
-}
-
-function _drush_core_config_php_ini_files() {
-  $ini_files = array();
-  $ini_files[] = php_ini_loaded_file();
-  if ($drush_ini = getenv('DRUSH_INI')) {
-    if (file_exists($drush_ini)) {
-      $ini_files[] = $drush_ini;
-    }
-  }
-  foreach (array(DRUSH_BASE_PATH, '/etc/drush', drush_server_home() . '/.drush') as $ini_dir) {
-    if (file_exists($ini_dir . "/drush.ini")) {
-      $ini_files[] = realpath($ini_dir . "/drush.ini");
-    }
-  }
-  return array_unique($ini_files);
-}
-
-function _drush_core_config_bash_files() {
-  $bash_files = array();
-  $home = drush_server_home();
-  if ($bashrc = drush_core_find_bashrc($home)) {
-    $bash_files[] = $bashrc;
-  }
-  $prompt = $home . '/.drush/drush.prompt.sh';
-  if (file_exists($prompt)) {
-    $bash_files[] = $prompt;
-  }
-  return $bash_files;
-}
-
-/**
- * Determine which .bashrc file is best to use on this platform.
- *
- * TODO: Also exists as InitCommands::findBashrc. Decide on class-based
- * way to share code like this.
- */
-function drush_core_find_bashrc($home) {
-  return $home . "/.bashrc";
-}
-
-/**
- * Command callback. Provides information from the 'Status Reports' admin page.
- */
-function drush_core_requirements() {
-  include_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
-  $severities = array(
-    REQUIREMENT_INFO => t('Info'),
-    REQUIREMENT_OK => t('OK'),
-    REQUIREMENT_WARNING => t('Warning'),
-    REQUIREMENT_ERROR => t('Error'),
-  );
-
-  drupal_load_updates();
-
-  drush_include_engine('drupal', 'environment');
-  $requirements = drush_module_invoke_all('requirements', 'runtime');
-  // If a module uses "$requirements[] = " instead of
-  // "$requirements['label'] = ", then build a label from
-  // the title.
-  foreach($requirements as $key => $info) {
-    if (is_numeric($key)) {
-      unset($requirements[$key]);
-      $new_key = strtolower(str_replace(' ', '_', $info['title']));
-      $requirements[$new_key] = $info;
-    }
-  }
-  $ignore_requirements = drush_get_option_list('ignore');
-  foreach ($ignore_requirements as $ignore) {
-    unset($requirements[$ignore]);
-  }
-  ksort($requirements);
-
-  $min_severity = drush_get_option('severity', -1);
-  foreach($requirements as $key => $info) {
-    $severity = array_key_exists('severity', $info) ? $info['severity'] : -1;
-    $requirements[$key]['sid'] = $severity;
-    $requirements[$key]['severity'] = $severities[$severity];
-    if ($severity < $min_severity) {
-      unset($requirements[$key]);
-    }
-  }
-  return $requirements;
 }
 
 // Command callback. Show all global options. Exposed via topic command.
@@ -1172,63 +913,6 @@ function drush_core_updatedb_batch_process($id) {
 }
 
 /**
- * Given a target (e.g. @site:%modules), return the evaluated directory path.
- *
- * @param $target
- *   The target to evaluate.  Can be @site or /path or @site:path
- *   or @site:%pathalias, etc. (just like rsync parameters)
- * @param $component
- *   The portion of the evaluated path to return.  Possible values:
- *   'path' - the full path to the target (default)
- *   'name' - the name of the site from the path (e.g. @site1)
- *   'user-path' - the part after the ':' (e.g. %modules)
- *   'root' & 'uri' - the Drupal root and URI of the site from the path
- *   'path-component' - The ':' and the path
- */
-function _drush_core_directory($target = 'root', $component = 'path', $local_only = FALSE) {
-  // Normalize to a sitealias in the target.
-  $normalized_target = $target;
-  if (strpos($target, ':') === FALSE) {
-    if (substr($target, 0, 1) != '@') {
-      // drush_sitealias_evaluate_path() requires bootstrap to database.
-      if (!drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
-        return drush_set_error('DRUPAL_SITE_NOT_FOUND', dt('You need to specify an alias or run this command within a drupal site.'));
-      }
-      $normalized_target = '@self:';
-      if (substr($target, 0, 1) != '%') {
-        $normalized_target .= '%';
-      }
-      $normalized_target .= $target;
-    }
-  }
-  $additional_options = array();
-  $values = drush_sitealias_evaluate_path($normalized_target, $additional_options, $local_only);
-  if (isset($values[$component])) {
-    // Hurray, we found the destination.
-    return $values[$component];
-  }
-}
-
-/**
- * Command callback.
- */
-function drush_core_drupal_directory($target = 'root') {
-  $path = _drush_core_directory($target, drush_get_option('component', 'path'), drush_get_option('local-only', FALSE));
-
-  // If _drush_core_directory is working right, it will turn
-  // %blah into the path to the item referred to by the key 'blah'.
-  // If there is no such key, then no replacement is done.  In the
-  // case of the dd command, we will consider it an error if
-  // any keys are -not- replaced in _drush_core_directory.
-  if ($path && (strpos($path, '%') === FALSE)) {
-    return $path;
-  }
-  else {
-    return drush_set_error('DRUSH_TARGET_NOT_FOUND', dt("Target '!target' not found.", array('!target' => $target)));
-  }
-}
-
-/**
  * Called for `drush version` or `drush --version`
  */
 function drush_core_version() {
@@ -1288,34 +972,6 @@ function drush_core_execute() {
     return drush_set_error('CORE_EXECUTE_FAILED', dt("Command !command failed.", array('!command' => $cmd)));
   }
   return $result;
-}
-
-function drush_core_twig_compile() {
-  require_once DRUSH_DRUPAL_CORE . "/themes/engines/twig/twig.engine";
-  // Scan all enabled modules and themes.
-  // @todo refactor since \Drush\Boot\DrupalBoot::commandfile_searchpaths is similar.
-  $ignored_modules = drush_get_option_list('ignored-modules', array());
-  $cid = drush_cid_install_profile();
-  if ($cached = drush_cache_get($cid)) {
-    $ignored_modules[] = $cached->data;
-  }
-  foreach (array_diff(drush_module_list(), $ignored_modules) as $module) {
-    $searchpaths[] = drupal_get_path('module', $module);
-  }
-
-  $themes = drush_theme_list();
-  foreach ($themes as $name => $theme) {
-    $searchpaths[] = $theme->getPath();
-  }
-
-  foreach ($searchpaths as $searchpath) {
-    foreach ($file = drush_scan_directory($searchpath, '/\.html.twig/', array('tests')) as $file) {
-      $relative = str_replace(drush_get_context('DRUSH_DRUPAL_ROOT'). '/', '', $file->filename);
-      // @todo Dynamically disable twig debugging since there is no good info there anyway.
-      twig_render_template($relative, array('theme_hook_original' => ''));
-      drush_log(dt('Compiled twig template !path', array('!path' => $relative)), LogLevel::INFO);
-    }
-  }
 }
 
 /**
