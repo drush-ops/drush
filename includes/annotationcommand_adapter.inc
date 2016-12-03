@@ -358,7 +358,6 @@ function annotationcommand_adapter_get_command_for_console_command($console_comm
  *
  * @param object $commandhandler Command handler object
  * @param string $commandfile_path
- * @param boolean $includeAllPublicMethods TODO remove this, make it 'false' always
  *
  * @return array Drush $command record
  */
