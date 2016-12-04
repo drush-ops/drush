@@ -103,7 +103,12 @@ class PhpCommands extends DrushCommands {
       // just the arguments that are relevant using drush_shift().
       drush_set_context('DRUSH_SHIFT_SKIP', 2);
       if ($this->eval_shebang_script($found) === FALSE) {
-        return include($found);
+        $return = include($found);
+        // 1 just means success so don't return it.
+        // http://us3.php.net/manual/en/function.include.php#example-120
+        if ($return !== 1) {
+          return $return;
+        }
       }
     }
   }
