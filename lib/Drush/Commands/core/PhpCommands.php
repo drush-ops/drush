@@ -31,7 +31,7 @@ class PhpCommands extends DrushCommands {
   /**
    * Run php script(s).
    *
-   * @command php-eval
+   * @command php-script
    * @param $script The file you wish to execute (without extension). If omitted, list files ending in .php in the current working directory and specified script-path. Note that some might not be drush scripts.
    * @option script-path Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).
    * @usage drush php-script example --script-path=/path/to/scripts:/another/path
