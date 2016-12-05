@@ -220,11 +220,6 @@ class SanitizeCommands extends DrushCommands {
    * @throws \Drush\Sql\SqlException
    */
   protected function executeQuery($query) {
-    // Enable prefix processing when db-prefix option is used.
-    if (drush_get_option('db-prefix')) {
-      $query = Database::getConnection()->prefixTables($query);
-    }
-
     $sql = drush_sql_get_class();
     return $sql->query($query);
   }
