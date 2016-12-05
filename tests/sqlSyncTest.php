@@ -44,12 +44,13 @@ class sqlSyncTest extends CommandUnishTestCase {
       'yes' => NULL,
     );
     $this->drush('user-create', array($name), $options + array('password' => 'password', 'mail' => $mail));
+    $this->drush('pm-enable', array('comment'), array('yes' => NULL));
 
     // Copy stage to dev with --sanitize.
     $sync_options = array(
       'sanitize' => NULL,
       'yes' => NULL,
-      // Test wildcards expansion from within sql-sync. Also avoid D8 persisten entity cache.
+      // Test wildcards expansion from within sql-sync. Also avoid D8 persistent entity cache.
       'structure-tables-list' => 'cache,cache*',
     );
     $this->drush('sql-sync', array('@stage', '@dev'), $sync_options);
