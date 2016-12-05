@@ -8,10 +8,6 @@ namespace Unish;
 class QueueCase extends CommandUnishTestCase {
 
   function testQueue() {
-    if (UNISH_DRUPAL_MAJOR_VERSION == 6) {
-      $this->markTestSkipped("Queue API not available in Drupal 6.");
-    }
-
     if (UNISH_DRUPAL_MAJOR_VERSION == 7) {
       $expected = 'aggregator_feeds,%items,SystemQueue';
     }
@@ -33,7 +29,7 @@ class QueueCase extends CommandUnishTestCase {
     $output = $this->getOutput();
     $this->assertContains('aggregator_feeds', $output, 'Queue list shows the declared queue.');
 
-    $this->drush('php-script', array('queue_script-D' . UNISH_DRUPAL_MAJOR_VERSION), $options + array('script-path' => dirname(__FILE__) . '/resources'));
+    $this->drush('php-script', array('queue_script-D' . UNISH_DRUPAL_MAJOR_VERSION), $options + array('script-path' => __DIR__ . '/resources'));
     $this->drush('queue-list', array(), $options + array('pipe' => TRUE));
     $output = trim($this->getOutput());
     $parts = explode(",", $output);
@@ -51,10 +47,6 @@ class QueueCase extends CommandUnishTestCase {
    * Tests the queue-delete command.
    */
   public function testQueueDelete() {
-    if (UNISH_DRUPAL_MAJOR_VERSION == 6) {
-      $this->markTestSkipped("Queue API not available in Drupal 6.");
-    }
-
     if (UNISH_DRUPAL_MAJOR_VERSION == 7) {
       $expected = 'aggregator_feeds,%items,SystemQueue';
     }
@@ -73,7 +65,7 @@ class QueueCase extends CommandUnishTestCase {
     $this->drush('pm-enable', array('aggregator'), $options);
 
     // Add another item to the queue and make sure it was deleted.
-    $this->drush('php-script', array('queue_script-D' . UNISH_DRUPAL_MAJOR_VERSION), $options + array('script-path' => dirname(__FILE__) . '/resources'));
+    $this->drush('php-script', array('queue_script-D' . UNISH_DRUPAL_MAJOR_VERSION), $options + array('script-path' => __DIR__ . '/resources'));
     $this->drush('queue-list', array(), $options + array('pipe' => TRUE));
     $output = trim($this->getOutput());
     $this->assertEquals(str_replace('%items', 1, $expected), $output, 'Item was successfully added to the queue.');
@@ -108,7 +100,7 @@ class QueueCase extends CommandUnishTestCase {
     $this->drush('pm-enable', array('woot'), $options, NULL, NULL, self::EXIT_SUCCESS);
 
     // Add an item to the queue.
-    $this->drush('php-script', array('requeue_script'), $options + array('script-path' => dirname(__FILE__) . '/resources'));
+    $this->drush('php-script', array('requeue_script'), $options + array('script-path' => __DIR__ . '/resources'));
 
     // Check that the queue exists and it has one item in it.
     $expected = 'woot_requeue_exception,%items,Drupal\Core\Queue\DatabaseQueue';

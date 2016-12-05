@@ -16,7 +16,6 @@ function unit_drush_command() {
   $items['unit-eval'] = array(
     'description' => 'Works like php-eval. Used for testing $command_specific context.',
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
-    'callback' => 'drush_core_php_eval',
   );
   $items['unit-invoke'] = array(
     'description' => 'Return an array indicating which invoke hooks got called.',
@@ -91,6 +90,13 @@ function unit_invoke_log($function = NULL) {
   else {
     return $called;
   }
+}
+
+/**
+ * Command callback.
+ */
+function drush_unit_eval($code) {
+  return eval($code . ';');
 }
 
 /**
