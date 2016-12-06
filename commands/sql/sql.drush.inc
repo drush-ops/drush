@@ -696,6 +696,6 @@ function sql_drush_sql_sync_sanitize($site) {
     drush_sql_register_post_sync_op('user-email', dt('Reset !message in !table table', array('!message' => implode(' and ', $message_list), '!table' => $table)), $sanitize_query);
   }
 
-  $sanitizer = new \Drush\Commands\core\SanitizeCommands($site, $major_version);
-  $sanitizer->sanitize();
+  $sanitizer = new \Drush\Commands\core\SanitizeCommands();
+  $sanitizer->sanitize($major_version);
 }

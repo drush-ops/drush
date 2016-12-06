@@ -14,35 +14,10 @@ use Drush\Commands\DrushCommands;
 class SanitizeCommands extends DrushCommands {
 
   /**
-   * @var string
-   *   The site. I.e., the value of -l or --uri flags for drush.
-   */
-  protected $site;
-  /**
    * @var bool
    *   Whether database table names should be wrapped in brackets for prefixing.
    */
   protected $wrap;
-
-  /**
-   * @var int
-   *   The major Drupal version. E.g., 8.
-   */
-  protected $majorVersion;
-
-  /**
-   * Sanitizer constructor.
-   *
-   * @param string $site
-   *   The site. I.e., the value of -l or --uri flags for drush.
-   */
-  public function __construct($site, $major_version) {
-    $this->site = $site;
-    $this->majorVersion = $major_version;
-    $this->setWrap();
-
-    parent::__construct();
-  }
 
   /**
    * Sets $this->wrap to TRUE if a db-prefix is set with drush.
@@ -54,10 +29,11 @@ class SanitizeCommands extends DrushCommands {
   /**
    * Runs all sanitizing methods.
    */
-  public function sanitize() {
+  public function sanitize($major_version) {
+    $this->setWrap();
     $this->sanitizeSessions();
 
-    if ($this->majorVersion == 8) {
+    if ($major_version == 8) {
       $this->sanitizeComments();
       $this->sanitizeUserFields();
     }
