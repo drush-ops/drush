@@ -122,28 +122,6 @@ function core_drush_command() {
     'aliases' => array('rsync'),
     'topics' => array('docs-aliases'),
   );
-
-  $items['batch-process'] = array(
-    'description' => 'Process operations in the specified batch set',
-    'hidden' => TRUE,
-    'arguments' => array(
-      'batch-id' => 'The batch id that will be processed.',
-    ),
-    'required-arguments' => TRUE,
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
-  );
-
-  $items['updatedb-batch-process'] = array(
-    'description' => 'Perform update functions',
-    'hidden' => TRUE,
-    'arguments' => array(
-      'batch-id' => 'The batch id that will be processed',
-    ),
-    'required-arguments' => TRUE,
-    // Drupal 7 needs DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION, while Drupal 8 needs _FULL.
-    // Therefore we bootstrap to _FULL in commands/core/drupal/update.inc.
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
-  );
   $items['core-quick-drupal'] = array(
     'description' => 'Download, install, serve and login to Drupal with minimal configuration and dependencies.',
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
@@ -621,31 +599,6 @@ function drush_core_quick_drupal_options(&$items) {
   unset($options['user']);
   $items['core-quick-drupal']['options'] = $options;
   $items['core-quick-drupal']['engines'] = $pm['pm-download']['engines'];
-}
-
-/**
- * Command callback. Process sets from the specified batch.
- *
- * This is the default batch processor that will be used if the $command parameter
- * to drush_backend_batch_process() has not been specified.
- */
-function drush_core_batch_process($id) {
-  drush_batch_command($id);
-}
-
-/**
- * Command callback. Process outstanding updates during updatedb.
- *
- * This is a batch processing command that makes use of the drush_backend_invoke
- * api.
- *
- * This command includes the version specific update engine, which correctly
- * initialises the environment to be able to successfully handle minor and major
- * upgrades.
- */
-function drush_core_updatedb_batch_process($id) {
-  drush_include_engine('drupal', 'update');
-  _update_batch_command($id);
 }
 
 /**
