@@ -24,7 +24,7 @@ function unit_drush_command() {
   );
   $items['unit-batch'] = array(
     'description' => 'Run a batch process.',
-    'bootstrap' => DRUSH_BOOTSTRAP_MAX,
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
   );
   $items['unit-return-options'] = array(
     'description' => 'Return options as function result.',
