@@ -328,12 +328,12 @@ class UserCommands extends DrushCommands {
   }
 
   /**
-   * Display a one time login link for the given user account (defaults to uid 1).
+   * Display a one time login link for user ID 1, or a specified user account.
    *
    * @command user-login
    *
-   * @param string $name A user name to log in as. Defaults to uid=1
    * @param string $path Optional path to redirect to after logging in.
+   * @option $name A user name to log in as. If not provided, defaults to uid=1.
    * @option string browser Optional value denotes which browser to use (defaults to operating system default). Use --no-browser to suppress opening a browser.
    * @option string redirect-port A custom port for redirecting to (e.g. when running within a Vagrant environment)
    * @bootstrap DRUSH_BOOTSTRAP_NONE
@@ -344,7 +344,7 @@ class UserCommands extends DrushCommands {
    * @usage drush user-login --browser=firefox --mail=drush@example.org admin/settings/performance
    *   Open firefox web browser, login as the user with the e-mail address drush@example.org and redirect to the path admin/settings/performance.
    */
-  public function login($name = '1', $path = '', $options = ['browser' => '', 'redirect-port' => '']) {
+  public function login($path = '', $options = ['name' => '1', 'browser' => '', 'redirect-port' => '']) {
 
     // Redispatch if called against a remote-host so a browser is started on the
     // the *local* machine.
@@ -365,13 +365,13 @@ class UserCommands extends DrushCommands {
         return FALSE;
       }
 
-      if ($name == 1) {
+      if ($options['name'] == 1) {
         $account = User::load(1);
       }
-      elseif (!$account = user_load_by_name($name)) {
-        throw new \Exception(dt('Unable to load user: !user', array('!user' => $name)));
+      elseif (!$account = user_load_by_name($options['name'])) {
+        throw new \Exception(dt('Unable to load user: !user', array('!user' => $options['name'])));
       }
-      $link = user_pass_reset_url($account);
+      $link = user_pass_reset_url($account). '/login';
       if ($path) {
         $link .= '?destination=' . $path;
       }
