@@ -254,7 +254,7 @@ class CoreCommands extends DrushCommands {
    *
    */
   public function version() {
-    return Drush::getVersion();
+    return \Drush::getVersion();
   }
 
   /**
@@ -262,7 +262,7 @@ class CoreCommands extends DrushCommands {
    *
    * Used by shell aliases that start with !.
    *
-   * @todo Handle variable arguments in command.
+   * @todo Handle variable number of arguments.
    *
    * @command core-execute
    * @param $command The shell command to be executed.
@@ -277,7 +277,7 @@ class CoreCommands extends DrushCommands {
    * @topics docs-aliases
    * @bootstrap DRUSH_BOOTSTRAP_NONE
    */
-  public function execute($command, $options = ['escape' => TRUE]) {
+  public function execute($options = ['escape' => TRUE]) {
     $result = TRUE;
     // Get all of the args and options that appear after the command name.
     $args = drush_get_original_cli_args_and_options();

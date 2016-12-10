@@ -29,7 +29,16 @@ class PhpCommands extends DrushCommands {
   }
 
   /**
-   * Run php script(s).
+   * Run php a script after a full Drupal bootstrap.
+   *
+   * A useful alternative to eval command when your php is lengthy or you
+   * can't be bothered to figure out bash quoting. If you plan to share a
+   * script with others, consider making a full drush command instead, since
+   * that's more self-documenting.  Drush provides commandline options to the
+   * script via drush_get_option('option-name'), and commandline arguments can
+   * be accessed either via drush_get_arguments(), which returns all arguments
+   * in an array, or drush_shift(), which removes the next argument from the
+   * list and returns it.
    *
    * @command php-script
    * @param $script The file you wish to execute (without extension). If omitted, list files ending in .php in the current working directory and specified script-path. Note that some might not be drush scripts.
