@@ -101,6 +101,12 @@ interface Boot {
   function report_command_error($command);
 
   /**
+   * Called from drush_require_bootstrap() if required bootstrap
+   * level is not met.  Also called by report_command_error().
+   */
+  function report_bootstrap_errors();
+
+  /**
    * This method is called during the shutdown of drush.
    *
    * @return void

@@ -42,11 +42,20 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface {
     elseif (!empty($args)) {
       drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The drush command '!args' could not be found.  Run `drush cache-clear drush` to clear the commandfile cache if you have installed new extensions.", array('!args' => $args)));
     }
+    $this->report_bootstrap_errors();
+  }
+
+  function report_bootstrap_errors($warning = '') {
     // Set errors that occurred in the bootstrap phases.
     $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS', array());
     foreach ($errors as $code => $message) {
+      if (!empty($warning)) {
+        drush_log($warning, LogLevel::WARNING);
+        $warning = '';
+      }
       drush_set_error($code, $message);
     }
+    drush_set_context('DRUSH_BOOTSTRAP_ERRORS', array());
   }
 
   function bootstrap_and_dispatch() {
@@ -131,5 +140,10 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface {
    * {@inheritdoc}
    */
   public function terminate() {
+    // If we exited with an error, then report any bootstrap errors
+    // that may not have been reported before.
+    if (drush_get_error() != DRUSH_SUCCESS) {
+      $this->report_bootstrap_errors(dt('Unreported bootstrap errors:'));
+    }
   }
 }
