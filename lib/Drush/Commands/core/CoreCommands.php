@@ -2,6 +2,7 @@
 namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\Options\FormatterOptions;
+use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drupal;
 use Drush\Commands\DrushCommands;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
@@ -251,10 +252,14 @@ class CoreCommands extends DrushCommands {
    *
    * @command version
    * @bootstrap DRUSH_BOOTSTRAP_NONE
+   * @table-style compact
+   * @list-delimiter :
+   * @field-labels
+   *   drush-version: Drush version
    *
    */
-  public function version() {
-    return \Drush::getVersion();
+  public function version($options = ['format' => 'table']) {
+    return new PropertyList(['drush-version' => \Drush::getVersion()]);
   }
 
   /**
