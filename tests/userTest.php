@@ -78,16 +78,16 @@ class userCase extends CommandUnishTestCase {
       }
     }
     $this->assertEquals($browser, TRUE, 'Correct browser opened at correct URL');
-    // Check specific user and path argument.
+    // Check specific user with a path argument.
     $uid = 2;
-    $this->drush('user-login', array(self::NAME, 'node/add'), $user_login_options);
+    $this->drush('user-login', array('node/add'), $user_login_options + ['name' => self::NAME]);
     $output = $this->getOutput();
     $url = parse_url($output);
     $query = $url['query'];
     $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with user argument returned a valid reset URL');
     $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
     // Check path used as only argument when using uid option.
-    $this->drush('user-login', array(self::NAME, 'node/add'), $user_login_options);
+    $this->drush('user-login', array('node/add'), $user_login_options + ['name' => self::NAME]);
     $output = $this->getOutput();
     $url = parse_url($output);
     $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
