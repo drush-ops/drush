@@ -108,7 +108,7 @@ abstract class UserSingleBase {
    * @return string
    */
   public function passResetUrl($path = '') {
-    $url = user_pass_reset_url($this->account);
+    $url = user_pass_reset_url($this->account) . '/login';
     if ($path) {
       $url .= '?destination=' . $path;
     }
