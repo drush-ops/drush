@@ -12,6 +12,7 @@
  * - Release: a specific release of a project, with associated metadata (from the drupal.org update service).
  */
 
+use Drush\Commands\core\RoleCommands;
 use Drush\Log\LogLevel;
 
 /**
@@ -1170,7 +1171,7 @@ function drush_pm_enable() {
   // Inform the user of final status.
   $result_extensions = drush_get_named_extensions_list($extensions);
   $problem_extensions = array();
-  $role = drush_role_get_class();
+  $role = RoleCommands::get_instance();
   foreach ($result_extensions as $name => $extension) {
     if ($extension->status) {
       drush_log(dt('!extension was enabled successfully.', array('!extension' => $name)), LogLevel::OK);

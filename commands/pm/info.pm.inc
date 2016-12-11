@@ -5,6 +5,7 @@
  * pm-info command implementation.
  */
 
+use Drush\Commands\core\RoleCommands;
 use Drush\Log\LogLevel;
 
 /**
@@ -115,7 +116,7 @@ function _drush_pm_info_module($info) {
   }
   $data['required_by'] = $requiredby;
   if ($info->status == 1) {
-    $role = drush_role_get_class();
+    $role = RoleCommands::get_instance();
     $data['permissions'] = $role->getModulePerms(drush_extension_get_name($info));
   }
   return $data;
