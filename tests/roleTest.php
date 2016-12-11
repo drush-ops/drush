@@ -20,31 +20,49 @@ class roleCase extends CommandUnishTestCase {
     // In D8+, the testing profile has no perms.
     $sites = $this->setUpDrupal(1, TRUE, UNISH_DRUPAL_MAJOR_VERSION, 'standard');
     $root = $this->webroot();
-    $name = "example";
     $options = array(
       'root' => $root,
       'uri' => key($sites),
       'yes' => NULL,
     );
-    $anonymous = 'anonymous';
-    $authenticated = 'authenticated';
-    if (UNISH_DRUPAL_MAJOR_VERSION < 8) {
-      $anonymous .= ' user';
-      $authenticated .= ' user';
-    }
-    $this->drush('role-list', array($anonymous), $options + array('pipe' => NULL) );
+
+    $this->drush('role-list', array(), $options);
     $output = $this->getOutput();
     $this->assertContains('access content', $output);
-    $this->drush('role-list', array($authenticated), $options + array('pipe' => NULL) );
+
+    $this->drush('role-list', array(), $options + array('filter' => 'post comments'));
     $output = $this->getOutput();
-    $this->assertContains('access content', $output);
-    $this->drush('role-add-perm', array($anonymous, 'administer nodes'), $options );
-    $this->drush('role-list', array($anonymous), $options + array('pipe' => NULL) );
-    $output = $this->getOutput();
-    $this->assertContains('administer nodes', $output);
-    $this->drush('role-remove-perm', array($anonymous, 'administer nodes'), $options );
-    $this->drush('role-list', array($anonymous), $options + array('pipe' => NULL) );
-    $output = $this->getOutput();
-    $this->assertNotContains('administer nodes', $output);
+    $this->assertContains('authenticated', $output);
+    $this->assertNotContains('anonymous', $output);
+
+    // Create and check the role foo.
+    $rid = 'foo';
+    $this->drush('role-create', array($rid), $options);
+    $this->drush('role-list', array(), $options);
+    $this->assertContains($rid, $this->getOutput());
+
+    // Assert that anon user starts without 'administer nodes' perm.
+    $perm = 'administer nodes';
+    $this->drush('role-list', array(), $options + array('format' => 'json'));
+    $role = $this->getOutputFromJSON($rid);
+    $this->assertFalse(in_array($perm, $role->perms));
+
+    // Now grant that perm.
+    $this->drush('role-add-perm', array($rid, 'administer nodes'), $options);
+    $this->drush('role-list', array(), $options + array('format' => 'json'));
+    $role = $this->getOutputFromJSON($rid);
+    $this->assertTrue(in_array($perm, $role->perms));
+
+    // Now remove the perm.
+    $this->drush('role-remove-perm', array($rid, 'administer nodes'), $options );
+    $this->drush('role-list', array(), $options + array('format' => 'json'));
+    $role = $this->getOutputFromJSON($rid);
+    $this->assertFalse(in_array($perm, $role->perms));
+
+    // Delete the foo role
+    $this->drush('role-delete', array($rid), $options);
+    $this->drush('role-list', array(), $options);
+    $this->assertNotContains($rid, $this->getOutput());
+
   }
 }

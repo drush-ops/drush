@@ -166,7 +166,7 @@ class UserCommands extends DrushCommands {
    */
   public function addRole($role, $names) {
     // If role is not found, an exception gets thrown and handled by command invoke.
-    $role_object = drush_role_get_class($role);
+    $role_object = RoleCommands::get_instance($role);
     if ($names = _convert_csv_to_array($names)) {
       foreach ($names as $name) {
         if ($account = user_load_by_name($name)) {
@@ -199,7 +199,7 @@ class UserCommands extends DrushCommands {
    */
   public function removeRole($role, $names) {
     // If role is not found, an exception gets thrown and handled by command invoke.
-    $role_object = drush_role_get_class($role);
+    $role_object = RoleCommands::get_instance($role);
     if ($names = _convert_csv_to_array($names)) {
       foreach ($names as $name) {
         if ($account = user_load_by_name($name)) {
