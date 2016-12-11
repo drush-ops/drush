@@ -164,7 +164,7 @@ class RoleCommands extends DrushCommands {
    *
    * @see drush_get_class().
    */
-  static function get_instance($role_name = DRUPAL_ANONYMOUS_RID) {
+  static function get_instance($role_name = 'anonymous') {
     return drush_get_class('Drush\Role\Role', func_get_args());
   }
 }
