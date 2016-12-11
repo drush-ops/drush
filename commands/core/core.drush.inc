@@ -22,10 +22,6 @@ use Drush\Log\LogLevel;
  */
 function core_drush_help($section) {
   switch ($section) {
-    case 'meta:core:title':
-      return dt("Core Drush commands");
-    case 'drush:php-script':
-      return dt("Runs the given php script(s) after a full Drupal bootstrap. A useful alternative to eval command when your php is lengthy or you can't be bothered to figure out bash quoting. If you plan to share a script with others, consider making a full drush command instead, since that's more self-documenting.  Drush provides commandline options to the script via drush_get_option('option-name'), and commandline arguments can be accessed either via drush_get_arguments(), which returns all arguments in an array, or drush_shift(), which removes the next argument from the list and returns it.");
     case 'drush:rsync':
       return dt("Sync the entire drupal directory or a subdirectory to a <destination> using ssh. Excludes reserved files and directories for supported VCSs. Useful for pushing copies of your tree to a staging server, or retrieving a files directory from a remote site. Relative paths start from the Drupal root directory if a site alias is used; otherwise they start from the current working directory.");
     case 'error:DRUSH_DRUPAL_DB_ERROR':
@@ -59,39 +55,6 @@ function core_drush_help($section) {
  */
 function core_drush_command() {
   $items = array();
-
-  $items['version'] = array(
-    'description' => 'Show drush version.',
-    'bootstrap' => DRUSH_BOOTSTRAP_NONE, // No bootstrap.
-    'options' => array(
-      'pipe' => 'Print just the version number, and nothing else.',
-    ),
-    'outputformat' => array(
-      'default' => 'key-value',
-      'pipe-format' => 'string',
-      'label' => 'Drush Version',
-      'output-data-type' => 'format-single',
-    ),
-  );
-  $items['core-execute'] = array(
-    'description' => 'Execute a shell command. Usually used with a site alias.',
-    'bootstrap' => DRUSH_BOOTSTRAP_NONE, // No bootstrap.
-    'arguments' => array(
-      'command' => 'The shell command to be executed.',
-    ),
-    'options' => array(
-      'escape' => 'Escape parameters before executing them with the shell. Default is escape; use --no-escape to disable.',
-    ) + drush_shell_exec_proc_build_options(),
-    'required-arguments' => TRUE,
-    'allow-additional-options' => TRUE,
-    'handle-remote-commands' => TRUE,
-    'strict-option-handling' => TRUE,
-    'examples' => array(
-      'drush core-execute git pull origin rebase' => 'Retrieve latest code from git',
-    ),
-    'aliases' => array('exec', 'execute'),
-    'topics' => array('docs-aliases'),
-  );
   $items['core-rsync'] = array(
     'description' => 'Rsync the Drupal tree to/from another server using ssh.',
     'bootstrap' => DRUSH_BOOTSTRAP_NONE, // No bootstrap.
@@ -599,81 +562,4 @@ function drush_core_quick_drupal_options(&$items) {
   unset($options['user']);
   $items['core-quick-drupal']['options'] = $options;
   $items['core-quick-drupal']['engines'] = $pm['pm-download']['engines'];
-}
-
-/**
- * Called for `drush version` or `drush --version`
- */
-function drush_core_version() {
-  return Drush::getVersion();
-}
-
-/**
- * Command callback. Execute specified shell code. Often used by shell aliases
- * that start with !.
- */
-function drush_core_execute() {
-  $result = TRUE;
-  $escape = drush_get_option('escape', TRUE);
-  // Get all of the args and options that appear after the command name.
-  $args = drush_get_original_cli_args_and_options();
-  if ($escape) {
-    for ($x = 0; $x < count($args); $x++) {
-      // escape all args except for command separators.
-      if (!in_array($args[$x], array('&&', '||', ';'))) {
-        $args[$x] = drush_escapeshellarg($args[$x]);
-      }
-    }
-  }
-  $cmd = implode(' ', $args);
-  // If we selected a Drupal site, then cwd to the site root prior to exec
-  $cwd = FALSE;
-  if ($selected_root = \Drush::bootstrapManager()->getRoot()) {
-    if (is_dir($selected_root)) {
-      $cwd = getcwd();
-      drush_op('chdir', $selected_root);
-    }
-  }
-  if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
-    $site = drush_sitealias_get_record($alias);
-    if (!empty($site['site-list'])) {
-      $sites = drush_sitealias_resolve_sitelist($site);
-      foreach ($sites as $site_name => $site_spec) {
-        $result = _drush_core_execute_cmd($site_spec, $cmd);
-        if (!$result) {
-          break;
-        }
-      }
-    }
-    else {
-      $result = _drush_core_execute_cmd($site, $cmd);
-    }
-  }
-  else {
-    // Must be a local command.
-    $result = (drush_shell_proc_open($cmd) == 0);
-  }
-  // Restore the cwd if we changed it
-  if ($cwd) {
-    drush_op('chdir', $selected_root);
-  }
-  if (!$result) {
-    return drush_set_error('CORE_EXECUTE_FAILED', dt("Command !command failed.", array('!command' => $cmd)));
-  }
-  return $result;
-}
-
-/**
- * Helper function for drush_core_execute: run one shell command
- */
-function _drush_core_execute_cmd($site, $cmd) {
-  if (!empty($site['remote-host'])) {
-    // Remote, so execute an ssh command with a bash fragment at the end.
-    $exec = drush_shell_proc_build($site, $cmd, TRUE);
-    return (drush_shell_proc_open($exec) == 0);
-  }
-  elseif (!empty($site['root']) && is_dir($site['root'])) {
-    return (drush_shell_proc_open('cd ' . drush_escapeshellarg($site['root']) . ' && ' . $cmd) == 0);
-  }
-  return (drush_shell_proc_open($cmd) == 0);
 }

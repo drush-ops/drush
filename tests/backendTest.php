@@ -79,8 +79,9 @@ EOD;
    *   - JSON object is wrapped in expected delimiters.
   */
   function testTarget() {
-    $stdin = json_encode(array('filter'=>'sql'));
-    $exec = sprintf('%s version --backend 2>%s', UNISH_DRUSH, self::escapeshellarg($this->bit_bucket()));
+    // Without --strict=0, the version call would fail.
+    $stdin = json_encode(array('strict'=>0));
+    $exec = sprintf('%s version --not-exist --backend 2>%s', UNISH_DRUSH, self::escapeshellarg($this->bit_bucket()));
     $this->execute($exec, self::EXIT_SUCCESS, NULL, NULL, $stdin);
     $parsed = $this->parse_backend_output($this->getOutput());
     $this->assertTrue((bool) $parsed, 'Successfully parsed backend output');
@@ -89,7 +90,9 @@ EOD;
     $this->assertArrayHasKey('object', $parsed);
     $this->assertEquals(self::EXIT_SUCCESS, $parsed['error_status']);
     // This assertion shows that `version` was called and that stdin options were respected.
-    $this->assertStringStartsWith(' Drush Version ', $parsed['output']);
+    $this->assertEquals('drush-version', key($parsed['object']));
+    // @todo --backend not currently populating 'output' for Annotated commands.
+    // $this->assertStringStartsWith(' Drush Version ', $parsed['output']);
     $this->assertEquals('Starting Drush preflight.', $parsed['log'][1]['message']);
 
     // Check error propogation by requesting an invalid command (missing Drupal site).

@@ -79,8 +79,6 @@ class SshCommands extends DrushCommands {
    * @option ssh-options A string of extra options that will be passed to the ssh command (e.g. "-p 100")',
    * @option tty Create a tty (e.g. to run an interactive program).',
    * @option escaped Command string already escaped; do not add additional quoting.',
-   *
-   * @todo Reuse this for core-execute when that ports.
    */
   public function proc_build_options() {}
 }
