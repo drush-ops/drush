@@ -221,6 +221,7 @@ function drush_module_disable($modules) {
  * @param $modules
  *   Array of module names
  *
+ * @see drush_module_uninstall_validate()
  * @see \Drupal\Core\Extension\ModuleInstallerInterface::uninstall()
  */
 function drush_module_uninstall($modules) {
@@ -228,6 +229,26 @@ function drush_module_uninstall($modules) {
   // Our logger got blown away during the container rebuild above.
   $boot = \Drush::bootstrapManager()->bootstrap();
   $boot->add_logger();
+}
+
+/**
+ * Validates a list of modules and checks if they're eligible to uninstall.
+ *
+ * @param array $modules
+ *   Array of module names
+ *
+ * @return bool
+ *   TRUE or FALSE
+ *
+ * @see drush_module_uninstall()
+ * @see \Drupal\Core\Extension\ModuleInstallerInterface::validateUninstall()
+ */
+function drush_module_uninstall_validate(array $modules = array()) {
+  if ($modules && ($validation_reasons = \Drupal::service('module_installer')->validateUninstall($modules))) {
+    drush_print(dt('The following reasons prevent the modules from being uninstalled: '));
+    return drush_set_error(drush_format_table(drush_key_value_to_array_table($validation_reasons)));
+  }
+  return TRUE;
 }
 
 /**
