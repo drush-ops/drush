@@ -410,7 +410,6 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       'hidden' => $commandinfo->hasAnnotation('hidden'),
       'aliases' => $aliases,
       'topic' => $commandinfo->getTopics(),
-      'mwtopic' => $commandinfo->getAnnotation('topic'),
       'topics' => _convert_csv_to_array($commandinfo->getAnnotation('topics')),
       'add-options-to-arguments' => TRUE,
       'consolidation-output-formatters' => TRUE,
