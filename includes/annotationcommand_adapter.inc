@@ -409,7 +409,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       'strict-option-handling' => $commandinfo->hasAnnotation('strict-option-handling'),
       'hidden' => $commandinfo->hasAnnotation('hidden'),
       'aliases' => $aliases,
-      'topic' => $commandinfo->getTopics(),
+      'topic' => (bool) $commandinfo->getTopics(),
       'topics' => _convert_csv_to_array($commandinfo->getAnnotation('topics')),
       'add-options-to-arguments' => TRUE,
       'consolidation-output-formatters' => TRUE,
