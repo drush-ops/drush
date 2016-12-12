@@ -44,7 +44,7 @@ class sqlSyncTest extends CommandUnishTestCase {
       'yes' => NULL,
     );
     $this->drush('user-create', array($name), $options + array('password' => 'password', 'mail' => $mail));
-    $this->drush('pm-enable', array('comment'), array('yes' => NULL));
+    $this->drush('pm-enable', array('comment'), $options + array('yes' => NULL));
 
     // Copy stage to dev with --sanitize.
     $sync_options = array(
