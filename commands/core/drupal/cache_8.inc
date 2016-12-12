@@ -27,10 +27,6 @@ function _drush_cache_command_set($cid, $data, $bin, $expire, $tags) {
     $bin = _drush_cache_bin_default();
   }
 
-  // Convert the "expire" argument to a valid value for Drupal's cache_set().
-  if ($expire == 'CACHE_TEMPORARY') {
-    $expire = Cache::TEMPORARY;
-  }
   if (!isset($expire) || $expire == 'CACHE_PERMANENT') {
     $expire = Cache::PERMANENT;
   }
@@ -40,7 +36,7 @@ function _drush_cache_command_set($cid, $data, $bin, $expire, $tags) {
 
 function _drush_cache_clear_types($include_bootstrapped_types) {
   $types = array(
-    'drush' => 'drush_cache_clear_drush',
+    'drush' => ['\Drush\Commands\core\CacheCommands', 'cacheDrush'],
   );
   if ($include_bootstrapped_types) {
     $types += array(
