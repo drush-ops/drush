@@ -319,12 +319,13 @@ class ViewsCommands extends DrushCommands {
   }
 
   /**
-   * @todo See https://github.com/consolidation/annotated-command/issues/56
-   * Implements hook_cache_clear. Adds a cache clear option for views.
+   * Adds a cache clear option for views.
+   *
+   * @hook on-event cache-clear
    */
-//  function views_drush_cache_clear(&$types, $include_bootstrapped_types) {
-//    if ($include_bootstrapped_types && \Drupal::moduleHandler()->moduleExists('views')) {
-//      $types['views'] = 'views_invalidate_cache';
-//    }
-//  }
+  function cacheClear(&$types, $include_bootstrapped_types) {
+    if ($include_bootstrapped_types && \Drupal::moduleHandler()->moduleExists('views')) {
+      $types['views'] = 'views_invalidate_cache';
+    }
+  }
 }

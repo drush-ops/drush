@@ -45,7 +45,7 @@ class cacheCommandCase extends CommandUnishTestCase {
     $input = array('data'=> $expected);
     $stdin = json_encode($input);
     $bin = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? 'default' : 'cache';
-    $exec = sprintf('%s cache-set %s %s my_cache_id - %s CACHE_PERMANENT --format=json --cache-get 2>%s', UNISH_DRUSH, "--root=" . self::escapeshellarg($options['root']), '--uri=' . $options['uri'], $bin, $this->bit_bucket());
+    $exec = sprintf('%s cache-set %s %s my_cache_id - %s CACHE_PERMANENT --input-format=json --cache-get 2>%s', UNISH_DRUSH, "--root=" . self::escapeshellarg($options['root']), '--uri=' . $options['uri'], $bin, $this->bit_bucket());
     $return = $this->execute($exec, self::EXIT_SUCCESS, NULL, [], $stdin);
     $this->drush('cache-get', array('my_cache_id'), $options + array('format' => 'json'));
     $data = $this->getOutputFromJSON('data');

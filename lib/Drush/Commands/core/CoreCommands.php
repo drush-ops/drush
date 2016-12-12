@@ -36,7 +36,7 @@ class CoreCommands extends DrushCommands {
    * @aliases twigc
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    */
-  public function twig_compile() {
+  public function twigCompile() {
     require_once DRUSH_DRUPAL_CORE . "/themes/engines/twig/twig.engine";
     // Scan all enabled modules and themes.
     // @todo refactor since \Drush\Boot\DrupalBoot::commandfile_searchpaths is similar.
@@ -167,10 +167,10 @@ class CoreCommands extends DrushCommands {
    * @aliases dd
    * @bootstrap DRUSH_BOOTSTRAP_NONE
    */
-  public function drupal_directory($target = 'root', $options = ['component' => 'path', 'local-only' => FALSE]) {
-    $path = $this->drush_core_directory($target, $options['component'], $options['local-only']);
+  public function drupalDirectory($target = 'root', $options = ['component' => 'path', 'local-only' => FALSE]) {
+    $path = $this->getPath($target, $options['component'], $options['local-only']);
 
-    // If _drush_core_directory is working right, it will turn
+    // If getPath() is working right, it will turn
     // %blah into the path to the item referred to by the key 'blah'.
     // If there is no such key, then no replacement is done.  In the
     // case of the dd command, we will consider it an error if
@@ -197,7 +197,7 @@ class CoreCommands extends DrushCommands {
    *   'root' & 'uri' - the Drupal root and URI of the site from the path
    *   'path-component' - The ':' and the path
    */
-  protected function drush_core_directory($target = 'root', $component = 'path', $local_only = FALSE) {
+  protected function getPath($target = 'root', $component = 'path', $local_only = FALSE) {
     // Normalize to a sitealias in the target.
     $normalized_target = $target;
     if (strpos($target, ':') === FALSE) {
@@ -234,7 +234,7 @@ class CoreCommands extends DrushCommands {
    *   description: Description
    * @default-fields name,description
    */
-  public function global_options($options = ['format' => 'table', 'fields' => '', 'include-field-labels' => FALSE]) {
+  public function globalOptions($options = ['format' => 'table', 'fields' => '', 'include-field-labels' => FALSE]) {
     drush_print(dt('These options are applicable to most Drush commands. Most options can be disabled by using --no-option (i.e. --no-debug to disable --debug.)'));
     drush_print();
     $fake = drush_global_options_command(FALSE);
@@ -308,14 +308,14 @@ class CoreCommands extends DrushCommands {
       if (!empty($site['site-list'])) {
         $sites = drush_sitealias_resolve_sitelist($site);
         foreach ($sites as $site_name => $site_spec) {
-          $result = $this->drush_core_execute_cmd($site_spec, $cmd);
+          $result = $this->executeCmd($site_spec, $cmd);
           if (!$result) {
             break;
           }
         }
       }
       else {
-        $result = $this->drush_core_execute_cmd($site, $cmd);
+        $result = $this->executeCmd($site, $cmd);
       }
     }
     else {
@@ -335,7 +335,7 @@ class CoreCommands extends DrushCommands {
   /**
    * Helper function for drush_core_execute: run one shell command
    */
-  protected function drush_core_execute_cmd($site, $cmd) {
+  protected function executeCmd($site, $cmd) {
     if (!empty($site['remote-host'])) {
       // Remote, so execute an ssh command with a bash fragment at the end.
       $exec = drush_shell_proc_build($site, $cmd, TRUE);

@@ -1,4 +1,6 @@
 <?php
+use Drush\Commands\core\CacheCommands;
+
 /**
  * @file
  *   Engine for the cache commands.
@@ -38,7 +40,7 @@ function _drush_cache_command_set($cid, $data, $bin, $expire, $tags) {
 
 function _drush_cache_clear_types($include_bootstrapped_types) {
   $types = array(
-    'drush' => 'drush_cache_clear_drush',
+    'drush' => ['\Drush\Commands\core\CacheCommands', 'cacheDrush'],
     'all' => 'drush_cache_clear_both',
   );
   if ($include_bootstrapped_types) {
@@ -88,7 +90,7 @@ function drush_cache_clear_block() {
  * Clear caches internal to Drush core and Drupal.
  */
 function drush_cache_clear_both() {
-  drush_cache_clear_drush();
+  CacheCommands::clearDrush();
   if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
     drupal_flush_all_caches();
   }
