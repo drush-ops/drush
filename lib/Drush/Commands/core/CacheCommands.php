@@ -21,8 +21,6 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface {
   /**
    * Fetch a cached object and display it.
    *
-   * @todo how to handle output formats for this command.
-   *
    * @command cache-get
    * @param $cid The id of the object to fetch.
    * @param $bin The cache bin to fetch from.
