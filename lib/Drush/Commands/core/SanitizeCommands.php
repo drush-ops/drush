@@ -31,10 +31,9 @@ class SanitizeCommands extends DrushCommands {
    *
    * @command sql-sanitize
    *
-   * @bootstrap DRUSH_BOOTSTRAP_NONE
-   *
    * @todo "drush dependencies" array('sqlsync')
    *
+   * @bootstrap DRUSH_BOOTSTRAP_NONE
    * @description Run sanitization operations on the current database.
    * @option db-prefix Enable replacement of braces in sanitize queries.
    * @option db-url A Drupal 6 style database URL. E.g.,
@@ -60,12 +59,13 @@ class SanitizeCommands extends DrushCommands {
     'sanitize-email' => '',
     'sanitize-password' => '',
     'whitelist-fields' => '',
-  ]) {
+    ]) {
     drush_sql_bootstrap_further();
     if ($options['db-prefix']) {
       drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
     }
 
+    // Drush itself implements this via sql_drush_sql_sync_sanitize().
     drush_command_invoke_all('drush_sql_sync_sanitize', 'default');
     $operations = drush_get_context('post-sync-ops');
     if (!empty($operations)) {
