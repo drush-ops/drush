@@ -1,4 +1,6 @@
 <?php
+use Drush\Commands\core\CacheCommands;
+
 /**
  * @file
  *   Engine for the cache commands.
@@ -88,7 +90,7 @@ function drush_cache_clear_block() {
  * Clear caches internal to Drush core and Drupal.
  */
 function drush_cache_clear_both() {
-  drush_cache_clear_drush();
+  CacheCommands::clearDrush();
   if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
     drupal_flush_all_caches();
   }

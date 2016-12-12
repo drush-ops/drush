@@ -62,7 +62,7 @@ function drush_topic_core_topic($topic_name = NULL) {
     }
   }
   if (empty($topics)) {
-    return drush_set_error('DRUSH_NO_SUCH_TOPIC', dt("No topics on !topic found.", array('!topic' => $topic_name)));
+    return drush_set_error('DRUSH_NO_SUCH_TOPIC', dt("!topic topic not found.", array('!topic' => $topic_name)));
   }
   if (count($topics) > 1) {
     // Show choice list.
