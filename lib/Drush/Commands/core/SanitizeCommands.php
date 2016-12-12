@@ -7,9 +7,8 @@ use Drupal\Core\Database\Database;
 use Drush\Commands\DrushCommands;
 
 /**
- * Class Sanitizer.
- *
- * @package Drupal\sanitize
+ * Class SanitizeCommands
+ * @package Drush\Commands\core
  */
 class SanitizeCommands extends DrushCommands {
 
@@ -26,10 +25,81 @@ class SanitizeCommands extends DrushCommands {
     $this->wrap = $wrap_table_name = (bool) drush_get_option('db-prefix');
   }
 
+
   /**
-   * Runs all sanitizing methods.
+   * Initialize local Drush configuration
+   *
+   * @command sql-sanitize
+   *
+   * @bootstrap DRUSH_BOOTSTRAP_NONE
+   *
+   * @todo "drush dependencies" array('sqlsync')
+   *
+   * @description Run sanitization operations on the current database.
+   * @option db-prefix Enable replacement of braces in sanitize queries.
+   * @option db-url A Drupal 6 style database URL. E.g.,
+   *   mysql://root:pass@127.0.0.1/db
+   * @option sanitize-email The pattern for test email addresses in the
+   *   sanitization operation, or "no" to keep email addresses unchanged. May
+   *   contain replacement patterns %uid, %mail or %name. Example value:
+   *   user+%uid@localhost
+   * @option sanitize-password The password to assign to all accounts in the
+   *   sanitization operation, or "no" to keep passwords unchanged. Example
+   *   value: password
+   * @option whitelist-fields Exempt these fields from sanitizing.
+   * @aliases sqlsan
+   * @usage drush sql-sanitize --sanitize-password=no
+   *   Sanitize database without modifying any passwords.
+   * @usage drush sql-sanitize --whitelist-fields=field_biography,field_phone_number
+   *   Sanitizes database but exempts two user fields from modification.
+   * @see hook_drush_sql_sync_sanitize() for adding custom sanitize routines.
    */
-  public function sanitize($major_version) {
+  public function sqlSanitize($options = [
+    'db-prefix' => '',
+    'db-url' => '',
+    'sanitize-email' => '',
+    'sanitize-password' => '',
+    'whitelist-fields' => '',
+  ]) {
+    drush_sql_bootstrap_further();
+    if ($options['db-prefix']) {
+      drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
+    }
+
+    drush_command_invoke_all('drush_sql_sync_sanitize', 'default');
+    $operations = drush_get_context('post-sync-ops');
+    if (!empty($operations)) {
+      if (!drush_get_context('DRUSH_SIMULATE')) {
+        $messages = _drush_sql_get_post_sync_messages();
+        if ($messages) {
+          drush_print();
+          drush_print($messages);
+        }
+      }
+      $queries = array_column($operations, 'query');
+      $sanitize_query = implode(" ", $queries);
+    }
+    if (!drush_confirm(dt('Do you really want to sanitize the current database?'))) {
+      return drush_user_abort();
+    }
+
+    if ($sanitize_query) {
+      $sql = drush_sql_get_class();
+      $sanitize_query = $sql->query_prefix($sanitize_query);
+      $result = $sql->query($sanitize_query);
+      if (!$result) {
+        return drush_set_error('DRUSH_SQL_NO_QUERY', dt('Sanitize query failed.'));
+      }
+    }
+  }
+
+  /**
+   * Performs database sanitization.
+   *
+   * @param int $major_version
+   *   E.g., 6, 7, or 8.
+   */
+  public function doSanitize($major_version) {
     $this->setWrap();
     $this->sanitizeSessions();
 
