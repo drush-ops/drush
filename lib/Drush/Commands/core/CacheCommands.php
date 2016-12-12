@@ -99,7 +99,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface {
    * @param $cid The id of the object to set.
    * @param $data The object to set in the cache. Use \'-\' to read the object from STDIN.
    * @param $bin The cache bin to store the object in.
-   * @param $expire CACHE_PERMANENT, CACHE_TEMPORARY, or a Unix timestamp.
+   * @param $expire 'CACHE_PERMANENT', or a Unix timestamp.
    * @param $tags A comma delimited list of cache tags.
    * @option input-format The format of value. Use 'json' for complex values.
    * @option cache-get If the object is the result a previous fetch from the cache, only store the value in the "data" property of the object in the cache.
