@@ -27,7 +27,7 @@ class SanitizeCommands extends DrushCommands {
 
 
   /**
-   * Initialize local Drush configuration
+   * Sanitize the database by removed and obfuscating user data.
    *
    * @command sql-sanitize
    *
@@ -45,7 +45,7 @@ class SanitizeCommands extends DrushCommands {
    * @option sanitize-password The password to assign to all accounts in the
    *   sanitization operation, or "no" to keep passwords unchanged. Example
    *   value: password
-   * @option whitelist-fields Exempt these fields from sanitizing.
+   * @option whitelist-fields A comma delimited list of fields exempt from sanitization.
    * @aliases sqlsan
    * @usage drush sql-sanitize --sanitize-password=no
    *   Sanitize database without modifying any passwords.
@@ -54,7 +54,7 @@ class SanitizeCommands extends DrushCommands {
    * @see hook_drush_sql_sync_sanitize() for adding custom sanitize routines.
    */
   public function sqlSanitize($options = [
-    'db-prefix' => '',
+    'db-prefix' => FALSE,
     'db-url' => '',
     'sanitize-email' => '',
     'sanitize-password' => '',
@@ -88,7 +88,7 @@ class SanitizeCommands extends DrushCommands {
       $sanitize_query = $sql->query_prefix($sanitize_query);
       $result = $sql->query($sanitize_query);
       if (!$result) {
-        return drush_set_error('DRUSH_SQL_NO_QUERY', dt('Sanitize query failed.'));
+        throw new \Exception(dt('Sanitize query failed.'));
       }
     }
   }
@@ -245,29 +245,12 @@ class SanitizeCommands extends DrushCommands {
   protected function query($query) {
     $current = drush_get_context('DRUSH_SIMULATE');
     drush_set_context('DRUSH_SIMULATE', FALSE);
-    $success = $this->executeQuery($query);
+    $sql = drush_sql_get_class();
+    $success = $sql->query($query);
     $output = drush_shell_exec_output();
     drush_set_context('DRUSH_SIMULATE', $current);
 
     return $output;
-  }
-
-  /**
-   * Executes a sql command using drush sqlq.
-   *
-   * Command output can be grabbed using drush_shell_exec_output().
-   *
-   * @param string $query
-   *   The SQL query to execute. Must end in a semicolon!
-   *
-   * @return bool
-   *   TRUE if command executed successfully.
-   *
-   * @throws \Drush\Sql\SqlException
-   */
-  protected function executeQuery($query) {
-    $sql = drush_sql_get_class();
-    return $sql->query($query);
   }
 
 }
