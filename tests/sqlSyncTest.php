@@ -35,16 +35,36 @@ class sqlSyncTest extends CommandUnishTestCase {
   }
 
   public function localSqlSync() {
-    // Create a user in the staging site
-    $name = 'joe.user';
-    $mail = "joe.user@myhome.com";
+
     $options = array(
       'root' => $this->webroot(),
       'uri' => 'stage',
       'yes' => NULL,
     );
-    $this->drush('user-create', array($name), $options + array('password' => 'password', 'mail' => $mail));
-    $this->drush('pm-enable', array('comment'), $options + array('yes' => NULL));
+
+    if (UNISH_DRUPAL_MAJOR_VERSION == 8) {
+      // Add user fields.
+      $this->drush('php-script', array('user_fields-D' . UNISH_DRUPAL_MAJOR_VERSION), $options + array('script-path' => __DIR__ . '/resources'));
+      $this->drush('pm-enable', array('comment'), $options + array('yes' => NULL));
+    }
+
+    // Create a user in the staging site
+    $name = 'joe.user';
+    $mail = "joe.user@myhome.com";
+
+    $fields = [
+      'password' => 'password',
+      'mail' => $mail,
+      'field_user_email' => '',
+      'field_user_string' => '',
+      'field_user_string_long' => '',
+      'field_user_telephone' => '',
+      'field_user_text' => '',
+      'field_user_text_long' => '',
+      'field_user_text_with_summary' => '',
+    ];
+
+    $this->drush('user-create', array($name), $options + $fields);
 
     // Copy stage to dev with --sanitize.
     $sync_options = array(
