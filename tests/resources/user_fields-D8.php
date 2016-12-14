@@ -1,7 +1,7 @@
 <?php
 
-use \Drupal\field\Entity\FieldStorageConfig;
-use \Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\field\Entity\FieldConfig;
 
 // @see https://api.drupal.org/api/drupal/core%21lib%21Drupal%21Core%21Field%21Annotation%21FieldWidget.php/class/annotations/FieldWidget/8.2.x
 // @see https://api.drupal.org/api/drupal/core%21lib%21Drupal%21Core%21Field%21Annotation%21FieldType.php/class/annotations/FieldType/8.2.x

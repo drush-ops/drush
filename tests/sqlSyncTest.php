@@ -55,13 +55,13 @@ class sqlSyncTest extends CommandUnishTestCase {
     $fields = [
       'password' => 'password',
       'mail' => $mail,
-      'field_user_email' => '',
-      'field_user_string' => '',
-      'field_user_string_long' => '',
-      'field_user_telephone' => '',
-      'field_user_text' => '',
-      'field_user_text_long' => '',
-      'field_user_text_with_summary' => '',
+      'field_user_email' => 'joe.user.alt@myhome.com',
+      'field_user_string' => 'Private info',
+      'field_user_string_long' => 'Really private info',
+      'field_user_telephone' => '5555555555',
+      'field_user_text' => 'Super private info',
+      'field_user_text_long' => 'Super duper private info',
+      'field_user_text_with_summary' => 'Private',
     ];
 
     $this->drush('user-create', array($name), $options + $fields);
@@ -121,5 +121,7 @@ class sqlSyncTest extends CommandUnishTestCase {
     $uid = $row[0];
     $this->assertEquals("user@mysite.org", $row[2], 'email address was sanitized (fixed email) on destination site.');
     $this->assertEquals($name, $row[1]);
+
+    // @assert that other user fields have been sanitized.
   }
 }
