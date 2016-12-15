@@ -19,9 +19,6 @@ $args = drush_get_arguments();
 
 // Create a user.
 $values = [
-  'name' => $args[2],
-  'mail' => $args[3],
-  'password' => 'password',
   'field_user_email' => 'joe.user.alt@myhome.com',
   'field_user_string' => 'Private info',
   'field_user_string_long' => 'Really private info',
@@ -30,7 +27,17 @@ $values = [
   'field_user_text_long' => 'Super duper private info',
   'field_user_text_with_summary' => 'Private',
 ];
-$user = User::create($values);
+
+$user = User::create([
+  'name' => $args[2],
+  'mail' => $args[3],
+  'pass' => 'password',
+]);
+
+foreach ($values as $field_name => $value) {
+  $user->set($field_name, $value);
+}
+
 $return = $user->save();
 
 /**
@@ -56,13 +63,11 @@ function create_field($field_name, $field_type, $widget_type, $entity_type, $bun
   FieldConfig::create([
     'entity_type' => $entity_type,
     'field_name' => $field_name,
-    'bundle' => $bundle,
-  ])->save();
-
-  // Create a form display for the default form mode.
-  entity_get_form_display($entity_type, $bundle, 'default')
-    ->setComponent($field_name, array(
+     'bundle' => $bundle,
+    'label' => $field_name,
+    'widget' => array(
       'type' => $widget_type,
-    ))
-    ->save();
+      'weight' => 0,
+    ),
+  ])->save();
 }

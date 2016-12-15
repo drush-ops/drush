@@ -106,6 +106,22 @@ class sqlSyncTest extends CommandUnishTestCase {
     $this->assertEquals("user@mysite.org", $row[2], 'email address was sanitized (fixed email) on destination site.');
     $this->assertEquals($name, $row[1]);
 
-    // @assert that other user fields have been sanitized.
+    $fields = [
+      'field_user_email' => 'joe.user.alt@myhome.com',
+      'field_user_string' => 'Private info',
+      'field_user_string_long' => 'Really private info',
+      'field_user_telephone' => '5555555555',
+      'field_user_text' => 'Super private info',
+      'field_user_text_long' => 'Super duper private info',
+      // 'field_user_text_with_summary' => 'Private',
+    ];
+    foreach ($fields as $field_name => $value) {
+      $table = 'user__' . $field_name;
+      $column = $field_name . '_value';
+      $this->drush('sql-query', [ "SELECT $column FROM $table LIMIT 1" ], $options);
+      $output = $this->getOutput();
+      $this->assertNotEmpty($output);
+      $this->assertNotContains($value, $output);
+    }
   }
 }
