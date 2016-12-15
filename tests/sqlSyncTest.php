@@ -42,29 +42,13 @@ class sqlSyncTest extends CommandUnishTestCase {
       'yes' => NULL,
     );
 
-    if (UNISH_DRUPAL_MAJOR_VERSION == 8) {
-      // Add user fields.
-      $this->drush('php-script', array('user_fields-D' . UNISH_DRUPAL_MAJOR_VERSION), $options + array('script-path' => __DIR__ . '/resources'));
-      $this->drush('pm-enable', array('comment'), $options + array('yes' => NULL));
-    }
-
     // Create a user in the staging site
     $name = 'joe.user';
     $mail = "joe.user@myhome.com";
 
-    $fields = [
-      'password' => 'password',
-      'mail' => $mail,
-      'field_user_email' => 'joe.user.alt@myhome.com',
-      'field_user_string' => 'Private info',
-      'field_user_string_long' => 'Really private info',
-      'field_user_telephone' => '5555555555',
-      'field_user_text' => 'Super private info',
-      'field_user_text_long' => 'Super duper private info',
-      'field_user_text_with_summary' => 'Private',
-    ];
-
-    $this->drush('user-create', array($name), $options + $fields);
+    // Add user fields and a test User.
+    $this->drush('pm-enable', array('field,text,telephone,comment'), $options + array('yes' => NULL));
+    $this->drush('php-script', array('user_fields-D' . UNISH_DRUPAL_MAJOR_VERSION, $name, $mail), $options + array('script-path' => __DIR__ . '/resources', 'debug' => NULL));
 
     // Copy stage to dev with --sanitize.
     $sync_options = array(

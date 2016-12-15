@@ -33,7 +33,7 @@ class PhpCommands extends DrushCommands {
    *
    * A useful alternative to eval command when your php is lengthy or you
    * can't be bothered to figure out bash quoting. If you plan to share a
-   * script with others, consider making a full drush command instead, since
+   * script with others, consider making a full Drush command instead, since
    * that's more self-documenting.  Drush provides commandline options to the
    * script via drush_get_option('option-name'), and commandline arguments can
    * be accessed either via drush_get_arguments(), which returns all arguments
