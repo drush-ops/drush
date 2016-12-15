@@ -470,7 +470,9 @@ function annotationcommand_adapter_add_hook_options(&$command)
   // the extension hook a core command, or have an early-loaded global
   // extension hook a late-loaded extension (e.g. attached to a module).
   $names = annotationcommand_adapter_command_names($command);
-  $names[] = '*'; // we are missing annotations here; maybe we just don't support that? (TODO later, maybe)
+  $names[] = '*';
+  // @todo Stop hard coding this list.
+  $names = array_merge($names, ['@optionset_proc_build', '@optionset_get_editor']);
   $factory = \Drush::commandFactory();
   $extraOptions = $factory->hookManager()->getHookOptions($names);
   foreach ($extraOptions as $commandinfo) {
