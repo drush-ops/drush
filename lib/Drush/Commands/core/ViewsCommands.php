@@ -1,13 +1,9 @@
 <?php
 namespace Drush\Commands\core;
 
-use Consolidation\AnnotatedCommand\CommandData;
-use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
 use Drush\Log\LogLevel;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
 use Drupal\views\Views;
 
 class ViewsCommands extends DrushCommands {
@@ -160,7 +156,7 @@ class ViewsCommands extends DrushCommands {
    *
    * @command views-execute
    *
-   * @param string $view The name of the view to execute.
+   * @param string $view_name The name of the view to execute.
    * @param string $display The display ID to execute. If none specified, the default display will be used.
    * @param string $view_args A comma delimited list of values, corresponding to contextual filters.
    * @option count Display a count of the results instead of each row.
@@ -174,14 +170,14 @@ class ViewsCommands extends DrushCommands {
    *   Show the rendered HTML of my_view:page_1 where the first two contextual filter values are 3 and 'foo' respectively.
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    * @complete \Drush\Commands\core\ViewsCommands::complete
-   * @validate-entity-load view views
+   * @validate-entity-load view view_name
    * @aliases vex
    *
    * @return string
    */
-  public function execute($view, $display = NULL, $view_args = NULL, $options = ['count' => 0, 'show-admin-links' => 0]) {
+  public function execute($view_name, $display = NULL, $view_args = NULL, $options = ['count' => 0, 'show-admin-links' => 0]) {
 
-    $view = Views::getView($view);
+    $view = Views::getView($view_name);
 
     // Set the display and execute the view.
     $view->setDisplay($display);
@@ -189,7 +185,7 @@ class ViewsCommands extends DrushCommands {
     $view->execute();
 
     if (empty($view->result)) {
-      $this->logger->log(LogLevel::WARNING, dt('No results returned for this view.'));
+      $this->logger->log(LogLevel::WARNING, dt('No results returned for this View.'));
       return NULL;
     }
     elseif ($options['count']) {
@@ -288,23 +284,6 @@ class ViewsCommands extends DrushCommands {
       }
     }
     $this->logger->log(LogLevel::OK, dt('!str disabled.', ['!str' => implode(', ', $view_names)]));
-  }
-
-  /**
-   * Validate that passed View names are valid.
-   *
-   * @hook validate @validate-entity-load
-   * @param \Consolidation\AnnotatedCommand\CommandData $commandData
-   * @return \Consolidation\AnnotatedCommand\CommandError|null
-   */
-  public function validate_entity_load(CommandData $commandData) {
-    list($entity_type, $arg_name) = explode(' ', $commandData->annotationData()->get('validate-entity-load', NULL));
-    $names = _convert_csv_to_array($commandData->input()->getArgument($arg_name));
-    $loaded = \Drupal::entityTypeManager()->getStorage($entity_type)->loadMultiple($names);
-    if ($missing = array_diff($names, array_keys($loaded))) {
-      $msg = dt('Unable to load Views: !str', ['!str' => implode(', ', $missing)]);
-      return new CommandError($msg);
-    }
   }
 
   /**
