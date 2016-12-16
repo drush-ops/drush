@@ -37,6 +37,7 @@ class RoleCommands extends DrushCommands {
    *
    * @command role-delete
    * @param $machine_name The symbolic machine name for the role.
+   * @todo Use @validate-entity-load once D7 is really put out to pasture.
    * @usage drush role-delete 'test role'
    *   Delete the role 'test role'.
    * @aliases rdel
