@@ -471,8 +471,16 @@ function annotationcommand_adapter_add_hook_options(&$command)
   // extension hook a late-loaded extension (e.g. attached to a module).
   $names = annotationcommand_adapter_command_names($command);
   $names[] = '*';
-  // @todo Stop hard coding this list.
-  $names = array_merge($names, ['@optionset_proc_build', '@optionset_get_editor']);
+  // Add possible hooks.
+  $blacklist = ['command', 'handle-remote-commands', 'strict-option-handling', 'allow-additional-options', 'bootstrap', 'topic', 'hidden', 'hidden-option'];
+  /** @var \Consolidation\AnnotatedCommand\AnnotationData $annotationData */
+  $annotationData = $command['annotations'];
+  $keys = array_diff($annotationData->keys(), $blacklist);
+  $atkeys = [];
+  foreach ($keys as $key) {
+    $atkeys[] = '@'. $key;
+  }
+  $names = array_merge($names, $atkeys);
   $factory = \Drush::commandFactory();
   $extraOptions = $factory->hookManager()->getHookOptions($names);
   foreach ($extraOptions as $commandinfo) {

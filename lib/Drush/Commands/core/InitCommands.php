@@ -3,9 +3,16 @@ namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
 use Drush\Log\LogLevel;
+use Robo\LoadAllTasks;
+use Robo\Contract\IOAwareInterface;
+use Robo\Contract\BuilderAwareInterface;
 
-class InitCommands extends DrushCommands
+
+class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwareInterface
 {
+
+  use LoadAllTasks;
+
   /**
    * Enrich the bash startup file with completion and aliases.
    *

@@ -13,7 +13,6 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface {
   use IO {
     io as roboIo;
   }
-  use OptionsTrait;
 
 
   public function __construct() {}
