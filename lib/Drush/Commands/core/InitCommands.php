@@ -1,23 +1,29 @@
 <?php
 namespace Drush\Commands\core;
 
+use Drush\Commands\DrushCommands;
 use Drush\Log\LogLevel;
+use Robo\LoadAllTasks;
+use Robo\Contract\IOAwareInterface;
+use Robo\Contract\BuilderAwareInterface;
 
-class InitCommands extends \Robo\Tasks
+
+class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwareInterface
 {
+
+  use LoadAllTasks;
+
   /**
-   * Initialize local Drush configuration
+   * Enrich the bash startup file with completion and aliases.
    *
    * @command core-init
    *
-   * @todo: @global-options
-   *
-   * @description Enrich the bash startup file with completion and aliases.
    * @option $edit Open the new config file in an editor.
-   * @option $add-path Always add Drush to the \$PATH in the user's .bashrc
-   *   file, even if it is already in the \$PATH. Use --no-add-path to skip
-   *   updating .bashrc with the Drush \$PATH. Default is to update .bashrc
-   *   only if Drush is not already in the \$PATH.
+   * @option $add-path Always add Drush to the $PATH in the user's .bashrc
+   *   file, even if it is already in the $PATH. Use --no-add-path to skip
+   *   updating .bashrc with the Drush $PATH. Default is to update .bashrc
+   *   only if Drush is not already in the $PATH.
+   * @optionset_get_editor
    * @aliases init
    * @usage core-init --edit
    *   Enrich Bash and open drush config file in editor.

@@ -11,7 +11,7 @@ class EditCommands extends DrushCommands {
    * @command core-edit
    * @bootstrap DRUSH_BOOTSTRAP_MAX
    * @param $filter A substring for filtering the list of files. Omit this argument to choose from loaded files.
-   * @todo global-options' => array('editor', 'bg'),
+   * @optionset_get_editor
    * @usage drush core-config
    *   Pick from a list of config/alias/settings files. Open selected in editor.
    * @usage drush --bg core-config

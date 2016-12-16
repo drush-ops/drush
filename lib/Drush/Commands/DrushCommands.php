@@ -8,10 +8,7 @@ use Psr\Log\LoggerInterface;
 use Robo\Contract\IOAwareInterface;
 use Robo\Common\IO;
 
-abstract class DrushCommands implements
-  IOAwareInterface,
-  LoggerAwareInterface
-{
+abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface {
   use LoggerAwareTrait;
   use IO {
     io as roboIo;

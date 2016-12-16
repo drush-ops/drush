@@ -272,7 +272,7 @@ class CoreCommands extends DrushCommands {
    * @command core-execute
    * @param $command The shell command to be executed.
    * @option escape Escape parameters before executing them with the shell. Default is escape; use --no-escape to disable.
-   * @proc_build_options
+   * @optionset_proc_build
    * @allow-additional-options
    * @handle-remote-commands
    * @strict-option-handling

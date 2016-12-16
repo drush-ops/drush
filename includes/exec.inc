@@ -251,18 +251,6 @@ function drush_shell_proc_open($cmd) {
 }
 
 /**
- * Used by definition of ssh and other commands that call into drush_shell_proc_build()
- * to declare their options.
- */
-function drush_shell_exec_proc_build_options() {
-  return array(
-   'ssh-options' => 'A string of extra options that will be passed to the ssh command (e.g. "-p 100")',
-    'tty' => 'Create a tty (e.g. to run an interactive program).',
-    'escaped' => 'Command string already escaped; do not add additional quoting.',
-  );
-}
-
-/**
  * Determine the appropriate os value for the
  * specified site record
  *

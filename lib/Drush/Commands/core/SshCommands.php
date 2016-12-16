@@ -12,6 +12,7 @@ class SshCommands extends DrushCommands {
    * @command site-ssh
    * @param string $bash Bash to execute on target. Optional, except when site-alias is a list.
    * @option cd Directory to change to if Drupal root is not desired (the default). Value should be a full path, or --no-cd for the ssh default (usually the remote user's home directory).
+   * @optionset_proc_build
    * @handle-remote-commands
    * @strict-option-handling
    * @usage drush @mysite ssh
@@ -73,12 +74,4 @@ class SshCommands extends DrushCommands {
       throw new \Exception(dt('An error @code occurred while running the command `@command`', array('@command' => $cmd, '@code' => $status)));
     }
   }
-
-  /**
-   * @hook option site-ssh
-   * @option ssh-options A string of extra options that will be passed to the ssh command (e.g. "-p 100")',
-   * @option tty Create a tty (e.g. to run an interactive program).',
-   * @option escaped Command string already escaped; do not add additional quoting.',
-   */
-  public function proc_build_options() {}
 }
