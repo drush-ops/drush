@@ -4,7 +4,7 @@ namespace Drush\Commands;
 /*
  * Common options providers. Use them by adding an annotation to your method.
  */
-class OptionsCommands extends DrushCommands {
+class OptionsCommands {
 
   /**
    * @hook option @optionset_proc_build
