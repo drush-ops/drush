@@ -89,7 +89,7 @@
 // Add a 'pm-clone' to simplify git cloning from drupal.org.
 # $options['shell-aliases']['pm-clone'] = 'pm-download --gitusername=YOURUSERNAME --package-handler=git_drupalorg';
 // Save a sanitized sql dump. Customize alias names and --result-file.
-# $options['shell-aliases']['pm-clone'] = 'drush sql-sync @source @temp --sanitize && drush @temp sql-dump --result-file=/example && drush @temp sql-drop';
+# $options['shell-aliases']['sql-dump-sanitized'] = 'drush sql-sync @source @temp --sanitize && drush @temp sql-dump --result-file=/example && drush @temp sql-drop';
 
 // Load a drushrc.php configuration file from the current working directory.
 # $options['config'][] = './drushrc.php';
