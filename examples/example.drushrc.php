@@ -81,26 +81,18 @@
 # $options['shell-aliases']['noncore'] = 'pm-list --no-core';
 # $options['shell-aliases']['wipe'] = 'cache-clear all';
 # $options['shell-aliases']['unsuck'] = 'pm-disable -y overlay,dashboard';
-# $options['shell-aliases']['offline'] = 'drush sset system.maintenance_mode 1 --input-format=integer';
-# $options['shell-aliases']['online'] = 'drush sset system.maintenance_mode 0 --input-format=integer';
+# $options['shell-aliases']['offline'] = 'state-set system.maintenance_mode 1 --input-format=integer';
+# $options['shell-aliases']['online'] = 'state-set system.maintenance_mode 0 --input-format=integer';
 # $options['shell-aliases']['dis-all'] = '!drush -y dis `drush pml --status=enabled --type=module --no-core --pipe`';
 # $options['shell-aliases']['self-alias'] = 'site-alias @self --with-db --alias-name=new';
 # $options['shell-aliases']['site-get'] = '@none php-eval "return drush_sitealias_site_get();"';
 // Add a 'pm-clone' to simplify git cloning from drupal.org.
 # $options['shell-aliases']['pm-clone'] = 'pm-download --gitusername=YOURUSERNAME --package-handler=git_drupalorg';
 // Save a sanitized sql dump. Customize alias names and --result-file.
-# $options['shell-aliases']['sql-dump-sanitized'] = 'drush sql-sync @source @temp --sanitize && drush @temp sql-dump --result-file=/example && drush @temp sql-drop';
+# $options['shell-aliases']['sql-dump-sanitized'] = '!drush sql-sync @source @temp --sanitize && drush @temp sql-dump --result-file=/example && drush @temp sql-drop';
 
 // Load a drushrc.php configuration file from the current working directory.
 # $options['config'][] = './drushrc.php';
-
-/**
- * By default, Drush will download projects compatible with the current
- * version of Drupal, or, if no Drupal site is specified, then the Drupal-8
- * version of the project is downloaded.  Set default-major to select a
- * different default version.
- */
-# $options['default-major'] = 7;
 
 // Clone extensions (modules, themes, etc.) from drupal.org via 'pm-download'.
 # $options['package-handler'] = 'git_drupalorg';
