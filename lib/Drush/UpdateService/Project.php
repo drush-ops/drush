@@ -636,7 +636,8 @@ class Project {
       file_put_contents($tmpfile, $content, FILE_APPEND);
     }
 
-    #TODO# don't print! Just return the filename
-    drush_print_file($tmpfile);
+    #TODO# don't print! Just return the filename.
+    #TODO# Barring that, use \Drush\Commands\DrushCommands::printFile
+    drush_print(file_get_contents($tmpfile));
   }
 }
