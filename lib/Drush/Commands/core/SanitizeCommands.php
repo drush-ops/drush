@@ -160,7 +160,6 @@ class SanitizeCommands extends DrushCommands {
             break;
 
           case 'text_with_summary':
-            // This isn't working?
             $this->sanitizeTableColumn($table,  $field_name . '_value', $randomizer->paragraphs(2));
             $this->sanitizeTableColumn($table,  $field_name . '_summary', $randomizer->name(255));
             break;

@@ -110,17 +110,42 @@ class sqlSyncTest extends CommandUnishTestCase {
       'field_user_email' => 'joe.user.alt@myhome.com',
       'field_user_string' => 'Private info',
       'field_user_string_long' => 'Really private info',
-      'field_user_telephone' => '5555555555',
       'field_user_text' => 'Super private info',
       'field_user_text_long' => 'Super duper private info',
-      // 'field_user_text_with_summary' => 'Private',
+      'field_user_text_with_summary' => 'Private',
     ];
+    // Asser that field DO NOT contain values.
     foreach ($fields as $field_name => $value) {
-      $table = 'user__' . $field_name;
-      $column = $field_name . '_value';
-      $this->drush('sql-query', [ "SELECT $column FROM $table LIMIT 1" ], $options);
-      $output = $this->getOutput();
-      $this->assertNotEmpty($output);
+      $this->assertUserFieldContents($field_name, $value, $options);
+    }
+
+    // Assert that field_user_telephone DOES contain "5555555555".
+    $this->assertUserFieldContents('field_user_telephone', '5555555555', $options, TRUE);
+  }
+
+  /**
+   * Assert that a field on the user entity does or does not contain a value.
+   *
+   * @param string $field_name
+   *   The machine name of the field.
+   * @param string $value
+   *   The field value.
+   * @param array $options
+   *   Options to be added to the sql-query command.
+   * @param bool $should_contain
+   *   Whether the field should contain the value. Defaults to false.
+   */
+  public function assertUserFieldContents($field_name, $value, $options = [], $should_contain = FALSE) {
+    $table = 'user__' . $field_name;
+    $column = $field_name . '_value';
+    $this->drush('sql-query', [ "SELECT $column FROM $table LIMIT 1" ], $options);
+    $output = $this->getOutput();
+    $this->assertNotEmpty($output);
+
+    if ($should_contain) {
+      $this->assertContains($value, $output);
+    }
+    else {
       $this->assertNotContains($value, $output);
     }
   }
