@@ -13,14 +13,14 @@ use Psy\Configuration;
 class CliCommands extends DrushCommands {
 
   /**
+   * Drush's PHP Shell.
+   *
    * @command docs-repl
-   * @description Drush's PHP Shell
-   * @bootstrap DRUSH_BOOTSTRAP_NONE
    * @hidden
    * @topic
    */
   public function docs() {
-    drush_print_file(DRUSH_BASE_PATH. '/docs/repl.md');
+    self::printFile(DRUSH_BASE_PATH. '/docs/repl.md');
   }
 
   /**
