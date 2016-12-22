@@ -46,9 +46,18 @@ class sqlSyncTest extends CommandUnishTestCase {
     $name = 'joe.user';
     $mail = "joe.user@myhome.com";
 
-    // Add user fields and a test User.
-    $this->drush('pm-enable', array('field,text,telephone,comment'), $options + array('yes' => NULL));
-    $this->drush('php-script', array('user_fields-D' . UNISH_DRUPAL_MAJOR_VERSION, $name, $mail), $options + array('script-path' => __DIR__ . '/resources', 'debug' => NULL));
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
+      // Add user fields and a test User.
+      $this->drush('pm-enable', array('field,text,telephone,comment'), $options + array('yes' => NULL));
+      $this->drush('php-script', array(
+        'user_fields-D' . UNISH_DRUPAL_MAJOR_VERSION,
+        $name,
+        $mail
+      ), $options + array(
+          'script-path' => __DIR__ . '/resources',
+          'debug' => NULL
+        ));
+    }
 
     // Copy stage to dev with --sanitize.
     $sync_options = array(
@@ -106,21 +115,23 @@ class sqlSyncTest extends CommandUnishTestCase {
     $this->assertEquals("user@mysite.org", $row[2], 'email address was sanitized (fixed email) on destination site.');
     $this->assertEquals($name, $row[1]);
 
-    $fields = [
-      'field_user_email' => 'joe.user.alt@myhome.com',
-      'field_user_string' => 'Private info',
-      'field_user_string_long' => 'Really private info',
-      'field_user_text' => 'Super private info',
-      'field_user_text_long' => 'Super duper private info',
-      'field_user_text_with_summary' => 'Private',
-    ];
-    // Asser that field DO NOT contain values.
-    foreach ($fields as $field_name => $value) {
-      $this->assertUserFieldContents($field_name, $value, $options);
-    }
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
+      $fields = [
+        'field_user_email' => 'joe.user.alt@myhome.com',
+        'field_user_string' => 'Private info',
+        'field_user_string_long' => 'Really private info',
+        'field_user_text' => 'Super private info',
+        'field_user_text_long' => 'Super duper private info',
+        'field_user_text_with_summary' => 'Private',
+      ];
+      // Assert that field DO NOT contain values.
+      foreach ($fields as $field_name => $value) {
+        $this->assertUserFieldContents($field_name, $value, $options);
+      }
 
-    // Assert that field_user_telephone DOES contain "5555555555".
-    $this->assertUserFieldContents('field_user_telephone', '5555555555', $options, TRUE);
+      // Assert that field_user_telephone DOES contain "5555555555".
+      $this->assertUserFieldContents('field_user_telephone', '5555555555', $options, TRUE);
+    }
   }
 
   /**
