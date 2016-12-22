@@ -36,7 +36,7 @@ function _drush_cache_command_set($cid, $data, $bin, $expire, $tags) {
 
 function _drush_cache_clear_types($include_bootstrapped_types) {
   $types = array(
-    'drush' => ['\Drush\Commands\core\CacheCommands', 'cacheDrush'],
+    'drush' => ['\Drush\Commands\core\CacheCommands', 'clearDrush'],
   );
   if ($include_bootstrapped_types) {
     $types += array(
