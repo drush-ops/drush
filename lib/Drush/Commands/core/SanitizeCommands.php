@@ -10,7 +10,7 @@ use Drush\Commands\DrushCommands;
  * Class SanitizeCommands
  * @package Drush\Commands\core
  */
-class SanitizeCommands extends DrushCommands {
+class SanitizeCommands {
 
   /**
    * @var bool
