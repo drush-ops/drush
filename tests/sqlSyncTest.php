@@ -72,6 +72,9 @@ class sqlSyncTest extends CommandUnishTestCase {
           'debug' => NULL
         ));
     }
+    else {
+      $this->drush('user-create', array($name), $options + array('password' => 'password', 'mail' => $mail));
+    }
 
     // Copy stage to dev with --sanitize.
     $sync_options = array(
