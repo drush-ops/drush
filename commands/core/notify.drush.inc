@@ -56,7 +56,7 @@ function notify_drush_help($section) {
 function drush_notify_shutdown() {
   $cmd = drush_get_command();
 
-  if (!isset($cmd['command'])) {
+  if (empty($cmd['command'])) {
     return;
   }
 
