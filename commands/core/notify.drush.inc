@@ -56,6 +56,10 @@ function notify_drush_help($section) {
 function drush_notify_shutdown() {
   $cmd = drush_get_command();
 
+  if (empty($cmd['command'])) {
+    return;
+  }
+
   // pm-download handles its own notification.
   if ($cmd['command'] != 'pm-download' && drush_notify_allowed($cmd['command'])) {
     $msg = dt("Command '!command' completed.", array('!command' => $cmd['command']));
