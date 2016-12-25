@@ -14,7 +14,7 @@ class Sqlmysql extends SqlBase {
     if ($hide_password) {
       // EMPTY password is not the same as NO password, and is valid.
       $contents = <<<EOT
-#This file was written by Drush's Sqlmysql.inc.
+#This file was written by Drush's Sqlmysql.php.
 [client]
 user="{$this->db_spec['username']}"
 password="{$this->db_spec['password']}"
