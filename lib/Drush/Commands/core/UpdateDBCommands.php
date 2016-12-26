@@ -16,7 +16,6 @@ class UpdateDBCommands extends DrushCommands {
    * @option entity-updates Run automatic entity schema updates at the end of any update hooks. Defaults to --no-entity-updates.
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_SITE
    * @aliases updb
-   *
    */
   public function updatedb($options = ['cache-clear' => TRUE]) {
     if (drush_get_context('DRUSH_SIMULATE')) {
@@ -74,9 +73,9 @@ class UpdateDBCommands extends DrushCommands {
    *   update_id: Update ID
    *   description: Description
    * @default-fields module,update_id,description
-   *
+   * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
    */
-  public function updatedb_status() {
+  public function updatedb_status($options = ['format'=> 'table']) {
     require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
     drupal_load_updates();
     drush_include_engine('drupal', 'update');
