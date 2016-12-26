@@ -178,6 +178,7 @@ class SqlCommands extends DrushCommands {
    *
    * @command sql-dump
    * @optionset_sql
+   * @optionset_table_selection
    * @option result-file Save to a file. The file should be relative to Drupal root.
    * @option create-db Omit DROP TABLE statements. Postgres and Oracle only.  Used by sql-sync, since including the DROP TABLE statements interfere with the import when the database is created.
    * @option data-only Dump data without statements to create any of the schema.

@@ -67,14 +67,8 @@ function drush_sql_get_table_selection() {
 }
 
 function drush_sql_get_table_selection_options() {
-  return array(
-    'skip-tables-key' => 'A key in the $skip_tables array. @see example.drushrc.php. Optional.',
-    'structure-tables-key' => 'A key in the $structure_tables array. @see example.drushrc.php. Optional.',
-    'tables-key' => 'A key in the $tables array. Optional.',
-    'skip-tables-list' => 'A comma-separated list of tables to exclude completely. Optional.',
-    'structure-tables-list' => 'A comma-separated list of tables to include for structure, but not data. Optional.',
-    'tables-list' => 'A comma-separated list of tables to transfer. Optional.',
-  );
+  // @todo only left here until archive-dump converts to annotated
+  return array();
 }
 
 /**
