@@ -5,6 +5,7 @@
  * pm-download command implementation.
  */
 
+use Drush\Commands\core\NotifyCommands;
 use Drush\Log\LogLevel;
 use Drush\UpdateService\ReleaseInfo;
 
@@ -248,15 +249,16 @@ function drush_pm_download() {
       drush_set_error('DRUSH_PM_DOWNLOAD_FAILED', dt("Project !project (!version) could not be downloaded to !dest.", array('!project' => $request['name'], '!version' => $release['version'], '!dest' => $request['project_install_location'])));
     }
 
+//   @todo - bring back when porting to Annotated.
     // Notify about this project.
-    if (drush_notify_allowed('pm-download')) {
-      $msg = dt('Project !project (!version) downloaded to !install.', array(
-        '!project' => $name,
-        '!version' => $release['version'],
-        '!install' => $request['project_install_location'],
-      ));
-      drush_notify_send(drush_notify_command_message('pm-download', $msg));
-    }
+//    if (NotifyCommands::isAllowed('pm-download', $commandData)) {
+//      $msg = dt('Project !project (!version) downloaded to !install.', array(
+//        '!project' => $name,
+//        '!version' => $release['version'],
+//        '!install' => $request['project_install_location'],
+//      ));
+//      NotifyCommands::shutdownSend($msg), $commandData);
+//    }
   }
 }
 
