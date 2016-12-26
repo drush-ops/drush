@@ -68,9 +68,6 @@ function policy_drush_sitealias_alter(&$alias_record) {
   }
 }
 
-<?php
-
-
 /**
  * Implements drush_hook_COMMAND_validate().
  *
