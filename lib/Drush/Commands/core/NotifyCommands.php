@@ -64,10 +64,10 @@ class NotifyCommands extends DrushCommands {
    * @param string $msg
    *   Message to send via notification.
    */
-  function shutdownSend($msg, CommandData $commandData) {
-    $this->shutdownSendText($msg, $commandData);
+  static function shutdownSend($msg, CommandData $commandData) {
+    self::shutdownSendText($msg, $commandData);
     if ($commandData->input()->getOption('notify-audio')) {
-      $this->shutdownSendAudio($msg, $commandData);
+      self::shutdownSendAudio($msg, $commandData);
     }
   }
 
@@ -83,7 +83,7 @@ class NotifyCommands extends DrushCommands {
    * @return bool
    *   TRUE on success, FALSE on failure
    */
-  function shutdownSendText($msg,CommandData $commandData) {
+  static function shutdownSendText($msg,CommandData $commandData) {
     $override = $commandData->input()->getOption('notify-cmd');
 
     if (!empty($override)) {
@@ -123,7 +123,7 @@ class NotifyCommands extends DrushCommands {
    * @return bool
    *   TRUE on success, FALSE on failure
    */
-  function shutdownSendAudio($msg, CommandData $commandData) {
+  static function shutdownSendAudio($msg, CommandData $commandData) {
     $override = $commandData->input()->getOption('notify-cmd-audio');
 
     if (!empty($override)) {
