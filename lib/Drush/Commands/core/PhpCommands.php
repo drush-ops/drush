@@ -21,7 +21,6 @@ class PhpCommands extends DrushCommands {
    * @usage drush php-eval "node_access_rebuild();"
    *   Rebuild node access permissions.
    * @aliases eval,ev
-   * @allow-additional-options
    * @bootstrap DRUSH_BOOTSTRAP_MAX
    */
   public function evaluate($code, $options = ['format' => 'var_export']) {

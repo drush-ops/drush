@@ -166,6 +166,7 @@ EOD;
     $config = UNISH_SANDBOX . '/drushrc.php';
     $options = array(
       'cli1' => NULL,
+      'strict' => 0,
       'config' => $config,
       'root' => $this->webroot(),
       'uri' => key($this->getSites()),
