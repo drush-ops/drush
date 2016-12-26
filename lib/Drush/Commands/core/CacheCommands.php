@@ -61,6 +61,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface {
    * @aliases cc
    * @bootstrap DRUSH_BOOTSTRAP_MAX
    * @complete \Drush\Commands\core\CacheCommands::complete
+   * @notify Caches have been cleared.
    */
   public function clear($type = NULL, $options = ['cache-clear' => TRUE]) {
     if (!$options['cache-clear']) {
