@@ -257,6 +257,8 @@ class CoreCommands extends DrushCommands {
    * @field-labels
    *   drush-version: Drush version
    *
+   * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
+   *
    */
   public function version($options = ['format' => 'table']) {
     return new PropertyList(['drush-version' => \Drush::getVersion()]);
