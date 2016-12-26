@@ -494,7 +494,7 @@ function annotationcommand_adapter_add_hook_options(&$command)
       if (!empty($default)) {
         $command['options'][$option]['example-value'] = $default;
       }
-      if ($commandinfo->getAnnotation('hidden-option') == $option) {
+      if (in_array($option, _convert_csv_to_array($commandinfo->getAnnotation('hidden-option')))) {
         $command['options'][$option]['hidden'] = TRUE;
       }
       $fn = 'annotationcommand_adapter_alter_option_description_' . $option;
