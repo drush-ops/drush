@@ -14,7 +14,7 @@ class NotifyCommands extends DrushCommands {
   /**
    *
    *
-   * @hook pre-command *
+   * @hook option *
    * @option notify Use system notifications to signal command completion. If set to a number, commands that finish in fewer seconds will not trigger a notification.
    * @todo change these to sub-options when/if we support those again.
    * @option notify-audio Trigger an audio alert to signal command completion. If set to a number, commands that finish in fewer seconds will not trigger a notification.
@@ -23,7 +23,12 @@ class NotifyCommands extends DrushCommands {
    * @todo hidden is not yet part of annotated-command project. It is recognized by Drush's annotation_adapter.inc
    * @hidden-option notify,notify-audio,notify-cmd,notify-cmd-audio
    */
-  public function notify(CommandData $commandData) {
+  public function notify() {}
+
+  /**
+   * @hook pre-command *
+   */
+  public function registerShutdown(CommandData $commandData) {
     register_shutdown_function([$this, 'shutdown'], $commandData);
   }
 
