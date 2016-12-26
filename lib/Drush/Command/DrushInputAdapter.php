@@ -52,7 +52,7 @@ class DrushInputAdapter implements InputInterface {
      */
     public function getFirstArgument()
     {
-        return reset($arguments);
+        return reset($this->arguments);
     }
 
     /**
