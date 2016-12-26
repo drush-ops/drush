@@ -27,11 +27,11 @@ class SanitizeCommands extends DrushCommands {
 
 
   /**
-   * Sanitize the database by removed and obfuscating user data.
+   * Sanitize the database by removing or obfuscating user data.
+   *
+   * Commandfiles may add custom operations by implementing hook_drush_sql_sync_sanitize().
    *
    * @command sql-sanitize
-   *
-   * @todo "drush dependencies" array('sqlsync')
    *
    * @bootstrap DRUSH_BOOTSTRAP_NONE
    * @description Run sanitization operations on the current database.

@@ -21,6 +21,16 @@ class OptionsCommands {
    */
   public function optionset_get_editor() {}
 
+  /**
+   * @hook option @optionset_sql
+   * @option database The DB connection key if using multiple connections in settings.php.
+   * @option db-url A Drupal 6 style database URL.
+   * @option target The name of a target within the specified database connection. Defaults to default
+   */
+  public function optionset_sql() {
+
+  }
+
 }
 
 
