@@ -167,7 +167,7 @@ class SqlCommands extends DrushCommands {
       $sql = drush_sql_get_class($options['db-spec']);
       $result = $sql->query($query, $filename, $options['result-file']);
       if (!$result) {
-        return drush_set_error('DRUSH_SQL_NO_QUERY', dt('Query failed.'));
+        throw new \Exception(dt('Query failed.'));
       }
       drush_print(implode("\n", drush_shell_exec_output()));
     }

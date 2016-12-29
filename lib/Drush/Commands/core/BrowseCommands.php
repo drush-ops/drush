@@ -32,7 +32,7 @@ class BrowseCommands extends DrushCommands {
       $site_record = drush_sitealias_get_record($alias);
       $return = drush_invoke_process($site_record, 'browse', [$path], drush_redispatch_get_options(), array('integrate' => TRUE));
       if ($return['error_status']) {
-        return drush_set_error('Unable to execute browse command on remote alias.');
+        throw new \Exception('Unable to execute browse command on remote alias.');
       }
       else {
         $link = $return['object'];

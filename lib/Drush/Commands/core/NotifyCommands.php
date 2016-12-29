@@ -4,6 +4,7 @@ namespace Drush\Commands\core;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
 use Drush\Log\LogLevel;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
 /**
  * @todo there are no hooks fired after a command errors out. Still?
@@ -146,7 +147,7 @@ class NotifyCommands extends DrushCommands {
     }
 
     if (!drush_shell_exec($cmd, $msg)) {
-      return drush_set_error('NOTIFY_COMMAND_NOT_FOUND', dt('The third party notification utility failed.'));
+      throw new Exception('The third party notification utility failed.');
     }
   }
 

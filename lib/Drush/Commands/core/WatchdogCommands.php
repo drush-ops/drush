@@ -135,7 +135,7 @@ class WatchdogCommands extends DrushCommands {
     else {
 
       if ((!isset($substring))&&(!isset($options['type']))&&(!isset($options['severity']))) {
-        return drush_set_error(dt('No options provided.'));
+        throw new \Exception(dt('No options provided.'));
       }
       $where = $this->where($options['type'], $options['severity'], $substring, 'OR');
       drush_print(dt('All messages with !where will be deleted.', array('!where' => preg_replace("/message LIKE %$substring%/", "message body containing '$substring'" , strtr($where['where'], $where['args'])))));
