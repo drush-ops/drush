@@ -64,6 +64,10 @@ class WatchdogCommands extends DrushCommands {
   public function interactShow($input, $output) {
     drush_include_engine('drupal', 'environment');
 
+    if ($this->hasSeverityOrTypeOption($input)) {
+      return;
+    }
+
     $choices['-- types --'] = dt('== message types ==');
     $types = drush_watchdog_message_types();
     foreach ($types as $key => $type) {
@@ -76,6 +80,8 @@ class WatchdogCommands extends DrushCommands {
     }
     $option = drush_choice($choices, dt('Select a message type or severity level.'));
     if ($option === FALSE) {
+      // TODO: We need to throw an exception to abort from an interact hook.
+      // Need to define an abort type and catch it.
       return drush_user_abort();
     }
     if (isset($types[$option])) {
@@ -84,6 +90,13 @@ class WatchdogCommands extends DrushCommands {
     else {
       $input->setOption('severity', $severities[$option]);
     }
+  }
+
+  protected function hasSeverityOrTypeOption($input) {
+    if ($input->getOption('type', false) || $input->getOption('severity', false)) {
+      return true;
+    }
+    return false;
   }
 
   /**
