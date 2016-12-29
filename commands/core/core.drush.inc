@@ -156,7 +156,6 @@ function core_drush_engine_drupal() {
     'site_install' => array(),
     'pm' => array(),
     'cache' => array(),
-    'image' => array(),
   );
   return $engines;
 }
