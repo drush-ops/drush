@@ -43,6 +43,7 @@ class ImageCommands extends DrushCommands {
       $choices = array_merge(array('all' => 'all'), $choices);
       $style_names = drush_choice($choices, dt("Choose a style to flush."));
       if ($style_names === FALSE) {
+        // TODO: This will need to `throw`
         return drush_user_abort();
       }
     }
