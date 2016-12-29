@@ -136,6 +136,7 @@ class SqlCommands extends DrushCommands {
    * @option db-prefix Enable replacement of braces in your query.
    * @option db-spec A database specification. Only used with --backend calls.
    * @hidden-option db-spec
+   * @validate-file-exists file
    * @aliases sqlq
    * @usage drush sql-query "SELECT * FROM users WHERE uid=1"
    *   Browse user record. Table prefixes, if used, must be added to table names by hand.
