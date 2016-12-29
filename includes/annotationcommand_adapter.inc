@@ -212,6 +212,7 @@ function annotationcommand_adapter_process_command() {
     $args[$key] = $value;
   }
 
+  // TODO: Need to determine if $input is interactive, and ensure that $input->isInteractive() returns the correct result.
   $input = new DrushInputAdapter($args, annotationcommand_adapter_get_options($command), $command['command']);
   $output = new ConsoleOutput();
   $annotationData = $command['annotations'];
@@ -223,7 +224,16 @@ function annotationcommand_adapter_process_command() {
   $commandData->setIncludeOptionsInArgs($command['add-options-to-arguments']);
   $names = annotationcommand_adapter_command_names($command);
 
-  // n.b.: backend result is set by a post-alter hook.
+  // Run any `@hook init` for this command. c.f. AnnotatedCommand::initialize()
+  $commandprocessor->initializeHook($input, $names, $annotationData);
+
+  // Run any `@hook interact` for this command. c.f. AnnotatedCommand::interact()
+  if ($input->isInteractive()) {
+    $commandprocessor->interact($input, $output, $names, $annotationData);
+  }
+
+  // Run any validate, command, process, alter or handle results hooks. c.f. AnnotatedCommand::execute()
+  // n.b.: backend result is set by a global post-alter hook.
   $result = $commandprocessor->process(
     $output,
     $names,

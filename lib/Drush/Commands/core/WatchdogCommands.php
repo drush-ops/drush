@@ -59,7 +59,35 @@ class WatchdogCommands extends DrushCommands {
   }
 
   /**
-   * @hook interact watchdog-show
+   * Show watchdog messages.
+   *
+   * @command watchdog-list
+   * @drupal-dependencies dblog
+   * @param $substring A substring to look search in error messages.
+   * @option count The number of messages to show. Defaults to 10.
+   * @option extended Return extended information about each message.
+   * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
+   * @usage  drush watchdog-list
+   *   Prompt for message type or severity, then run watchdog-show.
+   * @aliases wd-list
+   * @field-labels
+   *   wid: ID
+   *   type: Type
+   *   message: Message
+   *   severity: Severity
+   *   location: Location
+   *   hostname: Hostname
+   *   date: Date
+   *   username: Username
+   * @default-fields wid,date,type,severity,message
+   * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+   */
+  function watchdogList($substring = '', $options = ['format' => 'table', 'count' => 10, 'extended' => FALSE]) {
+    return $this->show($substring, $options);
+  }
+
+  /**
+   * @hook interact watchdog-list
    */
   public function interactShow($input, $output) {
     drush_include_engine('drupal', 'environment');
@@ -76,6 +104,8 @@ class WatchdogCommands extends DrushCommands {
     }
     $option = drush_choice($choices, dt('Select a message type or severity level.'));
     if ($option === FALSE) {
+      // TODO: We need to throw an exception to abort from an interact hook.
+      // Need to define an abort type and catch it.
       return drush_user_abort();
     }
     if (isset($types[$option])) {

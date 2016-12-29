@@ -29,7 +29,7 @@ class ValidatorsCommands {
 
   /**
    * Validate that the file path exists.
-
+   *
    * @hook validate @validate-file-exists
    * @param \Consolidation\AnnotatedCommand\CommandData $commandData
    * @return \Consolidation\AnnotatedCommand\CommandError|null
@@ -38,7 +38,7 @@ class ValidatorsCommands {
     $arg_names = _convert_csv_to_array($commandData->annotationData()->get('validate-file-exists', NULL));
     foreach ($arg_names as $arg_name) {
       $path = $commandData->input()->getArgument($arg_name);
-      if (!file_exists($path)) {
+      if (!empty($path) && !file_exists($path)) {
         $missing[] = $path;
       }
     }
