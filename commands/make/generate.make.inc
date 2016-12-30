@@ -113,7 +113,7 @@ function _drush_make_generate_projects($all_extensions, $version_options) {
     }
     // Add 'subdir' if the project is installed in a non-default location.
     if (isset($project['path'])) {
-      $projects[$name] += _drush_generate_makefile_check_path($project);
+      $projects[$name] += _drush_generate_makefile_check_path($name, $project);
     }
     // Add version number if this project's version is to be tracked.
     if (_drush_generate_track_version($name, $version_options) && $project["version"]) {
@@ -292,7 +292,7 @@ function _drush_generate_track_version($project, $version_options) {
 /**
  * Helper function to check for a non-default installation location.
  */
-function _drush_generate_makefile_check_path($project) {
+function _drush_generate_makefile_check_path($name, $project) {
   $info = array();
   $type = $project['type'];
   $path = dirname($project['path']);
