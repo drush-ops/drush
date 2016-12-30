@@ -374,7 +374,7 @@ abstract class DrupalBoot extends BaseBoot {
     $_SERVER['PHP_SELF'] = $_SERVER['REQUEST_URI'] . 'index.php';
     $_SERVER['SCRIPT_NAME'] = $_SERVER['PHP_SELF'];
     $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-    $_SERVER['REQUEST_METHOD']  = NULL;
+    $_SERVER['REQUEST_METHOD']  = 'GET';
 
     $_SERVER['SERVER_SOFTWARE'] = NULL;
     $_SERVER['HTTP_USER_AGENT'] = NULL;
