@@ -845,6 +845,13 @@ function module_builder_drush_interactive_prompt($property_name, $property_info,
     }
   }
 
+  // Convert boolean property input to an actual boolean.
+  if ($property_info['format'] == 'boolean') {
+    if (in_array(strtolower($value), ['no', 'n'])) {
+      $value = FALSE;
+    }
+  }
+
   // Callback to convert a value given as an index in a list of options into
   // the actual option value.
   $convert_index_to_value_callback = function($item) use ($option_by_index) {
