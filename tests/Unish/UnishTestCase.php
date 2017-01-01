@@ -293,7 +293,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         'overwrite' => NULL,
       );
       if ($install) {
-        $this->drush('archive-dump', array('@sites'), $options);
+        // $this->drush('archive-dump', array('@sites'), $options);
       }
     }
     // Write an empty sites.php. Needed for multi-site on D8.
