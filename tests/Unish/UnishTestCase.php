@@ -274,29 +274,12 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     }
     $db_driver = $this->db_driver(UNISH_DB_URL);
 
-    $cache_keys = array($num_sites, $install ? 'install' : 'noinstall', $version_string, $profile, $db_driver);
-    $source = $this->directory_cache('environments') . '/' . implode('-', $cache_keys) . '.tar.gz';
-    if (file_exists($source)) {
-      $this->log('Cache HIT. Environment: ' . $source, 'verbose');
-      $this->drush('archive-restore', array($source), array('destination' => $root, 'overwrite' => NULL));
+    // Build the site(s), install (if needed).
+    foreach ($sites_subdirs as $subdir) {
+      $this->fetchInstallDrupal($subdir, $install, $version_string, $profile);
     }
-    else {
-      $this->log('Cache MISS. Environment: ' . $source, 'verbose');
-      // Build the site(s), install (if needed), then cache.
-      foreach ($sites_subdirs as $subdir) {
-        $this->fetchInstallDrupal($subdir, $install, $version_string, $profile);
-      }
-      $options = array(
-        'destination' => $source,
-        'root' => $root,
-        'uri' => reset($sites_subdirs),
-        'overwrite' => NULL,
-      );
-      if ($install) {
-        // $this->drush('archive-dump', array('@sites'), $options);
-      }
-    }
-    // Write an empty sites.php. Needed for multi-site on D8.
+
+    // Write an empty sites.php. Needed for multi-site on D8+.
     if ($major_version >= 7 && !file_exists($root . '/sites/sites.php')) {
       copy($root . '/sites/example.sites.php', $root . '/sites/sites.php');
     }
