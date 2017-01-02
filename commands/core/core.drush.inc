@@ -554,10 +554,10 @@ function drush_core_quick_drupal_options(&$items) {
     $options[$option] = 'Site install option: ' . $description;
   }
   unset($options['sites-subdir']);
-  $runserver = runserver_drush_command();
-  foreach ($runserver['runserver']['options'] as $option => $description) {
-    $options[$option] = 'Runserver option: ' . $description;
-  }
+//  $runserver = runserver_drush_command();
+//  foreach ($runserver['runserver']['options'] as $option => $description) {
+//    $options[$option] = 'Runserver option: ' . $description;
+//  }
   unset($options['user']);
   $items['core-quick-drupal']['options'] = $options;
   $items['core-quick-drupal']['engines'] = $pm['pm-download']['engines'];
