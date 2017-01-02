@@ -57,7 +57,7 @@ class SshCommands extends DrushCommands {
 
     if (!drush_sitealias_is_remote_site($alias)) {
       // Local sites run their bash without SSH.
-      $return = drush_invoke_process('@self', 'core-execute', array($bash), array('escape' => FALSE));
+      $return = \Drush::call('@self', 'core-execute', array($bash), array('escape' => FALSE));
       return $return['object'];
     }
 

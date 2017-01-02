@@ -212,6 +212,15 @@ class Drush {
   }
 
   /**
+   * Run a Drush command in a new process.
+   *
+   * @see drush_invoke_process() for much more detail.
+   */
+  public static function call($site_alias_record, $command_name, $commandline_args = array(), $commandline_options = array(), $backend_options = TRUE) {
+    return drush_invoke_process($site_alias_record, $command_name, $commandline_args, $commandline_options, $backend_options);
+  }
+
+  /**
    * Read the drush info file.
    */
   private static function drush_read_drush_info() {
