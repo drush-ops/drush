@@ -295,6 +295,10 @@ function pm_drush_command() {
     ),
     'aliases' => array('pmu'),
   );
+  $items['pm-uninstall-disabled'] = array(
+    'description' => 'Uninstall all disabled modules.',
+    'aliases' => array('pmud'),
+  );
   $items['pm-list'] = array(
     'description' => 'Show a list of available extensions (modules and themes).',
     'callback arguments' => array(array(), FALSE),
@@ -1235,6 +1239,14 @@ function drush_pm_uninstall() {
   $args = pm_parse_arguments(func_get_args());
   drush_include_engine('drupal', 'pm');
   _drush_pm_uninstall($args);
+}
+
+/**
+ * Command callback. Uninstall all disabled modules.
+ */
+function drush_pm_uninstall_disabled() {
+  drush_include_engine('drupal', 'pm');
+  _drush_pm_uninstall_disabled();
 }
 
 /**

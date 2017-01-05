@@ -88,3 +88,9 @@ function _drush_pm_uninstall($extensions) {
   }
 }
 
+/**
+ * Command callback.
+ */
+function _drush_pm_uninstall_disabled() {
+  return drush_log(dt('Drupal 8 does not support disabling modules, thus there are never disabled modules to uninstall.'), LogLevel::OK);
+}

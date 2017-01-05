@@ -160,3 +160,39 @@ function _drush_pm_uninstall($modules) {
   }
 }
 
+/**
+ * Command callback. Uninstall one or more modules.
+ */
+function _drush_pm_uninstall_disabled() {
+  // Get a list of disabled, installed modules. Based on system.admin.inc.
+  $all_modules = system_rebuild_module_data();
+  $disabled_modules = array();
+  foreach ($all_modules as $name => $module) {
+    if (empty($module->status) && $module->schema_version > SCHEMA_UNINSTALLED) {
+      $disabled_modules[] = $name;
+    }
+  }
+
+  // Inform the user which modules will finally be uninstalled.
+  if (empty($disabled_modules)) {
+    return drush_log(dt('There were no modules that could be uninstalled.'), LogLevel::OK);
+  }
+  else {
+    drush_print(dt('The following modules will be uninstalled: !modules', array('!modules' => implode(', ', $disabled_modules))));
+    if (!drush_confirm(dt('Do you really want to continue?'))) {
+      return drush_user_abort();
+    }
+  }
+
+  // Uninstall the modules.
+  $success = drupal_uninstall_modules($disabled_modules);
+
+  if (!$success) {
+    return drush_log(dt('Uninstall failed.'), LogLevel::ERROR);
+  }
+
+  // Inform the user of final status.
+  foreach ($disabled_modules as $module) {
+    drush_log(dt('!module was successfully uninstalled.', array('!module' => $module)), LogLevel::OK);
+  }
+}
