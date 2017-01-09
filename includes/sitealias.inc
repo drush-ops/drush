@@ -1441,7 +1441,7 @@ function _drush_find_local_sites_in_sites_folder($a_drupal_root) {
       // First we'll resolve the realpath of the settings.php file,
       // so that we get the correct drupal root when symlinks are in use.
       $real_sitedir = dirname(realpath($filename));
-      $real_root = drush_locate_root($filename);
+      $real_root = drush_locate_root($real_sitedir);
       if ($real_root !== FALSE) {
         $a_drupal_site = $real_root . '#' . basename($real_sitedir);
       }
