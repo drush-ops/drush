@@ -29,7 +29,7 @@ class BatchCommands extends DrushCommands {
    */
   public function updatedb_process($batch_id) {
     drush_include_engine('drupal', 'update');
-    _update_batch_command($id);
+    _update_batch_command($batch_id);
   }
 
 }
