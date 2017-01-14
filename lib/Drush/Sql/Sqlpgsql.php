@@ -115,7 +115,13 @@ class Sqlpgsql extends SqlBase {
     $data_only = drush_get_option('data-only');
 
     $create_db = drush_get_option('create-db');
-    $exec = 'pg_dump ';
+
+    $environment = "";
+    $pw_file = $this->password_file();
+    if (isset($pw_file)) {
+      $environment = "PGPASSFILE={$pw_file} ";
+    }
+    $exec = "{$environment}pg_dump ";
     // Unlike psql, pg_dump does not take a '--dbname=' before the database name.
     $extra = str_replace('--dbname=', ' ', $this->creds());
     if (isset($data_only)) {
