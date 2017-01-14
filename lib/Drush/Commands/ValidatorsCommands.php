@@ -30,6 +30,8 @@ class ValidatorsCommands {
   /**
    * Validate that the file path exists.
    *
+   * Annotation value should be the name of the argument containing the path.
+   *
    * @hook validate @validate-file-exists
    * @param \Consolidation\AnnotatedCommand\CommandData $commandData
    * @return \Consolidation\AnnotatedCommand\CommandError|null

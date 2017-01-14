@@ -27,22 +27,6 @@ class ConfigCase extends CommandUnishTestCase {
     $this->assertEquals("'system.site:name': config_test", $this->getOutput(), 'Config was successfully set and get.');
   }
 
-  function testConfigList() {
-    $options = $this->options();
-    $this->drush('config-list', array(), $options);
-    $result = $this->getOutputAsList();
-    $this->assertNotEmpty($result, 'An array of config names was returned.');
-    $this->assertTrue(in_array('update.settings', $result), 'update.settings name found in the config names.');
-
-    $this->drush('config-list', array('system'), $options);
-    $result = $this->getOutputAsList();
-    $this->assertTrue(in_array('system.site', $result), 'system.site found in list of config names with "system" prefix.');
-
-    $this->drush('config-list', array('system'), $options + array('format' => 'json'));
-    $result = $this->getOutputFromJSON();
-    $this->assertNotEmpty($result, 'Valid, non-empty JSON output was returned.');
-  }
-
   function testConfigExportImport() {
     $options = $this->options();
     // Get path to sync dir.
