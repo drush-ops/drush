@@ -26,9 +26,7 @@ Instructions on writing a Drush extension to filter Drupal configuration follows
 The first thing that you will need to do is set up a Drush extension
 to hold your storage filter hook.  See the example
 [example sandwich commandfile](../examples/sandwich-drush.inc) for
-details; note, however, that it is not necessary for your commandfile
-to implement hook_drush_command(), or any other hook besides the storage
-filter hook.
+details.
 
 You will need a composer.json file as well, in order to define where
 your StorageFilter class is defined.  Make sure that Drush and your
@@ -39,17 +37,29 @@ Drupal site that you plan on using your filter with.
 
 When Drush imports or exports configuration, it gives all Drush
 extensions a chance to hook this process by way of the hook
-hook_drush_storage_filters.  The implementation of this hook,
-in the file MYFILTER.drush.inc, would look like this:
+config-storage-filters event hook.  The implementation of this hook,
+in the file ExampleCommands.php, would look like this:
 ```
-function MYFILTER_drush_storage_filters() {
-  $result = array();
-  $my_option = drush_get_option('my-option');
-  if (!empty($my_option)) {
-    $result[] = new MyConfigurationFilter($my_option);
+  /**
+   * @hook on-event config-storage-filters
+   *
+   * @return array
+   *   An array of filters.
+   */
+  function exampleStorageFilters($options) {
+    $result = array();
+    $my_option = $options['my-option'];
+    if (!empty($my_option)) {
+      $result[] = new MyConfigurationFilter($my_option);
+    }
+    return $result;
   }
-  return $result;
-}
+
+  /**
+   * @hook options @optionset-storage-filters
+   * @option my-option Foo bar baz.
+   */
+  function optionsetStorageFilters() {}
 ```
 With this hook in place, MyConfigurationFilter will become part of
 the import / export process.

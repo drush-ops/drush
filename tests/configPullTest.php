@@ -19,7 +19,7 @@ class ConfigPullCase extends CommandUnishTestCase {
   }
 
   /*
-   * Make sure a change propogates using config-pull+config-import.
+   * Make sure a change propagates using config-pull+config-import.
    */
   function testConfigPull() {
     list($source, $destination) = array_keys($this->getSites());

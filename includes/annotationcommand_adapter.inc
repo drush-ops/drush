@@ -433,7 +433,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
         ++$required_arguments;
       }
     }
-    $command['required-arguments'] = $required_arguments;
+    // $command['required-arguments'] = $required_arguments;
     foreach ($commandinfo->options()->getValues() as $option => $default) {
       $description = $commandinfo->options()->getDescription($option);
       $command['options'][$option] = ['description' => $description];

@@ -172,7 +172,7 @@ function drush_dispatch($command, $arguments = array()) {
     // Add command-specific options, if applicable.
     drush_command_default_options($command);
 
-    // Test to see if any of the options in the 'cli' context
+    // Test to see if any options or arguments in the 'cli' context
     // are not represented in the command structure.
     if ((_drush_verify_cli_options($command) === FALSE) || (_drush_verify_cli_arguments($command) === FALSE)) {
       return FALSE;
