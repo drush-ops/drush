@@ -64,7 +64,7 @@ class ConfigExportCommands extends DrushCommands {
 
   public function doExport($options, $destination_dir) {
     $commit = $options['commit'];
-    $storage_filters = $this->getStorageFilters();
+    $storage_filters = $this->getStorageFilters($options);
     if (count(glob($destination_dir . '/*')) > 0) {
       // Retrieve a list of differences between the active and target configuration (if any).
       $target_storage = new FileStorage($destination_dir);
@@ -101,7 +101,7 @@ class ConfigExportCommands extends DrushCommands {
       // Print a table with changes in color, then re-generate again without
       // color to place in the commit comment.
       ConfigCommands::configChangesTablePrint($change_list);
-      $tbl = _drush_format_config_changes_table($change_list);
+      $tbl = ConfigCommands::configChangesTableFormat($change_list);
       $preview = $tbl->getTable();
       if (!stristr(PHP_OS, 'WIN')) {
         $preview = str_replace("\r\n", PHP_EOL, $preview);
