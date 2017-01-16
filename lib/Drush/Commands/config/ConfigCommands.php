@@ -321,7 +321,9 @@ class ConfigCommands extends DrushCommands {
   /**
    * @hook on-event config-storage-filters
    *
-   * @return array
+   * @param array $options Options that were passed by the user.
+   *
+   * @return \Drush\Config\StorageFilter[]
    *   An array of filters.
    */
   function coreStorageFilters($options) {
