@@ -12,8 +12,8 @@ class SiteInstallCommands extends DrushCommands {
    * Install Drupal along with modules/themes/configuration using the specified install profile.
    *
    * @command site-install
-   * @param string $profile The install profile you wish to run. Defaults to 'default' in D6, 'standard' in D7+, unless an install profile is marked as exclusive (or as a distribution in D8+ terminology) in which case that is used.
-   * @param string $additional Any additional settings you wish to pass to the profile. The key is in the form [form name].[parameter name]
+   * @param $profile The install profile you wish to run. Defaults to 'default' in D6, 'standard' in D7+, unless an install profile is marked as exclusive (or as a distribution in D8+ terminology) in which case that is used.
+   * @param $additional Any additional settings you wish to pass to the profile. The key is in the form [form name].[parameter name]
    * @option db-url A Drupal 6 style database URL. Only required for initial install - not re-install.
    * @option db-prefix An optional table prefix to use for initial install.  Can be a key-value array of tables/prefixes in a drushrc file (not the command line).
    * @option db-su Account to use when creating a new database. Must have Grant permission (mysql only). Optional.
@@ -41,35 +41,26 @@ class SiteInstallCommands extends DrushCommands {
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_ROOT
    * @aliases si
    *
+   * @todo cast $additional to an array to get variable argument handling
    */
   public function install($profile, $additional = [], $options = ['db-url' => NULL, 'db-prefix' => NULL, 'db-su' => NULL, 'db-su-pw' => NULL, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'account-pass' => NULL, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => NULL, 'sites-subdir' => NULL, 'config-dir' => NULL]) {
-    // both of these are empty.
-    $input_args = $this->input()->getArguments();
-    $input_options = $this->input()->getOptions();
+    $form_options = [];
+    foreach ((array)$additional as $arg) {
+      list($key, $value) = explode('=', $arg, 2);
 
-    $args = func_get_args();
-    $form_options = array();
-
-    if ($args) {
-      // The first argument is the profile.
-      $profile = array_shift($args);
-      // Subsequent arguments are additional form values.
-      foreach ($args as $arg) {
-        list($key, $value) = explode('=', $arg, 2);
-
-        // Allow for numeric and NULL values to be passed in.
-        if (is_numeric($value)) {
-          $value = intval($value);
-        }
-        elseif ($value == 'NULL') {
-          $value = NULL;
-        }
-
-        $form_options[$key] = $value;
+      // Allow for numeric and NULL values to be passed in.
+      if (is_numeric($value)) {
+        $value = intval($value);
       }
+      elseif ($value == 'NULL') {
+        $value = NULL;
+      }
+
+      $form_options[$key] = $value;
     }
 
-    $profile = $this->determineProfile($profile, $options);
+    $class_loader = drush_drupal_load_autoloader(DRUPAL_ROOT);
+    $profile = $this->determineProfile($profile, $options, $class_loader);
 
     $sql = drush_sql_get_class();
     $db_spec = $sql->db_spec();
@@ -108,7 +99,7 @@ class SiteInstallCommands extends DrushCommands {
     );
 
     // Merge in the additional options.
-    foreach ($additional_form_options as $key => $value) {
+    foreach ($form_options as $key => $value) {
       $current = &$settings['forms'];
       foreach (explode('.', $key) as $param) {
         $current = &$current[$param];
@@ -123,10 +114,10 @@ class SiteInstallCommands extends DrushCommands {
     }
     $this->logger()->info(dt($msg));
     drush_op('install_drupal', $class_loader, $settings);
-    $this->logger()->log(LogLevel::SUCCESS, dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $account_name, '@pass' => $account_pass)));
+    $this->logger()->success(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $options['account-name'], '@pass' => $account_pass)));
   }
 
-  function determine_profile($profile, $options) {
+  function determineProfile($profile, $options, $class_loader) {
     // --config-dir fails with Standard profile and any other one that carries content entities.
     // Force to minimal install profile.
     if ($options['config-dir']) {
@@ -135,7 +126,6 @@ class SiteInstallCommands extends DrushCommands {
     }
     else {
       require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
-      $class_loader = drush_drupal_load_autoloader(DRUPAL_ROOT);
 
       if (!isset($profile)) {
         // If there is an installation profile that acts as a distribution, use it.
