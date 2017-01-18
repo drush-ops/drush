@@ -101,11 +101,16 @@ function core_drush_command() {
       'drush qd --makefile=mysite.make' => 'Create and install a site from a makefile.',
     ),
   );
-  // Add in options/engines.
-  drush_core_quick_drupal_options($items);
-  // Add in topics for engines
-  $items += drush_get_engine_topics();
   return $items;
+}
+
+function core_drush_help_alter(&$command) {
+  if ($command['command'] == 'core-quick-drupal') {
+    // Add in options/engines.
+    drush_core_quick_drupal_options($command);
+    // Add in topics for engines
+    $command += drush_get_engine_topics();
+  }
 }
 
 /**
@@ -513,14 +518,14 @@ EOT;
 
 /**
  * Include options and engines for core-quick-drupal command, aggregated from
- * other command options that are available. We prefix option descriptons,
+ * other command options that are available. We prefix option descriptions,
  * to make the long list more navigable.
  *
- * @param $items
- *   The core commandfile command array, by reference. Used to include
+ * @param $command
+ *   The command array, by reference. Used to add
  *   site-install options and add options and engines for core-quick-drupal.
  */
-function drush_core_quick_drupal_options(&$items) {
+function drush_core_quick_drupal_options(&$command) {
   $options = array(
     'core' => 'Drupal core to download. Defaults to "drupal" (latest stable version).',
     'use-existing' => 'Use an existing Drupal root, specified with --root. Overrides --core. Defaults to true when run from an existing site.',
@@ -533,32 +538,37 @@ function drush_core_quick_drupal_options(&$items) {
     'makefile' => array('description' => 'Makefile to use. Makefile must specify which version of Drupal core to build.', 'example-value' => 'mysite.make', 'value' => 'optional'),
     'root' => array('description' => 'Path to Drupal root.', 'example-value' => '/path/to/root', 'value' => 'optional'),
   );
-  $pm = pm_drush_command();
-  foreach ($pm['pm-download']['options'] as $option => $description) {
-    if (is_array($description)) {
-      $description = $description['description'];
+  $commands = drush_get_commands();
+  if (isset($commands['pm-download'])) {
+    foreach ($commands['pm-download']['options'] as $option => $description) {
+      if (is_array($description)) {
+        $description = $description['description'];
+      }
+      $options[$option] = 'Download option: ' . $description;
     }
-    $options[$option] = 'Download option: ' . $description;
+    // Unset a few options that are not usable here, as we control them ourselves
+    // or they are otherwise implied by the environment.
+    unset($options['destination']);
+    unset($options['drupal-project-rename']);
+    unset($options['default-major']);
+    unset($options['use-site-dir']);
   }
-  // Unset a few options that are not usable here, as we control them ourselves
-  // or they are otherwise implied by the environment.
-  unset($options['destination']);
-  unset($options['drupal-project-rename']);
-  unset($options['default-major']);
-  unset($options['use-site-dir']);
-  $si = site_install_drush_command();
-  foreach ($si['site-install']['options'] as $option => $description) {
-    if (is_array($description)) {
-      $description = $description['description'];
+  if (isset($commands['site-install'])) {
+    foreach ($commands['site-install']['options'] as $option => $description) {
+      if (is_array($description)) {
+        $description = $description['description'];
+      }
+      $options[$option] = 'Site install option: ' . $description;
     }
-    $options[$option] = 'Site install option: ' . $description;
+    unset($options['sites-subdir']);
   }
-  unset($options['sites-subdir']);
-//  $runserver = runserver_drush_command();
-//  foreach ($runserver['runserver']['options'] as $option => $description) {
-//    $options[$option] = 'Runserver option: ' . $description;
-//  }
-  unset($options['user']);
-  $items['core-quick-drupal']['options'] = $options;
-  $items['core-quick-drupal']['engines'] = $pm['pm-download']['engines'];
+  if (isset($commands['runserver'])) {
+    foreach ($commands['runserver']['options'] as $option => $description) {
+      $options[$option] = 'Runserver option: ' . $description;
+    }
+    unset($options['user']);
+  }
+
+  $command['options'] = $options;
+  $command['engines'] = $commands['pm-download']['engines'];
 }
