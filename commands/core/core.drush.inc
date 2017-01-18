@@ -104,7 +104,7 @@ function core_drush_command() {
   return $items;
 }
 
-function core_drush_command_alter($command) {
+function core_drush_help_alter(&$command) {
   if ($command['command'] == 'core-quick-drupal') {
     // Add in options/engines.
     drush_core_quick_drupal_options($command);
@@ -521,11 +521,11 @@ EOT;
  * other command options that are available. We prefix option descriptions,
  * to make the long list more navigable.
  *
- * @param $items
- *   The core commandfile command array, by reference. Used to include
+ * @param $command
+ *   The command array, by reference. Used to add
  *   site-install options and add options and engines for core-quick-drupal.
  */
-function drush_core_quick_drupal_options(&$items) {
+function drush_core_quick_drupal_options(&$command) {
   $options = array(
     'core' => 'Drupal core to download. Defaults to "drupal" (latest stable version).',
     'use-existing' => 'Use an existing Drupal root, specified with --root. Overrides --core. Defaults to true when run from an existing site.',
@@ -569,6 +569,6 @@ function drush_core_quick_drupal_options(&$items) {
     unset($options['user']);
   }
 
-  $items['core-quick-drupal']['options'] = $options;
-  $items['core-quick-drupal']['engines'] = $commands['pm-download']['engines'];
+  $command['options'] = $options;
+  $command['engines'] = $commands['pm-download']['engines'];
 }
