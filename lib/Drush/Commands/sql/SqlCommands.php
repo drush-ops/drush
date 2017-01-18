@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Commands\core;
+namespace Drush\Commands\sql;
 
 use Drush\Commands\DrushCommands;
 
