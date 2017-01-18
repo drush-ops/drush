@@ -12,7 +12,7 @@ class SiteInstallCommands extends DrushCommands {
    * Install Drupal along with modules/themes/configuration using the specified install profile.
    *
    * @command site-install
-   * @param $profile The install profile you wish to run. Defaults to 'default' in D6, 'standard' in D7+, unless an install profile is marked as exclusive (or as a distribution in D8+ terminology) in which case that is used.
+   * @param string $profile The install profile you wish to run. Defaults to 'default' in D6, 'standard' in D7+, unless an install profile is marked as exclusive (or as a distribution in D8+ terminology) in which case that is used.
    * @param $additional Any additional settings you wish to pass to the profile. The key is in the form [form name].[parameter name]
    * @option db-url A Drupal 6 style database URL. Only required for initial install - not re-install.
    * @option db-prefix An optional table prefix to use for initial install.  Can be a key-value array of tables/prefixes in a drushrc file (not the command line).
@@ -43,7 +43,7 @@ class SiteInstallCommands extends DrushCommands {
    *
    * @todo cast $additional to an array to get variable argument handling
    */
-  public function install($profile, $additional = [], $options = ['db-url' => NULL, 'db-prefix' => NULL, 'db-su' => NULL, 'db-su-pw' => NULL, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'account-pass' => NULL, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => NULL, 'sites-subdir' => NULL, 'config-dir' => NULL]) {
+  public function install($profile, $additional = NULL, $options = ['db-url' => NULL, 'db-prefix' => NULL, 'db-su' => NULL, 'db-su-pw' => NULL, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'account-pass' => NULL, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => NULL, 'sites-subdir' => NULL, 'config-dir' => NULL]) {
     $form_options = [];
     foreach ((array)$additional as $arg) {
       list($key, $value) = explode('=', $arg, 2);
