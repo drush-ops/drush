@@ -49,10 +49,10 @@ class completeCase extends CommandUnishTestCase {
     mkdir("asteroid");
     mkdir("asteroid/ceres");
     mkdir("asteroid/chiron");
-    touch('astronaut/aldrin.tar.gz');
-    touch('astronaut/armstrong.tar.gz');
-    touch('astronaut/yuri gagarin.tar.gz');
-    touch('zodiac.tar.gz');
+    touch('astronaut/aldrin.php');
+    touch('astronaut/armstrong.php');
+    touch('astronaut/yuri gagarin.php');
+    touch('zodiac.php');
     touch('zodiac.txt');
 
     // Create directory for temporary debug logs.
@@ -124,45 +124,45 @@ class completeCase extends CommandUnishTestCase {
     // Site alias + command + file/directory argument tests.
     // Current directory substrings.
     // NOTE: This command arg has not been used yet, so cache miss is expected.
-    $this->verifyComplete('archive-restore ""', 'asteroid/', 'zodiac.tar.gz', FALSE);
-    $this->verifyComplete('archive-restore a', 'asteroid/', 'astronaut/');
-    $this->verifyComplete('archive-restore ast', 'asteroid/', 'astronaut/');
-    $this->verifyComplete('archive-restore aste', 'asteroid/', 'asteroid/');
-    $this->verifyComplete('archive-restore asteroid', 'asteroid/', 'asteroid/');
-    $this->verifyComplete('archive-restore asteroid/', 'ceres', 'chiron');
-    $this->verifyComplete('archive-restore asteroid/ch', 'asteroid/chiron/', 'asteroid/chiron/');
-    $this->verifyComplete('archive-restore astronaut/', 'aldrin.tar.gz', 'yuri gagarin.tar.gz');
-    $this->verifyComplete('archive-restore astronaut/y', 'astronaut/yuri\ gagarin.tar.gz', 'astronaut/yuri\ gagarin.tar.gz');
+    $this->verifyComplete('php-script ""', 'asteroid/', 'zodiac.php', FALSE);
+    $this->verifyComplete('php-script a', 'asteroid/', 'astronaut/');
+    $this->verifyComplete('php-script ast', 'asteroid/', 'astronaut/');
+    $this->verifyComplete('php-script aste', 'asteroid/', 'asteroid/');
+    $this->verifyComplete('php-script asteroid', 'asteroid/', 'asteroid/');
+    $this->verifyComplete('php-script asteroid/', 'ceres', 'chiron');
+    $this->verifyComplete('php-script asteroid/ch', 'asteroid/chiron/', 'asteroid/chiron/');
+    $this->verifyComplete('php-script astronaut/', 'aldrin.php', 'yuri gagarin.php');
+    $this->verifyComplete('php-script astronaut/y', 'astronaut/yuri\ gagarin.php', 'astronaut/yuri\ gagarin.php');
     // Leading dot style current directory substrings.
-    $this->verifyComplete('archive-restore .', './asteroid/', './zodiac.tar.gz');
-    $this->verifyComplete('archive-restore ./', './asteroid/', './zodiac.tar.gz');
-    $this->verifyComplete('archive-restore ./a', './asteroid/', './astronaut/');
-    $this->verifyComplete('archive-restore ./ast', './asteroid/', './astronaut/');
-    $this->verifyComplete('archive-restore ./aste', './asteroid/', './asteroid/');
-    $this->verifyComplete('archive-restore ./asteroid', './asteroid/', './asteroid/');
-    $this->verifyComplete('archive-restore ./asteroid/', 'ceres', 'chiron');
-    $this->verifyComplete('archive-restore ./asteroid/ch', './asteroid/chiron/', './asteroid/chiron/');
-    $this->verifyComplete('archive-restore ./astronaut/', 'aldrin.tar.gz', 'yuri gagarin.tar.gz');
-    $this->verifyComplete('archive-restore ./astronaut/y', './astronaut/yuri\ gagarin.tar.gz', './astronaut/yuri\ gagarin.tar.gz');
+    $this->verifyComplete('php-script .', './asteroid/', './zodiac.php');
+    $this->verifyComplete('php-script ./', './asteroid/', './zodiac.php');
+    $this->verifyComplete('php-script ./a', './asteroid/', './astronaut/');
+    $this->verifyComplete('php-script ./ast', './asteroid/', './astronaut/');
+    $this->verifyComplete('php-script ./aste', './asteroid/', './asteroid/');
+    $this->verifyComplete('php-script ./asteroid', './asteroid/', './asteroid/');
+    $this->verifyComplete('php-script ./asteroid/', 'ceres', 'chiron');
+    $this->verifyComplete('php-script ./asteroid/ch', './asteroid/chiron/', './asteroid/chiron/');
+    $this->verifyComplete('php-script ./astronaut/', 'aldrin.php', 'yuri gagarin.php');
+    $this->verifyComplete('php-script ./astronaut/y', './astronaut/yuri\ gagarin.php', './astronaut/yuri\ gagarin.php');
     // Absolute path substrings.
     $path = getcwd();
-    $this->verifyComplete('archive-restore ' . $path, $path . '/', $path . '/');
-    $this->verifyComplete('archive-restore ' . $path . '/', 'asteroid', 'zodiac.tar.gz');
-    $this->verifyComplete('archive-restore ' . $path . '/a', $path . '/asteroid', $path . '/astronaut');
-    $this->verifyComplete('archive-restore ' . $path . '/ast', 'asteroid', 'astronaut');
-    $this->verifyComplete('archive-restore ' . $path . '/aste', $path . '/asteroid/', $path . '/asteroid/');
-    $this->verifyComplete('archive-restore ' . $path . '/asteroid', $path . '/asteroid/', $path . '/asteroid/');
-    $this->verifyComplete('archive-restore ' . $path . '/asteroid/', $path . '/asteroid/ceres', $path . '/asteroid/chiron');
-    $this->verifyComplete('archive-restore ' . $path . '/asteroid/ch', $path . '/asteroid/chiron/', $path . '/asteroid/chiron/');
-    $this->verifyComplete('archive-restore ' . $path . '/astronaut/', 'aldrin.tar.gz', 'yuri gagarin.tar.gz');
-    $this->verifyComplete('archive-restore ' . $path . '/astronaut/y', $path . '/astronaut/yuri\ gagarin.tar.gz', $path . '/astronaut/yuri\ gagarin.tar.gz');
+    $this->verifyComplete('php-script ' . $path, $path . '/', $path . '/');
+    $this->verifyComplete('php-script ' . $path . '/', 'asteroid', 'zodiac.php');
+    $this->verifyComplete('php-script ' . $path . '/a', $path . '/asteroid', $path . '/astronaut');
+    $this->verifyComplete('php-script ' . $path . '/ast', 'asteroid', 'astronaut');
+    $this->verifyComplete('php-script ' . $path . '/aste', $path . '/asteroid/', $path . '/asteroid/');
+    $this->verifyComplete('php-script ' . $path . '/asteroid', $path . '/asteroid/', $path . '/asteroid/');
+    $this->verifyComplete('php-script ' . $path . '/asteroid/', $path . '/asteroid/ceres', $path . '/asteroid/chiron');
+    $this->verifyComplete('php-script ' . $path . '/asteroid/ch', $path . '/asteroid/chiron/', $path . '/asteroid/chiron/');
+    $this->verifyComplete('php-script ' . $path . '/astronaut/', 'aldrin.php', 'yuri gagarin.php');
+    $this->verifyComplete('php-script ' . $path . '/astronaut/y', $path . '/astronaut/yuri\ gagarin.php', $path . '/astronaut/yuri\ gagarin.php');
     // Absolute via parent path substrings.
-    $this->verifyComplete('archive-restore ' . $path . '/asteroid/../astronaut/', 'aldrin.tar.gz', 'yuri gagarin.tar.gz');
-    $this->verifyComplete('archive-restore ' . $path . '/asteroid/../astronaut/y', $path . '/asteroid/../astronaut/yuri\ gagarin.tar.gz', $path . '/asteroid/../astronaut/yuri\ gagarin.tar.gz');
+    $this->verifyComplete('php-script ' . $path . '/asteroid/../astronaut/', 'aldrin.php', 'yuri gagarin.php');
+    $this->verifyComplete('php-script ' . $path . '/asteroid/../astronaut/y', $path . '/asteroid/../astronaut/yuri\ gagarin.php', $path . '/asteroid/../astronaut/yuri\ gagarin.php');
     // Parent directory path substrings.
     chdir('asteroid/chiron');
-    $this->verifyComplete('archive-restore ../../astronaut/', 'aldrin.tar.gz', 'yuri gagarin.tar.gz');
-    $this->verifyComplete('archive-restore ../../astronaut/y', '../../astronaut/yuri\ gagarin.tar.gz', '../../astronaut/yuri\ gagarin.tar.gz');
+    $this->verifyComplete('php-script ../../astronaut/', 'aldrin.php', 'yuri gagarin.php');
+    $this->verifyComplete('php-script ../../astronaut/y', '../../astronaut/yuri\ gagarin.php', '../../astronaut/yuri\ gagarin.php');
     chdir($path);
   }
 

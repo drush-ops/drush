@@ -51,6 +51,7 @@ class PhpCommands extends DrushCommands {
    * @aliases scr
    * @allow-additional-options
    * @bootstrap DRUSH_BOOTSTRAP_MAX
+   * @complete \Drush\Commands\core\PhpCommands::complete
    * @topics docs-examplescript,docs-scripts
    */
   public function script($script = '', $options = ['format' => 'var_export', 'script-path' => FALSE]) {
@@ -153,5 +154,25 @@ class PhpCommands extends DrushCommands {
       fclose($fp);
     }
     return $found;
+  }
+
+  /**
+   * Command argument complete callback.
+   *
+   * @return array
+   *   Strong glob of files to complete on.
+   */
+  public static function complete() {
+    return array(
+      'files' => array(
+        'directories' => array(
+          'pattern' => '*',
+          'flags' => GLOB_ONLYDIR,
+        ),
+        'script' => array(
+          'pattern' => '*.php',
+        ),
+      ),
+    );
   }
 }
