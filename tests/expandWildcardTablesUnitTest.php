@@ -1,7 +1,7 @@
 <?php
 
 namespace Unish;
-use Drush\Sql\SqlTrait;
+use \Drush\Sql\SqlTrait;
 
 /**
   * Unit tests for expandWildcardTables() and filterTables().

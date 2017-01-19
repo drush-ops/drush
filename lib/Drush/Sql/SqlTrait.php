@@ -134,8 +134,8 @@ trait SqlTrait {
    *   found, or an empty array if there were no matches.
    */
   public function getRawTableList($option_name, $options) {
-    $key_list = $options[$option_name . '-key'];
-    foreach(explode(',', $key_list) as $key) {
+    $key_list = _convert_csv_to_array($options[$option_name . '-key']);
+    foreach($key_list as $key) {
       $all_tables = $options[$option_name] ?: [];
       if (array_key_exists($key, $all_tables)) {
         return $all_tables[$key];
@@ -148,9 +148,10 @@ trait SqlTrait {
       }
     }
     $table_list = $options[$option_name . '-list'];
-    if (isset($table_list)) {
-      return empty($table_list) ? [] : explode(',', $table_list);
+    if (!empty($table_list)) {
+      return _convert_csv_to_array($table_list);
     }
+
     return [];
   }
 }
