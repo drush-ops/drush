@@ -1,5 +1,5 @@
 <?php
-namespace Drush\sql;
+namespace Drush\Sql;
 
 trait SqlTrait {
 
