@@ -111,13 +111,13 @@ trait SqlTrait {
    *   An array of table names with each table name in the appropriate
    *   element of the array.
    */
-  public function getTableSelection() {
+  public function getTableSelection($options) {
     // Skip large core tables if instructed.  Used by 'sql-drop/sql-dump/sql-sync' commands.
-    $skip_tables = $this->getRawTableList('skip-tables');
+    $skip_tables = $this->getRawTableList('skip-tables', $options);
     // Skip any structure-tables as well.
-    $structure_tables = $this->getRawTableList('structure-tables');
+    $structure_tables = $this->getRawTableList('structure-tables', $options);
     // Dump only the specified tables.  Takes precedence over skip-tables and structure-tables.
-    $tables = $this->getRawTableList('tables');
+    $tables = $this->getRawTableList('tables', $options);
 
     return array('skip' => $skip_tables, 'structure' => $structure_tables, 'tables' => $tables);
   }
@@ -141,7 +141,7 @@ trait SqlTrait {
         return $all_tables[$key];
       }
       if ($option_name != 'tables') {
-        $all_tables = $options['tables'] ?: [];
+        $all_tables = isset($options['tables']) ? $options['tables'] : [];
         if (array_key_exists($key, $all_tables)) {
           return $all_tables[$key];
         }

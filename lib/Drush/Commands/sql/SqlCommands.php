@@ -197,6 +197,6 @@ class SqlCommands extends DrushCommands {
   public function dump($options = ['result-file' => NULL, 'create-db' => NULL, 'data-only' => NULL, 'ordered-dump' => NULL, 'gzip' => NULL, 'extra' => NULL]) {
     drush_sql_bootstrap_further();
     $sql = drush_sql_get_class();
-    return $sql->dump($options['result-file']);
+    return $sql->dump($options);
   }
 }

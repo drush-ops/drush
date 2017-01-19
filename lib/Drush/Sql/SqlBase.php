@@ -60,7 +60,7 @@ class SqlBase {
    */
   public function dump($options) {
     /** @var string|bool $file Path where dump file should be stored. If TRUE, generate a path based on usual backup directory and current date.*/
-    $file = $options['result-file'];
+    $file = isset($options['result-file']) ? $options['result-file'] : NULL;
     $file_suffix = '';
     $table_selection = $this->getExpandedTableSelection($options);
     $file = $this->dumpFile($file);
