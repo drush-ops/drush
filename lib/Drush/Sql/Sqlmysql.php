@@ -118,7 +118,7 @@ EOT;
     return $tables;
   }
 
-  public function dumpCmd($table_selection) {
+  public function dumpCmd($table_selection, $options) {
     $parens = FALSE;
     $skip_tables = $table_selection['skip'];
     $structure_tables = $table_selection['structure'];
@@ -126,11 +126,11 @@ EOT;
 
     $ignores = array();
     $skip_tables  = array_merge($structure_tables, $skip_tables);
-    $data_only = drush_get_option('data-only');
+    $data_only = $options['data-only'];
     // The ordered-dump option is only supported by MySQL for now.
     // @todo add documention once a hook for drush_get_option_help() is available.
     // @see drush_get_option_help() in drush.inc
-    $ordered_dump = drush_get_option('ordered-dump');
+    $ordered_dump = $options['ordered-dump'];
 
     $exec = 'mysqldump ';
     // mysqldump wants 'databasename' instead of 'database=databasename' for no good reason.
@@ -146,7 +146,7 @@ EOT;
     if (isset($ordered_dump)) {
       $extra .= ' --skip-extended-insert --order-by-primary';
     }
-    if ($option = drush_get_option('extra', $this->query_extra)) {
+    if ($option = $options['extra-dump'] ?: $this->query_extra) {
       $extra .= " $option";
     }
     $exec .= $extra;

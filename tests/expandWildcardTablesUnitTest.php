@@ -1,20 +1,17 @@
 <?php
 
 namespace Unish;
+use \Drush\Sql\SqlTrait;
 
 /**
-  * Unit tests for drush_sql_expand_wildcard_tables and
-  *   drush_sql_filter_tables.
+  * Unit tests for expandWildcardTables() and filterTables().
   *
   * @group base
   * @group sql
   */
 class WildcardUnitCase extends UnitUnishTestCase {
 
-  public static function setUpBeforeClass() {
-    parent::setUpBeforeClass();
-    require_once(dirname(__FILE__) . '/../commands/sql/sql.drush.inc');
-  }
+  use SqlTrait;
 
   /**
    * Tests drush_sql_expand_wildcard_tables().
@@ -41,7 +38,7 @@ class WildcardUnitCase extends UnitUnishTestCase {
       'example',
     );
 
-    $expanded_db_tables = drush_sql_expand_wildcard_tables($wildcard_input, $db_tables);
+    $expanded_db_tables = $this->expandWildcardTables($wildcard_input, $db_tables);
     // We expect all but the last table to match.
     array_pop($db_tables);
     $this->assertEquals($db_tables, $expanded_db_tables);
@@ -74,7 +71,7 @@ class WildcardUnitCase extends UnitUnishTestCase {
       'cache',
     );
 
-    $actual_result = drush_sql_filter_tables($wildcard_input, $db_tables);
+    $actual_result = $this->filterTables($wildcard_input, $db_tables);
     $this->assertEquals($expected_result, $actual_result);
   }
 }

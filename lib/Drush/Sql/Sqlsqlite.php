@@ -81,7 +81,7 @@ class Sqlsqlite extends SqlBase {
     return $this->query($sql);
   }
 
-  public function dumpCmd($table_selection) {
+  public function dumpCmd($table_selection, $options) {
     // Dumping is usually not necessary in SQLite, since all database data
     // is stored in a single file which can be copied just
     // like any other file. But it still has a use in migration purposes and
@@ -91,7 +91,7 @@ class Sqlsqlite extends SqlBase {
     // Postgres or MySQL equivalents. We may be able to fake some in the
     // future, but for now, let's just support simple dumps.
     $exec .= ' ".dump"';
-    if ($option = drush_get_option('extra', $this->query_extra)) {
+    if ($option = $options['extra-dump'] ?: $this->query_extra) {
       $exec .= " $option";
     }
     return $exec;

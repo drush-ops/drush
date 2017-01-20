@@ -7,6 +7,8 @@ use Webmozart\PathUtil\Path;
 
 class SqlBase {
 
+  use SqlTrait;
+
   // An Drupal style array containing specs for connecting to database.
   public $db_spec;
 
@@ -53,17 +55,18 @@ class SqlBase {
   /*
    * Execute a SQL dump and return the path to the resulting dump file.
    *
-   * @param string|bool @file
-   *   The path where the dump file should be stored. If TRUE, generate a path
-   *   based on usual backup directory and current date.
+   * @param array @options
+   *   The options array as passed to the Annotated Command.
    */
-  public function dump($file = '') {
+  public function dump($options) {
+    /** @var string|bool $file Path where dump file should be stored. If TRUE, generate a path based on usual backup directory and current date.*/
+    $file = isset($options['result-file']) ? $options['result-file'] : NULL;
     $file_suffix = '';
-    $table_selection = $this->get_expanded_table_selection();
+    $table_selection = $this->getExpandedTableSelection($options);
     $file = $this->dumpFile($file);
-    $cmd = $this->dumpCmd($table_selection);
+    $cmd = $this->dumpCmd($table_selection, $options);
     // Gzip the output from dump command(s) if requested.
-    if (drush_get_option('gzip')) {
+    if ($options['gzip']) {
       $cmd .= ' | gzip -f';
       $file_suffix .= '.gz';
     }
@@ -89,11 +92,13 @@ class SqlBase {
    *
    * @param array $table_selection
    *   Supported keys: 'skip', 'structure', 'tables'.
+   * @param array $options
+   *   An options array as passed by an Annotated Command.
    * @return string
    *   One or more mysqldump/pg_dump/sqlite3/etc statements that are ready for executing.
    *   If multiple statements are needed, enclose in parenthesis.
    */
-  public function dumpCmd($table_selection) {}
+  public function dumpCmd($table_selection, $options) {}
 
   /*
    * Generate a path to an output file for a SQL dump when needed.
@@ -304,31 +309,6 @@ class SqlBase {
   }
 
   /**
-   * Get a list of all table names and expand input that may contain
-   * wildcards (`*`) if necessary so that the array returned only contains valid
-   * table names i.e. actual tables that exist, without a wildcard.
-   *
-   * @return array
-   *   An array of tables with each table name in the appropriate
-   *   element of the array.
-   */
-  public function get_expanded_table_selection() {
-    $table_selection = drush_sql_get_table_selection();
-    // Get the existing table names in the specified database.
-    $db_tables = $this->listTables();
-    if (isset($table_selection['skip'])) {
-      $table_selection['skip'] = _drush_sql_expand_and_filter_tables($table_selection['skip'], $db_tables);
-    }
-    if (isset($table_selection['structure'])) {
-      $table_selection['structure'] = _drush_sql_expand_and_filter_tables($table_selection['structure'], $db_tables);
-    }
-    if (isset($table_selection['tables'])) {
-      $table_selection['tables'] = _drush_sql_expand_and_filter_tables($table_selection['tables'], $db_tables);
-    }
-    return $table_selection;
-  }
-
-  /**
    * Extract the name of all existing tables in the given database.
    *
    * @return array|null
@@ -358,7 +338,7 @@ class SqlBase {
   /**
    * Adjust DB connection with superuser credentials if provided.
    *
-   * The options 'db-su' and 'db-su-pw' will be retreived from the
+   * The options 'db-su' and 'db-su-pw' will be retrieved from the
    * specified site alias record, if it exists and contains those items.
    * If it does not, they will be fetched via drush_get_option.
    *

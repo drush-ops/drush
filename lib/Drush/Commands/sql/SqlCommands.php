@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Commands\core;
+namespace Drush\Commands\sql;
 
 use Drush\Commands\DrushCommands;
 
@@ -185,18 +185,19 @@ class SqlCommands extends DrushCommands {
    * @option data-only Dump data without statements to create any of the schema.
    * @option ordered-dump Order by primary key and add line breaks for efficient diff in revision control. Slows down the dump. Mysql only.
    * @option gzip Compress the dump using the gzip program which must be in your $PATH.
-   * @option extra Add custom options to the dump command.
+   * @option extra Add custom arguments/options when connecting to database (used internally to list tables).
+   * @option extra-dump Add custom arguments/options to the dumping the database (e.g. mysqldump command).
    * @usage drush sql-dump --result-file=../18.sql
    *   Save SQL dump to the directory above Drupal root.
    * @usage drush sql-dump --skip-tables-key=common
    *   Skip standard tables. @see example.drushrc.php
-   * @usage drush sql-dump --extra=--no-data
-   *   Pass extra option to dump command.
+   * @usage drush sql-dump --extra-dump=--no-data
+   *   Pass extra option to mysqldump command.
    * @hidden-option create-db
    */
-  public function dump($options = ['result-file' => NULL, 'create-db' => NULL, 'data-only' => NULL, 'ordered-dump' => NULL, 'gzip' => NULL, 'extra' => NULL]) {
+  public function dump($options = ['result-file' => NULL, 'create-db' => NULL, 'data-only' => NULL, 'ordered-dump' => NULL, 'gzip' => NULL, 'extra' => NULL, 'extra-dump' => NULL]) {
     drush_sql_bootstrap_further();
     $sql = drush_sql_get_class();
-    return $sql->dump($options['result-file']);
+    return $sql->dump($options);
   }
 }

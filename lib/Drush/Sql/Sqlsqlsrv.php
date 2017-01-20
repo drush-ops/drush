@@ -50,12 +50,12 @@ class Sqlsqlsrv extends SqlBase {
 
   // @todo $file is no longer provided. We are supposed to return bash that can be piped to gzip.
   // Probably sqlsrv needs to override dump() entirely.
-  public function dumpCmd($table_selection) {
+  public function dumpCmd($table_selection, $options) {
     if (!$file) {
       $file = $this->db_spec['database'] . '_' . date('Ymd_His') . '.bak';
     }
     $exec = "sqlcmd -U \"" . $this->db_spec['username'] . "\" -P \"" . $this->db_spec['password'] . "\" -S \"" . $this->db_spec['host'] . "\" -Q \"BACKUP DATABASE [" . $this->db_spec['database'] . "] TO DISK='" . $file . "'\"";
-    if ($option = drush_get_option('extra', $this->query_extra)) {
+    if ($option = $options['extra-dump'] :? $this->query_extra) {
       $exec .= " $option";
     }
     return array($exec, $file);
