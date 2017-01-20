@@ -64,7 +64,7 @@ class SqlBase {
     $file_suffix = '';
     $table_selection = $this->getExpandedTableSelection($options);
     $file = $this->dumpFile($file);
-    $cmd = $this->dumpCmd($table_selection);
+    $cmd = $this->dumpCmd($table_selection, $options);
     // Gzip the output from dump command(s) if requested.
     if ($options['gzip']) {
       $cmd .= ' | gzip -f';
@@ -92,11 +92,13 @@ class SqlBase {
    *
    * @param array $table_selection
    *   Supported keys: 'skip', 'structure', 'tables'.
+   * @param array $options
+   *   An options array as passed by an Annotated Command.
    * @return string
    *   One or more mysqldump/pg_dump/sqlite3/etc statements that are ready for executing.
    *   If multiple statements are needed, enclose in parenthesis.
    */
-  public function dumpCmd($table_selection) {}
+  public function dumpCmd($table_selection, $options) {}
 
   /*
    * Generate a path to an output file for a SQL dump when needed.

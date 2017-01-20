@@ -36,9 +36,9 @@ class SqlDumpTest extends CommandUnishTestCase {
       'uri' => $uri,
     );
 
-    // Test --extra option
+    // Test --extra-dump option
     if ($this->db_driver() == 'mysql') {
-      $this->drush('sql-dump', array(), array_merge($options, $site_selection_options, array('extra' => '--skip-add-drop-table')));
+      $this->drush('sql-dump', array(), array_merge($options, $site_selection_options, array('extra-dump' => '--skip-add-drop-table')));
       $this->assertFileExists($full_dump_file_path);
       $full_dump_file = file_get_contents($full_dump_file_path);
       $this->assertNotContains('DROP TABLE IF EXISTS', $full_dump_file);
