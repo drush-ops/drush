@@ -104,7 +104,7 @@ class Sqlpgsql extends SqlBase {
     return array();
   }
 
-  public function dumpCmd($table_selection) {
+  public function dumpCmd($table_selection, $options) {
     $parens = FALSE;
     $skip_tables = $table_selection['skip'];
     $structure_tables = $table_selection['structure'];
@@ -112,16 +112,16 @@ class Sqlpgsql extends SqlBase {
 
     $ignores = array();
     $skip_tables  = array_merge($structure_tables, $skip_tables);
-    $data_only = drush_get_option('data-only');
+    $data_only = $options['data-only'];
 
-    $create_db = drush_get_option('create-db');
+    $create_db = $options['create-db'];
     $exec = 'pg_dump ';
     // Unlike psql, pg_dump does not take a '--dbname=' before the database name.
     $extra = str_replace('--dbname=', ' ', $this->creds());
     if (isset($data_only)) {
       $extra .= ' --data-only';
     }
-    if ($option = drush_get_option('extra', $this->query_extra)) {
+    if ($option = $options['extra-dump'] ?: $this->query_extra) {
       $extra .= " $option";
     }
     $exec .= $extra;
