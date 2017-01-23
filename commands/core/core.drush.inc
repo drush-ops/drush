@@ -55,36 +55,6 @@ function core_drush_help($section) {
  */
 function core_drush_command() {
   $items = array();
-  $items['core-rsync'] = array(
-    'description' => 'Rsync the Drupal tree to/from another server using ssh.',
-    'bootstrap' => DRUSH_BOOTSTRAP_NONE, // No bootstrap.
-    'arguments' => array(
-      'source' => 'May be rsync path or site alias. See rsync documentation and example.aliases.drushrc.php.',
-      'destination' => 'May be rsync path or site alias. See rsync documentation and example.aliases.drushrc.php.',
-    ),
-    'options' => array(
-      'mode' => 'The unary flags to pass to rsync; --mode=rultz implies rsync -rultz.  Default is -akz.',
-      'exclude-conf' => 'Excludes settings.php from being rsynced.  Default.',
-      'include-conf' => 'Allow settings.php to be rsynced. Default is to exclude settings.php.',
-      'include-vcs' => 'Include special version control directories (e.g. .svn).  Default is to exclude vcs files.',
-      'exclude-files' => 'Exclude the files directory.',
-      'exclude-sites' => 'Exclude all directories in "sites/" except for "sites/all".',
-      'exclude-other-sites' => 'Exclude all directories in "sites/" except for "sites/all" and the site directory for the site being synced.  Note: if the site directory is different between the source and destination, use --exclude-sites followed by "drush rsync @from:%site @to:%site"',
-      'exclude-paths' => 'List of paths to exclude, seperated by : (Unix-based systems) or ; (Windows).',
-      'include-paths' => 'List of paths to include, seperated by : (Unix-based systems) or ; (Windows).',
-      '{rsync-option-name}' => "Replace {rsync-option-name} with the rsync option (or option='value') that you would like to pass through to rsync. Examples include --delete, --exclude=*.sql, --filter='merge /etc/rsync/default.rules', etc. See the rsync documentation for a complete explanation of all the rsync options and values.",
-      'rsync-version' => 'Set to the version of rsync you are using to signal Drush to go into backwards-compatibility mode when using very old versions of rsync. For example, --rsync-version=2.6.8 or earlier will cause Drush to avoid the --remove-source-files flag.',
-
-    ),
-    'strict-option-handling' => TRUE,
-    'examples' => array(
-      'drush rsync @dev @stage' => 'Rsync Drupal root from Drush alias dev to the alias stage. Either or both may be remote.',
-      'drush rsync ./ @stage:%files/img' => 'Rsync all files in the current directory to the \'img\' directory in the file storage folder on the Drush alias stage.',
-      'drush -s rsync @dev @stage --exclude=*.sql --delete' => "Simulate Rsync Drupal root from the Drush alias dev to the alias stage (one of which must be local), excluding all files that match the filter '*.sql' and delete all files on the destination that are no longer on the source.",
-    ),
-    'aliases' => array('rsync'),
-    'topics' => array('docs-aliases'),
-  );
   $items['core-quick-drupal'] = array(
     'description' => 'Download, install, serve and login to Drupal with minimal configuration and dependencies.',
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
@@ -124,16 +94,6 @@ function core_site_install_complete() {
   if ($max >= DRUSH_BOOTSTRAP_DRUPAL_ROOT) {
     return array('values' => array_keys(drush_find_profiles(DRUPAL_ROOT)));
   }
-}
-
-/**
- * Command argument complete callback.
- *
- * @return
- *  Array of available site aliases.
- */
-function core_core_rsync_complete() {
-  return array('values' => array_keys(_drush_sitealias_all_list()));
 }
 
 /**

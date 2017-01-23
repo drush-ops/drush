@@ -181,7 +181,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
         $prefix .= $env_name . '=' . self::escapeshellarg($env_value) . ' ';
       }
     }
-    $this->log("Executing: $command", 'warning');
+    $this->log("Executing: $command", 'verbose');
 
     try {
       // Process uses a default timeout of 60 seconds, set it to 0 (none).
