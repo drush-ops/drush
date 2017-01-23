@@ -1,9 +1,17 @@
 <?php
 namespace Drush\Commands\core;
 
+use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
 
 class RsyncCommands extends DrushCommands {
+
+  /**
+   * These are arguments after the aliases and paths have been evaluated.
+   * @see validate().
+   */
+  public $source_evaluated_path;
+  public $destination_evaluated_path;
 
   /**
    * Rsync Drupal code or files to/from another server using ssh.
@@ -30,23 +38,9 @@ class RsyncCommands extends DrushCommands {
    * @complete \Drush\Commands\CompletionCommands::completeSiteAliases
    */
   public function rsync($source, $destination, $extra = NULL, $options = ['exclude-paths' => NULL, 'include-paths' => NULL, 'mode' => 'akz']) {
-    // We evaluate destination paths first, because there is a first-one-wins policy with --exclude-paths.
-    $additional_options = [];
-    $destination_site_record = drush_sitealias_evaluate_path($destination, $additional_options, FALSE);
-    $source_site_record = drush_sitealias_evaluate_path($source, $additional_options, FALSE);
-    $source_evaluated_path = $source_site_record['evaluated-path'];
-    $destination_evaluated_path = $destination_site_record['evaluated-path'];
-
-    if (!isset($source_site_record)) {
-      throw new \Exception(dt('Could not evaluate source path !path.', array('!path' => $source)));
-    }
-    if (!isset($destination_site_record)) {
-      throw new \Exception(dt('Could not evaluate destination path !path.', array('!path' => $destination)));
-    }
-
     // Prompt for confirmation. This is destructive.
     if (!drush_get_context('DRUSH_SIMULATE')) {
-      drush_print(dt("You will delete files in !target and replace with data from !source", array('!source' => $source_evaluated_path, '!target' => $destination_evaluated_path)));
+      drush_print(dt("You will delete files in !target and replace with data from !source", array('!source' => $this->source_evaluated_path, '!target' => $this->destination_evaluated_path)));
       if (!drush_confirm(dt('Do you really want to continue?'))) {
         return drush_user_abort();
       }
@@ -55,14 +49,14 @@ class RsyncCommands extends DrushCommands {
     $rsync_options = $this->rsyncOptions($options);
 
     $ssh_options = $options['ssh-options'];
-    $exec = "rsync -e 'ssh $ssh_options'". ' '. implode(' ', array_filter([$rsync_options, $extra, $source_evaluated_path, $destination_evaluated_path]));
+    $exec = "rsync -e 'ssh $ssh_options'". ' '. implode(' ', array_filter([$rsync_options, $extra, $this->source_evaluated_path, $this->destination_evaluated_path]));
     $exec_result = drush_op_system($exec);
 
     if ($exec_result == 0) {
-      drush_backend_set_result($destination_evaluated_path);
+      drush_backend_set_result($this->destination_evaluated_path);
     }
     else {
-      throw new \Exception(dt("Could not rsync from !source to !dest", array('!source' => $source_evaluated_path, '!dest' => $destination_evaluated_path)));
+      throw new \Exception(dt("Could not rsync from !source to !dest", array('!source' => $this->source_evaluated_path, '!dest' => $this->destination_evaluated_path)));
     }
   }
 
@@ -90,10 +84,33 @@ class RsyncCommands extends DrushCommands {
   }
 
   /**
-   * @hook interact core-rsync
+   * Validate that passed aliases are valid.
+   *
+   * @hook validate core-rsync
+   * @param \Consolidation\AnnotatedCommand\CommandData $commandData
+   * @throws \Exception
+   * @return void
    */
-  function interact() {
-    // @todo
+  function validate(CommandData $commandData) {
+    $additional_options = [];
+    $destination = $commandData->input()->getArgument('destination');
+    $source = $commandData->input()->getArgument('source');
+    $destination_site_record = drush_sitealias_evaluate_path($destination, $additional_options, FALSE);
+    $source_site_record = drush_sitealias_evaluate_path($source, $additional_options, FALSE);
+
+    if (!isset($source_site_record)) {
+      throw new \Exception(dt('Could not evaluate source path !path.', array('!path' => $source)));
+    }
+    if (!isset($destination_site_record)) {
+      throw new \Exception(dt('Could not evaluate destination path !path.', array('!path' => $destination)));
+    }
+    if (drush_sitealias_is_remote_site($source_site_record) && drush_sitealias_is_remote_site($destination_site_record)) {
+      $msg = dt('Cannot specify two remote aliases. Instead, use this form: `drush !source rsync @self !target`. Make sure site alias definitions are available at !source', array('!source' => $source, '!target' => $destination));
+      throw new \Exception($msg);
+    }
+
+    $this->source_evaluated_path = $source_site_record['evaluated-path'];
+    $this->destination_evaluated_path = $destination_site_record['evaluated-path'];
   }
 
   /**
