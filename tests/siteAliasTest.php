@@ -88,57 +88,6 @@ EOD;
     $this->assertEquals( "WORKING CASE = TRUE", $output);
   }
 
-
-  /**
-   * Test to see if rsync @site:%files calculates the %files path correctly.
-   * This tests the non-optimized code path in drush_sitealias_resolve_path_references.
-   *
-   * @todo This test does not appear to accomplish its goal.
-   */
-  function testRsyncBothRemote() {
-    $aliasPath = UNISH_SANDBOX . '/site-alias-directory';
-    file_exists($aliasPath) ?: mkdir($aliasPath);
-    $aliasFile = $aliasPath . '/remote.aliases.drushrc.php';
-    $aliasContents = <<<EOD
-  <?php
-  // Written by Unish. This file is safe to delete.
-  \$aliases['one'] = array(
-    'remote-host' => 'fake.remote-host.com',
-    'remote-user' => 'www-admin',
-    'root' => '/fake/path/to/root',
-    'uri' => 'default',
-  );
-  \$aliases['two'] = array(
-    'remote-host' => 'other-fake.remote-host.com',
-    'remote-user' => 'www-admin',
-    'root' => '/other-fake/path/to/root',
-    'uri' => 'default',
-  );
-EOD;
-    file_put_contents($aliasFile, $aliasContents);
-    $options = array(
-      'alias-path' => $aliasPath,
-      'simulate' => TRUE,
-      'yes' => NULL,
-    );
-    $this->drush('core-rsync', array("@remote.one:files", "@remote.two:tmp"), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1;');
-    $output = $this->getOutput();
-    $level = $this->log_level();
-    $pattern = in_array($level, array('verbose', 'debug')) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress --yes %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz --yes %s /tmp);";
-    $expected = sprintf($pattern, UNISH_SANDBOX . "/web/sites/default/files");
-
-
-    // Expected ouput:
-    //   Simulating backend invoke: /path/to/php  -d sendmail_path='true' /path/to/drush.php --php=/path/to/php --php-options=' -d sendmail_path='\''true'\'''  --backend=2 --alias-path=/path/to/site-alias-directory --nocolor --root=/fake/path/to/root --uri=default  core-rsync '@remote.one:files' /path/to/tmpdir 2>&1
-    //   Simulating backend invoke: /path/to/php  -d sendmail_path='true' /path/to/drush.php --php=/path/to/php --php-options=' -d sendmail_path='\''true'\'''  --backend=2 --alias-path=/path/to/site-alias-directory --nocolor --root=/fake/path/to/root --uri=default  core-rsync /path/to/tmpdir/files '@remote.two:tmp' 2>&1'
-    // Since there are a lot of variable items in the output (e.g. path
-    // to a temporary folder), so we will use 'assertContains' to
-    // assert on portions of the output that does not vary.
-    $this->assertContains('Simulating backend invoke', $output);
-    $this->assertContains("core-rsync '@remote.one:files' /", $output);
-    $this->assertContains("/files '@remote.two:tmp'", $output);
-  }
-
   /**
    * Assure that site lists work as expected.
    * @todo Use --backend for structured return data. Depends on http://drupal.org/node/1043922
