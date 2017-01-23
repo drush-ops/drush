@@ -1,15 +1,34 @@
 <?php
 
-/**
- * @file
- * Definition of Drush\Config\StorageFilter.
- */
-
 namespace Drush\Config;
 
 use Drupal\Core\Config\StorageInterface;
 
 interface StorageFilterInterface {
+
+  /**
+   * Sets the source config storage on which the operation is performed.
+   *
+   * The storage is given to the filter when the storage wrapper is set up,
+   * to avoid passing the storage to each of the filters so that they can read
+   * from it before writing filtered config.
+   *
+   * @param \Drupal\Core\Config\StorageInterface $storage
+   *   The storage on which the operation is performed.
+   */
+  public function setSourceStorage(StorageInterface $storage);
+
+  /**
+   * Sets the wrapped config storage which is using the filter.
+   *
+   * This storage is available to the filter in order to inspect how the end
+   * result looks like. This is useful for reading configuration from the
+   * storage as drupal will. Beware of recursive calls to the filter.
+   *
+   * @param \Drupal\Core\Config\StorageInterface $storage
+   *   The storage which has the filters applied.
+   */
+  public function setWrappedStorage(StorageInterface $storage);
 
   /**
    * Filters configuration data after it is read from storage.
@@ -31,15 +50,22 @@ interface StorageFilterInterface {
    *   The name of a configuration object to save.
    * @param array $data
    *   The configuration data to filter.
-   * @param StorageInterface $storage
-   *   (optional) The storage object that the filtered data will be
-   *   written to. Provided in case the filter needs to
-   *   read the existing configuration before writing it.
    *
    * @return array $data
    *   The filtered data.
    */
-  public function filterWrite($name, array $data, StorageInterface $storage = NULL);
+  public function filterWrite($name, array $data);
+
+  /**
+   * Let the filter decide whether writing not writing data should mean delete.
+   *
+   * @param string $name
+   *   The name of a configuration object to save.
+   *
+   * @return bool
+   *   True to delete at the end of a filtered write action.
+   */
+  public function filterWriteEmptyIsDelete($name);
 
   /**
    * Filters whether a configuration object exists.
@@ -146,7 +172,7 @@ interface StorageFilterInterface {
    *   configuration in a way that allows retrieval of configuration for a
    *   particular collection.
    *
-   * @return \Drupal\config_split\Config\StorageFilterInterface|NULL
+   * @return \Drupal\config_split\Config\StorageFilterInterface|null
    *   Return a filter that should participate in the collection. This is
    *   allows filters to act on different collections.
    */

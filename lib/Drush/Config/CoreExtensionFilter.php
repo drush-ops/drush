@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Definition of Drush\Config\StorageFilter.
- */
-
 namespace Drush\Config;
 
 use Drupal\Core\Config\StorageInterface;
@@ -65,12 +60,12 @@ class CoreExtensionFilter extends StorageFilterBase implements StorageFilterInte
     return $data;
   }
 
-  public function filterWrite($name, array $data, StorageInterface $storage = NULL) {
+  public function filterWrite($name, array $data) {
     if ($name != 'core.extension') {
       return $data;
     }
-    $originalData = $storage->read($name);
-    return $this->filterOutIgnored($data, $storage->read($name));
+
+    return $this->filterOutIgnored($data, $this->source->read($name));
   }
 
   protected function filterOutIgnored($data, $originalData) {

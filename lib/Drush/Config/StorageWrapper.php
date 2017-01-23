@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Definition of Drush\Config\StorageWrapper.
- */
-
 namespace Drush\Config;
 
 use Drupal\Core\Config\StorageInterface;
@@ -31,6 +26,12 @@ class StorageWrapper implements StorageInterface {
   function __construct($storage, $filterOrFilters) {
     $this->storage = $storage;
     $this->filters = is_array($filterOrFilters) ? $filterOrFilters : array($filterOrFilters);
+
+    // Set the storage to all the filters.
+    foreach ($this->filters as $filter) {
+      $filter->setSourceStorage($storage);
+      $filter->setWrappedStorage($this);
+    }
   }
 
   /**
@@ -71,7 +72,7 @@ class StorageWrapper implements StorageInterface {
    */
   public function write($name, array $data) {
     foreach ($this->filters as $filter) {
-      $data = $filter->filterWrite($name, $data, $this->storage);
+      $data = $filter->filterWrite($name, $data);
     }
     if ($data) {
       return $this->storage->write($name, $data);
