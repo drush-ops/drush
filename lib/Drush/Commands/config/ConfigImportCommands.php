@@ -36,12 +36,14 @@ class ConfigImportCommands extends DrushCommands implements CustomEventAwareInte
     // Determine source directory.
     if ($target = $options['source']) {
       $source_dir = $target;
+      $source_storage = new FileStorage($target);
     }
     else {
       $source_dir = \config_get_config_directory($label ?: CONFIG_SYNC_DIRECTORY);
+      $source_storage = \Drupal::service('config.storage.sync');
     }
 
-    // Determine $source_storage in partial and non-partial cases.
+    // Determine $source_storage in partial case.
     /** @var \Drupal\Core\Config\StorageInterface $active_storage */
     $active_storage = \Drupal::service('config.storage');
     if (drush_get_option('partial')) {
@@ -51,9 +53,6 @@ class ConfigImportCommands extends DrushCommands implements CustomEventAwareInte
         $data = $file_storage->read($name);
         $source_storage->replaceData($name, $data);
       }
-    }
-    else {
-      $source_storage = new FileStorage($source_dir);
     }
 
     // If our configuration storage is being filtered, then attach all filters

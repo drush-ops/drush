@@ -68,7 +68,12 @@ class ConfigExportCommands extends DrushCommands implements CustomEventAwareInte
     $storage_filters = $this->getStorageFilters($options);
     if (count(glob($destination_dir . '/*')) > 0) {
       // Retrieve a list of differences between the active and target configuration (if any).
-      $target_storage = new FileStorage($destination_dir);
+      if ($destination_dir == CONFIG_SYNC_DIRECTORY) {
+        $target_storage = \Drupal::service('config.storage.sync');
+      }
+      else {
+        $target_storage = new FileStorage($destination_dir);
+      }
       /** @var \Drupal\Core\Config\StorageInterface $active_storage */
       $active_storage = \Drupal::service('config.storage');
       $comparison_source = $active_storage;
@@ -117,7 +122,12 @@ class ConfigExportCommands extends DrushCommands implements CustomEventAwareInte
 
     // Write all .yml files.
     $source_storage = \Drupal::service('config.storage');
-    $destination_storage = new FileStorage($destination_dir);
+    if ($destination_dir == CONFIG_SYNC_DIRECTORY) {
+      $destination_storage = \Drupal::service('config.storage.sync');
+    }
+    else {
+      $destination_storage = new FileStorage($destination_dir);
+    }
     // If there are any filters, then attach them to the destination storage
     if (!empty($storage_filters)) {
       $destination_storage = new StorageWrapper($destination_storage, $storage_filters);
