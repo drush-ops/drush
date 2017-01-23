@@ -3,6 +3,7 @@
 namespace Drush\Sql;
 
 use Drush\Log\LogLevel;
+use Webmozart\PathUtil\Path;
 
 class SqlBase {
 
@@ -116,7 +117,7 @@ class SqlBase {
         if (empty($backup_dir)) {
           $backup_dir = drush_find_tmp();
         }
-        $file = $backup_dir . '/@DATABASE_@DATE.sql';
+        $file = Path::join($backup_dir, '@DATABASE_@DATE.sql');
       }
       $file = str_replace(array('@DATABASE', '@DATE'), array($database, gmdate('Ymd_His')), $file);
     }
@@ -254,7 +255,7 @@ class SqlBase {
    */
   public function createdb($quoted = FALSE) {
     $dbname = $this->db_spec['database'];
-    $sql = $this->createdb_sql($dbname);
+    $sql = $this->createdb_sql($dbname, $quoted);
     // Adjust connection to allow for superuser creds if provided.
     $this->su();
     return $this->query($sql);

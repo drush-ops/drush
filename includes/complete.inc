@@ -1,5 +1,6 @@
 <?php
 
+use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 use Drush\Log\LogLevel;
 
 /**
@@ -503,8 +504,18 @@ function drush_complete_rebuild_arguments($command) {
   // the bootstrap level, and perhaps bootstrap higher in extraordinary cases.
   drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
   $commands = drush_get_commands();
-  $hook = str_replace("-", "_", $commands[$command]['command-hook']);
-  $result = drush_command_invoke_all($hook . '_complete');
+  $command_info = $commands[$command];
+  if ($callback = $command_info['annotated-command-callback']) {
+    list($classname, $method) = $callback;
+    $commandInfo = new CommandInfo($classname, $method);
+    if ($callable = $commandInfo->getAnnotation('complete')) {
+      $result = call_user_func($callable);
+    }
+  }
+  else {
+    $hook = str_replace("-", "_", $command_info['command-hook']);
+    $result = drush_command_invoke_all($hook . '_complete');
+  }
   if (isset($result['values'])) {
     // We add a space following all completes. Eventually there may be some
     // items (e.g. comma separated arguments) where we don't add a space.

@@ -271,7 +271,7 @@ abstract class DrupalBoot extends BaseBoot {
       return drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', array('!drush_version' => DRUSH_VERSION, '!major_version' => $major_version)));
     }
 
-    drush_bootstrap_value('drupal_root', realpath($drupal_root));
+    drush_bootstrap_value('drupal_root', $drupal_root);
     define('DRUSH_DRUPAL_SIGNATURE', $signature);
 
     return TRUE;
@@ -374,7 +374,7 @@ abstract class DrupalBoot extends BaseBoot {
     $_SERVER['PHP_SELF'] = $_SERVER['REQUEST_URI'] . 'index.php';
     $_SERVER['SCRIPT_NAME'] = $_SERVER['PHP_SELF'];
     $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-    $_SERVER['REQUEST_METHOD']  = NULL;
+    $_SERVER['REQUEST_METHOD']  = 'GET';
 
     $_SERVER['SERVER_SOFTWARE'] = NULL;
     $_SERVER['HTTP_USER_AGENT'] = NULL;

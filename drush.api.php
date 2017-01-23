@@ -14,7 +14,7 @@ function hook_drush_command() {
 }
 
 /**
- * All drush commands are invoked in a specific order, using
+ * All Drush commands are invoked in a specific order, using
  * drush-made hooks, very similar to the Drupal hook system. See drush_invoke()
  * for the actual implementation.
  *
@@ -418,6 +418,22 @@ function hook_drush_invoke_alter($modules, $hook) {
     // Ensure it'll be called first for 'some_hook'.
     array_unshift($modules, $module);
   }
+}
+
+/*
+ * Storage filters alter the .yml files on disk after a config-export or before
+ * a config-import. See `drush topic docs-config-filter` and config_drush_storage_filters().
+ */
+function hook_drush_storage_filters() {
+  $result = array();
+  $module_adjustments = drush_get_option('skip-modules');
+  if (!empty($module_adjustments)) {
+    if (is_string($module_adjustments)) {
+      $module_adjustments = explode(',', $module_adjustments);
+    }
+    $result[] = new CoreExtensionFilter($module_adjustments);
+  }
+  return $result;
 }
 
 /**

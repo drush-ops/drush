@@ -322,40 +322,6 @@ function drush_wrap_with_quotes($arg) {
  * Use raw to get an unquoted version of the escaped arg.
  * Notice that you can't add quotes later until you know the platform.
  */
-function drush_escapeshellarg($arg, $os = NULL, $raw = FALSE) {
-  // Short-circuit escaping for simple params (keep stuff readable)
-  if (preg_match('|^[a-zA-Z0-9.:/_-]*$|', $arg)) {
-    return $arg;
-  }
-  elseif (drush_is_windows($os)) {
-    return _drush_escapeshellarg_windows($arg, $raw);
-  }
-  else {
-    return _drush_escapeshellarg_linux($arg, $raw);
-  }
-}
-
-/**
- * Windows version of escapeshellarg().
- */
-function _drush_escapeshellarg_windows($arg, $raw = FALSE) {
-  // Double up existing backslashes
-  $arg = preg_replace('/\\\/', '\\\\\\\\', $arg);
-
-  // Double up double quotes
-  $arg = preg_replace('/"/', '""', $arg);
-
-  // Double up percents.
-  $arg = preg_replace('/%/', '%%', $arg);
-
-  // Only wrap with quotes when needed.
-  if(!$raw) {
-    // Add surrounding quotes.
-    $arg = '"' . $arg . '"';
-  }
-
-  return $arg;
-}
 
 /**
  * Stores output for the most recent shell command.

@@ -11,6 +11,7 @@
  */
 
 use Drush\Log\LogLevel;
+use Webmozart\PathUtil\Path;
 
 /**
  * Log PHP errors to the Drush log. This is in effect until Drupal's error
@@ -133,7 +134,7 @@ function drush_cwd() {
   }
 
   // Convert windows paths.
-  $path = _drush_convert_path($path);
+  $path = Path::canonicalize($path);
 
   // Save original working dir case some command wants it.
   drush_set_context('DRUSH_OLDCWD', $path);
@@ -168,10 +169,11 @@ function _drush_shift_path_up($path) {
   if (empty($path)) {
     return FALSE;
   }
-  $path = explode('/', $path);
+  $path = explode(DIRECTORY_SEPARATOR, $path);
   // Move one directory up.
   array_pop($path);
-  return implode('/', $path);
+  return implode(DIRECTORY_SEPARATOR, $path);
+  // return dirname($path);
 }
 
 /**
@@ -419,12 +421,10 @@ function drush_valid_db_credentials() {
  * @see DRUSH_COMMAND
  */
 function drush_find_drush() {
-  $drush = realpath($_SERVER['argv']['0']);
-  // TODO: On Windows, if we leave $drush as-is, then callbacks will
-  // be done just as we were called by the batch file:  php.exe C:\path\drush.php
-  // We could also convert drush.php to drush.bat to run the batch file again,
-  // but this works just as well.
-  return $drush;
+  if ($drush = realpath($_SERVER['argv']['0'])) {
+    return Path::canonicalize($drush);
+  }
+  return FALSE;
 }
 
 /**
@@ -505,16 +505,6 @@ function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, 
   }
 
   return trim($prefix . ' ' . drush_escapeshellarg($drush_path, $os) . $additional_options);
-}
-
-/**
- * Check if the operating system is Windows.
- * This will return TRUE under DOS, Powershell
- * Cygwin and MSYSGIT shells, so test for the
- * Windows variant FIRST if you care.
- */
-function drush_is_windows($os = NULL) {
-  return _drush_test_os($os, array("WIN","CYGWIN","CWRSYNC","MINGW"));
 }
 
 /**
@@ -648,21 +638,11 @@ function drush_is_local_host($host) {
  * Return the user's home directory.
  */
 function drush_server_home() {
-  // Cannot use $_SERVER superglobal since that's empty during UnitUnishTestCase
-  // getenv('HOME') isn't set on Windows and generates a Notice.
-  $home = getenv('HOME');
-  if (!empty($home)) {
-    // home should never end with a trailing slash.
-    $home = rtrim($home, '/');
+  try {
+    return Path::getHomeDirectory();
+  } catch (Exception $e) {
+    return NULL;
   }
-  elseif (!empty($_SERVER['HOMEDRIVE']) && !empty($_SERVER['HOMEPATH'])) {
-    // home on windows
-    $home = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'];
-    // If HOMEPATH is a root directory the path can end with a slash. Make sure
-    // that doesn't happen.
-    $home = rtrim($home, '\\/');
-  }
-  return empty($home) ? NULL : $home;
 }
 
 /**

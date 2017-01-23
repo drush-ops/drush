@@ -49,21 +49,38 @@ class sqlSyncTest extends CommandUnishTestCase {
   }
 
   public function localSqlSync() {
-    // Create a user in the staging site
-    $name = 'joe.user';
-    $mail = "joe.user@myhome.com";
+
     $options = array(
       'root' => $this->webroot(),
       'uri' => 'stage',
       'yes' => NULL,
     );
-    $this->drush('user-create', array($name), $options + array('password' => 'password', 'mail' => $mail));
+
+    // Create a user in the staging site
+    $name = 'joe.user';
+    $mail = "joe.user@myhome.com";
+
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
+      // Add user fields and a test User.
+      $this->drush('pm-enable', array('field,text,telephone,comment'), $options + array('yes' => NULL));
+      $this->drush('php-script', array(
+        'user_fields-D' . UNISH_DRUPAL_MAJOR_VERSION,
+        $name,
+        $mail
+      ), $options + array(
+          'script-path' => __DIR__ . '/resources',
+          'debug' => NULL
+        ));
+    }
+    else {
+      $this->drush('user-create', array($name), $options + array('password' => 'password', 'mail' => $mail));
+    }
 
     // Copy stage to dev with --sanitize.
     $sync_options = array(
       'sanitize' => NULL,
       'yes' => NULL,
-      // Test wildcards expansion from within sql-sync. Also avoid D8 persisten entity cache.
+      // Test wildcards expansion from within sql-sync. Also avoid D8 persistent entity cache.
       'structure-tables-list' => 'cache,cache*',
     );
     $this->drush('sql-sync', array('@stage', '@dev'), $sync_options);
@@ -114,5 +131,50 @@ class sqlSyncTest extends CommandUnishTestCase {
     $uid = $row[1];
     $this->assertEquals("user@mysite.org", $row[2], 'email address was sanitized (fixed email) on destination site.');
     $this->assertEquals($name, $row[0]);
+
+    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
+      $fields = [
+        'field_user_email' => 'joe.user.alt@myhome.com',
+        'field_user_string' => 'Private info',
+        'field_user_string_long' => 'Really private info',
+        'field_user_text' => 'Super private info',
+        'field_user_text_long' => 'Super duper private info',
+        'field_user_text_with_summary' => 'Private',
+      ];
+      // Assert that field DO NOT contain values.
+      foreach ($fields as $field_name => $value) {
+        $this->assertUserFieldContents($field_name, $value, $options);
+      }
+
+      // Assert that field_user_telephone DOES contain "5555555555".
+      $this->assertUserFieldContents('field_user_telephone', '5555555555', $options, TRUE);
+    }
+  }
+
+  /**
+   * Assert that a field on the user entity does or does not contain a value.
+   *
+   * @param string $field_name
+   *   The machine name of the field.
+   * @param string $value
+   *   The field value.
+   * @param array $options
+   *   Options to be added to the sql-query command.
+   * @param bool $should_contain
+   *   Whether the field should contain the value. Defaults to false.
+   */
+  public function assertUserFieldContents($field_name, $value, $options = [], $should_contain = FALSE) {
+    $table = 'user__' . $field_name;
+    $column = $field_name . '_value';
+    $this->drush('sql-query', [ "SELECT $column FROM $table LIMIT 1" ], $options);
+    $output = $this->getOutput();
+    $this->assertNotEmpty($output);
+
+    if ($should_contain) {
+      $this->assertContains($value, $output);
+    }
+    else {
+      $this->assertNotContains($value, $output);
+    }
   }
 }

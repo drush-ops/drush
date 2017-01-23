@@ -1,5 +1,5 @@
 <?php
-namespace Drupal\woot\Command;
+namespace Drupal\woot\Commands;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 
@@ -51,7 +51,7 @@ class WootCommands
      * @usage try:formatters --format=csv
      * @usage try:formatters --fields=first,third
      * @usage try:formatters --fields=III,II
-     * @return Consolidation\OutputFormatters\StructuredData\RowsOfFields
+     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function tryFormatters($options = ['format' => 'table', 'fields' => ''])
     {

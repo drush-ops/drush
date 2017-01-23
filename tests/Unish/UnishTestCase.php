@@ -28,6 +28,8 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * Remove any pre-existing sandbox, then create a new one.
    */
   public static function setUpFreshSandBox() {
+    // Avoid perm denied error on Windows by moving out of the dir to be deleted.
+    chdir(dirname(UNISH_SANDBOX));
     $sandbox = UNISH_SANDBOX;
     if (file_exists($sandbox)) {
       unish_file_delete_recursive($sandbox);
@@ -53,6 +55,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * Runs after all tests in a class are run. Remove sandbox directory.
    */
   public static function tearDownAfterClass() {
+    chdir(dirname(UNISH_SANDBOX));
     $dirty = getenv('UNISH_DIRTY');
     if (file_exists(UNISH_SANDBOX) && empty($dirty)) {
       unish_file_delete_recursive(UNISH_SANDBOX, TRUE);
@@ -96,7 +99,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   public static function is_windows() {
-    return (strtoupper(substr(PHP_OS, 0, 3)) == "WIN");
+    return strtoupper(substr(PHP_OS, 0, 3)) == "WIN";
   }
 
   public static function get_tar_executable() {
@@ -166,7 +169,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     $arg = preg_replace('/"/', '""', $arg);
 
     // Double up percents.
-    // $arg = preg_replace('/%/', '%%', $arg);
+    $arg = preg_replace('/%/', '%%', $arg);
 
     // Add surrounding quotes.
     $arg = '"' . $arg . '"';
@@ -237,7 +240,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   function webroot() {
-    return UNISH_SANDBOX . '/web';
+    return UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'web';
   }
 
   function getSites() {

@@ -193,7 +193,7 @@ function drush_core_pre_site_install($profile = NULL) {
   // Write an empty sites.php if we are on D8 and using multi-site.
   if ($sitesfile_write) {
     if (!drush_op('copy', 'sites/example.sites.php', $sitesfile) && !drush_get_context('DRUSH_SIMULATE')) {
-      return drush_set_error(dt('Failed to copy sites/sites.php to @sitesfile', array('@sitesfile' => $sitesfile)));
+      return drush_set_error(dt('Failed to copy sites/example.sites.php to @sitesfile', array('@sitesfile' => $sitesfile)));
     }
   }
 
@@ -226,7 +226,7 @@ function drush_core_site_install($profile = NULL) {
     $profile = array_shift($args);
     // Subsequent arguments are additional form values.
     foreach ($args as $arg) {
-      list($key, $value) = explode('=', $arg);
+      list($key, $value) = explode('=', $arg, 2);
 
       // Allow for numeric and NULL values to be passed in.
       if (is_numeric($value)) {
@@ -248,12 +248,13 @@ function drush_core_site_install($profile = NULL) {
   drush_include_engine('drupal', 'site_install');
   drush_core_site_install_version($profile, $form_options);
 
-  // Post installation run the configuration import.
+  // Post installation, run the configuration import.
   if ($config = drush_get_option('config-dir')) {
     // Set the destination site UUID to match the source UUID, to bypass a core fail-safe.
     $source_storage = new FileStorage($config);
-    drush_op('drush_config_set', 'system.site', 'uuid', $source_storage->read('system.site')['uuid']);
+    $options = ['yes' => TRUE];
+    drush_invoke_process('@self', 'config-set', array('system.site', 'uuid', $source_storage->read('system.site')['uuid']), $options);
     // Run a full configuration import.
-    drush_invoke_process('@self', 'config-import', array(), array('source' => $config));
+    drush_invoke_process('@self', 'config-import', array(), array('source' => $config) + $options);
   }
 }

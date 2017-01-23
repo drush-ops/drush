@@ -271,11 +271,20 @@ function drush_cache_rebuild() {
   if (function_exists('apc_fetch')) {
     apc_clear_cache('user');
   }
+  // Clear user cache for all major platforms.
+  $user_caches = [
+    'apcu_clear_cache',
+    'wincache_ucache_clear',
+    'xcache_clear_cache',
+  ];
+  array_map('call_user_func', array_filter($user_caches, 'is_callable'));
 
   $autoloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
   require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';
 
   $request = Request::createFromGlobals();
+  // Ensure that the HTTP method is set, which does not happen with Request::createFromGlobals().
+  $request->setMethod('GET');
   // Manually resemble early bootstrap of DrupalKernel::boot().
   require_once DRUSH_DRUPAL_CORE . '/includes/bootstrap.inc';
   DrupalKernel::bootEnvironment();

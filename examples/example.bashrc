@@ -4,19 +4,6 @@
 # Use `drush init` to copy this file to your home directory, rename and
 # customize it to suit, and source it from your ~/.bashrc file.
 #
-# Example - rename this to drush.bashrc, and in your
-# ~/.bashrc add:
-#
-#
-#    if [ -f ~/.drush/drush.bashrc ] ; then
-#        . ~/.drush/drush.bashrc
-#    fi
-#
-# Features:
-#
-# Finds and sources drush.complete.sh from your drush directory,
-# enabling autocompletion for Drush commands.
-#
 # Creates aliases to common Drush commands that work in a global context:
 #
 #       dr               - drush

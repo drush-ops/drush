@@ -586,10 +586,13 @@ function _core_site_status_table($project = '') {
         $status_table['db-port'] = isset($db_spec['port']) ? $db_spec['port'] : NULL;
         if ($phase > DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION) {
           $status_table['install-profile'] = $boot_object->get_profile();
-          if ($phase > DRUSH_BOOTSTRAP_DRUPAL_FULL) {
-            $status_table['bootstrap'] = dt('Successful');
-            if ($phase == DRUSH_BOOTSTRAP_DRUPAL_LOGIN) {
-              $status_table['user'] = drush_user_get_class()->getCurrentUserAsSingle()->getUsername();
+          if ($phase > DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
+            $status_table['db-status'] = dt('Connected');
+            if ($phase > DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+              $status_table['bootstrap'] = dt('Successful');
+              if ($phase == DRUSH_BOOTSTRAP_DRUPAL_LOGIN) {
+                $status_table['user'] = drush_user_get_class()->getCurrentUserAsSingle()->getUsername();
+              }
             }
           }
         }

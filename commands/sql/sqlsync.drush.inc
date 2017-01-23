@@ -1,6 +1,7 @@
 <?php
 
 use Drush\Log\LogLevel;
+use Webmozart\PathUtil\Path;
 
 /**
  * Implementation of hook_drush_command().
@@ -126,25 +127,25 @@ function drush_sqlsync_sql_sync_validate($source, $destination) {
   // Get destination info for confirmation prompt.
   $source_settings = drush_sitealias_overlay_options(drush_sitealias_get_record($source), 'source-');
   $destination_settings = drush_sitealias_overlay_options(drush_sitealias_get_record($destination), 'target-');
-  $source_db_url = drush_sitealias_get_db_spec($source_settings, FALSE, 'source-');
-  $target_db_url = drush_sitealias_get_db_spec($destination_settings, FALSE, 'target-');
-  $txt_source = (isset($source_db_url['remote-host']) ? $source_db_url['remote-host'] . '/' : '') . $source_db_url['database'];
-  $txt_destination = (isset($target_db_url['remote-host']) ? $target_db_url['remote-host'] . '/' : '') . $target_db_url['database'];
+  $source_db_spec = drush_sitealias_get_db_spec($source_settings, FALSE, 'source-');
+  $target_db_spec = drush_sitealias_get_db_spec($destination_settings, FALSE, 'target-');
+  $txt_source = (isset($source_db_spec['remote-host']) ? $source_db_spec['remote-host'] . '/' : '') . $source_db_spec['database'];
+  $txt_destination = (isset($target_db_spec['remote-host']) ? $target_db_spec['remote-host'] . '/' : '') . $target_db_spec['database'];
 
   // Validate.
-  if (empty($source_db_url)) {
+  if (empty($source_db_spec)) {
     if (empty($source_settings)) {
       return drush_set_error('DRUSH_ALIAS_NOT_FOUND', dt('Error: no alias record could be found for source !source', array('!source' => $source)));
     }
     return drush_set_error('DRUSH_DATABASE_NOT_FOUND', dt('Error: no database record could be found for source !source', array('!source' => $source)));
   }
-  if (empty($target_db_url)) {
+  if (empty($target_db_spec)) {
     if (empty($destination_settings)) {
       return drush_set_error('DRUSH_ALIAS_NOT_FOUND', dt('Error: no alias record could be found for target !destination', array('!destination' => $destination)));
     }
     return drush_set_error('DRUSH_DATABASE_NOT_FOUND', dt('Error: no database record could be found for target !destination', array('!destination' => $destination)));
   }
-  if (isset($source_db_url['remote-host']) && isset($target_db_url['remote-host']) && ($source_db_url['remote-host'] == $target_db_url['remote-host']) && ($source_db_url['database'] == $target_db_url['database']) && !drush_get_context('DRUSH_SIMULATE')) {
+  if (drush_sitealias_convert_db_spec_to_db_url($source_db_spec) == drush_sitealias_convert_db_spec_to_db_url($target_db_spec) && !drush_get_context('DRUSH_SIMULATE')) {
     return drush_set_error('DRUSH_SAME_DATABASE', dt('Source and target databases are the same; please sync to a different target.'));
   }
 
@@ -242,7 +243,7 @@ function drush_sqlsync_sql_sync($source, $destination) {
     if (!$return['error_status'] && isset($return['object']['drush-temp'])) {
       $tmp = $return['object']['drush-temp'];
     }
-    $destination_dump_path = $tmp . '/' . basename($source_dump_path);
+    $destination_dump_path = Path::join($tmp, basename($source_dump_path));
     $rsync_options['yes'] = TRUE;  // No need to prompt as destination is a tmp file.
   }
 

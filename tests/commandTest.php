@@ -79,7 +79,7 @@ class commandCase extends CommandUnishTestCase {
   }
 
   /**
-   * Assert that commands in disabled modules are detected.
+   * Assert that commands in disabled/uninstalled modules throw an error.
    */
   public function testDisabledModule() {
     $sites = $this->setUpDrupal(1, TRUE);

@@ -113,7 +113,7 @@ function drush_preflight_prepare() {
     $vendor_path = $global_vendor_path;
   }
   else {
-    $msg = "Unable to load autoload.php. Run composer install to fetch dependencies and write this file (http://docs.drush.org/en/master/install-alternative/). Or if you prefer, use the drush.phar which already has depdencies included (http://docs.drush.org/en/master/install).\n";
+    $msg = "Unable to load autoload.php. Run composer install to fetch dependencies and write this file (http://docs.drush.org/en/master/install-alternative/). Or if you prefer, use the drush.phar which already has dependencies included (http://docs.drush.org/en/master/install).\n";
     fwrite(STDERR, $msg);
     return FALSE;
   }
@@ -335,6 +335,19 @@ function drush_preflight_root() {
   // Load the config options from Drupal's /drush, ../drush, and sites/all/drush directories,
   // even prior to bootstrapping the root.
   drush_load_config('drupal');
+
+  // Search for commandfiles in the root locations
+  $discovery = annotationcommand_adapter_get_discovery();
+  $searchpath = [dirname($root) . '/drush', "$root/drush", "$root/sites/all/drush"];
+
+  $drush_root_extensions = $discovery->discover($searchpath, '\Drush');
+  drush_set_context(
+    'DRUSH_ANNOTATED_COMMANDFILES',
+    array_merge(
+      drush_get_context('DRUSH_ANNOTATED_COMMANDFILES'),
+      $drush_root_extensions
+    )
+  );
 }
 
 function drush_preflight_site() {
@@ -515,6 +528,25 @@ function _drush_find_commandfiles_drush() {
 
   // @todo the zero parameter is a bit weird here. It's $phase.
   _drush_add_commandfiles($searchpath, 0);
+
+  // Also discover Drush's own annotation commands.
+  $discovery = annotationcommand_adapter_get_discovery();
+  $annotation_commandfiles = $discovery->discover(DRUSH_BASE_PATH . '/lib/Drush', '\Drush');
+
+  // And, finally, search for commandfiles in the $searchpath
+  $searchpath = array_map(
+    function ($item) {
+      if (strtolower(basename($item)) == 'commands') {
+        return dirname($item);
+      }
+      return $item;
+    },
+    $searchpath
+  );
+  $global_drush_extensions = $discovery->discover($searchpath, '\Drush');
+  $annotation_commandfiles += $global_drush_extensions;
+
+  drush_set_context('DRUSH_ANNOTATED_COMMANDFILES', $annotation_commandfiles);
 }
 
 /**

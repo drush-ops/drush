@@ -51,6 +51,9 @@ function drush_core_helpsingle($commandstring) {
   }
   if (array_key_exists($commandstring, $commands)) {
     $command = $commands[$commandstring];
+
+    annotationcommand_adapter_add_hook_options($command);
+
     drush_print_help($command);
     return TRUE;
   }
