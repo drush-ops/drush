@@ -40,7 +40,7 @@ core-config: NONE
 core-cron
 core-status: FAIR: Implicit test by contextTest.
 docs
-core-rsync
+core-rsync: GOOD
 core-quick-drupal: GOOD
 image: GOOD
 queue-*: GOOD
@@ -52,12 +52,9 @@ site-install: FAIR. Implicit test by setUpDrupal().
 state: NONE
 ssh: GOOD
 topic
-usage-*
 watchdog-*: GOOD
 
 user-*: GOOD.
-
-field-*: GOOD.
 
 make: GOOD
 

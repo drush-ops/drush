@@ -240,12 +240,6 @@
  *   (source and destination) take precedence over command-specific options
  *   in the bootstrapped site, and command-specific options in a destination
  *   alias will take precedence over those in a source alias.
- * - 'source-command-specific' and 'target-command-specific': Behaves exactly
- *   like the 'command-specific' option, but is applied only if the alias
- *   is used as the source or target, respectively, of an rsync or sql-sync
- *   command.  In the example below, `--skip-tables-list=comments` whenever
- *   the alias @live is the target of an sql-sync command, but comments will
- *   be included if @live is the source for the sql-sync command.
  * - '#peer': Settings that begin with a '#' are not used directly by Drush, and
  *   in fact are removed before making a backend invoke call (for example).
  *   These kinds of values are useful in conjunction with shell aliases.  See
@@ -267,9 +261,6 @@
  *     // TRUE or NULL to work (i.e. setting $VALUE to 1, 0, or ''
  *     // will not work).
  *     'delete' => TRUE,
- *
- *     // if you need multiple excludes, use an rsync exclude file
- *     'exclude-from' => "'/etc/rsync/exclude.rules'",
  *
  *     // filter options with white space must be wrapped in "" to preserve
  *     // the inner ''.

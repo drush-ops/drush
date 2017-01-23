@@ -22,14 +22,18 @@ class OptionsCommands {
   public function optionsetGetEditor() {}
 
   /**
+   * @hook option @optionset_ssh
+   * @option ssh-options A string appended to ssh command during rsync, sql-sync, etc.
+   */
+  public function optionsetSsh() {}
+
+  /**
    * @hook option @optionset_sql
    * @option database The DB connection key if using multiple connections in settings.php.
    * @option db-url A Drupal 6 style database URL.
    * @option target The name of a target within the specified database connection. Defaults to default
    */
-  public function optionsetSql() {
-
-  }
+  public function optionsetSql() {}
 
   /**
    * @hook option @optionset_table_selection

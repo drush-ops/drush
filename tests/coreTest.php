@@ -19,21 +19,19 @@ class coreCase extends CommandUnishTestCase {
    * Test to see if rsync @site:%files calculates the %files path correctly.
    * This tests the non-optimized code path in drush_sitealias_resolve_path_references.
    */
-  function testRsyncPercentFiles() {
+  function testRsyncAndPercentFiles() {
     $root = $this->webroot();
     $site = key($this->getSites());
     $options = array(
       'root' => $root,
       'uri' => key($this->getSites()),
       'simulate' => NULL,
-      'include-conf' => NULL,
-      'include-vcs' => NULL,
       'yes' => NULL,
     );
     $this->drush('core-rsync', array("@$site:%files", "/tmp"), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1;');
     $output = $this->getOutput();
     $level = $this->log_level();
-    $pattern = in_array($level, array('verbose', 'debug')) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress --yes %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz --yes %s /tmp);";
+    $pattern = in_array($level, array('verbose', 'debug')) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz %s /tmp);";
     $expected = sprintf($pattern, UNISH_SANDBOX . "/web/sites/$site/files");
     $this->assertEquals($expected, $output);
   }
@@ -49,8 +47,6 @@ class coreCase extends CommandUnishTestCase {
       'root' => $root,
       'uri' => key($this->getSites()),
       'simulate' => NULL,
-      'include-conf' => NULL,
-      'include-vcs' => NULL,
       'yes' => NULL,
       'strict' => 0, // invoke from script: do not verify options
     );
