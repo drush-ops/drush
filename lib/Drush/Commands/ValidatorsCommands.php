@@ -37,6 +37,7 @@ class ValidatorsCommands {
    * @return \Consolidation\AnnotatedCommand\CommandError|null
    */
   public function validateFileExists(CommandData $commandData) {
+    $missing = [];
     $arg_names = _convert_csv_to_array($commandData->annotationData()->get('validate-file-exists', NULL));
     foreach ($arg_names as $arg_name) {
       $path = $commandData->input()->getArgument($arg_name);
