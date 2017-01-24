@@ -42,18 +42,6 @@ function _drush_pm_uninstall($extensions) {
       unset($extensions[$extension]);
       drush_log(dt('!extension is already uninstalled.', array('!extension' => $extension)), LogLevel::OK);
     }
-    elseif (drush_extension_get_type($extension_info[$extension]) == 'module') {
-      $dependents = array();
-      foreach (drush_module_dependents(array($extension), $extension_info) as $dependent) {
-        if (!in_array($dependent, $required) && ($extension_info[$dependent]->status)) {
-          $dependents[] = $dependent;
-        }
-      }
-      if (count($dependents)) {
-        drush_log(dt('To uninstall !extension, the following extensions must be uninstalled first: !required', array('!extension' => $extension, '!required' => implode(', ', $dependents))), LogLevel::ERROR);
-        unset($extensions[$extension]);
-      }
-    }
   }
 
   // Discard default theme.
@@ -87,4 +75,3 @@ function _drush_pm_uninstall($extensions) {
     drush_log(dt('!extension was successfully uninstalled.', array('!extension' => $extension)), LogLevel::OK);
   }
 }
-
