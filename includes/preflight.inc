@@ -204,6 +204,10 @@ function drush_preflight_prepare() {
   drush_init_annotation_commands($container);
   drush_init_application_global_options($container);
 
+  // Add completion command
+  $commandFileInstance = new \Stecman\Component\Symfony\Console\BashCompletion\CompletionCommand();
+  drush_add_command_instance($container, $commandFileInstance);
+
   // Terminate immediately unless invoked as a command line script
   if (!drush_verify_cli()) {
     return drush_set_error('DRUSH_REQUIREMENTS_ERROR', dt('Drush is designed to run via the command line.'));
