@@ -2,8 +2,13 @@
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
+use Robo\Contract\BuilderAwareInterface;
+use Robo\LoadAllTasks;
+use Symfony\Component\Console\Application;
 
-class BrowseCommands extends DrushCommands {
+class BrowseCommands extends DrushCommands implements BuilderAwareInterface {
+
+  use LoadAllTasks;
 
   /**
    * Display a link to a given path or open link in a browser.
@@ -30,7 +35,19 @@ class BrowseCommands extends DrushCommands {
     $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
     if (drush_sitealias_is_remote_site($alias)) {
       $site_record = drush_sitealias_get_record($alias);
+
+      // Experiment 1a.
+      $ret = $this->taskExec('drush browse')->run();
+      // Experiment 1b.
+      $container = \Drush::getContainer();
+      /** @var Application $app */
+      $app = $container->get('application');
+      $command = $app->get('browse');
+      $ret = $this->taskExec($command)->site($site_record)->run();
+
+      // Experiment 2.
       $return = \Drush::call($site_record, 'browse', [$path], drush_redispatch_get_options(), array('integrate' => TRUE));
+
       if ($return['error_status']) {
         throw new \Exception('Unable to execute browse command on remote alias.');
       }
