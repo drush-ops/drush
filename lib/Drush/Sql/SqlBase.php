@@ -339,14 +339,7 @@ class SqlBase {
    * Adjust DB connection with superuser credentials if provided.
    *
    * The options 'db-su' and 'db-su-pw' will be retrieved from the
-   * specified site alias record, if it exists and contains those items.
-   * If it does not, they will be fetched via drush_get_option.
-   *
-   * Note that in the context of sql-sync, the site alias record will
-   * be taken from the target alias (e.g. `drush sql-sync @source @target`),
-   * which will be overlayed with any options that begin with 'target-';
-   * therefore, the commandline options 'target-db-su' and 'target-db-su-pw'
-   * may also affect the operation of this function.
+   * specified site alias record.
    *
    * @return null
    */

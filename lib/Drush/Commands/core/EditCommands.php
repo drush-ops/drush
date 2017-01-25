@@ -113,7 +113,7 @@ class EditCommands extends DrushCommands {
   static public function bash_files() {
     $bash_files = array();
     $home = drush_server_home();
-    if ($bashrc = $this->find_bashrc($home)) {
+    if ($bashrc = self::find_bashrc($home)) {
       $bash_files[] = $bashrc;
     }
     $prompt = $home . '/.drush/drush.prompt.sh';

@@ -236,18 +236,12 @@
  *   - `drush @stage sql-sync @self @live`
  *   - `drush sql-sync @stage @live`
  *   - `drush sql-sync @live @stage`
- *   In case of conflicting options, command-specific options in targets
- *   (source and destination) take precedence over command-specific options
- *   in the bootstrapped site, and command-specific options in a destination
- *   alias will take precedence over those in a source alias.
  * - '#peer': Settings that begin with a '#' are not used directly by Drush, and
  *   in fact are removed before making a backend invoke call (for example).
  *   These kinds of values are useful in conjunction with shell aliases.  See
  *   `drush topic docs-shell-aliases` for more information on this.
  * - '#env-vars': An associative array of keys and values that should be set on
  *    the remote side before invoking drush.
- * - rsync command options have specific requirements in order to
- *   be passed through by Drush. See the comments on the sample below:
  *
  * @code
  * 'command-specific' => array (
