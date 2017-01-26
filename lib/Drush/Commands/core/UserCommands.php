@@ -379,7 +379,7 @@ class UserCommands extends DrushCommands {
     $port = drush_get_option('redirect-port', FALSE);
     drush_start_browser($link, FALSE, $port);
     // Use an array for backwards compat.
-    drush_backend_set_result([$account->id() => $link]);
+    drush_backend_set_result([$link]);
     return $link;
   }
 
