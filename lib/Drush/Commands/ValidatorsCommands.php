@@ -52,4 +52,19 @@ class ValidatorsCommands {
     }
   }
 
+  /**
+   * Validate that required PHP extension exists.
+   *
+   * Annotation value should be extension name. If multiple, delimit by a comma.
+   *
+   * @hook validate @validate-php-extension
+   * @param \Consolidation\AnnotatedCommand\CommandData $commandData
+   * @return \Consolidation\AnnotatedCommand\CommandError|null
+   */
+  function validate(CommandData $commandData) {
+    $arg_names = _convert_csv_to_array($commandData->annotationData()->get('validate-php-extension', NULL));
+    $args = array('!command' => $commandData->input(), '!dependencies' => implode(', ', $arg_names));
+    return new CommandError(dt('Command !command needs the following PHP extensions installed and enabled: !dependencies.', $args));
+  }
+
 }

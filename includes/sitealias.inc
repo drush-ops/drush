@@ -1570,6 +1570,48 @@ function drush_sitealias_build_record_from_settings_file($site_settings_file, $a
 }
 
 /**
+ * Use heuristics to attempt to convert from a site directory to a URI.
+ * This function should only be used when the URI really is unknown, as
+ * the mapping is not perfect.
+ *
+ * @param site_dir
+ *   A directory, such as domain.com.8080.drupal
+ *
+ * @return string
+ *   A uri, such as http://domain.com:8080/drupal
+ */
+function _drush_sitealias_site_dir_to_uri($site_dir) {
+  // Protect IP addresses NN.NN.NN.NN by converting them
+  // temporarily to NN_NN_NN_NN for now.
+  $uri = preg_replace("/([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)/", "$1_$2_$3_$4", $site_dir);
+  // Convert .[0-9]+. into :[0-9]+/
+  $uri = preg_replace("/\.([0-9]+)\./", ":$1/", $uri);
+  // Convert .[0-9]$ into :[0-9]
+  $uri = preg_replace("/\.([0-9]+)$/", ":$1", $uri);
+  // Convert .(com|net|org|info). into .(com|net|org|info)/
+  $uri = str_replace(array('.com.', '.net.', '.org.', '.info.'), array('.com/', '.net/', '.org/', '.info/'), $uri);
+
+  // If there is a / then convert every . after the / to /
+  // Then again, if we did this we would break if the path contained a "."
+  // I hope that the path would never contain a "."...
+  $pos = strpos($uri, '/');
+  if ($pos !== false) {
+    $uri = substr($uri, 0, $pos + 1) . str_replace('.', '/', substr($uri, $pos + 1));
+  }
+
+  // n.b. this heuristic works all the time if there is a port,
+  // it also works all the time if there is a port and no path,
+  // but it does not work for domains such as .co.jp with no path,
+  // and it can fail horribly if someone makes a domain like "info.org".
+  // Still, I think this is the best we can do short of consulting DNS.
+
+  // Convert from NN_NN_NN_NN back to NN.NN.NN.NN
+  $uri = preg_replace("/([0-9]+)_([0-9]+)_([0-9]+)_([0-9]+)/", "$1.$2.$3.$4", $site_dir);
+
+  return 'http://' . $uri;
+}
+
+/**
  * Pull the site directory from the path to settings.php
  *
  * @param site_settings_file
