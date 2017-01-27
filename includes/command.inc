@@ -63,7 +63,7 @@ function drush_invoke($command, $arguments = array()) {
  * Invoke a command in a new process, targeting the site specified by
  * the provided site alias record.
  *
- * @param array $site_alias_record
+ * @param array|string $site_alias_record
  *  The site record to execute the command on.  Use '@self' to run on the current site.
  * @param string $command_name
  *  The command to invoke.

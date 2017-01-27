@@ -175,18 +175,6 @@
 # $options['strict'] = FALSE;
 
 /**
- * Drush requires at least rsync version 2.6.9 for some functions to work
- * correctly.  rsync version 2.6.8 or earlier may give the following error
- * message: "--remove-source-files: unknown option".  To fix this, set
- * $options['rsync-version'] = '2.6.8'; (replace with the lowest version of
- * rsync installed on any system you are using with Drush).  Note that this
- * option can also be set in a site alias, which is the preferred solution if
- * newer versions of rsync are available on some of the systems you use.
- * See: http://drupal.org/node/955092
- */
-# $options['rsync-version'] = '2.6.9';
-
-/**
  * The output charset suitable to pass to the iconv PHP function's out_charset
  * parameter.
  *

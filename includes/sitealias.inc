@@ -1733,17 +1733,6 @@ function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
 }
 
 /**
- * Given an alias record, overwrite its values with options
- * from the command line and other drush contexts as specified
- * by the provided prefix.  For example, if the prefix is 'source-',
- * then any option 'source-foo' will set the value 'foo' in the
- * alias record.
- */
-function drush_sitealias_overlay_options($site_alias_record, $prefix) {
-  return array_merge($site_alias_record, drush_get_merged_prefixed_options($prefix));
-}
-
-/**
  * First return an option set via drush_sitealias_overlay_options, if
  * any, then fall back on "%" . $option from the path aliases.
  */
