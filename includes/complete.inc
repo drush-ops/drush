@@ -1,6 +1,7 @@
 <?php
 
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
+use Drush\Commands\core\SiteCommands;
 use Drush\Log\LogLevel;
 
 /**
@@ -469,7 +470,7 @@ function drush_complete_rebuild() {
   }
   // We treat shell aliases as commands for the purposes of completion.
   $complete['command-names'] = array_merge(array_keys($commands), array_keys(drush_get_context('shell-aliases', array())));
-  $site_aliases = _drush_sitealias_all_list();
+  $site_aliases = SiteCommands::siteAllList();
   // TODO: Figure out where this dummy @0 alias is introduced.
   unset($site_aliases['@0']);
   $complete['site-aliases'] = array_keys($site_aliases);
