@@ -62,9 +62,18 @@ class ValidatorsCommands {
    * @return \Consolidation\AnnotatedCommand\CommandError|null
    */
   function validate(CommandData $commandData) {
+    $missing = [];
     $arg_names = _convert_csv_to_array($commandData->annotationData()->get('validate-php-extension', NULL));
-    $args = array('!command' => $commandData->input(), '!dependencies' => implode(', ', $arg_names));
-    return new CommandError(dt('Command !command needs the following PHP extensions installed and enabled: !dependencies.', $args));
+    foreach ($arg_names as $arg_name) {
+      if (!extension_loaded($arg_name)) {
+        $missing[] = $arg_name;
+      }
+    }
+
+    if ($missing) {
+      $args = array('!command' => $commandData->input(), '!dependencies' => implode(', ', $missing));
+      return new CommandError(dt('Command !command needs the following PHP extensions installed and enabled: !dependencies.', $args));
+    }
   }
 
 }

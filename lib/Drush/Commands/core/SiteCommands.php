@@ -11,7 +11,7 @@ class SiteCommands extends DrushCommands {
    * @command site-set
    * @param $site Site specification to use, or "-" for previous site. Omit this argument to unset.
    * @handle-remote-commands
-   * @validate_php_extension posix
+   * @validate-php-extension posix
    * @usage drush site-set @dev
    *   Set the current session to use the @dev alias.
    * @usage drush site-set user@server/path/to/drupal#sitename
