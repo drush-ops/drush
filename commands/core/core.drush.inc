@@ -115,7 +115,6 @@ function core_drush_engine_type_info() {
  */
 function core_drush_engine_drupal() {
   $engines = array(
-    'batch' => array(),
     'update'=> array(),
     'environment' => array(),
     'site_install' => array(),
