@@ -19,17 +19,4 @@ class BatchCommands extends DrushCommands {
     drush_batch_command($batch_id);
   }
 
-  /**
-   * Perform update functions.
-   *
-   * @command updatedb-batch-process
-   * @param $batch_id The batch id that will be processed.
-   * @hidden
-   * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
-   */
-  public function updatedb_process($batch_id) {
-    drush_include_engine('drupal', 'update');
-    _update_batch_command($batch_id);
-  }
-
 }
