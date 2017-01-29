@@ -118,7 +118,6 @@ function core_drush_engine_drupal() {
     'environment' => array(),
     'site_install' => array(),
     'pm' => array(),
-    'cache' => array(),
   );
   return $engines;
 }
