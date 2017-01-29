@@ -6,9 +6,9 @@ use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drush\Commands\DrushCommands;
-use Drush\Log\LogLevel;
 use Drupal\Core\DrupalKernel;
 use Drupal\Core\Site\Settings;
+use Drupal\Core\Cache\Cache;
 use Symfony\Component\HttpFoundation\Request;
 
 /*
@@ -41,12 +41,10 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface {
    * @default-fields cid,data,created,expire,tags
    * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
    */
-  public function get($cid, $bin = NULL, $options = ['format' => 'json']) {
-    drush_include_engine('drupal', 'cache');
-    $result = drush_op('_drush_cache_command_get', $cid, $bin);
-
+  public function get($cid, $bin = 'default', $options = ['format' => 'json']) {
+    $result = \Drupal::cache($bin)->get($cid);
     if (empty($result)) {
-      throw new \Exception(dt('The !cid object in the !bin bin was not found.', array('!cid' => $cid, '!bin' => $bin ? $bin : _drush_cache_bin_default())));
+      throw new \Exception(dt('The !cid object in the !bin bin was not found.', array('!cid' => $cid, '!bin' => $bin)));
     }
     return new PropertyList($result);
   }
@@ -55,7 +53,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface {
    * Clear a specific cache, or all Drupal caches.
    *
    * @command cache-clear
-   * @param $type The particular cache to clear. Omit this argument to choose from available caches.
+   * @param $type The particular cache to clear. Omit this argument to choose from available types.
    * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
    * @hidden-option cache-clear
    * @aliases cc
@@ -63,7 +61,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface {
    * @complete \Drush\Commands\core\CacheCommands::complete
    * @notify Caches have been cleared.
    */
-  public function clear($type = NULL, $options = ['cache-clear' => TRUE]) {
+  public function clear($type, $options = ['cache-clear' => TRUE]) {
     if (!$options['cache-clear']) {
       $this->logger()->info(dt("Skipping cache-clear operation due to --cache-clear=0 option."));
       return NULL;
@@ -71,25 +69,23 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface {
 
     $types = $this->getTypes(drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
 
-    if (empty($type)) {
-      // Don't offer 'all' unless Drush has bootstrapped the Drupal site
-      if (!drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
-        unset($types['all']);
-      }
-      $type = drush_choice($types, 'Enter a number to choose which cache to clear.', '!key');
-      if (empty($type)) {
-        return drush_user_abort();
-      }
-    }
-
     // Do it.
     drush_op($types[$type]);
-    // @todo 'all' only applies to D7.
-    if ($type == 'all' && !drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
-      $this->logger()->warning(dt("No Drupal site found, only 'drush' cache was cleared."));
-    }
-    else {
-      $this->logger()->success(dt("'!name' cache was cleared.", array('!name' => $type)));
+    $this->logger()->success(dt("'!name' cache was cleared.", array('!name' => $type)));
+  }
+
+  /**
+   * @hook interact cache-clear
+   */
+  public function interact($input, $output) {
+    if (empty($input->getArgument('type'))) {
+      $types = $this->getTypes(drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
+      $type = drush_choice(array_combine(array_keys($types), array_keys($types)), 'Enter a number to choose which cache to clear.', '!key');
+      if (empty($type)) {
+        // @todo throw Exception.
+        return drush_user_abort();
+      }
+      $input->setArgument('type', $type);
     }
   }
 
@@ -107,7 +103,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface {
    * @aliases cs
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    */
-  public function set($cid, $data, $bin = NULL, $expire = NULL, $tags = NULL, $options = ['input-format' => 'string', 'cache-get' => FALSE]) {
+  public function set($cid, $data, $bin = 'default', $expire = NULL, $tags = NULL, $options = ['input-format' => 'string', 'cache-get' => FALSE]) {
     $tags = is_string($tags) ? _convert_csv_to_array($tags) : [];
 
     // In addition to prepare, this also validates. Can't easily be in own validate callback as
@@ -118,8 +114,11 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface {
       return;
     }
 
-    drush_include_engine('drupal', 'cache');
-    return drush_op('_drush_cache_command_set', $cid, $data, $bin, $expire, $tags);
+    if (!isset($expire) || $expire == 'CACHE_PERMANENT') {
+      $expire = Cache::PERMANENT;
+    }
+
+    return \Drupal::cache($bin)->set($cid, $data, $expire, $tags);
   }
 
   protected function setPrepareData($data, $options) {
@@ -242,8 +241,17 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface {
    * Types of caches available for clearing. Contrib commands can hook in their own.
    */
   function getTypes($include_bootstrapped_types = FALSE) {
-    drush_include_engine('drupal', 'cache');
-    $types = _drush_cache_clear_types($include_bootstrapped_types);
+    $types = array(
+      'drush' => [$this, 'clearDrush'],
+    );
+    if ($include_bootstrapped_types) {
+      $types += array(
+        'theme-registry' => [$this, 'clearThemeRegistry'],
+        'router' => [$this, 'clearRouter'],
+        'css-js' => [$this, 'clearCssJs'],
+        'render' => [$this, 'clearRender'],
+      );
+    }
 
     // Include the appropriate environment engine, so callbacks can use core
     // version specific cache clearing functions directly.
@@ -266,5 +274,28 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface {
     // Release XML. We don't clear tarballs since those never change.
     $matches = drush_scan_directory(drush_directory_cache('download'), "/^https---updates.drupal.org-release-history/", array('.', '..'));
     array_map('unlink', array_keys($matches));
+  }
+
+  static function clearThemeRegistry() {
+    \Drupal::service('theme.registry')->reset();
+  }
+
+  static function clearRouter() {
+    /** @var \Drupal\Core\Routing\RouteBuilderInterface $router_builder */
+    $router_builder = \Drupal::service('router.builder');
+    $router_builder->rebuild();
+  }
+
+  static function clearCssJs() {
+    _drupal_flush_css_js();
+    \Drupal::service('asset.css.collection_optimizer')->deleteAll();
+    \Drupal::service('asset.js.collection_optimizer')->deleteAll();
+  }
+
+  /**
+   * Clears the render cache entries.
+   */
+  static function clearRender() {
+    Cache::invalidateTags(['rendered']);
   }
 }
