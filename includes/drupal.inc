@@ -82,8 +82,7 @@ function system_watchdog($log_entry) {
     $severity = 'error';
   }
   else {
-    drush_include_engine('drupal', 'environment');
-    $levels = drush_watchdog_severity_levels();
+    $levels = RfcLogLevel::getLevels();
     $severity = $levels[$log_entry['severity']];
   }
   // Format the message.

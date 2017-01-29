@@ -2,6 +2,7 @@
 namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Core\Logger\RfcLogLevel;
 use Drush\Commands\DrushCommands;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\Html;
@@ -25,7 +26,7 @@ class WatchdogCommands extends DrushCommands {
    *   Show a listing of most recent 10 messages containing the string "cron run succesful".
    * @usage drush watchdog-show --count=46
    *   Show a listing of most recent 46 messages.
-   * @usage drush watchdog-show --severity=notice
+   * @usage drush watchdog-show --severity=Notice
    *   Show a listing of most recent 10 messages with a severity of notice.
    * @usage drush watchdog-show --type=php
    *   Show a listing of most recent 10 messages of type php
@@ -89,18 +90,19 @@ class WatchdogCommands extends DrushCommands {
   /**
    * @hook interact watchdog-list
    */
-  public function interactShow($input, $output) {
+  public function interactList($input, $output) {
     drush_include_engine('drupal', 'environment');
 
     $choices['-- types --'] = dt('== message types ==');
-    $types = drush_watchdog_message_types();
+    $types = $this->messageTypes();
     foreach ($types as $key => $type) {
       $choices[$key] = $type;
     }
     $choices['-- levels --'] = dt('== severity levels ==');
-    $severities = drush_watchdog_severity_levels();
+    $severities = RfcLogLevel::getLevels();
+
     foreach ($severities as $key => $value) {
-      $choices[$key] = "$value($key)";
+      $choices[$key] = $value;
     }
     $option = drush_choice($choices, dt('Select a message type or severity level.'));
     if ($option === FALSE) {
@@ -112,7 +114,7 @@ class WatchdogCommands extends DrushCommands {
       $input->setOption('type', $types[$option]);
     }
     else {
-      $input->setOption('severity', $severities[$option]);
+      $input->setOption('severity', $option);
     }
   }
 
@@ -214,7 +216,7 @@ class WatchdogCommands extends DrushCommands {
     $args = array();
     $conditions = array();
     if ($type) {
-      $types = drush_watchdog_message_types();
+      $types = $this->messageTypes();
       if (array_search($type, $types) === FALSE) {
         $msg = "Unrecognized message type: !type.\nRecognized types are: !types.";
         throw new \Exception(dt($msg, array('!type' => $type, '!types' => implode(', ', $types))));
@@ -223,7 +225,7 @@ class WatchdogCommands extends DrushCommands {
       $args[':type'] = $type;
     }
     if (isset($severity)) {
-      $severities = drush_watchdog_severity_levels();
+      $severities = RfcLogLevel::getLevels();
       if (isset($severities[$severity])) {
         $level = $severity;
       }
@@ -265,7 +267,7 @@ class WatchdogCommands extends DrushCommands {
    */
   function formatResult($result, $extended = FALSE) {
     // Severity.
-    $severities = drush_watchdog_severity_levels();
+    $severities = RfcLogLevel::getLevels();
     $result->severity = $severities[$result->severity];
 
     // Date.
@@ -311,5 +313,15 @@ class WatchdogCommands extends DrushCommands {
     }
 
     return $result;
+  }
+
+  /**
+   * Helper function to obtain the message types based on drupal version.
+   *
+   * @return
+   *   Array of watchdog message types.
+   */
+  public static function messageTypes() {
+    return _dblog_get_message_types();
   }
 }

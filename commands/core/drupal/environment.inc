@@ -323,35 +323,6 @@ function drush_theme_uninstall($themes) {
   $boot->add_logger();
 }
 
-/**
- * Helper function to obtain the severity levels based on Drupal version.
- *
- * @return array
- *   Watchdog severity levels keyed by RFC 3164 severities.
- */
-function drush_watchdog_severity_levels() {
-  return array(
-    RfcLogLevel::EMERGENCY => LogLevel::EMERGENCY,
-    RfcLogLevel::ALERT => LogLevel::ALERT,
-    RfcLogLevel::CRITICAL => LogLevel::CRITICAL,
-    RfcLogLevel::ERROR => LogLevel::ERROR,
-    RfcLogLevel::WARNING => LogLevel::WARNING,
-    RfcLogLevel::NOTICE => LogLevel::NOTICE,
-    RfcLogLevel::INFO => LogLevel::INFO,
-    RfcLogLevel::DEBUG => LogLevel::DEBUG,
-  );
-}
-
-/**
- * Helper function to obtain the message types based on drupal version.
- *
- * @return
- *   Array of watchdog message types.
- */
-function drush_watchdog_message_types() {
-  return _dblog_get_message_types();
-}
-
 function _drush_theme_default() {
   return \Drupal::config('system.theme')->get('default');
 }
