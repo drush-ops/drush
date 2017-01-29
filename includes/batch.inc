@@ -117,12 +117,7 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
     // The batch is now completely built. Allow other modules to make changes
     // to the batch so that it is easier to reuse batch processes in other
     // enviroments.
-    if (drush_drupal_major_version() >= 8) {
-      \Drupal::moduleHandler()->alter('batch', $batch);
-    }
-    else {
-      drupal_alter('batch', $batch);
-    }
+    \Drupal::moduleHandler()->alter('batch', $batch);
 
     // Assign an arbitrary id: don't rely on a serial column in the 'batch'
     // table, since non-progressive batches skip database storage completely.
@@ -139,25 +134,10 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
 
     drush_include_engine('drupal', 'environment');
     // Store the batch.
-    if (drush_drupal_major_version() >= 8) {
-      /** @var \Drupal\Core\Batch\BatchStorage $batch_storage */
-      $batch_storage = \Drupal::service('batch.storage');
-      $batch_storage->create($batch);
-    }
-    else {
-      db_insert('batch')
-        ->fields(array(
-          'bid' => $batch['id'],
-          'timestamp' => REQUEST_TIME,
-          'token' => drush_get_token($batch['id']),
-          'batch' => serialize($batch),
-        ))
-        ->execute();
-    }
+    /** @var \Drupal\Core\Batch\BatchStorage $batch_storage */
+    $batch_storage = \Drupal::service('batch.storage');
+    $batch_storage->create($batch);
     $finished = FALSE;
-
-    // Not used in D8+ and possibly earlier.
-    global $user;
 
     while (!$finished) {
       $data = drush_invoke_process('@self', $command, $args, array('user' => \Drupal::currentUser()->id()));
