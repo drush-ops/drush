@@ -6,18 +6,6 @@
  */
 
 /**
- * Implements hook_drush_help_alter().
- */
-function sql_drush_help_alter(&$command) {
-  // Drupal 7+ only options.
-  if (drush_drupal_major_version() >= 7) {
-    if ($command['commandfile'] == 'sql') {
-      unset($command['options']['target']['hidden']);
-    }
-  }
-}
-
-/**
  * Safely bootstrap Drupal to the point where we can
  * access the database configuration.
  */
@@ -40,18 +28,6 @@ function drush_sql_bootstrap_further() {
   if (!drush_get_option(array('db-url', 'db-spec'))) {
     drush_sql_bootstrap_database_configuration();
   }
-}
-
-// @todo Remove once sql-sync and archive-dump are using \Drush\Commands\OptionsCommands::optionsetTableSelection
-function drush_sql_get_table_selection_options() {
-  return array(
-    'skip-tables-key' => 'A key in the $skip_tables array. @see example.drushrc.php. Optional.',
-    'structure-tables-key' => 'A key in the $structure_tables array. @see example.drushrc.php. Optional.',
-    'tables-key' => 'A key in the $tables array. Optional.',
-    'skip-tables-list' => 'A comma-separated list of tables to exclude completely. Optional.',
-    'structure-tables-list' => 'A comma-separated list of tables to include for structure, but not data. Optional.',
-    'tables-list' => 'A comma-separated list of tables to transfer. Optional.',
-  );
 }
 
 /**

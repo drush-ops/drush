@@ -1,7 +1,7 @@
 <?php
 
 namespace Unish;
-use \Drush\Sql\SqlTrait;
+use \Drush\Sql\SqlTableSelectionTrait;
 
 /**
   * Unit tests for expandWildcardTables() and filterTables().
@@ -11,7 +11,7 @@ use \Drush\Sql\SqlTrait;
   */
 class WildcardUnitCase extends UnitUnishTestCase {
 
-  use SqlTrait;
+  use SqlTableSelectionTrait;
 
   /**
    * Tests drush_sql_expand_wildcard_tables().

@@ -7,7 +7,7 @@ use Webmozart\PathUtil\Path;
 
 class SqlBase {
 
-  use SqlTrait;
+  use SqlTableSelectionTrait;
 
   // An Drupal style array containing specs for connecting to database.
   public $db_spec;
