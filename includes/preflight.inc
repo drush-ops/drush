@@ -351,6 +351,15 @@ function drush_preflight_root() {
 }
 
 function drush_preflight_site() {
+  // If possible set the site path according to the current working directory
+  // in order to load the right site specific drushrc.php.
+  $root = drush_get_context('DRUSH_SELECTED_DRUPAL_ROOT');
+  $path = drush_site_path();
+  if (substr($path, 0, strlen($root) + 1) == $root . '/') {
+    $site_path = substr($path, strlen($root) + 1);
+    drush_set_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', $site_path);
+  }
+
   // Load the Drupal site configuration options upfront.
   drush_load_config('site');
 
