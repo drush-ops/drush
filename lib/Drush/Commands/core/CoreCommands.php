@@ -126,7 +126,7 @@ class CoreCommands extends DrushCommands {
       $rows[$i] = [
         'title' => (string) $info['title'],
         'value' => (string) $info['value'],
-        'description' => (string) $info['description'],
+        'description' => drush_render($info['description']),
         'sid' => $severity,
         'severity' => @$severities[$severity]
       ];
