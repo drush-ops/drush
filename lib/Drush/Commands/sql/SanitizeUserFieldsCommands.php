@@ -84,6 +84,6 @@ class SanitizeUserFieldsCommands extends DrushCommands {
    * @param $input The effective commandline input for this request.
    */
   public function messages(&$messages, InputInterface $input) {
-    $messages[] = dt('Sanitize string fields associated with the user.');
+    $messages[] = dt('Sanitize text Fields associated with the user.');
   }
 }
