@@ -5,6 +5,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Component\Utility\Random;
 use Drupal\Core\Database\Database;
 use Drush\Commands\DrushCommands;
+use Symfony\Component\Console\Input\InputInterface;
 
 /**
  * This class is a good example of how to build a sql-sanitize extension.
@@ -35,8 +36,8 @@ class SanitizeUserFieldsCommands extends DrushCommands {
           continue;
         }
 
-        $conditions = [':name' => $field_name];
-        $output = $conn->select('SELECT data FROM config WHERE name = field.field.user.user.:name', NULL, $conditions);
+        $arguments = [':name' => 'field.field.user.user.'. $field_name];
+        $output = $conn->query('SELECT data FROM config WHERE name = :name', $arguments)->fetchCol();
         $field_config = unserialize($output[0]);
         $field_type = $field_config['field_type'];
         $randomizer = new Random();
@@ -44,15 +45,15 @@ class SanitizeUserFieldsCommands extends DrushCommands {
         switch ($field_type) {
 
           case 'email':
-            $conn->update($table)->fields([$field_name . '_value' => $randomizer->name(10) . '@example.com']);
+            $conn->update($table)->fields([$field_name . '_value' => $randomizer->name(10) . '@example.com'])->execute();
             break;
 
           case 'string':
-            $conn->update($table)->fields([$field_name . '_value' => $randomizer->name(255)]);
+            $conn->update($table)->fields([$field_name . '_value' => $randomizer->name(255)])->execute();
             break;
 
           case 'string_long':
-            $conn->update($table)->fields([$field_name . '_value' => $randomizer->sentences(1)]);
+            $conn->update($table)->fields([$field_name . '_value' => $randomizer->sentences(1)])->execute();
             break;
 
           case 'telephone':
@@ -60,19 +61,19 @@ class SanitizeUserFieldsCommands extends DrushCommands {
             break;
 
           case 'text':
-            $conn->update($table)->fields([$field_name . '_value' => $randomizer->paragraphs(2)]);
+            $conn->update($table)->fields([$field_name . '_value' => $randomizer->paragraphs(2)])->execute();
             break;
 
           case 'text_long':
-            $conn->update($table)->fields([$field_name . '_value' => $randomizer->paragraphs(10)]);
+            $conn->update($table)->fields([$field_name . '_value' => $randomizer->paragraphs(10)])->execute();
             break;
 
           case 'text_with_summary':
-            $conn->update($table)->fields([$field_name . '_value' => $randomizer->paragraphs(2)]);
-            $conn->update($table)->fields([$field_name . '_summary' => $randomizer->name(255)]);
+            $conn->update($table)->fields([$field_name . '_value' => $randomizer->paragraphs(2)])->execute();
+            $conn->update($table)->fields([$field_name . '_summary' => $randomizer->name(255)])->execute();
             break;
         }
-        $this->logger()->success(dt('!table sanitized.', ['!table' => $table]));
+        $this->logger()->success(dt('!table table sanitized.', ['!table' => $table]));
       }
     }
   }
@@ -80,9 +81,9 @@ class SanitizeUserFieldsCommands extends DrushCommands {
   /**
    * @hook on-event sql-sanitize-confirms
    * @param $messages An array of messages to show during confirmation.
-   * @param $options The effective commandline options for this request.
+   * @param $input The effective commandline input for this request.
    */
-  public function messages(&$messages, $options) {
+  public function messages(&$messages, InputInterface $input) {
     $messages[] = dt('Sanitize string fields associated with the user.');
   }
 }

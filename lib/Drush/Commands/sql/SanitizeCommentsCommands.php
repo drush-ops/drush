@@ -4,6 +4,7 @@ namespace Drush\Commands\sql;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Database\Database;
 use Drush\Commands\DrushCommands;
+use Symfony\Component\Console\Input\InputInterface;
 
 /**
  * This class is a good example of how to build a sql-sanitize extension.
@@ -33,11 +34,9 @@ class SanitizeCommentsCommands extends DrushCommands {
 
       // Update auth.
       Database::getConnection()->update('comment_field_data')
-        ->fields([
-          'name' => "CONCAT('User', `uid`)",
-          'mail' => "CONCAT('user+', `uid`, '@example.com')",
-          'homepage' => 'http://example.com'
-        ])
+        ->expression('name', "CONCAT('User', `uid`)")
+        ->expression('mail', "CONCAT('user+', `uid`, '@example.com')")
+        ->fields(['homepage' => 'http://example.com'])
         ->condition('uid', 1, '>=')
         ->execute();
       $this->logger()->success(dt('Comment display names and emails removed.'));
@@ -47,9 +46,9 @@ class SanitizeCommentsCommands extends DrushCommands {
   /**
    * @hook on-event sql-sanitize-confirms
    * @param $messages An array of messages to show during confirmation.
-   * @param $options The effective commandline options for this request.
+   * @param $input The effective commandline input for this request.
    */
-  public function messages(&$messages, $options) {
+  public function messages(&$messages, InputInterface $input) {
     if ($this->applies()) {
       $messages[] = dt('Remove comment display names and emails.');
     }

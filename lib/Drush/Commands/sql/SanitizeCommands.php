@@ -6,10 +6,11 @@ use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Sql\SqlTrait;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class SanitizeCommands extends DrushCommands implements CustomEventAwareInterface {
 
-  use SqlTrait;
   use CustomEventAwareTrait;
 
   /**
@@ -40,24 +41,29 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
    * @usage drush sql-sanitize --whitelist-fields=field_biography,field_phone_number
    *   Sanitizes database but exempts two user fields from modification.
    */
-  public function sanitize($options = [
-    'db-prefix' => FALSE,
-    'db-url' => '',
-    'sanitize-email' => 'user+%uid@localhost.localdomain',
-    'sanitize-password' => 'password',
-    'whitelist-fields' => '',
-    ]) {
+  public function sanitize($options = ['db-prefix' => FALSE, 'db-url' => '', 'sanitize-email' => 'user+%uid@localhost.localdomain', 'sanitize-password' => 'password', 'whitelist-fields' => '']) {
+    // All sanitizing operations defined in post-command hooks, including Drush
+    // core sanitizing routines.
+  }
 
-    /**
-     * In order to present only one prompt, collect all confirmations from
-     * commandfiles and present at once. Hook implementations should change
-     * $messages by reference. In order to actually sanitize, implement
-     * a method with annotation: @hook post-command sql-sanitize. See
-     */
+  /**
+   * In order to present only one prompt, collect all confirmations from
+   * commandfiles and present at once. Hook implementations should change
+   * $messages by reference. In order to actually sanitize, implement
+   * a method with annotation: @hook post-command sql-sanitize. For example,
+   * \Drush\Commands\sql\SanitizeSessionsCommands::sanitize
+   *
+   * @hook interact sql-sanitize
+   *
+   *
+   * @param \Symfony\Component\Console\Input\InputInterface $input
+   * @param \Symfony\Component\Console\Output\OutputInterface $output
+   */
+  public function interact(InputInterface $input, OutputInterface $output) {
     $messages = [];
     $handlers = $this->getCustomEventHandlers('sql-sanitize-confirms');
     foreach ($handlers as $handler) {
-      $handler($messages, $options);
+      $handler($messages, $input);
     }
     if (!empty($messages)) {
       drush_print(dt('The following operations will be performed:'));
@@ -68,9 +74,6 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
     if (!drush_confirm(dt('Do you really want to sanitize the current database?'))) {
       return drush_user_abort();
     }
-
-    // All sanitizing operations defined in post-command hooks, including Drush
-    // core sanitizing routines.
   }
 }
 

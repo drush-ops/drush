@@ -4,6 +4,7 @@ namespace Drush\Commands\sql;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Database\Database;
 use Drush\Commands\DrushCommands;
+use Symfony\Component\Console\Input\InputInterface;
 
 /**
  * This class is a good example of how to build a sql-sanitize extension.
@@ -31,7 +32,7 @@ class SanitizeUserTableCommands extends DrushCommands {
       drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
       $password_hasher = \Drupal::service('password');
       $hash = $password_hasher->hash($options['sanitize-password']);
-      $query->fields(['password' => $hash]);
+      $query->fields(['pass' => $hash]);
       $messages[] = dt('User passwords sanitized.');
     }
 
@@ -54,7 +55,7 @@ class SanitizeUserTableCommands extends DrushCommands {
           $new_mail =  "concat('" . str_replace(array_keys($email_map), array_values($email_map), $options['sanitize-email']) . "')";
         }
       }
-      $query->fields(['mail' => $new_mail]);
+      $query->expression('mail', $new_mail);
       $messages[] = dt('User emails sanitized.');
     }
 
@@ -69,11 +70,12 @@ class SanitizeUserTableCommands extends DrushCommands {
   /**
    * @hook on-event sql-sanitize-confirms
    * @param $messages An array of messages to show during confirmation.
-   * @param $options The effective commandline options for this request.
+   * @param $input The effective commandline input for this request.
    */
-  public function messages(&$messages, $options) {
+  public function messages(&$messages, InputInterface $input) {
+    $options = $input->getOptions();
     if ($this->isEnabled($options['sanitize-password'])) {
-      $messages[] = dt('Sanitize user passswords.');
+      $messages[] = dt('Sanitize user passwords.');
     }
     if ($this->isEnabled($options['sanitize-email'])) {
       $messages[] = dt('Sanitize user emails.');

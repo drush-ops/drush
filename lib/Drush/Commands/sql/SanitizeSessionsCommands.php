@@ -4,6 +4,7 @@ namespace Drush\Commands\sql;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Database\Database;
 use Drush\Commands\DrushCommands;
+use Symfony\Component\Console\Input\InputInterface;
 
 /**
  * This class is a good example of how to build a sql-sanitize extension.
@@ -27,9 +28,9 @@ class SanitizeSessionsCommands extends DrushCommands {
   /**
    * @hook on-event sql-sanitize-confirms
    * @param $messages An array of messages to show during confirmation.
-   * @param $options The effective commandline options for this request.
+   * @param $input The effective commandline input for this request.
    */
-  public function messages(&$messages, $options) {
+  public function messages(&$messages, InputInterface $input) {
     $messages[] = dt('Truncate sessions table.');
   }
 }
