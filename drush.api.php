@@ -277,13 +277,10 @@ function drush_hook_pre_pm_enable() {
  * This is equivalent to the built-in --sanitize option of sql-sync, but
  * simplified to only work with default values on Drupal 6 + mysql.
  *
- * @see sql_drush_sql_sync_sanitize()
+ * @see \Drush\Commands\sql\SanitizeSessionsCommands::sanitize
  */
 function hook_drush_sql_sync_sanitize($source) {
-  $table = drush_get_option('db-prefix') ? '{users}' : 'users';
-  drush_sql_register_post_sync_op('my-sanitize-id',
-    dt('Reset passwords and email addresses in user table.'),
-    "UPDATE $table SET pass = MD5('password'), mail = concat('user+', uid, '@localhost') WHERE uid > 0;");
+  // @todo
 }
 
 /**
