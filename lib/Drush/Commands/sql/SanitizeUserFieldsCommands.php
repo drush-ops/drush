@@ -24,55 +24,61 @@ class SanitizeUserFieldsCommands extends DrushCommands {
    */
   public function sanitize($result, CommandData $commandData) {
     $options = $commandData->options();
+    $randomizer = new Random();
     $conn = Database::getConnection();
-    $sql_class = drush_sql_get_class();
-    $tables = $sql_class->listTables();
-    $whitelist_fields = (array) explode(',', $options['whitelist-fields']);
+    $field_definitions = \Drupal::entityManager()->getFieldDefinitions('user', 'user');
+    $field_storage = \Drupal::entityManager()->getFieldDefinitions('user', 'user');
+    foreach (explode(',', $options['whitelist-fields']) as $key => $def) {
+      unset($field_definitions[$key], $field_storage[$key]);
+    }
 
-    foreach ($tables as $table) {
-      if (strpos($table, 'user__field_') === 0) {
-        $field_name = substr($table, 6, strlen($table));
-        if (in_array($field_name, $whitelist_fields)) {
-          continue;
-        }
+    foreach ($field_definitions as $key => $def) {
+      $execute = FALSE;
+      if ($field_storage[$key]->getFieldStorageDefinition()->isBaseField()) {
+        continue;
+      }
+      $table = 'user__' . $key;
+      $query = $conn->update($table);
+      $name = $def->getName();
+      switch ($def->getType()) {
+        case 'email':
+          $query->fields([$name . '_value' => $randomizer->name(10) . '@example.com']);
+          $execute = TRUE;
+          break;
 
-        $arguments = [':name' => 'field.field.user.user.'. $field_name];
-        $output = $conn->query('SELECT data FROM config WHERE name = :name', $arguments)->fetchCol();
-        $field_config = unserialize($output[0]);
-        $field_type = $field_config['field_type'];
-        $randomizer = new Random();
+        case 'string':
+          $query->fields([$name . '_value' => $randomizer->name(255)]);
+          $execute = TRUE;
+          break;
 
-        switch ($field_type) {
+        case 'string_long':
+          $query->fields([$name . '_value' => $randomizer->sentences(1)]);
+          $execute = TRUE;
+          break;
 
-          case 'email':
-            $conn->update($table)->fields([$field_name . '_value' => $randomizer->name(10) . '@example.com'])->execute();
-            break;
+        case 'telephone':
+          $query->fields([$name . '_value' => '15555555555']);
+          $execute = TRUE;
+          break;
 
-          case 'string':
-            $conn->update($table)->fields([$field_name . '_value' => $randomizer->name(255)])->execute();
-            break;
+        case 'text':
+          $query->fields([$name . '_value' => $randomizer->paragraphs(2)]);
+          $execute = TRUE;
+          break;
 
-          case 'string_long':
-            $conn->update($table)->fields([$field_name . '_value' => $randomizer->sentences(1)])->execute();
-            break;
+        case 'text_long':
+          $query->fields([$name . '_value' => $randomizer->paragraphs(10)]);
+          $execute = TRUE;
+          break;
 
-          case 'telephone':
-            $conn->update($table)->fields([$field_name . '_value' => '15555555555']);
-            break;
-
-          case 'text':
-            $conn->update($table)->fields([$field_name . '_value' => $randomizer->paragraphs(2)])->execute();
-            break;
-
-          case 'text_long':
-            $conn->update($table)->fields([$field_name . '_value' => $randomizer->paragraphs(10)])->execute();
-            break;
-
-          case 'text_with_summary':
-            $conn->update($table)->fields([$field_name . '_value' => $randomizer->paragraphs(2)])->execute();
-            $conn->update($table)->fields([$field_name . '_summary' => $randomizer->name(255)])->execute();
-            break;
-        }
+        case 'text_with_summary':
+          $query->fields([$name . '_value' => $randomizer->paragraphs(2)]);
+          $query->fields([$name . '_summary' => $randomizer->name(255)]);
+          $execute = TRUE;
+          break;
+      }
+      if ($execute) {
+        $query->execute();
         $this->logger()->success(dt('!table table sanitized.', ['!table' => $table]));
       }
     }
