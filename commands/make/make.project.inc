@@ -61,6 +61,11 @@ class DrushMakeProject {
   protected $variant = 'profile-only';
 
   /**
+   * Type of downloaded project.
+   */
+  protected $type = 'core';
+
+  /**
    * Set attributes and retrieve project information.
    */
   protected function __construct($project) {
@@ -636,6 +641,12 @@ class DrushMakeProject_Core extends DrushMakeProject {
  * For processing libraries.
  */
 class DrushMakeProject_Library extends DrushMakeProject {
+
+  /**
+   * Override default project type.
+   */
+  protected $type = 'library';
+
   /**
    * Override constructor for libraries to properly set contrib destination.
    */
@@ -673,6 +684,12 @@ class DrushMakeProject_Library extends DrushMakeProject {
  * For processing modules.
  */
 class DrushMakeProject_Module extends DrushMakeProject {
+
+  /**
+   * Override default project type.
+   */
+  protected $type = 'module';
+
   /**
    * Override constructor for modules to properly set contrib destination.
    */
@@ -686,6 +703,12 @@ class DrushMakeProject_Module extends DrushMakeProject {
  * For processing installation profiles.
  */
 class DrushMakeProject_Profile extends DrushMakeProject {
+
+  /**
+   * Override default project type.
+   */
+  protected $type = 'profile';
+
   /**
    * Override contructor for installation profiles to properly set contrib
    * destination.
@@ -707,6 +730,12 @@ class DrushMakeProject_Profile extends DrushMakeProject {
  * For processing themes.
  */
 class DrushMakeProject_Theme extends DrushMakeProject {
+
+  /**
+   * Override default project type.
+   */
+  protected $type = 'theme';
+
   /**
    * Override contructor for themes to properly set contrib destination.
    */
@@ -720,6 +749,12 @@ class DrushMakeProject_Theme extends DrushMakeProject {
  * For processing translations.
  */
 class DrushMakeProject_Translation extends DrushMakeProject {
+
+  /**
+   * Override default project type.
+   */
+  protected $type = 'translation';
+
   /**
    * Override constructor for translations to properly set contrib destination.
    */
