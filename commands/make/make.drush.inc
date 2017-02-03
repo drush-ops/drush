@@ -774,6 +774,7 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
       'directory_name'      => '',
       'make_directory'      => $make_dir,
       'options'             => array(),
+      'type'                => isset($project['type']) ? $project['type'] : 'module',
     );
     // MD5 Checksum.
     if ($ignore_checksums) {
