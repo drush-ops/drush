@@ -192,9 +192,6 @@ class SqlSyncCommands extends DrushCommands {
       }
       throw new \Exception(dt('Error: no database record could be found for target !destination', array('!destination' => $destination)));
     }
-    if (drush_sitealias_convert_db_spec_to_db_url($source_db_spec) == drush_sitealias_convert_db_spec_to_db_url($target_db_spec) && !drush_get_context('DRUSH_SIMULATE')) {
-      throw new \Exception(dt('Source and target databases are the same; please sync to a different target.'));
-    }
 
     if (drush_get_option('no-dump') && !drush_get_option('source-dump')) {
       throw new \Exception(dt('The --source-dump option must be supplied when --no-dump is specified.'));
