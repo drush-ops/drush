@@ -73,7 +73,6 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface {
             $return = drush_dispatch($command);
 
             if (drush_get_context('DRUSH_DEBUG') && !drush_get_context('DRUSH_QUIET')) {
-              // @todo Create version independant wrapper around Drupal timers. Use it.
               drush_print_timers();
             }
             break;

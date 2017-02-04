@@ -196,7 +196,7 @@ function annotationcommand_adapter_get_options($command) {
  * variable is set, these will be called via Symfony's Application::run() method.
  * Otherwise, the legacy Drush command dispatcher will be used for all commands.
  *
- * @return bolean false if command failed (expect drush_set_error was called in this case)
+ * @return boolean false if command failed (expect drush_set_error was called in this case)
  */
 function annotationcommand_adapter_process_command() {
   $userArgs = func_get_args();
