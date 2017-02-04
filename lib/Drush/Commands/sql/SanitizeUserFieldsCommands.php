@@ -40,20 +40,21 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SqlSanitizePlu
       $table = 'user__' . $key;
       $query = $conn->update($table);
       $name = $def->getName();
-      // @todo
-      // $value = StringItem::generateSampleValue($def);
+      $field_type_class = \Drupal::service('plugin.manager.field.field_type')->getPluginClass($def->getType());
+      $value_array = $field_type_class::generateSampleValue($def);
+      $value = $value_array['value'];
       switch ($def->getType()) {
         case 'email':
-          $query->fields([$name . '_value' => $randomizer->name(10) . '@example.com']);
+          $query->fields([$name . '_value' => $value]);
           $execute = TRUE;
           break;
         case 'string':
-          $query->fields([$name . '_value' => $randomizer->name(250)]);
+          $query->fields([$name . '_value' => $value]);
           $execute = TRUE;
           break;
 
         case 'string_long':
-          $query->fields([$name . '_value' => $randomizer->sentences(1)]);
+          $query->fields([$name . '_value' => $value]);
           $execute = TRUE;
           break;
 
@@ -63,18 +64,20 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SqlSanitizePlu
           break;
 
         case 'text':
-          $query->fields([$name . '_value' => $randomizer->paragraphs(10)]);
+          $query->fields([$name . '_value' => $value]);
           $execute = TRUE;
           break;
 
         case 'text_long':
-          $query->fields([$name . '_value' => $randomizer->paragraphs(10)]);
+          $query->fields([$name . '_value' => $value]);
           $execute = TRUE;
           break;
 
         case 'text_with_summary':
-          $query->fields([$name . '_value' => $randomizer->paragraphs(10)]);
-          $query->fields([$name . '_summary' => $randomizer->name(255)]);
+          $query->fields([
+            $name . '_value' => $value,
+            $name . '_summary' => $value_array['summary'],
+          ]);
           $execute = TRUE;
           break;
       }
