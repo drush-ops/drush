@@ -3,11 +3,12 @@
 namespace Drush\Tests\Make\Parser;
 
 use Drush\Make\Parser\ParserYaml;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \Drush\Make\Parser\ParserYaml
  */
-class ParserYamlTest extends \PHPUnit_Framework_TestCase {
+class ParserYamlTest extends TestCase {
 
   /**
    * @covers ::supportedFile
