@@ -54,7 +54,7 @@ class Queue8 extends QueueBase {
 
     while ((!$time_limit || time() < $end) && ($item = $queue->claimItem())) {
       try {
-        drush_log(dt('Processing item @id from @name queue.', array('@name' => $name, 'id' => $item->item_id)), LogLevel::INFO);
+        drush_log(dt('Processing item @id from @name queue.', array('@name' => $name, '@id' => $item->item_id)), LogLevel::INFO);
         $worker->processItem($item->data);
         $queue->deleteItem($item);
         $count++;
