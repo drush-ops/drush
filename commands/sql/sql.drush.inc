@@ -6,31 +6,6 @@
  */
 
 /**
- * Safely bootstrap Drupal to the point where we can
- * access the database configuration.
- */
-function drush_sql_bootstrap_database_configuration() {
-  // Under Drupal 7, if the database is configured but empty, then
-  // DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION will throw an exception.
-  // If this happens, we'll just catch it and continue.
-  // TODO:  Fix this in the bootstrap, per http://drupal.org/node/1996004
-  try {
-    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
-  }
-  catch (Exception $e) {
-  }
-}
-
-/**
- * Check whether further bootstrap is needed. If so, do it.
- */
-function drush_sql_bootstrap_further() {
-  if (!drush_get_option(array('db-url', 'db-spec'))) {
-    drush_sql_bootstrap_database_configuration();
-  }
-}
-
-/**
  * Wrapper for drush_get_class; instantiates an driver-specific instance
  * of SqlBase class.
  *

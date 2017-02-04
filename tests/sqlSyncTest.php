@@ -46,18 +46,16 @@ class sqlSyncTest extends CommandUnishTestCase {
     $name = 'joe.user';
     $mail = "joe.user@myhome.com";
 
-    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
-      // Add user fields and a test User.
-      $this->drush('pm-enable', array('field,text,telephone,comment'), $options + array('yes' => NULL));
-      $this->drush('php-script', array(
-        'user_fields-D' . UNISH_DRUPAL_MAJOR_VERSION,
-        $name,
-        $mail
+    // Add user fields and a test User.
+    $this->drush('pm-enable', array('field,text,telephone,comment'), $options + array('yes' => NULL));
+    $this->drush('php-script', array(
+      'user_fields-D' . UNISH_DRUPAL_MAJOR_VERSION,
+      $name,
+      $mail
       ), $options + array(
-          'script-path' => __DIR__ . '/resources',
-          'debug' => NULL
-        ));
-    }
+        'script-path' => __DIR__ . '/resources',
+      )
+    );
 
     // Copy stage to dev with --sanitize.
     $sync_options = array(
@@ -68,8 +66,8 @@ class sqlSyncTest extends CommandUnishTestCase {
     );
     $this->drush('sql-sync', array('@stage', '@dev'), $sync_options);
 
-    // Confirm that the sample user has the correct email address on the staging site
-    $this->drush('user-information', array($name), $options + array('format' => 'csv', 'include-field-labels' => 0, 'strict' => 0));
+    // Confirm that the sample user is unchanged on the staging site
+    $this->drush('user-information', array($name), $options + array('format' => 'csv', 'include-field-labels' => 0, 'strict' => 0), '@stage');
     $output = $this->getOutput();
     $row  = str_getcsv($output);
     $uid = $row[0];
@@ -88,9 +86,6 @@ class sqlSyncTest extends CommandUnishTestCase {
     $uid = $row[0];
     $this->assertEquals("user+$uid@localhost.localdomain", $row[2], 'email address was sanitized on destination site.');
     $this->assertEquals($name, $row[1]);
-
-    // @todo Confirm that the role_permissions table no longer exists in dev site (i.e. wildcard expansion works in sql-sync).
-    // $this->drush('sql-query', array('SELECT * FROM role_permission'), $options, NULL, NULL, self::EXIT_ERROR);
 
     // Copy stage to dev with --sanitize and a fixed sanitized email
     $sync_options = array(

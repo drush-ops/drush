@@ -21,7 +21,7 @@ sql-query: FAIR. Implicit by site-install, sql-sync
 sql-dump: GOOD. tested by sqlDumpTest.
 sql-sync: GOOD. testLocalSqlSync().
 sql-drop: FAIR. Implicit by site-install
-sql-sanitize: FAIR. Implicit by testLocalSqlSync()
+sql-sanitize and plugins: FAIR. Implicit by testLocalSqlSync()
 
 
 updatedb: NONE. Used to be implicitly tested by siteUpgradeTest.

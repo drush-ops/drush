@@ -15,7 +15,7 @@ class SqlCommands extends DrushCommands {
    * @hidden
    */
   public function conf($options = ['format' => 'yaml', 'all' => FALSE, 'show-passwords' => FALSE]) {
-    drush_sql_bootstrap_database_configuration();
+    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
     if ($options['all']) {
       $sqlVersion = drush_sql_get_version();
       $return = $sqlVersion->getAll();
@@ -49,7 +49,7 @@ class SqlCommands extends DrushCommands {
    *   Fish: Import SQL statements from a file into the current database.
    */
   public function connect($options = ['extra' => '']) {
-    drush_sql_bootstrap_further();
+    $this->further($options);
     $sql = drush_sql_get_class();
     return $sql->connect(FALSE);
   }
@@ -69,7 +69,7 @@ class SqlCommands extends DrushCommands {
    *   Create the database as specified in the db-url option.
    */
   public function create() {
-    drush_sql_bootstrap_further();
+    $this->further($options);
     $sql = drush_sql_get_class();
     $db_spec = $sql->db_spec();
     // Prompt for confirmation.
@@ -95,7 +95,7 @@ class SqlCommands extends DrushCommands {
    * @topics docs-policy
    */
   public function drop() {
-    drush_sql_bootstrap_further();
+    $this->further($options);
     $sql = drush_sql_get_class();
     $db_spec = $sql->db_spec();
     if (!drush_confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $db_spec['database'])))) {
@@ -119,7 +119,7 @@ class SqlCommands extends DrushCommands {
    * @remote-tty
    */
   public function cli() {
-    drush_sql_bootstrap_further();
+    $this->further($options);
     $sql = drush_sql_get_class();
     drush_shell_proc_open($sql->connect());
   }
@@ -149,7 +149,7 @@ class SqlCommands extends DrushCommands {
    *
    */
   public function query($query = '', $options = ['result-file' => NULL, 'file' => NULL, 'extra' => NULL, 'db-prefix' => NULL, 'db-spec' => NULL]) {
-    drush_sql_bootstrap_further();
+    $this->further($options);
     $filename = $options['file'];
     // Enable prefix processing when db-prefix option is used.
     if ($options['db-prefix']) {
@@ -196,8 +196,17 @@ class SqlCommands extends DrushCommands {
    * @hidden-option create-db
    */
   public function dump($options = ['result-file' => NULL, 'create-db' => NULL, 'data-only' => NULL, 'ordered-dump' => NULL, 'gzip' => NULL, 'extra' => NULL, 'extra-dump' => NULL]) {
-    drush_sql_bootstrap_further();
+    $this->further($options);
     $sql = drush_sql_get_class();
     return $sql->dump($options);
+  }
+
+  /**
+   * Check whether further bootstrap is needed. If so, do it.
+   */
+  public function further($options) {
+    if (empty($options['db-url']) && empty($options['db-spec'])) {
+      drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+    }
   }
 }

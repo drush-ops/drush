@@ -7,18 +7,17 @@ use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
- * This class is a good example of how to build a sql-sanitize extension.
+ * A sql-sanitize plugin.
  */
-class SanitizeUserTableCommands extends DrushCommands {
+class SanitizeUserTableCommands extends DrushCommands implements SqlSanitizePluginInterface {
 
   /**
    * Sanitize usernames and passwords. This also an example of how to write a
    * database sanitizer for sql-sync.
    *
-   * @param $result Exit code from the main operation for this command.
-   * @param $commandData Information about the current request.
-   *
    * @hook post-command sql-sanitize
+   *
+   * @inheritdoc
    */
   public function sanitize($result, CommandData $commandData) {
     $options = $commandData->options();
@@ -70,8 +69,8 @@ class SanitizeUserTableCommands extends DrushCommands {
 
   /**
    * @hook on-event sql-sanitize-confirms
-   * @param $messages An array of messages to show during confirmation.
-   * @param $input The effective commandline input for this request.
+   *
+   * @inheritdoc
    */
   public function messages(&$messages, InputInterface $input) {
     $options = $input->getOptions();

@@ -44,15 +44,14 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
   public function sanitize($options = ['db-prefix' => FALSE, 'db-url' => '', 'sanitize-email' => 'user+%uid@localhost.localdomain', 'sanitize-password' => 'password', 'whitelist-fields' => '']) {
     /**
      * In order to present only one prompt, collect all confirmations from
-     * commandfiles and present at once. Hook implementations should change
-     * $messages by reference. In order to actually sanitize, implement
-     * a method with annotation: @hook post-command sql-sanitize. For example,
-     * \Drush\Commands\sql\SanitizeSessionsCommands::sanitize
+     * commandfiles up front. sql-sanitize plugins are commandfiles that implement
+     * \Drush\Commands\sql\SanitizePluginInterface
      */
     $messages = [];
+    $input = $this->input();
     $handlers = $this->getCustomEventHandlers('sql-sanitize-confirms');
     foreach ($handlers as $handler) {
-      $handler($messages, $this->input());
+      $handler($messages, $input);
     }
     if (!empty($messages)) {
       drush_print(dt('The following operations will be performed:'));
@@ -64,8 +63,8 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
       return drush_user_abort();
     }
 
-    // All sanitizing operations defined in post-command hooks, including Drush
-    // core sanitizing routines.
+    // All sanitize operations defined in post-command hooks, including Drush
+    // core sanitize routines. See \Drush\Commands\sql\SanitizePluginInterface.
   }
 }
 
