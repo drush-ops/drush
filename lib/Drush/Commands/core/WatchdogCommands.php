@@ -1,7 +1,9 @@
 <?php
 namespace Drush\Commands\core;
 
+use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Core\Database\Database;
 use Drupal\Core\Logger\RfcLogLevel;
 use Drush\Commands\DrushCommands;
 use Drupal\Component\Utility\Unicode;
@@ -45,9 +47,15 @@ class WatchdogCommands extends DrushCommands {
    */
   function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => NULL, 'type' => NULL, 'extended' => FALSE]) {
     $where = $this->where($options['type'], $options['severity'], $substring);
-    $rsc = drush_db_select('watchdog', '*', $where['where'], $where['args'], 0, $options['count'], 'wid', 'DESC');
-    $table = array();
-    while ($result = drush_db_fetch_object($rsc)) {
+    $query = Database::getConnection()->select('watchdog', 'w')
+      ->range(0, $options['count'])
+      ->fields('w')
+      ->orderBy('wid', 'DESC');
+    if (!empty($where['where'])) {
+      $query->where($where['where'], $where['args']);
+    }
+    $rsc = $query->execute();
+    while ($result = $rsc->fetchObject()) {
       $row = $this->formatResult($result, $options['extended']);
       $table[$row->wid] = (array)$row;
     }
@@ -141,14 +149,12 @@ class WatchdogCommands extends DrushCommands {
    * @return void
    */
   public function delete($substring = '', $options = ['severity' => NULL, 'type' => NULL]) {
-    drush_include_engine('drupal', 'environment');
-
     if ($substring == 'all') {
       drush_print(dt('All watchdog messages will be deleted.'));
       if (!drush_confirm(dt('Do you really want to continue?'))) {
         return drush_user_abort();
       }
-      drush_db_delete('watchdog');
+      $ret = Database::getConnection()->truncate('watchdog')->execute();
       $this->logger()->success(dt('All watchdog messages have been deleted.'));
     }
     else if (is_numeric($substring)) {
@@ -156,9 +162,9 @@ class WatchdogCommands extends DrushCommands {
       if(!drush_confirm(dt('Do you really want to continue?'))) {
         return drush_user_abort();
       }
-      $affected_rows = drush_db_delete('watchdog', 'wid=:wid', array(':wid' => $substring));
+      $affected_rows = Database::getConnection()->delete('watchdog')->condition('wid', $substring)->execute();
       if ($affected_rows == 1) {
-        $this->logger->success(log(dt('Watchdog message #!wid has been deleted.', array('!wid' => $substring))));
+        $this->logger->success(dt('Watchdog message #!wid has been deleted.', array('!wid' => $substring)));
       }
       else {
         throw new \Exception(dt('Watchdog message #!wid does not exist.', array('!wid' => $substring)));
@@ -174,7 +180,9 @@ class WatchdogCommands extends DrushCommands {
       if(!drush_confirm(dt('Do you really want to continue?'))) {
         return drush_user_abort();
       }
-      $affected_rows = drush_db_delete('watchdog', $where['where'], $where['args']);
+      $affected_rows = Database::getConnection()->delete('watchdog')
+        ->where($where['where'], $where['args'])
+        ->execute();
       $this->logger()->success(dt('!affected_rows watchdog messages have been deleted.', array('!affected_rows' => $affected_rows)));
     }
   }
@@ -187,15 +195,20 @@ class WatchdogCommands extends DrushCommands {
    * @drupal-dependencies dblog
    * @aliases wd-one
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
+   *
+   * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
    */
   public function showOne($id, $options = ['format' => 'yaml']) {
-    $rsc = drush_db_select('watchdog', '*', 'wid = :wid', array(':wid' => (int)$id), 0, 1);
-    $result = drush_db_fetch_object($rsc);
+    $rsc = Database::getConnection()->select('watchdog', 'w')
+      ->fields('w')
+      ->condition('wid', (int)$id)
+      ->range(0, 1)
+      ->execute();
+    $result = $rsc->fetchObject();
     if (!$result) {
       throw new \Exception(dt('Watchdog message #!wid not found.', array('!wid' => $id)));
     }
-    $result = core_watchdog_format_result($result, TRUE);
-    return $result;
+    return new PropertyList($this->formatResult($result));
   }
 
   /**
@@ -304,13 +317,7 @@ class WatchdogCommands extends DrushCommands {
       unset($result->uid);
       $message_length = PHP_INT_MAX;
     }
-
-    if (drush_drupal_major_version() >= 8) {
-      $result->message = Unicode::truncate(strip_tags(Html::decodeEntities($result->message)), $message_length, FALSE, FALSE);
-    }
-    else {
-      $result->message = truncate_utf8(strip_tags(decode_entities($result->message)), $message_length, FALSE, FALSE);
-    }
+    $result->message = Unicode::truncate(strip_tags(Html::decodeEntities($result->message)), $message_length, FALSE, FALSE);
 
     return $result;
   }
