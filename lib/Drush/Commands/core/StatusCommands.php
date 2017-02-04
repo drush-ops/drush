@@ -3,6 +3,7 @@
 namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
+use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputInterface;
 
@@ -21,48 +22,50 @@ class StatusCommands extends DrushCommands {
    * @field-labels
    *   drupal-version: Drupal version
    *   uri: Site URI
-   *   db-driver: Database driver
-   *   db-hostname: Database hostname
-   *   db-port: Database port
-   *   db-username: Database username
-   *   db-password: Database password
-   *   db-name: Database name
+   *   db-driver: DB driver
+   *   db-hostname: DB hostname
+   *   db-port: DB port
+   *   db-username: DB username
+   *   db-password: DB password
+   *   db-name: DB name
    *   db-status: Database
    *   bootstrap: Drupal bootstrap
    *   user: Drupal user
    *   theme: Default theme
-   *   admin-theme: Administration theme
-   *   php-bin: PHP executable
-   *   php-conf: PHP configuration
+   *   admin-theme: Admin theme
+   *   php-bin: PHP binary
+   *   php-conf: PHP config
    *   php-os: PHP OS
    *   drush-script: Drush script
    *   drush-version: Drush version
-   *   drush-temp: Drush temp directory
-   *   drush-conf: Drush configuration
-   *   drush-alias-files: Drush alias files
+   *   drush-temp: Drush temp
+   *   drush-conf: Drush configs
+   *   drush-alias-files: Drush aliases
    *   install-profile: Install profile
    *   root: Drupal root
-   *   drupal-settings-file: Drupal Settings File
+   *   drupal-settings-file: Drupal Settings
    *   site-path: Site path
-   *   root: Drupal root
    *   site: Site path
    *   themes: Themes path
    *   modules: Modules path
-   *   files: File directory path
-   *   private: Private file directory path
-   *   temp: Temporary file directory path
-   *   config-sync: Sync config path
-   *   files-path: File directory path
-   *   temp-path: Temporary file directory path
+   *   files: Files, Public
+   *   private: Files, Private
+   *   temp: Files, Temp
+   *   config-sync: Drupal config
+   *   files-path: Files, Public
+   *   temp-path: Files, Temp
    *   %paths: Other paths
+   * @default-fields drupal-version,uri,db-driver,db-hostname,db-port,db-username,db-password,db-name,db-status,bootstrap,user,theme,admin-theme,php-bin,php-conf,php-os,drush-script,drush-version,drush-temp,drush-conf,drush-alias-files,install-profile,root,site,files,private,temp,config-sync
    * @pipe-format json
    * @bootstrap DRUSH_BOOTSTRAP_MAX
    * @topics docs-readme
+   *
+   * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
    */
   public function status($filter = '', $options = ['project' => '', 'format' => 'table', 'fields' => '', 'include-field-labels' => true]) {
     $data = _core_site_status_table($options['project']);
 
-    $result = new AssociativeList($data);
+    $result = new PropertyList($data);
     $result->addRendererFunction([$this, 'renderStatusCell']);
 
     return $result;
