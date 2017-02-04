@@ -2,10 +2,9 @@
 
 namespace Unish;
 
-use PHPUnit\Framework\AssertionFailedError;
 use Symfony\Component\Process\Process;
 
-class UnishProcessFailedError extends AssertionFailedError {
+class UnishProcessFailedError extends \PHPUnit_Framework_AssertionFailedError {
   public function __construct($message, Process $process) {
     if ($output = $process->getOutput()) {
       $message .= "\n\nCommand output:\n" . $output;
