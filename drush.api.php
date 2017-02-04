@@ -272,18 +272,14 @@ function drush_hook_pre_pm_enable() {
 }
 
 /**
- * Sql-sync sanitization example.
+ * Sql-sanitize example.
  *
- * This is equivalent to the built-in --sanitize option of sql-sync, but
- * simplified to only work with default values on Drupal 6 + mysql.
+ * These plugins sanitize the DB, usually removing personal information.
  *
- * @see sql_drush_sql_sync_sanitize()
+ * @see \Drush\Commands\sql\SqlSanitizePluginInterface
  */
-function hook_drush_sql_sync_sanitize($source) {
-  $table = drush_get_option('db-prefix') ? '{users}' : 'users';
-  drush_sql_register_post_sync_op('my-sanitize-id',
-    dt('Reset passwords and email addresses in user table.'),
-    "UPDATE $table SET pass = MD5('password'), mail = concat('user+', uid, '@localhost') WHERE uid > 0;");
+function sanitize() {}
+function messages() {}
 }
 
 /**
@@ -313,90 +309,6 @@ function hook_drush_help_alter(&$command) {
  */
 function hook_drush_cache_clear(&$types, $include_bootstrapped_types) {
   $types['views'] = 'views_invalidate_cache';
-}
-
-/**
- * Inform drush about one or more engine types.
- *
- * This hook allow to declare available engine types, the cli option to select
- * between engine implementatins, which one to use by default, global options
- * and other parameters. Commands may override this info when declaring the
- * engines they use.
- *
- * @return array
- *   An array whose keys are engine type names and whose values describe
- *   the characteristics of the engine type in relation to command definitions:
- *
- *   - description: The engine type description.
- *   - topic: If specified, the name of the topic command that will
- *     display the automatically generated topic for this engine.
- *   - topic-file: If specified, the path to the file that will be
- *     displayed at the head of the automatically generated topic for
- *     this engine.  This path is relative to the Drush root directory;
- *     non-core commandfiles should therefore use:
- *       'topic-file' => dirname(__FILE__) . '/mytopic.html';
- *   - topics: If set, contains a list of topics that should be added to
- *     the "Topics" section of any command that uses this engine.  Note
- *     that if 'topic' is set, it will automatically be added to the topics
- *     list, and therefore does not need to also be listed here.
- *   - option: The command line option to choose an implementation for
- *     this engine type.
- *     FALSE means there's no option. That is, the engine type is for internal
- *     usage of the command and thus an implementation is not selectable.
- *   - default: The default implementation to use by the engine type.
- *   - options: Engine options common to all implementations.
- *   - add-options-to-command: If there's a single implementation for this
- *     engine type, add its options as command level options.
- *   - combine-help: If there are multiple implementations for this engine
- *     type, then instead of adding multiple help items in the form of
- *     --engine-option=engine-type [description], instead combine all help
- *     options into a single --engine-option that lists the different possible
- *     values that can be used.
- *
- * @see drush_get_engine_types_info()
- * @see pm_drush_engine_type_info()
- */
-function hook_drush_engine_type_info() {
-  return array(
-    'dessert' => array(
-      'description' => 'Choose a dessert while the sandwich is baked.',
-      'option' => 'dessert',
-      'default' => 'ice-cream',
-      'options' => 'sweetness',
-      'add-options-to-command' => FALSE,
-    ),
-  );
-}
-
-/**
- * Inform drush about one or more engines implementing a given engine type.
- *
- *   - description: The engine implementation's description.
- *   - implemented-by: The engine that actually implements this engine.
- *       This is useful to allow the implementation of similar engines
- *       in the reference one.
- *       Defaults to the engine type key (e.g. 'ice-cream').
- *   - verbose-only: The engine implementation will only appear in help
- *       output in --verbose mode.
- *
- * This hook allow to declare implementations for an engine type.
- *
- * @see pm_drush_engine_package_handler()
- * @see pm_drush_engine_version_control()
- */
-function hook_drush_engine_ENGINE_TYPE() {
-  return array(
-    'ice-cream' => array(
-      'description' => 'Feature rich ice-cream with all kind of additives.',
-      'options' => array(
-        'flavour' => 'Choose your favorite flavour',
-      ),
-    ),
-    'frozen-yogurt' => array(
-      'description' => 'Frozen dairy dessert made with yogurt instead of milk and cream.',
-      'implemented-by' => 'ice-cream',
-    ),
-  );
 }
 
 /**

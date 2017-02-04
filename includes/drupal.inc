@@ -166,21 +166,3 @@ function _drush_drupal_parse_info_file($data, $merge_item = NULL) {
 function drush_cid_install_profile() {
   return drush_get_cid('install_profile', array(), array(drush_get_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH')));
 }
-
-/*
- * An array of options shared by sql-sanitize and sql-sync commands.
- */
-function drupal_sanitize_options() {
-  return array(
-    'sanitize-password' => array(
-      'description' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.',
-      'example-value' => 'password',
-      'value' => 'required',
-    ),
-    'sanitize-email' => array(
-      'description' => 'The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %name.',
-      'example-value' => 'user+%uid@localhost',
-      'value' => 'required',
-    ),
-  );
-}

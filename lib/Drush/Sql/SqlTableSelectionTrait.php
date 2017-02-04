@@ -1,7 +1,7 @@
 <?php
 namespace Drush\Sql;
 
-trait SqlTrait {
+trait SqlTableSelectionTrait {
 
   /**
    * Get a list of all table names and expand input that may contain
