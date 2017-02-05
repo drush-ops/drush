@@ -9,6 +9,7 @@
  * @see http://drupal.org/node/670460
  */
 
+use Drush\Commands\core\StatusCommands;
 use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 
@@ -1123,7 +1124,7 @@ function drush_sitealias_resolve_path_references(&$alias_record, $test_string = 
     // site specified by $alias_record, then we can just
     // call _core_site_status_table() rather than use backend invoke.
     if (drush_sitealias_is_bootstrapped_site($alias_record) && drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
-      $status_values = _core_site_status_table($project_list);
+      $status_values = StatusCommands::getPropertyList(['project-list' => $project_list]);
     }
     else {
       $values = drush_invoke_process($alias_record, "core-status", array(), empty($project_list) ? array() : array('project' => $project_list), array('integrate' => FALSE, 'override-simulated' => TRUE));
@@ -1907,15 +1908,6 @@ function _drush_sitealias_preflight_path($path) {
     }
   }
   return array('alias' => $alias, 'path' => $path, 'machine' => $machine);
-}
-
-/**
- * Given a properly-escaped options string, replace any occurance of
- * %files and so on embedded inside it with its corresponding path.
- */
-function drush_sitealias_evaluate_paths_in_options($option_string) {
-  $path_aliases = _core_path_aliases();
-  return str_replace(array_keys($path_aliases), array_values($path_aliases), $option_string);
 }
 
 /**

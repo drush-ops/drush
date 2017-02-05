@@ -15,6 +15,7 @@ class StatusCommands extends DrushCommands {
 
   /**
    * @command core-status
+   * @param $filter
    * @aliases status, st
    *
    * @table-style compact
@@ -63,12 +64,92 @@ class StatusCommands extends DrushCommands {
    * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
    */
   public function status($filter = '', $options = ['project' => '', 'format' => 'table', 'fields' => '', 'include-field-labels' => true]) {
-    $data = _core_site_status_table($options['project']);
+    $data = self::getPropertyList($options);
 
     $result = new PropertyList($data);
     $result->addRendererFunction([$this, 'renderStatusCell']);
 
     return $result;
+  }
+
+  public static function getPropertyList($options) {
+    $project = $options['project'];
+    $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
+    if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
+      $status_table['drupal-version'] = drush_drupal_version();
+      $boot_object = \Drush::bootstrap();
+      $conf_dir = $boot_object->conf_path();
+      $settings_file = "$conf_dir/settings.php";
+      $status_table['drupal-settings-file'] = file_exists($settings_file) ? $settings_file : '';
+      if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
+        $status_table['uri'] = drush_get_context('DRUSH_URI');
+        try {
+          $sql = drush_sql_get_class();
+          $db_spec = $sql->db_spec();
+          $status_table['db-driver'] = $db_spec['driver'];
+          if (!empty($db_spec['unix_socket'])) {
+            $status_table['db-socket'] = $db_spec['unix_socket'];
+          }
+          elseif (isset($db_spec['host'])) {
+            $status_table['db-hostname'] = $db_spec['host'];
+          }
+          $status_table['db-username'] = isset($db_spec['username']) ? $db_spec['username'] : NULL;
+          $status_table['db-password'] = isset($db_spec['password']) ? $db_spec['password'] : NULL;
+          $status_table['db-name'] = isset($db_spec['database']) ? $db_spec['database'] : NULL;
+          $status_table['db-port'] = isset($db_spec['port']) ? $db_spec['port'] : NULL;
+          if ($phase > DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION) {
+            $status_table['install-profile'] = $boot_object->get_profile();
+            if ($phase > DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
+              $status_table['db-status'] = dt('Connected');
+              if ($phase > DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+                $status_table['bootstrap'] = dt('Successful');
+                if ($phase == DRUSH_BOOTSTRAP_DRUPAL_LOGIN) {
+                  $status_table['user'] = \Drupal::currentUser()->getAccountName();
+                }
+              }
+            }
+          }
+        }
+        catch (\Exception $e) {
+          // Don't worry be happy.
+        }
+      }
+      if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+        $status_table['theme'] = drush_theme_get_default();
+        $status_table['admin-theme'] = drush_theme_get_admin();
+      }
+    }
+    if ($php_bin = $options['php']) {
+      $status_table['php-bin'] = $php_bin;
+    }
+    $status_table['php-os'] = PHP_OS;
+    if ($php_ini_files = EditCommands::php_ini_files()) {
+      $status_table['php-conf'] = $php_ini_files;
+    }
+    $status_table['drush-script'] = DRUSH_COMMAND;
+    $status_table['drush-version'] = \Drush::getVersion();
+    $status_table['drush-temp'] = drush_find_tmp();
+    $status_table['drush-conf'] = drush_flatten_array(drush_get_context_options('context-path', ''));
+    $alias_files = _drush_sitealias_find_alias_files();
+    $status_table['drush-alias-files'] = $alias_files;
+
+    $paths = _core_path_aliases($project);
+    if (!empty($paths)) {
+      foreach ($paths as $target => $one_path) {
+        $name = $target;
+        if (substr($name,0,1) == '%') {
+          $name = substr($name,1);
+        }
+        $status_table[$name] = $one_path;
+      }
+    }
+
+    // Store the paths into the '%paths' index; this will be
+    // used by other code, but will not be included in the output
+    // of the drush status command.
+    $status_table['%paths'] = $paths;
+
+    return $status_table;
   }
 
   public function renderStatusCell($key, $cellData, FormatterOptions $options)

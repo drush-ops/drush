@@ -29,12 +29,12 @@ function core_drush_help($section) {
       $message .= dt("Hint: This may occur when Drush is trying to:\n");
       $message .= dt(" * bootstrap a site that has not been installed or does not have a configured database. In this case you can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line. See `drush topic docs-aliases` for details.\n");
       $message .= dt(" * connect the database through a socket. The socket file may be wrong or the php-cli may have no access to it in a jailed shell. See http://drupal.org/node/1428638 for details.\n");
-      $message .= dt("\nDrush was attempting to connect to: \n!credentials\n", array('!credentials' => _core_site_credentials(12)));
+      $message .= dt('More information may be available by running `drush status`');
       return $message;
     case 'error:DRUSH_DRUPAL_BOOTSTRAP_ERROR':
       $message = dt("Drush was not able to start (bootstrap) Drupal.\n");
       $message .= dt("Hint: This error can only occur once the database connection has already been successfully initiated, therefore this error generally points to a site configuration issue, and not a problem connecting to the database.\n");
-      $message .= dt("\nDrush was attempting to connect to: \n!credentials\n", array('!credentials' => _core_site_credentials(12)));
+      $message .= dt('More information may be available by running `drush status`');
       return $message;
       break;
   }
@@ -126,18 +126,6 @@ function core_drush_engine_drupal() {
  * @} End of "Engine types".
  */
 
-function _core_site_credentials($right_margin = 0) {
-  // Leave some space on the right so that we can put the result into the
-  // drush_log, which will again wordwrap the result.
-  $original_columns = drush_get_context('DRUSH_COLUMNS', 80);
-  drush_set_context('DRUSH_COLUMNS', $original_columns - $right_margin);
-  $status_table = _core_site_status_table();
-  $metadata = drush_get_command_format_metadata('core-status');
-  $output = drush_format($status_table, $metadata, 'key-value');
-  drush_set_context('DRUSH_COLUMNS', $original_columns);
-  return $output;
-}
-
 function _core_path_aliases($project = '') {
   $paths = array();
   $site_wide = drush_drupal_sitewide_directory();
@@ -158,7 +146,7 @@ function _core_path_aliases($project = '') {
       else {
         $paths['%themes'] = ltrim($site_wide . '/themes', '/');
       }
-      if (drush_drupal_major_version() >= 8 && drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
+      if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
         try {
           if (isset($GLOBALS['config_directories'])) {
             foreach ($GLOBALS['config_directories'] as $label => $unused) {
@@ -173,14 +161,12 @@ function _core_path_aliases($project = '') {
 
       if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
         $paths['%files'] = drush_file_get_public();
+        $paths['%temp'] = file_directory_temp();
         if ($private_path = drush_file_get_private()) {
           $paths['%private'] = $private_path;
         }
       }
 
-      if (function_exists('file_directory_temp')) {
-        $paths['%temp'] = file_directory_temp();
-      }
       // If the 'project' parameter was specified, then search
       // for a project (or a few) and add its path to the path list
       if (!empty($project)) {
@@ -199,109 +185,6 @@ function _core_path_aliases($project = '') {
   $paths = array_merge($paths, drush_get_option('path-aliases', array()));
 
   return $paths;
-}
-
-function _core_site_status_table($project = '') {
-  $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
-  if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
-    $status_table['drupal-version'] = drush_drupal_version();
-    $boot_object = \Drush::bootstrap();
-    $conf_dir = $boot_object->conf_path();
-    $settings_file = "$conf_dir/settings.php";
-    $status_table['drupal-settings-file'] = file_exists($settings_file) ? $settings_file : '';
-    if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
-      $status_table['uri'] = drush_get_context('DRUSH_URI');
-      try {
-        $sql = drush_sql_get_class();
-        $db_spec = $sql->db_spec();
-        $status_table['db-driver'] = $db_spec['driver'];
-        if (!empty($db_spec['unix_socket'])) {
-          $status_table['db-socket'] = $db_spec['unix_socket'];
-        }
-        elseif (isset($db_spec['host'])) {
-          $status_table['db-hostname'] = $db_spec['host'];
-        }
-        $status_table['db-username'] = isset($db_spec['username']) ? $db_spec['username'] : NULL;
-        $status_table['db-password'] = isset($db_spec['password']) ? $db_spec['password'] : NULL;
-        $status_table['db-name'] = isset($db_spec['database']) ? $db_spec['database'] : NULL;
-        $status_table['db-port'] = isset($db_spec['port']) ? $db_spec['port'] : NULL;
-        if ($phase > DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION) {
-          $status_table['install-profile'] = $boot_object->get_profile();
-          if ($phase > DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
-            $status_table['db-status'] = dt('Connected');
-            if ($phase > DRUSH_BOOTSTRAP_DRUPAL_FULL) {
-              $status_table['bootstrap'] = dt('Successful');
-              if ($phase == DRUSH_BOOTSTRAP_DRUPAL_LOGIN) {
-                $status_table['user'] = \Drupal::currentUser()->getAccountName();
-              }
-            }
-          }
-        }
-      }
-      catch (Exception $e) {
-        // Don't worry be happy.
-      }
-    }
-    if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
-      $status_table['theme'] = drush_theme_get_default();
-      $status_table['admin-theme'] = drush_theme_get_admin();
-    }
-  }
-  if ($php_bin = drush_get_option('php')) {
-    $status_table['php-bin'] = $php_bin;
-  }
-  $status_table['php-os'] = PHP_OS;
-  if ($php_ini_files = EditCommands::php_ini_files()) {
-    $status_table['php-conf'] = $php_ini_files;
-  }
-  $status_table['drush-script'] = DRUSH_COMMAND;
-  $status_table['drush-version'] = Drush::getVersion();
-  $status_table['drush-temp'] = drush_find_tmp();
-  $status_table['drush-conf'] = drush_flatten_array(drush_get_context_options('context-path', ''));
-  $alias_files = _drush_sitealias_find_alias_files();
-  $status_table['drush-alias-files'] = $alias_files;
-
-  $paths = _core_path_aliases($project);
-  if (!empty($paths)) {
-    foreach ($paths as $target => $one_path) {
-      $name = $target;
-      if (substr($name,0,1) == '%') {
-        $name = substr($name,1);
-      }
-      $status_table[$name] = $one_path;
-    }
-  }
-
-  // Store the paths into the '%paths' index; this will be
-  // used by other code, but will not be included in the output
-  // of the drush status command.
-  $status_table['%paths'] = $paths;
-
-  return $status_table;
-}
-
-// Adjust the status output for any non-pipe output format
-function _drush_core_status_format_table_data($output, $metadata) {
-  if (drush_get_option('full', FALSE) == FALSE) {
-    // Hide any key that begins with a %
-    foreach ($output as $key => $value) {
-      if ($key[0] == '%') {
-        unset($output[$key]);
-      }
-    }
-    // Hide 'Modules path' and 'Themes path' as well
-    unset($output['modules']);
-    unset($output['themes']);
-    // Shorten the list of alias files if there are too many
-    if (isset($output['drush-alias-files']) && count($output['drush-alias-files']) > 24) {
-      $msg = dt("\nThere are !count more alias files. Run with --full to see the full list.", array('!count' => count($output['drush-alias-files']) - 1));
-      $output['drush-alias-files'] = array($output['drush-alias-files'][0] , $msg);
-    }
-    if (isset($output['drupal-settings-file']) && empty($output['drupal-settings-file'])) {
-      $output['drupal-settings-file'] = dt('MISSING');
-    }
-  }
-  return $output;
 }
 
 function _drush_core_is_named_in_array($key, $the_array) {
