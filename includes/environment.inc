@@ -372,9 +372,6 @@ function drush_valid_root($root) {
 /**
  * Tests the currently loaded database credentials to ensure a database connection can be made.
  *
- * @param bool $log_errors
- *   (optional) If TRUE, log error conditions; otherwise be quiet.
- *
  * @return bool
  *   TRUE if database credentials are valid.
  */
@@ -385,8 +382,7 @@ function drush_valid_db_credentials() {
       drush_log(dt('While checking DB credentials, could not instantiate SQLVersion class.'), 'debug');
       return FALSE;
     }
-    if (!$sqlVersion->valid_credentials($sql->db_spec())) {
-      drush_log(dt('DB credentials are invalid.'), 'debug');
+    if (!$sqlVersion->hasPDO()) {
       return FALSE;
     }
     return $sql->query('SELECT 1;');
