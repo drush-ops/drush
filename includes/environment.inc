@@ -370,30 +370,6 @@ function drush_valid_root($root) {
 }
 
 /**
- * Tests the currently loaded database credentials to ensure a database connection can be made.
- *
- * @return bool
- *   TRUE if database credentials are valid.
- */
-function drush_valid_db_credentials() {
-  try {
-    $sql = drush_sql_get_class();
-    if (!$sqlVersion = drush_sql_get_version()) {
-      drush_log(dt('While checking DB credentials, could not instantiate SQLVersion class.'), 'debug');
-      return FALSE;
-    }
-    if (!$sqlVersion->hasPDO()) {
-      return FALSE;
-    }
-    return $sql->query('SELECT 1;');
-  }
-  catch (Exception $e) {
-    drush_log(dt('Checking DB credentials yielded error: @e', array('@e' => $e->getMessage())), 'debug');
-    return FALSE;
-  }
-}
-
-/**
  * Determine a proper way to call drush again
  *
  * This check if we were called directly or as an argument to some

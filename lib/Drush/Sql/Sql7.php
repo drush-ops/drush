@@ -17,10 +17,4 @@ class Sql7 extends SqlVersion {
     }
     return $db_spec;
   }
-
-  public function getAll() {
-    if (isset($GLOBALS['databases'])) {
-      return $GLOBALS['databases'];
-    }
-  }
 }

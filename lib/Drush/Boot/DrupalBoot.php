@@ -473,7 +473,14 @@ abstract class DrupalBoot extends BaseBoot {
    * phase.
    */
   function bootstrap_drupal_database_validate() {
-    if (!drush_valid_db_credentials()) {
+    // Drupal requires PDO, and Drush requires php 5.6+ which ships with PDO
+    // but PHP may be compiled with --disable-pdo.
+    if (!class_exists('\PDO')) {
+      drush_log(dt('PDO support is required.'), LogLevel::BOOTSTRAP);
+      return FALSE;
+    }
+    $sql = drush_sql_get_class();
+    if (!$sql->query('SELECT 1;')) {
       return drush_bootstrap_error('DRUSH_DRUPAL_DB_ERROR');
     }
     return TRUE;

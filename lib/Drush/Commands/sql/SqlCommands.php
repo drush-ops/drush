@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Commands\sql;
 
+use Drupal\Core\Database\Database;
 use Drush\Commands\DrushCommands;
 
 class SqlCommands extends DrushCommands {
@@ -17,8 +18,7 @@ class SqlCommands extends DrushCommands {
   public function conf($options = ['format' => 'yaml', 'all' => FALSE, 'show-passwords' => FALSE]) {
     drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
     if ($options['all']) {
-      $sqlVersion = drush_sql_get_version();
-      $return = $sqlVersion->getAll();
+      $return = Database::getAllConnectionInfo();
       foreach ($return as $key1 => $value) {
         foreach ($value as $key2 => $spec) {
           if (!$options['show-passwords']) {
