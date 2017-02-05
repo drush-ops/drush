@@ -213,10 +213,10 @@ class StatusCommands extends DrushCommands {
 
         // If the 'project' parameter was specified, then search
         // for a project (or a few) and add its path to the path list
-        if (!empty($options['project-list'])) {
+        if (!empty($options['project'])) {
           drush_include_engine('drupal', 'environment');
           $projects = array_merge(drush_get_modules(), drush_get_themes());
-          foreach(explode(',', $options['project-list']) as $target) {
+          foreach(explode(',', $options['project']) as $target) {
             if (array_key_exists($target, $projects)) {
               $paths['%' . $target] = $drupal_root . '/' . _drush_extension_get_path($projects[$target]);
             }
