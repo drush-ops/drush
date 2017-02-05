@@ -73,7 +73,6 @@ class StatusCommands extends DrushCommands {
   }
 
   public static function getPropertyList($options) {
-    $project = $options['project'];
     $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
     if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
       $status_table['drupal-version'] = drush_drupal_version();
@@ -133,7 +132,7 @@ class StatusCommands extends DrushCommands {
     $alias_files = _drush_sitealias_find_alias_files();
     $status_table['drush-alias-files'] = $alias_files;
 
-    $paths = _core_path_aliases($project);
+    $paths = self::pathAliases($options);
     if (!empty($paths)) {
       foreach ($paths as $target => $one_path) {
         $name = $target;
@@ -169,5 +168,66 @@ class StatusCommands extends DrushCommands {
     if (!empty($args['filter'])) {
       $input->setOption('fields', '*' . $args['filter'] . '*');
     }
+  }
+
+  public static function pathAliases($options) {
+    $paths = array();
+    $site_wide = drush_drupal_sitewide_directory();
+    $boot = \Drush::bootstrap();
+    if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
+      $paths['%root'] = $drupal_root;
+      if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
+        $paths['%site'] = $site_root;
+        if (is_dir($modules_path = $boot->conf_path() . '/modules')) {
+          $paths['%modules'] = $modules_path;
+        }
+        else {
+          $paths['%modules'] = ltrim($site_wide . '/modules', '/');
+        }
+        if (is_dir($themes_path = $boot->conf_path() . '/themes')) {
+          $paths['%themes'] = $themes_path;
+        }
+        else {
+          $paths['%themes'] = ltrim($site_wide . '/themes', '/');
+        }
+        if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
+          try {
+            if (isset($GLOBALS['config_directories'])) {
+              foreach ($GLOBALS['config_directories'] as $label => $unused) {
+                $paths["%config-$label"] = config_get_config_directory($label);
+              }
+            }
+          }
+          catch (Exception $e) {
+            // Nothing to do.
+          }
+        }
+
+        if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+          $paths['%files'] = drush_file_get_public();
+          $paths['%temp'] = file_directory_temp();
+          if ($private_path = drush_file_get_private()) {
+            $paths['%private'] = $private_path;
+          }
+        }
+
+        // If the 'project' parameter was specified, then search
+        // for a project (or a few) and add its path to the path list
+        if (!empty($options['project-list'])) {
+          drush_include_engine('drupal', 'environment');
+          $projects = array_merge(drush_get_modules(), drush_get_themes());
+          foreach(explode(',', $options['project-list']) as $target) {
+            if (array_key_exists($target, $projects)) {
+              $paths['%' . $target] = $drupal_root . '/' . _drush_extension_get_path($projects[$target]);
+            }
+          }
+        }
+      }
+    }
+
+    // Add in all of the global paths from $options['path-aliases']
+    $paths = array_merge($paths, (array)$options['path-aliases']);
+
+    return $paths;
   }
 }
