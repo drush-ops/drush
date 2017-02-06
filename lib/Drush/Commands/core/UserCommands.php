@@ -333,13 +333,13 @@ class UserCommands extends DrushCommands {
    * @command user-login
    *
    * @param string $path Optional path to redirect to after logging in.
-   * @option $name A user name to log in as. If not provided, defaults to uid=1.
-   * @option string browser Optional value denotes which browser to use (defaults to operating system default). Use --no-browser to suppress opening a browser.
-   * @option string redirect-port A custom port for redirecting to (e.g. when running within a Vagrant environment)
+   * @option name A user name to log in as. If not provided, defaults to uid=1.
+   * @option browser Optional value denotes which browser to use (defaults to operating system default). Use --no-browser to suppress opening a browser.
+   * @option redirect-port A custom port for redirecting to (e.g., when running within a Vagrant environment)
    * @bootstrap DRUSH_BOOTSTRAP_NONE
    * @handle-remote-commands
    * @aliases uli
-   * @usage drush user-login ryan node/add/blog
+   * @usage drush user-login --name=ryan node/add/blog
    *   Displays and opens default web browser (if configured or detected) for a one-time login link for the user with the username ryan and redirect to the path node/add/blog.
    * @usage drush user-login --browser=firefox --mail=drush@example.org admin/settings/performance
    *   Open firefox web browser, login as the user with the e-mail address drush@example.org and redirect to the path admin/settings/performance.
