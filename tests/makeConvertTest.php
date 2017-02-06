@@ -42,20 +42,6 @@ class makeConvertCase extends CommandUnishTestCase {
   public function providerTestMakeConvert() {
     return array(
       array(
-        // Source filename in makefiles directory.
-        'patches.make',
-        // Command pptions.
-        array('format' => 'yml'),
-        // Expected output lines.
-        array(
-          'core: 7.x',
-          'features:',
-          'version: 1.0-beta4',
-          'patch:',
-          "- 'http://drupal.org/files/issues/features-drush-backend-invoke-25.patch'",
-        ),
-      ),
-      array(
         'patches.make',
         array('format' => 'composer'),
         array(
@@ -75,33 +61,6 @@ class makeConvertCase extends CommandUnishTestCase {
           '"patches": {',
           '"drupal/features": {',
           '"Enter drupal/features patch #0 description here": "http://drupal.org/files/issues/features-drush-backend-invoke-25.patch"',
-        ),
-      ),
-      array(
-        'composer.lock',
-        array('format' => 'make'),
-        array(
-          'core = 7.x',
-          'api = 2',
-          // Ensure Drupal core tag is set correctly.
-          'projects[drupal][download][tag] = "7.43"',
-          'projects[features][download][type] = "git"',
-          'projects[features][download][url] = "https://git.drupal.org/project/features"',
-          'projects[features][download][tag] = "7.x-1.0-beta4"',
-          'projects[features][patch][0] = "http://drupal.org/files/issues/features-drush-backend-invoke-25.patch"'),
-      ),
-      array(
-        'composer.lock',
-        array('format' => 'yml'),
-        array(
-          'core: 7.x',
-          'api: 2',
-          // Ensure Drupal core tag is set correctly.
-          "tag: '7.43'",
-          'features:',
-          'tag: 7.x-1.0-beta4',
-          'patch:',
-          "- 'http://drupal.org/files/issues/features-drush-backend-invoke-25.patch'",
         ),
       ),
     );
