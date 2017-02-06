@@ -479,9 +479,15 @@ abstract class DrupalBoot extends BaseBoot {
       drush_log(dt('PDO support is required.'), LogLevel::BOOTSTRAP);
       return FALSE;
     }
-    $sql = drush_sql_get_class();
-    if (!$sql->query('SELECT 1;')) {
-      return drush_bootstrap_error('DRUSH_DRUPAL_DB_ERROR');
+    try {
+      $sql = drush_sql_get_class();
+      if (!$sql->query('SELECT 1;')) {
+        return drush_bootstrap_error('DRUSH_DRUPAL_DB_ERROR');
+      }
+    }
+    catch (\Exception $e) {
+      drush_log(dt('Unable to validate DB c: @e', array('@e' => $e->getMessage())), 'debug');
+      return FALSE;
     }
     return TRUE;
   }
