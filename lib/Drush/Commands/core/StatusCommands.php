@@ -226,7 +226,9 @@ class StatusCommands extends DrushCommands {
     }
 
     // Add in all of the global paths from $options['path-aliases']
-    $paths = array_merge($paths, (array)$options['path-aliases']);
+    if (isset($options['path-aliases'])) {
+      $paths = array_merge($paths, $options['path-aliases']);
+    }
 
     return $paths;
   }

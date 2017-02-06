@@ -960,7 +960,7 @@ function drush_preflight_command_dispatch() {
  */
 function drush_preflight_tilde_expansion(&$command) {
   // Skip tilde expansion for commands that use
-  // stict option handling, or those that explicitly
+  // strict option handling, or those that explicitly
   // turn it off via $command['tilde-expansion'] = FALSE.
   if ($command['tilde-expansion'] && !$command['strict-option-handling']) {
     $cli =& drush_get_context('cli');
