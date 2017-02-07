@@ -38,9 +38,14 @@ class Sqlpgsql extends SqlBase {
 
   public function command() {
     $environment = "";
+    
+    if (drush_is_windows()) {
+      $environment = "SET ";
+    }
+    
     $pw_file = $this->password_file();
     if (isset($pw_file)) {
-      $environment = "PGPASSFILE={$pw_file} ";
+      $environment .= "PGPASSFILE={$pw_file} ";
     }
     return "{$environment}psql -q";
   }
