@@ -39,8 +39,7 @@ function drush_pm_updatestatus() {
 
   foreach ($extensions as $name => $extension) {
     // Add an item to $update_info for each enabled extension which was obtained
-    // from cvs or git and its project is unknown (because of cvs_deploy or
-    // git_deploy is not enabled).
+    // from git and its project is unknown (because git_deploy is not enabled).
     if (!isset($extension->info['project'])) {
       if ((isset($extension->vcs)) && ($extension->status)) {
         $update_info[$name] = array(
