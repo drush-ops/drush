@@ -4,7 +4,7 @@ namespace Drush\Sql;
 
 use Drush\Log\LogLevel;
 
-class Sqlsqlite extends SqlBase {
+class SqlSqlite extends SqlBase {
   public function command() {
     return 'sqlite3';
   }
@@ -13,10 +13,10 @@ class Sqlsqlite extends SqlBase {
     // SQLite doesn't do user management, instead relying on the filesystem
     // for that. So the only info we really need is the path to the database
     // file, and not as a "--key=value" parameter.
-    return ' '  .  $this->db_spec['database'];
+    return ' '  .  $this->getDbSpec()['database'];
   }
 
-  public function createdb_sql($dbname, $quoted = false) {
+  public function createdbSql($dbname, $quoted = false) {
     return '';
   }
 
@@ -28,7 +28,7 @@ class Sqlsqlite extends SqlBase {
    *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
    */
   public function createdb($quoted = FALSE) {
-    $file = $this->db_spec['database'];
+    $file = $this->getDbSpec()['database'];
     if (file_exists($file)) {
       drush_log("SQLITE: Deleting existing database '$file'", LogLevel::DEBUG);
       drush_delete_dir($file, TRUE);
@@ -47,8 +47,8 @@ class Sqlsqlite extends SqlBase {
     }
   }
 
-  public function db_exists() {
-    return file_exists($this->db_spec['database']);
+  public function dbExists() {
+    return file_exists($this->getDbSpec()['database']);
   }
 
   public function listTables() {
@@ -81,7 +81,7 @@ class Sqlsqlite extends SqlBase {
     return $this->query($sql);
   }
 
-  public function dumpCmd($table_selection, $options) {
+  public function dumpCmd($table_selection) {
     // Dumping is usually not necessary in SQLite, since all database data
     // is stored in a single file which can be copied just
     // like any other file. But it still has a use in migration purposes and
@@ -91,7 +91,7 @@ class Sqlsqlite extends SqlBase {
     // Postgres or MySQL equivalents. We may be able to fake some in the
     // future, but for now, let's just support simple dumps.
     $exec .= ' ".dump"';
-    if ($option = $options['extra-dump'] ?: $this->query_extra) {
+    if ($option = $this->.$this->getOption('extra-dump', $this->queryExtra)) {
       $exec .= " $option";
     }
     return $exec;

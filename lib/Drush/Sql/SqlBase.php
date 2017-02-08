@@ -2,6 +2,7 @@
 
 namespace Drush\Sql;
 
+use Drupal\Core\Database\Database;
 use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 
@@ -10,26 +11,84 @@ class SqlBase {
   use SqlTableSelectionTrait;
 
   // An Drupal style array containing specs for connecting to database.
-  public $db_spec;
+  public $dbSpec;
 
   // Default code appended to sql-query connections.
-  public $query_extra = '';
+  public $queryExtra = '';
 
   // The way you pass a sql file when issueing a query.
-  public $query_file = '<';
+  public $queryFile = '<';
+
+  // An options array.
+  public $options;
 
   /**
-   * Typically, SqlBase objects are constructed via drush_sql_get_class().
+   * Typically, SqlBase instances are constructed via SqlBase::create($options).
    */
-  public function __construct($db_spec = NULL) {
-    $this->db_spec = $db_spec;
+  public function __construct($db_spec, $options) {
+    $this->dbSpec = $db_spec;
+    $this->options = $options;
+  }
+
+  /**
+   * Get a driver specific instance of this class.
+   *
+   * @param $options
+   *   An options array as handed to a command callback.
+   * @return SqlBase
+   */
+  public static function create($options = []) {
+    // Set defaults in the unfortunate event that caller doesn't provide values.
+    $options += [
+      'database' => 'default',
+      'target' => 'default',
+      'db-url' => NULL,
+      'databases' => NULL,
+      'db-prefix' => NULL,
+    ];
+    $database = $options['database'];
+    $target = $options['target'];
+
+    if ($url = $options['db-url']) {
+      $url =  is_array($url) ? $url[$database] : $url;
+      $db_spec = drush_convert_db_from_db_url($url);
+      $db_spec['db_prefix'] = $options['db-prefix'];
+      return self::getInstance($db_spec, $options);
+    }
+    elseif (($databases = $options['databases']) && (array_key_exists($database, $databases)) && (array_key_exists($target, $databases[$database]))) {
+      // @todo 'databases' option is not declared anywhere?
+      $db_spec = $databases[$database][$target];
+      return self::getInstance($db_spec, $options);
+    }
+    elseif ($info = Database::getConnectionInfo($database)) {
+      $db_spec = $info[$target];
+      return self::getInstance($db_spec, $options);
+    }
+    else {
+      throw new \Exception(dt('Unable to load Drupal settings. Check your --root, --uri, etc.'));
+    }
+  }
+
+  public static function getInstance($db_spec, $options) {
+    $driver = $db_spec['driver'];
+    $class_name = 'Drush\Sql\Sql'. ucfirst($driver);
+    return new $class_name($db_spec, $options);
   }
 
   /*
    * Get the current $db_spec.
    */
-  public function db_spec() {
-    return $this->db_spec;
+  public function getDbSpec() {
+    return $this->dbSpec;
+  }
+
+  /**
+   * Set the current db spec.
+   *
+   * @param array $dbSpec
+   */
+  public function setDbSpec($dbSpec) {
+    $this->dbSpec = $dbSpec;
   }
 
   /**
@@ -48,21 +107,18 @@ class SqlBase {
    * @return string
    */
   public function connect($hide_password = TRUE) {
-    return trim($this->command() . ' ' . $this->creds($hide_password) . ' ' . drush_get_option('extra', $this->query_extra));
+    return trim($this->command() . ' ' . $this->creds($hide_password) . ' ' . $this->getOption('extra', $this->queryExtra));
   }
 
 
   /*
    * Execute a SQL dump and return the path to the resulting dump file.
-   *
-   * @param array @options
-   *   The options array as passed to the Annotated Command.
    */
-  public function dump($options) {
+  public function dump() {
     /** @var string|bool $file Path where dump file should be stored. If TRUE, generate a path based on usual backup directory and current date.*/
-    $file = isset($options['result-file']) ? $options['result-file'] : NULL;
+    $file = $this->getOption('result-file');
     $file_suffix = '';
-    $table_selection = $this->getExpandedTableSelection($options);
+    $table_selection = $this->getExpandedTableSelection($this->getOptions());
     $file = $this->dumpFile($file);
     $cmd = $this->dumpCmd($table_selection, $options);
     // Gzip the output from dump command(s) if requested.
@@ -92,13 +148,11 @@ class SqlBase {
    *
    * @param array $table_selection
    *   Supported keys: 'skip', 'structure', 'tables'.
-   * @param array $options
-   *   An options array as passed by an Annotated Command.
    * @return string
    *   One or more mysqldump/pg_dump/sqlite3/etc statements that are ready for executing.
    *   If multiple statements are needed, enclose in parenthesis.
    */
-  public function dumpCmd($table_selection, $options) {}
+  public function dumpCmd($table_selection) {}
 
   /*
    * Generate a path to an output file for a SQL dump when needed.
@@ -108,7 +162,7 @@ class SqlBase {
    *   Otherwise, just return the path that was provided.
    */
   public function dumpFile($file) {
-    $database = $this->db_spec['database'];
+    $database = $this->dbSpec['database'];
 
     // $file is passed in to us usually via --result-file.  If the user
     // has set $options['result-file'] = TRUE, then we
@@ -132,8 +186,7 @@ class SqlBase {
   /**
    * Execute a SQL query.
    *
-   * Note: This is an API function. Try to avoid using drush_get_option() and instead
-   * pass params in. If you don't want to query results to print during --debug then
+   * If you don't want to query results to print during --debug then
    * provide a $result_file whose value can be drush_bit_bucket().
    *
    * @param string $query
@@ -143,7 +196,7 @@ class SqlBase {
    * @param string $result_file
    *   A path to save query results to. Can be drush_bit_bucket() if desired.
    *
-   * @return
+   * @return boolean
    *   TRUE on success, FALSE on failure
    */
   public function query($query, $input_file = NULL, $result_file = '') {
@@ -159,8 +212,8 @@ class SqlBase {
 
     // Save $query to a tmp file if needed. We will redirect it in.
     if (!$input_file) {
-      $query = $this->query_prefix($query);
-      $query = $this->query_format($query);
+      $query = $this->queryPrefix($query);
+      $query = $this->queryFormat($query);
       $input_file = drush_save_data_to_temp_file($query);
     }
 
@@ -168,8 +221,8 @@ class SqlBase {
       $this->command(),
       $this->creds(),
       $this->silent(), // This removes column header and various helpful things in mysql.
-      drush_get_option('extra', $this->query_extra),
-      $this->query_file,
+      $this->getOption('extra', $this->queryExtra),
+      $this->queryFile,
       drush_escapeshellarg($input_file),
     );
     $exec = implode(' ', $parts);
@@ -187,7 +240,7 @@ class SqlBase {
 
     $success = drush_shell_exec($exec);
 
-    if ($success && drush_get_option('file-delete')) {
+    if ($success && $this->getOption('file-delete')) {
       drush_op('drush_delete_dir', $input_file);
     }
 
@@ -200,24 +253,19 @@ class SqlBase {
   public function silent() {}
 
 
-  public function query_prefix($query) {
+  public function queryPrefix($query) {
     // Inject table prefixes as needed.
     if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
       // Enable prefix processing which can be dangerous so off by default. See http://drupal.org/node/1219850.
-      if (drush_get_option('db-prefix')) {
-        if (drush_drupal_major_version() >= 7) {
-          $query = \Database::getConnection()->prefixTables($query);
-        }
-        else {
-          $query = db_prefix_tables($query);
-        }
+      if ($this->getOption('db-prefix')) {
+        $query = \Database::getConnection()->prefixTables($query);
       }
     }
     return $query;
   }
 
 
-  public function query_format($query) {
+  public function queryFormat($query) {
     return $query;
   }
 
@@ -246,8 +294,9 @@ class SqlBase {
    * @param boolean $quoted
    *   Quote the database name. Mysql uses backticks to quote which can cause problems
    *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
+   * @return string
    */
-  public function createdb_sql($dbname, $quoted = FALSE) {}
+  public function createdbSql($dbname, $quoted = FALSE) {}
 
   /**
    * Create a new database.
@@ -259,8 +308,8 @@ class SqlBase {
    *   True if successful, FALSE otherwise.
    */
   public function createdb($quoted = FALSE) {
-    $dbname = $this->db_spec['database'];
-    $sql = $this->createdb_sql($dbname, $quoted);
+    $dbname = $this->getDbSpec()['database'];
+    $sql = $this->createdbSql($dbname, $quoted);
     // Adjust connection to allow for superuser creds if provided.
     $this->su();
     return $this->query($sql);
@@ -272,8 +321,8 @@ class SqlBase {
    * return boolean
    *   TRUE or FALSE depending on success.
    */
-  public function drop_or_create() {
-    if ($this->db_exists()) {
+  public function dropOrCreate() {
+    if ($this->dbExists()) {
       return $this->drop($this->listTables());
     }
     else {
@@ -286,7 +335,7 @@ class SqlBase {
    *
    * @return bool
    */
-  public function db_exists() {}
+  public function dbExists() {}
 
   public function delete() {}
 
@@ -305,7 +354,7 @@ class SqlBase {
    * @return string
    */
   public function scheme() {
-    return $this->db_spec['driver'];
+    return $this->dbSpec['driver'];
   }
 
   /**
@@ -322,7 +371,7 @@ class SqlBase {
    * @return string
    *   A bash fragment.
    */
-  public function params_to_options($parameters) {
+  public function paramsToOptions($parameters) {
     // Turn each parameter into a valid parameter string.
     $parameter_strings = array();
     foreach ($parameters as $key => $value) {
@@ -344,22 +393,34 @@ class SqlBase {
    * @return null
    */
   public function su() {
-    $create_db_target = $this->db_spec;
+    $create_db_target = $this->getDbSpec();
 
     $create_db_target['database'] = '';
-    $db_superuser = drush_get_option('db-su');
-    if (isset($db_superuser)) {
+    $db_superuser = $this->getOption('db-su');
+    if (!empty($db_superuser)) {
       $create_db_target['username'] = $db_superuser;
     }
-    $db_su_pw = drush_get_option('db-su-pw');
+    $db_su_pw = $this->getOption('db-su-pw');
     // If --db-su-pw is not provided and --db-su is, default to empty password.
     // This way db cli command will take password from .my.cnf or .pgpass.
     if (!empty($db_su_pw)) {
       $create_db_target['password'] = $db_su_pw;
     }
-    elseif (isset($db_superuser)) {
+    elseif (!empty($db_superuser)) {
       unset($create_db_target['password']);
     }
-    $this->db_spec = $create_db_target;
+    $this->setDbSpec($create_db_target);
+  }
+
+  /**
+   * @return array
+   */
+  public function getOptions() {
+    return $this->options;
+  }
+
+  public function getOption($name, $default = NULL) {
+    $options = $this->getOptions();
+    return array_key_exists($name, $options) ? $options[$name] : $default;
   }
 }

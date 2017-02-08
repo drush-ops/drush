@@ -3,6 +3,7 @@
 namespace Drush\Boot;
 
 use Drush\Log\LogLevel;
+use Drush\Sql\SqlBase;
 use Psr\Log\LoggerInterface;
 use Drupal\user\Entity\User;
 
@@ -476,17 +477,17 @@ abstract class DrupalBoot extends BaseBoot {
     // Drupal requires PDO, and Drush requires php 5.6+ which ships with PDO
     // but PHP may be compiled with --disable-pdo.
     if (!class_exists('\PDO')) {
-      drush_log(dt('PDO support is required.'), LogLevel::BOOTSTRAP);
+      $this->logger->log(LogLevel::BOOTSTRAP, dt('PDO support is required.'));
       return FALSE;
     }
     try {
-      $sql = drush_sql_get_class();
+      $sql = SqlBase::create();
       if (!$sql->query('SELECT 1;')) {
         return drush_bootstrap_error('DRUSH_DRUPAL_DB_ERROR');
       }
     }
     catch (\Exception $e) {
-      drush_log(dt('Unable to validate DB c: @e', array('@e' => $e->getMessage())), 'debug');
+      $this->logger->log(LogLevel::DEBUG, dt('Unable to validate DB: @e', array('@e' => $e->getMessage())));
       return FALSE;
     }
     return TRUE;
@@ -518,8 +519,8 @@ abstract class DrupalBoot extends BaseBoot {
    */
   function bootstrap_drupal_database_has_table($required_tables) {
     try {
-      $sql = drush_sql_get_class();
-      $spec = $sql->db_spec();
+      $sql = SqlBase::create();
+      $spec = $sql->getDbSpec();
       $prefix = isset($spec['prefix']) ? $spec['prefix'] : NULL;
       if (!is_array($prefix)) {
         $prefix = array('default' => $prefix);

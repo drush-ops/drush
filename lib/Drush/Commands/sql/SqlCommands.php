@@ -3,6 +3,7 @@ namespace Drush\Commands\sql;
 
 use Drupal\Core\Database\Database;
 use Drush\Commands\DrushCommands;
+use Drush\Sql\SqlBase;
 
 class SqlCommands extends DrushCommands {
 
@@ -16,7 +17,7 @@ class SqlCommands extends DrushCommands {
    * @hidden
    */
   public function conf($options = ['format' => 'yaml', 'all' => FALSE, 'show-passwords' => FALSE]) {
-    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+    $this->further($options);
     if ($options['all']) {
       $return = Database::getAllConnectionInfo();
       foreach ($return as $key1 => $value) {
@@ -28,8 +29,8 @@ class SqlCommands extends DrushCommands {
       }
     }
     else {
-      $sql = drush_sql_get_class();
-      $return = $sql->db_spec();
+      $sql = SqlBase::create($options);
+      $return = $sql->getDbSpec();
       if (!$options['show-passwords']) {
         unset($return['password']);
       }
@@ -50,7 +51,7 @@ class SqlCommands extends DrushCommands {
    */
   public function connect($options = ['extra' => '']) {
     $this->further($options);
-    $sql = drush_sql_get_class();
+    $sql = SqlBase::create($options);
     return $sql->connect(FALSE);
   }
 
@@ -68,10 +69,10 @@ class SqlCommands extends DrushCommands {
    * @usage drush sql-create --db-su=root --db-su-pw=rootpassword --db-url="mysql://drupal_db_user:drupal_db_password@127.0.0.1/drupal_db"
    *   Create the database as specified in the db-url option.
    */
-  public function create() {
+  public function create($options = []) {
     $this->further($options);
-    $sql = drush_sql_get_class();
-    $db_spec = $sql->db_spec();
+    $sql = SqlBase::create($options);
+    $db_spec = $sql->getDbSpec();
     // Prompt for confirmation.
     if (!drush_get_context('DRUSH_SIMULATE')) {
       // @todo odd - maybe for sql-sync.
@@ -94,10 +95,10 @@ class SqlCommands extends DrushCommands {
    * @optionset_sql
    * @topics docs-policy
    */
-  public function drop() {
+  public function drop($options = []) {
     $this->further($options);
-    $sql = drush_sql_get_class();
-    $db_spec = $sql->db_spec();
+    $sql = SqlBase::create($options);
+    $db_spec = $sql->getDbSpec();
     if (!drush_confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $db_spec['database'])))) {
       return drush_user_abort();
     }
@@ -118,9 +119,9 @@ class SqlCommands extends DrushCommands {
    *   Open a SQL CLI and skip reading table information.
    * @remote-tty
    */
-  public function cli() {
+  public function cli($options = []) {
     $this->further($options);
-    $sql = drush_sql_get_class();
+    $sql = SqlBase::create($options);
     drush_shell_proc_open($sql->connect());
   }
 
@@ -134,8 +135,6 @@ class SqlCommands extends DrushCommands {
    * @option file Path to a file containing the SQL to be run. Gzip files are accepted.
    * @option extra Add custom options to the connect string (e.g. --extra=--skip-column-names)
    * @option db-prefix Enable replacement of braces in your query.
-   * @option db-spec A database specification. Only used with --backend calls.
-   * @hidden-option db-spec
    * @validate-file-exists file
    * @aliases sqlq
    * @usage drush sql-query "SELECT * FROM users WHERE uid=1"
@@ -148,7 +147,7 @@ class SqlCommands extends DrushCommands {
    *   Alternate way to import sql statements from a file.
    *
    */
-  public function query($query = '', $options = ['result-file' => NULL, 'file' => NULL, 'extra' => NULL, 'db-prefix' => NULL, 'db-spec' => NULL]) {
+  public function query($query = '', $options = ['result-file' => NULL, 'file' => NULL, 'extra' => NULL, 'db-prefix' => NULL]) {
     $this->further($options);
     $filename = $options['file'];
     // Enable prefix processing when db-prefix option is used.
@@ -164,7 +163,7 @@ class SqlCommands extends DrushCommands {
       }
     }
     else {
-      $sql = drush_sql_get_class($options['db-spec']);
+      $sql = SqlBase::create($options);
       $result = $sql->query($query, $filename, $options['result-file']);
       if (!$result) {
         throw new \Exception(dt('Query failed.'));
@@ -197,7 +196,7 @@ class SqlCommands extends DrushCommands {
    */
   public function dump($options = ['result-file' => NULL, 'create-db' => NULL, 'data-only' => NULL, 'ordered-dump' => NULL, 'gzip' => NULL, 'extra' => NULL, 'extra-dump' => NULL]) {
     $this->further($options);
-    $sql = drush_sql_get_class();
+    $sql = SqlBase::create($options);
     return $sql->dump($options);
   }
 

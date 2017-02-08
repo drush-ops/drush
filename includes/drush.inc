@@ -1413,7 +1413,7 @@ function drush_print_timers() {
 }
 
 /**
- * Turn drupal_set_message errors into drush_log errors
+ * Turn drupal_set_message() errors into drush_log errors
  */
 function _drush_log_drupal_messages() {
   if (function_exists('drupal_get_messages')) {

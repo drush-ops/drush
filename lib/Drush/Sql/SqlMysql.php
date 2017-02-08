@@ -4,20 +4,21 @@ namespace Drush\Sql;
 
 use PDO;
 
-class Sqlmysql extends SqlBase {
+class SqlMysql extends SqlBase {
 
   public function command() {
     return 'mysql';
   }
 
   public function creds($hide_password = TRUE) {
+    $dbSpec = $this->getDbSpec();
     if ($hide_password) {
       // EMPTY password is not the same as NO password, and is valid.
       $contents = <<<EOT
 #This file was written by Drush's Sqlmysql.php.
 [client]
-user="{$this->db_spec['username']}"
-password="{$this->db_spec['password']}"
+user="{$dbSpec['username']}"
+password="{$dbSpec['password']}"
 EOT;
 
       $file = drush_save_data_to_temp_file($contents);
@@ -25,62 +26,63 @@ EOT;
     }
     else {
       // User is required. Drupal calls it 'username'. MySQL calls it 'user'.
-      $parameters['user'] = $this->db_spec['username'];
+      $parameters['user'] = $dbSpec['username'];
       // EMPTY password is not the same as NO password, and is valid.
-      if (isset($this->db_spec['password'])) {
-        $parameters['password'] = $this->db_spec['password'];
+      if (isset($dbSpec['password'])) {
+        $parameters['password'] = $dbSpec['password'];
       }
     }
 
-    // Some drush commands (e.g. site-install) want to connect to the
+    // Some Drush commands (e.g. site-install) want to connect to the
     // server, but not the database.  Connect to the built-in database.
-    $parameters['database'] = empty($this->db_spec['database']) ? 'information_schema' : $this->db_spec['database'];
+    $parameters['database'] = empty($dbSpec['database']) ? 'information_schema' : $dbSpec['database'];
 
     // Default to unix socket if configured.
-    if (!empty($this->db_spec['unix_socket'])) {
-      $parameters['socket'] = $this->db_spec['unix_socket'];
+    if (!empty($dbSpec['unix_socket'])) {
+      $parameters['socket'] = $dbSpec['unix_socket'];
     }
     // EMPTY host is not the same as NO host, and is valid (see unix_socket).
-    elseif (isset($this->db_spec['host'])) {
-      $parameters['host'] = $this->db_spec['host'];
+    elseif (isset($dbSpec['host'])) {
+      $parameters['host'] = $dbSpec['host'];
     }
 
-    if (!empty($this->db_spec['port'])) {
-      $parameters['port'] = $this->db_spec['port'];
+    if (!empty($dbSpec['port'])) {
+      $parameters['port'] = $dbSpec['port'];
     }
 
-    if (!empty($this->db_spec['pdo']['unix_socket'])) {
-      $parameters['socket'] = $this->db_spec['pdo']['unix_socket'];
+    if (!empty($dbSpec['pdo']['unix_socket'])) {
+      $parameters['socket'] = $dbSpec['pdo']['unix_socket'];
     }
 
-    if (!empty($this->db_spec['pdo'][PDO::MYSQL_ATTR_SSL_CA])) {
-      $parameters['ssl-ca'] = $this->db_spec['pdo'][PDO::MYSQL_ATTR_SSL_CA];
+    if (!empty($dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_CA])) {
+      $parameters['ssl-ca'] = $dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_CA];
     }
 
-    if (!empty($this->db_spec['pdo'][PDO::MYSQL_ATTR_SSL_CAPATH])) {
-      $parameters['ssl-capath'] = $this->db_spec['pdo'][PDO::MYSQL_ATTR_SSL_CAPATH];
+    if (!empty($dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_CAPATH])) {
+      $parameters['ssl-capath'] = $dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_CAPATH];
     }
 
-    if (!empty($this->db_spec['pdo'][PDO::MYSQL_ATTR_SSL_CERT])) {
-      $parameters['ssl-cert'] = $this->db_spec['pdo'][PDO::MYSQL_ATTR_SSL_CERT];
+    if (!empty($dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_CERT])) {
+      $parameters['ssl-cert'] = $dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_CERT];
     }
 
-    if (!empty($this->db_spec['pdo'][PDO::MYSQL_ATTR_SSL_CIPHER])) {
-      $parameters['ssl-cipher'] = $this->db_spec['pdo'][PDO::MYSQL_ATTR_SSL_CIPHER];
+    if (!empty($dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_CIPHER])) {
+      $parameters['ssl-cipher'] = $dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_CIPHER];
     }
 
-    if (!empty($this->db_spec['pdo'][PDO::MYSQL_ATTR_SSL_KEY])) {
-      $parameters['ssl-key'] = $this->db_spec['pdo'][PDO::MYSQL_ATTR_SSL_KEY];
+    if (!empty($dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_KEY])) {
+      $parameters['ssl-key'] = $dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_KEY];
     }
 
-    return $this->params_to_options($parameters);
+    return $this->paramsToOptions($parameters);
   }
 
   public function silent() {
     return '--silent';
   }
 
-  public function createdb_sql($dbname, $quoted = FALSE) {
+  public function createdbSql($dbname, $quoted = FALSE) {
+    $dbSpec = $this->getDbSpec();
     if ($quoted) {
       $dbname = '`' . $dbname . '`';
     }
@@ -92,15 +94,18 @@ EOT;
       //   localhost is special and only allows local Unix socket file connections.
       // - If the database is on a remote server, create a wilcard user with %.
       //   We can't easily know what IP adderss or hostname would represent our server.
-      $domain = ($this->db_spec['host'] == 'localhost') ? 'localhost' : '%';
-      $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO \'%s\'@\'%s\'', $dbname, $this->db_spec['username'], $domain);
-      $sql[] = sprintf("IDENTIFIED BY '%s';", $this->db_spec['password']);
+      $domain = ($dbSpec['host'] == 'localhost') ? 'localhost' : '%';
+      $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO \'%s\'@\'%s\'', $dbname, $dbSpec['username'], $domain);
+      $sql[] = sprintf("IDENTIFIED BY '%s';", $dbSpec['password']);
       $sql[] = 'FLUSH PRIVILEGES;';
     }
     return implode(' ', $sql);
   }
 
-  public function db_exists() {
+  /**
+   * @inheritdoc
+   */
+  public function dbExists() {
     $current = drush_get_context('DRUSH_SIMULATE');
     drush_set_context('DRUSH_SIMULATE', FALSE);
     // Suppress output. We only care about return value.
@@ -118,7 +123,8 @@ EOT;
     return $tables;
   }
 
-  public function dumpCmd($table_selection, $options) {
+  public function dumpCmd($table_selection) {
+    $dbSpec = $this->getDbSpec();
     $parens = FALSE;
     $skip_tables = $table_selection['skip'];
     $structure_tables = $table_selection['structure'];
@@ -126,11 +132,9 @@ EOT;
 
     $ignores = array();
     $skip_tables  = array_merge($structure_tables, $skip_tables);
-    $data_only = $options['data-only'];
+    $data_only = $this->getOption('data-only');
     // The ordered-dump option is only supported by MySQL for now.
-    // @todo add documention once a hook for drush_get_option_help() is available.
-    // @see drush_get_option_help() in drush.inc
-    $ordered_dump = $options['ordered-dump'];
+    $ordered_dump = $this->getOption('ordered-dump');
 
     $exec = 'mysqldump ';
     // mysqldump wants 'databasename' instead of 'database=databasename' for no good reason.
@@ -146,7 +150,7 @@ EOT;
     if (isset($ordered_dump)) {
       $extra .= ' --skip-extended-insert --order-by-primary';
     }
-    if ($option = $options['extra-dump'] ?: $this->query_extra) {
+    if ($option = $this->getOption('extra-dump', $this->queryExtra)) {
       $extra .= " $option";
     }
     $exec .= $extra;
@@ -157,7 +161,7 @@ EOT;
     else {
       // Append the ignore-table options.
       foreach ($skip_tables as $table) {
-        $ignores[] = '--ignore-table=' . $this->db_spec['database'] . '.' . $table;
+        $ignores[] = '--ignore-table=' . $dbSpec['database'] . '.' . $table;
         $parens = TRUE;
       }
       $exec .= ' '. implode(' ', $ignores);

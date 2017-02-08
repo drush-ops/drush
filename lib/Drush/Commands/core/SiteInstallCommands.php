@@ -5,6 +5,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
 use Drush\Log\LogLevel;
 use Drupal\Core\Config\FileStorage;
+use Drush\Sql\SqlBase;
 
 class SiteInstallCommands extends DrushCommands {
 
@@ -62,8 +63,8 @@ class SiteInstallCommands extends DrushCommands {
     $class_loader = drush_drupal_load_autoloader(DRUPAL_ROOT);
     $profile = $this->determineProfile($profile, $options, $class_loader);
 
-    $sql = drush_sql_get_class();
-    $db_spec = $sql->db_spec();
+    $sql = SqlBase::create($options);
+    $db_spec = $sql->getDbSpec();
 
     $account_pass = $options['account-pass'] ?: drush_generate_password();
     $settings = array(
@@ -190,8 +191,8 @@ class SiteInstallCommands extends DrushCommands {
       }
     }
 
-    $sql = drush_sql_get_class();
-    if (!$sql->db_spec()) {
+    $sql = SqlBase::create($commandData->input()->getOptions());
+    if (!$sql->getDbSpec()) {
       throw new \Exception(dt('Could not determine database connection parameters. Pass --db-url option.'));
     }
   }
@@ -203,8 +204,8 @@ class SiteInstallCommands extends DrushCommands {
    *
    */
   public function pre(CommandData $commandData) {
-    $sql = drush_sql_get_class();
-    $db_spec = $sql->db_spec();
+    $sql = SqlBase::create($commandData->input()->getOptions());
+    $db_spec = $sql->getDbSpec();
 
     // Make sure URI is set so we get back a proper $alias_record. Needed for quick-drupal.
     _drush_bootstrap_selected_uri();
@@ -227,7 +228,7 @@ class SiteInstallCommands extends DrushCommands {
     if ($sitesfile_write) {
       $msg[] = dt('create a @sitesfile file', array('@sitesfile' => $sitesfile));
     }
-    if ($sql->db_exists()) {
+    if ($sql->dbExists()) {
       $msg[] = dt("DROP all tables in your '@db' database.", array('@db' => $db_spec['database']));
     }
     else {
@@ -266,7 +267,7 @@ class SiteInstallCommands extends DrushCommands {
     define('MAINTENANCE_MODE', 'install');
     drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
 
-    if (!$sql->drop_or_create()) {
+    if (!$sql->dropOrCreate()) {
       throw new \Exception(dt('Failed to create database: @error', array('@error' => implode(drush_shell_exec_output()))));
     }
   }
