@@ -19,11 +19,15 @@ class SqlBase {
   // The way you pass a sql file when issueing a query.
   public $queryFile = '<';
 
+  // An options array.
+  public $options;
+
   /**
    * Typically, SqlBase instances are constructed via SqlBase::create($options).
    */
-  public function __construct($db_spec = NULL) {
+  public function __construct($db_spec, $options) {
     $this->dbSpec = $db_spec;
+    $this->options = $options;
   }
 
   /**
@@ -49,26 +53,26 @@ class SqlBase {
       $url =  is_array($url) ? $url[$database] : $url;
       $db_spec = drush_convert_db_from_db_url($url);
       $db_spec['db_prefix'] = $options['db-prefix'];
-      return self::getInstance($db_spec);
+      return self::getInstance($db_spec, $options);
     }
     elseif (($databases = $options['databases']) && (array_key_exists($database, $databases)) && (array_key_exists($target, $databases[$database]))) {
       // @todo 'databases' option is not declared anywhere?
       $db_spec = $databases[$database][$target];
-      return self::getInstance($db_spec);
+      return self::getInstance($db_spec, $options);
     }
     elseif ($info = Database::getConnectionInfo($database)) {
       $db_spec = $info[$target];
-      return self::getInstance($db_spec);
+      return self::getInstance($db_spec, $options);
     }
     else {
       throw new \Exception(dt('Unable to load Drupal settings. Check your --root, --uri, etc.'));
     }
   }
 
-  public static function getInstance($db_spec) {
+  public static function getInstance($db_spec, $options) {
     $driver = $db_spec['driver'];
     $class_name = 'Drush\Sql\Sql'. ucfirst($driver);
-    return new $class_name($db_spec);
+    return new $class_name($db_spec, $options);
   }
 
   /*
@@ -76,6 +80,15 @@ class SqlBase {
    */
   public function getDbSpec() {
     return $this->dbSpec;
+  }
+
+  /**
+   * Set the current db spec.
+   *
+   * @param array $dbSpec
+   */
+  public function setDbSpec($dbSpec) {
+    $this->dbSpec = $dbSpec;
   }
 
   /**
@@ -94,7 +107,7 @@ class SqlBase {
    * @return string
    */
   public function connect($hide_password = TRUE) {
-    return trim($this->command() . ' ' . $this->creds($hide_password) . ' ' . drush_get_option('extra', $this->queryExtra));
+    return trim($this->command() . ' ' . $this->creds($hide_password) . ' ' . $this->getOption('extra', $this->queryExtra));
   }
 
 
@@ -178,8 +191,7 @@ class SqlBase {
   /**
    * Execute a SQL query.
    *
-   * Note: This is an API function. Try to avoid using drush_get_option() and instead
-   * pass params in. If you don't want to query results to print during --debug then
+   * If you don't want to query results to print during --debug then
    * provide a $result_file whose value can be drush_bit_bucket().
    *
    * @param string $query
@@ -189,7 +201,7 @@ class SqlBase {
    * @param string $result_file
    *   A path to save query results to. Can be drush_bit_bucket() if desired.
    *
-   * @return
+   * @return boolean
    *   TRUE on success, FALSE on failure
    */
   public function query($query, $input_file = NULL, $result_file = '') {
@@ -214,7 +226,7 @@ class SqlBase {
       $this->command(),
       $this->creds(),
       $this->silent(), // This removes column header and various helpful things in mysql.
-      drush_get_option('extra', $this->queryExtra),
+      $this->getOption('extra', $this->queryExtra),
       $this->queryFile,
       drush_escapeshellarg($input_file),
     );
@@ -233,7 +245,7 @@ class SqlBase {
 
     $success = drush_shell_exec($exec);
 
-    if ($success && drush_get_option('file-delete')) {
+    if ($success && $this->getOption('file-delete')) {
       drush_op('drush_delete_dir', $input_file);
     }
 
@@ -250,13 +262,8 @@ class SqlBase {
     // Inject table prefixes as needed.
     if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
       // Enable prefix processing which can be dangerous so off by default. See http://drupal.org/node/1219850.
-      if (drush_get_option('db-prefix')) {
-        if (drush_drupal_major_version() >= 7) {
-          $query = \Database::getConnection()->prefixTables($query);
-        }
-        else {
-          $query = db_prefix_tables($query);
-        }
+      if ($this->getOption('db-prefix')) {
+        $query = \Database::getConnection()->prefixTables($query);
       }
     }
     return $query;
@@ -292,6 +299,7 @@ class SqlBase {
    * @param boolean $quoted
    *   Quote the database name. Mysql uses backticks to quote which can cause problems
    *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
+   * @return string
    */
   public function createdbSql($dbname, $quoted = FALSE) {}
 
@@ -305,7 +313,7 @@ class SqlBase {
    *   True if successful, FALSE otherwise.
    */
   public function createdb($quoted = FALSE) {
-    $dbname = $this->dbSpec['database'];
+    $dbname = $this->getDbSpec()['database'];
     $sql = $this->createdbSql($dbname, $quoted);
     // Adjust connection to allow for superuser creds if provided.
     $this->su();
@@ -390,22 +398,34 @@ class SqlBase {
    * @return null
    */
   public function su() {
-    $create_db_target = $this->dbSpec;
+    $create_db_target = $this->getDbSpec();
 
     $create_db_target['database'] = '';
-    $db_superuser = drush_get_option('db-su');
-    if (isset($db_superuser)) {
+    $db_superuser = $this->getOption('db-su');
+    if (!empty($db_superuser)) {
       $create_db_target['username'] = $db_superuser;
     }
-    $db_su_pw = drush_get_option('db-su-pw');
+    $db_su_pw = $this->getOption('db-su-pw');
     // If --db-su-pw is not provided and --db-su is, default to empty password.
     // This way db cli command will take password from .my.cnf or .pgpass.
     if (!empty($db_su_pw)) {
       $create_db_target['password'] = $db_su_pw;
     }
-    elseif (isset($db_superuser)) {
+    elseif (!empty($db_superuser)) {
       unset($create_db_target['password']);
     }
-    $this->dbSpec = $create_db_target;
+    $this->setDbSpec($create_db_target);
+  }
+
+  /**
+   * @return array
+   */
+  public function getOptions() {
+    return $this->options;
+  }
+
+  public function getOption($name, $default = NULL) {
+    $options = $this->getOptions();
+    return array_key_exists($name, $options) ? $options[$name] : $default;
   }
 }
