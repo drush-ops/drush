@@ -39,7 +39,7 @@ class SanitizeUserTableCommands extends DrushCommands implements SqlSanitizePlug
     if ($this->isEnabled($options['sanitize-email'])) {
       if (strpos($options['sanitize-email'], '%') !== FALSE) {
         // We need a different sanitization query for MSSQL, Postgres and Mysql.
-        $sql = drush_sql_get_class();
+        $sql = SqlBase::create($commandData->input()->getOptions());
         $db_driver = $sql->scheme();
         if ($db_driver == 'pgsql') {
           $email_map = array('%uid' => "' || uid || '", '%mail' => "' || replace(mail, '@', '_') || '", '%name' => "' || replace(name, ' ', '_') || '");

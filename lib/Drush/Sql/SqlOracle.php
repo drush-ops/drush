@@ -4,7 +4,7 @@ namespace Drush\Sql;
 
 use Drush\Log\LogLevel;
 
-class Sqloracle extends SqlBase {
+class SqlOracle extends SqlBase {
 
   // The way you pass a sql file when issueing a query.
   public $query_file = '@';

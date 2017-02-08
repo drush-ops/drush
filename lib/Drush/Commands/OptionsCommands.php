@@ -33,7 +33,7 @@ class OptionsCommands {
    * @option db-url A Drupal 6 style database URL.
    * @option target The name of a target within the specified database connection. Defaults to default
    */
-  public function optionsetSql() {}
+  public function optionsetSql($options = ['database' => 'default', 'target' => 'default']) {}
 
   /**
    * @hook option @optionset_table_selection

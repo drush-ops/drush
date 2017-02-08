@@ -2,7 +2,7 @@
 
 namespace Drush\Sql;
 
-class Sqlsqlsrv extends SqlBase {
+class SqlSqlsrv extends SqlBase {
 
   // The way you pass a sql file when issueing a query.
   public $query_file = '-h -1 -i';

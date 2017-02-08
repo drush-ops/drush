@@ -5,6 +5,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
 use Drush\Log\LogLevel;
 use Drupal\Core\Config\FileStorage;
+use Drush\Sql\SqlBase;
 
 class SiteInstallCommands extends DrushCommands {
 
@@ -62,7 +63,7 @@ class SiteInstallCommands extends DrushCommands {
     $class_loader = drush_drupal_load_autoloader(DRUPAL_ROOT);
     $profile = $this->determineProfile($profile, $options, $class_loader);
 
-    $sql = drush_sql_get_class();
+    $sql = SqlBase::create($options);
     $db_spec = $sql->db_spec();
 
     $account_pass = $options['account-pass'] ?: drush_generate_password();
@@ -190,7 +191,7 @@ class SiteInstallCommands extends DrushCommands {
       }
     }
 
-    $sql = drush_sql_get_class();
+    $sql = SqlBase::create($commandData->input()->getOptions());
     if (!$sql->db_spec()) {
       throw new \Exception(dt('Could not determine database connection parameters. Pass --db-url option.'));
     }
@@ -203,7 +204,7 @@ class SiteInstallCommands extends DrushCommands {
    *
    */
   public function pre(CommandData $commandData) {
-    $sql = drush_sql_get_class();
+    $sql = SqlBase::create($commandData->input()->getOptions());
     $db_spec = $sql->db_spec();
 
     // Make sure URI is set so we get back a proper $alias_record. Needed for quick-drupal.

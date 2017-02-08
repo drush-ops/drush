@@ -2,6 +2,7 @@
 
 namespace Drush\Sql;
 
+use Drupal\Core\Database\Database;
 use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 
@@ -19,10 +20,57 @@ class SqlBase {
   public $query_file = '<';
 
   /**
-   * Typically, SqlBase objects are constructed via drush_sql_get_class().
+   * Typically, SqlBase instances are constructed via SqlBase::create($options).
    */
   public function __construct($db_spec = NULL) {
     $this->db_spec = $db_spec;
+  }
+
+  /**
+   * Get a driver specific instance of this class.
+   *
+   * @param $options
+   *   An options array as handed to a command callback.
+   * @return SqlBase
+   */
+  public static function create($options = []) {
+    // Set defaults in the unfortunate event that caller doesn't provide values.
+    $options += [
+      'database' => 'default',
+      'target' => 'default',
+      'db-url' => NULL,
+      'databases' => NULL,
+      'db-prefix' => NULL,
+    ];
+    $database = $options['database'];
+    $target = $options['target'];
+
+    try {
+      if ($url = $options['db-url']) {
+        $url =  is_array($url) ? $url[$database] : $url;
+        $db_spec = drush_convert_db_from_db_url($url);
+        $db_spec['db_prefix'] = $options['db-prefix'];
+        return self::getInstance($db_spec);
+      }
+      elseif (($databases = $options['databases']) && (array_key_exists($database, $databases)) && (array_key_exists($target, $databases[$database]))) {
+        // @todo 'databases' option is not declared anywhere?
+        $db_spec = $databases[$database][$target];
+        return self::getInstance($db_spec);
+      }
+      elseif ($info = Database::getConnectionInfo($database)) {
+        $db_spec = $info[$target];
+        return self::getInstance($db_spec);
+      }
+    }
+    catch (\Exception $e) {
+      throw new \Exception(dt('Unable to load Drupal settings. Check your --root, --uri, etc.'));
+    }
+  }
+
+  public static function getInstance($db_spec) {
+    $driver = $db_spec['driver'];
+    $class_name = 'Drush\Sql\sql'. ucfirst($driver);
+    return new $class_name($db_spec);
   }
 
   /*

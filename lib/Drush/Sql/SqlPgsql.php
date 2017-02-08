@@ -4,7 +4,7 @@ namespace Drush\Sql;
 
 define('PSQL_SHOW_TABLES', "SELECT tablename FROM pg_tables WHERE schemaname='public';");
 
-class Sqlpgsql extends SqlBase {
+class SqlPgsql extends SqlBase {
 
   public $query_extra = "--no-align --field-separator=\"\t\" --pset tuples_only=on";
 

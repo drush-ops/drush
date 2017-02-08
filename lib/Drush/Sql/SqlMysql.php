@@ -4,7 +4,7 @@ namespace Drush\Sql;
 
 use PDO;
 
-class Sqlmysql extends SqlBase {
+class SqlMysql extends SqlBase {
 
   public function command() {
     return 'mysql';

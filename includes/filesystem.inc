@@ -4,6 +4,7 @@
  * @file
  * Filesystem utilities.
  */
+use Drush\Sql\SqlBase;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -576,7 +577,7 @@ function drush_preflight_backup_dir($subdir = NULL) {
     // Try to use db name as subdir if none was provided.
     if (empty($subdir)) {
       $subdir = 'unknown';
-      if ($sql = drush_sql_get_class()) {
+      if ($sql = SqlBase::create()) {
         $db_spec = $sql->db_spec();
         $subdir = $db_spec['database'];
       }

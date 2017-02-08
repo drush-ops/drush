@@ -3,6 +3,7 @@
 namespace Drush\Boot;
 
 use Drush\Log\LogLevel;
+use Drush\Sql\SqlBase;
 use Psr\Log\LoggerInterface;
 use Drupal\user\Entity\User;
 
@@ -480,7 +481,7 @@ abstract class DrupalBoot extends BaseBoot {
       return FALSE;
     }
     try {
-      $sql = drush_sql_get_class();
+      $sql = SqlBase::create();
       if (!$sql->query('SELECT 1;')) {
         return drush_bootstrap_error('DRUSH_DRUPAL_DB_ERROR');
       }
@@ -518,7 +519,7 @@ abstract class DrupalBoot extends BaseBoot {
    */
   function bootstrap_drupal_database_has_table($required_tables) {
     try {
-      $sql = drush_sql_get_class();
+      $sql = SqlBase::create();
       $spec = $sql->db_spec();
       $prefix = isset($spec['prefix']) ? $spec['prefix'] : NULL;
       if (!is_array($prefix)) {

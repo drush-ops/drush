@@ -5,6 +5,7 @@ namespace Drush\Commands\core;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drush\Commands\DrushCommands;
+use Drush\Sql\SqlBase;
 use Symfony\Component\Console\Input\InputInterface;
 
 use Consolidation\OutputFormatters\StructuredData\AssociativeList;
@@ -83,7 +84,7 @@ class StatusCommands extends DrushCommands {
       if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
         $status_table['uri'] = drush_get_context('DRUSH_URI');
         try {
-          $sql = drush_sql_get_class();
+          $sql = SqlBase::create($options);
           $db_spec = $sql->db_spec();
           $status_table['db-driver'] = $db_spec['driver'];
           if (!empty($db_spec['unix_socket'])) {
