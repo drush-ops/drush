@@ -69,7 +69,7 @@ class SqlBase {
 
   public static function getInstance($db_spec) {
     $driver = $db_spec['driver'];
-    $class_name = 'Drush\Sql\sql'. ucfirst($driver);
+    $class_name = 'Drush\Sql\Sql'. ucfirst($driver);
     return new $class_name($db_spec);
   }
 
