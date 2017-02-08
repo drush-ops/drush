@@ -14,24 +14,26 @@ class SqlSqlsrv extends SqlBase {
   public function creds() {
     // Some drush commands (e.g. site-install) want to connect to the
     // server, but not the database.  Connect to the built-in database.
-    $database = empty($this->dbSpec['database']) ? 'master' : $this->dbSpec['database'];
+    $dbSpec = $this->getDbSpec();
+    $database = empty($dbSpec['database']) ? 'master' : $dbSpec['database'];
     // Host and port are optional but have defaults.
-    $host = empty($this->dbSpec['host']) ? '.\SQLEXPRESS' : $this->dbSpec['host'];
-    if ($this->dbSpec['username'] == '') {
+    $host = empty($dbSpec['host']) ? '.\SQLEXPRESS' : $dbSpec['host'];
+    if ($dbSpec['username'] == '') {
       return ' -S ' . $host . ' -d ' . $database;
     }
     else {
-      return ' -S ' . $host . ' -d ' . $database . ' -U ' . $this->dbSpec['username'] . ' -P ' . $this->dbSpec['password'];
+      return ' -S ' . $host . ' -d ' . $database . ' -U ' . $dbSpec['username'] . ' -P ' . $dbSpec['password'];
     }
   }
 
   public function dbExists() {
     // TODO: untested, but the gist is here.
-    $database = $this->dbSpec['database'];
+    $dbSpec = $this->getDbSpec();
+    $database = $dbSpec['database'];
     // Get a new class instance that has no 'database'.
-    $db_spec_no_db = $this->dbSpec;
+    $db_spec_no_db = $dbSpec;
     unset($db_spec_no_db['database']);
-    $sql_no_db = drush_sql_get_class($db_spec_no_db);
+    $sql_no_db = new SqlSqlsrv($db_spec_no_db, $this->getOptions());
     $query = "if db_id('$database') IS NOT NULL print 1";
     drush_shell_exec($sql_no_db->connect() . ' -Q %s', $query);
     $output = drush_shell_exec_output();
@@ -50,12 +52,13 @@ class SqlSqlsrv extends SqlBase {
 
   // @todo $file is no longer provided. We are supposed to return bash that can be piped to gzip.
   // Probably sqlsrv needs to override dump() entirely.
-  public function dumpCmd($table_selection, $options) {
+  public function dumpCmd($table_selection) {
+    $dbSpec = $this->getDbSpec();
     if (!$file) {
-      $file = $this->dbSpec['database'] . '_' . date('Ymd_His') . '.bak';
+      $file = $dbSpec['database'] . '_' . date('Ymd_His') . '.bak';
     }
-    $exec = "sqlcmd -U \"" . $this->dbSpec['username'] . "\" -P \"" . $this->dbSpec['password'] . "\" -S \"" . $this->dbSpec['host'] . "\" -Q \"BACKUP DATABASE [" . $this->dbSpec['database'] . "] TO DISK='" . $file . "'\"";
-    if ($option = $options['extra-dump'] :? $this->queryExtra) {
+    $exec = "sqlcmd -U \"" . $dbSpec['username'] . "\" -P \"" . $dbSpec['password'] . "\" -S \"" . $dbSpec['host'] . "\" -Q \"BACKUP DATABASE [" . $dbSpec['database'] . "] TO DISK='" . $file . "'\"";
+    if ($option = $this->getOption('extra-dump', $this->queryExtra)) {
       $exec .= " $option";
     }
     return array($exec, $file);

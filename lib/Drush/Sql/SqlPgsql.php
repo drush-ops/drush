@@ -12,15 +12,16 @@ class SqlPgsql extends SqlBase {
 
   private $password_file = NULL;
 
-  private function password_file() {
-    if (!isset($password_file) && isset($this->dbSpec['password'])) {
+  private function createPasswordFile() {
+    $dbSpec = $this->getDbSpec();
+    if (!isset($this->getPasswordFile()) && isset($dbSpec['password'])) {
       $pgpass_parts = array(
-        empty($this->dbSpec['host']) ? 'localhost' : $this->dbSpec['host'],
-        empty($this->dbSpec['port']) ? '5432' : $this->dbSpec['port'],
+        empty($dbSpec['host']) ? 'localhost' : $dbSpec['host'],
+        empty($Spec['port']) ? '5432' : $dbSpec['port'],
         // Database
         '*',
-        $this->dbSpec['username'],
-        $this->dbSpec['password']
+        $dbSpec['username'],
+        $dbSpec['password']
       );
       // Escape colon and backslash characters in entries.
       // @see http://www.postgresql.org/docs/9.1/static/libpq-pgpass.html
@@ -38,7 +39,7 @@ class SqlPgsql extends SqlBase {
 
   public function command() {
     $environment = "";
-    $pw_file = $this->password_file();
+    $pw_file = $this->createPasswordFile();
     if (isset($pw_file)) {
       $environment = "PGPASSFILE={$pw_file} ";
     }
@@ -50,16 +51,17 @@ class SqlPgsql extends SqlBase {
    *   Not used in postgres. Use .pgpass file instead. See http://drupal.org/node/438828.
    */
   public function creds($hide_password = TRUE) {
+    $dbSpec = $this->getDbSpec();
     // Some drush commands (e.g. site-install) want to connect to the
     // server, but not the database.  Connect to the built-in database.
-    $parameters['dbname'] = empty($this->dbSpec['database']) ? 'template1' : $this->dbSpec['database'];
+    $parameters['dbname'] = empty($dbSpec['database']) ? 'template1' : $dbSpec['database'];
 
     // Host and port are optional but have defaults.
-    $parameters['host'] = empty($this->dbSpec['host']) ? 'localhost' : $this->dbSpec['host'];
-    $parameters['port'] = empty($this->dbSpec['port']) ? '5432' : $this->dbSpec['port'];
+    $parameters['host'] = empty($dbSpec['host']) ? 'localhost' : $['host'];
+    $parameters['port'] = empty($dbSpec['port']) ? '5432' : $dbSpec['port'];
 
     // Username is required.
-    $parameters['username'] = $this->dbSpec['username'];
+    $parameters['username'] = $dbSpec['username'];
 
     // Don't set the password.
     // @see http://drupal.org/node/438828
@@ -77,11 +79,12 @@ class SqlPgsql extends SqlBase {
   }
 
   public function dbExists() {
-    $database = $this->dbSpec['database'];
+    $dbSpec = $this->getDbSpec();
+    $database = $dbSpec['database'];
     // Get a new class instance that has no 'database'.
-    $db_spec_no_db = $this->dbSpec;
+    $db_spec_no_db = $dbSpec;
     unset($db_spec_no_db['database']);
-    $sql_no_db = drush_sql_get_class($db_spec_no_db);
+    $sql_no_db = new SqlPgsql($db_spec_no_db, $this->.$this->getOptions());
     $query = "SELECT 1 AS result FROM pg_database WHERE datname='$database'";
     drush_shell_exec($sql_no_db->connect() . ' -t -c %s', $query);
     $output = drush_shell_exec_output();
@@ -104,7 +107,7 @@ class SqlPgsql extends SqlBase {
     return array();
   }
 
-  public function dumpCmd($table_selection, $options) {
+  public function dumpCmd($table_selection) {
     $parens = FALSE;
     $skip_tables = $table_selection['skip'];
     $structure_tables = $table_selection['structure'];
@@ -112,16 +115,16 @@ class SqlPgsql extends SqlBase {
 
     $ignores = array();
     $skip_tables  = array_merge($structure_tables, $skip_tables);
-    $data_only = $options['data-only'];
+    $data_only = $this->getOption('data-only');
 
-    $create_db = $options['create-db'];
+    $create_db = $this->getOption(['create-db');
     $exec = 'pg_dump ';
     // Unlike psql, pg_dump does not take a '--dbname=' before the database name.
     $extra = str_replace('--dbname=', ' ', $this->creds());
     if (isset($data_only)) {
       $extra .= ' --data-only';
     }
-    if ($option = $options['extra-dump'] ?: $this->queryExtra) {
+    if ($option = $this->getOption('extra-dump', $this->queryExtra) {
       $extra .= " $option";
     }
     $exec .= $extra;
@@ -149,5 +152,12 @@ class SqlPgsql extends SqlBase {
       }
     }
     return $parens ? "($exec)" : $exec;
+  }
+
+  /**
+   * @return string|null
+   */
+  public function getPasswordFile() {
+    return $this->password_file;
   }
 }

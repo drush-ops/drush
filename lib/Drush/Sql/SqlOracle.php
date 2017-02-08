@@ -71,8 +71,8 @@ class SqlOracle extends SqlBase {
 
   // @todo $file is no longer provided. We are supposed to return bash that can be piped to gzip.
   // Probably Oracle needs to override dump() entirely - http://stackoverflow.com/questions/2236615/oracle-can-imp-exp-go-to-stdin-stdout.
-  public function dumpCmd($table_selection, $options) {
-    $create_db = $options['create-db'];
+  public function dumpCmd($table_selection) {
+    $create_db = $this->getOption('create-db');
     $exec = 'exp ' . $this->creds();
     // Change variable '$file' by reference in order to get drush_log() to report.
     if (!$file) {
@@ -84,7 +84,7 @@ class SqlOracle extends SqlBase {
       $exec .= ' tables="(' . implode(',', $tables) . ')"';
     }
     $exec .= ' owner=' . $this->dbSpec['username'];
-    if ($option = $options['extra-dump'] ?:  $this->queryExtra) {
+    if ($option = $this->getOption('extra-dump', $this->queryExtra)) {
       $exec .= " $option";
     }
     return array($exec, $file);

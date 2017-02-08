@@ -35,10 +35,10 @@ EOT;
 
     // Some Drush commands (e.g. site-install) want to connect to the
     // server, but not the database.  Connect to the built-in database.
-    $parameters['database'] = empty($dbSpec['database']) ? 'information_schema' : $this->dbSpec['database'];
+    $parameters['database'] = empty($dbSpec['database']) ? 'information_schema' : $dbSpec['database'];
 
     // Default to unix socket if configured.
-    if (!empty($this->dbSpec['unix_socket'])) {
+    if (!empty($dbSpec['unix_socket'])) {
       $parameters['socket'] = $dbSpec['unix_socket'];
     }
     // EMPTY host is not the same as NO host, and is valid (see unix_socket).
@@ -54,7 +54,7 @@ EOT;
       $parameters['socket'] = $dbSpec['pdo']['unix_socket'];
     }
 
-    if (!empty($this->dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_CA])) {
+    if (!empty($dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_CA])) {
       $parameters['ssl-ca'] = $dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_CA];
     }
 
@@ -123,7 +123,7 @@ EOT;
     return $tables;
   }
 
-  public function dumpCmd($table_selection, $options) {
+  public function dumpCmd($table_selection) {
     $dbSpec = $this->getDbSpec();
     $parens = FALSE;
     $skip_tables = $table_selection['skip'];
@@ -132,11 +132,9 @@ EOT;
 
     $ignores = array();
     $skip_tables  = array_merge($structure_tables, $skip_tables);
-    $data_only = $options['data-only'];
+    $data_only = $this->getOption('data-only');
     // The ordered-dump option is only supported by MySQL for now.
-    // @todo add documention once a hook for drush_get_option_help() is available.
-    // @see drush_get_option_help() in drush.inc
-    $ordered_dump = $options['ordered-dump'];
+    $ordered_dump = $this->getOption('ordered-dump');
 
     $exec = 'mysqldump ';
     // mysqldump wants 'databasename' instead of 'database=databasename' for no good reason.
@@ -152,7 +150,7 @@ EOT;
     if (isset($ordered_dump)) {
       $extra .= ' --skip-extended-insert --order-by-primary';
     }
-    if ($option = $options['extra-dump'] ?: $this->queryExtra) {
+    if ($option = $this->getOption('extra-dump', $this->queryExtra)) {
       $extra .= " $option";
     }
     $exec .= $extra;
