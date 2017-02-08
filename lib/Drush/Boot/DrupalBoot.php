@@ -477,7 +477,7 @@ abstract class DrupalBoot extends BaseBoot {
     // Drupal requires PDO, and Drush requires php 5.6+ which ships with PDO
     // but PHP may be compiled with --disable-pdo.
     if (!class_exists('\PDO')) {
-      drush_log(dt('PDO support is required.'), LogLevel::BOOTSTRAP);
+      $this->logger->log(LogLevel::BOOTSTRAP, dt('PDO support is required.'));
       return FALSE;
     }
     try {
@@ -487,7 +487,7 @@ abstract class DrupalBoot extends BaseBoot {
       }
     }
     catch (\Exception $e) {
-      drush_log(dt('Unable to validate DB: @e', array('@e' => $e->getMessage())), LogLevel::DEBUG);
+      $this->logger->log(LogLevel::DEBUG, dt('Unable to validate DB: @e', array('@e' => $e->getMessage())));
       return FALSE;
     }
     return TRUE;
