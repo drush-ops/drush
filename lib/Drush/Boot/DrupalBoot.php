@@ -520,7 +520,7 @@ abstract class DrupalBoot extends BaseBoot {
   function bootstrap_drupal_database_has_table($required_tables) {
     try {
       $sql = SqlBase::create();
-      $spec = $sql->dbSpec();
+      $spec = $sql->getDbSpec();
       $prefix = isset($spec['prefix']) ? $spec['prefix'] : NULL;
       if (!is_array($prefix)) {
         $prefix = array('default' => $prefix);

@@ -74,7 +74,7 @@ class SqlBase {
   /*
    * Get the current $db_spec.
    */
-  public function dbSpec() {
+  public function getDbSpec() {
     return $this->dbSpec;
   }
 

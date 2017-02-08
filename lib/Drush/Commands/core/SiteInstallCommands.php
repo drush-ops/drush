@@ -64,7 +64,7 @@ class SiteInstallCommands extends DrushCommands {
     $profile = $this->determineProfile($profile, $options, $class_loader);
 
     $sql = SqlBase::create($options);
-    $db_spec = $sql->dbSpec();
+    $db_spec = $sql->getDbSpec();
 
     $account_pass = $options['account-pass'] ?: drush_generate_password();
     $settings = array(
@@ -192,7 +192,7 @@ class SiteInstallCommands extends DrushCommands {
     }
 
     $sql = SqlBase::create($commandData->input()->getOptions());
-    if (!$sql->dbSpec()) {
+    if (!$sql->getDbSpec()) {
       throw new \Exception(dt('Could not determine database connection parameters. Pass --db-url option.'));
     }
   }
@@ -205,7 +205,7 @@ class SiteInstallCommands extends DrushCommands {
    */
   public function pre(CommandData $commandData) {
     $sql = SqlBase::create($commandData->input()->getOptions());
-    $db_spec = $sql->dbSpec();
+    $db_spec = $sql->getDbSpec();
 
     // Make sure URI is set so we get back a proper $alias_record. Needed for quick-drupal.
     _drush_bootstrap_selected_uri();

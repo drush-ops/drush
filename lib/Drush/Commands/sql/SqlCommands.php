@@ -30,7 +30,7 @@ class SqlCommands extends DrushCommands {
     }
     else {
       $sql = SqlBase::create($options);
-      $return = $sql->dbSpec();
+      $return = $sql->getDbSpec();
       if (!$options['show-passwords']) {
         unset($return['password']);
       }
@@ -72,7 +72,7 @@ class SqlCommands extends DrushCommands {
   public function create($options = []) {
     $this->further($options);
     $sql = SqlBase::create($options);
-    $db_spec = $sql->dbSpec();
+    $db_spec = $sql->getDbSpec();
     // Prompt for confirmation.
     if (!drush_get_context('DRUSH_SIMULATE')) {
       // @todo odd - maybe for sql-sync.
@@ -98,7 +98,7 @@ class SqlCommands extends DrushCommands {
   public function drop($options = []) {
     $this->further($options);
     $sql = SqlBase::create($options);
-    $db_spec = $sql->dbSpec();
+    $db_spec = $sql->getDbSpec();
     if (!drush_confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $db_spec['database'])))) {
       return drush_user_abort();
     }
