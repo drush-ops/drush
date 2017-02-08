@@ -135,8 +135,6 @@ class SqlCommands extends DrushCommands {
    * @option file Path to a file containing the SQL to be run. Gzip files are accepted.
    * @option extra Add custom options to the connect string (e.g. --extra=--skip-column-names)
    * @option db-prefix Enable replacement of braces in your query.
-   * @option db-spec A database specification. Only used with --backend calls.
-   * @hidden-option db-spec
    * @validate-file-exists file
    * @aliases sqlq
    * @usage drush sql-query "SELECT * FROM users WHERE uid=1"
@@ -149,7 +147,7 @@ class SqlCommands extends DrushCommands {
    *   Alternate way to import sql statements from a file.
    *
    */
-  public function query($query = '', $options = ['result-file' => NULL, 'file' => NULL, 'extra' => NULL, 'db-prefix' => NULL, 'db-spec' => NULL]) {
+  public function query($query = '', $options = ['result-file' => NULL, 'file' => NULL, 'extra' => NULL, 'db-prefix' => NULL]) {
     $this->further($options);
     $filename = $options['file'];
     // Enable prefix processing when db-prefix option is used.
