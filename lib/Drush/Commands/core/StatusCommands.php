@@ -85,7 +85,7 @@ class StatusCommands extends DrushCommands {
         $status_table['uri'] = drush_get_context('DRUSH_URI');
         try {
           $sql = SqlBase::create($options);
-          $db_spec = $sql->db_spec();
+          $db_spec = $sql->dbSpec();
           $status_table['db-driver'] = $db_spec['driver'];
           if (!empty($db_spec['unix_socket'])) {
             $status_table['db-socket'] = $db_spec['unix_socket'];

@@ -7,7 +7,7 @@ use Drush\Log\LogLevel;
 class SqlOracle extends SqlBase {
 
   // The way you pass a sql file when issueing a query.
-  public $query_file = '@';
+  public $queryFile = '@';
 
   public function command() {
     // use rlwrap if available for readline support
@@ -22,15 +22,15 @@ class SqlOracle extends SqlBase {
   }
 
   public function creds() {
-    return ' ' . $this->db_spec['username'] . '/' . $this->db_spec['password'] . ($this->db_spec['host'] == 'USETNS' ? '@' . $this->db_spec['database'] : '@//' . $this->db_spec['host'] . ':' . ($db_spec['port'] ? $db_spec['port'] : '1521') . '/' . $this->db_spec['database']);
+    return ' ' . $this->dbSpec['username'] . '/' . $this->dbSpec['password'] . ($this->dbSpec['host'] == 'USETNS' ? '@' . $this->dbSpec['database'] : '@//' . $this->dbSpec['host'] . ':' . ($db_spec['port'] ? $db_spec['port'] : '1521') . '/' . $this->dbSpec['database']);
   }
 
-  public function createdb_sql($dbname) {
+  public function createdbSql($dbname) {
     return drush_log("Unable to generate CREATE DATABASE sql for $dbname", LogLevel::ERROR);
   }
 
   // @todo $suffix = '.sql';
-  public function query_format($query) {
+  public function queryFormat($query) {
     // remove trailing semicolon from query if we have it
     $query = preg_replace('/\;$/', '', $query);
 
@@ -76,15 +76,15 @@ class SqlOracle extends SqlBase {
     $exec = 'exp ' . $this->creds();
     // Change variable '$file' by reference in order to get drush_log() to report.
     if (!$file) {
-      $file = $this->db_spec['username'] . '.dmp';
+      $file = $this->dbSpec['username'] . '.dmp';
     }
     $exec .= ' file=' . $file;
 
     if (!empty($tables)) {
       $exec .= ' tables="(' . implode(',', $tables) . ')"';
     }
-    $exec .= ' owner=' . $this->db_spec['username'];
-    if ($option = $options['extra-dump'] ?:  $this->query_extra) {
+    $exec .= ' owner=' . $this->dbSpec['username'];
+    if ($option = $options['extra-dump'] ?:  $this->queryExtra) {
       $exec .= " $option";
     }
     return array($exec, $file);

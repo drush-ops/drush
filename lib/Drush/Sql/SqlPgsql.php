@@ -6,21 +6,21 @@ define('PSQL_SHOW_TABLES', "SELECT tablename FROM pg_tables WHERE schemaname='pu
 
 class SqlPgsql extends SqlBase {
 
-  public $query_extra = "--no-align --field-separator=\"\t\" --pset tuples_only=on";
+  public $queryExtra = "--no-align --field-separator=\"\t\" --pset tuples_only=on";
 
-  public $query_file = "--file";
+  public $queryFile = "--file";
 
   private $password_file = NULL;
 
   private function password_file() {
-    if (!isset($password_file) && isset($this->db_spec['password'])) {
+    if (!isset($password_file) && isset($this->dbSpec['password'])) {
       $pgpass_parts = array(
-        empty($this->db_spec['host']) ? 'localhost' : $this->db_spec['host'],
-        empty($this->db_spec['port']) ? '5432' : $this->db_spec['port'],
+        empty($this->dbSpec['host']) ? 'localhost' : $this->dbSpec['host'],
+        empty($this->dbSpec['port']) ? '5432' : $this->dbSpec['port'],
         // Database
         '*',
-        $this->db_spec['username'],
-        $this->db_spec['password']
+        $this->dbSpec['username'],
+        $this->dbSpec['password']
       );
       // Escape colon and backslash characters in entries.
       // @see http://www.postgresql.org/docs/9.1/static/libpq-pgpass.html
@@ -52,22 +52,22 @@ class SqlPgsql extends SqlBase {
   public function creds($hide_password = TRUE) {
     // Some drush commands (e.g. site-install) want to connect to the
     // server, but not the database.  Connect to the built-in database.
-    $parameters['dbname'] = empty($this->db_spec['database']) ? 'template1' : $this->db_spec['database'];
+    $parameters['dbname'] = empty($this->dbSpec['database']) ? 'template1' : $this->dbSpec['database'];
 
     // Host and port are optional but have defaults.
-    $parameters['host'] = empty($this->db_spec['host']) ? 'localhost' : $this->db_spec['host'];
-    $parameters['port'] = empty($this->db_spec['port']) ? '5432' : $this->db_spec['port'];
+    $parameters['host'] = empty($this->dbSpec['host']) ? 'localhost' : $this->dbSpec['host'];
+    $parameters['port'] = empty($this->dbSpec['port']) ? '5432' : $this->dbSpec['port'];
 
     // Username is required.
-    $parameters['username'] = $this->db_spec['username'];
+    $parameters['username'] = $this->dbSpec['username'];
 
     // Don't set the password.
     // @see http://drupal.org/node/438828
 
-    return $this->params_to_options($parameters);
+    return $this->paramsToOptions($parameters);
   }
 
-  public function createdb_sql($dbname, $quoted = FALSE) {
+  public function createdbSql($dbname, $quoted = FALSE) {
     if ($quoted) {
       $dbname = '`' . $dbname . '`';
     }
@@ -76,10 +76,10 @@ class SqlPgsql extends SqlBase {
     return implode(' ', $sql);
   }
 
-  public function db_exists() {
-    $database = $this->db_spec['database'];
+  public function dbExists() {
+    $database = $this->dbSpec['database'];
     // Get a new class instance that has no 'database'.
-    $db_spec_no_db = $this->db_spec;
+    $db_spec_no_db = $this->dbSpec;
     unset($db_spec_no_db['database']);
     $sql_no_db = drush_sql_get_class($db_spec_no_db);
     $query = "SELECT 1 AS result FROM pg_database WHERE datname='$database'";
@@ -88,7 +88,7 @@ class SqlPgsql extends SqlBase {
     return (bool)$output[0];
   }
 
-  public function query_format($query) {
+  public function queryFormat($query) {
     if (strtolower($query) == 'show tables;') {
       return PSQL_SHOW_TABLES;
     }
@@ -121,7 +121,7 @@ class SqlPgsql extends SqlBase {
     if (isset($data_only)) {
       $extra .= ' --data-only';
     }
-    if ($option = $options['extra-dump'] ?: $this->query_extra) {
+    if ($option = $options['extra-dump'] ?: $this->queryExtra) {
       $extra .= " $option";
     }
     $exec .= $extra;

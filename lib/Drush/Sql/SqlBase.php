@@ -11,19 +11,19 @@ class SqlBase {
   use SqlTableSelectionTrait;
 
   // An Drupal style array containing specs for connecting to database.
-  public $db_spec;
+  public $dbSpec;
 
   // Default code appended to sql-query connections.
-  public $query_extra = '';
+  public $queryExtra = '';
 
   // The way you pass a sql file when issueing a query.
-  public $query_file = '<';
+  public $queryFile = '<';
 
   /**
    * Typically, SqlBase instances are constructed via SqlBase::create($options).
    */
   public function __construct($db_spec = NULL) {
-    $this->db_spec = $db_spec;
+    $this->dbSpec = $db_spec;
   }
 
   /**
@@ -76,8 +76,8 @@ class SqlBase {
   /*
    * Get the current $db_spec.
    */
-  public function db_spec() {
-    return $this->db_spec;
+  public function dbSpec() {
+    return $this->dbSpec;
   }
 
   /**
@@ -96,7 +96,7 @@ class SqlBase {
    * @return string
    */
   public function connect($hide_password = TRUE) {
-    return trim($this->command() . ' ' . $this->creds($hide_password) . ' ' . drush_get_option('extra', $this->query_extra));
+    return trim($this->command() . ' ' . $this->creds($hide_password) . ' ' . drush_get_option('extra', $this->queryExtra));
   }
 
 
@@ -156,7 +156,7 @@ class SqlBase {
    *   Otherwise, just return the path that was provided.
    */
   public function dumpFile($file) {
-    $database = $this->db_spec['database'];
+    $database = $this->dbSpec['database'];
 
     // $file is passed in to us usually via --result-file.  If the user
     // has set $options['result-file'] = TRUE, then we
@@ -207,8 +207,8 @@ class SqlBase {
 
     // Save $query to a tmp file if needed. We will redirect it in.
     if (!$input_file) {
-      $query = $this->query_prefix($query);
-      $query = $this->query_format($query);
+      $query = $this->queryPrefix($query);
+      $query = $this->queryFormat($query);
       $input_file = drush_save_data_to_temp_file($query);
     }
 
@@ -216,8 +216,8 @@ class SqlBase {
       $this->command(),
       $this->creds(),
       $this->silent(), // This removes column header and various helpful things in mysql.
-      drush_get_option('extra', $this->query_extra),
-      $this->query_file,
+      drush_get_option('extra', $this->queryExtra),
+      $this->queryFile,
       drush_escapeshellarg($input_file),
     );
     $exec = implode(' ', $parts);
@@ -248,7 +248,7 @@ class SqlBase {
   public function silent() {}
 
 
-  public function query_prefix($query) {
+  public function queryPrefix($query) {
     // Inject table prefixes as needed.
     if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
       // Enable prefix processing which can be dangerous so off by default. See http://drupal.org/node/1219850.
@@ -265,7 +265,7 @@ class SqlBase {
   }
 
 
-  public function query_format($query) {
+  public function queryFormat($query) {
     return $query;
   }
 
@@ -295,7 +295,7 @@ class SqlBase {
    *   Quote the database name. Mysql uses backticks to quote which can cause problems
    *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
    */
-  public function createdb_sql($dbname, $quoted = FALSE) {}
+  public function createdbSql($dbname, $quoted = FALSE) {}
 
   /**
    * Create a new database.
@@ -307,8 +307,8 @@ class SqlBase {
    *   True if successful, FALSE otherwise.
    */
   public function createdb($quoted = FALSE) {
-    $dbname = $this->db_spec['database'];
-    $sql = $this->createdb_sql($dbname, $quoted);
+    $dbname = $this->dbSpec['database'];
+    $sql = $this->createdbSql($dbname, $quoted);
     // Adjust connection to allow for superuser creds if provided.
     $this->su();
     return $this->query($sql);
@@ -320,8 +320,8 @@ class SqlBase {
    * return boolean
    *   TRUE or FALSE depending on success.
    */
-  public function drop_or_create() {
-    if ($this->db_exists()) {
+  public function dropOrCreate() {
+    if ($this->dbExists()) {
       return $this->drop($this->listTables());
     }
     else {
@@ -334,7 +334,7 @@ class SqlBase {
    *
    * @return bool
    */
-  public function db_exists() {}
+  public function dbExists() {}
 
   public function delete() {}
 
@@ -353,7 +353,7 @@ class SqlBase {
    * @return string
    */
   public function scheme() {
-    return $this->db_spec['driver'];
+    return $this->dbSpec['driver'];
   }
 
   /**
@@ -370,7 +370,7 @@ class SqlBase {
    * @return string
    *   A bash fragment.
    */
-  public function params_to_options($parameters) {
+  public function paramsToOptions($parameters) {
     // Turn each parameter into a valid parameter string.
     $parameter_strings = array();
     foreach ($parameters as $key => $value) {
@@ -392,7 +392,7 @@ class SqlBase {
    * @return null
    */
   public function su() {
-    $create_db_target = $this->db_spec;
+    $create_db_target = $this->dbSpec;
 
     $create_db_target['database'] = '';
     $db_superuser = drush_get_option('db-su');
@@ -408,6 +408,6 @@ class SqlBase {
     elseif (isset($db_superuser)) {
       unset($create_db_target['password']);
     }
-    $this->db_spec = $create_db_target;
+    $this->dbSpec = $create_db_target;
   }
 }

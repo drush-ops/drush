@@ -64,7 +64,7 @@ class SiteInstallCommands extends DrushCommands {
     $profile = $this->determineProfile($profile, $options, $class_loader);
 
     $sql = SqlBase::create($options);
-    $db_spec = $sql->db_spec();
+    $db_spec = $sql->dbSpec();
 
     $account_pass = $options['account-pass'] ?: drush_generate_password();
     $settings = array(
@@ -192,7 +192,7 @@ class SiteInstallCommands extends DrushCommands {
     }
 
     $sql = SqlBase::create($commandData->input()->getOptions());
-    if (!$sql->db_spec()) {
+    if (!$sql->dbSpec()) {
       throw new \Exception(dt('Could not determine database connection parameters. Pass --db-url option.'));
     }
   }
@@ -205,7 +205,7 @@ class SiteInstallCommands extends DrushCommands {
    */
   public function pre(CommandData $commandData) {
     $sql = SqlBase::create($commandData->input()->getOptions());
-    $db_spec = $sql->db_spec();
+    $db_spec = $sql->dbSpec();
 
     // Make sure URI is set so we get back a proper $alias_record. Needed for quick-drupal.
     _drush_bootstrap_selected_uri();
@@ -228,7 +228,7 @@ class SiteInstallCommands extends DrushCommands {
     if ($sitesfile_write) {
       $msg[] = dt('create a @sitesfile file', array('@sitesfile' => $sitesfile));
     }
-    if ($sql->db_exists()) {
+    if ($sql->dbExists()) {
       $msg[] = dt("DROP all tables in your '@db' database.", array('@db' => $db_spec['database']));
     }
     else {
@@ -267,7 +267,7 @@ class SiteInstallCommands extends DrushCommands {
     define('MAINTENANCE_MODE', 'install');
     drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
 
-    if (!$sql->drop_or_create()) {
+    if (!$sql->dropOrCreate()) {
       throw new \Exception(dt('Failed to create database: @error', array('@error' => implode(drush_shell_exec_output()))));
     }
   }
