@@ -487,7 +487,7 @@ abstract class DrupalBoot extends BaseBoot {
       }
     }
     catch (\Exception $e) {
-      drush_log(dt('Unable to validate DB c: @e', array('@e' => $e->getMessage())), 'debug');
+      drush_log(dt('Unable to validate DB: @e', array('@e' => $e->getMessage())), LogLevel::DEBUG);
       return FALSE;
     }
     return TRUE;

@@ -45,24 +45,22 @@ class SqlBase {
     $database = $options['database'];
     $target = $options['target'];
 
-    try {
-      if ($url = $options['db-url']) {
-        $url =  is_array($url) ? $url[$database] : $url;
-        $db_spec = drush_convert_db_from_db_url($url);
-        $db_spec['db_prefix'] = $options['db-prefix'];
-        return self::getInstance($db_spec);
-      }
-      elseif (($databases = $options['databases']) && (array_key_exists($database, $databases)) && (array_key_exists($target, $databases[$database]))) {
-        // @todo 'databases' option is not declared anywhere?
-        $db_spec = $databases[$database][$target];
-        return self::getInstance($db_spec);
-      }
-      elseif ($info = Database::getConnectionInfo($database)) {
-        $db_spec = $info[$target];
-        return self::getInstance($db_spec);
-      }
+    if ($url = $options['db-url']) {
+      $url =  is_array($url) ? $url[$database] : $url;
+      $db_spec = drush_convert_db_from_db_url($url);
+      $db_spec['db_prefix'] = $options['db-prefix'];
+      return self::getInstance($db_spec);
     }
-    catch (\Exception $e) {
+    elseif (($databases = $options['databases']) && (array_key_exists($database, $databases)) && (array_key_exists($target, $databases[$database]))) {
+      // @todo 'databases' option is not declared anywhere?
+      $db_spec = $databases[$database][$target];
+      return self::getInstance($db_spec);
+    }
+    elseif ($info = Database::getConnectionInfo($database)) {
+      $db_spec = $info[$target];
+      return self::getInstance($db_spec);
+    }
+    else {
       throw new \Exception(dt('Unable to load Drupal settings. Check your --root, --uri, etc.'));
     }
   }
