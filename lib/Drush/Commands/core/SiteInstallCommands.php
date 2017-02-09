@@ -190,10 +190,29 @@ class SiteInstallCommands extends DrushCommands {
         throw new \Exception('The config source is not a directory.');
       }
     }
+    if ($commandData->input()->getOption('db-url') == '') {
+      // Prompt for the db-url data if it was not provided via --db-url.
+      $database = drush_prompt('Database name');
+      $driver = drush_prompt('Database driver', 'mysql');
+      $username = drush_prompt('Database username');
+      $password = drush_prompt('Database password');
+      $host = drush_prompt('Database host', 'localhost');
+      $port = drush_prompt('Database port', '3306');
+      $db_url = "$driver://$username:$password@$host/$database";
 
-    $sql = SqlBase::create($commandData->input()->getOptions());
-    if (!$sql->getDbSpec()) {
-      throw new \Exception(dt('Could not determine database connection parameters. Pass --db-url option.'));
+      $commandData->input()->setOption('db-url', $db_url);
+
+      $sql = SqlBase::create($commandData->input()->getOptions());
+
+      if (!$sql->getDbSpec()) {
+        throw new \Exception(dt('Could not determine database connection parameters. Pass --db-url option.'));
+      }
+    }
+    else {
+      $sql = SqlBase::create($commandData->input()->getOptions());
+      if (!$sql->getDbSpec()) {
+        throw new \Exception(dt('Could not determine database connection parameters. Pass --db-url option.'));
+      }
     }
   }
 
@@ -206,7 +225,6 @@ class SiteInstallCommands extends DrushCommands {
   public function pre(CommandData $commandData) {
     $sql = SqlBase::create($commandData->input()->getOptions());
     $db_spec = $sql->getDbSpec();
-
     // Make sure URI is set so we get back a proper $alias_record. Needed for quick-drupal.
     _drush_bootstrap_selected_uri();
 
