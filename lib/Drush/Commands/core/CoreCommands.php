@@ -126,7 +126,7 @@ class CoreCommands extends DrushCommands {
       $rows[$i] = [
         'title' => (string) $info['title'],
         'value' => (string) $info['value'],
-        'description' => (string) $info['description'],
+        'description' => drush_render($info['description']),
         'sid' => $severity,
         'severity' => @$severities[$severity]
       ];
@@ -136,15 +136,7 @@ class CoreCommands extends DrushCommands {
       $i++;
     }
     $result = new RowsOfFields($rows);
-    $result->addRendererFunction([$this, 'renderCell']);
     return $result;
-  }
-
-  public function renderCell($key, $cellData, FormatterOptions $options) {
-    if ($key =='value') {
-      $cellData = strip_tags($cellData);
-    }
-    return $cellData;
   }
 
   /**
