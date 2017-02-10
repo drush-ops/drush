@@ -116,10 +116,10 @@ class UserCommands extends DrushCommands {
         if ($account = user_load_by_name($name)) {
           $account->block();
           $account->save();
-          $this->logger->log(LogLevel::SUCCESS, dt('Blocked user(s): !user', array('!user' => $name)));
+          $this->logger->success(dt('Blocked user(s): !user', array('!user' => $name)));
         }
         else {
-          $this->logger->log(LogLevel::WARNING, dt('Unable to load user: !user', array('!user' => $name)));
+          $this->logger->warning(dt('Unable to load user: !user', array('!user' => $name)));
         }
       }
     }
@@ -142,10 +142,10 @@ class UserCommands extends DrushCommands {
         if ($account = user_load_by_name($name)) {
           $account->activate();
           $account->save();
-          $this->logger->log(LogLevel::SUCCESS, dt('Unblocked user(s): !user', array('!user' => $name)));
+          $this->logger->success(dt('Unblocked user(s): !user', array('!user' => $name)));
         }
         else {
-          $this->logger->log(LogLevel::WARNING, dt('Unable to load user: !user', array('!user' => $name)));
+          $this->logger->warning(dt('Unable to load user: !user', array('!user' => $name)));
         }
       }
     }
@@ -177,7 +177,7 @@ class UserCommands extends DrushCommands {
           )));
         }
         else {
-          $this->logger->warn(dt('Unable to load user: !user', array('!user' => $name)));
+          $this->logger->warning(dt('Unable to load user: !user', array('!user' => $name)));
         }
       }
     }
@@ -209,7 +209,7 @@ class UserCommands extends DrushCommands {
           )));
         }
         else {
-          $this->logger->warn(dt('Unable to load user: !user', array('!user' => $name)));
+          $this->logger->warning(dt('Unable to load user: !user', array('!user' => $name)));
         }
       }
     }
@@ -240,7 +240,7 @@ class UserCommands extends DrushCommands {
       if ($account = User::create($new_user)) {
         $account->save();
         drush_backend_set_result($this->info_array($account));
-        $this->logger()->log(LogLevel::SUCCESS, dt('Created a new user with uid !uid', array('!uid' => $account->id())));
+        $this->logger()->success(dt('Created a new user with uid !uid', array('!uid' => $account->id())));
       }
       else {
         return new CommandError("Could not create a new user account with the name " . $name . ".");
@@ -284,16 +284,16 @@ class UserCommands extends DrushCommands {
       foreach ($names as $name) {
         if ($account = user_load_by_name($name)) {
           if ($options['delete-content']) {
-            $this->logger()->log(LogLevel::OK, dt('All content created by !name will be deleted.', array('!name' => $account->getUsername())));
+            $this->logger()->warning(dt('All content created by !name will be deleted.', array('!name' => $account->getUsername())));
           }
           if (drush_confirm('Cancel user account?: ')) {
             $account->cancel();
-            $this->logger()->log(LogLevel::SUCCESS, dt('Cancelled user: !user', array('!user' => $name)));
+            $this->logger()->success(dt('Cancelled user: !user', array('!user' => $name)));
           }
 
         }
         else {
-          $this->logger->log(LogLevel::WARNING, dt('Unable to load user: !user', array('!user' => $name)));
+          $this->logger->warning(dt('Unable to load user: !user', array('!user' => $name)));
         }
       }
     }
@@ -317,7 +317,7 @@ class UserCommands extends DrushCommands {
         $account->setpassword($password);
         $account->save();
         $this->logger()
-          ->log(LogLevel::SUCCESS, dt('Changed password for !name.', array('!name' => $name)));
+          ->success(dt('Changed password for !name.', array('!name' => $name)));
       }
     }
     else {
