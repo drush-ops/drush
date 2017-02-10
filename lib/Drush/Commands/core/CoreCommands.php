@@ -136,15 +136,7 @@ class CoreCommands extends DrushCommands {
       $i++;
     }
     $result = new RowsOfFields($rows);
-    $result->addRendererFunction([$this, 'renderCell']);
     return $result;
-  }
-
-  public function renderCell($key, $cellData, FormatterOptions $options) {
-    if ($key =='value') {
-      $cellData = strip_tags($cellData);
-    }
-    return $cellData;
   }
 
   /**
