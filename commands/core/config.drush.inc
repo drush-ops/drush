@@ -728,7 +728,20 @@ function _drush_config_import(StorageComparer $storage_comparer) {
   }
   else{
     try {
-      $config_importer->import();
+      // This is the contents of \Drupal\Core\Config\ConfigImporter::import.
+      // Copied here so we can log progress.
+      if ($config_importer->hasUnprocessedConfigurationChanges()) {
+        $sync_steps = $config_importer->initialize();
+        foreach ($sync_steps as $step) {
+          $context = array();
+          do {
+            $config_importer->doSyncStep($step, $context);
+            if (isset($context['message'])) {
+              drush_log(str_replace('Synchronizing', 'Synchronized', (string)$context['message']), LogLevel::OK);
+            }
+          } while ($context['finished'] < 1);
+        }
+      }
       drush_log('The configuration was imported successfully.', LogLevel::SUCCESS);
     }
     catch (ConfigException $e) {
