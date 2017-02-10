@@ -128,7 +128,7 @@ class ConfigImportCommands extends DrushCommands implements CustomEventAwareInte
             do {
               $config_importer->doSyncStep($step, $context);
               if (isset($context['message'])) {
-                $this->logger()->notice((string) $context['message']);
+                $this->logger()->notice(str_replace('Synchronizing', 'Synchronized', (string)$context['message']));
               }
             } while ($context['finished'] < 1);
           }
