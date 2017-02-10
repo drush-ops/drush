@@ -384,6 +384,6 @@ function drush_render($data) {
     $data = drupal_render($data);
   }
 
-  $data = drupal_html_to_text();
+  $data = drupal_html_to_text($data);
   return $data;
 }
