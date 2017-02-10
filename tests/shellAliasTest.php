@@ -70,9 +70,8 @@ class shellAliasesCase extends CommandUnishTestCase {
     $options = array(
       'config' => UNISH_SANDBOX,
       'simulate' => NULL,
-      'rebase' => NULL,
     );
-    $this->drush('pull', array('origin'), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
+    $this->drush('pull', array('origin', '--', '--rebase'), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
     $output = $this->getOutput();
     $this->assertContains('Calling proc_open(git pull origin --rebase);', $output);
   }
@@ -104,9 +103,8 @@ class shellAliasesCase extends CommandUnishTestCase {
       'config' => UNISH_SANDBOX,
       'simulate' => NULL,
       'ssh-options' => '',
-      'rebase' => NULL,
     );
-    $this->drush('pull', array('origin'), $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
+    $this->drush('pull', array('origin', '--', '--rebase'), $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
     // $expected might be different on non unix platforms. We shall see.
     $exec = self::escapeshellarg('cd /path/to/drupal && git pull origin --rebase');
     $expected = "Calling proc_open(ssh  user@server $exec);";

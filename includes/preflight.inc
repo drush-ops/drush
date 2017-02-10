@@ -809,38 +809,6 @@ function drush_preflight_command_dispatch() {
   $command = drush_parse_command();
   drush_command_default_options($command);
 
-  // If the command sets the 'strict-option-handling' flag, then we will remove
-  // any cli options that appear after the command name from the 'cli' context.
-  // The cli options that appear before the command name are stored in the
-  // 'DRUSH_GLOBAL_CLI_OPTIONS' context, so we will just overwrite the cli context
-  // with this, after doing the neccessary fixup from short-form to long-form options.
-  // After we do that, we put back any local drush options identified by $command['options'].
-  if (is_array($command) && !empty($command['strict-option-handling'])) {
-    $cli_options = drush_get_context('DRUSH_GLOBAL_CLI_OPTIONS', array());
-    // Now we are going to sort out any options that exist in $command['options'];
-    // we will remove these from DRUSH_COMMAND_ARGS and put them back into the
-    // cli options.
-    $cli_context = drush_get_context('cli');
-    $remove_from_command_args = array();
-    foreach ($command['options'] as $option => $info) {
-      if (array_key_exists($option, $cli_context)) {
-        $cli_options[$option] = $cli_context[$option];
-        $remove_from_command_args[$option] = $option;
-      }
-    }
-    if (!empty($remove_from_command_args)) {
-      $drush_command_args = array();
-      foreach (drush_get_context('DRUSH_COMMAND_ARGS') as $arg) {
-        if (!_drush_should_remove_command_arg($arg, $remove_from_command_args)) {
-          $drush_command_args[] = $arg;
-        }
-      }
-      drush_set_context('DRUSH_COMMAND_ARGS', $drush_command_args);
-    }
-    drush_expand_short_form_options($cli_options);
-    drush_set_context('cli', $cli_options);
-    _drush_preflight_global_options();
-  }
   $args = drush_get_arguments();
   $command_name = array_shift($args);
   $root = \Drush::bootstrapManager()->getRoot();

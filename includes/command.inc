@@ -828,6 +828,7 @@ function drush_redispatch_get_options() {
  * Parse console arguments.
  */
 function drush_parse_args() {
+  $sawDashDash = false;
   $args = drush_get_context('argv');
   $command_args = NULL;
   $global_options = array();
@@ -855,8 +856,11 @@ function drush_parse_args() {
     if (is_array($command_args)) {
       $command_args[] = $opt;
     }
+    if ($opt == '--') {
+      $sawDashDash = true;
+    }
     // Is the arg an option (starting with '-')?
-    if (!empty($opt) && $opt{0} == "-" && strlen($opt) != 1) {
+    elseif (!$sawDashDash && !empty($opt) && $opt{0} == "-" && strlen($opt) != 1) {
       // Do we have multiple options behind one '-'?
       if (strlen($opt) > 2 && $opt{1} != "-") {
         // Each char becomes a key of its own.
@@ -1254,7 +1258,6 @@ function drush_command_defaults($key, $commandfile, $path) {
     'drush dependencies' => array(),
     'handle-remote-commands' => FALSE,
     'remote-tty' => FALSE,
-    'strict-option-handling' => FALSE,
     'tilde-expansion' => TRUE,
     'bootstrap_errors' => array(),
     'topics' => array(),
@@ -1353,18 +1356,6 @@ function _drush_command_translate($source) {
  * - remote-tty: set to TRUE if Drush should force ssh to allocate a pseudo-tty
  *   when this command is being called remotely.  Important for interactive commands.
  *   Remote commands that allocate a psedo-tty always print "Connection closed..." when done.
- * - strict-option-handling: set to TRUE if drush should strictly separate local command
- *   cli options from the global options.  Usually, drush allows global cli options and
- *   command cli options to be interspersed freely on the commandline.  For commands where
- *   this flag is set, options are separated, with global options comming before the
- *   command names, and command options coming after, like so:
- *     drush --global-options command --command-options
- *   In this mode, the command options are no longer available via drush_get_option();
- *   instead, they can be retrieved via:
- *     $args = drush_get_original_cli_args_and_options();
- *     $args = drush_get_context('DRUSH_COMMAND_ARGS', array());
- *   In this case, $args will contain the command args and options literally, exactly as they
- *   were entered on the command line, and in the same order as they appeared.
  * - 'outputformat': declares the data format to be used to render the
  *   command result.  In addition to the output format engine options
  *   listed below, each output format type can take additional metadata
@@ -1746,23 +1737,6 @@ function drush_command_set_command_specific($command_default_options, $command =
     // options such as -y and -v.
     if (!empty($options_were_set)) {
       _drush_preflight_global_options();
-    }
-    // If the command uses strict option handling, back out any global
-    // options that were set.
-    if ($command['strict-option-handling']) {
-      $global_options = drush_get_global_options();
-      foreach ($options_were_set as $key) {
-        if (array_key_exists($key, $global_options)) {
-          if (!array_key_exists('context', $global_options[$key])) {
-            $strict_options_warning =& drush_get_context('DRUSH_STRICT_OPTIONS_WARNING', array());
-            if (!array_key_exists($key, $strict_options_warning)) {
-              drush_log(dt("Global option --!option not supported in command-specific options for command !command due to a limitation in strict option handling.", array('!option' => $key, '!command' => $command['command'])), LogLevel::WARNING);
-              $strict_options_warning[$key] = TRUE;
-            }
-          }
-          drush_unset_option($key, 'specific');
-        }
-      }
     }
   }
 }

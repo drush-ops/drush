@@ -24,7 +24,6 @@ class RsyncCommands extends DrushCommands {
    * @option exclude-paths List of paths to exclude, seperated by : (Unix-based systems) or ; (Windows).
    * @option include-paths List of paths to include, seperated by : (Unix-based systems) or ; (Windows).
    * @option mode The unary flags to pass to rsync; --mode=rultz implies rsync -rultz.  Default is -akz.
-   * @strict-option-handling
    * @usage drush rsync @dev @stage
    *   Rsync Drupal root from Drush alias dev to the alias stage.
    * @usage drush rsync ./ @stage:%files/img
