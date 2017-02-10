@@ -147,49 +147,35 @@ function _pm_update_core(&$project, $tmpfile) {
   }
 
   $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+  $project['full_project_path'] = $drupal_root;
 
   // We need write permission on $drupal_root.
   if (!is_writable($drupal_root)) {
     return drush_set_error('DRUSH_PATH_NO_WRITABLE', dt('Drupal root path is not writable.'));
   }
 
-  // Create a directory 'core' if it does not already exist.
-  $project['path'] = 'drupal-' . $project['candidate_version'];
-  $project['full_project_path'] = $drupal_root . '/' . $project['path'];
-  if (!is_dir($project['full_project_path'])) {
-    drush_mkdir($project['full_project_path']);
-  }
+  // The upgrade process for core requires to remove files from the old core first, but not removing any site-local files.
+  // Drupal documentation specifies a set of directories that comprise the core, but isn't specific about the exact list of files in the root.
+  // The code below takes a safe approach.
+  // - Check and back-up all files in the root.
+  // - Don't delete any files in the root.  Instead allow the new files to overwrite them.  This does mean that if a file is removed from
+  //   core, it will stay around locally.  However this is likely to be rare, and seems hard to avoid.
 
-  // Create a list of directories to exclude from the update process.
-  // On Drupal >=8 skip also directories in the document root.
   if (drush_drupal_major_version() >= 8) {
-    $skip_list = array('sites', $project['path'], 'modules', 'profiles', 'themes');
+    // See https://api.drupal.org/api/drupal/core!UPGRADE.txt/8
+    $items_to_delete = array('core', 'vendor');
   }
   else {
-    $skip_list = array('sites', $project['path']);
+    // See https://api.drupal.org/api/drupal/UPGRADE.txt/7
+    $items_to_delete = array('includes', 'misc', 'modules', 'scripts', 'themes', 'profiles/minimal', 'profiles/standard', 'profiles/testing');
   }
-  // Add non-writable directories: we can't move them around.
-  // We will also use $items_to_test later for $version_control check.
-  $items_to_test = drush_scan_directory($drupal_root, '/.*/', array_merge(array('.', '..'), $skip_list), 0, FALSE, 'basename', 0, TRUE);
-  foreach (array_keys($items_to_test) as $item) {
-    if (is_dir($item) && !is_writable($item)) {
-      $skip_list[] = $item;
-      unset($items_to_test[$item]);
-    }
-    elseif (is_link($item)) {
-      $skip_list[] = $item;
-      unset($items_to_test[$item]);
+
+  $items_to_test = array_flip($items_to_delete);
+  foreach (scandir($drupal_root) as $file) {
+    if (is_file("$drupal_root/$file")) {
+      $items_to_test[$file] = 1;
     }
   }
-  $project['skip_list'] = $skip_list;
-
-  // Move all files and folders in $drupal_root to the new 'core' directory
-  // except for the items in the skip list
-  _pm_update_move_files($drupal_root, $project['full_project_path'], $project['skip_list']);
-
-  // Set a context variable to indicate that rollback should reverse
-  // the _pm_update_move_files above.
-  drush_set_context('DRUSH_PM_DRUPAL_CORE', $project);
 
   if (!$version_control = drush_pm_include_version_control($project['full_project_path'])) {
     return FALSE;
@@ -200,44 +186,19 @@ function _pm_update_core(&$project, $tmpfile) {
     return FALSE;
   }
 
+  foreach ($items_to_delete as $dir) {
+    if (!drush_delete_dir($dir)) {
+      return FALSE;
+    }
+  }
+
   // Update core.
   if (pm_update_project($project, $version_control) === FALSE) {
     return FALSE;
   }
 
-  // Take the updated files in the 'core' directory that have been updated,
-  // and move all except for the items in the skip list back to
-  // the drupal root.
-  _pm_update_move_files($project['full_project_path'], $drupal_root, $project['skip_list']);
-  drush_delete_dir($project['full_project_path']);
-  $project['full_project_path'] = $drupal_root;
-
-  // If there is a backup target, then find items
-  // in the backup target that do not exist at the
-  // drupal root.  These are to be moved back.
-  if (array_key_exists('backup_target', $project)) {
-    _pm_update_move_files($project['backup_target'], $drupal_root, $project['skip_list'], FALSE);
-    _pm_update_move_files($project['backup_target'] . '/profiles', $drupal_root . '/profiles', array('default'), FALSE);
-  }
-
   pm_update_finish($project, $version_control);
 
-  return TRUE;
-}
-
-/**
- * Move some files from one location to another.
- */
-function _pm_update_move_files($src_dir, $dest_dir, $skip_list, $remove_conflicts = TRUE) {
-  $items_to_move = drush_scan_directory($src_dir, '/.*/', array_merge(array('.', '..'), $skip_list), 0, FALSE, 'filename', 0, TRUE);
-  foreach ($items_to_move as $filename => $info) {
-    if ($remove_conflicts) {
-      drush_delete_dir($dest_dir . '/' . basename($filename));
-    }
-    if (!file_exists($dest_dir . '/' . basename($filename))) {
-      $move_result = drush_move_dir($filename,  $dest_dir . '/' . basename($filename));
-    }
-  }
   return TRUE;
 }
 
@@ -340,21 +301,6 @@ function pm_update_packages($update_info, $tmpfile) {
  *   Success or failure. An error message will be logged.
  */
 function pm_update_project($project, $version_control) {
-  // 1. If the version control engine is a proper vcs we need to remove project
-  // files in order to not have orphan files after update.
-  // 2. If the package-handler is cvs or git, it will remove upstream removed
-  // files and no orphans will exist after update.
-  // So, we must remove all files previous update if the directory is not a
-  // working copy of cvs or git but we don't need to remove them if the version
-  // control engine is backup, as it did already move the project out to the
-  // backup directory.
-  if (($version_control->engine != 'backup') && (drush_get_option('package-handler', 'wget') == 'wget')) {
-    // Find and unlink all files but the ones in the vcs control directories.
-    $skip_list = array('.', '..');
-    $skip_list = array_merge($skip_list, drush_version_control_reserved_files());
-    drush_scan_directory($project['full_project_path'], '/.*/', $skip_list, 'unlink', TRUE, 'filename', 0, TRUE);
-  }
-
   // Add the project to a context so we can roll back if needed.
   $updated = drush_get_context('DRUSH_PM_UPDATED');
   $updated[] = $project;
@@ -362,13 +308,6 @@ function pm_update_project($project, $version_control) {
 
   if (!package_handler_update_project($project, $project['releases'][$project['candidate_version']])) {
     return drush_set_error('DRUSH_PM_UPDATING_FAILED', dt('Updating project !project failed. Attempting to roll back to previously installed version.', array('!project' => $project['name'])));
-  }
-
-  // If the version control engine is a proper vcs we also need to remove
-  // orphan directories.
-  if (($version_control->engine != 'backup') && (drush_get_option('package-handler', 'wget') == 'wget')) {
-    $files = drush_find_empty_directories($project['full_project_path'], $version_control->reserved_files());
-    array_map('drush_delete_dir', $files);
   }
 
   return TRUE;
@@ -396,14 +335,6 @@ function drush_pm_updatecode_rollback() {
       return FALSE;
     }
     $version_control->rollback($project);
-  }
-
-  // Post rollback, we will do additional repair if the project is drupal core.
-  $drupal_core = drush_get_context('DRUSH_PM_DRUPAL_CORE', FALSE);
-  if ($drupal_core) {
-    $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
-    _pm_update_move_files($drupal_core['full_project_path'], $drupal_root, $drupal_core['skip_list']);
-    drush_delete_dir($drupal_core['full_project_path']);
   }
 }
 
