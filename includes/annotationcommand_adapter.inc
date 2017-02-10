@@ -203,14 +203,8 @@ function annotationcommand_adapter_process_command() {
   $commandprocessor = annotationcommand_adapter_get_processor();
   $command = drush_get_command();
   annotationcommand_adapter_add_hook_options($command);
-  $args = [];
-  foreach ($command['consolidation-arg-defaults'] as $key => $default) {
-    $value = array_shift($userArgs);
-    if (!isset($value)) {
-      $value = $default;
-    }
-    $args[$key] = $value;
-  }
+
+  $args = annotationcommand_adapter_process_args($userArgs, $command['consolidation-arg-defaults']);
 
   // TODO: Need to determine if $input is interactive, and ensure that $input->isInteractive() returns the correct result.
   $input = new DrushInputAdapter($args, annotationcommand_adapter_get_options($command), $command['command']);
@@ -242,6 +236,22 @@ function annotationcommand_adapter_process_command() {
   );
 
   return $result;
+}
+
+function annotationcommand_adapter_process_args($userArgs, $defaults) {
+  $args = [];
+  foreach ($defaults as $key => $default) {
+    if (is_array($default)) {
+      $args[$key] = $userArgs;
+      return $args;
+    }
+    $value = array_shift($userArgs);
+    if (!isset($value)) {
+      $value = $default;
+    }
+    $args[$key] = $value;
+  }
+  return $args;
 }
 
 /**
