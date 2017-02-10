@@ -61,7 +61,7 @@ class ValidatorsCommands {
    * @param \Consolidation\AnnotatedCommand\CommandData $commandData
    * @return \Consolidation\AnnotatedCommand\CommandError|null
    */
-  function validate(CommandData $commandData) {
+  function validatePHPExtension(CommandData $commandData) {
     $missing = [];
     $arg_names = _convert_csv_to_array($commandData->annotationData()->get('validate-php-extension', NULL));
     foreach ($arg_names as $arg_name) {
@@ -73,6 +73,27 @@ class ValidatorsCommands {
     if ($missing) {
       $args = array('!command' => $commandData->input(), '!dependencies' => implode(', ', $missing));
       return new CommandError(dt('Command !command needs the following PHP extensions installed and enabled: !dependencies.', $args));
+    }
+  }
+
+  /**
+   * Validate that the permission exists.
+   *
+   * Annotation value should be the name of the argument/option containing the permission(s).
+   *
+   * @hook validate @validate-permissions
+   * @param \Consolidation\AnnotatedCommand\CommandData $commandData
+   * @return \Consolidation\AnnotatedCommand\CommandError|null
+   */
+  public function validatePermissions(CommandData $commandData) {
+    $missing = [];
+    $arg_or_option_name = $commandData->annotationData()->get('validate-permissions');
+    $permissions = _convert_csv_to_array($commandData->input()->getArgument($arg_or_option_name) ?: $commandData->input()->getOption($arg_or_option_name));
+    $all_permissions = array_keys(\Drupal::service('user.permissions')->getPermissions());
+    $missing = array_diff($permissions, $all_permissions);
+    if ($missing) {
+      $msg = dt('Permission(s) not found: !perms', ['!perms' => implode(', ', $missing)]);
+      return new CommandError($msg);
     }
   }
 
