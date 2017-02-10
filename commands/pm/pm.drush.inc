@@ -1171,13 +1171,18 @@ function drush_pm_enable() {
   // Inform the user of final status.
   $result_extensions = drush_get_named_extensions_list($extensions);
   $problem_extensions = array();
-  $role = RoleCommands::get_instance();
   foreach ($result_extensions as $name => $extension) {
     if ($extension->status) {
       drush_log(dt('!extension was enabled successfully.', array('!extension' => $name)), LogLevel::OK);
-      $perms = $role->getModulePerms($name);
-      if (!empty($perms)) {
-        drush_print(dt('!extension defines the following permissions: !perms', array('!extension' => $name, '!perms' => implode(', ', $perms))));
+      $module_perms = array();
+      $perms = \Drupal::service('user.permissions')->getPermissions();
+      foreach ($perms as $perm_name => $perm) {
+        if ($perm['provider'] == $name) {
+          $module_perms[] = $perm_name;
+        }
+      }
+      if (!empty($module_perms)) {
+        drush_print(dt('!extension defines the following permissions: !perms', array('!extension' => $name, '!perms' => implode(', ', $module_perms))));
       }
     }
     else {

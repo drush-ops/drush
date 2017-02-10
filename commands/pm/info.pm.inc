@@ -116,8 +116,14 @@ function _drush_pm_info_module($info) {
   }
   $data['required_by'] = $requiredby;
   if ($info->status == 1) {
-    $role = RoleCommands::get_instance();
-    $data['permissions'] = $role->getModulePerms(drush_extension_get_name($info));
+    $module_perms = array();
+    $perms = \Drupal::service('user.permissions')->getPermissions();
+    foreach ($perms as $name => $perm) {
+      if ($perm['provider'] == drush_extension_get_name($info)) {
+        $module_perms[] = $name;
+      }
+    }
+    $data['permissions'] = $module_perms;
   }
   return $data;
 }

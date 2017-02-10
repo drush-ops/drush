@@ -156,6 +156,7 @@ class UserCommands extends DrushCommands {
    *
    * @command user-add-role
    *
+   * @validate-entity-load user_role role
    * @param string $role The name of the role to add
    * @param string $names A comma delimited list user names.
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
@@ -165,20 +166,18 @@ class UserCommands extends DrushCommands {
    *   Add the "power user" role to user3
    */
   public function addRole($role, $names) {
-    // If role is not found, an exception gets thrown and handled by command invoke.
-    $role_object = RoleCommands::get_instance($role);
     if ($names = _convert_csv_to_array($names)) {
       foreach ($names as $name) {
         if ($account = user_load_by_name($name)) {
-          $account->addRole($role_object->rid);
+          $account->addRole($role);
           $account->save();
-          $this->logger->log(LogLevel::SUCCESS, dt('Added !role role to !user', array(
+          $this->logger->success(dt('Added !role role to !user', array(
             '!role' => $role,
             '!user' => $name,
           )));
         }
         else {
-          $this->logger->log(LogLevel::WARNING, dt('Unable to load user: !user', array('!user' => $name)));
+          $this->logger->warn(dt('Unable to load user: !user', array('!user' => $name)));
         }
       }
     }
@@ -189,6 +188,7 @@ class UserCommands extends DrushCommands {
    *
    * @command user-remove-role
    *
+   * @validate-entity-load user_role role
    * @param string $role The name of the role to add
    * @param string $names A comma delimited list of user names.
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
@@ -198,20 +198,18 @@ class UserCommands extends DrushCommands {
    *   Remove the "power user" role from user3
    */
   public function removeRole($role, $names) {
-    // If role is not found, an exception gets thrown and handled by command invoke.
-    $role_object = RoleCommands::get_instance($role);
     if ($names = _convert_csv_to_array($names)) {
       foreach ($names as $name) {
         if ($account = user_load_by_name($name)) {
-          $account->removeRole($role_object->rid);
+          $account->removeRole($role);
           $account->save();
-          $this->logger->log(LogLevel::SUCCESS, dt('Removed !role role from !user', array(
+          $this->logger->success(dt('Removed !role role from !user', array(
             '!role' => $role,
             '!user' => $name,
           )));
         }
         else {
-          $this->logger->log(LogLevel::WARNING, dt('Unable to load user: !user', array('!user' => $name)));
+          $this->logger->warn(dt('Unable to load user: !user', array('!user' => $name)));
         }
       }
     }
