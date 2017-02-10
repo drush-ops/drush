@@ -119,7 +119,20 @@ class ConfigImportCommands extends DrushCommands implements CustomEventAwareInte
     }
     else{
       try {
-        $config_importer->import();
+        // This is the contents of \Drupal\Core\Config\ConfigImporter::import.
+        // Copied here so we can log progress.
+        if ($config_importer->hasUnprocessedConfigurationChanges()) {
+          $sync_steps = $config_importer->initialize();
+          foreach ($sync_steps as $step) {
+            $context = array();
+            do {
+              $config_importer->doSyncStep($step, $context);
+              if (isset($context['message'])) {
+                $this->logger()->notice(str_replace('Synchronizing', 'Synchronized', (string)$context['message']));
+              }
+            } while ($context['finished'] < 1);
+          }
+        }
         $this->logger()->success('The configuration was imported successfully.');
       }
       catch (ConfigException $e) {
