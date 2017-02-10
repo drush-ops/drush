@@ -231,15 +231,4 @@ class DocsCommands extends DrushCommands {
   public function policy() {
     self::printFile(DRUSH_BASE_PATH. '/examples/policy.drush.inc');
   }
-
-  /**
-   * Strict option handling, and how commands that use it differ from regular Drush commands.
-   *
-   * @command docs-strict-options
-   * @hidden
-   * @topic
-   */
-  public function strictOptions() {
-    self::printFile(DRUSH_BASE_PATH. '/docs/strict-options.md');
-  }
 }

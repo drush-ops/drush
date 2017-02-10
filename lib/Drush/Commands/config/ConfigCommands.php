@@ -243,7 +243,7 @@ class ConfigCommands extends DrushCommands {
     // This comment applies similarly to sql-sync's use of core-rsync.
     // Since core-rsync is a strict-handling command and drush_invoke_process() puts options at end, we can't send along cli options to rsync.
     // Alternatively, add options like --ssh-options to a site alias (usually on the machine that initiates the sql-sync).
-    $return = drush_invoke_process($runner, 'core-rsync', array("$source:$export_path", "$destination:%config-$label"), $rsync_options);
+    $return = drush_invoke_process($runner, 'core-rsync', array("$source:$export_path", "$destination:%config-$label", '--', $rsync_options));
     if ($return['error_status']) {
       throw new \Exception(dt('Config-pull rsync failed.'));
     }
