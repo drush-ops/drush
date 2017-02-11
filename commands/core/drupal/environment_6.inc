@@ -396,3 +396,21 @@ function drush_get_token($value = NULL) {
 function drush_url($path = NULL, $options = array()) {
   return url($path, $options);
 }
+
+/**
+ * Output a Drupal render array, object or plain string as plain text.
+ *
+ * @param string $data
+ *   Data to render.
+ *
+ * @return string
+ *   The plain-text representation of the input.
+ */
+function drush_render($data) {
+  if (is_array($data)) {
+    $data = drupal_render($data);
+  }
+
+  $data = drupal_html_to_text($data);
+  return $data;
+}
