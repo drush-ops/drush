@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Commands\core;
 
+use Drupal\Core\Url;
 use Drush\Commands\DrushCommands;
 
 class BrowseCommands extends DrushCommands {
@@ -44,7 +45,7 @@ class BrowseCommands extends DrushCommands {
         // already logged an error.
         return FALSE;
       }
-      $link = drush_url($path, array('absolute' => TRUE));
+      $link = Url::fromUserInput('/' . $path, ['absolute' => TRUE])->toString();
     }
 
     drush_start_browser($link);

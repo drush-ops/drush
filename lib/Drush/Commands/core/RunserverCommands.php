@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Commands\core;
 
+use Drupal\Core\Url;
 use Drupal\user\Entity\User;
 use Drush\Commands\DrushCommands;
 
@@ -84,12 +85,12 @@ class RunserverCommands extends DrushCommands {
       $user_message = ', logged in as ' . \Drupal::currentUser()->getAccountName();
     }
     else {
-      $link = drush_url($path);
+      $link = Url::fromUserInput('/' . $path, ['absolute' => TRUE])->toString();
     }
 
     drush_print(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site !site!user...', array('!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $path, '!site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'), '!user' => $user_message)));
     // Start php built-in server.
-    if (!empty($uri['path'])) {
+    if (!empty($path)) {
       // Start a browser if desired. Include a 2 second delay to allow the
       // server to come up.
       drush_start_browser($link, 2);

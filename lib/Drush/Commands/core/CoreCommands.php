@@ -6,6 +6,7 @@ use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drupal;
 use Drush\Commands\DrushCommands;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drush\Drupal\DrupalUtil;
 use Drush\Log\LogLevel;
 
 
@@ -126,7 +127,7 @@ class CoreCommands extends DrushCommands {
       $rows[$i] = [
         'title' => (string) $info['title'],
         'value' => (string) $info['value'],
-        'description' => drush_render($info['description']),
+        'description' => DrupalUtil::drush_render($info['description']),
         'sid' => $severity,
         'severity' => @$severities[$severity]
       ];
