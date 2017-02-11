@@ -28,10 +28,10 @@ class RsyncCommands extends DrushCommands {
    *   Rsync Drupal root from Drush alias dev to the alias stage.
    * @usage drush rsync ./ @stage:%files/img
    *   Rsync all files in the current directory to the 'img' directory in the file storage folder on the Drush alias stage.
-   * @usage drush rsync @dev @stage --exclude=*.sql --delete
+   * @usage drush rsync @dev @stage -- --exclude=*.sql --delete
    *   Rsync Drupal root from the Drush alias dev to the alias stage, excluding all .sql files and delete all files on the destination that are no longer on the source.
-   * @usage drush rsync @dev @stage --ssh-options="-o StrictHostKeyChecking=no"
-   *   Customize how rsync connects with remote host via SSH.
+   * @usage drush rsync @dev @stage --ssh-options="-o StrictHostKeyChecking=no" -- --delete
+   *   Customize how rsync connects with remote host via SSH. rsync options like --delete are placed after a --.
    * @aliases rsync
    * @topics docs-aliases
    * @complete \Drush\Commands\CompletionCommands::completeSiteAliases

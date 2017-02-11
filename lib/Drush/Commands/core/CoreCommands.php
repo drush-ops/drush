@@ -261,19 +261,15 @@ class CoreCommands extends DrushCommands {
    *
    * Used by shell aliases that start with !.
    *
-   * @todo Handle variable number of arguments.
-   *
    * @command core-execute
    * @param $args The shell command to be executed.
    * @option escape Escape parameters before executing them with the shell. Default is escape; use --no-escape to disable.
    * @optionset_proc_build
-   * @allow-additional-options
    * @handle-remote-commands
-   * @usage drush core-execute git pull origin rebase
+   * @usage drush core-execute git pull origin rebase -- --no-ff
    *   Retrieve latest code from git
    * @aliases exec,execute
    * @topics docs-aliases
-   * @bootstrap DRUSH_BOOTSTRAP_NONE
    */
   public function execute(array $args, array $options = ['escape' => TRUE]) {
     $result = TRUE;
