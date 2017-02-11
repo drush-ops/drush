@@ -375,17 +375,3 @@ function _drush_extension_get_type($info) {
 function _drush_extension_get_path($info) {
   return $info->getPath();
 }
-
-/*
- * Wrapper for CSRF token generation.
- */
-function drush_get_token($value = NULL) {
-  return \Drupal::csrfToken()->get($value);
-}
-
-/*
- * Wrapper for _url().
- */
-function drush_url($path = NULL, array $options = array()) {
-  return \Drupal\Core\Url::fromUserInput('/' . $path, $options)->toString();
-}
