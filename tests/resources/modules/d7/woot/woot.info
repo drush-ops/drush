@@ -1,4 +1,0 @@
-name = woot
-description = Woot Mightily
-core = 7.x
-files[] = woot.module

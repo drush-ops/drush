@@ -46,17 +46,13 @@ class annotatedCommandCase extends CommandUnishTestCase {
 
     // These are not good asserts, but for the purposes of isolation....
     $targetDir = $root . DIRECTORY_SEPARATOR . $this->drupalSitewideDirectory() . '/modules/woot';
-    if (UNISH_DRUPAL_MAJOR_VERSION == 8) {
-        $commandFile = $targetDir . "/src/Commands/WootCommands.php";
-    } else {
-        $commandFile = $targetDir . "/Commands/WootCommands.php";
-    }
+    $commandFile = $targetDir . "/src/Commands/WootCommands.php";
     $this->assertFileExists(dirname(dirname(dirname($commandFile))));
     $this->assertFileExists(dirname(dirname($commandFile)));
     $this->assertFileExists(dirname($commandFile));
     $this->assertFileExists($commandFile);
 
-    // Enable out module. This will also clear the commandfile cache.
+    // Enable our module. This will also clear the commandfile cache.
     $this->drush('pm-enable', array('woot'), $options);
 
     // In theory this is not necessary, but this test keeps failing.
@@ -157,20 +153,18 @@ EOT;
     $this->assertContains('Select output format. Available:', $output);
     $this->assertContains('Aliases: try-formatters', $output);
 
-    // If we are running Drupal version 8 or later, then also check to
-    // see if the demo:greet and annotated:greet commands are available.
-    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
-        $this->drush('demo:greet symfony', array(), $options, NULL, NULL, self::EXIT_SUCCESS);
-        $output = $this->getOutput();
-        $this->assertEquals('Hello symfony', $output);
 
-        $this->drush('annotated:greet symfony', array(), $options, NULL, NULL, self::EXIT_SUCCESS);
-        $output = $this->getOutput();
-        $this->assertEquals('Hello symfony', $output);
-    }
+
+    $this->drush('demo:greet symfony', array(), $options);
+    $output = $this->getOutput();
+    $this->assertEquals('Hello symfony', $output);
+
+    $this->drush('annotated:greet symfony', array(), $options);
+    $output = $this->getOutput();
+    $this->assertEquals('Hello symfony', $output);
 
     // Clear the Drush cache so that our 'woot' command is not cached.
-    $this->drush('cache-clear', array('drush'), $options, NULL, NULL, self::EXIT_SUCCESS);
+    $this->drush('cache-clear', array('drush'), $options);
   }
 
   public function setupGlobalExtensionsForTests() {
