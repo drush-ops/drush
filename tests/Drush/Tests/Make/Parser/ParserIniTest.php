@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @coversDefaultClass \Drush\Make\Parser\ParserIni
  */
-class ParserIniTest extends TestCase {
+class ParserIniTest extends \PHPUnit_Framework_TestCase {
 
   /**
    * @covers ::supportedFile

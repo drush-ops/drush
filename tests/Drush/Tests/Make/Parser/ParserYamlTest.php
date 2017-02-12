@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @coversDefaultClass \Drush\Make\Parser\ParserYaml
  */
-class ParserYamlTest extends TestCase {
+class ParserYamlTest extends \PHPUnit_Framework_TestCase {
 
   /**
    * @covers ::supportedFile
