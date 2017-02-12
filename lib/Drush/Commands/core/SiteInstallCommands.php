@@ -113,6 +113,7 @@ class SiteInstallCommands extends DrushCommands {
       $msg .= ' Consider using the --notify global option.';
     }
     $this->logger()->info(dt($msg));
+    require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
     drush_op('install_drupal', $class_loader, $settings);
     $this->logger()->success(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $options['account-name'], '@pass' => $account_pass)));
   }
@@ -125,29 +126,7 @@ class SiteInstallCommands extends DrushCommands {
       $profile = 'minimal';
     }
     else {
-      require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
-
-      if (!isset($profile)) {
-        // If there is an installation profile that acts as a distribution, use it.
-        // You can turn your installation profile into a distribution by providing a
-        // @code
-        //   distribution:
-        //     name: 'Distribution name'
-        // @endcode
-        // block in the profile's info YAML file.
-        // See https://www.drupal.org/node/2210443 for more information.
-        $install_state = array('interactive' => FALSE) + install_state_defaults();
-        try {
-          install_begin_request($class_loader, $install_state);
-          $profile = _install_select_profile($install_state);
-        } catch (\Exception $e) {
-          // This is only a best effort to provide a better default, no harm done
-          // if it fails.
-        }
-        if (empty($profile)) {
-          $profile = 'standard';
-        }
-      }
+      $profile = drupal_get_profile() ?: 'standard';
     }
     return $profile;
   }
