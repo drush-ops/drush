@@ -1170,16 +1170,6 @@ function drush_do_command_redispatch($command, $args = array(), $remote_host = N
   $command_options = $aditional_options + $command_options;
   if (is_array($command)) {
     $command_name = $command['command'];
-    // If we are executing a remote command that uses strict option handling,
-    // then mark all of the options in the alias context as global, so that they
-    // will appear before the command name.
-    if (!empty($command['strict-option-handling'])) {
-      foreach(drush_get_context('alias') as $alias_key => $alias_value) {
-        if (array_key_exists($alias_key, $command_options) && !array_key_exists($alias_key, $command['options'])) {
-          $additional_global_options[$alias_key] = $alias_value;
-        }
-      }
-    }
   }
   else {
     $command_name = $command;

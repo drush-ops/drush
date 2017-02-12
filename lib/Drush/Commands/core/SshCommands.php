@@ -10,11 +10,9 @@ class SshCommands extends DrushCommands {
    * Connect to a Drupal site's server via SSH for an interactive session or to run a shell command.
    *
    * @command site-ssh
-   * @param string $bash Bash to execute on target. Optional, except when site-alias is a list.
    * @option cd Directory to change to if Drupal root is not desired (the default). Value should be a full path, or --no-cd for the ssh default (usually the remote user's home directory).
    * @optionset_proc_build
    * @handle-remote-commands
-   * @strict-option-handling
    * @usage drush @mysite ssh
    *   Open an interactive shell on @mysite's server.
    * @usage drush @prod ssh ls /tmp
@@ -25,9 +23,7 @@ class SshCommands extends DrushCommands {
    * @bootstrap DRUSH_BOOTSTRAP_NONE
    * @topics docs-aliases
    */
-  public function ssh($bash = '', $options = ['cd' => TRUE]) {
-    // Get all of the args and options that appear after the command name.
-    $args = drush_get_original_cli_args_and_options();
+  public function ssh(array $args, $options = ['cd' => TRUE]) {
     // n.b. we do not escape the first (0th) arg to allow `drush ssh 'ls /path'`
     // to work in addition to the preferred form of `drush ssh ls /path`.
     // Supporting the legacy form means that we cannot give the full path to an
@@ -57,7 +53,7 @@ class SshCommands extends DrushCommands {
 
     if (!drush_sitealias_is_remote_site($alias)) {
       // Local sites run their bash without SSH.
-      $return = drush_invoke_process('@self', 'core-execute', array($bash), array('escape' => FALSE));
+      $return = drush_invoke_process('@self', 'core-execute', array($command), array('escape' => FALSE));
       return $return['object'];
     }
 

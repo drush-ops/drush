@@ -79,10 +79,6 @@ function drush_print_help($command) {
     $help = array($command['description']);
   }
 
-  if ($command['strict-option-handling']) {
-    $command['topics'][] = 'docs-strict-options';
-  }
-
   // Give commandfiles an opportunity to add examples and options to the command.
   drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
   drush_engine_add_help_topics($command);

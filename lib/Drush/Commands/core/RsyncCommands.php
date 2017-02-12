@@ -24,20 +24,19 @@ class RsyncCommands extends DrushCommands {
    * @option exclude-paths List of paths to exclude, seperated by : (Unix-based systems) or ; (Windows).
    * @option include-paths List of paths to include, seperated by : (Unix-based systems) or ; (Windows).
    * @option mode The unary flags to pass to rsync; --mode=rultz implies rsync -rultz.  Default is -akz.
-   * @strict-option-handling
    * @usage drush rsync @dev @stage
    *   Rsync Drupal root from Drush alias dev to the alias stage.
    * @usage drush rsync ./ @stage:%files/img
    *   Rsync all files in the current directory to the 'img' directory in the file storage folder on the Drush alias stage.
-   * @usage drush rsync @dev @stage --exclude=*.sql --delete
+   * @usage drush rsync @dev @stage -- --exclude=*.sql --delete
    *   Rsync Drupal root from the Drush alias dev to the alias stage, excluding all .sql files and delete all files on the destination that are no longer on the source.
-   * @usage drush rsync @dev @stage --ssh-options="-o StrictHostKeyChecking=no"
-   *   Customize how rsync connects with remote host via SSH.
+   * @usage drush rsync @dev @stage --ssh-options="-o StrictHostKeyChecking=no" -- --delete
+   *   Customize how rsync connects with remote host via SSH. rsync options like --delete are placed after a --.
    * @aliases rsync
    * @topics docs-aliases
    * @complete \Drush\Commands\CompletionCommands::completeSiteAliases
    */
-  public function rsync($source, $destination, $extra = NULL, $options = ['exclude-paths' => NULL, 'include-paths' => NULL, 'mode' => 'akz']) {
+  public function rsync($source, $destination, array $extra, $options = ['exclude-paths' => NULL, 'include-paths' => NULL, 'mode' => 'akz']) {
     // Prompt for confirmation. This is destructive.
     if (!drush_get_context('DRUSH_SIMULATE')) {
       drush_print(dt("You will delete files in !target and replace with data from !source", array('!source' => $this->source_evaluated_path, '!target' => $this->destination_evaluated_path)));
@@ -47,9 +46,12 @@ class RsyncCommands extends DrushCommands {
     }
 
     $rsync_options = $this->rsyncOptions($options);
+    $parameters = array_merge([$rsync_options], $extra);
+    $parameters[] = $this->source_evaluated_path;
+    $parameters[] = $this->destination_evaluated_path;
 
     $ssh_options = $options['ssh-options'];
-    $exec = "rsync -e 'ssh $ssh_options'". ' '. implode(' ', array_filter([$rsync_options, $extra, $this->source_evaluated_path, $this->destination_evaluated_path]));
+    $exec = "rsync -e 'ssh $ssh_options'". ' '. implode(' ', array_filter($parameters));
     $exec_result = drush_op_system($exec);
 
     if ($exec_result == 0) {

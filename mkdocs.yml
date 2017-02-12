@@ -14,7 +14,6 @@ pages:
   - Output formats: output-formats.md
   - Shell aliases: shellaliases.md
   - Shell scripts: shellscripts.md
-  - Strict options: strict-options.md
   - Bastion: bastion.md
   - Exporting Drupal configuration: config-exporting.md
 - Writing commands:

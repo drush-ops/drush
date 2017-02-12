@@ -113,7 +113,7 @@ class SqlSyncCommands extends DrushCommands {
       $runner = drush_get_runner($source_record, $destination_record, $options['runner']);
       // Since core-rsync is a strict-handling command and drush_invoke_process() puts options at end, we can't send along cli options to rsync.
       // Alternatively, add options like --ssh-options to a site alias (usually on the machine that initiates the sql-sync).
-      $return = drush_invoke_process($runner, 'core-rsync', array("$source:$source_dump_path", "$destination:$destination_dump_path"), $rsync_options);
+      $return = drush_invoke_process($runner, 'core-rsync', array("$source:$source_dump_path", "$destination:$destination_dump_path", '--', $rsync_options));
       $this->logger()->notice(dt('Copying dump file from Source to Destination.'));
       if ($return['error_status']) {
         throw new \Exception(dt('core-rsync failed.'));

@@ -122,7 +122,7 @@
  *
  *   $ drush site-alias @self
  *
- * TIP:  If you would like to have drush include a 'databases' record
+ * TIP:  If you would like to have Drush include a 'databases' record
  * in the output, include the options --with-db and --show-passwords:
  *
  *   $ drush site-alias @self --with-db --show-passwords
@@ -260,7 +260,7 @@
  *     // the inner ''.
  *     'filter' => "'exclude *.sql'",
  *
- *     // if you need multple filter options, see rsync merge-file options
+ *     // if you need multiple filter options, see rsync merge-file options
  *     'filter' => "'merge /etc/rsync/default.rules'",
  *   ),
  * ),
