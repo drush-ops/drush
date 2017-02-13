@@ -125,7 +125,7 @@ class SiteInstallCommands extends DrushCommands {
       $this->logger()->info(dt("Using 'minimal' install profile since --config-dir option was provided."));
       $profile = 'minimal';
     }
-    else {
+    elseif(!isset($profile)) {
       $profile = drupal_get_profile() ?: 'standard';
     }
     return $profile;

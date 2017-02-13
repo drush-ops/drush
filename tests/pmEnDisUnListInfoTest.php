@@ -70,9 +70,8 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
       $this->assertEquals($output->{$key}, $value);
     }
 
-    // Test the testing install profile theme is installed.
-    $themeToCheck = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? 'classy' : (UNISH_DRUPAL_MAJOR_VERSION == 7 ? 'bartik' : 'garland');
-    $this->assertTrue(in_array($themeToCheck, $list), 'Themes are in the pm-list');
+    // Test the testing install profile theme is installed.;
+    $this->assertTrue(in_array('classy', $list), 'Themes are in the pm-list');
 
     // Test cache was cleared after enabling a module.
     $table = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? 'router' : 'menu_router';
