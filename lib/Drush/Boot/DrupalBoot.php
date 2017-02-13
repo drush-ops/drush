@@ -346,6 +346,8 @@ abstract class DrupalBoot extends BaseBoot {
     drush_set_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', drush_conf_path($drush_uri));
 
     $this->bootstrap_drupal_site_setup_server_global($drush_uri);
+    $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
+    $conf_path = drush_bootstrap_value('conf_path', $this->conf_path(TRUE, TRUE));
     return TRUE; //$this->bootstrap_drupal_site_validate_settings_present();
   }
 
