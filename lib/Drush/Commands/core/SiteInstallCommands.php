@@ -169,6 +169,7 @@ class SiteInstallCommands extends DrushCommands {
       }
     }
 
+    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
     $sql = SqlBase::create($commandData->input()->getOptions());
     if (!$sql->getDbSpec()) {
       throw new \Exception(dt('Could not determine database connection parameters. Pass --db-url option.'));

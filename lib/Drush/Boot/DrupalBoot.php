@@ -346,7 +346,9 @@ abstract class DrupalBoot extends BaseBoot {
     drush_set_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', drush_conf_path($drush_uri));
 
     $this->bootstrap_drupal_site_setup_server_global($drush_uri);
-    return $this->bootstrap_drupal_site_validate_settings_present();
+    $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
+    $conf_path = drush_bootstrap_value('conf_path', $this->conf_path(TRUE, TRUE));
+    return TRUE; //$this->bootstrap_drupal_site_validate_settings_present();
   }
 
   /**
@@ -401,18 +403,20 @@ abstract class DrupalBoot extends BaseBoot {
    * Validate that the Drupal site has all of the settings that it
    * needs to operated.
    */
-  function bootstrap_drupal_site_validate_settings_present() {
-    $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
-
-    $conf_path = drush_bootstrap_value('conf_path', $this->conf_path(TRUE, TRUE));
-    $conf_file = "$conf_path/settings.php";
-    if (!file_exists($conf_file)) {
-      return drush_bootstrap_error('DRUPAL_SITE_SETTINGS_NOT_FOUND', dt("Could not find a Drupal settings.php file at !file.",
-         array('!file' => $conf_file)));
-    }
-
-    return TRUE;
-  }
+//  function bootstrap_drupal_site_validate_settings_present() {
+//    $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
+//
+//    $conf_path = drush_bootstrap_value('conf_path', $this->conf_path(TRUE, TRUE));
+//    $conf_file = "$conf_path/settings.php";
+//    if (!file_exists($conf_file)) {
+//      $this->logger()->notice(dt("Could not find a Drupal settings.php file at !file.",
+//        array('!file' => $conf_file)));
+//      return FALSE;
+//      // return drush_bootstrap_error('DRUPAL_SITE_SETTINGS_NOT_FOUND', );
+//    }
+//
+//    return TRUE;
+//  }
 
   /**
    * Called by bootstrap_drupal_site to do the main work
