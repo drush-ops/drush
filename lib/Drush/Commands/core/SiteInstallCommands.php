@@ -13,9 +13,9 @@ class SiteInstallCommands extends DrushCommands {
    * Install Drupal along with modules/themes/configuration using the specified install profile.
    *
    * @command site-install
-   * @param string $profile The install profile you wish to run. Defaults to 'default' in D6, 'standard' in D7+, unless an install profile is marked as exclusive (or as a distribution in D8+ terminology) in which case that is used.
+   * @param $profile The install profile you wish to run. Defaults to 'default' in D6, 'standard' in D7+, unless an install profile is marked as exclusive (or as a distribution in D8+ terminology) in which case that is used.
    * @param $additional Any additional settings you wish to pass to the profile. The key is in the form [form name].[parameter name]
-   * @option db-url A Drupal 6 style database URL. Only required for initial install - not re-install.
+   * @option db-url A Drupal 6 style database URL. Only required for initial install - not re-install. If omitted and required, Drush prompts for this item.
    * @option db-prefix An optional table prefix to use for initial install.  Can be a key-value array of tables/prefixes in a drushrc file (not the command line).
    * @option db-su Account to use when creating a new database. Must have Grant permission (mysql only). Optional.
    * @option db-su-pw Password for the "db-su" account. Optional.
@@ -170,9 +170,32 @@ class SiteInstallCommands extends DrushCommands {
     }
 
     drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
-    $sql = SqlBase::create($commandData->input()->getOptions());
+    try {
+      $sql = SqlBase::create($commandData->input()->getOptions());
+    }
+    catch (\Exception $e) {
+      // Ask questions to get our data.
+      if ($commandData->input()->getOption('db-url') == '') {
+        // Prompt for the db-url data if it was not provided via --db-url.
+        $database = drush_prompt('Database name');
+        $driver = drush_prompt('Database driver', 'mysql');
+        $username = drush_prompt('Database username', 'root');
+        $password = drush_prompt('Database password', '', FALSE);
+        $host = drush_prompt('Database host', '127.0.0.1');
+        $port = drush_prompt('Database port', '3306');
+        $db_url = "$driver://$username:$password@$host:$port/$database";
+        $commandData->input()->setOption('db-url', $db_url);
+
+        try {
+          $sql = SqlBase::create($commandData->input()->getOptions());
+        }
+        catch (\Exception $e) {
+          throw new \Exception(dt('Could not determine database connection parameters. Pass --db-url option.'));
+        }
+      }
+    }
     if (!$sql->getDbSpec()) {
-      throw new \Exception(dt('Could not determine database connection parameters. Pass --db-url option.'));
+
     }
   }
 
