@@ -35,6 +35,9 @@ class Logger extends AbstractLogger {
       $entry = $context;
       $entry['type'] = $level;
       $entry['message'] = $message;
+      if (!isset($entry['memory'])) {
+        $entry['memory'] = memory_get_usage();
+      }
 
       // Drush\Log\Logger should take over all of the responsibilities
       // of drush_log, including caching the log messages and sending
