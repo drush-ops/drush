@@ -1021,6 +1021,9 @@ function _drush_backend_invoke($cmds, $common_backend_options = array(), $contex
       }
 
       $result_code = drush_shell_proc_open($exec_cmd);
+      if ($result_code > 0) {
+        drush_print(dt('Command returned error code !code, this could indicate a problem with SSH.', array('!code' => $result_code)));
+      }
       $ret = array('error_status' => $result_code);
     }
   }
