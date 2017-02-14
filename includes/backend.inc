@@ -1163,7 +1163,7 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
   if (isset($hostname)) {
     $username = (isset($username)) ? drush_escapeshellarg($username, "LOCAL") . "@" : '';
     $ssh_options = $site_record['ssh-options'];
-    $ssh_options = (isset($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
+    $ssh_options = (isset($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no -o ConnectTimeout=10");
 
     $ssh_cmd[] = "ssh";
     $ssh_cmd[] = $ssh_options;
