@@ -830,6 +830,9 @@ function drush_core_requirements() {
     if ($severity < $min_severity) {
       unset($requirements[$key]);
     }
+    if (isset($requirements[$key]['description'])) {
+      $requirements[$key]['description'] = drush_render($requirements[$key]['description']);
+    }
   }
   return $requirements;
 }
@@ -1360,7 +1363,7 @@ function drush_core_twig_compile() {
   foreach ($themes as $name => $theme) {
     $searchpaths[] = $theme->getPath();
   }
-  
+
   foreach ($searchpaths as $searchpath) {
     foreach ($file = drush_scan_directory($searchpath, '/\.html.twig/', array('tests')) as $file) {
       $relative = str_replace(drush_get_context('DRUSH_DRUPAL_ROOT'). '/', '', $file->filename);
