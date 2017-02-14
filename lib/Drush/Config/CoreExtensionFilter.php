@@ -7,7 +7,11 @@
 
 namespace Drush\Config;
 
+use Drupal\Core\Config\ConfigFactory;
+use Drupal\Core\Config\ConfigManager;
+use Drupal\Core\Config\ExtensionInstallStorage;
 use Drupal\Core\Config\StorageInterface;
+use Drupal\Core\Config\TypedConfigManager;
 
 /**
  * This filter adjusts the data going to and coming from
@@ -50,24 +54,70 @@ class CoreExtensionFilter implements StorageFilter {
     $this->adjustments = $adjustments;
   }
 
-  public function filterRead($name, $data) {
-    if ($name != 'core.extension') {
-      return $data;
-    }
+  public function filterRead($name, $data, StorageInterface $storage) {
     $active_storage = \Drupal::service('config.storage');
-    return $this->filterOutIgnored($data, $active_storage->read($name));
+    if ($name == 'core.extension') {
+      return $this->filterOutIgnored($data, $active_storage->read($name));
+    }
+
+    $dependent_configs = $this->getAllDependentConfigs($storage);
+    if (in_array($name, $dependent_configs)) {
+      if ($existing = $active_storage->read($name)) {
+        $data = $existing;
+      }
+      else {
+        $data = NULL;
+      }
+    }
+    return $data;
   }
 
   public function filterWrite($name, array $data, StorageInterface $storage) {
-    if ($name != 'core.extension') {
-      return $data;
+    if ($name == 'core.extension') {
+      return $this->filterOutIgnored($data, $storage->read($name));
     }
-    $originalData = $storage->read($name);
-    return $this->filterOutIgnored($data, $storage->read($name));
+
+    $dependent_configs = $this->getAllDependentConfigs($storage);
+    if (in_array($name, $dependent_configs)) {
+      $data = ($existing = $storage->read($name)) ? $existing : NULL;
+    }
+    return $data;
+  }
+
+  public function filterExists($exists, $name, StorageInterface $storage) {
+    $active_storage = \Drupal::service('config.storage');
+    $dependent_configs = $this->getAllDependentConfigs($storage);
+    if (in_array($name, $dependent_configs)) {
+      return (bool) $active_storage->read($name);
+    }
+    return $exists;
+  }
+
+  public function filterDelete($doDelete, $name, StorageInterface $storage) {
+    $active_storage = \Drupal::service('config.storage');
+    $dependent_configs = $this->getAllDependentConfigs($storage);
+    if (in_array($name, $dependent_configs)) {
+      return (bool) $active_storage->read($name);
+    }
+    return $doDelete;
+  }
+
+  public function rename($new_name, $name, StorageInterface $storage) {
+    $dependent_configs = $this->getAllDependentConfigs($storage);
+    if (in_array($name, $dependent_configs)) {
+      return $name;
+    }
+    return $new_name;
+  }
+
+  public function filterListAll($list, StorageInterface $storage, $prefix = '') {
+    $active_storage = \Drupal::service('config.storage');
+    $list = array_unique(array_merge($list, $active_storage->listAll($prefix)));
+    return $list;
   }
 
   protected function filterOutIgnored($data, $originalData) {
-    foreach($this->adjustments as $module) {
+    foreach ($this->adjustments as $module) {
       if (is_array($originalData) && array_key_exists($module, $originalData['module'])) {
         $data['module'][$module] = $originalData['module'][$module];
       }
@@ -75,7 +125,59 @@ class CoreExtensionFilter implements StorageFilter {
         unset($data['module'][$module]);
       }
     }
+    // Make sure data stays sorted so that == comparison works.
+    $data['module'] = module_config_sort($data['module']);
     return $data;
+  }
 
+  protected function getAllDependentConfigs(StorageInterface $storage) {
+    // Find dependent configs in the given storage and in the active storage.
+    $active_storage = \Drupal::service('config.storage');
+    return array_unique(array_merge(
+      $this->getStorageDependentConfigs($storage),
+      $this->getStorageDependentConfigs($active_storage)
+    ));
+  }
+
+  protected function getStorageDependentConfigs(StorageInterface $storage) {
+    static $dependents = [];
+    $storage_id = spl_object_hash($storage);
+    if (!isset($dependents[$storage_id])) {
+      // We cannot use the service config.manager because it depends on the
+      // active storage.
+      $manager = new ConfigManager(
+        \Drupal::service('entity.manager'),
+        new ConfigFactory(
+          $storage,
+          \Drupal::service('event_dispatcher'),
+          new TypedConfigManager(
+            $storage,
+            new ExtensionInstallStorage($storage, 'config/schema'),
+            \Drupal::service('cache.discovery'),
+            \Drupal::service('module_handler')
+          )
+        ),
+        \Drupal::service('config.typed'),
+        \Drupal::service('string_translation'),
+        $storage,
+        \Drupal::service('event_dispatcher')
+      );
+
+      // Get configs from other modules which depend on the given modules.
+      $external_dependents = array_keys($manager->findConfigEntityDependents('module', $this->adjustments));
+      // Get configs from the given modules (which obviously depend on them but
+      // are not listed by findConfigEntityDependents().
+      $adjustments = $this->adjustments;
+      $internal_dependents = array_filter($storage->listAll(), function ($config_name) use ($adjustments) {
+        foreach ($this->adjustments as $module_name) {
+          if (strpos($config_name, $module_name . '.') === 0) {
+            return TRUE;
+          }
+        }
+        return FALSE;
+      });
+      $dependents[$storage_id] = array_unique(array_merge($internal_dependents, $external_dependents));
+    }
+    return $dependents[$storage_id];
   }
 }
