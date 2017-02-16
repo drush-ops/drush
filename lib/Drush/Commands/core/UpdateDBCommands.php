@@ -286,7 +286,7 @@ class UpdateDBCommands extends DrushCommands {
     // Apply post update hooks.
     $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateFunctions();
     if ($post_updates) {
-      $operations[] = ['drush_drupal_cache_clear_all', []];
+      $operations[] = [[$this, 'cacheRebuild'], []];
       foreach ($post_updates as $function) {
         $operations[] = ['update_invoke_post_update', [$function]];
       }
@@ -344,6 +344,25 @@ class UpdateDBCommands extends DrushCommands {
     }
 
     return $return;
+  }
+
+  /**
+   * Clears caches and rebuilds the container.
+   *
+   * This is called in between regular updates and post updates. Do not use
+   * drush_drupal_cache_clear_all() as the cache clearing and container rebuild
+   * must happen in the same process that the updates are run in.
+   *
+   * Drupal core's update.php uses drupal_flush_all_caches() directly without
+   * explicitly rebuilding the container as the container is rebuilt on the next
+   * HTTP request of the batch.
+   *
+   * @see drush_drupal_cache_clear_all()
+   * @see \Drupal\system\Controller\DbUpdateController::triggerBatch()
+   */
+  function cacheRebuild() {
+    drupal_flush_all_caches();
+    \Drupal::service('kernel')->rebuildContainer();
   }
 
   /**
