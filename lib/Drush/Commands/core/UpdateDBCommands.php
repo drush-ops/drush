@@ -308,6 +308,7 @@ class UpdateDBCommands extends DrushCommands {
       'init_message' => 'Starting updates',
       'error_message' => 'An unrecoverable error has occurred. You can find the error message below. It is advised to copy it to the clipboard for reference.',
       'finished' => [$this, 'drush_update_finished'],
+      'file' => 'core/includes/update.inc',
     );
     batch_set($batch);
     \Drupal::service('state')->set('system.maintenance_mode', TRUE);
