@@ -71,7 +71,7 @@ function find_wrapper_or_launcher($location) {
  * few of the most common locations; if the user relocates
  * their vendor directory anywhere else, then they must
  * use a wrapper script to locate it.  See the comment in
- * 'examples/drush' for details.
+ * 'examples/drush.wrapper' for details.
  */
 function find_wrapper_or_launcher_in_vicinity($location) {
   $sep = DIRECTORY_SEPARATOR;
@@ -105,8 +105,8 @@ function find_wrapper_or_launcher_in_specific_locations($location, $drush_locati
  * of Drush, the "drush launcher" was named "drush".
  * Otherwise, there wouldn't be any point in looking for
  * "drush.launcher" at the root, or "drush" in a vendor directory.
- * We also allow users to rename their drush wrapper to
- * 'drush.wrapper' to avoid conflicting with a directory named
+ * We also allow users name their wrapper 'drush' or 'drush.wrapper'
+ * to avoid conflicting with a directory named
  * 'drush' at the site root.
  */
 function find_wrapper_or_launcher_at_location($location) {

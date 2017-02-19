@@ -1,7 +1,7 @@
 Drush Contexts
 ==============
 
-The drush contexts API acts as a storage mechanism for all options, arguments and configuration settings that are loaded into drush.
+The Drush contexts API acts as a storage mechanism for all options, arguments and configuration settings that are loaded into Drush.
 
 This API also acts as an IPC mechanism between the different drush commands, and provides protection from accidentally overriding settings that are needed by other parts of the system.
 

@@ -1,4 +1,12 @@
-Install/Upgrade a global Drush
+Install a site-local Drush
+-----------------
+1. It is recommended that Drupal 8 sites be [built using Composer, with Drush listed as a dependency](https://github.com/drupal-composer/drupal-project). That project already includes Drush in its composer.json. If you Composer project doesn't yet depend on Drush, run `composer require drush/drush` to add it.
+1. To run Drush, navigate to your Drupal root and call `../vendor/bin/drush`. 
+1. If you want the convenience of calling `drush` instead of `../vendor/bin/drush`, copy the [examples/drush.wrapper](https://github.com/drush-ops/drush/blob/master/examples/drush.wrapper) file to your Drupal root and modify to taste.
+1. If you want the old convenience of being able to call `drush` from anywhere, see [drush-shim](https://github.com/webflo/drush-shim).
+1. See [Usage](http://docs.drush.org/en/master/usage/) for details on using Drush.
+
+(Deprecated) Install/Upgrade a global Drush
 ---------------
 ```sh
 # Download latest stable release using the code below or browse to github.com/drush-ops/drush/releases.
@@ -22,14 +30,6 @@ drush init
 * Your shell now has [useful bash aliases and tab completion for command names, site aliases, options, and arguments](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.bashrc).
 * A [drushrc.php](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.drushrc.php) has been copied to ~/.drush above. Customize it to save typing and standardize options for commands.
 * Upgrade using this same procedure.
-
-Install a site-local Drush
------------------
-In addition to the global Drush, it is recommended that Drupal 8 sites be [built using Composer, with Drush listed as a dependency](https://github.com/drupal-composer/drupal-project).
-
-1. When you run `drush`, the global Drush is called first and then hands execution to the site-local Drush. This gives you the convenience of running `drush` without specifying the full path to the executable, without sacrificing the safety provided by a site-local Drush.
-2. Optional: Copy the [examples/drush.wrapper](https://github.com/drush-ops/drush/blob/master/examples/drush.wrapper) file to your project root and modify to taste. This is a handy launcher script; add --local here to turn off all global configuration locations, and maintain consistency over configuration/aliases/commandfiles for your team.
-3. Note that if you have multiple Drupal sites on your system, it is possible to use a different version of Drush with each one.
 
 Drupal Compatibility
 -----------------
