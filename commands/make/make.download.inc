@@ -353,6 +353,10 @@ function make_download_git($name, $type, $download, $download_location) {
     chdir($cwd);
   }
 
+  // Set the timestamps of files and directories to the latest commit timestamp
+  // of the git checkout directory.
+  drush_update_git_checkout_timestamps($tmp_location);
+
   // Move the directory into the final resting location.
   drush_copy_dir($tmp_location, $download_location, FILE_EXISTS_OVERWRITE);
 
