@@ -62,10 +62,6 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface {
           $command += $this->command_defaults();
           // Insure that we have bootstrapped to a high enough
           // phase for the command prior to enforcing requirements.
-          if ($command['command'] == 'updatedb-batch-process') {
-            global $drupal_update;
-            $drupal_update = TRUE;
-          }
           $bootstrap_result = drush_bootstrap_to_phase($command['bootstrap']);
           $this->enforce_requirement($command);
 

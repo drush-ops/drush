@@ -6,9 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Psr\Log\LoggerInterface;
 use Drupal\Core\DrupalKernel;
-use Drupal\Core\Update\UpdateKernel;
 use Drush\Drupal\DrupalKernel as DrushDrupalKernel;
-use Drush\Drupal\DrupalUpdateKernel as DrushDrupalUpdateKernel;
 use Drush\Drupal\DrushServiceModfier;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -120,26 +118,15 @@ class DrupalBoot8 extends DrupalBoot {
   }
 
   function bootstrap_drupal_configuration() {
-    global $drupal_update;
     $this->request = Request::createFromGlobals();
     $classloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
     // @todo - use Request::create() and then no need to set PHP superglobals
     $kernelClass = new \ReflectionClass('\Drupal\Core\DrupalKernel');
     if ($kernelClass->hasMethod('addServiceModifier')) {
-      if (!$drupal_update) {
-        $this->kernel = DrupalKernel::createFromRequest($this->request, $classloader, 'prod');
-      }
-      else {
-        $this->kernel = UpdateKernel::createFromRequest($this->request, $classloader, 'prod');
-      }
+      $this->kernel = DrupalKernel::createFromRequest($this->request, $classloader, 'prod', DRUPAL_ROOT);
     }
     else {
-      if (!$drupal_update) {
-        $this->kernel = DrushDrupalKernel::createFromRequest($this->request, $classloader, 'prod');
-      }
-      else {
-        $this->kernel = DrushDrupalUpdateKernel::createFromRequest($this->request, $classloader, 'prod');
-      }
+      $this->kernel = DrushDrupalKernel::createFromRequest($this->request, $classloader, 'prod', DRUPAL_ROOT);
     }
     // @see Drush\Drupal\DrupalKernel::addServiceModifier()
     $this->kernel->addServiceModifier(new DrushServiceModfier());
