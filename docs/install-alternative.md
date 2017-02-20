@@ -9,7 +9,7 @@ Note: a common variant of this for Linux users is "$HOME/.config/composer/vendor
 1. Verify that Drush works: `drush status`
 
 #### Notes
-* Update to latest release (per your specification in ~/.composer/composer.json): `composer global update`
+* Update to latest release (per your specification in ~/.config/composer/composer.json): `composer global update`
 * Install a specific version of Drush:
 
         # Install a specific version of Drush, e.g. Drush 7.1.0
