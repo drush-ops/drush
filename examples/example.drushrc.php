@@ -16,7 +16,6 @@
  * 3.  In any location, as specified by the --config (-c) option.
  * 4.  User's .drush folder (i.e. ~/.drush/drushrc.php).
  * 5.  System wide configuration folder (e.g. /etc/drush/drushrc.php).
- * 6.  Drush installation folder.
  *
  * If a configuration file is found in any of the above locations, it will be
  * loaded and merged with other configuration files in the search list.
@@ -86,16 +85,11 @@
 # $options['shell-aliases']['dis-all'] = '!drush -y dis `drush pml --status=enabled --type=module --no-core --pipe`';
 # $options['shell-aliases']['self-alias'] = 'site-alias @self --with-db --alias-name=new';
 # $options['shell-aliases']['site-get'] = '@none php-eval "return drush_sitealias_site_get();"';
-// Add a 'pm-clone' to simplify git cloning from drupal.org.
-# $options['shell-aliases']['pm-clone'] = 'pm-download --gitusername=YOURUSERNAME --package-handler=git_drupalorg';
 // Save a sanitized sql dump. Customize alias names and --result-file.
 # $options['shell-aliases']['sql-dump-sanitized'] = '!drush sql-sync @source @temp --sanitize && drush @temp sql-dump --result-file=/example && drush @temp sql-drop';
 
 // Load a drushrc.php configuration file from the current working directory.
 # $options['config'][] = './drushrc.php';
-
-// Clone extensions (modules, themes, etc.) from drupal.org via 'pm-download'.
-# $options['package-handler'] = 'git_drupalorg';
 
 /**
  * Specify folders to search for Drush command files (*.drush.inc).  These
@@ -221,13 +215,6 @@
  * example.  You may add new tables to the existing array or add a new element.
  */
 # $options['skip-tables']['common'] = array('migration_*');
-
-/**
- * Override specific entries in Drupal's variable system or settings.php (D7 only).
- */
-# $options['variables']['site_name'] = 'My Drupal site';
-# $options['variables']['theme_default'] = 'minnelli';
-# $options['variables']['anonymous'] = 'Visitor';
 
 /**
  * Command-specific execution options:

@@ -186,12 +186,8 @@
  * Although most aliases will contain only a few options, a number
  * of settings that are commonly used appear below:
  *
- * - 'uri': In Drupal 7 and 8, the value of --uri should always be the same as
+ * - 'uri': The value of --uri should always be the same as
  *   when the site is being accessed from a web browser (e.g. http://example.com)
- *   In Drupal 6, the value of --uri should always be the same as the site's folder
- *   name in the 'sites' folder (e.g. default); it is best if the site folder name
- *   matches the URI from the browser, and is consistent on every instance of the
- *   same site (e.g. also use sites/example.com for http://example.com).
  * - 'root': The Drupal root; must not be specified as a relative path.
  * - 'remote-host': The fully-qualified domain name of the remote system
  *   hosting the Drupal instance. **Important Note: The remote-host option
@@ -223,12 +219,9 @@
  *     specified.
  *   - '%root': A reference to the Drupal root defined in the 'root' item in the
  *     site alias record.
- * - 'php': path to custom php interpreter. Windows support limited to Cygwin.
+ * - 'php': path to custom php interpreter.
  * - 'php-options': commandline options for php interpreter, you may
  *   want to set this to '-d error_reporting="E_ALL^E_DEPRECATED"'
- * - 'variables' : An array of name/value pairs which override Drupal
- *   variables/config. These values take precedence even over settings.php
- *   overrides.
  * - 'command-specific': These options will only be set if the alias
  *   is used with the specified command.  In the example below, the option
  *   `--no-dump` will be selected whenever the @stage alias
@@ -305,9 +298,6 @@
 #      '%files' => 'sites/mydrupalsite.com/files',
 #      '%custom' => '/my/custom/path',
 #     ),
-#     'variables' => array(
-#        'site_name' => 'My Drupal site',
-#      ),
 #     'command-specific' => array (
 #       'sql-sync' => array (
 #         'no-dump' => TRUE,
@@ -322,9 +312,6 @@
 #$aliases['dev'] = array(
 #    'uri' => 'http://dev.example.com',
 #    'root' => '/path/to/drupal/root',
-#    'variables' => array(
-#      'mail_system' => array('default-system' => 'DevelMailLog'),
-#    ),
 #  );
 #$aliases['server'] = array(
 #    'remote-host' => 'mystagingserver.myisp.com',

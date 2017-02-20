@@ -3,10 +3,10 @@ Creating Custom Drush Commands
 
 Creating a new Drush command is very easy. Follow these simple steps:
 
-1.  Copy the example commandfile at examples/SandwichCommands.php to mymodule/src/Drush/Commands/MyModuleCommands.php
-1.  Edit the namespace and classnames to match your file.
-1.  For next step, use the classes for the core Drush commands at /lib/Drush/Commands as inspiration and documention.   
-1.  Rename and edit the makeMeASandwich method. Carefully add/edit/remove annotations above the method and put your logic inside the method.
+1.  Copy the example commandfile at lib/Drush/Commands/examples/Commands/SandwichCommands.php to mymodule/src/Drush/Commands/MyModuleCommands.php
+1.  Edit the namespace and classnames in your file to match the file's location.
+1.  Use the classes for the core Drush commands at /lib/Drush/Commands as inspiration and documentation.   
+1.  Rename and edit the makeSandwich() method. Carefully add/edit/remove annotations above the method and put your logic inside the method.
 
 Drush searches for commandfiles in the following locations:
 
