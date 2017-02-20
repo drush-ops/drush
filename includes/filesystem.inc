@@ -745,40 +745,5 @@ function drush_is_nested_directory($base_dir, $test_is_nested) {
 }
 
 /**
- * Updates the timestamps of files and directories to the date of the latest
- * commit.
- *
- * We have to perform this action when we are downloading project files from
- * git during make in order to ensure that files in git checkouts of the same
- * revision will always have the same timestamps otherwise syncing project
- * files will always have to take update actions e.g. update the timestamps of
- * the files.
- * We use the timestamp of the latest commit of the git checkout directory for
- * all the files and the directories, as retrieving the latest commit for each
- * file and directory is slow.
- *
- * @param $git_checkout_dir
- *   The git checkout directory.
- */
-function drush_update_git_checkout_timestamps($git_checkout_dir) {
-  // Get the current directory (so we can move back later).
-  $cwd = getcwd();
-  // Change into the working copy of the cloned repo.
-  chdir($git_checkout_dir);
-
-  $latest_commit_timestamp = (int) exec('git log -1 --pretty=format:%ct');
-  $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($git_checkout_dir));
-  foreach($iterator as $path) {
-    // Skip updating timestamps of parent directories.
-    if ($path->isFile() || ($path->getFilename() == '.')) {
-      touch($path->getPathname(), $latest_commit_timestamp);
-    }
-  }
-
-  // Move back to last current directory (first line).
-  chdir($cwd);
-}
-
-/**
  * @} End of "defgroup filesystemfunctions".
  */
