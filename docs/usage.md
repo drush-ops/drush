@@ -17,7 +17,7 @@ Options
 -----------
 
 For multisite installations, use the --uri option to target a particular site.  If
-you are outside the Drupal web root, you might need to use the --root, --uri or other
+you are outside the Drupal web root, you will need to use the --root, --uri or other
 command line options just for Drush to work.
 
     $ drush --uri=http://example.com pm-updatecode

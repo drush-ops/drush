@@ -13,7 +13,7 @@ Site aliases can refer to Drupal sites that are running on remote machines simpl
         'root' => '/path/to/remote/drupal/root',
     );
 
-With this alias defintion, you may use commands such as `drush @internal status`, `drush ssh @internal` and `drush rsync @internal @dev` to operate remotely on the internal machine. What if you cannot reach the server that site is on from your current network? Enter the bastion server.
+With this alias definition, you may use commands such as `drush @internal status`, `drush ssh @internal` and `drush rsync @internal @dev` to operate remotely on the internal machine. What if you cannot reach the server that site is on from your current network? Enter the bastion server.
 
 ## Setting up a Bastion server in .ssh/config
 
