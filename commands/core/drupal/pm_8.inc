@@ -43,15 +43,12 @@ function _drush_pm_uninstall($extensions) {
       drush_log(dt('!extension is already uninstalled.', array('!extension' => $extension)), LogLevel::OK);
     }
     elseif (drush_extension_get_type($extension_info[$extension]) == 'module') {
-      $dependents = array();
+      // Add installed dependencies to the list of modules to uninstall.
       foreach (drush_module_dependents(array($extension), $extension_info) as $dependent) {
-        if (!in_array($dependent, $required) && ($extension_info[$dependent]->status)) {
-          $dependents[] = $dependent;
+        // Check if this dependency is not required, already enabled, and not already already in the list of modules to uninstall.
+        if (!in_array($dependent, $required) && ($extension_info[$dependent]->status) && !in_array($dependent, $extensions)) {
+          $extensions[] = $dependent;
         }
-      }
-      if (count($dependents)) {
-        drush_log(dt('To uninstall !extension, the following extensions must be uninstalled first: !required', array('!extension' => $extension, '!required' => implode(', ', $dependents))), LogLevel::ERROR);
-        unset($extensions[$extension]);
       }
     }
   }
@@ -87,4 +84,3 @@ function _drush_pm_uninstall($extensions) {
     drush_log(dt('!extension was successfully uninstalled.', array('!extension' => $extension)), LogLevel::OK);
   }
 }
-
