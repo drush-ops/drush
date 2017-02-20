@@ -110,6 +110,7 @@ function config_drush_command() {
       ),
       'destination' => 'An arbitrary directory that should receive the exported files. An alternative to label argument.',
       'skip-modules' => 'A list of modules to ignore during export (e.g. to avoid listing dev-only modules in exported configuration).',
+      'skip-hashes' => 'Skip configuration hashes.',
     ),
     'examples' => array(
       'drush config-export --skip-modules=devel' => 'Export configuration; do not include the devel module in the exported configuration, regardless of whether or not it is enabled in the site.',
@@ -458,6 +459,7 @@ function drush_config_export($destination = NULL) {
 function _drush_config_export($destination, $destination_dir, $branch) {
   $commit = drush_get_option('commit');
   $comment = drush_get_option('message', 'Exported configuration.');
+  $skip_hashes = drush_get_option('skip-hashes');
   $storage_filters = drush_config_get_storage_filters();
   if (count(glob($destination_dir . '/*')) > 0) {
     // Retrieve a list of differences between the active and target configuration (if any).
@@ -526,7 +528,12 @@ function _drush_config_export($destination, $destination_dir, $branch) {
     $destination_storage = new StorageWrapper($destination_storage, $storage_filters);
   }
   foreach ($source_storage->listAll() as $name) {
-    $destination_storage->write($name, $source_storage->read($name));
+    $config = $source_storage->read($name);
+    if ($skip_hashes) {
+      unset($config['_core']);
+      unset($config['uuid']);
+    }
+    $destination_storage->write($name, $config);
   }
 
   // Export configuration collections.
