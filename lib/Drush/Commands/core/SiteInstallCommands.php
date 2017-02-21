@@ -27,7 +27,6 @@ class SiteInstallCommands extends DrushCommands {
    * @option site-mail From: for system mailings. Defaults to admin@example.com
    * @option sites-subdir Name of directory under 'sites' which should be created. Only needed when the subdirectory does not already exist. Defaults to 'default'
    * @option config-dir A path pointing to a full set of configuration which should be imported after installation.
-   * @option show-passwords Show uid1 account and password once installation completes. Defaults to 'false' if --account-pass is provided.
    * @usage drush site-install expert --locale=uk
    *   (Re)install using the expert install profile. Set default language to Ukrainian.
    * @usage drush site-install --db-url=mysql://root:pass@localhost:port/dbname
@@ -145,11 +144,6 @@ class SiteInstallCommands extends DrushCommands {
    */
   public function post($result, CommandData $commandData) {
     if ($config = $commandData->input()->getOption('config-dir')) {
-      // Skip config import with a warning if specified config dir is empty.
-      if (!$this->hasConfigFiles($config)) {
-        $this->logger()->warning(dt('Configuration import directory @config does not contain any configuration; skipping import.', ['@config' => $config]));
-        return;
-      }
       // Set the destination site UUID to match the source UUID, to bypass a core fail-safe.
       $source_storage = new FileStorage($config);
       $options = ['yes' => TRUE];
@@ -185,6 +179,11 @@ class SiteInstallCommands extends DrushCommands {
       }
       if (!is_dir($config)) {
         throw new \Exception('The config source is not a directory.');
+      }
+      // Skip config import with a warning if specified config dir is empty.
+      if (!$this->hasConfigFiles($config)) {
+        $this->logger()->warning(dt('Configuration import directory @config does not contain any configuration; will skip import.', ['@config' => $config]));
+        $commandData->input()->setOption('config-dir', '');
       }
     }
 
