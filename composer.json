@@ -55,11 +55,11 @@
       "drush/config-extra": "Provides configuration workflow commands, such as config-merge."
   },
   "autoload": {
-    "psr-0": {
-      "Drush":        "lib/"
+    "psr-4": {
+      "Drush\\":        "src/"
     },
     "classmap": [
-      "lib/Drush.php"
+      "src/Drush.php"
     ]
   },
   "autoload-dev": {
