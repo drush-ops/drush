@@ -27,6 +27,7 @@ class SiteInstallCommands extends DrushCommands {
    * @option site-mail From: for system mailings. Defaults to admin@example.com
    * @option sites-subdir Name of directory under 'sites' which should be created. Only needed when the subdirectory does not already exist. Defaults to 'default'
    * @option config-dir A path pointing to a full set of configuration which should be imported after installation.
+   * @option show-passwords Show uid1 account and password once installation completes. Defaults to 'false' if --account-pass is provided.
    * @usage drush site-install expert --locale=uk
    *   (Re)install using the expert install profile. Set default language to Ukrainian.
    * @usage drush site-install --db-url=mysql://root:pass@localhost:port/dbname
@@ -43,7 +44,7 @@ class SiteInstallCommands extends DrushCommands {
    * @aliases si
    *
    */
-  public function install($profile, array $additional, $options = ['db-url' => NULL, 'db-prefix' => NULL, 'db-su' => NULL, 'db-su-pw' => NULL, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'account-pass' => NULL, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => NULL, 'sites-subdir' => NULL, 'config-dir' => NULL]) {
+  public function install($profile, array $additional, $options = ['db-url' => NULL, 'db-prefix' => NULL, 'db-su' => NULL, 'db-su-pw' => NULL, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'account-pass' => NULL, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => NULL, 'sites-subdir' => NULL, 'config-dir' => NULL, 'show-passwords' => NULL]) {
     $form_options = [];
     foreach ((array)$additional as $arg) {
       list($key, $value) = explode('=', $arg, 2);
@@ -65,6 +66,7 @@ class SiteInstallCommands extends DrushCommands {
     $sql = SqlBase::create($options);
     $db_spec = $sql->getDbSpec();
 
+    $show_password = isset($options['show-passwords']) ? $options['show-passwords'] : empty($options['account-pass']);
     $account_pass = $options['account-pass'] ?: drush_generate_password();
     $settings = array(
       'parameters' => array(
@@ -115,7 +117,12 @@ class SiteInstallCommands extends DrushCommands {
     $this->logger()->info(dt($msg));
     require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
     drush_op('install_drupal', $class_loader, $settings);
-    $this->logger()->success(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $options['account-name'], '@pass' => $account_pass)));
+    if ($show_password) {
+      $this->logger()->success(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $options['account-name'], '@pass' => $account_pass)));
+    }
+    else {
+      $this->logger()->success(dt('Installation complete.'));
+    }
   }
 
   function determineProfile($profile, $options, $class_loader) {
@@ -138,6 +145,11 @@ class SiteInstallCommands extends DrushCommands {
    */
   public function post($result, CommandData $commandData) {
     if ($config = $commandData->input()->getOption('config-dir')) {
+      // Skip config import with a warning if specified config dir is empty.
+      if (!$this->hasConfigFiles($config)) {
+        $this->logger()->warning(dt('Configuration import directory @config does not contain any configuration; skipping import.', ['@config' => $config]));
+        return;
+      }
       // Set the destination site UUID to match the source UUID, to bypass a core fail-safe.
       $source_storage = new FileStorage($config);
       $options = ['yes' => TRUE];
@@ -145,6 +157,13 @@ class SiteInstallCommands extends DrushCommands {
       // Run a full configuration import.
       drush_invoke_process('@self', 'config-import', array(), array('source' => $config) + $options);
     }
+  }
+  /**
+   * Check to see if there are any .yml files in the provided config directory.
+   */
+  protected function hasConfigFiles($config) {
+    $files = glob("$config/*.yml");
+    return !empty($files);
   }
   /**
    * @hook validate site-install
