@@ -184,6 +184,9 @@ class UpdateDBCommands extends DrushCommands {
   }
 
   function updateMain($options) {
+    global $drupal_update;
+    $drupal_update = TRUE;
+
     // In D8, we expect to be in full bootstrap.
     drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUPAL_FULL);
 
