@@ -107,7 +107,12 @@ function drush_core_site_install_validate() {
     if (!is_dir($config)) {
       return drush_set_error('config_import_target', 'The config source is not a directory.');
     }
-  }
+    $configFiles = glob("$config/*.yml");
+    if (empty($configFiles)) {
+      drush_log(dt('Configuration import directory !config does not contain any configuration; will skip import.', array('!config' => $config)), LogLevel::WARNING);
+      drush_set_option('config-dir', '');
+    }
+   }
 }
 
 /**

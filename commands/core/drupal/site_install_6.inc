@@ -41,8 +41,12 @@ function drush_core_site_install_version($profile, array $additional_form_option
     return FALSE;
   }
 
-  $account_pass = drush_get_option('account-pass', drush_generate_password());
   $account_name = drush_get_option('account-name', 'admin');
+  $account_pass = drush_get_option('account-pass', FALSE);
+  $show_password = drush_get_option('show-passwords', !$account_pass);
+  if (!$account_pass) {
+    $account_pass = drush_generate_password();
+  }
   $phpcode = _drush_site_install6_cookies($profile, $cli_cookie);
   $post = array (
     "site_name" => drush_get_option('site-name', 'Site-Install'),
@@ -73,7 +77,12 @@ function drush_core_site_install_version($profile, array $additional_form_option
   include("'. $drupal_root .'/install.php");';
   drush_shell_exec('php -r %s', $phpcode);
 
-  drush_log(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $account_name, '@pass' => $account_pass)), LogLevel::OK);
+  if ($show_password) {
+    drush_log(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $account_name, '@pass' => $account_pass)), LogLevel::OK);
+  }
+  else {
+    drush_log(dt('Installation complete.'), LogLevel::OK);
+  }
 }
 
 /**
