@@ -4,6 +4,18 @@ Drush is a command line shell and Unix scripting interface for Drupal. Drush cor
 
 [![Latest Stable Version](https://poser.pugx.org/drush/drush/v/stable.png)](https://packagist.org/packages/drush/drush) [![Total Downloads](https://poser.pugx.org/drush/drush/downloads.png)](https://packagist.org/packages/drush/drush) [![Latest Unstable Version](https://poser.pugx.org/drush/drush/v/unstable.png)](https://packagist.org/packages/drush/drush) [![License](https://poser.pugx.org/drush/drush/license.png)](https://packagist.org/packages/drush/drush)
 
+.. note:: You can use D8 ...
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+!!! note
+
+    Any extra CSS or JavaScript files will be added to the generated HTML
+    document after the page content. If you desire to include a JavaScript
+    library, you may have better success including the library by using the
+    [theme_dir].
+
+
 Resources
 -----------
 * [Install documentation](http://docs.drush.org/en/master/install/) [(Drush8)](http://docs.drush.org/en/8.x/install)
