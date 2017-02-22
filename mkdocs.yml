@@ -21,3 +21,8 @@ pages:
   - Context system: context.md
   - Filtering Drupal configuration: config-filter.md
 #use_directory_urls: false
+
+markdown_extensions:
+    - toc:
+        permalink: 
+    - admonition:
