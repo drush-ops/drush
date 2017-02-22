@@ -55,8 +55,8 @@ class ConfigCase extends CommandUnishTestCase {
     $this->drush('config-export', array(), $options + array('skip-hashes' => TRUE));
     $this->assertFileExists($system_site_yml);
     $content = file_get_contents($system_site_yml);
-    $this->assertNotRegExp('/_core/', $content, '_core hash removed.');
-    $this->assertNotRegExp('/uuid/', $content, 'uuid hash removed.');
+    $this->assertNotRegExp('/^_core:/', $content, '_core hash removed.');
+    $this->assertNotRegExp('/^uuid:/', $content, 'uuid hash removed.');
 
     // Test export
     $this->drush('config-export', array(), $options);
