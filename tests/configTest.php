@@ -51,6 +51,13 @@ class ConfigCase extends CommandUnishTestCase {
     $system_site_yml = $sync . '/system.site.yml';
     $core_extension_yml = $sync . '/core.extension.yml';
 
+    // Test export with skip hashes
+    $this->drush('config-export', array(), $options + array('skip-hashes' => TRUE));
+    $this->assertFileExists($system_site_yml);
+    $content = file_get_contents($system_site_yml);
+    $this->assertNotRegExp('/_core/', $content, '_core hash removed.');
+    $this->assertNotRegExp('/uuid/', $content, 'uuid hash removed.');
+
     // Test export
     $this->drush('config-export', array(), $options);
     $this->assertFileExists($system_site_yml);
