@@ -4,16 +4,9 @@ Drush is a command line shell and Unix scripting interface for Drupal. Drush cor
 
 [![Latest Stable Version](https://poser.pugx.org/drush/drush/v/stable.png)](https://packagist.org/packages/drush/drush) [![Total Downloads](https://poser.pugx.org/drush/drush/downloads.png)](https://packagist.org/packages/drush/drush) [![Latest Unstable Version](https://poser.pugx.org/drush/drush/v/unstable.png)](https://packagist.org/packages/drush/drush) [![License](https://poser.pugx.org/drush/drush/license.png)](https://packagist.org/packages/drush/drush)
 
-.. note:: You can use D8 ...
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
 !!! note
 
-    Any extra CSS or JavaScript files will be added to the generated HTML
-    document after the page content. If you desire to include a JavaScript
-    library, you may have better success including the library by using the
-    [theme_dir].
+    Go to the [Drush 8 docs](http://docs.drush.org/en/8.x/install) if you want the latest stable version of Drush.
 
 
 Resources
@@ -36,27 +29,3 @@ pursuing one of the support options below.
 * Post support requests to [Drupal Answers](http://drupal.stackexchange.com/questions/tagged/drush).
 * Bug reports and feature requests should be reported in the [GitHub Drush Issue Queue](https://github.com/drush-ops/drush/issues).
 * Use pull requests (PRs) to contribute to Drush.
-
-FAQ
-------
-
-##### What does the name Drush mean?
-The Drupal Shell.
-
-##### How do I pronounce Drush?
-  
-Some people pronounce the dru with a long u like Drupal. Fidelity points go to them, but they are in the minority. Most pronounce Drush so that it rhymes with hush, rush, flush, etc. This is the preferred pronunciation.
-
-##### Does Drush have unit tests?
-  
-Drush has an excellent suite of unit tests. See [tests/README.md](https://github.com/drush-ops/drush/blob/master/tests/README.md) for more information.
-
-
-Credits
------------
-
-* Originally developed by [Arto Bendiken](http://bendiken.net) for Drupal 4.7.
-* Redesigned by [Franz Heinzmann](http://unbiskant.org) in May 2007 for Drupal 5.
-* Maintained by [Moshe Weitzman](http://drupal.org/moshe) with much help from
-  Owen Barton, greg.1.anderson, jonhattan, Mark Sonnabaum, Jonathan Hedstrom and
-  [Christopher Gervais](http://drupal.org/u/ergonlogic).
