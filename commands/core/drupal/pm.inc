@@ -102,6 +102,19 @@ function _drush_pm_disable($args) {
 }
 
 /**
+ * Validate the extensions to be uninstalled.
+ *
+ * @param array $args
+ *   Arguments from the command line.
+ *
+ * @return bool
+ *   TRUE or FALSE
+ */
+function _drush_pm_uninstall_validate($args) {
+  return TRUE;
+}
+
+/**
  * Command callback. Uninstall one or more modules.
  */
 function _drush_pm_uninstall($modules) {

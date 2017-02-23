@@ -1235,6 +1235,15 @@ function _drush_pm_expand_extensions(&$extensions, $extension_info = array()) {
 }
 
 /**
+ * Validate callback. Determine the modules and themes that the user would like enabled.
+ */
+function drush_pm_uninstall_validate() {
+  $args = pm_parse_arguments(func_get_args());
+  drush_include_engine('drupal', 'pm');
+  _drush_pm_uninstall_validate($args);
+}
+
+/**
  * Command callback. Uninstall one or more modules.
  */
 function drush_pm_uninstall() {
