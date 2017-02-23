@@ -68,7 +68,7 @@ class ConfigExportCommands extends DrushCommands implements CustomEventAwareInte
     $storage_filters = $this->getStorageFilters($options);
     if (count(glob($destination_dir . '/*')) > 0) {
       // Retrieve a list of differences between the active and target configuration (if any).
-      if ($destination_dir == CONFIG_SYNC_DIRECTORY) {
+      if ($destination_dir == \config_get_config_directory(CONFIG_SYNC_DIRECTORY)) {
         $target_storage = \Drupal::service('config.storage.sync');
       }
       else {
@@ -117,12 +117,12 @@ class ConfigExportCommands extends DrushCommands implements CustomEventAwareInte
         return drush_user_abort();
       }
       // Only delete .yml files, and not .htaccess or .git.
-      drush_scan_directory($destination_dir, '/\.yml$/', array('.', '..'), 'unlink');
+      $target_storage->deleteAll();
     }
 
     // Write all .yml files.
     $source_storage = \Drupal::service('config.storage');
-    if ($destination_dir == CONFIG_SYNC_DIRECTORY) {
+    if ($destination_dir == \config_get_config_directory(CONFIG_SYNC_DIRECTORY)) {
       $destination_storage = \Drupal::service('config.storage.sync');
     }
     else {
