@@ -510,7 +510,7 @@ function _drush_config_export($destination, $destination_dir, $branch) {
       return drush_user_abort();
     }
     // Only delete .yml files, and not .htaccess or .git.
-    drush_scan_directory($destination_dir, '/\.yml$/', array('.', '..'), 'unlink');
+    $target_storage->deleteAll();
   }
 
   // Write all .yml files.
