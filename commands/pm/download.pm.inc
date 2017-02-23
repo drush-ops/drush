@@ -213,6 +213,16 @@ function drush_pm_download() {
       $skip_list = array('.', '..');
       $skip_list = array_merge($skip_list, drush_version_control_reserved_files());
       drush_scan_directory($request['project_install_location'], '/.*/', $skip_list, 'unlink', TRUE, 'filename', 0, TRUE);
+
+      // If the version control engine is a proper vcs we also need to remove
+      // orphan directories.
+      if ($version_control->engine != 'backup') {
+        $empty_dirs = drush_find_empty_directories($request['full_project_path'], $version_control->reserved_files());
+        foreach ($empty_dirs as $empty_dir) {
+          // Some VCS files are read-only on Windows (e.g., .svn/entries).
+          drush_delete_dir($empty_dir, TRUE);
+        }
+      }
     }
 
     // Copy the project to the install location.

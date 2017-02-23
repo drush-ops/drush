@@ -353,6 +353,13 @@ function pm_update_project($project, $version_control) {
     $skip_list = array('.', '..');
     $skip_list = array_merge($skip_list, drush_version_control_reserved_files());
     drush_scan_directory($project['full_project_path'], '/.*/', $skip_list, 'unlink', TRUE, 'filename', 0, TRUE);
+
+    // If the version control engine is a proper vcs we also need to remove
+    // orphan directories.
+    if (($version_control->engine != 'backup') && (drush_get_option('package-handler', 'wget') == 'wget')) {
+      $files = drush_find_empty_directories($project['full_project_path'], $version_control->reserved_files());
+      array_map('drush_delete_dir', $files);
+    }
   }
 
   // Add the project to a context so we can roll back if needed.
