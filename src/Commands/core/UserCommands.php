@@ -311,7 +311,7 @@ class UserCommands extends DrushCommands {
    * @usage drush user-password someuser "correct horse battery staple"
    *   Set the password for the username someuser. @see xkcd.com/936
    */
-  public function password($name, $password, $options = ['password' => '']) {
+  public function password($name, $password) {
     if ($account = user_load_by_name($name)) {
       if (!drush_get_context('DRUSH_SIMULATE')) {
         $account->setpassword($password);
