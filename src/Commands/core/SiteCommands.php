@@ -91,7 +91,6 @@ class SiteCommands extends DrushCommands {
    * @param site Site alias or site specification.
    * @option no-db Do not include the database record in the full alias record (default).
    * @option with-optional Include optional default items.
-   * @option alias-name For a single alias, set the name to use in the output.
    * @option local-only Only display sites that are available on the local system (remote-site not set, and Drupal root exists)
    * @option show-hidden Include hidden internal elements in site alias output
    * @aliases sa
@@ -103,6 +102,8 @@ class SiteCommands extends DrushCommands {
    *   Print only actual aliases; omit multisites from the local Drupal installation.
    * @topics docs-aliases
    * @complete \Drush\Commands\CompletionCommands::completeSiteAliases
+   *
+   * @return array
    */
   public function siteAlias($site, $options = ['format' => 'yaml']) {
     $site_list = $this->resolveSpecifications($site, $options);
