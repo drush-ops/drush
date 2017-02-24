@@ -181,36 +181,36 @@ function pm_drush_command() {
     ),
   );
 
-  $items['pm-enable'] = array(
-    'description' => 'Enable one or more extensions (modules or themes).',
-    'arguments' => array(
-      'extensions' => 'A list of modules or themes. You can use the * wildcard at the end of extension names to enable all matches.',
-    ),
-    'options' => array(
-      'resolve-dependencies' => 'Attempt to download any missing dependencies. At the moment, only works when the module name is the same as the project name.',
-      'skip' => 'Skip automatic downloading of libraries (c.f. devel).',
-    ),
-    'aliases' => array('en'),
-    'engines' => array(
-      'release_info' => array(
-        'add-options-to-command' => FALSE,
-      ),
-    ),
-  );
-  $items['pm-disable'] = array(
-    'description' => 'Disable one or more extensions (modules or themes).',
-    'arguments' => array(
-      'extensions' => 'A list of modules or themes. You can use the * wildcard at the end of extension names to disable multiple matches.',
-    ),
-    'aliases' => array('dis'),
-    'engines' => array(
-      'version_control',
-      'package_handler',
-      'release_info' => array(
-        'add-options-to-command' => FALSE,
-      ),
-    ),
-  );
+//  $items['pm-enable'] = array(
+//    'description' => 'Enable one or more extensions (modules or themes).',
+//    'arguments' => array(
+//      'extensions' => 'A list of modules or themes. You can use the * wildcard at the end of extension names to enable all matches.',
+//    ),
+//    'options' => array(
+//      'resolve-dependencies' => 'Attempt to download any missing dependencies. At the moment, only works when the module name is the same as the project name.',
+//      'skip' => 'Skip automatic downloading of libraries (c.f. devel).',
+//    ),
+//    'aliases' => array('en'),
+//    'engines' => array(
+//      'release_info' => array(
+//        'add-options-to-command' => FALSE,
+//      ),
+//    ),
+//  );
+//  $items['pm-disable'] = array(
+//    'description' => 'Disable one or more extensions (modules or themes).',
+//    'arguments' => array(
+//      'extensions' => 'A list of modules or themes. You can use the * wildcard at the end of extension names to disable multiple matches.',
+//    ),
+//    'aliases' => array('dis'),
+//    'engines' => array(
+//      'version_control',
+//      'package_handler',
+//      'release_info' => array(
+//        'add-options-to-command' => FALSE,
+//      ),
+//    ),
+//  );
   $items['pm-info'] = array(
     'description' => 'Show detailed info for one or more extensions (modules or themes).',
     'arguments' => array(
@@ -289,37 +289,37 @@ function pm_drush_command() {
   // $items['install'] = array(
   //     'description' => 'Download and enable one or more modules',
   //   );
-  $items['pm-uninstall'] = array(
-    'description' => 'Uninstall one or more modules and their dependent modules.',
-    'arguments' => array(
-      'modules' => 'A list of modules.',
-    ),
-    'aliases' => array('pmu'),
-  );
-  $items['pm-list'] = array(
-    'description' => 'Show a list of available extensions (modules and themes).',
-    'callback arguments' => array(array(), FALSE),
-    'options' => array(
-      'type' => array(
-        'description' => 'Filter by extension type. Choices: module, theme.',
-        'example-value' => 'module',
-      ),
-      'status' => array(
-        'description' => 'Filter by extension status. Choices: enabled, disabled and/or \'not installed\'. You can use multiple comma separated values. (i.e. --status="disabled,not installed").',
-        'example-value' => 'disabled',
-      ),
-      'package' => 'Filter by project packages. You can use multiple comma separated values. (i.e. --package="Core - required,Other").',
-      'core' => 'Filter out extensions that are not in drupal core.',
-      'no-core' => 'Filter out extensions that are provided by drupal core.',
-    ),
-    'outputformat' => array(
-      'default' => 'table',
-      'pipe-format' => 'list',
-      'field-labels' => array('package' => 'Package', 'name' => 'Name', 'type' => 'Type', 'status' => 'Status', 'version' => 'Version'),
-      'output-data-type' => 'format-table',
-    ),
-    'aliases' => array('pml'),
-  );
+//  $items['pm-uninstall'] = array(
+//    'description' => 'Uninstall one or more modules and their dependent modules.',
+//    'arguments' => array(
+//      'modules' => 'A list of modules.',
+//    ),
+//    'aliases' => array('pmu'),
+//  );
+//  $items['pm-list'] = array(
+//    'description' => 'Show a list of available extensions (modules and themes).',
+//    'callback arguments' => array(array(), FALSE),
+//    'options' => array(
+//      'type' => array(
+//        'description' => 'Filter by extension type. Choices: module, theme.',
+//        'example-value' => 'module',
+//      ),
+//      'status' => array(
+//        'description' => 'Filter by extension status. Choices: enabled, disabled and/or \'not installed\'. You can use multiple comma separated values. (i.e. --status="disabled,not installed").',
+//        'example-value' => 'disabled',
+//      ),
+//      'package' => 'Filter by project packages. You can use multiple comma separated values. (i.e. --package="Core - required,Other").',
+//      'core' => 'Filter out extensions that are not in drupal core.',
+//      'no-core' => 'Filter out extensions that are provided by drupal core.',
+//    ),
+//    'outputformat' => array(
+//      'default' => 'table',
+//      'pipe-format' => 'list',
+//      'field-labels' => array('package' => 'Package', 'name' => 'Name', 'type' => 'Type', 'status' => 'Status', 'version' => 'Version'),
+//      'output-data-type' => 'format-table',
+//    ),
+//    'aliases' => array('pml'),
+//  );
   $items['pm-refresh'] = array(
     'description' => 'Refresh update status information.',
     'engines' => array(
