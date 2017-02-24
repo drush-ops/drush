@@ -36,6 +36,10 @@ function drush_drupal_load_autoloader($drupal_root) {
 function drush_drupal_version($drupal_root = NULL) {
   static $version = FALSE;
 
+  if ($drush_drupal_version = drush_get_context('DRUSH_DRUPAL_VERSION')) {
+    $version = $drush_drupal_version;
+  }
+
   if (!$version) {
     if (($drupal_root != NULL) || ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT'))) {
       $bootstrap = \Drush::bootstrapManager()->bootstrapObjectForRoot($drupal_root);
@@ -44,6 +48,7 @@ function drush_drupal_version($drupal_root = NULL) {
       }
     }
   }
+
   return $version;
 }
 

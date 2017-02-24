@@ -14,6 +14,7 @@ function drush_make_update($makefile = NULL) {
 
   make_prepare_projects(FALSE, $info);
   $make_projects = drush_get_option('DRUSH_MAKE_PROJECTS', FALSE);
+  $drupal_version = $info['core'];
 
   // Pick projects coming from drupal.org and adjust its structure
   // to feed update_status engine.
@@ -23,6 +24,9 @@ function drush_make_update($makefile = NULL) {
   // git_drupalorg engine.
   $projects = array();
   foreach ($make_projects as $project_name => $project) {
+    if ($project['type'] == 'core' && isset($project['version'])) {
+      $drupal_version = $project['version'];
+    }
     if (($project['download']['type'] == 'git') && !empty($project['download']['url'])) {
       // TODO check that tag or branch are valid version strings (with pm_parse_version()).
       if (!empty($project['download']['tag'])) {
@@ -53,6 +57,8 @@ function drush_make_update($makefile = NULL) {
       );
     }
   }
+
+  drush_set_context('DRUSH_DRUPAL_VERSION', $drupal_version);
 
   // Check for updates.
   $update_status = drush_get_engine('update_status');
