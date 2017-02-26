@@ -4,52 +4,60 @@ namespace Drush\Commands;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Extension\Extension;
+use Drupal\Core\Extension\MissingDependencyException;
 
 class PmCommands extends DrushCommands {
 
   /**
-   * Enable one or more extensions (modules or themes).
+   * Enable one or more modules.
    *
    * @command pm-enable
-   * @param $extensions A comma delimited list of modules or themes. You can use the * wildcard at the end of extension names to enable all matches.
+   * @param $modules A comma delimited list of modules.
    * @aliases en
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    */
-  public function enable($extensions) {
-    $extensions = _convert_csv_to_array($extensions);
-    if (!\Drupal::service('module_installer')->install($extensions, TRUE)) {
+  public function enable($modules) {
+    $modules = _convert_csv_to_array($modules);
+    $list = $this->addInstallDependencies($modules);
+    if (array_values($list) !== $modules) {
+      drush_print(dt('The following extensions will be enabled: !list', array('!list' => implode(', ', $list))));
+      if(!drush_confirm(dt('Do you really want to continue?'))) {
+        return drush_user_abort();
+      }
+    }
+    if (!\Drupal::service('module_installer')->install($modules, TRUE)) {
       throw new \Exception('Unable to install modules.');
     }
-  }
-
-  /**
-   * Uninstall one or more modules and their dependent modules.
-   *
-   * @command pm-uninstall
-   * @param $extensions A comma delimited list of modules.
-   * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
-   * @aliases pmu
-   */
-  public function uninstall($extensions) {
-    $extensions = _convert_csv_to_array($extensions);
-    if (!\Drupal::service('module_installer')->uninstall($extensions, TRUE)) {
-      throw new \Exception('Unable to uninstall modules.');
-    }
+    $this->logger()->success(dt('Successfully enabled modules: !list', ['!list' => implode(', ', $list)]));
     // Our logger got blown away during the container rebuild above.
     $boot = \Drush::bootstrapManager()->bootstrap();
     $boot->add_logger();
   }
 
   /**
-   * Show a report of available projects and their extensions.
+   * Uninstall one or more modules and their dependent modules.
    *
-   * @command pm-info
-   * @param $extensions A comma delimited list of modules.
-   * @option status Filter by project status. Choices: enabled, disabled. A project is considered enabled when at least one of its extensions is enabled.
+   * @command pm-uninstall
+   * @param $modules A comma delimited list of modules.
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
+   * @aliases pmu
    */
-  public function info() {
-
+  public function uninstall($modules) {
+    $modules = _convert_csv_to_array($modules);
+    $list = $this->addUninstallDependencies($modules);
+    if (array_values($list) !== $modules) {
+      drush_print(dt('The following extensions will be uninstalled: !list', array('!list' => implode(', ', $list))));
+      if(!drush_confirm(dt('Do you really want to continue?'))) {
+        return drush_user_abort();
+      }
+    }
+    if (!\Drupal::service('module_installer')->uninstall($modules, TRUE)) {
+      throw new \Exception('Unable to uninstall modules.');
+    }
+    $this->logger()->success(dt('Successfully uninstalled modules: !list', ['!list' => implode(', ', $list)]));
+    // Our logger got blown away during the container rebuild above.
+    $boot = \Drush::bootstrapManager()->bootstrap();
+    $boot->add_logger();
   }
 
   /**
@@ -154,7 +162,61 @@ class PmCommands extends DrushCommands {
     return $extension->status == 1 ? 'enabled' : 'disabled';
   }
 
+  function addInstallDependencies($modules) {
+    $module_data = system_rebuild_module_data();
+    $module_list  = array_combine($modules, $modules);
+    if ($missing_modules = array_diff_key($module_list, $module_data)) {
+      // One or more of the given modules doesn't exist.
+      throw new MissingDependencyException(sprintf('Unable to install modules %s due to missing modules %s.', implode(', ', $module_list), implode(', ', $missing_modules)));
+    }
+    $extension_config = \Drupal::configFactory()->getEditable('core.extension');
+    $installed_modules = $extension_config->get('module') ?: array();
 
+    // Copied from \Drupal\Core\Extension\ModuleInstaller::install
+    // Add dependencies to the list. The new modules will be processed as
+    // the while loop continues.
+    while (list($module) = each($module_list)) {
+      foreach (array_keys($module_data[$module]->requires) as $dependency) {
+        if (!isset($module_data[$dependency])) {
+          // The dependency does not exist.
+          throw new MissingDependencyException("Unable to install modules: module '$module' is missing its dependency module $dependency.");
+        }
 
+        // Skip already installed modules.
+        if (!isset($module_list[$dependency]) && !isset($installed_modules[$dependency])) {
+          $module_list[$dependency] = $dependency;
+        }
+      }
+    }
+    return $module_list;
+  }
 
+  function addUninstallDependencies($modules) {
+    // Get all module data so we can find dependencies and sort.
+    $module_data = system_rebuild_module_data();
+    $module_list = array_combine($modules, $modules);
+    if ($diff = array_diff_key($module_list, $module_data)) {
+      throw new \Exception(dt('A specified extension does not exist: !diff', ['!diff' => implode(',', $diff)]));
+    }
+    $extension_config = \Drupal::configFactory()->getEditable('core.extension');
+    $installed_modules = $extension_config->get('module') ?: array();
+
+    // Add dependent modules to the list. The new modules will be processed as
+    // the while loop continues.
+    $profile = drupal_get_profile();
+    while (list($module) = each($module_list)) {
+      foreach (array_keys($module_data[$module]->required_by) as $dependent) {
+        if (!isset($module_data[$dependent])) {
+          // The dependent module does not exist.
+          return FALSE;
+        }
+
+        // Skip already uninstalled modules.
+        if (isset($installed_modules[$dependent]) && !isset($module_list[$dependent]) && $dependent != $profile) {
+          $module_list[$dependent] = $dependent;
+        }
+      }
+    }
+    return $module_list;
+  }
 }
