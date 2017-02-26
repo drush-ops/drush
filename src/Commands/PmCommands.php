@@ -15,6 +15,7 @@ class PmCommands extends DrushCommands {
    * @param $modules A comma delimited list of modules.
    * @aliases en
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
+   * @complete \Drush\Commands\CompletionCommands::completeModules
    */
   public function enable($modules) {
     $modules = _convert_csv_to_array($modules);
@@ -41,6 +42,7 @@ class PmCommands extends DrushCommands {
    * @param $modules A comma delimited list of modules.
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    * @aliases pmu
+   * @complete \Drush\Commands\CompletionCommands::completeModules
    */
   public function uninstall($modules) {
     $modules = _convert_csv_to_array($modules);
@@ -64,7 +66,6 @@ class PmCommands extends DrushCommands {
    * Show a list of available extensions (modules and themes).
    *
    * @command pm-list
-   * @param $extensions A comma delimited list of modules.
    * @option type Filter by extension type. Choices: module, theme.
    * @option status Filter by extension status. Choices: enabled or 'not installed'.
    * @option core Filter out extensions that are not in Drupal core.
@@ -83,7 +84,7 @@ class PmCommands extends DrushCommands {
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
    */
-  public function pmList($extensions = NULL, $options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => NULL, 'core' => NULL, 'no-core' => NULL]) {
+  public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => NULL, 'core' => NULL, 'no-core' => NULL]) {
     $rows = [];
     $modules = \system_rebuild_module_data();
     $themes = \Drupal::service('theme_handler')->rebuildThemeData();
@@ -94,6 +95,7 @@ class PmCommands extends DrushCommands {
     $status_filter = _convert_csv_to_array(strtolower($options['status']));
 
     foreach ($both as $key => $extension) {
+      // Filter out test modules/themes.
       if (strpos($extension->getPath(), 'tests')) {
         continue;
       }

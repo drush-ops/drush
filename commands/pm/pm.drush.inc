@@ -133,29 +133,6 @@ function pm_drush_help($section) {
       return dt('Project manager commands');
     case 'meta:pm:summary':
       return dt('Download, enable, examine and update your modules and themes.');
-    case 'drush:pm-enable':
-      return dt('Enable one or more extensions (modules or themes). Enable dependant extensions as well.');
-    case 'drush:pm-disable':
-      return dt('Disable one or more extensions (modules or themes). Disable dependant extensions as well.');
-    case 'drush:pm-updatecode':
-    case 'drush:pm-update':
-      $message = dt("Display available update information for Drupal core and all enabled projects and allow updating to latest recommended releases.");
-      if ($section == 'drush:pm-update') {
-        $message .= ' '.dt("Also apply any database updates required (same as pm-updatecode + updatedb).");
-      }
-      $message .= ' '.dt("Note: The user is asked to confirm before the actual update. Backups are performed unless directory is already under version control. Updated projects can potentially break your site. It is NOT recommended to update production sites without prior testing.");
-      return $message;
-    case 'drush:pm-updatecode-postupdate':
-      return dt("This is a helper command needed by updatecode. It is used to check for db updates in a backend process after code updated have been performed. We need to run this task in a separate process to not conflict with old code already in memory.");
-    case 'drush:pm-download':
-      return dt("Download Drupal core or projects from drupal.org (Drupal core, modules, themes or profiles) and other sources. It will automatically figure out which project version you want based on its recommended release, or you may specify a particular version.
-
-If no --destination is provided, then destination depends on the project type:
-  - Profiles will be downloaded to profiles/ in your Drupal root.
-  - Modules and themes will be downloaded to the site specific directory (sites/example.com/modules|themes) if available, or to the site wide directory otherwise.
-  - If you're downloading drupal core or you are not running the command within a bootstrapped drupal site, the default location is the current directory.
-  - Drush commands will be relocated to @site_wide_location (if available) or ~/.drush. Relocation is determined once the project is downloaded by examining its content. Note you can provide your own function in a commandfile to determine the relocation of any project.", array('@site_wide_location' => drush_get_context('DRUSH_SITE_WIDE_COMMANDFILES')));
-  }
 }
 
 /**

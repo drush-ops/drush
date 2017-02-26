@@ -11,4 +11,12 @@ class CompletionCommands {
   static public function completeSiteAliases() {
     return array('values' => array_keys(SiteCommands::siteAllList()));
   }
+
+  static public function completeModules() {
+    if (drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+      $extension_config = \Drupal::configFactory()->getEditable('core.extension');
+      $installed_modules = $extension_config->get('module') ?: array();
+      return array('values' => array_keys($installed_modules));
+    }
+  }
 }

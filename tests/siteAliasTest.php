@@ -137,7 +137,7 @@ EOD;
     $name = key($sites);
     $sites_php = "\n\$sites['example.com'] = '$name';";
     file_put_contents($sites[$name]['root'] . '/sites/sites.php', $sites_php, FILE_APPEND);
-    $this->drush('pm-updatecode', array(), array('uri' => 'http://example.com', 'no' => NULL, 'no-core' => NULL, 'verbose' => NULL), '@' . $name);
+    $this->drush('config-pull', array(), array('uri' => 'http://example.com', 'safe' => NULL, 'verbose' => NULL), '@' . $name);
     $this->assertContains('--uri=http://example.com', $this->getErrorOutput());
 
     // Test a remote alias that does not have a 'root' element
