@@ -6,6 +6,7 @@
  */
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drush\Cache\CommandCache;
 use Drush\Log\LogLevel;
 use League\Container\Container;
 use Robo\Contract\BuilderAwareInterface;
@@ -296,14 +297,21 @@ function drush_init_dependency_injection_container($input = null, $output = null
   \Drush::setContainer($container);
   \Robo\Robo::setContainer($container);
 
+
+
   // Add our own callback to the hook manager
   $hookManager = $container->get('hookManager');
   $hookManager->addOutputExtractor(new Drush\Backend\BackendResultSetter());
   // @todo: do we need both backend result setters? The one below should be removed at some point.
   $hookManager->add('annotatedcomand_adapter_backend_result', HookManager::EXTRACT_OUTPUT);
 
+  // Install our command cache into the command factory
+  $cacheBackend = _drush_cache_get_object('factory');
+  $commandCacheDataStore = new CommandCache($cacheBackend);
+
   $factory = $container->get('commandFactory');
   $factory->setIncludeAllPublicMethods(false);
+  $factory->setDataStore($commandCacheDataStore);
 
   // It is necessary to set the dispatcher when using configureContainer
   $eventDispatcher = $container->get('eventDispatcher');
@@ -312,7 +320,6 @@ function drush_init_dependency_injection_container($input = null, $output = null
 
   return $container;
 }
-
 
 // TODO: Where should this go?
 function drush_init_application_global_options($container) {
@@ -399,7 +406,6 @@ function drush_add_command_instance($container, $commandInstance, $includeAllPub
 function drush_create_commands_from_command_instance($container, $commandInstance, $includeAllPublicMethods = true) {
   $application = $container->get('application');
   $commandFactory = $container->get('commandFactory');
-  $commandFactory->setIncludeAllPublicMethods(false);
   $commandList = $commandFactory->createCommandsFromClass($commandInstance, $includeAllPublicMethods);
   foreach ($commandList as $command) {
     drush_add_command_to_application($container, $command);

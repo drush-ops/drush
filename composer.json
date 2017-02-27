@@ -34,7 +34,7 @@
     "league/container": "~2",
     "consolidation/robo": "~1",
     "symfony/config": "~2.2",
-    "consolidation/annotated-command": "^2",
+    "consolidation/annotated-command": "^2.4.2",
     "consolidation/output-formatters": "~3",
     "symfony/yaml": "~2.3",
     "symfony/var-dumper": "~2.7",

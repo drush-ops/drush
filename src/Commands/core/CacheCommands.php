@@ -271,6 +271,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface {
   static function clearDrush() {
     drush_cache_clear_all(NULL, 'default'); // commandfiles, etc.
     drush_cache_clear_all(NULL, 'complete'); // completion
+    drush_cache_clear_all(NULL, 'factory'); // command info from annotated-command library
     // Release XML. We don't clear tarballs since those never change.
     $matches = drush_scan_directory(drush_directory_cache('download'), "/^https---updates.drupal.org-release-history/", array('.', '..'));
     array_map('unlink', array_keys($matches));
