@@ -43,7 +43,7 @@ class SiteInstallCommands extends DrushCommands {
    * @aliases si
    *
    */
-  public function install($profile, array $additional, $options = ['db-url' => NULL, 'db-prefix' => NULL, 'db-su' => NULL, 'db-su-pw' => NULL, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'account-pass' => NULL, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => NULL, 'sites-subdir' => NULL, 'config-dir' => NULL, 'show-passwords' => NULL]) {
+  public function install($profile, array $additional, $options = ['db-url' => NULL, 'db-prefix' => NULL, 'db-su' => NULL, 'db-su-pw' => NULL, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => NULL, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => NULL, 'sites-subdir' => NULL, 'config-dir' => NULL, 'show-passwords' => NULL]) {
     $form_options = [];
     foreach ((array)$additional as $arg) {
       list($key, $value) = explode('=', $arg, 2);
