@@ -9,7 +9,6 @@ pages:
   - Usage: usage.md
   - Example files: examples.md
   - Cron: cron.md
-  - Make: make.md
   - Output formats: output-formats.md
   - Shell aliases: shellaliases.md
   - Shell scripts: shellscripts.md
