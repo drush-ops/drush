@@ -73,4 +73,13 @@ class LegacyCommands extends DrushCommands {
     $msg = 'The pm-releases command was deprecated. Please see `composer show <packagename>`';
     $this->logger()->notice($msg);
   }
+
+  /**
+   * @command make
+   * @aliases make-convert,make-generate,make-lock,make-update
+   */
+  public function make() {
+    $msg = 'Make has been removed, in favor of Composer. Use the make-convert command in Drush 8 to quickly upgrade your build to Composer.';
+    $this->logger()->notice($msg);
+  }
 }
