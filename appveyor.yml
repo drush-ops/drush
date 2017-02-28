@@ -82,7 +82,4 @@ environment:
     PHPUNIT_ARGS: --group=quick-drupal
 
   - UNISH_DRUPAL_MAJOR_VERSION: 7
-    PHPUNIT_ARGS: --exclude-group=base,make,commands,pm,quick-drupal
-
-  - UNISH_DRUPAL_MAJOR_VERSION: 7
-    PHPUNIT_ARGS: --group=make
+    PHPUNIT_ARGS: --exclude-group=basecommands,pm,quick-drupal
