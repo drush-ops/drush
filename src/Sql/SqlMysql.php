@@ -22,7 +22,7 @@ password="{$dbSpec['password']}"
 EOT;
 
       $file = drush_save_data_to_temp_file($contents);
-      $parameters['defaults-extra-file'] = $file;
+      $parameters['defaults-file'] = $file;
     }
     else {
       // User is required. Drupal calls it 'username'. MySQL calls it 'user'.
