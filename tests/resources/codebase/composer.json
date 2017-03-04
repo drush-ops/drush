@@ -1,9 +1,12 @@
 {
-  "name": "Unish",
+  "name": "Site Under Test",
   "repositories": [
     {
       "type": "path",
-      "url": "%PATH-TO-DRUSH%"
+      "url": "%PATH-TO-DRUSH%",
+      "options": {
+        "symlink": true
+      }
     },
     {
       "type": "composer",

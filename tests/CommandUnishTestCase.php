@@ -241,7 +241,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     // It is preferable to call drush.php directly instead of vendor/bin/drush or drush.launcher.
     // Otherwise, Drush is mistakenly finding itself as a local Drush and redispatching.
     // See https://github.com/drush-ops/drush/blob/11c1267c9f14672f080ef31d15b70e156618b47b/includes/preflight.inc#L840
-    $cmd[] = file_exists(UNISH_DRUSH_PHP) ? UNISH_DRUSH_PHP : UNISH_DRUSH;
+    $cmd[] = Path::join(getenv('UNISH_DRUSH'), 'drush.php');
 
     // Insert global options.
     foreach ($options as $key => $value) {

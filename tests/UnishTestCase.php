@@ -18,50 +18,24 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Assure that each class starts with an empty sandbox directory and
-   * a clean environment - http://drupal.org/node/1103568.
+   * We used to assure that each class starts with an empty sandbox directory and
+   * a clean environment - http://drupal.org/node/1103568. No need now - hurray!
    */
-  public static function setUpBeforeClass() {
-    self::setUpFreshSandBox();
-  }
-
-  /**
-   * Remove any pre-existing sandbox, then create a new one.
-   */
-  public static function setUpFreshSandBox() {
-    // Avoid perm denied error on Windows by moving out of the dir to be deleted.
-    chdir(dirname(UNISH_SANDBOX));
-    $sandbox = UNISH_SANDBOX;
-    if (file_exists($sandbox)) {
-      unish_file_delete_recursive($sandbox);
-    }
-    $ret = mkdir($sandbox, 0777, TRUE);
-    chdir(UNISH_SANDBOX);
-
-    mkdir(getenv('HOME') . '/.drush', 0777, TRUE);
-    mkdir($sandbox . '/etc/drush', 0777, TRUE);
-    mkdir($sandbox . '/share/drush/commands', 0777, TRUE);
-
-    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-      // Hack to make git use unix line endings on windows
-      // We need it to make hashes of files pulled from git match ones hardcoded in tests
-      if (!file_exists($sandbox . '\home')) {
-        mkdir($sandbox . '\home');
-      }
-      exec("git config --file $sandbox\\home\\.gitconfig core.autocrlf false", $output, $return);
-    }
+  public static function setUpBeforeCunishlass() {
+    parent::setUpBeforeClass();
   }
 
   /**
    * Runs after all tests in a class are run. Remove sandbox directory.
    */
   public static function tearDownAfterClass() {
-    chdir(dirname(UNISH_SANDBOX));
-    $dirty = getenv('UNISH_DIRTY');
-    if (file_exists(UNISH_SANDBOX) && empty($dirty)) {
-      unish_file_delete_recursive(UNISH_SANDBOX, TRUE);
-    }
-    self::$sites = array();
+//    chdir(dirname(UNISH_SANDBOX));
+//    $dirty = getenv('UNISH_DIRTY');
+//    if (file_exists(UNISH_SANDBOX) && empty($dirty)) {
+//      \unish_file_delete_recursive(UNISH_SANDBOX, TRUE);
+//    }
+//    self::$sites = array();
+    parent::tearDownAfterClass();
   }
 
   /**
