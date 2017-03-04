@@ -275,9 +275,9 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     }
     $db_driver = $this->db_driver(UNISH_DB_URL);
 
-    // Build the site(s), install (if needed).
+    // Install (if needed).
     foreach ($sites_subdirs as $subdir) {
-      $this->fetchInstallDrupal($subdir, $install, $version_string, $profile);
+      $this->installDrupal($subdir, $install, $version_string, $profile);
     }
 
     // Write an empty sites.php. Needed for multi-site on D8+.
@@ -298,28 +298,10 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     return self::$sites;
   }
 
-  function fetchInstallDrupal($env = 'dev', $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL, $separate_roots = FALSE) {
+  function installDrupal($env = 'dev', $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL, $separate_roots = FALSE) {
     $root = $this->webroot();
     $uri = $separate_roots ? "default" : "$env";
     $site = "$root/sites/$uri";
-
-    // Build codebase if not already present.
-    if (!file_exists($root)) {
-      // Use Composer to build a Drupal codebase, with this Drush symlinked into /vendor.
-      $codebase = dirname(__DIR__). '/resources/codebase';
-      $this->recursive_copy($codebase, dirname($root));
-      foreach (['composer.json', 'composer.lock'] as $file) {
-        // We replace a token in these 2 files with the /path/to/drush for this install.
-        // @todo Use https://getcomposer.org/doc/03-cli.md#modifying-repositories if it can edit composer.lock too.
-        $contents = file_get_contents(dirname($root). "/$file");
-        $new_contents = str_replace('%PATH-TO-DRUSH%', dirname(UNISH_DRUSH), $contents);
-        file_put_contents(dirname($root). "/$file", $new_contents);
-      }
-      $this->execute('composer install --no-interaction --no-progress --no-dev --no-suggest', CommandUnishTestCase::EXIT_SUCCESS, dirname($root));
-
-      // @todo This path is a bit legacy in D8.
-      mkdir($root . '/sites/all/drush', 0777, TRUE);
-    }
 
     // If specified, install Drupal as a multi-site.
     if ($install) {

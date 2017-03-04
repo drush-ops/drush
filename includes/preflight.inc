@@ -160,7 +160,9 @@ function drush_preflight_prepare() {
     return FALSE;
   }
 
-  $classloader = require $vendor_path;
+  if (empty(getenv('DRUSH_SKIP_OWN_AUTOLOAD'))) {
+    $classloader = require $vendor_path;
+  }
 
   require_once DRUSH_BASE_PATH . '/includes/startup.inc';
   require_once DRUSH_BASE_PATH . '/includes/bootstrap.inc';
@@ -178,10 +180,6 @@ function drush_preflight_prepare() {
   require_once DRUSH_BASE_PATH . '/includes/output.inc';
   require_once DRUSH_BASE_PATH . '/includes/cache.inc';
   require_once DRUSH_BASE_PATH . '/includes/filesystem.inc';
-
-  // Stash our vendor path and classloader.
-  drush_set_context('DRUSH_VENDOR_PATH', dirname($vendor_path));
-  drush_set_context('DRUSH_CLASSLOADER', $classloader);
 
   /*
    * @deprecated. Use \Drush::getVersion().
@@ -237,7 +235,12 @@ function drush_preflight_prepare() {
   // Process initial global options such as --debug.
   _drush_preflight_global_options();
 
-  drush_log(dt("Drush preflight prepare loaded autoloader at !autoloader", array('!autoloader' => realpath($vendor_path))), LogLevel::BOOTSTRAP);
+  if (empty(getenv('DRUSH_SKIP_OWN_AUTOLOAD'))) {
+    drush_log(dt("Drush preflight prepare loaded autoloader at !autoloader", array('!autoloader' => Path::canonicalize($vendor_path))), LogLevel::BOOTSTRAP);
+    // Stash our vendor path and classloader.
+    drush_set_context('DRUSH_VENDOR_PATH', dirname($vendor_path));
+    drush_set_context('DRUSH_CLASSLOADER', $classloader);
+  }
 
   return $container;
 }
