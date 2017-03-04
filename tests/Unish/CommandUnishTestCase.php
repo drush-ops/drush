@@ -238,11 +238,10 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     // cd is added for the benefit of siteSshTest which tests a strict command.
     $global_option_list = array('simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'backend', 'cd');
     $hide_stderr = FALSE;
-    $drush_php = Path::join(UNISH_SANDBOX, 'vendor/drush/drush/drush.php');
     // It is preferable to call drush.php directly instead of vendor/bin/drush or drush.launcher.
     // Otherwise, Drush is mistakenly finding itself as a local Drush and redispatching.
     // See https://github.com/drush-ops/drush/blob/11c1267c9f14672f080ef31d15b70e156618b47b/includes/preflight.inc#L840
-    $cmd[] = file_exists($drush_php) ? $drush_php : UNISH_DRUSH;
+    $cmd[] = file_exists(UNISH_DRUSH_PHP) ? UNISH_DRUSH_PHP : UNISH_DRUSH;
 
     // Insert global options.
     foreach ($options as $key => $value) {

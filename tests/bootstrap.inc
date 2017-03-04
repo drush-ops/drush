@@ -51,6 +51,7 @@ function unish_init() {
 
   define('UNISH_TMP', realpath(getenv('UNISH_TMP') ? getenv('UNISH_TMP') : (isset($GLOBALS['UNISH_TMP']) ? $GLOBALS['UNISH_TMP'] : sys_get_temp_dir())));
   define('UNISH_SANDBOX', UNISH_TMP . DIRECTORY_SEPARATOR . 'drush-sandbox');
+  define('UNISH_DRUSH_PHP', Path::join(UNISH_SANDBOX, 'vendor/drush/drush/drush.php'));
 
   // Cache dir lives outside the sandbox so that we get persistence across classes.
   define('UNISH_CACHE', UNISH_TMP . DIRECTORY_SEPARATOR . 'drush-cache');

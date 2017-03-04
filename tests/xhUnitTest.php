@@ -19,7 +19,7 @@ class xhUnitCase extends UnitUnishTestCase {
     foreach ($options as $option_name => $option_value) {
       drush_set_option($option_name, $option_value);
     }
-    $this->assertEquals($expected, xh_flags(), $name);
+    $this->assertEquals($expected, \xh_flags(), $name);
   }
 
   /**

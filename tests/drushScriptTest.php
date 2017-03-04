@@ -28,10 +28,7 @@ class drushScriptCase extends CommandUnishTestCase {
   }
 
   public function testDrushFinder() {
-    // We don't really need a real Drupal site; we could
-    // create a fake site, as long as we had the right signature
-    // files to allow us to bootstrap to the DRUPAL_ROOT phase.
-    $this->setUpDrupal(1, TRUE);
+    $this->markTestSkipped('The Finder is not long for this world. Disabling this test.');
 
     $globalDrushDotPhp = Path::join(UNISH_DRUSH, '../drush.php');
 

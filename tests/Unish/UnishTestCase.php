@@ -310,6 +310,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
       $this->recursive_copy($codebase, dirname($root));
       foreach (['composer.json', 'composer.lock'] as $file) {
         // We replace a token in these 2 files with the /path/to/drush for this install.
+        // @todo Use https://getcomposer.org/doc/03-cli.md#modifying-repositories if it can edit composer.lock too.
         $contents = file_get_contents(dirname($root). "/$file");
         $new_contents = str_replace('%PATH-TO-DRUSH%', dirname(UNISH_DRUSH), $contents);
         file_put_contents(dirname($root). "/$file", $new_contents);
