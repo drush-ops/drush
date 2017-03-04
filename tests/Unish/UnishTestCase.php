@@ -301,24 +301,21 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   function fetchInstallDrupal($env = 'dev', $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL, $separate_roots = FALSE) {
     $root = $this->webroot();
     $uri = $separate_roots ? "default" : "$env";
-    $options = array();
     $site = "$root/sites/$uri";
 
-    if (substr($version_string, 0, 1) == 6 && $this->db_driver(UNISH_DB_URL) == 'sqlite') {
-      // Validate
-      $this->markTestSkipped("Drupal 6 does not support SQLite.");
-    }
-
-    // Download Drupal if not already present.
+    // Build codebase if not already present.
     if (!file_exists($root)) {
-      $options += array(
-        'destination' => dirname($root),
-        'drupal-project-rename' => basename($root),
-        'yes' => NULL,
-        'quiet' => NULL,
-        'cache' => NULL,
-      );
-      $this->drush('pm-download', array("drupal-$version_string"), $options);
+      // Use Composer to build a Drupal codebase, with this Drush symlinked into /vendor.
+      $codebase = dirname(__DIR__). '/resources/codebase';
+      $this->recursive_copy($codebase, dirname($root));
+      foreach (['composer.json', 'composer.lock'] as $file) {
+        // We replace a token in these 2 files with the /path/to/drush for this install.
+        $contents = file_get_contents(dirname($root). "/$file");
+        $new_contents = str_replace('%PATH-TO-DRUSH%', dirname(UNISH_DRUSH), $contents);
+        file_put_contents(dirname($root). "/$file", $new_contents);
+      }
+      $this->execute('composer install --no-interaction --no-progress --no-dev --no-suggest', CommandUnishTestCase::EXIT_SUCCESS, dirname($root));
+
       // @todo This path is a bit legacy in D8.
       mkdir($root . '/sites/all/drush', 0777, TRUE);
     }

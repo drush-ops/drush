@@ -6,15 +6,17 @@
  */
 
 // This code copied from drush_bootstrap_prepare() except for 1st line.
-$drush_base_path = dirname(__DIR__);
-$local_vendor_path = $drush_base_path . '/vendor/autoload.php';
-$global_vendor_path = $drush_base_path . '/../../../vendor/autoload.php';
-// Check for a local composer install or a global composer install. Vendor dirs are in different spots.
-if ((!@include $local_vendor_path) && (!@include $global_vendor_path)) {
-  $msg = "Unable to load autoload.php. Drush now requires Composer in order to install its dependencies and autoload classes. Please see http://docs.drush.org/en/master/install/\n";
-  fwrite(STDERR, $msg);
-  return FALSE;
-}
+use Webmozart\PathUtil\Path;
+
+//$drush_base_path = dirname(__DIR__);
+//$local_vendor_path = $drush_base_path . '/vendor/autoload.php';
+//$global_vendor_path = $drush_base_path . '/../../../vendor/autoload.php';
+//// Check for a local composer install or a global composer install. Vendor dirs are in different spots.
+//if ((!@include $local_vendor_path) && (!@include $global_vendor_path)) {
+//  $msg = "Unable to load autoload.php. Drush now requires Composer in order to install its dependencies and autoload classes. Please see http://docs.drush.org/en/master/install/\n";
+//  fwrite(STDERR, $msg);
+//  return FALSE;
+//}
 
 unish_init();
 
@@ -64,9 +66,11 @@ function unish_init() {
     $ret = mkdir(UNISH_CACHE, 0777, TRUE);
   }
 
-  $home = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'home';
+  $home = Path::join(UNISH_SANDBOX, 'home');
   putenv("HOME=$home");
   putenv("HOMEDRIVE=$home");
+  $composer_home = Path::join(UNISH_CACHE, '.composer');
+  putenv("COMPOSER_HOME=$composer_home");
 
   putenv('ETC_PREFIX=' . UNISH_SANDBOX);
   putenv('SHARE_PREFIX=' . UNISH_SANDBOX);

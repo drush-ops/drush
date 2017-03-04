@@ -744,8 +744,9 @@ function _drush_preflight_uri() {
 }
 
 function _drush_find_commandfiles_drush() {
-  // Core commands shipping with Drush
-  $searchpath[] = dirname(__FILE__) . '/../commands/';
+  // Legacy style commands still shipping with Drush.
+  $searchpath[] = dirname(__FILE__) . '/../commands/core';
+  $searchpath[] = dirname(__FILE__) . '/../commands/pm';
 
   // User commands, specified by 'include' option
   $include = drush_get_context('DRUSH_INCLUDE', array());
@@ -775,9 +776,9 @@ function _drush_find_commandfiles_drush() {
 
   // Also discover Drush's own annotation commands.
   $discovery = annotationcommand_adapter_get_discovery();
-  $annotation_commandfiles = $discovery->discover(DRUSH_BASE_PATH . '/lib/Drush', '\Drush');
+  $annotation_commandfiles = $discovery->discover(DRUSH_BASE_PATH . '/src', '\Drush');
 
-  // And, finally, search for commandfiles in the $searchpath
+  // And, finally, search for Annotated commandfiles in the $searchpath.
   $searchpath = array_map(
     function ($item) {
       if (strtolower(basename($item)) == 'commands') {
@@ -798,7 +799,7 @@ function _drush_find_commandfiles_drush() {
  * potentially redispatching the command immediately (e.g. for remote
  * commands).
  *
- * @return
+ * @return bool
  *   TRUE if the command was handled remotely.
  */
 function drush_preflight_command_dispatch() {

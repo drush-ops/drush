@@ -92,8 +92,6 @@ drush_invoke("version", $arg);
       'root' => $root,
       'uri' => key($this->getSites()),
       'yes' => NULL,
-      'skip' => NULL,
-      'cache' => NULL,
       'strict' => 0, // invoke from script: do not verify options
     );
     $this->drush('drupal-directory', array('%files'), $options);
@@ -104,17 +102,15 @@ drush_invoke("version", $arg);
     $output = $this->getOutput();
     $this->assertEquals($root . $sitewide . '/modules', $output);
 
-    $this->drush('pm-download', array('devel'), $options);
     $this->drush('pm-enable', array('devel'), $options);
-    $this->drush('pm-download', array('empty_theme'), $options);
 
     $this->drush('drupal-directory', array('devel'), $options);
     $output = $this->getOutput();
-    $this->assertEquals(realpath($root  . $sitewide . '/modules/devel'), $output);
+    $this->assertEquals(realpath($root  . $sitewide . '/modules/contrib/devel'), $output);
 
     $this->drush('drupal-directory', array('empty_theme'), $options);
     $output = $this->getOutput();
-    $this->assertEquals(realpath($root  . $sitewide . '/themes/empty_theme'), $output);
+    $this->assertEquals(realpath($root  . $sitewide . '/themes/contrib/empty_theme'), $output);
   }
 
   function testCoreRequirements() {

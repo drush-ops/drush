@@ -88,10 +88,6 @@ class commandCase extends CommandUnishTestCase {
     $options = array(
       'root' => $root,
       'uri' => $uri,
-      'cache' => NULL,
-    );
-    $this->drush('pm-download', array('devel'), $options);
-    $options += array(
       'backend' => NULL, // To obtain and parse the error log.
     );
     $this->drush('devel-reinstall', array(), $options, NULL, NULL, self::EXIT_ERROR);

@@ -38,27 +38,4 @@ EOD;
     $this->assertNotContains($files[2], $loaded); //Did not load a mismatched version-specific command file.
     $this->assertNotContains($files[3], $loaded); //Did not load a a mismatched version-specific command directory.
   }
-
-  /**
-   * Assert that $command has interesting properties. Reference command by
-   * it's alias (dl) to assure that those aliases are built as expected.
-   */
-  public function testGetCommands() {
-    drush_preflight();
-    $commands = drush_get_commands();
-    $command = $commands['dl'];
-
-    $this->assertEquals('dl', current($command['aliases']));
-    $this->assertArrayHasKey('version_control', $command['engines']);
-    $this->assertArrayHasKey('package_handler', $command['engines']);
-    $this->assertArrayHasKey('release_info', $command['engines']);
-    $this->assertEquals('pm-download', $command['command']);
-    $this->assertEquals('pm', $command['commandfile']);
-    $this->assertEquals('drush_command', $command['callback']);
-    $this->assertArrayHasKey('examples', $command['sections']);
-    $this->assertTrue($command['is_alias']);
-
-    $command = $commands['pm-download'];
-    $this->assertArrayNotHasKey('is_alias', $command);
-  }
 }

@@ -19,16 +19,13 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
       'yes' => NULL,
       'root' => $this->webroot(),
       'uri' => key($sites),
-      'cache' => NULL,
-      'skip' => NULL, // No FirePHP
       'strict' => 0, // Don't validate options
     );
     $options = $options_no_pipe + array(
       'pipe' => NULL,
     );
 
-    // Test pm-download downloads a module and pm-list lists it.
-    $this->drush('pm-download', array('devel'), $options);
+    // Test that pm-list lists uninstalled modules.
     $this->drush('pm-list', array(), $options + array('no-core' => NULL, 'status' => 'disabled'));
     $out = $this->getOutput();
     $this->assertContains('devel', $out);
