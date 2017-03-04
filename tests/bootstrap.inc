@@ -34,7 +34,7 @@ function unish_bootstrap() {
     // unish_file_delete_recursive($cache, TRUE);
   }
   else {
-    $ret = mkdir(UNISH_CACHE, 0777, TRUE);
+    $ret = unish_mkdir(UNISH_CACHE, 0777, TRUE);
   }
 
   define('UNISH_SANDBOX', getenv('UNISH_SANDBOX'));
@@ -47,9 +47,21 @@ function unish_bootstrap() {
   putenv('ETC_PREFIX=' . UNISH_SANDBOX);
   putenv('SHARE_PREFIX=' . UNISH_SANDBOX);
   putenv('TEMP=' . getenv('UNISH_TMP'));
-  putenv('DRUSH_SKIP_OWN_AUTOLOAD=1');
+  putenv('DRUSH_AUTOLOAD_PHP='. PHPUNIT_COMPOSER_INSTALL);
 
   define('UNISH_USERGROUP', isset($GLOBALS['UNISH_USERGROUP']) ? $GLOBALS['UNISH_USERGROUP'] : NULL);
 
   define('UNISH_BACKEND_OUTPUT_DELIMITER', 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END');
+}
+
+function unish_mkdir($path) {
+  if (!is_dir($path)) {
+    if (unish_mkdir(dirname($path))) {
+      if (@mkdir($path)) {
+        return TRUE;
+      }
+    }
+    return FALSE;
+  }
+  return TRUE;
 }

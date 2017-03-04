@@ -147,8 +147,11 @@ function drush_preflight_prepare() {
   $local_vendor_path = DRUSH_BASE_PATH . '/vendor/autoload.php';
   $global_vendor_path = DRUSH_BASE_PATH . '/../../../vendor/autoload.php';
 
-  // Check for a local composer install or a global composer install. Vendor dirs are in different spots).
-  if (file_exists($local_vendor_path)) {
+  // Check for Unish's autoload.php, a local autoload.php, or a global autoload.php.
+  if (file_exists(getenv('DRUSH_AUTOLOAD_PHP'))) {
+    $vendor_path = getenv('DRUSH_AUTOLOAD_PHP');
+  }
+  elseif (file_exists($local_vendor_path)) {
     $vendor_path = $local_vendor_path;
   }
   elseif (file_exists($global_vendor_path)) {
@@ -159,10 +162,7 @@ function drush_preflight_prepare() {
     fwrite(STDERR, $msg);
     return FALSE;
   }
-
-  if (empty(getenv('DRUSH_SKIP_OWN_AUTOLOAD'))) {
-    $classloader = require $vendor_path;
-  }
+  $classloader = require $vendor_path;
 
   require_once DRUSH_BASE_PATH . '/includes/startup.inc';
   require_once DRUSH_BASE_PATH . '/includes/bootstrap.inc';
@@ -235,12 +235,11 @@ function drush_preflight_prepare() {
   // Process initial global options such as --debug.
   _drush_preflight_global_options();
 
-  if (empty(getenv('DRUSH_SKIP_OWN_AUTOLOAD'))) {
-    drush_log(dt("Drush preflight prepare loaded autoloader at !autoloader", array('!autoloader' => Path::canonicalize($vendor_path))), LogLevel::BOOTSTRAP);
-    // Stash our vendor path and classloader.
-    drush_set_context('DRUSH_VENDOR_PATH', dirname($vendor_path));
-    drush_set_context('DRUSH_CLASSLOADER', $classloader);
-  }
+  drush_log(dt("Drush preflight prepare loaded autoloader at !autoloader", array('!autoloader' => Path::canonicalize($vendor_path))), LogLevel::BOOTSTRAP);
+  // Stash our vendor path and classloader.
+  drush_set_context('DRUSH_VENDOR_PATH', dirname($vendor_path));
+  drush_set_context('DRUSH_CLASSLOADER', $classloader);
+
 
   return $container;
 }
