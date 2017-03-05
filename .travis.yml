@@ -13,12 +13,6 @@ php:
   - 5.6
   - 7.0
 
-# Cache Composer & Unish directories.
-cache:
-  directories:
-    - $HOME/.composer/cache
-    - /tmp/unish
-
 # http://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure/
 sudo: false
 
@@ -51,16 +45,15 @@ before_install:
   - echo 'mbstring.http_input = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo 'mbstring.http_output = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
-# No longer necessary to run composer install on Drush. That happens on the Site-Under-Test.
-install: echo 'Nothing to install'
+# Build a System-Under-Test.
+install: ${PWD}/unish.sut.php
 
 before_script:
   - phpenv config-rm xdebug.ini
   - echo 'sendmail_path = /bin/true' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   # - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
-  - export UNISH_DRUSH="${PWD}/drush"
 
-script: ${PWD}/unish.php $PHPUNIT_ARGS
+script: ${PWD}/unish.clean.php $PHPUNIT_ARGS
 
 # Background: https://github.com/drush-ops/drush/pull/1426
 after_success: ${PWD}/tests/testChildren.sh

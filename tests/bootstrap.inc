@@ -1,8 +1,8 @@
 <?php
 
 
-// PHPUnit already loaded autoloader. It is at PHPUNIT_COMPOSER_INSTALL.
-
+require __DIR__. '/unish.inc';
+unish_env();
 unish_bootstrap();
 
 function unish_bootstrap() {
@@ -19,7 +19,6 @@ function unish_bootstrap() {
   }
   define('UNISH_DB_URL', $unish_db_url);
 
-  define('UNISH_TMP', getenv('UNISH_TMP'));
   // Cache dir lives outside the sandbox so that we get persistence across classes.
   define('UNISH_CACHE', UNISH_TMP . DIRECTORY_SEPARATOR . 'drush-cache');
   putenv("CACHE_PREFIX=" . UNISH_CACHE);
@@ -33,8 +32,7 @@ function unish_bootstrap() {
     $ret = unish_mkdir(UNISH_CACHE, 0777, TRUE);
   }
 
-  define('UNISH_SANDBOX', getenv('UNISH_SANDBOX'));
-  define('UNISH_DRUSH', getenv('UNISH_DRUSH'). '/drush.php');
+  define('UNISH_DRUSH', UNISH_DRUSH_DIR. '/drush.php');
   $home = UNISH_SANDBOX. '/home';
   putenv("HOME=$home");
   putenv("HOMEDRIVE=$home");
