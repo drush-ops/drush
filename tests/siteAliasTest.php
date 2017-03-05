@@ -182,8 +182,8 @@ EOD;
     'uri' => 'default',
   );
 EOD;
-    @mkdir($root . "/drush");
-    @mkdir($root . "/drush/site-aliases");
+    $this->mkdir($root . "/drush");
+    $this->mkdir($root . "/drush/site-aliases");
     file_put_contents($root . "/drush/site-aliases/atroot.aliases.drushrc.php", $aliasContents);
 
     $aliasContents = <<<EOD
@@ -194,8 +194,8 @@ EOD;
     'uri' => 'default',
   );
 EOD;
-    @mkdir($root . "/sites/all/drush");
-    @mkdir($root . "/sites/all/drush/site-aliases");
+    $this->mkdir($root . "/sites/all/drush");
+    $this->mkdir($root . "/sites/all/drush/site-aliases");
     file_put_contents($root . "/sites/all/drush/site-aliases/sitefolder.aliases.drushrc.php", $aliasContents);
 
     $aliasContents = <<<EOD
@@ -206,12 +206,12 @@ EOD;
     'uri' => 'default',
   );
 EOD;
-    @mkdir($root . "/../drush");
-    @mkdir($root . "/../drush/site-aliases");
+    $this->mkdir($root . "/../drush");
+    $this->mkdir($root . "/../drush/site-aliases");
     file_put_contents($root . "/../drush/site-aliases/aboveroot.aliases.drushrc.php", $aliasContents);
 
     // Ensure that none of these 'sa' commands return an error
-    $this->drush('sa', array('@atroot'), array(), '@dev');
+    $this->drush('sa', array('@atroot'), array('debug' => NULL, 'verbose' => NULL), '@dev');
     $this->drush('sa', array('@insitefolder'), array(), '@dev');
     $this->drush('sa', array('@aboveroot'), array(), '@dev');
   }
