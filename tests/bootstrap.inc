@@ -38,6 +38,7 @@ function unish_bootstrap() {
   }
 
   define('UNISH_SANDBOX', getenv('UNISH_SANDBOX'));
+  define('UNISH_DRUSH', getenv('UNISH_DRUSH'));
   $home = UNISH_SANDBOX. '/home';
   putenv("HOME=$home");
   putenv("HOMEDRIVE=$home");
