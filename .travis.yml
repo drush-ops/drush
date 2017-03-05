@@ -53,7 +53,7 @@ before_script:
   - echo 'sendmail_path = /bin/true' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   # - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
 
-script: ${PWD}/unish.clean.php $PHPUNIT_ARGS
+script: ${PWD}/unish.phpunit.php $PHPUNIT_ARGS
 
 # Background: https://github.com/drush-ops/drush/pull/1426
 after_success: ${PWD}/tests/testChildren.sh
