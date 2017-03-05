@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- *   Initialize a sandboxed environment. Starts with call unish_init() at bottom.
- */
-
 
 // PHPUnit already loaded autoloader. It is at PHPUNIT_COMPOSER_INSTALL.
 
@@ -24,8 +19,9 @@ function unish_bootstrap() {
   }
   define('UNISH_DB_URL', $unish_db_url);
 
+  define('UNISH_TMP', getenv('UNISH_TMP'));
   // Cache dir lives outside the sandbox so that we get persistence across classes.
-  define('UNISH_CACHE', getenv('UNISH_TMP') . DIRECTORY_SEPARATOR . 'drush-cache');
+  define('UNISH_CACHE', UNISH_TMP . DIRECTORY_SEPARATOR . 'drush-cache');
   putenv("CACHE_PREFIX=" . UNISH_CACHE);
   if (file_exists(UNISH_CACHE)) {
     // TODO: We no longer clean up cache dir between runs. Much faster, but we
@@ -47,7 +43,7 @@ function unish_bootstrap() {
 
   putenv('ETC_PREFIX=' . UNISH_SANDBOX);
   putenv('SHARE_PREFIX=' . UNISH_SANDBOX);
-  putenv('TEMP=' . getenv('UNISH_TMP'));
+  putenv('TEMP=' . UNISH_TMP);
   putenv('DRUSH_AUTOLOAD_PHP='. PHPUNIT_COMPOSER_INSTALL);
 
   define('UNISH_USERGROUP', isset($GLOBALS['UNISH_USERGROUP']) ? $GLOBALS['UNISH_USERGROUP'] : NULL);

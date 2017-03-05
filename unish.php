@@ -1,6 +1,10 @@
 #!/usr/bin/env php
 <?php
 
+/**
+ * This script runs before a `composer install`. It may not autoload code.
+ */
+
 // Set some environment variables that are used here and again unish_bootstrap().
 putenv('UNISH_TMP='. realpath(getenv('UNISH_TMP') ? getenv('UNISH_TMP') : (isset($GLOBALS['UNISH_TMP']) ? $GLOBALS['UNISH_TMP'] : sys_get_temp_dir())));
 $unish_sandbox = getenv('UNISH_TMP') . DIRECTORY_SEPARATOR . 'drush-sandbox';
@@ -40,8 +44,10 @@ function unish_setup_sut($unish_sandbox) {
       file_put_contents($path, $new_contents);
     }
   }
-  chdir($unish_sandbox);
-  passthru('composer install --no-interaction --no-progress --no-suggest');
+  // @todo Call update instead of install if specified on the CLI. Useful need we need to update composer.lock.
+  // We also need to put back the %PATH-TO-DRUSH% token by hand or automatically.
+  // For option parsing, see built-in getopt() function.
+  passthru('composer install --no-interaction --no-progress --no-suggest --working-dir '. $unish_sandbox);
 }
 
 /**

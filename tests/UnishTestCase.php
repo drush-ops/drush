@@ -50,7 +50,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
 //    if (file_exists(UNISH_SANDBOX) && empty($dirty)) {
 //      \unish_file_delete_recursive(UNISH_SANDBOX, TRUE);
 //    }
-//    self::$sites = array();
+    self::$sites = array();
     parent::tearDownAfterClass();
   }
 
