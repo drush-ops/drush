@@ -24,6 +24,7 @@ function unish_validate() {
  * Use Composer to build a Drupal codebase, with this Drush symlinked into /vendor.
  */
 function unish_setup_sut() {
+  echo "Deleting ". UNISH_SANDBOX. "\n";
   drush_delete_dir(UNISH_SANDBOX, TRUE);
   $codebase = 'tests/resources/codebase';
   drush_copy_dir($codebase, UNISH_SANDBOX);
