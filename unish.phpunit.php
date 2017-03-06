@@ -14,7 +14,7 @@ $arguments = $GLOBALS['argv'];
 array_shift($arguments);
 // Add the directory containing the phpunit bootstrap file.
 array_unshift($arguments, UNISH_DRUSH_DIR. '/tests');
-$cmd = escapeshellarg(UNISH_SANDBOX. '/vendor/bin/phpunit'). ' --configuration '. implode(' ', $arguments);
+$cmd = escapeshellarg(dirname(UNISH_SANDBOX). '/drush-sut/vendor/bin/phpunit'). ' --configuration '. implode(' ', $arguments);
 fwrite(STDERR, 'Executing: '. $cmd. "\n");
 passthru($cmd, $return);
 exit($return);

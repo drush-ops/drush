@@ -24,12 +24,12 @@ function unish_validate() {
  * Use Composer to build a Drupal codebase, with this Drush symlinked into /vendor.
  */
 function unish_setup_sut() {
-  fwrite(STDERR, 'Deleting '. UNISH_SANDBOX. "\n");
-  drush_delete_dir(UNISH_SANDBOX, TRUE);
+  $working_dir = dirname(UNISH_SANDBOX). DIRECTORY_SEPARATOR. 'drush-sut';
+  drush_delete_dir($working_dir, TRUE);
   $codebase = 'tests/resources/codebase';
-  drush_copy_dir($codebase, UNISH_SANDBOX);
+  drush_copy_dir($codebase, $working_dir);
   foreach (['composer.json', 'composer.lock'] as $filename) {
-    $path = UNISH_SANDBOX . "/$filename";
+    $path = $working_dir . "/$filename";
     if (file_exists($path)) {
       // We replace a token with the /path/to/drush for this install.
       // @todo Use https://getcomposer.org/doc/03-cli.md#modifying-repositories if it can edit composer.lock too.
@@ -41,7 +41,7 @@ function unish_setup_sut() {
   // @todo Call update instead of install if specified on the CLI. Useful need we need to update composer.lock.
   // We also need to put back the %PATH-TO-DRUSH% token by hand or automatically.
   // For option parsing, see built-in getopt() function.
-  $cmd = 'composer install --no-interaction --no-progress --no-suggest --working-dir ' . escapeshellarg(UNISH_SANDBOX);
+  $cmd = 'composer install --no-interaction --no-progress --no-suggest --working-dir ' . escapeshellarg($working_dir);
   fwrite(STDERR, 'Executing: '. $cmd. "\n");
   passthru($cmd, $return);
   return $return;

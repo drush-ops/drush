@@ -18,7 +18,7 @@ if ($return) exit($return);
 $arguments = $GLOBALS['argv'];
 // Shift off argv[0] which contains the name of this script.
 array_shift($arguments);
-$cmd = __DIR__. '/unish.phpunit.php'. implode(' ', $arguments);
+$cmd = __DIR__. '/unish.phpunit.php '. implode(' ', $arguments);
 fwrite(STDERR, 'Executing: '. $cmd. "\n");
 passthru($cmd, $return);
 if ($return) exit($return);

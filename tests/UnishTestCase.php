@@ -2,6 +2,7 @@
 
 namespace Unish;
 use PHPUnit\Framework\TestCase;
+use Webmozart\PathUtil\Path;
 
 abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
 
@@ -26,10 +27,14 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     chdir(dirname(UNISH_SANDBOX));
     $sandbox = UNISH_SANDBOX;
 
-    // Clean the global locations.
-    $dirs = [getenv('HOME'), $sandbox. '/etc/drush', $sandbox. '/share/drush/commands'];
+    // Clean the sandbox and tmp.
+    $dirs = [$sandbox, getenv('TEMP')];
     foreach ($dirs as $dir) {
       exec('rm -rf .??* '. self::escapeshellarg($dir));
+    }
+    // Create all the dirs.
+    $dirs = [getenv('HOME'), $sandbox. '/etc/drush', $sandbox. '/share/drush/commands', UNISH_CACHE, getenv('TEMP')];
+    foreach ($dirs as $dir) {
       \unish_mkdir($dir);
     }
 
@@ -226,7 +231,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   function webroot() {
-    return UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'web';
+    return Path::join(dirname(UNISH_SANDBOX), 'drush-sut/web');
   }
 
   function getSites() {
