@@ -24,7 +24,7 @@ function unish_validate() {
  * Use Composer to build a Drupal codebase, with this Drush symlinked into /vendor.
  */
 function unish_setup_sut() {
-  echo "Deleting ". UNISH_SANDBOX. "\n";
+  fwrite(STDERR, 'Deleting '. UNISH_SANDBOX. "\n");
   drush_delete_dir(UNISH_SANDBOX, TRUE);
   $codebase = 'tests/resources/codebase';
   drush_copy_dir($codebase, UNISH_SANDBOX);
@@ -41,6 +41,8 @@ function unish_setup_sut() {
   // @todo Call update instead of install if specified on the CLI. Useful need we need to update composer.lock.
   // We also need to put back the %PATH-TO-DRUSH% token by hand or automatically.
   // For option parsing, see built-in getopt() function.
-  passthru('composer install --no-interaction --no-progress --no-suggest --working-dir '. UNISH_SANDBOX, $return);
+  $cmd = 'composer install --no-interaction --no-progress --no-suggest --working-dir ' . escapeshellarg(UNISH_SANDBOX);
+  fwrite(STDERR, 'Executing: '. $cmd. "\n");
+  passthru($cmd, $return);
   return $return;
 }
