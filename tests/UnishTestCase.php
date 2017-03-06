@@ -431,8 +431,8 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     return substr(self::getDbUrl(), 0, 6) == 'sqlite'  ?  "sqlite://sites/$env/files/unish.sqlite" : self::getDbUrl() . '/unish_' . $env;
   }
 
-  function db_driver($db_url) {
-    return parse_url($db_url, PHP_URL_SCHEME);
+  function db_driver($db_url = NULL) {
+    return parse_url($db_url ?: self::getDbUrl(), PHP_URL_SCHEME);
   }
 
   function setUpDrupal($num_sites = 1, $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL) {
