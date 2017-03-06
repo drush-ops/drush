@@ -140,9 +140,7 @@ function _drush_shell_exec($args, $interactive = FALSE) {
     $command = call_user_func_array('sprintf', $args);
   }
 
-  if (drush_get_context('DRUSH_VERBOSE')) {
-    drush_print('Executing: ' . $command, 0, STDERR);
-  }
+  drush_log('Executing: ' . $command, LogLevel::INFO);
   if (!drush_get_context('DRUSH_SIMULATE')) {
     if ($interactive) {
       $result = drush_shell_proc_open($command);

@@ -1,7 +1,7 @@
 <?php
 
 namespace Unish;
-use PHPUnit\Framework\TestCase;
+use Webmozart\PathUtil\Path;
 
 abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
 
@@ -12,56 +12,140 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * @var array
    */
   private static $sites = array();
+  
+  private static $sandbox;
+
+  private static $drush;
+
+  private static $tmp;
+
+  private static $db_url;
+
+  private static $usergroup = NULL;
+
+  private static $backendOutputDelimiter = 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END';
+
+  /**
+   * @return array
+   */
+  public static function getSites() {
+    return self::$sites;
+  }
+
+  /**
+   * @return string
+   */
+  public static function getDrush() {
+    return self::$drush;
+  }
+
+  /**
+   * @return string
+   */
+  public static function getTmp() {
+    return self::$tmp;
+  }
+
+  /**
+   * @return string
+   */
+  public static function getSandbox() {
+    return self::$sandbox;
+  }
+
+  /**
+   * @return string
+   */
+  public static function getDbUrl() {
+    return self::$db_url;
+  }
+
+  /**
+   * @return string
+   */
+  public static function getUserGroup() {
+    return self::$usergroup;
+  }
+
+  /**
+   * @return string
+   */
+  public static function getBackendOutputDelimiter() {
+    return self::$backendOutputDelimiter;
+  }
 
   function __construct($name = NULL, array $data = array(), $dataName = '') {
     parent::__construct($name, $data, $dataName);
+
+    // Default drupal major version to run tests over.
+    // @todo Remove this.
+    if (!defined('UNISH_DRUPAL_MAJOR_VERSION')) {
+      define('UNISH_DRUPAL_MAJOR_VERSION', '8');
+    }
+
+    // We read from env then globals then default to mysql.
+    self::$db_url = getenv('UNISH_DB_URL') ?: ($GLOBALS['UNISH_DB_URL'] ?: 'mysql://root:@127.0.0.1');
+
+    require_once __DIR__ . '/unish.inc';
+    list($unish_tmp, $unish_sandbox, $unish_drush_dir) = \unishGetPaths();
+    $unish_cache = Path::join($unish_sandbox, 'cache');
+
+    self::$drush = $unish_drush_dir . '/drush.php';
+    self::$tmp = $unish_tmp;
+    self::$sandbox = $unish_sandbox;
+    self::$usergroup = isset($GLOBALS['UNISH_USERGROUP']) ? $GLOBALS['UNISH_USERGROUP'] : NULL;
+
+    putenv("CACHE_PREFIX=" . $unish_cache);
+    $home = $unish_sandbox . '/home';
+    putenv("HOME=$home");
+    putenv("HOMEDRIVE=$home");
+    $composer_home = $unish_cache . '/.composer';
+    putenv("COMPOSER_HOME=$composer_home");
+
+    putenv('ETC_PREFIX=' . $unish_sandbox);
+    putenv('SHARE_PREFIX=' . $unish_sandbox);
+    putenv('TEMP=' . Path::join($unish_sandbox, 'drush-tmp'));
+    putenv('DRUSH_AUTOLOAD_PHP=' . PHPUNIT_COMPOSER_INSTALL);
   }
 
   /**
-   * Assure that each class starts with an empty sandbox directory and
-   * a clean environment - http://drupal.org/node/1103568.
+   * We used to assure that each class starts with an empty sandbox directory and
+   * a clean environment except for the SUT. History: http://drupal.org/node/1103568.
    */
   public static function setUpBeforeClass() {
-    self::setUpFreshSandBox();
-  }
-
-  /**
-   * Remove any pre-existing sandbox, then create a new one.
-   */
-  public static function setUpFreshSandBox() {
     // Avoid perm denied error on Windows by moving out of the dir to be deleted.
-    chdir(dirname(UNISH_SANDBOX));
-    $sandbox = UNISH_SANDBOX;
-    if (file_exists($sandbox)) {
-      unish_file_delete_recursive($sandbox);
-    }
-    $ret = mkdir($sandbox, 0777, TRUE);
-    chdir(UNISH_SANDBOX);
+    // chdir(dirname(self::getSandbox()));
+    $sandbox = self::getSandbox();
 
-    mkdir(getenv('HOME') . '/.drush', 0777, TRUE);
-    mkdir($sandbox . '/etc/drush', 0777, TRUE);
-    mkdir($sandbox . '/share/drush/commands', 0777, TRUE);
+    // Clean the sandbox.
+    $dirs = [$sandbox];
+    foreach ($dirs as $dir) {
+      self::recursive_delete($dir);
+    }
+    // Create all the dirs.
+    $dirs = [getenv('HOME') . '/.drush', $sandbox . '/etc/drush', $sandbox . '/share/drush/commands', "$sandbox/cache", getenv('TEMP')];
+    foreach ($dirs as $dir) {
+      self::mkdir($dir);
+    }
 
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
       // Hack to make git use unix line endings on windows
-      // We need it to make hashes of files pulled from git match ones hardcoded in tests
-      if (!file_exists($sandbox . '\home')) {
-        mkdir($sandbox . '\home');
-      }
       exec("git config --file $sandbox\\home\\.gitconfig core.autocrlf false", $output, $return);
     }
+    parent::setUpBeforeClass();
   }
 
   /**
    * Runs after all tests in a class are run. Remove sandbox directory.
    */
   public static function tearDownAfterClass() {
-    chdir(dirname(UNISH_SANDBOX));
-    $dirty = getenv('UNISH_DIRTY');
-    if (file_exists(UNISH_SANDBOX) && empty($dirty)) {
-      unish_file_delete_recursive(UNISH_SANDBOX, TRUE);
+    $sandbox = self::getSandBox();
+    // chdir(dirname($sandbox));
+    if (empty(getenv('UNISH_DIRTY')) && file_exists($sandbox)) {
+      self::recursive_delete($sandbox);
     }
     self::$sites = array();
+    parent::tearDownAfterClass();
   }
 
   /**
@@ -212,9 +296,9 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     return $pass;
   }
 
-  public function mkdir($path) {
+  public static function mkdir($path) {
     if (!is_dir($path)) {
-      if ($this->mkdir(dirname($path))) {
+      if (self::mkdir(dirname($path))) {
         if (@mkdir($path)) {
           return TRUE;
         }
@@ -224,13 +308,13 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     return TRUE;
   }
 
-  public function recursive_copy($src, $dst) {
+  public static function recursive_copy($src, $dst) {
     $dir = opendir($src);
-    $this->mkdir($dst);
+    self::mkdir($dst);
     while(false !== ( $file = readdir($dir)) ) {
       if (( $file != '.' ) && ( $file != '..' )) {
         if ( is_dir($src . '/' . $file) ) {
-          $this->recursive_copy($src . '/' . $file,$dst . '/' . $file);
+          self::recursive_copy($src . '/' . $file,$dst . '/' . $file);
         }
         else {
           copy($src . '/' . $file,$dst . '/' . $file);
@@ -240,12 +324,99 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     closedir($dir);
   }
 
-  function webroot() {
-    return UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'web';
+
+  /**
+   * Deletes the specified file or directory and everything inside it.
+   *
+   * Usually respects read-only files and folders. To do a forced delete use
+   * drush_delete_tmp_dir() or set the parameter $forced.
+   *
+   * To avoid permission denied error on Windows, make sure your CWD is not
+   * inside the directory being deleted.
+   *
+   * This is essentially a copy of drush_delete_dir().
+   *
+   * @todo This sort of duplication isn't very DRY. This is bound to get out of
+   *   sync with drush_delete_dir(), as in fact it already has before.
+   *
+   * @param string $dir
+   *   The file or directory to delete.
+   * @param bool $force
+   *   Whether or not to try everything possible to delete the directory, even if
+   *   it's read-only. Defaults to FALSE.
+   * @param bool $follow_symlinks
+   *   Whether or not to delete symlinked files. Defaults to FALSE--simply
+   *   unlinking symbolic links.
+   *
+   * @return bool
+   *   FALSE on failure, TRUE if everything was deleted.
+   *
+   * @see drush_delete_dir()
+   */
+  public static function recursive_delete($dir, $force = TRUE, $follow_symlinks = FALSE) {
+    // Do not delete symlinked files, only unlink symbolic links
+    if (is_link($dir) && !$follow_symlinks) {
+      return unlink($dir);
+    }
+    // Allow to delete symlinks even if the target doesn't exist.
+    if (!is_link($dir) && !file_exists($dir)) {
+      return TRUE;
+    }
+    if (!is_dir($dir)) {
+      if ($force) {
+        // Force deletion of items with readonly flag.
+        @chmod($dir, 0777);
+      }
+      return unlink($dir);
+    }
+    if (self::recursive_delete_dir_contents($dir, $force) === FALSE) {
+      return FALSE;
+    }
+    if ($force) {
+      // Force deletion of items with readonly flag.
+      @chmod($dir, 0777);
+    }
+    return rmdir($dir);
   }
 
-  function getSites() {
-    return self::$sites;
+  /**
+   * Deletes the contents of a directory.
+   *
+   * This is essentially a copy of drush_delete_dir_contents().
+   *
+   * @param string $dir
+   *   The directory to delete.
+   * @param bool $force
+   *   Whether or not to try everything possible to delete the contents, even if
+   *   they're read-only. Defaults to FALSE.
+   *
+   * @return bool
+   *   FALSE on failure, TRUE if everything was deleted.
+   *
+   * @see drush_delete_dir_contents()
+   */
+  public static function recursive_delete_dir_contents($dir, $force = FALSE) {
+    $scandir = @scandir($dir);
+    if (!is_array($scandir)) {
+      return FALSE;
+    }
+
+    foreach ($scandir as $item) {
+      if ($item == '.' || $item == '..') {
+        continue;
+      }
+      if ($force) {
+        @chmod($dir, 0777);
+      }
+      if (!self::recursive_delete($dir . '/' . $item, $force)) {
+        return FALSE;
+      }
+    }
+    return TRUE;
+  }
+
+  function webroot() {
+    return Path::join(dirname(self::getSandbox()), 'drush-sut/web');
   }
 
   function directory_cache($subdir = '') {
@@ -257,11 +428,11 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * @return string
    */
   function db_url($env) {
-    return substr(UNISH_DB_URL, 0, 6) == 'sqlite'  ?  "sqlite://sites/$env/files/unish.sqlite" : UNISH_DB_URL . '/unish_' . $env;
+    return substr(self::getDbUrl(), 0, 6) == 'sqlite'  ?  "sqlite://sites/$env/files/unish.sqlite" : self::getDbUrl() . '/unish_' . $env;
   }
 
-  function db_driver($db_url = UNISH_DB_URL) {
-    return parse_url(UNISH_DB_URL, PHP_URL_SCHEME);
+  function db_driver($db_url = NULL) {
+    return parse_url($db_url ?: self::getDbUrl(), PHP_URL_SCHEME);
   }
 
   function setUpDrupal($num_sites = 1, $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL) {
@@ -273,11 +444,10 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     if (!isset($profile)) {
       $profile = $major_version >= 7 ? 'testing' : 'default';
     }
-    $db_driver = $this->db_driver(UNISH_DB_URL);
 
-    // Build the site(s), install (if needed).
+    // Install (if needed).
     foreach ($sites_subdirs as $subdir) {
-      $this->fetchInstallDrupal($subdir, $install, $version_string, $profile);
+      $this->installDrupal($subdir, $install, $version_string, $profile);
     }
 
     // Write an empty sites.php. Needed for multi-site on D8+.
@@ -298,30 +468,11 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     return self::$sites;
   }
 
-  function fetchInstallDrupal($env = 'dev', $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL, $separate_roots = FALSE) {
+  // @todo. It is no longer supported to pass alternative versions of Drush or alternative install_profile.
+  function installDrupal($env = 'dev', $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL, $separate_roots = FALSE) {
     $root = $this->webroot();
     $uri = $separate_roots ? "default" : "$env";
-    $options = array();
     $site = "$root/sites/$uri";
-
-    if (substr($version_string, 0, 1) == 6 && $this->db_driver(UNISH_DB_URL) == 'sqlite') {
-      // Validate
-      $this->markTestSkipped("Drupal 6 does not support SQLite.");
-    }
-
-    // Download Drupal if not already present.
-    if (!file_exists($root)) {
-      $options += array(
-        'destination' => dirname($root),
-        'drupal-project-rename' => basename($root),
-        'yes' => NULL,
-        'quiet' => NULL,
-        'cache' => NULL,
-      );
-      $this->drush('pm-download', array("drupal-$version_string"), $options);
-      // @todo This path is a bit legacy in D8.
-      mkdir($root . '/sites/all/drush', 0777, TRUE);
-    }
 
     // If specified, install Drupal as a multi-site.
     if ($install) {
@@ -337,14 +488,14 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
       chmod($site, 0777);
     }
     else {
-      @mkdir($site);
+      $this->mkdir($site);
       touch("$site/settings.php");
     }
   }
 
   function writeSiteAlias($name, $root, $uri) {
     $alias_definition = array($name => array('root' => $root,  'uri' => $uri));
-    file_put_contents(UNISH_SANDBOX . '/etc/drush/' . $name . '.alias.drushrc.php', $this->unish_file_aliases($alias_definition));
+    file_put_contents(self::getSandbox() . '/etc/drush/' . $name . '.alias.drushrc.php', $this->unish_file_aliases($alias_definition));
   }
 
   /**

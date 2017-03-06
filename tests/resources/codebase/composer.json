@@ -1,0 +1,37 @@
+{
+  "name": "Site Under Test",
+  "repositories": [
+    {
+      "type": "path",
+      "url": "%PATH-TO-DRUSH%",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
+    }
+  ],
+  "require": {
+    "composer/installers": "^1.2",
+    "drupal/core": "~8.0",
+    "drush/drush": "*",
+    "phpunit/phpunit": "4.*",
+    "symfony/process": "~2.8",
+    "drupal/empty_theme": "1.0",
+    "drupal/devel": "^1.0@RC"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "extra": {
+    "installer-paths": {
+      "web/core": ["type:drupal-core"],
+      "web/libraries/{$name}": ["type:drupal-library"],
+      "web/modules/contrib/{$name}": ["type:drupal-module"],
+      "web/profiles/contrib/{$name}": ["type:drupal-profile"],
+      "web/themes/contrib/{$name}": ["type:drupal-theme"],
+      "drush/contrib/{$name}": ["type:drupal-drush"]
+    }
+  }
+}

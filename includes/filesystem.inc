@@ -237,7 +237,7 @@ function drush_copy_dir($src, $dest, $overwrite = FILE_EXISTS_ABORT) {
     return drush_set_error('DRUSH_DESTINATION_NOT_WRITABLE', dt('Destination directory !dest is not writable.', array('!dest' => dirname($dest))));
   }
   // Try to do a recursive copy.
-  if (@drush_op('_drush_recursive_copy', $src, $dest)) {
+  if (@_drush_recursive_copy($src, $dest)) {
     return TRUE;
   }
 
@@ -275,7 +275,7 @@ function _drush_recursive_copy($src, $dest) {
   touch($dest, filemtime($src));
 
   // Preserve execute permission.
-  if (!is_link($src) && !drush_is_windows()) {
+  if (!is_link($src) && (!function_exists('drush_is_windows') || !drush_is_windows())) {
     // Get execute bits of $src.
     $execperms = fileperms($src) & 0111;
     // Apply execute permissions if any.

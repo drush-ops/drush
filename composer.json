@@ -56,16 +56,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Drush\\":        "src/"
+      "Drush\\":        "src/",
+      "Unish\\":        "tests/"
     },
     "classmap": [
       "src/Drush.php"
     ]
-  },
-  "autoload-dev": {
-    "psr-0": {
-      "Unish":        "tests/"
-    }
   },
   "extra": {
     "branch-alias": {

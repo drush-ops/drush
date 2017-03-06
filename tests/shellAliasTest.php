@@ -25,9 +25,9 @@ class shellAliasesCase extends CommandUnishTestCase {
         'compound-command' => '!cd {{%sandbox}} && echo second',
       );
     ";
-    file_put_contents(UNISH_SANDBOX . '/drushrc.php', trim($contents));
-    if (!file_exists(UNISH_SANDBOX . '/b')) {
-      mkdir(UNISH_SANDBOX . '/b');
+    file_put_contents(self::getSandbox() . '/drushrc.php', trim($contents));
+    if (!file_exists(self::getSandbox() . '/b')) {
+      mkdir(self::getSandbox() . '/b');
     }
     $contents = "
       <?php
@@ -36,18 +36,18 @@ class shellAliasesCase extends CommandUnishTestCase {
         'also' => '!echo alternate config file included too',
       );
     ";
-    file_put_contents(UNISH_SANDBOX . '/b/drushrc.php', trim($contents));
+    file_put_contents(self::getSandbox() . '/b/drushrc.php', trim($contents));
     $aliases['myalias'] = array(
       'root' => '/path/to/drupal',
       'uri' => 'mysite.org',
       '#peer' => '@live',
       'path-aliases' => array (
         '%mypath' => '/srv/data/mypath',
-        '%sandbox' => UNISH_SANDBOX,
+        '%sandbox' => self::getSandbox(),
       ),
     );
     $contents = $this->unish_file_aliases($aliases);
-    file_put_contents(UNISH_SANDBOX . '/aliases.drushrc.php', $contents);
+    file_put_contents(self::getSandbox() . '/aliases.drushrc.php', $contents);
   }
 
   /**
@@ -55,7 +55,7 @@ class shellAliasesCase extends CommandUnishTestCase {
    */
   public function testShellAliasDrushLocal() {
     $options = array(
-      'config' => UNISH_SANDBOX,
+      'config' => self::getSandbox(),
     );
     $this->drush('glopts', array(), $options);
     $output = $this->getOutput();
@@ -68,7 +68,7 @@ class shellAliasesCase extends CommandUnishTestCase {
    */
   public function testShellAliasBashLocal() {
     $options = array(
-      'config' => UNISH_SANDBOX,
+      'config' => self::getSandbox(),
       'simulate' => NULL,
     );
     $this->drush('pull', array('origin', '--', '--rebase'), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
@@ -78,7 +78,7 @@ class shellAliasesCase extends CommandUnishTestCase {
 
   public function testShellAliasDrushRemote() {
     $options = array(
-      'config' => UNISH_SANDBOX,
+      'config' => self::getSandbox(),
       'simulate' => NULL,
       'ssh-options' => '',
     );
@@ -100,7 +100,7 @@ class shellAliasesCase extends CommandUnishTestCase {
 
   public function testShellAliasBashRemote() {
     $options = array(
-      'config' => UNISH_SANDBOX,
+      'config' => self::getSandbox(),
       'simulate' => NULL,
       'ssh-options' => '',
     );
@@ -117,7 +117,7 @@ class shellAliasesCase extends CommandUnishTestCase {
    */
   public function testShellAliasSimpleReplacement() {
     $options = array(
-      'config' => UNISH_SANDBOX,
+      'config' => self::getSandbox(),
     );
     $this->drush('echosimple', array(), $options);
     // Windows command shell prints quotes (but not always?). See http://drupal.org/node/1452944.
@@ -131,7 +131,7 @@ class shellAliasesCase extends CommandUnishTestCase {
    */
   public function testShellAliasReplacementNoAlias() {
     $options = array(
-      'config' => UNISH_SANDBOX,
+      'config' => self::getSandbox(),
     );
     // echo test has replacements that are not satisfied, so this is expected to return an error.
     $this->drush('echotest', array(), $options, NULL, NULL, self::EXIT_ERROR);
@@ -142,8 +142,8 @@ class shellAliasesCase extends CommandUnishTestCase {
    */
   public function testShellAliasReplacementWithAlias() {
     $options = array(
-      'config' => UNISH_SANDBOX,
-      'alias-path' => UNISH_SANDBOX,
+      'config' => self::getSandbox(),
+      'alias-path' => self::getSandbox(),
     );
     $this->drush('echotest', array(), $options, '@myalias');
     // Windows command shell prints quotes (not always?). See http://drupal.org/node/1452944.
@@ -158,8 +158,8 @@ class shellAliasesCase extends CommandUnishTestCase {
    */
   public function testShellAliasCompoundCommands() {
     $options = array(
-      'config' => UNISH_SANDBOX,
-      'alias-path' => UNISH_SANDBOX,
+      'config' => self::getSandbox(),
+      'alias-path' => self::getSandbox(),
     );
     $this->drush('compound-command', array(), $options, '@myalias');
     $expected = 'second';
@@ -173,8 +173,8 @@ class shellAliasesCase extends CommandUnishTestCase {
    */
   public function testShellAliasMultipleConfigFiles() {
     $options = array(
-      'config' => UNISH_SANDBOX . "/b" . PATH_SEPARATOR . UNISH_SANDBOX,
-      'alias-path' => UNISH_SANDBOX,
+      'config' => self::getSandbox() . "/b" . PATH_SEPARATOR . self::getSandbox(),
+      'alias-path' => self::getSandbox(),
     );
     $this->drush('also', array(), $options);
     $expected = "alternate config file included too";

@@ -23,7 +23,7 @@ class SqlDumpTest extends CommandUnishTestCase {
     $this->setUpDrupal(1, TRUE);
     $root = $this->webroot();
     $uri = 'dev';
-    $full_dump_file_path = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'full_db.sql';
+    $full_dump_file_path = self::getSandbox() . DIRECTORY_SEPARATOR . 'full_db.sql';
 
     $options = array(
       'result-file' => $full_dump_file_path,
@@ -67,7 +67,7 @@ class SqlDumpTest extends CommandUnishTestCase {
     $this->assertContains('CREATE TABLE `key_value', $full_dump_file);
 
 // @todo Aliases to local sites are no longer supported. Throw exception?
-//    $aliasPath = UNISH_SANDBOX . '/aliases';
+//    $aliasPath = self::getSandbox() . '/aliases';
 //    mkdir($aliasPath);
 //    $aliasFile = $aliasPath . '/bar.aliases.drushrc.php';
 //    $aliasContents = <<<EOD

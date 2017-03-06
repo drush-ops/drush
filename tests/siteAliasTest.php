@@ -18,7 +18,7 @@ class saCase extends CommandUnishTestCase {
    *     places said option AFTER the command name.
    */
   function testDispatchStrictOptions() {
-    $aliasPath = UNISH_SANDBOX . '/site-alias-directory';
+    $aliasPath = self::getSandbox() . '/site-alias-directory';
     file_exists($aliasPath) ?: mkdir($aliasPath);
     $aliasFile = $aliasPath . '/bar.aliases.drushrc.php';
     $aliasContents = <<<EOD
@@ -65,7 +65,7 @@ EOD;
     $eval =  '$env_test = getenv("DRUSH_ENV_TEST");';
     $eval .= '$env_test2 = getenv("DRUSH_ENV_TEST2");';
     $eval .= 'print json_encode(get_defined_vars());';
-    $config = UNISH_SANDBOX . '/drushrc.php';
+    $config = self::getSandbox() . '/drushrc.php';
     $options = array(
       'alias-path' => $aliasPath,
       'root' => $this->webroot(),
@@ -141,7 +141,7 @@ EOD;
     $this->assertContains('--uri=http://example.com', $this->getErrorOutput());
 
     // Test a remote alias that does not have a 'root' element
-    $aliasPath = UNISH_SANDBOX . '/site-alias-directory';
+    $aliasPath = self::getSandbox() . '/site-alias-directory';
     @mkdir($aliasPath);
     $aliasContents = <<<EOD
   <?php
@@ -182,8 +182,8 @@ EOD;
     'uri' => 'default',
   );
 EOD;
-    @mkdir($root . "/drush");
-    @mkdir($root . "/drush/site-aliases");
+    $this->mkdir($root . "/drush");
+    $this->mkdir($root . "/drush/site-aliases");
     file_put_contents($root . "/drush/site-aliases/atroot.aliases.drushrc.php", $aliasContents);
 
     $aliasContents = <<<EOD
@@ -194,8 +194,8 @@ EOD;
     'uri' => 'default',
   );
 EOD;
-    @mkdir($root . "/sites/all/drush");
-    @mkdir($root . "/sites/all/drush/site-aliases");
+    $this->mkdir($root . "/sites/all/drush");
+    $this->mkdir($root . "/sites/all/drush/site-aliases");
     file_put_contents($root . "/sites/all/drush/site-aliases/sitefolder.aliases.drushrc.php", $aliasContents);
 
     $aliasContents = <<<EOD
@@ -206,12 +206,12 @@ EOD;
     'uri' => 'default',
   );
 EOD;
-    @mkdir($root . "/../drush");
-    @mkdir($root . "/../drush/site-aliases");
+    $this->mkdir($root . "/../drush");
+    $this->mkdir($root . "/../drush/site-aliases");
     file_put_contents($root . "/../drush/site-aliases/aboveroot.aliases.drushrc.php", $aliasContents);
 
     // Ensure that none of these 'sa' commands return an error
-    $this->drush('sa', array('@atroot'), array(), '@dev');
+    $this->drush('sa', array('@atroot'), array('debug' => NULL, 'verbose' => NULL), '@dev');
     $this->drush('sa', array('@insitefolder'), array(), '@dev');
     $this->drush('sa', array('@aboveroot'), array(), '@dev');
   }
@@ -222,7 +222,7 @@ EOD;
    * for alias files.
    */
   public function testDeepAliasSearching() {
-    $aliasPath = UNISH_SANDBOX . '/site-alias-directory';
+    $aliasPath = self::getSandbox() . '/site-alias-directory';
     file_exists($aliasPath) ?: mkdir($aliasPath);
     $deepPath = $aliasPath . '/deep';
     file_exists($deepPath) ?: mkdir($deepPath);

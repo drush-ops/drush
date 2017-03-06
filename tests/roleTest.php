@@ -1,11 +1,7 @@
 <?php
 
-/**
- * @file
- *   Tests for role.drush.inc
- */
-
 namespace Unish;
+use Webmozart\PathUtil\Path;
 
 /**
  *  @group slow
@@ -17,44 +13,47 @@ class roleCase extends CommandUnishTestCase {
    * Create, edit, block, and cancel users.
    */
   public function testRole() {
-    // In D8+, the testing profile has no perms.
-    $sites = $this->setUpDrupal(1, TRUE, UNISH_DRUPAL_MAJOR_VERSION, 'standard');
+    $sites = $this->setUpDrupal(1, TRUE);
     $root = $this->webroot();
     $options = array(
       'root' => $root,
       'uri' => key($sites),
       'yes' => NULL,
     );
+    // In D8+, the testing profile has no perms.
+    // Copy the module to where Drupal expects it.
+    $this->setupModulesForTests($root);
+    $this->drush('pm-enable', ['user_form_test'], $options);
 
     $this->drush('role-list', array(), $options);
     $output = $this->getOutput();
-    $this->assertContains('access content', $output);
+    $this->assertNotContains('cancel other accounts', $output);
 
-    $this->drush('role-list', array(), $options + array('filter' => 'post comments'));
+    $this->drush('role-list', array(), $options + array('filter' => 'cancel other accounts'));
     $output = $this->getOutput();
-    $this->assertContains('authenticated', $output);
+    $this->assertNotContains('authenticated', $output);
     $this->assertNotContains('anonymous', $output);
 
-    // Create and check the role foo.
+    // Create the role foo.
     $rid = 'foo';
     $this->drush('role-create', array($rid), $options);
     $this->drush('role-list', array(), $options);
     $this->assertContains($rid, $this->getOutput());
 
-    // Assert that anon user starts without 'administer nodes' perm.
-    $perm = 'administer nodes';
+    // Assert that anon user starts without 'cancel other accounts' perm.
+    $perm = 'cancel other accounts';
     $this->drush('role-list', array(), $options + array('format' => 'json'));
     $role = $this->getOutputFromJSON($rid);
     $this->assertFalse(in_array($perm, $role->perms));
 
-    // Now grant that perm.
-    $this->drush('role-add-perm', array($rid, 'administer nodes'), $options);
+    // Now grant that perm to foo.
+    $this->drush('role-add-perm', array($rid, 'cancel other accounts'), $options);
     $this->drush('role-list', array(), $options + array('format' => 'json'));
     $role = $this->getOutputFromJSON($rid);
     $this->assertTrue(in_array($perm, $role->perms));
 
-    // Now remove the perm.
-    $this->drush('role-remove-perm', array($rid, 'administer nodes'), $options );
+    // Now remove the perm from foo.
+    $this->drush('role-remove-perm', array($rid, 'cancel other accounts'), $options );
     $this->drush('role-list', array(), $options + array('format' => 'json'));
     $role = $this->getOutputFromJSON($rid);
     $this->assertFalse(in_array($perm, $role->perms));
@@ -63,6 +62,12 @@ class roleCase extends CommandUnishTestCase {
     $this->drush('role-delete', array($rid), $options);
     $this->drush('role-list', array(), $options);
     $this->assertNotContains($rid, $this->getOutput());
+  }
 
+  public function setupModulesForTests($root) {
+    $sourceDir = Path::join($root, 'core/modules/user/tests/modules/user_form_test');
+    $targetDir = Path::join($root, 'modules/user_form_test');
+    $this->mkdir($targetDir);
+    $this->recursive_copy($sourceDir, $targetDir);
   }
 }

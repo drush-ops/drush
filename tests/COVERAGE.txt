@@ -1,7 +1,5 @@
 COMMANDS
 ------------
-pm-download: GOOD.
-  need test for `pm-download --select` (hard to test; depends on state of project releases on d.o.)
 pm-updatecode: GOOD.
 pm-update: FAIR. Implicitly tested by pm-updatecode but updatedb not yet tested.
 pm-releasenotes

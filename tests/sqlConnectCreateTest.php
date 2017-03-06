@@ -38,7 +38,7 @@ class SqlConnectCase extends CommandUnishTestCase {
       $this->assertRegExp('/^psql -q --dbname=[^\s]+ --host=[^\s]+ --port=[^\s]+ --username=[^\s]+/', $connectionString);
     }
     else {
-      $this->markTestSkipped('sql-connect test does not recognize database type in ' . UNISH_DB_URL);
+      $this->markTestSkipped('sql-connect test does not recognize database type in ' . self::getDbUrl());
     }
 
     // Issue a query and check the result to verify the connection.

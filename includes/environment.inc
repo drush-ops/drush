@@ -392,7 +392,7 @@ function drush_valid_root($root) {
  * @see DRUSH_COMMAND
  */
 function drush_find_drush() {
-  if ($drush = realpath($_SERVER['argv']['0'])) {
+  if ($drush = $_SERVER['argv']['0']) {
     return Path::canonicalize($drush);
   }
   return FALSE;

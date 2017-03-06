@@ -147,8 +147,11 @@ function drush_preflight_prepare() {
   $local_vendor_path = DRUSH_BASE_PATH . '/vendor/autoload.php';
   $global_vendor_path = DRUSH_BASE_PATH . '/../../../vendor/autoload.php';
 
-  // Check for a local composer install or a global composer install. Vendor dirs are in different spots).
-  if (file_exists($local_vendor_path)) {
+  // Check for Unish's autoload.php, a local autoload.php, or a global autoload.php.
+  if (file_exists(getenv('DRUSH_AUTOLOAD_PHP'))) {
+    $vendor_path = getenv('DRUSH_AUTOLOAD_PHP');
+  }
+  elseif (file_exists($local_vendor_path)) {
     $vendor_path = $local_vendor_path;
   }
   elseif (file_exists($global_vendor_path)) {
@@ -159,7 +162,6 @@ function drush_preflight_prepare() {
     fwrite(STDERR, $msg);
     return FALSE;
   }
-
   $classloader = require $vendor_path;
 
   require_once DRUSH_BASE_PATH . '/includes/startup.inc';
@@ -178,10 +180,6 @@ function drush_preflight_prepare() {
   require_once DRUSH_BASE_PATH . '/includes/output.inc';
   require_once DRUSH_BASE_PATH . '/includes/cache.inc';
   require_once DRUSH_BASE_PATH . '/includes/filesystem.inc';
-
-  // Stash our vendor path and classloader.
-  drush_set_context('DRUSH_VENDOR_PATH', dirname($vendor_path));
-  drush_set_context('DRUSH_CLASSLOADER', $classloader);
 
   /*
    * @deprecated. Use \Drush::getVersion().
@@ -237,7 +235,11 @@ function drush_preflight_prepare() {
   // Process initial global options such as --debug.
   _drush_preflight_global_options();
 
-  drush_log(dt("Drush preflight prepare loaded autoloader at !autoloader", array('!autoloader' => realpath($vendor_path))), LogLevel::BOOTSTRAP);
+  drush_log(dt("drush_preflight_prepare() loaded autoloader at !autoloader", array('!autoloader' => Path::canonicalize($vendor_path))), LogLevel::BOOTSTRAP);
+  // Stash our vendor path and classloader.
+  drush_set_context('DRUSH_VENDOR_PATH', dirname($vendor_path));
+  drush_set_context('DRUSH_CLASSLOADER', $classloader);
+
 
   return $container;
 }
@@ -744,8 +746,9 @@ function _drush_preflight_uri() {
 }
 
 function _drush_find_commandfiles_drush() {
-  // Core commands shipping with Drush
-  $searchpath[] = dirname(__FILE__) . '/../commands/';
+  // Legacy style commands still shipping with Drush.
+  $searchpath[] = dirname(__FILE__) . '/../commands/core';
+  $searchpath[] = dirname(__FILE__) . '/../commands/pm';
 
   // User commands, specified by 'include' option
   $include = drush_get_context('DRUSH_INCLUDE', array());
@@ -775,9 +778,9 @@ function _drush_find_commandfiles_drush() {
 
   // Also discover Drush's own annotation commands.
   $discovery = annotationcommand_adapter_get_discovery();
-  $annotation_commandfiles = $discovery->discover(DRUSH_BASE_PATH . '/lib/Drush', '\Drush');
+  $annotation_commandfiles = $discovery->discover(DRUSH_BASE_PATH . '/src', '\Drush');
 
-  // And, finally, search for commandfiles in the $searchpath
+  // And, finally, search for Annotated commandfiles in the $searchpath.
   $searchpath = array_map(
     function ($item) {
       if (strtolower(basename($item)) == 'commands') {
@@ -798,7 +801,7 @@ function _drush_find_commandfiles_drush() {
  * potentially redispatching the command immediately (e.g. for remote
  * commands).
  *
- * @return
+ * @return bool
  *   TRUE if the command was handled remotely.
  */
 function drush_preflight_command_dispatch() {

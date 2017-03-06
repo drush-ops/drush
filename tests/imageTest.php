@@ -10,13 +10,14 @@ namespace Unish;
 class ImageCase extends CommandUnishTestCase {
 
   function testImage() {
-    $sites = $this->setUpDrupal(1, TRUE, UNISH_DRUPAL_MAJOR_VERSION, 'standard');
+    $sites = $this->setUpDrupal(1, TRUE);
     $options = array(
       'yes' => NULL,
       'root' => $this->webroot(),
       'uri' => key($sites),
     );
-    $logo = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? 'core/themes/bartik/screenshot.png' : 'themes/bartik/screenshot.png';
+    $this->drush('pm-enable', ['image'], $options);
+    $logo = 'core/themes/bartik/screenshot.png';
     $styles_dir = $options['root'] . '/sites/' . key($sites) . '/files/styles/';
     $thumbnail = $styles_dir . 'thumbnail/public/' . $logo;
     $medium = $styles_dir . 'medium/public/' . $logo;

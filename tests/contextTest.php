@@ -18,15 +18,15 @@ class contextCase extends CommandUnishTestCase {
     $this->log("webroot: " . $this->webroot() . "\n", 'warning');
     $this->env = key($this->getSites());
     $this->site = $this->webroot() . '/sites/' . $this->env;
-    $this->home = UNISH_SANDBOX . '/home';
+    $this->home = self::getSandbox() . '/home';
     $this->paths = array(
-      'custom' => UNISH_SANDBOX,
+      'custom' => self::getSandbox(),
       'site' =>  $this->site,
       'drupal' => $this->webroot() . '/sites/all/drush',
       'drupal-parent' => dirname($this->webroot()) . '/drush',
       'user' => $this->home,
       'home.drush' => $this->home . '/.drush',
-      'system' => UNISH_SANDBOX . '/etc/drush',
+      'system' => self::getSandbox() . '/etc/drush',
     );
     // Run each path through realpath() since the paths we'll compare against
     // will have already run through drush_load_config_file().
@@ -84,7 +84,7 @@ EOD;
     $options = array(
       'format' => 'json',
       'fields' => 'drush-conf',
-      'config' => UNISH_SANDBOX,
+      'config' => self::getSandbox(),
       'root' => $this->webroot(),
       'uri' => key($this->getSites())
     );
@@ -97,7 +97,7 @@ EOD;
     // Next test `drush status --pipe 'Drush configuration'`
     $options = array(
       'pipe' => NULL,
-      'config' => UNISH_SANDBOX,
+      'config' => self::getSandbox(),
       'root' => $this->webroot(),
       'uri' => key($this->getSites())
     );
@@ -114,7 +114,7 @@ EOD;
   function testConfigVersionSpecific() {
     $major = $this->drush_major_version();
     // Arbitrarily choose the system search path.
-    $path = realpath(UNISH_SANDBOX . '/etc/drush');
+    $path = realpath(self::getSandbox() . '/etc/drush');
     $contents = <<<EOD
 <?php
 // Written by Unish. This file is safe to delete.
@@ -163,7 +163,7 @@ EOD;
     $eval =  '$contextConfig = drush_get_option("contextConfig", "n/a");';
     $eval .= '$cli1 = drush_get_option("cli1");';
     $eval .= 'print json_encode(get_defined_vars());';
-    $config = UNISH_SANDBOX . '/drushrc.php';
+    $config = self::getSandbox() . '/drushrc.php';
     $options = array(
       'cli1' => NULL,
       'strict' => 0,

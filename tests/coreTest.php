@@ -32,7 +32,7 @@ class coreCase extends CommandUnishTestCase {
     $output = $this->getOutput();
     $level = $this->log_level();
     $pattern = in_array($level, array('verbose', 'debug')) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz %s /tmp);";
-    $expected = sprintf($pattern, UNISH_SANDBOX . "/web/sites/$site/files");
+    $expected = sprintf($pattern, $this->webroot(). "/sites/$site/files");
     $this->assertEquals($expected, $output);
   }
 
@@ -76,8 +76,8 @@ class coreCase extends CommandUnishTestCase {
 $arg = drush_shift();
 drush_invoke("version", $arg);
 ';
-    $data = str_replace('[PATH-TO-DRUSH]', UNISH_DRUSH, $data);
-    $script = UNISH_SANDBOX . '/' . $filename;
+    $data = str_replace('[PATH-TO-DRUSH]', self::getDrush(), $data);
+    $script = self::getSandbox() . '/' . $filename;
     file_put_contents($script, $data);
     chmod($script, 0755);
     $this->execute("$script drush_version --pipe");
@@ -92,8 +92,6 @@ drush_invoke("version", $arg);
       'root' => $root,
       'uri' => key($this->getSites()),
       'yes' => NULL,
-      'skip' => NULL,
-      'cache' => NULL,
       'strict' => 0, // invoke from script: do not verify options
     );
     $this->drush('drupal-directory', array('%files'), $options);
@@ -104,17 +102,15 @@ drush_invoke("version", $arg);
     $output = $this->getOutput();
     $this->assertEquals($root . $sitewide . '/modules', $output);
 
-    $this->drush('pm-download', array('devel'), $options);
     $this->drush('pm-enable', array('devel'), $options);
-    $this->drush('pm-download', array('empty_theme'), $options);
 
     $this->drush('drupal-directory', array('devel'), $options);
     $output = $this->getOutput();
-    $this->assertEquals(realpath($root  . $sitewide . '/modules/devel'), $output);
+    $this->assertEquals(realpath($root  . $sitewide . '/modules/contrib/devel'), $output);
 
     $this->drush('drupal-directory', array('empty_theme'), $options);
     $output = $this->getOutput();
-    $this->assertEquals(realpath($root  . $sitewide . '/themes/empty_theme'), $output);
+    $this->assertEquals(realpath($root  . $sitewide . '/themes/contrib/empty_theme'), $output);
   }
 
   function testCoreRequirements() {
