@@ -30,20 +30,16 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     // Clean the sandbox.
     $dirs = [$sandbox];
     foreach ($dirs as $dir) {
-      exec('rm -rf .??* '. self::escapeshellarg($dir));
+      self::recursive_delete($dir);
     }
     // Create all the dirs.
-    $dirs = [getenv('HOME'), $sandbox . '/etc/drush', $sandbox . '/share/drush/commands', UNISH_CACHE, getenv('TEMP')];
+    $dirs = [getenv('HOME') . '/.drush', $sandbox . '/etc/drush', $sandbox . '/share/drush/commands', UNISH_CACHE, getenv('TEMP')];
     foreach ($dirs as $dir) {
-      \unish_mkdir($dir);
+      self::mkdir($dir);
     }
 
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
       // Hack to make git use unix line endings on windows
-      // We need it to make hashes of files pulled from git match ones hardcoded in tests
-      if (!file_exists($sandbox . '\home')) {
-        \unish_mkdir($sandbox . '\home');
-      }
       exec("git config --file $sandbox\\home\\.gitconfig core.autocrlf false", $output, $return);
     }
     parent::setUpBeforeClass();
@@ -58,7 +54,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     if (empty($dirty)) {
       foreach ([UNISH_SANDBOX] as $dir) {
         if (file_exists($dir)) {
-          exec('rm -rf .??* ' . self::escapeshellarg($dir));
+          self::recursive_delete($dir);
         }
       }
     }
@@ -214,17 +210,25 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     return $pass;
   }
 
-  public function mkdir($path) {
-    return \unish_mkdir($path);
+  public static function mkdir($path) {
+    if (!is_dir($path)) {
+      if (self::mkdir(dirname($path))) {
+        if (@mkdir($path)) {
+          return TRUE;
+        }
+      }
+      return FALSE;
+    }
+    return TRUE;
   }
 
-  public function recursive_copy($src, $dst) {
+  public static function recursive_copy($src, $dst) {
     $dir = opendir($src);
-    $this->mkdir($dst);
+    self::mkdir($dst);
     while(false !== ( $file = readdir($dir)) ) {
       if (( $file != '.' ) && ( $file != '..' )) {
         if ( is_dir($src . '/' . $file) ) {
-          $this->recursive_copy($src . '/' . $file,$dst . '/' . $file);
+          self::recursive_copy($src . '/' . $file,$dst . '/' . $file);
         }
         else {
           copy($src . '/' . $file,$dst . '/' . $file);
@@ -232,6 +236,97 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
       }
     }
     closedir($dir);
+  }
+
+
+  /**
+   * Deletes the specified file or directory and everything inside it.
+   *
+   * Usually respects read-only files and folders. To do a forced delete use
+   * drush_delete_tmp_dir() or set the parameter $forced.
+   *
+   * To avoid permission denied error on Windows, make sure your CWD is not
+   * inside the directory being deleted.
+   *
+   * This is essentially a copy of drush_delete_dir().
+   *
+   * @todo This sort of duplication isn't very DRY. This is bound to get out of
+   *   sync with drush_delete_dir(), as in fact it already has before.
+   *
+   * @param string $dir
+   *   The file or directory to delete.
+   * @param bool $force
+   *   Whether or not to try everything possible to delete the directory, even if
+   *   it's read-only. Defaults to FALSE.
+   * @param bool $follow_symlinks
+   *   Whether or not to delete symlinked files. Defaults to FALSE--simply
+   *   unlinking symbolic links.
+   *
+   * @return bool
+   *   FALSE on failure, TRUE if everything was deleted.
+   *
+   * @see drush_delete_dir()
+   */
+  public static function recursive_delete($dir, $force = TRUE, $follow_symlinks = FALSE) {
+    // Do not delete symlinked files, only unlink symbolic links
+    if (is_link($dir) && !$follow_symlinks) {
+      return unlink($dir);
+    }
+    // Allow to delete symlinks even if the target doesn't exist.
+    if (!is_link($dir) && !file_exists($dir)) {
+      return TRUE;
+    }
+    if (!is_dir($dir)) {
+      if ($force) {
+        // Force deletion of items with readonly flag.
+        @chmod($dir, 0777);
+      }
+      return unlink($dir);
+    }
+    if (self::recursive_delete_dir_contents($dir, $force) === FALSE) {
+      return FALSE;
+    }
+    if ($force) {
+      // Force deletion of items with readonly flag.
+      @chmod($dir, 0777);
+    }
+    return rmdir($dir);
+  }
+
+  /**
+   * Deletes the contents of a directory.
+   *
+   * This is essentially a copy of drush_delete_dir_contents().
+   *
+   * @param string $dir
+   *   The directory to delete.
+   * @param bool $force
+   *   Whether or not to try everything possible to delete the contents, even if
+   *   they're read-only. Defaults to FALSE.
+   *
+   * @return bool
+   *   FALSE on failure, TRUE if everything was deleted.
+   *
+   * @see drush_delete_dir_contents()
+   */
+  public static function recursive_delete_dir_contents($dir, $force = FALSE) {
+    $scandir = @scandir($dir);
+    if (!is_array($scandir)) {
+      return FALSE;
+    }
+
+    foreach ($scandir as $item) {
+      if ($item == '.' || $item == '..') {
+        continue;
+      }
+      if ($force) {
+        @chmod($dir, 0777);
+      }
+      if (!self::recursive_delete($dir . '/' . $item, $force)) {
+        return FALSE;
+      }
+    }
+    return TRUE;
   }
 
   function webroot() {

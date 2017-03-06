@@ -32,7 +32,7 @@ class coreCase extends CommandUnishTestCase {
     $output = $this->getOutput();
     $level = $this->log_level();
     $pattern = in_array($level, array('verbose', 'debug')) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz %s /tmp);";
-    $expected = sprintf($pattern, UNISH_SANDBOX . "/web/sites/$site/files");
+    $expected = sprintf($pattern, $this->webroot(). "/sites/$site/files");
     $this->assertEquals($expected, $output);
   }
 

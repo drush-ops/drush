@@ -29,9 +29,8 @@ class completeCase extends CommandUnishTestCase {
     }
 
     // We copy our completetest commandfile into our path.
-    // We cannot use --include since complete deliberately avoids drush
-    // command dispatch.
-    copy(dirname(__FILE__) . '/completetest.drush.inc', getenv('HOME') . '/.drush/completetest.drush.inc');
+    // We cannot use --include since complete deliberately avoids Drush command dispatch.
+    copy(__DIR__ . '/completetest.drush.inc', getenv('HOME') . '/.drush/completetest.drush.inc');
 
     $sites = $this->setUpDrupal(2);
     $env = key($sites);

@@ -36,15 +36,3 @@ function unish_bootstrap() {
   define('UNISH_USERGROUP', isset($GLOBALS['UNISH_USERGROUP']) ? $GLOBALS['UNISH_USERGROUP'] : NULL);
   define('UNISH_BACKEND_OUTPUT_DELIMITER', 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END');
 }
-
-function unish_mkdir($path) {
-  if (!is_dir($path)) {
-    if (unish_mkdir(dirname($path))) {
-      if (@mkdir($path)) {
-        return TRUE;
-      }
-    }
-    return FALSE;
-  }
-  return TRUE;
-}
