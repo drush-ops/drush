@@ -5,8 +5,8 @@
  * This script performs setup and then calls `composer install`. It may not autoload code.
  */
 
-require __DIR__. '/includes/filesystem.inc';
-require __DIR__. '/tests/unish.inc';
+require __DIR__ . '/includes/filesystem.inc';
+require __DIR__ . '/tests/unish.inc';
 
 unish_env();
 unish_validate();
@@ -24,7 +24,7 @@ function unish_validate() {
  * Use Composer to build a Drupal codebase, with this Drush symlinked into /vendor.
  */
 function unish_setup_sut() {
-  $working_dir = dirname(UNISH_SANDBOX). DIRECTORY_SEPARATOR. 'drush-sut';
+  $working_dir = dirname(UNISH_SANDBOX) . DIRECTORY_SEPARATOR . 'drush-sut';
   drush_delete_dir($working_dir, TRUE);
   $codebase = 'tests/resources/codebase';
   drush_copy_dir($codebase, $working_dir);
@@ -42,7 +42,7 @@ function unish_setup_sut() {
   // We also need to put back the %PATH-TO-DRUSH% token by hand or automatically.
   // For option parsing, see built-in getopt() function.
   $cmd = 'composer install --no-interaction --no-progress --no-suggest --working-dir ' . escapeshellarg($working_dir);
-  fwrite(STDERR, 'Executing: '. $cmd. "\n");
+  fwrite(STDERR, 'Executing: ' . $cmd . "\n");
   passthru($cmd, $return);
   return $return;
 }

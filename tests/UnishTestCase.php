@@ -27,13 +27,13 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     chdir(dirname(UNISH_SANDBOX));
     $sandbox = UNISH_SANDBOX;
 
-    // Clean the sandbox and tmp.
-    $dirs = [$sandbox, getenv('TEMP')];
+    // Clean the sandbox.
+    $dirs = [$sandbox];
     foreach ($dirs as $dir) {
       exec('rm -rf .??* '. self::escapeshellarg($dir));
     }
     // Create all the dirs.
-    $dirs = [getenv('HOME'), $sandbox. '/etc/drush', $sandbox. '/share/drush/commands', UNISH_CACHE, getenv('TEMP')];
+    $dirs = [getenv('HOME'), $sandbox . '/etc/drush', $sandbox . '/share/drush/commands', UNISH_CACHE, getenv('TEMP')];
     foreach ($dirs as $dir) {
       \unish_mkdir($dir);
     }
@@ -53,11 +53,15 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * Runs after all tests in a class are run. Remove sandbox directory.
    */
   public static function tearDownAfterClass() {
-//    chdir(dirname(UNISH_SANDBOX));
-//    $dirty = getenv('UNISH_DIRTY');
-//    if (file_exists(UNISH_SANDBOX) && empty($dirty)) {
-//      \unish_file_delete_recursive(UNISH_SANDBOX, TRUE);
-//    }
+    chdir(dirname(UNISH_SANDBOX));
+    $dirty = getenv('UNISH_DIRTY');
+    if (empty($dirty)) {
+      foreach ([UNISH_SANDBOX] as $dir) {
+        if (file_exists($dir)) {
+          exec('rm -rf .??* ' . self::escapeshellarg($dir));
+        }
+      }
+    }
     self::$sites = array();
     parent::tearDownAfterClass();
   }

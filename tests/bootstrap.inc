@@ -22,17 +22,17 @@ function unish_bootstrap() {
   define('UNISH_CACHE', UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'cache');
   putenv("CACHE_PREFIX=" . UNISH_CACHE);
 
-  define('UNISH_DRUSH', UNISH_DRUSH_DIR. '/drush.php');
-  $home = UNISH_SANDBOX. '/home';
+  define('UNISH_DRUSH', UNISH_DRUSH_DIR . '/drush.php');
+  $home = UNISH_SANDBOX . '/home';
   putenv("HOME=$home");
   putenv("HOMEDRIVE=$home");
-  $composer_home = UNISH_CACHE. '/.composer';
+  $composer_home = UNISH_CACHE . '/.composer';
   putenv("COMPOSER_HOME=$composer_home");
 
   putenv('ETC_PREFIX=' . UNISH_SANDBOX);
   putenv('SHARE_PREFIX=' . UNISH_SANDBOX);
-  putenv('TEMP=' . UNISH_TMP. DIRECTORY_SEPARATOR. 'drush-tmp');
-  putenv('DRUSH_AUTOLOAD_PHP='. PHPUNIT_COMPOSER_INSTALL);
+  putenv('TEMP=' . UNISH_SANDBOX. DIRECTORY_SEPARATOR . 'drush-tmp');
+  putenv('DRUSH_AUTOLOAD_PHP=' . PHPUNIT_COMPOSER_INSTALL);
   define('UNISH_USERGROUP', isset($GLOBALS['UNISH_USERGROUP']) ? $GLOBALS['UNISH_USERGROUP'] : NULL);
   define('UNISH_BACKEND_OUTPUT_DELIMITER', 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END');
 }
