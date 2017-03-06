@@ -26,9 +26,12 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     chdir(dirname(UNISH_SANDBOX));
     $sandbox = UNISH_SANDBOX;
 
-    \unish_mkdir(getenv('HOME') . '/.drush', 0777, TRUE);
-    \unish_mkdir($sandbox . '/etc/drush', 0777, TRUE);
-    \unish_mkdir($sandbox . '/share/drush/commands', 0777, TRUE);
+    // Clean the global locations.
+    $dirs = [getenv('HOME'), $sandbox. '/etc/drush', $sandbox. '/share/drush/commands'];
+    foreach ($dirs as $dir) {
+      exec('rm -rf .??* '. self::escapeshellarg($dir));
+      \unish_mkdir($dir);
+    }
 
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
       // Hack to make git use unix line endings on windows

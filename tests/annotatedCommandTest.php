@@ -32,9 +32,6 @@ class annotatedCommandCase extends CommandUnishTestCase {
   }
 
   public function testExecute() {
-
-    // $this->markTestSkipped('Causing Drush to load from its personal vendor dir.');
-
     $sites = $this->setUpDrupal(1, TRUE);
     $uri = key($sites);
     $root = $this->webroot();
