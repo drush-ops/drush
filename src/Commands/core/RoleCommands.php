@@ -117,6 +117,7 @@ class RoleCommands extends DrushCommands {
    * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
    */
   public function roleList($options = ['format' => 'yaml', 'filter' => NULL]) {
+    $rows = [];
     $roles = Role::loadMultiple();
     foreach ($roles as $role) {
       if ($options['filter'] && !$role->hasPermission($options['filter'])) {

@@ -87,7 +87,7 @@ class ValidatorsCommands {
    */
   public function validatePermissions(CommandData $commandData) {
     $missing = [];
-    $arg_or_option_name = $commandData->annotationData()->get('validate-permissions');
+    $arg_or_option_name = $commandData->annotationData()->get('validate-permissions', NULL);
     $permissions = _convert_csv_to_array($commandData->input()->getArgument($arg_or_option_name) ?: $commandData->input()->getOption($arg_or_option_name));
     $all_permissions = array_keys(\Drupal::service('user.permissions')->getPermissions());
     $missing = array_diff($permissions, $all_permissions);

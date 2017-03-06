@@ -280,6 +280,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     return self::$sites;
   }
 
+  // @todo. It is no longer supported to pass alternative versions of Drush or alternative install_profile.
   function installDrupal($env = 'dev', $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL, $separate_roots = FALSE) {
     $root = $this->webroot();
     $uri = $separate_roots ? "default" : "$env";
