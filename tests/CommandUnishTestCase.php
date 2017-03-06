@@ -241,7 +241,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     // It is preferable to call drush.php directly instead of vendor/bin/drush or drush.launcher.
     // Otherwise, Drush is mistakenly finding itself as a local Drush and redispatching.
     // See https://github.com/drush-ops/drush/blob/11c1267c9f14672f080ef31d15b70e156618b47b/includes/preflight.inc#L840
-    $cmd[] = UNISH_DRUSH;
+    $cmd[] = self::getDrush();
 
     // Insert global options.
     foreach ($options as $key => $value) {
@@ -366,13 +366,13 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    * A slightly less functional copy of drush_backend_parse_output().
    */
   function parse_backend_output($string) {
-    $regex = sprintf(UNISH_BACKEND_OUTPUT_DELIMITER, '(.*)');
+    $regex = sprintf(self::getBackendOutputDelimiter(), '(.*)');
     preg_match("/$regex/s", $string, $match);
     if (isset($match[1])) {
       // we have our JSON encoded string
       $output = $match[1];
       // remove the match we just made and any non printing characters
-      $string = trim(str_replace(sprintf(UNISH_BACKEND_OUTPUT_DELIMITER, $match[1]), '', $string));
+      $string = trim(str_replace(sprintf(self::getBackendOutputDelimiter(), $match[1]), '', $string));
     }
 
     if (!empty($output)) {

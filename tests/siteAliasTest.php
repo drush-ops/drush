@@ -18,7 +18,7 @@ class saCase extends CommandUnishTestCase {
    *     places said option AFTER the command name.
    */
   function testDispatchStrictOptions() {
-    $aliasPath = UNISH_SANDBOX . '/site-alias-directory';
+    $aliasPath = self::getSandbox() . '/site-alias-directory';
     file_exists($aliasPath) ?: mkdir($aliasPath);
     $aliasFile = $aliasPath . '/bar.aliases.drushrc.php';
     $aliasContents = <<<EOD
@@ -65,7 +65,7 @@ EOD;
     $eval =  '$env_test = getenv("DRUSH_ENV_TEST");';
     $eval .= '$env_test2 = getenv("DRUSH_ENV_TEST2");';
     $eval .= 'print json_encode(get_defined_vars());';
-    $config = UNISH_SANDBOX . '/drushrc.php';
+    $config = self::getSandbox() . '/drushrc.php';
     $options = array(
       'alias-path' => $aliasPath,
       'root' => $this->webroot(),
@@ -141,7 +141,7 @@ EOD;
     $this->assertContains('--uri=http://example.com', $this->getErrorOutput());
 
     // Test a remote alias that does not have a 'root' element
-    $aliasPath = UNISH_SANDBOX . '/site-alias-directory';
+    $aliasPath = self::getSandbox() . '/site-alias-directory';
     @mkdir($aliasPath);
     $aliasContents = <<<EOD
   <?php
@@ -222,7 +222,7 @@ EOD;
    * for alias files.
    */
   public function testDeepAliasSearching() {
-    $aliasPath = UNISH_SANDBOX . '/site-alias-directory';
+    $aliasPath = self::getSandbox() . '/site-alias-directory';
     file_exists($aliasPath) ?: mkdir($aliasPath);
     $deepPath = $aliasPath . '/deep';
     file_exists($deepPath) ?: mkdir($deepPath);

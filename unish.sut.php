@@ -8,9 +8,9 @@
 require __DIR__ . '/includes/filesystem.inc';
 require __DIR__ . '/tests/unish.inc';
 
-unish_env();
+list($unish_tmp, $unish_sandbox, $unish_drush_dir) = unishGetPaths();
 unish_validate();
-$return = unish_setup_sut();
+$return = unish_setup_sut($unish_sandbox);
 exit($return);
 
 function unish_validate() {
@@ -22,9 +22,12 @@ function unish_validate() {
 
 /**
  * Use Composer to build a Drupal codebase, with this Drush symlinked into /vendor.
+ * @param $unish_sandbox Path to sandbox.
+ * @return integer
+ *   Exit code.
  */
-function unish_setup_sut() {
-  $working_dir = dirname(UNISH_SANDBOX) . DIRECTORY_SEPARATOR . 'drush-sut';
+function unish_setup_sut($unish_sandbox) {
+  $working_dir = dirname($unish_sandbox) . DIRECTORY_SEPARATOR . 'drush-sut';
   drush_delete_dir($working_dir, TRUE);
   $codebase = 'tests/resources/codebase';
   drush_copy_dir($codebase, $working_dir);

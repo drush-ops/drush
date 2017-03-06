@@ -169,7 +169,7 @@ EOT;
 
   public function setupGlobalExtensionsForTests() {
     $globalExtension = __DIR__ . '/resources/global-includes';
-    $targetDir = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'global-includes';
+    $targetDir = self::getSandbox() . DIRECTORY_SEPARATOR . 'global-includes';
     $this->mkdir($targetDir);
     $this->recursive_copy($globalExtension, $targetDir);
     return $targetDir;

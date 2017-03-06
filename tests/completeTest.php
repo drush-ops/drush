@@ -18,7 +18,7 @@ class completeCase extends CommandUnishTestCase {
         'uninstall' => 'pm-uninstall',
       );
     ";
-    file_put_contents(UNISH_SANDBOX . '/drushrc.php', trim($contents));
+    file_put_contents(self::getSandbox() . '/drushrc.php', trim($contents));
   }
 
   
@@ -55,7 +55,7 @@ class completeCase extends CommandUnishTestCase {
     touch('zodiac.txt');
 
     // Create directory for temporary debug logs.
-    mkdir(UNISH_SANDBOX . '/complete-debug');
+    mkdir(self::getSandbox() . '/complete-debug');
 
     // Test cache clearing for global cache, which should affect all
     // environments. First clear the cache:
@@ -182,10 +182,10 @@ class completeCase extends CommandUnishTestCase {
   function verifyComplete($command, $first, $last, $cache_hit = TRUE) {
     // We capture debug output to a separate file, so we can check for cache
     // hits/misses.
-    $debug_file = tempnam(UNISH_SANDBOX . '/complete-debug', 'complete-debug');
+    $debug_file = tempnam(self::getSandbox() . '/complete-debug', 'complete-debug');
     // Commands should take the format:
     // drush --early=includes/complete.inc [--complete-debug] drush [@alias] [command]...
-    $exec = sprintf('%s --early=includes/complete.inc --config=%s --complete-debug %s %s 2> %s', UNISH_DRUSH, UNISH_SANDBOX . '/drushrc.php', UNISH_DRUSH, $command, $debug_file);
+    $exec = sprintf('%s --early=includes/complete.inc --config=%s --complete-debug %s %s 2> %s', self::getDrush(), self::getSandbox() . '/drushrc.php', self::getDrush(), $command, $debug_file);
     $this->execute($exec);
     $result = $this->getOutputAsList();
     $actual = reset($result);

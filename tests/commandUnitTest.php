@@ -9,7 +9,7 @@ class commandUnitCase extends UnitUnishTestCase {
    * Assure that matching version-specific command files are loaded and others are ignored.
    */
   function testCommandVersionSpecific() {
-    $path = Path::join(UNISH_SANDBOX, 'commandUnitCase');
+    $path = Path::join(self::getSandbox(), 'commandUnitCase');
     $major = $this->drush_major_version();
     $major_plus1 = $major + 1;
 

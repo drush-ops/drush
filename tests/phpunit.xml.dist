@@ -2,7 +2,6 @@
 <phpunit backupGlobals="false"
     backupStaticAttributes="false"
     syntaxCheck="false"
-    bootstrap="bootstrap.inc"
     colors="true">
   <testsuites>
     <testsuite name="Drush Test Suite">
@@ -18,9 +17,6 @@
     <!-- <var name="UNISH_DB_URL" value="mysql://root:@127.0.0.1"/> -->
     <!-- <var name="UNISH_DB_URL" value="pgsql://postgres:@localhost"/>-->
     <!-- <var name="UNISH_DB_URL" value="sqlite://none/of/this/matters"/> -->
-
-    <!--Uncomment to provide a group the user running the tests belong to. This is needed for some filesystem tests. -->
-    <!--<var name="UNISH_USERGROUP" value="staff"/>-->
 
     <!-- Uncomment to disable the total runtime and output timeouts for commands run through CommandUnishTestCase::execute().  -->
     <!-- <env name="UNISH_NO_TIMEOUTS" value="y"/> -->

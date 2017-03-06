@@ -51,7 +51,7 @@ class ConfigCase extends CommandUnishTestCase {
     // Similar, but this time via --partial option.
     $contents = file_get_contents($system_site_yml);
     $contents = preg_replace('/front: .*/', 'front: unish partial', $contents);
-    $partial_path = UNISH_SANDBOX . '/partial';
+    $partial_path = self::getSandbox() . '/partial';
     mkdir($partial_path);
     $contents = file_put_contents($partial_path. '/system.site.yml', $contents);
     $this->drush('config-import', array(), $options + array('partial' => NULL, 'source' => $partial_path));

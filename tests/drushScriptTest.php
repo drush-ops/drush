@@ -30,7 +30,7 @@ class drushScriptCase extends CommandUnishTestCase {
   public function testDrushFinder() {
     $this->markTestSkipped('The Finder is not long for this world. Disabling this test.');
 
-    $globalDrushDotPhp = Path::join(UNISH_DRUSH, '../drush.php');
+    $globalDrushDotPhp = Path::join(self::getDrush(), '../drush.php');
 
     // Control: test `drush --root ` ... with no site-local Drush
     $drush_location = $this->getDrushLocation();

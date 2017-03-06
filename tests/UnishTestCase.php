@@ -12,9 +12,100 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * @var array
    */
   private static $sites = array();
+  
+  private static $sandbox;
+
+  private static $drush;
+
+  private static $tmp;
+
+  private static $db_url;
+
+  private static $usergroup = NULL;
+
+  private static $backendOutputDelimiter = 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END';
+
+  /**
+   * @return array
+   */
+  public static function getSites() {
+    return self::$sites;
+  }
+
+  /**
+   * @return string
+   */
+  public static function getDrush() {
+    return self::$drush;
+  }
+
+  /**
+   * @return string
+   */
+  public static function getTmp() {
+    return self::$tmp;
+  }
+
+  /**
+   * @return string
+   */
+  public static function getSandbox() {
+    return self::$sandbox;
+  }
+
+  /**
+   * @return string
+   */
+  public static function getDbUrl() {
+    return self::$db_url;
+  }
+
+  /**
+   * @return string
+   */
+  public static function getUserGroup() {
+    return self::$usergroup;
+  }
+
+  /**
+   * @return string
+   */
+  public static function getBackendOutputDelimiter() {
+    return self::$backendOutputDelimiter;
+  }
 
   function __construct($name = NULL, array $data = array(), $dataName = '') {
     parent::__construct($name, $data, $dataName);
+
+    // Default drupal major version to run tests over.
+    // @todo Remove this.
+    if (!defined('UNISH_DRUPAL_MAJOR_VERSION')) {
+      define('UNISH_DRUPAL_MAJOR_VERSION', '8');
+    }
+
+    // We read from env then globals then default to mysql.
+    self::$db_url = getenv('UNISH_DB_URL') ?: ($GLOBALS['UNISH_DB_URL'] ?: 'mysql://root:@127.0.0.1');
+
+    require_once __DIR__ . '/unish.inc';
+    list($unish_tmp, $unish_sandbox, $unish_drush_dir) = \unishGetPaths();
+    $unish_cache = Path::join($unish_sandbox, 'cache');
+
+    self::$drush = $unish_drush_dir . '/drush.php';
+    self::$tmp = $unish_tmp;
+    self::$sandbox = $unish_sandbox;
+    self::$usergroup = isset($GLOBALS['UNISH_USERGROUP']) ? $GLOBALS['UNISH_USERGROUP'] : NULL;
+
+    putenv("CACHE_PREFIX=" . $unish_cache);
+    $home = $unish_sandbox . '/home';
+    putenv("HOME=$home");
+    putenv("HOMEDRIVE=$home");
+    $composer_home = $unish_cache . '/.composer';
+    putenv("COMPOSER_HOME=$composer_home");
+
+    putenv('ETC_PREFIX=' . $unish_sandbox);
+    putenv('SHARE_PREFIX=' . $unish_sandbox);
+    putenv('TEMP=' . Path::join($unish_sandbox, 'drush-tmp'));
+    putenv('DRUSH_AUTOLOAD_PHP=' . PHPUNIT_COMPOSER_INSTALL);
   }
 
   /**
@@ -23,8 +114,8 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    */
   public static function setUpBeforeClass() {
     // Avoid perm denied error on Windows by moving out of the dir to be deleted.
-    chdir(dirname(UNISH_SANDBOX));
-    $sandbox = UNISH_SANDBOX;
+    // chdir(dirname(self::getSandbox()));
+    $sandbox = self::getSandbox();
 
     // Clean the sandbox.
     $dirs = [$sandbox];
@@ -32,7 +123,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
       self::recursive_delete($dir);
     }
     // Create all the dirs.
-    $dirs = [getenv('HOME') . '/.drush', $sandbox . '/etc/drush', $sandbox . '/share/drush/commands', UNISH_CACHE, getenv('TEMP')];
+    $dirs = [getenv('HOME') . '/.drush', $sandbox . '/etc/drush', $sandbox . '/share/drush/commands', "$sandbox/cache", getenv('TEMP')];
     foreach ($dirs as $dir) {
       self::mkdir($dir);
     }
@@ -48,14 +139,10 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * Runs after all tests in a class are run. Remove sandbox directory.
    */
   public static function tearDownAfterClass() {
-    chdir(dirname(UNISH_SANDBOX));
-    $dirty = getenv('UNISH_DIRTY');
-    if (empty($dirty)) {
-      foreach ([UNISH_SANDBOX] as $dir) {
-        if (file_exists($dir)) {
-          self::recursive_delete($dir);
-        }
-      }
+    $sandbox = self::getSandBox();
+    // chdir(dirname($sandbox));
+    if (empty(getenv('UNISH_DIRTY')) && file_exists($sandbox)) {
+      self::recursive_delete($sandbox);
     }
     self::$sites = array();
     parent::tearDownAfterClass();
@@ -329,11 +416,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   function webroot() {
-    return Path::join(dirname(UNISH_SANDBOX), 'drush-sut/web');
-  }
-
-  function getSites() {
-    return self::$sites;
+    return Path::join(dirname(self::getSandbox()), 'drush-sut/web');
   }
 
   function directory_cache($subdir = '') {
@@ -345,11 +428,11 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * @return string
    */
   function db_url($env) {
-    return substr(UNISH_DB_URL, 0, 6) == 'sqlite'  ?  "sqlite://sites/$env/files/unish.sqlite" : UNISH_DB_URL . '/unish_' . $env;
+    return substr(self::getDbUrl(), 0, 6) == 'sqlite'  ?  "sqlite://sites/$env/files/unish.sqlite" : self::getDbUrl() . '/unish_' . $env;
   }
 
-  function db_driver($db_url = UNISH_DB_URL) {
-    return parse_url(UNISH_DB_URL, PHP_URL_SCHEME);
+  function db_driver($db_url) {
+    return parse_url($db_url, PHP_URL_SCHEME);
   }
 
   function setUpDrupal($num_sites = 1, $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL) {
@@ -361,7 +444,6 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     if (!isset($profile)) {
       $profile = $major_version >= 7 ? 'testing' : 'default';
     }
-    $db_driver = $this->db_driver(UNISH_DB_URL);
 
     // Install (if needed).
     foreach ($sites_subdirs as $subdir) {
@@ -413,7 +495,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
 
   function writeSiteAlias($name, $root, $uri) {
     $alias_definition = array($name => array('root' => $root,  'uri' => $uri));
-    file_put_contents(UNISH_SANDBOX . '/etc/drush/' . $name . '.alias.drushrc.php', $this->unish_file_aliases($alias_definition));
+    file_put_contents(self::getSandbox() . '/etc/drush/' . $name . '.alias.drushrc.php', $this->unish_file_aliases($alias_definition));
   }
 
   /**

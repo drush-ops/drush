@@ -39,7 +39,7 @@ class quickDrupalCase extends CommandUnishTestCase {
       $options['makefile'] = $makefile;
     }
     $return = !empty($config['fail']) ? self::EXIT_ERROR : self::EXIT_SUCCESS;
-    $target = UNISH_SANDBOX . '/qd-' . $test;
+    $target = self::getSandbox() . '/qd-' . $test;
     $options['root'] = $target;
     $this->drush('core-quick-drupal', $config['args'], $options, NULL, NULL, $return);
 

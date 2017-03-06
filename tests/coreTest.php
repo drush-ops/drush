@@ -76,8 +76,8 @@ class coreCase extends CommandUnishTestCase {
 $arg = drush_shift();
 drush_invoke("version", $arg);
 ';
-    $data = str_replace('[PATH-TO-DRUSH]', UNISH_DRUSH, $data);
-    $script = UNISH_SANDBOX . '/' . $filename;
+    $data = str_replace('[PATH-TO-DRUSH]', self::getDrush(), $data);
+    $script = self::getSandbox() . '/' . $filename;
     file_put_contents($script, $data);
     chmod($script, 0755);
     $this->execute("$script drush_version --pipe");

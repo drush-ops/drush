@@ -16,7 +16,7 @@ class backendUnitCase extends UnitUnishTestCase {
 
     // Ensure that file that will be created by forked process does not exist
     // before invocation.
-    $test_file = UNISH_SANDBOX . '/fork_test.txt';
+    $test_file = self::getSandbox() . '/fork_test.txt';
     if (file_exists($test_file)) {
       unlink($test_file);
     }
