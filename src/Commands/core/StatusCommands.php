@@ -208,6 +208,15 @@ class StatusCommands extends DrushCommands {
           if ($private_path = PrivateStream::basePath()) {
             $paths['%private'] = $private_path;
           }
+
+          $modules = \system_rebuild_module_data();
+          $themes = \Drupal::service('theme_handler')->rebuildThemeData();
+          $projects = array_merge($modules, $themes);
+          foreach(explode(',', $options['project']) as $target) {
+            if (array_key_exists($target, $projects)) {
+              $paths['%' . $target] = $drupal_root . '/' . $projects[$target]->getPath();
+            }
+          }
         }
       }
     }

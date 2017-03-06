@@ -106,11 +106,11 @@ drush_invoke("version", $arg);
 
     $this->drush('drupal-directory', array('devel'), $options);
     $output = $this->getOutput();
-    $this->assertEquals(realpath($root  . $sitewide . '/modules/contrib/devel'), $output);
+    $this->assertEquals($root  . '/modules/contrib/devel', $output);
 
     $this->drush('drupal-directory', array('empty_theme'), $options);
     $output = $this->getOutput();
-    $this->assertEquals(realpath($root  . $sitewide . '/themes/contrib/empty_theme'), $output);
+    $this->assertEquals($root  . '/themes/contrib/empty_theme', $output);
   }
 
   function testCoreRequirements() {
