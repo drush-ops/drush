@@ -45,7 +45,6 @@ function core_drush_engine_type_info() {
 function core_drush_engine_drupal() {
   $engines = array(
     'environment' => array(),
-    'pm' => array(),
   );
   return $engines;
 }

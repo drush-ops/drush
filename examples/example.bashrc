@@ -22,12 +22,8 @@
 #       cca              - drush cache-clear all
 #       dis              - drush pm-disable
 #       en               - drush pm-enable
-#       i                - drush pm-info
 #       pml              - drush pm-list
-#       rf               - drush pm-refresh
 #       unin             - drush pm-uninstall
-#       up               - drush pm-update
-#       upc              - drush pm-updatecode
 #       updb             - drush updatedb
 #       q                - drush sql-query
 #
@@ -65,7 +61,6 @@
 # Aliases for common Drush commands that work in a global context.
 alias dr='drush'
 alias ddd='drush drupal-directory'
-alias dl='drush pm-download'
 alias ev='drush php-eval'
 alias sa='drush site-alias'
 alias lsa='drush site-alias --local-only'
@@ -75,15 +70,9 @@ alias use='drush site-set'
 # Aliases for Drush commands that work on the current drupal site
 alias cc='drush cache-clear'
 alias cr='drush cache-rebuild'
-alias cca='drush cache-clear all'
-alias dis='drush pm-disable'
 alias en='drush pm-enable'
-alias pmi='drush pm-info'
 alias pml='drush pm-list'
-alias rf='drush pm-refresh'
 alias unin='drush pm-uninstall'
-alias up='drush pm-update'
-alias upc='drush pm-updatecode'
 alias updb='drush updatedb'
 alias q='drush sql-query'
 

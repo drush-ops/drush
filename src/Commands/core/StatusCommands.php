@@ -2,13 +2,11 @@
 
 namespace Drush\Commands\core;
 
-use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
+use Drupal\Core\StreamWrapper\PrivateStream;
+use Drupal\Core\StreamWrapper\PublicStream;
 use Drush\Commands\DrushCommands;
 use Drush\Sql\SqlBase;
-use Symfony\Component\Console\Input\InputInterface;
-
-use Consolidation\OutputFormatters\StructuredData\AssociativeList;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\AnnotatedCommand\CommandData;
 
@@ -115,8 +113,8 @@ class StatusCommands extends DrushCommands {
         }
       }
       if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
-        $status_table['theme'] = drush_theme_get_default();
-        $status_table['admin-theme'] = drush_theme_get_admin();
+        $status_table['theme'] = \Drupal::config('system.theme')->get('default');
+        $status_table['admin-theme'] = $theme = \Drupal::config('system.theme')->get('admin') ?: 'seven';
       }
     }
     if ($php_bin = $options['php']) {
@@ -173,7 +171,7 @@ class StatusCommands extends DrushCommands {
 
   public static function pathAliases($options) {
     $paths = array();
-    $site_wide = drush_drupal_sitewide_directory();
+    $site_wide = 'sites/all';
     $boot = \Drush::bootstrap();
     if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
       $paths['%root'] = $drupal_root;
@@ -205,21 +203,18 @@ class StatusCommands extends DrushCommands {
         }
 
         if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
-          $paths['%files'] = drush_file_get_public();
+          $paths['%files'] = PublicStream::basePath();
           $paths['%temp'] = file_directory_temp();
-          if ($private_path = drush_file_get_private()) {
+          if ($private_path = PrivateStream::basePath()) {
             $paths['%private'] = $private_path;
           }
-        }
 
-        // If the 'project' parameter was specified, then search
-        // for a project (or a few) and add its path to the path list
-        if (!empty($options['project'])) {
-          drush_include_engine('drupal', 'environment');
-          $projects = array_merge(drush_get_modules(), drush_get_themes());
+          $modules = \system_rebuild_module_data();
+          $themes = \Drupal::service('theme_handler')->rebuildThemeData();
+          $projects = array_merge($modules, $themes);
           foreach(explode(',', $options['project']) as $target) {
             if (array_key_exists($target, $projects)) {
-              $paths['%' . $target] = $drupal_root . '/' . _drush_extension_get_path($projects[$target]);
+              $paths['%' . $target] = $drupal_root . '/' . $projects[$target]->getPath();
             }
           }
         }
@@ -227,6 +222,7 @@ class StatusCommands extends DrushCommands {
     }
 
     // Add in all of the global paths from $options['path-aliases']
+    // @todo is this used?
     if (isset($options['path-aliases'])) {
       $paths = array_merge($paths, $options['path-aliases']);
     }

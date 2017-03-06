@@ -1677,26 +1677,6 @@ function drush_unset_recursive(&$data, $unset_key) {
 }
 
 /**
- * Return a list of VCSs reserved files and directories.
- */
-function drush_version_control_reserved_files() {
-  static $files = FALSE;
-
-  if (!$files) {
-    // Also support VCSs that are not drush vc engines.
-    $files = array('.git', '.gitignore', '.hg', '.hgignore', '.hgrags');
-    $engine_info = drush_get_engines('version_control');
-    $vcs = array_keys($engine_info['engines']);
-    foreach ($vcs as $name) {
-      $version_control = drush_include_engine('version_control', $name);
-      $files = array_merge($files, $version_control->reserved_files());
-    }
-  }
-
-  return $files;
-}
-
-/**
  * Generate a random alphanumeric password.  Copied from user.module.
  */
 function drush_generate_password($length = 10) {

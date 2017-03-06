@@ -664,155 +664,29 @@ function drush_directory_cache($subdir = '') {
     array('@locations' => implode(',', array_keys($cache_locations)))));
 }
 
-/**
- * Get complete information for all available extensions (modules and themes).
- *
- * @return
- *   An array containing info for all available extensions. In D8, these are Extension objects.
- */
-function drush_get_extensions($include_hidden = TRUE) {
-  drush_include_engine('drupal', 'environment');
-  $extensions = array_merge(drush_get_modules($include_hidden), drush_get_themes($include_hidden));
-  foreach ($extensions as $name => $extension) {
-    if (isset($extension->info['name'])) {
-      $extensions[$name]->label = $extension->info['name'].' ('.$name.')';
-    }
-    else {
-      drush_log(dt("Extension !name provides no human-readable name in .info file.", array('!name' => $name), LogLevel::DEBUG));
-      $extensions[$name]->label = $name.' ('.$name.')';
-    }
-    if (empty($extension->info['package'])) {
-      $extensions[$name]->info['package'] = dt('Other');
-    }
-  }
-  return $extensions;
-}
-
-/**
- * Gets the extension name.
- *
- * @param $info
- *   The extension info.
- * @return string
- *   The extension name.
- */
-function drush_extension_get_name($info) {
-  drush_include_engine('drupal', 'environment');
-  return _drush_extension_get_name($info);
-}
-
-/**
- * Gets the extension type.
- *
- * @param $info
- *   The extension info.
- * @return string
- *   The extension type.
- */
-function drush_extension_get_type($info) {
-  drush_include_engine('drupal', 'environment');
-  return _drush_extension_get_type($info);
-}
-
-/**
- * Gets the extension path.
- *
- * @param $info
- *   The extension info.
- * @return string
- *   The extension path.
- */
-function drush_extension_get_path($info) {
-  drush_include_engine('drupal', 'environment');
-  return _drush_extension_get_path($info);
-}
-
-/**
- * Test compatibility of a extension with version of drupal core and php.
- *
- * @param $file Extension object as returned by system_rebuild_module_data().
- * @return FALSE if the extension is compatible.
- */
-function drush_extension_check_incompatibility($file) {
-  if (!isset($file->info['core']) || $file->info['core'] != drush_get_drupal_core_compatibility()) {
-    return 'Drupal';
-  }
-  if (version_compare(phpversion(), $file->info['php']) < 0) {
-    return 'PHP';
-  }
-  return FALSE;
-}
-
-/**
- *
- */
-function drush_drupal_required_modules($modules) {
-  drush_include_engine('drupal', 'environment');
-  return _drush_drupal_required_modules($modules);
-}
-
-/**
- * Return the default theme.
- *
- * @return
- *  Machine name of the default theme.
- */
-function drush_theme_get_default() {
-  drush_include_engine('drupal', 'environment');
-  return _drush_theme_default();
-}
-
-/**
- * Return the administration theme.
- *
- * @return
- *  Machine name of the administration theme.
- */
-function drush_theme_get_admin() {
-  drush_include_engine('drupal', 'environment');
-  return _drush_theme_admin();
-}
-
-/**
- * Return the path to public files directory.
- */
-function drush_file_get_public() {
-  drush_include_engine('drupal', 'environment');
-  return _drush_file_public_path();
-}
-
-/**
- * Return the path to private files directory.
- */
-function drush_file_get_private() {
-  drush_include_engine('drupal', 'environment');
-  return _drush_file_private_path();
-}
-
-/**
- * Returns the sitewide Drupal directory for extensions.
- */
-function drush_drupal_sitewide_directory($major_version = NULL) {
-  if (!$major_version) {
-    $major_version = drush_drupal_major_version();
-  }
-  return ($major_version < 8) ? 'sites/all' : '';
-}
-
-/**
- * Helper function to get core compatibility constant.
- *
- * @return string
- *   The Drupal core compatibility constant.
- */
-function drush_get_drupal_core_compatibility() {
-  if (defined('DRUPAL_CORE_COMPATIBILITY')) {
-    return DRUPAL_CORE_COMPATIBILITY;
-  }
-  elseif (defined('\Drupal::CORE_COMPATIBILITY')) {
-    return \Drupal::CORE_COMPATIBILITY;
-  }
-}
+///**
+// * Get complete information for all available extensions (modules and themes).
+// *
+// * @return
+// *   An array containing info for all available extensions. In D8, these are Extension objects.
+// */
+//function drush_get_extensions($include_hidden = TRUE) {
+//  drush_include_engine('drupal', 'environment');
+//  $extensions = array_merge(drush_get_modules($include_hidden), drush_get_themes($include_hidden));
+//  foreach ($extensions as $name => $extension) {
+//    if (isset($extension->info['name'])) {
+//      $extensions[$name]->label = $extension->info['name'].' ('.$name.')';
+//    }
+//    else {
+//      drush_log(dt("Extension !name provides no human-readable name in .info file.", array('!name' => $name), LogLevel::DEBUG));
+//      $extensions[$name]->label = $name.' ('.$name.')';
+//    }
+//    if (empty($extension->info['package'])) {
+//      $extensions[$name]->info['package'] = dt('Other');
+//    }
+//  }
+//  return $extensions;
+//}
 
 /**
  * Set Env. Variables for given site-alias.

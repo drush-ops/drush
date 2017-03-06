@@ -173,7 +173,7 @@ abstract class DrupalBoot extends BaseBoot {
         }
 
         // Check all enabled themes including non-default and non-admin.
-        foreach (drush_theme_list() as $key => $value) {
+        foreach (\Drupal::service('theme_handler')->listInfo() as $key => $value) {
           $searchpath[] = drupal_get_path('theme', $key);
         }
         // Drupal 8 uses the modules' services files to find commandfiles. Should we allow
@@ -254,8 +254,7 @@ abstract class DrupalBoot extends BaseBoot {
     // If there are no drupal dependencies, then do nothing
     if (!empty($command['drupal dependencies'])) {
       foreach ($command['drupal dependencies'] as $dependency) {
-        drush_include_engine('drupal', 'environment');
-        if(!drush_module_exists($dependency)) {
+        if (!\Drupal::moduleHandler()->moduleExists($dependency)) {
           $command['bootstrap_errors']['DRUSH_COMMAND_DEPENDENCY_ERROR'] = dt('Command !command needs the following modules installed/enabled to run: !dependencies.', array('!command' => $command['command'], '!dependencies' => implode(', ', $command['drupal dependencies'])));
           return FALSE;
         }

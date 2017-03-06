@@ -79,10 +79,8 @@
 # $options['shell-aliases']['cpull'] = 'config-pull @example.prod @self --label=vcs';
 # $options['shell-aliases']['noncore'] = 'pm-list --no-core';
 # $options['shell-aliases']['wipe'] = 'cache-clear all';
-# $options['shell-aliases']['unsuck'] = 'pm-disable -y overlay,dashboard';
 # $options['shell-aliases']['offline'] = 'state-set system.maintenance_mode 1 --input-format=integer';
 # $options['shell-aliases']['online'] = 'state-set system.maintenance_mode 0 --input-format=integer';
-# $options['shell-aliases']['dis-all'] = '!drush -y dis `drush pml --status=enabled --type=module --no-core --pipe`';
 # $options['shell-aliases']['self-alias'] = 'site-alias @self --with-db --alias-name=new';
 # $options['shell-aliases']['site-get'] = '@none php-eval "return drush_sitealias_site_get();"';
 // Save a sanitized sql dump. Customize alias names and --result-file.
@@ -122,8 +120,8 @@
  * substitution tokens are available: @DATABASE is replaced with the name of the
  * database being dumped, and @DATE is replaced with the current time and date
  * of the dump of the form: YYYYMMDD_HHMMSS.  A value of TRUE ("--result-file=1"
- * on the command line) will cause 'sql-dump' to use the same temporary backup
- * location as 'pm-updatecode'.
+ * on the command line) will cause 'sql-dump' to generate a timestamped destination
+ * directory.
  */
 # $options['result-file'] = TRUE;
 # $options['result-file'] = '/path/to/backup/dir/@DATABASE_@DATE.sql';
@@ -246,10 +244,6 @@
 // Additional folders to search for scripts.
 // Separate by : (Unix-based systems) or ; (Windows).
 # $command_specific['script']['script-path'] = 'sites/all/scripts:profiles/myprofile/scripts';
-
-// Always show release notes when running pm-update or pm-updatecode.
-# $command_specific['pm-update'] = array('notes' => TRUE);
-# $command_specific['pm-updatecode'] = array('notes' => TRUE);
 
 // Set a predetermined username and password when using site-install.
 # $command_specific['site-install'] = array('account-name' => 'alice', 'account-pass' => 'secret');

@@ -82,4 +82,13 @@ class LegacyCommands extends DrushCommands {
     $msg = 'Make has been removed, in favor of Composer. Use the make-convert command in Drush 8 to quickly upgrade your build to Composer.';
     $this->logger()->notice($msg);
   }
+
+  /**
+   * @command pm-download
+   * @aliases dl
+   */
+  public function download() {
+    $msg = 'dl has been deprecated. Please build your site using Composer. Add new projects with composer require drupal/[project-name]. Use https://www.drupal.org/project/composer_generate to build a composer.json which represents the the enabled modules on your site.';
+    $this->logger()->notice($msg);
+  }
 }
