@@ -329,9 +329,9 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    * Runs the test case and collects the results in a TestResult object.
    * If no TestResult object is passed a new one will be created.
    *
-   * @param  PHPUnit_Framework_TestResult $result
-   * @return PHPUnit_Framework_TestResult
-   * @throws PHPUnit_Framework_Exception
+   * @param  \PHPUnit_Framework_TestResult $result
+   * @return \PHPUnit_Framework_TestResult
+   * @throws \PHPUnit_Framework_Exception
    */
   public function run(\PHPUnit_Framework_TestResult $result = NULL) {
     $result = parent::run($result);

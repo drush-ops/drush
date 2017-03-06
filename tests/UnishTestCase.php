@@ -1,7 +1,6 @@
 <?php
 
 namespace Unish;
-use PHPUnit\Framework\TestCase;
 use Webmozart\PathUtil\Path;
 
 abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
@@ -20,7 +19,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
 
   /**
    * We used to assure that each class starts with an empty sandbox directory and
-   * a clean environment - http://drupal.org/node/1103568. No need now - hurray!
+   * a clean environment except for the SUT. History: http://drupal.org/node/1103568.
    */
   public static function setUpBeforeClass() {
     // Avoid perm denied error on Windows by moving out of the dir to be deleted.
