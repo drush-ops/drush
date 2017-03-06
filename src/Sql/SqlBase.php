@@ -170,9 +170,7 @@ class SqlBase {
     // directory that pm-updatecode uses.
     if ($file) {
       if ($file === TRUE) {
-        // User did not pass a specific value for --result-file. Make one.
-        $backup = drush_include_engine('version_control', 'backup');
-        $backup_dir = $backup->prepare_backup_dir($database);
+        $backup_dir = drush_prepare_backup_dir($database);
         if (empty($backup_dir)) {
           $backup_dir = drush_find_tmp();
         }

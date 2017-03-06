@@ -46,9 +46,7 @@ class ConfigExportCommands extends DrushCommands implements CustomEventAwareInte
     if ($target = $options['destination']) {
       if ($target === TRUE) {
         // User did not pass a specific value for --destination. Make one.
-        /** @var drush_version_control_backup $backup */
-        $backup = drush_include_engine('version_control', 'backup');
-        $destination_dir = $backup->prepare_backup_dir('config-export');
+        $destination_dir = drush_prepare_backup_dir('config-export');
       }
       else {
         $destination_dir = $target;
