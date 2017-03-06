@@ -510,12 +510,9 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @see drush_drupal_sitewide_directory()
+   * The sidewide directory for a Drupal 8 installation.
    */
   function drupalSitewideDirectory($major_version = NULL) {
-    if (!$major_version) {
-      $major_version = UNISH_DRUPAL_MAJOR_VERSION;
-    }
-    return ($major_version < 8) ? '/sites/all' : '';
+    return '/sites/all';
   }
 }

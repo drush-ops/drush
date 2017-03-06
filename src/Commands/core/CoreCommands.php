@@ -50,7 +50,7 @@ class CoreCommands extends DrushCommands {
       $searchpaths[] = drupal_get_path('module', $module);
     }
 
-    $themes = drush_theme_list();
+    $themes = \Drupal::service('theme_handler')->listInfo();
     foreach ($themes as $name => $theme) {
       $searchpaths[] = $theme->getPath();
     }
@@ -103,7 +103,7 @@ class CoreCommands extends DrushCommands {
     drupal_load_updates();
 
     drush_include_engine('drupal', 'environment');
-    $requirements = drush_module_invoke_all('requirements', 'runtime');
+    $requirements = \Drupal::moduleHandler()->invokeAll('requirements', ['runtime']);
     // If a module uses "$requirements[] = " instead of
     // "$requirements['label'] = ", then build a label from
     // the title.

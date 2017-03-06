@@ -173,7 +173,7 @@ abstract class DrupalBoot extends BaseBoot {
         }
 
         // Check all enabled themes including non-default and non-admin.
-        foreach (drush_theme_list() as $key => $value) {
+        foreach (\Drupal::service('theme_handler')->listInfo() as $key => $value) {
           $searchpath[] = drupal_get_path('theme', $key);
         }
         // Drupal 8 uses the modules' services files to find commandfiles. Should we allow
