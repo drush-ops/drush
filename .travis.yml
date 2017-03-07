@@ -22,8 +22,7 @@ env:
     - PHPUNIT_ARGS=--group=base
     - PHPUNIT_ARGS=--group=commands
     - PHPUNIT_ARGS=--group=pm
-    - PHPUNIT_ARGS=--group=quick-drupal
-    - PHPUNIT_ARGS=--exclude-group=base,commands,pm,quick-drupal TEST_CHILDREN="drush-ops/config-extra"
+    - PHPUNIT_ARGS=--exclude-group=base,commands,pm TEST_CHILDREN="drush-ops/config-extra"
 
     # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=base
     # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=commands
