@@ -29,22 +29,3 @@ function core_drush_help($section) {
       break;
   }
 }
-
-/**
- * Implementation of hook_drush_engine_type_info().
- */
-function core_drush_engine_type_info() {
-  $info = array();
-  $info['drupal'] = array();
-  return $info;
-}
-
-/**
- * Implements hook_drush_engine_ENGINE_TYPE().
- */
-function core_drush_engine_drupal() {
-  $engines = array(
-    'environment' => array(),
-  );
-  return $engines;
-}

@@ -16,7 +16,7 @@ class DrupalBoot6 extends DrupalBoot {
       // Drupal 6 root.
       // We check for the absence of 'modules/field/field.module' to differentiate this from a D7 site.
       // n.b. we want D5 and earlier to match here, if possible, so that we can print a 'not supported'
-      // error durring bootstrap.  If someone later adds a commandfile that adds a boot class for
+      // error during bootstrap.  If someone later adds a commandfile that adds a boot class for
       // Drupal 5, it will be tested first, so we shouldn't get here.
       $candidate = 'includes/common.inc';
       if (file_exists($path . '/' . $candidate) && file_exists($path . '/misc/drupal.js') && !file_exists($path . '/modules/field/field.module')) {
@@ -39,14 +39,7 @@ class DrupalBoot6 extends DrupalBoot {
     return variable_get('install_profile', 'standard');
   }
 
-  function add_logger() {
-    // If needed, prod module_implements() to recognize our system_watchdog() implementation.
-    $dogs = drush_module_implements('watchdog');
-    if (!in_array('system', $dogs)) {
-      // Note that this resets module_implements cache.
-      drush_module_implements('watchdog', FALSE, TRUE);
-    }
-  }
+  function add_logger() {}
 
   function contrib_modules_paths() {
     return array(
