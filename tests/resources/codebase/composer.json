@@ -20,7 +20,8 @@
     "phpunit/phpunit": "4.*",
     "symfony/process": "~2.8",
     "drupal/empty_theme": "1.0",
-    "drupal/devel": "^1.0@RC"
+    "drupal/devel": "^1.0@RC",
+    "lox/xhprof": "dev-master"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,

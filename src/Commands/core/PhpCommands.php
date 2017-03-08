@@ -2,7 +2,6 @@
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
-use Drush\Log\LogLevel;
 
 
 class PhpCommands extends DrushCommands {
