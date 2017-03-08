@@ -5,6 +5,7 @@ Install a site-local Drush
 1. If you want the convenience of calling `drush` instead of `../vendor/bin/drush`, copy the [examples/drush.wrapper](https://github.com/drush-ops/drush/blob/master/examples/drush.wrapper) file to your Drupal root and modify to taste.
 1. If you want the old convenience of being able to call `drush` from anywhere, see [drush-shim](https://github.com/webflo/drush-shim).
 1. See [Usage](http://docs.drush.org/en/master/usage/) for details on using Drush.
+1. MAMP users, and anyone wishing to use a non-default PHP, needs to [edit ~/.bashrc so that the right PHP is in your $PATH](http://stackoverflow.com/questions/4145667/how-to-override-the-path-of-php-to-use-the-mamp-path/10653443#10653443).
 
 (Deprecated) Install/Upgrade a global Drush
 ---------------
@@ -23,13 +24,6 @@ sudo mv drush /usr/local/bin
 # Optional. Enrich the bash startup file with completion and aliases.
 drush init
 ```
-
-* MAMP users, and anyone wishing to launch a non-default PHP, needs to [edit ~/.bashrc so that the right PHP is in your $PATH](http://stackoverflow.com/questions/4145667/how-to-override-the-path-of-php-to-use-the-mamp-path/10653443#10653443).
-* We have documented [alternative ways to install](http://docs.drush.org/en/master/install-alternative/), including [Windows](http://docs.drush.org/en/master/install-alternative/#windows).
-* If you need to pass custom php.ini values, run `php -d foo=bar drush.phar --php-options=foo=bar`
-* Your shell now has [useful bash aliases and tab completion for command names, site aliases, options, and arguments](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.bashrc).
-* A [drushrc.php](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.drushrc.php) has been copied to ~/.drush above. Customize it to save typing and standardize options for commands.
-* Upgrade using this same procedure.
 
 Drupal Compatibility
 -----------------
