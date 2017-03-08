@@ -1,10 +1,7 @@
 tests/phpunit.xml
 vendor
-/lib/Console_Table-*
 box.phar
 drush.phar
-#A library from Drush6 and prior that can come back when you switch branches.
-*youngj-httpserver*
 #The mkdocs output directory.
 site
 # IDE config
