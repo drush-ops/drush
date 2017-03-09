@@ -209,8 +209,8 @@ class StatusCommands extends DrushCommands {
             $paths['%private'] = $private_path;
           }
 
-          $modules = \system_rebuild_module_data();
-          $themes = \Drupal::service('theme_handler')->rebuildThemeData();
+          $modules = \Drupal::moduleHandler()->getModuleList();
+          $themes = \Drupal::service('theme_handler')->listInfo();
           $projects = array_merge($modules, $themes);
           foreach(explode(',', $options['project']) as $target) {
             if (array_key_exists($target, $projects)) {

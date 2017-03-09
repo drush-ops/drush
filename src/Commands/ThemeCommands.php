@@ -16,7 +16,7 @@ class ThemeCommands extends DrushCommands {
    */
   public function enable($themes) {
     $themes = _convert_csv_to_array($themes);
-    if (\Drupal::service('theme_installer')->install($themes, TRUE)) {
+    if (!\Drupal::service('theme_installer')->install($themes, TRUE)) {
       throw new \Exception('Unable to install themes.');
     }
     $this->logger()->success(dt('Successfully enabled theme: !list', ['!list' => implode(', ', $themes)]));

@@ -103,6 +103,7 @@ drush_invoke("version", $arg);
     $this->assertEquals($root . $sitewide . '/modules', $output);
 
     $this->drush('pm-enable', array('devel'), $options);
+    $this->drush('theme-enable', array('empty_theme'), $options);
 
     $this->drush('drupal-directory', array('devel'), $options);
     $output = $this->getOutput();
