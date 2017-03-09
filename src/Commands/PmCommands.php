@@ -86,8 +86,8 @@ class PmCommands extends DrushCommands {
    */
   public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => NULL, 'core' => NULL, 'no-core' => NULL]) {
     $rows = [];
-    $modules = \Drupal::moduleHandler()->getModuleList();
-    $themes = \Drupal::service('theme_handler')->listInfo();
+    $modules = \system_rebuild_module_data();
+    $themes = \Drupal::service('theme_handler')->rebuildThemeData();
     $both = array_merge($modules, $themes);
 
     $package_filter = _convert_csv_to_array(strtolower($options['package']));
