@@ -54,7 +54,7 @@ class XhprofCommands extends DrushCommands {
    */
   function xhprofInitialize(InputInterface $input, AnnotationData $annotationData) {
     if (self::xhprofIsEnabled($input)) {
-      xhprof_enable(xh_flags($input->getOptions()));
+      xhprof_enable(self::xhprofFlags($input->getOptions()));
     }
   }
 
