@@ -4,11 +4,9 @@ namespace Drush\Boot;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Psr\Log\LoggerInterface;
 use Drupal\Core\DrupalKernel;
 use Drush\Drupal\DrupalKernel as DrushDrupalKernel;
-use Drush\Drupal\DrushServiceModfier;
-use Symfony\Component\DependencyInjection\Reference;
+use Drush\Drupal\DrushServiceModifier;
 
 use Drush\Log\LogLevel;
 
@@ -128,7 +126,7 @@ class DrupalBoot8 extends DrupalBoot {
       $this->kernel = DrushDrupalKernel::createFromRequest($this->request, $classloader, 'prod');
     }
     // @see Drush\Drupal\DrupalKernel::addServiceModifier()
-    $this->kernel->addServiceModifier(new DrushServiceModfier());
+    $this->kernel->addServiceModifier(new DrushServiceModifier());
 
     // Unset drupal error handler and restore Drush's one.
     restore_error_handler();
@@ -145,7 +143,6 @@ class DrupalBoot8 extends DrupalBoot {
     if (!drush_get_context('DRUSH_QUIET', FALSE)) {
       ob_start();
     }
-    $this->kernel->invalidateContainer();
     $this->kernel->boot();
     $this->kernel->prepareLegacyRequest($this->request);
     if (!drush_get_context('DRUSH_QUIET', FALSE)) {
