@@ -9,19 +9,31 @@ use Drush\Commands\DrushCommands;
 
 class XhprofCommands extends DrushCommands {
 
+  const XH_PROFILE_MEMORY = FALSE;
+  const XH_PROFILE_CPU = FALSE;
+  const XH_PROFILE_BUILTINS = TRUE;
+
+
   // @todo Add a command for launching the built-in web server pointing to the
   // HTML site of xhprof.
   // @todo write a topic explaining how to use this.
 
   /**
-   * Enable profiling via XHProf
+   * @hook option *
    *
-   * @hook post-command *
    * @option xh-link URL to your XHProf report site.
    * @option xh-profile-builtins Profile built-in PHP functions (defaults to TRUE).
    * @option xh-profile-cpu Profile CPU (defaults to FALSE).
    * @option xh-profile-memory Profile Memory (defaults to FALSE).
-   * @hidden-option xh-link,xh-profile-cpu-xh-profile-builtins,xh-profile-memory
+   * @hidden-option xh-link,xh-profile-cpu,xh-profile-builtins,xh-profile-memory
+   */
+  public function optionsetXhProf($options = ['xh-profile-cpu' => NULL, 'xh-profile-builtins' => NULL, 'xh-profile-memory' => NULL]) {
+
+  }
+  /**
+   * Enable profiling via XHProf
+   *
+   * @hook post-command *
    */
   function xhprofPost($result, CommandData $commandData) {
     if (self::xhprofIsEnabled($commandData->input())) {
@@ -42,7 +54,7 @@ class XhprofCommands extends DrushCommands {
    */
   function xhprofInitialize(InputInterface $input, AnnotationData $annotationData) {
     if (self::xhprofIsEnabled($input)) {
-      xhprof_enable(xh_flags());
+      xhprof_enable(xh_flags($input->getOptions()));
     }
   }
 
@@ -58,15 +70,15 @@ class XhprofCommands extends DrushCommands {
   /**
    * Determines flags.
    */
-  public static function xhprofFlags(CommandData $commandData) {
+  public static function xhprofFlags($options) {
     $flags = 0;
-    if (!$commandData->input()->getOption('xh-profile-builtins') ?: XH_PROFILE_BUILTINS) {
+    if (!(!is_null($options['xh-profile-builtins']) ? $options['xh-profile-builtins'] : self::XH_PROFILE_BUILTINS)) {
       $flags |= XHPROF_FLAGS_NO_BUILTINS;
     }
-    if ($commandData->input()->getOption('xh-profile-cpu') ?: XH_PROFILE_CPU) {
+    if (!is_null($options['xh-profile-cpu']) ? $options['xh-profile-cpu'] : self::XH_PROFILE_CPU) {
       $flags |= XHPROF_FLAGS_CPU;
     }
-    if ($commandData->input()->getOption('xh-profile-memory') ?: XH_PROFILE_MEMORY) {
+    if (!is_null($options['xh-profile-memory']) ? $options['xh-profile-memory'] : self::XH_PROFILE_MEMORY) {
       $flags |= XHPROF_FLAGS_MEMORY;
     }
     return $flags;
