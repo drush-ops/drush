@@ -47,6 +47,7 @@
     "sebastian/version": "~1"
   },
   "require-dev": {
+    "lox/xhprof": "dev-master",
     "phpunit/phpunit": "^4",
     "symfony/process": "2.7.*"
   },
