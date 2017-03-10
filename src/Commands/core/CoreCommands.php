@@ -104,7 +104,6 @@ class CoreCommands extends DrushCommands {
 
     drupal_load_updates();
 
-    drush_include_engine('drupal', 'environment');
     $requirements = \Drupal::moduleHandler()->invokeAll('requirements', ['runtime']);
     // If a module uses "$requirements[] = " instead of
     // "$requirements['label'] = ", then build a label from

@@ -560,7 +560,6 @@ abstract class DrupalBoot extends BaseBoot {
    * Attempt to load the full Drupal system.
    */
   function bootstrap_drupal_full() {
-    drush_include_engine('drupal', 'environment');
 
     $this->add_logger();
 

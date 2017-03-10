@@ -99,7 +99,6 @@ class WatchdogCommands extends DrushCommands {
    * @hook interact watchdog-list
    */
   public function interactList($input, $output) {
-    drush_include_engine('drupal', 'environment');
 
     $choices['-- types --'] = dt('== message types ==');
     $types = $this->messageTypes();

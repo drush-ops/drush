@@ -253,10 +253,6 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface {
       );
     }
 
-    // Include the appropriate environment engine, so callbacks can use core
-    // version specific cache clearing functions directly.
-    drush_include_engine('drupal', 'environment');
-
     // Command files may customize $types as desired.
     $handlers = $this->getCustomEventHandlers('cache-clear', $types, $include_bootstrapped_types);
     foreach ($handlers as $handler) {
