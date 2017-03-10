@@ -161,11 +161,13 @@ abstract class DrupalBoot extends BaseBoot {
         // Add enabled module paths, excluding the install profile. Since we are bootstrapped,
         // we can use the Drupal API.
         $ignored_modules = drush_get_option_list('ignored-modules', array());
+        $modules = array_keys(\Drupal::moduleHandler()->getModuleList());
+        $module_list = array_combine($modules, $modules);
         $cid = drush_cid_install_profile();
         if ($cached = drush_cache_get($cid)) {
           $ignored_modules[] = $cached->data;
         }
-        foreach (array_diff(drush_module_list(), $ignored_modules) as $module) {
+        foreach (array_diff($module_list, $ignored_modules) as $module) {
           $filepath = drupal_get_path('module', $module);
           if ($filepath && $filepath != '/') {
             $searchpath[] = $filepath;
@@ -558,7 +560,6 @@ abstract class DrupalBoot extends BaseBoot {
    * Attempt to load the full Drupal system.
    */
   function bootstrap_drupal_full() {
-    drush_include_engine('drupal', 'environment');
 
     $this->add_logger();
 

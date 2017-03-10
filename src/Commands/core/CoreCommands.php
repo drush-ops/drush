@@ -42,11 +42,13 @@ class CoreCommands extends DrushCommands {
     // Scan all enabled modules and themes.
     // @todo refactor since \Drush\Boot\DrupalBoot::commandfile_searchpaths is similar.
     $ignored_modules = drush_get_option_list('ignored-modules', array());
+    $modules = array_keys(\Drupal::moduleHandler()->getModuleList());
+    $module_list = array_combine($modules, $modules);
     $cid = drush_cid_install_profile();
     if ($cached = drush_cache_get($cid)) {
       $ignored_modules[] = $cached->data;
     }
-    foreach (array_diff(drush_module_list(), $ignored_modules) as $module) {
+    foreach (array_diff($module_list, $ignored_modules) as $module) {
       $searchpaths[] = drupal_get_path('module', $module);
     }
 
@@ -102,7 +104,6 @@ class CoreCommands extends DrushCommands {
 
     drupal_load_updates();
 
-    drush_include_engine('drupal', 'environment');
     $requirements = \Drupal::moduleHandler()->invokeAll('requirements', ['runtime']);
     // If a module uses "$requirements[] = " instead of
     // "$requirements['label'] = ", then build a label from

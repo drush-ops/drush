@@ -132,7 +132,6 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
       _batch_populate_queue($batch, $key);
     }
 
-    drush_include_engine('drupal', 'environment');
     // Store the batch.
     /** @var \Drupal\Core\Batch\BatchStorage $batch_storage */
     $batch_storage = \Drupal::service('batch.storage');

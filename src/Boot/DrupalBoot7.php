@@ -31,20 +31,7 @@ class DrupalBoot7 extends DrupalBoot {
     return drupal_get_profile();
   }
 
-  function add_logger() {
-    // If needed, prod module_implements() to recognize our system_watchdog() implementation.
-    $dogs = drush_module_implements('watchdog');
-    if (!in_array('system', $dogs)) {
-      // Note that we must never clear the module_implements() cache because
-      // that would trigger larger cache rebuilds with system_cache_tables on
-      // every drush invocation. Instead we inject our system_watchdog()
-      // implementation direclty into the static cache.
-      $implementations = &drupal_static('module_implements');
-      $implementations['watchdog']['system'] = FALSE;
-      $verified_implementations = &drupal_static('module_implements:verified');
-      $verified_implementations['watchdog'] = TRUE;
-    }
-  }
+  function add_logger() {}
 
   function contrib_modules_paths() {
     return array(
