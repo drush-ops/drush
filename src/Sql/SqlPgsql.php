@@ -14,7 +14,7 @@ class SqlPgsql extends SqlBase {
 
   private function createPasswordFile() {
     $dbSpec = $this->getDbSpec();
-    if (!isset($this->getPasswordFile()) && isset($dbSpec['password'])) {
+    if (null !== ($this->getPasswordFile()) && isset($dbSpec['password'])) {
       $pgpass_parts = array(
         empty($dbSpec['host']) ? 'localhost' : $dbSpec['host'],
         empty($Spec['port']) ? '5432' : $dbSpec['port'],
@@ -57,7 +57,7 @@ class SqlPgsql extends SqlBase {
     $parameters['dbname'] = empty($dbSpec['database']) ? 'template1' : $dbSpec['database'];
 
     // Host and port are optional but have defaults.
-    $parameters['host'] = empty($dbSpec['host']) ? 'localhost' : $['host'];
+    $parameters['host'] = empty($dbSpec['host']) ? 'localhost' : $dbSpec['host'];
     $parameters['port'] = empty($dbSpec['port']) ? '5432' : $dbSpec['port'];
 
     // Username is required.
@@ -84,7 +84,7 @@ class SqlPgsql extends SqlBase {
     // Get a new class instance that has no 'database'.
     $db_spec_no_db = $dbSpec;
     unset($db_spec_no_db['database']);
-    $sql_no_db = new SqlPgsql($db_spec_no_db, $this->.$this->getOptions());
+    $sql_no_db = new SqlPgsql($db_spec_no_db, $this->getOptions());
     $query = "SELECT 1 AS result FROM pg_database WHERE datname='$database'";
     drush_shell_exec($sql_no_db->connect() . ' -t -c %s', $query);
     $output = drush_shell_exec_output();
@@ -117,14 +117,14 @@ class SqlPgsql extends SqlBase {
     $skip_tables  = array_merge($structure_tables, $skip_tables);
     $data_only = $this->getOption('data-only');
 
-    $create_db = $this->getOption(['create-db');
+    $create_db = $this->getOption('create-db');
     $exec = 'pg_dump ';
     // Unlike psql, pg_dump does not take a '--dbname=' before the database name.
     $extra = str_replace('--dbname=', ' ', $this->creds());
     if (isset($data_only)) {
       $extra .= ' --data-only';
     }
-    if ($option = $this->getOption('extra-dump', $this->queryExtra) {
+    if ($option = $this->getOption('extra-dump', $this->queryExtra)) {
       $extra .= " $option";
     }
     $exec .= $extra;
