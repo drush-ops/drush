@@ -169,6 +169,8 @@ function drush_core_pre_site_install($profile = NULL) {
   else {
     drush_log(dt('Sites directory @subdir already exists - proceeding.', array('@subdir' => $conf_path)));
   }
+  // Quietly try to make the conf_path directory writable for re-installs.
+  @chmod($conf_path, 0777);
 
   if (!drush_file_not_empty($settingsfile)) {
     if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !drush_get_context('DRUSH_SIMULATE')) {
@@ -194,6 +196,9 @@ function drush_core_pre_site_install($profile = NULL) {
       }
     }
   }
+  // Quietly try to make settings.php writable for re-installs. We will let the
+  // Drupal installer report any problems.
+  @chmod($settingsfile, 0666);
 
   // Write an empty sites.php if we are on D8 and using multi-site.
   if ($sitesfile_write) {
