@@ -43,4 +43,21 @@ class DrupalKernel extends DrupalDrupalKernel {
     }
     return $container;
   }
+  /**
+   * Initializes the service container.
+   *
+   * @return \Symfony\Component\DependencyInjection\ContainerInterface
+   */
+  protected function initializeContainer() {
+    if (empty($this->moduleList) && !$this->containerNeedsRebuild) {
+      $container_definition = $this->getCachedContainerDefinition();
+      foreach ($this->serviceModifiers as $serviceModifier) {
+        if (!$serviceModifier->check($container_definition)) {
+          $this->invalidateContainer();
+          break;
+        }
+      }
+    }
+    return parent::initializeContainer();
+  }
 }
