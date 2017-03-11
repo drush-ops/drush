@@ -2,6 +2,8 @@
 
 namespace Unish;
 
+use Webmozart\PathUtil\Path;
+
 /**
  * @group base
  */
@@ -45,8 +47,7 @@ class annotatedCommandCase extends CommandUnishTestCase {
     $this->setupModulesForTests($root);
 
     // These are not good asserts, but for the purposes of isolation....
-    $targetDir = $root . DIRECTORY_SEPARATOR . $this->drupalSitewideDirectory() . '/modules/woot';
-    $commandFile = $targetDir . "/src/Commands/WootCommands.php";
+    $commandFile = Path::join($root, 'modules/contrib/woot/src/Commands/WootCommands.php');
     $this->assertFileExists(dirname(dirname(dirname($commandFile))));
     $this->assertFileExists(dirname(dirname($commandFile)));
     $this->assertFileExists(dirname($commandFile));
@@ -176,8 +177,8 @@ EOT;
   }
 
   public function setupModulesForTests($root) {
-    $wootModule = __DIR__ . '/resources/modules/d' . UNISH_DRUPAL_MAJOR_VERSION . '/woot';
-    $targetDir = $root . DIRECTORY_SEPARATOR . $this->drupalSitewideDirectory() . '/modules/woot';
+    $wootModule = Path::join(__DIR__, '/resources/modules/d8/woot');
+    $targetDir = Path::join($root, 'modules/contrib/woot');
     $this->mkdir($targetDir);
     $this->recursive_copy($wootModule, $targetDir);
   }

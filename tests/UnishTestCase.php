@@ -56,6 +56,30 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   /**
    * @return string
    */
+  public static function getSut() {
+    return Path::join(self::getTmp(), 'drush-sut');
+  }
+
+  /**
+   * - Remove sandbox directory.
+   * - Empty /modules, /profiles, /themes in SUT.
+   */
+  public static function cleanDirs() {
+    $sandbox = self::getSandBox();
+    if (file_exists($sandbox)) {
+      self::recursive_delete($sandbox);
+    }
+    foreach (['modules', 'themes', 'profiles'] as $dir) {
+      $target = Path::join(self::getSut(), 'web', $dir, 'contrib');
+      if (file_exists($target)) {
+        self::recursive_delete_dir_contents($target);
+      }
+    }
+  }
+
+  /**
+   * @return string
+   */
   public static function getDbUrl() {
     return self::$db_url;
   }
@@ -113,16 +137,10 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * a clean environment except for the SUT. History: http://drupal.org/node/1103568.
    */
   public static function setUpBeforeClass() {
-    // Avoid perm denied error on Windows by moving out of the dir to be deleted.
-    // chdir(dirname(self::getSandbox()));
-    $sandbox = self::getSandbox();
+    self::cleanDirs();
 
-    // Clean the sandbox.
-    $dirs = [$sandbox];
-    foreach ($dirs as $dir) {
-      self::recursive_delete($dir);
-    }
     // Create all the dirs.
+    $sandbox = self::getSandbox();
     $dirs = [getenv('HOME') . '/.drush', $sandbox . '/etc/drush', $sandbox . '/share/drush/commands', "$sandbox/cache", getenv('TEMP')];
     foreach ($dirs as $dir) {
       self::mkdir($dir);
@@ -136,14 +154,13 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Runs after all tests in a class are run. Remove sandbox directory.
+   * Runs after all tests in a class are run.
    */
   public static function tearDownAfterClass() {
-    $sandbox = self::getSandBox();
-    // chdir(dirname($sandbox));
-    if (empty(getenv('UNISH_DIRTY')) && file_exists($sandbox)) {
-      self::recursive_delete($sandbox);
+    if (empty(getenv('UNISH_DIRTY'))) {
+      self::cleanDirs();
     }
+
     self::$sites = array();
     parent::tearDownAfterClass();
   }
@@ -416,7 +433,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   function webroot() {
-    return Path::join(dirname(self::getSandbox()), 'drush-sut/web');
+    return Path::join(self::getSut(), 'web');
   }
 
   function directory_cache($subdir = '') {

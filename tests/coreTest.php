@@ -2,6 +2,8 @@
 
 namespace Unish;
 
+use Webmozart\PathUtil\Path;
+
 /**
  * Tests for core commands.
  *
@@ -96,22 +98,22 @@ drush_invoke("version", $arg);
     );
     $this->drush('drupal-directory', array('%files'), $options);
     $output = $this->getOutput();
-    $this->assertEquals($root . '/sites/dev/files', $output);
+    $this->assertEquals(Path::join($root, '/sites/dev/files'), $output);
 
     $this->drush('drupal-directory', array('%modules'), $options);
     $output = $this->getOutput();
-    $this->assertEquals($root . $sitewide . '/modules', $output);
+    $this->assertEquals(Path::join($root, $sitewide . '/modules'), $output);
 
     $this->drush('pm-enable', array('devel'), $options);
     $this->drush('theme-enable', array('empty_theme'), $options);
 
     $this->drush('drupal-directory', array('devel'), $options);
     $output = $this->getOutput();
-    $this->assertEquals($root  . '/modules/contrib/devel', $output);
+    $this->assertEquals(Path::join($root, '/modules/unish/devel'), $output);
 
     $this->drush('drupal-directory', array('empty_theme'), $options);
     $output = $this->getOutput();
-    $this->assertEquals($root  . '/themes/contrib/empty_theme', $output);
+    $this->assertEquals(Path::join($root, '/themes/unish/empty_theme'), $output);
   }
 
   function testCoreRequirements() {
