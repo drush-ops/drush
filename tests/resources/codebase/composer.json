@@ -29,6 +29,8 @@
     "installer-paths": {
       "web/core": ["type:drupal-core"],
       "web/libraries/{$name}": ["type:drupal-library"],
+      "web/modules/unish/{$name}": ["drupal/devel"],
+      "web/themes/unish/{$name}": ["drupal/empty_theme"],
       "web/modules/contrib/{$name}": ["type:drupal-module"],
       "web/profiles/contrib/{$name}": ["type:drupal-profile"],
       "web/themes/contrib/{$name}": ["type:drupal-theme"],

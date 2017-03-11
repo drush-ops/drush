@@ -2,6 +2,8 @@
 
 namespace Unish;
 
+use Webmozart\PathUtil\Path;
+
 /**
  * @group base
  */
@@ -176,8 +178,8 @@ EOT;
   }
 
   public function setupModulesForTests($root) {
-    $wootModule = __DIR__ . '/resources/modules/d' . UNISH_DRUPAL_MAJOR_VERSION . '/woot';
-    $targetDir = $root . DIRECTORY_SEPARATOR . $this->drupalSitewideDirectory() . '/modules/woot';
+    $wootModule = Path::join(__DIR__, '/resources/modules/d8/woot');
+    $targetDir = Path::join($root, 'modules/contrib/woot');
     $this->mkdir($targetDir);
     $this->recursive_copy($wootModule, $targetDir);
   }

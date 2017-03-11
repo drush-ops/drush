@@ -1,6 +1,7 @@
 <?php
 
 namespace Unish;
+use Webmozart\PathUtil\Path;
 
 /**
  * @group commands
@@ -116,10 +117,11 @@ class QueueCase extends CommandUnishTestCase {
    *   The path to the root directory of Drupal.
    */
   public function setupModulesForTests($root) {
-    $wootModule = __DIR__ . '/resources/modules/d8/woot';
-    $modulesDir = "$root/modules";
-    // $this->mkdir($modulesDir);
-    \symlink($wootModule, "$modulesDir/woot");
+    $wootModule = Path::join(__DIR__ , 'resources/modules/d8/woot');
+    $this->assertTrue(file_exists($wootModule));
+    $targetDir = Path::join($root, 'modules/contrib/woot');
+    $this->mkdir($targetDir);
+    $this->recursive_copy($wootModule, $targetDir);
   }
 
 

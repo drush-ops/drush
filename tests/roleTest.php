@@ -66,7 +66,7 @@ class roleCase extends CommandUnishTestCase {
 
   public function setupModulesForTests($root) {
     $sourceDir = Path::join($root, 'core/modules/user/tests/modules/user_form_test');
-    $targetDir = Path::join($root, 'modules/user_form_test');
+    $targetDir = Path::join($root, 'modules/contrib');
     $this->mkdir($targetDir);
     $this->recursive_copy($sourceDir, $targetDir);
   }
