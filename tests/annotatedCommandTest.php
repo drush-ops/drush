@@ -47,8 +47,7 @@ class annotatedCommandCase extends CommandUnishTestCase {
     $this->setupModulesForTests($root);
 
     // These are not good asserts, but for the purposes of isolation....
-    $targetDir = $root . DIRECTORY_SEPARATOR . $this->drupalSitewideDirectory() . '/modules/woot';
-    $commandFile = $targetDir . "/src/Commands/WootCommands.php";
+    $commandFile = Path::join($root, 'modules/contrib/woot/src/Commands/WootCommands.php');
     $this->assertFileExists(dirname(dirname(dirname($commandFile))));
     $this->assertFileExists(dirname(dirname($commandFile)));
     $this->assertFileExists(dirname($commandFile));
