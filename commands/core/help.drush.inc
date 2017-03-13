@@ -147,16 +147,6 @@ function drush_core_help($name = '') {
   }
 }
 
-// Uncategorize the list of commands. Hiddens have been removed and
-// filtering performed.
-function drush_help_visible($command_categories) {
-  $all = array();
-  foreach ($command_categories as $category => $info) {
-    $all = array_merge($all,  $info['commands']);
-  }
-  return $all;
-}
-
 /**
  * Print CLI table listing all commands.
  */
