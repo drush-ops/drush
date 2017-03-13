@@ -1186,7 +1186,7 @@ function drush_commands_categorize($commands) {
   unset($command_categories['core']);
 
   // Post-process the categories that have no title.
-  // Any that have fewer than 3 commands go into a section called "other".
+  // Any that have fewer than 4 commands go into a section called "other".
   $processed_categories = array();
   $misc_categories = array();
   $other_commands = array();
@@ -1194,7 +1194,7 @@ function drush_commands_categorize($commands) {
   foreach ($command_categories as $key => $info) {
     if (empty($info['title'])) {
       $one_category = $key;
-      if (count($info['commands']) < 3) {
+      if (count($info['commands']) < 4) {
         $other_commands = array_merge($other_commands, $info['commands']);
         $other_categories[] = $one_category;
       }
