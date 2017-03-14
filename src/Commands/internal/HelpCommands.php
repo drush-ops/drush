@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Commands\internal;
 
+use Drush\Commands\core\TopicCommands;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\Table;
@@ -21,6 +22,7 @@ class HelpCommands extends DrushCommands {
    *   Show all available commands in XML format.
    * @usage drush help --format=json
    *   All available commands, in JSON format.
+   * @bootstrap DRUSH_BOOTSTRAP_MAX
    */
   public function help($name) {
     /** @var Application $application */
@@ -28,32 +30,88 @@ class HelpCommands extends DrushCommands {
     $command = $application->find($name);
     $def = $command->getDefinition();
     $table = new Table($this->output());
+    $table->setStyle('compact');
+    // @todo How to do this n Annotated?
+    $allTopics = TopicCommands::getAllTopics();
 
 
-    if ($usages = []) {
-      $table->addRow([new TableCell('Usage:', array('colspan' => 2))]);
-      // @todo oddly, $usage is not the name => value pair.
-      foreach ($usages as $usage) {
+    // @todo How to get commandinfo? Can't do this until https://github.com/consolidation/annotated-command/issues/68.
+//    if ($usages = $commandinfo->getExampleUsages()) {
+//      $table->addRow(['','']);
+//      $table->addRow([new TableCell('Examples:', array('colspan' => 2))]);
+//      foreach ($usages as $usage) {
+//
+//      }
+//    }
 
-      }
-    }
-
+    // @todo Why two elements for each argument?
     if ($arguments = $def->getArguments()) {
+      $table->addRow(['','']);
       $table->addRow([new TableCell('Arguments:', array('colspan' => 2))]);
       foreach ($arguments as $argument) {
-        $table->addRow([$argument->getName(), $argument->getDescription()]);
+        $formatted = $this->formatArgument($argument);
+        $table->addRow(['  ' . $formatted, $argument->getDescription()]);
       }
     }
 
-    if ($options = $def->getOptions()) {
+    if ($aliases = $def->getOptions()) {
+      $table->addRow(['','']);
       $table->addRow([new TableCell('Options:', array('colspan' => 2))]);
-      foreach ($options as $option) {
-        $table->addRow([$option->getName(), $option->getDescription()]);
+      foreach ($aliases as $option) {
+        $formatted = $this->formatOption($option);
+        $table->addRow(['  ' . $formatted, $option->getDescription()]);
       }
     }
 
-    $table->addRow([]);
+    if ($topics = $command->getTopics()) {
+      $table->addRow(['','']);
+      $table->addRow([new TableCell('Topics:', array('colspan' => 2))]);
+      foreach ($topics as $topic) {
+        // @todo deal with long descriptions
+        $table->addRow(['  ' . $topic, substr($allTopics[$topic]['description'], 0, 30)]);
+      }
+    }
+
+    if ($aliases = $command->getAliases()) {
+      $table->addRow(['','']);
+      $table->addRow([new TableCell('Aliases: '. implode(' ', $aliases), array('colspan' => 2))]);
+    }
+
+    $table->addRow(['','']);
     $table->addRow([new TableCell('Help:', array('colspan' => 2))]);
-    $table->render([new TableCell('  '. $def->getSynopsis(), array('colspan' => 2))]);
+    // @todo deal with long descriptions
+    $table->addRow([new TableCell('  '. $command->getDescription(), array('colspan' => 2))]);
+
+    $table->render();
+  }
+
+  function formatOption($option) {
+    $value = '';
+    if ($option->acceptValue()) {
+      $value = sprintf(
+        ' %s%s%s',
+        $option->isValueOptional() ? '[' : '',
+        strtoupper($option->getName()),
+        $option->isValueOptional() ? ']' : ''
+      );
+    }
+
+    $shortcut = $option->getShortcut() ? sprintf('-%s|', $option->getShortcut()) : '';
+    return sprintf('[%s--%s%s]', $shortcut, $option->getName(), $value);
+  }
+
+  function formatArgument($argument) {
+    $element = '<'.$argument->getName().'>';
+    if (!$argument->isRequired()) {
+      $element = '['.$element.']';
+    } elseif ($argument->isArray()) {
+      $element = $element.' ('.$element.')';
+    }
+
+    if ($argument->isArray()) {
+      $element .= '...';
+    }
+
+    return $element;
   }
 }
