@@ -11,18 +11,10 @@ class ListCommands extends DrushCommands {
    * @command list
    * @param $filter Restrict command list to those commands defined in the specified file. Omit value to choose from a list of names.
    * @bootstrap DRUSH_BOOTSTRAP_MAX
-   * @usage drush
+   * @usage drush list
    *   List all commands.
-   * @usage drush --filter=devel_generate
-   *   Show only commands defined in DevelGenerateCommands
-   * @usage drush help pm-download
-   *   Show help for one command.
-   * @usage drush help dl
-   *   Show help for one command using an alias.
-   * @usage drush help --format=html
-   *   Show an HTML page detailing all available commands.
-   * @usage drush help --format=json
-   *   All available commands, in a machine parseable format.
+   * @usage drush list --filter=devel_generate
+   *   Show only commands starting with devel-
    */
   public function helpList($filter, $options = ['format' => 'table']) {
     /** @var Application $application */
