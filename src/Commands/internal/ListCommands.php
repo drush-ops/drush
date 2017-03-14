@@ -4,6 +4,8 @@ namespace Drush\Commands\internal;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\ListCommand;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\TableCell;
 
 class ListCommands extends DrushCommands {
 
@@ -37,9 +39,9 @@ class ListCommands extends DrushCommands {
     }
     else {
 
-      // Filter out categories that the user does not want to see
+      // Filter out namespaces that the user does not want to see
       $filter_category = $options['filter'];
-      if (!empty($filter_category) && ($filter_category !== TRUE)) {
+      if (!empty($filter_category)) {
         if (!array_key_exists($filter_category, $namespaced)) {
           throw new \Exception(dt("The specified command category !filter does not exist.", array('!filter' => $filter_category)));
         }
@@ -51,8 +53,22 @@ class ListCommands extends DrushCommands {
       if (!$options['filter']) {
         drush_print_help($global_options_help);
       }
-      drush_help_listing_print($command_categories);
-      drush_backend_set_result($command_categories);
+      // Print command list.
+      $table = new Table($this->output());
+      $table->setStyle('compact');
+      foreach ($namespaced as $namespace => $list) {
+        $table->addRow([new TableCell($namespace . ':', array('colspan' => 2))]);
+        foreach ($list as $name => $command) {
+          $description = $command->getDescription();
+          if ($aliases = implode(' ', $command->getAliases())) {
+            $title = count($aliases) == 1 ? 'Alias' : 'Aliases';
+            $description .= " $title: " . $aliases;
+          }
+          $table->addRow(['  ' . $name, $description]);
+        }
+      }
+      $table->render();
+      drush_backend_set_result($namespaced);
       return;
     }
   }

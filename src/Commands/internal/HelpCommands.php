@@ -31,11 +31,14 @@ class HelpCommands extends DrushCommands {
     $def = $command->getDefinition();
     $table = new Table($this->output());
     $table->setStyle('compact');
-    // @todo How to do this n Annotated?
+    // @todo How to do this in Annotated?
     $allTopics = TopicCommands::getAllTopics();
 
+    // How best to output this?
+    drush_print($command->getDescription());
 
-    // @todo How to get commandinfo? Can't do this until https://github.com/consolidation/annotated-command/issues/68.
+
+    // @todo How to get commandinfo? See https://github.com/consolidation/annotated-command/issues/68.
 //    if ($usages = $commandinfo->getExampleUsages()) {
 //      $table->addRow(['','']);
 //      $table->addRow([new TableCell('Examples:', array('colspan' => 2))]);
@@ -76,11 +79,6 @@ class HelpCommands extends DrushCommands {
       $table->addRow(['','']);
       $table->addRow([new TableCell('Aliases: '. implode(' ', $aliases), array('colspan' => 2))]);
     }
-
-    $table->addRow(['','']);
-    $table->addRow([new TableCell('Help:', array('colspan' => 2))]);
-    // @todo deal with long descriptions
-    $table->addRow([new TableCell('  '. $command->getDescription(), array('colspan' => 2))]);
 
     $table->render();
   }

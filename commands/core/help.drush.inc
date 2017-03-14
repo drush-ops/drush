@@ -148,26 +148,6 @@ function drush_core_help($name = '') {
 }
 
 /**
- * Print CLI table listing all commands.
- */
-function drush_help_listing_print($command_categories) {
-  $all_commands = array();
-  foreach ($command_categories as $key => $info) {
-    // Get the commands in this category.
-    $commands = $info['commands'];
-
-    // Build rows for drush_print_table().
-    $rows = array();
-    foreach($commands as $cmd => $command) {
-      $name = $command['aliases'] ? $cmd . ' (' . implode(', ', $command['aliases']) . ')': $cmd;
-      $rows[$cmd] = array('name' => $name, 'description' => $command['description']);
-    }
-    drush_print($info['title'] . ": (" . $key . ")");
-    drush_print_table($rows, FALSE, array('name' => 20));
-  }
-}
-
-/**
  * Build a fake command for the purposes of showing examples and options.
  */
 function drush_global_options_command($brief = FALSE) {
