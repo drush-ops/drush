@@ -88,7 +88,7 @@ class SiteCommands extends DrushCommands {
    * Show records for all known site aliases and local sites.
    *
    * @command site-alias
-   * @param site Site alias or site specification.
+   * @param $site Site alias or site specification.
    * @option no-db Do not include the database record in the full alias record (default).
    * @option with-optional Include optional default items.
    * @option local-only Only display sites that are available on the local system (remote-site not set, and Drupal root exists)

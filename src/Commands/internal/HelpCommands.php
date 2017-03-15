@@ -47,7 +47,6 @@ class HelpCommands extends DrushCommands {
 //      }
 //    }
 
-    // @todo Why two elements for each argument?
     if ($arguments = $def->getArguments()) {
       $table->addRow(['','']);
       $table->addRow([new TableCell('Arguments:', array('colspan' => 2))]);
