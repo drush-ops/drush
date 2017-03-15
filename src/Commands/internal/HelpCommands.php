@@ -37,22 +37,24 @@ class HelpCommands extends DrushCommands {
     // How best to output this?
     drush_print($command->getDescription());
 
-
-    // @todo How to get commandinfo? See https://github.com/consolidation/annotated-command/issues/68.
-//    if ($usages = $commandinfo->getExampleUsages()) {
-//      $table->addRow(['','']);
-//      $table->addRow([new TableCell('Examples:', array('colspan' => 2))]);
-//      foreach ($usages as $usage) {
-//
-//      }
-//    }
+    if ($usages = $command->getExampleUsages()) {
+      $table->addRow(['','']);
+      $table->addRow([new TableCell('Examples:', array('colspan' => 2))]);
+      foreach ($usages as $key => $description) {
+        $table->addRow(['  ' . $key, $description]);
+      }
+    }
 
     if ($arguments = $def->getArguments()) {
       $table->addRow(['','']);
       $table->addRow([new TableCell('Arguments:', array('colspan' => 2))]);
       foreach ($arguments as $argument) {
-        $formatted = $this->formatArgument($argument);
-        $table->addRow(['  ' . $formatted, $argument->getDescription()]);
+        $formatted = $this->formatArgumentName($argument);
+        $description = $argument->getDescription();
+        if ($argument->getDefault()) {
+          $description .= ' [default: ' . $argument->getDefault() . ']';
+        }
+        $table->addRow(['  ' . $formatted, $description]);
       }
     }
 
@@ -97,8 +99,8 @@ class HelpCommands extends DrushCommands {
     return sprintf('[%s--%s%s]', $shortcut, $option->getName(), $value);
   }
 
-  function formatArgument($argument) {
-    $element = '<'.$argument->getName().'>';
+  function formatArgumentName($argument) {
+    $element = $argument->getName();
     if (!$argument->isRequired()) {
       $element = '['.$element.']';
     } elseif ($argument->isArray()) {

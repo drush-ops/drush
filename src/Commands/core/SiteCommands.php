@@ -85,7 +85,7 @@ class SiteCommands extends DrushCommands {
 
 
   /**
-   * Show records for all known site aliases and local sites.
+   * Show site alias details, or a list of available site aliases.
    *
    * @command site-alias
    * @param $site Site alias or site specification.
