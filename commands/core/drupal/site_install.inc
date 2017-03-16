@@ -57,10 +57,8 @@ function drush_core_site_install_version($profile, array $additional_form_option
             'pass2' => $account_pass,
           ),
         ),
-        'update_status_module' => array(
-          1 => TRUE,
-          2 => TRUE,
-        ),
+        'enable_update_status_module' => TRUE,
+        'enable_update_status_emails' => TRUE,
         'clean_url' => drush_get_option('clean-url', TRUE),
         'op' => dt('Save and continue'),
       ),
