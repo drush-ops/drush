@@ -88,8 +88,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface {
     // command via the Symfony application. See also drush_main() in preflight.inc;
     // ultimately, the Symfony application should be called from there.
     if (!$command_found && isset($command) && empty($command['bootstrap_errors'])) {
-      $container = \Drush::getContainer();
-      $application = $container->get('application');
+      $application = \Drush::getApplication();
       $args = drush_get_arguments();
       if (count($args)) {
         $name = $args[0];
