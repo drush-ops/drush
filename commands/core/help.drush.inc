@@ -35,38 +35,38 @@ function help_drush_help($section) {
 function help_drush_command() {
   $items = array();
 
-  $items['help'] = array(
-    'description' => 'Print this help message. See `drush help help` for more options.',
-    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
-    'allow-additional-options' => array('helpsingle'),
-    'options' => array(
-      'sort' => 'Sort commands in alphabetical order. Drush waits for full bootstrap before printing any commands when this option is used.',
-      'filter' => array(
-        'description' => 'Restrict command list to those commands defined in the specified file. Omit value to choose from a list of names.',
-        'example-value' => 'category',
-        'value' => 'optional',
-      ),
-    ),
-    'arguments' => array(
-      'command' => 'A command name, or command alias.',
-    ),
-    'examples' => array(
-      'drush' => 'List all commands.',
-      'drush --filter=devel_generate' => 'Show only commands defined in devel_generate.drush.inc',
-      'drush help pm-download' => 'Show help for one command.',
-      'drush help dl' => 'Show help for one command using an alias.',
-      'drush help --format=html' => 'Show an HTML page detailing all available commands.',
-      'drush help --format=json' => 'All available comamnds, in a machine parseable format.',
-    ),
-    // Use output format system for all formats except the default presentation.
-    'outputformat' => array(
-      'default' => 'table',
-      'field-labels' => array('name' => 'Name', 'description' => 'Description'),
-      'output-data-type' => 'format-table',
-    ),
-    'topics' => array('docs-readme'),
-  );
-  return $items;
+//  $items['help'] = array(
+//    'description' => 'Print this help message. See `drush help help` for more options.',
+//    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+//    'allow-additional-options' => array('helpsingle'),
+//    'options' => array(
+//      'sort' => 'Sort commands in alphabetical order. Drush waits for full bootstrap before printing any commands when this option is used.',
+//      'filter' => array(
+//        'description' => 'Restrict command list to those commands defined in the specified file. Omit value to choose from a list of names.',
+//        'example-value' => 'category',
+//        'value' => 'optional',
+//      ),
+//    ),
+//    'arguments' => array(
+//      'command' => 'A command name, or command alias.',
+//    ),
+//    'examples' => array(
+//      'drush' => 'List all commands.',
+//      'drush --filter=devel_generate' => 'Show only commands defined in devel_generate.drush.inc',
+//      'drush help pm-download' => 'Show help for one command.',
+//      'drush help dl' => 'Show help for one command using an alias.',
+//      'drush help --format=html' => 'Show an HTML page detailing all available commands.',
+//      'drush help --format=json' => 'All available comamnds, in a machine parseable format.',
+//    ),
+//    // Use output format system for all formats except the default presentation.
+//    'outputformat' => array(
+//      'default' => 'table',
+//      'field-labels' => array('name' => 'Name', 'description' => 'Description'),
+//      'output-data-type' => 'format-table',
+//    ),
+//    'topics' => array('docs-readme'),
+//  );
+//  return $items;
 }
 
 
