@@ -38,7 +38,9 @@ class SiteInstallCommands extends DrushCommands {
    * @usage drush site-install standard install_configure_form.site_default_country=FR my_profile_form.my_settings.key=value
    *   Pass additional arguments to the profile (D7 example shown here.
    * @usage drush site-install standard install_configure_form.update_status_module='array(FALSE,FALSE)'
-   *   Disable email notification during install and later. If your server has no smtp, this gets rid of an error during install.
+   *   Disable email notification during install and later (D7). If your server has no mail transfer agent, this gets rid of an error during install.
+   * @usage drush site-install standard install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=NULL
+   *   Disable email notification during install and later (D8). If your server has no mail transfer agent, this gets rid of an error during install.
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_ROOT
    * @aliases si
    *
@@ -89,10 +91,8 @@ class SiteInstallCommands extends DrushCommands {
               'pass2' => $account_pass,
             ),
           ),
-          'update_status_module' => array(
-            1 => TRUE,
-            2 => TRUE,
-          ),
+          'enable_update_status_module' => TRUE,
+          'enable_update_status_emails' => TRUE,
           'clean_url' => TRUE,
           'op' => dt('Save and continue'),
         ),
