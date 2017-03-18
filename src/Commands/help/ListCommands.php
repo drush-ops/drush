@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Commands\internal;
+namespace Drush\Commands\help;
 
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Application;
