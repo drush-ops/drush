@@ -202,7 +202,7 @@ function drush_preflight_prepare() {
 
   // Add our core annotation command files to the application.
   drush_init_annotation_commands($container);
-  drush_init_application_global_options($container);
+  drush_init_application_global_options();
 
   // Terminate immediately unless invoked as a command line script
   if (!drush_verify_cli()) {
@@ -324,8 +324,8 @@ function drush_init_dependency_injection_container($input = null, $output = null
 }
 
 // TODO: Where should this go?
-function drush_init_application_global_options($container) {
-  $application = $container->get('application');
+function drush_init_application_global_options() {
+  $application = Drush::getApplication();
   $definition = $application->getDefinition();
 
   // TODO: We should make a better way to manage global options

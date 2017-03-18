@@ -8,6 +8,7 @@
 use League\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use SebastianBergmann\Version;
+use Symfony\Component\Console\Application;
 
 /**
  * Static Service Container wrapper.
@@ -131,6 +132,15 @@ class Drush {
    */
   public static function hasContainer() {
     return static::$container !== NULL;
+  }
+
+  /**
+   * Get the current Symfony Console Application.
+   *
+   * @return Application
+   */
+  public static function getApplication() {
+    return self::getContainer()->get('application');
   }
 
   /**
