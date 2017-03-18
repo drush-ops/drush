@@ -168,8 +168,7 @@ function drush_flatten_array($a) {
 }
 
 /**
- * Get the available global options. Used by help command. Command files may
- * modify this list using hook_drush_help_alter().
+ * Get the available global options. Used by list/help commands.
  *
  * @param boolean $brief
  *   Return a reduced set of important options. Used by help command.
@@ -260,13 +259,10 @@ function drush_get_global_options($brief = FALSE) {
     $options['cache-clear']         = array('propagate' => TRUE, 'description' => 'If 0, Drush skips normal cache clearing; the caller should then clear if needed.', 'example-value' => '0', );
     $options['local']               = array('propagate' => TRUE, 'description' => 'Don\'t look in global locations for commandfiles, config, and site aliases');
 
-    $command = array(
-        'options' => $options,
-        '#brief' => FALSE,
-      ) + drush_command_defaults('global-options', 'global_options', __FILE__);
-    drush_command_invoke_all_ref('drush_help_alter', $command);
 
-    $options = $command['options'];
+
+    // @todo How can Annotated Commands alter global options?
+    // drush_command_invoke_all_ref('drush_help_alter', $command);
   }
   return $options;
 }
