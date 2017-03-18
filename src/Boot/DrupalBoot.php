@@ -457,10 +457,6 @@ abstract class DrupalBoot extends BaseBoot {
   function bootstrap_drupal_configuration() {
     global $conf;
 
-    $override = array(
-      'cron_safe_threshold' => 0, // Don't run poormanscron during Drush request (D7).
-    );
-
     $current_override = drush_get_option_list('variables');
     foreach ($current_override as $name => $value) {
       if (is_numeric($name) && (strpos($value, '=') !== FALSE)) {
