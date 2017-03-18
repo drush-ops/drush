@@ -19,8 +19,7 @@ class ListCommands extends DrushCommands {
    *   Show only commands starting with devel-
    */
   public function helpList($filter, $options = ['format' => 'table']) {
-    /** @var Application $application */
-    $application = \Drush::getContainer()->get('application');
+    $application = \Drush::getApplication();
     $all = $application->all();
 
     foreach ($all as $key => $command) {
@@ -60,11 +59,9 @@ class ListCommands extends DrushCommands {
         $table->addRow([new TableCell($namespace . ':', array('colspan' => 2))]);
         foreach ($list as $name => $command) {
           $description = $command->getDescription();
-          if ($aliases = implode(' ', $command->getAliases())) {
-            $title = count($aliases) == 1 ? 'Alias' : 'Aliases';
-            $description .= " $title: " . $aliases;
-          }
-          $table->addRow(['  ' . $name, $description]);
+          $aliases = implode(' ', $command->getAliases());
+          $suffix = $aliases ? " ($aliases)" : '';
+          $table->addRow(['  ' . $name . $suffix, $description]);
         }
       }
       $table->render();

@@ -105,7 +105,7 @@ class SiteCommands extends DrushCommands {
    *
    * @return array
    */
-  public function siteAlias($site, $options = ['format' => 'yaml']) {
+  public function siteAlias($site = NULL, $options = ['format' => 'yaml']) {
     $site_list = $this->resolveSpecifications($site, $options);
     if ($site_list === FALSE) {
       $this->logger()->success('No sites found.');

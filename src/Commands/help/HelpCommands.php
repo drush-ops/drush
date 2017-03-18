@@ -27,8 +27,7 @@ class HelpCommands extends DrushCommands {
    * @return \Consolidation\AnnotatedCommand\Help\HelpDocument
    */
   public function help($name, $options = ['format' => 'helpcli']) {
-    /** @var Application $application */
-    $application = \Drush::getContainer()->get('application');
+    $application = \Drush::getApplication();
     $command = $application->find($name);
     $helpDocument = new HelpDocument($command);
 

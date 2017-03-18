@@ -59,8 +59,8 @@ class HelpCLIFormatter implements FormatterInterface
       $table->addRow(['','']);
       $table->addRow([new TableCell('Topics:', array('colspan' => 2))]);
       foreach ($topics as $topic) {
-        $topic_command = $this->application->find($topic);
-        $table->addRow(['  ' . $topic, substr('foo', 0, 30)]);
+        $topic_command = \Drush::getApplication()->find($topic);
+        $table->addRow(['  ' . $topic, $topic_command->getDescription()]);
       }
     }
 
@@ -80,14 +80,14 @@ class HelpCLIFormatter implements FormatterInterface
     if ($option['accept_value']) {
       $value = sprintf(
         ' %s%s%s',
-        $option['is_value_required'] ? '[' : '',
-        strtoupper($option['name']),
-        $option['is_value_required'] ? ']' : ''
+        !$option['is_value_required'] ? '[' : '',
+        substr(strtoupper($option['name']), 2),
+        !$option['is_value_required'] ? ']' : ''
       );
     }
 
     $shortcut = $option['shortcut'] ? sprintf('-%s|', $option['shortcut']) : '';
-    return sprintf('[%s--%s%s]', $shortcut, $option['name'], $value);
+    return sprintf('[%s%s%s]', $shortcut, $option['name'], $value);
   }
 
   public function formatArgumentName($argument) {
