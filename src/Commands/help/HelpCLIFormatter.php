@@ -21,7 +21,6 @@ class HelpCLIFormatter implements FormatterInterface
     $table = new Table($output);
     $table->setStyle('compact');
 
-    // @todo. Get input data as an array.
     $output->writeln($data['description']);
 
     if ($examples = $data['examples']) {
@@ -51,7 +50,8 @@ class HelpCLIFormatter implements FormatterInterface
       $table->addRow([new TableCell('Options:', array('colspan' => 2))]);
       foreach ($options as $option) {
         $formatted = $this->formatOption($option);
-        $table->addRow(['  ' . $formatted, $option['description']]);
+        $defaults = $option['defaults'] ? ' [default: "' . implode(' ', $option['defaults']) . '"]' : '';
+        $table->addRow(['  ' . $formatted, $option['description'] . $defaults]);
       }
     }
 
@@ -64,30 +64,32 @@ class HelpCLIFormatter implements FormatterInterface
       }
     }
 
-    // @todo
-    if ($aliases = [$data['alias']]) {
+    if ($aliases = $data['aliases']) {
       $table->addRow(['','']);
-      $table->addRow([new TableCell('Aliases: '. implode(' ', $aliases), array('colspan' => 2))]);
+      $table->addRow([new TableCell('Aliases: '. implode(', ', $aliases), array('colspan' => 2))]);
     }
 
     $table->render();
-
-    // $output->writeln($help);
   }
 
   public function formatOption($option) {
+    // Remove leading dashes.
+    $option['name'] = substr($option['name'], 2);
+
     $value = '';
     if ($option['accept_value']) {
-      $value = sprintf(
-        ' %s%s%s',
-        !$option['is_value_required'] ? '[' : '',
-        substr(strtoupper($option['name']), 2),
-        !$option['is_value_required'] ? ']' : ''
-      );
+      $value = '='.strtoupper($option['name']);
+
+      if (!$option['is_value_required']) {
+        $value = '['.$value.']';
+      }
     }
 
-    $shortcut = $option['shortcut'] ? sprintf('-%s|', $option['shortcut']) : '';
-    return sprintf('[%s%s%s]', $shortcut, $option['name'], $value);
+    $synopsis = sprintf('%s%s',
+      $option['shortcut']  ? sprintf('-%s, ', $option['shortcut'] ) : '    ',
+      sprintf('--%s%s', $option['name'], $value)
+    );
+    return $synopsis;
   }
 
   public function formatArgumentName($argument) {
