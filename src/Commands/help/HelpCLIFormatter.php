@@ -23,21 +23,21 @@ class HelpCLIFormatter implements FormatterInterface
 
     $output->writeln($data['description']);
 
-    if ($examples = $data['examples']) {
+    if (array_key_exists('examples', $data)) {
       $table->addRow(['','']);
       $table->addRow([new TableCell('Examples:', array('colspan' => 2))]);
-      foreach ($examples as $example) {
+      foreach ($data['examples'] as $example) {
         $table->addRow(['  ' . $example['usage'], $example['description']]);
       }
     }
 
-    if ($arguments = $data['arguments']) {
+    if (array_key_exists('arguments', $data)) {
       $table->addRow(['','']);
       $table->addRow([new TableCell('Arguments:', array('colspan' => 2))]);
-      foreach ($arguments as $argument) {
+      foreach ($data['arguments'] as $argument) {
         $formatted = $this->formatArgumentName($argument);
         $description = $argument['description'];
-        // @todo No default in Helpdocument
+        // @todo No argument default in Helpdocument
         //        if ($argument['default']) {
 //          $description .= ' [default: ' . $argument->getDefault() . ']';
 //        }
@@ -45,20 +45,20 @@ class HelpCLIFormatter implements FormatterInterface
       }
     }
 
-    if ($options = $data['options']) {
+    if (array_key_exists('options', $data)) {
       $table->addRow(['','']);
       $table->addRow([new TableCell('Options:', array('colspan' => 2))]);
-      foreach ($options as $option) {
+      foreach ($data['options'] as $option) {
         $formatted = $this->formatOption($option);
-        $defaults = $option['defaults'] ? ' [default: "' . implode(' ', $option['defaults']) . '"]' : '';
+        $defaults = array_key_exists('defaults', $option) ? ' [default: "' . implode(' ', $option['defaults']) . '"]' : '';
         $table->addRow(['  ' . $formatted, $option['description'] . $defaults]);
       }
     }
 
-    if ($topics = $data['topics']) {
+    if (array_key_exists('topics', $data)) {
       $table->addRow(['','']);
       $table->addRow([new TableCell('Topics:', array('colspan' => 2))]);
-      foreach ($topics as $topic) {
+      foreach ($data['topics'] as $topic) {
         $topic_command = \Drush::getApplication()->find($topic);
         $table->addRow(['  ' . $topic, $topic_command->getDescription()]);
       }

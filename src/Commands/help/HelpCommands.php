@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Commands\help;
 
+use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Help\HelpDocument;
 use Drush\Commands\core\TopicCommands;
 use Drush\Commands\DrushCommands;
@@ -36,5 +37,15 @@ class HelpCommands extends DrushCommands {
     $formatterManager = \Drush::getContainer()->get('formatterManager');
     $formatterManager->addFormatter('helpcli', $formatter);
     return $helpDocument;
+  }
+
+  /**
+   * @hook validate help
+   */
+  public function validate(CommandData $commandData) {
+    $name = $commandData->input()->getArgument('name');
+    if (!in_array($name, array_keys(\Drush::getApplication()->all()))) {
+      throw new \Exception(dt("Command !name not found.", array('!name' => $name)));
+    }
   }
 }

@@ -163,9 +163,6 @@ EOT;
     $this->drush('annotated:greet symfony', array(), $options);
     $output = $this->getOutput();
     $this->assertEquals('Hello symfony', $output);
-
-    // Clear the Drush cache so that our 'woot' command is not cached.
-    $this->drush('cache-clear', array('drush'), $options);
   }
 
   public function setupGlobalExtensionsForTests() {

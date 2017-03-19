@@ -255,8 +255,7 @@ function annotationcommand_adapter_process_args($userArgs, $defaults) {
 }
 
 /**
- * Internal function called by annotationcommand_adapter_commands, which
- * is called by drush_get_commands().
+ * Called by drush_get_commands().
  *
  * @param array $annotation_commandfiles path => class mapping
  *
@@ -308,6 +307,8 @@ function annotationcommand_adapter_cache_module_console_commands($console_comman
   $module_service_commands = drush_get_context('DRUSH_MODULE_SERVICE_COMMANDS');
   $commands = annotationcommand_adapter_get_command_for_console_command($console_command, $commandfile_path);
   drush_set_context('DRUSH_MODULE_SERVICE_COMMANDS', array_merge($commands, $module_service_commands));
+  // Register these commands in the Application.
+  annotationcommand_adapter_create_commandfile_instance($commandfile_path, $commandhandler);
 }
 
 /**
@@ -321,6 +322,8 @@ function annotationcommand_adapter_cache_module_service_commands($commandhandler
   $module_service_commands = drush_get_context('DRUSH_MODULE_SERVICE_COMMANDS');
   $commands = annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path);
   drush_set_context('DRUSH_MODULE_SERVICE_COMMANDS', array_merge($commands, $module_service_commands));
+  // Register these commands in the Application.
+  annotationcommand_adapter_create_commandfile_instance($commandfile_path, $commandhandler);
 }
 
 /**
@@ -497,13 +500,14 @@ function annotationcommand_adapter_add_hook_options(&$command)
   // Add possible hooks.
   $blacklist = ['command', 'handle-remote-commands', 'strict-option-handling', 'allow-additional-options', 'bootstrap', 'topic', 'hidden', 'hidden-option'];
   /** @var \Consolidation\AnnotatedCommand\AnnotationData $annotationData */
-  $annotationData = $command['annotations'];
-  $keys = array_diff($annotationData->keys(), $blacklist);
-  $atkeys = [];
-  foreach ($keys as $key) {
-    $atkeys[] = '@'. $key;
+  if ($annotationData = $command['annotations']) {
+    $keys = array_diff($annotationData->keys(), $blacklist);
+    $atkeys = [];
+    foreach ($keys as $key) {
+      $atkeys[] = '@'. $key;
+    }
+    $names = array_merge($names, $atkeys);
   }
-  $names = array_merge($names, $atkeys);
   $factory = \Drush::commandFactory();
   $extraOptions = $factory->hookManager()->getHookOptions($names);
   foreach ($extraOptions as $commandinfo) {
