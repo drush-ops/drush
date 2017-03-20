@@ -19,8 +19,10 @@ class ListCommands extends DrushCommands {
    *   List all commands.
    * @usage drush list --filter=devel_generate
    *   Show only commands starting with devel-
+   *
+   * @return array
    */
-  public function helpList($filter, $options = ['format' => 'table']) {
+  public function helpList($filter, $options = ['format' => 'listcli']) {
     $application = \Drush::getApplication();
     $all = $application->all();
 
@@ -44,42 +46,20 @@ class ListCommands extends DrushCommands {
 
     ksort($namespaced);
 
-    if ($options['format'] != 'table') {
-      // @todo - send something other that Command instances.
-      return $namespaced;
-    }
-    else {
-
-      // Filter out namespaces that the user does not want to see
-      $filter_category = $options['filter'];
-      if (!empty($filter_category)) {
-        if (!array_key_exists($filter_category, $namespaced)) {
-          throw new \Exception(dt("The specified command category !filter does not exist.", array('!filter' => $filter_category)));
-        }
-        $namespaced = array($filter_category => $namespaced[$filter_category]);
+    // Filter out namespaces that the user does not want to see
+    $filter_category = $options['filter'];
+    if (!empty($filter_category)) {
+      if (!array_key_exists($filter_category, $namespaced)) {
+        throw new \Exception(dt("The specified command category !filter does not exist.", array('!filter' => $filter_category)));
       }
-
-      // @todo Bring back global help.
-      // Make a fake command section to hold the global options, then print it.
-//      $global_options_help = drush_global_options_command(TRUE);
-//      if (!$options['filter']) {
-//        drush_print_help($global_options_help);
-//      }
-      // Print command list.
-      $table = new Table($this->output());
-      $table->setStyle('compact');
-      foreach ($namespaced as $namespace => $list) {
-        $table->addRow([new TableCell($namespace . ':', array('colspan' => 2))]);
-        foreach ($list as $name => $command) {
-          $description = $command->getDescription();
-          $aliases = implode(', ', $command->getAliases());
-          $suffix = $aliases ? " ($aliases)" : '';
-          $table->addRow(['  ' . $name . $suffix, $description]);
-        }
-      }
-      $table->render();
-      drush_backend_set_result($namespaced);
-      return;
+      $namespaced = array($filter_category => $namespaced[$filter_category]);
     }
+
+    // This serves as example about how a command can add a custom Formatter.
+    $formatter = new ListCLIFormatter();
+    $formatterManager = \Drush::getContainer()->get('formatterManager');
+    $formatterManager->addFormatter('listcli', $formatter);
+
+    return $namespaced;
   }
 }
