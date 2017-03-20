@@ -2,16 +2,11 @@
 namespace Drush\Commands\config;
 
 use Consolidation\AnnotatedCommand\CommandData;
-use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
-use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\FileStorage;
-use Drush\Config\StorageWrapper;
 use Drush\Commands\DrushCommands;
 
-class ConfigExportCommands extends DrushCommands implements CustomEventAwareInterface {
-
-  use CustomEventAwareTrait;
+class ConfigExportCommands extends DrushCommands {
 
   /**
    * Export Drupal configuration to a directory.

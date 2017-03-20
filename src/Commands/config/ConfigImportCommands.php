@@ -3,8 +3,6 @@ namespace Drush\Commands\config;
 
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
-use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
-use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
 use Drupal\config\StorageReplaceDataWrapper;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\ConfigImporter;
@@ -12,9 +10,7 @@ use Drupal\Core\Config\ConfigException;
 use Drupal\Core\Config\FileStorage;
 use Drush\Commands\DrushCommands;
 
-class ConfigImportCommands extends DrushCommands implements CustomEventAwareInterface {
-
-  use CustomEventAwareTrait;
+class ConfigImportCommands extends DrushCommands {
 
   /**
    * Import config from a config directory.
