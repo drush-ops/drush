@@ -1,11 +1,8 @@
 <?php
 namespace Drush\Commands\help;
 
+use Consolidation\AnnotatedCommand\Help\HelpDocument;
 use Drush\Commands\DrushCommands;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Command\ListCommand;
-use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Helper\TableCell;
 
 class ListCommands extends DrushCommands {
 
@@ -20,7 +17,7 @@ class ListCommands extends DrushCommands {
    * @usage drush list --filter=devel_generate
    *   Show only commands starting with devel-
    *
-   * @return array
+   * @return \DOMDocument
    */
   public function helpList($filter, $options = ['format' => 'listcli']) {
     $application = \Drush::getApplication();
@@ -31,7 +28,7 @@ class ListCommands extends DrushCommands {
       $annotationData = $command->getAnnotationData();
       if (!in_array($key, $command->getAliases()) && !$annotationData->has('hidden')) {
         $parts = explode('-', $key);
-        $namespace = count($parts) >= 2 ? array_shift($parts) : 'other';
+        $namespace = count($parts) >= 2 ? array_shift($parts) : '_global';
         $namespaced[$namespace][$key] = $command;
       }
     }
@@ -39,7 +36,7 @@ class ListCommands extends DrushCommands {
     // Avoid solo namespaces.
     foreach ($namespaced as $namespace => $commands) {
       if (count($commands) == 1) {
-        $namespaced['other'] += $commands;
+        $namespaced['_global'] += $commands;
         unset($namespaced[$namespace]);
       }
     }
@@ -55,11 +52,34 @@ class ListCommands extends DrushCommands {
       $namespaced = array($filter_category => $namespaced[$filter_category]);
     }
 
+    $dom = new \DOMDocument('1.0', 'UTF-8');
+    $commandsXML = $dom->createElement('commands');
+    $namespacesXML = $dom->createElement('namespaces');
+    foreach ($namespaced as $namespace => $commands) {
+      $helpDocument = new HelpDocument($command);
+      $domData = $helpDocument->getDomData();
+      $node = $domData->getElementsByTagName("command")->item(0);
+      $element = $dom->importNode($node, true);
+      $commandsXML->appendChild($element);
+
+      $namespaceXML = $dom->createElement('namespace');
+      $namespaceXML->setAttribute('id', $namespace);
+      foreach ($commands as $key => $command) {
+        $ncommandXML = $dom->createElement('command', $key);
+        $namespaceXML->appendChild($ncommandXML);
+      }
+      $namespacesXML->appendChild($namespaceXML);
+    }
+
+    // Append top level elements in correct order.
+    $dom->appendChild($commandsXML);
+    $dom->appendChild($namespacesXML);
+
     // This serves as example about how a command can add a custom Formatter.
     $formatter = new ListCLIFormatter();
     $formatterManager = \Drush::getContainer()->get('formatterManager');
     $formatterManager->addFormatter('listcli', $formatter);
 
-    return $namespaced;
+    return $dom;
   }
 }
