@@ -308,7 +308,7 @@ function annotationcommand_adapter_cache_module_console_commands($console_comman
   $commands = annotationcommand_adapter_get_command_for_console_command($console_command, $commandfile_path);
   drush_set_context('DRUSH_MODULE_SERVICE_COMMANDS', array_merge($commands, $module_service_commands));
   // Register these commands in the Application.
-  annotationcommand_adapter_create_commandfile_instance($commandfile_path, $commandhandler);
+  annotationcommand_adapter_create_commandfile_instance($commandfile_path, $class->getName());
 }
 
 /**

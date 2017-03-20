@@ -64,7 +64,8 @@ class HelpCLIFormatter implements FormatterInterface
       }
     }
 
-    if ($aliases = $data['aliases']) {
+    // @todo Fix this variability in key name upstream.
+    if ($aliases = array_key_exists('aliases', $data) ? $data['aliases'] :  array_key_exists('alias', $data) ? [$data['alias']] : []) {
       $table->addRow(['','']);
       $table->addRow([new TableCell('Aliases: '. implode(', ', $aliases), array('colspan' => 2))]);
     }

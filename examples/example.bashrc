@@ -8,7 +8,6 @@
 #
 #       dr               - drush
 #       ddd              - drush drupal-directory
-#       dl               - drush pm-download
 #       ev               - drush php-eval
 #       sa               - drush site-alias
 #       sa               - drush site-alias --local-only (show local site aliases)
@@ -17,10 +16,7 @@
 #
 # Aliases for Drush commands that work on the current drupal site:
 #
-#       cc               - drush cache-clear
 #       cr               - drush cache-rebuild
-#       cca              - drush cache-clear all
-#       dis              - drush pm-disable
 #       en               - drush pm-enable
 #       pml              - drush pm-list
 #       unin             - drush pm-uninstall
@@ -68,7 +64,6 @@ alias st='drush core-status'
 alias use='drush site-set'
 
 # Aliases for Drush commands that work on the current drupal site
-alias cc='drush cache-clear'
 alias cr='drush cache-rebuild'
 alias en='drush pm-enable'
 alias pml='drush pm-list'

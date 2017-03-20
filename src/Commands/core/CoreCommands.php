@@ -227,6 +227,8 @@ class CoreCommands extends DrushCommands {
    *   name: Name
    *   description: Description
    * @default-fields name,description
+   *
+   * @return RowsOfFields
    */
   public function globalOptions($options = ['format' => 'table']) {
     $application = \Drush::getApplication();
