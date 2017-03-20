@@ -111,7 +111,7 @@ class ConfigCommands extends DrushCommands {
   }
 
   /**
-   * Open a config file in a text editor. Edits are imported into active configuration after closing editor.
+   * Open a config file in a text editor. Edits are imported after closing editor.
    *
    * @command config-edit
    * @validate-config-name

@@ -10,6 +10,8 @@ use Symfony\Component\Console\Helper\TableCell;
 class ListCommands extends DrushCommands {
 
   /**
+   * List available commands.
+   *
    * @command list
    * @param $filter Restrict command list to those commands defined in the specified file. Omit value to choose from a list of names.
    * @bootstrap DRUSH_BOOTSTRAP_MAX
@@ -31,6 +33,16 @@ class ListCommands extends DrushCommands {
         $namespaced[$namespace][$key] = $command;
       }
     }
+
+    // Avoid solo namespaces.
+    foreach ($namespaced as $namespace => $commands) {
+      if (count($commands) == 1) {
+        $namespaced['other'] += $commands;
+        unset($namespaced[$namespace]);
+      }
+    }
+
+    ksort($namespaced);
 
     if ($options['format'] != 'table') {
       // @todo - send something other that Command instances.
@@ -60,7 +72,7 @@ class ListCommands extends DrushCommands {
         $table->addRow([new TableCell($namespace . ':', array('colspan' => 2))]);
         foreach ($list as $name => $command) {
           $description = $command->getDescription();
-          $aliases = implode(' ', $command->getAliases());
+          $aliases = implode(', ', $command->getAliases());
           $suffix = $aliases ? " ($aliases)" : '';
           $table->addRow(['  ' . $name . $suffix, $description]);
         }

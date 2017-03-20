@@ -10,7 +10,7 @@ use Webmozart\PathUtil\Path;
 class SqlSyncCommands extends DrushCommands {
 
   /**
-   * Copies the database contents from a source site to a target site. Transfers the database dump via rsync.
+   * Copy DB data from a source site to a target site. Transfers data via rsync.
    *
    * @command sql-sync
    * @param $source A site-alias or the name of a subdirectory within /sites whose database you want to copy from.

@@ -36,6 +36,7 @@ class HelpCommands extends DrushCommands {
     $formatter = new HelpCLIFormatter();
     $formatterManager = \Drush::getContainer()->get('formatterManager');
     $formatterManager->addFormatter('helpcli', $formatter);
+
     return $helpDocument;
   }
 
