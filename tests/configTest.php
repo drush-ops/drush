@@ -58,16 +58,6 @@ class ConfigCase extends CommandUnishTestCase {
     $this->drush('config-get', array('system.site', 'page'), $options + array('format' => 'json'));
     $page = $this->getOutputFromJSON('system.site:page');
     $this->assertContains('unish partial', $page->front, '--partial was successfully imported.');
-
-    // @TODO: this may be irrelevant now.
-    $this->drush('pm-enable', array('tracker'), $options);
-
-    // Run config-export one final time.  'tracker' is enabled, then 'tracker'
-    // will be exported.
-    $this->drush('config-export', array(), $options);
-    $this->assertFileExists($core_extension_yml);
-    $contents = file_get_contents($core_extension_yml);
-    $this->assertContains('tracker', $contents);
   }
 
   function options() {
