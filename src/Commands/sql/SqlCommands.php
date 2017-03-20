@@ -192,7 +192,7 @@ class SqlCommands extends DrushCommands {
    *   Skip standard tables. @see example.drushrc.php
    * @usage drush sql-dump --extra-dump=--no-data
    *   Pass extra option to mysqldump command.
-   * @hidden-option create-db
+   * @hidden-options create-db
    */
   public function dump($options = ['result-file' => NULL, 'create-db' => NULL, 'data-only' => NULL, 'ordered-dump' => NULL, 'gzip' => NULL, 'extra' => NULL, 'extra-dump' => NULL]) {
     $this->further($options);

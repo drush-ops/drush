@@ -47,11 +47,12 @@ class ListCommands extends DrushCommands {
         $namespaced = array($filter_category => $namespaced[$filter_category]);
       }
 
+      // @todo Bring back global help.
       // Make a fake command section to hold the global options, then print it.
-      $global_options_help = drush_global_options_command(TRUE);
-      if (!$options['filter']) {
-        drush_print_help($global_options_help);
-      }
+//      $global_options_help = drush_global_options_command(TRUE);
+//      if (!$options['filter']) {
+//        drush_print_help($global_options_help);
+//      }
       // Print command list.
       $table = new Table($this->output());
       $table->setStyle('compact');

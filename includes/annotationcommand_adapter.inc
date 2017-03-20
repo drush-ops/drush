@@ -457,7 +457,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       if (function_exists($fn)) {
         $command['options'][$option] = $fn($command['options'][$option], $commandinfo, $default);
       }
-      if ($commandinfo->getAnnotation('hidden-option') == $option) {
+      if ($commandinfo->getAnnotation('hidden-options') == $option) {
         $command['options'][$option]['hidden'] = TRUE;
       }
     }
@@ -498,7 +498,7 @@ function annotationcommand_adapter_add_hook_options(&$command)
   $names = annotationcommand_adapter_command_names($command);
   $names[] = '*';
   // Add possible hooks.
-  $blacklist = ['command', 'handle-remote-commands', 'strict-option-handling', 'allow-additional-options', 'bootstrap', 'topic', 'hidden', 'hidden-option'];
+  $blacklist = ['command', 'handle-remote-commands', 'strict-option-handling', 'allow-additional-options', 'bootstrap', 'topic', 'hidden', 'hidden-options'];
   /** @var \Consolidation\AnnotatedCommand\AnnotationData $annotationData */
   if ($annotationData = $command['annotations']) {
     $keys = array_diff($annotationData->keys(), $blacklist);
@@ -521,7 +521,7 @@ function annotationcommand_adapter_add_hook_options(&$command)
       if (!empty($default)) {
         $command['options'][$option]['example-value'] = $default;
       }
-      if (in_array($option, _convert_csv_to_array($commandinfo->getAnnotation('hidden-option')))) {
+      if (in_array($option, _convert_csv_to_array($commandinfo->getAnnotation('hidden-options')))) {
         $command['options'][$option]['hidden'] = TRUE;
       }
       $fn = 'annotationcommand_adapter_alter_option_description_' . $option;

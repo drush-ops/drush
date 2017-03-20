@@ -55,7 +55,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface {
    * @command cache-clear
    * @param $type The particular cache to clear. Omit this argument to choose from available types.
    * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
-   * @hidden-option cache-clear
+   * @hidden-options cache-clear
    * @aliases cc
    * @bootstrap DRUSH_BOOTSTRAP_MAX
    * @complete \Drush\Commands\core\CacheCommands::complete
@@ -161,7 +161,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface {
    *
    * @command cache-rebuild
    * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
-   * @hidden-option cache-clear
+   * @hidden-options cache-clear
    * @aliases cr,rebuild
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_SITE
    */

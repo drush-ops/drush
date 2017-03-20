@@ -22,6 +22,10 @@ class HelpCLIFormatter implements FormatterInterface
     $table->setStyle('compact');
 
     $output->writeln($data['description']);
+    if (array_key_exists('help', $data)) {
+      $output->writeln('');
+      $output->writeln($data['help']);
+    }
 
     if (array_key_exists('examples', $data)) {
       $table->addRow(['','']);

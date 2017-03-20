@@ -13,7 +13,7 @@ class DrupliconCommands extends DrushCommands {
    * @hook post-command *
    * @option druplicon Shows the druplicon as glorious ASCII art.
    * @todo hidden is not yet part of annotated-command project. It is recognized by Drush's annotation_adapter.inc
-   * @hidden-option druplicon
+   * @hidden-options druplicon
    */
   public function druplicon($result, CommandData $commandData) {
     // If one command does a drush_invoke to another command,

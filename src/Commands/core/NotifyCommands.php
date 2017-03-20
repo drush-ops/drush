@@ -22,7 +22,7 @@ class NotifyCommands extends DrushCommands {
    * @option notify-cmd Specify the shell command to trigger the notification.
    * @option notify-cmd-audio Specify the shell command to trigger the audio notification.
    * @todo hidden is not yet part of annotated-command project. It is recognized by Drush's annotation_adapter.inc
-   * @hidden-option notify,notify-audio,notify-cmd,notify-cmd-audio
+   * @hidden-options notify,notify-audio,notify-cmd,notify-cmd-audio
    */
   public function notify() {}
 
