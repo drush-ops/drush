@@ -109,10 +109,8 @@ function config_drush_command() {
         'example-value' => 'branchname',
       ),
       'destination' => 'An arbitrary directory that should receive the exported files. An alternative to label argument.',
-      'skip-modules' => 'A list of modules to ignore during export (e.g. to avoid listing dev-only modules in exported configuration).',
     ),
     'examples' => array(
-      'drush config-export --skip-modules=devel' => 'Export configuration; do not include the devel module in the exported configuration, regardless of whether or not it is enabled in the site.',
       'drush config-export --destination' => 'Export configuration; Save files in a backup directory named config-export.',
     ),
   );
@@ -133,11 +131,10 @@ function config_drush_command() {
       'partial' => array(
         'description' => 'Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted).',
       ),
-      'skip-modules' => 'A list of modules to ignore during import (e.g. to avoid disabling dev-only modules that are not enabled in the imported configuration).',
     ),
     'core' => array('8+'),
     'examples' => array(
-      'drush config-import --skip-modules=devel' => 'Import configuration; do not enable or disable the devel module, regardless of whether or not it appears in the imported list of enabled modules.',
+      'drush config-import --partial' => 'Import configuration; do not remove missing configuration.',
     ),
     'aliases' => array('cim'),
   );
@@ -458,7 +455,6 @@ function drush_config_export($destination = NULL) {
 function _drush_config_export($destination, $destination_dir, $branch) {
   $commit = drush_get_option('commit');
   $comment = drush_get_option('message', 'Exported configuration.');
-  $storage_filters = drush_config_get_storage_filters();
   if (count(glob($destination_dir . '/*')) > 0) {
     // Retrieve a list of differences between the active and target configuration (if any).
     if ($destination == CONFIG_SYNC_DIRECTORY) {
@@ -470,21 +466,6 @@ function _drush_config_export($destination, $destination_dir, $branch) {
     /** @var \Drupal\Core\Config\StorageInterface $active_storage */
     $active_storage = \Drupal::service('config.storage');
     $comparison_source = $active_storage;
-
-    // If the output is being filtered, then write a temporary copy before doing
-    // any comparison.
-    if (!empty($storage_filters)) {
-      $tmpdir = drush_tempdir();
-      drush_copy_dir($destination_dir, $tmpdir, FILE_EXISTS_OVERWRITE);
-      $comparison_source = new FileStorage($tmpdir);
-      $comparison_source_filtered = new StorageWrapper($comparison_source, $storage_filters);
-      foreach ($active_storage->listAll() as $name) {
-        // Copy active storage to our temporary active store.
-        if ($existing = $active_storage->read($name)) {
-          $comparison_source_filtered->write($name, $existing);
-        }
-      }
-    }
 
     $config_comparer = new StorageComparer($comparison_source, $target_storage, \Drupal::service('config.manager'));
     if (!$config_comparer->createChangelist()->hasChanges()) {
@@ -521,10 +502,7 @@ function _drush_config_export($destination, $destination_dir, $branch) {
   else {
     $destination_storage = new FileStorage($destination_dir);
   }
-  // If there are any filters, then attach them to the destination storage
-  if (!empty($storage_filters)) {
-    $destination_storage = new StorageWrapper($destination_storage, $storage_filters);
-  }
+
   foreach ($source_storage->listAll() as $name) {
     $destination_storage->write($name, $source_storage->read($name));
   }
@@ -600,28 +578,6 @@ function drush_config_import_validate() {
 }
 
 /**
- * Return storage filters to alter config import and export.
- */
-function drush_config_get_storage_filters() {
-  return drush_command_invoke_all('drush_storage_filters');
-}
-
-/**
- * Implements hook_drush_storage_filters().
- */
-function config_drush_storage_filters() {
-  $result = array();
-  $module_adjustments = drush_get_option('skip-modules');
-  if (!empty($module_adjustments)) {
-    if (is_string($module_adjustments)) {
-      $module_adjustments = explode(',', $module_adjustments);
-    }
-    $result[] = new CoreExtensionFilter($module_adjustments);
-  }
-  return $result;
-}
-
-/**
  * Command callback. Import from specified config directory (defaults to sync).
  */
 function drush_config_import($source = NULL) {
@@ -646,38 +602,28 @@ function drush_config_import($source = NULL) {
     $source_dir = config_get_config_directory($source);
   }
 
+  if ($source == CONFIG_SYNC_DIRECTORY) {
+    $source_storage = \Drupal::service('config.storage.sync');
+  }
+  else {
+    $source_storage = new FileStorage($source_dir);
+  }
+
   // Determine $source_storage in partial and non-partial cases.
   /** @var \Drupal\Core\Config\StorageInterface $active_storage */
   $active_storage = \Drupal::service('config.storage');
   if (drush_get_option('partial')) {
-    $source_storage = new StorageReplaceDataWrapper($active_storage);
-    $file_storage = new FileStorage($source_dir);
-    foreach ($file_storage->listAll() as $name) {
-      $data = $file_storage->read($name);
-      $source_storage->replaceData($name, $data);
+    $replacement_storage = new StorageReplaceDataWrapper($active_storage);
+    foreach ($source_storage->listAll() as $name) {
+      $data = $source_storage->read($name);
+      $replacement_storage->replaceData($name, $data);
     }
-  }
-  else {
-    if ($source == CONFIG_SYNC_DIRECTORY) {
-      $source_storage = \Drupal::service('config.storage.sync');
-    }
-    else {
-      $source_storage = new FileStorage($source_dir);
-    }
-  }
-
-  // If our configuration storage is being filtered, then attach all filters
-  // to the source storage object.  We will use the filtered values uniformly
-  // for comparison, full imports, and partial imports.
-  $storage_filters = drush_config_get_storage_filters();
-  if (!empty($storage_filters)) {
-    $source_storage = new StorageWrapper($source_storage, $storage_filters);
+    $source_storage = $replacement_storage;
   }
 
   /** @var \Drupal\Core\Config\ConfigManagerInterface $config_manager */
   $config_manager = \Drupal::service('config.manager');
   $storage_comparer = new StorageComparer($source_storage, $active_storage, $config_manager);
-
 
   if (!$storage_comparer->createChangelist()->hasChanges()) {
     return drush_log(dt('There are no changes to import.'), LogLevel::OK);

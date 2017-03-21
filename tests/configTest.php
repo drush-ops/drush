@@ -74,35 +74,6 @@ class ConfigCase extends CommandUnishTestCase {
     $this->drush('config-get', array('system.site', 'page'), $options + array('format' => 'json'));
     $page = $this->getOutputFromJSON('system.site:page');
     $this->assertContains('unish partial', $page->front, '--partial was successfully imported.');
-
-    $this->drush('pm-enable', array('tracker'), $options);
-    $ignored_modules = array('skip-modules' => 'tracker');
-
-    // Run config-export again - note that 'tracker' is enabled, but we
-    // are going to ignore it on write, so no changes should be written
-    // to core.extension when it is exported.
-    $this->drush('config-export', array(), $options + $ignored_modules);
-    $this->assertFileExists($core_extension_yml);
-    $contents = file_get_contents($core_extension_yml);
-    $this->assertNotContains('tracker', $contents);
-
-    // Run config-import again, but ignore 'tracker' when importing.
-    // It is not presently in the exported configuration, because we enabled
-    // it after export.  If we imported again without adding 'tracker' with
-    // 'skip-modules' option, then it would be disabled.
-    $this->drush('config-import', array(), $options + $ignored_modules);
-    $this->drush('config-get', array('core.extension', 'module'), $options + array('format' => 'yaml'));
-    $modules = $this->getOutput();
-    $this->assertContains('tracker', $modules, 'Tracker module appears in extension list after import, as it should.');
-
-    // Run config-export one final time.  'tracker' is still enabled, even
-    // though it was ignored in the previous import/export operations.
-    // When we remove the skip-modules option, then 'tracker' will
-    // be exported.
-    $this->drush('config-export', array(), $options);
-    $this->assertFileExists($core_extension_yml);
-    $contents = file_get_contents($core_extension_yml);
-    $this->assertContains('tracker', $contents);
   }
 
   function options() {

@@ -21,7 +21,6 @@ pages:
   - Command Authoring: commands.md
   - Bootstrap: bootstrap.md
   - Context system: context.md
-  - Filtering Drupal configuration: config-filter.md
 theme: readthedocs
 site_author: ""
 repo_url: https://github.com/drush-ops/drush
