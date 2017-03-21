@@ -3,18 +3,14 @@ namespace Drush\Commands\config;
 
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
-use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Drupal\config\StorageReplaceDataWrapper;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\ConfigImporter;
 use Drupal\Core\Config\ConfigException;
 use Drupal\Core\Config\FileStorage;
-use Drush\Config\StorageWrapper;
 use Drush\Commands\DrushCommands;
 
-class ConfigImportCommands extends DrushCommands implements CustomEventAwareInterface {
-
-  use ConfigTrait;
+class ConfigImportCommands extends DrushCommands {
 
   /**
    * Import config from a config directory.
@@ -22,12 +18,9 @@ class ConfigImportCommands extends DrushCommands implements CustomEventAwareInte
    * @command config-import
    * @param $label A config directory label (i.e. a key in \$config_directories array in settings.php).
    * @interact-config-label
-   * @optionset-storage-filters
    * @option preview Format for displaying proposed changes. Recognized values: list, diff.
    * @option source An arbitrary directory that holds the configuration files. An alternative to label argument
    * @option partial Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted).
-   * @usage drush config-import --skip-modules=devel
-   *   Import configuration; do not enable or disable the devel module, regardless of whether or not it appears in the imported list of enabled modules.
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    * @aliases cim
    * @complete \Drush\Commands\core\ConfigCommands::completeLabels
@@ -47,21 +40,12 @@ class ConfigImportCommands extends DrushCommands implements CustomEventAwareInte
     /** @var \Drupal\Core\Config\StorageInterface $active_storage */
     $active_storage = \Drupal::service('config.storage');
     if (drush_get_option('partial')) {
-      $source_storage = new StorageReplaceDataWrapper($active_storage);
-      $file_storage = new FileStorage($source_dir);
-      foreach ($file_storage->listAll() as $name) {
-        $data = $file_storage->read($name);
-        $source_storage->replaceData($name, $data);
+      $replacement_storage = new StorageReplaceDataWrapper($active_storage);
+      foreach ($source_storage->listAll() as $name) {
+        $data = $source_storage->read($name);
+        $replacement_storage->replaceData($name, $data);
       }
-    }
-
-    // If our configuration storage is being filtered, then attach all filters
-    // to the source storage object.  We will use the filtered values uniformly
-    // for comparison, full imports, and partial imports.
-    // Command files may provide filters by implementing our hook.
-    $storage_filters = $this->getStorageFilters($options);
-    if (!empty($storage_filters)) {
-      $source_storage = new StorageWrapper($source_storage, $storage_filters);
+      $source_storage = $replacement_storage;
     }
 
     /** @var \Drupal\Core\Config\ConfigManagerInterface $config_manager */

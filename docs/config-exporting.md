@@ -33,29 +33,5 @@ you can use Drush configuration filters.
 
 ## Ignoring Development Modules
 
-If you have a certain list of modules that should only be enabled on
-the development or staging server, then this may be done with the
-built-in `--skip-modules` option in the config-export and config-import
-commands.
-
-For example, if you want to enable the 'devel' module on development
-systems, but not on production server, you could define the following
-configuration settings in your drushrc.php file:
-```
-# $command_specific['config-export']['skip-modules'] = array('devel');
-# $command_specific['config-import']['skip-modules'] = array('devel');
-```
-You may then use `drush pm-enable` to enable the devel module on the
-development machine, and subsequent imports of the configuration data
-will not cause it to be disabled again.  Similarly, if you make changes
-to configuration on the development environment and export them, then
-the devel module will not be listed in the exports.
-
-## More Complex Adjustments
-
-Drush allows more complex changes to the configuration data to be made
-via the configuration filter mechanism.  In order to do this, you must
-write some code inside a Drush extension.
-
-See [Drupal Configuration Filtering](config-filter.md) for more information
-on how to do this.
+Use the [Config Split](https://www.drupal.org/project/config_split) module to
+split off development configuration in a dedicated config directory.

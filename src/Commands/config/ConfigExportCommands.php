@@ -2,15 +2,11 @@
 namespace Drush\Commands\config;
 
 use Consolidation\AnnotatedCommand\CommandData;
-use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\FileStorage;
-use Drush\Config\StorageWrapper;
 use Drush\Commands\DrushCommands;
 
-class ConfigExportCommands extends DrushCommands implements CustomEventAwareInterface {
-
-  use ConfigTrait;
+class ConfigExportCommands extends DrushCommands {
 
   /**
    * Export Drupal configuration to a directory.
@@ -18,13 +14,10 @@ class ConfigExportCommands extends DrushCommands implements CustomEventAwareInte
    * @command config-export
    * @interact-config-label
    * @param string $label A config directory label (i.e. a key in $config_directories array in settings.php).
-   * @optionset-storage-filters
    * @option add Run `git add -p` after exporting. This lets you choose which config changes to sync for commit.
    * @option commit Run `git add -A` and `git commit` after exporting.  This commits everything that was exported without prompting.
    * @option message Commit comment for the exported configuration.  Optional; may only be used with --commit.
    * @option destination An arbitrary directory that should receive the exported files. An alternative to label argument.
-   * @usage drush config-export --skip-modules=devel
-   *   Export configuration; do not include the devel module in the exported configuration, regardless of whether or not it is enabled in the site.
    * @usage drush config-export --destination
    *   Export configuration; Save files in a backup directory named config-export.
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
@@ -63,7 +56,6 @@ class ConfigExportCommands extends DrushCommands implements CustomEventAwareInte
 
   public function doExport($options, $destination_dir) {
     $commit = $options['commit'];
-    $storage_filters = $this->getStorageFilters($options);
     if (count(glob($destination_dir . '/*')) > 0) {
       // Retrieve a list of differences between the active and target configuration (if any).
       if ($destination_dir == \config_get_config_directory(CONFIG_SYNC_DIRECTORY)) {
@@ -75,21 +67,6 @@ class ConfigExportCommands extends DrushCommands implements CustomEventAwareInte
       /** @var \Drupal\Core\Config\StorageInterface $active_storage */
       $active_storage = \Drupal::service('config.storage');
       $comparison_source = $active_storage;
-
-      // If the output is being filtered, then write a temporary copy before doing
-      // any comparison.
-      if (!empty($storage_filters)) {
-        $tmpdir = drush_tempdir();
-        drush_copy_dir($destination_dir, $tmpdir, FILE_EXISTS_OVERWRITE);
-        $comparison_source = new FileStorage($tmpdir);
-        $comparison_source_filtered = new StorageWrapper($comparison_source, $storage_filters);
-        foreach ($active_storage->listAll() as $name) {
-          // Copy active storage to our temporary active store.
-          if ($existing = $active_storage->read($name)) {
-            $comparison_source_filtered->write($name, $existing);
-          }
-        }
-      }
 
       $config_comparer = new StorageComparer($comparison_source, $target_storage, \Drupal::service('config.manager'));
       if (!$config_comparer->createChangelist()->hasChanges()) {
@@ -126,10 +103,7 @@ class ConfigExportCommands extends DrushCommands implements CustomEventAwareInte
     else {
       $destination_storage = new FileStorage($destination_dir);
     }
-    // If there are any filters, then attach them to the destination storage
-    if (!empty($storage_filters)) {
-      $destination_storage = new StorageWrapper($destination_storage, $storage_filters);
-    }
+
     foreach ($source_storage->listAll() as $name) {
       $destination_storage->write($name, $source_storage->read($name));
     }
