@@ -58,7 +58,7 @@ class DrushInputAdapter implements InputInterface {
     /**
      * {@inheritdoc}
      */
-    public function hasParameterOption($values, $onlyParams = false)
+    public function hasParameterOption($values)
     {
         $values = (array) $values;
 
@@ -74,7 +74,7 @@ class DrushInputAdapter implements InputInterface {
     /**
      *  {@inheritdoc}
      */
-    public function getParameterOption($values, $default = false, $onlyParams = false)
+    public function getParameterOption($values, $default = false)
     {
         $values = (array) $values;
 
