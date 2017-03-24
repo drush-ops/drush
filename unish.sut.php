@@ -18,35 +18,11 @@ function unish_validate() {
     fwrite(STDERR, 'The drush directory must end in /drush in order to run the tests. This is due to the "path" repository in tests/resources/composer.json');
     exit(1);
   }
-
-  /**
-   * Assure that the composer.lock and the composer.json in the /tests directory
-   * are in sync.
-   *
-   * Based on http://stackoverflow.com/a/28730898/265501.
-   *
-   * @todo. Not sure this is feasible since multiple authors will update the lockfile from different path/to/drush.
-   */
-//  $codebase = __DIR__ . '/tests/resources/codebase';
-//  // If composer.lock is missing then no need for this check.
-//  $lockfile = $codebase . '/composer.lock';
-//  if (file_exists($lockfile)) {
-//    $lock = json_decode(file_get_contents($lockfile))->{'content-hash'};
-//    $json = md5(replace_token(file_get_contents($codebase . '/composer.json')));
-//
-//    if ($lock !== $json) {
-//      fwrite(STDERR, "$lockfile file out of sync with its composer.json.\n");
-//      exit(1);
-//    }
-//
-//    fwrite(STDERR, "$lockfile file up to date with its composer.json.\n");
-//    exit(0);
-//  }
 }
 
 /**
  * Use Composer to build a Drupal codebase, with this Drush symlinked into /vendor.
- * @param $unish_sandbox Path to sandbox.
+ * @param string $unish_sandbox Path to sandbox.
  * @return integer
  *   Exit code.
  */
