@@ -39,14 +39,14 @@ function unish_setup_sut($unish_sandbox) {
       file_put_contents($path, $new_contents);
     }
   }
-  // @todo Call update instead of install if specified on the CLI. Useful need we need to update composer.lock.
+
   // We also need to put back the %PATH-TO-DRUSH% token by hand or automatically.
   // For option parsing, see built-in getopt() function.
   $cmd = 'composer install --no-interaction --no-progress --no-suggest --working-dir ' . escapeshellarg($working_dir);
   fwrite(STDERR, 'Executing: ' . $cmd . "\n");
   exec($cmd, $output, $return);
 
-  // @todo Not 100% sure this is needed, but I've seen Composer download a second Drush, instead of symlink.
+  // If requirements force it to, Composer downloads a second Drush, instead of symlink.
   $drush_sut = $working_dir . '/vendor/drush/drush';
   if (!is_link($drush_sut)) {
     fwrite(STDERR, "Drush not symlinked in the System-Under-Test.\n");

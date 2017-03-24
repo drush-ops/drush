@@ -16,7 +16,7 @@
   "require": {
     "composer/installers": "^1.2",
     "cweagans/composer-patches": "~1.0",
-    "drupal/core": "dev-8.4.x",
+    "drupal/core": "8.4.x",
     "drush/drush": "*",
     "phpunit/phpunit": "4.*",
     "drupal/empty_theme": "1.0",
