@@ -36,9 +36,6 @@
       "web/themes/contrib/{$name}": ["type:drupal-theme"],
       "drush/contrib/{$name}": ["type:drupal-drush"]
     },
-    "patches": {
-      "drupal/core": {
-        "Update Symfony components to ~3.2 (https://www.drupal.org/node/2712647)": "https://www.drupal.org/files/issues/update_symfony-2712647-333.patch"
-      },
+    "patches": {}
   }
 }
