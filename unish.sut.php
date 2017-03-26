@@ -31,7 +31,8 @@ function unish_setup_sut($unish_sandbox) {
   drush_delete_dir($working_dir, TRUE);
   $codebase = 'tests/resources/codebase';
   drush_copy_dir($codebase, $working_dir);
-  foreach (['composer.json', 'composer.lock'] as $filename) {
+  $composer_json = getenv('COMPOSER') ?: 'composer.json';
+  foreach ([$composer_json] as $filename) {
     $path = $working_dir . "/$filename";
     if (file_exists($path)) {
       $contents = file_get_contents($path);
@@ -40,9 +41,14 @@ function unish_setup_sut($unish_sandbox) {
     }
   }
 
-  // We also need to put back the %PATH-TO-DRUSH% token by hand or automatically.
-  // For option parsing, see built-in getopt() function.
-  $cmd = 'composer install --no-interaction --no-progress --no-suggest --working-dir ' . escapeshellarg($working_dir);
+  // getopt() is awkward
+  $verbose = NULL;
+  foreach (['-v','-vv','-vvv','--verbose'] as $needle) {
+    if (in_array($needle, $_SERVER['argv'])) {
+      $verbose = $needle;
+    }
+  }
+  $cmd = "composer $verbose install --no-interaction --no-progress --no-suggest --working-dir " . escapeshellarg($working_dir);
   fwrite(STDERR, 'Executing: ' . $cmd . "\n");
   exec($cmd, $output, $return);
 

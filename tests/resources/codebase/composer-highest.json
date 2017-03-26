@@ -15,11 +15,11 @@
   ],
   "require": {
     "composer/installers": "^1.2",
-    "cweagans/composer-patches": "~1.0",
-    "drupal/core": "8.4.x",
-    "drush/drush": "*",
-    "phpunit/phpunit": "4.*",
-    "drupal/empty_theme": "1.0",
+    "cweagans/composer-patches": "~1.6",
+    "drupal/core": "8.4.x-dev",
+    "drush/drush": "*@dev",
+    "phpunit/phpunit": "^4.1",
+    "drupal/empty_theme": "^1.0",
     "drupal/devel": "^1.0@RC",
     "lox/xhprof": "dev-master"
   },
