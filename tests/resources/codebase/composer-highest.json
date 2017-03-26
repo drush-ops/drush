@@ -2,6 +2,10 @@
   "name": "Site Under Test",
   "repositories": [
     {
+      "type": "vcs",
+      "url": "https://github.com/ms-slasher13/drupal"
+    },
+    {
       "type": "path",
       "url": "%PATH-TO-DRUSH%",
       "options": {
@@ -16,7 +20,7 @@
   "require": {
     "composer/installers": "^1.2",
     "cweagans/composer-patches": "~1.6",
-    "drupal/core": "8.4.x-dev",
+    "drupal/core": "dev-symfony32",
     "drush/drush": "*@dev",
     "phpunit/phpunit": "^4.1",
     "drupal/empty_theme": "^1.0",
