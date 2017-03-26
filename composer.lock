@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "546d303006c9073ab6f5238326b266e5",
+    "content-hash": "c6dab847ee76bb577e0006bc454ebc2b",
     "packages": [
         {
             "name": "consolidation/annotated-command",
@@ -107,16 +107,16 @@
         },
         {
             "name": "consolidation/output-formatters",
-            "version": "3.1.8",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/output-formatters.git",
-                "reference": "0b50ba1134d581fd55376f3e21508dab009ced47"
+                "reference": "5091d69247e119c0388fe2593eeafd3e32d60d79"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/output-formatters/zipball/0b50ba1134d581fd55376f3e21508dab009ced47",
-                "reference": "0b50ba1134d581fd55376f3e21508dab009ced47",
+                "url": "https://api.github.com/repos/consolidation/output-formatters/zipball/5091d69247e119c0388fe2593eeafd3e32d60d79",
+                "reference": "5091d69247e119c0388fe2593eeafd3e32d60d79",
                 "shasum": ""
             },
             "require": {
@@ -133,7 +133,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.x-dev"
+                    "dev-master": "3.x-dev"
                 }
             },
             "autoload": {
@@ -152,7 +152,7 @@
                 }
             ],
             "description": "Format text by applying transformations provided by plug-in formatters.",
-            "time": "2017-03-01T20:54:45+00:00"
+            "time": "2017-03-19 14:39:43"
         },
         {
             "name": "consolidation/robo",
@@ -1550,7 +1550,7 @@
                 "performance",
                 "profiling"
             ],
-            "time": "2015-08-31T22:07:48+00:00"
+            "time": "2015-08-31 22:07:48"
         },
         {
             "name": "phpspec/prophecy",
@@ -2332,6 +2332,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "consolidation/output-formatters": 20,
         "lox/xhprof": 20
     },
     "prefer-stable": true,

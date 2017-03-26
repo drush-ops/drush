@@ -2,10 +2,7 @@
 namespace Drush\Commands\help;
 
 use Consolidation\AnnotatedCommand\CommandData;
-use Consolidation\AnnotatedCommand\Help\HelpDocument;
-use Drush\Commands\core\TopicCommands;
 use Drush\Commands\DrushCommands;
-use Symfony\Component\Console\Application;
 
 class HelpCommands extends DrushCommands {
 
@@ -30,7 +27,7 @@ class HelpCommands extends DrushCommands {
   public function help($name, $options = ['format' => 'helpcli']) {
     $application = \Drush::getApplication();
     $command = $application->find($name);
-    $helpDocument = new HelpDocument($command);
+    $helpDocument = new DrushHelpDocument($command);
 
     // This serves as example about how a command can add a custom Formatter.
     $formatter = new HelpCLIFormatter();
