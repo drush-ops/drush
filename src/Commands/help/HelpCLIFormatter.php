@@ -22,7 +22,7 @@ class HelpCLIFormatter implements FormatterInterface
     $table->setStyle('compact');
 
     $output->writeln($data['description']);
-    if (array_key_exists('help', $data)) {
+    if (array_key_exists('help', $data) && $data['help'] != $data['description']) {
       $output->writeln('');
       $output->writeln($data['help']);
     }
@@ -55,7 +55,7 @@ class HelpCLIFormatter implements FormatterInterface
       foreach ($data['options'] as $option) {
         $formatted = $this->formatOption($option);
         $defaults = array_key_exists('defaults', $option) ? ' [default: "' . implode(' ', $option['defaults']) . '"]' : '';
-        $table->addRow(['  ' . $formatted, $option['description'] . $defaults]);
+        $table->addRow([$formatted, $option['description'] . $defaults]);
       }
     }
 
@@ -69,9 +69,9 @@ class HelpCLIFormatter implements FormatterInterface
     }
 
     // @todo Fix this variability in key name upstream.
-    if ($aliases = array_key_exists('aliases', $data) ? $data['aliases'] :  array_key_exists('alias', $data) ? [$data['alias']] : []) {
+    if (array_key_exists('aliases', $data) ? $data['aliases'] :  array_key_exists('alias', $data) ? [$data['alias']] : []) {
       $table->addRow(['','']);
-      $table->addRow([new TableCell('Aliases: '. implode(', ', $aliases), array('colspan' => 2))]);
+      $table->addRow([new TableCell('Aliases: '. implode(', ', $data['aliases']), array('colspan' => 2))]);
     }
 
     $table->render();
@@ -91,7 +91,7 @@ class HelpCLIFormatter implements FormatterInterface
     }
 
     $synopsis = sprintf('%s%s',
-      $option['shortcut']  ? sprintf('-%s, ', $option['shortcut'] ) : '    ',
+      $option['shortcut']  ? sprintf('-%s, ', $option['shortcut'] ) : '  ',
       sprintf('--%s%s', $option['name'], $value)
     );
     return $synopsis;
