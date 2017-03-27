@@ -35,10 +35,9 @@ class EmptyBoot extends BaseBoot {
       // This isn't right any more, but we can't just change this to
       // DRUSH_BOOTSTRAP_DRUSH, or we will start running commands that
       // needed a full bootstrap with no bootstrap, and that won't work.
-      // For now, we will continue to force this to 'login'.  Any command
-      // that does not declare 'bootstrap' is declaring that it is a Drupal
-      // command.
-      'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
+      // Any command that does not declare 'bootstrap' is declaring that
+      // it is a Drupal command.
+      'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
     );
   }
 }

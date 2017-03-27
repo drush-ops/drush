@@ -27,12 +27,6 @@ define('DRUSH_BOOTSTRAP_MAX', -2);
  */
 define('DRUSH_BOOTSTRAP_DRUSH', 0);
 
-// TODO: Move all of the constants below to a Drupal-specific file.
-// We can't do this until commands are declaring which CMS they work
-// with, because right now, commands that do not declare a 'bootstrap'
-// level default to DRUSH_BOOTSTRAP_DRUPAL_LOGIN, so we need this constant,
-// at least, available in non-Drupal contexts.
-
 /**
  * Set up and test for a valid drupal root, either through the -r/--root options,
  * or evaluated based on the current working directory.
@@ -91,23 +85,7 @@ define('DRUSH_BOOTSTRAP_DRUPAL_DATABASE', 4);
  */
 define('DRUSH_BOOTSTRAP_DRUPAL_FULL', 5);
 
-/**
- * Log in to the initialiased Drupal site.
- *
- * This is the default bootstrap phase all commands will try to reach,
- * unless otherwise specified.
- *
- * This bootstrap phase is used after the site has been
- * fully bootstrapped.
- *
- * This phase will log you in to the drupal site with the username
- * or user ID specified by the --user/ -u option.
- *
- * Use this bootstrap phase for your command if you need to have access
- * to information for a specific user, such as listing nodes that might
- * be different based on who is logged in.
- */
-define('DRUSH_BOOTSTRAP_DRUPAL_LOGIN', 6);
+
 
 /**
  * Find the URI that has been selected by the cwd

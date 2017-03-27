@@ -30,7 +30,6 @@ class StatusCommands extends DrushCommands {
    *   db-name: DB name
    *   db-status: Database
    *   bootstrap: Drupal bootstrap
-   *   user: Drupal user
    *   theme: Default theme
    *   admin-theme: Admin theme
    *   php-bin: PHP binary
@@ -55,7 +54,7 @@ class StatusCommands extends DrushCommands {
    *   files-path: Files, Public
    *   temp-path: Files, Temp
    *   %paths: Other paths
-   * @default-fields drupal-version,uri,db-driver,db-hostname,db-port,db-username,db-password,db-name,db-status,bootstrap,user,theme,admin-theme,php-bin,php-conf,php-os,drush-script,drush-version,drush-temp,drush-conf,drush-alias-files,install-profile,root,site,files,private,temp,config-sync
+   * @default-fields drupal-version,uri,db-driver,db-hostname,db-port,db-username,db-password,db-name,db-status,bootstrap,theme,admin-theme,php-bin,php-conf,php-os,drush-script,drush-version,drush-temp,drush-conf,drush-alias-files,install-profile,root,site,files,private,temp,config-sync
    * @pipe-format json
    * @bootstrap DRUSH_BOOTSTRAP_MAX
    * @topics docs-readme
@@ -99,11 +98,8 @@ class StatusCommands extends DrushCommands {
             $status_table['install-profile'] = $boot_object->get_profile();
             if ($phase > DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
               $status_table['db-status'] = dt('Connected');
-              if ($phase > DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+              if ($phase >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
                 $status_table['bootstrap'] = dt('Successful');
-                if ($phase == DRUSH_BOOTSTRAP_DRUPAL_LOGIN) {
-                  $status_table['user'] = \Drupal::currentUser()->getAccountName();
-                }
               }
             }
           }
