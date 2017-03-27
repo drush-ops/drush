@@ -4,6 +4,7 @@ namespace Drush\Commands\core;
 
 use Drupal\image\Entity\ImageStyle;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 
 class ImageCommands extends DrushCommands {
 
@@ -46,8 +47,7 @@ class ImageCommands extends DrushCommands {
       $choices = array_merge(array('all' => 'all'), $choices);
       $style_names = drush_choice($choices, dt("Choose a style to flush."));
       if ($style_names === FALSE) {
-        // TODO: This will need to `throw`
-        return drush_user_abort();
+        throw new UserAbortException();
       }
     }
 

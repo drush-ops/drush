@@ -2,6 +2,7 @@
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 use Drush\Log\LogLevel;
 use Robo\LoadAllTasks;
 use Robo\Contract\IOAwareInterface;
@@ -115,7 +116,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
         $openEditor = $options['edit'];
       }
       else {
-        return drush_user_abort();
+        throw new UserAbortException();
       }
     }
     else {

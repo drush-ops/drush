@@ -9,6 +9,7 @@ use Drush\Commands\DrushCommands;
 use Drupal\Core\DrupalKernel;
 use Drupal\Core\Site\Settings;
 use Drupal\Core\Cache\Cache;
+use Drush\Exceptions\UserAbortException;
 use Symfony\Component\HttpFoundation\Request;
 
 /*
@@ -82,8 +83,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface {
       $types = $this->getTypes(drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
       $type = drush_choice(array_combine(array_keys($types), array_keys($types)), 'Enter a number to choose which cache to clear.', '!key');
       if (empty($type)) {
-        // @todo throw Exception.
-        return drush_user_abort();
+        throw new UserAbortException();
       }
       $input->setArgument('type', $type);
     }

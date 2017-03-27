@@ -6,6 +6,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Config\FileStorage;
 use Drush\Config\CoreExtensionFilter;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Yaml\Parser;
@@ -326,8 +327,7 @@ class ConfigCommands extends DrushCommands {
       $config_names = \Drupal::configFactory()->listAll();
       $choice = drush_choice($config_names, 'Choose a configuration.');
       if (empty($choice)) {
-        // TODO: This will need to `throw`
-        return drush_user_abort();
+        throw new UserAbortException();
       }
       else {
         $config_name = $config_names[$choice];
@@ -349,8 +349,7 @@ class ConfigCommands extends DrushCommands {
       if (count($choices) >= 2) {
         $label = drush_choice($choices, 'Choose a '. $option_name. '.');
         if (empty($label)) {
-          // @todo Throw exception.
-          return drush_user_abort();
+          throw new UserAbortException();
         }
         $input->setArgument('label', $label);
       }

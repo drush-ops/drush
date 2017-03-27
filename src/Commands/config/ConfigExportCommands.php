@@ -5,6 +5,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\FileStorage;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 
 class ConfigExportCommands extends DrushCommands {
 
@@ -89,7 +90,7 @@ class ConfigExportCommands extends DrushCommands {
       }
 
       if (!$commit && !drush_confirm(dt('The .yml files in your export directory (!target) will be deleted and replaced with the active config.', array('!target' => $destination_dir)))) {
-        return drush_user_abort();
+        throw new UserAbortException();
       }
       // Only delete .yml files, and not .htaccess or .git.
       $target_storage->deleteAll();

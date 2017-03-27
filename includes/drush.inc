@@ -1393,6 +1393,8 @@ function drush_clear_error() {
  * Exit due to user declining a confirmation prompt.
  *
  * Usage:  return drush_user_abort();
+ *
+ * @deprecated
  */
 function drush_user_abort($msg = NULL) {
   drush_set_context('DRUSH_USER_ABORT', TRUE);

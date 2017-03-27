@@ -5,6 +5,7 @@ use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Command\DrushInputAdapter;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -55,7 +56,7 @@ class TopicCommands extends DrushCommands {
       }
       natcasesort($choices);
       if (!$topic_name = drush_choice($choices, dt('Choose a topic'), '!value (!key)', array(5))) {
-        return drush_user_abort();
+        throw new UserAbortException();
       }
       $input->setArgument('topic_name', $topic_name);
     }
