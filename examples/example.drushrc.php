@@ -133,9 +133,6 @@
 // Enable verbose mode.
 # $options['v'] = 1;
 
-// Show database passwords in 'status' and 'sql-conf' commands.
-# $options['show-passwords'] = 1;
-
 /**
  * Specify the logging level for PHP notices.  Defaults to "notice".  Set to
  * "warning" when doing Drush development.  Also make sure that error_reporting

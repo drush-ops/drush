@@ -54,7 +54,7 @@ class StatusCommands extends DrushCommands {
    *   files-path: Files, Public
    *   temp-path: Files, Temp
    *   %paths: Other paths
-   * @default-fields drupal-version,uri,db-driver,db-hostname,db-port,db-username,db-password,db-name,db-status,bootstrap,theme,admin-theme,php-bin,php-conf,php-os,drush-script,drush-version,drush-temp,drush-conf,drush-alias-files,install-profile,root,site,files,private,temp,config-sync
+   * @default-fields drupal-version,uri,db-driver,db-hostname,db-port,db-username,db-name,db-status,bootstrap,theme,admin-theme,php-bin,php-conf,php-os,drush-script,drush-version,drush-temp,drush-conf,drush-alias-files,install-profile,root,site,files,private,temp,config-sync
    * @pipe-format json
    * @bootstrap DRUSH_BOOTSTRAP_MAX
    * @topics docs-readme

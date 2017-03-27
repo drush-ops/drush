@@ -80,16 +80,17 @@ class ListCommands extends DrushCommands {
     $dom = new \DOMDocument('1.0', 'UTF-8');
     $commandsXML = $dom->createElement('commands');
     $namespacesXML = $dom->createElement('namespaces');
-    foreach ($namespaced as $namespace => $commands) {
-      $helpDocument = new HelpDocument($command);
-      $domData = $helpDocument->getDomData();
-      $node = $domData->getElementsByTagName("command")->item(0);
-      $element = $dom->importNode($node, TRUE);
-      $commandsXML->appendChild($element);
 
+    foreach ($namespaced as $namespace => $commands) {
       $namespaceXML = $dom->createElement('namespace');
       $namespaceXML->setAttribute('id', $namespace);
       foreach ($commands as $key => $command) {
+        $helpDocument = new HelpDocument($command);
+        $domData = $helpDocument->getDomData();
+        $node = $domData->getElementsByTagName("command")->item(0);
+        $element = $dom->importNode($node, TRUE);
+        $commandsXML->appendChild($element);
+
         $ncommandXML = $dom->createElement('command', $key);
         $namespaceXML->appendChild($ncommandXML);
       }

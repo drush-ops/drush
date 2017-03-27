@@ -180,9 +180,9 @@ class SqlCommands extends DrushCommands {
    * @optionset_sql
    * @optionset_table_selection
    * @option result-file Save to a file. The file should be relative to Drupal root.
-   * @option create-db Omit DROP TABLE statements. Postgres and Oracle only.  Used by sql-sync, since including the DROP TABLE statements interfere with the import when the database is created.
+   * @option create-db Omit DROP TABLE statements. Used by Postgres and Oracle only.
    * @option data-only Dump data without statements to create any of the schema.
-   * @option ordered-dump Order by primary key and add line breaks for efficient diff in revision control. Slows down the dump. Mysql only.
+   * @option ordered-dump Order by primary key and add line breaks for efficient diffs. Slows down the dump. Mysql only.
    * @option gzip Compress the dump using the gzip program which must be in your $PATH.
    * @option extra Add custom arguments/options when connecting to database (used internally to list tables).
    * @option extra-dump Add custom arguments/options to the dumping the database (e.g. mysqldump command).
@@ -193,6 +193,9 @@ class SqlCommands extends DrushCommands {
    * @usage drush sql-dump --extra-dump=--no-data
    *   Pass extra option to mysqldump command.
    * @hidden-options create-db
+   *
+   * @notes
+   *   createdb is used by sql-sync, since including the DROP TABLE statements interfere with the import when the database is created.
    */
   public function dump($options = ['result-file' => NULL, 'create-db' => NULL, 'data-only' => NULL, 'ordered-dump' => NULL, 'gzip' => NULL, 'extra' => NULL, 'extra-dump' => NULL]) {
     $this->further($options);
