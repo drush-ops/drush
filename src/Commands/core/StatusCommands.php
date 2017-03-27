@@ -101,9 +101,6 @@ class StatusCommands extends DrushCommands {
               $status_table['db-status'] = dt('Connected');
               if ($phase > DRUSH_BOOTSTRAP_DRUPAL_FULL) {
                 $status_table['bootstrap'] = dt('Successful');
-                if ($phase == DRUSH_BOOTSTRAP_DRUPAL_LOGIN) {
-                  $status_table['user'] = \Drupal::currentUser()->getAccountName();
-                }
               }
             }
           }

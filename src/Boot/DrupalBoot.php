@@ -46,7 +46,7 @@ abstract class DrupalBoot extends BaseBoot {
       DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION   => 'bootstrap_drupal_configuration',
       DRUSH_BOOTSTRAP_DRUPAL_DATABASE        => 'bootstrap_drupal_database',
       DRUSH_BOOTSTRAP_DRUPAL_FULL            => 'bootstrap_drupal_full',
-      DRUSH_BOOTSTRAP_DRUPAL_LOGIN           => 'bootstrap_drupal_login');
+    );
   }
 
   /**
@@ -87,7 +87,7 @@ abstract class DrupalBoot extends BaseBoot {
   function command_defaults() {
     return array(
       'drupal dependencies' => array(),
-      'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
+      'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
     );
   }
 
@@ -580,30 +580,6 @@ abstract class DrupalBoot extends BaseBoot {
       drush_cache_set($cid, $install_profile);
     }
 
-    _drush_log_drupal_messages();
-  }
-
-  /**
-   * Log into the bootstrapped Drupal site with a specific
-   * username or user id.
-   */
-  function bootstrap_drupal_login() {
-    $uid_or_name = drush_set_context('DRUSH_USER', drush_get_option('user', 0));
-    if (!$account = User::load($uid_or_name)) {
-      if (!$account = \user_load_by_name($uid_or_name)) {
-        if (is_numeric($uid_or_name)) {
-          $message = dt('Could not login with user ID !user.', array('!user' => $uid_or_name));
-          if ($uid_or_name === 0) {
-            $message .= ' ' . dt('This is typically caused by importing a MySQL database dump from a faulty tool which re-numbered the anonymous user ID in the users table. See !link for help recovering from this situation.', array('!link' => 'http://drupal.org/node/1029506'));
-          }
-        }
-        else {
-          $message = dt('Could not login with user account `!user\'.', array('!user' => $uid_or_name));
-        }
-        return drush_set_error('DRUPAL_USER_LOGIN_FAILED', $message);
-      }
-    }
-    \Drupal::currentUser()->setAccount($account);
     _drush_log_drupal_messages();
   }
 

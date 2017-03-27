@@ -3,9 +3,7 @@
 namespace Unish;
 
 /**
- * Tests the drush batch subsystem.
- *
- * @see includes/batch.inc
+ * Tests the Drush Batch subsystem.
  *
  * @group base
  */
