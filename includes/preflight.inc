@@ -994,10 +994,6 @@ function drush_shutdown() {
   }
   elseif (drush_get_context('DRUSH_QUIET', FALSE)) {
     ob_end_clean();
-    // If we are in pipe mode, emit the compact representation of the command, if available.
-    if (drush_get_context('DRUSH_PIPE')) {
-      drush_pipe_output();
-    }
   }
 
   // This way drush_return_status() will always be the last shutdown function (unless other shutdown functions register shutdown functions...)
