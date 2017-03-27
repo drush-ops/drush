@@ -47,7 +47,7 @@ class EditCommands extends DrushCommands {
     else {
       $choice = drush_choice($all, 'Enter a number to choose which file to edit.', '!key');
       if (!$choice) {
-        return drush_user_abort();
+        throw new UserAbortException();
       }
       $filepath = $all[$choice];
     }

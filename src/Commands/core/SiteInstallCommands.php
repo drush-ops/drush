@@ -3,6 +3,7 @@ namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 use Drush\Log\LogLevel;
 use Drupal\Core\Config\FileStorage;
 use Drush\Sql\SqlBase;
@@ -256,8 +257,7 @@ class SiteInstallCommands extends DrushCommands {
     }
 
     if (!drush_confirm(dt('You are about to ') . implode(dt(' and '), $msg) . ' Do you want to continue?')) {
-      // @todo test this.
-      return drush_user_abort();
+      throw new UserAbortException();
     }
 
     // Can't install without sites subdirectory and settings.php.

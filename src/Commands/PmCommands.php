@@ -5,6 +5,7 @@ namespace Drush\Commands;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Extension\Extension;
 use Drupal\Core\Extension\MissingDependencyException;
+use Drush\Exceptions\UserAbortException;
 
 class PmCommands extends DrushCommands {
 
@@ -23,7 +24,7 @@ class PmCommands extends DrushCommands {
     if (array_values($list) !== $modules) {
       drush_print(dt('The following extensions will be enabled: !list', array('!list' => implode(', ', $list))));
       if(!drush_confirm(dt('Do you really want to continue?'))) {
-        return drush_user_abort();
+        throw new UserAbortException();
       }
     }
     if (!\Drupal::service('module_installer')->install($modules, TRUE)) {
@@ -50,7 +51,7 @@ class PmCommands extends DrushCommands {
     if (array_values($list) !== $modules) {
       drush_print(dt('The following extensions will be uninstalled: !list', array('!list' => implode(', ', $list))));
       if(!drush_confirm(dt('Do you really want to continue?'))) {
-        return drush_user_abort();
+        throw new UserAbortException();
       }
     }
     if (!\Drupal::service('module_installer')->uninstall($modules, TRUE)) {

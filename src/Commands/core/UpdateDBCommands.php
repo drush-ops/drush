@@ -5,6 +5,7 @@ use Drupal\Core\Utility\Error;
 use Drupal\Core\Entity\EntityStorageException;
 use Drush\Commands\DrushCommands;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drush\Exceptions\UserAbortException;
 use Drush\Log\LogLevel;
 
 
@@ -236,7 +237,7 @@ class UpdateDBCommands extends DrushCommands {
       }
 
       if (!drush_confirm(dt('Do you wish to run all pending updates?'))) {
-        return drush_user_abort();
+        throw new UserAbortException();
       }
 
       $this->updateBatch($options);
@@ -456,7 +457,7 @@ class UpdateDBCommands extends DrushCommands {
       }
 
       if (!drush_confirm(dt('Do you wish to run all pending updates?'))) {
-        return drush_user_abort();
+        throw new UserAbortException();
       }
 
       $operations[] = array([$this, 'updateEntityDefinitions'], array());

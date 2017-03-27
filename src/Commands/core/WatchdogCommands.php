@@ -8,6 +8,7 @@ use Drupal\Core\Logger\RfcLogLevel;
 use Drush\Commands\DrushCommands;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\Html;
+use Drush\Exceptions\UserAbortException;
 
 class WatchdogCommands extends DrushCommands {
 
@@ -97,6 +98,7 @@ class WatchdogCommands extends DrushCommands {
 
   /**
    * @hook interact watchdog-list
+   * @throws \Drush\Exceptions\UserAbortException
    */
   public function interactList($input, $output) {
 
@@ -113,9 +115,7 @@ class WatchdogCommands extends DrushCommands {
     }
     $option = drush_choice($choices, dt('Select a message type or severity level.'));
     if ($option === FALSE) {
-      // TODO: We need to throw an exception to abort from an interact hook.
-      // Need to define an abort type and catch it.
-      return drush_user_abort();
+      throw new UserAbortException();
     }
     if (isset($types[$option])) {
       $input->setOption('type', $types[$option]);
@@ -151,7 +151,7 @@ class WatchdogCommands extends DrushCommands {
     if ($substring == 'all') {
       drush_print(dt('All watchdog messages will be deleted.'));
       if (!drush_confirm(dt('Do you really want to continue?'))) {
-        return drush_user_abort();
+        throw new UserAbortException();
       }
       $ret = Database::getConnection()->truncate('watchdog')->execute();
       $this->logger()->success(dt('All watchdog messages have been deleted.'));
@@ -159,7 +159,7 @@ class WatchdogCommands extends DrushCommands {
     else if (is_numeric($substring)) {
       drush_print(dt('Watchdog message #!wid will be deleted.', array('!wid' => $substring)));
       if(!drush_confirm(dt('Do you really want to continue?'))) {
-        return drush_user_abort();
+        throw new UserAbortException();
       }
       $affected_rows = Database::getConnection()->delete('watchdog')->condition('wid', $substring)->execute();
       if ($affected_rows == 1) {
@@ -177,7 +177,7 @@ class WatchdogCommands extends DrushCommands {
       $where = $this->where($options['type'], $options['severity'], $substring, 'OR');
       drush_print(dt('All messages with !where will be deleted.', array('!where' => preg_replace("/message LIKE %$substring%/", "message body containing '$substring'" , strtr($where['where'], $where['args'])))));
       if(!drush_confirm(dt('Do you really want to continue?'))) {
-        return drush_user_abort();
+        throw new UserAbortException();
       }
       $affected_rows = Database::getConnection()->delete('watchdog')
         ->where($where['where'], $where['args'])
