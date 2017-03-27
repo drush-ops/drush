@@ -125,7 +125,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface {
 
   protected function hasRegisteredSymfonyCommand($application, $name) {
     try {
-      $application->get($name);
+      $application->find($name);
       return true;
     }
     catch (\InvalidArgumentException $e) {
