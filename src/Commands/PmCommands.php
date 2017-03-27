@@ -2,6 +2,7 @@
 namespace Drush\Commands;
 
 
+use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Extension\Extension;
 use Drupal\Core\Extension\MissingDependencyException;
@@ -61,6 +62,23 @@ class PmCommands extends DrushCommands {
     // Our logger got blown away during the container rebuild above.
     $boot = \Drush::bootstrapManager()->bootstrap();
     $boot->add_logger();
+  }
+
+  /**
+   * @hook validate pm-uninstall
+   */
+  public function validateUninstall(CommandData $commandData) {
+    if ($modules = $commandData->input()->getArgument('modules')) {
+      $modules = _convert_csv_to_array($modules);
+      if ($validation_reasons = \Drupal::service('module_installer')->validateUninstall($modules)) {
+        foreach ($validation_reasons as $module => $list) {
+          foreach ($list as $markup) {
+            $reasons[$module] = "$module: " . (string) $markup;
+          }
+        }
+        throw new \Exception(implode("/n", $reasons));
+      }
+    }
   }
 
   /**
