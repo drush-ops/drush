@@ -117,9 +117,7 @@ class StatusCommands extends DrushCommands {
         $status_table['admin-theme'] = $theme = \Drupal::config('system.theme')->get('admin') ?: 'seven';
       }
     }
-    if ($php_bin = $options['php']) {
-      $status_table['php-bin'] = $php_bin;
-    }
+    $status_table['php-bin'] = PHP_BINARY;
     $status_table['php-os'] = PHP_OS;
     if ($php_ini_files = EditCommands::php_ini_files()) {
       $status_table['php-conf'] = $php_ini_files;

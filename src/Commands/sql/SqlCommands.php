@@ -139,8 +139,8 @@ class SqlCommands extends DrushCommands {
    * @aliases sqlq
    * @usage drush sql-query "SELECT * FROM users WHERE uid=1"
    *   Browse user record. Table prefixes, if used, must be added to table names by hand.
-   * @usage drush sql-query --db-prefix "SELECT * FROM {users} WHERE uid=1"
-   *   Browse user record. Table prefixes are honored.  Caution: curly-braces will be stripped from all portions of the query.
+   * @usage drush sql-query --db-prefix "SELECT * FROM {users}"
+   *   Browse user record. Table prefixes are honored.  Caution: All curly-braces will be stripped.
    * @usage `drush sql-connect` < example.sql
    *   Import sql statements from a file into the current database.
    * @usage drush sql-query --file=example.sql
@@ -192,7 +192,7 @@ class SqlCommands extends DrushCommands {
    *   Skip standard tables. @see example.drushrc.php
    * @usage drush sql-dump --extra-dump=--no-data
    *   Pass extra option to mysqldump command.
-   * @hidden-option create-db
+   * @hidden-options create-db
    */
   public function dump($options = ['result-file' => NULL, 'create-db' => NULL, 'data-only' => NULL, 'ordered-dump' => NULL, 'gzip' => NULL, 'extra' => NULL, 'extra-dump' => NULL]) {
     $this->further($options);

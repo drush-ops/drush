@@ -34,7 +34,7 @@ class StateCommands {
    * @param mixed $value The value to assign to the state key. Use '-' to read from STDIN.
    * @option input-format Type for the value. Defaults to 'auto'. Other recognized values: string, integer float, boolean, json, yaml.
    * @option value For internal use only.
-   * @hidden-option value
+   * @hidden-options value
    * @usage drush sset system.maintenance_mode 1 --input-format=integer
    *  Put site into Maintenance mode.
    * @usage drush state-set system.cron_last 1406682882 --input-format=integer

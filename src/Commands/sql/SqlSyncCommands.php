@@ -10,7 +10,7 @@ use Webmozart\PathUtil\Path;
 class SqlSyncCommands extends DrushCommands {
 
   /**
-   * Copies the database contents from a source site to a target site. Transfers the database dump via rsync.
+   * Copy DB data from a source site to a target site. Transfers data via rsync.
    *
    * @command sql-sync
    * @param $source A site-alias or the name of a subdirectory within /sites whose database you want to copy from.
@@ -32,7 +32,7 @@ class SqlSyncCommands extends DrushCommands {
    * @topics docs-aliases,docs-policy,docs-example-sync-via-http,docs-example-sync-extension
    * @complete \Drush\Commands\CompletionCommands::completeSiteAliases
    */
-  public function sqlsync($source, $destination, $options = ['no-dump' => NULL, 'no-sync' => NULL, 'runner' => NULL, 'create-db' => NULL, 'db-su' => NULL, 'db-su-pw' => NULL, 'sanitize' => NULL, 'confirm-sanitizations' => NULL, 'target-dump' => NULL, 'source-dump' => TRUE]) {
+  public function sqlsync($source, $destination, $options = ['no-dump' => false, 'no-sync' => false, 'runner' => NULL, 'create-db' => false, 'db-su' => NULL, 'db-su-pw' => NULL, 'sanitize' => false, 'confirm-sanitizations' => false, 'target-dump' => NULL, 'source-dump' => TRUE]) {
     $source_record = drush_sitealias_get_record($source);
     $destination_record = drush_sitealias_get_record($destination);
     $source_is_local = !array_key_exists('remote-host', $source_record) || drush_is_local_host($source_record);

@@ -85,11 +85,11 @@ class PmCommands extends DrushCommands {
    * Show a list of available extensions (modules and themes).
    *
    * @command pm-list
-   * @option type Filter by extension type. Choices: module, theme.
-   * @option status Filter by extension status. Choices: enabled or 'not installed'.
-   * @option core Filter out extensions that are not in Drupal core.
-   * @option no-core Filter out extensions that are provided by Drupal core.
-   * @option package Filter by project packages (e.g. Development).
+   * @option type Only show extensions having a given type. Choices: module, theme.
+   * @option status Only show extensions having a given status. Choices: enabled or disabled.
+   * @option core Only show extensions that are in Drupal core.
+   * @option no-core Only show extensions that are not provided by Drupal core.
+   * @option package Only show extensions having a given project packages (e.g. Development).
    * @field-labels
    *   package: Package
    *   display_name: Name
@@ -103,7 +103,7 @@ class PmCommands extends DrushCommands {
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
    */
-  public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => NULL, 'core' => NULL, 'no-core' => NULL]) {
+  public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => NULL, 'core' => false, 'no-core' => false]) {
     $rows = [];
     $modules = \system_rebuild_module_data();
     $themes = \Drupal::service('theme_handler')->rebuildThemeData();

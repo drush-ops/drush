@@ -925,7 +925,7 @@ function drush_parse_args() {
       $arguments = array('version');
     }
     else {
-      $arguments = array('help');
+      $arguments = array('list');
     }
   }
   if (is_array($command_args)) {
@@ -1414,16 +1414,7 @@ function drush_parse_command() {
 
   // We have found a command that matches. Set the appropriate values.
   if ($command) {
-    // Special case. Force help command if --help option was specified.
-    if (drush_get_option('help')) {
-      $arguments = array($command['command']);
-      $command = $implemented['helpsingle'];
-      $command['arguments'] = $arguments;
-      $command['allow-additional-options'] = TRUE;
-    }
-    else {
-      _drush_prepare_command($command, $arguments);
-    }
+    _drush_prepare_command($command, $arguments);
     drush_set_command($command);
   }
   return $command;

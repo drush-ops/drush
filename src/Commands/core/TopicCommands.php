@@ -66,8 +66,8 @@ class TopicCommands extends DrushCommands {
    * @hook validate topic
    */
   public function validate(CommandData $commandData) {
-    $topic_name = $topic_name = $commandData->input()->getArgument('topic_name');
-    if (empty($topic_name)) {
+    $topic_name = $commandData->input()->getArgument('topic_name');
+    if (!in_array($topic_name, array_keys(self::getAllTopics()))) {
       throw new \Exception(dt("!topic topic not found.", array('!topic' => $topic_name)));
     }
   }

@@ -65,14 +65,16 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * - Empty /modules, /profiles, /themes in SUT.
    */
   public static function cleanDirs() {
-    $sandbox = self::getSandBox();
-    if (file_exists($sandbox)) {
-      self::recursive_delete($sandbox);
-    }
-    foreach (['modules', 'themes', 'profiles'] as $dir) {
-      $target = Path::join(self::getSut(), 'web', $dir, 'contrib');
-      if (file_exists($target)) {
-        self::recursive_delete_dir_contents($target);
+    if (empty(getenv('UNISH_DIRTY'))) {
+      $sandbox = self::getSandBox();
+      if (file_exists($sandbox)) {
+        self::recursive_delete($sandbox);
+      }
+      foreach (['modules', 'themes', 'profiles'] as $dir) {
+        $target = Path::join(self::getSut(), 'web', $dir, 'contrib');
+        if (file_exists($target)) {
+          self::recursive_delete_dir_contents($target);
+        }
       }
     }
   }
@@ -157,9 +159,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * Runs after all tests in a class are run.
    */
   public static function tearDownAfterClass() {
-    if (empty(getenv('UNISH_DIRTY'))) {
-      self::cleanDirs();
-    }
+    self::cleanDirs();
 
     self::$sites = array();
     parent::tearDownAfterClass();

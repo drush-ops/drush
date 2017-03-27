@@ -63,7 +63,6 @@ class annotatedCommandCase extends CommandUnishTestCase {
     $this->drush('woot', array(), $options + ['help' => NULL]);
     $output = $this->getOutput();
     $this->assertContains('Woot mightily.', $output);
-
     $this->assertContains('Aliases: wt', $output);
 
     // drush help woot
@@ -143,15 +142,14 @@ EOT;
     $this->assertEquals($expected, json_encode($data));
 
     // drush try-formatters --help
-    $this->drush('try-formatters', array(), $options + ['help' => NULL], NULL, NULL, self::EXIT_SUCCESS);
+    $this->drush('try-formatters', array(), $options + ['help' => NULL]);
     $output = $this->getOutput();
     $this->assertContains('Demonstrate formatters', $output);
     $this->assertContains('try:formatters --fields=first,third', $output);
     $this->assertContains('try:formatters --fields=III,II', $output);
-    $this->assertContains('--fields=<first, second, third>', $output);
-    $this->assertContains('Fields to output. All available', $output);
-    $this->assertContains('--format=<table>', $output);
-    $this->assertContains('Select output format. Available:', $output);
+    // $this->assertContains('--fields=<first, second, third>', $output);
+    $this->assertContains('Available fields:', $output);
+    $this->assertContains('[default: "table"]', $output);
     $this->assertContains('Aliases: try-formatters', $output);
 
 
@@ -163,9 +161,6 @@ EOT;
     $this->drush('annotated:greet symfony', array(), $options);
     $output = $this->getOutput();
     $this->assertEquals('Hello symfony', $output);
-
-    // Clear the Drush cache so that our 'woot' command is not cached.
-    $this->drush('cache-clear', array('drush'), $options);
   }
 
   public function setupGlobalExtensionsForTests() {

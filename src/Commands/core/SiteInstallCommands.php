@@ -11,13 +11,13 @@ use Drush\Sql\SqlBase;
 class SiteInstallCommands extends DrushCommands {
 
   /**
-   * Install Drupal along with modules/themes/configuration using the specified install profile.
+   * Install Drupal along with modules/themes/configuration/profile.
    *
    * @command site-install
-   * @param $profile The install profile you wish to run. Defaults to 'default' in D6, 'standard' in D7+, unless an install profile is marked as exclusive (or as a distribution in D8+ terminology) in which case that is used.
-   * @param $additional Any additional settings you wish to pass to the profile. The key is in the form [form name].[parameter name]
-   * @option db-url A Drupal 6 style database URL. Only required for initial install - not re-install. If omitted and required, Drush prompts for this item.
-   * @option db-prefix An optional table prefix to use for initial install.  Can be a key-value array of tables/prefixes in a drushrc file (not the command line).
+   * @param $profile An install profile name. Defaults to 'standard' unless an install profile is marked as a distribution.
+   * @param $additional Additional info for the install profile. The key is in the form [form name].[parameter name]
+   * @option db-url A Drupal 6 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.
+   * @option db-prefix An optional table prefix to use for initial install.
    * @option db-su Account to use when creating a new database. Must have Grant permission (mysql only). Optional.
    * @option db-su-pw Password for the "db-su" account. Optional.
    * @option account-name uid1 name. Defaults to admin
@@ -26,7 +26,7 @@ class SiteInstallCommands extends DrushCommands {
    * @option locale A short language code. Sets the default site language. Language files must already be present.
    * @option site-name Defaults to Site-Install
    * @option site-mail From: for system mailings. Defaults to admin@example.com
-   * @option sites-subdir Name of directory under 'sites' which should be created. Only needed when the subdirectory does not already exist. Defaults to 'default'
+   * @option sites-subdir Name of directory under 'sites' which should be created.
    * @option config-dir A path pointing to a full set of configuration which should be imported after installation.
    * @usage drush site-install expert --locale=uk
    *   (Re)install using the expert install profile. Set default language to Ukrainian.
@@ -36,10 +36,10 @@ class SiteInstallCommands extends DrushCommands {
    *   Install using SQLite
    * @usage drush site-install --account-name=joe --account-pass=mom
    *   Re-install with specified uid1 credentials.
-   * @usage drush site-install standard install_configure_form.site_default_country=FR my_profile_form.my_settings.key=value
+   * @usage drush si install_configure_form.site_default_country=FR
    *   Pass additional arguments to the profile (D7 example shown here.
-   * @usage drush site-install standard install_configure_form.update_status_module='array(FALSE,FALSE)'
-   *   Disable email notification during install and later. If your server has no smtp, this gets rid of an error during install.
+   * @usage drush si install_configure_form.update_status_module='array(FALSE,FALSE)'
+   *   Disable email notification during install and later. If server has no smtp, this avoids an error.
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_ROOT
    * @aliases si
    *

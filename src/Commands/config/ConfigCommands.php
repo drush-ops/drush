@@ -52,7 +52,7 @@ class ConfigCommands extends DrushCommands {
    * @option format Format to parse the object. Use "string" for string (default), and "yaml" for YAML.
    * // A convenient way to pass a multiline value within a backend request.
    * @option value The value to assign to the config key (if any).
-   * @hidden-option value
+   * @hidden-options value
    * @usage drush config-set system.site page.front node
    *   Sets system.site:page.front to "node".
    * @aliases cset
@@ -112,7 +112,7 @@ class ConfigCommands extends DrushCommands {
   }
 
   /**
-   * Open a config file in a text editor. Edits are imported into active configuration after closing editor.
+   * Open a config file in a text editor. Edits are imported after closing editor.
    *
    * @command config-edit
    * @validate-config-name
@@ -120,7 +120,7 @@ class ConfigCommands extends DrushCommands {
    * @param $config_name The config object name, for example "system.site".
    * @optionset_get_editor
    * @allow_additional_options config-import
-   * @hidden-option source,partial
+   * @hidden-options source,partial
    * @usage drush config-edit image.style.large
    *   Edit the image style configurations.
    * @usage drush config-edit

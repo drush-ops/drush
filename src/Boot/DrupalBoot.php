@@ -180,9 +180,10 @@ abstract class DrupalBoot extends BaseBoot {
         }
         // Drupal 8 uses the modules' services files to find commandfiles. Should we allow
         // redundant find-module-by-location for Drupal 8?  (Maybe not.)
-        if (drush_drupal_major_version() < 8) {
-          $commandFiles = $discovery->discoverNamespaced($searchpath, '\Drupal');
-        }
+        // The operator below was wrong anyway.
+//        if (drush_drupal_major_version() < 8) {
+//          $commandFiles = $discovery->discoverNamespaced($searchpath, '\Drupal');
+//        }
         break;
     }
     // A little inelegant, but will do for now.
@@ -456,10 +457,6 @@ abstract class DrupalBoot extends BaseBoot {
    */
   function bootstrap_drupal_configuration() {
     global $conf;
-
-    $override = array(
-      'cron_safe_threshold' => 0, // Don't run poormanscron during Drush request (D7).
-    );
 
     $current_override = drush_get_option_list('variables');
     foreach ($current_override as $name => $value) {

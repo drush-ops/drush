@@ -67,8 +67,16 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface {
 
           if ($bootstrap_result && empty($command['bootstrap_errors'])) {
             $this->logger->log(LogLevel::BOOTSTRAP, dt("Found command: !command (commandfile=!commandfile)", array('!command' => $command['command'], '!commandfile' => $command['commandfile'])));
-
             $command_found = TRUE;
+
+            // Special case. Force 'help' command if --help option was specified.
+            if (drush_get_option('help')) {
+              $implemented = drush_get_commands();
+              $command = $implemented['help'];
+              $command['arguments']['name'] = drush_get_arguments()[0];
+              $command['allow-additional-options'] = TRUE;
+            }
+
             // Dispatch the command(s).
             $return = drush_dispatch($command);
 
@@ -117,7 +125,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface {
 
   protected function hasRegisteredSymfonyCommand($application, $name) {
     try {
-      $application->find($name);
+      $application->get($name);
       return true;
     }
     catch (\InvalidArgumentException $e) {

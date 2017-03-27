@@ -26,22 +26,4 @@ function hook_drush_sitealias_alter(&$alias_record) {
 function sanitize() {}
 function messages() {}
 
-/**
- * Add help components to a command.
- */
-function hook_drush_help_alter(&$command) {
-  if ($command['command'] == 'sql-sync') {
-    $command['options']['myoption'] = "Description of modification of sql-sync done by hook";
-    $command['sub-options']['sanitize']['my-sanitize-option'] = "Description of sanitization option added by hook (grouped with --sanitize option)";
-  }
-  if ($command['command'] == 'global-options') {
-    // Recommended: don't show global hook options in brief global options help.
-    if ($command['#brief'] === FALSE) {
-      $command['options']['myglobaloption'] = 'Description of option used globally in all commands (e.g. in a commandfile init hook)';
-    }
-  }
-}
 
-/**
- * @} End of "addtogroup hooks".
- */

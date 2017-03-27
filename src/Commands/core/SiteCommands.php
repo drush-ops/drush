@@ -85,10 +85,10 @@ class SiteCommands extends DrushCommands {
 
 
   /**
-   * Show records for all known site aliases and local sites.
+   * Show site alias details, or a list of available site aliases.
    *
    * @command site-alias
-   * @param site Site alias or site specification.
+   * @param $site Site alias or site specification.
    * @option no-db Do not include the database record in the full alias record (default).
    * @option with-optional Include optional default items.
    * @option local-only Only display sites that are available on the local system (remote-site not set, and Drupal root exists)
@@ -105,7 +105,7 @@ class SiteCommands extends DrushCommands {
    *
    * @return array
    */
-  public function siteAlias($site, $options = ['format' => 'yaml']) {
+  public function siteAlias($site = NULL, $options = ['format' => 'yaml']) {
     $site_list = $this->resolveSpecifications($site, $options);
     if ($site_list === FALSE) {
       $this->logger()->success('No sites found.');

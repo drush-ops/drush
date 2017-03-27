@@ -18,7 +18,7 @@ class FilesystemCase extends CommandUnishTestCase {
     }
 
     $dest = self::getSandbox() . '/test-filesystem-sbit';
-    mkdir($dest);
+    $this->mkdir($dest);
     chgrp($dest, self::getUserGroup());
     chmod($dest, 02755); // rwxr-sr-x
 
@@ -36,8 +36,10 @@ class FilesystemCase extends CommandUnishTestCase {
       $this->markTestSkipped("execute bit test doesn't apply on Windows.");
     }
 
+    $this->markTestSkipped("execute bit test is likely non-useful nowadays.");
+
     $dest = self::getSandbox() . '/test-filesystem-execute';
-    mkdir($dest);
+    $this->mkdir($dest);
     $this->execute(sprintf("git clone --depth=1 https://github.com/drush-ops/drush.git %s", $dest . '/drush'));
 
     $perms = fileperms($dest . '/drush/drush') & 0111;

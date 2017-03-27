@@ -56,7 +56,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface {
    * @command cache-clear
    * @param $type The particular cache to clear. Omit this argument to choose from available types.
    * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
-   * @hidden-option cache-clear
+   * @hidden-options cache-clear
    * @aliases cc
    * @bootstrap DRUSH_BOOTSTRAP_MAX
    * @complete \Drush\Commands\core\CacheCommands::complete
@@ -94,12 +94,12 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface {
    *
    * @command cache-set
    * @param $cid The id of the object to set.
-   * @param $data The object to set in the cache. Use \'-\' to read the object from STDIN.
+   * @param $data The object to set in the cache. Use - to read the object from STDIN.
    * @param $bin The cache bin to store the object in.
    * @param $expire 'CACHE_PERMANENT', or a Unix timestamp.
    * @param $tags A comma delimited list of cache tags.
    * @option input-format The format of value. Use 'json' for complex values.
-   * @option cache-get If the object is the result a previous fetch from the cache, only store the value in the "data" property of the object in the cache.
+   * @option cache-get If the object is the result a previous fetch from the cache, only store the value in the 'data' property of the object in the cache.
    * @aliases cs
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    */
@@ -161,7 +161,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface {
    *
    * @command cache-rebuild
    * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
-   * @hidden-option cache-clear
+   * @hidden-options cache-clear
    * @aliases cr,rebuild
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_SITE
    */

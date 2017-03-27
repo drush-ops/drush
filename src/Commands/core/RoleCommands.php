@@ -100,7 +100,11 @@ class RoleCommands extends DrushCommands {
   }
 
   /**
-   * Display a list of all roles defined on the system.  If a role name is provided as an argument, then all of the permissions of that role will be listed.  If a permission name is provided as an option, then all of the roles that have been granted that permission will be listed.
+   * Display a list of all roles defined on the system.
+   *
+   * If a role name is provided as an argument, then all of the permissions of
+   * that role will be listed.  If a permission name is provided as an option,
+   * then all of the roles that have been granted that permission will be listed.
    *
    * @command role-list
    * @validate-permissions filter

@@ -78,7 +78,7 @@
 # $options['shell-aliases']['pulldb'] = '!git pull && drush updatedb';
 # $options['shell-aliases']['cpull'] = 'config-pull @example.prod @self --label=vcs';
 # $options['shell-aliases']['noncore'] = 'pm-list --no-core';
-# $options['shell-aliases']['wipe'] = 'cache-clear all';
+# $options['shell-aliases']['wipe'] = 'cache-rebuild';
 # $options['shell-aliases']['offline'] = 'state-set system.maintenance_mode 1 --input-format=integer';
 # $options['shell-aliases']['online'] = 'state-set system.maintenance_mode 0 --input-format=integer';
 # $options['shell-aliases']['self-alias'] = 'site-alias @self --with-db --alias-name=new';
