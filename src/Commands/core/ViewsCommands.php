@@ -161,7 +161,6 @@ class ViewsCommands extends DrushCommands {
    * @param string $view_args A comma delimited list of values, corresponding to contextual filters.
    * @option count Display a count of the results instead of each row.
    * @option show-admin-links Show contextual admin links in the rendered markup.
-   * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    * @usage drush views-execute my_view
    *   Show the rendered HTML for the default display for the my_view View.
    * @usage drush views-execute my_view page_1 3 --count
