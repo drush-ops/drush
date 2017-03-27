@@ -319,32 +319,6 @@ class ConfigCommands extends DrushCommands {
   }
 
   /**
-   * @hook on-event config-storage-filters
-   *
-   * @param array $options Options that were passed by the user.
-   *
-   * @return \Drush\Config\StorageFilter[]
-   *   An array of filters.
-   */
-  function coreStorageFilters($options) {
-    $result = [];
-    $module_adjustments = $options['skip-modules'];
-    if (!empty($module_adjustments)) {
-      if (is_string($module_adjustments)) {
-        $module_adjustments = explode(',', $module_adjustments);
-      }
-      $result[] = new CoreExtensionFilter($module_adjustments);
-    }
-    return $result;
-  }
-
-  /**
-   * @hook options @optionset-storage-filters
-   * @option skip-modules A list of modules to ignore during import/export (e.g. to avoid disabling dev-only modules that are not enabled in the imported configuration).
-   */
-  function optionsetStorageFilters() {}
-
-  /**
    * @hook interact @interact-config-name
    */
   public function interactConfigName($input, $output) {

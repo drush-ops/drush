@@ -68,17 +68,6 @@ class DocsCommands extends DrushCommands {
   }
 
   /**
-   * Drupal configuration filter instructions for changing yml files during import/export.
-   *
-   * @command docs-config-filter
-   * @hidden
-   * @topic
-   */
-  public function configFilter() {
-    self::printFile(DRUSH_BASE_PATH. '/docs/config-filter.md');
-  }
-
-  /**
    * Site aliases overview on creating your own aliases for commonly used Drupal sites with examples from example.aliases.drushrc.php.
    *
    * @command docs-aliases

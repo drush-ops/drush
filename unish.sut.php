@@ -22,7 +22,7 @@ function unish_validate() {
 
 /**
  * Use Composer to build a Drupal codebase, with this Drush symlinked into /vendor.
- * @param $unish_sandbox Path to sandbox.
+ * @param string $unish_sandbox Path to sandbox.
  * @return integer
  *   Exit code.
  */
@@ -31,21 +31,42 @@ function unish_setup_sut($unish_sandbox) {
   drush_delete_dir($working_dir, TRUE);
   $codebase = 'tests/resources/codebase';
   drush_copy_dir($codebase, $working_dir);
-  foreach (['composer.json', 'composer.lock'] as $filename) {
+  $composer_json = getenv('COMPOSER') ?: 'composer.json';
+  foreach ([$composer_json] as $filename) {
     $path = $working_dir . "/$filename";
     if (file_exists($path)) {
-      // We replace a token with the /path/to/drush for this install.
-      // @todo Use https://getcomposer.org/doc/03-cli.md#modifying-repositories if it can edit composer.lock too.
       $contents = file_get_contents($path);
-      $new_contents = str_replace('%PATH-TO-DRUSH%', __DIR__, $contents);
+      $new_contents = replace_token($contents);
       file_put_contents($path, $new_contents);
     }
   }
-  // @todo Call update instead of install if specified on the CLI. Useful when we need to update composer.lock.
-  // We also need to put back the %PATH-TO-DRUSH% token by hand or automatically.
-  // For option parsing, see built-in getopt() function.
-  $cmd = 'composer install --no-interaction --no-progress --no-suggest --working-dir ' . escapeshellarg($working_dir);
+
+  // getopt() is awkward
+  $verbose = NULL;
+  foreach (['-v','-vv','-vvv','--verbose'] as $needle) {
+    if (in_array($needle, $_SERVER['argv'])) {
+      $verbose = $needle;
+    }
+  }
+  $cmd = "composer $verbose install --no-interaction --no-progress --no-suggest --working-dir " . escapeshellarg($working_dir);
   fwrite(STDERR, 'Executing: ' . $cmd . "\n");
-  passthru($cmd, $return);
+  exec($cmd, $output, $return);
+
+  // If requirements force it to, Composer downloads a second Drush, instead of symlink.
+  $drush_sut = $working_dir . '/vendor/drush/drush';
+  if (!is_link($drush_sut)) {
+    fwrite(STDERR, "Drush not symlinked in the System-Under-Test.\n");
+    $return = 1;
+  }
   return $return;
+}
+
+/**
+ * Replace a token with the /path/to/drush for this install.
+ *
+ * @param $contents
+ */
+function replace_token($contents) {
+  // @todo Use https://getcomposer.org/doc/03-cli.md#modifying-repositories if it can edit composer.lock too.
+  return str_replace('%PATH-TO-DRUSH%', __DIR__, $contents);
 }
