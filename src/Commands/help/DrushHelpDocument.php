@@ -10,7 +10,7 @@ class DrushHelpDocument extends HelpDocument {
   /**
    * @inheritdoc
    */
-  static function generateBaseHelpDom(Command $command)
+  public function generateBaseHelpDom(Command $command)
   {
     // Global options should not appear in our help output.
     $command->setApplication(NULL);
