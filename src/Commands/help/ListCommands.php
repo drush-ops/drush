@@ -13,6 +13,7 @@ class ListCommands extends DrushCommands {
    *
    * @command list
    * @param $filter Restrict command list to those commands defined in the specified file. Omit value to choose from a list of names.
+   * @option raw Show a simple table of command names and descriptions.
    * @bootstrap DRUSH_BOOTSTRAP_MAX
    * @usage drush list
    *   List all commands.
@@ -21,11 +22,9 @@ class ListCommands extends DrushCommands {
    * @usage drush list --format=xml
    *   List all commands in Symfony compatible xml format.
    *
-   * @todo The listcli format does not yet go through the output formatter system.
-   *
    * @return \DOMDocument
    */
-  public function helpList($filter, $options = ['format' => 'listcli']) {
+  public function helpList($filter, $options = ['format' => 'listcli', 'raw' => FALSE]) {
     $application = \Drush::getApplication();
     $all = $application->all();
 
@@ -58,25 +57,30 @@ class ListCommands extends DrushCommands {
       $namespaced = array($filter_category => $namespaced[$filter_category]);
     }
 
-    if ($options['format'] == 'listcli') {
+    /**
+     * The listcli and raw formats don't yet go through the output formatter system.
+     * because \Consolidation\OutputFormatters\Transformations\DomToArraySimplifier
+     * can't yet handle the DomDocument that produces the Symfony expected XML.
+     */
+    if ($options['raw']) {
+      $this->renderListRaw($namespaced);
+      return NULL;
+    }
+    elseif ($options['format'] == 'listcli') {
       $this->renderListCLI($application, $namespaced);
       return NULL;
     }
     else {
-      $dom = $this->buildDom($namespaced, $command);
+      $dom = $this->buildDom($namespaced);
       return $dom;
     }
   }
 
   /**
-   * @todo Not used because DomToArrySimplifer can't yet handle the DomDocument
-   *   that produces the Symfony expected XML.
-   *
    * @param $namespaced
-   * @param $command
    * @return \DOMDocument
    */
-  public function buildDom($namespaced, $command) {
+  public function buildDom($namespaced) {
     $dom = new \DOMDocument('1.0', 'UTF-8');
     $commandsXML = $dom->createElement('commands');
     $namespacesXML = $dom->createElement('namespaces');
@@ -124,15 +128,19 @@ class ListCommands extends DrushCommands {
       foreach ($global_options_help as $key => $help) {
         $data = [
           'name' => '--' . $options[$key]->getName(),
-          'description' => $help['description'], // Not using $options[$key]->getDescription() as description is too long for -v
+          'description' => $help['description'],
+          // Not using $options[$key]->getDescription() as description is too long for -v
           'accept_value' => $options[$key]->acceptValue(),
           'is_value_required' => $options[$key]->isValueRequired(),
           'shortcut' => $options[$key]->getShortcut(),
         ];
-        $table->addRow([HelpCLIFormatter::formatOptionKeys($data), HelpCLIFormatter::formatOptionDescription($data)]);
+        $table->addRow([
+          HelpCLIFormatter::formatOptionKeys($data),
+          HelpCLIFormatter::formatOptionDescription($data)
+        ]);
       }
     }
-    $table->addRow(['','']);
+    $table->addRow(['', '']);
 
     $table->addRow([new TableCell('Available commands:', array('colspan' => 2))]);
     foreach ($namespaced as $namespace => $list) {
@@ -142,6 +150,20 @@ class ListCommands extends DrushCommands {
         $aliases = implode(', ', $command->getAliases());
         $suffix = $aliases ? " ($aliases)" : '';
         $table->addRow(['  ' . $name . $suffix, $description]);
+      }
+    }
+    $table->render();
+  }
+
+  /**
+   * @param array $namespaced
+   */
+  public function renderListRaw($namespaced) {
+    $table = new Table($this->output());
+    $table->setStyle('compact');
+    foreach ($namespaced as $namespace => $commands) {
+      foreach ($commands as $command) {
+        $table->addRow([$command->getName(), $command->getDescription()]);
       }
     }
     $table->render();
