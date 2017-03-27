@@ -170,7 +170,6 @@ function drush_preflight_prepare() {
   require_once DRUSH_BASE_PATH . '/includes/annotationcommand_adapter.inc';
   require_once DRUSH_BASE_PATH . '/includes/command.inc';
   require_once DRUSH_BASE_PATH . '/includes/drush.inc';
-  require_once DRUSH_BASE_PATH . '/includes/engines.inc';
   require_once DRUSH_BASE_PATH . '/includes/backend.inc';
   require_once DRUSH_BASE_PATH . '/includes/batch.inc';
   require_once DRUSH_BASE_PATH . '/includes/context.inc';
@@ -897,22 +896,7 @@ function drush_preflight_command_dispatch() {
     if (drush_get_option('no-label', FALSE)) {
       $backend_options['no-label'] = TRUE;
     }
-    // If the user specified a format, try to look up the
-    // default list separator for the specified format.
-    // If the user did not specify a different label separator,
-    // then pass in the default as an option, so that the
-    // separator between the items in the list and the site
-    // name will be consistent.
-    $format = drush_get_option('format', FALSE);
-    if ($format && !array_key_exists('label-separator', $multi_options)) {
-      $formatter = drush_load_engine('outputformat', $format);
-      if ($formatter) {
-        $list_separator = $formatter->get_info('list-separator');
-        if ($list_separator) {
-          $multi_options['label-separator'] = $list_separator;
-        }
-      }
-    }
+
     $values = drush_invoke_process($site_record, $command_name, $args, $multi_options, $backend_options);
   }
   if (isset($values)) {
@@ -1010,10 +994,6 @@ function drush_shutdown() {
   }
   elseif (drush_get_context('DRUSH_QUIET', FALSE)) {
     ob_end_clean();
-    // If we are in pipe mode, emit the compact representation of the command, if available.
-    if (drush_get_context('DRUSH_PIPE')) {
-      drush_pipe_output();
-    }
   }
 
   // This way drush_return_status() will always be the last shutdown function (unless other shutdown functions register shutdown functions...)
