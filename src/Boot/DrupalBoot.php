@@ -485,7 +485,13 @@ abstract class DrupalBoot extends BaseBoot {
     try {
       $sql = SqlBase::create();
       if (!$sql->query('SELECT 1;')) {
-        return drush_bootstrap_error('DRUSH_DRUPAL_DB_ERROR');
+        $message = dt("Drush was not able to start (bootstrap) the Drupal database.\n");
+        $message .= dt("Hint: This may occur when Drush is trying to:\n");
+        $message .= dt(" * bootstrap a site that has not been installed or does not have a configured database. In this case you can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line. See `drush topic docs-aliases` for details.\n");
+        $message .= dt(" * connect the database through a socket. The socket file may be wrong or the php-cli may have no access to it in a jailed shell. See http://drupal.org/node/1428638 for details.\n");
+        $message .= dt('More information may be available by running `drush status`');
+        $this->logger->log(LogLevel::BOOTSTRAP, $message);
+        return FALSE;
       }
     }
     catch (\Exception $e) {

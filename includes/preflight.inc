@@ -984,7 +984,10 @@ function drush_shutdown() {
       case DRUSH_BOOTSTRAP_DRUPAL_FULL :
         ob_end_clean();
         _drush_log_drupal_messages();
-        drush_set_error('DRUSH_DRUPAL_BOOTSTRAP_ERROR');
+        $message = dt("Drush was not able to start (bootstrap) Drupal.\n");
+        $message .= dt("Hint: This error can only occur once the database connection has already been successfully initiated, therefore this error generally points to a site configuration issue, and not a problem connecting to the database.\n");
+        $message .= dt('More information may be available by running `drush status`');
+        drush_set_error($message);
         break;
     }
   }
