@@ -1150,16 +1150,6 @@ function dlm($object) {
   drush_log(print_r($object, TRUE));
 }
 
-/**
- * Display the pipe output for the current request.
- */
-function drush_pipe_output() {
-  $pipe = drush_get_context('DRUSH_PIPE_BUFFER');
-  if (!empty($pipe)) {
-    drush_print_r($pipe, NULL, FALSE);
-  }
-}
-
 // Print all timers for the request.
 function drush_print_timers() {
   global $timers;

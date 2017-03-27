@@ -181,11 +181,6 @@ function drush_dispatch($command, $arguments = array()) {
     // Give command files an opportunity to alter the command record
     drush_command_invoke_all_ref('drush_command_alter', $command);
 
-    // Include and validate command engines.
-    if (drush_load_command_engines($command) === FALSE) {
-      return FALSE;
-    }
-
     // Do tilde expansion immediately prior to execution,
     // so that tildes are passed through unchanged for
     // remote commands and other redispatches.
@@ -719,8 +714,6 @@ function _drush_get_command_options($command) {
  * command record including options provided by engines and additional-options.
  */
 function drush_get_command_options_extended($command) {
-  drush_merge_engine_data($command);
-
   // Start out with just the options in the current command record.
   $options = _drush_get_command_options($command);
   // If 'allow-additional-options' contains a list of command names,
@@ -1100,9 +1093,6 @@ function drush_get_commands($reset = FALSE) {
         // Add some defaults and normalize the command descriptor.
         $command += drush_command_defaults($key, $commandfile, $path);
 
-        // Add engine data.
-        drush_merge_engine_data($command);
-
         // Translate command.
         drush_command_translate($command);
 
@@ -1356,47 +1346,6 @@ function _drush_command_translate($source) {
  * - remote-tty: set to TRUE if Drush should force ssh to allocate a pseudo-tty
  *   when this command is being called remotely.  Important for interactive commands.
  *   Remote commands that allocate a psedo-tty always print "Connection closed..." when done.
- * - 'outputformat': declares the data format to be used to render the
- *   command result.  In addition to the output format engine options
- *   listed below, each output format type can take additional metadata
- *   items that control the way that the output is rendered.  See the
- *   comment in each particular output format class for information. The
- *   Drush core output format engines can be found in commands/core/outputformat.
- *     - 'default': The default type to render output as. If declared, the
- *       command should not print any output on its own, but instead should
- *       return a data structure (usually an associative array) that can
- *       be rendered by the output type selected.
- *     - 'pipe-format': When the command is executed in --pipe mode, the
- *       command output will be rendered by the format specified by the
- *       pipe-format item instead of the default format.  Note that in
- *       either event, the user may specify the format to use via the
- *       --format command-line option.
- *     - 'formatted-filter': specifies a function callback that will be
- *       used to filter the command result if the selected output formatter
- *       is NOT declared to be machine-parsable.  "table" is an example of
- *       an output format that is not machine-parsable.
- *     - 'parsable-filter': function callback that will be used to filter the
- *       command result if the selected output formatter is declared to be
- *       machine-parsable. "var_export" is an example of an output format that
- *       is machine-parsable.
- *     - 'output-data-type': An identifier representing the data structure that
- *       the command returns.  @see outputformat_drush_engine_outputformat() for
- *       a description of the supported values.
- *     - 'field-labels': A mapping from machine name to human-readable name
- *       for all of the fields in a table-format command result.  All
- *       possible field names should appear in this list.
- *     - 'fields-default': A list of the machine names of the fields that
- *       should be displayed by default in tables.
- *     - 'private-fields': A list of any fields that contain sensitive
- *       information, such as passwords.  By default, Drush will hide private
- *       fields before printing the results to the console, but will include
- *       them in backend invoke results. Use --show-passwords to display.
- *     - 'column-widths': A mapping from field machine name to the column width
- *       that should be used in table output.  Drush will automatically
- *       calculate the width of any field not listed here based on the length
- *       of the data items in it.
- * - engines: declares information on Drush engines the command will load.
- *   Available engines can vary by command type.
  *
  * @return bool|array
  *   A command definition.
