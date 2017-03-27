@@ -68,7 +68,7 @@ class CoreCommands extends DrushCommands {
   }
 
   /**
-   * Provides information about things that may be wrong in your Drupal installation, if any.
+   * Information about things that may be wrong in your Drupal installation.
    *
    * @command core-requirements
    * @option severity Only show status report messages with a severity greater than or equal to the specified value.

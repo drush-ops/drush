@@ -326,7 +326,7 @@ class UserCommands extends DrushCommands {
   }
 
   /**
-   * Display a one time login link for user ID 1, or a specified user account.
+   * Display a one time login link for user ID 1, or another user.
    *
    * @command user-login
    *

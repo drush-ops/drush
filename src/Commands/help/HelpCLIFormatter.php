@@ -53,9 +53,7 @@ class HelpCLIFormatter implements FormatterInterface
       $table->addRow(['','']);
       $table->addRow([new TableCell('Options:', array('colspan' => 2))]);
       foreach ($data['options'] as $option) {
-        $formatted = $this->formatOption($option);
-        $defaults = array_key_exists('defaults', $option) ? ' [default: "' . implode(' ', $option['defaults']) . '"]' : '';
-        $table->addRow([$formatted, $option['description'] . $defaults]);
+        $table->addRow([$this->formatOptionKeys($option), $this->formatOptionDescription($option)]);
       }
     }
 
@@ -77,7 +75,11 @@ class HelpCLIFormatter implements FormatterInterface
     $table->render();
   }
 
-  public function formatOption($option) {
+  /**
+   * @param array $option
+   * @return string
+   */
+  public static function formatOptionKeys($option) {
     // Remove leading dashes.
     $option['name'] = substr($option['name'], 2);
 
@@ -95,6 +97,11 @@ class HelpCLIFormatter implements FormatterInterface
       sprintf('--%s%s', $option['name'], $value)
     );
     return $synopsis;
+  }
+
+  public static function formatOptionDescription($option) {
+    $defaults = array_key_exists('defaults', $option) ? ' [default: "' . implode(' ', $option['defaults']) . '"]' : '';
+    return $option['description'] . $defaults;
   }
 
   public function formatArgumentName($argument) {

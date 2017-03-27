@@ -7,10 +7,10 @@ use Drush\Log\LogLevel;
 class SshCommands extends DrushCommands {
 
   /**
-   * Connect to a Drupal site's server via SSH for an interactive session or to run a shell command.
+   * Connect to a Drupal site's server via SSH.
    *
    * @command site-ssh
-   * @option cd Directory to change to if Drupal root is not desired (the default). Value should be a full path, or --no-cd for the ssh default (usually the remote user's home directory).
+   * @option cd Directory to change to if Drupal root is not desired (the default).
    * @optionset_proc_build
    * @handle-remote-commands
    * @usage drush @mysite ssh
