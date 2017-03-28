@@ -27,6 +27,7 @@ class HelpCommands extends DrushCommands {
   public function help($name, $options = ['format' => 'helpcli']) {
     $application = \Drush::getApplication();
     $command = $application->get($name);
+    $command->optionsHook();
     $helpDocument = new DrushHelpDocument($command);
 
     // This serves as example about how a command can add a custom Formatter.
