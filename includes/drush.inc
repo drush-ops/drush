@@ -168,7 +168,8 @@ function drush_flatten_array($a) {
 }
 
 /**
- * Get the available global options. Used by list/help commands.
+ * Get the available global options. Used by list/help commands. All other users
+ * should pull options from $application.
  *
  * @param boolean $brief
  *   Return a reduced set of important options. Used by help command.
@@ -252,7 +253,6 @@ function drush_get_global_options($brief = FALSE) {
     $options['shell-aliases']       = array('hidden' => TRUE, 'merge' => TRUE, 'never-propagate' => TRUE, 'description' => 'List of shell aliases.');
     $options['path-aliases']        = array('hidden' => TRUE, 'never-propagate' => TRUE, 'description' => 'Path aliases from site alias.');
     $options['ssh-options']         = array('never-propagate' => TRUE, 'description' => 'A string of extra options that will be passed to the ssh command', 'example-value' => '-p 100');
-    $options['db-url']              = array('hidden' => TRUE, 'description' => 'A Drupal 6 style database URL. Used by various commands.', 'example-value' => 'mysql://root:pass@127.0.0.1/db');
     $options['drush-coverage']      = array('hidden' => TRUE, 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'description' => 'File to save code coverage data into.');
     $options['local']               = array('propagate' => TRUE, 'description' => 'Don\'t look in global locations for commandfiles, config, and site aliases');
 

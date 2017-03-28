@@ -44,7 +44,7 @@ class SiteInstallCommands extends DrushCommands {
    * @aliases si
    *
    */
-  public function install($profile, array $additional, $options = ['db-url' => NULL, 'db-prefix' => NULL, 'db-su' => NULL, 'db-su-pw' => NULL, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => NULL, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => NULL, 'sites-subdir' => NULL, 'config-dir' => NULL, 'show-passwords' => NULL]) {
+  public function install($profile, array $additional, $options = ['db-url' => NULL, 'db-prefix' => NULL, 'db-su' => NULL, 'db-su-pw' => NULL, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => NULL, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => NULL, 'sites-subdir' => NULL, 'config-dir' => NULL]) {
     $form_options = [];
     foreach ((array)$additional as $arg) {
       list($key, $value) = explode('=', $arg, 2);
@@ -66,7 +66,7 @@ class SiteInstallCommands extends DrushCommands {
     $sql = SqlBase::create($options);
     $db_spec = $sql->getDbSpec();
 
-    $show_password = isset($options['show-passwords']) ? $options['show-passwords'] : empty($options['account-pass']);
+    $show_password = empty($options['account-pass']);
     $account_pass = $options['account-pass'] ?: drush_generate_password();
     $settings = array(
       'parameters' => array(
