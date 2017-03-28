@@ -222,9 +222,19 @@ class PmCommands extends DrushCommands {
     $extension_config = \Drupal::configFactory()->getEditable('core.extension');
     $installed_modules = $extension_config->get('module') ?: array();
 
+    // Get a list of installed profiles that will be excluded when calculating
+    // the dependency tree.
+    if (\Drupal::hasService('profile_handler')) {
+      // #1356276 adds the profile_handler service but it hasn't been committed
+      // to core yet so we need to check if it exists.
+      $profiles = \Drupal::service('profile_handler')->getProfiles();
+    }
+    else {
+      $profiles[drupal_get_profile()] = [];
+    }
+
     // Add dependent modules to the list. The new modules will be processed as
     // the while loop continues.
-    $profile = drupal_get_profile();
     while (list($module) = each($module_list)) {
       foreach (array_keys($module_data[$module]->required_by) as $dependent) {
         if (!isset($module_data[$dependent])) {
@@ -232,8 +242,8 @@ class PmCommands extends DrushCommands {
           return FALSE;
         }
 
-        // Skip already uninstalled modules.
-        if (isset($installed_modules[$dependent]) && !isset($module_list[$dependent]) && $dependent != $profile) {
+        // Skip already uninstalled modules and dependencies of profiles.
+        if (isset($installed_modules[$dependent]) && !isset($module_list[$dependent]) && (!array_key_exists($dependent, $profiles))) {
           $module_list[$dependent] = $dependent;
         }
       }
