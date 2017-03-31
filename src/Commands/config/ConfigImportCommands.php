@@ -125,7 +125,7 @@ class ConfigImportCommands extends DrushCommands {
         // concurrent synchronizations are an edge-case happening only when
         // multiple developers or site builders attempt to do it without
         // coordinating.
-        $message = 'The import failed due for the following reasons:' . "\n";
+        $message = 'The import failed due to the following reasons:' . "\n";
         $message .= implode("\n", $config_importer->getErrors());
 
         watchdog_exception('config_import', $e);
