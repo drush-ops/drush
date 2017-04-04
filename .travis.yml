@@ -40,7 +40,7 @@ before_install:
   - echo 'mbstring.http_output = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
 # Build a System-Under-Test.
-install: ${PWD}/unish.sut.php
+install: ${PWD}/unish.sut.php -vvv
 
 before_script:
   - phpenv config-rm xdebug.ini
