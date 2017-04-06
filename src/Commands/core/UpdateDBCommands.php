@@ -287,7 +287,7 @@ class UpdateDBCommands extends DrushCommands {
     // Apply post update hooks.
     $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateFunctions();
     if ($post_updates) {
-      $operations[] = [[$this, 'cacheRebuild'], []];
+      $operations[] = 'drupal_flush_all_caches';
       foreach ($post_updates as $function) {
         $operations[] = ['update_invoke_post_update', [$function]];
       }
