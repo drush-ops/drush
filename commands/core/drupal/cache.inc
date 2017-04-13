@@ -49,6 +49,7 @@ function _drush_cache_clear_types($include_bootstrapped_types) {
       'block' => 'drush_cache_clear_block',
       'module-list' => 'drush_get_modules',
       'theme-list' => 'drush_get_themes',
+      'page' => 'drush_cache_clear_page',
     );
   }
   $drupal_version = drush_drupal_major_version();
@@ -88,6 +89,13 @@ function drush_cache_clear_css_js() {
  */
 function drush_cache_clear_block() {
   cache_clear_all(NULL, 'cache_block');
+}
+
+/**
+ * Clear the cache of the pages.
+ */
+function drush_cache_clear_page() {
+  cache_clear_all('*', 'cache_page', TRUE);
 }
 
 /**
