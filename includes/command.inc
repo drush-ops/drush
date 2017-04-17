@@ -698,7 +698,12 @@ function drush_redispatch_get_options() {
   $global_option_list = drush_get_global_options(FALSE);
   foreach ($options_soup as $key => $value) {
     if (array_key_exists($key, $global_option_list)) {
-      $options[$key] = $value;
+      if (isset($cli_context[$key])) {
+        $options[$key] = $cli_context[$key];
+      }
+      else {
+        $options[$key] = $value;
+      }
     }
   }
 
