@@ -1284,10 +1284,33 @@ function _drush_backend_get_stdin() {
     }
   }
   stream_set_blocking($fp, FALSE);
-  $string = stream_get_contents($fp);
+  $string = drush_stream_get_contents($fp);
   fclose($fp);
   if (trim($string)) {
     return json_decode($string, TRUE);
   }
   return FALSE;
+}
+
+/**
+ * Wrapper function around stream_get_contents.
+ */
+function drush_stream_get_contents($handle, $timeout_seconds = 0.5) {
+  $ret = "";
+
+  while (true) {
+    $starttime = microtime(true);
+    $new = stream_get_contents($handle, 1);
+    $endtime = microtime(true);
+    if (is_string($new) && strlen($new) >= 1) {
+      $ret .= $new;
+    }
+    $time_used = $endtime - $starttime;
+    if (($time_used >= $timeout_seconds) ||
+        !is_string($new) ||
+        (is_string($new) && strlen($new) < 1)) {
+      break;
+    }
+  }
+  return $ret;
 }
