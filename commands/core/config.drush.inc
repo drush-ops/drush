@@ -688,7 +688,12 @@ function _drush_config_import(StorageComparer $storage_comparer) {
           } while ($context['finished'] < 1);
         }
       }
-      drush_log('The configuration was imported successfully.', LogLevel::SUCCESS);
+      if ($config_importer->getErrors()) {
+        throw new \Drupal\Core\Config\ConfigException('Errors occurred during import');
+      }
+      else {
+        drush_log('The configuration was imported successfully.', LogLevel::SUCCESS);
+      }
     }
     catch (ConfigException $e) {
       // Return a negative result for UI purposes. We do not differentiate
