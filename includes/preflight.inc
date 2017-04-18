@@ -822,7 +822,10 @@ function drush_preflight_command_dispatch() {
   $root = \Drush::bootstrapManager()->getRoot();
   $local_drush = drush_get_option('drush-script');
   if (empty($local_drush) && !empty($root)) {
-    $local_drush = find_wrapper_or_launcher($root);
+    $local_wrapper_or_launcher = find_wrapper_or_launcher($root);
+    if (!getenv('DRUSH_FINDER_SCRIPT')) {
+      $local_drush = $local_wrapper_or_launcher;
+    }
   }
   $is_local = drush_get_option('local');
   $values = NULL;
