@@ -11,7 +11,7 @@ Install a site-local Drush
 1. If you want the convenience of calling `drush` instead of `../vendor/bin/drush`, copy the [examples/drush.wrapper](https://github.com/drush-ops/drush/blob/master/examples/drush.wrapper) file to your Drupal root and modify to taste.
 1. If you want the old convenience of being able to call `drush` from anywhere, see [drush-shim](https://github.com/webflo/drush-shim).
 1. See [Usage](http://docs.drush.org/en/master/usage/) for details on using Drush.
-1. MAMP users, and anyone wishing to use a non-default PHP, needs to [edit ~/.bashrc so that the right PHP is in your $PATH](http://stackoverflow.com/questions/4145667/how-to-override-the-path-of-php-to-use-the-mamp-path/10653443#10653443).
+1. To use a non-default PHP, [edit ~/.bashrc so that the right PHP is in your $PATH](http://stackoverflow.com/questions/4145667/how-to-override-the-path-of-php-to-use-the-mamp-path/10653443#10653443).
 
 Drupal Compatibility
 -----------------
