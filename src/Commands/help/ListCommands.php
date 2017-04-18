@@ -6,6 +6,7 @@ use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
 
+
 class ListCommands extends DrushCommands {
 
   /**
@@ -26,6 +27,7 @@ class ListCommands extends DrushCommands {
    */
   public function helpList($filter, $options = ['format' => 'listcli', 'raw' => FALSE]) {
     $application = \Drush::getApplication();
+    annotation_adapter_add_legacy_commands_to_application($application);
     $all = $application->all();
 
     foreach ($all as $key => $command) {

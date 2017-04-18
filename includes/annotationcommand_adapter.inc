@@ -16,6 +16,9 @@ use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Command\DrushInputAdapter;
 use Drush\Command\DrushOutputAdapter;
+use Consolidation\AnnotatedCommand\AnnotatedCommand;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -479,6 +482,40 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
   }
   $cache[$commandfile_path] = $commands;
   return $commands;
+}
+
+/**
+ * Add legacy commands to the $application. Used by help and list commands.
+ *
+ * @deprecated Will be removed once dispatch pipeline is modernized.
+ * @param $application
+ */
+function annotation_adapter_add_legacy_commands_to_application($application) {
+  $commands = drush_get_commands();
+  foreach ($commands as $command) {
+    if (empty($command['annotated-command-callback']) && empty($command['hidden'])) {
+      $annotated = new AnnotatedCommand($command['command']);
+      $annotated->setDescription($command['description']);
+      foreach ($command['arguments'] as $name => $description) {
+        $annotated->addArgument($name, InputArgument::OPTIONAL, $description);
+      }
+      foreach ($command['options'] as $name => $option) {
+        if (!array_key_exists('default_value', $option)) {
+          $option['default_value'] = '';
+        }
+        $annotated->addOption($name, NULL, $option['default_value'] ? InputOption::VALUE_OPTIONAL : InputOption::VALUE_REQUIRED, $option['description'], $option['default_value']);
+      }
+      foreach ($command['examples'] as $name => $description) {
+        // @todo
+        // $annotated->addUsageOrExample($name, $description);
+      }
+//      if ($command['topics']) {
+//        $annotated->setTopics($command['topics']);
+//      }
+      $annotated->setAnnotationData(new AnnotationData());
+      $application->add($annotated);
+    }
+  }
 }
 
 /**

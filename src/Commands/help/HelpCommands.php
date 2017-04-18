@@ -43,7 +43,9 @@ class HelpCommands extends DrushCommands {
    */
   public function validate(CommandData $commandData) {
     $name = $commandData->input()->getArgument('name');
-    if (!in_array($name, array_keys(\Drush::getApplication()->all()))) {
+    $application = \Drush::getApplication();
+    annotation_adapter_add_legacy_commands_to_application($application);
+    if (!in_array($name, array_keys($application->all()))) {
       throw new \Exception(dt("!name command not found.", array('!name' => $name)));
     }
   }
