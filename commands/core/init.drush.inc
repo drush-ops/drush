@@ -66,7 +66,7 @@ function drush_init_core_init() {
   if (!is_file($drush_bashrc)) {
     copy($example_bashrc, $drush_bashrc);
     $pattern = basename($drush_bashrc);
-    $bashrc_additions["%$pattern%"] = "# Include Drush bash customizations.\n". drush_bash_addition($drush_bashrc);
+    $bashrc_additions["%$pattern%"] = "\n# Include Drush bash customizations.". drush_bash_addition($drush_bashrc);
     drush_log(dt("Copied example Drush bash configuration file to !path", array('!path' => $drush_bashrc)), LogLevel::OK);
   }
 
@@ -74,7 +74,7 @@ function drush_init_core_init() {
   if (!is_file($drush_complete)) {
     copy($example_complete, $drush_complete);
     $pattern = basename($drush_complete);
-    $bashrc_additions["%$pattern%"] = "# Include Drush completion.\n". drush_bash_addition($drush_complete);
+    $bashrc_additions["%$pattern%"] = "\n# Include Drush completion.\n". drush_bash_addition($drush_complete);
     drush_log(dt("Copied Drush completion file to !path", array('!path' => $drush_complete)), LogLevel::OK);
   }
 
@@ -83,7 +83,7 @@ function drush_init_core_init() {
   if (!is_file($drush_prompt)) {
     copy($example_prompt, $drush_prompt);
     $pattern = basename($drush_prompt);
-    $bashrc_additions["%$pattern%"] = "# Include Drush prompt customizations.\n". drush_bash_addition($drush_prompt);
+    $bashrc_additions["%$pattern%"] = "\n# Include Drush prompt customizations.\n". drush_bash_addition($drush_prompt);
     drush_log(dt("Copied example Drush prompt file to !path", array('!path' => $drush_prompt)), LogLevel::OK);
   }
 
@@ -98,7 +98,7 @@ function drush_init_core_init() {
     $drush_path = drush_find_path_to_drush($home);
     $drush_path = preg_replace("%^" . preg_quote($home) . "/%", '$HOME/', $drush_path);
 
-    $bashrc_additions["%$drush_path%"] = "# Path to Drush, added by 'drush init'.\nexport PATH=\"\$PATH:$drush_path\"\n\n";
+    $bashrc_additions["%$drush_path%"] = "\n# Path to Drush, added by 'drush init'.\nexport PATH=\"\$PATH:$drush_path\"\n\n";
   }
 
   // Modify the user's bashrc file, adding our customizations.
