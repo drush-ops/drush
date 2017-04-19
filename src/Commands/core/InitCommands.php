@@ -93,7 +93,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
         $description = $drushBashFileDescriptions[$destFile];
         $collection->progressMessage('Copied {description} to {path}', ['description' => $description, 'path' => $destFile], LogLevel::OK);
         $pattern = basename($destFile);
-        $taskUpdateBashrc->appendUnlessMatches("#$pattern#", "# Include $description.\n". $this->bashAddition($destFile));
+        $taskUpdateBashrc->appendUnlessMatches("#$pattern#", "\n# Include $description.". $this->bashAddition($destFile));
       }
     }
 
@@ -104,7 +104,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
       $drush_path = $this->findPathToDrush();
       $drush_path = preg_replace("%^" . preg_quote($home) . "/%", '$HOME/', $drush_path);
       $pattern = "$drush_path";
-      $taskUpdateBashrc->appendUnlessMatches("#$pattern#", "# Path to Drush, added by 'drush init'.\nexport PATH=\"\$PATH:$drush_path\"\n\n");
+      $taskUpdateBashrc->appendUnlessMatches("#$pattern#", "\n# Path to Drush, added by 'drush init'.\nexport PATH=\"\$PATH:$drush_path\"\n\n");
     }
 
     $openEditor = FALSE;
