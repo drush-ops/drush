@@ -13,11 +13,8 @@ class drush_version_control_backup implements drush_version_control {
    * Implementation of pre_update().
    */
   public function pre_update(&$project, $items_to_test = array()) {
+    // If backups are disabled there's nothing to do.
     if (drush_get_option('no-backup', FALSE)) {
-      // Delete the project path to clean up files that should be removed
-      if (!drush_delete_dir($project['full_project_path'])) {
-        return FALSE;
-      }
       return TRUE;
     }
     if ($backup_target = $this->prepare_backup_dir()) {
