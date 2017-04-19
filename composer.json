@@ -29,6 +29,7 @@
   ],
   "require": {
     "php": ">=5.6.0",
+    "ext-dom": "*",
     "psr/log": "~1.0",
     "psy/psysh": "~0.6",
     "league/container": "~2",
