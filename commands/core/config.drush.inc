@@ -46,8 +46,8 @@ function config_drush_command() {
         'example-value' => 'sync',
         'value' => 'required',
       ),
-      'include-overridden' => array(
-        'description' => 'Include overridden values.',
+      'exclude-overridden' => array(
+        'description' => 'Exclude overridden values.',
       )
     ),
     'examples' => array(
@@ -818,16 +818,16 @@ function drush_config_pull($source, $destination) {
 }
 
 /**
- * Show and return a config object
+ * Show and return a config object.
  *
  * @param $config_name
  *   The config object name.
  */
 function drush_config_get_object($config_name) {
   $source = drush_get_option('source', 'active');
-  $include_overridden = drush_get_option('include-overridden', FALSE);
+  $exclude_overridden = drush_get_option('exclude-overridden', FALSE);
 
-  if ($include_overridden) {
+  if (!$exclude_overridden) {
     // Displaying overrides only applies to active storage.
     $config = \Drupal::config($config_name);
     $data = $config->get();
