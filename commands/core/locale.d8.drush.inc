@@ -89,6 +89,10 @@ function drush_locale_update() {
     // @todo Not selecting any language code in the user interface results in
     //   all translations being updated, so we mimick that behavior here.
   }
+  // Deduplicate the list of langcodes since each project may have added the
+  // same language several times.
+  $langcodes = array_unique($langcodes);
+
   // @todo Restricting by projects is not possible in the user interface and is
   //   broken when attempting to do it in a hook_form_alter() implementation so
   //   we do not allow for it here either.
