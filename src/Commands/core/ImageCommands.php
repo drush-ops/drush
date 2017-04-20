@@ -38,7 +38,7 @@ class ImageCommands extends DrushCommands {
   public function interactFlush($input, $output) {
     $styles = ImageStyle::loadMultiple();
     $style_names = $input->getArgument('style_names');
-    if ($input->hasOption('all')) {
+    if ($input->getOption('all')) {
       $style_names = 'all';
     }
 
