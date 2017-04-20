@@ -209,6 +209,14 @@ function config_drush_command() {
     'topics' => array('docs-aliases', 'docs-config-exporting'),
   );
 
+  $items['config-status'] = array(
+    'description' => 'Display status of configuration (differences between stored and active configuration).',
+    'core' => array('8+'),
+    'arguments' => array(
+      'label' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'sync'",
+    ),
+  );
+
   return $items;
 }
 
@@ -340,6 +348,14 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
   }
 }
 
+/**
+ * Command callback: Display configuration status.
+ */
+function drush_config_status($destination = NULL) {
+  list($destination, $destination_dir) = _drush_config_get_destination_dir($destination);
+  _drush_config_print_changes($destination, $destination_dir);
+}
+
 /*
  * If provided $destination is not TRUE and not empty, make sure it is writable.
  */
@@ -382,37 +398,7 @@ function drush_config_export_validate() {
  * Command callback: Export config to specified directory (usually sync).
  */
 function drush_config_export($destination = NULL) {
-  global $config_directories;
-
-  // Determine which target directory to use.
-  if ($target = drush_get_option('destination')) {
-    if ($target === TRUE) {
-      // User did not pass a specific value for --destination. Make one.
-      /** @var drush_version_control_backup $backup */
-      $backup = drush_include_engine('version_control', 'backup');
-      $destination_dir = $backup->prepare_backup_dir('config-export');
-    }
-    else {
-      $destination_dir = $target;
-      // It is important to be able to specify a destination directory that
-      // does not exist yet, for exporting on remote systems
-      drush_mkdir($destination_dir);
-    }
-  }
-  else {
-    $choices = drush_map_assoc(array_keys($config_directories));
-    unset($choices[CONFIG_ACTIVE_DIRECTORY]);
-    if (!isset($destination) && count($choices) >= 2) {
-      $destination = drush_choice($choices, 'Choose a destination.');
-      if (empty($destination)) {
-        return drush_user_abort();
-      }
-    }
-    elseif (!isset($destination)) {
-      $destination = CONFIG_SYNC_DIRECTORY;
-    }
-    $destination_dir = config_get_config_directory($destination);
-  }
+  list($destination, $destination_dir) = _drush_config_get_destination_dir($destination);
 
   // Prepare a new branch, if applicable
   $remote = drush_get_option('push', FALSE);
@@ -457,35 +443,16 @@ function _drush_config_export($destination, $destination_dir, $branch) {
   $comment = drush_get_option('message', 'Exported configuration.');
   if (count(glob($destination_dir . '/*')) > 0) {
     // Retrieve a list of differences between the active and target configuration (if any).
+    if (!_drush_config_print_changes($destination, $destination_dir)) {
+      // Active configuration matches configuration in export directory.
+      return;
+    }
     if ($destination == CONFIG_SYNC_DIRECTORY) {
       $target_storage = \Drupal::service('config.storage.sync');
     }
     else {
       $target_storage = new FileStorage($destination_dir);
     }
-    /** @var \Drupal\Core\Config\StorageInterface $active_storage */
-    $active_storage = \Drupal::service('config.storage');
-    $comparison_source = $active_storage;
-
-    $config_comparer = new StorageComparer($comparison_source, $target_storage, \Drupal::service('config.manager'));
-    if (!$config_comparer->createChangelist()->hasChanges()) {
-      return drush_log(dt('The active configuration is identical to the configuration in the export directory (!target).', array('!target' => $destination_dir)), LogLevel::OK);
-    }
-
-    drush_print("Differences of the active config to the export directory:\n");
-    $change_list = array();
-    foreach ($config_comparer->getAllCollectionNames() as $collection) {
-      $change_list[$collection] = $config_comparer->getChangelist(NULL, $collection);
-    }
-    // Print a table with changes in color, then re-generate again without
-    // color to place in the commit comment.
-    _drush_print_config_changes_table($change_list);
-    $tbl = _drush_format_config_changes_table($change_list);
-    $output = $tbl->getTable();
-    if (!stristr(PHP_OS, 'WIN')) {
-      $output = str_replace("\r\n", PHP_EOL, $output);
-    }
-    $comment .= "\n\n$output";
 
     if (!$commit && !drush_confirm(dt('The .yml files in your export directory (!target) will be deleted and replaced with the active config.', array('!target' => $destination_dir)))) {
       return drush_user_abort();
@@ -560,6 +527,81 @@ function _drush_config_export($destination, $destination_dir, $branch) {
     'destination' => $destination_dir,
   );
   return $values;
+}
+
+/**
+ * Helper function to get destination directories.
+ */
+function _drush_config_get_destination_dir($destination = NULL) {
+  global $config_directories;
+
+  // Determine which target directory to use.
+  if ($target = drush_get_option('destination')) {
+    if ($target === TRUE) {
+      // User did not pass a specific value for --destination. Make one.
+      /** @var drush_version_control_backup $backup */
+      $backup = drush_include_engine('version_control', 'backup');
+      $destination_dir = $backup->prepare_backup_dir('config-export');
+    }
+    else {
+      $destination_dir = $target;
+      // It is important to be able to specify a destination directory that
+      // does not exist yet, for exporting on remote systems
+      drush_mkdir($destination_dir);
+    }
+  }
+  else {
+    $choices = drush_map_assoc(array_keys($config_directories));
+    unset($choices[CONFIG_ACTIVE_DIRECTORY]);
+    if (!isset($destination) && count($choices) >= 2) {
+      $destination = drush_choice($choices, 'Choose a destination.');
+      if (empty($destination)) {
+        return drush_user_abort();
+      }
+    }
+    elseif (!isset($destination)) {
+      $destination = CONFIG_SYNC_DIRECTORY;
+    }
+    $destination_dir = config_get_config_directory($destination);
+  }
+  return array($destination, $destination_dir);
+}
+
+/**
+ * Prints a list of differences between the active and stored configuration.
+ */
+function _drush_config_print_changes($destination, $destination_dir) {
+  if ($destination == CONFIG_SYNC_DIRECTORY) {
+    $target_storage = \Drupal::service('config.storage.sync');
+  }
+  else {
+    $target_storage = new FileStorage($destination_dir);
+  }
+  /** @var \Drupal\Core\Config\StorageInterface $active_storage */
+  $active_storage = \Drupal::service('config.storage');
+  $comparison_source = $active_storage;
+
+  $config_comparer = new StorageComparer($comparison_source, $target_storage, \Drupal::service('config.manager'));
+  if (!$config_comparer->createChangelist()->hasChanges()) {
+    drush_log(dt('The active configuration is identical to the configuration in the export directory (!target).', array('!target' => $destination_dir)), LogLevel::OK);
+    return false;
+  }
+
+  drush_print("Differences of the active config to the export directory:\n");
+  $change_list = array();
+  foreach ($config_comparer->getAllCollectionNames() as $collection) {
+    $change_list[$collection] = $config_comparer->getChangelist(NULL, $collection);
+  }
+  // Print a table with changes in color, then re-generate again without
+  // color to place in the commit comment.
+  _drush_print_config_changes_table($change_list);
+  $tbl = _drush_format_config_changes_table($change_list);
+  $output = $tbl->getTable();
+  if (!stristr(PHP_OS, 'WIN')) {
+    $output = str_replace("\r\n", PHP_EOL, $output);
+  }
+  $comment .= "\n\n$output";
+  return true;
 }
 
 function drush_config_import_validate() {
