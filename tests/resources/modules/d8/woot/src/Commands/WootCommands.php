@@ -5,7 +5,7 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 
 /**
  * For commands that are parts of modules, Drush expects to find commandfiles in
- * __MODULE__/src/Command, and the namespace is Drupal/__MODULE__/Command.
+ * __MODULE__/src/Commands, and the namespace is Drupal/__MODULE__/Commands.
  */
 class WootCommands
 {
