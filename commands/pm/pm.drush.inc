@@ -289,7 +289,7 @@ function pm_drush_command() {
   //     'description' => 'Download and enable one or more modules',
   //   );
   $items['pm-uninstall'] = array(
-    'description' => 'Uninstall one or more modules.',
+    'description' => 'Uninstall one or more modules and their dependent modules.',
     'arguments' => array(
       'modules' => 'A list of modules.',
     ),
