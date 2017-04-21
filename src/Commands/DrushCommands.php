@@ -7,6 +7,7 @@ use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Robo\Contract\IOAwareInterface;
 use Robo\Common\IO;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface {
   use LoggerAwareTrait;
@@ -32,9 +33,10 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface {
    */
   protected function io()
   {
-//    if (!$this->io) {
-//      $this->io = new TerminusStyle($this->input(), $this->output());
-//    }
+    if (!$this->io) {
+      // Specify our own Style class when needed.
+      $this->io = new SymfonyStyle($this->input(), $this->output());
+    }
     return $this->io;
   }
 

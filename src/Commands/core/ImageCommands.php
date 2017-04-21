@@ -43,10 +43,9 @@ class ImageCommands extends DrushCommands {
     }
 
     if (empty($style_names)) {
-      $choices = array_combine(array_keys($styles), array_keys($styles));
-      $choices = array_merge(array('all' => 'all'), $choices);
-      $style_names = drush_choice($choices, dt("Choose a style to flush."));
-      if ($style_names === FALSE) {
+      $choices = array_merge([0 => 'cancel', 'all'], array_keys($styles));
+      $style_names = $this->io()->choice(dt("Choose a style to flush"), $choices, 'all');
+      if ($style_names == 'cancel') {
         throw new UserAbortException();
       }
     }
