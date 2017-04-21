@@ -28,6 +28,23 @@ class ValidatorsCommands {
   }
 
   /**
+   * Validate that passed module names are enabled.
+   * @see \Drush\Commands\core\WatchdogCommands::show for an example.
+   *
+   * @hook validate @validate-module-enabled
+   * @param \Consolidation\AnnotatedCommand\CommandData $commandData
+   * @return \Consolidation\AnnotatedCommand\CommandError|null
+   */
+  public function validateModuleEnabled(CommandData $commandData) {
+    $names = _convert_csv_to_array($commandData->annotationData()->get('validate-module-enabled'));
+    $loaded = \Drupal::moduleHandler()->getModuleList();
+    if ($missing = array_diff($names, array_keys($loaded))) {
+      $msg = dt('Missing module: !str', ['!str' => implode(', ', $missing)]);
+      return new CommandError($msg);
+    }
+  }
+
+  /**
    * Validate that the file path exists.
    *
    * Annotation value should be the name of the argument containing the path.

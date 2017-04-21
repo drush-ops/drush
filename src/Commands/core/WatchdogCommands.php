@@ -34,6 +34,7 @@ class WatchdogCommands extends DrushCommands {
    * @usage drush watchdog-show --type=php
    *   Show a listing of most recent 10 messages of type php
    * @aliases wd-show,ws
+   * @validate-module-enabled dblog
    * @field-labels
    *   wid: ID
    *   type: Type
@@ -80,6 +81,7 @@ class WatchdogCommands extends DrushCommands {
    * @usage  drush watchdog-list
    *   Prompt for message type or severity, then run watchdog-show.
    * @aliases wd-list
+   * @validate-module-enabled dblog
    * @field-labels
    *   wid: ID
    *   type: Type
@@ -145,6 +147,7 @@ class WatchdogCommands extends DrushCommands {
    * @usage drush watchdog-delete --type=cron
    *   Delete all messages of type cron.
    * @aliases wd-del,wd-delete,wd
+   * @validate-module-enabled dblog
    * @return void
    */
   public function delete($substring = '', $options = ['severity' => NULL, 'type' => NULL]) {
@@ -193,6 +196,7 @@ class WatchdogCommands extends DrushCommands {
    * @param $id Watchdog Id
    * @drupal-dependencies dblog
    * @aliases wd-one
+   * @validate-module-enabled dblog
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    *
    * @return \Consolidation\OutputFormatters\StructuredData\PropertyList

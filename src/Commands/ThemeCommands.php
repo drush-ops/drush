@@ -1,9 +1,6 @@
 <?php
 namespace Drush\Commands;
 
-
-use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-
 class ThemeCommands extends DrushCommands {
 
   /**

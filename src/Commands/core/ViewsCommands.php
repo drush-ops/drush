@@ -12,6 +12,7 @@ class ViewsCommands extends DrushCommands {
    *
    * @command views-dev
    *
+   * @validate-module-enabled views
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    * @aliases vd
    */
@@ -79,6 +80,7 @@ class ViewsCommands extends DrushCommands {
    * @default-fields machine-name,label,description,status
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    * @aliases vl
+   * @validate-module-enabled views
    *
    * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
    */
@@ -171,6 +173,7 @@ class ViewsCommands extends DrushCommands {
    * @complete \Drush\Commands\core\ViewsCommands::complete
    * @validate-entity-load view view_name
    * @aliases vex
+   * @validate-module-enabled views
    *
    * @return string
    */
@@ -211,6 +214,7 @@ class ViewsCommands extends DrushCommands {
    *   type: Type
    *   message: Message
    * @aliases va
+   * @validate-module-enabled views
    *
    * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields|void
    */
