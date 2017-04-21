@@ -1,5 +1,7 @@
 <?php
-namespace Drush\Commands;
+namespace Drush\Commands\pm;
+
+use Drush\Commands\DrushCommands;
 
 class ThemeCommands extends DrushCommands {
 

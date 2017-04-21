@@ -1,11 +1,11 @@
 <?php
-namespace Drush\Commands;
+namespace Drush\Commands\pm;
 
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-use Drupal\Core\Extension\Extension;
 use Drupal\Core\Extension\MissingDependencyException;
+use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
 
 class PmCommands extends DrushCommands {
