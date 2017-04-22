@@ -286,14 +286,14 @@ class UserCommands extends DrushCommands {
           if ($options['delete-content']) {
             $this->logger()->warning(dt('All content created by !name will be deleted.', array('!name' => $account->getUsername())));
           }
-          if (drush_confirm('Cancel user account?: ')) {
+          if ($this->io()->confirm('Cancel user account?: ')) {
             $account->cancel();
             $this->logger()->success(dt('Cancelled user: !user', array('!user' => $name)));
           }
 
         }
         else {
-          $this->logger->warning(dt('Unable to load user: !user', array('!user' => $name)));
+          $this->logger()->warning(dt('Unable to load user: !user', array('!user' => $name)));
         }
       }
     }

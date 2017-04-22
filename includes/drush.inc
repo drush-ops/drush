@@ -306,6 +306,8 @@ function _drush_is_drush_shebang_script($script_filename) {
  *
  * @return bool
  *   TRUE if the user enters "y" or FALSE if "n".
+ *
+ * @deprecated Use $this->io()->confirm() in an Annotated Command.
  */
 function drush_confirm($msg, $indent = 0) {
   drush_print_prompt((string)$msg . " (y/n): ", $indent);
@@ -360,6 +362,8 @@ function drush_confirm($msg, $indent = 0) {
  *   be useful to display both the key and the value; for
  *   example, if the key is a user id and the value is the
  *   user name, use '!value (uid=!key)'.
+ *
+ * @deprecated Use $this->io()->choice() in an Annotated Command.
  */
 function drush_choice($options, $prompt = 'Enter a number.', $label = '!value', $widths = array()) {
   drush_print(dt($prompt));
@@ -464,6 +468,8 @@ function drush_choice($options, $prompt = 'Enter a number.', $label = '!value', 
  *   in the return value). If this is an empty array (default), then a built in
  *   final option of "Done" will be added to the available options (in this case
  *   no additional keys are added to the return value).
+ *
+ * @deprecated Use $this>io()->choice() in an Annotated Command.
  */
 function drush_choice_multiple($options, $defaults = FALSE, $prompt = 'Select some numbers.', $label = '!value', $mark = '!value (selected)', $min = 0, $max = NULL, $final_options = array()) {
   $selections = array();
@@ -530,9 +536,9 @@ function drush_choice_multiple($options, $defaults = FALSE, $prompt = 'Select so
  * @param $required
  *   If TRUE, user may continue even when no value is in the input.
  * @param $password
- *   If TRUE, surpress printing of the input.
+ *   If TRUE, supress printing of the input.
  *
- * @see drush_confirm()
+ * @deprecated Use $this>io()->ask() in an Annotated Command.
  */
 function drush_prompt($prompt, $default = NULL, $required = TRUE, $password = FALSE) {
   if (isset($default)) {

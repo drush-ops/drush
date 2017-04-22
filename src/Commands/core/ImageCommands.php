@@ -4,7 +4,6 @@ namespace Drush\Commands\core;
 
 use Drupal\image\Entity\ImageStyle;
 use Drush\Commands\DrushCommands;
-use Drush\Exceptions\UserAbortException;
 
 class ImageCommands extends DrushCommands {
 
@@ -36,22 +35,21 @@ class ImageCommands extends DrushCommands {
    * @hook interact image-flush
    */
   public function interactFlush($input, $output) {
-    $styles = ImageStyle::loadMultiple();
+    $styles = array_keys(ImageStyle::loadMultiple());
     $style_names = $input->getArgument('style_names');
     if ($input->getOption('all')) {
       $style_names = 'all';
     }
 
     if (empty($style_names)) {
-      $choices = array_merge([0 => 'cancel', 'all'], array_keys($styles));
+      $styles_all = $styles;
+      array_unshift($styles_all, 'all');
+      $choices = array_combine($styles_all, $styles_all);
       $style_names = $this->io()->choice(dt("Choose a style to flush"), $choices, 'all');
-      if ($style_names == 'cancel') {
-        throw new UserAbortException();
-      }
     }
 
     if ($style_names == 'all') {
-      $style_names = implode(',', array_keys($styles));
+      $style_names = implode(',', $styles);
     }
     $input->setArgument('style_names', $style_names);
   }

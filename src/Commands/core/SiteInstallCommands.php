@@ -196,12 +196,12 @@ class SiteInstallCommands extends DrushCommands {
       // Ask questions to get our data.
       if ($commandData->input()->getOption('db-url') == '') {
         // Prompt for the db-url data if it was not provided via --db-url.
-        $database = drush_prompt('Database name');
-        $driver = drush_prompt('Database driver', 'mysql');
-        $username = drush_prompt('Database username', 'root');
-        $password = drush_prompt('Database password', '', FALSE);
-        $host = drush_prompt('Database host', '127.0.0.1');
-        $port = drush_prompt('Database port', '3306');
+        $database = $this->io()->ask('Database name', 'drupal');
+        $driver = $this->io()->ask('Database driver', 'mysql');
+        $username = $this->io()->ask('Database username', 'drupal');
+        $password = $this->io()->ask('Database password', 'drupal');
+        $host = $this->io()->ask('Database host', '127.0.0.1');
+        $port = $this->io()->ask('Database port', '3306');
         $db_url = "$driver://$username:$password@$host:$port/$database";
         $commandData->input()->setOption('db-url', $db_url);
 
@@ -256,7 +256,7 @@ class SiteInstallCommands extends DrushCommands {
       $msg[] = dt("CREATE the '@db' database.", array('@db' => $db_spec['database']));
     }
 
-    if (!drush_confirm(dt('You are about to ') . implode(dt(' and '), $msg) . ' Do you want to continue?')) {
+    if (!$this->io()->confirm(dt('You are about to ') . implode(dt(' and '), $msg) . ' Do you want to continue?')) {
       throw new UserAbortException();
     }
 

@@ -3,6 +3,7 @@ namespace Drush\Commands\sql;
 
 use Drupal\Core\Database\Database;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 use Drush\Sql\SqlBase;
 
 class SqlCommands extends DrushCommands {
@@ -79,8 +80,8 @@ class SqlCommands extends DrushCommands {
       $txt_destination = (isset($db_spec['remote-host']) ? $db_spec['remote-host'] . '/' : '') . $db_spec['database'];
       drush_print(dt("Creating database !target. Any possible existing database will be dropped!", array('!target' => $txt_destination)));
 
-      if (!drush_confirm(dt('Do you really want to continue?'))) {
-        return drush_user_abort();
+      if (!$this->io()->confirm(dt('Do you really want to continue?'))) {
+        throw new UserAbortException();
       }
     }
 
@@ -99,8 +100,8 @@ class SqlCommands extends DrushCommands {
     $this->further($options);
     $sql = SqlBase::create($options);
     $db_spec = $sql->getDbSpec();
-    if (!drush_confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $db_spec['database'])))) {
-      return drush_user_abort();
+    if (!$this->io()->confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $db_spec['database'])))) {
+      throw new UserAbortException();
     }
     $tables = $sql->listTables();
     return $sql->drop($tables);

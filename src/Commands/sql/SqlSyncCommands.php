@@ -4,6 +4,7 @@ namespace Drush\Commands\sql;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Console\Input\InputInterface;
 use Webmozart\PathUtil\Path;
 
@@ -207,8 +208,8 @@ class SqlSyncCommands extends DrushCommands {
         '!target' => $txt_destination
       )));
       // @todo Move sanitization prompts to here. They currently show much later.
-      if (!drush_confirm(dt('Do you really want to continue?'))) {
-        return drush_user_abort();
+      if (!$this->io()->confirm(dt('Do you really want to continue?'))) {
+        throw new UserAbortException();
       }
     }
   }

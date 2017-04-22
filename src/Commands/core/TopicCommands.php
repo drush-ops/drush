@@ -52,12 +52,10 @@ class TopicCommands extends DrushCommands {
     if (count($topics) > 1) {
       // Show choice list.
       foreach ($topics as $key => $topic) {
-        $choices[$key] = $topic->getDescription();
+        $choices[$key] = $topic->getDescription() . " ($key)";
       }
       natcasesort($choices);
-      if (!$topic_name = drush_choice($choices, dt('Choose a topic'), '!value (!key)', array(5))) {
-        throw new UserAbortException();
-      }
+      $topic_name = $this->io()->choice(dt('Choose a topic'), $choices);
       $input->setArgument('topic_name', $topic_name);
     }
   }

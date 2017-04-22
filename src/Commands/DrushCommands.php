@@ -2,12 +2,12 @@
 
 namespace Drush\Commands;
 
+use Drush\Style\DrushStyle;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Robo\Contract\IOAwareInterface;
 use Robo\Common\IO;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface {
   use LoggerAwareTrait;
@@ -35,7 +35,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface {
   {
     if (!$this->io) {
       // Specify our own Style class when needed.
-      $this->io = new SymfonyStyle($this->input(), $this->output());
+      $this->io = new DrushStyle($this->input(), $this->output());
     }
     return $this->io;
   }

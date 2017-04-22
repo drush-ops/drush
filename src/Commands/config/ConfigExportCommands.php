@@ -89,7 +89,7 @@ class ConfigExportCommands extends DrushCommands {
         $preview = str_replace("\r\n", PHP_EOL, $preview);
       }
 
-      if (!$commit && !drush_confirm(dt('The .yml files in your export directory (!target) will be deleted and replaced with the active config.', array('!target' => $destination_dir)))) {
+      if (!$commit && !$this->io()->confirm(dt('The .yml files in your export directory (!target) will be deleted and replaced with the active config.', array('!target' => $destination_dir)))) {
         throw new UserAbortException();
       }
       // Only delete .yml files, and not .htaccess or .git.

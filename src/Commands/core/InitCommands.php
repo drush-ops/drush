@@ -109,7 +109,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
 
     $openEditor = FALSE;
     if ($taskUpdateBashrc->wouldChange()) {
-      if (drush_confirm(dt("Modify !file to include Drush configuration files?", array('!file' => $bashrc)))) {
+      if ($this->io()->confirm(dt("Modify !file to include Drush configuration files?", array('!file' => $bashrc)))) {
         $collection->addTask($taskUpdateBashrc);
         $collection->progressMessage('Updated bash configuration file {path}', ['path' => $bashrc], LogLevel::OK);
         $collection->progressMessage('Start a new shell in order to experience the improvements (e.g. `{shell}`).', ['shell' => 'bash'], LogLevel::OK);

@@ -88,7 +88,7 @@ class ConfigCommands extends DrushCommands {
         $data = $parser->parse($data, TRUE);
     }
 
-    if (is_array($data) && drush_confirm(dt('Do you want to update or set multiple keys on !name config.', array('!name' => $config_name)))) {
+    if (is_array($data) && $this->io()->confirm(dt('Do you want to update or set multiple keys on !name config.', array('!name' => $config_name)))) {
       foreach ($data as $key => $value) {
         $config->set($key, $value);
       }
@@ -96,13 +96,14 @@ class ConfigCommands extends DrushCommands {
     }
     else {
       $confirmed = FALSE;
-      if ($config->isNew() && drush_confirm(dt('!name config does not exist. Do you want to create a new config object?', array('!name' => $config_name)))) {
+      if ($config->isNew() && $this->io()->confirm(dt('!name config does not exist. Do you want to create a new config object?', array('!name' => $config_name)))) {
         $confirmed = TRUE;
       }
-      elseif ($new_key && drush_confirm(dt('!key key does not exist in !name config. Do you want to create a new config key?', array('!key' => $key, '!name' => $config_name)))) {
+      elseif ($new_key && $this->io()->confirm(dt('!key key does not exist in !name config. Do you want to create a new config key?', array('!key' => $key, '!name' => $config_name)))) {
         $confirmed = TRUE;
+        break;
       }
-      elseif (drush_confirm(dt('Do you want to update !key key in !name config?', array('!key' => $key, '!name' => $config_name)))) {
+      elseif ($this->io()->confirm(dt('Do you want to update !key key in !name config?', array('!key' => $key, '!name' => $config_name)))) {
         $confirmed = TRUE;
       }
       if ($confirmed && !drush_get_context('DRUSH_SIMULATE')) {
@@ -130,6 +131,7 @@ class ConfigCommands extends DrushCommands {
    * @usage drush --bg config-edit image.style.large
    *   Return to shell prompt as soon as the editor window opens.
    * @aliases cedit
+   * @validate-module-enabled config
    * @complete \Drush\Commands\core\ConfigCommands::completeNames
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    */
@@ -325,14 +327,8 @@ class ConfigCommands extends DrushCommands {
   public function interactConfigName($input, $output) {
     if (empty($input->getArgument('config_name'))) {
       $config_names = \Drupal::configFactory()->listAll();
-      $choice = drush_choice($config_names, 'Choose a configuration.');
-      if (empty($choice)) {
-        throw new UserAbortException();
-      }
-      else {
-        $config_name = $config_names[$choice];
-        $input->setArgument('config_name', $config_name);
-      }
+      $choice = $this->io()->choice('Choose a configuration', drush_map_assoc($config_names));
+      $input->setArgument('config_name', $choice);
     }
   }
 
@@ -347,10 +343,7 @@ class ConfigCommands extends DrushCommands {
       $choices = drush_map_assoc(array_keys($config_directories));
       unset($choices[CONFIG_ACTIVE_DIRECTORY]);
       if (count($choices) >= 2) {
-        $label = drush_choice($choices, 'Choose a '. $option_name. '.');
-        if (empty($label)) {
-          throw new UserAbortException();
-        }
+        $label = $this->io()->choice('Choose a '. $option_name. '.', $choices);
         $input->setArgument('label', $label);
       }
     }
