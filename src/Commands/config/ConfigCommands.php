@@ -4,9 +4,7 @@ namespace Drush\Commands\config;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Config\FileStorage;
-use Drush\Config\CoreExtensionFilter;
 use Drush\Commands\DrushCommands;
-use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Yaml\Parser;
@@ -101,7 +99,6 @@ class ConfigCommands extends DrushCommands {
       }
       elseif ($new_key && $this->io()->confirm(dt('!key key does not exist in !name config. Do you want to create a new config key?', array('!key' => $key, '!name' => $config_name)))) {
         $confirmed = TRUE;
-        break;
       }
       elseif ($this->io()->confirm(dt('Do you want to update !key key in !name config?', array('!key' => $key, '!name' => $config_name)))) {
         $confirmed = TRUE;
