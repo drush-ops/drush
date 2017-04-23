@@ -236,7 +236,7 @@ class UpdateDBCommands extends DrushCommands {
         }
       }
 
-      if (!drush_confirm(dt('Do you wish to run all pending updates?'))) {
+      if (!$this->io()->confirm(dt('Do you wish to run all pending updates?'))) {
         throw new UserAbortException();
       }
 
@@ -456,7 +456,7 @@ class UpdateDBCommands extends DrushCommands {
         }
       }
 
-      if (!drush_confirm(dt('Do you wish to run all pending updates?'))) {
+      if (!$this->io()->confirm(dt('Do you wish to run all pending updates?'))) {
         throw new UserAbortException();
       }
 

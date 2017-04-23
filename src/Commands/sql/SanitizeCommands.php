@@ -5,6 +5,7 @@ namespace Drush\Commands\sql;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 use Drush\Sql\SqlTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -57,8 +58,8 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
         drush_print('* '. $message);
       }
     }
-    if (!drush_confirm(dt('Do you really want to sanitize the current database?'))) {
-      return drush_user_abort();
+    if (!$this->io()->confirm(dt('Do you want to sanitize the current database?'))) {
+      throw new UserAbortException();
     }
 
     // All sanitize operations defined in post-command hooks, including Drush

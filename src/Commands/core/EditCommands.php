@@ -45,11 +45,8 @@ class EditCommands extends DrushCommands {
       $filepath = current($all);
     }
     else {
-      $choice = drush_choice($all, 'Enter a number to choose which file to edit.', '!key');
-      if (!$choice) {
-        throw new UserAbortException();
-      }
-      $filepath = $all[$choice];
+      $choice = $this->io()->choice(dt("Choose a file to edit"), $all);
+      $filepath = $choice;
     }
     return drush_shell_exec_interactive($exec, $filepath, $filepath);
   }

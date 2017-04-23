@@ -80,7 +80,7 @@ class ConfigImportCommands extends DrushCommands {
       drush_print(implode("\n", $output));
     }
 
-    if (drush_confirm(dt('Import the listed configuration changes?'))) {
+    if ($this->io()->confirm(dt('Import the listed configuration changes?'))) {
       return drush_op([$this, 'doImport'], $storage_comparer);
     }
   }

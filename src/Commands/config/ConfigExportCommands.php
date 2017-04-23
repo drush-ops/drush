@@ -56,7 +56,6 @@ class ConfigExportCommands extends DrushCommands {
   }
 
   public function doExport($options, $destination_dir) {
-    $commit = $options['commit'];
     if (count(glob($destination_dir . '/*')) > 0) {
       // Retrieve a list of differences between the active and target configuration (if any).
       if ($destination_dir == \config_get_config_directory(CONFIG_SYNC_DIRECTORY)) {
@@ -89,7 +88,7 @@ class ConfigExportCommands extends DrushCommands {
         $preview = str_replace("\r\n", PHP_EOL, $preview);
       }
 
-      if (!$commit && !drush_confirm(dt('The .yml files in your export directory (!target) will be deleted and replaced with the active config.', array('!target' => $destination_dir)))) {
+      if (!$this->io()->confirm(dt('The .yml files in your export directory (!target) will be deleted and replaced with the active config.', array('!target' => $destination_dir)))) {
         throw new UserAbortException();
       }
       // Only delete .yml files, and not .htaccess or .git.

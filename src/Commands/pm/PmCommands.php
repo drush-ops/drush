@@ -24,7 +24,7 @@ class PmCommands extends DrushCommands {
     $list = $this->addInstallDependencies($modules);
     if (array_values($list) !== $modules) {
       drush_print(dt('The following extensions will be enabled: !list', array('!list' => implode(', ', $list))));
-      if(!drush_confirm(dt('Do you really want to continue?'))) {
+      if(!$this->io()->confirm(dt('Do you want to continue?'))) {
         throw new UserAbortException();
       }
     }
@@ -51,7 +51,7 @@ class PmCommands extends DrushCommands {
     $list = $this->addUninstallDependencies($modules);
     if (array_values($list) !== $modules) {
       drush_print(dt('The following extensions will be uninstalled: !list', array('!list' => implode(', ', $list))));
-      if(!drush_confirm(dt('Do you really want to continue?'))) {
+      if(!$this->io()->confirm(dt('Do you want to continue?'))) {
         throw new UserAbortException();
       }
     }

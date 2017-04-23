@@ -115,10 +115,7 @@ class WatchdogCommands extends DrushCommands {
     foreach ($severities as $key => $value) {
       $choices[$key] = $value;
     }
-    $option = drush_choice($choices, dt('Select a message type or severity level.'));
-    if ($option === FALSE) {
-      throw new UserAbortException();
-    }
+    $option = $this->io()->choice(dt('Select a message type or severity level'), $choices);
     if (isset($types[$option])) {
       $input->setOption('type', $types[$option]);
     }
@@ -153,7 +150,7 @@ class WatchdogCommands extends DrushCommands {
   public function delete($substring = '', $options = ['severity' => NULL, 'type' => NULL]) {
     if ($substring == 'all') {
       drush_print(dt('All watchdog messages will be deleted.'));
-      if (!drush_confirm(dt('Do you really want to continue?'))) {
+      if (!$this->io()->confirm(dt('Do you really want to continue?'))) {
         throw new UserAbortException();
       }
       $ret = Database::getConnection()->truncate('watchdog')->execute();
@@ -161,7 +158,7 @@ class WatchdogCommands extends DrushCommands {
     }
     else if (is_numeric($substring)) {
       drush_print(dt('Watchdog message #!wid will be deleted.', array('!wid' => $substring)));
-      if(!drush_confirm(dt('Do you really want to continue?'))) {
+      if(!$this->io()->confirm(dt('Do you want to continue?'))) {
         throw new UserAbortException();
       }
       $affected_rows = Database::getConnection()->delete('watchdog')->condition('wid', $substring)->execute();
@@ -179,7 +176,7 @@ class WatchdogCommands extends DrushCommands {
       }
       $where = $this->where($options['type'], $options['severity'], $substring, 'OR');
       drush_print(dt('All messages with !where will be deleted.', array('!where' => preg_replace("/message LIKE %$substring%/", "message body containing '$substring'" , strtr($where['where'], $where['args'])))));
-      if(!drush_confirm(dt('Do you really want to continue?'))) {
+      if(!$this->io()->confirm(dt('Do you want to continue?'))) {
         throw new UserAbortException();
       }
       $affected_rows = Database::getConnection()->delete('watchdog')

@@ -28,7 +28,7 @@ class ConfigPullCase extends CommandUnishTestCase {
 
     $this->drush('config-set', array('system.site', 'name', 'testConfigPull'), array('yes' => NULL), $source);
     $this->drush('config-pull', array($source, $destination), array());
-    $this->drush('config-import', array(), array(), $destination);
+    $this->drush('config-import', array(), array('yes' => NULL), $destination);
     $this->drush('config-get', array('system.site', 'name'), array(), $source);
     $this->assertEquals("'system.site:name': testConfigPull", $this->getOutput(), 'Config was successfully pulled.');
   }

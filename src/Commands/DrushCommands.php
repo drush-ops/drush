@@ -2,6 +2,7 @@
 
 namespace Drush\Commands;
 
+use Drush\Style\DrushStyle;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -32,9 +33,10 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface {
    */
   protected function io()
   {
-//    if (!$this->io) {
-//      $this->io = new TerminusStyle($this->input(), $this->output());
-//    }
+    if (!$this->io) {
+      // Specify our own Style class when needed.
+      $this->io = new DrushStyle($this->input(), $this->output());
+    }
     return $this->io;
   }
 
