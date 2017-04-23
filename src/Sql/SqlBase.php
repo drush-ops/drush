@@ -120,9 +120,9 @@ class SqlBase {
     $file_suffix = '';
     $table_selection = $this->getExpandedTableSelection($this->getOptions());
     $file = $this->dumpFile($file);
-    $cmd = $this->dumpCmd($table_selection, $options);
+    $cmd = $this->dumpCmd($table_selection);
     // Gzip the output from dump command(s) if requested.
-    if ($options['gzip']) {
+    if ($this->getOption('gzip')) {
       $cmd .= ' | gzip -f';
       $file_suffix .= '.gz';
     }

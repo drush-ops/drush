@@ -120,7 +120,7 @@ class ConfigExportCommands extends DrushCommands {
 
     $this->logger()->success(dt('Configuration successfully exported to !target.', array('!target' => $destination_dir)));
     drush_backend_set_result($destination_dir);
-    return $preview;
+    return isset($preview) ? $preview : 'No existing configuration to diff against.';
   }
 
   public function doAddCommit($options, $destination_dir, $preview) {
