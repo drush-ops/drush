@@ -88,7 +88,7 @@ class SqlSyncCommands extends DrushCommands {
     // Determine path/to/dump on destination.
     if ($options['target-dump']) {
       $destination_dump_path = $options['target-dump'];
-      $rsync_options['yes'] = TRUE;  // @temporary: See https://github.com/drush-ops/drush/pull/555
+      $backend_options['interactive'] = FALSE;  // @temporary: See https://github.com/drush-ops/drush/pull/555
     }
     elseif ($source_is_local && $destination_is_local) {
       $destination_dump_path = $source_dump_path;
@@ -102,18 +102,18 @@ class SqlSyncCommands extends DrushCommands {
         $tmp = $return['object']['drush-temp'];
       }
       $destination_dump_path = Path::join($tmp, basename($source_dump_path));
-      $rsync_options['yes'] = TRUE;  // No need to prompt as destination is a tmp file.
+      $backend_options['interactive'] = FALSE;  // No need to prompt as destination is a tmp file.
     }
 
     if ($do_rsync) {
       if (!$options['no-dump']) {
         // Cleanup if this command created the dump file.
-        $rsync_options['remove-source-files'] = TRUE;
+        $rsync_options[] = '--remove-source-files';
       }
       $runner = drush_get_runner($source_record, $destination_record, $options['runner']);
       // Since core-rsync is a strict-handling command and drush_invoke_process() puts options at end, we can't send along cli options to rsync.
       // Alternatively, add options like --ssh-options to a site alias (usually on the machine that initiates the sql-sync).
-      $return = drush_invoke_process($runner, 'core-rsync', array("$source:$source_dump_path", "$destination:$destination_dump_path", '--', $rsync_options));
+      $return = drush_invoke_process($runner, 'core-rsync', array_merge(["$source:$source_dump_path", "$destination:$destination_dump_path", '--'], $rsync_options), [], $backend_options);
       $this->logger()->notice(dt('Copying dump file from Source to Destination.'));
       if ($return['error_status']) {
         throw new \Exception(dt('core-rsync failed.'));
