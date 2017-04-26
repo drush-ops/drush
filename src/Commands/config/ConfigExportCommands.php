@@ -26,7 +26,8 @@ class ConfigExportCommands extends DrushCommands {
    * @complete \Drush\Commands\core\ConfigCommands::completeLabels
    */
   public function export($label = NULL, $options = ['add' => FALSE, 'commit' => FALSE, 'message' => NULL, 'destination' => '']) {
-    $destination_dir = $this->processDestination($label, $options);
+    // Get destination directory.
+    $destination_dir = ConfigCommands::getDirectory($label, $options['destination']);
 
     // Do the actual config export operation.
     $preview = $this->doExport($options, $destination_dir);
@@ -35,50 +36,16 @@ class ConfigExportCommands extends DrushCommands {
     $this->doAddCommit($options, $destination_dir, $preview);
   }
 
-  function processDestination($label, $options) {
-    // Determine which target directory to use.
-    if ($target = $options['destination']) {
-      if ($target === TRUE) {
-        // User did not pass a specific value for --destination. Make one.
-        $destination_dir = drush_prepare_backup_dir('config-export');
-      }
-      else {
-        $destination_dir = $target;
-        // It is important to be able to specify a destination directory that
-        // does not exist yet, for exporting on remote systems
-        drush_mkdir($destination_dir);
-      }
-    }
-    else {
-      $destination_dir = \config_get_config_directory($label ?: CONFIG_SYNC_DIRECTORY);
-    }
-    return $destination_dir;
-  }
-
   public function doExport($options, $destination_dir) {
+    $destination_storage = ConfigCommands::getStorage($destination_dir);
     if (count(glob($destination_dir . '/*')) > 0) {
-      // Retrieve a list of differences between the active and target configuration (if any).
-      if ($destination_dir == \config_get_config_directory(CONFIG_SYNC_DIRECTORY)) {
-        $target_storage = \Drupal::service('config.storage.sync');
-      }
-      else {
-        $target_storage = new FileStorage($destination_dir);
-      }
-      /** @var \Drupal\Core\Config\StorageInterface $active_storage */
-      $active_storage = \Drupal::service('config.storage');
-      $comparison_source = $active_storage;
-
-      $config_comparer = new StorageComparer($comparison_source, $target_storage, \Drupal::service('config.manager'));
-      if (!$config_comparer->createChangelist()->hasChanges()) {
+      $change_list = ConfigCommands::getChanges($destination_storage);
+      if (empty($change_list)) {
         $this->logger()->notice(dt('The active configuration is identical to the configuration in the export directory (!target).', array('!target' => $destination_dir)));
         return;
       }
 
       drush_print("Differences of the active config to the export directory:\n");
-      $change_list = array();
-      foreach ($config_comparer->getAllCollectionNames() as $collection) {
-        $change_list[$collection] = $config_comparer->getChangelist(NULL, $collection);
-      }
       // Print a table with changes in color, then re-generate again without
       // color to place in the commit comment.
       ConfigCommands::configChangesTablePrint($change_list);
@@ -92,17 +59,11 @@ class ConfigExportCommands extends DrushCommands {
         throw new UserAbortException();
       }
       // Only delete .yml files, and not .htaccess or .git.
-      $target_storage->deleteAll();
+      $destination_storage->deleteAll();
     }
 
     // Write all .yml files.
     $source_storage = \Drupal::service('config.storage');
-    if ($destination_dir == \config_get_config_directory(CONFIG_SYNC_DIRECTORY)) {
-      $destination_storage = \Drupal::service('config.storage.sync');
-    }
-    else {
-      $destination_storage = new FileStorage($destination_dir);
-    }
 
     foreach ($source_storage->listAll() as $name) {
       $destination_storage->write($name, $source_storage->read($name));

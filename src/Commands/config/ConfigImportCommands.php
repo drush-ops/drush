@@ -26,15 +26,9 @@ class ConfigImportCommands extends DrushCommands {
    * @complete \Drush\Commands\core\ConfigCommands::completeLabels
    */
   public function import($label = NULL, $options = ['preview' => 'list', 'source' => '', 'partial' => FALSE]) {
-    // Determine source directory.
-    if ($target = $options['source']) {
-      $source_dir = $target;
-      $source_storage = new FileStorage($target);
-    }
-    else {
-      $source_dir = \config_get_config_directory($label ?: CONFIG_SYNC_DIRECTORY);
-      $source_storage = \Drupal::service('config.storage.sync');
-    }
+    // Get the source directory and storage.
+    $source_dir = ConfigCommands::processDirectory($label, $options['source']);
+    $source_storage = ConfigCommands::getStorage($source_dir);
 
     // Determine $source_storage in partial case.
     /** @var \Drupal\Core\Config\StorageInterface $active_storage */
@@ -48,21 +42,13 @@ class ConfigImportCommands extends DrushCommands {
       $source_storage = $replacement_storage;
     }
 
-    /** @var \Drupal\Core\Config\ConfigManagerInterface $config_manager */
-    $config_manager = \Drupal::service('config.manager');
-    $storage_comparer = new StorageComparer($source_storage, $active_storage, $config_manager);
-
-
-    if (!$storage_comparer->createChangelist()->hasChanges()) {
+    $change_list = ConfigCommands::getChanges($source_storage);
+    if (empty($change_list)) {
       $this->logger()->notice(('There are no changes to import.'));
       return;
     }
 
     if ($options['preview'] == 'list') {
-      $change_list = array();
-      foreach ($storage_comparer->getAllCollectionNames() as $collection) {
-        $change_list[$collection] = $storage_comparer->getChangelist(NULL, $collection);
-      }
       ConfigCommands::configChangesTablePrint($change_list);
     }
     else {
