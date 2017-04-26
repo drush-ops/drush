@@ -190,7 +190,7 @@ class ConfigCommands extends DrushCommands {
       return;
     }
     drush_print("Differences of the active config to the export directory:\n");
-    ConfigCommands::configChangesTablePrint($change_list);
+    $this->configChangesTablePrint($change_list);
   }
 
   /**

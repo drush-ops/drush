@@ -27,7 +27,7 @@ class ConfigImportCommands extends DrushCommands {
    */
   public function import($label = NULL, $options = ['preview' => 'list', 'source' => '', 'partial' => FALSE]) {
     // Get the source directory and storage.
-    $source_dir = ConfigCommands::processDirectory($label, $options['source']);
+    $source_dir = ConfigCommands::getDirectory($label, $options['source']);
     $source_storage = ConfigCommands::getStorage($source_dir);
 
     // Determine $source_storage in partial case.
