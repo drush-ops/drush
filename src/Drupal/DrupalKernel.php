@@ -28,7 +28,7 @@ class DrupalKernel extends DrupalDrupalKernel {
    * for clients to add compiler passes et. al. before then.
    */
   public function addServiceModifier(ServiceModifierInterface $serviceModifier) {
-    drush_log(dt("add service modifier"), LogLevel::DEBUG);
+    drush_log(dt("Add service modifier"), LogLevel::DEBUG);
     $this->serviceModifiers[] = $serviceModifier;
   }
 
@@ -36,7 +36,7 @@ class DrupalKernel extends DrupalDrupalKernel {
    * @inheritdoc
    */
   protected function getContainerBuilder() {
-    drush_log(dt("get container builder"), LogLevel::DEBUG);
+    drush_log(dt("Get container builder"), LogLevel::DEBUG);
     $container = parent::getContainerBuilder();
     foreach ($this->serviceModifiers as $serviceModifier) {
       $serviceModifier->alter($container);
