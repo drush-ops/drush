@@ -4,6 +4,7 @@ namespace Drush\Commands\config;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Config\FileStorage;
+use Drupal\Core\Config\StorageComparer;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;

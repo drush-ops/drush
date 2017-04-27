@@ -2,7 +2,6 @@
 namespace Drush\Commands\config;
 
 use Consolidation\AnnotatedCommand\CommandData;
-use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\FileStorage;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
