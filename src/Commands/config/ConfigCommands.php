@@ -181,6 +181,7 @@ class ConfigCommands extends DrushCommands {
    * @command config-status
    * @param $label A config directory label (i.e. a key in \$config_directories array in settings.php).
    * @interact-config-label
+   * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    */
   public function status($label = NULL) {
     $directory = $this->getDirectory($label, '');
