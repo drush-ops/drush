@@ -6,6 +6,8 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 
 /**
  * Run these commands using the --include option - e.g. `drush --include=/path/to/drush/examples mmas`
+ *
+ * For an example of a Drupal module implementing commands, see http://cgit.drupalcode.org/devel/tree/devel_generate/src/Commands
  */
 
 class SandwichCommands extends DrushCommands {
@@ -57,7 +59,7 @@ class SandwichCommands extends DrushCommands {
       ),
       'mayonnaise' => array(
         'name' => 'Mayonnaise',
-        'description' => 'A nice dairy-free spead.',
+        'description' => 'A nice dairy-free spread.',
         'available' => '12',
         'taste' => 'creamy',
       ),
