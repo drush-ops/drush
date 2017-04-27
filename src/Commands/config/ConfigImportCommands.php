@@ -42,13 +42,21 @@ class ConfigImportCommands extends DrushCommands {
       $source_storage = $replacement_storage;
     }
 
-    $change_list = ConfigCommands::getChanges($source_storage);
-    if (empty($change_list)) {
+    /** @var \Drupal\Core\Config\ConfigManagerInterface $config_manager */
+    $config_manager = \Drupal::service('config.manager');
+    $storage_comparer = new StorageComparer($source_storage, $active_storage, $config_manager);
+
+
+    if (!$storage_comparer->createChangelist()->hasChanges()) {
       $this->logger()->notice(('There are no changes to import.'));
       return;
     }
 
     if ($options['preview'] == 'list') {
+      $change_list = array();
+      foreach ($storage_comparer->getAllCollectionNames() as $collection) {
+        $change_list[$collection] = $storage_comparer->getChangelist(NULL, $collection);
+      }
       ConfigCommands::configChangesTablePrint($change_list);
     }
     else {
