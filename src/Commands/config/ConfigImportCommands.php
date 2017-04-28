@@ -25,15 +25,9 @@ class ConfigImportCommands extends DrushCommands {
    * @aliases cim
    */
   public function import($label = NULL, $options = ['preview' => 'list', 'source' => '', 'partial' => FALSE]) {
-    // Determine source directory.
-    if ($target = $options['source']) {
-      $source_dir = $target;
-      $source_storage = new FileStorage($target);
-    }
-    else {
-      $source_dir = \config_get_config_directory($label ?: CONFIG_SYNC_DIRECTORY);
-      $source_storage = \Drupal::service('config.storage.sync');
-    }
+    // Get the source directory and storage.
+    $source_dir = ConfigCommands::getDirectory($label, $options['source']);
+    $source_storage = ConfigCommands::getStorage($source_dir);
 
     // Determine $source_storage in partial case.
     /** @var \Drupal\Core\Config\StorageInterface $active_storage */
