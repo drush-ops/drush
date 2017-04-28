@@ -60,4 +60,20 @@ class DrupalKernel extends DrupalDrupalKernel {
     }
     return parent::initializeContainer();
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function discoverServiceProviders() {
+    parent::discoverServiceProviders();
+
+    $module_filenames = $this->getModuleFileNames();
+    // Load each module's serviceProvider class.
+    foreach ($module_filenames as $module => $filename) {
+      $filename = dirname($filename) . "/drush.services.yml";
+      if (file_exists($filename)) {
+        $this->serviceYamls['app'][$module] = $filename;
+      }
+    }
+  }
 }
