@@ -110,7 +110,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     }
 
     // We read from env then globals then default to mysql.
-    self::$db_url = getenv('UNISH_DB_URL') ?: ($GLOBALS['UNISH_DB_URL'] ?: 'mysql://root:@127.0.0.1');
+    self::$db_url = getenv('UNISH_DB_URL') ?: (isset($GLOBALS['UNISH_DB_URL']) ? $GLOBALS['UNISH_DB_URL'] : 'mysql://root:@127.0.0.1');
 
     require_once __DIR__ . '/unish.inc';
     list($unish_tmp, $unish_sandbox, $unish_drush_dir) = \unishGetPaths();
