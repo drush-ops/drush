@@ -3,6 +3,7 @@ namespace Drush\Commands\config;
 
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\FileStorage;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,6 +11,28 @@ use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Yaml\Parser;
 
 class ConfigCommands extends DrushCommands {
+
+  /**
+   * @var ConfigFactoryInterface
+   */
+  protected $configFactory;
+
+  /**
+   * @return ConfigFactoryInterface
+   */
+  public function getConfigFactory() {
+    return $this->configFactory;
+  }
+
+
+  /**
+   * ConfigCommands constructor.
+   * @param ConfigFactoryInterface $configFactory
+   */
+  public function __construct(ConfigFactoryInterface $configFactory) {
+    parent::__construct();
+    $this->configFactory = $configFactory;
+  }
 
   /**
    * Display a config value, or a whole configuration object.
@@ -26,12 +49,11 @@ class ConfigCommands extends DrushCommands {
    * @usage drush config-get system.site page.front
    *   Gets system.site:page.front value.
    * @aliases cget
-   * @complete \Drush\Commands\core\ConfigCommands::completeNames
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    */
   public function get($config_name, $key = '', $options = ['format' => 'yaml', 'source' => 'active', 'include-overridden' => FALSE]) {
     // Displaying overrides only applies to active storage.
-    $factory = \Drupal::configFactory();
+    $factory = $this->getConfigFactory();
     $config = $options['include-overridden'] ? $factory->getEditable($config_name) : $factory->get($config_name);
     $value = $config->get($key);
     // @todo If the value is TRUE (for example), nothing gets printed. Is this yaml formatter's fault?
@@ -54,7 +76,6 @@ class ConfigCommands extends DrushCommands {
    * @usage drush config-set system.site page.front node
    *   Sets system.site:page.front to "node".
    * @aliases cset
-   * @complete \Drush\Commands\core\ConfigCommands::completeNames
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    */
   public function set($config_name, $key, $value = NULL, $options = ['format' => 'string', 'value' => NULL]) {
@@ -65,7 +86,7 @@ class ConfigCommands extends DrushCommands {
       throw new \Exception(dt('No config value specified.'));
     }
 
-    $config = \Drupal::configFactory()->getEditable($config_name);
+    $config = $this->getConfigFactory()->getEditable($config_name);
     // Check to see if config key already exists.
     if ($config->get($key) === NULL) {
       $new_key = TRUE;
@@ -129,11 +150,10 @@ class ConfigCommands extends DrushCommands {
    *   Return to shell prompt as soon as the editor window opens.
    * @aliases cedit
    * @validate-module-enabled config
-   * @complete \Drush\Commands\core\ConfigCommands::completeNames
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    */
   public function edit($config_name, $options = []) {
-    $config = \Drupal::configFactory()->get($config_name);
+    $config = $this->getConfigFactory()->get($config_name);
     $active_storage = $config->getStorage();
     $contents = $active_storage->read($config_name);
 
@@ -162,10 +182,9 @@ class ConfigCommands extends DrushCommands {
    * @param $config_name The config object name, for example "system.site".
    * @aliases cdel
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
-   * @complete \Drush\Commands\core\ConfigCommands::completeNames
    */
   public function delete($config_name, $options = []) {
-    $config =\Drupal::service('config.factory')->getEditable($config_name);
+    $config = $this->getConfigFactory()->getEditable($config_name);
     if ($config->isNew()) {
       throw new \Exception('Configuration name not recognized.');
     }
@@ -323,7 +342,7 @@ class ConfigCommands extends DrushCommands {
    */
   public function interactConfigName($input, $output) {
     if (empty($input->getArgument('config_name'))) {
-      $config_names = \Drupal::configFactory()->listAll();
+      $config_names = $this->getConfigFactory()->listAll();
       $choice = $this->io()->choice('Choose a configuration', drush_map_assoc($config_names));
       $input->setArgument('config_name', $choice);
     }
