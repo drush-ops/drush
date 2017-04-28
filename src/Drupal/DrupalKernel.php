@@ -72,7 +72,7 @@ class DrupalKernel extends DrupalDrupalKernel {
     foreach ($module_filenames as $module => $filename) {
       $filename = dirname($filename) . "/drush.services.yml";
       if (file_exists($filename)) {
-        $this->serviceYamls['app'][$module] = $filename;
+        $this->serviceYamls['app']["drush.$module"] = $filename;
       }
     }
   }
