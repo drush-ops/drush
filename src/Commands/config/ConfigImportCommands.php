@@ -23,7 +23,6 @@ class ConfigImportCommands extends DrushCommands {
    * @option partial Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted).
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    * @aliases cim
-   * @complete \Drush\Commands\core\ConfigCommands::completeLabels
    */
   public function import($label = NULL, $options = ['preview' => 'list', 'source' => '', 'partial' => FALSE]) {
     // Determine source directory.

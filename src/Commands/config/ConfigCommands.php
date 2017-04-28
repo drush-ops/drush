@@ -365,17 +365,4 @@ class ConfigCommands extends DrushCommands {
       return new CommandError($msg);
     }
   }
-
-  public function completeNames() {
-    // @todo This is not bootstrapping. Neither is drush_complete_rebuild_arguments().
-    drush_bootstrap_max();
-    return array('values' => \Drupal::service('config.storage')->listAll());
-  }
-
-  function completeLabels() {
-    // @todo This is not bootstrapping. Neither is drush_complete_rebuild_arguments().
-    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
-    global $config_directories;
-    return array('values' => array_keys($config_directories));
-  }
 }
