@@ -43,6 +43,7 @@ class DrupalKernel extends DrupalDrupalKernel {
     }
     return $container;
   }
+
   /**
    * Initializes the service container.
    *
@@ -65,15 +66,40 @@ class DrupalKernel extends DrupalDrupalKernel {
    * {@inheritdoc}
    */
   public function discoverServiceProviders() {
+    // Let Drupal discover all of its service providers
     parent::discoverServiceProviders();
 
+    // Add those Drush service providers from Drush core that
+    // need references to the Drupal DI container. This includes
+    // Drush commands, and those services needed by those Drush
+    // commands. Note that these commands are not instantiated
+    // until Drupal is bootstrapped.
+    $this->addDrushServiceProvider("_drush", DRUSH_BASE_PATH . '/drush.services.yml');
+
+    // TODO: We could potentially also add service providers from:
+    //  - DRUSH_BASE_PATH . '/drush/drush.services.yml');
+    //  - DRUSH_BASE_PATH . '/../drush/drush.services.yml');
+    // Or, perhaps better yet, from every Drush command directory
+    // (e.g. DRUSH_BASE_PATH/drush/mycmd/drush.services.yml) in
+    // any of these `drush` folders. In order to do this, it is
+    // necessary that the class files in these commands are available
+    // in the autoloader.
+
+    // Also add Drush services from all modules
     $module_filenames = $this->getModuleFileNames();
     // Load each module's serviceProvider class.
     foreach ($module_filenames as $module => $filename) {
       $filename = dirname($filename) . "/drush.services.yml";
-      if (file_exists($filename)) {
-        $this->serviceYamls['app']["drush.$module"] = $filename;
-      }
+      $this->addDrushServiceProvider("_drush.$module", $filename);
+    }
+  }
+
+  /**
+   * Add a services.yml file if it exists.
+   */
+  protected function addDrushServiceProvider($serviceProviderName, $filename) {
+    if (file_exists($filename)) {
+      $this->serviceYamls['app'][$serviceProviderName] = $filename;
     }
   }
 }
