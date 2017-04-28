@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Commands\config;
+namespace Drush\Drupal\Commands\config;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Config\ConfigManagerInterface;

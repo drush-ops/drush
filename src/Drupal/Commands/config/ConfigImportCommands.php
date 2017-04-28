@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Commands\config;
+namespace Drush\Drupal\Commands\config;
 
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
@@ -14,7 +14,6 @@ use Drupal\Core\Config\TypedConfigManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
-use Drupal\Core\Lock\LockBackendAbstract;
 use Drupal\Core\Lock\LockBackendInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drush\Commands\DrushCommands;
@@ -81,7 +80,7 @@ class ConfigImportCommands extends DrushCommands {
   }
 
   /**
-   * @return \Drupal\Core\Lock\LockBackendAbstract
+   * @return \Drupal\Core\Lock\LockBackendInterface
    */
   public function getLock() {
     return $this->lock;
@@ -120,7 +119,7 @@ class ConfigImportCommands extends DrushCommands {
    * @param StorageInterface $configStorage
    * @param StorageInterface $configStorageSync
    */
-  public function __construct(ConfigManagerInterface $configManager, StorageInterface $configStorage, StorageInterface $configStorageSync, ModuleHandlerInterface $moduleHandler, EventDispatcherInterface $eventDispatcher, LockBackendAbstract $lock, TypedConfigManagerInterface $configTyped, ModuleInstallerInterface $moduleInstaller, ThemeHandlerInterface $themeHandler, TranslationInterface $stringTranslation) {
+  public function __construct(ConfigManagerInterface $configManager, StorageInterface $configStorage, StorageInterface $configStorageSync, ModuleHandlerInterface $moduleHandler, EventDispatcherInterface $eventDispatcher, LockBackendInterface $lock, TypedConfigManagerInterface $configTyped, ModuleInstallerInterface $moduleInstaller, ThemeHandlerInterface $themeHandler, TranslationInterface $stringTranslation) {
     parent::__construct();
     $this->configManager = $configManager;
     $this->configStorage = $configStorage;

@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Commands\config;
+namespace Drush\Drupal\Commands\config;
 
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
@@ -29,7 +29,7 @@ class ConfigCommands extends DrushCommands {
    * ConfigCommands constructor.
    * @param ConfigFactoryInterface $configFactory
    */
-  public function __construct(ConfigFactoryInterface $configFactory) {
+  public function __construct($configFactory) {
     parent::__construct();
     $this->configFactory = $configFactory;
   }
