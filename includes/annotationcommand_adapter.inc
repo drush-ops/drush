@@ -500,6 +500,9 @@ function annotation_adapter_add_legacy_commands_to_application($application) {
         $annotated->addArgument($name, InputArgument::OPTIONAL, $description);
       }
       foreach ($command['options'] as $name => $option) {
+        if (!is_array($option)) {
+          $option = ['description' => $option];
+        }
         if (!array_key_exists('default_value', $option)) {
           $option['default_value'] = '';
         }
