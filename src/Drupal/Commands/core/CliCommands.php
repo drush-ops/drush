@@ -1,6 +1,6 @@
 <?php
 
-namespace Drush\Commands\core;
+namespace Drush\Drupal\Commands\core;
 
 use Drush\Commands\DrushCommands;
 use Drush\Log\LogLevel;
@@ -81,13 +81,6 @@ class CliCommands extends DrushCommands {
     // DrupalBoot classes except DrupalBoot8.
     if ($bootstrap = \Drush::bootstrap()) {
       $bootstrap->terminate();
-    }
-
-    // To fix the above problem in Drupal 7, the connection can be closed manually.
-    // This will make sure a new connection is created again in child loops. So
-    // any shutdown functions will still run ok after the shell has exited.
-    if ($drupal_major_version == 7) {
-      \Database::closeConnection();
     }
 
     $shell->run();
