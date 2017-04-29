@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Commands\pm;
+namespace Drush\Drupal\Commands\pm;
 
 
 use Consolidation\AnnotatedCommand\CommandData;
