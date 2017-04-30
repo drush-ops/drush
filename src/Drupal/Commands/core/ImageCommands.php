@@ -1,6 +1,6 @@
 <?php
 
-namespace Drush\Commands\core;
+namespace Drush\Drupal\Commands\core;
 
 use Drupal\image\Entity\ImageStyle;
 use Drush\Commands\DrushCommands;

@@ -1,10 +1,24 @@
 <?php
 
-namespace Drush\Commands\core;
+namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
+use Drupal\Core\State\StateInterface;
 
 class StateCommands {
+
+  protected $state;
+
+  public function __construct(StateInterface $state) {
+    $this->state = $state;
+  }
+
+  /**
+   * @return \Drupal\Core\State\StateInterface
+   */
+  public function getState() {
+    return $this->state;
+  }
 
   /**
    * Display a state value.
@@ -20,7 +34,7 @@ class StateCommands {
    * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
    */
   public function get($key, $options = ['format' => 'string', 'fields' => '']) {
-    $value = \Drupal::state()->get($key);
+    $value = $this->getState()->get($key);
     return new PropertyList([$key => $value]);
   }
 
@@ -65,7 +79,7 @@ class StateCommands {
       $value = drush_value_format($value, $options['input-format']);
     }
 
-    \Drupal::state()->set($key, $value);
+    $this->getState()->set($key, $value);
   }
 
   /**
@@ -82,6 +96,6 @@ class StateCommands {
    * @return void
    */
   public function delete($key) {
-    \Drupal::state()->delete($key);
+    $this->getState()->delete($key);
   }
 }

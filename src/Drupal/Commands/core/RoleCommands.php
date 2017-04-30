@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Commands\core;
+namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Drupal\user\Entity\Role;
