@@ -57,7 +57,7 @@ class DocsCommands extends DrushCommands {
   }
 
   /**
-   * Drupal configuration export instructions, including customizing configuration by environment.
+   * Drupal config export instructions, including customizing config by environment.
    *
    * @command docs-config-exporting
    * @hidden
@@ -68,7 +68,7 @@ class DocsCommands extends DrushCommands {
   }
 
   /**
-   * Site aliases overview on creating your own aliases for commonly used Drupal sites with examples from example.aliases.drushrc.php.
+   * Creating site aliases for running Drush on remote sites.
    *
    * @command docs-aliases
    * @hidden
@@ -90,7 +90,7 @@ class DocsCommands extends DrushCommands {
   }
 
   /**
-   * Bootstrap explanation: how Drush starts up and prepares the Drupal environment for use with the command.
+   * Bootstrap explanation: how Drush starts up and prepares the Drupal environment.
    *
    * @command docs-bootstrap
    * @hidden
@@ -156,7 +156,7 @@ class DocsCommands extends DrushCommands {
   }
 
   /**
-   * Contexts overview explaining how Drush manages command line options and configuration file settings.
+   * Explaining how Drush manages command line options and configuration file settings.
    *
    * @command docs-context
    * @hidden
@@ -189,18 +189,7 @@ class DocsCommands extends DrushCommands {
   }
 
   /**
-   * Example commandfile that extends sql-sync to enable development modules in the post-sync hook.
-   *
-   * @command docs-example-sync-extension
-   * @hidden
-   * @topic
-   */
-  public function syncEnable() {
-    self::printFile(DRUSH_BASE_PATH. '/examples/sync_enable.drush.inc');
-  }
-
-  /**
-   * Example Drush commandfile that extends sql-sync to allow transfer of the sql dump file via http rather than ssh and rsync.
+   * Example Drush commandfile that extends sql-sync to allow transfer of the sql dump file via http.
    *
    * @command docs-example-sync-via-http
    * @hidden

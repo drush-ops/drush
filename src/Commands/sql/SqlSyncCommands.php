@@ -30,7 +30,7 @@ class SqlSyncCommands extends DrushCommands {
    *   Copy the database from the site with the alias 'source' to the site with the alias 'target'.
    * @usage drush sql-sync prod dev
    *   Copy the database from the site in /sites/prod to the site in /sites/dev (multisite installation).
-   * @topics docs-aliases,docs-policy,docs-example-sync-via-http,docs-example-sync-extension
+   * @topics docs-aliases,docs-policy,docs-example-sync-via-http
    * @complete \Drush\Commands\CompletionCommands::completeSiteAliases
    */
   public function sqlsync($source, $destination, $options = ['no-dump' => false, 'no-sync' => false, 'runner' => NULL, 'create-db' => false, 'db-su' => NULL, 'db-su-pw' => NULL, 'sanitize' => false, 'confirm-sanitizations' => false, 'target-dump' => NULL, 'source-dump' => TRUE]) {
