@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Commands\core;
+namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;

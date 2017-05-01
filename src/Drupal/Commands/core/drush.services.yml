@@ -39,3 +39,12 @@ services:
     class: \Drush\Drupal\Commands\core\UserCommands
     tags:
       -  { name: drush.command }
+  views.commands:
+    class: \Drush\Drupal\Commands\core\ViewsCommands
+    arguments: ['@config.factory', '@module_handler', '@entity.type.manager', '@renderer', '@views.analyzer']
+    tags:
+      -  { name: drush.command }
+  watchdog.commands:
+    class: \Drush\Drupal\Commands\core\WatchdogCommands
+    tags:
+      -  { name: drush.command }

@@ -1,12 +1,77 @@
 <?php
-namespace Drush\Commands\core;
+namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Render\RendererInterface;
+use Drupal\views\Analyzer;
 use Drush\Commands\DrushCommands;
 use Drush\Log\LogLevel;
 use Drupal\views\Views;
 
 class ViewsCommands extends DrushCommands {
+
+  protected $configFactory;
+
+  protected $moduleHandler;
+
+  protected $entityTypeManager;
+
+  protected $renderer;
+
+  protected $viewsAnalyzer;
+
+  /**
+   * ViewsCommands constructor.
+   * @param $moduleHandler
+   * @param $entityTypeManager
+   * @param $renderer
+   */
+  public function __construct(ConfigFactoryInterface $configFactory, ModuleHandlerInterface $moduleHandler, EntityTypeManagerInterface $entityTypeManager, RendererInterface $renderer, Analyzer $viewsAnalyzer) {
+    $this->moduleHandler = $moduleHandler;
+    $this->entityTypeManager = $entityTypeManager;
+    $this->renderer = $renderer;
+    $this->configFactory = $configFactory;
+    $this->viewsAnalyzer = $viewsAnalyzer;
+  }
+
+  /**
+   * @return \Drupal\views\Analyzer
+   */
+  public function getViewsAnalyzer() {
+    return $this->viewsAnalyzer;
+  }
+
+  /**
+   * @return \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  public function getConfigFactory() {
+    return $this->configFactory;
+  }
+
+  /**
+   * @return \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  public function getModuleHandler() {
+    return $this->moduleHandler;
+  }
+
+  /**
+   * @return \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  public function getEntityTypeManager() {
+    return $this->entityTypeManager;
+  }
+
+  /**
+   * @return \Drupal\Core\Render\RendererInterface
+   */
+  public function getRenderer() {
+    return $this->renderer;
+  }
+
   /**
    * Set several Views settings to more developer-oriented values.
    *
@@ -30,7 +95,7 @@ class ViewsCommands extends DrushCommands {
       'ui.show.additional_queries' => TRUE,
     );
 
-    $config = \Drupal::configFactory()->getEditable('views.settings');
+    $config = $this->getConfigFactory()->getEditable('views.settings');
 
     foreach ($settings as $setting => $value) {
       $config->set($setting, $value);
@@ -88,7 +153,7 @@ class ViewsCommands extends DrushCommands {
     $disabled_views = array();
     $enabled_views = array();
 
-    $views = \Drupal::entityTypeManager()->getStorage('view')->loadMultiple();
+    $views = $this->getEntityTypeManager()->getStorage('view')->loadMultiple();
 
     // Get the --name option.
     $name = \_convert_csv_to_array($options['name']);
@@ -199,7 +264,7 @@ class ViewsCommands extends DrushCommands {
       // Don't show admin links in markup by default.
       $view->hide_admin_links = !$options['show-admin-links'];
       $build = $view->preview();
-      return (string) \Drupal::service('renderer')->renderPlain($build);
+      return (string) $this->getRenderer()->renderPlain($build);
     }
   }
 
@@ -207,7 +272,6 @@ class ViewsCommands extends DrushCommands {
    * Get a list of all Views and analyze warnings.
    *
    * @command views-analyze
-   * @todo 'drupal dependencies' => array('views', 'views_ui'),
    * @todo Command has not  been fully tested. How to generate a message?
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    * @field-labels
@@ -216,17 +280,17 @@ class ViewsCommands extends DrushCommands {
    * @aliases va
    * @validate-module-enabled views
    *
-   * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields|void
+   * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
    */
   public function analyze() {
     $messages = NULL;
     $messages_count = 0;
     $rows = [];
 
-    $views = \Drupal::entityTypeManager()->getStorage('view')->loadMultiple();
+    $views = $this->getEntityTypeManager()->getStorage('view')->loadMultiple();
 
     if (!empty($views)) {
-      $analyzer = \Drupal::service('views.analyzer');
+      $analyzer = $this->getViewsAnalyzer();
       foreach ($views as $view_name => $view) {
         $view = $view->getExecutable();
 
@@ -257,7 +321,7 @@ class ViewsCommands extends DrushCommands {
    */
   public function enable($views) {
     $view_names = _convert_csv_to_array($views);
-    if ($views = \Drupal::entityTypeManager()->getStorage('view')->loadMultiple($view_names)) {
+    if ($views = $this->getEntityTypeManager()->getStorage('view')->loadMultiple($view_names)) {
       foreach ($views as $view) {
         $view->enable();
         $view->save();
@@ -280,7 +344,7 @@ class ViewsCommands extends DrushCommands {
    */
   public function disable($views) {
     $view_names = _convert_csv_to_array($views);
-    if ($views = \Drupal::entityTypeManager()->getStorage('view')->loadMultiple($view_names)) {
+    if ($views = $this->getEntityTypeManager()->getStorage('view')->loadMultiple($view_names)) {
       foreach ($views as $view) {
         $view->disable();
         $view->save();
@@ -290,23 +354,12 @@ class ViewsCommands extends DrushCommands {
   }
 
   /**
-   * A completion callback.
-   *
-   * @return array
-   *   An array of available view names.
-   */
-  static function complete() {
-    drush_bootstrap_max();
-    return array('values' => array_keys(\Drupal::entityTypeManager()->getStorage('view')->loadMultiple()));
-  }
-
-  /**
    * Adds a cache clear option for views.
    *
    * @hook on-event cache-clear
    */
   function cacheClear(&$types, $include_bootstrapped_types) {
-    if ($include_bootstrapped_types && \Drupal::moduleHandler()->moduleExists('views')) {
+    if ($include_bootstrapped_types && $this->getModuleHandler()->moduleExists('views')) {
       $types['views'] = 'views_invalidate_cache';
     }
   }
