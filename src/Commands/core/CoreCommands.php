@@ -89,13 +89,13 @@ class CoreCommands extends DrushCommands {
    * @hidden
    * @topic
    * @bootstrap DRUSH_BOOTSTRAP_NONE
-   *
+   * @table-style default
    * @field-labels
    *   name: Name
    *   description: Description
    * @default-fields name,description
    *
-   * @return RowsOfFields
+   * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
    */
   public function globalOptions($options = ['format' => 'table']) {
     $application = \Drush::getApplication();
