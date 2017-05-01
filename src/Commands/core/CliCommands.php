@@ -4,6 +4,7 @@ namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
 use Drush\Log\LogLevel;
+use Drush\Psysh\Drupal8ForkingLoop;
 use Drush\Psysh\DrushCommand;
 use Drush\Psysh\DrushHelpCommand;
 use Drupal\Component\Assertion\Handle;
@@ -40,17 +41,29 @@ class CliCommands extends DrushCommands {
     // Set the Drush specific history file path.
     $configuration->setHistoryFile($this->historyPath($options));
 
-    $shell = new Shell($configuration);
+    // Store scope variables separately for now so we can delay the creation
+    // of the shell instance.
+    $scope_variables = [];
 
     if ($drupal_major_version >= 8) {
       // Register the assertion handler so exceptions are thrown instead of errors
       // being triggered. This plays nicer with PsySH.
       Handle::register();
-      $shell->setScopeVariables(['container' => \Drupal::getContainer()]);
+
+      $scope_variables['container'] = \Drupal::getContainer();
 
       // Add Drupal 8 specific casters to the shell configuration.
       $configuration->addCasters($this->getCasters());
+
+      // Set our own ForkingLoop class.
+      if ($configuration->usePcntl()) {
+        $forking_loop = new Drupal8ForkingLoop($configuration);
+        $configuration->setLoop($forking_loop);
+      }
     }
+
+    $shell = new Shell($configuration);
+    $shell->setScopeVariables($scope_variables);
 
     // Add Drush commands to the shell.
     $commands = [new DrushHelpCommand()];
