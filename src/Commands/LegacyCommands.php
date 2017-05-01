@@ -15,7 +15,7 @@ class LegacyCommands extends DrushCommands {
 
   /**
    * @command pm-info
-   * @aliases dis
+   * @aliases pmi
    * @hidden
    */
   public function info() {
