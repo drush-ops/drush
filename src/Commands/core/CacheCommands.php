@@ -9,11 +9,10 @@ use Drush\Commands\DrushCommands;
 use Drupal\Core\DrupalKernel;
 use Drupal\Core\Site\Settings;
 use Drupal\Core\Cache\Cache;
-use Drush\Exceptions\UserAbortException;
 use Symfony\Component\HttpFoundation\Request;
 
 /*
- * Interact with Drupal's cache API.
+ * Interact with Drupal's Cache API.
  */
 class CacheCommands extends DrushCommands implements CustomEventAwareInterface {
 

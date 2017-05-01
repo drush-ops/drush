@@ -6,11 +6,14 @@ use Drush\Log\LogLevel;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use League\Container\ContainerAwareInterface;
+use League\Container\ContainerAwareTrait;
 
 use Symfony\Component\Console\Input\ArgvInput;
 
-abstract class BaseBoot implements Boot, LoggerAwareInterface {
+abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInterface {
   use LoggerAwareTrait;
+  use ContainerAwareTrait;
 
   function __construct() {
   }
@@ -130,6 +133,34 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface {
     }
     catch (\InvalidArgumentException $e) {
       return false;
+    }
+  }
+
+  protected function inflect($object) {
+    $container = $this->getContainer();
+    if ($object instanceof \Robo\Contract\ConfigAwareInterface) {
+      $object->setConfig($container->get('config'));
+    }
+    if ($object instanceof \Psr\Log\LoggerAwareInterface) {
+      $object->setLogger($container->get('logger'));
+    }
+    if ($object instanceof \League\Container\ContainerAwareInterface) {
+      $object->setContainer($container->get('container'));
+    }
+    if ($object instanceof \Symfony\Component\Console\Input\InputAwareInterface) {
+      $object->setInput($container->get('input'));
+    }
+    if ($object instanceof \Robo\Contract\OutputAwareInterface) {
+      $object->setOutput($container->get('output'));
+    }
+    if ($object instanceof \Robo\Contract\ProgressIndicatorAwareInterface) {
+      $object->setProgressIndicator($container->get('progressIndicator'));
+    }
+    if ($object instanceof \Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface) {
+      $object->setHookManager($container->get('hookManager'));
+    }
+    if ($object instanceof \Robo\Contract\VerbosityThresholdInterface) {
+      $object->setOutputAdapter($container->get('outputAdapter'));
     }
   }
 

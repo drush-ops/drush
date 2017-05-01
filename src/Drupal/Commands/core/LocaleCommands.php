@@ -1,10 +1,34 @@
 <?php
 
-namespace Drush\Commands\core;
+namespace Drush\Drupal\Commands\core;
 
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\State\StateInterface;
 use Drush\Commands\DrushCommands;
 
 class LocaleCommands extends DrushCommands {
+
+  protected $moduleHandler;
+
+  protected $state;
+
+  /**
+   * @return \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  public function getModuleHandler() {
+    return $this->moduleHandler;
+  }
+
+  /**
+   * @return mixed
+   */
+  public function getState() {
+    return $this->state;
+  }
+
+  public function __construct(ModuleHandlerInterface $moduleHandler, StateInterface $state) {
+    $this->moduleHandler = $moduleHandler;
+  }
 
   /**
    * Checks for available translation updates.
@@ -14,7 +38,7 @@ class LocaleCommands extends DrushCommands {
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    */
   public function check() {
-    \Drupal::moduleHandler()->loadInclude('locale', 'inc', 'locale.compare');
+    $this->getModuleHandler()->loadInclude('locale', 'inc', 'locale.compare');
 
     // Check translation status of all translatable project in all languages.
     // First we clear the cached list of projects. Although not strictly
@@ -45,7 +69,7 @@ class LocaleCommands extends DrushCommands {
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    */
   public function update($options = ['langcodes' => '']) {
-    $module_handler = \Drupal::moduleHandler();
+    $module_handler = $this->getModuleHandler();
     $module_handler->loadInclude('locale', 'fetch.inc');
     $module_handler->loadInclude('locale', 'bulk.inc');
 
@@ -80,7 +104,7 @@ class LocaleCommands extends DrushCommands {
     // If the status was updated recently we can immediately start fetching the
     // translation updates. If the status is expired we clear it an run a batch to
     // update the status and then fetch the translation updates.
-    $last_checked = \Drupal::state()->get('locale.translation_last_checked');
+    $last_checked = $this->getState()->get('locale.translation_last_checked');
     if ($last_checked < REQUEST_TIME - LOCALE_TRANSLATION_STATUS_TTL) {
       locale_translation_clear_status();
       $batch = locale_translation_batch_update_build(array(), $langcodes, $options);

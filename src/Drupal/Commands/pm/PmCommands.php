@@ -1,14 +1,52 @@
 <?php
-namespace Drush\Commands\pm;
+namespace Drush\Drupal\Commands\pm;
 
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\MissingDependencyException;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Extension\ModuleInstallerInterface;
+use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
 
 class PmCommands extends DrushCommands {
+
+  protected $configFactory;
+
+  protected $moduleInstaller;
+
+  protected $themeHandler;
+
+  public function __construct(ConfigFactoryInterface $configFactory, ModuleInstallerInterface $moduleInstaller, ThemeHandlerInterface $themeHandler) {
+    parent::__construct();
+    $this->configFactory = $configFactory;
+    $this->moduleInstaller = $moduleInstaller;
+    $this->themeHandler = $themeHandler;
+  }
+
+  /**
+   * @return \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  public function getConfigFactory() {
+    return $this->configFactory;
+  }
+
+  /**
+   * @return \Drupal\Core\Extension\ModuleInstallerInterface
+   */
+  public function getModuleInstaller() {
+    return $this->moduleInstaller;
+  }
+
+  /**
+   * @return \Drupal\Core\Extension\ThemeHandlerInterface
+   */
+  public function getThemeHandler() {
+    return $this->themeHandler;
+  }
 
   /**
    * Enable one or more modules.
@@ -28,7 +66,7 @@ class PmCommands extends DrushCommands {
         throw new UserAbortException();
       }
     }
-    if (!\Drupal::service('module_installer')->install($modules, TRUE)) {
+    if (!$this->getModuleInstaller()->install($modules, TRUE)) {
       throw new \Exception('Unable to install modules.');
     }
     $this->logger()->success(dt('Successfully enabled modules: !list', ['!list' => implode(', ', $list)]));
@@ -55,7 +93,7 @@ class PmCommands extends DrushCommands {
         throw new UserAbortException();
       }
     }
-    if (!\Drupal::service('module_installer')->uninstall($modules, TRUE)) {
+    if (!$this->getModuleInstaller()->uninstall($modules, TRUE)) {
       throw new \Exception('Unable to uninstall modules.');
     }
     $this->logger()->success(dt('Successfully uninstalled modules: !list', ['!list' => implode(', ', $list)]));
@@ -70,7 +108,7 @@ class PmCommands extends DrushCommands {
   public function validateUninstall(CommandData $commandData) {
     if ($modules = $commandData->input()->getArgument('modules')) {
       $modules = _convert_csv_to_array($modules);
-      if ($validation_reasons = \Drupal::service('module_installer')->validateUninstall($modules)) {
+      if ($validation_reasons = $this->getModuleInstaller()->validateUninstall($modules)) {
         foreach ($validation_reasons as $module => $list) {
           foreach ($list as $markup) {
             $reasons[$module] = "$module: " . (string) $markup;
@@ -106,7 +144,7 @@ class PmCommands extends DrushCommands {
   public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => NULL, 'core' => false, 'no-core' => false]) {
     $rows = [];
     $modules = \system_rebuild_module_data();
-    $themes = \Drupal::service('theme_handler')->rebuildThemeData();
+    $themes = $this->getThemeHandler()->rebuildThemeData();
     $both = array_merge($modules, $themes);
 
     $package_filter = _convert_csv_to_array(strtolower($options['package']));
@@ -190,7 +228,7 @@ class PmCommands extends DrushCommands {
       // One or more of the given modules doesn't exist.
       throw new MissingDependencyException(sprintf('Unable to install modules %s due to missing modules %s.', implode(', ', $module_list), implode(', ', $missing_modules)));
     }
-    $extension_config = \Drupal::configFactory()->getEditable('core.extension');
+    $extension_config = $this->getConfigFactory()->getEditable('core.extension');
     $installed_modules = $extension_config->get('module') ?: array();
 
     // Copied from \Drupal\Core\Extension\ModuleInstaller::install
@@ -219,7 +257,7 @@ class PmCommands extends DrushCommands {
     if ($diff = array_diff_key($module_list, $module_data)) {
       throw new \Exception(dt('A specified extension does not exist: !diff', ['!diff' => implode(',', $diff)]));
     }
-    $extension_config = \Drupal::configFactory()->getEditable('core.extension');
+    $extension_config = $this->getConfigFactory()->getEditable('core.extension');
     $installed_modules = $extension_config->get('module') ?: array();
 
     // Add dependent modules to the list. The new modules will be processed as

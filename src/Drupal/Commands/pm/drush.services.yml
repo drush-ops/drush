@@ -1,0 +1,11 @@
+services:
+  pm.commands:
+    class: \Drush\Drupal\Commands\pm\PmCommands
+    arguments: ['@config.factory', '@module_installer', '@theme_handler']
+    tags:
+      -  { name: drush.command }
+  theme.commands:
+    class: \Drush\Drupal\Commands\pm\ThemeCommands
+    arguments: ['@theme_installer']
+    tags:
+      -  { name: drush.command }

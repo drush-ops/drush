@@ -1,8 +1,9 @@
 <?php
-namespace Drush\Commands\config;
+namespace Drush\Drupal\Commands\config;
 
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\FileStorage;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,6 +11,28 @@ use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Yaml\Parser;
 
 class ConfigCommands extends DrushCommands {
+
+  /**
+   * @var ConfigFactoryInterface
+   */
+  protected $configFactory;
+
+  /**
+   * @return ConfigFactoryInterface
+   */
+  public function getConfigFactory() {
+    return $this->configFactory;
+  }
+
+
+  /**
+   * ConfigCommands constructor.
+   * @param ConfigFactoryInterface $configFactory
+   */
+  public function __construct($configFactory) {
+    parent::__construct();
+    $this->configFactory = $configFactory;
+  }
 
   /**
    * Display a config value, or a whole configuration object.
@@ -26,12 +49,11 @@ class ConfigCommands extends DrushCommands {
    * @usage drush config-get system.site page.front
    *   Gets system.site:page.front value.
    * @aliases cget
-   * @complete \Drush\Commands\core\ConfigCommands::completeNames
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    */
   public function get($config_name, $key = '', $options = ['format' => 'yaml', 'source' => 'active', 'include-overridden' => FALSE]) {
     // Displaying overrides only applies to active storage.
-    $factory = \Drupal::configFactory();
+    $factory = $this->getConfigFactory();
     $config = $options['include-overridden'] ? $factory->getEditable($config_name) : $factory->get($config_name);
     $value = $config->get($key);
     // @todo If the value is TRUE (for example), nothing gets printed. Is this yaml formatter's fault?
@@ -54,7 +76,6 @@ class ConfigCommands extends DrushCommands {
    * @usage drush config-set system.site page.front node
    *   Sets system.site:page.front to "node".
    * @aliases cset
-   * @complete \Drush\Commands\core\ConfigCommands::completeNames
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    */
   public function set($config_name, $key, $value = NULL, $options = ['format' => 'string', 'value' => NULL]) {
@@ -65,7 +86,7 @@ class ConfigCommands extends DrushCommands {
       throw new \Exception(dt('No config value specified.'));
     }
 
-    $config = \Drupal::configFactory()->getEditable($config_name);
+    $config = $this->getConfigFactory()->getEditable($config_name);
     // Check to see if config key already exists.
     if ($config->get($key) === NULL) {
       $new_key = TRUE;
@@ -129,11 +150,10 @@ class ConfigCommands extends DrushCommands {
    *   Return to shell prompt as soon as the editor window opens.
    * @aliases cedit
    * @validate-module-enabled config
-   * @complete \Drush\Commands\core\ConfigCommands::completeNames
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
    */
   public function edit($config_name, $options = []) {
-    $config = \Drupal::configFactory()->get($config_name);
+    $config = $this->getConfigFactory()->get($config_name);
     $active_storage = $config->getStorage();
     $contents = $active_storage->read($config_name);
 
@@ -162,93 +182,15 @@ class ConfigCommands extends DrushCommands {
    * @param $config_name The config object name, for example "system.site".
    * @aliases cdel
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
-   * @complete \Drush\Commands\core\ConfigCommands::completeNames
    */
   public function delete($config_name, $options = []) {
-    $config =\Drupal::service('config.factory')->getEditable($config_name);
+    $config = $this->getConfigFactory()->getEditable($config_name);
     if ($config->isNew()) {
       throw new \Exception('Configuration name not recognized.');
     }
     else {
       $config->delete();
     }
-  }
-
-  /**
-   * @hook validate config-pull
-   */
-  function validateConfigPull(CommandData $commandData) {
-    if ($commandData->input()->getOption('safe')) {
-      $return = drush_invoke_process($commandData->input()->getArgument('destination'), 'core-execute', array('git diff --quiet'), array('escape' => 0));
-      if ($return['error_status']) {
-        throw new \Exception('There are uncommitted changes in your git working copy.');
-      }
-    }
-  }
-
-  /**
-   * Export and transfer config from one environment to another.
-   *
-   * @command config-pull
-   * @param string $source A site-alias or the name of a subdirectory within /sites whose config you want to copy from,
-   * @param string $destination A site-alias or the name of a subdirectory within /sites whose config you want to replace.
-   * @option safe Validate that there are no git uncommitted changes before proceeding
-   * @option label A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'sync'
-   * @option runner Where to run the rsync command; defaults to the local site. Can also be 'source' or 'destination'
-   * @usage drush config-pull @prod @stage
-   *   Export config from @prod and transfer to @stage.
-   * @usage drush config-pull @prod @self --label=vcs
-   *   Export config from @prod and transfer to the 'vcs' config directory of current site.
-   * @bootstrap DRUSH_BOOTSTRAP_NONE
-   * @aliases cpull
-   * @complete \Drush\Commands\CompletionCommands::completeSiteAliases
-   * @topics docs-aliases,docs-config-exporting
-   *
-   */
-  function pull($source, $destination, $options = ['safe' => FALSE, 'label' => 'sync', 'runner' => NULL]) {
-    // @todo drush_redispatch_get_options() assumes you will execute same command. Not good.
-    $global_options = drush_redispatch_get_options() + array(
-      'strict' => 0,
-    );
-
-    // @todo If either call is made interactive, we don't get an $return['object'] back.
-    $backend_options = array('interactive' => FALSE);
-    if (drush_get_context('DRUSH_SIMULATE')) {
-      $backend_options['backend-simulate'] = TRUE;
-    }
-
-    $export_options = array(
-      // Use the standard backup directory on Destination.
-      'destination' => TRUE,
-      'yes' => NULL,
-    );
-    $this->logger()->notice(dt('Starting to export configuration on Target.'));
-    $return = drush_invoke_process($source, 'config-export', array(), $global_options + $export_options, $backend_options);
-    if ($return['error_status']) {
-      throw new \Exception(dt('Config-export failed.'));
-    }
-    else {
-      // Trailing slash assures that transfer files and not the containing dir.
-      $export_path = $return['object'] . '/';
-    }
-
-    $rsync_options = array(
-      '--remove-source-files',
-      '--delete',
-      '--exclude=.htaccess',
-    );
-    $label = $options['label'];
-    $runner = drush_get_runner($source, $destination, drush_get_option('runner', FALSE));
-    $this->logger()->notice(dt('Starting to rsync configuration files from !source to !dest.', array('!source' => $source, '!dest' => $destination)));
-    // This comment applies similarly to sql-sync's use of core-rsync.
-    // Since core-rsync is a strict-handling command and drush_invoke_process() puts options at end, we can't send along cli options to rsync.
-    // Alternatively, add options like --ssh-options to a site alias (usually on the machine that initiates the sql-sync).
-    $return = drush_invoke_process($runner, 'core-rsync', array_merge(["$source:$export_path", "$destination:%config-$label", '--'], $rsync_options), ['yes' => TRUE], $backend_options);
-    if ($return['error_status']) {
-      throw new \Exception(dt('Config-pull rsync failed.'));
-    }
-
-    drush_backend_set_result($return['object']);
   }
 
   /**
@@ -323,7 +265,7 @@ class ConfigCommands extends DrushCommands {
    */
   public function interactConfigName($input, $output) {
     if (empty($input->getArgument('config_name'))) {
-      $config_names = \Drupal::configFactory()->listAll();
+      $config_names = $this->getConfigFactory()->listAll();
       $choice = $this->io()->choice('Choose a configuration', drush_map_assoc($config_names));
       $input->setArgument('config_name', $choice);
     }

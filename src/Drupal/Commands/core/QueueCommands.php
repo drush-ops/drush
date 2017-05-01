@@ -1,9 +1,12 @@
 <?php
-namespace Drush\Commands\core;
+namespace Drush\Drupal\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Core\Queue\QueueFactory;
+use Drupal\Core\Queue\QueueInterface;
+use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Drupal\Core\Queue\RequeueException;
 use Drupal\Core\Queue\SuspendQueueException;
 use Drush\Commands\DrushCommands;
@@ -15,6 +18,27 @@ class QueueCommands extends DrushCommands {
    * @var \Drupal\Core\Queue\QueueWorkerManager
    */
   protected $workerManager;
+
+  protected $queueService;
+
+  public function __construct(QueueWorkerManagerInterface $workerManager, QueueFactory $queueService) {
+    $this->workerManager = $workerManager;
+    $this->queueService = $queueService;
+  }
+
+  /**
+   * @return \Drupal\Core\Queue\QueueWorkerManager
+   */
+  public function getWorkerManager() {
+    return $this->workerManager;
+  }
+
+  /**
+   * @return \Drupal\Core\Queue\QueueFactory
+   */
+  public function getQueueService() {
+    return $this->queueService;
+  }
 
   /**
    * Keep track of queue definitions.
@@ -121,16 +145,6 @@ class QueueCommands extends DrushCommands {
   }
 
   /**
-   * @return \Drupal\Core\Queue\QueueWorkerManager
-   */
-  public function getWorkerManager() {
-    if (!isset($this->workerManager)) {
-      $this->workerManager = \Drupal::service('plugin.manager.queue_worker');
-    }
-    return $this->workerManager;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function getQueues() {
@@ -149,6 +163,6 @@ class QueueCommands extends DrushCommands {
    * @return \Drupal\Core\Queue\QueueInterface
    */
   public function getQueue($name) {
-    return \Drupal::queue($name);
+    return $this->getQueueService()->get($name);
   }
 }

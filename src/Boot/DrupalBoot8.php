@@ -164,6 +164,7 @@ class DrupalBoot8 extends DrupalBoot {
     $serviceCommandlist = $container->get('drush.service.consolecommands');
     foreach ($serviceCommandlist->getCommandList() as $command) {
       if (!$this->commandIgnored($command, $ignored_modules)) {
+        $this->inflect($command);
         drush_log(dt('Add a command: !name', ['!name' => $command->getName()]), LogLevel::DEBUG);
         annotationcommand_adapter_cache_module_console_commands($command);
       }
@@ -172,6 +173,7 @@ class DrupalBoot8 extends DrupalBoot {
     $serviceCommandlist = $container->get('drush.service.consolidationcommands');
     foreach ($serviceCommandlist->getCommandList() as $commandhandler) {
       if (!$this->commandIgnored($commandhandler, $ignored_modules)) {
+        $this->inflect($commandhandler);
         drush_log(dt('Add a commandhandler: !name', ['!name' => get_class($commandhandler)]), LogLevel::DEBUG);
         annotationcommand_adapter_cache_module_service_commands($commandhandler);
       }
