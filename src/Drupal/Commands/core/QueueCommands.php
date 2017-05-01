@@ -4,6 +4,7 @@ namespace Drush\Drupal\Commands\core;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Drupal\Core\Queue\RequeueException;
@@ -20,7 +21,7 @@ class QueueCommands extends DrushCommands {
 
   protected $queueService;
 
-  public function __construct(QueueWorkerManagerInterface $workerManager, QueueInterface $queueService) {
+  public function __construct(QueueWorkerManagerInterface $workerManager, QueueFactory $queueService) {
     $this->workerManager = $workerManager;
     $this->queueService = $queueService;
   }
@@ -33,7 +34,7 @@ class QueueCommands extends DrushCommands {
   }
 
   /**
-   * @return \Drupal\Core\Queue\QueueInterface
+   * @return \Drupal\Core\Queue\QueueFactory
    */
   public function getQueueService() {
     return $this->queueService;
