@@ -6,7 +6,6 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Render\RendererInterface;
-use Drupal\views\Analyzer;
 use Drush\Commands\DrushCommands;
 use Drush\Log\LogLevel;
 use Drupal\views\Views;
@@ -21,27 +20,17 @@ class ViewsCommands extends DrushCommands {
 
   protected $renderer;
 
-  protected $viewsAnalyzer;
-
   /**
    * ViewsCommands constructor.
    * @param $moduleHandler
    * @param $entityTypeManager
    * @param $renderer
    */
-  public function __construct(ConfigFactoryInterface $configFactory, ModuleHandlerInterface $moduleHandler, EntityTypeManagerInterface $entityTypeManager, RendererInterface $renderer, Analyzer $viewsAnalyzer) {
+  public function __construct(ConfigFactoryInterface $configFactory, ModuleHandlerInterface $moduleHandler, EntityTypeManagerInterface $entityTypeManager, RendererInterface $renderer) {
     $this->moduleHandler = $moduleHandler;
     $this->entityTypeManager = $entityTypeManager;
     $this->renderer = $renderer;
     $this->configFactory = $configFactory;
-    $this->viewsAnalyzer = $viewsAnalyzer;
-  }
-
-  /**
-   * @return \Drupal\views\Analyzer
-   */
-  public function getViewsAnalyzer() {
-    return $this->viewsAnalyzer;
   }
 
   /**
@@ -290,7 +279,7 @@ class ViewsCommands extends DrushCommands {
     $views = $this->getEntityTypeManager()->getStorage('view')->loadMultiple();
 
     if (!empty($views)) {
-      $analyzer = $this->getViewsAnalyzer();
+      $analyzer = \Drupal::service('views.analyzer');
       foreach ($views as $view_name => $view) {
         $view = $view->getExecutable();
 

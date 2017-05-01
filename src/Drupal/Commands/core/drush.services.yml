@@ -41,7 +41,7 @@ services:
       -  { name: drush.command }
   views.commands:
     class: \Drush\Drupal\Commands\core\ViewsCommands
-    arguments: ['@config.factory', '@module_handler', '@entity_type.manager', '@renderer', '@views.analyzer']
+    arguments: ['@config.factory', '@module_handler', '@entity_type.manager', '@renderer']
     tags:
       -  { name: drush.command }
   watchdog.commands:
