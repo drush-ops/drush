@@ -53,19 +53,8 @@ class CliCommands extends DrushCommands {
     }
 
     // Add Drush commands to the shell.
-    $commands = [new DrushHelpCommand()];
-
-    foreach (drush_commands_categorize($this->getDrushCommands()) as $category_data) {
-      $category_title = (string) $category_data['title'];
-      foreach ($category_data['commands'] as $command_config) {
-        $command = new DrushCommand($command_config);
-        // Set the category label on each.
-        $command->setCategory($category_title);
-        $commands[] = $command;
-      }
-    }
-
-    $shell->addCommands($commands);
+    $shell->addCommands([new DrushHelpCommand()]);
+    $shell->addCommands($this->getDrushCommands());
 
     // PsySH will never return control to us, but our shutdown handler will still
     // run after the user presses ^D.  Mark this command as completed to avoid a
@@ -92,25 +81,34 @@ class CliCommands extends DrushCommands {
    * @return array
    */
   protected function getDrushCommands() {
-    $commands = drush_get_commands();
+    $application = \Drush::getApplication();
+    //annotation_adapter_add_legacy_commands_to_application($application);
+    $commands = $application->all();
+
     $ignored_commands = ['help', 'drush-psysh', 'php-eval', 'core-cli', 'php'];
     $php_keywords = $this->getPhpKeywords();
 
-    foreach ($commands as $name => $config) {
+    /** @var \Consolidation\AnnotatedCommand\AnnotatedCommand $command */
+    foreach ($commands as $name => $command) {
+      $definition = $command->getDefinition();
+
       // Ignore some commands that don't make sense inside PsySH, are PHP keywords
       // are hidden, or are aliases.
-      if (in_array($name, $ignored_commands) || in_array($name, $php_keywords) || !empty($config['hidden']) || ($name !== $config['command'])) {
+      if (in_array($name, $ignored_commands) || in_array($name, $php_keywords) || ($name !== $command->getName())) {
         unset($commands[$name]);
       }
       else {
+        $aliases = $command->getAliases();
         // Make sure the command aliases don't contain any PHP keywords.
-        if (!empty($config['aliases'])) {
-          $commands[$name]['aliases'] = array_diff($commands[$name]['aliases'], $php_keywords);
+        if (!empty($aliases)) {
+          $command->setAliases(array_diff($aliases, $php_keywords));
         }
       }
     }
 
-    return $commands;
+    return array_map(function ($command) {
+      return new DrushCommand($command);
+    }, $commands);
   }
 
   /**
