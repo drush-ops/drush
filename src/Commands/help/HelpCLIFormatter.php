@@ -53,7 +53,9 @@ class HelpCLIFormatter implements FormatterInterface
       $table->addRow(['','']);
       $table->addRow([new TableCell('Options:', array('colspan' => 2))]);
       foreach ($data['options'] as $option) {
-        $table->addRow([$this->formatOptionKeys($option), $this->formatOptionDescription($option)]);
+        if (substr($option['name'], 0, 8) !== '--notify' && substr($option['name'], 0, 5) !== '--xh-' && substr($option['name'], 0, 11) !== '--druplicon') {
+          $table->addRow([$this->formatOptionKeys($option), $this->formatOptionDescription($option)]);
+        }
       }
     }
 
