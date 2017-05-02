@@ -11,10 +11,6 @@
     {
       "type": "composer",
       "url": "https://packages.drupal.org/8"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/webflo/drupal-core-8.4.x"
     }
   ],
   "require": {
