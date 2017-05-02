@@ -19,7 +19,7 @@ if (!function_exists('filter_init')) {
 if (!function_exists('system_watchdog')) {
   // Check function_exists as a safety net in case it is added in future.
   function system_watchdog($log_entry = array()) {
-    $uid = $log_entry['user']->id();
+    $uid = $log_entry['user']->uid;
     $message = strtr('Watchdog: !message | severity: !severity | type: !type | uid: !uid | !ip | !request_uri | !referer | !link', array(
       '!message'     => strip_tags(!isset($log_entry['variables']) ? $log_entry['message'] : strtr($log_entry['message'], $log_entry['variables'])),
       '!severity'    => $log_entry['severity'],
@@ -50,6 +50,9 @@ if (file_exists('.' . $url['path'])) {
   // Serve the requested resource as-is.
   return FALSE;
 }
+
+// Populate the "q" query key with the path, skip the leading slash.
+$_GET['q'] = $_REQUEST['q'] = substr($url['path'], 1);
 
 // We set the base_url so that Drupal generates correct URLs for runserver
 // (e.g. http://127.0.0.1:8888/...), but can still select and serve a specific
