@@ -59,17 +59,23 @@ class PmCommands extends DrushCommands {
    */
   public function enable($modules) {
     $modules = _convert_csv_to_array($modules);
-    $list = $this->addInstallDependencies($modules);
-    if (array_values($list) !== $modules) {
-      drush_print(dt('The following extensions will be enabled: !list', array('!list' => implode(', ', $list))));
+    $todo = $this->addInstallDependencies($modules);
+    $todo_str = ['!list' => implode(', ', $todo)];
+    if (empty($todo)) {
+      $this->logger()->notice(dt('Already enabled: !list', ['!list' => implode(', ', $modules)]));
+      return;
+    }
+    elseif (array_values($todo) !== $modules) {
+      drush_print(dt('The following module(s) will be enabled: !list', $todo_str));
       if(!$this->io()->confirm(dt('Do you want to continue?'))) {
         throw new UserAbortException();
       }
     }
+
     if (!$this->getModuleInstaller()->install($modules, TRUE)) {
       throw new \Exception('Unable to install modules.');
     }
-    $this->logger()->success(dt('Successfully enabled modules: !list', ['!list' => implode(', ', $list)]));
+    $this->logger()->success(dt('Successfully enabled: !list', $todo_str));
     // Our logger got blown away during the container rebuild above.
     $boot = \Drush::bootstrapManager()->bootstrap();
     $boot->add_logger();
@@ -96,7 +102,7 @@ class PmCommands extends DrushCommands {
     if (!$this->getModuleInstaller()->uninstall($modules, TRUE)) {
       throw new \Exception('Unable to uninstall modules.');
     }
-    $this->logger()->success(dt('Successfully uninstalled modules: !list', ['!list' => implode(', ', $list)]));
+    $this->logger()->success(dt('Successfully uninstalled: !list', ['!list' => implode(', ', $list)]));
     // Our logger got blown away during the container rebuild above.
     $boot = \Drush::bootstrapManager()->bootstrap();
     $boot->add_logger();
@@ -247,7 +253,10 @@ class PmCommands extends DrushCommands {
         }
       }
     }
-    return $module_list;
+
+    // Remove already installed modules.
+    $todo = array_diff_key($module_list, $installed_modules);
+    return $todo;
   }
 
   function addUninstallDependencies($modules) {
