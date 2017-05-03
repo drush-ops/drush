@@ -26,7 +26,7 @@ class DrushHelpCommand extends BaseCommand {
   /**
    * Label for PsySH commands.
    */
-  const PSYSH_CATEGORY = 'PsySH commands';
+  const PSYSH_CATEGORY = 'PsySH';
 
   /**
    * The currently set subcommand.
@@ -71,7 +71,7 @@ class DrushHelpCommand extends BaseCommand {
       $output->page($this->getApplication()->get($name)->asText());
     }
     else {
-      $categories = [];
+      $namespaces = [];
 
       // List available commands.
       $commands = $this->getApplication()->all();
@@ -95,27 +95,29 @@ class DrushHelpCommand extends BaseCommand {
           $aliases = '';
         }
 
+        $namespace = '';
         if ($command instanceof DrushCommand) {
-          $category = (string) $command->getCategory();
-        }
-        else {
-          $category = static::PSYSH_CATEGORY;
+          $namespace = $command->getNamespace();
         }
 
-        if (!isset($categories[$category])) {
-          $categories[$category] = [];
+        if (empty($namespace)) {
+          $namespace = static::PSYSH_CATEGORY;
         }
 
-        $categories[$category][] = sprintf("    <info>%-${width}s</info> %s%s", $name, $command->getDescription(), $aliases);
+        if (!isset($namespaces[$namespace])) {
+          $namespaces[$namespace] = [];
+        }
+
+        $namespaces[$namespace][] = sprintf("    <info>%-${width}s</info> %s%s", $name, $command->getDescription(), $aliases);
       }
 
       $messages = [];
 
-      foreach ($categories as $name => $category) {
+      foreach ($namespaces as $namespace => $command_messages) {
         $messages[] = '';
-        $messages[] = sprintf('<comment>%s</comment>', OutputFormatter::escape($name));
-        foreach ($category as $message) {
-          $messages[] = $message;
+        $messages[] = sprintf('<comment>%s</comment>', OutputFormatter::escape($namespace));
+        foreach ($command_messages as $command_message) {
+          $messages[] = $command_message;
         }
       }
 
