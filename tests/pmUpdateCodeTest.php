@@ -25,9 +25,11 @@ class pmUpdateCode extends CommandUnishTestCase {
     $list = $this->getOutputAsList();
     // Line 0 is "Release"
     // Line 1 is "...-dev"
-    // Line 2 is current best release
-    // Line 3 is the previous release
-    return trim($list[3]);
+    // Line 2 is "...-dev"
+    // Line 3 is "...-dev"
+    // Line 4 is current best release
+    // Line 5 is the previous release
+    return trim($list[5]);
   }
 
   /**
