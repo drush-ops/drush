@@ -82,7 +82,6 @@ class CliCommands extends DrushCommands {
    */
   protected function getDrushCommands() {
     $application = \Drush::getApplication();
-    //annotation_adapter_add_legacy_commands_to_application($application);
     $commands = $application->all();
 
     $ignored_commands = ['help', 'drush-psysh', 'php-eval', 'core-cli', 'php'];
