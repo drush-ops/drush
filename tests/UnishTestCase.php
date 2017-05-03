@@ -500,7 +500,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         'yes' => NULL,
         'quiet' => NULL,
       );
-      $this->drush('site-install', array($profile), $options);
+      $this->drush('site-install', array($profile, 'install_configure_form.enable_update_status_emails=NULL'), $options);
       // Give us our write perms back.
       chmod($site, 0777);
     }
