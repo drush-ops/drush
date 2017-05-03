@@ -65,14 +65,16 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * - Empty /modules, /profiles, /themes in SUT.
    */
   public static function cleanDirs() {
-    $sandbox = self::getSandBox();
-    if (file_exists($sandbox)) {
-      self::recursive_delete($sandbox);
-    }
-    foreach (['modules', 'themes', 'profiles'] as $dir) {
-      $target = Path::join(self::getSut(), 'web', $dir, 'contrib');
-      if (file_exists($target)) {
-        self::recursive_delete_dir_contents($target);
+    if (empty(getenv('UNISH_DIRTY'))) {
+      $sandbox = self::getSandBox();
+      if (file_exists($sandbox)) {
+        self::recursive_delete($sandbox);
+      }
+      foreach (['modules', 'themes', 'profiles'] as $dir) {
+        $target = Path::join(self::getSut(), 'web', $dir, 'contrib');
+        if (file_exists($target)) {
+          self::recursive_delete_dir_contents($target);
+        }
       }
     }
   }
@@ -108,7 +110,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     }
 
     // We read from env then globals then default to mysql.
-    self::$db_url = getenv('UNISH_DB_URL') ?: ($GLOBALS['UNISH_DB_URL'] ?: 'mysql://root:@127.0.0.1');
+    self::$db_url = getenv('UNISH_DB_URL') ?: (isset($GLOBALS['UNISH_DB_URL']) ? $GLOBALS['UNISH_DB_URL'] : 'mysql://root:@127.0.0.1');
 
     require_once __DIR__ . '/unish.inc';
     list($unish_tmp, $unish_sandbox, $unish_drush_dir) = \unishGetPaths();
@@ -157,9 +159,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * Runs after all tests in a class are run.
    */
   public static function tearDownAfterClass() {
-    if (empty(getenv('UNISH_DIRTY'))) {
-      self::cleanDirs();
-    }
+    self::cleanDirs();
 
     self::$sites = array();
     parent::tearDownAfterClass();

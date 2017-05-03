@@ -16,6 +16,9 @@ use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Command\DrushInputAdapter;
 use Drush\Command\DrushOutputAdapter;
+use Consolidation\AnnotatedCommand\AnnotatedCommand;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -255,8 +258,7 @@ function annotationcommand_adapter_process_args($userArgs, $defaults) {
 }
 
 /**
- * Internal function called by annotationcommand_adapter_commands, which
- * is called by drush_get_commands().
+ * Called by drush_get_commands().
  *
  * @param array $annotation_commandfiles path => class mapping
  *
@@ -308,6 +310,8 @@ function annotationcommand_adapter_cache_module_console_commands($console_comman
   $module_service_commands = drush_get_context('DRUSH_MODULE_SERVICE_COMMANDS');
   $commands = annotationcommand_adapter_get_command_for_console_command($console_command, $commandfile_path);
   drush_set_context('DRUSH_MODULE_SERVICE_COMMANDS', array_merge($commands, $module_service_commands));
+  // Register these commands in the Application.
+  annotationcommand_adapter_create_commandfile_instance($commandfile_path, $class->getName());
 }
 
 /**
@@ -321,6 +325,8 @@ function annotationcommand_adapter_cache_module_service_commands($commandhandler
   $module_service_commands = drush_get_context('DRUSH_MODULE_SERVICE_COMMANDS');
   $commands = annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path);
   drush_set_context('DRUSH_MODULE_SERVICE_COMMANDS', array_merge($commands, $module_service_commands));
+  // Register these commands in the Application.
+  annotationcommand_adapter_create_commandfile_instance($commandfile_path, $commandhandler);
 }
 
 /**
@@ -454,7 +460,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       if (function_exists($fn)) {
         $command['options'][$option] = $fn($command['options'][$option], $commandinfo, $default);
       }
-      if ($commandinfo->getAnnotation('hidden-option') == $option) {
+      if ($commandinfo->getAnnotation('hidden-options') == $option) {
         $command['options'][$option]['hidden'] = TRUE;
       }
     }
@@ -479,6 +485,43 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
 }
 
 /**
+ * Add legacy commands to the $application. Used by help and list commands.
+ *
+ * @deprecated Will be removed once dispatch pipeline is modernized.
+ * @param $application
+ */
+function annotation_adapter_add_legacy_commands_to_application($application) {
+  $commands = drush_get_commands();
+  foreach ($commands as $command) {
+    if (empty($command['annotated-command-callback']) && empty($command['hidden'])) {
+      $annotated = new AnnotatedCommand($command['command']);
+      $annotated->setDescription($command['description']);
+      foreach ($command['arguments'] as $name => $description) {
+        $annotated->addArgument($name, InputArgument::OPTIONAL, $description);
+      }
+      foreach ($command['options'] as $name => $option) {
+        if (!is_array($option)) {
+          $option = ['description' => $option];
+        }
+        if (!array_key_exists('default_value', $option)) {
+          $option['default_value'] = '';
+        }
+        $annotated->addOption($name, NULL, $option['default_value'] ? InputOption::VALUE_OPTIONAL : InputOption::VALUE_REQUIRED, $option['description'], $option['default_value']);
+      }
+      foreach ($command['examples'] as $name => $description) {
+        // @todo
+        // $annotated->addUsageOrExample($name, $description);
+      }
+//      if ($command['topics']) {
+//        $annotated->setTopics($command['topics']);
+//      }
+      $annotated->setAnnotationData(new AnnotationData());
+      $application->add($annotated);
+    }
+  }
+}
+
+/**
  * Modify a $command record, adding option definitions defined by any
  * command hook.
  *
@@ -495,15 +538,16 @@ function annotationcommand_adapter_add_hook_options(&$command)
   $names = annotationcommand_adapter_command_names($command);
   $names[] = '*';
   // Add possible hooks.
-  $blacklist = ['command', 'handle-remote-commands', 'strict-option-handling', 'allow-additional-options', 'bootstrap', 'topic', 'hidden', 'hidden-option'];
+  $blacklist = ['command', 'handle-remote-commands', 'strict-option-handling', 'allow-additional-options', 'bootstrap', 'topic', 'hidden', 'hidden-options'];
   /** @var \Consolidation\AnnotatedCommand\AnnotationData $annotationData */
-  $annotationData = $command['annotations'];
-  $keys = array_diff($annotationData->keys(), $blacklist);
-  $atkeys = [];
-  foreach ($keys as $key) {
-    $atkeys[] = '@'. $key;
+  if ($annotationData = $command['annotations']) {
+    $keys = array_diff($annotationData->keys(), $blacklist);
+    $atkeys = [];
+    foreach ($keys as $key) {
+      $atkeys[] = '@'. $key;
+    }
+    $names = array_merge($names, $atkeys);
   }
-  $names = array_merge($names, $atkeys);
   $factory = \Drush::commandFactory();
   $extraOptions = $factory->hookManager()->getHookOptions($names);
   foreach ($extraOptions as $commandinfo) {
@@ -517,7 +561,7 @@ function annotationcommand_adapter_add_hook_options(&$command)
       if (!empty($default)) {
         $command['options'][$option]['example-value'] = $default;
       }
-      if (in_array($option, _convert_csv_to_array($commandinfo->getAnnotation('hidden-option')))) {
+      if (in_array($option, _convert_csv_to_array($commandinfo->getAnnotation('hidden-options')))) {
         $command['options'][$option]['hidden'] = TRUE;
       }
       $fn = 'annotationcommand_adapter_alter_option_description_' . $option;

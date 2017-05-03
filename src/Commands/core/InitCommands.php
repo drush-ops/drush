@@ -2,6 +2,7 @@
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 use Drush\Log\LogLevel;
 use Robo\LoadAllTasks;
 use Robo\Contract\IOAwareInterface;
@@ -92,7 +93,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
         $description = $drushBashFileDescriptions[$destFile];
         $collection->progressMessage('Copied {description} to {path}', ['description' => $description, 'path' => $destFile], LogLevel::OK);
         $pattern = basename($destFile);
-        $taskUpdateBashrc->appendUnlessMatches("#$pattern#", "# Include $description.\n". $this->bashAddition($destFile));
+        $taskUpdateBashrc->appendUnlessMatches("#$pattern#", "\n# Include $description.". $this->bashAddition($destFile));
       }
     }
 
@@ -103,19 +104,19 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
       $drush_path = $this->findPathToDrush();
       $drush_path = preg_replace("%^" . preg_quote($home) . "/%", '$HOME/', $drush_path);
       $pattern = "$drush_path";
-      $taskUpdateBashrc->appendUnlessMatches("#$pattern#", "# Path to Drush, added by 'drush init'.\nexport PATH=\"\$PATH:$drush_path\"\n\n");
+      $taskUpdateBashrc->appendUnlessMatches("#$pattern#", "\n# Path to Drush, added by 'drush init'.\nexport PATH=\"\$PATH:$drush_path\"\n\n");
     }
 
     $openEditor = FALSE;
     if ($taskUpdateBashrc->wouldChange()) {
-      if (drush_confirm(dt("Modify !file to include Drush configuration files?", array('!file' => $bashrc)))) {
+      if ($this->io()->confirm(dt("Modify !file to include Drush configuration files?", array('!file' => $bashrc)))) {
         $collection->addTask($taskUpdateBashrc);
         $collection->progressMessage('Updated bash configuration file {path}', ['path' => $bashrc], LogLevel::OK);
         $collection->progressMessage('Start a new shell in order to experience the improvements (e.g. `{shell}`).', ['shell' => 'bash'], LogLevel::OK);
         $openEditor = $options['edit'];
       }
       else {
-        return drush_user_abort();
+        throw new UserAbortException();
       }
     }
     else {

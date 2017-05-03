@@ -1,0 +1,50 @@
+services:
+  batch.commands:
+    class: \Drush\Drupal\Commands\core\BatchCommands
+    tags:
+      -  { name: drush.command }
+  cli.commands:
+    class: \Drush\Drupal\Commands\core\CliCommands
+    tags:
+      -  { name: drush.command }
+  drupal.commands:
+    class: \Drush\Drupal\Commands\core\DrupalCommands
+    arguments: ['@cron', '@module_handler']
+    tags:
+      -  { name: drush.command }
+  image.commands:
+    class: \Drush\Drupal\Commands\core\ImageCommands
+    tags:
+      -  { name: drush.command }
+  locale.commands:
+    class: \Drush\Drupal\Commands\core\LocaleCommands
+    arguments: ['@module_handler', '@state']
+    tags:
+      -  { name: drush.command }
+  queue.commands:
+    class: \Drush\Drupal\Commands\core\QueueCommands
+    arguments: ['@plugin.manager.queue_worker', '@queue']
+    tags:
+      -  { name: drush.command }
+  role.commands:
+    class: \Drush\Drupal\Commands\core\RoleCommands
+    tags:
+      -  { name: drush.command }
+  state.commands:
+    class: \Drush\Drupal\Commands\core\StateCommands
+    arguments: ['@state']
+    tags:
+      -  { name: drush.command }
+  user.commands:
+    class: \Drush\Drupal\Commands\core\UserCommands
+    tags:
+      -  { name: drush.command }
+  views.commands:
+    class: \Drush\Drupal\Commands\core\ViewsCommands
+    arguments: ['@config.factory', '@module_handler', '@entity_type.manager', '@renderer']
+    tags:
+      -  { name: drush.command }
+  watchdog.commands:
+    class: \Drush\Drupal\Commands\core\WatchdogCommands
+    tags:
+      -  { name: drush.command }

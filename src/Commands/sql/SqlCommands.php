@@ -3,6 +3,7 @@ namespace Drush\Commands\sql;
 
 use Drupal\Core\Database\Database;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 use Drush\Sql\SqlBase;
 
 class SqlCommands extends DrushCommands {
@@ -79,8 +80,8 @@ class SqlCommands extends DrushCommands {
       $txt_destination = (isset($db_spec['remote-host']) ? $db_spec['remote-host'] . '/' : '') . $db_spec['database'];
       drush_print(dt("Creating database !target. Any possible existing database will be dropped!", array('!target' => $txt_destination)));
 
-      if (!drush_confirm(dt('Do you really want to continue?'))) {
-        return drush_user_abort();
+      if (!$this->io()->confirm(dt('Do you really want to continue?'))) {
+        throw new UserAbortException();
       }
     }
 
@@ -99,8 +100,8 @@ class SqlCommands extends DrushCommands {
     $this->further($options);
     $sql = SqlBase::create($options);
     $db_spec = $sql->getDbSpec();
-    if (!drush_confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $db_spec['database'])))) {
-      return drush_user_abort();
+    if (!$this->io()->confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $db_spec['database'])))) {
+      throw new UserAbortException();
     }
     $tables = $sql->listTables();
     return $sql->drop($tables);
@@ -139,8 +140,8 @@ class SqlCommands extends DrushCommands {
    * @aliases sqlq
    * @usage drush sql-query "SELECT * FROM users WHERE uid=1"
    *   Browse user record. Table prefixes, if used, must be added to table names by hand.
-   * @usage drush sql-query --db-prefix "SELECT * FROM {users} WHERE uid=1"
-   *   Browse user record. Table prefixes are honored.  Caution: curly-braces will be stripped from all portions of the query.
+   * @usage drush sql-query --db-prefix "SELECT * FROM {users}"
+   *   Browse user record. Table prefixes are honored.  Caution: All curly-braces will be stripped.
    * @usage `drush sql-connect` < example.sql
    *   Import sql statements from a file into the current database.
    * @usage drush sql-query --file=example.sql
@@ -180,9 +181,9 @@ class SqlCommands extends DrushCommands {
    * @optionset_sql
    * @optionset_table_selection
    * @option result-file Save to a file. The file should be relative to Drupal root.
-   * @option create-db Omit DROP TABLE statements. Postgres and Oracle only.  Used by sql-sync, since including the DROP TABLE statements interfere with the import when the database is created.
+   * @option create-db Omit DROP TABLE statements. Used by Postgres and Oracle only.
    * @option data-only Dump data without statements to create any of the schema.
-   * @option ordered-dump Order by primary key and add line breaks for efficient diff in revision control. Slows down the dump. Mysql only.
+   * @option ordered-dump Order by primary key and add line breaks for efficient diffs. Slows down the dump. Mysql only.
    * @option gzip Compress the dump using the gzip program which must be in your $PATH.
    * @option extra Add custom arguments/options when connecting to database (used internally to list tables).
    * @option extra-dump Add custom arguments/options to the dumping the database (e.g. mysqldump command).
@@ -192,7 +193,10 @@ class SqlCommands extends DrushCommands {
    *   Skip standard tables. @see example.drushrc.php
    * @usage drush sql-dump --extra-dump=--no-data
    *   Pass extra option to mysqldump command.
-   * @hidden-option create-db
+   * @hidden-options create-db
+   *
+   * @notes
+   *   createdb is used by sql-sync, since including the DROP TABLE statements interfere with the import when the database is created.
    */
   public function dump($options = ['result-file' => NULL, 'create-db' => NULL, 'data-only' => NULL, 'ordered-dump' => NULL, 'gzip' => NULL, 'extra' => NULL, 'extra-dump' => NULL]) {
     $this->further($options);

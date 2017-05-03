@@ -91,7 +91,7 @@ class SqlSqlite extends SqlBase {
     // Postgres or MySQL equivalents. We may be able to fake some in the
     // future, but for now, let's just support simple dumps.
     $exec .= ' ".dump"';
-    if ($option = $this->.$this->getOption('extra-dump', $this->queryExtra)) {
+    if ($option = $this->getOption('extra-dump', $this->queryExtra)) {
       $exec .= " $option";
     }
     return $exec;

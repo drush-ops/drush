@@ -16,13 +16,13 @@ class NotifyCommands extends DrushCommands {
    *
    *
    * @hook option *
-   * @option notify Use system notifications to signal command completion. If set to a number, commands that finish in fewer seconds will not trigger a notification.
+   * @option notify Notify upon command completion. If set to a number, commands that finish in fewer seconds won't notify.
    * @todo change these to sub-options when/if we support those again.
-   * @option notify-audio Trigger an audio alert to signal command completion. If set to a number, commands that finish in fewer seconds will not trigger a notification.
+   * @option notify-audio Notify via audio alert. If set to a number, commands that finish in fewer seconds won't notify.
    * @option notify-cmd Specify the shell command to trigger the notification.
    * @option notify-cmd-audio Specify the shell command to trigger the audio notification.
    * @todo hidden is not yet part of annotated-command project. It is recognized by Drush's annotation_adapter.inc
-   * @hidden-option notify,notify-audio,notify-cmd,notify-cmd-audio
+   * @hidden-options notify,notify-audio,notify-cmd,notify-cmd-audio
    */
   public function notify() {}
 

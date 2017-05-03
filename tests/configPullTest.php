@@ -11,10 +11,6 @@ namespace Unish;
 class ConfigPullCase extends CommandUnishTestCase {
 
   function setUp() {
-    if (UNISH_DRUPAL_MAJOR_VERSION < 8) {
-      $this->markTestSkipped('Config only available on D8+.');
-    }
-
     $this->setUpDrupal(2, TRUE);
   }
 
@@ -25,9 +21,14 @@ class ConfigPullCase extends CommandUnishTestCase {
     list($source, $destination) = array_keys($this->getSites());
     $source = "@$source";
     $destination = "@$destination";
+    // Make UUID match.
+    $this->drush('config-get', array('system.site', 'uuid'), array('yes' => NULL), $source);
+    list($name, $uuid) = explode(' ', $this->getOutput());
+    $this->drush('config-set', array('system.site', 'uuid', $uuid), array('yes' => NULL), $destination);
+
     $this->drush('config-set', array('system.site', 'name', 'testConfigPull'), array('yes' => NULL), $source);
     $this->drush('config-pull', array($source, $destination), array());
-    $this->drush('config-import', array(), array(), $destination);
+    $this->drush('config-import', array(), array('yes' => NULL), $destination);
     $this->drush('config-get', array('system.site', 'name'), array(), $source);
     $this->assertEquals("'system.site:name': testConfigPull", $this->getOutput(), 'Config was successfully pulled.');
   }

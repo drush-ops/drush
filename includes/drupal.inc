@@ -46,12 +46,7 @@ function drush_drupal_version($drupal_root = NULL) {
 }
 
 function drush_drupal_cache_clear_all() {
-  if (drush_drupal_major_version() >= 8) {
-    drush_invoke_process('@self', 'cache-rebuild');
-  }
-  else {
-    drush_invoke_process('@self', 'cache-clear', array('all'));
-  }
+  drush_invoke_process('@self', 'cache-rebuild');
 }
 
 /**

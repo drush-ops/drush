@@ -3,6 +3,7 @@ namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 
 class RsyncCommands extends DrushCommands {
 
@@ -40,8 +41,8 @@ class RsyncCommands extends DrushCommands {
     // Prompt for confirmation. This is destructive.
     if (!drush_get_context('DRUSH_SIMULATE')) {
       drush_print(dt("You will delete files in !target and replace with data from !source", array('!source' => $this->source_evaluated_path, '!target' => $this->destination_evaluated_path)));
-      if (!drush_confirm(dt('Do you really want to continue?'))) {
-        return drush_user_abort();
+      if (!$this->io()->confirm(dt('Do you want to continue?'))) {
+        throw new UserAbortException();
       }
     }
 

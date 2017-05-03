@@ -5,6 +5,7 @@ namespace Drush\Commands\sql;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 use Drush\Sql\SqlTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -27,8 +28,6 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION
    * @description Run sanitization operations on the current database.
    * @option db-prefix Enable replacement of braces in sanitize queries.
-   * @option db-url A Drupal 6 style database URL. E.g.,
-   *   mysql://root:pass@127.0.0.1/db
    * @option sanitize-email The pattern for test email addresses in the
    *   sanitization operation, or "no" to keep email addresses unchanged. May
    *   contain replacement patterns %uid, %mail or %name.
@@ -41,7 +40,7 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
    * @usage drush sql-sanitize --whitelist-fields=field_biography,field_phone_number
    *   Sanitizes database but exempts two user fields from modification.
    */
-  public function sanitize($options = ['db-prefix' => FALSE, 'db-url' => '', 'sanitize-email' => 'user+%uid@localhost.localdomain', 'sanitize-password' => 'password', 'whitelist-fields' => '']) {
+  public function sanitize($options = ['db-prefix' => FALSE, 'sanitize-email' => 'user+%uid@localhost.localdomain', 'sanitize-password' => 'password', 'whitelist-fields' => '']) {
     /**
      * In order to present only one prompt, collect all confirmations from
      * commandfiles up front. sql-sanitize plugins are commandfiles that implement
@@ -59,8 +58,8 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
         drush_print('* '. $message);
       }
     }
-    if (!drush_confirm(dt('Do you really want to sanitize the current database?'))) {
-      return drush_user_abort();
+    if (!$this->io()->confirm(dt('Do you want to sanitize the current database?'))) {
+      throw new UserAbortException();
     }
 
     // All sanitize operations defined in post-command hooks, including Drush

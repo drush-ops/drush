@@ -28,7 +28,7 @@ class DrupalKernel extends DrupalDrupalKernel {
    * for clients to add compiler passes et. al. before then.
    */
   public function addServiceModifier(ServiceModifierInterface $serviceModifier) {
-    drush_log(dt("add service modifier"), LogLevel::DEBUG);
+    drush_log(dt("Add service modifier"), LogLevel::DEBUG);
     $this->serviceModifiers[] = $serviceModifier;
   }
 
@@ -36,13 +36,14 @@ class DrupalKernel extends DrupalDrupalKernel {
    * @inheritdoc
    */
   protected function getContainerBuilder() {
-    drush_log(dt("get container builder"), LogLevel::DEBUG);
+    drush_log(dt("Get container builder"), LogLevel::DEBUG);
     $container = parent::getContainerBuilder();
     foreach ($this->serviceModifiers as $serviceModifier) {
       $serviceModifier->alter($container);
     }
     return $container;
   }
+
   /**
    * Initializes the service container.
    *
@@ -59,5 +60,52 @@ class DrupalKernel extends DrupalDrupalKernel {
       }
     }
     return parent::initializeContainer();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function discoverServiceProviders() {
+    // Let Drupal discover all of its service providers
+    parent::discoverServiceProviders();
+
+    // Add those Drush service providers from Drush core that
+    // need references to the Drupal DI container. This includes
+    // Drush commands, and those services needed by those Drush
+    // commands.
+    //
+    // Note that:
+    //  - We list all of the individual service files we use here.
+    //  - These commands are not available until Drupal is bootstrapped.
+    $this->addDrushServiceProvider("_drush__config", DRUSH_BASE_PATH . '/src/Drupal/Commands/config/drush.services.yml');
+    $this->addDrushServiceProvider("_drush__core", DRUSH_BASE_PATH . '/src/Drupal/Commands/core/drush.services.yml');
+    $this->addDrushServiceProvider("_drush__pm", DRUSH_BASE_PATH . '/src/Drupal/Commands/pm/drush.services.yml');
+    $this->addDrushServiceProvider("_drush__sql", DRUSH_BASE_PATH . '/src/Drupal/Commands/sql/drush.services.yml');
+
+    // TODO: We could potentially also add service providers from:
+    //  - DRUSH_BASE_PATH . '/drush/drush.services.yml');
+    //  - DRUSH_BASE_PATH . '/../drush/drush.services.yml');
+    // Or, perhaps better yet, from every Drush command directory
+    // (e.g. DRUSH_BASE_PATH/drush/mycmd/drush.services.yml) in
+    // any of these `drush` folders. In order to do this, it is
+    // necessary that the class files in these commands are available
+    // in the autoloader.
+
+    // Also add Drush services from all modules
+    $module_filenames = $this->getModuleFileNames();
+    // Load each module's serviceProvider class.
+    foreach ($module_filenames as $module => $filename) {
+      $filename = dirname($filename) . "/drush.services.yml";
+      $this->addDrushServiceProvider("_drush.$module", $filename);
+    }
+  }
+
+  /**
+   * Add a services.yml file if it exists.
+   */
+  protected function addDrushServiceProvider($serviceProviderName, $filename) {
+    if (file_exists($filename)) {
+      $this->serviceYamls['app'][$serviceProviderName] = $filename;
+    }
   }
 }

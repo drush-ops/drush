@@ -6,6 +6,8 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 
 /**
  * Run these commands using the --include option - e.g. `drush --include=/path/to/drush/examples mmas`
+ *
+ * For an example of a Drupal module implementing commands, see http://cgit.drupalcode.org/devel/tree/devel_generate/src/Commands
  */
 
 class SandwichCommands extends DrushCommands {
@@ -20,7 +22,6 @@ class SandwichCommands extends DrushCommands {
    *   Make a terrible-tasting sandwich that is lacking in pickles.
    * @aliases mmas
    * @bootstrap DRUSH_BOOTSTRAP_NONE
-   * @complete \SandwichCommands::complete
    */
   public function makeSandwich($filling, $options = ['spreads' => NULL]) {
     if ($spreads = _convert_csv_to_array('spreads')) {
@@ -58,7 +59,7 @@ class SandwichCommands extends DrushCommands {
       ),
       'mayonnaise' => array(
         'name' => 'Mayonnaise',
-        'description' => 'A nice dairy-free spead.',
+        'description' => 'A nice dairy-free spread.',
         'available' => '12',
         'taste' => 'creamy',
       ),
@@ -104,17 +105,5 @@ class SandwichCommands extends DrushCommands {
     if ($name['name'] !== 'root') {
       throw new \Exception(dt('What? Make your own sandwich.'));
     }
-  }
-
-  /**
-   * Command argument complete callback.
-   *
-   * Provides argument values for shell completion.
-   *
-   * @return array
-   *   Array of popular fillings.
-   */
-  function complete() {
-    return array('values' => array('turkey', 'cheese', 'jelly', 'butter'));
   }
 }

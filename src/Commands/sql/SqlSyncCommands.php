@@ -4,13 +4,14 @@ namespace Drush\Commands\sql;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Console\Input\InputInterface;
 use Webmozart\PathUtil\Path;
 
 class SqlSyncCommands extends DrushCommands {
 
   /**
-   * Copies the database contents from a source site to a target site. Transfers the database dump via rsync.
+   * Copy DB data from a source site to a target site. Transfers data via rsync.
    *
    * @command sql-sync
    * @param $source A site-alias or the name of a subdirectory within /sites whose database you want to copy from.
@@ -29,10 +30,10 @@ class SqlSyncCommands extends DrushCommands {
    *   Copy the database from the site with the alias 'source' to the site with the alias 'target'.
    * @usage drush sql-sync prod dev
    *   Copy the database from the site in /sites/prod to the site in /sites/dev (multisite installation).
-   * @topics docs-aliases,docs-policy,docs-example-sync-via-http,docs-example-sync-extension
+   * @topics docs-aliases,docs-policy,docs-example-sync-via-http
    * @complete \Drush\Commands\CompletionCommands::completeSiteAliases
    */
-  public function sqlsync($source, $destination, $options = ['no-dump' => NULL, 'no-sync' => NULL, 'runner' => NULL, 'create-db' => NULL, 'db-su' => NULL, 'db-su-pw' => NULL, 'sanitize' => NULL, 'confirm-sanitizations' => NULL, 'target-dump' => NULL, 'source-dump' => TRUE]) {
+  public function sqlsync($source, $destination, $options = ['no-dump' => false, 'no-sync' => false, 'runner' => NULL, 'create-db' => false, 'db-su' => NULL, 'db-su-pw' => NULL, 'sanitize' => false, 'confirm-sanitizations' => false, 'target-dump' => NULL, 'source-dump' => TRUE]) {
     $source_record = drush_sitealias_get_record($source);
     $destination_record = drush_sitealias_get_record($destination);
     $source_is_local = !array_key_exists('remote-host', $source_record) || drush_is_local_host($source_record);
@@ -88,7 +89,7 @@ class SqlSyncCommands extends DrushCommands {
     // Determine path/to/dump on destination.
     if ($options['target-dump']) {
       $destination_dump_path = $options['target-dump'];
-      $rsync_options['yes'] = TRUE;  // @temporary: See https://github.com/drush-ops/drush/pull/555
+      $backend_options['interactive'] = FALSE;  // @temporary: See https://github.com/drush-ops/drush/pull/555
     }
     elseif ($source_is_local && $destination_is_local) {
       $destination_dump_path = $source_dump_path;
@@ -102,18 +103,18 @@ class SqlSyncCommands extends DrushCommands {
         $tmp = $return['object']['drush-temp'];
       }
       $destination_dump_path = Path::join($tmp, basename($source_dump_path));
-      $rsync_options['yes'] = TRUE;  // No need to prompt as destination is a tmp file.
+      $backend_options['interactive'] = FALSE;  // No need to prompt as destination is a tmp file.
     }
 
     if ($do_rsync) {
       if (!$options['no-dump']) {
         // Cleanup if this command created the dump file.
-        $rsync_options['remove-source-files'] = TRUE;
+        $rsync_options[] = '--remove-source-files';
       }
       $runner = drush_get_runner($source_record, $destination_record, $options['runner']);
       // Since core-rsync is a strict-handling command and drush_invoke_process() puts options at end, we can't send along cli options to rsync.
       // Alternatively, add options like --ssh-options to a site alias (usually on the machine that initiates the sql-sync).
-      $return = drush_invoke_process($runner, 'core-rsync', array("$source:$source_dump_path", "$destination:$destination_dump_path", '--', $rsync_options));
+      $return = drush_invoke_process($runner, 'core-rsync', array_merge(["$source:$source_dump_path", "$destination:$destination_dump_path", '--'], $rsync_options), [], $backend_options);
       $this->logger()->notice(dt('Copying dump file from Source to Destination.'));
       if ($return['error_status']) {
         throw new \Exception(dt('core-rsync failed.'));
@@ -207,8 +208,8 @@ class SqlSyncCommands extends DrushCommands {
         '!target' => $txt_destination
       )));
       // @todo Move sanitization prompts to here. They currently show much later.
-      if (!drush_confirm(dt('Do you really want to continue?'))) {
-        return drush_user_abort();
+      if (!$this->io()->confirm(dt('Do you really want to continue?'))) {
+        throw new UserAbortException();
       }
     }
   }

@@ -5,7 +5,7 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 
 /**
  * For commands that are parts of modules, Drush expects to find commandfiles in
- * __MODULE__/src/Command, and the namespace is Drupal/__MODULE__/Command.
+ * __MODULE__/src/Commands, and the namespace is Drupal/__MODULE__/Commands.
  */
 class WootCommands
 {
@@ -51,9 +51,14 @@ class WootCommands
      *   second: II
      *   third: III
      * @usage try:formatters --format=yaml
+     *   Emit yaml.
      * @usage try:formatters --format=csv
+     *   Emit CSV.
      * @usage try:formatters --fields=first,third
+     *   Emit some fields.
      * @usage try:formatters --fields=III,II
+     *   Emit other fields.
+     * @aliases try-formatters
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function tryFormatters($options = ['format' => 'table', 'fields' => ''])

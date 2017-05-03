@@ -25,7 +25,7 @@ class XhprofCommands extends DrushCommands {
    * @option xh-profile-builtins Profile built-in PHP functions (defaults to TRUE).
    * @option xh-profile-cpu Profile CPU (defaults to FALSE).
    * @option xh-profile-memory Profile Memory (defaults to FALSE).
-   * @hidden-option xh-link,xh-profile-cpu,xh-profile-builtins,xh-profile-memory
+   * @hidden-options xh-link,xh-profile-cpu,xh-profile-builtins,xh-profile-memory
    */
   public function optionsetXhProf($options = ['xh-profile-cpu' => NULL, 'xh-profile-builtins' => NULL, 'xh-profile-memory' => NULL]) {
 

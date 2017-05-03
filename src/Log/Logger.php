@@ -168,4 +168,10 @@ class Logger extends RoboLogger {
       // Robo-styled output
       parent::log($level, $message, $context);
     }
+
+  public function error($message, array $context = array()) {
+    $error_log =& drush_get_context('DRUSH_ERROR_LOG', array());
+    $error_log[$message][] = $message;
+    parent::error($message, $context);
+  }
 }

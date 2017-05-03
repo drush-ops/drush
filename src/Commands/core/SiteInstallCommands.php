@@ -3,6 +3,7 @@ namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 use Drush\Log\LogLevel;
 use Drupal\Core\Config\FileStorage;
 use Drush\Sql\SqlBase;
@@ -10,13 +11,13 @@ use Drush\Sql\SqlBase;
 class SiteInstallCommands extends DrushCommands {
 
   /**
-   * Install Drupal along with modules/themes/configuration using the specified install profile.
+   * Install Drupal along with modules/themes/configuration/profile.
    *
    * @command site-install
-   * @param $profile The install profile you wish to run. Defaults to 'default' in D6, 'standard' in D7+, unless an install profile is marked as exclusive (or as a distribution in D8+ terminology) in which case that is used.
-   * @param $additional Any additional settings you wish to pass to the profile. The key is in the form [form name].[parameter name]
-   * @option db-url A Drupal 6 style database URL. Only required for initial install - not re-install. If omitted and required, Drush prompts for this item.
-   * @option db-prefix An optional table prefix to use for initial install.  Can be a key-value array of tables/prefixes in a drushrc file (not the command line).
+   * @param $profile An install profile name. Defaults to 'standard' unless an install profile is marked as a distribution.
+   * @param $additional Additional info for the install profile. The key is in the form [form name].[parameter name]
+   * @option db-url A Drupal 6 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.
+   * @option db-prefix An optional table prefix to use for initial install.
    * @option db-su Account to use when creating a new database. Must have Grant permission (mysql only). Optional.
    * @option db-su-pw Password for the "db-su" account. Optional.
    * @option account-name uid1 name. Defaults to admin
@@ -25,7 +26,7 @@ class SiteInstallCommands extends DrushCommands {
    * @option locale A short language code. Sets the default site language. Language files must already be present.
    * @option site-name Defaults to Site-Install
    * @option site-mail From: for system mailings. Defaults to admin@example.com
-   * @option sites-subdir Name of directory under 'sites' which should be created. Only needed when the subdirectory does not already exist. Defaults to 'default'
+   * @option sites-subdir Name of directory under 'sites' which should be created.
    * @option config-dir A path pointing to a full set of configuration which should be imported after installation.
    * @usage drush site-install expert --locale=uk
    *   (Re)install using the expert install profile. Set default language to Ukrainian.
@@ -35,17 +36,15 @@ class SiteInstallCommands extends DrushCommands {
    *   Install using SQLite
    * @usage drush site-install --account-name=joe --account-pass=mom
    *   Re-install with specified uid1 credentials.
-   * @usage drush site-install standard install_configure_form.site_default_country=FR my_profile_form.my_settings.key=value
+   * @usage drush si install_configure_form.site_default_country=FR
    *   Pass additional arguments to the profile (D7 example shown here.
-   * @usage drush site-install standard install_configure_form.update_status_module='array(FALSE,FALSE)'
-   *   Disable email notification during install and later (D7). If your server has no mail transfer agent, this gets rid of an error during install.
-   * @usage drush site-install standard install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=NULL
-   *   Disable email notification during install and later (D8). If your server has no mail transfer agent, this gets rid of an error during install.
+   * @usage drush si install_configure_form.enable_update_status_emails=NULL
+   *   Disable email notification during install and later. If your server has no mail transfer agent, this gets rid of an error during install.
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_ROOT
    * @aliases si
    *
    */
-  public function install($profile, array $additional, $options = ['db-url' => NULL, 'db-prefix' => NULL, 'db-su' => NULL, 'db-su-pw' => NULL, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => NULL, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => NULL, 'sites-subdir' => NULL, 'config-dir' => NULL, 'show-passwords' => NULL]) {
+  public function install($profile, array $additional, $options = ['db-url' => NULL, 'db-prefix' => NULL, 'db-su' => NULL, 'db-su-pw' => NULL, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => NULL, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => NULL, 'sites-subdir' => NULL, 'config-dir' => NULL]) {
     $form_options = [];
     foreach ((array)$additional as $arg) {
       list($key, $value) = explode('=', $arg, 2);
@@ -67,7 +66,7 @@ class SiteInstallCommands extends DrushCommands {
     $sql = SqlBase::create($options);
     $db_spec = $sql->getDbSpec();
 
-    $show_password = isset($options['show-passwords']) ? $options['show-passwords'] : empty($options['account-pass']);
+    $show_password = empty($options['account-pass']);
     $account_pass = $options['account-pass'] ?: drush_generate_password();
     $settings = array(
       'parameters' => array(
@@ -195,12 +194,12 @@ class SiteInstallCommands extends DrushCommands {
       // Ask questions to get our data.
       if ($commandData->input()->getOption('db-url') == '') {
         // Prompt for the db-url data if it was not provided via --db-url.
-        $database = drush_prompt('Database name');
-        $driver = drush_prompt('Database driver', 'mysql');
-        $username = drush_prompt('Database username', 'root');
-        $password = drush_prompt('Database password', '', FALSE);
-        $host = drush_prompt('Database host', '127.0.0.1');
-        $port = drush_prompt('Database port', '3306');
+        $database = $this->io()->ask('Database name', 'drupal');
+        $driver = $this->io()->ask('Database driver', 'mysql');
+        $username = $this->io()->ask('Database username', 'drupal');
+        $password = $this->io()->ask('Database password', 'drupal');
+        $host = $this->io()->ask('Database host', '127.0.0.1');
+        $port = $this->io()->ask('Database port', '3306');
         $db_url = "$driver://$username:$password@$host:$port/$database";
         $commandData->input()->setOption('db-url', $db_url);
 
@@ -255,9 +254,8 @@ class SiteInstallCommands extends DrushCommands {
       $msg[] = dt("CREATE the '@db' database.", array('@db' => $db_spec['database']));
     }
 
-    if (!drush_confirm(dt('You are about to ') . implode(dt(' and '), $msg) . ' Do you want to continue?')) {
-      // @todo test this.
-      return drush_user_abort();
+    if (!$this->io()->confirm(dt('You are about to ') . implode(dt(' and '), $msg) . ' Do you want to continue?')) {
+      throw new UserAbortException();
     }
 
     // Can't install without sites subdirectory and settings.php.

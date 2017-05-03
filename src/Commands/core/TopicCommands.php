@@ -3,10 +3,10 @@ namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandData;
-use Drush\Command\DrushInputAdapter;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -30,7 +30,7 @@ class TopicCommands extends DrushCommands {
    */
   public function topic($topic_name) {
     $application = \Drush::getApplication();
-    $input = new DrushInputAdapter([$topic_name], []);
+    $input = new ArrayInput([$topic_name], NULL);
     return $application->run($input);
   }
 
@@ -51,12 +51,10 @@ class TopicCommands extends DrushCommands {
     if (count($topics) > 1) {
       // Show choice list.
       foreach ($topics as $key => $topic) {
-        $choices[$key] = $topic->getDescription();
+        $choices[$key] = $topic->getDescription() . " ($key)";
       }
       natcasesort($choices);
-      if (!$topic_name = drush_choice($choices, dt('Choose a topic'), '!value (!key)', array(5))) {
-        return drush_user_abort();
-      }
+      $topic_name = $this->io()->choice(dt('Choose a topic'), $choices);
       $input->setArgument('topic_name', $topic_name);
     }
   }
@@ -65,8 +63,8 @@ class TopicCommands extends DrushCommands {
    * @hook validate topic
    */
   public function validate(CommandData $commandData) {
-    $topic_name = $topic_name = $commandData->input()->getArgument('topic_name');
-    if (empty($topic_name)) {
+    $topic_name = $commandData->input()->getArgument('topic_name');
+    if (!in_array($topic_name, array_keys(self::getAllTopics()))) {
       throw new \Exception(dt("!topic topic not found.", array('!topic' => $topic_name)));
     }
   }

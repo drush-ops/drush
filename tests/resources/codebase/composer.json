@@ -15,10 +15,10 @@
   ],
   "require": {
     "composer/installers": "^1.2",
+    "cweagans/composer-patches": "~1.0",
     "drupal/core": "~8.0",
     "drush/drush": "*",
     "phpunit/phpunit": "4.*",
-    "symfony/process": "~2.8",
     "drupal/empty_theme": "1.0",
     "drupal/devel": "^1.0@RC",
     "lox/xhprof": "dev-master"
@@ -35,6 +35,7 @@
       "web/profiles/contrib/{$name}": ["type:drupal-profile"],
       "web/themes/contrib/{$name}": ["type:drupal-theme"],
       "drush/contrib/{$name}": ["type:drupal-drush"]
-    }
+    },
+    "patches": {}
   }
 }

@@ -28,10 +28,6 @@ DRUSH\_BOOTSTRAP\_DRUPAL\_FULL
 ------------------------------
 Fully initialize Drupal. This is analogous to the DRUPAL\_BOOTSTRAP\_FULL bootstrap phase in Drupal. Any code that interacts with the general Drupal API should be bootstrapped to this phase.
 
-DRUSH\_BOOTSTRAP\_DRUPAL\_LOGIN
--------------------------------
-Log in to the initialized Drupal site. This bootstrap phase is used after the site has been fully bootstrapped. This is the default bootstrap phase all commands will try to reach, unless otherwise specified. This phase will log you in to the drupal site with the username or user ID specified by the --user/ -u option(defaults to 0, anonymous). Use this bootstrap phase for your command if you need to have access to information for a specific user, such as listing nodes that might be different based on who is logged in.
-
 DRUSH\_BOOTSTRAP\_MAX
 ---------------------
 This is not an actual bootstrap phase. Commands that use DRUSH\_BOOTSTRAP\_MAX will cause Drush to bootstrap as far as possible, and then run the command regardless of the bootstrap phase that was reached. This is useful for Drush commands that work without a bootstrapped site, but that provide additional information or capabilities in the presence of a bootstrapped site. For example, `drush pm-releases modulename` works without a bootstrapped Drupal site, but will include the version number for the installed module if a Drupal site has been bootstrapped.

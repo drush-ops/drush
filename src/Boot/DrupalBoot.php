@@ -46,7 +46,7 @@ abstract class DrupalBoot extends BaseBoot {
       DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION   => 'bootstrap_drupal_configuration',
       DRUSH_BOOTSTRAP_DRUPAL_DATABASE        => 'bootstrap_drupal_database',
       DRUSH_BOOTSTRAP_DRUPAL_FULL            => 'bootstrap_drupal_full',
-      DRUSH_BOOTSTRAP_DRUPAL_LOGIN           => 'bootstrap_drupal_login');
+    );
   }
 
   /**
@@ -87,7 +87,7 @@ abstract class DrupalBoot extends BaseBoot {
   function command_defaults() {
     return array(
       'drupal dependencies' => array(),
-      'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
+      'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
     );
   }
 
@@ -180,9 +180,10 @@ abstract class DrupalBoot extends BaseBoot {
         }
         // Drupal 8 uses the modules' services files to find commandfiles. Should we allow
         // redundant find-module-by-location for Drupal 8?  (Maybe not.)
-        if (drush_drupal_major_version() < 8) {
-          $commandFiles = $discovery->discoverNamespaced($searchpath, '\Drupal');
-        }
+        // The operator below was wrong anyway.
+//        if (drush_drupal_major_version() < 8) {
+//          $commandFiles = $discovery->discoverNamespaced($searchpath, '\Drupal');
+//        }
         break;
     }
     // A little inelegant, but will do for now.
@@ -457,10 +458,6 @@ abstract class DrupalBoot extends BaseBoot {
   function bootstrap_drupal_configuration() {
     global $conf;
 
-    $override = array(
-      'cron_safe_threshold' => 0, // Don't run poormanscron during Drush request (D7).
-    );
-
     $current_override = drush_get_option_list('variables');
     foreach ($current_override as $name => $value) {
       if (is_numeric($name) && (strpos($value, '=') !== FALSE)) {
@@ -488,7 +485,13 @@ abstract class DrupalBoot extends BaseBoot {
     try {
       $sql = SqlBase::create();
       if (!$sql->query('SELECT 1;')) {
-        return drush_bootstrap_error('DRUSH_DRUPAL_DB_ERROR');
+        $message = dt("Drush was not able to start (bootstrap) the Drupal database.\n");
+        $message .= dt("Hint: This may occur when Drush is trying to:\n");
+        $message .= dt(" * bootstrap a site that has not been installed or does not have a configured database. In this case you can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line. See `drush topic docs-aliases` for details.\n");
+        $message .= dt(" * connect the database through a socket. The socket file may be wrong or the php-cli may have no access to it in a jailed shell. See http://drupal.org/node/1428638 for details.\n");
+        $message .= dt('More information may be available by running `drush status`');
+        $this->logger->log(LogLevel::BOOTSTRAP, $message);
+        return FALSE;
       }
     }
     catch (\Exception $e) {
@@ -577,30 +580,6 @@ abstract class DrupalBoot extends BaseBoot {
       drush_cache_set($cid, $install_profile);
     }
 
-    _drush_log_drupal_messages();
-  }
-
-  /**
-   * Log into the bootstrapped Drupal site with a specific
-   * username or user id.
-   */
-  function bootstrap_drupal_login() {
-    $uid_or_name = drush_set_context('DRUSH_USER', drush_get_option('user', 0));
-    if (!$account = User::load($uid_or_name)) {
-      if (!$account = \user_load_by_name($uid_or_name)) {
-        if (is_numeric($uid_or_name)) {
-          $message = dt('Could not login with user ID !user.', array('!user' => $uid_or_name));
-          if ($uid_or_name === 0) {
-            $message .= ' ' . dt('This is typically caused by importing a MySQL database dump from a faulty tool which re-numbered the anonymous user ID in the users table. See !link for help recovering from this situation.', array('!link' => 'http://drupal.org/node/1029506'));
-          }
-        }
-        else {
-          $message = dt('Could not login with user account `!user\'.', array('!user' => $uid_or_name));
-        }
-        return drush_set_error('DRUPAL_USER_LOGIN_FAILED', $message);
-      }
-    }
-    \Drupal::currentUser()->setAccount($account);
     _drush_log_drupal_messages();
   }
 
