@@ -232,7 +232,11 @@ function drush_update_batch() {
   }
 
   // Apply post update hooks.
-  $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateFunctions();
+  $post_updates = [];
+  if (drush_get_option('post-updates', TRUE)) {
+    $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateFunctions();
+  }
+
   if ($post_updates) {
     $operations[] = ['drush_update_cache_rebuild', []];
     foreach ($post_updates as $function) {
