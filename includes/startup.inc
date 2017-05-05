@@ -304,9 +304,6 @@ function drush_startup($argv) {
   // we will look for a "launcher" script in vendor/bin.
   if (empty($found_script) && !empty($ROOT)) {
     $found_script = find_wrapper_or_launcher($ROOT);
-    if (!empty($found_script)) {
-      chdir($ROOT);
-    }
   }
 
   // If there is a .drush-use file, then its contents will
