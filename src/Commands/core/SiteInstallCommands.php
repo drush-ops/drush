@@ -2,6 +2,7 @@
 namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use Drupal\Core\Database\ConnectionNotDefinedException;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
 use Drush\Log\LogLevel;
@@ -123,15 +124,42 @@ class SiteInstallCommands extends DrushCommands {
     }
   }
 
-  function determineProfile($profile, $options, $class_loader) {
+  protected function determineProfile($profile, $options, $class_loader) {
     // --config-dir fails with Standard profile and any other one that carries content entities.
     // Force to minimal install profile.
     if ($options['config-dir']) {
       $this->logger()->info(dt("Using 'minimal' install profile since --config-dir option was provided."));
       $profile = 'minimal';
     }
-    elseif(!isset($profile)) {
-      $profile = drupal_get_profile() ?: 'standard';
+    if (empty($profile)) {
+      try {
+        $profile = drupal_get_profile();
+      } catch (ConnectionNotDefinedException $exception) {
+        // This is only a best effort to provide a better default, no harm done
+        // if it fails.
+      }
+    }
+    if (empty($profile)) {
+      // If there is an installation profile that acts as a distribution, use it.
+      // You can turn your installation profile into a distribution by providing a
+      // @code
+      //   distribution:
+      //     name: 'Distribution name'
+      // @endcode
+      // block in the profile's info YAML file.
+      // See https://www.drupal.org/node/2210443 for more information.
+      require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
+      $install_state = array('interactive' => FALSE) + install_state_defaults();
+      try {
+        install_begin_request($class_loader, $install_state);
+        $profile = _install_select_profile($install_state);
+      } catch (\Exception $e) {
+        // This is only a best effort to provide a better default, no harm done
+        // if it fails.
+      }
+    }
+    if (empty($profile)) {
+      $profile = 'standard';
     }
     return $profile;
   }
