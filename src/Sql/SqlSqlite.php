@@ -60,6 +60,7 @@ class SqlSqlite extends SqlBase {
     // table_bravo    table_delta      table_foxtrot
     // …and there doesn't seem to be a way to fix that. So we need to do some
     // clean-up.
+    $tables = [];
     foreach ($tables_raw as $line) {
       preg_match_all('/[^\s]+/', $line, $matches);
       if (!empty($matches[0])) {
@@ -72,13 +73,17 @@ class SqlSqlite extends SqlBase {
   }
 
   public function drop($tables) {
+    $return = TRUE;
     $sql = '';
-    // SQLite only wants one table per DROP TABLE command (so we have to do
-    // "DROP TABLE foo; DROP TABLE bar;" instead of "DROP TABLE foo, bar;").
-    foreach ($tables as $table) {
-      $sql .= "DROP TABLE $table; ";
+    if ($tables) {
+      // SQLite only wants one table per DROP TABLE command (so we have to do
+      // "DROP TABLE foo; DROP TABLE bar;" instead of "DROP TABLE foo, bar;").
+      foreach ($tables as $table) {
+        $sql .= "DROP TABLE $table; ";
+      }
+      $return = $this->query($sql);
     }
-    return $this->query($sql);
+    return $return;
   }
 
   public function dumpCmd($table_selection) {
