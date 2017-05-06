@@ -139,7 +139,7 @@ class DrupalBoot8 extends DrupalBoot {
   }
 
   function bootstrap_drupal_full() {
-    drush_log(dt('About to bootstrap the Drupal 8 Kernel.'), LogLevel::DEBUG);
+    $this->logger->debug(dt('Start bootstrap of the Drupal Kernel.'));
     // TODO: do we need to do ob_start any longer?
     if (!drush_get_context('DRUSH_QUIET', FALSE)) {
       ob_start();
@@ -149,7 +149,7 @@ class DrupalBoot8 extends DrupalBoot {
     if (!drush_get_context('DRUSH_QUIET', FALSE)) {
       ob_end_clean();
     }
-    drush_log(dt('Finished bootstraping the Drupal 8 Kernel.'), LogLevel::DEBUG);
+    $this->logger->debug(dt('Finished bootstrap of the Drupal Kernel.'));
 
     parent::bootstrap_drupal_full();
 
@@ -165,7 +165,7 @@ class DrupalBoot8 extends DrupalBoot {
     foreach ($serviceCommandlist->getCommandList() as $command) {
       if (!$this->commandIgnored($command, $ignored_modules)) {
         $this->inflect($command);
-        drush_log(dt('Add a command: !name', ['!name' => $command->getName()]), LogLevel::DEBUG);
+        $this->logger->log(LogLevel::DEBUG_NOTIFY, dt('Add a command: !name', ['!name' => $command->getName()]));
         annotationcommand_adapter_cache_module_console_commands($command);
       }
     }
@@ -174,7 +174,7 @@ class DrupalBoot8 extends DrupalBoot {
     foreach ($serviceCommandlist->getCommandList() as $commandhandler) {
       if (!$this->commandIgnored($commandhandler, $ignored_modules)) {
         $this->inflect($commandhandler);
-        drush_log(dt('Add a commandhandler: !name', ['!name' => get_class($commandhandler)]), LogLevel::DEBUG);
+        $this->logger->log(LogLevel::DEBUG_NOTIFY, dt('Add a commandhandler: !name', ['!name' => get_class($commandhandler)]));
         annotationcommand_adapter_cache_module_service_commands($commandhandler);
       }
     }
