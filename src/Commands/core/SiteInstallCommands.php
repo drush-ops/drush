@@ -29,16 +29,14 @@ class SiteInstallCommands extends DrushCommands {
    * @option site-mail From: for system mailings. Defaults to admin@example.com
    * @option sites-subdir Name of directory under 'sites' which should be created.
    * @option config-dir A path pointing to a full set of configuration which should be imported after installation.
-   * @usage drush site-install expert --locale=uk
+   * @usage drush si expert --locale=uk
    *   (Re)install using the expert install profile. Set default language to Ukrainian.
-   * @usage drush site-install --db-url=mysql://root:pass@localhost:port/dbname
+   * @usage drush si --db-url=mysql://root:pass@localhost:port/dbname
    *   Install using the specified DB params.
-   * @usage drush site-install --db-url=sqlite://sites/example.com/files/.ht.sqlite
+   * @usage drush si --db-url=sqlite://sites/example.com/files/.ht.sqlite
    *   Install using SQLite
-   * @usage drush site-install --account-name=joe --account-pass=mom
-   *   Re-install with specified uid1 credentials.
-   * @usage drush si install_configure_form.site_default_country=FR
-   *   Pass additional arguments to the profile (D7 example shown here.
+   * @usage drush si --account-pass=mom
+   *   Re-install with specified uid1 password.
    * @usage drush si standard install_configure_form.enable_update_status_emails=NULL
    *   Disable email notification during install and later. If your server has no mail transfer agent, this gets rid of an error during install.
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_ROOT
