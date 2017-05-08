@@ -159,10 +159,25 @@ class ListCommands extends DrushCommands {
       }
     }
     $formatterManager = new FormatterManager();
-    $formatterOptions = new FormatterOptions([], ['include-field-labels' => FALSE, 'table-style' => 'compact']);
+    $opts = [
+      FormatterOptions::INCLUDE_FIELD_LABELS => FALSE,
+      FormatterOptions::TABLE_STYLE => 'compact',
+      FormatterOptions::TERMINAL_WIDTH => $this->getTerminalWidth(),
+    ];
+    $formatterOptions = new FormatterOptions([], $opts);
 
     $formatterManager->write($this->output(), 'table', new RowsOfFields($rows), $formatterOptions);
 
+  }
+
+  public function getTerminalWidth() {
+    // From \Consolidation\AnnotatedCommand\Options\PrepareTerminalWidthOption::getTerminalWidth
+    $application = \Drush::getApplication();
+    $dimensions = $application->getTerminalDimensions();
+    if ($dimensions[0] == null) {
+      return 0;
+    }
+    return $dimensions[0];
   }
 
   /**
