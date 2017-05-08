@@ -24,7 +24,7 @@ class EditCommands extends DrushCommands {
    *   Edit settings.php for the current Drupal site.
    * @usage drush core-config --choice=2
    *  Edit the second file in the choice list.
-   * @aliases conf, config, core-config
+   * @aliases conf, config
    * @complete \Drush\Commands\core\EditCommands::complete
    */
   public function edit($filter = NULL) {
