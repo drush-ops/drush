@@ -189,7 +189,7 @@ class DocsCommands extends DrushCommands {
   }
 
   /**
-   * Example Drush commandfile that extends sql-sync to allow transfer of the sql dump file via http.
+   * Extend sql-sync to allow transfer of the sql dump file via http.
    *
    * @command docs-example-sync-via-http
    * @hidden

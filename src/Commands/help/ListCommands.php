@@ -2,6 +2,9 @@
 namespace Drush\Commands\help;
 
 use Consolidation\AnnotatedCommand\Help\HelpDocument;
+use Consolidation\OutputFormatters\FormatterManager;
+use Consolidation\OutputFormatters\Options\FormatterOptions;
+use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
@@ -120,9 +123,9 @@ class ListCommands extends DrushCommands {
       ->writeln('Run `drush help [command]` to view command-specific help.  Run `drush topic` to read even more documentation.');
     $this->output()->writeln('');
 
+    // For now ,this table does not need TableFormatter.
     $table = new Table($this->output());
     $table->setStyle('compact');
-
     $table->addRow([new TableCell('Global options. See `drush topic core-global-options` for the full list.', array('colspan' => 2))]);
     $global_options_help = drush_get_global_options(TRUE);
     $options = $application->getDefinition()->getOptions();
@@ -143,18 +146,23 @@ class ListCommands extends DrushCommands {
       }
     }
     $table->addRow(['', '']);
+    $table->render();
 
-    $table->addRow([new TableCell('Available commands:', array('colspan' => 2))]);
+    $rows[] = ['Available commands:', ''];
     foreach ($namespaced as $namespace => $list) {
-      $table->addRow([new TableCell($namespace . ':', array('colspan' => 2))]);
+      $rows[] = [$namespace . ':', ''];
       foreach ($list as $name => $command) {
         $description = $command->getDescription();
         $aliases = implode(', ', $command->getAliases());
         $suffix = $aliases ? " ($aliases)" : '';
-        $table->addRow(['  ' . $name . $suffix, $description]);
+        $rows[] = ['  ' . $name . $suffix, $description];
       }
     }
-    $table->render();
+    $formatterManager = new FormatterManager();
+    $formatterOptions = new FormatterOptions([], ['include-field-labels' => FALSE, 'table-style' => 'compact']);
+
+    $formatterManager->write($this->output(), 'table', new RowsOfFields($rows), $formatterOptions);
+
   }
 
   /**
