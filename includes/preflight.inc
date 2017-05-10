@@ -142,7 +142,7 @@ function drush_symfony_input() {
  */
 function drush_preflight_prepare() {
   define('DRUSH_BASE_PATH', dirname(dirname(__FILE__)));
-  $project_vendor_path = '/../../../vendor/autoload.php';
+  $project_vendor_path = 'vendor/autoload.php';
 
   // Check for Unish's autoload.php, a local autoload.php, or a global autoload.php.
   if (file_exists(getenv('DRUSH_AUTOLOAD_PHP'))) {
