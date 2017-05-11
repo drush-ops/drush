@@ -142,17 +142,24 @@ function drush_symfony_input() {
  */
 function drush_preflight_prepare() {
   define('DRUSH_BASE_PATH', dirname(dirname(__FILE__)));
-  $project_vendor_path = 'vendor/autoload.php';
+
+  // Local means that autoload.php is inside of Drush. That is, Drush is its own Composer project.
+  // Global means autoload.php is outside of Drush. That is, Drush is a dependency of a bigger project.
+  $local_vendor_path = DRUSH_BASE_PATH . '/vendor/autoload.php';
+  $global_vendor_path = DRUSH_BASE_PATH . '/../../../vendor/autoload.php';
 
   // Check for Unish's autoload.php, a local autoload.php, or a global autoload.php.
   if (file_exists(getenv('DRUSH_AUTOLOAD_PHP'))) {
     $vendor_path = getenv('DRUSH_AUTOLOAD_PHP');
   }
-  elseif (file_exists($project_vendor_path)) {
-    $vendor_path = $project_vendor_path;
+  elseif (file_exists($local_vendor_path)) {
+    $vendor_path = $local_vendor_path;
+  }
+  elseif (file_exists($global_vendor_path)) {
+    $vendor_path = $global_vendor_path;
   }
   else {
-    $msg = "Unable to load autoload.php. Run composer install to fetch dependencies and write autoload.php (http://docs.drush.org/en/master/install-alternative/).\n";
+    $msg = "Unable to load autoload.php. Run composer install to fetch dependencies and write autoload.php (http://docs.drush.org/en/master/install/).\n";
     fwrite(STDERR, $msg);
     return FALSE;
   }
