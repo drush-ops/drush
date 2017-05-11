@@ -70,7 +70,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
       if (file_exists($sandbox)) {
         self::recursive_delete($sandbox);
       }
-      foreach (['modules', 'themes', 'profiles'] as $dir) {
+      foreach (['modules', 'themes', 'profiles', 'drush'] as $dir) {
         $target = Path::join(self::getSut(), 'web', $dir, 'contrib');
         if (file_exists($target)) {
           self::recursive_delete_dir_contents($target);
@@ -116,7 +116,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     list($unish_tmp, $unish_sandbox, $unish_drush_dir) = \unishGetPaths();
     $unish_cache = Path::join($unish_sandbox, 'cache');
 
-    self::$drush = $unish_drush_dir . '/drush.php';
+    self::$drush = $unish_drush_dir . '/drush';
     self::$tmp = $unish_tmp;
     self::$sandbox = $unish_sandbox;
     self::$usergroup = isset($GLOBALS['UNISH_USERGROUP']) ? $GLOBALS['UNISH_USERGROUP'] : NULL;
@@ -452,15 +452,10 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     return parse_url($db_url ?: self::getDbUrl(), PHP_URL_SCHEME);
   }
 
-  function setUpDrupal($num_sites = 1, $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL) {
+  function setUpDrupal($num_sites = 1, $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = 'testing') {
     $sites_subdirs_all = array('dev', 'stage', 'prod', 'retired', 'elderly', 'dead', 'dust');
     $sites_subdirs = array_slice($sites_subdirs_all, 0, $num_sites);
     $root = $this->webroot();
-    $major_version = substr($version_string, 0, 1);
-
-    if (!isset($profile)) {
-      $profile = $major_version >= 7 ? 'testing' : 'default';
-    }
 
     // Install (if needed).
     foreach ($sites_subdirs as $subdir) {
@@ -468,7 +463,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     }
 
     // Write an empty sites.php. Needed for multi-site on D8+.
-    if ($major_version >= 7 && !file_exists($root . '/sites/sites.php')) {
+    if (!file_exists($root . '/sites/sites.php')) {
       copy($root . '/sites/example.sites.php', $root . '/sites/sites.php');
     }
 
@@ -527,9 +522,9 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * The sidewide directory for a Drupal 8 installation.
+   * The sidewide directory for Drupal extensions.
    */
-  function drupalSitewideDirectory($major_version = NULL) {
+  function drupalSitewideDirectory() {
     return '/sites/all';
   }
 }

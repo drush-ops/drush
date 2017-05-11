@@ -142,6 +142,7 @@ function drush_symfony_input() {
  */
 function drush_preflight_prepare() {
   define('DRUSH_BASE_PATH', dirname(dirname(__FILE__)));
+
   // Local means that autoload.php is inside of Drush. That is, Drush is its own Composer project.
   // Global means autoload.php is outside of Drush. That is, Drush is a dependency of a bigger project.
   $local_vendor_path = DRUSH_BASE_PATH . '/vendor/autoload.php';
@@ -158,13 +159,12 @@ function drush_preflight_prepare() {
     $vendor_path = $global_vendor_path;
   }
   else {
-    $msg = "Unable to load autoload.php. Run composer install to fetch dependencies and write this file (http://docs.drush.org/en/master/install-alternative/). Or if you prefer, use the drush.phar which already has dependencies included (http://docs.drush.org/en/master/install).\n";
+    $msg = "Unable to load autoload.php. Run composer install to fetch dependencies and write autoload.php (http://docs.drush.org/en/master/install/).\n";
     fwrite(STDERR, $msg);
     return FALSE;
   }
   $classloader = require $vendor_path;
 
-  require_once DRUSH_BASE_PATH . '/includes/startup.inc';
   require_once DRUSH_BASE_PATH . '/includes/bootstrap.inc';
   require_once DRUSH_BASE_PATH . '/includes/environment.inc';
   require_once DRUSH_BASE_PATH . '/includes/annotationcommand_adapter.inc';
@@ -820,10 +820,7 @@ function drush_preflight_command_dispatch() {
   $args = drush_get_arguments();
   $command_name = array_shift($args);
   $root = \Drush::bootstrapManager()->getRoot();
-  $local_drush = drush_get_option('drush-script');
-  if (empty($local_drush) && !empty($root)) {
-    $local_drush = find_wrapper_or_launcher($root);
-  }
+  $local_drush = drush_get_option('drush-script', Path::join(dirname(__DIR__), 'drush'));
   $is_local = drush_get_option('local');
   $values = NULL;
   if (!empty($root) && !empty($local_drush) && empty($is_local)) {
