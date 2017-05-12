@@ -20,7 +20,6 @@ use Webmozart\PathUtil\Path;
 /**
  * The main Drush function.
  *
- * - Runs "early" option code, if set (see global options).
  * - Parses the command line arguments, configuration files and environment.
  * - Prepares and executes a Drupal bootstrap, if possible,
  * - Dispatches the given command.
@@ -57,45 +56,31 @@ function drush_main() {
 
   $return = '';
   if (!drush_get_error()) {
-    if ($file = drush_get_option('early', FALSE)) {
-      require_once drush_is_absolute_path($file) ? $file : DRUSH_BASE_PATH . DIRECTORY_SEPARATOR . $file;
-      $function = 'drush_early_' . basename($file, '.inc');
-      if (function_exists($function)) {
-        if ($return = $function()) {
-          // If the function returns FALSE, we continue and attempt to bootstrap
-          // as normal. Otherwise, we exit early with the returned output.
-          if ($return === TRUE) {
-            $return = '';
-          }
-        }
-      }
+    // TODO: If 'DRUSH_SYMFONY' is set, then disable the legacy command
+    // runner, and use only the Symfony Application.  n.b. the legacy runner
+    // will also try to run commands via the Symfony Application runner if
+    // it cannot find a matching legacy Drush command.
+    if (getenv('DRUSH_SYMFONY')) {
+      drush_log(dt("Dispatching directly with Symfony application (DRUSH_SYMFONY set)"), LogLevel::BOOTSTRAP);
+
+      // Get the application and run it.
+      // TODO: We need a new way to handle @alias arguments,
+      // remote command dispatching, bootstrapping, etc.
+      $application = $container->get('application');
+      $input = drush_symfony_input();
+      $application->run($input);
     }
     else {
-      // TODO: If 'DRUSH_SYMFONY' is set, then disable the legacy command
-      // runner, and use only the Symfony Application.  n.b. the legacy runner
-      // will also try to run commands via the Symfony Application runner if
-      // it cannot find a matching legacy Drush command.
-      if (getenv('DRUSH_SYMFONY')) {
-        drush_log(dt("Dispatching directly with Symfony application (DRUSH_SYMFONY set)"), LogLevel::BOOTSTRAP);
-
-        // Get the application and run it.
-        // TODO: We need a new way to handle @alias arguments,
-        // remote command dispatching, bootstrapping, etc.
-        $application = $container->get('application');
-        $input = drush_symfony_input();
-        $application->run($input);
-      }
-      else {
-        // Do any necessary preprocessing operations on the command,
-        // perhaps handling immediately.
-        $command_handled = drush_preflight_command_dispatch();
-        if (!$command_handled) {
-          drush_log(dt("Dispatching using Drush bootstrap_and_dispatch"), LogLevel::BOOTSTRAP);
-          $return = $bootstrap->bootstrap_and_dispatch();
-        }
+      // Do any necessary preprocessing operations on the command,
+      // perhaps handling immediately.
+      $command_handled = drush_preflight_command_dispatch();
+      if (!$command_handled) {
+        drush_log(dt("Dispatching using Drush bootstrap_and_dispatch"), LogLevel::BOOTSTRAP);
+        $return = $bootstrap->bootstrap_and_dispatch();
       }
     }
   }
+
   // TODO: Get rid of global variable access here, and just trust
   // the bootstrap object returned from drush_preflight().  This will
   // require some adjustments to Drush bootstrapping.
@@ -917,10 +902,9 @@ function drush_preflight_command_dispatch() {
  * a command is handled locally.
  */
 function drush_preflight_tilde_expansion(&$command) {
-  // Skip tilde expansion for commands that use
-  // strict option handling, or those that explicitly
+  // Skip tilde expansion for commands that explicitly
   // turn it off via $command['tilde-expansion'] = FALSE.
-  if ($command['tilde-expansion'] && !$command['strict-option-handling']) {
+  if ($command['tilde-expansion']) {
     $cli =& drush_get_context('cli');
     $match = '#^~/#';
     $replacement = drush_server_home() . '/';

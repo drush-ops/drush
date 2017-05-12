@@ -15,7 +15,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
   use LoadAllTasks;
 
   /**
-   * Enrich the bash startup file with completion and aliases.
+   * Enrich the bash startup file with bash aliases and a smart command prompt.
    *
    * @command core-init
    *
@@ -40,12 +40,10 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
     $drush_config_file = $drush_config_dir . "/drushrc.php";
     $drush_bashrc = $drush_config_dir . "/drush.bashrc";
     $drush_prompt = $drush_config_dir . "/drush.prompt.sh";
-    $drush_complete = $drush_config_dir . "/drush.complete.sh";
     $examples_dir = DRUSH_BASE_PATH . "/examples";
     $example_configuration = $examples_dir . "/example.drushrc.php";
     $example_bashrc = $examples_dir . "/example.bashrc";
     $example_prompt = $examples_dir . "/example.prompt.sh";
-    $example_complete = DRUSH_BASE_PATH . "/drush.complete.sh";
 
     $collection = $this->collectionBuilder();
 
@@ -72,7 +70,6 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
     // their source templates.
     $drushBashFiles = [
       $drush_bashrc => $example_bashrc,
-      $drush_complete => $example_complete,
       $drush_prompt => $example_prompt,
     ];
 
@@ -80,7 +77,6 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
     // to a description of what each one is.
     $drushBashFileDescriptions = [
       $drush_bashrc => 'Drush bash customizations',
-      $drush_complete => 'Drush completion',
       $drush_prompt => 'Drush prompt customizations',
     ];
 
