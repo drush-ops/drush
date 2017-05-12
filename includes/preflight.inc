@@ -164,6 +164,7 @@ function drush_preflight_prepare() {
   require_once DRUSH_BASE_PATH . '/includes/output.inc';
   require_once DRUSH_BASE_PATH . '/includes/cache.inc';
   require_once DRUSH_BASE_PATH . '/includes/filesystem.inc';
+  require_once DRUSH_BASE_PATH . '/includes/legacy.inc';
 
   /*
    * @deprecated. Use \Drush::getVersion().
