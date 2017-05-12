@@ -1517,32 +1517,6 @@ function drush_map_assoc($array, $function = NULL) {
   }
   return $array;
 }
-/**
- * Clears completion caches.
- *
- * If called with no parameters the entire complete cache will be cleared.
- * If called with just the $type parameter the global cache for that type will
- * be cleared (in the site context, if any). If called with both $type and
- * $command parameters the command cache of that type will be cleared  (in the
- * site context, if any).
- *
- * This is included in drush.inc as complete.inc is only loaded conditionally.
- *
- * @param $type
- *   The completion type (optional).
- * @param $command
- *   The command name (optional), if command specific cache is to be cleared.
- *   If specifying a command, $type is not optional.
- */
-function drush_complete_cache_clear($type = NULL, $command = NULL) {
-  require_once DRUSH_BASE_PATH . '/includes/complete.inc';
-  if ($type) {
-    drush_cache_clear_all(drush_complete_cache_cid($type, $command), 'complete');
-    return;
-  }
-  // No type or command, so clear the entire complete cache.
-  drush_cache_clear_all('*', 'complete', TRUE);
-}
 
 /*
  * Cast a value according to the provided format
