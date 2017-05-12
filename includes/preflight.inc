@@ -902,10 +902,9 @@ function drush_preflight_command_dispatch() {
  * a command is handled locally.
  */
 function drush_preflight_tilde_expansion(&$command) {
-  // Skip tilde expansion for commands that use
-  // strict option handling, or those that explicitly
+  // Skip tilde expansion for commands that explicitly
   // turn it off via $command['tilde-expansion'] = FALSE.
-  if ($command['tilde-expansion'] && !$command['strict-option-handling']) {
+  if ($command['tilde-expansion']) {
     $cli =& drush_get_context('cli');
     $match = '#^~/#';
     $replacement = drush_server_home() . '/';
