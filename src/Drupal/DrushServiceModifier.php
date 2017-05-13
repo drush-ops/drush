@@ -12,7 +12,7 @@ class DrushServiceModifier implements ServiceModifierInterface
      * @inheritdoc
      */
     public function alter(ContainerBuilder $container) {
-        drush_log(dt("Service modifier alter"), LogLevel::DEBUG);
+        drush_log(dt("Service modifier alter."), LogLevel::DEBUG_NOTIFY);
         // http://symfony.com/doc/2.7/components/dependency_injection/tags.html#register-the-pass-with-the-container
         $container->register('drush.service.consolecommands', 'Drush\Command\ServiceCommandlist');
         $container->addCompilerPass(new FindCommandsCompilerPass('drush.service.consolecommands', 'console.command'));
