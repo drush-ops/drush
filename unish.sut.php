@@ -48,6 +48,9 @@ function unish_setup_sut($unish_sandbox) {
       $verbose = $needle;
     }
   }
+  $cmd = "composer $verbose clear-cache";
+  fwrite(STDERR, 'Executing: ' . $cmd . "\n");
+  exec($cmd, $output, $return);
   $cmd = "composer $verbose install --no-interaction --no-progress --no-suggest --working-dir " . escapeshellarg($working_dir);
   fwrite(STDERR, 'Executing: ' . $cmd . "\n");
   exec($cmd, $output, $return);

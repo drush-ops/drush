@@ -13,11 +13,6 @@ php:
   - 5.6
   - 7.0
 
-# Cache Composer.
-cache:
-  directories:
-    - $HOME/.composer/cache
-
 # http://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure/
 sudo: false
 
@@ -45,7 +40,7 @@ before_install:
   - echo 'mbstring.http_output = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
 # Build a System-Under-Test.
-install: ${PWD}/unish.sut.php
+install: ${PWD}/unish.sut.php -vvv
 
 before_script:
   - phpenv config-rm xdebug.ini
