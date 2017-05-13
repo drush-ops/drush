@@ -111,7 +111,7 @@ class RunserverCommands extends DrushCommands {
       'path' => '',
     );
     $user_default = $this->parseUri($options['default-server']);
-    $site_default = $this->parseUri($options['uri']);
+    $site_default = $this->parseUri($uri);
     $uri = $this->parseUri($uri);
     if (is_array($uri)) {
       // Populate defaults.
