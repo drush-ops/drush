@@ -17,10 +17,11 @@ class UpdateDBCommands extends DrushCommands {
    * @command updatedb
    * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
    * @option entity-updates Run automatic entity schema updates at the end of any update hooks. Defaults to disabled.
+   * @option post-updates Run hook_post_update_X() implementations. Use --post-updates=0 to skip post-updates.
    * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_SITE
    * @aliases updb
    */
-  public function updatedb($options = ['cache-clear' => TRUE, 'entity-updates' => FALSE]) {
+  public function updatedb($options = ['cache-clear' => TRUE, 'entity-updates' => FALSE, 'post-updates' => TRUE]) {
     if (drush_get_context('DRUSH_SIMULATE')) {
       $this->logger()->info(dt('updatedb command does not support --simulate option.'));
       return TRUE;
@@ -197,7 +198,10 @@ class UpdateDBCommands extends DrushCommands {
     $pending = update_get_update_list();
 
     // Pending hook_post_update_X() implementations.
-    $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateInformation();
+    $post_updates = [];
+    if ($options['post-updates']) {
+      $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateInformation();
+    }
 
     $start = array();
 
@@ -285,7 +289,11 @@ class UpdateDBCommands extends DrushCommands {
     }
 
     // Apply post update hooks.
-    $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateFunctions();
+    $post_updates = [];
+    if ($options['post-updates']) {
+      $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateFunctions();
+    }
+
     if ($post_updates) {
       $operations[] = [[$this, 'cacheRebuild'], []];
       foreach ($post_updates as $function) {
