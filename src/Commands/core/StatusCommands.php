@@ -78,7 +78,7 @@ class StatusCommands extends DrushCommands
         if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
             $status_table['drupal-version'] = drush_drupal_version();
             $boot_object = \Drush::bootstrap();
-            $conf_dir = $boot_object->conf_path();
+            $conf_dir = $boot_object->confPath();
             $settings_file = "$conf_dir/settings.php";
             $status_table['drupal-settings-file'] = file_exists($settings_file) ? $settings_file : '';
             if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
@@ -97,7 +97,7 @@ class StatusCommands extends DrushCommands
                     $status_table['db-name'] = isset($db_spec['database']) ? $db_spec['database'] : null;
                     $status_table['db-port'] = isset($db_spec['port']) ? $db_spec['port'] : null;
                     if ($phase > DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION) {
-                        $status_table['install-profile'] = $boot_object->get_profile();
+                        $status_table['install-profile'] = $boot_object->getProfile();
                         if ($phase > DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
                             $status_table['db-status'] = dt('Connected');
                             if ($phase >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
@@ -116,8 +116,8 @@ class StatusCommands extends DrushCommands
         }
         $status_table['php-bin'] = PHP_BINARY;
         $status_table['php-os'] = PHP_OS;
-        if ($php_ini_files = EditCommands::php_ini_files()) {
-            $status_table['php-conf'] = $php_ini_files;
+        if ($phpIniFiles = EditCommands::phpIniFiles()) {
+            $status_table['php-conf'] = $phpIniFiles;
         }
         $status_table['drush-script'] = DRUSH_COMMAND;
         $status_table['drush-version'] = \Drush::getVersion();
@@ -174,12 +174,12 @@ class StatusCommands extends DrushCommands
             $paths['%root'] = $drupal_root;
             if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
                 $paths['%site'] = $site_root;
-                if (is_dir($modules_path = $boot->conf_path() . '/modules')) {
+                if (is_dir($modules_path = $boot->confPath() . '/modules')) {
                     $paths['%modules'] = $modules_path;
                 } else {
                     $paths['%modules'] = ltrim($site_wide . '/modules', '/');
                 }
-                if (is_dir($themes_path = $boot->conf_path() . '/themes')) {
+                if (is_dir($themes_path = $boot->confPath() . '/themes')) {
                     $paths['%themes'] = $themes_path;
                 } else {
                     $paths['%themes'] = ltrim($site_wide . '/themes', '/');

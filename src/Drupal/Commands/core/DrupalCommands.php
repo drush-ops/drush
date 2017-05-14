@@ -72,7 +72,7 @@ class DrupalCommands extends DrushCommands
     {
         require_once DRUSH_DRUPAL_CORE . "/themes/engines/twig/twig.engine";
         // Scan all enabled modules and themes.
-        // @todo refactor since \Drush\Boot\DrupalBoot::commandfile_searchpaths is similar.
+        // @todo refactor since \Drush\Boot\DrupalBoot::commandfileSearchpaths is similar.
         $ignored_modules = drush_get_option_list('ignored-modules', array());
         $modules = array_keys($this->getModuleHandler()->getModuleList());
         $module_list = array_combine($modules, $modules);
@@ -167,7 +167,7 @@ class DrupalCommands extends DrushCommands
             $rows[$i] = [
             'title' => (string) $info['title'],
             'value' => (string) $info['value'],
-            'description' => DrupalUtil::drush_render($info['description']),
+            'description' => DrupalUtil::drushRender($info['description']),
             'sid' => $severity,
             'severity' => @$severities[$severity]
             ];

@@ -71,7 +71,7 @@ class Drush
     public static function getVersion()
     {
         if (!static::$version) {
-            $drush_info = static::drush_read_drush_info();
+            $drush_info = static::drushReadDrushInfo();
             $instance = new Version($drush_info['drush_version'], DRUSH_BASE_PATH);
             static::$version = $instance->getversion();
         }
@@ -241,7 +241,7 @@ class Drush
     /**
      * Read the drush info file.
      */
-    private static function drush_read_drush_info()
+    private static function drushReadDrushInfo()
     {
         $drush_info_file = dirname(__FILE__) . '/../drush.info';
 

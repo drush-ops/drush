@@ -57,6 +57,6 @@ class ThemeCommands extends DrushCommands
         $this->logger()->success(dt('Successfully uninstalled theme: !list', ['!list' => implode(', ', $themes)]));
         // Our logger got blown away during the container rebuild above.
         $boot = \Drush::bootstrapManager()->bootstrap();
-        $boot->add_logger();
+        $boot->addLogger();
     }
 }

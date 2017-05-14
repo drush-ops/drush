@@ -10,21 +10,21 @@ use Drupal\user\Entity\User;
 abstract class DrupalBoot extends BaseBoot
 {
 
-    public function valid_root($path)
+    public function validRoot($path)
     {
     }
 
-    public function get_version($drupal_root)
+    public function getVersion($drupal_root)
     {
     }
 
-    public function get_profile()
+    public function getProfile()
     {
     }
 
-    public function conf_path($require_settings = true, $reset = false)
+    public function confPath($require_settings = true, $reset = false)
     {
-        return conf_path($require_settings = true, $reset = false);
+        return confPath($require_settings = true, $reset = false);
     }
 
     /**
@@ -43,15 +43,15 @@ abstract class DrupalBoot extends BaseBoot
      * method is called, if defined.  The validate method name is the
      * bootstrap method name with "_validate" appended.
      */
-    function bootstrap_phases()
+    public function bootstrapPhases()
     {
         return array(
         DRUSH_BOOTSTRAP_DRUSH                  => 'bootstrap_drush',
-        DRUSH_BOOTSTRAP_DRUPAL_ROOT            => 'bootstrap_drupal_root',
-        DRUSH_BOOTSTRAP_DRUPAL_SITE            => 'bootstrap_drupal_site',
-        DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION   => 'bootstrap_drupal_configuration',
-        DRUSH_BOOTSTRAP_DRUPAL_DATABASE        => 'bootstrap_drupal_database',
-        DRUSH_BOOTSTRAP_DRUPAL_FULL            => 'bootstrap_drupal_full',
+        DRUSH_BOOTSTRAP_DRUPAL_ROOT            => 'bootstrapDrupalRoot',
+        DRUSH_BOOTSTRAP_DRUPAL_SITE            => 'bootstrapDrupalSite',
+        DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION   => 'bootstrapDrupalConfiguration',
+        DRUSH_BOOTSTRAP_DRUPAL_DATABASE        => 'bootstrapDrupalDatabase',
+        DRUSH_BOOTSTRAP_DRUPAL_FULL            => 'bootstrapDrupalFull',
         );
     }
 
@@ -70,30 +70,30 @@ abstract class DrupalBoot extends BaseBoot
      *
      * @return array of PHASE indexes.
      */
-    public function bootstrap_init_phases()
+    public function bootstrapInitPhases()
     {
         return array(DRUSH_BOOTSTRAP_DRUSH, DRUSH_BOOTSTRAP_DRUPAL_ROOT, DRUSH_BOOTSTRAP_DRUPAL_FULL);
     }
 
-    public function enforce_requirement(&$command)
+    public function enforceRequirement(&$command)
     {
-        parent::enforce_requirement($command);
-        $this->drush_enforce_requirement_drupal_dependencies($command);
+        parent::enforceRequirement($command);
+        $this->drushEnforceRequirementDrupalDependencies($command);
     }
 
-    public function report_command_error($command)
+    public function reportCommandError($command)
     {
         // If we reach this point, command doesn't fit requirements or we have not
         // found either a valid or matching command.
 
         // If no command was found check if it belongs to a disabled module.
         if (!$command) {
-            $command = $this->drush_command_belongs_to_disabled_module();
+            $command = $this->drushCommandBelongsToDisabledModule();
         }
-        parent::report_command_error($command);
+        parent::reportCommandError($command);
     }
 
-    public function command_defaults()
+    public function commandDefaults()
     {
         return array(
         'drupal dependencies' => array(),
@@ -105,15 +105,15 @@ abstract class DrupalBoot extends BaseBoot
      * @return array of strings - paths to directories where contrib
      * modules can be found
      */
-    abstract public function contrib_modules_paths();
+    abstract public function contribModulesPaths();
 
     /**
      * @return array of strings - paths to directories where contrib
      * themes can be found
      */
-    abstract public function contrib_themes_paths();
+    abstract public function contribThemesPaths();
 
-    public function commandfile_searchpaths($phase, $phase_max = false)
+    public function commandfileSearchpaths($phase, $phase_max = false)
     {
         if (!$phase_max) {
             $phase_max = $phase;
@@ -141,7 +141,7 @@ abstract class DrupalBoot extends BaseBoot
                 // only those Drush commandfiles that are associated with
                 // enabled modules.
                 if ($phase_max < DRUSH_BOOTSTRAP_DRUPAL_FULL) {
-                    $searchpath = array_merge($searchpath, $this->contrib_modules_paths());
+                    $searchpath = array_merge($searchpath, $this->contribModulesPaths());
 
                     // Adding commandfiles located within /profiles. Try to limit to one profile for speed. Note
                     // that Drupal allows enabling modules from a non-active profile so this logic is kinda dodgy.
@@ -156,7 +156,7 @@ abstract class DrupalBoot extends BaseBoot
                         $searchpath[] = "sites/all/profiles";
                     }
 
-                    $searchpath = array_merge($searchpath, $this->contrib_themes_paths());
+                    $searchpath = array_merge($searchpath, $this->contribThemesPaths());
                     // Drupal 8 uses the modules' services files to find commandfiles. Should we allow
                     // redundant find-module-by-location for Drupal 8?  (Maybe not.)
                     if (drush_drupal_major_version() < 8) {
@@ -209,7 +209,7 @@ abstract class DrupalBoot extends BaseBoot
      *   Array with a command-like bootstrap error or FALSE if Drupal was not
      *   bootstrapped fully or the command does not belong to a disabled module.
      */
-    public function drush_command_belongs_to_disabled_module()
+    public function drushCommandBelongsToDisabledModule()
     {
         if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
             _drush_find_commandfiles(DRUSH_BOOTSTRAP_DRUPAL_SITE, DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
@@ -251,7 +251,7 @@ abstract class DrupalBoot extends BaseBoot
      * @return
      *   TRUE if command is valid.
      */
-    public function drush_enforce_requirement_drupal_dependencies(&$command)
+    public function drushEnforceRequirementDrupalDependencies(&$command)
     {
         // If the command bootstrap is DRUSH_BOOTSTRAP_MAX, then we will
         // allow the requirements to pass if we have not successfully
@@ -284,7 +284,7 @@ abstract class DrupalBoot extends BaseBoot
      * We also determine the value that will be stored in the DRUSH_DRUPAL_ROOT
      * context and DRUPAL_ROOT constant if it is considered a valid option.
      */
-    public function bootstrap_drupal_root_validate()
+    public function bootstrapDrupalRootValidate()
     {
         $drupal_root = \Drush::bootstrapManager()->getRoot();
 
@@ -321,7 +321,7 @@ abstract class DrupalBoot extends BaseBoot
      * We can now include files from the Drupal Tree, and figure
      * out more context about the platform, such as the version of Drupal.
      */
-    public function bootstrap_drupal_root()
+    public function bootstrapDrupalRoot()
     {
         // Load the config options from Drupal's /drush and sites/all/drush directories.
         drush_load_config('drupal');
@@ -331,7 +331,7 @@ abstract class DrupalBoot extends BaseBoot
         $version = drush_drupal_version();
         $major_version = drush_drupal_major_version();
 
-        $core = $this->bootstrap_drupal_core($drupal_root);
+        $core = $this->bootstrapDrupalCore($drupal_root);
 
         // DRUSH_DRUPAL_CORE should point to the /core folder in Drupal 8+ or to DRUPAL_ROOT
         // in prior versions.
@@ -350,10 +350,10 @@ abstract class DrupalBoot extends BaseBoot
      * and check for a valid settings.php file.
      *
      * To do this, we need to set up the $_SERVER environment variable,
-     * to allow us to use conf_path to determine what Drupal will load
+     * to allow us to use confPath to determine what Drupal will load
      * as a configuration file.
      */
-    public function bootstrap_drupal_site_validate()
+    public function bootstrapDrupalSiteValidate()
     {
         // Define the selected conf path as soon as we have identified that
         // we have selected a Drupal site.  Drush used to set this context
@@ -361,17 +361,17 @@ abstract class DrupalBoot extends BaseBoot
         $drush_uri = _drush_bootstrap_selected_uri();
         drush_set_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', drush_conf_path($drush_uri));
 
-        $this->bootstrap_drupal_site_setup_server_global($drush_uri);
+        $this->bootstrapDrupalSiteSetupServerGlobal($drush_uri);
         $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
-        $conf_path = drush_bootstrap_value('conf_path', $this->conf_path(true, true));
-        return true; //$this->bootstrap_drupal_site_validate_settings_present();
+        $confPath = drush_bootstrap_value('confPath', $this->confPath(true, true));
+        return true; //$this->bootstrapDrupalSiteValidate_settings_present();
     }
 
     /**
      * Set up the $_SERVER globals so that Drupal will see the same values
      * that it does when serving pages via the web server.
      */
-    public function bootstrap_drupal_site_setup_server_global($drush_uri)
+    public function bootstrapDrupalSiteSetupServerGlobal($drush_uri)
     {
         // Fake the necessary HTTP headers that Drupal needs:
         if ($drush_uri) {
@@ -419,11 +419,11 @@ abstract class DrupalBoot extends BaseBoot
      * Validate that the Drupal site has all of the settings that it
      * needs to operated.
      */
-//  public function bootstrap_drupal_site_validate_settings_present() {
+//  public function bootstrapDrupalSiteValidate_settings_present() {
 //    $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
 //
-//    $conf_path = drush_bootstrap_value('conf_path', $this->conf_path(TRUE, TRUE));
-//    $conf_file = "$conf_path/settings.php";
+//    $confPath = drush_bootstrap_value('confPath', $this->confPath(TRUE, TRUE));
+//    $conf_file = "$confPath/settings.php";
 //    if (!file_exists($conf_file)) {
 //      $this->logger()->notice(dt("Could not find a Drupal settings.php file at !file.",
 //        array('!file' => $conf_file)));
@@ -435,17 +435,17 @@ abstract class DrupalBoot extends BaseBoot
 //  }
 
     /**
-     * Called by bootstrap_drupal_site to do the main work
+     * Called by bootstrapDrupalSite to do the main work
      * of the drush drupal site bootstrap.
      */
-    public function bootstrap_do_drupal_site()
+    public function bootstrapDoDrupalSite()
     {
         $drush_uri = drush_get_context('DRUSH_SELECTED_URI');
         drush_set_context('DRUSH_URI', $drush_uri);
         $site = drush_set_context('DRUSH_DRUPAL_SITE', drush_bootstrap_value('site'));
-        $conf_path = drush_set_context('DRUSH_DRUPAL_SITE_ROOT', drush_bootstrap_value('conf_path'));
+        $confPath = drush_set_context('DRUSH_DRUPAL_SITE_ROOT', drush_bootstrap_value('confPath'));
 
-        $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal site !site at !site_root", array('!site' => $site, '!site_root' => $conf_path)));
+        $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal site !site at !site_root", array('!site' => $site, '!site_root' => $confPath)));
 
         _drush_preflight_global_options();
     }
@@ -456,10 +456,10 @@ abstract class DrupalBoot extends BaseBoot
      * We now set various contexts that we determined and confirmed to be valid.
      * Additionally we load an optional drushrc.php file in the site directory.
      */
-    public function bootstrap_drupal_site()
+    public function bootstrapDrupalSite()
     {
         drush_load_config('site');
-        $this->bootstrap_do_drupal_site();
+        $this->bootstrapDoDrupalSite();
     }
 
     /**
@@ -471,7 +471,7 @@ abstract class DrupalBoot extends BaseBoot
      *
      * Also override Drupal variables as per --variables option.
      */
-    public function bootstrap_drupal_configuration()
+    public function bootstrapDrupalConfiguration()
     {
         global $conf;
 
@@ -492,7 +492,7 @@ abstract class DrupalBoot extends BaseBoot
      * database credentials that were loaded during the previous
      * phase.
      */
-    public function bootstrap_drupal_database_validate()
+    public function bootstrapDrupalDatabaseValidate()
     {
         // Drupal requires PDO, and Drush requires php 5.6+ which ships with PDO
         // but PHP may be compiled with --disable-pdo.
@@ -523,7 +523,7 @@ abstract class DrupalBoot extends BaseBoot
      * table or tables.
      *
      * This is a bootstrap helper function designed to be called
-     * from the bootstrap_drupal_database_validate() methods of
+     * from the bootstrapDrupalDatabaseValidate() methods of
      * derived DrupalBoot classes.  If a database exists, but is
      * empty, then the Drupal database bootstrap will fail.  To
      * prevent this situation, we test for some table that is needed
@@ -542,7 +542,7 @@ abstract class DrupalBoot extends BaseBoot
      * @return TRUE if all tables in input parameter exist in
      *   the database.
      */
-    public function bootstrap_drupal_database_has_table($required_tables)
+    public function bootstrapDrupalDatabaseHasTable($required_tables)
     {
         try {
             $sql = SqlBase::create();
@@ -570,7 +570,7 @@ abstract class DrupalBoot extends BaseBoot
     /**
      * Boostrap the Drupal database.
      */
-    public function bootstrap_drupal_database()
+    public function bootstrapDrupalDatabase()
     {
         // We presume that our derived classes will connect and then
         // either fail, or call us via parent::
@@ -580,14 +580,14 @@ abstract class DrupalBoot extends BaseBoot
     /**
      * Attempt to load the full Drupal system.
      */
-    public function bootstrap_drupal_full()
+    public function bootstrapDrupalFull()
     {
 
-        $this->add_logger();
+        $this->addLogger();
 
         // Write correct install_profile to cache as needed. Used by _drush_find_commandfiles().
         $cid = drush_cid_install_profile();
-        $install_profile = $this->get_profile();
+        $install_profile = $this->getProfile();
         if ($cached_install_profile = drush_cache_get($cid)) {
             // We have a cached profile. Check it for correctness and save new value if needed.
             if ($cached_install_profile->data != $install_profile) {

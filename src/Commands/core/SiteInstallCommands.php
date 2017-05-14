@@ -132,7 +132,7 @@ class SiteInstallCommands extends DrushCommands
         }
         if (empty($profile)) {
             try {
-                $profile = drupal_get_profile();
+                $profile = drupal_getProfile();
             } catch (ConnectionNotDefinedException $exception) {
                 // This is only a best effort to provide a better default, no harm done
                 // if it fails.
@@ -265,11 +265,11 @@ class SiteInstallCommands extends DrushCommands
         if ($dir = $commandData->input()->getOption('sites-subdir')) {
             $sites_subdir = "sites/$dir";
         }
-        $conf_path = $sites_subdir;
-        $settingsfile = "$conf_path/settings.php";
+        $confPath = $sites_subdir;
+        $settingsfile = "$confPath/settings.php";
         $sitesfile = "sites/sites.php";
         $default = realpath($alias_record['root'] . '/sites/default');
-        $sitesfile_write = $conf_path != $default && !file_exists($sitesfile);
+        $sitesfile_write = $confPath != $default && !file_exists($sitesfile);
 
         if (!file_exists($settingsfile)) {
             $msg[] = dt('create a @settingsfile file', array('@settingsfile' => $settingsfile));
@@ -288,12 +288,12 @@ class SiteInstallCommands extends DrushCommands
         }
 
         // Can't install without sites subdirectory and settings.php.
-        if (!file_exists($conf_path)) {
-            if (!drush_mkdir($conf_path) && !drush_get_context('DRUSH_SIMULATE')) {
-                throw new \Exception(dt('Failed to create directory @conf_path', array('@conf_path' => $conf_path)));
+        if (!file_exists($confPath)) {
+            if (!drush_mkdir($confPath) && !drush_get_context('DRUSH_SIMULATE')) {
+                throw new \Exception(dt('Failed to create directory @confPath', array('@confPath' => $confPath)));
             }
         } else {
-            $this->logger()->info(dt('Sites directory @subdir already exists - proceeding.', array('@subdir' => $conf_path)));
+            $this->logger()->info(dt('Sites directory @subdir already exists - proceeding.', array('@subdir' => $confPath)));
         }
 
         if (!drush_file_not_empty($settingsfile)) {

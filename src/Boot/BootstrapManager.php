@@ -113,7 +113,7 @@ class BootstrapManager implements LoggerAwareInterface
     public function bootstrapObjectForRoot($path)
     {
         foreach ($this->bootstrapCandidates as $candidate) {
-            if ($candidate->valid_root($path)) {
+            if ($candidate->validRoot($path)) {
                 return $candidate;
             }
         }

@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class DrupalBoot6 extends DrupalBoot
 {
 
-    public function valid_root($path)
+    public function validRoot($path)
     {
         if (!empty($path) && is_dir($path) && file_exists($path . '/index.php')) {
             // Drupal 6 root.
@@ -27,7 +27,7 @@ class DrupalBoot6 extends DrupalBoot
         }
     }
 
-    public function get_version($drupal_root)
+    public function getVersion($drupal_root)
     {
         $path = $drupal_root . '/modules/system/system.module';
         if (is_file($path)) {
@@ -38,32 +38,32 @@ class DrupalBoot6 extends DrupalBoot
         }
     }
 
-    public function get_profile()
+    public function getProfile()
     {
         return variable_get('install_profile', 'standard');
     }
 
-    public function add_logger()
+    public function addLogger()
     {
     }
 
-    public function contrib_modules_paths()
+    public function contribModulesPaths()
     {
         return array(
-        $this->conf_path() . '/modules',
+        $this->confPath() . '/modules',
         'sites/all/modules',
         );
     }
 
-    public function contrib_themes_paths()
+    public function contribThemesPaths()
     {
         return array(
-        $this->conf_path() . '/themes',
+        $this->confPath() . '/themes',
         'sites/all/themes',
         );
     }
 
-    public function bootstrap_drupal_core($drupal_root)
+    public function bootstrapDrupalCore($drupal_root)
     {
         define('DRUPAL_ROOT', $drupal_root);
         require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
@@ -72,25 +72,25 @@ class DrupalBoot6 extends DrupalBoot
         return $core;
     }
 
-    public function bootstrap_drupal_database_validate()
+    public function bootstrapDrupalDatabaseValidate()
     {
-        return parent::bootstrap_drupal_database_validate() && $this->bootstrap_drupal_database_has_table('cache');
+        return parent::bootstrapDrupalDatabaseValidate() && $this->bootstrapDrupalDatabaseHasTable('cache');
     }
 
-    public function bootstrap_drupal_database()
+    public function bootstrapDrupalDatabase()
     {
         drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
-        parent::bootstrap_drupal_database();
+        parent::bootstrapDrupalDatabase();
     }
 
-    public function bootstrap_drupal_configuration()
+    public function bootstrapDrupalConfiguration()
     {
         drupal_bootstrap(DRUPAL_BOOTSTRAP_CONFIGURATION);
 
-        parent::bootstrap_drupal_configuration();
+        parent::bootstrapDrupalConfiguration();
     }
 
-    public function bootstrap_drupal_full()
+    public function bootstrapDrupalFull()
     {
         if (!drush_get_context('DRUSH_QUIET', false)) {
             ob_start();
@@ -103,6 +103,6 @@ class DrupalBoot6 extends DrupalBoot
         // Unset drupal error handler and restore drush's one.
         restore_error_handler();
 
-        parent::bootstrap_drupal_full();
+        parent::bootstrapDrupalFull();
     }
 }

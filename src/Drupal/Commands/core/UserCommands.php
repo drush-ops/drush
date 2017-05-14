@@ -85,7 +85,7 @@ class UserCommands extends DrushCommands
         }
 
         foreach ($accounts as $id => $account) {
-            $outputs[$id] = $this->info_array($account);
+            $outputs[$id] = $this->infoArray($account);
         }
 
         $result = new RowsOfFields($outputs);
@@ -242,7 +242,7 @@ class UserCommands extends DrushCommands
         if (!drush_get_context('DRUSH_SIMULATE')) {
             if ($account = User::create($new_user)) {
                 $account->save();
-                drush_backend_set_result($this->info_array($account));
+                drush_backend_set_result($this->infoArray($account));
                 $this->logger()->success(dt('Created a new user with uid !uid', array('!uid' => $account->id())));
             } else {
                 return new CommandError("Could not create a new user account with the name " . $name . ".");
@@ -347,7 +347,7 @@ class UserCommands extends DrushCommands
      * @param $account A user account
      * @return array
      */
-    public function info_array($account)
+    public function infoArray($account)
     {
         return array(
         'uid' => $account->id(),

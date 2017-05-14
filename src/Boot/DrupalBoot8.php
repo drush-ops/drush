@@ -23,7 +23,7 @@ class DrupalBoot8 extends DrupalBoot
        */
     protected $request;
 
-    public function valid_root($path)
+    public function validRoot($path)
     {
         if (!empty($path) && is_dir($path) && file_exists($path . '/autoload.php')) {
             // Additional check for the presence of core/composer.json to
@@ -37,7 +37,7 @@ class DrupalBoot8 extends DrupalBoot
         }
     }
 
-    public function get_version($drupal_root)
+    public function getVersion($drupal_root)
     {
         // Load the autoloader so we can access the class constants.
         drush_drupal_load_autoloader($drupal_root);
@@ -48,12 +48,12 @@ class DrupalBoot8 extends DrupalBoot
         }
     }
 
-    public function get_profile()
+    public function getProfile()
     {
-        return drupal_get_profile();
+        return drupal_getProfile();
     }
 
-    public function conf_path($require_settings = true, $reset = false, Request $request = null)
+    public function confPath($require_settings = true, $reset = false, Request $request = null)
     {
         if (!isset($request)) {
             if (\Drupal::hasRequest()) {
@@ -72,7 +72,7 @@ class DrupalBoot8 extends DrupalBoot
         return $site_path;
     }
 
-    public function add_logger()
+    public function addLogger()
     {
         // If we're running on Drupal 8 or later, we provide a logger which will send
         // output to drush_log(). This should catch every message logged through every
@@ -85,10 +85,10 @@ class DrupalBoot8 extends DrupalBoot
         $container->get('logger.factory')->addLogger($logger);
     }
 
-    public function contrib_modules_paths()
+    public function contribModulesPaths()
     {
         return array(
-        $this->conf_path() . '/modules',
+        $this->confPath() . '/modules',
         'sites/all/modules',
         'modules',
         );
@@ -98,34 +98,34 @@ class DrupalBoot8 extends DrupalBoot
      * @return array of strings - paths to directories where contrib
      * themes can be found
      */
-    public function contrib_themes_paths()
+    public function contribThemesPaths()
     {
         return array(
-        $this->conf_path() . '/themes',
+        $this->confPath() . '/themes',
         'sites/all/themes',
         'themes',
         );
     }
 
-    public function bootstrap_drupal_core($drupal_root)
+    public function bootstrapDrupalCore($drupal_root)
     {
         $core = DRUPAL_ROOT . '/core';
 
         return $core;
     }
 
-    public function bootstrap_drupal_database_validate()
+    public function bootstrapDrupalDatabaseValidate()
     {
-        return parent::bootstrap_drupal_database_validate() && $this->bootstrap_drupal_database_has_table('key_value');
+        return parent::bootstrapDrupalDatabaseValidate() && $this->bootstrapDrupalDatabaseHasTable('key_value');
     }
 
-    public function bootstrap_drupal_database()
+    public function bootstrapDrupalDatabase()
     {
         // D8 omits this bootstrap level as nothing special needs to be done.
-        parent::bootstrap_drupal_database();
+        parent::bootstrapDrupalDatabase();
     }
 
-    public function bootstrap_drupal_configuration()
+    public function bootstrapDrupalConfiguration()
     {
         $this->request = Request::createFromGlobals();
         $classloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
@@ -145,10 +145,10 @@ class DrupalBoot8 extends DrupalBoot
         // Disable automated cron if the module is enabled.
         $GLOBALS['config']['automated_cron.settings']['interval'] = 0;
 
-        parent::bootstrap_drupal_configuration();
+        parent::bootstrapDrupalConfiguration();
     }
 
-    public function bootstrap_drupal_full()
+    public function bootstrapDrupalFull()
     {
         $this->logger->debug(dt('Start bootstrap of the Drupal Kernel.'));
         // TODO: do we need to do ob_start any longer?
@@ -162,7 +162,7 @@ class DrupalBoot8 extends DrupalBoot
         }
         $this->logger->debug(dt('Finished bootstrap of the Drupal Kernel.'));
 
-        parent::bootstrap_drupal_full();
+        parent::bootstrapDrupalFull();
 
         // Get a list of the modules to ignore
         $ignored_modules = drush_get_option_list('ignored-modules', array());

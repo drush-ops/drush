@@ -75,8 +75,8 @@ function drush_main() {
       // perhaps handling immediately.
       $command_handled = drush_preflight_command_dispatch();
       if (!$command_handled) {
-        drush_log(dt("Dispatching using Drush bootstrap_and_dispatch"), LogLevel::BOOTSTRAP);
-        $return = $bootstrap->bootstrap_and_dispatch();
+        drush_log(dt("Dispatching using Drush bootstrapAndDispatch"), LogLevel::BOOTSTRAP);
+        $return = $bootstrap->bootstrapAndDispatch();
       }
     }
   }

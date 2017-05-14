@@ -82,7 +82,7 @@ class PmCommands extends DrushCommands
         $this->logger()->success(dt('Successfully enabled: !list', $todo_str));
         // Our logger got blown away during the container rebuild above.
         $boot = \Drush::bootstrapManager()->bootstrap();
-        $boot->add_logger();
+        $boot->addLogger();
     }
 
     /**
@@ -110,7 +110,7 @@ class PmCommands extends DrushCommands
         $this->logger()->success(dt('Successfully uninstalled: !list', ['!list' => implode(', ', $list)]));
         // Our logger got blown away during the container rebuild above.
         $boot = \Drush::bootstrapManager()->bootstrap();
-        $boot->add_logger();
+        $boot->addLogger();
     }
 
     /**
@@ -280,7 +280,7 @@ class PmCommands extends DrushCommands
 
         // Add dependent modules to the list. The new modules will be processed as
         // the while loop continues.
-        $profile = drupal_get_profile();
+        $profile = drupal_getProfile();
         while (list($module) = each($module_list)) {
             foreach (array_keys($module_data[$module]->required_by) as $dependent) {
                 if (!isset($module_data[$dependent])) {

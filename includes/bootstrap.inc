@@ -138,13 +138,13 @@ function drush_bootstrap_value($context, $value = null) {
  *
  * @return array
  *
- * @see \Drush\Boot\Boot::bootstrap_phases()
+ * @see \Drush\Boot\Boot::bootstrapPhases()
  */
 function _drush_bootstrap_phases($function_names = FALSE) {
   $result = array();
 
   if ($bootstrap = \Drush::bootstrap()) {
-    $result = $bootstrap->bootstrap_phases();
+    $result = $bootstrap->bootstrapPhases();
     if (!$function_names) {
       $result = array_keys($result);
     }
@@ -169,7 +169,7 @@ function _drush_bootstrap_phases($function_names = FALSE) {
  * @return bool
  *   TRUE if the specified bootstrap phase has completed.
  *
- * @see \Drush\Boot\Boot::bootstrap_phases()
+ * @see \Drush\Boot\Boot::bootstrapPhases()
  */
 function drush_bootstrap($phase, $phase_max = FALSE) {
   $bootstrap = \Drush::bootstrap();
@@ -256,7 +256,7 @@ function drush_has_boostrapped($phase) {
  * @return bool
  *   TRUE if bootstrap is possible, FALSE if the validation failed.
  *
- * @see \Drush\Boot\Boot::bootstrap_phases()
+ * @see \Drush\Boot\Boot::bootstrapPhases()
  */
 function drush_bootstrap_validate($phase) {
   $bootstrap = \Drush::bootstrap();
@@ -273,7 +273,7 @@ function drush_bootstrap_validate($phase) {
         break;
       }
       if ($phase_index > $validated_phase) {
-        $current_phase .= '_validate';
+        $current_phase .= 'Validate';
         if (method_exists($bootstrap, $current_phase)) {
           $result_cache[$phase_index] = $bootstrap->{$current_phase}();
         }

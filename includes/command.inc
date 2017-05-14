@@ -1196,9 +1196,9 @@ function drush_command_defaults($key, $commandfile, $path) {
   // options list.  Later, the bootstrap object can also provide
   // additional defaults if needed.  The bootstrap command defaults
   // will be merged into the command object again just before
-  // running it in bootstrap_and_dispatch().
+  // running it in bootstrapAndDispatch().
   if ($bootstrap = \Drush::bootstrap()) {
-    $defaults = array_merge($defaults, $bootstrap->command_defaults());
+    $defaults = array_merge($defaults, $bootstrap->commandDefaults());
   }
   return $defaults;
 }
@@ -1439,7 +1439,7 @@ function drush_commandfile_list() {
 function _drush_find_commandfiles($phase, $phase_max = FALSE) {
   drush_log(dt("Find command files for phase !phase (max=!max)", array('!phase' => $phase, '!max' => (string)$phase_max)), LogLevel::DEBUG);
   if ($bootstrap = \Drush::bootstrap()) {
-    $searchpath = $bootstrap->commandfile_searchpaths($phase, $phase_max);
+    $searchpath = $bootstrap->commandfileSearchpaths($phase, $phase_max);
     _drush_add_commandfiles($searchpath, $phase);
     annotationcommand_adapter_discover($searchpath, $phase, $phase_max);
   }

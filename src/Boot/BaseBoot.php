@@ -20,26 +20,26 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInt
     {
     }
 
-    public function valid_root($path)
+    public function validRoot($path)
     {
     }
 
-    public function get_version($root)
+    public function getVersion($root)
     {
     }
 
-    public function command_defaults()
+    public function commandDefaults()
     {
     }
 
-    public function enforce_requirement(&$command)
+    public function enforceRequirement(&$command)
     {
         drush_enforce_requirement_bootstrap_phase($command);
         drush_enforce_requirement_core($command);
         drush_enforce_requirement_drush_dependencies($command);
     }
 
-    public function report_command_error($command)
+    public function reportCommandError($command)
     {
         // Set errors related to this command.
         $args = implode(' ', drush_get_arguments());
@@ -58,9 +58,9 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInt
         }
     }
 
-    public function bootstrap_and_dispatch()
+    public function bootstrapAndDispatch()
     {
-        $phases = $this->bootstrap_init_phases();
+        $phases = $this->bootstrapInitPhases();
 
         $return = '';
         $command_found = false;
@@ -69,11 +69,11 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInt
             if (drush_bootstrap_to_phase($phase)) {
                 $command = drush_parse_command();
                 if (is_array($command)) {
-                    $command += $this->command_defaults();
+                    $command += $this->commandDefaults();
                     // Insure that we have bootstrapped to a high enough
                     // phase for the command prior to enforcing requirements.
                     $bootstrap_result = drush_bootstrap_to_phase($command['bootstrap']);
-                    $this->enforce_requirement($command);
+                    $this->enforceRequirement($command);
 
                     if ($bootstrap_result && empty($command['bootstrap_errors'])) {
                         $this->logger->log(LogLevel::BOOTSTRAP, dt("Found command: !command (commandfile=!commandfile)", array('!command' => $command['command'], '!commandfile' => $command['commandfile'])));
@@ -121,7 +121,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInt
         if (!$command_found) {
             // If we reach this point, command doesn't fit requirements or we have not
             // found either a valid or matching command.
-            $this->report_command_error($command);
+            $this->reportCommandError($command);
         }
 
         // Prevent a '1' at the end of the output.

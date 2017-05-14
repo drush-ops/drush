@@ -23,7 +23,7 @@ interface Boot
      *
      * @return TRUE if $path is a valid root directory
      */
-    public function valid_root($path);
+    public function validRoot($path);
 
 
     /**
@@ -34,7 +34,7 @@ interface Boot
      * @return string|NULL
      *   The version string for the current version of the software, e.g. 8.1.3
      */
-    public function get_version($root);
+    public function getVersion($root);
 
     /**
      * Main entrypoint to bootstrap the selected CMS and
@@ -44,7 +44,7 @@ interface Boot
      * sufficient; this method usually will not need to
      * be overridden.
      */
-    public function bootstrap_and_dispatch();
+    public function bootstrapAndDispatch();
 
     /**
      * Returns an array that determines what bootstrap phases
@@ -53,11 +53,11 @@ interface Boot
      * (string) in the Boot class that handles the bootstrap
      * phase.
      *
-     * @see \Drush\Boot\DrupalBoot::bootstrap_phases()
+     * @see \Drush\Boot\DrupalBoot::bootstrapPhases()
      *
      * @return array of PHASE index => method name.
      */
-    public function bootstrap_phases();
+    public function bootstrapPhases();
 
     /**
      * List of bootstrap phases where Drush should stop and look for commandfiles.
@@ -69,14 +69,14 @@ interface Boot
      *
      * @return array of PHASE indexes.
      */
-    public function bootstrap_init_phases();
+    public function bootstrapInitPhases();
 
     /**
      * Return an array of default values that should be added
-     * to every command (e.g. values needed in enforce_requirements(),
+     * to every command (e.g. values needed in enforceRequirements(),
      * etc.)
      */
-    public function command_defaults();
+    public function commandDefaults();
 
     /**
      * Called by Drush when a command is selected, but
@@ -89,7 +89,7 @@ interface Boot
      * should be populated with an array of error messages if
      * the command is not valid.
      */
-    public function enforce_requirement(&$command);
+    public function enforceRequirement(&$command);
 
     /**
      * Called by Drush if a command is not found, or if the
@@ -99,7 +99,7 @@ interface Boot
      * for most cases, so this method typically will not need
      * to be overridden.
      */
-    public function report_command_error($command);
+    public function reportCommandError($command);
 
     /**
      * This method is called during the shutdown of drush.

@@ -47,7 +47,7 @@ class UpdateDBCommands extends DrushCommands
      * @aliases entup
      *
      */
-    public function entity_updates($options = ['cache-clear' => true])
+    public function entityUpdates($options = ['cache-clear' => true])
     {
         if (drush_get_context('DRUSH_SIMULATE')) {
             $this->logger()->info(dt('entity-updates command does not support --simulate option.'));

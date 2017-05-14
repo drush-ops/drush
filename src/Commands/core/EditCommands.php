@@ -55,14 +55,14 @@ class EditCommands extends DrushCommands
     public function load($headers = true)
     {
         $php_header = $php = $rcs_header = $rcs = $aliases_header = $aliases = $drupal_header = $drupal = array();
-        $php = $this->php_ini_files();
+        $php = $this->phpIniFiles();
         if (!empty($php)) {
             if ($headers) {
                 $php_header = array('phpini' => '-- PHP ini files --');
             }
         }
 
-        $bash = $this->bash_files();
+        $bash = $this->bashFiles();
         if (!empty($bash)) {
             if ($headers) {
                 $bash_header = array('bash' => '-- Bash files --');
@@ -93,7 +93,7 @@ class EditCommands extends DrushCommands
         return array_merge($php_header, $php, $bash_header, $bash, $rcs_header, $rcs, $aliases_header, $aliases, $drupal_header, $drupal);
     }
 
-    public static function php_ini_files()
+    public static function phpIniFiles()
     {
         $ini_files = array();
         $ini_files[] = php_ini_loaded_file();
@@ -110,18 +110,18 @@ class EditCommands extends DrushCommands
         return array_unique($ini_files);
     }
 
-    public static function bash_files()
+    public static function bashFiles()
     {
-        $bash_files = array();
+        $bashFiles = array();
         $home = drush_server_home();
-        if ($bashrc = self::find_bashrc($home)) {
-            $bash_files[] = $bashrc;
+        if ($bashrc = self::findBashrc($home)) {
+            $bashFiles[] = $bashrc;
         }
         $prompt = $home . '/.drush/drush.prompt.sh';
         if (file_exists($prompt)) {
-            $bash_files[] = $prompt;
+            $bashFiles[] = $prompt;
         }
-        return $bash_files;
+        return $bashFiles;
     }
 
     /**
@@ -130,7 +130,7 @@ class EditCommands extends DrushCommands
      * TODO: Also exists as InitCommands::findBashrc. Decide on class-based
      * way to share code like this.
      */
-    public function find_bashrc($home)
+    public function findBashrc($home)
     {
         return $home . "/.bashrc";
     }

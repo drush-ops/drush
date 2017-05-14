@@ -109,7 +109,7 @@ class PhpCommands extends DrushCommands
             // pathname, via drush_get_arguments(), or it can process
             // just the arguments that are relevant using drush_shift().
             drush_set_context('DRUSH_SHIFT_SKIP', 2);
-            if ($this->eval_shebang_script($found) === false) {
+            if ($this->evalShebangScript($found) === false) {
                 $return = include($found);
                 // 1 just means success so don't return it.
                 // http://us3.php.net/manual/en/function.include.php#example-120
@@ -123,7 +123,7 @@ class PhpCommands extends DrushCommands
     /**
      * Evaluate a script that begins with #!drush php-script
      */
-    public function eval_shebang_script($script_filename)
+    public function evalShebangScript($script_filename)
     {
         $found = false;
         $fp = fopen($script_filename, "r");

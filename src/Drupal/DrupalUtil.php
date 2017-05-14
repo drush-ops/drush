@@ -13,7 +13,7 @@ class DrupalUtil
      * @return string
      *   The plain-text representation of the input.
      */
-    public static function drush_render($data)
+    public static function drushRender($data)
     {
         if (is_array($data)) {
             $data = \Drupal::service('renderer')->renderRoot($data);
