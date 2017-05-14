@@ -39,6 +39,7 @@
  *   the matching configuration file through the drush_save_config() function.
  */
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
 
 
@@ -110,7 +111,7 @@ function _drush_config_file($context, $prefix = NULL, $version = '') {
     }
   }
 
-  if ($drupal_root = \Drush::bootstrapManager()->getRoot()) {
+  if ($drupal_root = Drush::bootstrapManager()->getRoot()) {
     $configs['drupal'] = array(
       $drupal_root . '/../drush/' . $config_file,
       $drupal_root . '/sites/all/drush/' . $config_file,

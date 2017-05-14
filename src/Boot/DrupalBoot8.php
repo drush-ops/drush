@@ -5,6 +5,7 @@ namespace Drush\Boot;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Drupal\Core\DrupalKernel;
+use Drush\Drush;
 use Drush\Drupal\DrupalKernel as DrushDrupalKernel;
 use Drush\Drupal\DrushServiceModifier;
 
@@ -80,7 +81,7 @@ class DrupalBoot8 extends DrupalBoot
         $container = \Drupal::getContainer();
         $parser = $container->get('logger.log_message_parser');
 
-        $drushLogger = \Drush::logger();
+        $drushLogger = Drush::logger();
         $logger = new \Drush\Log\DrushLog($parser, $drushLogger);
         $container->get('logger.factory')->addLogger($logger);
     }

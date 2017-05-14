@@ -4,6 +4,7 @@
  * @file
  * Contains \Drush.
  */
+namespace Drush;
 
 use League\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -32,7 +33,7 @@ use Symfony\Component\Console\Application;
  *   $object = drush_get_context('DRUSH_CLASS_LABEL');
  *
  * Better:
- *   $object = \Drush::service('label');
+ *   $object = Drush::service('label');
  *
  * @endcode
  */
@@ -127,7 +128,7 @@ class Drush
     public static function getContainer()
     {
         if (static::$container === null) {
-            throw new \RuntimeException('\Drush::$container is not initialized yet. \Drupal::setContainer() must be called with a real container.');
+            throw new \RuntimeException('Drush::$container is not initialized yet. \Drupal::setContainer() must be called with a real container.');
         }
         return static::$container;
     }

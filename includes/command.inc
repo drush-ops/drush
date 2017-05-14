@@ -1,5 +1,6 @@
 <?php
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 use Consolidation\AnnotatedCommand\AnnotationData;
@@ -1197,7 +1198,7 @@ function drush_command_defaults($key, $commandfile, $path) {
   // additional defaults if needed.  The bootstrap command defaults
   // will be merged into the command object again just before
   // running it in bootstrapAndDispatch().
-  if ($bootstrap = \Drush::bootstrap()) {
+  if ($bootstrap = Drush::bootstrap()) {
     $defaults = array_merge($defaults, $bootstrap->commandDefaults());
   }
   return $defaults;
@@ -1438,7 +1439,7 @@ function drush_commandfile_list() {
 
 function _drush_find_commandfiles($phase, $phase_max = FALSE) {
   drush_log(dt("Find command files for phase !phase (max=!max)", array('!phase' => $phase, '!max' => (string)$phase_max)), LogLevel::DEBUG);
-  if ($bootstrap = \Drush::bootstrap()) {
+  if ($bootstrap = Drush::bootstrap()) {
     $searchpath = $bootstrap->commandfileSearchpaths($phase, $phase_max);
     _drush_add_commandfiles($searchpath, $phase);
     annotationcommand_adapter_discover($searchpath, $phase, $phase_max);
@@ -1842,7 +1843,7 @@ function commandfiles_cache() {
   static $commandfiles_cache = NULL;
 
   if (!isset($commandfiles_cache)) {
-    $commandfiles_cache = new Drush\Command\Commandfiles();
+    $commandfiles_cache = new \Drush\Command\Commandfiles();
   }
   return $commandfiles_cache;
 }

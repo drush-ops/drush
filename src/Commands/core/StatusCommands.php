@@ -6,6 +6,7 @@ use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drupal\Core\StreamWrapper\PrivateStream;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Drush\Sql\SqlBase;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\AnnotatedCommand\CommandData;
@@ -77,7 +78,7 @@ class StatusCommands extends DrushCommands
         $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
         if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
             $status_table['drupal-version'] = drush_drupal_version();
-            $boot_object = \Drush::bootstrap();
+            $boot_object = Drush::bootstrap();
             $conf_dir = $boot_object->confPath();
             $settings_file = "$conf_dir/settings.php";
             $status_table['drupal-settings-file'] = file_exists($settings_file) ? $settings_file : '';
@@ -120,7 +121,7 @@ class StatusCommands extends DrushCommands
             $status_table['php-conf'] = $phpIniFiles;
         }
         $status_table['drush-script'] = DRUSH_COMMAND;
-        $status_table['drush-version'] = \Drush::getVersion();
+        $status_table['drush-version'] = Drush::getVersion();
         $status_table['drush-temp'] = drush_find_tmp();
         $status_table['drush-conf'] = drush_flatten_array(drush_get_context_options('context-path', ''));
         $alias_files = _drush_sitealias_find_alias_files();
@@ -169,7 +170,7 @@ class StatusCommands extends DrushCommands
     {
         $paths = array();
         $site_wide = 'sites/all';
-        $boot = \Drush::bootstrap();
+        $boot = Drush::bootstrap();
         if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
             $paths['%root'] = $drupal_root;
             if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {

@@ -5,6 +5,7 @@
  * The drush API implementation and helpers.
  */
 
+use Drush\Drush;
 use Drush\Log\Logger;
 use Drush\Log\LogLevel;
 use Psr\Log\LoggerInterface;
@@ -1063,7 +1064,7 @@ function _drush_create_default_logger() {
 function _drush_log($entry) {
   $callback = drush_get_context('DRUSH_LOG_CALLBACK');
   if (!$callback) {
-    $callback = \Drush::logger();
+    $callback = Drush::logger();
   }
   if ($callback instanceof LoggerInterface) {
     _drush_log_to_logger($callback, $entry);
@@ -1079,7 +1080,7 @@ function _drush_log($entry) {
 // Maintain compatibility with extensions that hook into
 // DRUSH_LOG_CALLBACK (e.g. drush_ctex_bonus)
 function _drush_print_log($entry) {
-  $drush_logger = \Drush::logger();
+  $drush_logger = Drush::logger();
   if ($drush_logger) {
     _drush_log_to_logger($drush_logger, $entry);
   }

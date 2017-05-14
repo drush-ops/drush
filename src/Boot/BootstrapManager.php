@@ -2,6 +2,7 @@
 
 namespace Drush\Boot;
 
+use Drush\Drush;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -125,7 +126,7 @@ class BootstrapManager implements LoggerAwareInterface
      * times, the bootstrap class returned might change on subsequent
      * calls, if the root directory changes.  Once the bootstrap object
      * starts changing the state of the system, however, it will
-     * be 'latched', and further calls to \Drush::bootstrapf()
+     * be 'latched', and further calls to Drush::bootstrapf()
      * will always return the same object.
      */
     protected function selectBootstrapClass()

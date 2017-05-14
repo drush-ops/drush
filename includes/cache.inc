@@ -11,6 +11,7 @@
  * option in drushrc.php.
  */
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
 
 /**

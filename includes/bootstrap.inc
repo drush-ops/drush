@@ -1,5 +1,6 @@
 <?php
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
 
 /**
@@ -143,7 +144,7 @@ function drush_bootstrap_value($context, $value = null) {
 function _drush_bootstrap_phases($function_names = FALSE) {
   $result = array();
 
-  if ($bootstrap = \Drush::bootstrap()) {
+  if ($bootstrap = Drush::bootstrap()) {
     $result = $bootstrap->bootstrapPhases();
     if (!$function_names) {
       $result = array_keys($result);
@@ -172,7 +173,7 @@ function _drush_bootstrap_phases($function_names = FALSE) {
  * @see \Drush\Boot\Boot::bootstrapPhases()
  */
 function drush_bootstrap($phase, $phase_max = FALSE) {
-  $bootstrap = \Drush::bootstrap();
+  $bootstrap = Drush::bootstrap();
   $phases = _drush_bootstrap_phases(TRUE);
   $result = TRUE;
 
@@ -186,7 +187,7 @@ function drush_bootstrap($phase, $phase_max = FALSE) {
   // Once we start bootstrapping past the DRUSH_BOOTSTRAP_DRUSH phase, we
   // will latch the bootstrap object, and prevent it from changing.
   if ($phase > DRUSH_BOOTSTRAP_DRUSH) {
-    \Drush::bootstrapManager()->latch($bootstrap);
+    Drush::bootstrapManager()->latch($bootstrap);
   }
 
   drush_set_context('DRUSH_BOOTSTRAPPING', TRUE);
@@ -259,7 +260,7 @@ function drush_has_boostrapped($phase) {
  * @see \Drush\Boot\Boot::bootstrapPhases()
  */
 function drush_bootstrap_validate($phase) {
-  $bootstrap = \Drush::bootstrap();
+  $bootstrap = Drush::bootstrap();
   $phases = _drush_bootstrap_phases(TRUE);
   static $result_cache = array();
 

@@ -59,10 +59,7 @@
     "psr-4": {
       "Drush\\":        "src/",
       "Unish\\":        "tests/"
-    },
-    "classmap": [
-      "src/Drush.php"
-    ]
+    }
   },
   "scripts": {
     "cs": "phpcs --standard=PSR2 -n src",

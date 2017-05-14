@@ -2,6 +2,7 @@
 
 namespace Drush\Boot;
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
@@ -105,7 +106,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInt
         // command via the Symfony application. See also drush_main() in preflight.inc;
         // ultimately, the Symfony application should be called from there.
         if (!$command_found && isset($command) && empty($command['bootstrap_errors'])) {
-            $application = \Drush::getApplication();
+            $application = Drush::getApplication();
             $args = drush_get_arguments();
             if (count($args)) {
                 $name = $args[0];

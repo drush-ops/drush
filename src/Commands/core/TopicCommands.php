@@ -4,6 +4,7 @@ namespace Drush\Commands\core;
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -31,7 +32,7 @@ class TopicCommands extends DrushCommands
      */
     public function topic($topic_name)
     {
-        $application = \Drush::getApplication();
+        $application = Drush::getApplication();
         $input = new ArrayInput([$topic_name], null);
         return $application->run($input);
     }
@@ -81,7 +82,7 @@ class TopicCommands extends DrushCommands
     public static function getAllTopics()
     {
         /** @var Application $application */
-        $application = \Drush::getApplication();
+        $application = Drush::getApplication();
         $all = $application->all();
         foreach ($all as $key => $command) {
             if ($command instanceof AnnotatedCommand) {

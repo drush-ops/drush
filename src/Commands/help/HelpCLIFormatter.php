@@ -5,6 +5,7 @@ use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\Formatters\FormatterInterface;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drush\Drush;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -68,7 +69,7 @@ class HelpCLIFormatter implements FormatterInterface
             $output->writeln('');
             $output->writeln('Topics:');
             foreach ($data['topics'] as $topic) {
-                $topic_command = \Drush::getApplication()->find($topic);
+                $topic_command = Drush::getApplication()->find($topic);
                 $rows[] = [' drush topic ' . $topic, $topic_command->getDescription()];
             }
             $formatterManager->write($output, 'table', new RowsOfFields($rows), $options);

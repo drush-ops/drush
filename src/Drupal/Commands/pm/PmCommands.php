@@ -9,6 +9,7 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 
 class PmCommands extends DrushCommands
@@ -81,7 +82,7 @@ class PmCommands extends DrushCommands
         }
         $this->logger()->success(dt('Successfully enabled: !list', $todo_str));
         // Our logger got blown away during the container rebuild above.
-        $boot = \Drush::bootstrapManager()->bootstrap();
+        $boot = Drush::bootstrapManager()->bootstrap();
         $boot->addLogger();
     }
 
@@ -109,7 +110,7 @@ class PmCommands extends DrushCommands
         }
         $this->logger()->success(dt('Successfully uninstalled: !list', ['!list' => implode(', ', $list)]));
         // Our logger got blown away during the container rebuild above.
-        $boot = \Drush::bootstrapManager()->bootstrap();
+        $boot = Drush::bootstrapManager()->bootstrap();
         $boot->addLogger();
     }
 

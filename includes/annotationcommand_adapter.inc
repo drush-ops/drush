@@ -11,6 +11,7 @@ use Consolidation\AnnotatedCommand\CommandProcessor;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
+use Drush\Drush;
 use Symfony\Component\Console\Input\ArrayInput;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
@@ -46,7 +47,7 @@ function annotationcommand_adapter_get_discovery() {
  * @return AnnotatedCommandFactory
  */
 function annotationcommand_adapter_get_processor() {
-  $factory = \Drush::commandFactory();
+  $factory = Drush::commandFactory();
   return $factory->commandProcessor();
 }
 
@@ -288,8 +289,8 @@ function annotationcommand_adapter_get_commands($annotation_commandfiles) {
  * @return object
  */
 function annotationcommand_adapter_create_commandfile_instance($commandfile_path, $commandfile_class) {
-  $runner = \Drush::runner();
-  $app = \Drush::service('application');
+  $runner = Drush::runner();
+  $app = Drush::service('application');
   $cache =& drush_get_context('DRUSH_ANNOTATION_COMMANDFILE_INSTANCES');
   if (!isset($cache[$commandfile_path])) {
     include_once $commandfile_path;
@@ -340,7 +341,7 @@ function annotationcommand_adapter_cache_module_service_commands($commandhandler
 function annotationcommand_adapter_get_command_for_console_command($console_command, $commandfile_path) {
   $commands = [];
   $commandfile = basename($commandfile_path, '.php');
-  $factory = \Drush::commandFactory();
+  $factory = Drush::commandFactory();
   $inputDefinition = $console_command->getDefinition();
   $inputArguments = $inputDefinition->getArguments();
   $inputOptions = $inputDefinition->getOptions();
@@ -392,7 +393,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
   if (isset($cache[$commandfile_path])) {
     return $cache[$commandfile_path];
   }
-  $factory = \Drush::commandFactory();
+  $factory = Drush::commandFactory();
   $commands = [];
   $commandfile = basename($commandfile_path, '.php');
 
@@ -548,7 +549,7 @@ function annotationcommand_adapter_add_hook_options(&$command)
     }
     $names = array_merge($names, $atkeys);
   }
-  $factory = \Drush::commandFactory();
+  $factory = Drush::commandFactory();
   $extraOptions = $factory->hookManager()->getHookOptions($names);
   foreach ($extraOptions as $commandinfo) {
     if (!isset($command['consolidation-option-defaults'])) {
@@ -605,7 +606,7 @@ function annotationcommand_adapter_command_names($command)
  */
 function annotationcommand_adapter_call_initialize($names, CommandData $commandData)
 {
-  $factory = \Drush::commandFactory();
+  $factory = Drush::commandFactory();
   $hookManager = $factory->hookManager();
 
   $hooks = $hookManager->getHooks(
@@ -782,7 +783,7 @@ function annotationcommand_adapter_call_hook_process_and_alter($names, $commandD
  */
 function annotationcommand_adapter_call_process_interface($names, $hooks, CommandData $commandData, $return)
 {
-  $factory = \Drush::commandFactory();
+  $factory = Drush::commandFactory();
   $hookManager = $factory->hookManager();
 
   $hooks = $hookManager->getHooks($names, $hooks, $commandData->annotationData());
@@ -814,7 +815,7 @@ function annotationcommand_adapter_call_process_interface($names, $hooks, Comman
  */
 function annotationcommand_adapter_call_validate_interface($names, $hooks, CommandData $commandData)
 {
-  $factory = \Drush::commandFactory();
+  $factory = Drush::commandFactory();
   $hookManager = $factory->hookManager();
   $annotationData = $commandData->annotationData();
 

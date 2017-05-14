@@ -2,6 +2,7 @@
 
 namespace Drush\Boot;
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
 use Drush\Sql\SqlBase;
 use Psr\Log\LoggerInterface;
@@ -119,13 +120,13 @@ abstract class DrupalBoot extends BaseBoot
             $phase_max = $phase;
         }
 
-        $container = \Drush::getContainer();
+        $container = Drush::getContainer();
         $discovery = $container->get('commandDiscovery');
         $commandFiles = [];
         $searchpath = [];
         switch ($phase) {
             case DRUSH_BOOTSTRAP_DRUPAL_ROOT:
-                $drupal_root = \Drush::bootstrapManager()->getRoot();
+                $drupal_root = Drush::bootstrapManager()->getRoot();
                 $searchpath[] = $drupal_root . '/../drush';
                 $searchpath[] = $drupal_root . '/drush';
                 $searchpath[] = $drupal_root . '/sites/all/drush';
@@ -286,7 +287,7 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapDrupalRootValidate()
     {
-        $drupal_root = \Drush::bootstrapManager()->getRoot();
+        $drupal_root = Drush::bootstrapManager()->getRoot();
 
         if (empty($drupal_root)) {
             return drush_bootstrap_error('DRUSH_NO_DRUPAL_ROOT', dt("A Drupal installation directory could not be found"));
@@ -298,7 +299,7 @@ abstract class DrupalBoot extends BaseBoot
         $version = drush_drupal_version($drupal_root);
         $major_version = drush_drupal_major_version($drupal_root);
         if ($major_version <= 6) {
-            return drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', array('!drush_version' => \Drush::getMajorVersion(), '!major_version' => $major_version)));
+            return drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', array('!drush_version' => Drush::getMajorVersion(), '!major_version' => $major_version)));
         }
 
         drush_bootstrap_value('drupal_root', $drupal_root);

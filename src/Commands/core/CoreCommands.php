@@ -3,6 +3,7 @@ namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 
 class CoreCommands extends DrushCommands
@@ -100,7 +101,7 @@ class CoreCommands extends DrushCommands
      */
     public function globalOptions($options = ['format' => 'table'])
     {
-        $application = \Drush::getApplication();
+        $application = Drush::getApplication();
         $def = $application->getDefinition();
         foreach ($def->getOptions() as $key => $value) {
             $rows[] = [
@@ -126,7 +127,7 @@ class CoreCommands extends DrushCommands
      */
     public function version($options = ['format' => 'table'])
     {
-        return new PropertyList(['drush-version' => \Drush::getVersion()]);
+        return new PropertyList(['drush-version' => Drush::getVersion()]);
     }
 
     /**
@@ -158,7 +159,7 @@ class CoreCommands extends DrushCommands
         $cmd = implode(' ', $args);
         // If we selected a Drupal site, then cwd to the site root prior to exec
         $cwd = false;
-        if ($selected_root = \Drush::bootstrapManager()->getRoot()) {
+        if ($selected_root = Drush::bootstrapManager()->getRoot()) {
             if (is_dir($selected_root)) {
                 $cwd = getcwd();
                 drush_op('chdir', $selected_root);

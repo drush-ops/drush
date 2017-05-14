@@ -3,6 +3,7 @@
 namespace Drush\Drupal\Commands\core;
 
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Drush\Log\LogLevel;
 use Drush\Psysh\DrushCommand;
 use Drush\Psysh\DrushHelpCommand;
@@ -71,7 +72,7 @@ class CliCommands extends DrushCommands
         // command in preflight still, but the subscriber instances are already
         // created from before. Call terminate() regardless, this is a no-op for all
         // DrupalBoot classes except DrupalBoot8.
-        if ($bootstrap = \Drush::bootstrap()) {
+        if ($bootstrap = Drush::bootstrap()) {
             $bootstrap->terminate();
         }
 
@@ -85,7 +86,7 @@ class CliCommands extends DrushCommands
      */
     protected function getDrushCommands()
     {
-        $application = \Drush::getApplication();
+        $application = Drush::getApplication();
         $commands = $application->all();
 
         $ignored_commands = ['help', 'drush-psysh', 'php-eval', 'core-cli', 'php'];

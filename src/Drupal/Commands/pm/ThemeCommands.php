@@ -3,6 +3,7 @@ namespace Drush\Drupal\Commands\pm;
 
 use Drupal\Core\Extension\ThemeInstallerInterface;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 
 class ThemeCommands extends DrushCommands
 {
@@ -56,7 +57,7 @@ class ThemeCommands extends DrushCommands
         }
         $this->logger()->success(dt('Successfully uninstalled theme: !list', ['!list' => implode(', ', $themes)]));
         // Our logger got blown away during the container rebuild above.
-        $boot = \Drush::bootstrapManager()->bootstrap();
+        $boot = Drush::bootstrapManager()->bootstrap();
         $boot->addLogger();
     }
 }

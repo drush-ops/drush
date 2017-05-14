@@ -6,6 +6,7 @@ use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
 
@@ -30,7 +31,7 @@ class ListCommands extends DrushCommands
      */
     public function helpList($filter, $options = ['format' => 'listcli', 'raw' => false])
     {
-        $application = \Drush::getApplication();
+        $application = Drush::getApplication();
         annotation_adapter_add_legacy_commands_to_application($application);
         $all = $application->all();
 
@@ -173,7 +174,7 @@ class ListCommands extends DrushCommands
     public function getTerminalWidth()
     {
         // From \Consolidation\AnnotatedCommand\Options\PrepareTerminalWidthOption::getTerminalWidth
-        $application = \Drush::getApplication();
+        $application = Drush::getApplication();
         $dimensions = $application->getTerminalDimensions();
         if ($dimensions[0] == null) {
             return 0;
