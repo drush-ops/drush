@@ -1,5 +1,6 @@
 <?php
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
 
 /**
@@ -138,13 +139,13 @@ function drush_bootstrap_value($context, $value = null) {
  *
  * @return array
  *
- * @see \Drush\Boot\Boot::bootstrap_phases()
+ * @see \Drush\Boot\Boot::bootstrapPhases()
  */
 function _drush_bootstrap_phases($function_names = FALSE) {
   $result = array();
 
-  if ($bootstrap = \Drush::bootstrap()) {
-    $result = $bootstrap->bootstrap_phases();
+  if ($bootstrap = Drush::bootstrap()) {
+    $result = $bootstrap->bootstrapPhases();
     if (!$function_names) {
       $result = array_keys($result);
     }
@@ -169,10 +170,10 @@ function _drush_bootstrap_phases($function_names = FALSE) {
  * @return bool
  *   TRUE if the specified bootstrap phase has completed.
  *
- * @see \Drush\Boot\Boot::bootstrap_phases()
+ * @see \Drush\Boot\Boot::bootstrapPhases()
  */
 function drush_bootstrap($phase, $phase_max = FALSE) {
-  $bootstrap = \Drush::bootstrap();
+  $bootstrap = Drush::bootstrap();
   $phases = _drush_bootstrap_phases(TRUE);
   $result = TRUE;
 
@@ -186,7 +187,7 @@ function drush_bootstrap($phase, $phase_max = FALSE) {
   // Once we start bootstrapping past the DRUSH_BOOTSTRAP_DRUSH phase, we
   // will latch the bootstrap object, and prevent it from changing.
   if ($phase > DRUSH_BOOTSTRAP_DRUSH) {
-    \Drush::bootstrapManager()->latch($bootstrap);
+    Drush::bootstrapManager()->latch($bootstrap);
   }
 
   drush_set_context('DRUSH_BOOTSTRAPPING', TRUE);
@@ -256,10 +257,10 @@ function drush_has_boostrapped($phase) {
  * @return bool
  *   TRUE if bootstrap is possible, FALSE if the validation failed.
  *
- * @see \Drush\Boot\Boot::bootstrap_phases()
+ * @see \Drush\Boot\Boot::bootstrapPhases()
  */
 function drush_bootstrap_validate($phase) {
-  $bootstrap = \Drush::bootstrap();
+  $bootstrap = Drush::bootstrap();
   $phases = _drush_bootstrap_phases(TRUE);
   static $result_cache = array();
 
@@ -273,7 +274,7 @@ function drush_bootstrap_validate($phase) {
         break;
       }
       if ($phase_index > $validated_phase) {
-        $current_phase .= '_validate';
+        $current_phase .= 'Validate';
         if (method_exists($bootstrap, $current_phase)) {
           $result_cache[$phase_index] = $bootstrap->{$current_phase}();
         }

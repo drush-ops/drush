@@ -7,6 +7,7 @@
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Cache\CommandCache;
+use Drush\Drush;
 use Drush\Log\LogLevel;
 use League\Container\Container;
 use Robo\Contract\BuilderAwareInterface;
@@ -75,8 +76,8 @@ function drush_main() {
       // perhaps handling immediately.
       $command_handled = drush_preflight_command_dispatch();
       if (!$command_handled) {
-        drush_log(dt("Dispatching using Drush bootstrap_and_dispatch"), LogLevel::BOOTSTRAP);
-        $return = $bootstrap->bootstrap_and_dispatch();
+        drush_log(dt("Dispatching using Drush bootstrapAndDispatch"), LogLevel::BOOTSTRAP);
+        $return = $bootstrap->bootstrapAndDispatch();
       }
     }
   }
@@ -85,7 +86,7 @@ function drush_main() {
   // the bootstrap object returned from drush_preflight().  This will
   // require some adjustments to Drush bootstrapping.
   // See: https://github.com/drush-ops/drush/pull/1303
-  if ($bootstrap = \Drush::bootstrap()) {
+  if ($bootstrap = Drush::bootstrap()) {
     $bootstrap->terminate();
   }
   drush_postflight();
@@ -167,17 +168,17 @@ function drush_preflight_prepare() {
   require_once DRUSH_BASE_PATH . '/includes/legacy.inc';
 
   /*
-   * @deprecated. Use \Drush::getVersion().
+   * @deprecated. Use Drush::getVersion().
    */
-  define('DRUSH_VERSION', \Drush::getVersion());
+  define('DRUSH_VERSION', Drush::getVersion());
 
   /*
-   * @deprecated. Use \Drush::getMajorVersion().
+   * @deprecated. Use Drush::getMajorVersion().
    */
   define('DRUSH_MAJOR_VERSION', Drush::getMajorVersion());
 
   /*
-   * @deprecated. Use \Drush::getMinorVersion().
+   * @deprecated. Use Drush::getMinorVersion().
    */
   define('DRUSH_MINOR_VERSION', Drush::getMinorVersion());
 
@@ -246,7 +247,7 @@ function drush_init_dependency_injection_container($input = null, $output = null
   $container = new \League\Container\Container();
   $roboConfig = new \Robo\Config(); // TODO: make a global Drush config class derived from \Robo\Config. Then use $drushConfig here instead of $roboConfig
 
-  $application = new \Symfony\Component\Console\Application('Drush Commandline Tool', \Drush::getVersion());
+  $application = new \Symfony\Component\Console\Application('Drush Commandline Tool', Drush::getVersion());
 
   \Robo\Robo::configureContainer($container, $application, $roboConfig, $input, $output);
   $container->add('container', $container);
@@ -281,14 +282,14 @@ function drush_init_dependency_injection_container($input = null, $output = null
     ->withMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
 
   // Store the container in the \Drush object
-  \Drush::setContainer($container);
+  Drush::setContainer($container);
   \Robo\Robo::setContainer($container);
 
 
 
   // Add our own callback to the hook manager
   $hookManager = $container->get('hookManager');
-  $hookManager->addOutputExtractor(new Drush\Backend\BackendResultSetter());
+  $hookManager->addOutputExtractor(new \Drush\Backend\BackendResultSetter());
   // @todo: do we need both backend result setters? The one below should be removed at some point.
   $hookManager->add('annotatedcomand_adapter_backend_result', HookManager::EXTRACT_OUTPUT);
 
@@ -534,7 +535,7 @@ function drush_preflight() {
   drush_set_environment_vars($alias_record);
 
   // Select the bootstrap object and return it.
-  return \Drush::bootstrapManager()->bootstrap();
+  return Drush::bootstrapManager()->bootstrap();
 }
 
 /**
@@ -548,7 +549,7 @@ function drush_preflight_root() {
   if ($root) {
     $root = realpath($root);
   }
-  \Drush::bootstrapManager()->setRoot($root);
+  Drush::bootstrapManager()->setRoot($root);
 
   // Load the config options from Drupal's /drush, ../drush, and sites/all/drush directories,
   // even prior to bootstrapping the root.
@@ -619,7 +620,7 @@ function _drush_preflight_global_options() {
 
   // Copy the simulated option to the Robo configuration object.
   // TODO: Long-term there should be a better way to do this (e.g. via an event listener)
-  $config = \Drush::service('config');
+  $config = Drush::service('config');
   $config->setSimulated(drush_get_context('DRUSH_SIMULATE'));
 
   // Copy the output verbosity into the output object
@@ -630,7 +631,7 @@ function _drush_preflight_global_options() {
   if (drush_get_context('DRUSH_DEBUG')) {
     $verbosity = OutputInterface::VERBOSITY_DEBUG;
   }
-  $output = \Drush::service('output');
+  $output = Drush::service('output');
   $output->setVerbosity($verbosity);
 }
 
@@ -805,7 +806,7 @@ function drush_preflight_command_dispatch() {
 
   $args = drush_get_arguments();
   $command_name = array_shift($args);
-  $root = \Drush::bootstrapManager()->getRoot();
+  $root = Drush::bootstrapManager()->getRoot();
   $local_drush = drush_get_option('drush-script', Path::join(dirname(__DIR__), 'drush'));
   $is_local = drush_get_option('local');
   $values = NULL;

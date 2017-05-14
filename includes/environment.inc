@@ -10,6 +10,7 @@
  * @see includes/bootstrap.inc
  */
 
+use Drush\Drush;
 use DrupalFinder\DrupalFinder;
 use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
@@ -211,7 +212,7 @@ function drush_site_path($path = NULL) {
     }
   }
 
-  $site_root = \Drush::bootstrapManager()->getRoot();
+  $site_root = Drush::bootstrapManager()->getRoot();
   if (file_exists($site_root . '/sites/sites.php')) {
     $sites = array();
     // This will overwrite $sites with the desired mappings.
@@ -245,7 +246,7 @@ function drush_site_path($path = NULL) {
  */
 function drush_site_dir_lookup_from_hostname($hostname, $site_root = NULL) {
   if (!isset($site_root)) {
-    $site_root = \Drush::bootstrapManager()->getRoot();
+    $site_root = Drush::bootstrapManager()->getRoot();
   }
   if (!empty($site_root) && file_exists($site_root . '/sites/sites.php')) {
     $sites = array();
@@ -272,7 +273,7 @@ function drush_site_dir_lookup_from_hostname($hostname, $site_root = NULL) {
  * (drushrc.php) stored with the site's drush folders might not be found.
  */
 function drush_conf_path($server_uri, $require_settings = TRUE) {
-  $drupal_root = \Drush::bootstrapManager()->getRoot();
+  $drupal_root = Drush::bootstrapManager()->getRoot();
   if(empty($drupal_root) || empty($server_uri)) {
     return NULL;
   }
@@ -353,7 +354,7 @@ function drush_locate_root($start_path = NULL) {
  *   True if the provided path is a valid Drupal root.
  */
 function drush_valid_root($root) {
-  $bootstrap_class = \Drush::bootstrapManager()->bootstrapObjectForRoot($root);
+  $bootstrap_class = Drush::bootstrapManager()->bootstrapObjectForRoot($root);
   return $bootstrap_class != NULL;
 }
 

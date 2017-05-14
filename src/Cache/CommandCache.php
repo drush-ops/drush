@@ -10,11 +10,13 @@ use Consolidation\AnnotatedCommand\Cache\SimpleCacheInterface;
  * This wrapper implements a cache usable with the annotated-command
  * library's command cache. It uses a Drush JSONCache for its back-end.
  */
-class CommandCache implements SimpleCacheInterface {
+class CommandCache implements SimpleCacheInterface
+{
 
     protected $cacheBackend;
 
-    public function __construct(CacheInterface $cacheBackend) {
+    public function __construct(CacheInterface $cacheBackend)
+    {
         $this->cacheBackend = $cacheBackend;
     }
 
@@ -23,7 +25,8 @@ class CommandCache implements SimpleCacheInterface {
      * @param string $key
      * @return boolean
      */
-    public function has($key) {
+    public function has($key)
+    {
         $cacheItem = $this->cacheBackend->get($key);
         return $this->valid($cacheItem);
     }
@@ -32,7 +35,8 @@ class CommandCache implements SimpleCacheInterface {
      * @param string $key
      * @return array
      */
-    public function get($key) {
+    public function get($key)
+    {
         $cacheItem = $this->cacheBackend->get($key);
         if (!$this->valid($cacheItem)) {
             return [];
@@ -48,11 +52,13 @@ class CommandCache implements SimpleCacheInterface {
      * @param string $key
      * @param array $data
      */
-    public function set($key, $data) {
+    public function set($key, $data)
+    {
         $this->cacheBackend->set($key, $data);
     }
 
-    protected function valid($cacheItem) {
+    protected function valid($cacheItem)
+    {
         return is_object($cacheItem) && isset($cacheItem->data);
     }
 }
