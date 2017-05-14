@@ -48,7 +48,8 @@
   },
   "require-dev": {
     "lox/xhprof": "dev-master",
-    "phpunit/phpunit": "^4"
+    "phpunit/phpunit": "^4",
+    "squizlabs/php_codesniffer": "^2.7"
   },
   "suggest": {
       "ext-pcntl": "*",
@@ -62,6 +63,10 @@
     "classmap": [
       "src/Drush.php"
     ]
+  },
+  "scripts": {
+    "cs": "phpcs --standard=PSR2 -n src",
+    "cbf": "phpcbf --standard=PSR2 -n src"
   },
   "extra": {
     "branch-alias": {

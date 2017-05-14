@@ -24,7 +24,8 @@ use Symfony\Component\Console\Input\InputDefinition;
  * 2) We do not want Symfony to attempt to validate our options or arguments
  *    for us.
  */
-class DrushInputAdapter implements InputInterface {
+class DrushInputAdapter implements InputInterface
+{
     protected $arguments;
     protected $options;
     protected $interactive;
