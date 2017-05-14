@@ -45,7 +45,7 @@
     "symfony/finder": "~2.7",
     "pear/console_table": "~1.3.0",
     "webmozart/path-util": "~2",
-    "drupal-code-builder/drupal-code-builder": "3.0.x-dev"
+    "drupal-code-builder/drupal-code-builder": "~3.0.0"
   },
   "require-dev": {
     "phpunit/phpunit": "4.*",
