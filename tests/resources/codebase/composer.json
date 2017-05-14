@@ -20,7 +20,7 @@
     "drush/drush": "*",
     "phpunit/phpunit": "4.*",
     "drupal/empty_theme": "1.0",
-    "drupal/devel": "^1.0@RC",
+    "drupal/devel": "dev-1.x",
     "lox/xhprof": "dev-master"
   },
   "minimum-stability": "dev",
