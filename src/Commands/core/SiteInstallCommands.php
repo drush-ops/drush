@@ -132,7 +132,7 @@ class SiteInstallCommands extends DrushCommands
         }
         if (empty($profile)) {
             try {
-                $profile = drupal_getProfile();
+                $profile = drupal_get_profile();
             } catch (ConnectionNotDefinedException $exception) {
                 // This is only a best effort to provide a better default, no harm done
                 // if it fails.

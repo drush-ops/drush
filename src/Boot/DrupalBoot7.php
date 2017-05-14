@@ -32,7 +32,7 @@ class DrupalBoot7 extends DrupalBoot
 
     public function getProfile()
     {
-        return drupal_getProfile();
+        return drupal_get_profile();
     }
 
     public function addLogger()

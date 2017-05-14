@@ -50,7 +50,7 @@ class DrupalBoot8 extends DrupalBoot
 
     public function getProfile()
     {
-        return drupal_getProfile();
+        return drupal_get_profile();
     }
 
     public function confPath($require_settings = true, $reset = false, Request $request = null)
