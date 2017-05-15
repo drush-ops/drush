@@ -2,6 +2,8 @@
 
 namespace Drush\Boot;
 
+use DrupalCodeGenerator\GeneratorDiscovery;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Drupal\Core\DrupalKernel;
@@ -167,6 +169,23 @@ class DrupalBoot8 extends DrupalBoot
 
         // Get a list of the modules to ignore
         $ignored_modules = drush_get_option_list('ignored-modules', array());
+
+        // Register Vendor directories.
+        $commands_directories[] = DCG_ROOT . '/src/Commands';
+        $twig_directories[] = DCG_ROOT . '/src/Templates';
+        // Register app directories.
+        // $commands_directories[] = __DIR__ . '/src/Commands';
+        // $twig_directories[] = __DIR__ . '/src/Templates';
+        // Discover generators.
+        $discovery = new GeneratorDiscovery(new Filesystem());
+        $generators = $discovery->getGenerators($commands_directories, $twig_directories);
+        foreach ($generators as $generator) {
+          if (!$this->commandIgnored($generator, $ignored_modules)) {
+//            $this->inflect($generator);
+//            $this->logger->log(LogLevel::DEBUG_NOTIFY, dt('Add a command: !name', ['!name' => $generators->getName()]));
+            annotationcommand_adapter_cache_module_console_commands($generator);
+          }
+        }
 
         // We have to get the service command list from the container, because
         // it is constructed in an indirect way during the container initialization.
