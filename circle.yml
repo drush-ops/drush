@@ -13,3 +13,4 @@ dependencies:
 test:
   override:
     - composer cs
+    - composer lint
