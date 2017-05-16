@@ -277,7 +277,9 @@ function drush_cache_rebuild() {
     'wincache_ucache_clear',
     'xcache_clear_cache',
   ];
-  array_map('call_user_func', array_filter($user_caches, 'is_callable'));
+  foreach (array_filter($user_caches, 'is_callable') as $cache) {
+    call_user_func($cache);
+  }
 
   $autoloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
   require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';
