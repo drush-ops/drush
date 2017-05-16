@@ -175,8 +175,8 @@ class DrupalBoot8 extends DrupalBoot
         $commands_directories[] = DCG_ROOT . '/src/Commands'; // @todo only search in /Drupal_8
         $twig_directories[] = DCG_ROOT . '/src/Templates'; // @todo only search in /d8
         // Register Drush directories.
-        // $commands_directories[] = __DIR__ . '/src/Generate/Commands';
-        // $twig_directories[] = __DIR__ . '/src/Generate/Templates';
+        // $commands_directories[] = dirname(__DIR__) . '/Generate/Commands';
+        // $twig_directories[] = dirname(__DIR__) . '/Generate/Templates';
 
         // Discover generators.
         $discovery = new GeneratorDiscovery(new Filesystem());
