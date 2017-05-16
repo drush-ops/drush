@@ -3,6 +3,7 @@
 namespace Drush\Boot;
 
 use DrupalCodeGenerator\GeneratorDiscovery;
+use Drush\Generate\DrushGenerator;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -171,21 +172,28 @@ class DrupalBoot8 extends DrupalBoot
         $ignored_modules = drush_get_option_list('ignored-modules', array());
 
         // Register Vendor directories.
-        $commands_directories[] = DCG_ROOT . '/src/Commands';
-        $twig_directories[] = DCG_ROOT . '/src/Templates';
-        // Register app directories.
-        // $commands_directories[] = __DIR__ . '/src/Commands';
-        // $twig_directories[] = __DIR__ . '/src/Templates';
+        $commands_directories[] = DCG_ROOT . '/src/Commands'; // @todo only search in /Drupal_8
+        $twig_directories[] = DCG_ROOT . '/src/Templates'; // @todo only search in /d8
+        // Register Drush directories.
+        // $commands_directories[] = __DIR__ . '/src/Generate/Commands';
+        // $twig_directories[] = __DIR__ . '/src/Generate/Templates';
+
         // Discover generators.
         $discovery = new GeneratorDiscovery(new Filesystem());
         $generators = $discovery->getGenerators($commands_directories, $twig_directories);
         foreach ($generators as $generator) {
-          if (!$this->commandIgnored($generator, $ignored_modules)) {
-//            $this->inflect($generator);
-//            $this->logger->log(LogLevel::DEBUG_NOTIFY, dt('Add a command: !name', ['!name' => $generators->getName()]));
-            annotationcommand_adapter_cache_module_console_commands($generator);
-          }
+          $drushGenerator = DrushGenerator::create($twig_directories);
+          $drushGenerator = $drushGenerator->setName($generator->getName());
+          $drushGenerator = $drushGenerator->setDescription($generator->getDescription());
+          $drushGenerator->generator = $generator;
+          $drushGenerators[] = $drushGenerator;
+          $def = $generator->getDefinition();
+          $optiondef = $def->getOption('destination');
+          // How to remove shortcut from $optiondef?
         }
+        $application = Drush::getApplication();
+        $application->addCommands($drushGenerators);
+
 
         // We have to get the service command list from the container, because
         // it is constructed in an indirect way during the container initialization.
