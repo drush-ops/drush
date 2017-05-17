@@ -13,3 +13,13 @@ function unishGetPaths() {
   $unish_drush_dir = dirname($unish_sandbox) . '/drush-sut/vendor/drush/drush';
   return [$unish_tmp, $unish_sandbox, $unish_drush_dir];
 }
+
+function unishIsVerbose() {
+  $verbose = false;
+  foreach (['-v','-vv','-vvv','--verbose'] as $needle) {
+    if (in_array($needle, $_SERVER['argv'])) {
+      $verbose = $needle;
+    }
+  }
+  return $verbose;
+}

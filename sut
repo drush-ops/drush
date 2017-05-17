@@ -23,7 +23,9 @@ array_unshift($arguments, "--uri=dev");
  * This confuses our autoload.php detection.
  */
 $cmd = "DRUSH_AUTOLOAD_PHP=$vendor/autoload.php " . escapeshellarg($vendor . '/bin/drush') . ' ' . implode(' ', $arguments);
-fwrite(STDERR, 'Executing: ' . $cmd . "\n");
+if (unishIsVerbose()) {
+  fwrite(STDERR, 'Executing: ' . $cmd . "\n");
+}
 chdir($sut);
 passthru($cmd, $return);
 exit($return);
