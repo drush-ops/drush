@@ -40,6 +40,8 @@ class DrushGenerator extends BaseGenerator
     $this->generator->setApplication($this->getApplication());
     $this->generator->interact($input, $output);
     $this->files = $this->generator->files;
+    $this->hooks = $this->generator->hooks ?: [];
+    $this->services = $this->generator->services ?: null;
   }
 
 

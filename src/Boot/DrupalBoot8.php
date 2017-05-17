@@ -172,8 +172,8 @@ class DrupalBoot8 extends DrupalBoot
         $ignored_modules = drush_get_option_list('ignored-modules', array());
 
         // Register Vendor directories.
-        $commands_directories[] = DCG_ROOT . '/src/Commands'; // @todo only search in /Drupal_8
-        $twig_directories[] = DCG_ROOT . '/src/Templates'; // @todo only search in /d8
+        $commands_directories[] = DCG_ROOT . '/src/Commands';
+        $twig_directories[] = DCG_ROOT . '/src/Templates';
         // Register Drush directories.
         // $commands_directories[] = dirname(__DIR__) . '/Generate/Commands';
         // $twig_directories[] = dirname(__DIR__) . '/Generate/Templates';
@@ -182,14 +182,19 @@ class DrupalBoot8 extends DrupalBoot
         $discovery = new GeneratorDiscovery(new Filesystem());
         $generators = $discovery->getGenerators($commands_directories, $twig_directories);
         foreach ($generators as $generator) {
-          $drushGenerator = DrushGenerator::create($twig_directories);
-          $drushGenerator = $drushGenerator->setName($generator->getName());
-          $drushGenerator = $drushGenerator->setDescription($generator->getDescription());
-          $drushGenerator->generator = $generator;
-          $drushGenerators[] = $drushGenerator;
-          $def = $generator->getDefinition();
-          $optiondef = $def->getOption('destination');
-          // How to remove shortcut from $optiondef?
+          $name = $generator->getName();
+          if (strpos($name, 'd7:') === FALSE && !in_array($name, ['other:drush-command', 'other:drupal-console-command']))  {
+            $drushGenerator = DrushGenerator::create($twig_directories);
+            $nameNew = str_replace(['d8:', 'other:'], 'gen-', $name);
+            $nameNew = str_replace(':', '-', $nameNew);
+            $drushGenerator = $drushGenerator->setName($nameNew);
+            $drushGenerator = $drushGenerator->setDescription($generator->getDescription());
+            $drushGenerator->generator = $generator;
+            $drushGenerators[] = $drushGenerator;
+            $def = $generator->getDefinition();
+            $optiondef = $def->getOption('destination');
+            // How to remove shortcut from $optiondef?
+          }
         }
         $application = Drush::getApplication();
         $application->addCommands($drushGenerators);
