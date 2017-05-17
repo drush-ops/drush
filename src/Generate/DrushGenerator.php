@@ -35,7 +35,9 @@ class DrushGenerator extends BaseGenerator
       $answers = json_encode(['name' => $module, 'machine_name' => $module]);
       $input->setOption('answers', $answers);
       // Used by execute() to save generated files.
-      $this->destination = Path::makeAbsolute($list[$module]->getPath(), DRUPAL_ROOT);
+      $destination = Path::makeAbsolute($list[$module]->getPath(), DRUPAL_ROOT);
+      $input->setOption('destination', $destination);
+      $this->destination = $destination;
     }
     $this->generator->setApplication($this->getApplication());
     $this->generator->interact($input, $output);

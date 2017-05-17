@@ -1,5 +1,5 @@
 <?php
-namespace Drupal\{{ module }}\Commands;
+namespace Drupal\{{ machine_name }}\Commands;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
@@ -15,15 +15,15 @@ use Drush\Commands\DrushCommands;
  *   - http://cgit.drupalcode.org/devel/tree/src/Commands/DevelCommands.php
  *   - http://cgit.drupalcode.org/devel/tree/drush.services.yml
  */
-class {{ module }}Commands extends DrushCommands {
+class {{ class }} extends DrushCommands {
 
   /**
    * Command description here.
    *
-   * @command {{ module }}-commandName
+   * @command {{ machine_name }}-commandName
    * @param $arg1 Argument description.
    * @option option-name option description
-   * @usage {{ module }}-commandName foo
+   * @usage {{ machine_name }}-commandName foo
    *   Usage description
    * @aliases foo
    */
@@ -34,7 +34,7 @@ class {{ module }}Commands extends DrushCommands {
   /**
    * An example of the table output format.
    *
-   * @command devel-token
+   * @command {{  machine_name }}-token
    * @aliases token
    * @field-labels
    *   group: Group

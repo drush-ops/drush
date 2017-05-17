@@ -172,15 +172,18 @@ class DrupalBoot8 extends DrupalBoot
         $ignored_modules = drush_get_option_list('ignored-modules', array());
 
         // Register Vendor directories.
-        $commands_directories[] = DCG_ROOT . '/src/Commands';
-        $twig_directories[] = DCG_ROOT . '/src/Templates';
-        // Register Drush directories.
-        // $commands_directories[] = dirname(__DIR__) . '/Generate/Commands';
-        // $twig_directories[] = dirname(__DIR__) . '/Generate/Templates';
-
-        // Discover generators.
+        $commands_directories = [DCG_ROOT . '/src/Commands'];
+        $twig_directories = [DCG_ROOT . '/src/Templates'];
         $discovery = new GeneratorDiscovery(new Filesystem());
         $generators = $discovery->getGenerators($commands_directories, $twig_directories);
+        // Register Drush directories.
+        $commands_directories = [dirname(__DIR__) . '/Generate/Commands'];
+        $twig_directories = [dirname(__DIR__) . '/Generate/Templates'];
+        $discovery = new GeneratorDiscovery(new Filesystem(), '\Drush\Generate\Commands');
+        $generators = array_merge($discovery->getGenerators($commands_directories, $twig_directories), $generators);
+        // Discover generators.
+
+
         foreach ($generators as $generator) {
           $name = $generator->getName();
           if (strpos($name, 'd7:') === FALSE && !in_array($name, ['other:drush-command', 'other:drupal-console-command']))  {
