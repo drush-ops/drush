@@ -102,8 +102,8 @@ Do not use both types of declarations for a single project in your makefile.
 
 - `patch`
 
-  One or more patches to apply to this project. An array of URLs from which
-  each patch should be retrieved.
+  One or more patches to apply to this project. An array of patches,
+  each specified as a URL or local path relative to the makefile.
 
         projects:
           calendar:
@@ -116,6 +116,7 @@ Do not use both types of declarations for a single project in your makefile.
             patch:
               - "http://drupal.org/files/issues/adminrole_exceptions.patch"
               - "http://drupal.org/files/issues/adminrole-213212-01.patch"
+              - "adminrole-customizations.patch"
 
 - `subdir`
 
