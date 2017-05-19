@@ -31,6 +31,7 @@
     "psy/psysh": "~0.6",
     "league/container": "~2",
     "consolidation/robo": "~1",
+    "chi-teck/drupal-code-generator": "dev-master",
     "symfony/config": "~2.2|^3",
     "consolidation/annotated-command": "~2.4",
     "consolidation/output-formatters": "~3.1",
