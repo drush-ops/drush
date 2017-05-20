@@ -164,6 +164,7 @@ function drush_find_path_to_drush($home) {
 
 function drush_bash_addition($file) {
   return <<<EOD
+
 if [ -f "$file" ] ; then
   source $file
 fi
