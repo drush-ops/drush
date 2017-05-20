@@ -136,7 +136,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
 
     /**
      * Determine where Drush is located, so that we can add
-     * that location to the $PATH
+     * that location to the $PATH.
      */
     protected function findPathToDrush()
     {
@@ -160,10 +160,10 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
     protected function bashAddition($file)
     {
         return <<<EOD
+
 if [ -f "$file" ] ; then
   source $file
 fi
-
 
 EOD;
     }
