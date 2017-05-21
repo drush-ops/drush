@@ -87,11 +87,10 @@ class GenerateCommands extends DrushCommands {
     $dcg_generators = $discovery->getGenerators([DCG_ROOT . '/src/Commands/Drupal_8'], '\DrupalCodeGenerator\Commands\Drupal_8');
     $drush_generators = $discovery->getGenerators([__DIR__ . '/Commands'], '\Drush\Commands\generate\Commands');
 
-    /** @var \Symfony\Component\Console\Command\Command[] $available_generators */
-    $available_generators = array_merge($dcg_generators, $drush_generators);
+    /** @var \Symfony\Component\Console\Command\Command[] $generators */
+    $generators = array_merge($dcg_generators, $drush_generators);
 
-    $generators = [];
-    foreach ($available_generators as $generator) {
+    foreach ($generators as $generator) {
       $sub_names = explode(':', $generator->getName());
       if ($sub_names[0] == 'd8') {
         // Remove d8 namespace.
@@ -99,7 +98,6 @@ class GenerateCommands extends DrushCommands {
       }
       // @todo Shall we use command alias instead?
       $generator->setName(implode('-', $sub_names));
-      $generators[] = $generator;
     }
 
     $application->addCommands($generators);

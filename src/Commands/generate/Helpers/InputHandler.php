@@ -38,7 +38,7 @@ class InputHandler extends BaseInputHandler {
         break;
 
       case 'theme-file':
-        // @TODO: Handle this case.
+        // @todo Handle this case.
         break;
 
       case 'settings-local':
@@ -50,19 +50,20 @@ class InputHandler extends BaseInputHandler {
         break;
 
       case 'yml-module-info':
-        // @TODO: Handle this case.
+        // @todo Handle this case.
         break;
 
       default:
         if (isset($vars['machine_name'])) {
           $machine_name = $vars['machine_name'];
+          // @todo Can we proccess disabled modules as well?
           $modules = system_rebuild_module_data();
           $directory = isset($modules[$machine_name])
             ? $modules[$machine_name]->getPath()
             : $modules_dir . '/' . $machine_name;
         }
         else {
-          // @TODO: Handle this case.
+          // @todo Handle this case.
         }
 
     }
