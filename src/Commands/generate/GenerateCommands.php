@@ -53,9 +53,8 @@ class GenerateCommands extends DrushCommands {
 
     $application = $this->createApplication();
 
-    // Create isolated input.
+    // Create an isolated input.
     $argv = [$_SERVER['argv'][0], $generator];
-
     return $application->run(new ArgvInput($argv));
   }
 
@@ -83,7 +82,7 @@ class GenerateCommands extends DrushCommands {
     // Discover generators.
     $discovery = new GeneratorDiscovery(new Filesystem());
 
-    // @todo: Discover generators in Drupal modules and themes.
+    // @todo Discover generators in Drupal modules and themes.
     $dcg_generators = $discovery->getGenerators([DCG_ROOT . '/src/Commands/Drupal_8'], '\DrupalCodeGenerator\Commands\Drupal_8');
     $drush_generators = $discovery->getGenerators([__DIR__ . '/Commands'], '\Drush\Commands\generate\Commands');
 
@@ -109,7 +108,7 @@ class GenerateCommands extends DrushCommands {
   /**
    * Drush completion callback.
    *
-   * @todo: Implement this.
+   * @todo Implement this.
    */
   public function completeGenerators() {
 

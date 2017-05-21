@@ -28,7 +28,7 @@ class InputPreprocessor extends Helper {
   public function preprocess(array &$questions) {
 
     if (isset($questions['name'])) {
-      // @TODO Pick up default name from current working directory when possible.
+      // @todo Pick up default name from current working directory when possible.
       $questions['name'][1] = FALSE;
     }
 
