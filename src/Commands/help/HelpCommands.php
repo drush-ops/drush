@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Commands\help;
 
+use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -30,7 +31,9 @@ class HelpCommands extends DrushCommands
     {
         $application = Drush::getApplication();
         $command = $application->get($name);
-        $command->optionsHook();
+        if ($command instanceof AnnotatedCommand) {
+          $command->optionsHook();
+        }
         $helpDocument = new DrushHelpDocument($command);
 
         // This serves as example about how a command can add a custom Formatter.

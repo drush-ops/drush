@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Commands\help;
 
+use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\Help\HelpDocument;
 use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
@@ -36,12 +37,11 @@ class ListCommands extends DrushCommands
         $all = $application->all();
 
         foreach ($all as $key => $command) {
-            /** @var \Consolidation\AnnotatedCommand\AnnotationData $annotationData */
-            $annotationData = $command->getAnnotationData();
-            if (!in_array($key, $command->getAliases()) && !$annotationData->has('hidden')) {
-                $parts = explode('-', $key);
-                $namespace = count($parts) >= 2 ? array_shift($parts) : '_global';
-                $namespaced[$namespace][$key] = $command;
+            $hidden = method_exists($command, 'getAnnotationData') && $command->getAnnotationData()->has('hidden');
+            if (!in_array($key, $command->getAliases()) && !$hidden) {
+              $parts = explode('-', $key);
+              $namespace = count($parts) >= 2 ? array_shift($parts) : '_global';
+              $namespaced[$namespace][$key] = $command;
             }
         }
 

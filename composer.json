@@ -24,6 +24,12 @@
   "bin": [
     "drush"
   ],
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/Chi-teck/drupal-code-generator"
+    }
+  ],
   "require": {
     "php": ">=5.6.0",
     "ext-dom": "*",
@@ -31,6 +37,7 @@
     "psy/psysh": "~0.6",
     "league/container": "~2",
     "consolidation/robo": "~1",
+    "chi-teck/drupal-code-generator": "~1",
     "symfony/config": "~2.2|^3",
     "consolidation/annotated-command": "~2.4",
     "consolidation/output-formatters": "~3.1",
@@ -57,8 +64,9 @@
   },
   "autoload": {
     "psr-4": {
-      "Drush\\":        "src/",
-      "Unish\\":        "tests/"
+      "Drush\\": "src/",
+      "Unish\\": "tests/",
+      "DrupalCodeGenerator\\": "src/"
     }
   },
   "scripts": {

@@ -2,6 +2,9 @@
 
 namespace Drush\Boot;
 
+use DrupalCodeGenerator\GeneratorDiscovery;
+use Drush\Generate\DrushGenerator;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Drupal\Core\DrupalKernel;
@@ -168,6 +171,9 @@ class DrupalBoot8 extends DrupalBoot
         // Get a list of the modules to ignore
         $ignored_modules = drush_get_option_list('ignored-modules', array());
 
+        $this->addGeneratorsToApplication();
+
+
         // We have to get the service command list from the container, because
         // it is constructed in an indirect way during the container initialization.
         // The upshot is that the list of console commands is not available
@@ -215,4 +221,39 @@ class DrupalBoot8 extends DrupalBoot
             $this->kernel->terminate($this->request, $response);
         }
     }
+
+  /**
+   * Discover and add generator commands provided by DCG an Drush.
+   */
+  public function addGeneratorsToApplication() {
+    // Register Vendor directories.
+    $commands_directories = [DCG_ROOT . '/src/Commands'];
+    $twig_directories = [DCG_ROOT . '/src/Templates'];
+    $discovery = new GeneratorDiscovery(new Filesystem());
+    $generators = $discovery->getGenerators($commands_directories, $twig_directories);
+    // Register Drush directories.
+    $commands_directories = [dirname(__DIR__) . '/Generate/Commands'];
+    $twig_directories = [dirname(__DIR__) . '/Generate/Templates'];
+    $discovery = new GeneratorDiscovery(new Filesystem(), '\Drush\Generate\Commands');
+    $generators = array_merge($discovery->getGenerators($commands_directories, $twig_directories), $generators);
+
+    foreach ($generators as $generator) {
+      $name = $generator->getName();
+      if (strpos($name, 'd7:') === FALSE && !in_array($name, ['other:drush-command', 'other:drupal-console-command']))
+      {
+        $drushGenerator = DrushGenerator::create($twig_directories);
+        $nameNew = str_replace(['d8:', 'other:'], 'gen-', $name);
+        $nameNew = str_replace(':', '-', $nameNew);
+        $drushGenerator = $drushGenerator->setName($nameNew);
+        $drushGenerator = $drushGenerator->setDescription($generator->getDescription());
+        $drushGenerator->generator = $generator;
+        $drushGenerators[] = $drushGenerator;
+        $def = $generator->getDefinition();
+        $optiondef = $def->getOption('destination');
+        // How to remove shortcut from $optiondef?
+      }
+    }
+    $application = Drush::getApplication();
+    $application->addCommands($drushGenerators);
+  }
 }
