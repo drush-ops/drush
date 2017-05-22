@@ -30,8 +30,7 @@ class Sqlpgsql extends SqlBase {
         $part = str_replace(array('\\', ':'), array('\\\\', '\:'), $part);
       });
       $pgpass_contents = implode(':', $pgpass_parts);
-      $password_file = drush_save_data_to_temp_file($pgpass_contents);
-      chmod($password_file, 0600);
+      $password_file = drush_save_data_to_temp_file($pgpass_contents, NULL, 0600);
     }
     return $password_file;
   }

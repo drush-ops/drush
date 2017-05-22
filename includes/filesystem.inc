@@ -412,10 +412,12 @@ function drush_program_exists($program) {
  * @param string $suffix
  *   Append string to filename. use of this parameter if is discouraged. @see
  *   drush_tempnam().
+ * @param int $mode
+ *   Optional filemode to set upon creation.
  * @return string
  *   A path to the file.
  */
-function drush_save_data_to_temp_file($data, $suffix = NULL) {
+function drush_save_data_to_temp_file($data, $suffix = NULL, $mode = NULL) {
   static $fp;
 
   $file = drush_tempnam('drush_', NULL, $suffix);
@@ -424,6 +426,11 @@ function drush_save_data_to_temp_file($data, $suffix = NULL) {
   $meta_data = stream_get_meta_data($fp);
   $file = $meta_data['uri'];
   fclose($fp);
+
+  // Set filemode.
+  if ($mode) {
+    @chmod($file, $mode);
+  }
 
   return $file;
 }
