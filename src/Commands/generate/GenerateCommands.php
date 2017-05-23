@@ -22,9 +22,10 @@ use Symfony\Component\Yaml\Dumper as YamlDumper;
 class GenerateCommands extends DrushCommands {
 
   /**
-   * Generates Drupal code.
+   * Generate boilerplate code for modules/plugins/services etc.
    *
    * @command generate
+   * @aliases gen
    *
    * @param string $generator
    *    Name of the generator to run.

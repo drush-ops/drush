@@ -69,10 +69,10 @@ class InputPreprocessor extends Helper {
     // Module related generators.
     if (isset($questions['machine_name'])) {
       $modules = [];
-      // system_rebuild_module_data() seems to be redundant because we do not
-      // want to rebuild anything. We just need cached module definitions.
-      foreach (system_rebuild_module_data() as $machine_name => $module) {
-        $modules[$machine_name] = $module->info['name'];
+      // @todo - For better UX, match on both labels and machine names.
+      $moduleHandler = \Drupal::moduleHandler();
+      foreach ($moduleHandler->getModuleList() as $machine_name => $module) {
+        $modules[$machine_name] = $moduleHandler->getName($machine_name);
       }
 
       $questions['machine_name'][3] = array_keys($modules);
