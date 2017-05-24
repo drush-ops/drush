@@ -497,6 +497,7 @@ function annotation_adapter_add_legacy_commands_to_application($application) {
     if (empty($command['annotated-command-callback']) && empty($command['hidden'])) {
       $annotated = new AnnotatedCommand($command['command']);
       $annotated->setDescription($command['description']);
+      $annotated->setAliases($command['aliases']);
       foreach ($command['arguments'] as $name => $description) {
         $annotated->addArgument($name, InputArgument::OPTIONAL, $description);
       }

@@ -807,7 +807,7 @@ function drush_preflight_command_dispatch() {
   $args = drush_get_arguments();
   $command_name = array_shift($args);
   $root = Drush::bootstrapManager()->getRoot();
-  $local_drush = drush_get_option('drush-script', Path::join(dirname(__DIR__), 'drush'));
+  $local_drush = drush_get_option('drush-script');
   $is_local = drush_get_option('local');
   $values = NULL;
   if (!empty($root) && !empty($local_drush) && empty($is_local)) {
