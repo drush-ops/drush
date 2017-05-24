@@ -36,6 +36,13 @@ class ListCommands extends DrushCommands
         $all = $application->all();
 
         foreach ($all as $key => $command) {
+            $hidden = method_exists($command, 'getAnnotationData') && $command->getAnnotationData()->has('hidden');
+            if (!in_array($key, $command->getAliases()) && !$hidden) {
+                $parts = explode('-', $key);
+                $namespace = count($parts) >= 2 ? array_shift($parts) : '_global';
+                $namespaced[$namespace][$key] = $command;
+            }
+
             /** @var \Consolidation\AnnotatedCommand\AnnotationData $annotationData */
             $annotationData = $command->getAnnotationData();
             if (!in_array($key, $command->getAliases()) && !$annotationData->has('hidden')) {
