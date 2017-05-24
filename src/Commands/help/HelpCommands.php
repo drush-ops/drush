@@ -32,7 +32,7 @@ class HelpCommands extends DrushCommands
         $application = Drush::getApplication();
         $command = $application->get($name);
         if ($command instanceof AnnotatedCommand) {
-          $command->optionsHook();
+            $command->optionsHook();
         }
         $helpDocument = new DrushHelpDocument($command);
 
