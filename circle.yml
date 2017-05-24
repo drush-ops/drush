@@ -8,7 +8,7 @@ dependencies:
   cache_directories:
     - ~/.composer/cache
   override:
-    - composer install
+    - composer install --prefer-dist --no-interaction
 
 test:
   override:
