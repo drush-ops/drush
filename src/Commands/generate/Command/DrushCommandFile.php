@@ -1,8 +1,8 @@
 <?php
 
-namespace Drush\Commands\generate\Commands;
+namespace Drush\Commands\generate\Command;
 
-use DrupalCodeGenerator\Commands\BaseGenerator;
+use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\Utils;
 
 class DrushCommandFile extends BaseGenerator

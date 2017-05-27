@@ -1,9 +1,9 @@
 <?php
 
-namespace Drush\Commands\generate\Helpers;
+namespace Drush\Commands\generate\Helper;
 
 use Symfony\Component\Console\Output\OutputInterface;
-use DrupalCodeGenerator\Helpers\OutputHandler as BaseOutputHandler;
+use DrupalCodeGenerator\Helper\OutputHandler as BaseOutputHandler;
 use Webmozart\PathUtil\Path;
 
 /**

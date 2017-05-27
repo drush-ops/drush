@@ -1,6 +1,6 @@
 <?php
 
-namespace Drush\Commands\generate\Helpers;
+namespace Drush\Commands\generate\Helper;
 
 use Symfony\Component\Console\Helper\Helper;
 use DrupalCodeGenerator\Utils;

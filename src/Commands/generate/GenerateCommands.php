@@ -3,13 +3,13 @@
 namespace Drush\Commands\generate;
 
 use DrupalCodeGenerator\GeneratorDiscovery;
-use DrupalCodeGenerator\Helpers\Dumper;
-use DrupalCodeGenerator\Helpers\Renderer;
+use DrupalCodeGenerator\Helper\Dumper;
+use DrupalCodeGenerator\Helper\Renderer;
 use DrupalCodeGenerator\TwigEnvironment;
 use Drush\Commands\DrushCommands;
-use Drush\Commands\generate\Helpers\InputHandler;
-use Drush\Commands\generate\Helpers\InputPreprocessor;
-use Drush\Commands\generate\Helpers\OutputHandler;
+use Drush\Commands\generate\Helper\InputHandler;
+use Drush\Commands\generate\Helper\InputPreprocessor;
+use Drush\Commands\generate\Helper\OutputHandler;
 use Drush\Drush;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -84,8 +84,8 @@ class GenerateCommands extends DrushCommands {
     $discovery = new GeneratorDiscovery(new Filesystem());
 
     // @todo Discover generators in Drupal modules and themes.
-    $dcg_generators = $discovery->getGenerators([DCG_ROOT . '/src/Commands/Drupal_8'], '\DrupalCodeGenerator\Commands\Drupal_8');
-    $drush_generators = $discovery->getGenerators([__DIR__ . '/Commands'], '\Drush\Commands\generate\Commands');
+    $dcg_generators = $discovery->getGenerators([DCG_ROOT . '/src/Command/Drupal_8'], '\DrupalCodeGenerator\Command\Drupal_8');
+    $drush_generators = $discovery->getGenerators([__DIR__ . '/Command'], '\Drush\Commands\generate\Command');
 
     /** @var \Symfony\Component\Console\Command\Command[] $generators */
     $generators = array_merge($dcg_generators, $drush_generators);

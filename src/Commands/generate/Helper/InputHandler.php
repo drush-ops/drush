@@ -1,10 +1,10 @@
 <?php
 
-namespace Drush\Commands\generate\Helpers;
+namespace Drush\Commands\generate\Helper;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use DrupalCodeGenerator\Helpers\InputHandler as BaseInputHandler;
+use DrupalCodeGenerator\Helper\InputHandler as BaseInputHandler;
 
 /**
  * Generators input handler.
