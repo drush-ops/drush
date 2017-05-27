@@ -69,7 +69,14 @@ class GenerateCommands extends DrushCommands {
     $application = new Application('Drush generate', Drush::getVersion());
     $helperSet = $application->getHelperSet();
 
-    $dumper = new Dumper(new Filesystem(), new YamlDumper());
+    $override = NULL;
+    if (drush_get_context('DRUSH_AFFIRMATIVE')) {
+      $override = TRUE;
+    }
+    elseif (drush_get_context('DRUSH_NEGATIVE')) {
+      $override = FALSE;
+    }
+    $dumper = new Dumper(new Filesystem(), new YamlDumper(), $override);
     $helperSet->set($dumper);
 
     $twig_loader = new \Twig_Loader_Filesystem();
