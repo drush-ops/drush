@@ -4,26 +4,37 @@ namespace Drush\Commands\generate\Command;
 
 use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\Utils;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class DrushCommandFile extends BaseGenerator
-{
-  protected $name = 'drush-commandfile';
-  protected $description = 'Generates a Drush commandfile.';
+/**
+ * Implements drush-command-file command.
+ */
+class DrushCommandFile extends BaseGenerator {
+
+  protected $name = 'drush-command-file';
+  protected $description = 'Generates a Drush command file.';
   protected $alias = 'dcf';
   protected $templatePath = __DIR__;
 
   /**
    * {@inheritdoc}
    */
-  protected function interact($input, $output) {
-
+  protected function interact(InputInterface $input, OutputInterface $output) {
     $questions = Utils::defaultQuestions();
 
     $vars = $this->collectVars($input, $output, $questions);
     $vars['class'] = Utils::camelize($vars['machine_name'] . 'Commands');
-    // $directoryBaseName = basename($this->destination);
-    $this->files['src/Commands/' . $vars['class'] . '.php'] = $this->render('drushcommandfile.twig', $vars);
-    // @todo Can only generate a file named [module].services.yml right now.
-    // $this->files['drush.services.yml'] = $this->render('drush.services.twig', $vars);
+
+    $this->files['src/Commands/' . $vars['class'] . '.php'] = $this->render('drush-command-file.twig', $vars);
+    $this->services[$vars['machine_name'] . '.commands'] = [
+      'class' => '\Drupal\\' . $vars['machine_name'] . '\Commands\\' . $vars['class'],
+      'tags' => [
+        [
+          'name' => 'drush.command',
+        ],
+      ],
+    ];
   }
+
 }

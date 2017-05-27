@@ -28,7 +28,7 @@ class GenerateCommands extends DrushCommands {
    * @aliases gen
    *
    * @param string $generator
-   *    Name of the generator to run.
+   *   Name of the generator to run.
    *
    * @bootstrap DRUSH_BOOTSTRAP_MAX
    *

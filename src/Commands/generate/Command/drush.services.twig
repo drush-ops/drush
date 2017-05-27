@@ -1,7 +1,0 @@
-# Add a service for each commandfile.
-services:
-{{ module }}.commands:
-# arguments: ['@foo', '@bar']
-class: \Drupal\{{ module }}\Commands\{{ module }}Commands
-tags:
--  { name: drush.command }
