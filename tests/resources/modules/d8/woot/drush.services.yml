@@ -18,5 +18,6 @@ services:
       -  { name: console.command }
   example.generator:
       class: Drupal\woot\Generators\ExampleGenerator
+      arguments: ['@module_handler']
       tags:
         -  { name: drush.generator }
