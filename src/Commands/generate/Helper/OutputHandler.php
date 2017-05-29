@@ -25,7 +25,7 @@ class OutputHandler extends BaseOutputHandler {
     }
 
     // @todo fix this.
-    if (FALSE && defined('DRUPAL_ROOT')) {
+    if (FALSE && defined('DRUPAL_ROOT') && $dumped_files) {
       // @todo Below code is forking new process well but current process is not shutting down fully.
       $exec = drush_get_editor();
       $exec = str_replace('%s', drush_escapeshellarg(Path::makeAbsolute($dumped_files[0], DRUPAL_ROOT)), $exec);

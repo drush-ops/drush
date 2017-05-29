@@ -12,9 +12,10 @@ use Drush\Commands\generate\Helper\InputPreprocessor;
 use Drush\Commands\generate\Helper\OutputHandler;
 use Drush\Drush;
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Dumper as YamlDumper;
+use Webmozart\PathUtil\Path;
 
 /**
  * Drush generate command.
@@ -26,16 +27,16 @@ class GenerateCommands extends DrushCommands {
    *
    * @command generate
    * @aliases gen
-   *
-   * @param string $generator
-   *   Name of the generator to run.
+   * @param string $generator Name of the generator to run.
+   * @option answers JSON formatted answers
+   * @option directory Base directory for file writing.
    *
    * @bootstrap DRUSH_BOOTSTRAP_MAX
    *
    * @return string
    *   The command result.
    */
-  public function generate($generator) {
+  public function generate($generator, $options = ['answers' => null, 'directory' =>  null]) {
 
     // Disallow default Symfony console commands.
     if ($generator == 'help' || $generator == 'list') {
@@ -55,8 +56,8 @@ class GenerateCommands extends DrushCommands {
     $application = $this->createApplication();
 
     // Create an isolated input.
-    $argv = [$_SERVER['argv'][0], $generator];
-    return $application->run(new ArgvInput($argv));
+    $argv = [$generator, '--answers=' . escapeshellarg($options['answers']), '--directory=' . $options['directory']];
+    return $application->run(new StringInput(implode(' ', $argv)));
   }
 
   /**
@@ -90,12 +91,18 @@ class GenerateCommands extends DrushCommands {
     // Discover generators.
     $discovery = new GeneratorDiscovery(new Filesystem());
 
-    // @todo Discover generators in Drupal modules and themes.
+    /**
+     * Discover generators.
+     */
     $dcg_generators = $discovery->getGenerators([DCG_ROOT . '/src/Command/Drupal_8'], '\DrupalCodeGenerator\Command\Drupal_8');
     $drush_generators = $discovery->getGenerators([__DIR__ . '/Command'], '\Drush\Commands\generate\Command');
+    if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+      $container = \Drupal::getContainer();
+      $module_generators = $container->get('drush.service.generators')->getCommandList();
+    }
 
     /** @var \Symfony\Component\Console\Command\Command[] $generators */
-    $generators = array_merge($dcg_generators, $drush_generators);
+    $generators = array_merge($dcg_generators, $drush_generators, $module_generators);
 
     foreach ($generators as $generator) {
       $sub_names = explode(':', $generator->getName());
