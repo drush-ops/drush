@@ -7,12 +7,13 @@ use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class ListCommands extends DrushCommands
 {
-
     /**
      * List available commands.
      *
@@ -34,33 +35,7 @@ class ListCommands extends DrushCommands
         $application = Drush::getApplication();
         annotation_adapter_add_legacy_commands_to_application($application);
         $all = $application->all();
-
-        foreach ($all as $key => $command) {
-            $hidden = method_exists($command, 'getAnnotationData') && $command->getAnnotationData()->has('hidden');
-            if (!in_array($key, $command->getAliases()) && !$hidden) {
-                $parts = explode('-', $key);
-                $namespace = count($parts) >= 2 ? array_shift($parts) : '_global';
-                $namespaced[$namespace][$key] = $command;
-            }
-
-            /** @var \Consolidation\AnnotatedCommand\AnnotationData $annotationData */
-            $annotationData = $command->getAnnotationData();
-            if (!in_array($key, $command->getAliases()) && !$annotationData->has('hidden')) {
-                $parts = explode('-', $key);
-                $namespace = count($parts) >= 2 ? array_shift($parts) : '_global';
-                $namespaced[$namespace][$key] = $command;
-            }
-        }
-
-        // Avoid solo namespaces.
-        foreach ($namespaced as $namespace => $commands) {
-            if (count($commands) == 1) {
-                $namespaced['_global'] += $commands;
-                unset($namespaced[$namespace]);
-            }
-        }
-
-        ksort($namespaced);
+        $namespaced = $this->categorize($all);
 
         // Filter out namespaces that the user does not want to see
         $filter_category = $options['filter'];
@@ -80,7 +55,8 @@ class ListCommands extends DrushCommands
             $this->renderListRaw($namespaced);
             return null;
         } elseif ($options['format'] == 'listcli') {
-            $this->renderListCLI($application, $namespaced);
+            $preamble = dt('Run `drush help [command]` to view command-specific help.  Run `drush topic` to read even more documentation.');
+            $this->renderListCLI($application, $namespaced, $this->output(), $preamble);
             return null;
         } else {
             $dom = $this->buildDom($namespaced);
@@ -123,39 +99,42 @@ class ListCommands extends DrushCommands
     /**
      * @param \Symfony\Component\Console\Application $application
      * @param array $namespaced
+     * @param OutputInterface $output
+     * @param string $preamble
      */
-    public function renderListCLI($application, $namespaced)
+    public static function renderListCLI($application, $namespaced, $output, $preamble)
     {
-        $this->output()->writeln($application->getHelp());
-        $this->output()->writeln('');
-        $this->output()
-        ->writeln('Run `drush help [command]` to view command-specific help.  Run `drush topic` to read even more documentation.');
-        $this->output()->writeln('');
+        $output->writeln($application->getHelp());
+        $output->writeln('');
+        $output
+        ->writeln($preamble);
+        $output->writeln('');
 
         // For now ,this table does not need TableFormatter.
-        $table = new Table($this->output());
+        $table = new Table($output);
         $table->setStyle('compact');
-        $table->addRow([new TableCell('Global options. See `drush topic core-global-options` for the full list.', array('colspan' => 2))]);
         $global_options_help = drush_get_global_options(true);
         $options = $application->getDefinition()->getOptions();
-        if (!$options['filter']) {
+        // Only display this table for Drush help, not 'generate' command.
+        if ($application->getName() == 'Drush Commandline Tool') {
+            $table->addRow([new TableCell('Global options. See `drush topic core-global-options` for the full list.', array('colspan' => 2))]);
             foreach ($global_options_help as $key => $help) {
                 $data = [
-                'name' => '--' . $options[$key]->getName(),
-                'description' => $help['description'],
-                // Not using $options[$key]->getDescription() as description is too long for -v
-                'accept_value' => $options[$key]->acceptValue(),
-                'is_value_required' => $options[$key]->isValueRequired(),
-                'shortcut' => $options[$key]->getShortcut(),
+                    'name' => '--' . $options[$key]->getName(),
+                    'description' => $help['description'],
+                    // Not using $options[$key]->getDescription() as description is too long for -v
+                    'accept_value' => $options[$key]->acceptValue(),
+                    'is_value_required' => $options[$key]->isValueRequired(),
+                    'shortcut' => $options[$key]->getShortcut(),
                 ];
                 $table->addRow([
-                HelpCLIFormatter::formatOptionKeys($data),
-                HelpCLIFormatter::formatOptionDescription($data)
+                    HelpCLIFormatter::formatOptionKeys($data),
+                    HelpCLIFormatter::formatOptionDescription($data)
                 ]);
             }
+            $table->addRow(['', '']);
+            $table->render();
         }
-        $table->addRow(['', '']);
-        $table->render();
 
         $rows[] = ['Available commands:', ''];
         foreach ($namespaced as $namespace => $list) {
@@ -168,14 +147,15 @@ class ListCommands extends DrushCommands
             }
         }
         $formatterManager = new FormatterManager();
+        list($terminalWidth,) = $application->getTerminalDimensions();
         $opts = [
-        FormatterOptions::INCLUDE_FIELD_LABELS => false,
-        FormatterOptions::TABLE_STYLE => 'compact',
-        FormatterOptions::TERMINAL_WIDTH => $this->getTerminalWidth(),
+            FormatterOptions::INCLUDE_FIELD_LABELS => false,
+            FormatterOptions::TABLE_STYLE => 'compact',
+            FormatterOptions::TERMINAL_WIDTH => $terminalWidth,
         ];
         $formatterOptions = new FormatterOptions([], $opts);
 
-        $formatterManager->write($this->output(), 'table', new RowsOfFields($rows), $formatterOptions);
+        $formatterManager->write($output, 'table', new RowsOfFields($rows), $formatterOptions);
     }
 
     public function getTerminalWidth()
@@ -202,5 +182,32 @@ class ListCommands extends DrushCommands
             }
         }
         $table->render();
+    }
+
+    /**
+     * @param Command[] $all
+     * @return array
+     */
+    public static function categorize($all)
+    {
+        foreach ($all as $key => $command) {
+            $hidden = method_exists($command, 'getAnnotationData') && $command->getAnnotationData()->has('hidden');
+            if (!in_array($key, $command->getAliases()) && !$hidden) {
+                $parts = explode('-', $key);
+                $namespace = count($parts) >= 2 ? array_shift($parts) : '_global';
+                $namespaced[$namespace][$key] = $command;
+            }
+        }
+
+        // Avoid solo namespaces.
+        foreach ($namespaced as $namespace => $commands) {
+            if (count($commands) == 1) {
+                $namespaced['_global'] += $commands;
+                unset($namespaced[$namespace]);
+            }
+        }
+
+        ksort($namespaced);
+        return $namespaced;
     }
 }

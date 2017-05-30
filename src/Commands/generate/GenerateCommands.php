@@ -10,6 +10,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Commands\generate\Helper\InputHandler;
 use Drush\Commands\generate\Helper\InputPreprocessor;
 use Drush\Commands\generate\Helper\OutputHandler;
+use Drush\Commands\help\ListCommands;
 use Drush\Drush;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\StringInput;
@@ -54,25 +55,23 @@ class GenerateCommands extends DrushCommands
             $generator = null;
         }
 
-        if (!$generator) {
-            // @TODO: What shall we do if argument was not provided?
-            // Possible variants:
-            // 1. - Run Navigation command like DCG does.
-            // 2. - Ask the user for the command name (with auto completion).
-            // 3. - Display help message.
-            // 4. - Display list of available commands ($argv = [$_SERVER['argv'][0], 'list', '--raw'];).
-            // 5. - Nothing (throw an exception).
-        }
-
         $application = $this->createApplication();
-
-        // Create an isolated input.
-        $argv = [
-            $generator,
-            '--answers=' . escapeshellarg($options['answers']),
-            '--directory=' . $options['directory']
-        ];
-        return $application->run(new StringInput(implode(' ', $argv)));
+        if (!$generator) {
+            $all = $application->all();
+            $namespaced = ListCommands::categorize($all);
+            $preamble = dt('Run `drush generate [command]` and answer a few questions in order to write starter code to your project.');
+            ListCommands::renderListCLI($application, $namespaced, $this->output(), $preamble);
+            return null;
+        }
+        else {
+            // Create an isolated input.
+            $argv = [
+                $generator,
+                '--answers=' . escapeshellarg($options['answers']),
+                '--directory=' . $options['directory']
+            ];
+            return $application->run(new StringInput(implode(' ', $argv)));
+        }
     }
 
     /**
