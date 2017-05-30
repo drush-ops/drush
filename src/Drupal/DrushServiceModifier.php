@@ -19,6 +19,8 @@ class DrushServiceModifier implements ServiceModifierInterface
         $container->addCompilerPass(new FindCommandsCompilerPass('drush.service.consolecommands', 'console.command'));
         $container->register('drush.service.consolidationcommands', 'Drush\Command\ServiceCommandlist');
         $container->addCompilerPass(new FindCommandsCompilerPass('drush.service.consolidationcommands', 'drush.command'));
+        $container->register('drush.service.generators', 'Drush\Command\ServiceCommandlist');
+        $container->addCompilerPass(new FindCommandsCompilerPass('drush.service.generators', 'drush.generator'));
     }
 
     /**
