@@ -62,8 +62,7 @@ class GenerateCommands extends DrushCommands
             $preamble = dt('Run `drush generate [command]` and answer a few questions in order to write starter code to your project.');
             ListCommands::renderListCLI($application, $namespaced, $this->output(), $preamble);
             return null;
-        }
-        else {
+        } else {
             // Create an isolated input.
             $argv = [
                 $generator,
