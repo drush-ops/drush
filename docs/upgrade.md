@@ -1,0 +1,3 @@
+Running both Drush 8 and Drush 9
+==========================
+Sometimes you need to run commandfiles which are incompatible with Drush9. If you dont have ime or skill to upgrade it, you can commit a copy of Drush8 to your project. Grab the latest 8.x release from https://github.com/drush-ops/drush/releases. and put it in a top level directory called drush8. In addition, you might want to add [this shell script] to that same directory. Call this shell script instead of drush.phar directly. The script ensures that Drush's redispatches call back into drush.phar and not into the Composer managed Drush9.
