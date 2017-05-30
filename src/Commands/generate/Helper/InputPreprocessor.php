@@ -32,7 +32,7 @@ class InputPreprocessor extends Helper
 
         if (isset($questions['name'])) {
             // @todo Pick up default name from current working directory when possible.
-            $questions['name'][1] = false;
+            $questions['name'][1] = '';
         }
 
         if (!isset($questions['machine_name'])) {
