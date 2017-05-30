@@ -179,7 +179,8 @@ EOT;
 
   public function setupModulesForTests($root) {
     $wootModule = Path::join(__DIR__, '/resources/modules/d8/woot');
-    $targetDir = Path::join($root, 'modules/contrib/woot');
+    // We install into Unish so that we aren't cleaned up. That causes container to go invalid after tearDownAfterClass().
+    $targetDir = Path::join($root, 'modules/unish/woot');
     $this->mkdir($targetDir);
     $this->recursive_copy($wootModule, $targetDir);
   }

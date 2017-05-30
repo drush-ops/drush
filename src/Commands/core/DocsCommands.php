@@ -158,6 +158,18 @@ class DocsCommands extends DrushCommands
     }
 
     /**
+     * Instructions on creating your own Drush Generators.
+     *
+     * @command docs-generators
+     * @hidden
+     * @topic
+     */
+    public function generators()
+    {
+        self::printFile(DRUSH_BASE_PATH. '/docs/generators.md');
+    }
+
+    /**
      * Drush API
      *
      * @command docs-api

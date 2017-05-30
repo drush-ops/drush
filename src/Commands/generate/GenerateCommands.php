@@ -25,11 +25,21 @@ class GenerateCommands extends DrushCommands {
   /**
    * Generate boilerplate code for modules/plugins/services etc.
    *
+   * Drush asks questions so that the generated code is as polished as possible. After
+   * generating, Drush lists the files that were created.
+   *
    * @command generate
    * @aliases gen
-   * @param string $generator Name of the generator to run.
+   * @param string $generator A generator name. Omit to pick from available Generators.
    * @option answers JSON formatted answers
    * @option directory Base directory for file writing.
+   * @usage drush generate
+   *  Pick from available generators and then run it.
+   * @usage drush generate controller
+   *  Generate a controller class for your module.
+   * @usage drush generate drush-command-file
+   *  Generate a Drush commandfile for your module.
+   * @topics docs-generators
    *
    * @bootstrap DRUSH_BOOTSTRAP_MAX
    *
