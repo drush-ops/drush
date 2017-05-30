@@ -56,8 +56,7 @@ class InputHandler extends BaseInputHandler
                 default:
                     if (isset($vars['machine_name'])) {
                         $machine_name = $vars['machine_name'];
-                        // @todo Can we proccess disabled modules as well?
-                        $modules = system_rebuild_module_data();
+                        $modules = \Drupal::moduleHandler()->getModuleList();
                         $directory = isset($modules[$machine_name])
                             ? $modules[$machine_name]->getPath()
                             : $modules_dir . '/' . $machine_name;
