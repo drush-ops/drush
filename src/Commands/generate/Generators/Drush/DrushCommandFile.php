@@ -1,6 +1,6 @@
 <?php
 
-namespace Drush\Commands\generate\Command;
+namespace Drush\Commands\generate\Generators\Drush;
 
 use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\Utils;
