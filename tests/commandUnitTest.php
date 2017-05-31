@@ -2,7 +2,7 @@
 
 namespace Unish;
 
-use Webmozart\PathUtil\Path;
+use Drush\Webmozart\PathUtil\Path;
 
 class commandUnitCase extends UnitUnishTestCase {
   /**

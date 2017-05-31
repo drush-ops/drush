@@ -4,7 +4,7 @@
  * @file
  * Filesystem utilities.
  */
-use Webmozart\PathUtil\Path;
+use Drush\Webmozart\PathUtil\Path;
 
 /**
  * @defgroup filesystemfunctions Filesystem convenience functions.

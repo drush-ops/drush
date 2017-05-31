@@ -11,7 +11,7 @@
  */
 
 use Drush\Log\LogLevel;
-use Webmozart\PathUtil\Path;
+use Drush\Webmozart\PathUtil\Path;
 
 /**
  * Log PHP errors to the Drush log. This is in effect until Drupal's error
@@ -440,14 +440,6 @@ function drush_valid_db_credentials() {
  * @see DRUSH_COMMAND
  */
 function drush_find_drush() {
-  // TEMPORARY: We need this early in the bootstrap for a number of reasons.
-  // Make a better strategy for this later (although this might just do in a pinch).
-  $vendor_path = drush_get_context('DRUSH_VENDOR_PATH');
-  include "$vendor_path/webmozart/assert/src/Assert.php";
-  include "$vendor_path/webmozart/path-util/src/Path.php";
-
-  //debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-
   if ($drush = realpath($_SERVER['argv']['0'])) {
     return Path::canonicalize($drush);
   }

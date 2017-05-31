@@ -1,7 +1,7 @@
 <?php
 
 use Drush\Log\LogLevel;
-use Webmozart\PathUtil\Path;
+use Drush\Webmozart\PathUtil\Path;
 
 /**
  * Implementation of hook_drush_command().

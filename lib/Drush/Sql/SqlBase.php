@@ -3,7 +3,7 @@
 namespace Drush\Sql;
 
 use Drush\Log\LogLevel;
-use Webmozart\PathUtil\Path;
+use Drush\Webmozart\PathUtil\Path;
 
 class SqlBase {
 
