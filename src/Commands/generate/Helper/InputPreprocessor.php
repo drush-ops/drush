@@ -32,45 +32,19 @@ class InputPreprocessor extends Helper
 
         if (isset($questions['name'])) {
             // @todo Pick up default name from current working directory when possible.
-            $questions['name'][1] = false;
+            $questions['name'][1] = '';
         }
 
-        /** @var \Symfony\Component\Console\Command\Command $command */
+        if (!isset($questions['machine_name'])) {
+            return;
+        }
+
+        /** @var \DrupalCodeGenerator\Command\GeneratorInterface $command */
         $command = $this->getHelperSet()->getCommand();
-        $command_name = $command->getName();
-
-        $excluded = [
-            'module-configuration-entity',
-            'module-content-entity',
-            'module-plugin-manager',
-            'module-standard',
-            'theme-standard',
-            'settings-local',
-            'yml-theme-info',
-            'yml-module-info',
-        ];
-        if (in_array($command_name, $excluded)) {
-            return;
-        }
-
-        // Theme related generators (only one so far).
-        if ($command_name == 'theme-file') {
-            $themes = [];
-            foreach (\Drupal::service('theme_handler')->listInfo() as $machine_name => $theme) {
-                $themes[$machine_name] = $theme->info['name'];
-            }
-            $questions['name'][3] = array_values($themes);
-            $questions['machine_name'][1] = function ($vars) use ($themes) {
-                $machine_name = array_search($vars['name'], $themes);
-                return $machine_name ?: Utils::human2machine($vars['name']);
-            };
-            $questions['machine_name'][3] = array_keys($themes);
-
-            return;
-        }
+        $destination = $command->getDestination();
 
         // Module related generators.
-        if (isset($questions['machine_name'])) {
+        if ($destination == 'modules/%') {
             $modules = [];
             // @todo - For better UX, match on both labels and machine names.
             $moduleHandler = \Drupal::moduleHandler();
@@ -90,6 +64,18 @@ class InputPreprocessor extends Helper
                 // Only machine name exists.
                 $questions['machine_name'][1] = 'example';
             }
+        // Theme related generators.
+        } elseif ($destination == 'themes/%') {
+            $themes = [];
+            foreach (\Drupal::service('theme_handler')->listInfo() as $machine_name => $theme) {
+                $themes[$machine_name] = $theme->info['name'];
+            }
+            $questions['name'][3] = array_values($themes);
+            $questions['machine_name'][1] = function ($vars) use ($themes) {
+                $machine_name = array_search($vars['name'], $themes);
+                return $machine_name ?: Utils::human2machine($vars['name']);
+            };
+            $questions['machine_name'][3] = array_keys($themes);
         }
     }
 }

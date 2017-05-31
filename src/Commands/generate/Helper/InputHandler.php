@@ -19,51 +19,51 @@ class InputHandler extends BaseInputHandler
     {
         $vars = parent::collectVars($input, $output, $questions);
         if (empty($input->getOption('directory'))) {
-            /** @var \Symfony\Component\Console\Command\Command $command */
+            /** @var \DrupalCodeGenerator\Command\GeneratorInterface $command */
             $command = $this->getHelperSet()->getCommand();
+            $destination = $command->getDestination();
 
-            $modules_dir = is_dir(DRUPAL_ROOT . '/modules/custom') ?
-                'modules/custom' : 'modules';
+            // Check if the generator can handle it itself.
+            if (is_callable($destination)) {
+                $directory = $destination($vars);
+            } else {
+                $modules_dir = is_dir(DRUPAL_ROOT . '/modules/custom') ?
+                  'modules/custom' : 'modules';
 
-            $directory = false;
-            switch ($command->getName()) {
-                case 'module-configuration-entity':
-                case 'module-content-entity':
-                case 'module-plugin-manager':
-                case 'module-standard':
-                    $directory = $modules_dir;
-                    break;
-                case 'theme-standard':
-                    $directory = 'themes';
-                    break;
+                $directory = false;
+                switch ($destination) {
+                    case 'modules':
+                        $directory = $modules_dir;
+                        break;
 
-                case 'theme-file':
-                    // @todo Handle this case.
-                    break;
+                    case 'themes':
+                        $directory = 'themes';
+                        break;
 
-                case 'settings-local':
-                    $directory = 'sites/default';
-                    break;
+                    case 'modules/%':
+                        if (isset($vars['machine_name'])) {
+                            $machine_name = $vars['machine_name'];
+                            $modules = \Drupal::moduleHandler()->getModuleList();
+                            $directory = isset($modules[$machine_name])
+                              ? $modules[$machine_name]->getPath()
+                              : $modules_dir . '/' . $machine_name;
+                        }
+                        break;
 
-                case 'yml-theme-info':
-                    // Do nothing.
-                    break;
-
-                case 'yml-module-info':
-                    // @todo Handle this case.
-                    break;
-
-                default:
-                    if (isset($vars['machine_name'])) {
-                        $machine_name = $vars['machine_name'];
-                        $modules = \Drupal::moduleHandler()->getModuleList();
-                        $directory = isset($modules[$machine_name])
-                            ? $modules[$machine_name]->getPath()
-                            : $modules_dir . '/' . $machine_name;
-                    } else {
+                    case 'themes/%':
                         // @todo Handle this case.
-                    }
+                        break;
+
+                    case 'profiles':
+                        $directory = 'profiles';
+                        break;
+
+                    case 'sites/default':
+                        $directory = 'sites/default';
+                        break;
+                }
             }
+
             /** @var \DrupalCodeGenerator\Command\GeneratorInterface $command */
             $directory && $command->setDirectory($directory);
         }
