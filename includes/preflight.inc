@@ -43,6 +43,13 @@ function drush_main() {
   // Reset our bootstrap phase to the beginning
   drush_set_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE);
 
+  $vendor_path = drush_get_context('DRUSH_VENDOR_PATH');
+  $classloader = require $vendor_path . '/autoload.php';
+  drush_set_context('DRUSH_CLASSLOADER', $classloader);
+
+  // Can't log until we have a logger, so we'll create this ASAP.
+  _drush_create_default_logger();
+
   $return = '';
   if (!drush_get_error()) {
     if ($file = drush_get_option('early', FALSE)) {
@@ -118,8 +125,6 @@ function drush_preflight_prepare() {
     return FALSE;
   }
 
-  $classloader = require $vendor_path;
-
   require_once DRUSH_BASE_PATH . '/includes/startup.inc';
   require_once DRUSH_BASE_PATH . '/includes/bootstrap.inc';
   require_once DRUSH_BASE_PATH . '/includes/environment.inc';
@@ -141,10 +146,10 @@ function drush_preflight_prepare() {
 
   // Stash our vendor path and classloader.
   drush_set_context('DRUSH_VENDOR_PATH', dirname($vendor_path));
-  drush_set_context('DRUSH_CLASSLOADER', $classloader);
 
-  // Can't log until we have a logger, so we'll create this ASAP.
-  _drush_create_default_logger();
+  // Register our autoloader -- provides Drush internal classes later.
+  // The Composer autoloader is included later to bring in our dependencies.
+  spl_autoload_register('drush_internal_autoloader');
 
   // Terminate immediately unless invoked as a command line script
   if (!drush_verify_cli()) {
@@ -185,7 +190,21 @@ function drush_preflight_prepare() {
   // Process initial global options such as --debug.
   _drush_preflight_global_options();
 
-  drush_log(dt("Drush preflight prepare loaded autoloader at !autoloader", array('!autoloader' => realpath($vendor_path))), LogLevel::PREFLIGHT);
+  drush_log(dt("Drush preflight prepare loaded autoloader at !autoloader", array('!autoloader' => realpath($vendor_path))), 'preflight'); // LogLevel::PREFLIGHT
+}
+
+/**
+ * Autoload classes in the Drush namespace.
+ */
+function drush_internal_autoloader($className) {
+  if (substr($className,0,6) != "Drush\\") {
+    return;
+  }
+  $classFilePath = dirname(__DIR__) . '/lib/' . strtr($className, '\\', '/') . '.php';
+
+  if(file_exists($classFilePath) && is_readable($classFilePath)) {
+    require($classFilePath);
+  }
 }
 
 /**
@@ -219,7 +238,7 @@ function drush_preflight() {
   _drush_preflight_columns();
 
   // Display is tidy now that column width has been handled.
-  drush_log(dt('Starting Drush preflight.'), LogLevel::PREFLIGHT);
+  drush_log(dt('Starting Drush preflight.'), 'preflight'); // LogLevel::PREFLIGHT
 
   // Statically define a way to call drush again.
   define('DRUSH_COMMAND', drush_find_drush());
@@ -252,9 +271,6 @@ function drush_preflight() {
   drush_load_config('custom');
 
   _drush_preflight_global_options();
-  // Load all the commandfiles findable from any of the
-  // scopes listed above.
-  _drush_find_commandfiles_drush();
 
   // Look up the alias identifier that the user wants to use,
   // either via an argument or via 'site-set'.
@@ -268,6 +284,9 @@ function drush_preflight() {
   // done, since site aliases may set option values that
   // affect these phases.
   $alias_record = _drush_sitealias_set_context_by_name($target_alias);
+
+  // Load the appropriate autoloader
+  drush_composer_autoloader();
 
   // Find the selected site based on --root, --uri or cwd
   drush_preflight_root();
@@ -304,6 +323,11 @@ function drush_preflight() {
     return drush_set_error('DRUSH_BOOTSTRAP_NO_ALIAS', dt("Could not find the alias !alias", array('!alias' => $target_alias)));
   }
 
+  // Load all the commandfiles findable from any of the
+  // scopes listed above.
+  // This previously happened immediately after _drush_preflight_global_options().
+  _drush_find_commandfiles_drush();
+
   // If applicable swaps in shell alias values.
   drush_shell_alias_replace($target_alias);
 
@@ -315,6 +339,40 @@ function drush_preflight() {
 
   // Select the bootstrap object and return it.
   return drush_select_bootstrap_class();
+}
+
+/**
+ * Here is where we need to do magic logic to figure out whether we
+ * want to load our Symfony-2 compatible autoload file, or our Symfony-3
+ * compatible autoload file.
+ */
+function drush_composer_autoloader() {
+  // Start from --root, if it was specified.
+  $root = drush_get_option('root');
+
+  // Find the composer root. If there is no composer root, then we
+  // will just load Drush's autoload file. If there is a composer root,
+  // and we find evidence of Symfony 3 in the lock file, then we will
+  // do something special.
+  // Alternate plan: always load the application autoload file, and then
+  // try to include all of the necessary Drush dependencies that are still
+  // missing.
+  $composer_root = drush_locate_composer_root($root);
+
+  // For now just load the Drush autoloader, until we have implemented
+  // our magical strategy. The general idea is that we will just load
+  // our own autoload file if:
+  //  - There is no composer root
+  //  - "$composer_root/vendor" == $vendor_path (site-local Drush)
+  //  - Maybe also if Drupal version is 7 (or when there are no Symfony components in $composer_root)
+  // Otherwise, we have to inspect the composer.lock at $composer_root,
+  // and find an autoload file of ours that will be compatible with that.
+  // Alternately, we might be able to make a mini vendor directory that
+  // contains only the components that are not overlapping with Drupal 8.3.x
+  // and earlier or Drupal 8.4.x and later.
+  $vendor_path = drush_get_context('DRUSH_VENDOR_PATH');
+  $classloader = require $vendor_path . '/autoload.php';
+  drush_set_context('DRUSH_CLASSLOADER', $classloader);
 }
 
 /**

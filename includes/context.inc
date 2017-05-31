@@ -157,10 +157,10 @@ function drush_load_config_file($context, $config_list) {
   foreach ((array)$config_list as $config) {
     if (file_exists($config)) {
       $options = $aliases = $command_specific = $override = array();
-      drush_log(dt('Loading drushrc "!config" into "!context" scope.', array('!config' => realpath($config), '!context' => $context)), LogLevel::BOOTSTRAP);
+      drush_log(dt('Loading drushrc "!config" into "!context" scope.', array('!config' => realpath($config), '!context' => $context)), 'bootstrap'); // LogLevel::BOOTSTRAP
       $ret = @include_once($config);
       if ($ret === FALSE) {
-        drush_log(dt('Cannot open drushrc "!config", ignoring.', array('!config' => realpath($config))), LogLevel::WARNING);
+        drush_log(dt('Cannot open drushrc "!config", ignoring.', array('!config' => realpath($config))), 'warning'); // LogLevel::WARNING
         return FALSE;
       }
       if (!empty($options) || !empty($aliases) || !empty($command_specific) || !empty($override)) {
@@ -198,7 +198,7 @@ function drush_set_config_options($context, $options, $override = array()) {
  * array that use the short form into the long form.
  */
 function drush_expand_short_form_options(&$options) {
-  foreach (drush_get_global_options() as $name => $info) {
+  foreach (drush_get_standard_global_options() as $name => $info) {
     if (is_array($info)) {
       // For any option with a short form, check to see if the short form was set in the
       // options.  If it was, then rename it to its long form.
@@ -240,7 +240,7 @@ function drush_set_config_special_contexts(&$options) {
     // Expand -s into --simulate, etc.
     drush_expand_short_form_options($options);
 
-    foreach (drush_get_global_options() as $name => $info) {
+    foreach (drush_get_standard_global_options() as $name => $info) {
       if (is_array($info)) {
         // For any global option with the 'merge-pathlist' or 'merge-associative' flag, set its
         // value in the specified context.  The option is 'merged' because we
