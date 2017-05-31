@@ -124,8 +124,12 @@ class GenerateCommands extends DrushCommands
                 // Remove d8 namespace.
                 array_shift($sub_names);
             }
-            // @todo Shall we use command alias instead?
-            $generator->setName(implode('-', $sub_names));
+            $new_name = implode('-', $sub_names);
+            $generator->setName($new_name);
+            // Remove alias if it is same as new name.
+            if ($aliases = $generator->getAliases()) {
+                $generator->setAliases(array_diff($aliases, [$new_name]));
+            }
         }
 
         $application->addCommands($generators);
