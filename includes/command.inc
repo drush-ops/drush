@@ -1,7 +1,7 @@
 <?php
 
 use Drush\Log\LogLevel;
-use Webmozart\PathUtil\Path;
+use Drush\Webmozart\PathUtil\Path;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drush\Command\DrushInputAdapter;
 use Drush\Command\DrushOutputAdapter;
@@ -1225,6 +1225,7 @@ function drush_commands_categorize($commands) {
 }
 
 function drush_command_defaults($key, $commandfile, $path) {
+  //debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
   $defaults =  array(
     'command' => $key,
     'command-hook' => $key,
@@ -1997,6 +1998,8 @@ function drush_shell_alias_replace($target_site_alias) {
 
 function commandfiles_cache() {
   static $commandfiles_cache = NULL;
+
+  //debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
 
   if (!isset($commandfiles_cache)) {
     $commandfiles_cache = new Drush\Command\Commandfiles();
