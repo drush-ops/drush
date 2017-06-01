@@ -84,7 +84,7 @@ class BootstrapManager implements LoggerAwareInterface
         return $this->drupalFinder->getComposerRoot();
     }
 
-    public function locateRoot($root, $start_path = NULL)
+    public function locateRoot($root, $start_path = null)
     {
         // TODO: Throw if we already bootstrapped a framework?
 
