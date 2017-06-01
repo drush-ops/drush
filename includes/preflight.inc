@@ -543,13 +543,7 @@ function drush_preflight() {
  */
 function drush_preflight_root() {
   $root = drush_get_option('root');
-  if (!isset($root)) {
-    $root = drush_locate_root();
-  }
-  if ($root) {
-    $root = realpath($root);
-  }
-  Drush::bootstrapManager()->setRoot($root);
+  Drush::bootstrapManager()->locateRoot($root);
 
   // Load the config options from Drupal's /drush, ../drush, and sites/all/drush directories,
   // even prior to bootstrapping the root.

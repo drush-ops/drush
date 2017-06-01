@@ -318,33 +318,6 @@ function drush_conf_path($server_uri, $require_settings = TRUE) {
 }
 
 /**
- * Exhaustive depth-first search to try and locate the Drupal root directory.
- * This makes it possible to run Drush from a subdirectory of the drupal root.
- *
- * @param
- *   Search start path. Defaults to current working directory.
- * @return
- *   A path to drupal root, or FALSE if not found.
- */
-function drush_locate_root($start_path = NULL) {
-  $drupal_root = FALSE;
-
-  $start_path = empty($start_path) ? drush_cwd() : $start_path;
-
-  $drupalFinder = new DrupalFinder();
-  if (!$drupalFinder->locateRoot($start_path)) {
-//    echo ' Drush must be executed within a Drupal site.'. PHP_EOL;
-//    exit(1);
-  }
-
-  // $composerRoot = $drupalFinder->getComposerRoot();
-  $drupalRoot = $drupalFinder->getDrupalRoot();
-  // chdir($drupalRoot);
-
-  return $drupalRoot;
-}
-
-/**
  * Checks whether given path qualifies as a Drupal root.
  *
  * @param string

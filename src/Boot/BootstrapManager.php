@@ -2,6 +2,7 @@
 
 namespace Drush\Boot;
 
+use DrupalFinder\DrupalFinder;
 use Drush\Drush;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
@@ -10,6 +11,11 @@ use Psr\Log\LoggerAwareTrait;
 class BootstrapManager implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
+
+    /**
+     * @var DrupalFinder
+     */
+    protected $drupalFinder;
 
     /**
      * @var \Drush\Boot\Boot[]
@@ -46,6 +52,7 @@ class BootstrapManager implements LoggerAwareInterface
     public function __construct(Boot $default)
     {
         $this->defaultBootstrapObject = $default;
+        $this->drupalFinder = new DrupalFinder();
     }
 
     /**
@@ -66,13 +73,28 @@ class BootstrapManager implements LoggerAwareInterface
      */
     public function getRoot()
     {
-        return $this->root;
+        return $this->drupalFinder->getDrupalRoot();
     }
 
-    public function setRoot($root)
+    /**
+     * Return the composer root for the selected Drupal site.
+     */
+    public function getComposerRoot()
+    {
+        return $this->drupalFinder->getComposerRoot();
+    }
+
+    public function locateRoot($root, $start_path = NULL)
     {
         // TODO: Throw if we already bootstrapped a framework?
-        $this->root = $root;
+
+        if (!isset($root)) {
+            $root = drush_cwd();
+        }
+        if (!$this->drupalFinder->locateRoot($root)) {
+            //    echo ' Drush must be executed within a Drupal site.'. PHP_EOL;
+            //    exit(1);
+        }
     }
 
     /**
@@ -133,7 +155,7 @@ class BootstrapManager implements LoggerAwareInterface
     {
         // Once we have selected a Drupal root, we will reduce our bootstrap
         // candidates down to just the one used to select this site root.
-        $bootstrap = $this->bootstrapObjectForRoot($this->root);
+        $bootstrap = $this->bootstrapObjectForRoot($this->getRoot());
         // If we have not found a bootstrap class by this point,
         // then return our default bootstrap object.  The default bootstrap object
         // should pass through all calls without doing anything that
