@@ -1443,8 +1443,10 @@ function _drush_find_local_sites_in_sites_folder($a_drupal_root) {
       // First we'll resolve the realpath of the settings.php file,
       // so that we get the correct drupal root when symlinks are in use.
       $real_sitedir = dirname(realpath($filename));
-      $real_root = drush_locate_root($filename);
-      if ($real_root !== FALSE) {
+
+      $drupalFinder = new DrupalFinder();
+      if ($drupalFinder->locateRoot($real_sitedir)) {
+        $real_root = $drupalFinder->getDrupalRoot();
         $a_drupal_site = $real_root . '#' . basename($real_sitedir);
       }
       // If the symlink points to some folder outside of any drupal
@@ -1556,7 +1558,10 @@ function drush_sitealias_build_record_from_settings_file($site_settings_file, $a
 
   if (file_exists($site_settings_file)) {
     if (!isset($drupal_root)) {
-      $drupal_root = drush_locate_root($site_settings_file);
+      $drupalFinder = new DrupalFinder();
+      if ($drupalFinder->locateRoot(dirname($site_settings_file))) {
+        $drupal_root = $drupalFinder->getDrupalRoot();
+      }
     }
 
     $alias_record['root'] = $drupal_root;
