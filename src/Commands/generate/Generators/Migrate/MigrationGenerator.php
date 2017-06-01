@@ -8,13 +8,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Implements `generate migrate-source` command.
+ * Implements `generate migration` command.
  */
-class MigrateSourceGenerator extends BaseGenerator
+class MigrationGenerator extends BaseGenerator
 {
 
-    protected $name = 'migrate-source';
-    protected $description = 'Generates the yml and PHP class for a Migration source';
+    protected $name = 'migration';
+    protected $description = 'Generates the yml and PHP class for a Migration';
     protected $templatePath = __DIR__;
 
     /**
@@ -38,8 +38,8 @@ class MigrateSourceGenerator extends BaseGenerator
         $vars['class'] = Utils::camelize($vars['plugin_label']);
 
         $path = 'src/Plugin/migrate/source/' . $vars['class'] . '.php';
-        $this->files[$path] = $this->render('migrate-source.twig', $vars);
+        $this->files[$path] = $this->render('migration.twig', $vars);
         $path = 'config/install/migrate_plus.migration.' . $vars['plugin_id'] . '.yml';
-        $this->files[$path] = $this->render('migrate-source.yml.twig', $vars);
+        $this->files[$path] = $this->render('migration.yml.twig', $vars);
     }
 }
