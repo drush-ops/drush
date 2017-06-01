@@ -8,8 +8,6 @@
   "authors": [
     { "name": "Moshe Weitzman", "email": "weitzman@tejasa.com" },
     { "name": "Owen Barton", "email": "drupal@owenbarton.com" },
-    { "name": "Mark Sonnabaum", "email": "marksonnabaum@gmail.com" },
-    { "name": "Antoine Beaupré", "email": "anarcat@koumbit.org" },
     { "name": "Greg Anderson", "email": "greg.1.anderson@greenknowe.org" },
     { "name": "Jonathan Araña Cruz", "email": "jonhattan@faita.net" },
     { "name": "Jonathan Hedstrom", "email": "jhedstrom@gmail.com" },
@@ -57,10 +55,6 @@
     "lox/xhprof": "dev-master",
     "phpunit/phpunit": "^4",
     "squizlabs/php_codesniffer": "^2.7"
-  },
-  "suggest": {
-      "ext-pcntl": "*",
-      "drush/config-extra": "Provides configuration workflow commands, such as config-merge."
   },
   "autoload": {
     "psr-4": {

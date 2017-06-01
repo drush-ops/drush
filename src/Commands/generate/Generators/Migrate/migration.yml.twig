@@ -1,0 +1,54 @@
+# Migration configuration for {{ plugin_id }} content.
+id: {{ plugin_id }}
+label: {{ plugin_label }}
+migration_group: {{ migration_group }}
+source:
+  plugin: {{ plugin_id }}
+destination:
+  # Specify the destination plugin (usually entity:entity_type).
+  plugin: {{ destination_plugin }}
+process:
+  # Hardcode the destination node type (bundle) as 'migrate_example_beer'.
+  type:
+    plugin: default_value
+    default_value: migrate_example_beer
+  title: name
+  nid: bid
+  uid:
+    plugin: migration
+    migration: beer_user
+    source: aid
+  sticky:
+    plugin: default_value
+    default_value: 0
+  field_migrate_example_country: countries
+  field_migrate_example_beer_style:
+    plugin: migration
+    migration: beer_term
+    source: terms
+  # Some Drupal fields may have multiple components we may want to set
+  # separately. For example, text fields may have summaries (teasers) in
+  # addition to the full text value. We use / to separate the field name from
+  # the internal field value being set, and put it in quotes because / is a
+  # YAML special character.
+  'body/value': body
+  'body/summary': excerpt
+# Our beer nodes have references to terms and users, so we want those to be
+# imported first. We make that dependency explicit here - by putting those
+# migrations under the 'required' key, we ensure that the tools will prevent
+# us from running the beer_node migration unless the beer_term and beer_user
+# migrations are complete (although we can override the dependency check by
+# passing --force to the drush migrate-import command). We can also add
+# 'optional' dependencies - these affect the order in which migrations are
+# displayed, and run by default, but does not force you run them in that
+# order.
+# The general rule of thumb is that any migrations referenced by migration
+# process plugins should be required here.
+migration_dependencies:
+  required:
+    - beer_term
+    - beer_user
+dependencies:
+  enforced:
+    module:
+      - migrate_example

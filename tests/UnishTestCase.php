@@ -522,7 +522,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * The sidewide directory for Drupal extensions.
+   * The sitewide directory for Drupal extensions.
    */
   function drupalSitewideDirectory() {
     return '/sites/all';
