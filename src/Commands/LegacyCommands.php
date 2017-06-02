@@ -94,7 +94,7 @@ class LegacyCommands extends DrushCommands implements BuilderAwareInterface, IOA
      */
     public function releases()
     {
-        $msg = 'The pm-releases command was deprecated. Please see `composer show <packagename>`';
+        $msg = 'The pm-releases command was deprecated. Please see `composer search` and `composer show <packagename>`';
         $this->logger()->notice($msg);
     }
 
