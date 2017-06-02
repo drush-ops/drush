@@ -122,8 +122,9 @@ class LegacyCommands extends DrushCommands implements BuilderAwareInterface, IOA
             'keep-vcs' => false,
             'no-install' => false,
             'repository' => 'https://packages.drupal.org/8'
-        ])
-    {
+        ]
+    ) {
+    
         $composerRoot = Drush::bootstrapManager()->getComposerRoot();
 
         $args = $this->fixProjectArgs($args);
