@@ -124,7 +124,6 @@ class LegacyCommands extends DrushCommands implements BuilderAwareInterface, IOA
             'repository' => ''
         ]
     ) {
-
         $composerRoot = Drush::bootstrapManager()->getComposerRoot();
 
         if ($options['dev']) {
@@ -133,9 +132,6 @@ class LegacyCommands extends DrushCommands implements BuilderAwareInterface, IOA
 
         if ($composerRoot) {
             return $this->downloadViaRequire($composerRoot, $args, $options);
-        }
-        if ($options['dev']) {
-            return $this->downloadViaClone($args, $options);
         }
         return $this->downloadViaCreateProject($args, $options);
     }
@@ -164,23 +160,6 @@ class LegacyCommands extends DrushCommands implements BuilderAwareInterface, IOA
         );
     }
 
-    protected function getBranch($project)
-    {
-        $uri = "https://updates.drupal.org/release-history/$project/8.x";
-        $releaseData = file_get_contents($uri);
-        $defaultMajor = $this->getDefaultMajor($releaseData);
-
-        return "8.x-${defaultMajor}.x";
-    }
-
-    protected function getDefaultMajor($releaseData)
-    {
-        if (preg_match('#<default_major>([0-9]*)</default_major>#', $releaseData, $matches)) {
-            return $matches[1];
-        }
-        return '1';
-    }
-
     protected function downloadViaCreateProject($args, $options)
     {
         $args = $this->fixProjectArgs($args);
@@ -204,24 +183,6 @@ class LegacyCommands extends DrushCommands implements BuilderAwareInterface, IOA
                 ->noInstall($options['no-install'])
                 ->stability($stability)
                 ->noInteraction();
-        }
-        return $builder;
-    }
-
-    protected function downloadViaClone($args, $options)
-    {
-        $builder = $this->collectionBuilder();
-        $baseDir = drush_cwd();
-
-        foreach ($args as $arg) {
-            $repoUri = "https://git.drupal.org/project/$arg.git";
-            // How would we determine the correct branch?
-            // We probably wouldn't want to have to pull in large
-            // amounts of releasexml parsing code.
-            $branch = $this->getBranch($arg);
-            $targetDir = "$baseDir/$arg";
-            $builder = $this->taskGitStack()
-                ->cloneRepo($repoUri, $targetDir, $branch);
         }
         return $builder;
     }
