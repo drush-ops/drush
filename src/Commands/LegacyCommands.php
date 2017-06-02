@@ -1,8 +1,15 @@
 <?php
 namespace Drush\Commands;
 
-class LegacyCommands extends DrushCommands
+use Drush\Drush;
+
+use Robo\LoadAllTasks;
+use Robo\Contract\IOAwareInterface;
+use Robo\Contract\BuilderAwareInterface;
+
+class LegacyCommands extends DrushCommands implements BuilderAwareInterface, IOAwareInterface
 {
+    use LoadAllTasks;
 
     /**
      * @command pm-disable
@@ -107,9 +114,68 @@ class LegacyCommands extends DrushCommands
      * @aliases dl
      * @hidden
      */
-    public function download()
+    public function download(
+        array $args,
+        $options = [
+            'stability' => false,
+            'dev' => false,
+            'keep-vcs' => false,
+            'no-install' => false,
+            'repository' => 'https://packages.drupal.org/8'
+        ])
     {
-        $msg = 'dl has been deprecated. Please build your site using Composer. Add new projects with composer require drupal/[project-name]. Use https://www.drupal.org/project/composer_generate to build a composer.json which represents the the enabled modules on your site.';
-        $this->logger()->notice($msg);
+        $composerRoot = Drush::bootstrapManager()->getComposerRoot();
+
+        $args = $this->fixProjectArgs($args);
+        if ($options['dev']) {
+            $options['stability'] = 'dev';
+        }
+
+        if (!$composerRoot) {
+            return $this->downloadViaCreateProject($args, $options);
+        }
+        return $this->downloadViaRequire($composerRoot, $args, $options);
+    }
+
+    public function fixProjectArgs($args)
+    {
+        return array_map(
+            function ($item) {
+                list($project, $version) = explode(':', $item, 2) + ['', ''];
+
+                if (strpos($project, "/") === false) {
+                    $project = "drupal/$project";
+                }
+
+                if (!empty($version)) {
+                    $project = "$project:$version";
+                }
+
+                return $project;
+            },
+            $args
+        );
+    }
+
+    protected function downloadViaCreateProject($args, $options)
+    {
+        $builder = $this->collectionBuilder();
+        foreach ($args as $arg) {
+            $builder = $builder->taskComposerCreateProject()
+                ->source($arg)
+                ->repository($options['repository'])
+                ->keepVcs($options['keep-vcs'])
+                ->noInstall($options['no-install'])
+                ->stability($options['stability']);
+        }
+        return $builder;
+    }
+
+    protected function downloadViaRequire($composerRoot, $args, $options)
+    {
+        return $this->taskComposerRequire()
+            ->workingDir($composerRoot)
+            ->noInstall($options['no-install'])
+            ->dependency($args);
     }
 }
