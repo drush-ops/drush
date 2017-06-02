@@ -164,6 +164,23 @@ class LegacyCommands extends DrushCommands implements BuilderAwareInterface, IOA
         );
     }
 
+    protected function getBranch($project)
+    {
+        $uri = "https://updates.drupal.org/release-history/$project/8.x";
+        $releaseData = file_get_contents($uri);
+        $defaultMajor = $this->getDefaultMajor($releaseData);
+
+        return "8.x-${defaultMajor}.x";
+    }
+
+    protected function getDefaultMajor($releaseData)
+    {
+        if (preg_match('#<default_major>([0-9]*)</default_major>#', $releaseData, $matches)) {
+            return $matches[1];
+        }
+        return '1';
+    }
+
     protected function downloadViaCreateProject($args, $options)
     {
         $args = $this->fixProjectArgs($args);
@@ -201,7 +218,7 @@ class LegacyCommands extends DrushCommands implements BuilderAwareInterface, IOA
             // How would we determine the correct branch?
             // We probably wouldn't want to have to pull in large
             // amounts of releasexml parsing code.
-            $branch = '8.x-3.x';
+            $branch = $this->getBranch($arg);
             $targetDir = "$baseDir/$arg";
             $builder = $this->taskGitStack()
                 ->cloneRepo($repoUri, $targetDir, $branch);
