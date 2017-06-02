@@ -121,21 +121,23 @@ class LegacyCommands extends DrushCommands implements BuilderAwareInterface, IOA
             'dev' => false,
             'keep-vcs' => false,
             'no-install' => false,
-            'repository' => 'https://packages.drupal.org/8'
+            'repository' => ''
         ]
     ) {
-    
+
         $composerRoot = Drush::bootstrapManager()->getComposerRoot();
 
-        $args = $this->fixProjectArgs($args);
         if ($options['dev']) {
             $options['stability'] = 'dev';
         }
 
-        if (!$composerRoot) {
-            return $this->downloadViaCreateProject($args, $options);
+        if ($composerRoot) {
+            return $this->downloadViaRequire($composerRoot, $args, $options);
         }
-        return $this->downloadViaRequire($composerRoot, $args, $options);
+        if ($options['dev']) {
+            return $this->downloadViaClone($args, $options);
+        }
+        return $this->downloadViaCreateProject($args, $options);
     }
 
     public function fixProjectArgs($args)
@@ -146,6 +148,10 @@ class LegacyCommands extends DrushCommands implements BuilderAwareInterface, IOA
 
                 if (strpos($project, "/") === false) {
                     $project = "drupal/$project";
+                }
+
+                if ($project == 'drupal/drupal') {
+                    $project = 'drupal-composer/drupal-project';
                 }
 
                 if (!empty($version)) {
@@ -160,23 +166,57 @@ class LegacyCommands extends DrushCommands implements BuilderAwareInterface, IOA
 
     protected function downloadViaCreateProject($args, $options)
     {
+        $args = $this->fixProjectArgs($args);
+
         $builder = $this->collectionBuilder();
         foreach ($args as $arg) {
+            $repository = $options['repository'];
+            $stability = $options['stability'];
+
+            if (substr($arg, 0, 7) == 'drupal/') {
+                $repository = 'https://packages.drupal.org/8';
+            }
+            if (empty($stability) && (substr($arg, 0, 30) == 'drupal-composer/drupal-project')) {
+                $stability = 'dev';
+            }
+
             $builder = $builder->taskComposerCreateProject()
                 ->source($arg)
-                ->repository($options['repository'])
+                ->repository($repository)
                 ->keepVcs($options['keep-vcs'])
                 ->noInstall($options['no-install'])
-                ->stability($options['stability']);
+                ->stability($stability)
+                ->noInteraction();
+        }
+        return $builder;
+    }
+
+    protected function downloadViaClone($args, $options)
+    {
+        $builder = $this->collectionBuilder();
+        $baseDir = drush_cwd();
+
+        foreach ($args as $arg) {
+            $repoUri = "https://git.drupal.org/project/$arg.git";
+            // How would we determine the correct branch?
+            // We probably wouldn't want to have to pull in large
+            // amounts of releasexml parsing code.
+            $branch = '8.x-3.x';
+            $targetDir = "$baseDir/$arg";
+            $builder = $this->taskGitStack()
+                ->cloneRepo($repoUri, $targetDir, $branch);
         }
         return $builder;
     }
 
     protected function downloadViaRequire($composerRoot, $args, $options)
     {
+        $args = $this->fixProjectArgs($args);
+
         return $this->taskComposerRequire()
             ->workingDir($composerRoot)
             ->noInstall($options['no-install'])
-            ->dependency($args);
+            ->dependency($args)
+            ->noInteraction();
     }
 }
