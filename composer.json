@@ -34,7 +34,7 @@
     "psr/log": "~1.0",
     "psy/psysh": "~0.6",
     "league/container": "~2",
-    "consolidation/robo": "dev-composer-init",
+    "consolidation/robo": "^1.0.8",
     "symfony/config": "~2.2|^3",
     "chi-teck/drupal-code-generator": "dev-master",
     "consolidation/annotated-command": "~2.4",
