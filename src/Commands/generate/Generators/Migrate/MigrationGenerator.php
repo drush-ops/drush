@@ -37,9 +37,9 @@ class MigrationGenerator extends BaseGenerator
         $vars = $this->collectVars($input, $output, $questions);
         $vars['class'] = Utils::camelize($vars['plugin_label']);
 
-        $path = 'src/Plugin/migrate/source/' . $vars['class'] . '.php';
-        $this->files[$path] = $this->render('migration.twig', $vars);
-        $path = 'config/install/migrate_plus.migration.' . $vars['plugin_id'] . '.yml';
-        $this->files[$path] = $this->render('migration.yml.twig', $vars);
+        $plugin_path = 'src/Plugin/migrate/source/' . $vars['class'] . '.php';
+        $this->setFile($plugin_path, 'migration.twig', $vars);
+        $migration_path = 'config/install/migrate_plus.migration.' . $vars['plugin_id'] . '.yml';
+        $this->setFile($migration_path, 'migration.yml.twig', $vars);
     }
 }
