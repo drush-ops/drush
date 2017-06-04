@@ -15,7 +15,6 @@ use Drush\Drush;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Yaml\Dumper as YamlDumper;
 
 /**
  * Drush generate command.
@@ -90,7 +89,7 @@ class GenerateCommands extends DrushCommands
         } elseif (drush_get_context('DRUSH_NEGATIVE')) {
             $override = false;
         }
-        $dumper = new Dumper(new Filesystem(), new YamlDumper(), $override);
+        $dumper = new Dumper(new Filesystem(), $override);
         $helperSet->set($dumper);
 
         $twig_loader = new \Twig_Loader_Filesystem();

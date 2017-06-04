@@ -1,0 +1,5 @@
+services:
+  {{ machine_name }}.commands:
+    class: \Drupal\{{ machine_name }}\Commands\{{ class }}
+    tags:
+      - { name: drush.command }
