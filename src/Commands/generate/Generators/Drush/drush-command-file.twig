@@ -1,7 +1,9 @@
 <?php
 namespace Drupal\{{ machine_name }}\Commands;
 
+{% if not source %}
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+{% endif %}
 use Drush\Commands\DrushCommands;
 
 /**
