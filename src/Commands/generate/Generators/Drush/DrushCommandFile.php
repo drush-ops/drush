@@ -46,7 +46,7 @@ class DrushCommandFile extends BaseGenerator
             if (($pos = strpos($name, '-')) !== false) {
                 $command['method'] = substr($name, $pos + 1);
             }
-            $command['method'] = Utils::camelize($command['method'], false);
+            $command['method'] = Utils::camelize(str_replace('-', '_', $command['method']), false);
             if ($command['options']) {
                 foreach ($command['options'] as $oName => &$option) {
                     // We only care about option description so make value a simple string.
