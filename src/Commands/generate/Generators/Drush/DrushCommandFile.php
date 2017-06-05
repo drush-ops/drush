@@ -35,15 +35,8 @@ class DrushCommandFile extends BaseGenerator
             $commands = call_user_func($filename . '_drush_command');
             $vars['commands'] = $this->adjustCommands($commands);
         }
-        $this->files['src/Commands/' . $vars['class'] . '.php'] = $this->render('drush-command-file.twig', $vars);
-        $this->services[$vars['machine_name'] . '.commands'] = [
-            'class' => '\Drupal\\' . $vars['machine_name'] . '\Commands\\' . $vars['class'],
-            'tags' => [
-                [
-                    'name' => 'drush.command',
-                ],
-            ],
-        ];
+        $this->setFile('src/Commands/' . $vars['class'] . '.php', 'drush-command-file.twig', $vars);
+        $this->setServicesFile('drush.services.yml', 'drush.services.twig', $vars);
     }
 
     protected function adjustCommands($commands) {
