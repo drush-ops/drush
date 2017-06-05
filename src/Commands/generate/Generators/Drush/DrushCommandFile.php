@@ -24,7 +24,7 @@ class DrushCommandFile extends BaseGenerator
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $questions = Utils::defaultQuestions() + [
-            'source' => ['Absolute path to legacy Drush commandfile (optional - for porting)'],
+            'source' => ['Absolute path to legacy Drush commandfile (optional - for porting)', null, ''],
         ];
 
         $vars = $this->collectVars($input, $output, $questions);
