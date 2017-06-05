@@ -39,10 +39,11 @@ class DrushCommandFile extends BaseGenerator
         $this->setServicesFile('drush.services.yml', 'drush.services.twig', $vars);
     }
 
-    protected function adjustCommands($commands) {
+    protected function adjustCommands($commands)
+    {
         foreach ($commands as $name => &$command) {
             $command['method'] = $name;
-            if (($pos = strpos($name, '-')) !== FALSE) {
+            if (($pos = strpos($name, '-')) !== false) {
                 $command['method'] = substr($name, $pos + 1);
             }
             $command['method'] = Utils::camelize($command['method'], false);
