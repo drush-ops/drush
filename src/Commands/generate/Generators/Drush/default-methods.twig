@@ -1,0 +1,40 @@
+  /**
+   * Command description here.
+   *
+   * @command {{ machine_name }}-commandName
+   * @param $arg1 Argument description.
+   * @option option-name option description
+   * @usage {{ machine_name }}-commandName foo
+   *   Usage description
+   * @aliases foo
+   */
+  public function commandName($arg1, $options = ['option-name' => 'default']) {
+    $this->logger()->success(dt('Achievement unlocked.'));
+  }
+
+  /**
+   * An example of the table output format.
+   *
+   * @command {{  machine_name }}-token
+   * @aliases token
+   * @field-labels
+   *   group: Group
+   *   token: Token
+   *   name: Name
+   * @default-fields group,token,name
+   *
+   * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+   */
+  public function token($options = ['format' => 'table']) {
+    $all = \Drupal::token()->getInfo();
+    foreach ($all['tokens'] as $group => $tokens) {
+      foreach ($tokens as $key => $token) {
+        $rows[] = [
+          'group' => $group,
+          'token' => $key,
+          'name' => $token['name'],
+        ];
+      }
+    }
+    return new RowsOfFields($rows);
+  }
