@@ -263,7 +263,14 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     return parse_url(UNISH_DB_URL, PHP_URL_SCHEME);
   }
 
-  function setUpDrupal($num_sites = 1, $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL) {
+  function defaultInstallationVerion() {
+    return UNISH_DRUPAL_MAJOR_VERSION . UNISH_DRUPAL_MINOR_VERSION;
+  }
+
+  function setUpDrupal($num_sites = 1, $install = FALSE, $version_string = NULL, $profile = NULL) {
+    if (!$version_string) {
+      $version_string = UNISH_DRUPAL_MAJOR_VERSION;
+    }
     $sites_subdirs_all = array('dev', 'stage', 'prod', 'retired', 'elderly', 'dead', 'dust');
     $sites_subdirs = array_slice($sites_subdirs_all, 0, $num_sites);
     $root = $this->webroot();
@@ -315,7 +322,10 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     return self::$sites;
   }
 
-  function fetchInstallDrupal($env = 'dev', $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL, $separate_roots = FALSE) {
+  function fetchInstallDrupal($env = 'dev', $install = FALSE, $version_string = NULL, $profile = NULL, $separate_roots = FALSE) {
+    if (!$version_string) {
+      $version_string = UNISH_DRUPAL_MAJOR_VERSION;
+    }
     $root = $this->webroot();
     $uri = $separate_roots ? "default" : "$env";
     $options = array();
