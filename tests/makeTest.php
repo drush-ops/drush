@@ -380,6 +380,7 @@ class makeMakefileCase extends CommandUnishTestCase {
     }
   }
 
+  /* TODO: http://download.gna.org/wkhtmltopdf/obsolete/linux/wkhtmltopdf-0.11.0_rc1-static-amd64.tar.bz2 cannot be downloaded any longer
   function testMakeBZ2SingleFile() {
     // Silently skip bz2 test if bz2 is not installed.
     exec('which bzip2', $output, $whichBzip2ErrorCode);
@@ -390,6 +391,7 @@ class makeMakefileCase extends CommandUnishTestCase {
       $this->markTestSkipped('bzip2 command not available.');
     }
   }
+  */
 
   function testMakeContribDestination() {
     $this->runMakefileTest('contrib-destination');

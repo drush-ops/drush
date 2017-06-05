@@ -31,6 +31,16 @@ function unish_init() {
     $unish_drupal_major = $GLOBALS['UNISH_DRUPAL_MAJOR_VERSION'];
   }
   define('UNISH_DRUPAL_MAJOR_VERSION', $unish_drupal_major);
+  $unish_drupal_minor = '';
+  if ($unish_drupal_major == 8) {
+    if (getenv('UNISH_DRUPAL_MINOR_VERSION')) {
+      $unish_drupal_minor = '.' . getenv('UNISH_DRUPAL_MINOR_VERSION');
+    }
+    elseif (isset($GLOBALS['UNISH_DRUPAL_MINOR_VERSION'])) {
+      $unish_drupal_minor = '.' . $GLOBALS['UNISH_DRUPAL_MINOR_VERSION'];
+    }
+  }
+  define('UNISH_DRUPAL_MINOR_VERSION', $unish_drupal_minor);
 
   // We read from env then globals then default to mysql.
   $unish_db_url = 'mysql://root:@127.0.0.1';

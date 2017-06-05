@@ -24,7 +24,8 @@ use Symfony\Component\Console\Input\InputDefinition;
  * 2) We do not want Symfony to attempt to validate our options or arguments
  *    for us.
  */
-class DrushInputAdapter implements InputInterface {
+class DrushInputAdapter implements InputInterface
+{
     protected $arguments;
     protected $options;
     protected $interactive;
@@ -52,13 +53,13 @@ class DrushInputAdapter implements InputInterface {
      */
     public function getFirstArgument()
     {
-        return reset($arguments);
+        return reset($this->arguments);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function hasParameterOption($values)
+    public function hasParameterOption($values, $onlyParams = false)
     {
         $values = (array) $values;
 
@@ -74,7 +75,7 @@ class DrushInputAdapter implements InputInterface {
     /**
      *  {@inheritdoc}
      */
-    public function getParameterOption($values, $default = false)
+    public function getParameterOption($values, $default = false, $onlyParams = false)
     {
         $values = (array) $values;
 
