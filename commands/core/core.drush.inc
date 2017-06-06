@@ -97,6 +97,7 @@ function core_drush_command() {
     ),
     'options' => array(
       'entity-updates' => 'Run automatic entity schema updates at the end of any update hooks. Defaults to --no-entity-updates.',
+      'post-updates' => 'Run hook_post_update_X() implementations. Use --post-updates=0 to skip post-updates.',
     ),
     'aliases' => array('updb'),
   );
