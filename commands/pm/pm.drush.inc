@@ -982,6 +982,7 @@ function drush_pm_enable_validate() {
   $extension_info = drush_get_extensions();
 
   $recheck = TRUE;
+  $last_download = NULL;
   while ($recheck) {
     $recheck = FALSE;
 
@@ -1005,6 +1006,11 @@ function drush_pm_enable_validate() {
         }
       }
       if (!empty($found)) {
+        // Prevent from looping if last download failed.
+        if ($found === $last_download) {
+          drush_log(dt("Unable to download some or all of the extensions."), LogLevel::WARNING);
+          break;
+        }
         drush_log(dt("The following projects provide some or all of the extensions not found:\n@list", array('@list' => implode("\n", $found))), LogLevel::OK);
         if (drush_get_option('resolve-dependencies')) {
           drush_log(dt("They are being downloaded."), LogLevel::OK);
@@ -1053,12 +1059,18 @@ function drush_pm_enable_validate() {
           $unmet_project_list = array_merge($unmet_project_list, $unmet_projects);
           $msgs[] = dt("!module requires !unmet-projects", array('!unmet-projects' => implode(', ', $unmet_projects), '!module' => $module));
         }
+        $found = array_merge($download, $unmet_project_list);
+        // Prevent from looping if last download failed.
+        if ($found === $last_download) {
+          drush_log(dt("Unable to download some or all of the extensions."), LogLevel::WARNING);
+          break;
+        }
         drush_log(dt("The following projects have unmet dependencies:\n!list", array('!list' => implode("\n", $msgs))), LogLevel::OK);
         if (drush_get_option('resolve-dependencies')) {
           drush_log(dt("They are being downloaded."), LogLevel::OK);
         }
         if (drush_get_option('resolve-dependencies') || drush_confirm(dt("Would you like to download them?"))) {
-          $download = array_merge($download, $unmet_project_list);
+          $download = $found;
         }
       }
     }
@@ -1077,6 +1089,7 @@ function drush_pm_enable_validate() {
         system_list_reset();
       }
       $extension_info = drush_get_extensions();
+      $last_download = $download;
       $recheck = TRUE;
     }
   }
