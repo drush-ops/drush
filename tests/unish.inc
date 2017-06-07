@@ -16,7 +16,7 @@ function unishGetPaths() {
 
 function unishIsVerbose() {
   $verbose = false;
-  foreach (['-v','-vv','-vvv','--verbose'] as $needle) {
+  foreach (['-v','-vv','-vvv','--verbose', '--debug', '-d', '-dv'] as $needle) {
     if (in_array($needle, $_SERVER['argv'])) {
       $verbose = $needle;
     }
