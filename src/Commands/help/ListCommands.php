@@ -59,18 +59,27 @@ class ListCommands extends DrushCommands
             $this->renderListCLI($application, $namespaced, $this->output(), $preamble);
             return null;
         } else {
-            $dom = $this->buildDom($namespaced);
+            $dom = $this->buildDom($namespaced, $application);
             return $dom;
         }
     }
 
     /**
      * @param $namespaced
+     * @param $application
      * @return \DOMDocument
      */
-    public function buildDom($namespaced)
+    public function buildDom($namespaced, $application)
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');
+        $rootXml = $dom->createElement('symfony');
+        $rootXml->setAttribute('name', $application->getName());
+        if ($application->getVersion() !== 'UNKNOWN') {
+            $rootXml->setAttribute('version', $application->getVersion());
+        }
+
+
+        // Create two top level  elements.
         $commandsXML = $dom->createElement('commands');
         $namespacesXML = $dom->createElement('namespaces');
 
@@ -90,9 +99,10 @@ class ListCommands extends DrushCommands
             $namespacesXML->appendChild($namespaceXML);
         }
 
-        // Append top level elements in correct order.
-        $dom->appendChild($commandsXML);
-        $dom->appendChild($namespacesXML);
+        // Append top level elements to root element in correct order.
+        $rootXml->appendChild($commandsXML);
+        $rootXml->appendChild($namespacesXML);
+        $dom->appendChild($rootXml);
         return $dom;
     }
 
