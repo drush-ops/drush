@@ -52,6 +52,11 @@
     "sebastian/version": "~1"
   },
   "require-dev": {
+    "symfony/var-dumper": "~2.7",
+    "symfony/console": "~2.7",
+    "symfony/process": "~2.7",
+    "symfony/event-dispatcher": "~2.7",
+    "symfony/finder": "~2.7",
     "lox/xhprof": "dev-master",
     "phpunit/phpunit": "^4",
     "squizlabs/php_codesniffer": "^2.7"
