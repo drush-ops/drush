@@ -8,6 +8,7 @@ use Drush\Exceptions\UserAbortException;
 use Drush\Log\LogLevel;
 use Drupal\Core\Config\FileStorage;
 use Drush\Sql\SqlBase;
+use Webmozart\PathUtil\Path;
 
 class SiteInstallCommands extends DrushCommands
 {
@@ -113,6 +114,10 @@ class SiteInstallCommands extends DrushCommands
             $msg .= ' Consider using the --notify global option.';
         }
         $this->logger()->info(dt($msg));
+
+        // Define some functions which alter away the install_finished task.
+        require_once Path::join(DRUSH_BASE_PATH, 'includes/site_install.inc');
+
         require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
         drush_op('install_drupal', $class_loader, $settings);
         if ($show_password) {
