@@ -106,7 +106,7 @@ function dt($string, $args = array()) {
       $output = $string;
     }
   }
-  return $output;
+  return (string) $output;
 }
 
 /**
