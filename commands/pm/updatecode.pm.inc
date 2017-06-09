@@ -56,6 +56,16 @@ function drush_pm_updatecode() {
     drush_print(dt('Skipping core update (--no-core specified).'));
   }
 
+  // Drush 8 cannot upgrade Drupal 8.3.x and below to 8.4.x.
+  // @see https://www.drupal.org/node/2874827
+  if (isset($update_info['drupal'])) {
+    if (version_compare($update_info['drupal']['candidate_version'], '8.4.0') >= 0
+      && version_compare($update_info['drupal']['existing_version'], '8.4.0') < 0) {
+      drush_print(dt('Notice: This version of Drush cannot upgrade Drupal to 8.4.0 and above. See @url.', ['@url' => 'https://www.drupal.org/project/drupal/releases/8.4.0']));
+      $update_info['drupal']['updateable'] = 0;
+    }
+  }
+
   // Remove locked and non-updateable projects.
   foreach ($update_info as $name => $project) {
     if ((isset($project['locked']) && !isset($requests[$name])) || (!isset($project['updateable']) || !$project['updateable'])) {
