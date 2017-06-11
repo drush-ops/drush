@@ -46,7 +46,6 @@ class InputPreprocessor extends Helper
         // Module related generators.
         if ($destination == 'modules/%') {
             $modules = [];
-            // @todo - For better UX, match on both labels and machine names.
             $moduleHandler = \Drupal::moduleHandler();
             foreach ($moduleHandler->getModuleList() as $machine_name => $module) {
                 $modules[$machine_name] = $moduleHandler->getName($machine_name);
@@ -55,7 +54,8 @@ class InputPreprocessor extends Helper
             $questions['machine_name']->setAutocompleterValues(array_keys($modules));
 
             if (isset($questions['name'])) {
-                $questions['name']->setAutocompleterValues(array_values($modules));
+                $questions['name']->setAutocompleterValues($modules);
+                $questions['name']->setNormalizer([$this, 'machineToLabel']);
                 $questions['machine_name']->setDefault(function ($vars) use ($modules) {
                     $machine_name = array_search($vars['name'], $modules);
                     return $machine_name ?: Utils::human2machine($vars['name']);
@@ -77,5 +77,14 @@ class InputPreprocessor extends Helper
             });
             $questions['machine_name']->setAutocompleterValues(array_keys($themes));
         }
+    }
+
+    public function machineToLabel($choice)
+    {
+        $handler = \Drupal::moduleHandler();
+        if ($handler->moduleExists($choice)) {
+            return $handler->getName($choice);
+        }
+        return $choice;
     }
 }
