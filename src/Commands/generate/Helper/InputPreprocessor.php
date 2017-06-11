@@ -22,7 +22,7 @@ class InputPreprocessor extends Helper
     /**
      * Modifies default DCG questions for better DX.
      *
-     * @param array $questions
+     * @param \DrupalCodeGenerator\Question[] $questions
      *   List of questions to modify.
      *
      * @todo Shall we add validation callbacks for names?
@@ -32,7 +32,7 @@ class InputPreprocessor extends Helper
 
         if (isset($questions['name'])) {
             // @todo Pick up default name from current working directory when possible.
-            $questions['name'][1] = '';
+            $questions['name']->setDefault('');
         }
 
         if (!isset($questions['machine_name'])) {
@@ -52,17 +52,17 @@ class InputPreprocessor extends Helper
                 $modules[$machine_name] = $moduleHandler->getName($machine_name);
             }
 
-            $questions['machine_name'][3] = array_keys($modules);
+            $questions['machine_name']->setAutocompleterValues(array_keys($modules));
 
             if (isset($questions['name'])) {
-                $questions['name'][3] = array_values($modules);
-                $questions['machine_name'][1] = function ($vars) use ($modules) {
+                $questions['name']->setAutocompleterValues(array_values($modules));
+                $questions['machine_name']->setDefault(function ($vars) use ($modules) {
                     $machine_name = array_search($vars['name'], $modules);
                     return $machine_name ?: Utils::human2machine($vars['name']);
-                };
+                });
             } else {
                 // Only machine name exists.
-                $questions['machine_name'][1] = 'example';
+                $questions['machine_name']->setDefault('example');
             }
         // Theme related generators.
         } elseif ($destination == 'themes/%') {
@@ -70,12 +70,12 @@ class InputPreprocessor extends Helper
             foreach (\Drupal::service('theme_handler')->listInfo() as $machine_name => $theme) {
                 $themes[$machine_name] = $theme->info['name'];
             }
-            $questions['name'][3] = array_values($themes);
-            $questions['machine_name'][1] = function ($vars) use ($themes) {
+            $questions['name']->setAutocompleterValues(array_values($themes));
+            $questions['machine_name']->setDefault(function ($vars) use ($themes) {
                 $machine_name = array_search($vars['name'], $themes);
                 return $machine_name ?: Utils::human2machine($vars['name']);
-            };
-            $questions['machine_name'][3] = array_keys($themes);
+            });
+            $questions['machine_name']->setAutocompleterValues(array_keys($themes));
         }
     }
 }
