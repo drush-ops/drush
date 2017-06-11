@@ -56,7 +56,7 @@ function drush_invoke($command, $arguments = array()) {
     return drush_dispatch($command, $arguments);
   }
   else {
-    return drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The drush command '!command' could not be found.", array('!command' => $command)));
+    return drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The Drush command '!command' could not be found.", array('!command' => $command)));
   }
 }
 
