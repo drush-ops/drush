@@ -22,14 +22,7 @@ class MigrationGenerator extends BaseGenerator
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $questions = Utils::defaultQuestions() + [
-            'plugin_label' => ['Plugin label', 'Example'],
-            'plugin_id' => [
-                'Plugin ID',
-                function ($vars) {
-                    return Utils::human2machine($vars['plugin_label']);
-                },
-            ],
+        $questions = Utils::defaultQuestions() + Utils::defaultPluginQuestions() + [
             'migration_group' => ['Migration group', 'default'],
             'destination_plugin' => ['Destination plugin', 'entity:node'],
         ];
