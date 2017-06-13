@@ -450,4 +450,22 @@ class SqlBase
         $options = $this->getOptions();
         return array_key_exists($name, $options) ? $options[$name] : $default;
     }
+
+    /**
+     * @deprecated.
+     */
+    function db_spec()
+    {
+        return $this->getDbSpec();
+    }
+
+    /**
+     * @deprecated
+     *
+     * @param $options
+     * @return array
+     */
+    function get_expanded_table_selection($options = []) {
+        return $this->getExpandedTableSelection($options);
+    }
 }
