@@ -1,4 +1,5 @@
 <?php
+use Drush\Sql\SqlBase;
 
 /**
  * These are deprecated functions that we keep around just to ease the transition
@@ -9,6 +10,14 @@
 
 function drush_sql_bootstrap_further() {
   
+}
+
+function drush_sql_get_class($db_spec = NULL) {
+  $options = [];
+  if ($url = drush_get_option('db-url')) {
+    $options['db-url'] = $url;
+  }
+  return SqlBase::create($options);
 }
 
 /**
