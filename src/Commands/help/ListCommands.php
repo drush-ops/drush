@@ -18,7 +18,7 @@ class ListCommands extends DrushCommands
      * List available commands.
      *
      * @command list
-     * @param $filter Restrict command list to those commands defined in the specified file. Omit value to choose from a list of names.
+     * @option filter Restrict command list to those commands defined in the specified file. Omit value to choose from a list of names.
      * @option raw Show a simple table of command names and descriptions.
      * @bootstrap DRUSH_BOOTSTRAP_MAX
      * @usage drush list
@@ -30,7 +30,7 @@ class ListCommands extends DrushCommands
      *
      * @return \DOMDocument
      */
-    public function helpList($filter, $options = ['format' => 'listcli', 'raw' => false])
+    public function helpList($filter, $options = ['format' => 'listcli', 'raw' => false, 'filter' => null])
     {
         $application = Drush::getApplication();
         annotation_adapter_add_legacy_commands_to_application($application);
