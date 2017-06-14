@@ -4,6 +4,8 @@ namespace Drupal\woot\Generators;
 
 use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\Utils;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class ExampleGenerator extends BaseGenerator
 {
@@ -24,7 +26,7 @@ class ExampleGenerator extends BaseGenerator
     /**
      * {@inheritdoc}
      */
-    protected function interact($input, $output) {
+    protected function interact(InputInterface $input, OutputInterface $output) {
 
         $questions = Utils::defaultQuestions();
 
