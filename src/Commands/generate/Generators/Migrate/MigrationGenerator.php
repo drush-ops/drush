@@ -6,6 +6,7 @@ use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\Utils;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 /**
  * Implements `generate migration` command.
@@ -22,9 +23,9 @@ class MigrationGenerator extends BaseGenerator
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $questions = Utils::defaultQuestions() + Utils::defaultPluginQuestions() + [
-            'migration_group' => ['Migration group', 'default'],
-            'destination_plugin' => ['Destination plugin', 'entity:node'],
+        $questions = Utils::defaultPluginQuestions() + [
+            'migration_group' => new Question('Migration group', 'default'),
+            'destination_plugin' => new Question('Destination plugin', 'entity:node'),
         ];
 
         $vars = $this->collectVars($input, $output, $questions);
