@@ -381,12 +381,15 @@ function _drush_backend_proc_open($cmds, $process_limit, $context = NULL) {
         if ($post_options) {
           fwrite($process['pipes'][0], json_encode($post_options)); // pass the data array in a JSON encoded string
         }
-        // If we do not close stdin here, then we cause a deadlock;
-        // see: http://drupal.org/node/766080#comment-4309936
-        // If we reimplement interactive commands to also use
-        // _drush_proc_open, then clearly we would need to keep
-        // this open longer.
-        fclose($process['pipes'][0]);
+
+        if ($is_windows) {
+          // If we do not close stdin here, then we cause a deadlock;
+          // see: http://drupal.org/node/766080#comment-4309936
+          // If we reimplement interactive commands to also use
+          // _drush_proc_open, then clearly we would need to keep
+          // this open longer.
+          fclose($process['pipes'][0]);
+        }
 
         $process['info'] = stream_get_meta_data($process['pipes'][1]);
         stream_set_blocking($process['pipes'][1], FALSE);
