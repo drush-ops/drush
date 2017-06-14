@@ -74,13 +74,15 @@ class InputPreprocessor extends Helper
             foreach (\Drupal::service('theme_handler')->listInfo() as $machine_name => $theme) {
                 $themes[$machine_name] = $theme->info['name'];
             }
-            $questions['name']->setAutocompleterValues(array_values($themes));
-            $default_machine_name = function ($vars) use ($themes) {
-                $machine_name = array_search($vars['name'], $themes);
-                return $machine_name ?: Utils::human2machine($vars['name']);
-            };
-            $this->setQuestionDefault($questions['machine_name'], $default_machine_name);
             $questions['machine_name']->setAutocompleterValues(array_keys($themes));
+            if (isset($questions['name'])) {
+                $questions['name']->setAutocompleterValues(array_values($themes));
+                $default_machine_name = function ($vars) use ($themes) {
+                    $machine_name = array_search($vars['name'], $themes);
+                    return $machine_name ?: Utils::human2machine($vars['name']);
+                };
+                $this->setQuestionDefault($questions['machine_name'], $default_machine_name);
+            }
         }
     }
 
