@@ -16,7 +16,7 @@ use Webmozart\PathUtil\Path;
 
 /**
  * Check to see if the user specified an alias
- * in an arguement, or via site-set.  If so, return
+ * in an argument, or via site-set.  If so, return
  * the name of the alias.
  *
  * If the alias came from args, then remove it
