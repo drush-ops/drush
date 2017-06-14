@@ -51,7 +51,13 @@ class InputHandler extends BaseInputHandler
                         break;
 
                     case 'themes/%':
-                        // @todo Handle this case.
+                        if (isset($vars['machine_name'])) {
+                            $machine_name = $vars['machine_name'];
+                            $themes = \Drupal::service('theme_handler')->listInfo();
+                            $directory = isset($themes[$machine_name])
+                                ? $themes[$machine_name]->getPath()
+                                : 'themes/' . $machine_name;
+                        }
                         break;
 
                     case 'profiles':
