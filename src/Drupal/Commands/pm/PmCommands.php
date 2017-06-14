@@ -62,7 +62,7 @@ class PmCommands extends DrushCommands
      * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @complete \Drush\Commands\CompletionCommands::completeModules
      */
-    public function enable($modules)
+    public function enable(array $modules)
     {
         $modules = _convert_csv_to_array($modules);
         $todo = $this->addInstallDependencies($modules);
@@ -95,7 +95,7 @@ class PmCommands extends DrushCommands
      * @aliases pmu
      * @complete \Drush\Commands\CompletionCommands::completeModules
      */
-    public function uninstall($modules)
+    public function uninstall(array $modules)
     {
         $modules = _convert_csv_to_array($modules);
         $list = $this->addUninstallDependencies($modules);
