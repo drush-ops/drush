@@ -3,10 +3,10 @@
 namespace Drush\Commands\generate\Generators\Drush;
 
 use DrupalCodeGenerator\Command\BaseGenerator;
-use DrupalCodeGenerator\Question;
 use DrupalCodeGenerator\Utils;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 /**
  * Implements drush-command-file command.
@@ -24,7 +24,8 @@ class DrushCommandFile extends BaseGenerator
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $questions = Utils::defaultQuestions() + [new Question('Absolute path to legacy Drush commandfile (optional - for porting)')];
+        $questions = Utils::defaultQuestions();
+        $questions['source'] = new Question('Absolute path to legacy Drush command file (optional - for porting)');
 
         $vars = $this->collectVars($input, $output, $questions);
         $vars['class'] = Utils::camelize($vars['machine_name'] . 'Commands');

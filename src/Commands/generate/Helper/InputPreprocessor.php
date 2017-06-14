@@ -2,6 +2,7 @@
 
 namespace Drush\Commands\generate\Helper;
 
+use DrupalCodeGenerator\Helper\QuestionSettersTrait;
 use DrupalCodeGenerator\Utils;
 use Symfony\Component\Console\Helper\Helper;
 
@@ -10,6 +11,8 @@ use Symfony\Component\Console\Helper\Helper;
  */
 class InputPreprocessor extends Helper
 {
+
+    use QuestionSettersTrait;
 
     /**
      * {@inheritdoc}
@@ -20,9 +23,9 @@ class InputPreprocessor extends Helper
     }
 
     /**
-     * Modifies default DCG questions for better DX.
+     * Modifies questions for better DX.
      *
-     * @param \DrupalCodeGenerator\Question[] $questions
+     * @param \Symfony\Component\Console\Question\Question[] $questions
      *   List of questions to modify.
      *
      * @todo Shall we add validation callbacks for names?
@@ -32,7 +35,7 @@ class InputPreprocessor extends Helper
 
         if (isset($questions['name'])) {
             // @todo Pick up default name from current working directory when possible.
-            $questions['name']->setDefault('');
+            $this->setQuestionDefault($questions['name'], '');
         }
 
         if (!isset($questions['machine_name'])) {
@@ -56,13 +59,14 @@ class InputPreprocessor extends Helper
             if (isset($questions['name'])) {
                 $questions['name']->setAutocompleterValues($modules);
                 $questions['name']->setNormalizer([$this, 'machineToLabel']);
-                $questions['machine_name']->setDefault(function ($vars) use ($modules) {
-                    $machine_name = array_search($vars['name'], $modules);
-                    return $machine_name ?: Utils::human2machine($vars['name']);
-                });
+                $default_machine_name = function ($vars) use ($modules) {
+                  $machine_name = array_search($vars['name'], $modules);
+                  return $machine_name ?: Utils::human2machine($vars['name']);
+                };
+                $this->setQuestionDefault($questions['machine_name'], $default_machine_name);
             } else {
                 // Only machine name exists.
-                $questions['machine_name']->setDefault('example');
+                $this->setQuestionDefault($questions['machine_name'], 'example');
             }
         // Theme related generators.
         } elseif ($destination == 'themes/%') {
@@ -71,10 +75,11 @@ class InputPreprocessor extends Helper
                 $themes[$machine_name] = $theme->info['name'];
             }
             $questions['name']->setAutocompleterValues(array_values($themes));
-            $questions['machine_name']->setDefault(function ($vars) use ($themes) {
+            $default_machine_name = function ($vars) use ($themes) {
                 $machine_name = array_search($vars['name'], $themes);
                 return $machine_name ?: Utils::human2machine($vars['name']);
-            });
+            };
+            $this->setQuestionDefault($questions['machine_name'], $default_machine_name);
             $questions['machine_name']->setAutocompleterValues(array_keys($themes));
         }
     }
