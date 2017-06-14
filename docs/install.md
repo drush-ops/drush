@@ -8,10 +8,9 @@ Install a site-local Drush
 -----------------
 1. It is recommended that Drupal 8 sites be [built using Composer, with Drush listed as a dependency](https://github.com/drupal-composer/drupal-project). That project already includes Drush in its composer.json. If your Composer project doesn't yet depend on Drush, run `composer require drush/drush` to add it.
 1. To run Drush, navigate to your Drupal root and call `../vendor/bin/drush`. 
-1. If you want the convenience of calling `drush` instead of `../vendor/bin/drush`, copy the [examples/drush.wrapper](https://github.com/drush-ops/drush/blob/master/examples/drush.wrapper) file to your Drupal root and modify to taste.
-1. If you want the old convenience of being able to call `drush` from anywhere, see [drush-shim](https://github.com/webflo/drush-shim).
+1. If you want the convenience of being able to call `drush` from anywhere, install the [drush-shim](https://github.com/webflo/drush-shim).
 1. See [Usage](http://docs.drush.org/en/master/usage/) for details on using Drush.
-1. To use a non-default PHP, [edit ~/.bashrc so that the right PHP is in your $PATH](http://stackoverflow.com/questions/4145667/how-to-override-the-path-of-php-to-use-the-mamp-path/10653443#10653443).
+1. To use a non-default PHP, [edit ~/.bashrc so that the desired PHP is in front of your $PATH](http://stackoverflow.com/questions/4145667/how-to-override-the-path-of-php-to-use-the-mamp-path/10653443#10653443).
 
 Drupal Compatibility
 -----------------
