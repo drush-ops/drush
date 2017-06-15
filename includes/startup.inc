@@ -382,9 +382,6 @@ function drush_startup($argv) {
     }
   }
 
-  // Always use pcntl_exec if it exists.
-  $use_pcntl_exec = function_exists("pcntl_exec");
-
   // If we have posix_getppid, then pass in the shell pid so
   // that 'site-set' et. al. can work correctly.
   if (function_exists('posix_getppid')) {
@@ -402,40 +399,22 @@ function drush_startup($argv) {
   // Emit a message in debug mode advertising the location of the
   // script we found.
   if ($DEBUG) {
-    $launch_method = $use_pcntl_exec ? 'pcntl_exec' : 'proc_open';
-    fwrite(STDERR, "Using the Drush script found at $found_script using $launch_method\n");
+    fwrite(STDERR, "Using the Drush script found at $found_script\n");
   }
 
-  if ($use_pcntl_exec) {
-    // Get the current environment for pnctl_exec.
-    $env = drush_env();
-
-    // Launch the new script in the same process.
-    // If the launch succeeds, then it will not return.
-    $error = pcntl_exec($found_script, $arguments, $env);
-    if (!$error) {
-      $errno = pcntl_get_last_error();
-      $strerror = pcntl_strerror($errno);
-      fwrite(STDERR, "Error has occurred executing the Drush script found at $found_script\n");
-      fwrite(STDERR, "(errno {$errno}) $strerror\n");
-    }
-    exit(1);
+  $escaped_args = array_map(function($item) { return drush_escapeshellarg($item); }, $arguments);
+  // Double quotes around $found_script as it can contain spaces.
+  $cmd = drush_escapeshellarg($found_script). ' '. implode(' ', $escaped_args);
+  if (drush_is_windows()) {
+    // Windows requires double quotes around whole command.
+    // @see https://bugs.php.net/bug.php?id=49139
+    // @see https://bugs.php.net/bug.php?id=60181
+    $cmd = '"'. $cmd. '"';
   }
-  else {
-    $escaped_args = array_map(function($item) { return drush_escapeshellarg($item); }, $arguments);
-    // Double quotes around $found_script as it can contain spaces.
-    $cmd = drush_escapeshellarg($found_script). ' '. implode(' ', $escaped_args);
-    if (drush_is_windows()) {
-      // Windows requires double quotes around whole command.
-      // @see https://bugs.php.net/bug.php?id=49139
-      // @see https://bugs.php.net/bug.php?id=60181
-      $cmd = '"'. $cmd. '"';
-    }
-    $process = proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes, $cwd);
-    $proc_status = proc_get_status($process);
-    $exit_code = proc_close($process);
-    exit($proc_status["running"] ? $exit_code : $proc_status["exitcode"] );
-  }
+  $process = proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes, $cwd);
+  $proc_status = proc_get_status($process);
+  $exit_code = proc_close($process);
+  exit($proc_status["running"] ? $exit_code : $proc_status["exitcode"] );
 }
 
 /**
@@ -450,7 +429,7 @@ function drush_startup($argv) {
  *   Debug message to log before running drush_main()
  */
 function drush_run_main($DEBUG, $sep, $msg) {
-// Emit a message in debug mode advertising how we proceeded.
+  // Emit a message in debug mode advertising how we proceeded.
   if ($DEBUG) {
     fwrite(STDERR, $msg. "\n");
   }
