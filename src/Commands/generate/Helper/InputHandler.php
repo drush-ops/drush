@@ -129,6 +129,10 @@ class InputHandler extends BaseInputHandler
             };
             $this->setQuestionDefault($questions['machine_name'], $default_machine_name);
         }
+        // For other generator types simply reset default value set by DCG.
+        elseif (isset($questions['name'])) {
+            $this->setQuestionDefault($questions['name'], '');
+        }
     }
 
     /**
