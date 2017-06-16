@@ -93,7 +93,6 @@ class InputHandler extends BaseInputHandler
             // Name question.
             if (isset($questions['name'])) {
                 $questions['name']->setAutocompleterValues($modules);
-                $questions['name']->setNormalizer([$this, 'machineToLabel']);
                 $default_name = function ($vars) use ($root_directory) {
                     return Utils::machine2human(isset($vars['machine_name']) ? $vars['machine_name'] : $root_directory);
                 };
@@ -198,21 +197,4 @@ class InputHandler extends BaseInputHandler
         return $directory;
     }
 
-    /**
-     * Returns module name by its machine name.
-     *
-     * @param string $machine_name
-     *   Module machine name.
-     *
-     * @return string
-     *   Module name.
-     */
-    public function machineToLabel($machine_name)
-    {
-        $handler = \Drupal::moduleHandler();
-        if ($handler->moduleExists($machine_name)) {
-            return $handler->getName($machine_name);
-        }
-        return $machine_name;
-    }
 }
