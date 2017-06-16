@@ -503,6 +503,12 @@ abstract class DrupalBoot extends BaseBoot
         }
         try {
             $sql = SqlBase::create();
+            // Drush requires a database client program during its Drupal bootstrap.
+            $command = $sql->command();
+            if (!drush_program_exists($command)) {
+              $this->logger->log(LogLevel::BOOTSTRAP, dt('The command \'!command\' is required for preflight but cannot be found. Please install it and retry.', ['!command' => $command]));
+              return false;
+            }
             if (!$sql->query('SELECT 1;')) {
                 $message = dt("Drush was not able to start (bootstrap) the Drupal database.\n");
                 $message .= dt("Hint: This may occur when Drush is trying to:\n");
