@@ -16,16 +16,50 @@ class InputHandler extends BaseInputHandler
     /**
      * {@inheritdoc}
      */
-    public function collectVars(InputInterface $input, OutputInterface $output, array $questions)
+    public function collectVars(InputInterface $input, OutputInterface $output, array $questions, array $vars = [])
     {
         $questions = $this->normalizeQuestions($questions);
 
-        $this->preprocessQuestions($questions);
+        /** @var \DrupalCodeGenerator\Command\GeneratorInterface $command */
+        $command = $this->getHelperSet()->getCommand();
+        $destination = $command->getDestination();
 
-        $vars = parent::collectVars($input, $output, $questions);
+        $this->preprocessQuestions($questions, $destination);
 
-        if (empty($input->getOption('directory'))) {
-            $this->setDirectory($vars);
+        $existing_extension = in_array($destination, ['modules/%', 'themes/%']);
+
+        $vars = [];
+
+        // If both name and machine_name questions are defined it is quite
+        // possible that we can provide the extension name without interacting
+        // with a user.
+        if (isset($questions['name'], $questions['machine_name']) && $existing_extension) {
+            // Collect only machine_name answer.
+            $vars += parent::collectVars($input, $output, ['machine_name' => $questions['machine_name']]);
+            unset($questions['machine_name']);
+
+            if ($destination == 'modules/%') {
+                $moduleHandler = \Drupal::moduleHandler();
+                if ($moduleHandler->moduleExists($vars['machine_name'])) {
+                    $vars['name'] = $moduleHandler->getName($vars['machine_name']);
+                    unset($questions['name']);
+                }
+            }
+            elseif ($destination == 'themes/%') {
+                $themeHandler = \Drupal::service('theme_handler');
+                if ($themeHandler->themeExists($vars['machine_name'])) {
+                    $vars['name'] = $themeHandler->getName($vars['machine_name']);
+                    unset($questions['name']);
+                }
+            }
+        }
+
+        // Collect all other variables.
+        $vars += parent::collectVars($input, $output, $questions, $vars);
+
+        // Set an appropriate directory for dumped files.
+        if (empty($input->getOption('directory')) && ($directory = $this->getDirectory($vars, $destination))) {
+            $command->setDirectory($directory);
         }
 
         return $vars;
@@ -36,62 +70,67 @@ class InputHandler extends BaseInputHandler
      *
      * @param \Symfony\Component\Console\Question\Question[] $questions
      *   List of questions to modify.
-     *
-     * @todo Shall we add validation callbacks for names?
+     * @param string $destination
+     *   The destination for dumped files.
      */
-    protected function preprocessQuestions(array &$questions)
+    protected function preprocessQuestions(array &$questions, $destination)
     {
-
-        if (isset($questions['name'])) {
-            // @todo Pick up default name from current working directory when possible.
-            $this->setQuestionDefault($questions['name'], '');
-        }
-
         if (!isset($questions['machine_name'])) {
             return;
         }
 
-        /** @var \DrupalCodeGenerator\Command\GeneratorInterface $command */
-        $command = $this->getHelperSet()->getCommand();
-        $destination = $command->getDestination();
+        $root_directory = basename(Utils::getExtensionRoot(drush_cwd()));
 
         // Module related generators.
         if ($destination == 'modules/%') {
+            // Prepare list of modules.
             $modules = [];
             $moduleHandler = \Drupal::moduleHandler();
             foreach ($moduleHandler->getModuleList() as $machine_name => $module) {
                 $modules[$machine_name] = $moduleHandler->getName($machine_name);
             }
 
-            $questions['machine_name']->setAutocompleterValues(array_keys($modules));
-
+            // Name question.
             if (isset($questions['name'])) {
                 $questions['name']->setAutocompleterValues($modules);
-                $questions['name']->setNormalizer([$this, 'machineToLabel']);
-                $default_machine_name = function ($vars) use ($modules) {
-                    $machine_name = array_search($vars['name'], $modules);
-                    return $machine_name ?: Utils::human2machine($vars['name']);
+                $default_name = function ($vars) use ($root_directory) {
+                    return Utils::machine2human(isset($vars['machine_name']) ? $vars['machine_name'] : $root_directory);
                 };
-                $this->setQuestionDefault($questions['machine_name'], $default_machine_name);
-            } else {
-                // Only machine name exists.
-                $this->setQuestionDefault($questions['machine_name'], 'example');
+                $this->setQuestionDefault($questions['name'], $default_name);
             }
+
+            // Machine name question.
+            $questions['machine_name']->setAutocompleterValues(array_keys($modules));
+            $default_machine_name = function ($vars) use ($modules, $root_directory) {
+                $machine_name = array_search($vars['name'], $modules);
+                return $machine_name ?: Utils::human2machine(isset($vars['name']) ? $vars['name'] : $root_directory);
+            };
+            $this->setQuestionDefault($questions['machine_name'], $default_machine_name);
+
         // Theme related generators.
         } elseif ($destination == 'themes/%') {
+            // Prepare list of themes.
             $themes = [];
             foreach (\Drupal::service('theme_handler')->listInfo() as $machine_name => $theme) {
                 $themes[$machine_name] = $theme->info['name'];
             }
-            $questions['machine_name']->setAutocompleterValues(array_keys($themes));
+
+            // Name question.
             if (isset($questions['name'])) {
                 $questions['name']->setAutocompleterValues(array_values($themes));
-                $default_machine_name = function ($vars) use ($themes) {
-                    $machine_name = array_search($vars['name'], $themes);
-                    return $machine_name ?: Utils::human2machine($vars['name']);
-                };
-                $this->setQuestionDefault($questions['machine_name'], $default_machine_name);
             }
+
+            // Machine name question.
+            $questions['machine_name']->setAutocompleterValues(array_keys($themes));
+            $default_machine_name = function ($vars) use ($themes, $root_directory) {
+                $machine_name = array_search($vars['name'], $themes);
+                return $machine_name ?: Utils::human2machine(isset($vars['name']) ? $vars['name'] : $root_directory);
+            };
+            $this->setQuestionDefault($questions['machine_name'], $default_machine_name);
+        }
+        // For other generator types simply reset default value set by DCG.
+        elseif (isset($questions['name'])) {
+            $this->setQuestionDefault($questions['name'], '');
         }
     }
 
@@ -100,11 +139,13 @@ class InputHandler extends BaseInputHandler
      *
      * @param array $vars
      *   Collected variables.
+     * @param string|bool $destination
+     *   The destination for dumped files.
+     *
+     * @return string $directory
+     *   The directory to dump file or false it cannot be determined.
      */
-    protected function setDirectory(array $vars) {
-        /** @var \DrupalCodeGenerator\Command\GeneratorInterface $command */
-        $command = $this->getHelperSet()->getCommand();
-        $destination = $command->getDestination();
+    protected function getDirectory(array $vars, $destination) {
 
         // Check if the generator can handle it itself.
         if (is_callable($destination)) {
@@ -153,25 +194,7 @@ class InputHandler extends BaseInputHandler
             }
         }
 
-        /** @var \DrupalCodeGenerator\Command\GeneratorInterface $command */
-        $directory && $command->setDirectory($directory);
+        return $directory;
     }
 
-    /**
-     * Returns module name by its machine name.
-     *
-     * @param string $machine_name
-     *   Module machine name.
-     *
-     * @return string
-     *   Module name.
-     */
-    public function machineToLabel($machine_name)
-    {
-        $handler = \Drupal::moduleHandler();
-        if ($handler->moduleExists($machine_name)) {
-            return $handler->getName($machine_name);
-        }
-        return $machine_name;
-    }
 }
