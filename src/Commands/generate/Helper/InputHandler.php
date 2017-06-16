@@ -52,14 +52,6 @@ class InputHandler extends BaseInputHandler
                     unset($questions['name']);
                 }
             }
-
-            // If an extension with provided machine name was not found the name
-            // question is still actual. So we can set default value for it.
-            if (isset($questions['name']) && !$questions['name']->getDefault()) {
-                $this->setQuestionDefault($questions['name'], function ($vars) {
-                    return Utils::machine2human($vars['machine_name']);
-                });
-            }
         }
 
         // Collect all other variables.
@@ -80,58 +72,62 @@ class InputHandler extends BaseInputHandler
      *   List of questions to modify.
      * @param string $destination
      *   The destination for dumped files.
-     *
-     * @todo Shall we add validation callbacks for names?
      */
     protected function preprocessQuestions(array &$questions, $destination)
     {
-
-        if (isset($questions['name'])) {
-            // @todo Pick up default name from current working directory when possible.
-            $this->setQuestionDefault($questions['name'], '');
-        }
-
         if (!isset($questions['machine_name'])) {
             return;
         }
 
+        $root_directory = basename(Utils::getExtensionRoot(drush_cwd()));
+
         // Module related generators.
         if ($destination == 'modules/%') {
+            // Prepare list of modules.
             $modules = [];
             $moduleHandler = \Drupal::moduleHandler();
             foreach ($moduleHandler->getModuleList() as $machine_name => $module) {
                 $modules[$machine_name] = $moduleHandler->getName($machine_name);
             }
 
-            $questions['machine_name']->setAutocompleterValues(array_keys($modules));
-
+            // Name question.
             if (isset($questions['name'])) {
                 $questions['name']->setAutocompleterValues($modules);
                 $questions['name']->setNormalizer([$this, 'machineToLabel']);
-                $default_machine_name = function ($vars) use ($modules) {
-                    $machine_name = array_search($vars['name'], $modules);
-                    return $machine_name ?: Utils::human2machine($vars['name']);
+                $default_name = function ($vars) use ($root_directory) {
+                    return Utils::machine2human(isset($vars['machine_name']) ? $vars['machine_name'] : $root_directory);
                 };
-                $this->setQuestionDefault($questions['machine_name'], $default_machine_name);
-            } else {
-                // Only machine name exists.
-                $this->setQuestionDefault($questions['machine_name'], 'example');
+                $this->setQuestionDefault($questions['name'], $default_name);
             }
+
+            // Machine name question.
+            $questions['machine_name']->setAutocompleterValues(array_keys($modules));
+            $default_machine_name = function ($vars) use ($modules, $root_directory) {
+                $machine_name = array_search($vars['name'], $modules);
+                return $machine_name ?: Utils::human2machine(isset($vars['name']) ? $vars['name'] : $root_directory);
+            };
+            $this->setQuestionDefault($questions['machine_name'], $default_machine_name);
+
         // Theme related generators.
         } elseif ($destination == 'themes/%') {
+            // Prepare list of themes.
             $themes = [];
             foreach (\Drupal::service('theme_handler')->listInfo() as $machine_name => $theme) {
                 $themes[$machine_name] = $theme->info['name'];
             }
-            $questions['machine_name']->setAutocompleterValues(array_keys($themes));
+
+            // Name question.
             if (isset($questions['name'])) {
                 $questions['name']->setAutocompleterValues(array_values($themes));
-                $default_machine_name = function ($vars) use ($themes) {
-                    $machine_name = array_search($vars['name'], $themes);
-                    return $machine_name ?: Utils::human2machine($vars['name']);
-                };
-                $this->setQuestionDefault($questions['machine_name'], $default_machine_name);
             }
+
+            // Machine name question.
+            $questions['machine_name']->setAutocompleterValues(array_keys($themes));
+            $default_machine_name = function ($vars) use ($themes, $root_directory) {
+                $machine_name = array_search($vars['name'], $themes);
+                return $machine_name ?: Utils::human2machine(isset($vars['name']) ? $vars['name'] : $root_directory);
+            };
+            $this->setQuestionDefault($questions['machine_name'], $default_machine_name);
         }
     }
 
@@ -140,8 +136,11 @@ class InputHandler extends BaseInputHandler
      *
      * @param array $vars
      *   Collected variables.
-     * @param string $destination
+     * @param string|bool $destination
      *   The destination for dumped files.
+     *
+     * @return string $directory
+     *   The directory to dump file or false it cannot be determined.
      */
     protected function getDirectory(array $vars, $destination) {
 
