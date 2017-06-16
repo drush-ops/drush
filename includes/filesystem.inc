@@ -401,7 +401,9 @@ function drush_mkdir($path, $required = TRUE) {
 function drush_program_exists($program) {
   if (drush_has_bash()) {
     $bucket = drush_bit_bucket();
-    return drush_op_system("command -v $program >$bucket 2>&1") === 0 ? TRUE : FALSE;
+    // Dont't use drush_op_system() since we don't want output during tests.
+    system("command -v $program > $bucket 2>&1", $result_code);
+    return $result_code === 0 ? TRUE : FALSE;
   }
 }
 
