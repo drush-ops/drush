@@ -16,16 +16,58 @@ class InputHandler extends BaseInputHandler
     /**
      * {@inheritdoc}
      */
-    public function collectVars(InputInterface $input, OutputInterface $output, array $questions)
+    public function collectVars(InputInterface $input, OutputInterface $output, array $questions, array $vars = [])
     {
         $questions = $this->normalizeQuestions($questions);
 
-        $this->preprocessQuestions($questions);
+        /** @var \DrupalCodeGenerator\Command\GeneratorInterface $command */
+        $command = $this->getHelperSet()->getCommand();
+        $destination = $command->getDestination();
 
-        $vars = parent::collectVars($input, $output, $questions);
+        $this->preprocessQuestions($questions, $destination);
 
-        if (empty($input->getOption('directory'))) {
-            $this->setDirectory($vars);
+        $existing_extension = in_array($destination, ['modules/%', 'themes/%']);
+
+        $vars = [];
+
+        // If both name and machine_name questions are defined it is quite
+        // possible that we can provide the extension name without interacting
+        // with a user.
+        if (isset($questions['name'], $questions['machine_name']) && $existing_extension) {
+            // Collect only machine_name answer.
+            $vars += parent::collectVars($input, $output, ['machine_name' => $questions['machine_name']]);
+            unset($questions['machine_name']);
+
+            if ($destination == 'modules/%') {
+                $moduleHandler = \Drupal::moduleHandler();
+                if ($moduleHandler->moduleExists($vars['machine_name'])) {
+                    $vars['name'] = $moduleHandler->getName($vars['machine_name']);
+                    unset($questions['name']);
+                }
+            }
+            elseif ($destination == 'themes/%') {
+                $themeHandler = \Drupal::service('theme_handler');
+                if ($themeHandler->themeExists($vars['machine_name'])) {
+                    $vars['name'] = $themeHandler->getName($vars['machine_name']);
+                    unset($questions['name']);
+                }
+            }
+
+            // If an extension with provided machine name was not found the name
+            // question is still actual. So we can set default value for it.
+            if (isset($questions['name']) && !$questions['name']->getDefault()) {
+                $this->setQuestionDefault($questions['name'], function ($vars) {
+                    return Utils::machine2human($vars['machine_name']);
+                });
+            }
+        }
+
+        // Collect all other variables.
+        $vars += parent::collectVars($input, $output, $questions, $vars);
+
+        // Set an appropriate directory for dumped files.
+        if (empty($input->getOption('directory')) && ($directory = $this->getDirectory($vars, $destination))) {
+            $command->setDirectory($directory);
         }
 
         return $vars;
@@ -36,10 +78,12 @@ class InputHandler extends BaseInputHandler
      *
      * @param \Symfony\Component\Console\Question\Question[] $questions
      *   List of questions to modify.
+     * @param string $destination
+     *   The destination for dumped files.
      *
      * @todo Shall we add validation callbacks for names?
      */
-    protected function preprocessQuestions(array &$questions)
+    protected function preprocessQuestions(array &$questions, $destination)
     {
 
         if (isset($questions['name'])) {
@@ -50,10 +94,6 @@ class InputHandler extends BaseInputHandler
         if (!isset($questions['machine_name'])) {
             return;
         }
-
-        /** @var \DrupalCodeGenerator\Command\GeneratorInterface $command */
-        $command = $this->getHelperSet()->getCommand();
-        $destination = $command->getDestination();
 
         // Module related generators.
         if ($destination == 'modules/%') {
@@ -100,11 +140,10 @@ class InputHandler extends BaseInputHandler
      *
      * @param array $vars
      *   Collected variables.
+     * @param string $destination
+     *   The destination for dumped files.
      */
-    protected function setDirectory(array $vars) {
-        /** @var \DrupalCodeGenerator\Command\GeneratorInterface $command */
-        $command = $this->getHelperSet()->getCommand();
-        $destination = $command->getDestination();
+    protected function getDirectory(array $vars, $destination) {
 
         // Check if the generator can handle it itself.
         if (is_callable($destination)) {
@@ -153,8 +192,7 @@ class InputHandler extends BaseInputHandler
             }
         }
 
-        /** @var \DrupalCodeGenerator\Command\GeneratorInterface $command */
-        $directory && $command->setDirectory($directory);
+        return $directory;
     }
 
     /**
