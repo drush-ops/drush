@@ -8,7 +8,6 @@ use DrupalCodeGenerator\Helper\Renderer;
 use DrupalCodeGenerator\TwigEnvironment;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\generate\Helper\InputHandler;
-use Drush\Commands\generate\Helper\InputPreprocessor;
 use Drush\Commands\generate\Helper\OutputHandler;
 use Drush\Commands\help\ListCommands;
 use Drush\Drush;
@@ -98,7 +97,6 @@ class GenerateCommands extends DrushCommands
 
         $helperSet->set(new InputHandler());
         $helperSet->set(new OutputHandler());
-        $helperSet->set(new InputPreprocessor());
 
         // Discover generators.
         $discovery = new GeneratorDiscovery(new Filesystem());
