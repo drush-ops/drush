@@ -1,7 +1,7 @@
 <?php
 
 /**
- * A sneaky implementaton of hook_module_implements_alter().
+ * A sneaky implementation of hook_module_implements_alter().
  *
  * site-install includes this file in order to not run any cron hooks during install.
  * That's a bad idea.
