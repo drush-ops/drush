@@ -6,8 +6,8 @@
  */
 
 use Drush\Drush;
-use Drush\Log\Logger;
 use Drush\Log\LogLevel;
+use Drush\Utils\StringUtils;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -134,16 +134,11 @@ function drush_get_class($class_name, $constructor_args = array(), $variations =
  *
  * @returns array
  *   A simple list of items (e.g. array('a','b','c')
+ *
+ * @deprecated Use \Drush\StringUtils::csvToArray
  */
 function _convert_csv_to_array($args) {
-  //
-  // Step 1: implode(',',$args) converts from, say, array('a,','b,','c,') to 'a,,b,,c,'
-  // Step 2: explode(',', ...) converts to array('a','','b','','c','')
-  // Step 3: array_filter(...) removes the empty items
-  // Step 4: array_map(...) trims extra whitespace from each item
-  // (handles csv strings with extra whitespace, e.g. 'a, b, c')
-  //
-  return array_map('trim', array_filter(explode(',', is_array($args) ? implode(',',$args) : $args)));
+  return StringUtils::csvToArray($args);
 }
 
 /**
