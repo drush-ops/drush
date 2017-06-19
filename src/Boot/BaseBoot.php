@@ -50,7 +50,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInt
             }
             drush_set_error('DRUSH_COMMAND_NOT_EXECUTABLE', dt("The Drush command '!args' could not be executed.", array('!args' => $args)));
         } elseif (!empty($args)) {
-            drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The Drush command '!args' could not be found.  Run `drush cache-clear drush` to clear the commandfile cache if you have installed new extensions.", array('!args' => $args)));
+            drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The Drush command '!args' could not be found. Use 'drush core-status' to verify that Drupal is found and bootstrapped successfully. Look for 'Drupal bootstrap : Successful' in its output.", array('!args' => $args)));
         }
         // Set errors that occurred in the bootstrap phases.
         $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS', array());
