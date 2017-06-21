@@ -452,14 +452,19 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     return parse_url($db_url ?: self::getDbUrl(), PHP_URL_SCHEME);
   }
 
-  function setUpDrupal($num_sites = 1, $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = 'testing') {
+  /**
+   * Assemble (and optionally install) one or more Drupal sites using a single codebase.
+   *
+   * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
+   */
+  function setUpDrupal($num_sites = 1, $install = FALSE) {
     $sites_subdirs_all = array('dev', 'stage', 'prod', 'retired', 'elderly', 'dead', 'dust');
     $sites_subdirs = array_slice($sites_subdirs_all, 0, $num_sites);
     $root = $this->webroot();
 
     // Install (if needed).
     foreach ($sites_subdirs as $subdir) {
-      $this->installDrupal($subdir, $install, $version_string, $profile);
+      $this->installDrupal($subdir, $install);
     }
 
     // Write an empty sites.php. Needed for multi-site on D8+.
@@ -480,8 +485,12 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     return self::$sites;
   }
 
-  // @todo. It is no longer supported to pass alternative versions of Drush or alternative install_profile.
-  function installDrupal($env = 'dev', $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL, $separate_roots = FALSE) {
+  /**
+   * Install a Drupal site.
+   *
+   * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
+   */
+  function installDrupal($env = 'dev', $install = FALSE) {
     $root = $this->webroot();
     $uri = $separate_roots ? "default" : "$env";
     $site = "$root/sites/$uri";
@@ -495,7 +504,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         'yes' => NULL,
         'quiet' => NULL,
       );
-      $this->drush('site-install', array($profile, 'install_configure_form.enable_update_status_emails=NULL'), $options);
+      $this->drush('site-install', array('testing', 'install_configure_form.enable_update_status_emails=NULL'), $options);
       // Give us our write perms back.
       chmod($site, 0777);
     }
