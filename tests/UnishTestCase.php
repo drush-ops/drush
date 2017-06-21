@@ -492,7 +492,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    */
   function installDrupal($env = 'dev', $install = FALSE) {
     $root = $this->webroot();
-    $uri = $separate_roots ? "default" : "$env";
+    $uri = $env;
     $site = "$root/sites/$uri";
 
     // If specified, install Drupal as a multi-site.
