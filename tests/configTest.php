@@ -10,10 +10,6 @@ namespace Unish;
 class ConfigCase extends CommandUnishTestCase {
 
   function setUp() {
-    if (UNISH_DRUPAL_MAJOR_VERSION < 8) {
-      $this->markTestSkipped('Config only available on D8+.');
-    }
-
     if (!$this->getSites()) {
       $this->setUpDrupal(1, TRUE);
       $this->drush('pm-enable', array('config'), $this->options());

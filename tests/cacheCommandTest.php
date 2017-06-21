@@ -18,12 +18,7 @@ class cacheCommandCase extends CommandUnishTestCase {
   function testCacheGet() {
     $options = $this->getOptions();
     // Test the cache get command.
-    $inputs = array(
-      7 => array('schema', NULL),
-      8 => array('system.date', 'config'),
-    );
-    list($key, $bin) = $inputs[UNISH_DRUPAL_MAJOR_VERSION];
-    $this->drush('cache-get', array($key, $bin), $options + array('format' => 'json'));
+    $this->drush('cache-get', array('system.date', 'config'), $options + array('format' => 'json'));
     $schema = $this->getOutputFromJSON('data');
     $this->assertNotEmpty($schema);
 
@@ -44,7 +39,7 @@ class cacheCommandCase extends CommandUnishTestCase {
     $expected = array('key' => 'value');
     $input = array('data'=> $expected);
     $stdin = json_encode($input);
-    $bin = UNISH_DRUPAL_MAJOR_VERSION >= 8 ? 'default' : 'cache';
+    $bin = 'default';
     $exec = sprintf('%s cache-set %s %s my_cache_id - %s CACHE_PERMANENT --input-format=json --cache-get 2>%s', self::getDrush(), "--root=" . self::escapeshellarg($options['root']), '--uri=' . $options['uri'], $bin, $this->bit_bucket());
     $return = $this->execute($exec, self::EXIT_SUCCESS, NULL, [], $stdin);
     $this->drush('cache-get', array('my_cache_id'), $options + array('format' => 'json'));
@@ -55,12 +50,7 @@ class cacheCommandCase extends CommandUnishTestCase {
   function testCacheRebuild() {
     $options = $this->getOptions();
     // Test cache-clear all and cache-rebuild (D8+).
-    if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
-      $this->drush('cache-rebuild', array(), $options);
-    }
-    else {
-      $this->drush('cache-clear', array('all'), $options);
-    }
+    $this->drush('cache-rebuild', array(), $options);
     $this->drush('cache-get', array('cache-test-cid'), $options + array('format' => 'json'), NULL, NULL, self::EXIT_ERROR);
   }
 
