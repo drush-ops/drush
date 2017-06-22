@@ -96,34 +96,15 @@ class userCase extends CommandUnishTestCase {
   }
 
   function testUserCancel() {
-    // create content
-    // @todo Creation of node types and content has changed in D8.
-    if (UNISH_DRUPAL_MAJOR_VERSION == 8) {
-      $this->markTestSkipped("@todo Creation of node types and content has changed in D8.");
-    }
-    if (UNISH_DRUPAL_MAJOR_VERSION >= 7) {
-      // create_node_types script does not work for D6
-      $this->drush('php-script', array('create_node_types'), $this->options() + array('script-path' => dirname(__FILE__) . '/resources'));
-      $name = self::NAME;
-      $newpass = 'newpass';
-      $eval = "return user_authenticate('$name', '$newpass')";
-      $this->drush('php-eval', array($eval), $this->options());
-      $eval = "\$node = (object) array('title' => 'foo', 'uid' => 2, 'type' => 'page',);";
-      if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
-        $eval .= " \$node = node_submit(entity_create('node', \$node));";
-      }
-      $eval .= " node_save(\$node);";
-      $this->drush('php-eval', array($eval), $this->options());
-      $this->drush('user-cancel', array(self::NAME), $this->options() + array('delete-content' => NULL));
-      $eval = 'print (string) user_load(2)';
-      $this->drush('php-eval', array($eval), $this->options());
-      $output = $this->getOutput();
-      $this->assertEmpty($output, 'User was deleted');
-      $eval = 'print (string) node_load(2)';
-      $this->drush('php-eval', array($eval), $this->options());
-      $output = $this->getOutput();
-      $this->assertEmpty($output, 'Content was deleted');
-    }
+    // @todo Create content type and content. Can't use Feeds as these have no uid.
+    $this->markTestSkipped("@todo Creation of node types and content has changed in D8.");
+
+    $this->drush('user-cancel', array(self::NAME), $this->options() + array('delete-content' => NULL));
+    $this->drush('user-information', [self::NAME], $this->options(), NULL, NULL, self::EXIT_ERROR);
+    $eval = 'print (string) node_load(2)';
+    $this->drush('php-eval', array($eval), $this->options());
+    $output = $this->getOutput();
+    $this->assertEmpty($output, 'Content was deleted');
   }
 
   function UserCreate() {
