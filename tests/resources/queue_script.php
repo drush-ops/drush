@@ -6,6 +6,7 @@ use Drupal\aggregator\Entity\Feed;
 $feed = Feed::create(array(
   'title' => 'test',
   'url' => 'http://drupal.org/project/issues/rss/drupal?categories=All',
+  'uid' => 2,
   'refresh' => 3600,
 ));
 $feed->save();
