@@ -53,8 +53,6 @@ class UserCommands extends DrushCommands
      *   uuid: Uuid
      * @table-style default
      * @default-fields uid,name,mail,roles,user_status
-     * @todo --pipe showing a table, not csv.
-     * @pipe-format csv
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
