@@ -274,7 +274,7 @@ class UserCommands extends DrushCommands
      * @command user-cancel
      *
      * @param string $names A comma delimited list of user names.
-     * @option bool delete-content Delete all content created by the user
+     * @option delete-content Delete all content created by the user
      * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @aliases ucan
      * @usage drush user-cancel username
@@ -291,8 +291,10 @@ class UserCommands extends DrushCommands
                         $this->logger()->warning(dt('All content created by !name will be deleted.', array('!name' => $account->getUsername())));
                     }
                     if ($this->io()->confirm('Cancel user account?: ')) {
-                        $account->cancel();
-                        $this->logger()->success(dt('Cancelled user: !user', array('!user' => $name)));
+                        $method = $options['delete-content'] ? 'user_cancel_block' : 'user_cancel_delete';
+                        user_cancel([], $account->id(), $method);
+                        drush_backend_batch_process();
+                        // Drupal logs a message for us.
                     }
                 } else {
                     $this->logger()->warning(dt('Unable to load user: !user', array('!user' => $name)));
