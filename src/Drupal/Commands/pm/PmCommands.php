@@ -59,7 +59,6 @@ class PmCommands extends DrushCommands
      * @command pm-enable
      * @param $modules A comma delimited list of modules.
      * @aliases en
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @complete \Drush\Commands\CompletionCommands::completeModules
      */
     public function enable(array $modules)
@@ -91,7 +90,6 @@ class PmCommands extends DrushCommands
      *
      * @command pm-uninstall
      * @param $modules A comma delimited list of modules.
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @aliases pmu
      * @complete \Drush\Commands\CompletionCommands::completeModules
      */
@@ -151,7 +149,6 @@ class PmCommands extends DrushCommands
      *   version: Version
      * @default-fields package,display_name,status,version
      * @aliases pml
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => null, 'core' => false, 'no-core' => false])

@@ -14,7 +14,6 @@ class BatchCommands extends DrushCommands
      * @command batch-process
      * @param $batch_id The batch id that will be processed.
      * @hidden
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      */
     public function process($batch_id)
     {

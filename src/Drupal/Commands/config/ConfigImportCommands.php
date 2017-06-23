@@ -154,7 +154,6 @@ class ConfigImportCommands extends DrushCommands
      * @option preview Format for displaying proposed changes. Recognized values: list, diff.
      * @option source An arbitrary directory that holds the configuration files. An alternative to label argument
      * @option partial Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted).
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @aliases cim
      */
     public function import($label = null, $options = ['preview' => 'list', 'source' => '', 'partial' => false])

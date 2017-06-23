@@ -23,7 +23,6 @@ class WatchdogCommands extends DrushCommands
      * @option severity Restrict to messages of a given severity level.
      * @option type Restrict to messages of a given type.
      * @option extended Return extended information about each message.
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @usage  drush watchdog-show
      *   Show a listing of most recent 10 messages.
      * @usage drush watchdog-show "cron run succesful"
@@ -78,7 +77,6 @@ class WatchdogCommands extends DrushCommands
      * @param $substring A substring to look search in error messages.
      * @option count The number of messages to show. Defaults to 10.
      * @option extended Return extended information about each message.
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @usage  drush watchdog-list
      *   Prompt for message type or severity, then run watchdog-show.
      * @aliases wd-list
@@ -134,7 +132,6 @@ class WatchdogCommands extends DrushCommands
      * @option severity Delete messages of a given severity level.
      * @option type Delete messages of a given type.
      * @drupal-dependencies dblog
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @usage drush watchdog-delete all
      *   Delete all messages.
      * @usage drush watchdog-delete 64
@@ -193,7 +190,6 @@ class WatchdogCommands extends DrushCommands
      * @drupal-dependencies dblog
      * @aliases wd-one
      * @validate-module-enabled dblog
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      *
      * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
      */

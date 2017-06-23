@@ -39,7 +39,6 @@ class LocaleCommands extends DrushCommands
      *
      * @command locale-check
      * @drupal-dependencies locale
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      */
     public function check()
     {
@@ -71,7 +70,6 @@ class LocaleCommands extends DrushCommands
      * @command locale-update
      * @option langcodes A comma-separated list of language codes to update. If omitted, all translations will be updated.
      * @drupal-dependencies locale
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      */
     public function update($options = ['langcodes' => ''])
     {

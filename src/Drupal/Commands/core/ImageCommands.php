@@ -22,8 +22,6 @@ class ImageCommands extends DrushCommands
      *   Flush all derived images. They will be regenerated on the fly.
      * @validate-entity-load image_style style_names
      * @aliases if
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
-     * @todo @complete
      */
     public function flush($style_names = null, $options = ['all' => false])
     {
@@ -67,7 +65,6 @@ class ImageCommands extends DrushCommands
      *   Save thumbnail sized derivative of logo image.
      * @validate-file-exists source
      * @validate-entity-load image_style style
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @aliases id
      */
     public function derive($style_name, $source)

@@ -52,7 +52,6 @@ class ConfigCommands extends DrushCommands
      * @usage drush config-get system.site page.front
      *   Gets system.site:page.front value.
      * @aliases cget
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      */
     public function get($config_name, $key = '', $options = ['format' => 'yaml', 'source' => 'active', 'include-overridden' => false])
     {
@@ -80,7 +79,6 @@ class ConfigCommands extends DrushCommands
      * @usage drush config-set system.site page.front node
      *   Sets system.site:page.front to "node".
      * @aliases cset
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      */
     public function set($config_name, $key, $value = null, $options = ['format' => 'string', 'value' => null])
     {
@@ -151,7 +149,6 @@ class ConfigCommands extends DrushCommands
      *   Return to shell prompt as soon as the editor window opens.
      * @aliases cedit
      * @validate-module-enabled config
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      */
     public function edit($config_name, $options = [])
     {
@@ -183,7 +180,6 @@ class ConfigCommands extends DrushCommands
      * @interact-config-name
      * @param $config_name The config object name, for example "system.site".
      * @aliases cdel
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      */
     public function delete($config_name, $options = [])
     {

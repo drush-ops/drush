@@ -73,7 +73,6 @@ class ViewsCommands extends DrushCommands
      * @command views-dev
      *
      * @validate-module-enabled views
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @aliases vd
      */
     public function dev()
@@ -138,7 +137,6 @@ class ViewsCommands extends DrushCommands
      *   status: Status
      *   tag: Tag
      * @default-fields machine-name,label,description,status
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @aliases vl
      * @validate-module-enabled views
      *
@@ -228,7 +226,6 @@ class ViewsCommands extends DrushCommands
      *   Show a count of my_view:page_1 where the first contextual filter value is 3.
      * @usage drush views-execute my_view page_1 3,foo
      *   Show the rendered HTML of my_view:page_1 where the first two contextual filter values are 3 and 'foo' respectively.
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @complete \Drush\Commands\core\ViewsCommands::complete
      * @validate-entity-load view view_name
      * @aliases vex
@@ -266,7 +263,6 @@ class ViewsCommands extends DrushCommands
      *
      * @command views-analyze
      * @todo Command has not  been fully tested. How to generate a message?
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @field-labels
      *   type: Type
      *   message: Message
@@ -309,7 +305,6 @@ class ViewsCommands extends DrushCommands
      * @usage drush ven frontpage,taxonomy_term
      *   Enable the frontpage and taxonomy_term views.
      * @complete \Drush\Commands\core\ViewsCommands::complete
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @aliases ven
      */
     public function enable($views)
@@ -333,7 +328,6 @@ class ViewsCommands extends DrushCommands
      * @usage drush vdis frontpage taxonomy_term
      *   Disable the frontpage and taxonomy_term views.
      * @complete \Drush\Commands\core\ViewsCommands::complete
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @aliases vdis
      */
     public function disable($views)

@@ -26,7 +26,6 @@ class SandwichCommands extends DrushCommands {
    * @usage drush mmas turkey --spreads=ketchup,mustard
    *   Make a terrible-tasting sandwich that is lacking in pickles.
    * @aliases mmas
-   * @bootstrap DRUSH_BOOTSTRAP_NONE
    */
   public function makeSandwich($filling, $options = ['spreads' => NULL]) {
     if ($spreads = _convert_csv_to_array('spreads')) {
@@ -45,7 +44,6 @@ class SandwichCommands extends DrushCommands {
    *
    * @command xkcd-spreads
    * @aliases xspreads
-   * @bootstrap DRUSH_BOOTSTRAP_NONE
    * @field-labels
    *   name: Name
    *   description: Description
@@ -96,7 +94,6 @@ class SandwichCommands extends DrushCommands {
    * @command sandwich-exposition
    * @hidden
    * @topic
-   * @bootstrap DRUSH_BOOTSTRAP_NONE
    */
   public function ruminate() {
     self::printFile(__DIR__ . '/sandwich-topic.md');

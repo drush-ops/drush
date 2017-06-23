@@ -77,7 +77,6 @@ class ConfigExportCommands extends DrushCommands
      * @option destination An arbitrary directory that should receive the exported files. An alternative to label argument.
      * @usage drush config-export --destination
      *   Export configuration; Save files in a backup directory named config-export.
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @aliases cex
      */
     public function export($label = null, $options = ['add' => false, 'commit' => false, 'message' => null, 'destination' => ''])

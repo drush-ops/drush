@@ -30,7 +30,6 @@ class ThemeCommands extends DrushCommands
      * @command theme-enable
      * @param $themes A comma delimited list of themes.
      * @aliases then
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      */
     public function enable($themes)
     {
@@ -46,7 +45,6 @@ class ThemeCommands extends DrushCommands
      *
      * @command theme-uninstall
      * @param $themes A comma delimited list of themes.
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @aliases thun
      */
     public function uninstall($themes)

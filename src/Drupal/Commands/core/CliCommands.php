@@ -30,7 +30,6 @@ class CliCommands extends DrushCommands
      * @command core-cli
      * @description Open an interactive shell on a Drupal site.
      * @aliases php
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @option $version-history Use command history based on Drupal version
      *   (Default is per site).
      * @topics docs-repl

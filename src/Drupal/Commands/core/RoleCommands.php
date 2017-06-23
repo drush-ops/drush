@@ -22,7 +22,6 @@ class RoleCommands extends DrushCommands
      * @usage drush role-create 'test role' 'Test role'
      *   Create a new role with a machine name of 'test role', and a human-readable name of 'Test role'.
      * @aliases rcrt
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      */
     public function create($machine_name, $human_readable_name = null)
     {
@@ -44,7 +43,6 @@ class RoleCommands extends DrushCommands
      * @usage drush role-delete 'test role'
      *   Delete the role 'test role'.
      * @aliases rdel
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      */
     public function delete($machine_name)
     {
@@ -71,7 +69,6 @@ class RoleCommands extends DrushCommands
      * @usage drush pm-info --fields=permissions --format=csv aggregator
      *   Discover the permissions associated with  given module (then use this command as needed).
      * @aliases rap
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      */
     public function roleAddPerm($machine_name, $permissions)
     {
@@ -92,7 +89,6 @@ class RoleCommands extends DrushCommands
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @usage drush role-remove-perm anonymous 'access content'
      *   Hide content from anon users.
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @aliases rmp
      */
     public function roleRemovePerm($machine_name, $permissions)
@@ -116,7 +112,6 @@ class RoleCommands extends DrushCommands
      * @usage drush role-list --filter='administer nodes'
      *   Display a list of roles that have the administer nodes permission assigned.
      * @aliases rls
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @field-labels
      *   rid: ID
      *   label: Role Label

@@ -50,7 +50,6 @@ class DrupalCommands extends DrushCommands
      *
      * @command core-cron
      * @aliases cron
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @topics docs-cron
      */
     public function cron()
@@ -66,7 +65,6 @@ class DrupalCommands extends DrushCommands
      *
      * @command twig-compile
      * @aliases twigc
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      */
     public function twigCompile()
     {
@@ -107,7 +105,6 @@ class DrupalCommands extends DrushCommands
      * @option severity Only show status report messages with a severity greater than or equal to the specified value.
      * @option ignore Comma-separated list of requirements to remove from output. Run with --format=yaml to see key values to use.
      * @aliases status-report, rq
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @usage drush core-requirements
      *   Show all status lines from the Status Report admin page.
      * @usage drush core-requirements --severity=2

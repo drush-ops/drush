@@ -57,7 +57,6 @@ class QueueCommands extends DrushCommands
      * @param string $name The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.
      * @validate-queue name
      * @option time-limit The maximum number of seconds allowed to run the queue
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      */
     public function run($name, $options = ['time-limit' => null])
     {
@@ -92,7 +91,6 @@ class QueueCommands extends DrushCommands
      * Returns a list of all defined queues.
      *
      * @command queue-list
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @field-labels
      *   queue: Queue
      *   items: Items
@@ -120,7 +118,6 @@ class QueueCommands extends DrushCommands
      * @command queue-delete
      * @param $name The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.
      * @validate-queue name
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      */
     public function delete($name)
     {

@@ -20,7 +20,6 @@ class UserCommands extends DrushCommands
      * @param string $names A comma delimited list of user names.
      * @option $uid A comma delimited list of user ids to lookup (an alternative to names).
      * @option $mail A comma delimited list of emails to lookup (an alternative to names).
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @aliases uinf
      * @usage drush user-information someguy,somegal
      *   Display information about the someguy and somegal user accounts.
@@ -105,7 +104,6 @@ class UserCommands extends DrushCommands
      * @command user-block
      *
      * @param string $names A comma delimited list of user names.
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @aliases ublk
      * @usage drush user-block user3
      *   Block the users whose name is user3
@@ -131,7 +129,6 @@ class UserCommands extends DrushCommands
      * @command user-unblock
      *
      * @param string $names A comma delimited list of user names.
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @aliases uublk
      * @usage drush user-unblock user3
      *   Unblock the users with name user3
@@ -159,7 +156,6 @@ class UserCommands extends DrushCommands
      * @validate-entity-load user_role role
      * @param string $role The name of the role to add
      * @param string $names A comma delimited list user names.
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @aliases urol
      * @complete \Drush\Commands\core\UserCommands::complete
      * @usage drush user-add-role "power user" user3
@@ -191,7 +187,6 @@ class UserCommands extends DrushCommands
      * @validate-entity-load user_role role
      * @param string $role The name of the role to add
      * @param string $names A comma delimited list of user names.
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @aliases urrol
      * @complete \Drush\Commands\core\UserCommands::complete
      * @usage drush user-remove-role "power user" user3
@@ -223,7 +218,6 @@ class UserCommands extends DrushCommands
      * @param string $name The name of the account to add
      * @option string password The password for the new account
      * @option string mail The email address for the new account
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @aliases ucrt
      * @usage drush user-create newuser --mail="person@example.com" --password="letmein"
      *   Create a new user account with the name newuser, the email address person@example.com, and the password letmein
@@ -273,7 +267,6 @@ class UserCommands extends DrushCommands
      *
      * @param string $names A comma delimited list of user names.
      * @option delete-content Delete all content created by the user
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @aliases ucan
      * @usage drush user-cancel username
      *   Cancel the user account with the name username and anonymize all content created by that user.
@@ -308,7 +301,6 @@ class UserCommands extends DrushCommands
      *
      * @param string $name The name of the account to modify.
      * @param string $password The new password for the account.
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @aliases upwd
      * @usage drush user-password someuser "correct horse battery staple"
      *   Set the password for the username someuser. @see xkcd.com/936

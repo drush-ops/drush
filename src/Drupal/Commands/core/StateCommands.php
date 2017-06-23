@@ -28,7 +28,6 @@ class StateCommands
      *
      * @command state-get
      *
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @param string $key The key name.
      * @usage drush state-get system.cron_last
      *   Displays last cron run timestamp
@@ -47,7 +46,6 @@ class StateCommands
      *
      * @command state-set
      *
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @param string $key The state key, for example: system.cron_last.
      * @param mixed $value The value to assign to the state key. Use '-' to read from STDIN.
      * @option input-format Type for the value. Defaults to 'auto'. Other recognized values: string, integer float, boolean, json, yaml.
@@ -92,7 +90,6 @@ class StateCommands
      *
      * @command state-delete
      *
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @param string $key The state key, for example "system.cron_last".
      * @usage drush state-del system.cron_last
      *   Delete state entry for system.cron_last.
