@@ -10,6 +10,7 @@ use Drush\Psysh\DrushHelpCommand;
 use Drupal\Component\Assertion\Handle;
 use Drush\Psysh\Shell;
 use Psy\Configuration;
+use Psy\VersionUpdater\Checker;
 
 class CliCommands extends DrushCommands
 {
@@ -42,6 +43,9 @@ class CliCommands extends DrushCommands
 
         // Set the Drush specific history file path.
         $configuration->setHistoryFile($this->historyPath($options));
+
+        // Disable checking for updates. Our dependencies are managed with Composer.
+        $configuration->setUpdateCheck(Checker::NEVER);
 
         $shell = new Shell($configuration);
 
