@@ -837,7 +837,7 @@ function annotationcommand_adapter_call_validate_interface($names, $hooks, Comma
 }
 
 /**
- * TODO: Document
+ * Alter the value of the --format description. Show available formats.
  */
 function annotationcommand_adapter_alter_option_description_format($option_help, $commandinfo, $default) {
   $formatterManager = annotatedcomand_adapter_get_formatter();
@@ -853,7 +853,7 @@ function annotationcommand_adapter_alter_option_description_format($option_help,
 }
 
 /**
- * TODO: Document
+ * Add the available fields list to --fields description.
  */
 function annotationcommand_adapter_alter_option_description_fields($option_help, $commandinfo, $default) {
   $formatOptions = new FormatterOptions($commandinfo->getAnnotations()->getArrayCopy());
