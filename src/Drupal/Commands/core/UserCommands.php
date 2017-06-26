@@ -282,7 +282,7 @@ class UserCommands extends DrushCommands
                         $this->logger()->warning(dt('All content created by !name will be deleted.', array('!name' => $account->getUsername())));
                     }
                     if ($this->io()->confirm('Cancel user account?: ')) {
-                        $method = $options['delete-content'] ? 'user_cancel_block' : 'user_cancel_delete';
+                        $method = $options['delete-content'] ? 'user_cancel_delete' : 'user_cancel_block';
                         user_cancel([], $account->id(), $method);
                         drush_backend_batch_process();
                         // Drupal logs a message for us.
