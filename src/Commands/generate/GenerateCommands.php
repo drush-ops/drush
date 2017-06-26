@@ -30,8 +30,8 @@ class GenerateCommands extends DrushCommands
      * @command generate
      * @aliases gen
      * @param string $generator A generator name. Omit to pick from available Generators.
-     * @option answers JSON formatted answers
-     * @option directory Base directory for file writing.
+     * @option answers A JSON string containing pairs of question and answers.
+     * @option directory Absolute path to a base directory for file writing.
      * @usage drush generate
      *  Pick from available generators and then run it.
      * @usage drush generate controller
