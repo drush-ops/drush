@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
  * @{
  *
  * These functions handle command dispatching, and can
- * be used to programatically invoke drush commands in
+ * be used to programmatically invoke Drush commands in
  * different ways.
  */
 
