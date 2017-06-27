@@ -461,6 +461,10 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       if (function_exists($fn)) {
         $command['options'][$option] = $fn($command['options'][$option], $commandinfo, $default);
       }
+      if ($option == 'fields') {
+        // This allows --field to pass validation - https://github.com/drush-ops/drush/issues/2825
+        $command['options']['field'] = 'Select just one field, and force format to \'string\'';
+      }
       if ($commandinfo->getAnnotation('hidden-options') == $option) {
         $command['options'][$option]['hidden'] = TRUE;
       }
