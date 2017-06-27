@@ -726,10 +726,6 @@ function _drush_preflight_uri() {
 }
 
 function _drush_find_commandfiles_drush() {
-  // Legacy style commands still shipping with Drush.
-  $searchpath[] = dirname(__FILE__) . '/../commands/core';
-  $searchpath[] = dirname(__FILE__) . '/../commands/pm';
-
   // User commands, specified by 'include' option
   $include = drush_get_context('DRUSH_INCLUDE', array());
   foreach ($include as $path) {
