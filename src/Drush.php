@@ -52,7 +52,7 @@ class Drush
     /**
      * The currently active container object, or NULL if not initialized yet.
      *
-     * @var League\Container\ContainerInterface|null
+     * @var \League\Container\ContainerInterface|null
      */
     protected static $container;
 
@@ -102,7 +102,7 @@ class Drush
     /**
      * Sets a new global container.
      *
-     * @param League\Container\Container $container
+     * @param \League\Container\Container $container
      *   A new container instance to replace the current.
      */
     public static function setContainer(ContainerInterface $container)
@@ -121,7 +121,7 @@ class Drush
     /**
      * Returns the currently active global container.
      *
-     * @return League\Container\Container|null
+     * @return \League\Container\Container|null
      *
      * @throws RuntimeException
      */
@@ -222,7 +222,7 @@ class Drush
     /**
      * Return the Bootstrap Manager.
      *
-     * @return Drush\Boot\BootstrapManager
+     * @return \Drush\Boot\BootstrapManager
      */
     public static function bootstrapManager()
     {
@@ -232,7 +232,7 @@ class Drush
     /**
      * Return the Bootstrap object.
      *
-     * @return Drush\Boot\Boot
+     * @return \Drush\Boot\Boot
      */
     public static function bootstrap()
     {
