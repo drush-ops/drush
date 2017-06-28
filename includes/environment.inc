@@ -11,7 +11,6 @@
  */
 
 use Drush\Drush;
-use DrupalFinder\DrupalFinder;
 use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 
