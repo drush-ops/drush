@@ -97,7 +97,6 @@ class SqlCommands extends DrushCommands
      * Drop all tables in a given database.
      *
      * @command sql-drop
-     * @option result-file  Save to a file. Value should be relative to Drupal root.
      * @optionset_sql
      * @topics docs-policy
      */
