@@ -88,7 +88,7 @@ class SqlCommands extends DrushCommands
             }
         }
 
-        return $sql->createdb(true);
+        return (int) !$sql->createdb(true);
     }
 
     /**
@@ -108,7 +108,7 @@ class SqlCommands extends DrushCommands
             throw new UserAbortException();
         }
         $tables = $sql->listTables();
-        return $sql->drop($tables);
+        return (int) !$sql->drop($tables);
     }
 
     /**
@@ -128,7 +128,7 @@ class SqlCommands extends DrushCommands
     {
         $this->further($options);
         $sql = SqlBase::create($options);
-        drush_shell_proc_open($sql->connect());
+        return drush_shell_proc_open($sql->connect());
     }
 
     /**
@@ -206,7 +206,7 @@ class SqlCommands extends DrushCommands
     {
         $this->further($options);
         $sql = SqlBase::create($options);
-        return $sql->dump($options);
+        return (int)$sql->dump($options) == FALSE;
     }
 
     /**
