@@ -119,6 +119,9 @@ class SqlBase
 
     /*
      * Execute a SQL dump and return the path to the resulting dump file.
+     *
+     * @return bool|null
+     *   Returns null, or false on failure.
      */
     public function dump()
     {

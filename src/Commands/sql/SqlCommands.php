@@ -86,9 +86,11 @@ class SqlCommands extends DrushCommands
             if (!$this->io()->confirm(dt('Do you really want to continue?'))) {
                 throw new UserAbortException();
             }
-        }
 
-        return (int) !$sql->createdb(true);
+            if (!$sql->createdb(true)) {
+              throw new \Exception('Unable to create database. Rerun with --debug to see any error message.');
+            }
+        }
     }
 
     /**
@@ -108,7 +110,9 @@ class SqlCommands extends DrushCommands
             throw new UserAbortException();
         }
         $tables = $sql->listTables();
-        return (int) !$sql->drop($tables);
+        if (!$sql->drop($tables)) {
+          throw new \Exception('Unable to drop database. Rerun with --debug to see any error message.');
+        }
     }
 
     /**
@@ -128,7 +132,9 @@ class SqlCommands extends DrushCommands
     {
         $this->further($options);
         $sql = SqlBase::create($options);
-        return drush_shell_proc_open($sql->connect());
+        if (!drush_shell_proc_open($sql->connect())) {
+          throw new \Exception('Unable to open database shell. Rerun with --debug to see any error message.');
+        }
     }
 
     /**
@@ -206,7 +212,9 @@ class SqlCommands extends DrushCommands
     {
         $this->further($options);
         $sql = SqlBase::create($options);
-        return (int)$sql->dump($options) == FALSE;
+        if ($sql->dump($options) === FALSE) {
+          throw new \Exception('Unable to drop database. Rerun with --debug to see any error message.');
+        }
     }
 
     /**
