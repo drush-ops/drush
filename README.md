@@ -22,7 +22,7 @@ Support
 FAQ
 ------
 
->  Q: What does "drush" stand for?<br>
+>  Q: What does "Drush" stand for?<br>
 >  A: The Drupal Shell.
 >
 >  Q: How do I pronounce Drush?<br>
