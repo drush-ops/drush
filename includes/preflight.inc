@@ -726,6 +726,8 @@ function _drush_preflight_uri() {
 }
 
 function _drush_find_commandfiles_drush() {
+  $searchpath = [];
+
   // User commands, specified by 'include' option
   $include = drush_get_context('DRUSH_INCLUDE', array());
   foreach ($include as $path) {
