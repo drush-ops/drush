@@ -44,8 +44,7 @@ class InputHandler extends BaseInputHandler
                     $vars['name'] = $moduleHandler->getName($vars['machine_name']);
                     unset($questions['name']);
                 }
-            }
-            elseif ($destination == 'themes/%') {
+            } elseif ($destination == 'themes/%') {
                 $themeHandler = \Drupal::service('theme_handler');
                 if ($themeHandler->themeExists($vars['machine_name'])) {
                     $vars['name'] = $themeHandler->getName($vars['machine_name']);
@@ -127,9 +126,8 @@ class InputHandler extends BaseInputHandler
                 return $machine_name ?: Utils::human2machine(isset($vars['name']) ? $vars['name'] : $root_directory);
             };
             $this->setQuestionDefault($questions['machine_name'], $default_machine_name);
-        }
-        // For other generator types simply reset default value set by DCG.
-        elseif (isset($questions['name'])) {
+        } elseif (isset($questions['name'])) {
+            // For other generator types simply reset default value set by DCG.
             $this->setQuestionDefault($questions['name'], '');
         }
     }
