@@ -190,8 +190,7 @@ class ConfigCommands extends DrushCommands
                 throw new \Exception(dt('Configuration key !key not found.', array('!key' => $key)));
             }
             $config->clear($key)->save();
-        }
-         else {
+        } else {
             $config->delete();
         }
     }
