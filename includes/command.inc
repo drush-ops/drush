@@ -523,11 +523,22 @@ function drush_handle_command_output($command, $structured_output) {
  */
 function _drush_verify_cli_options($command) {
 
-  // Start out with just the options in the current command record.
-  $options = _drush_get_command_options($command);
+  if (annotation_adapter_is_annotated($command)) {
+    // The canonical options list is now in $application
+    $application = Drush::getApplication();
+    annotation_adapter_add_legacy_commands_to_application($application);
+    $console = $application->get($command['command']);
+    $options = $console->getDefinition()->getOptions();
+    // Add formatter options. See \Consolidation\OutputFormatters\Options\FormatterOptions
+    // @todo Move this out of Drush.
+    $options['include-field-labels'] = '';
+  }
+  else {
+    // Start out with just the options in the current command record.
+    $options = _drush_get_command_options($command);
+  }
+
   // Skip all tests if the command is marked to allow anything.
-  // Also skip backend commands, which may have options on the commandline
-  // that were inherited from the calling command.
   if (($command['allow-additional-options'] === TRUE)) {
     return TRUE;
   }
