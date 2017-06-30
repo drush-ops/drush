@@ -452,24 +452,10 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       }
     }
     // $command['required-arguments'] = $required_arguments;
+
+    // We just need to declare the option. The values are no longer used.
     foreach ($commandinfo->options()->getValues() as $option => $default) {
-      $description = $commandinfo->options()->getDescription($option);
-      $command['options'][$option] = ['description' => $description];
-      if (!empty($default)) {
-        $command['options'][$option]['example-value'] = $default;
-      }
-      $fn = 'annotationcommand_adapter_alter_option_description_' . $option;
-      if (function_exists($fn)) {
-        $command['options'][$option] = $fn($command['options'][$option], $commandinfo, $default);
-      }
-      if ($option == 'fields') {
-        // Allow these options to pass validation - https://github.com/drush-ops/drush/issues/2825
-        $command['options']['field'] = 'Select just one field, and force format to \'string\'';
-        $command['options']['include-field-labels'] = 'Set to 0 to avoid field labels in output.';
-      }
-      if ($commandinfo->getAnnotation('hidden-options') == $option) {
-        $command['options'][$option]['hidden'] = TRUE;
-      }
+      $command['options'][$option] = '';
     }
     $command['annotations'] = $commandinfo->getAnnotations();
     // If the command has a '@return' annotation, then
@@ -492,6 +478,17 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
 }
 
 /**
+ * Determine whether command record represents an Annotated command.
+ *
+ * @param array $command
+ *
+ * @return bool
+ */
+function annotation_adapter_is_annotated(array $command) {
+  return !empty($command['annotated-command-callback']);
+}
+
+/**
  * Add legacy commands to the $application. Used by help and list commands.
  *
  * @deprecated Will be removed once dispatch pipeline is modernized.
@@ -500,7 +497,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
 function annotation_adapter_add_legacy_commands_to_application($application) {
   $commands = drush_get_commands();
   foreach ($commands as $command) {
-    if (empty($command['annotated-command-callback']) && empty($command['hidden'])) {
+    if (!annotation_adapter_is_annotated($command) && empty($command['hidden'])) {
       $annotated = new AnnotatedCommand($command['command']);
       $annotated->setDescription($command['description']);
       $annotated->setAliases($command['aliases']);
@@ -840,36 +837,6 @@ function annotationcommand_adapter_call_validate_interface($names, $hooks, Comma
     }
   }
   return true;
-}
-
-/**
- * Alter the value of the --format description. Show available formats.
- */
-function annotationcommand_adapter_alter_option_description_format($option_help, $commandinfo, $default) {
-  $formatterManager = annotatedcomand_adapter_get_formatter();
-  $return_type = $commandinfo->getReturnType();
-  if (!empty($return_type)) {
-    $available_formats = $formatterManager->validFormats($return_type);
-    $option_help['description'] = dt('Select output format. Available: !formats.', array('!formats' => implode(', ', $available_formats)));
-    if (!empty($default)) {
-      $option_help['description'] .= dt(' Default is !default.', array('!default' => $default));
-    }
-  }
-  return $option_help;
-}
-
-/**
- * Add the available fields list to --fields description.
- */
-function annotationcommand_adapter_alter_option_description_fields($option_help, $commandinfo, $default) {
-  $formatOptions = new FormatterOptions($commandinfo->getAnnotations()->getArrayCopy());
-  $field_labels = $formatOptions->get(FormatterOptions::FIELD_LABELS, [], '');
-  $default_fields = $formatOptions->get(FormatterOptions::DEFAULT_FIELDS, [], array_keys($field_labels));
-  $available_fields = array_keys($field_labels);
-  // @todo silencing a notice that will likely be fixed on views-list fixes https://github.com/consolidation/output-formatters/issues/35
-  $option_help['example-value'] = @implode(', ', $default_fields);
-  $option_help['description'] = dt('Fields to output. All available fields are: !available.', array('!available' => implode(', ', $available_fields)));
-  return $option_help;
 }
 
 /**
