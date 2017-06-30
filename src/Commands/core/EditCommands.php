@@ -34,13 +34,12 @@ class EditCommands extends DrushCommands
 
         // Apply any filter that was supplied.
         if ($filter) {
-            foreach ($all as $key => $file) {
+            foreach ($all as $file => $display) {
                 if (strpos($file, $filter) === false) {
-                    unset($all[$key]);
+                    unset($all[$file]);
                 }
             }
         }
-        $all = drush_map_assoc(array_values($all));
 
         $exec = drush_get_editor();
         if (count($all) == 1) {
@@ -48,6 +47,10 @@ class EditCommands extends DrushCommands
         } else {
             $choice = $this->io()->choice(dt("Choose a file to edit"), $all);
             $filepath = $choice;
+            // We don't yet support launching editor at a start line.
+            if ($pos = strpos($filepath, ':')) {
+              $filepath = substr($filepath, 0, $pos);
+            }
         }
         return drush_shell_exec_interactive($exec, $filepath, $filepath);
     }
@@ -76,38 +79,52 @@ class EditCommands extends DrushCommands
             }
         }
         if ($aliases = drush_get_context('drush-alias-files')) {
+            $aliases = drush_map_assoc($aliases);
             if ($headers) {
                 $aliases_header = array('aliases' => '-- Aliases --');
             }
         }
         if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
-            $drupal[] = realpath($site_root . '/settings.php');
+          $path = realpath($site_root . '/settings.php');
+          $drupal[$path] = $path;
             if (file_exists($site_root . '/settings.local.php')) {
-                $drupal[] = realpath($site_root . '/settings.local.php');
+              $path = realpath($site_root . '/settings.local.php');
+              $drupal[$path] = $path;
             }
-            $drupal[] = realpath(DRUPAL_ROOT . '/.htaccess');
+          $path = realpath(DRUPAL_ROOT . '/.htaccess');
+          $drupal[$path] = $path;
             if ($headers) {
                 $drupal_header = array('drupal' => '-- Drupal --');
             }
         }
-        return array_merge($php_header, $php, $bash_header, $bash, $rcs_header, $rcs, $aliases_header, $aliases, $drupal_header, $drupal);
+        $commands = drush_get_commands();
+        ksort($commands);
+        $commandfiles_header = array('commands' => '-- Commands --');
+        foreach ($commands as $command) {
+            $acc = $command['annotated-command-callback'];
+            $reflection = $acc ? new \ReflectionMethod($acc[0], $acc[1]) : new \ReflectionFunction($command['callback']);
+            $commandfiles[$reflection->getFileName() . ':' . $reflection->getStartLine()] = $command['command'];
+        }
+        return array_merge($php_header, $php, $bash_header, $bash, $rcs_header, $rcs, $aliases_header, $aliases, $commandfiles_header, $commandfiles, $drupal_header, $drupal);
     }
 
     public static function phpIniFiles()
     {
         $ini_files = array();
-        $ini_files[] = php_ini_loaded_file();
+        $path = php_ini_loaded_file();
+        $ini_files[$path] = $path;
         if ($drush_ini = getenv('DRUSH_INI')) {
             if (file_exists($drush_ini)) {
-                $ini_files[] = $drush_ini;
+                $ini_files[$drush_ini] = $drush_ini;
             }
         }
         foreach (array(DRUSH_BASE_PATH, '/etc/drush', drush_server_home() . '/.drush') as $ini_dir) {
             if (file_exists($ini_dir . "/drush.ini")) {
-                $ini_files[] = realpath($ini_dir . "/drush.ini");
+              $path = realpath($ini_dir . "/drush.ini");
+              $ini_files[$path] = $path;
             }
         }
-        return array_unique($ini_files);
+        return $ini_files;
     }
 
     public static function bashFiles()
@@ -115,11 +132,11 @@ class EditCommands extends DrushCommands
         $bashFiles = array();
         $home = drush_server_home();
         if ($bashrc = self::findBashrc($home)) {
-            $bashFiles[] = $bashrc;
+            $bashFiles[$bashrc] = $bashrc;
         }
         $prompt = $home . '/.drush/drush.prompt.sh';
         if (file_exists($prompt)) {
-            $bashFiles[] = $prompt;
+            $bashFiles[$prompt] = $prompt;
         }
         return $bashFiles;
     }
