@@ -1,5 +1,6 @@
 <?php
 
+use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Drush\Drush;
 use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
@@ -527,6 +528,9 @@ function _drush_verify_cli_options($command) {
     // The canonical options list is now in $application
     $application = Drush::getApplication();
     $console = $application->get($command['command']);
+    if ($console instanceof AnnotatedCommand) {
+      $console->optionsHook();
+    }
     $options = $console->getDefinition()->getOptions();
     // Add formatter options. See \Consolidation\OutputFormatters\Options\FormatterOptions
     // @todo Move this out of Drush.
