@@ -145,7 +145,8 @@ class InputHandler extends BaseInputHandler
      * @return string $directory
      *   The directory to dump file or false it cannot be determined.
      */
-    protected function getDirectory(array $vars, $destination) {
+    protected function getDirectory(array $vars, $destination)
+    {
 
         // Check if the generator can handle it itself.
         if (is_callable($destination)) {
@@ -196,5 +197,4 @@ class InputHandler extends BaseInputHandler
 
         return $directory;
     }
-
 }

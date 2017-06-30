@@ -457,7 +457,7 @@ class SqlBase
     /**
      * @deprecated.
      */
-    function db_spec()
+    public function db_spec() // @codingStandardsIgnoreLine
     {
         return $this->getDbSpec();
     }
@@ -468,7 +468,8 @@ class SqlBase
      * @param $options
      * @return array
      */
-    function get_expanded_table_selection($options = []) {
+    public function get_expanded_table_selection($options = []) // @codingStandardsIgnoreLine
+    {
         return $this->getExpandedTableSelection($options);
     }
 }
