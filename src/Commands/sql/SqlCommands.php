@@ -88,7 +88,7 @@ class SqlCommands extends DrushCommands
             }
 
             if (!$sql->createdb(true)) {
-              throw new \Exception('Unable to create database. Rerun with --debug to see any error message.');
+                throw new \Exception('Unable to create database. Rerun with --debug to see any error message.');
             }
         }
     }
@@ -110,7 +110,7 @@ class SqlCommands extends DrushCommands
         }
         $tables = $sql->listTables();
         if (!$sql->drop($tables)) {
-          throw new \Exception('Unable to drop database. Rerun with --debug to see any error message.');
+            throw new \Exception('Unable to drop database. Rerun with --debug to see any error message.');
         }
     }
 
@@ -132,7 +132,7 @@ class SqlCommands extends DrushCommands
         $this->further($options);
         $sql = SqlBase::create($options);
         if (!drush_shell_proc_open($sql->connect())) {
-          throw new \Exception('Unable to open database shell. Rerun with --debug to see any error message.');
+            throw new \Exception('Unable to open database shell. Rerun with --debug to see any error message.');
         }
     }
 
@@ -211,8 +211,8 @@ class SqlCommands extends DrushCommands
     {
         $this->further($options);
         $sql = SqlBase::create($options);
-        if ($sql->dump($options) === FALSE) {
-          throw new \Exception('Unable to drop database. Rerun with --debug to see any error message.');
+        if ($sql->dump($options) === false) {
+            throw new \Exception('Unable to drop database. Rerun with --debug to see any error message.');
         }
     }
 

@@ -49,7 +49,7 @@ class EditCommands extends DrushCommands
             $filepath = $choice;
             // We don't yet support launching editor at a start line.
             if ($pos = strpos($filepath, ':')) {
-              $filepath = substr($filepath, 0, $pos);
+                $filepath = substr($filepath, 0, $pos);
             }
         }
         return drush_shell_exec_interactive($exec, $filepath, $filepath);
@@ -85,14 +85,14 @@ class EditCommands extends DrushCommands
             }
         }
         if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
-          $path = realpath($site_root . '/settings.php');
-          $drupal[$path] = $path;
+            $path = realpath($site_root . '/settings.php');
+            $drupal[$path] = $path;
             if (file_exists($site_root . '/settings.local.php')) {
-              $path = realpath($site_root . '/settings.local.php');
-              $drupal[$path] = $path;
+                $path = realpath($site_root . '/settings.local.php');
+                $drupal[$path] = $path;
             }
-          $path = realpath(DRUPAL_ROOT . '/.htaccess');
-          $drupal[$path] = $path;
+            $path = realpath(DRUPAL_ROOT . '/.htaccess');
+            $drupal[$path] = $path;
             if ($headers) {
                 $drupal_header = array('drupal' => '-- Drupal --');
             }
@@ -120,8 +120,8 @@ class EditCommands extends DrushCommands
         }
         foreach (array(DRUSH_BASE_PATH, '/etc/drush', drush_server_home() . '/.drush') as $ini_dir) {
             if (file_exists($ini_dir . "/drush.ini")) {
-              $path = realpath($ini_dir . "/drush.ini");
-              $ini_files[$path] = $path;
+                $path = realpath($ini_dir . "/drush.ini");
+                $ini_files[$path] = $path;
             }
         }
         return $ini_files;
