@@ -526,7 +526,6 @@ function _drush_verify_cli_options($command) {
   if (annotation_adapter_is_annotated($command)) {
     // The canonical options list is now in $application
     $application = Drush::getApplication();
-    annotation_adapter_add_legacy_commands_to_application($application);
     $console = $application->get($command['command']);
     $options = $console->getDefinition()->getOptions();
     // Add formatter options. See \Consolidation\OutputFormatters\Options\FormatterOptions
