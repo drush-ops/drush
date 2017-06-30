@@ -453,8 +453,10 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
     }
     // $command['required-arguments'] = $required_arguments;
 
-    // _drush_verify_cli_options() uses $application so nothing to do here.
-    
+    // We just need to declare the option. The values are no longer used.
+    foreach ($commandinfo->options()->getValues() as $option => $default) {
+      $command['options'][$option] = '';
+    }
     $command['annotations'] = $commandinfo->getAnnotations();
     // If the command has a '@return' annotation, then
     // remember information we will need to use the output formatter.
