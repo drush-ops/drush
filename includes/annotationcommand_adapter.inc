@@ -12,6 +12,7 @@ use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Drush\Drush;
+use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Input\ArrayInput;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
@@ -478,10 +479,10 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       $command['return-type'] = $returnType;
     }
     if ($additional = $commandinfo->getAnnotation('allow-additional-options')) {
-      $command['allow-additional-options'] = _convert_csv_to_array($additional);
+      $command['allow-additional-options'] = StringUtils::csvToArray($additional);
     }
     if ($dependencies = $commandinfo->getAnnotation('drupal-dependencies')) {
-      $command['drupal dependencies'] = _convert_csv_to_array($dependencies);
+      $command['drupal dependencies'] = StringUtils::csvToArray($dependencies);
     }
     $command += drush_command_defaults($command_name, $commandfile, $commandfile_path);
     $commands[$command_name] = $command;

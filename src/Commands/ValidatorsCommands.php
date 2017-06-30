@@ -3,6 +3,7 @@ namespace Drush\Commands;
 
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
+use Drush\Utils\StringUtils;
 
 /*
  * Common validation providers. Use them by adding an annotation to your method.
@@ -21,7 +22,7 @@ class ValidatorsCommands
     public function validateEntityLoad(CommandData $commandData)
     {
         list($entity_type, $arg_name) = explode(' ', $commandData->annotationData()->get('validate-entity-load', null));
-        $names = _convert_csv_to_array($commandData->input()->getArgument($arg_name));
+        $names = StringUtils::csvToArray($commandData->input()->getArgument($arg_name));
         $loaded = \Drupal::entityTypeManager()->getStorage($entity_type)->loadMultiple($names);
         if ($missing = array_diff($names, array_keys($loaded))) {
             $msg = dt('Unable to load the !type: !str', ['!type' => $entity_type, '!str' => implode(', ', $missing)]);
@@ -39,7 +40,7 @@ class ValidatorsCommands
      */
     public function validateModuleEnabled(CommandData $commandData)
     {
-        $names = _convert_csv_to_array($commandData->annotationData()->get('validate-module-enabled'));
+        $names = StringUtils::csvToArray($commandData->annotationData()->get('validate-module-enabled'));
         $loaded = \Drupal::moduleHandler()->getModuleList();
         if ($missing = array_diff($names, array_keys($loaded))) {
             $msg = dt('Missing module: !str', ['!str' => implode(', ', $missing)]);
