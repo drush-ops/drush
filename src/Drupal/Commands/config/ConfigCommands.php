@@ -91,11 +91,7 @@ class ConfigCommands extends DrushCommands
 
         $config = $this->getConfigFactory()->getEditable($config_name);
         // Check to see if config key already exists.
-        if ($config->get($key) === null) {
-            $new_key = true;
-        } else {
-            $new_key = false;
-        }
+        $new_key = $config->get($key) === null;
 
         // Special flag indicating that the value has been passed via STDIN.
         if ($data === '-') {
@@ -173,20 +169,29 @@ class ConfigCommands extends DrushCommands
     }
 
     /**
-     * Delete a configuration object.
+     * Delete a configuration key, or a whole object.
      *
      * @command config-delete
      * @validate-config-name
      * @interact-config-name
      * @param $config_name The config object name, for example "system.site".
+     * @param $key A config key to clear, for example "page.front".
+     * @usage drush config-delete system.site
+     *   Delete the the system.site config object.
+     * @usage drush config-delete system.site page.front node
+     *   Delete the 'page.front' key from the system.site object.
      * @aliases cdel
      */
-    public function delete($config_name, $options = [])
+    public function delete($config_name, $key = null)
     {
         $config = $this->getConfigFactory()->getEditable($config_name);
-        if ($config->isNew()) {
-            throw new \Exception('Configuration name not recognized.');
-        } else {
+        if ($key) {
+            if ($config->get($key) === null) {
+                throw new \Exception(dt('Configuration key !key not found.', array('!key' => $key)));
+            }
+            $config->clear($key)->save();
+        }
+         else {
             $config->delete();
         }
     }
