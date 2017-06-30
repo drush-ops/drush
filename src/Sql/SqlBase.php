@@ -468,7 +468,7 @@ class SqlBase
      * @param $options
      * @return array
      */
-    public function get_expanded_table_selection($options = []) { // @codingStandardsIgnoreLine
+    public function get_expanded_table_selection($options = []) // @codingStandardsIgnoreLine
     {
         return $this->getExpandedTableSelection($options);
     }
