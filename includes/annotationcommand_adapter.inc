@@ -101,6 +101,7 @@ function annotationcommand_adapter_discover($searchpath, $phase = false, $phase_
     return;
   }
   if (($phase >= DRUSH_BOOTSTRAP_DRUPAL_SITE) && (drush_drupal_major_version() >= 8)) {
+    // These commands are already discovered by \Drush\Boot\DrupalBoot8::bootstrapDrupalFull
     return;
   }
   $annotation_commandfiles = [];
