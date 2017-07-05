@@ -325,7 +325,7 @@ class StatusInfoDrush implements StatusInfoInterface {
 
       // If we're running a dev snapshot and have a timestamp, stop
       // searching for security updates once we hit an official release
-      // older than what we've got. Allow 100 seconds of leeway to handle
+      // older than what we've got. Allow 300 seconds of leeway to handle
       // differences between the datestamp in the .info file and the
       // timestamp of the tarball itself (which are usually off by 1 or 2
       // seconds) so that we don't flag that as a new release.
@@ -334,7 +334,7 @@ class StatusInfoDrush implements StatusInfoInterface {
           // We don't have current timestamp info, so we can't know.
           continue;
         }
-        elseif (isset($release['date']) && ($project_data['datestamp'] + 100 > $release['date'])) {
+        elseif (isset($release['date']) && ($project_data['datestamp'] + 300 > $release['date'])) {
           // We're newer than this, so we can skip it.
           continue;
         }
@@ -404,7 +404,7 @@ class StatusInfoDrush implements StatusInfoInterface {
         if (empty($project_data['datestamp'])) {
           $project_data['status'] = DRUSH_UPDATESTATUS_NOT_CHECKED;
         }
-        elseif (($project_data['datestamp'] + 100 > $latest['date'])) {
+        elseif (($project_data['datestamp'] + 300 > $latest['date'])) {
           $project_data['status'] = DRUSH_UPDATESTATUS_CURRENT;
         }
         else {
