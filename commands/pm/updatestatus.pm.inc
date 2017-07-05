@@ -232,14 +232,11 @@ function pm_release_recommended(&$project) {
     $project['updateable'] = TRUE;
   }
   // If installed version is dev and the candidate version is older, choose
-  // latest dev as candidate. Allow 300 seconds of leeway to handle
-  // differences between the datestamp in the .info file and the
-  // timestamp of the tarball itself (which are usually off by a couple of
-  // seconds) so that we don't flag that as a new release.
+  // latest dev as candidate.
   if (($project['install_type'] == 'dev') && isset($project['candidate_version'])) {
-    if ($project['releases'][$project['candidate_version']]['date'] < ($project['datestamp'] + 300)) {
+    if ($project['releases'][$project['candidate_version']]['date'] < $project['datestamp']) {
       $project['candidate_version'] = $project['latest_dev'];
-      if ($project['releases'][$project['candidate_version']]['date'] <= ($project['datestamp'] + 300)) {
+      if ($project['releases'][$project['candidate_version']]['date'] <= $project['datestamp']) {
         $project['candidate_version'] = $project['existing_version'];
         $project['updateable'] = FALSE;
       }
