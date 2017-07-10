@@ -339,7 +339,7 @@ function drush_user_cancel($inputs) {
   $userlist = new UserList($inputs);
   foreach ($userlist->accounts as $account) {
     if (drush_get_option('delete-content') && drush_drupal_major_version() >= 7) {
-      drush_print(dt('All content created by !name will be deleted.', '!name'));
+      drush_print(dt('All content created by !name will be deleted.', array('!name')));
     }
     if (drush_confirm('Cancel user account?: ')) {
       $account->cancel();
