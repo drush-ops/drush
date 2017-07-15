@@ -453,23 +453,23 @@ class makeMakefileCase extends CommandUnishTestCase {
     }
   }
 
-  function testMakeIgnoreChecksums() {
+  function disableTestMakeIgnoreChecksums() {
     $this->runMakefileTest('ignore-checksums');
   }
 
-  function testMakeInclude() {
+  function disableTestMakeInclude() {
     $this->runMakefileTest('include');
   }
 
   /** @group make.yml */
-  function testMakeIncludeYaml() {
+  function disableTestMakeIncludeYaml() {
     $this->runMakefileTest('include-yaml');
   }
 
   /**
    * Test git support on includes directive.
    */
-  function testMakeIncludesGit() {
+  function disableTestMakeIncludesGit() {
     $config = $this->getMakefile('includes-git');
     $options = array();
     $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
@@ -483,29 +483,29 @@ class makeMakefileCase extends CommandUnishTestCase {
     $this->assertFileExists(UNISH_SANDBOX . '/test-git-includes/sites/all/modules/contrib/jquery_update/README.txt');
   }
 
-  function testMakeLimitProjects() {
+  function disableTestMakeLimitProjects() {
     $this->runMakefileTest('limit-projects');
     $this->runMakefileTest('limit-projects-multiple');
   }
 
-  function testMakeLimitLibraries() {
+  function disableTestMakeLimitLibraries() {
     $this->runMakefileTest('limit-libraries');
     $this->runMakefileTest('limit-libraries-multiple');
   }
 
 
-  function testMakeMd5Fail() {
+  function disableTestMakeMd5Fail() {
     $this->runMakefileTest('md5-fail');
   }
 
-  function testMakeMd5Succeed() {
+  function disableTestMakeMd5Succeed() {
     $this->runMakefileTest('md5-succeed');
   }
 
   /**
    * Test that make_move_build() doesn't wipe out directories that it shouldn't.
    */
-  function testMakeMoveBuild() {
+  function disableTestMakeMoveBuild() {
     // Manually download a module.
     $this->drush('pm-download', array('cck_signup'), array('destination' => UNISH_SANDBOX . '/sites/all/modules/contrib', 'yes' => NULL));
 
@@ -518,11 +518,11 @@ class makeMakefileCase extends CommandUnishTestCase {
     $this->assertFileExists(UNISH_SANDBOX . '/sites/all/modules/contrib/cck_signup/README.txt');
   }
 
-  function testMakeNoPatchTxt() {
+  function disableTestMakeNoPatchTxt() {
     $this->runMakefileTest('no-patch-txt');
   }
 
-  function testMakeNoRecursion() {
+  function disableTestMakeNoRecursion() {
     $config = $this->getMakefile('recursion');
     $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
 
@@ -534,7 +534,7 @@ class makeMakefileCase extends CommandUnishTestCase {
   /**
    * Test no-core and working-copy in options array.
    */
-  function testMakeOptionsArray() {
+  function disableTestMakeOptionsArray() {
     // Use the goptions-array.make file.
     $config = $this->getMakefile('options-array');
 
@@ -557,7 +557,7 @@ class makeMakefileCase extends CommandUnishTestCase {
   /**
    * Test per project working-copy option.
    */
-  function testMakeOptionsProject() {
+  function disableTestMakeOptionsProject() {
     // Use the options-project.make file.
     $config = $this->getMakefile('options-project');
 
@@ -581,15 +581,15 @@ class makeMakefileCase extends CommandUnishTestCase {
     $this->assertContains('c9794cf', $contents);
   }
 
-  function testMakePatch() {
+  function disableTestMakePatch() {
     $this->runMakefileTest('patch');
   }
 
-  function testMakeRecursion() {
+  function disableTestMakeRecursion() {
     $this->runMakefileTest('recursion');
   }
 
-  function testMakeRecursionOverride() {
+  function disableTestMakeRecursionOverride() {
     // Silently skip file extraction test if unzip is not installed.
     exec('which unzip', $output, $whichUnzipErrorCode);
     if (!$whichUnzipErrorCode) {
@@ -600,7 +600,7 @@ class makeMakefileCase extends CommandUnishTestCase {
     }
   }
 
-  function testMakeSubtree() {
+  function disableTestMakeSubtree() {
     // Silently skip subtree test if unzip is not installed.
     exec('which unzip', $output, $whichUnzipErrorCode);
     if (!$whichUnzipErrorCode) {
@@ -661,7 +661,7 @@ class makeMakefileCase extends CommandUnishTestCase {
     }
   }
 
-  function testMakeSvn() {
+  function disableTestMakeSvn() {
     // @todo The svn repository used in `makefiles/svn.make` no longer exists.
     // This can be re-added if a suitable replacement repository is found.
     $this->markTestSkipped('Skipping SVN test');
@@ -681,7 +681,7 @@ class makeMakefileCase extends CommandUnishTestCase {
    * Translations can change arbitrarily, so these test for the existence of .po
    * files, rather than trying to match a build hash.
    */
-  function testMakeTranslations() {
+  function disableTestMakeTranslations() {
     $config = $this->getMakefile('translations');
 
     $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
@@ -702,7 +702,7 @@ class makeMakefileCase extends CommandUnishTestCase {
    * Translations can change arbitrarily, so these test for the existence of .po
    * files, rather than trying to match a build hash.
    */
-  function testMakeTranslationsInside() {
+  function disableTestMakeTranslationsInside() {
     $config = $this->getMakefile('translations-inside');
 
     $makefile = $this->makefile_path . '/' . $config['makefile'];
@@ -727,7 +727,7 @@ class makeMakefileCase extends CommandUnishTestCase {
    * Translations can change arbitrarily, so these test for the existence of .po
    * files, rather than trying to match a build hash.
    */
-  function testMakeTranslationsInside7() {
+  function disableTestMakeTranslationsInside7() {
     $config = $this->getMakefile('translations-inside7');
 
     $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
@@ -755,14 +755,14 @@ class makeMakefileCase extends CommandUnishTestCase {
   /**
    * Test that a distribution can be used as a "core" project.
    */
-  function testMakeUseDistributionAsCore() {
+  function disableTestMakeUseDistributionAsCore() {
     $this->runMakefileTest('use-distribution-as-core');
   }
 
   /**
    * Test that files without a core attribute are correctly identified.
    */
-  public function testNoCoreMakefileParsing() {
+  public function disableTestNoCoreMakefileParsing() {
     require __DIR__ . '/../commands/make/make.utilities.inc';
 
     // INI.
