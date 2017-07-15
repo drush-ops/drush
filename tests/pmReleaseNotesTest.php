@@ -16,7 +16,7 @@ class pmReleaseNotesCase extends CommandUnishTestCase {
     $expected = <<< EXPECTED
 ------------------------------------------------------------------------------
 > RELEASE NOTES FOR 'DRUPAL' PROJECT, VERSION 7.1:
-> Last updated:  May 25, 2011 - 20:59.
+> Last updated:  25 May 2011 at 20:59 UTC.
 > Security
 ------------------------------------------------------------------------------
 EXPECTED;
