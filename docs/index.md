@@ -4,14 +4,14 @@ Drush is a command line shell and Unix scripting interface for Drupal. Drush cor
 
 Resources
 -----------
-* [Install documentation](http://docs.drush.org/en/master/install/)
+* [Install documentation](http://docs.drush.org/en/8.x/install/)
 * [General documentation](http://docs.drush.org)
 * [API Documentation](http://api.drush.org)
 * [Drush Commands](http://drushcommands.com)
 * Subscribe [this atom feed](https://github.com/drush-ops/drush/releases.atom) to receive notification on new releases. Also, [Version eye](https://www.versioneye.com/).
 * [Drush packages available via Composer](http://packages.drush.org)
 * [A list of modules that include Drush integration](https://www.drupal.org/project/project_module?f[2]=im_vid_3%3A4654&solrsort=ds_project_latest_release+desc)
-* Drush comes with a [full test suite](https://github.com/drush-ops/drush/blob/master/tests/README.md) powered by [PHPUnit](https://github.com/sebastianbergmann/phpunit). Each commit gets tested by the awesome [Travis.ci continuous integration service](https://travis-ci.org/drush-ops/drush).
+* Drush comes with a [full test suite](https://github.com/drush-ops/drush/blob/8.x/tests/README.md) powered by [PHPUnit](https://github.com/sebastianbergmann/phpunit). Each commit gets tested by the awesome [Travis.ci continuous integration service](https://travis-ci.org/drush-ops/drush).
 
 Support
 -----------
@@ -36,7 +36,7 @@ Some people pronounce the dru with a long u like Drupal. Fidelity points go to t
 
 ##### Does Drush have unit tests?
   
-Drush has an excellent suite of unit tests. See [tests/README.md](https://github.com/drush-ops/drush/blob/master/tests/README.md) for more information.
+Drush has an excellent suite of unit tests. See [tests/README.md](https://github.com/drush-ops/drush/blob/8.x/tests/README.md) for more information.
 
 
 Credits
