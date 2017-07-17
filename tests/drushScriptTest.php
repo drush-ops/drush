@@ -1,7 +1,7 @@
 <?php
 
 namespace Unish;
-use Webmozart\PathUtil\Path;
+use Drush\Webmozart\PathUtil\Path;
 
 /**
  * Tests for the 'drush' script itself

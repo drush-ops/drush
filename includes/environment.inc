@@ -11,7 +11,7 @@
  */
 
 use Drush\Log\LogLevel;
-use Webmozart\PathUtil\Path;
+use Drush\Webmozart\PathUtil\Path;
 
 /**
  * Log PHP errors to the Drush log. This is in effect until Drupal's error
@@ -315,6 +315,21 @@ function drush_conf_path($server_uri, $require_settings = TRUE) {
   return $conf;
 }
 
+function drush_locate_composer_root($start_path = NULL) {
+  return drush_search_up_directory_tree($start_path, 'drush_valid_composer_root');
+}
+
+function drush_valid_composer_root($path) {
+  // This cannot be a composer root unless there is a composer.json file here.
+  if (!file_exists('composer.json')) {
+    return false;
+  }
+  // For now, we'll presume that there is a composer.lock at the project
+  // root, and that no one has created a spurrious composer.lock file
+  // anywhere else.
+  return file_exists('composer.lock');
+}
+
 /**
  * Exhaustive depth-first search to try and locate the Drupal root directory.
  * This makes it possible to run Drush from a subdirectory of the drupal root.
@@ -325,6 +340,10 @@ function drush_conf_path($server_uri, $require_settings = TRUE) {
  *   A path to drupal root, or FALSE if not found.
  */
 function drush_locate_root($start_path = NULL) {
+  return drush_search_up_directory_tree($start_path, 'drush_valid_root');
+}
+
+function drush_search_up_directory_tree($start_path, $fn) {
   $drupal_root = FALSE;
 
   $start_path = empty($start_path) ? drush_cwd() : $start_path;
@@ -334,7 +353,7 @@ function drush_locate_root($start_path = NULL) {
       $path = realpath($path);
     }
     // Check the start path.
-    if (drush_valid_root($path)) {
+    if ($fn($path)) {
       $drupal_root = $path;
       break;
     }
@@ -344,7 +363,7 @@ function drush_locate_root($start_path = NULL) {
         if ($follow_symlinks && is_link($path)) {
           $path = realpath($path);
         }
-        if (drush_valid_root($path)) {
+        if ($fn($path)) {
           $drupal_root = $path;
           break 2;
         }

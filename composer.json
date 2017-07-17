@@ -44,8 +44,7 @@
     "symfony/event-dispatcher": "~2.7",
     "symfony/finder": "~2.7",
     "pear/console_table": "~1.3.0",
-    "phpdocumentor/reflection-docblock": "^2.0",
-    "webmozart/path-util": "~2"
+    "phpdocumentor/reflection-docblock": "^2.0"
   },
   "require-dev": {
     "phpunit/phpunit": "4.*",
@@ -55,20 +54,9 @@
       "ext-pcntl": "*",
       "drush/config-extra": "Provides configuration workflow commands, such as config-merge."
   },
-  "autoload": {
-    "psr-0": {
-      "Drush":        "lib/",
-      "Consolidation": "lib/"
-    }
-  },
   "autoload-dev": {
     "psr-0": {
       "Unish":        "tests/"
-    }
-  },
-  "extra": {
-    "branch-alias": {
-        "dev-master": "8.0.x-dev"
     }
   }
 }
