@@ -29,15 +29,16 @@
  *   - Return status code
  */
 
+$loader = false;
 if (file_exists($path = __DIR__ . '/vendor/autoload.php')
     || file_exists($path = __DIR__ . '/../autoload.php')
     || file_exists($path = __DIR__ . '/../../autoload.php')
 ) {
-    include_once($path);
+    $loader = include_once($path);
 } else {
     throw new \Exception('Could not locate autoload.php');
 }
 
-$preflight = new \Drush\Drush\Preflight();
-$status_code = $preflight->run();
+$preflight = new \Drush\Boot\Preflight($loader, dirname($path));
+$status_code = $preflight->run($_SERVER['argv']);
 exit($status_code);
