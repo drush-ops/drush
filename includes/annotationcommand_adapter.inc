@@ -49,7 +49,7 @@ function annotationcommand_adapter_get_discovery() {
  */
 function annotationcommand_adapter_get_processor() {
   $factory = Drush::commandFactory();
-  return $factory->commandProcessor();
+  return $factory->commandProcessor()->setPassExceptions(true);
 }
 
 /**
