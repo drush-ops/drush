@@ -234,7 +234,6 @@ function annotationcommand_adapter_process_command() {
 
   // Run any validate, command, process, alter or handle results hooks. c.f. AnnotatedCommand::execute()
   // n.b.: backend result is set by a global post-alter hook.
-  $result = null;
   try {
     $result = $commandprocessor->process(
       $output,
@@ -242,12 +241,11 @@ function annotationcommand_adapter_process_command() {
       $command['annotated-command-callback'],
       $commandData
     );
+    return $result;
   }
   catch (\Exception $e) {
-    drush_set_error($e->getMessage());
+    return drush_set_error($e->getMessage());
   }
-
-  return $result;
 }
 
 function annotationcommand_adapter_process_args($userArgs, $defaults) {
