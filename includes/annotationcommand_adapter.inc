@@ -49,7 +49,7 @@ function annotationcommand_adapter_get_discovery() {
  */
 function annotationcommand_adapter_get_processor() {
   $factory = Drush::commandFactory();
-  return $factory->commandProcessor();
+  return $factory->commandProcessor()->setPassExceptions(true);
 }
 
 /**
@@ -234,14 +234,18 @@ function annotationcommand_adapter_process_command() {
 
   // Run any validate, command, process, alter or handle results hooks. c.f. AnnotatedCommand::execute()
   // n.b.: backend result is set by a global post-alter hook.
-  $result = $commandprocessor->process(
-    $output,
-    $names,
-    $command['annotated-command-callback'],
-    $commandData
-  );
-
-  return $result;
+  try {
+    $result = $commandprocessor->process(
+      $output,
+      $names,
+      $command['annotated-command-callback'],
+      $commandData
+    );
+    return $result;
+  }
+  catch (\Exception $e) {
+    return drush_set_error($e->getMessage());
+  }
 }
 
 function annotationcommand_adapter_process_args($userArgs, $defaults) {

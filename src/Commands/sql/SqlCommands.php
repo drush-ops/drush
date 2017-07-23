@@ -81,7 +81,7 @@ class SqlCommands extends DrushCommands
         if (!drush_get_context('DRUSH_SIMULATE')) {
             // @todo odd - maybe for sql-sync.
             $txt_destination = (isset($db_spec['remote-host']) ? $db_spec['remote-host'] . '/' : '') . $db_spec['database'];
-            drush_print(dt("Creating database !target. Any possible existing database will be dropped!", array('!target' => $txt_destination)));
+            drush_print(dt("Creating database !target. Any existing database will be dropped!", array('!target' => $txt_destination)));
 
             if (!$this->io()->confirm(dt('Do you really want to continue?'))) {
                 throw new UserAbortException();
