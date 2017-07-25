@@ -66,6 +66,11 @@
       "Unish":        "tests/"
     }
   },
+  "scripts": {
+    "lint": [
+      "find includes -name '*.inc' -print0 | xargs -0 -n1 php -l"
+    ]
+  },
   "extra": {
     "branch-alias": {
         "dev-master": "8.0.x-dev"
