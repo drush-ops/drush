@@ -47,8 +47,9 @@ class Preflight
         $this->setTerminationHandlers();
 
         // Preprocess the args, removing any @sitealias that may be present
-        $argProcessor = new PreprocessArgs($home);
-        $argProcessor->parseArgv($argv);
+        $argProcessor = new ArgsPreprocessor($home);
+        $preflightArgs = new PreflightArgs();
+        $argProcessor->parseArgv($argv, $preflightArgs);
 
         // Load configuration and aliases from defined global locations
         // where such things are found.

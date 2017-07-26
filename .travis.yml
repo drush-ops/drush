@@ -23,6 +23,7 @@ sudo: false
 
 env:
   matrix:
+    - ISOLATION=1
     - PHPUNIT_ARGS=--group=base
     - PHPUNIT_ARGS=--group=commands
     - PHPUNIT_ARGS=--exclude-group=base,commands
@@ -44,6 +45,7 @@ matrix:
 before_install:
   - echo 'mbstring.http_input = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo 'mbstring.http_output = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - if [ -n $ISOLATION ] ; THEN cd tests/isolation ; composer install ; fi
 
 # Build a System-Under-Test.
 install: ${PWD}/unish.sut.php
@@ -53,7 +55,13 @@ before_script:
   - echo 'sendmail_path = /bin/true' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   # - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
 
-script: ${PWD}/unish.phpunit.php $PHPUNIT_ARGS
+script:
+  - |
+    if [ -n $ISOLATION ] ; then
+      cd tests/isolation && phpunit
+    else
+      ${PWD}/unish.phpunit.php $PHPUNIT_ARGS
+    fi
 
 # Background: https://github.com/drush-ops/drush/pull/1426
 after_success: ${PWD}/tests/testChildren.sh
