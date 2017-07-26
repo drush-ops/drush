@@ -48,7 +48,8 @@ before_install:
 
 # Build a System-Under-Test.
 install:
-  - if [ -n "$ISOLATION" ] ; then composer --working-dir=${PWD}/tests/isolation install ; else ${PWD}/unish.sut.php ; fi
+  - [ -n "$ISOLATION" ] && composer --working-dir=${PWD}/tests/isolation install
+  - [ -z "$ISOLATION" ] && ${PWD}/unish.sut.php
 
 before_script:
   - phpenv config-rm xdebug.ini
@@ -56,12 +57,8 @@ before_script:
   # - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
 
 script:
-  - |
-    if [ -n $ISOLATION ] ; then
-      cd tests/isolation && phpunit
-    else
-      ${PWD}/unish.phpunit.php $PHPUNIT_ARGS
-    fi
+  - [ -n "$ISOLATION" ] && cd tests/isolation && phpunit
+  - [ -z "$ISOLATION" ] && ${PWD}/unish.phpunit.php $PHPUNIT_ARGS
 
 # Background: https://github.com/drush-ops/drush/pull/1426
 after_success: ${PWD}/tests/testChildren.sh
