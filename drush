@@ -1,44 +1,4 @@
 #!/usr/bin/env php
 <?php
 
-/**
- * This script runs Drush.
- *
- * Responsibilities of this script:
- *   - Locate and include the Composer autoload file for Drush
- *   - Begin the bootstrap process
- *   - Exit with status code returned
- *
- * The Drush bootstrap goes through the following steps:
- *   - Preprocess the commandline arguments, considering only:
- *     - The named alias `@sitealias` (removed from arguments if present)
- *     - The --root option (read and retained)
- *     - The --config option (read and retained)
- *     - The --alias-path option (read and retained)
- *   - Load the Drush configuration and alias files from the standard
- *     global locations (including --config and --alias-path)
- *   - Determine the local Drupal site targeted, if any
- *   - Include the Composer autoload for Drupal (if different)
- *   - Extend configuration and alias files to include files in target Drupal site.
- *   - Predispatch: call a remote Drush command if applicable
- *   - Create the Robo DI container and Symfony Application et. al.
- *   - Run the Symfony Application
- *     - Bootstrap Drupal via @bootstrap command hook
- *     - Run commands and command hooks via annotated commands library
- *     - Catch 'command not found' exception, bootstrap Drupal and run again
- *   - Return status code
- */
-
-$loader = false;
-if (file_exists($path = __DIR__ . '/vendor/autoload.php')
-    || file_exists($path = __DIR__ . '/../autoload.php')
-    || file_exists($path = __DIR__ . '/../../autoload.php')
-) {
-    $loader = include_once($path);
-} else {
-    throw new \Exception('Could not locate autoload.php');
-}
-
-$preflight = new \Drush\Boot\Preflight($loader, dirname($path));
-$status_code = $preflight->run($_SERVER['argv']);
-exit($status_code);
+require __DIR__ . '/drush.php';
