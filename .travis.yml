@@ -45,7 +45,7 @@ matrix:
 before_install:
   - echo 'mbstring.http_input = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo 'mbstring.http_output = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-  - if [ -n $ISOLATION ] ; THEN cd tests/isolation ; composer install ; fi
+  - if [ -n $ISOLATION ] ; then cd tests/isolation ; composer install ; fi
 
 # Build a System-Under-Test.
 install: ${PWD}/unish.sut.php
