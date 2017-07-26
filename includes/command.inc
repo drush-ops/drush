@@ -110,8 +110,7 @@ function drush_invoke_process($site_alias_record, $command_name, $commandline_ar
   if (is_array($site_alias_record) && array_key_exists('site-list', $site_alias_record)) {
     list($site_alias_records, $not_found) = drush_sitealias_resolve_sitespecs($site_alias_record['site-list']);
     if (!empty($not_found)) {
-      drush_log(dt("Not found: @list", array("@list" => implode(', ', $not_found))), LogLevel::WARNING);
-      return FALSE;
+      return drush_set_error('DRUSH_EXECUTION_EXCEPTION', dt("Not found: @list", array("@list" => implode(', ', $not_found))));
     }
     $site_alias_records = drush_sitealias_simplify_names($site_alias_records);
     foreach ($site_alias_records as $alias_name => $alias_record) {
