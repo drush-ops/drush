@@ -27,7 +27,7 @@ class ConfigLocatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test a comprehensive load of all default fixture data
+     * Test a comprehensive load of all default fixture data.
      */
     function testLoadAll()
     {
@@ -37,18 +37,21 @@ class ConfigLocatorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->fixtures->fixturesDir() . '/etc/drush/drush.yml', $sources['test']['system']);
         $this->assertEquals($this->fixtures->fixturesDir() . '/home/.drush/drush.yml', $sources['test']['home']);
         $this->assertEquals($this->fixtures->fixturesDir() . '/sites/d8/drush/drush.yml', $sources['test']['site']);
+        $this->assertEquals($this->fixtures->environment()->drushBasePath() . '/drush.yml', $sources['drush']['php']['minimum-version']);
         //$this->assertEquals('', var_export($sources, true));
         $config = $configLocator->config();
         $this->assertEquals($this->fixtures->homeDir(), $config->get('env.cwd'));
         $this->assertEquals('A system-wide setting', $config->get('test.system'));
         $this->assertEquals('A user-specific setting', $config->get('test.home'));
         $this->assertEquals('A site-specific setting', $config->get('test.site'));
-
-        // TODO: use the drush config file for something. Put data in it and assert it has been set.
+        $this->assertTrue($config->has('drush.php.minimum-version'));
     }
 
     /**
-     * Test loading default fixture data in 'local' mode
+     * Test loading default fixture data in 'local' mode. This prevents Drush
+     * from loading any configuration file in any "global" location. In this
+     * context, "global" means anything that is not site-local, including the
+     * configuration file in the user's home directory, etc.
      */
     function testLocalMode()
     {
