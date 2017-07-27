@@ -132,7 +132,7 @@ class ConfigLocator
     public function addSiteConfig($siteRoot)
     {
         // There might not be a site
-        if (!isdir($siteRoot)) {
+        if (!is_dir($siteRoot)) {
             return;
         }
         $this->addConfigPaths([ $siteRoot, "$siteRoot/drush" ]);
