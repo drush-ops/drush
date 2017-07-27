@@ -55,6 +55,15 @@ class Environment
         ];
     }
 
+    public function drushBasePath() {
+        return $this->drushBasePath;
+    }
+
+    public function homeDir()
+    {
+        return $this->homeDir;
+    }
+
     /**
      * Return the original working directory
      */

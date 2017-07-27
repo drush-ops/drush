@@ -45,5 +45,6 @@ if (file_exists($autoloadFile = __DIR__ . '/vendor/autoload.php')
 $environment = new Environment(Path::getHomeDirectory(), getcwd(), $autoloadFile);
 $environment->applyEnvironment();
 $preflight = new \Drush\Boot\Preflight($environment);
+$preflight->init();
 $status_code = $preflight->run($_SERVER['argv']);
 exit($status_code);

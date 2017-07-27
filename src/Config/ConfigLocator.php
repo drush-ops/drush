@@ -1,8 +1,8 @@
 <?php
 namespace Drush\Config;
 
-use YamlConfigLoader;
-use ConfigProcessor;
+use Consolidation\Config\Loader\YamlConfigLoader;
+use Consolidation\Config\Loader\ConfigProcessor;
 
 /**
  * Locate Drush configuration files and load them into the configuration
@@ -29,6 +29,8 @@ class ConfigLocator
      * @var \Robo\Config
      */
     protected $config;
+
+    protected $processor;
 
     protected $isLocal;
 
@@ -68,9 +70,17 @@ class ConfigLocator
      */
     protected function createConfig()
     {
-        // TODO: make a global Drush config class derived from \Robo\Config.
-        // Maybe we do not need to do this, though.
-        return new \Robo\Config();
+        // TODO: Is it going to cause problems to not use \Robo\Config()?
+        return new \Consolidation\Config\Config();
+        // return new \Robo\Config();
+    }
+
+    public function sources()
+    {
+        if ($this->processor) {
+            return $this->processor->sources();
+        }
+        return [];
     }
 
     /**
@@ -137,14 +147,14 @@ class ConfigLocator
 
         $loader = new YamlConfigLoader();
         foreach ($configFiles as $configFile) {
-            $this->addLoader($loader->load("$path/$configFile"));
+            $this->addLoader($loader->load($configFile));
         }
     }
 
     public function addLoader($loader)
     {
         $processor = $this->configProcessor();
-        $processor->extend($loader->load("$path/$configFile"));
+        $processor->extend($loader);
         return $this;
     }
 
@@ -160,7 +170,7 @@ class ConfigLocator
     protected function locateConfig($path)
     {
         if (!is_dir($path)) {
-            return;
+            return [];
         }
 
         $candidates = [

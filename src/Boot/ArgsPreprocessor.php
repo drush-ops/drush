@@ -13,14 +13,8 @@ namespace Drush\Boot;
  */
 class ArgsPreprocessor
 {
-    /**
-     * @var $home Path to user's home directory
-     */
-    protected $home;
-
-    public function __construct($home)
+    public function __construct()
     {
-        $this->home = $home;
     }
 
     /**

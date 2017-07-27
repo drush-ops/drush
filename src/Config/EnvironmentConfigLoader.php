@@ -6,7 +6,7 @@ use Consolidation\Config\Loader\ConfigLoaderInterface;
 /**
  * Load the environment settings into our configuration
  */
-class EnviornmentConfigLoader implements ConfigLoaderInterface
+class EnvironmentConfigLoader implements ConfigLoaderInterface
 {
     protected $environment;
 
@@ -22,7 +22,7 @@ class EnviornmentConfigLoader implements ConfigLoaderInterface
      */
     public function export()
     {
-        $this->environment->exportConfigData();
+        return $this->environment->exportConfigData();
     }
 
     /**
