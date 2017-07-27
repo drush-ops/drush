@@ -23,7 +23,7 @@ sudo: false
 
 env:
   matrix:
-    - ISOLATION=1
+    - TEST_DIR=isolation
     - PHPUNIT_ARGS=--group=base
     - PHPUNIT_ARGS=--group=commands
     - PHPUNIT_ARGS=--exclude-group=base,commands
@@ -48,8 +48,8 @@ before_install:
 
 # Build a System-Under-Test.
 install:
-  - if [ -n "$ISOLATION" ] ; then composer --working-dir=${PWD}/tests/isolation install ; fi
-  - if [ -z "$ISOLATION" ] ; then ${PWD}/unish.sut.php ; fi
+  - if [ -n "$TEST_DIR" ] ; then composer --working-dir=${PWD}/$TEST_DIR install ; fi
+  - if [ -z "$TEST_DIR" ] ; then ${PWD}/unish.sut.php ; fi
 
 before_script:
   - phpenv config-rm xdebug.ini
@@ -57,8 +57,8 @@ before_script:
   # - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
 
 script:
-  - if [ -n "$ISOLATION" ] ; then cd tests/isolation && phpunit ; fi
-  - if [ -z "$ISOLATION" ] ; then ${PWD}/unish.phpunit.php $PHPUNIT_ARGS ; fi
+  - if [ -n "$TEST_DIR" ] ; then cd $TEST_DIR && phpunit ; fi
+  - if [ -z "$TEST_DIR" ] ; then ${PWD}/unish.phpunit.php $PHPUNIT_ARGS ; fi
 
 # Background: https://github.com/drush-ops/drush/pull/1426
 after_success: ${PWD}/tests/testChildren.sh

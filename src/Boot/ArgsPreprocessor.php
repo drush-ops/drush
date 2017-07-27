@@ -104,11 +104,12 @@ class ArgsPreprocessor
      *   to 'true'.
      * @return [$methodName, $optionValue]
      */
-    protected function checkMatchingOption($opt, $key, $methodName)
+    protected function checkMatchingOption($opt, $keyParam, $methodName)
     {
         // Test to see if $key ends in '='; remove the character if present.
-        $hasValue = $key[-1] == '=';
-        $key = rtrim($key, '=');
+        // If the char is removed, it means the option has a value.
+        $key = rtrim($keyParam, '=');
+        $hasValue = $key != $keyParam;
 
         // If $opt does not begin with $key, then it cannot be a match.
         if ($key != substr($opt, 0, strlen($key))) {

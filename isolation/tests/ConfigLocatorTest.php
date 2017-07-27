@@ -57,7 +57,7 @@ class ConfigLocatorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('environment', $sources['env']['cwd']);
         $this->assertTrue(!isset($sources['test']['system']));
         $this->assertTrue(!isset($sources['test']['home']));
-        $this->assertEquals($this->fixtures->fixturesDir() . '/sites/d8/drush/drush.yml', $sources['test']['site']);
+        $this->assertEquals($this->fixtures->siteDir() . '/drush/drush.yml', $sources['test']['site']);
         $config = $configLocator->config();
         $this->assertEquals($this->fixtures->homeDir(), $config->get('env.cwd'));
         $this->assertTrue(!$config->has('test.system'));
@@ -66,7 +66,7 @@ class ConfigLocatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Create a config locator from All The Sources
+     * Create a config locator from All The Sources, for use in multiple tests.
      */
     protected function createConfigLoader($isLocal = false, $configPath = '', $aliasPath = '', $alias = '')
     {
