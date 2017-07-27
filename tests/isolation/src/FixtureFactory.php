@@ -15,6 +15,13 @@ class FixtureFactory
         return $this->fixturesDir() . '/home';
     }
 
+    // It is still an aspirational goal to add Drupal 7 support back to Drush 10. :P
+    // For now, only Drupal 8 is supported.
+    public function siteDir($majorVersion = '8')
+    {
+        return $this->fixturesDir() . '/sites/d' . $majorVersion;
+    }
+
     public function environment($cwd = false)
     {
         $fixturesDir = $this->fixturesDir();

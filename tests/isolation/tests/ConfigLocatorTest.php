@@ -36,11 +36,15 @@ class ConfigLocatorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('environment', $sources['env']['cwd']);
         $this->assertEquals($this->fixtures->fixturesDir() . '/etc/drush/drush.yml', $sources['test']['system']);
         $this->assertEquals($this->fixtures->fixturesDir() . '/home/.drush/drush.yml', $sources['test']['home']);
+        $this->assertEquals($this->fixtures->fixturesDir() . '/sites/d8/drush/drush.yml', $sources['test']['site']);
         //$this->assertEquals('', var_export($sources, true));
         $config = $configLocator->config();
         $this->assertEquals($this->fixtures->homeDir(), $config->get('env.cwd'));
         $this->assertEquals('A system-wide setting', $config->get('test.system'));
         $this->assertEquals('A user-specific setting', $config->get('test.home'));
+        $this->assertEquals('A site-specific setting', $config->get('test.site'));
+
+        // TODO: use the drush config file for something. Put data in it and assert it has been set.
     }
 
     /**
@@ -53,10 +57,12 @@ class ConfigLocatorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('environment', $sources['env']['cwd']);
         $this->assertTrue(!isset($sources['test']['system']));
         $this->assertTrue(!isset($sources['test']['home']));
+        $this->assertEquals($this->fixtures->fixturesDir() . '/sites/d8/drush/drush.yml', $sources['test']['site']);
         $config = $configLocator->config();
         $this->assertEquals($this->fixtures->homeDir(), $config->get('env.cwd'));
         $this->assertTrue(!$config->has('test.system'));
         $this->assertTrue(!$config->has('test.home'));
+        $this->assertEquals('A site-specific setting', $config->get('test.site'));
     }
 
     /**
@@ -72,6 +78,8 @@ class ConfigLocatorTest extends \PHPUnit_Framework_TestCase
 
         // Make our environment settings available as configuration items
         $configLocator->addLoader(new EnvironmentConfigLoader($this->fixtures->environment()));
+
+        $configLocator->addSiteConfig($this->fixtures->siteDir());
 
         return $configLocator;
     }
