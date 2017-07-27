@@ -21,6 +21,10 @@ class PreflightArgs implements PreflightArgsInterface
 
     protected $aliasPath;
 
+    protected $commandPath;
+
+    protected $isLocal;
+
     public function __construct()
     {
     }
@@ -31,11 +35,13 @@ class PreflightArgs implements PreflightArgsInterface
     public function optionsWithValues()
     {
         return [
-            '-r' => 'setSelectedSite',
-            '--root' => 'setSelectedSite',
-            '-c' => 'setConfig',
-            '--config' => 'setConfigPath',
-            '--alias-path' => 'setAliasPath',
+            '-r=' => 'setSelectedSite',
+            '--root=' => 'setSelectedSite',
+            '-c=' => 'setConfig',
+            '--config=' => 'setConfigPath',
+            '--alias-path=' => 'setAliasPath',
+            '--include=' => 'setCommandPath',
+            '--local' => 'setLocal',
         ];
     }
 
@@ -111,6 +117,28 @@ class PreflightArgs implements PreflightArgsInterface
     public function setAliasPath($aliasPath)
     {
         $this->aliasPath = $aliasPath;
+        return $this;
+    }
+
+    public function commandPath()
+    {
+        return $this->commandPath;
+    }
+
+    public function setCommandPath($commandPath)
+    {
+        $this->commandPath = $commandPath;
+        return $this;
+    }
+
+    public function isLocal()
+    {
+        return $this->isLocal;
+    }
+
+    public function setLocal($isLocal)
+    {
+        $this->isLocal = $isLocal;
         return $this;
     }
 }

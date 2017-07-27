@@ -1,0 +1,7 @@
+test:
+  home: ~/home/.drush/drush.yml
+command:
+  test:
+    foo:
+      options:
+        bar: baz

@@ -24,5 +24,10 @@
     "psr-4": {
       "Drush\\": "../../src/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Drush\\": "src/"
+    }
   }
 }

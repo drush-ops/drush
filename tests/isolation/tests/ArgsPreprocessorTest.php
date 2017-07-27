@@ -12,19 +12,21 @@ class ArgsPreprocessorTest extends \PHPUnit_Framework_TestCase
         $selectedSite,
         $configPath,
         $aliasPath,
+        $commandPath,
+        $isLocal,
         $unprocessedArgs)
     {
         $home = __DIR__ . '/fixtures/home';
 
         $argProcessor = new ArgsPreprocessor($home);
         $preflightArgs = new PreflightArgs();
-        $argProcessor->parseArgv($argv, $preflightArgs);
+        $argProcessor->parse($argv, $preflightArgs);
 
+        $this->assertEquals($unprocessedArgs, implode(',', $preflightArgs->args()));
         $this->assertEquals($alias, $preflightArgs->alias());
         $this->assertEquals($selectedSite, $preflightArgs->selectedSite());
         $this->assertEquals($configPath, $preflightArgs->configPath());
         $this->assertEquals($aliasPath, $preflightArgs->aliasPath());
-        $this->assertEquals($unprocessedArgs, implode(',', $preflightArgs->args()));
     }
 
     public static function argTestValues()
@@ -42,7 +44,9 @@ class ArgsPreprocessorTest extends \PHPUnit_Framework_TestCase
                 null,
                 null,
                 null,
-                'status,version',
+                null,
+                null,
+                'drush,status,version',
             ],
 
             [
@@ -58,7 +62,9 @@ class ArgsPreprocessorTest extends \PHPUnit_Framework_TestCase
                 null,
                 null,
                 null,
-                'rsync,@from,@to,--delete',
+                null,
+                null,
+                'drush,rsync,@from,@to,--delete',
             ],
 
             [
@@ -74,7 +80,9 @@ class ArgsPreprocessorTest extends \PHPUnit_Framework_TestCase
                 '/path/to/drupal',
                 null,
                 null,
-                'status,--verbose',
+                null,
+                null,
+                'drush,status,--verbose',
             ],
 
             [
@@ -89,7 +97,9 @@ class ArgsPreprocessorTest extends \PHPUnit_Framework_TestCase
                 '/path/to/drupal',
                 null,
                 null,
-                'status,--verbose',
+                null,
+                null,
+                'drush,status,--verbose',
             ],
 
             [
@@ -105,7 +115,9 @@ class ArgsPreprocessorTest extends \PHPUnit_Framework_TestCase
                 null,
                 '/path/to/config',
                 null,
-                'status,--verbose',
+                null,
+                null,
+                'drush,status,--verbose',
             ],
 
             [
@@ -120,7 +132,9 @@ class ArgsPreprocessorTest extends \PHPUnit_Framework_TestCase
                 null,
                 '/path/to/config',
                 null,
-                'status,--verbose',
+                null,
+                null,
+                'drush,status,--verbose',
             ],
 
             [
@@ -136,7 +150,9 @@ class ArgsPreprocessorTest extends \PHPUnit_Framework_TestCase
                 null,
                 null,
                 '/path/to/aliases',
-                'status,--verbose',
+                null,
+                null,
+                'drush,status,--verbose',
             ],
 
             [
@@ -151,7 +167,9 @@ class ArgsPreprocessorTest extends \PHPUnit_Framework_TestCase
                 null,
                 null,
                 '/path/to/aliases',
-                'status,--verbose',
+                null,
+                null,
+                'drush,status,--verbose',
             ],
 
             [
@@ -159,16 +177,73 @@ class ArgsPreprocessorTest extends \PHPUnit_Framework_TestCase
                     'drush',
                     'status',
                     '--verbose',
+                    '--include',
+                    '/path/to/commands',
+                ],
+
+                null,
+                null,
+                null,
+                null,
+                'path/to/commands',
+                null,
+                'drush,status,--verbose',
+            ],
+
+            [
+                [
+                    'drush',
+                    'status',
+                    '--verbose',
+                    '--include=/path/to/commands',
+                ],
+
+                null,
+                null,
+                null,
+                null,
+                'path/to/commands',
+                null,
+                'drush,status,--verbose',
+            ],
+
+            [
+                [
+                    'drush',
+                    'status',
+                    '--verbose',
+                    '--local',
+                ],
+
+                null,
+                null,
+                null,
+                null,
+                null,
+                true,
+                'drush,status,--verbose',
+            ],
+
+            [
+                [
+                    'drush',
+                    '@alias',
+                    'status',
+                    '--verbose',
+                    '--local',
                     '--alias-path=/path/to/aliases',
                     '--config=/path/to/config',
                     '--root=/path/to/drupal',
+                    '--include=/path/to/commands',
                 ],
 
-                null,
+                '@alias',
                 '/path/to/drupal',
                 '/path/to/config',
                 '/path/to/aliases',
-                'status,--verbose',
+                'path/to/commands',
+                true,
+                'drush,status,--verbose',
             ],
         ];
     }
