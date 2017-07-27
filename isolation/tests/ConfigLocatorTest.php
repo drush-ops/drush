@@ -33,6 +33,7 @@ class ConfigLocatorTest extends \PHPUnit_Framework_TestCase
     {
         $configLocator = $this->createConfigLoader();
         $sources = $configLocator->sources();
+        // $this->assertEquals('', var_export($sources, true));
         $this->assertEquals('environment', $sources['env']['cwd']);
         $this->assertEquals($this->fixtures->fixturesDir() . '/etc/drush/drush.yml', $sources['test']['system']);
         $this->assertEquals($this->fixtures->fixturesDir() . '/home/.drush/drush.yml', $sources['test']['home']);
@@ -75,7 +76,7 @@ class ConfigLocatorTest extends \PHPUnit_Framework_TestCase
     {
         $configLocator = new ConfigLocator();
         $configLocator->setLocal($isLocal);
-        $configLocator->addUserConfig($configPath, $this->fixtures->environment()->systemConfigPath(), $this->fixtures->environment()->homeDir());
+        $configLocator->addUserConfig($configPath, $this->fixtures->environment()->systemConfigPath(), $this->fixtures->environment()->userConfigPath());
         $configLocator->addDrushConfig($this->fixtures->environment()->drushBasePath());
         $configLocator->addAliasConfig($alias, $aliasPath, $this->fixtures->environment()->homeDir());
 

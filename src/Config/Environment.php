@@ -1,6 +1,10 @@
 <?php
 namespace Drush\Config;
 
+use Composer\Autoload\ClassLoader;
+
+use Webmozart\PathUtil\Path;
+
 class Environment
 {
     protected $homeDir;
@@ -15,7 +19,7 @@ class Environment
     public function __construct($homeDir, $cwd, $autoloadFile)
     {
         $this->homeDir = $homeDir;
-        $this->originalCwd = $cwd;
+        $this->originalCwd = Path::canonicalize($cwd);
         $this->etcPrefix = '';
         $this->sharePrefix = '';
         $this->drushBasePath = dirname(dirname(__DIR__));
@@ -37,7 +41,7 @@ class Environment
      */
     public function exportConfigData()
     {
-        // TODO: evaluate these paths.
+        // TODO: decide how to organize / name this heirarchy.
         // i.e. which is better:
         //   $config->get('drush.base-dir')
         //     - or -
@@ -45,12 +49,16 @@ class Environment
         return [
             'env' => [
                 'cwd' => $this->cwd(),
+                'home' => $this->homeDir(),
                 'is-windows' => $this->isWindows(),
             ],
             'drush' => [
                 'base-dir' => $this->drushBasePath,
-                'vendor-dir' => $this->vendorDir(),
+                'vendor-dir' => $this->vendorPath(),
                 'docs-dir' => $this->docsPath(),
+                'user-dir' => $this->userConfigPath(),
+                'system-dir' => $this->systemConfigPath(),
+                'system-command-dir' => $this->systemCommandFilePath(),
             ],
         ];
     }
@@ -65,6 +73,11 @@ class Environment
         return $this->homeDir;
     }
 
+    public function userConfigPath()
+    {
+        return $this->homeDir() . '/.drush';
+    }
+
     /**
      * Return the original working directory
      */
@@ -76,9 +89,22 @@ class Environment
     /**
      * Return the path to Drush's vendor directory
      */
-    public function vendorDir()
+    public function vendorPath()
     {
         return $this->vendorDir;
+    }
+
+    public function loader()
+    {
+        return $this->loader;
+    }
+
+    /**
+     * Set the class loader from the autload.php file, if available.
+     */
+    public function setLoader(ClassLoader $loader)
+    {
+        $this->loader = $loader;
     }
 
     /**

@@ -53,6 +53,11 @@ class PreflightArgs implements PreflightArgsInterface
         return $this->args;
     }
 
+    public function applicationPath()
+    {
+        return reset($this->args);
+    }
+
     /**
      * @inheritdoc
      */

@@ -935,6 +935,11 @@ function drush_postflight() {
  * result of drush_get_error() if it wasn't.
  */
 function drush_shutdown() {
+  // Avoid doing anything if our container has not been initialized yet.
+  if (!\Drush\Drush::hasContainer()) {
+    return;
+  }
+
   // Mysteriously make $user available during sess_write(). Avoids a NOTICE.
   global $user;
 

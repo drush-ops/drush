@@ -2,6 +2,7 @@
 namespace Drush\Boot;
 
 use Drush\Drush;
+use Drush\Config\Environment;
 
 /**
  * Prepare to bootstrap Drupal
@@ -15,10 +16,16 @@ class LegacyPreflight
     /**
      * Define legacy constants.
      */
-    public static function defineConstants($drushBasePath)
+    public static function defineConstants(Environment $environment, $applicationPath)
     {
+        $applicationPath = Path::makeAbsolute($applicationPath, $environment->cwd());
+
         define('DRUSH_REQUEST_TIME', microtime(true));
-        define('DRUSH_BASE_PATH', $drushBasePath);
+
+        /*
+         * @deprecated. Use $config->get('drush.base-dir') instead.
+         */
+        define('DRUSH_BASE_PATH', $environment->drushBasePath());
 
         /*
          * @deprecated. Use Drush::getVersion().
@@ -36,12 +43,60 @@ class LegacyPreflight
         define('DRUSH_MINOR_VERSION', Drush::getMinorVersion());
 
         /*
+         * @deprecated.
+         */
+        define('DRUSH_COMMAND', $applicationPath);
+
+        /*
+         * @deprecated. Use $config->get('env.cwd') instead.
+         */
+        drush_set_context('DRUSH_OLDCWD', $path);
+
+        /*
          * @deprecated. Do not use
          */
         drush_set_context('argc', $GLOBALS['argc']);
         drush_set_context('argv', $GLOBALS['argv']);
-        drush_set_context('DRUSH_VENDOR_PATH', $this->vendorPath);
-        drush_set_context('DRUSH_CLASSLOADER', $this->loader);
+
+        /*
+         * @deprecated. Use $config->get('drush.vendor-dir') instead.
+         */
+        drush_set_context('DRUSH_VENDOR_PATH', $environment->vendorPath());
+
+        /*
+         * @deprecated. Use $environment->loader() instead.
+         */
+        drush_set_context('DRUSH_CLASSLOADER', $environment->loader());
+    }
+
+    public static function setContexts(Environment $environment)
+    {
+        /*
+         * Obsolete. Presumed to be unnecessary; available in Environment if needed
+         * (just add a getter method).
+         */
+        // drush_set_context('ETC_PREFIX', $environment->...);
+        // drush_set_context('SHARE_PREFIX', $environment->...);
+
+        /*
+         * @deprecated. Use $config->get('drush.docs-dir') instead.
+         */
+        drush_set_context('DRUSH_BASE_PATH', $environment->docsPath());
+
+        /*
+         * @deprecated. Use $config->get('drush.system-dir') instead.
+         */
+        drush_set_context('DRUSH_SITE_WIDE_CONFIGURATION', $environment->systemConfigPath());
+
+        /*
+         * @deprecated. Use $config->get('drush.system-command-dir') instead.
+         */
+        drush_set_context('DRUSH_SITE_WIDE_COMMANDFILES', $environment->systemCommandFilePath());
+
+        /*
+         * @deprecated. Use $config->get('drush.user-dir') instead.
+         */
+        drush_set_context('DRUSH_PER_USER_CONFIGURATION', $environment->userConfigPath());
     }
 
     /**

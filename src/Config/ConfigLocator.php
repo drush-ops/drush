@@ -108,11 +108,11 @@ class ConfigLocator
      *
      * In 'local' mode, only the --config location is used.
      */
-    public function addUserConfig($configPath, $systemConfigPath, $home)
+    public function addUserConfig($configPath, $systemConfigPath, $userConfigDir)
     {
         $paths = [ $configPath ];
         if (!$this->isLocal) {
-            $paths = array_merge($paths, [ $systemConfigPath, $home, "$home/.drush" ]);
+            $paths = array_merge($paths, [ $systemConfigPath, $userConfigDir ]);
         }
         $this->addConfigPaths($paths);
     }
@@ -124,11 +124,6 @@ class ConfigLocator
         }
     }
 
-    public function addAliasConfig($alias, $aliasPath, $home)
-    {
-        // @TODO
-    }
-
     public function addSiteConfig($siteRoot)
     {
         // There might not be a site
@@ -138,14 +133,27 @@ class ConfigLocator
         $this->addConfigPaths([ $siteRoot, "$siteRoot/drush" ]);
     }
 
+    public function addAliasConfig($aliasPath, $systemConfigPath, $userConfigDir)
+    {
+    }
+
     public function addConfigPaths($paths)
     {
-        $configFiles = $this->locateConfigs($paths);
+        $loader = new YamlConfigLoader();
+        $candidates = [
+            'drush.yml',
+            'config/drush.yml',
+        ];
+        $this->addConfigCandidates($loader, $paths, $candidates);
+    }
+
+    protected function addConfigCandidates($loader, $paths, $candidates)
+    {
+        $configFiles = $this->locateConfigs($paths, $candidates);
         if (empty($configFiles)) {
             return;
         }
 
-        $loader = new YamlConfigLoader();
         foreach ($configFiles as $configFile) {
             $this->addLoader($loader->load($configFile));
         }
@@ -158,25 +166,20 @@ class ConfigLocator
         return $this;
     }
 
-    protected function locateConfigs($paths)
+    protected function locateConfigs($paths, $candidates)
     {
         $configFiles = [];
         foreach ($paths as $path) {
-            $configFiles = array_merge($configFiles, $this->locateConfig($path));
+            $configFiles = array_merge($configFiles, $this->locateConfig($path, $candidates));
         }
         return $configFiles;
     }
 
-    protected function locateConfig($path)
+    protected function locateConfig($path, $candidates)
     {
         if (!is_dir($path)) {
             return [];
         }
-
-        $candidates = [
-            'drush.yml',
-            'config/drush.yml',
-        ];
 
         $result = [];
         foreach ($candidates as $candidate) {
