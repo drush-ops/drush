@@ -1,5 +1,5 @@
 test:
-  home: ~/home/.drush/drush.yml
+  home: 'A user-specific setting'
 command:
   test:
     foo:

@@ -1,2 +1,2 @@
 test:
-  global: etc/drush
+  system: 'A system-wide setting'
