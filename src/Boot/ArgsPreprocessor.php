@@ -57,8 +57,7 @@ class ArgsPreprocessor
                 }
                 $method = [$storage, $methodName];
                 call_user_func($method, $value);
-            }
-            else {
+            } else {
                 $storage->addArg($opt);
             }
         }

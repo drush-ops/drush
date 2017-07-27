@@ -55,7 +55,8 @@ class Environment
         ];
     }
 
-    public function drushBasePath() {
+    public function drushBasePath()
+    {
         return $this->drushBasePath;
     }
 
@@ -159,7 +160,8 @@ class Environment
     /**
      * Determine whether current OS is a Windows variant.
      */
-    public static function isWindows($os = NULL) {
+    public static function isWindows($os = null)
+    {
         return strtoupper(substr($os ?: PHP_OS, 0, 3)) === 'WIN';
     }
 }

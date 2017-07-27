@@ -17,7 +17,7 @@ class LegacyPreflight
      */
     public static function defineConstants($drushBasePath)
     {
-        define('DRUSH_REQUEST_TIME', microtime(TRUE));
+        define('DRUSH_REQUEST_TIME', microtime(true));
         define('DRUSH_BASE_PATH', $drushBasePath);
 
         /*
