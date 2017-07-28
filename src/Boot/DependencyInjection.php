@@ -2,6 +2,7 @@
 namespace Drush\Boot;
 
 use Drush\Drush;
+use Drush\Cache\CommandCache;
 
 /**
  * Prepare our Dependency Injection Container
@@ -61,22 +62,15 @@ class DependencyInjection
           ->withMethodCall('add', ['bootstrap.drupal6'])
           ->withMethodCall('add', ['bootstrap.drupal7'])
           ->withMethodCall('add', ['bootstrap.drupal8']);
-
-        // Robo does not manage the command discovery object in the container,
-        // but we will register and configure one for our use.
-        $container->share('commandDiscovery', 'Consolidation\AnnotatedCommand\CommandFileDiscovery')
-          ->withMethodCall('addSearchLocation', ['CommandFiles'])
-          ->withMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
     }
 
     protected static function alterServicesForDrush($container, $application)
     {
-
         // Add our own callback to the hook manager
         $hookManager = $container->get('hookManager');
         $hookManager->addOutputExtractor(new \Drush\Backend\BackendResultSetter());
         // @todo: do we need both backend result setters? The one below should be removed at some point.
-        $hookManager->add('annotatedcomand_adapter_backend_result', HookManager::EXTRACT_OUTPUT);
+        $hookManager->add('annotatedcomand_adapter_backend_result', \Consolidation\AnnotatedCommand\Hooks\HookManager::EXTRACT_OUTPUT);
 
         // Install our command cache into the command factory
         // TODO: Create class-based implementation of our cache management functions.

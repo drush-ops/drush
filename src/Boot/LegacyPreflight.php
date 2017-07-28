@@ -3,6 +3,7 @@ namespace Drush\Boot;
 
 use Drush\Drush;
 use Drush\Config\Environment;
+use Webmozart\PathUtil\Path;
 
 /**
  * Prepare to bootstrap Drupal
@@ -50,7 +51,7 @@ class LegacyPreflight
         /*
          * @deprecated. Use $config->get('env.cwd') instead.
          */
-        drush_set_context('DRUSH_OLDCWD', $path);
+        drush_set_context('DRUSH_OLDCWD', $environment->cwd());
 
         /*
          * @deprecated. Do not use

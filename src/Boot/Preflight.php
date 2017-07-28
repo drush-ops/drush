@@ -5,6 +5,10 @@ use Composer\Autoload\ClassLoader;
 use Drush\Drush;
 use Drush\Config\Environment;
 use Drush\Config\ConfigLocator;
+use Drush\Config\EnvironmentConfigLoader;
+use DrupalFinder\DrupalFinder;
+
+use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputOption;
@@ -38,6 +42,10 @@ class Preflight
         LegacyPreflight::includeCode($this->environment->drushBasePath());
         LegacyPreflight::defineConstants($this->environment, $preflightArgs->applicationPath());
         LegacyPreflight::setContexts($this->environment);
+
+        // TODO: Inject a termination handler into this class, so that we don't
+        // need to add these e.g. when testing.
+        $this->setTerminationHandlers();
     }
 
     /**
@@ -49,7 +57,7 @@ class Preflight
     {
         $argProcessor = new ArgsPreprocessor();
         $preflightArgs = new PreflightArgs();
-        $argProcessor->parseArgv($argv, $preflightArgs);
+        $argProcessor->parse($argv, $preflightArgs);
 
         return $preflightArgs;
     }
@@ -62,6 +70,8 @@ class Preflight
         $configLocator->setLocal($preflightArgs->isLocal());
         $configLocator->addUserConfig($preflightArgs->configPath(), $environment->systemConfigPath(), $environment->userConfigPath());
         $configLocator->addDrushConfig($environment->drushBasePath());
+
+        // @TODO: aliases
         $configLocator->addAliasConfig($preflightArgs->aliasPath(), $environment->systemConfigPath(), $environment->userConfigPath());
 
         // Make our environment settings available as configuration items
@@ -100,19 +110,16 @@ class Preflight
         $preflightArgs = $this->preflightArgs($argv);
         $configLocator = $this->prepareConfig($preflightArgs, $this->environment);
 
-        // Handle $preflightArgs->alias()
-
         // Do legacy initialization
         $this->init($preflightArgs);
 
-        // Determine the local Drupal site targeted, if any
-        // TODO: We should probably pass cwd into the bootstrap manager as a parameter.
-        Drush::bootstrapManager()->locateRoot($preflightArgs->selectedSite());
+        // Determine the local site targeted, if any.
+        // Extend configuration and alias files to include files in
+        // target site.
+        $root = $this->findSelectedSite($preflightArgs);
+        $configLocator->addSiteConfig($root);
 
         // TODO: Include the Composer autoload for Drupal (if different)
-
-        // Extend configuration and alias files to include files in target Drupal site.
-        $configLocator->addSiteConfig(Drush::bootstrapManager()->getRoot());
 
         // Create the Symfony Application et. al.
         $input = new ArgvInput($preflightArgs->args());
@@ -127,14 +134,99 @@ class Preflight
         // has set it to something higher.
         $this->confirmPhpVersion($config->get('drush.php.minimum-version'));
 
-        // TODO: We still need to add the commandfiles to the application
+        // Find all of the available commandfiles, save for those that are
+        // provided by modules in the selected site; those will be added
+        // during bootstrap.
+        $searchpath = $this->findCommandFileSearchPath($preflightArgs, $root);
+        $discovery = $this->commandDiscovery();
+        $commandClasses = $discovery->discover($searchpath, '\Drush');
+
+        // For now: use Symfony's built-in help, as Drush's version
+        // assumes we are using the legacy Drush dispatcher.
+        unset($commandClasses[dirname(__DIR__) . '/Commands/help/HelpCommands.php']);
+        unset($commandClasses[dirname(__DIR__) . '/Commands/help/ListCommands.php']);
+
+        // Use the robo runner to register commands with Symfony application.
+        $runner = new \Robo\Runner();
+        $runner->registerCommandClasses($application, $commandClasses);
 
         // Run the Symfony Application
         // Predispatch: call a remote Drush command if applicable (via a 'pre-init' hook)
         // Bootstrap: bootstrap site to the level requested by the command (via a 'post-init' hook)
         $status = $application->run($input, $output);
 
+        // Placate the Drush shutdown handler.
+        // TODO: use a more modern termination management strategy
+        drush_set_context('DRUSH_EXECUTION_COMPLETED', true);
+
         return $status;
+    }
+
+    /**
+     * Find the site the user selected based on @alias, --root or cwd.
+     */
+    protected function findSelectedSite($preflightArgs)
+    {
+        $drupalFinder = new DrupalFinder();
+
+        // TODO: Handle $preflightArgs->alias()
+        // This might provide a new site root
+
+        $root = $drupalFinder->locateRoot($preflightArgs->selectedSite());
+        if ($root) {
+            return $root;
+        }
+        return $drupalFinder->locateRoot($this->environment->cwd());
+    }
+
+    /**
+     * Create a command file discovery object
+     */
+    protected function commandDiscovery()
+    {
+        $discovery = new CommandFileDiscovery();
+        $discovery
+            ->setIncludeFilesAtBase(false)
+            ->setSearchLocations(['Commands'])
+            ->setSearchPattern('#.*Commands.php$#');
+        return $discovery;
+    }
+
+    /**
+     * Return the search path containing all of the locations where Drush
+     * commands are found.
+     */
+    function findCommandFileSearchPath($preflightArgs)
+    {
+        // Start with the built-in commands
+        $searchpath = [ dirname(__DIR__) ];
+
+        // Commands specified by 'include' option
+        $commandPath = $preflightArgs->commandPath();
+        if (is_dir($commandPath)) {
+            $searchpath[] = $commandPath;
+        }
+
+        if (!$preflightArgs->isLocal()) {
+            // System commands, residing in $SHARE_PREFIX/share/drush/commands
+            $share_path = $this->environment->systemCommandFilePath();
+            if (is_dir($share_path)) {
+                $searchpath[] = $share_path;
+            }
+
+            // User commands, residing in ~/.drush
+            $per_user_config_dir = $this->environment->userConfigPath();
+            if (is_dir($per_user_config_dir)) {
+                $searchpath[] = $per_user_config_dir;
+            }
+        }
+
+        $siteCommands = "$root/drupal";
+        if (is_dir($siteCommands)) {
+            $searchpath[] = $siteCommands;
+        }
+
+        return $searchpath;
     }
 
     /**
@@ -142,7 +234,7 @@ class Preflight
      */
     protected function confirmPhpVersion($minimumPhpVersion)
     {
-
+        // @TODO
     }
 
     /**
