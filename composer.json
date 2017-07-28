@@ -28,7 +28,7 @@
     "psr/log": "~1.0",
     "psy/psysh": "~0.6",
     "league/container": "~2",
-    "consolidation/robo": "~1",
+    "consolidation/robo": "dev-config-interface",
     "symfony/config": "~2.2|^3",
     "chi-teck/drupal-code-generator": "^1.17.3",
     "consolidation/annotated-command": "^2.4.10",
@@ -62,7 +62,8 @@
     "lint": [
       "find includes -name '*.inc' -print0 | xargs -0 -n1 php -l",
       "find src -name '*.php' -print0 | xargs -0 -n1 php -l"
-    ]
+    ],
+    "post-update-cmd": "cd isolation && composer update"
   },
   "extra": {
     "branch-alias": {
