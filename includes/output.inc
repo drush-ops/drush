@@ -3,6 +3,7 @@
 use Drupal\Core\Render\Markup;
 use Drush\Drush;
 use Drush\Log\LogLevel;
+use Drush\Utils\StringUtils;
 
 /**
  * @defgroup outputfunctions Process output text.
@@ -99,12 +100,7 @@ function dt($string, $args = array()) {
 
   // If Drupal's t() function unavailable.
   if (!isset($output)) {
-    if (!empty($args)) {
-      $output = strtr($string, $args);
-    }
-    else {
-      $output = $string;
-    }
+    $output = StringUtils::interpolate($string, $args);
   }
   return $output;
 }
