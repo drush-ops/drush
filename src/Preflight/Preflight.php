@@ -31,9 +31,21 @@ class Preflight
      */
     protected $environment;
 
-    public function __construct(Environment $environment)
+    /**
+     * @var PreflightVerify
+     */
+    protected $verify;
+
+    /**
+     * @var ConfigLocator
+     */
+    protected $configLocator;
+
+    public function __construct(Environment $environment, $verify = null, $configLocator = null)
     {
         $this->environment = $environment;
+        $this->verify = $verify ?: new PreflightVerify();
+        $this->configLocator = $configLocator ?: new ConfigLocator();
     }
 
     public function init($preflightArgs)
@@ -102,14 +114,14 @@ class Preflight
 
     protected function doRun($argv)
     {
-        // Fail fast if the PHP version is not at least 5.6.0.
-        $this->confirmPhpVersion('5.6.0');
+        // Fail fast if there is anything in our environment that does not check out
+        $this->verify->verify($this->environment);
 
         // Get the preflight args and begin collecting configuration files.
         $preflightArgs = $this->preflightArgs($argv);
         $configLocator = $this->prepareConfig($preflightArgs, $this->environment);
 
-        // Do legacy initialization
+        // Do legacy initialization (load static includes, define old constants, etc.)
         $this->init($preflightArgs);
 
         // Determine the local site targeted, if any.
@@ -130,8 +142,8 @@ class Preflight
         $container = DependencyInjection::initContainer($application, $config, $input, $output);
 
         // We need to check the php minimum version again, in case anyone
-        // has set it to something higher.
-        $this->confirmPhpVersion($config->get('drush.php.minimum-version'));
+        // has set it to something higher in one of the config files we loaded.
+        $this->verify->confirmPhpVersion($config->get('drush.php.minimum-version'));
 
         // Find all of the available commandfiles, save for those that are
         // provided by modules in the selected site; those will be added
@@ -226,16 +238,6 @@ class Preflight
         }
 
         return $searchpath;
-    }
-
-    /**
-     * Fail fast if the php version does not meet the minimum requirements.
-     */
-    protected function confirmPhpVersion($minimumPhpVersion)
-    {
-        if (version_compare(phpversion(), $minimumPhpVersion) < 0 && !getenv('DRUSH_NO_MIN_PHP')) {
-            throw new \Exception(dt('Your command line PHP installation is too old. Drush requires at least PHP !version. To suppress this check, set the environment variable DRUSH_NO_MIN_PHP=1', ['!version' => $minimumPhpVersion]));
-        }
     }
 
     /**

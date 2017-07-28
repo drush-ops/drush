@@ -190,4 +190,16 @@ class Environment
     {
         return strtoupper(substr($os ?: PHP_OS, 0, 3)) === 'WIN';
     }
+
+    /**
+     * Verify that we are running PHP through the command line interface.
+     *
+     * @return
+     *   A boolean value that is true when PHP is being run through the command line,
+     *   and false if being run through cgi or mod_php.
+     */
+    function verifyCLI() {
+      return (php_sapi_name() == 'cli' || (is_numeric($_SERVER['argc']) && $_SERVER['argc'] > 0));
+    }
+
 }
