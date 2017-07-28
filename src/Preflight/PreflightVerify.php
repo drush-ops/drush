@@ -90,9 +90,9 @@ class PreflightVerify
             return !empty($ini_value) && (strcasecmp($ini_value, 'off') != 0);
         } else {
             foreach ($disallowed_value as $test_value) {
-               if (preg_match('/(^|,)' . $test_value . '(,|$)/', $ini_value)) {
-                   return true;
-               }
+                if (preg_match('/(^|,)' . $test_value . '(,|$)/', $ini_value)) {
+                    return true;
+                }
             }
         }
         return false;

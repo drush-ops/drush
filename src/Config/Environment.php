@@ -198,8 +198,8 @@ class Environment
      *   A boolean value that is true when PHP is being run through the command line,
      *   and false if being run through cgi or mod_php.
      */
-    function verifyCLI() {
-      return (php_sapi_name() == 'cli' || (is_numeric($_SERVER['argc']) && $_SERVER['argc'] > 0));
+    public function verifyCLI()
+    {
+        return (php_sapi_name() == 'cli' || (is_numeric($_SERVER['argc']) && $_SERVER['argc'] > 0));
     }
-
 }
