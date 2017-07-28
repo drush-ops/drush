@@ -233,7 +233,9 @@ class Preflight
      */
     protected function confirmPhpVersion($minimumPhpVersion)
     {
-        // @TODO
+        if (version_compare(phpversion(), $minimumPhpVersion) < 0 && !getenv('DRUSH_NO_MIN_PHP')) {
+            throw new \Exception(dt('Your command line PHP installation is too old. Drush requires at least PHP !version. To suppress this check, set the environment variable DRUSH_NO_MIN_PHP=1', ['!version' => $minimumPhpVersion]));
+        }
     }
 
     /**
