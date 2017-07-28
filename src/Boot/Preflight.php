@@ -88,9 +88,8 @@ class Preflight
     public function run($argv)
     {
         $status = 0;
-        try
-        {
-            $status = $this->do_run($argv);
+        try {
+            $status = $this->doRun($argv);
         } catch (\Exception $e) {
             $status = $e->getCode();
             $message = $e->getMessage();
@@ -101,7 +100,7 @@ class Preflight
         return $status;
     }
 
-    protected function do_run($argv)
+    protected function doRun($argv)
     {
         // Fail fast if the PHP version is not at least 5.6.0.
         $this->confirmPhpVersion('5.6.0');
@@ -196,7 +195,7 @@ class Preflight
      * Return the search path containing all of the locations where Drush
      * commands are found.
      */
-    function findCommandFileSearchPath($preflightArgs)
+    protected function findCommandFileSearchPath($preflightArgs)
     {
         // Start with the built-in commands
         $searchpath = [ dirname(__DIR__) ];
