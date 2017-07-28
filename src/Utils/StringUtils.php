@@ -14,7 +14,7 @@ class StringUtils
      *   or a simple list of items; e.g. array('a','b','c')
      *   or some combination; e.g. array('a,b','c') or array('a,','b,','c,')
      *
-     * @returns array
+     * @return array
      *   A simple list of items (e.g. array('a','b','c')
      */
     public static function csvToArray($args)
@@ -36,11 +36,11 @@ class StringUtils
      *   interpolate('Hello, {var}', ['var' => 'world']) ==> 'Hello, world'
      *   interpolate('Do !what', ['!what' => 'work'])    ==> 'Do work'
      *
-     * @param string $message 
+     * @param string $message
      *   The string with placeholders to be interpolated.
-     * @param array $context 
+     * @param array $context
      *   An associative array of values to be inserted into the message.
-     * @returns string 
+     * @return string
      *   The resulting string with all placeholders filled in.
      */
     public static function interpolate($message, array $context = [])
@@ -65,9 +65,9 @@ class StringUtils
     /**
      * Wrap simple strings (with no special characters) in {}s
      *
-     * @param string $key 
+     * @param string $key
      *   A key from an interpolation context.
-     * @returns string
+     * @return string
      *   The key prepared for interpolation.
      */
     private static function interpolationKey($key)
