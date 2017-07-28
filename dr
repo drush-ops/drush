@@ -58,7 +58,7 @@ $environment->setLoader($loader);
 $environment->applyEnvironment();
 
 // Preflight and run
-$preflight = new \Drush\Boot\Preflight($environment);
+$preflight = new \Drush\Preflight\Preflight($environment);
 $status_code = $preflight->run($_SERVER['argv']);
 
 exit($status_code);

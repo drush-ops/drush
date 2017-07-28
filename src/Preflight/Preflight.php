@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Boot;
+namespace Drush\Preflight;
 
 use Composer\Autoload\ClassLoader;
 use Drush\Drush;

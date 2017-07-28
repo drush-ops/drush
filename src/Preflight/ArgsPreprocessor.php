@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Boot;
+namespace Drush\Preflight;
 
 /**
  * Preprocess commandline arguments.

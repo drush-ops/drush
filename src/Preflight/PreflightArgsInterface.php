@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Boot;
+namespace Drush\Preflight;
 
 /**
  * Storage for arguments preprocessed during preflight.

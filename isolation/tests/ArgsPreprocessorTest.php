@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Boot;
+namespace Drush\Preflight;
 
 class ArgsPreprocessorTest extends \PHPUnit_Framework_TestCase
 {

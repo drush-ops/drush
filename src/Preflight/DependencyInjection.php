@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Boot;
+namespace Drush\Preflight;
 
 use Drush\Drush;
 use Drush\Cache\CommandCache;
