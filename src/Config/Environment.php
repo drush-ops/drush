@@ -5,6 +5,9 @@ use Composer\Autoload\ClassLoader;
 
 use Webmozart\PathUtil\Path;
 
+/**
+ * Store information about the environment
+ */
 class Environment
 {
     protected $homeDir;
@@ -16,6 +19,12 @@ class Environment
 
     protected $docPrefix;
 
+    /**
+     * Environment constructor
+     * @param string $homeDir User home directory.
+     * @param string $cwd The current working directory at the time Drush was called.
+     * @param string $autoloadFile Path to the autoload.php file.
+     */
     public function __construct($homeDir, $cwd, $autoloadFile)
     {
         $this->homeDir = $homeDir;
@@ -38,6 +47,8 @@ class Environment
      * to the DI container and make an EnvironmentAwareInterface & etc.
      *
      * Not convinced that is better, but this mapping will grow.
+     *
+     * @return array Nested associative array that is overlayed on configuration.
      */
     public function exportConfigData()
     {
@@ -47,11 +58,18 @@ class Environment
         //     - or -
         //   $config->get('drush.base.dir')
         return [
+            // Information about the environment presented to Drush
             'env' => [
                 'cwd' => $this->cwd(),
                 'home' => $this->homeDir(),
                 'is-windows' => $this->isWindows(),
             ],
+            // These values are available as global options, and
+            // will be passed in to the FormatterOptions et. al.
+            'options' => [
+                'width' => $this->calculateColumns(),
+            ],
+            // Information about the directories where Drush found assets, etc.
             'drush' => [
                 'base-dir' => $this->drushBasePath,
                 'vendor-dir' => $this->vendorPath(),
@@ -63,23 +81,41 @@ class Environment
         ];
     }
 
+    /**
+     * The base directory of the Drush application itself
+     * (where composer.json et.al. are found)
+     *
+     * @return string
+     */
     public function drushBasePath()
     {
         return $this->drushBasePath;
     }
 
+    /**
+     * User's home directory
+     *
+     * @return string
+     */
     public function homeDir()
     {
         return $this->homeDir;
     }
 
+    /**
+     * The user's Drush configuration directory, ~/.drush
+     *
+     * @return string
+     */
     public function userConfigPath()
     {
         return $this->homeDir() . '/.drush';
     }
 
     /**
-     * Return the original working directory
+     * The original working directory
+     *
+     * @return string
      */
     public function cwd()
     {
@@ -88,12 +124,19 @@ class Environment
 
     /**
      * Return the path to Drush's vendor directory
+     *
+     * @return string
      */
     public function vendorPath()
     {
         return $this->vendorDir;
     }
 
+    /**
+     * The class loader returned when the autoload.php file is included.
+     *
+     * @return \Composer\Autoload\ClassLoader
+     */
     public function loader()
     {
         return $this->loader;
@@ -101,6 +144,8 @@ class Environment
 
     /**
      * Set the class loader from the autload.php file, if available.
+     *
+     * @param \Composer\Autoload\ClassLoader $loader
      */
     public function setLoader(ClassLoader $loader)
     {
@@ -109,6 +154,8 @@ class Environment
 
     /**
      * Alter our default locations based on the value of environment variables
+     *
+     * @return $this
      */
     public function applyEnvironment()
     {
@@ -121,6 +168,13 @@ class Environment
         return $this;
     }
 
+    /**
+     * Set the directory prefix to locate the directory that Drush will
+     * use as /etc (e.g. during the functional tests)
+     *
+     * @param string $etcPrefix
+     * @return $this
+     */
     public function setEtcPrefix($etcPrefix)
     {
         if (isset($etcPrefix)) {
@@ -129,6 +183,12 @@ class Environment
         return $this;
     }
 
+    /**
+     * Set the directory prefix to locate the directory that Drush will
+     * use as /user/share (e.g. during the functional tests)
+     * @param string $sharePrefix
+     * @return $this
+     */
     public function setSharePrefix($sharePrefix)
     {
         if (isset($sharePrefix)) {
@@ -138,6 +198,14 @@ class Environment
         return $this;
     }
 
+    /**
+     * Return the directory where Drush's documentation is stored. Usually
+     * this is within the Drush application, but some Drush RPM distributions
+     * & c. for Linux platforms slice-and-dice the contents and put the docs
+     * elsewhere.
+     *
+     * @return string
+     */
     public function docsPath()
     {
         if (!$this->docPrefix) {
@@ -146,6 +214,13 @@ class Environment
         return $this->docPrefix;
     }
 
+    /**
+     * Locate the Drush documentation. This is recalculated whenever the
+     * share prefix is changed.
+     *
+     * @param string $drushBasePath
+     * @return string
+     */
     protected function findDocsPath($drushBasePath)
     {
         $candidates = [
@@ -155,6 +230,12 @@ class Environment
         return $this->findFromCandidates($candidates);
     }
 
+    /**
+     * Check a list of directories and return the first one that exists.
+     *
+     * @param string $candidates
+     * @return boolean
+     */
     protected function findFromCandidates($candidates)
     {
         foreach ($candidates as $candidate) {
@@ -165,6 +246,12 @@ class Environment
         return false;
     }
 
+    /**
+     * Return the appropriate system path prefix, unless an override is provided.
+     * @param string $override
+     * @param string $defaultPrefix
+     * @return string
+     */
     protected static function systemPathPrefix($override = '', $defaultPrefix = '')
     {
         if ($override) {
@@ -173,11 +260,21 @@ class Environment
         return static::isWindows() ? getenv('ALLUSERSPROFILE') . '/Drush' : $defaultPrefix;
     }
 
+    /**
+     * Return the system configuration path (default: /etc/drush)
+     *
+     * @return string
+     */
     public function systemConfigPath()
     {
         return static::systemPathPrefix($this->etcPrefix, '') . '/etc/drush';
     }
 
+    /**
+     * Return the system shared commandfile path (default: /usr/share/drush/commands)
+     *
+     * @return string
+     */
     public function systemCommandFilePath()
     {
         return static::systemPathPrefix($this->sharePrefix, '/usr') . '/share/drush/commands';
@@ -185,6 +282,8 @@ class Environment
 
     /**
      * Determine whether current OS is a Windows variant.
+     *
+     * @return boolean
      */
     public static function isWindows($os = null)
     {
@@ -194,12 +293,49 @@ class Environment
     /**
      * Verify that we are running PHP through the command line interface.
      *
-     * @return
+     * @return boolean
      *   A boolean value that is true when PHP is being run through the command line,
      *   and false if being run through cgi or mod_php.
      */
     public function verifyCLI()
     {
         return (php_sapi_name() == 'cli' || (is_numeric($_SERVER['argc']) && $_SERVER['argc'] > 0));
+    }
+
+    /**
+     * Calculate the terminal width used for wrapping table output.
+     * Normally this is exported using tput in the drush script.
+     * If this is not present we do an additional check using stty here.
+     * On Windows in CMD and PowerShell is this exported using mode con.
+     *
+     * @return integer
+     */
+    public function calculateColumns()
+    {
+        if ($columns = getenv('COLUMNS')) {
+            return $columns;
+        }
+
+        // Trying to export the columns using stty.
+        exec('stty size 2>&1', $columns_output, $columns_status);
+        if (!$columns_status) $columns = preg_replace('/\d+\s(\d+)/', '$1', $columns_output[0], -1, $columns_count);
+
+        // If stty fails and Drush us running on Windows are we trying with mode con.
+        if (($columns_status || !$columns_count) && static::isWindows()) {
+            $columns_output = [];
+            exec('mode con', $columns_output, $columns_status);
+            if (!$columns_status && is_array($columns_output)) {
+                $columns = (int)preg_replace('/\D/', '', $columns_output[4], -1, $columns_count);
+            }
+            // TODO: else { 'Drush could not detect the console window width. Set a Windows Environment Variable of COLUMNS to the desired width.'
+        }
+
+        // Failling back to default columns value
+        if (empty($columns)) {
+            $columns = 80;
+        }
+
+        // TODO: should we deal with reserve-margin here, or adjust it later?
+        return $columns;
     }
 }

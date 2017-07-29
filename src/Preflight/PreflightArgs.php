@@ -25,6 +25,8 @@ class PreflightArgs implements PreflightArgsInterface
 
     protected $isLocal;
 
+    protected $coverageFile;
+
     public function __construct()
     {
     }
@@ -42,6 +44,7 @@ class PreflightArgs implements PreflightArgsInterface
             '--alias-path=' => 'setAliasPath',
             '--include=' => 'setCommandPath',
             '--local' => 'setLocal',
+            '--drush-coverage' => 'setCoverageFile',
         ];
     }
 
@@ -144,6 +147,17 @@ class PreflightArgs implements PreflightArgsInterface
     public function setLocal($isLocal)
     {
         $this->isLocal = $isLocal;
+        return $this;
+    }
+
+    public function coverageFile()
+    {
+        return $this->coverageFile;
+    }
+
+    public function setCoverageFile($coverageFile)
+    {
+        $this->coverageFile = $coverageFile;
         return $this;
     }
 }

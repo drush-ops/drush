@@ -48,7 +48,7 @@ class Preflight
         $this->configLocator = $configLocator ?: new ConfigLocator();
     }
 
-    public function init($preflightArgs)
+    public function init(PreflightArgs $preflightArgs)
     {
         // Define legacy constants, and include legacy files that Drush still needs
         LegacyPreflight::includeCode($this->environment->drushBasePath());
@@ -74,7 +74,7 @@ class Preflight
         return $preflightArgs;
     }
 
-    public function prepareConfig($preflightArgs, $environment)
+    public function prepareConfig(PreflightArgs $preflightArgs, Environment $environment)
     {
         // Load configuration and aliases from defined global locations
         // where such things are found.
@@ -90,6 +90,21 @@ class Preflight
         $configLocator->addLoader(new EnvironmentConfigLoader($environment));
 
         return $configLocator;
+    }
+
+    /**
+     * Start code coverage collection
+     *
+     * @param PreflightArgs $preflightArgs
+     */
+    public function startCoverage(PreflightArgs $preflightArgs)
+    {
+        if ($coverage_file = $preflightArgs->coverageFile()) {
+            // TODO: modernize code coverage handling
+            drush_set_context('DRUSH_CODE_COVERAGE', $coverage_file);
+            xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+            register_shutdown_function('drush_coverage_shutdown');
+        }
     }
 
     /**
@@ -124,12 +139,16 @@ class Preflight
         // Do legacy initialization (load static includes, define old constants, etc.)
         $this->init($preflightArgs);
 
+        // Start code coverage
+        $this->startCoverage($preflightArgs);
+
         // Determine the local site targeted, if any.
         // Extend configuration and alias files to include files in
         // target site.
         $root = $this->findSelectedSite($preflightArgs);
         $configLocator->addSiteConfig($root);
 
+        // TODO: define the '@self' alias
         // TODO: Include the Composer autoload for Drupal (if different)
 
         // Create the Symfony Application et. al.
@@ -176,7 +195,7 @@ class Preflight
     /**
      * Find the site the user selected based on @alias, --root or cwd.
      */
-    protected function findSelectedSite($preflightArgs)
+    protected function findSelectedSite(PreflightArgs $preflightArgs)
     {
         $drupalFinder = new DrupalFinder();
 
@@ -207,7 +226,7 @@ class Preflight
      * Return the search path containing all of the locations where Drush
      * commands are found.
      */
-    protected function findCommandFileSearchPath($preflightArgs)
+    protected function findCommandFileSearchPath(PreflightArgs $preflightArgs)
     {
         // Start with the built-in commands
         $searchpath = [ dirname(__DIR__) ];
