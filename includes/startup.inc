@@ -321,7 +321,7 @@ function drush_startup($argv) {
   // and in each of the directories above the cwd.  If
   // we find one, use it.
   if (empty($found_script)) {
-    $c = getcwd();
+    $c = $cwd;
     // Windows can give us lots of different strings to represent the root
     // directory as it often includes the drive letter. If we get the same
     // result from dirname() twice in a row, then we know we're at the root.
@@ -335,6 +335,14 @@ function drush_startup($argv) {
       $last = $c;
       $c = dirname($c);
     }
+
+    // Restore actual current working directory in order to provide
+    // proper multisite operability. In a case, if CWD is a subsite
+    // at "/path/to/drupal/docroot/sites/example.com" and Drush locates
+    // in "/path/to/drupal/vendor/drush/drush", then CWD will be changed
+    // to "/path/to/drupal/docroot" which will make unavailable usage of
+    // a Drush for a subsites without "--uri" option.
+    chdir($cwd);
   }
 
   if (!empty($found_script)) {
