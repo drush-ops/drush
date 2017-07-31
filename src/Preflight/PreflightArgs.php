@@ -1,34 +1,31 @@
 <?php
 namespace Drush\Preflight;
 
+use Consolidation\Config\Config;
+
 /**
  * Storage for arguments preprocessed during preflight.
  *
  * Holds @sitealias, if present, and a limited number of global options.
  */
-class PreflightArgs implements PreflightArgsInterface
+class PreflightArgs extends Config implements PreflightArgsInterface
 {
     /**
      * @var $args Remaining arguments not handled by the preprocessor
      */
     protected $args;
 
-    protected $alias;
+    const ALIAS = 'alias';
+    const ALIAS_PATH = 'alias-path';
+    const COMMAND_PATH = 'include';
+    const CONFIG_PATH = 'config';
+    const COVERAGE_FILE = 'coverage-file';
+    const LOCAL = 'local';
+    const ROOT = 'root';
 
-    protected $root;
-
-    protected $configPath;
-
-    protected $aliasPath;
-
-    protected $commandPath;
-
-    protected $isLocal;
-
-    protected $coverageFile;
-
-    public function __construct()
+    public function __construct(array $data = null)
     {
+        parent::__construct($data);
     }
 
     /**
@@ -44,7 +41,7 @@ class PreflightArgs implements PreflightArgsInterface
             '--alias-path=' => 'setAliasPath',
             '--include=' => 'setCommandPath',
             '--local' => 'setLocal',
-            '--drush-coverage' => 'setCoverageFile',
+            '--drush-coverage=' => 'setCoverageFile',
         ];
     }
 
@@ -81,83 +78,76 @@ class PreflightArgs implements PreflightArgsInterface
 
     public function alias()
     {
-        return $this->alias;
+        return $this->get(self::ALIAS);
     }
 
     public function hasAlias()
     {
-        return isset($this->alias);
+        return $this->has(self::ALIAS);
     }
 
     public function setAlias($alias)
     {
-        $this->alias = $alias;
-        return $this;
+        return $this->set(self::ALIAS, $alias);
     }
 
     public function selectedSite()
     {
-        return $this->root;
+        return $this->get(self::ROOT);
     }
 
     public function setSelectedSite($root)
     {
-        $this->root = $root;
-        return $this;
+        return $this->set(self::ROOT, $root);
     }
 
     public function configPath()
     {
-        return $this->configPath;
+        return $this->get(self::CONFIG_PATH);
     }
 
     public function setConfigPath($configPath)
     {
-        $this->configPath = $configPath;
-        return $this;
+        return $this->set(self::CONFIG_PATH, $configPath);
     }
 
     public function aliasPath()
     {
-        return $this->aliasPath;
+        return $this->get(self::ALIAS_PATH);
     }
 
     public function setAliasPath($aliasPath)
     {
-        $this->aliasPath = $aliasPath;
-        return $this;
+        return $this->set(self::ALIAS_PATH, $aliasPath);
     }
 
     public function commandPath()
     {
-        return $this->commandPath;
+        return $this->get(self::COMMAND_PATH);
     }
 
     public function setCommandPath($commandPath)
     {
-        $this->commandPath = $commandPath;
-        return $this;
+        return $this->set(self::COMMAND_PATH, $commandPath);
     }
 
     public function isLocal()
     {
-        return $this->isLocal;
+        return $this->get(self::LOCAL);
     }
 
     public function setLocal($isLocal)
     {
-        $this->isLocal = $isLocal;
-        return $this;
+        return $this->set(self::LOCAL, $isLocal);
     }
 
     public function coverageFile()
     {
-        return $this->coverageFile;
+        return $this->get(self::COVERAGE_FILE);
     }
 
     public function setCoverageFile($coverageFile)
     {
-        $this->coverageFile = $coverageFile;
-        return $this;
+        return $this->set(self::COVERAGE_FILE, $coverageFile);
     }
 }

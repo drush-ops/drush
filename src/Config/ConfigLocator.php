@@ -1,8 +1,10 @@
 <?php
 namespace Drush\Config;
 
+use Consolidation\Config\Loader\ConfigLoaderInterface;
 use Consolidation\Config\Loader\YamlConfigLoader;
 use Consolidation\Config\Loader\ConfigProcessor;
+use Consolidation\Config\ConfigOverlay;
 
 /**
  * Locate Drush configuration files and load them into the configuration
@@ -30,13 +32,64 @@ class ConfigLocator
      */
     protected $config;
 
-    protected $processor;
-
     protected $isLocal;
 
-    public function __construct($config = null)
+    protected $sources = false;
+
+    /*
+     * From context.inc:
+     *
+     *   Specified by the script itself :
+     *     process  : Generated in the current process.
+     *     cli      : Passed as --option=value to the command line.
+     *     stdin    : Passed as a JSON encoded string through stdin.
+     *     specific : Defined in a command-specific option record, and
+     *                set in the command context whenever that command is used.
+     *     alias    : Defined in an alias record, and set in the
+     *                alias context whenever that alias is used.
+     *
+     *   Specified by config files :
+     *     custom   : Loaded from the config file specified by --config or -c
+     *     site     : Loaded from the drushrc.php file in the Drupal site directory.
+     *     drupal   : Loaded from the drushrc.php file in the Drupal root directory.
+     *     user     : Loaded from the drushrc.php file in the user's home directory.
+     *     home.drush Loaded from the drushrc.php file in the $HOME/.drush directory.
+     *     system   : Loaded from the drushrc.php file in the system's $PREFIX/etc/drush directory.
+     *     drush    : Loaded from the drushrc.php file in the same directory as drush.php.
+     *
+     *   Specified by the script, but has the lowest priority :
+     *     default  : The script might provide some sensible defaults during init.
+     */
+
+    // 'process' context is provided by ConfigOverlay
+    const ENVIRONMENT_CONTEXT = 'environment'; // new context
+    const PREFLIGHT_CONTEXT = 'cli';
+    // 'stdin' context not implemented
+    // 'specific' context obsolete; command-specific options handled differently by annotated command library
+    const ALIAS_CONTEXT = 'alias';
+    // custom context is obsolect (loaded in USER_CONTEXT)
+    const SITE_CONTEXT = 'site';
+    const DRUPAL_CONTEXT = 'drupal';
+    const USER_CONTEXT = 'user';
+    // home.drush is obsolete (loaded in USER_CONTEXT)
+    // system context is obsolect (loaded in USER_CONTEXT - note priority change)
+    const DRUSH_CONTEXT = 'drush';
+    // 'default' context is provided by ConfigOverlay
+
+    public function __construct()
     {
-        $this->config = $config;
+        $this->config = new ConfigOverlay();
+
+        // Add placeholders to establish priority. We add
+        // contexts from lowest to highest priority.
+        $this->config->addPlaceholder(self::DRUSH_CONTEXT);
+        $this->config->addPlaceholder(self::USER_CONTEXT);
+        $this->config->addPlaceholder(self::DRUPAL_CONTEXT);
+        $this->config->addPlaceholder(self::SITE_CONTEXT); // not implemented yet (multisite)
+        $this->config->addPlaceholder(self::ALIAS_CONTEXT);
+        $this->config->addPlaceholder(self::PREFLIGHT_CONTEXT);
+        $this->config->addPlaceholder(self::ENVIRONMENT_CONTEXT);
+
         $this->isLocal = false;
     }
 
@@ -48,39 +101,25 @@ class ConfigLocator
         $this->isLocal = $isLocal;
     }
 
-    /**
-     * Return the configuration processor.
-     */
-    protected function configProcessor()
+    // TODO: Not sure I need to manage the sources on a per-config-item basis
+    // any longer. However, I still need to track the configuration files that
+    // were loaded, so that these can be shown in `drush status`.
+    public function collectSources($collect = true)
     {
-        // Create our processor if it does not already exist.
-        if (!$this->processor) {
-            $this->processor = new ConfigProcessor();
-            // Seed the processor with the current configuration values,
-            // if there is already a configuration object.
-            if ($this->config) {
-                $this->processor->add($this->config->export());
-            }
-        }
-        return $this->processor;
-    }
-
-    /**
-     * Create the configuration object
-     */
-    protected function createConfig()
-    {
-        // TODO: Is it going to cause problems to not use \Robo\Config()?
-        return new \Consolidation\Config\Config();
-        // return new \Robo\Config();
+        $this->sources = $collect ? [] : false;
     }
 
     public function sources()
     {
-        if ($this->processor) {
-            return $this->processor->sources();
+        return $this->sources;
+    }
+
+    protected function addToSources(array $sources)
+    {
+        if (!is_array($this->sources)) {
+            return;
         }
-        return [];
+        $this->sources = array_merge_recursive($this->sources, $sources);
     }
 
     /**
@@ -89,17 +128,18 @@ class ConfigLocator
      */
     public function config()
     {
-        // Create our config object if we have not already done so.
-        if (!isset($this->config)) {
-            $this->config = $this->createConfig();
-        }
-        // If there are configuration values that are being processed,
-        // then import them into the configuration.
-        if ($this->processor) {
-            $this->config->import($this->processor->export());
-            $this->processor = null;
-        }
         return $this->config;
+    }
+
+    public function addEnvironment(Environment $environment)
+    {
+        $this->config->getContext(self::ENVIRONMENT_CONTEXT)->import($environment->exportConfigData());
+    }
+
+    public function addPreflightConfig($preflightConfig)
+    {
+        $this->config->addContext(self::PREFLIGHT_CONTEXT, $preflightConfig);
+        return $this;
     }
 
     /**
@@ -114,14 +154,16 @@ class ConfigLocator
         if (!$this->isLocal) {
             $paths = array_merge($paths, [ $systemConfigPath, $userConfigDir ]);
         }
-        $this->addConfigPaths($paths);
+        $this->addConfigPaths(self::USER_CONTEXT, $paths);
+        return $this;
     }
 
     public function addDrushConfig($drushProjectDir)
     {
         if (!$this->isLocal) {
-            $this->addConfigPaths([ $drushProjectDir ]);
+            $this->addConfigPaths(self::DRUSH_CONTEXT, [ $drushProjectDir ]);
         }
+        return $this;
     }
 
     public function addSiteConfig($siteRoot)
@@ -130,40 +172,44 @@ class ConfigLocator
         if (!is_dir($siteRoot)) {
             return;
         }
-        $this->addConfigPaths([ dirname($siteRoot) . '/drush', "$siteRoot/drush", "$siteRoot/sites/all/drush" ]);
+        $this->addConfigPaths(self::DRUPAL_CONTEXT, [ dirname($siteRoot) . '/drush', "$siteRoot/drush", "$siteRoot/sites/all/drush" ]);
+        return $this;
     }
 
     public function addAliasConfig($aliasPath, $systemConfigPath, $userConfigDir)
     {
     }
 
-    public function addConfigPaths($paths)
+    public function addConfigPaths($contextName, $paths)
     {
         $loader = new YamlConfigLoader();
         $candidates = [
             'drush.yml',
             'config/drush.yml',
         ];
-        $this->addConfigCandidates($loader, $paths, $candidates);
+
+        $processor = new ConfigProcessor();
+        $context = $this->config->getContext($contextName);
+        $processor->add($context->export());
+        $this->addConfigCandidates($processor, $loader, $paths, $candidates);
+        $this->addToSources($processor->sources());
+        $context->import($processor->export());
+        $this->config->addContext($contextName, $context);
+
+        return $this;
     }
 
-    protected function addConfigCandidates($loader, $paths, $candidates)
+    protected function addConfigCandidates(ConfigProcessor $processor, ConfigLoaderInterface $loader, $paths, $candidates)
     {
         $configFiles = $this->locateConfigs($paths, $candidates);
         if (empty($configFiles)) {
             return;
         }
 
+        // TODO: store `$configFiles` and make them available to `drush status`
         foreach ($configFiles as $configFile) {
-            $this->addLoader($loader->load($configFile));
+            $processor->extend($loader->load($configFile));
         }
-    }
-
-    public function addLoader($loader)
-    {
-        $processor = $this->configProcessor();
-        $processor->extend($loader);
-        return $this;
     }
 
     protected function locateConfigs($paths, $candidates)

@@ -87,7 +87,7 @@ class Preflight
         $configLocator->addAliasConfig($preflightArgs->aliasPath(), $environment->systemConfigPath(), $environment->userConfigPath());
 
         // Make our environment settings available as configuration items
-        $configLocator->addLoader(new EnvironmentConfigLoader($environment));
+        $configLocator->addEnvironment($environment);
 
         return $configLocator;
     }
@@ -141,6 +141,8 @@ class Preflight
 
         // Start code coverage
         $this->startCoverage($preflightArgs);
+
+
 
         // Determine the local site targeted, if any.
         // Extend configuration and alias files to include files in
