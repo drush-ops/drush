@@ -55,6 +55,7 @@ class SanitizeUserTableCommands extends DrushCommands implements SqlSanitizePlug
                     $new_mail =  "concat('" . str_replace(array_keys($email_map), array_values($email_map), $options['sanitize-email']) . "')";
                 }
                 $query->expression('mail', $new_mail);
+                $query->expression('init', $new_mail);
             } else {
                 $query->fields(['mail' => $options['sanitize-email']]);
             }
