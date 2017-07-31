@@ -155,7 +155,7 @@ class Preflight
         $input = new ArgvInput($preflightArgs->args());
         $output = new \Symfony\Component\Console\Output\ConsoleOutput();
         $config = $configLocator->config();
-        $application = new \Symfony\Component\Console\Application('Drush Commandline Tool', Drush::getVersion());
+        $application = new \Drush\Application('Drush Commandline Tool', Drush::getVersion());
 
         // Set up the DI container
         $container = DependencyInjection::initContainer($application, $config, $input, $output);

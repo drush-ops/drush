@@ -20,8 +20,12 @@ class ArgsPreprocessor
     /**
      * Parse the argv array.
      *
-     * @param string[] $argv Commandline arguments. The first element is
+     * @param string[] $argv
+     *   Commandline arguments. The first element is
      *   the path to the application, which we will ignore.
+     * @param PreflightArgsInterface $storage
+     *   A storage object to hold the arguments we remove
+     *   from argv, plus the remaining argv arguments.
      */
     public function parse($argv, PreflightArgsInterface $storage)
     {

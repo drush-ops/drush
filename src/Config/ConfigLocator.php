@@ -130,7 +130,7 @@ class ConfigLocator
         if (!is_dir($siteRoot)) {
             return;
         }
-        $this->addConfigPaths([ $siteRoot, "$siteRoot/drush" ]);
+        $this->addConfigPaths([ dirname($siteRoot) . '/drush', "$siteRoot/drush", "$siteRoot/sites/all/drush" ]);
     }
 
     public function addAliasConfig($aliasPath, $systemConfigPath, $userConfigDir)
