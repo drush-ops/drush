@@ -24,6 +24,9 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
      * - @hook post-command sql-sanitize
      *     Run queries or call APIs to perform sanitizing
      *
+     * Note that these commandfiles cannot be supplied by Drupal modules since those load only on commands that do a
+     * full bootstrap. This command only bootstraps to CONFIG level. You may add commandfiles manually via --include option.
+     *
      * @command sql-sanitize
      *
      * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION
