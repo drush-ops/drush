@@ -166,7 +166,7 @@ class ConfigLocator
         return $this;
     }
 
-    public function addSiteConfig($siteRoot)
+    public function addSitewideConfig($siteRoot)
     {
         // There might not be a site
         if (!is_dir($siteRoot)) {

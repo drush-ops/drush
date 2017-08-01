@@ -148,10 +148,12 @@ class Preflight
         // Extend configuration and alias files to include files in
         // target site.
         $root = $this->findSelectedSite($preflightArgs);
-        $configLocator->addSiteConfig($root);
+        $configLocator->addSitewideConfig($root);
 
         // TODO: define the '@self' alias
-        // TODO: Include the Composer autoload for Drupal (if different)
+
+        // Require the Composer autoloader for Drupal (if different)
+        $this->environment->loadSiteAutoloader($root);
 
         // Create the Symfony Application et. al.
         $input = new ArgvInput($preflightArgs->args());

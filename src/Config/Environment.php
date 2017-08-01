@@ -19,6 +19,9 @@ class Environment
 
     protected $docPrefix;
 
+    protected $loader;
+    protected $siteLoader;
+
     /**
      * Environment constructor
      * @param string $homeDir User home directory.
@@ -33,6 +36,27 @@ class Environment
         $this->sharePrefix = '';
         $this->drushBasePath = dirname(dirname(__DIR__));
         $this->vendorDir = dirname($autoloadFile);
+    }
+
+    /**
+     * Load the autoloader for the selected Drupal site
+     */
+    public function loadSiteAutoloader($root)
+    {
+        $autloadFilePath = "$root/autoload.php";
+        if (!file_exists($autloadFilePath)) {
+            return false;
+        }
+
+        if (!$this->siteLoader) {
+            $this->siteLoader = require $autloadFilePath;
+            if ($this->siteLoader === TRUE) {
+                // The autoloader was already required. Assume that Drush and Drupal share an autoloader per
+                // "Point autoload.php to the proper vendor directory" - https://www.drupal.org/node/2404989
+                $this->siteLoader = $this->loader;
+            }
+        }
+        return $this->siteLoader;
     }
 
     /**

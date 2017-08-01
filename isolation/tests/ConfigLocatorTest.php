@@ -86,7 +86,7 @@ class ConfigLocatorTest extends \PHPUnit_Framework_TestCase
         // Make our environment settings available as configuration items
         $configLocator->addEnvironment($this->fixtures->environment());
 
-        $configLocator->addSiteConfig($this->fixtures->siteDir());
+        $configLocator->addSitewideConfig($this->fixtures->siteDir());
 
         return $configLocator;
     }
