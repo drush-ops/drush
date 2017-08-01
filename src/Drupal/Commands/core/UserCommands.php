@@ -273,7 +273,7 @@ class UserCommands extends DrushCommands
      * @usage drush user-cancel --delete-content username
      *   Cancel the user account with the name username and delete all content created by that user.
      */
-    public function cancel($names, $options = ['delete-account' => false])
+    public function cancel($names, $options = ['delete-content' => false])
     {
         if ($names = _convert_csv_to_array($names)) {
             foreach ($names as $name) {
