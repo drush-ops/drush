@@ -26,7 +26,7 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
      *
      * Note that these commandfiles are not automatically loaded when supplied by Drupal modules (since this command
      * only bootstraps to CONFIG). You may load these module-supplied commandfiles via --include option. For example,
-     * `drush --include modules/contrib/module-name/src/Commands sql-sanitize`. Also note that these commandfiles may not
+     * `drush --include=modules/contrib/module-name/src/Commands sql-sanitize`. Also note that these commandfiles may not
      * use dependency injection.
      *
      * @command sql-sanitize
