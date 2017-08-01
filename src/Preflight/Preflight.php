@@ -6,6 +6,7 @@ use Drush\Drush;
 use Drush\Config\Environment;
 use Drush\Config\ConfigLocator;
 use Drush\Config\EnvironmentConfigLoader;
+use Drush\SiteAlias\SiteAliasManager;
 use DrupalFinder\DrupalFinder;
 
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
@@ -83,9 +84,6 @@ class Preflight
         $configLocator->addUserConfig($preflightArgs->configPath(), $environment->systemConfigPath(), $environment->userConfigPath());
         $configLocator->addDrushConfig($environment->drushBasePath());
 
-        // @TODO: aliases
-        $configLocator->addAliasConfig($preflightArgs->aliasPath(), $environment->systemConfigPath(), $environment->userConfigPath());
-
         // Make our environment settings available as configuration items
         $configLocator->addEnvironment($environment);
 
@@ -142,7 +140,9 @@ class Preflight
         // Start code coverage
         $this->startCoverage($preflightArgs);
 
-
+        // @TODO: aliases
+        $aliasManager = new SiteAliasManager($preflightArgs->aliasPath(), $environment->systemConfigPath(), $environment->userConfigPath());
+        $config = $configLocator->config();
 
         // Determine the local site targeted, if any.
         // Extend configuration and alias files to include files in
@@ -156,7 +156,6 @@ class Preflight
         // Create the Symfony Application et. al.
         $input = new ArgvInput($preflightArgs->args());
         $output = new \Symfony\Component\Console\Output\ConsoleOutput();
-        $config = $configLocator->config();
         $application = new \Drush\Application('Drush Commandline Tool', Drush::getVersion());
 
         // Set up the DI container

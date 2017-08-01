@@ -176,10 +176,6 @@ class ConfigLocator
         return $this;
     }
 
-    public function addAliasConfig($aliasPath, $systemConfigPath, $userConfigDir)
-    {
-    }
-
     public function addConfigPaths($contextName, $paths)
     {
         $loader = new YamlConfigLoader();

@@ -82,7 +82,6 @@ class ConfigLocatorTest extends \PHPUnit_Framework_TestCase
         $configLocator->setLocal($isLocal);
         $configLocator->addUserConfig($configPath, $this->fixtures->environment()->systemConfigPath(), $this->fixtures->environment()->userConfigPath());
         $configLocator->addDrushConfig($this->fixtures->environment()->drushBasePath());
-        $configLocator->addAliasConfig($alias, $aliasPath, $this->fixtures->environment()->homeDir());
 
         // Make our environment settings available as configuration items
         $configLocator->addEnvironment($this->fixtures->environment());
