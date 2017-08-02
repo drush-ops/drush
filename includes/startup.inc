@@ -383,7 +383,7 @@ function drush_startup($argv) {
   }
 
   // Always use pcntl_exec if it exists.
-  $use_pcntl_exec = function_exists("pcntl_exec");
+  $use_pcntl_exec = function_exists("pcntl_exec") && (strpos(ini_get('disable_functions'), 'pcntl_exec') === FALSE);
 
   // If we have posix_getppid, then pass in the shell pid so
   // that 'site-set' et. al. can work correctly.
