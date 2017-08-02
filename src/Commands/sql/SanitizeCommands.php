@@ -24,16 +24,10 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
      * - @hook post-command sql-sanitize
      *     Run queries or call APIs to perform sanitizing
      *
-     * Note that these commandfiles are not automatically loaded when supplied by Drupal modules (since this command
-     * only bootstraps to CONFIG). You may load these module-supplied commandfiles via --include option. For example,
-     * `drush --include=modules/contrib/module-name/src/Commands sql-sanitize`. Also note that these commandfiles may not
-     * use dependency injection.
-     *
      * @command sql-sanitize
      *
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION
+     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @description Run sanitization operations on the current database.
-     * @option db-prefix Enable replacement of braces in sanitize queries.
      * @option sanitize-email The pattern for test email addresses in the
      *   sanitization operation, or "no" to keep email addresses unchanged. May
      *   contain replacement patterns %uid, %mail or %name.
@@ -46,9 +40,9 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
      * @usage drush sql-sanitize --whitelist-fields=field_biography,field_phone_number
      *   Sanitizes database but exempts two user fields from modification.
      */
-    public function sanitize($options = ['db-prefix' => false, 'sanitize-email' => 'user+%uid@localhost.localdomain', 'sanitize-password' => 'password', 'whitelist-fields' => ''])
+    public function sanitize($options = ['sanitize-email' => 'user+%uid@localhost.localdomain', 'sanitize-password' => 'password', 'whitelist-fields' => ''])
     {
-        /**
+     /**
      * In order to present only one prompt, collect all confirmations from
      * commandfiles up front. sql-sanitize plugins are commandfiles that implement
      * \Drush\Commands\sql\SanitizePluginInterface

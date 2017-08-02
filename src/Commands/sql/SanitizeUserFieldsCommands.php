@@ -87,6 +87,9 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SqlSanitizePlu
                 $query->execute();
                 $this->logger()->success(dt('!table table sanitized.', ['!table' => $table]));
             }
+            else {
+                $this->logger()->success(dt('No text fields for users need sanitizing.', ['!table' => $table]));
+            }
         }
     }
 
@@ -97,6 +100,6 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SqlSanitizePlu
      */
     public function messages(&$messages, InputInterface $input)
     {
-        $messages[] = dt('Sanitize text Fields associated with the user.');
+        $messages[] = dt('Sanitize text fields associated with users.');
     }
 }
