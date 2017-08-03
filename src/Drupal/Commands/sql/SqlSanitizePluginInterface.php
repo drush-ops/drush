@@ -1,6 +1,6 @@
 <?php
 
-namespace Drush\Commands\sql;
+namespace Drush\Drupal\Commands\sql;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Symfony\Component\Console\Input\InputInterface;

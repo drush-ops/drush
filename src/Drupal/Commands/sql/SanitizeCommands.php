@@ -1,14 +1,11 @@
 <?php
 
-namespace Drush\Commands\sql;
+namespace Drush\Drupal\Commands\sql;
 
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
-use Drush\Sql\SqlTrait;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class SanitizeCommands extends DrushCommands implements CustomEventAwareInterface
 {
@@ -26,7 +23,6 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
      *
      * @command sql-sanitize
      *
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
      * @description Run sanitization operations on the current database.
      * @option sanitize-email The pattern for test email addresses in the
      *   sanitization operation, or "no" to keep email addresses unchanged. May

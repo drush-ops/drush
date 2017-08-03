@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Commands\sql;
+namespace Drush\Drupal\Commands\sql;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Database\Database;
@@ -12,6 +12,14 @@ use Symfony\Component\Console\Input\InputInterface;
  */
 class SanitizeUserTableCommands extends DrushCommands implements SqlSanitizePluginInterface
 {
+    protected $database;
+    protected $passwordHasher;
+
+    public function __construct($database, $passwordHasher)
+    {
+        $this->database = $database;
+        $this->passwordHasher = $passwordHasher;
+    }
 
     /**
      * Sanitize usernames and passwords. This also an example of how to write a
@@ -24,16 +32,14 @@ class SanitizeUserTableCommands extends DrushCommands implements SqlSanitizePlug
     public function sanitize($result, CommandData $commandData)
     {
         $options = $commandData->options();
-        $query = Database::getConnection()->update('users_field_data')
+        $query = $this->database->update('users_field_data')
         ->condition('uid', 0, '>');
         $messages = [];
 
         // Sanitize passwords.
         if ($this->isEnabled($options['sanitize-password'])) {
             // D8+. Mimic Drupal's /scripts/password-hash.sh
-            drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
-            $password_hasher = \Drupal::service('password');
-            $hash = $password_hasher->hash($options['sanitize-password']);
+            $hash = $this->passwordHasher->hash($options['sanitize-password']);
             $query->fields(['pass' => $hash]);
             $messages[] = dt('User passwords sanitized.');
         }

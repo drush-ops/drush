@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Commands\sql;
+namespace Drush\Drupal\Commands\sql;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Database\Database;
@@ -11,6 +11,18 @@ use Symfony\Component\Console\Input\InputInterface;
  */
 class SanitizeCommentsCommands extends DrushCommands implements SqlSanitizePluginInterface
 {
+    protected $database;
+    protected $moduleHandler;
+
+    /**
+     * SanitizeCommentsCommands constructor.
+     * @param $database
+     * @param $moduleHandler
+     */
+    public function __construct($database, $moduleHandler) {
+        $this->database = $database;
+        $this->moduleHandler = $moduleHandler;
+    }
 
     /**
      * Sanitize comment names from the DB.
@@ -23,7 +35,7 @@ class SanitizeCommentsCommands extends DrushCommands implements SqlSanitizePlugi
     {
         if ($this->applies()) {
             //Update anon.
-            Database::getConnection()->update('comment_field_data')
+            $this->database->update('comment_field_data')
             ->fields([
               'name' => 'Anonymous',
               'mail' => '',
@@ -33,7 +45,7 @@ class SanitizeCommentsCommands extends DrushCommands implements SqlSanitizePlugi
               ->execute();
 
             // Update auth.
-            Database::getConnection()->update('comment_field_data')
+            $this->database->update('comment_field_data')
               ->expression('name', "CONCAT('User', `uid`)")
               ->expression('mail', "CONCAT('user+', `uid`, '@example.com')")
               ->fields(['homepage' => 'http://example.com'])
@@ -58,6 +70,6 @@ class SanitizeCommentsCommands extends DrushCommands implements SqlSanitizePlugi
     protected function applies()
     {
         drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
-        return \Drupal::moduleHandler()->moduleExists('comment');
+        return $this->moduleHandler->moduleExists('comment');
     }
 }

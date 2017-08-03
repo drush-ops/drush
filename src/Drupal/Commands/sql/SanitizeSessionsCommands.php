@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Commands\sql;
+namespace Drush\Drupal\Commands\sql;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Database\Database;
@@ -11,6 +11,21 @@ use Symfony\Component\Console\Input\InputInterface;
  */
 class SanitizeSessionsCommands extends DrushCommands implements SqlSanitizePluginInterface
 {
+    protected $database;
+
+    public function __construct($database)
+    {
+        $this->database = $database;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDatabase()
+    {
+        return $this->database;
+    }
+
 
     /**
      * Sanitize sessions from the DB.
@@ -21,7 +36,7 @@ class SanitizeSessionsCommands extends DrushCommands implements SqlSanitizePlugi
      */
     public function sanitize($result, CommandData $commandData)
     {
-        Database::getConnection()->truncate('sessions')->execute();
+        $this->getDatabase()->truncate('sessions')->execute();
         $this->logger()->success(dt('Sessions table truncated.'));
     }
 
