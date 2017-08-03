@@ -77,6 +77,18 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
     }
 
     /**
+     * @hook option sql-sanitize
+     * @option sanitize-email The pattern for test email addresses in the
+     *   sanitization operation, or "no" to keep email addresses unchanged. May
+     *   contain replacement patterns %uid, %mail or %name.
+     * @option sanitize-password The password to assign to all accounts in the
+     *   sanitization operation, or "no" to keep passwords unchanged.
+     */
+    public function options($options = ['sanitize-email' => 'user+%uid@localhost.localdomain', 'sanitize-password' => 'password'])
+    {
+    }
+
+    /**
      * @hook on-event sql-sanitize-confirms
      *
      * @inheritdoc

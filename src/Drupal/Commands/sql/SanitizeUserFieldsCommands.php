@@ -125,4 +125,12 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
     {
         $messages[] = dt('Sanitize text fields associated with users.');
     }
+
+    /**
+     * @hook option sql-sanitize
+     * @option whitelist-fields A comma delimited list of fields exempt from sanitization.
+     */
+    public function options($options = ['whitelist-fields' => ''])
+    {
+    }
 }
