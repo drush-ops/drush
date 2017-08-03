@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 /**
  * This class is a good example of how to build a sql-sanitize plugin.
  */
-class SanitizeSessionsCommands extends DrushCommands implements SqlSanitizePluginInterface
+class SanitizeSessionsCommands extends DrushCommands implements SanitizePluginInterface
 {
     protected $database;
 

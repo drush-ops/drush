@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 /**
  * Implement this interface when building a Drush sql-sanitize plugin.
  */
-interface SqlSanitizePluginInterface
+interface SanitizePluginInterface
 {
     /**
      * Run your sanitization logic using standard Drupal APIs.

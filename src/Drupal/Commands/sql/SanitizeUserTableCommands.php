@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputInterface;
 /**
  * A sql-sanitize plugin.
  */
-class SanitizeUserTableCommands extends DrushCommands implements SqlSanitizePluginInterface
+class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginInterface
 {
     protected $database;
     protected $passwordHasher;
