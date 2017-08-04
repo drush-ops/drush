@@ -24,7 +24,8 @@ class SqlSyncCommands extends DrushCommands
      * @option create-db Create a new database before importing the database dump on the target machine.
      * @option db-su Account to use when creating a new database (e.g. root).
      * @option db-su-pw Password for the db-su account.
-     * @allow-additional-options sql-sanitize
+     * # We cannot list sql-sanitize below since it bootstraps higher - to FULL.
+     * @allow-additional-options
      * @option sanitize Obscure email addresses and reset passwords in the user table post-sync.
      * @option confirm-sanitizations Prompt yes/no after importing the database, but before running the sanitizations.
      * @usage drush sql-sync @source @target
