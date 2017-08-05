@@ -8,9 +8,10 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
-class BootstrapManager implements LoggerAwareInterface
+class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
 {
     use LoggerAwareTrait;
+    use AutoloaderAwareTrait;
 
     /**
      * @var DrupalFinder
@@ -137,6 +138,9 @@ class BootstrapManager implements LoggerAwareInterface
     {
         foreach ($this->bootstrapCandidates as $candidate) {
             if ($candidate->validRoot($path)) {
+                if ($candidate instanceof AutoloaderAwareInterface) {
+                    $candidate->setAutoloader($this->autoloader());
+                }
                 return $candidate;
             }
         }

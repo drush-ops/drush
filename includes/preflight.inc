@@ -497,19 +497,9 @@ function drush_preflight() {
   drush_preflight_site();
 
   // Check to see if anything changed during the 'site' preflight
-  // that might allow us to find our alias record now
+  // that might allow us to find our alias record now.
   if (empty($alias_record)) {
     $alias_record = _drush_sitealias_set_context_by_name($target_alias);
-
-    // If the site alias settings changed late in the preflight,
-    // then run the preflight for the root and site contexts again.
-    if (!empty($alias_record)) {
-      $remote_host = drush_get_option('remote-host');
-      if (!isset($remote_host)) {
-        drush_preflight_root();
-        drush_preflight_site();
-      }
-    }
   }
 
   // Fail if we could not find the selected site alias.
@@ -544,6 +534,9 @@ function drush_preflight() {
 function drush_preflight_root() {
   $root = drush_get_option('root');
   Drush::bootstrapManager()->locateRoot($root);
+  // Load the autoload file and provide it to the bootstrap manager.
+  $siteAutoloader = drush_drupal_load_autoloader($root);
+  Drush::bootstrapManager()->setAutoloader($siteAutoloader);
 
   // Load the config options from Drupal's /drush, ../drush, and sites/all/drush directories,
   // even prior to bootstrapping the root.

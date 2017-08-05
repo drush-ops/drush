@@ -13,14 +13,17 @@ use Drush\Drush;
 function drush_drupal_load_autoloader($drupal_root) {
   static $autoloader = FALSE;
 
-  if (!$autoloader) {
-    $autoloader = require $drupal_root .'/autoload.php';
-    if ($autoloader === TRUE) {
-      // The autoloader was already require(). Assume that Drush and Drupal share an autoloader per
-      // "Point autoload.php to the proper vendor directory" - https://www.drupal.org/node/2404989
-      $autoloader = drush_get_context('DRUSH_CLASSLOADER');
-    }
+  $autoloadFilePath = $drupal_root .'/autoload.php';
+  if (!$autoloader && file_exists($autoloadFilePath)) {
+    $autoloader = require $autoloadFilePath;
   }
+
+  if ($autoloader === TRUE) {
+    // The autoloader was already requireed. Assume that Drush and Drupal share an autoloader per
+    // "Point autoload.php to the proper vendor directory" - https://www.drupal.org/node/2404989
+    $autoloader = drush_get_context('DRUSH_CLASSLOADER');
+  }
+
   return $autoloader;
 }
 
