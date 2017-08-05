@@ -534,6 +534,8 @@ function drush_preflight() {
 function drush_preflight_root() {
   $root = drush_get_option('root');
   Drush::bootstrapManager()->locateRoot($root);
+  $root = Drush::bootstrapManager()->getRoot();
+
   // Load the autoload file and provide it to the bootstrap manager.
   $siteAutoloader = drush_drupal_load_autoloader($root);
   Drush::bootstrapManager()->setAutoloader($siteAutoloader);

@@ -19,7 +19,7 @@ function drush_drupal_load_autoloader($drupal_root) {
   }
 
   if ($autoloader === TRUE) {
-    // The autoloader was already requireed. Assume that Drush and Drupal share an autoloader per
+    // The autoloader was already required. Assume that Drush and Drupal share an autoloader per
     // "Point autoload.php to the proper vendor directory" - https://www.drupal.org/node/2404989
     $autoloader = drush_get_context('DRUSH_CLASSLOADER');
   }

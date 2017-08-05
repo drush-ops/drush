@@ -17,6 +17,6 @@ trait AutoloaderAwareTrait
 
     public function hasAutoloader()
     {
-        return false;
+        return isset($this->loader);
     }
 }
