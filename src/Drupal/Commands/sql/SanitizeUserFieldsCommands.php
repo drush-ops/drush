@@ -109,8 +109,7 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
             if ($execute) {
                 $query->execute();
                 $this->logger()->success(dt('!table table sanitized.', ['!table' => $table]));
-            }
-            else {
+            } else {
                 $this->logger()->success(dt('No text fields for users need sanitizing.', ['!table' => $table]));
             }
         }

@@ -19,7 +19,8 @@ class SanitizeCommentsCommands extends DrushCommands implements SanitizePluginIn
      * @param $database
      * @param $moduleHandler
      */
-    public function __construct($database, $moduleHandler) {
+    public function __construct($database, $moduleHandler)
+    {
         $this->database = $database;
         $this->moduleHandler = $moduleHandler;
     }
