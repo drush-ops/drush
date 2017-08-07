@@ -600,15 +600,21 @@ function _drush_preflight_global_options() {
   drush_set_context('DRUSH_QUIET', drush_get_option(array('quiet', 'pipe')));
   drush_set_context('DRUSH_PIPE', drush_get_option('pipe'));
 
-  // Suppress colored logging if --nocolor option is explicitly given or if
-  // terminal does not support it.
-  $nocolor = (drush_get_option('nocolor', FALSE));
-  if (!$nocolor) {
-    // Check for colorless terminal.  If there is no terminal, then
-    // 'tput colors 2>&1' will return "tput: No value for $TERM and no -T specified",
-    // which is not numeric and therefore will put us in no-color mode.
-    $colors = exec('tput colors 2>&1');
-    $nocolor = !($colors === FALSE || (is_numeric($colors) && $colors >= 3));
+  // Force color output is the --color option is given.
+  if (drush_get_option('color', FALSE)) {
+    $nocolor = FALSE;
+  }
+  else {
+    // Suppress colored logging if --nocolor option is explicitly given or if
+    // terminal does not support it.
+    $nocolor = (drush_get_option('nocolor', FALSE));
+    if (!$nocolor) {
+      // Check for colorless terminal.  If there is no terminal, then
+      // 'tput colors 2>&1' will return "tput: No value for $TERM and no -T specified",
+      // which is not numeric and therefore will put us in no-color mode.
+      $colors = exec('tput colors 2>&1');
+      $nocolor = !($colors === FALSE || (is_numeric($colors) && $colors >= 3));
+    }
   }
   drush_set_context('DRUSH_NOCOLOR', $nocolor);
 
