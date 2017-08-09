@@ -34,7 +34,6 @@
     "consolidation/robo": "^1.1.2",
     "symfony/config": "~2.2|^3",
     "chi-teck/drupal-code-generator": "^1.17.3",
-    "grasmesh/yaml-expander": "^1.1.1",
     "symfony/yaml": "~2.3|^3",
     "symfony/var-dumper": "~2.7|^3",
     "symfony/console": "~2.7|^3",
