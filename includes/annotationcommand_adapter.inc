@@ -469,8 +469,9 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
     if (isset($returnType)) {
       $command['return-type'] = $returnType;
     }
-    if ($additional = $commandinfo->getAnnotation('allow-additional-options')) {
-      $command['allow-additional-options'] = StringUtils::csvToArray($additional);
+    if ($commandinfo->hasAnnotation('allow-additional-options')) {
+      $additional = $commandinfo->getAnnotation('allow-additional-options');
+      $command['allow-additional-options'] = empty($additional) ? true : StringUtils::csvToArray($additional);
     }
     if ($dependencies = $commandinfo->getAnnotation('drupal-dependencies')) {
       $command['drupal dependencies'] = StringUtils::csvToArray($dependencies);

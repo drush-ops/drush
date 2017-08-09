@@ -1,14 +1,11 @@
 <?php
 
-namespace Drush\Commands\sql;
+namespace Drush\Drupal\Commands\sql;
 
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
-use Drush\Sql\SqlTrait;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class SanitizeCommands extends DrushCommands implements CustomEventAwareInterface
 {
@@ -25,25 +22,15 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
      *     Run queries or call APIs to perform sanitizing
      *
      * @command sql-sanitize
-     *
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION
-     * @description Run sanitization operations on the current database.
-     * @option db-prefix Enable replacement of braces in sanitize queries.
-     * @option sanitize-email The pattern for test email addresses in the
-     *   sanitization operation, or "no" to keep email addresses unchanged. May
-     *   contain replacement patterns %uid, %mail or %name.
-     * @option sanitize-password The password to assign to all accounts in the
-     *   sanitization operation, or "no" to keep passwords unchanged.
-     * @option whitelist-fields A comma delimited list of fields exempt from sanitization.
      * @aliases sqlsan
      * @usage drush sql-sanitize --sanitize-password=no
      *   Sanitize database without modifying any passwords.
      * @usage drush sql-sanitize --whitelist-fields=field_biography,field_phone_number
      *   Sanitizes database but exempts two user fields from modification.
      */
-    public function sanitize($options = ['db-prefix' => false, 'sanitize-email' => 'user+%uid@localhost.localdomain', 'sanitize-password' => 'password', 'whitelist-fields' => ''])
+    public function sanitize()
     {
-        /**
+     /**
      * In order to present only one prompt, collect all confirmations from
      * commandfiles up front. sql-sanitize plugins are commandfiles that implement
      * \Drush\Commands\sql\SanitizePluginInterface
