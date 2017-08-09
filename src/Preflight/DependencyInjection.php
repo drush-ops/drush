@@ -68,6 +68,7 @@ class DependencyInjection
     {
         // Add our own callback to the hook manager
         $hookManager = $container->get('hookManager');
+        $hookManager->addInitializeHook(new \Drush\Boot\BootstrapHook());
         $hookManager->addOutputExtractor(new \Drush\Backend\BackendResultSetter());
         // @todo: do we need both backend result setters? The one below should be removed at some point.
         $hookManager->add('annotatedcomand_adapter_backend_result', \Consolidation\AnnotatedCommand\Hooks\HookManager::EXTRACT_OUTPUT);
