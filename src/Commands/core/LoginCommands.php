@@ -12,7 +12,8 @@ class LoginCommands extends DrushCommands
      *
      * @command user-login
      *
-     * @param string $path Optional path to redirect to after logging in.
+     * @param string|int $path  Optional path to redirect to after logging in.
+     *  For backwards compatibility, a uid may be passed instead, which will be used if the name option is not specified.
      * @option name A user name to log in as. If not provided, defaults to uid=1.
      * @option browser Optional value denotes which browser to use (defaults to operating system default). Use --no-browser to suppress opening a browser.
      * @option redirect-port A custom port for redirecting to (e.g., when running within a Vagrant environment)
@@ -24,14 +25,14 @@ class LoginCommands extends DrushCommands
      * @usage drush user-login --browser=firefox --mail=drush@example.org admin/settings/performance
      *   Open firefox web browser, login as the user with the e-mail address drush@example.org and redirect to the path admin/settings/performance.
      */
-    public function login($path = '', $options = ['name' => '1', 'browser' => '', 'redirect-port' => ''])
+    public function login($path = '', $options = ['name' => '', 'browser' => '', 'redirect-port' => ''])
     {
 
         // Redispatch if called against a remote-host so a browser is started on the
         // the *local* machine.
         $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
         if (drush_sitealias_is_remote_site($alias)) {
-            $return = drush_invoke_process($alias, 'user-login', $options['name'], drush_redispatch_get_options(), array('integrate' => false));
+            $return = drush_invoke_process($alias, 'user-login', array($path), drush_redispatch_get_options(), array('integrate' => false));
             if ($return['error_status']) {
                 throw new \Exception('Unable to execute user login.');
             } else {
@@ -44,8 +45,16 @@ class LoginCommands extends DrushCommands
                 return false;
             }
 
-            if ($options['name'] == 1) {
+            if (empty($options['name'])) {
+              // Backwards compatibility: If name is not specified and argument
+              // is an integer, treat as an old-style attempt to login by uid.
+              if (ctype_digit($path)) {
+                $account = User::load(intval($path));
+              }
+              // Default to logging in as user 1.
+              if (!isset($account)) {
                 $account = User::load(1);
+              }
             } elseif (!$account = user_load_by_name($options['name'])) {
                 throw new \Exception(dt('Unable to load user: !user', array('!user' => $options['name'])));
             }
