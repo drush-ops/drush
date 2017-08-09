@@ -42,8 +42,8 @@ class SandwichCommands extends DrushCommands {
   /**
    * Show a table of information about available spreads.
    *
-   * @command xkcd-spreads
-   * @aliases xspreads
+   * @command mmas-spreads
+   * @aliases mspreads
    * @field-labels
    *   name: Name
    *   description: Description

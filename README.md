@@ -8,14 +8,14 @@ Resources
 * [General Documentation](http://docs.drush.org) [(Drush8)](http://docs.drush.org/en/8.x)
 * [API Documentation](http://api.drush.org)
 * [Drush Commands](http://drushcommands.com)
-* Subscribe [this atom feed](https://github.com/drush-ops/drush/releases.atom) to receive notification on new releases. Also, [Version eye](https://www.versioneye.com/).
+* Subscribe [this atom feed](https://github.com/drush-ops/drush/releases.atom) to receive notification of new releases. Also, [Version eye](https://www.versioneye.com/).
 * [Drush packages available via Composer](https://packagist.org/search/?type=drupal-drush)
 * [A list of modules that include Drush integration](https://www.drupal.org/project/project_module?f[2]=im_vid_3%3A4654&solrsort=ds_project_latest_release+desc)
 * Drush comes with a [full test suite](https://github.com/drush-ops/drush/blob/master/tests/README.md) powered by [PHPUnit](https://github.com/sebastianbergmann/phpunit). Each commit gets tested by the awesome [Travis.ci continuous integration service](https://travis-ci.org/drush-ops/drush).
 
 Support
 -----------
-* Post support requests to [Drupal Answers](http://drupal.stackexchange.com/questions/tagged/drush).
+* Post support requests to [Drupal Answers](http://drupal.stackexchange.com/questions/tagged/drush). Tag question with 'drush'.
 * Report bugs and request features in the [GitHub Drush Issue Queue](https://github.com/drush-ops/drush/issues).
 * Use pull requests (PRs) to contribute to Drush.
 

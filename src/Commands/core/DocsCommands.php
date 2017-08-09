@@ -214,7 +214,7 @@ class DocsCommands extends DrushCommands
      */
     public function exampleCommand()
     {
-        self::printFile(DRUSH_BASE_PATH. '/examples/sandwich.drush.inc');
+        self::printFile(DRUSH_BASE_PATH. '/examples/Commands/SandwichCommands.php');
     }
 
     /**
@@ -226,7 +226,7 @@ class DocsCommands extends DrushCommands
      */
     public function syncHttp()
     {
-        self::printFile(DRUSH_BASE_PATH. '/examples/sync_via_http.drush.inc');
+        self::printFile(DRUSH_BASE_PATH. '/examples/Commands/SyncViaHttpCommands.php');
     }
 
     /**
@@ -238,6 +238,6 @@ class DocsCommands extends DrushCommands
      */
     public function policy()
     {
-        self::printFile(DRUSH_BASE_PATH. '/examples/policy.drush.inc');
+        self::printFile(DRUSH_BASE_PATH. '/examples/Commands/PolicyCommands.php');
     }
 }

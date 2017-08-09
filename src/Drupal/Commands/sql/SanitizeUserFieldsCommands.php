@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Commands\sql;
+namespace Drush\Drupal\Commands\sql;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Component\Utility\Random;
@@ -10,8 +10,32 @@ use Symfony\Component\Console\Input\InputInterface;
 /**
  * This class is a good example of how to build a sql-sanitize plugin.
  */
-class SanitizeUserFieldsCommands extends DrushCommands implements SqlSanitizePluginInterface
+class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePluginInterface
 {
+    protected $database;
+    protected $entityManager;
+
+    public function __construct($database, $entityManager)
+    {
+        $this->database = $database;
+        $this->entityManager = $entityManager;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDatabase()
+    {
+        return $this->database;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEntityManager()
+    {
+        return $this->entityManager;
+    }
 
     /**
      * Sanitize string fields associated with the user.
@@ -25,10 +49,9 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SqlSanitizePlu
     public function sanitize($result, CommandData $commandData)
     {
         $options = $commandData->options();
-        $randomizer = new Random();
-        $conn = Database::getConnection();
-        $field_definitions = \Drupal::entityManager()->getFieldDefinitions('user', 'user');
-        $field_storage = \Drupal::entityManager()->getFieldStorageDefinitions('user');
+        $conn = $this->getDatabase();
+        $field_definitions = $this->getEntityManager()->getFieldDefinitions('user', 'user');
+        $field_storage = $this->getEntityManager()->getFieldStorageDefinitions('user');
         foreach (explode(',', $options['whitelist-fields']) as $key => $def) {
             unset($field_definitions[$key], $field_storage[$key]);
         }
@@ -86,6 +109,8 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SqlSanitizePlu
             if ($execute) {
                 $query->execute();
                 $this->logger()->success(dt('!table table sanitized.', ['!table' => $table]));
+            } else {
+                $this->logger()->success(dt('No text fields for users need sanitizing.', ['!table' => $table]));
             }
         }
     }
@@ -97,6 +122,14 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SqlSanitizePlu
      */
     public function messages(&$messages, InputInterface $input)
     {
-        $messages[] = dt('Sanitize text Fields associated with the user.');
+        $messages[] = dt('Sanitize text fields associated with users.');
+    }
+
+    /**
+     * @hook option sql-sanitize
+     * @option whitelist-fields A comma delimited list of fields exempt from sanitization.
+     */
+    public function options($options = ['whitelist-fields' => ''])
+    {
     }
 }

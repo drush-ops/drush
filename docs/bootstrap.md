@@ -2,7 +2,7 @@ The Drush Bootstrap Process
 ===========================
 When preparing to run a command, Drush works by "bootstrapping" the Drupal environment in very much the same way that is done during a normal page request from the web server, so most Drush commands run in the context of a fully-initialized website.
 
-For efficiency and convenience, some Drush commands can work without first bootstrapping a Drupal site, or by only partially bootstrapping a site. This is faster than a full bootstrap. It is also a matter of convenience, because some commands are useful even when you don't have a working Drupal site. For example, you can use Drush to download Drupal with `drush dl drupal`. This obviously does not require any bootstrapping to work.
+For efficiency and convenience, some Drush commands can work without first bootstrapping a Drupal site, or by only partially bootstrapping a site. This is faster than a full bootstrap. It is also a matter of convenience, because some commands are useful even when you don't have a working Drupal site.
 
 DRUSH\_BOOTSTRAP\_NONE
 -----------------------

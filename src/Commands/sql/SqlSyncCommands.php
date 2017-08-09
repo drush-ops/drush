@@ -24,9 +24,6 @@ class SqlSyncCommands extends DrushCommands
      * @option create-db Create a new database before importing the database dump on the target machine.
      * @option db-su Account to use when creating a new database (e.g. root).
      * @option db-su-pw Password for the db-su account.
-     * @allow-additional-options sql-sanitize
-     * @option sanitize Obscure email addresses and reset passwords in the user table post-sync.
-     * @option confirm-sanitizations Prompt yes/no after importing the database, but before running the sanitizations.
      * @usage drush sql-sync @source @target
      *   Copy the database from the site with the alias 'source' to the site with the alias 'target'.
      * @usage drush sql-sync prod dev
@@ -34,7 +31,7 @@ class SqlSyncCommands extends DrushCommands
      * @topics docs-aliases,docs-policy,docs-example-sync-via-http
      * @complete \Drush\Commands\CompletionCommands::completeSiteAliases
      */
-    public function sqlsync($source, $destination, $options = ['no-dump' => false, 'no-sync' => false, 'runner' => null, 'create-db' => false, 'db-su' => null, 'db-su-pw' => null, 'sanitize' => false, 'confirm-sanitizations' => false, 'target-dump' => null, 'source-dump' => true])
+    public function sqlsync($source, $destination, $options = ['no-dump' => false, 'no-sync' => false, 'runner' => null, 'create-db' => false, 'db-su' => null, 'db-su-pw' => null, 'target-dump' => null, 'source-dump' => true])
     {
         $source_record = drush_sitealias_get_record($source);
         $destination_record = drush_sitealias_get_record($destination);
@@ -130,16 +127,6 @@ class SqlSyncCommands extends DrushCommands
             // An error was already logged.
             return false;
         }
-
-        // Run Sanitize if needed.
-        $sanitize_options = $global_options;
-        if ($options['sanitize']) {
-            $this->logger()->notice(dt('Starting to sanitize target database on Destination.'));
-            $return = drush_invoke_process($destination, 'sql-sanitize', array(), $sanitize_options, $backend_options);
-            if ($return['error_status']) {
-                throw new \Exception(dt('sql-sanitize failed.'));
-            }
-        }
     }
 
     /**
@@ -207,7 +194,6 @@ class SqlSyncCommands extends DrushCommands
             '!source' => $txt_source,
             '!target' => $txt_destination
             )));
-            // @todo Move sanitization prompts to here. They currently show much later.
             if (!$this->io()->confirm(dt('Do you really want to continue?'))) {
                   throw new UserAbortException();
             }
