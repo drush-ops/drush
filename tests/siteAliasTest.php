@@ -25,6 +25,11 @@ class saCase extends CommandUnishTestCase {
     $other_root = $other_sut . '/web';
     @mkdir($other_sut);
     self::recursive_copy($dev_root, $other_root);
+
+    if (!file_exists($drush_sut . '/composer.json') || !file_exists($drush_sut . '/composer.lock')) {
+      $this->markTestSkipped('This test does not run in the highest / lowest configurations.');
+    }
+
     copy($drush_sut . '/composer.json', $other_sut . '/composer.json');
     copy($drush_sut . '/composer.lock', $other_sut . '/composer.lock');
 
