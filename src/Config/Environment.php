@@ -50,7 +50,7 @@ class Environment
 
         if (!$this->siteLoader) {
             $this->siteLoader = require $autloadFilePath;
-            if ($this->siteLoader === TRUE) {
+            if ($this->siteLoader === true) {
                 // The autoloader was already required. Assume that Drush and Drupal share an autoloader per
                 // "Point autoload.php to the proper vendor directory" - https://www.drupal.org/node/2404989
                 $this->siteLoader = $this->loader;
