@@ -1772,8 +1772,6 @@ function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
         }
 
         _drush_sitealias_cache_alias('@self', $site_alias_settings);
-        // Change the selected site to match the new --root and --uri, if any were set.
-        _drush_preflight_root_uri();
       }
       return $site_alias_settings;
     }

@@ -497,19 +497,9 @@ function drush_preflight() {
   drush_preflight_site();
 
   // Check to see if anything changed during the 'site' preflight
-  // that might allow us to find our alias record now
+  // that might allow us to find our alias record now.
   if (empty($alias_record)) {
     $alias_record = _drush_sitealias_set_context_by_name($target_alias);
-
-    // If the site alias settings changed late in the preflight,
-    // then run the preflight for the root and site contexts again.
-    if (!empty($alias_record)) {
-      $remote_host = drush_get_option('remote-host');
-      if (!isset($remote_host)) {
-        drush_preflight_root();
-        drush_preflight_site();
-      }
-    }
   }
 
   // Fail if we could not find the selected site alias.
@@ -544,6 +534,11 @@ function drush_preflight() {
 function drush_preflight_root() {
   $root = drush_get_option('root');
   Drush::bootstrapManager()->locateRoot($root);
+  $root = Drush::bootstrapManager()->getRoot();
+
+  // Load the autoload file and provide it to the bootstrap manager.
+  $siteAutoloader = drush_drupal_load_autoloader($root);
+  Drush::bootstrapManager()->setAutoloader($siteAutoloader);
 
   // Load the config options from Drupal's /drush, ../drush, and sites/all/drush directories,
   // even prior to bootstrapping the root.
@@ -799,14 +794,21 @@ function drush_preflight_command_dispatch() {
   $args = drush_get_arguments();
   $command_name = array_shift($args);
   $root = Drush::bootstrapManager()->getRoot();
-  $local_drush = drush_get_option('drush-script');
   $is_local = drush_get_option('local');
   $values = NULL;
-  if (!empty($root) && !empty($local_drush) && empty($is_local)) {
+
+  $local_drush = drush_get_option('drush-script');
+  if (!empty($local_drush)) {
     if (!drush_is_absolute_path($local_drush)) {
       $local_drush = $root . DIRECTORY_SEPARATOR . $local_drush;
     }
     $local_drush = realpath($local_drush);
+  }
+
+  $drupal_root_from_alias = drush_get_option('root', $root, 'alias');
+  $shouldRedispatch = (!empty($root)) && ($root != $drupal_root_from_alias);
+
+  if (!empty($root) && !empty($local_drush) && empty($is_local)) {
     $this_drush = drush_find_drush();
     // If there is a local Drush selected, and it is not the
     // same Drush that is currently running, redispatch to it.
@@ -817,18 +819,23 @@ function drush_preflight_command_dispatch() {
     // infinite loop.
     if (file_exists($local_drush) && !drush_is_nested_directory(dirname($root), $this_drush)) {
       $uri = drush_get_context('DRUSH_SELECTED_URI');
-      $aditional_options = array(
-        'root' => $root,
-      );
-      if (!empty($uri)) {
-        $aditional_options['uri'] = $uri;
-      }
-      // We need to chdir to the Drupal root here, for the
-      // benefit of the Drush wrapper.
-      chdir($root);
-      $values = drush_do_command_redispatch(is_array($command) ? $command : $command_name, $args, NULL, NULL, $local_drush, TRUE, $aditional_options);
+      $shouldRedispatch = true;
     }
   }
+
+  if ($shouldRedispatch) {
+    $aditional_options = [
+      'root' => $drupal_root_from_alias,
+    ];
+    if (!empty($uri)) {
+      $aditional_options['uri'] = $uri;
+    }
+    // We need to chdir to the Drupal root here, for the
+    // benefit of the Drush wrapper.
+    chdir($root);
+    $values = drush_do_command_redispatch(is_array($command) ? $command : $command_name, $args, NULL, NULL, $local_drush, TRUE, $aditional_options);
+  }
+
   // If the command sets the 'handle-remote-commands' flag, then we will short-circuit
   // remote command dispatching and site-list command dispatching, and always let
   // the command handler run on the local machine.
