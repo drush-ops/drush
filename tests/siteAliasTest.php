@@ -20,8 +20,16 @@ class saCase extends CommandUnishTestCase {
     // Make a separate copy of the stage site so that we can test
     // to see if we can switch to a separate site via an site-local alias.
     $dev_root = $sites['dev']['root'];
-    $other_root = dirname($dev_root) . '/web-other';
+    $drush_sut = dirname($dev_root);
+    $other_sut = dirname($drush_sut) . '/drush-other-sut';
+    $other_root = $other_sut . '/web';
+    @mkdir($other_sut);
     self::recursive_copy($dev_root, $other_root);
+    copy($drush_sut . '/composer.json', $other_sut . '/composer.json');
+    copy($drush_sut . '/composer.lock', $other_sut . '/composer.lock');
+
+    // Hopefully this will run quickly from the cache.
+    passthru("composer --working-dir=$other_sut install");
 
     $aliasPath = $dev_root . '/drush';
     $aliasFile = "$aliasPath/aliases.drushrc.php";
@@ -53,7 +61,7 @@ EOD;
       'root' => $dev_root,
       'format' => 'yaml',
     ];
-    $this->drush('core-status', array(''), $options, '@other');
+    $this->drush('core-status', [], $options, '@other');
     $output = $this->getOutput();
     $this->assertContains("root: $other_root", $output);
   }
