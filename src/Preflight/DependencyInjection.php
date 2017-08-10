@@ -12,7 +12,7 @@ class DependencyInjection
     /**
      * Set up our dependency injection container.
      */
-    public static function initContainer($application, $config, $input = null, $output = null)
+    public static function initContainer($application, $config, $input = null, $output = null, $loader)
     {
         // Create default input and output objects if they were not provided
         if (!$input) {
@@ -27,7 +27,7 @@ class DependencyInjection
         \Robo\Robo::configureContainer($container, $application, $config, $input, $output);
         $container->add('container', $container);
 
-        static::addDrushServices($container);
+        static::addDrushServices($container, $loader);
 
         // Store the container in the \Drush object
         Drush::setContainer($container);
@@ -38,12 +38,14 @@ class DependencyInjection
         return $container;
     }
 
-    protected static function addDrushServices($container)
+    protected static function addDrushServices($container, $loader)
     {
         // Override Robo's logger with our own
         $container->share('logger', 'Drush\Log\Logger')
           ->withArgument('output')
           ->withMethodCall('setLogOutputStyler', ['logStyler']);
+
+        $container->share('loader', $loader);
 
         // Override Robo's formatter manager with our own
         // @todo not sure that we'll use this. Maybe remove it.
@@ -58,17 +60,31 @@ class DependencyInjection
         $container->share('bootstrap.drupal8', 'Drush\Boot\DrupalBoot8');
         $container->share('bootstrap.manager', 'Drush\Boot\BootstrapManager')
           ->withArgument('bootstrap.default');
+        // TODO: Can we somehow add these via discovery (e.g. backdrop extension?)
         $container->extend('bootstrap.manager')
           ->withMethodCall('add', ['bootstrap.drupal6'])
           ->withMethodCall('add', ['bootstrap.drupal7'])
           ->withMethodCall('add', ['bootstrap.drupal8']);
+        $container->share('bootstrap.hook', 'Drush\Boot\BootstrapHook')
+          ->withArgument('bootstrap.manager');
+
+        // Robo does not manage the command discovery object in the container,
+        // but we will register and configure one for our use.
+        // TODO: Some old adapter code uses this, but the Symfony dispatcher does not.
+        $container->share('commandDiscovery', 'Consolidation\AnnotatedCommand\CommandFileDiscovery')
+            ->withMethodCall('addSearchLocation', ['CommandFiles'])
+            ->withMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
+
+        // Add inflectors
+        $container->inflector(\Drush\Boot\AutoloaderAwareInterface::class)
+            ->invokeMethod('setAutoloader', ['loader']);
     }
 
     protected static function alterServicesForDrush($container, $application)
     {
         // Add our own callback to the hook manager
         $hookManager = $container->get('hookManager');
-        $hookManager->addInitializeHook(new \Drush\Boot\BootstrapHook());
+        $hookManager->addInitializeHook($container->get('bootstrap.hook'));
         $hookManager->addOutputExtractor(new \Drush\Backend\BackendResultSetter());
         // @todo: do we need both backend result setters? The one below should be removed at some point.
         $hookManager->add('annotatedcomand_adapter_backend_result', \Consolidation\AnnotatedCommand\Hooks\HookManager::EXTRACT_OUTPUT);

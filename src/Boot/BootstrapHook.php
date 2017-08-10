@@ -13,9 +13,11 @@ use Consolidation\AnnotatedCommand\AnnotationData;
  */
 class BootstrapHook implements InitializeHookInterface
 {
-    public function __construct()
-    {
+    protected $bootstrapManager;
 
+    public function __construct(BootstrapManager $bootstrapManager)
+    {
+        $this->bootstrapManager = $bootstrapManager;
     }
 
     public function initialize(InputInterface $input, AnnotationData $annotationData)
@@ -25,8 +27,10 @@ class BootstrapHook implements InitializeHookInterface
             return;
         }
 
-        $bootstrap = $annotationData->get('bootstrap');
+        $phase = $annotationData->get('bootstrap');
+        if (!defined($phase)) {
+            return;
+        }
+        $this->bootstrapManager->bootstrapToPhase(constant($phase));
     }
-
-
 }

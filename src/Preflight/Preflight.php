@@ -42,11 +42,17 @@ class Preflight
      */
     protected $configLocator;
 
+    /**
+     * @var DrupalFinder
+     */
+    protected $drupalFinder;
+
     public function __construct(Environment $environment, $verify = null, $configLocator = null)
     {
         $this->environment = $environment;
         $this->verify = $verify ?: new PreflightVerify();
         $this->configLocator = $configLocator ?: new ConfigLocator();
+        $this->drupalFinder = new DrupalFinder();
     }
 
     public function init(PreflightArgs $preflightArgs)
@@ -153,7 +159,7 @@ class Preflight
         // TODO: define the '@self' alias
 
         // Require the Composer autoloader for Drupal (if different)
-        $this->environment->loadSiteAutoloader($root);
+        $loader = $this->environment->loadSiteAutoloader($root);
 
         // Create the Symfony Application et. al.
         $input = new ArgvInput($preflightArgs->args());
@@ -161,7 +167,7 @@ class Preflight
         $application = new \Drush\Application('Drush Commandline Tool', Drush::getVersion());
 
         // Set up the DI container
-        $container = DependencyInjection::initContainer($application, $config, $input, $output);
+        $container = DependencyInjection::initContainer($application, $config, $input, $output, $loader);
 
         // We need to check the php minimum version again, in case anyone
         // has set it to something higher in one of the config files we loaded.
@@ -183,6 +189,11 @@ class Preflight
         $runner = new \Robo\Runner();
         $runner->registerCommandClasses($application, $commandClasses);
 
+        // TODO: Consider alternatives for injecting '$root' into the bootstrap manager.
+        // Also, maybe we should inject the DrupalFinder from this class instead.
+        $bootstrapManager = $container->get('bootstrap.manager');
+        $bootstrapManager->locateRoot($root);
+
         // Run the Symfony Application
         // Predispatch: call a remote Drush command if applicable (via a 'pre-init' hook)
         // Bootstrap: bootstrap site to the level requested by the command (via a 'post-init' hook)
@@ -200,16 +211,15 @@ class Preflight
      */
     protected function findSelectedSite(PreflightArgs $preflightArgs)
     {
-        $drupalFinder = new DrupalFinder();
-
         // TODO: Handle $preflightArgs->alias()
         // This might provide a new site root
 
-        $root = $drupalFinder->locateRoot($preflightArgs->selectedSite());
-        if ($root) {
-            return $root;
+        $selectedRoot = $preflightArgs->selectedSite();
+        if (!$selectedRoot) {
+            $selectedRoot = $this->environment->cwd();
         }
-        return $drupalFinder->locateRoot($this->environment->cwd());
+        $this->drupalFinder->locateRoot($selectedRoot);
+        return $this->drupalFinder->getDrupalRoot();
     }
 
     /**

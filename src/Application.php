@@ -36,7 +36,6 @@ class Application extends SymfonyApplication
         //
         // Functionality provided / subsumed by Symfony:
         //
-        //   --debug / -d
         //   --verbose / -v
         //   --help
         //   --quiet
@@ -52,6 +51,7 @@ class Application extends SymfonyApplication
         //
         // Not handled yet (to be implemented):
         //
+        //   --debug / -d
         //   --uri / -l
         //   --yes / -y
         //   --pipe
