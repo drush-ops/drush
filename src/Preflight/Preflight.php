@@ -189,10 +189,9 @@ class Preflight
         $runner = new \Robo\Runner();
         $runner->registerCommandClasses($application, $commandClasses);
 
-        // TODO: Consider alternatives for injecting '$root' into the bootstrap manager.
-        // Also, maybe we should inject the DrupalFinder from this class instead.
+        // TODO: Consider alternatives for injecting DrupalFinder into the bootstrap manager.
         $bootstrapManager = $container->get('bootstrap.manager');
-        $bootstrapManager->locateRoot($root);
+        $bootstrapManager->setDrupalFinder($this->drupalFinder);
 
         // Run the Symfony Application
         // Predispatch: call a remote Drush command if applicable (via a 'pre-init' hook)
