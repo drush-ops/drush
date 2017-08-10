@@ -12,7 +12,7 @@ class DependencyInjection
     /**
      * Set up our dependency injection container.
      */
-    public static function initContainer($application, $config, $input = null, $output = null, $loader)
+    public static function initContainer($application, $config, $input, $output, $loader)
     {
         // Create default input and output objects if they were not provided
         if (!$input) {
