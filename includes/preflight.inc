@@ -52,9 +52,6 @@ function drush_main() {
   // Select and return the bootstrap class.
   $bootstrap = drush_preflight();
 
-  // Reset our bootstrap phase to the beginning
-  drush_set_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE);
-
   $return = '';
   if (!drush_get_error()) {
     // TODO: If 'DRUSH_SYMFONY' is set, then disable the legacy command
@@ -610,7 +607,7 @@ function _drush_preflight_global_options() {
   // Copy the simulated option to the Robo configuration object.
   // TODO: Long-term there should be a better way to do this (e.g. via an event listener)
   $config = Drush::service('config');
-  $config->setSimulated(drush_get_context('DRUSH_SIMULATE'));
+  $config->set(\Robo\Config\Config::SIMULATE, drush_get_context('DRUSH_SIMULATE'));
 
   // Copy the output verbosity into the output object
   $verbosity = OutputInterface::VERBOSITY_NORMAL;

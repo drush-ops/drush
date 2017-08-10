@@ -15,14 +15,14 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 {
     use AutoloaderAwareTrait;
 
-      /**
-       * @var \Drupal\Core\DrupalKernelInterface
-       */
+    /**
+     * @var \Drupal\Core\DrupalKernelInterface
+     */
     protected $kernel;
 
-      /**
-       * @var \Symfony\Component\HttpFoundation\Request
-       */
+    /**
+     * @var \Symfony\Component\HttpFoundation\Request
+     */
     protected $request;
 
     public function validRoot($path)

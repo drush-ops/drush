@@ -54,7 +54,9 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     public function __construct(Boot $default)
     {
         $this->defaultBootstrapObject = $default;
-        $this->drupalFinder = new DrupalFinder();
+
+        // Reset our bootstrap phase to the beginning
+        drush_set_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE);
     }
 
     /**
@@ -70,12 +72,25 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         }
     }
 
+    public function drupalFinder()
+    {
+        if (!isset($this->drupalFinder)) {
+            $this->drupalFinder = new DrupalFinder();
+        }
+        return $this->drupalFinder;
+    }
+
+    public function setDrupalFinder(DrupalFinder $drupalFinder)
+    {
+        $this->drupalFinder = $drupalFinder;
+    }
+
     /**
      * Return the framework root selected by the user.
      */
     public function getRoot()
     {
-        return $this->drupalFinder->getDrupalRoot();
+        return $this->drupalFinder()->getDrupalRoot();
     }
 
     /**
@@ -83,7 +98,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      */
     public function getComposerRoot()
     {
-        return $this->drupalFinder->getComposerRoot();
+        return $this->drupalFinder()->getComposerRoot();
     }
 
     public function locateRoot($root, $start_path = null)
@@ -93,7 +108,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         if (!isset($root)) {
             $root = drush_cwd();
         }
-        if (!$this->drupalFinder->locateRoot($root)) {
+        if (!$this->drupalFinder()->locateRoot($root)) {
             //    echo ' Drush must be executed within a Drupal site.'. PHP_EOL;
             //    exit(1);
         }
@@ -139,6 +154,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     {
         foreach ($this->bootstrapCandidates as $candidate) {
             if ($candidate->validRoot($path)) {
+                // This is not necessary when the autoloader is inflected
                 if ($candidate instanceof AutoloaderAwareInterface) {
                     $candidate->setAutoloader($this->autoloader());
                 }
@@ -403,7 +419,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
             $max_phase_index = count($phases);
         }
 
-          // Try to bootstrap to the maximum possible level, without generating errors.
+        // Try to bootstrap to the maximum possible level, without generating errors.
         foreach ($phases as $phase_index => $current_phase) {
             if ($phase_index > $max_phase_index) {
                 // Stop trying, since we achieved what was specified.
