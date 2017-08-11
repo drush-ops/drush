@@ -22,6 +22,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     const COVERAGE_FILE = 'coverage-file';
     const LOCAL = 'local';
     const ROOT = 'root';
+    const URI = 'uri';
 
     public function __construct(array $data = null)
     {
@@ -36,6 +37,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return [
             '-r=' => 'setSelectedSite',
             '--root=' => 'setSelectedSite',
+            '-l=' => 'setUri',
+            '--uri=' => 'setUri',
             '-c=' => 'setConfig',
             '--config=' => 'setConfigPath',
             '--alias-path=' => 'setAliasPath',
@@ -91,14 +94,24 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return $this->set(self::ALIAS, $alias);
     }
 
-    public function selectedSite()
+    public function selectedSite($default = false)
     {
-        return $this->get(self::ROOT);
+        return $this->get(self::ROOT, $default);
     }
 
     public function setSelectedSite($root)
     {
         return $this->set(self::ROOT, $root);
+    }
+
+    public function uri($default = false)
+    {
+        return $this->get(self::URI, $default);
+    }
+
+    public function setUri($uri)
+    {
+        return $this->set(self::URI, $uri);
     }
 
     public function configPath()

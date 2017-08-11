@@ -146,8 +146,10 @@ class Preflight
         // Start code coverage
         $this->startCoverage($preflightArgs);
 
-        // @TODO: aliases
-        $aliasManager = new SiteAliasManager($preflightArgs->aliasPath(), $environment->systemConfigPath(), $environment->userConfigPath());
+        // TODO: Should we allow config to set values defined by preflightArgs?
+        // (e.g. --root and --uri).
+        // Maybe preflight args should be one of the config layers, and we
+        // should fetch 'root' et. al. from config rather than preflight args.
         $config = $configLocator->config();
 
         // Determine the local site targeted, if any.
@@ -156,7 +158,15 @@ class Preflight
         $root = $this->findSelectedSite($preflightArgs);
         $configLocator->addSitewideConfig($root);
 
-        // TODO: define the '@self' alias
+        // Handle aliases. Note that this might change the root. If it does,
+        // extend the configuration again for the new alias record.
+        $aliasManager = (new SiteAliasManager())
+            ->addSearchLocation($preflightArgs->aliasPath())
+            ->addSearchLocation($this->environment->systemConfigPath())
+            ->addSearchLocation($this->environment->userConfigPath());
+        $selfAliasRecord = $aliasManager->findSelf($preflightArgs->alias(), $root, $preflightArgs->uri());
+        $root = $this->setSelectedSite($selfAliasRecord->localRoot());
+        $configLocator->addSitewideConfig($root);
 
         // Require the Composer autoloader for Drupal (if different)
         $loader = $this->environment->loadSiteAutoloader($root);
@@ -206,17 +216,16 @@ class Preflight
     }
 
     /**
-     * Find the site the user selected based on @alias, --root or cwd.
+     * Find the site the user selected based on --root or cwd.
      */
     protected function findSelectedSite(PreflightArgs $preflightArgs)
     {
-        // TODO: Handle $preflightArgs->alias()
-        // This might provide a new site root
+        $selectedRoot = $preflightArgs->selectedSite($this->environment->cwd());
+        return $this->setSelectedSite($selectedRoot);
+    }
 
-        $selectedRoot = $preflightArgs->selectedSite();
-        if (!$selectedRoot) {
-            $selectedRoot = $this->environment->cwd();
-        }
+    protected function setSelectedSite($selectedRoot)
+    {
         $this->drupalFinder->locateRoot($selectedRoot);
         return $this->drupalFinder->getDrupalRoot();
     }

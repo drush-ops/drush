@@ -87,10 +87,14 @@ class Application extends SymfonyApplication
         $this->getDefinition()
             ->addOption(
                 new InputOption('--remote-host', null, InputOption::VALUE_REQUIRED, 'Run on a remote server.')
-            )
+            );
+
+        $this->getDefinition()
             ->addOption(
                 new InputOption('--remote-user', null, InputOption::VALUE_REQUIRED, 'The user to use in remote execution.')
-            )
+            );
+
+        $this->getDefinition()
             ->addOption(
                 new InputOption('--simulate', null, InputOption::VALUE_NONE, 'Run in simulated mode (show what would have happened).')
             );

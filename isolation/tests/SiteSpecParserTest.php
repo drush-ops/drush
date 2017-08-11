@@ -51,7 +51,7 @@ class SiteSpecParserTest extends \PHPUnit_Framework_TestCase
     {
         $parser = new SiteSpecParser();
 
-        $result = $parser->valid($spec);
+        $result = $parser->validSiteSpec($spec);
         $this->assertEquals($expected, $result);
     }
 
@@ -106,8 +106,6 @@ class SiteSpecParserTest extends \PHPUnit_Framework_TestCase
             [
                 '/fixtures#mymultisite',
                 [
-                    'remote-user' => '',
-                    'remote-server' => '',
                     'root' => '/fixtures',
                     'sitename' => 'mymultisite',
                 ],
@@ -116,8 +114,6 @@ class SiteSpecParserTest extends \PHPUnit_Framework_TestCase
             [
                 '#mymultisite',
                 [
-                    'remote-user' => '',
-                    'remote-server' => '',
                     'root' => '/fixtures',
                     'sitename' => 'mymultisite',
                 ],

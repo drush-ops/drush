@@ -84,7 +84,7 @@ class ArgsPreprocessor
         if ($arg[0] == '@') {
             return true;
         }
-        return $this->specParser->valid($arg);
+        return $this->specParser->validSiteSpec($arg);
     }
 
     /**

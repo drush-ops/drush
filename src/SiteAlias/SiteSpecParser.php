@@ -49,10 +49,21 @@ class SiteSpecParser
      *   @see parse()
      * @return bool
      */
-    public function valid($spec)
+    public function validSiteSpec($spec)
     {
         $result = $this->match($spec);
         return !empty($result);
+    }
+
+    /**
+     * Determine whether or not the provided name is an alias name.
+     *
+     * @param string $aliasName
+     * @return bool
+     */
+    public function isAliasName($aliasName)
+    {
+        return !empty($aliasName) && ($aliasName[0] == '@');
     }
 
     /**
@@ -126,8 +137,6 @@ class SiteSpecParser
     protected function defaults($result = [])
     {
         $result += [
-            'remote-user' => '',
-            'remote-server' => '',
             'root' => '',
             'sitename' => '',
         ];
@@ -188,6 +197,12 @@ class SiteSpecParser
             $result['root'] = $root;
         }
 
+        // TODO: If using a sitespec `#sitename`, then `sitename` MUST
+        // be the name of a folder that exists in __DRUPAL_ROOT__/sites.
+        // This restriction does NOT apply to the --uri option. Are there
+        // instances where we need to allow 'sitename' to be the uri
+        // rather than the folder name? If so, we need to loosen this check.
+        // I think it's fine as it is, though.
         $path = $result['root'] . '/sites/' . $result['sitename'];
         if (!is_dir($path)) {
             return [];

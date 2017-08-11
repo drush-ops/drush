@@ -36,6 +36,8 @@ class ConfigLocator
 
     protected $sources = false;
 
+    protected $siteRoots = [];
+
     /*
      * From context.inc:
      *
@@ -168,10 +170,20 @@ class ConfigLocator
 
     public function addSitewideConfig($siteRoot)
     {
-        // There might not be a site
+        // There might not be a site.
         if (!is_dir($siteRoot)) {
             return;
         }
+
+        // We might have already processed this root.
+        $siteRoot = realpath($siteRoot);
+        if (in_array($siteRoot, $this->siteRoots)) {
+            return;
+        }
+
+        // Remember that we've seen this location.
+        $this->siteRoots[] = $siteRoot;
+
         $this->addConfigPaths(self::DRUPAL_CONTEXT, [ dirname($siteRoot) . '/drush', "$siteRoot/drush", "$siteRoot/sites/all/drush" ]);
         return $this;
     }
