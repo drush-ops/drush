@@ -67,6 +67,7 @@ class DependencyInjection
           ->withMethodCall('add', ['bootstrap.drupal8']);
         $container->share('bootstrap.hook', 'Drush\Boot\BootstrapHook')
           ->withArgument('bootstrap.manager');
+        $container->share('redispatch.hook', 'Drush\Preflight\RedispatchHook');
 
         // Robo does not manage the command discovery object in the container,
         // but we will register and configure one for our use.
@@ -85,6 +86,7 @@ class DependencyInjection
         // Add our own callback to the hook manager
         $hookManager = $container->get('hookManager');
         $hookManager->addInitializeHook($container->get('bootstrap.hook'));
+        $hookManager->addInitializeHook($container->get('redispatch.hook'));
         $hookManager->addOutputExtractor(new \Drush\Backend\BackendResultSetter());
         // @todo: do we need both backend result setters? The one below should be removed at some point.
         $hookManager->add('annotatedcomand_adapter_backend_result', \Consolidation\AnnotatedCommand\Hooks\HookManager::EXTRACT_OUTPUT);

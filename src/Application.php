@@ -32,6 +32,8 @@ class Application extends SymfonyApplication
         //
         // Global options registerd with Symfony:
         //
+        //   --remote-host
+        //   --remote-user
         //   --simulate
         //
         // Functionality provided / subsumed by Symfony:
@@ -48,6 +50,8 @@ class Application extends SymfonyApplication
         //   --early             Completion handled by standard symfony extension
         //   --complete-debug
         //   --strict            Not supported by Symfony
+        //   --interactive       If command isn't -n, then it is interactive
+        //   --command-specific  Now handled by consolidation/config component
         //
         // Not handled yet (to be implemented):
         //
@@ -57,7 +61,6 @@ class Application extends SymfonyApplication
         //   --pipe
         //   --php
         //   --php-options
-        //   --interactive
         //   --tty
         //   --exclude
         //   --backend
@@ -71,20 +74,23 @@ class Application extends SymfonyApplication
         //   --confirm-rollback
         //   --halt-on-error
         //   --deferred-sanitization
-        //   --remote-host
-        //   --remote-user
         //   --remote-os
         //   --site-list
         //   --reserve-margin
         //   --drush-coverage
         //
-        //   --command-specific
         //   --site-aliases
         //   --shell-aliases
         //   --path-aliases
         //   --ssh-options
 
         $this->getDefinition()
+            ->addOption(
+                new InputOption('--remote-host', null, InputOption::VALUE_REQUIRED, 'Run on a remote server.')
+            )
+            ->addOption(
+                new InputOption('--remote-user', null, InputOption::VALUE_REQUIRED, 'The user to use in remote execution.')
+            )
             ->addOption(
                 new InputOption('--simulate', null, InputOption::VALUE_NONE, 'Run in simulated mode (show what would have happened).')
             );
