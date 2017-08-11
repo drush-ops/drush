@@ -4,7 +4,7 @@ namespace Drush\Config;
 use Consolidation\Config\Loader\ConfigLoaderInterface;
 use Consolidation\Config\Loader\YamlConfigLoader;
 use Consolidation\Config\Loader\ConfigProcessor;
-use Consolidation\Config\ConfigOverlay;
+use Consolidation\Config\Util\ConfigOverlay;
 
 /**
  * Locate Drush configuration files and load them into the configuration
