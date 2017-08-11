@@ -12,21 +12,6 @@ namespace Drush\SiteAlias;
  */
 class SiteSpecParser
 {
-    protected $root;
-
-    /**
-     * Constructor
-     *
-     * @param string $root
-     *   Drupal root (if provided). This is not needed for a validity
-     *   test -- only for parsing site specs for local sites with an
-     *   implicit root (e.g. provided via the cwd).
-     */
-    public function __construct($root = '')
-    {
-        $this->root = $root;
-    }
-
     /**
      * Parse a site specification
      *
@@ -38,6 +23,8 @@ class SiteSpecParser
      *     - user@server#sitename
      *   or, a site name:
      *     - #sitename
+     * @param string $root
+     *   Drupal root (if provided).
      * @return array
      *   A site specification array with the specified components filled in:
      *     - remote-user
@@ -46,10 +33,10 @@ class SiteSpecParser
      *     - sitename
      *   or, an empty array if the provided parameter is not a valid site spec.
      */
-    public function parse($spec)
+    public function parse($spec, $root = '')
     {
         $result = $this->match($spec);
-        return $this->fixAndCheckUsability($result);
+        return $this->fixAndCheckUsability($result, $root);
     }
 
     /**
@@ -185,7 +172,7 @@ class SiteSpecParser
      * @return array
      *   @see parse()
      */
-    protected function fixAndCheckUsability($result)
+    protected function fixAndCheckUsability($result, $root)
     {
         if (empty($result) || !empty($result['remote-server'])) {
             return $result;
@@ -194,11 +181,11 @@ class SiteSpecParser
         if (empty($result['root'])) {
             // TODO: should these throw an exception, so the user knows
             // why their site spec was invalid?
-            if (empty($this->root) || !is_dir($this->root)) {
+            if (empty($root) || !is_dir($root)) {
                 return [];
             }
 
-            $result['root'] = $this->root;
+            $result['root'] = $root;
         }
 
         $path = $result['root'] . '/sites/' . $result['sitename'];

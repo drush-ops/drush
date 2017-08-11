@@ -12,14 +12,14 @@ class SiteSpecParserTest extends \PHPUnit_Framework_TestCase
     {
         $fixtureSite = '/fixtures/sites/d8';
         $root = dirname(__DIR__) . $fixtureSite;
-        $parser = new SiteSpecParser($root);
+        $parser = new SiteSpecParser();
 
         // If the test spec begins with '/fixtures', substitute the
         // actual path to our fixture site.
         $spec = preg_replace('%^/fixtures%', $root, $spec);
 
         // Parse it!
-        $result = $parser->parse($spec);
+        $result = $parser->parse($spec, $root);
 
         // If the result contains the path to our fixtures site, replace
         // it with the simple string '/fixtures'.

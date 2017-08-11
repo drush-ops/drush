@@ -1,20 +1,23 @@
 <?php
 namespace Drush\Preflight;
 
+use Drush\SiteAlias\SiteSpecParser;
+
 /**
  * Preprocess commandline arguments.
  *
  * - Record @sitealias, if present
  * - Record a limited number of global options
  *
- * If we are still going to support --php and --php-options flags, then
- * we need to remove those here as well (or add them to the Symfony
- * application).
+ * Anything not handled here is processed by Symfony Console.
  */
 class ArgsPreprocessor
 {
+    protected $specParser;
+
     public function __construct()
     {
+        $this->specParser = new SiteSpecParser();
     }
 
     /**
@@ -45,7 +48,7 @@ class ArgsPreprocessor
                 return $storage->passArgs($argv);
             }
 
-            if ($opt[0] == '@' && !$storage->hasAlias() && !$sawArg) {
+            if ($this->isAliasOrSiteSpec($opt) && !$storage->hasAlias() && !$sawArg) {
                 $storage->setAlias($opt);
                 continue;
             }
@@ -66,6 +69,22 @@ class ArgsPreprocessor
             }
         }
         return $storage;
+    }
+
+    /**
+     * Determine whether the provided argument is an alias or
+     * a site specification.
+     *
+     * @param string $arg
+     *   Argument to test.
+     * @return bool
+     */
+    protected function isAliasOrSiteSpec($arg)
+    {
+        if ($arg[0] == '@') {
+            return true;
+        }
+        return $this->specParser->valid($arg);
     }
 
     /**

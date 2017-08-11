@@ -52,6 +52,40 @@ class ArgsPreprocessorTest extends \PHPUnit_Framework_TestCase
             [
                 [
                     'drush',
+                    '#multisite',
+                    'status',
+                    'version',
+                ],
+
+                '#multisite',
+                null,
+                null,
+                null,
+                null,
+                null,
+                'drush,status,version',
+            ],
+
+            [
+                [
+                    'drush',
+                    'user@server/path',
+                    'status',
+                    'version',
+                ],
+
+                'user@server/path',
+                null,
+                null,
+                null,
+                null,
+                null,
+                'drush,status,version',
+            ],
+
+            [
+                [
+                    'drush',
                     'rsync',
                     '@from',
                     '@to',
