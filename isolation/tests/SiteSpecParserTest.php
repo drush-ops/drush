@@ -10,13 +10,24 @@ class SiteSpecParserTest extends \PHPUnit_Framework_TestCase
         $spec,
         $expected)
     {
-        $root = dirname(__DIR__) . '/fixtures/sites/d8';
+        $fixtureSite = '/fixtures/sites/d8';
+        $root = dirname(__DIR__) . $fixtureSite;
         $parser = new SiteSpecParser($root);
 
+        // If the test spec begins with '/fixtures', substitute the
+        // actual path to our fixture site.
+        $spec = preg_replace('%^/fixtures%', $root, $spec);
+
+        // Parse it!
         $result = $parser->parse($spec);
+
+        // If the result contains the path to our fixtures site, replace
+        // it with the simple string '/fixtures'.
         if (isset($result['root'])) {
-            $result['root'] = preg_replace('%.*/fixtures/%', '/fixtures/', $result['root']);
+            $result['root'] = preg_replace("%.*$fixtureSite%", '/fixtures', $result['root']);
         }
+
+        // Compare the altered result with the expected value.
         $this->assertEquals($expected, $result);
     }
 
@@ -93,18 +104,12 @@ class SiteSpecParserTest extends \PHPUnit_Framework_TestCase
             ],
 
             [
-                '/path#somemultisite',
+                '/fixtures#mymultisite',
                 [
                     'remote-user' => '',
                     'remote-server' => '',
-                    'root' => '/path',
-                    'sitename' => 'somemultisite',
-                ],
-            ],
-
-            [
-                '#somemultisite',
-                [
+                    'root' => '/fixtures',
+                    'sitename' => 'mymultisite',
                 ],
             ],
 
@@ -113,11 +118,34 @@ class SiteSpecParserTest extends \PHPUnit_Framework_TestCase
                 [
                     'remote-user' => '',
                     'remote-server' => '',
-                    'root' => '/fixtures/sites/d8',
+                    'root' => '/fixtures',
                     'sitename' => 'mymultisite',
                 ],
             ],
 
+            [
+                '/fixtures#somemultisite',
+                [
+                ],
+            ],
+
+            [
+                '/path#somemultisite',
+                [
+                ],
+            ],
+
+            [
+                '/path#mymultisite',
+                [
+                ],
+            ],
+
+            [
+                '#somemultisite',
+                [
+                ],
+            ],
         ];
     }
 }

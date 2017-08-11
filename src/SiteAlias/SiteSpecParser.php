@@ -18,7 +18,9 @@ class SiteSpecParser
      * Constructor
      *
      * @param string $root
-     *   Drupal root (if provided)
+     *   Drupal root (if provided). This is not needed for a validity
+     *   test -- only for parsing site specs for local sites with an
+     *   implicit root (e.g. provided via the cwd).
      */
     public function __construct($root = '')
     {
@@ -46,11 +48,15 @@ class SiteSpecParser
      */
     public function parse($spec)
     {
-        return $this->validate($this->match($spec));
+        $result = $this->match($spec);
+        return $this->fixAndCheckUsability($result);
     }
 
     /**
-     * Determine if the provided specification is value.
+     * Determine if the provided specification is valid. Note that this
+     * tests only for syntactic validity; to see if the specification is
+     * usable, call 'parse()', which will also filter out specifications
+     * for local sites that specify a multidev site that does not exist.
      *
      * @param string $spec
      *   @see parse()
@@ -179,7 +185,7 @@ class SiteSpecParser
      * @return array
      *   @see parse()
      */
-    protected function validate($result)
+    protected function fixAndCheckUsability($result)
     {
         if (empty($result) || !empty($result['remote-server'])) {
             return $result;
@@ -192,13 +198,12 @@ class SiteSpecParser
                 return [];
             }
 
-            $path = $this->root . '/sites/' . $result['sitename'];
-            if (!is_dir($path)) {
-                return [];
-            }
-
             $result['root'] = $this->root;
-            return $result;
+        }
+
+        $path = $result['root'] . '/sites/' . $result['sitename'];
+        if (!is_dir($path)) {
+            return [];
         }
 
         return $result;
