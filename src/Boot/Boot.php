@@ -60,6 +60,18 @@ interface Boot
     public function bootstrapPhases();
 
     /**
+     * Return an array mapping from bootstrap phase shorthand
+     * strings (e.g. "full") to the corresponding bootstrap
+     * phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).
+     */
+    public function bootstrapPhaseMap();
+
+    /**
+     * Convert from a phase shorthand or constant to a phase index.
+     */
+    public function lookUpPhaseIndex($phase);
+
+    /**
      * List of bootstrap phases where Drush should stop and look for commandfiles.
      *
      * This allows us to bootstrap to a minimum neccesary to find commands.
