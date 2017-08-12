@@ -46,14 +46,26 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapPhases()
     {
-        return array(
-        DRUSH_BOOTSTRAP_DRUSH                  => 'bootstrap_drush',
-        DRUSH_BOOTSTRAP_DRUPAL_ROOT            => 'bootstrapDrupalRoot',
-        DRUSH_BOOTSTRAP_DRUPAL_SITE            => 'bootstrapDrupalSite',
-        DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION   => 'bootstrapDrupalConfiguration',
-        DRUSH_BOOTSTRAP_DRUPAL_DATABASE        => 'bootstrapDrupalDatabase',
-        DRUSH_BOOTSTRAP_DRUPAL_FULL            => 'bootstrapDrupalFull',
-        );
+        return parent::bootstrapPhases() + [
+            DRUSH_BOOTSTRAP_DRUPAL_ROOT            => 'bootstrapDrupalRoot',
+            DRUSH_BOOTSTRAP_DRUPAL_SITE            => 'bootstrapDrupalSite',
+            DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION   => 'bootstrapDrupalConfiguration',
+            DRUSH_BOOTSTRAP_DRUPAL_DATABASE        => 'bootstrapDrupalDatabase',
+            DRUSH_BOOTSTRAP_DRUPAL_FULL            => 'bootstrapDrupalFull',
+        ];
+    }
+
+    public function bootstrapPhaseMap()
+    {
+        return parent::bootstrapPhaseMap() + [
+            'root' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
+            'site' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
+            'config' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
+            'configuration' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
+            'db' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
+            'database' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
+            'full' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+        ];
     }
 
     /**
