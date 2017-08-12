@@ -423,7 +423,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
     // If there is no 'bootstrap' annotation, default to NONE.
     $bootstrap = DRUSH_BOOTSTRAP_NONE;
     if ($bootstrap = $commandinfo->getAnnotation('bootstrap')) {
-      $bootstrap = constant($bootstrap);
+      $bootstrap = Drush::bootstrapManager()->bootstrap()->lookUpPhaseIndex($bootstrap);
     }
     $command = [
       'name' => $command_name,
