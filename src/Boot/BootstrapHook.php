@@ -28,9 +28,6 @@ class BootstrapHook implements InitializeHookInterface
         }
 
         $phase = $annotationData->get('bootstrap');
-        if (!defined($phase)) {
-            return;
-        }
-        $this->bootstrapManager->bootstrapToPhase(constant($phase));
+        $this->bootstrapManager->bootstrapToPhase($phase);
     }
 }
