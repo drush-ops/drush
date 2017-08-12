@@ -58,7 +58,7 @@ class StatusCommands extends DrushCommands
      *   %paths: Other paths
      * @default-fields drupal-version,uri,db-driver,db-hostname,db-port,db-username,db-name,db-status,bootstrap,theme,admin-theme,php-bin,php-conf,php-os,drush-script,drush-version,drush-temp,drush-conf,drush-alias-files,install-profile,root,site,files,private,temp
      * @pipe-format json
-     * @bootstrap DRUSH_BOOTSTRAP_MAX
+     * @bootstrap max
      * @topics docs-readme
      *
      * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
