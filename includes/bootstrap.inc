@@ -219,7 +219,7 @@ function drush_bootstrap_validate($phase) {
  *   TRUE if the specified bootstrap phase has completed.
  */
 function drush_bootstrap_to_phase($max_phase_index) {
-  return Drush::bootstrapManager()->bootstrapToPhase($max_phase_index);
+  return Drush::bootstrapManager()->bootstrapToPhaseIndex($max_phase_index);
 }
 
 /**

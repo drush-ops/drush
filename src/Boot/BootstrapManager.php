@@ -363,13 +363,31 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     /**
      * Bootstrap to the specified phase.
      *
+     * @param string $bootstrapPhase
+     *   Name of phase to bootstrap to. Will be converted to appropriate index.
+     *
+     * @return bool
+     *   TRUE if the specified bootstrap phase has completed.
+     */
+    public function bootstrapToPhase($bootstrapPhase)
+    {
+        $phase = $this->bootstrap()->lookUpPhaseIndex($bootstrapPhase);
+        if (!isset($phase)) {
+            throw new \Exception(dt('Bootstrap phase !phase unknown.', ['!phase' => $bootstrapPhase]));
+        }
+        return $this->bootstrapToPhaseIndex($phase);
+    }
+
+    /**
+     * Bootstrap to the specified phase.
+     *
      * @param int $max_phase_index
      *   Only attempt bootstrap to the specified level.
      *
      * @return bool
      *   TRUE if the specified bootstrap phase has completed.
      */
-    public function bootstrapToPhase($max_phase_index)
+    public function bootstrapToPhaseIndex($max_phase_index)
     {
         if ($max_phase_index == DRUSH_BOOTSTRAP_MAX) {
             // Bootstrap as far as we can without throwing an error, but log for
