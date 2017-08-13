@@ -21,7 +21,7 @@ use Symfony\Component\Finder\Finder;
 class SiteAliasFileDiscovery
 {
     protected $searchLocations = [];
-    protected $fileCache = [];
+    protected $groupAliasFiles = [];
     protected $depth = '== 0';
 
     public function __consrtuct()
@@ -42,24 +42,47 @@ class SiteAliasFileDiscovery
 
     public function findSingleSiteAliasFile($siteName)
     {
-        $searchPattern = "*.alias.yml";
-        return $this->findAliasFilesOfType($searchPattern, $siteName);
+        $result = $this->searchForAliasFiles("$siteName.alias.yml");
+        if (empty($result)) {
+            return false;
+        }
+        return reset($result);
     }
 
     public function findGroupAliasFile($groupName)
     {
-        $searchPattern = "*.aliases.yml";
-        return $this->findAliasFilesOfType($searchPattern, $groupName);
+        return $this->searchForGroupAliasFile($$groupName);
     }
 
-    protected function findAliasFilesOfType($searchPattern, $name)
+    public function findAllGroupAliasFiles()
     {
-        if (!isset($this->$fileCache[$searchPattern])) {
-            $this->$fileCache[$searchPattern] = $this->searchForAliasFiles($searchPattern);
-        }
+        $unnamedGroupAliasFiles = $this->findUnknamedGroupAliasFiles();
+        $groupAliasFileCache = $this->groupAliasFileCache();
 
-        if (isset($this->$fileCache[$searchPattern][$name])) {
-            return $this->$fileCache[$searchPattern][$name];
+        return array_merge($unnamedGroupAliasFiles, $groupAliasFileCache);
+    }
+
+    protected function findUnknamedGroupAliasFiles()
+    {
+        if (empty($this->unknamedGroupAliasFiles)) {
+            $this->unknamedGroupAliasFiles = $this->searchForAliasFiles('aliases.yml');
+        }
+        return $this->unknamedGroupAliasFiles;
+    }
+
+    protected function groupAliasFileCache()
+    {
+        if (!isset($this->$groupAliasFiles)) {
+            $this->$groupAliasFiles = $this->searchForAliasFiles('*.aliases.yml');
+        }
+        return $this->$groupAliasFiles;
+    }
+
+    protected function searchForGroupAliasFile($name)
+    {
+        $groupAliasFileCache = $this->groupAliasFileCache();
+        if (isset($groupAliasFileCache[$searchPattern][$name])) {
+            return $groupAliasFileCache[$searchPattern][$name];
         }
 
         return false;
