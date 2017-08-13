@@ -8,17 +8,18 @@ use Drush\SiteAlias\SiteSpecParser;
  */
 class SiteAliasManager
 {
-    protected $searchLocations;
+    protected $discovery;
     protected $selfAliasRecord;
 
-    public function __consrtuct()
+    public function __consrtuct($discovery = null)
     {
+        $this->discovery = $discovery ?: new SiteAliasFileDiscovery();
         $this->selfAliasRecord = new AliasRecord();
     }
 
     public function addSearchLocation($path)
     {
-        $this->searchLocations[] = $path;
+        $this->discovery->addSearchLocation($path);
         return $this;
     }
 
@@ -40,30 +41,11 @@ class SiteAliasManager
         return $this->selfAliasRecord;
     }
 
-    public function getAlias($aliasName)
-    {
-        // Accept either `@alias` or `alias` in the API.
-        $aliasName = ltrim($aliasName, '@');
-
-        if ($aliasName == 'self') {
-            return $this->getSelf();
-        }
-
-        if ($aliasName == 'none') {
-            return new AliasRecord();
-        }
-
-        // TODO: Search through all search locations, load
-        // matching and potentially-matching alias files,
-        // and return the alias matching the provided name.
-        return new AliasRecord();
-    }
-
     protected function buildSelf($aliasName, $root, $uri)
     {
         $specParser = new SiteSpecParser();
 
-        if ($specParser->isAliasName($aliasName)) {
+        if (SiteAliasName::isAliasName($aliasName)) {
             return $this->getAlias($aliasName);
         }
 
@@ -79,5 +61,23 @@ class SiteAliasManager
             'root' => $root,
             'uri' => $uri,
         ]);
+    }
+
+    public function getAlias($aliasName)
+    {
+        $aliasName = new SiteAliasName($aliasName);
+
+        if ($aliasName.isSelf()) {
+            return $this->getSelf();
+        }
+
+        if ($aliasName.isNone()) {
+            return new AliasRecord();
+        }
+
+        // TODO: Search through all search locations, load
+        // matching and potentially-matching alias files,
+        // and return the alias matching the provided name.
+        return new AliasRecord();
     }
 }

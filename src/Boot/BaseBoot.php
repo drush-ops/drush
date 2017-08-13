@@ -156,7 +156,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInt
             return $phaseMap[$phase];
         }
 
-        if (/*(substr($phase, 0, 16) != 'DRUSH_BOOTSTRAP_') ||*/ (!defined($phase))) {
+        if ((substr($phase, 0, 16) != 'DRUSH_BOOTSTRAP_') || (!defined($phase))) {
             return;
         }
         return constant($phase);

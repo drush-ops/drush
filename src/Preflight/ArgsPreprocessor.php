@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Preflight;
 
+use Drush\SiteAlias\SiteAliasName;
 use Drush\SiteAlias\SiteSpecParser;
 
 /**
@@ -81,7 +82,7 @@ class ArgsPreprocessor
      */
     protected function isAliasOrSiteSpec($arg)
     {
-        if ($arg[0] == '@') {
+        if (SiteAliasName::isAliasName($arg)) {
             return true;
         }
         return $this->specParser->validSiteSpec($arg);
