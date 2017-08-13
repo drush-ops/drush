@@ -63,7 +63,7 @@ class SiteAliasName
      * @param string $aliasName
      * @return bool
      */
-    static public function isAliasName($aliasName)
+    public static function isAliasName($aliasName)
     {
         // Alias names provided by users must begin with '@'
         if (empty($aliasName) || ($aliasName[0] != '@')) {

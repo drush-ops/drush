@@ -68,8 +68,7 @@ class SiteAliasFileDiscovery
     protected function searchForAliasFiles($searchPattern)
     {
         $result = [];
-        foreach ($searchLocations as $dir)
-        {
+        foreach ($searchLocations as $dir) {
             $files = $this->searchForAliasFilesInLocation($searchPattern, $dir);
             $result = array_merge($files, $result);
         }
