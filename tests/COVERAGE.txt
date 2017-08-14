@@ -1,17 +1,10 @@
 COMMANDS
 ------------
-pm-updatecode: GOOD.
-pm-update: FAIR. Implicitly tested by pm-updatecode but updatedb not yet tested.
-pm-releasenotes
-pm-releases
 pm-enable: GOOD. testEnDisUnList().
 pm-disable: GOOD. testEnDisUnList().
 pm-uninstall: GOOD. testEnDisUnList().
 pm-list: GOOD. testEnDisUnList().
 pm-info: GOOD. testEnDisUnList().
-pm-refresh:
-version-control: FAIR. See updatecode. To be deprecated all git workflow after git.drupal.org?
-package-hander:
 
 sql-cli:
 sql-connect:
@@ -54,8 +47,6 @@ watchdog-*: GOOD
 
 user-*: GOOD.
 
-make: GOOD
-
 INCLUDES
 ------------
 backend: GOOD
@@ -63,21 +54,11 @@ backend: GOOD
 batch: GOOD
 bootstrap:
 command: FAIR
-complete: GOOD
 context: FAIR. Many functions implicitly tested. Option merging (config, include, alias-path) not tested.
 drush: NONE.
 environment
 sitealias. FAIR. Explicit test for alias lists. Single aliases implicitly tested by contextTest.  Option propagation tested by backendTest.  Option recovery for @self alias tested by sqlDumpTest.
-dbtng: Fair. Used to be implicit by variable-*.
 drupal
 exec: GOOD: Implicitly tested all over.
 filesystem
 output
-
-
-ROOT
--------------
-drush:
-  need test: drush.ini
-drush.php
-drush.complete.sh: N/A
