@@ -42,16 +42,12 @@ class SiteAliasFileDiscovery
 
     public function findSingleSiteAliasFile($siteName)
     {
-        $result = $this->searchForAliasFiles("$siteName.alias.yml");
-        if (empty($result)) {
-            return false;
-        }
-        return reset($result);
+        return $this->searchForAliasFileAndReturnFirst("$siteName.alias.yml");
     }
 
     public function findGroupAliasFile($groupName)
     {
-        return $this->searchForGroupAliasFile($$groupName);
+        return $this->searchForGroupAliasFile($groupName);
     }
 
     public function findAllGroupAliasFiles()
@@ -85,6 +81,17 @@ class SiteAliasFileDiscovery
             return $groupAliasFileCache[$searchPattern][$name];
         }
 
+        return false;
+    }
+
+    protected function searchForAliasFileAndReturnFirst($searchPattern)
+    {
+        foreach ($searchLocations as $dir) {
+            $files = $this->searchForAliasFilesInLocation($searchPattern, $dir);
+            if (!empty($files)) {
+                return reset($files);
+            }
+        }
         return false;
     }
 

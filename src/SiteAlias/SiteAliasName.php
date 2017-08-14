@@ -185,15 +185,24 @@ class SiteAliasName
             return false;
         }
 
+        // If $matches contains only two items, then the alias name contains
+        // only the sitename.
         if (count($matches) == 2) {
             return $this->processJustSitename($matches[1]);
         }
 
+        // If there are four items in $matches, then the group, sitename
+        // and env were all specified.
         if (count($matches) == 4) {
-            return $this->processGroupSitenameAndEnv($matches[1], $matches[2], $matches[3]);
+            $group = $matches[1];
+            $sitename = ltrim($matches[2], '.');
+            $env = ltrim($matches[3], '.');
+            return $this->processGroupSitenameAndEnv($group, $sitename, $env);
         }
 
-        return $this->processGroupSitenameAndEnv($matches[1], $matches[2]);
+        // Otherwise, it is ambiguous: the alias name might be @group.sitename,
+        // or it might be @sitename.env.
+        return $this->processAmbiguous($matches[1], ltrim($matches[2], '.'));
     }
 
     /**
