@@ -44,7 +44,6 @@
     "symfony/event-dispatcher": "~2.7",
     "symfony/finder": "~2.7",
     "pear/console_table": "~1.3.0",
-    "phpdocumentor/reflection-docblock": "^2.0",
     "webmozart/path-util": "~2"
   },
   "require-dev": {
