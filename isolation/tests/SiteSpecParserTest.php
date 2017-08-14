@@ -3,6 +3,8 @@ namespace Drush\SiteAlias;
 
 class SiteSpecParserTest extends \PHPUnit_Framework_TestCase
 {
+    use \Drush\FixtureFactory;
+
     /**
      * @dataProvider parserTestValues
      */
@@ -10,8 +12,8 @@ class SiteSpecParserTest extends \PHPUnit_Framework_TestCase
         $spec,
         $expected)
     {
-        $fixtureSite = '/fixtures/sites/d8';
-        $root = dirname(__DIR__) . $fixtureSite;
+        $root = $this->siteDir();
+        $fixtureSite = '/' . basename($root);
         $parser = new SiteSpecParser();
 
         // If the test spec begins with '/fixtures', substitute the

@@ -43,12 +43,11 @@ class SiteAliasManager
 
     protected function buildSelf($aliasName, $root, $uri)
     {
-        $specParser = new SiteSpecParser();
-
         if (SiteAliasName::isAliasName($aliasName)) {
             return $this->getAlias($aliasName);
         }
 
+        $specParser = new SiteSpecParser();
         if ($specParser->validSiteSpec($aliasName)) {
             return new AliasRecord($specParser->parse($aliasName, $root));
         }

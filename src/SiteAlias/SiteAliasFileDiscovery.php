@@ -21,15 +21,12 @@ use Symfony\Component\Finder\Finder;
 class SiteAliasFileDiscovery
 {
     protected $searchLocations = [];
-    protected $groupAliasFiles = [];
+    protected $groupAliasFiles;
     protected $depth = '== 0';
-
-    public function __consrtuct()
-    {
-    }
 
     public function addSearchLocation($path)
     {
+        $this->groupAliasFiles = null;
         $this->searchLocations[] = $path;
         return $this;
     }
@@ -42,23 +39,35 @@ class SiteAliasFileDiscovery
 
     public function findSingleSiteAliasFile($siteName)
     {
-        return $this->searchForAliasFileAndReturnFirst("$siteName.alias.yml");
+        $desiredFilename = "$siteName.alias.yml";
+        foreach ($this->searchLocations as $dir) {
+            $check = "$dir/$desiredFilename";
+            if (file_exists($check)) {
+                return $check;
+            }
+        }
+        return false;
     }
 
     public function findGroupAliasFile($groupName)
     {
-        return $this->searchForGroupAliasFile($groupName);
+        $groupAliasFileCache = $this->groupAliasFileCache();
+        if (isset($groupAliasFileCache[$groupName])) {
+            return $groupAliasFileCache[$groupName];
+        }
+
+        return false;
     }
 
     public function findAllGroupAliasFiles()
     {
-        $unnamedGroupAliasFiles = $this->findUnknamedGroupAliasFiles();
+        $unnamedGroupAliasFiles = $this->findUnnamedGroupAliasFiles();
         $groupAliasFileCache = $this->groupAliasFileCache();
 
         return array_merge($unnamedGroupAliasFiles, $groupAliasFileCache);
     }
 
-    protected function findUnknamedGroupAliasFiles()
+    protected function findUnnamedGroupAliasFiles()
     {
         if (empty($this->unknamedGroupAliasFiles)) {
             $this->unknamedGroupAliasFiles = $this->searchForAliasFiles('aliases.yml');
@@ -68,64 +77,48 @@ class SiteAliasFileDiscovery
 
     protected function groupAliasFileCache()
     {
-        if (!isset($this->$groupAliasFiles)) {
-            $this->$groupAliasFiles = $this->searchForAliasFiles('*.aliases.yml');
+        if (!isset($this->groupAliasFiles)) {
+            $this->groupAliasFiles = $this->searchForAliasFilesKeyedByBasenamePrefix('.aliases.yml');
         }
-        return $this->$groupAliasFiles;
+        return $this->groupAliasFiles;
     }
 
-    protected function searchForGroupAliasFile($name)
-    {
-        $groupAliasFileCache = $this->groupAliasFileCache();
-        if (isset($groupAliasFileCache[$searchPattern][$name])) {
-            return $groupAliasFileCache[$searchPattern][$name];
-        }
-
-        return false;
-    }
-
-    protected function searchForAliasFileAndReturnFirst($searchPattern)
-    {
-        foreach ($searchLocations as $dir) {
-            $files = $this->searchForAliasFilesInLocation($searchPattern, $dir);
-            if (!empty($files)) {
-                return reset($files);
-            }
-        }
-        return false;
-    }
-
-    protected function searchForAliasFiles($searchPattern)
-    {
-        $result = [];
-        foreach ($searchLocations as $dir) {
-            $files = $this->searchForAliasFilesInLocation($searchPattern, $dir);
-            $result = array_merge($files, $result);
-        }
-        return $result;
-    }
-
-    protected function searchForAliasFilesInLocation($searchPattern, $dir)
+    protected function createFinder($searchPattern)
     {
         $finder = new Finder();
         $finder->files()
             ->name($searchPattern)
-            ->in($dir)
+            ->in($this->searchLocations)
             ->depth($this->depth);
+        return $finder;
+    }
 
+    protected function searchForAliasFiles($searchPattern)
+    {
+        $finder = $this->createFinder($searchPattern);
         $result = [];
         foreach ($finder as $file) {
             $path = $file->getRealPath();
-            $key = $this->extractKey($file->getBasename(), $searchPattern);
+            $result[] = $path;
+        }
+        return $result;
+    }
+
+    protected function searchForAliasFilesKeyedByBasenamePrefix($filenameExensions)
+    {
+        $searchPattern = '*' . $filenameExensions;
+        $finder = $this->createFinder($searchPattern);
+        $result = [];
+        foreach ($finder as $file) {
+            $path = $file->getRealPath();
+            $key = $this->extractKey($file->getBasename(), $filenameExensions);
             $result[$key] = $path;
         }
         return $result;
     }
 
-    protected function extractKey($basename, $searchPattern)
+    protected function extractKey($basename, $filenameExensions)
     {
-        $regex = str_replace('*', '([^\.]*)', $searchPattern);
-        preg_match("/$regex/", $basename, $matches);
-        return $matches[1];
+        return str_replace($filenameExensions, '', $basename);
     }
 }

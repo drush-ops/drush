@@ -7,32 +7,24 @@ namespace Drush\Config;
  */
 class EnvironmentTest extends \PHPUnit_Framework_TestCase
 {
-    protected $fixtures;
-    protected $environment;
-    protected $home;
-    protected $fixturesDir;
-
-    function setup()
-    {
-        $this->fixtures = new \Drush\FixtureFactory();
-    }
+    use \Drush\FixtureFactory;
 
     function testExportConfigData()
     {
-        $data = $this->fixtures->environment()->exportConfigData();
-        $this->assertEquals($this->fixtures->homeDir(), $data['env']['cwd']);
+        $data = $this->environment()->exportConfigData();
+        $this->assertEquals($this->homeDir(), $data['env']['cwd']);
     }
 
     function testDocsPath()
     {
-        $docsPath = $this->fixtures->environment()->docsPath();
+        $docsPath = $this->environment()->docsPath();
         $this->assertTrue(is_string($docsPath), 'A docsPath was found');
         $this->assertTrue(file_exists("$docsPath/README.md"), 'README.md exists at docsPath');
     }
 
     function testDrushConfigFileFixturesExist()
     {
-        $fixturesDir = $this->fixtures->fixturesDir();
+        $fixturesDir = $this->fixturesDir();
         $this->assertTrue(file_exists("$fixturesDir/etc/drush/drush.yml"), '/etc/drush/drush.yml exists');
         $this->assertTrue(file_exists("$fixturesDir/home/.drush/drush.yml"), '/home/.drush/drush.yml exists');
     }

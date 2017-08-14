@@ -3,26 +3,26 @@ namespace Drush;
 
 use \Drush\Config\Environment;
 
-class FixtureFactory
+trait FixtureFactory
 {
-    public function fixturesDir()
+    protected function fixturesDir()
     {
         return dirname(__DIR__) . '/fixtures';
     }
 
-    public function homeDir()
+    protected function homeDir()
     {
         return $this->fixturesDir() . '/home';
     }
 
-    // It is still an aspirational goal to add Drupal 7 support back to Drush 10. :P
+    // It is still an aspirational goal to add Drupal 7 support back to Drush. :P
     // For now, only Drupal 8 is supported.
-    public function siteDir($majorVersion = '8')
+    protected function siteDir($majorVersion = '8')
     {
         return $this->fixturesDir() . '/sites/d' . $majorVersion;
     }
 
-    public function environment($cwd = false)
+    protected function environment($cwd = false)
     {
         $fixturesDir = $this->fixturesDir();
         $home = $this->homeDir();

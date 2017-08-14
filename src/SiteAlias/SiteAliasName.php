@@ -78,7 +78,7 @@ class SiteAliasName
      */
     public function assumeAmbiguousIsGroup()
     {
-        if ($this->ambiguous && !isset($this->group)) {
+        if ($this->ambiguous && !$this->hasGroup()) {
             $this->group = $this->sitename;
             $this->sitename = $this->env;
             $this->env = null;
@@ -91,7 +91,7 @@ class SiteAliasName
      */
     public function assumeAmbiguousIsSitename()
     {
-        if ($this->ambiguous && !isset($this->group)) {
+        if ($this->ambiguous && !$this->hasEnv()) {
             $this->env = $this->sitename;
             $this->sitename = $this->group;
             $this->group = null;
@@ -134,12 +134,12 @@ class SiteAliasName
 
     public function hasEnv()
     {
-        return !empty($this->env());
+        return !empty($this->env);
     }
 
     public function env()
     {
-        return $this->env();
+        return $this->env;
     }
 
     public function isSelf()

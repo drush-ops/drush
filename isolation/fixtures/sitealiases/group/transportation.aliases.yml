@@ -1,0 +1,10 @@
+sites:
+  planes:
+    default:
+      root: /path/to/planes
+  trains:
+    default:
+      root: /path/to/trains
+  cars:
+    default:
+      root: /path/to/cars

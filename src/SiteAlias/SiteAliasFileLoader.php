@@ -1,6 +1,7 @@
 <?php
 namespace Drush\SiteAlias;
 
+use Consolidation\Config\Loader\ConfigProcessor;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 
@@ -46,7 +47,7 @@ class SiteAliasFileLoader
      */
     public function discovery()
     {
-        return $this->discovery();
+        return $this->discovery;
     }
 
     /**
@@ -172,13 +173,14 @@ class SiteAliasFileLoader
             return false;
         }
 
-        $paths = $discovery->findAllGroupAliasFiles();
+        $paths = $this->discovery()->findAllGroupAliasFiles();
         foreach ($paths as $path) {
             $aliasRecord = $this->loadAliasRecordFromGroupAliasPath($aliasName, $path);
             if ($aliasRecord) {
                 return $aliasRecord;
             }
         }
+        return false;
     }
 
     /**
@@ -213,7 +215,8 @@ class SiteAliasFileLoader
 
     /**
      * Given an array containing site alias data, return an alias record
-     * containing the data for the requested record.
+     * containing the data for the requested record. If there is a 'common'
+     * section, then merge that in as well.
      *
      * @param SiteAliasName $aliasName the alias we are loading
      * @param array $data
@@ -226,7 +229,16 @@ class SiteAliasFileLoader
         if (!isset($data[$env])) {
             return false;
         }
-        return new AliasRecord($data[$env]);
+
+        // Use a config processor to merge together the alias data
+        $processor = new ConfigProcessor();
+        if (isset($data['common'])) {
+            $processor->add($data['common']);
+        }
+        $processor->add($data[$env]);
+
+        // Export the combined data and create an AliasRecord object to manage it.
+        return new AliasRecord($processor->export());
     }
 
     /**
