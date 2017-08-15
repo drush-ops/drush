@@ -45,7 +45,7 @@ class Environment
     {
         $autloadFilePath = "$root/autoload.php";
         if (!file_exists($autloadFilePath)) {
-            return false;
+            return $this->loader;
         }
 
         if ($this->siteLoader) {

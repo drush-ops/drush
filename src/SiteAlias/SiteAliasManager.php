@@ -8,20 +8,20 @@ use Drush\SiteAlias\SiteSpecParser;
  */
 class SiteAliasManager
 {
-    protected $loader;
+    protected $aliasLoader;
     protected $selfAliasRecord;
     protected $specParser;
 
-    public function __construct($loader = null)
+    public function __construct($aliasLoader = null)
     {
-        $this->loader = $loader ?: new SiteAliasFileLoader();
+        $this->aliasLoader = $aliasLoader ?: new SiteAliasFileLoader();
         $this->specParser = new SiteSpecParser();
         $this->selfAliasRecord = new AliasRecord();
     }
 
     public function addSearchLocation($path)
     {
-        $this->loader->discovery()->addSearchLocation($path);
+        $this->aliasLoader->discovery()->addSearchLocation($path);
         return $this;
     }
 
@@ -82,7 +82,7 @@ class SiteAliasManager
         // Search through all search locations, load
         // matching and potentially-matching alias files,
         // and return the alias matching the provided name.
-        return $this->loader->load($aliasName);
+        return $this->aliasLoader->load($aliasName);
     }
 
     protected function buildSelf($aliasName, $root, $uri)

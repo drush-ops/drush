@@ -42,6 +42,14 @@ class RedispatchHook implements InitializeHookInterface
             $command_name = array_shift($redispatchArgs);
 
             // Fetch the commandline options to pass along to the remote command.
+            // TODO: The $input object will not reveal which options were
+            // passed in via the commandline, or which are provided by some
+            // other source - e.g. from an option's default value. By this
+            // method, the option and its default value will end up in the
+            // redispatchOptions array, even if said option did not appear on
+            // the commandline. This can cause problems if the default value
+            // in this version of Drush is not valid in the target Drush
+            // (e.g. `drush status --format=table).
             $redispatchOptions = $this->redispatchOptions($input);
 
             $backend_options = [

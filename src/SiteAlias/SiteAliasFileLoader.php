@@ -2,6 +2,7 @@
 namespace Drush\SiteAlias;
 
 use Consolidation\Config\Loader\ConfigProcessor;
+use Dflydev\DotAccessData\Util as DotAccessDataUtil;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 
@@ -237,13 +238,14 @@ class SiteAliasFileLoader
      */
     protected function fetchAliasRecordFromSiteAliasData(SiteAliasName $aliasName, ConfigProcessor $processor, array $data)
     {
+        $data = $this->adjustIfSingleAlias($data);
         $env = $this->getEnvironmentName($aliasName, $data);
-        if (!isset($data[$env])) {
+        if (!$this->siteEnvExists($data, $env)) {
             return false;
         }
 
         // Add the 'common' section if it exists.
-        if (isset($data['common'])) {
+        if (isset($data['common']) && is_array($data['common'])) {
             $processor->add($data['common']);
         }
 
@@ -252,6 +254,79 @@ class SiteAliasFileLoader
 
         // Export the combined data and create an AliasRecord object to manage it.
         return new AliasRecord($processor->export());
+    }
+
+    /**
+     * Determine whether there is a valid-looking environment '$env' in the
+     * provided site alias data.
+     *
+     * @param array $data
+     * @param string $env
+     * @return bool
+     */
+    protected function siteEnvExists(array $data, $env)
+    {
+        return (
+            is_array($data) &&
+            isset($data[$env]) &&
+            is_array($data[$env])
+        );
+    }
+
+    /**
+     * Adjust the alias data for a single-site alias. Usually, a .yml alias
+     * file will contain multiple entries, one for each of the environments
+     * of an alias. If there are no environments
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function adjustIfSingleAlias($data)
+    {
+        if (!$this->detectSingleAlias($data)) {
+            return $data;
+        }
+
+        $result = [
+            'default' => $data,
+        ];
+
+        return $result;
+    }
+
+    /**
+     * A single-environment alias looks something like this:
+     *
+     *   ---
+     *   root: /path/to/drupal
+     *   uri: https://mysite.org
+     *
+     * A multiple-environment alias looks something like this:
+     *
+     *   ---
+     *   default: dev
+     *   dev:
+     *     root: /path/to/dev
+     *     uri: https://dev.mysite.org
+     *   stage:
+     *     root: /path/to/stage
+     *     uri: https://stage.mysite.org
+     *
+     * The differentiator between these two is that the multi-environment
+     * alias always has top-level elements that are associative arrays, and
+     * the single-environment alias never does.
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function detectSingleAlias($data)
+    {
+        foreach ($data as $key => $value) {
+            if (is_array($value) && DotAccessDataUtil::isAssoc($value)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

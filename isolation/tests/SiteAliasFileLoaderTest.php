@@ -16,6 +16,12 @@ class SiteAliasFileLoaderTest extends \PHPUnit_Framework_TestCase
         $siteAliasesDir = $this->fixturesDir() . '/sitealiases/single';
         $this->loader->addSearchLocation($siteAliasesDir);
 
+        // Look for a simple alias with no environments defined
+        $name = new SiteAliasName('@simple');
+        $result = $this->callProtected('loadSingleAliasFile', [$name]);
+        $this->assertTrue($result instanceof AliasRecord);
+        $this->assertEquals('/path/to/simple', $result->get('root'));
+
         // Look for a single alias without an environment specified.
         $name = new SiteAliasName('@single');
         $result = $this->callProtected('loadSingleAliasFile', [$name]);
@@ -40,6 +46,12 @@ class SiteAliasFileLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $this->loader->addSearchLocation($this->fixturesDir() . '/sitealiases/single');
         $this->loader->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
+
+        // Look for a simple alias with no environments defined
+        $name = new SiteAliasName('@simple');
+        $result = $this->loader->load($name);
+        $this->assertTrue($result instanceof AliasRecord);
+        $this->assertEquals('/path/to/simple', $result->get('root'));
 
         // Look for a single alias without an environment specified.
         $name = new SiteAliasName('@single');

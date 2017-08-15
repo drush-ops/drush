@@ -3,6 +3,13 @@ namespace Drush\Preflight;
 
 use Drush\Drush;
 use Drush\Cache\CommandCache;
+use DrupalFinder\DrupalFinder;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Application;
+use Consolidation\Config\ConfigInterface;
+use Composer\Autoload\ClassLoader;
+use League\Container\ContainerInterface;
 
 /**
  * Prepare our Dependency Injection Container
@@ -12,7 +19,13 @@ class DependencyInjection
     /**
      * Set up our dependency injection container.
      */
-    public static function initContainer($application, $config, $input, $output, $loader, $drupalFinder)
+    public static function initContainer(
+        Application $application,
+        ConfigInterface $config,
+        InputInterface $input,
+        OutputInterface $output,
+        ClassLoader $loader,
+        DrupalFinder $drupalFinder)
     {
         // Create default input and output objects if they were not provided
         if (!$input) {
@@ -38,7 +51,7 @@ class DependencyInjection
         return $container;
     }
 
-    protected static function addDrushServices($container, $loader, $drupalFinder)
+    protected static function addDrushServices(ContainerInterface $container, ClassLoader $loader, DrupalFinder $drupalFinder)
     {
         // Override Robo's logger with our own
         $container->share('logger', 'Drush\Log\Logger')
@@ -82,7 +95,7 @@ class DependencyInjection
             ->invokeMethod('setAutoloader', ['loader']);
     }
 
-    protected static function alterServicesForDrush($container, $application)
+    protected static function alterServicesForDrush(ContainerInterface $container, Application $application)
     {
         // Add our own callback to the hook manager
         $hookManager = $container->get('hookManager');
