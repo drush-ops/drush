@@ -22,7 +22,12 @@ use Symfony\Component\Yaml\Yaml;
  */
 class SiteAliasFileLoader
 {
-    public function __construct(SiteAliasFileDiscovery $discovery = null)
+    /**
+     * @var SiteAliasFileDiscovery
+     */
+    protected $discovery;
+
+    public function __construct($discovery = null)
     {
         $this->discovery = $discovery ?: new SiteAliasFileDiscovery();
     }

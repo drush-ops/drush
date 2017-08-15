@@ -144,6 +144,13 @@ class ConfigLocator
         return $this;
     }
 
+    public function addAliasConfig($aliasConfig)
+    {
+        $this->config->addContext(self::ALIAS_CONTEXT, $aliasConfig);
+        return $this;
+    }
+
+
     /**
      * Given the path provided via --config and the user's home directory,
      * add all of the user configuration paths.

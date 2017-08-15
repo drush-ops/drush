@@ -64,7 +64,7 @@ class Preflight
 
         // TODO: Inject a termination handler into this class, so that we don't
         // need to add these e.g. when testing.
-        $this->setTerminationHandlers();
+        // $this->setTerminationHandlers();
     }
 
     /**
@@ -158,13 +158,15 @@ class Preflight
         $root = $this->findSelectedSite($preflightArgs);
         $configLocator->addSitewideConfig($root);
 
-        // Handle aliases. Note that this might change the root. If it does,
-        // extend the configuration again for the new alias record.
+        // Handle aliases. Note that this might change the selected site.
+        // If it does, extend the configuration again for the new alias record.
         $aliasManager = (new SiteAliasManager())
             ->addSearchLocation($preflightArgs->aliasPath())
             ->addSearchLocation($this->environment->systemConfigPath())
             ->addSearchLocation($this->environment->userConfigPath());
         $selfAliasRecord = $aliasManager->findSelf($preflightArgs->alias(), $root, $preflightArgs->uri());
+        $aliasConfig = $selfAliasRecord->exportConfig();
+        $configLocator->addAliasConfig($aliasConfig);
         $root = $this->setSelectedSite($selfAliasRecord->localRoot());
         $configLocator->addSitewideConfig($root);
 
@@ -247,7 +249,7 @@ class Preflight
      * Return the search path containing all of the locations where Drush
      * commands are found.
      */
-    protected function findCommandFileSearchPath(PreflightArgs $preflightArgs)
+    protected function findCommandFileSearchPath(PreflightArgs $preflightArgs, $root = '')
     {
         // Start with the built-in commands
         $searchpath = [ dirname(__DIR__) ];
@@ -273,7 +275,7 @@ class Preflight
         }
 
         $siteCommands = "$root/drupal";
-        if (is_dir($siteCommands)) {
+        if (!empty($root) && is_dir($siteCommands)) {
             $searchpath[] = $siteCommands;
         }
 

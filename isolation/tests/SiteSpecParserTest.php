@@ -88,8 +88,8 @@ class SiteSpecParserTest extends \PHPUnit_Framework_TestCase
             [
                 'user@server/path#somemultisite',
                 [
-                    'remote-user' => 'user',
-                    'remote-server' => 'server',
+                    'user' => 'user',
+                    'host' => 'server',
                     'root' => '/path',
                     'sitename' => 'somemultisite',
                 ],
@@ -98,8 +98,8 @@ class SiteSpecParserTest extends \PHPUnit_Framework_TestCase
             [
                 'user@server/path',
                 [
-                    'remote-user' => 'user',
-                    'remote-server' => 'server',
+                    'user' => 'user',
+                    'host' => 'server',
                     'root' => '/path',
                     'sitename' => 'default',
                 ],

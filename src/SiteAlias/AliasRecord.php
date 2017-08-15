@@ -6,19 +6,29 @@ use Consolidation\Config\Config;
 /**
  * An alias record is a configuration record containing well-known items.
  *
+ * NOTE: AliasRecord is implemented as a Config subclass; however, it
+ * should not be used as a config. (A better implementaton would be
+ * "hasa" config, but that is less convenient, as we want all of the
+ * same capabilities as a config object).
+ *
+ * If using an alias record as config is desired, use the 'exportConfig()'
+ * method.
+ *
  * Example remote alias:
  *
  * ---
- * remote-host: www.myisp.org
- * remote-user: www-data
+ * host: www.myisp.org
+ * user: www-data
  * root: /path/to/drupal
  * uri: mysite.org
  *
- * Example local alias with command-specific options:
+ * Example local alias with global and command-specific options:
  *
  * ---
  * root: /path/to/drupal
  * uri: mysite.org
+ * options:
+ *   no-interaction: true
  * command:
  *   user:
  *     login:
@@ -39,17 +49,17 @@ class AliasRecord extends Config
 
     public function remoteUser()
     {
-        return $this->get('remote-user');
+        return $this->get('user');
     }
 
     public function remoteHost()
     {
-        return $this->get('remote-host');
+        return $this->get('host');
     }
 
     public function isRemote()
     {
-        return $this->has('remote-host');
+        return $this->has('host');
     }
 
     /**
@@ -63,5 +73,29 @@ class AliasRecord extends Config
         }
 
         return false;
+    }
+
+    public function exportConfig()
+    {
+        $data = $this->export();
+
+        foreach ($this->remapOptions() as $from => $to) {
+            if (isset($data[$from])) {
+                $data['options'][$to] = $data[$from];
+                unset($data[$from]);
+            }
+        }
+
+        return new Config($data);
+    }
+
+    protected function remapOptions()
+    {
+        return [
+            'user' => 'remote-user',
+            'host' => 'remote-host',
+            'root' => 'root',
+            'uri' => 'uri',
+        ];
     }
 }

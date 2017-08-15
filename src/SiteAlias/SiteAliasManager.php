@@ -10,16 +10,41 @@ class SiteAliasManager
 {
     protected $loader;
     protected $selfAliasRecord;
+    protected $specParser;
 
-    public function __consrtuct($loader = null)
+    public function __construct($loader = null)
     {
         $this->loader = $loader ?: new SiteAliasFileLoader();
+        $this->specParser = new SiteSpecParser();
         $this->selfAliasRecord = new AliasRecord();
     }
 
     public function addSearchLocation($path)
     {
         $this->loader->discovery()->addSearchLocation($path);
+        return $this;
+    }
+
+    public function get($name)
+    {
+        if (SiteAliasName::isAliasName($name)) {
+            return $this->getAlias($name);
+        }
+
+        return $this->specParser->validSiteSpec($arg);
+
+
+        return false;
+    }
+
+    public function getSelf()
+    {
+        return $this->selfAliasRecord;
+    }
+
+    public function setSelf($selfAliasRecord)
+    {
+        $this->selfAliasRecord = $selfAliasRecord;
         return $this;
     }
 
@@ -30,15 +55,22 @@ class SiteAliasManager
         return $this->getSelf();
     }
 
-    public function setSelf($selfAliasRecord)
+    public function getAlias($aliasName)
     {
-        $this->selfAliasRecord = $selfAliasRecord;
-        return $this;
-    }
+        $aliasName = new SiteAliasName($aliasName);
 
-    public function getSelf()
-    {
-        return $this->selfAliasRecord;
+        if ($aliasName->isSelf()) {
+            return $this->getSelf();
+        }
+
+        if ($aliasName->isNone()) {
+            return new AliasRecord();
+        }
+
+        // Search through all search locations, load
+        // matching and potentially-matching alias files,
+        // and return the alias matching the provided name.
+        return $this->loader->load($aliasName);
     }
 
     protected function buildSelf($aliasName, $root, $uri)
@@ -56,27 +88,11 @@ class SiteAliasManager
             $uri = 'default';
         }
 
-        return new AliasRecord([
-            'root' => $root,
-            'uri' => $uri,
-        ]);
-    }
-
-    public function getAlias($aliasName)
-    {
-        $aliasName = new SiteAliasName($aliasName);
-
-        if ($aliasName.isSelf()) {
-            return $this->getSelf();
-        }
-
-        if ($aliasName.isNone()) {
-            return new AliasRecord();
-        }
-
-        // Search through all search locations, load
-        // matching and potentially-matching alias files,
-        // and return the alias matching the provided name.
-        return $this->loader->load($aliasName);
+        return new AliasRecord(
+            [
+                'root' => $root,
+                'uri' => $uri,
+            ]
+        );
     }
 }

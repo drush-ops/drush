@@ -5,8 +5,8 @@ namespace Drush\SiteAlias;
  * Parse a string that contains a site specification.
  *
  * Site specifications contain some of the following elements:
- *   - remote-user
- *   - remote-server
+ *   - user
+ *   - host
  *   - path
  *   - sitename
  */
@@ -27,8 +27,8 @@ class SiteSpecParser
      *   Drupal root (if provided).
      * @return array
      *   A site specification array with the specified components filled in:
-     *     - remote-user
-     *     - remote-server
+     *     - user
+     *     - host
      *     - path
      *     - sitename
      *   or, an empty array if the provided parameter is not a valid site spec.
@@ -85,22 +85,22 @@ class SiteSpecParser
             ],
             // user@server/path/to/drupal#sitename
             '%^([a-zA-Z0-9_-]+)@([a-zA-Z0-9_-]+)(/[^#]*)#([a-zA-Z0-9_-]+)$%' => [
-                'remote-user' => 1,
-                'remote-server' => 2,
+                'user' => 1,
+                'host' => 2,
                 'root' => 3,
                 'sitename' => 4,
             ],
             // user@server/path/to/drupal
             '%^([a-zA-Z0-9_-]+)@([a-zA-Z0-9_-]+)(/[^#]*)$%' => [
-                'remote-user' => 1,
-                'remote-server' => 2,
+                'user' => 1,
+                'host' => 2,
                 'root' => 3,
                 'sitename' => 'default', // Or '2' if sitename should be 'server'
             ],
             // user@server#sitename
             '%^([a-zA-Z0-9_-]+)@([a-zA-Z0-9_-]+)#([a-zA-Z0-9_-]+)$%' => [
-                'remote-user' => 1,
-                'remote-server' => 2,
+                'user' => 1,
+                'host' => 2,
                 'sitename' => 3,
             ],
             // #sitename
@@ -183,7 +183,7 @@ class SiteSpecParser
      */
     protected function fixAndCheckUsability($result, $root)
     {
-        if (empty($result) || !empty($result['remote-server'])) {
+        if (empty($result) || !empty($result['host'])) {
             return $result;
         }
 
