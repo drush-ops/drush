@@ -75,9 +75,9 @@ class commandCase extends CommandUnishTestCase {
   }
 
   /**
-   * Assert that commands in disabled/uninstalled modules throw an error.
+   * Assert that commands in uninstalled modules throw an error.
    */
-  public function testDisabledModule() {
+  public function testUninstalledModule() {
     $sites = $this->setUpDrupal(1, TRUE);
     $uri = key($sites);
     $root = $this->webroot();
@@ -88,6 +88,6 @@ class commandCase extends CommandUnishTestCase {
     );
     $this->drush('devel-reinstall', array(), $options, NULL, NULL, self::EXIT_ERROR);
     $parsed = $this->parse_backend_output($this->getOutput());
-    $this->assertArrayHasKey("DRUSH_COMMAND_DEPENDENCY_ERROR", $parsed['error_log']);
+    $this->assertArrayHasKey("DRUSH_COMMAND_NOT_FOUND", $parsed['error_log']);
   }
 }
