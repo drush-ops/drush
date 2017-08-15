@@ -27,7 +27,9 @@ class SiteAliasFileDiscovery
     public function addSearchLocation($path)
     {
         $this->groupAliasFiles = null;
-        $this->searchLocations[] = $path;
+        if (is_dir($path)) {
+            $this->searchLocations[] = $path;
+        }
         return $this;
     }
 

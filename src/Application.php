@@ -34,6 +34,8 @@ class Application extends SymfonyApplication
         //
         //   --remote-host
         //   --remote-user
+        //   --root / -r
+        //   --uri / -l
         //   --simulate
         //
         // Functionality provided / subsumed by Symfony:
@@ -92,6 +94,17 @@ class Application extends SymfonyApplication
         $this->getDefinition()
             ->addOption(
                 new InputOption('--remote-user', null, InputOption::VALUE_REQUIRED, 'The user to use in remote execution.')
+            );
+
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--root', '-r', InputOption::VALUE_REQUIRED, 'The Drupal root for this site.')
+            );
+
+
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--uri', '-l', InputOption::VALUE_REQUIRED, 'Which multisite from the selected root to use.')
             );
 
         $this->getDefinition()

@@ -61,6 +61,7 @@ class SiteAliasFileLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($result);
 
         // Look for a group alias with environment explicitly provided.
+        // Confirm that site alias inherits the common value for 'options.food'.
         $name = new SiteAliasName('@pets.dogs.default');
         $result = $this->loader->load($name);
         $this->assertTrue($result instanceof AliasRecord);
@@ -68,6 +69,7 @@ class SiteAliasFileLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('meat', $result->get('options.food'));
 
         // Look for a group alias with environment explicitly provided.
+        // Confirm that site alias has the overridden value for 'options.food'.
         $name = new SiteAliasName('@pets.birds.default');
         $result = $this->loader->load($name);
         $this->assertTrue($result instanceof AliasRecord);

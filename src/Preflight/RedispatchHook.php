@@ -22,7 +22,7 @@ class RedispatchHook implements InitializeHookInterface
     {
         // See drush_preflight_command_dispatch; also needed are:
         //   - redispatch to a different site-local Drush on same system
-        //   - site-list handling
+        //   - site-list handling (REMOVED)
         // These redispatches need to be done regardless of the presence
         // of a @handle-remote-commands annotation.
 
@@ -37,15 +37,70 @@ class RedispatchHook implements InitializeHookInterface
         if (isset($remote_host)) {
             $remote_user = $input->getOption('remote-user');
 
-            // TODO: All commandline options to pass along to the remote command.
-            $args = [];
+            // Get the command arguements, and shift off the Drush command.
+            $redispatchArgs = $input->getArguments();
+            $command_name = array_shift($redispatchArgs);
 
-            $command_name = $input->getFirstArgument();
-            $user_interactive = $input->isInteractive();
+            // Fetch the commandline options to pass along to the remote command.
+            $redispatchOptions = $this->redispatchOptions($input);
 
-            $values = drush_do_command_redispatch($command_name, $args, $remote_host, $remote_user, $user_interactive);
+            $backend_options = [
+                'drush-script' => null,
+                'remote-host' => $remote_host,
+                'remote-user' => $remote_user,
+                'additional-global-options' => [],
+                'integrate' => true,
+            ];
+            if ($input->isInteractive()) {
+                $backend_options['#tty'] = true;
+                $backend_options['interactive'] = true;
+            }
+
+            $invocations = [
+                [
+                    'command' => $command_name,
+                    'args' => $redispatchArgs,
+                ],
+            ];
+            $common_backend_options = [];
+            $default_command = null;
+            $default_site = [
+                'remote-host' => $remote_host,
+                'remote-user' => $remote_user,
+                'root' => $input->getOption('root'),
+                'uri' => $input->getOption('uri'),
+            ];
+            $context = null;
+
+            $values = drush_backend_invoke_concurrent(
+                $invocations,
+                $redispatchOptions,
+                $backend_options,
+                $default_command,
+                $default_site,
+                $context
+            );
+
             return $this->exitEarly($values);
         }
+    }
+
+    protected function redispatchOptions(InputInterface $input)
+    {
+        $result = [];
+        foreach ($input->getOptions() as $option => $value) {
+            if ($value === true) {
+                $result[$option] = true;
+            } elseif (is_string($value) && !empty($value)) {
+                $result[$option] = $value;
+            }
+        }
+
+        // hack hack
+        unset($result['remote-host']);
+        unset($result['remote-user']);
+
+        return $result;
     }
 
     protected function exitEarly($values)

@@ -37,12 +37,21 @@ class SiteAliasManager
         return false;
     }
 
+    /**
+     * @return AliasRecord
+     */
     public function getSelf()
     {
         return $this->selfAliasRecord;
     }
 
-    public function setSelf($selfAliasRecord)
+    /**
+     * Return the current @self alias.
+     *
+     * @param AliasRecord $selfAliasRecord
+     * @return $this
+     */
+    public function setSelf(AliasRecord $selfAliasRecord)
     {
         $this->selfAliasRecord = $selfAliasRecord;
         return $this;
@@ -51,6 +60,9 @@ class SiteAliasManager
     public function findSelf($aliasName, $root, $uri)
     {
         $selfAliasRecord = $this->buildSelf($aliasName, $root, $uri);
+        if (!$selfAliasRecord) {
+            throw new \Exception("The alias $aliasName could not be found.");
+        }
         $this->setSelf($selfAliasRecord);
         return $this->getSelf();
     }
