@@ -179,7 +179,7 @@ class Preflight
         $application = new \Drush\Application('Drush Commandline Tool', Drush::getVersion());
 
         // Set up the DI container
-        $container = DependencyInjection::initContainer($application, $config, $input, $output, $loader);
+        $container = DependencyInjection::initContainer($application, $config, $input, $output, $loader, $this->drupalFinder);
 
         // We need to check the php minimum version again, in case anyone
         // has set it to something higher in one of the config files we loaded.
@@ -200,10 +200,6 @@ class Preflight
         // Use the robo runner to register commands with Symfony application.
         $runner = new \Robo\Runner();
         $runner->registerCommandClasses($application, $commandClasses);
-
-        // TODO: Consider alternatives for injecting DrupalFinder into the bootstrap manager.
-        $bootstrapManager = $container->get('bootstrap.manager');
-        $bootstrapManager->setDrupalFinder($this->drupalFinder);
 
         // Run the Symfony Application
         // Predispatch: call a remote Drush command if applicable (via a 'pre-init' hook)

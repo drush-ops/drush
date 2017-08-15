@@ -12,7 +12,7 @@ class DependencyInjection
     /**
      * Set up our dependency injection container.
      */
-    public static function initContainer($application, $config, $input, $output, $loader)
+    public static function initContainer($application, $config, $input, $output, $loader, $drupalFinder)
     {
         // Create default input and output objects if they were not provided
         if (!$input) {
@@ -27,7 +27,7 @@ class DependencyInjection
         \Robo\Robo::configureContainer($container, $application, $config, $input, $output);
         $container->add('container', $container);
 
-        static::addDrushServices($container, $loader);
+        static::addDrushServices($container, $loader, $drupalFinder);
 
         // Store the container in the \Drush object
         Drush::setContainer($container);
@@ -38,7 +38,7 @@ class DependencyInjection
         return $container;
     }
 
-    protected static function addDrushServices($container, $loader)
+    protected static function addDrushServices($container, $loader, $drupalFinder)
     {
         // Override Robo's logger with our own
         $container->share('logger', 'Drush\Log\Logger')
@@ -59,12 +59,13 @@ class DependencyInjection
         $container->share('bootstrap.drupal7', 'Drush\Boot\DrupalBoot7');
         $container->share('bootstrap.drupal8', 'Drush\Boot\DrupalBoot8');
         $container->share('bootstrap.manager', 'Drush\Boot\BootstrapManager')
-          ->withArgument('bootstrap.default');
+            ->withArgument('bootstrap.default')
+            ->withMethodCall('setDrupalFinder', [$drupalFinder]);
         // TODO: Can we somehow add these via discovery (e.g. backdrop extension?)
         $container->extend('bootstrap.manager')
-          ->withMethodCall('add', ['bootstrap.drupal6'])
-          ->withMethodCall('add', ['bootstrap.drupal7'])
-          ->withMethodCall('add', ['bootstrap.drupal8']);
+            ->withMethodCall('add', ['bootstrap.drupal6'])
+            ->withMethodCall('add', ['bootstrap.drupal7'])
+            ->withMethodCall('add', ['bootstrap.drupal8']);
         $container->share('bootstrap.hook', 'Drush\Boot\BootstrapHook')
           ->withArgument('bootstrap.manager');
         $container->share('redispatch.hook', 'Drush\Preflight\RedispatchHook');
