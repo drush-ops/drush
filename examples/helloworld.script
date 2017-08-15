@@ -5,8 +5,6 @@
 // "shebang" script.  These scripts start with the
 // line "#!/usr/bin/env drush" or "#!/full/path/to/drush".
 //
-// See `drush topic docs-scripts` for more information.
-//
 drush_print("Hello world!");
 drush_print();
 drush_print("The arguments to this command were:");
@@ -17,7 +15,7 @@ drush_print("The arguments to this command were:");
 // call will include 'php-script' (the drush command)
 // and the path to this script.
 //
-if (drush_get_option('everything')) {
+if ($options['everything'])) {
   drush_print("  " . implode("\n  ", drush_get_arguments()));
 }
 //
