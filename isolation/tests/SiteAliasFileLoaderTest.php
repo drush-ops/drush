@@ -65,6 +65,14 @@ class SiteAliasFileLoaderTest extends \PHPUnit_Framework_TestCase
         $result = $this->loader->load($name);
         $this->assertTrue($result instanceof AliasRecord);
         $this->assertEquals('/path/to/dogs', $result->get('root'));
+        $this->assertEquals('meat', $result->get('options.food'));
+
+        // Look for a group alias with environment explicitly provided.
+        $name = new SiteAliasName('@pets.birds.default');
+        $result = $this->loader->load($name);
+        $this->assertTrue($result instanceof AliasRecord);
+        $this->assertEquals('/path/to/birds', $result->get('root'));
+        $this->assertEquals('seed', $result->get('options.food'));
 
         // Ask for sitename only; find result in an aliases.yml file.
         $name = new SiteAliasName('@trains');

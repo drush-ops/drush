@@ -112,7 +112,8 @@ class SiteAliasFileLoader
         if (!$data) {
             return false;
         }
-        return $this->fetchAliasRecordFromSiteAliasData($aliasName, $data);
+        $processor = new ConfigProcessor();
+        return $this->fetchAliasRecordFromSiteAliasData($aliasName, $processor, $data);
     }
 
     /**
@@ -150,11 +151,17 @@ class SiteAliasFileLoader
         if (!$data) {
             return false;
         }
-        $data = $this->fetchSiteAliasDataFromGroupAliasFile($aliasName, $data);
-        if (!$data) {
+        $siteData = $this->fetchSiteAliasDataFromGroupAliasFile($aliasName, $data);
+        if (!$siteData) {
             return false;
         }
-        return $this->fetchAliasRecordFromSiteAliasData($aliasName, $data);
+
+        $processor = new ConfigProcessor();
+        if (isset($data['common'])) {
+            $processor->add($data['common']);
+        }
+
+        return $this->fetchAliasRecordFromSiteAliasData($aliasName, $processor, $siteData);
     }
 
     /**
@@ -228,18 +235,19 @@ class SiteAliasFileLoader
      *
      * @return AliasRecord|false
      */
-    protected function fetchAliasRecordFromSiteAliasData(SiteAliasName $aliasName, array $data)
+    protected function fetchAliasRecordFromSiteAliasData(SiteAliasName $aliasName, ConfigProcessor $processor, array $data)
     {
         $env = $this->getEnvironmentName($aliasName, $data);
         if (!isset($data[$env])) {
             return false;
         }
 
-        // Use a config processor to merge together the alias data
-        $processor = new ConfigProcessor();
+        // Add the 'common' section if it exists.
         if (isset($data['common'])) {
             $processor->add($data['common']);
         }
+
+        // Then add the data from the desired environment.
         $processor->add($data[$env]);
 
         // Export the combined data and create an AliasRecord object to manage it.

@@ -5,6 +5,11 @@ sites:
   trains:
     default:
       root: /path/to/trains
+      options:
+        fuel: electricity
   cars:
     default:
       root: /path/to/cars
+common:
+  options:
+    fuel: petroleum

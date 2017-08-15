@@ -8,3 +8,8 @@ sites:
   birds:
     default:
       root: /path/to/birds
+      options:
+        food: seed
+common:
+  options:
+    food: meat
