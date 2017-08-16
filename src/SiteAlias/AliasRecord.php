@@ -37,6 +37,45 @@ use Consolidation\Config\Config;
  */
 class AliasRecord extends Config
 {
+    /**
+     * @var string
+     */
+    protected $name;
+
+    /**
+     * AliasRecord constructor
+     *
+     * @param array|null $data Initial data for alias record
+     * @param string $name Alias name or site specification for this alias record
+     * @param string $env Environment for this alias record. Will be appended to
+     *   the alias name, separated by a "." if provided.
+     * @param string $group Group for this alias record. Will be prepended to
+     *   the alias name, separated by a "." if provided. Ignored unless $name is
+     *   an alias (must begin with "@").
+     * @return type
+     */
+    public function __construct(array $data = null, $name = '', $env = '', $group = '')
+    {
+        parent::__construct($data);
+        if (!empty($env)) {
+            $name .= ".$env";
+        }
+        if (!empty($group)) {
+            $name = preg_replace('/^@/', "@{$group}.", $name);
+        }
+        $this->name = $name;
+    }
+
+    public function name()
+    {
+        return $this->name;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
     public function root()
     {
         return $this->get('root');

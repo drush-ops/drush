@@ -112,6 +112,15 @@ class SiteAliasFileLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($result);
     }
 
+    public function testLoadAll()
+    {
+        $this->loader->addSearchLocation($this->fixturesDir() . '/sitealiases/single');
+        $this->loader->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
+
+        $all = $this->loader->loadAll();
+        $this->assertEquals('@bathtub.default,@drill.default,@pets.birds.default,@pets.cats.default,@pets.dogs.default,@simple.default,@single.dev,@transportation.cars.default,@transportation.planes.default,@transportation.trains.default,@tuna.default', implode(',', array_keys($all)));
+    }
+
     protected function callProtected($methodName, $args)
     {
         $r = new \ReflectionMethod(SiteAliasFileLoader::class, $methodName);

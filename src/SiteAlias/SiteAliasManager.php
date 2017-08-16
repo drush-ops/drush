@@ -78,7 +78,7 @@ class SiteAliasManager
         }
 
         if ($aliasName->isNone()) {
-            return new AliasRecord();
+            return new AliasRecord([], $aliasName);
         }
 
         // Search through all search locations, load
@@ -100,7 +100,7 @@ class SiteAliasManager
 
         $specParser = new SiteSpecParser();
         if ($specParser->validSiteSpec($aliasName)) {
-            return new AliasRecord($specParser->parse($aliasName, $root));
+            return new AliasRecord($specParser->parse($aliasName, $root), $aliasName);
         }
 
         if (empty($uri)) {
@@ -111,7 +111,8 @@ class SiteAliasManager
             [
                 'root' => $root,
                 'uri' => $uri,
-            ]
+            ],
+            '@self'
         );
     }
 }

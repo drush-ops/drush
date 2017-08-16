@@ -92,13 +92,28 @@ class SiteAliasFileLoader
         $result = [];
         $paths = $this->discovery()->findAllGroupAliasFiles();
         foreach ($paths as $path) {
-            $result[] = $this->loadAllRecordsFromGroupAliasPath($path);
+            $result = array_merge($result, $this->loadAllRecordsFromGroupAliasPath($path));
         }
         $paths = $this->discovery()->findAllSingleAliasFiles();
         foreach ($paths as $path) {
-            $result[] = $this->loadSingleAliasFileAtPath($path);
+            $aliasRecord = $this->loadSingleAliasFileAtPath($path);
+            $this->storeAliasRecordInResut($result, $aliasRecord);
         }
+        ksort($result);
         return $result;
+    }
+
+    protected function storeAliasRecordInResut(&$result, $aliasRecord)
+    {
+        if (!$aliasRecord) {
+            return;
+        }
+        $key = $aliasRecord->name();
+        if (empty($key)) {
+            $result[] = $aliasRecord;
+            return;
+        }
+        $result[$key] = $aliasRecord;
     }
 
     /**
@@ -132,10 +147,33 @@ class SiteAliasFileLoader
 
     protected function loadSingleAliasFileAtPath($path)
     {
-        $aliasName = str_replace('.alias.yml', '', basename($path));
-        $aliasName = new SiteAliasName($aliasName);
-
+        $aliasName = new SiteAliasName($this->siteNameFromPath($path));
         return $this->loadSingleAliasFileWithNameAtPath($aliasName, $path);
+    }
+
+    protected function groupNameFromPath($path)
+    {
+        // Return an empty string if there is no group.e
+        if (basename($path) == 'aliases.yml') {
+            return '';
+        }
+
+        return $this->basenameWithoutExtension($path, '.aliases.yml');
+    }
+
+    protected function siteNameFromPath($path)
+    {
+        return $this->basenameWithoutExtension($path, '.alias.yml');
+    }
+
+    protected function basenameWithoutExtension($path, $extension)
+    {
+        $result = basename($path, $extension);
+        // It is an error if $path does not end with alias.yml
+        if ($result == basename($path)) {
+            throw new \Exception("$path must end with '$extension'");
+        }
+        return $result;
     }
 
     protected function loadSingleAliasFileWithNameAtPath(SiteAliasName $aliasName, $path)
@@ -180,17 +218,20 @@ class SiteAliasFileLoader
     protected function loadAllRecordsFromGroupAliasPath($path)
     {
         $data = $this->loadYml($path);
-        if (!$data) {
+        if (!$data || !isset($data['sites'])) {
             return false;
         }
 
-        $names = array_keys($data);
+        $names = array_keys($data['sites']);
         unset($names['common']);
+
+        $group = $this->groupNameFromPath($path);
 
         $result = [];
         foreach ($names as $name) {
             $aliasName = new SiteAliasName($name);
-            $result[] = $this->fetchAliasRecordFromGroupAliasData($aliasName, $data);
+            $aliasRecord = $this->fetchAliasRecordFromGroupAliasData($aliasName, $data, $group);
+            $this->storeAliasRecordInResut($result, $aliasRecord);
         }
         return $result;
     }
@@ -202,10 +243,12 @@ class SiteAliasFileLoader
             return false;
         }
 
-        return $this->fetchAliasRecordFromGroupAliasData($aliasName, $data);
+        $group = $this->groupNameFromPath($path);
+
+        return $this->fetchAliasRecordFromGroupAliasData($aliasName, $data, $group);
     }
 
-    protected function fetchAliasRecordFromGroupAliasData($aliasName, $data)
+    protected function fetchAliasRecordFromGroupAliasData($aliasName, $data, $group = '')
     {
         $processor = new ConfigProcessor();
         if (isset($data['common'])) {
@@ -217,7 +260,7 @@ class SiteAliasFileLoader
             return false;
         }
 
-        return $this->fetchAliasRecordFromSiteAliasData($aliasName, $processor, $siteData);
+        return $this->fetchAliasRecordFromSiteAliasData($aliasName, $processor, $siteData, $group);
     }
 
     /**
@@ -291,7 +334,7 @@ class SiteAliasFileLoader
      *
      * @return AliasRecord|false
      */
-    protected function fetchAliasRecordFromSiteAliasData(SiteAliasName $aliasName, ConfigProcessor $processor, array $data)
+    protected function fetchAliasRecordFromSiteAliasData(SiteAliasName $aliasName, ConfigProcessor $processor, array $data, $group = '')
     {
         $data = $this->adjustIfSingleAlias($data);
         $env = $this->getEnvironmentName($aliasName, $data);
@@ -308,7 +351,7 @@ class SiteAliasFileLoader
         $processor->add($data[$env]);
 
         // Export the combined data and create an AliasRecord object to manage it.
-        return new AliasRecord($processor->export());
+        return new AliasRecord($processor->export(), '@' . $aliasName->sitename(), $env, $group);
     }
 
     /**

@@ -58,6 +58,21 @@ class SiteAliasName
     }
 
     /**
+     * Convert an alias name back to a string.
+     */
+    public function __toString()
+    {
+        $parts = [ $this->sitename() ];
+        if ($this->hasGroup()) {
+            array_unshift($parts, $this->group());
+        }
+        if ($this->hasEnv()) {
+            $parts[] = $this->env();
+        }
+        return '@' . implode('.', $parts);
+    }
+
+    /**
      * Determine whether or not the provided name is an alias name.
      *
      * @param string $aliasName
@@ -127,14 +142,29 @@ class SiteAliasName
         return $this->group;
     }
 
+    public function setGroup($group)
+    {
+        $this->group = $group;
+    }
+
     public function sitename()
     {
         return $this->sitename;
     }
 
+    public function setSitename($sitename)
+    {
+        $this->sitename = $sitename;
+    }
+
     public function hasEnv()
     {
         return !empty($this->env);
+    }
+
+    public function setEnv($env)
+    {
+        $this->env = $env;
     }
 
     public function env()
