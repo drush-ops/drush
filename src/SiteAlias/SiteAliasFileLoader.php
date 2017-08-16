@@ -83,6 +83,25 @@ class SiteAliasFileLoader
     }
 
     /**
+     * Return a list of all site aliases loadable from any findable path.
+     *
+     * @return AliasRecord[]
+     */
+    public function loadAll()
+    {
+        $result = [];
+        $paths = $this->discovery()->findAllGroupAliasFiles();
+        foreach ($paths as $path) {
+            $result[] = $this->loadAllRecordsFromGroupAliasPath($path);
+        }
+        $paths = $this->discovery()->findAllSingleAliasFiles();
+        foreach ($paths as $path) {
+            $result[] = $this->loadSingleAliasFileAtPath($path);
+        }
+        return $result;
+    }
+
+    /**
      * If the alias name is '@sitename', or if it is '@sitename.env', then
      * look for a sitename.alias.yml file that contains it.
      *
@@ -108,7 +127,19 @@ class SiteAliasFileLoader
         if (!$path) {
             return false;
         }
+        return $this->loadSingleAliasFileWithNameAtPath($aliasName, $path);
+    }
 
+    protected function loadSingleAliasFileAtPath($path)
+    {
+        $aliasName = str_replace('.alias.yml', '', basename($path));
+        $aliasName = new SiteAliasName($aliasName);
+
+        return $this->loadSingleAliasFileWithNameAtPath($aliasName, $path);
+    }
+
+    protected function loadSingleAliasFileWithNameAtPath(SiteAliasName $aliasName, $path)
+    {
         $data = $this->loadYml($path);
         if (!$data) {
             return false;
@@ -146,20 +177,44 @@ class SiteAliasFileLoader
         return $this->loadAliasRecordFromGroupAliasPath($aliasName, $path);
     }
 
+    protected function loadAllRecordsFromGroupAliasPath($path)
+    {
+        $data = $this->loadYml($path);
+        if (!$data) {
+            return false;
+        }
+
+        $names = array_keys($data);
+        unset($names['common']);
+
+        $result = [];
+        foreach ($names as $name) {
+            $aliasName = new SiteAliasName($name);
+            $result[] = $this->fetchAliasRecordFromGroupAliasData($aliasName, $data);
+        }
+        return $result;
+    }
+
     protected function loadAliasRecordFromGroupAliasPath(SiteAliasName $aliasName, $path)
     {
         $data = $this->loadYml($path);
         if (!$data) {
             return false;
         }
-        $siteData = $this->fetchSiteAliasDataFromGroupAliasFile($aliasName, $data);
-        if (!$siteData) {
-            return false;
-        }
 
+        return $this->fetchAliasRecordFromGroupAliasData($aliasName, $data);
+    }
+
+    protected function fetchAliasRecordFromGroupAliasData($aliasName, $data)
+    {
         $processor = new ConfigProcessor();
         if (isset($data['common'])) {
             $processor->add($data['common']);
+        }
+
+        $siteData = $this->fetchSiteAliasDataFromGroupAliasFile($aliasName, $data);
+        if (!$siteData) {
+            return false;
         }
 
         return $this->fetchAliasRecordFromSiteAliasData($aliasName, $processor, $siteData);

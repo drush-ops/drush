@@ -1,8 +1,6 @@
 <?php
 namespace Drush\SiteAlias;
 
-use Drush\SiteAlias\SiteSpecParser;
-
 /**
  * Site Alias manager
  */
@@ -25,14 +23,18 @@ class SiteAliasManager
         return $this;
     }
 
+    /**
+     * @return AliasRecord
+     */
     public function get($name)
     {
         if (SiteAliasName::isAliasName($name)) {
             return $this->getAlias($name);
         }
 
-        return $this->specParser->validSiteSpec($arg);
-
+        if ($this->specParser->validSiteSpec($name)) {
+            return new AliasRecord($this->specParser->parse($name));
+        }
 
         return false;
     }
@@ -83,6 +85,11 @@ class SiteAliasManager
         // matching and potentially-matching alias files,
         // and return the alias matching the provided name.
         return $this->aliasLoader->load($aliasName);
+    }
+
+    public function loadAll()
+    {
+        return $this->aliasLoader->loadAll();
     }
 
     protected function buildSelf($aliasName, $root, $uri)

@@ -60,25 +60,25 @@ class SiteSpecParserTest extends \PHPUnit_Framework_TestCase
     public static function validSiteSpecs()
     {
         return [
-            [ '/path/to/drupal#sitename' ],
-            [ 'user@server/path/to/drupal#sitename' ],
+            [ '/path/to/drupal#uri' ],
+            [ 'user@server/path/to/drupal#uri' ],
             [ 'user@server/path/to/drupal' ],
-            [ 'user@server#sitename' ],
-            [ '#sitename' ],
+            [ 'user@server#uri' ],
+            [ '#uri' ],
         ];
     }
 
     public static function invalidSiteSpecs()
     {
         return [
-            [ 'sitename' ],
+            [ 'uri' ],
             [ '@/#' ],
-            [ 'user@#sitename' ],
-            [ '@server/path/to/drupal#sitename' ],
+            [ 'user@#uri' ],
+            [ '@server/path/to/drupal#uri' ],
             [ 'user@server/path/to/drupal#' ],
-            [ 'user@server/path/to/drupal#sitename!' ],
-            [ 'user@server/path/to/drupal##sitename' ],
-            [ 'user#server/path/to/drupal#sitename' ],
+            [ 'user@server/path/to/drupal#uri!' ],
+            [ 'user@server/path/to/drupal##uri' ],
+            [ 'user#server/path/to/drupal#uri' ],
        ];
     }
 
@@ -91,7 +91,7 @@ class SiteSpecParserTest extends \PHPUnit_Framework_TestCase
                     'user' => 'user',
                     'host' => 'server',
                     'root' => '/path',
-                    'sitename' => 'somemultisite',
+                    'uri' => 'somemultisite',
                 ],
             ],
 
@@ -101,7 +101,7 @@ class SiteSpecParserTest extends \PHPUnit_Framework_TestCase
                     'user' => 'user',
                     'host' => 'server',
                     'root' => '/path',
-                    'sitename' => 'default',
+                    'uri' => 'default',
                 ],
             ],
 
@@ -109,7 +109,7 @@ class SiteSpecParserTest extends \PHPUnit_Framework_TestCase
                 '/fixtures#mymultisite',
                 [
                     'root' => '/fixtures',
-                    'sitename' => 'mymultisite',
+                    'uri' => 'mymultisite',
                 ],
             ],
 
@@ -117,7 +117,7 @@ class SiteSpecParserTest extends \PHPUnit_Framework_TestCase
                 '#mymultisite',
                 [
                     'root' => '/fixtures',
-                    'sitename' => 'mymultisite',
+                    'uri' => 'mymultisite',
                 ],
             ],
 

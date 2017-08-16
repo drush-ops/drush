@@ -179,7 +179,7 @@ class Preflight
         $application = new \Drush\Application('Drush Commandline Tool', Drush::getVersion());
 
         // Set up the DI container
-        $container = DependencyInjection::initContainer($application, $config, $input, $output, $loader, $this->drupalFinder);
+        $container = DependencyInjection::initContainer($application, $config, $input, $output, $loader, $this->drupalFinder, $aliasManager);
 
         // We need to check the php minimum version again, in case anyone
         // has set it to something higher in one of the config files we loaded.

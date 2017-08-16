@@ -8,7 +8,7 @@ namespace Drush\SiteAlias;
  *   - user
  *   - host
  *   - path
- *   - sitename
+ *   - uri (multisite selector)
  */
 class SiteSpecParser
 {
@@ -17,12 +17,12 @@ class SiteSpecParser
      *
      * @param string $spec
      *   A site specification in one of the accepted forms:
-     *     - /path/to/drupal#sitename
-     *     - user@server/path/to/drupal#sitename
+     *     - /path/to/drupal#uri
+     *     - user@server/path/to/drupal#uri
      *     - user@server/path/to/drupal
-     *     - user@server#sitename
+     *     - user@server#uri
      *   or, a site name:
-     *     - #sitename
+     *     - #uri
      * @param string $root
      *   Drupal root (if provided).
      * @return array
@@ -30,7 +30,7 @@ class SiteSpecParser
      *     - user
      *     - host
      *     - path
-     *     - sitename
+     *     - uri
      *   or, an empty array if the provided parameter is not a valid site spec.
      */
     public function parse($spec, $root = '')
@@ -78,34 +78,34 @@ class SiteSpecParser
     protected function patterns()
     {
         return [
-            // /path/to/drupal#sitename
+            // /path/to/drupal#uri
             '%^(/[^#]*)#([a-zA-Z0-9_-]+)$%' => [
                 'root' => 1,
-                'sitename' => 2,
+                'uri' => 2,
             ],
-            // user@server/path/to/drupal#sitename
+            // user@server/path/to/drupal#uri
             '%^([a-zA-Z0-9_-]+)@([a-zA-Z0-9_-]+)(/[^#]*)#([a-zA-Z0-9_-]+)$%' => [
                 'user' => 1,
                 'host' => 2,
                 'root' => 3,
-                'sitename' => 4,
+                'uri' => 4,
             ],
             // user@server/path/to/drupal
             '%^([a-zA-Z0-9_-]+)@([a-zA-Z0-9_-]+)(/[^#]*)$%' => [
                 'user' => 1,
                 'host' => 2,
                 'root' => 3,
-                'sitename' => 'default', // Or '2' if sitename should be 'server'
+                'uri' => 'default', // Or '2' if uri should be 'host'
             ],
-            // user@server#sitename
+            // user@server#uri
             '%^([a-zA-Z0-9_-]+)@([a-zA-Z0-9_-]+)#([a-zA-Z0-9_-]+)$%' => [
                 'user' => 1,
                 'host' => 2,
-                'sitename' => 3,
+                'uri' => 3,
             ],
-            // #sitename
+            // #uri
             '%^#([a-zA-Z0-9_-]+)$%' => [
-                'sitename' => 1,
+                'uri' => 1,
             ],
         ];
     }
@@ -138,7 +138,7 @@ class SiteSpecParser
     {
         $result += [
             'root' => '',
-            'sitename' => '',
+            'uri' => '',
         ];
 
         return $result;
@@ -197,13 +197,13 @@ class SiteSpecParser
             $result['root'] = $root;
         }
 
-        // TODO: If using a sitespec `#sitename`, then `sitename` MUST
+        // TODO: If using a sitespec `#uri`, then `uri` MUST
         // be the name of a folder that exists in __DRUPAL_ROOT__/sites.
         // This restriction does NOT apply to the --uri option. Are there
-        // instances where we need to allow 'sitename' to be the uri
+        // instances where we need to allow 'uri' to be a literal uri
         // rather than the folder name? If so, we need to loosen this check.
         // I think it's fine as it is, though.
-        $path = $result['root'] . '/sites/' . $result['sitename'];
+        $path = $result['root'] . '/sites/' . $result['uri'];
         if (!is_dir($path)) {
             return [];
         }

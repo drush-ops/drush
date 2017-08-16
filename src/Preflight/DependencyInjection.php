@@ -10,6 +10,7 @@ use Symfony\Component\Console\Application;
 use Consolidation\Config\ConfigInterface;
 use Composer\Autoload\ClassLoader;
 use League\Container\ContainerInterface;
+use Drush\SiteAlias\SiteAliasManager;
 
 /**
  * Prepare our Dependency Injection Container
@@ -25,8 +26,10 @@ class DependencyInjection
         InputInterface $input,
         OutputInterface $output,
         ClassLoader $loader,
-        DrupalFinder $drupalFinder)
-    {
+        DrupalFinder $drupalFinder,
+        SiteAliasManager $aliasManager
+    ) {
+    
         // Create default input and output objects if they were not provided
         if (!$input) {
             $input = new \Symfony\Component\Console\Input\StringInput('');
@@ -40,7 +43,7 @@ class DependencyInjection
         \Robo\Robo::configureContainer($container, $application, $config, $input, $output);
         $container->add('container', $container);
 
-        static::addDrushServices($container, $loader, $drupalFinder);
+        static::addDrushServices($container, $loader, $drupalFinder, $aliasManager);
 
         // Store the container in the \Drush object
         Drush::setContainer($container);
@@ -51,7 +54,7 @@ class DependencyInjection
         return $container;
     }
 
-    protected static function addDrushServices(ContainerInterface $container, ClassLoader $loader, DrupalFinder $drupalFinder)
+    protected static function addDrushServices(ContainerInterface $container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager)
     {
         // Override Robo's logger with our own
         $container->share('logger', 'Drush\Log\Logger')
@@ -59,6 +62,7 @@ class DependencyInjection
           ->withMethodCall('setLogOutputStyler', ['logStyler']);
 
         $container->share('loader', $loader);
+        $container->share('site.alias.manager', $aliasManager);
 
         // Override Robo's formatter manager with our own
         // @todo not sure that we'll use this. Maybe remove it.
@@ -93,6 +97,8 @@ class DependencyInjection
         // Add inflectors
         $container->inflector(\Drush\Boot\AutoloaderAwareInterface::class)
             ->invokeMethod('setAutoloader', ['loader']);
+        $container->inflector(\Drush\SiteAlias\SiteAliasManagerAwareInterface::class)
+            ->invokeMethod('setSiteAliasManager', ['site.alias.manager']);
     }
 
     protected static function alterServicesForDrush(ContainerInterface $container, Application $application)

@@ -2,9 +2,13 @@
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Drush\SiteAlias\SiteAliasManagerAwareTrait;
+use Drush\SiteAlias\SiteAliasName;
 
-class SiteCommands extends DrushCommands
+class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+    use SiteAliasManagerAwareTrait;
 
     /**
      * Set a site alias to work on that will persist for the current session.
@@ -104,6 +108,38 @@ class SiteCommands extends DrushCommands
      * @return array
      */
     public function siteAlias($site = null, $options = ['format' => 'yaml'])
+    {
+        if (!$this->hasSiteAliasManager()) {
+            return $this->oldSiteAliasCommandImplementation($site, $options);
+        }
+
+        if (empty($site)) {
+            return $this->siteAliasListAll($options);
+        }
+
+        $aliasRecord = $this->siteAliasManager()->get($site);
+        if ($aliasRecord !== false) {
+            return $aliasRecord->export();
+        }
+
+        // TODO: load and display all sites in a specified alias group
+
+        $this->logger()->success('No sites found.');
+    }
+
+    protected function siteAliasListAll($options)
+    {
+        $result = $this->siteAliasManager()->loadAll();
+        $result = array_map(
+            function ($aliasRecord) {
+                return $aliasRecord->export();
+            },
+            $result
+        );
+        return $result;
+    }
+
+    protected function oldSiteAliasCommandImplementation($site, $options)
     {
         $site_list = $this->resolveSpecifications($site, $options);
         if ($site_list === false) {

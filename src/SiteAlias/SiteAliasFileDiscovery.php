@@ -69,6 +69,11 @@ class SiteAliasFileDiscovery
         return array_merge($unnamedGroupAliasFiles, $groupAliasFileCache);
     }
 
+    public function findAllSingleAliasFiles()
+    {
+        return $this->searchForAliasFiles('*.alias.yml');
+    }
+
     protected function findUnnamedGroupAliasFiles()
     {
         if (empty($this->unknamedGroupAliasFiles)) {
