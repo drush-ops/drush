@@ -2,9 +2,11 @@
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
+
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\SiteAlias\SiteAliasName;
+use Consolidation\OutputFormatters\StructuredData\ListDataFromKeys;
 
 class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
@@ -105,21 +107,21 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * @topics docs-aliases
      * @complete \Drush\Commands\CompletionCommands::completeSiteAliases
      *
-     * @return array
+     * @return \Consolidation\OutputFormatters\StructuredData\ListDataFromKeys
      */
     public function siteAlias($site = null, $options = ['format' => 'yaml'])
     {
         if (!$this->hasSiteAliasManager()) {
-            return $this->oldSiteAliasCommandImplementation($site, $options);
+            return new ListDataFromKeys($this->oldSiteAliasCommandImplementation($site, $options));
         }
 
         if (empty($site)) {
-            return $this->siteAliasListAll($options);
+            return new ListDataFromKeys($this->siteAliasListAll($options));
         }
 
         $aliasRecord = $this->siteAliasManager()->get($site);
         if ($aliasRecord !== false) {
-            return $aliasRecord->export();
+            return new ListDataFromKeys($aliasRecord->export());
         }
 
         // TODO: load and display all sites in a specified alias group
@@ -154,7 +156,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
             $site_specs[$site] = $result_record;
         }
         ksort($site_specs);
-        return $site_specs;
+        return new ListDataFromKeys($site_specs);
     }
 
     /**
