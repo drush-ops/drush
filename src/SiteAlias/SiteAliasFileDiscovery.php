@@ -74,6 +74,14 @@ class SiteAliasFileDiscovery
         return $this->searchForAliasFiles('*.alias.yml');
     }
 
+    public function findAllLegacyAliasFiles()
+    {
+        return array_merge(
+            $this->searchForAliasFiles('*.alias.drushrc.php'),
+            $this->searchForAliasFiles('*.aliases.drushrc.php')
+        );
+    }
+
     protected function findUnnamedGroupAliasFiles()
     {
         if (empty($this->unknamedGroupAliasFiles)) {

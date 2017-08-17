@@ -1,53 +1,55 @@
 <?php
 namespace Drush\SiteAlias;
 
-class SiteAliasFileDiscoveryTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class SiteAliasFileDiscoveryTest extends TestCase
 {
     use \Drush\FixtureFactory;
-    protected $discovery;
+    use \Drush\FunctionUtils;
 
-    function setup()
+    function setUp()
     {
-        $this->discovery = new SiteAliasFileDiscovery();
+        $this->sut = new SiteAliasFileDiscovery();
     }
 
     public function testSearchForSingleAliasFile()
     {
-        $this->discovery->addSearchLocation($this->fixturesDir() . '/sitealiases/single');
+        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/single');
 
-        $path = $this->discovery->findSingleSiteAliasFile('single');
+        $path = $this->sut->findSingleSiteAliasFile('single');
         $this->assertLocation('single', $path);
         $this->assertBasename('single.alias.yml', $path);
     }
 
     public function testSearchForMissingSingleAliasFile()
     {
-        $this->discovery->addSearchLocation($this->fixturesDir() . '/sitealiases/single');
+        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/single');
 
-        $path = $this->discovery->findSingleSiteAliasFile('missing');
+        $path = $this->sut->findSingleSiteAliasFile('missing');
         $this->assertFalse($path);
     }
 
     public function testSearchForGroupAliasFile()
     {
-        $this->discovery->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
+        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
 
-        $path = $this->discovery->findGroupAliasFile('pets');
+        $path = $this->sut->findGroupAliasFile('pets');
         $this->assertLocation('group', $path);
         $this->assertBasename('pets.aliases.yml', $path);
     }
 
     public function testSearchForMissingGroupAliasFile()
     {
-        $this->discovery->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
+        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
 
-        $path = $this->discovery->findGroupAliasFile('missing');
+        $path = $this->sut->findGroupAliasFile('missing');
         $this->assertFalse($path);
     }
 
     public function testUnnamedGroupFileCache()
     {
-        $this->discovery->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
+        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
         $this->assertTrue(file_exists($this->fixturesDir() . '/sitealiases/group/aliases.yml'));
 
         $result = $this->callProtected('findUnnamedGroupAliasFiles');
@@ -57,7 +59,7 @@ class SiteAliasFileDiscoveryTest extends \PHPUnit_Framework_TestCase
 
     public function testGroupFileCache()
     {
-        $this->discovery->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
+        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
 
         $result = $this->callProtected('groupAliasFileCache');
         $paths = $this->simplifyToBasenamesWithLocation($result);
@@ -70,11 +72,20 @@ class SiteAliasFileDiscoveryTest extends \PHPUnit_Framework_TestCase
 
     public function testFindAllGroupAliasFiles()
     {
-        $this->discovery->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
+        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
 
-        $result = $this->discovery->findAllGroupAliasFiles();
+        $result = $this->sut->findAllGroupAliasFiles();
         $paths = $this->simplifyToBasenamesWithLocation($result);
         $this->assertEquals('group/aliases.yml,group/pets.aliases.yml,group/transportation.aliases.yml', implode(',', $paths));
+    }
+
+    public function testFindAllLegacyAliasFiles()
+    {
+        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/legacy');
+
+        $result = $this->sut->findAllLegacyAliasFiles();
+        $paths = $this->simplifyToBasenamesWithLocation($result);
+        $this->assertEquals('legacy/cc.aliases.drushrc.php,legacy/one.alias.drushrc.php,legacy/pantheon.aliases.drushrc.php,legacy/server.aliases.drushrc.php', implode(',', $paths));
     }
 
     protected function assertLocation($expected, $path)
@@ -104,12 +115,5 @@ class SiteAliasFileDiscoveryTest extends \PHPUnit_Framework_TestCase
         sort($result);
 
         return $result;
-    }
-
-    protected function callProtected($methodName, $args = [])
-    {
-        $r = new \ReflectionMethod(SiteAliasFileDiscovery::class, $methodName);
-        $r->setAccessible(true);
-        return $r->invokeArgs($this->discovery, $args);
     }
 }

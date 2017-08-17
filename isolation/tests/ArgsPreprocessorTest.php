@@ -1,7 +1,9 @@
 <?php
 namespace Drush\Preflight;
 
-class ArgsPreprocessorTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class ArgsPreprocessorTest extends TestCase
 {
     /**
      * @dataProvider argTestValues

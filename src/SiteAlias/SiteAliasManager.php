@@ -7,12 +7,14 @@ namespace Drush\SiteAlias;
 class SiteAliasManager
 {
     protected $aliasLoader;
+    protected $legacyAliasConverter;
     protected $selfAliasRecord;
     protected $specParser;
 
     public function __construct($aliasLoader = null)
     {
         $this->aliasLoader = $aliasLoader ?: new SiteAliasFileLoader();
+        $this->legacyAliasConverter = new LegacyAliasConverter($this->aliasLoader->discovery());
         $this->specParser = new SiteSpecParser();
         $this->selfAliasRecord = new AliasRecord();
     }
@@ -81,6 +83,11 @@ class SiteAliasManager
             return new AliasRecord([], $aliasName);
         }
 
+        // Check to see if there are any legacy alias files that
+        // need to be converted.
+        // TODO: provide an enable / disable switch for this?
+        $this->legacyAliasConverter->convertOnce();
+
         // Search through all search locations, load
         // matching and potentially-matching alias files,
         // and return the alias matching the provided name.
@@ -89,6 +96,8 @@ class SiteAliasManager
 
     public function loadAll()
     {
+        $this->legacyAliasConverter->convertOnce();
+
         return $this->aliasLoader->loadAll();
     }
 

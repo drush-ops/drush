@@ -1,11 +1,13 @@
 <?php
 namespace Drush\Config;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * The code tested here is pretty trivial; this test suite also serves
  * the dual purpose of testing that the fixture data is reasonable.
  */
-class EnvironmentTest extends \PHPUnit_Framework_TestCase
+class EnvironmentTest extends TestCase
 {
     use \Drush\FixtureFactory;
 

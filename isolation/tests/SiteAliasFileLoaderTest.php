@@ -1,20 +1,21 @@
 <?php
 namespace Drush\SiteAlias;
 
-class SiteAliasFileLoaderTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class SiteAliasFileLoaderTest extends TestCase
 {
     use \Drush\FixtureFactory;
-    protected $loader;
+    use \Drush\FunctionUtils;
 
-    function setup()
+    function setUp()
     {
-        $this->loader = new SiteAliasFileLoader();
+        $this->sut = new SiteAliasFileLoader();
     }
 
     public function testLoadSingleAliasFile()
     {
-        $siteAliasesDir = $this->fixturesDir() . '/sitealiases/single';
-        $this->loader->addSearchLocation($siteAliasesDir);
+        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/single');
 
         // Look for a simple alias with no environments defined
         $name = new SiteAliasName('@simple');
@@ -42,40 +43,45 @@ class SiteAliasFileLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($result);
     }
 
+    public function testLoadLegacy()
+    {
+        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/legacy');
+    }
+
     public function testLoad()
     {
-        $this->loader->addSearchLocation($this->fixturesDir() . '/sitealiases/single');
-        $this->loader->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
+        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/single');
+        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
 
         // Look for a simple alias with no environments defined
         $name = new SiteAliasName('@simple');
-        $result = $this->loader->load($name);
+        $result = $this->sut->load($name);
         $this->assertTrue($result instanceof AliasRecord);
         $this->assertEquals('/path/to/simple', $result->get('root'));
 
         // Look for a single alias without an environment specified.
         $name = new SiteAliasName('@single');
-        $result = $this->loader->load($name);
+        $result = $this->sut->load($name);
         $this->assertTrue($result instanceof AliasRecord);
         $this->assertEquals('/path/to/single', $result->get('root'));
         $this->assertEquals('bar', $result->get('foo'));
 
         // Same test, but with environment explicitly requested.
         $name = new SiteAliasName('@single.alternate');
-        $result = $this->loader->load($name);
+        $result = $this->sut->load($name);
         $this->assertTrue($result instanceof AliasRecord);
         $this->assertEquals('/alternate/path/to/single', $result->get('root'));
         $this->assertEquals('bar', $result->get('foo'));
 
         // Try to fetch an alias that does not exist.
         $name = new SiteAliasName('@missing');
-        $result = $this->loader->load($name);
+        $result = $this->sut->load($name);
         $this->assertFalse($result);
 
         // Look for a group alias with environment explicitly provided.
         // Confirm that site alias inherits the common value for 'options.food'.
         $name = new SiteAliasName('@pets.dogs.default');
-        $result = $this->loader->load($name);
+        $result = $this->sut->load($name);
         $this->assertTrue($result instanceof AliasRecord);
         $this->assertEquals('/path/to/dogs', $result->get('root'));
         $this->assertEquals('meat', $result->get('options.food'));
@@ -83,48 +89,41 @@ class SiteAliasFileLoaderTest extends \PHPUnit_Framework_TestCase
         // Look for a group alias with environment explicitly provided.
         // Confirm that site alias has the overridden value for 'options.food'.
         $name = new SiteAliasName('@pets.birds.default');
-        $result = $this->loader->load($name);
+        $result = $this->sut->load($name);
         $this->assertTrue($result instanceof AliasRecord);
         $this->assertEquals('/path/to/birds', $result->get('root'));
         $this->assertEquals('seed', $result->get('options.food'));
 
         // Ask for sitename only; find result in an aliases.yml file.
         $name = new SiteAliasName('@trains');
-        $result = $this->loader->load($name);
+        $result = $this->sut->load($name);
         $this->assertTrue($result instanceof AliasRecord);
         $this->assertEquals('/path/to/trains', $result->get('root'));
 
         // Ask for sitename only; find result in a group.aliases.yml file.
         $name = new SiteAliasName('@cats');
-        $result = $this->loader->load($name);
+        $result = $this->sut->load($name);
         $this->assertTrue($result instanceof AliasRecord);
         $this->assertEquals('/path/to/cats', $result->get('root'));
 
         // Test fetching with a group and sitename without an environment specified.
         $name = new SiteAliasName('@pets.cats');
-        $result = $this->loader->load($name);
+        $result = $this->sut->load($name);
         $this->assertTrue($result instanceof AliasRecord);
         $this->assertEquals('/path/to/cats', $result->get('root'));
 
         // Try to fetch an alias that does not exist.
         $name = new SiteAliasName('@missing');
-        $result = $this->loader->load($name);
+        $result = $this->sut->load($name);
         $this->assertFalse($result);
     }
 
     public function testLoadAll()
     {
-        $this->loader->addSearchLocation($this->fixturesDir() . '/sitealiases/single');
-        $this->loader->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
+        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/single');
+        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
 
-        $all = $this->loader->loadAll();
+        $all = $this->sut->loadAll();
         $this->assertEquals('@bathtub.default,@drill.default,@pets.birds.default,@pets.cats.default,@pets.dogs.default,@simple.default,@single.dev,@transportation.cars.default,@transportation.planes.default,@transportation.trains.default,@tuna.default', implode(',', array_keys($all)));
-    }
-
-    protected function callProtected($methodName, $args)
-    {
-        $r = new \ReflectionMethod(SiteAliasFileLoader::class, $methodName);
-        $r->setAccessible(true);
-        return $r->invokeArgs($this->loader, $args);
     }
 }

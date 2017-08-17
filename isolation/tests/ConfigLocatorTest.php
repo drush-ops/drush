@@ -1,10 +1,12 @@
 <?php
 namespace Drush\Config;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Test the config loader. Also exercises the EnvironmentConfigLoader.
  */
-class ConfigLocatorTest extends \PHPUnit_Framework_TestCase
+class ConfigLocatorTest extends TestCase
 {
     use \Drush\FixtureFactory;
 

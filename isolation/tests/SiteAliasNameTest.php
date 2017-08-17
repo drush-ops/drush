@@ -1,7 +1,9 @@
 <?php
 namespace Drush\SiteAlias;
 
-class SiteAliasNameTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class SiteAliasNameTest extends TestCase
 {
     public function testSiteAliasName()
     {

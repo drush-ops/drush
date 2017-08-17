@@ -3,7 +3,6 @@ namespace Drush\SiteAlias;
 
 use Consolidation\Config\Loader\ConfigProcessor;
 use Dflydev\DotAccessData\Util as DotAccessDataUtil;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -219,7 +218,7 @@ class SiteAliasFileLoader
     {
         $data = $this->loadYml($path);
         if (!$data || !isset($data['sites'])) {
-            return false;
+            return [];
         }
 
         $names = array_keys($data['sites']);

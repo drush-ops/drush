@@ -1,7 +1,9 @@
 <?php
 namespace Drush\SiteAlias;
 
-class SiteSpecParserTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class SiteSpecParserTest extends TestCase
 {
     use \Drush\FixtureFactory;
 
