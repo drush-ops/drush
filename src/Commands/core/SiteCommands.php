@@ -2,6 +2,7 @@
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
+use Consolidation\OutputFormatters\StructuredData\ListDataFromKeys;
 
 class SiteCommands extends DrushCommands
 {
@@ -101,7 +102,7 @@ class SiteCommands extends DrushCommands
      * @topics docs-aliases
      * @complete \Drush\Commands\CompletionCommands::completeSiteAliases
      *
-     * @return array
+     * @return \Consolidation\OutputFormatters\StructuredData\ListDataFromKeys
      */
     public function siteAlias($site = null, $options = ['format' => 'yaml'])
     {
@@ -118,7 +119,7 @@ class SiteCommands extends DrushCommands
             $site_specs[$site] = $result_record;
         }
         ksort($site_specs);
-        return $site_specs;
+        return new ListDataFromKeys($site_specs);
     }
 
     /**
