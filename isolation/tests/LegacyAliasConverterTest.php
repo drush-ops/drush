@@ -8,6 +8,7 @@ class LegacyAliasConverterTest extends TestCase
 {
     use \Drush\FixtureFactory;
     use \Drush\FunctionUtils;
+    use \Drush\FSUtils;
 
     protected $discovery;
     protected $target;
@@ -25,8 +26,7 @@ class LegacyAliasConverterTest extends TestCase
 
     protected function tearDown()
     {
-        $fs = new Filesystem();
-        $fs->remove($this->target);
+        $this->removeDir($this->target);
     }
 
     protected function tempdir()
