@@ -61,10 +61,6 @@ class Preflight
         LegacyPreflight::includeCode($this->environment->drushBasePath());
         LegacyPreflight::defineConstants($this->environment, $preflightArgs->applicationPath());
         LegacyPreflight::setContexts($this->environment);
-
-        // TODO: Inject a termination handler into this class, so that we don't
-        // need to add these e.g. when testing.
-        // $this->setTerminationHandlers();
     }
 
     /**
@@ -180,6 +176,11 @@ class Preflight
 
         // Set up the DI container
         $container = DependencyInjection::initContainer($application, $config, $input, $output, $loader, $this->drupalFinder, $aliasManager);
+
+        // Our termination handlers depend on classes we set up via DependencyInjection.
+        // TODO: Inject a termination handler into this class, so that we don't
+        // need to add these e.g. when testing.
+        $this->setTerminationHandlers();
 
         // We need to check the php minimum version again, in case anyone
         // has set it to something higher in one of the config files we loaded.
