@@ -32,6 +32,7 @@ class LocaleCommands extends DrushCommands
     public function __construct(ModuleHandlerInterface $moduleHandler, StateInterface $state)
     {
         $this->moduleHandler = $moduleHandler;
+        $this->state = $state;
     }
 
     /**

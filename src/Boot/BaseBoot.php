@@ -133,6 +133,39 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInt
         return $return;
     }
 
+    public function bootstrapPhases()
+    {
+        return [
+            DRUSH_BOOTSTRAP_DRUSH => 'bootstrapDrush',
+        ];
+    }
+
+    public function bootstrapPhaseMap()
+    {
+        return [
+            'none' => DRUSH_BOOTSTRAP_DRUSH,
+            'drush' => DRUSH_BOOTSTRAP_DRUSH,
+            'max' => DRUSH_BOOTSTRAP_MAX,
+        ];
+    }
+
+    public function lookUpPhaseIndex($phase)
+    {
+        $phaseMap = $this->bootstrapPhaseMap();
+        if (isset($phaseMap[$phase])) {
+            return $phaseMap[$phase];
+        }
+
+        if (/*(substr($phase, 0, 16) != 'DRUSH_BOOTSTRAP_') ||*/ (!defined($phase))) {
+            return;
+        }
+        return constant($phase);
+    }
+
+    public function bootstrapDrush()
+    {
+    }
+
     protected function hasRegisteredSymfonyCommand($application, $name)
     {
         try {

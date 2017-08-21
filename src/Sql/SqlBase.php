@@ -271,7 +271,7 @@ class SqlBase
         if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
             // Enable prefix processing which can be dangerous so off by default. See http://drupal.org/node/1219850.
             if ($this->getOption('db-prefix')) {
-                $query = \Database::getConnection()->prefixTables($query);
+                $query = Database::getConnection()->prefixTables($query);
             }
         }
         return $query;

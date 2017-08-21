@@ -11,17 +11,18 @@ use Drush\Drupal\DrushServiceModifier;
 
 use Drush\Log\LogLevel;
 
-class DrupalBoot8 extends DrupalBoot
+class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 {
+    use AutoloaderAwareTrait;
 
-      /**
-       * @var \Drupal\Core\DrupalKernelInterface
-       */
+    /**
+     * @var \Drupal\Core\DrupalKernelInterface
+     */
     protected $kernel;
 
-      /**
-       * @var \Symfony\Component\HttpFoundation\Request
-       */
+    /**
+     * @var \Symfony\Component\HttpFoundation\Request
+     */
     protected $request;
 
     public function validRoot($path)
@@ -40,8 +41,10 @@ class DrupalBoot8 extends DrupalBoot
 
     public function getVersion($drupal_root)
     {
-        // Load the autoloader so we can access the class constants.
-        drush_drupal_load_autoloader($drupal_root);
+        // Are the class constants available?
+        if (!$this->hasAutoloader()) {
+            throw new \Exception('Cannot access Drupal 8 class constants - Drupal autoloader not loaded yet.');
+        }
         // Drush depends on bootstrap being loaded at this point.
         require_once $drupal_root .'/core/includes/bootstrap.inc';
         if (defined('\Drupal::VERSION')) {
@@ -129,7 +132,7 @@ class DrupalBoot8 extends DrupalBoot
     public function bootstrapDrupalConfiguration()
     {
         $this->request = Request::createFromGlobals();
-        $classloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
+        $classloader = $this->autoloader();
         // @todo - use Request::create() and then no need to set PHP superglobals
         $kernelClass = new \ReflectionClass('\Drupal\Core\DrupalKernel');
         if ($kernelClass->hasMethod('addServiceModifier')) {

@@ -16,9 +16,10 @@ class StatusCommands extends DrushCommands
 
     /**
      * @command core-status
-     * @param $filter
+     * @param $filter A field to filter on. @deprecated - use --field option instead.
+     * @option project A comma delimited list of projects. their paths will be added to path-aliases section.
      * @aliases status, st
-     *
+     *n
      * @table-style compact
      * @list-delimiter :
      * @field-labels
@@ -58,7 +59,8 @@ class StatusCommands extends DrushCommands
      *   %paths: Other paths
      * @default-fields drupal-version,uri,db-driver,db-hostname,db-port,db-username,db-name,db-status,bootstrap,theme,admin-theme,php-bin,php-conf,php-os,drush-script,drush-version,drush-temp,drush-conf,drush-alias-files,install-profile,root,site,files,private,temp
      * @pipe-format json
-     * @bootstrap DRUSH_BOOTSTRAP_MAX
+     * @hidden-options project
+     * @bootstrap max
      * @topics docs-readme
      *
      * @return \Consolidation\OutputFormatters\StructuredData\PropertyList

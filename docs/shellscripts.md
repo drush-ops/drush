@@ -44,7 +44,7 @@ Drush scripts can access their arguments via the drush\_shift() function:
               drush_print($arg);
             }
 
-Options are available via drush\_get\_option('option-name'). The directory where the script was launched is available via drush_cwd()
+Options are available via $options. The directory where the script was launched is available via drush_cwd()
 
 See the example Drush script in `drush topic docs-examplescript`, and the list of Drush error codes in `drush topic docs-errorcodes`.
 
