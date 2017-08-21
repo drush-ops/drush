@@ -1,4 +1,4 @@
-# Configuration file for unit test runner at http://travis-ci.org/#!/drush-ops/drush
+  # Configuration file for unit test runner at http://travis-ci.org/#!/drush-ops/drush
 branches:
   only:
     - master
