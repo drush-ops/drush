@@ -96,6 +96,8 @@ class commandCase extends CommandUnishTestCase {
     );
     $this->drush('devel-reinstall', array(), $options, NULL, NULL, self::EXIT_ERROR);
     $parsed = $this->parse_backend_output($this->getOutput());
+    print_r($parsed);
+    fwrite(STDERR, print_r($parsed, TRUE));
     $this->assertArrayHasKey("DRUSH_COMMAND_DEPENDENCY_ERROR", $parsed['error_log']);
   }
 }
