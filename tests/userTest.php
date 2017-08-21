@@ -11,6 +11,7 @@ use Webmozart\PathUtil\Path;
 class userCase extends CommandUnishTestCase {
 
   const NAME = 'example';
+  const EMAIL = 'example@example.com';
 
   function setUp() {
     if (!$this->getSites()) {
@@ -83,7 +84,7 @@ class userCase extends CommandUnishTestCase {
 
     // Check specific user with a path argument.
     $uid = 2;
-    $this->drush('user-login', array('node/add'), $user_login_options + ['name' => self::NAME]);
+    $this->drush('user-login', array('node/add'), $user_login_options + ['uid' => $uid]);
     $output = $this->getOutput();
     $url = parse_url($output);
     $query = $url['query'];
@@ -98,12 +99,31 @@ class userCase extends CommandUnishTestCase {
     $query = $url['query'];
     $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
 
-    // Check backwards compatability uid argument without name option.
+    // Check uid as only argument.
     $this->drush('user-login', array("$uid"), $user_login_options);
     $output = $this->getOutput();
     $url = parse_url($output);
-    $query = $url['query'];
     $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with uid argument returned a valid reset URL');
+
+    // Check mail as only argument.
+    $this->drush('user-login', array(self::EMAIL), $user_login_options);
+    $output = $this->getOutput();
+    $url = parse_url($output);
+    $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with mail argument returned a valid reset URL');
+
+    // Check name as only argument.
+    $this->drush('user-login', array(self::NAME), $user_login_options);
+    $output = $this->getOutput();
+    $url = parse_url($output);
+    $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with name argument returned a valid reset URL');
+
+    // Check path as only argument.
+    $this->drush('user-login', array('node/add'), $user_login_options);
+    $output = $this->getOutput();
+    $url = parse_url($output);
+    $this->assertContains('/user/reset/1', $url['path'], 'Login with single path argument returned a valid reset URL');
+    $query = $url['query'];
+    $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
 
   }
 
@@ -156,11 +176,11 @@ class userCase extends CommandUnishTestCase {
   }
 
   function UserCreate() {
-    $this->drush('user-create', array(self::NAME), $this->options() + array('password' => 'password', 'mail' => "example@example.com"));
+    $this->drush('user-create', array(self::NAME), $this->options() + array('password' => 'password', 'mail' => self::EMAIL));
     $this->drush('user-information', array(self::NAME), $this->options() + array('format' => 'json'));
     $uid = 2;
     $output = $this->getOutputFromJSON($uid);
-    $this->assertEquals('example@example.com', $output->mail);
+    $this->assertEquals(self::EMAIL, $output->mail);
     $this->assertEquals(self::NAME, $output->name);
     $this->assertEquals(1, $output->user_status, 'Newly created user is Active.');
     $expected = array('authenticated');
