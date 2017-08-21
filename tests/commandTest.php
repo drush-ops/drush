@@ -91,6 +91,8 @@ class commandCase extends CommandUnishTestCase {
       'cache' => NULL,
     );
     $this->drush('pm-download', array('devel'), $options);
+    $this->drush('version');
+    fwrite(STDERR, $this->getOutputRaw());
     $options += array(
       'backend' => NULL, // To obtain and parse the error log.
     );
