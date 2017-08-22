@@ -46,7 +46,7 @@ function runserver_env($key) {
 }
 
 $url = parse_url($_SERVER["REQUEST_URI"]);
-if (file_exists('.' . $url['path'])) {
+if (file_exists('.' . urldecode($url['path']))) {
   // Serve the requested resource as-is.
   return FALSE;
 }
