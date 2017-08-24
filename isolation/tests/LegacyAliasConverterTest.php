@@ -2,7 +2,6 @@
 namespace Drush\SiteAlias;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Filesystem\Filesystem;
 
 class LegacyAliasConverterTest extends TestCase
 {
