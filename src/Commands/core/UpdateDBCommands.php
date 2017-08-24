@@ -90,19 +90,6 @@ class UpdateDBCommands extends DrushCommands
     }
 
     /**
-     * Perform update functions.
-     *
-     * @command updatedb-batch-process
-     * @param $batch_id The batch id that will be processed.
-     * @hidden
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
-     */
-    public function updatedbProcess($batch_id)
-    {
-        drush_batch_command($batch_id);
-    }
-
-    /**
      * Perform one update and store the results which will later be displayed on
      * the finished page.
      *
@@ -315,7 +302,7 @@ class UpdateDBCommands extends DrushCommands
         );
         batch_set($batch);
         \Drupal::service('state')->set('system.maintenance_mode', true);
-        drush_backend_batch_process('updatedb-batch-process');
+        drush_backend_batch_process();
         \Drupal::service('state')->set('system.maintenance_mode', false);
     }
 
@@ -477,7 +464,7 @@ class UpdateDBCommands extends DrushCommands
             );
             batch_set($batch);
             \Drupal::service('state')->set('system.maintenance_mode', true);
-            drush_backend_batch_process('updatedb-batch-process');
+            drush_backend_batch_process();
             \Drupal::service('state')->set('system.maintenance_mode', false);
         } else {
             $this->logger()->success(dt("No entity schema updates required"));
