@@ -1,8 +1,15 @@
 <?php
 namespace Drush\Commands;
 
-class LegacyCommands extends DrushCommands
+use Drush\Drush;
+
+use Robo\LoadAllTasks;
+use Robo\Contract\IOAwareInterface;
+use Robo\Contract\BuilderAwareInterface;
+
+class LegacyCommands extends DrushCommands implements BuilderAwareInterface, IOAwareInterface
 {
+    use LoadAllTasks;
 
     /**
      * @command pm-disable
@@ -87,7 +94,7 @@ class LegacyCommands extends DrushCommands
      */
     public function releases()
     {
-        $msg = 'The pm-releases command was deprecated. Please see `composer show <packagename>`';
+        $msg = 'The pm-releases command was deprecated. Please see `composer search` and `composer show <packagename>`';
         $this->logger()->notice($msg);
     }
 
@@ -107,9 +114,87 @@ class LegacyCommands extends DrushCommands
      * @aliases dl
      * @hidden
      */
-    public function download()
+    public function download(
+        array $args,
+        $options = [
+            'stability' => false,
+            'dev' => false,
+            'keep-vcs' => false,
+            'no-install' => false,
+            'repository' => ''
+        ]
+    ) {
+        $composerRoot = Drush::bootstrapManager()->getComposerRoot();
+
+        if ($options['dev']) {
+            $options['stability'] = 'dev';
+        }
+
+        if ($composerRoot) {
+            return $this->downloadViaRequire($composerRoot, $args, $options);
+        }
+        return $this->downloadViaCreateProject($args, $options);
+    }
+
+    public function fixProjectArgs($args)
     {
-        $msg = 'dl has been deprecated. Please build your site using Composer. Add new projects with composer require drupal/[project-name]. Use https://www.drupal.org/project/composer_generate to build a composer.json which represents the the enabled modules on your site.';
-        $this->logger()->notice($msg);
+        return array_map(
+            function ($item) {
+                list($project, $version) = explode(':', $item, 2) + ['', ''];
+
+                if (strpos($project, "/") === false) {
+                    $project = "drupal/$project";
+                }
+
+                if ($project == 'drupal/drupal') {
+                    $project = 'drupal-composer/drupal-project';
+                }
+
+                if (!empty($version)) {
+                    $project = "$project:$version";
+                }
+
+                return $project;
+            },
+            $args
+        );
+    }
+
+    protected function downloadViaCreateProject($args, $options)
+    {
+        $args = $this->fixProjectArgs($args);
+
+        $builder = $this->collectionBuilder();
+        foreach ($args as $arg) {
+            $repository = $options['repository'];
+            $stability = $options['stability'];
+
+            if (substr($arg, 0, 7) == 'drupal/') {
+                $repository = 'https://packages.drupal.org/8';
+            }
+            if (empty($stability) && (substr($arg, 0, 30) == 'drupal-composer/drupal-project')) {
+                $stability = 'dev';
+            }
+
+            $builder = $builder->taskComposerCreateProject()
+                ->source($arg)
+                ->repository($repository)
+                ->keepVcs($options['keep-vcs'])
+                ->noInstall($options['no-install'])
+                ->stability($stability)
+                ->noInteraction();
+        }
+        return $builder;
+    }
+
+    protected function downloadViaRequire($composerRoot, $args, $options)
+    {
+        $args = $this->fixProjectArgs($args);
+
+        return $this->taskComposerRequire()
+            ->workingDir($composerRoot)
+            ->noInstall($options['no-install'])
+            ->dependency($args)
+            ->noInteraction();
     }
 }
