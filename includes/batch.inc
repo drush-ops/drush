@@ -64,7 +64,7 @@ class DrushBatchContext extends ArrayObject {
  *
  * @param string $command
  *   (optional) The command to call for the back end process. By default this will be
- *   the 'batch-process' command, but some commands such as updatedb will
+ *   the 'batch-process' command, but some commands will
  *   have special initialization requirements, and will need to define and
  *   use their own command.
  * @param array $args
