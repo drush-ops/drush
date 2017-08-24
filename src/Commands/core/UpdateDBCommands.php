@@ -458,7 +458,7 @@ class UpdateDBCommands extends DrushCommands
             $batch['operations'] = $operations;
             $batch += array(
             'title' => 'Updating',
-            'init_message' => 'Starti ng updates',
+            'init_message' => 'Starting updates',
             'error_message' => 'An unrecoverable error has occurred. You can find the error message below. It is advised to copy it to the clipboard for reference.',
             'finished' => [$this, 'updateFinished'],
             );
