@@ -159,7 +159,9 @@ class Preflight
         $aliasManager = (new SiteAliasManager())
             ->addSearchLocation($preflightArgs->aliasPath())
             ->addSearchLocation($this->environment->systemConfigPath())
-            ->addSearchLocation($this->environment->userConfigPath());
+            ->addSearchLocation($this->environment->userConfigPath())
+            ->addSearchLocation($this->selectedDrupalRoot() . '/drush')
+            ->addSearchLocation($this->selectedComposerRoot() . '/drush');
         $selfAliasRecord = $aliasManager->findSelf($preflightArgs->alias(), $root, $preflightArgs->uri());
         $aliasConfig = $selfAliasRecord->exportConfig();
         $configLocator->addAliasConfig($aliasConfig);
@@ -226,7 +228,17 @@ class Preflight
     protected function setSelectedSite($selectedRoot)
     {
         $this->drupalFinder->locateRoot($selectedRoot);
+        return $this->selectedDrupalRoot();
+    }
+
+    protected function selectedDrupalRoot()
+    {
         return $this->drupalFinder->getDrupalRoot();
+    }
+
+    protected function selectedComposerRoot()
+    {
+        return $this->drupalFinder->getComposerRoot();
     }
 
     /**
