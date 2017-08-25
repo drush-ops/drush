@@ -101,6 +101,11 @@ class AliasRecord extends Config
         return $this->has('host');
     }
 
+    public function isNone()
+    {
+        return empty($this->root());
+    }
+
     /**
      * Return the 'root' element of this alias if this alias record
      * is local.
