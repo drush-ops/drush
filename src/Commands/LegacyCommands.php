@@ -1,7 +1,6 @@
 <?php
 namespace Drush\Commands;
 
-use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Drush;
 
 class LegacyCommands extends DrushCommands
@@ -130,8 +129,9 @@ class LegacyCommands extends DrushCommands
      * Throw and exception taken from the description of the legacy command.
      *
      * @param string $commandName
+     * @throws \Exception
      */
-    public function legacyFailureMessage(string $commandName) {
+    public function legacyFailureMessage($commandName) {
         $application = Drush::getApplication();
         $command = $application->get($commandName);
         $message = $command->getDescription();
