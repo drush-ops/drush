@@ -94,6 +94,9 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return $this->set(self::ALIAS, $alias);
     }
 
+    /**
+     * Get the selected site. Here, the default will typically be the cwd.
+     */
     public function selectedSite($default = false)
     {
         return $this->get(self::ROOT, $default);

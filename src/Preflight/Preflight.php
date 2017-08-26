@@ -217,17 +217,24 @@ class Preflight
     }
 
     /**
-     * Find the site the user selected based on --root or cwd.
+     * Find the site the user selected based on --root or cwd. If neither of
+     * those result in a site, then we will fall back to the vendor path.
      */
     protected function findSelectedSite(PreflightArgs $preflightArgs)
     {
+        // TODO: If we want to support ONLY site-local Drush (which is
+        // DIFFERENT than --local), then skip the call to `$preflightArgs->selectedSite`
+        // and just assign `false` to $selectedRoot.
         $selectedRoot = $preflightArgs->selectedSite($this->environment->cwd());
-        return $this->setSelectedSite($selectedRoot);
+        return $this->setSelectedSite($selectedRoot, $this->environment->vendorPath());
     }
 
-    protected function setSelectedSite($selectedRoot)
+    protected function setSelectedSite($selectedRoot, $fallbackPath = false)
     {
-        $this->drupalFinder->locateRoot($selectedRoot);
+        $foundRoot = $this->drupalFinder->locateRoot($selectedRoot);
+        if (!$foundRoot && $fallbackPath) {
+            $this->drupalFinder->locateRoot($fallbackPath);
+        }
         return $this->selectedDrupalRoot();
     }
 
