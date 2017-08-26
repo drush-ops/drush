@@ -15,7 +15,9 @@ class LegacyCommands extends DrushCommands
      * @allow-additional-options
      * @hidden
      */
-    public function disable() {}
+    public function disable() {
+        $this->legacyFailureMessage('pm-disable');
+    }
 
     /**
      * The pm-info command was deprecated. Please see `drush pm-list` and `composer show`
@@ -25,7 +27,9 @@ class LegacyCommands extends DrushCommands
      * @allow-additional-options
      * @hidden
      */
-    public function info() {}
+    public function info() {
+        $this->legacyFailureMessage('pm-info');
+    }
 
     /**
      * The pm-projectinfo command was deprecated. Please see `drush pm-list` and `composer show`
@@ -34,7 +38,9 @@ class LegacyCommands extends DrushCommands
      * @allow-additional-options
      * @hidden
      */
-    public function projectInfo() {}
+    public function projectInfo() {
+        $this->legacyFailureMessage('pm-projectinfo');
+    }
 
     /**
      * The pm-refresh command was deprecated. It is no longer useful.
@@ -44,7 +50,9 @@ class LegacyCommands extends DrushCommands
      * @allow-additional-options
      * @hidden
      */
-    public function refresh() {}
+    public function refresh() {
+        $this->legacyFailureMessage('pm-refresh');
+    }
 
     /**
      * The pm-updatestatus command was deprecated. Please see `composer show` and `composer outdated`. For security release notification, your project should depend on https://github.com/drupal-composer/drupal-security-advisories.
@@ -54,7 +62,9 @@ class LegacyCommands extends DrushCommands
      * @allow-additional-options
      * @hidden
      */
-    public function updatestatus() {}
+    public function updatestatus() {
+        $this->legacyFailureMessage('pm-updatestatus');
+    }
 
     /**
      * The pm-updatecode command was deprecated. Please see `composer outdated` and `composer update`. For security release notification, your project should depend on https://github.com/drupal-composer/drupal-security-advisories.
@@ -64,7 +74,9 @@ class LegacyCommands extends DrushCommands
      * @allow-additional-options
      * @hidden
      */
-    public function updatecode() {}
+    public function updatecode() {
+        $this->legacyFailureMessage('pm-updatecode');
+    }
 
     /**
      * The pm-releasenotes command was deprecated. No replacement available.
@@ -74,7 +86,9 @@ class LegacyCommands extends DrushCommands
      * @allow-additional-options
      * @hidden
      */
-    public function releaseNotes() {}
+    public function releaseNotes() {
+        $this->legacyFailureMessage('pm-releasenotes');
+    }
 
     /**
      * The pm-releases command was deprecated. Please see `composer show <packagename>`
@@ -84,7 +98,9 @@ class LegacyCommands extends DrushCommands
      * @allow-additional-options
      * @hidden
      */
-    public function releases() {}
+    public function releases() {
+        $this->legacyFailureMessage('pm-releases');
+    }
 
     /**
      * Make has been removed, in favor of Composer. Use the make-convert command in Drush 8 to quickly upgrade your build to Composer.
@@ -94,7 +110,9 @@ class LegacyCommands extends DrushCommands
      * @allow-additional-options
      * @hidden
      */
-    public function make() {}
+    public function make() {
+        $this->legacyFailureMessage('make');
+    }
 
     /**
      * dl has been deprecated. Please build your site using Composer. Add new projects with composer require drupal/[project-name]. Use https://www.drupal.org/project/composer_generate to build a composer.json which represents the the enabled modules on your site.
@@ -104,15 +122,18 @@ class LegacyCommands extends DrushCommands
      * @allow-additional-options
      * @hidden
      */
-    public function download() {}
+    public function download() {
+        $this->legacyFailureMessage('pm-download');
+    }
 
     /**
-     * @hook validate
-     * @param CommandData $commandData
+     * Throw and exception taken from the description of the legacy command.
+     *
+     * @param string $commandName
      */
-    public function validate(CommandData $commandData) {
+    public function legacyFailureMessage(string $commandName) {
         $application = Drush::getApplication();
-        $command = $application->get($commandData->input()->getFirstArgument());
+        $command = $application->get($commandName);
         $message = $command->getDescription();
         throw new \Exception($message);
     }
