@@ -41,7 +41,7 @@ class SqlSyncCommands extends DrushCommands
         $backend_options = array();
         // @todo drush_redispatch_get_options() assumes you will execute same command. Not good.
         $global_options = drush_redispatch_get_options() + array(
-        'strict' => 0,
+            'strict' => 0,
         );
         // We do not want to include root or uri here.  If the user
         // provided -r or -l, their key has already been remapped to
@@ -102,6 +102,7 @@ class SqlSyncCommands extends DrushCommands
         }
 
         if ($do_rsync) {
+            $rsync_options = [];
             if (!$options['no-dump']) {
                 // Cleanup if this command created the dump file.
                 $rsync_options[] = '--remove-source-files';
