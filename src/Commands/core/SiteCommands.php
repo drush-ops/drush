@@ -115,28 +115,29 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
             return new ListDataFromKeys($this->oldSiteAliasCommandImplementation($site, $options));
         }
 
-        if (empty($site)) {
-            return new ListDataFromKeys($this->siteAliasListAll($options));
+        // Check to see if the user provided a specification that matches
+        // multiple sites.
+        $aliasList = $this->siteAliasManager()->getMultiple($site);
+        if (is_array($aliasList)) {
+            return new ListDataFromKeys($this->siteAliasExportList($aliasList, $options));
         }
 
+        // Next check for a specific alias or a site specification.
         $aliasRecord = $this->siteAliasManager()->get($site);
         if ($aliasRecord !== false) {
-            return new ListDataFromKeys($aliasRecord->export());
+            return new ListDataFromKeys([$aliasRecord->name() => $aliasRecord->export()]);
         }
-
-        // TODO: load and display all sites in a specified alias group
 
         $this->logger()->success('No sites found.');
     }
 
-    protected function siteAliasListAll($options)
+    protected function siteAliasExportList($aliasList, $options)
     {
-        $result = $this->siteAliasManager()->loadAll();
         $result = array_map(
             function ($aliasRecord) {
                 return $aliasRecord->export();
             },
-            $result
+            $aliasList
         );
         return $result;
     }

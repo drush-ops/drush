@@ -102,6 +102,45 @@ class SiteAliasFileLoader
         return $result;
     }
 
+    public function loadMultiple(SiteAliasName $aliasName)
+    {
+
+        $collectionName = $aliasName->couldBeCollectionName();
+        if (!$collectionName) {
+            return false;
+        }
+
+        $path = $this->discovery()->findGroupAliasFile($collectionName);
+        $sitename = $aliasName->sitenameOfGroupCollection();
+        if ($path && !$sitename) {
+            return $this->loadAllRecordsFromGroupAliasPath($path);
+        }
+
+        $siteData = $this->getSiteDataForLoadMultiple($path, $sitename, $aliasName->sitename());
+        if (!$siteData) {
+            return false;
+        }
+
+        if ($siteData) {
+            // TODO: Load all aliases from $path
+            return $false;
+        }
+        return false;
+    }
+
+    protected function getSiteDataForLoadMultiple($pathToGroup, $sitenameInGroup, $singleSitename)
+    {
+        $siteData = $this->loadSiteDataFromGroup($pathToGroup, $sitenameInGroup);
+        if ($siteData) {
+            return $siteData;
+        }
+        $path = $this->discovery()->findSingleSiteAliasFile($singleSitename);
+        if (!$path) {
+            return false;
+        }
+        return $this->loadSiteDataFromPath($path);
+    }
+
     protected function storeAliasRecordInResut(&$result, $aliasRecord)
     {
         if (!$aliasRecord) {
@@ -247,6 +286,18 @@ class SiteAliasFileLoader
         return $this->fetchAliasRecordFromGroupAliasData($aliasName, $data, $group);
     }
 
+    protected function loadSiteDataFromGroup($path, $sitenameInGroup)
+    {
+        $data = $this->loadYml($path);
+        if (!$data) {
+            return false;
+        }
+        if (!isset($data['sites'][$sitenameInGroup])) {
+            return false;
+        }
+        return $data['sites'][$sitenameInGroup];
+    }
+
     protected function fetchAliasRecordFromGroupAliasData($aliasName, $data, $group = '')
     {
         $processor = new ConfigProcessor();
@@ -301,6 +352,9 @@ class SiteAliasFileLoader
      */
     protected function loadYml($path)
     {
+        if (empty($path)) {
+            return [];
+        }
         // TODO: Perhaps cache these alias files, as they may be read multiple times.
         return (array) Yaml::parse(file_get_contents($path));
     }

@@ -114,6 +114,44 @@ class SiteAliasName
     }
 
     /**
+     * In the case of calling SiteAliasManager::getMultiple(),
+     * we are interested in alias names that could be:
+     *
+     *   - @group
+     *   - @group.sitename
+     *   - @sitename
+     *
+     * This method will return the first component of an alias
+     * in one of those forms (the group or sitename), or 'false'
+     * for any alias name that does not match that pattern.
+     *
+     * @return string|false
+     */
+    public function couldBeCollectionName()
+    {
+        $this->assumeAmbiguousIsSitename();
+        if ($this->hasGroup()) {
+            return false;
+        }
+        return $this->sitename();
+    }
+
+    /**
+     * If this alias name is being used to call SiteALiasManager::getMultipl(),
+     * and it is in the form @group.sitename, then this method will return
+     * the 'sitename' component. Otherwise it returns 'false'.
+     *
+     * @return string|false
+     */
+    public function sitenameOfGroupCollection()
+    {
+        if (!$this->couldBeCollectionName() || !$this->hasEnv()) {
+            return false;
+        }
+        return $this->env();
+    }
+
+    /**
      * Returns true if alias name was provided in an ambiguous form.
      *
      * @return bool
