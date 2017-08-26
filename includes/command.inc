@@ -524,37 +524,13 @@ function drush_handle_command_output($command, $structured_output) {
  */
 function _drush_verify_cli_options($command) {
 
-  if (annotation_adapter_is_annotated($command)) {
-    // The canonical options list is now in $application
-    $application = Drush::getApplication();
-    $console = $application->get($command['command']);
-    if ($console instanceof AnnotatedCommand) {
-      $console->optionsHook();
-    }
-    $options = $console->getDefinition()->getOptions();
-    // Add formatter options. See \Consolidation\OutputFormatters\Options\FormatterOptions
-    // @todo Move this out of Drush.
-    $options['include-field-labels'] = '';
-  }
-  else {
-    // Start out with just the options in the current command record.
-    $options = _drush_get_command_options($command);
-  }
+  $options = drush_get_command_options_extended($command);
 
   // Skip all tests if the command is marked to allow anything.
   if (($command['allow-additional-options'] === TRUE)) {
     return TRUE;
   }
-  // If 'allow-additional-options' contains a list of command names,
-  // then union together all of the options from all of the commands.
-  if (is_array($command['allow-additional-options'])) {
-    $implemented = drush_get_commands();
-    foreach ($command['allow-additional-options'] as $subcommand_name) {
-      if (array_key_exists($subcommand_name, $implemented)) {
-        $options = array_merge($options, _drush_get_command_options($implemented[$subcommand_name]));
-      }
-    }
-  }
+
   // Also add in global options
   $options = array_merge($options, drush_get_global_options());
 
@@ -655,11 +631,26 @@ function _drush_get_command_options($command) {
 
 /**
  * Return the list of all of the options for the given
- * command record including options provided by engines and additional-options.
+ * command record including options provided by hooks and additional-options.
  */
 function drush_get_command_options_extended($command) {
-  // Start out with just the options in the current command record.
-  $options = _drush_get_command_options($command);
+  if (annotation_adapter_is_annotated($command)) {
+    // The canonical options list is now in $application
+    $application = Drush::getApplication();
+    $console = $application->get($command['command']);
+    if ($console instanceof AnnotatedCommand) {
+      $console->optionsHook();
+    }
+    $options = $console->getDefinition()->getOptions();
+    // Add formatter options. See \Consolidation\OutputFormatters\Options\FormatterOptions
+    // @todo Move this out of Drush.
+    $options['include-field-labels'] = '';
+  }
+  else {
+    // Start out with just the options in the current command record.
+    $options = _drush_get_command_options($command);
+  }
+
   // If 'allow-additional-options' contains a list of command names,
   // then union together all of the options from all of the commands.
   if (is_array($command['allow-additional-options'])) {
@@ -670,6 +661,7 @@ function drush_get_command_options_extended($command) {
       }
     }
   }
+
   return $options;
 }
 
