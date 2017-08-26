@@ -14,7 +14,8 @@ class LegacyCommands extends DrushCommands
      * @allow-additional-options
      * @hidden
      */
-    public function disable() {
+    public function disable()
+    {
         $this->legacyFailureMessage('pm-disable');
     }
 
@@ -26,7 +27,8 @@ class LegacyCommands extends DrushCommands
      * @allow-additional-options
      * @hidden
      */
-    public function info() {
+    public function info()
+    {
         $this->legacyFailureMessage('pm-info');
     }
 
@@ -37,7 +39,8 @@ class LegacyCommands extends DrushCommands
      * @allow-additional-options
      * @hidden
      */
-    public function projectInfo() {
+    public function projectInfo()
+    {
         $this->legacyFailureMessage('pm-projectinfo');
     }
 
@@ -49,7 +52,8 @@ class LegacyCommands extends DrushCommands
      * @allow-additional-options
      * @hidden
      */
-    public function refresh() {
+    public function refresh()
+    {
         $this->legacyFailureMessage('pm-refresh');
     }
 
@@ -61,7 +65,8 @@ class LegacyCommands extends DrushCommands
      * @allow-additional-options
      * @hidden
      */
-    public function updatestatus() {
+    public function updatestatus()
+    {
         $this->legacyFailureMessage('pm-updatestatus');
     }
 
@@ -73,7 +78,8 @@ class LegacyCommands extends DrushCommands
      * @allow-additional-options
      * @hidden
      */
-    public function updatecode() {
+    public function updatecode()
+    {
         $this->legacyFailureMessage('pm-updatecode');
     }
 
@@ -85,7 +91,8 @@ class LegacyCommands extends DrushCommands
      * @allow-additional-options
      * @hidden
      */
-    public function releaseNotes() {
+    public function releaseNotes()
+    {
         $this->legacyFailureMessage('pm-releasenotes');
     }
 
@@ -97,7 +104,8 @@ class LegacyCommands extends DrushCommands
      * @allow-additional-options
      * @hidden
      */
-    public function releases() {
+    public function releases()
+    {
         $this->legacyFailureMessage('pm-releases');
     }
 
@@ -109,7 +117,8 @@ class LegacyCommands extends DrushCommands
      * @allow-additional-options
      * @hidden
      */
-    public function make() {
+    public function make()
+    {
         $this->legacyFailureMessage('make');
     }
 
@@ -121,7 +130,8 @@ class LegacyCommands extends DrushCommands
      * @allow-additional-options
      * @hidden
      */
-    public function download() {
+    public function download()
+    {
         $this->legacyFailureMessage('pm-download');
     }
 
@@ -131,7 +141,8 @@ class LegacyCommands extends DrushCommands
      * @param string $commandName
      * @throws \Exception
      */
-    public function legacyFailureMessage($commandName) {
+    public function legacyFailureMessage($commandName)
+    {
         $application = Drush::getApplication();
         $command = $application->get($commandName);
         $message = $command->getDescription();
