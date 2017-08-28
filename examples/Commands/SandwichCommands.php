@@ -3,6 +3,7 @@ namespace Drush\Commands;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drush\Utils\StringUtils;
 
 /**
  * Run these commands using the --include option - e.g. `drush --include=/path/to/drush/examples mmas`
@@ -12,7 +13,7 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
  * - http://cgit.drupalcode.org/devel/tree/devel_generate/drush.services.yml
  *
  * This file is a good example of the first of those bullets (a commandfile) but
- * since it isn't part of a module, it does not implement drush.services.yml.
+ * since it isn't part of a module, it does not implement drush.services.yml. Global commandfiles like this one
  */
 
 class SandwichCommands extends DrushCommands {
@@ -28,7 +29,7 @@ class SandwichCommands extends DrushCommands {
    * @aliases mmas
    */
   public function makeSandwich($filling, $options = ['spreads' => NULL]) {
-    if ($spreads = _convert_csv_to_array('spreads')) {
+    if ($spreads = StringUtils::csvToArray('spreads')) {
       $list = implode(' and ', $spreads);
       $str_spreads = ' with just a dash of ' . $list;
     }

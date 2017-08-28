@@ -1,7 +1,7 @@
 Creating Custom Drush Commands
 ==============================
 
-Creating a new Drush command is very easy. Follow these simple steps:
+Creating a new Drush command is easy. Follow these simple steps:
 
 1. Run `drush generate drush-command-file`.
 1. Enter the machine name of the module that should "own" the file.
@@ -11,11 +11,24 @@ Creating a new Drush command is very easy. Follow these simple steps:
 
 Drush searches for commandfiles in the following locations:
 
--  Folders listed in the 'include' option (see `drush topic docs-configuration`).
--  The system-wide Drush commands folder, e.g. /usr/share/drush/commands.
--  The ".drush" folder in the user's HOME folder.
--  ../drush, /drush and /sites/all/drush relative to the current Drupal installation.
--  All enabled modules in the current Drupal installation.
+Global Drush Commands
+==============================
 
-Note: Folders and files containing other versions of Drush in their names will be \*skipped\* (e.g. devel.drush7.inc or drush7/devel.drush.inc). Names containing the current version of Drush (e.g. devel.drush9.inc) will be loaded.
+Commandfiles that don't ship inside Drupal modules are called 'global' commandfiles. See the examples/Commands folder for examples. In general, its better to use modules to carry your Drush commands. If you still prefer using a global commandfiles, please note:
+
+1. The file's namespace should be \Drush.
+1. The filename must end in Commands.php (e.g. FooCommands.php)
+1. The enclosing directory must be named Commands
+1. The directory above Commands must be one of: 
+    1.  Folders listed in the 'include' option (see `drush topic docs-configuration`).
+    1.  The system-wide Drush commands folder, e.g. /usr/share/drush/commands.
+    1.  The ".drush" folder in the user's HOME folder.
+    1.  ../drush, /drush and /sites/all/drush relative to the current Drupal installation.
+1. Until https://github.com/consolidation/annotated-command/issues/107 is implemented, you can't have commands in symlinks.
+
+Avoiding the loading of certain Commandfiles
+=================
+
+- Folders and files containing other versions of Drush in their names will be \*skipped\* (e.g. devel.drush7.inc or drush7/devel.drush.inc). Names containing the current version of Drush (e.g. devel.drush9.inc) will be loaded.
+- The --ignored-modules global option stops loading of commandfiles from specified modules.
 
