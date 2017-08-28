@@ -183,8 +183,6 @@ function drush_preflight_prepare() {
   // or do much else until after this is done.
   $container = drush_init_dependency_injection_container();
 
-  // Add our core annotation command files to the application.
-  drush_init_annotation_commands($container);
   drush_init_application_global_options();
 
   // Terminate immediately unless invoked as a command line script
@@ -351,16 +349,6 @@ function drush_init_application_global_options() {
       );
     }
   }
-}
-
-function drush_init_annotation_commands($container) {
-  $application = $container->get('application');
-  /** @var \Consolidation\AnnotatedCommand\CommandFileDiscovery */
-  $discovery = $container->get('commandDiscovery');
-  $commandFiles = $discovery->discover(DRUSH_BASE_PATH . '/lib/Drush', '\Drush');
-  $base_class = Path::join(DRUSH_BASE_PATH, 'lib/Drush/CommandFiles/DrushCommands.php');
-  unset($commandFiles[$base_class]);
-  drush_init_register_command_files($container, $commandFiles);
 }
 
 function drush_init_register_command_files($container, $commandFiles) {
@@ -540,18 +528,6 @@ function drush_preflight_root() {
   // Load the config options from Drupal's /drush, ../drush, and sites/all/drush directories,
   // even prior to bootstrapping the root.
   drush_load_config('drupal');
-
-  // Search for commandfiles in the root locations
-  $discovery = annotationcommand_adapter_get_discovery();
-  $searchpath = [dirname($root) . '/drush', "$root/drush", "$root/sites/all/drush"];
-  $drush_root_extensions = $discovery->discover($searchpath, '\Drush');
-  drush_set_context(
-    'DRUSH_ANNOTATED_COMMANDFILES',
-    array_merge(
-      drush_get_context('DRUSH_ANNOTATED_COMMANDFILES'),
-      $drush_root_extensions
-    )
-  );
 }
 
 function drush_preflight_site() {
