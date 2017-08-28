@@ -3,9 +3,12 @@ namespace Drush\Commands\core;
 
 use Drupal\Core\Url;
 use Drush\Commands\DrushCommands;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 
-class BrowseCommands extends DrushCommands
+class BrowseCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+    use SiteAliasManagerAwareTrait;
 
     /**
      * Display a link to a given path or open link in a browser.
@@ -28,11 +31,20 @@ class BrowseCommands extends DrushCommands
      */
     public function browse($path = '', $options = ['browser' => null])
     {
+        // TODO: Remove 2nd branch when no longer needed.
+        if ($this->hasSiteAliasManager()) {
+            $aliasRecord = $this->siteAliasManager()->getSelf();
+            $is_remote = $aliasRecord->isRemote();
+            $site_record = $aliasRecord->exportConfig()->get('options', []);
+        }
+        else {
+            $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
+            $is_remote = drush_sitealias_is_remote_site($alias);
+            $site_record = drush_sitealias_get_record($alias);
+        }
         // Redispatch if called against a remote-host so a browser is started on the
         // the *local* machine.
-        $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
-        if (drush_sitealias_is_remote_site($alias)) {
-            $site_record = drush_sitealias_get_record($alias);
+        if ($is_remote) {
             $return = drush_invoke_process($site_record, 'browse', [$path], drush_redispatch_get_options(), array('integrate' => true));
             if ($return['error_status']) {
                 throw new \Exception('Unable to execute browse command on remote alias.');
