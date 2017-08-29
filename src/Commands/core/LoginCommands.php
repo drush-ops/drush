@@ -21,8 +21,8 @@ class LoginCommands extends DrushCommands
      * @aliases uli
      * @usage drush user-login --name=ryan node/add/blog
      *   Displays and opens default web browser (if configured or detected) for a one-time login link for the user with the username ryan and redirect to the path node/add/blog.
-     * @usage drush user-login --browser=firefox --mail=drush@example.org admin/settings/performance
-     *   Open firefox web browser, login as the user with the e-mail address drush@example.org and redirect to the path admin/settings/performance.
+     * @usage drush user-login --browser=firefox --mail=drush@example.org
+     *   Open firefox web browser, and login as the user with the e-mail address drush@example.org.
      */
     public function login($path = '', $options = ['name' => '1', 'browser' => '', 'redirect-port' => ''])
     {
