@@ -133,7 +133,8 @@ class AliasRecord extends Config
         return new Config($data);
     }
 
-    public function legacyRecord() {
+    public function legacyRecord()
+    {
         return $this->exportConfig()->get('options', []);
     }
 

@@ -36,8 +36,7 @@ class BrowseCommands extends DrushCommands implements SiteAliasManagerAwareInter
             $aliasRecord = $this->siteAliasManager()->getSelf();
             $is_remote = $aliasRecord->isRemote();
             $site_record = $aliasRecord->legacyRecord();
-        }
-        else {
+        } else {
             $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
             $is_remote = drush_sitealias_is_remote_site($alias);
             $site_record = drush_sitealias_get_record($alias);
