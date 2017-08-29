@@ -37,6 +37,7 @@ function annotationcommand_adapter_get_discovery() {
     $discovery
       ->setIncludeFilesAtBase(false)
       ->setSearchLocations(['Commands'])
+      ->followLinks()
       ->setSearchPattern('#.*Commands.php$#');
   }
   return $discovery;
