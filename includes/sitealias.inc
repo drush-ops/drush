@@ -2235,7 +2235,7 @@ function drush_sitealias_cache_alias_by_path($alias_record) {
   if (!isset($alias_record['remote-host']) && isset($alias_record['root']) && isset($alias_record['uri']) && isset($alias_record['#name']) && isset($alias_record['#file'])) {
     $path = drush_sitealias_local_site_path($alias_record);
     if ($path) {
-      $cid = drush_get_cid('alias-path-', array(), array($path));
+      $cid = drush_get_cid('alias-path-', array(), array($path, drush_get_option('local') ? 'local' : 'no-local'));
       $alias_path_data = array(
         '#name' => $alias_record['#name'],
         '#file' => $alias_record['#file'],
@@ -2296,7 +2296,7 @@ function drush_sitealias_lookup_alias_by_path($path, $allow_best_match=FALSE) {
  */
 function drush_sitealias_quick_lookup_cached_alias_by_path($path) {
   $alias_record = array();
-  $cid = drush_get_cid('alias-path-', array(), array($path));
+  $cid = drush_get_cid('alias-path-', array(), array($path, drush_get_option('local') ? 'local' : 'no-local'));
   $alias_path_cache = drush_cache_get($cid);
   if (isset($alias_path_cache->data)) {
     $alias_name = $alias_path_cache->data['#name'];
