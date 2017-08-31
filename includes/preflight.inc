@@ -779,9 +779,9 @@ function drush_preflight_command_dispatch() {
   }
 
   $drupal_root_from_alias = drush_get_option('root', $root, 'alias');
-  $shouldRedispatch = (!empty($root)) && ($root != $drupal_root_from_alias);
+  $shouldRedispatch = (!isset($remote_host) && !empty($root)) && ($root != $drupal_root_from_alias);
 
-  if (!empty($root) && !empty($local_drush) && empty($is_local)) {
+  if (!isset($remote_host) && !empty($root) && !empty($local_drush) && empty($is_local)) {
     $this_drush = drush_find_drush();
     // If there is a local Drush selected, and it is not the
     // same Drush that is currently running, redispatch to it.
