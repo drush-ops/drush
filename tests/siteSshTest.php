@@ -4,7 +4,7 @@ namespace Unish;
 
 /**
  * @file
- *   Tests for sshCommands
+ *   Tests for ssh.drush.inc
  *
  * @group commands
  */
@@ -23,8 +23,8 @@ class siteSshCase extends CommandUnishTestCase {
     );
     $this->drush('ssh', array(), $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
     $output = $this->getOutput();
-    $expected = "Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush  --backend=2 --nocolor --uri=sitename --root=/path/to/drupal  core-execute   --escape=";
-    $this->assertContains($expected, $output);
+    $expected = sprintf('Calling proc_open(ssh -o PasswordAuthentication=no -t %s@%s %s);', self::escapeshellarg('user'), self::escapeshellarg('server'), "'cd /path/to/drupal && bash -l'");
+    $this->assertEquals($expected, $output);
   }
 
   /**
@@ -39,8 +39,8 @@ class siteSshCase extends CommandUnishTestCase {
     );
     $this->drush('ssh', array('date'), $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
     $output = $this->getOutput();
-    $expected = "Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush  --backend=2 --nocolor --uri=sitename --root=/path/to/drupal  core-execute date   --escape=";
-    $this->assertContains($expected, $output);
+    $expected = sprintf('Calling proc_open(ssh -o PasswordAuthentication=no %s@%s %s);', self::escapeshellarg('user'), self::escapeshellarg('server'), self::escapeshellarg('date'));
+    $this->assertEquals($expected, $output);
   }
 
   /**
@@ -53,8 +53,8 @@ class siteSshCase extends CommandUnishTestCase {
     );
     $this->drush('ssh', array('ls', '/path1', '/path2'), $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
     $output = $this->getOutput();
-    $expected = "Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush  --backend=2 --nocolor --uri=sitename --root=/path/to/drupal  core-execute '\''ls /path1 /path2'\''   --escape=";
-    $this->assertContains($expected, $output);
+    $expected = sprintf('Calling proc_open(ssh -o PasswordAuthentication=no %s@%s %s);', self::escapeshellarg('user'), self::escapeshellarg('server'), self::escapeshellarg('ls /path1 /path2'));
+    $this->assertEquals($expected, $output);
   }
 
   /**
@@ -67,7 +67,7 @@ class siteSshCase extends CommandUnishTestCase {
    );
    $this->drush('ssh', array('ls /path1 /path2'), $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
    $output = $this->getOutput();
-   $expected = "Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush  --backend=2 --nocolor --uri=sitename --root=/path/to/drupal  core-execute '\''ls /path1 /path2'\''   --escape=";
-   $this->assertContains($expected, $output);
+   $expected = sprintf('Calling proc_open(ssh -o PasswordAuthentication=no %s@%s %s);', self::escapeshellarg('user'), self::escapeshellarg('server'), self::escapeshellarg('ls /path1 /path2'));
+   $this->assertEquals($expected, $output);
  }
 }
