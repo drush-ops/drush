@@ -677,7 +677,7 @@ function drush_escapeshellarg($arg, $os = NULL, $raw = FALSE) {
     return $arg;
   }
   elseif (drush_is_windows($os)) {
-    return _drush_escapeshellarg_windows($arg, $raw);
+    return _drush_escapeshellarg_windows($arg, TRUE);
   }
   else {
     return _drush_escapeshellarg_linux($arg, $raw);
