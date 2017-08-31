@@ -35,9 +35,6 @@ class SshCommands extends DrushCommands
         }
         $command = implode(' ', $args);
 
-        if (!$alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
-            throw new \Exception('A site alias is required. The way you call ssh command has changed to `drush @alias ssh`.');
-        }
         $site = drush_sitealias_get_record($alias);
         // If we have multiple sites, run ourselves on each one. Set context back when done.
         if (isset($site['site-list'])) {
