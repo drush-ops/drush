@@ -1,0 +1,11 @@
+sites:
+  tuna:
+    default:
+      root: /path/to/tuna
+  drill:
+    default:
+      root: /path/to/drill
+  bathtub:
+    default:
+      root: /path/to/bathtub
+

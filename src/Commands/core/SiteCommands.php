@@ -2,10 +2,15 @@
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
+
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Drush\SiteAlias\SiteAliasManagerAwareTrait;
+use Drush\SiteAlias\SiteAliasName;
 use Consolidation\OutputFormatters\StructuredData\ListDataFromKeys;
 
-class SiteCommands extends DrushCommands
+class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+    use SiteAliasManagerAwareTrait;
 
     /**
      * Set a site alias to work on that will persist for the current session.
@@ -105,6 +110,39 @@ class SiteCommands extends DrushCommands
      * @return \Consolidation\OutputFormatters\StructuredData\ListDataFromKeys
      */
     public function siteAlias($site = null, $options = ['format' => 'yaml'])
+    {
+        if (!$this->hasSiteAliasManager()) {
+            return new ListDataFromKeys($this->oldSiteAliasCommandImplementation($site, $options));
+        }
+
+        // Check to see if the user provided a specification that matches
+        // multiple sites.
+        $aliasList = $this->siteAliasManager()->getMultiple($site);
+        if (is_array($aliasList)) {
+            return new ListDataFromKeys($this->siteAliasExportList($aliasList, $options));
+        }
+
+        // Next check for a specific alias or a site specification.
+        $aliasRecord = $this->siteAliasManager()->get($site);
+        if ($aliasRecord !== false) {
+            return new ListDataFromKeys([$aliasRecord->name() => $aliasRecord->export()]);
+        }
+
+        $this->logger()->success('No sites found.');
+    }
+
+    protected function siteAliasExportList($aliasList, $options)
+    {
+        $result = array_map(
+            function ($aliasRecord) {
+                return $aliasRecord->export();
+            },
+            $aliasList
+        );
+        return $result;
+    }
+
+    protected function oldSiteAliasCommandImplementation($site, $options)
     {
         $site_list = $this->resolveSpecifications($site, $options);
         if ($site_list === false) {

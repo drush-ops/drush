@@ -1,0 +1,15 @@
+sites:
+  planes:
+    default:
+      root: /path/to/planes
+  trains:
+    default:
+      root: /path/to/trains
+      options:
+        fuel: electricity
+  cars:
+    default:
+      root: /path/to/cars
+common:
+  options:
+    fuel: petroleum

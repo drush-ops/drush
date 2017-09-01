@@ -128,6 +128,7 @@ class Drush
     public static function getContainer()
     {
         if (static::$container === null) {
+            debug_print_backtrace();
             throw new \RuntimeException('Drush::$container is not initialized yet. \Drupal::setContainer() must be called with a real container.');
         }
         return static::$container;

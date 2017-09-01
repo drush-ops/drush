@@ -23,6 +23,7 @@ sudo: false
 
 env:
   matrix:
+    - TEST_DIR=isolation
     - PHPUNIT_ARGS=--group=base
     - PHPUNIT_ARGS=--group=commands
     - PHPUNIT_ARGS=--exclude-group=base,commands
@@ -46,14 +47,18 @@ before_install:
   - echo 'mbstring.http_output = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
 # Build a System-Under-Test.
-install: ${PWD}/unish.sut.php
+install:
+  - if [ -n "$TEST_DIR" ] ; then composer --working-dir=${PWD}/$TEST_DIR install ; fi
+  - if [ -z "$TEST_DIR" ] ; then ${PWD}/unish.sut.php ; fi
 
 before_script:
   - phpenv config-rm xdebug.ini
   - echo 'sendmail_path = /bin/true' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   # - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
 
-script: ${PWD}/unish.phpunit.php $PHPUNIT_ARGS
+script:
+  - if [ -n "$TEST_DIR" ] ; then cd $TEST_DIR && phpunit ; fi
+  - if [ -z "$TEST_DIR" ] ; then ${PWD}/unish.phpunit.php $PHPUNIT_ARGS ; fi
 
 # Background: https://github.com/drush-ops/drush/pull/1426
 after_success: ${PWD}/tests/testChildren.sh

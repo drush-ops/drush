@@ -1,0 +1,15 @@
+sites:
+  cats:
+    default:
+      root: /path/to/cats
+  dogs:
+    default:
+      root: /path/to/dogs
+  birds:
+    default:
+      root: /path/to/birds
+      options:
+        food: seed
+common:
+  options:
+    food: meat
