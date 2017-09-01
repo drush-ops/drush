@@ -28,7 +28,7 @@ class DrupliconCommands extends DrushCommands
         $this->printed = true;
         $annotationData = $commandData->annotationData();
         $commandName = $annotationData['command'];
-        if ($commandData->input()->getOption('druplicon')) {
+        if ($commandData->input()->hasOption('druplicon') && $commandData->input()->getOption('druplicon')) {
             $this->logger()->debug(dt('Displaying Druplicon for "!command" command.', array('!command' => $commandName)));
             $misc_dir = DRUSH_BASE_PATH . '/misc';
             if (drush_get_context('DRUSH_NOCOLOR')) {
