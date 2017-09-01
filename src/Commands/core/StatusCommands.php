@@ -17,7 +17,7 @@ class StatusCommands extends DrushCommands
     /**
      * @command core-status
      * @param $filter A field to filter on. @deprecated - use --field option instead.
-     * @option project A comma delimited list of projects. their paths will be added to path-aliases section.
+     * @option project A comma delimited list of projects. Their paths will be added to path-aliases section.
      * @aliases status, st
      *n
      * @table-style compact

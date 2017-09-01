@@ -39,19 +39,15 @@ class NotifyCommands extends DrushCommands
 
     public function shutdown(CommandData $commandData)
     {
-        $cmd = $commandData->input()->getFirstArgument();
+
+        $input = $commandData->input();
+        $cmd = $input->getFirstArgument();
 
         if (empty($cmd)) {
             return;
         }
 
-        // pm-download handles its own notification.
-        if ($cmd != 'pm-download' && self::isAllowed($commandData)) {
-            $msg = $commandData->annotationData()->get('notify', dt("Command '!command' completed.", array('!command' => $cmd)));
-            $this->shutdownSend($msg, $commandData);
-        }
-
-        if ($commandData->input()->getOption('notify') && drush_get_error()) {
+        if ($input->hasOption('notify') && $input->getOption('notify') && drush_get_error()) {
             // If the only error is that notify failed, do not try to notify again.
             $log = drush_get_error_log();
             if (count($log) == 1 && array_key_exists('NOTIFY_COMMAND_NOT_FOUND', $log)) {
