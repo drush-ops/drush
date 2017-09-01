@@ -779,9 +779,9 @@ function drush_preflight_command_dispatch() {
   }
 
   $drupal_root_from_alias = drush_get_option('root', $root, 'alias');
-  $shouldRedispatch = (!empty($root)) && ($root != $drupal_root_from_alias);
+  $shouldRedispatch = (!isset($remote_host) && !empty($root)) && ($root != $drupal_root_from_alias);
 
-  if (!empty($root) && !empty($local_drush) && empty($is_local)) {
+  if (!isset($remote_host) && !empty($root) && !empty($local_drush) && empty($is_local)) {
     $this_drush = drush_find_drush();
     // If there is a local Drush selected, and it is not the
     // same Drush that is currently running, redispatch to it.
@@ -807,6 +807,7 @@ function drush_preflight_command_dispatch() {
     // benefit of the Drush wrapper.
     chdir($root);
     $values = drush_do_command_redispatch(is_array($command) ? $command : $command_name, $args, NULL, NULL, $local_drush, TRUE, $aditional_options);
+    return drush_preflight_command_dispatch_exit($values);
   }
 
   // If the command sets the 'handle-remote-commands' flag, then we will short-circuit
@@ -822,6 +823,7 @@ function drush_preflight_command_dispatch() {
     $user_interactive = drush_get_option('interactive');
     drush_set_option('interactive', TRUE);
     $values = drush_do_command_redispatch(is_array($command) ? $command : $command_name, $args, $remote_host, $remote_user, $user_interactive);
+    return drush_preflight_command_dispatch_exit($values);
   }
   // If the --site-list flag is set, then we will execute the specified
   // command once for every site listed in the site list.
@@ -854,7 +856,12 @@ function drush_preflight_command_dispatch() {
     }
 
     $values = drush_invoke_process($site_record, $command_name, $args, $multi_options, $backend_options);
+    return drush_preflight_command_dispatch_exit($values);
   }
+  return FALSE;
+}
+
+function drush_preflight_command_dispatch_exit($values) {
   if (isset($values)) {
     if (is_array($values) && ($values['error_status'] > 0)) {
       // Force an error result code.  Note that drush_shutdown() will still run.
