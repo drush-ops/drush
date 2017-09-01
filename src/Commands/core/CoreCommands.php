@@ -5,9 +5,13 @@ use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 
-class CoreCommands extends DrushCommands
+class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+
+    use SiteAliasManagerAwareTrait;
 
     /**
      * Return the filesystem path for modules/themes and other key folders.
@@ -165,27 +169,28 @@ class CoreCommands extends DrushCommands
                 drush_op('chdir', $selected_root);
             }
         }
-        if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
-            $site = drush_sitealias_get_record($alias);
-            if (!empty($site['site-list'])) {
-                $sites = drush_sitealias_resolve_sitelist($site);
-                foreach ($sites as $site_name => $site_spec) {
-                    $result = $this->executeCmd($site_spec, $cmd);
-                    if (!$result) {
-                        break;
-                    }
-                }
-            } else {
-                $result = $this->executeCmd($site, $cmd);
-            }
+
+        // @todo: Remove 2nd branch when no longer needed.
+        if ($this->hasSiteAliasManager()) {
+            $aliasRecord = $this->siteAliasManager()->getSelf();
+            $site_record = $aliasRecord->legacyRecord();
+        } else {
+            $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
+            $site_record = drush_sitealias_get_record($alias);
+        }
+
+        if ($site_record) {
+            $result = $this->executeCmd($site_record, $cmd);
         } else {
             // Must be a local command.
             $result = (drush_shell_proc_open($cmd) == 0);
         }
+
         // Restore the cwd if we changed it
         if ($cwd) {
             drush_op('chdir', $selected_root);
         }
+
         if (!$result) {
             throw new \Exception(dt("Command !command failed.", array('!command' => $cmd)));
         }
