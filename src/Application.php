@@ -126,7 +126,7 @@ class Application extends SymfonyApplication
         try {
             return parent::find($name);
         } catch (CommandNotFoundException $e) {
-            print "TOOD: bootstrap further.\n";
+            print "TODO: bootstrap further.\n";
             // TODO: if the command was not found, and a bootstrap object
             // is available, then bootstrap some more and try to
             // find the requested command again. If things still do not

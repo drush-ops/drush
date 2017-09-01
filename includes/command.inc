@@ -1278,7 +1278,7 @@ function _drush_command_translate($source) {
  * - handle-remote-commands: set to TRUE if `drush @remote mycommand` should be executed
  *   locally rather than remotely dispatched.  When this mode is set, the target site
  *   can be obtained via:
- *     drush_get_context('DRUSH_TARGET_SITE_ALIAS')
+ *     $this->siteAliasManager()->getSelf()
  * - remote-tty: set to TRUE if Drush should force ssh to allocate a pseudo-tty
  *   when this command is being called remotely.  Important for interactive commands.
  *   Remote commands that allocate a psedo-tty always print "Connection closed..." when done.

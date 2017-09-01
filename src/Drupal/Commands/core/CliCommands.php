@@ -165,9 +165,20 @@ class CliCommands extends DrushCommands
         } // If there is an alias, use that in the site specific name. Otherwise,
         // use a hash of the root path.
         else {
-            if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
-                $site = drush_sitealias_get_record($alias);
-                $site_suffix = $site['#name'];
+            // TODO: Remove 2nd branch when no longer needed.
+            $site_name = '';
+            if ($this->hasSiteAliasManager()) {
+                $aliasRecord = $this->siteAliasManager()->getSelf();
+                $site_name = $aliasRecord->name();
+            } else {
+                if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
+                    $site_record = drush_sitealias_get_record($alias);
+                    $site_name = $site_record['#name'];
+                }
+            }
+
+            if ($site_name) {
+                $site_suffix = $site_name;
             } else {
                 $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
                 $site_suffix = md5($drupal_root);
