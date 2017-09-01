@@ -444,7 +444,11 @@ function drush_sql_drop() {
 function drush_sql_cli() {
   drush_sql_bootstrap_further();
   $sql = drush_sql_get_class();
-  return !(bool)drush_shell_proc_open($sql->connect());
+  $result = !drush_shell_proc_open($sql->connect());
+  if (!$result) {
+    drush_set_error('DRUSH_SQL_CLI_ERROR', dt('SQL client error occurred.'));
+  }
+  return $result;
 }
 
 /**
