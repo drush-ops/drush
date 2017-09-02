@@ -45,6 +45,7 @@ class Application extends SymfonyApplication
         //   --quiet
         //   --debug / -d : equivalent to -vv
         //   --yes / -y : equivalent to --no-interaction
+        //   --nocolor  : equivalent to --no-ansi
         //
         //
         // No longer supported
@@ -57,14 +58,14 @@ class Application extends SymfonyApplication
         //   --strict            Not supported by Symfony
         //   --interactive       If command isn't -n, then it is interactive
         //   --command-specific  Now handled by consolidation/config component
+        //   --php               If needed prefix command with PATH=/path/to/php:$PATH
+        //   --php-options
         //
         // Not handled yet (to be implemented):
         //
 
         //   --uri / -l
         //   --pipe
-        //   --php
-        //   --php-options
         //   --tty
         //   --exclude
         //   --backend
@@ -72,7 +73,6 @@ class Application extends SymfonyApplication
         //   --ignored-modules
         //   --no-label
         //   --label-separator
-        //   --nocolor
         //   --cache-default-class
         //   --cache-class-<bin>
         //   --confirm-rollback
