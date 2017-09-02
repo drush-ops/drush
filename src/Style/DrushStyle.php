@@ -26,20 +26,4 @@ class DrushStyle extends SymfonyStyle
             return array_search($return, $choices);
         }
     }
-
-    public function confirm($question, $default = true)
-    {
-        // Automatically accept confirmations if the --yes argument was supplied.
-        if (drush_get_context('DRUSH_AFFIRMATIVE')) {
-            $this->comment($question . ': yes.');
-            return true;
-        } // Automatically cancel confirmations if the --no argument was supplied.
-        elseif (drush_get_context('DRUSH_NEGATIVE')) {
-            $this->warning($question . ': no.');
-            return false;
-        }
-
-        $return = parent::confirm($question, $default);
-        return $return;
-    }
 }

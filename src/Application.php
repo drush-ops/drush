@@ -30,7 +30,7 @@ class Application extends SymfonyApplication
         //   --alias-path
         //   --local
         //
-        // Global options registerd with Symfony:
+        // Global options registered with Symfony:
         //
         //   --remote-host
         //   --remote-user
@@ -43,6 +43,9 @@ class Application extends SymfonyApplication
         //   --verbose / -v
         //   --help
         //   --quiet
+        //   --debug / -d : equivalent to -vv
+        //   --yes / -y : equivalent to --no-interaction
+        //
         //
         // No longer supported
         //
@@ -57,9 +60,8 @@ class Application extends SymfonyApplication
         //
         // Not handled yet (to be implemented):
         //
-        //   --debug / -d
+
         //   --uri / -l
-        //   --yes / -y
         //   --pipe
         //   --php
         //   --php-options
@@ -85,6 +87,17 @@ class Application extends SymfonyApplication
         //   --shell-aliases
         //   --path-aliases
         //   --ssh-options
+
+
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--debug', 'd', InputOption::VALUE_NONE, 'Equivalent to -vv')
+            );
+
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--yes', 'y', InputOption::VALUE_NONE, 'Equivalent to --no-interaction.')
+            );
 
         $this->getDefinition()
             ->addOption(

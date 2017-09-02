@@ -14,6 +14,7 @@ use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Output\Output;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Webmozart\PathUtil\Path;
@@ -198,6 +199,15 @@ class Preflight
         // Use the robo runner to register commands with Symfony application.
         $runner = new \Robo\Runner();
         $runner->registerCommandClasses($application, $commandClasses);
+
+        // Process legacy Drush global options.
+        if ($input->getParameterOption(['--yes', '-y'], false, true)) {
+            $input->setInteractive(false);
+        }
+        // Use -vvv for even more verbose logging.
+        if ($input->getParameterOption(['--debug', '-d'], false, true)) {
+            $output->setVerbosity(Output::VERBOSITY_VERBOSE);
+        }
 
         // Run the Symfony Application
         // Predispatch: call a remote Drush command if applicable (via a 'pre-init' hook)
