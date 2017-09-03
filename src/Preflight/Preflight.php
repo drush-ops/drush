@@ -205,6 +205,15 @@ class Preflight
         $runner = new \Robo\Runner();
         $runner->registerCommandClasses($application, $commandClasses);
 
+        // Process legacy Drush global options.
+        if ($input->getParameterOption(['--yes', '-y'], false, true)) {
+            $input->setInteractive(false);
+        }
+        // Use -vvv for even more verbose logging.
+        if ($input->getParameterOption(['--debug', '-d'], false, true)) {
+            $output->setVerbosity(Output::VERBOSITY_DEBUG);
+        }
+
         // Run the Symfony Application
         // Predispatch: call a remote Drush command if applicable (via a 'pre-init' hook)
         // Bootstrap: bootstrap site to the level requested by the command (via a 'post-init' hook)
