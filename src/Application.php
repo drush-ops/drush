@@ -58,14 +58,13 @@ class Application extends SymfonyApplication
         //   --strict            Not supported by Symfony
         //   --interactive       If command isn't -n, then it is interactive
         //   --command-specific  Now handled by consolidation/config component
-        //   --php               If needed prefix command with PATH=/path/to/php:$PATH
+        //   --php               If needed prefix command with PATH=/path/to/php:$PATH. Also see #env_vars in site aliases.
         //   --php-options
-        //
+        //   --pipe
         // Not handled yet (to be implemented):
         //
 
         //   --uri / -l
-        //   --pipe
         //   --tty
         //   --exclude
         //   --backend
