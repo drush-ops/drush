@@ -206,7 +206,7 @@ class Preflight
         }
         // Use -vvv for even more verbose logging.
         if ($input->getParameterOption(['--debug', '-d'], false, true)) {
-            $output->setVerbosity(Output::VERBOSITY_VERBOSE);
+            $output->setVerbosity(Output::VERBOSITY_DEBUG);
         }
 
         // Run the Symfony Application
