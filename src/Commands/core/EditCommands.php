@@ -2,6 +2,7 @@
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 
 class EditCommands extends DrushCommands
 {
@@ -84,7 +85,7 @@ class EditCommands extends DrushCommands
                 $aliases_header = array('aliases' => '-- Aliases --');
             }
         }
-        if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
+        if ($site_root = Drush::bootstrap()->confPath()) {
             $path = realpath($site_root . '/settings.php');
             $drupal[$path] = $path;
             if (file_exists($site_root . '/settings.local.php')) {

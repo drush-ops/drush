@@ -3,6 +3,7 @@ namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
 
+use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\SiteAlias\SiteAliasName;
@@ -219,7 +220,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
     public static function siteSiteList()
     {
         $site_list = array();
-        $base_path = drush_get_context('DRUSH_DRUPAL_ROOT');
+        $base_path = Drush::bootstrapManager()->getRoot();
         if ($base_path) {
             $base_path .= '/sites';
             $files = drush_scan_directory($base_path, '/settings\.php/', array('.', '..', 'CVS', 'all'), 0, 1);
