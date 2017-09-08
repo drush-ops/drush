@@ -60,7 +60,7 @@ EOD;
     $exec = sprintf('%s %s version arg1 arg2 --simulate --ssh-options=%s 2>%s', UNISH_DRUSH, self::escapeshellarg($site_specification), self::escapeshellarg('-i mysite_dsa'), self::escapeshellarg($this->bit_bucket()));
     $this->execute($exec);
     $bash = $this->escapeshellarg('drush  --uri=sitename --root=/path/to/drupal  version arg1 arg2 2>&1');
-    $expected = "Simulating backend invoke: ssh -i mysite_dsa user@server $bash 2>&1";
+    $expected = "Simulating backend invoke: ssh -i mysite_dsa user@server $bash";
     $output = $this->getOutput();
     $this->assertContains($expected, $output, 'Expected ssh command was built');
 
