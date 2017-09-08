@@ -30,7 +30,7 @@ class coreCase extends CommandUnishTestCase {
       'include-vcs' => NULL,
       'yes' => NULL,
     );
-    $this->drush('core-rsync', array("@$site:%files", "/tmp"), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1;');
+    $this->drush('core-rsync', array("@$site:%files", "/tmp"), $options, NULL, NULL, self::EXIT_SUCCESS, ';');
     $output = $this->getOutput();
     $level = $this->log_level();
     $pattern = in_array($level, array('verbose', 'debug')) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress --yes %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz --yes %s /tmp);";
