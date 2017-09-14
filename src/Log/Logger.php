@@ -72,6 +72,8 @@ class Logger extends RoboLogger
         $debug = drush_get_context('DRUSH_DEBUG');
         $debugnotify = drush_get_context('DRUSH_DEBUG_NOTIFY');
 
+        $oldStyleEarlyExit = drush_get_context('DRUSH_LEGACY_CONTEXT');
+
         // Save the original level in the context name, then
         // map it to a standard log level.
         $context['name'] = $level;
@@ -92,7 +94,7 @@ class Logger extends RoboLogger
             case LogLevel::SUCCESS:
             case 'status': // Obsolete; only here in case contrib is using it.
                 // In quiet mode, suppress progress messages
-                if (drush_get_context('DRUSH_QUIET')) {
+                if ($oldStyleEarlyExit && drush_get_context('DRUSH_QUIET')) {
                     return true;
                 }
                 $type_msg = sprintf($green, $level);
@@ -103,7 +105,7 @@ class Logger extends RoboLogger
                 break;
             case 'message': // Obsolete; only here in case contrib is using it.
             case LogLevel::INFO:
-                if (!$verbose) {
+                if ($oldStyleEarlyExit && !$verbose) {
                     // print nothing. exit cleanly.
                     return true;
                 }
@@ -113,7 +115,7 @@ class Logger extends RoboLogger
             case LogLevel::DEBUG_NOTIFY:
                 $level = LogLevel::DEBUG; // Report 'debug', handle like 'preflight'
             case LogLevel::PREFLIGHT:
-                if (!$debugnotify) {
+                if ($oldStyleEarlyExit && !$debugnotify) {
                     // print nothing unless --debug AND --verbose. exit cleanly.
                     return true;
                 }
@@ -123,7 +125,7 @@ class Logger extends RoboLogger
             case LogLevel::BOOTSTRAP:
             case LogLevel::DEBUG:
             default:
-                if (!$debug) {
+                if ($oldStyleEarlyExit && !$debug) {
                     // print nothing. exit cleanly.
                     return true;
                 }

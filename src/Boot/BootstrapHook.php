@@ -6,6 +6,8 @@ use Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Consolidation\AnnotatedCommand\AnnotationData;
 
+use Drush\Log\LogLevel;
+
 /**
  * The BootstrapHook is installed as an init hook that runs before
  * all commands. If there is a `@bootstrap` annotation, then we will

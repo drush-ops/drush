@@ -14,6 +14,8 @@ use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\Output;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Webmozart\PathUtil\Path;
@@ -176,6 +178,10 @@ class Preflight
         $output = new \Symfony\Component\Console\Output\ConsoleOutput();
         $application = new \Drush\Application('Drush Commandline Tool', Drush::getVersion());
 
+        // Process options such as --debug so that we may begin using the
+        // logger as soon as the DI container is set up.
+        $this->setIOModeOptions($input, $output);
+
         // Set up the DI container
         $container = DependencyInjection::initContainer($application, $config, $input, $output, $loader, $this->drupalFinder, $aliasManager);
 
@@ -246,6 +252,31 @@ class Preflight
     protected function selectedComposerRoot()
     {
         return $this->drupalFinder->getComposerRoot();
+    }
+
+    /**
+     * Set input and output modes early
+     */
+    protected function setIOModeOptions(InputInterface $input, OutputInterface $output)
+    {
+        // Process legacy Drush global options.
+        // Note that `getParameterOption` returns the VALUE of the option if
+        // it is found, or NULL if it finds an option with no value.
+        if ($input->getParameterOption(['--yes', '-y'], false, true) !== false) {
+            $input->setInteractive(false);
+        }
+        // Symfony will set these later, but we want it set upfront
+        if ($input->getParameterOption(['--verbose', '-v'], false, true) !== false) {
+            $output->setVerbosity(OutputInterface::VERBOSITY_VERBOSE);
+        }
+        // We are not using "very verbose", but set this for completeness
+        if ($input->getParameterOption(['-vv'], false, true) !== false) {
+            $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
+        }
+        // Use -vvv of --debug for even more verbose logging.
+        if ($input->getParameterOption(['--debug', '-d', '-vvv'], false, true) !== false) {
+            $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
+        }
     }
 
     /**

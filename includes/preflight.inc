@@ -205,6 +205,9 @@ function drush_preflight_prepare() {
   drush_set_context('argc', $GLOBALS['argc']);
   drush_set_context('argv', $GLOBALS['argv']);
 
+  // Signal that our old-style contexts are in use.
+  drush_set_context('DRUSH_LEGACY_CONTEXT', true);
+
   // Set an error handler and a shutdown function
   set_error_handler('drush_error_handler');
   register_shutdown_function('drush_shutdown');
