@@ -111,17 +111,16 @@ class ConfigExportCommands extends DrushCommands
 
     public function doExport($options, $destination_dir)
     {
+        // Prepare the configuration storage for the export.
+        if ($destination_dir == \config_get_config_directory(CONFIG_SYNC_DIRECTORY)) {
+            $target_storage = $this->getConfigStorageSync();
+        } else {
+            $target_storage = new FileStorage($destination_dir);
+        }
+
         if (count(glob($destination_dir . '/*')) > 0) {
             // Retrieve a list of differences between the active and target configuration (if any).
-            if ($destination_dir == \config_get_config_directory(CONFIG_SYNC_DIRECTORY)) {
-                $target_storage = $this->getConfigStorageSync();
-            } else {
-                $target_storage = new FileStorage($destination_dir);
-            }
-            $active_storage = $this->getConfigStorage();
-            $comparison_source = $active_storage;
-
-            $config_comparer = new StorageComparer($comparison_source, $target_storage, $this->getConfigManager());
+            $config_comparer = new StorageComparer($this->getConfigStorage(), $target_storage, $this->getConfigManager());
             if (!$config_comparer->createChangelist()->hasChanges()) {
                 $this->logger()->notice(dt('The active configuration is identical to the configuration in the export directory (!target).', array('!target' => $destination_dir)));
                 return;
@@ -149,25 +148,7 @@ class ConfigExportCommands extends DrushCommands
         }
 
         // Write all .yml files.
-        $source_storage = $this->getConfigStorage();
-        if ($destination_dir == \config_get_config_directory(CONFIG_SYNC_DIRECTORY)) {
-            $destination_storage = $this->getConfigStorageSync();
-        } else {
-            $destination_storage = new FileStorage($destination_dir);
-        }
-
-        foreach ($source_storage->listAll() as $name) {
-            $destination_storage->write($name, $source_storage->read($name));
-        }
-
-        // Export configuration collections.
-        foreach ($this->getConfigStorage()->getAllCollectionNames() as $collection) {
-            $source_storage = $source_storage->createCollection($collection);
-            $destination_storage = $destination_storage->createCollection($collection);
-            foreach ($source_storage->listAll() as $name) {
-                $destination_storage->write($name, $source_storage->read($name));
-            }
-        }
+        ConfigCommands::copyConfig($this->getConfigStorage(), $target_storage);
 
         $this->logger()->success(dt('Configuration successfully exported to !target.', array('!target' => $destination_dir)));
         drush_backend_set_result($destination_dir);
