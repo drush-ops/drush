@@ -6,6 +6,7 @@ use Drupal\Core\CronInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
+use Drush\Drush;
 
 class DrupalCommands extends DrushCommands
 {
@@ -89,7 +90,7 @@ class DrupalCommands extends DrushCommands
 
         foreach ($searchpaths as $searchpath) {
             foreach ($file = drush_scan_directory($searchpath, '/\.html.twig/', array('tests')) as $file) {
-                $relative = str_replace(drush_get_context('DRUSH_DRUPAL_ROOT') . '/', '', $file->filename);
+                $relative = str_replace(Drush::bootstrapManager()->getRoot() . '/', '', $file->filename);
                 // @todo Dynamically disable twig debugging since there is no good info there anyway.
                 twig_render_template($relative, array('theme_hook_original' => ''));
                 $this->logger()

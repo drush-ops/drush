@@ -9,11 +9,15 @@ use Drush\Psysh\DrushCommand;
 use Drush\Psysh\DrushHelpCommand;
 use Drupal\Component\Assertion\Handle;
 use Drush\Psysh\Shell;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Psy\Configuration;
 use Psy\VersionUpdater\Checker;
 
-class CliCommands extends DrushCommands
+class CliCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+
+    use SiteAliasManagerAwareTrait;
 
     /**
      * Drush's PHP Shell.
@@ -180,7 +184,7 @@ class CliCommands extends DrushCommands
             if ($site_name) {
                 $site_suffix = $site_name;
             } else {
-                $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+                $drupal_root = Drush::bootstrapManager()->getRoot();
                 $site_suffix = md5($drupal_root);
             }
 
@@ -190,7 +194,7 @@ class CliCommands extends DrushCommands
         $full_path = "$cli_directory/$file_name";
 
         // Output the history path if verbose is enabled.
-        if (drush_get_context('DRUSH_VERBOSE')) {
+        if ($this->io()->isVerbose()) {
             $this->logger()->log(LogLevel::SUCCESS, dt('History: @full_path', ['@full_path' => $full_path]));
         }
 

@@ -30,7 +30,7 @@ class Application extends SymfonyApplication
         //   --alias-path
         //   --local
         //
-        // Global options registerd with Symfony:
+        // Global options registered with Symfony:
         //
         //   --remote-host
         //   --remote-user
@@ -43,6 +43,10 @@ class Application extends SymfonyApplication
         //   --verbose / -v
         //   --help
         //   --quiet
+        //   --debug / -d : equivalent to -vv
+        //   --yes / -y : equivalent to --no-interaction
+        //   --nocolor  : equivalent to --no-ansi
+        //
         //
         // No longer supported
         //
@@ -54,15 +58,13 @@ class Application extends SymfonyApplication
         //   --strict            Not supported by Symfony
         //   --interactive       If command isn't -n, then it is interactive
         //   --command-specific  Now handled by consolidation/config component
-        //
+        //   --php               If needed prefix command with PATH=/path/to/php:$PATH. Also see #env_vars in site aliases.
+        //   --php-options
+        //   --pipe
         // Not handled yet (to be implemented):
         //
-        //   --debug / -d
+
         //   --uri / -l
-        //   --yes / -y
-        //   --pipe
-        //   --php
-        //   --php-options
         //   --tty
         //   --exclude
         //   --backend
@@ -70,7 +72,6 @@ class Application extends SymfonyApplication
         //   --ignored-modules
         //   --no-label
         //   --label-separator
-        //   --nocolor
         //   --cache-default-class
         //   --cache-class-<bin>
         //   --confirm-rollback
@@ -85,6 +86,17 @@ class Application extends SymfonyApplication
         //   --shell-aliases
         //   --path-aliases
         //   --ssh-options
+
+
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--debug', 'd', InputOption::VALUE_NONE, 'Equivalent to -vv')
+            );
+
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--yes', 'y', InputOption::VALUE_NONE, 'Equivalent to --no-interaction.')
+            );
 
         $this->getDefinition()
             ->addOption(
