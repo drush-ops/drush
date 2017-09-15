@@ -257,7 +257,7 @@ class Preflight
         // Process legacy Drush global options.
         // Note that `getParameterOption` returns the VALUE of the option if
         // it is found, or NULL if it finds an option with no value.
-        if ($input->getParameterOption(['--yes', '-y'], false, true) !== false) {
+        if ($input->getParameterOption(['--yes', '-y', '--no', '-n'], false, true) !== false) {
             $input->setInteractive(false);
         }
         // Symfony will set these later, but we want it set upfront
