@@ -9,8 +9,6 @@ use Drush\Config\EnvironmentConfigLoader;
 use Drush\SiteAlias\SiteAliasManager;
 use DrupalFinder\DrupalFinder;
 
-use Consolidation\AnnotatedCommand\CommandFileDiscovery;
-
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
@@ -170,6 +168,15 @@ class Preflight
         $root = $this->setSelectedSite($selfAliasRecord->localRoot());
         $configLocator->addSitewideConfig($root);
 
+        // We need to check the php minimum version again, in case anyone
+        // has set it to something higher in one of the config files we loaded.
+        $this->verify->confirmPhpVersion($config->get('drush.php.minimum-version'));
+
+        // Find all of the available commandfiles, save for those that are
+        // provided by modules in the selected site; those will be added
+        // during bootstrap.
+        $commandfileSearchpath = $this->findCommandFileSearchPath($preflightArgs, $root);
+
         // Require the Composer autoloader for Drupal (if different)
         $loader = $this->environment->loadSiteAutoloader($root);
 
@@ -178,37 +185,19 @@ class Preflight
         $output = new \Symfony\Component\Console\Output\ConsoleOutput();
         $application = new \Drush\Application('Drush Commandline Tool', Drush::getVersion());
 
-        // Process options such as --debug so that we may begin using the
-        // logger as soon as the DI container is set up.
-        $this->setIOModeOptions($input, $output);
-
-        // Set up the DI container
+        // Set up the DI container.
         $container = DependencyInjection::initContainer($application, $config, $input, $output, $loader, $this->drupalFinder, $aliasManager);
 
-        // Our termination handlers depend on classes we set up via DependencyInjection.
+        // Our termination handlers depend on classes we set up via DependencyInjection,
+        // so we do not want to enable it any earlier than this.
         // TODO: Inject a termination handler into this class, so that we don't
         // need to add these e.g. when testing.
         $this->setTerminationHandlers();
 
-        // We need to check the php minimum version again, in case anyone
-        // has set it to something higher in one of the config files we loaded.
-        $this->verify->confirmPhpVersion($config->get('drush.php.minimum-version'));
-
-        // Find all of the available commandfiles, save for those that are
-        // provided by modules in the selected site; those will be added
-        // during bootstrap.
-        $searchpath = $this->findCommandFileSearchPath($preflightArgs, $root);
-        $discovery = $this->commandDiscovery();
-        $commandClasses = $discovery->discover($searchpath, '\Drush');
-
-        // For now: use Symfony's built-in help, as Drush's version
-        // assumes we are using the legacy Drush dispatcher.
-        unset($commandClasses[dirname(__DIR__) . '/Commands/help/HelpCommands.php']);
-        unset($commandClasses[dirname(__DIR__) . '/Commands/help/ListCommands.php']);
-
-        // Use the robo runner to register commands with Symfony application.
-        $runner = new \Robo\Runner();
-        $runner->registerCommandClasses($application, $commandClasses);
+        // Configure the application object and register all of the commandfiles
+        // from the search paths we found above.  After this point, the input
+        // and output objects are ready & we can start using the logger, etc.
+        $application->configureAndRegisterCommands($input, $output, $commandfileSearchpath);
 
         // Run the Symfony Application
         // Predispatch: call a remote Drush command if applicable (via a 'pre-init' hook)
@@ -252,44 +241,6 @@ class Preflight
     protected function selectedComposerRoot()
     {
         return $this->drupalFinder->getComposerRoot();
-    }
-
-    /**
-     * Set input and output modes early
-     */
-    protected function setIOModeOptions(InputInterface $input, OutputInterface $output)
-    {
-        // Process legacy Drush global options.
-        // Note that `getParameterOption` returns the VALUE of the option if
-        // it is found, or NULL if it finds an option with no value.
-        if ($input->getParameterOption(['--yes', '-y', '--no', '-n'], false, true) !== false) {
-            $input->setInteractive(false);
-        }
-        // Symfony will set these later, but we want it set upfront
-        if ($input->getParameterOption(['--verbose', '-v'], false, true) !== false) {
-            $output->setVerbosity(OutputInterface::VERBOSITY_VERBOSE);
-        }
-        // We are not using "very verbose", but set this for completeness
-        if ($input->getParameterOption(['-vv'], false, true) !== false) {
-            $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
-        }
-        // Use -vvv of --debug for even more verbose logging.
-        if ($input->getParameterOption(['--debug', '-d', '-vvv'], false, true) !== false) {
-            $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
-        }
-    }
-
-    /**
-     * Create a command file discovery object
-     */
-    protected function commandDiscovery()
-    {
-        $discovery = new CommandFileDiscovery();
-        $discovery
-            ->setIncludeFilesAtBase(false)
-            ->setSearchLocations(['Commands'])
-            ->setSearchPattern('#.*Commands.php$#');
-        return $discovery;
     }
 
     /**

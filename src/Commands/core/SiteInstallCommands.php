@@ -264,11 +264,15 @@ class SiteInstallCommands extends DrushCommands
         // Make sure URI is set so we get back a proper $alias_record. Needed for quick-drupal.
         _drush_bootstrap_selected_uri();
 
+        // TODO: Update to use new alias manager API
         $alias_record = drush_sitealias_get_record('@self');
         $sites_subdir = drush_sitealias_local_site_path($alias_record);
         // Override with sites-subdir if specified.
         if ($dir = $commandData->input()->getOption('sites-subdir')) {
             $sites_subdir = "sites/$dir";
+        }
+        if (empty($sites_subdir)) {
+            throw new \Exception(dt('Could not deterimine target sites directory for site to install.'));
         }
         $confPath = $sites_subdir;
         $settingsfile = "$confPath/settings.php";
