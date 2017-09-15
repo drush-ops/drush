@@ -201,6 +201,11 @@ class Preflight
         $discovery = $this->commandDiscovery();
         $commandClasses = $discovery->discover($searchpath, '\Drush');
 
+        // For now: use Symfony's built-in help, as Drush's version
+        // assumes we are using the legacy Drush dispatcher.
+        unset($commandClasses[dirname(__DIR__) . '/Commands/help/HelpCommands.php']);
+        unset($commandClasses[dirname(__DIR__) . '/Commands/help/ListCommands.php']);
+
         // Use the robo runner to register commands with Symfony application.
         $runner = new \Robo\Runner();
         $runner->registerCommandClasses($application, $commandClasses);
