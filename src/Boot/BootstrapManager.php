@@ -270,7 +270,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
             if ($phase_index > $bootstrapped_phase) {
                 if ($result = $this->bootstrapValidate($phase_index)) {
                     if (method_exists($bootstrap, $current_phase) && !drush_get_error()) {
-                        drush_log(dt("Drush bootstrap phase : !function()", array('!function' => $current_phase)), LogLevel::BOOTSTRAP);
+                        $this->logger->log(LogLevel::BOOTSTRAP, 'Drush bootstrap phase: {function}()', ['function' => $current_phase]);
                         $bootstrap->{$current_phase}();
 
                         // Reset commandfile cache and find any new command files that are available during this bootstrap phase.
@@ -371,7 +371,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      */
     public function bootstrapToPhase($bootstrapPhase)
     {
-        \Drush\Drush::logger()->log(LogLevel::DEBUG, 'Bootstrap to {phase}', ['phase' => $bootstrapPhase]);
+        $this->logger->log(LogLevel::DEBUG, 'Bootstrap to {phase}', ['phase' => $bootstrapPhase]);
         $phase = $this->bootstrap()->lookUpPhaseIndex($bootstrapPhase);
         if (!isset($phase)) {
             throw new \Exception(dt('Bootstrap phase !phase unknown.', ['!phase' => $bootstrapPhase]));
@@ -391,14 +391,11 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     public function bootstrapToPhaseIndex($max_phase_index)
     {
         if ($max_phase_index == DRUSH_BOOTSTRAP_MAX) {
-            // Bootstrap as far as we can without throwing an error, but log for
-            // debugging purposes.
-            drush_log(dt("Trying to bootstrap as far as we can."), 'debug');
             $this->bootstrapMax();
             return true;
         }
 
-        drush_log(dt("Bootstrap to phase !phase.", array('!phase' => $max_phase_index)), LogLevel::BOOTSTRAP);
+        $this->logger->log(LogLevel::BOOTSTRAP, 'Drush bootstrap phase {phase}', ['phase' => $max_phase_index]);
         $phases = $this->bootstrapPhases();
         $result = true;
 
@@ -433,6 +430,10 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      */
     public function bootstrapMax($max_phase_index = false)
     {
+        // Bootstrap as far as we can without throwing an error, but log for
+        // debugging purposes.
+        $this->logger->log(LogLevel::DEBUG, 'Trying to bootstrap as far as we can');
+
         $phases = $this->bootstrapPhases(true);
         if (!$max_phase_index) {
             $max_phase_index = count($phases);
@@ -453,7 +454,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                 // $this->bootstrapValidate() only logs successful validations. For us,
                 // knowing what failed can also be important.
                 $previous = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
-                drush_log(dt("Bootstrap phase !function() failed to validate; continuing at !current().", array('!function' => $current_phase, '!current' => $phases[$previous])), 'debug');
+                $this->logger->log(LogLevel::DEBUG, 'Bootstrap phase {function}() failed to validate; continuing at {current}()', ['function' => $current_phase, 'current' => $phases[$previous]]);
                 break;
             }
         }

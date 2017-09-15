@@ -154,8 +154,9 @@ class Preflight
         $root = $this->findSelectedSite($preflightArgs);
         $configLocator->addSitewideConfig($root);
 
-        // Handle aliases. Note that this might change the selected site.
-        // If it does, extend the configuration again for the new alias record.
+        // Configure alias manager.
+        // TODO: We have a nice ConfigLocator that knows about --local, etc.;
+        // we should use that here as well.
         $aliasManager = (new SiteAliasManager())
             ->addSearchLocation($preflightArgs->aliasPath())
             ->addSearchLocation($this->environment->systemConfigPath())
@@ -165,6 +166,9 @@ class Preflight
         $selfAliasRecord = $aliasManager->findSelf($preflightArgs->alias(), $root, $preflightArgs->uri());
         $aliasConfig = $selfAliasRecord->exportConfig();
         $configLocator->addAliasConfig($aliasConfig);
+
+        // Process the selected alias. This might change the selected site,
+        // so we will add new site-wide config location for the new root.
         $root = $this->setSelectedSite($selfAliasRecord->localRoot());
         $configLocator->addSitewideConfig($root);
 
@@ -249,8 +253,10 @@ class Preflight
      */
     protected function findCommandFileSearchPath(PreflightArgs $preflightArgs, $root = '')
     {
-        // Start with the built-in commands
-        $searchpath = [ dirname(__DIR__) ];
+        // Start with the built-in commands.
+        $searchpath = [
+            dirname(__DIR__),
+        ];
 
         // Commands specified by 'include' option
         $commandPath = $preflightArgs->commandPath();

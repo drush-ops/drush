@@ -2,6 +2,8 @@
 namespace Drush;
 
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use Drush\Boot\BootstrapManager;
+use Drush\Log\LogLevel;
 
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Command\Command;
@@ -9,9 +11,24 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 
-class Application extends SymfonyApplication
+/**
+ * Our application object
+ *
+ * Note: Implementing *AwareInterface here does NOT automatically cause
+ * that corresponding service to be injected into the Application. This
+ * is because the application object is created prior to the DI container.
+ * See DependencyInjection::injectApplicationServices() to add more services.
+ */
+class Application extends SymfonyApplication implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
+    /** @var BootstrapManager */
+    protected $bootstrapManager;
+
     /**
      * @param string $name
      * @param string $version
@@ -133,6 +150,11 @@ class Application extends SymfonyApplication
             );
     }
 
+    public function setBootstrapManager(BootstrapManager $bootstrapManager)
+    {
+        $this->bootstrapManager = $bootstrapManager;
+    }
+
     /**
      * @inheritdoc
      */
@@ -141,12 +163,22 @@ class Application extends SymfonyApplication
         try {
             return parent::find($name);
         } catch (CommandNotFoundException $e) {
-            print "TODO: bootstrap further.\n";
-            // TODO: if the command was not found, and a bootstrap object
-            // is available, then bootstrap some more and try to
-            // find the requested command again. If things still do not
-            // pan out, re-throw the CommandNotFoundException.
-            throw $e;
+            // If we have no bootstrap manager, then just re-throw
+            // the exception.
+            if (!$this->bootstrapManager) {
+                throw $e;
+            }
+
+            // TODO: We could also fail-fast (throw $e) if bootstrapMax made no progress.
+            $this->logger->log(LogLevel::DEBUG, 'Bootstrap futher to find {command}', ['command' => $name]);
+            $this->bootstrapManager->bootstrapMax();
+
+            // TODO: parent::find resets log level? Log below not printed, but is printed at LogLevel::WARNING.
+            $this->logger->log(LogLevel::DEBUG, 'Done with bootstrap max');
+
+            // Try to find it again. This time the exception will
+            // not be caught if the command cannot be found.
+            return parent::find($name);
         }
     }
 
@@ -202,8 +234,8 @@ class Application extends SymfonyApplication
 
         // For now: use Symfony's built-in help, as Drush's version
         // assumes we are using the legacy Drush dispatcher.
-        unset($commandClasses[dirname(__DIR__) . '/Commands/help/HelpCommands.php']);
-        unset($commandClasses[dirname(__DIR__) . '/Commands/help/ListCommands.php']);
+        unset($commandClasses[__DIR__ . '/Commands/help/HelpCommands.php']);
+        unset($commandClasses[__DIR__ . '/Commands/help/ListCommands.php']);
 
         // Use the robo runner to register commands with Symfony application.
         // This method could / should be refactored in Robo so that we can use
@@ -220,8 +252,8 @@ class Application extends SymfonyApplication
         $discovery = new CommandFileDiscovery();
         $discovery
             ->setIncludeFilesAtBase(false)
-            ->setSearchLocations(['Commands'])
-            ->setSearchPattern('#.*Commands.php$#');
+            ->setSearchLocations(['Commands', 'Hooks'])
+            ->setSearchPattern('#.*(Command|Hook)s?.php$#');
         return $discovery;
     }
 }

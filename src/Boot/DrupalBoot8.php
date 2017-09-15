@@ -180,7 +180,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         foreach ($serviceCommandlist->getCommandList() as $command) {
             if (!$this->commandIgnored($command, $ignored_modules)) {
                 $this->inflect($command);
-                $this->logger->log(LogLevel::DEBUG_NOTIFY, dt('Add a command: !name', ['!name' => $command->getName()]));
+                $this->logger->log(LogLevel::DEBUG, dt('Add a command: !name', ['!name' => $command->getName()]));
                 annotationcommand_adapter_cache_module_console_commands($command);
             }
         }
@@ -189,7 +189,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         foreach ($serviceCommandlist->getCommandList() as $commandhandler) {
             if (!$this->commandIgnored($commandhandler, $ignored_modules)) {
                 $this->inflect($commandhandler);
-                $this->logger->log(LogLevel::DEBUG_NOTIFY, dt('Add a commandhandler: !name', ['!name' => get_class($commandhandler)]));
+                $this->logger->log(LogLevel::DEBUG, dt('Add a commandhandler: !name', ['!name' => get_class($commandhandler)]));
                 annotationcommand_adapter_cache_module_service_commands($commandhandler);
             }
         }

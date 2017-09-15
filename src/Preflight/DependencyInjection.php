@@ -29,7 +29,7 @@ class DependencyInjection
         DrupalFinder $drupalFinder,
         SiteAliasManager $aliasManager
     ) {
-    
+
         // Create default input and output objects if they were not provided
         if (!$input) {
             $input = new \Symfony\Component\Console\Input\StringInput('');
@@ -49,7 +49,11 @@ class DependencyInjection
         Drush::setContainer($container);
         \Robo\Robo::setContainer($container);
 
+        // Change service definitions as needed for our application.
         static::alterServicesForDrush($container, $application);
+
+        // Inject needed services into our application object.
+        static::injectApplicationServices($container, $application);
 
         return $container;
     }
@@ -90,6 +94,7 @@ class DependencyInjection
         // Robo does not manage the command discovery object in the container,
         // but we will register and configure one for our use.
         // TODO: Some old adapter code uses this, but the Symfony dispatcher does not.
+        // See Application::commandDiscovery().
         $container->share('commandDiscovery', 'Consolidation\AnnotatedCommand\CommandFileDiscovery')
             ->withMethodCall('addSearchLocation', ['CommandFiles'])
             ->withMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
@@ -124,5 +129,11 @@ class DependencyInjection
         $eventDispatcher = $container->get('eventDispatcher');
         $eventDispatcher->addSubscriber(new \Drush\Command\GlobalOptionsEventListener());
         $application->setDispatcher($eventDispatcher);
+    }
+
+    protected static function injectApplicationServices(ContainerInterface $container, Application $application)
+    {
+        $application->setLogger($container->get('logger'));
+        $application->setBootstrapManager($container->get('bootstrap.manager'));
     }
 }
