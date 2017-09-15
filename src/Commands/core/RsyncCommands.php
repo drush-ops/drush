@@ -80,7 +80,7 @@ class RsyncCommands extends DrushCommands
         }
 
         $mode = '-'. $options['mode'];
-        if ($this->io()->isVerbose()) {
+        if ($this->output()->isVerbose()) {
             $mode .= 'v';
             $verbose = ' --stats --progress';
         }
