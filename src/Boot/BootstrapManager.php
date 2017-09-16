@@ -115,7 +115,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     }
 
     /**
-     * Return the framework root selected by the user.
+     * Return the framework uri selected by the user.
      */
     public function getUri()
     {
@@ -125,7 +125,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     public function setUri($uri)
     {
         // TODO: Throw if we already bootstrapped a framework?
-        $this->uri = $root;
+        $this->uri = $uri;
     }
 
     /**
@@ -155,9 +155,11 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         foreach ($this->bootstrapCandidates as $candidate) {
             if ($candidate->validRoot($path)) {
                 // This is not necessary when the autoloader is inflected
+                // TODO: The autoloader is inflected in the symfony dispatch, but not the traditional Drush dispatcher
                 if ($candidate instanceof AutoloaderAwareInterface) {
                     $candidate->setAutoloader($this->autoloader());
                 }
+                $candidate->setUri($this->getUri());
                 return $candidate;
             }
         }

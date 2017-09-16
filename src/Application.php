@@ -144,6 +144,12 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
                 new InputOption('--simulate', null, InputOption::VALUE_NONE, 'Run in simulated mode (show what would have happened).')
             );
 
+        // TODO: Implement handling for 'pipe'
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--pipe', null, InputOption::VALUE_NONE, 'Select the canonical script-friendly output format.')
+            );
+
         $this->getDefinition()
             ->addOption(
                 new InputOption('--define', '-D', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Define a configuration item value.', [])
@@ -153,6 +159,27 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
     public function setBootstrapManager(BootstrapManager $bootstrapManager)
     {
         $this->bootstrapManager = $bootstrapManager;
+    }
+
+    /**
+     * Return the framework uri selected by the user.
+     */
+    public function getUri()
+    {
+        if (!$this->bootstrapManager) {
+            return 'default';
+        }
+        return $this->bootstrapManager->getUri();
+    }
+
+    /**
+     * Set the framework uri selected by the user.
+     */
+    public function setUri($uri)
+    {
+        if ($this->bootstrapManager) {
+            $this->bootstrapManager->setUri($uri);
+        }
     }
 
     /**

@@ -25,7 +25,7 @@ abstract class DrupalBoot extends BaseBoot
 
     public function confPath($require_settings = true, $reset = false)
     {
-        return confPath($require_settings = true, $reset = false);
+        return confPath($require_settings, $reset);
     }
 
     /**
@@ -368,13 +368,9 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapDrupalSiteValidate()
     {
-        // Define the selected conf path as soon as we have identified that
-        // we have selected a Drupal site.  Drush used to set this context
-        // during the drush_bootstrap_drush phase.
-        $drush_uri = _drush_bootstrap_selected_uri();
-        drush_set_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', drush_conf_path($drush_uri));
+        drush_set_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', drush_conf_path($this->uri));
 
-        $this->bootstrapDrupalSiteSetupServerGlobal($drush_uri);
+        $this->bootstrapDrupalSiteSetupServerGlobal();
         $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
         $confPath = drush_bootstrap_value('confPath', $this->confPath(true, true));
         return true; //$this->bootstrapDrupalSiteValidate_settings_present();
@@ -384,15 +380,15 @@ abstract class DrupalBoot extends BaseBoot
      * Set up the $_SERVER globals so that Drupal will see the same values
      * that it does when serving pages via the web server.
      */
-    public function bootstrapDrupalSiteSetupServerGlobal($drush_uri)
+    public function bootstrapDrupalSiteSetupServerGlobal()
     {
         // Fake the necessary HTTP headers that Drupal needs:
-        if ($drush_uri) {
-            $drupal_base_url = parse_url($drush_uri);
+        if ($this->uri) {
+            $drupal_base_url = parse_url($this->uri);
             // If there's no url scheme set, add http:// and re-parse the url
             // so the host and path values are set accurately.
             if (!array_key_exists('scheme', $drupal_base_url)) {
-                $drush_uri = 'http://' . $drush_uri;
+                $drush_uri = 'http://' . $this->uri;
                 $drupal_base_url = parse_url($drush_uri);
             }
             // Fill in defaults.
@@ -453,8 +449,7 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapDoDrupalSite()
     {
-        $drush_uri = drush_get_context('DRUSH_SELECTED_URI');
-        drush_set_context('DRUSH_URI', $drush_uri);
+        drush_set_context('DRUSH_URI', $this->uri);
         $site = drush_set_context('DRUSH_DRUPAL_SITE', drush_bootstrap_value('site'));
         $confPath = drush_set_context('DRUSH_DRUPAL_SITE_ROOT', drush_bootstrap_value('confPath'));
 

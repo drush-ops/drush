@@ -12,6 +12,13 @@ namespace Drush\Boot;
 interface Boot
 {
     /**
+     * Inject the uri for the specific site to be bootstrapped
+     *
+     * @param $uri Site to bootstrap
+     */
+    public function setUri($uri);
+
+    /**
      * This function determines if the specified path points to
      * the root directory of a CMS that can be bootstrapped by
      * the specific subclass that implements it.
@@ -24,7 +31,6 @@ interface Boot
      * @return TRUE if $path is a valid root directory
      */
     public function validRoot($path);
-
 
     /**
      * Given a site root directory, determine the exact version of the software.

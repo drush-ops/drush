@@ -39,7 +39,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
             '--root=' => 'setSelectedSite',
             '-l=' => 'setUri',
             '--uri=' => 'setUri',
-            '-c=' => 'setConfig',
+            '-c=' => 'setConfigPath',
             '--config=' => 'setConfigPath',
             '--alias-path=' => 'setAliasPath',
             '--include=' => 'setCommandPath',

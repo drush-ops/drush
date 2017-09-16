@@ -52,6 +52,13 @@ function unish_setup_sut($unish_sandbox) {
     fwrite(STDERR, "Drush not symlinked in the System-Under-Test.\n");
     $return = 1;
   }
+
+  // If there is no 'vendor' directory in the Drush home dir, then make
+  // a symlink from the SUT
+  if (!is_dir(__DIR__ . '/vendor')) {
+    symlink("$working_dir/vendor", __DIR__ . '/vendor');
+  }
+
   return $return;
 }
 

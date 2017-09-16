@@ -17,8 +17,15 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInt
     use LoggerAwareTrait;
     use ContainerAwareTrait;
 
+    protected $uri;
+
     public function __construct()
     {
+    }
+
+    public function setUri($uri)
+    {
+        $this->uri = $uri;
     }
 
     public function validRoot($path)
