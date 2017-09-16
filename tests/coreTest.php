@@ -67,7 +67,7 @@ class coreCase extends CommandUnishTestCase {
       $this->markTestSkipped('Standalone scripts not currently available on Windows.');
     }
 
-    $this->drush('version', array('drush_version'), array('pipe' => NULL));
+    $this->drush('version', array(), array('field' => 'drush-version'));
     $standard = $this->getOutput();
 
     // Write out a hellounish.script into the sandbox. The correct /path/to/drush
