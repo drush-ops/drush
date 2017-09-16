@@ -129,7 +129,12 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
             return new ListDataFromKeys([$aliasRecord->name() => $aliasRecord->export()]);
         }
 
-        $this->logger()->success('No sites found.');
+        if ($site) {
+            throw new \Exception('Site alias not found.');
+        }
+        else {
+            $this->logger()->success('No site aliases found.');
+        }
     }
 
     protected function siteAliasExportList($aliasList, $options)
