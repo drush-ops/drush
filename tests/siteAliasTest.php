@@ -309,7 +309,7 @@ EOD;
     file_put_contents($aliasFile, $aliasContents);
     $options = array(
       'alias-path' => $aliasPath,
-      'simulate' => TRUE,
+      'simulate' => null,
     );
 
     $this->drush('sa', array('@deep'), $options);
@@ -336,7 +336,7 @@ EOD;
     file_put_contents($aliasFile, $aliasContents);
     $options = array(
       'alias-path' => $aliasPath,
-      'simulate' => TRUE,
+      'simulate' => null,
     );
 
     // This should not find the '@nope' alias.
