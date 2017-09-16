@@ -72,7 +72,7 @@ class SqlCommands extends DrushCommands
      * @usage drush sql-create --db-su=root --db-su-pw=rootpassword --db-url="mysql://drupal_db_user:drupal_db_password@127.0.0.1/drupal_db"
      *   Create the database as specified in the db-url option.
      */
-    public function create($options = [])
+    public function create($options = ['db-su' => '', 'db-su-pw' => ''])
     {
         $this->further($options);
         $sql = SqlBase::create($options);
