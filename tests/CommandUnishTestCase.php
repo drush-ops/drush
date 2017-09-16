@@ -260,7 +260,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     if ($level = $this->log_level()) {
       $cmd[] = '--' . $level;
     }
-    $cmd[] = "--nocolor";
+    $cmd[] = "--no-ansi";
 
     // Insert code coverage argument before command, in order for it to be
     // parsed as a global option. This matters for commands like ssh and rsync

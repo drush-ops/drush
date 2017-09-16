@@ -67,7 +67,7 @@ class sqlSyncTest extends CommandUnishTestCase {
     $this->drush('sql-sanitize', [], ['yes' => NULL], '@dev');
 
     // Confirm that the sample user is unchanged on the staging site
-    $this->drush('user-information', array($name), $options + array('format' => 'csv', 'include-field-labels' => 0, 'strict' => 0), '@stage');
+    $this->drush('user-information', array($name), $options + array('format' => 'csv', 'include-field-labels' => 0), '@stage');
     $output = $this->getOutput();
     $row  = str_getcsv($output);
     $uid = $row[0];
@@ -80,7 +80,7 @@ class sqlSyncTest extends CommandUnishTestCase {
       'yes' => NULL,
     );
     // Confirm that the sample user's email address has been sanitized on the dev site
-    $this->drush('user-information', array($name), $options + array('format' => 'csv', 'include-field-labels' => 0, 'strict' => 0));
+    $this->drush('user-information', array($name), $options + array('format' => 'csv', 'include-field-labels' => 0));
     $output = $this->getOutput();
     $row  = str_getcsv($output);
     $uid = $row[0];
@@ -102,7 +102,7 @@ class sqlSyncTest extends CommandUnishTestCase {
       'yes' => NULL,
     );
     // Confirm that the sample user's email address has been sanitized on the dev site
-    $this->drush('user-information', array($name), $options + array('format' => 'csv', 'include-field-labels' => 0, 'strict' => 0));
+    $this->drush('user-information', array($name), $options + array('format' => 'csv', 'include-field-labels' => 0));
     $output = $this->getOutput();
     $row  = str_getcsv($output);
     $uid = $row[0];

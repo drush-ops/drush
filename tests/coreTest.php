@@ -50,7 +50,7 @@ class coreCase extends CommandUnishTestCase {
       'uri' => key($this->getSites()),
       'simulate' => NULL,
       'yes' => NULL,
-      'strict' => 0, // invoke from script: do not verify options
+      // 'strict' => 0, // invoke from script: do not verify options
     );
     $php = '$a=drush_sitealias_get_record("@' . $site . '"); drush_sitealias_resolve_path_references($a, "%files"); print_r($a["path-aliases"]["%files"]);';
     $this->drush('ev', array($php), $options);
@@ -94,7 +94,7 @@ drush_invoke("version", $arg);
       'root' => $root,
       'uri' => key($this->getSites()),
       'yes' => NULL,
-      'strict' => 0, // invoke from script: do not verify options
+      // 'strict' => 0, // invoke from script: do not verify options
     );
     $this->drush('drupal-directory', array('%files'), $options);
     $output = $this->getOutput();
@@ -123,7 +123,7 @@ drush_invoke("version", $arg);
       'uri' => key($this->getSites()),
       'pipe' => NULL,
       'ignore' => 'cron,http requests,update,update_core,trusted_host_patterns', // no network access when running in tests, so ignore these
-      'strict' => 0, // invoke from script: do not verify options
+      // 'strict' => 0, // invoke from script: do not verify options
     );
     // Verify that there are no severity 2 items in the status report
     $this->drush('core-requirements', array(), $options + array('severity' => '2'));
