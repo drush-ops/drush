@@ -368,6 +368,10 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapDrupalSiteValidate()
     {
+        // TODO: uri not injected in traditional Drush dispatcher. This is not needed for Symfony Dispatch.
+        if (!$this->uri) {
+            $this->uri = _drush_bootstrap_selected_uri();
+        }
         drush_set_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', drush_conf_path($this->uri));
 
         $this->bootstrapDrupalSiteSetupServerGlobal();
