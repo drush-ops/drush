@@ -21,16 +21,14 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
      * @usage drush @mysite ssh
      *   Open an interactive shell on @mysite's server.
      * @usage drush @prod ssh ls /tmp
-     *   Run "ls /tmp" on @prod site.
+     *   Run "ls /tmp" on @prod site. If @prod is a site list, then ls will be executed on each site.
      * @usage drush @prod ssh git pull
      *   Run "git pull" on the Drupal root directory on the @prod site.
-     * @usage drush @prod --cd=0 ssh ls /tmp
-     *   Run "ls /tmp" without changing into the @prod docroot.
      * @aliases ssh
      * @bootstrap DRUSH_BOOTSTRAP_NONE
      * @topics docs-aliases
      */
-    public function ssh(array $args, $options = ['cd' => '1'])
+    public function ssh(array $args, $options = ['cd' => true])
     {
         // n.b. we do not escape the first (0th) arg to allow `drush ssh 'ls /path'`
         // to work in addition to the preferred form of `drush ssh ls /path`.
@@ -59,7 +57,7 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
 
         // We have a remote site - build ssh command and run.
         $interactive = false;
-        $cd = (bool) $options['cd'];
+        $cd = $options['cd'];
         if (empty($command)) {
             $command = 'bash -l';
             $interactive = true;
