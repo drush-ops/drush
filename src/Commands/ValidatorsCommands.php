@@ -62,10 +62,16 @@ class ValidatorsCommands
         $missing = [];
         $arg_names = _convert_csv_to_array($commandData->annotationData()->get('validate-file-exists', null));
         foreach ($arg_names as $arg_name) {
-            $path = $commandData->input()->getArgument($arg_name);
+            if ($commandData->input()->hasArgument($arg_name)) {
+                $path = $commandData->input()->getArgument($arg_name);
+            }
+            elseif ($commandData->input()->hasOption($arg_name)) {
+                $path = $commandData->input()->getOption($arg_name);
+            }
             if (!empty($path) && !file_exists($path)) {
                 $missing[] = $path;
             }
+            unset($path);
         }
 
         if ($missing) {
