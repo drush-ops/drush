@@ -1,3 +1,5 @@
+options:
+  sim: false
 drush:
   php:
     minimum-version: 5.6.0

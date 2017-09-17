@@ -27,10 +27,10 @@ use Drush\Log\LogLevel;
  * @see drush_shell_exec()
  */
 function drush_op_system($exec) {
-  if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
+  if (\Drush\Drush::verbose() || \Drush\Drush::simulate()) {
     drush_print("Calling system($exec);", 0, STDERR);
   }
-  if (drush_get_context('DRUSH_SIMULATE')) {
+  if (\Drush\Drush::simulate()) {
     return 0;
   }
 
@@ -141,7 +141,7 @@ function _drush_shell_exec($args, $interactive = FALSE) {
   }
 
   drush_log('Executing: ' . $command, LogLevel::INFO);
-  if (!drush_get_context('DRUSH_SIMULATE')) {
+  if (!\Drush\Drush::simulate()) {
     if ($interactive) {
       $result = drush_shell_proc_open($command);
       return ($result == 0) ? TRUE : FALSE;
@@ -236,10 +236,10 @@ function drush_shell_proc_build($site, $command = '', $cd = NULL, $interactive =
  *     127 command not found
  */
 function drush_shell_proc_open($cmd) {
-  if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
+  if (\Drush\Drush::verbose() || \Drush\Drush::simulate()) {
     drush_print("Calling proc_open($cmd);", 0, STDERR);
   }
-  if (!drush_get_context('DRUSH_SIMULATE')) {
+  if (!\Drush\Drush::simulate()) {
     $process = proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
     $proc_status = proc_get_status($process);
     $exit_code = proc_close($process);
@@ -347,7 +347,7 @@ function drush_start_browser($uri = NULL, $sleep = FALSE, $port = FALSE) {
   if ($browser = drush_get_option('browser', TRUE)) {
     // We can only open a browser if we have a DISPLAY environment variable on
     // POSIX or are running Windows or OS X.
-    if (!drush_get_context('DRUSH_SIMULATE') && !getenv('DISPLAY') && !drush_is_windows() && !drush_is_osx()) {
+    if (!\Drush\Drush::simulate() && !getenv('DISPLAY') && !drush_is_windows() && !drush_is_osx()) {
       drush_log(dt('No graphical display appears to be available, not starting browser.'), LogLevel::INFO);
       return FALSE;
     }
@@ -362,7 +362,7 @@ function drush_start_browser($uri = NULL, $sleep = FALSE, $port = FALSE) {
     // open the browser for http://default or similar invalid hosts.
     $hosterror = (gethostbynamel($host) === FALSE);
     $iperror = (ip2long($host) && gethostbyaddr($host) == $host);
-    if (!drush_get_context('DRUSH_SIMULATE') && ($hosterror || $iperror)) {
+    if (!\Drush\Drush::simulate() && ($hosterror || $iperror)) {
       drush_log(dt('!host does not appear to be a resolvable hostname or IP, not starting browser. You may need to use the --uri option in your command or site alias to indicate the correct URL of this site.', array('!host' => $host)), LogLevel::WARNING);
       return FALSE;
     }
@@ -391,7 +391,7 @@ function drush_start_browser($uri = NULL, $sleep = FALSE, $port = FALSE) {
     }
     if ($browser) {
       drush_log(dt('Opening browser !browser at !uri', array('!browser' => $browser, '!uri' => $uri)));
-      if (!drush_get_context('DRUSH_SIMULATE')) {
+      if (!\Drush\Drush::simulate()) {
         $pipes = array();
         proc_close(proc_open($prefix . $browser . ' ' . drush_escapeshellarg($uri) . ' 2> ' . drush_bit_bucket() . ' &', array(), $pipes));
       }

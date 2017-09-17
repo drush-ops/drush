@@ -41,7 +41,7 @@ class RsyncCommands extends DrushCommands
     public function rsync($source, $destination, array $extra, $options = ['exclude-paths' => null, 'include-paths' => null, 'mode' => 'akz'])
     {
         // Prompt for confirmation. This is destructive.
-        if (!drush_get_context('DRUSH_SIMULATE')) {
+        if (!\Drush\Drush::simulate()) {
             drush_print(dt("You will delete files in !target and replace with data from !source", array('!source' => $this->source_evaluated_path, '!target' => $this->destination_evaluated_path)));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();

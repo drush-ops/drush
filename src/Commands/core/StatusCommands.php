@@ -6,6 +6,7 @@ use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drupal\Core\StreamWrapper\PrivateStream;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drush\Boot\BootstrapManager;
+use Drush\Boot\DrupalBoot;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Sql\SqlBase;
@@ -65,7 +66,7 @@ class StatusCommands extends DrushCommands
      *
      * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
      */
-    public function status($filter = '', $options = ['project' => '', 'format' => 'table', 'fields' => '', 'include-field-labels' => true])
+    public function status($filter = '', $options = ['project' => '', 'format' => 'table', 'fields' => ''])
     {
         $data = self::getPropertyList($options);
 
@@ -79,7 +80,7 @@ class StatusCommands extends DrushCommands
     {
         $boot_manager = Drush::bootstrapManager();
         $boot_object = Drush::bootstrap();
-        if ($drupal_root = $boot_manager->getRoot()) {
+        if (($drupal_root = $boot_manager->getRoot()) && ($boot_object instanceof DrupalBoot)) {
             $status_table['drupal-version'] = drush_drupal_version();
             $conf_dir = $boot_object->confPath();
             $settings_file = "$conf_dir/settings.php";
@@ -178,7 +179,7 @@ class StatusCommands extends DrushCommands
     {
         $paths = array();
         $site_wide = 'sites/all';
-        if ($drupal_root = $boot_manager->getRoot()) {
+        if (($drupal_root = $boot_manager->getRoot()) && ($boot_object instanceof DrupalBoot)) {
             $paths['%root'] = $drupal_root;
             if ($site_root = $boot->confPath()) {
                 $paths['%site'] = $site_root;

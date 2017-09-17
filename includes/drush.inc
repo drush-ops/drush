@@ -615,11 +615,11 @@ function drush_op($callable) {
     drush_log(dt("Do not call drush_op('system'); use drush_op_system instead"), LogLevel::DEBUG);
   }
 
-  if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
+  if (\Drush\Drush::verbose() || \Drush\Drush::simulate()) {
     drush_log(sprintf("Calling %s(%s)", $callable_string, implode(", ", $args_printed)), LogLevel::DEBUG);
   }
 
-  if (drush_get_context('DRUSH_SIMULATE')) {
+  if (\Drush\Drush::simulate()) {
     return TRUE;
   }
 

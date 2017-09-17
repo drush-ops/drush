@@ -586,11 +586,11 @@ function _drush_preflight_global_options() {
   // Copy the simulated option to the Robo configuration object.
   // TODO: Long-term there should be a better way to do this (e.g. via an event listener)
   $config = Drush::service('config');
-  $config->set(\Robo\Config\Config::SIMULATE, drush_get_context('DRUSH_SIMULATE'));
+  $config->set(\Robo\Config\Config::SIMULATE, \Drush\Drush::simulate());
 
   // Copy the output verbosity into the output object
   $verbosity = OutputInterface::VERBOSITY_NORMAL;
-  if (drush_get_context('DRUSH_VERBOSE')) {
+  if (\Drush\Drush::verbose()) {
     $verbosity = OutputInterface::VERBOSITY_VERBOSE;
   }
   if (drush_get_context('DRUSH_DEBUG')) {
@@ -837,7 +837,7 @@ function drush_preflight_command_dispatch() {
     $site_record = array('site-list' => $site_list);
     $args = drush_get_arguments();
 
-    if (!drush_get_context('DRUSH_SIMULATE') && !$interactive  && !drush_get_context('DRUSH_AFFIRMATIVE') && !drush_get_context('DRUSH_QUIET')) {
+    if (!\Drush\Drush::simulate() && !$interactive  && !drush_get_context('DRUSH_AFFIRMATIVE') && !drush_get_context('DRUSH_QUIET')) {
       drush_print(dt("You are about to execute '!command' non-interactively (--yes forced) on all of the following targets:", array('!command' => implode(" ", $args))));
       foreach ($site_list as $one_destination) {
         drush_print(dt('  !target', array('!target' => $one_destination)));

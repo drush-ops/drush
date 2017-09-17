@@ -6,6 +6,7 @@ use Drush\Log\LogLevel;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\SiteAlias\SiteAliasName;
+use Symfony\Component\Console\Input\InputOption;
 
 class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
@@ -28,7 +29,7 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
      * @bootstrap DRUSH_BOOTSTRAP_NONE
      * @topics docs-aliases
      */
-    public function ssh(array $args, $options = ['cd' => true])
+    public function ssh(array $args, $options = ['cd' => InputOption::VALUE_OPTIONAL])
     {
         // n.b. we do not escape the first (0th) arg to allow `drush ssh 'ls /path'`
         // to work in addition to the preferred form of `drush ssh ls /path`.
@@ -38,11 +39,6 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
             $args[$x] = drush_escapeshellarg($args[$x]);
         }
         $command = implode(' ', $args);
-
-        // TODO: Remove when no longer needed.
-        if (!$this->hasSiteAliasManager()) {
-            return $this->legacySsh($command, $options);
-        }
 
         $alias = $this->siteAliasManager()->getSelf();
         if ($alias->isNone()) {
@@ -65,46 +61,7 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
         $config = $alias->exportConfig();
         $site = $config->get('options', []);
 
-        $cmd = drush_shell_proc_build($site, $command, $cd, $interactive);
-        $status = drush_shell_proc_open($cmd);
-        if ($status != 0) {
-            throw new \Exception(dt('An error @code occurred while running the command `@command`', array('@command' => $cmd, '@code' => $status)));
-        }
-    }
-
-    protected function legacySsh($command, $options = ['cd' => true])
-    {
-        if (!$alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
-            throw new \Exception('A site alias is required. The way you call ssh command has changed to `drush @alias ssh`.');
-        }
-        $site = drush_sitealias_get_record($alias);
-        // If we have multiple sites, run ourselves on each one. Set context back when done.
-        if (isset($site['site-list'])) {
-            if (empty($command)) {
-                throw new \Exception('A command is required when multiple site aliases are specified.');
-                return;
-            }
-            foreach ($site['site-list'] as $alias_single) {
-                drush_set_context('DRUSH_TARGET_SITE_ALIAS', $alias_single);
-                drush_ssh_site_ssh($command);
-            }
-            drush_set_context('DRUSH_TARGET_SITE_ALIAS', $alias);
-            return;
-        }
-
-        if (!drush_sitealias_is_remote_site($alias)) {
-            // Local sites run their bash without SSH.
-            $return = drush_invoke_process('@self', 'core-execute', array($command), array('escape' => false));
-            return $return['object'];
-        }
-
-        // We have a remote site - build ssh command and run.
-        $interactive = false;
-        $cd = $options['cd'];
-        if (empty($command)) {
-            $command = 'bash -l';
-            $interactive = true;
-        }
+        print "cd is " . var_export($cd, true) . "\n";
         $cmd = drush_shell_proc_build($site, $command, $cd, $interactive);
         $status = drush_shell_proc_open($cmd);
         if ($status != 0) {

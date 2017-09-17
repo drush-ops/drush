@@ -33,7 +33,7 @@ class ConfigPullCommands extends DrushCommands
 
         // @todo If either call is made interactive, we don't get an $return['object'] back.
         $backend_options = array('interactive' => false);
-        if (drush_get_context('DRUSH_SIMULATE')) {
+        if (\Drush\Drush::simulate()) {
             $backend_options['backend-simulate'] = true;
         }
 

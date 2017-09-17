@@ -10,6 +10,9 @@ use League\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use SebastianBergmann\Version;
 use Symfony\Component\Console\Application;
+use Consolidation\Config\ConfigInterface;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Static Service Container wrapper.
@@ -218,6 +221,69 @@ class Drush
     public static function logger()
     {
         return static::service('logger');
+    }
+
+    /**
+     * Return the configuration object
+     *
+     * @return ConfigInterface
+     */
+    public static function config()
+    {
+        return static::service('config');
+    }
+
+    /**
+     * Return the input object
+     *
+     * @return InputInterface
+     */
+    public static function input()
+    {
+        return static::service('input');
+    }
+
+    /**
+     * Return the output object
+     *
+     * @return OutputInterface
+     */
+    public static function output()
+    {
+        return static::service('output');
+    }
+
+    /**
+     * Return 'true' if we are in simulated mode
+     */
+    public static function simulate()
+    {
+        if (!static::hasService('input')) {
+            return false;
+        }
+        return \Drush\Drush::input()->getOption('simulate');
+    }
+
+    /**
+     * Return 'true' if we are in verbose mode
+     */
+    public static function verbose()
+    {
+        if (!static::hasService('output')) {
+            return false;
+        }
+        return \Drush\Drush::output()->isVerbose();
+    }
+
+    /**
+     * Return 'true' if we are in debug mode
+     */
+    public static function debug()
+    {
+        if (!static::hasService('output')) {
+            return false;
+        }
+        return \Drush\Drush::output()->isDebug();
     }
 
     /**

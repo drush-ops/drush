@@ -68,7 +68,7 @@ class Logger extends RoboLogger
             $green = "\033[1;32;40m\033[1m[%s]\033[0m";
         }
 
-        $verbose = drush_get_context('DRUSH_VERBOSE');
+        $verbose = \Drush\Drush::verbose();
         $debug = drush_get_context('DRUSH_DEBUG');
         $debugnotify = drush_get_context('DRUSH_DEBUG_NOTIFY');
 
