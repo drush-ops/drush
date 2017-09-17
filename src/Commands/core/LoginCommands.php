@@ -58,9 +58,7 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
             }
         } else {
             if (!drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
-                // Fail gracefully if unable to bootstrap Drupal.
-                // drush_bootstrap() has already logged an error.
-                return false;
+                throw new \Exception(dt('Unable to bootstrap Drupal.'));
             }
 
             if ($options['name'] == 1) {
