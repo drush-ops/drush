@@ -131,7 +131,7 @@ class SqlCommands extends DrushCommands
     {
         $this->further($options);
         $sql = SqlBase::create($options);
-        if (!drush_shell_proc_open($sql->connect())) {
+        if (drush_shell_proc_open($sql->connect())) {
             throw new \Exception('Unable to open database shell. Rerun with --debug to see any error message.');
         }
     }
