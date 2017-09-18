@@ -125,7 +125,11 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     public function setUri($uri)
     {
         // TODO: Throw if we already bootstrapped a framework?
+        // n.b. site-install needs to set the uri.
         $this->uri = $uri;
+        if ($this->bootstrap) {
+            $this->bootstrap->setUri($this->getUri());
+        }
     }
 
     /**
@@ -257,8 +261,8 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
             $result = drush_bootstrap_error('DRUSH_NO_SITE', dt("We could not find an applicable site for that command."));
         }
 
-          // Once we start bootstrapping past the DRUSH_BOOTSTRAP_DRUSH phase, we
-          // will latch the bootstrap object, and prevent it from changing.
+        // Once we start bootstrapping past the DRUSH_BOOTSTRAP_DRUSH phase, we
+        // will latch the bootstrap object, and prevent it from changing.
         if ($phase > DRUSH_BOOTSTRAP_DRUSH) {
             $this->latch($bootstrap);
         }
@@ -444,11 +448,14 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     {
         // Bootstrap as far as we can without throwing an error, but log for
         // debugging purposes.
-        $this->logger->log(LogLevel::DEBUG, 'Trying to bootstrap as far as we can');
 
         $phases = $this->bootstrapPhases(true);
         if (!$max_phase_index) {
             $max_phase_index = count($phases);
+        }
+
+        if ($max_phase_index >= count($phases)) {
+            $this->logger->log(LogLevel::DEBUG, 'Trying to bootstrap as far as we can');
         }
 
         // Try to bootstrap to the maximum possible level, without generating errors.
