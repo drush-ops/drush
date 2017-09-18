@@ -179,7 +179,7 @@ class StatusCommands extends DrushCommands
     {
         $paths = array();
         $site_wide = 'sites/all';
-        if (($drupal_root = $boot_manager->getRoot()) && ($boot_object instanceof DrupalBoot)) {
+        if ($drupal_root = $boot_manager->getRoot()) {
             $paths['%root'] = $drupal_root;
             if ($site_root = $boot->confPath()) {
                 $paths['%site'] = $site_root;

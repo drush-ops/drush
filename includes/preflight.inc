@@ -582,22 +582,6 @@ function _drush_preflight_global_options() {
     $nocolor = !($colors === FALSE || (is_numeric($colors) && $colors >= 3));
   }
   drush_set_context('DRUSH_NOCOLOR', $nocolor);
-
-  // Copy the simulated option to the Robo configuration object.
-  // TODO: Long-term there should be a better way to do this (e.g. via an event listener)
-  $config = Drush::service('config');
-  $config->set(\Robo\Config\Config::SIMULATE, \Drush\Drush::simulate());
-
-  // Copy the output verbosity into the output object
-  $verbosity = OutputInterface::VERBOSITY_NORMAL;
-  if (\Drush\Drush::verbose()) {
-    $verbosity = OutputInterface::VERBOSITY_VERBOSE;
-  }
-  if (drush_get_context('DRUSH_DEBUG')) {
-    $verbosity = OutputInterface::VERBOSITY_DEBUG;
-  }
-  $output = Drush::service('output');
-  $output->setVerbosity($verbosity);
 }
 
 /**

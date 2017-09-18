@@ -258,7 +258,8 @@ class Drush
      */
     public static function simulate()
     {
-        if (!static::hasService('input')) {
+        // TODO: re-enable this function
+        if (true || !static::hasService('input')) {
             return false;
         }
         return \Drush\Drush::input()->getOption('simulate');

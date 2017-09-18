@@ -29,7 +29,7 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
      * @bootstrap DRUSH_BOOTSTRAP_NONE
      * @topics docs-aliases
      */
-    public function ssh(array $args, $options = ['cd' => InputOption::VALUE_OPTIONAL])
+    public function ssh(array $args, $options = ['cd' => true])
     {
         // n.b. we do not escape the first (0th) arg to allow `drush ssh 'ls /path'`
         // to work in addition to the preferred form of `drush ssh ls /path`.
@@ -61,7 +61,6 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
         $config = $alias->exportConfig();
         $site = $config->get('options', []);
 
-        print "cd is " . var_export($cd, true) . "\n";
         $cmd = drush_shell_proc_build($site, $command, $cd, $interactive);
         $status = drush_shell_proc_open($cmd);
         if ($status != 0) {

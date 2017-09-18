@@ -48,7 +48,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface
      * @param string $file
      *   Full path to a file.
      */
-    public static function printFile($file)
+    public function printFile($file)
     {
 
         if ((substr($file, -4) == ".htm") || (substr($file, -5) == ".html")) {

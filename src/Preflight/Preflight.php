@@ -192,6 +192,9 @@ class Preflight
         // Set up the DI container.
         $container = DependencyInjection::initContainer($application, $config, $input, $output, $loader, $this->drupalFinder, $aliasManager);
 
+        // TODO: copy 'simulate' value over to config
+        // $config->set(\Robo\Config\Config::SIMULATE, \Drush\Drush::simulate());
+
         // Now that the DI container has been set up, the Application object will
         // have a reference to the bootstrap manager et. al., so we may use it
         // as needed. Set the selected uri on the application (which will set
