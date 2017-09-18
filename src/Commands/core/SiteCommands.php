@@ -131,8 +131,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
 
         if ($site) {
             throw new \Exception('Site alias not found.');
-        }
-        else {
+        } else {
             $this->logger()->success('No site aliases found.');
         }
     }

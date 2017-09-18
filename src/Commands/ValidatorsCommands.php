@@ -64,8 +64,7 @@ class ValidatorsCommands
         foreach ($arg_names as $arg_name) {
             if ($commandData->input()->hasArgument($arg_name)) {
                 $path = $commandData->input()->getArgument($arg_name);
-            }
-            elseif ($commandData->input()->hasOption($arg_name)) {
+            } elseif ($commandData->input()->hasOption($arg_name)) {
                 $path = $commandData->input()->getOption($arg_name);
             }
             if (!empty($path) && !file_exists($path)) {
@@ -120,8 +119,7 @@ class ValidatorsCommands
         $arg_or_option_name = $commandData->annotationData()->get('validate-permissions', null);
         if ($commandData->input()->hasArgument($arg_or_option_name)) {
             $permissions = StringUtils::csvToArray($commandData->input()->getArgument($arg_or_option_name));
-        }
-        else {
+        } else {
             $permissions = StringUtils::csvToArray($commandData->input()->getOption($arg_or_option_name));
         }
         $all_permissions = array_keys(\Drupal::service('user.permissions')->getPermissions());
