@@ -233,6 +233,11 @@ class Drush
         return static::service('config');
     }
 
+    public static function aliasManager()
+    {
+        return static::service('site.alias.manager');
+    }
+
     /**
      * Return the input object
      *
@@ -258,11 +263,7 @@ class Drush
      */
     public static function simulate()
     {
-        // TODO: re-enable this function
-        if (true || !static::hasService('input')) {
-            return false;
-        }
-        return \Drush\Drush::input()->getOption('simulate');
+        return \Drush\Drush::config()->get(\Robo\Config\Config::SIMULATE);
     }
 
     /**

@@ -148,6 +148,9 @@ class Preflight
         // should fetch 'root' et. al. from config rather than preflight args.
         $config = $configLocator->config();
 
+        // Copy 'simulate' setting value over to config. Use Robo's SIMULATE identifier.
+        $config->set(\Robo\Config\Config::SIMULATE, $preflightArgs->isSimulated());
+
         // Determine the local site targeted, if any.
         // Extend configuration and alias files to include files in
         // target site.
@@ -191,9 +194,6 @@ class Preflight
 
         // Set up the DI container.
         $container = DependencyInjection::initContainer($application, $config, $input, $output, $loader, $this->drupalFinder, $aliasManager);
-
-        // TODO: copy 'simulate' value over to config
-        // $config->set(\Robo\Config\Config::SIMULATE, \Drush\Drush::simulate());
 
         // Now that the DI container has been set up, the Application object will
         // have a reference to the bootstrap manager et. al., so we may use it

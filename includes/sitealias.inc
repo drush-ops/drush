@@ -211,6 +211,15 @@ function drush_sitealias_valid_alias_format($alias) {
  *   An alias record, or empty if none found.
  */
 function drush_sitealias_get_record($alias, $alias_context = NULL) {
+  // If legacy code is still looking for an alias record this way, redirect the
+  // request to the alias manager.
+  if (\Drush\Drush::hasService('site.alias.manager')) {
+    // TODO: probably need to check for 'not found'
+    $alias_record = \Drush\Drush::aliasManager()->get($alias);
+    $config_record = $alias_record->exportConfig();
+    $exported_config = $config_record->export();
+    return $exported_config['options'];
+  }
   // Check to see if the alias contains commas.  If it does, then
   // we will go ahead and make a site list record
   $alias_record = array();
