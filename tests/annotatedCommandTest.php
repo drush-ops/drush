@@ -46,18 +46,24 @@ class annotatedCommandCase extends CommandUnishTestCase {
     // Copy the 'woot' module over to the Drupal site we just set up.
     $this->setupModulesForTests($root);
 
-    // These are not good asserts, but for the purposes of isolation....
-    $commandFile = Path::join($root, 'modules/contrib/woot/src/Commands/WootCommands.php');
-    $this->assertFileExists(dirname(dirname(dirname($commandFile))));
-    $this->assertFileExists(dirname(dirname($commandFile)));
-    $this->assertFileExists(dirname($commandFile));
-    $this->assertFileExists($commandFile);
-
     // Enable our module. This will also clear the commandfile cache.
     $this->drush('pm-enable', array('woot'), $options);
 
     // In theory this is not necessary, but this test keeps failing.
-    $this->drush('cc', array('drush'), $options);
+    // $this->drush('cc', array('drush'), $options);
+
+    // Make sure that modules can supply DCG Generators and they work.
+    $optionsExample['answers'] = json_encode([
+      'name' => 'foo',
+      'machine_name' => 'bar',
+    ]);
+    $optionsExample['directory'] = self::getSandbox();
+    $original = getenv('SHELL_INTERACTIVE');
+    putenv('SHELL_INTERACTIVE=1');
+    $this->drush('generate', ['woot-example'], array_merge($options, $optionsExample));
+    putenv('SHELL_INTERACTIVE=' . $original);
+    $target = Path::join(self::getSandbox(), '/src/Commands/ExampleBarCommands.php');
+    $this->assertStringEqualsFile($target, 'ExampleBarCommands says Woot mightily.');
 
     // drush woot --help
     $this->drush('woot', array(), $options + ['help' => NULL]);
@@ -165,7 +171,7 @@ EOT;
 
   public function setupGlobalExtensionsForTests() {
     $globalExtension = __DIR__ . '/resources/global-includes';
-    $targetDir = self::getSandbox() . DIRECTORY_SEPARATOR . 'global-includes';
+    $targetDir = Path::join(self::getSandbox(), 'global-includes');
     $this->mkdir($targetDir);
     $this->recursive_copy($globalExtension, $targetDir);
     return $targetDir;
@@ -173,7 +179,8 @@ EOT;
 
   public function setupModulesForTests($root) {
     $wootModule = Path::join(__DIR__, '/resources/modules/d8/woot');
-    $targetDir = Path::join($root, 'modules/contrib/woot');
+    // We install into Unish so that we aren't cleaned up. That causes container to go invalid after tearDownAfterClass().
+    $targetDir = Path::join($root, 'modules/unish/woot');
     $this->mkdir($targetDir);
     $this->recursive_copy($wootModule, $targetDir);
   }

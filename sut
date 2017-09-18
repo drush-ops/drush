@@ -1,0 +1,41 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * Run a Drush command against the Site Under Test
+ *
+ * @usage sut core-status --verbose
+ */
+
+require __DIR__. '/tests/unish.inc';
+list($unish_tmp, $unish_sandbox, $unish_drush_dir) = unishGetPaths();
+$sut = dirname($unish_sandbox) . '/drush-sut';
+$vendor = $sut . '/vendor';
+
+// Get the arguments for the command.
+$arguments = $GLOBALS['argv'];
+// Shift off argv[0] which contains the name of this script.
+array_shift($arguments);
+// Add uri option
+array_unshift($arguments, "--uri=dev");
+
+// Make it easy to just call `/.sut si -y testing`
+if (in_array('si', $arguments)) {
+    $db_url = getenv('UNISH_DB_URL') ?: 'mysql://root:@127.0.0.1';
+    $arguments[] = "--db-url=$db_url/unish_dev";
+    $arguments[] = '--sites-subdir=dev';
+}
+
+/**
+ * DRUSH_AUTOLOAD_PHP must be provided because Drush is symlinked into the SUT.
+ * This confuses our autoload.php detection.
+ */
+$cmd = "DRUSH_AUTOLOAD_PHP=$vendor/autoload.php " . escapeshellarg($vendor . '/bin/drush') . ' ' . implode(' ', $arguments);
+if (unishIsVerbose()) {
+  fwrite(STDERR, 'Executing: ' . $cmd . "\n");
+}
+chdir($sut);
+$process = proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
+$proc_status = proc_get_status($process);
+$exit_code = proc_close($process);
+exit($proc_status["running"] ? $exit_code : $proc_status["exitcode"] );

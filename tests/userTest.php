@@ -2,6 +2,8 @@
 
 namespace Unish;
 
+use Webmozart\PathUtil\Path;
+
 /**
  *  @group slow
  *  @group commands
@@ -96,34 +98,51 @@ class userCase extends CommandUnishTestCase {
   }
 
   function testUserCancel() {
-    // create content
-    // @todo Creation of node types and content has changed in D8.
-    if (UNISH_DRUPAL_MAJOR_VERSION == 8) {
-      $this->markTestSkipped("@todo Creation of node types and content has changed in D8.");
-    }
-    if (UNISH_DRUPAL_MAJOR_VERSION >= 7) {
-      // create_node_types script does not work for D6
-      $this->drush('php-script', array('create_node_types'), $this->options() + array('script-path' => dirname(__FILE__) . '/resources'));
-      $name = self::NAME;
-      $newpass = 'newpass';
-      $eval = "return user_authenticate('$name', '$newpass')";
-      $this->drush('php-eval', array($eval), $this->options());
-      $eval = "\$node = (object) array('title' => 'foo', 'uid' => 2, 'type' => 'page',);";
-      if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {
-        $eval .= " \$node = node_submit(entity_create('node', \$node));";
-      }
-      $eval .= " node_save(\$node);";
-      $this->drush('php-eval', array($eval), $this->options());
-      $this->drush('user-cancel', array(self::NAME), $this->options() + array('delete-content' => NULL));
-      $eval = 'print (string) user_load(2)';
-      $this->drush('php-eval', array($eval), $this->options());
-      $output = $this->getOutput();
-      $this->assertEmpty($output, 'User was deleted');
-      $eval = 'print (string) node_load(2)';
-      $this->drush('php-eval', array($eval), $this->options());
-      $output = $this->getOutput();
-      $this->assertEmpty($output, 'Content was deleted');
-    }
+    // $this->markTestSkipped("@todo Creation of node types and content has changed in D8.");
+    // Create a content entity type and enable its module.
+    $answers = [
+      'name' => 'UnishArticle',
+      'machine_name' => 'unish_article',
+      'package' => 'custom',
+      'version' => '8.x-1.0-dev',
+      'dependencies' => 'text',
+      'entity_type_label' => 'UnishArticle',
+      'entity_type_id' => 'unish_article',
+      'entity_base_path' => 'admin/content/unish_article',
+      'fieldable' => 'no',
+      'revisionable' => 'no',
+      'template' => 'no',
+      'access_controller' => 'no',
+      'title_base_field' => 'yes',
+      'status_base_field' => 'yes',
+      'created_base_field' => 'yes',
+      'changed_base_field' => 'yes',
+      'author_base_field' => 'yes',
+      'description_base_field' => 'no',
+      'rest_configuration' => 'no',
+    ];
+    $answers = json_encode($answers);
+    $original = getenv('SHELL_INTERACTIVE');
+    putenv('SHELL_INTERACTIVE=1');
+    $this->drush('generate', ['content-entity'], $this->options() + ['answers' => $answers, 'directory' => Path::join(self::webroot(), 'modules/unish')]);
+    putenv('SHELL_INTERACTIVE=' . $original);
+    $this->drush('pm-enable', ['text,unish_article'], $this->options());
+    // Create one unish_article owned by our example user.
+    $this->drush('php-script', ['create_unish_articles'], $this->options() + ['script-path' => '../vendor/drush/drush/tests/resources']);
+    // Verify that content entity exists.
+    $code = "echo entity_load('unish_article', 1)->id()";
+    $this->drush('php-eval', [$code], $this->options());
+    $this->assertEquals(1, $this->getOutput());
+
+    // Cancel user and verify that the account is deleted.
+    $this->drush('user-cancel', array(self::NAME), $this->options() + array('delete-content' => NULL));
+    $this->drush('user-information', [self::NAME], $this->options() + ['fields' => 'user_status', 'format' => 'string'], NULL, NULL, self::EXIT_ERROR);
+
+    // Verify that the content is deleted.
+    // Sigh - only nodes actually honor the cancellation methods. @see node_user_cancel().
+    // $this->drush('php-eval', [$code], $this->options(), NULL, NULL, self::EXIT_ERROR);
+    // $output = $this->getOutput();
+    // $this->assertEquals('', $this->getOutput());
   }
 
   function UserCreate() {

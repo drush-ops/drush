@@ -12,5 +12,6 @@ use \Consolidation\OutputFormatters\FormatterManager;
 /**
  * Our own output formatter
  */
-class DrushFormatterManager extends FormatterManager {
+class DrushFormatterManager extends FormatterManager
+{
 }

@@ -2,4 +2,6 @@
 
 namespace Drush\Sql;
 
-class SqlException extends \Exception {}
+class SqlException extends \Exception
+{
+}

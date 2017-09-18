@@ -10,12 +10,13 @@
  */
 
 use Drush\Commands\core\StatusCommands;
+use Drush\Drush;
 use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 
 /**
  * Check to see if the user specified an alias
- * in an arguement, or via site-set.  If so, return
+ * in an argument, or via site-set.  If so, return
  * the name of the alias.
  *
  * If the alias came from args, then remove it
@@ -93,7 +94,7 @@ function drush_sitealias_check_site_env() {
 function drush_sitealias_create_self_alias() {
   $self_record = drush_sitealias_get_record('@self');
   if (!array_key_exists('root', $self_record) && !array_key_exists('remote-host', $self_record)) {
-    $drupal_root = \Drush::bootstrapManager()->getRoot();
+    $drupal_root = Drush::bootstrapManager()->getRoot();
     $uri = drush_get_context('DRUSH_SELECTED_URI');
     if (!empty($drupal_root) && !empty($uri)) {
       // Create an alias '@self'
@@ -405,7 +406,7 @@ function drush_sitealias_alias_path($alias_path_context = NULL) {
 
   // If the user defined the root of a drupal site, then also
   // look for alias files in /drush and /sites/all/drush.
-  $drupal_root = \Drush::bootstrapManager()->getRoot();
+  $drupal_root = Drush::bootstrapManager()->getRoot();
   if (!empty($drupal_root)) {
     $site_paths[] = drush_sitealias_alias_base_directory($drupal_root . '/../drush');
     $site_paths[] = drush_sitealias_alias_base_directory($drupal_root . '/drush');
@@ -668,7 +669,7 @@ function _drush_sitealias_find_and_load_alias($aliasname, $alias_path_context = 
       }
     }
     else {
-      $drupal_root = \Drush::bootstrapManager()->getRoot();
+      $drupal_root = Drush::bootstrapManager()->getRoot();
     }
     if (isset($drupal_root) && !is_array($drupal_root)) {
       drush_sitealias_create_sites_alias($drupal_root);
@@ -1083,7 +1084,7 @@ function drush_sitealias_bootstrapped_site_name() {
     $site_name = $self_record['#name'];
   }
   if (!isset($site_name) || ($site_name == '@self')) {
-    $drupal_root = \Drush::bootstrapManager()->getRoot();
+    $drupal_root = Drush::bootstrapManager()->getRoot();
     if (isset($drupal_root)) {
       $drupal_uri = drush_get_context('DRUSH_SELECTED_URI', 'default');
       $drupal_uri = str_replace('http://', '', $drupal_uri);
@@ -1442,8 +1443,10 @@ function _drush_find_local_sites_in_sites_folder($a_drupal_root) {
       // First we'll resolve the realpath of the settings.php file,
       // so that we get the correct drupal root when symlinks are in use.
       $real_sitedir = dirname(realpath($filename));
-      $real_root = drush_locate_root($filename);
-      if ($real_root !== FALSE) {
+
+      $drupalFinder = new DrupalFinder();
+      if ($drupalFinder->locateRoot($real_sitedir)) {
+        $real_root = $drupalFinder->getDrupalRoot();
         $a_drupal_site = $real_root . '#' . basename($real_sitedir);
       }
       // If the symlink points to some folder outside of any drupal
@@ -1538,7 +1541,7 @@ function _drush_sitealias_find_record_for_local_site($alias, $drupal_root = NULL
   }
 
   if (!isset($drupal_root)) {
-    $drupal_root = \Drush::bootstrapManager()->getRoot();
+    $drupal_root = Drush::bootstrapManager()->getRoot();
   }
 
   if (!empty($drupal_root)) {
@@ -1555,7 +1558,10 @@ function drush_sitealias_build_record_from_settings_file($site_settings_file, $a
 
   if (file_exists($site_settings_file)) {
     if (!isset($drupal_root)) {
-      $drupal_root = drush_locate_root($site_settings_file);
+      $drupalFinder = new DrupalFinder();
+      if ($drupalFinder->locateRoot(dirname($site_settings_file))) {
+        $drupal_root = $drupalFinder->getDrupalRoot();
+      }
     }
 
     $alias_record['root'] = $drupal_root;
@@ -1766,8 +1772,6 @@ function _drush_sitealias_set_context_by_name($alias, $prefix = '') {
         }
 
         _drush_sitealias_cache_alias('@self', $site_alias_settings);
-        // Change the selected site to match the new --root and --uri, if any were set.
-        _drush_preflight_root_uri();
       }
       return $site_alias_settings;
     }
@@ -2231,7 +2235,7 @@ function drush_sitealias_cache_alias_by_path($alias_record) {
   if (!isset($alias_record['remote-host']) && isset($alias_record['root']) && isset($alias_record['uri']) && isset($alias_record['#name']) && isset($alias_record['#file'])) {
     $path = drush_sitealias_local_site_path($alias_record);
     if ($path) {
-      $cid = drush_get_cid('alias-path-', array(), array($path));
+      $cid = drush_get_cid('alias-path-', array(), array($path, drush_get_option('local') ? 'local' : 'no-local'));
       $alias_path_data = array(
         '#name' => $alias_record['#name'],
         '#file' => $alias_record['#file'],
@@ -2292,7 +2296,7 @@ function drush_sitealias_lookup_alias_by_path($path, $allow_best_match=FALSE) {
  */
 function drush_sitealias_quick_lookup_cached_alias_by_path($path) {
   $alias_record = array();
-  $cid = drush_get_cid('alias-path-', array(), array($path));
+  $cid = drush_get_cid('alias-path-', array(), array($path, drush_get_option('local') ? 'local' : 'no-local'));
   $alias_path_cache = drush_cache_get($cid);
   if (isset($alias_path_cache->data)) {
     $alias_name = $alias_path_cache->data['#name'];

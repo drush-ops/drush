@@ -41,14 +41,8 @@ function unish_setup_sut($unish_sandbox) {
     }
   }
 
-  // getopt() is awkward
-  $verbose = NULL;
-  foreach (['-v','-vv','-vvv','--verbose'] as $needle) {
-    if (in_array($needle, $_SERVER['argv'])) {
-      $verbose = $needle;
-    }
-  }
-  $cmd = "composer $verbose install --no-interaction --no-progress --no-suggest --working-dir " . escapeshellarg($working_dir);
+  $verbose = unishIsVerbose();
+  $cmd = "composer $verbose install --no-progress --no-suggest --working-dir " . escapeshellarg($working_dir);
   fwrite(STDERR, 'Executing: ' . $cmd . "\n");
   exec($cmd, $output, $return);
 

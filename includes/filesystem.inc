@@ -67,47 +67,6 @@ function drush_correct_absolute_path_for_exec($path, $os = NULL) {
 }
 
 /**
- * Remove the trailing DIRECTORY_SEPARATOR from a path.
- * Will actually remove either / or \ on Windows.
- */
-function drush_trim_path($path, $os = NULL) {
-  if (drush_is_windows($os)) {
-    return rtrim($path, '/\\');
-  }
-  else {
-    return rtrim($path, '/');
-  }
-}
-
-/**
- * Makes sure the path has only path separators native for the current operating system
- */
-function drush_normalize_path($path) {
-  if (drush_is_windows()) {
-    $path = str_replace('/', '\\',  strtolower($path));
-  }
-  else {
-    $path = str_replace('\\', '/', $path);
-  }
-  return drush_trim_path($path);
-}
-
-/**
- * Calculates a single md5 hash for all files a directory (incuding subdirectories)
- */
-function drush_dir_md5($dir) {
-  $flist = drush_scan_directory($dir, '/./', array('.', '..'), 0, TRUE, 'filename', 0, TRUE);
-  $hashes = array();
-  foreach ($flist as $f) {
-    $sum = array();
-    exec('cksum ' . escapeshellarg($f->filename), $sum);
-    $hashes[] = trim(str_replace(array($dir), array(''), $sum[0]));
-  }
-  sort($hashes);
-  return md5(implode("\n", $hashes));
-}
-
-/**
  * Deletes the specified file or directory and everything inside it.
  *
  * Usually respects read-only files and folders. To do a forced delete use
@@ -401,7 +360,9 @@ function drush_mkdir($path, $required = TRUE) {
 function drush_program_exists($program) {
   if (drush_has_bash()) {
     $bucket = drush_bit_bucket();
-    return drush_op_system("command -v $program >$bucket 2>&1") === 0 ? TRUE : FALSE;
+    // Dont't use drush_op_system() since we don't want output during tests.
+    system("command -v $program > $bucket 2>&1", $result_code);
+    return $result_code === 0 ? TRUE : FALSE;
   }
 }
 

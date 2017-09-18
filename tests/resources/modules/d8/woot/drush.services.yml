@@ -1,0 +1,23 @@
+services:
+  woot.manager:
+    class: Drupal\woot\WootManager
+    arguments: ['@current_user']
+    tags:
+      -  { name: drush.command }
+  woot.command:
+    class: Drupal\woot\Commands\WootCommands
+    tags:
+      -  { name: drush.command }
+  greet.command:
+    class: Drupal\woot\Commands\GreetCommand
+    tags:
+      -  { name: console.command }
+  annotated_greet.command:
+    class: Drupal\woot\Commands\AnnotatedGreetCommand
+    tags:
+      -  { name: console.command }
+  example.generator:
+      class: Drupal\woot\Generators\ExampleGenerator
+      arguments: ['@module_handler']
+      tags:
+        -  { name: drush.generator }

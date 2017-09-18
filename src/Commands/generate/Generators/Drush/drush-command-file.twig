@@ -1,0 +1,26 @@
+<?php
+namespace Drupal\{{ machine_name }}\Commands;
+
+{% if not source %}
+use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+{% endif %}
+use Drush\Commands\DrushCommands;
+
+/**
+ *
+ * In addition to a commandfile like this one, you need to add a drush.services.yml
+ * in root of your module.
+ *
+ * See these files for an example of injecting Drupal services:
+ *   - http://cgit.drupalcode.org/devel/tree/src/Commands/DevelCommands.php
+ *   - http://cgit.drupalcode.org/devel/tree/drush.services.yml
+ */
+class {{ class }} extends DrushCommands {
+
+{% if source %}
+{% include 'ported-methods.twig' %}
+{% else %}
+{% include 'default-methods.twig' %}
+{% endif %}
+
+}

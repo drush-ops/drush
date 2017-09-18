@@ -39,6 +39,7 @@
  *   the matching configuration file through the drush_save_config() function.
  */
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
 
 
@@ -110,15 +111,15 @@ function _drush_config_file($context, $prefix = NULL, $version = '') {
     }
   }
 
-  if ($drupal_root = \Drush::bootstrapManager()->getRoot()) {
+  if ($drupal_root = Drush::bootstrapManager()->getRoot()) {
     $configs['drupal'] = array(
       $drupal_root . '/../drush/' . $config_file,
       $drupal_root . '/sites/all/drush/' . $config_file,
       $drupal_root . '/drush/' . $config_file,
     );
 
-    if ($conf_path = drush_get_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', 'sites/default')) {
-      $site_path = $drupal_root . '/' . $conf_path;
+    if ($confPath = drush_get_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', 'sites/default')) {
+      $site_path = $drupal_root . '/' . $confPath;
       $configs['site'] = $site_path . "/" . $config_file;
     }
   }

@@ -1,0 +1,22 @@
+{% for key, command in commands %}
+  /**
+   * {{ command.description|raw }}
+   *
+   * @command {{ key }}
+{% for argName, argDescription in command.arguments %}
+   * @param {{ argName }} {{ argDescription|raw }}
+{% endfor %}
+{% for optionName, optionDescription in command.options %}
+   * @option {{ optionName }} {{ optionDescription|raw }}
+{% endfor %}
+{% for usageName, usageDescription in command.examples %}
+   * @usage {{ usageName|raw }}
+   *   {{ usageDescription|raw }}
+{% endfor %}
+   * @aliases {{ command.aliases|join(',')  }}
+   */
+  public function {{ command.method }}({{ command.argumentsConcat|raw }}{{ command.optionsConcat|raw }}) {
+
+  }
+
+{% endfor %}

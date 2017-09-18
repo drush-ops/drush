@@ -22,7 +22,7 @@ class contextCase extends CommandUnishTestCase {
     $this->paths = array(
       'custom' => self::getSandbox(),
       'site' =>  $this->site,
-      'drupal' => $this->webroot() . '/sites/all/drush',
+      'drupal' => $this->webroot() . '/drush',
       'drupal-parent' => dirname($this->webroot()) . '/drush',
       'user' => $this->home,
       'home.drush' => $this->home . '/.drush',
@@ -189,6 +189,7 @@ EOD;
     $output = $this->getOutput();
     $actuals = json_decode(trim($output));
     $this->assertEquals('alias1', $actuals->contextConfig);
+    unlink($this->webroot() . '/sites/' . $this->env . '/aliases.drushrc.php');
 
     // Command specific wins over non-specific. If it did not, $expected would
     // be 'site'. Note we call unit-eval command in order not to purturb

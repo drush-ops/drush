@@ -9,6 +9,69 @@ namespace Unish;
  */
 class saCase extends CommandUnishTestCase {
   /**
+   * Covers the following responsibilities:
+   *   - Dispatching a Drush command via an alias that is defined in a
+   *     site-local alias file. The target alias points to a different
+   *     Drupal site at a different docroot on the same system.
+   */
+  function testSiteLocalAliasDispatch() {
+    $sites = $this->setUpDrupal(2, TRUE);
+
+    // Make a separate copy of the stage site so that we can test
+    // to see if we can switch to a separate site via an site-local alias.
+    $dev_root = $sites['dev']['root'];
+    $drush_sut = dirname($dev_root);
+    $other_sut = dirname($drush_sut) . '/drush-other-sut';
+    $other_root = $other_sut . '/web';
+    @mkdir($other_sut);
+    self::recursive_copy($dev_root, $other_root);
+
+    if (!file_exists($drush_sut . '/composer.json') || !file_exists($drush_sut . '/composer.lock')) {
+      $this->markTestSkipped('This test does not run in the highest / lowest configurations.');
+    }
+
+    copy($drush_sut . '/composer.json', $other_sut . '/composer.json');
+    copy($drush_sut . '/composer.lock', $other_sut . '/composer.lock');
+
+    // Hopefully this will run quickly from the cache.
+    passthru("composer --working-dir=$other_sut install");
+
+    $aliasPath = $dev_root . '/drush';
+    $aliasFile = "$aliasPath/aliases.drushrc.php";
+    $aliasContents = <<<EOD
+<?php
+// Written by Unish. This file is safe to delete.
+
+\$aliases["other"] = array (
+  'root' => '$other_root',
+  'uri' => 'stage',
+);
+EOD;
+    if (!is_dir($aliasPath)) {
+      mkdir($aliasPath);
+    }
+    file_put_contents($aliasFile, $aliasContents);
+
+    // Ensure that we can access the 'other' alias from the context
+    // of the 'dev' site, and that it has the right drupal root.
+    $options = [
+    ];
+    $this->drush('sa', array('@other'), $options, '@dev');
+    $output = $this->getOutput();
+    $this->assertContains("root: $other_root", $output);
+
+    // Ensure that we can get status on the 'other' alias when the
+    // root of the dev site is provided (to allow Drush to find the 'other' alias)
+    $options = [
+      'root' => $dev_root,
+      'format' => 'yaml',
+    ];
+    $this->drush('core-status', [], $options, '@other');
+    $output = $this->getOutput();
+    $this->assertContains("root: $other_root", $output);
+  }
+
+  /**
    * Covers the following responsibilities.
    *   - Dispatching a Drush command that uses strict option handling
    *     using a global option (e.g. --alias-path) places said global
@@ -125,20 +188,21 @@ EOD;
    */
   public function testBackendHonorsAliasOverride() {
     // Test a standard remote dispatch.
-    $this->drush('core-status', array(), array('uri' => 'http://example.com', 'simulate' => NULL), 'user@server/path/to/drupal#sitename');
+    $siteSpec = 'user@server/path/to/drupal#sitename';
+    $this->drush('core-status', array(), array('uri' => 'http://example.com', 'simulate' => NULL), $siteSpec);
     $this->assertContains('--uri=http://example.com', $this->getOutput());
 
     // Test a local-handling command which uses drush_redispatch_get_options().
-    $this->drush('browse', array(), array('uri' => 'http://example.com', 'simulate' => NULL), 'user@server/path/to/drupal#sitename');
+    $this->drush('browse', array(), array('uri' => 'http://example.com', 'simulate' => NULL), $siteSpec);
     $this->assertContains('--uri=http://example.com', $this->getOutput());
 
     // Test a command which uses drush_invoke_process('@self') internally.
-    $sites = $this->setUpDrupal(1, TRUE);
-    $name = key($sites);
-    $sites_php = "\n\$sites['example.com'] = '$name';";
-    file_put_contents($sites[$name]['root'] . '/sites/sites.php', $sites_php, FILE_APPEND);
-    $this->drush('config-pull', array(), array('uri' => 'http://example.com', 'safe' => NULL, 'verbose' => NULL), '@' . $name);
-    $this->assertContains('--uri=http://example.com', $this->getErrorOutput());
+//    $sites = $this->setUpDrupal(1, TRUE);
+//    $name = key($sites);
+//    $sites_php = "\n\$sites['example.com'] = '$name';";
+//    file_put_contents($sites[$name]['root'] . '/sites/sites.php', $sites_php, FILE_APPEND);
+//    $this->drush('config-pull', array(), array('uri' => 'http://example.com', 'safe' => NULL, 'verbose' => NULL), '@' . $name);
+//    $this->assertContains('--uri=http://example.com', $this->getErrorOutput());
 
     // Test a remote alias that does not have a 'root' element
     $aliasPath = self::getSandbox() . '/site-alias-directory';

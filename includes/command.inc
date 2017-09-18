@@ -1,5 +1,7 @@
 <?php
 
+use Consolidation\AnnotatedCommand\AnnotatedCommand;
+use Drush\Drush;
 use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 use Consolidation\AnnotatedCommand\AnnotationData;
@@ -12,7 +14,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
  * @{
  *
  * These functions handle command dispatching, and can
- * be used to programatically invoke drush commands in
+ * be used to programmatically invoke Drush commands in
  * different ways.
  */
 
@@ -55,7 +57,7 @@ function drush_invoke($command, $arguments = array()) {
     return drush_dispatch($command, $arguments);
   }
   else {
-    return drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The drush command '!command' could not be found.", array('!command' => $command)));
+    return drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The Drush command '!command' could not be found.", array('!command' => $command)));
   }
 }
 
@@ -522,24 +524,13 @@ function drush_handle_command_output($command, $structured_output) {
  */
 function _drush_verify_cli_options($command) {
 
-  // Start out with just the options in the current command record.
-  $options = _drush_get_command_options($command);
+  $options = drush_get_command_options_extended($command);
+
   // Skip all tests if the command is marked to allow anything.
-  // Also skip backend commands, which may have options on the commandline
-  // that were inherited from the calling command.
   if (($command['allow-additional-options'] === TRUE)) {
     return TRUE;
   }
-  // If 'allow-additional-options' contains a list of command names,
-  // then union together all of the options from all of the commands.
-  if (is_array($command['allow-additional-options'])) {
-    $implemented = drush_get_commands();
-    foreach ($command['allow-additional-options'] as $subcommand_name) {
-      if (array_key_exists($subcommand_name, $implemented)) {
-        $options = array_merge($options, _drush_get_command_options($implemented[$subcommand_name]));
-      }
-    }
-  }
+
   // Also add in global options
   $options = array_merge($options, drush_get_global_options());
 
@@ -640,11 +631,26 @@ function _drush_get_command_options($command) {
 
 /**
  * Return the list of all of the options for the given
- * command record including options provided by engines and additional-options.
+ * command record including options provided by hooks and additional-options.
  */
 function drush_get_command_options_extended($command) {
-  // Start out with just the options in the current command record.
-  $options = _drush_get_command_options($command);
+  if (annotation_adapter_is_annotated($command)) {
+    // The canonical options list is now in $application
+    $application = Drush::getApplication();
+    $console = $application->get($command['command']);
+    if ($console instanceof AnnotatedCommand) {
+      $console->optionsHook();
+    }
+    $options = $console->getDefinition()->getOptions();
+    // Add formatter options. See \Consolidation\OutputFormatters\Options\FormatterOptions
+    // @todo Move this out of Drush.
+    $options['include-field-labels'] = '';
+  }
+  else {
+    // Start out with just the options in the current command record.
+    $options = _drush_get_command_options($command);
+  }
+
   // If 'allow-additional-options' contains a list of command names,
   // then union together all of the options from all of the commands.
   if (is_array($command['allow-additional-options'])) {
@@ -655,6 +661,7 @@ function drush_get_command_options_extended($command) {
       }
     }
   }
+
   return $options;
 }
 
@@ -1196,9 +1203,9 @@ function drush_command_defaults($key, $commandfile, $path) {
   // options list.  Later, the bootstrap object can also provide
   // additional defaults if needed.  The bootstrap command defaults
   // will be merged into the command object again just before
-  // running it in bootstrap_and_dispatch().
-  if ($bootstrap = \Drush::bootstrap()) {
-    $defaults = array_merge($defaults, $bootstrap->command_defaults());
+  // running it in bootstrapAndDispatch().
+  if ($bootstrap = Drush::bootstrap()) {
+    $defaults = array_merge($defaults, $bootstrap->commandDefaults());
   }
   return $defaults;
 }
@@ -1438,8 +1445,8 @@ function drush_commandfile_list() {
 
 function _drush_find_commandfiles($phase, $phase_max = FALSE) {
   drush_log(dt("Find command files for phase !phase (max=!max)", array('!phase' => $phase, '!max' => (string)$phase_max)), LogLevel::DEBUG);
-  if ($bootstrap = \Drush::bootstrap()) {
-    $searchpath = $bootstrap->commandfile_searchpaths($phase, $phase_max);
+  if ($bootstrap = Drush::bootstrap()) {
+    $searchpath = $bootstrap->commandfileSearchpaths($phase, $phase_max);
     _drush_add_commandfiles($searchpath, $phase);
     annotationcommand_adapter_discover($searchpath, $phase, $phase_max);
   }
@@ -1842,7 +1849,7 @@ function commandfiles_cache() {
   static $commandfiles_cache = NULL;
 
   if (!isset($commandfiles_cache)) {
-    $commandfiles_cache = new Drush\Command\Commandfiles();
+    $commandfiles_cache = new \Drush\Command\Commandfiles();
   }
   return $commandfiles_cache;
 }

@@ -11,13 +11,16 @@ class DrushServiceModifier implements ServiceModifierInterface
     /**
      * @inheritdoc
      */
-    public function alter(ContainerBuilder $container) {
-        drush_log(dt("service modifier alter"), LogLevel::DEBUG);
+    public function alter(ContainerBuilder $container)
+    {
+        drush_log(dt("Service modifier alter."), LogLevel::DEBUG_NOTIFY);
         // http://symfony.com/doc/2.7/components/dependency_injection/tags.html#register-the-pass-with-the-container
         $container->register('drush.service.consolecommands', 'Drush\Command\ServiceCommandlist');
-        $container->addCompilerPass(new FindCommandsCompilerPass('drush.service.consolecommands', 'drush.command'));
+        $container->addCompilerPass(new FindCommandsCompilerPass('drush.service.consolecommands', 'console.command'));
         $container->register('drush.service.consolidationcommands', 'Drush\Command\ServiceCommandlist');
-        $container->addCompilerPass(new FindCommandsCompilerPass('drush.service.consolidationcommands', 'consolidation.commandhandler'));
+        $container->addCompilerPass(new FindCommandsCompilerPass('drush.service.consolidationcommands', 'drush.command'));
+        $container->register('drush.service.generators', 'Drush\Command\ServiceCommandlist');
+        $container->addCompilerPass(new FindCommandsCompilerPass('drush.service.generators', 'drush.generator'));
     }
 
     /**
@@ -27,8 +30,9 @@ class DrushServiceModifier implements ServiceModifierInterface
      *   Cached container definition
      * @return bool
      */
-    public function check($container_definition) {
-      return isset($container_definition['services']['drush.service.consolecommands']) &&
+    public function check($container_definition)
+    {
+        return isset($container_definition['services']['drush.service.consolecommands']) &&
         isset($container_definition['services']['drush.service.consolidationcommands']);
     }
 }

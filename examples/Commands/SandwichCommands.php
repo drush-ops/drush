@@ -3,9 +3,17 @@ namespace Drush\Commands;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drush\Utils\StringUtils;
 
 /**
  * Run these commands using the --include option - e.g. `drush --include=/path/to/drush/examples mmas`
+ *
+ * For an example of a Drupal module implementing commands, see
+ * - http://cgit.drupalcode.org/devel/tree/devel_generate/src/Commands
+ * - http://cgit.drupalcode.org/devel/tree/devel_generate/drush.services.yml
+ *
+ * This file is a good example of the first of those bullets (a commandfile) but
+ * since it isn't part of a module, it does not implement drush.services.yml. Global commandfiles like this one
  */
 
 class SandwichCommands extends DrushCommands {
@@ -19,11 +27,9 @@ class SandwichCommands extends DrushCommands {
    * @usage drush mmas turkey --spreads=ketchup,mustard
    *   Make a terrible-tasting sandwich that is lacking in pickles.
    * @aliases mmas
-   * @bootstrap DRUSH_BOOTSTRAP_NONE
-   * @complete \SandwichCommands::complete
    */
   public function makeSandwich($filling, $options = ['spreads' => NULL]) {
-    if ($spreads = _convert_csv_to_array('spreads')) {
+    if ($spreads = StringUtils::csvToArray('spreads')) {
       $list = implode(' and ', $spreads);
       $str_spreads = ' with just a dash of ' . $list;
     }
@@ -37,9 +43,8 @@ class SandwichCommands extends DrushCommands {
   /**
    * Show a table of information about available spreads.
    *
-   * @command xkcd-spreads
-   * @aliases xspreads
-   * @bootstrap DRUSH_BOOTSTRAP_NONE
+   * @command mmas-spreads
+   * @aliases mspreads
    * @field-labels
    *   name: Name
    *   description: Description
@@ -58,7 +63,7 @@ class SandwichCommands extends DrushCommands {
       ),
       'mayonnaise' => array(
         'name' => 'Mayonnaise',
-        'description' => 'A nice dairy-free spead.',
+        'description' => 'A nice dairy-free spread.',
         'available' => '12',
         'taste' => 'creamy',
       ),
@@ -90,7 +95,6 @@ class SandwichCommands extends DrushCommands {
    * @command sandwich-exposition
    * @hidden
    * @topic
-   * @bootstrap DRUSH_BOOTSTRAP_NONE
    */
   public function ruminate() {
     self::printFile(__DIR__ . '/sandwich-topic.md');
@@ -104,17 +108,5 @@ class SandwichCommands extends DrushCommands {
     if ($name['name'] !== 'root') {
       throw new \Exception(dt('What? Make your own sandwich.'));
     }
-  }
-
-  /**
-   * Command argument complete callback.
-   *
-   * Provides argument values for shell completion.
-   *
-   * @return array
-   *   Array of popular fillings.
-   */
-  function complete() {
-    return array('values' => array('turkey', 'cheese', 'jelly', 'butter'));
   }
 }

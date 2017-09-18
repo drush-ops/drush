@@ -99,7 +99,6 @@ EOD;
     $this->drush('core-cron', array(), array('backend' => NULL), NULL, NULL, self::EXIT_ERROR);
     $parsed = $this->parse_backend_output($this->getOutput());
     $this->assertEquals(1, $parsed['error_status']);
-    $this->assertArrayHasKey('DRUSH_COMMAND_INSUFFICIENT_BOOTSTRAP', $parsed['error_log']);
   }
 
   /**
@@ -109,11 +108,11 @@ EOD;
    *   - Insures that the drush output appears before the backend output start marker (output is displayed in 'real time' as it is produced).
    */
   function testRealtimeOutput() {
-    $exec = sprintf('%s core-status --backend --nocolor 2>&1', self::getDrush());
+    $exec = sprintf('%s core-status --backend --format=yaml --nocolor 2>&1', self::getDrush());
     $this->execute($exec);
 
     $output = $this->getOutput();
-    $drush_version_offset = strpos($output, "Drush version");
+    $drush_version_offset = strpos($output, "drush-version");
     $backend_output_offset = strpos($output, "DRUSH_BACKEND_OUTPUT_START>>>");
 
     $this->assertTrue($drush_version_offset !== FALSE, "'Drush version' string appears in output.");

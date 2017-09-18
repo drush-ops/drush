@@ -59,12 +59,12 @@ class sqlSyncTest extends CommandUnishTestCase {
 
     // Copy stage to dev with --sanitize.
     $sync_options = array(
-      'sanitize' => NULL,
       'yes' => NULL,
       // Test wildcards expansion from within sql-sync. Also avoid D8 persistent entity cache.
       'structure-tables-list' => 'cache,cache*',
     );
     $this->drush('sql-sync', array('@stage', '@dev'), $sync_options);
+    $this->drush('sql-sanitize', [], ['yes' => NULL], '@dev');
 
     // Confirm that the sample user is unchanged on the staging site
     $this->drush('user-information', array($name), $options + array('format' => 'csv', 'include-field-labels' => 0, 'strict' => 0), '@stage');
@@ -89,13 +89,12 @@ class sqlSyncTest extends CommandUnishTestCase {
 
     // Copy stage to dev with --sanitize and a fixed sanitized email
     $sync_options = array(
-      'sanitize' => NULL,
       'yes' => NULL,
-      'sanitize-email' => 'user@mysite.org',
       // Test wildcards expansion from within sql-sync. Also avoid D8 persistent entity cache.
       'structure-tables-list' => 'cache,cache*',
     );
     $this->drush('sql-sync', array('@stage', '@dev'), $sync_options);
+    $this->drush('sql-sanitize', [], ['yes' => NULL, 'sanitize-email' => 'user@mysite.org'], '@dev');
 
     $options = array(
       'root' => $this->webroot(),

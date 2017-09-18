@@ -50,7 +50,7 @@ class SqlDumpTest extends CommandUnishTestCase {
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('queue', $full_dump_file);
+    $this->assertContains('menu_tree', $full_dump_file);
     // Test skip-files-list and wildcard expansion.
     $this->assertNotContains('CREATE TABLE `key_value', $full_dump_file);
     // Next, set up an alias file and run a couple of simulated
@@ -62,7 +62,7 @@ class SqlDumpTest extends CommandUnishTestCase {
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
-    $this->assertContains('CREATE TABLE `queue', $full_dump_file);
+    $this->assertContains('CREATE TABLE `menu_tree', $full_dump_file);
     // Test absence of skip-files-list.
     $this->assertContains('CREATE TABLE `key_value', $full_dump_file);
 

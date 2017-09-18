@@ -5,8 +5,9 @@
  * The drush API implementation and helpers.
  */
 
-use Drush\Log\Logger;
+use Drush\Drush;
 use Drush\Log\LogLevel;
+use Drush\Utils\StringUtils;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -133,16 +134,11 @@ function drush_get_class($class_name, $constructor_args = array(), $variations =
  *
  * @returns array
  *   A simple list of items (e.g. array('a','b','c')
+ *
+ * @deprecated Use \Drush\StringUtils::csvToArray
  */
 function _convert_csv_to_array($args) {
-  //
-  // Step 1: implode(',',$args) converts from, say, array('a,','b,','c,') to 'a,,b,,c,'
-  // Step 2: explode(',', ...) converts to array('a','','b','','c','')
-  // Step 3: array_filter(...) removes the empty items
-  // Step 4: array_map(...) trims extra whitespace from each item
-  // (handles csv strings with extra whitespace, e.g. 'a, b, c')
-  //
-  return array_map('trim', array_filter(explode(',', is_array($args) ? implode(',',$args) : $args)));
+  return StringUtils::csvToArray($args);
 }
 
 /**
@@ -238,10 +234,8 @@ function drush_get_global_options($brief = FALSE) {
     $options['early']               = array('description' => "Include a file (with relative or full path) and call the drush_early_hook() function (where 'hook' is the filename)");
     $options['alias-path']          = array('context' => 'ALIAS_PATH', 'local-context-only' => TRUE, 'merge-pathlist' => TRUE, 'propagate-cli-value' => TRUE, 'description' => "Specifies the list of paths where drush will search for alias files.", 'example-value' => '/path/alias1:/path/alias2');
     $options['confirm-rollback']    = array('description' => 'Wait for confirmation before doing a rollback when something goes wrong.');
-    $options['complete-debug']      = array('hidden' => TRUE, 'description' => "Turn on debug mode forf completion code");
-    $options['php-options']         = array('description' => "Options to pass to `php` when running drush.  Only effective when using the drush.launcher script.", 'never-propagate' => TRUE, 'example-value' => '-d error_reporting="E_ALL"');
+    $options['php-options']         = array('hidden' => TRUE, 'description' => "Options to pass to `php` when running drush.  Only effective when specified in a site alias definition.", 'never-propagate' => TRUE, 'example-value' => '-d error_reporting="E_ALL"');
     $options['halt-on-error']       = array('propagate-cli-value' => TRUE, 'description' => "Manage recoverable errors. Values: 1=Execution halted. 0=Execution continues.");
-    $options['deferred-sanitization'] = array('hidden' => TRUE, 'description' => "Defer calculating the sanitization operations until after the DB is copied. This is the default if the source DB is remote.");
     $options['remote-host']         = array('hidden' => TRUE, 'description' => 'Remote site to execute drush command on. Managed by site alias.', 'example-value' => 'http://example.com');
     $options['remote-user']         = array('hidden' => TRUE, 'description' => 'User account to use with a remote drush command. Managed by site alias.', 'example-value' => 'www-data');
     $options['remote-os']           = array('hidden' => TRUE, 'description' => 'The operating system used on the remote host. Managed by site alias.', 'example-value' => 'linux');
@@ -306,6 +300,8 @@ function _drush_is_drush_shebang_script($script_filename) {
  *
  * @return bool
  *   TRUE if the user enters "y" or FALSE if "n".
+ *
+ * @deprecated Use $this->io()->confirm() in an Annotated Command.
  */
 function drush_confirm($msg, $indent = 0) {
   drush_print_prompt((string)$msg . " (y/n): ", $indent);
@@ -360,6 +356,8 @@ function drush_confirm($msg, $indent = 0) {
  *   be useful to display both the key and the value; for
  *   example, if the key is a user id and the value is the
  *   user name, use '!value (uid=!key)'.
+ *
+ * @deprecated Use $this->io()->choice() in an Annotated Command.
  */
 function drush_choice($options, $prompt = 'Enter a number.', $label = '!value', $widths = array()) {
   drush_print(dt($prompt));
@@ -464,6 +462,8 @@ function drush_choice($options, $prompt = 'Enter a number.', $label = '!value', 
  *   in the return value). If this is an empty array (default), then a built in
  *   final option of "Done" will be added to the available options (in this case
  *   no additional keys are added to the return value).
+ *
+ * @deprecated Use $this>io()->choice() in an Annotated Command.
  */
 function drush_choice_multiple($options, $defaults = FALSE, $prompt = 'Select some numbers.', $label = '!value', $mark = '!value (selected)', $min = 0, $max = NULL, $final_options = array()) {
   $selections = array();
@@ -530,9 +530,9 @@ function drush_choice_multiple($options, $defaults = FALSE, $prompt = 'Select so
  * @param $required
  *   If TRUE, user may continue even when no value is in the input.
  * @param $password
- *   If TRUE, surpress printing of the input.
+ *   If TRUE, supress printing of the input.
  *
- * @see drush_confirm()
+ * @deprecated Use $this>io()->ask() in an Annotated Command.
  */
 function drush_prompt($prompt, $default = NULL, $required = TRUE, $password = FALSE) {
   if (isset($default)) {
@@ -818,9 +818,19 @@ function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE, $t
       // Remove the header line.
       array_shift($output);
       // Remove the prefix verb from each line.
-      $output = array_map(create_function('$str', 'return substr($str, strpos($str, ":") + 3 + ' . strlen($destination) . ');'), $output);
+      $output = array_map(
+        function ($str) use ($destination) {
+          return substr($str, strpos($str, ":") + 3 + strlen($destination));
+        },
+        $output
+      );
       // Remove any remaining blank lines.
-      $return = array_filter($output, create_function('$str', 'return $str != "";'));
+      $return = array_filter(
+        $output,
+        function ($str) {
+          return $str != "";
+        }
+      );
     }
   }
   // Otherwise we have a possibly-compressed Tar file.
@@ -1042,22 +1052,13 @@ function drush_log($message, $type = LogLevel::INFO, $error = null) {
 }
 
 /**
- * Future: add some sort of dependency injection to Drush.
- */
-function _drush_create_default_logger() {
-  $drush_logger = new Logger();
-  drush_set_context('DRUSH_LOGGER', $drush_logger);
-  drush_set_context('DRUSH_LOG_CALLBACK', $drush_logger);
-}
-
-/**
  * Call the default logger, or the user's log callback, as
  * appropriate.
  */
 function _drush_log($entry) {
   $callback = drush_get_context('DRUSH_LOG_CALLBACK');
   if (!$callback) {
-    $callback = \Drush::logger();
+    $callback = Drush::logger();
   }
   if ($callback instanceof LoggerInterface) {
     _drush_log_to_logger($callback, $entry);
@@ -1073,7 +1074,7 @@ function _drush_log($entry) {
 // Maintain compatibility with extensions that hook into
 // DRUSH_LOG_CALLBACK (e.g. drush_ctex_bonus)
 function _drush_print_log($entry) {
-  $drush_logger = \Drush::logger();
+  $drush_logger = Drush::logger();
   if ($drush_logger) {
     _drush_log_to_logger($drush_logger, $entry);
   }
@@ -1510,32 +1511,6 @@ function drush_map_assoc($array, $function = NULL) {
     $array = array_map($function, $array);
   }
   return $array;
-}
-/**
- * Clears completion caches.
- *
- * If called with no parameters the entire complete cache will be cleared.
- * If called with just the $type parameter the global cache for that type will
- * be cleared (in the site context, if any). If called with both $type and
- * $command parameters the command cache of that type will be cleared  (in the
- * site context, if any).
- *
- * This is included in drush.inc as complete.inc is only loaded conditionally.
- *
- * @param $type
- *   The completion type (optional).
- * @param $command
- *   The command name (optional), if command specific cache is to be cleared.
- *   If specifying a command, $type is not optional.
- */
-function drush_complete_cache_clear($type = NULL, $command = NULL) {
-  require_once DRUSH_BASE_PATH . '/includes/complete.inc';
-  if ($type) {
-    drush_cache_clear_all(drush_complete_cache_cid($type, $command), 'complete');
-    return;
-  }
-  // No type or command, so clear the entire complete cache.
-  drush_cache_clear_all('*', 'complete', TRUE);
 }
 
 /*

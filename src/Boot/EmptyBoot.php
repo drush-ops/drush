@@ -12,32 +12,37 @@ use Psr\Log\LoggerInterface;
  * in case bootstrap code might later come along and set
  * a site (e.g. in command completion).
  */
-class EmptyBoot extends BaseBoot {
+class EmptyBoot extends BaseBoot
+{
 
-  function valid_root($path) {
-    return FALSE;
-  }
+    public function validRoot($path)
+    {
+        return false;
+    }
 
-  function bootstrap_phases() {
-    return array(
-      DRUSH_BOOTSTRAP_DRUSH => '_drush_bootstrap_drush',
-    );
-  }
+    public function bootstrapPhases()
+    {
+        return array(
+        DRUSH_BOOTSTRAP_DRUSH => '_drush_bootstrap_drush',
+        );
+    }
 
-  function bootstrap_init_phases() {
-    return array(DRUSH_BOOTSTRAP_DRUSH);
-  }
+    public function bootstrapInitPhases()
+    {
+        return array(DRUSH_BOOTSTRAP_DRUSH);
+    }
 
-  function command_defaults() {
-    return array(
-      // TODO: Historically, commands that do not explicitly specify
-      // their bootstrap level default to DRUSH_BOOTSTRAP_DRUPAL_LOGIN.
-      // This isn't right any more, but we can't just change this to
-      // DRUSH_BOOTSTRAP_DRUSH, or we will start running commands that
-      // needed a full bootstrap with no bootstrap, and that won't work.
-      // Any command that does not declare 'bootstrap' is declaring that
-      // it is a Drupal command.
-      'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
-    );
-  }
+    public function commandDefaults()
+    {
+        return array(
+        // TODO: Historically, commands that do not explicitly specify
+        // their bootstrap level default to DRUSH_BOOTSTRAP_DRUPAL_LOGIN.
+        // This isn't right any more, but we can't just change this to
+        // DRUSH_BOOTSTRAP_DRUSH, or we will start running commands that
+        // needed a full bootstrap with no bootstrap, and that won't work.
+        // Any command that does not declare 'bootstrap' is declaring that
+        // it is a Drupal command.
+        'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+        );
+    }
 }

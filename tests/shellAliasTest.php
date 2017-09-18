@@ -59,7 +59,8 @@ class shellAliasesCase extends CommandUnishTestCase {
     );
     $this->drush('glopts', array(), $options);
     $output = $this->getOutput();
-    $this->assertContains('--yes	Assume \'yes\' as answer to all prompts.', $output);
+    $this->assertContains('--yes', $output);
+    $this->assertContains('Assume \'yes\' as answer to all prompts.', $output);
   }
 
   /**

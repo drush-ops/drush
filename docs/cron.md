@@ -1,16 +1,16 @@
 Running Drupal cron tasks from Drush
 ====================================
 
-Drupal cron tasks are often set up to be run via a wget call to cron.php; this same task can also be accomplished via the `drush cron` command, which circumvents the need to provide a webserver interface to cron.
+Drupal cron tasks are often set up to be run via a wget call to cron.php; this same task can also be accomplished via the `drush cron` command, which circumvents the need to provide a web server interface to cron.
 
 Quick start
 ----------
 
 If you just want to get started quickly, here is a crontab entry that will run cron once every hour at ten minutes after the hour:
 
-    10 * * * * /usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin COLUMNS=72 /usr/local/bin/drush --root=/path/to/your/drupalroot --uri=your.drupalsite.org --quiet cron
+    10 * * * * /usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin COLUMNS=72 cd [DOCROOT] && ../vendor/bin/drush --uri=your.drupalsite.org --quiet cron
 
-You should set up crontab to run your cron tasks as the same user that runs the web server; for example, if you run your webserver as the user www-data:
+You should set up crontab to run your cron tasks as the same user that runs the web server; for example, if you run your web server as the user www-data:
 
     sudo crontab -u www-data -e
 
@@ -45,5 +45,5 @@ By default, Drush will print a success message when the run of cron is completed
 Specifying the Drupal site to run
 ---------------------------------
 
-There are many ways to tell Drush which Drupal site to select for the active command, and any may be used here. The example uses the --root and --uri flags, but you could also use an alias record.
+There are many ways to tell Drush which Drupal site to select for the active command, and any may be used here. The example uses `cd [DOCROOT]`, but you could also use the --root and --uri flags, or a site alias.
 

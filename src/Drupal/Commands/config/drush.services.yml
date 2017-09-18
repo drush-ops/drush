@@ -1,0 +1,17 @@
+#Loaded by Drush\Drupal\DrupalKernel::discoverServiceProviders
+services:
+  config.commands:
+    class: \Drush\Drupal\Commands\config\ConfigCommands
+    arguments: ['@config.factory']
+    tags:
+      -  { name: drush.command }
+  config.export.commands:
+    class: \Drush\Drupal\Commands\config\ConfigExportCommands
+    arguments: ['@config.manager', '@config.storage', '@config.storage.sync']
+    tags:
+      -  { name: drush.command }
+  config.import.commands:
+    class: \Drush\Drupal\Commands\config\ConfigImportCommands
+    arguments: ['@config.manager', '@config.storage', '@config.storage.sync', '@module_handler', '@event_dispatcher', '@lock', '@config.typed', '@module_installer', '@theme_handler', '@string_translation']
+    tags:
+      -  { name: drush.command }

@@ -24,7 +24,9 @@ class QueueCase extends CommandUnishTestCase {
     $output = $this->getOutput();
     $this->assertContains('aggregator_feeds', $output, 'Queue list shows the declared queue.');
 
-    $this->drush('php-script', array('queue_script-D8'), $options + array('script-path' => __DIR__ . '/resources'));
+    // We need user to own to the feed.
+    $this->drush('user-create', array('example'), $options + ['password' => 'password', 'mail' => "example@example.com"]);
+    $this->drush('php-script', array('queue_script'), $options + array('script-path' => __DIR__ . '/resources'));
     $this->drush('queue-list', array(), $options + array('format' => 'csv'));
     $output = $this->getOutputAsList();
     $this->assertEquals(str_replace('%items', 1, $expected), array_pop($output), 'Item was successfully added to the queue.');
@@ -52,7 +54,7 @@ class QueueCase extends CommandUnishTestCase {
     $this->drush('pm-enable', array('aggregator'), $options);
 
     // Add another item to the queue and make sure it was deleted.
-    $this->drush('php-script', array('queue_script-D8'), $options + array('script-path' => __DIR__ . '/resources'));
+    $this->drush('php-script', array('queue_script'), $options + array('script-path' => __DIR__ . '/resources'));
     $this->drush('queue-list', array(), $options + array('format' => 'csv'));
     $output = $this->getOutputAsList();
     $this->assertEquals(str_replace('%items', 1, $expected), array_pop($output), 'Item was successfully added to the queue.');

@@ -1,0 +1,16 @@
+machine:
+  timezone:
+    America/Chicago
+  php:
+    version: 7.0.11
+
+dependencies:
+  cache_directories:
+    - ~/.composer/cache
+  override:
+    - composer install --prefer-dist --no-interaction
+
+test:
+  override:
+    - composer cs
+    - composer lint

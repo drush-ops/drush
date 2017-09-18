@@ -70,7 +70,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
       if (file_exists($sandbox)) {
         self::recursive_delete($sandbox);
       }
-      foreach (['modules', 'themes', 'profiles'] as $dir) {
+      foreach (['modules', 'themes', 'profiles', 'drush'] as $dir) {
         $target = Path::join(self::getSut(), 'web', $dir, 'contrib');
         if (file_exists($target)) {
           self::recursive_delete_dir_contents($target);
@@ -110,13 +110,13 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     }
 
     // We read from env then globals then default to mysql.
-    self::$db_url = getenv('UNISH_DB_URL') ?: ($GLOBALS['UNISH_DB_URL'] ?: 'mysql://root:@127.0.0.1');
+    self::$db_url = getenv('UNISH_DB_URL') ?: (isset($GLOBALS['UNISH_DB_URL']) ? $GLOBALS['UNISH_DB_URL'] : 'mysql://root:@127.0.0.1');
 
     require_once __DIR__ . '/unish.inc';
     list($unish_tmp, $unish_sandbox, $unish_drush_dir) = \unishGetPaths();
     $unish_cache = Path::join($unish_sandbox, 'cache');
 
-    self::$drush = $unish_drush_dir . '/drush.php';
+    self::$drush = $unish_drush_dir . '/drush';
     self::$tmp = $unish_tmp;
     self::$sandbox = $unish_sandbox;
     self::$usergroup = isset($GLOBALS['UNISH_USERGROUP']) ? $GLOBALS['UNISH_USERGROUP'] : NULL;
@@ -452,23 +452,23 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     return parse_url($db_url ?: self::getDbUrl(), PHP_URL_SCHEME);
   }
 
-  function setUpDrupal($num_sites = 1, $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL) {
+  /**
+   * Assemble (and optionally install) one or more Drupal sites using a single codebase.
+   *
+   * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
+   */
+  function setUpDrupal($num_sites = 1, $install = FALSE) {
     $sites_subdirs_all = array('dev', 'stage', 'prod', 'retired', 'elderly', 'dead', 'dust');
     $sites_subdirs = array_slice($sites_subdirs_all, 0, $num_sites);
     $root = $this->webroot();
-    $major_version = substr($version_string, 0, 1);
-
-    if (!isset($profile)) {
-      $profile = $major_version >= 7 ? 'testing' : 'default';
-    }
 
     // Install (if needed).
     foreach ($sites_subdirs as $subdir) {
-      $this->installDrupal($subdir, $install, $version_string, $profile);
+      $this->installDrupal($subdir, $install);
     }
 
     // Write an empty sites.php. Needed for multi-site on D8+.
-    if ($major_version >= 7 && !file_exists($root . '/sites/sites.php')) {
+    if (!file_exists($root . '/sites/sites.php')) {
       copy($root . '/sites/example.sites.php', $root . '/sites/sites.php');
     }
 
@@ -485,10 +485,14 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     return self::$sites;
   }
 
-  // @todo. It is no longer supported to pass alternative versions of Drush or alternative install_profile.
-  function installDrupal($env = 'dev', $install = FALSE, $version_string = UNISH_DRUPAL_MAJOR_VERSION, $profile = NULL, $separate_roots = FALSE) {
+  /**
+   * Install a Drupal site.
+   *
+   * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
+   */
+  function installDrupal($env = 'dev', $install = FALSE) {
     $root = $this->webroot();
-    $uri = $separate_roots ? "default" : "$env";
+    $uri = $env;
     $site = "$root/sites/$uri";
 
     // If specified, install Drupal as a multi-site.
@@ -500,7 +504,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         'yes' => NULL,
         'quiet' => NULL,
       );
-      $this->drush('site-install', array($profile), $options);
+      $this->drush('site-install', array('testing', 'install_configure_form.enable_update_status_emails=NULL'), $options);
       // Give us our write perms back.
       chmod($site, 0777);
     }
@@ -527,9 +531,9 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * The sidewide directory for a Drupal 8 installation.
+   * The sitewide directory for Drupal extensions.
    */
-  function drupalSitewideDirectory($major_version = NULL) {
+  function drupalSitewideDirectory() {
     return '/sites/all';
   }
 }

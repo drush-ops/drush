@@ -11,11 +11,16 @@ use Consolidation\AnnotatedCommand\CommandProcessor;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
+use Drush\Drush;
+use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Input\ArrayInput;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Command\DrushInputAdapter;
 use Drush\Command\DrushOutputAdapter;
+use Consolidation\AnnotatedCommand\AnnotatedCommand;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -32,6 +37,7 @@ function annotationcommand_adapter_get_discovery() {
     $discovery
       ->setIncludeFilesAtBase(false)
       ->setSearchLocations(['Commands'])
+      ->followLinks()
       ->setSearchPattern('#.*Commands.php$#');
   }
   return $discovery;
@@ -43,8 +49,8 @@ function annotationcommand_adapter_get_discovery() {
  * @return AnnotatedCommandFactory
  */
 function annotationcommand_adapter_get_processor() {
-  $factory = \Drush::commandFactory();
-  return $factory->commandProcessor();
+  $factory = Drush::commandFactory();
+  return $factory->commandProcessor()->setPassExceptions(true);
 }
 
 /**
@@ -96,6 +102,7 @@ function annotationcommand_adapter_discover($searchpath, $phase = false, $phase_
     return;
   }
   if (($phase >= DRUSH_BOOTSTRAP_DRUPAL_SITE) && (drush_drupal_major_version() >= 8)) {
+    // These commands are already discovered by \Drush\Boot\DrupalBoot8::bootstrapDrupalFull
     return;
   }
   $annotation_commandfiles = [];
@@ -228,14 +235,18 @@ function annotationcommand_adapter_process_command() {
 
   // Run any validate, command, process, alter or handle results hooks. c.f. AnnotatedCommand::execute()
   // n.b.: backend result is set by a global post-alter hook.
-  $result = $commandprocessor->process(
-    $output,
-    $names,
-    $command['annotated-command-callback'],
-    $commandData
-  );
-
-  return $result;
+  try {
+    $result = $commandprocessor->process(
+      $output,
+      $names,
+      $command['annotated-command-callback'],
+      $commandData
+    );
+    return $result;
+  }
+  catch (\Exception $e) {
+    return drush_set_error($e->getMessage());
+  }
 }
 
 function annotationcommand_adapter_process_args($userArgs, $defaults) {
@@ -285,8 +296,8 @@ function annotationcommand_adapter_get_commands($annotation_commandfiles) {
  * @return object
  */
 function annotationcommand_adapter_create_commandfile_instance($commandfile_path, $commandfile_class) {
-  $runner = \Drush::runner();
-  $app = \Drush::service('application');
+  $runner = Drush::runner();
+  $app = Drush::service('application');
   $cache =& drush_get_context('DRUSH_ANNOTATION_COMMANDFILE_INSTANCES');
   if (!isset($cache[$commandfile_path])) {
     include_once $commandfile_path;
@@ -337,7 +348,7 @@ function annotationcommand_adapter_cache_module_service_commands($commandhandler
 function annotationcommand_adapter_get_command_for_console_command($console_command, $commandfile_path) {
   $commands = [];
   $commandfile = basename($commandfile_path, '.php');
-  $factory = \Drush::commandFactory();
+  $factory = Drush::commandFactory();
   $inputDefinition = $console_command->getDefinition();
   $inputArguments = $inputDefinition->getArguments();
   $inputOptions = $inputDefinition->getOptions();
@@ -389,7 +400,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
   if (isset($cache[$commandfile_path])) {
     return $cache[$commandfile_path];
   }
-  $factory = \Drush::commandFactory();
+  $factory = Drush::commandFactory();
   $commands = [];
   $commandfile = basename($commandfile_path, '.php');
 
@@ -413,7 +424,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
     // If there is no 'bootstrap' annotation, default to NONE.
     $bootstrap = DRUSH_BOOTSTRAP_NONE;
     if ($bootstrap = $commandinfo->getAnnotation('bootstrap')) {
-      $bootstrap = constant($bootstrap);
+      $bootstrap = Drush::bootstrapManager()->bootstrap()->lookUpPhaseIndex($bootstrap);
     }
     $command = [
       'name' => $command_name,
@@ -447,19 +458,10 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       }
     }
     // $command['required-arguments'] = $required_arguments;
+
+    // We just need to declare the option. The values are no longer used.
     foreach ($commandinfo->options()->getValues() as $option => $default) {
-      $description = $commandinfo->options()->getDescription($option);
-      $command['options'][$option] = ['description' => $description];
-      if (!empty($default)) {
-        $command['options'][$option]['example-value'] = $default;
-      }
-      $fn = 'annotationcommand_adapter_alter_option_description_' . $option;
-      if (function_exists($fn)) {
-        $command['options'][$option] = $fn($command['options'][$option], $commandinfo, $default);
-      }
-      if ($commandinfo->getAnnotation('hidden-options') == $option) {
-        $command['options'][$option]['hidden'] = TRUE;
-      }
+      $command['options'][$option] = '';
     }
     $command['annotations'] = $commandinfo->getAnnotations();
     // If the command has a '@return' annotation, then
@@ -468,17 +470,67 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
     if (isset($returnType)) {
       $command['return-type'] = $returnType;
     }
-    if ($additional = $commandinfo->getAnnotation('allow-additional-options')) {
-      $command['allow-additional-options'] = _convert_csv_to_array($additional);
+    if ($commandinfo->hasAnnotation('allow-additional-options')) {
+      $additional = $commandinfo->getAnnotation('allow-additional-options');
+      $command['allow-additional-options'] = empty($additional) ? true : StringUtils::csvToArray($additional);
     }
     if ($dependencies = $commandinfo->getAnnotation('drupal-dependencies')) {
-      $command['drupal dependencies'] = _convert_csv_to_array($dependencies);
+      $command['drupal dependencies'] = StringUtils::csvToArray($dependencies);
     }
     $command += drush_command_defaults($command_name, $commandfile, $commandfile_path);
     $commands[$command_name] = $command;
   }
   $cache[$commandfile_path] = $commands;
   return $commands;
+}
+
+/**
+ * Determine whether command record represents an Annotated command.
+ *
+ * @param array $command
+ *
+ * @return bool
+ */
+function annotation_adapter_is_annotated(array $command) {
+  return !empty($command['annotated-command-callback']);
+}
+
+/**
+ * Add legacy commands to the $application. Used by help and list commands.
+ *
+ * @deprecated Will be removed once dispatch pipeline is modernized.
+ * @param $application
+ */
+function annotation_adapter_add_legacy_commands_to_application($application) {
+  $commands = drush_get_commands();
+  foreach ($commands as $command) {
+    if (!annotation_adapter_is_annotated($command) && empty($command['hidden'])) {
+      $annotated = new AnnotatedCommand($command['command']);
+      $annotated->setDescription($command['description']);
+      $annotated->setAliases($command['aliases']);
+      foreach ($command['arguments'] as $name => $description) {
+        $annotated->addArgument($name, InputArgument::OPTIONAL, $description);
+      }
+      foreach ($command['options'] as $name => $option) {
+        if (!is_array($option)) {
+          $option = ['description' => $option];
+        }
+        if (!array_key_exists('default_value', $option)) {
+          $option['default_value'] = '';
+        }
+        $annotated->addOption($name, NULL, $option['default_value'] ? InputOption::VALUE_OPTIONAL : InputOption::VALUE_REQUIRED, $option['description'], $option['default_value']);
+      }
+      foreach ($command['examples'] as $name => $description) {
+        // @todo
+        // $annotated->addUsageOrExample($name, $description);
+      }
+//      if ($command['topics']) {
+//        $annotated->setTopics($command['topics']);
+//      }
+      $annotated->setAnnotationData(new AnnotationData());
+      $application->add($annotated);
+    }
+  }
 }
 
 /**
@@ -508,7 +560,7 @@ function annotationcommand_adapter_add_hook_options(&$command)
     }
     $names = array_merge($names, $atkeys);
   }
-  $factory = \Drush::commandFactory();
+  $factory = Drush::commandFactory();
   $extraOptions = $factory->hookManager()->getHookOptions($names);
   foreach ($extraOptions as $commandinfo) {
     if (!isset($command['consolidation-option-defaults'])) {
@@ -565,7 +617,7 @@ function annotationcommand_adapter_command_names($command)
  */
 function annotationcommand_adapter_call_initialize($names, CommandData $commandData)
 {
-  $factory = \Drush::commandFactory();
+  $factory = Drush::commandFactory();
   $hookManager = $factory->hookManager();
 
   $hooks = $hookManager->getHooks(
@@ -742,7 +794,7 @@ function annotationcommand_adapter_call_hook_process_and_alter($names, $commandD
  */
 function annotationcommand_adapter_call_process_interface($names, $hooks, CommandData $commandData, $return)
 {
-  $factory = \Drush::commandFactory();
+  $factory = Drush::commandFactory();
   $hookManager = $factory->hookManager();
 
   $hooks = $hookManager->getHooks($names, $hooks, $commandData->annotationData());
@@ -774,7 +826,7 @@ function annotationcommand_adapter_call_process_interface($names, $hooks, Comman
  */
 function annotationcommand_adapter_call_validate_interface($names, $hooks, CommandData $commandData)
 {
-  $factory = \Drush::commandFactory();
+  $factory = Drush::commandFactory();
   $hookManager = $factory->hookManager();
   $annotationData = $commandData->annotationData();
 
@@ -792,36 +844,6 @@ function annotationcommand_adapter_call_validate_interface($names, $hooks, Comma
     }
   }
   return true;
-}
-
-/**
- * TODO: Document
- */
-function annotationcommand_adapter_alter_option_description_format($option_help, $commandinfo, $default) {
-  $formatterManager = annotatedcomand_adapter_get_formatter();
-  $return_type = $commandinfo->getReturnType();
-  if (!empty($return_type)) {
-    $available_formats = $formatterManager->validFormats($return_type);
-    $option_help['description'] = dt('Select output format. Available: !formats.', array('!formats' => implode(', ', $available_formats)));
-    if (!empty($default)) {
-      $option_help['description'] .= dt(' Default is !default.', array('!default' => $default));
-    }
-  }
-  return $option_help;
-}
-
-/**
- * TODO: Document
- */
-function annotationcommand_adapter_alter_option_description_fields($option_help, $commandinfo, $default) {
-  $formatOptions = new FormatterOptions($commandinfo->getAnnotations()->getArrayCopy());
-  $field_labels = $formatOptions->get(FormatterOptions::FIELD_LABELS, [], '');
-  $default_fields = $formatOptions->get(FormatterOptions::DEFAULT_FIELDS, [], array_keys($field_labels));
-  $available_fields = array_keys($field_labels);
-  // @todo silencing a notice that will likely be fixed on views-list fixes https://github.com/consolidation/output-formatters/issues/35
-  $option_help['example-value'] = @implode(', ', $default_fields);
-  $option_help['description'] = dt('Fields to output. All available fields are: !available.', array('!available' => implode(', ', $available_fields)));
-  return $option_help;
 }
 
 /**

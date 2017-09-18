@@ -4,8 +4,7 @@ namespace Drupal\woot\Commands;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 
 /**
- * For commands that are parts of modules, Drush expects to find commandfiles in
- * __MODULE__/src/Command, and the namespace is Drupal/__MODULE__/Command.
+ * Commandfiles must be listed in a module's drush.services.yml file.
  */
 class WootCommands
 {
@@ -23,7 +22,7 @@ class WootCommands
     /**
      * This is the my-cat command
      *
-     * This command will concatinate two parameters. If the --flip flag
+     * This command will concatenate two parameters. If the --flip flag
      * is provided, then the result is the concatination of two and one.
      *
      * @command my-cat

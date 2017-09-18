@@ -2,9 +2,10 @@
 
 namespace Drush\Command;
 
-interface CommandfilesInterface {
-  function add($commandfile);
-  function get();
-  function deferred();
-  function sort();
+interface CommandfilesInterface
+{
+    public function add($commandfile);
+    public function get();
+    public function deferred();
+    public function sort();
 }
