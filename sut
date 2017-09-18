@@ -20,7 +20,7 @@ array_shift($arguments);
 array_unshift($arguments, "--uri=dev");
 
 // Make it easy to just call `/.sut si -y testing`
-if (in_array('si', $arguments)) {
+if (in_array('si', $arguments) || in_array('site-install', $arguments)) {
     $db_url = getenv('UNISH_DB_URL') ?: 'mysql://root:@127.0.0.1';
     $arguments[] = "--db-url=$db_url/unish_dev";
     $arguments[] = '--sites-subdir=dev';
