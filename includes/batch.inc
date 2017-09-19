@@ -228,7 +228,10 @@ function _drush_batch_worker() {
       // See https://github.com/drush-ops/drush/issues/1930
       $halt_on_error = drush_get_option('halt-on-error', TRUE);
       drush_set_option('halt-on-error', FALSE);
-      call_user_func_array($function, array_merge($args, array(&$batch_context)));
+      $message = call_user_func_array($function, array_merge($args, array(&$batch_context)));
+      if (!empty($message)) {
+        drush_print(strip_tags($message), 2);
+      }
       drush_set_option('halt-on-error', $halt_on_error);
 
       $finished = $batch_context['finished'];
