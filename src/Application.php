@@ -263,6 +263,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
 
         $discovery = $this->commandDiscovery();
         $commandClasses = $discovery->discover($commandfileSearchpath, '\Drush');
+        $this->loadCommandClasses($commandClasses);
 
         // For now: use Symfony's built-in help, as Drush's version
         // assumes we are using the legacy Drush dispatcher.
@@ -277,13 +278,26 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
     }
 
     /**
+     * Ensure that any discovered class that is not part of the autoloader
+     * is, in fact, included.
+     */
+    protected function loadCommandClasses($commandClasses)
+    {
+        foreach ($commandClasses as $file => $commandClass) {
+            if (!class_exists($commandClass)) {
+                include $file;
+            }
+        }
+    }
+
+    /**
      * Create a command file discovery object
      */
     protected function commandDiscovery()
     {
         $discovery = new CommandFileDiscovery();
         $discovery
-            ->setIncludeFilesAtBase(false)
+            ->setIncludeFilesAtBase(true)
             ->setSearchLocations(['Commands', 'Hooks'])
             ->setSearchPattern('#.*(Command|Hook)s?.php$#');
         return $discovery;
