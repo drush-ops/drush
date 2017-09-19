@@ -52,7 +52,7 @@ class PhpCommands extends DrushCommands
      * @complete \Drush\Commands\core\PhpCommands::complete
      * @topics docs-examplescript,docs-scripts
      */
-    public function script($script = '', array $extra = [], $options = ['format' => 'var_export', 'script-path' => ''])
+    public function script($script, array $extra = [], $options = ['format' => 'var_export', 'script-path' => ''])
     {
         $found = false;
 
