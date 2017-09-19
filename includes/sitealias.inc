@@ -216,6 +216,9 @@ function drush_sitealias_get_record($alias, $alias_context = NULL) {
   if (\Drush\Drush::hasService('site.alias.manager')) {
     // TODO: probably need to check for 'not found'
     $alias_record = \Drush\Drush::aliasManager()->get($alias);
+    if (empty($alias_record)) {
+      return $alias_record;
+    }
     $config_record = $alias_record->exportConfig();
     $exported_config = $config_record->export();
     return $exported_config['options'];
