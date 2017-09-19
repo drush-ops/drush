@@ -46,6 +46,8 @@ class roleCase extends CommandUnishTestCase {
     $role = $this->getOutputFromJSON($rid);
     $this->assertFalse(in_array($perm, $role->perms));
 
+    $this->markTestSkipped('Tests below depend on backend invoke.');
+
     // Now grant that perm to foo.
     $this->drush('role-add-perm', array($rid, 'cancel other accounts'), $options);
     $this->drush('role-list', array(), $options + array('format' => 'json'));
