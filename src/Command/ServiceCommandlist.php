@@ -13,7 +13,6 @@ class ServiceCommandlist
 
     public function addCommandReference($command)
     {
-        drush_log(dt("Add command reference."), LogLevel::DEBUG_NOTIFY);
         $this->commandList[] = $command;
     }
 

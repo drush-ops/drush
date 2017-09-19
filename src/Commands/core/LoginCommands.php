@@ -72,7 +72,7 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
             }
         }
         $port = $options['redirect-port'];
-        drush_start_browser($link, false, $port);
+        drush_start_browser($link, false, $port, $options['browser']);
         // Use an array for backwards compat.
         drush_backend_set_result([$link]);
         return $link;

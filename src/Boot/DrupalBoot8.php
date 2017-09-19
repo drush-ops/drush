@@ -189,7 +189,6 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         foreach ($serviceCommandlist->getCommandList() as $commandhandler) {
             if (!$this->commandIgnored($commandhandler, $ignored_modules)) {
                 $this->inflect($commandhandler);
-                $this->logger->log(LogLevel::DEBUG, dt('Add a commandhandler: !name', ['!name' => get_class($commandhandler)]));
                 annotationcommand_adapter_cache_module_service_commands($commandhandler);
             }
         }

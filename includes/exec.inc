@@ -343,8 +343,8 @@ function drush_shell_exec_output() {
  *   TRUE if browser was opened, FALSE if browser was disabled by the user or a,
  *   default browser could not be found.
  */
-function drush_start_browser($uri = NULL, $sleep = FALSE, $port = FALSE) {
-  if ($browser = drush_get_option('browser', TRUE)) {
+function drush_start_browser($uri = NULL, $sleep = FALSE, $port = FALSE, $browser = true) {
+  if ($browser) {
     // We can only open a browser if we have a DISPLAY environment variable on
     // POSIX or are running Windows or OS X.
     if (!\Drush\Drush::simulate() && !getenv('DISPLAY') && !drush_is_windows() && !drush_is_osx()) {
