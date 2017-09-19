@@ -61,6 +61,8 @@ class coreCase extends CommandUnishTestCase {
 
   /**
    * Test standalone php-script scripts. Assure that script args and options work.
+   *
+   * @requires extension WIP
    */
   public function testStandaloneScript() {
     if ($this->is_windows()) {
