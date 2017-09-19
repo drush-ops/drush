@@ -22,6 +22,7 @@ class coreCase extends CommandUnishTestCase {
    * This tests the non-optimized code path in drush_sitealias_resolve_path_references.
    */
   function testRsyncAndPercentFiles() {
+    $this->markTestSkipped('rsync path aliases (e.g. %files) not implemented yet.');
     $root = $this->webroot();
     $site = key($this->getSites());
     $options = array(
@@ -43,6 +44,7 @@ class coreCase extends CommandUnishTestCase {
    * that avoids a call to backend invoke when evaluating %files works.
    */
   function testPercentFilesOptimization() {
+    $this->markTestSkipped('rsync path aliases (e.g. %files) not implemented yet.');
     $root = $this->webroot();
     $site = key($this->getSites());
     $options = array(
@@ -65,6 +67,7 @@ class coreCase extends CommandUnishTestCase {
    * @requires extension WIP
    */
   public function testStandaloneScript() {
+    $this->markTestSkipped('Standalone scripts not implemented yet.');
     if ($this->is_windows()) {
       $this->markTestSkipped('Standalone scripts not currently available on Windows.');
     }
@@ -90,6 +93,7 @@ drush_invoke("version", $arg);
   }
 
   function testDrupalDirectory() {
+    $this->markTestSkipped('Depends on backend');
     $root = $this->webroot();
     $sitewide = $this->drupalSitewideDirectory();
     $options = array(
@@ -119,6 +123,7 @@ drush_invoke("version", $arg);
   }
 
   function testCoreRequirements() {
+    $this->markTestSkipped('Core requirements not implemented yet.');
     $root = $this->webroot();
     $options = array(
       'root' => $root,
