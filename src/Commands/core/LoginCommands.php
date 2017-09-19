@@ -30,7 +30,7 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      * @usage drush user-login --browser=firefox --mail=drush@example.org
      *   Open firefox web browser, and login as the user with the e-mail address drush@example.org.
      */
-    public function login($path = '', $options = ['name' => '1', 'browser' => '', 'redirect-port' => ''])
+    public function login($path = '', $options = ['name' => '1', 'browser' => true, 'redirect-port' => ''])
     {
 
         // Redispatch if called against a remote-host so a browser is started on the
@@ -71,7 +71,7 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
                 $link .= '?destination=' . $path;
             }
         }
-        $port = drush_get_option('redirect-port', false);
+        $port = $options['redirect-port'];
         drush_start_browser($link, false, $port);
         // Use an array for backwards compat.
         drush_backend_set_result([$link]);

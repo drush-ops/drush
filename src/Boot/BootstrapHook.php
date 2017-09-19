@@ -22,12 +22,8 @@ class BootstrapHook implements InitializeHookInterface
 
     public function initialize(InputInterface $input, AnnotationData $annotationData)
     {
-        // Check the @bootstrap annotation. If there isn't one, then exit.
-        if (!$annotationData->has('bootstrap')) {
-            return;
-        }
-
-        $phase = $annotationData->get('bootstrap');
+        // Get the @bootstrap annotation. If there isn't one, then assume NONE.
+        $phase = $annotationData->get('bootstrap', DRUSH_BOOTSTRAP_NONE);
         $bootstrap_successful = $this->bootstrapManager->bootstrapToPhase($phase);
 
         if (!$bootstrap_successful) {
