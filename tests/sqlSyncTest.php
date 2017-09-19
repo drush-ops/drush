@@ -25,6 +25,7 @@ class sqlSyncTest extends CommandUnishTestCase {
    * General handling of site aliases will be in sitealiasTest.php.
    */
   public function testLocalSqlSync() {
+    $this->markTestSkipped('Depends on backend; also, some functions of sql-sync not implemented.');
     if ($this->db_driver() == 'sqlite') {
       $this->markTestSkipped('SQL Sync does not apply to SQLite.');
       return;
