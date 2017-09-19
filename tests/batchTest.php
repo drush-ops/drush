@@ -10,6 +10,7 @@ namespace Unish;
 class batchCase extends CommandUnishTestCase {
 
   public function testBatch() {
+    $this->markTestSkipped('Depends on backend invoke.');
     $sites = $this->setUpDrupal(1, TRUE);
     $options = array(
       'root' => $this->webroot(),
