@@ -169,7 +169,7 @@ class ConfigImportCommands extends DrushCommands
 
         // Determine $source_storage in partial case.
         $active_storage = $this->getConfigStorage();
-        if (drush_get_option('partial')) {
+        if ($options['partial']) {
             $replacement_storage = new StorageReplaceDataWrapper($active_storage);
             foreach ($source_storage->listAll() as $name) {
                 $data = $source_storage->read($name);
