@@ -21,7 +21,7 @@ class RsyncCommands extends DrushCommands
      * @command core-rsync
      * @param $source A site alias and optional path. See rsync documentation and example.aliases.drushrc.php.
      * @param $destination A site alias and optional path. See rsync documentation and example.aliases.drushrc.php.',
-     * @param $extra should be a variable argument once thats working.
+     * @param $extra Additional parameters after the ssh statement.
      * @optionset_ssh
      * @option exclude-paths List of paths to exclude, seperated by : (Unix-based systems) or ; (Windows).
      * @option include-paths List of paths to include, seperated by : (Unix-based systems) or ; (Windows).

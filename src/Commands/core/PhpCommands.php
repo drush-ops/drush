@@ -34,27 +34,25 @@ class PhpCommands extends DrushCommands
      * can't be bothered to figure out bash quoting. If you plan to share a
      * script with others, consider making a full Drush command instead, since
      * that's more self-documenting.  Drush provides commandline options to the
-     * script via drush_get_option('option-name'), and commandline arguments can
-     * be accessed either via drush_get_arguments(), which returns all arguments
-     * in an array, or drush_shift(), which removes the next argument from the
-     * list and returns it.
+     * script via a variable called $extra.
      *
      * @command php-script
      * @param $script The file you wish to execute (without extension). If omitted, list files ending in .php in the current working directory and specified script-path. Note that some might not be drush scripts.
+     * @param $extra Additional arguments and options that are passed to the script.
      * @option script-path Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).
      * @usage drush php-script example --script-path=/path/to/scripts:/another/path
      *   Run a script named example.php from specified paths
      * @usage drush php-script
      *   List all available scripts.
-     * @usage #!/usr/bin/env drush\n<?php\nvariable_set('key', drush_shift());
-     *  Execute php code with a full Drupal bootstrap directly from a shell script.
+     * @usage drush php-script foo -- apple --cider
+     *  Run foo script with argument 'apple' and option 'cider'
      * @aliases scr
      * @allow-additional-options
      * @bootstrap DRUSH_BOOTSTRAP_MAX
      * @complete \Drush\Commands\core\PhpCommands::complete
      * @topics docs-examplescript,docs-scripts
      */
-    public function script($script = '', $options = ['format' => 'var_export', 'script-path' => ''])
+    public function script($script = '', array $extra, $options = ['format' => 'var_export', 'script-path' => ''])
     {
         $found = false;
 
