@@ -2,7 +2,6 @@
 branches:
   only:
     - master
-    - symfony-dispatch
     - 8.x
     - 7.x
     - 6.x
