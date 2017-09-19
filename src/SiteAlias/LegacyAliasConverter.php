@@ -63,7 +63,7 @@ class LegacyAliasConverter
 
         // We reconvert all legacy files together, because the aliases
         // in the legacy files might be written into multiple different .yml
-        // files, depeneding on the naming conventions followed.
+        // files, depending on the naming conventions followed.
         $convertedFiles = $this->convertAll($legacyFiles);
         $this->writeAll($convertedFiles);
 
@@ -257,8 +257,7 @@ EOT;
 
         // Decide whether this is a single-alias file or a multiple-alias file.
         if (preg_match('#\.alias\.drushrc\.php$#', $legacyFile)) {
-            // TODO: log a warning if $aliases is not empty?
-            return $this->convertSingleAliasLegacyFile($legacyFile, $options);
+            return $this->convertSingleAliasLegacyFile($legacyFile, $options ?: current($aliases));
         }
         return $this->convertMultipleAliasesLegacyFile($legacyFile, $aliases, $options);
     }
