@@ -42,8 +42,8 @@ class PhpCommands extends DrushCommands
      *   Run a script named example.php from specified paths
      * @usage drush php-script
      *   List all available scripts.
-     * @usage drush php-script foo --apple --cider
-     *  Run foo script with argument 'apple' and option 'cider'
+     * @usage drush php-script foo apple --cider
+     *  Run foo.php script with argument 'apple' and option 'cider'
      * @aliases scr
      * @bootstrap DRUSH_BOOTSTRAP_MAX
      * @topics docs-examplescript,docs-scripts
