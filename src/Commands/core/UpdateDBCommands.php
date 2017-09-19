@@ -22,7 +22,7 @@ class UpdateDBCommands extends DrushCommands
      */
     public function updatedb($options = ['cache-clear' => true, 'entity-updates' => false])
     {
-        if (drush_get_context('DRUSH_SIMULATE')) {
+        if (\Drush\Drush::simulate()) {
             $this->logger()->info(dt('updatedb command does not support --simulate option.'));
             return true;
         }
@@ -49,7 +49,7 @@ class UpdateDBCommands extends DrushCommands
      */
     public function entityUpdates($options = ['cache-clear' => true])
     {
-        if (drush_get_context('DRUSH_SIMULATE')) {
+        if (\Drush\Drush::simulate()) {
             $this->logger()->info(dt('entity-updates command does not support --simulate option.'));
         }
 

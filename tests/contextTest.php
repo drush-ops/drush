@@ -159,6 +159,8 @@ EOD;
    * Stdin context not exercised here. See backendCase::testTarget().
    */
   function testContextHierarchy() {
+    // TODO: is it possible to make a Symfony Console command with unvalidated options? Maybe not.
+    // The 'drush_get_option()' will ultimately be un-supported anyway.
     // The 'custom' config file has higher priority than cli and regular config files.
     $eval =  '$contextConfig = drush_get_option("contextConfig", "n/a");';
     $eval .= '$cli1 = drush_get_option("cli1");';
@@ -166,7 +168,6 @@ EOD;
     $config = self::getSandbox() . '/drushrc.php';
     $options = array(
       'cli1' => NULL,
-      'strict' => 0,
       'config' => $config,
       'root' => $this->webroot(),
       'uri' => key($this->getSites()),

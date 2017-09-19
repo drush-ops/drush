@@ -110,7 +110,7 @@ EOT;
        */
     public function dbExists()
     {
-        $current = drush_get_context('DRUSH_SIMULATE');
+        $current = \Drush\Drush::simulate();
         drush_set_context('DRUSH_SIMULATE', false);
         // Suppress output. We only care about return value.
         $return = $this->query("SELECT 1;", null, drush_bit_bucket());
@@ -120,7 +120,7 @@ EOT;
 
     public function listTables()
     {
-        $current = drush_get_context('DRUSH_SIMULATE');
+        $current = \Drush\Drush::simulate();
         drush_set_context('DRUSH_SIMULATE', false);
         $return = $this->query('SHOW TABLES;');
         $tables = drush_shell_exec_output();

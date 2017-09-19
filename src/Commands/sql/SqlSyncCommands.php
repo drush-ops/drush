@@ -49,7 +49,7 @@ class SqlSyncCommands extends DrushCommands
         unset($global_options['root']);
         unset($global_options['uri']);
 
-        if (drush_get_context('DRUSH_SIMULATE')) {
+        if (\Drush\Drush::simulate()) {
             $backend_options['backend-simulate'] = true;
         }
 
@@ -190,7 +190,7 @@ class SqlSyncCommands extends DrushCommands
             throw new \Exception(dt('The --target-dump option must be supplied when --no-sync is specified.'));
         }
 
-        if (!drush_get_context('DRUSH_SIMULATE')) {
+        if (!\Drush\Drush::simulate()) {
             drush_print(dt("You will destroy data in !target and replace with data from !source.", array(
             '!source' => $txt_source,
             '!target' => $txt_destination

@@ -78,7 +78,7 @@ class SqlCommands extends DrushCommands
         $sql = SqlBase::create($options);
         $db_spec = $sql->getDbSpec();
         // Prompt for confirmation.
-        if (!drush_get_context('DRUSH_SIMULATE')) {
+        if (!\Drush\Drush::simulate()) {
             // @todo odd - maybe for sql-sync.
             $txt_destination = (isset($db_spec['remote-host']) ? $db_spec['remote-host'] . '/' : '') . $db_spec['database'];
             drush_print(dt("Creating database !target. Any existing database will be dropped!", array('!target' => $txt_destination)));
@@ -166,7 +166,7 @@ class SqlCommands extends DrushCommands
         if ($options['db-prefix']) {
             drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
         }
-        if (drush_get_context('DRUSH_SIMULATE')) {
+        if (\Drush\Drush::simulate()) {
             if ($query) {
                 drush_print(dt('Simulating sql-query: !q', array('!q' => $query)));
             } else {

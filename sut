@@ -20,7 +20,7 @@ array_shift($arguments);
 array_unshift($arguments, "--uri=dev");
 
 // Make it easy to just call `/.sut si -y testing`
-if (in_array('si', $arguments)) {
+if (in_array('si', $arguments) || in_array('site-install', $arguments)) {
     $db_url = getenv('UNISH_DB_URL') ?: 'mysql://root:@127.0.0.1';
     $arguments[] = "--db-url=$db_url/unish_dev";
     $arguments[] = '--sites-subdir=dev';
@@ -30,7 +30,7 @@ if (in_array('si', $arguments)) {
  * DRUSH_AUTOLOAD_PHP must be provided because Drush is symlinked into the SUT.
  * This confuses our autoload.php detection.
  */
-$cmd = "DRUSH_AUTOLOAD_PHP=$vendor/autoload.php " . escapeshellarg($vendor . '/bin/drush') . ' ' . implode(' ', $arguments);
+$cmd = "DRUSH_AUTOLOAD_PHP=$vendor/autoload.php " . escapeshellarg($vendor . '/bin/drush') . ' ' . implode(' ', array_map(function ($item) { return escapeshellarg($item); }, $arguments));
 if (unishIsVerbose()) {
   fwrite(STDERR, 'Executing: ' . $cmd . "\n");
 }

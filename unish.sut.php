@@ -42,7 +42,7 @@ function unish_setup_sut($unish_sandbox) {
   }
 
   $verbose = unishIsVerbose();
-  $cmd = "composer $verbose install --no-progress --no-suggest --working-dir " . escapeshellarg($working_dir);
+  $cmd = "composer $verbose install --prefer-dist --no-progress --no-suggest --working-dir " . escapeshellarg($working_dir);
   fwrite(STDERR, 'Executing: ' . $cmd . "\n");
   exec($cmd, $output, $return);
 

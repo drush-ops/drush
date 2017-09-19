@@ -148,6 +148,9 @@ class Preflight
         // should fetch 'root' et. al. from config rather than preflight args.
         $config = $configLocator->config();
 
+        // Copy 'simulate' setting value over to config. Use Robo's SIMULATE identifier.
+        $config->set(\Robo\Config\Config::SIMULATE, $preflightArgs->isSimulated());
+
         // Determine the local site targeted, if any.
         // Extend configuration and alias files to include files in
         // target site.

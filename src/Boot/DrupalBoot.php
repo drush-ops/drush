@@ -341,6 +341,7 @@ abstract class DrupalBoot extends BaseBoot
 
         $drupal_root = drush_set_context('DRUSH_DRUPAL_ROOT', drush_bootstrap_value('drupal_root'));
         chdir($drupal_root);
+        $this->logger->log(LogLevel::BOOTSTRAP, dt("Change working directory to !drupal_root", array('!drupal_root' => $drupal_root)));
         $version = drush_drupal_version();
         $major_version = drush_drupal_major_version();
 

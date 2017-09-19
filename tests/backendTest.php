@@ -80,7 +80,8 @@ EOD;
   */
   function testTarget() {
     // Without --strict=0, the version call would fail.
-    $stdin = json_encode(array('strict'=>0));
+    // Now, strict is not supported; we will see how this behaves without it.
+    $stdin = json_encode([]);
     $exec = sprintf('%s version --not-exist --backend 2>%s', self::getDrush(), self::escapeshellarg($this->bit_bucket()));
     $this->execute($exec, self::EXIT_SUCCESS, NULL, NULL, $stdin);
     $parsed = $this->parse_backend_output($this->getOutput());
@@ -108,7 +109,7 @@ EOD;
    *   - Insures that the drush output appears before the backend output start marker (output is displayed in 'real time' as it is produced).
    */
   function testRealtimeOutput() {
-    $exec = sprintf('%s core-status --backend --format=yaml --nocolor 2>&1', self::getDrush());
+    $exec = sprintf('%s core-status --backend --format=yaml --no-ansi 2>&1', self::getDrush());
     $this->execute($exec);
 
     $output = $this->getOutput();
@@ -158,7 +159,7 @@ EOD;
       'backend' => NULL,
       'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
     );
-    $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('x' => 'y', 'strict' => 0), array('invoke-multiple' => '3')); return \$values;";
+    $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('x' => 'y'), array('invoke-multiple' => '3')); return \$values;";
     $this->drush('php-eval', array($php), $options);
     $parsed = $this->parse_backend_output($this->getOutput());
     // assert that $parsed has a 'concurrent'-format output result
@@ -185,7 +186,7 @@ EOD;
       'backend' => NULL,
       'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
     );
-    $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('x' => 'y', 'strict' => 0, 'data' => array('a' => 1, 'b' => 2)), array('method' => 'GET')); return array_key_exists('object', \$values) ? \$values['object'] : 'no result';";
+    $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('x' => 'y', 'data' => array('a' => 1, 'b' => 2)), array('method' => 'GET')); return array_key_exists('object', \$values) ? \$values['object'] : 'no result';";
     $this->drush('php-eval', array($php), $options);
     $parsed = $this->parse_backend_output($this->getOutput());
     // assert that $parsed has 'x' but not 'data'
@@ -205,7 +206,7 @@ EOD;
       'backend' => NULL,
       'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
     );
-    $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('x' => 'y', 'strict' => 0, 'data' => array('a' => 1, 'b' => 2)), array('method' => 'POST')); return array_key_exists('object', \$values) ? \$values['object'] : 'no result';";
+    $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('x' => 'y', 'data' => array('a' => 1, 'b' => 2)), array('method' => 'POST')); return array_key_exists('object', \$values) ? \$values['object'] : 'no result';";
     $this->drush('php-eval', array($php), $options);
     $parsed = $this->parse_backend_output($this->getOutput());
     // assert that $parsed has 'x' and 'data'
@@ -245,7 +246,7 @@ EOD;
       $log_message="";
       for ($i = $min; $i <= $max; $i++) {
         $log_message .= "X";
-        $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('log-message' => '$log_message', 'x' => 'y$read_size', 'strict' => 0, 'data' => array('a' => 1, 'b' => 2)), array('method' => 'GET', '#process-read-size' => $read_size)); return array_key_exists('object', \$values) ? \$values['object'] : 'no result';";
+        $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('log-message' => '$log_message', 'x' => 'y$read_size', 'data' => array('a' => 1, 'b' => 2)), array('method' => 'GET', '#process-read-size' => $read_size)); return array_key_exists('object', \$values) ? \$values['object'] : 'no result';";
         $this->drush('php-eval', array($php), $options);
         $parsed = $this->parse_backend_output($this->getOutput());
         // assert that $parsed has 'x' but not 'data'

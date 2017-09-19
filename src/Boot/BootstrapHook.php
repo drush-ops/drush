@@ -28,6 +28,11 @@ class BootstrapHook implements InitializeHookInterface
         }
 
         $phase = $annotationData->get('bootstrap');
-        $this->bootstrapManager->bootstrapToPhase($phase);
+        $bootstrap_successful = $this->bootstrapManager->bootstrapToPhase($phase);
+
+        if (!$bootstrap_successful) {
+            // TODO: better exception class, better exception method
+            throw new \Exception('Bootstrap failed.');
+        }
     }
 }

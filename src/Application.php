@@ -156,6 +156,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
             );
     }
 
+    public function bootstrapManager()
+    {
+        return $this->bootstrapManager;
+    }
+
     public function setBootstrapManager(BootstrapManager $bootstrapManager)
     {
         $this->bootstrapManager = $bootstrapManager;

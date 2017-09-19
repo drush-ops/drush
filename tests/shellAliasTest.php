@@ -86,7 +86,7 @@ class shellAliasesCase extends CommandUnishTestCase {
     $this->drush('glopts', array(), $options, 'user@server/path/to/drupal#sitename');
     // $expected might be different on non unix platforms. We shall see.
     // n.b. --config is not included in calls to remote systems.
-    $bash = $this->escapeshellarg('drush  --config=drush-sandbox --nocolor --uri=sitename --root=/path/to/drupal  core-topic core-global-options 2>&1');
+    $bash = $this->escapeshellarg('drush  --config=drush-sandbox --no-ansi --uri=sitename --root=/path/to/drupal  core-topic core-global-options 2>&1');
     $expected = "Simulating backend invoke: ssh -t user@server $bash 2>&1";
     $output = $this->getOutput();
     // Remove any coverage arguments. The filename changes, so it's not possible

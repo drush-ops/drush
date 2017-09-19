@@ -119,7 +119,7 @@ class ConfigCommands extends DrushCommands
             } elseif ($this->io()->confirm(dt('Do you want to update !key key in !name config?', array('!key' => $key, '!name' => $config_name)))) {
                 $confirmed = true;
             }
-            if ($confirmed && !drush_get_context('DRUSH_SIMULATE')) {
+            if ($confirmed && !\Drush\Drush::simulate()) {
                 return $config->set($key, $data)->save();
             }
         }

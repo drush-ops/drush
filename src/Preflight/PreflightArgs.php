@@ -23,6 +23,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     const LOCAL = 'local';
     const ROOT = 'root';
     const URI = 'uri';
+    const SIMULATE = 'simulate';
 
     public function __construct(array $data = null)
     {
@@ -44,6 +45,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
             '--alias-path=' => 'setAliasPath',
             '--include=' => 'setCommandPath',
             '--local' => 'setLocal',
+            '--simulate' => 'setSimulate',
             '--drush-coverage=' => 'setCoverageFile',
         ];
     }
@@ -155,6 +157,16 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     public function setLocal($isLocal)
     {
         return $this->set(self::LOCAL, $isLocal);
+    }
+
+    public function isSimulated()
+    {
+        return $this->get(self::SIMULATE);
+    }
+
+    public function setSimulate($simulate)
+    {
+        return $this->set(self::SIMULATE, $simulate);
     }
 
     public function coverageFile()

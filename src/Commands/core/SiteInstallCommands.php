@@ -61,7 +61,7 @@ class SiteInstallCommands extends DrushCommands
             $form_options[$key] = $value;
         }
 
-        $class_loader = drush_drupal_load_autoloader(DRUPAL_ROOT);
+        $class_loader = \Drush\Drush::service('loader');
         $profile = $this->determineProfile($profile, $options, $class_loader);
 
         $sql = SqlBase::create($options);
@@ -206,7 +206,8 @@ class SiteInstallCommands extends DrushCommands
                 $commandData->input()->setOption('sites-subdir', $lower);
             }
             // Make sure that we will bootstrap to the 'sites-subdir' site.
-            drush_set_context('DRUSH_SELECTED_URI', 'http://' . $sites_subdir);
+            $bootstrapManager = \Drush\Drush::bootstrapManager();
+            $bootstrapManager->setUri('http://' . $sites_subdir);
         }
 
         if ($config = $commandData->input()->getOption('config-dir')) {
@@ -223,11 +224,12 @@ class SiteInstallCommands extends DrushCommands
             }
         }
 
-        drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+        \Drush\Drush::bootstrapManager()->bootstrapMax(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
         try {
             $sql = SqlBase::create($commandData->input()->getOptions());
         } catch (\Exception $e) {
             // Ask questions to get our data.
+            // TODO: we should only 'ask' in hook interact, never in hook validate
             if ($commandData->input()->getOption('db-url') == '') {
                 // Prompt for the db-url data if it was not provided via --db-url.
                 $database = $this->io()->ask('Database name', 'drupal');
@@ -298,7 +300,7 @@ class SiteInstallCommands extends DrushCommands
 
         // Can't install without sites subdirectory and settings.php.
         if (!file_exists($confPath)) {
-            if (!drush_mkdir($confPath) && !drush_get_context('DRUSH_SIMULATE')) {
+            if (!drush_mkdir($confPath) && !\Drush\Drush::simulate()) {
                 throw new \Exception(dt('Failed to create directory @confPath', array('@confPath' => $confPath)));
             }
         } else {
@@ -306,21 +308,22 @@ class SiteInstallCommands extends DrushCommands
         }
 
         if (!drush_file_not_empty($settingsfile)) {
-            if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !drush_get_context('DRUSH_SIMULATE')) {
+            if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !\Drush\Drush::simulate()) {
                 throw new \Exception(dt('Failed to copy sites/default/default.settings.php to @settingsfile', array('@settingsfile' => $settingsfile)));
             }
         }
 
         // Write an empty sites.php if we using multi-site.
         if ($sitesfile_write) {
-            if (!drush_op('copy', 'sites/example.sites.php', $sitesfile) && !drush_get_context('DRUSH_SIMULATE')) {
+            if (!drush_op('copy', 'sites/example.sites.php', $sitesfile) && !\Drush\Drush::simulate()) {
                 throw new \Exception(dt('Failed to copy sites/example.sites.php to @sitesfile', array('@sitesfile' => $sitesfile)));
             }
         }
 
         // We need to be at least at DRUSH_BOOTSTRAP_DRUPAL_SITE to select the site uri to install to
         define('MAINTENANCE_MODE', 'install');
-        drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
+        $bootstrapManager = \Drush\Drush::bootstrapManager();
+        $bootstrapManager->doBootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
 
         if (!$sql->dropOrCreate()) {
             throw new \Exception(dt('Failed to create database: @error', array('@error' => implode(drush_shell_exec_output()))));

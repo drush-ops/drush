@@ -125,7 +125,11 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     public function setUri($uri)
     {
         // TODO: Throw if we already bootstrapped a framework?
+        // n.b. site-install needs to set the uri.
         $this->uri = $uri;
+        if ($this->bootstrap) {
+            $this->bootstrap->setUri($this->getUri());
+        }
     }
 
     /**
@@ -257,8 +261,8 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
             $result = drush_bootstrap_error('DRUSH_NO_SITE', dt("We could not find an applicable site for that command."));
         }
 
-          // Once we start bootstrapping past the DRUSH_BOOTSTRAP_DRUSH phase, we
-          // will latch the bootstrap object, and prevent it from changing.
+        // Once we start bootstrapping past the DRUSH_BOOTSTRAP_DRUSH phase, we
+        // will latch the bootstrap object, and prevent it from changing.
         if ($phase > DRUSH_BOOTSTRAP_DRUSH) {
             $this->latch($bootstrap);
         }
@@ -373,10 +377,15 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      */
     public function bootstrapToPhase($bootstrapPhase)
     {
-        $this->logger->log(LogLevel::DEBUG, 'Bootstrap to {phase}', ['phase' => $bootstrapPhase]);
+        $this->logger->log(LogLevel::BOOTSTRAP, 'Bootstrap to {phase}', ['phase' => $bootstrapPhase]);
         $phase = $this->bootstrap()->lookUpPhaseIndex($bootstrapPhase);
         if (!isset($phase)) {
             throw new \Exception(dt('Bootstrap phase !phase unknown.', ['!phase' => $bootstrapPhase]));
+        }
+        // Do not attempt to bootstrap to a phase that is unknown to the selected bootstrap object.
+        $phases = $this->bootstrapPhases();
+        if (!array_key_exists($phase, $phases) && ($phase >= 0)) {
+            return false;
         }
         return $this->bootstrapToPhaseIndex($phase);
     }
@@ -408,11 +417,15 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                 break;
             }
 
+            $this->logger->log(LogLevel::BOOTSTRAP, 'Try to validate bootstrap phase {phase}', ['phase' => $max_phase_index]);
+
             if ($this->bootstrapValidate($phase_index)) {
                 if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE)) {
+                    $this->logger->log(LogLevel::BOOTSTRAP, 'Try to bootstrap at phase {phase}', ['phase' => $max_phase_index]);
                     $result = $this->doBootstrap($phase_index, $max_phase_index);
                 }
             } else {
+                $this->logger->log(LogLevel::BOOTSTRAP, 'Could not bootstrap at phase {phase}', ['phase' => $max_phase_index]);
                 $result = false;
                 break;
             }
@@ -434,11 +447,14 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     {
         // Bootstrap as far as we can without throwing an error, but log for
         // debugging purposes.
-        $this->logger->log(LogLevel::DEBUG, 'Trying to bootstrap as far as we can');
 
         $phases = $this->bootstrapPhases(true);
         if (!$max_phase_index) {
             $max_phase_index = count($phases);
+        }
+
+        if ($max_phase_index >= count($phases)) {
+            $this->logger->log(LogLevel::DEBUG, 'Trying to bootstrap as far as we can');
         }
 
         // Try to bootstrap to the maximum possible level, without generating errors.

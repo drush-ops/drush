@@ -188,7 +188,7 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
 
         // Restore the cwd if we changed it
         if ($cwd) {
-            drush_op('chdir', $selected_root);
+            drush_op('chdir', $cwd);
         }
 
         if (!$result) {
