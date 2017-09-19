@@ -120,20 +120,23 @@ EOT;
 
     $this->drush('try-formatters --format=yaml --fields=III,II', array(), $options, NULL, NULL, self::EXIT_SUCCESS);
     $output = $this->getOutput();
-    // TODO: Drush 8 had 2-space indentation; now it is 4. Do we want to fix that?
+    // TODO: If there are different versions of symfony/yaml in Drush and Drupal,
+    // then we can get indentation errors. Ignore that in these tests; this is not
+    // a problem with site-local Drush.
+    $output = str_replace('    ', '  ', $output);
     $expected = <<<EOT
 en:
-    third: Three
-    second: Two
+  third: Three
+  second: Two
 de:
-    third: Drei
-    second: Zwei
+  third: Drei
+  second: Zwei
 jp:
-    third: San
-    second: Ni
+  third: San
+  second: Ni
 es:
-    third: Tres
-    second: Dos
+  third: Tres
+  second: Dos
 EOT;
     $this->assertEquals($expected, $output);
 
