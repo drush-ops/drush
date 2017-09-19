@@ -64,10 +64,10 @@ class ImageCommands extends DrushCommands
      * @usage drush image-derive thumbnail core/themes/bartik/screenshot.png
      *   Save thumbnail sized derivative of logo image.
      * @validate-file-exists source
-     * @validate-entity-load image_style style
+     * @validate-entity-load image_style style_name
      * @aliases id
      */
-    public function derive($style_name, $source)
+    public function derive($style_name = 'foo', $source = 'bar')
     {
         $image_style = ImageStyle::load($style_name);
         $derivative_uri = $image_style->buildUri($source);
