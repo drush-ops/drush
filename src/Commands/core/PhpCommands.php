@@ -37,24 +37,21 @@ class PhpCommands extends DrushCommands
      * script via a variable called $extra.
      *
      * @command php-script
-     * @param $script The file you wish to execute (without extension). If omitted, list files ending in .php in the current working directory and specified script-path. Note that some might not be drush scripts.
-     * @param $extra Additional arguments and options that are passed to the script.
      * @option script-path Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).
      * @usage drush php-script example --script-path=/path/to/scripts:/another/path
      *   Run a script named example.php from specified paths
      * @usage drush php-script
      *   List all available scripts.
-     * @usage drush php-script foo -- apple --cider
+     * @usage drush php-script foo --apple --cider
      *  Run foo script with argument 'apple' and option 'cider'
      * @aliases scr
-     * @allow-additional-options
      * @bootstrap DRUSH_BOOTSTRAP_MAX
-     * @complete \Drush\Commands\core\PhpCommands::complete
      * @topics docs-examplescript,docs-scripts
      */
-    public function script($script, array $extra = [], $options = ['format' => 'var_export', 'script-path' => ''])
+    public function script(array $extra, $options = ['format' => 'var_export', 'script-path' => ''])
     {
         $found = false;
+        $script = array_shift($extra);
 
         if ($script == '-') {
             return eval(stream_get_contents(STDIN));
