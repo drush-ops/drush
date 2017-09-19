@@ -6,29 +6,6 @@ namespace Unish;
  * @group base
  */
 class commandCase extends CommandUnishTestCase {
-  public function testInvoke() {
-    $expected = array(
-      'unit_drush_init',
-      'drush_unit_invoke_init',
-      'drush_unit_invoke_validate',
-      'drush_unit_pre_unit_invoke',
-      'drush_unit_invoke_primary',
-      // Primary callback is not invoked when command specifies a 'callback'.
-      // 'drush_unit_invoke',
-      'drush_unit_post_unit_invoke',
-      'drush_unit_post_unit_invoke_rollback',
-      'drush_unit_pre_unit_invoke_rollback',
-      'drush_unit_invoke_validate_rollback',
-    );
-
-    $options = array(
-      'include' => dirname(__FILE__),
-    );
-    $this->drush('unit-invoke', array(), $options, NULL, NULL, self::EXIT_ERROR);
-    $called = $this->getOutputFromJSON();
-    $this->assertSame($expected, $called);
-  }
-
   /**
    * Assert that minimum bootstrap phase is honored.
    *
@@ -51,20 +28,10 @@ class commandCase extends CommandUnishTestCase {
   }
 
   /**
-   * Assert that errors are thrown for commands with missing callbacks.
-   */
-  public function testMissingCommandCallback() {
-    $options = array(
-      'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
-      //'show-invoke' => TRUE,
-    );
-    $this->drush('missing-callback', array(), $options, NULL, NULL, self::EXIT_ERROR);
-  }
-
-  /**
    * Assert that commands depending on unknown commandfiles are detected.
    */
   public function testMissingDrushDependency() {
+    $this->markTestSkipped('SYMFONY: Drush dependencies not implemented.');
     $options = array(
       'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
       'backend' => NULL, // To obtain and parse the error log.
@@ -78,6 +45,7 @@ class commandCase extends CommandUnishTestCase {
    * Assert that commands in uninstalled modules throw an error.
    */
   public function testUninstalledModule() {
+    $this->markTestSkipped('SYMFONY BACKEND: Test depends on parse_backend_output.');
     $sites = $this->setUpDrupal(1, TRUE);
     $uri = key($sites);
     $root = $this->webroot();
