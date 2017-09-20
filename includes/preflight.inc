@@ -945,7 +945,7 @@ function drush_shutdown() {
     }
   }
 
-  if (drush_get_context('DRUSH_BACKEND', FALSE)) {
+  if (\Drush\Drush::backend()) {
     drush_backend_output();
   }
   elseif (drush_get_context('DRUSH_QUIET', FALSE)) {

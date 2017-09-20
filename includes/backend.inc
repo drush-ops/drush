@@ -84,7 +84,7 @@ define('DRUSH_BACKEND_PACKET_PATTERN', "\0" . DRUSH_BACKEND_PACKET_START . "%s\n
  * used to generate the output for the current command.
  */
 function drush_backend_set_result($value) {
-  if (drush_get_context('DRUSH_BACKEND')) {
+  if (\Drush\Drush::backend()) {
     drush_set_context('BACKEND_RESULT', $value);
   }
 }
@@ -210,7 +210,7 @@ function drush_backend_output_discard($string) {
  *  A boolean indicating whether the command was output.
  */
 function drush_backend_packet($packet, $data) {
-  if (drush_get_context('DRUSH_BACKEND')) {
+  if (\Drush\Drush::backend()) {
     $data['packet'] = $packet;
     $data = json_encode($data);
     // We use 'fwrite' instead of 'drush_print' here because

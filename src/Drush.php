@@ -267,6 +267,14 @@ class Drush
     }
 
     /**
+     * Return 'true' if we are in backend mode
+     */
+    public static function backend()
+    {
+        return \Drush\Drush::config()->get('backend');
+    }
+
+    /**
      * Return 'true' if we are in verbose mode
      */
     public static function verbose()

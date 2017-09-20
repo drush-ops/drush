@@ -2,6 +2,7 @@
 namespace Drush\Preflight;
 
 use Consolidation\Config\Config;
+use Consolidation\Config\ConfigInterface;
 
 /**
  * Storage for arguments preprocessed during preflight.
@@ -24,6 +25,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     const ROOT = 'root';
     const URI = 'uri';
     const SIMULATE = 'simulate';
+    const BACKEND = 'backend';
 
     public function __construct(array $data = null)
     {
@@ -46,8 +48,21 @@ class PreflightArgs extends Config implements PreflightArgsInterface
             '--include=' => 'setCommandPath',
             '--local' => 'setLocal',
             '--simulate' => 'setSimulate',
+            '--backend' => 'setBackend',
             '--drush-coverage=' => 'setCoverageFile',
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function applyToConfig(ConfigInterface $config)
+    {
+        // Copy 'simulate' setting value over to config. Use Robo's SIMULATE identifier.
+        $config->set(\Robo\Config\Config::SIMULATE, $this->isSimulated());
+
+        // Also store our 'backend' setting
+        $config->set(self::BACKEND, $this->isBackend());
     }
 
     /**
@@ -167,6 +182,16 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     public function setSimulate($simulate)
     {
         return $this->set(self::SIMULATE, $simulate);
+    }
+
+    public function isBackend()
+    {
+        return $this->get(self::BACKEND);
+    }
+
+    public function setBackend($backend)
+    {
+        return $this->set(self::BACKEND, $backend);
     }
 
     public function coverageFile()

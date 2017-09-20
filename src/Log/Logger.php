@@ -136,7 +136,7 @@ class Logger extends RoboLogger
 
         // When running in backend mode, log messages are not displayed, as they will
         // be returned in the JSON encoded associative array.
-        if (drush_get_context('DRUSH_BACKEND')) {
+        if (\Drush\Drush::backend()) {
             return;
         }
 

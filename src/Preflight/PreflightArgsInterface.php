@@ -1,6 +1,8 @@
 <?php
 namespace Drush\Preflight;
 
+use Consolidation\Config\ConfigInterface;
+
 /**
  * Storage for arguments preprocessed during preflight.
  */
@@ -13,6 +15,12 @@ interface PreflightArgsInterface
      * if the option requires a value.
      */
     public function optionsWithValues();
+
+    /**
+     * Copy any applicable arguments into the provided configuration
+     * object, as appropriate.
+     */
+    public function applyToConfig(ConfigInterface $config);
 
     /**
      * Return all of the args from the inputs that were NOT processed

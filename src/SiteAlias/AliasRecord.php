@@ -94,7 +94,7 @@ class AliasRecord extends Config
     public function database()
     {
         if (!$this->has('database')) {
-            $values = drush_invoke_process($this->legacyRecord(), "sql-conf", array(), array('all' => TRUE), array('integrate' => FALSE, 'override-simulated' => TRUE));
+            $values = drush_invoke_process($this->legacyRecord(), "sql-conf", array(), array('all' => true), array('integrate' => false, 'override-simulated' => true));
             if (is_array($values) && ($values['error_status'] == 0)) {
                 $this->set('database', $values['object']);
             }

@@ -117,7 +117,7 @@ class LegacyPreflight
 
         // Backend implies affirmative unless negative is explicitly specified
         drush_set_context('DRUSH_NEGATIVE', $no);
-        drush_set_context('DRUSH_AFFIRMATIVE', $yes || $pipe || (drush_get_context('DRUSH_BACKEND') && !$no));
+        drush_set_context('DRUSH_AFFIRMATIVE', $yes || $pipe || (\Drush\Drush::backend() && !$no));
 
         // Pipe implies quiet.
         drush_set_context('DRUSH_QUIET', $quiet || $pipe);
