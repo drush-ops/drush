@@ -195,7 +195,7 @@ function drush_which($command) {
  */
 function drush_shell_proc_build(AliasRecord $site, $command = '', $cd = NULL, $interactive = FALSE) {
   // Build up the command. TODO: We maybe refactor this soon.
-  $hostname = $site->remoteHost();
+  $hostname = $site->remoteHostWithUser();
   $ssh_options = $site->getConfig(\Drush\Drush::config(), 'ssh.options', "-o PasswordAuthentication=no");
   $os = drush_os($site);
   if ($site->get('tty') || $interactive) {
@@ -257,7 +257,7 @@ function drush_os($site_record = NULL) {
     return legacy_drush_os($site_record);
   }
   // n.b. $options['remote-os'] has become 'ssh.os' in drush.yml
-  return $site_record.getConfig(\Drush\Drush::config(), 'ssh.os', 'Linux');
+  return $site_record->getConfig(\Drush\Drush::config(), 'ssh.os', 'Linux');
 }
 
 function legacy_drush_os($site_record = NULL) {

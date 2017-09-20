@@ -62,6 +62,8 @@ EOD;
     $bash = $this->escapeshellarg('drush --root=/path/to/drupal --uri=sitename version 2>&1');
     $expected = "Simulating backend invoke: ssh -i mysite_dsa user@server $bash 2>&1";
     $output = $this->getOutput();
+    // We do not care if Drush inserts a -t or not in the string. Depends on whether there is a tty.
+    $output = preg_replace('# -t #', ' ', $output);
     // Remove double spaces from output to help protect test from false negatives if spacing changes subtlely
     $output = preg_replace('#  *#', ' ', $output);
     $this->assertContains($expected, $output, 'Expected ssh command was built');

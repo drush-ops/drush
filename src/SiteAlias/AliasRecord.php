@@ -107,11 +107,6 @@ class AliasRecord extends Config
         return $this->get('uri');
     }
 
-    public function remoteUser()
-    {
-        return $this->get('user');
-    }
-
     public function database()
     {
         if (!$this->has('database')) {
@@ -121,6 +116,25 @@ class AliasRecord extends Config
             }
         }
         return $this->get('database');
+    }
+
+    public function remoteHostWithUser()
+    {
+        $result = $this->remoteHost();
+        if (!empty($result) && $this->hasRemoteUser()) {
+            $result = $this->remoteUser() . '@' . $result;
+        }
+        return $result;
+    }
+
+    public function remoteUser()
+    {
+        return $this->get('user');
+    }
+
+    public function hasRemoteUser()
+    {
+        return $this->has('user');
     }
 
     public function remoteHost()
