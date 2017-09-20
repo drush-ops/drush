@@ -93,7 +93,6 @@ drush_invoke("version", $arg);
   }
 
   function testDrupalDirectory() {
-    $this->markTestSkipped('Depends on backend');
     $root = $this->webroot();
     $sitewide = $this->drupalSitewideDirectory();
     $options = array(
