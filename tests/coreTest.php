@@ -123,7 +123,6 @@ drush_invoke("version", $arg);
   }
 
   function testCoreRequirements() {
-    $this->markTestSkipped('Core requirements not implemented yet.');
     $root = $this->webroot();
     $options = array(
       'root' => $root,

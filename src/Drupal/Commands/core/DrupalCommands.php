@@ -7,6 +7,7 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
 use Drush\Drush;
+use Drush\Utils\StringUtils;
 
 class DrupalCommands extends DrushCommands
 {
@@ -124,24 +125,19 @@ class DrupalCommands extends DrushCommands
      * @default-fields title,severity,value
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function requirements($options = [
-    'format' => 'table',
-    'severity' => -1,
-    'ignore' => null
-    ])
+    public function requirements($options = ['format' => 'table', 'severity' => -1, 'ignore' => null])
     {
         include_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
         $severities = array(
-        REQUIREMENT_INFO => dt('Info'),
-        REQUIREMENT_OK => dt('OK'),
-        REQUIREMENT_WARNING => dt('Warning'),
-        REQUIREMENT_ERROR => dt('Error'),
+            REQUIREMENT_INFO => dt('Info'),
+            REQUIREMENT_OK => dt('OK'),
+            REQUIREMENT_WARNING => dt('Warning'),
+            REQUIREMENT_ERROR => dt('Error'),
         );
 
         drupal_load_updates();
 
-        $requirements = $this->getModuleHandler()
-        ->invokeAll('requirements', ['runtime']);
+        $requirements = $this->getModuleHandler()->invokeAll('requirements', ['runtime']);
         // If a module uses "$requirements[] = " instead of
         // "$requirements['label'] = ", then build a label from
         // the title.
@@ -152,7 +148,7 @@ class DrupalCommands extends DrushCommands
                 $requirements[$new_key] = $info;
             }
         }
-        $ignore_requirements = _convert_csv_to_array($options['ignore']);
+        $ignore_requirements = StringUtils::csvToArray($options['ignore']);
         foreach ($ignore_requirements as $ignore) {
             unset($requirements[$ignore]);
         }
@@ -163,11 +159,11 @@ class DrupalCommands extends DrushCommands
         foreach ($requirements as $key => $info) {
             $severity = array_key_exists('severity', $info) ? $info['severity'] : -1;
             $rows[$i] = [
-            'title' => (string) $info['title'],
-            'value' => (string) $info['value'],
-            'description' => DrupalUtil::drushRender($info['description']),
-            'sid' => $severity,
-            'severity' => @$severities[$severity]
+                'title' => (string) $info['title'],
+                'value' => (string) $info['value'],
+                'description' => DrupalUtil::drushRender($info['description']),
+                'sid' => $severity,
+                'severity' => @$severities[$severity]
             ];
             if ($severity < $min_severity) {
                 unset($rows[$i]);

@@ -109,7 +109,15 @@ class AliasRecord extends Config
 
     public function isRemote()
     {
-        return $this->has('host');
+        return !$this->isLocal();
+    }
+
+    public function isLocal()
+    {
+        if ($host = $this->remoteHost()) {
+            return $host == 'localhost' || $host == '127.0.0.1';
+        }
+        return true;
     }
 
     public function isNone()
