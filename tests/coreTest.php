@@ -63,8 +63,6 @@ class coreCase extends CommandUnishTestCase {
 
   /**
    * Test standalone php-script scripts. Assure that script args and options work.
-   *
-   * @requires extension WIP
    */
   public function testStandaloneScript() {
     $this->markTestSkipped('Standalone scripts not implemented yet.');
@@ -99,7 +97,6 @@ drush_invoke("version", $arg);
       'root' => $root,
       'uri' => key($this->getSites()),
       'yes' => NULL,
-      // 'strict' => 0, // invoke from script: do not verify options
     );
     $this->drush('drupal-directory', array('%files'), $options);
     $output = $this->getOutput();
