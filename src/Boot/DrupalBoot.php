@@ -352,8 +352,6 @@ abstract class DrupalBoot extends BaseBoot
         drush_set_context('DRUSH_DRUPAL_CORE', $core);
         define('DRUSH_DRUPAL_CORE', $core);
 
-        _drush_preflight_global_options();
-
         $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal !version root directory at !drupal_root", array("!version" => $version, '!drupal_root' => $drupal_root)));
     }
 
@@ -459,8 +457,6 @@ abstract class DrupalBoot extends BaseBoot
         $confPath = drush_set_context('DRUSH_DRUPAL_SITE_ROOT', drush_bootstrap_value('confPath'));
 
         $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal site !site at !site_root", array('!site' => $site, '!site_root' => $confPath)));
-
-        _drush_preflight_global_options();
     }
 
     /**
