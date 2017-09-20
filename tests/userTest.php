@@ -91,8 +91,6 @@ class userCase extends CommandUnishTestCase {
   }
 
   function testUserCancel() {
-    $this->markTestSkipped('generate content-entity not working correctly here.');
-    // $this->markTestSkipped("@todo Creation of node types and content has changed in D8.");
     // Create a content entity type and enable its module.
     $answers = [
       'name' => 'UnishArticle',
