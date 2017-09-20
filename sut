@@ -30,7 +30,7 @@ if (in_array('si', $arguments) || in_array('site-install', $arguments)) {
  * DRUSH_AUTOLOAD_PHP must be provided because Drush is symlinked into the SUT.
  * This confuses our autoload.php detection.
  */
-$cmd = "DRUSH_AUTOLOAD_PHP=$vendor/autoload.php " . escapeshellarg($vendor . '/bin/drush') . ' ' . implode(' ', array_map(function ($item) { return escapeshellarg($item); }, $arguments));
+$cmd = "DRUSH_AUTOLOAD_PHP=$vendor/autoload.php ETC_PREFIX=$unish_sandbox SHARE_PREFIX=$unish_sandbox TEMP=$unish_sandbox/temp " . escapeshellarg($vendor . '/bin/drush') . ' ' . implode(' ', array_map(function ($item) { return escapeshellarg($item); }, $arguments));
 if (unishIsVerbose()) {
   fwrite(STDERR, 'Executing: ' . $cmd . "\n");
 }
