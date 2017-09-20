@@ -569,7 +569,6 @@ function _drush_preflight_global_options() {
 
   // Pipe implies quiet.
   drush_set_context('DRUSH_QUIET', drush_get_option(array('quiet', 'pipe')));
-  drush_set_context('DRUSH_PIPE', drush_get_option('pipe'));
 
   // Suppress colored logging if --nocolor option is explicitly given or if
   // terminal does not support it.

@@ -137,16 +137,10 @@ function drush_backend_get_result() {
 function drush_backend_output() {
   $data = array();
 
-  if (drush_get_context('DRUSH_PIPE')) {
-    $pipe = drush_get_context('DRUSH_PIPE_BUFFER');
-    $data['output'] = $pipe; // print_r($pipe, TRUE);
-  }
-  else {
-    // Strip out backend commands.
-    $packet_regex = strtr(sprintf(DRUSH_BACKEND_PACKET_PATTERN, "([^\0]*)"), array("\0" => "\\0"));
-    $packet_regex = str_replace("\n", "", $packet_regex);
-    $data['output'] = preg_replace("/$packet_regex/s", '', drush_backend_output_collect(NULL));
-  }
+  // Strip out backend commands.
+  $packet_regex = strtr(sprintf(DRUSH_BACKEND_PACKET_PATTERN, "([^\0]*)"), array("\0" => "\\0"));
+  $packet_regex = str_replace("\n", "", $packet_regex);
+  $data['output'] = preg_replace("/$packet_regex/s", '', drush_backend_output_collect(NULL));
 
   if (drush_get_context('DRUSH_QUIET', FALSE)) {
     ob_end_clean();
