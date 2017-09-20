@@ -16,6 +16,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      */
     protected $args;
 
+    const DRUSH_CONFIG_CONTEXT_NAMESPACE = 'context';
     const ALIAS = 'alias';
     const ALIAS_PATH = 'alias-path';
     const COMMAND_PATH = 'include';
@@ -54,15 +55,30 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     }
 
     /**
+     * Map of option key to the corresponding config key to store the
+     * preflight option in.
+     */
+    protected function optionConfigMap()
+    {
+        return [
+            self::SIMULATE =>       \Robo\Config\Config::SIMULATE,
+            self::BACKEND =>        self::BACKEND,
+            self::ALIAS_PATH =>     self::DRUSH_CONFIG_CONTEXT_NAMESPACE . '.' . self::ALIAS_PATH,
+            self::CONFIG_PATH =>    self::DRUSH_CONFIG_CONTEXT_NAMESPACE . '.' . self::CONFIG_PATH,
+            self::COMMAND_PATH =>   self::DRUSH_CONFIG_CONTEXT_NAMESPACE . '.' . self::COMMAND_PATH,
+            self::LOCAL =>          self::DRUSH_CONFIG_CONTEXT_NAMESPACE . '.' . self::LOCAL,
+        ];
+    }
+
+    /**
      * @inheritdoc
      */
     public function applyToConfig(ConfigInterface $config)
     {
-        // Copy 'simulate' setting value over to config. Use Robo's SIMULATE identifier.
-        $config->set(\Robo\Config\Config::SIMULATE, $this->isSimulated());
-
-        // Also store our 'backend' setting
-        $config->set(self::BACKEND, $this->isBackend());
+        // Copy the relevant preflight options to the applicable configuration namespace
+        foreach ($this->optionConfigMap() as $option_key => $config_key) {
+            $config->set($config_key, $this->get($option_key));
+        }
     }
 
     /**

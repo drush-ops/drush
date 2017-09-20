@@ -148,10 +148,13 @@ class ArgsPreprocessor
             return [$methodName, $hasValue ? null: true];
         }
 
-        // If $opt does not take a value, then we will never match options
+        // If $opt does not take a value, then we will ignore
         // of the form --opt=value
         if (!$hasValue) {
-            return [false, false];
+            // TODO: We could fail with "The "--foo" option does not accept a value." here.
+            // It is important that we ignore the value for '--backend', but other options could throw.
+            // For now, we just ignore the value if it is there. This only affects --simulate and --local at the moment.
+            return [$methodName, true];
         }
 
         // If $opt is a double-dash option, and it contains an '=', then

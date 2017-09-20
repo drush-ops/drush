@@ -58,6 +58,7 @@
  */
 
 use Drush\Log\LogLevel;
+use Drush\Preflight\PreflightArgs;
 
 /**
  * Identify the JSON encoded output from a command.
@@ -741,6 +742,14 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
 
     // Add in command-specific options as well
     $command_options += drush_command_get_command_specific_options($site_record, $command);
+
+    // Add in preflight option contexts (--include et. al)
+    $preflightContextOptions = \Drush\Drush::config()->get(PreflightArgs::DRUSH_CONFIG_CONTEXT_NAMESPACE, []);
+    foreach ($preflightContextOptions as $key => $value) {
+      if ($value) {
+        $command_options[$key] = $value;
+      }
+    }
 
     // If the caller has requested it, don't pull the options from the alias
     // into the command line, but use the alias name for dispatching.

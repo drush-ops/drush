@@ -930,7 +930,8 @@ function drush_shutdown() {
     _drush_postmortem();
   }
 
-  // @todo Ask the bootstrap object (or maybe dispatch) how far we got.
+  // @todo Allow the bootstrap objects to register shutdown handlers on
+  // the bootstrap manager, and remove them when the bootstrap phase succeeds.
   $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
   if (drush_get_context('DRUSH_BOOTSTRAPPING')) {
     switch ($phase) {
@@ -947,9 +948,6 @@ function drush_shutdown() {
 
   if (\Drush\Drush::backend()) {
     drush_backend_output();
-  }
-  elseif (drush_get_context('DRUSH_QUIET', FALSE)) {
-    ob_end_clean();
   }
 
   // This way drush_return_status() will always be the last shutdown function (unless other shutdown functions register shutdown functions...)
