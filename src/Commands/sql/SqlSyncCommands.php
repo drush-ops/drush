@@ -36,10 +36,9 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      */
     public function sqlsync($source, $destination, $options = ['no-dump' => false, 'no-sync' => false, 'runner' => null, 'create-db' => false, 'db-su' => null, 'db-su-pw' => null, 'target-dump' => null, 'source-dump' => true])
     {
-        $source_record = drush_sitealias_get_record($source);
-        $destination_record = drush_sitealias_get_record($destination);
-        $source_is_local = !array_key_exists('remote-host', $source_record) || drush_is_local_host($source_record);
-        $destination_is_local = !array_key_exists('remote-host', $destination_record) || drush_is_local_host($destination_record);
+        $manager = $this->siteAliasManager();
+        $sourceRecord = $manager->get($source);
+        $destinationRecord = $manager->get($destination);
 
         $backend_options = array();
         // @todo drush_redispatch_get_options() assumes you will execute same command. Not good.
@@ -67,8 +66,8 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
         // Perform sql-dump on source unless told otherwise.
         $dump_options = $global_options + array(
-        'gzip' => true,
-        'result-file' => $options['source-dump'],
+            'gzip' => true,
+            'result-file' => $options['source-dump'],
         );
         if (!$options['no-dump']) {
             $this->logger()->notice(dt('Starting to dump database on Source.'));
@@ -90,7 +89,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         if ($options['target-dump']) {
             $destination_dump_path = $options['target-dump'];
             $backend_options['interactive'] = false;  // @temporary: See https://github.com/drush-ops/drush/pull/555
-        } elseif ($source_is_local && $destination_is_local) {
+        } elseif (!$sourceRecord->isRemote() && !$destinationRecord->isRemote()) {
             $destination_dump_path = $source_dump_path;
             $do_rsync = false;
         } else {
@@ -110,7 +109,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
                 // Cleanup if this command created the dump file.
                 $rsync_options[] = '--remove-source-files';
             }
-            $runner = drush_get_runner($source_record, $destination_record, $options['runner']);
+            $runner = drush_get_runner($sourceRecord, $destinationRecord, $options['runner']);
             // Since core-rsync is a strict-handling command and drush_invoke_process() puts options at end, we can't send along cli options to rsync.
             // Alternatively, add options like --ssh-options to a site alias (usually on the machine that initiates the sql-sync).
             $return = drush_invoke_process($runner, 'core-rsync', array_merge(["$source:$source_dump_path", "$destination:$destination_dump_path", '--'], $rsync_options), [], $backend_options);
@@ -123,8 +122,8 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         // Import file into destination.
         $this->logger()->notice(dt('Starting to import dump file onto Destination database.'));
         $query_options = $global_options + array(
-        'file' => $destination_dump_path,
-        'file-delete' => true,
+            'file' => $destination_dump_path,
+            'file-delete' => true,
         );
         $return = drush_invoke_process($destination, 'sql-query', array(), $query_options, $backend_options);
         if ($return['error_status']) {
