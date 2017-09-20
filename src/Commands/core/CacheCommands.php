@@ -168,8 +168,8 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface
      */
     public function rebuild($options = ['cache-clear' => true])
     {
-        if (!drush_get_option('cache-clear', true)) {
-            $this->logger()->info(dt("Skipping cache-clear operation due to --cache-clear=0 option."));
+        if (!$options['cache-clear']) {
+            $this->logger()->info(dt("Skipping cache-clear operation due to --no-cache-clear option."));
             return true;
         }
         chdir(DRUPAL_ROOT);
