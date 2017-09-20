@@ -121,7 +121,9 @@ class RedispatchHook implements InitializeHookInterface
     protected function alterArgsForRedispatch($redispatchArgs)
     {
 
-        return array_filter($redispatchArgs, function ($item) { return strpos($item, '-D') !== 0; });
+        return array_filter($redispatchArgs, function ($item) {
+            return strpos($item, '-D') !== 0;
+        });
     }
 
 
