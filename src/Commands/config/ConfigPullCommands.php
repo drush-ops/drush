@@ -38,9 +38,9 @@ class ConfigPullCommands extends DrushCommands
         }
 
         $export_options = array(
-        // Use the standard backup directory on Destination.
-        'destination' => true,
-        'yes' => null,
+            // Use the standard backup directory on Destination.
+            'destination' => true,
+            'yes' => null,
         );
         $this->logger()->notice(dt('Starting to export configuration on Target.'));
         $return = drush_invoke_process($source, 'config-export', array(), $global_options + $export_options, $backend_options);
@@ -52,9 +52,9 @@ class ConfigPullCommands extends DrushCommands
         }
 
         $rsync_options = array(
-        '--remove-source-files',
-        '--delete',
-        '--exclude=.htaccess',
+            '--remove-source-files',
+            '--delete',
+            '--exclude=.htaccess',
         );
         $label = $options['label'];
         $runner = drush_get_runner($source, $destination, $options['runner']);
@@ -67,12 +67,12 @@ class ConfigPullCommands extends DrushCommands
         // Since core-rsync is a strict-handling command and drush_invoke_process() puts options at end, we can't send along cli options to rsync.
         // Alternatively, add options like --ssh-options to a site alias (usually on the machine that initiates the sql-sync).
         $return = drush_invoke_process($runner, 'core-rsync', array_merge([
-          "$source:$export_path",
-          "$destination:%config-$label",
-          '--'
+            "$source:$export_path",
+            "$destination:%config-$label",
+            '--'
         ], $rsync_options), ['yes' => true], $backend_options);
         if ($return['error_status']) {
-              throw new \Exception(dt('Config-pull rsync failed.'));
+            throw new \Exception(dt('Config-pull rsync failed.'));
         }
 
         drush_backend_set_result($return['object']);
