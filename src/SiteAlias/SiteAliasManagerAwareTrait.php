@@ -10,6 +10,9 @@ trait SiteAliasManagerAwareTrait
         $this->siteAliasManager = $siteAliasManager;
     }
 
+    /**
+     * @return SiteAliasManager
+     */
     public function siteAliasManager()
     {
         return $this->siteAliasManager;

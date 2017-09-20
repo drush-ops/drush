@@ -5,11 +5,14 @@ use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Webmozart\PathUtil\Path;
 
-class SqlSyncCommands extends DrushCommands
+class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+    use SiteAliasManagerAwareTrait;
 
     /**
      * Copy DB data from a source site to a target site. Transfers data via rsync.
@@ -131,29 +134,6 @@ class SqlSyncCommands extends DrushCommands
     }
 
     /**
-     * @hook init sql-sync
-     */
-    public function init(InputInterface $input, AnnotationData $annotationData)
-    {
-        // Try to get @self defined when --uri was not provided.
-        drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
-
-        $destination = $input->getArgument('destination');
-        $source = $input->getArgument('source');
-
-        // Preflight destination in case it defines the alias used by the source
-        _drush_sitealias_get_record($destination);
-
-        // After preflight, get source and destination settings
-        $source_settings = drush_sitealias_get_record($source);
-        $destination_settings = drush_sitealias_get_record($destination);
-
-        // Apply command-specific options.
-        drush_sitealias_command_default_options($source_settings, 'source-');
-        drush_sitealias_command_default_options($destination_settings, 'target-');
-    }
-
-    /**
      * @hook validate sql-sync
      */
     public function validate(CommandData $commandData)
@@ -161,33 +141,33 @@ class SqlSyncCommands extends DrushCommands
         $source = $commandData->input()->getArgument('source');
         $destination = $commandData->input()->getArgument('destination');
         // Get destination info for confirmation prompt.
-        $source_settings = drush_sitealias_get_record($source);
-        $destination_settings = drush_sitealias_get_record($destination);
-        $source_db_spec = drush_sitealias_get_db_spec($source_settings, false, 'source-');
-        $target_db_spec = drush_sitealias_get_db_spec($destination_settings, false, 'target-');
+        $manager = $this->siteAliasManager();
+        $sourceRecord = $manager->get($source);
+        $destinationRecord = $manager->get($destination);
+        $source_db_spec = $sourceRecord->database();
+        $target_db_spec = $destinationRecord->database();
         $txt_source = (isset($source_db_spec['remote-host']) ? $source_db_spec['remote-host'] . '/' : '') . $source_db_spec['database'];
         $txt_destination = (isset($target_db_spec['remote-host']) ? $target_db_spec['remote-host'] . '/' : '') . $target_db_spec['database'];
 
         // Validate.
         if (empty($source_db_spec)) {
-            if (empty($source_settings)) {
+            if (empty($sourceRecord)) {
                 throw new \Exception(dt('Error: no alias record could be found for source !source', array('!source' => $source)));
             }
             throw new \Exception(dt('Error: no database record could be found for source !source', array('!source' => $source)));
         }
         if (empty($target_db_spec)) {
-            if (empty($destination_settings)) {
+            if (empty($destinationRecord)) {
                 throw new \Exception(dt('Error: no alias record could be found for target !destination', array('!destination' => $destination)));
             }
             throw new \Exception(dt('Error: no database record could be found for target !destination', array('!destination' => $destination)));
         }
 
-        // TODO: query $input via the CommandData for options..
-        if (drush_get_option('no-dump') && !drush_get_option('source-dump')) {
+        if ($commandData->input()->getOption('no-dump') && !$commandData->input()->getOption('source-dump')) {
             throw new \Exception(dt('The --source-dump option must be supplied when --no-dump is specified.'));
         }
 
-        if (drush_get_option('no-sync') && !drush_get_option('target-dump')) {
+        if ($commandData->input()->getOption('no-sync') && !$commandData->input()->getOption('target-dump')) {
             throw new \Exception(dt('The --target-dump option must be supplied when --no-sync is specified.'));
         }
 
