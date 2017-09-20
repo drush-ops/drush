@@ -16,7 +16,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      */
     protected $args;
 
-    const DRUSH_CONFIG_CONTEXT_NAMESPACE = 'context';
+    const DRUSH_CONFIG_CONTEXT_NAMESPACE = 'runtime.context';
     const ALIAS = 'alias';
     const ALIAS_PATH = 'alias-path';
     const COMMAND_PATH = 'include';
@@ -79,6 +79,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         foreach ($this->optionConfigMap() as $option_key => $config_key) {
             $config->set($config_key, $this->get($option_key));
         }
+
+        $config->set('runtime.args', $this->args());
     }
 
     /**

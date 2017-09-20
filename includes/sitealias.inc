@@ -217,11 +217,11 @@ function drush_sitealias_get_record($alias, $alias_context = NULL) {
     // TODO: probably need to check for 'not found'
     $alias_record = \Drush\Drush::aliasManager()->get($alias);
     if (empty($alias_record)) {
-      return $alias_record;
+      return [];
     }
     $config_record = $alias_record->exportConfig();
     $exported_config = $config_record->export();
-    return $exported_config['options'];
+    return isset($exported_config['options']) ? $exported_config['options'] : [];
   }
   // Check to see if the alias contains commas.  If it does, then
   // we will go ahead and make a site list record

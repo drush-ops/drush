@@ -64,6 +64,46 @@ class Preflight
     }
 
     /**
+     * Remapping table for arguments. Anything found in a key
+     * here will be converted to the corresponding value entry.
+     *
+     * For example:
+     *    --ssh-options='-i mysite_dsa'
+     * will become:
+     *    -Dssh.options='-i mysite_dsa'
+     *
+     * TODO: We could consider loading this from a file or some other
+     * source. However, this table is needed very early -- even earlier
+     * than config is loaded (since this is needed for preflighting the
+     * arguments, which can select config files to load). Hardcoding
+     * is probably best; we might want to move to another class, perhaps.
+     * We also need this prior to Dependency Injection, though.
+     *
+     * Eventually, we might want to expose this table to some form of
+     * 'help' output, so folks can see the available conversions.
+     */
+    protected function remapArguments()
+    {
+        return [
+            '--ssh-options' => '-Dssh.options',
+            '--halt-on-error' => '-Druntime.halt-on-error',
+            '--php-notices' => '-Druntime.php-notices',
+            '--output_charset' => '-Dio.output.charset',
+            '--output-charset' => '-Dio.output.charset',
+        ];
+    }
+
+    /**
+     * Removal table for arguments. Anythign found here will be silently
+     * removed. The option value is ignored; ergo, both --strict and
+     * --strict=0 will be removed; however, --stricter will not be removed.
+     */
+    protected function removeArguments()
+    {
+        return [ '--strict' ];
+    }
+
+    /**
      * Preprocess the args, removing any @sitealias that may be present.
      * Arguments and options not used during preflight will be processed
      * with an ArgvInput.
@@ -71,7 +111,10 @@ class Preflight
     public function preflightArgs($argv)
     {
         $argProcessor = new ArgsPreprocessor();
+        $remapper = new ArgsRemapper($this->remapArguments(), $this->removeArguments());
         $preflightArgs = new PreflightArgs();
+        $argProcessor->setArgsRemapper($remapper);
+
         $argProcessor->parse($argv, $preflightArgs);
 
         return $preflightArgs;
@@ -220,6 +263,9 @@ class Preflight
         // Placate the Drush shutdown handler.
         // TODO: use a more modern termination management strategy
         drush_set_context('DRUSH_EXECUTION_COMPLETED', true);
+
+        // For backwards compatibility (backend invoke needs this in drush_backend_output())
+        drush_set_context('DRUSH_ERROR_CODE', $status);
 
         return $status;
     }

@@ -58,10 +58,8 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
             $command = 'bash -l';
             $interactive = true;
         }
-        $config = $alias->exportConfig();
-        $site = $config->get('options', []);
 
-        $cmd = drush_shell_proc_build($site, $command, $cd, $interactive);
+        $cmd = drush_shell_proc_build($alias, $command, $cd, $interactive);
         $status = drush_shell_proc_open($cmd);
         if ($status != 0) {
             throw new \Exception(dt('An error @code occurred while running the command `@command`', array('@command' => $cmd, '@code' => $status)));

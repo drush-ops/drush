@@ -29,6 +29,7 @@ use Drush\Log\LogLevel;
 use Psr\Log\AbstractLogger;
 use Robo\Log\RoboLogger;
 use Symfony\Component\Console\Output\OutputInterface;
+use Drush\Utils\StringUtils;
 
 class Logger extends RoboLogger
 {
@@ -42,10 +43,10 @@ class Logger extends RoboLogger
     {
         // Convert to old $entry array for b/c calls
         $entry = $context + [
-        'type' => $level,
-        'message' => $message,
-        'timestamp' => microtime(true),
-        'memory' => memory_get_usage(),
+            'type' => $level,
+            'message' => StringUtils::interpolate($message, $context),
+            'timestamp' => microtime(true),
+            'memory' => memory_get_usage(),
         ];
 
         // Drush\Log\Logger should take over all of the responsibilities
@@ -147,9 +148,9 @@ class Logger extends RoboLogger
         if ($debug) {
             $timer = sprintf('[%s sec, %s]', round($entry['timestamp']-DRUSH_REQUEST_TIME, 2), drush_format_size($entry['memory']));
             $entry['message'] = $entry['message'] . ' ' . $timer;
+            $message = $message . ' ' . $timer;
         }
 
-        $message = $entry['message'];
 /*
       // Drush-styled output
 

@@ -79,7 +79,8 @@ class TestFixtureCommands
    * Return options as function result.
    * @command unit-return-options
    */
-  function drush_unit_return_options($options = []) {
+  function drush_unit_return_options($arg = '', $options = ['x' => 'y', 'data' => [], 'format' => 'yaml']) {
+    unset($options['format']);
     return $options;
   }
 

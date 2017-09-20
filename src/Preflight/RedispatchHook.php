@@ -38,18 +38,17 @@ class RedispatchHook implements InitializeHookInterface
             $remote_user = $input->getOption('remote-user');
 
             // Get the command arguements, and shift off the Drush command.
-            $redispatchArgs = $input->getArguments();
+            $redispatchArgs = \Drush\Drush::config()->get('runtime.args');
+            $drush_path = array_shift($redispatchArgs);
             $command_name = array_shift($redispatchArgs);
 
+            // Remove argument patterns that should not be propagated
+            $redispatchArgs = $this->alterArgsForRedispatch($redispatchArgs);
+
             // Fetch the commandline options to pass along to the remote command.
-            // TODO: The $input object will not reveal which options were
-            // passed in via the commandline, or which are provided by some
-            // other source - e.g. from an option's default value. By this
-            // method, the option and its default value will end up in the
-            // redispatchOptions array, even if said option did not appear on
-            // the commandline. This can cause problems if the default value
-            // in this version of Drush is not valid in the target Drush
-            // (e.g. `drush status --format=table).
+            // The options the user provided on the commandline will be included
+            // in $redispatchArgs. Here, we only need to provide those
+            // preflight options that should be propagated.
             $redispatchOptions = $this->redispatchOptions($input);
 
             $backend_options = [
@@ -58,6 +57,7 @@ class RedispatchHook implements InitializeHookInterface
                 'remote-user' => $remote_user,
                 'additional-global-options' => [],
                 'integrate' => true,
+                'backend' => false,
             ];
             if ($input->isInteractive()) {
                 $backend_options['#tty'] = true;
@@ -95,8 +95,14 @@ class RedispatchHook implements InitializeHookInterface
 
     protected function redispatchOptions(InputInterface $input)
     {
+        return [];
         $result = [];
-        foreach ($input->getOptions() as $option => $value) {
+        $redispatchOptionList = [
+            'root',
+            'uri',
+        ];
+        foreach ($redispatchOptionList as $option) {
+            $value = $input->hasOption($option) ? $input->getOption($option) : false;
             if ($value === true) {
                 $result[$option] = true;
             } elseif (is_string($value) && !empty($value)) {
@@ -104,12 +110,20 @@ class RedispatchHook implements InitializeHookInterface
             }
         }
 
-        // hack hack
-        unset($result['remote-host']);
-        unset($result['remote-user']);
-
         return $result;
     }
+
+    /**
+     * Remove anything that is not necessary for the remote side.
+     * At the moment this is limited to configuration options
+     * provided via -D.
+     */
+    protected function alterArgsForRedispatch($redispatchArgs)
+    {
+
+        return array_filter($redispatchArgs, function ($item) { return strpos($item, '-D') !== 0; });
+    }
+
 
     protected function exitEarly($values)
     {

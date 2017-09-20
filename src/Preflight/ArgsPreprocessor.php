@@ -14,11 +14,19 @@ use Drush\SiteAlias\SiteSpecParser;
  */
 class ArgsPreprocessor
 {
+    /** @var SiteSpecParser */
     protected $specParser;
+    /** @var ArgsRemapper */
+    protected $remapper;
 
     public function __construct()
     {
         $this->specParser = new SiteSpecParser();
+    }
+
+    public function setArgsRemapper(ArgsRemapper $remapper)
+    {
+        $this->remapper = $remapper;
     }
 
     /**
@@ -39,6 +47,10 @@ class ArgsPreprocessor
         // 'unprocessed' args list.
         $appName = array_shift($argv);
         $storage->addArg($appName);
+
+        if ($this->remapper) {
+            $argv = $this->remapper->remap($argv);
+        }
 
         $optionsTable = $storage->optionsWithValues();
         while (!empty($argv)) {

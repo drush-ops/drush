@@ -6,6 +6,7 @@
  */
 
 use Drush\Log\LogLevel;
+use \Drush\SiteAlias\AliasRecord;
 
 /**
  * @defgroup commandwrappers Functions to execute commands.
@@ -190,21 +191,22 @@ function drush_which($command) {
  *   Force creation of a tty
  * @return string
  *   A string suitable for execution with drush_shell_remote_exec().
+ *
  */
-function drush_shell_proc_build($site, $command = '', $cd = NULL, $interactive = FALSE) {
+function drush_shell_proc_build(AliasRecord $site, $command = '', $cd = NULL, $interactive = FALSE) {
   // Build up the command. TODO: We maybe refactor this soon.
-  $hostname = drush_remote_host($site);
-  $ssh_options = drush_sitealias_get_option($site, 'ssh-options', "-o PasswordAuthentication=no");
+  $hostname = $site->remoteHost();
+  $ssh_options = $site->getConfig(\Drush\Drush::config(), 'ssh.options', "-o PasswordAuthentication=no");
   $os = drush_os($site);
-  if (drush_sitealias_get_option($site, 'tty') || $interactive) {
+  if ($site->get('tty') || $interactive) {
     $ssh_options .= ' -t';
   }
 
   $cmd = "ssh " . $ssh_options . " " . $hostname;
 
   if ($cd === TRUE) {
-    if (array_key_exists('root', $site)) {
-      $cd = $site['root'];
+    if ($site->hasRoot()) {
+      $cd = $site->root();
     }
     else {
       $cd = FALSE;
@@ -215,12 +217,7 @@ function drush_shell_proc_build($site, $command = '', $cd = NULL, $interactive =
   }
 
   if (!empty($command)) {
-    if (!drush_get_option('escaped', FALSE)) {
-      $cmd .= " " . drush_escapeshellarg($command, $os);
-    }
-    else {
-      $cmd .= " $command";
-    }
+    $cmd .= " " . drush_escapeshellarg($command, $os);
   }
 
   return $cmd;
@@ -256,6 +253,14 @@ function drush_shell_proc_open($cmd) {
  *   NULL for 'same as local machine', 'Windows' or 'Linux'.
  */
 function drush_os($site_record = NULL) {
+  if (!$site_record instanceof AliasRecord) {
+    return legacy_drush_os($site_record);
+  }
+  // n.b. $options['remote-os'] has become 'ssh.os' in drush.yml
+  return $site_record.getConfig(\Drush\Drush::config(), 'ssh.os', 'Linux');
+}
+
+function legacy_drush_os($site_record = NULL) {
   // Default to $os = NULL, meaning 'same as local machine'
   $os = NULL;
   // If the site record has an 'os' element, use it

@@ -1136,7 +1136,7 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
 
   $hostname = $site_record['remote-host'];
   $username = $site_record['remote-user'];
-  $ssh_options = $site_record['ssh-options'];
+  $ssh_options = $site_record['ssh-options']; // TODO: update this (maybe make $site_record an AliasRecord)
   $os = drush_os($site_record);
 
   if (drush_is_local_host($hostname)) {
@@ -1161,8 +1161,8 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
   $command = implode(' ', array_filter($cmd, 'strlen'));
   if (isset($hostname)) {
     $username = (isset($username)) ? drush_escapeshellarg($username, "LOCAL") . "@" : '';
-    $ssh_options = $site_record['ssh-options'];
-    $ssh_options = (isset($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
+    $ssh_options = $site_record['ssh-options']; // TODO: update
+    $ssh_options = (isset($ssh_options)) ? $ssh_options : \Drush\Drush::config()->get('ssh.options', "-o PasswordAuthentication=no");
 
     $ssh_cmd[] = "ssh";
     $ssh_cmd[] = $ssh_options;

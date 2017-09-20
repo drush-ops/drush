@@ -2,6 +2,7 @@
 namespace Drush\SiteAlias;
 
 use Consolidation\Config\Config;
+use Consolidation\Config\ConfigInterface;
 
 /**
  * An alias record is a configuration record containing well-known items.
@@ -66,6 +67,21 @@ class AliasRecord extends Config
         $this->name = $name;
     }
 
+    /**
+     * Get a value from the provided config option. Values stored in
+     * this alias record will override the configuration values, if present.
+     *
+     * If multiple alias records need to be chained together in a more
+     * complex priority arrangement, @see \Consolidation\Config\Config\ConfigOverlay.
+     */
+    public function getConfig(ConfigInterface $config, $key, $default = null)
+    {
+        if ($this->has($key)) {
+            return $this->get($key, $default);
+        }
+        return $config->get($key, $default);
+    }
+
     public function name()
     {
         return $this->name;
@@ -74,6 +90,11 @@ class AliasRecord extends Config
     public function setName($name)
     {
         $this->name = $name;
+    }
+
+    public function hasRoot()
+    {
+        return $this->has('root');
     }
 
     public function root()

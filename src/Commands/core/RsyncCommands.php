@@ -53,7 +53,7 @@ class RsyncCommands extends DrushCommands
         $parameters[] = $this->source_evaluated_path;
         $parameters[] = $this->destination_evaluated_path;
 
-        $ssh_options = $options['ssh-options'];
+        $ssh_options = \Drush\Drush::config()->get('ssh.options', '');
         $exec = "rsync -e 'ssh $ssh_options'". ' '. implode(' ', array_filter($parameters));
         $exec_result = drush_op_system($exec);
 

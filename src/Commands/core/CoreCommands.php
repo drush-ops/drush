@@ -170,17 +170,9 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
             }
         }
 
-        // @todo: Remove 2nd branch when no longer needed.
-        if ($this->hasSiteAliasManager()) {
-            $aliasRecord = $this->siteAliasManager()->getSelf();
-            $site_record = $aliasRecord->legacyRecord();
-        } else {
-            $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
-            $site_record = drush_sitealias_get_record($alias);
-        }
-
-        if ($site_record) {
-            $result = $this->executeCmd($site_record, $cmd);
+        $aliasRecord = $this->siteAliasManager()->getSelf();
+        if ($aliasRecord) {
+            $result = $this->executeCmd($aliasRecord, $cmd);
         } else {
             // Must be a local command.
             $result = (drush_shell_proc_open($cmd) == 0);
@@ -202,12 +194,12 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      */
     protected function executeCmd($site, $cmd)
     {
-        if (!empty($site['remote-host'])) {
+        if ($site->isRemote()) {
             // Remote, so execute an ssh command with a bash fragment at the end.
             $exec = drush_shell_proc_build($site, $cmd, true);
             return (drush_shell_proc_open($exec) == 0);
-        } elseif (!empty($site['root']) && is_dir($site['root'])) {
-            return (drush_shell_proc_open('cd ' . drush_escapeshellarg($site['root']) . ' && ' . $cmd) == 0);
+        } elseif ($site->hasRoot() && is_dir($site->root())) {
+            return (drush_shell_proc_open('cd ' . drush_escapeshellarg($site->root()) . ' && ' . $cmd) == 0);
         }
         return (drush_shell_proc_open($cmd) == 0);
     }
