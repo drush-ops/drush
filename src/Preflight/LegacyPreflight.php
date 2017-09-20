@@ -110,13 +110,13 @@ class LegacyPreflight
         $quiet = $input->getOption('quiet', false);
         $simulate = \Drush\Drush::simulate();
 
-        drush_set_context('DRUSH_VERBOSE',      $verbose || $debug);
-        drush_set_context('DRUSH_DEBUG',        $debug);
+        drush_set_context('DRUSH_VERBOSE', $verbose || $debug);
+        drush_set_context('DRUSH_DEBUG', $debug);
         drush_set_context('DRUSH_DEBUG_NOTIFY', $verbose && $debug);
-        drush_set_context('DRUSH_SIMULATE',     $simulate);
+        drush_set_context('DRUSH_SIMULATE', $simulate);
 
         // Backend implies affirmative unless negative is explicitly specified
-        drush_set_context('DRUSH_NEGATIVE',    $no);
+        drush_set_context('DRUSH_NEGATIVE', $no);
         drush_set_context('DRUSH_AFFIRMATIVE', $yes || $pipe || (drush_get_context('DRUSH_BACKEND') && !$no));
 
         // Pipe implies quiet.
@@ -124,13 +124,13 @@ class LegacyPreflight
 
         // Suppress colored logging if --no-ansi (was --nocolor) option is explicitly given or if
         // terminal does not support it.
-        $nocolor = $input->getOption('no-ansi', FALSE);
+        $nocolor = $input->getOption('no-ansi', false);
         if (!$nocolor) {
             // Check for colorless terminal.  If there is no terminal, then
             // 'tput colors 2>&1' will return "tput: No value for $TERM and no -T specified",
             // which is not numeric and therefore will put us in no-color mode.
             $colors = exec('tput colors 2>&1');
-            $nocolor = !($colors === FALSE || (is_numeric($colors) && $colors >= 3));
+            $nocolor = !($colors === false || (is_numeric($colors) && $colors >= 3));
         }
         drush_set_context('DRUSH_NOCOLOR', $nocolor);
     }
