@@ -57,7 +57,7 @@ class ConfigPullCommands extends DrushCommands
         '--exclude=.htaccess',
         );
         $label = $options['label'];
-        $runner = drush_get_runner($source, $destination, drush_get_option('runner', false));
+        $runner = drush_get_runner($source, $destination, $options['runner']);
         $this->logger()
           ->notice(dt('Starting to rsync configuration files from !source to !dest.', array(
           '!source' => $source,

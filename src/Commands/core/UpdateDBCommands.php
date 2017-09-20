@@ -10,6 +10,7 @@ use Drush\Log\LogLevel;
 
 class UpdateDBCommands extends DrushCommands
 {
+    protected $cache_clear;
 
     /**
      * Apply any database updates required (as with running update.php).
@@ -22,6 +23,8 @@ class UpdateDBCommands extends DrushCommands
      */
     public function updatedb($options = ['cache-clear' => true, 'entity-updates' => false])
     {
+        $this->cache_clear = $options['cache-clear'];
+
         if (\Drush\Drush::simulate()) {
             $this->logger()->info(dt('updatedb command does not support --simulate option.'));
             return true;
@@ -367,8 +370,8 @@ class UpdateDBCommands extends DrushCommands
     public function updateFinished($success, $results, $operations)
     {
 
-        if (!drush_get_option('cache-clear', true)) {
-            drush_log(dt("Skipping cache-clear operation due to --cache-clear=0 option."), LogLevel::WARNING);
+        if (!$this->cache_clear) {
+            drush_log(dt("Skipping cache-clear operation due to --no-cache-clear option."), LogLevel::WARNING);
         } else {
             drupal_flush_all_caches();
         }

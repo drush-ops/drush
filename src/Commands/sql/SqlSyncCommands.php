@@ -182,6 +182,7 @@ class SqlSyncCommands extends DrushCommands
             throw new \Exception(dt('Error: no database record could be found for target !destination', array('!destination' => $destination)));
         }
 
+        // TODO: query $input via the CommandData for options..
         if (drush_get_option('no-dump') && !drush_get_option('source-dump')) {
             throw new \Exception(dt('The --source-dump option must be supplied when --no-dump is specified.'));
         }
