@@ -104,7 +104,8 @@ class Preflight
      */
     protected function removeArguments()
     {
-        return [ '--strict' ];
+        // Now we are going to support rather than remove --strict.
+        return [];
     }
 
     /**
@@ -116,7 +117,7 @@ class Preflight
     {
         $argProcessor = new ArgsPreprocessor();
         $remapper = new ArgsRemapper($this->remapArguments(), $this->removeArguments());
-        $preflightArgs = new PreflightArgs();
+        $preflightArgs = new PreflightArgs([]);
         $argProcessor->setArgsRemapper($remapper);
 
         $argProcessor->parse($argv, $preflightArgs);
@@ -235,7 +236,7 @@ class Preflight
         $loader = $this->environment->loadSiteAutoloader($root);
 
         // Create the Symfony Application et. al.
-        $input = new ArgvInput($preflightArgs->args());
+        $input = $preflightArgs->createInput();
         $output = new \Symfony\Component\Console\Output\ConsoleOutput();
         $application = new \Drush\Application('Drush Commandline Tool', Drush::getVersion());
 

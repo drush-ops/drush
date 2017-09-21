@@ -4,6 +4,9 @@ namespace Drush\Preflight;
 use Consolidation\Config\Config;
 use Consolidation\Config\ConfigInterface;
 
+use Symfony\Component\Console\Input\ArgvInput;
+use Drush\Preflight\LessStrictArgvInput;
+
 /**
  * Storage for arguments preprocessed during preflight.
  *
@@ -27,10 +30,19 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     const URI = 'uri';
     const SIMULATE = 'simulate';
     const BACKEND = 'backend';
+    const STRICT = 'strict';
 
-    public function __construct(array $data = null)
+    public function __construct($data = [])
     {
-        parent::__construct($data);
+        parent::__construct($data + [self::STRICT => true]);
+    }
+
+    public function createInput()
+    {
+        if ($this->isStrict()) {
+            return new ArgvInput($this->args());
+        }
+        return new LessStrictArgvInput($this->args());
     }
 
     /**
@@ -51,6 +63,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
             '--simulate' => 'setSimulate',
             '--backend' => 'setBackend',
             '--drush-coverage=' => 'setCoverageFile',
+            '--strict=' => 'setStrict',
         ];
     }
 
@@ -221,5 +234,15 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     public function setCoverageFile($coverageFile)
     {
         return $this->set(self::COVERAGE_FILE, $coverageFile);
+    }
+
+    public function isStrict()
+    {
+        return $this->get(self::STRICT);
+    }
+
+    public function setStrict($strict)
+    {
+        return $this->set(self::STRICT, $strict);
     }
 }
