@@ -183,7 +183,8 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         }
     }
 
-    public function databaseName(AliasRecord $record) {
+    public function databaseName(AliasRecord $record)
+    {
         $values = drush_invoke_process($record->legacyRecord(), "core-status", array(), array(), array('integrate' => false, 'override-simulated' => true));
         if (is_array($values) && ($values['error_status'] == 0)) {
             return $values['object']['db-name'];

@@ -115,6 +115,5 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
             $msg = dt('Cannot specify two remote aliases. Instead, use this form: `drush !source rsync @self !target`. Make sure site alias definitions are available at !source', array('!source' => $source, '!target' => $destination));
             throw new \Exception($msg);
         }
-
     }
 }
