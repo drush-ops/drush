@@ -86,10 +86,14 @@ class Preflight
     {
         return [
             '--ssh-options' => '-Dssh.options',
-            '--halt-on-error' => '-Druntime.halt-on-error',
-            '--php-notices' => '-Druntime.php-notices',
+            '--php' => '-Druntime.php.path',
+            '--php-options' => '-Druntime.php.options',
+            '--php-notices' => '-Druntime.php.notices',
+            '--halt-on-error' => '-Druntime.php.halt-on-error',
             '--output_charset' => '-Dio.output.charset',
             '--output-charset' => '-Dio.output.charset',
+            '--db-su' => '-Dsql.db-su',
+            '--variables' => 'drupal.variables',
         ];
     }
 

@@ -66,6 +66,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInt
         }
     }
 
+    // @deprecated
     public function bootstrapAndDispatch()
     {
         $phases = $this->bootstrapInitPhases();

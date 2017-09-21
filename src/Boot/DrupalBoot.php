@@ -484,7 +484,8 @@ abstract class DrupalBoot extends BaseBoot
     {
         global $conf;
 
-        $current_override = drush_get_option_list('variables');
+        $current_override = \Drush\Drush::config()->get('variables');
+        $current_override = explode(',', $current_override);
         foreach ($current_override as $name => $value) {
             if (is_numeric($name) && (strpos($value, '=') !== false)) {
                 list($name, $value) = explode('=', $value, 2);

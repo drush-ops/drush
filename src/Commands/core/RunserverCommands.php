@@ -100,7 +100,7 @@ class RunserverCommands extends DrushCommands
         // Start the server using 'php -S'.
         $extra = ' "' . DRUSH_BASE_PATH . '/misc/d8-rs-router.php"';
         $root = Drush::bootstrapManager()->getRoot();
-        drush_shell_exec_interactive('cd %s && %s -S ' . $addr . ':' . $uri['port']. $extra, $root, drush_get_option('php', 'php'));
+        drush_shell_exec_interactive('cd %s && %s -S ' . $addr . ':' . $uri['port']. $extra, $root, \Drush\Drush::config()->get('php', 'php'));
     }
 
     /**
