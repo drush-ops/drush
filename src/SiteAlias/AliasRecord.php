@@ -107,17 +107,6 @@ class AliasRecord extends Config
         return $this->get('uri');
     }
 
-    public function database()
-    {
-        if (!$this->has('database')) {
-            $values = drush_invoke_process($this->legacyRecord(), "sql-conf", array(), array('all' => true), array('integrate' => false, 'override-simulated' => true));
-            if (is_array($values) && ($values['error_status'] == 0)) {
-                $this->set('database', $values['object']);
-            }
-        }
-        return $this->get('database');
-    }
-
     public function remoteHostWithUser()
     {
         $result = $this->remoteHost();
