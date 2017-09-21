@@ -4,15 +4,21 @@ namespace Drush\Commands\core;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
+use Drush\SiteAlias\HostPath;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 
-class RsyncCommands extends DrushCommands
+class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+    use SiteAliasManagerAwareTrait;
 
     /**
      * These are arguments after the aliases and paths have been evaluated.
      * @see validate().
      */
+    /** @var HostPath */
     public $source_evaluated_path;
+    /** @var HostPath */
     public $destination_evaluated_path;
 
     /**
@@ -50,15 +56,15 @@ class RsyncCommands extends DrushCommands
 
         $rsync_options = $this->rsyncOptions($options);
         $parameters = array_merge([$rsync_options], $extra);
-        $parameters[] = $this->source_evaluated_path;
-        $parameters[] = $this->destination_evaluated_path;
+        $parameters[] = $this->source_evaluated_path->fullyQualifiedPath();
+        $parameters[] = $this->destination_evaluated_path->fullyQualifiedPath();
 
         $ssh_options = \Drush\Drush::config()->get('ssh.options', '');
         $exec = "rsync -e 'ssh $ssh_options'". ' '. implode(' ', array_filter($parameters));
         $exec_result = drush_op_system($exec);
 
         if ($exec_result == 0) {
-            drush_backend_set_result($this->destination_evaluated_path);
+            drush_backend_set_result($this->destination_evaluated_path->fullyQualifiedPath());
         } else {
             throw new \Exception(dt("Could not rsync from !source to !dest", array('!source' => $this->source_evaluated_path, '!dest' => $this->destination_evaluated_path)));
         }
@@ -98,33 +104,17 @@ class RsyncCommands extends DrushCommands
      */
     public function validate(CommandData $commandData)
     {
-        $additional_options = [];
         $destination = $commandData->input()->getArgument('destination');
         $source = $commandData->input()->getArgument('source');
-        $destination_site_record = drush_sitealias_evaluate_path($destination, $additional_options, false);
-        $source_site_record = drush_sitealias_evaluate_path($source, $additional_options, false);
 
-        if (!isset($source_site_record)) {
-            throw new \Exception(dt('Could not evaluate source path !path.', array('!path' => $source)));
-        }
-        if (!isset($destination_site_record)) {
-            throw new \Exception(dt('Could not evaluate destination path !path.', array('!path' => $destination)));
-        }
-        if (drush_sitealias_is_remote_site($source_site_record) && drush_sitealias_is_remote_site($destination_site_record)) {
+        $manager = $this->siteAliasManager();
+        $this->source_evaluated_path = HostPath::create($manager, $source);
+        $this->destination_evaluated_path = HostPath::create($manager, $destination);
+
+        if ($this->source_evaluated_path->isRemote() && $this->destination_evaluated_path->isRemote()) {
             $msg = dt('Cannot specify two remote aliases. Instead, use this form: `drush !source rsync @self !target`. Make sure site alias definitions are available at !source', array('!source' => $source, '!target' => $destination));
             throw new \Exception($msg);
         }
 
-        $this->source_evaluated_path = $source_site_record['evaluated-path'];
-        $this->destination_evaluated_path = $destination_site_record['evaluated-path'];
-    }
-
-    /**
-     * @hook init core-rsync
-     */
-    public function init()
-    {
-        // Try to get @self defined when --uri was not provided.
-        drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_SITE);
     }
 }

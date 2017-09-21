@@ -10,18 +10,25 @@ class SiteAliasManager
     protected $legacyAliasConverter;
     protected $selfAliasRecord;
     protected $specParser;
+    protected $root = '';
 
     /**
      * Constructor for SiteAliasManager
      *
      * @param SiteAliasFileLoader|null $aliasLoader an alias loader
      */
-    public function __construct($aliasLoader = null)
+    public function __construct($aliasLoader = null, $root = '')
     {
         $this->aliasLoader = $aliasLoader ?: new SiteAliasFileLoader();
         $this->legacyAliasConverter = new LegacyAliasConverter($this->aliasLoader->discovery());
         $this->specParser = new SiteSpecParser();
         $this->selfAliasRecord = new AliasRecord();
+        $this->root = $root;
+    }
+
+    public function setRoot($root)
+    {
+        $this->root = $root;
     }
 
     /**
@@ -53,7 +60,7 @@ class SiteAliasManager
         }
 
         if ($this->specParser->validSiteSpec($name)) {
-            return new AliasRecord($this->specParser->parse($name));
+            return new AliasRecord($this->specParser->parse($name, $this->root));
         }
 
         return false;
@@ -78,6 +85,7 @@ class SiteAliasManager
     public function setSelf(AliasRecord $selfAliasRecord)
     {
         $this->selfAliasRecord = $selfAliasRecord;
+        $this->setRoot($selfAliasRecord->localRoot());
         return $this;
     }
 

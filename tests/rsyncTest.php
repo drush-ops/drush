@@ -14,7 +14,6 @@ class rsyncCase extends CommandUnishTestCase {
    * Test drush rsync --simulate.
    */
   public function testSimulated() {
-    $this->markTestSkipped('rsync command not working yet.');
     if ($this->is_windows()) {
       $this->markTestSkipped('rsync command not currently available on Windows.');
     }
@@ -26,22 +25,22 @@ class rsyncCase extends CommandUnishTestCase {
 
     // Test simulated backend invoke
     $this->drush('rsync', ['@example.dev', '@example.stage'], $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
-    $expected = '';
+    $expected = "Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --alias-path=/Users/ganderson/local/drupal/drush9/drush/tests/resources/alias-fixtures --root=/path/to/drupal --uri=sitename --no-ansi rsync '\''@example.dev'\'' '\''@example.stage'\'' 2>&1' 2>&1";
     $this->assertOutputEquals($expected);
 
     // Test simulated simple rsync with two local sites
     $this->drush('rsync', ['@example.dev', '@example.stage'], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
-    $expected = '';
+    $expected = "Calling system(rsync -e 'ssh ' -akz /path/to/dev /path/to/stage);";
     $this->assertOutputEquals($expected);
 
     // Test simulated rsync with relative paths
     $this->drush('rsync', ['@example.dev:files', '@example.stage:files'], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
-    $expected = '';
+    $expected = "Calling system(rsync -e 'ssh ' -akz /path/to/dev/files /path/to/stage/files);";
     $this->assertOutputEquals($expected);
   }
 
   public function testRsyncPathAliases() {
-    $this->markTestSkipped('rsync command not working yet.');
+    $this->markTestSkipped('rsync command path alias replacement not working yet.');
 
     $sites = $this->setUpDrupal(2, TRUE);
 
