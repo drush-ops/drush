@@ -27,6 +27,8 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @option create-db Create a new database before importing the database dump on the target machine.
      * @option db-su Account to use when creating a new database (e.g. root).
      * @option db-su-pw Password for the db-su account.
+     * @option source-dump The path for retrieving the sql-dump on source machine.
+     * @option target-dump The path for storing the sql-dump on destination machine.
      * @usage drush sql-sync @source @target
      *   Copy the database from the site with the alias 'source' to the site with the alias 'target'.
      * @usage drush sql-sync prod dev
