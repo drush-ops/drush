@@ -22,7 +22,7 @@ class OptionsCommands
      * @option editor A string of bash which launches user's preferred text editor. Defaults to ${VISUAL-${EDITOR-vi}}.
      * @option bg Run editor in the background. Does not work with editors such as `vi` that run in the terminal.
      */
-    public function optionsetGetEditor()
+    public function optionsetGetEditor($options = ['editor' => '', 'bg' => false])
     {
     }
 
