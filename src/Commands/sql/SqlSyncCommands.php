@@ -8,6 +8,7 @@ use Drush\Exceptions\UserAbortException;
 use Drush\SiteAlias\AliasRecord;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Webmozart\PathUtil\Path;
 
 class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface
@@ -31,10 +32,9 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @option target-dump The path for storing the sql-dump on destination machine.
      * @usage drush sql-sync @source @target
      *   Copy the database from the site with the alias 'source' to the site with the alias 'target'.
-     * @usage drush sql-sync prod dev
+     * @usage drush sql-sync #prod #dev
      *   Copy the database from the site in /sites/prod to the site in /sites/dev (multisite installation).
      * @topics docs-aliases,docs-policy,docs-example-sync-via-http
-     * @complete \Drush\Commands\CompletionCommands::completeSiteAliases
      */
     public function sqlsync($source, $destination, $options = ['no-dump' => false, 'no-sync' => false, 'runner' => null, 'create-db' => false, 'db-su' => null, 'db-su-pw' => null, 'target-dump' => null, 'source-dump' => true])
     {
@@ -42,16 +42,8 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $sourceRecord = $manager->get($source);
         $destinationRecord = $manager->get($destination);
 
-        $backend_options = array();
-        // @todo drush_redispatch_get_options() assumes you will execute same command. Not good.
-        $global_options = drush_redispatch_get_options() + array(
-            'strict' => 0,
-        );
-        // We do not want to include root or uri here.  If the user
-        // provided -r or -l, their key has already been remapped to
-        // 'root' or 'uri' by the time we get here.
-        unset($global_options['root']);
-        unset($global_options['uri']);
+        $backend_options = [];
+        $global_options = Drush::redispatchOptions()  + ['strict' => 0];
 
         if (Drush::simulate()) {
             $backend_options['backend-simulate'] = true;
@@ -129,8 +121,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         );
         $return = drush_invoke_process($destination, 'sql-query', array(), $query_options, $backend_options);
         if ($return['error_status']) {
-            // An error was already logged.
-            return false;
+            throw new Exception('Failed to rsync the database dump from source to destination.');
         }
     }
 
