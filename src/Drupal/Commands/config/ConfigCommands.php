@@ -6,6 +6,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\FileStorage;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Yaml\Parser;
@@ -139,14 +140,12 @@ class ConfigCommands extends DrushCommands
      *   Edit the image style configurations.
      * @usage drush config-edit
      *   Choose a config file to edit.
-     * @usage drush config-edit --choice=2
-     *   Edit the second file in the choice list.
      * @usage drush --bg config-edit image.style.large
      *   Return to shell prompt as soon as the editor window opens.
      * @aliases cedit
      * @validate-module-enabled config
      */
-    public function edit($config_name, $options = [])
+    public function edit($config_name)
     {
         $config = $this->getConfigFactory()->get($config_name);
         $active_storage = $config->getStorage();
@@ -162,7 +161,7 @@ class ConfigCommands extends DrushCommands
 
         // Perform import operation if user did not immediately exit editor.
         if (!$options['bg']) {
-            $options = drush_redispatch_get_options() + array('partial' => true, 'source' => $temp_dir);
+            $options = Drush::redispatchOptions()   + array('partial' => true, 'source' => $temp_dir);
             $backend_options = array('interactive' => true);
             return (bool) drush_invoke_process('@self', 'config-import', array(), $options, $backend_options);
         }
