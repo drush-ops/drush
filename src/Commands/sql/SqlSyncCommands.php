@@ -1,13 +1,13 @@
 <?php
 namespace Drush\Commands\sql;
 
-use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
+use Drush\SiteAlias\AliasRecord;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
-use Symfony\Component\Console\Input\InputInterface;
 use Webmozart\PathUtil\Path;
 
 class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface
@@ -51,7 +51,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         unset($global_options['root']);
         unset($global_options['uri']);
 
-        if (\Drush\Drush::simulate()) {
+        if (Drush::simulate()) {
             $backend_options['backend-simulate'] = true;
         }
 
@@ -143,19 +143,19 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $manager = $this->siteAliasManager();
         $sourceRecord = $manager->get($source);
         $destinationRecord = $manager->get($destination);
-        $source_db_spec = $sourceRecord->database();
-        $target_db_spec = $destinationRecord->database();
-        $txt_source = (isset($source_db_spec['remote-host']) ? $source_db_spec['remote-host'] . '/' : '') . $source_db_spec['database'];
-        $txt_destination = (isset($target_db_spec['remote-host']) ? $target_db_spec['remote-host'] . '/' : '') . $target_db_spec['database'];
+        $source_db_name = $this->databaseName($sourceRecord);
+        $target_db_name = $this->databaseName($destinationRecord);
+        $txt_source = ($sourceRecord->remoteHost() ? $sourceRecord->remoteHost() . '/' : '') . $source_db_name;
+        $txt_destination = ($destinationRecord->remoteHost() ? $destinationRecord->remoteHost() . '/' : '') . $target_db_name;
 
         // Validate.
-        if (empty($source_db_spec)) {
+        if (empty($source_db_name)) {
             if (empty($sourceRecord)) {
                 throw new \Exception(dt('Error: no alias record could be found for source !source', array('!source' => $source)));
             }
             throw new \Exception(dt('Error: no database record could be found for source !source', array('!source' => $source)));
         }
-        if (empty($target_db_spec)) {
+        if (empty($target_db_name)) {
             if (empty($destinationRecord)) {
                 throw new \Exception(dt('Error: no alias record could be found for target !destination', array('!destination' => $destination)));
             }
@@ -170,14 +170,21 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
             throw new \Exception(dt('The --target-dump option must be supplied when --no-sync is specified.'));
         }
 
-        if (!\Drush\Drush::simulate()) {
+        if (!Drush::simulate()) {
             drush_print(dt("You will destroy data in !target and replace with data from !source.", array(
-            '!source' => $txt_source,
-            '!target' => $txt_destination
+                '!source' => $txt_source,
+                '!target' => $txt_destination
             )));
             if (!$this->io()->confirm(dt('Do you really want to continue?'))) {
-                  throw new UserAbortException();
+                throw new UserAbortException();
             }
+        }
+    }
+
+    public function databaseName(AliasRecord $record) {
+        $values = drush_invoke_process($record->legacyRecord(), "core-status", array(), array(), array('integrate' => false, 'override-simulated' => true));
+        if (is_array($values) && ($values['error_status'] == 0)) {
+            return $values['object']['db-name'];
         }
     }
 }

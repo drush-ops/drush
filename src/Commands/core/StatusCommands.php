@@ -66,7 +66,7 @@ class StatusCommands extends DrushCommands
      *
      * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
      */
-    public function status($filter = '', $options = ['project' => '', 'format' => 'table', 'fields' => ''])
+    public function status($filter = '', $options = ['project' => '', 'format' => 'table'])
     {
         $data = self::getPropertyList($options);
 
