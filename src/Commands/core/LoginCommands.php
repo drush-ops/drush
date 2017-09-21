@@ -3,6 +3,7 @@ namespace Drush\Commands\core;
 
 use Drupal\user\Entity\User;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 
@@ -50,7 +51,7 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
         }
 
         if ($is_remote) {
-            $return = drush_invoke_process($site_record, 'user-login', [$options['name']], drush_redispatch_get_options(), array('integrate' => false));
+            $return = drush_invoke_process($site_record, 'user-login', [$options['name']], Drush::redispatchOptions(), array('integrate' => false));
             if ($return['error_status']) {
                 throw new \Exception('Unable to execute user login.');
             } else {

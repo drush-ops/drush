@@ -3,6 +3,7 @@ namespace Drush\Commands\config;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 
 class ConfigPullCommands extends DrushCommands
 {
@@ -28,8 +29,7 @@ class ConfigPullCommands extends DrushCommands
      */
     public function pull($source, $destination, $options = ['safe' => false, 'label' => 'sync', 'runner' => null])
     {
-        // @todo drush_redispatch_get_options() assumes you will execute same command. Not good.
-        $global_options = drush_redispatch_get_options() + array('strict' => 0);
+        $global_options = Drush::redispatchOptions()  + array('strict' => 0);
 
         // @todo If either call is made interactive, we don't get an $return['object'] back.
         $backend_options = array('interactive' => false);
