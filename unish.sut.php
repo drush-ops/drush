@@ -27,7 +27,7 @@ function unish_validate() {
  *   Exit code.
  */
 function unish_setup_sut($unish_sandbox) {
-  $working_dir = dirname($unish_sandbox) . DIRECTORY_SEPARATOR . 'drush-sut';
+  $working_dir = dirname($unish_sandbox) . DIRECTORY_SEPARATOR . 'build-drush-sut';
   drush_delete_dir($working_dir, TRUE);
   $codebase = 'tests/resources/codebase';
   drush_copy_dir($codebase, $working_dir);
@@ -53,10 +53,15 @@ function unish_setup_sut($unish_sandbox) {
     $return = 1;
   }
 
+  // Move the sut into place
+  $target_dir = dirname($working_dir) . DIRECTORY_SEPARATOR . 'drush-sut';
+  drush_delete_dir($target_dir, TRUE);
+  rename($working_dir, $target_dir);
+
   // If there is no 'vendor' directory in the Drush home dir, then make
   // a symlink from the SUT
   if (!is_dir(__DIR__ . '/vendor')) {
-    symlink("$working_dir/vendor", __DIR__ . '/vendor');
+    symlink("$target_dir/vendor", __DIR__ . '/vendor');
   }
 
   return $return;
