@@ -246,14 +246,14 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface
     public function getTypes($include_bootstrapped_types = false)
     {
         $types = array(
-        'drush' => [$this, 'clearDrush'],
+            'drush' => [$this, 'clearDrush'],
         );
         if ($include_bootstrapped_types) {
-              $types += array(
-              'theme-registry' => [$this, 'clearThemeRegistry'],
-              'router' => [$this, 'clearRouter'],
-              'css-js' => [$this, 'clearCssJs'],
-              'render' => [$this, 'clearRender'],
+            $types += array(
+                'theme-registry' => [$this, 'clearThemeRegistry'],
+                'router' => [$this, 'clearRouter'],
+                'css-js' => [$this, 'clearCssJs'],
+                'render' => [$this, 'clearRender'],
               );
         }
 
