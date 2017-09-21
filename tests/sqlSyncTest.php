@@ -25,7 +25,6 @@ class sqlSyncTest extends CommandUnishTestCase {
    * General handling of site aliases will be in sitealiasTest.php.
    */
   public function testLocalSqlSync() {
-    $this->markTestSkipped('Depends on backend; also, some functions of sql-sync not implemented.');
     if ($this->db_driver() == 'sqlite') {
       $this->markTestSkipped('SQL Sync does not apply to SQLite.');
       return;
@@ -68,12 +67,10 @@ class sqlSyncTest extends CommandUnishTestCase {
     $this->drush('sql-sanitize', [], ['yes' => NULL], '@dev');
 
     // Confirm that the sample user is unchanged on the staging site
-    $this->drush('user-information', array($name), $options + array('format' => 'csv', 'include-field-labels' => 0), '@stage');
-    $output = $this->getOutput();
-    $row  = str_getcsv($output);
-    $uid = $row[0];
-    $this->assertEquals($mail, $row[2], 'email address is unchanged on source site.');
-    $this->assertEquals($name, $row[1]);
+    $this->drush('user-information', array($name), $options + ['format' => 'json'], '@stage');
+    $info = $this->getOutputFromJSON(2);
+    $this->assertEquals($mail, $info->mail, 'Email address is unchanged on source site.');
+    $this->assertEquals($name, $info->name);
 
     $options = array(
       'root' => $this->webroot(),
@@ -81,12 +78,10 @@ class sqlSyncTest extends CommandUnishTestCase {
       'yes' => NULL,
     );
     // Confirm that the sample user's email address has been sanitized on the dev site
-    $this->drush('user-information', array($name), $options + array('format' => 'csv', 'include-field-labels' => 0));
-    $output = $this->getOutput();
-    $row  = str_getcsv($output);
-    $uid = $row[0];
-    $this->assertEquals("user+$uid@localhost.localdomain", $row[2], 'email address was sanitized on destination site.');
-    $this->assertEquals($name, $row[1]);
+    $this->drush('user-information', array($name), $options + ['format' => 'json']);
+    $info = $this->getOutputFromJSON(2);
+    $this->assertEquals("user+2@localhost.localdomain", $info->mail, 'Email address was sanitized on destination site.');
+    $this->assertEquals($name, $info->name);
 
     // Copy stage to dev with --sanitize and a fixed sanitized email
     $sync_options = array(
@@ -103,12 +98,10 @@ class sqlSyncTest extends CommandUnishTestCase {
       'yes' => NULL,
     );
     // Confirm that the sample user's email address has been sanitized on the dev site
-    $this->drush('user-information', array($name), $options + array('format' => 'csv', 'include-field-labels' => 0));
-    $output = $this->getOutput();
-    $row  = str_getcsv($output);
-    $uid = $row[0];
-    $this->assertEquals("user@mysite.org", $row[2], 'email address was sanitized (fixed email) on destination site.');
-    $this->assertEquals($name, $row[1]);
+    $this->drush('user-information', array($name), $options + ['format' => 'json']);
+    $info = $this->getOutputFromJSON(2);
+    $this->assertEquals('user@mysite.org', $info->mail, 'Email address was sanitized (fixed email) on destination site.');
+    $this->assertEquals($name, $info->name);
 
 
     $fields = [
