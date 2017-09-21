@@ -316,6 +316,23 @@ class Drush
         return static::bootstrapManager()->bootstrap();
     }
 
+    public static function redispatchOptions($input = null)
+    {
+        $input = $input ?: static::input();
+
+        // $input->getOptions() returns an associative array of option => value
+        $options = $input->getOptions();
+
+        // The 'runtime.options' config contains a list of option names on th cli
+        $optionNamesFromCommandline = static::config()->get('runtime.options');
+
+        // Remove anything in $options that was not on the cli
+        $options = array_intersect_key($options, array_flip($optionNamesFromCommandline));
+
+        // Add in the 'runtime.context' items, which includes --include, --alias-path et. al.
+        return $options + array_filter(static::config()->get('runtime.context'));
+    }
+
     /**
      * Read the drush info file.
      */

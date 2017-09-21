@@ -96,12 +96,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
 
         // Store the runtime arguments and options (sans the runtime context items)
         // in runtime.argv et. al.
-        $argv = $this->args();
-        $arguments = array_filter($argv, function ($item) { return $item[0] != '-'; });
-        $options = array_diff_assoc($argv, $arguments);
-        $config->set('runtime.argv', $argv);
-        $config->set('runtime.arguments', $arguments);
-        $config->set('runtime.options', $options);
+        $config->set('runtime.argv', $this->args());
+        $config->set('runtime.options', $this->getOptionNameList($this->args()));
     }
 
     /**
@@ -251,5 +247,33 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     public function setStrict($strict)
     {
         return $this->set(self::STRICT, $strict);
+    }
+
+    /**
+     * Search through the provided argv list, and return
+     * just the option name of any item that is an option.
+     *
+     * @param array $argv e.g. ['foo', '--bar=baz', 'boz']
+     * @return string[] e.g. ['bar']
+     */
+    protected function getOptionNameList($argv)
+    {
+        return array_filter(
+            array_map(
+                function ($item) {
+                    // Ignore configuration definitions
+                    if (substr($item, 0, 2) == '-D') {
+                        return null;
+                    }
+                    // Regular expression matches:
+                    //   ^-+        # anything that begins with one or more '-'
+                    //   ([^= ]*)   # any number of characters up to the first = or space
+                    if (preg_match('#^-+([^= ]*)#', $item, $matches)) {
+                        return $matches[1];
+                    }
+                },
+                $argv
+            )
+        );
     }
 }
