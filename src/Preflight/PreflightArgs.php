@@ -94,8 +94,14 @@ class PreflightArgs extends Config implements PreflightArgsInterface
             $config->set($config_key, $this->get($option_key));
         }
 
-        // Store the runtime arguments and options (sans the runtime context items) in runtime.args.
-        $config->set('runtime.args', $this->args());
+        // Store the runtime arguments and options (sans the runtime context items)
+        // in runtime.argv et. al.
+        $argv = $this->args();
+        $arguments = array_filter($argv, function ($item) { return $item[0] != '-'; });
+        $options = array_diff_assoc($argv, $arguments);
+        $config->set('runtime.argv', $argv);
+        $config->set('runtime.arguments', $arguments);
+        $config->set('runtime.options', $options);
     }
 
     /**

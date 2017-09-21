@@ -38,7 +38,7 @@ class RedispatchHook implements InitializeHookInterface
             $remote_user = $input->getOption('remote-user');
 
             // Get the command arguements, and shift off the Drush command.
-            $redispatchArgs = \Drush\Drush::config()->get('runtime.args');
+            $redispatchArgs = \Drush\Drush::config()->get('runtime.argv');
             $drush_path = array_shift($redispatchArgs);
             $command_name = array_shift($redispatchArgs);
 
