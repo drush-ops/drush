@@ -36,8 +36,7 @@ class DrupliconCommands extends DrushCommands
             } else {
                 $content = file_get_contents($misc_dir . '/druplicon-color.txt');
             }
-            // @todo: `$commandData->output->writeln($content)` after $output hooked up to backend invoke
-            drush_print($content);
+            $commandData->output()->writeln($content);
         }
     }
 }
