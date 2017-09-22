@@ -42,7 +42,6 @@ class CliCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
      */
     public function cli(array $options = ['version-history' => false])
     {
-        $drupal_major_version = drush_drupal_major_version();
         $configuration = new Configuration();
 
         // Set the Drush specific history file path.
@@ -53,15 +52,14 @@ class CliCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
 
         $shell = new Shell($configuration);
 
-        if ($drupal_major_version >= 8) {
-            // Register the assertion handler so exceptions are thrown instead of errors
-            // being triggered. This plays nicer with PsySH.
-            Handle::register();
-            $shell->setScopeVariables(['container' => \Drupal::getContainer()]);
 
-            // Add Drupal 8 specific casters to the shell configuration.
-            $configuration->addCasters($this->getCasters());
-        }
+        // Register the assertion handler so exceptions are thrown instead of errors
+        // being triggered. This plays nicer with PsySH.
+        Handle::register();
+        $shell->setScopeVariables(['container' => \Drupal::getContainer()]);
+
+        // Add Drupal 8 specific casters to the shell configuration.
+        $configuration->addCasters($this->getCasters());
 
         // Add Drush commands to the shell.
         $shell->addCommands([new DrushHelpCommand()]);
@@ -156,7 +154,7 @@ class CliCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
     protected function historyPath(array $options)
     {
         $cli_directory = drush_directory_cache('cli');
-        $drupal_major_version = drush_drupal_major_version();
+        $drupal_major_version = Drush::getMajorVersion();
 
         // If there is no drupal version (and thus no root). Just use the current
         // path.
@@ -169,20 +167,10 @@ class CliCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
         } // If there is an alias, use that in the site specific name. Otherwise,
         // use a hash of the root path.
         else {
-            // TODO: Remove 2nd branch when no longer needed.
-            $site_name = '';
-            if ($this->hasSiteAliasManager()) {
-                $aliasRecord = $this->siteAliasManager()->getSelf();
-                $site_name = $aliasRecord->name();
-            } else {
-                if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
-                    $site_record = drush_sitealias_get_record($alias);
-                    $site_name = $site_record['#name'];
-                }
-            }
+             $aliasRecord = Drush::aliasManager()->getSelf();
 
-            if ($site_name) {
-                $site_suffix = $site_name;
+            if ($aliasRecord->name()) {
+                $site_suffix = $aliasRecord->name();
             } else {
                 $drupal_root = Drush::bootstrapManager()->getRoot();
                 $site_suffix = md5($drupal_root);
@@ -194,7 +182,7 @@ class CliCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
         $full_path = "$cli_directory/$file_name";
 
         // Output the history path if verbose is enabled.
-        if ($this->io()->isVerbose()) {
+        if (Drush::verbose()) {
             $this->logger()->log(LogLevel::SUCCESS, dt('History: @full_path', ['@full_path' => $full_path]));
         }
 
