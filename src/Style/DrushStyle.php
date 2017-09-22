@@ -10,7 +10,7 @@ class DrushStyle extends SymfonyStyle
     public function confirm($question, $default = true)
     {
         // Automatically accept confirmations if the --yes argument was supplied.
-        // Note that these contexts are only set in the legacy adapter -- not in the symfony dispatcher.
+        // These contexts are set in \Drush\Preflight\LegacyPreflight::setGlobalOptionContexts.
         if (drush_get_context('DRUSH_AFFIRMATIVE')) {
             $this->comment($question . ': yes.');
             return true;
