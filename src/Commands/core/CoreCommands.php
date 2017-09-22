@@ -109,8 +109,8 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         $def = $application->getDefinition();
         foreach ($def->getOptions() as $key => $value) {
             $rows[] = [
-            'name' => '--'. $key,
-            'description' => $value->getDescription(),
+                'name' => '--'. $key,
+                'description' => $value->getDescription(),
             ];
         }
         return new RowsOfFields($rows);

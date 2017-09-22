@@ -13,7 +13,7 @@ class DrupliconCommands extends DrushCommands
      *
      * @hook post-command *
      * @option druplicon Shows the druplicon as glorious ASCII art.
-     * @todo hidden is not yet part of annotated-command project. It is recognized by Drush's annotation_adapter.inc
+     * @todo hidden-options is not yet part of annotated-command project. It is recognized by Drush's annotation_adapter.inc
      * @hidden-options druplicon
      */
     public function druplicon($result, CommandData $commandData)
@@ -31,7 +31,7 @@ class DrupliconCommands extends DrushCommands
         if ($commandData->input()->hasOption('druplicon') && $commandData->input()->getOption('druplicon')) {
             $this->logger()->debug(dt('Displaying Druplicon for "!command" command.', array('!command' => $commandName)));
             $misc_dir = DRUSH_BASE_PATH . '/misc';
-            if (drush_get_context('DRUSH_NOCOLOR')) {
+            if ($commandData->input()->getOption('no-ansi')) {
                 $content = file_get_contents($misc_dir . '/druplicon-no_color.txt');
             } else {
                 $content = file_get_contents($misc_dir . '/druplicon-color.txt');
