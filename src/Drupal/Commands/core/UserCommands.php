@@ -225,11 +225,11 @@ class UserCommands extends DrushCommands
     public function create($name, $options = ['password' => '', 'mail' => ''])
     {
         $new_user = array(
-        'name' => $name,
-        'pass' => $options['password'],
-        'mail' => $options['mail'],
-        'access' => '0',
-        'status' => 1,
+            'name' => $name,
+            'pass' => $options['password'],
+            'mail' => $options['mail'],
+            'access' => '0',
+            'status' => 1,
         );
         if (!\Drush\Drush::simulate()) {
             if ($account = User::create($new_user)) {
@@ -311,8 +311,7 @@ class UserCommands extends DrushCommands
             if (!\Drush\Drush::simulate()) {
                 $account->setpassword($password);
                 $account->save();
-                $this->logger()
-                ->success(dt('Changed password for !name.', array('!name' => $name)));
+                $this->logger()->success(dt('Changed password for !name.', array('!name' => $name)));
             }
         } else {
             throw new \Exception(dt('Unable to load user: !user', array('!user' => $name)));
@@ -342,22 +341,22 @@ class UserCommands extends DrushCommands
     public function infoArray($account)
     {
         return array(
-        'uid' => $account->id(),
-        'name' => $account->getUsername(),
-        'password' => $account->getPassword(),
-        'mail' => $account->getEmail(),
-        'user_created' => $account->getCreatedTime(),
-        'created' => format_date($account->getCreatedTime()),
-        'user_access' => $account->getLastAccessedTime(),
-        'access' => format_date($account->getLastAccessedTime()),
-        'user_login' => $account->getLastLoginTime(),
-        'login' => format_date($account->getLastLoginTime()),
-        'user_status' => $account->get('status')->value,
-        'status' => $account->isActive() ? 'active' : 'blocked',
-        'timezone' => $account->getTimeZone(),
-        'roles' => $account->getRoles(),
-        'langcode' => $account->getPreferredLangcode(),
-        'uuid' => $account->uuid->value,
+            'uid' => $account->id(),
+            'name' => $account->getUsername(),
+            'password' => $account->getPassword(),
+            'mail' => $account->getEmail(),
+            'user_created' => $account->getCreatedTime(),
+            'created' => format_date($account->getCreatedTime()),
+            'user_access' => $account->getLastAccessedTime(),
+            'access' => format_date($account->getLastAccessedTime()),
+            'user_login' => $account->getLastLoginTime(),
+            'login' => format_date($account->getLastLoginTime()),
+            'user_status' => $account->get('status')->value,
+            'status' => $account->isActive() ? 'active' : 'blocked',
+            'timezone' => $account->getTimeZone(),
+            'roles' => $account->getRoles(),
+            'langcode' => $account->getPreferredLangcode(),
+            'uuid' => $account->uuid->value,
         );
     }
 }

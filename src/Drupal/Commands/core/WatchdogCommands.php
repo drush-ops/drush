@@ -51,9 +51,9 @@ class WatchdogCommands extends DrushCommands
     {
         $where = $this->where($options['type'], $options['severity'], $substring);
         $query = Database::getConnection()->select('watchdog', 'w')
-        ->range(0, $options['count'])
-        ->fields('w')
-        ->orderBy('wid', 'DESC');
+            ->range(0, $options['count'])
+            ->fields('w')
+            ->orderBy('wid', 'DESC');
         if (!empty($where['where'])) {
             $query->where($where['where'], $where['args']);
         }
@@ -162,7 +162,7 @@ class WatchdogCommands extends DrushCommands
             }
             $affected_rows = Database::getConnection()->delete('watchdog')->condition('wid', $substring)->execute();
             if ($affected_rows == 1) {
-                $this->logger->success(dt('Watchdog message #!wid has been deleted.', array('!wid' => $substring)));
+                $this->logger()->success(dt('Watchdog message #!wid has been deleted.', array('!wid' => $substring)));
             } else {
                 throw new \Exception(dt('Watchdog message #!wid does not exist.', array('!wid' => $substring)));
             }
@@ -176,8 +176,8 @@ class WatchdogCommands extends DrushCommands
                 throw new UserAbortException();
             }
             $affected_rows = Database::getConnection()->delete('watchdog')
-            ->where($where['where'], $where['args'])
-            ->execute();
+                ->where($where['where'], $where['args'])
+                ->execute();
             $this->logger()->success(dt('!affected_rows watchdog messages have been deleted.', array('!affected_rows' => $affected_rows)));
         }
     }
@@ -196,10 +196,10 @@ class WatchdogCommands extends DrushCommands
     public function showOne($id, $options = ['format' => 'yaml'])
     {
         $rsc = Database::getConnection()->select('watchdog', 'w')
-        ->fields('w')
-        ->condition('wid', (int)$id)
-        ->range(0, 1)
-        ->execute();
+            ->fields('w')
+            ->condition('wid', (int)$id)
+            ->range(0, 1)
+            ->execute();
         $result = $rsc->fetchObject();
         if (!$result) {
             throw new \Exception(dt('Watchdog message #!wid not found.', array('!wid' => $id)));
