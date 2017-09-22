@@ -36,22 +36,9 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
 
         // Redispatch if called against a remote-host so a browser is started on the
         // the *local* machine.
-        // TODO: Remove 2nd branch when no longer needed.
-        $site_record = [];
-        $is_remote = false;
-        if ($this->hasSiteAliasManager()) {
-            $aliasRecord = $this->siteAliasManager()->getSelf();
-            $is_remote = $aliasRecord->isRemote();
-            $site_record = $aliasRecord->legacyRecord();
-        } else {
-            if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
-                $site_record = drush_sitealias_get_record($alias);
-                $is_remote = drush_sitealias_is_remote_site($alias);
-            }
-        }
-
-        if ($is_remote) {
-            $return = drush_invoke_process($site_record, 'user-login', [$options['name']], Drush::redispatchOptions(), array('integrate' => false));
+        $aliasRecord = $this->siteAliasManager()->getSelf();
+        if ($aliasRecord->isRemote()) {
+            $return = drush_invoke_process($aliasRecord->legacyRecord(), 'user-login', [$options['name']], Drush::redispatchOptions(), array('integrate' => false));
             if ($return['error_status']) {
                 throw new \Exception('Unable to execute user login.');
             } else {
