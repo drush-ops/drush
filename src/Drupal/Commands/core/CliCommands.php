@@ -14,10 +14,8 @@ use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Psy\Configuration;
 use Psy\VersionUpdater\Checker;
 
-class CliCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+class CliCommands extends DrushCommands
 {
-
-    use SiteAliasManagerAwareTrait;
 
     /**
      * Drush's PHP Shell.
