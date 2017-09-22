@@ -4,6 +4,7 @@ namespace Drush\Commands\core;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Database\ConnectionNotDefinedException;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Log\LogLevel;
 use Drupal\Core\Config\FileStorage;
@@ -61,7 +62,7 @@ class SiteInstallCommands extends DrushCommands
             $form_options[$key] = $value;
         }
 
-        $class_loader = \Drush\Drush::service('loader');
+        $class_loader = Drush::service('loader');
         $profile = $this->determineProfile($profile, $options, $class_loader);
 
         $sql = SqlBase::create($options);
@@ -70,33 +71,33 @@ class SiteInstallCommands extends DrushCommands
         $show_password = empty($options['account-pass']);
         $account_pass = $options['account-pass'] ?: drush_generate_password();
         $settings = array(
-        'parameters' => array(
-        'profile' => $profile,
-        'langcode' => $options['locale'],
-        ),
-        'forms' => array(
-        'install_settings_form' => array(
-          'driver' => $db_spec['driver'],
-          $db_spec['driver'] => $db_spec,
-          'op' => dt('Save and continue'),
-        ),
-        'install_configure_form' => array(
-          'site_name' => $options['site-name'],
-          'site_mail' => $options['site-mail'],
-          'account' => array(
-            'name' => $options['account-name'],
-            'mail' => $options['account-mail'],
-            'pass' => array(
-              'pass1' => $account_pass,
-              'pass2' => $account_pass,
+            'parameters' => array(
+                'profile' => $profile,
+                'langcode' => $options['locale'],
             ),
-          ),
-          'enable_update_status_module' => true,
-          'enable_update_status_emails' => true,
-          'clean_url' => true,
-          'op' => dt('Save and continue'),
-        ),
-        ),
+            'forms' => array(
+                'install_settings_form' => array(
+                    'driver' => $db_spec['driver'],
+                    $db_spec['driver'] => $db_spec,
+                    'op' => dt('Save and continue'),
+                ),
+                'install_configure_form' => array(
+                    'site_name' => $options['site-name'],
+                    'site_mail' => $options['site-mail'],
+                    'account' => array(
+                      'name' => $options['account-name'],
+                      'mail' => $options['account-mail'],
+                      'pass' => array(
+                        'pass1' => $account_pass,
+                        'pass2' => $account_pass,
+                      ),
+                    ),
+                    'enable_update_status_module' => true,
+                    'enable_update_status_emails' => true,
+                    'clean_url' => true,
+                    'op' => dt('Save and continue'),
+                ),
+            ),
         );
 
         // Merge in the additional options.
@@ -109,7 +110,6 @@ class SiteInstallCommands extends DrushCommands
         }
 
         $msg = 'Starting Drupal installation. This takes a while.';
-        // @todo Check if this option gets passed.
         if (is_null($options['notify'])) {
             $msg .= ' Consider using the --notify global option.';
         }
@@ -224,7 +224,7 @@ class SiteInstallCommands extends DrushCommands
             }
         }
 
-        \Drush\Drush::bootstrapManager()->bootstrapMax(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+        Drush::bootstrapManager()->bootstrapMax(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
         try {
             $sql = SqlBase::create($commandData->input()->getOptions());
         } catch (\Exception $e) {
@@ -263,9 +263,6 @@ class SiteInstallCommands extends DrushCommands
         $sql = SqlBase::create($commandData->input()->getOptions());
         $db_spec = $sql->getDbSpec();
 
-        // Make sure URI is set so we get back a proper $alias_record. Needed for quick-drupal.
-        _drush_bootstrap_selected_uri();
-
         // TODO: Update to use new alias manager API
         $alias_record = drush_sitealias_get_record('@self');
         $sites_subdir = drush_sitealias_local_site_path($alias_record);
@@ -274,7 +271,7 @@ class SiteInstallCommands extends DrushCommands
             $sites_subdir = "sites/$dir";
         }
         if (empty($sites_subdir)) {
-            throw new \Exception(dt('Could not deterimine target sites directory for site to install.'));
+            throw new \Exception(dt('Could not determine target sites directory for site to install.'));
         }
         $confPath = $sites_subdir;
         $settingsfile = "$confPath/settings.php";
@@ -322,7 +319,7 @@ class SiteInstallCommands extends DrushCommands
 
         // We need to be at least at DRUSH_BOOTSTRAP_DRUPAL_SITE to select the site uri to install to
         define('MAINTENANCE_MODE', 'install');
-        $bootstrapManager = \Drush\Drush::bootstrapManager();
+        $bootstrapManager = Drush::bootstrapManager();
         $bootstrapManager->doBootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
 
         if (!$sql->dropOrCreate()) {
