@@ -7,7 +7,7 @@ use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\user\Entity\User;
 use Drush\Commands\DrushCommands;
-use Drush\Log\LogLevel;
+use Drush\Utils\StringUtils;
 
 class UserCommands extends DrushCommands
 {
@@ -58,19 +58,19 @@ class UserCommands extends DrushCommands
     public function information($names = '', $options = ['format' => 'table', 'uid' => '', 'mail' => '', 'fields' => ''])
     {
         $accounts = [];
-        if ($mails = _convert_csv_to_array($options['mail'])) {
+        if ($mails = StringUtils::csvToArray($options['mail'])) {
             foreach ($mails as $mail) {
                 if ($account = user_load_by_mail($mail)) {
                     $accounts[$account->id()] = $account;
                 }
             }
         }
-        if ($uids = _convert_csv_to_array($options['uid'])) {
+        if ($uids = StringUtils::csvToArray($options['uid'])) {
             if ($loaded = User::loadMultiple($uids)) {
                 $accounts += $loaded;
             }
         }
-        if ($names = _convert_csv_to_array($names)) {
+        if ($names = StringUtils::csvToArray($names)) {
             foreach ($names as $name) {
                 if ($account = user_load_by_name($name)) {
                     $accounts[$account->id()] = $account;
@@ -110,7 +110,7 @@ class UserCommands extends DrushCommands
      */
     public function block($names)
     {
-        if ($names = _convert_csv_to_array($names)) {
+        if ($names = StringUtils::csvToArray($names)) {
             foreach ($names as $name) {
                 if ($account = user_load_by_name($name)) {
                     $account->block();
@@ -135,7 +135,7 @@ class UserCommands extends DrushCommands
      */
     public function unblock($names)
     {
-        if ($names = _convert_csv_to_array($names)) {
+        if ($names = StringUtils::csvToArray($names)) {
             foreach ($names as $name) {
                 if ($account = user_load_by_name($name)) {
                     $account->activate();
@@ -163,7 +163,7 @@ class UserCommands extends DrushCommands
      */
     public function addRole($role, $names)
     {
-        if ($names = _convert_csv_to_array($names)) {
+        if ($names = StringUtils::csvToArray($names)) {
             foreach ($names as $name) {
                 if ($account = user_load_by_name($name)) {
                     $account->addRole($role);
@@ -194,7 +194,7 @@ class UserCommands extends DrushCommands
      */
     public function removeRole($role, $names)
     {
-        if ($names = _convert_csv_to_array($names)) {
+        if ($names = StringUtils::csvToArray($names)) {
             foreach ($names as $name) {
                 if ($account = user_load_by_name($name)) {
                     $account->removeRole($role);
@@ -275,7 +275,7 @@ class UserCommands extends DrushCommands
      */
     public function cancel($names, $options = ['delete-content' => false])
     {
-        if ($names = _convert_csv_to_array($names)) {
+        if ($names = StringUtils::csvToArray($names)) {
             foreach ($names as $name) {
                 if ($account = user_load_by_name($name)) {
                     if ($options['delete-content']) {
