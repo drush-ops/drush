@@ -31,11 +31,10 @@ class BrowseCommands extends DrushCommands implements SiteAliasManagerAwareInter
     public function browse($path = '', $options = ['browser' => null, 'redirect-port' => ''])
     {
         $aliasRecord = $this->siteAliasManager()->getSelf();
-        $site_record = $aliasRecord->legacyRecord();
         // Redispatch if called against a remote-host so a browser is started on the
         // the *local* machine.
         if ($aliasRecord->isRemote()) {
-            $return = drush_invoke_process($site_record, 'browse', [$path], Drush::redispatchOptions(), array('integrate' => true));
+            $return = drush_invoke_process($aliasRecord->legacyRecord(), 'browse', [$path], Drush::redispatchOptions(), array('integrate' => true));
             if ($return['error_status']) {
                 throw new \Exception('Unable to execute browse command on remote alias.');
             } else {
