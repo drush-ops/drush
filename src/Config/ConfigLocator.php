@@ -21,7 +21,7 @@ use Consolidation\Config\Util\ConfigOverlay;
  * There are two operating modes that are supported:
  *
  * - Normal: All config locations are used.
- * - Local:  The global locations are ommitted.
+ * - Local:  The global locations are omitted.
  *
  * The mode is set via the `setLocal()` method.
  */
