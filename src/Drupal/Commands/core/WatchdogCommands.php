@@ -70,7 +70,7 @@ class WatchdogCommands extends DrushCommands
     }
 
     /**
-     * Show watchdog messages.
+     * Interactively filter the watchdog message listing.
      *
      * @command watchdog-list
      * @drupal-dependencies dblog
