@@ -47,7 +47,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * @usage drush si standard install_configure_form.enable_update_status_emails=NULL
      *   Disable email notification during install and later. If your server has no mail transfer agent, this gets rid of an error during install.
      * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_ROOT
-     * @aliases si
+     * @aliases si,sin
      *
      */
     public function install($profile = '', array $additional, $options = ['db-url' => null, 'db-prefix' => null, 'db-su' => null, 'db-su-pw' => null, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => null, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => null, 'sites-subdir' => null, 'config-dir' => null])
