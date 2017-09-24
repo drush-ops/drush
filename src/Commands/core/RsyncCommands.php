@@ -8,6 +8,7 @@ use Drush\Exceptions\UserAbortException;
 use Drush\SiteAlias\HostPath;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
+use Drush\Backend\BackendPathEvaluator;
 
 class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
@@ -18,9 +19,18 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      * @see validate().
      */
     /** @var HostPath */
-    public $source_evaluated_path;
+    public $sourceEvaluatedPath;
     /** @var HostPath */
-    public $destination_evaluated_path;
+    public $destinationEvaluatedPath;
+    /** @var BackendPathEvaluator */
+    protected $pathEvaluator;
+
+    public function __construct()
+    {
+        // TODO: once the BackendInvoke service exists, inject it here
+        // and use it to get the path evaluator
+        $this->pathEvaluator = new BackendPathEvaluator();
+    }
 
     /**
      * Rsync Drupal code or files to/from another server using ssh.
@@ -49,7 +59,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
     {
         // Prompt for confirmation. This is destructive.
         if (!\Drush\Drush::simulate()) {
-            $this->output()->writeln(dt("You will delete files in !target and replace with data from !source", array('!source' => $this->source_evaluated_path, '!target' => $this->destination_evaluated_path)));
+            $this->output()->writeln(dt("You will delete files in !target and replace with data from !source", array('!source' => $this->sourceEvaluatedPath->fullyQualifiedPath(), '!target' => $this->destinationEvaluatedPath->fullyQualifiedPath())));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
@@ -57,17 +67,17 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
 
         $rsync_options = $this->rsyncOptions($options);
         $parameters = array_merge([$rsync_options], $extra);
-        $parameters[] = $this->source_evaluated_path->fullyQualifiedPath();
-        $parameters[] = $this->destination_evaluated_path->fullyQualifiedPath();
+        $parameters[] = $this->sourceEvaluatedPath->fullyQualifiedPath();
+        $parameters[] = $this->destinationEvaluatedPath->fullyQualifiedPath();
 
         $ssh_options = Drush::config()->get('ssh.options', '');
         $exec = "rsync -e 'ssh $ssh_options'". ' '. implode(' ', array_filter($parameters));
         $exec_result = drush_op_system($exec);
 
         if ($exec_result == 0) {
-            drush_backend_set_result($this->destination_evaluated_path->fullyQualifiedPath());
+            drush_backend_set_result($this->destinationEvaluatedPath->fullyQualifiedPath());
         } else {
-            throw new \Exception(dt("Could not rsync from !source to !dest", array('!source' => $this->source_evaluated_path, '!dest' => $this->destination_evaluated_path)));
+            throw new \Exception(dt("Could not rsync from !source to !dest", array('!source' => $this->sourceEvaluatedPath->fullyQualifiedPath(), '!dest' => $this->destinationEvaluatedPath->fullyQualifiedPath())));
         }
     }
 
@@ -109,11 +119,14 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
         $source = $commandData->input()->getArgument('source');
 
         $manager = $this->siteAliasManager();
-        $this->source_evaluated_path = HostPath::create($manager, $source);
-        $this->destination_evaluated_path = HostPath::create($manager, $destination);
+        $this->sourceEvaluatedPath = HostPath::create($manager, $source);
+        $this->destinationEvaluatedPath = HostPath::create($manager, $destination);
 
-        if ($this->source_evaluated_path->isRemote() && $this->destination_evaluated_path->isRemote()) {
-            $msg = dt('Cannot specify two remote aliases. Instead, use this form: `drush !source rsync @self !target`. Make sure site alias definitions are available at !source', array('!source' => $source, '!target' => $destination));
+        $this->pathEvaluator->evaluate($this->sourceEvaluatedPath);
+        $this->pathEvaluator->evaluate($this->destinationEvaluatedPath);
+
+        if ($this->sourceEvaluatedPath->isRemote() && $this->destinationEvaluatedPath->isRemote()) {
+            $msg = dt("Cannot specify two remote aliases. Instead, use one of the following alternate options:\n\n    `drush {source} rsync @self {target}`\n    `drush {source} rsync @self {fulltarget}\n\nUse the second form if the site alias definitions are not available at {source}.", array('source' => $source, 'target' => $destination, 'fulltarget' => $this->destinationEvaluatedPath->fullyQualifiedPath()));
             throw new \Exception($msg);
         }
     }

@@ -249,7 +249,7 @@ class SiteAliasFileLoader
     {
         $aliasName = new SiteAliasName($this->siteNameFromPath($path));
         $siteData = $this->loadSiteDataFromPath($path);
-        return createAliasRecordsFromSiteData($aliasName, $siteData)
+        return createAliasRecordsFromSiteData($aliasName, $siteData);
     }
 
     /**
