@@ -50,6 +50,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
         //   --config
         //   --alias-path
         //   --local
+        //   --ssh-options : See \Drush\Preflight\Preflight::remapArguments
         //
         // Global options registered with Symfony:
         //
@@ -104,7 +105,6 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
         //   --site-aliases
         //   --shell-aliases
         //   --path-aliases
-        //   --ssh-options
 
 
         $this->getDefinition()
