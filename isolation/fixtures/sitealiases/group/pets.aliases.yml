@@ -1,12 +1,12 @@
 sites:
   cats:
-    default:
+    dev:
       root: /path/to/cats
   dogs:
-    default:
+    dev:
       root: /path/to/dogs
   birds:
-    default:
+    dev:
       root: /path/to/birds
       options:
         food: seed

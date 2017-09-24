@@ -1,14 +1,14 @@
 sites:
   planes:
-    default:
+    dev:
       root: /path/to/planes
   trains:
-    default:
+    dev:
       root: /path/to/trains
       options:
         fuel: electricity
   cars:
-    default:
+    dev:
       root: /path/to/cars
 common:
   options:

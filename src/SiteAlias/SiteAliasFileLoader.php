@@ -95,8 +95,10 @@ class SiteAliasFileLoader
         }
         $paths = $this->discovery()->findAllSingleAliasFiles();
         foreach ($paths as $path) {
-            $aliasRecord = $this->loadSingleSiteAliasFileAtPath($path);
-            $this->storeAliasRecordInResut($result, $aliasRecord);
+            $aliasRecords = $this->loadSingleSiteAliasFileAtPath($path);
+            foreach ($aliasRecords as $aliasRecord) {
+                $this->storeAliasRecordInResut($result, $aliasRecord);
+            }
         }
         ksort($result);
         return $result;
@@ -165,7 +167,6 @@ class SiteAliasFileLoader
 
                 $processor = new ConfigProcessor();
                 $oneRecord = $this->fetchAliasRecordFromSiteAliasData($aliasName, $processor, $siteData);
-                //print "alias name is " . var_export($aliasName, true) . " and record is " . var_export($oneRecord, true) . "\n";
                 $this->storeAliasRecordInResut($result, $oneRecord);
             }
         }
@@ -249,7 +250,7 @@ class SiteAliasFileLoader
     {
         $aliasName = new SiteAliasName($this->siteNameFromPath($path));
         $siteData = $this->loadSiteDataFromPath($path);
-        return createAliasRecordsFromSiteData($aliasName, $siteData);
+        return $this->createAliasRecordsFromSiteData($aliasName, $siteData);
     }
 
     /**

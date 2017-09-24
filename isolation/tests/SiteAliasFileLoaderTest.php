@@ -80,7 +80,7 @@ class SiteAliasFileLoaderTest extends TestCase
 
         // Look for a group alias with environment explicitly provided.
         // Confirm that site alias inherits the common value for 'options.food'.
-        $name = new SiteAliasName('@pets.dogs.default');
+        $name = new SiteAliasName('@pets.dogs.dev');
         $result = $this->sut->load($name);
         $this->assertTrue($result instanceof AliasRecord);
         $this->assertEquals('/path/to/dogs', $result->get('root'));
@@ -88,7 +88,7 @@ class SiteAliasFileLoaderTest extends TestCase
 
         // Look for a group alias with environment explicitly provided.
         // Confirm that site alias has the overridden value for 'options.food'.
-        $name = new SiteAliasName('@pets.birds.default');
+        $name = new SiteAliasName('@pets.birds.dev');
         $result = $this->sut->load($name);
         $this->assertTrue($result instanceof AliasRecord);
         $this->assertEquals('/path/to/birds', $result->get('root'));
@@ -124,6 +124,6 @@ class SiteAliasFileLoaderTest extends TestCase
         $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
 
         $all = $this->sut->loadAll();
-        $this->assertEquals('@bathtub.default,@drill.default,@pets.birds.default,@pets.cats.default,@pets.dogs.default,@simple.default,@single.dev,@transportation.cars.default,@transportation.planes.default,@transportation.trains.default,@tuna.default', implode(',', array_keys($all)));
+        $this->assertEquals('@bathtub.dev,@drill.dev,@pets.birds.dev,@pets.cats.dev,@pets.dogs.dev,@single.alternate,@single.common,@single.dev,@transportation.cars.dev,@transportation.planes.dev,@transportation.trains.dev,@tuna.dev', implode(',', array_keys($all)));
     }
 }
