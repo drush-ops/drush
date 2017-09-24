@@ -134,7 +134,7 @@ class ConfigExportCommands extends DrushCommands
             }
             // Print a table with changes in color, then re-generate again without
             // color to place in the commit comment.
-            ConfigCommands::configChangesTablePrint($change_list, true);
+            ConfigCommands::configChangesTablePrint($change_list);
             $tbl = ConfigCommands::configChangesTableFormat($change_list);
             $preview = $tbl->getTable();
             if (!stristr(PHP_OS, 'WIN')) {
