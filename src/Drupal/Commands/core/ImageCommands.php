@@ -24,9 +24,10 @@ class ImageCommands extends DrushCommands
      * @usage drush image-flush --all
      *   Flush all derived images. They will be regenerated on demand.
      * @validate-entity-load image_style style_names
+     * @validate-module-enabled image
      * @aliases if
      */
-    public function flush($style_names = null, $options = ['all' => false])
+    public function flush($style_names, $options = ['all' => false])
     {
         foreach (ImageStyle::loadMultiple(StringUtils::csvToArray($style_names)) as $style_name => $style) {
             $style->flush();
@@ -76,6 +77,7 @@ class ImageCommands extends DrushCommands
      *   Save thumbnail sized derivative of logo image.
      * @validate-file-exists source
      * @validate-entity-load image_style style_name
+     * @validate-module-enabled image
      * @aliases id
      */
     public function derive($style_name, $source)

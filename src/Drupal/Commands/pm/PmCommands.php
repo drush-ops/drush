@@ -11,6 +11,7 @@ use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
+use Drush\Utils\StringUtils;
 
 class PmCommands extends DrushCommands
 {
@@ -59,11 +60,10 @@ class PmCommands extends DrushCommands
      * @command pm-enable
      * @param $modules A comma delimited list of modules.
      * @aliases en
-     * @complete \Drush\Commands\CompletionCommands::completeModules
      */
     public function enable(array $modules)
     {
-        $modules = _convert_csv_to_array($modules);
+        $modules = StringUtils::csvToArray($modules);
         $todo = $this->addInstallDependencies($modules);
         $todo_str = ['!list' => implode(', ', $todo)];
         if (empty($todo)) {
@@ -91,11 +91,10 @@ class PmCommands extends DrushCommands
      * @command pm-uninstall
      * @param $modules A comma delimited list of modules.
      * @aliases pmu
-     * @complete \Drush\Commands\CompletionCommands::completeModules
      */
     public function uninstall(array $modules)
     {
-        $modules = _convert_csv_to_array($modules);
+        $modules = StringUtils::csvToArray($modules);
         $list = $this->addUninstallDependencies($modules);
         if (array_values($list) !== $modules) {
             $this->output()->writeln(dt('The following extensions will be uninstalled: !list', array('!list' => implode(', ', $list))));
@@ -118,7 +117,7 @@ class PmCommands extends DrushCommands
     public function validateUninstall(CommandData $commandData)
     {
         if ($modules = $commandData->input()->getArgument('modules')) {
-            $modules = _convert_csv_to_array($modules);
+            $modules = StringUtils::csvToArray($modules);
             if ($validation_reasons = $this->getModuleInstaller()->validateUninstall($modules)) {
                 foreach ($validation_reasons as $module => $list) {
                     foreach ($list as $markup) {
@@ -158,9 +157,9 @@ class PmCommands extends DrushCommands
         $themes = $this->getThemeHandler()->rebuildThemeData();
         $both = array_merge($modules, $themes);
 
-        $package_filter = _convert_csv_to_array(strtolower($options['package']));
-        $type_filter = _convert_csv_to_array(strtolower($options['type']));
-        $status_filter = _convert_csv_to_array(strtolower($options['status']));
+        $package_filter = StringUtils::csvToArray(strtolower($options['package']));
+        $type_filter = StringUtils::csvToArray(strtolower($options['type']));
+        $status_filter = StringUtils::csvToArray(strtolower($options['status']));
 
         foreach ($both as $key => $extension) {
             // Filter out test modules/themes.
