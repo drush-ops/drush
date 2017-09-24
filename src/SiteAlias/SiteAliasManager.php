@@ -60,7 +60,7 @@ class SiteAliasManager
         }
 
         if ($this->specParser->validSiteSpec($name)) {
-            return new AliasRecord($this->specParser->parse($name, $this->root));
+            return new AliasRecord($this->specParser->parse($name, $this->root), $name);
         }
 
         return false;
