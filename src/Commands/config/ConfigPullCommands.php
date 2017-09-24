@@ -12,7 +12,7 @@ class ConfigPullCommands extends DrushCommands
      * Export and transfer config from one environment to another.
      *
      * @command config-pull
-     * @param string $source A site-alias or the name of a subdirectory within /sites whose config you want to copy from,
+     * @param string $source A site-alias or the name of a subdirectory within /sites whose config you want to copy from.
      * @param string $destination A site-alias or the name of a subdirectory within /sites whose config you want to replace.
      * @option safe Validate that there are no git uncommitted changes before proceeding
      * @option label A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'sync'
@@ -21,7 +21,6 @@ class ConfigPullCommands extends DrushCommands
      *   Export config from @prod and transfer to @stage.
      * @usage drush config-pull @prod @self --label=vcs
      *   Export config from @prod and transfer to the 'vcs' config directory of current site.
-     * @bootstrap DRUSH_BOOTSTRAP_NONE
      * @aliases cpull
      * @complete \Drush\Commands\CompletionCommands::completeSiteAliases
      * @topics docs-aliases,docs-config-exporting

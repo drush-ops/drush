@@ -50,6 +50,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
         //   --config
         //   --alias-path
         //   --local
+        //   --ssh-options : See \Drush\Preflight\Preflight::remapArguments
         //
         // Global options registered with Symfony:
         //
@@ -58,6 +59,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
         //   --root / -r
         //   --uri / -l
         //   --simulate
+        //   --strict
         //   --debug / -d : equivalent to -vv
         //   --yes / -y : equivalent to --no-interaction
         //   --no / -n : equivalent to --no-interaction
@@ -75,7 +77,6 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
         //   --show-invoke
         //   --early             Completion handled by standard symfony extension
         //   --complete-debug
-        //   --strict            Not supported by Symfony
         //   --interactive       If command isn't -n, then it is interactive
         //   --command-specific  Now handled by consolidation/config component
         //   --php               If needed prefix command with PATH=/path/to/php:$PATH. Also see #env_vars in site aliases.
@@ -84,12 +85,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
         //
         // Not handled yet (probably to be implemented, but maybe not all):
         //
-        //   --uri / -l
         //   --tty
         //   --exclude
         //   --backend
         //   --choice
-        //   --ignored-modules
+        //   --ignored-modules : see \Drush\Boot\DrupalBoot8::bootstrapDrupalFull
         //   --no-label
         //   --label-separator
         //   --cache-default-class
@@ -105,7 +105,6 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
         //   --site-aliases
         //   --shell-aliases
         //   --path-aliases
-        //   --ssh-options
 
 
         $this->getDefinition()

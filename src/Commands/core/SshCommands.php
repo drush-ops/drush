@@ -26,7 +26,6 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
      * @usage drush @prod ssh git pull
      *   Run "git pull" on the Drupal root directory on the @prod site.
      * @aliases ssh
-     * @bootstrap DRUSH_BOOTSTRAP_NONE
      * @topics docs-aliases
      */
     public function ssh(array $args, $options = ['cd' => true])

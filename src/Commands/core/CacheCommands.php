@@ -30,7 +30,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface
      * @usage drush cache-get update_available_releases update
      *   Display the data for the cache id "update_available_releases" from the "update" bin.
      * @aliases cg
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
+     * @bootstrap full
      * @field-labels
      *   cid: Cache ID
      *   data: Data
@@ -59,7 +59,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @hidden-options cache-clear
      * @aliases cc
-     * @bootstrap DRUSH_BOOTSTRAP_MAX
+     * @bootstrap max
      * @complete \Drush\Commands\core\CacheCommands::complete
      * @notify Caches have been cleared.
      */
@@ -102,7 +102,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface
      * @option input-format The format of value. Use 'json' for complex values.
      * @option cache-get If the object is the result a previous fetch from the cache, only store the value in the 'data' property of the object in the cache.
      * @aliases cs
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
+     * @bootstrap full
      */
     public function set($cid, $data, $bin = 'default', $expire = null, $tags = null, $options = ['input-format' => 'string', 'cache-get' => false])
     {
@@ -164,7 +164,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @hidden-options cache-clear
      * @aliases cr,rebuild
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_SITE
+     * @bootstrap site
      */
     public function rebuild($options = ['cache-clear' => true])
     {

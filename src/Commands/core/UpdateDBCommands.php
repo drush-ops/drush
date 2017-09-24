@@ -19,7 +19,7 @@ class UpdateDBCommands extends DrushCommands
      * @command updatedb
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @option entity-updates Run automatic entity schema updates at the end of any update hooks. Defaults to disabled.
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_SITE
+     * @bootstrap site
      * @aliases updb
      */
     public function updatedb($options = ['cache-clear' => true, 'entity-updates' => false])
@@ -46,7 +46,7 @@ class UpdateDBCommands extends DrushCommands
      *
      * @command entity-updates
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
+     * @bootstrap full
      * @aliases entup
      *
      */
@@ -71,7 +71,7 @@ class UpdateDBCommands extends DrushCommands
      * @command updatedb-status
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @option entity-updates Run automatic entity schema updates at the end of any update hooks. Defaults to --no-entity-updates.
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
+     * @bootstrap full
      * @aliases updbst
      * @field-labels
      *   module: Module
@@ -200,13 +200,13 @@ class UpdateDBCommands extends DrushCommands
 
         // Print a list of pending updates for this module and get confirmation.
         if (count($pending) || count($change_summary) || count($post_updates)) {
-            drush_print(dt('The following updates are pending:'));
-            drush_print();
+            $this->output()->writeln(dt('The following updates are pending:'));
+            $this->io()->newLine();
 
             foreach ($change_summary as $entity_type_id => $changes) {
-                drush_print($entity_type_id . ' entity type : ');
+                $this->output()->writeln($entity_type_id . ' entity type : ');
                 foreach ($changes as $change) {
-                    drush_print(strip_tags($change), 2);
+                    $this->output()->writeln(strip_tags($change), 2);
                 }
             }
 
@@ -214,16 +214,16 @@ class UpdateDBCommands extends DrushCommands
                 $updates = $update_type == 'update' ? $pending : $post_updates;
                 foreach ($updates as $module => $updates) {
                     if (isset($updates['start'])) {
-                        drush_print($module . ' module : ');
+                        $this->output()->writeln($module . ' module : ');
                         if (!empty($updates['pending'])) {
                             $start += [$module => array()];
 
                             $start[$module] = array_merge($start[$module], $updates['pending']);
                             foreach ($updates['pending'] as $update) {
-                                drush_print(strip_tags($update), 2);
+                                $this->output()->writeln(strip_tags($update));
                             }
                         }
-                        drush_print();
+                        $this->io()->newLine();
                     }
                 }
             }
@@ -441,13 +441,13 @@ class UpdateDBCommands extends DrushCommands
     {
         $change_summary = \Drupal::entityDefinitionUpdateManager()->getChangeSummary();
         if (!empty($change_summary)) {
-            drush_print(dt('The following updates are pending:'));
-            drush_print();
+            $this->output()->writeln(dt('The following updates are pending:'));
+            $this->io()->newLine();
 
             foreach ($change_summary as $entity_type_id => $changes) {
-                drush_print($entity_type_id . ' entity type : ');
+                $this->output()->writeln($entity_type_id . ' entity type : ');
                 foreach ($changes as $change) {
-                    drush_print(strip_tags($change), 2);
+                    $this->output()->writeln(strip_tags($change), 2);
                 }
             }
 

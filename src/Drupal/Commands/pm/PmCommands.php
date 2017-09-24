@@ -70,7 +70,7 @@ class PmCommands extends DrushCommands
             $this->logger()->notice(dt('Already enabled: !list', ['!list' => implode(', ', $modules)]));
             return;
         } elseif (array_values($todo) !== $modules) {
-            drush_print(dt('The following module(s) will be enabled: !list', $todo_str));
+            $this->output()->writeln(dt('The following module(s) will be enabled: !list', $todo_str));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
@@ -98,7 +98,7 @@ class PmCommands extends DrushCommands
         $modules = _convert_csv_to_array($modules);
         $list = $this->addUninstallDependencies($modules);
         if (array_values($list) !== $modules) {
-            drush_print(dt('The following extensions will be uninstalled: !list', array('!list' => implode(', ', $list))));
+            $this->output()->writeln(dt('The following extensions will be uninstalled: !list', array('!list' => implode(', ', $list))));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }

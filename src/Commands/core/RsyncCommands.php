@@ -3,6 +3,7 @@ namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\SiteAlias\HostPath;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
@@ -48,7 +49,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
     {
         // Prompt for confirmation. This is destructive.
         if (!\Drush\Drush::simulate()) {
-            drush_print(dt("You will delete files in !target and replace with data from !source", array('!source' => $this->source_evaluated_path, '!target' => $this->destination_evaluated_path)));
+            $this->output()->writeln(dt("You will delete files in !target and replace with data from !source", array('!source' => $this->source_evaluated_path, '!target' => $this->destination_evaluated_path)));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
@@ -59,7 +60,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
         $parameters[] = $this->source_evaluated_path->fullyQualifiedPath();
         $parameters[] = $this->destination_evaluated_path->fullyQualifiedPath();
 
-        $ssh_options = \Drush\Drush::config()->get('ssh.options', '');
+        $ssh_options = Drush::config()->get('ssh.options', '');
         $exec = "rsync -e 'ssh $ssh_options'". ' '. implode(' ', array_filter($parameters));
         $exec_result = drush_op_system($exec);
 

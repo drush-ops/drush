@@ -4,13 +4,11 @@
 // This example demonstrates how to write a drush
 // script.  These scripts are run with the php-script command.
 //
-drush_print("Hello world!");
-drush_print();
-drush_print("The extra options/arguments to this command were:");
-print_r($extra);
+$this->output()->writeln("Hello world!");
+$this->output()->writeln("The extra options/arguments to this command were:");
+$this->output()->writeln(print_r($extra, true));
 
 
-drush_print();
 
 //
 // We can check which site was bootstrapped via
@@ -18,10 +16,10 @@ drush_print();
 // there is a bootstrapped site.
 //
 $self_record = drush_sitealias_get_record('@self');
-if (empty($self_record)) {
-  drush_print('No bootstrapped site.');
+if (empty($self_record['root'])) {
+  $this->output()->writeln('No bootstrapped site.');
 }
 else {
-  drush_print('The following site is bootstrapped:');
-  print_r($self_record);
+  $this->output()->writeln('The following site is bootstrapped:');
+  $this->output()->writeln(print_r($self_record, true));
 }

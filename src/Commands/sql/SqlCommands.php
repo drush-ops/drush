@@ -81,7 +81,7 @@ class SqlCommands extends DrushCommands
         if (!\Drush\Drush::simulate()) {
             // @todo odd - maybe for sql-sync.
             $txt_destination = (isset($db_spec['remote-host']) ? $db_spec['remote-host'] . '/' : '') . $db_spec['database'];
-            drush_print(dt("Creating database !target. Any existing database will be dropped!", array('!target' => $txt_destination)));
+            $this->output()->writeln(dt("Creating database !target. Any existing database will be dropped!", array('!target' => $txt_destination)));
 
             if (!$this->io()->confirm(dt('Do you really want to continue?'))) {
                 throw new UserAbortException();
@@ -168,9 +168,9 @@ class SqlCommands extends DrushCommands
         }
         if (\Drush\Drush::simulate()) {
             if ($query) {
-                drush_print(dt('Simulating sql-query: !q', array('!q' => $query)));
+                $this->output()->writeln(dt('Simulating sql-query: !q', array('!q' => $query)));
             } else {
-                drush_print(dt('Simulating sql-import from !f', array('!f' => $options['file'])));
+                $this->output()->writeln(dt('Simulating sql-import from !f', array('!f' => $options['file'])));
             }
         } else {
             $sql = SqlBase::create($options);
@@ -178,7 +178,7 @@ class SqlCommands extends DrushCommands
             if (!$result) {
                 throw new \Exception(dt('Query failed.'));
             }
-            drush_print(implode("\n", drush_shell_exec_output()));
+            $this->output()->writeln(implode("\n", drush_shell_exec_output()));
         }
         return true;
     }

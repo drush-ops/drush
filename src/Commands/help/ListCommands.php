@@ -20,7 +20,7 @@ class ListCommands extends DrushCommands
      * @command list
      * @option filter Restrict command list to those commands defined in the specified file. Omit value to choose from a list of names.
      * @option raw Show a simple table of command names and descriptions.
-     * @bootstrap DRUSH_BOOTSTRAP_MAX
+     * @bootstrap max
      * @usage drush list
      *   List all commands.
      * @usage drush list --filter=devel_generate

@@ -42,10 +42,8 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
             $handler($messages, $input);
         }
         if (!empty($messages)) {
-            drush_print(dt('The following operations will be performed:'));
-            foreach ($messages as $message) {
-                drush_print('* '. $message);
-            }
+            $this->output()->writeln(dt('The following operations will be performed:'));
+            $this->io()->listing($messages);
         }
         if (!$this->io()->confirm(dt('Do you want to sanitize the current database?'))) {
             throw new UserAbortException();

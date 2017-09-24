@@ -25,7 +25,5 @@ Commandfiles that don't ship inside Drupal modules are called 'global' commandfi
 
 Avoiding the loading of certain Commandfiles
 =================
-
-- Folders and files containing other versions of Drush in their names will be \*skipped\* (e.g. devel.drush7.inc or drush7/devel.drush.inc). Names containing the current version of Drush (e.g. devel.drush9.inc) will be loaded.
 - The --ignored-modules global option stops loading of commandfiles from specified modules.
 

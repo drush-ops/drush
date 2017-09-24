@@ -20,7 +20,7 @@ class PhpCommands extends DrushCommands
      * @usage drush php-eval "node_access_rebuild();"
      *   Rebuild node access permissions.
      * @aliases eval,ev
-     * @bootstrap DRUSH_BOOTSTRAP_MAX
+     * @bootstrap max
      */
     public function evaluate($code, $options = ['format' => 'var_export'])
     {
@@ -45,7 +45,7 @@ class PhpCommands extends DrushCommands
      * @usage drush php-script foo apple --cider
      *  Run foo.php script with argument 'apple' and option 'cider'
      * @aliases scr
-     * @bootstrap DRUSH_BOOTSTRAP_MAX
+     * @bootstrap max
      * @topics docs-examplescript,docs-scripts
      */
     public function script(array $extra, $options = ['format' => 'var_export', 'script-path' => ''])

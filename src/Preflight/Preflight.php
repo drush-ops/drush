@@ -93,7 +93,9 @@ class Preflight
             '--output_charset' => '-Dio.output.charset',
             '--output-charset' => '-Dio.output.charset',
             '--db-su' => '-Dsql.db-su',
-            '--variables' => 'drupal.variables',
+            // Map command aliases which Console complains about.
+            'si' => 'site-install',
+            'en' => 'pm-enable',
         ];
     }
 

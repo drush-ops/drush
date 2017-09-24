@@ -17,6 +17,8 @@ class StatusCommands extends DrushCommands
 {
 
     /**
+     * An overview of the environment - Drush and Drupal.
+     *
      * @command core-status
      * @param $filter A field to filter on. @deprecated - use --field option instead.
      * @option project A comma delimited list of projects. Their paths will be added to path-aliases section.

@@ -104,7 +104,7 @@ EOD;
     $this->assertEquals('drush-version', key($parsed['object']));
     // @todo --backend not currently populating 'output' for Annotated commands.
     // $this->assertStringStartsWith(' Drush Version ', $parsed['output']);
-    $this->assertEquals('Bootstrap to DRUSH_BOOTSTRAP_NONE', $parsed['log'][0]['message']);
+    $this->assertEquals('Bootstrap to none', $parsed['log'][0]['message']);
   }
 
   function testBackendErrorStatus() {

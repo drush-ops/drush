@@ -63,7 +63,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface
             } elseif (drush_shell_exec_interactive("more %s", $file)) {
                 return;
             } else {
-                drush_print(file_get_contents($file));
+                $this->output()->writeln(file_get_contents($file));
             }
         }
     }
