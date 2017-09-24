@@ -11,6 +11,7 @@ use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
+use Drush\Utils\StringUtils;
 
 class PmCommands extends DrushCommands
 {
@@ -63,7 +64,7 @@ class PmCommands extends DrushCommands
      */
     public function enable(array $modules)
     {
-        $modules = _convert_csv_to_array($modules);
+        $modules = StringUtils::csvToArray($modules);
         $todo = $this->addInstallDependencies($modules);
         $todo_str = ['!list' => implode(', ', $todo)];
         if (empty($todo)) {
@@ -95,7 +96,7 @@ class PmCommands extends DrushCommands
      */
     public function uninstall(array $modules)
     {
-        $modules = _convert_csv_to_array($modules);
+        $modules = StringUtils::csvToArray($modules);
         $list = $this->addUninstallDependencies($modules);
         if (array_values($list) !== $modules) {
             $this->output()->writeln(dt('The following extensions will be uninstalled: !list', array('!list' => implode(', ', $list))));
@@ -118,7 +119,7 @@ class PmCommands extends DrushCommands
     public function validateUninstall(CommandData $commandData)
     {
         if ($modules = $commandData->input()->getArgument('modules')) {
-            $modules = _convert_csv_to_array($modules);
+            $modules = StringUtils::csvToArray($modules);
             if ($validation_reasons = $this->getModuleInstaller()->validateUninstall($modules)) {
                 foreach ($validation_reasons as $module => $list) {
                     foreach ($list as $markup) {
