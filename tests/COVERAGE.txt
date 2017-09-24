@@ -28,6 +28,7 @@ core-cron
 core-status: FAIR: Implicit test by contextTest.
 docs
 core-rsync: GOOD
+generate: GOOD. See annotatedCommandCase and userCase
 image: GOOD
 queue-*: GOOD
 runserver
