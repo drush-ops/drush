@@ -213,9 +213,9 @@ function drush_sitealias_valid_alias_format($alias) {
 function drush_sitealias_get_record($alias, $alias_context = NULL) {
   // If legacy code is still looking for an alias record this way, redirect the
   // request to the alias manager.
-  if (\Drush\Drush::hasService('site.alias.manager')) {
+  if (Drush::hasService('site.alias.manager')) {
     // TODO: probably need to check for 'not found'
-    $alias_record = \Drush\Drush::aliasManager()->get($alias);
+    $alias_record = Drush::aliasManager()->get($alias);
     if (empty($alias_record)) {
       return [];
     }
