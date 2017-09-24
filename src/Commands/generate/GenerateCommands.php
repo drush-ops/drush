@@ -121,6 +121,12 @@ class GenerateCommands extends DrushCommands
             $generator->setName($new_name);
             // Remove alias if it is same as new name.
             if ($aliases = $generator->getAliases()) {
+                foreach ($aliases as $key => $alias) {
+                    // These dont work due to Console 'guessing' wrong.
+                    if ($alias == 'module' || $alias == 'theme') {
+                        unset($aliases[$key]);
+                    }
+                }
                 $generator->setAliases(array_diff($aliases, [$new_name]));
             }
         }
