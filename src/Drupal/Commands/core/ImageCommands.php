@@ -78,7 +78,7 @@ class ImageCommands extends DrushCommands
      * @validate-entity-load image_style style_name
      * @aliases id
      */
-    public function derive($style_name = 'foo', $source = 'bar')
+    public function derive($style_name, $source)
     {
         $image_style = ImageStyle::load($style_name);
         $derivative_uri = $image_style->buildUri($source);
