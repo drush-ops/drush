@@ -89,7 +89,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
         //   --exclude
         //   --backend
         //   --choice
-        //   --ignored-modules
+        //   --ignored-modules : see \Drush\Boot\DrupalBoot8::bootstrapDrupalFull
         //   --no-label
         //   --label-separator
         //   --cache-default-class
