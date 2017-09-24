@@ -93,7 +93,6 @@ class Preflight
             '--output_charset' => '-Dio.output.charset',
             '--output-charset' => '-Dio.output.charset',
             '--db-su' => '-Dsql.db-su',
-            '--variables' => 'drupal.variables',
         ];
     }
 
