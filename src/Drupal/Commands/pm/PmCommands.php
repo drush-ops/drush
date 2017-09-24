@@ -157,9 +157,9 @@ class PmCommands extends DrushCommands
         $themes = $this->getThemeHandler()->rebuildThemeData();
         $both = array_merge($modules, $themes);
 
-        $package_filter = _convert_csv_to_array(strtolower($options['package']));
-        $type_filter = _convert_csv_to_array(strtolower($options['type']));
-        $status_filter = _convert_csv_to_array(strtolower($options['status']));
+        $package_filter = StringUtils::csvToArray(strtolower($options['package']));
+        $type_filter = StringUtils::csvToArray(strtolower($options['type']));
+        $status_filter = StringUtils::csvToArray(strtolower($options['status']));
 
         foreach ($both as $key => $extension) {
             // Filter out test modules/themes.
