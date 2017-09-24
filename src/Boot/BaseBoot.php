@@ -154,6 +154,11 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInt
             'none' => DRUSH_BOOTSTRAP_DRUSH,
             'drush' => DRUSH_BOOTSTRAP_DRUSH,
             'max' => DRUSH_BOOTSTRAP_MAX,
+            'root' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
+            'site' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
+            'configuration' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
+            'database' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
+            'full' => DRUSH_BOOTSTRAP_DRUPAL_FULL
         ];
     }
 

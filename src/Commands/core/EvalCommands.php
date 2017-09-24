@@ -22,7 +22,7 @@ class EvalCommands
      *   its value.
      * @usage php-eval "node_access_rebuild();"
      *   Rebuild node access permissions.
-     * @bootstrap DRUSH_BOOTSTRAP_MAX
+     * @bootstrap max
      */
     public function phpEval($php, $options = ['format' => 'var_export'])
     {

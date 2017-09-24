@@ -19,7 +19,7 @@ class UpdateDBCommands extends DrushCommands
      * @command updatedb
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @option entity-updates Run automatic entity schema updates at the end of any update hooks. Defaults to disabled.
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_SITE
+     * @bootstrap site
      * @aliases updb
      */
     public function updatedb($options = ['cache-clear' => true, 'entity-updates' => false])
@@ -46,7 +46,7 @@ class UpdateDBCommands extends DrushCommands
      *
      * @command entity-updates
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
+     * @bootstrap full
      * @aliases entup
      *
      */
@@ -71,7 +71,7 @@ class UpdateDBCommands extends DrushCommands
      * @command updatedb-status
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @option entity-updates Run automatic entity schema updates at the end of any update hooks. Defaults to --no-entity-updates.
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_FULL
+     * @bootstrap full
      * @aliases updbst
      * @field-labels
      *   module: Module

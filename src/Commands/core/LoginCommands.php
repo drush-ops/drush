@@ -21,7 +21,7 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      * @option name A user name to log in as. If not provided, defaults to uid=1.
      * @option browser Optional value denotes which browser to use (defaults to operating system default). Use --no-browser to suppress opening a browser.
      * @option redirect-port A custom port for redirecting to (e.g., when running within a Vagrant environment)
-     * @bootstrap DRUSH_BOOTSTRAP_NONE
+     * @bootstrap none
      * @handle-remote-commands
      * @aliases uli
      * @usage drush user-login

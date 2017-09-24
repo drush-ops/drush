@@ -11,7 +11,7 @@ class EditCommands extends DrushCommands
      * Edit drushrc, site alias, and Drupal settings.php files.
      *
      * @command core-edit
-     * @bootstrap DRUSH_BOOTSTRAP_MAX
+     * @bootstrap max
      * @param $filter A substring for filtering the list of files. Omit this argument to choose from loaded files.
      * @optionset_get_editor
      * @usage drush core-config

@@ -39,7 +39,7 @@ class GenerateCommands extends DrushCommands
      * @usage drush generate drush-command-file
      *  Generate a Drush commandfile for your module.
      * @topics docs-generators
-     * @bootstrap DRUSH_BOOTSTRAP_MAX
+     * @bootstrap max
      */
     public function generate($generator = '', $options = ['answers' => null, 'directory' => null])
     {

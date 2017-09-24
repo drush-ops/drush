@@ -46,7 +46,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      *   Re-install with specified uid1 password.
      * @usage drush si standard install_configure_form.enable_update_status_emails=NULL
      *   Disable email notification during install and later. If your server has no mail transfer agent, this gets rid of an error during install.
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_ROOT
+     * @bootstrap root
      * @aliases si,sin
      *
      */

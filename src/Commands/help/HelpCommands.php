@@ -22,7 +22,7 @@ class HelpCommands extends DrushCommands
      *   Show all available commands in XML format.
      * @usage drush help --format=json
      *   All available commands, in JSON format.
-     * @bootstrap DRUSH_BOOTSTRAP_MAX
+     * @bootstrap max
      * @topics docs-readme
      *
      * @return \Consolidation\AnnotatedCommand\Help\HelpDocument

@@ -31,7 +31,6 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * @usage edit `drush dd devel`/devel.module
      *   Open devel module in your editor (customize 'edit' for your editor)
      * @aliases dd
-     * @bootstrap DRUSH_BOOTSTRAP_NONE
      */
     public function drupalDirectory($target = 'root', $options = ['component' => 'path', 'local-only' => false])
     {
@@ -94,7 +93,6 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * @command core-global-options
      * @hidden
      * @topic
-     * @bootstrap DRUSH_BOOTSTRAP_NONE
      * @table-style default
      * @field-labels
      *   name: Name
@@ -120,7 +118,6 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * Show Drush version.
      *
      * @command version
-     * @bootstrap DRUSH_BOOTSTRAP_NONE
      * @table-style compact
      * @list-delimiter :
      * @field-labels
