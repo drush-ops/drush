@@ -5,6 +5,7 @@ use Drupal\Core\Utility\Error;
 use Drupal\Core\Entity\EntityStorageException;
 use Drush\Commands\DrushCommands;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Log\LogLevel;
 
@@ -25,9 +26,8 @@ class UpdateDBCommands extends DrushCommands
     {
         $this->cache_clear = $options['cache-clear'];
 
-        if (\Drush\Drush::simulate()) {
-            $this->logger()->info(dt('updatedb command does not support --simulate option.'));
-            return true;
+        if (Drush::simulate()) {
+            throw new \Exception('updatedb command does not support --simulate option.');
         }
 
         $result = $this->updateMain($options);
@@ -52,8 +52,8 @@ class UpdateDBCommands extends DrushCommands
      */
     public function entityUpdates($options = ['cache-clear' => true])
     {
-        if (\Drush\Drush::simulate()) {
-            $this->logger()->info(dt('entity-updates command does not support --simulate option.'));
+        if (Drush::simulate()) {
+            throw new \Exception(dt('entity-updates command does not support --simulate option.'));
         }
 
         if ($this->entityUpdatesMain() === false) {
@@ -297,11 +297,11 @@ class UpdateDBCommands extends DrushCommands
 
         $batch['operations'] = $operations;
         $batch += array(
-        'title' => 'Updating',
-        'init_message' => 'Starting updates',
-        'error_message' => 'An unrecoverable error has occurred. You can find the error message below. It is advised to copy it to the clipboard for reference.',
-        'finished' => [$this, 'drush_update_finished'],
-        'file' => 'core/includes/update.inc',
+            'title' => 'Updating',
+            'init_message' => 'Starting updates',
+            'error_message' => 'An unrecoverable error has occurred. You can find the error message below. It is advised to copy it to the clipboard for reference.',
+            'finished' => [$this, 'drush_update_finished'],
+            'file' => 'core/includes/update.inc',
         );
         batch_set($batch);
         \Drupal::service('state')->set('system.maintenance_mode', true);
@@ -460,10 +460,10 @@ class UpdateDBCommands extends DrushCommands
 
             $batch['operations'] = $operations;
             $batch += array(
-            'title' => 'Updating',
-            'init_message' => 'Starting updates',
-            'error_message' => 'An unrecoverable error has occurred. You can find the error message below. It is advised to copy it to the clipboard for reference.',
-            'finished' => [$this, 'updateFinished'],
+                'title' => 'Updating',
+                'init_message' => 'Starting updates',
+                'error_message' => 'An unrecoverable error has occurred. You can find the error message below. It is advised to copy it to the clipboard for reference.',
+                'finished' => [$this, 'updateFinished'],
             );
             batch_set($batch);
             \Drupal::service('state')->set('system.maintenance_mode', true);

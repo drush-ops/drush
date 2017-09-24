@@ -8,11 +8,15 @@ use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Log\LogLevel;
 use Drupal\Core\Config\FileStorage;
+use Drush\SiteAlias\SiteAliasManager;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Sql\SqlBase;
 use Webmozart\PathUtil\Path;
 
-class SiteInstallCommands extends DrushCommands
+class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+    use SiteAliasManagerAwareTrait;
 
     /**
      * Install Drupal along with modules/themes/configuration/profile.
@@ -46,7 +50,7 @@ class SiteInstallCommands extends DrushCommands
      * @aliases si
      *
      */
-    public function install($profile, array $additional, $options = ['db-url' => null, 'db-prefix' => null, 'db-su' => null, 'db-su-pw' => null, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => null, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => null, 'sites-subdir' => null, 'config-dir' => null])
+    public function install($profile = '', array $additional, $options = ['db-url' => null, 'db-prefix' => null, 'db-su' => null, 'db-su-pw' => null, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => null, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => null, 'sites-subdir' => null, 'config-dir' => null])
     {
         $form_options = [];
         foreach ((array)$additional as $arg) {
@@ -68,7 +72,6 @@ class SiteInstallCommands extends DrushCommands
         $sql = SqlBase::create($options);
         $db_spec = $sql->getDbSpec();
 
-        $show_password = empty($options['account-pass']);
         $account_pass = $options['account-pass'] ?: drush_generate_password();
         $settings = array(
             'parameters' => array(
@@ -120,7 +123,7 @@ class SiteInstallCommands extends DrushCommands
 
         require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
         drush_op('install_drupal', $class_loader, $settings);
-        if ($show_password) {
+        if (empty($options['account-pass'])) {
             $this->logger()->success(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $options['account-name'], '@pass' => $account_pass)));
         } else {
             $this->logger()->success(dt('Installation complete.'));
@@ -248,8 +251,6 @@ class SiteInstallCommands extends DrushCommands
                 }
             }
         }
-        if (!$sql->getDbSpec()) {
-        }
     }
 
     /**
@@ -263,9 +264,8 @@ class SiteInstallCommands extends DrushCommands
         $sql = SqlBase::create($commandData->input()->getOptions());
         $db_spec = $sql->getDbSpec();
 
-        // TODO: Update to use new alias manager API
-        $alias_record = drush_sitealias_get_record('@self');
-        $sites_subdir = drush_sitealias_local_site_path($alias_record);
+        $aliasRecord = $this->siteAliasManager()->getSelf();
+        $sites_subdir = drush_sitealias_local_site_path($aliasRecord->legacyRecord());
         // Override with sites-subdir if specified.
         if ($dir = $commandData->input()->getOption('sites-subdir')) {
             $sites_subdir = "sites/$dir";
@@ -276,7 +276,7 @@ class SiteInstallCommands extends DrushCommands
         $confPath = $sites_subdir;
         $settingsfile = "$confPath/settings.php";
         $sitesfile = "sites/sites.php";
-        $default = realpath($alias_record['root'] . '/sites/default');
+        $default = realpath($aliasRecord->root() . '/sites/default');
         $sitesfile_write = $confPath != $default && !file_exists($sitesfile);
 
         if (!file_exists($settingsfile)) {

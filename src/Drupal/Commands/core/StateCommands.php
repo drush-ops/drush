@@ -68,7 +68,6 @@ class StateCommands
 
         if (!isset($value)) {
             throw new \Exception(dt('No state value specified.'));
-            return null;
         }
 
         // Special flag indicating that the value has been passed via STDIN.

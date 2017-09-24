@@ -4,6 +4,7 @@ namespace Drush\Commands\core;
 use Drush\Commands\DrushCommands;
 
 use Drush\Drush;
+use Drush\SiteAlias\AliasRecord;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\SiteAlias\SiteAliasName;
@@ -85,10 +86,6 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *
      * @command site-alias
      * @param $site Site alias or site specification.
-     * @option no-db Do not include the database record in the full alias record (default).
-     * @option with-optional Include optional default items.
-     * @option local-only Only display sites that are available on the local system (remote-site not set, and Drupal root exists)
-     * @option show-hidden Include hidden internal elements in site alias output
      * @aliases sa
      * @usage drush site-alias
      *   List all alias records known to drush.
@@ -97,16 +94,11 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * @usage drush @none site-alias
      *   Print only actual aliases; omit multisites from the local Drupal installation.
      * @topics docs-aliases
-     * @complete \Drush\Commands\CompletionCommands::completeSiteAliases
      *
      * @return \Consolidation\OutputFormatters\StructuredData\ListDataFromKeys
      */
     public function siteAlias($site = null, $options = ['format' => 'yaml'])
     {
-        if (!$this->hasSiteAliasManager()) {
-            return new ListDataFromKeys($this->oldSiteAliasCommandImplementation($site, $options));
-        }
-
         // Check to see if the user provided a specification that matches
         // multiple sites.
         $aliasList = $this->siteAliasManager()->getMultiple($site);
@@ -127,6 +119,11 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         }
     }
 
+    /**
+     * @param array $aliasList
+     * @param $options
+     * @return array
+     */
     protected function siteAliasExportList($aliasList, $options)
     {
         $result = array_map(
