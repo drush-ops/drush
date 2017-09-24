@@ -60,7 +60,6 @@ class PmCommands extends DrushCommands
      * @command pm-enable
      * @param $modules A comma delimited list of modules.
      * @aliases en
-     * @complete \Drush\Commands\CompletionCommands::completeModules
      */
     public function enable(array $modules)
     {
@@ -92,7 +91,6 @@ class PmCommands extends DrushCommands
      * @command pm-uninstall
      * @param $modules A comma delimited list of modules.
      * @aliases pmu
-     * @complete \Drush\Commands\CompletionCommands::completeModules
      */
     public function uninstall(array $modules)
     {
