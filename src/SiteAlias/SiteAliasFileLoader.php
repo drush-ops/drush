@@ -95,7 +95,7 @@ class SiteAliasFileLoader
         }
         $paths = $this->discovery()->findAllSingleAliasFiles();
         foreach ($paths as $path) {
-            $aliasRecord = $this->loadSingleAliasFileAtPath($path);
+            $aliasRecord = $this->loadSingleSiteAliasFileAtPath($path);
             $this->storeAliasRecordInResut($result, $aliasRecord);
         }
         ksort($result);
@@ -103,35 +103,53 @@ class SiteAliasFileLoader
     }
 
     /**
-     * Given an alias name that could represent multiple sites,
-     * return a list of all matching paths.
+     * Given an alias name that might represent multiple sites,
+     * return a list of all matching alias records. If nothing was found,
+     * or the name represents a single site + env, then we take
+     * no action and return `false`.
+     *
+     * @param SiteAliasName $aliasName The alias name to look up.
+     * @return AliasRecord[]|false
      */
     public function loadMultiple(SiteAliasName $aliasName)
     {
+        // Is the provided alias name a fully qualified name
+        // (`@group.site.env`)? If so, exit - we only load
+        // groups of aliases here.
         $collectionName = $aliasName->couldBeCollectionName();
         if (!$collectionName) {
             return false;
         }
 
+        // Look for a `group.aliases.yml` file that matches the requested name.
         $path = $this->discovery()->findGroupAliasFile($collectionName);
+        $foundGroupAliasFile = !empty($path);
+
+        // If we found a group alias file (group.aliases.yml), and there
+        // is no sitename to modify the group name (that is, the alias
+        // is simply `@group`, not `@group.site`), then return all of the
+        // alias records we can find from @group.
         $sitename = $aliasName->sitenameOfGroupCollection();
-        if ($path && !$sitename) {
+        if ($foundGroupAliasFile && !$sitename) {
             return $this->loadAllRecordsFromGroupAliasPath($path);
         }
 
-        if (empty($path) && $aliasName->hasEnv()) {
+        // If we did NOT find a group file, then the alias must be
+        // either `@site` or `@site.env`. If it is the
+        if (!$foundGroupAliasFile && $aliasName->hasEnv()) {
             return false;
         }
 
+        // Load the raw array of data from the specified path,
+        // focusing down on the specific subset of data, if
+        // applicable (e.g. if the alias was `@group.site`).
         $siteData = $this->getSiteDataForLoadMultiple($path, $sitename, $aliasName->sitename());
         if (!$siteData) {
             return false;
         }
 
-        if ($siteData) {
-            return $this->createAliasRecordsFromSiteData($aliasName, $siteData);
-        }
-        return false;
+        // Convert the raw array into a list of alias records.
+        return $this->createAliasRecordsFromSiteData($aliasName, $siteData);
     }
 
     /**
@@ -154,6 +172,12 @@ class SiteAliasFileLoader
         return $result;
     }
 
+    /**
+     * Given a path to an alias file, return multiple alias records for
+     * some specific site and its environments. This will either extract
+     * one site collection from a group alias file (group.aliases.yml), or
+     * load all of a the data from a single site alias file (site.alias.yml)
+     */
     protected function getSiteDataForLoadMultiple($pathToGroup, $sitenameInGroup, $singleSitename)
     {
         $siteData = $this->loadSiteDataFromGroup($pathToGroup, $sitenameInGroup);
@@ -167,7 +191,15 @@ class SiteAliasFileLoader
         return $this->loadSiteDataFromPath($path);
     }
 
-    protected function storeAliasRecordInResut(&$result, $aliasRecord)
+    /**
+     * Store an alias record in a list. If the alias record has
+     * a known name, then the key of the list will be the record's name.
+     * Otherwise, append the record to the end of the list with
+     * a numeric index.
+     *
+     * @param &AliasRecord[] $result list of alias records
+     */
+    protected function storeAliasRecordInResut(&$result, AliasRecord $aliasRecord)
     {
         if (!$aliasRecord) {
             return;
@@ -209,12 +241,21 @@ class SiteAliasFileLoader
         return $this->loadSingleAliasFileWithNameAtPath($aliasName, $path);
     }
 
-    protected function loadSingleAliasFileAtPath($path)
+    /**
+     * Given only the path to an alias file `site.alias.yml`, return all
+     * of the alias records for every environment stored in that file.
+     */
+    protected function loadSingleSiteAliasFileAtPath($path)
     {
         $aliasName = new SiteAliasName($this->siteNameFromPath($path));
-        return $this->loadSingleAliasFileWithNameAtPath($aliasName, $path);
+        $siteData = $this->loadSiteDataFromPath($path);
+        return createAliasRecordsFromSiteData($aliasName, $siteData)
     }
 
+    /**
+     * Given the path to a group alias file `group.aliases.yml`, return
+     * the `group` part.
+     */
     protected function groupNameFromPath($path)
     {
         // Return an empty string if there is no group.e
@@ -225,21 +266,32 @@ class SiteAliasFileLoader
         return $this->basenameWithoutExtension($path, '.aliases.yml');
     }
 
+    /**
+     * Given the path to a single site alias file `site.alias.yml`,
+     * return the `site` part.
+     */
     protected function siteNameFromPath($path)
     {
         return $this->basenameWithoutExtension($path, '.alias.yml');
     }
 
+    /**
+     * Chop off the `aliases.yml` or `alias.yml` part of a path.
+     */
     protected function basenameWithoutExtension($path, $extension)
     {
         $result = basename($path, $extension);
-        // It is an error if $path does not end with alias.yml
+        // It is an error if $path does not end with alias.yml or aliases.yml, as appropriate
         if ($result == basename($path)) {
             throw new \Exception("$path must end with '$extension'");
         }
         return $result;
     }
 
+    /**
+     * Given an alias name and a path, load the data from the path
+     * and process it as needed to generate the alias record.
+     */
     protected function loadSingleAliasFileWithNameAtPath(SiteAliasName $aliasName, $path)
     {
         $data = $this->loadYml($path);
@@ -279,6 +331,10 @@ class SiteAliasFileLoader
         return $this->loadAliasRecordFromGroupAliasPath($aliasName, $path);
     }
 
+    /**
+     * Given a `group.aliases.yml` file, load all of the alias records
+     * for all environments.
+     */
     protected function loadAllRecordsFromGroupAliasPath($path)
     {
         $data = $this->loadYml($path);
@@ -300,6 +356,10 @@ class SiteAliasFileLoader
         return $result;
     }
 
+    /**
+     * Load a single alias from a group alias path. Pick the best default
+     * environment if no environment name was specifically provided.
+     */
     protected function loadAliasRecordFromGroupAliasPath(SiteAliasName $aliasName, $path)
     {
         $data = $this->loadYml($path);
@@ -312,6 +372,11 @@ class SiteAliasFileLoader
         return $this->fetchAliasRecordFromGroupAliasData($aliasName, $data, $group);
     }
 
+    /**
+     * Load the yml from the given path
+     *
+     * TODO: Maybe this could be removed and `loadYml` could be called directly.
+     */
     protected function loadSiteDataFromPath($path)
     {
         $data = $this->loadYml($path);
@@ -321,6 +386,12 @@ class SiteAliasFileLoader
         return $data;
     }
 
+    /**
+     * Description
+     * @param type $path
+     * @param type $sitenameInGroup
+     * @return type
+     */
     protected function loadSiteDataFromGroup($path, $sitenameInGroup)
     {
         $data = $this->loadYml($path);
@@ -333,6 +404,10 @@ class SiteAliasFileLoader
         return $data['sites'][$sitenameInGroup];
     }
 
+    /**
+     * Given data from a `group.aliases.yml` file, look up and create
+     * a single alias record.
+     */
     protected function fetchAliasRecordFromGroupAliasData($aliasName, $data, $group = '')
     {
         $processor = new ConfigProcessor();
