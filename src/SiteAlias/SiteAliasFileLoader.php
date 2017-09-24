@@ -102,9 +102,12 @@ class SiteAliasFileLoader
         return $result;
     }
 
+    /**
+     * Given an alias name that could represent multiple sites,
+     * return a list of all matching paths.
+     */
     public function loadMultiple(SiteAliasName $aliasName)
     {
-
         $collectionName = $aliasName->couldBeCollectionName();
         if (!$collectionName) {
             return false;
@@ -116,16 +119,39 @@ class SiteAliasFileLoader
             return $this->loadAllRecordsFromGroupAliasPath($path);
         }
 
+        if (empty($path) && $aliasName->hasEnv()) {
+            return false;
+        }
+
         $siteData = $this->getSiteDataForLoadMultiple($path, $sitename, $aliasName->sitename());
         if (!$siteData) {
             return false;
         }
 
         if ($siteData) {
-            // TODO: Load all aliases from $path
-            return $false;
+            return $this->createAliasRecordsFromSiteData($aliasName, $siteData);
         }
         return false;
+    }
+
+    /**
+     * @param array $siteData list of sites with its respective data
+     */
+    protected function createAliasRecordsFromSiteData(SiteAliasName $aliasName, $siteData)
+    {
+        $result = [];
+        $aliasName->assumeAmbiguousIsGroup();
+        foreach ($siteData as $name => $data) {
+            if (is_array($data)) {
+                $aliasName->setEnv($name);
+
+                $processor = new ConfigProcessor();
+                $oneRecord = $this->fetchAliasRecordFromSiteAliasData($aliasName, $processor, $siteData);
+                //print "alias name is " . var_export($aliasName, true) . " and record is " . var_export($oneRecord, true) . "\n";
+                $this->storeAliasRecordInResut($result, $oneRecord);
+            }
+        }
+        return $result;
     }
 
     protected function getSiteDataForLoadMultiple($pathToGroup, $sitenameInGroup, $singleSitename)
@@ -284,6 +310,15 @@ class SiteAliasFileLoader
         $group = $this->groupNameFromPath($path);
 
         return $this->fetchAliasRecordFromGroupAliasData($aliasName, $data, $group);
+    }
+
+    protected function loadSiteDataFromPath($path)
+    {
+        $data = $this->loadYml($path);
+        if (!$data) {
+            return false;
+        }
+        return $data;
     }
 
     protected function loadSiteDataFromGroup($path, $sitenameInGroup)
