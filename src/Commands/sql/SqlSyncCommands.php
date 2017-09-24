@@ -164,7 +164,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         }
 
         if (!Drush::simulate()) {
-            drush_print(dt("You will destroy data in !target and replace with data from !source.", array(
+            $this->output()->writeln(dt("You will destroy data in !target and replace with data from !source.", array(
                 '!source' => $txt_source,
                 '!target' => $txt_destination
             )));

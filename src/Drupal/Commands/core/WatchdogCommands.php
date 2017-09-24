@@ -149,14 +149,14 @@ class WatchdogCommands extends DrushCommands
     public function delete($substring = '', $options = ['severity' => null, 'type' => null])
     {
         if ($substring == 'all') {
-            drush_print(dt('All watchdog messages will be deleted.'));
+            $this->output()->writeln(dt('All watchdog messages will be deleted.'));
             if (!$this->io()->confirm(dt('Do you really want to continue?'))) {
                 throw new UserAbortException();
             }
             $ret = Database::getConnection()->truncate('watchdog')->execute();
             $this->logger()->success(dt('All watchdog messages have been deleted.'));
         } else if (is_numeric($substring)) {
-            drush_print(dt('Watchdog message #!wid will be deleted.', array('!wid' => $substring)));
+            $this->output()->writeln(dt('Watchdog message #!wid will be deleted.', array('!wid' => $substring)));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
@@ -171,7 +171,7 @@ class WatchdogCommands extends DrushCommands
                 throw new \Exception(dt('No options provided.'));
             }
             $where = $this->where($options['type'], $options['severity'], $substring, 'OR');
-            drush_print(dt('All messages with !where will be deleted.', array('!where' => preg_replace("/message LIKE %$substring%/", "message body containing '$substring'", strtr($where['where'], $where['args'])))));
+            $this->output()->writeln(dt('All messages with !where will be deleted.', array('!where' => preg_replace("/message LIKE %$substring%/", "message body containing '$substring'", strtr($where['where'], $where['args'])))));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }

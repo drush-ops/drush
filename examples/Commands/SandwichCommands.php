@@ -36,7 +36,7 @@ class SandwichCommands extends DrushCommands {
     $msg = dt('Okay. Enjoy this !filling sandwich!str_spreads.',
       array('!filling' => $filling, '!str_spreads' => $str_spreads)
     );
-    drush_print("\n" . $msg . "\n");
+    $this->output()->writeln("\n" . $msg . "\n");
     $this->printFile(__DIR__ . '/sandwich-nocolor.txt');
   }
 

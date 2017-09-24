@@ -127,14 +127,14 @@ class ConfigExportCommands extends DrushCommands
                 return;
             }
 
-            drush_print("Differences of the active config to the export directory:\n");
+            $this->output()->writeln("Differences of the active config to the export directory:\n");
             $change_list = array();
             foreach ($config_comparer->getAllCollectionNames() as $collection) {
                 $change_list[$collection] = $config_comparer->getChangelist(null, $collection);
             }
             // Print a table with changes in color, then re-generate again without
             // color to place in the commit comment.
-            ConfigCommands::configChangesTablePrint($change_list);
+            ConfigCommands::configChangesTablePrint($change_list, true);
             $tbl = ConfigCommands::configChangesTableFormat($change_list);
             $preview = $tbl->getTable();
             if (!stristr(PHP_OS, 'WIN')) {
