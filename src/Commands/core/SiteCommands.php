@@ -32,9 +32,12 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * @usage drush site-set
      *   Without an argument, any existing site becomes unset.
      * @aliases use
+     * @hidden
      */
     public function siteSet($site = '@none', $options = ['a' =>'b'])
     {
+        // @todo Needs modernizing to get it functional, so @hidden for now.
+
         if ($filename = drush_sitealias_get_envar_filename()) {
             $last_site_filename = drush_sitealias_get_envar_filename('drush-drupal-prev-site-');
             if ($site == '-') {
