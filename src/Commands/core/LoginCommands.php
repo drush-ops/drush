@@ -40,7 +40,7 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
         // the *local* machine.
         $aliasRecord = $this->siteAliasManager()->getSelf();
         if ($aliasRecord->isRemote()) {
-            $return = drush_invoke_process($aliasRecord->legacyRecord(), 'user-login', [$options['name']], Drush::redispatchOptions(), array('integrate' => false));
+            $return = drush_invoke_process($aliasRecord, 'user-login', [$options['name']], Drush::redispatchOptions(), array('integrate' => false));
             if ($return['error_status']) {
                 throw new \Exception('Unable to execute user login.');
             } else {
