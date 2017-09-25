@@ -3,11 +3,14 @@ namespace Drush\Commands\core;
 
 use Drush\Drush;
 use Drupal\Core\Url;
-use Drupal\user\Entity\User;
 use Drush\Commands\DrushCommands;
+use Drush\Exec\ExecTrait;
 
 class RunserverCommands extends DrushCommands
 {
+
+    use ExecTrait;
+
     /**
      * Runs PHP's built-in http server for development.
      *
@@ -18,7 +21,7 @@ class RunserverCommands extends DrushCommands
      * @command runserver
      * @param $uri Host IP address and port number to bind to and path to open in web browser. Format is addr:port/path. Only opens a browser if a path is specified.
      * @option default-server A default addr:port/path to use for any values not specified as an argument.
-     * @option browser If opening a web browser, which browser to user (defaults to operating system default). Use --no-browser to avoid opening a browser.
+     * @option browser If opening a web browser, which browser to use (defaults to operating system default). Use --no-browser to avoid opening a browser.
      * @option dns Resolve hostnames/IPs using DNS/rDNS (if possible) to determine binding IPs and/or human friendly hostnames for URLs and browser.
      * @bootstrap full
      * @aliases rs
@@ -37,7 +40,7 @@ class RunserverCommands extends DrushCommands
      * @usage drush rs :9000/admin
      *   Start runserver on 127.0.0.1, port 9000, and open /admin in browser. Note that you need a colon when you specify port and path, but no IP.
      */
-    public function runserver($uri = null, $options = ['default-server' => null, 'user' => 1, 'browser' => true, 'dns' => false])
+    public function runserver($uri = null, $options = ['default-server' => null, 'browser' => true, 'dns' => false])
     {
         global $base_url;
 
@@ -69,11 +72,11 @@ class RunserverCommands extends DrushCommands
 
 
         $link = Url::fromUserInput('/' . $path, ['absolute' => true])->toString();
-        drush_print(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site !site!user...', array('!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $path, '!site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'), '!user' => $user_message)));
+        drush_print(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site !site', array('!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $path, '!site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'))));
         // Start php built-in server.
         if (!empty($path)) {
             // Start a browser if desired. Include a 2 second delay to allow the server to come up.
-            drush_start_browser($link, 2);
+            $this->startBrowser($link, 2);
         }
         // Start the server using 'php -S'.
         $extra = ' "' . DRUSH_BASE_PATH . '/misc/d8-rs-router.php"';

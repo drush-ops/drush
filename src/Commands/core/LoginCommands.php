@@ -4,6 +4,7 @@ namespace Drush\Commands\core;
 use Drupal\user\Entity\User;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
+use Drush\Exec\ExecTrait;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 
@@ -11,6 +12,7 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
 {
 
     use SiteAliasManagerAwareTrait;
+    use ExecTrait;
 
     /**
      * Display a one time login link for user ID 1, or another user.
@@ -60,7 +62,7 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
             }
         }
         $port = $options['redirect-port'];
-        drush_start_browser($link, false, $port, $options['browser']);
+        $this->startBrowser($link, false, $port, $options['browser']);
         // Use an array for backwards compat.
         drush_backend_set_result([$link]);
         return $link;
