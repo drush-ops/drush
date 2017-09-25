@@ -64,7 +64,11 @@ class HostPath
 
         // If $parts[0] did not resolve to a site spec or alias record,
         // but there is a $parts[1], then $parts[0] must be a machine name.
+        // Unless it was an alias that could not be found.
         if ($alias_record === false) {
+            if (SiteAliasName::isAliasName($parts[0])) {
+                throw new \Exception('Site alias ' . $parts[0] . ' not found.');
+            }
             $alias_record = new AliasRecord(['host' => $parts[0]]);
         }
 
@@ -132,6 +136,23 @@ class HostPath
             return $host . ':' . $this->getPath();
         }
         return $this->getPath();
+    }
+
+    /**
+     * Our fully qualified path passes the result through Path::makeAbsolute()
+     * which canonicallizes the path, removing any trailing slashes.
+     * That is what we want most of the time; however, the trailing slash is
+     * sometimes significant, e.g. for rsync, so we provide a separate API
+     * for those cases where the trailing slash should be preserved.
+     */
+    public function fullyQualifiedPathPreservingTrailingSlash()
+    {
+        $fqp = $this->fullyQualifiedPath();
+
+        if ((substr($this->path, strlen($this->path) - 1) == '/') && (substr($fqp, strlen($fqp) - 1) != '/')) {
+            $fqp .= '/';
+        }
+        return $fqp;
     }
 
     protected static function determinePathOrAlias($alias_record, $alias_path, $single_part)

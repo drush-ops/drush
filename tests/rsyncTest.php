@@ -44,11 +44,12 @@ class rsyncCase extends CommandUnishTestCase {
     $sites = $this->setUpDrupal(2, TRUE);
 
     $options = [
+      'yes' => NULL,
       'alias-path' => __DIR__ . '/resources/alias-fixtures',
     ];
 
     $source = $this->webroot() . '/sites/dev/files/a';
-    $target = $this->webroot() . '/sites/dev/files/b';
+    $target = $this->webroot() . '/sites/stage/files/b';
 
     @mkdir($source);
     @mkdir($target);
@@ -67,12 +68,13 @@ class rsyncCase extends CommandUnishTestCase {
 
     // We just deleted it -- should be missing
     $this->assertFalse(file_exists($target_file));
+    $this->assertTrue(file_exists($source_file));
 
     // Test an actual rsync between our two fixture sites. Note that
     // these sites share the same web root.
-    $this->drush('rsync', ['@unish.dev:%files/a', '@unish.stage:%files/b'], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
+    $this->drush('rsync', ['@dev:%files/a/', '@stage:%files/b'], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
     $expected = '';
-    $this->assertOutputEquals($expected);
+    $this->assertContains('You will delete files in', $this->getOutput());
 
     // Test to see if our fixture file now exists at $target
     $this->assertTrue(file_exists($target_file));
@@ -100,7 +102,6 @@ class rsyncCase extends CommandUnishTestCase {
    * This tests the non-optimized code path in drush_sitealias_resolve_path_references.
    */
   function testRsyncAndPercentFiles() {
-    $this->markTestSkipped('rsync path aliases (e.g. %files) not implemented yet.');
     $root = $this->webroot();
     $site = key($this->getSites());
     $options = array(

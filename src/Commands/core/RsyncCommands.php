@@ -59,7 +59,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
     {
         // Prompt for confirmation. This is destructive.
         if (!\Drush\Drush::simulate()) {
-            $this->output()->writeln(dt("You will delete files in !target and replace with data from !source", array('!source' => $this->sourceEvaluatedPath->fullyQualifiedPath(), '!target' => $this->destinationEvaluatedPath->fullyQualifiedPath())));
+            $this->output()->writeln(dt("You will delete files in !target and replace with data from !source", array('!source' => $this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash(), '!target' => $this->destinationEvaluatedPath->fullyQualifiedPath())));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
@@ -67,7 +67,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
 
         $rsync_options = $this->rsyncOptions($options);
         $parameters = array_merge([$rsync_options], $extra);
-        $parameters[] = $this->sourceEvaluatedPath->fullyQualifiedPath();
+        $parameters[] = $this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash();
         $parameters[] = $this->destinationEvaluatedPath->fullyQualifiedPath();
 
         $ssh_options = Drush::config()->get('ssh.options', '');
@@ -77,7 +77,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
         if ($exec_result == 0) {
             drush_backend_set_result($this->destinationEvaluatedPath->fullyQualifiedPath());
         } else {
-            throw new \Exception(dt("Could not rsync from !source to !dest", array('!source' => $this->sourceEvaluatedPath->fullyQualifiedPath(), '!dest' => $this->destinationEvaluatedPath->fullyQualifiedPath())));
+            throw new \Exception(dt("Could not rsync from !source to !dest", array('!source' => $this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash(), '!dest' => $this->destinationEvaluatedPath->fullyQualifiedPath())));
         }
     }
 
