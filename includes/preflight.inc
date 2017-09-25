@@ -21,85 +21,11 @@ use Webmozart\PathUtil\Path;
 /**
  * The main Drush function.
  *
- * - Parses the command line arguments, configuration files and environment.
- * - Prepares and executes a Drupal bootstrap, if possible,
- * - Dispatches the given command.
- *
- * function_exists('drush_main') may be used by modules to detect whether
- * they are being called from Drush.  See http://drupal.org/node/1181308
- * and http://drupal.org/node/827478
- *
- * @return mixed
- *   Whatever the given command returns.
+ * This function is still called by drush-launcher. It is no longer used by
+ * Drush itself.
  */
 function drush_main() {
-  // Load Drush core include files, create the container and
-  // parse commandline arguments
-  $container = drush_preflight_prepare();
-  if ($container === FALSE) {
-    return(1);
-  }
-  // Start code coverage collection.
-  if ($coverage_file = drush_get_option('drush-coverage', FALSE)) {
-    drush_set_context('DRUSH_CODE_COVERAGE', $coverage_file);
-    xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
-    register_shutdown_function('drush_coverage_shutdown');
-  }
-
-  // Load the global Drush configuration files, and global Drush commands.
-  // Find the selected site based on --root, --uri or cwd
-  // Preflight the selected site, and load any configuration and commandfiles associated with it.
-  // Select and return the bootstrap class.
-  $bootstrap = drush_preflight();
-
-  $return = '';
-  if (!drush_get_error()) {
-    // TODO: If 'DRUSH_SYMFONY' is set, then disable the legacy command
-    // runner, and use only the Symfony Application.  n.b. the legacy runner
-    // will also try to run commands via the Symfony Application runner if
-    // it cannot find a matching legacy Drush command.
-    if (getenv('DRUSH_SYMFONY')) {
-      drush_log(dt("Dispatching directly with Symfony application (DRUSH_SYMFONY set)"), LogLevel::BOOTSTRAP);
-
-      // Get the application and run it.
-      // TODO: We need a new way to handle @alias arguments,
-      // remote command dispatching, bootstrapping, etc.
-      $application = $container->get('application');
-      $input = drush_symfony_input();
-      $application->run($input);
-    }
-    else {
-      // Do any necessary preprocessing operations on the command,
-      // perhaps handling immediately.
-      $command_handled = drush_preflight_command_dispatch();
-      if (!$command_handled) {
-        drush_log(dt("Dispatching using Drush bootstrapAndDispatch"), LogLevel::BOOTSTRAP);
-        $return = $bootstrap->bootstrapAndDispatch();
-      }
-    }
-  }
-
-  // TODO: Get rid of global variable access here, and just trust
-  // the bootstrap object returned from drush_preflight().  This will
-  // require some adjustments to Drush bootstrapping.
-  // See: https://github.com/drush-ops/drush/pull/1303
-  if ($bootstrap = Drush::bootstrap()) {
-    $bootstrap->terminate();
-  }
-  drush_postflight();
-  if (is_object($return)) {
-    $return = 0;
-  }
-
-  // How strict are we?  If we are very strict, turn 'ok' into 'error'
-  // if there are any warnings in the log.
-  if (($return == 0) && (drush_get_option('strict') > 1) && drush_log_has_errors()) {
-    $return = 1;
-  }
-
-  // After this point the drush_shutdown function will run,
-  // exiting with the correct exit code.
-  return $return;
+  require dirname(__DIR__) . '/drush.php';
 }
 
 function drush_symfony_input() {
