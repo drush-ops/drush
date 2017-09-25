@@ -18,7 +18,6 @@ class ConfigPullCase extends CommandUnishTestCase {
    * Make sure a change propagates using config-pull+config-import.
    */
   function testConfigPull() {
-    $this->markTestSkipped('Depends on backend invoke.');
     list($source, $destination) = array_keys($this->getSites());
     $source = "@$source";
     $destination = "@$destination";
