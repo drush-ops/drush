@@ -265,7 +265,11 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $db_spec = $sql->getDbSpec();
 
         $aliasRecord = $this->siteAliasManager()->getSelf();
-        $sites_subdir = drush_sitealias_local_site_path($aliasRecord->legacyRecord());
+
+
+        // @todo The function below is inscrutable. Would rather not port it. Please pass --sites-subdir for now.
+        // $sites_subdir = drush_sitealias_local_site_path($aliasRecord->legacyRecord());
+
         // Override with sites-subdir if specified.
         if ($dir = $commandData->input()->getOption('sites-subdir')) {
             $sites_subdir = "sites/$dir";
