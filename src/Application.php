@@ -59,6 +59,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
         //   --root / -r
         //   --uri / -l
         //   --simulate
+        //   --backend : the value is now ignored. see PreflightArgs.
         //   --strict
         //   --debug / -d : equivalent to -vv
         //   --yes / -y : equivalent to --no-interaction
@@ -87,7 +88,6 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
         //
         //   --tty
         //   --exclude
-        //   --backend
         //   --choice
         //   --ignored-modules : see \Drush\Boot\DrupalBoot8::bootstrapDrupalFull
         //   --no-label
