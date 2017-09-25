@@ -1,0 +1,16 @@
+<!-- Copy and rename to phpunit.xml. Customize as needed. -->
+<phpunit backupGlobals="false"
+    bootstrap="vendor/autoload.php"
+    backupStaticAttributes="false"
+    syntaxCheck="false"
+    colors="true">
+  <testsuites>
+    <testsuite name="Drush Preflight Isolation Unit Tests">
+      <directory suffix="Test.php">tests</directory>
+    </testsuite>
+  </testsuites>
+
+  <php>
+    <includePath>.</includePath>
+  </php>
+</phpunit>

@@ -5,9 +5,13 @@ use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 
-class CoreCommands extends DrushCommands
+class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+
+    use SiteAliasManagerAwareTrait;
 
     /**
      * Return the filesystem path for modules/themes and other key folders.
@@ -27,7 +31,6 @@ class CoreCommands extends DrushCommands
      * @usage edit `drush dd devel`/devel.module
      *   Open devel module in your editor (customize 'edit' for your editor)
      * @aliases dd
-     * @bootstrap DRUSH_BOOTSTRAP_NONE
      */
     public function drupalDirectory($target = 'root', $options = ['component' => 'path', 'local-only' => false])
     {
@@ -90,7 +93,6 @@ class CoreCommands extends DrushCommands
      * @command core-global-options
      * @hidden
      * @topic
-     * @bootstrap DRUSH_BOOTSTRAP_NONE
      * @table-style default
      * @field-labels
      *   name: Name
@@ -105,8 +107,8 @@ class CoreCommands extends DrushCommands
         $def = $application->getDefinition();
         foreach ($def->getOptions() as $key => $value) {
             $rows[] = [
-            'name' => '--'. $key,
-            'description' => $value->getDescription(),
+                'name' => '--'. $key,
+                'description' => $value->getDescription(),
             ];
         }
         return new RowsOfFields($rows);
@@ -116,7 +118,6 @@ class CoreCommands extends DrushCommands
      * Show Drush version.
      *
      * @command version
-     * @bootstrap DRUSH_BOOTSTRAP_NONE
      * @table-style compact
      * @list-delimiter :
      * @field-labels
@@ -165,27 +166,20 @@ class CoreCommands extends DrushCommands
                 drush_op('chdir', $selected_root);
             }
         }
-        if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
-            $site = drush_sitealias_get_record($alias);
-            if (!empty($site['site-list'])) {
-                $sites = drush_sitealias_resolve_sitelist($site);
-                foreach ($sites as $site_name => $site_spec) {
-                    $result = $this->executeCmd($site_spec, $cmd);
-                    if (!$result) {
-                        break;
-                    }
-                }
-            } else {
-                $result = $this->executeCmd($site, $cmd);
-            }
+
+        $aliasRecord = $this->siteAliasManager()->getSelf();
+        if ($aliasRecord) {
+            $result = $this->executeCmd($aliasRecord, $cmd);
         } else {
             // Must be a local command.
             $result = (drush_shell_proc_open($cmd) == 0);
         }
+
         // Restore the cwd if we changed it
         if ($cwd) {
-            drush_op('chdir', $selected_root);
+            drush_op('chdir', $cwd);
         }
+
         if (!$result) {
             throw new \Exception(dt("Command !command failed.", array('!command' => $cmd)));
         }
@@ -197,12 +191,12 @@ class CoreCommands extends DrushCommands
      */
     protected function executeCmd($site, $cmd)
     {
-        if (!empty($site['remote-host'])) {
+        if ($site->isRemote()) {
             // Remote, so execute an ssh command with a bash fragment at the end.
             $exec = drush_shell_proc_build($site, $cmd, true);
             return (drush_shell_proc_open($exec) == 0);
-        } elseif (!empty($site['root']) && is_dir($site['root'])) {
-            return (drush_shell_proc_open('cd ' . drush_escapeshellarg($site['root']) . ' && ' . $cmd) == 0);
+        } elseif ($site->hasRoot() && is_dir($site->root())) {
+            return (drush_shell_proc_open('cd ' . drush_escapeshellarg($site->root()) . ' && ' . $cmd) == 0);
         }
         return (drush_shell_proc_open($cmd) == 0);
     }

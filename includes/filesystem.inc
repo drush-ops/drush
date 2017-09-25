@@ -318,6 +318,9 @@ function drush_move_dir($src, $dest, $overwrite = FALSE) {
  * halted if the required directory cannot be created.
  */
 function drush_mkdir($path, $required = TRUE) {
+  if (empty($path)) {
+    return drush_set_error('DRUSH_MKDIR_NULL_PATH', dt('Path passed to drush_mkdir cannot be empty.'));
+  }
   if (!is_dir($path)) {
     if (drush_mkdir(dirname($path))) {
       if (@mkdir($path)) {

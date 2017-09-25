@@ -213,8 +213,12 @@ function annotationcommand_adapter_process_command() {
 
   $args = annotationcommand_adapter_process_args($userArgs, $command['consolidation-arg-defaults']);
 
-  // TODO: Need to determine if $input is interactive, and ensure that $input->isInteractive() returns the correct result.
+  // Determine if $input is interactive, and ensure that $input->isInteractive() returns the correct result.
   $input = new DrushInputAdapter($args, annotationcommand_adapter_get_options($command), $command['command']);
+  $yes = drush_get_context('DRUSH_AFFIRMATIVE');
+  $no = drush_get_context('DRUSH_NEGATIVE');
+  $interactive = (!$yes && !$no);
+  $input->setInteractive($interactive);
   $output = new ConsoleOutput();
   $annotationData = $command['annotations'];
   $commandData = new CommandData(

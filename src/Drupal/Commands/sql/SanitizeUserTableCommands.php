@@ -14,11 +14,13 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
 {
     protected $database;
     protected $passwordHasher;
+    protected $entityTypeManager;
 
-    public function __construct($database, $passwordHasher)
+    public function __construct($database, $passwordHasher, $entityTypeManager)
     {
         $this->database = $database;
         $this->passwordHasher = $passwordHasher;
+        $this->entityTypeManager = $entityTypeManager;
     }
 
     /**
@@ -32,13 +34,12 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
     public function sanitize($result, CommandData $commandData)
     {
         $options = $commandData->options();
-        $query = $this->database->update('users_field_data')
-        ->condition('uid', 0, '>');
+        $query = $this->database->update('users_field_data')->condition('uid', 0, '>');
         $messages = [];
 
         // Sanitize passwords.
         if ($this->isEnabled($options['sanitize-password'])) {
-            // D8+. Mimic Drupal's /scripts/password-hash.sh
+            // Mimic Drupal's /scripts/password-hash.sh
             $hash = $this->passwordHasher->hash($options['sanitize-password']);
             $query->fields(['pass' => $hash]);
             $messages[] = dt('User passwords sanitized.');
@@ -70,6 +71,7 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
 
         if ($messages) {
             $query->execute();
+            $this->entityTypeManager->getStorage('user')->resetCache();
             foreach ($messages as $message) {
                 $this->logger()->success($message);
             }

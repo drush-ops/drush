@@ -29,7 +29,7 @@ class HelpCLIFormatter implements FormatterInterface
 
         if (array_key_exists('examples', $data)) {
             $output->writeln('');
-            $output->writeln('Examples:');
+            $output->writeln('<comment>Examples:</comment>');
             foreach ($data['examples'] as $example) {
                 $rows[] = [' ' . $example['usage'], $example['description']];
             }
@@ -39,7 +39,7 @@ class HelpCLIFormatter implements FormatterInterface
         if (array_key_exists('arguments', $data)) {
             $rows = [];
             $output->writeln('');
-            $output->writeln('Arguments:');
+            $output->writeln('<comment>Arguments:</comment>');
             foreach ($data['arguments'] as $argument) {
                 $formatted = $this->formatArgumentName($argument);
                 $description = $argument['description'];
@@ -55,7 +55,7 @@ class HelpCLIFormatter implements FormatterInterface
         if (array_key_exists('options', $data)) {
             $rows = [];
             $output->writeln('');
-            $output->writeln('Options:');
+            $output->writeln('<comment>Options:</comment>');
             foreach ($data['options'] as $option) {
                 if (substr($option['name'], 0, 8) !== '--notify' && substr($option['name'], 0, 5) !== '--xh-' && substr($option['name'], 0, 11) !== '--druplicon') {
                     $rows[] = [$this->formatOptionKeys($option), $this->formatOptionDescription($option)];
@@ -67,7 +67,7 @@ class HelpCLIFormatter implements FormatterInterface
         if (array_key_exists('topics', $data)) {
             $rows = [];
             $output->writeln('');
-            $output->writeln('Topics:');
+            $output->writeln('<comment>Topics:</comment>');
             foreach ($data['topics'] as $topic) {
                 $topic_command = Drush::getApplication()->find($topic);
                 $rows[] = [' drush topic ' . $topic, $topic_command->getDescription()];
@@ -78,7 +78,7 @@ class HelpCLIFormatter implements FormatterInterface
         // @todo Fix this variability in key name upstream.
         if (array_key_exists('aliases', $data) ? $data['aliases'] :  array_key_exists('alias', $data) ? [$data['alias']] : []) {
             $output->writeln('');
-            $output->writeln('Aliases: ' . implode(', ', $data['aliases']));
+            $output->writeln('<comment>Aliases:</comment> ' . implode(', ', $data['aliases']));
         }
     }
 

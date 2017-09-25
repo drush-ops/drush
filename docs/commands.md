@@ -14,7 +14,7 @@ Global Drush Commands
 
 Commandfiles that don't ship inside Drupal modules are called 'global' commandfiles. See the examples/Commands folder for examples. In general, its better to use modules to carry your Drush commands. If you still prefer using a global commandfiles, please note:
 
-1. The file's namespace should be \Drush.
+1. The file's namespace should be \Drush\Commands\[dir-name].
 1. The filename must end in Commands.php (e.g. FooCommands.php)
 1. The enclosing directory must be named Commands
 1. The directory above Commands must be one of: 
@@ -23,9 +23,7 @@ Commandfiles that don't ship inside Drupal modules are called 'global' commandfi
     1.  The ".drush" folder in the user's HOME folder.
     1.  ../drush, /drush and /sites/all/drush relative to the current Drupal installation.
 
-Avoiding the loading of certain Commandfiles
+Avoiding the loading of certain Commandfiles (Note: not functional right now).
 =================
-
-- Folders and files containing other versions of Drush in their names will be \*skipped\* (e.g. devel.drush7.inc or drush7/devel.drush.inc). Names containing the current version of Drush (e.g. devel.drush9.inc) will be loaded.
 - The --ignored-modules global option stops loading of commandfiles from specified modules.
 

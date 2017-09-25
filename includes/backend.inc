@@ -58,6 +58,7 @@
  */
 
 use Drush\Log\LogLevel;
+use Drush\Preflight\PreflightArgs;
 
 /**
  * Identify the JSON encoded output from a command.
@@ -84,7 +85,7 @@ define('DRUSH_BACKEND_PACKET_PATTERN', "\0" . DRUSH_BACKEND_PACKET_START . "%s\n
  * used to generate the output for the current command.
  */
 function drush_backend_set_result($value) {
-  if (drush_get_context('DRUSH_BACKEND')) {
+  if (\Drush\Drush::backend()) {
     drush_set_context('BACKEND_RESULT', $value);
   }
 }
@@ -137,16 +138,10 @@ function drush_backend_get_result() {
 function drush_backend_output() {
   $data = array();
 
-  if (drush_get_context('DRUSH_PIPE')) {
-    $pipe = drush_get_context('DRUSH_PIPE_BUFFER');
-    $data['output'] = $pipe; // print_r($pipe, TRUE);
-  }
-  else {
-    // Strip out backend commands.
-    $packet_regex = strtr(sprintf(DRUSH_BACKEND_PACKET_PATTERN, "([^\0]*)"), array("\0" => "\\0"));
-    $packet_regex = str_replace("\n", "", $packet_regex);
-    $data['output'] = preg_replace("/$packet_regex/s", '', drush_backend_output_collect(NULL));
-  }
+  // Strip out backend commands.
+  $packet_regex = strtr(sprintf(DRUSH_BACKEND_PACKET_PATTERN, "([^\0]*)"), array("\0" => "\\0"));
+  $packet_regex = str_replace("\n", "", $packet_regex);
+  $data['output'] = preg_replace("/$packet_regex/s", '', drush_backend_output_collect(NULL));
 
   if (drush_get_context('DRUSH_QUIET', FALSE)) {
     ob_end_clean();
@@ -216,7 +211,7 @@ function drush_backend_output_discard($string) {
  *  A boolean indicating whether the command was output.
  */
 function drush_backend_packet($packet, $data) {
-  if (drush_get_context('DRUSH_BACKEND')) {
+  if (\Drush\Drush::backend()) {
     $data['packet'] = $packet;
     $data = json_encode($data);
     // We use 'fwrite' instead of 'drush_print' here because
@@ -748,6 +743,14 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     // Add in command-specific options as well
     $command_options += drush_command_get_command_specific_options($site_record, $command);
 
+    // Add in preflight option contexts (--include et. al)
+    $preflightContextOptions = \Drush\Drush::config()->get(PreflightArgs::DRUSH_CONFIG_CONTEXT_NAMESPACE, []);
+    foreach ($preflightContextOptions as $key => $value) {
+      if ($value) {
+        $command_options[$key] = $value;
+      }
+    }
+
     // If the caller has requested it, don't pull the options from the alias
     // into the command line, but use the alias name for dispatching.
     if (!empty($backend_options['dispatch-using-alias']) && isset($site_record['#name'])) {
@@ -1003,7 +1006,7 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
  *   backend invoke results from each concurrent command.
  */
 function _drush_backend_invoke($cmds, $common_backend_options = array(), $context = NULL) {
-  if (drush_get_context('DRUSH_SIMULATE') && !array_key_exists('override-simulated', $common_backend_options) && !array_key_exists('backend-simulate', $common_backend_options)) {
+  if (\Drush\Drush::simulate() && !array_key_exists('override-simulated', $common_backend_options) && !array_key_exists('backend-simulate', $common_backend_options)) {
     foreach ($cmds as $cmd) {
       drush_print(dt('Simulating backend invoke: !cmd', array('!cmd' => $cmd['cmd'])));
     }
@@ -1133,7 +1136,7 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
 
   $hostname = $site_record['remote-host'];
   $username = $site_record['remote-user'];
-  $ssh_options = $site_record['ssh-options'];
+  $ssh_options = $site_record['ssh-options']; // TODO: update this (maybe make $site_record an AliasRecord)
   $os = drush_os($site_record);
 
   if (drush_is_local_host($hostname)) {
@@ -1158,8 +1161,8 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
   $command = implode(' ', array_filter($cmd, 'strlen'));
   if (isset($hostname)) {
     $username = (isset($username)) ? drush_escapeshellarg($username, "LOCAL") . "@" : '';
-    $ssh_options = $site_record['ssh-options'];
-    $ssh_options = (isset($ssh_options)) ? $ssh_options : drush_get_option('ssh-options', "-o PasswordAuthentication=no");
+    $ssh_options = $site_record['ssh-options']; // TODO: update
+    $ssh_options = (isset($ssh_options)) ? $ssh_options : \Drush\Drush::config()->get('ssh.options', "-o PasswordAuthentication=no");
 
     $ssh_cmd[] = "ssh";
     $ssh_cmd[] = $ssh_options;

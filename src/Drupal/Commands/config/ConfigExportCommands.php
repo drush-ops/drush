@@ -127,7 +127,7 @@ class ConfigExportCommands extends DrushCommands
                 return;
             }
 
-            drush_print("Differences of the active config to the export directory:\n");
+            $this->output()->writeln("Differences of the active config to the export directory:\n");
             $change_list = array();
             foreach ($config_comparer->getAllCollectionNames() as $collection) {
                 $change_list[$collection] = $config_comparer->getChangelist(null, $collection);

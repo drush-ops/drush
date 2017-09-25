@@ -205,6 +205,9 @@ function drush_preflight_prepare() {
   drush_set_context('argc', $GLOBALS['argc']);
   drush_set_context('argv', $GLOBALS['argv']);
 
+  // Signal that our old-style contexts are in use.
+  drush_set_context('DRUSH_LEGACY_CONTEXT', true);
+
   // Set an error handler and a shutdown function
   set_error_handler('drush_error_handler');
   register_shutdown_function('drush_shutdown');
@@ -566,7 +569,6 @@ function _drush_preflight_global_options() {
 
   // Pipe implies quiet.
   drush_set_context('DRUSH_QUIET', drush_get_option(array('quiet', 'pipe')));
-  drush_set_context('DRUSH_PIPE', drush_get_option('pipe'));
 
   // Suppress colored logging if --nocolor option is explicitly given or if
   // terminal does not support it.
@@ -579,22 +581,6 @@ function _drush_preflight_global_options() {
     $nocolor = !($colors === FALSE || (is_numeric($colors) && $colors >= 3));
   }
   drush_set_context('DRUSH_NOCOLOR', $nocolor);
-
-  // Copy the simulated option to the Robo configuration object.
-  // TODO: Long-term there should be a better way to do this (e.g. via an event listener)
-  $config = Drush::service('config');
-  $config->set(\Robo\Config\Config::SIMULATE, drush_get_context('DRUSH_SIMULATE'));
-
-  // Copy the output verbosity into the output object
-  $verbosity = OutputInterface::VERBOSITY_NORMAL;
-  if (drush_get_context('DRUSH_VERBOSE')) {
-    $verbosity = OutputInterface::VERBOSITY_VERBOSE;
-  }
-  if (drush_get_context('DRUSH_DEBUG')) {
-    $verbosity = OutputInterface::VERBOSITY_DEBUG;
-  }
-  $output = Drush::service('output');
-  $output->setVerbosity($verbosity);
 }
 
 /**
@@ -834,7 +820,7 @@ function drush_preflight_command_dispatch() {
     $site_record = array('site-list' => $site_list);
     $args = drush_get_arguments();
 
-    if (!drush_get_context('DRUSH_SIMULATE') && !$interactive  && !drush_get_context('DRUSH_AFFIRMATIVE') && !drush_get_context('DRUSH_QUIET')) {
+    if (!\Drush\Drush::simulate() && !$interactive  && !drush_get_context('DRUSH_AFFIRMATIVE') && !drush_get_context('DRUSH_QUIET')) {
       drush_print(dt("You are about to execute '!command' non-interactively (--yes forced) on all of the following targets:", array('!command' => implode(" ", $args))));
       foreach ($site_list as $one_destination) {
         drush_print(dt('  !target', array('!target' => $one_destination)));
@@ -922,6 +908,11 @@ function drush_postflight() {
  * result of drush_get_error() if it wasn't.
  */
 function drush_shutdown() {
+  // Avoid doing anything if our container has not been initialized yet.
+  if (!\Drush\Drush::hasContainer()) {
+    return;
+  }
+
   // Mysteriously make $user available during sess_write(). Avoids a NOTICE.
   global $user;
 
@@ -939,7 +930,8 @@ function drush_shutdown() {
     _drush_postmortem();
   }
 
-  // @todo Ask the bootstrap object (or maybe dispatch) how far we got.
+  // @todo Allow the bootstrap objects to register shutdown handlers on
+  // the bootstrap manager, and remove them when the bootstrap phase succeeds.
   $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
   if (drush_get_context('DRUSH_BOOTSTRAPPING')) {
     switch ($phase) {
@@ -954,11 +946,8 @@ function drush_shutdown() {
     }
   }
 
-  if (drush_get_context('DRUSH_BACKEND', FALSE)) {
+  if (\Drush\Drush::backend()) {
     drush_backend_output();
-  }
-  elseif (drush_get_context('DRUSH_QUIET', FALSE)) {
-    ob_end_clean();
   }
 
   // This way drush_return_status() will always be the last shutdown function (unless other shutdown functions register shutdown functions...)

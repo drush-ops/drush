@@ -3,9 +3,14 @@ namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
 use Drush\Log\LogLevel;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Drush\SiteAlias\SiteAliasManagerAwareTrait;
+use Drush\SiteAlias\SiteAliasName;
+use Symfony\Component\Console\Input\InputOption;
 
-class SshCommands extends DrushCommands
+class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+    use SiteAliasManagerAwareTrait;
 
     /**
      * Connect to a Drupal site's server via SSH.
@@ -21,7 +26,6 @@ class SshCommands extends DrushCommands
      * @usage drush @prod ssh git pull
      *   Run "git pull" on the Drupal root directory on the @prod site.
      * @aliases ssh
-     * @bootstrap DRUSH_BOOTSTRAP_NONE
      * @topics docs-aliases
      */
     public function ssh(array $args, $options = ['cd' => true])
@@ -35,26 +39,13 @@ class SshCommands extends DrushCommands
         }
         $command = implode(' ', $args);
 
-        if (!$alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
+        $alias = $this->siteAliasManager()->getSelf();
+        if ($alias->isNone()) {
             throw new \Exception('A site alias is required. The way you call ssh command has changed to `drush @alias ssh`.');
         }
-        $site = drush_sitealias_get_record($alias);
-        // If we have multiple sites, run ourselves on each one. Set context back when done.
-        if (isset($site['site-list'])) {
-            if (empty($command)) {
-                throw new \Exception('A command is required when multiple site aliases are specified.');
-                return;
-            }
-            foreach ($site['site-list'] as $alias_single) {
-                drush_set_context('DRUSH_TARGET_SITE_ALIAS', $alias_single);
-                drush_ssh_site_ssh($command);
-            }
-            drush_set_context('DRUSH_TARGET_SITE_ALIAS', $alias);
-            return;
-        }
 
-        if (!drush_sitealias_is_remote_site($alias)) {
-            // Local sites run their bash without SSH.
+        // Local sites run their bash without SSH.
+        if (!$alias->isRemote()) {
             $return = drush_invoke_process('@self', 'core-execute', array($command), array('escape' => false));
             return $return['object'];
         }
@@ -66,7 +57,8 @@ class SshCommands extends DrushCommands
             $command = 'bash -l';
             $interactive = true;
         }
-        $cmd = drush_shell_proc_build($site, $command, $cd, $interactive);
+
+        $cmd = drush_shell_proc_build($alias, $command, $cd, $interactive);
         $status = drush_shell_proc_open($cmd);
         if ($status != 0) {
             throw new \Exception(dt('An error @code occurred while running the command `@command`', array('@command' => $cmd, '@code' => $status)));

@@ -29,8 +29,8 @@ function drush_error_handler($errno, $message, $filename, $line, $context) {
   // drush_errors_on() and drush_errors_off().
   if ($errno & error_reporting()) {
     // By default we log notices.
-    $type = drush_get_option('php-notices', LogLevel::INFO);
-    $halt_on_error = drush_get_option('halt-on-error', (drush_drupal_major_version() != 6));
+    $type = \Drush\Drush::config()->get('runtime.php.notices', LogLevel::INFO);
+    $halt_on_error = \Drush\Drush::config()->get('runtime.php.halt-on-error', (drush_drupal_major_version() != 6));
 
     // Bitmask value that constitutes an error needing to be logged.
     $error = E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR;
@@ -396,10 +396,7 @@ function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, 
   // via the --php flag.
   if (substr($drush_path, -4) == ".php") {
     if (!isset($php)) {
-      $php = drush_get_option('php');
-      if (!isset($php)) {
-        $php = 'php';
-      }
+      $php = \Drush\Drush::config()->get('php', 'php');
     }
     if (isset($php) && ($php != "php")) {
       $additional_options .= ' --php=' . drush_escapeshellarg($php, $os);

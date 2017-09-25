@@ -29,6 +29,7 @@ use Drush\Log\LogLevel;
 use Psr\Log\AbstractLogger;
 use Robo\Log\RoboLogger;
 use Symfony\Component\Console\Output\OutputInterface;
+use Drush\Utils\StringUtils;
 
 class Logger extends RoboLogger
 {
@@ -42,10 +43,10 @@ class Logger extends RoboLogger
     {
         // Convert to old $entry array for b/c calls
         $entry = $context + [
-        'type' => $level,
-        'message' => $message,
-        'timestamp' => microtime(true),
-        'memory' => memory_get_usage(),
+            'type' => $level,
+            'message' => StringUtils::interpolate($message, $context),
+            'timestamp' => microtime(true),
+            'memory' => memory_get_usage(),
         ];
 
         // Drush\Log\Logger should take over all of the responsibilities
@@ -68,9 +69,11 @@ class Logger extends RoboLogger
             $green = "\033[1;32;40m\033[1m[%s]\033[0m";
         }
 
-        $verbose = drush_get_context('DRUSH_VERBOSE');
+        $verbose = \Drush\Drush::verbose();
         $debug = drush_get_context('DRUSH_DEBUG');
         $debugnotify = drush_get_context('DRUSH_DEBUG_NOTIFY');
+
+        $oldStyleEarlyExit = drush_get_context('DRUSH_LEGACY_CONTEXT');
 
         // Save the original level in the context name, then
         // map it to a standard log level.
@@ -92,7 +95,7 @@ class Logger extends RoboLogger
             case LogLevel::SUCCESS:
             case 'status': // Obsolete; only here in case contrib is using it.
                 // In quiet mode, suppress progress messages
-                if (drush_get_context('DRUSH_QUIET')) {
+                if ($oldStyleEarlyExit && drush_get_context('DRUSH_QUIET')) {
                     return true;
                 }
                 $type_msg = sprintf($green, $level);
@@ -103,7 +106,7 @@ class Logger extends RoboLogger
                 break;
             case 'message': // Obsolete; only here in case contrib is using it.
             case LogLevel::INFO:
-                if (!$verbose) {
+                if ($oldStyleEarlyExit && !$verbose) {
                     // print nothing. exit cleanly.
                     return true;
                 }
@@ -113,7 +116,7 @@ class Logger extends RoboLogger
             case LogLevel::DEBUG_NOTIFY:
                 $level = LogLevel::DEBUG; // Report 'debug', handle like 'preflight'
             case LogLevel::PREFLIGHT:
-                if (!$debugnotify) {
+                if ($oldStyleEarlyExit && !$debugnotify) {
                     // print nothing unless --debug AND --verbose. exit cleanly.
                     return true;
                 }
@@ -123,7 +126,7 @@ class Logger extends RoboLogger
             case LogLevel::BOOTSTRAP:
             case LogLevel::DEBUG:
             default:
-                if (!$debug) {
+                if ($oldStyleEarlyExit && !$debug) {
                     // print nothing. exit cleanly.
                     return true;
                 }
@@ -134,7 +137,7 @@ class Logger extends RoboLogger
 
         // When running in backend mode, log messages are not displayed, as they will
         // be returned in the JSON encoded associative array.
-        if (drush_get_context('DRUSH_BACKEND')) {
+        if (\Drush\Drush::backend()) {
             return;
         }
 
@@ -145,9 +148,9 @@ class Logger extends RoboLogger
         if ($debug) {
             $timer = sprintf('[%s sec, %s]', round($entry['timestamp']-DRUSH_REQUEST_TIME, 2), drush_format_size($entry['memory']));
             $entry['message'] = $entry['message'] . ' ' . $timer;
+            $message = $message . ' ' . $timer;
         }
 
-        $message = $entry['message'];
 /*
       // Drush-styled output
 

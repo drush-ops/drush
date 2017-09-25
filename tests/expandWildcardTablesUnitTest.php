@@ -9,7 +9,7 @@ use \Drush\Sql\SqlTableSelectionTrait;
   * @group base
   * @group sql
   */
-class WildcardUnitCase extends UnitUnishTestCase {
+class WildcardUnitCase extends \PHPUnit_Framework_TestCase {
 
   use SqlTableSelectionTrait;
 

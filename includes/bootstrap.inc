@@ -9,7 +9,7 @@ use Drush\Log\LogLevel;
  * Commands that only preflight, but do not bootstrap, should use
  * a bootstrap level of DRUSH_BOOTSTRAP_NONE.
  */
-define('DRUSH_BOOTSTRAP_NONE', -1);
+define('DRUSH_BOOTSTRAP_NONE', 0);
 
 /**
  * Use drush_bootstrap_max instead of drush_bootstrap_to_phase

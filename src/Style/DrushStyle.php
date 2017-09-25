@@ -7,6 +7,22 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class DrushStyle extends SymfonyStyle
 {
+    public function confirm($question, $default = true)
+    {
+        // Automatically accept confirmations if the --yes argument was supplied.
+        // These contexts are set in \Drush\Preflight\LegacyPreflight::setGlobalOptionContexts.
+        if (drush_get_context('DRUSH_AFFIRMATIVE')) {
+            $this->comment($question . ': yes.');
+            return true;
+        } // Automatically cancel confirmations if the --no argument was supplied.
+        elseif (drush_get_context('DRUSH_NEGATIVE')) {
+            $this->warning($question . ': no.');
+            return false;
+        }
+
+        $return = parent::confirm($question, $default);
+        return $return;
+    }
 
     /**
      * @param string $question
@@ -25,21 +41,5 @@ class DrushStyle extends SymfonyStyle
         } else {
             return array_search($return, $choices);
         }
-    }
-
-    public function confirm($question, $default = true)
-    {
-        // Automatically accept confirmations if the --yes argument was supplied.
-        if (drush_get_context('DRUSH_AFFIRMATIVE')) {
-            $this->comment($question . ': yes.');
-            return true;
-        } // Automatically cancel confirmations if the --no argument was supplied.
-        elseif (drush_get_context('DRUSH_NEGATIVE')) {
-            $this->warning($question . ': no.');
-            return false;
-        }
-
-        $return = parent::confirm($question, $default);
-        return $return;
     }
 }

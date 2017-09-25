@@ -12,6 +12,7 @@
 use Drush\Commands\core\StatusCommands;
 use Drush\Drush;
 use Drush\Log\LogLevel;
+use Drush\SiteAlias\AliasRecord;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -211,6 +212,18 @@ function drush_sitealias_valid_alias_format($alias) {
  *   An alias record, or empty if none found.
  */
 function drush_sitealias_get_record($alias, $alias_context = NULL) {
+  // If legacy code is still looking for an alias record this way, redirect the
+  // request to the alias manager.
+  if (Drush::hasService('site.alias.manager')) {
+    // TODO: probably need to check for 'not found'
+    $alias_record = Drush::aliasManager()->get($alias);
+    if (empty($alias_record)) {
+      return [];
+    }
+    $config_record = $alias_record->exportConfig();
+    $exported_config = $config_record->export();
+    return isset($exported_config['options']) ? $exported_config['options'] : [];
+  }
   // Check to see if the alias contains commas.  If it does, then
   // we will go ahead and make a site list record
   $alias_record = array();
@@ -1819,7 +1832,7 @@ function drush_sitealias_set_alias_context($site_alias_settings, $prefix = '') {
   $skip_list = drush_get_special_keys();
   // If 'php-options' are set in the alias, then we will force drush
   // to redispatch via the remote dispatch mechanism even if the target is localhost.
-  if ((array_key_exists('php-options', $site_alias_settings) || array_key_exists('php', $site_alias_settings)) && !drush_get_context('DRUSH_BACKEND', FALSE)) {
+  if ((array_key_exists('php-options', $site_alias_settings) || array_key_exists('php', $site_alias_settings)) && !\Drush\Drush::backend()) {
     if (!array_key_exists('remote-host', $site_alias_settings)) {
       $site_alias_settings['remote-host'] = 'localhost';
     }

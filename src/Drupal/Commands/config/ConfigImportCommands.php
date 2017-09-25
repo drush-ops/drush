@@ -169,7 +169,7 @@ class ConfigImportCommands extends DrushCommands
 
         // Determine $source_storage in partial case.
         $active_storage = $this->getConfigStorage();
-        if (drush_get_option('partial')) {
+        if ($options['partial']) {
             $replacement_storage = new StorageReplaceDataWrapper($active_storage);
             foreach ($source_storage->listAll() as $name) {
                 $data = $source_storage->read($name);
@@ -205,7 +205,7 @@ class ConfigImportCommands extends DrushCommands
             }
             drush_shell_exec('diff -x %s -u %s %s', '*.git', $temp_dir, $source_dir);
             $output = drush_shell_exec_output();
-            drush_print(implode("\n", $output));
+            $this->output()->writeln(implode("\n", $output));
         }
 
         if ($this->io()->confirm(dt('Import the listed configuration changes?'))) {

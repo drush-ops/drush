@@ -25,7 +25,7 @@ abstract class DrupalBoot extends BaseBoot
 
     public function confPath($require_settings = true, $reset = false)
     {
-        return confPath($require_settings = true, $reset = false);
+        return confPath($require_settings, $reset);
     }
 
     /**
@@ -37,7 +37,6 @@ abstract class DrupalBoot extends BaseBoot
      *     DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION = Load the site's settings.
      *     DRUSH_BOOTSTRAP_DRUPAL_DATABASE      = Initialize the database.
      *     DRUSH_BOOTSTRAP_DRUPAL_FULL          = Initialize Drupal fully.
-     *     DRUSH_BOOTSTRAP_DRUPAL_LOGIN         = Log into Drupal with a valid user.
      *
      * The value is the name of the method of the Boot class to
      * execute when bootstrapping.  Prior to bootstrapping, a "validate"
@@ -109,8 +108,8 @@ abstract class DrupalBoot extends BaseBoot
     public function commandDefaults()
     {
         return array(
-        'drupal dependencies' => array(),
-        'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+            'drupal dependencies' => array(),
+            'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
         );
     }
 
@@ -341,6 +340,7 @@ abstract class DrupalBoot extends BaseBoot
 
         $drupal_root = drush_set_context('DRUSH_DRUPAL_ROOT', drush_bootstrap_value('drupal_root'));
         chdir($drupal_root);
+        $this->logger->log(LogLevel::BOOTSTRAP, dt("Change working directory to !drupal_root", array('!drupal_root' => $drupal_root)));
         $version = drush_drupal_version();
         $major_version = drush_drupal_major_version();
 
@@ -350,8 +350,6 @@ abstract class DrupalBoot extends BaseBoot
         // in prior versions.
         drush_set_context('DRUSH_DRUPAL_CORE', $core);
         define('DRUSH_DRUPAL_CORE', $core);
-
-        _drush_preflight_global_options();
 
         $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal !version root directory at !drupal_root", array("!version" => $version, '!drupal_root' => $drupal_root)));
     }
@@ -368,13 +366,13 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapDrupalSiteValidate()
     {
-        // Define the selected conf path as soon as we have identified that
-        // we have selected a Drupal site.  Drush used to set this context
-        // during the drush_bootstrap_drush phase.
-        $drush_uri = _drush_bootstrap_selected_uri();
-        drush_set_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', drush_conf_path($drush_uri));
+        // TODO: uri not injected in traditional Drush dispatcher. This is not needed for Symfony Dispatch.
+        if (!$this->uri) {
+            $this->uri = _drush_bootstrap_selected_uri();
+        }
+        drush_set_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', drush_conf_path($this->uri));
 
-        $this->bootstrapDrupalSiteSetupServerGlobal($drush_uri);
+        $this->bootstrapDrupalSiteSetupServerGlobal();
         $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
         $confPath = drush_bootstrap_value('confPath', $this->confPath(true, true));
         return true; //$this->bootstrapDrupalSiteValidate_settings_present();
@@ -384,15 +382,15 @@ abstract class DrupalBoot extends BaseBoot
      * Set up the $_SERVER globals so that Drupal will see the same values
      * that it does when serving pages via the web server.
      */
-    public function bootstrapDrupalSiteSetupServerGlobal($drush_uri)
+    public function bootstrapDrupalSiteSetupServerGlobal()
     {
         // Fake the necessary HTTP headers that Drupal needs:
-        if ($drush_uri) {
-            $drupal_base_url = parse_url($drush_uri);
+        if ($this->uri) {
+            $drupal_base_url = parse_url($this->uri);
             // If there's no url scheme set, add http:// and re-parse the url
             // so the host and path values are set accurately.
             if (!array_key_exists('scheme', $drupal_base_url)) {
-                $drush_uri = 'http://' . $drush_uri;
+                $drush_uri = 'http://' . $this->uri;
                 $drupal_base_url = parse_url($drush_uri);
             }
             // Fill in defaults.
@@ -453,14 +451,11 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapDoDrupalSite()
     {
-        $drush_uri = drush_get_context('DRUSH_SELECTED_URI');
-        drush_set_context('DRUSH_URI', $drush_uri);
+        drush_set_context('DRUSH_URI', $this->uri);
         $site = drush_set_context('DRUSH_DRUPAL_SITE', drush_bootstrap_value('site'));
         $confPath = drush_set_context('DRUSH_DRUPAL_SITE_ROOT', drush_bootstrap_value('confPath'));
 
         $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal site !site at !site_root", array('!site' => $site, '!site_root' => $confPath)));
-
-        _drush_preflight_global_options();
     }
 
     /**
@@ -477,25 +472,9 @@ abstract class DrupalBoot extends BaseBoot
 
     /**
      * Initialize and load the Drupal configuration files.
-     *
-     * We process and store a normalized set of database credentials
-     * from the loaded configuration file, so we can validate them
-     * and access them easily in the future.
-     *
-     * Also override Drupal variables as per --variables option.
      */
     public function bootstrapDrupalConfiguration()
     {
-        global $conf;
-
-        $current_override = drush_get_option_list('variables');
-        foreach ($current_override as $name => $value) {
-            if (is_numeric($name) && (strpos($value, '=') !== false)) {
-                list($name, $value) = explode('=', $value, 2);
-            }
-            $override[$name] = $value;
-        }
-        $conf = is_array($conf) ? array_merge($conf, $override) : $conf;
     }
 
     /**
@@ -571,6 +550,9 @@ abstract class DrupalBoot extends BaseBoot
                 $prefix = array('default' => $prefix);
             }
             $tables = $sql->listTables();
+            if (!$tables) {
+                return false;
+            }
             foreach ((array)$required_tables as $required_table) {
                 $prefix_key = array_key_exists($required_table, $prefix) ? $required_table : 'default';
                 if (!in_array($prefix[$prefix_key] . $required_table, $tables)) {
@@ -603,19 +585,6 @@ abstract class DrupalBoot extends BaseBoot
     {
 
         $this->addLogger();
-
-        // Write correct install_profile to cache as needed. Used by _drush_find_commandfiles().
-        $cid = drush_cid_install_profile();
-        $install_profile = $this->getProfile();
-        if ($cached_install_profile = drush_cache_get($cid)) {
-            // We have a cached profile. Check it for correctness and save new value if needed.
-            if ($cached_install_profile->data != $install_profile) {
-                drush_cache_set($cid, $install_profile);
-            }
-        } else {
-            // No cached entry so write to cache.
-            drush_cache_set($cid, $install_profile);
-        }
 
         _drush_log_drupal_messages();
     }

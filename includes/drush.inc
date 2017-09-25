@@ -390,7 +390,6 @@ function drush_choice($options, $prompt = 'Enter a number.', $label = '!value', 
     }
   }
   drush_print_table($rows, FALSE, $widths);
-  drush_print_pipe(array_keys($options));
 
   // If the user specified --choice, then make an
   // automatic selection.  Cancel if the choice is
@@ -408,10 +407,10 @@ function drush_choice($options, $prompt = 'Enter a number.', $label = '!value', 
   }
 
   // If the user specified --no, then cancel; also avoid
-  // getting hung up waiting for user input in --pipe and
-  // backend modes.  If none of these apply, then wait,
+  // getting hung up waiting for user input in
+  // backend mode.  If none of these apply, then wait,
   // for user input and return the selected result.
-  if (!drush_get_context('DRUSH_NEGATIVE') && !drush_get_context('DRUSH_AFFIRMATIVE') && !drush_get_context('DRUSH_PIPE')) {
+  if (!drush_get_context('DRUSH_NEGATIVE') && !drush_get_context('DRUSH_AFFIRMATIVE')) {
     while ($line = trim(fgets(STDIN))) {
       if (array_key_exists($line, $selection_list)) {
         return $selection_list[$line];
@@ -615,11 +614,11 @@ function drush_op($callable) {
     drush_log(dt("Do not call drush_op('system'); use drush_op_system instead"), LogLevel::DEBUG);
   }
 
-  if (drush_get_context('DRUSH_VERBOSE') || drush_get_context('DRUSH_SIMULATE')) {
+  if (\Drush\Drush::verbose() || \Drush\Drush::simulate()) {
     drush_log(sprintf("Calling %s(%s)", $callable_string, implode(", ", $args_printed)), LogLevel::DEBUG);
   }
 
-  if (drush_get_context('DRUSH_SIMULATE')) {
+  if (\Drush\Drush::simulate()) {
     return TRUE;
   }
 

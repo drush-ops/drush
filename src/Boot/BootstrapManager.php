@@ -115,7 +115,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     }
 
     /**
-     * Return the framework root selected by the user.
+     * Return the framework uri selected by the user.
      */
     public function getUri()
     {
@@ -125,7 +125,11 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     public function setUri($uri)
     {
         // TODO: Throw if we already bootstrapped a framework?
-        $this->uri = $root;
+        // n.b. site-install needs to set the uri.
+        $this->uri = $uri;
+        if ($this->bootstrap) {
+            $this->bootstrap->setUri($this->getUri());
+        }
     }
 
     /**
@@ -155,9 +159,11 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         foreach ($this->bootstrapCandidates as $candidate) {
             if ($candidate->validRoot($path)) {
                 // This is not necessary when the autoloader is inflected
+                // TODO: The autoloader is inflected in the symfony dispatch, but not the traditional Drush dispatcher
                 if ($candidate instanceof AutoloaderAwareInterface) {
                     $candidate->setAutoloader($this->autoloader());
                 }
+                $candidate->setUri($this->getUri());
                 return $candidate;
             }
         }
@@ -255,8 +261,8 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
             $result = drush_bootstrap_error('DRUSH_NO_SITE', dt("We could not find an applicable site for that command."));
         }
 
-          // Once we start bootstrapping past the DRUSH_BOOTSTRAP_DRUSH phase, we
-          // will latch the bootstrap object, and prevent it from changing.
+        // Once we start bootstrapping past the DRUSH_BOOTSTRAP_DRUSH phase, we
+        // will latch the bootstrap object, and prevent it from changing.
         if ($phase > DRUSH_BOOTSTRAP_DRUSH) {
             $this->latch($bootstrap);
         }
@@ -270,7 +276,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
             if ($phase_index > $bootstrapped_phase) {
                 if ($result = $this->bootstrapValidate($phase_index)) {
                     if (method_exists($bootstrap, $current_phase) && !drush_get_error()) {
-                        drush_log(dt("Drush bootstrap phase : !function()", array('!function' => $current_phase)), LogLevel::BOOTSTRAP);
+                        $this->logger->log(LogLevel::BOOTSTRAP, 'Drush bootstrap phase: {function}()', ['function' => $current_phase]);
                         $bootstrap->{$current_phase}();
 
                         // Reset commandfile cache and find any new command files that are available during this bootstrap phase.
@@ -371,9 +377,15 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      */
     public function bootstrapToPhase($bootstrapPhase)
     {
+        $this->logger->log(LogLevel::BOOTSTRAP, 'Bootstrap to {phase}', ['phase' => $bootstrapPhase]);
         $phase = $this->bootstrap()->lookUpPhaseIndex($bootstrapPhase);
         if (!isset($phase)) {
             throw new \Exception(dt('Bootstrap phase !phase unknown.', ['!phase' => $bootstrapPhase]));
+        }
+        // Do not attempt to bootstrap to a phase that is unknown to the selected bootstrap object.
+        $phases = $this->bootstrapPhases();
+        if (!array_key_exists($phase, $phases) && ($phase >= 0)) {
+            return false;
         }
         return $this->bootstrapToPhaseIndex($phase);
     }
@@ -390,14 +402,11 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     public function bootstrapToPhaseIndex($max_phase_index)
     {
         if ($max_phase_index == DRUSH_BOOTSTRAP_MAX) {
-            // Bootstrap as far as we can without throwing an error, but log for
-            // debugging purposes.
-            drush_log(dt("Trying to bootstrap as far as we can."), 'debug');
             $this->bootstrapMax();
             return true;
         }
 
-        drush_log(dt("Bootstrap to phase !phase.", array('!phase' => $max_phase_index)), LogLevel::BOOTSTRAP);
+        $this->logger->log(LogLevel::BOOTSTRAP, 'Drush bootstrap phase {phase}', ['phase' => $max_phase_index]);
         $phases = $this->bootstrapPhases();
         $result = true;
 
@@ -408,11 +417,15 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                 break;
             }
 
+            $this->logger->log(LogLevel::BOOTSTRAP, 'Try to validate bootstrap phase {phase}', ['phase' => $max_phase_index]);
+
             if ($this->bootstrapValidate($phase_index)) {
                 if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE)) {
+                    $this->logger->log(LogLevel::BOOTSTRAP, 'Try to bootstrap at phase {phase}', ['phase' => $max_phase_index]);
                     $result = $this->doBootstrap($phase_index, $max_phase_index);
                 }
             } else {
+                $this->logger->log(LogLevel::BOOTSTRAP, 'Could not bootstrap at phase {phase}', ['phase' => $max_phase_index]);
                 $result = false;
                 break;
             }
@@ -432,9 +445,16 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      */
     public function bootstrapMax($max_phase_index = false)
     {
+        // Bootstrap as far as we can without throwing an error, but log for
+        // debugging purposes.
+
         $phases = $this->bootstrapPhases(true);
         if (!$max_phase_index) {
             $max_phase_index = count($phases);
+        }
+
+        if ($max_phase_index >= count($phases)) {
+            $this->logger->log(LogLevel::DEBUG, 'Trying to bootstrap as far as we can');
         }
 
         // Try to bootstrap to the maximum possible level, without generating errors.
@@ -452,7 +472,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                 // $this->bootstrapValidate() only logs successful validations. For us,
                 // knowing what failed can also be important.
                 $previous = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
-                drush_log(dt("Bootstrap phase !function() failed to validate; continuing at !current().", array('!function' => $current_phase, '!current' => $phases[$previous])), 'debug');
+                $this->logger->log(LogLevel::DEBUG, 'Bootstrap phase {function}() failed to validate; continuing at {current}()', ['function' => $current_phase, 'current' => $phases[$previous]]);
                 break;
             }
         }

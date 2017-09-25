@@ -33,13 +33,12 @@ class ImageCase extends CommandUnishTestCase {
 
     // Check that "drush image-flush --all" deletes all image styles by creating two different ones and testing its
     // existence afterwards.
-    // @todo uncomment this after https://github.com/drush-ops/drush/issues/2524
-//    $this->drush('image-derive', array('thumbnail', $logo), $options);
-//    $this->assertFileExists($thumbnail);
-//    $this->drush('image-derive', array('medium', $logo), $options);
-//    $this->assertFileExists($medium);
-//    $this->drush('image-flush', array(), array('all' => TRUE) + $options);
-//    $this->assertFileNotExists($thumbnail);
-//    $this->assertFileNotExists($medium);
+    $this->drush('image-derive', array('thumbnail', $logo), $options);
+    $this->assertFileExists($thumbnail);
+    $this->drush('image-derive', array('medium', $logo), $options);
+    $this->assertFileExists($medium);
+    $this->drush('image-flush', array(), array('all' => null) + $options);
+    $this->assertFileNotExists($thumbnail);
+    $this->assertFileNotExists($medium);
   }
 }

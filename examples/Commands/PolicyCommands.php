@@ -40,7 +40,7 @@ class PolicyCommands extends DrushCommands {
    */
   public function validateUpdateDb(CommandData $commandData) {
     if (!$commandData->input()->getOption('secret') == 'mysecret') {
-      throw new \Exception(dt('UpoateDb command requires a secret token per site policy.'));
+      throw new \Exception(dt('UpdateDb command requires a secret token per site policy.'));
     }
   }
 

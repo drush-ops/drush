@@ -28,7 +28,6 @@ class TopicCommands extends DrushCommands
      * @remote-tty
      * @aliases topic
      * @topics docs-readme
-     * @complete \Drush\Commands\core\TopicCommands::complete
      */
     public function topic($topic_name)
     {
@@ -94,10 +93,5 @@ class TopicCommands extends DrushCommands
             }
         }
         return $topics;
-    }
-
-    public function complete()
-    {
-        return array('values' => array_keys(self::getAllTopics()));
     }
 }

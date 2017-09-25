@@ -20,7 +20,7 @@ class ListCommands extends DrushCommands
      * @command list
      * @option filter Restrict command list to those commands defined in the specified file. Omit value to choose from a list of names.
      * @option raw Show a simple table of command names and descriptions.
-     * @bootstrap DRUSH_BOOTSTRAP_MAX
+     * @bootstrap max
      * @usage drush list
      *   List all commands.
      * @usage drush list --filter=devel_generate
@@ -30,7 +30,7 @@ class ListCommands extends DrushCommands
      *
      * @return \DOMDocument
      */
-    public function helpList($filter, $options = ['format' => 'listcli', 'raw' => false, 'filter' => null])
+    public function helpList($filter = null, $options = ['format' => 'listcli', 'raw' => false, 'filter' => null])
     {
         $application = Drush::getApplication();
         annotation_adapter_add_legacy_commands_to_application($application);
@@ -123,35 +123,9 @@ class ListCommands extends DrushCommands
         ->writeln($preamble);
         $output->writeln('');
 
-        // For now ,this table does not need TableFormatter.
-        $table = new Table($output);
-        $table->setStyle('compact');
-        $global_options_help = drush_get_global_options(true);
-        $options = $application->getDefinition()->getOptions();
-        // Only display this table for Drush help, not 'generate' command.
-        if ($application->getName() == 'Drush Commandline Tool') {
-            $table->addRow([new TableCell('Global options. See `drush topic core-global-options` for the full list.', array('colspan' => 2))]);
-            foreach ($global_options_help as $key => $help) {
-                $data = [
-                    'name' => '--' . $options[$key]->getName(),
-                    'description' => $help['description'],
-                    // Not using $options[$key]->getDescription() as description is too long for -v
-                    'accept_value' => $options[$key]->acceptValue(),
-                    'is_value_required' => $options[$key]->isValueRequired(),
-                    'shortcut' => $options[$key]->getShortcut(),
-                ];
-                $table->addRow([
-                    HelpCLIFormatter::formatOptionKeys($data),
-                    HelpCLIFormatter::formatOptionDescription($data)
-                ]);
-            }
-            $table->addRow(['', '']);
-            $table->render();
-        }
-
         $rows[] = ['Available commands:', ''];
         foreach ($namespaced as $namespace => $list) {
-            $rows[] = [$namespace . ':', ''];
+            $rows[] = ['<comment>' . $namespace . ':</comment>', ''];
             foreach ($list as $name => $command) {
                 $description = $command->getDescription();
                 $aliases = implode(', ', $command->getAliases());

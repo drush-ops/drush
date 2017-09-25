@@ -170,18 +170,6 @@ class DocsCommands extends DrushCommands
     }
 
     /**
-     * Drush API
-     *
-     * @command docs-api
-     * @hidden
-     * @topic
-     */
-    public function api()
-    {
-        self::printFile(DRUSH_BASE_PATH. 'docs//drush.api.php');
-    }
-
-    /**
      * Explaining how Drush manages command line options and configuration file settings.
      *
      * @command docs-context

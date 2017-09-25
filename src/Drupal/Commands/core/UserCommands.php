@@ -7,7 +7,7 @@ use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\user\Entity\User;
 use Drush\Commands\DrushCommands;
-use Drush\Log\LogLevel;
+use Drush\Utils\StringUtils;
 
 class UserCommands extends DrushCommands
 {
@@ -58,19 +58,19 @@ class UserCommands extends DrushCommands
     public function information($names = '', $options = ['format' => 'table', 'uid' => '', 'mail' => '', 'fields' => ''])
     {
         $accounts = [];
-        if ($mails = _convert_csv_to_array($options['mail'])) {
+        if ($mails = StringUtils::csvToArray($options['mail'])) {
             foreach ($mails as $mail) {
                 if ($account = user_load_by_mail($mail)) {
                     $accounts[$account->id()] = $account;
                 }
             }
         }
-        if ($uids = _convert_csv_to_array($options['uid'])) {
+        if ($uids = StringUtils::csvToArray($options['uid'])) {
             if ($loaded = User::loadMultiple($uids)) {
                 $accounts += $loaded;
             }
         }
-        if ($names = _convert_csv_to_array($names)) {
+        if ($names = StringUtils::csvToArray($names)) {
             foreach ($names as $name) {
                 if ($account = user_load_by_name($name)) {
                     $accounts[$account->id()] = $account;
@@ -110,7 +110,7 @@ class UserCommands extends DrushCommands
      */
     public function block($names)
     {
-        if ($names = _convert_csv_to_array($names)) {
+        if ($names = StringUtils::csvToArray($names)) {
             foreach ($names as $name) {
                 if ($account = user_load_by_name($name)) {
                     $account->block();
@@ -135,7 +135,7 @@ class UserCommands extends DrushCommands
      */
     public function unblock($names)
     {
-        if ($names = _convert_csv_to_array($names)) {
+        if ($names = StringUtils::csvToArray($names)) {
             foreach ($names as $name) {
                 if ($account = user_load_by_name($name)) {
                     $account->activate();
@@ -157,13 +157,12 @@ class UserCommands extends DrushCommands
      * @param string $role The name of the role to add
      * @param string $names A comma delimited list user names.
      * @aliases urol
-     * @complete \Drush\Commands\core\UserCommands::complete
      * @usage drush user-add-role "power user" user3
      *   Add the "power user" role to user3
      */
     public function addRole($role, $names)
     {
-        if ($names = _convert_csv_to_array($names)) {
+        if ($names = StringUtils::csvToArray($names)) {
             foreach ($names as $name) {
                 if ($account = user_load_by_name($name)) {
                     $account->addRole($role);
@@ -188,13 +187,12 @@ class UserCommands extends DrushCommands
      * @param string $role The name of the role to add
      * @param string $names A comma delimited list of user names.
      * @aliases urrol
-     * @complete \Drush\Commands\core\UserCommands::complete
      * @usage drush user-remove-role "power user" user3
      *   Remove the "power user" role from user3
      */
     public function removeRole($role, $names)
     {
-        if ($names = _convert_csv_to_array($names)) {
+        if ($names = StringUtils::csvToArray($names)) {
             foreach ($names as $name) {
                 if ($account = user_load_by_name($name)) {
                     $account->removeRole($role);
@@ -225,13 +223,13 @@ class UserCommands extends DrushCommands
     public function create($name, $options = ['password' => '', 'mail' => ''])
     {
         $new_user = array(
-        'name' => $name,
-        'pass' => $options['password'],
-        'mail' => $options['mail'],
-        'access' => '0',
-        'status' => 1,
+            'name' => $name,
+            'pass' => $options['password'],
+            'mail' => $options['mail'],
+            'access' => '0',
+            'status' => 1,
         );
-        if (!drush_get_context('DRUSH_SIMULATE')) {
+        if (!\Drush\Drush::simulate()) {
             if ($account = User::create($new_user)) {
                 $account->save();
                 drush_backend_set_result($this->infoArray($account));
@@ -275,7 +273,7 @@ class UserCommands extends DrushCommands
      */
     public function cancel($names, $options = ['delete-content' => false])
     {
-        if ($names = _convert_csv_to_array($names)) {
+        if ($names = StringUtils::csvToArray($names)) {
             foreach ($names as $name) {
                 if ($account = user_load_by_name($name)) {
                     if ($options['delete-content']) {
@@ -308,11 +306,10 @@ class UserCommands extends DrushCommands
     public function password($name, $password)
     {
         if ($account = user_load_by_name($name)) {
-            if (!drush_get_context('DRUSH_SIMULATE')) {
+            if (!\Drush\Drush::simulate()) {
                 $account->setpassword($password);
                 $account->save();
-                $this->logger()
-                ->success(dt('Changed password for !name.', array('!name' => $name)));
+                $this->logger()->success(dt('Changed password for !name.', array('!name' => $name)));
             }
         } else {
             throw new \Exception(dt('Unable to load user: !user', array('!user' => $name)));
@@ -342,22 +339,22 @@ class UserCommands extends DrushCommands
     public function infoArray($account)
     {
         return array(
-        'uid' => $account->id(),
-        'name' => $account->getUsername(),
-        'password' => $account->getPassword(),
-        'mail' => $account->getEmail(),
-        'user_created' => $account->getCreatedTime(),
-        'created' => format_date($account->getCreatedTime()),
-        'user_access' => $account->getLastAccessedTime(),
-        'access' => format_date($account->getLastAccessedTime()),
-        'user_login' => $account->getLastLoginTime(),
-        'login' => format_date($account->getLastLoginTime()),
-        'user_status' => $account->get('status')->value,
-        'status' => $account->isActive() ? 'active' : 'blocked',
-        'timezone' => $account->getTimeZone(),
-        'roles' => $account->getRoles(),
-        'langcode' => $account->getPreferredLangcode(),
-        'uuid' => $account->uuid->value,
+            'uid' => $account->id(),
+            'name' => $account->getUsername(),
+            'password' => $account->getPassword(),
+            'mail' => $account->getEmail(),
+            'user_created' => $account->getCreatedTime(),
+            'created' => format_date($account->getCreatedTime()),
+            'user_access' => $account->getLastAccessedTime(),
+            'access' => format_date($account->getLastAccessedTime()),
+            'user_login' => $account->getLastLoginTime(),
+            'login' => format_date($account->getLastLoginTime()),
+            'user_status' => $account->get('status')->value,
+            'status' => $account->isActive() ? 'active' : 'blocked',
+            'timezone' => $account->getTimeZone(),
+            'roles' => $account->getRoles(),
+            'langcode' => $account->getPreferredLangcode(),
+            'uuid' => $account->uuid->value,
         );
     }
 }

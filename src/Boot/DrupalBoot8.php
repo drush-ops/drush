@@ -2,6 +2,7 @@
 
 namespace Drush\Boot;
 
+use Drush\Log\DrushLog;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Drupal\Core\DrupalKernel;
@@ -78,23 +79,23 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
     public function addLogger()
     {
-        // If we're running on Drupal 8 or later, we provide a logger which will send
+        // Provide a logger which sends
         // output to drush_log(). This should catch every message logged through every
         // channel.
         $container = \Drupal::getContainer();
         $parser = $container->get('logger.log_message_parser');
 
         $drushLogger = Drush::logger();
-        $logger = new \Drush\Log\DrushLog($parser, $drushLogger);
+        $logger = new DrushLog($parser, $drushLogger);
         $container->get('logger.factory')->addLogger($logger);
     }
 
     public function contribModulesPaths()
     {
         return array(
-        $this->confPath() . '/modules',
-        'sites/all/modules',
-        'modules',
+            $this->confPath() . '/modules',
+            'sites/all/modules',
+            'modules',
         );
     }
 
@@ -105,9 +106,9 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     public function contribThemesPaths()
     {
         return array(
-        $this->confPath() . '/themes',
-        'sites/all/themes',
-        'themes',
+            $this->confPath() . '/themes',
+            'sites/all/themes',
+            'themes',
         );
     }
 
@@ -180,7 +181,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         foreach ($serviceCommandlist->getCommandList() as $command) {
             if (!$this->commandIgnored($command, $ignored_modules)) {
                 $this->inflect($command);
-                $this->logger->log(LogLevel::DEBUG_NOTIFY, dt('Add a command: !name', ['!name' => $command->getName()]));
+                $this->logger->log(LogLevel::DEBUG, dt('Add a command: !name', ['!name' => $command->getName()]));
                 annotationcommand_adapter_cache_module_console_commands($command);
             }
         }
@@ -189,7 +190,6 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         foreach ($serviceCommandlist->getCommandList() as $commandhandler) {
             if (!$this->commandIgnored($commandhandler, $ignored_modules)) {
                 $this->inflect($commandhandler);
-                $this->logger->log(LogLevel::DEBUG_NOTIFY, dt('Add a commandhandler: !name', ['!name' => get_class($commandhandler)]));
                 annotationcommand_adapter_cache_module_service_commands($commandhandler);
             }
         }

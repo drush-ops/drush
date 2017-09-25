@@ -2,6 +2,7 @@
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 
 class EditCommands extends DrushCommands
 {
@@ -10,7 +11,7 @@ class EditCommands extends DrushCommands
      * Edit drushrc, site alias, and Drupal settings.php files.
      *
      * @command core-edit
-     * @bootstrap DRUSH_BOOTSTRAP_MAX
+     * @bootstrap max
      * @param $filter A substring for filtering the list of files. Omit this argument to choose from loaded files.
      * @optionset_get_editor
      * @usage drush core-config
@@ -26,7 +27,6 @@ class EditCommands extends DrushCommands
      * @usage drush core-config --choice=2
      *  Edit the second file in the choice list.
      * @aliases conf, config
-     * @complete \Drush\Commands\core\EditCommands::complete
      */
     public function edit($filter = null)
     {
@@ -84,7 +84,7 @@ class EditCommands extends DrushCommands
                 $aliases_header = array('aliases' => '-- Aliases --');
             }
         }
-        if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
+        if ($site_root = Drush::bootstrap()->confPath()) {
             $path = realpath($site_root . '/settings.php');
             $drupal[$path] = $path;
             if (file_exists($site_root . '/settings.local.php')) {

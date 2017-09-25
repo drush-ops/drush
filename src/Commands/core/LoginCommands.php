@@ -3,9 +3,16 @@ namespace Drush\Commands\core;
 
 use Drupal\user\Entity\User;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
+use Drush\Exec\ExecTrait;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 
-class LoginCommands extends DrushCommands
+class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+
+    use SiteAliasManagerAwareTrait;
+    use ExecTrait;
 
     /**
      * Display a one time login link for user ID 1, or another user.
@@ -16,7 +23,7 @@ class LoginCommands extends DrushCommands
      * @option name A user name to log in as. If not provided, defaults to uid=1.
      * @option browser Optional value denotes which browser to use (defaults to operating system default). Use --no-browser to suppress opening a browser.
      * @option redirect-port A custom port for redirecting to (e.g., when running within a Vagrant environment)
-     * @bootstrap DRUSH_BOOTSTRAP_NONE
+     * @bootstrap none
      * @handle-remote-commands
      * @aliases uli
      * @usage drush user-login
@@ -26,14 +33,14 @@ class LoginCommands extends DrushCommands
      * @usage drush user-login --browser=firefox --mail=drush@example.org
      *   Open firefox web browser, and login as the user with the e-mail address drush@example.org.
      */
-    public function login($path = '', $options = ['name' => '1', 'browser' => '', 'redirect-port' => ''])
+    public function login($path = '', $options = ['name' => '1', 'browser' => true, 'redirect-port' => ''])
     {
 
         // Redispatch if called against a remote-host so a browser is started on the
         // the *local* machine.
-        $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
-        if (drush_sitealias_is_remote_site($alias)) {
-            $return = drush_invoke_process($alias, 'user-login', [$options['name']], drush_redispatch_get_options(), array('integrate' => false));
+        $aliasRecord = $this->siteAliasManager()->getSelf();
+        if ($aliasRecord->isRemote()) {
+            $return = drush_invoke_process($aliasRecord, 'user-login', [$options['name']], Drush::redispatchOptions(), array('integrate' => false));
             if ($return['error_status']) {
                 throw new \Exception('Unable to execute user login.');
             } else {
@@ -41,9 +48,7 @@ class LoginCommands extends DrushCommands
             }
         } else {
             if (!drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
-                // Fail gracefully if unable to bootstrap Drupal.
-                // drush_bootstrap() has already logged an error.
-                return false;
+                throw new \Exception(dt('Unable to bootstrap Drupal.'));
             }
 
             if ($options['name'] == 1) {
@@ -56,8 +61,8 @@ class LoginCommands extends DrushCommands
                 $link .= '?destination=' . $path;
             }
         }
-        $port = drush_get_option('redirect-port', false);
-        drush_start_browser($link, false, $port);
+        $port = $options['redirect-port'];
+        $this->startBrowser($link, false, $port, $options['browser']);
         // Use an array for backwards compat.
         drush_backend_set_result([$link]);
         return $link;
