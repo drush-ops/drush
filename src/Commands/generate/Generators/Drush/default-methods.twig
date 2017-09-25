@@ -25,7 +25,8 @@
    *
    * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
    */
-  public function token($options = ['format' => 'table']) {
+  public function token($options = ['format' => 'table'])
+  {
     $all = \Drupal::token()->getInfo();
     foreach ($all['tokens'] as $group => $tokens) {
       foreach ($tokens as $key => $token) {

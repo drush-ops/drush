@@ -15,7 +15,8 @@
 {% endfor %}
    * @aliases {{ command.aliases|join(',')  }}
    */
-  public function {{ command.method }}({{ command.argumentsConcat|raw }}{{ command.optionsConcat|raw }}) {
+  public function {{ command.method }}({{ command.argumentsConcat|raw }}{{ command.optionsConcat|raw }})
+  {
 
   }
 
