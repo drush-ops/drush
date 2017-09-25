@@ -86,7 +86,7 @@ class Environment
      */
     public function exportConfigData()
     {
-        // TODO: decide how to organize / name this heirarchy.
+        // TODO: decide how to organize / name this hierarchy.
         // i.e. which is better:
         //   $config->get('drush.base-dir')
         //     - or -
