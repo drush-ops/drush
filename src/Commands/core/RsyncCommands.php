@@ -53,7 +53,6 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      *   Customize how rsync connects with remote host via SSH. rsync options like --delete are placed after a --.
      * @aliases rsync
      * @topics docs-aliases
-     * @complete \Drush\Commands\CompletionCommands::completeSiteAliases
      */
     public function rsync($source, $destination, array $extra, $options = ['exclude-paths' => null, 'include-paths' => null, 'mode' => 'akz'])
     {

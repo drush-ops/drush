@@ -22,7 +22,6 @@ class ConfigPullCommands extends DrushCommands
      * @usage drush config-pull @prod @self --label=vcs
      *   Export config from @prod and transfer to the 'vcs' config directory of current site.
      * @aliases cpull
-     * @complete \Drush\Commands\CompletionCommands::completeSiteAliases
      * @topics docs-aliases,docs-config-exporting
      *
      */

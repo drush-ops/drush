@@ -226,7 +226,6 @@ class ViewsCommands extends DrushCommands
      *   Show a count of my_view:page_1 where the first contextual filter value is 3.
      * @usage drush views-execute my_view page_1 3,foo
      *   Show the rendered HTML of my_view:page_1 where the first two contextual filter values are 3 and 'foo' respectively.
-     * @complete \Drush\Commands\core\ViewsCommands::complete
      * @validate-entity-load view view_name
      * @aliases vex
      * @validate-module-enabled views
@@ -304,7 +303,6 @@ class ViewsCommands extends DrushCommands
      * @validate-entity-load view views
      * @usage drush ven frontpage,taxonomy_term
      *   Enable the frontpage and taxonomy_term views.
-     * @complete \Drush\Commands\core\ViewsCommands::complete
      * @aliases ven
      */
     public function enable($views)
@@ -327,7 +325,6 @@ class ViewsCommands extends DrushCommands
      * @param string $views A comma delimited list of view names.
      * @usage drush vdis frontpage taxonomy_term
      *   Disable the frontpage and taxonomy_term views.
-     * @complete \Drush\Commands\core\ViewsCommands::complete
      * @aliases vdis
      */
     public function disable($views)
