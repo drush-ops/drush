@@ -17,35 +17,6 @@ class coreCase extends CommandUnishTestCase {
     }
   }
 
-  /**
-   * Test standalone php-script scripts. Assure that script args and options work.
-   */
-  public function testStandaloneScript() {
-    $this->markTestSkipped('Standalone scripts not implemented yet.');
-    if ($this->is_windows()) {
-      $this->markTestSkipped('Standalone scripts not currently available on Windows.');
-    }
-
-    $this->drush('version', array(), array('field' => 'drush-version'));
-    $standard = $this->getOutput();
-
-    // Write out a hellounish.script into the sandbox. The correct /path/to/drush
-    // is in the shebang line.
-    $filename = 'hellounish.script';
-    $data = '#!/usr/bin/env [PATH-TO-DRUSH]
-
-$arg = drush_shift();
-drush_invoke("version", $arg);
-';
-    $data = str_replace('[PATH-TO-DRUSH]', self::getDrush(), $data);
-    $script = self::getSandbox() . '/' . $filename;
-    file_put_contents($script, $data);
-    chmod($script, 0755);
-    $this->execute("$script drush_version --pipe");
-    $standalone = $this->getOutput();
-    $this->assertEquals($standard, $standalone);
-  }
-
   function testDrupalDirectory() {
     $root = $this->webroot();
     $sitewide = $this->drupalSitewideDirectory();
