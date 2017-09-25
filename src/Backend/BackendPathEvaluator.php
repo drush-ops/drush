@@ -72,7 +72,7 @@ class BackendPathEvaluator
     public function request(AliasRecord $aliasRecord, $pathAlias)
     {
         // TODO: Stop using `status` here and start using `drupal-directory`
-        $values = drush_invoke_process($aliasRecord, "core-status", [], ['project' => $pathAlias], ['integrate' => FALSE, 'override-simulated' => TRUE]);
+        $values = drush_invoke_process($aliasRecord, "core-status", [], ['project' => $pathAlias], ['integrate' => false, 'override-simulated' => true]);
         $statusValues = $values['object'];
         if (isset($statusValues[$pathAlias])) {
             return $statusValues[$pathAlias];

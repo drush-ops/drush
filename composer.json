@@ -59,8 +59,8 @@
     }
   },
   "scripts": {
-    "cs": "phpcs --standard=PSR2 --ignore=PEAR.Functions.ValidDefaultValue -n src",
-    "cbf": "phpcbf --standard=PSR2 --ignore=PEAR.Functions.ValidDefaultValue -n src",
+    "cs": "phpcs -n src",
+    "cbf": "phpcbf -n src",
     "lint": [
       "find includes -name '*.inc' -print0 | xargs -0 -n1 php -l",
       "find src -name '*.php' -print0 | xargs -0 -n1 php -l"
