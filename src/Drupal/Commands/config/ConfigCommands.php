@@ -5,6 +5,7 @@ use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\FileStorage;
+use Drupal\Core\Config\StorageInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Symfony\Component\Console\Input\InputInterface;
@@ -310,6 +311,39 @@ class ConfigCommands extends DrushCommands
         if ($config->isNew()) {
             $msg = dt('Config !name does not exist', array('!name' => $config_name));
             return new CommandError($msg);
+        }
+    }
+
+    /**
+     * Copies configuration objects from source storage to target storage.
+     *
+     * @param \Drupal\Core\Config\StorageInterface $source
+     *   The source config storage service.
+     * @param \Drupal\Core\Config\StorageInterface $destination
+     *   The destination config storage service.
+     */
+    public static function copyConfig(StorageInterface $source, StorageInterface $destination)
+    {
+        // Make sure the source and destination are on the default collection.
+        if ($source->getCollectionName() != StorageInterface::DEFAULT_COLLECTION) {
+            $source = $source->createCollection(StorageInterface::DEFAULT_COLLECTION);
+        }
+        if ($destination->getCollectionName() != StorageInterface::DEFAULT_COLLECTION) {
+            $destination = $destination->createCollection(StorageInterface::DEFAULT_COLLECTION);
+        }
+
+        // Export all the configuration.
+        foreach ($source->listAll() as $name) {
+            $destination->write($name, $source->read($name));
+        }
+
+        // Export configuration collections.
+        foreach ($source->getAllCollectionNames() as $collection) {
+            $source = $source->createCollection($collection);
+            $destination = $destination->createCollection($collection);
+            foreach ($source->listAll() as $name) {
+                $destination->write($name, $source->read($name));
+            }
         }
     }
 }

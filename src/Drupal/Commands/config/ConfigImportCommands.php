@@ -160,10 +160,8 @@ class ConfigImportCommands extends DrushCommands
     {
         // Determine source directory.
         if ($target = $options['source']) {
-            $source_dir = $target;
             $source_storage = new FileStorage($target);
         } else {
-            $source_dir = \config_get_config_directory($label ?: CONFIG_SYNC_DIRECTORY);
             $source_storage = $this->getConfigStorageSync();
         }
 
@@ -194,16 +192,18 @@ class ConfigImportCommands extends DrushCommands
             }
             ConfigCommands::configChangesTablePrint($change_list);
         } else {
-            // Copy active storage to the temporary directory.
-            $temp_dir = drush_tempdir();
-            $temp_storage = new FileStorage($temp_dir);
-            $source_dir_storage = new FileStorage($source_dir);
-            foreach ($source_dir_storage->listAll() as $name) {
-                if ($data = $active_storage->read($name)) {
-                    $temp_storage->write($name, $data);
-                }
-            }
-            drush_shell_exec('diff -x %s -u %s %s', '*.git', $temp_dir, $source_dir);
+            // Copy active storage to a temporary directory.
+            $temp_active_dir = drush_tempdir();
+            $temp_active_storage = new FileStorage($temp_active_dir);
+            ConfigCommands::copyConfig($active_storage, $temp_active_storage);
+
+            // Copy sync storage to a temporary directory as it could be
+            // modified by the partial option or by decorated sync storages.
+            $temp_sync_dir = drush_tempdir();
+            $temp_sync_storage = new FileStorage($temp_sync_dir);
+            ConfigCommands::copyConfig($source_storage, $temp_sync_storage);
+
+            drush_shell_exec('diff -u %s %s', $temp_active_dir, $temp_sync_dir);
             $output = drush_shell_exec_output();
             $this->output()->writeln(implode("\n", $output));
         }
