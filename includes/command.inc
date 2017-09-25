@@ -6,6 +6,7 @@ use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drush\Command\DrushInputAdapter;
+use Drush\SiteAlias\AliasRecord;
 use Consolidation\AnnotatedCommand\CommandData;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -109,6 +110,9 @@ function drush_invoke($command, $arguments = array()) {
  * is one of the key Drush APIs.  See http://drupal.org/node/1152908
  */
 function drush_invoke_process($site_alias_record, $command_name, $commandline_args = array(), $commandline_options = array(), $backend_options = TRUE) {
+  if ($site_alias_record instanceof AliasRecord) {
+    $site_alias_record = $site_alias_record->legacyRecord();
+  }
   if (is_array($site_alias_record) && array_key_exists('site-list', $site_alias_record)) {
     list($site_alias_records, $not_found) = drush_sitealias_resolve_sitespecs($site_alias_record['site-list']);
     if (!empty($not_found)) {

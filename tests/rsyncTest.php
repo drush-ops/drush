@@ -40,7 +40,6 @@ class rsyncCase extends CommandUnishTestCase {
   }
 
   public function testRsyncPathAliases() {
-    $this->markTestSkipped('rsync command path alias replacement not working yet.');
 
     $sites = $this->setUpDrupal(2, TRUE);
 
@@ -93,6 +92,28 @@ class rsyncCase extends CommandUnishTestCase {
     $output = preg_replace('#  *#', ' ', $output);
     // Get rid of any full paths in the output
     $output = str_replace(__DIR__, '__DIR__', $output);
+    $this->assertEquals($expected, $output);
+  }
+
+  /**
+   * Test to see if rsync @site:%files calculates the %files path correctly.
+   * This tests the non-optimized code path in drush_sitealias_resolve_path_references.
+   */
+  function testRsyncAndPercentFiles() {
+    $this->markTestSkipped('rsync path aliases (e.g. %files) not implemented yet.');
+    $root = $this->webroot();
+    $site = key($this->getSites());
+    $options = array(
+      'root' => $root,
+      'uri' => key($this->getSites()),
+      'simulate' => NULL,
+      'yes' => NULL,
+    );
+    $this->drush('core-rsync', array("@$site:%files", "/tmp"), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1;');
+    $output = $this->getOutput();
+    $level = $this->log_level();
+    $pattern = in_array($level, array('verbose', 'debug')) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz %s /tmp);";
+    $expected = sprintf($pattern, $this->webroot(). "/sites/$site/files");
     $this->assertEquals($expected, $output);
   }
 }

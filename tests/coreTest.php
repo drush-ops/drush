@@ -18,50 +18,6 @@ class coreCase extends CommandUnishTestCase {
   }
 
   /**
-   * Test to see if rsync @site:%files calculates the %files path correctly.
-   * This tests the non-optimized code path in drush_sitealias_resolve_path_references.
-   */
-  function testRsyncAndPercentFiles() {
-    $this->markTestSkipped('rsync path aliases (e.g. %files) not implemented yet.');
-    $root = $this->webroot();
-    $site = key($this->getSites());
-    $options = array(
-      'root' => $root,
-      'uri' => key($this->getSites()),
-      'simulate' => NULL,
-      'yes' => NULL,
-    );
-    $this->drush('core-rsync', array("@$site:%files", "/tmp"), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1;');
-    $output = $this->getOutput();
-    $level = $this->log_level();
-    $pattern = in_array($level, array('verbose', 'debug')) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz %s /tmp);";
-    $expected = sprintf($pattern, $this->webroot(). "/sites/$site/files");
-    $this->assertEquals($expected, $output);
-  }
-
-  /**
-   * Test to see if the optimized code path in drush_sitealias_resolve_path_references
-   * that avoids a call to backend invoke when evaluating %files works.
-   */
-  function testPercentFilesOptimization() {
-    $this->markTestSkipped('rsync path aliases (e.g. %files) not implemented yet.');
-    $root = $this->webroot();
-    $site = key($this->getSites());
-    $options = array(
-      'root' => $root,
-      'uri' => key($this->getSites()),
-      'simulate' => NULL,
-      'yes' => NULL,
-      // 'strict' => 0, // invoke from script: do not verify options
-    );
-    $php = '$a=drush_sitealias_get_record("@' . $site . '"); drush_sitealias_resolve_path_references($a, "%files"); print_r($a["path-aliases"]["%files"]);';
-    $this->drush('ev', array($php), $options);
-    $output = $this->getOutput();
-    $expected = "sites/dev/files";
-    $this->assertEquals($expected, $output);
-  }
-
-  /**
    * Test standalone php-script scripts. Assure that script args and options work.
    */
   public function testStandaloneScript() {

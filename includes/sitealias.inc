@@ -12,6 +12,7 @@
 use Drush\Commands\core\StatusCommands;
 use Drush\Drush;
 use Drush\Log\LogLevel;
+use Drush\SiteAlias\AliasRecord;
 use Webmozart\PathUtil\Path;
 
 /**
