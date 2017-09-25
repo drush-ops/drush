@@ -3,11 +3,13 @@ namespace Drush\Commands\core;
 
 use Drupal\Core\Url;
 use Drush\Commands\DrushCommands;
+use Drush\Exec\ExecTrait;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 
 class BrowseCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+    use ExecTrait;
     use SiteAliasManagerAwareTrait;
 
     /**
@@ -49,7 +51,7 @@ class BrowseCommands extends DrushCommands implements SiteAliasManagerAwareInter
             $link = Url::fromUserInput('/' . $path, ['absolute' => true])->toString();
         }
 
-        drush_start_browser($link, false, $options['redirect-port']);
+        $this->startBrowser($link, false, $options['redirect-port']);
         return $link;
     }
 }
