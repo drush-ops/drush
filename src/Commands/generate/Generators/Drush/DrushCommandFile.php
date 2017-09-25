@@ -61,7 +61,7 @@ class DrushCommandFile extends BaseGenerator
             if ($command['arguments']) {
                 foreach ($command['arguments'] as $aName => $description) {
                     // Prepend name with a '$' and replace dashes.
-                    $command['arguments']['$' . Utils::camelize(str_replace('-', '_', $aName)] = $description;
+                    $command['arguments']['$' . Utils::camelize(str_replace('-', '_', $aName))] = $description;
                     unset($command['arguments'][$aName]);
                 }
                 if ($concat = implode(', ', array_keys($command['arguments']))) {
