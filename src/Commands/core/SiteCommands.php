@@ -32,7 +32,6 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * @usage drush site-set
      *   Without an argument, any existing site becomes unset.
      * @aliases use
-     * @complete \Drush\Commands\CompletionCommands::completeSiteAliases
      */
     public function siteSet($site = '@none', $options = ['a' =>'b'])
     {

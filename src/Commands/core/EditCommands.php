@@ -27,7 +27,6 @@ class EditCommands extends DrushCommands
      * @usage drush core-config --choice=2
      *  Edit the second file in the choice list.
      * @aliases conf, config
-     * @complete \Drush\Commands\core\EditCommands::complete
      */
     public function edit($filter = null)
     {

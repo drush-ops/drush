@@ -157,7 +157,6 @@ class UserCommands extends DrushCommands
      * @param string $role The name of the role to add
      * @param string $names A comma delimited list user names.
      * @aliases urol
-     * @complete \Drush\Commands\core\UserCommands::complete
      * @usage drush user-add-role "power user" user3
      *   Add the "power user" role to user3
      */
@@ -188,7 +187,6 @@ class UserCommands extends DrushCommands
      * @param string $role The name of the role to add
      * @param string $names A comma delimited list of user names.
      * @aliases urrol
-     * @complete \Drush\Commands\core\UserCommands::complete
      * @usage drush user-remove-role "power user" user3
      *   Remove the "power user" role from user3
      */
