@@ -125,7 +125,7 @@ class ListCommands extends DrushCommands
 
         $rows[] = ['Available commands:', ''];
         foreach ($namespaced as $namespace => $list) {
-            $rows[] = [$namespace . ':', ''];
+            $rows[] = ['<comment>' . $namespace . ':</comment>', ''];
             foreach ($list as $name => $command) {
                 $description = $command->getDescription();
                 $aliases = implode(', ', $command->getAliases());
