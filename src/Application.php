@@ -264,10 +264,9 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
         $commandClasses = $discovery->discover($commandfileSearchpath, '\Drush');
         $this->loadCommandClasses($commandClasses);
 
-        // For now: use Symfony's built-in help, as Drush's version
-        // assumes we are using the legacy Drush dispatcher.
-        unset($commandClasses[__DIR__ . '/Commands/help/HelpCommands.php']);
-        unset($commandClasses[__DIR__ . '/Commands/help/ListCommands.php']);
+        // Uncomment the lines below to use Console's built in help and list commands.
+        // unset($commandClasses[__DIR__ . '/Commands/help/HelpCommands.php']);
+        // unset($commandClasses[__DIR__ . '/Commands/help/ListCommands.php']);
 
         // Use the robo runner to register commands with Symfony application.
         // This method could / should be refactored in Robo so that we can use
