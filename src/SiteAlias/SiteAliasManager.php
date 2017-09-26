@@ -1,6 +1,8 @@
 <?php
 namespace Drush\SiteAlias;
 
+use Webmozart\PathUtil\Path;
+
 /**
  * Site Alias manager
  */
@@ -96,11 +98,12 @@ class SiteAliasManager
      * @param string $aliasName An alias name or site specification
      * @param string $root The default Drupal root (from --root or cwd)
      * @param string $uri The selected multisite
+     * @param string $cwd The cwd at the time Drush was first called
      * @return type
      */
-    public function findSelf($aliasName, $root, $uri)
+    public function findSelf($aliasName, $root, $uri, $cwd)
     {
-        $selfAliasRecord = $this->buildSelf($aliasName, $root, $uri);
+        $selfAliasRecord = $this->buildSelf($aliasName, $root, $uri, $cwd);
         if (!$selfAliasRecord) {
             throw new \Exception("The alias $aliasName could not be found.");
         }
@@ -166,19 +169,22 @@ class SiteAliasManager
         return $this->aliasLoader->loadMultiple($aliasName);
     }
 
-    protected function buildSelf($aliasName, $root, $uri)
+    protected function buildSelf($aliasName, $root, $uri, $cwd)
     {
+        // If the user specified an @alias, that takes precidence.
         if (SiteAliasName::isAliasName($aliasName)) {
             return $this->getAlias($aliasName);
         }
 
+        // Ditto for a site spec (/path/to/drupal#uri)
         $specParser = new SiteSpecParser();
         if ($specParser->validSiteSpec($aliasName)) {
             return new AliasRecord($specParser->parse($aliasName, $root), $aliasName);
         }
 
+        // If there is no URI specified, find a reasonable default.
         if (empty($uri)) {
-            $uri = 'default';
+            $uri = $this->findUri($root, $cwd);
         }
 
         return new AliasRecord(
@@ -188,5 +194,40 @@ class SiteAliasManager
             ],
             '@self'
         );
+    }
+
+    protected function findUri($root, $cwd)
+    {
+        if (Path::isBasePath($root, $cwd)) {
+            $siteDir = $this->scanUpForUri($root, $cwd);
+            if ($siteDir) {
+                return basename($siteDir);
+            }
+        }
+        return 'default';
+    }
+
+    protected function scanUpForUri($root, $scan)
+    {
+        $root = Path::canonicalize($root);
+        while (!empty($scan)) {
+            // TODO: By all rights, the alias manager should not know about
+            // the filename 'settings.php'. We should refactor this such
+            // that we start of with a `self` alias with a `defaut` URI,
+            // and then have the bootstrap manager find a better URI
+            // (if available) and reset the self alias.
+            if (file_exists("$scan/settings.php")) {
+                return $scan;
+            }
+            $next = dirname($scan);
+            if ($next == $scan) {
+                return false;
+            }
+            $scan = Path::canonicalize($next);
+            if ($scan == $root) {
+                return false;
+            }
+        }
+        return false;
     }
 }

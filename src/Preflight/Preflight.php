@@ -216,7 +216,7 @@ class Preflight
             ->addSearchLocation($this->environment->userConfigPath())
             ->addSearchLocation($this->selectedDrupalRoot() . '/drush')
             ->addSearchLocation($this->selectedComposerRoot() . '/drush');
-        $selfAliasRecord = $aliasManager->findSelf($preflightArgs->alias(), $root, $preflightArgs->uri());
+        $selfAliasRecord = $aliasManager->findSelf($preflightArgs->alias(), $root, $preflightArgs->uri(), $this->environment->cwd());
         $aliasConfig = $selfAliasRecord->exportConfig();
         $configLocator->addAliasConfig($aliasConfig);
 
