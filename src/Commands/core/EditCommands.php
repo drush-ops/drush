@@ -10,23 +10,23 @@ class EditCommands extends DrushCommands
     /**
      * Edit drushrc, site alias, and Drupal settings.php files.
      *
-     * @command core-edit
+     * @command core:edit
      * @bootstrap max
      * @param $filter A substring for filtering the list of files. Omit this argument to choose from loaded files.
      * @optionset_get_editor
-     * @usage drush core-config
+     * @usage drush core:config
      *   Pick from a list of config/alias/settings files. Open selected in editor.
      * @usage drush --bg core-config
      *   Return to shell prompt as soon as the editor window opens.
-     * @usage drush core-config etc
+     * @usage drush core:config etc
      *   Edit the global configuration file.
-     * @usage drush core-config demo.alia
+     * @usage drush core:config demo.alia
      * Edit a particular alias file.
-     * @usage drush core-config sett
+     * @usage drush core:config sett
      *   Edit settings.php for the current Drupal site.
-     * @usage drush core-config --choice=2
+     * @usage drush core:config --choice=2
      *  Edit the second file in the choice list.
-     * @aliases conf, config
+     * @aliases conf,config,core-edit
      */
     public function edit($filter = null)
     {

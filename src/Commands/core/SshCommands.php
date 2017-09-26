@@ -15,7 +15,7 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
     /**
      * Connect to a Drupal site's server via SSH.
      *
-     * @command site-ssh
+     * @command site:ssh
      * @option cd Directory to change to if Drupal root is not desired (the default).
      * @optionset_proc_build
      * @handle-remote-commands
@@ -25,8 +25,8 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
      *   Run "ls /tmp" on @prod site. If @prod is a site list, then ls will be executed on each site.
      * @usage drush @prod ssh git pull
      *   Run "git pull" on the Drupal root directory on the @prod site.
-     * @aliases ssh
-     * @topics docs-aliases
+     * @aliases ssh,site-ssh
+     * @topics docs:aliases
      */
     public function ssh(array $args, $options = ['cd' => true])
     {

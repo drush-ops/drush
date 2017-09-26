@@ -44,7 +44,7 @@ class UpdateDBCommands extends DrushCommands
     /**
      * Apply pending entity schema updates.
      *
-     * @command entity-updates
+     * @command entity:updates
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @bootstrap full
      * @aliases entup
@@ -68,7 +68,7 @@ class UpdateDBCommands extends DrushCommands
     /**
      * List any pending database updates.
      *
-     * @command updatedb-status
+     * @command updatedb:status
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @option entity-updates Run automatic entity schema updates at the end of any update hooks. Defaults to --no-entity-updates.
      * @bootstrap full

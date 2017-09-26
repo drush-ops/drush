@@ -128,7 +128,17 @@ class ListCommands extends DrushCommands
             $rows[] = ['<comment>' . $namespace . ':</comment>', ''];
             foreach ($list as $name => $command) {
                 $description = $command->getDescription();
-                $aliases = implode(', ', $command->getAliases());
+
+                // For commands such as foo:bar, remove
+                // any alias 'foo-bar' from the alias list.
+                $aliasList = array_filter(
+                    $command->getAliases(),
+                    function ($aliasName) use ($name) {
+                        return $aliasName != str_replace(':', '-', $name);
+                    }
+                );
+
+                $aliases = implode(', ', $aliasList);
                 $suffix = $aliases ? " ($aliases)" : '';
                 $rows[] = ['  ' . $name . $suffix, $description];
             }
@@ -180,7 +190,7 @@ class ListCommands extends DrushCommands
         foreach ($all as $key => $command) {
             $hidden = method_exists($command, 'getAnnotationData') && $command->getAnnotationData()->has('hidden');
             if (!in_array($key, $command->getAliases()) && !$hidden) {
-                $parts = explode('-', $key);
+                $parts = explode(':', $key);
                 $namespace = count($parts) >= 2 ? array_shift($parts) : '_global';
                 $namespaced[$namespace][$key] = $command;
             }

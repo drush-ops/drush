@@ -16,7 +16,7 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
     /**
      * Return the filesystem path for modules/themes and other key folders.
      *
-     * @command drupal-directory
+     * @command drupal:directory
      * @param string $target A module/theme name, or special names like root, files, private, or an alias : path alias string such as @alias:%files. Defaults to root.
      * @option component The portion of the evaluated path to return.  Defaults to 'path'; 'name' returns the site alias of the target.
      * @option local-only Reject any target that specifies a remote site.
@@ -30,7 +30,7 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *   Print the path to the files directory on the site @alias.
      * @usage edit `drush dd devel`/devel.module
      *   Open devel module in your editor (customize 'edit' for your editor)
-     * @aliases dd
+     * @aliases dd,drupal-directory
      */
     public function drupalDirectory($target = 'root', $options = ['component' => 'path', 'local-only' => false])
     {
@@ -90,7 +90,7 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
     /**
      * All global options.
      *
-     * @command core-global-options
+     * @command core:global-options
      * @hidden
      * @topic
      * @table-style default
@@ -98,6 +98,7 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *   name: Name
      *   description: Description
      * @default-fields name,description
+     * @aliases core-global-options
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
@@ -136,15 +137,15 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *
      * Used by shell aliases that start with !.
      *
-     * @command core-execute
+     * @command core:execute
      * @param $args The shell command to be executed.
      * @option escape Escape parameters before executing them with the shell. Default is escape; use --no-escape to disable.
      * @optionset_proc_build
      * @handle-remote-commands
-     * @usage drush core-execute git pull origin rebase -- --no-ff
+     * @usage drush core:execute git pull origin rebase -- --no-ff
      *   Retrieve latest code from git
-     * @aliases exec,execute
-     * @topics docs-aliases
+     * @aliases exec,execute,core-execute
+     * @topics docs:aliases
      */
     public function execute(array $args, array $options = ['escape' => true])
     {

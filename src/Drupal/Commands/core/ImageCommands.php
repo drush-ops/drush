@@ -14,18 +14,18 @@ class ImageCommands extends DrushCommands
     /**
      * Flush all derived images for a given style.
      *
-     * @command image-flush
+     * @command image:flush
      * @param $style_names A comma delimited list of image style machine names. If not provided, user may choose from a list of names.
      * @option all Flush all derived images
-     * @usage drush image-flush
+     * @usage drush image:flush
      *   Pick an image style and then delete its derivatives.
-     * @usage drush image-flush thumbnail,large
+     * @usage drush image:flush thumbnail,large
      *   Delete all thumbnail and large derivatives.
-     * @usage drush image-flush --all
+     * @usage drush image:flush --all
      *   Flush all derived images. They will be regenerated on demand.
      * @validate-entity-load image_style style_names
      * @validate-module-enabled image
-     * @aliases if
+     * @aliases if,image-flush
      */
     public function flush($style_names, $options = ['all' => false])
     {
@@ -70,15 +70,15 @@ class ImageCommands extends DrushCommands
     /**
      * Create an image derivative.
      *
-     * @command image-derive
+     * @command image:derive
      * @param $style_name An image style machine name.
      * @param $source Path to a source image. Optionally prepend stream wrapper scheme.
-     * @usage drush image-derive thumbnail core/themes/bartik/screenshot.png
+     * @usage drush image:derive thumbnail core/themes/bartik/screenshot.png
      *   Save thumbnail sized derivative of logo image.
      * @validate-file-exists source
      * @validate-entity-load image_style style_name
      * @validate-module-enabled image
-     * @aliases id
+     * @aliases id,image-derive
      */
     public function derive($style_name, $source)
     {

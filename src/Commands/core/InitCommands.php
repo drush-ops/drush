@@ -16,7 +16,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
     /**
      * Enrich the bash startup file with bash aliases and a smart command prompt.
      *
-     * @command core-init
+     * @command core:init
      *
      * @option $edit Open the new config file in an editor.
      * @option $add-path Always add Drush to the $PATH in the user's .bashrc
@@ -24,7 +24,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
      *   updating .bashrc with the Drush $PATH. Default is to update .bashrc
      *   only if Drush is not already in the $PATH.
      * @optionset_get_editor
-     * @aliases init
+     * @aliases init,core-init
      * @usage core-init --edit
      *   Enrich Bash and open drush config file in editor.
      * @usage core-init --edit --bg

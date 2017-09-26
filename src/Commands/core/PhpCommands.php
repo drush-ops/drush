@@ -9,17 +9,17 @@ class PhpCommands extends DrushCommands
     /**
      * Evaluate arbitrary php code after bootstrapping Drupal (if available).
      *
-     * @command php-eval
+     * @command php:eval
      * @param $code PHP code
-     * @usage drush php-eval 'variable_set("hello", "world");'
+     * @usage drush php:eval 'variable_set("hello", "world");'
      *   Sets the hello variable using Drupal API.'
-     * @usage drush php-eval '$node = node_load(1); print $node->title;'
+     * @usage drush php:eval '$node = node_load(1); print $node->title;'
      *   Loads node with nid 1 and then prints its title.
-     * @usage drush php-eval "file_unmanaged_copy(\'$HOME/Pictures/image.jpg\', \'public://image.jpg\');"
+     * @usage drush php:eval "file_unmanaged_copy(\'$HOME/Pictures/image.jpg\', \'public://image.jpg\');"
      *   Copies a file whose path is determined by an environment\'s variable. Note the use of double quotes so the variable $HOME gets replaced by its value.
-     * @usage drush php-eval "node_access_rebuild();"
+     * @usage drush php:eval "node_access_rebuild();"
      *   Rebuild node access permissions.
-     * @aliases eval,ev
+     * @aliases eval,ev,php-eval
      * @bootstrap max
      */
     public function evaluate($code, $options = ['format' => 'var_export'])
@@ -36,17 +36,17 @@ class PhpCommands extends DrushCommands
      * that's more self-documenting.  Drush provides commandline options to the
      * script via a variable called $extra.
      *
-     * @command php-script
+     * @command php:script
      * @option script-path Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).
-     * @usage drush php-script example --script-path=/path/to/scripts:/another/path
+     * @usage drush php:script example --script-path=/path/to/scripts:/another/path
      *   Run a script named example.php from specified paths
-     * @usage drush php-script
+     * @usage drush php:script
      *   List all available scripts.
-     * @usage drush php-script foo -- apple --cider
+     * @usage drush php:script foo -- apple --cider
      *  Run foo.php script with argument 'apple' and option 'cider'. Note the -- separator.
-     * @aliases scr
+     * @aliases scr,php-script
      * @bootstrap max
-     * @topics docs-examplescript,docs-scripts
+     * @topics docs:examplescript,docs:scripts
      */
     public function script(array $extra, $options = ['format' => 'var_export', 'script-path' => ''])
     {

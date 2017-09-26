@@ -27,9 +27,9 @@ class ThemeCommands extends DrushCommands
     /**
      * Enable one or more themes.
      *
-     * @command theme-enable
+     * @command theme:enable
      * @param $themes A comma delimited list of themes.
-     * @aliases then
+     * @aliases then,theme-enable
      */
     public function enable($themes)
     {
@@ -43,9 +43,9 @@ class ThemeCommands extends DrushCommands
     /**
      * Uninstall theme.
      *
-     * @command theme-uninstall
+     * @command theme:uninstall
      * @param $themes A comma delimited list of themes.
-     * @aliases thun
+     * @aliases thun,theme-uninstall
      */
     public function uninstall($themes)
     {

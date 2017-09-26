@@ -11,9 +11,9 @@ class EvalCommands
     /**
      * Evaluate arbitrary php code after bootstrapping Drupal (if available).
      *
-     * @command php-eval
+     * @command php:eval
      * @param string $php Code to execute.
-     * @aliases eval, ev
+     * @aliases eval,ev,php-eval
      * @usage php-eval '$node = node_load(1); return $node->label();'
      *   Loads node with nid 1 and then prints its title.
      * @usage php-eval "file_unmanaged_copy('$HOME/Pictures/image.jpg', 'public://image.jpg');"

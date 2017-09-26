@@ -15,17 +15,17 @@ class UserCommands extends DrushCommands
     /**
      * Print information about the specified user(s).
      *
-     * @command user-information
+     * @command user:information
      *
      * @param string $names A comma delimited list of user names.
      * @option $uid A comma delimited list of user ids to lookup (an alternative to names).
      * @option $mail A comma delimited list of emails to lookup (an alternative to names).
-     * @aliases uinf
-     * @usage drush user-information someguy,somegal
+     * @aliases uinf,user-information
+     * @usage drush user:information someguy,somegal
      *   Display information about the someguy and somegal user accounts.
-     * @usage drush user-information --mail=someguy@somegal.com
+     * @usage drush user:information --mail=someguy@somegal.com
      *   Display information for a given email account.
-     * @usage drush user-information --uid=5
+     * @usage drush user:information --uid=5
      *   Display information for a given user id.
      * @field-labels
      *   uid: User ID
@@ -101,11 +101,11 @@ class UserCommands extends DrushCommands
     /**
      * Block the specified user(s).
      *
-     * @command user-block
+     * @command user:block
      *
      * @param string $names A comma delimited list of user names.
-     * @aliases ublk
-     * @usage drush user-block user3
+     * @aliases ublk,user-block
+     * @usage drush user:block user3
      *   Block the users whose name is user3
      */
     public function block($names)
@@ -126,11 +126,11 @@ class UserCommands extends DrushCommands
     /**
      * UnBlock the specified user(s).
      *
-     * @command user-unblock
+     * @command user:unblock
      *
      * @param string $names A comma delimited list of user names.
-     * @aliases uublk
-     * @usage drush user-unblock user3
+     * @aliases uublk,user-unblock
+     * @usage drush user:unblock user3
      *   Unblock the users with name user3
      */
     public function unblock($names)
@@ -151,13 +151,13 @@ class UserCommands extends DrushCommands
     /**
      * Add a role to the specified user accounts.
      *
-     * @command user-add-role
+     * @command user:role:add
      *
      * @validate-entity-load user_role role
      * @param string $role The name of the role to add.
      * @param string $names A comma delimited list of user names.
-     * @aliases urol
-     * @usage drush user-add-role "power user" user3
+     * @aliases urol,user-add-role
+     * @usage drush user:add-role "power user" user3
      *   Add the "power user" role to user3
      */
     public function addRole($role, $names)
@@ -181,13 +181,13 @@ class UserCommands extends DrushCommands
     /**
      * Remove a role from the specified user accounts.
      *
-     * @command user-remove-role
+     * @command user:role:remove
      *
      * @validate-entity-load user_role role
      * @param string $role The name of the role to add
      * @param string $names A comma delimited list of user names.
-     * @aliases urrol
-     * @usage drush user-remove-role "power user" user3
+     * @aliases urrol,user-remove-role
+     * @usage drush user:remove-role "power user" user3
      *   Remove the "power user" role from user3
      */
     public function removeRole($role, $names)
@@ -211,13 +211,13 @@ class UserCommands extends DrushCommands
     /**
      * Create a user account.
      *
-     * @command user-create
+     * @command user:create
      *
      * @param string $name The name of the account to add
      * @option string password The password for the new account
      * @option string mail The email address for the new account
-     * @aliases ucrt
-     * @usage drush user-create newuser --mail="person@example.com" --password="letmein"
+     * @aliases ucrt,user-create
+     * @usage drush user:create newuser --mail="person@example.com" --password="letmein"
      *   Create a new user account with the name newuser, the email address person@example.com, and the password letmein
      */
     public function create($name, $options = ['password' => '', 'mail' => ''])
@@ -261,14 +261,14 @@ class UserCommands extends DrushCommands
     /**
      * Cancel user account(s) with the specified name(s).
      *
-     * @command user-cancel
+     * @command user:cancel
      *
      * @param string $names A comma delimited list of user names.
      * @option delete-content Delete all content created by the user
-     * @aliases ucan
-     * @usage drush user-cancel username
+     * @aliases ucan,user-cancel
+     * @usage drush user:cancel username
      *   Cancel the user account with the name username and anonymize all content created by that user.
-     * @usage drush user-cancel --delete-content username
+     * @usage drush user:cancel --delete-content username
      *   Cancel the user account with the name username and delete all content created by that user.
      */
     public function cancel($names, $options = ['delete-content' => false])
@@ -295,12 +295,12 @@ class UserCommands extends DrushCommands
     /**
      * Set the password for the user account with the specified name.
      *
-     * @command user-password
+     * @command user:password
      *
      * @param string $name The name of the account to modify.
      * @param string $password The new password for the account.
-     * @aliases upwd
-     * @usage drush user-password someuser "correct horse battery staple"
+     * @aliases upwd,user-password
+     * @usage drush user:password someuser "correct horse battery staple"
      *   Set the password for the username someuser. @see xkcd.com/936
      */
     public function password($name, $password)

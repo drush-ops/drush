@@ -38,7 +38,8 @@ class LocaleCommands extends DrushCommands
     /**
      * Checks for available translation updates.
      *
-     * @command locale-check
+     * @command locale:check
+     * @aliases locale-check
      * @drupal-dependencies locale
      */
     public function check()
@@ -68,7 +69,8 @@ class LocaleCommands extends DrushCommands
      * @todo This can be simplified once https://www.drupal.org/node/2631584 lands
      *   in Drupal core.
      *
-     * @command locale-update
+     * @command locale:update
+     * @aliases locale-update
      * @option langcodes A comma-separated list of language codes to update. If omitted, all translations will be updated.
      * @drupal-dependencies locale
      */

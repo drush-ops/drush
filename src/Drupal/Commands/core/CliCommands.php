@@ -20,7 +20,8 @@ class CliCommands extends DrushCommands
     /**
      * Drush's PHP Shell.
      *
-     * @command docs-repl
+     * @command docs:repl
+     * @aliases docs-repl
      * @hidden
      * @topic
      */
@@ -30,12 +31,12 @@ class CliCommands extends DrushCommands
     }
 
     /**
-     * @command core-cli
+     * @command core:cli
      * @description Open an interactive shell on a Drupal site.
-     * @aliases php
+     * @aliases php,core-cli
      * @option $version-history Use command history based on Drupal version
      *   (Default is per site).
-     * @topics docs-repl
+     * @topics docs:repl
      * @remote-tty
      */
     public function cli(array $options = ['version-history' => false])

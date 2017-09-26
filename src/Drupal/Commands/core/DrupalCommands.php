@@ -50,9 +50,9 @@ class DrupalCommands extends DrushCommands
     /**
      * Run all cron hooks in all active modules for specified site.
      *
-     * @command core-cron
-     * @aliases cron
-     * @topics docs-cron
+     * @command core:cron
+     * @aliases cron,core-cron
+     * @topics docs:cron
      */
     public function cron()
     {
@@ -65,8 +65,8 @@ class DrupalCommands extends DrushCommands
     /**
      * Compile all Twig template(s).
      *
-     * @command twig-compile
-     * @aliases twigc
+     * @command twig:compile
+     * @aliases twigc,twig-compile
      */
     public function twigCompile()
     {
@@ -103,15 +103,15 @@ class DrupalCommands extends DrushCommands
     /**
      * Information about things that may be wrong in your Drupal installation.
      *
-     * @command core-requirements
+     * @command core:requirements
      * @option severity Only show status report messages with a severity greater than or equal to the specified value.
      * @option ignore Comma-separated list of requirements to remove from output. Run with --format=yaml to see key values to use.
-     * @aliases status-report, rq
-     * @usage drush core-requirements
+     * @aliases status-report,rq,core-requirements
+     * @usage drush core:requirements
      *   Show all status lines from the Status Report admin page.
-     * @usage drush core-requirements --severity=2
+     * @usage drush core:requirements --severity=2
      *   Show only the red lines from the Status Report admin page.
-     * @usage drush core-requirements --format=json
+     * @usage drush core:requirements --format=json
      *   Print a short report in JSON format, where severity 2=error, 1=warning, and 0/-1=OK
      * @table-style default
      * @field-labels

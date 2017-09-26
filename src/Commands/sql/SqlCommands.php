@@ -12,6 +12,7 @@ class SqlCommands extends DrushCommands
     /**
      * Print database connection details using print_r().
      *
+     * @command sql:conf
      * @command sql-conf
      * @option all Show all database connections, instead of just one.
      * @option show-passwords Show database password.
@@ -43,7 +44,8 @@ class SqlCommands extends DrushCommands
     /**
      * A string for connecting to the DB.
      *
-     * @command sql-connect
+     * @command sql:connect
+     * @aliases sql-connect
      * @option extra Add custom options to the connect string (e.g. --extra=--skip-column-names)
      * @optionset_sql
      * @usage `drush sql-connect` < example.sql
@@ -61,15 +63,16 @@ class SqlCommands extends DrushCommands
     /**
      * Create a database.
      *
-     * @command sql-create
+     * @command sql:create
+     * @aliases sql-create
      * @option db-su Account to use when creating a new database.
      * @option db-su-pw Password for the db-su account.
      * @optionset_sql
-     * @usage drush sql-create
+     * @usage drush sql:create
      *   Create the database for the current site.
      * @usage drush @site.test sql-create
      *   Create the database as specified for @site.test.
-     * @usage drush sql-create --db-su=root --db-su-pw=rootpassword --db-url="mysql://drupal_db_user:drupal_db_password@127.0.0.1/drupal_db"
+     * @usage drush sql:create --db-su=root --db-su-pw=rootpassword --db-url="mysql://drupal_db_user:drupal_db_password@127.0.0.1/drupal_db"
      *   Create the database as specified in the db-url option.
      */
     public function create($options = ['db-su' => '', 'db-su-pw' => ''])
@@ -96,9 +99,10 @@ class SqlCommands extends DrushCommands
     /**
      * Drop all tables in a given database.
      *
-     * @command sql-drop
+     * @command sql:drop
+     * @aliases sql-drop
      * @optionset_sql
-     * @topics docs-policy
+     * @topics docs:policy
      */
     public function drop($options = [])
     {
@@ -117,13 +121,13 @@ class SqlCommands extends DrushCommands
     /**
      * Open a SQL command-line interface using Drupal's credentials.
      *
-     * @command sql-cli
+     * @command sql:cli
      * @optionset_sql
      * @allow-additional-options sql-connect
-     * @aliases sqlc
-     * @usage drush sql-cli
+     * @aliases sqlc,sql-cli
+     * @usage drush sql:cli
      *   Open a SQL command-line interface using Drupal's credentials.
-     * @usage drush sql-cli --extra=-A
+     * @usage drush sql:cli --extra=-A
      *   Open a SQL CLI and skip reading table information.
      * @remote-tty
      */
@@ -139,7 +143,7 @@ class SqlCommands extends DrushCommands
     /**
      * Execute a query against a database.
      *
-     * @command sql-query
+     * @command sql:query
      * @param $query An SQL query. Ignored if --file is provided.
      * @optionset_sql
      * @option result-file Save to a file. The file should be relative to Drupal root.
@@ -147,14 +151,14 @@ class SqlCommands extends DrushCommands
      * @option extra Add custom options to the connect string (e.g. --extra=--skip-column-names)
      * @option db-prefix Enable replacement of braces in your query.
      * @validate-file-exists file
-     * @aliases sqlq
-     * @usage drush sql-query "SELECT * FROM users WHERE uid=1"
+     * @aliases sqlq,sql-query
+     * @usage drush sql:query "SELECT * FROM users WHERE uid=1"
      *   Browse user record. Table prefixes, if used, must be added to table names by hand.
-     * @usage drush sql-query --db-prefix "SELECT * FROM {users}"
+     * @usage drush sql:query --db-prefix "SELECT * FROM {users}"
      *   Browse user record. Table prefixes are honored.  Caution: All curly-braces will be stripped.
      * @usage `drush sql-connect` < example.sql
      *   Import sql statements from a file into the current database.
-     * @usage drush sql-query --file=example.sql
+     * @usage drush sql:query --file=example.sql
      *   Alternate way to import sql statements from a file.
      *
      */
@@ -186,7 +190,8 @@ class SqlCommands extends DrushCommands
     /**
      * Exports the Drupal DB as SQL using mysqldump or equivalent.
      *
-     * @command sql-dump
+     * @command sql:dump
+     * @aliases sql-dump
      * @optionset_sql
      * @optionset_table_selection
      * @option result-file Save to a file. The file should be relative to Drupal root.
@@ -196,11 +201,11 @@ class SqlCommands extends DrushCommands
      * @option gzip Compress the dump using the gzip program which must be in your $PATH.
      * @option extra Add custom arguments/options when connecting to database (used internally to list tables).
      * @option extra-dump Add custom arguments/options to the dumping the database (e.g. mysqldump command).
-     * @usage drush sql-dump --result-file=../18.sql
+     * @usage drush sql:dump --result-file=../18.sql
      *   Save SQL dump to the directory above Drupal root.
-     * @usage drush sql-dump --skip-tables-key=common
+     * @usage drush sql:dump --skip-tables-key=common
      *   Skip standard tables. @see example.drushrc.php
-     * @usage drush sql-dump --extra-dump=--no-data
+     * @usage drush sql:dump --extra-dump=--no-data
      *   Pass extra option to mysqldump command.
      * @hidden-options create-db
      *

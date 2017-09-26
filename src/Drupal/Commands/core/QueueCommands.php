@@ -53,7 +53,8 @@ class QueueCommands extends DrushCommands
     /**
      * Run a specific queue by name.
      *
-     * @command queue-run
+     * @command queue:run
+     * @aliases queue-run
      * @param string $name The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.
      * @validate-queue name
      * @option time-limit The maximum number of seconds allowed to run the queue
@@ -90,6 +91,7 @@ class QueueCommands extends DrushCommands
     /**
      * Returns a list of all defined queues.
      *
+     * @command queue:list
      * @command queue-list
      * @field-labels
      *   queue: Queue
@@ -115,7 +117,8 @@ class QueueCommands extends DrushCommands
     /**
      * Delete all items in a specific queue.
      *
-     * @command queue-delete
+     * @command queue:delete
+     * @aliases queue-delete
      * @param $name The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.
      * @validate-queue name
      */

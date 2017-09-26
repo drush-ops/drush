@@ -16,7 +16,7 @@ class WatchdogCommands extends DrushCommands
     /**
      * Show watchdog messages.
      *
-     * @command watchdog-show
+     * @command watchdog:show
      * @drupal-dependencies dblog
      * @param $substring A substring to look search in error messages.
      * @option count The number of messages to show. Defaults to 10.
@@ -25,15 +25,15 @@ class WatchdogCommands extends DrushCommands
      * @option extended Return extended information about each message.
      * @usage  drush watchdog-show
      *   Show a listing of most recent 10 messages.
-     * @usage drush watchdog-show "cron run succesful"
+     * @usage drush watchdog:show "cron run succesful"
      *   Show a listing of most recent 10 messages containing the string "cron run succesful".
-     * @usage drush watchdog-show --count=46
+     * @usage drush watchdog:show --count=46
      *   Show a listing of most recent 46 messages.
-     * @usage drush watchdog-show --severity=Notice
+     * @usage drush watchdog:show --severity=Notice
      *   Show a listing of most recent 10 messages with a severity of notice.
-     * @usage drush watchdog-show --type=php
+     * @usage drush watchdog:show --type=php
      *   Show a listing of most recent 10 messages of type php
-     * @aliases wd-show,ws
+     * @aliases wd-show,ws,watchdog-show
      * @validate-module-enabled dblog
      * @field-labels
      *   wid: ID
@@ -72,14 +72,14 @@ class WatchdogCommands extends DrushCommands
     /**
      * Interactively filter the watchdog message listing.
      *
-     * @command watchdog-list
+     * @command watchdog:list
      * @drupal-dependencies dblog
      * @param $substring A substring to look search in error messages.
      * @option count The number of messages to show. Defaults to 10.
      * @option extended Return extended information about each message.
      * @usage  drush watchdog-list
      *   Prompt for message type or severity, then run watchdog-show.
-     * @aliases wd-list
+     * @aliases wd-list,watchdog-list
      * @validate-module-enabled dblog
      * @field-labels
      *   wid: ID
@@ -127,22 +127,22 @@ class WatchdogCommands extends DrushCommands
     /**
      * Delete watchdog log records.
      *
-     * @command watchdog-delete
+     * @command watchdog:delete
      * @param $substring Delete all log records with this text in the messages.
      * @option severity Delete messages of a given severity level.
      * @option type Delete messages of a given type.
      * @drupal-dependencies dblog
-     * @usage drush watchdog-delete all
+     * @usage drush watchdog:delete all
      *   Delete all messages.
-     * @usage drush watchdog-delete 64
+     * @usage drush watchdog:delete 64
      *   Delete messages with id 64.
-     * @usage drush watchdog-delete "cron run succesful"
+     * @usage drush watchdog:delete "cron run succesful"
      *   Delete messages containing the string "cron run succesful".
-     * @usage drush watchdog-delete --severity=notice
+     * @usage drush watchdog:delete --severity=notice
      *   Delete all messages with a severity of notice.
-     * @usage drush watchdog-delete --type=cron
+     * @usage drush watchdog:delete --type=cron
      *   Delete all messages of type cron.
-     * @aliases wd-del,wd-delete,wd
+     * @aliases wd-del,wd-delete,wd,watchdog-delete
      * @validate-module-enabled dblog
      * @return void
      */
@@ -185,10 +185,10 @@ class WatchdogCommands extends DrushCommands
     /**
      * Show one log record by ID.
      *
-     * @command watchdog-show-one
+     * @command watchdog:show:one
      * @param $id Watchdog Id
      * @drupal-dependencies dblog
-     * @aliases wd-one
+     * @aliases wd-one,watchdog-show-one
      * @validate-module-enabled dblog
      *
      * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
