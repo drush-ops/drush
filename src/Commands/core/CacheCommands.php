@@ -5,19 +5,23 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
+use Drush\Boot\AutoloaderAwareInterface;
+use Drush\Boot\AutoloaderAwareTrait;
 use Drush\Commands\DrushCommands;
 use Drupal\Core\DrupalKernel;
 use Drupal\Core\Site\Settings;
 use Drupal\Core\Cache\Cache;
+use Drush\Drush;
 use Symfony\Component\HttpFoundation\Request;
 
 /*
  * Interact with Drupal's Cache API.
  */
-class CacheCommands extends DrushCommands implements CustomEventAwareInterface
+class CacheCommands extends DrushCommands implements CustomEventAwareInterface, AutoloaderAwareInterface
 {
 
     use CustomEventAwareTrait;
+    use AutoloaderAwareTrait;
 
     /**
      * Fetch a cached object and display it.
@@ -312,10 +316,10 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface
             $autoloader = require $autoloadFilePath;
         }
 
-        if ($autoloader === TRUE) {
+        if ($autoloader === true) {
             // The autoloader was already required. Assume that Drush and Drupal share an autoloader per
             // "Point autoload.php to the proper vendor directory" - https://www.drupal.org/node/2404989
-            $autoloader = drush_get_context('DRUSH_CLASSLOADER');
+            $autoloader = $this->autoloader();
         }
 
         return $autoloader;

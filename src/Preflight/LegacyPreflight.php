@@ -63,11 +63,6 @@ class LegacyPreflight
          * @deprecated. Use $config->get('drush.vendor-dir') instead.
          */
         drush_set_context('DRUSH_VENDOR_PATH', $environment->vendorPath());
-
-        /*
-         * @deprecated. Use $environment->loader() instead.
-         */
-        drush_set_context('DRUSH_CLASSLOADER', $environment->loader());
     }
 
     public static function setContexts(Environment $environment)
