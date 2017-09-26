@@ -35,7 +35,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
     /**
      * Rsync Drupal code or files to/from another server using ssh.
      *
-     * @command core-rsync
+     * @command core:rsync
      * @param $source A site alias and optional path. See rsync documentation and example.aliases.drushrc.php.
      * @param $destination A site alias and optional path. See rsync documentation and example.aliases.drushrc.php.',
      * @param $extra Additional parameters after the ssh statement.
@@ -51,8 +51,8 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      *   Rsync Drupal root from the Drush alias dev to the alias stage, excluding all .sql files and delete all files on the destination that are no longer on the source.
      * @usage drush rsync @dev @stage --ssh-options="-o StrictHostKeyChecking=no" -- --delete
      *   Customize how rsync connects with remote host via SSH. rsync options like --delete are placed after a --.
-     * @aliases rsync
-     * @topics docs-aliases
+     * @aliases rsync,core-rsync
+     * @topics docs:aliases
      */
     public function rsync($source, $destination, array $extra, $options = ['exclude-paths' => null, 'include-paths' => null, 'mode' => 'akz'])
     {

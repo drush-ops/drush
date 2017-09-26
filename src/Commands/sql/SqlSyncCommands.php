@@ -18,7 +18,8 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
     /**
      * Copy DB data from a source site to a target site. Transfers data via rsync.
      *
-     * @command sql-sync
+     * @command sql:sync
+     * @aliases sql-sync
      * @param $source A site-alias or the name of a subdirectory within /sites whose database you want to copy from.
      * @param $destination A site-alias or the name of a subdirectory within /sites whose database you want to replace.
      * @optionset_table_selection
@@ -30,11 +31,11 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @option db-su-pw Password for the db-su account.
      * @option source-dump The path for retrieving the sql-dump on source machine.
      * @option target-dump The path for storing the sql-dump on destination machine.
-     * @usage drush sql-sync @source @target
+     * @usage drush sql:sync @source @target
      *   Copy the database from the site with the alias 'source' to the site with the alias 'target'.
-     * @usage drush sql-sync #prod #dev
+     * @usage drush sql:sync #prod #dev
      *   Copy the database from the site in /sites/prod to the site in /sites/dev (multisite installation).
-     * @topics docs-aliases,docs-policy,docs-example-sync-via-http
+     * @topics docs:aliases,docs:policy,docs:example-sync-via-http
      */
     public function sqlsync($source, $destination, $options = ['no-dump' => false, 'no-sync' => false, 'runner' => null, 'create-db' => false, 'db-su' => null, 'db-su-pw' => null, 'target-dump' => null, 'source-dump' => true])
     {

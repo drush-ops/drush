@@ -57,9 +57,9 @@ class PmCommands extends DrushCommands
     /**
      * Enable one or more modules.
      *
-     * @command pm-enable
+     * @command pm:enable
      * @param $modules A comma delimited list of modules.
-     * @aliases en
+     * @aliases en,pm-enable
      */
     public function enable(array $modules)
     {
@@ -88,9 +88,9 @@ class PmCommands extends DrushCommands
     /**
      * Uninstall one or more modules and their dependent modules.
      *
-     * @command pm-uninstall
+     * @command pm:uninstall
      * @param $modules A comma delimited list of modules.
-     * @aliases pmu
+     * @aliases pmu,pm-uninstall
      */
     public function uninstall(array $modules)
     {
@@ -132,7 +132,7 @@ class PmCommands extends DrushCommands
     /**
      * Show a list of available extensions (modules and themes).
      *
-     * @command pm-list
+     * @command pm:list
      * @option type Only show extensions having a given type. Choices: module, theme.
      * @option status Only show extensions having a given status. Choices: enabled or disabled.
      * @option core Only show extensions that are in Drupal core.
@@ -147,7 +147,7 @@ class PmCommands extends DrushCommands
      *   status: Status
      *   version: Version
      * @default-fields package,display_name,status,version
-     * @aliases pml
+     * @aliases pml,pm-list
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => null, 'core' => false, 'no-core' => false])

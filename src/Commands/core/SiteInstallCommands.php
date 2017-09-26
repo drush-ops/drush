@@ -21,7 +21,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
     /**
      * Install Drupal along with modules/themes/configuration/profile.
      *
-     * @command site-install
+     * @command site:install
      * @param $profile An install profile name. Defaults to 'standard' unless an install profile is marked as a distribution.
      * @param $additional Additional info for the install profile. The key is in the form [form name].[parameter name]
      * @option db-url A Drupal 6 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.
@@ -47,7 +47,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * @usage drush si standard install_configure_form.enable_update_status_emails=NULL
      *   Disable email notification during install and later. If your server has no mail transfer agent, this gets rid of an error during install.
      * @bootstrap root
-     * @aliases si,sin
+     * @aliases si,sin,site-install
      *
      */
     public function install($profile = '', array $additional, $options = ['db-url' => null, 'db-prefix' => null, 'db-su' => null, 'db-su-pw' => null, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => null, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => null, 'sites-subdir' => null, 'config-dir' => null])

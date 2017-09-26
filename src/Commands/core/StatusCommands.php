@@ -19,10 +19,10 @@ class StatusCommands extends DrushCommands
     /**
      * An overview of the environment - Drush and Drupal.
      *
-     * @command core-status
+     * @command core:status
      * @param $filter A field to filter on. @deprecated - use --field option instead.
      * @option project A comma delimited list of projects. Their paths will be added to path-aliases section.
-     * @aliases status, st
+     * @aliases status,st,core-status
      * @table-style compact
      * @list-delimiter :
      * @field-labels
@@ -64,7 +64,7 @@ class StatusCommands extends DrushCommands
      * @pipe-format json
      * @hidden-options project
      * @bootstrap max
-     * @topics docs-readme
+     * @topics docs:readme
      *
      * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
      */

@@ -17,7 +17,7 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
     /**
      * Display a one time login link for user ID 1, or another user.
      *
-     * @command user-login
+     * @command user:login
      *
      * @param string $path Optional path to redirect to after logging in.
      * @option name A user name to log in as. If not provided, defaults to uid=1.
@@ -25,12 +25,12 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      * @option redirect-port A custom port for redirecting to (e.g., when running within a Vagrant environment)
      * @bootstrap none
      * @handle-remote-commands
-     * @aliases uli
-     * @usage drush user-login
+     * @aliases uli,user-login
+     * @usage drush user:login
      *   Open default web browser and browse to homepage, logged in as uid=1.
-     * @usage drush user-login --name=ryan node/add/blog
+     * @usage drush user:login --name=ryan node/add/blog
      *   Open default web browser (if configured or detected) for a one-time login link for username ryan that redirects to node/add/blog.
-     * @usage drush user-login --browser=firefox --mail=drush@example.org
+     * @usage drush user:login --browser=firefox --mail=drush@example.org
      *   Open firefox web browser, and login as the user with the e-mail address drush@example.org.
      */
     public function login($path = '', $options = ['name' => '1', 'browser' => true, 'redirect-port' => ''])

@@ -12,11 +12,11 @@ use Drush\Commands\DrushCommands;
  */
 class DocsCommands extends DrushCommands
 {
-
     /**
      * README.md
      *
-     * @command docs-readme
+     * @command docs:readme
+     * @aliases docs-readme
      * @hidden
      * @topic
      */
@@ -28,7 +28,8 @@ class DocsCommands extends DrushCommands
     /**
      * Drush's support for Git Bisect.
      *
-     * @command docs-bisect
+     * @command docs:bisect
+     * @aliases docs-bisect
      * @hidden
      * @topic
      */
@@ -40,7 +41,8 @@ class DocsCommands extends DrushCommands
     /**
      * Bashrc customization examples for Drush.
      *
-     * @command docs-bashrc
+     * @command docs:bashrc
+     * @aliases docs-bashrc
      * @hidden
      * @topic
      */
@@ -52,7 +54,8 @@ class DocsCommands extends DrushCommands
     /**
      * Configuration overview with examples from example.drushrc.php.
      *
-     * @command docs-configuration
+     * @command docs:configuration
+     * @aliases docs-configuration
      * @hidden
      * @topic
      */
@@ -64,7 +67,8 @@ class DocsCommands extends DrushCommands
     /**
      * Drupal config export instructions, including customizing config by environment.
      *
-     * @command docs-config-exporting
+     * @command docs:config:exporting
+     * @aliases docs-config-exporting
      * @hidden
      * @topic
      */
@@ -76,7 +80,8 @@ class DocsCommands extends DrushCommands
     /**
      * Creating site aliases for running Drush on remote sites.
      *
-     * @command docs-aliases
+     * @command docs:aliases
+     * @aliases docs-aliases
      * @hidden
      * @topic
      */
@@ -88,7 +93,8 @@ class DocsCommands extends DrushCommands
     /**
      * Bastion server configuration: remotely operate on a Drupal sites behind a firewall.
      *
-     * @command docs-bastion
+     * @command docs:bastion
+     * @aliases docs-bastion
      * @hidden
      * @topic
      */
@@ -100,7 +106,8 @@ class DocsCommands extends DrushCommands
     /**
      * Bootstrap explanation: how Drush starts up and prepares the Drupal environment.
      *
-     * @command docs-bootstrap
+     * @command docs:bootstrap
+     * @aliases docs-bootstrap
      * @hidden
      * @topic
      */
@@ -112,7 +119,8 @@ class DocsCommands extends DrushCommands
     /**
      * Crontab instructions for running your Drupal cron tasks via `drush cron`.
      *
-     * @command docs-cron
+     * @command docs:cron
+     * @aliases docs-cron
      * @hidden
      * @topic
      */
@@ -124,7 +132,8 @@ class DocsCommands extends DrushCommands
     /**
      * A script consisting of simple sequences of Drush statements.
      *
-     * @command docs-scripts
+     * @command docs:scripts
+     * @aliases docs-scripts
      * @hidden
      * @topic
      */
@@ -136,7 +145,8 @@ class DocsCommands extends DrushCommands
     /**
      * Creating your own aliases for commonly used Drush commands.
      *
-     * @command docs-shell-aliases
+     * @command docs:shell-aliases
+     * @aliases docs-shell-aliases
      * @hidden
      * @topic
      */
@@ -148,7 +158,8 @@ class DocsCommands extends DrushCommands
     /**
      * Instructions on creating your own Drush commands.
      *
-     * @command docs-commands
+     * @command docs:commands
+     * @aliases docs-commands
      * @hidden
      * @topic
      */
@@ -160,7 +171,8 @@ class DocsCommands extends DrushCommands
     /**
      * Instructions on creating your own Drush Generators.
      *
-     * @command docs-generators
+     * @command docs:generators
+     * @aliases docs-generators
      * @hidden
      * @topic
      */
@@ -172,7 +184,8 @@ class DocsCommands extends DrushCommands
     /**
      * Explaining how Drush manages command line options and configuration file settings.
      *
-     * @command docs-context
+     * @command docs:context
+     * @aliases docs-context
      * @hidden
      * @topic
      */
@@ -182,21 +195,10 @@ class DocsCommands extends DrushCommands
     }
 
     /**
-     * Example Drush script.
-     *
-     * @command docs-examplescript
-     * @hidden
-     * @topic
-     */
-    public function exampleScript()
-    {
-        self::printFile(DRUSH_BASE_PATH. '/examples/helloworld.script');
-    }
-
-    /**
      * Example Drush command file.
      *
-     * @command docs-examplecommand
+     * @command docs:examplecommand
+     * @aliases docs-examplecommand
      * @hidden
      * @topic
      */
@@ -208,7 +210,8 @@ class DocsCommands extends DrushCommands
     /**
      * Extend sql-sync to allow transfer of the sql dump file via http.
      *
-     * @command docs-example-sync-via-http
+     * @command docs:example-sync-via-http
+     * @aliases docs-example-sync-via-http
      * @hidden
      * @topic
      */
@@ -220,7 +223,8 @@ class DocsCommands extends DrushCommands
     /**
      * Example policy file.
      *
-     * @command docs-policy
+     * @command docs:policy
+     * @aliases docs-policy
      * @hidden
      * @topic
      */

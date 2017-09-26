@@ -22,14 +22,14 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface
     /**
      * Fetch a cached object and display it.
      *
-     * @command cache-get
+     * @command cache:get
      * @param $cid The id of the object to fetch.
      * @param $bin The cache bin to fetch from.
-     * @usage drush cache-get hook_info bootstrap
+     * @usage drush cache:get hook_info bootstrap
      *   Display the data for the cache id "hook_info" from the "bootstrap" bin.
-     * @usage drush cache-get update_available_releases update
+     * @usage drush cache:get update_available_releases update
      *   Display the data for the cache id "update_available_releases" from the "update" bin.
-     * @aliases cg
+     * @aliases cg,cache-get
      * @bootstrap full
      * @field-labels
      *   cid: Cache ID
@@ -54,11 +54,11 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface
     /**
      * Clear a specific cache, or all Drupal caches.
      *
-     * @command cache-clear
+     * @command cache:clear
      * @param $type The particular cache to clear. Omit this argument to choose from available types.
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @hidden-options cache-clear
-     * @aliases cc
+     * @aliases cc,cache-clear
      * @bootstrap max
      * @notify Caches have been cleared.
      */
@@ -92,7 +92,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface
     /**
      * Cache an object expressed in JSON or var_export() format.
      *
-     * @command cache-set
+     * @command cache:set
      * @param $cid The id of the object to set.
      * @param $data The object to set in the cache. Use - to read the object from STDIN.
      * @param $bin The cache bin to store the object in.
@@ -100,7 +100,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface
      * @param $tags A comma delimited list of cache tags.
      * @option input-format The format of value. Use 'json' for complex values.
      * @option cache-get If the object is the result a previous fetch from the cache, only store the value in the 'data' property of the object in the cache.
-     * @aliases cs
+     * @aliases cs,cache-set
      * @bootstrap full
      */
     public function set($cid, $data, $bin = 'default', $expire = null, $tags = null, $options = ['input-format' => 'string', 'cache-get' => false])
@@ -159,10 +159,10 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface
      * it also clears Drush cache and Drupal's render cache.
 
      *
-     * @command cache-rebuild
+     * @command cache:rebuild
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @hidden-options cache-clear
-     * @aliases cr,rebuild
+     * @aliases cr,rebuild,cache-rebuild
      * @bootstrap site
      */
     public function rebuild($options = ['cache-clear' => true])

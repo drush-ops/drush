@@ -14,7 +14,7 @@ class XkcdCommands extends DrushCommands {
   /**
    * Retrieve and display xkcd cartoons.
    *
-   * @command xkcd-fetch
+   * @command xkcd:fetch
    * @param $search Optional argument to retrieve the cartoons matching an index number, keyword search or "random". If omitted the latest cartoon will be retrieved.
    * @option image-viewer Command to use to view images (e.g. xv, firefox). Defaults to "display" (from ImageMagick).
    * @option google-custom-search-api-key Google Custom Search API Key, available from https://code.google.com/apis/console/. Default key limited to 100 queries/day globally.
