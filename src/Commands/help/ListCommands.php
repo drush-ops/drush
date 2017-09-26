@@ -30,7 +30,7 @@ class ListCommands extends DrushCommands
      *
      * @return \DOMDocument
      */
-    public function helpList($filter = null, $options = ['format' => 'listcli', 'raw' => false, 'filter' => null])
+    public function helpList($options = ['format' => 'listcli', 'raw' => false, 'filter' => null])
     {
         $application = Drush::getApplication();
         annotation_adapter_add_legacy_commands_to_application($application);
