@@ -97,76 +97,12 @@ class PhpCommands extends DrushCommands
         }
 
         if ($found) {
-            // Set the DRUSH_SHIFT_SKIP to two; this will cause
-            // drush_shift to skip the next two arguments the next
-            // time it is called.  This allows scripts to get all
-            // arguments, including the 'php-script' and script
-            // pathname, via drush_get_arguments(), or it can process
-            // just the arguments that are relevant using drush_shift().
-            drush_set_context('DRUSH_SHIFT_SKIP', 2);
-            if ($this->evalShebangScript($found) === false) {
-                $return = include($found);
-                // 1 just means success so don't return it.
-                // http://us3.php.net/manual/en/function.include.php#example-120
-                if ($return !== 1) {
-                    return $return;
-                }
+            $return = include($found);
+            // 1 just means success so don't return it.
+            // http://us3.php.net/manual/en/function.include.php#example-120
+            if ($return !== 1) {
+                return $return;
             }
         }
-    }
-
-    /**
-     * Evaluate a script that begins with #!drush php-script
-     */
-    public function evalShebangScript($script_filename)
-    {
-        $found = false;
-        $fp = fopen($script_filename, "r");
-        if ($fp !== false) {
-            $line = fgets($fp);
-            if (_drush_is_drush_shebang_line($line)) {
-                $first_script_line = '';
-                while ($line = fgets($fp)) {
-                    $line = trim($line);
-                    if ($line == '<?php') {
-                        $found = true;
-                        break;
-                    } elseif (!empty($line)) {
-                        $first_script_line = $line . "\n";
-                        break;
-                    }
-                }
-                $script = stream_get_contents($fp);
-                // Pop off the first two arguments, the
-                // command (php-script) and the path to
-                // the script to execute, as a service
-                // to the script.
-                eval($first_script_line . $script);
-                $found = true;
-            }
-            fclose($fp);
-        }
-        return $found;
-    }
-
-    /**
-     * Command argument complete callback.
-     *
-     * @return array
-     *   Strong glob of files to complete on.
-     */
-    public static function complete()
-    {
-        return array(
-        'files' => array(
-        'directories' => array(
-          'pattern' => '*',
-          'flags' => GLOB_ONLYDIR,
-        ),
-        'script' => array(
-          'pattern' => '*.php',
-        ),
-        ),
-        );
     }
 }
