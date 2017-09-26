@@ -335,8 +335,6 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapDrupalRoot()
     {
-        // Load the config options from Drupal's /drush and sites/all/drush directories.
-        drush_load_config('drupal');
 
         $drupal_root = drush_set_context('DRUSH_DRUPAL_ROOT', drush_bootstrap_value('drupal_root'));
         chdir($drupal_root);
@@ -466,7 +464,6 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapDrupalSite()
     {
-        drush_load_config('site');
         $this->bootstrapDoDrupalSite();
     }
 
