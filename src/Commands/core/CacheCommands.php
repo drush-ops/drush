@@ -176,7 +176,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface
         // We no longer clear APC and similar caches as they are useless on CLI.
         // See https://github.com/drush-ops/drush/pull/2450
 
-        $autoloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
+        $autoloader = $this->loadDrupalAutoloader(DRUPAL_ROOT);
         require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';
 
         $request = Request::createFromGlobals();
@@ -298,5 +298,26 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface
     public static function clearRender()
     {
         Cache::invalidateTags(['rendered']);
+    }
+
+    /**
+     * Loads the Drupal autoloader and returns the instance.
+     */
+    public function loadDrupalAutoloader($drupal_root)
+    {
+        static $autoloader = false;
+
+        $autoloadFilePath = $drupal_root .'/autoload.php';
+        if (!$autoloader && file_exists($autoloadFilePath)) {
+            $autoloader = require $autoloadFilePath;
+        }
+
+        if ($autoloader === TRUE) {
+            // The autoloader was already required. Assume that Drush and Drupal share an autoloader per
+            // "Point autoload.php to the proper vendor directory" - https://www.drupal.org/node/2404989
+            $autoloader = drush_get_context('DRUSH_CLASSLOADER');
+        }
+
+        return $autoloader;
     }
 }
