@@ -5,6 +5,8 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
+use Drush\Boot\AutoloaderAwareInterface;
+use Drush\Boot\AutoloaderAwareTrait;
 use Drush\Commands\DrushCommands;
 use Drupal\Core\DrupalKernel;
 use Drupal\Core\Site\Settings;
@@ -15,10 +17,11 @@ use Symfony\Component\HttpFoundation\Request;
 /*
  * Interact with Drupal's Cache API.
  */
-class CacheCommands extends DrushCommands implements CustomEventAwareInterface
+class CacheCommands extends DrushCommands implements CustomEventAwareInterface, AutoloaderAwareInterface
 {
 
     use CustomEventAwareTrait;
+    use AutoloaderAwareTrait;
 
     /**
      * Fetch a cached object and display it.
@@ -180,7 +183,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface
         // We no longer clear APC and similar caches as they are useless on CLI.
         // See https://github.com/drush-ops/drush/pull/2450
 
-        $autoloader = drush_drupal_load_autoloader(DRUPAL_ROOT);
+        $autoloader = $this->loadDrupalAutoloader(DRUPAL_ROOT);
         require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';
 
         $request = Request::createFromGlobals();
@@ -293,5 +296,26 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface
     public static function clearRender()
     {
         Cache::invalidateTags(['rendered']);
+    }
+
+    /**
+     * Loads the Drupal autoloader and returns the instance.
+     */
+    public function loadDrupalAutoloader($drupal_root)
+    {
+        static $autoloader = false;
+
+        $autoloadFilePath = $drupal_root .'/autoload.php';
+        if (!$autoloader && file_exists($autoloadFilePath)) {
+            $autoloader = require $autoloadFilePath;
+        }
+
+        if ($autoloader === true) {
+            // The autoloader was already required. Assume that Drush and Drupal share an autoloader per
+            // "Point autoload.php to the proper vendor directory" - https://www.drupal.org/node/2404989
+            $autoloader = $this->autoloader();
+        }
+
+        return $autoloader;
     }
 }

@@ -8,26 +8,6 @@
 use Drush\Drush;
 
 /**
- * Loads the Drupal autoloader and returns the instance.
- */
-function drush_drupal_load_autoloader($drupal_root) {
-  static $autoloader = FALSE;
-
-  $autoloadFilePath = $drupal_root .'/autoload.php';
-  if (!$autoloader && file_exists($autoloadFilePath)) {
-    $autoloader = require $autoloadFilePath;
-  }
-
-  if ($autoloader === TRUE) {
-    // The autoloader was already required. Assume that Drush and Drupal share an autoloader per
-    // "Point autoload.php to the proper vendor directory" - https://www.drupal.org/node/2404989
-    $autoloader = drush_get_context('DRUSH_CLASSLOADER');
-  }
-
-  return $autoloader;
-}
-
-/**
  * Detects the version number of the current Drupal installation,
  * if any. Returns FALSE if there is no current Drupal installation,
  * or it is somehow broken.
