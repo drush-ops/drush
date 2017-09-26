@@ -68,12 +68,14 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
      */
     public function clear($type, $options = ['cache-clear' => true])
     {
+        $boot_manager = Drush::bootstrapManager();
+
         if (!$options['cache-clear']) {
             $this->logger()->info(dt("Skipping cache-clear operation due to --cache-clear=0 option."));
             return null;
         }
 
-        $types = $this->getTypes(drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
+        $types = $this->getTypes($boot_manager->hasBootstrapped((DRUSH_BOOTSTRAP_DRUPAL_FULL)));
 
         // Do it.
         drush_op($types[$type]);
@@ -85,8 +87,9 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
      */
     public function interact($input, $output)
     {
+        $boot_manager = Drush::bootstrapManager();
         if (empty($input->getArgument('type'))) {
-            $types = $this->getTypes(drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
+            $types = $this->getTypes($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
             $choices = array_combine(array_keys($types), array_keys($types));
             $type = $this->io()->choice(dt("Choose a cache to clear"), $choices, 'all');
             $input->setArgument('type', $type);
@@ -207,31 +210,22 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
     }
 
     /**
-     * A complete callback for cache-clear.
-     */
-    public function complete()
-    {
-        // Bootstrap as far as possible so that Views and others can list their caches.
-        drush_bootstrap_max();
-        return array('values' => array_keys(drush_cache_clear_types(true)));
-    }
-
-    /**
      * @hook validate cache-clear
      */
     public function validate(CommandData $commandData)
     {
-        $types = $this->getTypes(drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
+        $boot_manager = Drush::bootstrapManager();
+        $types = $this->getTypes($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL));
         $type = $commandData->input()->getArgument('type');
         // Check if the provided type ($type) is a valid cache type.
         if ($type && !array_key_exists($type, $types)) {
-            if ($type === 'all' && drush_drupal_major_version() >= 8) {
+            if ($type === 'all') {
                 throw new \Exception(dt('`cache-clear all` is deprecated for Drupal 8 and later. Please use the `cache-rebuild` command instead.'));
             }
             // If we haven't done a full bootstrap, provide a more
             // specific message with instructions to the user on
             // bootstrapping a Drupal site for more options.
-            if (!drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+            if (!$boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
                 $all_types = $this->getTypes(true);
                 if (array_key_exists($type, $all_types)) {
                     throw new \Exception(dt("'!type' cache requires a working Drupal site to operate on. Use the --root and --uri options, or a site @alias, or cd to a directory containing a Drupal settings.php file.", array('!type' => $type)));
