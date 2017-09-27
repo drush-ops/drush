@@ -3,6 +3,7 @@ namespace Drush;
 
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Drush\Boot\BootstrapManager;
+use Drush\SiteAlias\AliasManager;
 use Drush\Log\LogLevel;
 
 use Symfony\Component\Console\Application as SymfonyApplication;
@@ -28,6 +29,9 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
 
     /** @var BootstrapManager */
     protected $bootstrapManager;
+
+    /** @var AliasManager */
+    protected $aliasManager;
 
     /**
      * @param string $name
@@ -165,6 +169,16 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
         $this->bootstrapManager = $bootstrapManager;
     }
 
+    public function aliasManager()
+    {
+        return $this->aliasManager;
+    }
+
+    public function setAliasManager($aliasManager)
+    {
+        $this->aliasManager = $aliasManager;
+    }
+
     /**
      * Return the framework uri selected by the user.
      */
@@ -177,13 +191,24 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
     }
 
     /**
-     * Set the framework uri selected by the user.
+     * If the user did not explicitly select a site URI,
+     * then pick an appropriate site from the cwd.
      */
-    public function setUri($uri)
+    public function refineUriSelection($cwd)
     {
-        if ($this->bootstrapManager) {
-            $this->bootstrapManager->setUri($uri);
+        if (!$this->bootstrapManager || !$this->aliasManager) {
+            return;
         }
+        $selfAliasRecord = $this->aliasManager->getSelf();
+        $uri = $selfAliasRecord->uri();
+
+        if (empty($uri)) {
+            $uri = $this->bootstrapManager()->selectUri($cwd);
+            $selfAliasRecord->setUri($uri);
+            $this->aliasManager->setSelf($selfAliasRecord);
+        }
+        // Update the uri in the bootstrap manager
+        $this->bootstrapManager->setUri($uri);
     }
 
     /**
@@ -194,6 +219,14 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
         try {
             return parent::find($name);
         } catch (CommandNotFoundException $e) {
+            // Is the unknown command destined for a remote site?
+            if ($this->aliasManager) {
+                $selfAlias = $this->aliasManager->getSelf();
+                if ($selfAlias->isRemote()) {
+                    // TODO: Create a proxy Command object for
+                    // the remote command execution.
+                }
+            }
             // If we have no bootstrap manager, then just re-throw
             // the exception.
             if (!$this->bootstrapManager) {

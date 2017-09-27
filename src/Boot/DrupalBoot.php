@@ -7,9 +7,43 @@ use Drush\Log\LogLevel;
 use Drush\Sql\SqlBase;
 use Psr\Log\LoggerInterface;
 use Drupal\user\Entity\User;
+use Webmozart\PathUtil\Path;
 
 abstract class DrupalBoot extends BaseBoot
 {
+    /**
+     * Select the best URI for the provided cwd. Only called
+     * if the user did not explicitly specify a URI.
+     */
+    public function findUri($root, $cwd)
+    {
+        if (Path::isBasePath($root, $cwd)) {
+            $siteDir = $this->scanUpForUri($root, $cwd);
+            if ($siteDir) {
+                return basename($siteDir);
+            }
+        }
+        return 'default';
+    }
+
+    protected function scanUpForUri($root, $scan)
+    {
+        $root = Path::canonicalize($root);
+        while (!empty($scan)) {
+            if (file_exists("$scan/settings.php")) {
+                return $scan;
+            }
+            $next = dirname($scan);
+            if ($next == $scan) {
+                return false;
+            }
+            $scan = Path::canonicalize($next);
+            if ($scan == $root) {
+                return false;
+            }
+        }
+        return false;
+    }
 
     public function validRoot($path)
     {
