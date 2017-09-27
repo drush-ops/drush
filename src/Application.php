@@ -207,6 +207,8 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
             $selfAliasRecord->setUri($uri);
             $this->aliasManager->setSelf($selfAliasRecord);
         }
+        // Update the uri in the bootstrap manager
+        $this->bootstrapManager->setUri($uri);
     }
 
     /**

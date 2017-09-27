@@ -185,6 +185,11 @@ class SiteAliasManager
             return new AliasRecord($specParser->parse($aliasName, $root), $aliasName);
         }
 
+        // If there is no root, then return '@none'
+        if (!$root) {
+            return new AliasRecord([], '@none');
+        }
+
         // If there is no URI specified, we will allow it to
         // remain empty for now. We will refine it later via
         // Application::refineUriSelection(), which is called
