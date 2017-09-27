@@ -56,20 +56,6 @@ function drush_error_handler($errno, $message, $filename, $line, $context) {
 }
 
 /**
- * Returns a localizable message about php.ini that
- * varies depending on whether the php_ini_loaded_file()
- * is available or not.
- */
-function _drush_php_ini_loaded_file_message() {
-  if (function_exists('php_ini_loaded_file')) {
-    return dt('Please check your configuration settings in !phpini or in your drush.ini file; see examples/example.drush.ini for details.', array('!phpini' => php_ini_loaded_file()));
-  }
-  else {
-    return dt('Please check your configuration settings in your php.ini file or in your drush.ini file; see examples/example.drush.ini for details.');
-  }
-}
-
-/**
  * Evalute the environment after an abnormal termination and
  * see if we can determine any configuration settings that the user might
  * want to adjust.
@@ -80,40 +66,6 @@ function _drush_postmortem() {
   if (($php_memory_limit > 0) && ($php_memory_limit <= 32*DRUSH_KILOBYTE*DRUSH_KILOBYTE)) {
     drush_set_error('DRUSH_MEMORY_LIMIT', dt('Your memory limit is set to !memory_limit; Drush needs as much memory to run as Drupal.  !php_ini_msg', array('!memory_limit' => $php_memory_limit / (DRUSH_KILOBYTE*DRUSH_KILOBYTE) . 'M', '!php_ini_msg' => _drush_php_ini_loaded_file_message())));
   }
-}
-
-/**
- * Evaluate the environment before command bootstrapping
- * begins.  If the php environment is too restrictive, then
- * notify the user that a setting change is needed and abort.
- */
-function _drush_environment_check_php_ini() {
-  $ini_checks = array('safe_mode' => '', 'open_basedir' => '', 'disable_functions' => array('exec', 'system'), 'disable_classes' => '');
-
-  // Test to insure that certain php ini restrictions have not been enabled
-  $prohibited_list = array();
-  foreach ($ini_checks as $prohibited_mode => $disallowed_value) {
-    $ini_value = ini_get($prohibited_mode);
-    $invalid_value = FALSE;
-    if (empty($disallowed_value)) {
-      $invalid_value = !empty($ini_value) && (strcasecmp($ini_value, 'off') != 0);
-    }
-    else {
-      foreach ($disallowed_value as $test_value) {
-        if (preg_match('/(^|,)' . $test_value . '(,|$)/', $ini_value)) {
-          $invalid_value = TRUE;
-        }
-      }
-    }
-    if ($invalid_value) {
-      $prohibited_list[] = $prohibited_mode;
-    }
-  }
-  if (!empty($prohibited_list)) {
-    drush_log(dt('The following restricted PHP modes have non-empty values: !prohibited_list. This configuration is incompatible with drush.  !php_ini_msg', array('!prohibited_list' => implode(' and ', $prohibited_list), '!php_ini_msg' => _drush_php_ini_loaded_file_message())), LogLevel::ERROR);
-  }
-
-  return TRUE;
 }
 
 /**
@@ -357,21 +309,6 @@ function drush_find_drush() {
     return Path::makeAbsolute($drush, drush_cwd());
   }
   return FALSE;
-}
-
-/**
- * Verify that we are running PHP through the command line interface.
- *
- * This function is useful for making sure that code cannot be run via the web server,
- * such as a function that needs to write files to which the web server should not have
- * access to.
- *
- * @return
- *   A boolean value that is true when PHP is being run through the command line,
- *   and false if being run through cgi or mod_php.
- */
-function drush_verify_cli() {
-  return (php_sapi_name() == 'cli' || (is_numeric($_SERVER['argc']) && $_SERVER['argc'] > 0));
 }
 
 /**
@@ -621,30 +558,6 @@ function drush_directory_cache($subdir = '') {
   return drush_set_error('DRUSH_NO_WRITABLE_CACHE', dt('Drush must have a writable cache directory; please insure that one of the following locations is writable: @locations',
     array('@locations' => implode(',', array_keys($cache_locations)))));
 }
-
-///**
-// * Get complete information for all available extensions (modules and themes).
-// *
-// * @return
-// *   An array containing info for all available extensions. In D8, these are Extension objects.
-// */
-//function drush_get_extensions($include_hidden = TRUE) {
-//  drush_include_engine('drupal', 'environment');
-//  $extensions = array_merge(drush_get_modules($include_hidden), drush_get_themes($include_hidden));
-//  foreach ($extensions as $name => $extension) {
-//    if (isset($extension->info['name'])) {
-//      $extensions[$name]->label = $extension->info['name'].' ('.$name.')';
-//    }
-//    else {
-//      drush_log(dt("Extension !name provides no human-readable name in .info file.", array('!name' => $name), LogLevel::DEBUG));
-//      $extensions[$name]->label = $name.' ('.$name.')';
-//    }
-//    if (empty($extension->info['package'])) {
-//      $extensions[$name]->info['package'] = dt('Other');
-//    }
-//  }
-//  return $extensions;
-//}
 
 /**
  * Set Env. Variables for given site-alias.
