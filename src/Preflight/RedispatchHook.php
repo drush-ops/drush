@@ -5,6 +5,7 @@ namespace Drush\Preflight;
 use Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Consolidation\AnnotatedCommand\AnnotationData;
+use Drush\Log\LogLevel;
 
 /**
  * The RedispatchHook is installed as an init hook that runs before
@@ -31,66 +32,82 @@ class RedispatchHook implements InitializeHookInterface
         if ($annotationData->has('handle-remote-commands')) {
             return;
         }
+        return $this->redispatchIfRemote($input);
+    }
 
+    public function redispatchIfRemote($input)
+    {
         // Determine if this is a remote command.
-        $remote_host = $input->getOption('remote-host');
-        if (isset($remote_host)) {
-            $remote_user = $input->getOption('remote-user');
-
-            // Get the command arguements, and shift off the Drush command.
-            $redispatchArgs = \Drush\Drush::config()->get('runtime.argv');
-            $drush_path = array_shift($redispatchArgs);
-            $command_name = array_shift($redispatchArgs);
-
-            // Remove argument patterns that should not be propagated
-            $redispatchArgs = $this->alterArgsForRedispatch($redispatchArgs);
-
-            // Fetch the commandline options to pass along to the remote command.
-            // The options the user provided on the commandline will be included
-            // in $redispatchArgs. Here, we only need to provide those
-            // preflight options that should be propagated.
-            $redispatchOptions = $this->redispatchOptions($input);
-
-            $backend_options = [
-                'drush-script' => null,
-                'remote-host' => $remote_host,
-                'remote-user' => $remote_user,
-                'additional-global-options' => [],
-                'integrate' => true,
-                'backend' => false,
-            ];
-            if ($input->isInteractive()) {
-                $backend_options['#tty'] = true;
-                $backend_options['interactive'] = true;
-            }
-
-            $invocations = [
-                [
-                    'command' => $command_name,
-                    'args' => $redispatchArgs,
-                ],
-            ];
-            $common_backend_options = [];
-            $default_command = null;
-            $default_site = [
-                'remote-host' => $remote_host,
-                'remote-user' => $remote_user,
-                'root' => $input->getOption('root'),
-                'uri' => $input->getOption('uri'),
-            ];
-            $context = null;
-
-            $values = drush_backend_invoke_concurrent(
-                $invocations,
-                $redispatchOptions,
-                $backend_options,
-                $default_command,
-                $default_site,
-                $context
-            );
-
-            return $this->exitEarly($values);
+        // n.b. 'hasOption' only means that the option definition exists, so don't use that here.
+        $root = $input->getOption('remote-host');
+        if (!empty($root)) {
+            return $this->redispatch($input);
         }
+    }
+
+    /**
+     * Called from RemoteCommandProxy::execute() to run remote commands.
+     */
+    public function redispatch($input)
+    {
+        $remote_host = $input->getOption('remote-host');
+        $remote_user = $input->getOption('remote-user');
+
+        // Get the command arguements, and shift off the Drush command.
+        $redispatchArgs = \Drush\Drush::config()->get('runtime.argv');
+        $drush_path = array_shift($redispatchArgs);
+        $command_name = array_shift($redispatchArgs);
+
+        \Drush\Drush::logger()->log(LogLevel::DEBUG, 'Redispatch hook {command}', ['command' => $command_name]);
+
+        // Remove argument patterns that should not be propagated
+        $redispatchArgs = $this->alterArgsForRedispatch($redispatchArgs);
+
+        // Fetch the commandline options to pass along to the remote command.
+        // The options the user provided on the commandline will be included
+        // in $redispatchArgs. Here, we only need to provide those
+        // preflight options that should be propagated.
+        $redispatchOptions = $this->redispatchOptions($input);
+
+        $backend_options = [
+            'drush-script' => null,
+            'remote-host' => $remote_host,
+            'remote-user' => $remote_user,
+            'additional-global-options' => [],
+            'integrate' => true,
+            'backend' => false,
+        ];
+        if ($input->isInteractive()) {
+            $backend_options['#tty'] = true;
+            $backend_options['interactive'] = true;
+        }
+
+        $invocations = [
+            [
+                'command' => $command_name,
+                'args' => $redispatchArgs,
+            ],
+        ];
+        $common_backend_options = [];
+        $default_command = null;
+        $default_site = [
+            'remote-host' => $remote_host,
+            'remote-user' => $remote_user,
+            'root' => $input->getOption('root'),
+            'uri' => $input->getOption('uri'),
+        ];
+        $context = null;
+
+        $values = drush_backend_invoke_concurrent(
+            $invocations,
+            $redispatchOptions,
+            $backend_options,
+            $default_command,
+            $default_site,
+            $context
+        );
+
+        return $this->exitEarly($values);
     }
 
     protected function redispatchOptions(InputInterface $input)
@@ -120,17 +137,20 @@ class RedispatchHook implements InitializeHookInterface
      */
     protected function alterArgsForRedispatch($redispatchArgs)
     {
-
         return array_filter($redispatchArgs, function ($item) {
             return strpos($item, '-D') !== 0;
         });
     }
 
-
     protected function exitEarly($values)
     {
+        \Drush\Drush::logger()->log(LogLevel::DEBUG, 'Redispatch hook exit early');
+
         // TODO: This is how Drush exits from redispatch commands today;
         // perhaps this could be somewhat improved, though.
+        // Note that RemoteCommandProxy::execute() is expecting that
+        // the redispatch() method will not return, so that will need
+        // to be altered if this behavior is changed.
         drush_set_context('DRUSH_EXECUTION_COMPLETED', true);
         exit($values['error_status']);
     }

@@ -136,5 +136,6 @@ class DependencyInjection
         $application->setLogger($container->get('logger'));
         $application->setBootstrapManager($container->get('bootstrap.manager'));
         $application->setAliasManager($container->get('site.alias.manager'));
+        $application->setRedispatchHook($container->get('redispatch.hook'));
     }
 }

@@ -162,6 +162,9 @@ class PmCommands extends DrushCommands
         $status_filter = StringUtils::csvToArray(strtolower($options['status']));
 
         foreach ($both as $key => $extension) {
+            // Fill in placeholder values as needed.
+            $extension->info += ['package' => ''];
+
             // Filter out test modules/themes.
             if (strpos($extension->getPath(), 'tests')) {
                 continue;
@@ -202,14 +205,14 @@ class PmCommands extends DrushCommands
             }
 
             $row = [
-            'package' => $extension->info['package'],
-            'display_name' => $extension->info['name']. ' ('. $extension->getName(). ')',
-            'name' => $extension->getName(),
-            'type' => $extension->getType(),
-            'path' => $extension->getPath(),
-            'status' => ucfirst($status),
-            // Suppress notice when version is not present.
-            'version' => @$extension->info['version'],
+                'package' => $extension->info['package'],
+                'display_name' => $extension->info['name']. ' ('. $extension->getName(). ')',
+                'name' => $extension->getName(),
+                'type' => $extension->getType(),
+                'path' => $extension->getPath(),
+                'status' => ucfirst($status),
+                // Suppress notice when version is not present.
+                'version' => @$extension->info['version'],
             ];
             $rows[$key] = $row;
         }

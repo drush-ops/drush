@@ -2,9 +2,12 @@
 namespace Drush;
 
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Drush\Boot\BootstrapManager;
 use Drush\SiteAlias\AliasManager;
 use Drush\Log\LogLevel;
+use Drush\Command\RemoteCommandProxy;
+use Drush\Preflight\RedispatchHook;
 
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Command\Command;
@@ -32,6 +35,9 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
 
     /** @var AliasManager */
     protected $aliasManager;
+
+    /** @var RedispatchHook */
+    protected $redispatchHook;
 
     /**
      * @param string $name
@@ -179,6 +185,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
         $this->aliasManager = $aliasManager;
     }
 
+    public function setRedispatchHook(RedispatchHook $redispatchHook)
+    {
+        $this->redispatchHook = $redispatchHook;
+    }
+
     /**
      * Return the framework uri selected by the user.
      */
@@ -223,8 +234,9 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
             if ($this->aliasManager) {
                 $selfAlias = $this->aliasManager->getSelf();
                 if ($selfAlias->isRemote()) {
-                    // TODO: Create a proxy Command object for
-                    // the remote command execution.
+                    $command = new RemoteCommandProxy($name, $this->redispatchHook);
+                    $command->setApplication($this);
+                    return $command;
                 }
             }
             // If we have no bootstrap manager, then just re-throw
@@ -236,9 +248,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
             // TODO: We could also fail-fast (throw $e) if bootstrapMax made no progress.
             $this->logger->log(LogLevel::DEBUG, 'Bootstrap futher to find {command}', ['command' => $name]);
             $this->bootstrapManager->bootstrapMax();
-
-            // TODO: parent::find resets log level? Log below not printed, but is printed at LogLevel::WARNING.
-            $this->logger->log(LogLevel::DEBUG, 'Done with bootstrap max');
+            $this->logger->log(LogLevel::DEBUG, 'Done with bootstrap max in Application::find(): trying to find {command} again.', ['command' => $name]);
 
             // Try to find it again. This time the exception will
             // not be caught if the command cannot be found.
