@@ -125,7 +125,7 @@ class SiteAliasManager
         }
 
         if ($aliasName->isNone()) {
-            return new AliasRecord([], $aliasName);
+            return new AliasRecord([], '@none');
         }
 
         // Check to see if there are any legacy alias files that

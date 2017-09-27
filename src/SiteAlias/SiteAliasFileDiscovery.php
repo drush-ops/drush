@@ -110,6 +110,9 @@ class SiteAliasFileDiscovery
 
     protected function searchForAliasFiles($searchPattern)
     {
+        if (empty($this->searchLocations)) {
+            return [];
+        }
         $finder = $this->createFinder($searchPattern);
         $result = [];
         foreach ($finder as $file) {
@@ -121,6 +124,9 @@ class SiteAliasFileDiscovery
 
     protected function searchForAliasFilesKeyedByBasenamePrefix($filenameExensions)
     {
+        if (empty($this->searchLocations)) {
+            return [];
+        }
         $searchPattern = '*' . $filenameExensions;
         $finder = $this->createFinder($searchPattern);
         $result = [];
