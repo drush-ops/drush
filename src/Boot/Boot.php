@@ -12,6 +12,12 @@ namespace Drush\Boot;
 interface Boot
 {
     /**
+     * Select the best URI for the provided cwd. Only called
+     * if the user did not explicitly specify a URI.
+     */
+    public function findUri($root, $uri);
+
+    /**
      * Inject the uri for the specific site to be bootstrapped
      *
      * @param $uri Site to bootstrap

@@ -96,6 +96,7 @@ class SiteAliasManager
      * @param string $aliasName An alias name or site specification
      * @param string $root The default Drupal root (from --root or cwd)
      * @param string $uri The selected multisite
+     * @param string $cwd The cwd at the time Drush was first called
      * @return type
      */
     public function findSelf($aliasName, $root, $uri)
@@ -124,7 +125,7 @@ class SiteAliasManager
         }
 
         if ($aliasName->isNone()) {
-            return new AliasRecord([], $aliasName);
+            return new AliasRecord([], '@none');
         }
 
         // Check to see if there are any legacy alias files that
@@ -166,21 +167,39 @@ class SiteAliasManager
         return $this->aliasLoader->loadMultiple($aliasName);
     }
 
+    /**
+     * Either look up the specified alias name / site spec,
+     * or, if those are invalid, then generate one from
+     * the provided root and URI.
+     */
     protected function buildSelf($aliasName, $root, $uri)
     {
+        // If the user specified an @alias, that takes precidence.
         if (SiteAliasName::isAliasName($aliasName)) {
             return $this->getAlias($aliasName);
         }
 
+        // Ditto for a site spec (/path/to/drupal#uri)
         $specParser = new SiteSpecParser();
         if ($specParser->validSiteSpec($aliasName)) {
             return new AliasRecord($specParser->parse($aliasName, $root), $aliasName);
         }
 
-        if (empty($uri)) {
-            $uri = 'default';
+        // If there is no root, then return '@none'
+        if (!$root) {
+            return new AliasRecord([], '@none');
         }
 
+        // If there is no URI specified, we will allow it to
+        // remain empty for now. We will refine it later via
+        // Application::refineUriSelection(), which is called
+        // in Preflight::doRun(). This method will set it to
+        // 'default' if no better directory can be devined.
+
+        // Create the 'self' alias record. Note that the self
+        // record will be named '@self' if it is manually constructed
+        // here, and will otherwise have the name of the
+        // alias or site specfication used by the user.
         return new AliasRecord(
             [
                 'root' => $root,

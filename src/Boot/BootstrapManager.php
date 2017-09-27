@@ -122,6 +122,17 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         return $this->uri;
     }
 
+    /**
+     * This method is called by the Application iff the user
+     * did not explicitly provide a URI.
+     */
+    public function selectUri($cwd)
+    {
+        $uri = $this->bootstrap()->findUri($this->getRoot(), $cwd);
+        $this->setUri($uri);
+        return $uri;
+    }
+
     public function setUri($uri)
     {
         // TODO: Throw if we already bootstrapped a framework?
