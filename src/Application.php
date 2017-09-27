@@ -171,7 +171,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
 
     public function aliasManager()
     {
-        return $this->aliasManager();
+        return $this->aliasManager;
     }
 
     public function setAliasManager($aliasManager)
@@ -191,12 +191,21 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
     }
 
     /**
-     * Set the framework uri selected by the user.
+     * If the user did not explicitly select a site URI,
+     * then pick an appropriate site from the cwd.
      */
-    public function setUri($uri)
+    public function refineUriSelection($cwd)
     {
-        if ($this->bootstrapManager) {
-            $this->bootstrapManager->setUri($uri);
+        if (!$this->bootstrapManager || !$this->aliasManager) {
+            return;
+        }
+        $selfAliasRecord = $this->aliasManager->getSelf();
+        $uri = $selfAliasRecord->uri();
+
+        if (empty($uri)) {
+            $uri = $this->bootstrapManager()->selectUri($cwd);
+            $selfAliasRecord->setUri($uri);
+            $this->aliasManager->setSelf($selfAliasRecord);
         }
     }
 

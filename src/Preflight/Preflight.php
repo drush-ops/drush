@@ -216,7 +216,7 @@ class Preflight
             ->addSearchLocation($this->environment->userConfigPath())
             ->addSearchLocation($this->selectedDrupalRoot() . '/drush')
             ->addSearchLocation($this->selectedComposerRoot() . '/drush');
-        $selfAliasRecord = $aliasManager->findSelf($preflightArgs->alias(), $root, $preflightArgs->uri(), $this->environment->cwd());
+        $selfAliasRecord = $aliasManager->findSelf($preflightArgs->alias(), $root, $preflightArgs->uri());
         $aliasConfig = $selfAliasRecord->exportConfig();
         $configLocator->addAliasConfig($aliasConfig);
 
@@ -243,13 +243,22 @@ class Preflight
         $application = new \Drush\Application('Drush Commandline Tool', Drush::getVersion());
 
         // Set up the DI container.
-        $container = DependencyInjection::initContainer($application, $config, $input, $output, $loader, $this->drupalFinder, $aliasManager);
+        $container = DependencyInjection::initContainer(
+            $application,
+            $config,
+            $input,
+            $output,
+            $loader,
+            $this->drupalFinder,
+            $aliasManager
+        );
 
         // Now that the DI container has been set up, the Application object will
         // have a reference to the bootstrap manager et. al., so we may use it
-        // as needed. Set the selected uri on the application (which will set
-        // it on the bootstrap manager).
-        $application->setUri($selfAliasRecord->uri());
+        // as needed. Tell the application to coordinate between the Bootstrap
+        // manager and the alias manager to select a more specific URI, if
+        // one was not explicitly provided earlier in the preflight.
+        $application->refineUriSelection($this->environment->cwd());
 
         // Our termination handlers depend on classes we set up via DependencyInjection,
         // so we do not want to enable it any earlier than this.

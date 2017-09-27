@@ -107,6 +107,11 @@ class AliasRecord extends Config
         return $this->get('uri');
     }
 
+    public function setUri($uri)
+    {
+        return $this->set('uri', $uri);
+    }
+
     public function remoteHostWithUser()
     {
         $result = $this->remoteHost();

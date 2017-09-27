@@ -23,6 +23,11 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInt
     {
     }
 
+    public function findUri($root, $uri)
+    {
+        return 'default';
+    }
+
     public function setUri($uri)
     {
         $this->uri = $uri;
