@@ -233,9 +233,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
             // Is the unknown command destined for a remote site?
             if ($this->aliasManager) {
                 $selfAlias = $this->aliasManager->getSelf();
-                $command = new RemoteCommandProxy($name, $this->redispatchHook);
-                $command->setApplication($this);
-                return $command;
+                if ($selfAlias->isRemote()) {
+                    $command = new RemoteCommandProxy($name, $this->redispatchHook);
+                    $command->setApplication($this);
+                    return $command;
+                }
             }
             // If we have no bootstrap manager, then just re-throw
             // the exception.

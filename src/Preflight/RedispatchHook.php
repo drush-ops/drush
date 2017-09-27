@@ -38,7 +38,9 @@ class RedispatchHook implements InitializeHookInterface
     public function redispatchIfRemote($input)
     {
         // Determine if this is a remote command.
-        if ($input->hasOption('remote-host')) {
+        // n.b. 'hasOption' only means that the option definition exists, so don't use that here.
+        $root = $input->getOption('remote-host');
+        if (!empty($root)) {
             return $this->redispatch($input);
         }
     }
