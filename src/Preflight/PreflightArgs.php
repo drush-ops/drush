@@ -65,7 +65,20 @@ class PreflightArgs extends Config implements PreflightArgsInterface
             '--backend' => 'setBackend',
             '--drush-coverage=' => 'setCoverageFile',
             '--strict=' => 'setStrict',
+            '--help' => 'adjustHelpOption',
+            '-h' => 'adjustHelpOption',
         ];
+    }
+
+    /**
+     * If the user enters '--help' or '-h', thrown that
+     * option away and add a 'help' command to the beginning
+     * of the argument list.
+     */
+    public function adjustHelpOption()
+    {
+        $drushPath = array_shift($this->args);
+        array_unshift($this->args, $drushPath, 'help');
     }
 
     /**
