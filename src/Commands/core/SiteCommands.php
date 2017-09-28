@@ -49,7 +49,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
             }
             if ($site == '@self') {
                 $path = drush_cwd();
-                $site_record = drush_sitealias_lookup_alias_by_path($path, true);
+                $site_record = []; // drush_sitealias_lookup_alias_by_path($path, true);
                 if (isset($site_record['#name'])) {
                     $site = '@' . $site_record['#name'];
                 } else {
@@ -61,7 +61,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
                     return;
                 }
             }
-            if (_drush_sitealias_set_context_by_name($site)) {
+            if (false && _drush_sitealias_set_context_by_name($site)) {
                 if (file_exists($filename)) {
                     @unlink($last_site_filename);
                     @rename($filename, $last_site_filename);

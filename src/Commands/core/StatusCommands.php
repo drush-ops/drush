@@ -130,7 +130,8 @@ class StatusCommands extends DrushCommands
         $status_table['drush-version'] = Drush::getVersion();
         $status_table['drush-temp'] = drush_find_tmp();
         $status_table['drush-conf'] = drush_flatten_array(drush_get_context_options('context-path', ''));
-        $alias_files = _drush_sitealias_find_alias_files();
+        // TODO: List available alias files
+        $alias_files = []; // _drush_sitealias_find_alias_files();
         $status_table['drush-alias-files'] = $alias_files;
 
         $paths = self::pathAliases($options, $boot_manager, $boot_object);

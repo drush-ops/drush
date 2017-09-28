@@ -72,13 +72,14 @@ class EditCommands extends DrushCommands
             }
         }
 
-        drush_sitealias_load_all();
         if ($rcs = drush_get_context_options('context-path', true)) {
             if ($headers) {
                 $rcs_header = array('drushrc' => '-- Drushrc --');
             }
         }
-        if ($aliases = drush_get_context('drush-alias-files')) {
+        // TODO: List alias files
+        $aliases = [];
+        if (!empty($aliases)) {
             $aliases = drush_map_assoc($aliases);
             if ($headers) {
                 $aliases_header = array('aliases' => '-- Aliases --');

@@ -59,7 +59,7 @@ class HostPath
         $alias_record = $manager->get($parts[0]);
 
         if (!isset($parts[1])) {
-            return static::determinePathOrAlias($alias_record, $alias_path, $parts[0]);
+            return static::determinePathOrAlias($manager, $alias_record, $alias_path, $parts[0]);
         }
 
         // If $parts[0] did not resolve to a site spec or alias record,
@@ -155,11 +155,11 @@ class HostPath
         return $fqp;
     }
 
-    protected static function determinePathOrAlias($alias_record, $alias_path, $single_part)
+    protected static function determinePathOrAlias($manager, $alias_record, $alias_path, $single_part)
     {
         // If $alias_record is false, then $single_part must be a path.
         if ($alias_record === false) {
-            return new HostPath(new AliasRecord(), $alias_path, $single_part);
+            return new HostPath($manager->getSelf(), $alias_path, $single_part);
         }
 
         // Otherwise, we have a alias record without a path.
