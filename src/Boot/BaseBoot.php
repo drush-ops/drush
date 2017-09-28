@@ -45,13 +45,6 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInt
     {
     }
 
-    public function enforceRequirement(&$command)
-    {
-        drush_enforce_requirement_bootstrap_phase($command);
-        drush_enforce_requirement_core($command);
-        drush_enforce_requirement_drush_dependencies($command);
-    }
-
     public function reportCommandError($command)
     {
         // Set errors related to this command.
@@ -69,81 +62,6 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInt
         foreach ($errors as $code => $message) {
             drush_set_error($code, $message);
         }
-    }
-
-    // @deprecated
-    public function bootstrapAndDispatch()
-    {
-        $phases = $this->bootstrapInitPhases();
-
-        $return = '';
-        $command_found = false;
-        _drush_bootstrap_output_prepare();
-        foreach ($phases as $phase) {
-            if (drush_bootstrap_to_phase($phase)) {
-                $command = drush_parse_command();
-                if (is_array($command)) {
-                    $command += $this->commandDefaults();
-                    // Insure that we have bootstrapped to a high enough
-                    // phase for the command prior to enforcing requirements.
-                    $bootstrap_result = drush_bootstrap_to_phase($command['bootstrap']);
-                    $this->enforceRequirement($command);
-
-                    if ($bootstrap_result && empty($command['bootstrap_errors'])) {
-                        $this->logger->log(LogLevel::BOOTSTRAP, dt("Found command: !command (commandfile=!commandfile)", array('!command' => $command['command'], '!commandfile' => $command['commandfile'])));
-                        $command_found = true;
-
-                        // Special case. Force 'help' command if --help option was specified.
-                        if (drush_get_option('help')) {
-                            $implemented = drush_get_commands();
-                            $command = $implemented['help'];
-                            $command['arguments']['name'] = drush_get_arguments()[0];
-                            $command['allow-additional-options'] = true;
-                        }
-
-                        // Dispatch the command(s).
-                        $return = drush_dispatch($command);
-
-                        if (drush_get_context('DRUSH_DEBUG') && !drush_get_context('DRUSH_QUIET')) {
-                            drush_print_timers();
-                        }
-                        break;
-                    }
-                }
-            } else {
-                break;
-            }
-        }
-
-        // TODO: If we could not find a legacy Drush command, try running a
-        // command via the Symfony application. See also drush_main() in preflight.inc;
-        // ultimately, the Symfony application should be called from there.
-        if (!$command_found && isset($command) && empty($command['bootstrap_errors'])) {
-            $application = Drush::getApplication();
-            $args = drush_get_arguments();
-            if (count($args)) {
-                $name = $args[0];
-                if ($this->hasRegisteredSymfonyCommand($application, $name)) {
-                    $command_found = true;
-                    $input = drush_symfony_input();
-                    $this->logger->log(LogLevel::DEBUG_NOTIFY, dt("Dispatching with Symfony application as a fallback, since no native Drush command was found. (Set DRUSH_SYMFONY environment variable to skip Drush dispatch.)"));
-                    $application->run($input);
-                }
-            }
-        }
-
-        if (!$command_found) {
-            // If we reach this point, command doesn't fit requirements or we have not
-            // found either a valid or matching command.
-            $this->reportCommandError($command);
-        }
-
-        // Prevent a '1' at the end of the output.
-        if ($return === true) {
-            $return = '';
-        }
-
-        return $return;
     }
 
     public function bootstrapPhases()

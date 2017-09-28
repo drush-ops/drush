@@ -49,16 +49,6 @@ interface Boot
     public function getVersion($root);
 
     /**
-     * Main entrypoint to bootstrap the selected CMS and
-     * execute the selected command.
-     *
-     * The implementation provided in BaseBoot should be
-     * sufficient; this method usually will not need to
-     * be overridden.
-     */
-    public function bootstrapAndDispatch();
-
-    /**
      * Returns an array that determines what bootstrap phases
      * are necessary to bootstrap this CMS.  This array
      * should map from a numeric phase to the name of a method
@@ -101,19 +91,6 @@ interface Boot
      * etc.)
      */
     public function commandDefaults();
-
-    /**
-     * Called by Drush when a command is selected, but
-     * before it runs.  This gives the Boot class an
-     * opportunity to determine if any minimum
-     * requirements (e.g. minimum Drupal version) declared
-     * in the command have been met.
-     *
-     * @return TRUE if command is valid. $command['bootstrap_errors']
-     * should be populated with an array of error messages if
-     * the command is not valid.
-     */
-    public function enforceRequirement(&$command);
 
     /**
      * Called by Drush if a command is not found, or if the

@@ -814,7 +814,7 @@ function _drush_sitealias_add_inherited_values(&$aliases) {
 }
 
 function _drush_sitealias_add_inherited_values_to_record(&$alias_value) {
-  drush_command_invoke_all_ref('drush_sitealias_alter', $alias_value);
+  // drush_command_invoke_all_ref('drush_sitealias_alter', $alias_value);
   if (isset($alias_value['parent'])) {
     drush_log(dt("Using deprecated 'parent' element '!parent' in '!name'.", array('!parent' => $alias_value['parent'], '!name' => $alias_value['#name'])), LogLevel::DEBUG);
     // Fetch and merge in each parent
@@ -1977,7 +1977,7 @@ function drush_sitealias_evaluate_path($path, &$additional_options, $local_only 
     // escaped per the LOCAL rules, without regard to the remote platform type.
     $site_alias_settings = drush_sitealias_get_record($alias);
     if (!empty($command_specific_prefix)) {
-      drush_command_set_command_specific_options($command_specific_prefix);
+      // drush_command_set_command_specific_options($command_specific_prefix);
       drush_sitealias_command_default_options($site_alias_settings, $command_specific_prefix);
     }
   }

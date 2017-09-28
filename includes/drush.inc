@@ -888,7 +888,7 @@ function drush_set_error($error, $message = null, $output_label = "") {
     $error = "$error";
   }
 
-  $message = ($message) ? $message : drush_command_invoke_all('drush_help', 'error:' . $error);
+  $message = ($message) ? $message : ''; // drush_command_invoke_all('drush_help', 'error:' . $error);
 
   if (is_array($message)) {
     $message = implode("\n", $message);

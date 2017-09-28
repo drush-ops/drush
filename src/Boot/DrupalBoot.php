@@ -121,12 +121,6 @@ abstract class DrupalBoot extends BaseBoot
         return array(DRUSH_BOOTSTRAP_DRUSH, DRUSH_BOOTSTRAP_DRUPAL_ROOT, DRUSH_BOOTSTRAP_DRUPAL_FULL);
     }
 
-    public function enforceRequirement(&$command)
-    {
-        parent::enforceRequirement($command);
-        $this->drushEnforceRequirementDrupalDependencies($command);
-    }
-
     public function reportCommandError($command)
     {
         // If we reach this point, command doesn't fit requirements or we have not
@@ -257,70 +251,8 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function drushCommandBelongsToDisabledModule()
     {
-        if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
-            _drush_find_commandfiles(DRUSH_BOOTSTRAP_DRUPAL_SITE, DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
-            drush_get_commands(true);
-            $commands = drush_get_commands();
-            $arguments = drush_get_arguments();
-            $command_name = array_shift($arguments);
-            if (isset($commands[$command_name])) {
-                // We found it. Load its module name and set an error.
-                if (is_array($commands[$command_name]['drupal dependencies']) && count($commands[$command_name]['drupal dependencies'])) {
-                    $modules = implode(', ', $commands[$command_name]['drupal dependencies']);
-                } else {
-                    // The command does not define Drupal dependencies. Derive them.
-                    $command_files = commandfiles_cache()->get();
-                    $command_path = $commands[$command_name]['path'] . DIRECTORY_SEPARATOR . $commands[$command_name]['commandfile'] . '.drush.inc';
-                    $modules = array_search($command_path, $command_files);
-                }
-                return array(
-                'bootstrap_errors' => array(
-                  'DRUSH_COMMAND_DEPENDENCY_ERROR' => dt('Command !command needs the following extension(s) enabled to run: !dependencies.', array(
-                    '!command' => $command_name,
-                    '!dependencies' => $modules,
-                  )),
-                ),
-                );
-            }
-        }
-
+        // TODO: How do we find annoated commands in disabled modules?
         return false;
-    }
-
-    /**
-     * Check that a command has its declared dependencies available or have no
-     * dependencies.
-     *
-     * @param $command
-     *   Command to check. Any errors  will be added to the 'bootstrap_errors' element.
-     *
-     * @return
-     *   TRUE if command is valid.
-     */
-    public function drushEnforceRequirementDrupalDependencies(&$command)
-    {
-        // If the command bootstrap is DRUSH_BOOTSTRAP_MAX, then we will
-        // allow the requirements to pass if we have not successfully
-        // bootstrapped Drupal.  The combination of DRUSH_BOOTSTRAP_MAX
-        // and 'drupal dependencies' indicates that the drush command
-        // will use the dependent modules only if they are available.
-        if ($command['bootstrap'] == DRUSH_BOOTSTRAP_MAX) {
-            // If we have not bootstrapped, then let the dependencies pass;
-            // if we have bootstrapped, then enforce them.
-            if (drush_get_context('DRUSH_BOOTSTRAP_PHASE') < DRUSH_BOOTSTRAP_DRUPAL_FULL) {
-                return true;
-            }
-        }
-        // If there are no drupal dependencies, then do nothing
-        if (!empty($command['drupal dependencies'])) {
-            foreach ($command['drupal dependencies'] as $dependency) {
-                if (!\Drupal::moduleHandler()->moduleExists($dependency)) {
-                    $command['bootstrap_errors']['DRUSH_COMMAND_DEPENDENCY_ERROR'] = dt('Command !command needs the following modules installed/enabled to run: !dependencies.', array('!command' => $command['command'], '!dependencies' => implode(', ', $command['drupal dependencies'])));
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     /**
