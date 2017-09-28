@@ -173,7 +173,7 @@ function drush_dispatch($command, $arguments = array()) {
     // Merge in the options added by hooks.  We need this
     // for validation, but this $command is just going to
     // get thrown away, so we'll have to do this again later.
-    annotationcommand_adapter_add_hook_options($command);
+    // annotationcommand_adapter_add_hook_options($command);
 
     // Add command-specific options, if applicable.
     drush_command_default_options($command);
@@ -345,7 +345,7 @@ function _drush_invoke_hooks($command, $args) {
   //   - Pre-command, command and post-command
   //   - Pre-process, process and post-process
   //   - Pre-alter, alter and post-alter
-
+/*
   $names = annotationcommand_adapter_command_names($command);
   // Merge in the options added by hooks (again)
   annotationcommand_adapter_add_hook_options($command);
@@ -362,7 +362,7 @@ function _drush_invoke_hooks($command, $args) {
   );
 
   annotationcommand_adapter_call_initialize($names, $commandData);
-
+*/
   $rollback = FALSE;
   $completed = array();
   $available_rollbacks = array();
@@ -378,8 +378,8 @@ function _drush_invoke_hooks($command, $args) {
   );
   foreach ($variations as $hook_phase => $var_hook) {
 
-    $adapterHookFunction = 'annotationcommand_adapter_call_hook_' . $hook_phase;
-    $adapterHookFunction($names, $commandData, $return);
+//    $adapterHookFunction = 'annotationcommand_adapter_call_hook_' . $hook_phase;
+//    $adapterHookFunction($names, $commandData, $return);
 
     // Get the list of command files.
     // We re-fetch the list every time through
@@ -450,7 +450,7 @@ function _drush_invoke_hooks($command, $args) {
     if ($var_hook == $hook) {
       $return = $accumulated_result;
       if (isset($return)) {
-        annotationcommand_adapter_call_hook_process_and_alter($names, $commandData, $return);
+        // annotationcommand_adapter_call_hook_process_and_alter($names, $commandData, $return);
         drush_handle_command_output($command, $return);
       }
     }
@@ -1051,7 +1051,7 @@ function drush_get_commands($reset = FALSE) {
       }
     }
   }
-  $commands = array_merge($commands, annotationcommand_adapter_commands());
+  $commands = []; // array_merge($commands, annotationcommand_adapter_commands());
   foreach ($commands as $command) {
     // For every alias, make a copy of the command and store it in the command list
     // using the alias as a key
@@ -1452,7 +1452,7 @@ function _drush_find_commandfiles($phase, $phase_max = FALSE) {
   if ($bootstrap = Drush::bootstrap()) {
     $searchpath = $bootstrap->commandfileSearchpaths($phase, $phase_max);
     _drush_add_commandfiles($searchpath, $phase);
-    annotationcommand_adapter_discover($searchpath, $phase, $phase_max);
+    // annotationcommand_adapter_discover($searchpath, $phase, $phase_max);
   }
 }
 
