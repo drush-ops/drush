@@ -638,7 +638,7 @@ function _drush_get_command_options($command) {
  * command record including options provided by hooks and additional-options.
  */
 function drush_get_command_options_extended($command) {
-  if (annotation_adapter_is_annotated($command)) {
+  if (false || annotation_adapter_is_annotated($command)) {
     // The canonical options list is now in $application
     $application = Drush::getApplication();
     $console = $application->get($command['command']);

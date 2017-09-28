@@ -289,10 +289,6 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                     if (method_exists($bootstrap, $current_phase) && !drush_get_error()) {
                         $this->logger->log(LogLevel::BOOTSTRAP, 'Drush bootstrap phase: {function}()', ['function' => $current_phase]);
                         $bootstrap->{$current_phase}();
-
-                        // Reset commandfile cache and find any new command files that are available during this bootstrap phase.
-                        drush_get_commands(true);
-                        _drush_find_commandfiles($phase_index, $phase_max);
                     }
                     drush_set_context('DRUSH_BOOTSTRAP_PHASE', $phase_index);
                 }
