@@ -127,3 +127,35 @@ function drush_get_runner($source, $destination, $runner = FALSE) {
   // we can always resolve aliases here.
   return '@self';
 }
+
+/**
+ * Determines whether a given site alias is for a remote site.
+ *
+ * @param string $alias
+ *   An alias name or site specification.
+ *
+ * @return bool
+ *   Returns TRUE if the alias refers to a remote site, FALSE if it does not, or NULL is unsure.
+ */
+function drush_sitealias_is_remote_site($alias) {
+  if (is_array($alias) && !empty($alias['remote-host'])) {
+    return TRUE;
+  }
+  if (!is_string($alias) || !strlen($alias)) {
+    return NULL;
+  }
+
+  $site_record = drush_sitealias_get_record($alias);
+  if ($site_record) {
+    if (!empty($site_record['remote-host'])) {
+      return TRUE;
+    }
+    else {
+      return FALSE;
+    }
+  }
+  else {
+    drush_set_error('Unrecognized site alias.');
+  }
+}
+
