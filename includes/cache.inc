@@ -168,7 +168,8 @@ function _drush_cache_is_empty($bin) {
  */
 function drush_cache_get_bins() {
   $drush = array('default');
-  return array_merge(drush_command_invoke_all('drush_flush_caches'), $drush);
+  return $drush;
+  // return array_merge(drush_command_invoke_all('drush_flush_caches'), $drush);
 }
 
 /**

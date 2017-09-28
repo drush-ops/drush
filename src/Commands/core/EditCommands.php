@@ -97,14 +97,10 @@ class EditCommands extends DrushCommands
                 $drupal_header = array('drupal' => '-- Drupal --');
             }
         }
-        $commands = drush_get_commands();
+        // TODO: how can we get a list of Drush commands and their paths?
+        $commands = []; // drush_get_commands();
         ksort($commands);
-        $commandfiles_header = array('commands' => '-- Commands --');
-        foreach ($commands as $command) {
-            $acc = $command['annotated-command-callback'];
-            $reflection = $acc ? new \ReflectionMethod($acc[0], $acc[1]) : new \ReflectionFunction($command['callback']);
-            $commandfiles[$reflection->getFileName() . ':' . $reflection->getStartLine()] = $command['command'];
-        }
+
         return array_merge($php_header, $php, $bash_header, $bash, $rcs_header, $rcs, $aliases_header, $aliases, $commandfiles_header, $commandfiles, $drupal_header, $drupal);
     }
 
