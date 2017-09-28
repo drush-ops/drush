@@ -9,7 +9,7 @@ namespace Unish;
 class siteSetCommandCase extends CommandUnishTestCase {
 
   function testSiteSet() {
-    $this->markTestSkipped('Test depends on backend invoke.');
+    $this->markTestSkipped('site set not implemented yet.');
     if ($this->is_windows()) {
       $this->markTestSkipped('Site-set not currently available on Windows.');
     }

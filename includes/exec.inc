@@ -277,16 +277,6 @@ function legacy_drush_os($site_record = NULL) {
 }
 
 /**
- * Determine the remote host (username@hostname.tld) for
- * the specified site.
- */
-function drush_remote_host($site, $prefix = '') {
-  $hostname = drush_escapeshellarg(drush_sitealias_get_option($site, 'remote-host', '', $prefix), "LOCAL");
-  $username = drush_escapeshellarg(drush_sitealias_get_option($site, 'remote-user', '', $prefix), "LOCAL");
-  return $username . (empty($username) ? '' : '@') . $hostname;
-}
-
-/**
  * Make an attempt to simply wrap the arg with the
  * kind of quote characters it does not already contain.
  * If it contains both kinds, then this function reverts to drush_escapeshellarg.

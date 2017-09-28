@@ -196,13 +196,8 @@ class ConfigExportCommands extends DrushCommands
         }
 
         if (!empty($destination)) {
-            $additional = array();
-            $values = drush_sitealias_evaluate_path($destination, $additional, true);
-            if (!isset($values['path'])) {
-                throw new \Exception('The destination directory could not be evaluated.');
-            }
-            $destination = $values['path'];
-            $commandData->input()->setOption('destination', $destination);
+            // TODO: evaluate %files et. al. in destination
+            // $commandData->input()->setOption('destination', $destination);
             if (!file_exists($destination)) {
                 $parent = dirname($destination);
                 if (!is_dir($parent)) {

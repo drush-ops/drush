@@ -7,7 +7,7 @@ use Drush\Sql\SqlBase;
  * versions. If they aren't working for you, consider upgrading your commandfile
  * so that it works with modern Drush.
  *
- * @deprecated 
+ * @deprecated
  */
 
 // @deprecated
@@ -19,19 +19,6 @@ function drush_sql_get_class($db_spec = NULL) {
     $options['db-url'] = $url;
   }
   return SqlBase::create($options);
-}
-
-/**
- * Given an alias record, overwrite its values with options
- * from the command line and other drush contexts as specified
- * by the provided prefix.  For example, if the prefix is 'source-',
- * then any option 'source-foo' will set the value 'foo' in the
- * alias record.
- *
- * @deprecated
- */
-function drush_sitealias_overlay_options($site_alias_record, $prefix) {
-  return array_merge($site_alias_record, drush_get_merged_prefixed_options($prefix));
 }
 
 /**

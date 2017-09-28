@@ -80,11 +80,7 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
             }
         }
         $additional_options = array();
-        $values = drush_sitealias_evaluate_path($normalized_target, $additional_options, $local_only);
-        if (isset($values[$component])) {
-            // Hurray, we found the destination.
-            return $values[$component];
-        }
+        // TODO: evaluate %files et. al. in $normalized_target
     }
 
     /**

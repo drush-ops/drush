@@ -106,7 +106,7 @@ function _drush_bootstrap_selected_uri() {
     }
     $uri = 'http://'. $current;
     $uri = drush_set_context('DRUSH_SELECTED_URI', $uri);
-    drush_sitealias_create_self_alias();
+    // drush_sitealias_create_self_alias();
   }
 
   return $uri;
@@ -249,7 +249,7 @@ function drush_bootstrap_max($max_phase_index = FALSE) {
  */
 function drush_bootstrap_max_to_sitealias($site_record, $max_phase_index = NULL) {
   if ((array_key_exists('root', $site_record) && !array_key_exists('remote-host', $site_record))) {
-    drush_sitealias_set_alias_context($site_record);
+    // drush_sitealias_set_alias_context($site_record);
     drush_bootstrap_max($max_phase_index);
     return TRUE;
   }

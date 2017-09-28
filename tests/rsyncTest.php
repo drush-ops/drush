@@ -99,7 +99,8 @@ class rsyncCase extends CommandUnishTestCase {
 
   /**
    * Test to see if rsync @site:%files calculates the %files path correctly.
-   * This tests the non-optimized code path in drush_sitealias_resolve_path_references.
+   * This tests the non-optimized code path. The optimized code path (direct
+   * call to Drush API functions rather than an `exec`) has not been implemented.
    */
   function testRsyncAndPercentFiles() {
     $root = $this->webroot();
