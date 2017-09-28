@@ -150,6 +150,15 @@ EOT;
     $output = $this->getOutput();
     $this->assertContains('Woot mightily.', $output);
 
+    // TODO: support console.command commands
+    $this->drush('annotated:greet symfony', array(), $options);
+    $output = $this->getOutput();
+    $this->assertEquals('Hello symfony', $output);
+
+    $this->drush('demo:greet symfony', array(), $options);
+    $output = $this->getOutput();
+    $this->assertEquals('Hello symfony', $output);
+
     $this->markTestSkipped('--help not working yet.');
 
     // drush my-cat --help
@@ -176,17 +185,6 @@ EOT;
     // $this->assertContains('--fields=<first, second, third>', $output);
     $this->assertContains('Available fields:', $output);
     $this->assertContains('[default: "table"]', $output);
-
-    $this->markTestSkipped('console.command commands not supported yet');
-
-    // TODO: support console.command commands
-    $this->drush('annotated:greet symfony', array(), $options);
-    $output = $this->getOutput();
-    $this->assertEquals('Hello symfony', $output);
-
-    $this->drush('demo:greet symfony', array(), $options);
-    $output = $this->getOutput();
-    $this->assertEquals('Hello symfony', $output);
 
     $this->markTestSkipped('--ignored-modules not supported yet');
 

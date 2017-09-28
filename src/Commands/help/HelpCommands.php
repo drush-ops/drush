@@ -54,7 +54,6 @@ class HelpCommands extends DrushCommands
             throw new \Exception(dt("The help command requires that a command name be provided. Run `drush list` to see a list of available commands."));
         } else {
             $application = Drush::getApplication();
-            annotation_adapter_add_legacy_commands_to_application($application);
             if (!in_array($name, array_keys($application->all()))) {
                 throw new \Exception(dt("!name command not found.", array('!name' => $name)));
             }

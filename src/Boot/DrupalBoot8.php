@@ -9,6 +9,7 @@ use Drupal\Core\DrupalKernel;
 use Drush\Drush;
 use Drush\Drupal\DrupalKernel as DrushDrupalKernel;
 use Drush\Drupal\DrushServiceModifier;
+use Consolidation\AnnotatedCommand\AnnotatedCommandFactory;
 
 use Drush\Log\LogLevel;
 
@@ -136,6 +137,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $classloader = $this->autoloader();
         // @todo - use Request::create() and then no need to set PHP superglobals
         $kernelClass = new \ReflectionClass('\Drupal\Core\DrupalKernel');
+        // This is not in core yet; see https://www.drupal.org/node/2718933
         if ($kernelClass->hasMethod('addServiceModifier')) {
             $this->kernel = DrupalKernel::createFromRequest($this->request, $classloader, 'prod', DRUPAL_ROOT);
         } else {
@@ -172,6 +174,9 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         // Get a list of the modules to ignore
         $ignored_modules = drush_get_option_list('ignored-modules', array());
 
+        $application = Drush::getApplication();
+        $runner = Drush::runner();
+
         // We have to get the service command list from the container, because
         // it is constructed in an indirect way during the container initialization.
         // The upshot is that the list of console commands is not available
@@ -182,15 +187,15 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             if (!$this->commandIgnored($command, $ignored_modules)) {
                 $this->inflect($command);
                 $this->logger->log(LogLevel::DEBUG_NOTIFY, dt('Add a command: !name', ['!name' => $command->getName()]));
-                annotationcommand_adapter_cache_module_console_commands($command);
+                $application->add($command);
             }
         }
         // Do the same thing with the annotation commands.
         $serviceCommandlist = $container->get('drush.service.consolidationcommands');
-        foreach ($serviceCommandlist->getCommandList() as $commandhandler) {
-            if (!$this->commandIgnored($commandhandler, $ignored_modules)) {
-                $this->inflect($commandhandler);
-                annotationcommand_adapter_cache_module_service_commands($commandhandler);
+        foreach ($serviceCommandlist->getCommandList() as $commandHandler) {
+            if (!$this->commandIgnored($commandHandler, $ignored_modules)) {
+                $this->inflect($commandHandler);
+                $runner->registerCommandClass($application, $commandHandler);
             }
         }
     }

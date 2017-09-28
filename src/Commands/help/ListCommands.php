@@ -33,7 +33,6 @@ class ListCommands extends DrushCommands
     public function helpList($options = ['format' => 'listcli', 'raw' => false, 'filter' => null])
     {
         $application = Drush::getApplication();
-        annotation_adapter_add_legacy_commands_to_application($application);
         $all = $application->all();
         $namespaced = $this->categorize($all);
 
