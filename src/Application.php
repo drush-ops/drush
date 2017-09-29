@@ -246,7 +246,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
             }
 
             // TODO: We could also fail-fast (throw $e) if bootstrapMax made no progress.
-            $this->logger->log(LogLevel::DEBUG, 'Bootstrap futher to find {command}', ['command' => $name]);
+            $this->logger->log(LogLevel::DEBUG, 'Bootstrap further to find {command}', ['command' => $name]);
             $this->bootstrapManager->bootstrapMax();
             $this->logger->log(LogLevel::DEBUG, 'Done with bootstrap max in Application::find(): trying to find {command} again.', ['command' => $name]);
 
