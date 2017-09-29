@@ -68,6 +68,9 @@ class DrushCommandFile extends BaseGenerator
                     $command['argumentsConcat'] = $concat . ', ';
                 }
             }
+            if ($deps = $command['drupal dependencies']) {
+                $command['depsConcat'] = implode(',', $deps);
+            }
         }
         return $commands;
     }
