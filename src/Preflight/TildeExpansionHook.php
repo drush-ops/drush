@@ -12,18 +12,19 @@ use Consolidation\AnnotatedCommand\Hooks\ValidatorInterface;
  */
 class TildeExpansionHook implements ValidatorInterface
 {
-    public function validate(CommandData $commandData) {
+    public function validate(CommandData $commandData)
+    {
         $input = $commandData->input();
         $args = $input->getArguments();
         $options = $input->getOptions();
         $match = '#^~/#';
         $replacement = drush_server_home() . '/';
-        foreach ($options as $name =>$value) {
+        foreach ($options as $name => $value) {
             if (is_string($value) && preg_match($match, $value)) {
                 $input->setOption($name, preg_replace($match, $replacement, $value));
             }
         }
-        foreach ($args as $name =>$value) {
+        foreach ($args as $name => $value) {
             if (is_string($value) && preg_match($match, $value)) {
                 $input->setArgument($name, preg_replace($match, $replacement, $value));
             }
