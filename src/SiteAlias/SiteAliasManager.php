@@ -167,6 +167,11 @@ class SiteAliasManager
         return $this->aliasLoader->loadMultiple($aliasName);
     }
 
+    public function listAllFilePaths()
+    {
+        return $this->aliasLoader->listAll();
+    }
+
     /**
      * Either look up the specified alias name / site spec,
      * or, if those are invalid, then generate one from
