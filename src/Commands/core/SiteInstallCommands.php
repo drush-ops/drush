@@ -265,23 +265,26 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $db_spec = $sql->getDbSpec();
 
         $aliasRecord = $this->siteAliasManager()->getSelf();
+        $root = $aliasRecord->root();
 
         $dir = $commandData->input()->getOption('sites-subdir');
         if (!$dir) {
-            $dir = $aliasRecord->get('uri');
+            // We will allow the 'uri' from the site alias to provide
+            // a fallback name when '--sites-subdir' is not specified, but
+            // only if the uri and the folder name match, and only if
+            // the sites directory has already been created.
+            $dir = $this->getSitesSubdirFromUri($root, $aliasRecord->get('uri'));
         }
 
-        // Override with sites-subdir if specified.
-        if ($dir) {
-            $sites_subdir = "sites/$dir";
+        if (!$dir) {
+            throw new \Exception(dt('Could not determine target sites directory for site to install. Use --site-subdir to specify.'));
         }
-        if (empty($sites_subdir)) {
-            throw new \Exception(dt('Could not determine target sites directory for site to install.'));
-        }
+
+        $sites_subdir = Path::join('sites', $dir);
         $confPath = $sites_subdir;
-        $settingsfile = "$confPath/settings.php";
+        $settingsfile = Path::join($confPath, 'settings.php');
         $sitesfile = "sites/sites.php";
-        $default = realpath($aliasRecord->root() . '/sites/default');
+        $default = realpath(Path::join($root, 'sites/default'));
         $sitesfile_write = $confPath != $default && !file_exists($sitesfile);
 
         if (!file_exists($settingsfile)) {
@@ -331,4 +334,25 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             throw new \Exception(dt('Failed to create database: @error', array('@error' => implode(drush_shell_exec_output()))));
         }
     }
+
+    /**
+     * Determine an appropriate site subdir name to use for the
+     * provided uri.
+     */
+    protected function getSitesSubdirFromUri($root, $uri)
+    {
+        $dir = strtolower($uri);
+        // Always accept simple uris (e.g. 'dev', 'stage', etc.)
+        if (preg_match('#^[a-z0-9_-]*$#', $dir)) {
+            return $dir;
+        }
+        // Strip off the protocol from the provided uri -- however,
+        // now we will require that the sites subdir already exist.
+        $dir = preg_replace('#[^/]*/*#', '', $dir);
+        if (file_exists(Path::join($root, $dir))) {
+            return $dir;
+        }
+        return false;
+    }
 }
+
