@@ -47,22 +47,6 @@ class DrupalBoot6 extends DrupalBoot
     {
     }
 
-    public function contribModulesPaths()
-    {
-        return array(
-        $this->confPath() . '/modules',
-        'sites/all/modules',
-        );
-    }
-
-    public function contribThemesPaths()
-    {
-        return array(
-        $this->confPath() . '/themes',
-        'sites/all/themes',
-        );
-    }
-
     public function bootstrapDrupalCore($drupal_root)
     {
         define('DRUPAL_ROOT', $drupal_root);

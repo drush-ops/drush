@@ -91,28 +91,6 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $container->get('logger.factory')->addLogger($logger);
     }
 
-    public function contribModulesPaths()
-    {
-        return array(
-            $this->confPath() . '/modules',
-            'sites/all/modules',
-            'modules',
-        );
-    }
-
-    /**
-     * @return array of strings - paths to directories where contrib
-     * themes can be found
-     */
-    public function contribThemesPaths()
-    {
-        return array(
-            $this->confPath() . '/themes',
-            'sites/all/themes',
-            'themes',
-        );
-    }
-
     public function bootstrapDrupalCore($drupal_root)
     {
         $core = DRUPAL_ROOT . '/core';
