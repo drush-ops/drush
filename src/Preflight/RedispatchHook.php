@@ -3,6 +3,7 @@
 namespace Drush\Preflight;
 
 use Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface;
+use Drush\Drush;
 use Symfony\Component\Console\Input\InputInterface;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drush\Log\LogLevel;
@@ -53,12 +54,12 @@ class RedispatchHook implements InitializeHookInterface
         $remote_host = $input->getOption('remote-host');
         $remote_user = $input->getOption('remote-user');
 
-        // Get the command arguements, and shift off the Drush command.
-        $redispatchArgs = \Drush\Drush::config()->get('runtime.argv');
+        // Get the command arguments, and shift off the Drush command.
+        $redispatchArgs = Drush::config()->get('runtime.argv');
         $drush_path = array_shift($redispatchArgs);
         $command_name = array_shift($redispatchArgs);
 
-        \Drush\Drush::logger()->log(LogLevel::DEBUG, 'Redispatch hook {command}', ['command' => $command_name]);
+        Drush::logger()->debug('Redispatch hook {command}', ['command' => $command_name]);
 
         // Remove argument patterns that should not be propagated
         $redispatchArgs = $this->alterArgsForRedispatch($redispatchArgs);
@@ -144,7 +145,7 @@ class RedispatchHook implements InitializeHookInterface
 
     protected function exitEarly($values)
     {
-        \Drush\Drush::logger()->log(LogLevel::DEBUG, 'Redispatch hook exit early');
+        Drush::logger()->log(LogLevel::DEBUG, 'Redispatch hook exit early');
 
         // TODO: This is how Drush exits from redispatch commands today;
         // perhaps this could be somewhat improved, though.
