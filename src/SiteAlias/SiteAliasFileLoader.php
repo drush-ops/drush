@@ -105,6 +105,18 @@ class SiteAliasFileLoader
     }
 
     /**
+     * Return a list of all available alias files. Does not include
+     * legacy files.
+     */
+    public function listAll()
+    {
+        return array_merge(
+            $this->discovery()->findAllGroupAliasFiles(),
+            $this->discovery()->findAllSingleAliasFiles()
+        );
+    }
+
+    /**
      * Given an alias name that might represent multiple sites,
      * return a list of all matching alias records. If nothing was found,
      * or the name represents a single site + env, then we take
