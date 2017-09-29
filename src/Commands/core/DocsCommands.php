@@ -52,7 +52,7 @@ class DocsCommands extends DrushCommands
     }
 
     /**
-     * Configuration overview with examples from example.drushrc.php.
+     * Configuration overview with examples from example.config.yml.
      *
      * @command docs:configuration
      * @aliases docs-configuration
@@ -61,7 +61,7 @@ class DocsCommands extends DrushCommands
      */
     public function config()
     {
-        self::printFile(DRUSH_BASE_PATH. '/examples/example.drushrc.php');
+        self::printFile(DRUSH_BASE_PATH. '/examples/example.config.yml');
     }
 
     /**
@@ -87,7 +87,7 @@ class DocsCommands extends DrushCommands
      */
     public function siteAliases()
     {
-        self::printFile(DRUSH_BASE_PATH. '/examples/example.aliases.drushrc.php');
+        self::printFile(DRUSH_BASE_PATH. '/examples/example.aliases.yml');
     }
 
     /**

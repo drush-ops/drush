@@ -34,6 +34,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
     {
         $home = drush_server_home();
         $drush_config_dir = $home . "/.drush";
+        // @todo copy a config.yml.
         $drush_config_file = $drush_config_dir . "/drushrc.php";
         $drush_bashrc = $drush_config_dir . "/drush.bashrc";
         $drush_prompt = $drush_config_dir . "/drush.prompt.sh";

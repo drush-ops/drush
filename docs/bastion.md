@@ -6,6 +6,7 @@ Wikipedia defines a [bastion server](http://en.wikipedia.org/wiki/Bastion_host) 
 
 Site aliases can refer to Drupal sites that are running on remote machines simply including 'remote-host' and 'remote-user' attributes:
 
+    // @todo convert below to YML.
     $aliases['internal'] = array(
         'remote-host' => 'internal.company.com',
         'remote-user' => 'wwwadmin',
@@ -30,7 +31,7 @@ That is all that is necessary; however, if the dev machine you are configuring i
 
 First, make sure that you do not have any configuration options for the internal machine in your .ssh/config file. The next step after that is to identify when you are connected to your company intranet. I like to determine this by using the `route` command to find my network gateway address, since this is always the same on my intranet, and unlikely to be encountered in other places.
 
-In **drushrc.php:**
+In **config.yml:**
 
     # Figure out if we are inside our company intranet by testing our gateway address against a known value
     exec("route -n | grep '^0\.0\.0\.0' | awk '{ print $2; }' 2> /dev/null", $output);
@@ -40,8 +41,9 @@ In **drushrc.php:**
 
 After this code runs, the 'MY\_INTRANET' context will be set if our gateway IP address matches the expected value, and unset otherwise. We can make use of this in our alias files.
 
-In **aliases.drushrc.php:**
+In **aliases.yml:**
 
+    // @todo convert below to YML with a dynamic hook.
     if (drush_get_context('MY_INTRANET', FALSE) === FALSE) {
       $aliases['intranet-proxy'] = array(
         'ssh-options' => ' -o "ProxyCommand ssh user@bastion.company.com nc %h %p"',

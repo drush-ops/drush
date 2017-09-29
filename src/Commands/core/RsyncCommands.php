@@ -36,8 +36,8 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      * Rsync Drupal code or files to/from another server using ssh.
      *
      * @command core:rsync
-     * @param $source A site alias and optional path. See rsync documentation and example.aliases.drushrc.php.
-     * @param $destination A site alias and optional path. See rsync documentation and example.aliases.drushrc.php.',
+     * @param $source A site alias and optional path. See rsync documentation and example.aliases.yml.
+     * @param $destination A site alias and optional path. See rsync documentation and example.aliases.config.yml.',
      * @param $extra Additional parameters after the ssh statement.
      * @optionset_ssh
      * @option exclude-paths List of paths to exclude, seperated by : (Unix-based systems) or ; (Windows).
