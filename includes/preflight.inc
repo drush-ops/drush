@@ -63,31 +63,6 @@ function drush_add_command_to_application($container, $command) {
 }
 
 /**
- * Look for instances of arguments or parameters that
- * start with "~/".  Replace these with "$HOME/".
- *
- * Note that this function is called _after_ Drush does
- * its redispatch checks; tildes are passed through
- * unmodified on a redispatch, and are only expanded when
- * a command is handled locally.
- */
-function drush_preflight_tilde_expansion(&$command) {
-  // Skip tilde expansion for commands that explicitly
-  // turn it off via $command['tilde-expansion'] = FALSE.
-  if ($command['tilde-expansion']) {
-    $cli =& drush_get_context('cli');
-    $match = '#^~/#';
-    $replacement = drush_server_home() . '/';
-    foreach ($cli as $key => $value) {
-      if (is_string($value) && preg_match($match, $value)) {
-        $cli[$key] = preg_replace($match, $replacement, $value);
-      }
-    }
-    $command['arguments'] = array_map(function($value) use($match, $replacement) { return is_string($value) ? preg_replace($match, $replacement, $value) : $value; } , $command['arguments']);
-  }
-}
-
-/**
  * We set this context to let the shutdown function know we reached the end of drush_main().
  *
  * @see drush_main()

@@ -2,15 +2,14 @@
 namespace Drush;
 
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
-use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Drush\Boot\BootstrapManager;
+use Drush\Preflight\TildeExpansionHook;
 use Drush\SiteAlias\AliasManager;
 use Drush\Log\LogLevel;
 use Drush\Command\RemoteCommandProxy;
 use Drush\Preflight\RedispatchHook;
 
 use Symfony\Component\Console\Application as SymfonyApplication;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -38,6 +37,9 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
 
     /** @var RedispatchHook */
     protected $redispatchHook;
+
+    /** @var TildeExpansionHook */
+    protected $tildeExpansionHook;
 
     /**
      * @param string $name
@@ -188,6 +190,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
     public function setRedispatchHook(RedispatchHook $redispatchHook)
     {
         $this->redispatchHook = $redispatchHook;
+    }
+
+    public function setTildeExpansionHook(TildeExpansionHook $tildeExpansionHook)
+    {
+        $this->tildeExpansionHook = $tildeExpansionHook;
     }
 
     /**

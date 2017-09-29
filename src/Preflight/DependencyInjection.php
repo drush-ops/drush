@@ -91,6 +91,7 @@ class DependencyInjection
         $container->share('bootstrap.hook', 'Drush\Boot\BootstrapHook')
           ->withArgument('bootstrap.manager');
         $container->share('redispatch.hook', 'Drush\Preflight\RedispatchHook');
+        $container->share('tildeExpansion.hook', 'Drush\Preflight\TildeExpansionHook');
 
         // Robo does not manage the command discovery object in the container,
         // but we will register and configure one for our use.
@@ -113,6 +114,7 @@ class DependencyInjection
         $hookManager = $container->get('hookManager');
         $hookManager->addInitializeHook($container->get('redispatch.hook'));
         $hookManager->addInitializeHook($container->get('bootstrap.hook'));
+        $hookManager->addPreValidator($container->get('tildeExpansion.hook'));
         $hookManager->addOutputExtractor(new \Drush\Backend\BackendResultSetter());
         // @todo: do we need both backend result setters? The one below should be removed at some point.
         $hookManager->add('annotatedcomand_adapter_backend_result', \Consolidation\AnnotatedCommand\Hooks\HookManager::EXTRACT_OUTPUT);
@@ -138,5 +140,6 @@ class DependencyInjection
         $application->setBootstrapManager($container->get('bootstrap.manager'));
         $application->setAliasManager($container->get('site.alias.manager'));
         $application->setRedispatchHook($container->get('redispatch.hook'));
+        $application->setTildeExpansionHook($container->get('tildeExpansion.hook'));
     }
 }
