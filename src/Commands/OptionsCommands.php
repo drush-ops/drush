@@ -11,9 +11,8 @@ class OptionsCommands
      * @hook option @optionset_proc_build
      * @option ssh-options A string of extra options that will be passed to the ssh command (e.g. "-p 100")
      * @option tty Create a tty (e.g. to run an interactive program).
-     * @option escaped Command string already escaped; do not add additional quoting.
      */
-    public function optionsetProcBuild()
+    public function optionsetProcBuild($options = ['ssh-options' => '', 'tty' => false])
     {
     }
 
@@ -40,20 +39,20 @@ class OptionsCommands
      * @option db-url A Drupal 6 style database URL.
      * @option target The name of a target within the specified database connection. Defaults to default
      */
-    public function optionsetSql($options = ['database' => 'default', 'target' => 'default'])
+    public function optionsetSql($options = ['database' => 'default', 'target' => 'default', 'db-url' => ''])
     {
     }
 
     /**
      * @hook option @optionset_table_selection
-     * @option skip-tables-key A key in the $skip_tables array. @see example.drushrc.php
-     * @option structure-tables-key A key in the $structure_tables array. @see example.drushrc.php
+     * @option skip-tables-key A key in the $skip_tables array. @see example.config.yml
+     * @option structure-tables-key A key in the $structure_tables array. @see example.config.yml
      * @option tables-key A key in the $tables array.
      * @option skip-tables-list A comma-separated list of tables to exclude completely.
      * @option structure-tables-list A comma-separated list of tables to include for structure, but not data.
      * @option tables-list A comma-separated list of tables to transfer.
      */
-    public function optionsetTableSelection($command, $annotationData)
+    public function optionsetTableSelection()
     {
     }
 }

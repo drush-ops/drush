@@ -7,7 +7,7 @@ class LegacyCommands extends DrushCommands
 {
 
     /**
-     * Drupal 8 does not support disabling modules. See pm-uninstall command.
+     * Drupal 8 does not support disabling modules. See pm:uninstall command.
      *
      * @command pm:disable
      * @aliases dis,pm-disable
@@ -20,7 +20,7 @@ class LegacyCommands extends DrushCommands
     }
 
     /**
-     * The pm-info command was deprecated. Please see `drush pm-list` and `composer show`
+     * The pm-info command was deprecated. Please see `drush pm:list` and `composer show`
      *
      * @command pm:info
      * @aliases pmi,pm-info
@@ -33,7 +33,7 @@ class LegacyCommands extends DrushCommands
     }
 
     /**
-     * The pm-projectinfo command was deprecated. Please see `drush pm-list` and `composer show`
+     * The pm-projectinfo command was deprecated. Please see `drush pm:list` and `composer show`
      *
      * @command pm:projectinfo
      * @allow-additional-options
