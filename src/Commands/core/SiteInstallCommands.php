@@ -29,7 +29,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * @option db-su Account to use when creating a new database. Must have Grant permission (mysql only). Optional.
      * @option db-su-pw Password for the "db-su" account. Optional.
      * @option account-name uid1 name. Defaults to admin
-     * @option account-pass uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in drushrc.php.
+     * @option account-pass uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in config.yml.
      * @option account-mail uid1 email. Defaults to admin@example.com
      * @option locale A short language code. Sets the default site language. Language files must already be present.
      * @option site-name Defaults to Site-Install
