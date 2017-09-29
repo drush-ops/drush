@@ -5,18 +5,7 @@
  * Preflight, postflight and shutdown code.
  */
 
-use Consolidation\AnnotatedCommand\Hooks\HookManager;
-use Drush\Cache\CommandCache;
-use Drush\Drush;
-use Drush\Log\LogLevel;
-use League\Container\Container;
 use Robo\Contract\BuilderAwareInterface;
-use Robo\Robo;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Output\OutputInterface;
-use Webmozart\PathUtil\Path;
 
 /**
  * The main Drush function.

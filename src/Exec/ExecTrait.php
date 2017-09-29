@@ -30,7 +30,6 @@ trait ExecTrait
             $host = parse_url($uri, PHP_URL_HOST);
             if (!$host) {
                 // Build a URI for the current site, if we were passed a path.
-                $self = $this->aliasManager()->getSelf();
                 $site = drush_get_context('DRUSH_URI');
                 $host = parse_url($site, PHP_URL_HOST);
                 $uri = $site . '/' . ltrim($uri, '/');

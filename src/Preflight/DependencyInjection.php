@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Preflight;
 
+use Drush\Command\GlobalOptionsEventListener;
 use Drush\Drush;
 use Drush\Cache\CommandCache;
 use DrupalFinder\DrupalFinder;
@@ -127,7 +128,7 @@ class DependencyInjection
 
         // It is necessary to set the dispatcher when using configureContainer
         $eventDispatcher = $container->get('eventDispatcher');
-        $eventDispatcher->addSubscriber(new \Drush\Command\GlobalOptionsEventListener());
+        $eventDispatcher->addSubscriber(new GlobalOptionsEventListener());
         $application->setDispatcher($eventDispatcher);
     }
 
