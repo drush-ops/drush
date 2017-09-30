@@ -209,6 +209,19 @@ class Preflight
         // Process the selected alias. This might change the selected site,
         // so we will add new site-wide config location for the new root.
         $root = $this->setSelectedSite($selfAliasRecord->localRoot());
+
+        // Now that we have our final Drupal root, check to see if there is
+        // a site-local Drush. If there is, we will redispatch to it.
+        // NOTE: termination handlers have not been set yet, so it is okay
+        // to exit early without taking special action.
+
+        $status = RedispatchToSiteLocal::redispatchIfSiteLocalDrush($argv, $root, $this->environment->vendorPath());
+        if ($status !== false) {
+            return $status;
+        }
+
+        // If we did not redispatch, then add the site-wide config for the
+        // new root (if the root did in fact change) and continue.
         $configLocator->addSitewideConfig($root);
 
         // Remember the paths to all the files we loaded, so that we can
