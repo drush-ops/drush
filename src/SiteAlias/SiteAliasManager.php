@@ -35,11 +35,27 @@ class SiteAliasManager
      * Add a search location to our site alias discovery object.
      *
      * @param string $path
+     *
      * @return $this
      */
     public function addSearchLocation($path)
     {
         $this->aliasLoader->discovery()->addSearchLocation($path);
+        return $this;
+    }
+
+    /**
+     * Add search locations to our site alias discovery object.
+     *
+     * @param array $paths
+     *
+     * @return $this
+     */
+    public function addSearchLocations(array $paths)
+    {
+        foreach ($paths as $path) {
+            $this->aliasLoader->discovery()->addSearchLocation($path);
+        }
         return $this;
     }
 
@@ -213,4 +229,5 @@ class SiteAliasManager
             '@self'
         );
     }
+
 }

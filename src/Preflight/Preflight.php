@@ -206,16 +206,12 @@ class Preflight
         // target site.
         $root = $this->findSelectedSite($preflightArgs);
         $configLocator->addSitewideConfig($root);
+        $configLocator->setComposerRoot($this->selectedComposerRoot());
+
+        $paths = $configLocator->getSiteAliasPaths($preflightArgs, $this->environment);
 
         // Configure alias manager.
-        // TODO: We have a nice ConfigLocator that knows about --local, etc.;
-        // we should use that here as well.
-        $aliasManager = (new SiteAliasManager())
-            ->addSearchLocation($preflightArgs->aliasPath())
-            ->addSearchLocation($this->environment->systemConfigPath())
-            ->addSearchLocation($this->environment->userConfigPath())
-            ->addSearchLocation($this->selectedDrupalRoot() . '/drush')
-            ->addSearchLocation($this->selectedComposerRoot() . '/drush');
+        $aliasManager = (new SiteAliasManager())->addSearchLocations($paths);
         $selfAliasRecord = $aliasManager->findSelf($preflightArgs->alias(), $root, $preflightArgs->uri());
         $aliasConfig = $selfAliasRecord->exportConfig();
         $configLocator->addAliasConfig($aliasConfig);
