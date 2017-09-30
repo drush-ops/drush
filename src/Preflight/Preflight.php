@@ -225,6 +225,11 @@ class Preflight
         $root = $this->setSelectedSite($selfAliasRecord->localRoot());
         $configLocator->addSitewideConfig($root);
 
+        // Remember the paths to all the files we loaded, so that we can
+        // report on it from Drush status or wherever else it may be needed.
+
+        $config->set('runtime.config.paths', $configLocator->configFilePaths());
+
         // We need to check the php minimum version again, in case anyone
         // has set it to something higher in one of the config files we loaded.
         $this->verify->confirmPhpVersion($config->get('drush.php.minimum-version'));

@@ -38,6 +38,8 @@ class ConfigLocator
 
     protected $siteRoots = [];
 
+    protected $configFilePaths = [];
+
     /*
      * From context.inc:
      *
@@ -93,6 +95,8 @@ class ConfigLocator
         $this->config->addPlaceholder(self::ENVIRONMENT_CONTEXT);
 
         $this->isLocal = false;
+
+        $this->configFilePaths = [];
     }
 
     /**
@@ -114,6 +118,11 @@ class ConfigLocator
     public function sources()
     {
         return $this->sources;
+    }
+
+    public function configFilePaths()
+    {
+        return $this->configFilePaths;
     }
 
     protected function addToSources(array $sources)
@@ -217,13 +226,9 @@ class ConfigLocator
     protected function addConfigCandidates(ConfigProcessor $processor, ConfigLoaderInterface $loader, $paths, $candidates)
     {
         $configFiles = $this->locateConfigs($paths, $candidates);
-        if (empty($configFiles)) {
-            return;
-        }
-
-        // TODO: store `$configFiles` and make them available to `drush status`
         foreach ($configFiles as $configFile) {
             $processor->extend($loader->load($configFile));
+            $this->configFilePaths[] = $configFile;
         }
     }
 
