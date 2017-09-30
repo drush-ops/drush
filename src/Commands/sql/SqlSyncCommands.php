@@ -104,7 +104,9 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
                 // Cleanup if this command created the dump file.
                 $rsync_options[] = '--remove-source-files';
             }
-            $runner = drush_get_runner($sourceRecord, $destinationRecord, $options['runner']);
+            if (!$runner = $options['runner']) {
+                $runner = $sourceRecord->isRemote() && $destinationRecord->isRemote() ? $destination : '@self';
+            }
             // Since core-rsync is a strict-handling command and drush_invoke_process() puts options at end, we can't send along cli options to rsync.
             // Alternatively, add options like --ssh-options to a site alias (usually on the machine that initiates the sql-sync).
             $return = drush_invoke_process($runner, 'core-rsync', array_merge(["$source:$source_dump_path", "$destination:$destination_dump_path", '--'], $rsync_options), [], $backend_options);

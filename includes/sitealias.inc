@@ -92,43 +92,6 @@ function drush_sitealias_get_record($alias, $alias_context = NULL) {
 }
 
 /**
- * Decide on which side to run a core-rsync.
- *
- * @param $source
- * @param $destination
- * @param $runner Where to run the rsync operation: 'destination', 'source',
- *   'auto' ('destination' if both are remote, otherwise '@self') or FALSE (@self)
- * @return mixed
- */
-function drush_get_runner($source, $destination, $runner = FALSE) {
-  if (is_string($source)) {
-    $source = drush_sitealias_get_record($site);
-  }
-  if (is_string($destination)) {
-    $destination = drush_sitealias_get_record($destination);
-  }
-
-  // If both sites are remote, and --runner=auto, then we'll use the destination site.
-  if (drush_sitealias_is_remote_site($source) && drush_sitealias_is_remote_site($destination)) {
-    if ($runner == 'auto') {
-      $runner = 'destination';
-    }
-  }
-
-  // If the user explicitly requests a remote site, then return the selected one.
-  if ($runner == 'destination') {
-    return "@" . $destination['#name'];
-  }
-  if ($runner == 'source') {
-    return "@" . $source['#name'];
-  }
-
-  // Default to running rsync locally. When in doubt, local is best, because
-  // we can always resolve aliases here.
-  return '@self';
-}
-
-/**
  * Determines whether a given site alias is for a remote site.
  *
  * @param string $alias
