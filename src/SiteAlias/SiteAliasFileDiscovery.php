@@ -12,7 +12,7 @@ use Symfony\Component\Finder\Finder;
  *     in the group 'group'. Each site can have multiple aliases for its
  *     environments.
  *
- * If an alais name is fully specified, with group, sitename and environment,
+ * If an alias name is fully specified, with group, sitename and environment,
  * then Drush will load only the group alias file that contains the alias.
  * Otherwise, Drush will first search for the provided alias name in a
  * single-alias alias file. If no such file can be found, then it will try
