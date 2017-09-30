@@ -133,7 +133,7 @@ class Preflight
         // where such things are found.
         $configLocator = new ConfigLocator();
         $configLocator->setLocal($preflightArgs->isLocal());
-        $configLocator->addUserConfig($preflightArgs->configPath(), $environment->systemConfigPath(), $environment->userConfigPath());
+        $configLocator->addUserConfig($preflightArgs->configPaths(), $environment->systemConfigPath(), $environment->userConfigPath());
         $configLocator->addDrushConfig($environment->drushBasePath());
 
         // Make our environment settings available as configuration items
@@ -209,7 +209,6 @@ class Preflight
         $configLocator->setComposerRoot($this->selectedComposerRoot());
 
         $paths = $configLocator->getSiteAliasPaths($preflightArgs, $this->environment);
-
         // Configure alias manager.
         $aliasManager = (new SiteAliasManager())->addSearchLocations($paths);
         $selfAliasRecord = $aliasManager->findSelf($preflightArgs->alias(), $root, $preflightArgs->uri());
@@ -331,9 +330,11 @@ class Preflight
         ];
 
         // Commands specified by 'include' option
-        $commandPath = $preflightArgs->commandPath();
-        if (is_dir($commandPath)) {
-            $searchpath[] = $commandPath;
+        $commandPaths = $preflightArgs->commandPaths();
+        foreach ($commandPaths as $commandPath) {
+            if (is_dir($commandPath)) {
+                $searchpath[] = $commandPath;
+            }
         }
 
         if (!$preflightArgs->isLocal()) {

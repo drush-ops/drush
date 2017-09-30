@@ -27,8 +27,8 @@ class ArgsPreprocessorTest extends TestCase
         $this->assertEquals($unprocessedArgs, implode(',', $preflightArgs->args()));
         $this->assertEquals($alias, $preflightArgs->alias());
         $this->assertEquals($selectedSite, $preflightArgs->selectedSite());
-        $this->assertEquals($configPath, $preflightArgs->configPath());
-        $this->assertEquals($aliasPath, $preflightArgs->aliasPath());
+        $this->assertEquals($configPath, $preflightArgs->configPaths());
+        $this->assertEquals($aliasPath, $preflightArgs->aliasPaths());
     }
 
     public static function argTestValues()
