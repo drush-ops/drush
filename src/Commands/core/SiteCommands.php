@@ -2,23 +2,28 @@
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
-
-use Drush\Drush;
-use Drush\SiteAlias\AliasRecord;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
-use Drush\SiteAlias\SiteAliasName;
 use Consolidation\OutputFormatters\StructuredData\ListDataFromKeys;
+use Robo\Common\ConfigAwareTrait;
+use Robo\Contract\ConfigAwareInterface;
 
-class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterface, ConfigAwareInterface
 {
     use SiteAliasManagerAwareTrait;
+    use ConfigAwareTrait;
 
     /**
-     * Set a site alias to work on that will persist for the current session.
+     * Set a site alias that will persist for the current session.
+     *
+     * Stores the site alias being used in the current session in a temporary
+     * file.
      *
      * @command site:set
-     * @param $site Site specification to use, or "-" for previous site. Omit this argument to unset.
+     *
+     * @param string $site Site specification to use, or "-" for previous site. Omit this argument to unset.
+     *
+     * @throws \Exception
      * @handle-remote-commands
      * @validate-php-extension posix
      * @usage drush site:set @dev
@@ -32,14 +37,12 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * @usage drush site:set
      *   Without an argument, any existing site becomes unset.
      * @aliases use,site-set
-     * @hidden
      */
-    public function siteSet($site = '@none', $options = ['a' =>'b'])
+    public function siteSet($site = '@none')
     {
-        // @todo Needs modernizing to get it functional, so @hidden for now.
-
-        if ($filename = drush_sitealias_get_envar_filename()) {
-            $last_site_filename = drush_sitealias_get_envar_filename('drush-drupal-prev-site-');
+        $filename = $this->getConfig()->get('drush.site-file-current');
+        if ($filename) {
+            $last_site_filename = $this->getConfig()->get('drush.site-file-previous');
             if ($site == '-') {
                 if (file_exists($last_site_filename)) {
                     $site = file_get_contents($last_site_filename);
@@ -48,8 +51,9 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
                 }
             }
             if ($site == '@self') {
-                $path = drush_cwd();
-                $site_record = []; // drush_sitealias_lookup_alias_by_path($path, true);
+                // $path = drush_cwd();
+                // $site_record = drush_sitealias_lookup_alias_by_path($path, true);
+                $site_record = [];
                 if (isset($site_record['#name'])) {
                     $site = '@' . $site_record['#name'];
                 } else {
@@ -61,12 +65,14 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
                     return;
                 }
             }
-            if (false && _drush_sitealias_set_context_by_name($site)) {
+            // Alias record lookup exists.
+            $aliasRecord = $this->siteAliasManager()->get($site);
+            if ($aliasRecord) {
                 if (file_exists($filename)) {
                     @unlink($last_site_filename);
                     @rename($filename, $last_site_filename);
                 }
-                $success_message = dt("Site set to !site", array('!site' => $site));
+                $success_message = dt('Site set to @site', array('@site' => $site));
                 if ($site == '@none') {
                     if (drush_delete_dir($filename)) {
                         $this->logger()->success(dt('Site unset.'));
@@ -74,11 +80,11 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
                 } elseif (drush_mkdir(dirname($filename), true)) {
                     if (file_put_contents($filename, $site)) {
                         $this->logger()->success($success_message);
-                        $this->logger()->info(dt("Site information stored in !file", array('!file' => $filename)));
+                        $this->logger()->info(dt('Site information stored in @file', array('@file' => $filename)));
                     }
                 }
             } else {
-                throw new \Exception(dt("Could not find a site definition for !site.", array('!site' => $site)));
+                throw new \Exception(dt('Could not find a site definition for @site.', array('@site' => $site)));
             }
         }
     }
@@ -87,7 +93,12 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * Show site alias details, or a list of available site aliases.
      *
      * @command site:alias
-     * @param $site Site alias or site specification.
+     *
+     * @param string $site Site alias or site specification.
+     * @param array $options
+     *
+     * @return \Consolidation\OutputFormatters\StructuredData\ListDataFromKeys
+     * @throws \Exception
      * @aliases sa
      * @usage drush site:alias
      *   List all alias records known to drush.
@@ -97,7 +108,6 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *   Print only actual aliases; omit multisites from the local Drupal installation.
      * @topics docs:aliases
      *
-     * @return \Consolidation\OutputFormatters\StructuredData\ListDataFromKeys
      */
     public function siteAlias($site = null, $options = ['format' => 'yaml'])
     {

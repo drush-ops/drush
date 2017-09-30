@@ -15,37 +15,11 @@ use Drush\Log\LogLevel;
 use Drush\SiteAlias\AliasRecord;
 use Webmozart\PathUtil\Path;
 
-
-
 /**
  * Option keys used for site selection.
  */
 function drush_sitealias_site_selection_keys() {
   return array('remote-host', 'remote-user', 'ssh-options', '#name', 'os');
-}
-
-/**
- * Returns the filename for the file that stores the DRUPAL_SITE variable.
- *
- * @param string $filename_prefix
- *   An arbitrary string to prefix the filename with.
- *
- * @return string|false
- *   Returns the full path to temp file if possible, or FALSE if not.
- */
-function drush_sitealias_get_envar_filename($filename_prefix = 'drush-drupal-site-') {
-  $shell_pid = getenv('DRUSH_SHELL_PID');
-  if (!$shell_pid && function_exists('posix_getppid')) {
-    $shell_pid = posix_getppid();
-  }
-  if (!$shell_pid) {
-    return FALSE;
-  }
-
-  $tmp = getenv('TMPDIR') ? getenv('TMPDIR') : '/tmp';
-  $username = drush_get_username();
-
-  return "{$tmp}/drush-env-{$username}/{$filename_prefix}" . $shell_pid;
 }
 
 /**
