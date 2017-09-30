@@ -70,6 +70,24 @@ class Environment
     }
 
     /**
+     * Return the name of the user running drush.
+     */
+    protected function getUsername()
+    {
+        $name = null;
+        if (!$name = getenv("username")) { // Windows
+            if (!$name = getenv("USER")) {
+                // If USER not defined, use posix
+                if (function_exists('posix_getpwuid')) {
+                    $processUser = posix_getpwuid(posix_geteuid());
+                    $name = $processUser['name'];
+                }
+            }
+        }
+        return $name;
+    }
+
+    /**
      * Convert the environment object into an exported configuration
      * array. This will be fed though the EnvironmentConfigLoader to
      * be added into the ConfigProcessor, where it will become accessible
@@ -111,7 +129,12 @@ class Environment
                 'user-dir' => $this->userConfigPath(),
                 'system-dir' => $this->systemConfigPath(),
                 'system-command-dir' => $this->systemCommandFilePath(),
+                'site-file-previous' => $this->getSiteSetAliasFilePath('drush-drupal-prev-site-'),
+                'site-file-current' => $this->getSiteSetAliasFilePath(),
             ],
+            'runtime' => [
+                'user' => $this->getUsername(),
+            ]
         ];
     }
 
@@ -124,6 +147,23 @@ class Environment
     public function drushBasePath()
     {
         return $this->drushBasePath;
+    }
+
+    /**
+     * Get the site:set alias from the current site:set file path.
+     *
+     * @return bool|string
+     */
+    public function getSiteSetAliasName()
+    {
+        $site_filename = $this->getSiteSetAliasFilePath();
+        if (file_exists($site_filename)) {
+            $site = file_get_contents($site_filename);
+            if ($site) {
+                return $site;
+            }
+        }
+        return false;
     }
 
     /**
@@ -373,5 +413,30 @@ class Environment
 
         // TODO: should we deal with reserve-margin here, or adjust it later?
         return $columns;
+    }
+
+    /**
+     * Returns the filename for the file that stores the DRUPAL_SITE variable.
+     *
+     * @param string $filename_prefix
+     *   An arbitrary string to prefix the filename with.
+     *
+     * @return string|false
+     *   Returns the full path to temp file if possible, or FALSE if not.
+     */
+    protected function getSiteSetAliasFilePath($filename_prefix = 'drush-drupal-site-')
+    {
+        $shell_pid = getenv('DRUSH_SHELL_PID');
+        if (!$shell_pid && function_exists('posix_getppid')) {
+            $shell_pid = posix_getppid();
+        }
+        if (!$shell_pid) {
+            return false;
+        }
+
+        $tmp = getenv('TMPDIR') ? getenv('TMPDIR') : '/tmp';
+        $username = $this->getUsername();
+
+        return "{$tmp}/drush-env-{$username}/{$filename_prefix}" . $shell_pid;
     }
 }

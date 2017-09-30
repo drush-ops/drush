@@ -1,22 +1,12 @@
 <?php
 namespace Drush\Preflight;
 
-use Composer\Autoload\ClassLoader;
 use Drush\Drush;
 use Drush\Config\Environment;
 use Drush\Config\ConfigLocator;
 use Drush\Config\EnvironmentConfigLoader;
 use Drush\SiteAlias\SiteAliasManager;
 use DrupalFinder\DrupalFinder;
-
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\Output;
-use Symfony\Component\Console\Output\OutputInterface;
-
-use Webmozart\PathUtil\Path;
 
 /**
  * Prepare to bootstrap Drupal
@@ -212,7 +202,7 @@ class Preflight
 
         // Configure alias manager.
         $aliasManager = (new SiteAliasManager())->addSearchLocations($paths);
-        $selfAliasRecord = $aliasManager->findSelf($preflightArgs->alias(), $root, $preflightArgs->uri());
+        $selfAliasRecord = $aliasManager->findSelf($preflightArgs, $this->environment, $root);
         $aliasConfig = $selfAliasRecord->exportConfig();
         $configLocator->addAliasConfig($aliasConfig);
 

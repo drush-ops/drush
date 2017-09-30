@@ -1,6 +1,9 @@
 <?php
 namespace Drush\SiteAlias;
 
+use Drush\Config\Environment;
+use Drush\Preflight\PreflightArgsInterface;
+
 /**
  * Site Alias manager
  */
@@ -109,15 +112,17 @@ class SiteAliasManager
      * During bootstrap, finds the currently selected site from the parameters
      * provided on the commandline.
      *
-     * @param string $aliasName An alias name or site specification
-     * @param string $root The default Drupal root (from --root or cwd)
-     * @param string $uri The selected multisite
-     * @param string $cwd The cwd at the time Drush was first called
-     * @return type
+     * @param PreflightArgsInterface $preflightArgs An alias name or site specification
+     * @param \Drush\Config\Environment $environment
+     * @param string $root The default Drupal root (from site:set, --root or cwd)
+     *
+     * @return \Drush\SiteAlias\type
+     * @throws \Exception
      */
-    public function findSelf($aliasName, $root, $uri)
+    public function findSelf(PreflightArgsInterface $preflightArgs, Environment $environment, $root)
     {
-        $selfAliasRecord = $this->buildSelf($aliasName, $root, $uri);
+        $aliasName = $preflightArgs->alias();
+        $selfAliasRecord = $this->buildSelf($preflightArgs, $environment, $root);
         if (!$selfAliasRecord) {
             throw new \Exception("The alias $aliasName could not be found.");
         }
@@ -192,9 +197,17 @@ class SiteAliasManager
      * Either look up the specified alias name / site spec,
      * or, if those are invalid, then generate one from
      * the provided root and URI.
+     *
+     * @param \Drush\Preflight\PreflightArgsInterface $preflightArgs
+     * @param \Drush\Config\Environment $environment
+     * @param $root
+     *
+     * @return \Drush\SiteAlias\AliasRecord
      */
-    protected function buildSelf($aliasName, $root, $uri)
+    protected function buildSelf(PreflightArgsInterface $preflightArgs, Environment $environment, $root)
     {
+        $aliasName = $preflightArgs->alias();
+
         // If the user specified an @alias, that takes precidence.
         if (SiteAliasName::isAliasName($aliasName)) {
             return $this->getAlias($aliasName);
@@ -204,6 +217,17 @@ class SiteAliasManager
         $specParser = new SiteSpecParser();
         if ($specParser->validSiteSpec($aliasName)) {
             return new AliasRecord($specParser->parse($aliasName, $root), $aliasName);
+        }
+
+        // If the user provides the --root parameter then we don't want to use
+        // the site alias.
+        $selectedRoot = $preflightArgs->selectedSite();
+        if (!$selectedRoot) {
+            $aliasName = $environment->getSiteSetAliasName();
+            $alias = $this->getAlias($aliasName);
+            if ($alias) {
+                return $alias;
+            }
         }
 
         // If there is no root, then return '@none'
@@ -224,7 +248,7 @@ class SiteAliasManager
         return new AliasRecord(
             [
                 'root' => $root,
-                'uri' => $uri,
+                'uri' => $preflightArgs->uri(),
             ],
             '@self'
         );
