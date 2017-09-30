@@ -5,6 +5,7 @@ use Consolidation\Config\Loader\ConfigLoaderInterface;
 use Consolidation\Config\Loader\YamlConfigLoader;
 use Consolidation\Config\Loader\ConfigProcessor;
 use Consolidation\Config\Util\ConfigOverlay;
+use Drush\Preflight\PreflightArgsInterface;
 
 /**
  * Locate Drush configuration files and load them into the configuration
@@ -37,6 +38,8 @@ class ConfigLocator
     protected $sources = false;
 
     protected $siteRoots = [];
+
+    protected $composerRoot;
 
     protected $configFilePaths = [];
 
@@ -78,6 +81,7 @@ class ConfigLocator
     // home.drush is obsolete (loaded in USER_CONTEXT)
     // system context is obsolect (loaded in USER_CONTEXT - note priority change)
     const DRUSH_CONTEXT = 'drush';
+
     // 'default' context is provided by ConfigOverlay
 
     public function __construct()
@@ -255,5 +259,39 @@ class ConfigLocator
             }
         }
         return $result;
+    }
+
+    /**
+     * Get the site aliases with preflight arguments and environment.
+     *
+     * @param $preflightArgs
+     * @param Environment $environment
+     *
+     * @return array
+     */
+    public function getSiteAliasPaths(PreflightArgsInterface $preflightArgs, Environment $environment)
+    {
+        $paths[] = $preflightArgs->aliasPath();
+        if (!$this->isLocal) {
+            $paths[] = $environment->systemConfigPath();
+            $paths[] = $environment->userConfigPath();
+        }
+
+        foreach ($this->siteRoots as $siteRoot) {
+            $paths[] = $siteRoot . '/drush';
+        }
+        $paths[] = $this->composerRoot . '/drush';
+
+        return $paths;
+    }
+
+    /**
+     * Sets the composer root.
+     *
+     * @param $selectedComposerRoot
+     */
+    public function setComposerRoot($selectedComposerRoot)
+    {
+        $this->composerRoot = $selectedComposerRoot;
     }
 }
