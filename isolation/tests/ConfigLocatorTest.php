@@ -77,7 +77,7 @@ class ConfigLocatorTest extends TestCase
         $configLocator = new ConfigLocator();
         $configLocator->collectSources();
         $configLocator->setLocal($isLocal);
-        $configLocator->addUserConfig($configPath, $this->environment()->systemConfigPath(), $this->environment()->userConfigPath());
+        $configLocator->addUserConfig([$configPath], $this->environment()->systemConfigPath(), $this->environment()->userConfigPath());
         $configLocator->addDrushConfig($this->environment()->drushBasePath());
 
         // Make our environment settings available as configuration items

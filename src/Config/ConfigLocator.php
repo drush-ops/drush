@@ -170,9 +170,9 @@ class ConfigLocator
      *
      * In 'local' mode, only the --config location is used.
      */
-    public function addUserConfig($configPath, $systemConfigPath, $userConfigDir)
+    public function addUserConfig($configPaths, $systemConfigPath, $userConfigDir)
     {
-        $paths = [ $configPath ];
+        $paths = $configPaths;
         if (!$this->isLocal) {
             $paths = array_merge($paths, [ $systemConfigPath, $userConfigDir ]);
         }
@@ -271,7 +271,7 @@ class ConfigLocator
      */
     public function getSiteAliasPaths(PreflightArgsInterface $preflightArgs, Environment $environment)
     {
-        $paths[] = $preflightArgs->aliasPath();
+        $paths = $preflightArgs->aliasPaths();
         if (!$this->isLocal) {
             $paths[] = $environment->systemConfigPath();
             $paths[] = $environment->userConfigPath();
