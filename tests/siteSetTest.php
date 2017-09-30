@@ -20,25 +20,30 @@ class SiteSetCommandCase extends CommandUnishTestCase
         $sites = $this->setUpDrupal(2, true);
         $site_names = array_keys($sites);
         $this->assertCount(2, $site_names, 'Has 2 drupal sites setup');
+
         // Test changing aliases.
         foreach ($site_names as $site_name) {
-            $this->drush('site-set', ['@' . $site_name]);
+            $this->drush('site:set', ['@' . $site_name]);
             $output = $this->getErrorOutput();
             $this->assertEquals('[success] Site set to @' . $site_name, $output);
         }
+
         // Toggle between the previous set alias and back again.
-        $this->drush('site-set', ['-']);
+        $this->drush('site:set', ['-']);
         $output = $this->getErrorOutput();
         $this->assertEquals('[success] Site set to @' . $site_names[0], $output);
-        $this->drush('site-set', ['-']);
+        $this->drush('site:set', ['-']);
         $output = $this->getErrorOutput();
         $this->assertEquals('[success] Site set to @' . $site_names[1], $output);
 
         // Test setting the site to the special @none alias.
-        $this->drush('site-set', ['@none']);
+        $this->drush('site:set', ['@none']);
         $output = $this->getErrorOutput();
         $this->assertEquals('[success] Site unset.', $output);
 
-
+        // Alternative to '@none'.
+        $this->drush('site:set', ['']);
+        $output = $this->getErrorOutput();
+        $this->assertEquals('[success] Site unset.', $output);
     }
 }
