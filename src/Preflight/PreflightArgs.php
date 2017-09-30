@@ -55,10 +55,10 @@ class PreflightArgs extends Config implements PreflightArgsInterface
             '--root=' => 'setSelectedSite',
             '-l=' => 'setUri',
             '--uri=' => 'setUri',
-            '-c=' => 'setConfigPath',
-            '--config=' => 'setConfigPath',
-            '--alias-path=' => 'setAliasPath',
-            '--include=' => 'setCommandPath',
+            '-c=' => 'addConfigPath',
+            '--config=' => 'addConfigPath',
+            '--alias-path=' => 'addAliasPath',
+            '--include=' => 'addCommandPath',
             '--local' => 'setLocal',
             '--simulate' => 'setSimulate',
             '-s' => 'setSimulate',
@@ -90,10 +90,20 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return [
             self::SIMULATE =>       \Robo\Config\Config::SIMULATE,
             self::BACKEND =>        self::BACKEND,
+            self::LOCAL =>          self::DRUSH_CONFIG_CONTEXT_NAMESPACE . '.' . self::LOCAL,
+        ];
+    }
+
+    /**
+     * Map of path option keys to the corresponding config key to store the
+     * preflight option in.
+     */
+    protected function optionConfigPathMap()
+    {
+        return [
             self::ALIAS_PATH =>     self::DRUSH_CONFIG_CONTEXT_NAMESPACE . '.' . self::ALIAS_PATH,
             self::CONFIG_PATH =>    self::DRUSH_CONFIG_CONTEXT_NAMESPACE . '.' . self::CONFIG_PATH,
             self::COMMAND_PATH =>   self::DRUSH_CONFIG_CONTEXT_NAMESPACE . '.' . self::COMMAND_PATH,
-            self::LOCAL =>          self::DRUSH_CONFIG_CONTEXT_NAMESPACE . '.' . self::LOCAL,
         ];
     }
 
@@ -105,6 +115,14 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         // Copy the relevant preflight options to the applicable configuration namespace
         foreach ($this->optionConfigMap() as $option_key => $config_key) {
             $config->set($config_key, $this->get($option_key));
+        }
+        // Merging as they are lists.
+        foreach ($this->optionConfigPathMap() as $option_key => $config_key) {
+            $cli_paths = $this->get($option_key, []);
+            $config_paths = $config->get($config_key, []);
+            $merged_paths = array_merge($cli_paths, $config_paths);
+            $config->set($config_key, $merged_paths);
+            $this->set($option_key, $merged_paths);
         }
 
         // Store the runtime arguments and options (sans the runtime context items)
@@ -182,34 +200,61 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return $this->set(self::URI, $uri);
     }
 
-    public function configPath()
+    public function configPaths()
     {
-        return $this->get(self::CONFIG_PATH);
+        return $this->get(self::CONFIG_PATH, []);
     }
 
-    public function setConfigPath($configPath)
+    public function addConfigPath($path)
     {
-        return $this->set(self::CONFIG_PATH, $configPath);
+        $paths = $this->configPaths();
+        $paths[] = $path;
+        return $this->set(self::CONFIG_PATH, $paths);
     }
 
-    public function aliasPath()
+    public function mergeConfigPaths($configPaths)
     {
-        return $this->get(self::ALIAS_PATH);
+        $paths = $this->configPaths();
+        $merged_paths = array_merge($paths, $configPaths);
+        return $this->set(self::CONFIG_PATH, $merged_paths);
     }
 
-    public function setAliasPath($aliasPath)
+    public function aliasPaths()
     {
-        return $this->set(self::ALIAS_PATH, $aliasPath);
+        return $this->get(self::ALIAS_PATH, []);
     }
 
-    public function commandPath()
+    public function addAliasPath($path)
     {
-        return $this->get(self::COMMAND_PATH);
+        $paths = $this->aliasPaths();
+        $paths[] = $path;
+        return $this->set(self::ALIAS_PATH, $paths);
     }
 
-    public function setCommandPath($commandPath)
+    public function mergeAliasPaths($aliasPaths)
     {
-        return $this->set(self::COMMAND_PATH, $commandPath);
+        $paths = $this->aliasPaths();
+        $merged_paths = array_merge($paths, $aliasPaths);
+        return $this->set(self::ALIAS_PATH, $merged_paths);
+    }
+
+    public function commandPaths()
+    {
+        return $this->get(self::COMMAND_PATH, []);
+    }
+
+    public function addCommandPath($path)
+    {
+        $paths = $this->commandPaths();
+        $paths[] = $path;
+        return $this->set(self::COMMAND_PATH, $paths);
+    }
+
+    public function mergeCommandPaths($commandPaths)
+    {
+        $paths = $this->commandPaths();
+        $merged_paths = array_merge($paths, $commandPaths);
+        return $this->set(self::COMMAND_PATH, $merged_paths);
     }
 
     public function isLocal()
