@@ -114,7 +114,7 @@ class SiteAliasManager
      *
      * @param PreflightArgsInterface $preflightArgs An alias name or site specification
      * @param \Drush\Config\Environment $environment
-     * @param string $root The default Drupal root (from site-set, --root or cwd)
+     * @param string $root The default Drupal root (from site:set, --root or cwd)
      *
      * @return \Drush\SiteAlias\type
      * @throws \Exception

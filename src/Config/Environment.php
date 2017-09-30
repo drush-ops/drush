@@ -150,7 +150,7 @@ class Environment
     }
 
     /**
-     * Get the site-set alias from the current site-set file path.
+     * Get the site:set alias from the current site:set file path.
      *
      * @return bool|string
      */

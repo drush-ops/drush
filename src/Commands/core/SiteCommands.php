@@ -59,7 +59,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
                 } else {
                     $site = '@none';
                 }
-                // Using 'site-set @self' is quiet if there is no change.
+                // Using 'site:set @self' is quiet if there is no change.
                 $current = is_file($filename) ? trim(file_get_contents($filename)) : "@none";
                 if ($current == $site) {
                     return;
