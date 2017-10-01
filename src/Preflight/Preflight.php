@@ -182,13 +182,11 @@ class Preflight
         // Start code coverage
         $this->startCoverage($preflightArgs);
 
-        // TODO: Should we allow config to set values defined by preflightArgs?
-        // (e.g. --root and --uri).
-        // Maybe preflight args should be one of the config layers, and we
-        // should fetch 'root' et. al. from config rather than preflight args.
+        // Get the config files provided by prepareConfig()
         $config = $configLocator->config();
 
-        // Copy items from the preflight args into configuration
+        // Copy items from the preflight args into configuration.
+        // This will also load certain config values into the preflight args.
         $preflightArgs->applyToConfig($config);
 
         // Determine the local site targeted, if any.
@@ -198,12 +196,13 @@ class Preflight
         $configLocator->addSitewideConfig($root);
         $configLocator->setComposerRoot($this->selectedComposerRoot());
 
+        // Look up the locations where alias files may be found.
         $paths = $configLocator->getSiteAliasPaths($preflightArgs, $this->environment);
+
         // Configure alias manager.
         $aliasManager = (new SiteAliasManager())->addSearchLocations($paths);
         $selfAliasRecord = $aliasManager->findSelf($preflightArgs, $this->environment, $root);
-        $aliasConfig = $selfAliasRecord->exportConfig();
-        $configLocator->addAliasConfig($aliasConfig);
+        $configLocator->addAliasConfig($selfAliasRecord->exportConfig());
 
         // Process the selected alias. This might change the selected site,
         // so we will add new site-wide config location for the new root.
@@ -213,7 +212,6 @@ class Preflight
         // a site-local Drush. If there is, we will redispatch to it.
         // NOTE: termination handlers have not been set yet, so it is okay
         // to exit early without taking special action.
-
         $status = RedispatchToSiteLocal::redispatchIfSiteLocalDrush($argv, $root, $this->environment->vendorPath());
         if ($status !== false) {
             return $status;
@@ -225,7 +223,6 @@ class Preflight
 
         // Remember the paths to all the files we loaded, so that we can
         // report on it from Drush status or wherever else it may be needed.
-
         $config->set('runtime.config.paths', $configLocator->configFilePaths());
 
         // We need to check the php minimum version again, in case anyone
@@ -235,6 +232,8 @@ class Preflight
         // Find all of the available commandfiles, save for those that are
         // provided by modules in the selected site; those will be added
         // during bootstrap.
+        // TODO: Move to ConfigLocator::getCommandFilePaths for consistency
+        // with ConfigLocator::GetSiteAliasPaths().
         $commandfileSearchpath = $this->findCommandFileSearchPath($preflightArgs, $root);
 
         // Require the Composer autoloader for Drupal (if different)

@@ -17,6 +17,7 @@ class LessStrictArgvInput extends ArgvInput
 {
     private $tokens;
     private $parsed;
+    protected $additionalOptions = [];
 
     /**
      * Constructor.
@@ -36,7 +37,21 @@ class LessStrictArgvInput extends ArgvInput
         // strip the application name
         array_shift($this->tokens);
 
-        // parent::__construct($argv, $definition);
+        parent::__construct($argv, $definition);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOption($name)
+    {
+        if (array_key_exists($name, $this->options)) {
+            return $this->options[$name];
+        }
+        if ($this->definition->hasOption($name)) {
+            return $this->definition->getOption($name)->getDefault();
+        }
+        return false;
     }
 
     protected function setTokens(array $tokens)
@@ -64,6 +79,8 @@ class LessStrictArgvInput extends ArgvInput
                 $this->parseArgument($token);
             }
         }
+        // Put back any options that were injected.
+        $this->options += $this->additionalOptions;
     }
 
     /**
@@ -186,6 +203,12 @@ class LessStrictArgvInput extends ArgvInput
         }
 
         $this->addLongOption($this->definition->getOptionForShortcut($shortcut)->getName(), $value);
+    }
+
+    public function injectAdditionalOptions($additionalOptions)
+    {
+        $this->additionalOptions += $additionalOptions;
+        $this->options += $additionalOptions;
     }
 
     /**
