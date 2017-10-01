@@ -114,6 +114,7 @@ class Environment
             'env' => [
                 'cwd' => $this->cwd(),
                 'home' => $this->homeDir(),
+                'user' => $this->getUsername(),
                 'is-windows' => $this->isWindows(),
             ],
             // These values are available as global options, and
@@ -132,9 +133,6 @@ class Environment
                 'site-file-previous' => $this->getSiteSetAliasFilePath('drush-drupal-prev-site-'),
                 'site-file-current' => $this->getSiteSetAliasFilePath(),
             ],
-            'runtime' => [
-                'user' => $this->getUsername(),
-            ]
         ];
     }
 

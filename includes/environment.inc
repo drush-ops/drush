@@ -29,8 +29,8 @@ function drush_error_handler($errno, $message, $filename, $line, $context) {
   // drush_errors_on() and drush_errors_off().
   if ($errno & error_reporting()) {
     // By default we log notices.
-    $type = \Drush\Drush::config()->get('runtime.php.notices', LogLevel::INFO);
-    $halt_on_error = \Drush\Drush::config()->get('runtime.php.halt-on-error', (drush_drupal_major_version() != 6));
+    $type = Drush::config()->get('runtime.php.notices', LogLevel::INFO);
+    $halt_on_error = Drush::config()->get('runtime.php.halt-on-error', (drush_drupal_major_version() != 6));
 
     // Bitmask value that constitutes an error needing to be logged.
     $error = E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR;
@@ -104,7 +104,7 @@ function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, 
   // via the --php flag.
   if (substr($drush_path, -4) == ".php") {
     if (!isset($php)) {
-      $php = \Drush\Drush::config()->get('php', 'php');
+      $php = Drush::config()->get('php', 'php');
     }
     if (isset($php) && ($php != "php")) {
       $additional_options .= ' --php=' . drush_escapeshellarg($php, $os);
@@ -256,34 +256,6 @@ function drush_is_local_host($host) {
 }
 
 /**
- * Return the user's home directory.
- */
-function drush_server_home() {
-  try {
-    return Path::getHomeDirectory();
-  } catch (Exception $e) {
-    return NULL;
-  }
-}
-
-/**
- * Return the name of the user running drush.
- */
-function drush_get_username() {
-  $name = NULL;
-  if (!$name = getenv("username")) { // Windows
-    if (!$name = getenv("USER")) {
-      // If USER not defined, use posix
-      if (function_exists('posix_getpwuid')) {
-        $processUser = posix_getpwuid(posix_geteuid());
-        $name = $processUser['name'];
-      }
-    }
-  }
-  return $name;
-}
-
-/**
  * The path to the global cache directory.
  *
  * @param subdir
@@ -299,7 +271,7 @@ function drush_directory_cache($subdir = '') {
   if ($home) {
     $cache_locations[$home] = '.drush/cache';
   }
-  $cache_locations[drush_find_tmp()] = 'drush-' . drush_get_username() . '/cache';
+  $cache_locations[drush_find_tmp()] = 'drush-' . Drush::config()->get('env.user') . '/cache';
   foreach ($cache_locations as $base => $dir) {
     if (!empty($base) && is_writable($base)) {
       $cache_dir = $base . '/' . $dir;
