@@ -103,63 +103,6 @@ function _drush_shift_path_up($path) {
 }
 
 /**
- * Like Drupal conf_path, but searching from beneath.
- * Allows proper site uri detection in site sub-directories.
- *
- * Essentially looks for a settings.php file.  Drush uses this
- * function to find a usable site based on the user's current
- * working directory.
- *
- * @param string
- *   Search starting path. Defaults to current working directory.
- *
- * @return
- *   Current site path (folder containing settings.php) or FALSE if not found.
- */
-function drush_site_path($path = NULL) {
-  $site_path = FALSE;
-
-  $path = empty($path) ? Drush::config()->get('env.cwd') : $path;
-  // Check the current path.
-  if (file_exists($path . '/settings.php')) {
-    $site_path = $path;
-  }
-  else {
-    // Move up dir by dir and check each.
-    // Stop if we get to a Drupal root.   We don't care
-    // if it is the selected or some other root.
-    while (($path = _drush_shift_path_up($path)) && !drush_valid_root($path)) {
-      if (file_exists($path . '/settings.php')) {
-        $site_path = $path;
-        break;
-      }
-    }
-  }
-
-  $site_root = Drush::bootstrapManager()->getRoot();
-  if (file_exists($site_root . '/sites/sites.php')) {
-    $sites = array();
-    // This will overwrite $sites with the desired mappings.
-    include($site_root . '/sites/sites.php');
-    // We do a reverse lookup here to determine the URL given the site key.
-    if ($match = array_search($site_path, $sites)) {
-      $site_path = $match;
-    }
-  }
-
-  // Last resort: try from site root
-  if (!$site_path) {
-    if ($site_root) {
-      if (file_exists($site_root . '/sites/default/settings.php')) {
-        $site_path = $site_root . '/sites/default';
-      }
-    }
-  }
-
-  return $site_path;
-}
-
-/**
  * Lookup a site's directory via the sites.php file given a hostname.
  *
  * @param $hostname

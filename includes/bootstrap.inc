@@ -89,30 +89,6 @@ define('DRUSH_BOOTSTRAP_DRUPAL_FULL', 5);
 
 
 /**
- * Find the URI that has been selected by the cwd
- * if it was not previously set via the --uri / -l option
- */
-function _drush_bootstrap_selected_uri() {
-  $uri = drush_get_context('DRUSH_SELECTED_URI');
-  if (empty($uri)) {
-    $site_path = drush_site_path();
-    if ($site_path) {
-      $site_path = _drush_convert_path($site_path);
-    }
-    $elements = explode('/', $site_path);
-    $current = array_pop($elements);
-    if (!$current) {
-      $current = 'default';
-    }
-    $uri = 'http://'. $current;
-    $uri = drush_set_context('DRUSH_SELECTED_URI', $uri);
-    // drush_sitealias_create_self_alias();
-  }
-
-  return $uri;
-}
-
-/**
  * Helper function to store any context settings that are being validated.
  */
 function drush_bootstrap_value($context, $value = null) {
