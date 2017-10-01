@@ -159,9 +159,10 @@ abstract class DrupalBoot extends BaseBoot
         return true;
     }
 
-    protected function legacyValidRootCheck($root) {
+    protected function legacyValidRootCheck($root)
+    {
         $bootstrap_class = Drush::bootstrapManager()->bootstrapObjectForRoot($root);
-        return $bootstrap_class != NULL;
+        return $bootstrap_class != null;
     }
 
     /**
