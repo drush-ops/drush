@@ -5,8 +5,9 @@ use Robo\Contract\ConfigAwareInterface;
 use Robo\Common\ConfigAwareTrait;
 use Drush\Commands\DrushCommands;
 
-class PhpCommands extends DrushCommands
+class PhpCommands extends DrushCommands implements ConfigAwareInterface
 {
+    use ConfigAwareTrait;
 
     /**
      * Evaluate arbitrary php code after bootstrapping Drupal (if available).
