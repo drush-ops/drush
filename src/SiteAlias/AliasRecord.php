@@ -73,6 +73,12 @@ class AliasRecord extends Config
      *
      * If multiple alias records need to be chained together in a more
      * complex priority arrangement, @see \Consolidation\Config\Config\ConfigOverlay.
+     *
+     * @param ConfigInterface $config The configuration object to pull fallback data from
+     * @param string $key The data item to fetch
+     * @param mixed $default The default value to return if there is no match
+     *
+     * @return string
      */
     public function getConfig(ConfigInterface $config, $key, $default = null)
     {
@@ -82,36 +88,66 @@ class AliasRecord extends Config
         return $config->get($key, $default);
     }
 
+    /**
+     * Return the name of this alias record.
+     *
+     * @return string
+     */
     public function name()
     {
         return $this->name;
     }
 
+    /**
+     * Remember the name of this record
+     *
+     * @param string $name
+     */
     public function setName($name)
     {
         $this->name = $name;
     }
 
+    /**
+     * Determine whether this alias has a root.
+     */
     public function hasRoot()
     {
         return $this->has('root');
     }
 
+    /**
+     * Get the root
+     */
     public function root()
     {
         return $this->get('root');
     }
 
+    /**
+     * Get the uri
+     */
     public function uri()
     {
         return $this->get('uri');
     }
 
+    /**
+     * Record the uri
+     *
+     * @param string $uri
+     */
     public function setUri($uri)
     {
         return $this->set('uri', $uri);
     }
 
+    /**
+     * Return user@host, or just host if there is no user. Returns
+     * an empty string if there is no host.
+     *
+     * @return string
+     */
     public function remoteHostWithUser()
     {
         $result = $this->remoteHost();
@@ -121,26 +157,42 @@ class AliasRecord extends Config
         return $result;
     }
 
+    /**
+     * Get the remote user
+     */
     public function remoteUser()
     {
         return $this->get('user');
     }
 
+    /**
+     * Return true if this alias record has a remote user
+     */
     public function hasRemoteUser()
     {
         return $this->has('user');
     }
 
+    /**
+     * Get the remote host
+     */
     public function remoteHost()
     {
         return $this->get('host');
     }
 
+    /**
+     * Return true if this alias record has a remote host that is not
+     * the local host
+     */
     public function isRemote()
     {
         return !$this->isLocal();
     }
 
+    /**
+     * Return true if this alias record is for the local system
+     */
     public function isLocal()
     {
         if ($host = $this->remoteHost()) {
@@ -149,9 +201,13 @@ class AliasRecord extends Config
         return true;
     }
 
+    /**
+     * Determine whether this alias does not represent any site. An
+     * alias record must either be remote or have a root.
+     */
     public function isNone()
     {
-        return empty($this->root());
+        return empty($this->root()) && $this->isLocal();
     }
 
     /**
@@ -167,6 +223,10 @@ class AliasRecord extends Config
         return false;
     }
 
+    /**
+     * Export the configuration values in this alias record, and reconfigure
+     * them so that the layout matches that of the global configuration object.
+     */
     public function exportConfig()
     {
         $data = $this->export();
@@ -181,11 +241,18 @@ class AliasRecord extends Config
         return new Config($data);
     }
 
+    /**
+     * Convert the data in this record to the layout that was used
+     * in the legacy code, for backwards compatiblity.
+     */
     public function legacyRecord()
     {
         return $this->exportConfig()->get('options', []);
     }
 
+    /**
+     * Conversion table from old to new option names.
+     */
     protected function remapOptions()
     {
         return [

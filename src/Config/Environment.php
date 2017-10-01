@@ -40,6 +40,9 @@ class Environment
 
     /**
      * Load the autoloader for the selected Drupal site
+     *
+     * @param string $root
+     * @return ClassLoader
      */
     public function loadSiteAutoloader($root)
     {
@@ -71,6 +74,8 @@ class Environment
 
     /**
      * Return the name of the user running drush.
+     *
+     * @return string
      */
     protected function getUsername()
     {

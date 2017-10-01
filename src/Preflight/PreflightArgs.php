@@ -11,6 +11,10 @@ use Drush\Preflight\LessStrictArgvInput;
  * Storage for arguments preprocessed during preflight.
  *
  * Holds @sitealias, if present, and a limited number of global options.
+ *
+ * TODO: The methods here with >~3 lines of logic could be refactored into a couple
+ * of different classes e.g. a helper to convert preflight args to configuration,
+ * and another to prepare the input object.
  */
 class PreflightArgs extends Config implements PreflightArgsInterface
 {
@@ -32,6 +36,11 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     const BACKEND = 'backend';
     const STRICT = 'strict';
 
+    /**
+     * PreflightArgs constroctor
+     *
+     * @param array $data Initial data (not usually used)
+     */
     public function __construct($data = [])
     {
         parent::__construct($data + [self::STRICT => true]);
@@ -131,6 +140,9 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return $this->args;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function applicationPath()
     {
         return reset($this->args);
@@ -154,16 +166,25 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function alias()
     {
         return $this->get(self::ALIAS);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function hasAlias()
     {
         return $this->has(self::ALIAS);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function setAlias($alias)
     {
         return $this->set(self::ALIAS, $alias);
@@ -177,26 +198,43 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return $this->get(self::ROOT, $default);
     }
 
+    /**
+     * Set the selected site.
+     */
     public function setSelectedSite($root)
     {
         return $this->set(self::ROOT, $root);
     }
 
+    /**
+     * Get the selected uri
+     */
     public function uri($default = false)
     {
         return $this->get(self::URI, $default);
     }
 
+    /**
+     * Set the uri option
+     */
     public function setUri($uri)
     {
         return $this->set(self::URI, $uri);
     }
 
+    /**
+     * Get the config path where drush.yml files may be found
+     */
     public function configPaths()
     {
         return $this->get(self::CONFIG_PATH, []);
     }
 
+    /**
+     * Add another location where drush.yml files may be found
+     *
+     * @param string $path
+     */
     public function addConfigPath($path)
     {
         $paths = $this->configPaths();
@@ -204,6 +242,11 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return $this->set(self::CONFIG_PATH, $paths);
     }
 
+    /**
+     * Add multiple additinoal locations where drush.yml files may be found
+     *
+     * @param string[] $configPaths
+     */
     public function mergeConfigPaths($configPaths)
     {
         $paths = $this->configPaths();
@@ -211,11 +254,19 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return $this->set(self::CONFIG_PATH, $merged_paths);
     }
 
+    /**
+     * Get the alias paths where drush site.alias.yml files may be found
+     */
     public function aliasPaths()
     {
         return $this->get(self::ALIAS_PATH, []);
     }
 
+    /**
+     * Set one more path where aliases may be found
+     *
+     * @param string $path
+     */
     public function addAliasPath($path)
     {
         $paths = $this->aliasPaths();
@@ -223,6 +274,11 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return $this->set(self::ALIAS_PATH, $paths);
     }
 
+    /**
+     * Add multiple additional locations for alias paths
+     *
+     * @param string $aliasPaths
+     */
     public function mergeAliasPaths($aliasPaths)
     {
         $paths = $this->aliasPaths();
@@ -230,11 +286,19 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return $this->set(self::ALIAS_PATH, $merged_paths);
     }
 
+    /**
+     * Get the path where Drush commandfiles e.g. FooCommands.php may be found.
+     */
     public function commandPaths()
     {
         return $this->get(self::COMMAND_PATH, []);
     }
 
+    /**
+     * Add one more path where commandfiles might be found.
+     *
+     * @param string $path
+     */
     public function addCommandPath($path)
     {
         $paths = $this->commandPaths();
@@ -242,6 +306,11 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return $this->set(self::COMMAND_PATH, $paths);
     }
 
+    /**
+     * Add multiple paths where commandfiles might be found
+     *
+     * @param $commanPaths
+     */
     public function mergeCommandPaths($commandPaths)
     {
         $paths = $this->commandPaths();
@@ -249,51 +318,91 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return $this->set(self::COMMAND_PATH, $merged_paths);
     }
 
+    /**
+     * Determine whether Drush is in "local" mode
+     */
     public function isLocal()
     {
         return $this->get(self::LOCAL);
     }
 
+    /**
+     * Set local mode
+     *
+     * @param bool $isLocal
+     */
     public function setLocal($isLocal)
     {
         return $this->set(self::LOCAL, $isLocal);
     }
 
+    /**
+     * Determine whether Drush is in "simulated" mode
+     */
     public function isSimulated()
     {
         return $this->get(self::SIMULATE);
     }
 
+    /**
+     * Set simulated mode
+     *
+     * @param bool $simulated
+     */
     public function setSimulate($simulate)
     {
         return $this->set(self::SIMULATE, $simulate);
     }
 
+    /**
+     * Determine whether Drush was placed in simulated mode
+     */
     public function isBackend()
     {
         return $this->get(self::BACKEND);
     }
 
+    /**
+     * Set backend mode
+     *
+     * @param bool $backend
+     */
     public function setBackend($backend)
     {
         return $this->set(self::BACKEND, $backend);
     }
 
+    /**
+     * Get the path to the coverage file.
+     */
     public function coverageFile()
     {
         return $this->get(self::COVERAGE_FILE);
     }
 
+    /**
+     * Set the coverage file path
+     *
+     * @param string
+     */
     public function setCoverageFile($coverageFile)
     {
         return $this->set(self::COVERAGE_FILE, $coverageFile);
     }
 
+    /**
+     * Determne whether Drush is in "strict" mode or not.
+     */
     public function isStrict()
     {
         return $this->get(self::STRICT);
     }
 
+    /**
+     * Set strict mode
+     *
+     * @param bool $strict
+     */
     public function setStrict($strict)
     {
         return $this->set(self::STRICT, $strict);

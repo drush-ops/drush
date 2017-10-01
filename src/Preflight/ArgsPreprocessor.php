@@ -19,6 +19,9 @@ class ArgsPreprocessor
     /** @var ArgsRemapper */
     protected $remapper;
 
+    /**
+     * ArgsPreprocessor constructor
+     */
     public function __construct()
     {
         $this->specParser = new SiteSpecParser();
