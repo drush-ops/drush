@@ -87,11 +87,10 @@ EOD;
    *   - JSON object is wrapped in expected delimiters.
    */
   function testTarget() {
-    // Without --strict=0, the version call would fail.
-    // Now, strict is not supported; we will see how this behaves without it.
+    // Backend invoke always runs in non-strict mode now.
     $stdin = json_encode([]);
     $exec = sprintf('%s version --not-exist --backend', self::getDrush());
-    $this->execute($exec, self::EXIT_ERROR, NULL, NULL, $stdin);
+    $this->execute($exec, self::EXIT_SUCCESS, NULL, NULL, $stdin);
     $exec = sprintf('%s version --backend', self::getDrush());
     $this->execute($exec, self::EXIT_SUCCESS, NULL, NULL, $stdin);
     $parsed = $this->parse_backend_output($this->getOutput());
@@ -213,7 +212,6 @@ EOD;
    *     backend invoke.
    */
   function testBackendMethodPost() {
-    $this->markTestIncomplete('Depends on reading from stdin');
     $options = array(
       'backend' => NULL,
       'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
@@ -222,13 +220,10 @@ EOD;
     $this->drush('php-eval', array($php), $options);
     $parsed = $this->parse_backend_output($this->getOutput());
     // assert that $parsed has 'x' and 'data'
+    $this->assertEquals('y', $parsed['object']['x']);
     $this->assertEquals(array (
-  'x' => 'y',
-  'data' =>
-  array (
     'a' => 1,
     'b' => 2,
-  ),
-), $parsed['object']);
+), $parsed['object']['data']);
   }
 }
