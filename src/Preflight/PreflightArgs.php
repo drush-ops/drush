@@ -357,7 +357,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      * @return
      *   An associative array of options, if successfull. Otherwise an empty array.
      */
-    function readStdinOptions() {
+    protected function readStdinOptions()
+    {
         // If we move this method to a backend manager, then testing for
         // backend mode will be the responsibility of the caller.
         if (!$this->isBackend()) {
@@ -386,8 +387,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         if (drush_is_windows()) {
             // Note that stream_select uses reference parameters, so we need variables (can't pass a constant NULL)
             $read = array($fp);
-            $write = NULL;
-            $except = NULL;
+            $write = null;
+            $except = null;
             // Question: might we need to wait a bit for STDIN to be ready,
             // even if the process that called us immediately writes our parameters?
             // Passing '100' for the timeout here causes us to hang indefinitely
@@ -402,11 +403,11 @@ class PreflightArgs extends Config implements PreflightArgsInterface
                 return [];
             }
         }
-        stream_set_blocking($fp, FALSE);
+        stream_set_blocking($fp, false);
         $string = stream_get_contents($fp);
         fclose($fp);
         if (trim($string)) {
-            return json_decode($string, TRUE);
+            return json_decode($string, true);
         }
         return [];
     }
