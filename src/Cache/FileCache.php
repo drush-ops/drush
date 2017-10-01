@@ -7,6 +7,8 @@
 
 namespace Drush\Cache;
 
+use Webmozart\PathUtil\Path;
+
 /**
  * Default cache implementation.
  *
@@ -158,6 +160,6 @@ class FileCache implements CacheInterface
      */
     protected function getFilePath($cid)
     {
-        return $this->directory . '/' . str_replace(array(':'), '.', $cid) . self::EXTENSION;
+        return Path::join($this->directory, str_replace(array(':'), '.', $cid) . self::EXTENSION);
     }
 }
