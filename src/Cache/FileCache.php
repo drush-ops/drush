@@ -94,11 +94,12 @@ class FileCache implements CacheInterface
             $cache->expire = $expire;
         }
 
+        $filename = $this->getFilePath($cid);
+
         // Ensure the cache directory still exists, in case a backend process
         // cleared the cache after the cache was initialized.
-        drush_mkdir($this->directory);
+        drush_mkdir(dirname($filename));
 
-        $filename = $this->getFilePath($cid);
         return $this->writeFile($filename, $cache);
     }
 
