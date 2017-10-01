@@ -115,7 +115,7 @@ class EditCommands extends DrushCommands
                 $ini_files[$drush_ini] = $drush_ini;
             }
         }
-        foreach (array(DRUSH_BASE_PATH, '/etc/drush', drush_server_home() . '/.drush') as $ini_dir) {
+        foreach (array(DRUSH_BASE_PATH, '/etc/drush', Drush::config()->get('env.home') . '/.drush') as $ini_dir) {
             if (file_exists($ini_dir . "/drush.ini")) {
                 $path = realpath($ini_dir . "/drush.ini");
                 $ini_files[$path] = $path;
@@ -127,7 +127,7 @@ class EditCommands extends DrushCommands
     public static function bashFiles()
     {
         $bashFiles = array();
-        $home = drush_server_home();
+        $home = Drush::config()->get('env.home');
         if ($bashrc = self::findBashrc($home)) {
             $bashFiles[$bashrc] = $bashrc;
         }

@@ -551,7 +551,7 @@ function drush_preflight_backup_dir($subdir = NULL) {
     // Save the date to be used in the backup directory's path name.
     $date = gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
 
-    $backup_dir = drush_get_option('backup-dir', Path::join(drush_server_home(), 'drush-backups'));
+    $backup_dir = drush_get_option('backup-dir', Path::join(Drush::config()->get('env.home'), 'drush-backups'));
     $backup_dir = Path::join($backup_dir, $subdir, $date);
     drush_set_context('DRUSH_BACKUP_DIR', $backup_dir);
   }

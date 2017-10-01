@@ -83,37 +83,8 @@ function _drush_convert_path($path) {
 }
 
 /**
- * Determine a proper way to call drush again
- *
- * This check if we were called directly or as an argument to some
- * wrapper command (php and sudo are checked now).
- *
- * Calling ./drush.php directly yields the following environment:
- *
- * _SERVER["argv"][0] => ./drush.php
- *
- * Calling php ./drush.php also yields the following:
- *
- * _SERVER["argv"][0] => ./drush.php
- *
- * Note that the $_ global is defined only in bash and therefore cannot
- * be relied upon.
- *
- * The DRUSH_COMMAND constant is initialised to the value of this
- * function when environment.inc is loaded.
- *
- * @see DRUSH_COMMAND
- */
-function drush_find_drush() {
-  if ($drush = $_SERVER['argv']['0']) {
-    return Path::makeAbsolute($drush, Drush::config()->get('env.cwd'));
-  }
-  return FALSE;
-}
-
-/**
- * Build a drush command suitable for use for Drush to call itself
- * e.g. in backend_invoke.
+ * Build a drush command suitable for use for Drush to call itself.
+ * Used in backend_invoke.
  */
 function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, $remote_command = FALSE, $environment_variables = array()) {
   $os = _drush_get_os($os);
@@ -185,13 +156,6 @@ function drush_is_cygwin($os = NULL) {
 
 function drush_is_mingw($os = NULL) {
   return _drush_test_os($os, array("MINGW"));
-}
-
-/**
- * Return tar executable name specific for the current OS
- */
-function drush_get_tar_executable() {
-  return drush_is_windows() ? (drush_is_mingw() ? "tar.exe" : "bsdtar.exe") : "tar";
 }
 
 /**
@@ -331,7 +295,7 @@ function drush_directory_cache($subdir = '') {
   if (getenv('CACHE_PREFIX')) {
     $cache_locations[getenv('CACHE_PREFIX')] = 'cache';
   }
-  $home = drush_server_home();
+  $home = Drush::config()->get('env.home');
   if ($home) {
     $cache_locations[$home] = '.drush/cache';
   }
@@ -357,21 +321,6 @@ function drush_directory_cache($subdir = '') {
   }
   return drush_set_error('DRUSH_NO_WRITABLE_CACHE', dt('Drush must have a writable cache directory; please insure that one of the following locations is writable: @locations',
     array('@locations' => implode(',', array_keys($cache_locations)))));
-}
-
-/**
- * Set Env. Variables for given site-alias.
- */
-function drush_set_environment_vars(array $site_record) {
-  if (!empty($site_record)) {
-    $os = drush_os($site_record);
-    if (isset($site_record['#env-vars'])) {
-      foreach ($site_record['#env-vars'] as $var => $value) {
-        $env_var = drush_escapeshellarg($var, $os, TRUE) . '=' . drush_escapeshellarg($value, $os, TRUE);
-        putenv($env_var);
-      }
-    }
-  }
 }
 
 /**
