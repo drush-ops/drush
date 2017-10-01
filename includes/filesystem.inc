@@ -4,6 +4,7 @@
  * @file
  * Filesystem utilities.
  */
+use Drush\Drush;
 use Drush\Sql\SqlBase;
 use Webmozart\PathUtil\Path;
 
@@ -441,7 +442,7 @@ function drush_find_tmp() {
 
     if (empty($temporary_directory)) {
       // If no directory has been found, create one in cwd.
-      $temporary_directory = Path::join(drush_cwd(), 'tmp');
+      $temporary_directory = Path::join(Drush::config()->get('env.cwd'), 'tmp');
       drush_mkdir($temporary_directory, TRUE);
       if (!is_dir($temporary_directory)) {
         return drush_set_error('DRUSH_UNABLE_TO_CREATE_TMP_DIR', dt("Unable to create a temporary directory."));

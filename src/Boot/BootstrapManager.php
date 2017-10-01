@@ -2,6 +2,8 @@
 
 namespace Drush\Boot;
 
+use Robo\Contract\ConfigAwareInterface;
+use Robo\Common\ConfigAwareTrait;
 use DrupalFinder\DrupalFinder;
 use Drush\Drush;
 use Drush\Log\LogLevel;
@@ -9,10 +11,11 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
-class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
+class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface, ConfigAwareInterface
 {
     use LoggerAwareTrait;
     use AutoloaderAwareTrait;
+    use ConfigAwareTrait;
 
     /**
      * @var DrupalFinder
@@ -106,7 +109,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         // TODO: Throw if we already bootstrapped a framework?
 
         if (!isset($root)) {
-            $root = drush_cwd();
+            $root = $this->getConfig()->get('env.cwd');
         }
         if (!$this->drupalFinder()->locateRoot($root)) {
             //    echo ' Drush must be executed within a Drupal site.'. PHP_EOL;

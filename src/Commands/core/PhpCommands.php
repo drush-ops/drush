@@ -1,6 +1,8 @@
 <?php
 namespace Drush\Commands\core;
 
+use Robo\Contract\ConfigAwareInterface;
+use Robo\Common\ConfigAwareTrait;
 use Drush\Commands\DrushCommands;
 
 class PhpCommands extends DrushCommands
@@ -59,7 +61,7 @@ class PhpCommands extends DrushCommands
             $found = $script;
         } else {
             // Array of paths to search for scripts
-            $searchpath['cwd'] = drush_cwd();
+            $searchpath['cwd'] = $this->getConfig()->get('env.cwd');
 
             // Additional script paths, specified by 'script-path' option
             if ($script_path = $options['script-path']) {

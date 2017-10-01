@@ -69,33 +69,6 @@ function _drush_postmortem() {
 }
 
 /**
- * Returns the current working directory.
- *
- * This is the directory as it was when drush was started, not the
- * directory we are currently in. For that, use getcwd() directly.
- */
-function drush_cwd() {
-  if ($path = drush_get_context('DRUSH_OLDCWD')) {
-    return $path;
-  }
-  // We use PWD if available because getcwd() resolves symlinks, which
-  // could take us outside of the Drupal root, making it impossible to find.
-  // $_SERVER['PWD'] isn't set on windows and generates a Notice.
-  $path = isset($_SERVER['PWD']) ? $_SERVER['PWD'] : '';
-  if (empty($path)) {
-    $path = getcwd();
-  }
-
-  // Convert windows paths.
-  $path = Path::canonicalize($path);
-
-  // Save original working dir case some command wants it.
-  drush_set_context('DRUSH_OLDCWD', $path);
-
-  return $path;
-}
-
-/**
  * Converts a Windows path (dir1\dir2\dir3) into a Unix path (dir1/dir2/dir3).
  * Also converts a cygwin "drive emulation" path (/cygdrive/c/dir1) into a
  * proper drive path, still with Unix slashes (c:/dir1).
@@ -146,7 +119,7 @@ function _drush_shift_path_up($path) {
 function drush_site_path($path = NULL) {
   $site_path = FALSE;
 
-  $path = empty($path) ? drush_cwd() : $path;
+  $path = empty($path) ? Drush::config()->get('env.cwd') : $path;
   // Check the current path.
   if (file_exists($path . '/settings.php')) {
     $site_path = $path;
@@ -306,7 +279,7 @@ function drush_valid_root($root) {
  */
 function drush_find_drush() {
   if ($drush = $_SERVER['argv']['0']) {
-    return Path::makeAbsolute($drush, drush_cwd());
+    return Path::makeAbsolute($drush, Drush::config()->get('env.cwd'));
   }
   return FALSE;
 }
