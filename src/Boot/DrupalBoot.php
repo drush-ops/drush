@@ -143,7 +143,8 @@ abstract class DrupalBoot extends BaseBoot
         if (empty($drupal_root)) {
             return drush_bootstrap_error('DRUSH_NO_DRUPAL_ROOT', dt("A Drupal installation directory could not be found"));
         }
-        if (!$signature = drush_valid_root($drupal_root)) {
+        // TODO: Perhaps $drupal_root is now ALWAYS valid by the time we get here.
+        if (!$this->legacyValidRootCheck($drupal_root)) {
             return drush_bootstrap_error('DRUSH_INVALID_DRUPAL_ROOT', dt("The directory !drupal_root does not contain a valid Drupal installation", array('!drupal_root' => $drupal_root)));
         }
 
@@ -154,9 +155,13 @@ abstract class DrupalBoot extends BaseBoot
         }
 
         drush_bootstrap_value('drupal_root', $drupal_root);
-        define('DRUSH_DRUPAL_SIGNATURE', $signature);
 
         return true;
+    }
+
+    protected function legacyValidRootCheck($root) {
+        $bootstrap_class = Drush::bootstrapManager()->bootstrapObjectForRoot($root);
+        return $bootstrap_class != NULL;
     }
 
     /**
@@ -204,8 +209,6 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapDrupalSiteValidate()
     {
-        drush_set_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', drush_conf_path($this->uri));
-
         $this->bootstrapDrupalSiteSetupServerGlobal();
         $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
         $confPath = drush_bootstrap_value('confPath', $this->confPath(true, true));
