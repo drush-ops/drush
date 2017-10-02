@@ -72,7 +72,7 @@ class rsyncCase extends CommandUnishTestCase {
 
     // Test an actual rsync between our two fixture sites. Note that
     // these sites share the same web root.
-    $this->drush('rsync', ['@dev:%files/a/', '@stage:%files/b'], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
+    $this->drush('rsync', ['@unish.dev:%files/a/', '@unish.stage:%files/b'], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
     $expected = '';
     $this->assertContains('You will delete files in', $this->getOutput());
 
@@ -105,9 +105,10 @@ class rsyncCase extends CommandUnishTestCase {
   function testRsyncAndPercentFiles() {
     $root = $this->webroot();
     $site = key($this->getSites());
+    $uri = $this->getUri();
     $options = array(
       'root' => $root,
-      'uri' => key($this->getSites()),
+      'uri' => $uri,
       'simulate' => NULL,
       'yes' => NULL,
     );
@@ -115,7 +116,7 @@ class rsyncCase extends CommandUnishTestCase {
     $output = $this->getOutput();
     $level = $this->log_level();
     $pattern = in_array($level, array('verbose', 'debug')) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz %s /tmp);";
-    $expected = sprintf($pattern, $this->webroot(). "/sites/$site/files");
+    $expected = sprintf($pattern, $this->webroot(). "/sites/$uri/files");
     $this->assertEquals($expected, $output);
   }
 }
