@@ -10,18 +10,17 @@ use Drush\Role\RoleBase;
 
 class RoleCommands extends DrushCommands
 {
-
     /**
      * Create a new role.
      *
-     * @command role-create
+     * @command role:create
      * @param $machine_name The symbolic machine name for the role.
      * @param $human_readable_name A descriptive name for the role.
-     * @usage drush role-create 'test role'
+     * @usage drush role:create 'test role'
      *   Create a new role 'test role'. On D8, the human-readable name will be 'Test role'.
-     * @usage drush role-create 'test role' 'Test role'
+     * @usage drush role:create 'test role' 'Test role'
      *   Create a new role with a machine name of 'test role', and a human-readable name of 'Test role'.
-     * @aliases rcrt
+     * @aliases rcrt,role-create
      */
     public function create($machine_name, $human_readable_name = null)
     {
@@ -37,12 +36,12 @@ class RoleCommands extends DrushCommands
     /**
      * Delete a new role.
      *
-     * @command role-delete
+     * @command role:delete
      * @param $machine_name The symbolic machine name for the role.
      * @validate-entity-load user_role machine_name
-     * @usage drush role-delete 'test role'
+     * @usage drush role:delete 'test role'
      *   Delete the role 'test role'.
-     * @aliases rdel
+     * @aliases rdel,role-delete
      */
     public function delete($machine_name)
     {
@@ -56,7 +55,7 @@ class RoleCommands extends DrushCommands
      *
      * @todo Add validation for permission names.
      *
-     * @command role-add-perm
+     * @command role:perm:add
      * @validate-entity-load user_role machine_name
      * @validate-permissions permissions
      * @param $machine_name The role to modify.
@@ -64,11 +63,11 @@ class RoleCommands extends DrushCommands
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @usage  drush role-add-perm anonymous 'post comments'
      *   Allow anon users to post comments.
-     * @usage drush role-add-perm anonymous "'post comments','access content'"
+     * @usage drush role:add-perm anonymous "'post comments','access content'"
      *   Allow anon users to post comments and access content.
-     * @usage drush pm-info --fields=permissions --format=csv aggregator
+     * @usage drush pm:info --fields=permissions --format=csv aggregator
      *   Discover the permissions associated with  given module (then use this command as needed).
-     * @aliases rap
+     * @aliases rap,role-add-perm
      */
     public function roleAddPerm($machine_name, $permissions)
     {
@@ -81,15 +80,15 @@ class RoleCommands extends DrushCommands
     /**
      * Remove specified permission(s) from a role.
      *
-     * @command role-remove-perm
+     * @command role:perm:remove
      * @validate-entity-load user_role machine_name
      * @validate-permissions permissions
      * @param $machine_name The role to modify.
      * @param $permissions The list of permission to grant, delimited by commas.
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
-     * @usage drush role-remove-perm anonymous 'access content'
+     * @usage drush role:remove-perm anonymous 'access content'
      *   Hide content from anon users.
-     * @aliases rmp
+     * @aliases rmp,role-remove-perm
      */
     public function roleRemovePerm($machine_name, $permissions)
     {
@@ -106,12 +105,12 @@ class RoleCommands extends DrushCommands
      * that role will be listed.  If a permission name is provided as an option,
      * then all of the roles that have been granted that permission will be listed.
      *
-     * @command role-list
+     * @command role:list
      * @validate-permissions filter
      * @option filter Limits the list of roles to only those that have been assigned the specified permission.
-     * @usage drush role-list --filter='administer nodes'
+     * @usage drush role:list --filter='administer nodes'
      *   Display a list of roles that have the administer nodes permission assigned.
-     * @aliases rls
+     * @aliases rls,role-list
      * @field-labels
      *   rid: ID
      *   label: Role Label

@@ -6,10 +6,15 @@
  */
 namespace Drush;
 
+use Drush\SiteAlias\SiteAliasManager;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use League\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use SebastianBergmann\Version;
 use Symfony\Component\Console\Application;
+use Consolidation\Config\ConfigInterface;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Static Service Container wrapper.
@@ -128,6 +133,7 @@ class Drush
     public static function getContainer()
     {
         if (static::$container === null) {
+            debug_print_backtrace();
             throw new \RuntimeException('Drush::$container is not initialized yet. \Drupal::setContainer() must be called with a real container.');
         }
         return static::$container;
@@ -220,6 +226,82 @@ class Drush
     }
 
     /**
+     * Return the configuration object
+     *
+     * @return ConfigInterface
+     */
+    public static function config()
+    {
+        return static::service('config');
+    }
+
+    /**
+     * @return SiteAliasManager
+     */
+    public static function aliasManager()
+    {
+        return static::service('site.alias.manager');
+    }
+
+    /**
+     * Return the input object
+     *
+     * @return InputInterface
+     */
+    public static function input()
+    {
+        return static::service('input');
+    }
+
+    /**
+     * Return the output object
+     *
+     * @return OutputInterface
+     */
+    public static function output()
+    {
+        return static::service('output');
+    }
+
+    /**
+     * Return 'true' if we are in simulated mode
+     */
+    public static function simulate()
+    {
+        return \Drush\Drush::config()->get(\Robo\Config\Config::SIMULATE);
+    }
+
+    /**
+     * Return 'true' if we are in backend mode
+     */
+    public static function backend()
+    {
+        return \Drush\Drush::config()->get('backend');
+    }
+
+    /**
+     * Return 'true' if we are in verbose mode
+     */
+    public static function verbose()
+    {
+        if (!static::hasService('output')) {
+            return false;
+        }
+        return \Drush\Drush::output()->isVerbose();
+    }
+
+    /**
+     * Return 'true' if we are in debug mode
+     */
+    public static function debug()
+    {
+        if (!static::hasService('output')) {
+            return false;
+        }
+        return \Drush\Drush::output()->isDebug();
+    }
+
+    /**
      * Return the Bootstrap Manager.
      *
      * @return \Drush\Boot\BootstrapManager
@@ -237,6 +319,23 @@ class Drush
     public static function bootstrap()
     {
         return static::bootstrapManager()->bootstrap();
+    }
+
+    public static function redispatchOptions($input = null)
+    {
+        $input = $input ?: static::input();
+
+        // $input->getOptions() returns an associative array of option => value
+        $options = $input->getOptions();
+
+        // The 'runtime.options' config contains a list of option names on th cli
+        $optionNamesFromCommandline = static::config()->get('runtime.options');
+
+        // Remove anything in $options that was not on the cli
+        $options = array_intersect_key($options, array_flip($optionNamesFromCommandline));
+
+        // Add in the 'runtime.context' items, which includes --include, --alias-path et. al.
+        return $options + array_filter(static::config()->get('runtime.context'));
     }
 
     /**

@@ -64,7 +64,7 @@ class XhprofCommands extends DrushCommands
 
     public static function xhprofIsEnabled(InputInterface $input)
     {
-        if ($input->getOption('xh-link')) {
+        if ($input->hasOption('xh-link') && $input->getOption('xh-link')) {
             if (!extension_loaded('xhprof') && !extension_loaded('tideways')) {
                 throw new \Exception(dt('You must enable the xhprof or tideways PHP extensions in your CLI PHP in order to profile.'));
             }

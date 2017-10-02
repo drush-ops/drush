@@ -3,9 +3,14 @@ namespace Drush\Commands\core;
 
 use Drupal\Core\Url;
 use Drush\Commands\DrushCommands;
+use Drush\Exec\ExecTrait;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 
-class BrowseCommands extends DrushCommands
+class BrowseCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+    use ExecTrait;
+    use SiteAliasManagerAwareTrait;
 
     /**
      * Display a link to a given path or open link in a browser.
@@ -23,17 +28,15 @@ class BrowseCommands extends DrushCommands
      *   Open a browser to the web site specified in a site alias.
      * @usage drush browse --browser=firefox admin
      *   Open Firefox web browser to the path 'admin'.
-     * @complete \Drush\Commands\core\BrowseCommands::complete
      * @handle-remote-commands true
      */
-    public function browse($path = '', $options = ['browser' => null])
+    public function browse($path = '', $options = ['browser' => null, 'redirect-port' => ''])
     {
+        $aliasRecord = $this->siteAliasManager()->getSelf();
         // Redispatch if called against a remote-host so a browser is started on the
         // the *local* machine.
-        $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
-        if (drush_sitealias_is_remote_site($alias)) {
-            $site_record = drush_sitealias_get_record($alias);
-            $return = drush_invoke_process($site_record, 'browse', [$path], drush_redispatch_get_options(), array('integrate' => true));
+        if ($aliasRecord->isRemote()) {
+            $return = drush_invoke_process($aliasRecord, 'browse', [$path], Drush::redispatchOptions(), array('integrate' => true));
             if ($return['error_status']) {
                 throw new \Exception('Unable to execute browse command on remote alias.');
             } else {
@@ -48,15 +51,7 @@ class BrowseCommands extends DrushCommands
             $link = Url::fromUserInput('/' . $path, ['absolute' => true])->toString();
         }
 
-        drush_start_browser($link);
+        $this->startBrowser($link, false, $options['redirect-port']);
         return $link;
-    }
-
-    /*
-     * An argument provider for shell completion.
-     */
-    public static function complete()
-    {
-        return ['values' => ['admin', 'admin/content', 'admin/reports', 'admin/structure', 'admin/people', 'admin/modules', 'admin/config']];
     }
 }

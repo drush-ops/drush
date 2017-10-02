@@ -2,6 +2,7 @@
 
 namespace Drush\Commands\generate\Helper;
 
+use Drush\Drush;
 use DrupalCodeGenerator\Helper\InputHandler as BaseInputHandler;
 use DrupalCodeGenerator\Utils;
 use Symfony\Component\Console\Input\InputInterface;
@@ -78,7 +79,7 @@ class InputHandler extends BaseInputHandler
             return;
         }
 
-        $root_directory = basename(Utils::getExtensionRoot(drush_cwd()));
+        $root_directory = basename(Utils::getExtensionRoot(Drush::config()->get('env.cwd')));
 
         // Module related generators.
         if ($destination == 'modules/%') {

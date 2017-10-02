@@ -17,18 +17,17 @@ class TopicCommands extends DrushCommands
     /**
      * Read detailed documentation on a given topic.
      *
-     * @command core-topic
+     * @command core:topic
      * @param $topic_name  The name of the topic you wish to view. If omitted, list all topic descriptions (and names in parenthesis).
      * @usage drush topic
      *   Pick from all available topics.
      * @usage drush topic docs-repl
      *   Show documentation for the Drush interactive shell
-     * @usage drush docs-r
+     * @usage drush docs:r
      *   Filter topics for those starting with 'docs-r'.
      * @remote-tty
-     * @aliases topic
-     * @topics docs-readme
-     * @complete \Drush\Commands\core\TopicCommands::complete
+     * @aliases topic,core-topic
+     * @topics docs:readme
      */
     public function topic($topic_name)
     {
@@ -94,10 +93,5 @@ class TopicCommands extends DrushCommands
             }
         }
         return $topics;
-    }
-
-    public function complete()
-    {
-        return array('values' => array_keys(self::getAllTopics()));
     }
 }

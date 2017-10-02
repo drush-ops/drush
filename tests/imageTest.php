@@ -14,11 +14,11 @@ class ImageCase extends CommandUnishTestCase {
     $options = array(
       'yes' => NULL,
       'root' => $this->webroot(),
-      'uri' => key($sites),
+      'uri' => $this->getUri(),
     );
     $this->drush('pm-enable', ['image'], $options);
     $logo = 'core/themes/bartik/screenshot.png';
-    $styles_dir = $options['root'] . '/sites/' . key($sites) . '/files/styles/';
+    $styles_dir = $options['root'] . '/sites/' . $this->getUri() . '/files/styles/';
     $thumbnail = $styles_dir . 'thumbnail/public/' . $logo;
     $medium = $styles_dir . 'medium/public/' . $logo;
 
@@ -33,13 +33,12 @@ class ImageCase extends CommandUnishTestCase {
 
     // Check that "drush image-flush --all" deletes all image styles by creating two different ones and testing its
     // existence afterwards.
-    // @todo uncomment this after https://github.com/drush-ops/drush/issues/2524
-//    $this->drush('image-derive', array('thumbnail', $logo), $options);
-//    $this->assertFileExists($thumbnail);
-//    $this->drush('image-derive', array('medium', $logo), $options);
-//    $this->assertFileExists($medium);
-//    $this->drush('image-flush', array(), array('all' => TRUE) + $options);
-//    $this->assertFileNotExists($thumbnail);
-//    $this->assertFileNotExists($medium);
+    $this->drush('image-derive', array('thumbnail', $logo), $options);
+    $this->assertFileExists($thumbnail);
+    $this->drush('image-derive', array('medium', $logo), $options);
+    $this->assertFileExists($medium);
+    $this->drush('image-flush', array(), array('all' => null) + $options);
+    $this->assertFileNotExists($thumbnail);
+    $this->assertFileNotExists($medium);
   }
 }

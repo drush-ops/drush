@@ -68,16 +68,16 @@ class ConfigExportCommands extends DrushCommands
     /**
      * Export Drupal configuration to a directory.
      *
-     * @command config-export
+     * @command config:export
      * @interact-config-label
      * @param string $label A config directory label (i.e. a key in $config_directories array in settings.php).
      * @option add Run `git add -p` after exporting. This lets you choose which config changes to sync for commit.
      * @option commit Run `git add -A` and `git commit` after exporting.  This commits everything that was exported without prompting.
      * @option message Commit comment for the exported configuration.  Optional; may only be used with --commit.
      * @option destination An arbitrary directory that should receive the exported files. An alternative to label argument.
-     * @usage drush config-export --destination
+     * @usage drush config:export --destination
      *   Export configuration; Save files in a backup directory named config-export.
-     * @aliases cex
+     * @aliases cex,config-export
      */
     public function export($label = null, $options = ['add' => false, 'commit' => false, 'message' => null, 'destination' => ''])
     {
@@ -126,7 +126,7 @@ class ConfigExportCommands extends DrushCommands
                 return;
             }
 
-            drush_print("Differences of the active config to the export directory:\n");
+            $this->output()->writeln("Differences of the active config to the export directory:\n");
             $change_list = array();
             foreach ($config_comparer->getAllCollectionNames() as $collection) {
                 $change_list[$collection] = $config_comparer->getChangelist(null, $collection);
@@ -196,13 +196,8 @@ class ConfigExportCommands extends DrushCommands
         }
 
         if (!empty($destination)) {
-            $additional = array();
-            $values = drush_sitealias_evaluate_path($destination, $additional, true);
-            if (!isset($values['path'])) {
-                throw new \Exception('The destination directory could not be evaluated.');
-            }
-            $destination = $values['path'];
-            $commandData->input()->setOption('destination', $destination);
+            // TODO: evaluate %files et. al. in destination
+            // $commandData->input()->setOption('destination', $destination);
             if (!file_exists($destination)) {
                 $parent = dirname($destination);
                 if (!is_dir($parent)) {

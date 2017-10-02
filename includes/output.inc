@@ -54,21 +54,6 @@ function drush_print_prompt($message, $indent = 0, $handle = NULL) {
 }
 
 /**
- * Stores a message which is printed during drush_shutdown() if in compact mode.
- * @param $message
- *   The message to print.  If $message is an array,
- *   then each element of the array is printed on a
- *   separate line.
- */
-function drush_print_pipe($message = '') {
-  $buffer = &drush_get_context('DRUSH_PIPE_BUFFER' , '');
-  if (is_array($message)) {
-    $message = implode("\n", $message) . "\n";
-  }
-  $buffer .= $message;
-}
-
-/**
  * Rudimentary replacement for Drupal API t() function.
  *
  * @param string

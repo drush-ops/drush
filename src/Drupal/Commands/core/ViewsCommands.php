@@ -70,24 +70,24 @@ class ViewsCommands extends DrushCommands
     /**
      * Set several Views settings to more developer-oriented values.
      *
-     * @command views-dev
+     * @command views:dev
      *
      * @validate-module-enabled views
-     * @aliases vd
+     * @aliases vd,views-dev
      */
     public function dev()
     {
         $settings = array(
-        'ui.show.listing_filters' => true,
-        'ui.show.master_display' => true,
-        'ui.show.advanced_column' => true,
-        'ui.always_live_preview' => false,
-        'ui.always_live_preview_button' => true,
-        'ui.show.preview_information' => true,
-        'ui.show.sql_query.enabled' => true,
-        'ui.show.sql_query.where' => 'above',
-        'ui.show.performance_statistics' => true,
-        'ui.show.additional_queries' => true,
+            'ui.show.listing_filters' => true,
+            'ui.show.master_display' => true,
+            'ui.show.advanced_column' => true,
+            'ui.always_live_preview' => false,
+            'ui.always_live_preview_button' => true,
+            'ui.show.preview_information' => true,
+            'ui.show.sql_query.enabled' => true,
+            'ui.show.sql_query.where' => 'above',
+            'ui.show.performance_statistics' => true,
+            'ui.show.additional_queries' => true,
         );
 
         $config = $this->getConfigFactory()->getEditable('views.settings');
@@ -101,22 +101,22 @@ class ViewsCommands extends DrushCommands
             elseif (is_string($value)) {
                 $value = "\"$value\"";
             }
-            $this->logger->log(LogLevel::SUCCESS, dt('!setting set to !value', array(
-            '!setting' => $setting,
-            '!value' => $value
+            $this->logger()->success(dt('!setting set to !value', array(
+                '!setting' => $setting,
+                '!value' => $value
             )));
         }
 
         // Save the new config.
         $config->save();
 
-        $this->logger->log(LogLevel::SUCCESS, (dt('New views configuration saved.')));
+        $this->logger()->success(dt('New views configuration saved.'));
     }
 
     /**
      * Get a list of all views in the system.
      *
-     * @command views-list
+     * @command views:list
      *
      * @option name A string contained in the view's name to filter the results with.
      * @option tags A comma-separated list of views tags by which to filter the results.
@@ -137,7 +137,7 @@ class ViewsCommands extends DrushCommands
      *   status: Status
      *   tag: Tag
      * @default-fields machine-name,label,description,status
-     * @aliases vl
+     * @aliases vl,views-list
      * @validate-module-enabled views
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
@@ -206,29 +206,28 @@ class ViewsCommands extends DrushCommands
             $rows = array_merge($enabled_views, $disabled_views);
             return new RowsOfFields($rows);
         } else {
-            $this->logger->log(LogLevel::OK, dt('No views found.'));
+            $this->logger()->info(dt('No views found.'));
         }
     }
 
     /**
      * Execute a view and show a count of the results, or the rendered HTML.
      *
-     * @command views-execute
+     * @command views:execute
      *
      * @param string $view_name The name of the view to execute.
      * @param string $display The display ID to execute. If none specified, the default display will be used.
      * @param string $view_args A comma delimited list of values, corresponding to contextual filters.
      * @option count Display a count of the results instead of each row.
      * @option show-admin-links Show contextual admin links in the rendered markup.
-     * @usage drush views-execute my_view
+     * @usage drush views:execute my_view
      *   Show the rendered HTML for the default display for the my_view View.
-     * @usage drush views-execute my_view page_1 3 --count
+     * @usage drush views:execute my_view page_1 3 --count
      *   Show a count of my_view:page_1 where the first contextual filter value is 3.
-     * @usage drush views-execute my_view page_1 3,foo
+     * @usage drush views:execute my_view page_1 3,foo
      *   Show the rendered HTML of my_view:page_1 where the first two contextual filter values are 3 and 'foo' respectively.
-     * @complete \Drush\Commands\core\ViewsCommands::complete
      * @validate-entity-load view view_name
-     * @aliases vex
+     * @aliases vex,views-execute
      * @validate-module-enabled views
      *
      * @return string
@@ -244,7 +243,7 @@ class ViewsCommands extends DrushCommands
         $view->execute();
 
         if (empty($view->result)) {
-            $this->logger->log(LogLevel::WARNING, dt('No results returned for this View.'));
+            $this->logger()->success(dt('No results returned for this View.'));
             return null;
         } elseif ($options['count']) {
             drush_backend_set_result(count($view->result));
@@ -261,12 +260,12 @@ class ViewsCommands extends DrushCommands
     /**
      * Get a list of all Views and analyze warnings.
      *
-     * @command views-analyze
+     * @command views:analyze
      * @todo Command has not  been fully tested. How to generate a message?
      * @field-labels
      *   type: Type
      *   message: Message
-     * @aliases va
+     * @aliases va,views-analyze
      * @validate-module-enabled views
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
@@ -289,23 +288,22 @@ class ViewsCommands extends DrushCommands
                 }
             }
 
-            $this->logger->log(LogLevel::OK, dt('A total of @total views were analyzed and @messages problems were found.', array('@total' => count($views), '@messages' => $messages_count)));
+            $this->logger()->success(dt('A total of @total views were analyzed and @messages problems were found.', array('@total' => count($views), '@messages' => $messages_count)));
             return new RowsOfFields($rows);
         } else {
-            $this->logger->log(LogLevel::OK, dt('There are no views to analyze'));
+            $this->logger()->success(dt('There are no views to analyze'));
         }
     }
 
     /**
      * Enable the specified views.
      *
-     * @command views-enable
+     * @command views:enable
      * @param string $views A comma delimited list of view names.
      * @validate-entity-load view views
      * @usage drush ven frontpage,taxonomy_term
      *   Enable the frontpage and taxonomy_term views.
-     * @complete \Drush\Commands\core\ViewsCommands::complete
-     * @aliases ven
+     * @aliases ven,views-enable
      */
     public function enable($views)
     {
@@ -316,19 +314,18 @@ class ViewsCommands extends DrushCommands
                 $view->save();
             }
         }
-        $this->logger->log(LogLevel::OK, dt('!str enabled.', ['!str' => implode(', ', $view_names)]));
+        $this->logger()->success(dt('!str enabled.', ['!str' => implode(', ', $view_names)]));
     }
 
     /**
      * Disable the specified views.
      *
-     * @command views-disable
+     * @command views:disable
      * @validate-entity-load view views
      * @param string $views A comma delimited list of view names.
      * @usage drush vdis frontpage taxonomy_term
      *   Disable the frontpage and taxonomy_term views.
-     * @complete \Drush\Commands\core\ViewsCommands::complete
-     * @aliases vdis
+     * @aliases vdis,views-disable
      */
     public function disable($views)
     {
@@ -339,7 +336,7 @@ class ViewsCommands extends DrushCommands
                 $view->save();
             }
         }
-        $this->logger->log(LogLevel::OK, dt('!str disabled.', ['!str' => implode(', ', $view_names)]));
+        $this->logger()->success(dt('!str disabled.', ['!str' => implode(', ', $view_names)]));
     }
 
     /**

@@ -13,7 +13,7 @@ class HelpCommands extends DrushCommands
      * Display usage details for a command.
      *
      * @command help
-     * @param $name A command name
+     * @param $command_name A command name
      * @usage drush help pm-uninstall
      *   Show help for a command.
      * @usage drush help pmu
@@ -22,15 +22,15 @@ class HelpCommands extends DrushCommands
      *   Show all available commands in XML format.
      * @usage drush help --format=json
      *   All available commands, in JSON format.
-     * @bootstrap DRUSH_BOOTSTRAP_MAX
-     * @topics docs-readme
+     * @bootstrap max
+     * @topics docs:readme
      *
      * @return \Consolidation\AnnotatedCommand\Help\HelpDocument
      */
-    public function help($name, $options = ['format' => 'helpcli', 'include-field-labels' => false, 'table-style' => 'compact'])
+    public function help($command_name, $options = ['format' => 'helpcli', 'include-field-labels' => false, 'table-style' => 'compact'])
     {
         $application = Drush::getApplication();
-        $command = $application->get($name);
+        $command = $application->get($command_name);
         if ($command instanceof AnnotatedCommand) {
             $command->optionsHook();
         }
@@ -49,12 +49,11 @@ class HelpCommands extends DrushCommands
      */
     public function validate(CommandData $commandData)
     {
-        $name = $commandData->input()->getArgument('name');
+        $name = $commandData->input()->getArgument('command_name');
         if (empty($name)) {
             throw new \Exception(dt("The help command requires that a command name be provided. Run `drush list` to see a list of available commands."));
         } else {
             $application = Drush::getApplication();
-            annotation_adapter_add_legacy_commands_to_application($application);
             if (!in_array($name, array_keys($application->all()))) {
                 throw new \Exception(dt("!name command not found.", array('!name' => $name)));
             }

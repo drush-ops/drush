@@ -19,7 +19,6 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
       'yes' => NULL,
       'root' => $this->webroot(),
       'uri' => key($sites),
-      'strict' => 0, // Don't validate options
     );
     $options = $options_no_pipe + array(
       'pipe' => NULL,

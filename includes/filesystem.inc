@@ -4,6 +4,7 @@
  * @file
  * Filesystem utilities.
  */
+use Drush\Drush;
 use Drush\Sql\SqlBase;
 use Webmozart\PathUtil\Path;
 
@@ -318,6 +319,9 @@ function drush_move_dir($src, $dest, $overwrite = FALSE) {
  * halted if the required directory cannot be created.
  */
 function drush_mkdir($path, $required = TRUE) {
+  if (empty($path)) {
+    return drush_set_error('DRUSH_MKDIR_NULL_PATH', dt('Path passed to drush_mkdir cannot be empty.'));
+  }
   if (!is_dir($path)) {
     if (drush_mkdir(dirname($path))) {
       if (@mkdir($path)) {
@@ -438,7 +442,7 @@ function drush_find_tmp() {
 
     if (empty($temporary_directory)) {
       // If no directory has been found, create one in cwd.
-      $temporary_directory = Path::join(drush_cwd(), 'tmp');
+      $temporary_directory = Path::join(Drush::config()->get('env.cwd'), 'tmp');
       drush_mkdir($temporary_directory, TRUE);
       if (!is_dir($temporary_directory)) {
         return drush_set_error('DRUSH_UNABLE_TO_CREATE_TMP_DIR', dt("Unable to create a temporary directory."));
@@ -547,7 +551,7 @@ function drush_preflight_backup_dir($subdir = NULL) {
     // Save the date to be used in the backup directory's path name.
     $date = gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
 
-    $backup_dir = drush_get_option('backup-dir', Path::join(drush_server_home(), 'drush-backups'));
+    $backup_dir = drush_get_option('backup-dir', Path::join(Drush::config()->get('env.home'), 'drush-backups'));
     $backup_dir = Path::join($backup_dir, $subdir, $date);
     drush_set_context('DRUSH_BACKUP_DIR', $backup_dir);
   }

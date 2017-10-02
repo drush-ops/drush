@@ -13,9 +13,6 @@ create_field('field_user_text', 'text', 'user','user');
 create_field('field_user_text_long', 'text_long', 'user','user');
 create_field('field_user_text_with_summary', 'text_with_summary', 'user','user');
 
-// @todo Find a Symfony-ish way to get arguments.
-$args = drush_get_arguments();
-
 // Create a user.
 $values = [
   'field_user_email' => 'joe.user.alt@myhome.com',
@@ -28,8 +25,8 @@ $values = [
 ];
 
 $user = User::create([
-  'name' => $args[2],
-  'mail' => $args[3],
+  'name' => $extra[0],
+  'mail' => $extra[1],
   'pass' => 'password',
 ]);
 

@@ -2,12 +2,14 @@
 
 namespace Drush\Boot;
 
+use Drush\Log\DrushLog;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Drupal\Core\DrupalKernel;
 use Drush\Drush;
 use Drush\Drupal\DrupalKernel as DrushDrupalKernel;
 use Drush\Drupal\DrushServiceModifier;
+use Consolidation\AnnotatedCommand\AnnotatedCommandFactory;
 
 use Drush\Log\LogLevel;
 
@@ -78,37 +80,15 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
     public function addLogger()
     {
-        // If we're running on Drupal 8 or later, we provide a logger which will send
+        // Provide a logger which sends
         // output to drush_log(). This should catch every message logged through every
         // channel.
         $container = \Drupal::getContainer();
         $parser = $container->get('logger.log_message_parser');
 
         $drushLogger = Drush::logger();
-        $logger = new \Drush\Log\DrushLog($parser, $drushLogger);
+        $logger = new DrushLog($parser, $drushLogger);
         $container->get('logger.factory')->addLogger($logger);
-    }
-
-    public function contribModulesPaths()
-    {
-        return array(
-        $this->confPath() . '/modules',
-        'sites/all/modules',
-        'modules',
-        );
-    }
-
-    /**
-     * @return array of strings - paths to directories where contrib
-     * themes can be found
-     */
-    public function contribThemesPaths()
-    {
-        return array(
-        $this->confPath() . '/themes',
-        'sites/all/themes',
-        'themes',
-        );
     }
 
     public function bootstrapDrupalCore($drupal_root)
@@ -135,6 +115,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $classloader = $this->autoloader();
         // @todo - use Request::create() and then no need to set PHP superglobals
         $kernelClass = new \ReflectionClass('\Drupal\Core\DrupalKernel');
+        // This is not in core yet; see https://www.drupal.org/node/2718933
         if ($kernelClass->hasMethod('addServiceModifier')) {
             $this->kernel = DrupalKernel::createFromRequest($this->request, $classloader, 'prod', DRUPAL_ROOT);
         } else {
@@ -171,6 +152,9 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         // Get a list of the modules to ignore
         $ignored_modules = drush_get_option_list('ignored-modules', array());
 
+        $application = Drush::getApplication();
+        $runner = Drush::runner();
+
         // We have to get the service command list from the container, because
         // it is constructed in an indirect way during the container initialization.
         // The upshot is that the list of console commands is not available
@@ -181,16 +165,15 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             if (!$this->commandIgnored($command, $ignored_modules)) {
                 $this->inflect($command);
                 $this->logger->log(LogLevel::DEBUG_NOTIFY, dt('Add a command: !name', ['!name' => $command->getName()]));
-                annotationcommand_adapter_cache_module_console_commands($command);
+                $application->add($command);
             }
         }
         // Do the same thing with the annotation commands.
         $serviceCommandlist = $container->get('drush.service.consolidationcommands');
-        foreach ($serviceCommandlist->getCommandList() as $commandhandler) {
-            if (!$this->commandIgnored($commandhandler, $ignored_modules)) {
-                $this->inflect($commandhandler);
-                $this->logger->log(LogLevel::DEBUG_NOTIFY, dt('Add a commandhandler: !name', ['!name' => get_class($commandhandler)]));
-                annotationcommand_adapter_cache_module_service_commands($commandhandler);
+        foreach ($serviceCommandlist->getCommandList() as $commandHandler) {
+            if (!$this->commandIgnored($commandHandler, $ignored_modules)) {
+                $this->inflect($commandHandler);
+                $runner->registerCommandClass($application, $commandHandler);
             }
         }
     }

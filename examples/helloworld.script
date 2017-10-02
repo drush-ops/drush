@@ -1,48 +1,27 @@
-#!/usr/bin/env drush
+<?php
 
 //
 // This example demonstrates how to write a drush
-// "shebang" script.  These scripts start with the
-// line "#!/usr/bin/env drush" or "#!/full/path/to/drush".
+// script.  These scripts are run with the php-script command.
 //
-drush_print("Hello world!");
-drush_print();
-drush_print("The arguments to this command were:");
+use Drush\Drush;
 
-//
-// If called with --everything, use drush_get_arguments
-// to print the commandline arguments.  Note that this
-// call will include 'php-script' (the drush command)
-// and the path to this script.
-//
-if ($options['everything'])) {
-  drush_print("  " . implode("\n  ", drush_get_arguments()));
-}
-//
-// If --everything is not included, then use
-// drush_shift to pull off the arguments one at
-// a time.  drush_shift only returns the user
-// commandline arguments, and does not include
-// the drush command or the path to this script.
-//
-else {
-  while ($arg = drush_shift()) {
-    drush_print('  ' . $arg);
-  }
-}
+$this->output()->writeln("Hello world!");
+$this->output()->writeln("The extra options/arguments to this command were:");
+$this->output()->writeln(print_r($extra, true));
 
-drush_print();
+
 
 //
 // We can check which site was bootstrapped via
 // the '@self' alias, which is defined only if
 // there is a bootstrapped site.
 //
-$self_record = drush_sitealias_get_record('@self');
-if (empty($self_record)) {
-  drush_print('No bootstrapped site.');
+$self = Drush::aliasManager()->getSelf();;
+if (empty($self->root())) {
+  $this->output()->writeln('No bootstrapped site.');
 }
 else {
-  drush_print('The following site is bootstrapped:');
-  _drush_sitealias_print_record($self_record);
+  $this->output()->writeln('The following site is bootstrapped:');
+  $this->output()->writeln(print_r($self->legacyRecord(), true));
 }

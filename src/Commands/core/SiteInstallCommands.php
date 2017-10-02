@@ -4,19 +4,24 @@ namespace Drush\Commands\core;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Database\ConnectionNotDefinedException;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Log\LogLevel;
 use Drupal\Core\Config\FileStorage;
+use Drush\SiteAlias\SiteAliasManager;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Sql\SqlBase;
 use Webmozart\PathUtil\Path;
 
-class SiteInstallCommands extends DrushCommands
+class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+    use SiteAliasManagerAwareTrait;
 
     /**
      * Install Drupal along with modules/themes/configuration/profile.
      *
-     * @command site-install
+     * @command site:install
      * @param $profile An install profile name. Defaults to 'standard' unless an install profile is marked as a distribution.
      * @param $additional Additional info for the install profile. The key is in the form [form name].[parameter name]
      * @option db-url A Drupal 6 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.
@@ -24,7 +29,7 @@ class SiteInstallCommands extends DrushCommands
      * @option db-su Account to use when creating a new database. Must have Grant permission (mysql only). Optional.
      * @option db-su-pw Password for the "db-su" account. Optional.
      * @option account-name uid1 name. Defaults to admin
-     * @option account-pass uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in drushrc.php.
+     * @option account-pass uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in config.yml.
      * @option account-mail uid1 email. Defaults to admin@example.com
      * @option locale A short language code. Sets the default site language. Language files must already be present.
      * @option site-name Defaults to Site-Install
@@ -41,11 +46,11 @@ class SiteInstallCommands extends DrushCommands
      *   Re-install with specified uid1 password.
      * @usage drush si standard install_configure_form.enable_update_status_emails=NULL
      *   Disable email notification during install and later. If your server has no mail transfer agent, this gets rid of an error during install.
-     * @bootstrap DRUSH_BOOTSTRAP_DRUPAL_ROOT
-     * @aliases si
+     * @bootstrap root
+     * @aliases si,sin,site-install
      *
      */
-    public function install($profile, array $additional, $options = ['db-url' => null, 'db-prefix' => null, 'db-su' => null, 'db-su-pw' => null, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => null, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => null, 'sites-subdir' => null, 'config-dir' => null])
+    public function install($profile = '', array $additional, $options = ['db-url' => null, 'db-prefix' => null, 'db-su' => null, 'db-su-pw' => null, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => null, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => null, 'sites-subdir' => null, 'config-dir' => null])
     {
         $form_options = [];
         foreach ((array)$additional as $arg) {
@@ -61,42 +66,41 @@ class SiteInstallCommands extends DrushCommands
             $form_options[$key] = $value;
         }
 
-        $class_loader = drush_drupal_load_autoloader(DRUPAL_ROOT);
+        $class_loader = Drush::service('loader');
         $profile = $this->determineProfile($profile, $options, $class_loader);
 
         $sql = SqlBase::create($options);
         $db_spec = $sql->getDbSpec();
 
-        $show_password = empty($options['account-pass']);
         $account_pass = $options['account-pass'] ?: drush_generate_password();
         $settings = array(
-        'parameters' => array(
-        'profile' => $profile,
-        'langcode' => $options['locale'],
-        ),
-        'forms' => array(
-        'install_settings_form' => array(
-          'driver' => $db_spec['driver'],
-          $db_spec['driver'] => $db_spec,
-          'op' => dt('Save and continue'),
-        ),
-        'install_configure_form' => array(
-          'site_name' => $options['site-name'],
-          'site_mail' => $options['site-mail'],
-          'account' => array(
-            'name' => $options['account-name'],
-            'mail' => $options['account-mail'],
-            'pass' => array(
-              'pass1' => $account_pass,
-              'pass2' => $account_pass,
+            'parameters' => array(
+                'profile' => $profile,
+                'langcode' => $options['locale'],
             ),
-          ),
-          'enable_update_status_module' => true,
-          'enable_update_status_emails' => true,
-          'clean_url' => true,
-          'op' => dt('Save and continue'),
-        ),
-        ),
+            'forms' => array(
+                'install_settings_form' => array(
+                    'driver' => $db_spec['driver'],
+                    $db_spec['driver'] => $db_spec,
+                    'op' => dt('Save and continue'),
+                ),
+                'install_configure_form' => array(
+                    'site_name' => $options['site-name'],
+                    'site_mail' => $options['site-mail'],
+                    'account' => array(
+                      'name' => $options['account-name'],
+                      'mail' => $options['account-mail'],
+                      'pass' => array(
+                        'pass1' => $account_pass,
+                        'pass2' => $account_pass,
+                      ),
+                    ),
+                    'enable_update_status_module' => true,
+                    'enable_update_status_emails' => true,
+                    'clean_url' => true,
+                    'op' => dt('Save and continue'),
+                ),
+            ),
         );
 
         // Merge in the additional options.
@@ -109,7 +113,6 @@ class SiteInstallCommands extends DrushCommands
         }
 
         $msg = 'Starting Drupal installation. This takes a while.';
-        // @todo Check if this option gets passed.
         if (is_null($options['notify'])) {
             $msg .= ' Consider using the --notify global option.';
         }
@@ -120,7 +123,7 @@ class SiteInstallCommands extends DrushCommands
 
         require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
         drush_op('install_drupal', $class_loader, $settings);
-        if ($show_password) {
+        if (empty($options['account-pass'])) {
             $this->logger()->success(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $options['account-name'], '@pass' => $account_pass)));
         } else {
             $this->logger()->success(dt('Installation complete.'));
@@ -206,7 +209,8 @@ class SiteInstallCommands extends DrushCommands
                 $commandData->input()->setOption('sites-subdir', $lower);
             }
             // Make sure that we will bootstrap to the 'sites-subdir' site.
-            drush_set_context('DRUSH_SELECTED_URI', 'http://' . $sites_subdir);
+            $bootstrapManager = \Drush\Drush::bootstrapManager();
+            $bootstrapManager->setUri('http://' . $sites_subdir);
         }
 
         if ($config = $commandData->input()->getOption('config-dir')) {
@@ -223,11 +227,12 @@ class SiteInstallCommands extends DrushCommands
             }
         }
 
-        drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+        Drush::bootstrapManager()->bootstrapMax(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
         try {
             $sql = SqlBase::create($commandData->input()->getOptions());
         } catch (\Exception $e) {
             // Ask questions to get our data.
+            // TODO: we should only 'ask' in hook interact, never in hook validate
             if ($commandData->input()->getOption('db-url') == '') {
                 // Prompt for the db-url data if it was not provided via --db-url.
                 $database = $this->io()->ask('Database name', 'drupal');
@@ -246,8 +251,6 @@ class SiteInstallCommands extends DrushCommands
                 }
             }
         }
-        if (!$sql->getDbSpec()) {
-        }
     }
 
     /**
@@ -261,19 +264,27 @@ class SiteInstallCommands extends DrushCommands
         $sql = SqlBase::create($commandData->input()->getOptions());
         $db_spec = $sql->getDbSpec();
 
-        // Make sure URI is set so we get back a proper $alias_record. Needed for quick-drupal.
-        _drush_bootstrap_selected_uri();
+        $aliasRecord = $this->siteAliasManager()->getSelf();
+        $root = $aliasRecord->root();
 
-        $alias_record = drush_sitealias_get_record('@self');
-        $sites_subdir = drush_sitealias_local_site_path($alias_record);
-        // Override with sites-subdir if specified.
-        if ($dir = $commandData->input()->getOption('sites-subdir')) {
-            $sites_subdir = "sites/$dir";
+        $dir = $commandData->input()->getOption('sites-subdir');
+        if (!$dir) {
+            // We will allow the 'uri' from the site alias to provide
+            // a fallback name when '--sites-subdir' is not specified, but
+            // only if the uri and the folder name match, and only if
+            // the sites directory has already been created.
+            $dir = $this->getSitesSubdirFromUri($root, $aliasRecord->get('uri'));
         }
+
+        if (!$dir) {
+            throw new \Exception(dt('Could not determine target sites directory for site to install. Use --site-subdir to specify.'));
+        }
+
+        $sites_subdir = Path::join('sites', $dir);
         $confPath = $sites_subdir;
-        $settingsfile = "$confPath/settings.php";
+        $settingsfile = Path::join($confPath, 'settings.php');
         $sitesfile = "sites/sites.php";
-        $default = realpath($alias_record['root'] . '/sites/default');
+        $default = realpath(Path::join($root, 'sites/default'));
         $sitesfile_write = $confPath != $default && !file_exists($sitesfile);
 
         if (!file_exists($settingsfile)) {
@@ -294,7 +305,7 @@ class SiteInstallCommands extends DrushCommands
 
         // Can't install without sites subdirectory and settings.php.
         if (!file_exists($confPath)) {
-            if (!drush_mkdir($confPath) && !drush_get_context('DRUSH_SIMULATE')) {
+            if (!drush_mkdir($confPath) && !\Drush\Drush::simulate()) {
                 throw new \Exception(dt('Failed to create directory @confPath', array('@confPath' => $confPath)));
             }
         } else {
@@ -302,24 +313,46 @@ class SiteInstallCommands extends DrushCommands
         }
 
         if (!drush_file_not_empty($settingsfile)) {
-            if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !drush_get_context('DRUSH_SIMULATE')) {
+            if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !\Drush\Drush::simulate()) {
                 throw new \Exception(dt('Failed to copy sites/default/default.settings.php to @settingsfile', array('@settingsfile' => $settingsfile)));
             }
         }
 
         // Write an empty sites.php if we using multi-site.
         if ($sitesfile_write) {
-            if (!drush_op('copy', 'sites/example.sites.php', $sitesfile) && !drush_get_context('DRUSH_SIMULATE')) {
+            if (!drush_op('copy', 'sites/example.sites.php', $sitesfile) && !\Drush\Drush::simulate()) {
                 throw new \Exception(dt('Failed to copy sites/example.sites.php to @sitesfile', array('@sitesfile' => $sitesfile)));
             }
         }
 
         // We need to be at least at DRUSH_BOOTSTRAP_DRUPAL_SITE to select the site uri to install to
         define('MAINTENANCE_MODE', 'install');
-        drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
+        $bootstrapManager = Drush::bootstrapManager();
+        $bootstrapManager->doBootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
 
         if (!$sql->dropOrCreate()) {
             throw new \Exception(dt('Failed to create database: @error', array('@error' => implode(drush_shell_exec_output()))));
         }
     }
+
+    /**
+     * Determine an appropriate site subdir name to use for the
+     * provided uri.
+     */
+    protected function getSitesSubdirFromUri($root, $uri)
+    {
+        $dir = strtolower($uri);
+        // Always accept simple uris (e.g. 'dev', 'stage', etc.)
+        if (preg_match('#^[a-z0-9_-]*$#', $dir)) {
+            return $dir;
+        }
+        // Strip off the protocol from the provided uri -- however,
+        // now we will require that the sites subdir already exist.
+        $dir = preg_replace('#[^/]*/*#', '', $dir);
+        if (file_exists(Path::join($root, $dir))) {
+            return $dir;
+        }
+        return false;
+    }
 }
+

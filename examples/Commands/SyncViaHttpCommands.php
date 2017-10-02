@@ -74,7 +74,7 @@ class SyncViaHttpCommands extends DrushCommands {
         drush_shell_exec("curl -s -L --connect-timeout 30 -o %s %s", $destination_tmp, $url);
       }
     }
-    if (!drush_get_context('DRUSH_SIMULATE')) {
+    if (!\Drush\Drush::simulate()) {
       if (!drush_file_not_empty($destination_tmp) && $file = @file_get_contents($url)) {
         @file_put_contents($destination_tmp, $file);
       }

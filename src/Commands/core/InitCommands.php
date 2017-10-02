@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Commands\core;
 
+use Drush\Drush;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
 use Drush\Log\LogLevel;
@@ -10,13 +11,12 @@ use Robo\Contract\BuilderAwareInterface;
 
 class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwareInterface
 {
-
     use LoadAllTasks;
 
     /**
      * Enrich the bash startup file with bash aliases and a smart command prompt.
      *
-     * @command core-init
+     * @command core:init
      *
      * @option $edit Open the new config file in an editor.
      * @option $add-path Always add Drush to the $PATH in the user's .bashrc
@@ -24,19 +24,17 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
      *   updating .bashrc with the Drush $PATH. Default is to update .bashrc
      *   only if Drush is not already in the $PATH.
      * @optionset_get_editor
-     * @aliases init
+     * @aliases init,core-init
      * @usage core-init --edit
      *   Enrich Bash and open drush config file in editor.
      * @usage core-init --edit --bg
      *   Return to shell prompt as soon as the editor window opens
      */
-    public function initializeDrush($options = [
-    'edit' => '',
-    'add-path' => '',
-    ])
+    public function initializeDrush($options = ['edit' => '', 'add-path' => ''])
     {
-        $home = drush_server_home();
+        $home = Drush::config()->get('env.home');
         $drush_config_dir = $home . "/.drush";
+        // @todo copy a config.yml.
         $drush_config_file = $drush_config_dir . "/drushrc.php";
         $drush_bashrc = $drush_config_dir . "/drush.bashrc";
         $drush_prompt = $drush_config_dir . "/drush.prompt.sh";
@@ -48,14 +46,12 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
         $collection = $this->collectionBuilder();
 
         // Create a ~/.drush directory if it does not yet exist
-        $collection->taskFilesystemStack()
-        ->mkdir($drush_config_dir);
+        $collection->taskFilesystemStack()->mkdir($drush_config_dir);
 
         // If there is no ~/.drush/drushrc.php, then copy the
         // example Drush configuration file here
         if (!is_file($drush_config_file)) {
-            $collection->taskWriteToFile($drush_config_file)
-            ->textFromFile($example_configuration);
+            $collection->taskWriteToFile($drush_config_file)->textFromFile($example_configuration);
         }
 
         // Decide whether we want to add our Bash commands to
@@ -63,8 +59,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
         // update it with includes of the various files we write,
         // as needed.  If it is, then we will add it to the collection.
         $bashrc = $this->findBashrc($home);
-        $taskUpdateBashrc = $this->taskWriteToFile($bashrc)
-        ->append();
+        $taskUpdateBashrc = $this->taskWriteToFile($bashrc)->append();
 
         // List of Drush bash configuration files, and
         // their source templates.
@@ -84,8 +79,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
             // If the destination file does not exist, then
             // copy the example file there.
             if (!is_file($destFile)) {
-                $collection->taskWriteToFile($destFile)
-                ->textFromFile($sourceFile);
+                $collection->taskWriteToFile($destFile)->textFromFile($sourceFile);
                 $description = $drushBashFileDescriptions[$destFile];
                 $collection->progressMessage('Copied {description} to {path}', ['description' => $description, 'path' => $destFile], LogLevel::OK);
                 $pattern = basename($destFile);

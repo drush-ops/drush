@@ -26,12 +26,12 @@ class StateCommands
     /**
      * Display a state value.
      *
-     * @command state-get
+     * @command state:get
      *
      * @param string $key The key name.
-     * @usage drush state-get system.cron_last
+     * @usage drush state:get system.cron_last
      *   Displays last cron run timestamp
-     * @aliases sget
+     * @aliases sget,state-get
      *
      * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
      */
@@ -44,7 +44,7 @@ class StateCommands
     /**
      * Set a state value.
      *
-     * @command state-set
+     * @command state:set
      *
      * @param string $key The state key, for example: system.cron_last.
      * @param mixed $value The value to assign to the state key. Use '-' to read from STDIN.
@@ -53,11 +53,11 @@ class StateCommands
      * @hidden-options value
      * @usage drush sset system.maintenance_mode 1 --input-format=integer
      *  Put site into Maintenance mode.
-     * @usage drush state-set system.cron_last 1406682882 --input-format=integer
+     * @usage drush state:set system.cron_last 1406682882 --input-format=integer
      *  Sets a timestamp for last cron run.
      * @usage php -r "print json_encode(array(\'drupal\', \'simpletest\'));"  | drush state-set --input-format=json foo.name -
      *   Set a key to a complex value (e.g. array)
-     * @aliases sset
+     * @aliases sset,state-set
      *
      * @return void
      */
@@ -68,7 +68,6 @@ class StateCommands
 
         if (!isset($value)) {
             throw new \Exception(dt('No state value specified.'));
-            return null;
         }
 
         // Special flag indicating that the value has been passed via STDIN.
@@ -88,12 +87,12 @@ class StateCommands
     /**
      * Delete a state entry.
      *
-     * @command state-delete
+     * @command state:delete
      *
      * @param string $key The state key, for example "system.cron_last".
-     * @usage drush state-del system.cron_last
+     * @usage drush state:del system.cron_last
      *   Delete state entry for system.cron_last.
-     * @aliases sdel
+     * @aliases sdel,state-delete
      *
      * @return void
      */

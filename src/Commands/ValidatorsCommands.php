@@ -1,9 +1,11 @@
 <?php
 namespace Drush\Commands;
 
+use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Utils\StringUtils;
+use Symfony\Component\Console\Input\Input;
 
 /*
  * Common validation providers. Use them by adding an annotation to your method.
@@ -31,20 +33,22 @@ class ValidatorsCommands
     }
 
     /**
-     * Validate that passed module names are enabled.
+     * Validate that passed module names are enabled. We use pre-init phase because interact() methods run early and they
+     * need to know that their module is enabled (e.g. image-flush).
+     *
      * @see \Drush\Commands\core\WatchdogCommands::show for an example.
      *
-     * @hook validate @validate-module-enabled
+     * @hook pre-init @validate-module-enabled
      * @param \Consolidation\AnnotatedCommand\CommandData $commandData
      * @return \Consolidation\AnnotatedCommand\CommandError|null
      */
-    public function validateModuleEnabled(CommandData $commandData)
+    public function validateModuleEnabled(Input $input, AnnotationData $annotationData)
     {
-        $names = StringUtils::csvToArray($commandData->annotationData()->get('validate-module-enabled'));
+        $names = StringUtils::csvToArray($annotationData->get('validate-module-enabled'));
         $loaded = \Drupal::moduleHandler()->getModuleList();
         if ($missing = array_diff($names, array_keys($loaded))) {
             $msg = dt('Missing module: !str', ['!str' => implode(', ', $missing)]);
-            return new CommandError($msg);
+            throw new \Exception($msg);
         }
     }
 
@@ -62,10 +66,15 @@ class ValidatorsCommands
         $missing = [];
         $arg_names = _convert_csv_to_array($commandData->annotationData()->get('validate-file-exists', null));
         foreach ($arg_names as $arg_name) {
-            $path = $commandData->input()->getArgument($arg_name);
+            if ($commandData->input()->hasArgument($arg_name)) {
+                $path = $commandData->input()->getArgument($arg_name);
+            } elseif ($commandData->input()->hasOption($arg_name)) {
+                $path = $commandData->input()->getOption($arg_name);
+            }
             if (!empty($path) && !file_exists($path)) {
                 $missing[] = $path;
             }
+            unset($path);
         }
 
         if ($missing) {
@@ -112,7 +121,11 @@ class ValidatorsCommands
     {
         $missing = [];
         $arg_or_option_name = $commandData->annotationData()->get('validate-permissions', null);
-        $permissions = _convert_csv_to_array($commandData->input()->getArgument($arg_or_option_name) ?: $commandData->input()->getOption($arg_or_option_name));
+        if ($commandData->input()->hasArgument($arg_or_option_name)) {
+            $permissions = StringUtils::csvToArray($commandData->input()->getArgument($arg_or_option_name));
+        } else {
+            $permissions = StringUtils::csvToArray($commandData->input()->getOption($arg_or_option_name));
+        }
         $all_permissions = array_keys(\Drupal::service('user.permissions')->getPermissions());
         $missing = array_diff($permissions, $all_permissions);
         if ($missing) {

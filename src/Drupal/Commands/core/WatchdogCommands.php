@@ -16,7 +16,7 @@ class WatchdogCommands extends DrushCommands
     /**
      * Show watchdog messages.
      *
-     * @command watchdog-show
+     * @command watchdog:show
      * @drupal-dependencies dblog
      * @param $substring A substring to look search in error messages.
      * @option count The number of messages to show. Defaults to 10.
@@ -25,15 +25,15 @@ class WatchdogCommands extends DrushCommands
      * @option extended Return extended information about each message.
      * @usage  drush watchdog-show
      *   Show a listing of most recent 10 messages.
-     * @usage drush watchdog-show "cron run succesful"
+     * @usage drush watchdog:show "cron run succesful"
      *   Show a listing of most recent 10 messages containing the string "cron run succesful".
-     * @usage drush watchdog-show --count=46
+     * @usage drush watchdog:show --count=46
      *   Show a listing of most recent 46 messages.
-     * @usage drush watchdog-show --severity=Notice
+     * @usage drush watchdog:show --severity=Notice
      *   Show a listing of most recent 10 messages with a severity of notice.
-     * @usage drush watchdog-show --type=php
+     * @usage drush watchdog:show --type=php
      *   Show a listing of most recent 10 messages of type php
-     * @aliases wd-show,ws
+     * @aliases wd-show,ws,watchdog-show
      * @validate-module-enabled dblog
      * @field-labels
      *   wid: ID
@@ -51,9 +51,9 @@ class WatchdogCommands extends DrushCommands
     {
         $where = $this->where($options['type'], $options['severity'], $substring);
         $query = Database::getConnection()->select('watchdog', 'w')
-        ->range(0, $options['count'])
-        ->fields('w')
-        ->orderBy('wid', 'DESC');
+            ->range(0, $options['count'])
+            ->fields('w')
+            ->orderBy('wid', 'DESC');
         if (!empty($where['where'])) {
             $query->where($where['where'], $where['args']);
         }
@@ -70,16 +70,16 @@ class WatchdogCommands extends DrushCommands
     }
 
     /**
-     * Show watchdog messages.
+     * Interactively filter the watchdog message listing.
      *
-     * @command watchdog-list
+     * @command watchdog:list
      * @drupal-dependencies dblog
      * @param $substring A substring to look search in error messages.
      * @option count The number of messages to show. Defaults to 10.
      * @option extended Return extended information about each message.
      * @usage  drush watchdog-list
      *   Prompt for message type or severity, then run watchdog-show.
-     * @aliases wd-list
+     * @aliases wd-list,watchdog-list
      * @validate-module-enabled dblog
      * @field-labels
      *   wid: ID
@@ -127,42 +127,42 @@ class WatchdogCommands extends DrushCommands
     /**
      * Delete watchdog log records.
      *
-     * @command watchdog-delete
+     * @command watchdog:delete
      * @param $substring Delete all log records with this text in the messages.
      * @option severity Delete messages of a given severity level.
      * @option type Delete messages of a given type.
      * @drupal-dependencies dblog
-     * @usage drush watchdog-delete all
+     * @usage drush watchdog:delete all
      *   Delete all messages.
-     * @usage drush watchdog-delete 64
+     * @usage drush watchdog:delete 64
      *   Delete messages with id 64.
-     * @usage drush watchdog-delete "cron run succesful"
+     * @usage drush watchdog:delete "cron run succesful"
      *   Delete messages containing the string "cron run succesful".
-     * @usage drush watchdog-delete --severity=notice
+     * @usage drush watchdog:delete --severity=notice
      *   Delete all messages with a severity of notice.
-     * @usage drush watchdog-delete --type=cron
+     * @usage drush watchdog:delete --type=cron
      *   Delete all messages of type cron.
-     * @aliases wd-del,wd-delete,wd
+     * @aliases wd-del,wd-delete,wd,watchdog-delete
      * @validate-module-enabled dblog
      * @return void
      */
     public function delete($substring = '', $options = ['severity' => null, 'type' => null])
     {
         if ($substring == 'all') {
-            drush_print(dt('All watchdog messages will be deleted.'));
+            $this->output()->writeln(dt('All watchdog messages will be deleted.'));
             if (!$this->io()->confirm(dt('Do you really want to continue?'))) {
                 throw new UserAbortException();
             }
             $ret = Database::getConnection()->truncate('watchdog')->execute();
             $this->logger()->success(dt('All watchdog messages have been deleted.'));
         } else if (is_numeric($substring)) {
-            drush_print(dt('Watchdog message #!wid will be deleted.', array('!wid' => $substring)));
+            $this->output()->writeln(dt('Watchdog message #!wid will be deleted.', array('!wid' => $substring)));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
             $affected_rows = Database::getConnection()->delete('watchdog')->condition('wid', $substring)->execute();
             if ($affected_rows == 1) {
-                $this->logger->success(dt('Watchdog message #!wid has been deleted.', array('!wid' => $substring)));
+                $this->logger()->success(dt('Watchdog message #!wid has been deleted.', array('!wid' => $substring)));
             } else {
                 throw new \Exception(dt('Watchdog message #!wid does not exist.', array('!wid' => $substring)));
             }
@@ -171,13 +171,13 @@ class WatchdogCommands extends DrushCommands
                 throw new \Exception(dt('No options provided.'));
             }
             $where = $this->where($options['type'], $options['severity'], $substring, 'OR');
-            drush_print(dt('All messages with !where will be deleted.', array('!where' => preg_replace("/message LIKE %$substring%/", "message body containing '$substring'", strtr($where['where'], $where['args'])))));
+            $this->output()->writeln(dt('All messages with !where will be deleted.', array('!where' => preg_replace("/message LIKE %$substring%/", "message body containing '$substring'", strtr($where['where'], $where['args'])))));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
             $affected_rows = Database::getConnection()->delete('watchdog')
-            ->where($where['where'], $where['args'])
-            ->execute();
+                ->where($where['where'], $where['args'])
+                ->execute();
             $this->logger()->success(dt('!affected_rows watchdog messages have been deleted.', array('!affected_rows' => $affected_rows)));
         }
     }
@@ -185,10 +185,10 @@ class WatchdogCommands extends DrushCommands
     /**
      * Show one log record by ID.
      *
-     * @command watchdog-show-one
+     * @command watchdog:show:one
      * @param $id Watchdog Id
      * @drupal-dependencies dblog
-     * @aliases wd-one
+     * @aliases wd-one,watchdog-show-one
      * @validate-module-enabled dblog
      *
      * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
@@ -196,10 +196,10 @@ class WatchdogCommands extends DrushCommands
     public function showOne($id, $options = ['format' => 'yaml'])
     {
         $rsc = Database::getConnection()->select('watchdog', 'w')
-        ->fields('w')
-        ->condition('wid', (int)$id)
-        ->range(0, 1)
-        ->execute();
+            ->fields('w')
+            ->condition('wid', (int)$id)
+            ->range(0, 1)
+            ->execute();
         $result = $rsc->fetchObject();
         if (!$result) {
             throw new \Exception(dt('Watchdog message #!wid not found.', array('!wid' => $id)));

@@ -14,11 +14,13 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
 {
     protected $database;
     protected $entityManager;
+    protected $entityTypeManager;
 
-    public function __construct($database, $entityManager)
+    public function __construct($database, $entityManager, $entityTypeManager)
     {
         $this->database = $database;
         $this->entityManager = $entityManager;
+        $this->entityTypeManager = $entityTypeManager;
     }
 
     /**
@@ -108,6 +110,7 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
             }
             if ($execute) {
                 $query->execute();
+                $this->entityTypeManager->getStorage('user')->resetCache();
                 $this->logger()->success(dt('!table table sanitized.', ['!table' => $table]));
             } else {
                 $this->logger()->success(dt('No text fields for users need sanitizing.', ['!table' => $table]));

@@ -5,21 +5,27 @@ namespace Drush\Commands\core;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drupal\Core\StreamWrapper\PrivateStream;
 use Drupal\Core\StreamWrapper\PublicStream;
+use Drush\Boot\BootstrapManager;
+use Drush\Boot\DrupalBoot;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Sql\SqlBase;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\AnnotatedCommand\CommandData;
 
-class StatusCommands extends DrushCommands
+class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+    use SiteAliasManagerAwareTrait;
 
     /**
-     * @command core-status
+     * An overview of the environment - Drush and Drupal.
+     *
+     * @command core:status
      * @param $filter A field to filter on. @deprecated - use --field option instead.
-     * @option project A comma delimited list of projects. their paths will be added to path-aliases section.
-     * @aliases status, st
-     *n
+     * @option project A comma delimited list of projects. Their paths will be added to path-aliases section.
+     * @aliases status,st,core-status
      * @table-style compact
      * @list-delimiter :
      * @field-labels
@@ -61,13 +67,13 @@ class StatusCommands extends DrushCommands
      * @pipe-format json
      * @hidden-options project
      * @bootstrap max
-     * @topics docs-readme
+     * @topics docs:readme
      *
      * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
      */
-    public function status($filter = '', $options = ['project' => '', 'format' => 'table', 'fields' => '', 'include-field-labels' => true])
+    public function status($filter = '', $options = ['project' => '', 'format' => 'table'])
     {
-        $data = self::getPropertyList($options);
+        $data = $this->getPropertyList($options);
 
         $result = new PropertyList($data);
         $result->addRendererFunction([$this, 'renderStatusCell']);
@@ -75,17 +81,18 @@ class StatusCommands extends DrushCommands
         return $result;
     }
 
-    public static function getPropertyList($options)
+    public function getPropertyList($options)
     {
-        $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
-        if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
+        $boot_manager = Drush::bootstrapManager();
+        $boot_object = Drush::bootstrap();
+        if (($drupal_root = $boot_manager->getRoot()) && ($boot_object instanceof DrupalBoot)) {
             $status_table['drupal-version'] = drush_drupal_version();
-            $boot_object = Drush::bootstrap();
             $conf_dir = $boot_object->confPath();
             $settings_file = "$conf_dir/settings.php";
             $status_table['drupal-settings-file'] = file_exists($settings_file) ? $settings_file : '';
-            if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
-                $status_table['uri'] = drush_get_context('DRUSH_URI');
+            if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_SITE)) {
+                // @todo for some reason getUri() is returning null.
+                $status_table['uri'] = $boot_manager->getUri();
                 try {
                     $sql = SqlBase::create($options);
                     $db_spec = $sql->getDbSpec();
@@ -99,11 +106,11 @@ class StatusCommands extends DrushCommands
                     $status_table['db-password'] = isset($db_spec['password']) ? $db_spec['password'] : null;
                     $status_table['db-name'] = isset($db_spec['database']) ? $db_spec['database'] : null;
                     $status_table['db-port'] = isset($db_spec['port']) ? $db_spec['port'] : null;
-                    if ($phase > DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION) {
+                    if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
                         $status_table['install-profile'] = $boot_object->getProfile();
-                        if ($phase > DRUSH_BOOTSTRAP_DRUPAL_DATABASE) {
+                        if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
                             $status_table['db-status'] = dt('Connected');
-                            if ($phase >= DRUSH_BOOTSTRAP_DRUPAL_FULL) {
+                            if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
                                 $status_table['bootstrap'] = dt('Successful');
                             }
                         }
@@ -112,7 +119,7 @@ class StatusCommands extends DrushCommands
                     // Don't worry be happy.
                 }
             }
-            if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+            if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
                 $status_table['theme'] = \Drupal::config('system.theme')->get('default');
                 $status_table['admin-theme'] = $theme = \Drupal::config('system.theme')->get('admin') ?: 'seven';
             }
@@ -125,11 +132,13 @@ class StatusCommands extends DrushCommands
         $status_table['drush-script'] = DRUSH_COMMAND;
         $status_table['drush-version'] = Drush::getVersion();
         $status_table['drush-temp'] = drush_find_tmp();
-        $status_table['drush-conf'] = drush_flatten_array(drush_get_context_options('context-path', ''));
-        $alias_files = _drush_sitealias_find_alias_files();
+        $status_table['drush-conf'] = Drush::config()->get('runtime.config.paths');
+        // List available alias files
+        $alias_files = $this->siteAliasManager()->listAllFilePaths();
+        sort($alias_files);
         $status_table['drush-alias-files'] = $alias_files;
 
-        $paths = self::pathAliases($options);
+        $paths = self::pathAliases($options, $boot_manager, $boot_object);
         if (!empty($paths)) {
             foreach ($paths as $target => $one_path) {
                 $name = $target;
@@ -168,38 +177,42 @@ class StatusCommands extends DrushCommands
         }
     }
 
-    public static function pathAliases($options)
+    /**
+     * @param array $options
+     * @param BootstrapManager $boot_manager
+     * @return array
+     */
+    public static function pathAliases(array $options, BootstrapManager $boot_manager, $boot)
     {
         $paths = array();
         $site_wide = 'sites/all';
-        $boot = Drush::bootstrap();
-        if ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT')) {
+        if ($drupal_root = $boot_manager->getRoot()) {
             $paths['%root'] = $drupal_root;
-            if ($site_root = drush_get_context('DRUSH_DRUPAL_SITE_ROOT')) {
+            if (($boot instanceof DrupalBoot) && ($site_root = $boot->confPath())) {
                 $paths['%site'] = $site_root;
-                if (is_dir($modules_path = $boot->confPath() . '/modules')) {
+                if (is_dir($modules_path = $site_root . '/modules')) {
                     $paths['%modules'] = $modules_path;
                 } else {
                     $paths['%modules'] = ltrim($site_wide . '/modules', '/');
                 }
-                if (is_dir($themes_path = $boot->confPath() . '/themes')) {
+                if (is_dir($themes_path = $site_root . '/themes')) {
                     $paths['%themes'] = $themes_path;
                 } else {
                     $paths['%themes'] = ltrim($site_wide . '/themes', '/');
                 }
-                if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
+                if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
                     try {
                         if (isset($GLOBALS['config_directories'])) {
                             foreach ($GLOBALS['config_directories'] as $label => $unused) {
                                 $paths["%config-$label"] = config_get_config_directory($label);
                             }
                         }
-                    } catch (Exception $e) {
+                    } catch (\Exception $e) {
                         // Nothing to do.
                     }
                 }
 
-                if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+                if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
                     $paths['%files'] = PublicStream::basePath();
                     $paths['%temp'] = file_directory_temp();
                     if ($private_path = PrivateStream::basePath()) {

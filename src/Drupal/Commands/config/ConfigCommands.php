@@ -7,6 +7,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Config\StorageInterface;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Yaml\Parser;
@@ -41,18 +42,18 @@ class ConfigCommands extends DrushCommands
     /**
      * Display a config value, or a whole configuration object.
      *
-     * @command config-get
+     * @command config:get
      * @validate-config-name
      * @interact-config-name
      * @param $config_name The config object name, for example "system.site".
      * @param $key The config key, for example "page.front". Optional.
      * @option source The config storage source to read. Additional labels may be defined in settings.php.
      * @option include-overridden Apply module and settings.php overrides to values.
-     * @usage drush config-get system.site
+     * @usage drush config:get system.site
      *   Displays the system.site config.
-     * @usage drush config-get system.site page.front
+     * @usage drush config:get system.site page.front
      *   Gets system.site:page.front value.
-     * @aliases cget
+     * @aliases cget,config-get
      */
     public function get($config_name, $key = '', $options = ['format' => 'yaml', 'source' => 'active', 'include-overridden' => false])
     {
@@ -67,7 +68,7 @@ class ConfigCommands extends DrushCommands
     /**
      * Set config value directly. Does not perform a config import.
      *
-     * @command config-set
+     * @command config:set
      * @validate-config-name
      * @todo @interact-config-name deferred until we have interaction for key.
      * @param $config_name The config object name, for example "system.site".
@@ -77,9 +78,9 @@ class ConfigCommands extends DrushCommands
      * // A convenient way to pass a multiline value within a backend request.
      * @option value The value to assign to the config key (if any).
      * @hidden-options value
-     * @usage drush config-set system.site page.front node
+     * @usage drush config:set system.site page.front node
      *   Sets system.site:page.front to "node".
-     * @aliases cset
+     * @aliases cset,config-set
      */
     public function set($config_name, $key, $value = null, $options = ['format' => 'string', 'value' => null])
     {
@@ -120,7 +121,7 @@ class ConfigCommands extends DrushCommands
             } elseif ($this->io()->confirm(dt('Do you want to update !key key in !name config?', array('!key' => $key, '!name' => $config_name)))) {
                 $confirmed = true;
             }
-            if ($confirmed && !drush_get_context('DRUSH_SIMULATE')) {
+            if ($confirmed && !\Drush\Drush::simulate()) {
                 return $config->set($key, $data)->save();
             }
         }
@@ -129,25 +130,23 @@ class ConfigCommands extends DrushCommands
     /**
      * Open a config file in a text editor. Edits are imported after closing editor.
      *
-     * @command config-edit
+     * @command config:edit
      * @validate-config-name
      * @interact-config-name
      * @param $config_name The config object name, for example "system.site".
      * @optionset_get_editor
      * @allow_additional_options config-import
      * @hidden-options source,partial
-     * @usage drush config-edit image.style.large
+     * @usage drush config:edit image.style.large
      *   Edit the image style configurations.
-     * @usage drush config-edit
+     * @usage drush config:edit
      *   Choose a config file to edit.
-     * @usage drush config-edit --choice=2
-     *   Edit the second file in the choice list.
      * @usage drush --bg config-edit image.style.large
      *   Return to shell prompt as soon as the editor window opens.
-     * @aliases cedit
+     * @aliases cedit,config-edit
      * @validate-module-enabled config
      */
-    public function edit($config_name, $options = [])
+    public function edit($config_name)
     {
         $config = $this->getConfigFactory()->get($config_name);
         $active_storage = $config->getStorage();
@@ -163,7 +162,7 @@ class ConfigCommands extends DrushCommands
 
         // Perform import operation if user did not immediately exit editor.
         if (!$options['bg']) {
-            $options = drush_redispatch_get_options() + array('partial' => true, 'source' => $temp_dir);
+            $options = Drush::redispatchOptions()   + array('partial' => true, 'source' => $temp_dir);
             $backend_options = array('interactive' => true);
             return (bool) drush_invoke_process('@self', 'config-import', array(), $options, $backend_options);
         }
@@ -172,16 +171,16 @@ class ConfigCommands extends DrushCommands
     /**
      * Delete a configuration key, or a whole object.
      *
-     * @command config-delete
+     * @command config:delete
      * @validate-config-name
      * @interact-config-name
      * @param $config_name The config object name, for example "system.site".
      * @param $key A config key to clear, for example "page.front".
-     * @usage drush config-delete system.site
+     * @usage drush config:delete system.site
      *   Delete the the system.site config object.
-     * @usage drush config-delete system.site page.front node
+     * @usage drush config:delete system.site page.front node
      *   Delete the 'page.front' key from the system.site object.
-     * @aliases cdel
+     * @aliases cdel,config-delete
      */
     public function delete($config_name, $key = null)
     {

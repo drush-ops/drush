@@ -11,6 +11,7 @@ use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
+use Drush\Utils\StringUtils;
 
 class PmCommands extends DrushCommands
 {
@@ -56,21 +57,20 @@ class PmCommands extends DrushCommands
     /**
      * Enable one or more modules.
      *
-     * @command pm-enable
+     * @command pm:enable
      * @param $modules A comma delimited list of modules.
-     * @aliases en
-     * @complete \Drush\Commands\CompletionCommands::completeModules
+     * @aliases en,pm-enable
      */
     public function enable(array $modules)
     {
-        $modules = _convert_csv_to_array($modules);
+        $modules = StringUtils::csvToArray($modules);
         $todo = $this->addInstallDependencies($modules);
         $todo_str = ['!list' => implode(', ', $todo)];
         if (empty($todo)) {
             $this->logger()->notice(dt('Already enabled: !list', ['!list' => implode(', ', $modules)]));
             return;
         } elseif (array_values($todo) !== $modules) {
-            drush_print(dt('The following module(s) will be enabled: !list', $todo_str));
+            $this->output()->writeln(dt('The following module(s) will be enabled: !list', $todo_str));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
@@ -88,17 +88,16 @@ class PmCommands extends DrushCommands
     /**
      * Uninstall one or more modules and their dependent modules.
      *
-     * @command pm-uninstall
+     * @command pm:uninstall
      * @param $modules A comma delimited list of modules.
-     * @aliases pmu
-     * @complete \Drush\Commands\CompletionCommands::completeModules
+     * @aliases pmu,pm-uninstall
      */
     public function uninstall(array $modules)
     {
-        $modules = _convert_csv_to_array($modules);
+        $modules = StringUtils::csvToArray($modules);
         $list = $this->addUninstallDependencies($modules);
         if (array_values($list) !== $modules) {
-            drush_print(dt('The following extensions will be uninstalled: !list', array('!list' => implode(', ', $list))));
+            $this->output()->writeln(dt('The following extensions will be uninstalled: !list', array('!list' => implode(', ', $list))));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
@@ -118,7 +117,7 @@ class PmCommands extends DrushCommands
     public function validateUninstall(CommandData $commandData)
     {
         if ($modules = $commandData->input()->getArgument('modules')) {
-            $modules = _convert_csv_to_array($modules);
+            $modules = StringUtils::csvToArray($modules);
             if ($validation_reasons = $this->getModuleInstaller()->validateUninstall($modules)) {
                 foreach ($validation_reasons as $module => $list) {
                     foreach ($list as $markup) {
@@ -133,7 +132,7 @@ class PmCommands extends DrushCommands
     /**
      * Show a list of available extensions (modules and themes).
      *
-     * @command pm-list
+     * @command pm:list
      * @option type Only show extensions having a given type. Choices: module, theme.
      * @option status Only show extensions having a given status. Choices: enabled or disabled.
      * @option core Only show extensions that are in Drupal core.
@@ -148,7 +147,7 @@ class PmCommands extends DrushCommands
      *   status: Status
      *   version: Version
      * @default-fields package,display_name,status,version
-     * @aliases pml
+     * @aliases pml,pm-list
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => null, 'core' => false, 'no-core' => false])
@@ -158,11 +157,14 @@ class PmCommands extends DrushCommands
         $themes = $this->getThemeHandler()->rebuildThemeData();
         $both = array_merge($modules, $themes);
 
-        $package_filter = _convert_csv_to_array(strtolower($options['package']));
-        $type_filter = _convert_csv_to_array(strtolower($options['type']));
-        $status_filter = _convert_csv_to_array(strtolower($options['status']));
+        $package_filter = StringUtils::csvToArray(strtolower($options['package']));
+        $type_filter = StringUtils::csvToArray(strtolower($options['type']));
+        $status_filter = StringUtils::csvToArray(strtolower($options['status']));
 
         foreach ($both as $key => $extension) {
+            // Fill in placeholder values as needed.
+            $extension->info += ['package' => ''];
+
             // Filter out test modules/themes.
             if (strpos($extension->getPath(), 'tests')) {
                 continue;
@@ -203,14 +205,14 @@ class PmCommands extends DrushCommands
             }
 
             $row = [
-            'package' => $extension->info['package'],
-            'display_name' => $extension->info['name']. ' ('. $extension->getName(). ')',
-            'name' => $extension->getName(),
-            'type' => $extension->getType(),
-            'path' => $extension->getPath(),
-            'status' => ucfirst($status),
-            // Suppress notice when version is not present.
-            'version' => @$extension->info['version'],
+                'package' => $extension->info['package'],
+                'display_name' => $extension->info['name']. ' ('. $extension->getName(). ')',
+                'name' => $extension->getName(),
+                'type' => $extension->getType(),
+                'path' => $extension->getPath(),
+                'status' => ucfirst($status),
+                // Suppress notice when version is not present.
+                'version' => @$extension->info['version'],
             ];
             $rows[$key] = $row;
         }

@@ -25,10 +25,10 @@ command line options just for Drush to work.
 If you wish to be able to select your Drupal site implicitly from the
 current working directory without using the --uri option, but you need your
 base_url to be set correctly, you may force it by setting the uri in
-a drushrc.php file located in the same directory as your settings.php file.
+a config.yml file located in the same directory as your settings.php file.
 
 ```
-$options['uri'] = "http://example.com";
+uri: "http://example.com"
 ```
 
 Site Aliases
@@ -46,5 +46,5 @@ $ drush rsync @staging:%files/ @live:%files
 $ drush sql-sync --structure-tables-key=custom @live @dev
 ```
 
-See [example.aliases.drushrc.php](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.aliases.drushrc.php) for more information.
+See [example.aliases.config.yml](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.aliases.config.yml) for more information.
 

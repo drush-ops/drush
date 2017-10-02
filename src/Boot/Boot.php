@@ -12,6 +12,19 @@ namespace Drush\Boot;
 interface Boot
 {
     /**
+     * Select the best URI for the provided cwd. Only called
+     * if the user did not explicitly specify a URI.
+     */
+    public function findUri($root, $uri);
+
+    /**
+     * Inject the uri for the specific site to be bootstrapped
+     *
+     * @param $uri Site to bootstrap
+     */
+    public function setUri($uri);
+
+    /**
      * This function determines if the specified path points to
      * the root directory of a CMS that can be bootstrapped by
      * the specific subclass that implements it.
@@ -25,7 +38,6 @@ interface Boot
      */
     public function validRoot($path);
 
-
     /**
      * Given a site root directory, determine the exact version of the software.
      *
@@ -35,16 +47,6 @@ interface Boot
      *   The version string for the current version of the software, e.g. 8.1.3
      */
     public function getVersion($root);
-
-    /**
-     * Main entrypoint to bootstrap the selected CMS and
-     * execute the selected command.
-     *
-     * The implementation provided in BaseBoot should be
-     * sufficient; this method usually will not need to
-     * be overridden.
-     */
-    public function bootstrapAndDispatch();
 
     /**
      * Returns an array that determines what bootstrap phases
@@ -89,19 +91,6 @@ interface Boot
      * etc.)
      */
     public function commandDefaults();
-
-    /**
-     * Called by Drush when a command is selected, but
-     * before it runs.  This gives the Boot class an
-     * opportunity to determine if any minimum
-     * requirements (e.g. minimum Drupal version) declared
-     * in the command have been met.
-     *
-     * @return TRUE if command is valid. $command['bootstrap_errors']
-     * should be populated with an array of error messages if
-     * the command is not valid.
-     */
-    public function enforceRequirement(&$command);
 
     /**
      * Called by Drush if a command is not found, or if the

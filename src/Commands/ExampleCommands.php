@@ -18,7 +18,7 @@ class ExampleCommands extends DrushCommands
     /**
      * Demonstrate output formatters.  Default format is 'table'.
      *
-     * @command example-table
+     * @command example:table
      * @field-labels
      *   first: I
      *   second: II

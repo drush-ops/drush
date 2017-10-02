@@ -1,26 +1,29 @@
 <?php
 namespace Drush\Commands\core;
 
+use Robo\Contract\ConfigAwareInterface;
+use Robo\Common\ConfigAwareTrait;
 use Drush\Commands\DrushCommands;
 
-class PhpCommands extends DrushCommands
+class PhpCommands extends DrushCommands implements ConfigAwareInterface
 {
+    use ConfigAwareTrait;
 
     /**
      * Evaluate arbitrary php code after bootstrapping Drupal (if available).
      *
-     * @command php-eval
+     * @command php:eval
      * @param $code PHP code
-     * @usage drush php-eval 'variable_set("hello", "world");'
+     * @usage drush php:eval 'variable_set("hello", "world");'
      *   Sets the hello variable using Drupal API.'
-     * @usage drush php-eval '$node = node_load(1); print $node->title;'
+     * @usage drush php:eval '$node = node_load(1); print $node->title;'
      *   Loads node with nid 1 and then prints its title.
-     * @usage drush php-eval "file_unmanaged_copy(\'$HOME/Pictures/image.jpg\', \'public://image.jpg\');"
+     * @usage drush php:eval "file_unmanaged_copy(\'$HOME/Pictures/image.jpg\', \'public://image.jpg\');"
      *   Copies a file whose path is determined by an environment\'s variable. Note the use of double quotes so the variable $HOME gets replaced by its value.
-     * @usage drush php-eval "node_access_rebuild();"
+     * @usage drush php:eval "node_access_rebuild();"
      *   Rebuild node access permissions.
-     * @aliases eval,ev
-     * @bootstrap DRUSH_BOOTSTRAP_MAX
+     * @aliases eval,ev,php-eval
+     * @bootstrap max
      */
     public function evaluate($code, $options = ['format' => 'var_export'])
     {
@@ -34,29 +37,24 @@ class PhpCommands extends DrushCommands
      * can't be bothered to figure out bash quoting. If you plan to share a
      * script with others, consider making a full Drush command instead, since
      * that's more self-documenting.  Drush provides commandline options to the
-     * script via drush_get_option('option-name'), and commandline arguments can
-     * be accessed either via drush_get_arguments(), which returns all arguments
-     * in an array, or drush_shift(), which removes the next argument from the
-     * list and returns it.
+     * script via a variable called $extra.
      *
-     * @command php-script
-     * @param $script The file you wish to execute (without extension). If omitted, list files ending in .php in the current working directory and specified script-path. Note that some might not be drush scripts.
+     * @command php:script
      * @option script-path Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).
-     * @usage drush php-script example --script-path=/path/to/scripts:/another/path
+     * @usage drush php:script example --script-path=/path/to/scripts:/another/path
      *   Run a script named example.php from specified paths
-     * @usage drush php-script
+     * @usage drush php:script
      *   List all available scripts.
-     * @usage #!/usr/bin/env drush\n<?php\nvariable_set('key', drush_shift());
-     *  Execute php code with a full Drupal bootstrap directly from a shell script.
-     * @aliases scr
-     * @allow-additional-options
-     * @bootstrap DRUSH_BOOTSTRAP_MAX
-     * @complete \Drush\Commands\core\PhpCommands::complete
-     * @topics docs-examplescript,docs-scripts
+     * @usage drush php:script foo -- apple --cider
+     *  Run foo.php script with argument 'apple' and option 'cider'. Note the -- separator.
+     * @aliases scr,php-script
+     * @bootstrap max
+     * @topics docs:examplescript,docs:scripts
      */
-    public function script($script = '', $options = ['format' => 'var_export', 'script-path' => false])
+    public function script(array $extra, $options = ['format' => 'var_export', 'script-path' => ''])
     {
         $found = false;
+        $script = array_shift($extra);
 
         if ($script == '-') {
             return eval(stream_get_contents(STDIN));
@@ -64,7 +62,7 @@ class PhpCommands extends DrushCommands
             $found = $script;
         } else {
             // Array of paths to search for scripts
-            $searchpath['cwd'] = drush_cwd();
+            $searchpath['cwd'] = $this->getConfig()->get('env.cwd');
 
             // Additional script paths, specified by 'script-path' option
             if ($script_path = $options['script-path']) {
@@ -102,76 +100,12 @@ class PhpCommands extends DrushCommands
         }
 
         if ($found) {
-            // Set the DRUSH_SHIFT_SKIP to two; this will cause
-            // drush_shift to skip the next two arguments the next
-            // time it is called.  This allows scripts to get all
-            // arguments, including the 'php-script' and script
-            // pathname, via drush_get_arguments(), or it can process
-            // just the arguments that are relevant using drush_shift().
-            drush_set_context('DRUSH_SHIFT_SKIP', 2);
-            if ($this->evalShebangScript($found) === false) {
-                $return = include($found);
-                // 1 just means success so don't return it.
-                // http://us3.php.net/manual/en/function.include.php#example-120
-                if ($return !== 1) {
-                    return $return;
-                }
+            $return = include($found);
+            // 1 just means success so don't return it.
+            // http://us3.php.net/manual/en/function.include.php#example-120
+            if ($return !== 1) {
+                return $return;
             }
         }
-    }
-
-    /**
-     * Evaluate a script that begins with #!drush php-script
-     */
-    public function evalShebangScript($script_filename)
-    {
-        $found = false;
-        $fp = fopen($script_filename, "r");
-        if ($fp !== false) {
-            $line = fgets($fp);
-            if (_drush_is_drush_shebang_line($line)) {
-                $first_script_line = '';
-                while ($line = fgets($fp)) {
-                    $line = trim($line);
-                    if ($line == '<?php') {
-                        $found = true;
-                        break;
-                    } elseif (!empty($line)) {
-                        $first_script_line = $line . "\n";
-                        break;
-                    }
-                }
-                $script = stream_get_contents($fp);
-                // Pop off the first two arguments, the
-                // command (php-script) and the path to
-                // the script to execute, as a service
-                // to the script.
-                eval($first_script_line . $script);
-                $found = true;
-            }
-            fclose($fp);
-        }
-        return $found;
-    }
-
-    /**
-     * Command argument complete callback.
-     *
-     * @return array
-     *   Strong glob of files to complete on.
-     */
-    public static function complete()
-    {
-        return array(
-        'files' => array(
-        'directories' => array(
-          'pattern' => '*',
-          'flags' => GLOB_ONLYDIR,
-        ),
-        'script' => array(
-          'pattern' => '*.php',
-        ),
-        ),
-        );
     }
 }

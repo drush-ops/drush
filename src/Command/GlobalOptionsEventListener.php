@@ -6,6 +6,8 @@ use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+use Drush\Preflight\LegacyPreflight;
+
 class GlobalOptionsEventListener implements EventSubscriberInterface
 {
     /**
@@ -29,8 +31,12 @@ class GlobalOptionsEventListener implements EventSubscriberInterface
     {
         /* @var Input $input */
         $input = $event->getInput();
+        $output = $event->getOutput();
 
         // TODO: We need a good strategy for managing global options.
         // $simulate = $input->getOption('simulate');
+
+        // Set up legacy contexts (deprecated)
+        LegacyPreflight::setGlobalOptionContexts($input, $output);
     }
 }

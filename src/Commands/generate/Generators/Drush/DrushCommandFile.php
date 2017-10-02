@@ -59,14 +59,17 @@ class DrushCommandFile extends BaseGenerator
                 unset($oNames);
             }
             if ($command['arguments']) {
-                foreach ($command['arguments'] as $aName => $desciption) {
-                    // Prepend name with a '$'.
-                    $command['arguments']['$' . $aName] = $desciption;
+                foreach ($command['arguments'] as $aName => $description) {
+                    // Prepend name with a '$' and replace dashes.
+                    $command['arguments']['$' . Utils::camelize(str_replace('-', '_', $aName))] = $description;
                     unset($command['arguments'][$aName]);
                 }
                 if ($concat = implode(', ', array_keys($command['arguments']))) {
                     $command['argumentsConcat'] = $concat . ', ';
                 }
+            }
+            if ($deps = $command['drupal dependencies']) {
+                $command['depsConcat'] = implode(',', $deps);
             }
         }
         return $commands;

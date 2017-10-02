@@ -158,6 +158,6 @@ class FileCache implements CacheInterface
      */
     protected function getFilePath($cid)
     {
-        return $this->directory . '/' . str_replace(array(':'), '.', $cid) . self::EXTENSION;
+        return $this->directory . '/' . str_replace(array(':', '\\', '/'), '.', $cid) . self::EXTENSION;
     }
 }

@@ -9,7 +9,7 @@ use Drush\Log\LogLevel;
  * Commands that only preflight, but do not bootstrap, should use
  * a bootstrap level of DRUSH_BOOTSTRAP_NONE.
  */
-define('DRUSH_BOOTSTRAP_NONE', -1);
+define('DRUSH_BOOTSTRAP_NONE', 0);
 
 /**
  * Use drush_bootstrap_max instead of drush_bootstrap_to_phase
@@ -87,30 +87,6 @@ define('DRUSH_BOOTSTRAP_DRUPAL_DATABASE', 4);
 define('DRUSH_BOOTSTRAP_DRUPAL_FULL', 5);
 
 
-
-/**
- * Find the URI that has been selected by the cwd
- * if it was not previously set via the --uri / -l option
- */
-function _drush_bootstrap_selected_uri() {
-  $uri = drush_get_context('DRUSH_SELECTED_URI');
-  if (empty($uri)) {
-    $site_path = drush_site_path();
-    if ($site_path) {
-      $site_path = _drush_convert_path($site_path);
-    }
-    $elements = explode('/', $site_path);
-    $current = array_pop($elements);
-    if (!$current) {
-      $current = 'default';
-    }
-    $uri = 'http://'. $current;
-    $uri = drush_set_context('DRUSH_SELECTED_URI', $uri);
-    drush_sitealias_create_self_alias();
-  }
-
-  return $uri;
-}
 
 /**
  * Helper function to store any context settings that are being validated.
@@ -249,7 +225,7 @@ function drush_bootstrap_max($max_phase_index = FALSE) {
  */
 function drush_bootstrap_max_to_sitealias($site_record, $max_phase_index = NULL) {
   if ((array_key_exists('root', $site_record) && !array_key_exists('remote-host', $site_record))) {
-    drush_sitealias_set_alias_context($site_record);
+    // drush_sitealias_set_alias_context($site_record);
     drush_bootstrap_max($max_phase_index);
     return TRUE;
   }
@@ -298,31 +274,5 @@ function _drush_bootstrap_output_prepare() {
   // completion.
   if ($quiet && !$backend) {
     ob_start();
-  }
-}
-
-/**
- * Used by a Drush extension to request that its Composer autoload
- * files be loaded by Drush, if they have not already been.
- *
- * Usage:
- *
- * function mycommandfile_drush_init() {
- *   drush_autoload(__FILE__)
- * }
- *
- */
-function drush_autoload($commandfile) {
-  $already_added = commandfiles_cache()->add($commandfile);
-
-  $dir = dirname($commandfile);
-  $candidates = array("vendor/autoload.php", "../../../vendor/autoload.php");
-  $drush_autoload_file = drush_get_context('DRUSH_VENDOR_PATH', '');
-
-  foreach ($candidates as $candidate) {
-    $autoload = $dir . '/' . $candidate;
-    if (file_exists($autoload) && (realpath($autoload) != $drush_autoload_file)) {
-      include $autoload;
-    }
   }
 }

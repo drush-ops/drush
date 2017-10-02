@@ -2,6 +2,8 @@
 
 namespace Drush\Drupal\Commands\core;
 
+use Robo\Contract\ConfigAwareInterface;
+use Robo\Common\ConfigAwareTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Log\LogLevel;
@@ -9,16 +11,18 @@ use Drush\Psysh\DrushCommand;
 use Drush\Psysh\DrushHelpCommand;
 use Drupal\Component\Assertion\Handle;
 use Drush\Psysh\Shell;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Psy\Configuration;
 use Psy\VersionUpdater\Checker;
 
 class CliCommands extends DrushCommands
 {
-
     /**
      * Drush's PHP Shell.
      *
-     * @command docs-repl
+     * @command docs:repl
+     * @aliases docs-repl
      * @hidden
      * @topic
      */
@@ -28,17 +32,16 @@ class CliCommands extends DrushCommands
     }
 
     /**
-     * @command core-cli
+     * @command core:cli
      * @description Open an interactive shell on a Drupal site.
-     * @aliases php
+     * @aliases php,core-cli
      * @option $version-history Use command history based on Drupal version
      *   (Default is per site).
-     * @topics docs-repl
+     * @topics docs:repl
      * @remote-tty
      */
     public function cli(array $options = ['version-history' => false])
     {
-        $drupal_major_version = drush_drupal_major_version();
         $configuration = new Configuration();
 
         // Set the Drush specific history file path.
@@ -49,15 +52,14 @@ class CliCommands extends DrushCommands
 
         $shell = new Shell($configuration);
 
-        if ($drupal_major_version >= 8) {
-            // Register the assertion handler so exceptions are thrown instead of errors
-            // being triggered. This plays nicer with PsySH.
-            Handle::register();
-            $shell->setScopeVariables(['container' => \Drupal::getContainer()]);
 
-            // Add Drupal 8 specific casters to the shell configuration.
-            $configuration->addCasters($this->getCasters());
-        }
+        // Register the assertion handler so exceptions are thrown instead of errors
+        // being triggered. This plays nicer with PsySH.
+        Handle::register();
+        $shell->setScopeVariables(['container' => \Drupal::getContainer()]);
+
+        // Add Drupal 8 specific casters to the shell configuration.
+        $configuration->addCasters($this->getCasters());
 
         // Add Drush commands to the shell.
         $shell->addCommands([new DrushHelpCommand()]);
@@ -152,24 +154,25 @@ class CliCommands extends DrushCommands
     protected function historyPath(array $options)
     {
         $cli_directory = drush_directory_cache('cli');
-        $drupal_major_version = drush_drupal_major_version();
+        $drupal_major_version = Drush::getMajorVersion();
 
         // If there is no drupal version (and thus no root). Just use the current
         // path.
         // @todo Could use a global file within drush?
         if (!$drupal_major_version) {
-            $file_name = 'global-' . md5(drush_cwd());
+            $file_name = 'global-' . md5($this->getConfig()->get('env.cwd'));
         } // If only the Drupal version is being used for the history.
         else if ($options['version-history']) {
             $file_name = "drupal-$drupal_major_version";
         } // If there is an alias, use that in the site specific name. Otherwise,
         // use a hash of the root path.
         else {
-            if ($alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
-                $site = drush_sitealias_get_record($alias);
-                $site_suffix = $site['#name'];
+             $aliasRecord = Drush::aliasManager()->getSelf();
+
+            if ($aliasRecord->name()) {
+                $site_suffix = $aliasRecord->name();
             } else {
-                $drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT');
+                $drupal_root = Drush::bootstrapManager()->getRoot();
                 $site_suffix = md5($drupal_root);
             }
 
@@ -179,7 +182,7 @@ class CliCommands extends DrushCommands
         $full_path = "$cli_directory/$file_name";
 
         // Output the history path if verbose is enabled.
-        if (drush_get_context('DRUSH_VERBOSE')) {
+        if (Drush::verbose()) {
             $this->logger()->log(LogLevel::SUCCESS, dt('History: @full_path', ['@full_path' => $full_path]));
         }
 
