@@ -359,7 +359,7 @@ class ConfigLocator
     }
 
     /**
-     * Get the site aliases with preflight arguments and environment.
+     * Get the site aliases according to preflight arguments and environment.
      *
      * @param $preflightArgs
      * @param Environment $environment
@@ -375,6 +375,31 @@ class ConfigLocator
         $paths[] = $this->composerRoot . '/drush';
 
         return $paths;
+    }
+
+    /**
+     * Get the commandfile paths according to preflight arguments.
+     *
+     * @param $preflightArgs
+     *
+     * @return array
+     */
+    public function getCommandFilePaths(PreflightArgsInterface $preflightArgs)
+    {
+        // Start with the built-in commands.
+        $searchpath = [
+            dirname(__DIR__),
+        ];
+
+        // Commands specified by 'include' option
+        $commandPaths = $preflightArgs->commandPaths();
+        foreach ($commandPaths as $commandPath) {
+            if (is_dir($commandPath)) {
+                $searchpath[] = $commandPath;
+            }
+        }
+
+        return $searchpath;
     }
 
     /**

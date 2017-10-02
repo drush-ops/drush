@@ -254,9 +254,7 @@ class Preflight
         // Find all of the available commandfiles, save for those that are
         // provided by modules in the selected site; those will be added
         // during bootstrap.
-        // TODO: Move to ConfigLocator::getCommandFilePaths for consistency
-        // with ConfigLocator::GetSiteAliasPaths().
-        $commandfileSearchpath = $this->findCommandFileSearchPath($preflightArgs, $root);
+        $commandfileSearchpath = $configLocator->getCommandFilePaths($preflightArgs);
 
         // Require the Composer autoloader for Drupal (if different)
         $loader = $this->environment->loadSiteAutoloader($root);
@@ -357,28 +355,6 @@ class Preflight
     protected function selectedComposerRoot()
     {
         return $this->drupalFinder->getComposerRoot();
-    }
-
-    /**
-     * Return the search path containing all of the locations where Drush
-     * commands are found.
-     */
-    protected function findCommandFileSearchPath(PreflightArgs $preflightArgs, $root = '')
-    {
-        // Start with the built-in commands.
-        $searchpath = [
-            dirname(__DIR__),
-        ];
-
-        // Commands specified by 'include' option
-        $commandPaths = $preflightArgs->commandPaths();
-        foreach ($commandPaths as $commandPath) {
-            if (is_dir($commandPath)) {
-                $searchpath[] = $commandPath;
-            }
-        }
-
-        return $searchpath;
     }
 
     /**
