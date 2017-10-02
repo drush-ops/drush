@@ -378,25 +378,6 @@ class Preflight
             }
         }
 
-//        if (!$preflightArgs->isLocal()) {
-//            // System commands, residing in $SHARE_PREFIX/share/drush/commands
-//            $share_path = $this->environment->systemCommandFilePath();
-//            if (is_dir($share_path)) {
-//                $searchpath[] = $share_path;
-//            }
-//
-//            // User commands, residing in ~/.drush
-//            $per_user_config_dir = $this->environment->userConfigPath();
-//            if (is_dir($per_user_config_dir)) {
-//                $searchpath[] = $per_user_config_dir;
-//            }
-//        }
-
-//        $siteCommands = "$root/drupal";
-//        if (!empty($root) && is_dir($siteCommands)) {
-//            $searchpath[] = $siteCommands;
-//        }
-
         return $searchpath;
     }
 

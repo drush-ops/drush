@@ -369,11 +369,6 @@ class ConfigLocator
     public function getSiteAliasPaths(PreflightArgsInterface $preflightArgs, Environment $environment)
     {
         $paths = $preflightArgs->aliasPaths();
-//        if (!$this->isLocal) {
-//            $paths[] = $environment->systemConfigPath();
-//            $paths[] = $environment->userConfigPath();
-//        }
-
         foreach ($this->siteRoots as $siteRoot) {
             $paths[] = $siteRoot . '/drush';
         }
