@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Commands\core;
 
+use Drush\Drush;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
 use Drush\Log\LogLevel;
@@ -10,7 +11,6 @@ use Robo\Contract\BuilderAwareInterface;
 
 class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwareInterface
 {
-
     use LoadAllTasks;
 
     /**
@@ -32,7 +32,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
      */
     public function initializeDrush($options = ['edit' => '', 'add-path' => ''])
     {
-        $home = drush_server_home();
+        $home = Drush::config()->get('env.home');
         $drush_config_dir = $home . "/.drush";
         // @todo copy a config.yml.
         $drush_config_file = $drush_config_dir . "/drushrc.php";

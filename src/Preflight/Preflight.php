@@ -37,6 +37,9 @@ class Preflight
      */
     protected $drupalFinder;
 
+    /**
+     * Preflight constructor
+     */
     public function __construct(Environment $environment, $verify = null, $configLocator = null)
     {
         $this->environment = $environment;
@@ -45,6 +48,12 @@ class Preflight
         $this->drupalFinder = new DrupalFinder();
     }
 
+    /**
+     * Perform preliminary initialization. This mostly involves setting up
+     * legacy systems.
+     *
+     * @param PreflightArgs $preflightArgs
+     */
     public function init(PreflightArgs $preflightArgs)
     {
         // Define legacy constants, and include legacy files that Drush still needs
@@ -117,6 +126,10 @@ class Preflight
         return $preflightArgs;
     }
 
+    /**
+     * Create the initial config locator object, and inject any needed
+     * settings, paths and so on into it.
+     */
     public function prepareConfig(PreflightArgs $preflightArgs, Environment $environment)
     {
         // Load configuration and aliases from defined global locations
@@ -167,6 +180,15 @@ class Preflight
         return $status;
     }
 
+    /**
+     * TODO: Factor this part of the prefligt out to a 'runtime' component.
+     * Bring along those classes that are not used until after the DI container
+     * is set up:
+     *  - LessStrictArgvInput
+     *  - DependencyInjection
+     *  - RedispatchHook
+     *  - TildeExpansionHook
+     */
     protected function doRun($argv)
     {
         // Fail fast if there is anything in our environment that does not check out
@@ -301,6 +323,13 @@ class Preflight
         return $this->setSelectedSite($selectedRoot, $this->environment->vendorPath());
     }
 
+    /**
+     * Use the DrupalFinder to locate the Drupal Root + Composer Root at
+     * the selected root, or, if nothing is found there, at a fallback path.
+     *
+     * @param string $selectedRoot The location to being searching for a site
+     * @param string|bool $fallbackPath The secondary location to search (usualy the vendor director)
+     */
     protected function setSelectedSite($selectedRoot, $fallbackPath = false)
     {
         $foundRoot = $this->drupalFinder->locateRoot($selectedRoot);
@@ -310,11 +339,21 @@ class Preflight
         return $this->selectedDrupalRoot();
     }
 
+    /**
+     * Return the Drupal Root
+     *
+     * @return string|bool
+     */
     protected function selectedDrupalRoot()
     {
         return $this->drupalFinder->getDrupalRoot();
     }
 
+    /**
+     * Return the Composer Root aka the "oroject root".
+     *
+     * @return string|bool
+     */
     protected function selectedComposerRoot()
     {
         return $this->drupalFinder->getComposerRoot();

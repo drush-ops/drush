@@ -18,10 +18,13 @@ use Webmozart\PathUtil\Path;
  */
 class RedispatchToSiteLocal
 {
-    public function __construct()
-    {
-    }
-
+    /**
+     * Determine if a local redispatch is needed, and do so if it is.
+     *
+     * @param array $argv The commandline arguments
+     * @param string $root The selected site root or false if none
+     * @param string $vendor The path to the vendor directory
+     */
     public static function redispatchIfSiteLocalDrush($argv, $root, $vendor)
     {
         // Special check for the SUT, which is always a site-local install.
@@ -64,6 +67,12 @@ class RedispatchToSiteLocal
         return $status;
     }
 
+    /**
+     * Find a site-local Drush, if there is one in the selected site's
+     * vendor directory.
+     *
+     * @param string $root The selected site root
+     */
     protected static function findSiteLocalDrush($root)
     {
         $candidates = [

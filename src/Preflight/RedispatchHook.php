@@ -16,10 +16,15 @@ use Drush\Log\LogLevel;
  */
 class RedispatchHook implements InitializeHookInterface
 {
-    public function __construct()
-    {
-    }
-
+    /**
+     * Check to see if it is necessary to redispatch to a remote site.
+     * We do not redispatch to local sites here; usually, local sites may
+     * simply be selected and require no redispatch. When a local redispatch
+     * is needed, it happens in the RedispatchToSiteLocal class.
+     *
+     * @param InputInterface $input
+     * @param AnnotationData $annotationData
+     */
     public function initialize(InputInterface $input, AnnotationData $annotationData)
     {
         // See drush_preflight_command_dispatch; also needed are:
@@ -36,7 +41,13 @@ class RedispatchHook implements InitializeHookInterface
         return $this->redispatchIfRemote($input);
     }
 
-    public function redispatchIfRemote($input)
+    /**
+     * Check to see if the target of the command is remote. Call redispatch
+     * if it is.
+     *
+     * @param InputInterface $input
+     */
+    public function redispatchIfRemote(InputInterface $input)
     {
         // Determine if this is a remote command.
         // n.b. 'hasOption' only means that the option definition exists, so don't use that here.
@@ -48,8 +59,10 @@ class RedispatchHook implements InitializeHookInterface
 
     /**
      * Called from RemoteCommandProxy::execute() to run remote commands.
+     *
+     * @param InputInterface $input
      */
-    public function redispatch($input)
+    public function redispatch(InputInterface $input)
     {
         $remote_host = $input->getOption('remote-host');
         $remote_user = $input->getOption('remote-user');
@@ -111,6 +124,11 @@ class RedispatchHook implements InitializeHookInterface
         return $this->exitEarly($values);
     }
 
+    /**
+     * Collect the options to use in a redispatch.
+     *
+     * @param InputInterface $input
+     */
     protected function redispatchOptions(InputInterface $input)
     {
         return [];
@@ -135,6 +153,8 @@ class RedispatchHook implements InitializeHookInterface
      * Remove anything that is not necessary for the remote side.
      * At the moment this is limited to configuration options
      * provided via -D.
+     *
+     * @param array $redispatchArgs
      */
     protected function alterArgsForRedispatch($redispatchArgs)
     {
@@ -143,6 +163,12 @@ class RedispatchHook implements InitializeHookInterface
         });
     }
 
+    /**
+     * Abort the current execution without causing distress to our
+     * shutdown handler.
+     *
+     * @param array $values The results from backend invoke.
+     */
     protected function exitEarly($values)
     {
         Drush::logger()->log(LogLevel::DEBUG, 'Redispatch hook exit early');
