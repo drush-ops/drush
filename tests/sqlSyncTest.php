@@ -63,22 +63,17 @@ class sqlSyncTest extends CommandUnishTestCase {
       // Test wildcards expansion from within sql-sync. Also avoid D8 persistent entity cache.
       'structure-tables-list' => 'cache,cache*',
     );
-    $this->drush('sql-sync', array('@stage', '@dev'), $sync_options);
-    $this->drush('sql-sanitize', [], ['yes' => NULL], '@dev');
+    $this->drush('sql-sync', array('@unish.stage', '@unish.dev'), $sync_options);
+    $this->drush('sql-sanitize', [], ['yes' => NULL], '@unish.dev');
 
     // Confirm that the sample user is unchanged on the staging site
-    $this->drush('user-information', array($name), $options + ['format' => 'json'], '@stage');
+    $this->drush('user-information', array($name), $options + ['format' => 'json'], '@unish.stage');
     $info = $this->getOutputFromJSON(2);
     $this->assertEquals($mail, $info->mail, 'Email address is unchanged on source site.');
     $this->assertEquals($name, $info->name);
 
-    $options = array(
-      'root' => $this->webroot(),
-      'uri' => 'dev',
-      'yes' => NULL,
-    );
     // Confirm that the sample user's email address has been sanitized on the dev site
-    $this->drush('user-information', array($name), $options + ['format' => 'json']);
+    $this->drush('user-information', array($name), $options + ['format' => 'json', 'yes' => null], '@unish.dev');
     $info = $this->getOutputFromJSON(2);
     $this->assertEquals("user+2@localhost.localdomain", $info->mail, 'Email address was sanitized on destination site.');
     $this->assertEquals($name, $info->name);
@@ -89,16 +84,11 @@ class sqlSyncTest extends CommandUnishTestCase {
       // Test wildcards expansion from within sql-sync. Also avoid D8 persistent entity cache.
       'structure-tables-list' => 'cache,cache*',
     );
-    $this->drush('sql-sync', array('@stage', '@dev'), $sync_options);
-    $this->drush('sql-sanitize', [], ['yes' => NULL, 'sanitize-email' => 'user@mysite.org'], '@dev');
+    $this->drush('sql-sync', array('@unish.stage', '@unish.dev'), $sync_options);
+    $this->drush('sql-sanitize', [], ['yes' => NULL, 'sanitize-email' => 'user@mysite.org'], '@unish.dev');
 
-    $options = array(
-      'root' => $this->webroot(),
-      'uri' => 'dev',
-      'yes' => NULL,
-    );
     // Confirm that the sample user's email address has been sanitized on the dev site
-    $this->drush('user-information', array($name), $options + ['format' => 'json']);
+    $this->drush('user-information', array($name), $options + ['yes' => NULL, 'format' => 'json'], '@unish.dev');
     $info = $this->getOutputFromJSON(2);
     $this->assertEquals('user@mysite.org', $info->mail, 'Email address was sanitized (fixed email) on destination site.');
     $this->assertEquals($name, $info->name);
@@ -114,11 +104,11 @@ class sqlSyncTest extends CommandUnishTestCase {
     ];
     // Assert that field DO NOT contain values.
     foreach ($fields as $field_name => $value) {
-      $this->assertUserFieldContents($field_name, $value, $options);
+      $this->assertUserFieldContents($field_name, $value);
     }
 
     // Assert that field_user_telephone DOES contain "5555555555".
-    $this->assertUserFieldContents('field_user_telephone', '5555555555', $options, TRUE);
+    $this->assertUserFieldContents('field_user_telephone', '5555555555', TRUE);
   }
 
   /**
@@ -128,15 +118,13 @@ class sqlSyncTest extends CommandUnishTestCase {
    *   The machine name of the field.
    * @param string $value
    *   The field value.
-   * @param array $options
-   *   Options to be added to the sql-query command.
    * @param bool $should_contain
    *   Whether the field should contain the value. Defaults to false.
    */
-  public function assertUserFieldContents($field_name, $value, $options = [], $should_contain = FALSE) {
+  public function assertUserFieldContents($field_name, $value, $should_contain = FALSE) {
     $table = 'user__' . $field_name;
     $column = $field_name . '_value';
-    $this->drush('sql-query', [ "SELECT $column FROM $table LIMIT 1" ], $options);
+    $this->drush('sql-query', [ "SELECT $column FROM $table LIMIT 1" ], [], '@unish.dev');
     $output = $this->getOutput();
     $this->assertNotEmpty($output);
 

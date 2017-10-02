@@ -1,6 +1,7 @@
 <?php
 
 namespace Unish;
+use Symfony\Component\Yaml\Yaml;
 use Webmozart\PathUtil\Path;
 
 abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
@@ -30,6 +31,10 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    */
   public static function getSites() {
     return self::$sites;
+  }
+
+  public static function getUri($site = 'dev') {
+    return self::$sites[$site]['uri'];
   }
 
   /**
@@ -474,14 +479,15 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
 
     // Stash details about each site.
     foreach ($sites_subdirs as $subdir) {
-      self::$sites[$subdir] = array(
+      self::$sites['unish.' . $subdir] = array(
         'root' => $root,
         'uri' => $subdir,
         'db_url' => $this->db_url($subdir),
       );
-      // Make an alias for the site
-      $this->writeSiteAlias($subdir, $root, $subdir);
     }
+    // Make an alias group for the sites.
+    $this->writeSiteAliases(self::$sites);
+
     return self::$sites;
   }
 
@@ -514,20 +520,22 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     }
   }
 
-  function writeSiteAlias($name, $root, $uri) {
-    $alias_definition = array($name => array('root' => $root,  'uri' => $uri));
-    file_put_contents(self::getSandbox() . '/etc/drush/' . $name . '.alias.drushrc.php', $this->unish_file_aliases($alias_definition));
-  }
-
   /**
-   * Prepare the contents of an aliases file.
+   * Write an alias group file and a config file which points to same dir.
+   *
+   * @param $sites
    */
-  function unish_file_aliases($aliases) {
-    foreach ($aliases as $name => $alias) {
-      $records[] = sprintf('$aliases[\'%s\'] = %s;', $name, var_export($alias, TRUE));
+  function writeSiteAliases($sites) {
+    foreach ($sites as $name => $site) {
+      $groups[str_replace('unish.', '', $name)] = [
+        'root' => $site['root'],
+        'uri' => $site['uri']
+      ];
     }
-    $contents = "<?php\n\n" . implode("\n\n", $records);
-    return $contents;
+    $etc = self::getSandbox() . '/etc/drush';
+    file_put_contents(Path::join($etc, 'unish.alias.yml'), Yaml::dump($groups));
+    $config['runtime']['context']['alias-path'][] = $etc;
+    file_put_contents(Path::join($etc, 'drush.yml'), Yaml::dump($config, 3));
   }
 
   /**
