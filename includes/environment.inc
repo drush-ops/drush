@@ -169,6 +169,10 @@ function _drush_shift_path_up($path) {
   if (empty($path)) {
     return FALSE;
   }
+  // Normalize directory separators to fix windows paths
+  // that are converted to unix style in _drush_convert_path().
+  $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+  // Break into directories.
   $path = explode(DIRECTORY_SEPARATOR, $path);
   // Move one directory up.
   array_pop($path);
