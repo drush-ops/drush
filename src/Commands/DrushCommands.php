@@ -30,7 +30,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface
     }
 
     /**
-     * @todo Override Robo's IO function with our custom style.
+     * Override Robo's IO function with our custom style.
      */
     protected function io()
     {

@@ -29,15 +29,22 @@ use Webmozart\PathUtil\Path;
  */
 class HostPath
 {
-    /** @var AliasRecord */
+    /** @var AliasRecord The alias record obtained from the host path */
     protected $alias_record;
 
-    /** @var string */
+    /** @var string The entire original host path (e.g. @alias:/path) */
     protected $original_path;
 
-    /** @var string */
+    /** @var string The "path" component from the host path */
     protected $path;
 
+    /**
+     * HostPath constructor
+     *
+     * @param AliasRecord $alias_record The alias record or site specification record
+     * @param string $original_path The original host path
+     * @param string $path Just the 'path' component
+     */
     protected function __construct($alias_record, $original_path, $path = '')
     {
         $this->alias_record = $alias_record;
@@ -45,12 +52,19 @@ class HostPath
         $this->path = $path;
     }
 
-    public static function create(SiteAliasManager $manager, $alias_path)
+    /**
+     * Factory method to create a host path.
+     *
+     * @param SiteAliasManager $manager We need to be provided a reference
+     *   to the alias manager to create a host path
+     * @param string $hostPath The path to create.
+     */
+    public static function create(SiteAliasManager $manager, $hostPath)
     {
         // Split the alias path up into
         //  - $parts[0]: everything before the first ":"
         //  - $parts[1]: everything after the ":", if there was one.
-        $parts = explode(':', $alias_path, 2);
+        $parts = explode(':', $hostPath, 2);
 
         // Determine whether or not $parts[0] is a site spec or an alias
         // record.  If $parts[0] is not in the right form, the result
@@ -59,7 +73,7 @@ class HostPath
         $alias_record = $manager->get($parts[0]);
 
         if (!isset($parts[1])) {
-            return static::determinePathOrAlias($manager, $alias_record, $alias_path, $parts[0]);
+            return static::determinePathOrAlias($manager, $alias_record, $hostPath, $parts[0]);
         }
 
         // If $parts[0] did not resolve to a site spec or alias record,
@@ -73,7 +87,7 @@ class HostPath
         }
 
         // Create our alias path
-        return new HostPath($alias_record, $alias_path, $parts[1]);
+        return new HostPath($alias_record, $hostPath, $parts[1]);
     }
 
     public function getAliasRecord()
@@ -155,18 +169,18 @@ class HostPath
         return $fqp;
     }
 
-    protected static function determinePathOrAlias($manager, $alias_record, $alias_path, $single_part)
+    protected static function determinePathOrAlias($manager, $alias_record, $hostPath, $single_part)
     {
         // If $alias_record is false, then $single_part must be a path.
         if ($alias_record === false) {
-            return new HostPath($manager->getSelf(), $alias_path, $single_part);
+            return new HostPath($manager->getSelf(), $hostPath, $single_part);
         }
 
         // Otherwise, we have a alias record without a path.
         // In this instance, the alias record _must_ have a root.
         if (!$alias_record->hasRoot()) {
-            throw new \Exception("$alias_path does not define a path.");
+            throw new \Exception("$hostPath does not define a path.");
         }
-        return new HostPath($alias_record, $alias_path);
+        return new HostPath($alias_record, $hostPath);
     }
 }

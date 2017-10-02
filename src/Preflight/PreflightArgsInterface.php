@@ -19,6 +19,8 @@ interface PreflightArgsInterface
     /**
      * Copy any applicable arguments into the provided configuration
      * object, as appropriate.
+     *
+     * @param ConfigInterface $config The configuration object to inject data into
      */
     public function applyToConfig(ConfigInterface $config);
 
@@ -29,6 +31,11 @@ interface PreflightArgsInterface
     public function args();
 
     /**
+     * Return the path to this application's executable ($argv[0]).
+     */
+    public function applicationPath();
+
+    /**
      * Add one argument to the end of the list returned by the `args()` method.
      *
      * @param string $arg One argument
@@ -37,6 +44,8 @@ interface PreflightArgsInterface
 
     /**
      * Add everything in the provided array to the list returned by `args()`
+     *
+     * @param $args
      */
     public function passArgs($args);
 
@@ -53,6 +62,8 @@ interface PreflightArgsInterface
 
     /**
      * Set an alias. Should always begin with '@'.
+     *
+     * @param string $alias The alias name '@site'
      */
     public function setAlias($alias);
 }

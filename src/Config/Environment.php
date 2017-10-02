@@ -40,6 +40,9 @@ class Environment
 
     /**
      * Load the autoloader for the selected Drupal site
+     *
+     * @param string $root
+     * @return ClassLoader
      */
     public function loadSiteAutoloader($root)
     {
@@ -71,6 +74,8 @@ class Environment
 
     /**
      * Return the name of the user running drush.
+     *
+     * @return string
      */
     protected function getUsername()
     {
@@ -114,6 +119,7 @@ class Environment
             'env' => [
                 'cwd' => $this->cwd(),
                 'home' => $this->homeDir(),
+                'user' => $this->getUsername(),
                 'is-windows' => $this->isWindows(),
             ],
             // These values are available as global options, and
@@ -132,9 +138,6 @@ class Environment
                 'site-file-previous' => $this->getSiteSetAliasFilePath('drush-drupal-prev-site-'),
                 'site-file-current' => $this->getSiteSetAliasFilePath(),
             ],
-            'runtime' => [
-                'user' => $this->getUsername(),
-            ]
         ];
     }
 
