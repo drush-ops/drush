@@ -226,7 +226,6 @@ function _drush_batch_worker() {
 
       // Tolerate recoverable errors.
       // See https://github.com/drush-ops/drush/issues/1930
-      $message = call_user_func_array($function, array_merge($args, array(&$batch_context)));
       $halt_on_error = \Drush\Drush::config()->get('runtime.php.halt-on-error', TRUE);
       \Drush\Drush::config()->set('runtime.php.halt-on-error', FALSE);
       $message = call_user_func_array($function, array_merge($args, array(&$batch_context)));
