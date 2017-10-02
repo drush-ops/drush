@@ -33,7 +33,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     return self::$sites;
   }
 
-  public static function getUri($site = 'dev') {
+  public static function getUri($site = 'unish.dev') {
     return self::$sites[$site]['uri'];
   }
 

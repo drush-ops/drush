@@ -14,7 +14,7 @@ class ImageCase extends CommandUnishTestCase {
     $options = array(
       'yes' => NULL,
       'root' => $this->webroot(),
-      'uri' => key($sites),
+      'uri' => $this->getUri(),
     );
     $this->drush('pm-enable', ['image'], $options);
     $logo = 'core/themes/bartik/screenshot.png';
