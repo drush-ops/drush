@@ -20,7 +20,8 @@
    */
   public function {{ command.method }}({{ command.argumentsConcat|raw }}{{ command.optionsConcat|raw }})
   {
-
+      // See bottom of https://weitzman.github.io/blog/port-to-drush9 for details on what to change when porting a
+      // legacy command.
   }
 
 {% endfor %}
