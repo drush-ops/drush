@@ -10,10 +10,12 @@ use Drush\Utils\StringUtils;
  *
  * For an example of a Drupal module implementing commands, see
  * - http://cgit.drupalcode.org/devel/tree/devel_generate/src/Commands
- * - http://cgit.drupalcode.org/devel/tree/devel_generate/drush.services.yml
+ * - http://cgit.drupalcode.org/devel/tree/devel_generate/drush9.services.yml
  *
  * This file is a good example of the first of those bullets (a commandfile) but
- * since it isn't part of a module, it does not implement drush.services.yml. Global commandfiles like this one
+ * since it isn't part of a module, it does not implement drush.9services.yml.
+ * Global commandfiles like this one cannot participate in Drupal dependency
+ * injection.
  */
 
 class SandwichCommands extends DrushCommands {
