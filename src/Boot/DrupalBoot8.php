@@ -115,12 +115,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $classloader = $this->autoloader();
         // @todo - use Request::create() and then no need to set PHP superglobals
         $kernelClass = new \ReflectionClass('\Drupal\Core\DrupalKernel');
-        // This is not in core yet; see https://www.drupal.org/node/2718933
-        if ($kernelClass->hasMethod('addServiceModifier')) {
-            $this->kernel = DrupalKernel::createFromRequest($this->request, $classloader, 'prod', DRUPAL_ROOT);
-        } else {
-            $this->kernel = DrushDrupalKernel::createFromRequest($this->request, $classloader, 'prod', DRUPAL_ROOT);
-        }
+        $this->kernel = DrushDrupalKernel::createFromRequest($this->request, $classloader, 'prod', DRUPAL_ROOT);
         // @see Drush\Drupal\DrupalKernel::addServiceModifier()
         $this->kernel->addServiceModifier(new DrushServiceModifier());
 
@@ -160,20 +155,25 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         // The upshot is that the list of console commands is not available
         // until after $kernel->boot() is called.
         $container = \Drupal::getContainer();
-        $serviceCommandlist = $container->get('drush.service.consolecommands');
-        foreach ($serviceCommandlist->getCommandList() as $command) {
-            if (!$this->commandIgnored($command, $ignored_modules)) {
-                $this->inflect($command);
-                $this->logger->log(LogLevel::DEBUG_NOTIFY, dt('Add a command: !name', ['!name' => $command->getName()]));
-                $application->add($command);
+        $serviceCommandlist = $container->get(DrushServiceModifier::DRUSH_CONSOLE_SERVICES);
+        if ($container->has(DrushServiceModifier::DRUSH_CONSOLE_SERVICES)) {
+            foreach ($serviceCommandlist->getCommandList() as $command) {
+                if (!$this->commandIgnored($command, $ignored_modules)) {
+                    $this->inflect($command);
+                    $this->logger->log(LogLevel::DEBUG_NOTIFY, dt('Add a command: !name', ['!name' => $command->getName()]));
+                    $application->add($command);
+                }
             }
         }
         // Do the same thing with the annotation commands.
-        $serviceCommandlist = $container->get('drush.service.consolidationcommands');
-        foreach ($serviceCommandlist->getCommandList() as $commandHandler) {
-            if (!$this->commandIgnored($commandHandler, $ignored_modules)) {
-                $this->inflect($commandHandler);
-                $runner->registerCommandClass($application, $commandHandler);
+        if ($container->has(DrushServiceModifier::DRUSH_COMMAND_SERVICES)) {
+            $serviceCommandlist = $container->get(DrushServiceModifier::DRUSH_COMMAND_SERVICES);
+            foreach ($serviceCommandlist->getCommandList() as $commandHandler) {
+                if (!$this->commandIgnored($commandHandler, $ignored_modules)) {
+                    $this->inflect($commandHandler);
+                    $this->logger->log(LogLevel::DEBUG_NOTIFY, dt('Add a commandfile class: !name', ['!name' => get_class($commandHandler)]));
+                    $runner->registerCommandClass($application, $commandHandler);
+                }
             }
         }
     }

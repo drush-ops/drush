@@ -8,6 +8,13 @@ use Drupal\Core\DependencyInjection\ContainerBuilder;
 
 class DrushServiceModifier implements ServiceModifierInterface
 {
+    // Holds list of command classes implementing Symfony\Console\Component\Command
+    const DRUSH_CONSOLE_SERVICES = 'drush.console.services';
+    // Holds list of command classes implemented with annotated commands
+    const DRUSH_COMMAND_SERVICES = 'drush.command.services';
+    // Holds list of classes implementing Drupal Code Generator classes
+    const DRUSH_GENERATOR_SERVICES = 'drush.generator.services';
+
     /**
      * @inheritdoc
      */
@@ -15,12 +22,12 @@ class DrushServiceModifier implements ServiceModifierInterface
     {
         drush_log(dt("Service modifier alter."), LogLevel::DEBUG_NOTIFY);
         // http://symfony.com/doc/2.7/components/dependency_injection/tags.html#register-the-pass-with-the-container
-        $container->register('drush.service.consolecommands', 'Drush\Command\ServiceCommandlist');
-        $container->addCompilerPass(new FindCommandsCompilerPass('drush.service.consolecommands', 'console.command'));
-        $container->register('drush.service.consolidationcommands', 'Drush\Command\ServiceCommandlist');
-        $container->addCompilerPass(new FindCommandsCompilerPass('drush.service.consolidationcommands', 'drush.command'));
-        $container->register('drush.service.generators', 'Drush\Command\ServiceCommandlist');
-        $container->addCompilerPass(new FindCommandsCompilerPass('drush.service.generators', 'drush.generator'));
+        $container->register(self::DRUSH_CONSOLE_SERVICES, 'Drush\Command\ServiceCommandlist');
+        $container->addCompilerPass(new FindCommandsCompilerPass(self::DRUSH_CONSOLE_SERVICES, 'console.command'));
+        $container->register(self::DRUSH_COMMAND_SERVICES, 'Drush\Command\ServiceCommandlist');
+        $container->addCompilerPass(new FindCommandsCompilerPass(self::DRUSH_COMMAND_SERVICES, 'drush.command'));
+        $container->register(self::DRUSH_GENERATOR_SERVICES, 'Drush\Command\ServiceCommandlist');
+        $container->addCompilerPass(new FindCommandsCompilerPass(self::DRUSH_GENERATOR_SERVICES, 'drush.generator'));
     }
 
     /**
@@ -32,7 +39,9 @@ class DrushServiceModifier implements ServiceModifierInterface
      */
     public function check($container_definition)
     {
-        return isset($container_definition['services']['drush.service.consolecommands']) &&
-        isset($container_definition['services']['drush.service.consolidationcommands']);
+        return
+            isset($container_definition['services'][self::DRUSH_CONSOLE_SERVICES]) &&
+            isset($container_definition['services'][self::DRUSH_COMMAND_SERVICES]) &&
+            isset($container_definition['services'][self::DRUSH_GENERATOR_SERVICES]);
     }
 }
