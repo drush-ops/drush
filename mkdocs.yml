@@ -10,7 +10,6 @@ pages:
   - Example files: examples.md
   - Cron: cron.md
   - Shell aliases: shellaliases.md
-  - Shell scripts: shellscripts.md
   - Bastion: bastion.md
   - Exporting Drupal configuration: config-exporting.md
 - Writing commands/generators:
