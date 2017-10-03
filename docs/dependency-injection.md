@@ -28,7 +28,7 @@ A class should use one or the other of these methods. The code that is responsib
 Services Files
 ------------------
 
-Drush command files can request that Drupal inject services by using a drush.services.yml file. See the document [commands](commands.md) for instructions on how to use the Drupal Code Generator to create a simple command file starter with a drush.services.yml file. An initial services file will look something like this:
+Drush command files can request that Drupal inject services by using a drush9.services.yml file. See the document [commands](commands.md) for instructions on how to use the Drupal Code Generator to create a simple command file starter with a drush9.services.yml file. An initial services file will look something like this:
 ```
 services:
   my_module.commands:

@@ -5,7 +5,7 @@ Creating a new Drush command is easy. Follow these simple steps:
 
 1. Run `drush generate drush-command-file`.
 1. Enter the machine name of the module that should "own" the file.
-1. Drush will then report that it created a commandfile and a drush.services.yml file. Edit those 2 files as needed.
+1. Drush will then report that it created a commandfile and a drush9.services.yml file. Edit those 2 files as needed.
 1. Use the classes for the core Drush commands at /src/Drupal/Commands as inspiration and documentation.   
 1. Once your two files are ready, run `drush cr` to get your command recognized by the Drupal container.
 

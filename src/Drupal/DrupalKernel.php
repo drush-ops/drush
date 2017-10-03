@@ -97,20 +97,11 @@ class DrupalKernel extends DrupalDrupalKernel
         $this->addDrushServiceProvider("_drush__pm", DRUSH_BASE_PATH . '/src/Drupal/Commands/pm/drush.services.yml');
         $this->addDrushServiceProvider("_drush__sql", DRUSH_BASE_PATH . '/src/Drupal/Commands/sql/drush.services.yml');
 
-        // TODO: We could potentially also add service providers from:
-        //  - DRUSH_BASE_PATH . '/drush/drush.services.yml');
-        //  - DRUSH_BASE_PATH . '/../drush/drush.services.yml');
-        // Or, perhaps better yet, from every Drush command directory
-        // (e.g. DRUSH_BASE_PATH/drush/mycmd/drush.services.yml) in
-        // any of these `drush` folders. In order to do this, it is
-        // necessary that the class files in these commands are available
-        // in the autoloader.
-
         // Also add Drush services from all modules
         $module_filenames = $this->getModuleFileNames();
         // Load each module's serviceProvider class.
         foreach ($module_filenames as $module => $filename) {
-            $filename = dirname($filename) . "/drush.services.yml";
+            $filename = dirname($filename) . "/drush9.services.yml";
             $this->addDrushServiceProvider("_drush.$module", $filename);
         }
     }
