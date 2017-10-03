@@ -92,7 +92,6 @@ class QueueCommands extends DrushCommands
      * Returns a list of all defined queues.
      *
      * @command queue:list
-     * @command queue-list
      * @field-labels
      *   queue: Queue
      *   items: Items
