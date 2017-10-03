@@ -1,0 +1,202 @@
+
+# Example of valid statements for an alias file.
+#
+# Use this file as a guide to creating your own aliases.
+#
+# Aliases are commonly used to define short names for
+# local or remote Drupal installations; however, an alias
+# is really nothing more than a collection of options.
+# A canonical alias named "dev" that points to a local
+# Drupal site named "http://example.com" looks like this:
+#
+# @code
+# dev:
+#   root: /path/to/drupal
+#   uri: http://example.com
+# @endcode
+#
+# With this alias definition, then the following commands
+# are equivalent:
+#
+#   $ drush @dev status
+#   $ drush --root=/path/to/drupal --uri=http://example.com status
+#
+# See the --uri option documentation below for hints on setting its value.
+#
+# Any option that can be placed on the Drush commandline
+# can also appear in an alias definition.
+#
+# There are several ways to create alias files.
+#
+#   + Put each alias in a separate file called ALIASNAME.alias.yml
+#   + Put multiple aliases in a single file called aliases.yml
+#   + Put groups of aliases into files called GROUPNAME.aliases.yml
+#
+# Drush will search for aliases in any of these files using
+# the alias search path.  The following locations are examined
+# for alias files:
+#
+#   1. In any path set in runtime.context in drush.yml
+#      or (equivalently) any path passed in via --alias-path=...
+#      on the command line.
+#   2. In one of the site-specific locations:
+#        a. The /drush and /sites/all/drush folders for the current Drupal site
+#        b. The /drush folder in the directory above the current Drupal site
+#
+# These locations are searched recursively.  If there is a folder called
+# 'site-aliases' in any search path, then Drush will search for site aliases
+# only inside that directory.
+#
+# The preferred locations for alias files, then, are:
+#
+#   $ROOT/drush/site-aliases
+#   $ROOT/sites/all/drush/site-aliases
+#   $ROOT/../drush/site-aliases
+#
+# Files stored in these locations can be used to create aliases
+# to local and remote Drupal installations.  These aliases can be
+# used in place of a site specification on the command line, and
+# may also be used in arguments to certain commands such as
+# "drush rsync" and "drush sql-sync".
+#
+# Alias groups (aliases stored together in files called
+# GROUPNAME.aliases.yml, as mentioned above) create an implicit
+# namespace that is named after the group name.
+#
+# For example:
+#
+# @code
+# # File: mysite.aliases.yml
+# dev:
+#   root: /path/to/drupal
+#   uri: https://dev.example.com
+# live:
+#   root: /other/path/to/drupal
+#   uri: https://live.example.com
+# @endcode
+#
+# Then the following aliases are defined:
+# - @mysite.dev
+# - @mysite.live
+#
+# To see an example alias definition for the current bootstrapped
+# site, use the "site-alias" command with the built-in alias "@self":
+#
+#   $ drush site-alias @self
+#
+# Drush also supports *remote* site aliases.  When a site alias is
+# defined for a remote site, Drush will use the ssh command to run
+# the requested command on the remote machine.  The simplest remote
+# alias looks like this:
+#
+# @code
+# live:
+#   remote-host: server.domain.com
+#   remote-user: www-admin
+# @endcode
+#
+# The form above requires that Drush be installed on the remote machine,
+# and that there also be an alias of the same name defined on that
+# machine.  The remote alias should define the 'root' and 'uri' elements,
+# as shown in the initial example at the top of this file.
+#
+# If you do not wish to maintain site aliases on the remote machine,
+# then you may define an alias that contains all of the elements
+# 'remote-host', 'remote-user', 'root' and 'uri'.  If you do this, then
+# Drush will make the remote call using the --root and --uri options
+# to identify the site, so no site alias is required on the remote server.
+#
+# @code
+# live:
+#   remote-host: server.domain.com
+#   remote-user: www-admin
+#   root: /other/path/to/drupal
+#   uri: http://example.com
+# @endcode
+#
+# The built-in alias "@none" represents the state of no Drupal site;
+# to ignore the site at the cwd and just see default drush status:
+#
+#   $ drush @none status
+#
+# See `drush help site-alias` for more options for displaying site
+# aliases.  See `drush topic docs-bastion` for instructions on configuring
+# remote access to a Drupal site behind a firewall via a bastion server.
+#
+# Although most aliases will contain only a few options, a number
+# of settings that are commonly used appear below:
+#
+# - 'uri': The value of --uri should always be the same as
+#   when the site is being accessed from a web browser (e.g. http://example.com)
+# - 'root': The Drupal root; must not be specified as a relative path.
+# - 'remote-host': The fully-qualified domain name of the remote system
+#   hosting the Drupal instance. **Important Note: The remote-host option
+#   must be omitted for local sites, as this option controls various
+#   operations, such as whether or not rsync parameters are for local or
+#   remote machines, and so on. @see hook_drush_sitealias_alter() in drush.api.php
+# - 'remote-user': The username to log in as when using ssh or rsync.
+# - 'os': The operating system of the remote server.  Valid values
+#   are 'Windows' and 'Linux'. Be sure to set this value for all remote
+#   aliases because the default value is PHP_OS if 'remote-host'
+#   is not set, and 'Linux' (or $options['remote-os']) if it is. Therefore,
+#   if you set a 'remote-host' value, and your remote OS is Windows, if you
+#   do not set the 'OS' value, it will default to 'Linux' and could cause
+#   unintended consequences, particularly when running 'drush sql-sync'.
+# - 'ssh-options': If the target requires special options, such as a non-
+#   standard port, alternative identity file, or alternative
+#   authentication method, ssh-options can contain a string of extra
+#   options that are used with the ssh command, eg "-p 100"
+# - 'path-aliases': An array of aliases for common rsync targets.
+#   Relative aliases are always taken from the Drupal root.
+#   - '%drush-script': The path to the 'drush' script, or to 'drush.php'.
+#     This is used by backend invoke when drush
+#     runs a drush command.  The default is 'drush' on remote machines, or
+#     the full path to drush.php on the local machine.
+#   - '%drush': A read-only property: points to the folder that the drush
+#     script is stored in.
+#   - '%files': Path to 'files' directory.  This will be looked up if not
+#     specified.
+#   - '%root': A reference to the Drupal root defined in the 'root' item in the
+#     site alias record.
+# - 'php': path to custom php interpreter.
+# - 'php-options': commandline options for php interpreter, you may
+#   want to set this to '-d error_reporting="E_ALL^E_DEPRECATED"'
+# - 'command-specific': These options will only be set if the alias
+#   is used with the specified command.  In the example below, the option
+#   `--no-dump` will be selected whenever the @stage alias
+#   is used in any of the following ways:
+#   - `drush @stage sql-sync @self @live`
+#   - `drush sql-sync @stage @live`
+#   - `drush sql-sync @live @stage`
+# - '#peer': Settings that begin with a '#' are not used directly by Drush, and
+#   in fact are removed before making a backend invoke call (for example).
+#   These kinds of values are useful in conjunction with shell aliases.  See
+#   `drush topic docs-shell-aliases` for more information on this.
+# - '#env-vars': An associative array of keys and values that should be set on
+#    the remote side before invoking drush.
+#
+# Altering aliases:
+#
+# It is no longer possible to alter aliases dynamically. This is a planned feature. Help wanted.
+#
+# Some examples appear below.  Remove the leading hash signs to enable.
+#stage:
+#  uri: http://stage.example.com
+#  root: /path/to/remote/drupal/root
+#  remote-host: mystagingserver.myisp.com
+#  remote-user: publisher
+#  os: Linux
+#  path-aliases:
+#    - %drush-script: path/to/drush/drush
+#    - %files: sites/mydrupalsite.com/files
+#    - %custom: /my/custom/path
+#  command-specific:
+#     sql-sync:
+#       options:
+#         no-dump: true
+#
+#dev:
+#  root: /path/to/docroot
+#  uri: https://dev.example.com
+#
+#
