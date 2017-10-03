@@ -103,8 +103,6 @@ class DrupalCommands extends DrushCommands
      *   Show all status lines from the Status Report admin page.
      * @usage drush core:requirements --severity=2
      *   Show only the red lines from the Status Report admin page.
-     * @usage drush core:requirements --format=json
-     *   Print a short report in JSON format, where severity 2=error, 1=warning, and 0/-1=OK
      * @table-style default
      * @field-labels
      *   title: Title
@@ -112,8 +110,6 @@ class DrupalCommands extends DrushCommands
      *   sid: SID
      *   description: Description
      *   value: Summary
-     *   reason: Reason
-     *   weight: Weight
      * @default-fields title,severity,value
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
