@@ -9,13 +9,17 @@ pages:
   - Usage: usage.md
   - Example files: examples.md
   - Cron: cron.md
-  - Shell aliases: shellaliases.md
   - Bastion: bastion.md
   - Exporting Drupal configuration: config-exporting.md
+  - REPL (a custom shell for Drupal): repl.md
 - Writing commands/generators:
   - Command Authoring: commands.md
+  - Custom hooks: custom-hooks.md
+  - Dependency injection: dependency-injection.md
+  - Input / Output: io.md
   - Generator Authoring: generators.md
   - Bootstrap: bootstrap.md
+  - Site Alias Manager: site-alias-manager.md
 #use_directory_urls: false
 
 markdown_extensions:
