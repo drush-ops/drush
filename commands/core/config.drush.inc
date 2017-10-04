@@ -515,7 +515,13 @@ function _drush_config_export($destination, $destination_dir, $branch) {
   }
 
   foreach ($source_storage->listAll() as $name) {
-    $destination_storage->write($name, $source_storage->read($name));
+    $config_item = $source_storage->read($name);
+    if ($config_item) {
+      $destination_storage->write($name, $config_item);
+    }
+    else {
+      drush_log(dt('Error writing !name to !target. !name not found in the configuration.', array('!name' => $name, '!target' => $destination_dir)), LogLevel::ERROR);
+    }
   }
 
   // Export configuration collections.
