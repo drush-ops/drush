@@ -29,9 +29,16 @@ class SiteAliasManager
         $this->root = $root;
     }
 
+    /**
+     * Inject the root of the selected site
+     *
+     * @param string $root
+     * @return $this
+     */
     public function setRoot($root)
     {
         $this->root = $root;
+        return $this;
     }
 
     /**
@@ -188,6 +195,12 @@ class SiteAliasManager
         return $this->aliasLoader->loadMultiple($aliasName);
     }
 
+    /**
+     * Return the paths to all alias files in all search locations known
+     * to the alias manager.
+     *
+     * @return string[]
+     */
     public function listAllFilePaths()
     {
         return $this->aliasLoader->listAll();
@@ -253,5 +266,4 @@ class SiteAliasManager
             '@self'
         );
     }
-
 }

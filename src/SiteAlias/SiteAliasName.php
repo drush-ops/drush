@@ -59,6 +59,8 @@ class SiteAliasName
 
     /**
      * Convert an alias name back to a string.
+     *
+     * @return string
      */
     public function __toString()
     {
@@ -170,51 +172,104 @@ class SiteAliasName
         $this->ambiguous = false;
     }
 
+    /**
+     * Return true if this alias name has a group.
+     *
+     * @return bool
+     */
     public function hasGroup()
     {
         return !empty($this->group);
     }
 
+    /**
+     * Return the name of the group portion of the alias name.
+     *
+     * @return string
+     */
     public function group()
     {
         return $this->group;
     }
 
+    /**
+     * Set the name of the group portion of the alias name.
+     *
+     * @param string $group
+     */
     public function setGroup($group)
     {
         $this->group = $group;
     }
 
+    /**
+     * Return the sitename portion of the alias name. By definition,
+     * every alias must have a sitename. If the alias is in the form
+     * @a.b.c, then the sitename will always be 'b'. If the alias is
+     * in the form @e.f, then the sitename might be e, (if assumeAmbiguousIsGroup()
+     * was called most recently) or it might be f (if assumeAmbiguousIsSitename()
+     * was called more recently).
+     *
+     * @return string
+     */
     public function sitename()
     {
         return $this->sitename;
     }
 
+    /**
+     * Set the sitename portion of the alias name
+     *
+     * @param string $sitename
+     */
     public function setSitename($sitename)
     {
         $this->sitename = $sitename;
     }
 
+    /**
+     * Return true if this alias name contains an 'env' portion.
+     *
+     * @return bool
+     */
     public function hasEnv()
     {
         return !empty($this->env);
     }
 
+    /**
+     * Set the environment portion of the alias record.
+     *
+     * @param string
+     */
     public function setEnv($env)
     {
         $this->env = $env;
     }
 
+    /**
+     * Return the 'env' portion of the alias record.
+     *
+     * @return string
+     */
     public function env()
     {
         return $this->env;
     }
 
+    /**
+     * Return true if this alias name is the 'self' alias.
+     *
+     * @return bool
+     */
     public function isSelf()
     {
         return $this->sitename() == 'self';
     }
 
+    /**
+     * Return true if this alias name is the 'none' alias.
+     */
     public function isNone()
     {
         return $this->sitename() == 'none';

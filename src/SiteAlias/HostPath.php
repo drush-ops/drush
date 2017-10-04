@@ -90,21 +90,41 @@ class HostPath
         return new HostPath($alias_record, $hostPath, $parts[1]);
     }
 
+    /**
+     * Return the alias record portion of the host path.
+     *
+     * @return AliasRecord
+     */
     public function getAliasRecord()
     {
         return $this->alias_record;
     }
 
+    /**
+     * Returns true if this host path points at a remote machine
+     *
+     * @return bool
+     */
     public function isRemote()
     {
         return $this->alias_record->isRemote();
     }
 
+    /**
+     * Return the original host path string, as provided to the create() method.
+     *
+     * @return string
+     */
     public function getOriginal()
     {
         return $this->original_path;
     }
 
+    /**
+     * Return just the path portion of the host path
+     *
+     * @return string
+     */
     public function getPath()
     {
         if (empty($this->path)) {
@@ -116,12 +136,25 @@ class HostPath
         return $this->path;
     }
 
+    /**
+     * Returns 'true' if the path portion of the host path begins with a
+     * path alias (e.g. '%files'). Path aliases must appear at the beginning
+     * of the path.
+     *
+     * @return bool
+     */
     public function hasPathAlias()
     {
         $pathAlias = $this->getPathAlias();
         return !empty($pathAlias);
     }
 
+    /**
+     * Return just the path alias portion of the path (e.g. '%files'), or
+     * empty if there is no alias in the path.
+     *
+     * @return string
+     */
     public function getPathAlias()
     {
         if (preg_match('#%([^/]*).*#', $this->path, $matches)) {
@@ -130,19 +163,36 @@ class HostPath
         return '';
     }
 
+    /**
+     * Replaces the path alias portion of the path with the resolved path.
+     *
+     * @param string $resolvedPath The converted path alias (e.g. 'sites/default/files')
+     * @return $this
+     */
     public function replacePathAlias($resolvedPath)
     {
         $pathAlias = $this->getPathAlias();
         if (!empty($pathAlias)) {
             $this->path = rtrim($resolvedPath, '/') . substr($this->path, strlen($pathAlias) + 1);
         }
+        return $this;
     }
 
+    /**
+     * Return the host portion of the host path, including the user.
+     *
+     * @return string
+     */
     public function getHost()
     {
         return $this->alias_record->remoteHostWithUser();
     }
 
+    /**
+     * Return the fully resolved path, e.g. user@server:/path/to/drupalroot/sites/default/files
+     *
+     * @return string
+     */
     public function fullyQualifiedPath()
     {
         $host = $this->getHost();
@@ -158,6 +208,8 @@ class HostPath
      * That is what we want most of the time; however, the trailing slash is
      * sometimes significant, e.g. for rsync, so we provide a separate API
      * for those cases where the trailing slash should be preserved.
+     *
+     * @return string
      */
     public function fullyQualifiedPathPreservingTrailingSlash()
     {
@@ -169,7 +221,17 @@ class HostPath
         return $fqp;
     }
 
-    protected static function determinePathOrAlias($manager, $alias_record, $hostPath, $single_part)
+    /**
+     * Helper method for HostPath::create(). When the host path contains no
+     * ':', this method determines whether the string that was provided is
+     * a host or a path.
+     *
+     * @param SiteAliasManager $manager
+     * @param AliasRecord|bool $alias_record
+     * @param string $hostPath
+     * @param string $single_part
+     */
+    protected static function determinePathOrAlias(SiteAliasManager $manager, $alias_record, $hostPath, $single_part)
     {
         // If $alias_record is false, then $single_part must be a path.
         if ($alias_record === false) {
