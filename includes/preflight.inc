@@ -17,51 +17,6 @@ function drush_main() {
   require dirname(__DIR__) . '/drush.php';
 }
 
-function drush_init_register_command_files($container, $commandFiles) {
-  foreach ($commandFiles as $sourcePath => $className) {
-    if (!class_exists($className)) {
-      include $sourcePath;
-    }
-    $classAlias = str_replace('\\', '', $className);
-    // Add and fetch our class from the container to apply the inductors
-    $container->share($classAlias, $className);
-    $commandFileInstance = $container->get($classAlias);
-    if ($commandFileInstance instanceof BuilderAwareInterface) {
-        $builder = $container->get('collectionBuilder', [$commandFileInstance]);
-        $commandFileInstance->setBuilder($builder);
-    }
-    drush_add_command_instance($container, $commandFileInstance);
-  }
-}
-
-function drush_add_command_instance($container, $commandInstance, $includeAllPublicMethods = true) {
-  if ($commandInstance instanceof Symfony\Component\Console\Command\Command) {
-    drush_add_command_to_application($container, $commandInstance);
-    return;
-  }
-  drush_create_commands_from_command_instance($container, $commandInstance);
-}
-
-function drush_create_commands_from_command_instance($container, $commandInstance, $includeAllPublicMethods = true) {
-  $application = $container->get('application');
-  $commandFactory = $container->get('commandFactory');
-  $commandList = $commandFactory->createCommandsFromClass($commandInstance, $includeAllPublicMethods);
-  foreach ($commandList as $command) {
-    drush_add_command_to_application($container, $command);
-  }
-}
-
-function drush_add_command_to_application($container, $command) {
-  $application = $container->get('application');
-  $commandName = $command->getName();
-  $drushAlias = strtr($commandName, ':', '-');
-  if ($commandName != $drushAlias) {
-    $aliases = $command->getAliases();
-    $command->setAliases(array_unique(array_merge($aliases, [$drushAlias])));
-  }
-  $application->add($command);
-}
-
 /**
  * We set this context to let the shutdown function know we reached the end of drush_main().
  *
