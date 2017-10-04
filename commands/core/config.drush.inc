@@ -180,9 +180,10 @@ function config_drush_command() {
     'core' => array('8+'),
     'aliases' => array('cdel'),
     'arguments' => array(
-        'config-name' => 'The config object name, for example "system.site".',
+      'config-name' => 'The config object name, for example "system.site".',
+      'key' => 'A config key to clear, for example "page.front".',
     ),
-    'required arguments'
+    'required-arguments' => 1,
   );
 
   $items['config-pull'] = array(
@@ -267,14 +268,24 @@ function drush_config_get($config_name, $key = NULL) {
  *
  * @param $config_name
  *   The config name.
+ * @param $key
+ *   A config key to clear, for example "page.front".
  */
-function drush_config_delete($config_name) {
+function drush_config_delete($config_name, $key = null) {
   $config =\Drupal::service('config.factory')->getEditable($config_name);
   if ($config->isNew()) {
-    return drush_set_error('DRUSH_CONFIG_ERROR', 'Configuration name not recognized. Use config-list to see all names.');
+    return drush_set_error('DRUSH_CONFIG_ERROR', dt('Configuration name not recognized. Use config-list to see all names.'));
   }
   else {
-    $config->delete();
+    if ($key) {
+      if ($config->get($key) === null) {
+        return drush_set_error('DRUSH_CONFIG_ERROR', dt('Configuration key !key not found.', array('!key' => $key)));
+      }
+      $config->clear($key)->save();
+    }
+    else {
+      $config->delete();
+    }
   }
 }
 
