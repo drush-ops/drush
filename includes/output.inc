@@ -1,8 +1,6 @@
 <?php
 
 use Drupal\Core\Render\Markup;
-use Drush\Drush;
-use Drush\Log\LogLevel;
 use Drush\Utils\StringUtils;
 
 /**
@@ -27,6 +25,9 @@ use Drush\Utils\StringUtils;
  *    error.  See http://php.net/manual/en/features.commandline.io-streams.php
  * @param $newline
  *    Add a "\n" to the end of the output.  Defaults to TRUE.
+ *
+ * @deprecated
+ *   Use $this->output()->writeln() in a command method.
  */
 function drush_print($message = '', $indent = 0, $handle = NULL, $newline = TRUE) {
   $msg = str_repeat(' ', $indent) . (string)$message;
@@ -44,13 +45,6 @@ function drush_print($message = '', $indent = 0, $handle = NULL, $newline = TRUE
     //$output = Drush::service('output');
     //$output->write($msg);
   }
-}
-
-/**
- * Print a prompt -- that is, a message with no trailing newline.
- */
-function drush_print_prompt($message, $indent = 0, $handle = NULL) {
-  drush_print($message, $indent, $handle, FALSE);
 }
 
 /**
@@ -138,35 +132,6 @@ function drush_html_to_text($html, $allowed_tags = NULL) {
   );
   $text = str_replace(array_keys($replacements), array_values($replacements), $html);
   return html_entity_decode(preg_replace('/ *<[^>]*> */', ' ', $text));
-}
-
-
-/**
- * Converts a PHP variable into its Javascript equivalent.
- *
- * We provide a copy of D7's drupal_json_encode since this function is
- * unavailable on earlier versions of Drupal.
- *
- * @see drupal_json_decode()
- * @ingroup php_wrappers
- */
-function drush_json_encode($var) {
-  $json = json_encode($var, JSON_PRETTY_PRINT);
-  // json_encode() does not escape <, > and &, so we do it with str_replace().
-  return str_replace(array('<', '>', '&'), array('\u003c', '\u003e', '\u0026'), $json);
-}
-
-/**
- * Converts an HTML-safe JSON string into its PHP equivalent.
- *
- * We provide a copy of D7's drupal_json_decode since this function is
- * unavailable on earlier versions of Drupal.
- *
- * @see drupal_json_encode()
- * @ingroup php_wrappers
- */
-function drush_json_decode($var) {
-  return json_decode($var, TRUE);
 }
 
 /**
