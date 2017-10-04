@@ -312,7 +312,7 @@ class ConfigLocator
      */
     protected function addConfigCandidates(ConfigProcessor $processor, ConfigLoaderInterface $loader, $paths, $candidates)
     {
-        $configFiles = $this->locateConfigs($paths, $candidates);
+        $configFiles = $this->identifyCandidates($paths, $candidates);
         foreach ($configFiles as $configFile) {
             $processor->extend($loader->load($configFile));
             $this->configFilePaths[] = $configFile;
@@ -320,29 +320,32 @@ class ConfigLocator
     }
 
     /**
-     * Find available configuration files.
+     * Given a list of paths, and candidates that might exist at each path,
+     * return all of the candidates that can be found. Candidates may be
+     * either directories or files.
      *
      * @param string[] $paths
      * @param string[] $candidates
      * @return string[] paths
      */
-    protected function locateConfigs($paths, $candidates)
+    protected function identifyCandidates($paths, $candidates)
     {
         $configFiles = [];
         foreach ($paths as $path) {
-            $configFiles = array_merge($configFiles, $this->locateConfig($path, $candidates));
+            $configFiles = array_merge($configFiles, $this->identifyCandidatesAtPath($path, $candidates));
         }
         return $configFiles;
     }
 
     /**
-     * Search for all config candidate locations at a single path.
+     * Search for all matching candidate locations at a single path.
+     * Candidate locations may be either directories or files.
      *
      * @param string $path
      * @param string[] $candidates
      * @return string[]
      */
-    protected function locateConfig($path, $candidates)
+    protected function identifyCandidatesAtPath($path, $candidates)
     {
         if (!is_dir($path)) {
             return [];
@@ -350,7 +353,7 @@ class ConfigLocator
 
         $result = [];
         foreach ($candidates as $candidate) {
-            $configFile = "$path/$candidate";
+            $configFile = empty($candidate) ? $path : "$path/$candidate";
             if (file_exists($configFile)) {
                 $result[] = $configFile;
             }
@@ -366,13 +369,16 @@ class ConfigLocator
      *
      * @return array
      */
-    public function getSiteAliasPaths(PreflightArgsInterface $preflightArgs, Environment $environment)
+    public function getSiteAliasPaths($paths, Environment $environment)
     {
-        $paths = $preflightArgs->aliasPaths();
+        // In addition to the paths passed in to us (from --alias-paths
+        // commandline options), add some site-local locations.
         foreach ($this->siteRoots as $siteRoot) {
             $paths[] = $siteRoot . '/drush';
         }
         $paths[] = $this->composerRoot . '/drush';
+        $candidates = [ '', 'site-aliases' ];
+        $paths = $this->identifyCandidates($paths, $candidates);
 
         return $paths;
     }
@@ -384,7 +390,7 @@ class ConfigLocator
      *
      * @return array
      */
-    public function getCommandFilePaths(PreflightArgsInterface $preflightArgs)
+    public function getCommandFilePaths($commandPaths)
     {
         // Start with the built-in commands.
         $searchpath = [
@@ -392,7 +398,6 @@ class ConfigLocator
         ];
 
         // Commands specified by 'include' option
-        $commandPaths = $preflightArgs->commandPaths();
         foreach ($commandPaths as $commandPath) {
             if (is_dir($commandPath)) {
                 $searchpath[] = $commandPath;

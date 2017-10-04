@@ -51,7 +51,7 @@
 #        a. The /drush and /sites/all/drush folders for the current Drupal site
 #        b. The /drush folder in the directory above the current Drupal site
 #
-# These locations are no longer searched recursively; alias files musst
+# These locations are no longer searched recursively; alias files must
 # appear directly inside one of the search locations, or in a directory called
 # 'site-aliases' in a search location, or it will not be found.
 #
@@ -181,7 +181,7 @@
 #     - `drush sql-sync @stage @live`
 #     - `drush sql-sync @live @stage`
 #   NOTE: Setting boolean options broke with Symfony 3. This will be fixed
-#     in a future release. See:
+#     in a future release. See: https://github.com/drush-ops/drush/issues/2956
 #
 # Altering aliases:
 #
