@@ -10,14 +10,12 @@ pages:
   - Example files: examples.md
   - Cron: cron.md
   - Shell aliases: shellaliases.md
-  - Shell scripts: shellscripts.md
   - Bastion: bastion.md
   - Exporting Drupal configuration: config-exporting.md
 - Writing commands/generators:
   - Command Authoring: commands.md
   - Generator Authoring: generators.md
   - Bootstrap: bootstrap.md
-  - Context system: context.md
 #use_directory_urls: false
 
 markdown_extensions:

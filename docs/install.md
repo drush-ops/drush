@@ -12,6 +12,10 @@ Install a site-local Drush and Drush Launcher.
 1. See [Usage](http://docs.drush.org/en/master/usage/) for details on using Drush.
 1. To use a non-default PHP, [edit ~/.bashrc so that the desired PHP is in front of your $PATH](http://stackoverflow.com/questions/4145667/how-to-override-the-path-of-php-to-use-the-mamp-path/10653443#10653443). If that is not desireable, you can change your PATH for just one request: `PATH=/path/to/php:$PATH` drush status ...`
 
+!!! note
+
+    Drush 9 cannot run commandfiles from Drush 8 and below (e.g. example.drush.inc). See our [guide on porting commandfiles](https://weitzman.github.io/blog/port-to-drush9). Also note that alias and config files use a new .yml format in Drush 9.
+
 Drupal Compatibility
 -----------------
 Drush Version | Drush Branch  | PHP | Compatible Drupal versions | Code Status

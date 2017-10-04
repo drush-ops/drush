@@ -1,7 +1,8 @@
 Creating Custom Drush Commands
 ==============================
 
-Creating a new Drush command is easy. Follow these simple steps:
+Creating a new Drush command is easy. Follow the steps below. If you are porting a legacy commandfile, enter the path to 
+that file after Step 1. Also see [tips on porting command to Drush 9](https://weitzman.github.io/blog/port-to-drush9).
 
 1. Run `drush generate drush-command-file`.
 1. Enter the machine name of the module that should "own" the file.
