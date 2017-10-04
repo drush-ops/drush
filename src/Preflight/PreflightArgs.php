@@ -23,7 +23,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      */
     protected $args;
 
-    const DRUSH_CONFIG_CONTEXT_NAMESPACE = 'runtime.context';
+    const DRUSH_CONFIG_PATH_NAMESPACE = 'drush';
     const ALIAS = 'alias';
     const ALIAS_PATH = 'alias-path';
     const COMMAND_PATH = 'include';
@@ -90,8 +90,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     {
         return [
             self::SIMULATE =>       \Robo\Config\Config::SIMULATE,
-            self::BACKEND =>        self::BACKEND,
-            self::LOCAL =>          self::DRUSH_CONFIG_CONTEXT_NAMESPACE . '.' . self::LOCAL,
+            self::BACKEND =>        'runtime.' . self::BACKEND,
+            self::LOCAL =>          'runtime.' . self::LOCAL,
         ];
     }
 
@@ -102,14 +102,16 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     protected function optionConfigPathMap()
     {
         return [
-            self::ALIAS_PATH =>     self::DRUSH_CONFIG_CONTEXT_NAMESPACE . '.' . self::ALIAS_PATH,
-            self::CONFIG_PATH =>    self::DRUSH_CONFIG_CONTEXT_NAMESPACE . '.' . self::CONFIG_PATH,
-            self::COMMAND_PATH =>   self::DRUSH_CONFIG_CONTEXT_NAMESPACE . '.' . self::COMMAND_PATH,
+            self::ALIAS_PATH =>     self::DRUSH_CONFIG_PATH_NAMESPACE . '.' . self::ALIAS_PATH,
+            self::CONFIG_PATH =>    self::DRUSH_CONFIG_PATH_NAMESPACE . '.' . self::CONFIG_PATH,
+            self::COMMAND_PATH =>   self::DRUSH_CONFIG_PATH_NAMESPACE . '.' . self::COMMAND_PATH,
         ];
     }
 
     /**
      * @inheritdoc
+     *
+     * @see Environment::exportConfigData(), which also exports information to config.
      */
     public function applyToConfig(ConfigInterface $config)
     {
