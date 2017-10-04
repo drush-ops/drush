@@ -138,7 +138,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
         // Now, we parse the object.
         switch ($options['input-format']) {
             case 'json':
-                $data = drush_json_decode($data);
+                $data = json_decode($data, true);
                 break;
         }
 
