@@ -274,12 +274,12 @@ function drush_config_get($config_name, $key = NULL) {
 function drush_config_delete($config_name, $key = null) {
   $config =\Drupal::service('config.factory')->getEditable($config_name);
   if ($config->isNew()) {
-    return drush_set_error('DRUSH_CONFIG_ERROR', 'Configuration name not recognized. Use config-list to see all names.');
+    return drush_set_error('DRUSH_CONFIG_ERROR', dt('Configuration name not recognized. Use config-list to see all names.'));
   }
   else {
     if ($key) {
       if ($config->get($key) === null) {
-        throw new \Exception(dt('Configuration key !key not found.', array('!key' => $key)));
+        return drush_set_error('DRUSH_CONFIG_ERROR', dt('Configuration key !key not found.', array('!key' => $key)));
       }
       $config->clear($key)->save();
     }
