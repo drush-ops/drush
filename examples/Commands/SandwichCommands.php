@@ -13,7 +13,7 @@ use Drush\Utils\StringUtils;
  * - http://cgit.drupalcode.org/devel/tree/devel_generate/drush.services.yml
  *
  * This file is a good example of the first of those bullets (a commandfile) but
- * since it isn't part of a module, it does not implement drush.services.yml. Global commandfiles like this one
+ * since it isn't part of a module, it does not implement drush.services.yml.
  */
 
 class SandwichCommands extends DrushCommands {
