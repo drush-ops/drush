@@ -269,13 +269,12 @@ class ConfigCommands extends DrushCommands
      */
     function getStorage($directory) {
         if ($directory == \config_get_config_directory(CONFIG_SYNC_DIRECTORY)) {
-            return $this->getConfigStorageSync();
+            return \Drupal::service('config.storage.sync');
         }
         else {
             return new FileStorage($directory);
         }
     }
-
 
     /**
      * Build a table of config changes.
