@@ -40,88 +40,6 @@ define('DRUSH_APPLICATION_ERROR', 255);
  */
 define('DRUSH_KILOBYTE', 1024);
 
-/**
- * Default amount of time, in seconds, to cache downloads via
- * drush_download_file(). One day is 86400 seconds.
- */
-define('DRUSH_CACHE_LIFETIME_DEFAULT', 86400);
-
-/**
- * Include a file, selecting a version specific file if available.
- *
- * For example, if you pass the path "/var/drush" and the name
- * "update" when bootstrapped on a Drupal 8 site it will first check for
- * the presence of "/var/drush/update_8.inc" in include it if exists. If this
- * file does NOT exist it will proceed and check for "/var/drush/update.inc".
- * If neither file exists, it will return FALSE.
- *
- * @param $path
- *   The path you want to search.
- * @param $name
- *   The file base name you want to include (not including a version suffix
- *   or extension).
- * @param $version
- *   The version suffix you want to include (could be specific to the software
- *   or platform your are connecting to) - defaults to the current Drupal core
- *   major version.
- * @param $extension
- *   The extension - defaults to ".inc".
- *
- * @return
- *   TRUE if the file was found and included.
- */
-function drush_include($path, $name, $version = NULL, $extension = 'inc') {
-  $name = str_replace('-', '_', $name);
-  $version = ($version) ? $version : drush_drupal_major_version();
-
-  $file = sprintf("%s/%s_%s.%s", $path, $name, $version, $extension);
-  if (file_exists($file)) {
-    include_once($file);
-    return TRUE;
-  }
-  $file = sprintf("%s/%s.%s", $path, $name, $extension);
-  if (file_exists($file)) {
-    include_once($file);
-    return TRUE;
-  }
-
-  return drush_set_error('DRUSH_INCLUDE_NO_PATH', dt('Unable to include file !name!version!extension or !name!extension from !path.', array('!name' => $name, '!version' => $version, '!extension' => $extension)));
-}
-
-/**
- * Provide a version-specific class instance.
- *
- * @param $class_name
- *   The name of the class to instantiate.  Appends the Drupal
- *   major version number to the end of the class name before instantiation.
- * @param $constructor_args
- *   An array of arguments to pass to the class constructor.
- *
- * Example wrapper class to instantiate a widget, called with the
- * arguments for the WIDGET_CLASS constructor:
- *
- *  function drush_WIDGET_CLASS_get_class($widgetName, $widgetStyle) {
- *    retrun drush_get_class('Widget_Class', func_get_args()));
- *  }
- */
-
-function drush_get_class($class_name, $constructor_args = array(), $variations = array()) {
-  if (empty($variations)) {
-    $variations[] = drush_drupal_major_version();
-  }
-  $class_names = is_array($class_name) ? $class_name : array($class_name);
-  foreach ($class_names as $class_name) {
-    for ($i=count($variations); $i >= 0; $i--) {
-      $variant_class_name = $class_name . implode('', array_slice($variations, 0, $i));
-      if (class_exists($variant_class_name)) {
-        $reflectionClass = new ReflectionClass($variant_class_name);
-        return !empty($constructor_args) ? $reflectionClass->newInstanceArgs($constructor_args) : $reflectionClass->newInstanceArgs();
-      }
-    }
-  }
-  // Something bad happenned. TODO Exception?
-  return drush_set_error('DRUSH_GET_CLASS_ERROR', dt('Unable to load class !class', array('!class' => $class_name)));
-}
 
 /**
  * Convert a csv string, or an array of items which
@@ -459,6 +377,138 @@ function drush_file_is_tarball($path) {
 }
 
 /**
+ * Extract a tarball.
+ *
+ * @param string $path
+ *   Path to the archive to be extracted.
+ * @param string $destination
+ *   The destination directory the tarball should be extracted into.
+ *   Optional, if ommitted the tarball directory will be used as destination.
+ * @param boolean $listing
+ *   If TRUE, a listing of the tar contents will be returned on success.
+ * @param string $tar_extra_options
+ *   Extra options to be passed to the tar command.
+ *
+ * @return mixed
+ *   TRUE on success, FALSE on fail. If $listing is TRUE, a file listing of the
+ *   tarball is returned if the extraction reported success, instead of TRUE.
+ */
+function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE, $tar_extra_options = '') {
+  // Check if tarball is supported.
+  if (!($mimetype = drush_file_is_tarball($path))) {
+    return drush_set_error('TARBALL_EXTRACT_UNKNOWN_FORMAT', dt('Unable to extract !path. Unknown archive format.', array('!path' => $path)));
+  }
+
+  // Check if destination is valid.
+  if (!$destination) {
+    $destination = dirname($path);
+  }
+  if (!drush_mkdir($destination)) {
+    // drush_mkdir already set an error.
+    return FALSE;
+  }
+
+  // Perform the extraction of a zip file.
+  if (($mimetype == 'application/zip') || ($mimetype == 'application/x-zip')) {
+    $return = drush_shell_cd_and_exec(dirname($path), "unzip %s -d %s", $path, $destination);
+    if (!$return) {
+      return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to unzip !filename.', array('!filename' => $path)));
+    }
+    if ($listing) {
+      // unzip prefixes the file listing output with a header line,
+      // and prefixes each line with a verb representing the compression type.
+      $output = drush_shell_exec_output();
+      // Remove the header line.
+      array_shift($output);
+      // Remove the prefix verb from each line.
+      $output = array_map(
+        function ($str) use ($destination) {
+          return substr($str, strpos($str, ":") + 3 + strlen($destination));
+        },
+        $output
+      );
+      // Remove any remaining blank lines.
+      $return = array_filter(
+        $output,
+        function ($str) {
+          return $str != "";
+        }
+      );
+    }
+  }
+  // Otherwise we have a possibly-compressed Tar file.
+  // If we are not on Windows, then try to do "tar" in a single operation.
+  elseif (!drush_is_windows()) {
+    $tar = drush_get_tar_executable();
+    $tar_compression_flag = '';
+    if ($mimetype == 'application/x-gzip') {
+      $tar_compression_flag = 'z';
+    }
+    elseif ($mimetype == 'application/x-bzip2') {
+      $tar_compression_flag = 'j';
+    }
+
+    $return = drush_shell_cd_and_exec(dirname($path), "$tar {$tar_extra_options} -C %s -x%sf %s", $destination, $tar_compression_flag, basename($path));
+    if (!$return) {
+      return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to untar !filename.', array('!filename' => $path)));
+    }
+    if ($listing) {
+      // We use a separate tar -tf instead of -xvf above because
+      // the output is not the same in Mac.
+      drush_shell_cd_and_exec(dirname($path), "$tar -t%sf %s", $tar_compression_flag, basename($path));
+      $return = drush_shell_exec_output();
+    }
+  }
+  // In windows, do the extraction by its primitive steps.
+  else {
+    // 1. copy the source tarball to the destination directory. Rename to a
+    // temp name in case the destination directory == dirname($path)
+    $tmpfile = drush_tempnam(basename($path), $destination);
+    drush_copy_dir($path, $tmpfile, FILE_EXISTS_OVERWRITE);
+
+    // 2. uncompress the tarball, if compressed.
+    if (($mimetype == 'application/x-gzip') || ($mimetype == 'application/x-bzip2')) {
+      if ($mimetype == 'application/x-gzip') {
+        $compressed = $tmpfile . '.gz';
+        // We used to use gzip --decompress in --stdout > out, but the output
+        // redirection sometimes failed on Windows for some binary output.
+        $command = 'gzip --decompress %s';
+      }
+      elseif ($mimetype == 'application/x-bzip2') {
+        $compressed = $tmpfile . '.bz2';
+        $command = 'bzip2 --decompress %s';
+      }
+      drush_op('rename', $tmpfile, $compressed);
+      $return = drush_shell_cd_and_exec(dirname($compressed), $command, $compressed);
+      if (!$return || !file_exists($tmpfile)) {
+        return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to decompress !filename.', array('!filename' => $compressed)));
+      }
+    }
+
+    // 3. Untar.
+    $tar = drush_get_tar_executable();
+    $return = drush_shell_cd_and_exec(dirname($tmpfile), "$tar {$tar_extra_options} -xvf %s", basename($tmpfile));
+    if (!$return) {
+      return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to untar !filename.', array('!filename' => $tmpfile)));
+    }
+    if ($listing) {
+      $return = drush_shell_exec_output();
+      // Cut off the 'x ' prefix for the each line of the tar output
+      // See http://drupal.org/node/1775520
+      foreach($return as &$line) {
+        if(strpos($line, "x ") === 0)
+          $line = substr($line, 2);
+      }
+    }
+
+    // Remove the temporary file so the md5 hash is accurate.
+    unlink($tmpfile);
+  }
+
+  return $return;
+}
+
+/**
  * @defgroup logging Logging information to be provided as output.
  * @{
  *
@@ -487,6 +537,9 @@ function drush_file_is_tarball($path) {
  *   a -v or --verbose flag, use type 'ok' or 'notice', this prints log messages out to
  *   STDERR, which prints to screen (unless you have redirected it). All other
  *   types of messages will be assumed to be info.
+ *
+ * @deprecated
+ *   Use this->logger()->warning (for example) from an Annotated command method.
  */
 function drush_log($message, $type = LogLevel::INFO, $error = null) {
   $entry = array(
@@ -596,40 +649,6 @@ function drush_get_log() {
  */
 function dlm($object) {
   drush_log(print_r($object, TRUE));
-}
-
-// Print all timers for the request.
-function drush_print_timers() {
-  global $timers;
-  $temparray = array();
-  foreach ((array)$timers as $name => $timerec) {
-    // We have to use timer_read() for active timers, and check the record for others
-    if (isset($timerec['start'])) {
-      $temparray[$name] = timer_read($name);
-    }
-    else {
-      $temparray[$name] = $timerec['time'];
-    }
-  }
-  // Go no farther if there were no timers
-  if (count($temparray) > 0) {
-    // Put the highest cumulative times first
-    arsort($temparray);
-    $table = array();
-    $table[] = array('Timer', 'Cum (sec)', 'Count', 'Avg (msec)');
-    foreach ($temparray as $name => $time) {
-      $cum = round($time/1000, 3);
-      $count = $timers[$name]['count'];
-      if ($count > 0) {
-        $avg = round($time/$count, 3);
-      }
-      else {
-        $avg = 'N/A';
-      }
-      $table[] = array($name, $cum, $count, $avg);
-    }
-    drush_print_table($table, TRUE, array(), STDERR);
-  }
 }
 
 /**
@@ -816,20 +835,6 @@ function drush_clear_error() {
 }
 
 /**
- * Exit due to user declining a confirmation prompt.
- *
- * Usage:  return drush_user_abort();
- *
- * @deprecated
- */
-function drush_user_abort($msg = NULL) {
-  drush_set_context('DRUSH_USER_ABORT', TRUE);
-  drush_set_context('DRUSH_EXIT_CODE', DRUSH_EXITCODE_USER_ABORT);
-  drush_log($msg ? $msg : dt('Cancelled.'), LogLevel::CANCEL);
-  return FALSE;
-}
-
-/**
  * Turn PHP error handling off.
  *
  * This is commonly used while bootstrapping Drupal for install
@@ -1008,7 +1013,7 @@ function drush_value_format($value, $format) {
       break;
 
     case 'json':
-      $value = drush_json_decode($value);
+      $value = json_decode($value, true);
       break;
 
     case 'yaml':
