@@ -45,5 +45,5 @@ By default, Drush will print a success message when the run of cron is completed
 Specifying the Drupal site to run
 ---------------------------------
 
-There are many ways to tell Drush which Drupal site to select for the active command, and any may be used here. The example uses `cd [DOCROOT]`, but you could also use the --root and --uri flags, or a site alias.
+There are many ways to tell Drush which Drupal site to select for the active command, and any may be used here. The example uses `cd [DOCROOT]`, but you could also use the --root and --uri flags.
 
