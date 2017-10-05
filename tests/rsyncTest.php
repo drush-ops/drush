@@ -25,7 +25,7 @@ class rsyncCase extends CommandUnishTestCase {
 
     // Test simulated backend invoke
     $this->drush('rsync', ['@example.dev', '@example.stage'], $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
-    $expected = "Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --alias-path=__DIR__/resources/alias-fixtures --root=/path/to/drupal --uri=sitename --no-ansi rsync '\''@example.dev'\'' '\''@example.stage'\'' 2>&1' 2>&1";
+    $expected = "Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush --root=/path/to/drupal --uri=sitename --no-ansi rsync '\''@example.dev'\'' '\''@example.stage'\'' 2>&1' 2>&1";
     $this->assertOutputEquals($expected);
 
     // Test simulated simple rsync with two local sites
@@ -94,6 +94,7 @@ class rsyncCase extends CommandUnishTestCase {
     $output = preg_replace('#  *#', ' ', $output);
     // Get rid of any full paths in the output
     $output = str_replace(__DIR__, '__DIR__', $output);
+    $output = str_replace(self::getSandbox(), '__SANDBOX__', $output);
     $this->assertEquals($expected, $output);
   }
 
