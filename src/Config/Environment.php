@@ -98,22 +98,12 @@ class Environment
      * be added into the ConfigProcessor, where it will become accessible
      * via the configuration object.
      *
-     * So, this seems like a good idea becuase we already have ConfigAwareInterface
-     * et. al. that makes the config object easily available via dependency
-     * injection. Instead of this, we could also add the Environment object
-     * to the DI container and make an EnvironmentAwareInterface & etc.
-     *
-     * Not convinced that is better, but this mapping will grow.
+     * @see PreflightArgs::applyToConfig(), which also exports information to config.
      *
      * @return array Nested associative array that is overlayed on configuration.
      */
     public function exportConfigData()
     {
-        // TODO: decide how to organize / name this hierarchy.
-        // i.e. which is better:
-        //   $config->get('drush.base-dir')
-        //     - or -
-        //   $config->get('drush.base.dir')
         return [
             // Information about the environment presented to Drush
             'env' => [
@@ -135,6 +125,8 @@ class Environment
                 'user-dir' => $this->userConfigPath(),
                 'system-dir' => $this->systemConfigPath(),
                 'system-command-dir' => $this->systemCommandFilePath(),
+            ],
+            'runtime' => [
                 'site-file-previous' => $this->getSiteSetAliasFilePath('drush-drupal-prev-site-'),
                 'site-file-current' => $this->getSiteSetAliasFilePath(),
             ],

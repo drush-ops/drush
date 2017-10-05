@@ -13,7 +13,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * @var array
    */
   private static $sites = array();
-  
+
   private static $sandbox;
 
   private static $drush;
@@ -534,7 +534,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     }
     $etc = self::getSandbox() . '/etc/drush';
     file_put_contents(Path::join($etc, 'unish.alias.yml'), Yaml::dump($groups));
-    $config['runtime']['context']['alias-path'][] = $etc;
+    $config['drush']['paths']['alias-path'][] = $etc;
     file_put_contents(Path::join($etc, 'drush.yml'), Yaml::dump($config, 3));
   }
 
