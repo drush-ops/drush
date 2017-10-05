@@ -254,6 +254,261 @@ function drush_call_user_func_array($function, $args = array() ) {
 }
 
 /**
+ * Determines the MIME content type of the specified file.
+ *
+ * The power of this function depends on whether the PHP installation
+ * has either mime_content_type() or finfo installed -- if not, only tar,
+ * gz, zip and bzip2 types can be detected.
+ *
+ * If mime type can't be obtained, an error will be set.
+ *
+ * @return mixed
+ *   The MIME content type of the file or FALSE.
+ */
+function drush_mime_content_type($filename) {
+  $content_type = drush_attempt_mime_content_type($filename);
+  if ($content_type) {
+    drush_log(dt('Mime type for !file is !mt', array('!file' => $filename, '!mt' => $content_type)), LogLevel::INFO);
+    return $content_type;
+  }
+  return drush_set_error('MIME_CONTENT_TYPE_UNKNOWN', dt('Unable to determine mime type for !file.', array('!file' => $filename)));
+}
+
+/**
+ * Works like drush_mime_content_type, but does not set an error
+ * if the type is unknown.
+ */
+function drush_attempt_mime_content_type($filename) {
+  $content_type = FALSE;
+  if (class_exists('finfo')) {
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $content_type = $finfo->file($filename);
+    if ($content_type == 'application/octet-stream') {
+      drush_log(dt('Mime type for !file is application/octet-stream.', array('!file' => $filename)), LogLevel::DEBUG);
+      $content_type = FALSE;
+    }
+  }
+  // If apache is configured in such a way that all files are considered
+  // octet-stream (e.g with mod_mime_magic and an http conf that's serving all
+  // archives as octet-stream for other reasons) we'll detect mime types on our
+  //  own by examing the file's magic header bytes.
+  if (!$content_type) {
+    drush_log(dt('Examining !file headers.', array('!file' => $filename)), LogLevel::DEBUG);
+    if ($file = fopen($filename, 'rb')) {
+      $first = fread($file, 2);
+      fclose($file);
+
+      if ($first !== FALSE) {
+        // Interpret the two bytes as a little endian 16-bit unsigned int.
+        $data = unpack('v', $first);
+        switch ($data[1]) {
+          case 0x8b1f:
+            // First two bytes of gzip files are 0x1f, 0x8b (little-endian).
+            // See http://www.gzip.org/zlib/rfc-gzip.html#header-trailer
+            $content_type = 'application/x-gzip';
+            break;
+
+          case 0x4b50:
+            // First two bytes of zip files are 0x50, 0x4b ('PK') (little-endian).
+            // See http://en.wikipedia.org/wiki/Zip_(file_format)#File_headers
+            $content_type = 'application/zip';
+            break;
+
+          case 0x5a42:
+            // First two bytes of bzip2 files are 0x5a, 0x42 ('BZ') (big-endian).
+            // See http://en.wikipedia.org/wiki/Bzip2#File_format
+            $content_type = 'application/x-bzip2';
+            break;
+
+          default:
+            drush_log(dt('Unable to determine mime type from header bytes 0x!hex of !file.', array('!hex' => dechex($data[1]), '!file' => $filename,), LogLevel::DEBUG));
+        }
+      }
+      else {
+        drush_log(dt('Unable to read !file.', array('!file' => $filename)), LogLevel::WARNING);
+      }
+    }
+    else {
+      drush_log(dt('Unable to open !file.', array('!file' => $filename)), LogLevel::WARNING);
+    }
+  }
+
+  // 3. Lastly if above methods didn't work, try to guess the mime type from
+  // the file extension. This is useful if the file has no identificable magic
+  // header bytes (for example tarballs).
+  if (!$content_type) {
+    drush_log(dt('Examining !file extension.', array('!file' => $filename)), LogLevel::DEBUG);
+
+    // Remove querystring from the filename, if present.
+    $filename = basename(current(explode('?', $filename, 2)));
+    $extension_mimetype = array(
+      '.tar'     => 'application/x-tar',
+      '.sql'     => 'application/octet-stream',
+    );
+    foreach ($extension_mimetype as $extension => $ct) {
+      if (substr($filename, -strlen($extension)) === $extension) {
+        $content_type = $ct;
+        break;
+      }
+    }
+  }
+  return $content_type;
+}
+
+/**
+ * Check whether a file is a supported tarball.
+ *
+ * @return mixed
+ *   The file content type if it's a tarball. FALSE otherwise.
+ */
+function drush_file_is_tarball($path) {
+  $content_type = drush_attempt_mime_content_type($path);
+  $supported = array(
+    'application/x-bzip2',
+    'application/x-gzip',
+    'application/x-tar',
+    'application/x-zip',
+    'application/zip',
+  );
+  if (in_array($content_type, $supported)) {
+    return $content_type;
+  }
+  return FALSE;
+}
+
+/**
+ * Extract a tarball.
+ *
+ * @param string $path
+ *   Path to the archive to be extracted.
+ * @param string $destination
+ *   The destination directory the tarball should be extracted into.
+ *   Optional, if ommitted the tarball directory will be used as destination.
+ * @param boolean $listing
+ *   If TRUE, a listing of the tar contents will be returned on success.
+ * @param string $tar_extra_options
+ *   Extra options to be passed to the tar command.
+ *
+ * @return mixed
+ *   TRUE on success, FALSE on fail. If $listing is TRUE, a file listing of the
+ *   tarball is returned if the extraction reported success, instead of TRUE.
+ */
+function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE, $tar_extra_options = '') {
+  // Check if tarball is supported.
+  if (!($mimetype = drush_file_is_tarball($path))) {
+    return drush_set_error('TARBALL_EXTRACT_UNKNOWN_FORMAT', dt('Unable to extract !path. Unknown archive format.', array('!path' => $path)));
+  }
+
+  // Check if destination is valid.
+  if (!$destination) {
+    $destination = dirname($path);
+  }
+  if (!drush_mkdir($destination)) {
+    // drush_mkdir already set an error.
+    return FALSE;
+  }
+
+  // Perform the extraction of a zip file.
+  if (($mimetype == 'application/zip') || ($mimetype == 'application/x-zip')) {
+    $return = drush_shell_cd_and_exec(dirname($path), "unzip %s -d %s", $path, $destination);
+    if (!$return) {
+      return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to unzip !filename.', array('!filename' => $path)));
+    }
+    if ($listing) {
+      // unzip prefixes the file listing output with a header line,
+      // and prefixes each line with a verb representing the compression type.
+      $output = drush_shell_exec_output();
+      // Remove the header line.
+      array_shift($output);
+      // Remove the prefix verb from each line.
+      $output = array_map(
+        function ($str) use ($destination) {
+          return substr($str, strpos($str, ":") + 3 + strlen($destination));
+        },
+        $output
+      );
+      // Remove any remaining blank lines.
+      $return = array_filter(
+        $output,
+        function ($str) {
+          return $str != "";
+        }
+      );
+    }
+  }
+  // Otherwise we have a possibly-compressed Tar file.
+  // If we are not on Windows, then try to do "tar" in a single operation.
+  elseif (!drush_is_windows()) {
+    $tar = drush_get_tar_executable();
+    $tar_compression_flag = '';
+    if ($mimetype == 'application/x-gzip') {
+      $tar_compression_flag = 'z';
+    }
+    elseif ($mimetype == 'application/x-bzip2') {
+      $tar_compression_flag = 'j';
+    }
+
+    $return = drush_shell_cd_and_exec(dirname($path), "$tar {$tar_extra_options} -C %s -x%sf %s", $destination, $tar_compression_flag, basename($path));
+    if (!$return) {
+      return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to untar !filename.', array('!filename' => $path)));
+    }
+    if ($listing) {
+      // We use a separate tar -tf instead of -xvf above because
+      // the output is not the same in Mac.
+      drush_shell_cd_and_exec(dirname($path), "$tar -t%sf %s", $tar_compression_flag, basename($path));
+      $return = drush_shell_exec_output();
+    }
+  }
+  // In windows, do the extraction by its primitive steps.
+  else {
+    // 1. copy the source tarball to the destination directory. Rename to a
+    // temp name in case the destination directory == dirname($path)
+    $tmpfile = drush_tempnam(basename($path), $destination);
+    drush_copy_dir($path, $tmpfile, FILE_EXISTS_OVERWRITE);
+
+    // 2. uncompress the tarball, if compressed.
+    if (($mimetype == 'application/x-gzip') || ($mimetype == 'application/x-bzip2')) {
+      if ($mimetype == 'application/x-gzip') {
+        $compressed = $tmpfile . '.gz';
+        // We used to use gzip --decompress in --stdout > out, but the output
+        // redirection sometimes failed on Windows for some binary output.
+        $command = 'gzip --decompress %s';
+      }
+      elseif ($mimetype == 'application/x-bzip2') {
+        $compressed = $tmpfile . '.bz2';
+        $command = 'bzip2 --decompress %s';
+      }
+      drush_op('rename', $tmpfile, $compressed);
+      $return = drush_shell_cd_and_exec(dirname($compressed), $command, $compressed);
+      if (!$return || !file_exists($tmpfile)) {
+        return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to decompress !filename.', array('!filename' => $compressed)));
+      }
+    }
+
+    // 3. Untar.
+    $tar = drush_get_tar_executable();
+    $return = drush_shell_cd_and_exec(dirname($tmpfile), "$tar {$tar_extra_options} -xvf %s", basename($tmpfile));
+    if (!$return) {
+      return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to untar !filename.', array('!filename' => $tmpfile)));
+    }
+    if ($listing) {
+      $return = drush_shell_exec_output();
+      // Cut off the 'x ' prefix for the each line of the tar output
+      // See http://drupal.org/node/1775520
+      foreach($return as &$line) {
+        if(strpos($line, "x ") === 0)
+          $line = substr($line, 2);
+      }
+    }
+
+    // Remove the temporary file so the md5 hash is accurate.
+    unlink($tmpfile);
+  }
+
+  return $return;
+}
+
+/**
  * @defgroup logging Logging information to be provided as output.
  * @{
  *
