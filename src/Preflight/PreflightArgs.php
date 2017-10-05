@@ -23,7 +23,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      */
     protected $args;
 
-    const DRUSH_CONFIG_PATH_NAMESPACE = 'drush';
+    const DRUSH_CONFIG_PATH_NAMESPACE = 'drush.paths';
     const ALIAS = 'alias';
     const ALIAS_PATH = 'alias-path';
     const COMMAND_PATH = 'include';
