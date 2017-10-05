@@ -276,7 +276,7 @@ class Drush
      */
     public static function backend()
     {
-        return \Drush\Drush::config()->get('backend');
+        return \Drush\Drush::config()->get(\Drush\Preflight\PreflightArgs::BACKEND);
     }
 
     /**
@@ -335,7 +335,7 @@ class Drush
         $options = array_intersect_key($options, array_flip($optionNamesFromCommandline));
 
         // Add in the 'runtime.context' items, which includes --include, --alias-path et. al.
-        return $options + array_filter(static::config()->get('runtime.context'));
+        return $options + array_filter(static::config()->get(\Drush\Preflight\PreflightArgs::DRUSH_RUNTIME_CONTEXT_NAMESPACE));
     }
 
     /**

@@ -134,13 +134,14 @@ class Preflight
     {
         // Load configuration and aliases from defined global locations
         // where such things are found.
-        $configLocator = new ConfigLocator();
-        $configLocator->setLocal($preflightArgs->isLocal());
-        $configLocator->addUserConfig($preflightArgs->configPaths(), $environment->systemConfigPath(), $environment->userConfigPath());
-        $configLocator->addDrushConfig($environment->drushBasePath());
+        $configLocator = new ConfigLocator('DRUSH_');
 
         // Make our environment settings available as configuration items
         $configLocator->addEnvironment($environment);
+
+        $configLocator->setLocal($preflightArgs->isLocal());
+        $configLocator->addUserConfig($preflightArgs->configPaths(), $environment->systemConfigPath(), $environment->userConfigPath());
+        $configLocator->addDrushConfig($environment->drushBasePath());
 
         return $configLocator;
     }
@@ -219,7 +220,7 @@ class Preflight
         $configLocator->setComposerRoot($this->selectedComposerRoot());
 
         // Look up the locations where alias files may be found.
-        $paths = $configLocator->getSiteAliasPaths($preflightArgs, $this->environment);
+        $paths = $configLocator->getSiteAliasPaths($preflightArgs->aliasPaths(), $this->environment);
 
         // Configure alias manager.
         $aliasManager = (new SiteAliasManager())->addSearchLocations($paths);
@@ -254,7 +255,7 @@ class Preflight
         // Find all of the available commandfiles, save for those that are
         // provided by modules in the selected site; those will be added
         // during bootstrap.
-        $commandfileSearchpath = $configLocator->getCommandFilePaths($preflightArgs);
+        $commandfileSearchpath = $configLocator->getCommandFilePaths($preflightArgs->commandPaths());
 
         // Require the Composer autoloader for Drupal (if different)
         $loader = $this->environment->loadSiteAutoloader($root);

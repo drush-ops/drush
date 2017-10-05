@@ -17,7 +17,7 @@ class JSONCache extends FileCache
     public function readFile($filename)
     {
         $item = file_get_contents($filename);
-        return $item ? (object)json_decode($item, TRUE) : false;
+        return $item ? (object)json_decode($item, true) : false;
     }
 
     public function writeFile($filename, $cache)

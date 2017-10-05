@@ -94,6 +94,7 @@ class rsyncCase extends CommandUnishTestCase {
     $output = preg_replace('#  *#', ' ', $output);
     // Get rid of any full paths in the output
     $output = str_replace(__DIR__, '__DIR__', $output);
+    $output = str_replace(self::getSandbox(), '__SANDBOX__', $output);
     $this->assertEquals($expected, $output);
   }
 

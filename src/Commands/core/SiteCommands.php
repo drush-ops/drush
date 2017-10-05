@@ -40,9 +40,9 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      */
     public function siteSet($site = '@none')
     {
-        $filename = $this->getConfig()->get('drush.site-file-current');
+        $filename = $this->getConfig()->get('runtime.site-file-current');
         if ($filename) {
-            $last_site_filename = $this->getConfig()->get('drush.site-file-previous');
+            $last_site_filename = $this->getConfig()->get('runtime.site-file-previous');
             if ($site == '-') {
                 if (file_exists($last_site_filename)) {
                     $site = file_get_contents($last_site_filename);
