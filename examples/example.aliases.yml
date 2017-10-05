@@ -68,9 +68,10 @@
 #
 # @code
 # drush:
-#   alias-path:
-#     - '${env.home}/.drush/site-aliases'
-#     - /etc/drush
+#   paths:
+#     alias-path:
+#       - '${env.home}/.drush/site-aliases'
+#       - /etc/drush
 # @endcode
 #
 # Files stored in one of the search path locations can be used to create

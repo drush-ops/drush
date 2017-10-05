@@ -24,6 +24,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     protected $args;
 
     const DRUSH_CONFIG_PATH_NAMESPACE = 'drush.paths';
+    const DRUSH_RUNTIME_CONTEXT_NAMESPACE = 'runtime.contxt';
     const ALIAS = 'alias';
     const ALIAS_PATH = 'alias-path';
     const COMMAND_PATH = 'include';
@@ -90,8 +91,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     {
         return [
             self::SIMULATE =>       \Robo\Config\Config::SIMULATE,
-            self::BACKEND =>        'runtime.' . self::BACKEND,
-            self::LOCAL =>          'runtime.' . self::LOCAL,
+            self::BACKEND =>        self::BACKEND,
+            self::LOCAL =>          self::DRUSH_RUNTIME_CONTEXT_NAMESPACE . '.' . self::LOCAL,
         ];
     }
 
