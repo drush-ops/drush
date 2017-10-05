@@ -42,6 +42,12 @@ class DrushCommandFile extends BaseGenerator
     protected function adjustCommands($commands)
     {
         foreach ($commands as $name => &$command) {
+            // Drush9 uses colons in command names.
+            $command['name'] = str_replace('-', ':', $name);
+            if ($command['name'] !== $name) {
+                $command['aliases'][] = $name;
+            }
+
             $command['method'] = $name;
             if (($pos = strpos($name, '-')) !== false) {
                 $command['method'] = substr($name, $pos + 1);

@@ -2,7 +2,7 @@
   /**
    * {{ command.description|raw }}
    *
-   * @command {{ key }}
+   * @command {{ command.name }}
 {% for argName, argDescription in command.arguments %}
    * @param {{ argName }} {{ argDescription|raw }}
 {% endfor %}
