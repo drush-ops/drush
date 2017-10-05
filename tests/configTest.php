@@ -42,8 +42,7 @@ class ConfigCase extends CommandUnishTestCase {
     
     // Test status of changed configuration.
     $this->drush('config:status', array(), $options);
-    $status = $this->getOutput();
-    $this->assertContains('system.site', $status, 'config:status correctly reports changes.');
+    $this->assertContains('system.site', $this->getOutput(), 'config:status correctly reports changes.');
     
     // Test import.
     $this->drush('config-import', array(), $options);
@@ -53,8 +52,7 @@ class ConfigCase extends CommandUnishTestCase {
 
     // Test status of identical configuration.
     $this->drush('config:status', array(), $options);
-    $status = $this->getOutput();
-    $this->assertContains('active configuration is identical', $status, 'config:status correctly reports identical config.');
+    $this->assertEquals('', $this->getOutput(), 'config:status correctly reports identical config.');
       
     // Similar, but this time via --partial option.
     $contents = file_get_contents($system_site_yml);
