@@ -23,7 +23,7 @@ class ConfigCase extends CommandUnishTestCase {
     $this->assertEquals("'system.site:name': config_test", $this->getOutput(), 'Config was successfully set and get.');
   }
 
-  function testConfigExportImport() {
+  function testConfigExportImportStatus() {
     $options = $this->options();
     // Get path to sync dir.
     $this->drush('core-status', array(), $options + array('format' => 'json', 'fields' => 'config-sync'));
@@ -31,19 +31,31 @@ class ConfigCase extends CommandUnishTestCase {
     $system_site_yml = $sync . '/system.site.yml';
     $core_extension_yml = $sync . '/core.extension.yml';
 
-    // Test export
+    // Test export.
     $this->drush('config-export', array(), $options);
     $this->assertFileExists($system_site_yml);
 
-    // Test import by finishing the round trip.
+    // Test import and status by finishing the round trip.
     $contents = file_get_contents($system_site_yml);
     $contents = preg_replace('/front: .*/', 'front: unish', $contents);
     $contents = file_put_contents($system_site_yml, $contents);
+    
+    // Test status of changed configuration.
+    $this->drush('config:status', array(), $options);
+    $status = $this->getOutput();
+    $this->assertContains('system.site', $status, 'config:status correctly reports changes.');
+    
+    // Test import.
     $this->drush('config-import', array(), $options);
     $this->drush('config-get', array('system.site', 'page'), $options + array('format' => 'json'));
     $page = $this->getOutputFromJSON('system.site:page');
     $this->assertContains('unish', $page->front, 'Config was successfully imported.');
 
+    // Test status of identical configuration.
+    $this->drush('config:status', array(), $options);
+    $status = $this->getOutput();
+    $this->assertContains('active configuration is identical', $status, 'config:status correctly reports identical config.');
+      
     // Similar, but this time via --partial option.
     $contents = file_get_contents($system_site_yml);
     $contents = preg_replace('/front: .*/', 'front: unish partial', $contents);
