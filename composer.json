@@ -28,7 +28,7 @@
     "psr/log": "~1.0",
     "psy/psysh": "~0.6",
     "league/container": "~2",
-    "consolidation/config": "dev-master",
+    "consolidation/config": "dev-env-config as 1.0.1",
     "consolidation/robo": "^1.1.2",
     "symfony/config": "~2.2|^3",
     "chi-teck/drupal-code-generator": "^1.17.3",

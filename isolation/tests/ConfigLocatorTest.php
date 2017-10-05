@@ -15,7 +15,7 @@ class ConfigLocatorTest extends TestCase
      */
     function testOnlyEnvironmentData()
     {
-        $configLocator = new ConfigLocator();
+        $configLocator = new ConfigLocator('TEST_');
         $configLocator->addEnvironment($this->environment());
         $config = $configLocator->config();
         $this->assertEquals($this->homeDir(), $config->get('env.cwd'));
@@ -90,7 +90,7 @@ class ConfigLocatorTest extends TestCase
      */
     protected function createConfigLocator($isLocal = false, $configPath = '')
     {
-        $configLocator = new ConfigLocator();
+        $configLocator = new ConfigLocator('TEST_');
         $configLocator->collectSources();
         $configLocator->setLocal($isLocal);
         $configLocator->addUserConfig([$configPath], $this->environment()->systemConfigPath(), $this->environment()->userConfigPath());

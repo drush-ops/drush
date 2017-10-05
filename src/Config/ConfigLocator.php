@@ -5,6 +5,8 @@ use Consolidation\Config\Loader\ConfigLoaderInterface;
 use Consolidation\Config\Loader\YamlConfigLoader;
 use Consolidation\Config\Loader\ConfigProcessor;
 use Consolidation\Config\Util\ConfigOverlay;
+use Consolidation\Config\Util\EnvConfig;
+
 use Drush\Preflight\PreflightArgsInterface;
 
 /**
@@ -69,7 +71,7 @@ class ConfigLocator
      */
 
     // 'process' context is provided by ConfigOverlay
-    const ENVIRONMENT_CONTEXT = 'environment'; // new context
+    const ENVIRONMENT_CONTEXT = 'environment'; // This is more of a 'runtime' context
     const PREFLIGHT_CONTEXT = 'cli';
     // 'stdin' context not implemented
     // 'specific' context obsolete; command-specific options handled differently by annotated command library
@@ -80,6 +82,7 @@ class ConfigLocator
     const USER_CONTEXT = 'user';
     // home.drush is obsolete (loaded in USER_CONTEXT)
     // system context is obsolect (loaded in USER_CONTEXT - note priority change)
+    const ENV_CONTEXT = 'env';
     const DRUSH_CONTEXT = 'drush';
 
     // 'default' context is provided by ConfigOverlay
@@ -87,13 +90,17 @@ class ConfigLocator
     /**
      * ConfigLocator constructor
      */
-    public function __construct()
+    public function __construct($envPrefix = '')
     {
         $this->config = new ConfigOverlay();
 
         // Add placeholders to establish priority. We add
         // contexts from lowest to highest priority.
         $this->config->addPlaceholder(self::DRUSH_CONTEXT);
+        if (!empty($envPrefix)) {
+            $envConfig = new EnvConfig($envPrefix);
+            $this->config->addContext(self::ENV_CONTEXT, $envConfig);
+        }
         $this->config->addPlaceholder(self::USER_CONTEXT);
         $this->config->addPlaceholder(self::DRUPAL_CONTEXT);
         $this->config->addPlaceholder(self::SITE_CONTEXT); // not implemented yet (multisite)

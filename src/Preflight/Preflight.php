@@ -134,7 +134,7 @@ class Preflight
     {
         // Load configuration and aliases from defined global locations
         // where such things are found.
-        $configLocator = new ConfigLocator();
+        $configLocator = new ConfigLocator('DRUSH_');
 
         // Make our environment settings available as configuration items
         $configLocator->addEnvironment($environment);
