@@ -135,12 +135,13 @@ class Preflight
         // Load configuration and aliases from defined global locations
         // where such things are found.
         $configLocator = new ConfigLocator();
-        $configLocator->setLocal($preflightArgs->isLocal());
-        $configLocator->addUserConfig($preflightArgs->configPaths(), $environment->systemConfigPath(), $environment->userConfigPath());
-        $configLocator->addDrushConfig($environment->drushBasePath());
 
         // Make our environment settings available as configuration items
         $configLocator->addEnvironment($environment);
+
+        $configLocator->setLocal($preflightArgs->isLocal());
+        $configLocator->addUserConfig($preflightArgs->configPaths(), $environment->systemConfigPath(), $environment->userConfigPath());
+        $configLocator->addDrushConfig($environment->drushBasePath());
 
         return $configLocator;
     }

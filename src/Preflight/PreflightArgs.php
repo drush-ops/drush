@@ -122,7 +122,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         // Merging as they are lists.
         foreach ($this->optionConfigPathMap() as $option_key => $config_key) {
             $cli_paths = $this->get($option_key, []);
-            $config_paths = $config->get($config_key, []);
+            $config_paths = (array) $config->get($config_key, []);
             $merged_paths = array_merge($cli_paths, $config_paths);
             $config->set($config_key, $merged_paths);
             $this->set($option_key, $merged_paths);

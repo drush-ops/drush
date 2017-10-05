@@ -291,12 +291,15 @@ class ConfigLocator
             'config/drush.yml',
         ];
 
+        // Make all of the config values parsed so far available in evaluations
+        $reference = $this->config()->export();
+
         $processor = new ConfigProcessor();
         $context = $this->config->getContext($contextName);
         $processor->add($context->export());
         $this->addConfigCandidates($processor, $loader, $paths, $candidates);
         $this->addToSources($processor->sources());
-        $context->import($processor->export());
+        $context->import($processor->export($reference));
         $this->config->addContext($contextName, $context);
 
         return $this;

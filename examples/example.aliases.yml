@@ -61,11 +61,21 @@
 #   $ROOT/sites/all/drush/site-aliases
 #   $ROOT/../drush/site-aliases
 #
-# Files stored in these locations can be used to create aliases
-# to local and remote Drupal installations.  These aliases can be
-# used in place of a site specification on the command line, and
-# may also be used in arguments to certain commands such as
-# "drush rsync" and "drush sql:sync".
+# If you would like to add additional locations, you can do so by
+# listing additional locations in your configuraton files. For example,
+# to re-add the default user alias path from Drush 8, put the following
+# in your ~/.drush/drush.yml configuration file:
+#
+# @code
+# drush:
+#   alias-path: '${env.home}/.drush/site-aliases'
+# @endcode
+#
+# Files stored in one of the search path locations can be used to create
+# aliases to local and remote Drupal installations.  These aliases can be
+# used in place of a site specification on the command line, and may also
+# be used in arguments to certain commands such as "drush rsync" and
+# "drush sql:sync".
 #
 # Alias groups (aliases stored together in files called
 # GROUPNAME.aliases.yml can be used to collect related sites
@@ -107,26 +117,6 @@
 # defined for a remote site, Drush will use the ssh command to run
 # the requested command on the remote machine.  The simplest remote
 # alias looks like this:
-#
-# @code
-# # File: remote.alias.yml
-# live:
-#   host: server.domain.com
-#   user: www-admin
-# @endcode
-#
-# The form above requires that Drush be installed on the remote machine,
-# and that there also be an alias of the same name defined on that
-# machine.  The remote alias should define the 'root' and 'uri' elements,
-# as shown in the initial example at the top of this file.
-#
-# TODO: I am not sure the feature above is working in Drush 9. Test and fix.
-#
-# If you do not wish to maintain site aliases on the remote machine,
-# then you may define an alias that contains all of the elements
-# 'host', 'user', 'root' and 'uri'.  If you do this, then
-# Drush will make the remote call using the --root and --uri options
-# to identify the site, so no site alias is required on the remote server.
 #
 # @code
 # # File: remote.alias.yml
@@ -206,10 +196,11 @@
 #   paths:
 #    - files: sites/mydrupalsite.com/files
 #    - custom: /my/custom/path
-#   command-specific:
-#     sql-sync:
-#       options:
-#         no-dump: true
+#   command:
+#     sql:
+#       sync:
+#         options:
+#           no-dump: true
 # dev:
 #   root: /path/to/docroot
 #   uri: https://dev.example.com
