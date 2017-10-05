@@ -200,8 +200,8 @@ class ConfigCommands extends DrushCommands
      * Display status of configuration (differences between the filesystem configuration and database configuration).
      *
      * @command config:status
-     * @interact-config-label
      * @param string $label A config directory label (i.e. a key in \$config_directories array in settings.php).
+     * @interact-config-label
      */
     public function status($label = NULL)
     {
