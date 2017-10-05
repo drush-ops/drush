@@ -40,88 +40,6 @@ define('DRUSH_APPLICATION_ERROR', 255);
  */
 define('DRUSH_KILOBYTE', 1024);
 
-/**
- * Default amount of time, in seconds, to cache downloads via
- * drush_download_file(). One day is 86400 seconds.
- */
-define('DRUSH_CACHE_LIFETIME_DEFAULT', 86400);
-
-/**
- * Include a file, selecting a version specific file if available.
- *
- * For example, if you pass the path "/var/drush" and the name
- * "update" when bootstrapped on a Drupal 8 site it will first check for
- * the presence of "/var/drush/update_8.inc" in include it if exists. If this
- * file does NOT exist it will proceed and check for "/var/drush/update.inc".
- * If neither file exists, it will return FALSE.
- *
- * @param $path
- *   The path you want to search.
- * @param $name
- *   The file base name you want to include (not including a version suffix
- *   or extension).
- * @param $version
- *   The version suffix you want to include (could be specific to the software
- *   or platform your are connecting to) - defaults to the current Drupal core
- *   major version.
- * @param $extension
- *   The extension - defaults to ".inc".
- *
- * @return
- *   TRUE if the file was found and included.
- */
-function drush_include($path, $name, $version = NULL, $extension = 'inc') {
-  $name = str_replace('-', '_', $name);
-  $version = ($version) ? $version : drush_drupal_major_version();
-
-  $file = sprintf("%s/%s_%s.%s", $path, $name, $version, $extension);
-  if (file_exists($file)) {
-    include_once($file);
-    return TRUE;
-  }
-  $file = sprintf("%s/%s.%s", $path, $name, $extension);
-  if (file_exists($file)) {
-    include_once($file);
-    return TRUE;
-  }
-
-  return drush_set_error('DRUSH_INCLUDE_NO_PATH', dt('Unable to include file !name!version!extension or !name!extension from !path.', array('!name' => $name, '!version' => $version, '!extension' => $extension)));
-}
-
-/**
- * Provide a version-specific class instance.
- *
- * @param $class_name
- *   The name of the class to instantiate.  Appends the Drupal
- *   major version number to the end of the class name before instantiation.
- * @param $constructor_args
- *   An array of arguments to pass to the class constructor.
- *
- * Example wrapper class to instantiate a widget, called with the
- * arguments for the WIDGET_CLASS constructor:
- *
- *  function drush_WIDGET_CLASS_get_class($widgetName, $widgetStyle) {
- *    retrun drush_get_class('Widget_Class', func_get_args()));
- *  }
- */
-
-function drush_get_class($class_name, $constructor_args = array(), $variations = array()) {
-  if (empty($variations)) {
-    $variations[] = drush_drupal_major_version();
-  }
-  $class_names = is_array($class_name) ? $class_name : array($class_name);
-  foreach ($class_names as $class_name) {
-    for ($i=count($variations); $i >= 0; $i--) {
-      $variant_class_name = $class_name . implode('', array_slice($variations, 0, $i));
-      if (class_exists($variant_class_name)) {
-        $reflectionClass = new ReflectionClass($variant_class_name);
-        return !empty($constructor_args) ? $reflectionClass->newInstanceArgs($constructor_args) : $reflectionClass->newInstanceArgs();
-      }
-    }
-  }
-  // Something bad happenned. TODO Exception?
-  return drush_set_error('DRUSH_GET_CLASS_ERROR', dt('Unable to load class !class', array('!class' => $class_name)));
-}
 
 /**
  * Convert a csv string, or an array of items which
@@ -336,129 +254,6 @@ function drush_call_user_func_array($function, $args = array() ) {
 }
 
 /**
- * Determines the MIME content type of the specified file.
- *
- * The power of this function depends on whether the PHP installation
- * has either mime_content_type() or finfo installed -- if not, only tar,
- * gz, zip and bzip2 types can be detected.
- *
- * If mime type can't be obtained, an error will be set.
- *
- * @return mixed
- *   The MIME content type of the file or FALSE.
- */
-function drush_mime_content_type($filename) {
-  $content_type = drush_attempt_mime_content_type($filename);
-  if ($content_type) {
-    drush_log(dt('Mime type for !file is !mt', array('!file' => $filename, '!mt' => $content_type)), LogLevel::INFO);
-    return $content_type;
-  }
-  return drush_set_error('MIME_CONTENT_TYPE_UNKNOWN', dt('Unable to determine mime type for !file.', array('!file' => $filename)));
-}
-
-/**
- * Works like drush_mime_content_type, but does not set an error
- * if the type is unknown.
- */
-function drush_attempt_mime_content_type($filename) {
-  $content_type = FALSE;
-  if (class_exists('finfo')) {
-    $finfo = new finfo(FILEINFO_MIME_TYPE);
-    $content_type = $finfo->file($filename);
-    if ($content_type == 'application/octet-stream') {
-      drush_log(dt('Mime type for !file is application/octet-stream.', array('!file' => $filename)), LogLevel::DEBUG);
-      $content_type = FALSE;
-    }
-  }
-  // If apache is configured in such a way that all files are considered
-  // octet-stream (e.g with mod_mime_magic and an http conf that's serving all
-  // archives as octet-stream for other reasons) we'll detect mime types on our
-  //  own by examing the file's magic header bytes.
-  if (!$content_type) {
-    drush_log(dt('Examining !file headers.', array('!file' => $filename)), LogLevel::DEBUG);
-    if ($file = fopen($filename, 'rb')) {
-      $first = fread($file, 2);
-      fclose($file);
-
-      if ($first !== FALSE) {
-        // Interpret the two bytes as a little endian 16-bit unsigned int.
-        $data = unpack('v', $first);
-        switch ($data[1]) {
-          case 0x8b1f:
-            // First two bytes of gzip files are 0x1f, 0x8b (little-endian).
-            // See http://www.gzip.org/zlib/rfc-gzip.html#header-trailer
-            $content_type = 'application/x-gzip';
-            break;
-
-          case 0x4b50:
-            // First two bytes of zip files are 0x50, 0x4b ('PK') (little-endian).
-            // See http://en.wikipedia.org/wiki/Zip_(file_format)#File_headers
-            $content_type = 'application/zip';
-            break;
-
-          case 0x5a42:
-            // First two bytes of bzip2 files are 0x5a, 0x42 ('BZ') (big-endian).
-            // See http://en.wikipedia.org/wiki/Bzip2#File_format
-            $content_type = 'application/x-bzip2';
-            break;
-
-          default:
-            drush_log(dt('Unable to determine mime type from header bytes 0x!hex of !file.', array('!hex' => dechex($data[1]), '!file' => $filename,), LogLevel::DEBUG));
-        }
-      }
-      else {
-        drush_log(dt('Unable to read !file.', array('!file' => $filename)), LogLevel::WARNING);
-      }
-    }
-    else {
-      drush_log(dt('Unable to open !file.', array('!file' => $filename)), LogLevel::WARNING);
-    }
-  }
-
-  // 3. Lastly if above methods didn't work, try to guess the mime type from
-  // the file extension. This is useful if the file has no identificable magic
-  // header bytes (for example tarballs).
-  if (!$content_type) {
-    drush_log(dt('Examining !file extension.', array('!file' => $filename)), LogLevel::DEBUG);
-
-    // Remove querystring from the filename, if present.
-    $filename = basename(current(explode('?', $filename, 2)));
-    $extension_mimetype = array(
-      '.tar'     => 'application/x-tar',
-      '.sql'     => 'application/octet-stream',
-    );
-    foreach ($extension_mimetype as $extension => $ct) {
-      if (substr($filename, -strlen($extension)) === $extension) {
-        $content_type = $ct;
-        break;
-      }
-    }
-  }
-  return $content_type;
-}
-
-/**
- * Check whether a file is a supported tarball.
- *
- * @return mixed
- *   The file content type if it's a tarball. FALSE otherwise.
- */
-function drush_file_is_tarball($path) {
-  $content_type = drush_attempt_mime_content_type($path);
-  $supported = array(
-    'application/x-bzip2',
-    'application/x-gzip',
-    'application/x-tar',
-    'application/x-zip',
-    'application/zip',
-  );
-  if (in_array($content_type, $supported)) {
-    return $content_type;
-  }
-  return FALSE;
-}
-
-/**
  * @defgroup logging Logging information to be provided as output.
  * @{
  *
@@ -487,6 +282,9 @@ function drush_file_is_tarball($path) {
  *   a -v or --verbose flag, use type 'ok' or 'notice', this prints log messages out to
  *   STDERR, which prints to screen (unless you have redirected it). All other
  *   types of messages will be assumed to be info.
+ *
+ * @deprecated
+ *   Use this->logger()->warning (for example) from an Annotated command method.
  */
 function drush_log($message, $type = LogLevel::INFO, $error = null) {
   $entry = array(
@@ -596,40 +394,6 @@ function drush_get_log() {
  */
 function dlm($object) {
   drush_log(print_r($object, TRUE));
-}
-
-// Print all timers for the request.
-function drush_print_timers() {
-  global $timers;
-  $temparray = array();
-  foreach ((array)$timers as $name => $timerec) {
-    // We have to use timer_read() for active timers, and check the record for others
-    if (isset($timerec['start'])) {
-      $temparray[$name] = timer_read($name);
-    }
-    else {
-      $temparray[$name] = $timerec['time'];
-    }
-  }
-  // Go no farther if there were no timers
-  if (count($temparray) > 0) {
-    // Put the highest cumulative times first
-    arsort($temparray);
-    $table = array();
-    $table[] = array('Timer', 'Cum (sec)', 'Count', 'Avg (msec)');
-    foreach ($temparray as $name => $time) {
-      $cum = round($time/1000, 3);
-      $count = $timers[$name]['count'];
-      if ($count > 0) {
-        $avg = round($time/$count, 3);
-      }
-      else {
-        $avg = 'N/A';
-      }
-      $table[] = array($name, $cum, $count, $avg);
-    }
-    drush_print_table($table, TRUE, array(), STDERR);
-  }
 }
 
 /**
@@ -816,20 +580,6 @@ function drush_clear_error() {
 }
 
 /**
- * Exit due to user declining a confirmation prompt.
- *
- * Usage:  return drush_user_abort();
- *
- * @deprecated
- */
-function drush_user_abort($msg = NULL) {
-  drush_set_context('DRUSH_USER_ABORT', TRUE);
-  drush_set_context('DRUSH_EXIT_CODE', DRUSH_EXITCODE_USER_ABORT);
-  drush_log($msg ? $msg : dt('Cancelled.'), LogLevel::CANCEL);
-  return FALSE;
-}
-
-/**
  * Turn PHP error handling off.
  *
  * This is commonly used while bootstrapping Drupal for install
@@ -1008,7 +758,7 @@ function drush_value_format($value, $format) {
       break;
 
     case 'json':
-      $value = drush_json_decode($value);
+      $value = json_decode($value, true);
       break;
 
     case 'yaml':
