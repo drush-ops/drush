@@ -212,7 +212,7 @@ class ConfigCommands extends DrushCommands
             $this->logger()->notice(dt('The active configuration is identical to the configuration in the export directory (!target).', array('!target' => $directory)));
             return;
         }
-        drush_print("Differences of the active config to the export directory:\n");
+        $this->output()->writeln("Differences of the active config to the export directory:\n");
         $this->configChangesTablePrint($change_list);
     }
 
@@ -229,7 +229,7 @@ class ConfigCommands extends DrushCommands
      * @param string $directory
      *   A configuration directory.
      */
-    function getDirectory($label, $directory) {
+    function getDirectory($label, $directory = NULL) {
         // If the user provided a directory, use it.
         if (!empty($directory)) {
             if ($directory === TRUE) {
