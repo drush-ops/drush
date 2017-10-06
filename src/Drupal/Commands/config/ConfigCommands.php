@@ -3,6 +3,7 @@ namespace Drush\Drupal\Commands\config;
 
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Config\StorageComparer;
@@ -200,20 +201,72 @@ class ConfigCommands extends DrushCommands
      * Display status of configuration (differences between the filesystem configuration and database configuration).
      *
      * @command config:status
-     * @param string $label A config directory label (i.e. a key in \$config_directories array in settings.php).
-     * @interact-config-label
+     * @option operation Operation A comma-separated list of operations to filter results.
+     * @option prefix Prefix The config prefix. For example, "system". No prefix will return all names in the system.
+     * @option string $label A config directory label (i.e. a key in \$config_directories array in settings.php).
+     * @usage drush config:status
+     *   Display configuration items that need to be synchronized.
+     * @usage drush config:status --operation=none
+     *   Display configuration items that are in default state.
+     * @usage drush config:status --operation=create --prefix=node.type.
+     *   Display all content types that would be created in active storage on configuration import.
+     * @usage drush config:status --operation=all --format=list
+     *   List all config names.
+     * @field-labels
+     *   name: Name
+     *   operation: Operation
+     * @default-fields name,operation
+     * @aliases cst,config-status
+     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function status($label = null)
+    public function status($options = ['operation' => 'create,update,delete', 'prefix' => '', 'label' => ''])
     {
-        $directory = $this->getDirectory($label, '');
+        $config_list = array_fill_keys(
+            $this->configFactory->listAll($options['prefix']),
+            'none'
+        );
+
+        $directory = $this->getDirectory(null, $options['label']);
         $storage = $this->getStorage($directory);
-        $change_list = $this->getChanges($storage);
-        if (empty($change_list)) {
-            $this->logger()->notice(dt('The active configuration is identical to the configuration in the export directory (!target).', array('!target' => $directory)));
-            return;
+        foreach ($this->getChanges($storage) as $collection) {
+            foreach ($collection as $operation => $configs) {
+                foreach ($configs as $config) {
+                  if (!$options['prefix'] || strpos($config, $options['prefix']) === 0) {
+                      $config_list[$config] = $operation;
+                  }
+                }
+            }
         }
-        $this->output()->writeln("Differences of the active config to the export directory:\n");
-        $this->configChangesTablePrint($change_list);
+
+        if ($options['operation']) {
+            $allowed_operations = explode(',', $options['operation']);
+            if (!in_array('all', $allowed_operations)) {
+                $config_list = array_filter($config_list, function ($operation) use ($allowed_operations) {
+                     return in_array($operation, $allowed_operations);
+                });
+            }
+        }
+
+        ksort($config_list);
+
+        $rows = [];
+        $color_map = [
+            'create' => 'green',
+            'update' => 'yellow',
+            'delete' => 'red',
+        ];
+        foreach ($config_list as $config => $operation) {
+            if ($operation == 'none') {
+                $operation = null;
+            } elseif ($options['format'] == 'table') {
+                $operation = "<fg={$color_map[$operation]};options=bold>$operation</>";
+            }
+            $rows[$config] = [
+                'name' => $config,
+                'operation' => $operation,
+            ];
+        }
+        return new RowsOfFields($rows);
     }
 
     /**
