@@ -7,6 +7,8 @@ use Drush\Drush;
 use Symfony\Component\Console\Input\InputInterface;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drush\Log\LogLevel;
+use Robo\Contract\ConfigAwareInterface;
+use Robo\Common\ConfigAwareTrait;
 
 /**
  * The RedispatchHook is installed as an init hook that runs before
@@ -14,8 +16,10 @@ use Drush\Log\LogLevel;
  * that points at a remote machine, then we will stop execution of the
  * current command and instead run the command remotely.
  */
-class RedispatchHook implements InitializeHookInterface
+class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface
 {
+    use ConfigAwareTrait;
+
     /**
      * Check to see if it is necessary to redispatch to a remote site.
      * We do not redispatch to local sites here; usually, local sites may
@@ -84,7 +88,7 @@ class RedispatchHook implements InitializeHookInterface
         $redispatchOptions = $this->redispatchOptions($input);
 
         $backend_options = [
-            'drush-script' => null,
+            'drush-script' => $this->getConfig()->get('paths.drush-script', null),
             'remote-host' => $remote_host,
             'remote-user' => $remote_user,
             'additional-global-options' => [],
