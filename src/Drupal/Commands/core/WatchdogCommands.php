@@ -185,7 +185,7 @@ class WatchdogCommands extends DrushCommands
     /**
      * Show one log record by ID.
      *
-     * @command watchdog:show:one
+     * @command watchdog:show-one
      * @param $id Watchdog Id
      * @drupal-dependencies dblog
      * @aliases wd-one,watchdog-show-one
@@ -273,7 +273,7 @@ class WatchdogCommands extends DrushCommands
      * @return
      *   Array. The result object with some attributes themed.
      */
-    public function formatResult($result, $extended = false)
+    protected function formatResult($result, $extended = false)
     {
         // Severity.
         $severities = RfcLogLevel::getLevels();
