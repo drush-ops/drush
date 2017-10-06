@@ -32,7 +32,7 @@
     "consolidation/robo": "^1.1.2",
     "symfony/config": "~2.2|^3",
     "chi-teck/drupal-code-generator": "^1.17.3",
-    "consolidation/annotated-command": "^2.7.1",
+    "consolidation/annotated-command": "^2.7.2",
     "consolidation/output-formatters": "^3.1.11",
     "grasmash/yaml-expander": "^1.1.1",
     "symfony/yaml": "~2.3|^3",
