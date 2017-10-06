@@ -77,9 +77,12 @@ class WatchdogCommands extends DrushCommands
      * @param $substring A substring to look search in error messages.
      * @option count The number of messages to show. Defaults to 10.
      * @option extended Return extended information about each message.
+     * @option severity Restrict to messages of a given severity level.
+     * @option type Restrict to messages of a given type.
      * @usage  drush watchdog-list
      *   Prompt for message type or severity, then run watchdog-show.
      * @aliases wd-list,watchdog-list
+     * @hidden-options type,severity
      * @validate-module-enabled dblog
      * @field-labels
      *   wid: ID
