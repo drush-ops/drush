@@ -371,7 +371,7 @@ class UpdateDBCommands extends DrushCommands
     {
 
         if (!$this->cache_clear) {
-            drush_log(dt("Skipping cache-clear operation due to --no-cache-clear option."), LogLevel::WARNING);
+            $this->logger()->info(dt("Skipping cache-clear operation due to --no-cache-clear option."));
         } else {
             drupal_flush_all_caches();
         }
@@ -386,9 +386,9 @@ class UpdateDBCommands extends DrushCommands
                         }
 
                         if ($query['success']) {
-                            drush_log(strip_tags($query['query']));
+                            $this->logger()->info(strip_tags($query['query']));
                         } else {
-                            drush_set_error(dt('Failed: ') . strip_tags($query['query']));
+                            throw new \Exception('Failed: ' . strip_tags($query['query']));
                         }
                     }
                 }

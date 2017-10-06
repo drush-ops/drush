@@ -81,32 +81,14 @@ class ConfigExportCommands extends DrushCommands
      */
     public function export($label = null, $options = ['add' => false, 'commit' => false, 'message' => null, 'destination' => ''])
     {
-        $destination_dir = $this->processDestination($label, $options);
+        // Get destination directory.
+        $destination_dir = ConfigCommands::getDirectory($label, $options['destination']);
 
         // Do the actual config export operation.
         $preview = $this->doExport($options, $destination_dir);
 
         // Do the VCS operations.
         $this->doAddCommit($options, $destination_dir, $preview);
-    }
-
-    public function processDestination($label, $options)
-    {
-        // Determine which target directory to use.
-        if ($target = $options['destination']) {
-            if ($target === true) {
-                // User did not pass a specific value for --destination. Make one.
-                $destination_dir = drush_prepare_backup_dir('config-export');
-            } else {
-                $destination_dir = $target;
-                // It is important to be able to specify a destination directory that
-                // does not exist yet, for exporting on remote systems
-                drush_mkdir($destination_dir);
-            }
-        } else {
-            $destination_dir = \config_get_config_directory($label ?: CONFIG_SYNC_DIRECTORY);
-        }
-        return $destination_dir;
     }
 
     public function doExport($options, $destination_dir)

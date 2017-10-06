@@ -1,6 +1,6 @@
 !!! note
 
-    Drush 9 (coming soon!) only supports one install method. It requires that your Drupal 8 site be built with Composer and Drush be listed as a dependency. 
+    Drush 9 only supports one install method. It requires that your Drupal 8 site be built with Composer and Drush be listed as a dependency. 
     
     See the [Drush 8 docs](http://docs.drush.org/en/8.x) for installing prior versions of Drush.
 
