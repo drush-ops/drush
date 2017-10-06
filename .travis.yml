@@ -92,7 +92,7 @@ matrix:
     - php: 5.4
       env: UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=3.7 PHPUNIT_ARGS=--group=quick-drupal
     - php: 5.4
-      env: UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=3.x PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal TEST_CHILDREN="drush-ops/config-extra"
+      env: UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=3.7 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal TEST_CHILDREN="drush-ops/config-extra"
     - php: 5.4
       env: UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--group=make
     - php: 5.4
