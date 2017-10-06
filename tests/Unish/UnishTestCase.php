@@ -310,6 +310,15 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
       copy($root . '/sites/example.sites.php', $root . '/sites/sites.php');
     }
 
+    // Print the result of a run of 'drush status' on the Drupal we are testing against
+    $options = array(
+      'root' => $this->webroot(),
+      'uri' => reset($sites_subdirs),
+    );
+    $this->drush('core-status', array('Drupal version'), $options);
+    $header = "\nTesting on ";
+    fwrite(STDERR, $header . $this->getOutput() . "\n\n");
+
     // Stash details about each site.
     foreach ($sites_subdirs as $subdir) {
       self::$sites[$subdir] = array(
