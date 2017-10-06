@@ -249,6 +249,12 @@ class PmCommands extends DrushCommands
         // Add dependencies to the list. The new modules will be processed as
         // the while loop continues.
         while (list($module) = each($module_list)) {
+            if (version_compare(phpversion(), $module_data[$module]->info['php']) < 0) {
+                $php_required = $module_data[$module]->info['php'] . (substr_count($module_data[$module]->info['php'], '.') < 2 ? '.*' : '');
+                $php_current = phpversion();
+                throw new MissingDependencyException("The module '$module' requires PHP version $php_required and is incompatible with PHP version $php_current.");
+            }
+
             foreach (array_keys($module_data[$module]->requires) as $dependency) {
                 if (!isset($module_data[$dependency])) {
                     // The dependency does not exist.
