@@ -51,7 +51,7 @@ class ConfigCase extends CommandUnishTestCase {
     $this->assertContains('unish', $page->front, 'Config was successfully imported.');
 
     // Test status of identical configuration.
-    $this->drush('config:status', array(), $options);
+    $this->drush('config:status --format=list', array(), $options);
     $this->assertEquals('', $this->getOutput(), 'config:status correctly reports identical config.');
       
     // Similar, but this time via --partial option.
