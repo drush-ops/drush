@@ -5,6 +5,7 @@ use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\FileStorage;
+use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\StorageInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -192,6 +193,86 @@ class ConfigCommands extends DrushCommands
             $config->clear($key)->save();
         } else {
             $config->delete();
+        }
+    }
+
+    /**
+     * Display status of configuration (differences between the filesystem configuration and database configuration).
+     *
+     * @command config:status
+     * @param string $label A config directory label (i.e. a key in \$config_directories array in settings.php).
+     * @interact-config-label
+     */
+    public function status($label = NULL)
+    {
+        $directory = $this->getDirectory($label, '');
+        $storage = $this->getStorage($directory);
+        $change_list = $this->getChanges($storage);
+        if (empty($change_list)) {
+            $this->logger()->notice(dt('The active configuration is identical to the configuration in the export directory (!target).', array('!target' => $directory)));
+            return;
+        }
+        $this->output()->writeln("Differences of the active config to the export directory:\n");
+        $this->configChangesTablePrint($change_list);
+    }
+
+    /**
+     * Determine which configuration directory to use and return directory path.
+     *
+     * Directory path is determined based on the following precedence:
+     *   1. User-provided $directory.
+     *   2. Directory path corresponding to $label (mapped via $config_directories in settings.php).
+     *   3. Default sync directory
+     *
+     * @param string $label
+     *   A configuration directory label.
+     * @param string $directory
+     *   A configuration directory.
+     */
+    function getDirectory($label, $directory = NULL) {
+        // If the user provided a directory, use it.
+        if (!empty($directory)) {
+            if ($directory === TRUE) {
+                // The user did not pass a specific directory, make one.
+                return drush_prepare_backup_dir('config-import-export');
+            }
+            else {
+                // The user has specified a directory.
+                drush_mkdir($directory);
+                return $directory;
+            }
+        }
+        // If a directory isn't specified, use the label argument or default sync directory.
+        return \config_get_config_directory($label ?: CONFIG_SYNC_DIRECTORY);
+    }
+
+    /**
+     * Returns the difference in configuration between active storage and target storage.
+     */
+    function getChanges($target_storage) {
+        /** @var \Drupal\Core\Config\StorageInterface $active_storage */
+        $active_storage = \Drupal::service('config.storage');
+
+        $config_comparer = new StorageComparer($active_storage, $target_storage, \Drupal::service('config.manager'));
+
+        $change_list = array();
+        if ($config_comparer->createChangelist()->hasChanges()) {
+            foreach ($config_comparer->getAllCollectionNames() as $collection) {
+                $change_list[$collection] = $config_comparer->getChangelist(NULL, $collection);
+            }
+        }
+        return $change_list;
+    }
+
+    /**
+     * Get storage corresponding to a configuration directory.
+     */
+    function getStorage($directory) {
+        if ($directory == \config_get_config_directory(CONFIG_SYNC_DIRECTORY)) {
+            return \Drupal::service('config.storage.sync');
+        }
+        else {
+            return new FileStorage($directory);
         }
     }
 
