@@ -88,7 +88,7 @@ class TopicCommands extends DrushCommands
                 /** @var \Consolidation\AnnotatedCommand\AnnotationData $annotationData */
                 $annotationData = $command->getAnnotationData();
                 if ($annotationData->has('topic')) {
-                    $topics[$key] = $command;
+                    $topics[$command->getName()] = $command;
                 }
             }
         }

@@ -52,7 +52,7 @@ class DocsCommands extends DrushCommands
     }
 
     /**
-     * Configuration overview with examples from example.config.yml.
+     * Configuration overview with examples from example.drush.yml.
      *
      * @command docs:configuration
      * @aliases docs-configuration
@@ -61,7 +61,7 @@ class DocsCommands extends DrushCommands
      */
     public function config()
     {
-        self::printFile(DRUSH_BASE_PATH. '/examples/example.config.yml');
+        self::printFile(DRUSH_BASE_PATH. '/examples/example.drush.yml');
     }
 
     /**
