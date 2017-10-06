@@ -206,43 +206,48 @@ class ConfigCommands extends DrushCommands
      * @option string $label A config directory label (i.e. a key in \$config_directories array in settings.php).
      * @usage drush config:status
      *   Display configuration items that need to be synchronized.
-     * @usage drush config:status --operation=none
+     * @usage drush config:status --state=Identical
      *   Display configuration items that are in default state.
-     * @usage drush config:status --operation=create --prefix=node.type.
+     * @usage drush config:status --state='Only in sync directory' --prefix=node.type.
      *   Display all content types that would be created in active storage on configuration import.
-     * @usage drush config:status --operation=all --format=list
+     * @usage drush config:status --state=Any --format=list
      *   List all config names.
      * @field-labels
      *   name: Name
-     *   operation: Operation
-     * @default-fields name,operation
+     *   state: State
+     * @default-fields name,state
      * @aliases cst,config-status
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function status($options = ['operation' => 'create,update,delete', 'prefix' => '', 'label' => ''])
+    public function status($options = ['state' => 'Only in DB,Only in sync directory,Different', 'prefix' => '', 'label' => ''])
     {
         $config_list = array_fill_keys(
             $this->configFactory->listAll($options['prefix']),
-            'none'
+            'Identical'
         );
 
         $directory = $this->getDirectory(null, $options['label']);
         $storage = $this->getStorage($directory);
+        $state_map = [
+            'create' => 'Only in DB',
+            'update' => 'Only in sync directory',
+            'delete' => 'Different',
+        ];
         foreach ($this->getChanges($storage) as $collection) {
             foreach ($collection as $operation => $configs) {
                 foreach ($configs as $config) {
                   if (!$options['prefix'] || strpos($config, $options['prefix']) === 0) {
-                      $config_list[$config] = $operation;
+                      $config_list[$config] = $state_map[$operation];
                   }
                 }
             }
         }
 
-        if ($options['operation']) {
-            $allowed_operations = explode(',', $options['operation']);
-            if (!in_array('all', $allowed_operations)) {
-                $config_list = array_filter($config_list, function ($operation) use ($allowed_operations) {
-                     return in_array($operation, $allowed_operations);
+        if ($options['state']) {
+            $allowed_states = explode(',', $options['state']);
+            if (!in_array('Any', $allowed_states)) {
+                $config_list = array_filter($config_list, function ($state) use ($allowed_states) {
+                     return in_array($state, $allowed_states);
                 });
             }
         }
@@ -251,19 +256,19 @@ class ConfigCommands extends DrushCommands
 
         $rows = [];
         $color_map = [
-            'create' => 'green',
-            'update' => 'yellow',
-            'delete' => 'red',
+            'Only in DB' => 'green',
+            'Only in sync directory' => 'yellow',
+            'Different' => 'red',
+            'Identical' => 'white',
         ];
-        foreach ($config_list as $config => $operation) {
-            if ($operation == 'none') {
-                $operation = null;
-            } elseif ($options['format'] == 'table') {
-                $operation = "<fg={$color_map[$operation]};options=bold>$operation</>";
+
+        foreach ($config_list as $config => $state) {
+            if ($options['format'] == 'table' && $state != 'Identical') {
+                $state = "<fg={$color_map[$state]};options=bold>$state</>";
             }
             $rows[$config] = [
                 'name' => $config,
-                'operation' => $operation,
+                'state' => $state,
             ];
         }
         return new RowsOfFields($rows);
