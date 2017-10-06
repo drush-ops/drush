@@ -233,13 +233,15 @@ class SiteAliasManager
         }
 
         // If the user provides the --root parameter then we don't want to use
-        // the site alias.
+        // the site-set alias.
         $selectedRoot = $preflightArgs->selectedSite();
         if (!$selectedRoot) {
             $aliasName = $environment->getSiteSetAliasName();
-            $alias = $this->getAlias($aliasName);
-            if ($alias) {
-                return $alias;
+            if (!empty($aliasName)) {
+                $alias = $this->getAlias($aliasName);
+                if ($alias) {
+                    return $alias;
+                }
             }
         }
 

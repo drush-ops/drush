@@ -190,6 +190,10 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      */
     public function setAlias($alias)
     {
+        // Treat `drush @self ...` as if an alias had not been used at all.
+        if ($alias == '@self') {
+            $alias = '';
+        }
         return $this->set(self::ALIAS, $alias);
     }
 
