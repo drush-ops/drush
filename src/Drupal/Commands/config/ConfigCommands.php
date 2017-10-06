@@ -229,7 +229,7 @@ class ConfigCommands extends DrushCommands
      * @param string $directory
      *   A configuration directory.
      */
-    function getDirectory($label, $directory = null)
+    public function getDirectory($label, $directory = null)
     {
         // If the user provided a directory, use it.
         if (!empty($directory)) {
@@ -249,7 +249,7 @@ class ConfigCommands extends DrushCommands
     /**
      * Returns the difference in configuration between active storage and target storage.
      */
-    function getChanges($target_storage)
+    public function getChanges($target_storage)
     {
         /** @var \Drupal\Core\Config\StorageInterface $active_storage */
         $active_storage = \Drupal::service('config.storage');
@@ -268,7 +268,7 @@ class ConfigCommands extends DrushCommands
     /**
      * Get storage corresponding to a configuration directory.
      */
-    function getStorage($directory)
+    public function getStorage($directory)
     {
         if ($directory == \config_get_config_directory(CONFIG_SYNC_DIRECTORY)) {
             return \Drupal::service('config.storage.sync');
