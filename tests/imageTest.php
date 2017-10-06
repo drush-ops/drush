@@ -14,7 +14,7 @@ class ImageCase extends CommandUnishTestCase {
       $this->markTestSkipped("Image styles not available in Drupal 6 core.");
     }
 
-    $sites = $this->setUpDrupal(1, TRUE, UNISH_DRUPAL_MAJOR_VERSION, 'standard');
+    $sites = $this->setUpDrupal(1, TRUE, null, 'standard');
     $options = array(
       'yes' => NULL,
       'root' => $this->webroot(),

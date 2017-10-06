@@ -264,12 +264,13 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   function defaultInstallationVerion() {
+    // There's a leading dot in UNISH_DRUPAL_MINOR_VERSION
     return UNISH_DRUPAL_MAJOR_VERSION . UNISH_DRUPAL_MINOR_VERSION;
   }
 
   function setUpDrupal($num_sites = 1, $install = FALSE, $version_string = NULL, $profile = NULL) {
     if (!$version_string) {
-      $version_string = UNISH_DRUPAL_MAJOR_VERSION;
+      $version_string = $this->defaultInstallationVerion();
     }
     $sites_subdirs_all = array('dev', 'stage', 'prod', 'retired', 'elderly', 'dead', 'dust');
     $sites_subdirs = array_slice($sites_subdirs_all, 0, $num_sites);
