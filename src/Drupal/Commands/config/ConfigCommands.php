@@ -203,7 +203,7 @@ class ConfigCommands extends DrushCommands
      * @param string $label A config directory label (i.e. a key in \$config_directories array in settings.php).
      * @interact-config-label
      */
-    public function status($label = NULL)
+    public function status($label = null)
     {
         $directory = $this->getDirectory($label, '');
         $storage = $this->getStorage($directory);
@@ -229,14 +229,14 @@ class ConfigCommands extends DrushCommands
      * @param string $directory
      *   A configuration directory.
      */
-    function getDirectory($label, $directory = NULL) {
+    function getDirectory($label, $directory = null)
+    {
         // If the user provided a directory, use it.
         if (!empty($directory)) {
-            if ($directory === TRUE) {
+            if ($directory === true) {
                 // The user did not pass a specific directory, make one.
                 return drush_prepare_backup_dir('config-import-export');
-            }
-            else {
+            } else {
                 // The user has specified a directory.
                 drush_mkdir($directory);
                 return $directory;
@@ -249,7 +249,8 @@ class ConfigCommands extends DrushCommands
     /**
      * Returns the difference in configuration between active storage and target storage.
      */
-    function getChanges($target_storage) {
+    function getChanges($target_storage)
+    {
         /** @var \Drupal\Core\Config\StorageInterface $active_storage */
         $active_storage = \Drupal::service('config.storage');
 
@@ -258,7 +259,7 @@ class ConfigCommands extends DrushCommands
         $change_list = array();
         if ($config_comparer->createChangelist()->hasChanges()) {
             foreach ($config_comparer->getAllCollectionNames() as $collection) {
-                $change_list[$collection] = $config_comparer->getChangelist(NULL, $collection);
+                $change_list[$collection] = $config_comparer->getChangelist(null, $collection);
             }
         }
         return $change_list;
@@ -267,11 +268,11 @@ class ConfigCommands extends DrushCommands
     /**
      * Get storage corresponding to a configuration directory.
      */
-    function getStorage($directory) {
+    function getStorage($directory)
+    {
         if ($directory == \config_get_config_directory(CONFIG_SYNC_DIRECTORY)) {
             return \Drupal::service('config.storage.sync');
-        }
-        else {
+        } else {
             return new FileStorage($directory);
         }
     }
