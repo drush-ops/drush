@@ -25,7 +25,7 @@ command line options just for Drush to work.
 If you wish to be able to select your Drupal site implicitly from the
 current working directory without using the --uri option, but you need your
 base_url to be set correctly, you may force it by setting the uri in
-a config.yml file located in the same directory as your settings.php file.
+a drush.yml file located in the same directory as your settings.php file.
 
 ```
 uri: "http://example.com"
