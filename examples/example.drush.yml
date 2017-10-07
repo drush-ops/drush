@@ -210,3 +210,10 @@ notify:
   duration: 30
   # Specify a command to run. Defaults to Notification Center (OSX) or libnotify (Linux)
   cmd: /path/to/program
+  # See src/Commands/core/NotifyCommands.php for more configuration settings.
+
+xh:
+  # Start profiling via xhprof/tideways and show a link to the run report.
+  link: http://xhprof.local
+  # See src/Commands/core/XhprofCommands.php for more configuration settings.
+

@@ -93,6 +93,7 @@ class Preflight
             '--output-charset' => '-Dio.output.charset',
             '--db-su' => '-Dsql.db-su',
             '--notify' => '-Dnotify.duration',
+            '--xh-link' => '-Dxh.link',
             // Map command aliases which Console complains about.
             'si' => 'site-install',
             'en' => 'pm-enable',
