@@ -101,10 +101,6 @@ options:
     - module1
     - module2
 
-  # Notify user via Notification Center (OSX) or libnotify (Linux) when command
-  # takes more than 30 seconds. See global options for more configuration.
-  notify: 30
-
   # Enable verbose mode.
   verbose: true
 
@@ -208,3 +204,9 @@ ssh:
   # password authentication, and is included here, so you may add additional
   # parameters without losing the default configuration.
   options: '-o PasswordAuthentication=no'
+
+notify:
+  # Notify when command takes more than 30 seconds.
+  duration: 30
+  # Specify a command to run. Defaults to Notification Center (OSX) or libnotify (Linux)
+  cmd: /path/to/program

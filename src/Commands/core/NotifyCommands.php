@@ -3,28 +3,17 @@ namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
-use Drush\Log\LogLevel;
+use Drush\Drush;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Webmozart\PathUtil\Path;
-
-/**
- * @todo there are no hooks fired after a command errors out. Still?
- */
 
 class NotifyCommands extends DrushCommands
 {
     /**
-     *
-     *
      * @hook option *
      * @option notify Notify upon command completion. If set to a number, commands that finish in fewer seconds won't notify.
-     * @todo change these to sub-options when/if we support those again.
-     * @option notify-audio Notify via audio alert. If set to a number, commands that finish in fewer seconds won't notify.
-     * @option notify-cmd Specify the shell command to trigger the notification.
-     * @option notify-cmd-audio Specify the shell command to trigger the audio notification.
-     * @hidden-options notify,notify-audio,notify-cmd,notify-cmd-audio
      */
-    public function notify()
+    public function optionsetNotify()
     {
     }
 
@@ -40,22 +29,13 @@ class NotifyCommands extends DrushCommands
     {
 
         $input = $commandData->input();
-        $cmd = $input->getFirstArgument();
-
-        if (empty($cmd)) {
+        if (!$cmd = $input->getFirstArgument()) {
             return;
         }
 
-        if ($input->hasOption('notify') && $input->getOption('notify') && drush_get_error()) {
-            // If the only error is that notify failed, do not try to notify again.
-            $log = drush_get_error_log();
-            if (count($log) == 1 && array_key_exists('NOTIFY_COMMAND_NOT_FOUND', $log)) {
-                return;
-            }
-
-            // Send an alert that the command failed.
+        if (Drush::config()->get('notify.duration')) {
             if (self::isAllowed($commandData)) {
-                $msg = dt("Command '!command' failed.", array('!command' => $cmd));
+                $msg = dt("Command '!command' completed.", array('!command' => $cmd));
                 self::shutdownSend($msg, $commandData);
             }
         }
@@ -73,9 +53,6 @@ class NotifyCommands extends DrushCommands
     public static function shutdownSend($msg, CommandData $commandData)
     {
         self::shutdownSendText($msg, $commandData);
-        if ($commandData->input()->getOption('notify-audio')) {
-            self::shutdownSendAudio($msg, $commandData);
-        }
     }
 
     /**
@@ -92,7 +69,7 @@ class NotifyCommands extends DrushCommands
      */
     public static function shutdownSendText($msg, CommandData $commandData)
     {
-        $override = $commandData->input()->getOption('notify-cmd');
+        $override = Drush::config()->get('notify.cmd');
 
         if (!empty($override)) {
             $cmd = $override;
@@ -112,44 +89,10 @@ class NotifyCommands extends DrushCommands
         }
 
         if (!drush_shell_exec($cmd, $msg)) {
-            throw new \Exception($error_message . ' ' . dt('Or you may specify an alternate command to run by specifying --notify-cmd=<my_command>'));
+            throw new \Exception($error_message . ' ' . dt('Or you may specify an alternate command to run by setting notify:cmd in a drush.yml file'));
         }
 
         return true;
-    }
-
-    /**
-     * Send an audio-based system notification.
-     *
-     * This function is only automatically invoked with the additional use of the
-     * --notify-audio flag or configuration state.
-     *
-     * @param $msg
-     *   Message for audio recital.
-     *
-     * @return bool
-     *   TRUE on success, FALSE on failure
-     */
-    public static function shutdownSendAudio($msg, CommandData $commandData)
-    {
-        $override = $commandData->input()->getOption('notify-cmd-audio');
-
-        if (!empty($override)) {
-            $cmd = $override;
-        } else {
-            switch (PHP_OS) {
-                case 'Darwin':
-                    $cmd = 'say %s';
-                    break;
-                case 'Linux':
-                default:
-                    $cmd = 'spd-say' . ' %s';
-            }
-        }
-
-        if (!drush_shell_exec($cmd, $msg)) {
-            throw new Exception('The third party notification utility failed.');
-        }
     }
 
     /**
@@ -163,10 +106,10 @@ class NotifyCommands extends DrushCommands
      */
     public static function isAllowed(CommandData $commandData)
     {
-        $notify = $commandData->input()->getOption('notify') || $commandData->input()->getOption('notify-audio');
+        $duration = Drush::config()->get('notify.duration');
         $execution = time() - $_SERVER['REQUEST_TIME'];
 
-        return ($notify === true ||
-        (is_numeric($notify) && $notify > 0 && $execution > $notify));
+        return ($duration === true ||
+        (is_numeric($duration) && $duration > 0 && $execution > $duration));
     }
 }
