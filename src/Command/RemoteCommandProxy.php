@@ -2,6 +2,7 @@
 namespace Drush\Command;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -28,6 +29,13 @@ class RemoteCommandProxy extends Command
     {
         parent::__construct($name);
         $this->redispatchHook = $redispatchHook;
+
+        // Put in a placeholder array arguement to avoid validation errors.
+        $this->addArgument(
+            'arguments',
+            InputArgument::IS_ARRAY,
+            'Proxy for command arguments'
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
