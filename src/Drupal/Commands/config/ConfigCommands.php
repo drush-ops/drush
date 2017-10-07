@@ -236,9 +236,9 @@ class ConfigCommands extends DrushCommands
         foreach ($this->getChanges($storage) as $collection) {
             foreach ($collection as $operation => $configs) {
                 foreach ($configs as $config) {
-                  if (!$options['prefix'] || strpos($config, $options['prefix']) === 0) {
-                      $config_list[$config] = $state_map[$operation];
-                  }
+                    if (!$options['prefix'] || strpos($config, $options['prefix']) === 0) {
+                        $config_list[$config] = $state_map[$operation];
+                    }
                 }
             }
         }
@@ -274,8 +274,7 @@ class ConfigCommands extends DrushCommands
 
         if ($rows) {
             return new RowsOfFields($rows);
-        }
-        else {
+        } else {
             $this->logger()->notice(dt('No differences between DB and sync directory.'));
         }
     }
