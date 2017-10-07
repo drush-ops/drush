@@ -8,7 +8,7 @@ use Drush\Commands\core\XhprofCommands;
  *
  * @group base
  */
-class xhUnitCase extends \PHPUnit_Framework_TestCase {
+class xhUnitCase extends UnishTestCase {
 
   /**
    * Test various combinations of XHProf flag options.
@@ -34,63 +34,63 @@ class xhUnitCase extends \PHPUnit_Framework_TestCase {
       array(
         'name' => 'Default flag options explicitly provided',
         'options' => array(
-          'xh-profile-builtins' => TRUE,
-          'xh-profile-cpu' => FALSE,
-          'xh-profile-memory' => FALSE,
+          'profile-builtins' => TRUE,
+          'profile-cpu' => FALSE,
+          'profile-memory' => FALSE,
         ),
         'expected' => 0,
       ),
       array(
         'name' => 'Disable profiling of built-ins',
         'options' => array(
-          'xh-profile-builtins' => FALSE,
-          'xh-profile-cpu' => FALSE,
-          'xh-profile-memory' => FALSE,
+          'profile-builtins' => FALSE,
+          'profile-cpu' => FALSE,
+          'profile-memory' => FALSE,
         ),
         'expected' => XHPROF_FLAGS_NO_BUILTINS,
       ),
       array(
         'name' => 'Enable profiling of CPU',
         'options' => array(
-          'xh-profile-builtins' => TRUE,
-          'xh-profile-cpu' => TRUE,
-          'xh-profile-memory' => FALSE,
+          'profile-builtins' => TRUE,
+          'profile-cpu' => TRUE,
+          'profile-memory' => FALSE,
         ),
         'expected' => XHPROF_FLAGS_CPU,
       ),
       array(
         'name' => 'Enable profiling of CPU, without builtins',
         'options' => array(
-          'xh-profile-builtins' => FALSE,
-          'xh-profile-cpu' => TRUE,
-          'xh-profile-memory' => FALSE,
+          'profile-builtins' => FALSE,
+          'profile-cpu' => TRUE,
+          'profile-memory' => FALSE,
         ),
         'expected' => XHPROF_FLAGS_NO_BUILTINS | XHPROF_FLAGS_CPU,
       ),
       array(
         'name' => 'Enable profiling of Memory',
         'options' => array(
-          'xh-profile-builtins' => TRUE,
-          'xh-profile-cpu' => FALSE,
-          'xh-profile-memory' => TRUE,
+          'profile-builtins' => TRUE,
+          'profile-cpu' => FALSE,
+          'profile-memory' => TRUE,
         ),
         'expected' => XHPROF_FLAGS_MEMORY,
       ),
       array(
         'name' => 'Enable profiling of Memory, without builtins',
         'options' => array(
-          'xh-profile-builtins' => FALSE,
-          'xh-profile-cpu' => FALSE,
-          'xh-profile-memory' => TRUE,
+          'profile-builtins' => FALSE,
+          'profile-cpu' => FALSE,
+          'profile-memory' => TRUE,
         ),
         'expected' => XHPROF_FLAGS_NO_BUILTINS | XHPROF_FLAGS_MEMORY,
       ),
       array(
         'name' => 'Enable profiling of CPU & Memory',
         'options' => array(
-          'xh-profile-builtins' => TRUE,
-          'xh-profile-cpu' => TRUE,
-          'xh-profile-memory' => TRUE,
+          'profile-builtins' => TRUE,
+          'profile-cpu' => TRUE,
+          'profile-memory' => TRUE,
         ),
         'expected' => XHPROF_FLAGS_CPU | XHPROF_FLAGS_MEMORY,
       ),
