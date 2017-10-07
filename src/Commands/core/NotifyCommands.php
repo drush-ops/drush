@@ -28,8 +28,8 @@ class NotifyCommands extends DrushCommands
     public function shutdown(CommandData $commandData)
     {
 
-        $input = $commandData->input();
-        if (!$cmd = $input->getFirstArgument()) {
+        $annotationData = $commandData->annotationData();
+        if (!$cmd = $annotationData['command']) {
             return;
         }
 
