@@ -271,7 +271,13 @@ class ConfigCommands extends DrushCommands
                 'state' => $state,
             ];
         }
-        return new RowsOfFields($rows);
+
+        if ($rows) {
+            return new RowsOfFields($rows);
+        }
+        else {
+            $this->logger()->notice(dt('No differences between DB and sync directory.'));
+        }
     }
 
     /**
