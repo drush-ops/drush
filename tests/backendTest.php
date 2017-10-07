@@ -38,6 +38,7 @@ class backendCase extends CommandUnishTestCase {
     unlink(self::getSandbox() . '/etc/drush/drush.yml');
 
     $output = preg_replace('#  *#', ' ', $output);
+    $output = preg_replace('# -t #', ' ', $output); // volkswagon away the -t, it's not relevant to what we're testing here
     $output = preg_replace('#' . self::getSandbox() . '#', '__SANDBOX__', $output);
     $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=no www-admin@server.isp.com '/usr/local/bin/drush --alias-path=__SANDBOX__/etc/drush --root=/path/to/drupal --uri=http://example.com --no-ansi status", $output);
   }
