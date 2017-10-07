@@ -87,7 +87,7 @@ class DrupalCommands extends DrushCommands
                 $relative = str_replace(Drush::bootstrapManager()->getRoot() . '/', '', $file->filename);
                 // @todo Dynamically disable twig debugging since there is no good info there anyway.
                 twig_render_template($relative, array('theme_hook_original' => ''));
-                $this->logger()->info(dt('Compiled twig template !path', array('!path' => $relative)));
+                $this->logger()->notice(dt('Compiled twig template !path', array('!path' => $relative)));
             }
         }
     }

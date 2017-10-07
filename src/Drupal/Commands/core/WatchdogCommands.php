@@ -63,7 +63,7 @@ class WatchdogCommands extends DrushCommands
             $table[$row->wid] = (array)$row;
         }
         if (empty($table)) {
-            $this->logger()->info(dt('No log messages available.'));
+            $this->logger()->notice(dt('No log messages available.'));
         } else {
             return new RowsOfFields($table);
         }

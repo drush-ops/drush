@@ -206,7 +206,7 @@ class ViewsCommands extends DrushCommands
             $rows = array_merge($enabled_views, $disabled_views);
             return new RowsOfFields($rows);
         } else {
-            $this->logger()->info(dt('No views found.'));
+            $this->logger()->notice(dt('No views found.'));
         }
     }
 

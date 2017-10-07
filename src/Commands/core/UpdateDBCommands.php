@@ -386,7 +386,7 @@ class UpdateDBCommands extends DrushCommands
                         }
 
                         if ($query['success']) {
-                            $this->logger()->info(strip_tags($query['query']));
+                            $this->logger()->notice(strip_tags($query['query']));
                         } else {
                             throw new \Exception('Failed: ' . strip_tags($query['query']));
                         }

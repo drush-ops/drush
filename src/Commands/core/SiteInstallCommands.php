@@ -116,7 +116,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         if (is_null($options['notify'])) {
             $msg .= ' Consider using the --notify global option.';
         }
-        $this->logger()->info(dt($msg));
+        $this->logger()->notice(dt($msg));
 
         // Define some functions which alter away the install_finished task.
         require_once Path::join(DRUSH_BASE_PATH, 'includes/site_install.inc');
