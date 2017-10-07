@@ -54,7 +54,9 @@ class XhprofCommands extends DrushCommands
     public function xhprofInitialize(InputInterface $input, AnnotationData $annotationData)
     {
         if (self::xhprofIsEnabled($input)) {
-            xhprof_enable(self::xhprofFlags());
+            $config = Drush::config()->get('xh');
+            $flags = self::xhprofFlags($config);
+            \xhprof_enable($flags);
         }
     }
 
@@ -71,16 +73,16 @@ class XhprofCommands extends DrushCommands
     /**
      * Determines flags.
      */
-    public static function xhprofFlags()
+    public static function xhprofFlags(array $config)
     {
         $flags = 0;
-        if (Drush::config()->get('xh.profile-builtins', self::XH_PROFILE_BUILTINS)) {
+        if (!(isset($config['profile-builtins']) ? $config['profile-builtins']: self::XH_PROFILE_BUILTINS)) {
             $flags |= XHPROF_FLAGS_NO_BUILTINS;
         }
-        if (Drush::config()->get('xh.profile-cpu', self::XH_PROFILE_CPU)) {
+        if (isset($config['profile-cpu']) ? $config['profile-cpu'] : self::XH_PROFILE_CPU) {
             $flags |= XHPROF_FLAGS_CPU;
         }
-        if (Drush::config()->get('xh.profile-memory', self::XH_PROFILE_MEMORY)) {
+        if (isset($config['profile-memory']) ? $config['profile-memory'] : self::XH_PROFILE_MEMORY) {
             $flags |= XHPROF_FLAGS_MEMORY;
         }
         return $flags;
