@@ -532,8 +532,13 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         'uri' => $site['uri']
       ];
     }
+    $this->writeUnishConfig($groups);
+  }
+
+  function writeUnishConfig($unishAliases, $config = [])
+  {
     $etc = self::getSandbox() . '/etc/drush';
-    file_put_contents(Path::join($etc, 'unish.alias.yml'), Yaml::dump($groups));
+    file_put_contents(Path::join($etc, 'unish.alias.yml'), Yaml::dump($unishAliases));
     $config['drush']['paths']['alias-path'][] = $etc;
     file_put_contents(Path::join($etc, 'drush.yml'), Yaml::dump($config, 3));
   }

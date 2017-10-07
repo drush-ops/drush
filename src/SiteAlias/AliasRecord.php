@@ -233,8 +233,11 @@ class AliasRecord extends Config
 
         foreach ($this->remapOptions() as $from => $to) {
             if (isset($data[$from])) {
-                $data['options'][$to] = $data[$from];
                 unset($data[$from]);
+            }
+            $value = $this->get($from, null);
+            if (isset($value)) {
+                $data['options'][$to] = $value;
             }
         }
 
@@ -251,7 +254,8 @@ class AliasRecord extends Config
     }
 
     /**
-     * Conversion table from old to new option names.
+     * Conversion table from old to new option names. These all implicitly
+     * go in `options`, although they can come from different locations.
      */
     protected function remapOptions()
     {

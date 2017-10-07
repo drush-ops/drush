@@ -16,36 +16,30 @@ namespace Unish;
  *  @group base
  */
 class backendCase extends CommandUnishTestCase {
-  // Test to insure that calling drush_invoke_process() with 'dispatch-using-alias'
-  // will build a command string that uses the alias instead of --root and --uri.
-  function testDispatchUsingAlias() {
-    $this->markTestIncomplete('Started failing due to https://github.com/drush-ops/drush/pull/555');
+  function testDispatchUsingAlias()
+  {
+    $unishAliases = [
+      'remote' => [
+        'host' => 'server.isp.com',
+        'user' => 'www-admin',
+        'root' => '/path/to/drupal',
+        'uri' => 'http://example.com',
+        'paths' => [
+          'drush-script' => '/usr/local/bin/drush',
+        ],
+      ],
+    ];
+    // n.b. writeUnishConfig will overwrite the alias files create by setupDrupal
+    $this->writeUnishConfig($unishAliases);
+    $this->drush('status', [], ['simulate' => NULL], '@unish.remote');
+    $output = $this->getOutput();
 
-    $aliasPath = self::getSandbox() . '/aliases';
-    mkdir($aliasPath);
-    $aliasFile = $aliasPath . '/foo.aliases.drushrc.php';
-    $aliasContents = <<<EOD
-  <?php
-  // Written by Unish. This file is safe to delete.
-  \$aliases['dev'] = array('root' => '/fake/path/to/root', 'uri' => 'default');
-EOD;
-    file_put_contents($aliasFile, $aliasContents);
-    $options = array(
-      'alias-path' => $aliasPath,
-      'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
-      'script-path' => dirname(__FILE__) . '/resources', // Find unit.drush.inc commandfile.
-      'backend' => TRUE,
-    );
-    $this->drush('php-script', array('testDispatchUsingAlias_script'), $options);
-    $parsed = $this->parse_backend_output($this->getOutput());
+    // Clean up -- our other tests do not want extra configuration
+    unlink(self::getSandbox() . '/etc/drush/drush.yml');
 
-    // $parsed['with'] and $parsed['without'] now contain an array
-    // each with the original arguments passed in with and without
-    // 'dispatch-using-alias', respectively.
-    $argDifference = array_diff($parsed['object']['with'], $parsed['object']['without']);
-    $this->assertEquals(array_diff(array_values($argDifference), array('@foo.dev')), array());
-    $argDifference = array_diff($parsed['object']['without'], $parsed['object']['with']);
-    $this->assertEquals(array_diff(array_values($argDifference), array('--root=/fake/path/to/root', '--uri=default')), array());
+    $output = preg_replace('#  *#', ' ', $output);
+    $output = preg_replace('#' . self::getSandbox() . '#', '__SANDBOX__', $output);
+    $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=no www-admin@server.isp.com '/usr/local/bin/drush --alias-path=__SANDBOX__/etc/drush --root=/path/to/drupal --uri=http://example.com --no-ansi status", $output);
   }
 
   /**
