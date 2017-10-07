@@ -208,7 +208,7 @@ class ConfigCommands extends DrushCommands
      *   Display configuration items that need to be synchronized.
      * @usage drush config:status --state=Identical
      *   Display configuration items that are in default state.
-     * @usage drush config:status --state='Only in sync directory' --prefix=node.type.
+     * @usage drush config:status --state='Only in sync dir' --prefix=node.type.
      *   Display all content types that would be created in active storage on configuration import.
      * @usage drush config:status --state=Any --format=list
      *   List all config names.
@@ -219,7 +219,7 @@ class ConfigCommands extends DrushCommands
      * @aliases cst,config-status
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function status($options = ['state' => 'Only in DB,Only in sync directory,Different', 'prefix' => '', 'label' => ''])
+    public function status($options = ['state' => 'Only in DB,Only in sync dir,Different', 'prefix' => '', 'label' => ''])
     {
         $config_list = array_fill_keys(
             $this->configFactory->listAll($options['prefix']),
@@ -230,7 +230,7 @@ class ConfigCommands extends DrushCommands
         $storage = $this->getStorage($directory);
         $state_map = [
             'create' => 'Only in DB',
-            'update' => 'Only in sync directory',
+            'update' => 'Only in sync dir',
             'delete' => 'Different',
         ];
         foreach ($this->getChanges($storage) as $collection) {
@@ -257,7 +257,7 @@ class ConfigCommands extends DrushCommands
         $rows = [];
         $color_map = [
             'Only in DB' => 'green',
-            'Only in sync directory' => 'yellow',
+            'Only in sync dir' => 'yellow',
             'Different' => 'red',
             'Identical' => 'white',
         ];
