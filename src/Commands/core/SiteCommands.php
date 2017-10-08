@@ -1,7 +1,9 @@
 <?php
 namespace Drush\Commands\core;
 
+use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\ListDataFromKeys;
@@ -131,6 +133,62 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         } else {
             $this->logger()->success('No site aliases found.');
         }
+    }
+
+    /**
+     * Convert all legacy site alias files to new yml format.
+     *
+     * The new aliases.yml files shall be located in the same directory as the equivalent legacy file. Rerunning this
+     * command is safe in that yml alias files are not overwritten, and legacy files are never changed/deleted.
+     *
+     * @command site:alias-convert
+     * @usage drush site:alias-convert --simulate
+     *   List the files to be converted but do not actually do anything.
+     * @bootstrap max
+     * @aliases sa-convert
+     * @field-labels
+     *   legacy: Legacy file
+     *   disposition: Converted
+     * @return RowsOfFields
+     */
+    public function siteAliasConvert()
+    {
+        /**
+         * @todo
+         *  - fix disposition column - needed data not yet present.
+         *  - check search depth
+         *  - support --simulate
+         *  - review public/private class property changes
+         *  - support custom paths instead of standard
+         *  - mention this command in docs and examples
+         *  - add a test
+         *  - add logging which explains disposition of each file
+         *  - suggest to user that she commits aliases to project after conversion
+         *  - allow a custom destination to deal with read only filesystems
+         */
+
+        $config = Drush::config();
+        $paths = [
+            $config->get('drush.user-dir'),
+            $config->get('drush.system-dir'),
+        ];
+        if ($siteRoot = Drush::bootstrapManager()->getRoot()) {
+            $paths = array_merge($paths, [ dirname($siteRoot) . '/drush', "$siteRoot/drush", "$siteRoot/sites/all/drush" ]);
+        }
+
+        // Configure alias manager and convert all.
+        $manager = $this->siteAliasManager();
+        $manager->addSearchLocations($paths);
+        $legacyFiles = $manager->legacyAliasConverter->discovery->findAllLegacyAliasFiles();
+        $convertedFiles = $manager->legacyAliasConverter->convert();
+        $rows = [];
+        foreach ($legacyFiles as $legacyFile) {
+            $rows[$legacyFile] = [
+                'legacy' => $legacyFile,
+                'disposition' => array_key_exists($legacyFile, $convertedFiles) ? 'Yes' : 'No',
+            ];
+        }
+        return new RowsOfFields($rows);
     }
 
     /**

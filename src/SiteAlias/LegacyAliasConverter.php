@@ -14,7 +14,7 @@ class LegacyAliasConverter
     /**
      * @var SiteAliasFileDiscovery
      */
-    protected $discovery;
+    public $discovery;
 
     /**
      * @var string
@@ -58,7 +58,7 @@ class LegacyAliasConverter
         $legacyFiles = $this->discovery->findAllLegacyAliasFiles();
 
         if (!$this->checkAnyNeedsConversion($legacyFiles)) {
-            return false;
+            return [];
         }
 
         // We reconvert all legacy files together, because the aliases
@@ -67,7 +67,7 @@ class LegacyAliasConverter
         $convertedFiles = $this->convertAll($legacyFiles);
         $this->writeAll($convertedFiles);
 
-        return true;
+        return $convertedFiles;
     }
 
     protected function checkAnyNeedsConversion($legacyFiles)

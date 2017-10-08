@@ -10,7 +10,7 @@ use Drush\Preflight\PreflightArgsInterface;
 class SiteAliasManager
 {
     protected $aliasLoader;
-    protected $legacyAliasConverter;
+    public $legacyAliasConverter;
     protected $selfAliasRecord;
     protected $specParser;
     protected $root = '';
@@ -156,11 +156,6 @@ class SiteAliasManager
             return new AliasRecord([], '@none');
         }
 
-        // Check to see if there are any legacy alias files that
-        // need to be converted.
-        // TODO: provide an enable / disable switch for this?
-        $this->legacyAliasConverter->convertOnce();
-
         // Search through all search locations, load
         // matching and potentially-matching alias files,
         // and return the alias matching the provided name.
@@ -181,8 +176,6 @@ class SiteAliasManager
      */
     public function getMultiple($name)
     {
-        $this->legacyAliasConverter->convertOnce();
-
         if (empty($name)) {
             return $this->aliasLoader->loadAll();
         }
