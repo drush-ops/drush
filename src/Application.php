@@ -1,6 +1,7 @@
 <?php
 namespace Drush;
 
+use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Drush\Boot\BootstrapManager;
 use Drush\Preflight\TildeExpansionHook;
@@ -164,6 +165,16 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
      */
     public function find($name)
     {
+        $command = $this->bootstrapAndFind($name);
+        $this->checkObsolete($command);
+        return $command;
+    }
+
+    /**
+     * Look up a command. Bootstrap further if necessary.
+     */
+    protected function bootstrapAndFind($name)
+    {
         try {
             return parent::find($name);
         } catch (CommandNotFoundException $e) {
@@ -191,6 +202,25 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
             // not be caught if the command cannot be found.
             return parent::find($name);
         }
+    }
+
+    /**
+     * If a command is annotated @obsolete, then we will throw an exception
+     * immediately; the command will not run, and no hooks will be called.
+     */
+    protected function checkObsolete($command)
+    {
+        if (!$command instanceof AnnotatedCommand) {
+            $return;
+        }
+
+        $annotationData = $command->getAnnotationData();
+        if (!$annotationData->has('obsolete')) {
+            return;
+        }
+
+        $obsoleteMessage = $command->getDescription();
+        throw new \Exception($obsoleteMessage);
     }
 
     /**
