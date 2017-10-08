@@ -211,7 +211,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
     protected function checkObsolete($command)
     {
         if (!$command instanceof AnnotatedCommand) {
-            $return;
+            return;
         }
 
         $annotationData = $command->getAnnotationData();
