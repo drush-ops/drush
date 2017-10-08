@@ -5,6 +5,13 @@ use Drush\Drush;
 
 class LegacyCommands extends DrushCommands
 {
+    /**
+     * @hook obsolete pm:test
+     */
+    public function test()
+    {
+        throw new \Exception('The pm:test command is just so very old it just is not a thing any more.');
+    }
 
     /**
      * Drupal 8 does not support disabling modules. See pm:uninstall command.

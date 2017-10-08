@@ -35,6 +35,9 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
     /** @var AliasManager */
     protected $aliasManager;
 
+    /** @var HookManager */
+    protected $hookManager;
+
     /** @var RedispatchHook */
     protected $redispatchHook;
 
@@ -117,6 +120,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
         $this->aliasManager = $aliasManager;
     }
 
+    public function setHookManager($hookManager)
+    {
+        $this->hookManager = $hookManager;
+    }
+
     public function setRedispatchHook(RedispatchHook $redispatchHook)
     {
         $this->redispatchHook = $redispatchHook;
@@ -167,6 +175,15 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
         try {
             return parent::find($name);
         } catch (CommandNotFoundException $e) {
+            // Check to see if there is a registered `@hook obsolete` for this command
+            if ($this->hookManager) {
+                // Look for @hook obsolete command:name
+                $obsoleteHook = $this->hookManager->getHook($name, 'obsolete');
+                foreach ($obsoleteHook as $obsolete) {
+                    $obsolete();
+                }
+            }
+
             // Is the unknown command destined for a remote site?
             if ($this->aliasManager) {
                 $selfAlias = $this->aliasManager->getSelf();
