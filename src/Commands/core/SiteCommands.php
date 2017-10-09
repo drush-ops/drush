@@ -177,6 +177,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         $discovery->depth('< 9');
         $legacyAliasConverter = new LegacyAliasConverter($discovery);
         $legacyAliasConverter->setTargetDir($destination);
+        $legacyAliasConverter->setSimulate(Drush::simulate());
 
         // Find and convert.
         drush_mkdir($destination, true);
@@ -197,7 +198,8 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
     /**
      * @hook interact site:alias-convert
      */
-    public function interactSiteAliasConvert(Input $input, Output $output) {
+    public function interactSiteAliasConvert(Input $input, Output $output)
+    {
         if (!$input->getArgument('destination')) {
             $default = $this->getConfig()->get('env.cwd');
             if ($composerRoot = Drush::bootstrapManager()->getComposerRoot()) {

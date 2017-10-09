@@ -27,6 +27,11 @@ class LegacyAliasConverter
     protected $converted;
 
     /**
+     * @var boolean
+     */
+    protected $simulate = false;
+
+    /**
      * LegacyAliasConverter constructor.
      *
      * @param SiteAliasFileDiscovery $discovery Provide the same discovery
@@ -37,6 +42,22 @@ class LegacyAliasConverter
     {
         $this->discovery = $discovery;
         $this->target = '';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSimulate()
+    {
+        return $this->simulate;
+    }
+
+    /**
+     * @param bool $simulate
+     */
+    public function setSimulate($simulate)
+    {
+        $this->simulate = $simulate;
     }
 
     /**
@@ -136,8 +157,8 @@ EOT;
     {
         $checksumPath = $this->checksumPath($path);
         if ($this->safeToWrite($path, $contents, $checksumPath)) {
-            drush_op('file_put_contents', $path, $contents);
-            drush_op([$this, 'saveChecksum'], $checksumPath, $path, $contents);
+            file_put_contents($path, $contents);
+            $this->saveChecksum($checksumPath, $path, $contents);
         }
     }
 
@@ -152,6 +173,11 @@ EOT;
      */
     protected function safeToWrite($path, $contents, $checksumPath)
     {
+        // Bail if simulate mode is enabled.
+        if ($this->isSimulate()) {
+            return true;
+        }
+
         // If the target file does not exist, it is always safe to write.
         if (!file_exists($path)) {
             return true;
