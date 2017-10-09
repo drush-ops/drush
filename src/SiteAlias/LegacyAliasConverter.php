@@ -39,6 +39,10 @@ class LegacyAliasConverter
         $this->target = '';
     }
 
+    /**
+     * @param string $target
+     *   A directory to write to. If not provided, writes go into same dir as the corresponding legacy file.
+     */
     public function setTargetDir($target)
     {
         $this->target = $target;
@@ -132,8 +136,8 @@ EOT;
     {
         $checksumPath = $this->checksumPath($path);
         if ($this->safeToWrite($path, $contents, $checksumPath)) {
-            file_put_contents($path, $contents);
-            $this->saveChecksum($checksumPath, $path, $contents);
+            drush_op('file_put_contents', $path, $contents);
+            drush_op([$this, 'saveChecksum'], $checksumPath, $path, $contents);
         }
     }
 
@@ -174,7 +178,7 @@ EOT;
         return $previousChecksum == $previousWrittenChecksum;
     }
 
-    protected function saveChecksum($checksumPath, $path, $contents)
+    public function saveChecksum($checksumPath, $path, $contents)
     {
         $name = basename($path);
         $comment = <<<EOT

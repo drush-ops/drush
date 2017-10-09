@@ -9,6 +9,9 @@ use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\ListDataFromKeys;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
+use Symfony\Component\Console\Input\Input;
+use Symfony\Component\Console\Output\Output;
+use Webmozart\PathUtil\Path;
 
 class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterface, ConfigAwareInterface
 {
@@ -142,53 +145,69 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * command is safe in that yml alias files are not overwritten, and legacy files are never changed/deleted.
      *
      * @command site:alias-convert
+     * @param $destination An absolute path to a directory for writing new alias files.If omitted, user will be prompted.
+     * @option sources A comma delimited list of paths to search. Overrides the default paths.
      * @usage drush site:alias-convert --simulate
      *   List the files to be converted but do not actually do anything.
      * @bootstrap max
      * @aliases sa-convert
-     * @field-labels
-     *   legacy: Legacy file
-     *   disposition: Converted
-     * @return RowsOfFields
+     * @return array
      */
-    public function siteAliasConvert()
+    public function siteAliasConvert($destination, $options = ['format' => 'yaml', 'sources' => null])
     {
         /**
          * @todo
-         *  - fix disposition column - needed data not yet present.
          *  - check search depth
-         *  - support --simulate
          *  - review public/private class property changes
-         *  - support custom paths instead of standard
          *  - mention this command in docs and examples
          *  - add a test
-         *  - add logging which explains disposition of each file
-         *  - suggest to user that she commits aliases to project after conversion
-         *  - allow a custom destination to deal with read only filesystems
+         *  - remove checksum system?
          */
-
-        $config = Drush::config();
-        $paths = [
-            $config->get('drush.user-dir'),
-            $config->get('drush.system-dir'),
-        ];
-        if ($siteRoot = Drush::bootstrapManager()->getRoot()) {
-            $paths = array_merge($paths, [ dirname($siteRoot) . '/drush', "$siteRoot/drush", "$siteRoot/sites/all/drush" ]);
+        $config = $this->getConfig();
+        if (!$paths = $options['sources']) {
+            $paths = [
+                $config->get('drush.user-dir'),
+                $config->get('drush.system-dir'),
+            ];
+            if ($siteRoot = Drush::bootstrapManager()->getRoot()) {
+                $paths = array_merge($paths, [ dirname($siteRoot) . '/drush', "$siteRoot/drush", "$siteRoot/sites/all/drush" ]);
+            }
         }
 
-        // Configure alias manager and convert all.
+        // Configure alias manager and legacy converter.
         $manager = $this->siteAliasManager();
         $manager->addSearchLocations($paths);
-        $legacyFiles = $manager->legacyAliasConverter->discovery->findAllLegacyAliasFiles();
-        $convertedFiles = $manager->legacyAliasConverter->convert();
-        $rows = [];
-        foreach ($legacyFiles as $legacyFile) {
-            $rows[$legacyFile] = [
-                'legacy' => $legacyFile,
-                'disposition' => array_key_exists($legacyFile, $convertedFiles) ? 'Yes' : 'No',
-            ];
+        $legacyAliasConverter = $manager->legacyAliasConverter;
+        $legacyAliasConverter->setTargetDir($destination);
+
+        // Find and convert.
+        drush_mkdir($destination, true);
+        $legacyFiles = $legacyAliasConverter->discovery->findAllLegacyAliasFiles();
+        if ($convertedFiles = $manager->legacyAliasConverter->convert()) {
+            $args = ['!num' => count($convertedFiles), '!dest' => $destination];
+            $message = dt('Created !num file(s) at !dest. Usually, one commits them to /drush/site-aliases in your Composer project.', $args);
+            $this->logger()->success($message);
         }
-        return new RowsOfFields($rows);
+
+        $return = [
+            'legacy_files' => $legacyFiles,
+            'converted_files' => $convertedFiles,
+        ];
+        return $return;
+    }
+
+    /**
+     * @hook interact site:alias-convert
+     */
+    public function interactSiteAliasConvert(Input $input, Output $output) {
+        if (!$input->getArgument('destination')) {
+            $default = $this->getConfig()->get('env.cwd');
+            if ($composerRoot = Drush::bootstrapManager()->getComposerRoot()) {
+                $default = Path::join($composerRoot, 'drush/site-aliases');
+            }
+            $destination = $this->io()->ask('Absolute path for writing new alias files', $default);
+            $input->setArgument('destination', $destination);
+        }
     }
 
     /**
