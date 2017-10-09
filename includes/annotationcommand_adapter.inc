@@ -20,7 +20,7 @@ use Drush\Command\DrushOutputAdapter;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
- * Cache the command file discovery object. Drush 9 uses dependency injection.
+ * Cache the command file discovery object.
  *
  * @return CommandFileDiscovery
  */
