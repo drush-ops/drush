@@ -14,7 +14,7 @@ class LegacyAliasConverter
     /**
      * @var SiteAliasFileDiscovery
      */
-    public $discovery;
+    protected $discovery;
 
     /**
      * @var string

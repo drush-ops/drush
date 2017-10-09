@@ -10,7 +10,7 @@ use Drush\Preflight\PreflightArgsInterface;
 class SiteAliasManager
 {
     protected $aliasLoader;
-    public $legacyAliasConverter;
+    protected $legacyAliasConverter;
     protected $selfAliasRecord;
     protected $specParser;
     protected $root = '';

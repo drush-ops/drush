@@ -1,12 +1,14 @@
 <?php
 namespace Drush\Commands\core;
 
-use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
+use Drush\SiteAlias\LegacyAliasConverter;
+use Drush\SiteAlias\SiteAliasFileDiscovery;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\ListDataFromKeys;
+use Drush\Utils\StringUtils;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\Input;
@@ -156,13 +158,10 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
     {
         /**
          * @todo
-         *  - check search depth
-         *  - review public/private class property changes
-         *  - add a test
          *  - remove checksum system?
          */
         $config = $this->getConfig();
-        if (!$paths = $options['sources']) {
+        if (!$paths = StringUtils::csvToArray($options['sources'])) {
             $paths = [
                 $config->get('drush.user-dir'),
                 $config->get('drush.system-dir'),
@@ -172,16 +171,17 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
             }
         }
 
-        // Configure alias manager and legacy converter.
-        $manager = $this->siteAliasManager();
-        $manager->addSearchLocations($paths);
-        $legacyAliasConverter = $manager->legacyAliasConverter;
+        // Configure legacy converter.
+        $discovery = new SiteAliasFileDiscovery();
+        array_map([$discovery, 'addSearchLocation'], $paths);
+        $discovery->depth('< 9');
+        $legacyAliasConverter = new LegacyAliasConverter($discovery);
         $legacyAliasConverter->setTargetDir($destination);
 
         // Find and convert.
         drush_mkdir($destination, true);
-        $legacyFiles = $legacyAliasConverter->discovery->findAllLegacyAliasFiles();
-        if ($convertedFiles = $manager->legacyAliasConverter->convert()) {
+        $legacyFiles = $discovery->findAllLegacyAliasFiles();
+        if ($convertedFiles = $legacyAliasConverter->convert()) {
             $args = ['!num' => count($convertedFiles), '!dest' => $destination];
             $message = dt('Created !num file(s) at !dest. Usually, one commits them to /drush/site-aliases in your Composer project.', $args);
             $this->logger()->success($message);
