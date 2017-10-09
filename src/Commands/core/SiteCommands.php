@@ -139,14 +139,13 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
     }
 
     /**
-     * Convert all legacy site alias files to new yml format.
-     *
-     * The new aliases.yml files shall be located in the same directory as the equivalent legacy file. Rerunning this
-     * command is safe in that yml alias files are not overwritten, and legacy files are never changed/deleted.
+     * Convert legacy site alias files to the new yml format.
      *
      * @command site:alias-convert
      * @param $destination An absolute path to a directory for writing new alias files.If omitted, user will be prompted.
      * @option sources A comma delimited list of paths to search. Overrides the default paths.
+     * @usage drush site:alias-convert
+     *   Find legacy alias files and convert them to yml. You will be prompted for a destination directory.
      * @usage drush site:alias-convert --simulate
      *   List the files to be converted but do not actually do anything.
      * @bootstrap max
@@ -159,7 +158,6 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
          * @todo
          *  - check search depth
          *  - review public/private class property changes
-         *  - mention this command in docs and examples
          *  - add a test
          *  - remove checksum system?
          */

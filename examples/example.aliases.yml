@@ -1,6 +1,8 @@
 #
 # Example of valid statements for an alias file.
 #
+# To convert legacy alias (*.aliases.drushrc.php) to yml, run the site:alias-convert command.
+#
 # Use this file as a guide to creating your own aliases.
 #
 # Aliases are commonly used to define short names for
