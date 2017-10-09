@@ -5,7 +5,7 @@ use Consolidation\Config\Config;
 use Consolidation\Config\ConfigInterface;
 
 use Symfony\Component\Console\Input\ArgvInput;
-use Drush\Preflight\LessStrictArgvInput;
+use Drush\Symfony\LessStrictArgvInput;
 
 /**
  * Storage for arguments preprocessed during preflight.
