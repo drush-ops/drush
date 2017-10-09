@@ -101,7 +101,7 @@ class Preflight
     }
 
     /**
-     * Removal table for arguments. Anythign found here will be silently
+     * Removal table for arguments. Anything found here will be silently
      * removed. The option value is ignored; ergo, both --strict and
      * --strict=0 will be removed; however, --stricter will not be removed.
      */
@@ -184,7 +184,7 @@ class Preflight
     }
 
     /**
-     * TODO: Factor this part of the prefligt out to a 'runtime' component.
+     * TODO: Factor this part of the preflight out to a 'runtime' component.
      * Bring along those classes that are not used until after the DI container
      * is set up:
      *  - LessStrictArgvInput
