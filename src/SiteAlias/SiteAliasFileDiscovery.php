@@ -42,7 +42,7 @@ class SiteAliasFileDiscovery
     /**
      * Set the search depth for finding alias files
      *
-     * @param integer $depth
+     * @param string|int $depth (@see \Symfony\Component\Finder\Finder::depth)
      * @return $this
      */
     public function depth($depth)
