@@ -1665,16 +1665,17 @@ function drush_errors_on($errors = null) {
 function drush_memory_limit() {
   $value = trim(ini_get('memory_limit'));
   $last = strtolower($value[strlen($value)-1]);
+  $size = (int) substr($value, 0, -1);
   switch ($last) {
     case 'g':
-      $value *= DRUSH_KILOBYTE;
+      $size *= DRUSH_KILOBYTE;
     case 'm':
-      $value *= DRUSH_KILOBYTE;
+      $size *= DRUSH_KILOBYTE;
     case 'k':
-      $value *= DRUSH_KILOBYTE;
+      $size *= DRUSH_KILOBYTE;
   }
 
-  return $value;
+  return $size;
 }
 
 /**
