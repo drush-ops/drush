@@ -8,6 +8,7 @@ use Consolidation\Config\Util\ConfigOverlay;
 use Consolidation\Config\Util\EnvConfig;
 
 use Drush\Preflight\PreflightArgsInterface;
+use Symfony\Component\Finder\Finder;
 
 /**
  * Locate Drush configuration files and load them into the configuration
@@ -400,21 +401,69 @@ class ConfigLocator
      *
      * @return array
      */
-    public function getCommandFilePaths($commandPaths)
+    public function getCommandFilePaths($commandPaths, $root)
     {
-        // Start with the built-in commands.
-        $searchpath = [
+        $builtin = $this->getBuiltinCommandFilePaths();
+        $included = $this->getIncludedCommandFilePaths($commandPaths);
+        $site = $this->getSiteCommandFilePaths(["$root/drush", dirname($root) . '/drush']);
+
+        return array_merge(
+            $builtin,
+            $included,
+            $site
+        );
+    }
+
+    /**
+     * Return all of the built-in commandfile locations
+     */
+    protected function getBuiltinCommandFilePaths()
+    {
+        return [
             dirname(__DIR__),
         ];
+    }
 
+    /**
+     * Return all of the commandfile locations specified via
+     * an 'include' option.
+     */
+    protected function getIncludedCommandFilePaths($commandPaths)
+    {
+        $searchpath = [];
         // Commands specified by 'include' option
         foreach ($commandPaths as $commandPath) {
             if (is_dir($commandPath)) {
                 $searchpath[] = $commandPath;
             }
         }
-
         return $searchpath;
+    }
+
+    /**
+     * Return all of the commandfile paths in any '$root/drush' or
+     * 'dirname($root)/drush' directory that contains a composer.json
+     * file or a 'Commands' or 'src/Commands' directory.
+     */
+    protected function getSiteCommandFilePaths($directories)
+    {
+        $result = [];
+
+        $directories = array_filter($directories, 'is_dir');
+
+        // Find projects
+        $finder = new Finder();
+        $finder->files()
+            ->ignoreUnreadableDirs()
+            ->path('#composer.json$|^src/Commands|^Commands#')
+            ->in($directories)
+            ->depth('<= 3');
+
+        foreach ($finder as $file) {
+            $result[] = dirname($file->getRealPath());
+        }
+
+        return $result;
     }
 
     /**
