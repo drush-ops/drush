@@ -74,12 +74,12 @@ class ConfigExportCommands extends DrushCommands
      * @option add Run `git add -p` after exporting. This lets you choose which config changes to sync for commit.
      * @option commit Run `git add -A` and `git commit` after exporting.  This commits everything that was exported without prompting.
      * @option message Commit comment for the exported configuration.  Optional; may only be used with --commit.
-     * @option destination An arbitrary directory that should receive the exported files. An alternative to label argument.
+     * @option destination An arbitrary directory that should receive the exported files. A backup directory is used when no value is provided.
      * @usage drush config:export --destination
      *   Export configuration; Save files in a backup directory named config-export.
      * @aliases cex,config-export
      */
-    public function export($label = null, $options = ['add' => false, 'commit' => false, 'message' => self::REQ, 'destination' => self::REQ])
+    public function export($label = null, $options = ['add' => false, 'commit' => false, 'message' => self::REQ, 'destination' => ''])
     {
         // Get destination directory.
         $destination_dir = ConfigCommands::getDirectory($label, $options['destination']);
