@@ -451,6 +451,10 @@ class ConfigLocator
 
         $directories = array_filter($directories, 'is_dir');
 
+        if (empty($directories)) {
+            return $result;
+        }
+
         // Find projects
         $finder = new Finder();
         $finder->files()
