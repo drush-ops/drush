@@ -30,7 +30,7 @@ class BrowseCommands extends DrushCommands implements SiteAliasManagerAwareInter
      *   Open Firefox web browser to the path 'admin'.
      * @handle-remote-commands true
      */
-    public function browse($path = '', $options = ['browser' => null, 'redirect-port' => ''])
+    public function browse($path = '', $options = ['browser' => self::REQ, 'redirect-port' => self::REQ])
     {
         $aliasRecord = $this->siteAliasManager()->getSelf();
         // Redispatch if called against a remote-host so a browser is started on the

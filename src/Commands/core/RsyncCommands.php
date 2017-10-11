@@ -54,7 +54,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      * @aliases rsync,core-rsync
      * @topics docs:aliases
      */
-    public function rsync($source, $destination, array $extra, $options = ['exclude-paths' => null, 'include-paths' => null, 'mode' => 'akz'])
+    public function rsync($source, $destination, array $extra, $options = ['exclude-paths' => self::REQ, 'include-paths' => self::REQ, 'mode' => 'akz'])
     {
         // Prompt for confirmation. This is destructive.
         if (!\Drush\Drush::simulate()) {

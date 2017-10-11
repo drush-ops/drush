@@ -30,7 +30,7 @@ class ListCommands extends DrushCommands
      *
      * @return \DOMDocument
      */
-    public function helpList($options = ['format' => 'listcli', 'raw' => false, 'filter' => null])
+    public function helpList($options = ['format' => 'listcli', 'raw' => false, 'filter' => self::REQ])
     {
         $application = Drush::getApplication();
         $all = $application->all();

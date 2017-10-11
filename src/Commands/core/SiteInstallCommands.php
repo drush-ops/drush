@@ -50,7 +50,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * @aliases si,sin,site-install
      *
      */
-    public function install($profile = '', array $additional, $options = ['db-url' => null, 'db-prefix' => null, 'db-su' => null, 'db-su-pw' => null, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => null, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => null, 'sites-subdir' => null, 'config-dir' => null])
+    public function install($profile = '', array $additional, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ])
     {
         $form_options = [];
         foreach ((array)$additional as $arg) {

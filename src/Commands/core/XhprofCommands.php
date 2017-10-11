@@ -24,7 +24,7 @@ class XhprofCommands extends DrushCommands
      *
      * @option xh-link URL to your XHProf report site.
      */
-    public function optionsetXhProf()
+    public function optionsetXhProf($options = ['xh-link' => self::REQ])
     {
     }
 

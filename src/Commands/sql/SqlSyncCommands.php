@@ -37,7 +37,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      *   Copy the database from the site in /sites/prod to the site in /sites/dev (multisite installation).
      * @topics docs:aliases,docs:policy,docs:example-sync-via-http
      */
-    public function sqlsync($source, $destination, $options = ['no-dump' => false, 'no-sync' => false, 'runner' => null, 'create-db' => false, 'db-su' => null, 'db-su-pw' => null, 'target-dump' => null, 'source-dump' => true])
+    public function sqlsync($source, $destination, $options = ['no-dump' => false, 'no-sync' => false, 'runner' => self::REQ, 'create-db' => false, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'target-dump' => self::REQ, 'source-dump' => true])
     {
         $manager = $this->siteAliasManager();
         $sourceRecord = $manager->get($source);
