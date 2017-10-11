@@ -230,8 +230,8 @@ class ConfigCommands extends DrushCommands
         $storage = $this->getStorage($directory);
         $state_map = [
             'create' => 'Only in DB',
-            'update' => 'Only in sync dir',
-            'delete' => 'Different',
+            'update' => 'Different',
+            'delete' => 'Only in sync dir',
         ];
         foreach ($this->getChanges($storage) as $collection) {
             foreach ($collection as $operation => $configs) {
@@ -257,8 +257,8 @@ class ConfigCommands extends DrushCommands
         $rows = [];
         $color_map = [
             'Only in DB' => 'green',
-            'Only in sync dir' => 'yellow',
-            'Different' => 'red',
+            'Only in sync dir' => 'red',
+            'Different' => 'yellow',
             'Identical' => 'white',
         ];
 
