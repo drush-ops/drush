@@ -51,7 +51,7 @@ class PhpCommands extends DrushCommands implements ConfigAwareInterface
      * @bootstrap max
      * @topics docs:examplescript,docs:scripts
      */
-    public function script(array $extra, $options = ['format' => 'var_export', 'script-path' => ''])
+    public function script(array $extra, $options = ['format' => 'var_export', 'script-path' => self::REQ])
     {
         $found = false;
         $script = array_shift($extra);

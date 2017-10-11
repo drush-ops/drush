@@ -30,7 +30,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
      * @usage core-init --edit --bg
      *   Return to shell prompt as soon as the editor window opens
      */
-    public function initializeDrush($options = ['edit' => '', 'add-path' => ''])
+    public function initializeDrush($options = ['edit' => false, 'add-path' => ''])
     {
         $home = Drush::config()->get('env.home');
         $drush_config_dir = $home . "/.drush";

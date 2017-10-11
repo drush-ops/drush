@@ -33,7 +33,7 @@ class ExampleCommands extends DrushCommands
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function exampleTable($options = ['format' => 'table', 'fields' => ''])
+    public function exampleTable($options = ['format' => 'table'])
     {
         $tableData = [
             'en' => [ 'first' => 'One',  'second' => 'Two',  'third' => 'Three' ],

@@ -53,7 +53,7 @@ class SqlCommands extends DrushCommands
      * @usage eval (drush sql-connect) < example.sql
      *   Fish: Import SQL statements from a file into the current database.
      */
-    public function connect($options = ['extra' => ''])
+    public function connect($options = ['extra' => self::REQ])
     {
         $this->further($options);
         $sql = SqlBase::create($options);
@@ -75,7 +75,7 @@ class SqlCommands extends DrushCommands
      * @usage drush sql:create --db-su=root --db-su-pw=rootpassword --db-url="mysql://drupal_db_user:drupal_db_password@127.0.0.1/drupal_db"
      *   Create the database as specified in the db-url option.
      */
-    public function create($options = ['db-su' => '', 'db-su-pw' => ''])
+    public function create($options = ['db-su' => self::REQ, 'db-su-pw' => self::REQ])
     {
         $this->further($options);
         $sql = SqlBase::create($options);
@@ -162,7 +162,7 @@ class SqlCommands extends DrushCommands
      *   Alternate way to import sql statements from a file.
      *
      */
-    public function query($query = '', $options = ['result-file' => null, 'file' => null, 'extra' => null, 'db-prefix' => null])
+    public function query($query = '', $options = ['result-file' => null, 'file' => self::REQ, 'extra' => self::REQ, 'db-prefix' => false])
     {
         $this->further($options);
         $filename = $options['file'];
@@ -212,7 +212,7 @@ class SqlCommands extends DrushCommands
      * @notes
      *   createdb is used by sql-sync, since including the DROP TABLE statements interfere with the import when the database is created.
      */
-    public function dump($options = ['result-file' => null, 'create-db' => null, 'data-only' => null, 'ordered-dump' => null, 'gzip' => null, 'extra' => null, 'extra-dump' => null])
+    public function dump($options = ['result-file' => null, 'create-db' => false, 'data-only' => false, 'ordered-dump' => false, 'gzip' => false, 'extra' => self::REQ, 'extra-dump' => self::REQ])
     {
         $this->further($options);
         $sql = SqlBase::create($options);

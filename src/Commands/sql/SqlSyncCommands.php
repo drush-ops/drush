@@ -37,7 +37,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      *   Copy the database from the site in /sites/prod to the site in /sites/dev (multisite installation).
      * @topics docs:aliases,docs:policy,docs:example-sync-via-http
      */
-    public function sqlsync($source, $destination, $options = ['no-dump' => false, 'no-sync' => false, 'runner' => null, 'create-db' => false, 'db-su' => null, 'db-su-pw' => null, 'target-dump' => null, 'source-dump' => true])
+    public function sqlsync($source, $destination, $options = ['no-dump' => false, 'no-sync' => false, 'runner' => self::REQ, 'create-db' => false, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'target-dump' => self::REQ, 'source-dump' => self::OPT])
     {
         $manager = $this->siteAliasManager();
         $sourceRecord = $manager->get($source);
@@ -62,7 +62,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         // Perform sql-dump on source unless told otherwise.
         $dump_options = $global_options + array(
             'gzip' => true,
-            'result-file' => $options['source-dump'],
+            'result-file' => $options['source-dump'] ?: true,
         );
         if (!$options['no-dump']) {
             $this->logger()->notice(dt('Starting to dump database on Source.'));
@@ -137,26 +137,20 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $destination = $commandData->input()->getArgument('destination');
         // Get destination info for confirmation prompt.
         $manager = $this->siteAliasManager();
-        $sourceRecord = $manager->get($source);
-        $destinationRecord = $manager->get($destination);
-        $source_db_name = $this->databaseName($sourceRecord);
-        $target_db_name = $this->databaseName($destinationRecord);
-        $txt_source = ($sourceRecord->remoteHost() ? $sourceRecord->remoteHost() . '/' : '') . $source_db_name;
-        $txt_destination = ($destinationRecord->remoteHost() ? $destinationRecord->remoteHost() . '/' : '') . $target_db_name;
-
-        // Validate.
-        if (empty($source_db_name)) {
-            if (empty($sourceRecord)) {
-                throw new \Exception(dt('Error: no alias record could be found for source !source', array('!source' => $source)));
-            }
+        if (!$sourceRecord = $manager->get($source)) {
+            throw new \Exception(dt('Error: no alias record could be found for source !source', array('!source' => $source)));
+        }
+        if (!$destinationRecord = $manager->get($destination)) {
+            throw new \Exception(dt('Error: no alias record could be found for target !destination', array('!destination' => $destination)));
+        }
+        if (!$source_db_name = $this->databaseName($sourceRecord)) {
             throw new \Exception(dt('Error: no database record could be found for source !source', array('!source' => $source)));
         }
-        if (empty($target_db_name)) {
-            if (empty($destinationRecord)) {
-                throw new \Exception(dt('Error: no alias record could be found for target !destination', array('!destination' => $destination)));
-            }
+        if (!$target_db_name = $this->databaseName($destinationRecord)) {
             throw new \Exception(dt('Error: no database record could be found for target !destination', array('!destination' => $destination)));
         }
+        $txt_source = ($sourceRecord->remoteHost() ? $sourceRecord->remoteHost() . '/' : '') . $source_db_name;
+        $txt_destination = ($destinationRecord->remoteHost() ? $destinationRecord->remoteHost() . '/' : '') . $target_db_name;
 
         if ($commandData->input()->getOption('no-dump') && !$commandData->input()->getOption('source-dump')) {
             throw new \Exception(dt('The --source-dump option must be supplied when --no-dump is specified.'));

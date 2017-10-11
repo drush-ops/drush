@@ -40,7 +40,7 @@ class RunserverCommands extends DrushCommands
      * @usage drush rs :9000/admin
      *   Start runserver on 127.0.0.1, port 9000, and open /admin in browser. Note that you need a colon when you specify port and path, but no IP.
      */
-    public function runserver($uri = null, $options = ['default-server' => null, 'browser' => true, 'dns' => false])
+    public function runserver($uri = null, $options = ['default-server' => self::REQ, 'browser' => true, 'dns' => false])
     {
         global $base_url;
 

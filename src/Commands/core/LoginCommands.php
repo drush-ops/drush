@@ -33,7 +33,7 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      * @usage drush user:login --browser=firefox --mail=drush@example.org
      *   Open firefox web browser, and login as the user with the e-mail address drush@example.org.
      */
-    public function login($path = '', $options = ['name' => '1', 'browser' => true, 'redirect-port' => ''])
+    public function login($path = '', $options = ['name' => '1', 'browser' => true, 'redirect-port' => self::REQ])
     {
 
         // Redispatch if called against a remote-host so a browser is started on the

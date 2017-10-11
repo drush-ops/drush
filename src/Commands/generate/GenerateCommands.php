@@ -42,7 +42,7 @@ class GenerateCommands extends DrushCommands
      * @topics docs:generators
      * @bootstrap max
      */
-    public function generate($generator = '', $options = ['answers' => null, 'directory' => null])
+    public function generate($generator = '', $options = ['answers' => self::REQ, 'directory' => self::REQ])
     {
 
         // Disallow default Symfony console commands.

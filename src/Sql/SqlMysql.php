@@ -150,10 +150,10 @@ EOT;
         // We had --skip-add-locks here for a while to help people with insufficient permissions,
         // but removed it because it slows down the import a lot.  See http://drupal.org/node/1283978
         $extra = ' --no-autocommit --single-transaction --opt -Q';
-        if (isset($data_only)) {
+        if ($data_only) {
             $extra .= ' --no-create-info';
         }
-        if (isset($ordered_dump)) {
+        if ($ordered_dump) {
             $extra .= ' --skip-extended-insert --order-by-primary';
         }
         if ($option = $this->getOption('extra-dump', $this->queryExtra)) {

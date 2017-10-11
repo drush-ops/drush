@@ -154,7 +154,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * @aliases sa-convert,sac
      * @return array
      */
-    public function siteAliasConvert($destination, $options = ['format' => 'yaml', 'sources' => null])
+    public function siteAliasConvert($destination, $options = ['format' => 'yaml', 'sources' => self::REQ])
     {
         /**
          * @todo
