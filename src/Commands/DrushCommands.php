@@ -13,6 +13,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface
 {
     // This is more readable.
     const REQ=InputOption::VALUE_REQUIRED;
+    const OPT=InputOption::VALUE_OPTIONAL;
 
     use LoggerAwareTrait;
     use IO {
