@@ -7,8 +7,8 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drush\Commands\DrushCommands;
-use Drush\Log\LogLevel;
 use Drupal\views\Views;
+use Drush\Utils\StringUtils;
 
 class ViewsCommands extends DrushCommands
 {
@@ -142,7 +142,7 @@ class ViewsCommands extends DrushCommands
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function vlist($options = ['name' => '', 'tags' => '', 'status' => null, 'format' => 'table', 'fields' => ''])
+    public function vlist($options = ['name' => self::REQ, 'tags' => self::REQ, 'status' => self::REQ, 'format' => 'table'])
     {
         $disabled_views = array();
         $enabled_views = array();
@@ -150,7 +150,7 @@ class ViewsCommands extends DrushCommands
         $views = $this->getEntityTypeManager()->getStorage('view')->loadMultiple();
 
         // Get the --name option.
-        $name = \_convert_csv_to_array($options['name']);
+        $name = StringUtils::csvToArray($options['name']);
         $with_name = !empty($name) ? true : false;
 
         // Get the --tags option.
@@ -232,14 +232,14 @@ class ViewsCommands extends DrushCommands
      *
      * @return string
      */
-    public function execute($view_name, $display = null, $view_args = null, $options = ['count' => 0, 'show-admin-links' => 0])
+    public function execute($view_name, $display = null, $view_args = null, $options = ['count' => 0, 'show-admin-links' => false])
     {
 
         $view = Views::getView($view_name);
 
         // Set the display and execute the view.
         $view->setDisplay($display);
-        $view->preExecute(_convert_csv_to_array($view_args));
+        $view->preExecute(StringUtils::csvToArray($view_args));
         $view->execute();
 
         if (empty($view->result)) {
@@ -307,7 +307,7 @@ class ViewsCommands extends DrushCommands
      */
     public function enable($views)
     {
-        $view_names = _convert_csv_to_array($views);
+        $view_names = StringUtils::csvToArray($views);
         if ($views = $this->getEntityTypeManager()->getStorage('view')->loadMultiple($view_names)) {
             foreach ($views as $view) {
                 $view->enable();
@@ -329,7 +329,7 @@ class ViewsCommands extends DrushCommands
      */
     public function disable($views)
     {
-        $view_names = _convert_csv_to_array($views);
+        $view_names = StringUtils::csvToArray($views);
         if ($views = $this->getEntityTypeManager()->getStorage('view')->loadMultiple($view_names)) {
             foreach ($views as $view) {
                 $view->disable();

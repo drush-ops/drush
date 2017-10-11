@@ -56,7 +56,7 @@ class UserCommands extends DrushCommands
      *
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function information($names = '', $options = ['format' => 'table', 'uid' => '', 'mail' => '', 'fields' => ''])
+    public function information($names = '', $options = ['format' => 'table', 'uid' => self::REQ, 'mail' => self::REQ])
     {
         $accounts = [];
         if ($mails = StringUtils::csvToArray($options['mail'])) {
@@ -215,13 +215,13 @@ class UserCommands extends DrushCommands
      * @command user:create
      *
      * @param string $name The name of the account to add
-     * @option string password The password for the new account
-     * @option string mail The email address for the new account
+     * @option password The password for the new account
+     * @option mail The email address for the new account
      * @aliases ucrt,user-create
      * @usage drush user:create newuser --mail="person@example.com" --password="letmein"
      *   Create a new user account with the name newuser, the email address person@example.com, and the password letmein
      */
-    public function create($name, $options = ['password' => '', 'mail' => ''])
+    public function create($name, $options = ['password' => self::REQ, 'mail' => self::REQ])
     {
         $new_user = array(
             'name' => $name,
@@ -315,20 +315,6 @@ class UserCommands extends DrushCommands
         } else {
             throw new \Exception(dt('Unable to load user: !user', array('!user' => $name)));
         }
-    }
-
-    /**
-     * A completion callback.
-     *
-     * @return array
-     *   An array of available roles.
-     */
-    public static function complete()
-    {
-        drush_bootstrap_max();
-        $roles = \Drupal::entityTypeManager()->getStorage('user_role')->loadMultiple();
-        unset($roles['anonymous']);
-        return array('values' => array_keys($roles));
     }
 
     /**

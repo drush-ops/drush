@@ -4,8 +4,9 @@ namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drupal\Core\State\StateInterface;
+use Drush\Commands\DrushCommands;
 
-class StateCommands
+class StateCommands extends DrushCommands
 {
 
     protected $state;
@@ -35,7 +36,7 @@ class StateCommands
      *
      * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
      */
-    public function get($key, $options = ['format' => 'string', 'fields' => ''])
+    public function get($key, $options = ['format' => 'string'])
     {
         $value = $this->getState()->get($key);
         return new PropertyList([$key => $value]);
@@ -61,7 +62,7 @@ class StateCommands
      *
      * @return void
      */
-    public function set($key, $value, $options = ['input-format' => 'auto', 'value' => null])
+    public function set($key, $value, $options = ['input-format' => 'auto', 'value' => self::REQ])
     {
         // A convenient way to pass a multiline value within a backend request.
         $value = $options['value'] ?: $value;

@@ -150,7 +150,7 @@ class PmCommands extends DrushCommands
      * @aliases pml,pm-list
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => null, 'core' => false, 'no-core' => false])
+    public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => self::REQ, 'core' => false, 'no-core' => false])
     {
         $rows = [];
         $modules = \system_rebuild_module_data();

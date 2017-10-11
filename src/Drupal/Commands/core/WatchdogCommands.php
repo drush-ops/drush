@@ -47,7 +47,7 @@ class WatchdogCommands extends DrushCommands
      * @default-fields wid,date,type,severity,message
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => null, 'type' => null, 'extended' => false])
+    public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'type' => self::REQ, 'extended' => false])
     {
         $where = $this->where($options['type'], $options['severity'], $substring);
         $query = Database::getConnection()->select('watchdog', 'w')
@@ -149,7 +149,7 @@ class WatchdogCommands extends DrushCommands
      * @validate-module-enabled dblog
      * @return void
      */
-    public function delete($substring = '', $options = ['severity' => null, 'type' => null])
+    public function delete($substring = '', $options = ['severity' => self::REQ, 'type' => self::REQ])
     {
         if ($substring == 'all') {
             $this->output()->writeln(dt('All watchdog messages will be deleted.'));

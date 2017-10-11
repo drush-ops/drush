@@ -7,9 +7,13 @@ use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Robo\Contract\IOAwareInterface;
 use Robo\Common\IO;
+use Symfony\Component\Console\Input\InputOption;
 
 abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface
 {
+    // This is more readable.
+    const REQ=InputOption::VALUE_REQUIRED;
+
     use LoggerAwareTrait;
     use IO {
         io as roboIo;

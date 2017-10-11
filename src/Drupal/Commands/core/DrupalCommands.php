@@ -113,7 +113,7 @@ class DrupalCommands extends DrushCommands
      * @default-fields title,severity,value
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function requirements($options = ['format' => 'table', 'severity' => -1, 'ignore' => null])
+    public function requirements($options = ['format' => 'table', 'severity' => -1, 'ignore' => ''])
     {
         include_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
         $severities = array(

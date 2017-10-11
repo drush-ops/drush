@@ -59,7 +59,7 @@ class QueueCommands extends DrushCommands
      * @validate-queue name
      * @option time-limit The maximum number of seconds allowed to run the queue
      */
-    public function run($name, $options = ['time-limit' => null])
+    public function run($name, $options = ['time-limit' => self::REQ])
     {
         $time_limit = (int) $options['time-limit'];
         $start = microtime(true);
