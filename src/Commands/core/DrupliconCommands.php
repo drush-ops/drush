@@ -13,15 +13,10 @@ class DrupliconCommands extends DrushCommands
 
     /**
      * @hook option *
+     * @option druplicon Shows the druplicon as glorious ASCII art.
      */
-    public function optionset(Command $command, AnnotationData $annotationData)
+    public function optionset($options = ['druplicon' => false])
     {
-        $command->addOption(
-            'druplicon',
-            '',
-            InputOption::VALUE_NONE,
-            'Shows the druplicon as glorious ASCII art.'
-        );
     }
 
     /**

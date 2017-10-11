@@ -3,6 +3,7 @@ namespace Drush\Commands;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Load this commandfile using the --include option - e.g. `drush --include=/path/to/drush/examples`
@@ -48,5 +49,5 @@ class PolicyCommands extends DrushCommands {
    * @hook option updatedb
    * @option secret A required token else user may not run updatedb command.
    */
-  public function optionsetUpdateDb() {}
+  public function optionsetUpdateDb($options = ['secret' => InputOption::VALUE_REQUIRED]) {}
 }
