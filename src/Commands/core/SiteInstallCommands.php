@@ -285,7 +285,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $settingsfile = Path::join($confPath, 'settings.php');
         $sitesfile = "sites/sites.php";
         $default = realpath(Path::join($root, 'sites/default'));
-        $sitesfile_write = $confPath != $default && !file_exists($sitesfile);
+        $sitesfile_write = realpath($confPath) != $default && !file_exists($sitesfile);
 
         if (!file_exists($settingsfile)) {
             $msg[] = dt('create a @settingsfile file', array('@settingsfile' => $settingsfile));
