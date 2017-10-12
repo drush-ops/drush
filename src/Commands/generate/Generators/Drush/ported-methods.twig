@@ -6,6 +6,7 @@
 {% for argName, argDescription in command.arguments %}
    * @param {{ argName }} {{ argDescription|raw }}
 {% endfor %}
+   * @param array $options An associative array of options whose values come from cli, aliases, config, etc.
 {% for optionName, optionDescription in command.options %}
    * @option {{ optionName }} {{ optionDescription|raw }}
 {% endfor %}
