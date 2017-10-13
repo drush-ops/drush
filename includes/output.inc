@@ -48,7 +48,7 @@ function drush_print($message = '', $indent = 0, $handle = NULL, $newline = TRUE
 }
 
 /**
- * Rudimentary replacement for Drupal API t() function.
+ * Rudimentary translation system, akin to Drupal's t() function.
  *
  * @param string
  *   String to process, possibly with replacement item.
@@ -57,53 +57,9 @@ function drush_print($message = '', $indent = 0, $handle = NULL, $newline = TRUE
  *
  * @return
  *   The processed string.
- *
- * @see t()
  */
 function dt($string, $args = array()) {
-  $output = NULL;
-  if (function_exists('t') && drush_drupal_major_version() == 7) {
-    $output = t($string, $args);
-  }
-  // The language system requires a working container which has the string
-  // translation service.
-  else if (drush_drupal_major_version() >= 8 && \Drupal::hasService('string_translation')) {
-    // Drupal 8 removes !var replacements, creating a user-level error when
-    // these are used, so we'll pre-replace these before calling translate().
-    list($string, $args) = replace_legacy_dt_args($string, $args);
-    $output = (string) \Drupal::translation()->translate($string, $args);
-  }
-  else if (function_exists('t') && drush_drupal_major_version() <= 7 && function_exists('theme')) {
-    $output = t($string, $args);
-  }
-
-  // If Drupal's t() function unavailable.
-  if (!isset($output)) {
-    $output = StringUtils::interpolate($string, $args);
-  }
-  return $output;
-}
-
-/**
- * Replace placeholders that begin with a '!' with '@'.
- */
-function replace_legacy_dt_args(&$string, &$legacy_args) {
-  $args = array();
-  $replace = array();
-  foreach ($legacy_args as $name => $argument) {
-    if ($name[0] == '!') {
-      $new_arg = '@' . substr($name, 1);
-      $replace[$name] = $new_arg;
-      $args[$new_arg] = Markup::create($argument);
-    }
-    else {
-      $args[$name] = $argument;
-    }
-  }
-  return [
-    strtr($string, $replace),
-    $args
-  ];
+  return StringUtils::interpolate($string, $args);
 }
 
 /**
