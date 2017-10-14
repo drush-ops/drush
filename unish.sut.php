@@ -28,6 +28,7 @@ function unish_validate() {
  */
 function unish_setup_sut($unish_sandbox) {
   $working_dir = dirname($unish_sandbox) . DIRECTORY_SEPARATOR . 'build-drush-sut';
+  $target_dir = dirname($working_dir) . DIRECTORY_SEPARATOR . 'drush-sut';
   drush_delete_dir($working_dir, TRUE);
   $codebase = 'tests/resources/codebase';
   drush_copy_dir($codebase, $working_dir);
@@ -40,6 +41,18 @@ function unish_setup_sut($unish_sandbox) {
       file_put_contents($path, $new_contents);
     }
   }
+
+  $alias_contents = <<<EOT
+dev:
+  root: $target_dir/web
+  uri: dev
+stage:
+  root: $target_dir/web
+  uri: stage
+EOT;
+  mkdir("$working_dir/drush");
+  mkdir("$working_dir/drush/site-aliases");
+  file_put_contents("$working_dir/drush/site-aliases/sut.alias.yml", $alias_contents);
 
   $verbose = unishIsVerbose();
   $cmd = "composer $verbose install --prefer-dist --no-progress --no-suggest --working-dir " . escapeshellarg($working_dir);
@@ -54,7 +67,6 @@ function unish_setup_sut($unish_sandbox) {
   }
 
   // Move the sut into place
-  $target_dir = dirname($working_dir) . DIRECTORY_SEPARATOR . 'drush-sut';
   drush_delete_dir($target_dir, TRUE);
   rename($working_dir, $target_dir);
 
