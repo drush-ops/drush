@@ -6,13 +6,16 @@ namespace Drush\Preflight;
  */
 class ArgsRemapper
 {
+    protected $remapOptions;
+    protected $remapCommandAliases;
+
     /**
      * ArgsRemapper constructor
      */
-    public function __construct($remap, $remove)
+    public function __construct($remapOptions, $remapCommandAliases)
     {
-        $this->remap = $remap;
-        $this->remove = $remove;
+        $this->remapOptions = $remapOptions;
+        $this->remapCommandAliases = $remapCommandAliases;
     }
 
     /**
@@ -24,43 +27,14 @@ class ArgsRemapper
     public function remap($argv)
     {
         $result = [];
+        $sawCommmand = false;
         foreach ($argv as $arg) {
-            $arg = $this->remapArgument($arg);
+            $arg = $this->checkRemap($arg, $sawCommmand);
             if (isset($arg)) {
                 $result[] = $arg;
             }
         }
         return $result;
-    }
-
-    /**
-     * Apply any transformations to a single arg.
-     *
-     * @param stinrg $arg One arguent to remap
-     * @return string The altered argument
-     */
-    protected function remapArgument($arg)
-    {
-        if ($this->checkRemoval($arg)) {
-            return null;
-        }
-        return $this->checkRemap($arg);
-    }
-
-    /**
-     * Check to see if the provided argument should be removed / ignored.
-     *
-     * @param stinrg $arg One arguent to inspect
-     * @return bool
-     */
-    protected function checkRemoval($arg)
-    {
-        foreach ($this->remove as $removalCandidate) {
-            if ($this->matches($arg, $removalCandidate)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -70,11 +44,30 @@ class ArgsRemapper
      * @param stinrg $arg One arguent to inspect
      * @return string The altered argument
      */
-    protected function checkRemap($arg)
+    protected function checkRemap($arg, &$sawCommmand)
     {
-        foreach ($this->remap as $from => $to) {
+        if (!$sawCommmand && ctype_alpha($arg[0])) {
+            $sawCommand = true;
+            return $this->remapCommandAlias($arg);
+        }
+        return $this->remapOptions($arg);
+    }
+
+    protected function remapOptions($arg)
+    {
+        foreach ($this->remapOptions as $from => $to) {
             if ($this->matches($arg, $from)) {
                 return $to . substr($arg, strlen($from));
+            }
+        }
+        return $arg;
+    }
+
+    protected function remapCommandAlias($arg)
+    {
+        foreach ($this->remapCommandAliases as $from => $to) {
+            if ($arg == $from) {
+                return $to;
             }
         }
         return $arg;
