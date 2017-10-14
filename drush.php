@@ -2,6 +2,7 @@
 
 use Drush\Config\Environment;
 use Drush\Preflight\Preflight;
+use Drush\Runtime\Runtime;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -59,6 +60,7 @@ $environment->applyEnvironment();
 
 // Preflight and run
 $preflight = new Preflight($environment);
-$status_code = $preflight->run($_SERVER['argv']);
+$runtime = new Runtime($preflight);
+$status_code = $runtime->run($_SERVER['argv']);
 
 exit($status_code);
