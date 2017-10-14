@@ -81,7 +81,7 @@ class Preflight
      * Eventually, we might want to expose this table to some form of
      * 'help' output, so folks can see the available conversions.
      */
-    protected function remapArguments()
+    protected function remapOptions()
     {
         return [
             '--ssh-options' => '-Dssh.options',
@@ -94,21 +94,24 @@ class Preflight
             '--db-su' => '-Dsql.db-su',
             '--notify' => '-Dnotify.duration',
             '--xh-link' => '-Dxh.link',
-            // Map command aliases which Console complains about.
-            'si' => 'site-install',
-            'en' => 'pm-enable',
         ];
     }
 
     /**
-     * Removal table for arguments. Anything found here will be silently
-     * removed. The option value is ignored; ergo, both --strict and
-     * --strict=0 will be removed; however, --stricter will not be removed.
+     * Symfony Console dislikes certain command aliases, because
+     * they are too similar to other Drush commands that contain
+     * the same characters.  To avoid the "I don't know which
+     * command you mean"-type errors, we will replace problematic
+     * aliases with their longhand equivalents.
+     *
+     * This should be fixed in Symfony Console.
      */
-    protected function removeArguments()
+    protected function remapCommandAliases()
     {
-        // Now we are going to support rather than remove --strict.
-        return [];
+        return [
+            'si' => 'site-install',
+            'en' => 'pm-enable',
+        ];
     }
 
     /**
@@ -119,7 +122,7 @@ class Preflight
     public function preflightArgs($argv)
     {
         $argProcessor = new ArgsPreprocessor();
-        $remapper = new ArgsRemapper($this->remapArguments(), $this->removeArguments());
+        $remapper = new ArgsRemapper($this->remapOptions(), $this->remapCommandAliases());
         $preflightArgs = new PreflightArgs([]);
         $argProcessor->setArgsRemapper($remapper);
 
