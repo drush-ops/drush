@@ -16,14 +16,20 @@ $vendor = $sut . '/vendor';
 $arguments = $GLOBALS['argv'];
 // Shift off argv[0] which contains the name of this script.
 array_shift($arguments);
-// Add uri option
-array_unshift($arguments, "--uri=dev");
+// Add alias if not already specified
+if (!empty($arguments) && ($arguments[0][0] != '@')) {
+  array_unshift($arguments, "@sut.dev");
+}
 
-// Make it easy to just call `/.sut si -y testing`
+// Make it easy to just call `./sut si -y testing`, or `./sut @sut.stage -y testing`
 if (in_array('si', $arguments) || in_array('site-install', $arguments)) {
+    $subdir = 'dev';
+    if (in_array('@sut.stage', $arguments)) {
+      $subdir = 'stage';
+    }
     $db_url = getenv('UNISH_DB_URL') ?: 'mysql://root:@127.0.0.1';
-    $arguments[] = "--db-url=$db_url/unish_dev";
-    $arguments[] = '--sites-subdir=dev';
+    $arguments[] = "--db-url=$db_url/unish_$subdir";
+    $arguments[] = "--sites-subdir=$subdir";
 }
 
 /**
