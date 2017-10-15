@@ -9,11 +9,13 @@ use Drush\SiteAlias\SiteAliasManager;
 use DrupalFinder\DrupalFinder;
 
 /**
- * Prepare to bootstrap Drupal
+ * The Drush preflight determines what needs to be done for this request.
+ * The preflight happens after Drush has loaded its autoload file, but
+ * prior to loading Drupal's autoload file and setting up the DI container.
  *
+ * - Pre-parse commandline arguements
+ * - Read configuration .yml files
  * - Determine the site to use
- * - Set up the DI container
- * - Start the bootstrap process
  */
 class Preflight
 {
@@ -38,27 +40,35 @@ class Preflight
     protected $drupalFinder;
 
     /**
+     * @var PreflightArgs
+     */
+    protected $preflightArgs;
+
+    /**
+     * @var SiteAliasManager
+     */
+    protected $aliasManager;
+
+    /**
      * Preflight constructor
      */
     public function __construct(Environment $environment, $verify = null, $configLocator = null)
     {
         $this->environment = $environment;
         $this->verify = $verify ?: new PreflightVerify();
-        $this->configLocator = $configLocator ?: new ConfigLocator();
+        $this->configLocator = $configLocator ?: new ConfigLocator('DRUSH_');
         $this->drupalFinder = new DrupalFinder();
     }
 
     /**
      * Perform preliminary initialization. This mostly involves setting up
      * legacy systems.
-     *
-     * @param PreflightArgs $preflightArgs
      */
-    public function init(PreflightArgs $preflightArgs)
+    public function init()
     {
         // Define legacy constants, and include legacy files that Drush still needs
         LegacyPreflight::includeCode($this->environment->drushBasePath());
-        LegacyPreflight::defineConstants($this->environment, $preflightArgs->applicationPath());
+        LegacyPreflight::defineConstants($this->environment, $this->preflightArgs->applicationPath());
         LegacyPreflight::setContexts($this->environment);
     }
 
@@ -135,30 +145,22 @@ class Preflight
      * Create the initial config locator object, and inject any needed
      * settings, paths and so on into it.
      */
-    public function prepareConfig(PreflightArgs $preflightArgs, Environment $environment)
+    public function prepareConfig(Environment $environment)
     {
-        // Load configuration and aliases from defined global locations
-        // where such things are found.
-        $configLocator = new ConfigLocator('DRUSH_');
-
         // Make our environment settings available as configuration items
-        $configLocator->addEnvironment($environment);
+        $this->configLocator->addEnvironment($environment);
 
-        $configLocator->setLocal($preflightArgs->isLocal());
-        $configLocator->addUserConfig($preflightArgs->configPaths(), $environment->systemConfigPath(), $environment->userConfigPath());
-        $configLocator->addDrushConfig($environment->drushBasePath());
-
-        return $configLocator;
+        $this->configLocator->setLocal($this->preflightArgs->isLocal());
+        $this->configLocator->addUserConfig($this->preflightArgs->configPaths(), $environment->systemConfigPath(), $environment->userConfigPath());
+        $this->configLocator->addDrushConfig($environment->drushBasePath());
     }
 
     /**
      * Start code coverage collection
-     *
-     * @param PreflightArgs $preflightArgs
      */
-    public function startCoverage(PreflightArgs $preflightArgs)
+    public function startCoverage()
     {
-        if ($coverage_file = $preflightArgs->coverageFile()) {
+        if ($coverage_file = $this->preflightArgs->coverageFile()) {
             // TODO: modernize code coverage handling
             drush_set_context('DRUSH_CODE_COVERAGE', $coverage_file);
             xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
@@ -166,71 +168,65 @@ class Preflight
         }
     }
 
-    /**
-     * Run the application, catching any errors that may be thrown.
-     * Typically, this will happen only for code that fails fast during
-     * preflight. Later code should catch and handle its own exceptions.
-     */
-    public function run($argv)
+    public function createInput()
     {
-        $status = 0;
-        try {
-            $status = $this->doRun($argv);
-        } catch (\Exception $e) {
-            $status = $e->getCode();
-            $message = $e->getMessage();
-            // Uncaught exceptions could happen early, before our logger
-            // and other classes are initialized. Print them and exit.
-            fwrite(STDERR, "$message\n");
-        }
-        return $status;
+        return $this->preflightArgs->createInput();
     }
 
-    /**
-     * TODO: Factor this part of the preflight out to a 'runtime' component.
-     * Bring along those classes that are not used until after the DI container
-     * is set up:
-     *  - LessStrictArgvInput
-     *  - DependencyInjection
-     *  - RedispatchHook
-     *  - TildeExpansionHook
-     */
-    protected function doRun($argv)
+    public function getCommandFilePaths()
+    {
+        // Find all of the available commandfiles, save for those that are
+        // provided by modules in the selected site; those will be added
+        // during bootstrap.
+        return $this->configLocator->getCommandFilePaths($this->preflightArgs->commandPaths());
+    }
+
+    public function loadSiteAutoloader()
+    {
+        return $this->environment()->loadSiteAutoloader($this->drupalFinder()->getDrupalRoot());
+    }
+
+    public function config()
+    {
+        return $this->configLocator->config();
+    }
+
+    public function preflight($argv)
     {
         // Fail fast if there is anything in our environment that does not check out
         $this->verify->verify($this->environment);
 
         // Get the preflight args and begin collecting configuration files.
-        $preflightArgs = $this->preflightArgs($argv);
-        $configLocator = $this->prepareConfig($preflightArgs, $this->environment);
+        $this->preflightArgs = $this->preflightArgs($argv);
+        $this->prepareConfig($this->environment);
 
         // Do legacy initialization (load static includes, define old constants, etc.)
-        $this->init($preflightArgs);
+        $this->init();
 
         // Start code coverage
-        $this->startCoverage($preflightArgs);
+        $this->startCoverage();
 
         // Get the config files provided by prepareConfig()
-        $config = $configLocator->config();
+        $config = $this->config();
 
         // Copy items from the preflight args into configuration.
         // This will also load certain config values into the preflight args.
-        $preflightArgs->applyToConfig($config);
+        $this->preflightArgs->applyToConfig($config);
 
         // Determine the local site targeted, if any.
         // Extend configuration and alias files to include files in
         // target site.
-        $root = $this->findSelectedSite($preflightArgs);
-        $configLocator->addSitewideConfig($root);
-        $configLocator->setComposerRoot($this->selectedComposerRoot());
+        $root = $this->findSelectedSite();
+        $this->configLocator->addSitewideConfig($root);
+        $this->configLocator->setComposerRoot($this->drupalFinder()->getComposerRoot());
 
         // Look up the locations where alias files may be found.
-        $paths = $configLocator->getSiteAliasPaths($preflightArgs->aliasPaths(), $this->environment);
+        $paths = $this->configLocator->getSiteAliasPaths($this->preflightArgs->aliasPaths(), $this->environment);
 
         // Configure alias manager.
-        $aliasManager = (new SiteAliasManager())->addSearchLocations($paths);
-        $selfAliasRecord = $aliasManager->findSelf($preflightArgs, $this->environment, $root);
-        $configLocator->addAliasConfig($selfAliasRecord->exportConfig());
+        $this->aliasManager = (new SiteAliasManager())->addSearchLocations($paths);
+        $selfAliasRecord = $this->aliasManager->findSelf($this->preflightArgs, $this->environment, $root);
+        $this->configLocator->addAliasConfig($selfAliasRecord->exportConfig());
 
         // Process the selected alias. This might change the selected site,
         // so we will add new site-wide config location for the new root.
@@ -247,83 +243,29 @@ class Preflight
 
         // If we did not redispatch, then add the site-wide config for the
         // new root (if the root did in fact change) and continue.
-        $configLocator->addSitewideConfig($root);
+        $this->configLocator->addSitewideConfig($root);
 
         // Remember the paths to all the files we loaded, so that we can
         // report on it from Drush status or wherever else it may be needed.
-        $config->set('runtime.config.paths', $configLocator->configFilePaths());
+        $config->set('runtime.config.paths', $this->configLocator->configFilePaths());
 
         // We need to check the php minimum version again, in case anyone
         // has set it to something higher in one of the config files we loaded.
         $this->verify->confirmPhpVersion($config->get('drush.php.minimum-version'));
 
-        // Find all of the available commandfiles, save for those that are
-        // provided by modules in the selected site; those will be added
-        // during bootstrap.
-        $commandfileSearchpath = $configLocator->getCommandFilePaths($preflightArgs->commandPaths());
-
-        // Require the Composer autoloader for Drupal (if different)
-        $loader = $this->environment->loadSiteAutoloader($root);
-
-        // Create the Symfony Application et. al.
-        $input = $preflightArgs->createInput();
-        $output = new \Symfony\Component\Console\Output\ConsoleOutput();
-        $application = new \Drush\Application('Drush Commandline Tool', Drush::getVersion());
-
-        // Set up the DI container.
-        $container = DependencyInjection::initContainer(
-            $application,
-            $config,
-            $input,
-            $output,
-            $loader,
-            $this->drupalFinder,
-            $aliasManager
-        );
-
-        // Now that the DI container has been set up, the Application object will
-        // have a reference to the bootstrap manager et. al., so we may use it
-        // as needed. Tell the application to coordinate between the Bootstrap
-        // manager and the alias manager to select a more specific URI, if
-        // one was not explicitly provided earlier in the preflight.
-        $application->refineUriSelection($this->environment->cwd());
-
-        // Our termination handlers depend on classes we set up via DependencyInjection,
-        // so we do not want to enable it any earlier than this.
-        // TODO: Inject a termination handler into this class, so that we don't
-        // need to add these e.g. when testing.
-        $this->setTerminationHandlers();
-
-        // Configure the application object and register all of the commandfiles
-        // from the search paths we found above.  After this point, the input
-        // and output objects are ready & we can start using the logger, etc.
-        $application->configureAndRegisterCommands($input, $output, $commandfileSearchpath);
-
-        // Run the Symfony Application
-        // Predispatch: call a remote Drush command if applicable (via a 'pre-init' hook)
-        // Bootstrap: bootstrap site to the level requested by the command (via a 'post-init' hook)
-        $status = $application->run($input, $output);
-
-        // Placate the Drush shutdown handler.
-        // TODO: use a more modern termination management strategy
-        drush_set_context('DRUSH_EXECUTION_COMPLETED', true);
-
-        // For backwards compatibility (backend invoke needs this in drush_backend_output())
-        drush_set_context('DRUSH_ERROR_CODE', $status);
-
-        return $status;
+        return false;
     }
 
     /**
      * Find the site the user selected based on --root or cwd. If neither of
      * those result in a site, then we will fall back to the vendor path.
      */
-    protected function findSelectedSite(PreflightArgs $preflightArgs)
+    protected function findSelectedSite()
     {
         // TODO: If we want to support ONLY site-local Drush (which is
         // DIFFERENT than --local), then skip the call to `$preflightArgs->selectedSite`
         // and just assign `false` to $selectedRoot.
-        $selectedRoot = $preflightArgs->selectedSite($this->environment->cwd());
+        $selectedRoot = $this->preflightArgs->selectedSite($this->environment->cwd());
         return $this->setSelectedSite($selectedRoot, $this->environment->vendorPath());
     }
 
@@ -340,37 +282,36 @@ class Preflight
         if (!$foundRoot && $fallbackPath) {
             $this->drupalFinder->locateRoot($fallbackPath);
         }
-        return $this->selectedDrupalRoot();
+        return $this->drupalFinder()->getDrupalRoot();
     }
 
     /**
-     * Return the Drupal Root
+     * Return the Drupal Finder
      *
-     * @return string|bool
+     * @return DrupalFinder
      */
-    protected function selectedDrupalRoot()
+    public function drupalFinder()
     {
-        return $this->drupalFinder->getDrupalRoot();
+        return $this->drupalFinder;
     }
 
     /**
-     * Return the Composer Root aka the "oroject root".
+     * Return the alias manager
      *
-     * @return string|bool
+     * @return SiteAliasManager
      */
-    protected function selectedComposerRoot()
+    public function aliasManager()
     {
-        return $this->drupalFinder->getComposerRoot();
+        return $this->aliasManager;
     }
 
     /**
-     * Make sure we are notified on exit, and when bad things happen.
+     * Return the environment
+     *
+     * @return Environment
      */
-    protected function setTerminationHandlers()
+    public function environment()
     {
-        // Set an error handler and a shutdown function
-        // TODO: move these to a class somewhere
-        set_error_handler('drush_error_handler');
-        register_shutdown_function('drush_shutdown');
+        return $this->environment;
     }
 }

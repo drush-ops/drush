@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Preflight;
+namespace Drush\Runtime;
 
 use Drush\Command\GlobalOptionsEventListener;
 use Drush\Drush;
@@ -90,8 +90,8 @@ class DependencyInjection
             ->withMethodCall('add', ['bootstrap.drupal8']);
         $container->share('bootstrap.hook', 'Drush\Boot\BootstrapHook')
           ->withArgument('bootstrap.manager');
-        $container->share('redispatch.hook', 'Drush\Preflight\RedispatchHook');
-        $container->share('tildeExpansion.hook', 'Drush\Preflight\TildeExpansionHook');
+        $container->share('redispatch.hook', 'Drush\Runtime\RedispatchHook');
+        $container->share('tildeExpansion.hook', 'Drush\Runtime\TildeExpansionHook');
 
         // Robo does not manage the command discovery object in the container,
         // but we will register and configure one for our use.

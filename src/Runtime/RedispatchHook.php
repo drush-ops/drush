@@ -1,6 +1,6 @@
 <?php
 
-namespace Drush\Preflight;
+namespace Drush\Runtime;
 
 use Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface;
 use Drush\Drush;
