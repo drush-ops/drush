@@ -4,11 +4,11 @@ namespace Drush;
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Drush\Boot\BootstrapManager;
-use Drush\Preflight\TildeExpansionHook;
+use Drush\Runtime\TildeExpansionHook;
 use Drush\SiteAlias\AliasManager;
 use Drush\Log\LogLevel;
 use Drush\Command\RemoteCommandProxy;
-use Drush\Preflight\RedispatchHook;
+use Drush\Runtime\RedispatchHook;
 
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Input\InputOption;
