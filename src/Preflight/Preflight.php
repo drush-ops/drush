@@ -178,7 +178,7 @@ class Preflight
         // Find all of the available commandfiles, save for those that are
         // provided by modules in the selected site; those will be added
         // during bootstrap.
-        return $this->configLocator->getCommandFilePaths($this->preflightArgs->commandPaths());
+        return $this->configLocator->getCommandFilePaths($this->preflightArgs->commandPaths(), $this->drupalFinder()->getDrupalRoot());
     }
 
     public function loadSiteAutoloader()
