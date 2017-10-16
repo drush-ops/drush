@@ -163,6 +163,13 @@ class ArgsPreprocessor
             return [$methodName, $hasValue ? null: true];
         }
 
+        // If the option is not an exact match for the key, then the next
+        // character in the option after the key name must be an '='. Otherwise,
+        // we might confuse `--locale` for `--local`, etc.
+        if ($opt[strlen($key)] != '=') {
+            return [false, false];
+        }
+
         // If $opt does not take a value, then we will ignore
         // of the form --opt=value
         if (!$hasValue) {
