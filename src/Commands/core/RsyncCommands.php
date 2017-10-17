@@ -9,10 +9,15 @@ use Drush\SiteAlias\HostPath;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Backend\BackendPathEvaluator;
+use Robo\Contract\ConfigAwareInterface;
+use Robo\Common\ConfigAwareTrait;
+use Drush\Config\ConfigLocator;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
-class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface, ConfigAwareInterface
 {
     use SiteAliasManagerAwareTrait;
+    use ConfigAwareTrait;
 
     /**
      * These are arguments after the aliases and paths have been evaluated.
@@ -105,6 +110,57 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
     }
 
     /**
+     * Evaluate the path aliases in the source and destination
+     * parameters. We do this in the pre-command-event so that
+     * we can set up the configuration object to include options
+     * from the source and target aliases, if any, so that these
+     * values may participate in configuration injection.
+     *
+     * @hook command-event core:rsync
+     * @param ConsoleCommandEvent $event
+     * @throws \Exception
+     * @return void
+     */
+    public function preCommandEvent(ConsoleCommandEvent $event)
+    {
+        $input = $event->getInput();
+        $destination = $input->getArgument('destination');
+        $source = $input->getArgument('source');
+
+        $manager = $this->siteAliasManager();
+        $this->sourceEvaluatedPath = HostPath::create($manager, $source);
+        $this->destinationEvaluatedPath = HostPath::create($manager, $destination);
+
+        $this->pathEvaluator->evaluate($this->sourceEvaluatedPath);
+        $this->pathEvaluator->evaluate($this->destinationEvaluatedPath);
+
+        // The Drush configuration object is a ConfigOverlay; fetch the alias
+        // context, that already has the options et. al. from the
+        // site-selection alias ('drush @site rsync ...'), @self.
+        $aliasConfigContext = $this->getConfig()->getContext(ConfigLocator::ALIAS_CONTEXT);
+
+        $this->injectAliasOptions($aliasConfigContext, $this->sourceEvaluatedPath->getAliasRecord(), 'source');
+        $this->injectAliasOptions($aliasConfigContext, $this->destinationEvaluatedPath->getAliasRecord(), 'target');
+    }
+
+    /**
+     * Copy options from the source and destination aliases into the
+     * alias context.
+     */
+    protected function injectAliasOptions($aliasConfigContext, $aliasRecord, $parameterSpecificOptions)
+    {
+        if (empty($aliasRecord)) {
+            return;
+        }
+        $aliasOptions = $aliasRecord->export();
+        if (isset($aliasOptions[$parameterSpecificOptions])) {
+            $aliasOptions = array_merge($aliasOptions, $aliasOptions[$parameterSpecificOptions]);
+            unset($aliasOptions[$parameterSpecificOptions]);
+        }
+        $aliasConfigContext->import($aliasOptions + $aliasConfigContext->export());
+    }
+
+    /**
      * Validate that passed aliases are valid.
      *
      * @hook validate core-rsync
@@ -114,16 +170,6 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      */
     public function validate(CommandData $commandData)
     {
-        $destination = $commandData->input()->getArgument('destination');
-        $source = $commandData->input()->getArgument('source');
-
-        $manager = $this->siteAliasManager();
-        $this->sourceEvaluatedPath = HostPath::create($manager, $source);
-        $this->destinationEvaluatedPath = HostPath::create($manager, $destination);
-
-        $this->pathEvaluator->evaluate($this->sourceEvaluatedPath);
-        $this->pathEvaluator->evaluate($this->destinationEvaluatedPath);
-
         if ($this->sourceEvaluatedPath->isRemote() && $this->destinationEvaluatedPath->isRemote()) {
             $msg = dt("Cannot specify two remote aliases. Instead, use one of the following alternate options:\n\n    `drush {source} rsync @self {target}`\n    `drush {source} rsync @self {fulltarget}\n\nUse the second form if the site alias definitions are not available at {source}.", array('source' => $source, 'target' => $destination, 'fulltarget' => $this->destinationEvaluatedPath->fullyQualifiedPath()));
             throw new \Exception($msg);
