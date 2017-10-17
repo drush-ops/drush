@@ -112,6 +112,7 @@ class DependencyInjection
     {
         // Add our own callback to the hook manager
         $hookManager = $container->get('hookManager');
+        $hookManager->addCommandEvent(new GlobalOptionsEventListener());
         $hookManager->addInitializeHook($container->get('redispatch.hook'));
         $hookManager->addInitializeHook($container->get('bootstrap.hook'));
         $hookManager->addPreValidator($container->get('tildeExpansion.hook'));
@@ -130,7 +131,7 @@ class DependencyInjection
 
         // It is necessary to set the dispatcher when using configureContainer
         $eventDispatcher = $container->get('eventDispatcher');
-        $eventDispatcher->addSubscriber(new GlobalOptionsEventListener());
+        $eventDispatcher->addSubscriber($hookManager);
         $application->setDispatcher($eventDispatcher);
     }
 
