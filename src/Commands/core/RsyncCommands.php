@@ -95,7 +95,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
             $inc_ex_path = explode(PATH_SEPARATOR, @$options[$include_exclude . '-paths']);
             foreach ($inc_ex_path as $one_path_to_inc_ex) {
                 if (!empty($one_path_to_inc_ex)) {
-                    $paths = ' --' . $include_exclude . '="' . $one_path_to_inc_ex . '"';
+                    $paths .= ' --' . $include_exclude . '="' . $one_path_to_inc_ex . '"';
                 }
             }
         }
@@ -152,12 +152,21 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
         if (empty($aliasRecord)) {
             return;
         }
-        $aliasOptions = $aliasRecord->export();
-        if (isset($aliasOptions[$parameterSpecificOptions])) {
-            $aliasOptions = array_merge($aliasOptions, $aliasOptions[$parameterSpecificOptions]);
-            unset($aliasOptions[$parameterSpecificOptions]);
+        $aliasData = $aliasRecord->export();
+        $aliasOptions = [
+            'options' => $aliasData['options'],
+            'command' => $aliasData['command'],
+        ];
+        if (isset($aliasData[$parameterSpecificOptions])) {
+            $aliasOptions = self::arrayMergeRecursiveDistinct($aliasOptions, $aliasData[$parameterSpecificOptions]);
         }
-        $aliasConfigContext->import($aliasOptions + $aliasConfigContext->export());
+        // 'import' is supposed to merge, but in fact it overwrites.
+        // We will therefore manually merge as a workaround.
+       // print "starting alias values: " . var_export($aliasConfigContext->export(), true) . "\n";
+       // print "merge into $parameterSpecificOptions: " . var_export($aliasOptions, true) . "\n";
+        $merged = self::arrayMergeRecursiveDistinct($aliasOptions, $aliasConfigContext->export());
+        $aliasConfigContext->import($merged);
+       // print "Result: " . var_export($aliasConfigContext, true) . "\n";
     }
 
     /**
@@ -175,4 +184,39 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
             throw new \Exception($msg);
         }
     }
+
+    /**
+     * Merges arrays recursively while preserving. TODO: Factor this into a reusable utility class
+     *
+     * @param array $array1
+     * @param array $array2
+     *
+     * @return array
+     *
+     * @see http://php.net/manual/en/function.array-merge-recursive.php#92195
+     * @see https://github.com/grasmash/bolt/blob/robo-rebase/src/Robo/Common/ArrayManipulator.php#L22
+     */
+    protected static function arrayMergeRecursiveDistinct(
+        array &$array1,
+        array &$array2
+    ) {
+        $merged = $array1;
+        foreach ($array2 as $key => &$value) {
+            $merged[$key] = self::mergeRecursiveValue($merged, $key, $value);
+        }
+        return $merged;
+    }
+
+    /**
+     * Process the value in an arrayMergeRecursiveDistinct - make a recursive
+     * call if needed.
+     */
+    private static function mergeRecursiveValue(&$merged, $key, $value)
+    {
+        if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
+            return self::arrayMergeRecursiveDistinct($merged[$key], $value);
+        }
+        return $value;
+    }
+
 }

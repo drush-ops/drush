@@ -23,19 +23,20 @@ class rsyncCase extends CommandUnishTestCase {
       'alias-path' => __DIR__ . '/resources/alias-fixtures',
     ];
 
-    // Test simulated backend invoke
-    $this->drush('rsync', ['@example.dev', '@example.stage'], $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
-    $expected = "Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --alias-path=__DIR__/resources/alias-fixtures --root=/path/to/drupal --uri=sitename --no-ansi rsync '\''@example.dev'\'' '\''@example.stage'\'' 2>&1' 2>&1";
-    $this->assertOutputEquals($expected);
-
     // Test simulated simple rsync with two local sites
-    $this->drush('rsync', ['@example.dev', '@example.stage'], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
-    $expected = "Calling system(rsync -e 'ssh ' -akz /path/to/dev /path/to/stage);";
+    $this->drush('rsync', ['@example.stage', '@example.dev'], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
+    $expected = "Calling system(rsync -e 'ssh ' -akz --include=\"stage-source\" --exclude=\"dev-target\" /path/to/stage /path/to/dev);";
     $this->assertOutputEquals($expected);
 
     // Test simulated rsync with relative paths
     $this->drush('rsync', ['@example.dev:files', '@example.stage:files'], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
-    $expected = "Calling system(rsync -e 'ssh ' -akz /path/to/dev/files /path/to/stage/files);";
+    $expected = "Calling system(rsync -e 'ssh ' -akz --include=\"dev-source\" --exclude=\"stage-target\" /path/to/dev/files /path/to/stage/files);";
+    $this->assertOutputEquals($expected);
+
+    // Test simulated backend invoke
+    // TODO: Note that command-specific options are not processed. Is this needed? Does Drush 8 support this?
+    $this->drush('rsync', ['@example.dev', '@example.stage'], $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
+    $expected = "Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --alias-path=__DIR__/resources/alias-fixtures --root=/path/to/drupal --uri=sitename --no-ansi rsync '\''@example.dev'\'' '\''@example.stage'\'' 2>&1' 2>&1";
     $this->assertOutputEquals($expected);
   }
 
