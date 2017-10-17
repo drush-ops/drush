@@ -33,8 +33,11 @@ class rsyncCase extends CommandUnishTestCase {
     $expected = "Calling system(rsync -e 'ssh ' -akz --include=\"dev-source\" --exclude=\"stage-target\" /path/to/dev/files /path/to/stage/files);";
     $this->assertOutputEquals($expected);
 
-    // Test simulated backend invoke
-    // TODO: Note that command-specific options are not processed. Is this needed? Does Drush 8 support this?
+    // Test simulated backend invoke.
+    // Note that command-specific options are not processed for remote
+    // targets. The aliases are not interpreted at all until they recach
+    // the remote side, at which point they will be evaluated & any needed
+    // injection will be done.
     $this->drush('rsync', ['@example.dev', '@example.stage'], $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
     $expected = "Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --alias-path=__DIR__/resources/alias-fixtures --root=/path/to/drupal --uri=sitename --no-ansi rsync '\''@example.dev'\'' '\''@example.stage'\'' 2>&1' 2>&1";
     $this->assertOutputEquals($expected);

@@ -26,7 +26,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
     /** @var HostPath */
     public $sourceEvaluatedPath;
     /** @var HostPath */
-    public $destinationEvaluatedPath;
+    public $targetEvaluatedPath;
     /** @var BackendPathEvaluator */
     protected $pathEvaluator;
 
@@ -42,7 +42,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      *
      * @command core:rsync
      * @param $source A site alias and optional path. See rsync documentation and example.aliases.yml.
-     * @param $destination A site alias and optional path. See rsync documentation and example.aliases.config.yml.',
+     * @param $target A site alias and optional path. See rsync documentation and example.aliases.config.yml.',
      * @param $extra Additional parameters after the ssh statement.
      * @optionset_ssh
      * @option exclude-paths List of paths to exclude, seperated by : (Unix-based systems) or ; (Windows).
@@ -59,11 +59,11 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      * @aliases rsync,core-rsync
      * @topics docs:aliases
      */
-    public function rsync($source, $destination, array $extra, $options = ['exclude-paths' => self::REQ, 'include-paths' => self::REQ, 'mode' => 'akz'])
+    public function rsync($source, $target, array $extra, $options = ['exclude-paths' => self::REQ, 'include-paths' => self::REQ, 'mode' => 'akz'])
     {
         // Prompt for confirmation. This is destructive.
         if (!\Drush\Drush::simulate()) {
-            $this->output()->writeln(dt("You will delete files in !target and replace with data from !source", array('!source' => $this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash(), '!target' => $this->destinationEvaluatedPath->fullyQualifiedPath())));
+            $this->output()->writeln(dt("You will delete files in !target and replace with data from !source", array('!source' => $this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash(), '!target' => $this->targetEvaluatedPath->fullyQualifiedPath())));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
@@ -72,16 +72,16 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
         $rsync_options = $this->rsyncOptions($options);
         $parameters = array_merge([$rsync_options], $extra);
         $parameters[] = $this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash();
-        $parameters[] = $this->destinationEvaluatedPath->fullyQualifiedPath();
+        $parameters[] = $this->targetEvaluatedPath->fullyQualifiedPath();
 
         $ssh_options = Drush::config()->get('ssh.options', '');
         $exec = "rsync -e 'ssh $ssh_options'". ' '. implode(' ', array_filter($parameters));
         $exec_result = drush_op_system($exec);
 
         if ($exec_result == 0) {
-            drush_backend_set_result($this->destinationEvaluatedPath->fullyQualifiedPath());
+            drush_backend_set_result($this->targetEvaluatedPath->fullyQualifiedPath());
         } else {
-            throw new \Exception(dt("Could not rsync from !source to !dest", array('!source' => $this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash(), '!dest' => $this->destinationEvaluatedPath->fullyQualifiedPath())));
+            throw new \Exception(dt("Could not rsync from !source to !dest", array('!source' => $this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash(), '!dest' => $this->targetEvaluatedPath->fullyQualifiedPath())));
         }
     }
 
@@ -124,49 +124,26 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
     public function preCommandEvent(ConsoleCommandEvent $event)
     {
         $input = $event->getInput();
-        $destination = $input->getArgument('destination');
-        $source = $input->getArgument('source');
+        $this->sourceEvaluatedPath = $this->injectAliasPathParameterOptions($input, 'source');
+        $this->targetEvaluatedPath = $this->injectAliasPathParameterOptions($input, 'target');
+    }
 
-        $manager = $this->siteAliasManager();
-        $this->sourceEvaluatedPath = HostPath::create($manager, $source);
-        $this->destinationEvaluatedPath = HostPath::create($manager, $destination);
-
-        $this->pathEvaluator->evaluate($this->sourceEvaluatedPath);
-        $this->pathEvaluator->evaluate($this->destinationEvaluatedPath);
-
+    protected function injectAliasPathParameterOptions($input, $parameterName)
+    {
         // The Drush configuration object is a ConfigOverlay; fetch the alias
         // context, that already has the options et. al. from the
         // site-selection alias ('drush @site rsync ...'), @self.
         $aliasConfigContext = $this->getConfig()->getContext(ConfigLocator::ALIAS_CONTEXT);
+        $manager = $this->siteAliasManager();
 
-        $this->injectAliasOptions($aliasConfigContext, $this->sourceEvaluatedPath->getAliasRecord(), 'source');
-        $this->injectAliasOptions($aliasConfigContext, $this->destinationEvaluatedPath->getAliasRecord(), 'target');
-    }
+        $aliasName = $input->getArgument($parameterName);
+        $evaluatedPath = HostPath::create($manager, $aliasName);
+        $this->pathEvaluator->evaluate($evaluatedPath);
 
-    /**
-     * Copy options from the source and destination aliases into the
-     * alias context.
-     */
-    protected function injectAliasOptions($aliasConfigContext, $aliasRecord, $parameterSpecificOptions)
-    {
-        if (empty($aliasRecord)) {
-            return;
-        }
-        $aliasData = $aliasRecord->export();
-        $aliasOptions = [
-            'options' => $aliasData['options'],
-            'command' => $aliasData['command'],
-        ];
-        if (isset($aliasData[$parameterSpecificOptions])) {
-            $aliasOptions = self::arrayMergeRecursiveDistinct($aliasOptions, $aliasData[$parameterSpecificOptions]);
-        }
-        // 'import' is supposed to merge, but in fact it overwrites.
-        // We will therefore manually merge as a workaround.
-       // print "starting alias values: " . var_export($aliasConfigContext->export(), true) . "\n";
-       // print "merge into $parameterSpecificOptions: " . var_export($aliasOptions, true) . "\n";
-        $merged = self::arrayMergeRecursiveDistinct($aliasOptions, $aliasConfigContext->export());
-        $aliasConfigContext->import($merged);
-       // print "Result: " . var_export($aliasConfigContext, true) . "\n";
+        // Inject the source and target alias records into the alias config context.
+        $evaluatedPath->getAliasRecord()->injectIntoConfig($aliasConfigContext, $parameterName);
+
+        return $evaluatedPath;
     }
 
     /**
@@ -179,44 +156,9 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      */
     public function validate(CommandData $commandData)
     {
-        if ($this->sourceEvaluatedPath->isRemote() && $this->destinationEvaluatedPath->isRemote()) {
-            $msg = dt("Cannot specify two remote aliases. Instead, use one of the following alternate options:\n\n    `drush {source} rsync @self {target}`\n    `drush {source} rsync @self {fulltarget}\n\nUse the second form if the site alias definitions are not available at {source}.", array('source' => $source, 'target' => $destination, 'fulltarget' => $this->destinationEvaluatedPath->fullyQualifiedPath()));
+        if ($this->sourceEvaluatedPath->isRemote() && $this->targetEvaluatedPath->isRemote()) {
+            $msg = dt("Cannot specify two remote aliases. Instead, use one of the following alternate options:\n\n    `drush {source} rsync @self {target}`\n    `drush {source} rsync @self {fulltarget}\n\nUse the second form if the site alias definitions are not available at {source}.", array('source' => $source, 'target' => $target, 'fulltarget' => $this->targetEvaluatedPath->fullyQualifiedPath()));
             throw new \Exception($msg);
         }
     }
-
-    /**
-     * Merges arrays recursively while preserving. TODO: Factor this into a reusable utility class
-     *
-     * @param array $array1
-     * @param array $array2
-     *
-     * @return array
-     *
-     * @see http://php.net/manual/en/function.array-merge-recursive.php#92195
-     * @see https://github.com/grasmash/bolt/blob/robo-rebase/src/Robo/Common/ArrayManipulator.php#L22
-     */
-    protected static function arrayMergeRecursiveDistinct(
-        array &$array1,
-        array &$array2
-    ) {
-        $merged = $array1;
-        foreach ($array2 as $key => &$value) {
-            $merged[$key] = self::mergeRecursiveValue($merged, $key, $value);
-        }
-        return $merged;
-    }
-
-    /**
-     * Process the value in an arrayMergeRecursiveDistinct - make a recursive
-     * call if needed.
-     */
-    private static function mergeRecursiveValue(&$merged, $key, $value)
-    {
-        if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
-            return self::arrayMergeRecursiveDistinct($merged[$key], $value);
-        }
-        return $value;
-    }
-
 }

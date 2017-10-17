@@ -3,6 +3,7 @@ namespace Drush\SiteAlias;
 
 use Consolidation\Config\Config;
 use Consolidation\Config\ConfigInterface;
+use Consolidation\Config\Util\ArrayUtil;
 
 /**
  * An alias record is a configuration record containing well-known items.
@@ -229,9 +230,17 @@ class AliasRecord extends Config
      */
     public function exportConfig()
     {
-        $data = $this->export();
+        return $this->remap($this->export());
+    }
 
-        foreach ($this->remapOptions() as $from => $to) {
+    /**
+     * Reconfigure data exported from the form it is expected to be in
+     * inside an alias record to the form it is expected to be in when
+     * inside a configuration file.
+     */
+    protected function remap($data)
+    {
+        foreach ($this->remapOptionTable() as $from => $to) {
             if (isset($data[$from])) {
                 unset($data[$from]);
             }
@@ -242,6 +251,44 @@ class AliasRecord extends Config
         }
 
         return new Config($data);
+    }
+
+    /**
+     * Copy options from the source and destination aliases into the
+     * alias context.
+     *
+     * This is essentially an `export` followed by `$config->combine()`.
+     * Parameter-specific options from the alias-parameters are also included.
+     *
+     * @param Config $config
+     * @param string $parameterName
+     * @return $this
+     */
+    public function injectIntoConfig($config, $parameterName = '')
+    {
+        $aliasData = $this->export();
+        $aliasOptions = $aliasData;
+        unset($aliasOptions['alias-parameters']);
+        $parameterSpecificData = $this->getParameterSpecificOptions($aliasData, $parameterName);
+        if (!empty($parameterSpecificData)) {
+            $aliasOptions = ArrayUtil::mergeRecursiveDistinct($aliasOptions, $parameterSpecificData);
+        }
+        // Combine the data from the parameter-specific
+        $config->combine($aliasOptions);
+        return $this;
+    }
+
+    /**
+     * Fetch the parameter-specific options from the 'alias-parameters' section of the alias.
+     * @param string $parameterName
+     * @return array
+     */
+    protected function getParameterSpecificOptions($aliasData, $parameterName)
+    {
+        if (!empty($parameterName) && $this->has("alias-parameters.{$parameterName}")) {
+            return $this->get("alias-parameters.{$parameterName}");
+        }
+        return [];
     }
 
     /**
@@ -257,7 +304,7 @@ class AliasRecord extends Config
      * Conversion table from old to new option names. These all implicitly
      * go in `options`, although they can come from different locations.
      */
-    protected function remapOptions()
+    protected function remapOptionTable()
     {
         return [
             'user' => 'remote-user',
