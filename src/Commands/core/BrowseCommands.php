@@ -3,6 +3,7 @@ namespace Drush\Commands\core;
 
 use Drupal\Core\Url;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Drush\Exec\ExecTrait;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
