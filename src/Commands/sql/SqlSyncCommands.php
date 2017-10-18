@@ -51,10 +51,6 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $backend_options = [];
         $global_options = Drush::redispatchOptions()  + ['strict' => 0];
 
-        if (Drush::simulate()) {
-            $backend_options['backend-simulate'] = true;
-        }
-
         // Create target DB if needed.
         if ($options['create-db']) {
             $this->logger()->notice(dt('Starting to create database on target.'));
@@ -71,9 +67,11 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         );
         if (!$options['no-dump']) {
             $this->logger()->notice(dt('Starting to dump database on source.'));
-            $return = drush_invoke_process($source, 'sql-dump', array(), $dump_options, $backend_options);
+            $return = drush_invoke_process($sourceRecord, 'sql-dump', array(), $dump_options, $backend_options);
             if ($return['error_status']) {
                 throw new \Exception(dt('sql-dump failed.'));
+            } elseif (Drush::simulate()) {
+                $source_dump_path = '/simulated/path/to/dump.tgz';
             } else {
                 $source_dump_path = $return['object'];
                 if (!is_string($source_dump_path)) {
@@ -163,7 +161,10 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $aliasName = $input->getArgument($parameterName);
 
         // Inject the source and target alias records into the alias config context.
-        $manager->get($aliasName)->injectIntoConfig($aliasConfigContext, $parameterName);
+        $aliasRecord = $manager->get($aliasName);
+        if (!empty($aliasRecord)) {
+            $manager->get($aliasName)->injectIntoConfig($aliasConfigContext, $parameterName);
+        }
     }
 
     /**
@@ -211,6 +212,9 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
     public function databaseName(AliasRecord $record)
     {
+        if ($record->isRemote() && preg_match('#\.simulated$#', $record->remoteHost())) {
+            return 'simulated_db';
+        }
         $values = drush_invoke_process($record, "core-status", array(), array(), array('integrate' => false, 'override-simulated' => true));
         if (is_array($values) && ($values['error_status'] == 0)) {
             return $values['object']['db-name'];

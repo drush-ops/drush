@@ -87,22 +87,6 @@ class rsyncCase extends CommandUnishTestCase {
   }
 
   /**
-   * Test to see if the output is what we expected.
-   */
-  protected function assertOutputEquals($expected)
-  {
-    $output = $this->getOutput();
-    // We do not care if Drush inserts a -t or not in the string. Depends on whether there is a tty.
-    $output = preg_replace('# -t #', ' ', $output);
-    // Remove double spaces from output to help protect test from false negatives if spacing changes subtlely
-    $output = preg_replace('#  *#', ' ', $output);
-    // Get rid of any full paths in the output
-    $output = str_replace(__DIR__, '__DIR__', $output);
-    $output = str_replace(self::getSandbox(), '__SANDBOX__', $output);
-    $this->assertEquals($expected, $output);
-  }
-
-  /**
    * Test to see if rsync @site:%files calculates the %files path correctly.
    * This tests the non-optimized code path. The optimized code path (direct
    * call to Drush API functions rather than an `exec`) has not been implemented.

@@ -458,6 +458,46 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Create some fixture sites that only have a 'settings.php' file
+   * with a database record.
+   *
+   * @param array $sites key=site_subder value=array of extra alias data
+   * @param string $aliasGroup Write aliases into a file named group.alias.yml
+   */
+  function setUpSettings(array $sites, $aliasGroup = 'fixture') {
+    foreach ($sites as $subdir => $extra) {
+      $this->createSettings($subdir);
+    }
+    // Create basic site alias data with root and uri
+    $siteAliasData = $this->createAliasFileData(array_keys($sites), $aliasGroup);
+    // Add in caller-provided site alias data
+    $siteAliasData = array_merge_recursive($siteAliasData, $sites);
+    $this->writeSiteAliases($siteAliasData, $aliasGroup);
+  }
+
+  function createSettings($subdir) {
+    $settingsContents = <<<EOT
+<?php
+
+\$databases['default']['default'] = array (
+  'database' => 'unish_$subdir',
+  'username' => 'root',
+  'password' => '',
+  'prefix' => '',
+  'host' => '127.0.0.1',
+  'port' => '',
+  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
+  'driver' => 'mysql',
+);
+\$settings['install_profile'] = 'testing';
+EOT;
+
+    $root = $this->webroot();
+    $settingsPath = "$root/sites/$subdir/settings.php";
+    self::mkdir(dirname($settingsPath));
+    file_put_contents($settingsPath, $settingsContents);
+  }
+  /**
    * Assemble (and optionally install) one or more Drupal sites using a single codebase.
    *
    * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
@@ -477,18 +517,33 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
       copy($root . '/sites/example.sites.php', $root . '/sites/sites.php');
     }
 
+    $siteData = $this->createAliasFile($sites_subdirs, 'unish');
+    self::$sites = [];
+    foreach ($siteData as $key => $data) {
+      self::$sites["unish.$key"] = $data;
+    }
+  }
+
+  function createAliasFileData($sites_subdirs, $aliasGroup = 'unish') {
+    $root = $this->webroot();
     // Stash details about each site.
+    $sites = [];
     foreach ($sites_subdirs as $subdir) {
-      self::$sites['unish.' . $subdir] = array(
+      $sites[$subdir] = array(
         'root' => $root,
         'uri' => $subdir,
         'db_url' => $this->db_url($subdir),
       );
     }
-    // Make an alias group for the sites.
-    $this->writeSiteAliases(self::$sites);
+    return $sites;
+  }
 
-    return self::$sites;
+  function createAliasFile($sites_subdirs, $aliasGroup = 'unish') {
+    // Make an alias group for the sites.
+    $sites = $this->createAliasFileData($sites_subdirs, $aliasGroup);
+    $this->writeSiteAliases($sites, $aliasGroup);
+
+    return $sites;
   }
 
   /**
@@ -525,22 +580,16 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    *
    * @param $sites
    */
-  function writeSiteAliases($sites) {
-    foreach ($sites as $name => $site) {
-      $groups[str_replace('unish.', '', $name)] = [
-        'root' => $site['root'],
-        'uri' => $site['uri']
-      ];
-    }
-    $this->writeUnishConfig($groups);
+  function writeSiteAliases($sites, $aliasGroup = 'unish') {
+    $this->writeUnishConfig($sites, [], $aliasGroup);
   }
 
-  function writeUnishConfig($unishAliases, $config = [])
+  function writeUnishConfig($unishAliases, $config = [], $aliasGroup = 'unish')
   {
     $etc = self::getSandbox() . '/etc/drush';
-    file_put_contents(Path::join($etc, 'unish.alias.yml'), Yaml::dump($unishAliases));
+    file_put_contents(Path::join($etc, $aliasGroup . '.alias.yml'), Yaml::dump($unishAliases, PHP_INT_MAX, 2));
     $config['drush']['paths']['alias-path'][] = $etc;
-    file_put_contents(Path::join($etc, 'drush.yml'), Yaml::dump($config, 3));
+    file_put_contents(Path::join($etc, 'drush.yml'), Yaml::dump($config, PHP_INT_MAX, 2));
   }
 
   /**

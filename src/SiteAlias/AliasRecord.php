@@ -297,7 +297,11 @@ class AliasRecord extends Config
      */
     public function legacyRecord()
     {
-        return $this->exportConfig()->get('options', []);
+        $result = $this->exportConfig()->get('options', []);
+        if ($this->has('paths.drush-script')) {
+            $result['path-aliases']['%drush-script'] = $this->get('paths.drush-script');
+        }
+        return $result;
     }
 
     /**

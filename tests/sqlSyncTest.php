@@ -17,6 +17,44 @@ namespace Unish;
  */
 class sqlSyncTest extends CommandUnishTestCase {
 
+  public function testSimulatedSqlSync() {
+    $fixtureSites = [
+      'remote' => [
+        'host' => 'server.isp.simulated',
+        'user' => 'www-admin',
+        'ssh' => [
+          'options' => '-o PasswordAuthentication=whatever'
+        ],
+        'paths' => [
+          'drush-script' => '/path/to/drush',
+        ],
+      ],
+      'local' => [
+      ],
+    ];
+    $this->setUpSettings($fixtureSites, 'synctest');
+    $options = [
+      'simulate' => NULL,
+      'alias-path' => __DIR__ . '/resources/alias-fixtures',
+    ];
+
+    // Test simulated simple rsync with two local sites
+    $this->drush('sql:sync', ['@synctest.remote', '@synctest.local'], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
+    $output = $this->getSimplifiedOutput();
+    $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=whatever www-admin@server.isp.simulated '/path/to/drush --backend=2 --strict=0 --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush --root=__SUT__/web --uri=remote sql-dump --no-ansi --gzip --result-file", $output);
+    $this->assertContains("Simulating backend invoke: __SUT__/vendor/drush/drush/drush --backend=2 --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush --uri=default core-rsync '@synctest.remote:/simulated/path/to/dump.tgz' '@synctest.local:__SANDBOX__/drush-tmp/dump.tgz' -- --remove-source-files", $output);
+    $this->assertContains("Simulating backend invoke: __SUT__/vendor/drush/drush/drush --backend=2 --strict=0 --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush --root=__SUT__/web --uri=local sql-query --no-ansi --file=__SANDBOX__/drush-tmp/dump.tgz --file-delete", $output);
+
+    // Test simulated backend invoke.
+    // Note that command-specific options are not processed for remote
+    // targets. The aliases are not interpreted at all until they recach
+    // the remote side, at which point they will be evaluated & any needed
+    // injection will be done.
+    $this->drush('sql:sync', ['@synctest.remote', '@synctest.local'], $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
+    $output = $this->getSimplifiedOutput();
+    $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=whatever user@server '/path/to/drush --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush --root=/path/to/drupal --uri=sitename --no-ansi sql:sync '\''@synctest.remote'\'' '\''@synctest.local'\''", $output);
+  }
+
   /**
    * Covers the following responsibilities.
    *   - A user created on the source site is copied to the destination site.
