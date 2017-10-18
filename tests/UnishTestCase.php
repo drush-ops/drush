@@ -522,6 +522,7 @@ EOT;
     foreach ($siteData as $key => $data) {
       self::$sites["unish.$key"] = $data;
     }
+    return self::$sites;
   }
 
   function createAliasFileData($sites_subdirs, $aliasGroup = 'unish') {
