@@ -89,11 +89,11 @@ drush:
 options:
   # Specify the base_url that should be used when generating links.
   # Not recommended if you have more than one Drupal site on your system.
-  uri: 'http://example.com/subdir';
+  uri: 'http://example.com/subdir'
 
   # Specify your Drupal core base directory (useful if you use symlinks).
   # Not recommended if you have more than one Drupal root on your system.
-  root: '/home/USER/workspace/drupal-6';
+  root: '/home/USER/workspace/drupal-6'
 
   # NOT SUPPORTED YET:
   # Specify the modules to ignore when searching for command files
