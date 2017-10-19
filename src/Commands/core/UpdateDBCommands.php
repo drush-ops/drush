@@ -185,6 +185,11 @@ class UpdateDBCommands extends DrushCommands
         drupal_load_updates();
         update_fix_compatibility();
 
+        // Check requirements before updating.
+        if (!$this->updateCheckRequirements()) {
+            return;
+        }
+
         // Pending hook_update_N() implementations.
         $pending = update_get_update_list();
 
@@ -472,5 +477,36 @@ class UpdateDBCommands extends DrushCommands
         } else {
             $this->logger()->success(dt("No entity schema updates required"));
         }
+    }
+
+    /**
+     * Log messages for any requirements warnings/errors.
+     */
+    public function updateCheckRequirements()
+    {
+        $continue = true;
+
+        \Drupal::moduleHandler()->resetImplementations();
+        $requirements = update_check_requirements();
+        $severity = drupal_requirements_severity($requirements);
+
+        // If there are issues, report them.
+        if ($severity != REQUIREMENT_OK) {
+            if ($severity === REQUIREMENT_ERROR) {
+                $continue = false;
+            }
+            foreach ($requirements as $requirement) {
+                if (isset($requirement['severity']) && $requirement['severity'] != REQUIREMENT_OK) {
+                    $message = isset($requirement['description']) ? $requirement['description'] : '';
+                    if (isset($requirement['value']) && $requirement['value']) {
+                        $message .= ' (Currently using '. $requirement['title'] .' '. $requirement['value'] .')';
+                    }
+                    $log_level = $requirement['severity'] === REQUIREMENT_ERROR ? LogLevel::ERROR : LogLevel::WARNING;
+                    $this->logger()->log($log_level, $message);
+                }
+            }
+        }
+
+        return $continue;
     }
 }
