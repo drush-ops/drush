@@ -23,19 +23,23 @@ class rsyncCase extends CommandUnishTestCase {
       'alias-path' => __DIR__ . '/resources/alias-fixtures',
     ];
 
-    // Test simulated backend invoke
-    $this->drush('rsync', ['@example.dev', '@example.stage'], $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
-    $expected = "Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --alias-path=__DIR__/resources/alias-fixtures --root=/path/to/drupal --uri=sitename --no-ansi rsync '\''@example.dev'\'' '\''@example.stage'\'' 2>&1' 2>&1";
-    $this->assertOutputEquals($expected);
-
     // Test simulated simple rsync with two local sites
-    $this->drush('rsync', ['@example.dev', '@example.stage'], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
-    $expected = "Calling system(rsync -e 'ssh ' -akz /path/to/dev /path/to/stage);";
+    $this->drush('rsync', ['@example.stage', '@example.dev'], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
+    $expected = "Calling system(rsync -e 'ssh ' -akz --include=\"stage-source\" --exclude=\"dev-target\" /path/to/stage /path/to/dev);";
     $this->assertOutputEquals($expected);
 
     // Test simulated rsync with relative paths
     $this->drush('rsync', ['@example.dev:files', '@example.stage:files'], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
-    $expected = "Calling system(rsync -e 'ssh ' -akz /path/to/dev/files /path/to/stage/files);";
+    $expected = "Calling system(rsync -e 'ssh ' -akz --include=\"dev-source\" --exclude=\"stage-target\" /path/to/dev/files /path/to/stage/files);";
+    $this->assertOutputEquals($expected);
+
+    // Test simulated backend invoke.
+    // Note that command-specific options are not processed for remote
+    // targets. The aliases are not interpreted at all until they recach
+    // the remote side, at which point they will be evaluated & any needed
+    // injection will be done.
+    $this->drush('rsync', ['@example.dev', '@example.stage'], $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
+    $expected = "Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --alias-path=__DIR__/resources/alias-fixtures --root=/path/to/drupal --uri=sitename --no-ansi rsync '\''@example.dev'\'' '\''@example.stage'\'' 2>&1' 2>&1";
     $this->assertOutputEquals($expected);
   }
 
@@ -80,22 +84,6 @@ class rsyncCase extends CommandUnishTestCase {
     $this->assertTrue(file_exists($target_file));
     $actual = file_get_contents($target_file);
     $this->assertEquals($test_data, $actual);
-  }
-
-  /**
-   * Test to see if the output is what we expected.
-   */
-  protected function assertOutputEquals($expected)
-  {
-    $output = $this->getOutput();
-    // We do not care if Drush inserts a -t or not in the string. Depends on whether there is a tty.
-    $output = preg_replace('# -t #', ' ', $output);
-    // Remove double spaces from output to help protect test from false negatives if spacing changes subtlely
-    $output = preg_replace('#  *#', ' ', $output);
-    // Get rid of any full paths in the output
-    $output = str_replace(__DIR__, '__DIR__', $output);
-    $output = str_replace(self::getSandbox(), '__SANDBOX__', $output);
-    $this->assertEquals($expected, $output);
   }
 
   /**

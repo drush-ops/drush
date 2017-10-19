@@ -128,11 +128,6 @@ class DependencyInjection
         $factory = $container->get('commandFactory');
         $factory->setIncludeAllPublicMethods(false);
         $factory->setDataStore($commandCacheDataStore);
-
-        // It is necessary to set the dispatcher when using configureContainer
-        $eventDispatcher = $container->get('eventDispatcher');
-        $eventDispatcher->addSubscriber($hookManager);
-        $application->setDispatcher($eventDispatcher);
     }
 
     protected static function injectApplicationServices(ContainerInterface $container, Application $application)
@@ -142,5 +137,6 @@ class DependencyInjection
         $application->setAliasManager($container->get('site.alias.manager'));
         $application->setRedispatchHook($container->get('redispatch.hook'));
         $application->setTildeExpansionHook($container->get('tildeExpansion.hook'));
+        $application->setDispatcher($container->get('eventDispatcher'));
     }
 }

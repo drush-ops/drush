@@ -160,14 +160,16 @@
 #   if you set a 'remote-host' value, and your remote OS is Windows, if you
 #   do not set the 'OS' value, it will default to 'Linux' and could cause
 #   unintended consequences, particularly when running 'drush sql-sync'.
-# - 'ssh-options': If the target requires special options, such as a non-
+# - 'ssh': If the target requires special options, such as a non-
 #   standard port, alternative identity file, or alternative
-#   authentication method, ssh-options can contain a string of extra
-#   options that are used with the ssh command, eg "-p 100"
+#   authentication method, the `option` entry under the `ssh` item may
+#   contain a string of extra options that are used with the ssh command,
+#   e.g. "-p 100"
 # - 'paths': An array of aliases for common rsync targets.
 #   Relative aliases are always taken from the Drupal root.
 #   - 'files': Path to 'files' directory.  This will be looked up if not
 #     specified.
+#   - 'drush-script': Path to the remot Drush command.
 # - 'command': These options will only be set if the alias
 #   is used with the specified command.  In the example below, the option
 #   `--no-dump` will be selected whenever the @stage alias
@@ -177,6 +179,36 @@
 #     - `drush sql-sync @live @stage`
 #   NOTE: Setting boolean options broke with Symfony 3. This will be fixed
 #     in a future release. See: https://github.com/drush-ops/drush/issues/2956
+# - 'alias-parameters': These options will only be set if the alias is
+#   used as the specified parameter. `sql:sync` and `core:rsync` are the two
+#   core commands that use this entry. These commands both have `source`
+#   and `target` parameters.
+#
+# Complex example:
+#
+# @code
+# # File: remote.alias.yml
+# live:
+#   host: server.domain.com
+#   user: www-admin
+#   root: /other/path/to/drupal
+#   uri: http://example.com
+#   ssh:
+#     options: '-p 100'
+#   paths:
+#     drush-script: '/path/to/drush'
+#   command:
+#     site:
+#       install:
+#         options:
+#           admin-password: 'secret-secret'
+#   alias-parameters:
+#     target:
+#       core:
+#         rsnyc:
+#           options:
+#             excplude-paths: sites/default/files/private
+# @endcode
 #
 # Altering aliases:
 #

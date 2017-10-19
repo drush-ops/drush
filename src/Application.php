@@ -149,6 +149,9 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
             return;
         }
         $selfAliasRecord = $this->aliasManager->getSelf();
+        if (!$selfAliasRecord->hasRoot()) {
+            return;
+        }
         $uri = $selfAliasRecord->uri();
 
         if (empty($uri)) {
