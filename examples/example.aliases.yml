@@ -207,7 +207,7 @@
 #       core:
 #         rsnyc:
 #           options:
-#             excplude-paths: sites/default/files/private
+#             exclude-paths: sites/default/files/private
 # @endcode
 #
 # Altering aliases:
