@@ -1,35 +1,19 @@
 dev:
   root: /path/to/dev
   uri: dev
-  alias-parameters:
-    source:
-      command:
-        core:
-          rsync:
-            options:
-              include-paths: dev-source
-    target:
-      command:
-        core:
-          rsync:
-            options:
-              exclude-paths: dev-target
+  command:
+    core:
+      rsync:
+        options:
+          include-paths: dev-path
 stage:
   root: /path/to/stage
   uri: stage
-  alias-parameters:
-    source:
-      command:
-        core:
-          rsync:
-            options:
-              include-paths: stage-source
-    target:
-      command:
-        core:
-          rsync:
-            options:
-              exclude-paths: stage-target
+  command:
+    core:
+      rsync:
+        options:
+          exclude-paths: stage-path
 live:
   user: www-admin
   host: service-provider.com
