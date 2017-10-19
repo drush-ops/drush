@@ -69,7 +69,7 @@ class DrushCommandFile extends BaseGenerator
                     }
                     $oNames[] = "'$oName' => null";
                 }
-                $command['optionsConcat'] = '$options = [' . implode(', ', $oNames) . ']';
+                $command['optionsConcat'] = 'array $options = [' . implode(', ', $oNames) . ']';
                 if (!empty($command['arguments'])) {
                     $command['optionsConcat'] = ', ' . $command['optionsConcat'];
                 }

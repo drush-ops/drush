@@ -3,6 +3,7 @@ namespace Drush\Commands\core;
 
 use Drupal\Core\Url;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Drush\Exec\ExecTrait;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
@@ -18,6 +19,7 @@ class BrowseCommands extends DrushCommands implements SiteAliasManagerAwareInter
      * @command browse
      *
      * @param string|null $path Path to open. If omitted, the site front page will be opened.
+     * @param array $options An associative array of options whose values come from cli, aliases, config, etc.
      * @option string $browser Specify a particular browser (defaults to operating system default). Use --no-browser to suppress opening a browser.
      * @option integer $redirect-port The port that the web server is redirected to (e.g. when running within a Vagrant environment).
      * @usage drush browse
@@ -30,7 +32,7 @@ class BrowseCommands extends DrushCommands implements SiteAliasManagerAwareInter
      *   Open Firefox web browser to the path 'admin'.
      * @handle-remote-commands true
      */
-    public function browse($path = '', $options = ['browser' => self::REQ, 'redirect-port' => self::REQ])
+    public function browse($path = '', array $options = ['browser' => self::REQ, 'redirect-port' => self::REQ])
     {
         $aliasRecord = $this->siteAliasManager()->getSelf();
         // Redispatch if called against a remote-host so a browser is started on the
