@@ -60,7 +60,7 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
 
         foreach ($field_definitions as $key => $def) {
             $execute = false;
-            if ($field_storage[$key]->isBaseField()) {
+            if (!isset($field_storage[$key]) || $field_storage[$key]->isBaseField()) {
                 continue;
             }
 
