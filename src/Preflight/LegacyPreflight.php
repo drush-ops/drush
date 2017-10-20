@@ -99,9 +99,6 @@ class LegacyPreflight
     {
         $verbose = $output->isVerbose();
         $debug = $output->isDebug();
-        $yes = $input->getOption('yes', false);
-        $no = $input->getOption('no-interaction', false);
-        $pipe = $input->getOption('pipe', false);
         $quiet = $input->getOption('quiet', false);
         $simulate = Drush::simulate();
 
@@ -109,10 +106,6 @@ class LegacyPreflight
         drush_set_context('DRUSH_DEBUG', $debug);
         drush_set_context('DRUSH_DEBUG_NOTIFY', $verbose && $debug);
         drush_set_context('DRUSH_SIMULATE', $simulate);
-
-        // Backend implies affirmative unless negative is explicitly specified
-        drush_set_context('DRUSH_NEGATIVE', $no);
-        drush_set_context('DRUSH_AFFIRMATIVE', $yes || $pipe || (Drush::backend() && !$no));
 
         // Pipe implies quiet.
         drush_set_context('DRUSH_QUIET', $quiet || $pipe);

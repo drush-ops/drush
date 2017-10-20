@@ -64,6 +64,12 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
                 new InputOption('--yes', 'y', InputOption::VALUE_NONE, 'Equivalent to --no-interaction.')
             );
 
+        // Note that -n belongs to Symfony Console's --no-interaction.
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--no', null, InputOption::VALUE_NONE, 'Cancels at any confirmation prompt.')
+            );
+
         $this->getDefinition()
             ->addOption(
                 new InputOption('--remote-host', null, InputOption::VALUE_REQUIRED, 'Run on a remote server.')

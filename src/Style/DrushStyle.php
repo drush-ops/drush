@@ -2,6 +2,7 @@
 
 namespace Drush\Style;
 
+use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -11,11 +12,11 @@ class DrushStyle extends SymfonyStyle
     {
         // Automatically accept confirmations if the --yes argument was supplied.
         // These contexts are set in \Drush\Preflight\LegacyPreflight::setGlobalOptionContexts.
-        if (drush_get_context('DRUSH_AFFIRMATIVE')) {
+        if (Drush::affirmative()) {
             $this->comment($question . ': yes.');
             return true;
         } // Automatically cancel confirmations if the --no argument was supplied.
-        elseif (drush_get_context('DRUSH_NEGATIVE')) {
+        elseif (Drush::negative()) {
             $this->warning($question . ': no.');
             return false;
         }
