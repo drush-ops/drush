@@ -3,6 +3,7 @@ namespace Drush;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use Consolidation\Config\ConfigInterface;
 use Drush\Boot\BootstrapManager;
 use Drush\Runtime\TildeExpansionHook;
 use Drush\SiteAlias\AliasManager;
@@ -10,6 +11,8 @@ use Drush\Log\LogLevel;
 use Drush\Command\RemoteCommandProxy;
 use Drush\Runtime\RedispatchHook;
 
+use Robo\Common\ConfigAwareTrait;
+use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
@@ -26,12 +29,16 @@ use Psr\Log\LoggerAwareTrait;
  * is because the application object is created prior to the DI container.
  * See DependencyInjection::injectApplicationServices() to add more services.
  */
-class Application extends SymfonyApplication implements LoggerAwareInterface
+class Application extends SymfonyApplication implements LoggerAwareInterface, ConfigAwareInterface
 {
     use LoggerAwareTrait;
+    use ConfigAwareTrait;
 
     /** @var BootstrapManager */
     protected $bootstrapManager;
+
+    /** @var ConfigInterface */
+    protected $config;
 
     /** @var AliasManager */
     protected $aliasManager;
@@ -43,59 +50,33 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
     protected $tildeExpansionHook;
 
     /**
-     * @param string $name
-     * @param string $version
+     * Add global options to the Application and their values to Config.
      */
-    public function __construct($name, $version)
+    public function configureGlobalOptions(InputInterface $input)
     {
-        parent::__construct($name, $version);
 
-        $this->getDefinition()
-            ->addOption(
-                new InputOption('--debug', 'd', InputOption::VALUE_NONE, 'Equivalent to -vv')
-            );
+        $globalOptions = [
+            'debug' => ['-d', InputOption::VALUE_NONE, 'Equivalent to -vv'],
+            'yes' => ['-y', InputOption::VALUE_NONE, 'Equivalent to --no-interaction.'],
+            'remote-host' => [null, InputOption::VALUE_REQUIRED, 'Run on a remote server.'],
+            'remote-user' => [null, InputOption::VALUE_REQUIRED, 'The user to use in remote execution.'],
+            'root' => ['-r', InputOption::VALUE_REQUIRED, 'The Drupal root for this site.'],
+            'uri' => ['-l', InputOption::VALUE_REQUIRED, 'Which multisite from the selected root to use.'],
+            'simulate' => [null, InputOption::VALUE_NONE, 'Run in simulated mode (show what would have happened).'],
+            // TODO: Implement handling for 'pipe'
+            'pipe' => [null, InputOption::VALUE_NONE, 'Select the canonical script-friendly output format.'],
+            'define' => ['-D', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Define a configuration item value.', []],
+        ];
 
-        $this->getDefinition()
-            ->addOption(
-                new InputOption('--yes', 'y', InputOption::VALUE_NONE, 'Equivalent to --no-interaction.')
-            );
+        foreach ($globalOptions as $key => $value) {
+            $this->getDefinition()
+                ->addOption(
+                    new InputOption('--' . $key, $value[0], $value[1], $value[2], $value[3])
+                );
 
-        $this->getDefinition()
-            ->addOption(
-                new InputOption('--remote-host', null, InputOption::VALUE_REQUIRED, 'Run on a remote server.')
-            );
+            $this->getConfig()->set($key, $input->getOption($key));
+        }
 
-        $this->getDefinition()
-            ->addOption(
-                new InputOption('--remote-user', null, InputOption::VALUE_REQUIRED, 'The user to use in remote execution.')
-            );
-
-        $this->getDefinition()
-            ->addOption(
-                new InputOption('--root', '-r', InputOption::VALUE_REQUIRED, 'The Drupal root for this site.')
-            );
-
-
-        $this->getDefinition()
-            ->addOption(
-                new InputOption('--uri', '-l', InputOption::VALUE_REQUIRED, 'Which multisite from the selected root to use.')
-            );
-
-        $this->getDefinition()
-            ->addOption(
-                new InputOption('--simulate', null, InputOption::VALUE_NONE, 'Run in simulated mode (show what would have happened).')
-            );
-
-        // TODO: Implement handling for 'pipe'
-        $this->getDefinition()
-            ->addOption(
-                new InputOption('--pipe', null, InputOption::VALUE_NONE, 'Select the canonical script-friendly output format.')
-            );
-
-        $this->getDefinition()
-            ->addOption(
-                new InputOption('--define', '-D', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Define a configuration item value.', [])
-            );
     }
 
     public function bootstrapManager()

@@ -97,6 +97,9 @@ class Runtime
         // need to add these e.g. when testing.
         $this->setTerminationHandlers();
 
+        // Add global options and copy their values into Config.
+        $application->configureGlobalOptions($input);
+
         // Configure the application object and register all of the commandfiles
         // from the search paths we found above.  After this point, the input
         // and output objects are ready & we can start using the logger, etc.

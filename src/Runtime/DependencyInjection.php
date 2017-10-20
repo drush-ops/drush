@@ -138,5 +138,6 @@ class DependencyInjection
         $application->setRedispatchHook($container->get('redispatch.hook'));
         $application->setTildeExpansionHook($container->get('tildeExpansion.hook'));
         $application->setDispatcher($container->get('eventDispatcher'));
+        $application->setConfig($container->get('config'));
     }
 }
