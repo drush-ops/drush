@@ -103,7 +103,7 @@ class LegacyPreflight
         $no = $input->getOption('no-interaction', false);
         $pipe = $input->getOption('pipe', false);
         $quiet = $input->getOption('quiet', false);
-        $simulate = \Drush\Drush::simulate();
+        $simulate = Drush::simulate();
 
         drush_set_context('DRUSH_VERBOSE', $verbose || $debug);
         drush_set_context('DRUSH_DEBUG', $debug);
@@ -112,7 +112,7 @@ class LegacyPreflight
 
         // Backend implies affirmative unless negative is explicitly specified
         drush_set_context('DRUSH_NEGATIVE', $no);
-        drush_set_context('DRUSH_AFFIRMATIVE', $yes || $pipe || (\Drush\Drush::backend() && !$no));
+        drush_set_context('DRUSH_AFFIRMATIVE', $yes || $pipe || (Drush::backend() && !$no));
 
         // Pipe implies quiet.
         drush_set_context('DRUSH_QUIET', $quiet || $pipe);
