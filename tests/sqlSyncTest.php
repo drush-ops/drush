@@ -52,7 +52,7 @@ class sqlSyncTest extends CommandUnishTestCase {
     // injection will be done.
     $this->drush('sql:sync', ['@synctest.remote', '@synctest.local'], $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
     $output = $this->getSimplifiedOutput();
-    $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=whatever user@server '/path/to/drush --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush --root=/path/to/drupal --uri=sitename --no-ansi sql:sync '\''@synctest.remote'\'' '\''@synctest.local'\''", $output);
+    $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush --root=/path/to/drupal --uri=sitename --no-ansi sql:sync '\''@synctest.remote'\'' '\''@synctest.local'\''", $output);
   }
 
   /**

@@ -35,3 +35,7 @@ live:
   host: service-provider.com
   root: /path/on/service-provider
   uri: https://example.com
+  ssh:
+    options: '-o PasswordAuthentication=example'
+  paths:
+    drush-script: '/example/path/to/drush'

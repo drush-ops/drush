@@ -267,14 +267,11 @@ class AliasRecord extends Config
     public function injectIntoConfig($config, $parameterName = '')
     {
         $aliasData = $this->export();
-        $aliasOptions = $aliasData;
-        unset($aliasOptions['alias-parameters']);
         $parameterSpecificData = $this->getParameterSpecificOptions($aliasData, $parameterName);
         if (!empty($parameterSpecificData)) {
-            $aliasOptions = ArrayUtil::mergeRecursiveDistinct($aliasOptions, $parameterSpecificData);
+            // Combine the data from the parameter-specific
+            $config->combine($parameterSpecificData);
         }
-        // Combine the data from the parameter-specific
-        $config->combine($aliasOptions);
         return $this;
     }
 
@@ -298,8 +295,13 @@ class AliasRecord extends Config
     public function legacyRecord()
     {
         $result = $this->exportConfig()->get('options', []);
+
+        // Backend invoke needs a couple of critical items in specific locations.
         if ($this->has('paths.drush-script')) {
             $result['path-aliases']['%drush-script'] = $this->get('paths.drush-script');
+        }
+        if ($this->has('ssh.options')) {
+            $result['ssh-options'] = $this->get('ssh.options');
         }
         return $result;
     }
