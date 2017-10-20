@@ -1,15 +1,11 @@
 <?php
 namespace Drush\Commands\core;
 
-use function array_keys;
 use Composer\Semver\Comparator;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Exception;
-use GuzzleHttp\Client;
-use function implode;
-use Symfony\Component\Console\Helper\Table;
 use Webmozart\PathUtil\Path;
 
 /**
