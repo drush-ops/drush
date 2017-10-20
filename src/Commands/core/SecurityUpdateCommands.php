@@ -45,7 +45,7 @@ class SecurityUpdateCommands extends DrushCommands
             throw new Exception("Unable to fetch drupal-security-advisories information.");
 
         }
-        $data = json_decode($response_body, TRUE);
+        $security_advisory_composer_json = json_decode($response_body, TRUE);
         $composer_root = Drush::bootstrapManager()->getComposerRoot();
         $composer_lock_file_path = Path::join($composer_root, 'composer.lock');
         if (!file_exists($composer_lock_file_path)) {
@@ -54,9 +54,10 @@ class SecurityUpdateCommands extends DrushCommands
         $composer_lock_contents = json_decode(file_get_contents($composer_lock_file_path), TRUE);
         foreach ($composer_lock_contents['packages'] as $key => $package) {
             $name = $package['name'];
-            if (!empty($data['conflict'][$name])) {
-                $conflict_constraints = explode(',', $data['conflict'][$name]);
+            if (!empty($security_advisory_composer_json['conflict'][$name])) {
+                $conflict_constraints = explode(',', $security_advisory_composer_json['conflict'][$name]);
                 foreach ($conflict_constraints as $conflict_constraint) {
+                    // Only parse constraints that follow pattern like "<1.0.0".
                     if (substr($conflict_constraint, 0, 1) == '<') {
                         $min_version = substr($conflict_constraint, 1);
                         if (Comparator::lessThan($package['version'], $min_version)) {
@@ -68,7 +69,7 @@ class SecurityUpdateCommands extends DrushCommands
                         }
                     }
                     else {
-                        $this->logger()->warning("Could not parse conflicting version constraint $conflict_constraint for package $name.");
+                        $this->logger()->warning("Could not parse drupal-security-advisories conflicting version constraint $conflict_constraint for package $name.");
                     }
                 }
             }

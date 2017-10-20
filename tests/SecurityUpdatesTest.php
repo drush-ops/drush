@@ -14,7 +14,7 @@ class SecurityUpdatesTest extends CommandUnishTestCase {
    * Test that insecure packages are correctly identified.
    */
   function testInsecurePackage() {
-    $this->execute("config repositories.0 '{\"type\": \"composer\", \"url\": \"https://packages.drupal.org/8\"'", self::EXIT_SUCCESS, $this->webRoot() . '../');
+    $this->execute("composer config repositories.0 '{\"type\": \"composer\", \"url\": \"https://packages.drupal.org/8\"}'", self::EXIT_SUCCESS, $this->webRoot() . '../');
     $this->execute("composer require drupal/alinks:1.0.0", self::EXIT_SUCCESS, $this->webRoot() . '../');
     $this->drush('pm:security');
     $this->assertContains('One or more of your dependencies has an outstanding security update. Please apply update(s) immediately.', $this->getOutput());
