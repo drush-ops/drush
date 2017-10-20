@@ -33,6 +33,11 @@ class rsyncCase extends CommandUnishTestCase {
     $expected = "Calling system(rsync -e 'ssh ' -akz --include=\"dev-source\" --exclude=\"stage-target\" /path/to/dev/files /path/to/stage/files);";
     $this->assertOutputEquals($expected);
 
+    // Test simulated rsync on local machine with a remote target
+    $this->drush('rsync', ['@example.dev:files', '@example.live:files'], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
+    $expected = "Calling system(rsync -e 'ssh -o PasswordAuthentication=example' -akz --include=\"dev-source\" /path/to/dev/files www-admin@service-provider.com:/path/on/service-provider/files);";
+    $this->assertOutputEquals($expected);
+
     // Test simulated backend invoke.
     // Note that command-specific options are not processed for remote
     // targets. The aliases are not interpreted at all until they recach
