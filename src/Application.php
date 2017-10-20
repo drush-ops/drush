@@ -50,33 +50,61 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     protected $tildeExpansionHook;
 
     /**
-     * Add global options to the Application and their values to Config.
+     * Add global options to the Application and their default values to Config.
      */
-    public function configureGlobalOptions(InputInterface $input)
+    public function configureGlobalOptions()
     {
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--debug', 'd', InputOption::VALUE_NONE, 'Equivalent to -vv')
+            );
 
-        $globalOptions = [
-            'debug' => ['-d', InputOption::VALUE_NONE, 'Equivalent to -vv'],
-            'yes' => ['-y', InputOption::VALUE_NONE, 'Equivalent to --no-interaction.'],
-            'remote-host' => [null, InputOption::VALUE_REQUIRED, 'Run on a remote server.'],
-            'remote-user' => [null, InputOption::VALUE_REQUIRED, 'The user to use in remote execution.'],
-            'root' => ['-r', InputOption::VALUE_REQUIRED, 'The Drupal root for this site.'],
-            'uri' => ['-l', InputOption::VALUE_REQUIRED, 'Which multisite from the selected root to use.'],
-            'simulate' => [null, InputOption::VALUE_NONE, 'Run in simulated mode (show what would have happened).'],
-            // TODO: Implement handling for 'pipe'
-            'pipe' => [null, InputOption::VALUE_NONE, 'Select the canonical script-friendly output format.'],
-            'define' => ['-D', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Define a configuration item value.', []],
-        ];
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--yes', 'y', InputOption::VALUE_NONE, 'Equivalent to --no-interaction.')
+            );
 
-        foreach ($globalOptions as $key => $value) {
-            $this->getDefinition()
-                ->addOption(
-                    new InputOption('--' . $key, $value[0], $value[1], $value[2], $value[3])
-                );
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--remote-host', null, InputOption::VALUE_REQUIRED, 'Run on a remote server.')
+            );
 
-            $this->getConfig()->set($key, $input->getOption($key));
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--remote-user', null, InputOption::VALUE_REQUIRED, 'The user to use in remote execution.')
+            );
+
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--root', '-r', InputOption::VALUE_REQUIRED, 'The Drupal root for this site.')
+            );
+
+
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--uri', '-l', InputOption::VALUE_REQUIRED, 'Which multisite from the selected root to use.')
+            );
+
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--simulate', null, InputOption::VALUE_NONE, 'Run in simulated mode (show what would have happened).')
+            );
+
+        // TODO: Implement handling for 'pipe'
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--pipe', null, InputOption::VALUE_NONE, 'Select the canonical script-friendly output format.')
+            );
+
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--define', '-D', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Define a configuration item value.', [])
+            );
+
+        foreach ($this->getDefinition()->getOptions() as $key => $option) {
+            // The config set here will be populated with resolved values by a later listener.
+            $this->getConfig()->set("options.$key", $option->acceptValue() ? $option->getDefault() : null);
         }
-
     }
 
     public function bootstrapManager()
