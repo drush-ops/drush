@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Commands\core;
+namespace Drush\Commands\pm;
 
 use Composer\Semver\Comparator;
 use Consolidation\AnnotatedCommand\CommandData;
@@ -94,7 +94,7 @@ class SecurityUpdateCommands extends DrushCommands
      * @hook post-command pm:security
      */
     public function preExampleHello($result, CommandData $commandData) {
-        if (isset($this->securityUpdates)) {
+        if (!empty($this->securityUpdates)) {
             $suggested_command = 'composer require ';
             foreach ($this->securityUpdates as $package) {
                 $suggested_command .= $package['name'] . ':^' . $package['min-version'] . ' ';
@@ -102,7 +102,7 @@ class SecurityUpdateCommands extends DrushCommands
             $suggested_command .= '--update-with-dependencies';
             $this->logger()->warning("One or more of your dependencies has an outstanding security update. Please apply update(s) immediately.");
             $this->logger()->notice("Try running: <comment>$suggested_command</comment>");
-            $this->logger()->notice("If that fails due a conflict then you must update one or more root dependencies.");
+            $this->logger()->notice("If that fails due to a conflict then you must update one or more root dependencies.");
         }
     }
 }
