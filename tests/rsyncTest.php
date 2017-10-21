@@ -13,7 +13,7 @@ class rsyncCase extends CommandUnishTestCase {
   /**
    * Test drush rsync --simulate.
    */
-  public function testSimulated() {
+  public function testRsyncSimulated() {
     if ($this->is_windows()) {
       $this->markTestSkipped('rsync command not currently available on Windows.');
     }
