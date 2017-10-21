@@ -100,6 +100,7 @@ class LegacyPreflight
         $verbose = $output->isVerbose();
         $debug = $output->isDebug();
         $quiet = $input->getOption('quiet', false);
+        $pipe = $input->getOption('pipe', false);
         $simulate = Drush::simulate();
 
         drush_set_context('DRUSH_VERBOSE', $verbose || $debug);
