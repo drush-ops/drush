@@ -45,7 +45,7 @@ class SecurityUpdateCommands extends DrushCommands
             throw new Exception("Unable to fetch drupal-security-advisories information.");
 
         }
-        $security_advisory_composer_json = json_decode($response_body, TRUE);
+        $security_advisories_composer_json = json_decode($response_body, TRUE);
         $composer_root = Drush::bootstrapManager()->getComposerRoot();
         $composer_lock_file_path = Path::join($composer_root, 'composer.lock');
         if (!file_exists($composer_lock_file_path)) {
@@ -54,8 +54,8 @@ class SecurityUpdateCommands extends DrushCommands
         $composer_lock_contents = json_decode(file_get_contents($composer_lock_file_path), TRUE);
         foreach ($composer_lock_contents['packages'] as $key => $package) {
             $name = $package['name'];
-            if (!empty($security_advisory_composer_json['conflict'][$name])) {
-                $conflict_constraints = explode(',', $security_advisory_composer_json['conflict'][$name]);
+            if (!empty($security_advisories_composer_json['conflict'][$name])) {
+                $conflict_constraints = explode(',', $security_advisories_composer_json['conflict'][$name]);
                 foreach ($conflict_constraints as $conflict_constraint) {
                     // Only parse constraints that follow pattern like "<1.0.0".
                     if (substr($conflict_constraint, 0, 1) == '<') {
@@ -80,9 +80,9 @@ class SecurityUpdateCommands extends DrushCommands
                 $suggested_command .= $package['name'] . ':^' . $package['min-version'] . ' ';
             }
             $suggested_command .= '--update-with-dependencies';
-            $this->output()->writeln("<error>One or more of your dependencies has an outstanding security update. Please apply update(s) immediately.</error>");
-            $this->output()->writeln("Try running: <comment>$suggested_command</comment>");
-            $this->output()->writeln("If that fails due a conflict then you must update one or more root dependencies.");
+            $this->logger()->warning("One or more of your dependencies has an outstanding security update. Please apply update(s) immediately.");
+            $this->logger()->notice("Try running: <comment>$suggested_command</comment>");
+            $this->logger()->notice("If that fails due a conflict then you must update one or more root dependencies.");
 
             $result = new RowsOfFields($security_updates);
 
