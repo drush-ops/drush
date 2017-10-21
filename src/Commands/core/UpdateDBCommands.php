@@ -19,10 +19,11 @@ class UpdateDBCommands extends DrushCommands
      * @command updatedb
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @option entity-updates Run automatic entity schema updates at the end of any update hooks. Defaults to disabled.
+     * @option post-updates Run post updates after hook_update_n and entity updates. Defaults to disabled.
      * @bootstrap site
      * @aliases updb
      */
-    public function updatedb($options = ['cache-clear' => true, 'entity-updates' => false])
+    public function updatedb($options = ['cache-clear' => true, 'entity-updates' => false, 'post-updates' => false])
     {
         $this->cache_clear = $options['cache-clear'];
 
@@ -233,7 +234,7 @@ class UpdateDBCommands extends DrushCommands
                 }
             }
 
-            if (!$this->io()->confirm(dt('Do you wish to run all pending updates?'))) {
+            if (!$this->io()->confirm(dt('Do you wish to run the specified pending updates?'))) {
                 throw new UserAbortException();
             }
 
@@ -281,16 +282,7 @@ class UpdateDBCommands extends DrushCommands
             }
         }
 
-        // Apply post update hooks.
-        $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateFunctions();
-        if ($post_updates) {
-            $operations[] = [[$this, 'cacheRebuild'], []];
-            foreach ($post_updates as $function) {
-                $operations[] = ['update_invoke_post_update', [$function]];
-            }
-        }
-
-        // Lastly, perform entity definition updates, which will update storage
+        // Perform entity definition updates, which will update storage
         // schema if needed. If module update functions need to work with specific
         // entity schema they should call the entity update service for the specific
         // update themselves.
@@ -298,6 +290,17 @@ class UpdateDBCommands extends DrushCommands
         // @see \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface::applyFieldUpdate()
         if ($options['entity-updates'] &&  \Drupal::entityDefinitionUpdateManager()->needsUpdates()) {
             $operations[] = array([$this, 'updateEntityDefinitions'], array());
+        }
+
+        // Lastly, apply post update hooks if specified.
+        if ($options['post-updates']) {
+            $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateFunctions();
+            if ($post_updates) {
+                $operations[] = [[$this, 'cacheRebuild'], []];
+                foreach ($post_updates as $function) {
+                    $operations[] = ['update_invoke_post_update', [$function]];
+                }
+            }
         }
 
         $batch['operations'] = $operations;
@@ -320,7 +323,7 @@ class UpdateDBCommands extends DrushCommands
     public function updateEntityDefinitions(&$context)
     {
         try {
-            \Drupal::entityDefinitionUpdateManager()->applyUpdates();
+            \Drupal::entityDefinitionUpdateManager()->applyupdates();
         } catch (EntityStorageException $e) {
             watchdog_exception('update', $e);
             $variables = Error::decodeException($e);
