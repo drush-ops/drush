@@ -37,9 +37,6 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     /** @var BootstrapManager */
     protected $bootstrapManager;
 
-    /** @var ConfigInterface */
-    protected $config;
-
     /** @var AliasManager */
     protected $aliasManager;
 
