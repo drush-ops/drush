@@ -21,6 +21,7 @@
     "phpunit/phpunit": "^4.1",
     "drupal/empty_theme": "^1.0",
     "drupal/devel": "^1.0@RC",
+    "drupal/alinks": "1.0.0",
     "lox/xhprof": "dev-master"
   },
   "minimum-stability": "dev",

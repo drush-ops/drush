@@ -2,6 +2,7 @@
 namespace Drush\Commands\core;
 
 use Composer\Semver\Comparator;
+use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -13,6 +14,8 @@ use Webmozart\PathUtil\Path;
  */
 class SecurityUpdateCommands extends DrushCommands
 {
+    protected $securityUpdates;
+
     /**
      * Check Drupal Composer packages for security updates.
      *
@@ -35,9 +38,9 @@ class SecurityUpdateCommands extends DrushCommands
      *
      * @throws \Exception
      */
-    public function securityUpdates()
+    public function security()
     {
-        $security_updates = [];
+        $this->securityUpdates = [];
         try {
             $response_body = file_get_contents('https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/8.x/composer.json');
         }
@@ -61,7 +64,7 @@ class SecurityUpdateCommands extends DrushCommands
                     if (substr($conflict_constraint, 0, 1) == '<') {
                         $min_version = substr($conflict_constraint, 1);
                         if (Comparator::lessThan($package['version'], $min_version)) {
-                            $security_updates[$name] = [
+                            $this->securityUpdates[$name] = [
                                 'name' => $name,
                                 'version' => $package['version'],
                                 'min-version' => $min_version,
@@ -74,22 +77,32 @@ class SecurityUpdateCommands extends DrushCommands
                 }
             }
         }
-        if ($security_updates) {
+        if ($this->securityUpdates) {
+            // @todo Modernize.
+            drush_set_context('DRUSH_EXIT_CODE', 1);
+            $result = new RowsOfFields($this->securityUpdates);
+            return $result;
+        }
+        else {
+            $this->logger()->info("<info>There are no outstanding security updates for Drupal projects.</info>");
+        }
+    }
+
+    /**
+     * Emit suggested composer command for security updates.
+     *
+     * @hook post-command pm:security
+     */
+    public function preExampleHello($result, CommandData $commandData) {
+        if (isset($this->securityUpdates)) {
             $suggested_command = 'composer require ';
-            foreach ($security_updates as $package) {
+            foreach ($this->securityUpdates as $package) {
                 $suggested_command .= $package['name'] . ':^' . $package['min-version'] . ' ';
             }
             $suggested_command .= '--update-with-dependencies';
             $this->logger()->warning("One or more of your dependencies has an outstanding security update. Please apply update(s) immediately.");
             $this->logger()->notice("Try running: <comment>$suggested_command</comment>");
             $this->logger()->notice("If that fails due a conflict then you must update one or more root dependencies.");
-
-            $result = new RowsOfFields($security_updates);
-
-            return $result;
-        }
-        else {
-            $this->output()->writeln("<info>There are no outstanding security updates for Drupal projects.</info>");
         }
     }
 }
