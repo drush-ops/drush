@@ -105,8 +105,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             );
 
         foreach ($this->getDefinition()->getOptions() as $key => $option) {
-            // The config set here will be populated with resolved values by a later listener.
-            $this->getConfig()->set("options.$key", $option->acceptValue() ? $option->getDefault() : null);
+            // Don't override top level keys set via PreflightArgs::optionsWithValues.
+            if (!$this->getConfig()->has("$key")) {
+                // The config set here will be populated with resolved values by a later listener.
+                $this->getConfig()->set("options.$key", $option->acceptValue() ? $option->getDefault() : null);
+            }
         }
     }
 
