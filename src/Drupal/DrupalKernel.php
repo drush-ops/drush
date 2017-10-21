@@ -106,7 +106,11 @@ class DrupalKernel extends DrupalDrupalKernel
         // necessary that the class files in these commands are available
         // in the autoloader.
 
-        // Also add Drush services from all modules
+        // Also add Drush services from all modules & themes.
+        $extensions = $this->getConfigStorage()->read('core.extension');
+        $this->moduleList += isset($extensions['theme']) ? $extensions['theme'] : [];
+        $this->themeData();
+
         $module_filenames = $this->getModuleFileNames();
         // Load each module's serviceProvider class.
         foreach ($module_filenames as $module => $filename) {
@@ -123,5 +127,37 @@ class DrupalKernel extends DrupalDrupalKernel
         if (file_exists($filename)) {
             $this->serviceYamls['app'][$serviceProviderName] = $filename;
         }
+    }
+
+    /**
+     * populates theme data on the filesystem.
+     *
+     * @see Drupal\Core\DrupalKernel::moduleData().
+     */
+    protected function themeData()
+    {
+        // First, find profiles.
+        $listing = new ExtensionDiscovery($this->root);
+        $listing->setProfileDirectories([]);
+        $all_profiles = $listing->scan('profile');
+        $profiles = array_intersect_key($all_profiles, $this->moduleList);
+
+        // If a module is within a profile directory but specifies another
+        // profile for testing, it needs to be found in the parent profile.
+        $settings = $this->getConfigStorage()->read('simpletest.settings');
+        $parent_profile = !empty($settings['parent_profile']) ? $settings['parent_profile'] : NULL;
+        if ($parent_profile && !isset($profiles[$parent_profile])) {
+            // In case both profile directories contain the same extension, the
+            // actual profile always has precedence.
+            $profiles = array($parent_profile => $all_profiles[$parent_profile]) + $profiles;
+        }
+
+        $profile_directories = array_map(function ($profile) {
+            return $profile->getPath();
+        }, $profiles);
+        $listing->setProfileDirectories($profile_directories);
+
+        // Now find themes.
+        $this->moduleData += $listing->scan('theme');
     }
 }
