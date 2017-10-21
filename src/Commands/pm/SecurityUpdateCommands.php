@@ -50,7 +50,8 @@ class SecurityUpdateCommands extends DrushCommands
         }
         $security_advisories_composer_json = json_decode($response_body, TRUE);
         $composer_root = Drush::bootstrapManager()->getComposerRoot();
-        $composer_lock_file_path = Path::join($composer_root, 'composer.lock');
+        $composer_lock_file_name = getenv('COMPOSER') ?: 'composer' . '.lock';
+        $composer_lock_file_path = Path::join($composer_root, $composer_lock_file_name);
         if (!file_exists($composer_lock_file_path)) {
             throw new \Exception("Cannot find composer.lock file.");
         }
@@ -84,7 +85,7 @@ class SecurityUpdateCommands extends DrushCommands
             return $result;
         }
         else {
-            $this->logger()->info("<info>There are no outstanding security updates for Drupal projects.</info>");
+            $this->logger()->notice("<info>There are no outstanding security updates for Drupal projects.</info>");
         }
     }
 
