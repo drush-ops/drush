@@ -11,6 +11,9 @@ class DrupalKernel extends DrupalDrupalKernel
   /** @var ServiceModifierInterface[] */
     protected $serviceModifiers = [];
 
+    /** @var array */
+    protected $themeNames;
+
     /**
      * @inheritdoc
      */
@@ -60,6 +63,7 @@ class DrupalKernel extends DrupalDrupalKernel
         if ($this->shouldDrushInvalidateContainer()) {
             $this->invalidateContainer();
         }
+        $this->classLoaderAddMultiplePsr4($this->getModuleNamespacesPsr4($this->getThemeFileNames()));
         return parent::initializeContainer();
     }
 
@@ -106,16 +110,20 @@ class DrupalKernel extends DrupalDrupalKernel
         // necessary that the class files in these commands are available
         // in the autoloader.
 
-        // Also add Drush services from all modules & themes.
-        $extensions = $this->getConfigStorage()->read('core.extension');
-        $this->moduleList += isset($extensions['theme']) ? $extensions['theme'] : [];
-        $this->themeData();
-
+        // Also add Drush services from all modules.
         $module_filenames = $this->getModuleFileNames();
         // Load each module's serviceProvider class.
         foreach ($module_filenames as $module => $filename) {
             $filename = dirname($filename) . "/drush.services.yml";
             $this->addDrushServiceProvider("_drush.$module", $filename);
+        }
+
+        // Also add Drush services from all themes.
+        $theme_filenames = $this->getThemeFileNames();
+        // Load each theme's serviceProvider class.
+        foreach ($theme_filenames as $theme => $filename) {
+            $filename = dirname($filename) . "/drush.services.yml";
+            $this->addDrushServiceProvider("_drush.$theme", $filename);
         }
     }
 
@@ -134,15 +142,15 @@ class DrupalKernel extends DrupalDrupalKernel
      *
      * @see Drupal\Core\DrupalKernel::moduleData().
      */
-    protected function themeData()
+    protected function themeData($theme_list)
     {
         // First, find profiles.
         $listing = new ExtensionDiscovery($this->root);
         $listing->setProfileDirectories([]);
         $all_profiles = $listing->scan('profile');
-        $profiles = array_intersect_key($all_profiles, $this->moduleList);
+        $profiles = array_intersect_key($all_profiles, $theme_list);
 
-        // If a module is within a profile directory but specifies another
+        // If a theme is within a profile directory but specifies another
         // profile for testing, it needs to be found in the parent profile.
         $settings = $this->getConfigStorage()->read('simpletest.settings');
         $parent_profile = !empty($settings['parent_profile']) ? $settings['parent_profile'] : NULL;
@@ -158,6 +166,29 @@ class DrupalKernel extends DrupalDrupalKernel
         $listing->setProfileDirectories($profile_directories);
 
         // Now find themes.
-        $this->moduleData += $listing->scan('theme');
+        return $listing->scan('theme');
+    }
+
+    /**
+     * Gets the file name for each enabled module.
+     *
+     * @return array
+     *   Array where each key is a module name, and each value is a path to the
+     *   respective *.info.yml file.
+     */
+    protected function getThemeFileNames() {
+        if ($this->themeNames) {
+          return $this->themeNames;
+        }
+        $extensions = $this->getConfigStorage()->read('core.extension');
+        $theme_list = isset($extensions['theme']) ? $extensions['theme'] : [];
+        $theme = [];
+        $theme_data = $this->themeData($theme_list);
+        foreach ($theme_list as $theme => $weight) {
+            if (isset($theme_data[$theme])) {
+                $this->themeNames[$theme] = $theme_data[$theme]->getPathname();
+            }
+        }
+        return $this->themeNames;
     }
 }
