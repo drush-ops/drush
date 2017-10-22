@@ -52,7 +52,7 @@ class LegacyCommands extends DrushCommands
     }
 
     /**
-     * The pm-updatestatus command was deprecated. Please see `composer show` and `composer outdated`. For security release notification, your project should depend on https://github.com/drupal-composer/drupal-security-advisories.
+     * The pm-updatestatus command was deprecated. Please see `composer show` and `composer outdated`. For security release notification, see `drush pm:security`.
      *
      * @command pm:updatestatus
      * @aliases ups,pm-updatestatus
@@ -63,7 +63,7 @@ class LegacyCommands extends DrushCommands
     }
 
     /**
-     * The pm-updatecode command was deprecated. Please see `composer outdated` and `composer update`. For security release notification, your project should depend on https://github.com/drupal-composer/drupal-security-advisories.
+     * The pm-updatecode command was deprecated. Please see `composer outdated` and `composer update`. For security release notification, see `drush pm:security`.
      *
      * @command pm:updatecode
      * @aliases upc,pm-update,pm-updatecode
