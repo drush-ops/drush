@@ -14,6 +14,10 @@ use Webmozart\PathUtil\Path;
  */
 class SecurityUpdateCommands extends DrushCommands
 {
+
+    /**
+     * @var array
+     */
     protected $securityUpdates;
 
     /**
@@ -50,7 +54,8 @@ class SecurityUpdateCommands extends DrushCommands
         }
         $security_advisories_composer_json = json_decode($response_body, TRUE);
         $composer_root = Drush::bootstrapManager()->getComposerRoot();
-        $composer_lock_file_name = getenv('COMPOSER') ?: 'composer' . '.lock';
+        $composer_lock_file_name = getenv('COMPOSER') ? str_replace('.json', '', getenv('COMPOSER')) : 'composer';
+        $composer_lock_file_name .= '.lock';
         $composer_lock_file_path = Path::join($composer_root, $composer_lock_file_name);
         if (!file_exists($composer_lock_file_path)) {
             throw new \Exception("Cannot find $composer_lock_file_path!");
