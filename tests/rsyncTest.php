@@ -50,6 +50,8 @@ class rsyncCase extends CommandUnishTestCase {
 
   public function testRsyncPathAliases() {
 
+    $this->setUpDrupal(2, TRUE);
+
     $options = [
       'yes' => NULL,
       'alias-path' => __DIR__ . '/resources/alias-fixtures',
@@ -110,11 +112,5 @@ class rsyncCase extends CommandUnishTestCase {
     $pattern = in_array($level, array('verbose', 'debug')) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz %s /tmp);";
     $expected = sprintf($pattern, $this->webroot(). "/sites/$uri/files");
     $this->assertEquals($expected, $output);
-  }
-
-  function setUp() {
-    if (!$this->getSites()) {
-      $this->setUpDrupal(2, TRUE);
-    }
   }
 }
