@@ -18,8 +18,8 @@ class UpdateDBCommands extends DrushCommands
      *
      * @command updatedb
      * @option cache-clear Clear caches upon completion.
-     * @option entity-updates Run automatic entity schema updates at the end of any update hooks. Defaults to disabled.
-     * @option post-updates Run post updates after hook_update_n and entity updates. Defaults to disabled.
+     * @option entity-updates Run automatic entity schema updates at the end of any update hooks.
+     * @option post-updates Run post updates after hook_update_n and entity updates.
      * @bootstrap full
      * @aliases updb
      */
@@ -42,11 +42,9 @@ class UpdateDBCommands extends DrushCommands
         $return = drush_invoke_process('@self', 'updatedb:status', [], ['entity-updates' => $options['entity-updates'], 'post-updates' => $options['post-updates']]);
         if ($return['error_status']) {
             throw new \Exception('Failed getting update status.');
-        }
-        elseif (empty($return['object'])) {
+        } elseif (empty($return['object'])) {
             // Do nothing. updatedb:status already logged a message.
-        }
-        else {
+        } else {
             if (!$this->io()->confirm(dt('Do you wish to run the specified pending updates?'))) {
                 throw new UserAbortException();
             }
