@@ -47,7 +47,7 @@ class UpdateDBCommands extends DrushCommands
      * @command entity:updates
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @bootstrap full
-     * @aliases entup
+     * @aliases entup,entity-updates
      *
      */
     public function entityUpdates($options = ['cache-clear' => true])
@@ -72,7 +72,7 @@ class UpdateDBCommands extends DrushCommands
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @option entity-updates Run automatic entity schema updates at the end of any update hooks. Defaults to --no-entity-updates.
      * @bootstrap full
-     * @aliases updbst
+     * @aliases updbst,updatedb-status
      * @field-labels
      *   module: Module
      *   update_id: Update ID
