@@ -170,10 +170,10 @@ class DrupalKernel extends DrupalDrupalKernel
     }
 
     /**
-     * Gets the file name for each enabled module.
+     * Gets the file name for each enabled theme.
      *
      * @return array
-     *   Array where each key is a module name, and each value is a path to the
+     *   Array where each key is a theme name, and each value is a path to the
      *   respective *.info.yml file.
      */
     protected function getThemeFileNames() {
