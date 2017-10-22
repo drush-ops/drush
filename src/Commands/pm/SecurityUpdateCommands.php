@@ -48,7 +48,7 @@ class SecurityUpdateCommands extends DrushCommands
         try {
             $response_body = file_get_contents('https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/8.x/composer.json');
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             throw new Exception("Unable to fetch drupal-security-advisories information.");
 
         }
@@ -58,12 +58,12 @@ class SecurityUpdateCommands extends DrushCommands
         $composer_lock_file_name .= '.lock';
         $composer_lock_file_path = Path::join($composer_root, $composer_lock_file_name);
         if (!file_exists($composer_lock_file_path)) {
-            throw new \Exception("Cannot find $composer_lock_file_path!");
+            throw new Exception("Cannot find $composer_lock_file_path!");
         }
         $composer_lock_contents = file_get_contents($composer_lock_file_path);
         $composer_lock_data = json_decode($composer_lock_contents, TRUE);
         if (!array_key_exists('packages', $composer_lock_data)) {
-            throw new \Exception("No packages were found in $composer_lock_file_path is empty! Contents: $composer_lock_contents");
+            throw new Exception("No packages were found in $composer_lock_file_path! Contents:\n $composer_lock_contents");
         }
         foreach ($composer_lock_data['packages'] as $key => $package) {
             $name = $package['name'];
@@ -89,7 +89,7 @@ class SecurityUpdateCommands extends DrushCommands
         }
         if ($this->securityUpdates) {
             // @todo Modernize.
-            drush_set_context('DRUSH_EXIT_CODE', 1);
+            drush_set_context('DRUSH_EXIT_CODE', DRUSH_FRAMEWORK_ERROR);
             $result = new RowsOfFields($this->securityUpdates);
             return $result;
         }
@@ -103,7 +103,7 @@ class SecurityUpdateCommands extends DrushCommands
      *
      * @hook post-command pm:security
      */
-    public function preExampleHello($result, CommandData $commandData) {
+    public function suggestComposerCommand($result, CommandData $commandData) {
         if (!empty($this->securityUpdates)) {
             $suggested_command = 'composer require ';
             foreach ($this->securityUpdates as $package) {
