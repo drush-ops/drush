@@ -53,10 +53,14 @@ class SecurityUpdateCommands extends DrushCommands
         $composer_lock_file_name = getenv('COMPOSER') ?: 'composer' . '.lock';
         $composer_lock_file_path = Path::join($composer_root, $composer_lock_file_name);
         if (!file_exists($composer_lock_file_path)) {
-            throw new \Exception("Cannot find composer.lock file.");
+            throw new \Exception("Cannot find $composer_lock_file_path!");
         }
-        $composer_lock_contents = json_decode(file_get_contents($composer_lock_file_path), TRUE);
-        foreach ($composer_lock_contents['packages'] as $key => $package) {
+        $composer_lock_contents = file_get_contents($composer_lock_file_path);
+        $composer_lock_data = json_decode($composer_lock_contents, TRUE);
+        if (!array_key_exists('packages', $composer_lock_data)) {
+            throw new \Exception("No packages were found in $composer_lock_file_path is empty! Contents: $composer_lock_contents");
+        }
+        foreach ($composer_lock_data['packages'] as $key => $package) {
             $name = $package['name'];
             if (!empty($security_advisories_composer_json['conflict'][$name])) {
                 $conflict_constraints = explode(',', $security_advisories_composer_json['conflict'][$name]);
