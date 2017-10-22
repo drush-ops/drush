@@ -85,8 +85,8 @@ class UpdateDBCommands extends DrushCommands
      * List any pending database updates.
      *
      * @command updatedb:status
-     * @option entity-updates Show entity schema updates. Defaults to enabled.
-     * @option post-updates Show post updates. Defaults to enabled.
+     * @option entity-updates Show entity schema updates.
+     * @option post-updates Show post updates.
      * @bootstrap full
      * @aliases updbst,updatedb-status
      * @field-labels
