@@ -32,9 +32,9 @@ class CliCommands extends DrushCommands
     }
 
     /**
-     * @command core:cli
+     * @command php:cli
      * @description Open an interactive shell on a Drupal site.
-     * @aliases php,core-cli
+     * @aliases php,core:cli,core-cli
      * @option $version-history Use command history based on Drupal version
      *   (Default is per site).
      * @topics docs:repl
@@ -94,7 +94,18 @@ class CliCommands extends DrushCommands
         $application = Drush::getApplication();
         $commands = $application->all();
 
-        $ignored_commands = ['help', 'drush-psysh', 'php-eval', 'core-cli', 'php'];
+        $ignored_commands = [
+            'help',
+            'php:cli',
+                'core:cli',
+                'core-cli',
+                'php',
+            'php:eval',
+                'eval',
+                'ev',
+            'php:script',
+                'scr',
+        ];
         $php_keywords = $this->getPhpKeywords();
 
         /** @var \Consolidation\AnnotatedCommand\AnnotatedCommand $command */
