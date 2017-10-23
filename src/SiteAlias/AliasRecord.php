@@ -9,7 +9,7 @@ use Consolidation\Config\Util\ArrayUtil;
  * An alias record is a configuration record containing well-known items.
  *
  * NOTE: AliasRecord is implemented as a Config subclass; however, it
- * should not be used as a config. (A better implementaton would be
+ * should not be used as a config. (A better implementation would be
  * "hasa" config, but that is less convenient, as we want all of the
  * same capabilities as a config object).
  *

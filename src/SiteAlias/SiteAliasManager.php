@@ -252,7 +252,7 @@ class SiteAliasManager
         // Create the 'self' alias record. Note that the self
         // record will be named '@self' if it is manually constructed
         // here, and will otherwise have the name of the
-        // alias or site specfication used by the user.
+        // alias or site specification used by the user.
         return new AliasRecord(
             [
                 'root' => $root,
