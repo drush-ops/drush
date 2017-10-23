@@ -59,9 +59,10 @@ class updateDBTest extends CommandUnishTestCase {
       'uri' => key($sites),
     ];
     $this->setupModulesForTests($root);
+    $this->drush('pm:enable', ['woot'], $options);
 
-    $this->drush('pm-enable', ['woot'], $options);
-
+    // Force re-run of woot_update_8101().
+    $this->drush('php:eval', array('drupal_set_installed_schema_version("woot", 8100)'), $options);
     // Force re-run of the post-update woot_post_update_failing().
     $this->drush('sql:query', ["SELECT value FROM key_value WHERE collection = 'post_update' AND name = 'existing_updates'"], $options);
     $functions = unserialize($this->getOutput());
@@ -69,14 +70,11 @@ class updateDBTest extends CommandUnishTestCase {
     $functions = serialize($functions);
     $this->drush('sql:query', ["UPDATE key_value SET value = '$functions' WHERE collection = 'post_update' AND name = 'existing_updates'"], $options);
 
-    // Run updates. woot_post_update_failing() is failing.
-    $return = $this->drush('updatedb', [], $options);
-
-    // Check that the command wxited with a non-zero code.
-    $this->assertNotEquals(0, $return);
+    // Run updates.
+    $this->drush('updatedb', [], $options, NULL, NULL, self::EXIT_ERROR);
   }
 
-  public function setupModulesForTests($root) {
+  protected function setupModulesForTests($root) {
     $wootModule = Path::join(__DIR__, '/resources/modules/d8/woot');
     // We install into Unish so that we aren't cleaned up. That causes container to go invalid after tearDownAfterClass().
     $targetDir = Path::join($root, 'modules/unish/woot');
