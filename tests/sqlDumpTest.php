@@ -36,6 +36,9 @@ class SqlDumpTest extends CommandUnishTestCase {
       'uri' => $uri,
     );
 
+    $this->drush('sql-dump', [], $options + $site_selection_options + ['simulate' => NULL]);
+    $this->assertContains('--ignore-table=unish_dev.cache_container', $this->getErrorOutput());
+
     // Test --extra-dump option
     if ($this->db_driver() == 'mysql') {
       $this->drush('sql-dump', array(), array_merge($options, $site_selection_options, array('extra-dump' => '--skip-add-drop-table')));
