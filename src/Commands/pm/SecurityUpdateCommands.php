@@ -47,12 +47,10 @@ class SecurityUpdateCommands extends DrushCommands
         $this->securityUpdates = [];
         try {
             $response_body = file_get_contents('https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/8.x/composer.json');
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             throw new Exception("Unable to fetch drupal-security-advisories information.");
-
         }
-        $security_advisories_composer_json = json_decode($response_body, TRUE);
+        $security_advisories_composer_json = json_decode($response_body, true);
         $composer_root = Drush::bootstrapManager()->getComposerRoot();
         $composer_lock_file_name = getenv('COMPOSER') ? str_replace('.json', '', getenv('COMPOSER')) : 'composer';
         $composer_lock_file_name .= '.lock';
@@ -61,7 +59,7 @@ class SecurityUpdateCommands extends DrushCommands
             throw new Exception("Cannot find $composer_lock_file_path!");
         }
         $composer_lock_contents = file_get_contents($composer_lock_file_path);
-        $composer_lock_data = json_decode($composer_lock_contents, TRUE);
+        $composer_lock_data = json_decode($composer_lock_contents, true);
         if (!array_key_exists('packages', $composer_lock_data)) {
             throw new Exception("No packages were found in $composer_lock_file_path! Contents:\n $composer_lock_contents");
         }
@@ -80,8 +78,7 @@ class SecurityUpdateCommands extends DrushCommands
                                 'min-version' => $min_version,
                             ];
                         }
-                    }
-                    else {
+                    } else {
                         $this->logger()->warning("Could not parse drupal-security-advisories conflicting version constraint $conflict_constraint for package $name.");
                     }
                 }
@@ -92,8 +89,7 @@ class SecurityUpdateCommands extends DrushCommands
             drush_set_context('DRUSH_EXIT_CODE', DRUSH_FRAMEWORK_ERROR);
             $result = new RowsOfFields($this->securityUpdates);
             return $result;
-        }
-        else {
+        } else {
             $this->logger()->notice("<info>There are no outstanding security updates for Drupal projects.</info>");
         }
     }
@@ -103,7 +99,8 @@ class SecurityUpdateCommands extends DrushCommands
      *
      * @hook post-command pm:security
      */
-    public function suggestComposerCommand($result, CommandData $commandData) {
+    public function suggestComposerCommand($result, CommandData $commandData)
+    {
         if (!empty($this->securityUpdates)) {
             $suggested_command = 'composer require ';
             foreach ($this->securityUpdates as $package) {
