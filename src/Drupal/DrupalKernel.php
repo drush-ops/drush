@@ -153,7 +153,7 @@ class DrupalKernel extends DrupalDrupalKernel
         // If a theme is within a profile directory but specifies another
         // profile for testing, it needs to be found in the parent profile.
         $settings = $this->getConfigStorage()->read('simpletest.settings');
-        $parent_profile = !empty($settings['parent_profile']) ? $settings['parent_profile'] : NULL;
+        $parent_profile = !empty($settings['parent_profile']) ? $settings['parent_profile'] : null;
         if ($parent_profile && !isset($profiles[$parent_profile])) {
             // In case both profile directories contain the same extension, the
             // actual profile always has precedence.
@@ -176,9 +176,10 @@ class DrupalKernel extends DrupalDrupalKernel
      *   Array where each key is a theme name, and each value is a path to the
      *   respective *.info.yml file.
      */
-    protected function getThemeFileNames() {
+    protected function getThemeFileNames()
+    {
         if ($this->themeNames) {
-          return $this->themeNames;
+            return $this->themeNames;
         }
         $extensions = $this->getConfigStorage()->read('core.extension');
         $theme_list = isset($extensions['theme']) ? $extensions['theme'] : [];
