@@ -51,7 +51,7 @@ class updateDBTest extends CommandUnishTestCase {
   /**
    * Tests that updatedb command returns properly a failure.
    */
-  function  testFailedUpdate() {
+  function testFailedUpdate() {
     $sites = $this->setUpDrupal(1, TRUE);
     $options = [
       'yes' => NULL,

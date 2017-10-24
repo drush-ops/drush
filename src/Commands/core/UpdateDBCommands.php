@@ -261,6 +261,11 @@ class UpdateDBCommands extends DrushCommands
         \Drupal::service('state')->set('system.maintenance_mode', true);
         drush_backend_batch_process();
         \Drupal::service('state')->set('system.maintenance_mode', false);
+
+        $batch = &batch_get();
+        if (empty($batch['sets'][$batch['current_set']]['success'])) {
+            throw new \Exception('Update aborted.');
+        }
     }
 
     /**
