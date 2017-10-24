@@ -53,25 +53,25 @@ class updateDBTest extends CommandUnishTestCase {
    */
   function testFailedUpdate() {
     $sites = $this->setUpDrupal(1, TRUE);
-    $options = [
+    $options = array(
       'yes' => NULL,
       'root' => $root = $this->webroot(),
       'uri' => key($sites),
-    ];
+    );
     $this->setupModulesForTests($root);
-    $this->drush('pm:enable', ['woot'], $options);
+    $this->drush('pm:enable', array('woot'), $options);
 
     // Force re-run of woot_update_8101().
     $this->drush('php:eval', array('drupal_set_installed_schema_version("woot", 8100)'), $options);
     // Force re-run of the post-update woot_post_update_failing().
-    $this->drush('sql:query', ["SELECT value FROM key_value WHERE collection = 'post_update' AND name = 'existing_updates'"], $options);
+    $this->drush('sql:query', array("SELECT value FROM key_value WHERE collection = 'post_update' AND name = 'existing_updates'"), $options);
     $functions = unserialize($this->getOutput());
     unset($functions[array_search('woot_post_update_failing', $functions)]);
     $functions = serialize($functions);
-    $this->drush('sql:query', ["UPDATE key_value SET value = '$functions' WHERE collection = 'post_update' AND name = 'existing_updates'"], $options);
+    $this->drush('sql:query', array("UPDATE key_value SET value = '$functions' WHERE collection = 'post_update' AND name = 'existing_updates'"), $options);
 
     // Run updates.
-    $this->drush('updatedb', [], $options, NULL, NULL, self::EXIT_ERROR);
+    $this->drush('updatedb', array(), $options, NULL, NULL, self::EXIT_ERROR);
   }
 
   protected function setupModulesForTests($root) {

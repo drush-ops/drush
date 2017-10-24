@@ -264,9 +264,9 @@ class UpdateDBCommands extends DrushCommands
 
         $batch = &batch_get();
         foreach ($batch['sets'] as $set) {
-          if (empty($set['success'])) {
-            throw new \Exception('Update aborted.');
-          }
+            if (empty($set['success'])) {
+                throw new \Exception('Update aborted.');
+            }
         }
     }
 
