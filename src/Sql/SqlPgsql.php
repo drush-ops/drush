@@ -15,11 +15,12 @@ class SqlPgsql extends SqlBase
 
     private function createPasswordFile()
     {
+        $password_file = null;
         $dbSpec = $this->getDbSpec();
         if (null !== ($this->getPasswordFile()) && isset($dbSpec['password'])) {
             $pgpass_parts = array(
             empty($dbSpec['host']) ? 'localhost' : $dbSpec['host'],
-            empty($Spec['port']) ? '5432' : $dbSpec['port'],
+            empty($dbSpec['port']) ? '5432' : $dbSpec['port'],
             // Database
             '*',
             $dbSpec['username'],
