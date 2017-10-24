@@ -140,7 +140,7 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
 
     while (!$finished) {
       $data = drush_invoke_process('@self', $command, $args);
-      $finished = !$data || $data['error_status'] == 1;
+      $finished = drush_get_error() || !$data || $data['error_status'] == 1;
     }
   }
 }
