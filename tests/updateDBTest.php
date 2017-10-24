@@ -40,7 +40,6 @@ class updateDBTest extends CommandUnishTestCase {
     // Assure that a pending post-update is reported.
     $this->pathPostUpdate = $this->getSut() . '/web/modules/unish/devel/devel.post_update.php';
     copy(__DIR__ . '/resources/devel.post_update.php', $this->pathPostUpdate);
-    // Assert that pending hook_update_n appears
     $this->drush('updatedb:status', array(), $options + ['format' => 'json']);
     $out = $this->getOutputFromJSON('devel-post-null_op');
     $this->assertEquals('This is a test of the emergency broadcast system.', trim($out->description));
