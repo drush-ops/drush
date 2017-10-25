@@ -3,6 +3,7 @@
 namespace Drush\Sql;
 
 use Drupal\Core\Database\Database;
+use Drush\Drush;
 use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 
@@ -303,7 +304,7 @@ class SqlBase
     public function queryPrefix($query)
     {
         // Inject table prefixes as needed.
-        if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
+        if (Drush::bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
             // Enable prefix processing which can be dangerous so off by default. See http://drupal.org/node/1219850.
             if ($this->getOption('db-prefix')) {
                 $query = Database::getConnection()->prefixTables($query);

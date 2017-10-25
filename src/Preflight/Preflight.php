@@ -119,8 +119,10 @@ class Preflight
     protected function remapCommandAliases()
     {
         return [
-            'si' => 'site-install',
-            'en' => 'pm-enable',
+            'si' => 'site:install',
+            'en' => 'pm:enable',
+            // php was an alias for core-cli which got renamed to php-cli. See https://github.com/drush-ops/drush/issues/3091.
+            'php' => 'php:cli',
         ];
     }
 
