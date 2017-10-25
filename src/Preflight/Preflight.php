@@ -267,8 +267,11 @@ class Preflight
         // TODO: If we want to support ONLY site-local Drush (which is
         // DIFFERENT than --local), then skip the call to `$preflightArgs->selectedSite`
         // and just assign `false` to $selectedRoot.
+
+        // Try two approaches.
         $selectedRoot = $this->preflightArgs->selectedSite($this->environment->cwd());
-        return $this->setSelectedSite($selectedRoot, $this->environment->vendorPath());
+        $fallBackPath = $this->preflightArgs->selectedSite(DRUSH_COMMAND);
+        return $this->setSelectedSite($selectedRoot, $fallBackPath);
     }
 
     /**
