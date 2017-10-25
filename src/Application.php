@@ -103,14 +103,6 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             ->addOption(
                 new InputOption('--define', '-D', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Define a configuration item value.', [])
             );
-
-        foreach ($this->getDefinition()->getOptions() as $key => $option) {
-            // Don't override top level keys set via PreflightArgs::optionsWithValues.
-            if (!$this->getConfig()->has("$key")) {
-                // The config set here will be populated with resolved values by a later listener.
-                //$this->getConfig()->set("options.$key", $option->acceptValue() ? $option->getDefault() : null);
-            }
-        }
     }
 
     public function bootstrapManager()

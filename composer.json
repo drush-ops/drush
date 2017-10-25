@@ -29,7 +29,7 @@
     "psy/psysh": "~0.6",
     "league/container": "~2",
     "consolidation/config": "^1.0.5",
-    "consolidation/robo": "^1.1.4",
+    "consolidation/robo": "dev-consider-application-options",
     "symfony/config": "~2.2|^3",
     "chi-teck/drupal-code-generator": "^1.17.3",
     "consolidation/annotated-command": "^2.8.1",
