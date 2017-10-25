@@ -179,10 +179,6 @@
 #     - `drush sql-sync @live @stage`
 #   NOTE: Setting boolean options broke with Symfony 3. This will be fixed
 #     in a future release. See: https://github.com/drush-ops/drush/issues/2956
-# - 'alias-parameters': These options will only be set if the alias is
-#   used as the specified parameter. `sql:sync` and `core:rsync` are the two
-#   core commands that use this entry. These commands both have `source`
-#   and `target` parameters.
 #
 # Complex example:
 #
@@ -202,12 +198,6 @@
 #       install:
 #         options:
 #           admin-password: 'secret-secret'
-#   alias-parameters:
-#     target:
-#       core:
-#         rsnyc:
-#           options:
-#             exclude-paths: sites/default/files/private
 # @endcode
 #
 # Altering aliases:

@@ -25,17 +25,17 @@ class rsyncCase extends CommandUnishTestCase {
 
     // Test simulated simple rsync with two local sites
     $this->drush('rsync', ['@example.stage', '@example.dev'], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
-    $expected = "Calling system(rsync -e 'ssh ' -akz --include=\"stage-source\" --exclude=\"dev-target\" /path/to/stage /path/to/dev);";
+    $expected = "Calling system(rsync -e 'ssh ' -akz /path/to/stage /path/to/dev);";
     $this->assertOutputEquals($expected);
 
     // Test simulated rsync with relative paths
     $this->drush('rsync', ['@example.dev:files', '@example.stage:files'], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
-    $expected = "Calling system(rsync -e 'ssh ' -akz --include=\"dev-source\" --exclude=\"stage-target\" /path/to/dev/files /path/to/stage/files);";
+    $expected = "Calling system(rsync -e 'ssh ' -akz /path/to/dev/files /path/to/stage/files);";
     $this->assertOutputEquals($expected);
 
     // Test simulated rsync on local machine with a remote target
     $this->drush('rsync', ['@example.dev:files', '@example.live:files'], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
-    $expected = "Calling system(rsync -e 'ssh -o PasswordAuthentication=example' -akz --include=\"dev-source\" /path/to/dev/files www-admin@service-provider.com:/path/on/service-provider/files);";
+    $expected = "Calling system(rsync -e 'ssh -o PasswordAuthentication=example' -akz /path/to/dev/files www-admin@service-provider.com:/path/on/service-provider/files);";
     $this->assertOutputEquals($expected);
 
     // Test simulated backend invoke.

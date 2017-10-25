@@ -142,9 +142,6 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
 
         $aliasRecord = $evaluatedPath->getAliasRecord();
 
-        // Inject the source and target alias records into the alias config context.
-        $aliasRecord->injectIntoConfig($aliasConfigContext, $parameterName);
-
         // If the path is remote, then we will also inject the global
         // options into the alias config context so that we pick up
         // things like ssh-options.
