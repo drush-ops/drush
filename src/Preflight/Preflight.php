@@ -269,10 +269,9 @@ class Preflight
         // and just assign `false` to $selectedRoot.
 
         // Try two approaches.
-        if (!$selectedRoot = $this->preflightArgs->selectedSite(DRUSH_COMMAND)) {
-            $selectedRoot = $this->preflightArgs->selectedSite($this->environment->cwd());
-        }
-        return $this->setSelectedSite($selectedRoot, $this->environment->vendorPath());
+        $selectedRoot = $this->preflightArgs->selectedSite($this->environment->cwd());
+        $fallBackPath = $this->preflightArgs->selectedSite(DRUSH_COMMAND);
+        return $this->setSelectedSite($selectedRoot, $fallBackPath);
     }
 
     /**
