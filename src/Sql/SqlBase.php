@@ -3,6 +3,7 @@
 namespace Drush\Sql;
 
 use Drupal\Core\Database\Database;
+use Drush\Drush;
 use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 
@@ -244,7 +245,7 @@ class SqlBase
         // In --verbose mode, drush_shell_exec() will show the call to mysql/psql/sqlite,
         // but the sql query itself is stored in a temp file and not displayed.
         // We show the query when --debug is used and this function created the temp file.
-        if ((drush_get_context('DRUSH_DEBUG') || \Drush\Drush::simulate()) && empty($input_file_original)) {
+        if ((Drush::debug() || Drush::simulate()) && empty($input_file_original)) {
             drush_log('sql-query: ' . $query, LogLevel::INFO);
         }
 
@@ -268,7 +269,7 @@ class SqlBase
     public function queryPrefix($query)
     {
         // Inject table prefixes as needed.
-        if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
+        if (Drush::bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
             // Enable prefix processing which can be dangerous so off by default. See http://drupal.org/node/1219850.
             if ($this->getOption('db-prefix')) {
                 $query = Database::getConnection()->prefixTables($query);

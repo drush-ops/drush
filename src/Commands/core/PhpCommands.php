@@ -49,7 +49,6 @@ class PhpCommands extends DrushCommands implements ConfigAwareInterface
      *  Run foo.php script with argument 'apple' and option 'cider'. Note the -- separator.
      * @aliases scr,php-script
      * @bootstrap max
-     * @topics docs:examplescript,docs:scripts
      */
     public function script(array $extra, $options = ['format' => 'var_export', 'script-path' => self::REQ])
     {
