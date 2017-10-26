@@ -254,28 +254,6 @@ class AliasRecord extends Config
     }
 
     /**
-     * Copy options from the source and destination aliases into the
-     * alias context.
-     *
-     * This is essentially an `export` followed by `$config->combine()`.
-     * Parameter-specific options from the alias-parameters are also included.
-     *
-     * @param Config $config
-     * @param string $parameterName
-     * @return $this
-     */
-    public function injectIntoConfig($config, $parameterName = '')
-    {
-        $aliasData = $this->export();
-        $parameterSpecificData = $this->getParameterSpecificOptions($aliasData, $parameterName);
-        if (!empty($parameterSpecificData)) {
-            // Combine the data from the parameter-specific
-            $config->combine($parameterSpecificData);
-        }
-        return $this;
-    }
-
-    /**
      * Fetch the parameter-specific options from the 'alias-parameters' section of the alias.
      * @param string $parameterName
      * @return array

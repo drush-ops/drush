@@ -138,36 +138,6 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
     }
 
     /**
-     * Inject options from source and target alias parameters.
-     *
-     * @hook command-event sql:sync
-     * @param ConsoleCommandEvent $event
-     */
-    public function preCommandEvent(ConsoleCommandEvent $event)
-    {
-        $input = $event->getInput();
-        $this->injectAliasPathParameterOptions($input, 'source');
-        $this->injectAliasPathParameterOptions($input, 'target');
-    }
-
-    protected function injectAliasPathParameterOptions($input, $parameterName)
-    {
-        // The Drush configuration object is a ConfigOverlay; fetch the alias
-        // context, that already has the options et. al. from the
-        // site-selection alias ('drush @site rsync ...'), @self.
-        $aliasConfigContext = $this->getConfig()->getContext(ConfigLocator::ALIAS_CONTEXT);
-        $manager = $this->siteAliasManager();
-
-        $aliasName = $input->getArgument($parameterName);
-
-        // Inject the source and target alias records into the alias config context.
-        $aliasRecord = $manager->get($aliasName);
-        if (!empty($aliasRecord)) {
-            $manager->get($aliasName)->injectIntoConfig($aliasConfigContext, $parameterName);
-        }
-    }
-
-    /**
      * @hook validate sql-sync
      */
     public function validate(CommandData $commandData)
