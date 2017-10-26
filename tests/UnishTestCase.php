@@ -228,20 +228,6 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Converts a Windows path (dir1\dir2\dir3) into a Unix path (dir1/dir2/dir3).
-   * Also converts a cygwin "drive emulation" path (/cygdrive/c/dir1) into a
-   * proper drive path, still with Unix slashes (c:/dir1).
-   *
-   * @copied from Drush's environment.inc
-   */
-  function convert_path($path) {
-    $path = str_replace('\\','/', $path);
-    $path = preg_replace('/^\/cygdrive\/([A-Za-z])(.*)$/', '\1:\2', $path);
-
-    return $path;
-  }
-
-  /**
    * Borrowed from Drush.
    * Checks operating system and returns
    * supported bit bucket folder.
