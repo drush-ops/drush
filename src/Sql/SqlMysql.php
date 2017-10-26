@@ -107,27 +107,19 @@ EOT;
         return implode(' ', $sql);
     }
 
-      /**
-       * @inheritdoc
-       */
+    /**
+     * @inheritdoc
+     */
     public function dbExists()
     {
-        $current = Drush::simulate();
-        Drush::config()->set(PreflightArgs::SIMULATE, false);
         // Suppress output. We only care about return value.
-        $return = $this->query("SELECT 1;", null, drush_bit_bucket());
-        Drush::config()->set(PreflightArgs::SIMULATE, $current);
-        return $return;
+        return $this->alwaysQuery("SELECT 1;", null, drush_bit_bucket());
     }
 
     public function listTables()
     {
-        $current = Drush::simulate();
-        Drush::config()->set(PreflightArgs::SIMULATE, false);
-        $return = $this->query('SHOW TABLES;');
-        $tables = drush_shell_exec_output();
-        Drush::config()->set(PreflightArgs::SIMULATE, $current);
-        return $tables;
+        $this->alwaysQuery('SHOW TABLES;');
+        return drush_shell_exec_output();
     }
 
     public function dumpCmd($table_selection)

@@ -93,7 +93,7 @@ class SqlPgsql extends SqlBase
         unset($db_spec_no_db['database']);
         $sql_no_db = new SqlPgsql($db_spec_no_db, $this->getOptions());
         $query = "SELECT 1 AS result FROM pg_database WHERE datname='$database'";
-        drush_shell_exec($sql_no_db->connect() . ' -t -c %s', $query);
+        drush_always_exec($sql_no_db->connect() . ' -t -c %s', $query);
         $output = drush_shell_exec_output();
         return (bool)$output[0];
     }
@@ -108,7 +108,7 @@ class SqlPgsql extends SqlBase
 
     public function listTables()
     {
-        $return = $this->query(PSQL_SHOW_TABLES);
+        $return = $this->alwaysQuery(PSQL_SHOW_TABLES);
         $tables = drush_shell_exec_output();
         if (!empty($tables)) {
             return $tables;

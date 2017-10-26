@@ -50,7 +50,7 @@ class rsyncCase extends CommandUnishTestCase {
 
   public function testRsyncPathAliases() {
 
-    $sites = $this->setUpDrupal(2, TRUE);
+    $this->setUpDrupal(2, TRUE);
 
     $options = [
       'yes' => NULL,

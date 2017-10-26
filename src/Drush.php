@@ -286,6 +286,28 @@ class Drush
     }
 
     /**
+     * Return 'true' if we are in affirmative mode
+     */
+    public static function affirmative()
+    {
+        if (!static::hasService('input')) {
+            throw new \Exception('No input service available.');
+        }
+        return Drush::input()->getOption('yes') || (Drush::backend() && !Drush::negative());
+    }
+
+    /**
+     * Return 'true' if we are in negative mode
+     */
+    public static function negative()
+    {
+        if (!static::hasService('input')) {
+            throw new \Exception('No input service available.');
+        }
+        return Drush::input()->getOption('no');
+    }
+
+    /**
      * Return 'true' if we are in verbose mode
      */
     public static function verbose()

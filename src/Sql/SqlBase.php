@@ -195,7 +195,7 @@ class SqlBase
     }
 
     /**
-     * Execute a SQL query.
+     * Execute a SQL query. Respect simulate mode.
      *
      * If you don't want to query results to print during --debug then
      * provide a $result_file whose value can be drush_bit_bucket().
@@ -212,9 +212,33 @@ class SqlBase
      */
     public function query($query, $input_file = null, $result_file = '')
     {
+        if (!\Drush\Drush::simulate()) {
+            return $this->alwaysQuery($query, $input_file, $result_file);
+        }
+        $this->logQueryInDebugMode($query, $input_file);
+    }
+
+    /**
+     * Execute a SQL query. Always execute it regardless of simulate mode.
+     *
+     * If you don't want to query results to print during --debug then
+     * provide a $result_file whose value can be drush_bit_bucket().
+     *
+     * @param string $query
+     *   The SQL to be executed. Should be NULL if $input_file is provided.
+     * @param string $input_file
+     *   A path to a file containing the SQL to be executed.
+     * @param string $result_file
+     *   A path to save query results to. Can be drush_bit_bucket() if desired.
+     *
+     * @return boolean
+     *   TRUE on success, FALSE on failure
+     */
+    public function alwaysQuery($query, $input_file = null, $result_file = '')
+    {
         $input_file_original = $input_file;
         if ($input_file && drush_file_is_tarball($input_file)) {
-            if (drush_shell_exec('gzip -d %s', $input_file)) {
+            if (drush_always_exec('gzip -d %s', $input_file)) {
                 $input_file = trim($input_file, '.gz');
             } else {
                 return drush_set_error(dt('Failed to decompress input file.'));
@@ -245,17 +269,28 @@ class SqlBase
         // In --verbose mode, drush_shell_exec() will show the call to mysql/psql/sqlite,
         // but the sql query itself is stored in a temp file and not displayed.
         // We show the query when --debug is used and this function created the temp file.
-        if ((Drush::debug() || Drush::simulate()) && empty($input_file_original)) {
-            drush_log('sql-query: ' . $query, LogLevel::INFO);
-        }
+        $this->logQueryInDebugMode($query, $input_file_original);
 
-        $success = drush_shell_exec($exec);
+        $success = drush_always_exec($exec);
 
         if ($success && $this->getOption('file-delete')) {
-            drush_op('drush_delete_dir', $input_file);
+            drush_delete_dir($input_file);
         }
 
         return $success;
+    }
+
+    /**
+     * Show the query in debug mode and simulate mode
+     */
+    protected function logQueryInDebugMode($query, $input_file_original)
+    {
+        // In --verbose mode, drush_shell_exec() will show the call to mysql/psql/sqlite,
+        // but the sql query itself is stored in a temp file and not displayed.
+        // We show the query when --debug is used and this function created the temp file.
+        if ((drush_get_context('DRUSH_DEBUG') || \Drush\Drush::simulate()) && empty($input_file_original)) {
+            drush_log('sql-query: ' . $query, LogLevel::INFO);
+        }
     }
 
     /*

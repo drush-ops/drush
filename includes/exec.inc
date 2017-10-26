@@ -80,7 +80,14 @@ function drush_shell_cd_and_exec($effective_wd, $cmd) {
  *   TRUE on success, FALSE on failure
  */
 function drush_shell_exec($cmd) {
-  return _drush_shell_exec(func_get_args());
+  return _drush_shell_exec(func_get_args(), FALSE, Drush::simulate());
+}
+
+/**
+ * A versopm pf drush_shell_exec that ignores simulate mode
+ */
+function drush_always_exec($cmd) {
+  return _drush_shell_exec(func_get_args(), FALSE, FALSE);
 }
 
 /**
@@ -104,7 +111,7 @@ function drush_get_editor() {
  * @see drush_shell_exec.
  */
 function drush_shell_exec_interactive($cmd) {
-  return _drush_shell_exec(func_get_args(), TRUE);
+  return _drush_shell_exec(func_get_args(), TRUE, Drush::simulate());
 }
 
 /**
@@ -125,7 +132,7 @@ function drush_shell_exec_interactive($cmd) {
  *
  * @see drush_shell_exec.
  */
-function _drush_shell_exec($args, $interactive = FALSE) {
+function _drush_shell_exec($args, $interactive = FALSE, $simulate = false) {
   // Do not change the command itself, just the parameters.
   for ($x = 1; $x < count($args); $x++) {
     $args[$x] = drush_escapeshellarg($args[$x]);
@@ -143,7 +150,7 @@ function _drush_shell_exec($args, $interactive = FALSE) {
   }
 
   drush_log('Executing: ' . $command, LogLevel::INFO);
-  if (!Drush::simulate()) {
+  if (!$simulate) {
     if ($interactive) {
       $result = drush_shell_proc_open($command);
       return ($result == 0) ? TRUE : FALSE;

@@ -80,9 +80,9 @@ class GenerateCommands extends DrushCommands
         $helperSet = $application->getHelperSet();
 
         $override = null;
-        if (drush_get_context('DRUSH_AFFIRMATIVE')) {
+        if (Drush::affirmative()) {
             $override = true;
-        } elseif (drush_get_context('DRUSH_NEGATIVE')) {
+        } elseif (Drush::negative()) {
             $override = false;
         }
         $dumper = new Dumper(new Filesystem(), $override);
