@@ -131,7 +131,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
             'file' => $target_dump_path,
             'file-delete' => true,
         );
-        $return = drush_invoke_process($target, 'sql-query', array(), $query_options, $backend_options);
+        $return = drush_invoke_process($targetRecord, 'sql-query', array(), $query_options, $backend_options);
         if ($return['error_status']) {
             throw new Exception('Failed to rsync the database dump from source to target.');
         }
