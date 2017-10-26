@@ -72,15 +72,8 @@ class DrupalCommands extends DrushCommands
     {
         require_once DRUSH_DRUPAL_CORE . "/themes/engines/twig/twig.engine";
         // Scan all enabled modules and themes.
-        // @todo refactor since \Drush\Boot\DrupalBoot::commandfileSearchpaths is similar.
-        $ignored_modules = drush_get_option_list('ignored-modules', array());
         $modules = array_keys($this->getModuleHandler()->getModuleList());
-        $module_list = array_combine($modules, $modules);
-        $cid = drush_cid_install_profile();
-        if ($cached = drush_cache_get($cid)) {
-            $ignored_modules[] = $cached->data;
-        }
-        foreach (array_diff($module_list, $ignored_modules) as $module) {
+        foreach ($modules as $module) {
             $searchpaths[] = drupal_get_path('module', $module);
         }
 
@@ -94,8 +87,7 @@ class DrupalCommands extends DrushCommands
                 $relative = str_replace(Drush::bootstrapManager()->getRoot() . '/', '', $file->filename);
                 // @todo Dynamically disable twig debugging since there is no good info there anyway.
                 twig_render_template($relative, array('theme_hook_original' => ''));
-                $this->logger()
-                ->info(dt('Compiled twig template !path', array('!path' => $relative)));
+                $this->logger()->notice(dt('Compiled twig template !path', array('!path' => $relative)));
             }
         }
     }
@@ -111,8 +103,6 @@ class DrupalCommands extends DrushCommands
      *   Show all status lines from the Status Report admin page.
      * @usage drush core:requirements --severity=2
      *   Show only the red lines from the Status Report admin page.
-     * @usage drush core:requirements --format=json
-     *   Print a short report in JSON format, where severity 2=error, 1=warning, and 0/-1=OK
      * @table-style default
      * @field-labels
      *   title: Title
@@ -120,12 +110,10 @@ class DrupalCommands extends DrushCommands
      *   sid: SID
      *   description: Description
      *   value: Summary
-     *   reason: Reason
-     *   weight: Weight
      * @default-fields title,severity,value
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function requirements($options = ['format' => 'table', 'severity' => -1, 'ignore' => null])
+    public function requirements($options = ['format' => 'table', 'severity' => -1, 'ignore' => ''])
     {
         include_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
         $severities = array(

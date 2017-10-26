@@ -1,0 +1,235 @@
+#
+# Example of valid statements for an alias file.
+#
+# To convert legacy alias (*.aliases.drushrc.php) to yml, run the site:alias-convert command.
+#
+# Use this file as a guide to creating your own aliases.
+#
+# Aliases are commonly used to define short names for
+# local or remote Drupal installations; however, an alias
+# is really nothing more than a collection of options.
+#
+# Drush site aliases always contain one or more environments;
+# for example, a site may have "dev", "test" and "live"
+# environments. The default environment is "dev"; the dev
+# environment of a site named "example" may therefore be
+# referred to as either "@example.dev" or "@example".
+#
+# A canonical alias named "example" that points to a local
+# Drupal site named "http://example.com" looks like this:
+#
+# @code
+# File: example.alias.yml
+# dev:
+#   root: /path/to/drupal
+#   uri: http://example.com
+# @endcode
+#
+# With this alias definition, then the following commands
+# are equivalent:
+#
+#   $ drush @example status
+#   $ drush --root=/path/to/drupal --uri=http://example.com status
+#
+# See the --uri option documentation below for hints on setting its value.
+#
+# Any option that can be placed on the Drush commandline
+# can also appear in an alias definition inside an 'options' section.
+#
+# There are several ways to create alias files.
+#
+#   + Put each alias in a separate file called ALIASNAME.alias.yml
+#   + Put multiple aliases in a single file called aliases.yml
+#   + Put groups of aliases into files called GROUPNAME.aliases.yml
+#
+# Drush will search for aliases in any of these files using
+# the alias search path.  The following locations are examined
+# for alias files:
+#
+#   1. In any path set in drush.alias-path in drush.yml
+#      or (equivalently) any path passed in via --alias-path=...
+#      on the command line.
+#   2. In one of the site-specific locations:
+#        a. The /drush and /sites/all/drush folders for the current Drupal site
+#        b. The /drush folder in the directory above the current Drupal site
+#
+# These locations are no longer searched recursively; alias files must
+# appear directly inside one of the search locations, or in a directory called
+# 'site-aliases' in a search location, or it will not be found.
+#
+# The preferred locations for alias files, then, are:
+#
+#   $ROOT/drush/site-aliases
+#   $ROOT/sites/all/drush/site-aliases
+#   $ROOT/../drush/site-aliases
+#
+# If you would like to add additional locations, you can do so by
+# listing additional locations in your configuraton files. For example,
+# to re-add the default user alias path from Drush 8, put the following
+# in your ~/.drush/drush.yml configuration file:
+#
+# @code
+# drush:
+#   paths:
+#     alias-path:
+#       - '${env.home}/.drush/site-aliases'
+#       - /etc/drush
+# @endcode
+#
+# Files stored in one of the search path locations can be used to create
+# aliases to local and remote Drupal installations.  These aliases can be
+# used in place of a site specification on the command line, and may also
+# be used in arguments to certain commands such as "drush rsync" and
+# "drush sql:sync".
+#
+# Alias groups (aliases stored together in files called
+# GROUPNAME.aliases.yml can be used to collect related sites
+# together.
+#
+# For example:
+#
+# @code
+# # File: elements.aliases.yml
+# sites:
+#   earth:
+#     dev:
+#       root: /path/to/drupal-earth
+#       uri: https://dev.earth.com
+#     live:
+#       root: /other/path/to/drupal-earth
+#       uri: https://earth.com
+#   wind:
+#     dev:
+#       root: /path/to/drupal-wind
+#       uri: https://dev.wind.com
+#     live:
+#       root: /other/path/to/drupal-wind
+#       uri: https://earth.com
+# @endcode
+#
+# Then the following aliases are defined:
+# - @elements.earth.dev
+# - @elements.earth.live
+# - @elements.wind.dev
+# - @elements.wind.live
+#
+# To see an example alias definition for the current bootstrapped
+# site, use the "site:alias" command with the built-in alias "@self":
+#
+#   $ drush site:alias @self
+#
+# Drush also supports *remote* site aliases.  When a site alias is
+# defined for a remote site, Drush will use the ssh command to run
+# the requested command on the remote machine.  The simplest remote
+# alias looks like this:
+#
+# @code
+# # File: remote.alias.yml
+# live:
+#   host: server.domain.com
+#   user: www-admin
+#   root: /other/path/to/drupal
+#   uri: http://example.com
+# @endcode
+#
+# The built-in alias "@none" represents the state of no Drupal site;
+# to ignore the site at the cwd and just see default drush status:
+#
+#   $ drush @none status
+#
+# See `drush help site:alias` for more options for displaying site
+# aliases.  See `drush topic docs:bastion` for instructions on configuring
+# remote access to a Drupal site behind a firewall via a bastion server.
+#
+# Although most aliases will contain only a few options, a number
+# of settings that are commonly used appear below:
+#
+# - 'uri': The value of --uri should always be the same as
+#   when the site is being accessed from a web browser (e.g. http://example.com)
+# - 'root': The Drupal root; must not be specified as a relative path.
+# - 'host': The fully-qualified domain name of the remote system
+#   hosting the Drupal instance. **Important Note: The remote-host option
+#   must be omitted for local sites, as this option controls various
+#   operations, such as whether or not rsync parameters are for local or
+#   remote machines, and so on. @see hook_drush_sitealias_alter() in drush.api.php
+# - 'user': The username to log in as when using ssh or rsync.
+# - 'os': The operating system of the remote server.  Valid values
+#   are 'Windows' and 'Linux'. Be sure to set this value for all remote
+#   aliases because the default value is PHP_OS if 'remote-host'
+#   is not set, and 'Linux' (or $options['remote-os']) if it is. Therefore,
+#   if you set a 'remote-host' value, and your remote OS is Windows, if you
+#   do not set the 'OS' value, it will default to 'Linux' and could cause
+#   unintended consequences, particularly when running 'drush sql-sync'.
+# - 'ssh': If the target requires special options, such as a non-
+#   standard port, alternative identity file, or alternative
+#   authentication method, the `option` entry under the `ssh` item may
+#   contain a string of extra options that are used with the ssh command,
+#   e.g. "-p 100"
+# - 'paths': An array of aliases for common rsync targets.
+#   Relative aliases are always taken from the Drupal root.
+#   - 'files': Path to 'files' directory.  This will be looked up if not
+#     specified.
+#   - 'drush-script': Path to the remot Drush command.
+# - 'command': These options will only be set if the alias
+#   is used with the specified command.  In the example below, the option
+#   `--no-dump` will be selected whenever the @stage alias
+#   is used in any of the following ways:
+#     - `drush @stage sql-sync @self @live`
+#     - `drush sql-sync @stage @live`
+#     - `drush sql-sync @live @stage`
+#   NOTE: Setting boolean options broke with Symfony 3. This will be fixed
+#     in a future release. See: https://github.com/drush-ops/drush/issues/2956
+#
+# Complex example:
+#
+# @code
+# # File: remote.alias.yml
+# live:
+#   host: server.domain.com
+#   user: www-admin
+#   root: /other/path/to/drupal
+#   uri: http://example.com
+#   ssh:
+#     options: '-p 100'
+#   paths:
+#     drush-script: '/path/to/drush'
+#   command:
+#     site:
+#       install:
+#         options:
+#           admin-password: 'secret-secret'
+# @endcode
+#
+# Altering aliases:
+#
+# It is no longer possible to alter aliases dynamically. This is a planned feature. Help wanted.
+#
+# Environment variables:
+#
+# It is no longer possible to set environment variables from within an alias.
+# This is also a planned feature.
+#
+# An example appears below. Edit to suit and remove the @code / @endcode and
+# leading hashes to enable.
+#
+# @code
+# # File: mysite.alias.yml
+# stage:
+#   uri: http://stage.example.com
+#   root: /path/to/remote/drupal/root
+#   host: mystagingserver.myisp.com
+#   user: publisher
+#   os: Linux
+#   paths:
+#    - files: sites/mydrupalsite.com/files
+#    - custom: /my/custom/path
+#   command:
+#     sql:
+#       sync:
+#         options:
+#           no-dump: true
+# dev:
+#   root: /path/to/docroot
+#   uri: https://dev.example.com
+# @endcode
+#

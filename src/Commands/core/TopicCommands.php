@@ -27,6 +27,7 @@ class TopicCommands extends DrushCommands
      *   Filter topics for those starting with 'docs-r'.
      * @remote-tty
      * @aliases topic,core-topic
+     * @bootstrap max
      * @topics docs:readme
      */
     public function topic($topic_name)
@@ -88,7 +89,7 @@ class TopicCommands extends DrushCommands
                 /** @var \Consolidation\AnnotatedCommand\AnnotationData $annotationData */
                 $annotationData = $command->getAnnotationData();
                 if ($annotationData->has('topic')) {
-                    $topics[$key] = $command;
+                    $topics[$command->getName()] = $command;
                 }
             }
         }

@@ -1,6 +1,8 @@
 <?php
 namespace Drush\Exec;
 
+use Drush\Drush;
+
 trait ExecTrait
 {
     /**
@@ -21,8 +23,8 @@ trait ExecTrait
         if ($browser) {
             // We can only open a browser if we have a DISPLAY environment variable on
             // POSIX or are running Windows or OS X.
-            if (!\Drush\Drush::simulate() && !getenv('DISPLAY') && !drush_is_windows() && !drush_is_osx()) {
-                drush_log(dt('No graphical display appears to be available, not starting browser.'), LogLevel::INFO);
+            if (!Drush::simulate() && !getenv('DISPLAY') && !drush_is_windows() && !drush_is_osx()) {
+                $this->logger()->info(dt('No graphical display appears to be available, not starting browser.'));
                 return false;
             }
             $host = parse_url($uri, PHP_URL_HOST);
@@ -36,8 +38,8 @@ trait ExecTrait
             // open the browser for http://default or similar invalid hosts.
             $hosterror = (gethostbynamel($host) === false);
             $iperror = (ip2long($host) && gethostbyaddr($host) == $host);
-            if (!\Drush\Drush::simulate() && ($hosterror || $iperror)) {
-                drush_log(dt('!host does not appear to be a resolvable hostname or IP, not starting browser. You may need to use the --uri option in your command or site alias to indicate the correct URL of this site.', array('!host' => $host)), LogLevel::WARNING);
+            if (!Drush::simulate() && ($hosterror || $iperror)) {
+                $this->logger()->warning(dt('!host does not appear to be a resolvable hostname or IP, not starting browser. You may need to use the --uri option in your command or site alias to indicate the correct URL of this site.', array('!host' => $host)));
                 return false;
             }
             if ($port) {
@@ -61,8 +63,8 @@ trait ExecTrait
                 $prefix = 'sleep ' . $sleep . ' && ';
             }
             if ($browser) {
-                drush_log(dt('Opening browser !browser at !uri', array('!browser' => $browser, '!uri' => $uri)));
-                if (!\Drush\Drush::simulate()) {
+                $this->logger()->success(dt('Opening browser !browser at !uri', array('!browser' => $browser, '!uri' => $uri)));
+                if (!Drush::simulate()) {
                     $pipes = array();
                     proc_close(proc_open($prefix . $browser . ' ' . drush_escapeshellarg($uri) . ' 2> ' . drush_bit_bucket() . ' &', array(), $pipes));
                 }

@@ -2,10 +2,11 @@
   /**
    * {{ command.description|raw }}
    *
-   * @command {{ key }}
+   * @command {{ command.name }}
 {% for argName, argDescription in command.arguments %}
    * @param {{ argName }} {{ argDescription|raw }}
 {% endfor %}
+   * @param array $options An associative array of options whose values come from cli, aliases, config, etc.
 {% for optionName, optionDescription in command.options %}
    * @option {{ optionName }} {{ optionDescription|raw }}
 {% endfor %}
@@ -13,11 +14,15 @@
    * @usage {{ usageName|raw }}
    *   {{ usageDescription|raw }}
 {% endfor %}
+{% if command.depsConcat|raw %}
+   * @validate-module-enabled {{ command.depsConcat|raw }}
+{% endif %}
    * @aliases {{ command.aliases|join(',')  }}
    */
   public function {{ command.method }}({{ command.argumentsConcat|raw }}{{ command.optionsConcat|raw }})
   {
-
+      // See bottom of https://weitzman.github.io/blog/port-to-drush9 for details on what to change when porting a
+      // legacy command.
   }
 
 {% endfor %}

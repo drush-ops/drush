@@ -2,8 +2,10 @@
 namespace Drush\Command;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Drush\Symfony\IndiscriminateInputDefinition;
 
 use Drush\Preflight\RedispatchHook;
 
@@ -28,6 +30,16 @@ class RemoteCommandProxy extends Command
     {
         parent::__construct($name);
         $this->redispatchHook = $redispatchHook;
+
+        // Put in a special input definition to avoid option validation errors.
+        $this->setDefinition(new IndiscriminateInputDefinition());
+
+        // Put in a placeholder array arguement to avoid validation errors.
+        $this->addArgument(
+            'arguments',
+            InputArgument::IS_ARRAY,
+            'Proxy for command arguments'
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

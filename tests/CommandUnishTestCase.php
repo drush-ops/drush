@@ -60,6 +60,28 @@ abstract class CommandUnishTestCase extends UnishTestCase {
   protected $idleTimeout = 15;
 
   /**
+   * Get command output and simiplify away things like full paths and extra
+   * whitespace.
+   */
+  protected function getSimplifiedOutput()
+  {
+    $output = $this->getOutput();
+    // We do not care if Drush inserts a -t or not in the string. Depends on whether there is a tty.
+    $output = preg_replace('# -t #', ' ', $output);
+    // Remove double spaces from output to help protect test from false negatives if spacing changes subtlely
+    $output = preg_replace('#  *#', ' ', $output);
+    // Debug flags may be added to command strings if we are in debug mode. Take those out so that tests in phpunit --debug mode work
+    $output = preg_replace('# --debug #', ' ', $output);
+    $output = preg_replace('# --verbose #', ' ', $output);
+    // Get rid of any full paths in the output
+    $output = str_replace(__DIR__, '__DIR__', $output);
+    $output = str_replace(self::getSandbox(), '__SANDBOX__', $output);
+    $output = str_replace(self::getSut(), '__SUT__', $output);
+
+    return $output;
+  }
+
+  /**
    * Accessor for the last output, trimmed.
    *
    * @return string
@@ -435,5 +457,11 @@ abstract class CommandUnishTestCase extends UnishTestCase {
       list($major) = explode('.', $version);
     }
     return (int)$major;
+  }
+
+  protected function assertOutputEquals($expected)
+  {
+    $output = $this->getSimplifiedOutput();
+    $this->assertEquals($expected, $output);
   }
 }

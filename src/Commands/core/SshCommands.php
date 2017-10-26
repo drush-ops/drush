@@ -2,11 +2,8 @@
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
-use Drush\Log\LogLevel;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
-use Drush\SiteAlias\SiteAliasName;
-use Symfony\Component\Console\Input\InputOption;
 
 class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {

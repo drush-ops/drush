@@ -11,6 +11,7 @@ use Drush\Commands\generate\Helper\InputHandler;
 use Drush\Commands\generate\Helper\OutputHandler;
 use Drush\Commands\help\ListCommands;
 use Drush\Drush;
+use Drush\Drupal\DrushServiceModifier;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Filesystem\Filesystem;
@@ -41,7 +42,7 @@ class GenerateCommands extends DrushCommands
      * @topics docs:generators
      * @bootstrap max
      */
-    public function generate($generator = '', $options = ['answers' => null, 'directory' => null])
+    public function generate($generator = '', $options = ['answers' => self::REQ, 'directory' => self::REQ])
     {
 
         // Disallow default Symfony console commands.
@@ -79,9 +80,9 @@ class GenerateCommands extends DrushCommands
         $helperSet = $application->getHelperSet();
 
         $override = null;
-        if (drush_get_context('DRUSH_AFFIRMATIVE')) {
+        if (Drush::affirmative()) {
             $override = true;
-        } elseif (drush_get_context('DRUSH_NEGATIVE')) {
+        } elseif (Drush::negative()) {
             $override = false;
         }
         $dumper = new Dumper(new Filesystem(), $override);
@@ -105,7 +106,9 @@ class GenerateCommands extends DrushCommands
         $module_generators = [];
         if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
             $container = \Drupal::getContainer();
-            $module_generators = $container->get('drush.service.generators')->getCommandList();
+            if ($container->has(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)) {
+                $module_generators = $container->get(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)->getCommandList();
+            }
         }
 
         /** @var \Symfony\Component\Console\Command\Command[] $generators */

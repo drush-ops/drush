@@ -16,6 +16,12 @@ use Consolidation\Config\ConfigInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+// TODO: Not sure if we should have a reference to PreflightArgs here.
+// Maybe these constants should be in config, and PreflightArgs can
+// reference them from there as well.
+use Drush\Preflight\PreflightArgs;
+
+
 /**
  * Static Service Container wrapper.
  *
@@ -276,7 +282,29 @@ class Drush
      */
     public static function backend()
     {
-        return \Drush\Drush::config()->get('backend');
+        return \Drush\Drush::config()->get(PreflightArgs::BACKEND);
+    }
+
+    /**
+     * Return 'true' if we are in affirmative mode
+     */
+    public static function affirmative()
+    {
+        if (!static::hasService('input')) {
+            throw new \Exception('No input service available.');
+        }
+        return Drush::input()->getOption('yes') || (Drush::backend() && !Drush::negative());
+    }
+
+    /**
+     * Return 'true' if we are in negative mode
+     */
+    public static function negative()
+    {
+        if (!static::hasService('input')) {
+            throw new \Exception('No input service available.');
+        }
+        return Drush::input()->getOption('no');
     }
 
     /**
@@ -335,7 +363,7 @@ class Drush
         $options = array_intersect_key($options, array_flip($optionNamesFromCommandline));
 
         // Add in the 'runtime.context' items, which includes --include, --alias-path et. al.
-        return $options + array_filter(static::config()->get('runtime.context'));
+        return $options + array_filter(static::config()->get(PreflightArgs::DRUSH_RUNTIME_CONTEXT_NAMESPACE));
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drush\Preflight;
+namespace Drush\Symfony;
 
 use Symfony\Component\Console\Input\ArgvInput;
 
@@ -12,11 +12,17 @@ use Symfony\Component\Console\Exception\RuntimeException;
  *
  * If the last argument of the command being called is not an array
  * argument, then an error will be thrown if there are two many arguments.
+ *
+ * We use this instead of a IndiscriminateInputDefinition in cases where we
+ * know in advance that we wish to disable input validation for all commands.
+ * In contrast, an IndiscriminateInputDefinition is attached to individual
+ * Commands that should accept any option.
  */
 class LessStrictArgvInput extends ArgvInput
 {
     private $tokens;
     private $parsed;
+    protected $additionalOptions = [];
 
     /**
      * Constructor.
@@ -36,7 +42,21 @@ class LessStrictArgvInput extends ArgvInput
         // strip the application name
         array_shift($this->tokens);
 
-        // parent::__construct($argv, $definition);
+        parent::__construct($argv, $definition);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOption($name)
+    {
+        if (array_key_exists($name, $this->options)) {
+            return $this->options[$name];
+        }
+        if ($this->definition->hasOption($name)) {
+            return $this->definition->getOption($name)->getDefault();
+        }
+        return false;
     }
 
     protected function setTokens(array $tokens)
@@ -64,6 +84,8 @@ class LessStrictArgvInput extends ArgvInput
                 $this->parseArgument($token);
             }
         }
+        // Put back any options that were injected.
+        $this->options += $this->additionalOptions;
     }
 
     /**
@@ -186,6 +208,12 @@ class LessStrictArgvInput extends ArgvInput
         }
 
         $this->addLongOption($this->definition->getOptionForShortcut($shortcut)->getName(), $value);
+    }
+
+    public function injectAdditionalOptions($additionalOptions)
+    {
+        $this->additionalOptions += $additionalOptions;
+        $this->options += $additionalOptions;
     }
 
     /**

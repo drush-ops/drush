@@ -74,7 +74,7 @@ class LocaleCommands extends DrushCommands
      * @option langcodes A comma-separated list of language codes to update. If omitted, all translations will be updated.
      * @drupal-dependencies locale
      */
-    public function update($options = ['langcodes' => ''])
+    public function update($options = ['langcodes' => self::REQ])
     {
         $module_handler = $this->getModuleHandler();
         $module_handler->loadInclude('locale', 'fetch.inc');
@@ -89,7 +89,7 @@ class LocaleCommands extends DrushCommands
             }
         }
 
-        if ($passed_langcodes = $options['langcodes']) {
+        if ($passed_langcodes = $translationOptions['langcodes']) {
             $langcodes = array_intersect($langcodes, explode(',', $passed_langcodes));
             // @todo Not selecting any language code in the user interface results in
             //   all translations being updated, so we mimick that behavior here.
@@ -106,7 +106,7 @@ class LocaleCommands extends DrushCommands
 
         // Set the translation import options. This determines if existing
         // translations will be overwritten by imported strings.
-        $options = _locale_translation_default_update_options();
+        $translationOptions = _locale_translation_default_update_options();
 
         // If the status was updated recently we can immediately start fetching the
         // translation updates. If the status is expired we clear it an run a batch to
@@ -114,14 +114,14 @@ class LocaleCommands extends DrushCommands
         $last_checked = $this->getState()->get('locale.translation_last_checked');
         if ($last_checked < REQUEST_TIME - LOCALE_TRANSLATION_STATUS_TTL) {
             locale_translation_clear_status();
-            $batch = locale_translation_batch_update_build(array(), $langcodes, $options);
+            $batch = locale_translation_batch_update_build(array(), $langcodes, $translationOptions);
             batch_set($batch);
         } else {
             // Set a batch to download and import translations.
-            $batch = locale_translation_batch_fetch_build($projects, $langcodes, $options);
+            $batch = locale_translation_batch_fetch_build($projects, $langcodes, $translationOptions);
             batch_set($batch);
             // Set a batch to update configuration as well.
-            if ($batch = locale_config_batch_update_components($options, $langcodes)) {
+            if ($batch = locale_config_batch_update_components($translationOptions, $langcodes)) {
                 batch_set($batch);
             }
         }

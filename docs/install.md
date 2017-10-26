@@ -1,6 +1,6 @@
 !!! note
 
-    Drush 9 (coming soon!) only supports one install method. It requires that your Drupal 8 site be built with Composer and Drush be listed as a dependency. 
+    Drush 9 only supports one install method. It requires that your Drupal 8 site be built with Composer and Drush be listed as a dependency. 
     
     See the [Drush 8 docs](http://docs.drush.org/en/8.x) for installing prior versions of Drush.
 
@@ -11,6 +11,10 @@ Install a site-local Drush and Drush Launcher.
 1. Run `drush init`. This edits ~/.bashrc so that Drush's custom prompt and bash integration are active.
 1. See [Usage](http://docs.drush.org/en/master/usage/) for details on using Drush.
 1. To use a non-default PHP, [edit ~/.bashrc so that the desired PHP is in front of your $PATH](http://stackoverflow.com/questions/4145667/how-to-override-the-path-of-php-to-use-the-mamp-path/10653443#10653443). If that is not desireable, you can change your PATH for just one request: `PATH=/path/to/php:$PATH` drush status ...`
+
+!!! note
+
+    Drush 9 cannot run commandfiles from Drush 8 and below (e.g. example.drush.inc). See our [guide on porting commandfiles](https://weitzman.github.io/blog/port-to-drush9). Also note that alias and config files use a new .yml format in Drush 9.
 
 Drupal Compatibility
 -----------------

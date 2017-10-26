@@ -19,6 +19,9 @@ class ArgsPreprocessor
     /** @var ArgsRemapper */
     protected $remapper;
 
+    /**
+     * ArgsPreprocessor constructor
+     */
     public function __construct()
     {
         $this->specParser = new SiteSpecParser();
@@ -158,6 +161,13 @@ class ArgsPreprocessor
         // supplied value, then we set its value to 'true'
         if (strlen($key) == strlen($opt)) {
             return [$methodName, $hasValue ? null: true];
+        }
+
+        // If the option is not an exact match for the key, then the next
+        // character in the option after the key name must be an '='. Otherwise,
+        // we might confuse `--locale` for `--local`, etc.
+        if ($opt[strlen($key)] != '=') {
+            return [false, false];
         }
 
         // If $opt does not take a value, then we will ignore

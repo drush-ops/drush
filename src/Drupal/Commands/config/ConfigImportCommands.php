@@ -156,7 +156,7 @@ class ConfigImportCommands extends DrushCommands
      * @option partial Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted).
      * @aliases cim,config-import
      */
-    public function import($label = null, $options = ['preview' => 'list', 'source' => '', 'partial' => false])
+    public function import($label = null, $options = ['preview' => 'list', 'source' => self::REQ, 'partial' => false])
     {
         // Determine source directory.
         if ($target = $options['source']) {
@@ -228,7 +228,7 @@ class ConfigImportCommands extends DrushCommands
             $this->getStringTranslation()
         );
         if ($config_importer->alreadyImporting()) {
-            $this->logger()->warn('Another request may be synchronizing configuration already.');
+            $this->logger()->warning('Another request may be synchronizing configuration already.');
         } else {
             try {
                 // This is the contents of \Drupal\Core\Config\ConfigImporter::import.

@@ -1,11 +1,14 @@
 <?php
 
-namespace Drush\Preflight;
+namespace Drush\Runtime;
 
 use Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface;
+use Drush\Drush;
 use Symfony\Component\Console\Input\InputInterface;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drush\Log\LogLevel;
+use Robo\Contract\ConfigAwareInterface;
+use Robo\Common\ConfigAwareTrait;
 
 /**
  * The RedispatchHook is installed as an init hook that runs before
@@ -13,12 +16,19 @@ use Drush\Log\LogLevel;
  * that points at a remote machine, then we will stop execution of the
  * current command and instead run the command remotely.
  */
-class RedispatchHook implements InitializeHookInterface
+class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface
 {
-    public function __construct()
-    {
-    }
+    use ConfigAwareTrait;
 
+    /**
+     * Check to see if it is necessary to redispatch to a remote site.
+     * We do not redispatch to local sites here; usually, local sites may
+     * simply be selected and require no redispatch. When a local redispatch
+     * is needed, it happens in the RedispatchToSiteLocal class.
+     *
+     * @param InputInterface $input
+     * @param AnnotationData $annotationData
+     */
     public function initialize(InputInterface $input, AnnotationData $annotationData)
     {
         // See drush_preflight_command_dispatch; also needed are:
@@ -35,7 +45,13 @@ class RedispatchHook implements InitializeHookInterface
         return $this->redispatchIfRemote($input);
     }
 
-    public function redispatchIfRemote($input)
+    /**
+     * Check to see if the target of the command is remote. Call redispatch
+     * if it is.
+     *
+     * @param InputInterface $input
+     */
+    public function redispatchIfRemote(InputInterface $input)
     {
         // Determine if this is a remote command.
         // n.b. 'hasOption' only means that the option definition exists, so don't use that here.
@@ -47,18 +63,20 @@ class RedispatchHook implements InitializeHookInterface
 
     /**
      * Called from RemoteCommandProxy::execute() to run remote commands.
+     *
+     * @param InputInterface $input
      */
-    public function redispatch($input)
+    public function redispatch(InputInterface $input)
     {
         $remote_host = $input->getOption('remote-host');
         $remote_user = $input->getOption('remote-user');
 
-        // Get the command arguements, and shift off the Drush command.
-        $redispatchArgs = \Drush\Drush::config()->get('runtime.argv');
+        // Get the command arguments, and shift off the Drush command.
+        $redispatchArgs = Drush::config()->get('runtime.argv');
         $drush_path = array_shift($redispatchArgs);
         $command_name = array_shift($redispatchArgs);
 
-        \Drush\Drush::logger()->log(LogLevel::DEBUG, 'Redispatch hook {command}', ['command' => $command_name]);
+        Drush::logger()->debug('Redispatch hook {command}', ['command' => $command_name]);
 
         // Remove argument patterns that should not be propagated
         $redispatchArgs = $this->alterArgsForRedispatch($redispatchArgs);
@@ -70,7 +88,7 @@ class RedispatchHook implements InitializeHookInterface
         $redispatchOptions = $this->redispatchOptions($input);
 
         $backend_options = [
-            'drush-script' => null,
+            'drush-script' => $this->getConfig()->get('paths.drush-script', null),
             'remote-host' => $remote_host,
             'remote-user' => $remote_user,
             'additional-global-options' => [],
@@ -110,6 +128,11 @@ class RedispatchHook implements InitializeHookInterface
         return $this->exitEarly($values);
     }
 
+    /**
+     * Collect the options to use in a redispatch.
+     *
+     * @param InputInterface $input
+     */
     protected function redispatchOptions(InputInterface $input)
     {
         return [];
@@ -134,6 +157,8 @@ class RedispatchHook implements InitializeHookInterface
      * Remove anything that is not necessary for the remote side.
      * At the moment this is limited to configuration options
      * provided via -D.
+     *
+     * @param array $redispatchArgs
      */
     protected function alterArgsForRedispatch($redispatchArgs)
     {
@@ -142,9 +167,15 @@ class RedispatchHook implements InitializeHookInterface
         });
     }
 
+    /**
+     * Abort the current execution without causing distress to our
+     * shutdown handler.
+     *
+     * @param array $values The results from backend invoke.
+     */
     protected function exitEarly($values)
     {
-        \Drush\Drush::logger()->log(LogLevel::DEBUG, 'Redispatch hook exit early');
+        Drush::logger()->log(LogLevel::DEBUG, 'Redispatch hook exit early');
 
         // TODO: This is how Drush exits from redispatch commands today;
         // perhaps this could be somewhat improved, though.

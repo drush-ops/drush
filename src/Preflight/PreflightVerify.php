@@ -5,6 +5,9 @@ use Drush\Drush;
 use Drush\Config\Environment;
 use Drush\Utils\StringUtils;
 
+/**
+ * Helper methods to verify preflight state.
+ */
 class PreflightVerify
 {
     /**

@@ -10,11 +10,14 @@ use Drush\Boot\DrupalBoot;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Sql\SqlBase;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\AnnotatedCommand\CommandData;
 
-class StatusCommands extends DrushCommands
+class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+    use SiteAliasManagerAwareTrait;
 
     /**
      * An overview of the environment - Drush and Drupal.
@@ -68,9 +71,9 @@ class StatusCommands extends DrushCommands
      *
      * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
      */
-    public function status($filter = '', $options = ['project' => '', 'format' => 'table'])
+    public function status($filter = '', $options = ['project' => self::REQ, 'format' => 'table'])
     {
-        $data = self::getPropertyList($options);
+        $data = $this->getPropertyList($options);
 
         $result = new PropertyList($data);
         $result->addRendererFunction([$this, 'renderStatusCell']);
@@ -78,7 +81,7 @@ class StatusCommands extends DrushCommands
         return $result;
     }
 
-    public static function getPropertyList($options)
+    public function getPropertyList($options)
     {
         $boot_manager = Drush::bootstrapManager();
         $boot_object = Drush::bootstrap();
@@ -129,8 +132,10 @@ class StatusCommands extends DrushCommands
         $status_table['drush-script'] = DRUSH_COMMAND;
         $status_table['drush-version'] = Drush::getVersion();
         $status_table['drush-temp'] = drush_find_tmp();
-        $status_table['drush-conf'] = drush_flatten_array(drush_get_context_options('context-path', ''));
-        $alias_files = _drush_sitealias_find_alias_files();
+        $status_table['drush-conf'] = Drush::config()->get('runtime.config.paths');
+        // List available alias files
+        $alias_files = $this->siteAliasManager()->listAllFilePaths();
+        sort($alias_files);
         $status_table['drush-alias-files'] = $alias_files;
 
         $paths = self::pathAliases($options, $boot_manager, $boot_object);

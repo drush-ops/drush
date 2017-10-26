@@ -27,6 +27,11 @@ class LegacyAliasConverter
     protected $converted;
 
     /**
+     * @var boolean
+     */
+    protected $simulate = false;
+
+    /**
      * LegacyAliasConverter constructor.
      *
      * @param SiteAliasFileDiscovery $discovery Provide the same discovery
@@ -39,6 +44,26 @@ class LegacyAliasConverter
         $this->target = '';
     }
 
+    /**
+     * @return bool
+     */
+    public function isSimulate()
+    {
+        return $this->simulate;
+    }
+
+    /**
+     * @param bool $simulate
+     */
+    public function setSimulate($simulate)
+    {
+        $this->simulate = $simulate;
+    }
+
+    /**
+     * @param string $target
+     *   A directory to write to. If not provided, writes go into same dir as the corresponding legacy file.
+     */
     public function setTargetDir($target)
     {
         $this->target = $target;
@@ -58,7 +83,7 @@ class LegacyAliasConverter
         $legacyFiles = $this->discovery->findAllLegacyAliasFiles();
 
         if (!$this->checkAnyNeedsConversion($legacyFiles)) {
-            return false;
+            return [];
         }
 
         // We reconvert all legacy files together, because the aliases
@@ -67,7 +92,7 @@ class LegacyAliasConverter
         $convertedFiles = $this->convertAll($legacyFiles);
         $this->writeAll($convertedFiles);
 
-        return true;
+        return $convertedFiles;
     }
 
     protected function checkAnyNeedsConversion($legacyFiles)
@@ -148,6 +173,11 @@ EOT;
      */
     protected function safeToWrite($path, $contents, $checksumPath)
     {
+        // Bail if simulate mode is enabled.
+        if ($this->isSimulate()) {
+            return true;
+        }
+
         // If the target file does not exist, it is always safe to write.
         if (!file_exists($path)) {
             return true;
@@ -174,7 +204,7 @@ EOT;
         return $previousChecksum == $previousWrittenChecksum;
     }
 
-    protected function saveChecksum($checksumPath, $path, $contents)
+    public function saveChecksum($checksumPath, $path, $contents)
     {
         $name = basename($path);
         $comment = <<<EOT

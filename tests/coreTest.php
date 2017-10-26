@@ -13,7 +13,7 @@ class coreCase extends CommandUnishTestCase {
 
   function setUp() {
     if (!$this->getSites()) {
-      $this->setUpDrupal(1, TRUE);
+      $this->setUpDrupal(2, TRUE);
     }
   }
 
@@ -76,5 +76,22 @@ class coreCase extends CommandUnishTestCase {
         $this->assertEquals($value, $loaded->$key->sid);
       }
     }
+  }
+
+  function testSiteSelectionViaCwd() {
+    $cwd = getcwd();
+    $root = $this->webroot();
+    foreach (['dev', 'stage'] as $uri) {
+      $conf_dir = $root . '/sites/' . $uri;
+      // We will chdir to the directory that contains settings.php
+      // and ensure that we can bootstrap the selected site from here.
+      chdir($conf_dir);
+      $this->drush('core-status');
+      $output = $this->getOutput();
+      $output = preg_replace('#  *#', ' ', $output);
+      $this->assertContains('Database : Connected', $output);
+      $this->assertContains("Site path : sites/$uri", $output);
+    }
+    chdir($cwd);
   }
 }

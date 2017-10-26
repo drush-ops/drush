@@ -15,7 +15,7 @@ class ConfigLocatorTest extends TestCase
      */
     function testOnlyEnvironmentData()
     {
-        $configLocator = new ConfigLocator();
+        $configLocator = new ConfigLocator('TEST_');
         $configLocator->addEnvironment($this->environment());
         $config = $configLocator->config();
         $this->assertEquals($this->homeDir(), $config->get('env.cwd'));
@@ -26,7 +26,7 @@ class ConfigLocatorTest extends TestCase
      */
     function testLoadAll()
     {
-        $configLocator = $this->createConfigLoader();
+        $configLocator = $this->createConfigLocator();
 
         $sources = $configLocator->sources();
         //$this->assertEquals('environment', $sources['env']['cwd']);
@@ -52,7 +52,7 @@ class ConfigLocatorTest extends TestCase
      */
     function testLocalMode()
     {
-        $configLocator = $this->createConfigLoader(true);
+        $configLocator = $this->createConfigLocator(true);
 
         /*
         $sources = $configLocator->sources();
@@ -69,15 +69,31 @@ class ConfigLocatorTest extends TestCase
         $this->assertEquals('A site-specific setting', $config->get('test.site'));
     }
 
+    function testAliasPaths()
+    {
+        $configLocator = $this->createConfigLocator();
+        $aliasPaths = $configLocator->getSiteAliasPaths(['/home/user/aliases'], $this->environment());
+        $aliasPaths = array_map(
+            function ($item) {
+                return str_replace(dirname(__DIR__) . '/', '', $item);
+            },
+            $aliasPaths
+        );
+        sort($aliasPaths);
+
+        $expected = 'fixtures/sites/d8/drush,fixtures/sites/d8/drush/site-aliases';
+        $this->assertEquals($expected, implode(',', $aliasPaths));
+    }
+
     /**
      * Create a config locator from All The Sources, for use in multiple tests.
      */
-    protected function createConfigLoader($isLocal = false, $configPath = '', $aliasPath = '', $alias = '')
+    protected function createConfigLocator($isLocal = false, $configPath = '')
     {
-        $configLocator = new ConfigLocator();
+        $configLocator = new ConfigLocator('TEST_');
         $configLocator->collectSources();
         $configLocator->setLocal($isLocal);
-        $configLocator->addUserConfig($configPath, $this->environment()->systemConfigPath(), $this->environment()->userConfigPath());
+        $configLocator->addUserConfig([$configPath], $this->environment()->systemConfigPath(), $this->environment()->userConfigPath());
         $configLocator->addDrushConfig($this->environment()->drushBasePath());
 
         // Make our environment settings available as configuration items

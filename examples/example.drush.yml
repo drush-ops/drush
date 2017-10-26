@@ -1,0 +1,219 @@
+#
+# Examples of valid statements for a Drush runtime config (drush.yml) file.
+#
+# Use this file to cut down on typing out lengthy and repetitive command line
+# options in the Drush commands you use and to avoid mistakes.
+#
+# Rename this file to drush.yml and optionally copy it to one of the places
+# listed below in order of precedence:
+#
+# 1.  Drupal site folder (e.g. sites/{default|example.com}/drush.yml).
+# 2.  Drupal /drush and sites/all/drush folders, or the /drush folder
+#       in the directory above the Drupal root.
+# 3.  In any location, as specified by the --config (-c) option.
+# 4.  User's .drush folder (i.e. ~/.drush/drush.yml).
+# 5.  System wide configuration folder (e.g. /etc/drush/drush.yml).
+#
+# If a configuration file is found in any of the above locations, it will be
+# loaded and merged with other configuration files in the search list.
+#
+# NOT SUPPORTED YET:
+#
+# A future feature will allow configuration files to be restricted to a
+# certain version of Drush. e.g. if you create a file called drush10.yml,
+# then the configuration options in that file will only be loaded by
+# Drush 10. At the moment, though, only Drush 9 loads drush.yml files,
+# so this feature is not needed yet.
+#
+# IMPORTANT NOTE regarding configuration file on Windows:
+#
+# For Windows 7, Windows Vista, Windows Server 2008 and later versions is the
+# system window configuration folder C:\ProgramData\Drush.  For previous
+# versions of Windows is the folder C:\Documents and Settings\All Users\Drush.
+#
+# IMPORTANT NOTE on configuration file loading:
+#
+# At its core, Drush works by "bootstrapping" the Drupal environment in very
+# much the same way that is done during a normal page request from the web
+# server, so most Drush commands run in the context of a fully-initialized
+# website.
+#
+# Configuration files are loaded in the reverse order they are shown above. All
+# configuration files are loaded in the first bootstrapping phase, but
+# a configuration file in a specific Drupal site folder other than the default
+# (eg, sites/example.com/drush.yml) will not be loaded unless a specific
+# Drupal site is selected.  However, it _will_ be loaded if a site is selected
+# (either via the current working directory or by use of the --uri option),
+# even if the Drush command being run does not bootstrap to the Drupal Site
+# phase.
+#
+# NOT SUPPORTED YET:
+#
+# The Drush commands 'rsync' and 'sql-sync' are special cases.  These commands
+# will load the configuration file for the site specified by the source
+# parameter; however, they do not load the configuration file for the site
+# specified by the destination parameter, nor do they load configuration files
+# for remote sites.
+#
+# See `drush topic docs:bootstrap` for more information on how bootstrapping
+# affects the loading of Drush configuration files.
+
+drush:
+  paths:
+    # Load a drush.yml configuration file from the current working directory.
+    config: ./drush.yml
+
+
+    # Specify folders to search for Drush command files.  These locations
+    # are always merged with include paths defined on the command line or
+    # in other configuration files.  On the command line, paths may be separated
+    # by a colon (:) on Unix-based systems or a semi-colon (;) on Windows,
+    # or multiple --include options may be provided. Note that the locations shown
+    # in the example below were searched by default in Drush 8 and earlier.
+    include:
+      - '${env.home}/.drush'
+      - /usr/share/drush/commands
+
+    # Specify the folders to search for Drush alias files (*.alias.yml and
+    # *.aliases.yml).  These locations are always merged with alias paths
+    #  defined on the command line or in other configuration files.  On the command
+    # line, paths may be separated by a colon (:) on Unix-based systems or a
+    # semi-colon (;) on Windows, or multiple --alias-path options may be provided.
+    # Note that the locations shown in the example below were searched by default
+    # in Drush 8 and earlier.
+    alias-path:
+      - '${env.home}/.drush'
+      - /etc/drush
+
+
+options:
+  # Specify the base_url that should be used when generating links.
+  # Not recommended if you have more than one Drupal site on your system.
+  uri: 'http://example.com/subdir'
+
+  # Specify your Drupal core base directory (useful if you use symlinks).
+  # Not recommended if you have more than one Drupal root on your system.
+  root: '/home/USER/workspace/drupal-6'
+
+  # NOT SUPPORTED YET:
+  # Specify the modules to ignore when searching for command files
+  ignored-modules:
+    - module1
+    - module2
+
+  # Enable verbose mode.
+  verbose: true
+
+  # NOT SUPPORTED YET:
+  # Specify the logging level for PHP notices.  Defaults to "notice".  Set to
+  # "warning" when doing Drush development.  Also make sure that error_reporting
+  # is set to E_ALL in your php configuration file.  See `drush status` for the
+  # path to your php.ini file.
+  php-notices: warning
+
+  # NOT SUPPORTED YET:
+  # Specify the error handling of recoverable errors (E_RECOVERABLE_ERROR).
+  # Defaults to true and will stop execution of Drush.
+  # When set to false, execution will continue.
+  halt-on-error: false
+
+  # By default, unknown options are disallowed and result in an error.  Change
+  # them to issue only a warning and let command proceed.
+  strict: false
+
+  # NOT SUPPORTED YET:
+  # Set 'remote-os' to 'Windows' to make Drush use Windows shell escape rules
+  # for remote sites that do not have an 'os' item set.
+  remote-os: Linux
+
+  # NOT SUPPORTED YET:
+  # The output charset suitable to pass to the iconv PHP function's out_charset
+  # parameter.
+  #
+  # Drush will convert its output from UTF-8 to the charset specified here.  It
+  # is possible to use //TRANSLIT and //IGNORE charset name suffixes (see iconv
+  # documentation).  If not defined, conversion will not be performed.
+
+  # output_charset: 'ISO-8859-1'
+  # output_charset: 'KOI8-R//IGNORE'
+  # output_charset: 'ISO-8859-1//TRANSLIT'
+
+command:
+  sql:
+    options:
+      # TODO: Confirm whether or not this is working
+      # An explicit list of tables which should be included in sql-dump and sql-sync.
+      tables:
+        common:
+          - user
+          - permissions
+          - role_permissions
+          - role
+      # List of tables whose *data* is skipped by the 'sql-dump' and 'sql-sync'
+      # commands when the "--structure-tables-key=common" option is provided.
+      # You may add specific tables to the existing array or add a new element.
+      structure-tables:
+        common:
+          - cache
+          - 'cache_*'
+          - history
+          - 'search_*'
+          - 'sessions'
+          - 'watchdog'
+      # List of tables to be omitted entirely from SQL dumps made by the 'sql-dump'
+      # and 'sql-sync' commands when the "--skip-tables-key=common" option is
+      # provided on the command line.  This is useful if your database contains
+      # non-Drupal tables used by some other application or during a migration for
+      # example.  You may add new tables to the existing array or add a new element.
+      skip-tables:
+        common:
+          - 'migration_*'
+
+    dump:
+      options:
+        # Specify the filename and path where 'sql-dump' should store backups of
+        # database dumps.  The default is to dump to STDOUT, however if this option is
+        # set in a drush.yml file, the default behaviour can be achieved by
+        # specifying a value of FALSE ("--result-file=0" on the command line).
+        #
+        # NOT SUPPORTED YET:
+        # Substitution variables with the database name, current date and so on
+        # should be provided for composing filenames.
+        result-file: /path/to/backup/dir/dump.sql
+  php:
+    script:
+      options:
+        # Additional folders to search for scripts.
+        script-path: 'sites/all/scripts:profiles/myprofile/scripts'
+  core:
+    rsync:
+      options:
+        # Ensure all rsync commands use verbose output.
+        verbose: true
+
+  site:
+    install:
+      options:
+        # Set a predetermined username and password when using site-install.
+        account-name: 'alice'
+        account-pass: 'secret'
+
+# TODO: Move this to transport.ssh.options?
+ssh:
+  # Specify options to pass to ssh in backend invoke.  The default is to prohibit
+  # password authentication, and is included here, so you may add additional
+  # parameters without losing the default configuration.
+  options: '-o PasswordAuthentication=no'
+
+notify:
+  # Notify when command takes more than 30 seconds.
+  duration: 30
+  # Specify a command to run. Defaults to Notification Center (OSX) or libnotify (Linux)
+  cmd: /path/to/program
+  # See src/Commands/core/NotifyCommands.php for more configuration settings.
+
+xh:
+  # Start profiling via xhprof/tideways and show a link to the run report.
+  link: http://xhprof.local
+  # See src/Commands/core/XhprofCommands.php for more configuration settings.
+

@@ -1,6 +1,7 @@
 <?php
-namespace Drush\Preflight;
+namespace Drush\Runtime;
 
+use Drush\Command\GlobalOptionsEventListener;
 use Drush\Drush;
 use Drush\Cache\CommandCache;
 use DrupalFinder\DrupalFinder;
@@ -89,7 +90,8 @@ class DependencyInjection
             ->withMethodCall('add', ['bootstrap.drupal8']);
         $container->share('bootstrap.hook', 'Drush\Boot\BootstrapHook')
           ->withArgument('bootstrap.manager');
-        $container->share('redispatch.hook', 'Drush\Preflight\RedispatchHook');
+        $container->share('redispatch.hook', 'Drush\Runtime\RedispatchHook');
+        $container->share('tildeExpansion.hook', 'Drush\Runtime\TildeExpansionHook');
 
         // Robo does not manage the command discovery object in the container,
         // but we will register and configure one for our use.
@@ -110,8 +112,10 @@ class DependencyInjection
     {
         // Add our own callback to the hook manager
         $hookManager = $container->get('hookManager');
+        $hookManager->addCommandEvent(new GlobalOptionsEventListener());
         $hookManager->addInitializeHook($container->get('redispatch.hook'));
         $hookManager->addInitializeHook($container->get('bootstrap.hook'));
+        $hookManager->addPreValidator($container->get('tildeExpansion.hook'));
         $hookManager->addOutputExtractor(new \Drush\Backend\BackendResultSetter());
         // @todo: do we need both backend result setters? The one below should be removed at some point.
         $hookManager->add('annotatedcomand_adapter_backend_result', \Consolidation\AnnotatedCommand\Hooks\HookManager::EXTRACT_OUTPUT);
@@ -124,11 +128,6 @@ class DependencyInjection
         $factory = $container->get('commandFactory');
         $factory->setIncludeAllPublicMethods(false);
         $factory->setDataStore($commandCacheDataStore);
-
-        // It is necessary to set the dispatcher when using configureContainer
-        $eventDispatcher = $container->get('eventDispatcher');
-        $eventDispatcher->addSubscriber(new \Drush\Command\GlobalOptionsEventListener());
-        $application->setDispatcher($eventDispatcher);
     }
 
     protected static function injectApplicationServices(ContainerInterface $container, Application $application)
@@ -137,5 +136,8 @@ class DependencyInjection
         $application->setBootstrapManager($container->get('bootstrap.manager'));
         $application->setAliasManager($container->get('site.alias.manager'));
         $application->setRedispatchHook($container->get('redispatch.hook'));
+        $application->setTildeExpansionHook($container->get('tildeExpansion.hook'));
+        $application->setDispatcher($container->get('eventDispatcher'));
+        $application->setConfig($container->get('config'));
     }
 }

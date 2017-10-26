@@ -2,6 +2,8 @@
 
 namespace Drush\Sql;
 
+use Drush\Drush;
+use Drush\Preflight\PreflightArgs;
 use PDO;
 
 class SqlMysql extends SqlBase
@@ -91,7 +93,7 @@ EOT;
         }
         $sql[] = sprintf('DROP DATABASE IF EXISTS %s;', $dbname);
         $sql[] = sprintf('CREATE DATABASE %s /*!40100 DEFAULT CHARACTER SET utf8 */;', $dbname);
-        $db_superuser = \Drush\Drush::config()->get('mysql.db-su');
+        $db_superuser = Drush::config()->get('mysql.db-su');
         if (isset($db_superuser)) {
             // - For a localhost database, create a localhost user.  This is important for security.
             //   localhost is special and only allows local Unix socket file connections.
@@ -105,27 +107,19 @@ EOT;
         return implode(' ', $sql);
     }
 
-      /**
-       * @inheritdoc
-       */
+    /**
+     * @inheritdoc
+     */
     public function dbExists()
     {
-        $current = \Drush\Drush::simulate();
-        drush_set_context('DRUSH_SIMULATE', false);
         // Suppress output. We only care about return value.
-        $return = $this->query("SELECT 1;", null, drush_bit_bucket());
-        drush_set_context('DRUSH_SIMULATE', $current);
-        return $return;
+        return $this->alwaysQuery("SELECT 1;", null, drush_bit_bucket());
     }
 
     public function listTables()
     {
-        $current = \Drush\Drush::simulate();
-        drush_set_context('DRUSH_SIMULATE', false);
-        $return = $this->query('SHOW TABLES;');
-        $tables = drush_shell_exec_output();
-        drush_set_context('DRUSH_SIMULATE', $current);
-        return $tables;
+        $this->alwaysQuery('SHOW TABLES;');
+        return drush_shell_exec_output();
     }
 
     public function dumpCmd($table_selection)
@@ -150,10 +144,10 @@ EOT;
         // We had --skip-add-locks here for a while to help people with insufficient permissions,
         // but removed it because it slows down the import a lot.  See http://drupal.org/node/1283978
         $extra = ' --no-autocommit --single-transaction --opt -Q';
-        if (isset($data_only)) {
+        if ($data_only) {
             $extra .= ' --no-create-info';
         }
-        if (isset($ordered_dump)) {
+        if ($ordered_dump) {
             $extra .= ' --skip-extended-insert --order-by-primary';
         }
         if ($option = $this->getOption('extra-dump', $this->queryExtra)) {

@@ -5,6 +5,10 @@ use Consolidation\Config\Loader\ConfigLoaderInterface;
 use Consolidation\Config\Loader\YamlConfigLoader;
 use Consolidation\Config\Loader\ConfigProcessor;
 use Consolidation\Config\Util\ConfigOverlay;
+use Consolidation\Config\Util\EnvConfig;
+
+use Drush\Preflight\PreflightArgsInterface;
+use Symfony\Component\Finder\Finder;
 
 /**
  * Locate Drush configuration files and load them into the configuration
@@ -38,6 +42,10 @@ class ConfigLocator
 
     protected $siteRoots = [];
 
+    protected $composerRoot;
+
+    protected $configFilePaths = [];
+
     /*
      * From context.inc:
      *
@@ -64,7 +72,7 @@ class ConfigLocator
      */
 
     // 'process' context is provided by ConfigOverlay
-    const ENVIRONMENT_CONTEXT = 'environment'; // new context
+    const ENVIRONMENT_CONTEXT = 'environment'; // This is more of a 'runtime' context
     const PREFLIGHT_CONTEXT = 'cli';
     // 'stdin' context not implemented
     // 'specific' context obsolete; command-specific options handled differently by annotated command library
@@ -75,16 +83,25 @@ class ConfigLocator
     const USER_CONTEXT = 'user';
     // home.drush is obsolete (loaded in USER_CONTEXT)
     // system context is obsolect (loaded in USER_CONTEXT - note priority change)
+    const ENV_CONTEXT = 'env';
     const DRUSH_CONTEXT = 'drush';
+
     // 'default' context is provided by ConfigOverlay
 
-    public function __construct()
+    /**
+     * ConfigLocator constructor
+     */
+    public function __construct($envPrefix = '')
     {
         $this->config = new ConfigOverlay();
 
         // Add placeholders to establish priority. We add
         // contexts from lowest to highest priority.
         $this->config->addPlaceholder(self::DRUSH_CONTEXT);
+        if (!empty($envPrefix)) {
+            $envConfig = new EnvConfig($envPrefix);
+            $this->config->addContext(self::ENV_CONTEXT, $envConfig);
+        }
         $this->config->addPlaceholder(self::USER_CONTEXT);
         $this->config->addPlaceholder(self::DRUPAL_CONTEXT);
         $this->config->addPlaceholder(self::SITE_CONTEXT); // not implemented yet (multisite)
@@ -93,29 +110,62 @@ class ConfigLocator
         $this->config->addPlaceholder(self::ENVIRONMENT_CONTEXT);
 
         $this->isLocal = false;
+
+        $this->configFilePaths = [];
     }
 
     /**
      * Put the config locator into 'local 'mode.
+     *
+     * @param bool $isLocal
      */
     public function setLocal($isLocal)
     {
         $this->isLocal = $isLocal;
     }
 
-    // TODO: Not sure I need to manage the sources on a per-config-item basis
-    // any longer. However, I still need to track the configuration files that
-    // were loaded, so that these can be shown in `drush status`.
+    /**
+     * Keep track of the source that every config item originally came from.
+     * Potentially useful in debugging.  If collectSources(true) is called,
+     * then the sources will be accumulated as config files are loaded. Otherwise,
+     * this information will not be saved.
+     *
+     * @param bool $collect
+     * @return $this
+     */
     public function collectSources($collect = true)
     {
         $this->sources = $collect ? [] : false;
+        return $this;
     }
 
+    /**
+     * Return all of the sources for every configuration item. The key
+     * is the address of the configuration item, and the value is the
+     * configuration file it was loaded from. Note that this method will
+     * return just an empty array unless collectSources(true) is called
+     * prior to loading configuration files.
+     *
+     * @return array
+     */
     public function sources()
     {
         return $this->sources;
     }
 
+    /**
+     * Return a list of all configuration files that were loaded.
+     *
+     * @return string[]
+     */
+    public function configFilePaths()
+    {
+        return $this->configFilePaths;
+    }
+
+    /**
+     * Accumulate the sources provided by the configuration loader.
+     */
     protected function addToSources(array $sources)
     {
         if (!is_array($this->sources)) {
@@ -127,23 +177,46 @@ class ConfigLocator
     /**
      * Return the configuration object. Create it and load it with
      * all identified configuration if necessary.
+     *
+     * @return Config
      */
     public function config()
     {
         return $this->config;
     }
 
+    /**
+     * Exports all of the information stored in the environment, and adds
+     * it to the configuration.  The Environment object itself is only
+     * available during preflight; the information exported here may be
+     * obtained by commands et. al. as needed. @see Environment::exportConfigData()
+     *
+     * @param Environment $environent
+     * @return $this
+     */
     public function addEnvironment(Environment $environment)
     {
         $this->config->getContext(self::ENVIRONMENT_CONTEXT)->import($environment->exportConfigData());
+        return $this;
     }
 
+    /**
+     * Unused. See PreflightArgs::applyToConfig() instead.
+     *
+     * @param array $preflightConfig
+     * @return $this
+     */
     public function addPreflightConfig($preflightConfig)
     {
         $this->config->addContext(self::PREFLIGHT_CONTEXT, $preflightConfig);
         return $this;
     }
 
+    /**
+     * Take any configuration from the active alias record, and add it
+     * to our configuratino.
+     * @return $this
+     */
     public function addAliasConfig($aliasConfig)
     {
         $this->config->addContext(self::ALIAS_CONTEXT, $aliasConfig);
@@ -156,10 +229,11 @@ class ConfigLocator
      * add all of the user configuration paths.
      *
      * In 'local' mode, only the --config location is used.
+     * @return $this
      */
-    public function addUserConfig($configPath, $systemConfigPath, $userConfigDir)
+    public function addUserConfig($configPaths, $systemConfigPath, $userConfigDir)
     {
-        $paths = [ $configPath ];
+        $paths = $configPaths;
         if (!$this->isLocal) {
             $paths = array_merge($paths, [ $systemConfigPath, $userConfigDir ]);
         }
@@ -167,6 +241,12 @@ class ConfigLocator
         return $this;
     }
 
+    /**
+     * Add the Drush project directory as a configuration search location.
+     *
+     * @param $drushProjectDir path to the drush project directory
+     * @return $this
+     */
     public function addDrushConfig($drushProjectDir)
     {
         if (!$this->isLocal) {
@@ -175,6 +255,13 @@ class ConfigLocator
         return $this;
     }
 
+    /**
+     * Add any configuration files found around the Drupal root of the
+     * selected site.
+     *
+     * @param Path to the selected Drupal site
+     * @return $this
+     */
     public function addSitewideConfig($siteRoot)
     {
         // There might not be a site.
@@ -195,6 +282,15 @@ class ConfigLocator
         return $this;
     }
 
+    /**
+     * Add any configruation file found at any of the provided paths. Both the
+     * provided location, and the directory `config` inside each provided location
+     * is searched for a drush.yml file.
+     *
+     * @param string $contextName Which context to put all configuration files in.
+     * @param string[] $paths List of paths to search for configuration.
+     * @return $this
+     */
     public function addConfigPaths($contextName, $paths)
     {
         $loader = new YamlConfigLoader();
@@ -203,40 +299,64 @@ class ConfigLocator
             'config/drush.yml',
         ];
 
+        // Make all of the config values parsed so far available in evaluations
+        $reference = $this->config()->export();
+
         $processor = new ConfigProcessor();
         $context = $this->config->getContext($contextName);
         $processor->add($context->export());
         $this->addConfigCandidates($processor, $loader, $paths, $candidates);
         $this->addToSources($processor->sources());
-        $context->import($processor->export());
+        $context->import($processor->export($reference));
         $this->config->addContext($contextName, $context);
 
         return $this;
     }
 
+    /**
+     * Worker function for addConfigPaths
+     *
+     * @param ConfigProcessor $processor
+     * @param ConfigLoaderInterface $loader
+     * @param string[] $paths
+     * @param string[] $candidates
+     */
     protected function addConfigCandidates(ConfigProcessor $processor, ConfigLoaderInterface $loader, $paths, $candidates)
     {
-        $configFiles = $this->locateConfigs($paths, $candidates);
-        if (empty($configFiles)) {
-            return;
-        }
-
-        // TODO: store `$configFiles` and make them available to `drush status`
+        $configFiles = $this->identifyCandidates($paths, $candidates);
         foreach ($configFiles as $configFile) {
             $processor->extend($loader->load($configFile));
+            $this->configFilePaths[] = $configFile;
         }
     }
 
-    protected function locateConfigs($paths, $candidates)
+    /**
+     * Given a list of paths, and candidates that might exist at each path,
+     * return all of the candidates that can be found. Candidates may be
+     * either directories or files.
+     *
+     * @param string[] $paths
+     * @param string[] $candidates
+     * @return string[] paths
+     */
+    protected function identifyCandidates($paths, $candidates)
     {
         $configFiles = [];
         foreach ($paths as $path) {
-            $configFiles = array_merge($configFiles, $this->locateConfig($path, $candidates));
+            $configFiles = array_merge($configFiles, $this->identifyCandidatesAtPath($path, $candidates));
         }
         return $configFiles;
     }
 
-    protected function locateConfig($path, $candidates)
+    /**
+     * Search for all matching candidate locations at a single path.
+     * Candidate locations may be either directories or files.
+     *
+     * @param string $path
+     * @param string[] $candidates
+     * @return string[]
+     */
+    protected function identifyCandidatesAtPath($path, $candidates)
     {
         if (!is_dir($path)) {
             return [];
@@ -244,11 +364,119 @@ class ConfigLocator
 
         $result = [];
         foreach ($candidates as $candidate) {
-            $configFile = "$path/$candidate";
+            $configFile = empty($candidate) ? $path : "$path/$candidate";
             if (file_exists($configFile)) {
                 $result[] = $configFile;
             }
         }
         return $result;
+    }
+
+    /**
+     * Get the site aliases according to preflight arguments and environment.
+     *
+     * @param $preflightArgs
+     * @param Environment $environment
+     *
+     * @return array
+     */
+    public function getSiteAliasPaths($paths, Environment $environment)
+    {
+        // In addition to the paths passed in to us (from --alias-paths
+        // commandline options), add some site-local locations.
+        foreach ($this->siteRoots as $siteRoot) {
+            $paths[] = $siteRoot . '/drush';
+        }
+        $paths[] = $this->composerRoot . '/drush';
+        $candidates = [ '', 'site-aliases' ];
+        $paths = $this->identifyCandidates($paths, $candidates);
+
+        return $paths;
+    }
+
+    /**
+     * Get the commandfile paths according to preflight arguments.
+     *
+     * @param $preflightArgs
+     *
+     * @return array
+     */
+    public function getCommandFilePaths($commandPaths, $root)
+    {
+        $builtin = $this->getBuiltinCommandFilePaths();
+        $included = $this->getIncludedCommandFilePaths($commandPaths);
+        $site = $this->getSiteCommandFilePaths(["$root/drush", dirname($root) . '/drush']);
+
+        return array_merge(
+            $builtin,
+            $included,
+            $site
+        );
+    }
+
+    /**
+     * Return all of the built-in commandfile locations
+     */
+    protected function getBuiltinCommandFilePaths()
+    {
+        return [
+            dirname(__DIR__),
+        ];
+    }
+
+    /**
+     * Return all of the commandfile locations specified via
+     * an 'include' option.
+     */
+    protected function getIncludedCommandFilePaths($commandPaths)
+    {
+        $searchpath = [];
+        // Commands specified by 'include' option
+        foreach ($commandPaths as $commandPath) {
+            if (is_dir($commandPath)) {
+                $searchpath[] = $commandPath;
+            }
+        }
+        return $searchpath;
+    }
+
+    /**
+     * Return all of the commandfile paths in any '$root/drush' or
+     * 'dirname($root)/drush' directory that contains a composer.json
+     * file or a 'Commands' or 'src/Commands' directory.
+     */
+    protected function getSiteCommandFilePaths($directories)
+    {
+        $result = [];
+
+        $directories = array_filter($directories, 'is_dir');
+
+        if (empty($directories)) {
+            return $result;
+        }
+
+        // Find projects
+        $finder = new Finder();
+        $finder->files()
+            ->ignoreUnreadableDirs()
+            ->path('#composer.json$|^src/Commands|^Commands#')
+            ->in($directories)
+            ->depth('<= 3');
+
+        foreach ($finder as $file) {
+            $result[] = dirname($file->getRealPath());
+        }
+
+        return $result;
+    }
+
+    /**
+     * Sets the composer root.
+     *
+     * @param $selectedComposerRoot
+     */
+    public function setComposerRoot($selectedComposerRoot)
+    {
+        $this->composerRoot = $selectedComposerRoot;
     }
 }

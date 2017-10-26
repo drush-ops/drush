@@ -40,88 +40,6 @@ define('DRUSH_APPLICATION_ERROR', 255);
  */
 define('DRUSH_KILOBYTE', 1024);
 
-/**
- * Default amount of time, in seconds, to cache downloads via
- * drush_download_file(). One day is 86400 seconds.
- */
-define('DRUSH_CACHE_LIFETIME_DEFAULT', 86400);
-
-/**
- * Include a file, selecting a version specific file if available.
- *
- * For example, if you pass the path "/var/drush" and the name
- * "update" when bootstrapped on a Drupal 8 site it will first check for
- * the presence of "/var/drush/update_8.inc" in include it if exists. If this
- * file does NOT exist it will proceed and check for "/var/drush/update.inc".
- * If neither file exists, it will return FALSE.
- *
- * @param $path
- *   The path you want to search.
- * @param $name
- *   The file base name you want to include (not including a version suffix
- *   or extension).
- * @param $version
- *   The version suffix you want to include (could be specific to the software
- *   or platform your are connecting to) - defaults to the current Drupal core
- *   major version.
- * @param $extension
- *   The extension - defaults to ".inc".
- *
- * @return
- *   TRUE if the file was found and included.
- */
-function drush_include($path, $name, $version = NULL, $extension = 'inc') {
-  $name = str_replace('-', '_', $name);
-  $version = ($version) ? $version : drush_drupal_major_version();
-
-  $file = sprintf("%s/%s_%s.%s", $path, $name, $version, $extension);
-  if (file_exists($file)) {
-    include_once($file);
-    return TRUE;
-  }
-  $file = sprintf("%s/%s.%s", $path, $name, $extension);
-  if (file_exists($file)) {
-    include_once($file);
-    return TRUE;
-  }
-
-  return drush_set_error('DRUSH_INCLUDE_NO_PATH', dt('Unable to include file !name!version!extension or !name!extension from !path.', array('!name' => $name, '!version' => $version, '!extension' => $extension)));
-}
-
-/**
- * Provide a version-specific class instance.
- *
- * @param $class_name
- *   The name of the class to instantiate.  Appends the Drupal
- *   major version number to the end of the class name before instantiation.
- * @param $constructor_args
- *   An array of arguments to pass to the class constructor.
- *
- * Example wrapper class to instantiate a widget, called with the
- * arguments for the WIDGET_CLASS constructor:
- *
- *  function drush_WIDGET_CLASS_get_class($widgetName, $widgetStyle) {
- *    retrun drush_get_class('Widget_Class', func_get_args()));
- *  }
- */
-
-function drush_get_class($class_name, $constructor_args = array(), $variations = array()) {
-  if (empty($variations)) {
-    $variations[] = drush_drupal_major_version();
-  }
-  $class_names = is_array($class_name) ? $class_name : array($class_name);
-  foreach ($class_names as $class_name) {
-    for ($i=count($variations); $i >= 0; $i--) {
-      $variant_class_name = $class_name . implode('', array_slice($variations, 0, $i));
-      if (class_exists($variant_class_name)) {
-        $reflectionClass = new ReflectionClass($variant_class_name);
-        return !empty($constructor_args) ? $reflectionClass->newInstanceArgs($constructor_args) : $reflectionClass->newInstanceArgs();
-      }
-    }
-  }
-  // Something bad happenned. TODO Exception?
-  return drush_set_error('DRUSH_GET_CLASS_ERROR', dt('Unable to load class !class', array('!class' => $class_name)));
-}
 
 /**
  * Convert a csv string, or an array of items which
@@ -619,6 +537,9 @@ function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE, $t
  *   a -v or --verbose flag, use type 'ok' or 'notice', this prints log messages out to
  *   STDERR, which prints to screen (unless you have redirected it). All other
  *   types of messages will be assumed to be info.
+ *
+ * @deprecated
+ *   Use this->logger()->warning (for example) from an Annotated command method.
  */
 function drush_log($message, $type = LogLevel::INFO, $error = null) {
   $entry = array(
@@ -728,40 +649,6 @@ function drush_get_log() {
  */
 function dlm($object) {
   drush_log(print_r($object, TRUE));
-}
-
-// Print all timers for the request.
-function drush_print_timers() {
-  global $timers;
-  $temparray = array();
-  foreach ((array)$timers as $name => $timerec) {
-    // We have to use timer_read() for active timers, and check the record for others
-    if (isset($timerec['start'])) {
-      $temparray[$name] = timer_read($name);
-    }
-    else {
-      $temparray[$name] = $timerec['time'];
-    }
-  }
-  // Go no farther if there were no timers
-  if (count($temparray) > 0) {
-    // Put the highest cumulative times first
-    arsort($temparray);
-    $table = array();
-    $table[] = array('Timer', 'Cum (sec)', 'Count', 'Avg (msec)');
-    foreach ($temparray as $name => $time) {
-      $cum = round($time/1000, 3);
-      $count = $timers[$name]['count'];
-      if ($count > 0) {
-        $avg = round($time/$count, 3);
-      }
-      else {
-        $avg = 'N/A';
-      }
-      $table[] = array($name, $cum, $count, $avg);
-    }
-    drush_print_table($table, TRUE, array(), STDERR);
-  }
 }
 
 /**
@@ -948,20 +835,6 @@ function drush_clear_error() {
 }
 
 /**
- * Exit due to user declining a confirmation prompt.
- *
- * Usage:  return drush_user_abort();
- *
- * @deprecated
- */
-function drush_user_abort($msg = NULL) {
-  drush_set_context('DRUSH_USER_ABORT', TRUE);
-  drush_set_context('DRUSH_EXIT_CODE', DRUSH_EXITCODE_USER_ABORT);
-  drush_log($msg ? $msg : dt('Cancelled.'), LogLevel::CANCEL);
-  return FALSE;
-}
-
-/**
  * Turn PHP error handling off.
  *
  * This is commonly used while bootstrapping Drupal for install
@@ -1013,16 +886,17 @@ function drush_errors_on($errors = null) {
 function drush_memory_limit() {
   $value = trim(ini_get('memory_limit'));
   $last = strtolower($value[strlen($value)-1]);
+  $size = (int) substr($value, 0, -1);
   switch ($last) {
     case 'g':
-      $value *= DRUSH_KILOBYTE;
+      $size *= DRUSH_KILOBYTE;
     case 'm':
-      $value *= DRUSH_KILOBYTE;
+      $size *= DRUSH_KILOBYTE;
     case 'k':
-      $value *= DRUSH_KILOBYTE;
+      $size *= DRUSH_KILOBYTE;
   }
 
-  return $value;
+  return $size;
 }
 
 /**
@@ -1140,7 +1014,7 @@ function drush_value_format($value, $format) {
       break;
 
     case 'json':
-      $value = drush_json_decode($value);
+      $value = json_decode($value, true);
       break;
 
     case 'yaml':

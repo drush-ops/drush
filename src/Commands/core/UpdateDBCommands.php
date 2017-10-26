@@ -17,26 +17,42 @@ class UpdateDBCommands extends DrushCommands
      * Apply any database updates required (as with running update.php).
      *
      * @command updatedb
-     * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
-     * @option entity-updates Run automatic entity schema updates at the end of any update hooks. Defaults to disabled.
-     * @bootstrap site
+     * @option cache-clear Clear caches upon completion.
+     * @option entity-updates Run automatic entity schema updates at the end of any update hooks.
+     * @option post-updates Run post updates after hook_update_n and entity updates.
+     * @bootstrap full
      * @aliases updb
      */
-    public function updatedb($options = ['cache-clear' => true, 'entity-updates' => false])
+    public function updatedb($options = ['cache-clear' => true, 'entity-updates' => true, 'post-updates' => true])
     {
         $this->cache_clear = $options['cache-clear'];
+        require_once DRUPAL_ROOT . '/core/includes/install.inc';
+        require_once DRUPAL_ROOT . '/core/includes/update.inc';
+        drupal_load_updates();
 
-        if (Drush::simulate()) {
-            throw new \Exception('updatedb command does not support --simulate option.');
+        // Disables extensions that have a lower Drupal core major version, or too high of a PHP requirement.
+        // Those are rare, and this function does a full rebuild. So commenting it out for now.
+        // update_fix_compatibility();
+
+        // Check requirements before updating.
+        if (!$this->updateCheckRequirements()) {
+            return;
         }
 
-        $result = $this->updateMain($options);
-        if ($result === false) {
-            throw new \Exception('Database updates not complete.');
-        } elseif ($result > 0) {
-            // Clear all caches in a new process. We just performed major surgery.
-            drush_drupal_cache_clear_all();
-
+        $return = drush_invoke_process('@self', 'updatedb:status', [], ['entity-updates' => $options['entity-updates'], 'post-updates' => $options['post-updates']]);
+        if ($return['error_status']) {
+            throw new \Exception('Failed getting update status.');
+        } elseif (empty($return['object'])) {
+            // Do nothing. updatedb:status already logged a message.
+        } else {
+            if (!$this->io()->confirm(dt('Do you wish to run the specified pending updates?'))) {
+                throw new UserAbortException();
+            }
+            if (!Drush::simulate()) {
+                $this->updateBatch($options);
+                // Clear all caches in a new process. We just performed major surgery.
+                drush_drupal_cache_clear_all();
+            }
             $this->logger()->success(dt('Finished performing updates.'));
         }
     }
@@ -47,7 +63,7 @@ class UpdateDBCommands extends DrushCommands
      * @command entity:updates
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @bootstrap full
-     * @aliases entup
+     * @aliases entup,entity-updates
      *
      */
     public function entityUpdates($options = ['cache-clear' => true])
@@ -69,24 +85,25 @@ class UpdateDBCommands extends DrushCommands
      * List any pending database updates.
      *
      * @command updatedb:status
-     * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
-     * @option entity-updates Run automatic entity schema updates at the end of any update hooks. Defaults to --no-entity-updates.
+     * @option entity-updates Show entity schema updates.
+     * @option post-updates Show post updates.
      * @bootstrap full
-     * @aliases updbst
+     * @aliases updbst,updatedb-status
      * @field-labels
      *   module: Module
      *   update_id: Update ID
      *   description: Description
-     * @default-fields module,update_id,description
+     *   type: Type
+     * @default-fields module,update_id,type,description
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function updatedbStatus($options = ['format'=> 'table'])
+    public function updatedbStatus($options = ['format'=> 'table', 'entity-updates' => true, 'post-updates' => true])
     {
         require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
         drupal_load_updates();
-        list($pending, $start) = $this->getUpdatedbStatus();
+        list($pending, $start) = $this->getUpdatedbStatus($options);
         if (empty($pending)) {
-            $this->logger()->success(dt("No database updates required"));
+            $this->logger()->success(dt("No database updates required."));
         } else {
             return new RowsOfFields($pending);
         }
@@ -175,71 +192,6 @@ class UpdateDBCommands extends DrushCommands
         $context['message'] = 'Performing ' . $function;
     }
 
-    public function updateMain($options)
-    {
-        // In D8, we expect to be in full bootstrap.
-        drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUPAL_FULL);
-
-        require_once DRUPAL_ROOT . '/core/includes/install.inc';
-        require_once DRUPAL_ROOT . '/core/includes/update.inc';
-        drupal_load_updates();
-        update_fix_compatibility();
-
-        // Pending hook_update_N() implementations.
-        $pending = update_get_update_list();
-
-        // Pending hook_post_update_X() implementations.
-        $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateInformation();
-
-        $start = array();
-
-        $change_summary = [];
-        if ($options['entity-updates']) {
-            $change_summary = \Drupal::entityDefinitionUpdateManager()->getChangeSummary();
-        }
-
-        // Print a list of pending updates for this module and get confirmation.
-        if (count($pending) || count($change_summary) || count($post_updates)) {
-            $this->output()->writeln(dt('The following updates are pending:'));
-            $this->io()->newLine();
-
-            foreach ($change_summary as $entity_type_id => $changes) {
-                $this->output()->writeln($entity_type_id . ' entity type : ');
-                foreach ($changes as $change) {
-                    $this->output()->writeln(strip_tags($change), 2);
-                }
-            }
-
-            foreach (array('update', 'post_update') as $update_type) {
-                $updates = $update_type == 'update' ? $pending : $post_updates;
-                foreach ($updates as $module => $updates) {
-                    if (isset($updates['start'])) {
-                        $this->output()->writeln($module . ' module : ');
-                        if (!empty($updates['pending'])) {
-                            $start += [$module => array()];
-
-                            $start[$module] = array_merge($start[$module], $updates['pending']);
-                            foreach ($updates['pending'] as $update) {
-                                $this->output()->writeln(strip_tags($update));
-                            }
-                        }
-                        $this->io()->newLine();
-                    }
-                }
-            }
-
-            if (!$this->io()->confirm(dt('Do you wish to run all pending updates?'))) {
-                throw new UserAbortException();
-            }
-
-            $this->updateBatch($options);
-        } else {
-            $this->logger()->success(dt("No database updates required"));
-        }
-
-        return count($pending) + count($change_summary) + count($post_updates);
-    }
-
     /**
      * Start the database update batch process.
      */
@@ -276,16 +228,7 @@ class UpdateDBCommands extends DrushCommands
             }
         }
 
-        // Apply post update hooks.
-        $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateFunctions();
-        if ($post_updates) {
-            $operations[] = [[$this, 'cacheRebuild'], []];
-            foreach ($post_updates as $function) {
-                $operations[] = ['update_invoke_post_update', [$function]];
-            }
-        }
-
-        // Lastly, perform entity definition updates, which will update storage
+        // Perform entity definition updates, which will update storage
         // schema if needed. If module update functions need to work with specific
         // entity schema they should call the entity update service for the specific
         // update themselves.
@@ -293,6 +236,17 @@ class UpdateDBCommands extends DrushCommands
         // @see \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface::applyFieldUpdate()
         if ($options['entity-updates'] &&  \Drupal::entityDefinitionUpdateManager()->needsUpdates()) {
             $operations[] = array([$this, 'updateEntityDefinitions'], array());
+        }
+
+        // Lastly, apply post update hooks if specified.
+        if ($options['post-updates']) {
+            $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateFunctions();
+            if ($post_updates) {
+                $operations[] = [[$this, 'cacheRebuild'], []];
+                foreach ($post_updates as $function) {
+                    $operations[] = ['update_invoke_post_update', [$function]];
+                }
+            }
         }
 
         $batch['operations'] = $operations;
@@ -315,7 +269,7 @@ class UpdateDBCommands extends DrushCommands
     public function updateEntityDefinitions(&$context)
     {
         try {
-            \Drupal::entityDefinitionUpdateManager()->applyUpdates();
+            \Drupal::entityDefinitionUpdateManager()->applyupdates();
         } catch (EntityStorageException $e) {
             watchdog_exception('update', $e);
             $variables = Error::decodeException($e);
@@ -371,7 +325,7 @@ class UpdateDBCommands extends DrushCommands
     {
 
         if (!$this->cache_clear) {
-            drush_log(dt("Skipping cache-clear operation due to --no-cache-clear option."), LogLevel::WARNING);
+            $this->logger()->info(dt("Skipping cache-clear operation due to --no-cache-clear option."));
         } else {
             drupal_flush_all_caches();
         }
@@ -386,9 +340,9 @@ class UpdateDBCommands extends DrushCommands
                         }
 
                         if ($query['success']) {
-                            drush_log(strip_tags($query['query']));
+                            $this->logger()->notice(strip_tags($query['query']));
                         } else {
-                            drush_set_error(dt('Failed: ') . strip_tags($query['query']));
+                            throw new \Exception('Failed: ' . strip_tags($query['query']));
                         }
                     }
                 }
@@ -398,10 +352,10 @@ class UpdateDBCommands extends DrushCommands
 
     /**
      * Return a 2 item array with
-     *  - an array where each item is a 3 item associative array describing a pending update.
+     *  - an array where each item is a 4 item associative array describing a pending update.
      *  - an array listing the first update to run, keyed by module.
      */
-    public function getUpdatedbStatus()
+    public function getUpdatedbStatus(array $options)
     {
         require_once DRUPAL_ROOT . '/core/includes/update.inc';
         $pending = \update_get_update_list();
@@ -410,23 +364,54 @@ class UpdateDBCommands extends DrushCommands
         // Ensure system module's updates run first.
         $start['system'] = array();
 
-        foreach (\Drupal::entityDefinitionUpdateManager()->getChangeSummary() as $entity_type_id => $changes) {
-            foreach ($changes as $change) {
-                $return[] = array(
-                'module' => dt('@type entity type', array('@type' => $entity_type_id)), 'update_id' => '', 'description' => strip_tags($change));
-            }
-        }
-
-        // Print a list of pending updates for this module and get confirmation.
         foreach ($pending as $module => $updates) {
             if (isset($updates['start'])) {
                 foreach ($updates['pending'] as $update_id => $description) {
                     // Strip cruft from front.
                     $description = str_replace($update_id . ' -   ', '', $description);
-                    $return[] = array('module' => ucfirst($module), 'update_id' => $update_id, 'description' => $description);
+                    $return[$module . "_update_$update_id"] = [
+                        'module' => $module,
+                        'update_id' => $update_id,
+                        'description' => $description,
+                        'type'=> 'hook_update_n'
+                    ];
                 }
                 if (isset($updates['start'])) {
                     $start[$module] = $updates['start'];
+                }
+            }
+        }
+
+        // Append row(s) for pending entity definition updates.
+        if ($options['entity-updates']) {
+            foreach (\Drupal::entityDefinitionUpdateManager()
+                         ->getChangeSummary() as $entity_type_id => $changes) {
+                foreach ($changes as $change) {
+                    $return[] = [
+                        'module' => dt('@type entity type', ['@type' => $entity_type_id]),
+                        'update_id' => '',
+                        'description' => strip_tags($change),
+                        'type' => 'entity-update'
+                    ];
+                }
+            }
+        }
+
+        // Pending hook_post_update_X() implementations.
+        $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateInformation();
+        if ($options['post-updates']) {
+            foreach ($post_updates as $module => $post_update) {
+                foreach ($post_update as $key => $list) {
+                    if ($key == 'pending') {
+                        foreach ($list as $id => $item) {
+                            $return[$module . '-post-' . $id] = [
+                                'module' => $module,
+                                'update_id' => $id,
+                                'description' => $item,
+                                'type' => 'post-update'
+                            ];
+                        }
+                    }
                 }
             }
         }
@@ -472,5 +457,36 @@ class UpdateDBCommands extends DrushCommands
         } else {
             $this->logger()->success(dt("No entity schema updates required"));
         }
+    }
+
+    /**
+     * Log messages for any requirements warnings/errors.
+     */
+    public function updateCheckRequirements()
+    {
+        $continue = true;
+
+        \Drupal::moduleHandler()->resetImplementations();
+        $requirements = update_check_requirements();
+        $severity = drupal_requirements_severity($requirements);
+
+        // If there are issues, report them.
+        if ($severity != REQUIREMENT_OK) {
+            if ($severity === REQUIREMENT_ERROR) {
+                $continue = false;
+            }
+            foreach ($requirements as $requirement) {
+                if (isset($requirement['severity']) && $requirement['severity'] != REQUIREMENT_OK) {
+                    $message = isset($requirement['description']) ? $requirement['description'] : '';
+                    if (isset($requirement['value']) && $requirement['value']) {
+                        $message .= ' (Currently using '. $requirement['title'] .' '. $requirement['value'] .')';
+                    }
+                    $log_level = $requirement['severity'] === REQUIREMENT_ERROR ? LogLevel::ERROR : LogLevel::WARNING;
+                    $this->logger()->log($log_level, $message);
+                }
+            }
+        }
+
+        return $continue;
     }
 }

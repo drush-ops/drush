@@ -1,10 +1,13 @@
 <?php
 namespace Drush\Commands\core;
 
+use Robo\Contract\ConfigAwareInterface;
+use Robo\Common\ConfigAwareTrait;
 use Drush\Commands\DrushCommands;
 
-class PhpCommands extends DrushCommands
+class PhpCommands extends DrushCommands implements ConfigAwareInterface
 {
+    use ConfigAwareTrait;
 
     /**
      * Evaluate arbitrary php code after bootstrapping Drupal (if available).
@@ -46,9 +49,8 @@ class PhpCommands extends DrushCommands
      *  Run foo.php script with argument 'apple' and option 'cider'. Note the -- separator.
      * @aliases scr,php-script
      * @bootstrap max
-     * @topics docs:examplescript,docs:scripts
      */
-    public function script(array $extra, $options = ['format' => 'var_export', 'script-path' => ''])
+    public function script(array $extra, $options = ['format' => 'var_export', 'script-path' => self::REQ])
     {
         $found = false;
         $script = array_shift($extra);
@@ -59,7 +61,7 @@ class PhpCommands extends DrushCommands
             $found = $script;
         } else {
             // Array of paths to search for scripts
-            $searchpath['cwd'] = drush_cwd();
+            $searchpath['cwd'] = $this->getConfig()->get('env.cwd');
 
             // Additional script paths, specified by 'script-path' option
             if ($script_path = $options['script-path']) {

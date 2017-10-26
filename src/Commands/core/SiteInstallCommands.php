@@ -29,7 +29,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * @option db-su Account to use when creating a new database. Must have Grant permission (mysql only). Optional.
      * @option db-su-pw Password for the "db-su" account. Optional.
      * @option account-name uid1 name. Defaults to admin
-     * @option account-pass uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in drushrc.php.
+     * @option account-pass uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in config.yml.
      * @option account-mail uid1 email. Defaults to admin@example.com
      * @option locale A short language code. Sets the default site language. Language files must already be present.
      * @option site-name Defaults to Site-Install
@@ -50,7 +50,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * @aliases si,sin,site-install
      *
      */
-    public function install($profile = '', array $additional, $options = ['db-url' => null, 'db-prefix' => null, 'db-su' => null, 'db-su-pw' => null, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => null, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => null, 'sites-subdir' => null, 'config-dir' => null])
+    public function install($profile = '', array $additional, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ])
     {
         $form_options = [];
         foreach ((array)$additional as $arg) {
@@ -116,7 +116,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         if (is_null($options['notify'])) {
             $msg .= ' Consider using the --notify global option.';
         }
-        $this->logger()->info(dt($msg));
+        $this->logger()->notice(dt($msg));
 
         // Define some functions which alter away the install_finished task.
         require_once Path::join(DRUSH_BASE_PATH, 'includes/site_install.inc');
@@ -265,23 +265,27 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $db_spec = $sql->getDbSpec();
 
         $aliasRecord = $this->siteAliasManager()->getSelf();
+        $root = $aliasRecord->root();
 
-
-        // @todo The function below is inscrutable. Would rather not port it. Please pass --sites-subdir for now.
-        // $sites_subdir = drush_sitealias_local_site_path($aliasRecord->legacyRecord());
-
-        // Override with sites-subdir if specified.
-        if ($dir = $commandData->input()->getOption('sites-subdir')) {
-            $sites_subdir = "sites/$dir";
+        $dir = $commandData->input()->getOption('sites-subdir');
+        if (!$dir) {
+            // We will allow the 'uri' from the site alias to provide
+            // a fallback name when '--sites-subdir' is not specified, but
+            // only if the uri and the folder name match, and only if
+            // the sites directory has already been created.
+            $dir = $this->getSitesSubdirFromUri($root, $aliasRecord->get('uri'));
         }
-        if (empty($sites_subdir)) {
-            throw new \Exception(dt('Could not determine target sites directory for site to install.'));
+
+        if (!$dir) {
+            throw new \Exception(dt('Could not determine target sites directory for site to install. Use --site-subdir to specify.'));
         }
+
+        $sites_subdir = Path::join('sites', $dir);
         $confPath = $sites_subdir;
-        $settingsfile = "$confPath/settings.php";
+        $settingsfile = Path::join($confPath, 'settings.php');
         $sitesfile = "sites/sites.php";
-        $default = realpath($aliasRecord->root() . '/sites/default');
-        $sitesfile_write = $confPath != $default && !file_exists($sitesfile);
+        $default = realpath(Path::join($root, 'sites/default'));
+        $sitesfile_write = realpath($confPath) != $default && !file_exists($sitesfile);
 
         if (!file_exists($settingsfile)) {
             $msg[] = dt('create a @settingsfile file', array('@settingsfile' => $settingsfile));
@@ -330,4 +334,25 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             throw new \Exception(dt('Failed to create database: @error', array('@error' => implode(drush_shell_exec_output()))));
         }
     }
+
+    /**
+     * Determine an appropriate site subdir name to use for the
+     * provided uri.
+     */
+    protected function getSitesSubdirFromUri($root, $uri)
+    {
+        $dir = strtolower($uri);
+        // Always accept simple uris (e.g. 'dev', 'stage', etc.)
+        if (preg_match('#^[a-z0-9_-]*$#', $dir)) {
+            return $dir;
+        }
+        // Strip off the protocol from the provided uri -- however,
+        // now we will require that the sites subdir already exist.
+        $dir = preg_replace('#[^/]*/*#', '', $dir);
+        if (file_exists(Path::join($root, $dir))) {
+            return $dir;
+        }
+        return false;
+    }
 }
+

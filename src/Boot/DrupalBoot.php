@@ -121,138 +121,12 @@ abstract class DrupalBoot extends BaseBoot
         return array(DRUSH_BOOTSTRAP_DRUSH, DRUSH_BOOTSTRAP_DRUPAL_ROOT, DRUSH_BOOTSTRAP_DRUPAL_FULL);
     }
 
-    public function reportCommandError($command)
-    {
-        // If we reach this point, command doesn't fit requirements or we have not
-        // found either a valid or matching command.
-
-        // If no command was found check if it belongs to a disabled module.
-        if (!$command) {
-            $command = $this->drushCommandBelongsToDisabledModule();
-        }
-        parent::reportCommandError($command);
-    }
-
     public function commandDefaults()
     {
         return array(
             'drupal dependencies' => array(),
             'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
         );
-    }
-
-    /**
-     * @return array of strings - paths to directories where contrib
-     * modules can be found
-     */
-    abstract public function contribModulesPaths();
-
-    /**
-     * @return array of strings - paths to directories where contrib
-     * themes can be found
-     */
-    abstract public function contribThemesPaths();
-
-    public function commandfileSearchpaths($phase, $phase_max = false)
-    {
-        if (!$phase_max) {
-            $phase_max = $phase;
-        }
-
-        $container = Drush::getContainer();
-        $discovery = $container->get('commandDiscovery');
-        $commandFiles = [];
-        $searchpath = [];
-        switch ($phase) {
-            case DRUSH_BOOTSTRAP_DRUPAL_ROOT:
-                $drupal_root = Drush::bootstrapManager()->getRoot();
-                $searchpath[] = $drupal_root . '/../drush';
-                $searchpath[] = $drupal_root . '/drush';
-                $searchpath[] = $drupal_root . '/sites/all/drush';
-                $commandFiles = $discovery->discover($searchpath, '\Drupal');
-                break;
-            case DRUSH_BOOTSTRAP_DRUPAL_SITE:
-                // If we are going to stop bootstrapping at the site, then
-                // we will quickly add all commandfiles that we can find for
-                // any extension associated with the site, whether it is enabled
-                // or not.  If we are, however, going to continue on to bootstrap
-                // all the way to DRUSH_BOOTSTRAP_DRUPAL_FULL, then we will
-                // instead wait for that phase, which will more carefully add
-                // only those Drush commandfiles that are associated with
-                // enabled modules.
-                if ($phase_max < DRUSH_BOOTSTRAP_DRUPAL_FULL) {
-                    $searchpath = array_merge($searchpath, $this->contribModulesPaths());
-
-                    // Adding commandfiles located within /profiles. Try to limit to one profile for speed. Note
-                    // that Drupal allows enabling modules from a non-active profile so this logic is kinda dodgy.
-                    $cid = drush_cid_install_profile();
-                    if ($cached = drush_cache_get($cid)) {
-                        $profile = $cached->data;
-                        $searchpath[] = "profiles/$profile/modules";
-                        $searchpath[] = "profiles/$profile/themes";
-                    } else {
-                        // If install_profile is not available, scan all profiles.
-                        $searchpath[] = "profiles";
-                        $searchpath[] = "sites/all/profiles";
-                    }
-
-                    $searchpath = array_merge($searchpath, $this->contribThemesPaths());
-                    // Drupal 8 uses the modules' services files to find commandfiles. Should we allow
-                    // redundant find-module-by-location for Drupal 8?  (Maybe not.)
-                    if (drush_drupal_major_version() < 8) {
-                        $commandFiles = $discovery->discoverNamespaced($searchpath, '\Drupal');
-                    }
-                }
-                break;
-            case DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION:
-                // Nothing to do here anymore. Left for documentation.
-                break;
-            case DRUSH_BOOTSTRAP_DRUPAL_FULL:
-                // Add enabled module paths, excluding the install profile. Since we are bootstrapped,
-                // we can use the Drupal API.
-                $ignored_modules = drush_get_option_list('ignored-modules', array());
-                $modules = array_keys(\Drupal::moduleHandler()->getModuleList());
-                $module_list = array_combine($modules, $modules);
-                $cid = drush_cid_install_profile();
-                if ($cached = drush_cache_get($cid)) {
-                    $ignored_modules[] = $cached->data;
-                }
-                foreach (array_diff($module_list, $ignored_modules) as $module) {
-                    $filepath = drupal_get_path('module', $module);
-                    if ($filepath && $filepath != '/') {
-                        $searchpath[] = $filepath;
-                    }
-                }
-
-                // Check all enabled themes including non-default and non-admin.
-                foreach (\Drupal::service('theme_handler')->listInfo() as $key => $value) {
-                    $searchpath[] = drupal_get_path('theme', $key);
-                }
-                // Drupal 8 uses the modules' services files to find commandfiles. Should we allow
-                // redundant find-module-by-location for Drupal 8?  (Maybe not.)
-                // The operator below was wrong anyway.
-        //        if (drush_drupal_major_version() < 8) {
-        //          $commandFiles = $discovery->discoverNamespaced($searchpath, '\Drupal');
-        //        }
-                break;
-        }
-        // A little inelegant, but will do for now.
-        drush_init_register_command_files($container, $commandFiles);
-
-        return $searchpath;
-    }
-
-    /**
-     * Check if the given command belongs to a disabled module.
-     *
-     * @return array
-     *   Array with a command-like bootstrap error or FALSE if Drupal was not
-     *   bootstrapped fully or the command does not belong to a disabled module.
-     */
-    public function drushCommandBelongsToDisabledModule()
-    {
-        // TODO: How do we find annoated commands in disabled modules?
-        return false;
     }
 
     /**
@@ -269,7 +143,8 @@ abstract class DrupalBoot extends BaseBoot
         if (empty($drupal_root)) {
             return drush_bootstrap_error('DRUSH_NO_DRUPAL_ROOT', dt("A Drupal installation directory could not be found"));
         }
-        if (!$signature = drush_valid_root($drupal_root)) {
+        // TODO: Perhaps $drupal_root is now ALWAYS valid by the time we get here.
+        if (!$this->legacyValidRootCheck($drupal_root)) {
             return drush_bootstrap_error('DRUSH_INVALID_DRUPAL_ROOT', dt("The directory !drupal_root does not contain a valid Drupal installation", array('!drupal_root' => $drupal_root)));
         }
 
@@ -280,9 +155,14 @@ abstract class DrupalBoot extends BaseBoot
         }
 
         drush_bootstrap_value('drupal_root', $drupal_root);
-        define('DRUSH_DRUPAL_SIGNATURE', $signature);
 
         return true;
+    }
+
+    protected function legacyValidRootCheck($root)
+    {
+        $bootstrap_class = Drush::bootstrapManager()->bootstrapObjectForRoot($root);
+        return $bootstrap_class != null;
     }
 
     /**
@@ -330,12 +210,6 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapDrupalSiteValidate()
     {
-        // TODO: uri not injected in traditional Drush dispatcher. This is not needed for Symfony Dispatch.
-        if (!$this->uri) {
-            $this->uri = _drush_bootstrap_selected_uri();
-        }
-        drush_set_context('DRUSH_SELECTED_DRUPAL_SITE_CONF_PATH', drush_conf_path($this->uri));
-
         $this->bootstrapDrupalSiteSetupServerGlobal();
         $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
         $confPath = drush_bootstrap_value('confPath', $this->confPath(true, true));

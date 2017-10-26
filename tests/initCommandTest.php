@@ -17,8 +17,7 @@ class initCommandCase extends CommandUnishTestCase {
     // First test to ensure that the command claimed to have made the expected progress
     $this->assertContains("Copied Drush bash customizations", $logOutput);
     $this->assertContains("Updated bash configuration file", $logOutput);
-    // Next we will test to see if there is evidence that those
-    // operations worked.
+    // Next we test to see if there is evidence that those operations worked.
     $home = getenv("HOME");
     $this->assertFileExists("$home/.drush/drushrc.php");
     $this->assertFileExists("$home/.drush/drush.bashrc");

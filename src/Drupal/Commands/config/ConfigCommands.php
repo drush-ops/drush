@@ -3,8 +3,10 @@ namespace Drush\Drupal\Commands\config;
 
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\FileStorage;
+use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\StorageInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -82,7 +84,7 @@ class ConfigCommands extends DrushCommands
      *   Sets system.site:page.front to "node".
      * @aliases cset,config-set
      */
-    public function set($config_name, $key, $value = null, $options = ['format' => 'string', 'value' => null])
+    public function set($config_name, $key, $value = null, $options = ['format' => 'string', 'value' => self::REQ])
     {
         // This hidden option is a convenient way to pass a value without passing a key.
         $data = $options['value'] ?: $value;
@@ -192,6 +194,149 @@ class ConfigCommands extends DrushCommands
             $config->clear($key)->save();
         } else {
             $config->delete();
+        }
+    }
+
+    /**
+     * Display status of configuration (differences between the filesystem configuration and database configuration).
+     *
+     * @command config:status
+     * @option operation Operation A comma-separated list of operations to filter results.
+     * @option prefix Prefix The config prefix. For example, "system". No prefix will return all names in the system.
+     * @option string $label A config directory label (i.e. a key in \$config_directories array in settings.php).
+     * @usage drush config:status
+     *   Display configuration items that need to be synchronized.
+     * @usage drush config:status --state=Identical
+     *   Display configuration items that are in default state.
+     * @usage drush config:status --state='Only in sync dir' --prefix=node.type.
+     *   Display all content types that would be created in active storage on configuration import.
+     * @usage drush config:status --state=Any --format=list
+     *   List all config names.
+     * @field-labels
+     *   name: Name
+     *   state: State
+     * @default-fields name,state
+     * @aliases cst,config-status
+     * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+     */
+    public function status($options = ['state' => 'Only in DB,Only in sync dir,Different', 'prefix' => self::REQ, 'label' => self::REQ])
+    {
+        $config_list = array_fill_keys(
+            $this->configFactory->listAll($options['prefix']),
+            'Identical'
+        );
+
+        $directory = $this->getDirectory(null, $options['label']);
+        $storage = $this->getStorage($directory);
+        $state_map = [
+            'create' => 'Only in DB',
+            'update' => 'Different',
+            'delete' => 'Only in sync dir',
+        ];
+        foreach ($this->getChanges($storage) as $collection) {
+            foreach ($collection as $operation => $configs) {
+                foreach ($configs as $config) {
+                    if (!$options['prefix'] || strpos($config, $options['prefix']) === 0) {
+                        $config_list[$config] = $state_map[$operation];
+                    }
+                }
+            }
+        }
+
+        if ($options['state']) {
+            $allowed_states = explode(',', $options['state']);
+            if (!in_array('Any', $allowed_states)) {
+                $config_list = array_filter($config_list, function ($state) use ($allowed_states) {
+                     return in_array($state, $allowed_states);
+                });
+            }
+        }
+
+        ksort($config_list);
+
+        $rows = [];
+        $color_map = [
+            'Only in DB' => 'green',
+            'Only in sync dir' => 'red',
+            'Different' => 'yellow',
+            'Identical' => 'white',
+        ];
+
+        foreach ($config_list as $config => $state) {
+            if ($options['format'] == 'table' && $state != 'Identical') {
+                $state = "<fg={$color_map[$state]};options=bold>$state</>";
+            }
+            $rows[$config] = [
+                'name' => $config,
+                'state' => $state,
+            ];
+        }
+
+        if ($rows) {
+            return new RowsOfFields($rows);
+        } else {
+            $this->logger()->notice(dt('No differences between DB and sync directory.'));
+        }
+    }
+
+    /**
+     * Determine which configuration directory to use and return directory path.
+     *
+     * Directory path is determined based on the following precedence:
+     *   1. User-provided $directory.
+     *   2. Directory path corresponding to $label (mapped via $config_directories in settings.php).
+     *   3. Default sync directory
+     *
+     * @param string $label
+     *   A configuration directory label.
+     * @param string $directory
+     *   A configuration directory.
+     */
+    public function getDirectory($label, $directory = null)
+    {
+        // If the user provided a directory, use it.
+        if (!empty($directory)) {
+            if ($directory === true) {
+                // The user did not pass a specific directory, make one.
+                return drush_prepare_backup_dir('config-import-export');
+            } else {
+                // The user has specified a directory.
+                drush_mkdir($directory);
+                return $directory;
+            }
+        }
+        // If a directory isn't specified, use the label argument or default sync directory.
+        return \config_get_config_directory($label ?: CONFIG_SYNC_DIRECTORY);
+    }
+
+    /**
+     * Returns the difference in configuration between active storage and target storage.
+     */
+    public function getChanges($target_storage)
+    {
+        /** @var \Drupal\Core\Config\StorageInterface $active_storage */
+        $active_storage = \Drupal::service('config.storage');
+
+        $config_comparer = new StorageComparer($active_storage, $target_storage, \Drupal::service('config.manager'));
+
+        $change_list = array();
+        if ($config_comparer->createChangelist()->hasChanges()) {
+            foreach ($config_comparer->getAllCollectionNames() as $collection) {
+                $change_list[$collection] = $config_comparer->getChangelist(null, $collection);
+            }
+        }
+        return $change_list;
+    }
+
+    /**
+     * Get storage corresponding to a configuration directory.
+     */
+    public function getStorage($directory)
+    {
+        if ($directory == \config_get_config_directory(CONFIG_SYNC_DIRECTORY)) {
+            return \Drupal::service('config.storage.sync');
+        } else {
+            return new FileStorage($directory);
         }
     }
 

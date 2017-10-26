@@ -42,11 +42,25 @@ class DrushCommandFile extends BaseGenerator
     protected function adjustCommands($commands)
     {
         foreach ($commands as $name => &$command) {
+            // Drush9 uses colons in command names.
+            $command['name'] = str_replace('-', ':', $name);
+            if ($command['name'] !== $name) {
+                $command['aliases'][] = $name;
+            }
+
             $command['method'] = $name;
             if (($pos = strpos($name, '-')) !== false) {
                 $command['method'] = substr($name, $pos + 1);
             }
             $command['method'] = Utils::camelize(str_replace('-', '_', $command['method']), false);
+            if ($command['arguments']) {
+                foreach ($command['arguments'] as $aName => $description) {
+                    // Prepend name with a '$' and replace dashes.
+                    $command['arguments']['$' . Utils::camelize(str_replace('-', '_', $aName))] = $description;
+                    unset($command['arguments'][$aName]);
+                }
+                $command['argumentsConcat'] = implode(', ', array_keys($command['arguments']));
+            }
             if ($command['options']) {
                 foreach ($command['options'] as $oName => &$option) {
                     // We only care about option description so make value a simple string.
@@ -55,18 +69,14 @@ class DrushCommandFile extends BaseGenerator
                     }
                     $oNames[] = "'$oName' => null";
                 }
-                $command['optionsConcat'] = '$options = [' . implode(', ', $oNames) . ']';
+                $command['optionsConcat'] = 'array $options = [' . implode(', ', $oNames) . ']';
+                if (!empty($command['arguments'])) {
+                    $command['optionsConcat'] = ', ' . $command['optionsConcat'];
+                }
                 unset($oNames);
             }
-            if ($command['arguments']) {
-                foreach ($command['arguments'] as $aName => $description) {
-                    // Prepend name with a '$' and replace dashes.
-                    $command['arguments']['$' . Utils::camelize(str_replace('-', '_', $aName))] = $description;
-                    unset($command['arguments'][$aName]);
-                }
-                if ($concat = implode(', ', array_keys($command['arguments']))) {
-                    $command['argumentsConcat'] = $concat . ', ';
-                }
+            if ($deps = $command['drupal dependencies']) {
+                $command['depsConcat'] = implode(',', $deps);
             }
         }
         return $commands;

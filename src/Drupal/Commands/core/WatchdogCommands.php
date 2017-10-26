@@ -47,7 +47,7 @@ class WatchdogCommands extends DrushCommands
      * @default-fields wid,date,type,severity,message
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => null, 'type' => null, 'extended' => false])
+    public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'type' => self::REQ, 'extended' => false])
     {
         $where = $this->where($options['type'], $options['severity'], $substring);
         $query = Database::getConnection()->select('watchdog', 'w')
@@ -63,7 +63,7 @@ class WatchdogCommands extends DrushCommands
             $table[$row->wid] = (array)$row;
         }
         if (empty($table)) {
-            $this->logger()->info(dt('No log messages available.'));
+            $this->logger()->notice(dt('No log messages available.'));
         } else {
             return new RowsOfFields($table);
         }
@@ -77,9 +77,12 @@ class WatchdogCommands extends DrushCommands
      * @param $substring A substring to look search in error messages.
      * @option count The number of messages to show. Defaults to 10.
      * @option extended Return extended information about each message.
+     * @option severity Restrict to messages of a given severity level.
+     * @option type Restrict to messages of a given type.
      * @usage  drush watchdog-list
      *   Prompt for message type or severity, then run watchdog-show.
      * @aliases wd-list,watchdog-list
+     * @hidden-options type,severity
      * @validate-module-enabled dblog
      * @field-labels
      *   wid: ID
@@ -146,7 +149,7 @@ class WatchdogCommands extends DrushCommands
      * @validate-module-enabled dblog
      * @return void
      */
-    public function delete($substring = '', $options = ['severity' => null, 'type' => null])
+    public function delete($substring = '', $options = ['severity' => self::REQ, 'type' => self::REQ])
     {
         if ($substring == 'all') {
             $this->output()->writeln(dt('All watchdog messages will be deleted.'));
@@ -185,7 +188,7 @@ class WatchdogCommands extends DrushCommands
     /**
      * Show one log record by ID.
      *
-     * @command watchdog:show:one
+     * @command watchdog:show-one
      * @param $id Watchdog Id
      * @drupal-dependencies dblog
      * @aliases wd-one,watchdog-show-one
@@ -273,7 +276,7 @@ class WatchdogCommands extends DrushCommands
      * @return
      *   Array. The result object with some attributes themed.
      */
-    public function formatResult($result, $extended = false)
+    protected function formatResult($result, $extended = false)
     {
         // Severity.
         $severities = RfcLogLevel::getLevels();

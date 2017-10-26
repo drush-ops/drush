@@ -17,6 +17,44 @@ namespace Unish;
  */
 class sqlSyncTest extends CommandUnishTestCase {
 
+  public function testSimulatedSqlSync() {
+    $fixtureSites = [
+      'remote' => [
+        'host' => 'server.isp.simulated',
+        'user' => 'www-admin',
+        'ssh' => [
+          'options' => '-o PasswordAuthentication=whatever'
+        ],
+        'paths' => [
+          'drush-script' => '/path/to/drush',
+        ],
+      ],
+      'local' => [
+      ],
+    ];
+    $this->setUpSettings($fixtureSites, 'synctest');
+    $options = [
+      'simulate' => NULL,
+      'alias-path' => __DIR__ . '/resources/alias-fixtures',
+    ];
+
+    // Test simulated simple rsync with two local sites
+    $this->drush('sql:sync', ['@synctest.remote', '@synctest.local'], $options, '@synctest.local', NULL, self::EXIT_SUCCESS, '2>&1');
+    $output = $this->getSimplifiedOutput();
+    $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=whatever www-admin@server.isp.simulated '/path/to/drush --backend=2 --strict=0 --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush --root=__SUT__/web --uri=remote sql-dump --no-ansi --gzip --result-file", $output);
+    $this->assertContains("Simulating backend invoke: __SUT__/vendor/drush/drush/drush --backend=2 --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush --root=__SUT__/web --uri=local core-rsync '@synctest.remote:/simulated/path/to/dump.tgz' '@synctest.local:__SANDBOX__/drush-tmp/dump.tgz' -- --remove-source-files", $output);
+    $this->assertContains("Simulating backend invoke: __SUT__/vendor/drush/drush/drush --backend=2 --strict=0 --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush --root=__SUT__/web --uri=local sql-query --no-ansi --file=__SANDBOX__/drush-tmp/dump.tgz --file-delete", $output);
+
+    // Test simulated backend invoke.
+    // Note that command-specific options are not processed for remote
+    // targets. The aliases are not interpreted at all until they recach
+    // the remote side, at which point they will be evaluated & any needed
+    // injection will be done.
+    $this->drush('sql:sync', ['@synctest.remote', '@synctest.local'], $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
+    $output = $this->getSimplifiedOutput();
+    $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush --root=/path/to/drupal --uri=sitename --no-ansi sql:sync '\''@synctest.remote'\'' '\''@synctest.local'\''", $output);
+  }
+
   /**
    * Covers the following responsibilities.
    *   - A user created on the source site is copied to the destination site.
@@ -63,22 +101,17 @@ class sqlSyncTest extends CommandUnishTestCase {
       // Test wildcards expansion from within sql-sync. Also avoid D8 persistent entity cache.
       'structure-tables-list' => 'cache,cache*',
     );
-    $this->drush('sql-sync', array('@stage', '@dev'), $sync_options);
-    $this->drush('sql-sanitize', [], ['yes' => NULL], '@dev');
+    $this->drush('sql-sync', array('@unish.stage', '@unish.dev'), $sync_options);
+    $this->drush('sql-sanitize', [], ['yes' => NULL], '@unish.dev');
 
     // Confirm that the sample user is unchanged on the staging site
-    $this->drush('user-information', array($name), $options + ['format' => 'json'], '@stage');
+    $this->drush('user-information', array($name), $options + ['format' => 'json'], '@unish.stage');
     $info = $this->getOutputFromJSON(2);
     $this->assertEquals($mail, $info->mail, 'Email address is unchanged on source site.');
     $this->assertEquals($name, $info->name);
 
-    $options = array(
-      'root' => $this->webroot(),
-      'uri' => 'dev',
-      'yes' => NULL,
-    );
     // Confirm that the sample user's email address has been sanitized on the dev site
-    $this->drush('user-information', array($name), $options + ['format' => 'json']);
+    $this->drush('user-information', array($name), $options + ['format' => 'json', 'yes' => null], '@unish.dev');
     $info = $this->getOutputFromJSON(2);
     $this->assertEquals("user+2@localhost.localdomain", $info->mail, 'Email address was sanitized on destination site.');
     $this->assertEquals($name, $info->name);
@@ -89,16 +122,11 @@ class sqlSyncTest extends CommandUnishTestCase {
       // Test wildcards expansion from within sql-sync. Also avoid D8 persistent entity cache.
       'structure-tables-list' => 'cache,cache*',
     );
-    $this->drush('sql-sync', array('@stage', '@dev'), $sync_options);
-    $this->drush('sql-sanitize', [], ['yes' => NULL, 'sanitize-email' => 'user@mysite.org'], '@dev');
+    $this->drush('sql-sync', array('@unish.stage', '@unish.dev'), $sync_options);
+    $this->drush('sql-sanitize', [], ['yes' => NULL, 'sanitize-email' => 'user@mysite.org'], '@unish.dev');
 
-    $options = array(
-      'root' => $this->webroot(),
-      'uri' => 'dev',
-      'yes' => NULL,
-    );
     // Confirm that the sample user's email address has been sanitized on the dev site
-    $this->drush('user-information', array($name), $options + ['format' => 'json']);
+    $this->drush('user-information', array($name), $options + ['yes' => NULL, 'format' => 'json'], '@unish.dev');
     $info = $this->getOutputFromJSON(2);
     $this->assertEquals('user@mysite.org', $info->mail, 'Email address was sanitized (fixed email) on destination site.');
     $this->assertEquals($name, $info->name);
@@ -114,11 +142,11 @@ class sqlSyncTest extends CommandUnishTestCase {
     ];
     // Assert that field DO NOT contain values.
     foreach ($fields as $field_name => $value) {
-      $this->assertUserFieldContents($field_name, $value, $options);
+      $this->assertUserFieldContents($field_name, $value);
     }
 
     // Assert that field_user_telephone DOES contain "5555555555".
-    $this->assertUserFieldContents('field_user_telephone', '5555555555', $options, TRUE);
+    $this->assertUserFieldContents('field_user_telephone', '5555555555', TRUE);
   }
 
   /**
@@ -128,15 +156,13 @@ class sqlSyncTest extends CommandUnishTestCase {
    *   The machine name of the field.
    * @param string $value
    *   The field value.
-   * @param array $options
-   *   Options to be added to the sql-query command.
    * @param bool $should_contain
    *   Whether the field should contain the value. Defaults to false.
    */
-  public function assertUserFieldContents($field_name, $value, $options = [], $should_contain = FALSE) {
+  public function assertUserFieldContents($field_name, $value, $should_contain = FALSE) {
     $table = 'user__' . $field_name;
     $column = $field_name . '_value';
-    $this->drush('sql-query', [ "SELECT $column FROM $table LIMIT 1" ], $options);
+    $this->drush('sql-query', [ "SELECT $column FROM $table LIMIT 1" ], [], '@unish.dev');
     $output = $this->getOutput();
     $this->assertNotEmpty($output);
 

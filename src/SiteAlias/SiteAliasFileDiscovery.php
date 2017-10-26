@@ -12,7 +12,7 @@ use Symfony\Component\Finder\Finder;
  *     in the group 'group'. Each site can have multiple aliases for its
  *     environments.
  *
- * If an alais name is fully specified, with group, sitename and environment,
+ * If an alias name is fully specified, with group, sitename and environment,
  * then Drush will load only the group alias file that contains the alias.
  * Otherwise, Drush will first search for the provided alias name in a
  * single-alias alias file. If no such file can be found, then it will try
@@ -24,6 +24,12 @@ class SiteAliasFileDiscovery
     protected $groupAliasFiles;
     protected $depth = '== 0';
 
+    /**
+     * Add a location that alias files may be found.
+     *
+     * @param string $path
+     * @return $this
+     */
     public function addSearchLocation($path)
     {
         $this->groupAliasFiles = null;
@@ -33,12 +39,25 @@ class SiteAliasFileDiscovery
         return $this;
     }
 
+    /**
+     * Set the search depth for finding alias files
+     *
+     * @param string|int $depth (@see \Symfony\Component\Finder\Finder::depth)
+     * @return $this
+     */
     public function depth($depth)
     {
         $this->depth = $depth;
         return $this;
     }
 
+    /**
+     * Find an alias file SITENAME.alias.yml in one
+     * of the specified search locations.
+     *
+     * @param string $siteName
+     * @return string|bool
+     */
     public function findSingleSiteAliasFile($siteName)
     {
         $desiredFilename = "$siteName.alias.yml";
@@ -51,6 +70,13 @@ class SiteAliasFileDiscovery
         return false;
     }
 
+    /**
+     * Find a group alias file, GROUPNAME.aliases.yml, in
+     * one of the specified search locations.
+     *
+     * @param string $groupName
+     * @return string|bool
+     */
     public function findGroupAliasFile($groupName)
     {
         $groupAliasFileCache = $this->groupAliasFileCache();
@@ -61,6 +87,12 @@ class SiteAliasFileDiscovery
         return false;
     }
 
+    /**
+     * Return a list of all GROUPNAME.aliases.yml files in any
+     * of the search locations.
+     *
+     * @return string[]
+     */
     public function findAllGroupAliasFiles()
     {
         $unnamedGroupAliasFiles = $this->findUnnamedGroupAliasFiles();
@@ -69,11 +101,22 @@ class SiteAliasFileDiscovery
         return array_merge($unnamedGroupAliasFiles, $groupAliasFileCache);
     }
 
+    /**
+     * Return a list of all SITENAME.alias.yml files in any of
+     * the search locations.
+     *
+     * @return string[]
+     */
     public function findAllSingleAliasFiles()
     {
         return $this->searchForAliasFiles('*.alias.yml');
     }
 
+    /**
+     * Return all of the legacy alias files used in previous Drush versions.
+     *
+     * @return string[]
+     */
     public function findAllLegacyAliasFiles()
     {
         return array_merge(
@@ -82,6 +125,11 @@ class SiteAliasFileDiscovery
         );
     }
 
+    /**
+     * Return a list of all aliases.yml alias files.
+     *
+     * @return string[]
+     */
     protected function findUnnamedGroupAliasFiles()
     {
         if (empty($this->unknamedGroupAliasFiles)) {
@@ -90,6 +138,11 @@ class SiteAliasFileDiscovery
         return $this->unknamedGroupAliasFiles;
     }
 
+    /**
+     * Prime the cache of all GROUPNAME.aliases.yml files.
+     *
+     * @return string[]
+     */
     protected function groupAliasFileCache()
     {
         if (!isset($this->groupAliasFiles)) {
@@ -98,6 +151,13 @@ class SiteAliasFileDiscovery
         return $this->groupAliasFiles;
     }
 
+    /**
+     * Create a Symfony Finder object to search all available search locations
+     * for the specified search pattern.
+     *
+     * @param string $searchPattern
+     * @return Finder
+     */
     protected function createFinder($searchPattern)
     {
         $finder = new Finder();
@@ -108,6 +168,12 @@ class SiteAliasFileDiscovery
         return $finder;
     }
 
+    /**
+     * Return a list of all alias files matching the provided pattern.
+     *
+     * @param string $searchPattern
+     * @return string[]
+     */
     protected function searchForAliasFiles($searchPattern)
     {
         if (empty($this->searchLocations)) {
@@ -122,6 +188,12 @@ class SiteAliasFileDiscovery
         return $result;
     }
 
+    /**
+     * Return a list of all alias files with the specified extension.
+     *
+     * @param string $filenameExensions
+     * @return string[]
+     */
     protected function searchForAliasFilesKeyedByBasenamePrefix($filenameExensions)
     {
         if (empty($this->searchLocations)) {
@@ -138,6 +210,7 @@ class SiteAliasFileDiscovery
         return $result;
     }
 
+    // TODO: Seems like this could just be basename()
     protected function extractKey($basename, $filenameExensions)
     {
         return str_replace($filenameExensions, '', $basename);

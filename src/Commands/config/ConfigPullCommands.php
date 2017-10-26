@@ -4,9 +4,12 @@ namespace Drush\Commands\config;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 
-class ConfigPullCommands extends DrushCommands
+class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+    use SiteAliasManagerAwareTrait;
 
     /**
      * Export and transfer config from one environment to another.
@@ -55,7 +58,11 @@ class ConfigPullCommands extends DrushCommands
             '--exclude=.htaccess',
         );
         $label = $options['label'];
-        $runner = drush_get_runner($source, $destination, $options['runner']);
+        if (!$runner = $options['runner']) {
+            $sourceRecord = $this->siteAliasManager()->get($source);
+            $destinationRecord = $this->siteAliasManager()->get($destination);
+            $runner = $sourceRecord->isRemote() && $destinationRecord->isRemote() ? $destination : '@self';
+        }
         $this->logger()
           ->notice(dt('Starting to rsync configuration files from !source to !dest.', array(
           '!source' => $source,

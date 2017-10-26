@@ -1,0 +1,15 @@
+sites:
+  earth:
+    dev:
+      root: /path/to/drupal-earth
+      uri: https://dev.earth.com
+    live:
+      root: /other/path/to/drupal-earth
+      uri: https://earth.com
+  wind:
+    dev:
+      root: /path/to/drupal-wind
+      uri: https://dev.wind.com
+    live:
+      root: /other/path/to/drupal-wind
+      uri: https://earth.com

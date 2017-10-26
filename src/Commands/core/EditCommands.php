@@ -3,9 +3,12 @@ namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 
-class EditCommands extends DrushCommands
+class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+    use SiteAliasManagerAwareTrait;
 
     /**
      * Edit drushrc, site alias, and Drupal settings.php files.
@@ -72,14 +75,17 @@ class EditCommands extends DrushCommands
             }
         }
 
-        drush_sitealias_load_all();
-        if ($rcs = drush_get_context_options('context-path', true)) {
+        if ($rcs = Drush::config()->get('runtime.config.paths')) {
+            // @todo filter out any files that are within Drush.
+            $rcs = array_combine($rcs, $rcs);
             if ($headers) {
                 $rcs_header = array('drushrc' => '-- Drushrc --');
             }
         }
-        if ($aliases = drush_get_context('drush-alias-files')) {
-            $aliases = drush_map_assoc($aliases);
+
+        if ($aliases = $this->siteAliasManager()->listAllFilePaths()) {
+            sort($aliases);
+            $aliases = array_combine($aliases, $aliases);
             if ($headers) {
                 $aliases_header = array('aliases' => '-- Aliases --');
             }
@@ -97,11 +103,8 @@ class EditCommands extends DrushCommands
                 $drupal_header = array('drupal' => '-- Drupal --');
             }
         }
-        // TODO: how can we get a list of Drush commands and their paths?
-        $commands = []; // drush_get_commands();
-        ksort($commands);
 
-        return array_merge($php_header, $php, $bash_header, $bash, $rcs_header, $rcs, $aliases_header, $aliases, $commandfiles_header, $commandfiles, $drupal_header, $drupal);
+        return array_merge($php_header, $php, $bash_header, $bash, $rcs_header, $rcs, $aliases_header, $aliases, $drupal_header, $drupal);
     }
 
     public static function phpIniFiles()
@@ -114,7 +117,7 @@ class EditCommands extends DrushCommands
                 $ini_files[$drush_ini] = $drush_ini;
             }
         }
-        foreach (array(DRUSH_BASE_PATH, '/etc/drush', drush_server_home() . '/.drush') as $ini_dir) {
+        foreach (array(DRUSH_BASE_PATH, '/etc/drush', Drush::config()->get('env.home') . '/.drush') as $ini_dir) {
             if (file_exists($ini_dir . "/drush.ini")) {
                 $path = realpath($ini_dir . "/drush.ini");
                 $ini_files[$path] = $path;
@@ -126,7 +129,7 @@ class EditCommands extends DrushCommands
     public static function bashFiles()
     {
         $bashFiles = array();
-        $home = drush_server_home();
+        $home = Drush::config()->get('env.home');
         if ($bashrc = self::findBashrc($home)) {
             $bashFiles[$bashrc] = $bashrc;
         }

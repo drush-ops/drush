@@ -7,42 +7,37 @@ class LegacyCommands extends DrushCommands
 {
 
     /**
-     * Drupal 8 does not support disabling modules. See pm-uninstall command.
+     * Drupal 8 does not support disabling modules. See pm:uninstall command.
      *
      * @command pm:disable
      * @aliases dis,pm-disable
-     * @allow-additional-options
-     * @hidden
+     * @obsolete
      */
     public function disable()
     {
-        $this->legacyFailureMessage('pm-disable');
     }
 
     /**
-     * The pm-info command was deprecated. Please see `drush pm-list` and `composer show`
+     * The pm-info command was deprecated. Please see `drush pm:list` and `composer show`
      *
      * @command pm:info
      * @aliases pmi,pm-info
-     * @allow-additional-options
-     * @hidden
+     * @obsolete
      */
     public function info()
     {
-        $this->legacyFailureMessage('pm-info');
     }
 
     /**
-     * The pm-projectinfo command was deprecated. Please see `drush pm-list` and `composer show`
+     * The pm-projectinfo command was deprecated. Please see `drush pm:list` and `composer show`
      *
      * @command pm:projectinfo
      * @allow-additional-options
      * @aliases pm-projectinfo
-     * @hidden
+     * @obsolete
      */
     public function projectInfo()
     {
-        $this->legacyFailureMessage('pm-projectinfo');
     }
 
     /**
@@ -50,38 +45,32 @@ class LegacyCommands extends DrushCommands
      *
      * @command pm:refresh
      * @aliases rf,pm-refresh
-     * @allow-additional-options
-     * @hidden
+     * @obsolete
      */
     public function refresh()
     {
-        $this->legacyFailureMessage('pm-refresh');
     }
 
     /**
-     * The pm-updatestatus command was deprecated. Please see `composer show` and `composer outdated`. For security release notification, your project should depend on https://github.com/drupal-composer/drupal-security-advisories.
+     * The pm-updatestatus command was deprecated. Please see `composer show` and `composer outdated`. For security release notification, see `drush pm:security`.
      *
      * @command pm:updatestatus
      * @aliases ups,pm-updatestatus
-     * @allow-additional-options
-     * @hidden
+     * @obsolete
      */
     public function updatestatus()
     {
-        $this->legacyFailureMessage('pm-updatestatus');
     }
 
     /**
-     * The pm-updatecode command was deprecated. Please see `composer outdated` and `composer update`. For security release notification, your project should depend on https://github.com/drupal-composer/drupal-security-advisories.
+     * The pm-updatecode command was deprecated. Please see `composer outdated` and `composer update`. For security release notification, see `drush pm:security`.
      *
      * @command pm:updatecode
      * @aliases upc,pm-update,pm-updatecode
-     * @allow-additional-options
-     * @hidden
+     * @obsolete
      */
     public function updatecode()
     {
-        $this->legacyFailureMessage('pm-updatecode');
     }
 
     /**
@@ -89,12 +78,10 @@ class LegacyCommands extends DrushCommands
      *
      * @command pm:releasenotes
      * @aliases rln,pm-releasenotes
-     * @allow-additional-options
-     * @hidden
+     * @obsolete
      */
     public function releaseNotes()
     {
-        $this->legacyFailureMessage('pm-releasenotes');
     }
 
     /**
@@ -102,12 +89,10 @@ class LegacyCommands extends DrushCommands
      *
      * @command pm:releases
      * @aliases rl,pm-releases
-     * @allow-additional-options
-     * @hidden
+     * @obsolete
      */
     public function releases()
     {
-        $this->legacyFailureMessage('pm-releases');
     }
 
     /**
@@ -115,12 +100,10 @@ class LegacyCommands extends DrushCommands
      *
      * @command make
      * @aliases make-convert,make-generate,make-lock,make-update
-     * @allow-additional-options
-     * @hidden
+     * @obsolete
      */
     public function make()
     {
-        $this->legacyFailureMessage('make');
     }
 
     /**
@@ -128,25 +111,9 @@ class LegacyCommands extends DrushCommands
      *
      * @command pm:download
      * @aliases dl,pm-download
-     * @allow-additional-options
-     * @hidden
+     * @obsolete
      */
     public function download()
     {
-        $this->legacyFailureMessage('pm-download');
-    }
-
-    /**
-     * Throw and exception taken from the description of the legacy command.
-     *
-     * @param string $commandName
-     * @throws \Exception
-     */
-    public function legacyFailureMessage($commandName)
-    {
-        $application = Drush::getApplication();
-        $command = $application->get($commandName);
-        $message = $command->getDescription();
-        throw new \Exception($message);
     }
 }

@@ -1,16 +1,19 @@
 <?php
 namespace Drush;
 
-use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
+use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use Consolidation\Config\ConfigInterface;
 use Drush\Boot\BootstrapManager;
+use Drush\Runtime\TildeExpansionHook;
 use Drush\SiteAlias\AliasManager;
 use Drush\Log\LogLevel;
 use Drush\Command\RemoteCommandProxy;
-use Drush\Preflight\RedispatchHook;
+use Drush\Runtime\RedispatchHook;
 
+use Robo\Common\ConfigAwareTrait;
+use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Application as SymfonyApplication;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,9 +29,10 @@ use Psr\Log\LoggerAwareTrait;
  * is because the application object is created prior to the DI container.
  * See DependencyInjection::injectApplicationServices() to add more services.
  */
-class Application extends SymfonyApplication implements LoggerAwareInterface
+class Application extends SymfonyApplication implements LoggerAwareInterface, ConfigAwareInterface
 {
     use LoggerAwareTrait;
+    use ConfigAwareTrait;
 
     /** @var BootstrapManager */
     protected $bootstrapManager;
@@ -39,84 +43,14 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
     /** @var RedispatchHook */
     protected $redispatchHook;
 
+    /** @var TildeExpansionHook */
+    protected $tildeExpansionHook;
+
     /**
-     * @param string $name
-     * @param string $version
+     * Add global options to the Application and their default values to Config.
      */
-    public function __construct($name, $version)
+    public function configureGlobalOptions()
     {
-        parent::__construct($name, $version);
-
-        // TODO: Add all of Drush's global options that are NOT handled
-        // by PreflightArgs here.
-
-        //
-        // All legacy global options from drush_get_global_options() in drush.inc:
-        //
-        // Options handled by PreflightArgs:
-        //
-        //   --root / -r
-        //   --include
-        //   --config
-        //   --alias-path
-        //   --local
-        //   --ssh-options : See \Drush\Preflight\Preflight::remapArguments
-        //
-        // Global options registered with Symfony:
-        //
-        //   --remote-host
-        //   --remote-user
-        //   --root / -r
-        //   --uri / -l
-        //   --simulate
-        //   --backend : the value is now ignored. see PreflightArgs.
-        //   --strict
-        //   --debug / -d : equivalent to -vv
-        //   --yes / -y : equivalent to --no-interaction
-        //   --no / -n : equivalent to --no-interaction
-        //
-        // Functionality provided by Symfony:
-        //
-        //   --verbose / -v
-        //   --help
-        //   --quiet
-        //
-        // No longer supported
-        //
-        //   --nocolor           Equivalent to --no-ansi
-        //   --search-depth      We could just decide the level we will search for aliases
-        //   --show-invoke
-        //   --early             Completion handled by standard symfony extension
-        //   --complete-debug
-        //   --interactive       If command isn't -n, then it is interactive
-        //   --command-specific  Now handled by consolidation/config component
-        //   --php               If needed prefix command with PATH=/path/to/php:$PATH. Also see #env_vars in site aliases.
-        //   --php-options
-        //   --pipe
-        //
-        // Not handled yet (probably to be implemented, but maybe not all):
-        //
-        //   --tty
-        //   --exclude
-        //   --choice
-        //   --ignored-modules : see \Drush\Boot\DrupalBoot8::bootstrapDrupalFull
-        //   --no-label
-        //   --label-separator
-        //   --cache-default-class
-        //   --cache-class-<bin>
-        //   --confirm-rollback
-        //   --halt-on-error
-        //   --deferred-sanitization
-        //   --remote-os
-        //   --site-list
-        //   --reserve-margin
-        //   --drush-coverage
-        //
-        //   --site-aliases
-        //   --shell-aliases
-        //   --path-aliases
-
-
         $this->getDefinition()
             ->addOption(
                 new InputOption('--debug', 'd', InputOption::VALUE_NONE, 'Equivalent to -vv')
@@ -125,6 +59,12 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
         $this->getDefinition()
             ->addOption(
                 new InputOption('--yes', 'y', InputOption::VALUE_NONE, 'Equivalent to --no-interaction.')
+            );
+
+        // Note that -n belongs to Symfony Console's --no-interaction.
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--no', null, InputOption::VALUE_NONE, 'Cancels at any confirmation prompt.')
             );
 
         $this->getDefinition()
@@ -190,6 +130,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
         $this->redispatchHook = $redispatchHook;
     }
 
+    public function setTildeExpansionHook(TildeExpansionHook $tildeExpansionHook)
+    {
+        $this->tildeExpansionHook = $tildeExpansionHook;
+    }
+
     /**
      * Return the framework uri selected by the user.
      */
@@ -211,6 +156,9 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
             return;
         }
         $selfAliasRecord = $this->aliasManager->getSelf();
+        if (!$selfAliasRecord->hasRoot()) {
+            return;
+        }
         $uri = $selfAliasRecord->uri();
 
         if (empty($uri)) {
@@ -226,6 +174,20 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
      * @inheritdoc
      */
     public function find($name)
+    {
+        $command = $this->bootstrapAndFind($name);
+        // Avoid exception when help is being built by https://github.com/bamarni/symfony-console-autocomplete.
+        // @todo Find a cleaner solution.
+        if (Drush::config()->get('runtime.argv')[1] !== 'help') {
+            $this->checkObsolete($command);
+        }
+        return $command;
+    }
+
+    /**
+     * Look up a command. Bootstrap further if necessary.
+     */
+    protected function bootstrapAndFind($name)
     {
         try {
             return parent::find($name);
@@ -246,7 +208,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
             }
 
             // TODO: We could also fail-fast (throw $e) if bootstrapMax made no progress.
-            $this->logger->log(LogLevel::DEBUG, 'Bootstrap futher to find {command}', ['command' => $name]);
+            $this->logger->log(LogLevel::DEBUG, 'Bootstrap further to find {command}', ['command' => $name]);
             $this->bootstrapManager->bootstrapMax();
             $this->logger->log(LogLevel::DEBUG, 'Done with bootstrap max in Application::find(): trying to find {command} again.', ['command' => $name]);
 
@@ -254,6 +216,25 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
             // not be caught if the command cannot be found.
             return parent::find($name);
         }
+    }
+
+    /**
+     * If a command is annotated @obsolete, then we will throw an exception
+     * immediately; the command will not run, and no hooks will be called.
+     */
+    protected function checkObsolete($command)
+    {
+        if (!$command instanceof AnnotatedCommand) {
+            return;
+        }
+
+        $annotationData = $command->getAnnotationData();
+        if (!$annotationData->has('obsolete')) {
+            return;
+        }
+
+        $obsoleteMessage = $command->getDescription();
+        throw new \Exception($obsoleteMessage);
     }
 
     /**

@@ -744,7 +744,10 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
     // $command_options += drush_command_get_command_specific_options($site_record, $command);
 
     // Add in preflight option contexts (--include et. al)
-    $preflightContextOptions = \Drush\Drush::config()->get(PreflightArgs::DRUSH_CONFIG_CONTEXT_NAMESPACE, []);
+    $preflightContextOptions =
+      \Drush\Drush::config()->get(PreflightArgs::DRUSH_RUNTIME_CONTEXT_NAMESPACE, []) +
+      \Drush\Drush::config()->get(PreflightArgs::DRUSH_CONFIG_PATH_NAMESPACE, []);
+    $preflightContextOptions['local'] = \Drush\Drush::config()->get('runtime.local', false);
     foreach ($preflightContextOptions as $key => $value) {
       if ($value) {
         $command_options[$key] = $value;

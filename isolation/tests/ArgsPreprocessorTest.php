@@ -27,8 +27,8 @@ class ArgsPreprocessorTest extends TestCase
         $this->assertEquals($unprocessedArgs, implode(',', $preflightArgs->args()));
         $this->assertEquals($alias, $preflightArgs->alias());
         $this->assertEquals($selectedSite, $preflightArgs->selectedSite());
-        $this->assertEquals($configPath, $preflightArgs->configPath());
-        $this->assertEquals($aliasPath, $preflightArgs->aliasPath());
+        $this->assertEquals($configPath, $preflightArgs->configPaths());
+        $this->assertEquals($aliasPath, $preflightArgs->aliasPaths());
     }
 
     public static function argTestValues()
@@ -44,9 +44,9 @@ class ArgsPreprocessorTest extends TestCase
 
                 '@alias',
                 null,
-                null,
-                null,
-                null,
+                [],
+                [],
+                [],
                 null,
                 'drush,status,version',
             ],
@@ -61,9 +61,9 @@ class ArgsPreprocessorTest extends TestCase
 
                 '#multisite',
                 null,
-                null,
-                null,
-                null,
+                [],
+                [],
+                [],
                 null,
                 'drush,status,version',
             ],
@@ -78,9 +78,9 @@ class ArgsPreprocessorTest extends TestCase
 
                 'user@server/path',
                 null,
-                null,
-                null,
-                null,
+                [],
+                [],
+                [],
                 null,
                 'drush,status,version',
             ],
@@ -96,9 +96,9 @@ class ArgsPreprocessorTest extends TestCase
 
                 null,
                 null,
-                null,
-                null,
-                null,
+                [],
+                [],
+                [],
                 null,
                 'drush,rsync,@from,@to,--delete',
             ],
@@ -114,9 +114,9 @@ class ArgsPreprocessorTest extends TestCase
 
                 null,
                 '/path/to/drupal',
-                null,
-                null,
-                null,
+                [],
+                [],
+                [],
                 null,
                 'drush,status,--verbose',
             ],
@@ -131,9 +131,9 @@ class ArgsPreprocessorTest extends TestCase
 
                 null,
                 '/path/to/drupal',
-                null,
-                null,
-                null,
+                [],
+                [],
+                [],
                 null,
                 'drush,status,--verbose',
             ],
@@ -149,9 +149,9 @@ class ArgsPreprocessorTest extends TestCase
 
                 null,
                 null,
-                '/path/to/config',
-                null,
-                null,
+                ['/path/to/config'],
+                [],
+                [],
                 null,
                 'drush,status,--verbose',
             ],
@@ -166,9 +166,27 @@ class ArgsPreprocessorTest extends TestCase
 
                 null,
                 null,
-                '/path/to/config',
+                ['/path/to/config'],
+                [],
+                [],
+                null,
+                'drush,status,--verbose',
+            ],
+
+            [
+                [
+                    'drush',
+                    'status',
+                    '--verbose',
+                    '--config=/path/to/config',
+                    '--config=/other/path/to/config',
+                ],
+
                 null,
                 null,
+                ['/path/to/config','/other/path/to/config'],
+                [],
+                [],
                 null,
                 'drush,status,--verbose',
             ],
@@ -184,9 +202,9 @@ class ArgsPreprocessorTest extends TestCase
 
                 null,
                 null,
-                null,
-                '/path/to/aliases',
-                null,
+                [],
+                ['/path/to/aliases'],
+                [],
                 null,
                 'drush,status,--verbose',
             ],
@@ -201,9 +219,27 @@ class ArgsPreprocessorTest extends TestCase
 
                 null,
                 null,
+                [],
+                ['/path/to/aliases'],
+                [],
                 null,
-                '/path/to/aliases',
+                'drush,status,--verbose',
+            ],
+
+            [
+                [
+                    'drush',
+                    'status',
+                    '--verbose',
+                    '--alias-path=/path/to/aliases',
+                    '--alias-path=/other/path/to/aliases',
+                ],
+
                 null,
+                null,
+                [],
+                ['/path/to/aliases','/other/path/to/aliases'],
+                [],
                 null,
                 'drush,status,--verbose',
             ],
@@ -219,9 +255,9 @@ class ArgsPreprocessorTest extends TestCase
 
                 null,
                 null,
-                null,
-                null,
-                'path/to/commands',
+                [],
+                [],
+                ['path/to/commands'],
                 null,
                 'drush,status,--verbose',
             ],
@@ -236,9 +272,44 @@ class ArgsPreprocessorTest extends TestCase
 
                 null,
                 null,
+                [],
+                [],
+                ['path/to/commands'],
+                null,
+                'drush,status,--verbose',
+            ],
+
+            [
+                [
+                    'drush',
+                    'status',
+                    '--verbose',
+                    '--include=/path/to/commands',
+                ],
+
                 null,
                 null,
-                'path/to/commands',
+                [],
+                [],
+                ['path/to/commands'],
+                null,
+                'drush,status,--verbose',
+            ],
+
+            [
+                [
+                    'drush',
+                    'status',
+                    '--verbose',
+                    '--include=/path/to/commands',
+                    '--include=/other/path/to/commands',
+                ],
+
+                null,
+                null,
+                [],
+                [],
+                ['path/to/commands','/other/path/to/commands'],
                 null,
                 'drush,status,--verbose',
             ],
@@ -253,9 +324,9 @@ class ArgsPreprocessorTest extends TestCase
 
                 null,
                 null,
-                null,
-                null,
-                null,
+                [],
+                [],
+                [],
                 true,
                 'drush,status,--verbose',
             ],
@@ -275,9 +346,9 @@ class ArgsPreprocessorTest extends TestCase
 
                 '@alias',
                 '/path/to/drupal',
-                '/path/to/config',
-                '/path/to/aliases',
-                'path/to/commands',
+                ['/path/to/config'],
+                ['/path/to/aliases'],
+                ['path/to/commands'],
                 true,
                 'drush,status,--verbose',
             ],

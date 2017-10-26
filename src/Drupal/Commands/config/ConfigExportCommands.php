@@ -74,39 +74,21 @@ class ConfigExportCommands extends DrushCommands
      * @option add Run `git add -p` after exporting. This lets you choose which config changes to sync for commit.
      * @option commit Run `git add -A` and `git commit` after exporting.  This commits everything that was exported without prompting.
      * @option message Commit comment for the exported configuration.  Optional; may only be used with --commit.
-     * @option destination An arbitrary directory that should receive the exported files. An alternative to label argument.
+     * @option destination An arbitrary directory that should receive the exported files. A backup directory is used when no value is provided.
      * @usage drush config:export --destination
      *   Export configuration; Save files in a backup directory named config-export.
      * @aliases cex,config-export
      */
-    public function export($label = null, $options = ['add' => false, 'commit' => false, 'message' => null, 'destination' => ''])
+    public function export($label = null, $options = ['add' => false, 'commit' => false, 'message' => self::REQ, 'destination' => ''])
     {
-        $destination_dir = $this->processDestination($label, $options);
+        // Get destination directory.
+        $destination_dir = ConfigCommands::getDirectory($label, $options['destination']);
 
         // Do the actual config export operation.
         $preview = $this->doExport($options, $destination_dir);
 
         // Do the VCS operations.
         $this->doAddCommit($options, $destination_dir, $preview);
-    }
-
-    public function processDestination($label, $options)
-    {
-        // Determine which target directory to use.
-        if ($target = $options['destination']) {
-            if ($target === true) {
-                // User did not pass a specific value for --destination. Make one.
-                $destination_dir = drush_prepare_backup_dir('config-export');
-            } else {
-                $destination_dir = $target;
-                // It is important to be able to specify a destination directory that
-                // does not exist yet, for exporting on remote systems
-                drush_mkdir($destination_dir);
-            }
-        } else {
-            $destination_dir = \config_get_config_directory($label ?: CONFIG_SYNC_DIRECTORY);
-        }
-        return $destination_dir;
     }
 
     public function doExport($options, $destination_dir)
@@ -196,13 +178,8 @@ class ConfigExportCommands extends DrushCommands
         }
 
         if (!empty($destination)) {
-            $additional = array();
-            $values = drush_sitealias_evaluate_path($destination, $additional, true);
-            if (!isset($values['path'])) {
-                throw new \Exception('The destination directory could not be evaluated.');
-            }
-            $destination = $values['path'];
-            $commandData->input()->setOption('destination', $destination);
+            // TODO: evaluate %files et. al. in destination
+            // $commandData->input()->setOption('destination', $destination);
             if (!file_exists($destination)) {
                 $parent = dirname($destination);
                 if (!is_dir($parent)) {

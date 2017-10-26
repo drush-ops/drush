@@ -2,26 +2,34 @@
 namespace Drush\Preflight;
 
 /**
- * Preprocess commandline arguments.
- *
- * - Record @sitealias, if present
- * - Record a limited number of global options
- *
- * Anything not handled here is processed by Symfony Console.
+ * Map commandline arguments from one value to anohter during preflight.
  */
 class ArgsRemapper
 {
-    public function __construct($remap, $remove)
+    protected $remapOptions;
+    protected $remapCommandAliases;
+
+    /**
+     * ArgsRemapper constructor
+     */
+    public function __construct($remapOptions, $remapCommandAliases)
     {
-        $this->remap = $remap;
-        $this->remove = $remove;
+        $this->remapOptions = $remapOptions;
+        $this->remapCommandAliases = $remapCommandAliases;
     }
 
+    /**
+     * Given an $argv array, apply all remap operations on each item
+     * within it.
+     *
+     * @param string[] $argv
+     */
     public function remap($argv)
     {
         $result = [];
+        $sawCommmand = false;
         foreach ($argv as $arg) {
-            $arg = $this->remapArgument($arg);
+            $arg = $this->checkRemap($arg, $sawCommmand);
             if (isset($arg)) {
                 $result[] = $arg;
             }
@@ -29,27 +37,25 @@ class ArgsRemapper
         return $result;
     }
 
-    protected function remapArgument($arg)
+    /**
+     * Check to see if the provided single arg needs to be remapped. If
+     * it does, then the remapping is performed.
+     *
+     * @param stinrg $arg One arguent to inspect
+     * @return string The altered argument
+     */
+    protected function checkRemap($arg, &$sawCommmand)
     {
-        if ($this->checkRemoval($arg)) {
-            return null;
+        if (!$sawCommmand && ctype_alpha($arg[0])) {
+            $sawCommand = true;
+            return $this->remapCommandAlias($arg);
         }
-        return $this->checkRemap($arg);
+        return $this->remapOptions($arg);
     }
 
-    protected function checkRemoval($arg)
+    protected function remapOptions($arg)
     {
-        foreach ($this->remove as $removalCandidate) {
-            if ($this->matches($arg, $removalCandidate)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    protected function checkRemap($arg)
-    {
-        foreach ($this->remap as $from => $to) {
+        foreach ($this->remapOptions as $from => $to) {
             if ($this->matches($arg, $from)) {
                 return $to . substr($arg, strlen($from));
             }
@@ -57,6 +63,24 @@ class ArgsRemapper
         return $arg;
     }
 
+    protected function remapCommandAlias($arg)
+    {
+        foreach ($this->remapCommandAliases as $from => $to) {
+            if ($arg == $from) {
+                return $to;
+            }
+        }
+        return $arg;
+    }
+
+    /**
+     * Check to see if the provided single arg matches the candidate.
+     * If the candidate is `--foo`, then we will match the exact string
+     * `--foo`, or the leading substring `--foo=`, and nohting else.
+     * @param string $arg
+     * @param string $candidate
+     * @return bool
+     */
     protected function matches($arg, $candidate)
     {
         if (strpos($arg, $candidate) !== 0) {

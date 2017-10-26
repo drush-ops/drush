@@ -5,6 +5,7 @@
  *   Functions for executing system commands. (e.g. exec(), system(), ...).
  */
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
 use \Drush\SiteAlias\AliasRecord;
 
@@ -28,10 +29,10 @@ use \Drush\SiteAlias\AliasRecord;
  * @see drush_shell_exec()
  */
 function drush_op_system($exec) {
-  if (\Drush\Drush::verbose() || \Drush\Drush::simulate()) {
+  if (Drush::verbose() || Drush::simulate()) {
     drush_print("Calling system($exec);", 0, STDERR);
   }
-  if (\Drush\Drush::simulate()) {
+  if (Drush::simulate()) {
     return 0;
   }
 
@@ -79,7 +80,14 @@ function drush_shell_cd_and_exec($effective_wd, $cmd) {
  *   TRUE on success, FALSE on failure
  */
 function drush_shell_exec($cmd) {
-  return _drush_shell_exec(func_get_args());
+  return _drush_shell_exec(func_get_args(), FALSE, Drush::simulate());
+}
+
+/**
+ * A versopm pf drush_shell_exec that ignores simulate mode
+ */
+function drush_always_exec($cmd) {
+  return _drush_shell_exec(func_get_args(), FALSE, FALSE);
 }
 
 /**
@@ -103,7 +111,7 @@ function drush_get_editor() {
  * @see drush_shell_exec.
  */
 function drush_shell_exec_interactive($cmd) {
-  return _drush_shell_exec(func_get_args(), TRUE);
+  return _drush_shell_exec(func_get_args(), TRUE, Drush::simulate());
 }
 
 /**
@@ -124,7 +132,7 @@ function drush_shell_exec_interactive($cmd) {
  *
  * @see drush_shell_exec.
  */
-function _drush_shell_exec($args, $interactive = FALSE) {
+function _drush_shell_exec($args, $interactive = FALSE, $simulate = false) {
   // Do not change the command itself, just the parameters.
   for ($x = 1; $x < count($args); $x++) {
     $args[$x] = drush_escapeshellarg($args[$x]);
@@ -142,7 +150,7 @@ function _drush_shell_exec($args, $interactive = FALSE) {
   }
 
   drush_log('Executing: ' . $command, LogLevel::INFO);
-  if (!\Drush\Drush::simulate()) {
+  if (!$simulate) {
     if ($interactive) {
       $result = drush_shell_proc_open($command);
       return ($result == 0) ? TRUE : FALSE;
@@ -196,7 +204,7 @@ function drush_which($command) {
 function drush_shell_proc_build(AliasRecord $site, $command = '', $cd = NULL, $interactive = FALSE) {
   // Build up the command. TODO: We maybe refactor this soon.
   $hostname = $site->remoteHostWithUser();
-  $ssh_options = $site->getConfig(\Drush\Drush::config(), 'ssh.options', "-o PasswordAuthentication=no");
+  $ssh_options = $site->getConfig(Drush::config(), 'ssh.options', "-o PasswordAuthentication=no");
   $os = drush_os($site);
   if ($site->get('tty') || $interactive) {
     $ssh_options .= ' -t';
@@ -233,10 +241,10 @@ function drush_shell_proc_build(AliasRecord $site, $command = '', $cd = NULL, $i
  *     127 command not found
  */
 function drush_shell_proc_open($cmd) {
-  if (\Drush\Drush::verbose() || \Drush\Drush::simulate()) {
+  if (Drush::verbose() || Drush::simulate()) {
     drush_print("Calling proc_open($cmd);", 0, STDERR);
   }
-  if (!\Drush\Drush::simulate()) {
+  if (!Drush::simulate()) {
     $process = proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
     $proc_status = proc_get_status($process);
     $exit_code = proc_close($process);
@@ -257,7 +265,7 @@ function drush_os($site_record = NULL) {
     return legacy_drush_os($site_record);
   }
   // n.b. $options['remote-os'] has become 'ssh.os' in drush.yml
-  return $site_record->getConfig(\Drush\Drush::config(), 'ssh.os', 'Linux');
+  return $site_record->getConfig(Drush::config(), 'ssh.os', 'Linux');
 }
 
 function legacy_drush_os($site_record = NULL) {
@@ -270,20 +278,10 @@ function legacy_drush_os($site_record = NULL) {
   // Otherwise, we will assume that all remote machines are Linux
   // (or whatever value 'remote-os' is set to in drushrc.php).
   elseif (isset($site_record) && array_key_exists('remote-host', $site_record) && !empty($site_record['remote-host'])) {
-    $os = \Drush\Drush::config()->get('ssh.os', 'Linux');
+    $os = Drush::config()->get('ssh.os', 'Linux');
   }
 
   return $os;
-}
-
-/**
- * Determine the remote host (username@hostname.tld) for
- * the specified site.
- */
-function drush_remote_host($site, $prefix = '') {
-  $hostname = drush_escapeshellarg(drush_sitealias_get_option($site, 'remote-host', '', $prefix), "LOCAL");
-  $username = drush_escapeshellarg(drush_sitealias_get_option($site, 'remote-user', '', $prefix), "LOCAL");
-  return $username . (empty($username) ? '' : '@') . $hostname;
 }
 
 /**
@@ -352,7 +350,7 @@ function drush_start_browser($uri = NULL, $sleep = FALSE, $port = FALSE, $browse
   if ($browser) {
     // We can only open a browser if we have a DISPLAY environment variable on
     // POSIX or are running Windows or OS X.
-    if (!\Drush\Drush::simulate() && !getenv('DISPLAY') && !drush_is_windows() && !drush_is_osx()) {
+    if (!Drush::simulate() && !getenv('DISPLAY') && !drush_is_windows() && !drush_is_osx()) {
       drush_log(dt('No graphical display appears to be available, not starting browser.'), LogLevel::INFO);
       return FALSE;
     }
@@ -367,7 +365,7 @@ function drush_start_browser($uri = NULL, $sleep = FALSE, $port = FALSE, $browse
     // open the browser for http://default or similar invalid hosts.
     $hosterror = (gethostbynamel($host) === FALSE);
     $iperror = (ip2long($host) && gethostbyaddr($host) == $host);
-    if (!\Drush\Drush::simulate() && ($hosterror || $iperror)) {
+    if (!Drush::simulate() && ($hosterror || $iperror)) {
       drush_log(dt('!host does not appear to be a resolvable hostname or IP, not starting browser. You may need to use the --uri option in your command or site alias to indicate the correct URL of this site.', array('!host' => $host)), LogLevel::WARNING);
       return FALSE;
     }
@@ -396,7 +394,7 @@ function drush_start_browser($uri = NULL, $sleep = FALSE, $port = FALSE, $browse
     }
     if ($browser) {
       drush_log(dt('Opening browser !browser at !uri', array('!browser' => $browser, '!uri' => $uri)));
-      if (!\Drush\Drush::simulate()) {
+      if (!Drush::simulate()) {
         $pipes = array();
         proc_close(proc_open($prefix . $browser . ' ' . drush_escapeshellarg($uri) . ' 2> ' . drush_bit_bucket() . ' &', array(), $pipes));
       }

@@ -14,11 +14,11 @@ class ImageCase extends CommandUnishTestCase {
     $options = array(
       'yes' => NULL,
       'root' => $this->webroot(),
-      'uri' => key($sites),
+      'uri' => $this->getUri(),
     );
     $this->drush('pm-enable', ['image'], $options);
     $logo = 'core/themes/bartik/screenshot.png';
-    $styles_dir = $options['root'] . '/sites/' . key($sites) . '/files/styles/';
+    $styles_dir = $options['root'] . '/sites/' . $this->getUri() . '/files/styles/';
     $thumbnail = $styles_dir . 'thumbnail/public/' . $logo;
     $medium = $styles_dir . 'medium/public/' . $logo;
 

@@ -1,6 +1,7 @@
 <?php
 
 namespace Unish;
+use Symfony\Component\Yaml\Yaml;
 use Webmozart\PathUtil\Path;
 
 abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
@@ -12,7 +13,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * @var array
    */
   private static $sites = array();
-  
+
   private static $sandbox;
 
   private static $drush;
@@ -30,6 +31,10 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    */
   public static function getSites() {
     return self::$sites;
+  }
+
+  public static function getUri($site = 'unish.dev') {
+    return self::$sites[$site]['uri'];
   }
 
   /**
@@ -220,20 +225,6 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     if (!$this->is_windows()) {
       print $chars[($counter++ % 4)] . "\033[1D";
     }
-  }
-
-  /**
-   * Converts a Windows path (dir1\dir2\dir3) into a Unix path (dir1/dir2/dir3).
-   * Also converts a cygwin "drive emulation" path (/cygdrive/c/dir1) into a
-   * proper drive path, still with Unix slashes (c:/dir1).
-   *
-   * @copied from Drush's environment.inc
-   */
-  function convert_path($path) {
-    $path = str_replace('\\','/', $path);
-    $path = preg_replace('/^\/cygdrive\/([A-Za-z])(.*)$/', '\1:\2', $path);
-
-    return $path;
   }
 
   /**
@@ -453,6 +444,46 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Create some fixture sites that only have a 'settings.php' file
+   * with a database record.
+   *
+   * @param array $sites key=site_subder value=array of extra alias data
+   * @param string $aliasGroup Write aliases into a file named group.alias.yml
+   */
+  function setUpSettings(array $sites, $aliasGroup = 'fixture') {
+    foreach ($sites as $subdir => $extra) {
+      $this->createSettings($subdir);
+    }
+    // Create basic site alias data with root and uri
+    $siteAliasData = $this->createAliasFileData(array_keys($sites), $aliasGroup);
+    // Add in caller-provided site alias data
+    $siteAliasData = array_merge_recursive($siteAliasData, $sites);
+    $this->writeSiteAliases($siteAliasData, $aliasGroup);
+  }
+
+  function createSettings($subdir) {
+    $settingsContents = <<<EOT
+<?php
+
+\$databases['default']['default'] = array (
+  'database' => 'unish_$subdir',
+  'username' => 'root',
+  'password' => '',
+  'prefix' => '',
+  'host' => '127.0.0.1',
+  'port' => '',
+  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
+  'driver' => 'mysql',
+);
+\$settings['install_profile'] = 'testing';
+EOT;
+
+    $root = $this->webroot();
+    $settingsPath = "$root/sites/$subdir/settings.php";
+    self::mkdir(dirname($settingsPath));
+    file_put_contents($settingsPath, $settingsContents);
+  }
+  /**
    * Assemble (and optionally install) one or more Drupal sites using a single codebase.
    *
    * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
@@ -472,17 +503,34 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
       copy($root . '/sites/example.sites.php', $root . '/sites/sites.php');
     }
 
+    $siteData = $this->createAliasFile($sites_subdirs, 'unish');
+    self::$sites = [];
+    foreach ($siteData as $key => $data) {
+      self::$sites["unish.$key"] = $data;
+    }
+    return self::$sites;
+  }
+
+  function createAliasFileData($sites_subdirs, $aliasGroup = 'unish') {
+    $root = $this->webroot();
     // Stash details about each site.
+    $sites = [];
     foreach ($sites_subdirs as $subdir) {
-      self::$sites[$subdir] = array(
+      $sites[$subdir] = array(
         'root' => $root,
         'uri' => $subdir,
         'db_url' => $this->db_url($subdir),
       );
-      // Make an alias for the site
-      $this->writeSiteAlias($subdir, $root, $subdir);
     }
-    return self::$sites;
+    return $sites;
+  }
+
+  function createAliasFile($sites_subdirs, $aliasGroup = 'unish') {
+    // Make an alias group for the sites.
+    $sites = $this->createAliasFileData($sites_subdirs, $aliasGroup);
+    $this->writeSiteAliases($sites, $aliasGroup);
+
+    return $sites;
   }
 
   /**
@@ -514,20 +562,21 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     }
   }
 
-  function writeSiteAlias($name, $root, $uri) {
-    $alias_definition = array($name => array('root' => $root,  'uri' => $uri));
-    file_put_contents(self::getSandbox() . '/etc/drush/' . $name . '.alias.drushrc.php', $this->unish_file_aliases($alias_definition));
+  /**
+   * Write an alias group file and a config file which points to same dir.
+   *
+   * @param $sites
+   */
+  function writeSiteAliases($sites, $aliasGroup = 'unish') {
+    $this->writeUnishConfig($sites, [], $aliasGroup);
   }
 
-  /**
-   * Prepare the contents of an aliases file.
-   */
-  function unish_file_aliases($aliases) {
-    foreach ($aliases as $name => $alias) {
-      $records[] = sprintf('$aliases[\'%s\'] = %s;', $name, var_export($alias, TRUE));
-    }
-    $contents = "<?php\n\n" . implode("\n\n", $records);
-    return $contents;
+  function writeUnishConfig($unishAliases, $config = [], $aliasGroup = 'unish')
+  {
+    $etc = self::getSandbox() . '/etc/drush';
+    file_put_contents(Path::join($etc, $aliasGroup . '.alias.yml'), Yaml::dump($unishAliases, PHP_INT_MAX, 2));
+    $config['drush']['paths']['alias-path'][] = $etc;
+    file_put_contents(Path::join($etc, 'drush.yml'), Yaml::dump($config, PHP_INT_MAX, 2));
   }
 
   /**

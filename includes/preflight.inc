@@ -5,18 +5,7 @@
  * Preflight, postflight and shutdown code.
  */
 
-use Consolidation\AnnotatedCommand\Hooks\HookManager;
-use Drush\Cache\CommandCache;
-use Drush\Drush;
-use Drush\Log\LogLevel;
-use League\Container\Container;
 use Robo\Contract\BuilderAwareInterface;
-use Robo\Robo;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Output\OutputInterface;
-use Webmozart\PathUtil\Path;
 
 /**
  * The main Drush function.
@@ -26,76 +15,6 @@ use Webmozart\PathUtil\Path;
  */
 function drush_main() {
   require dirname(__DIR__) . '/drush.php';
-}
-
-function drush_init_register_command_files($container, $commandFiles) {
-  foreach ($commandFiles as $sourcePath => $className) {
-    if (!class_exists($className)) {
-      include $sourcePath;
-    }
-    $classAlias = str_replace('\\', '', $className);
-    // Add and fetch our class from the container to apply the inductors
-    $container->share($classAlias, $className);
-    $commandFileInstance = $container->get($classAlias);
-    if ($commandFileInstance instanceof BuilderAwareInterface) {
-        $builder = $container->get('collectionBuilder', [$commandFileInstance]);
-        $commandFileInstance->setBuilder($builder);
-    }
-    drush_add_command_instance($container, $commandFileInstance);
-  }
-}
-
-function drush_add_command_instance($container, $commandInstance, $includeAllPublicMethods = true) {
-  if ($commandInstance instanceof Symfony\Component\Console\Command\Command) {
-    drush_add_command_to_application($container, $commandInstance);
-    return;
-  }
-  drush_create_commands_from_command_instance($container, $commandInstance);
-}
-
-function drush_create_commands_from_command_instance($container, $commandInstance, $includeAllPublicMethods = true) {
-  $application = $container->get('application');
-  $commandFactory = $container->get('commandFactory');
-  $commandList = $commandFactory->createCommandsFromClass($commandInstance, $includeAllPublicMethods);
-  foreach ($commandList as $command) {
-    drush_add_command_to_application($container, $command);
-  }
-}
-
-function drush_add_command_to_application($container, $command) {
-  $application = $container->get('application');
-  $commandName = $command->getName();
-  $drushAlias = strtr($commandName, ':', '-');
-  if ($commandName != $drushAlias) {
-    $aliases = $command->getAliases();
-    $command->setAliases(array_unique(array_merge($aliases, [$drushAlias])));
-  }
-  $application->add($command);
-}
-
-/**
- * Look for instances of arguments or parameters that
- * start with "~/".  Replace these with "$HOME/".
- *
- * Note that this function is called _after_ Drush does
- * its redispatch checks; tildes are passed through
- * unmodified on a redispatch, and are only expanded when
- * a command is handled locally.
- */
-function drush_preflight_tilde_expansion(&$command) {
-  // Skip tilde expansion for commands that explicitly
-  // turn it off via $command['tilde-expansion'] = FALSE.
-  if ($command['tilde-expansion']) {
-    $cli =& drush_get_context('cli');
-    $match = '#^~/#';
-    $replacement = drush_server_home() . '/';
-    foreach ($cli as $key => $value) {
-      if (is_string($value) && preg_match($match, $value)) {
-        $cli[$key] = preg_replace($match, $replacement, $value);
-      }
-    }
-    $command['arguments'] = array_map(function($value) use($match, $replacement) { return is_string($value) ? preg_replace($match, $replacement, $value) : $value; } , $command['arguments']);
-  }
 }
 
 /**
