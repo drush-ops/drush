@@ -9,7 +9,7 @@ use Drupal\Core\DrupalKernel;
 use Drush\Drush;
 use Drush\Drupal\DrupalKernel as DrushDrupalKernel;
 use Drush\Drupal\DrushServiceModifier;
-use Consolidation\AnnotatedCommand\AnnotatedCommandFactory;
+use Drupal\Core\Database\Database;
 
 use Drush\Log\LogLevel;
 
@@ -131,8 +131,11 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     {
         $classloader = $this->autoloader();
         $kernelClass = new \ReflectionClass('\Drupal\Core\DrupalKernel');
-        $this->kernel = DrushDrupalKernel::createFromRequest($this->getRequest(), $classloader, 'prod', false, DRUPAL_ROOT);
+        $request = $this->getRequest();
+        $this->logger->debug(print_r(['httphost' => $request->getHttpHost(), 'uri' => $request->getUri()], true));
+        $this->kernel = DrushDrupalKernel::createFromRequest($request, $classloader, 'prod', false, DRUPAL_ROOT);
         $this->logger->debug('site path is ' . $this->kernel->getSitePath() . "\n");
+        $this->logger->debug('db are ' . print_r(Database::getAllConnectionInfo(), true));
         // @see Drush\Drupal\DrupalKernel::addServiceModifier()
         $this->kernel->addServiceModifier(new DrushServiceModifier());
 
