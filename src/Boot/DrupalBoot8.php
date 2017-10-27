@@ -54,11 +54,6 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         }
     }
 
-    public function getProfile()
-    {
-        return drupal_get_profile();
-    }
-
     public function confPath($require_settings = true, $reset = false, Request $request = null)
     {
         if (!isset($request)) {

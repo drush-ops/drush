@@ -86,12 +86,11 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
         $boot_manager = Drush::bootstrapManager();
         $boot_object = Drush::bootstrap();
         if (($drupal_root = $boot_manager->getRoot()) && ($boot_object instanceof DrupalBoot)) {
-            $status_table['drupal-version'] = drush_drupal_version();
+            $status_table['drupal-version'] = $boot_object->getVersion($drupal_root);
             $conf_dir = $boot_object->confPath();
             $settings_file = "$conf_dir/settings.php";
             $status_table['drupal-settings-file'] = file_exists($settings_file) ? $settings_file : '';
             if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_SITE)) {
-                // @todo for some reason getUri() is returning null.
                 $status_table['uri'] = $boot_manager->getUri();
                 try {
                     $sql = SqlBase::create($options);
@@ -107,7 +106,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
                     $status_table['db-name'] = isset($db_spec['database']) ? $db_spec['database'] : null;
                     $status_table['db-port'] = isset($db_spec['port']) ? $db_spec['port'] : null;
                     if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
-                        $status_table['install-profile'] = $boot_object->getProfile();
+                        $status_table['install-profile'] = \Drupal::installProfile();
                         if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
                             $status_table['db-status'] = dt('Connected');
                             if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {

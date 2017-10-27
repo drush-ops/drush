@@ -53,10 +53,6 @@ abstract class DrupalBoot extends BaseBoot
     {
     }
 
-    public function getProfile()
-    {
-    }
-
     public function confPath($require_settings = true, $reset = false)
     {
         return confPath($require_settings, $reset);
