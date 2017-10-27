@@ -158,6 +158,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
             $install_state = array('interactive' => false) + install_state_defaults();
             try {
+                $this->serverGlobals(Drush::bootstrapManager()->getUri());
                 install_begin_request($class_loader, $install_state);
                 $profile = _install_select_profile($install_state);
             } catch (\Exception $e) {
@@ -353,6 +354,43 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             return $dir;
         }
         return false;
+    }
+
+    /**
+     * Fake the necessary HTTP headers that the Drupal installer still needs:
+     * @see https://github.com/drupal/drupal/blob/d260101f1ea8a6970df88d2f1899248985c499fc/core/includes/install.core.inc#L287
+     */
+    public function serverGlobals($drupal_base_url)
+    {
+        $drupal_base_url = parse_url($drupal_base_url);
+
+        // Fill in defaults.
+        $drupal_base_url += array(
+            'path' => '',
+            'host' => null,
+            'port' => null,
+        );
+        $_SERVER['HTTP_HOST'] = $drupal_base_url['host'];
+
+        if ($drupal_base_url['scheme'] == 'https') {
+              $_SERVER['HTTPS'] = 'on';
+        }
+
+        if ($drupal_base_url['port']) {
+              $_SERVER['HTTP_HOST'] .= ':' . $drupal_base_url['port'];
+        }
+        $_SERVER['SERVER_PORT'] = $drupal_base_url['port'];
+
+        $_SERVER['REQUEST_URI'] = $drupal_base_url['path'] . '/';
+
+        $_SERVER['PHP_SELF'] = $_SERVER['REQUEST_URI'] . 'index.php';
+        $_SERVER['SCRIPT_NAME'] = $_SERVER['PHP_SELF'];
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+        $_SERVER['REQUEST_METHOD']  = 'GET';
+
+        $_SERVER['SERVER_SOFTWARE'] = null;
+        $_SERVER['HTTP_USER_AGENT'] = null;
+        $_SERVER['SCRIPT_FILENAME'] = DRUPAL_ROOT . '/index.php';
     }
 }
 

@@ -7,6 +7,7 @@ use Drush\Log\LogLevel;
 use Drush\Sql\SqlBase;
 use Psr\Log\LoggerInterface;
 use Drupal\user\Entity\User;
+use Symfony\Component\HttpFoundation\Request;
 use Webmozart\PathUtil\Path;
 
 abstract class DrupalBoot extends BaseBoot
@@ -199,65 +200,9 @@ abstract class DrupalBoot extends BaseBoot
      *
      * In this function we determine the URL used for the command,
      * and check for a valid settings.php file.
-     *
-     * To do this, we need to set up the $_SERVER environment variable,
-     * to allow us to use confPath to determine what Drupal will load
-     * as a configuration file.
      */
     public function bootstrapDrupalSiteValidate()
     {
-        $this->bootstrapDrupalSiteSetupServerGlobal();
-        $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
-        $confPath = drush_bootstrap_value('confPath', $this->confPath(true, true));
-        return true; //$this->bootstrapDrupalSiteValidate_settings_present();
-    }
-
-    /**
-     * Set up the $_SERVER globals so that Drupal will see the same values
-     * that it does when serving pages via the web server.
-     */
-    public function bootstrapDrupalSiteSetupServerGlobal()
-    {
-        // Fake the necessary HTTP headers that Drupal needs:
-        if ($this->uri) {
-            $drupal_base_url = parse_url($this->uri);
-            // If there's no url scheme set, add http:// and re-parse the url
-            // so the host and path values are set accurately.
-            if (!array_key_exists('scheme', $drupal_base_url)) {
-                $drush_uri = 'http://' . $this->uri;
-                $drupal_base_url = parse_url($drush_uri);
-            }
-            // Fill in defaults.
-            $drupal_base_url += array(
-            'path' => '',
-            'host' => null,
-            'port' => null,
-            );
-            $_SERVER['HTTP_HOST'] = $drupal_base_url['host'];
-
-            if ($drupal_base_url['scheme'] == 'https') {
-                  $_SERVER['HTTPS'] = 'on';
-            }
-
-            if ($drupal_base_url['port']) {
-                  $_SERVER['HTTP_HOST'] .= ':' . $drupal_base_url['port'];
-            }
-            $_SERVER['SERVER_PORT'] = $drupal_base_url['port'];
-
-            $_SERVER['REQUEST_URI'] = $drupal_base_url['path'] . '/';
-        } else {
-            $_SERVER['HTTP_HOST'] = 'default';
-            $_SERVER['REQUEST_URI'] = '/';
-        }
-
-        $_SERVER['PHP_SELF'] = $_SERVER['REQUEST_URI'] . 'index.php';
-        $_SERVER['SCRIPT_NAME'] = $_SERVER['PHP_SELF'];
-        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-        $_SERVER['REQUEST_METHOD']  = 'GET';
-
-        $_SERVER['SERVER_SOFTWARE'] = null;
-        $_SERVER['HTTP_USER_AGENT'] = null;
-        $_SERVER['SCRIPT_FILENAME'] = DRUPAL_ROOT . '/index.php';
     }
 
     /**
