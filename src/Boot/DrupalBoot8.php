@@ -30,14 +30,16 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     /**
      * @return \Symfony\Component\HttpFoundation\Request
      */
-    public function getRequest() {
+    public function getRequest()
+    {
         return $this->request;
     }
 
     /**
      * @param \Symfony\Component\HttpFoundation\Request $request
      */
-    public function setRequest($request) {
+    public function setRequest($request)
+    {
         $this->request = $request;
     }
 
@@ -100,7 +102,8 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         return $core;
     }
 
-    public function bootstrapDrupalSiteValidate() {
+    public function bootstrapDrupalSiteValidate()
+    {
         parent::bootstrapDrupalSiteValidate();
         // Account for users who omit the http:// prefix.
         if (!parse_url($this->uri, PHP_URL_SCHEME)) {
