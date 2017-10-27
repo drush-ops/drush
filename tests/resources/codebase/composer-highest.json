@@ -16,7 +16,7 @@
   "require": {
     "composer/installers": "^1.2",
     "cweagans/composer-patches": "~1.6",
-    "webflo/drupal-core-strict": "8.4.x-dev",
+    "drupal/core": "8.5.x-dev",
     "drush/drush": "*@dev",
     "phpunit/phpunit": "^4.1",
     "drupal/empty_theme": "^1.0",
