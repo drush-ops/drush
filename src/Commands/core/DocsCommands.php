@@ -91,19 +91,6 @@ class DocsCommands extends DrushCommands
     }
 
     /**
-     * Bastion server configuration: remotely operate on a Drupal sites behind a firewall.
-     *
-     * @command docs:bastion
-     * @aliases docs-bastion
-     * @hidden
-     * @topic
-     */
-    public function bastion()
-    {
-        self::printFile(DRUSH_BASE_PATH. '/docs/bastion.md');
-    }
-
-    /**
      * Bootstrap explanation: how Drush starts up and prepares the Drupal environment.
      *
      * @command docs:bootstrap
