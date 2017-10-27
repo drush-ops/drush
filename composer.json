@@ -44,7 +44,7 @@
     "symfony/process": "~2.7|^3",
     "symfony/var-dumper": "~2.7|^3",
     "symfony/yaml": "~2.3|^3",
-    "webflo/drupal-finder": "^1.0",
+    "webflo/drupal-finder": "^1.1",
     "webmozart/path-util": "^2.1.0"
   },
   "require-dev": {
