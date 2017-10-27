@@ -2,11 +2,6 @@
 
 namespace Drush\Preflight;
 
-use Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface;
-use Drush\Drush;
-use Symfony\Component\Console\Input\InputInterface;
-use Consolidation\AnnotatedCommand\AnnotationData;
-use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -18,6 +13,8 @@ use Webmozart\PathUtil\Path;
  */
 class RedispatchToSiteLocal
 {
+    const REDISPATCH_RECURSION_LIMIT = 5;
+
     /**
      * Determine if a local redispatch is needed, and do so if it is.
      *
@@ -54,7 +51,11 @@ class RedispatchToSiteLocal
         }
 
         // Redispatch!
-        $command = $siteLocalDrush;
+        $recursion_limit = (int) getenv('DRUSH_REDISPATCH_RECURSION_LIMIT');
+        if ($recursion_limit > static::REDISPATCH_RECURSION_LIMIT) {
+            throw new \Exception('Redispatch limit reached. Drush could not bootstrap the site-local Drush. Please review your project setup.');
+        }
+        $recursion_limit++;
         array_shift($argv);
         $args = array_map(
             function ($item) {
@@ -62,7 +63,7 @@ class RedispatchToSiteLocal
             },
             $argv
         );
-        $command .= ' ' . implode(' ', $args);
+        $command = 'DRUSH_REDISPATCH_RECURSION_LIMIT=' . $recursion_limit . ' ' . $siteLocalDrush . ' ' . implode(' ', $args);
         passthru($command, $status);
         return $status;
     }
