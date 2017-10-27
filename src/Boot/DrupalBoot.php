@@ -53,10 +53,6 @@ abstract class DrupalBoot extends BaseBoot
     {
     }
 
-    public function getProfile()
-    {
-    }
-
     public function confPath($require_settings = true, $reset = false)
     {
         return confPath($require_settings, $reset);
@@ -263,25 +259,6 @@ abstract class DrupalBoot extends BaseBoot
         $_SERVER['HTTP_USER_AGENT'] = null;
         $_SERVER['SCRIPT_FILENAME'] = DRUPAL_ROOT . '/index.php';
     }
-
-    /**
-     * Validate that the Drupal site has all of the settings that it
-     * needs to operated.
-     */
-//  public function bootstrapDrupalSiteValidate_settings_present() {
-//    $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
-//
-//    $confPath = drush_bootstrap_value('confPath', $this->confPath(TRUE, TRUE));
-//    $conf_file = "$confPath/settings.php";
-//    if (!file_exists($conf_file)) {
-//      $this->logger()->notice(dt("Could not find a Drupal settings.php file at !file.",
-//        array('!file' => $conf_file)));
-//      return FALSE;
-//      // return drush_bootstrap_error('DRUPAL_SITE_SETTINGS_NOT_FOUND', );
-//    }
-//
-//    return TRUE;
-//  }
 
     /**
      * Called by bootstrapDrupalSite to do the main work

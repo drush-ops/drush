@@ -38,11 +38,6 @@ class DrupalBoot6 extends DrupalBoot
         }
     }
 
-    public function getProfile()
-    {
-        return variable_get('install_profile', 'standard');
-    }
-
     public function addLogger()
     {
     }

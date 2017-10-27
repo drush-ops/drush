@@ -242,7 +242,10 @@ class UpdateDBCommands extends DrushCommands
         if ($options['post-updates']) {
             $post_updates = \Drupal::service('update.post_update_registry')->getPendingUpdateFunctions();
             if ($post_updates) {
-                $operations[] = [[$this, 'cacheRebuild'], []];
+                if ($operations) {
+                    // Only needed if we performed updates earlier.
+                    $operations[] = [[$this, 'cacheRebuild'], []];
+                }
                 foreach ($post_updates as $function) {
                     $operations[] = ['update_invoke_post_update', [$function]];
                 }
