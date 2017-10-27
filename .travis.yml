@@ -58,7 +58,7 @@ before_script:
 
 script:
   - if [ -n "$TEST_DIR" ] ; then cd $TEST_DIR && phpunit ; fi
-  - if [ -z "$TEST_DIR" ] ; then ${PWD}/unish.phpunit.php $PHPUNIT_ARGS ; fi
+  - if [ -z "$TEST_DIR" ] ; then ${PWD}/unish.phpunit.php $PHPUNIT_ARGS --debug; fi
 
 # Background: https://github.com/drush-ops/drush/pull/1426
 after_success: ${PWD}/tests/testChildren.sh
