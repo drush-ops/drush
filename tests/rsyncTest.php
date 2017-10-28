@@ -52,8 +52,8 @@ class rsyncCase extends CommandUnishTestCase {
 
     $this->setUpDrupal(2, TRUE);
     $aliases = $this->getAliases();
-    $source = $aliases['stage'];
-    $destination = $aliases['dev'];
+    $source_alias = array_shift($aliases);
+    $target_alias = current($aliases);
 
     $options = [
       'yes' => NULL,
@@ -84,7 +84,7 @@ class rsyncCase extends CommandUnishTestCase {
 
     // Test an actual rsync between our two fixture sites. Note that
     // these sites share the same web root.
-    $this->drush('rsync', ["$source:%files/a/", "$destination:%files/b"], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
+    $this->drush('rsync', ["$source_alias:%files/a/", "$target_alias:%files/b"], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
     $this->assertContains('You will delete files in', $this->getOutput());
 
     // Test to see if our fixture file now exists at $target
