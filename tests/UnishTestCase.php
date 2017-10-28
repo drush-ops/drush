@@ -75,7 +75,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
       if (file_exists($sandbox)) {
         self::recursive_delete($sandbox);
       }
-      foreach (['modules', 'themes', 'profiles', 'drush'] as $dir) {
+      foreach (['modules', 'themes', 'profiles', 'drush', 'sites/dev', 'sites/stage', 'sites/prod'] as $dir) {
         $target = Path::join(self::getSut(), 'web', $dir, 'contrib');
         if (file_exists($target)) {
           self::recursive_delete_dir_contents($target);
