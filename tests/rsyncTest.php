@@ -81,7 +81,7 @@ class rsyncCase extends CommandUnishTestCase {
 
     // Test an actual rsync between our two fixture sites. Note that
     // these sites share the same web root.
-    $this->drush('rsync', ['@unish.dev:%files/a/', '@unish.stage:%files/b'], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
+    $this->drush('rsync', ['@sut.dev:%files/a/', '@sut.stage:%files/b'], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
     $expected = '';
     $this->assertContains('You will delete files in', $this->getOutput());
 
@@ -106,7 +106,7 @@ class rsyncCase extends CommandUnishTestCase {
       'simulate' => NULL,
       'yes' => NULL,
     );
-    $this->drush('core-rsync', array("@$site:%files", "/tmp"), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1;');
+    $this->drush('core-rsync', array("@sut.$site:%files", "/tmp"), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1;');
     $output = $this->getOutput();
     $level = $this->log_level();
     $pattern = in_array($level, array('verbose', 'debug')) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz %s /tmp);";

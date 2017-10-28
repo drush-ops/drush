@@ -25,7 +25,7 @@ class SiteSetCommandCase extends CommandUnishTestCase
         foreach ($site_names as $site_name) {
             $this->drush('site:set', ['@sut.' . $site_name]);
             $output = $this->getErrorOutput();
-            $this->assertEquals('[success] Site set to @' . $site_name, $output);
+            $this->assertEquals('[success] Site set to @sut.' . $site_name, $output);
         }
 
         // Test setting the site to the special @none alias.
