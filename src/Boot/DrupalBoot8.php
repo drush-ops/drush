@@ -116,7 +116,8 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         return true;
     }
 
-    public function bootstrapDrupalConfigurationValidate() {
+    public function bootstrapDrupalConfigurationValidate()
+    {
         $conf_file = $this->confPath() . '/settings.php';
         if (!file_exists($conf_file)) {
             $msg = dt("Could not find a Drupal settings.php file at !file.", array('!file' => $conf_file));
