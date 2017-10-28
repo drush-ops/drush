@@ -133,7 +133,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $kernelClass = new \ReflectionClass('\Drupal\Core\DrupalKernel');
         $request = $this->getRequest();
         $this->logger->debug(print_r(['httphost' => $request->getHttpHost(), 'uri' => $request->getUri()], true));
-        $this->kernel = DrushDrupalKernel::createFromRequest($request, $classloader, 'prod', false, DRUPAL_ROOT);
+        $this->kernel = DrushDrupalKernel::createFromRequest($request, $classloader, 'prod');
         $this->logger->debug('site path is ' . $this->kernel->getSitePath() . "\n");
         $this->logger->debug('db are ' . print_r(Database::getAllConnectionInfo(), true));
         // @see Drush\Drupal\DrupalKernel::addServiceModifier()
