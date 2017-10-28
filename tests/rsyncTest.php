@@ -51,7 +51,9 @@ class rsyncCase extends CommandUnishTestCase {
   public function testRsyncPathAliases() {
 
     $this->setUpDrupal(2, TRUE);
-    list($source, $destination) = $this->getAliases();
+    $aliases = $this->getAliases();
+    $source = $aliases['stage'];
+    $destination = $aliases['dev'];
 
     $options = [
       'yes' => NULL,
@@ -98,7 +100,7 @@ class rsyncCase extends CommandUnishTestCase {
    */
   function testRsyncAndPercentFiles() {
     $root = $this->webroot();
-    $site = key($this->getAliases());
+    $site = current($this->getAliases());
     $uri = $this->getUri();
     $options = array(
       'root' => $root,

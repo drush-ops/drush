@@ -18,7 +18,9 @@ class ConfigPullCase extends CommandUnishTestCase {
    * Make sure a change propagates using config-pull+config-import.
    */
   function testConfigPull() {
-    list($source, $destination) = $this->getAliases();
+    $aliases = $this->getAliases();
+    $source = $aliases['stage'];
+    $destination = $aliases['dev'];
     // Make UUID match.
     $this->drush('config-get', array('system.site', 'uuid'), array('yes' => NULL), $source);
     list($name, $uuid) = explode(' ', $this->getOutput());
