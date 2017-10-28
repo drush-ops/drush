@@ -24,7 +24,7 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
       'pipe' => NULL,
     );
 
-    $this->execute('tree', \self::EXIT_SUCCESS, $options['root'] . '/sites');
+    $this->execute('tree', self::EXIT_SUCCESS, $options['root'] . '/sites');
     $out = $this->getOutput();
     fwrite(STDERR, $out);
 
