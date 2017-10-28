@@ -19,8 +19,8 @@ class ConfigPullCase extends CommandUnishTestCase {
    */
   function testConfigPull() {
     list($source, $destination) = array_keys($this->getSites());
-    $source = "@$source";
-    $destination = "@$destination";
+    $source = "@sut.$source";
+    $destination = "@sut.$destination";
     // Make UUID match.
     $this->drush('config-get', array('system.site', 'uuid'), array('yes' => NULL), $source);
     list($name, $uuid) = explode(' ', $this->getOutput());

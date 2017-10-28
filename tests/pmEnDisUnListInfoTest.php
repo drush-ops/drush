@@ -24,10 +24,6 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
       'pipe' => NULL,
     );
 
-    $this->execute("find . -print", self::EXIT_SUCCESS, $options['root'] . '/sites');
-    $out = $this->getOutput();
-    fwrite(STDERR, $out);
-
     // Test that pm-list lists uninstalled modules.
     $this->drush('pm-list', array(), $options + array('no-core' => NULL, 'status' => 'disabled'));
     $out = $this->getOutput();

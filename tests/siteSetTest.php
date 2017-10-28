@@ -19,11 +19,11 @@ class SiteSetCommandCase extends CommandUnishTestCase
         }
         $sites = $this->setUpDrupal(2, true);
         $site_names = array_keys($sites);
-        $this->assertCount(2, $site_names, 'Has 2 drupal sites setup');
+        $this->assertCount(2, $site_names);
 
         // Test changing aliases.
         foreach ($site_names as $site_name) {
-            $this->drush('site:set', ['@' . $site_name]);
+            $this->drush('site:set', ['@sut.' . $site_name]);
             $output = $this->getErrorOutput();
             $this->assertEquals('[success] Site set to @' . $site_name, $output);
         }
@@ -44,9 +44,9 @@ class SiteSetCommandCase extends CommandUnishTestCase
         // Toggle between the previous set alias and back again.
         $this->drush('site:set', ['-']);
         $output = $this->getErrorOutput();
-        $this->assertEquals('[success] Site set to @' . $site_names[0], $output);
+        $this->assertEquals('[success] Site set to @sut.' . $site_names[0], $output);
         $this->drush('site:set', ['-']);
         $output = $this->getErrorOutput();
-        $this->assertEquals('[success] Site set to @' . $site_names[1], $output);
+        $this->assertEquals('[success] Site set to @sut.' . $site_names[1], $output);
     }
 }
