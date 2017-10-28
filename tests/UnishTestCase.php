@@ -506,7 +506,7 @@ EOT;
     $siteData = $this->createAliasFile($sites_subdirs, 'unish');
     self::$sites = [];
     foreach ($siteData as $key => $data) {
-      self::$sites["unish.$key"] = $data;
+      self::$sites[$key] = $data;
     }
     return self::$sites;
   }
