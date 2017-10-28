@@ -119,7 +119,10 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     public function bootstrapDrupalConfigurationValidate() {
         $conf_file = $this->confPath() . '/settings.php';
         if (!file_exists($conf_file)) {
-            throw new \Exception(dt("Could not find a Drupal settings.php file at !file.", array('!file' => $conf_file)));
+            $msg = dt("Could not find a Drupal settings.php file at !file.", array('!file' => $conf_file));
+            $this->logger->debug($msg);
+            // Cant do this because site:install deliberately bootstraps to configure without a settings.php file.
+            // return drush_set_error($msg);
         }
         return true;
     }
