@@ -24,7 +24,7 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
       'pipe' => NULL,
     );
 
-    $this->execute("find . -print | sed -e '\''s;[^/]*/;|____;g;s;____|; |;g'\''", self::EXIT_SUCCESS, $options['root'] . '/sites');
+    $this->execute("find . -print", self::EXIT_SUCCESS, $options['root'] . '/sites');
     $out = $this->getOutput();
     fwrite(STDERR, $out);
 
