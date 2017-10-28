@@ -18,14 +18,14 @@ class SiteSetCommandCase extends CommandUnishTestCase
             $this->markTestSkipped('Site-set not currently available on Windows.');
         }
         $sites = $this->setUpDrupal(2, true);
-        $site_names = array_keys($sites);
-        $this->assertCount(2, $site_names);
+        $site_aliases = $this->getAliases();
+        $this->assertCount(2, $site_aliases);
 
         // Test changing aliases.
-        foreach ($site_names as $site_name) {
-            $this->drush('site:set', ['@sut.' . $site_name]);
+        foreach ($site_aliases as $site_alias) {
+            $this->drush('site:set', [$site_alias]);
             $output = $this->getErrorOutput();
-            $this->assertEquals('[success] Site set to @sut.' . $site_name, $output);
+            $this->assertEquals('[success] Site set to ' . $site_alias, $output);
         }
 
         // Test setting the site to the special @none alias.
@@ -44,9 +44,9 @@ class SiteSetCommandCase extends CommandUnishTestCase
         // Toggle between the previous set alias and back again.
         $this->drush('site:set', ['-']);
         $output = $this->getErrorOutput();
-        $this->assertEquals('[success] Site set to @sut.' . $site_names[0], $output);
+        $this->assertEquals('[success] Site set to ' . $site_aliases[0], $output);
         $this->drush('site:set', ['-']);
         $output = $this->getErrorOutput();
-        $this->assertEquals('[success] Site set to @sut.' . $site_names[1], $output);
+        $this->assertEquals('[success] Site set to ' . $site_aliases[1], $output);
     }
 }
