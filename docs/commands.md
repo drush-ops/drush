@@ -19,7 +19,7 @@ Commandfiles that don't ship inside Drupal modules are called 'global' commandfi
 1. The filename must end in Commands.php (e.g. FooCommands.php)
 1. The enclosing directory must be named Commands
 1. The directory above Commands must be one of: 
-    1.  Folders listed in the 'include' option (see `drush topic docs:configuration`).
+    1.  Folders listed in the 'include' option.
     1.  ../drush, /drush and /sites/all/drush relative to the current Drupal installation.
 
 Avoiding the loading of certain Commandfiles (Note: not functional right now).
