@@ -34,7 +34,7 @@ class RemoteCommandProxy extends Command
         // Put in a special input definition to avoid option validation errors.
         $this->setDefinition(new IndiscriminateInputDefinition());
 
-        // Put in a placeholder array arguement to avoid validation errors.
+        // Put in a placeholder array argument to avoid validation errors.
         $this->addArgument(
             'arguments',
             InputArgument::IS_ARRAY,
