@@ -201,7 +201,7 @@
 #
 # Altering aliases:
 #
-# It is no longer possible to alter aliases dynamically. This is a planned feature. Help wanted.
+# See examples/Commands/SiteAliasAlter.php for an example.
 #
 # Environment variables:
 #
