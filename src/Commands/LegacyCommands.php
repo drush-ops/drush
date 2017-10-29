@@ -11,6 +11,7 @@ class LegacyCommands extends DrushCommands
      *
      * @command pm:disable
      * @aliases dis,pm-disable
+     * @hidden
      * @obsolete
      */
     public function disable()
@@ -22,6 +23,7 @@ class LegacyCommands extends DrushCommands
      *
      * @command pm:info
      * @aliases pmi,pm-info
+     * @hidden
      * @obsolete
      */
     public function info()
@@ -34,6 +36,7 @@ class LegacyCommands extends DrushCommands
      * @command pm:projectinfo
      * @allow-additional-options
      * @aliases pm-projectinfo
+     * @hidden
      * @obsolete
      */
     public function projectInfo()
@@ -45,6 +48,7 @@ class LegacyCommands extends DrushCommands
      *
      * @command pm:refresh
      * @aliases rf,pm-refresh
+     * @hidden
      * @obsolete
      */
     public function refresh()
@@ -56,6 +60,7 @@ class LegacyCommands extends DrushCommands
      *
      * @command pm:updatestatus
      * @aliases ups,pm-updatestatus
+     * @hidden
      * @obsolete
      */
     public function updatestatus()
@@ -67,6 +72,7 @@ class LegacyCommands extends DrushCommands
      *
      * @command pm:updatecode
      * @aliases upc,pm-update,pm-updatecode
+     * @hidden
      * @obsolete
      */
     public function updatecode()
@@ -78,6 +84,7 @@ class LegacyCommands extends DrushCommands
      *
      * @command pm:releasenotes
      * @aliases rln,pm-releasenotes
+     * @hidden
      * @obsolete
      */
     public function releaseNotes()
@@ -89,6 +96,7 @@ class LegacyCommands extends DrushCommands
      *
      * @command pm:releases
      * @aliases rl,pm-releases
+     * @hidden
      * @obsolete
      */
     public function releases()
@@ -100,6 +108,7 @@ class LegacyCommands extends DrushCommands
      *
      * @command make
      * @aliases make-convert,make-generate,make-lock,make-update
+     * @hidden
      * @obsolete
      */
     public function make()
@@ -111,6 +120,7 @@ class LegacyCommands extends DrushCommands
      *
      * @command pm:download
      * @aliases dl,pm-download
+     * @hidden
      * @obsolete
      */
     public function download()
