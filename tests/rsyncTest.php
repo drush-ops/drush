@@ -51,6 +51,9 @@ class rsyncCase extends CommandUnishTestCase {
   public function testRsyncPathAliases() {
 
     $this->setUpDrupal(2, TRUE);
+    $aliases = $this->getAliases();
+    $source_alias = array_shift($aliases);
+    $target_alias = current($aliases);
 
     $options = [
       'yes' => NULL,
@@ -81,8 +84,7 @@ class rsyncCase extends CommandUnishTestCase {
 
     // Test an actual rsync between our two fixture sites. Note that
     // these sites share the same web root.
-    $this->drush('rsync', ['@unish.dev:%files/a/', '@unish.stage:%files/b'], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
-    $expected = '';
+    $this->drush('rsync', ["$source_alias:%files/a/", "$target_alias:%files/b"], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1');
     $this->assertContains('You will delete files in', $this->getOutput());
 
     // Test to see if our fixture file now exists at $target
@@ -98,7 +100,7 @@ class rsyncCase extends CommandUnishTestCase {
    */
   function testRsyncAndPercentFiles() {
     $root = $this->webroot();
-    $site = key($this->getSites());
+    $site = current($this->getAliases());
     $uri = $this->getUri();
     $options = array(
       'root' => $root,
@@ -106,7 +108,7 @@ class rsyncCase extends CommandUnishTestCase {
       'simulate' => NULL,
       'yes' => NULL,
     );
-    $this->drush('core-rsync', array("@$site:%files", "/tmp"), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1;');
+    $this->drush('core-rsync', array("$site:%files", "/tmp"), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1;');
     $output = $this->getOutput();
     $level = $this->log_level();
     $pattern = in_array($level, array('verbose', 'debug')) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz %s /tmp);";

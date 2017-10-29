@@ -44,11 +44,11 @@ class SqlBase
     {
         // Set defaults in the unfortunate event that caller doesn't provide values.
         $options += [
-        'database' => 'default',
-        'target' => 'default',
-        'db-url' => null,
-        'databases' => null,
-        'db-prefix' => null,
+            'database' => 'default',
+            'target' => 'default',
+            'db-url' => null,
+            'databases' => null,
+            'db-prefix' => null,
         ];
         $database = $options['database'];
         $target = $options['target'];

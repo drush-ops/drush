@@ -3,25 +3,12 @@ namespace Drush\Drupal;
 
 use Drush\Log\LogLevel;
 use Drupal\Core\DrupalKernel as DrupalDrupalKernel;
-use Symfony\Component\HttpFoundation\Request;
 use Drupal\Core\DependencyInjection\ServiceModifierInterface;
 
 class DrupalKernel extends DrupalDrupalKernel
 {
   /** @var ServiceModifierInterface[] */
     protected $serviceModifiers = [];
-
-    /**
-     * @inheritdoc
-     */
-    public static function createFromRequest(Request $request, $class_loader, $environment, $allow_dumping = true, $app_root = null)
-    {
-        drush_log(dt("Create from request"), LogLevel::DEBUG);
-        $kernel = new static($environment, $class_loader, $allow_dumping, $app_root);
-        static::bootEnvironment($app_root);
-        $kernel->initializeSettings($request);
-        return $kernel;
-    }
 
     /**
      * Add a service modifier to the container builder.

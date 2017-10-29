@@ -14,7 +14,7 @@ class updateDBTest extends CommandUnishTestCase {
     $options = array(
       'yes' => NULL,
       'root' => $this->webroot(),
-      'uri' => key($sites),
+      'uri' => $this->getUri(),
     );
     $this->drush('pm:enable', array('devel'), $options);
     $this->drush('updatedb:status', array(), $options + ['format' => 'json']);

@@ -33,7 +33,18 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     return self::$sites;
   }
 
-  public static function getUri($site = 'unish.dev') {
+  /**
+   * @return array
+   */
+  public static function getAliases() {
+    // Prefix @sut. onto each site.
+    foreach (self::$sites as $key => $site) {
+      $aliases[$key] = '@sut.' . $key;
+    }
+    return $aliases;
+  }
+
+  public static function getUri($site = 'dev') {
     return self::$sites[$site]['uri'];
   }
 
@@ -79,6 +90,12 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         $target = Path::join(self::getSut(), 'web', $dir, 'contrib');
         if (file_exists($target)) {
           self::recursive_delete_dir_contents($target);
+        }
+      }
+      foreach (['sites/dev', 'sites/stage', 'sites/prod'] as $dir) {
+        $target = Path::join(self::getSut(), 'web', $dir);
+        if (file_exists($target)) {
+          self::recursive_delete($target);
         }
       }
     }
@@ -506,7 +523,7 @@ EOT;
     $siteData = $this->createAliasFile($sites_subdirs, 'unish');
     self::$sites = [];
     foreach ($siteData as $key => $data) {
-      self::$sites["unish.$key"] = $data;
+      self::$sites[$key] = $data;
     }
     return self::$sites;
   }
