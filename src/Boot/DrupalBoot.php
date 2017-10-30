@@ -168,10 +168,6 @@ abstract class DrupalBoot extends BaseBoot
      * In this function, the pwd will be moved to the root
      * of the Drupal installation.
      *
-     * The DRUSH_DRUPAL_ROOT context, DRUSH_DRUPAL_CORE context, DRUPAL_ROOT, and the
-     * DRUSH_DRUPAL_CORE constants are populated from the value that we determined during
-     * the validation phase.
-     *
      * We also now load the drushrc.php for this specific Drupal site.
      * We can now include files from the Drupal Tree, and figure
      * out more context about the platform, such as the version of Drupal.
