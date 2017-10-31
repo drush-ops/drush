@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Drupal;
 
+use Drupal\Core\Site\Settings;
 use Drush\Log\LogLevel;
 use Drupal\Core\DrupalKernel as DrupalDrupalKernel;
 use Drupal\Core\DependencyInjection\ServiceModifierInterface;
