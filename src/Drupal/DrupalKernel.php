@@ -51,10 +51,10 @@ class DrupalKernel extends DrupalDrupalKernel
             // or the config factory) being available for things like defining
             // event subscriptions.
             if (isset($container_definition)) {
-              $class = Settings::get('container_base_class', '\Drupal\Core\DependencyInjection\Container');
-              $container = new $class($container_definition);
-              $this->attachSynthetic($container);
-              \Drupal::setContainer($container);
+                $class = Settings::get('container_base_class', '\Drupal\Core\DependencyInjection\Container');
+                $container = new $class($container_definition);
+                $this->attachSynthetic($container);
+                \Drupal::setContainer($container);
             }
 
             $this->invalidateContainer();
