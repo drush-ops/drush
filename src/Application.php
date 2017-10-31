@@ -162,7 +162,9 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $uri = $selfAliasRecord->uri();
 
         if (empty($uri)) {
-            $uri = $this->bootstrapManager()->selectUri($cwd);
+            if (!$uri = $this->config->get('options.uri')) {
+              $uri = $this->bootstrapManager()->selectUri($cwd);
+            }
             $selfAliasRecord->setUri($uri);
             $this->aliasManager->setSelf($selfAliasRecord);
         }

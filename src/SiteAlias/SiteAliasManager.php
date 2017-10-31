@@ -256,7 +256,6 @@ class SiteAliasManager
         return new AliasRecord(
             [
                 'root' => $root,
-                'uri' => $preflightArgs->uri(),
             ],
             '@self'
         );
