@@ -14,7 +14,7 @@ pages:
   - REPL (a custom shell for Drupal): repl.md
 - Writing commands/generators:
   - Command Authoring: commands.md
-  - Custom hooks: custom-hooks.md
+  - Hooks: hooks.md
   - Dependency injection: dependency-injection.md
   - Input / Output: io.md
   - Generator Authoring: generators.md
