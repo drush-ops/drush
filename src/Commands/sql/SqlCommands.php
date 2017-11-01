@@ -217,7 +217,7 @@ class SqlCommands extends DrushCommands
         $this->further($options);
         $sql = SqlBase::create($options);
         if ($sql->dump($options) === false) {
-            throw new \Exception('Unable to drop database. Rerun with --debug to see any error message.');
+            throw new \Exception('Unable to dump database. Rerun with --debug to see any error message.');
         }
     }
 
