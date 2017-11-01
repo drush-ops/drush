@@ -86,11 +86,14 @@ class StringUtils
      * @param $path
      *   A path that may contain a ~ at front.
      *
-     * @return string
-     *   The path with tilde replaced, if applicable.
+     * @param $home
+     *   The effective home dir for this request.
+     *
+     * @return string The path with tilde replaced, if applicable.
+     * The path with tilde replaced, if applicable.
      */
-    public static function replaceTilde($path) {
-        $replacement = Drush::config()->get('env.home') . '/';
+    public static function replaceTilde($path, $home) {
+        $replacement = $home . '/';
         $match = '#^~/#';
         if (preg_match($match, $path)) {
             return preg_replace($match, $replacement, $path);
