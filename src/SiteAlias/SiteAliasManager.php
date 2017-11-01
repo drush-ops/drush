@@ -258,10 +258,9 @@ class SiteAliasManager
         $uri = $preflightArgs->uri();
         $data = [
             'root' => $root,
-            'uri' => $uri,
         ];
-        if (!$uri) {
-            unset($data['uri']);
+        if ($uri) {
+            $data['uri'] = $uri;
         }
 
         return new AliasRecord($data, '@self');
