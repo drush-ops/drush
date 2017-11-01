@@ -399,7 +399,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     }
 
     /**
-     * Determne whether Drush is in "strict" mode or not.
+     * Determine whether Drush is in "strict" mode or not.
      */
     public function isStrict()
     {
