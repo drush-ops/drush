@@ -175,11 +175,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
      */
     public function selectUri($cwd)
     {
-      $uri = $this->config->get('options.uri');
-      if ($uri) {
-        return $uri;
-      }
-      return $this->bootstrapManager()->selectUri($cwd);
+        $uri = $this->config->get('options.uri');
+        if ($uri) {
+            return $uri;
+        }
+        return $this->bootstrapManager()->selectUri($cwd);
     }
 
     /**
