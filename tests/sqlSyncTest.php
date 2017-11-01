@@ -102,7 +102,7 @@ class sqlSyncTest extends CommandUnishTestCase {
       )
     );
 
-    // Copy stage to dev with --sanitize.
+    // Copy stage to dev, and then sql:sanitize.
     $sync_options = array(
       'yes' => NULL,
       // Test wildcards expansion from within sql-sync. Also avoid D8 persistent entity cache.

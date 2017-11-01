@@ -455,7 +455,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         }
 
         // If in backend mode, read additional options from stdin.
-        // TODO: Maybe reading stdin options should be the responsibilty of some
+        // TODO: Maybe reading stdin options should be the responsibility of some
         // backend manager class? Could be called from preflight and injected here.
         $input = new LessStrictArgvInput($this->args());
         $input->injectAdditionalOptions($this->readStdinOptions());
