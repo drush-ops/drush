@@ -4,6 +4,7 @@ namespace Drush\Preflight;
 use Consolidation\Config\Config;
 use Consolidation\Config\ConfigInterface;
 
+use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Input\ArgvInput;
 use Drush\Symfony\LessStrictArgvInput;
 
@@ -210,7 +211,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      */
     public function setSelectedSite($root)
     {
-        return $this->set(self::ROOT, $root);
+        return $this->set(self::ROOT, StringUtils::replaceTilde($root));
     }
 
     /**
@@ -245,7 +246,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     public function addConfigPath($path)
     {
         $paths = $this->configPaths();
-        $paths[] = $path;
+        $paths[] = StringUtils::replaceTilde($path);
         return $this->set(self::CONFIG_PATH, $paths);
     }
 
@@ -277,7 +278,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     public function addAliasPath($path)
     {
         $paths = $this->aliasPaths();
-        $paths[] = $path;
+        $paths[] = StringUtils::replaceTilde($path);
         return $this->set(self::ALIAS_PATH, $paths);
     }
 
@@ -309,7 +310,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     public function addCommandPath($path)
     {
         $paths = $this->commandPaths();
-        $paths[] = $path;
+        $paths[] = StringUtils::replaceTilde($path);
         return $this->set(self::COMMAND_PATH, $paths);
     }
 
@@ -394,7 +395,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      */
     public function setCoverageFile($coverageFile)
     {
-        return $this->set(self::COVERAGE_FILE, $coverageFile);
+        return $this->set(self::COVERAGE_FILE, StringUtils::replaceTilde($coverageFile));
     }
 
     /**

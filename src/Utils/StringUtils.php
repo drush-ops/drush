@@ -2,6 +2,8 @@
 
 namespace Drush\Utils;
 
+use Drush\Drush;
+
 class StringUtils
 {
 
@@ -76,5 +78,23 @@ class StringUtils
             return sprintf('{%s}', $key);
         }
         return $key;
+    }
+
+    /**
+     * Replace tilde in a path with the HOME directory.
+     *
+     * @param $path
+     *   A path that may contain a ~ at front.
+     *
+     * @return string
+     *   The path with tilde replaced, if applicable.
+     */
+    public static function replaceTilde($path) {
+        $replacement = Drush::config()->get('env.home') . '/';
+        $match = '#^~/#';
+        if (preg_match($match, $path)) {
+            return preg_replace($match, $replacement, $path);
+        }
+        return $path;
     }
 }
