@@ -131,7 +131,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
             'file' => $target_dump_path,
             'file-delete' => true,
         ];
-        $return = drush_invoke_process($targetRecord, 'sql-query', [], $global_options + $query_options, $backend_options);
+        $return = drush_invoke_process($targetRecord, 'sql-query', [], $query_options, $backend_options);
         if ($return['error_status']) {
             throw new Exception(dt('Failed to import !dump into target.', ['!dump' => $target_dump_path]));
         }

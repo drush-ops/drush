@@ -31,12 +31,18 @@ class TildeExpansionHook implements ValidatorInterface, ConfigAwareInterface
 
         foreach ($options as $name => $value) {
             if (is_string($value)) {
-                $input->setOption($name, StringUtils::replaceTilde($value, $this->getConfig()->get($home_key)));
+                $replaced = StringUtils::replaceTilde($value, $this->getConfig()->get($home_key));
+                if ($value != $replaced) {
+                    $input->setOption($name, $replaced);
+                }
             }
         }
         foreach ($args as $name => $value) {
             if (is_string($value)) {
-                $input->setArgument($name, StringUtils::replaceTilde($value, $this->getConfig()->get($home_key)));
+                $replaced = StringUtils::replaceTilde($value, $this->getConfig()->get($home_key));
+                if ($value != $replaced) {
+                    $input->setArgument($name, $replaced);
+                }
             }
         }
     }
