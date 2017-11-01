@@ -5,6 +5,9 @@ use PHPUnit\Framework\TestCase;
 
 class ArgsPreprocessorTest extends TestCase
 {
+
+    use \Drush\FixtureFactory;
+
     /**
      * @dataProvider argTestValues
      */
@@ -22,6 +25,7 @@ class ArgsPreprocessorTest extends TestCase
 
         $argProcessor = new ArgsPreprocessor($home);
         $preflightArgs = new PreflightArgs();
+        $preflightArgs->setEnvironment($this->environment());
         $argProcessor->parse($argv, $preflightArgs);
 
         $this->assertEquals($unprocessedArgs, implode(',', $preflightArgs->args()));
