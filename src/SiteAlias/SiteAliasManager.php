@@ -252,12 +252,18 @@ class SiteAliasManager
         // Create the 'self' alias record. Note that the self
         // record will be named '@self' if it is manually constructed
         // here, and will otherwise have the name of the
-        // alias or site specification used by the user.
-        return new AliasRecord(
-            [
-                'root' => $root,
-            ],
-            '@self'
-        );
+        // alias or site specification used by the user. Also note that if we
+        // pass in a falsy uri the drush config (i.e drush.yml) can not override
+        // it.
+        $uri = $preflightArgs->uri();
+        $data = [
+            'root' => $root,
+            'uri' => $uri,
+        ];
+        if (!$uri) {
+            unset($data['uri']);
+        }
+
+        return new AliasRecord($data, '@self');
     }
 }
