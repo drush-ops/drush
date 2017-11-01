@@ -92,7 +92,8 @@ class StringUtils
      * @return string The path with tilde replaced, if applicable.
      * The path with tilde replaced, if applicable.
      */
-    public static function replaceTilde($path, $home) {
+    public static function replaceTilde($path, $home)
+    {
         $replacement = $home . '/';
         $match = '#^~/#';
         if (preg_match($match, $path)) {

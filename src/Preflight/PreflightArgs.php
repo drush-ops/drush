@@ -33,14 +33,16 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     /**
      * @return \Drush\Config\Environment
      */
-    public function getEnvironment() {
+    public function getEnvironment()
+    {
         return $this->environment;
     }
 
     /**
      * @param \Drush\Config\Environment $environment
      */
-    public function setEnvironment($environment) {
+    public function setEnvironment($environment)
+    {
         $this->environment = $environment;
     }
 
