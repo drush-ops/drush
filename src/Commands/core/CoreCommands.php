@@ -48,7 +48,10 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
                 'description' => $ancient[$name]['description'],
             ];
         }
-        usort($rows, function ($a, $b) { return strnatcmp($a['name'], $b['name']); });
+        usort($rows, function ($a, $b) {
+            return strnatcmp($a['name'], $b['name']);
+
+        });
         return new RowsOfFields($rows);
     }
 
