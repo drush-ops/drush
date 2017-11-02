@@ -126,7 +126,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     }
 
     /**
-     * This method is called by the Application iff the user
+     * This method is called by the Application if the user
      * did not explicitly provide a URI.
      */
     public function selectUri($cwd)
