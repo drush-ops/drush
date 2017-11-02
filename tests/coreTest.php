@@ -2,6 +2,7 @@
 
 namespace Unish;
 
+use Symfony\Component\Yaml\Yaml;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -93,5 +94,22 @@ class coreCase extends CommandUnishTestCase {
       $this->assertContains("Site path : sites/$uri", $output);
     }
     chdir($cwd);
+  }
+
+  function testOptionsUri() {
+    // Put a yml file in the drush folder.
+    $drush_directory = sprintf('%s/drush', $this->webroot());
+    $drush_config_file = sprintf('%s/drush.yml', $drush_directory);
+    $test_uri = 'http://test.uri';
+    $options_with_uri = [
+      'options' => [
+        'uri' => $test_uri,
+      ],
+    ];
+    file_put_contents($drush_config_file, Yaml::dump($options_with_uri, PHP_INT_MAX, 2));
+    $this->drush('core-status');
+    $output = $this->getOutput();
+    $output = preg_replace('#  *#', ' ', $output);
+    $this->assertContains("Site URI : $test_uri", $output);
   }
 }
