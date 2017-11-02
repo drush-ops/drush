@@ -106,8 +106,10 @@ class coreCase extends CommandUnishTestCase {
         'uri' => $test_uri,
       ],
     ];
+    @mkdir($drush_directory);
     file_put_contents($drush_config_file, Yaml::dump($options_with_uri, PHP_INT_MAX, 2));
     $this->drush('core-status');
+    unlink($drush_config_file);
     $output = $this->getOutput();
     $output = preg_replace('#  *#', ' ', $output);
     $this->assertContains("Site URI : $test_uri", $output);
