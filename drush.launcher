@@ -116,7 +116,7 @@ if [ -n "$drush_php_ini" ] ; then
   php_options="--php-ini $drush_php_ini"
 fi
 if [ -n "$drush_php_override" ] ; then
-  php_options=`grep '^[a-z_A-Z0-9.]\+ *=' $drush_php_override | sed -e 's|\([^ =]*\) *= *\(.*\)|\1="\2"|' -e 's| ||g' -e 's|^|-d |' | tr '\n\r' '  '`
+  php_options=`grep '^[a-z_A-Z0-9.]\+ *=' $drush_php_override | sed -e 's|\([^ =]*\) *= *\(.*\)|\1="\2"|' -e 's|^|-d |' | tr '\n\r' '  '`
 fi
 # If the PHP_OPTIONS environment variable is specified, then
 # its contents will be passed to php on the command line as
@@ -129,4 +129,19 @@ fi
 # re-launches itself to run subcommands.  We will also pass in the php options.
 # Important note: Any options added here must be removed  when Drush processes
 # a #! (shebang) script.  @see drush_adjust_args_if_shebang_script()
-exec "$php" $php_options "$SCRIPT_PATH" --php="$php" --php-options="$php_options" "$@"
+
+# Build up new $@ to allow spaces in quoted shell variables
+# http://mywiki.wooledge.org/BashFAQ/050#I.27m_constructing_a_command_based_on_information_that_is_only_known_at_run_time
+set -- "$SCRIPT_PATH" --php="$php" --php-options="$php_options" "$@"
+
+# Build a list of PHP settings delimited by lines so they can be applied
+# to the $@ variable one by one
+while read -r line; do
+  if [ -n "$line" ]; then
+    set -- -d"$line" "$@"
+  fi
+done <<EOF
+$(echo "$php_options" | sed -e 's|-d \([^ =]*\) *= *\([a-zA-Z]*\)|\n\1=\2|g')
+EOF
+
+exec "$php" "$@"
