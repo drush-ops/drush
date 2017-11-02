@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Drush\Symfony\IndiscriminateInputDefinition;
 
-use Drush\Preflight\RedispatchHook;
+use Drush\Runtime\RedispatchHook;
 
 /**
  * Create a placeholder proxy command to represent an unknown command.
