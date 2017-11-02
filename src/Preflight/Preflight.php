@@ -136,7 +136,7 @@ class Preflight
         $argProcessor = new ArgsPreprocessor();
         $remapper = new ArgsRemapper($this->remapOptions(), $this->remapCommandAliases());
         $preflightArgs = new PreflightArgs([], $this->environment());
-        $preflightArgs->setEnvironment($this->environment());
+        $preflightArgs->setHomeDir($this->environment()->homeDir());
         $argProcessor->setArgsRemapper($remapper);
 
         $argProcessor->parse($argv, $preflightArgs);

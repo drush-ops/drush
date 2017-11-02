@@ -4,7 +4,6 @@ namespace Drush\Preflight;
 use Consolidation\Config\Config;
 use Consolidation\Config\ConfigInterface;
 
-use Drush\Config\Environment;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Input\ArgvInput;
 use Drush\Symfony\LessStrictArgvInput;
@@ -21,29 +20,29 @@ use Drush\Symfony\LessStrictArgvInput;
 class PreflightArgs extends Config implements PreflightArgsInterface
 {
     /**
-     * @var $args Remaining arguments not handled by the preprocessor
+     * @var array $args Remaining arguments not handled by the preprocessor
      */
     protected $args;
 
     /**
-     * @var Environment $environment The environment object.
+     * @var string $homeDir Path to directory to use when replacing ~ in paths
      */
-    protected $environment;
+    protected $homeDir;
 
     /**
-     * @return \Drush\Config\Environment
+     * @return string
      */
-    public function getEnvironment()
+    public function homeDir()
     {
-        return $this->environment;
+        return $this->homeDir;
     }
 
     /**
-     * @param \Drush\Config\Environment $environment
+     * @param string $homeDir
      */
-    public function setEnvironment($environment)
+    public function setHomeDir($homeDir)
     {
-        $this->environment = $environment;
+        $this->homeDir = $homeDir;
     }
 
     const DRUSH_CONFIG_PATH_NAMESPACE = 'drush.paths';
@@ -233,7 +232,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      */
     public function setSelectedSite($root)
     {
-        return $this->set(self::ROOT, StringUtils::replaceTilde($root, $this->getEnvironment()->homeDir()));
+        return $this->set(self::ROOT, StringUtils::replaceTilde($root, $this->homeDir()));
     }
 
     /**
@@ -268,7 +267,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     public function addConfigPath($path)
     {
         $paths = $this->configPaths();
-        $paths[] = StringUtils::replaceTilde($path, $this->getEnvironment()->homeDir());
+        $paths[] = StringUtils::replaceTilde($path, $this->homeDir());
         return $this->set(self::CONFIG_PATH, $paths);
     }
 
@@ -300,7 +299,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     public function addAliasPath($path)
     {
         $paths = $this->aliasPaths();
-        $paths[] = StringUtils::replaceTilde($path, $this->getEnvironment()->homeDir());
+        $paths[] = StringUtils::replaceTilde($path, $this->homeDir());
         return $this->set(self::ALIAS_PATH, $paths);
     }
 
@@ -332,7 +331,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     public function addCommandPath($path)
     {
         $paths = $this->commandPaths();
-        $paths[] = StringUtils::replaceTilde($path, $this->getEnvironment()->homeDir());
+        $paths[] = StringUtils::replaceTilde($path, $this->homeDir());
         return $this->set(self::COMMAND_PATH, $paths);
     }
 
@@ -417,7 +416,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      */
     public function setCoverageFile($coverageFile)
     {
-        return $this->set(self::COVERAGE_FILE, StringUtils::replaceTilde($coverageFile, $this->getEnvironment()->homeDir()));
+        return $this->set(self::COVERAGE_FILE, StringUtils::replaceTilde($coverageFile, $this->homeDir()));
     }
 
     /**

@@ -25,7 +25,7 @@ class ArgsPreprocessorTest extends TestCase
 
         $argProcessor = new ArgsPreprocessor($home);
         $preflightArgs = new PreflightArgs();
-        $preflightArgs->setEnvironment($this->environment());
+        $preflightArgs->setHomeDir($this->environment()->homeDir());
         $argProcessor->parse($argv, $preflightArgs);
 
         $this->assertEquals($unprocessedArgs, implode(',', $preflightArgs->args()));
