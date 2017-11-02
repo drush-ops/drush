@@ -212,7 +212,7 @@ class SqlBase
      */
     public function query($query, $input_file = null, $result_file = '')
     {
-        if (!\Drush\Drush::simulate()) {
+        if (!Drush::simulate()) {
             return $this->alwaysQuery($query, $input_file, $result_file);
         }
         $this->logQueryInDebugMode($query, $input_file);
@@ -288,7 +288,7 @@ class SqlBase
         // In --verbose mode, drush_shell_exec() will show the call to mysql/psql/sqlite,
         // but the sql query itself is stored in a temp file and not displayed.
         // We show the query when --debug is used and this function created the temp file.
-        if ((drush_get_context('DRUSH_DEBUG') || \Drush\Drush::simulate()) && empty($input_file_original)) {
+        if ((drush_get_context('DRUSH_DEBUG') || Drush::simulate()) && empty($input_file_original)) {
             drush_log('sql-query: ' . $query, LogLevel::INFO);
         }
     }
