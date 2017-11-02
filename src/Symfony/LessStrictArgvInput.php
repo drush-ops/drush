@@ -11,7 +11,7 @@ use Symfony\Component\Console\Exception\RuntimeException;
  * extra options are provided.
  *
  * If the last argument of the command being called is not an array
- * argument, then an error will be thrown if there are two many arguments.
+ * argument, then an error will be thrown if there are too many arguments.
  *
  * We use this instead of a IndiscriminateInputDefinition in cases where we
  * know in advance that we wish to disable input validation for all commands.

@@ -38,6 +38,20 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
                 'description' => $value->getDescription(),
             ];
         }
+
+        // Also document the key PreflightArgs. It would be possible to redundantly declare
+        // those as global options. We don't do that for now, to avoid confusion.
+        $ancient = drush_get_global_options();
+        foreach (['config', 'alias-path', 'include', 'local', 'backend', 'strict'] as $name) {
+            $rows[] = [
+                'name' => '--' . $name,
+                'description' => $ancient[$name]['description'],
+            ];
+        }
+        usort($rows, function ($a, $b) {
+            return strnatcmp($a['name'], $b['name']);
+
+        });
         return new RowsOfFields($rows);
     }
 
