@@ -115,8 +115,7 @@ class Environment
                 // versions only allow system processes to use it.
                 $directories[] = Path::join($windir, 'Temp');
             }
-        }
-        else {
+        } else {
             $directories[] = Path::canonicalize('/tmp');
         }
         $directories[] = Path::canonicalize(sys_get_temp_dir());
@@ -131,7 +130,7 @@ class Environment
         if (empty($temporary_directory)) {
             // If no directory has been found, create one in cwd.
             $temporary_directory = Path::join(Drush::config()->get('env.cwd'), 'tmp');
-            drush_mkdir($temporary_directory, TRUE);
+            drush_mkdir($temporary_directory, true);
             if (!is_dir($temporary_directory)) {
                 throw new \Exception(dt("Unable to create a temporary directory."));
             }
