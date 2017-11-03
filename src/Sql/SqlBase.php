@@ -77,7 +77,10 @@ class SqlBase implements ConfigAwareInterface
     {
         $driver = $db_spec['driver'];
         $class_name = 'Drush\Sql\Sql'. ucfirst($driver);
-        return new $class_name($db_spec, $options);
+        $instance = new $class_name($db_spec, $options);
+        // Inject config
+        $instance->setConfig(Drush::config());
+        return $instance;
     }
 
     /*
@@ -188,7 +191,7 @@ class SqlBase implements ConfigAwareInterface
             if ($file === true) {
                 $backup_dir = drush_prepare_backup_dir($database);
                 if (empty($backup_dir)) {
-                    $backup_dir = $this->getConfig()->get('env.tmp');
+                    $backup_dir = Drush::config()->get('env.tmp');
                 }
                 $file = Path::join($backup_dir, '@DATABASE_@DATE.sql');
             }
