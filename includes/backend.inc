@@ -57,6 +57,7 @@
  * drush_backend_get_result().
  */
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
 use Drush\Preflight\PreflightArgs;
 
@@ -85,7 +86,7 @@ define('DRUSH_BACKEND_PACKET_PATTERN', "\0" . DRUSH_BACKEND_PACKET_START . "%s\n
  * used to generate the output for the current command.
  */
 function drush_backend_set_result($value) {
-  if (\Drush\Drush::backend()) {
+  if (Drush::backend()) {
     drush_set_context('BACKEND_RESULT', $value);
   }
 }
@@ -211,7 +212,7 @@ function drush_backend_output_discard($string) {
  *  A boolean indicating whether the command was output.
  */
 function drush_backend_packet($packet, $data) {
-  if (\Drush\Drush::backend()) {
+  if (Drush::backend()) {
     $data['packet'] = $packet;
     $data = json_encode($data);
     // We use 'fwrite' instead of 'drush_print' here because
@@ -745,9 +746,9 @@ function drush_backend_invoke_concurrent($invocations, $common_options = array()
 
     // Add in preflight option contexts (--include et. al)
     $preflightContextOptions =
-      \Drush\Drush::config()->get(PreflightArgs::DRUSH_RUNTIME_CONTEXT_NAMESPACE, []) +
-      \Drush\Drush::config()->get(PreflightArgs::DRUSH_CONFIG_PATH_NAMESPACE, []);
-    $preflightContextOptions['local'] = \Drush\Drush::config()->get('runtime.local', false);
+      Drush::config()->get(PreflightArgs::DRUSH_RUNTIME_CONTEXT_NAMESPACE, []) +
+      Drush::config()->get(PreflightArgs::DRUSH_CONFIG_PATH_NAMESPACE, []);
+    $preflightContextOptions['local'] = Drush::config()->get('runtime.local', false);
     foreach ($preflightContextOptions as $key => $value) {
       if ($value) {
         $command_options[$key] = $value;
@@ -1009,7 +1010,7 @@ function _drush_backend_classify_options($site_record, $command_options, &$backe
  *   backend invoke results from each concurrent command.
  */
 function _drush_backend_invoke($cmds, $common_backend_options = array(), $context = NULL) {
-  if (\Drush\Drush::simulate() && !array_key_exists('override-simulated', $common_backend_options) && !array_key_exists('backend-simulate', $common_backend_options)) {
+  if (Drush::simulate() && !array_key_exists('override-simulated', $common_backend_options) && !array_key_exists('backend-simulate', $common_backend_options)) {
     foreach ($cmds as $cmd) {
       drush_print(dt('Simulating backend invoke: !cmd', array('!cmd' => $cmd['cmd'])));
     }
@@ -1165,7 +1166,7 @@ function _drush_backend_generate_command($site_record, $command, $args = array()
   if (isset($hostname)) {
     $username = (isset($username)) ? drush_escapeshellarg($username, "LOCAL") . "@" : '';
     $ssh_options = $site_record['ssh-options']; // TODO: update
-    $ssh_options = (isset($ssh_options)) ? $ssh_options : \Drush\Drush::config()->get('ssh.options', "-o PasswordAuthentication=no");
+    $ssh_options = (isset($ssh_options)) ? $ssh_options : Drush::config()->get('ssh.options', "-o PasswordAuthentication=no");
 
     $ssh_cmd[] = "ssh";
     $ssh_cmd[] = $ssh_options;

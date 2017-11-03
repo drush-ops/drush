@@ -92,8 +92,6 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface
             'remote-host' => $remote_host,
             'remote-user' => $remote_user,
             'additional-global-options' => [],
-            'integrate' => true,
-            'backend' => false,
         ];
         if ($input->isInteractive()) {
             $backend_options['#tty'] = true;
