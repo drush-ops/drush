@@ -271,7 +271,7 @@ function drush_directory_cache($subdir = '') {
   if ($home) {
     $cache_locations[$home] = '.drush/cache';
   }
-  $cache_locations[drush_find_tmp()] = 'drush-' . Drush::config()->get('env.user') . '/cache';
+  $cache_locations[Drush::config()->get('env.tmp')] = 'drush-' . Drush::config()->get('env.user') . '/cache';
   foreach ($cache_locations as $base => $dir) {
     if (!empty($base) && is_writable($base)) {
       $cache_dir = $base . '/' . $dir;
