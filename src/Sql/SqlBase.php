@@ -5,12 +5,15 @@ namespace Drush\Sql;
 use Drupal\Core\Database\Database;
 use Drush\Drush;
 use Drush\Log\LogLevel;
+use Robo\Common\ConfigAwareTrait;
+use Robo\Contract\ConfigAwareInterface;
 use Webmozart\PathUtil\Path;
 
-class SqlBase
+class SqlBase implements ConfigAwareInterface
 {
 
     use SqlTableSelectionTrait;
+    use ConfigAwareTrait;
 
     // An Drupal style array containing specs for connecting to database.
     public $dbSpec;
@@ -185,7 +188,7 @@ class SqlBase
             if ($file === true) {
                 $backup_dir = drush_prepare_backup_dir($database);
                 if (empty($backup_dir)) {
-                    $backup_dir = drush_find_tmp();
+                    $backup_dir = $this->getConfig()->get('env.tmp');
                 }
                 $file = Path::join($backup_dir, '@DATABASE_@DATE.sql');
             }
