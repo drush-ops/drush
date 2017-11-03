@@ -98,20 +98,21 @@ class coreCase extends CommandUnishTestCase {
 
   function testOptionsUri() {
     // Put a yml file in the drush folder.
-    $drush_directory = sprintf('%s/drush', $this->webroot());
-    $drush_config_file = sprintf('%s/drush.yml', $drush_directory);
+    $drush_config_file = Path::join($this->getSut(), 'drush', 'drush.yml');
     $test_uri = 'http://test.uri';
     $options_with_uri = [
       'options' => [
         'uri' => $test_uri,
       ],
     ];
-    @mkdir($drush_directory);
+    $options = [
+      'format' => 'json',
+    ];
     file_put_contents($drush_config_file, Yaml::dump($options_with_uri, PHP_INT_MAX, 2));
-    $this->drush('core-status');
+    $this->drush('core-status', [], $options);
     unlink($drush_config_file);
-    $output = $this->getOutput();
-    $output = preg_replace('#  *#', ' ', $output);
-    $this->assertContains("Site URI : $test_uri", $output);
+    $output = $this->getOutputFromJSON();
+    $this->assertEquals($test_uri, $output->uri);
   }
+
 }
