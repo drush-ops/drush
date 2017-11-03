@@ -51,6 +51,7 @@ class DrupalKernel extends DrupalDrupalKernel
             // replaces it. Certain contrib modules rely on services (like State
             // or the config factory) being available for things like defining
             // event subscriptions.
+            // @see https://github.com/drush-ops/drush/issues/3123
             if (isset($container_definition)) {
                 $class = Settings::get('container_base_class', '\Drupal\Core\DependencyInjection\Container');
                 $container = new $class($container_definition);

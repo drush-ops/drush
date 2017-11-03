@@ -8,6 +8,8 @@ use Webmozart\PathUtil\Path;
  * Tests the Drush override of DrupalKernel.
  *
  * @group base
+ *
+ * @see https://github.com/drush-ops/drush/issues/3123
  */
 class containerTest extends CommandUnishTestCase {
 
@@ -15,11 +17,11 @@ class containerTest extends CommandUnishTestCase {
      * Tests that the existing container is available while Drush rebuilds it.
      */
     public function testContainer() {
-        $sites = $this->setUpDrupal(1, TRUE);
+        $this->setUpDrupal(1, TRUE);
         $root = $this->webroot();
         $options = array(
             'root' => $root,
-            'uri' => key($sites),
+            'uri' => $this->getUri(),
             'yes' => NULL,
         );
 
