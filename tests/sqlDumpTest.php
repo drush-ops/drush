@@ -22,7 +22,7 @@ class SqlDumpTest extends CommandUnishTestCase {
 
     $this->setUpDrupal(1, TRUE);
     $root = $this->webroot();
-    $uri = 'dev';
+    $uri = $this->getUri();
     $full_dump_file_path = self::getSandbox() . DIRECTORY_SEPARATOR . 'full_db.sql';
 
     $options = array(
@@ -37,7 +37,7 @@ class SqlDumpTest extends CommandUnishTestCase {
     );
 
     $this->drush('sql-dump', [], $options + $site_selection_options + ['simulate' => NULL]);
-    $this->assertContains('--ignore-table=unish_dev.cache_container', $this->getErrorOutput());
+    $this->assertContains('--ignore-table=unish_dev.cache_discovery', $this->getErrorOutput());
 
     // Test --extra-dump option
     if ($this->db_driver() == 'mysql') {

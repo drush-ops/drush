@@ -5,12 +5,15 @@ namespace Drush\Sql;
 use Drupal\Core\Database\Database;
 use Drush\Drush;
 use Drush\Log\LogLevel;
+use Robo\Common\ConfigAwareTrait;
+use Robo\Contract\ConfigAwareInterface;
 use Webmozart\PathUtil\Path;
 
-class SqlBase
+class SqlBase implements ConfigAwareInterface
 {
 
     use SqlTableSelectionTrait;
+    use ConfigAwareTrait;
 
     // An Drupal style array containing specs for connecting to database.
     public $dbSpec;
@@ -44,11 +47,11 @@ class SqlBase
     {
         // Set defaults in the unfortunate event that caller doesn't provide values.
         $options += [
-        'database' => 'default',
-        'target' => 'default',
-        'db-url' => null,
-        'databases' => null,
-        'db-prefix' => null,
+            'database' => 'default',
+            'target' => 'default',
+            'db-url' => null,
+            'databases' => null,
+            'db-prefix' => null,
         ];
         $database = $options['database'];
         $target = $options['target'];
@@ -74,7 +77,10 @@ class SqlBase
     {
         $driver = $db_spec['driver'];
         $class_name = 'Drush\Sql\Sql'. ucfirst($driver);
-        return new $class_name($db_spec, $options);
+        $instance = new $class_name($db_spec, $options);
+        // Inject config
+        $instance->setConfig(Drush::config());
+        return $instance;
     }
 
     /*
@@ -185,7 +191,7 @@ class SqlBase
             if ($file === true) {
                 $backup_dir = drush_prepare_backup_dir($database);
                 if (empty($backup_dir)) {
-                    $backup_dir = drush_find_tmp();
+                    $backup_dir = Drush::config()->get('env.tmp');
                 }
                 $file = Path::join($backup_dir, '@DATABASE_@DATE.sql');
             }
@@ -212,7 +218,7 @@ class SqlBase
      */
     public function query($query, $input_file = null, $result_file = '')
     {
-        if (!\Drush\Drush::simulate()) {
+        if (!Drush::simulate()) {
             return $this->alwaysQuery($query, $input_file, $result_file);
         }
         $this->logQueryInDebugMode($query, $input_file);
@@ -288,7 +294,7 @@ class SqlBase
         // In --verbose mode, drush_shell_exec() will show the call to mysql/psql/sqlite,
         // but the sql query itself is stored in a temp file and not displayed.
         // We show the query when --debug is used and this function created the temp file.
-        if ((drush_get_context('DRUSH_DEBUG') || \Drush\Drush::simulate()) && empty($input_file_original)) {
+        if ((drush_get_context('DRUSH_DEBUG') || Drush::simulate()) && empty($input_file_original)) {
             drush_log('sql-query: ' . $query, LogLevel::INFO);
         }
     }

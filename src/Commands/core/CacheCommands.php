@@ -186,12 +186,11 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
         $autoloader = $this->loadDrupalAutoloader(DRUPAL_ROOT);
         require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';
 
-        $request = Request::createFromGlobals();
-        // Ensure that the HTTP method is set, which does not happen with Request::createFromGlobals().
-        $request->setMethod('GET');
+        $request = Drush::bootstrap()->getRequest();
         // Manually resemble early bootstrap of DrupalKernel::boot().
         require_once DRUSH_DRUPAL_CORE . '/includes/bootstrap.inc';
         DrupalKernel::bootEnvironment();
+
         // Avoid 'Only variables should be passed by reference'
         $root  = DRUPAL_ROOT;
         $site_path = DrupalKernel::findSitePath($request);

@@ -152,7 +152,7 @@ class userCase extends CommandUnishTestCase {
   function options() {
     return array(
       'root' => $this->webroot(),
-      'uri' => key($this->getSites()),
+      'uri' => $this->getUri(),
       'yes' => NULL,
     );
   }

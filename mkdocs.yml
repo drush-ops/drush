@@ -1,7 +1,10 @@
 site_name: Drush docs
 theme: readthedocs
+site_url: http://docs.drush.org
 repo_url: https://github.com/drush-ops/drush
-include_search: true
+repo_name: GitHub
+edit_uri: blob/master/docs/
+#include_search: true
 pages:
 - Home: index.md
 - General:
@@ -9,12 +12,11 @@ pages:
   - Usage: usage.md
   - Example files: examples.md
   - Cron: cron.md
-  - Bastion: bastion.md
   - Exporting Drupal configuration: config-exporting.md
   - REPL (a custom shell for Drupal): repl.md
 - Writing commands/generators:
   - Command Authoring: commands.md
-  - Custom hooks: custom-hooks.md
+  - Hooks: hooks.md
   - Dependency injection: dependency-injection.md
   - Input / Output: io.md
   - Generator Authoring: generators.md

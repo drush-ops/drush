@@ -17,7 +17,8 @@
   ],
   "support": {
     "forum": "http://drupal.stackexchange.com/questions/tagged/drush",
-    "irc": "irc://irc.freenode.org/drush"
+    "irc": "irc://irc.freenode.org/drush",
+    "slack": "https://drupal.slack.com/messages/C62H9CWQM"
   },
   "bin": [
     "drush"

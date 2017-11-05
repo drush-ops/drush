@@ -3,6 +3,7 @@ namespace Drush\Commands\sql;
 
 use Drupal\Core\Database\Database;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Sql\SqlBase;
 
@@ -17,11 +18,11 @@ class SqlCommands extends DrushCommands
      * @option all Show all database connections, instead of just one.
      * @option show-passwords Show database password.
      * @optionset_sql
+     * @bootstrap max
      * @hidden
      */
     public function conf($options = ['format' => 'yaml', 'all' => false, 'show-passwords' => false])
     {
-        $this->further($options);
         if ($options['all']) {
             $return = Database::getAllConnectionInfo();
             foreach ($return as $key1 => $value) {
@@ -48,6 +49,7 @@ class SqlCommands extends DrushCommands
      * @aliases sql-connect
      * @option extra Add custom options to the connect string (e.g. --extra=--skip-column-names)
      * @optionset_sql
+     * @bootstrap max
      * @usage `drush sql-connect` < example.sql
      *   Bash: Import SQL statements from a file into the current database.
      * @usage eval (drush sql-connect) < example.sql
@@ -55,7 +57,6 @@ class SqlCommands extends DrushCommands
      */
     public function connect($options = ['extra' => self::REQ])
     {
-        $this->further($options);
         $sql = SqlBase::create($options);
         return $sql->connect(false);
     }
@@ -74,14 +75,14 @@ class SqlCommands extends DrushCommands
      *   Create the database as specified for @site.test.
      * @usage drush sql:create --db-su=root --db-su-pw=rootpassword --db-url="mysql://drupal_db_user:drupal_db_password@127.0.0.1/drupal_db"
      *   Create the database as specified in the db-url option.
+     * @bootstrap max
      */
     public function create($options = ['db-su' => self::REQ, 'db-su-pw' => self::REQ])
     {
-        $this->further($options);
         $sql = SqlBase::create($options);
         $db_spec = $sql->getDbSpec();
         // Prompt for confirmation.
-        if (!\Drush\Drush::simulate()) {
+        if (!Drush::simulate()) {
             // @todo odd - maybe for sql-sync.
             $txt_destination = (isset($db_spec['remote-host']) ? $db_spec['remote-host'] . '/' : '') . $db_spec['database'];
             $this->output()->writeln(dt("Creating database !target. Any existing database will be dropped!", array('!target' => $txt_destination)));
@@ -102,11 +103,11 @@ class SqlCommands extends DrushCommands
      * @command sql:drop
      * @aliases sql-drop
      * @optionset_sql
+     * @bootstrap max
      * @topics docs:policy
      */
     public function drop($options = [])
     {
-        $this->further($options);
         $sql = SqlBase::create($options);
         $db_spec = $sql->getDbSpec();
         if (!$this->io()->confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $db_spec['database'])))) {
@@ -130,10 +131,10 @@ class SqlCommands extends DrushCommands
      * @usage drush sql:cli --extra=-A
      *   Open a SQL CLI and skip reading table information.
      * @remote-tty
+     * @bootstrap max
      */
     public function cli($options = [])
     {
-        $this->further($options);
         $sql = SqlBase::create($options);
         if (drush_shell_proc_open($sql->connect())) {
             throw new \Exception('Unable to open database shell. Rerun with --debug to see any error message.');
@@ -160,17 +161,17 @@ class SqlCommands extends DrushCommands
      *   Import sql statements from a file into the current database.
      * @usage drush sql:query --file=example.sql
      *   Alternate way to import sql statements from a file.
+     * @bootstrap max
      *
      */
     public function query($query = '', $options = ['result-file' => null, 'file' => self::REQ, 'extra' => self::REQ, 'db-prefix' => false])
     {
-        $this->further($options);
         $filename = $options['file'];
         // Enable prefix processing when db-prefix option is used.
         if ($options['db-prefix']) {
             drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
         }
-        if (\Drush\Drush::simulate()) {
+        if (Drush::simulate()) {
             if ($query) {
                 $this->output()->writeln(dt('Simulating sql-query: !q', array('!q' => $query)));
             } else {
@@ -208,26 +209,16 @@ class SqlCommands extends DrushCommands
      * @usage drush sql:dump --extra-dump=--no-data
      *   Pass extra option to mysqldump command.
      * @hidden-options create-db
+     * @bootstrap max
      *
      * @notes
      *   createdb is used by sql-sync, since including the DROP TABLE statements interfere with the import when the database is created.
      */
     public function dump($options = ['result-file' => null, 'create-db' => false, 'data-only' => false, 'ordered-dump' => false, 'gzip' => false, 'extra' => self::REQ, 'extra-dump' => self::REQ])
     {
-        $this->further($options);
         $sql = SqlBase::create($options);
         if ($sql->dump($options) === false) {
-            throw new \Exception('Unable to drop database. Rerun with --debug to see any error message.');
-        }
-    }
-
-    /**
-     * Check whether further bootstrap is needed. If so, do it.
-     */
-    public function further($options)
-    {
-        if (empty($options['db-url']) && empty($options['db-spec'])) {
-            drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+            throw new \Exception('Unable to dump database. Rerun with --debug to see any error message.');
         }
     }
 }

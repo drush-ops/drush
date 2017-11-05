@@ -49,8 +49,8 @@ class OptionsCommands
 
     /**
      * @hook option @optionset_table_selection
-     * @option skip-tables-key A key in the $skip_tables array. @see example.config.yml
-     * @option structure-tables-key A key in the $structure_tables array. @see example.config.yml
+     * @option skip-tables-key A key in the $skip_tables array. @see example.drush.yml
+     * @option structure-tables-key A key in the $structure_tables array. @see example.drush.yml
      * @option tables-key A key in the $tables array.
      * @option skip-tables-list A comma-separated list of tables to exclude completely.
      * @option structure-tables-list A comma-separated list of tables to include for structure, but not data.

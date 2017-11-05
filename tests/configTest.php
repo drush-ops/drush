@@ -70,7 +70,7 @@ class ConfigCase extends CommandUnishTestCase {
     return array(
       'yes' => NULL,
       'root' => $this->webroot(),
-      'uri' => key($this->getSites()),
+      'uri' => $this->getUri(),
     );
   }
 }

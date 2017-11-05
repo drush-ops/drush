@@ -623,7 +623,7 @@ function _drush_backend_adjust_options($site_record, $command, $command_options,
  * n.b. Prefer drush_invoke_process() to this function.
  *
  * @param invocations
- *   An array of command records to exacute. Each record should contain:
+ *   An array of command records to execute. Each record should contain:
  *     'site':
  *       An array containing information used to generate the command.
  *         'remote-host'

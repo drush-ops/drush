@@ -70,7 +70,7 @@ Available Drush Services
 
 - AutoloaderAwareInterface: Provides access to the class loader.
 - SiteAliasManagerAwareInterface: The site alias manager [allows alias records to be obtained](site-alias-manager.md).
-- CustomEventAwareInterface: Allows command files to [define and fire custom events](custom-hooks.md) that other command files can hook.
+- CustomEventAwareInterface: Allows command files to [define and fire custom events](hooks.md) that other command files can hook.
 - ConfigAwareInterface: Provides access to the [Drush configuration manager](using-drush-configuration.md).
 - ContainerAwareInterface: Provides Drush's dependency injection container.
 
