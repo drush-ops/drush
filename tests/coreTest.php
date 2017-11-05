@@ -2,6 +2,7 @@
 
 namespace Unish;
 
+use Symfony\Component\Yaml\Yaml;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -94,4 +95,24 @@ class coreCase extends CommandUnishTestCase {
     }
     chdir($cwd);
   }
+
+  function testOptionsUri() {
+    // Put a yml file in the drush folder.
+    $drush_config_file = Path::join($this->getSut(), 'drush', 'drush.yml');
+    $test_uri = 'http://test.uri';
+    $options_with_uri = [
+      'options' => [
+        'uri' => $test_uri,
+      ],
+    ];
+    $options = [
+      'format' => 'json',
+    ];
+    file_put_contents($drush_config_file, Yaml::dump($options_with_uri, PHP_INT_MAX, 2));
+    $this->drush('core-status', [], $options);
+    unlink($drush_config_file);
+    $output = $this->getOutputFromJSON();
+    $this->assertEquals($test_uri, $output->uri);
+  }
+
 }

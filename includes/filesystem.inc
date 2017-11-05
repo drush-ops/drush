@@ -397,61 +397,10 @@ function drush_save_data_to_temp_file($data, $suffix = NULL) {
 /**
  * Returns the path to a temporary directory.
  *
- * This is a custom version of Drupal's file_directory_path().
- * We can't directly rely on sys_get_temp_dir() as this
- * path is not valid in some setups for Mac, and we want to honor
- * an environment variable (used by tests).
+ * @deprecated Use $this->getConfig()->get('env.tmp').
  */
 function drush_find_tmp() {
-  static $temporary_directory;
-
-  if (!isset($temporary_directory)) {
-    $directories = array();
-
-    // Get user specific and operating system temp folders from system environment variables.
-    // See http://www.microsoft.com/resources/documentation/windows/xp/all/proddocs/en-us/ntcmds_shelloverview.mspx?mfr=true
-    $tempdir = getenv('TEMP');
-    if (!empty($tempdir)) {
-      $directories[] = $tempdir;
-    }
-    $tmpdir = getenv('TMP');
-    if (!empty($tmpdir)) {
-      $directories[] = $tmpdir;
-    }
-    // Operating system specific dirs.
-    if (drush_is_windows()) {
-      $windir = getenv('WINDIR');
-      if (isset($windir)) {
-        // WINDIR itself is not writable, but it always contains a /Temp dir,
-        // which is the system-wide temporary directory on older versions. Newer
-        // versions only allow system processes to use it.
-        $directories[] = Path::join($windir, 'Temp');
-      }
-    }
-    else {
-      $directories[] = Path::canonicalize('/tmp');
-    }
-    $directories[] = Path::canonicalize(sys_get_temp_dir());
-
-    foreach ($directories as $directory) {
-      if (is_dir($directory) && is_writable($directory)) {
-        $temporary_directory = $directory;
-        break;
-      }
-    }
-
-    if (empty($temporary_directory)) {
-      // If no directory has been found, create one in cwd.
-      $temporary_directory = Path::join(Drush::config()->get('env.cwd'), 'tmp');
-      drush_mkdir($temporary_directory, TRUE);
-      if (!is_dir($temporary_directory)) {
-        return drush_set_error('DRUSH_UNABLE_TO_CREATE_TMP_DIR', dt("Unable to create a temporary directory."));
-      }
-      drush_register_file_for_deletion($temporary_directory);
-    }
-  }
-
-  return $temporary_directory;
+  return Drush::config()->get('env.tmp');
 }
 
 /**
@@ -467,7 +416,7 @@ function drush_find_tmp() {
  */
 function drush_tempnam($pattern, $tmp_dir = NULL, $suffix = '') {
   if ($tmp_dir == NULL) {
-    $tmp_dir = drush_find_tmp();
+    $tmp_dir = Drush::config()->get('env.tmp');
   }
   $tmp_file = tempnam($tmp_dir, $pattern);
   drush_register_file_for_deletion($tmp_file);
@@ -480,7 +429,7 @@ function drush_tempnam($pattern, $tmp_dir = NULL, $suffix = '') {
  * Creates a temporary directory and return its path.
  */
 function drush_tempdir() {
-  $tmp_dir = drush_trim_path(drush_find_tmp());
+  $tmp_dir = drush_trim_path(Drush::config()->get('env.tmp'));
   $tmp_dir .= '/' . 'drush_tmp_' . uniqid(time() . '_');
 
   drush_mkdir($tmp_dir);

@@ -366,6 +366,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
 
         // Fill in defaults.
         $drupal_base_url += array(
+            'scheme' => null,
             'path' => '',
             'host' => null,
             'port' => null,

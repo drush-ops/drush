@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Drupal;
 
+use Drupal\Core\Site\Settings;
 use Drush\Log\LogLevel;
 use Drupal\Core\DrupalKernel as DrupalDrupalKernel;
 use Drupal\Core\DependencyInjection\ServiceModifierInterface;
@@ -45,6 +46,19 @@ class DrupalKernel extends DrupalDrupalKernel
         $container_definition = $this->getCachedContainerDefinition();
 
         if ($this->shouldDrushInvalidateContainer()) {
+            // Normally when the container is being rebuilt, the existing
+            // container is still available for use until the newly built one
+            // replaces it. Certain contrib modules rely on services (like State
+            // or the config factory) being available for things like defining
+            // event subscriptions.
+            // @see https://github.com/drush-ops/drush/issues/3123
+            if (isset($container_definition)) {
+                $class = Settings::get('container_base_class', '\Drupal\Core\DependencyInjection\Container');
+                $container = new $class($container_definition);
+                $this->attachSynthetic($container);
+                \Drupal::setContainer($container);
+            }
+
             $this->invalidateContainer();
         }
         return parent::initializeContainer();
