@@ -16,11 +16,11 @@
     "symfony/finder": "~2.7|^3",
     "webflo/drupal-finder": "^0",
     "webmozart/path-util": "^2.1.0",
-    "sebastian/version": "~1"
+    "sebastian/version": "^1|^2"
   },
   "require-dev": {
     "lox/xhprof": "dev-master",
-    "phpunit/phpunit": "^4"
+    "phpunit/phpunit": "^4.8|^5.5.4"
   },
   "autoload": {
     "psr-4": {

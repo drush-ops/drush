@@ -37,7 +37,7 @@
     "pear/console_table": "~1.3.0",
     "psr/log": "~1.0",
     "psy/psysh": "~0.6",
-    "sebastian/version": "~1",
+    "sebastian/version": "^1|^2",
     "symfony/config": "~2.2|^3",
     "symfony/console": "~2.7|^3",
     "symfony/event-dispatcher": "~2.7|^3",
@@ -50,7 +50,7 @@
   },
   "require-dev": {
     "lox/xhprof": "dev-master",
-    "phpunit/phpunit": "^4",
+    "phpunit/phpunit": "^4.8|^5.5.4",
     "squizlabs/php_codesniffer": "^2.7"
   },
   "autoload": {
@@ -74,7 +74,7 @@
       "find includes -name '*.inc' -print0 | xargs -0 -n1 php -l",
       "find src -name '*.php' -print0 | xargs -0 -n1 php -l"
     ],
-    "isolation": "cd isolation && phpunit --colors=always",
+    "isolation": "cd isolation && vendor/bin/phpunit --colors=always",
     "post-update-cmd": "cd isolation && composer update"
   },
   "extra": {
