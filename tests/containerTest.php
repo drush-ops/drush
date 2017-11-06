@@ -17,31 +17,26 @@ class containerTest extends CommandUnishTestCase {
      * Tests that the existing container is available while Drush rebuilds it.
      */
     public function testContainer() {
-        $this->setUpDrupal(1, TRUE);
-        $root = $this->webroot();
-        $options = array(
-            'root' => $root,
-            'uri' => $this->getUri(),
-            'yes' => NULL,
-        );
+      $this->setUpDrupal(1, TRUE);
+      $root = $this->webroot();
 
       // Copy the 'woot' module over to the Drupal site we just set up.
       $this->setupModulesForTests($root);
 
       // Enable our module.
-      $this->drush('pm-enable', ['woot'], $options);
+      $this->drush('pm-enable', ['woot']);
 
       // Set up for a config import with just one small piece.
-      $this->drush('config-export', array(), $options);
-      $this->drush('config-set', array('system.site', 'name', 'config_test'), $options);
+      $this->drush('config-export');
+      $this->drush('config-set', array('system.site', 'name', 'config_test'));
 
       // Trigger the container rebuild we need.
-      $this->drush('cr', [], $options);
-      $this->drush('cron', [], $options);
+      $this->drush('cr');
+      $this->drush('cron');
 
       // If the event was registered successfully, then upon a config import, we
       // should get the error message.
-      $this->drush('config-import', [], $options, NULL, NULL, CommandUnishTestCase::EXIT_ERROR);
+      $this->drush('config-import', [], [], NULL, NULL, CommandUnishTestCase::EXIT_ERROR);
       $this->assertContains("woot config error", $this->getErrorOutput(), 'Event was successfully registered.');
     }
 

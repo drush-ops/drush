@@ -21,27 +21,22 @@ class coreCase extends CommandUnishTestCase {
   function testDrupalDirectory() {
     $root = $this->webroot();
     $sitewide = $this->drupalSitewideDirectory();
-    $options = array(
-      'root' => $root,
-      'uri' => key($this->getSites()),
-      'yes' => NULL,
-    );
-    $this->drush('drupal-directory', array('%files'), $options);
+    $this->drush('drupal-directory', array('%files'));
     $output = $this->getOutput();
     $this->assertEquals(Path::join($root, '/sites/dev/files'), $output);
 
-    $this->drush('drupal-directory', array('%modules'), $options);
+    $this->drush('drupal-directory', array('%modules'));
     $output = $this->getOutput();
     $this->assertEquals(Path::join($root, $sitewide . '/modules'), $output);
 
-    $this->drush('pm-enable', array('devel'), $options);
-    $this->drush('theme-enable', array('empty_theme'), $options);
+    $this->drush('pm-enable', array('devel'));
+    $this->drush('theme-enable', array('empty_theme'));
 
-    $this->drush('drupal-directory', array('devel'), $options);
+    $this->drush('drupal-directory', array('devel'));
     $output = $this->getOutput();
     $this->assertEquals(Path::join($root, '/modules/unish/devel'), $output);
 
-    $this->drush('drupal-directory', array('empty_theme'), $options);
+    $this->drush('drupal-directory', array('empty_theme'));
     $output = $this->getOutput();
     $this->assertEquals(Path::join($root, '/themes/unish/empty_theme'), $output);
   }
@@ -49,8 +44,6 @@ class coreCase extends CommandUnishTestCase {
   function testCoreRequirements() {
     $root = $this->webroot();
     $options = array(
-      'root' => $root,
-      'uri' => key($this->getSites()),
       'pipe' => NULL,
       'ignore' => 'cron,http requests,update,update_core,trusted_host_patterns', // no network access when running in tests, so ignore these
       // 'strict' => 0, // invoke from script: do not verify options
@@ -87,7 +80,8 @@ class coreCase extends CommandUnishTestCase {
       // We will chdir to the directory that contains settings.php
       // and ensure that we can bootstrap the selected site from here.
       chdir($conf_dir);
-      $this->drush('core-status');
+      $options['uri'] = 'OMIT'; // A special value which causes --uri to not be specified.
+      $this->drush('core-status', [], $options);
       $output = $this->getOutput();
       $output = preg_replace('#  *#', ' ', $output);
       $this->assertContains('Database : Connected', $output);
@@ -107,6 +101,7 @@ class coreCase extends CommandUnishTestCase {
     ];
     $options = [
       'format' => 'json',
+      'uri' => 'OMIT', // A special value which causes --uri to not be specified.
     ];
     file_put_contents($drush_config_file, Yaml::dump($options_with_uri, PHP_INT_MAX, 2));
     $this->drush('core-status', [], $options);

@@ -13,15 +13,9 @@ namespace Unish;
 class SqlConnectCase extends CommandUnishTestCase {
 
   function testSqlConnect() {
-    $sites = $this->setUpDrupal(1, TRUE);
-    $options = array(
-      'yes' => NULL,
-      'root' => $this->webroot(),
-      'uri' => key($sites),
-    );
-
+    $this->setUpDrupal(1, TRUE);
     // Get the connection details with sql-connect and check its structure.
-    $this->drush('sql-connect', array(), $options);
+    $this->drush('sql-connect');
     $connectionString = $this->getOutput();
 
     // Not all drivers need -e option like sqlite
@@ -47,21 +41,21 @@ class SqlConnectCase extends CommandUnishTestCase {
     $this->assertContains('1', $output);
 
     // Run 'core-status' and insure that we can bootstrap Drupal.
-    $this->drush('core-status', array(), $options + ['fields' => 'bootstrap']);
+    $this->drush('core-status', array(), ['fields' => 'bootstrap']);
     $output = $this->getOutput();
     $this->assertContains('Successful', $output);
 
     // Test to see if 'sql-create' can erase the database.
     // The only output is a confirmation string, so we'll run
     // other commands to confirm that this worked.
-    $this->drush('sql-create', array(), $options);
+    $this->drush('sql-create');
 
     // Try to execute a query.  This should give a "table not found" error.
     $this->execute($connectionString . ' ' . $shell_options . ' "SELECT uid FROM users where uid = 1;"', self::EXIT_ERROR);
 
     // We should still be able to run 'core-status' without getting an
     // error, although Drupal should not bootstrap any longer.
-    $this->drush('core-status', array(), $options + ['fields' => 'bootstrap']);
+    $this->drush('core-status', array(), ['fields' => 'bootstrap']);
     $output = $this->getOutput();
     $this->assertNotContains('Successful', $output);
   }

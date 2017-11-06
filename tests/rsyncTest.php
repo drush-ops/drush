@@ -44,7 +44,7 @@ class rsyncCase extends CommandUnishTestCase {
     // the remote side, at which point they will be evaluated & any needed
     // injection will be done.
     $this->drush('rsync', ['@example.dev', '@example.stage'], $options, 'user@server/path/to/drupal#sitename', NULL, self::EXIT_SUCCESS, '2>&1');
-    $expected = "Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --alias-path=__DIR__/resources/alias-fixtures --root=/path/to/drupal --uri=sitename --no-ansi rsync '\''@example.dev'\'' '\''@example.stage'\'' 2>&1' 2>&1";
+    $expected = "Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --alias-path=__DIR__/resources/alias-fixtures --root=/path/to/drupal --uri=sitename --no-ansi --no-interaction rsync '\''@example.dev'\'' '\''@example.stage'\'' 2>&1' 2>&1";
     $this->assertOutputEquals($expected);
   }
 
@@ -103,10 +103,7 @@ class rsyncCase extends CommandUnishTestCase {
     $site = current($this->getAliases());
     $uri = $this->getUri();
     $options = array(
-      'root' => $root,
-      'uri' => $uri,
       'simulate' => NULL,
-      'yes' => NULL,
     );
     $this->drush('core-rsync', array("$site:%files", "/tmp"), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1;');
     $output = $this->getOutput();

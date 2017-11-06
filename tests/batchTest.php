@@ -12,9 +12,6 @@ class batchCase extends CommandUnishTestCase {
   public function testBatch() {
     $sites = $this->setUpDrupal(1, TRUE);
     $options = array(
-      'root' => $this->webroot(),
-      'uri' => key($sites),
-      'yes' => NULL,
       'include' => __DIR__,
     );
     $this->drush('unit-batch', array(), $options);

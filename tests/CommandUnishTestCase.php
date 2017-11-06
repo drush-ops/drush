@@ -259,6 +259,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
   function drush($command, array $args = array(), array $options = array(), $site_specification = NULL, $cd = NULL, $expected_return = self::EXIT_SUCCESS, $suffix = NULL, $env = array()) {
     // cd is added for the benefit of siteSshTest which tests a strict command.
     $global_option_list = array('simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'backend', 'cd');
+    $options += ['uri' => 'dev']; // Default value.
     $hide_stderr = FALSE;
     $cmd[] = self::getDrush();
 
@@ -269,6 +270,9 @@ abstract class CommandUnishTestCase extends UnishTestCase {
         if ($key == 'backend') {
           $hide_stderr = TRUE;
           $value = NULL;
+        }
+        if ($key == 'uri' && $value == 'OMIT') {
+          continue;
         }
         if (!isset($value)) {
           $cmd[] = "--$key";
@@ -283,6 +287,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
       $cmd[] = '--' . $level;
     }
     $cmd[] = "--no-ansi";
+    $cmd[] = "--no-interaction";
 
     // Insert code coverage argument before command, in order for it to be
     // parsed as a global option. This matters for commands like ssh and rsync
