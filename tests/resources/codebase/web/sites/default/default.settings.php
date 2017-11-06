@@ -86,7 +86,7 @@
  * );
  * @endcode
  */
-$databases = array();
+$databases = [];
 
 /**
  * Customizing database settings.
@@ -244,7 +244,7 @@ $databases = array();
  *   );
  * @endcode
  */
-$config_directories = array();
+$config_directories = [];
 
 /**
  * Settings:

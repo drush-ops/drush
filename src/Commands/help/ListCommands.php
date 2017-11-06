@@ -40,9 +40,9 @@ class ListCommands extends DrushCommands
         $filter_category = $options['filter'];
         if (!empty($filter_category)) {
             if (!array_key_exists($filter_category, $namespaced)) {
-                throw new \Exception(dt("The specified command category !filter does not exist.", array('!filter' => $filter_category)));
+                throw new \Exception(dt("The specified command category !filter does not exist.", ['!filter' => $filter_category]));
             }
-            $namespaced = array($filter_category => $namespaced[$filter_category]);
+            $namespaced = [$filter_category => $namespaced[$filter_category]];
         }
 
         /**

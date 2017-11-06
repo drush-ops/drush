@@ -11,10 +11,10 @@ class batchCase extends CommandUnishTestCase {
 
   public function testBatch() {
     $sites = $this->setUpDrupal(1, TRUE);
-    $options = array(
+    $options = [
       'include' => __DIR__,
-    );
-    $this->drush('unit-batch', array(), $options);
+    ];
+    $this->drush('unit-batch', [], $options);
     // Collect log messages that begin with "!!!" (@see: _drush_unit_batch_operation())
     $parsed = $this->parse_backend_output($this->getOutput());
     $special_log_msgs = '';

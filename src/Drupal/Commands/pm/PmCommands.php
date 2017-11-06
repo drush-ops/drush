@@ -97,7 +97,7 @@ class PmCommands extends DrushCommands
         $modules = StringUtils::csvToArray($modules);
         $list = $this->addUninstallDependencies($modules);
         if (array_values($list) !== $modules) {
-            $this->output()->writeln(dt('The following extensions will be uninstalled: !list', array('!list' => implode(', ', $list))));
+            $this->output()->writeln(dt('The following extensions will be uninstalled: !list', ['!list' => implode(', ', $list)]));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
@@ -243,7 +243,7 @@ class PmCommands extends DrushCommands
             throw new MissingDependencyException(sprintf('Unable to install modules %s due to missing modules %s.', implode(', ', $module_list), implode(', ', $missing_modules)));
         }
         $extension_config = $this->getConfigFactory()->getEditable('core.extension');
-        $installed_modules = $extension_config->get('module') ?: array();
+        $installed_modules = $extension_config->get('module') ?: [];
 
         // Copied from \Drupal\Core\Extension\ModuleInstaller::install
         // Add dependencies to the list. The new modules will be processed as
@@ -276,7 +276,7 @@ class PmCommands extends DrushCommands
             throw new \Exception(dt('A specified extension does not exist: !diff', ['!diff' => implode(',', $diff)]));
         }
         $extension_config = $this->getConfigFactory()->getEditable('core.extension');
-        $installed_modules = $extension_config->get('module') ?: array();
+        $installed_modules = $extension_config->get('module') ?: [];
 
         // Add dependent modules to the list. The new modules will be processed as
         // the while loop continues.

@@ -60,18 +60,18 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
 
     public function load($headers = true)
     {
-        $php_header = $php = $rcs_header = $rcs = $aliases_header = $aliases = $drupal_header = $drupal = array();
+        $php_header = $php = $rcs_header = $rcs = $aliases_header = $aliases = $drupal_header = $drupal = [];
         $php = $this->phpIniFiles();
         if (!empty($php)) {
             if ($headers) {
-                $php_header = array('phpini' => '-- PHP ini files --');
+                $php_header = ['phpini' => '-- PHP ini files --'];
             }
         }
 
         $bash = $this->bashFiles();
         if (!empty($bash)) {
             if ($headers) {
-                $bash_header = array('bash' => '-- Bash files --');
+                $bash_header = ['bash' => '-- Bash files --'];
             }
         }
 
@@ -79,7 +79,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
             // @todo filter out any files that are within Drush.
             $rcs = array_combine($rcs, $rcs);
             if ($headers) {
-                $rcs_header = array('drushrc' => '-- Drushrc --');
+                $rcs_header = ['drushrc' => '-- Drushrc --'];
             }
         }
 
@@ -87,7 +87,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
             sort($aliases);
             $aliases = array_combine($aliases, $aliases);
             if ($headers) {
-                $aliases_header = array('aliases' => '-- Aliases --');
+                $aliases_header = ['aliases' => '-- Aliases --'];
             }
         }
         if ($site_root = Drush::bootstrap()->confPath()) {
@@ -100,7 +100,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
             $path = realpath(DRUPAL_ROOT . '/.htaccess');
             $drupal[$path] = $path;
             if ($headers) {
-                $drupal_header = array('drupal' => '-- Drupal --');
+                $drupal_header = ['drupal' => '-- Drupal --'];
             }
         }
 
@@ -109,7 +109,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
 
     public static function phpIniFiles()
     {
-        $ini_files = array();
+        $ini_files = [];
         $path = php_ini_loaded_file();
         $ini_files[$path] = $path;
         if ($drush_ini = getenv('DRUSH_INI')) {
@@ -117,7 +117,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
                 $ini_files[$drush_ini] = $drush_ini;
             }
         }
-        foreach (array(DRUSH_BASE_PATH, '/etc/drush', Drush::config()->get('env.home') . '/.drush') as $ini_dir) {
+        foreach ([DRUSH_BASE_PATH, '/etc/drush', Drush::config()->get('env.home') . '/.drush'] as $ini_dir) {
             if (file_exists($ini_dir . "/drush.ini")) {
                 $path = realpath($ini_dir . "/drush.ini");
                 $ini_files[$path] = $path;
@@ -128,7 +128,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
 
     public static function bashFiles()
     {
-        $bashFiles = array();
+        $bashFiles = [];
         $home = Drush::config()->get('env.home');
         if ($bashrc = self::findBashrc($home)) {
             $bashFiles[$bashrc] = $bashrc;
@@ -153,6 +153,6 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
 
     public function complete()
     {
-        return array('values' => $this->load(false));
+        return ['values' => $this->load(false)];
     }
 }

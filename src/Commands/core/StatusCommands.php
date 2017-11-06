@@ -183,7 +183,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
      */
     public static function pathAliases(array $options, BootstrapManager $boot_manager, $boot)
     {
-        $paths = array();
+        $paths = [];
         $site_wide = 'sites/all';
         if ($drupal_root = $boot_manager->getRoot()) {
             $paths['%root'] = $drupal_root;

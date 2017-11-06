@@ -19,7 +19,7 @@ use Webmozart\PathUtil\Path;
  * Option keys used for site selection.
  */
 function drush_sitealias_site_selection_keys() {
-  return array('remote-host', 'remote-user', 'ssh-options', '#name', 'os');
+  return ['remote-host', 'remote-user', 'ssh-options', '#name', 'os'];
 }
 
 /**

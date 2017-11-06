@@ -31,7 +31,7 @@ class ImageCommands extends DrushCommands
     {
         foreach (ImageStyle::loadMultiple(StringUtils::csvToArray($style_names)) as $style_name => $style) {
             $style->flush();
-            $this->logger()->success(dt('Image style !style_name flushed', array('!style_name' => $style_name)));
+            $this->logger()->success(dt('Image style !style_name flushed', ['!style_name' => $style_name]));
         }
     }
 

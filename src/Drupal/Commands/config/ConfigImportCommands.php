@@ -186,7 +186,7 @@ class ConfigImportCommands extends DrushCommands
         }
 
         if ($options['preview'] == 'list') {
-            $change_list = array();
+            $change_list = [];
             foreach ($storage_comparer->getAllCollectionNames() as $collection) {
                 $change_list[$collection] = $storage_comparer->getChangelist(null, $collection);
             }
@@ -236,7 +236,7 @@ class ConfigImportCommands extends DrushCommands
                 if ($config_importer->hasUnprocessedConfigurationChanges()) {
                     $sync_steps = $config_importer->initialize();
                     foreach ($sync_steps as $step) {
-                        $context = array();
+                        $context = [];
                         do {
                             $config_importer->doSyncStep($step, $context);
                             if (isset($context['message'])) {

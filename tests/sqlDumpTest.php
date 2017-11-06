@@ -25,19 +25,19 @@ class SqlDumpTest extends CommandUnishTestCase {
     $uri = $this->getUri();
     $full_dump_file_path = self::getSandbox() . DIRECTORY_SEPARATOR . 'full_db.sql';
 
-    $options = array(
+    $options = [
       'result-file' => $full_dump_file_path,
       // Last 5 entries are for D8+
       'skip-tables-list' => 'hist*,cache*,router,config*,watchdog,key_valu*',
       'yes' => NULL,
-    );
+    ];
 
     $this->drush('sql-dump', [], $options + ['simulate' => NULL]);
     $this->assertContains('--ignore-table=unish_dev.cache_discovery', $this->getErrorOutput());
 
     // Test --extra-dump option
     if ($this->db_driver() == 'mysql') {
-      $this->drush('sql-dump', array(), array_merge($options, [], array('extra-dump' => '--skip-add-drop-table')));
+      $this->drush('sql-dump', [], array_merge($options, [], ['extra-dump' => '--skip-add-drop-table']));
       $this->assertFileExists($full_dump_file_path);
       $full_dump_file = file_get_contents($full_dump_file_path);
       $this->assertNotContains('DROP TABLE IF EXISTS', $full_dump_file);
@@ -45,7 +45,7 @@ class SqlDumpTest extends CommandUnishTestCase {
 
 
     // First, do a test without any aliases, and dump the whole database
-    $this->drush('sql-dump', array(), $options);
+    $this->drush('sql-dump', [], $options);
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
@@ -57,7 +57,7 @@ class SqlDumpTest extends CommandUnishTestCase {
     // Control: insure options are not set when not specified
     unset($options['skip-tables-list']);
     unlink($full_dump_file_path);
-    $this->drush('sql-dump', array(), $options);
+    $this->drush('sql-dump', [], $options);
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.

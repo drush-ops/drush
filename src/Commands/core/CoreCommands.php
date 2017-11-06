@@ -93,7 +93,7 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         if ($options['escape']) {
             for ($x = 0; $x < count($args); $x++) {
                 // escape all args except for command separators.
-                if (!in_array($args[$x], array('&&', '||', ';'))) {
+                if (!in_array($args[$x], ['&&', '||', ';'])) {
                     $args[$x] = drush_escapeshellarg($args[$x]);
                 }
             }
@@ -122,7 +122,7 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         }
 
         if (!$result) {
-            throw new \Exception(dt("Command !command failed.", array('!command' => $cmd)));
+            throw new \Exception(dt("Command !command failed.", ['!command' => $cmd]));
         }
         return $result;
     }

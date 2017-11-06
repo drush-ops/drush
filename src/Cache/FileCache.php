@@ -38,7 +38,7 @@ class FileCache implements CacheInterface
 
     public function get($cid)
     {
-        $cids = array($cid);
+        $cids = [$cid];
         $cache = $this->getMultiple($cids);
         return reset($cache);
     }
@@ -46,7 +46,7 @@ class FileCache implements CacheInterface
     public function getMultiple(&$cids)
     {
         try {
-            $cache = array();
+            $cache = [];
             foreach ($cids as $cid) {
                 $filename = $this->getFilePath($cid);
                 if (!file_exists($filename)) {
@@ -61,7 +61,7 @@ class FileCache implements CacheInterface
             $cids = array_diff($cids, array_keys($cache));
             return $cache;
         } catch (\Exception $e) {
-            return array();
+            return [];
         }
     }
 
@@ -118,7 +118,7 @@ class FileCache implements CacheInterface
     public function clear($cid = null, $wildcard = false)
     {
         $bin_dir = $this->cacheDirectory();
-        $files = array();
+        $files = [];
         if (empty($cid)) {
             drush_delete_dir($bin_dir, true);
         } else {
@@ -126,7 +126,7 @@ class FileCache implements CacheInterface
                 if ($cid == '*') {
                     drush_delete_dir($bin_dir, true);
                 } else {
-                    $matches = drush_scan_directory($bin_dir, "/^$cid/", array('.', '..'));
+                    $matches = drush_scan_directory($bin_dir, "/^$cid/", ['.', '..']);
                     $files = $files + array_keys($matches);
                 }
             } else {
@@ -143,7 +143,7 @@ class FileCache implements CacheInterface
 
     public function isEmpty()
     {
-        $files = drush_scan_directory($this->directory, "//", array('.', '..'));
+        $files = drush_scan_directory($this->directory, "//", ['.', '..']);
         return empty($files);
     }
 
@@ -158,6 +158,6 @@ class FileCache implements CacheInterface
      */
     protected function getFilePath($cid)
     {
-        return $this->directory . '/' . str_replace(array(':', '\\', '/'), '.', $cid) . self::EXTENSION;
+        return $this->directory . '/' . str_replace([':', '\\', '/'], '.', $cid) . self::EXTENSION;
     }
 }

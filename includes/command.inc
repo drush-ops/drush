@@ -66,15 +66,16 @@ use Symfony\Component\Console\Output\ConsoleOutput;
  * Do not change the signature of this function!  drush_invoke_process
  * is one of the key Drush APIs.  See http://drupal.org/node/1152908
  */
-function drush_invoke_process($site_alias_record, $command_name, $commandline_args = array(), $commandline_options = array(), $backend_options = TRUE) {
+function drush_invoke_process($site_alias_record, $command_name, $commandline_args = [], $commandline_options = [], $backend_options = TRUE) {
   if ($site_alias_record instanceof AliasRecord) {
     $site_alias_record = $site_alias_record->legacyRecord();
   }
 
-  $invocations[] = array(
+  $invocations[] = [
     'site' => $site_alias_record,
     'command' => $command_name,
-    'args' => $commandline_args);
+    'args' => $commandline_args
+  ];
   $invoke_multiple = drush_get_option_override($backend_options, 'invoke-multiple', 0);
   if ($invoke_multiple) {
     $invocations = array_fill(0, $invoke_multiple, $invocations[0]);
@@ -88,7 +89,7 @@ function drush_invoke_process($site_alias_record, $command_name, $commandline_ar
  * TODO: Do we do any searching in the new code that should be filtered like this?
  */
 function drush_filename_blacklist() {
-  $blacklist = array('.', '..', 'drush_make', 'examples', 'tests', 'disabled', 'gitcache', 'cache');
+  $blacklist = ['.', '..', 'drush_make', 'examples', 'tests', 'disabled', 'gitcache', 'cache'];
   for ($v=4; $v<=(DRUSH_MAJOR_VERSION)+3; ++$v) {
     if ($v != DRUSH_MAJOR_VERSION) {
       $blacklist[] = 'drush' . $v;

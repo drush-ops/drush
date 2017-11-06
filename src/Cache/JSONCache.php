@@ -24,7 +24,7 @@ class JSONCache extends FileCache
     {
         $json = json_encode($cache, JSON_PRETTY_PRINT);
         // json_encode() does not escape <, > and &, so we do it with str_replace().
-        $json = str_replace(array('<', '>', '&'), array('\u003c', '\u003e', '\u0026'), $json);
+        $json = str_replace(['<', '>', '&'], ['\u003c', '\u003e', '\u0026'], $json);
         return file_put_contents($filename, $json);
     }
 }

@@ -72,7 +72,7 @@ class DrushBatchContext extends ArrayObject {
  * @param array $options
  *   (optional)
  */
-function drush_backend_batch_process($command = 'batch-process', $args = array(), $options = array()) {
+function drush_backend_batch_process($command = 'batch-process', $args = [], $options = []) {
   // Command line options to pass to the command.
   $options['u'] = \Drupal::currentUser()->id();
   _drush_backend_batch_process($command, $args, $options);
@@ -109,9 +109,9 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
   $batch =& batch_get();
 
   if (isset($batch)) {
-    $process_info = array(
+    $process_info = [
       'current_set' => 0,
-    );
+    ];
     $batch += $process_info;
 
     // The batch is now completely built. Allow other modules to make changes
@@ -159,8 +159,9 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
 function _drush_batch_command($id) {
   $batch =& batch_get();
 
-  $data = db_query("SELECT batch FROM {batch} WHERE bid = :bid", array(
-    ':bid' => $id))->fetchField();
+  $data = db_query("SELECT batch FROM {batch} WHERE bid = :bid", [
+    ':bid' => $id
+  ])->fetchField();
 
   if ($data) {
     $batch = unserialize($data);
@@ -215,12 +216,12 @@ function _drush_batch_worker() {
       list($function, $args) = $item->data;
 
       // Build the 'context' array and execute the function call.
-      $batch_context = array(
+      $batch_context = [
         'sandbox'  => &$current_set['sandbox'],
         'results'  => &$current_set['results'],
         'finished' => &$finished,
         'message'  => &$task_message,
-      );
+      ];
       // Magic wrap to catch changes to 'message' key.
       $batch_context = new DrushBatchContext($batch_context);
 
@@ -228,7 +229,7 @@ function _drush_batch_worker() {
       // See https://github.com/drush-ops/drush/issues/1930
       $halt_on_error = \Drush\Drush::config()->get('runtime.php.halt-on-error', TRUE);
       \Drush\Drush::config()->set('runtime.php.halt-on-error', FALSE);
-      $message = call_user_func_array($function, array_merge($args, array(&$batch_context)));
+      $message = call_user_func_array($function, array_merge($args, [&$batch_context]));
       if (!empty($message)) {
         drush_print(strip_tags($message), 2);
       }
@@ -241,7 +242,7 @@ function _drush_batch_worker() {
         // Remove the processed operation and clear the sandbox.
         $queue->deleteItem($item);
         $current_set['count']--;
-        $current_set['sandbox'] = array();
+        $current_set['sandbox'] = [];
       }
     }
 
@@ -354,7 +355,7 @@ function _drush_batch_shutdown() {
     }
     else {
       db_update('batch')
-        ->fields(array('batch' => serialize($batch)))
+        ->fields(['batch' => serialize($batch)])
         ->condition('bid', $batch['id'])
         ->execute();
     }

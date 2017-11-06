@@ -28,7 +28,7 @@ class containerTest extends CommandUnishTestCase {
 
       // Set up for a config import with just one small piece.
       $this->drush('config-export');
-      $this->drush('config-set', array('system.site', 'name', 'config_test'));
+      $this->drush('config-set', ['system.site', 'name', 'config_test']);
 
       // Trigger the container rebuild we need.
       $this->drush('cr');

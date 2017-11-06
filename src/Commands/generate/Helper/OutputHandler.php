@@ -31,8 +31,8 @@ class OutputHandler extends BaseOutputHandler
             // @todo Below code is forking new process well but current process is not shutting down fully.
             $exec = drush_get_editor();
             $exec = str_replace('%s', drush_escapeshellarg(Path::makeAbsolute($dumped_files[0], DRUPAL_ROOT)), $exec);
-            $pipes = array();
-            proc_close(proc_open($exec . ' 2> ' . drush_bit_bucket() . ' &', array(), $pipes));
+            $pipes = [];
+            proc_close(proc_open($exec . ' 2> ' . drush_bit_bucket() . ' &', [], $pipes));
         }
         parent::printSummary($output, $dumped_files);
     }

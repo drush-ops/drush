@@ -45,15 +45,15 @@ class TestFixtureCommands
     // Reduce php memory/time limits to test backend respawn.
     // TODO.
 
-    $batch = array(
-      'operations' => array(
-         array([$this, '_drush_unit_batch_operation'], array()),
-      ),
+    $batch = [
+      'operations' => [
+         [[$this, '_drush_unit_batch_operation'], []],
+      ],
       'finished' => [$this, '_drush_unit_batch_finished'],
       // 'file' => Doesn't work for us. Drupal 7 enforces this path
       // to be relative to DRUPAL_ROOT.
       // @see _batch_process().
-    );
+    ];
     \batch_set($batch);
     \drush_backend_batch_process();
 

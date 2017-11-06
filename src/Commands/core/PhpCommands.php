@@ -73,10 +73,10 @@ class PhpCommands extends DrushCommands implements ConfigAwareInterface
 
             if (empty($script)) {
                 // List all available scripts.
-                $all = array();
+                $all = [];
                 foreach ($searchpath as $key => $path) {
                     $recurse = !(($key == 'cwd') || ($path == '/'));
-                    $all = array_merge($all, array_keys(drush_scan_directory($path, '/\.php$/', array('.', '..', 'CVS'), null, $recurse)));
+                    $all = array_merge($all, array_keys(drush_scan_directory($path, '/\.php$/', ['.', '..', 'CVS'], null, $recurse)));
                 }
                 return implode("\n", $all);
             } else {
@@ -93,7 +93,7 @@ class PhpCommands extends DrushCommands implements ConfigAwareInterface
                     $all[] = $script_filename;
                 }
                 if (!$found) {
-                    throw new \Exception(dt('Unable to find any of the following: @files', array('@files' => implode(', ', $all))));
+                    throw new \Exception(dt('Unable to find any of the following: @files', ['@files' => implode(', ', $all)]));
                 }
             }
         }

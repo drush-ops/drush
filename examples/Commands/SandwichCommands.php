@@ -34,7 +34,7 @@ class SandwichCommands extends DrushCommands {
       $str_spreads = ' with just a dash of ' . $list;
     }
     $msg = dt('Okay. Enjoy this !filling sandwich!str_spreads.',
-      array('!filling' => $filling, '!str_spreads' => $str_spreads)
+      ['!filling' => $filling, '!str_spreads' => $str_spreads]
     );
     $this->output()->writeln("\n" . $msg . "\n");
     $this->printFile(__DIR__ . '/sandwich-nocolor.txt');
@@ -54,32 +54,32 @@ class SandwichCommands extends DrushCommands {
    * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
    */
   public function spread($options = ['format' => 'table']) {
-    $data = array(
-      'ketchup' => array(
+    $data = [
+      'ketchup' => [
         'name' => 'Ketchup',
         'description' => 'Some say its a vegetable, but we know its a sweet spread.',
         'available' => '7',
         'taste' => 'sweet',
-      ),
-      'mayonnaise' => array(
+      ],
+      'mayonnaise' => [
         'name' => 'Mayonnaise',
         'description' => 'A nice dairy-free spread.',
         'available' => '12',
         'taste' => 'creamy',
-      ),
-      'mustard' => array(
+      ],
+      'mustard' => [
         'name' => 'Mustard',
         'description' => 'Pardon me, but could you please pass that plastic yellow bottle?',
         'available' => '8',
         'taste' => 'tangy',
-      ),
-      'pickles' => array(
+      ],
+      'pickles' => [
         'name' => 'Pickles',
         'description' => 'A necessary part of any sandwich that does not taste terrible.',
         'available' => '63',
         'taste' => 'tasty',
-      ),
-    );
+      ],
+    ];
     return new RowsOfFields($data);
   }
 
