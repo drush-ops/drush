@@ -153,7 +153,7 @@ class UpdateDBCommands extends DrushCommands
                 $ret['results']['success'] = true;
             } // @TODO We may want to do different error handling for different exception
             // types, but for now we'll just print the message.
-            catch (Exception $e) {
+            catch (\Exception $e) {
                 $ret['#abort'] = array('success' => false, 'query' => $e->getMessage());
                 $this->logger()->warning($e->getMessage());
             }
@@ -257,13 +257,20 @@ class UpdateDBCommands extends DrushCommands
             'title' => 'Updating',
             'init_message' => 'Starting updates',
             'error_message' => 'An unrecoverable error has occurred. You can find the error message below. It is advised to copy it to the clipboard for reference.',
-            'finished' => [$this, 'drush_update_finished'],
+            'finished' => [$this, 'updateFinished'],
             'file' => 'core/includes/update.inc',
         );
         batch_set($batch);
         \Drupal::service('state')->set('system.maintenance_mode', true);
         drush_backend_batch_process();
         \Drupal::service('state')->set('system.maintenance_mode', false);
+
+        $batch = &batch_get();
+        foreach ($batch['sets'] as $set) {
+            if (empty($set['success'])) {
+                throw new \Exception('Update aborted.');
+            }
+        }
     }
 
     /**
