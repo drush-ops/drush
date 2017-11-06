@@ -2,11 +2,6 @@
 
 namespace Drush\Preflight;
 
-use Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface;
-use Drush\Drush;
-use Symfony\Component\Console\Input\InputInterface;
-use Consolidation\AnnotatedCommand\AnnotationData;
-use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 
 /**
