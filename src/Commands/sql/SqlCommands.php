@@ -217,7 +217,7 @@ class SqlCommands extends DrushCommands
     public function dump($options = ['result-file' => null, 'create-db' => false, 'data-only' => false, 'ordered-dump' => false, 'gzip' => false, 'extra' => self::REQ, 'extra-dump' => self::REQ])
     {
         $sql = SqlBase::create($options);
-        if ($sql->dump($options) === false) {
+        if ($sql->dump() === false) {
             throw new \Exception('Unable to dump database. Rerun with --debug to see any error message.');
         }
     }

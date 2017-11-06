@@ -547,7 +547,7 @@ function drush_backend_parse_packets(&$string, &$remainder, $backend_options) {
       else {
         drush_log(dt("Malformed backend packet"), LogLevel::ERROR);
         drush_log(dt("Bad packet: @packet", ['@packet' => print_r($entry, TRUE)]), LogLevel::DEBUG);
-        drush_log(dt("String is: @str", ['@str' => $packet_data], LogLevel::DEBUG));
+        drush_log(dt("String is: @str", ['@str' => $packet_data]), LogLevel::DEBUG);
       }
     }
     $string = preg_replace("/$packet_regex/s", '', $string);

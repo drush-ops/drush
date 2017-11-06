@@ -316,7 +316,7 @@ function drush_attempt_mime_content_type($filename) {
             break;
 
           default:
-            drush_log(dt('Unable to determine mime type from header bytes 0x!hex of !file.', ['!hex' => dechex($data[1]), '!file' => $filename,], LogLevel::DEBUG));
+            drush_log(dt('Unable to determine mime type from header bytes 0x!hex of !file.', ['!hex' => dechex($data[1]), '!file' => $filename,]), LogLevel::DEBUG);
         }
       }
       else {

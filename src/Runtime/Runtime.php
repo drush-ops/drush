@@ -98,7 +98,7 @@ class Runtime
         $this->setTerminationHandlers();
 
         // Add global options and copy their values into Config.
-        $application->configureGlobalOptions($input);
+        $application->configureGlobalOptions();
 
         // Configure the application object and register all of the commandfiles
         // from the search paths we found above.  After this point, the input

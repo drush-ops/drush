@@ -254,7 +254,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
         }
 
         // Command files may customize $types as desired.
-        $handlers = $this->getCustomEventHandlers('cache-clear', $types, $include_bootstrapped_types);
+        $handlers = $this->getCustomEventHandlers('cache-clear');
         foreach ($handlers as $handler) {
               $handler($types, $include_bootstrapped_types);
         }
