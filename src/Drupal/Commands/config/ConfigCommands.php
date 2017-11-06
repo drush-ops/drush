@@ -292,7 +292,7 @@ class ConfigCommands extends DrushCommands
      * @param string $directory
      *   A configuration directory.
      */
-    public function getDirectory($label, $directory = null)
+    public static function getDirectory($label, $directory = null)
     {
         // If the user provided a directory, use it.
         if (!empty($directory)) {

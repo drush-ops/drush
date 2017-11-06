@@ -146,7 +146,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * TODO: Also exists as InitCommands::findBashrc. Decide on class-based
      * way to share code like this.
      */
-    public function findBashrc($home)
+    public static function findBashrc($home)
     {
         return $home . "/.bashrc";
     }
