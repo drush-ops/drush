@@ -53,7 +53,7 @@ class StringUtils
         }
 
         // build a replacement array with braces around the context keys
-        $replace = array();
+        $replace = [];
         foreach ($context as $key => $val) {
             if (!is_array($val) && (!is_object($val) || method_exists($val, '__toString'))) {
                 $replace[static::interpolationKey($key)] = $val;

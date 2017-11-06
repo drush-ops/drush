@@ -524,7 +524,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         // So, redirecting input is okay, it is just the proc_open that is a problem.
         if (drush_is_windows()) {
             // Note that stream_select uses reference parameters, so we need variables (can't pass a constant NULL)
-            $read = array($fp);
+            $read = [$fp];
             $write = null;
             $except = null;
             // Question: might we need to wait a bit for STDIN to be ready,

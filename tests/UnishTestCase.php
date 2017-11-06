@@ -12,7 +12,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    *
    * @var array
    */
-  private static $sites = array();
+  private static $sites = [];
 
   private static $sandbox;
 
@@ -122,7 +122,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     return self::$backendOutputDelimiter;
   }
 
-  function __construct($name = NULL, array $data = array(), $dataName = '') {
+  function __construct($name = NULL, array $data = [], $dataName = '') {
     parent::__construct($name, $data, $dataName);
 
     // Default drupal major version to run tests over.
@@ -183,7 +183,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
   public static function tearDownAfterClass() {
     self::cleanDirs();
 
-    self::$sites = array();
+    self::$sites = [];
     parent::tearDownAfterClass();
   }
 
@@ -201,7 +201,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     $line = "\nLog: $message\n";
     switch ($this->log_level()) {
       case 'verbose':
-        if (in_array($type, array('notice', 'verbose'))) fwrite(STDERR, $line);
+        if (in_array($type, ['notice', 'verbose'])) fwrite(STDERR, $line);
         break;
       case 'debug':
         fwrite(STDERR, $line);
@@ -236,7 +236,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * Useful for longer running tests to indicate they're working.
    */
   function tick() {
-    static $chars = array('/', '-', '\\', '|');
+    static $chars = ['/', '-', '\\', '|'];
     static $counter = 0;
     // ANSI support is flaky on Win32, so don't try to do ticks there.
     if (!$this->is_windows()) {
@@ -506,7 +506,7 @@ EOT;
    * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
    */
   function setUpDrupal($num_sites = 1, $install = FALSE) {
-    $sites_subdirs_all = array('dev', 'stage', 'prod', 'retired', 'elderly', 'dead', 'dust');
+    $sites_subdirs_all = ['dev', 'stage', 'prod', 'retired', 'elderly', 'dead', 'dust'];
     $sites_subdirs = array_slice($sites_subdirs_all, 0, $num_sites);
     $root = $this->webroot();
 
@@ -533,11 +533,11 @@ EOT;
     // Stash details about each site.
     $sites = [];
     foreach ($sites_subdirs as $subdir) {
-      $sites[$subdir] = array(
+      $sites[$subdir] = [
         'root' => $root,
         'uri' => $subdir,
         'db_url' => $this->db_url($subdir),
-      );
+      ];
     }
     return $sites;
   }
@@ -562,14 +562,14 @@ EOT;
 
     // If specified, install Drupal as a multi-site.
     if ($install) {
-      $options = array(
+      $options = [
         'root' => $root,
         'db-url' => $this->db_url($env),
         'sites-subdir' => $uri,
         'yes' => NULL,
         'quiet' => NULL,
-      );
-      $this->drush('site-install', array('testing', 'install_configure_form.enable_update_status_emails=NULL'), $options);
+      ];
+      $this->drush('site-install', ['testing', 'install_configure_form.enable_update_status_emails=NULL'], $options);
       // Give us our write perms back.
       chmod($site, 0777);
     }

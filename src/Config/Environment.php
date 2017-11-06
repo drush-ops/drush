@@ -94,7 +94,7 @@ class Environment
 
     protected function getTmp()
     {
-        $directories = array();
+        $directories = [];
 
         // Get user specific and operating system temp folders from system environment variables.
         // See http://www.microsoft.com/resources/documentation/windows/xp/all/proddocs/en-us/ntcmds_shelloverview.mspx?mfr=true

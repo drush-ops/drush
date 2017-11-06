@@ -64,7 +64,7 @@ function _drush_postmortem() {
   // Make sure that the memory limit has been bumped up from the minimum default value of 32M.
   $php_memory_limit = drush_memory_limit();
   if (($php_memory_limit > 0) && ($php_memory_limit <= 32*DRUSH_KILOBYTE*DRUSH_KILOBYTE)) {
-    drush_set_error('DRUSH_MEMORY_LIMIT', dt('Your memory limit is set to !memory_limit; Drush needs as much memory to run as Drupal.  !php_ini_msg', array('!memory_limit' => $php_memory_limit / (DRUSH_KILOBYTE*DRUSH_KILOBYTE) . 'M', '!php_ini_msg' => _drush_php_ini_loaded_file_message())));
+    drush_set_error('DRUSH_MEMORY_LIMIT', dt('Your memory limit is set to !memory_limit; Drush needs as much memory to run as Drupal.  !php_ini_msg', ['!memory_limit' => $php_memory_limit / (DRUSH_KILOBYTE*DRUSH_KILOBYTE) . 'M', '!php_ini_msg' => _drush_php_ini_loaded_file_message()]));
   }
 }
 
@@ -86,7 +86,7 @@ function _drush_convert_path($path) {
  * Build a drush command suitable for use for Drush to call itself.
  * Used in backend_invoke.
  */
-function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, $remote_command = FALSE, $environment_variables = array()) {
+function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, $remote_command = FALSE, $environment_variables = []) {
   $os = _drush_get_os($os);
   $additional_options = '';
   $prefix = '';
@@ -151,11 +151,11 @@ function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, 
  * which is which, test mingw first.
  */
 function drush_is_cygwin($os = NULL) {
-  return _drush_test_os($os, array("CYGWIN","CWRSYNC","MINGW"));
+  return _drush_test_os($os, ["CYGWIN","CWRSYNC","MINGW"]);
 }
 
 function drush_is_mingw($os = NULL) {
-  return _drush_test_os($os, array("MINGW"));
+  return _drush_test_os($os, ["MINGW"]);
 }
 
 /**
@@ -163,7 +163,7 @@ function drush_is_mingw($os = NULL) {
  * This will return TRUE for Mac OS X (Darwin).
  */
 function drush_is_osx($os = NULL) {
-  return _drush_test_os($os, array("DARWIN"));
+  return _drush_test_os($os, ["DARWIN"]);
 }
 
 /**
@@ -214,7 +214,7 @@ function _drush_get_os($os = NULL) {
   if (isset($os) && ($os != "LOCAL")) {
     return $os;
   }
-  if (_drush_test_os(getenv("MSYSTEM"), array("MINGW"))) {
+  if (_drush_test_os(getenv("MSYSTEM"), ["MINGW"])) {
     return getenv("MSYSTEM");
   }
   // QUESTION: Can we differentiate between DOS and POWERSHELL? They appear to have the same environment.
@@ -263,7 +263,7 @@ function drush_is_local_host($host) {
  *   cache directory instead.  The subdirectory is created.
  */
 function drush_directory_cache($subdir = '') {
-  $cache_locations = array();
+  $cache_locations = [];
   if (getenv('CACHE_PREFIX')) {
     $cache_locations[getenv('CACHE_PREFIX')] = 'cache';
   }
@@ -292,7 +292,7 @@ function drush_directory_cache($subdir = '') {
     }
   }
   return drush_set_error('DRUSH_NO_WRITABLE_CACHE', dt('Drush must have a writable cache directory; please insure that one of the following locations is writable: @locations',
-    array('@locations' => implode(',', array_keys($cache_locations)))));
+    ['@locations' => implode(',', array_keys($cache_locations))]));
 }
 
 /**
@@ -336,7 +336,7 @@ function _drush_escapeshellarg_linux($arg, $raw = FALSE) {
   // usually are NOT replaced. However, this was done deliberately to be more
   // conservative when running _drush_escapeshellarg_linux on Windows
   // (this can happen when generating a command to run on a remote Linux server.)
-  $arg = str_replace(array("\t", "\n", "\r", "\0", "\x0B"), ' ', $arg);
+  $arg = str_replace(["\t", "\n", "\r", "\0", "\x0B"], ' ', $arg);
 
   // Only wrap with quotes when needed.
   if(!$raw) {

@@ -83,11 +83,11 @@ class DrupalCommands extends DrushCommands
         }
 
         foreach ($searchpaths as $searchpath) {
-            foreach ($file = drush_scan_directory($searchpath, '/\.html.twig/', array('tests')) as $file) {
+            foreach ($file = drush_scan_directory($searchpath, '/\.html.twig/', ['tests']) as $file) {
                 $relative = str_replace(Drush::bootstrapManager()->getRoot() . '/', '', $file->filename);
                 // @todo Dynamically disable twig debugging since there is no good info there anyway.
-                twig_render_template($relative, array('theme_hook_original' => ''));
-                $this->logger()->notice(dt('Compiled twig template !path', array('!path' => $relative)));
+                twig_render_template($relative, ['theme_hook_original' => '']);
+                $this->logger()->notice(dt('Compiled twig template !path', ['!path' => $relative]));
             }
         }
     }
@@ -116,12 +116,12 @@ class DrupalCommands extends DrushCommands
     public function requirements($options = ['format' => 'table', 'severity' => -1, 'ignore' => ''])
     {
         include_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
-        $severities = array(
+        $severities = [
             REQUIREMENT_INFO => dt('Info'),
             REQUIREMENT_OK => dt('OK'),
             REQUIREMENT_WARNING => dt('Warning'),
             REQUIREMENT_ERROR => dt('Error'),
-        );
+        ];
 
         drupal_load_updates();
 

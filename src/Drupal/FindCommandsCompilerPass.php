@@ -63,7 +63,7 @@ class FindCommandsCompilerPass implements CompilerPassInterface
             drush_log(dt("Found tagged service !id", ['!id' => $id]), LogLevel::DEBUG_NOTIFY);
             $definition->addMethodCall(
                 'addCommandReference',
-                array(new Reference($id))
+                [new Reference($id)]
             );
         }
     }

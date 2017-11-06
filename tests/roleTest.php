@@ -25,37 +25,37 @@ class roleCase extends CommandUnishTestCase {
     $output = $this->getOutput();
     $this->assertNotContains('cancel other accounts', $output);
 
-    $this->drush('role-list', array(), array('filter' => 'cancel other accounts'));
+    $this->drush('role-list', [], ['filter' => 'cancel other accounts']);
     $output = $this->getOutput();
     $this->assertNotContains('authenticated', $output);
     $this->assertNotContains('anonymous', $output);
 
     // Create the role foo.
     $rid = 'foo';
-    $this->drush('role-create', array($rid));
+    $this->drush('role-create', [$rid]);
     $this->drush('role-list');
     $this->assertContains($rid, $this->getOutput());
 
     // Assert that anon user starts without 'cancel other accounts' perm.
     $perm = 'cancel other accounts';
-    $this->drush('role-list', array(), array('format' => 'json'));
+    $this->drush('role-list', [], ['format' => 'json']);
     $role = $this->getOutputFromJSON($rid);
     $this->assertFalse(in_array($perm, $role->perms));
 
     // Now grant that perm to foo.
-    $this->drush('role-add-perm', array($rid, 'cancel other accounts'));
-    $this->drush('role-list', array(), array('format' => 'json'));
+    $this->drush('role-add-perm', [$rid, 'cancel other accounts']);
+    $this->drush('role-list', [], ['format' => 'json']);
     $role = $this->getOutputFromJSON($rid);
     $this->assertTrue(in_array($perm, $role->perms));
 
     // Now remove the perm from foo.
-    $this->drush('role-remove-perm', array($rid, 'cancel other accounts'));
-    $this->drush('role-list', array(), array('format' => 'json'));
+    $this->drush('role-remove-perm', [$rid, 'cancel other accounts']);
+    $this->drush('role-list', [], ['format' => 'json']);
     $role = $this->getOutputFromJSON($rid);
     $this->assertFalse(in_array($perm, $role->perms));
 
     // Delete the foo role
-    $this->drush('role-delete', array($rid));
+    $this->drush('role-delete', [$rid]);
     $this->drush('role-list');
     $this->assertNotContains($rid, $this->getOutput());
   }

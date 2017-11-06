@@ -81,7 +81,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
                     @unlink($last_site_filename);
                     @rename($filename, $last_site_filename);
                 }
-                $success_message = dt('Site set to @site', array('@site' => $site));
+                $success_message = dt('Site set to @site', ['@site' => $site]);
                 if ($site == '@none' || $site == '') {
                     if (drush_delete_dir($filename)) {
                         $this->logger()->success(dt('Site unset.'));
@@ -89,11 +89,11 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
                 } elseif (drush_mkdir(dirname($filename), true)) {
                     if (file_put_contents($filename, $site)) {
                         $this->logger()->success($success_message);
-                        $this->logger()->info(dt('Site information stored in @file', array('@file' => $filename)));
+                        $this->logger()->info(dt('Site information stored in @file', ['@file' => $filename]));
                     }
                 }
             } else {
-                throw new \Exception(dt('Could not find a site definition for @site.', array('@site' => $site)));
+                throw new \Exception(dt('Could not find a site definition for @site.', ['@site' => $site]));
             }
         }
     }

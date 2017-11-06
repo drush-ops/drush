@@ -63,7 +63,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
     {
         // Prompt for confirmation. This is destructive.
         if (!\Drush\Drush::simulate()) {
-            $this->output()->writeln(dt("You will delete files in !target and replace with data from !source", array('!source' => $this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash(), '!target' => $this->targetEvaluatedPath->fullyQualifiedPath())));
+            $this->output()->writeln(dt("You will delete files in !target and replace with data from !source", ['!source' => $this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash(), '!target' => $this->targetEvaluatedPath->fullyQualifiedPath()]));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
@@ -81,7 +81,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
         if ($exec_result == 0) {
             drush_backend_set_result($this->targetEvaluatedPath->fullyQualifiedPath());
         } else {
-            throw new \Exception(dt("Could not rsync from !source to !dest", array('!source' => $this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash(), '!dest' => $this->targetEvaluatedPath->fullyQualifiedPath())));
+            throw new \Exception(dt("Could not rsync from !source to !dest", ['!source' => $this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash(), '!dest' => $this->targetEvaluatedPath->fullyQualifiedPath()]));
         }
     }
 
@@ -89,7 +89,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
     {
         $verbose = $paths = '';
         // Process --include-paths and --exclude-paths options the same way
-        foreach (array('include', 'exclude') as $include_exclude) {
+        foreach (['include', 'exclude'] as $include_exclude) {
             // Get the option --include-paths or --exclude-paths and explode to an array of paths
             // that we will translate into an --include or --exclude option to pass to rsync
             $inc_ex_path = explode(PATH_SEPARATOR, @$options[$include_exclude . '-paths']);
@@ -163,7 +163,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
     public function validate(CommandData $commandData)
     {
         if ($this->sourceEvaluatedPath->isRemote() && $this->targetEvaluatedPath->isRemote()) {
-            $msg = dt("Cannot specify two remote aliases. Instead, use one of the following alternate options:\n\n    `drush {source} rsync @self {target}`\n    `drush {source} rsync @self {fulltarget}\n\nUse the second form if the site alias definitions are not available at {source}.", array('source' => $source, 'target' => $target, 'fulltarget' => $this->targetEvaluatedPath->fullyQualifiedPath()));
+            $msg = dt("Cannot specify two remote aliases. Instead, use one of the following alternate options:\n\n    `drush {source} rsync @self {target}`\n    `drush {source} rsync @self {fulltarget}\n\nUse the second form if the site alias definitions are not available at {source}.", ['source' => $source, 'target' => $target, 'fulltarget' => $this->targetEvaluatedPath->fullyQualifiedPath()]);
             throw new \Exception($msg);
         }
     }

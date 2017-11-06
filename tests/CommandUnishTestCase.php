@@ -18,7 +18,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    *
    * @var array
    */
-  protected $coverage_data = array();
+  protected $coverage_data = [];
 
   /**
    * Process of last executed command.
@@ -256,9 +256,9 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     * @return integer
     *   An exit code.
     */
-  function drush($command, array $args = array(), array $options = array(), $site_specification = NULL, $cd = NULL, $expected_return = self::EXIT_SUCCESS, $suffix = NULL, $env = array()) {
+  function drush($command, array $args = [], array $options = [], $site_specification = NULL, $cd = NULL, $expected_return = self::EXIT_SUCCESS, $suffix = NULL, $env = []) {
     // cd is added for the benefit of siteSshTest which tests a strict command.
-    $global_option_list = array('simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'backend', 'cd');
+    $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'backend', 'cd'];
     $options += ['uri' => 'dev']; // Default value.
     $hide_stderr = FALSE;
     $cmd[] = self::getDrush();
@@ -360,7 +360,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    */
   public function run(\PHPUnit_Framework_TestResult $result = NULL) {
     $result = parent::run($result);
-    $data = array();
+    $data = [];
     foreach ($this->coverage_data as $merge_data) {
       foreach ($merge_data as $file => $lines) {
         if (!isset($data[$file])) {
@@ -380,7 +380,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     }
 
     // Reset coverage data.
-    $this->coverage_data = array();
+    $this->coverage_data = [];
     if (!empty($data)) {
       $result->getCodeCoverage()->append($data, $this);
     }
@@ -442,7 +442,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
   protected function interpolate($message, array $context)
   {
       // build a replacement array with braces around the context keys
-      $replace = array();
+      $replace = [];
       foreach ($context as $key => $val) {
           if (!is_array($val) && (!is_object($val) || method_exists($val, '__toString'))) {
               $replace[sprintf('{%s}', $key)] = $val;
@@ -456,7 +456,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     static $major;
 
     if (!isset($major)) {
-      $this->drush('version', array(), array('field' => 'drush-version'));
+      $this->drush('version', [], ['field' => 'drush-version']);
       $version = trim($this->getOutput());
       list($major) = explode('.', $version);
     }

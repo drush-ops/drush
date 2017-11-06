@@ -81,58 +81,58 @@ class sqlSyncTest extends CommandUnishTestCase {
 
   public function localSqlSync() {
 
-    $options = array(
+    $options = [
       'uri' => 'stage',
       'yes' => NULL,
-    );
+    ];
 
     // Create a user in the staging site
     $name = 'joe.user';
     $mail = "joe.user@myhome.com";
 
     // Add user fields and a test User.
-    $this->drush('pm-enable', array('field,text,telephone,comment'), $options + array('yes' => NULL));
-    $this->drush('php-script', array(
+    $this->drush('pm-enable', ['field,text,telephone,comment'], $options + ['yes' => NULL]);
+    $this->drush('php-script', [
       'user_fields-D' . UNISH_DRUPAL_MAJOR_VERSION,
       $name,
       $mail
-      ), $options + array(
+    ], $options + [
         'script-path' => __DIR__ . '/resources',
-      )
+      ]
     );
 
     // Copy stage to dev, and then sql:sanitize.
-    $sync_options = array(
+    $sync_options = [
       'yes' => NULL,
       // Test wildcards expansion from within sql-sync. Also avoid D8 persistent entity cache.
       'structure-tables-list' => 'cache,cache*',
-    );
-    $this->drush('sql-sync', array('@unish.stage', '@unish.dev'), $sync_options);
+    ];
+    $this->drush('sql-sync', ['@unish.stage', '@unish.dev'], $sync_options);
     $this->drush('sql-sanitize', [], ['yes' => NULL], '@unish.dev');
 
     // Confirm that the sample user is unchanged on the staging site
-    $this->drush('user-information', array($name), $options + ['format' => 'json'], '@unish.stage');
+    $this->drush('user-information', [$name], $options + ['format' => 'json'], '@unish.stage');
     $info = $this->getOutputFromJSON(2);
     $this->assertEquals($mail, $info->mail, 'Email address is unchanged on source site.');
     $this->assertEquals($name, $info->name);
 
     // Confirm that the sample user's email address has been sanitized on the dev site
-    $this->drush('user-information', array($name), $options + ['format' => 'json', 'yes' => null], '@unish.dev');
+    $this->drush('user-information', [$name], $options + ['format' => 'json', 'yes' => null], '@unish.dev');
     $info = $this->getOutputFromJSON(2);
     $this->assertEquals("user+2@localhost.localdomain", $info->mail, 'Email address was sanitized on destination site.');
     $this->assertEquals($name, $info->name);
 
     // Copy stage to dev with --sanitize and a fixed sanitized email
-    $sync_options = array(
+    $sync_options = [
       'yes' => NULL,
       // Test wildcards expansion from within sql-sync. Also avoid D8 persistent entity cache.
       'structure-tables-list' => 'cache,cache*',
-    );
-    $this->drush('sql-sync', array('@unish.stage', '@unish.dev'), $sync_options);
+    ];
+    $this->drush('sql-sync', ['@unish.stage', '@unish.dev'], $sync_options);
     $this->drush('sql-sanitize', [], ['yes' => NULL, 'sanitize-email' => 'user@mysite.org'], '@unish.dev');
 
     // Confirm that the sample user's email address has been sanitized on the dev site
-    $this->drush('user-information', array($name), $options + ['yes' => NULL, 'format' => 'json'], '@unish.dev');
+    $this->drush('user-information', [$name], $options + ['yes' => NULL, 'format' => 'json'], '@unish.dev');
     $info = $this->getOutputFromJSON(2);
     $this->assertEquals('user@mysite.org', $info->mail, 'Email address was sanitized (fixed email) on destination site.');
     $this->assertEquals($name, $info->name);

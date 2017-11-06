@@ -115,15 +115,15 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapInitPhases()
     {
-        return array(DRUSH_BOOTSTRAP_DRUSH, DRUSH_BOOTSTRAP_DRUPAL_ROOT, DRUSH_BOOTSTRAP_DRUPAL_FULL);
+        return [DRUSH_BOOTSTRAP_DRUSH, DRUSH_BOOTSTRAP_DRUPAL_ROOT, DRUSH_BOOTSTRAP_DRUPAL_FULL];
     }
 
     public function commandDefaults()
     {
-        return array(
-            'drupal dependencies' => array(),
+        return [
+            'drupal dependencies' => [],
             'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
-        );
+        ];
     }
 
     /**
@@ -142,13 +142,13 @@ abstract class DrupalBoot extends BaseBoot
         }
         // TODO: Perhaps $drupal_root is now ALWAYS valid by the time we get here.
         if (!$this->legacyValidRootCheck($drupal_root)) {
-            return drush_bootstrap_error('DRUSH_INVALID_DRUPAL_ROOT', dt("The directory !drupal_root does not contain a valid Drupal installation", array('!drupal_root' => $drupal_root)));
+            return drush_bootstrap_error('DRUSH_INVALID_DRUPAL_ROOT', dt("The directory !drupal_root does not contain a valid Drupal installation", ['!drupal_root' => $drupal_root]));
         }
 
         $version = drush_drupal_version($drupal_root);
         $major_version = drush_drupal_major_version($drupal_root);
         if ($major_version <= 6) {
-            return drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', array('!drush_version' => Drush::getMajorVersion(), '!major_version' => $major_version)));
+            return drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', ['!drush_version' => Drush::getMajorVersion(), '!major_version' => $major_version]));
         }
 
         drush_bootstrap_value('drupal_root', $drupal_root);
@@ -177,7 +177,7 @@ abstract class DrupalBoot extends BaseBoot
 
         $drupal_root = drush_set_context('DRUSH_DRUPAL_ROOT', drush_bootstrap_value('drupal_root'));
         chdir($drupal_root);
-        $this->logger->log(LogLevel::BOOTSTRAP, dt("Change working directory to !drupal_root", array('!drupal_root' => $drupal_root)));
+        $this->logger->log(LogLevel::BOOTSTRAP, dt("Change working directory to !drupal_root", ['!drupal_root' => $drupal_root]));
         $version = drush_drupal_version();
         $major_version = drush_drupal_major_version();
 
@@ -188,7 +188,7 @@ abstract class DrupalBoot extends BaseBoot
         drush_set_context('DRUSH_DRUPAL_CORE', $core);
         define('DRUSH_DRUPAL_CORE', $core);
 
-        $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal !version root directory at !drupal_root", array("!version" => $version, '!drupal_root' => $drupal_root)));
+        $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal !version root directory at !drupal_root", ["!version" => $version, '!drupal_root' => $drupal_root]));
     }
 
     /**
@@ -211,7 +211,7 @@ abstract class DrupalBoot extends BaseBoot
         $site = drush_set_context('DRUSH_DRUPAL_SITE', drush_bootstrap_value('site'));
         $confPath = drush_set_context('DRUSH_DRUPAL_SITE_ROOT', drush_bootstrap_value('confPath'));
 
-        $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal site !site at !site_root", array('!site' => $site, '!site_root' => $confPath)));
+        $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal site !site at !site_root", ['!site' => $site, '!site_root' => $confPath]));
     }
 
     /**
@@ -265,7 +265,7 @@ abstract class DrupalBoot extends BaseBoot
                 return false;
             }
         } catch (\Exception $e) {
-            $this->logger->log(LogLevel::DEBUG, dt('Unable to validate DB: @e', array('@e' => $e->getMessage())));
+            $this->logger->log(LogLevel::DEBUG, dt('Unable to validate DB: @e', ['@e' => $e->getMessage()]));
             return false;
         }
         return true;
@@ -302,7 +302,7 @@ abstract class DrupalBoot extends BaseBoot
             $spec = $sql->getDbSpec();
             $prefix = isset($spec['prefix']) ? $spec['prefix'] : null;
             if (!is_array($prefix)) {
-                $prefix = array('default' => $prefix);
+                $prefix = ['default' => $prefix];
             }
             $tables = $sql->listTables();
             if (!$tables) {

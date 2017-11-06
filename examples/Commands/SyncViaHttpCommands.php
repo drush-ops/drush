@@ -81,7 +81,7 @@ class SyncViaHttpCommands extends DrushCommands {
       }
       if (!drush_file_not_empty($destination_tmp)) {
         // Download failed.
-        throw new \Exception(dt("The URL !url could not be downloaded.", array('!url' => $url)));
+        throw new \Exception(dt("The URL !url could not be downloaded.", ['!url' => $url]));
       }
     }
     if ($destination) {

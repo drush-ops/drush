@@ -35,7 +35,7 @@ class NotifyCommands extends DrushCommands
 
         if (Drush::config()->get('notify.duration')) {
             if (self::isAllowed($commandData)) {
-                $msg = dt("Command '!command' completed.", array('!command' => $cmd));
+                $msg = dt("Command '!command' completed.", ['!command' => $cmd]);
                 self::shutdownSend($msg, $commandData);
             }
         }

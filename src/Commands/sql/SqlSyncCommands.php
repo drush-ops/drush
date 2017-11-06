@@ -54,20 +54,20 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         // Create target DB if needed.
         if ($options['create-db']) {
             $this->logger()->notice(dt('Starting to create database on target.'));
-            $return = drush_invoke_process($target, 'sql-create', array(), $global_options, $backend_options);
+            $return = drush_invoke_process($target, 'sql-create', [], $global_options, $backend_options);
             if ($return['error_status']) {
                 throw new \Exception(dt('sql-create failed.'));
             }
         }
 
         // Perform sql-dump on source unless told otherwise.
-        $dump_options = $global_options + array(
+        $dump_options = $global_options + [
             'gzip' => true,
             'result-file' => $options['source-dump'] ?: true,
-        );
+            ];
         if (!$options['no-dump']) {
             $this->logger()->notice(dt('Starting to dump database on source.'));
-            $return = drush_invoke_process($sourceRecord, 'sql-dump', array(), $dump_options, $backend_options);
+            $return = drush_invoke_process($sourceRecord, 'sql-dump', [], $dump_options, $backend_options);
             if ($return['error_status']) {
                 throw new \Exception(dt('sql-dump failed.'));
             } elseif (Drush::simulate()) {
@@ -93,7 +93,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         } else {
             $tmp = '/tmp'; // Our fallback plan.
             $this->logger()->notice(dt('Starting to discover temporary files directory on target.'));
-            $return = drush_invoke_process($target, 'core-status', array(), array(), array('integrate' => false, 'override-simulated' => true));
+            $return = drush_invoke_process($target, 'core-status', [], [], ['integrate' => false, 'override-simulated' => true]);
             if (!$return['error_status'] && isset($return['object']['drush-temp'])) {
                 $tmp = $return['object']['drush-temp'];
             }
@@ -147,16 +147,16 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         // Get target info for confirmation prompt.
         $manager = $this->siteAliasManager();
         if (!$sourceRecord = $manager->get($source)) {
-            throw new \Exception(dt('Error: no alias record could be found for source !source', array('!source' => $source)));
+            throw new \Exception(dt('Error: no alias record could be found for source !source', ['!source' => $source]));
         }
         if (!$targetRecord = $manager->get($target)) {
-            throw new \Exception(dt('Error: no alias record could be found for target !target', array('!target' => $target)));
+            throw new \Exception(dt('Error: no alias record could be found for target !target', ['!target' => $target]));
         }
         if (!$source_db_name = $this->databaseName($sourceRecord)) {
-            throw new \Exception(dt('Error: no database record could be found for source !source', array('!source' => $source)));
+            throw new \Exception(dt('Error: no database record could be found for source !source', ['!source' => $source]));
         }
         if (!$target_db_name = $this->databaseName($targetRecord)) {
-            throw new \Exception(dt('Error: no database record could be found for target !target', array('!target' => $target)));
+            throw new \Exception(dt('Error: no database record could be found for target !target', ['!target' => $target]));
         }
         $txt_source = ($sourceRecord->remoteHost() ? $sourceRecord->remoteHost() . '/' : '') . $source_db_name;
         $txt_target = ($targetRecord->remoteHost() ? $targetRecord->remoteHost() . '/' : '') . $target_db_name;
@@ -170,10 +170,10 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         }
 
         if (!Drush::simulate()) {
-            $this->output()->writeln(dt("You will destroy data in !target and replace with data from !source.", array(
+            $this->output()->writeln(dt("You will destroy data in !target and replace with data from !source.", [
                 '!source' => $txt_source,
                 '!target' => $txt_target
-            )));
+            ]));
             if (!$this->io()->confirm(dt('Do you really want to continue?'))) {
                 throw new UserAbortException();
             }
@@ -185,7 +185,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         if ($record->isRemote() && preg_match('#\.simulated$#', $record->remoteHost())) {
             return 'simulated_db';
         }
-        $values = drush_invoke_process($record, "core-status", array(), array(), array('integrate' => false, 'override-simulated' => true));
+        $values = drush_invoke_process($record, "core-status", [], [], ['integrate' => false, 'override-simulated' => true]);
         if (is_array($values) && ($values['error_status'] == 0)) {
             return $values['object']['db-name'];
         }

@@ -92,7 +92,7 @@ define('DRUSH_BOOTSTRAP_DRUPAL_FULL', 5);
  * Helper function to store any context settings that are being validated.
  */
 function drush_bootstrap_value($context, $value = null) {
-  $values =& drush_get_context('DRUSH_BOOTSTRAP_VALUES', array());
+  $values =& drush_get_context('DRUSH_BOOTSTRAP_VALUES', []);
 
   if (isset($value)) {
     $values[$context] = $value;

@@ -22,14 +22,14 @@ class ConfigPullCase extends CommandUnishTestCase {
     $source = $aliases['stage'];
     $destination = $aliases['dev'];
     // Make UUID match.
-    $this->drush('config-get', array('system.site', 'uuid'), array('yes' => NULL), $source);
+    $this->drush('config-get', ['system.site', 'uuid'], ['yes' => NULL], $source);
     list($name, $uuid) = explode(' ', $this->getOutput());
-    $this->drush('config-set', array('system.site', 'uuid', $uuid), array('yes' => NULL), $destination);
+    $this->drush('config-set', ['system.site', 'uuid', $uuid], ['yes' => NULL], $destination);
 
-    $this->drush('config-set', array('system.site', 'name', 'testConfigPull'), array('yes' => NULL), $source);
-    $this->drush('config-pull', array($source, $destination), array());
-    $this->drush('config-import', array(), array('yes' => NULL), $destination);
-    $this->drush('config-get', array('system.site', 'name'), array(), $source);
+    $this->drush('config-set', ['system.site', 'name', 'testConfigPull'], ['yes' => NULL], $source);
+    $this->drush('config-pull', [$source, $destination], []);
+    $this->drush('config-import', [], ['yes' => NULL], $destination);
+    $this->drush('config-get', ['system.site', 'name'], [], $source);
     $this->assertEquals("'system.site:name': testConfigPull", $this->getOutput(), 'Config was successfully pulled.');
   }
 }

@@ -68,7 +68,7 @@ class backendCase extends CommandUnishTestCase {
   {
     $this->markTestSkipped('Cannot run remote commands that do not exist locally');
     // Assure that arguments and options are passed along to a command thats not recognized locally.
-    $this->drush('non-existent-command', array('foo'), array('bar' => 'baz', 'simulate' => NULL), $site_specification);
+    $this->drush('non-existent-command', ['foo'], ['bar' => 'baz', 'simulate' => NULL], $site_specification);
     $output = $this->getOutput();
     $this->assertContains('foo', $output);
     $this->assertContains('--bar=baz', $output);
@@ -103,7 +103,7 @@ class backendCase extends CommandUnishTestCase {
 
   function testBackendErrorStatus() {
     // Check error propogation by requesting an invalid command (missing Drupal site).
-    $this->drush('core-cron', array(), array('backend' => NULL), NULL, NULL, self::EXIT_ERROR);
+    $this->drush('core-cron', [], ['backend' => NULL], NULL, NULL, self::EXIT_ERROR);
     $parsed = $this->parse_backend_output($this->getOutput());
     $this->assertEquals(1, $parsed['error_status']);
   }
@@ -133,7 +133,7 @@ class backendCase extends CommandUnishTestCase {
    */
   function testBackendFunctionResult() {
     $php = "return 'bar'";
-    $this->drush('php-eval', array($php), array('backend' => NULL));
+    $this->drush('php-eval', [$php], ['backend' => NULL]);
     $parsed = $this->parse_backend_output($this->getOutput());
     // assert that $parsed has 'bar'
     $this->assertEquals("'bar'", var_export($parsed['object'], TRUE));
@@ -147,7 +147,7 @@ class backendCase extends CommandUnishTestCase {
    */
   function testBackendSetResult() {
     $php = "drush_backend_set_result('foo'); return 'bar'";
-    $this->drush('php-eval', array($php), array('backend' => NULL));
+    $this->drush('php-eval', [$php], ['backend' => NULL]);
     $parsed = $this->parse_backend_output($this->getOutput());
     // assert that $parsed has 'foo' and not 'bar'
     $this->assertEquals("'foo'", var_export($parsed['object'], TRUE));
@@ -162,12 +162,12 @@ class backendCase extends CommandUnishTestCase {
    */
   function testBackendInvokeMultiple() {
     $this->markTestIncomplete('Depends on concurrency');
-    $options = array(
+    $options = [
       'backend' => NULL,
       'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
-    );
+    ];
     $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('x' => 'y'), array('invoke-multiple' => '3')); return \$values;";
-    $this->drush('php-eval', array($php), $options);
+    $this->drush('php-eval', [$php], $options);
     $parsed = $this->parse_backend_output($this->getOutput());
     // assert that $parsed has a 'concurrent'-format output result
     $this->assertEquals('concurrent', implode(',', array_keys($parsed['object'])));
@@ -189,12 +189,12 @@ class backendCase extends CommandUnishTestCase {
    *     backend invoke.
    */
   function testBackendMethodGet() {
-    $options = array(
+    $options = [
       'backend' => NULL,
       'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
-    );
+    ];
     $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('x' => 'y', 'data' => array('a' => 1, 'b' => 2)), array('method' => 'GET')); return array_key_exists('object', \$values) ? \$values['object'] : 'no result';";
-    $this->drush('php-eval', array($php), $options);
+    $this->drush('php-eval', [$php], $options);
     $parsed = $this->parse_backend_output($this->getOutput());
     // assert that $parsed has value of 'x'
     $this->assertContains("'x' => 'y'", var_export($parsed['object'], TRUE));
@@ -207,18 +207,18 @@ class backendCase extends CommandUnishTestCase {
    *     backend invoke.
    */
   function testBackendMethodPost() {
-    $options = array(
+    $options = [
       'backend' => NULL,
       'include' => dirname(__FILE__), // Find unit.drush.inc commandfile.
-    );
+    ];
     $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('x' => 'y', 'data' => array('a' => 1, 'b' => 2)), array('method' => 'POST')); return array_key_exists('object', \$values) ? \$values['object'] : 'no result';";
-    $this->drush('php-eval', array($php), $options);
+    $this->drush('php-eval', [$php], $options);
     $parsed = $this->parse_backend_output($this->getOutput());
     // assert that $parsed has 'x' and 'data'
     $this->assertEquals('y', $parsed['object']['x']);
-    $this->assertEquals(array (
+    $this->assertEquals([
     'a' => 1,
     'b' => 2,
-), $parsed['object']['data']);
+    ], $parsed['object']['data']);
   }
 }

@@ -151,7 +151,7 @@ class SqlBase implements ConfigAwareInterface
         // Avoid the php memory of the $output array in drush_shell_exec().
         if (!$return = drush_op_system($cmd)) {
             if ($file) {
-                drush_log(dt('Database dump saved to !path', array('!path' => $file)), LogLevel::SUCCESS);
+                drush_log(dt('Database dump saved to !path', ['!path' => $file]), LogLevel::SUCCESS);
                 drush_backend_set_result($file);
             }
         } else {
@@ -195,7 +195,7 @@ class SqlBase implements ConfigAwareInterface
                 }
                 $file = Path::join($backup_dir, '@DATABASE_@DATE.sql');
             }
-            $file = str_replace(array('@DATABASE', '@DATE'), array($database, gmdate('Ymd_His')), $file);
+            $file = str_replace(['@DATABASE', '@DATE'], [$database, gmdate('Ymd_His')], $file);
         }
         return $file;
     }
@@ -258,14 +258,14 @@ class SqlBase implements ConfigAwareInterface
             $input_file = drush_save_data_to_temp_file($query);
         }
 
-        $parts = array(
+        $parts = [
         $this->command(),
         $this->creds(),
         $this->silent(), // This removes column header and various helpful things in mysql.
         $this->getOption('extra', $this->queryExtra),
         $this->queryFile,
         drush_escapeshellarg($input_file),
-        );
+        ];
         $exec = implode(' ', $parts);
 
         if ($result_file) {
@@ -443,7 +443,7 @@ class SqlBase implements ConfigAwareInterface
     public function paramsToOptions($parameters)
     {
         // Turn each parameter into a valid parameter string.
-        $parameter_strings = array();
+        $parameter_strings = [];
         foreach ($parameters as $key => $value) {
             // Only escape the values, not the keys or the rest of the string.
             $value = drush_escapeshellarg($value);

@@ -17,13 +17,13 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
     $sites = $this->setUpDrupal(1, TRUE);
 
     // Test that pm-list lists uninstalled modules.
-    $this->drush('pm-list', array(), array('no-core' => NULL, 'status' => 'disabled'));
+    $this->drush('pm-list', [], ['no-core' => NULL, 'status' => 'disabled']);
     $out = $this->getOutput();
     $this->assertContains('devel', $out);
 
     // Test pm-enable enables a module, and pm-list verifies that.
-    $this->drush('pm-enable', array('devel'));
-    $this->drush('pm-list', array(), array('status' => 'enabled'));
+    $this->drush('pm-enable', ['devel']);
+    $this->drush('pm-list', [], ['status' => 'enabled']);
     $out = $this->getOutput();
     $this->assertContains('devel', $out);
     // Test the testing install profile theme is installed.;
@@ -32,18 +32,18 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
     // Test cache was cleared after enabling a module.
     $table = 'router';
     $path = '/admin/config/development/devel';
-    $this->drush('sql-query', array("SELECT path FROM $table WHERE path = '$path';"));
+    $this->drush('sql-query', ["SELECT path FROM $table WHERE path = '$path';"]);
     $list = $this->getOutputAsList();
     $this->assertTrue(in_array($path, $list), 'Cache was cleared after modules were enabled');
 
     // Test pm-list filtering.
-    $this->drush('pm-list', array(), array('package' => 'Core'));
+    $this->drush('pm-list', [], ['package' => 'Core']);
     $out = $this->getOutput();
     $this->assertNotContains('devel', $out, 'Devel is not part of core package');
 
     // Test module uninstall.
-    $this->drush('pm-uninstall', array('devel'));
-    $this->drush('pm-list', array(), array('status' => 'disabled', 'type' => 'module'));
+    $this->drush('pm-uninstall', ['devel']);
+    $this->drush('pm-list', [], ['status' => 'disabled', 'type' => 'module']);
     $out = $this->getOutput();
     $this->assertContains('devel', $out);
   }

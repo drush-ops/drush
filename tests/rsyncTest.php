@@ -102,13 +102,13 @@ class rsyncCase extends CommandUnishTestCase {
     $root = $this->webroot();
     $site = current($this->getAliases());
     $uri = $this->getUri();
-    $options = array(
+    $options = [
       'simulate' => NULL,
-    );
-    $this->drush('core-rsync', array("$site:%files", "/tmp"), $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1;');
+    ];
+    $this->drush('core-rsync', ["$site:%files", "/tmp"], $options, NULL, NULL, self::EXIT_SUCCESS, '2>&1;');
     $output = $this->getOutput();
     $level = $this->log_level();
-    $pattern = in_array($level, array('verbose', 'debug')) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz %s /tmp);";
+    $pattern = in_array($level, ['verbose', 'debug']) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz %s /tmp);";
     $expected = sprintf($pattern, $this->webroot(). "/sites/$uri/files");
     $this->assertEquals($expected, $output);
   }

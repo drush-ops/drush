@@ -104,12 +104,12 @@ class ConfigExportCommands extends DrushCommands
             // Retrieve a list of differences between the active and target configuration (if any).
             $config_comparer = new StorageComparer($this->getConfigStorage(), $target_storage, $this->getConfigManager());
             if (!$config_comparer->createChangelist()->hasChanges()) {
-                $this->logger()->notice(dt('The active configuration is identical to the configuration in the export directory (!target).', array('!target' => $destination_dir)));
+                $this->logger()->notice(dt('The active configuration is identical to the configuration in the export directory (!target).', ['!target' => $destination_dir]));
                 return;
             }
 
             $this->output()->writeln("Differences of the active config to the export directory:\n");
-            $change_list = array();
+            $change_list = [];
             foreach ($config_comparer->getAllCollectionNames() as $collection) {
                 $change_list[$collection] = $config_comparer->getChangelist(null, $collection);
             }
@@ -122,7 +122,7 @@ class ConfigExportCommands extends DrushCommands
                 $preview = str_replace("\r\n", PHP_EOL, $preview);
             }
 
-            if (!$this->io()->confirm(dt('The .yml files in your export directory (!target) will be deleted and replaced with the active config.', array('!target' => $destination_dir)))) {
+            if (!$this->io()->confirm(dt('The .yml files in your export directory (!target) will be deleted and replaced with the active config.', ['!target' => $destination_dir]))) {
                 throw new UserAbortException();
             }
             // Only delete .yml files, and not .htaccess or .git.
@@ -132,7 +132,7 @@ class ConfigExportCommands extends DrushCommands
         // Write all .yml files.
         ConfigCommands::copyConfig($this->getConfigStorage(), $target_storage);
 
-        $this->logger()->success(dt('Configuration successfully exported to !target.', array('!target' => $destination_dir)));
+        $this->logger()->success(dt('Configuration successfully exported to !target.', ['!target' => $destination_dir]));
         drush_backend_set_result($destination_dir);
         return isset($preview) ? $preview : 'No existing configuration to diff against.';
     }
@@ -156,7 +156,7 @@ class ConfigExportCommands extends DrushCommands
                 $comment_file = drush_save_data_to_temp_file($options['message'] ?: 'Exported configuration.'. $preview);
                 $result = drush_shell_cd_and_exec($destination_dir, 'git commit --file=%s', $comment_file);
                 if (!$result) {
-                    throw new \Exception(dt("`git commit` failed.  Output:\n\n!output", array('!output' => implode("\n", drush_shell_exec_output()))));
+                    throw new \Exception(dt("`git commit` failed.  Output:\n\n!output", ['!output' => implode("\n", drush_shell_exec_output())]));
                 }
             }
         } elseif ($options['add']) {

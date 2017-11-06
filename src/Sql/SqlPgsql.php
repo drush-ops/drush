@@ -18,20 +18,20 @@ class SqlPgsql extends SqlBase
         $password_file = null;
         $dbSpec = $this->getDbSpec();
         if (null !== ($this->getPasswordFile()) && isset($dbSpec['password'])) {
-            $pgpass_parts = array(
+            $pgpass_parts = [
             empty($dbSpec['host']) ? 'localhost' : $dbSpec['host'],
             empty($dbSpec['port']) ? '5432' : $dbSpec['port'],
             // Database
             '*',
             $dbSpec['username'],
             $dbSpec['password']
-            );
+            ];
             // Escape colon and backslash characters in entries.
             // @see http://www.postgresql.org/docs/9.1/static/libpq-pgpass.html
             array_walk($pgpass_parts, function (&$part) {
                   // The order of the replacements is important so that backslashes are
                   // not replaced twice.
-                  $part = str_replace(array('\\', ':'), array('\\\\', '\:'), $part);
+                  $part = str_replace(['\\', ':'], ['\\\\', '\:'], $part);
             });
             $pgpass_contents = implode(':', $pgpass_parts);
             $password_file = drush_save_data_to_temp_file($pgpass_contents);
@@ -113,7 +113,7 @@ class SqlPgsql extends SqlBase
         if (!empty($tables)) {
             return $tables;
         }
-        return array();
+        return [];
     }
 
     public function dumpCmd($table_selection)
@@ -123,7 +123,7 @@ class SqlPgsql extends SqlBase
         $structure_tables = $table_selection['structure'];
         $tables = $table_selection['tables'];
 
-        $ignores = array();
+        $ignores = [];
         $skip_tables  = array_merge($structure_tables, $skip_tables);
         $data_only = $this->getOption('data-only');
 
@@ -152,7 +152,7 @@ class SqlPgsql extends SqlBase
             // Run pg_dump again and append output if we need some structure only tables.
             if (!empty($structure_tables)) {
                 $parens = true;
-                $schemaonlies = array();
+                $schemaonlies = [];
                 foreach ($structure_tables as $table) {
                     $schemaonlies[] = "--table=$table";
                 }

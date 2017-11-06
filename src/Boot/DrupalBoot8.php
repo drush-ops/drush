@@ -120,7 +120,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     {
         $conf_file = $this->confPath() . '/settings.php';
         if (!file_exists($conf_file)) {
-            $msg = dt("Could not find a Drupal settings.php file at !file.", array('!file' => $conf_file));
+            $msg = dt("Could not find a Drupal settings.php file at !file.", ['!file' => $conf_file]);
             $this->logger->debug($msg);
             // Cant do this because site:install deliberately bootstraps to configure without a settings.php file.
             // return drush_set_error($msg);
@@ -174,7 +174,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         parent::bootstrapDrupalFull();
 
         // Get a list of the modules to ignore
-        $ignored_modules = drush_get_option_list('ignored-modules', array());
+        $ignored_modules = drush_get_option_list('ignored-modules', []);
 
         $application = Drush::getApplication();
         $runner = Drush::runner();

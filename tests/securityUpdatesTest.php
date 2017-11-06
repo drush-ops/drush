@@ -14,7 +14,7 @@ class securityUpdatesTest extends CommandUnishTestCase {
    * Test that insecure packages are correctly identified.
    */
   function testInsecurePackage() {
-    $this->drush('pm:security', array(), array('format' => 'json'), NULL, NULL, self::EXIT_ERROR);
+    $this->drush('pm:security', [], ['format' => 'json'], NULL, NULL, self::EXIT_ERROR);
     $this->assertContains('One or more of your dependencies has an outstanding security update. Please apply update(s) immediately.', $this->getErrorOutput());
     $this->assertContains('Try running: composer require drupal/alinks:^1.1 --update-with-dependencies', $this->getErrorOutput());
     $security_advisories = $this->getOutputFromJSON();

@@ -22,19 +22,19 @@ class EmptyBoot extends BaseBoot
 
     public function bootstrapPhases()
     {
-        return array(
+        return [
         DRUSH_BOOTSTRAP_DRUSH => '_drush_bootstrap_drush',
-        );
+        ];
     }
 
     public function bootstrapInitPhases()
     {
-        return array(DRUSH_BOOTSTRAP_DRUSH);
+        return [DRUSH_BOOTSTRAP_DRUSH];
     }
 
     public function commandDefaults()
     {
-        return array(
+        return [
         // TODO: Historically, commands that do not explicitly specify
         // their bootstrap level default to DRUSH_BOOTSTRAP_DRUPAL_LOGIN.
         // This isn't right any more, but we can't just change this to
@@ -43,6 +43,6 @@ class EmptyBoot extends BaseBoot
         // Any command that does not declare 'bootstrap' is declaring that
         // it is a Drupal command.
         'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
-        );
+        ];
     }
 }

@@ -12,7 +12,7 @@ class initCommandCase extends CommandUnishTestCase {
 
   function testInitCommand() {
     // Call `drush core-init`
-    $this->drush('core-init', array(), array('add-path' => TRUE, 'yes' => NULL, 'no-ansi' => NULL));
+    $this->drush('core-init', [], ['add-path' => TRUE, 'yes' => NULL, 'no-ansi' => NULL]);
     $logOutput = $this->getErrorOutput();
     // First test to ensure that the command claimed to have made the expected progress
     $this->assertContains("Copied Drush bash customizations", $logOutput);

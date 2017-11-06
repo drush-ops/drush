@@ -130,7 +130,7 @@ EOT;
         $structure_tables = $table_selection['structure'];
         $tables = $table_selection['tables'];
 
-        $ignores = array();
+        $ignores = [];
         $skip_tables  = array_merge($structure_tables, $skip_tables);
         $data_only = $this->getOption('data-only');
         // The ordered-dump option is only supported by MySQL for now.

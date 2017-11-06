@@ -29,7 +29,7 @@ function drush_sql_get_class($db_spec = NULL) {
  */
 function drush_get_merged_prefixed_options($prefix) {
   $merged_options = drush_get_merged_options();
-  $result = array();
+  $result = [];
   foreach ($merged_options as $key => $value) {
     if ($prefix == substr($key, 0, strlen($prefix))) {
       $result[substr($key, strlen($prefix))] = $value;
@@ -75,12 +75,12 @@ function drush_normalize_path($path) {
  * @deprecated
  */
 function drush_dir_md5($dir) {
-    $flist = drush_scan_directory($dir, '/./', array('.', '..'), 0, TRUE, 'filename', 0, TRUE);
-    $hashes = array();
+    $flist = drush_scan_directory($dir, '/./', ['.', '..'], 0, TRUE, 'filename', 0, TRUE);
+    $hashes = [];
     foreach ($flist as $f) {
-        $sum = array();
+        $sum = [];
         exec('cksum ' . escapeshellarg($f->filename), $sum);
-        $hashes[] = trim(str_replace(array($dir), array(''), $sum[0]));
+        $hashes[] = trim(str_replace([$dir], [''], $sum[0]));
     }
     sort($hashes);
     return md5(implode("\n", $hashes));
@@ -109,7 +109,7 @@ function drush_dir_md5($dir) {
  *
  * @deprecated Use the table output formatter instead. Example: \Drush\Drupal\Commands\pm\PmCommands::pmList
  */
-function drush_print_table($rows, $header = FALSE, $widths = array(), $handle = NULL) {
+function drush_print_table($rows, $header = FALSE, $widths = [], $handle = NULL) {
     $tbl = _drush_format_table($rows, $header, $widths);
     $output = $tbl->getTable();
     if (!stristr(PHP_OS, 'WIN')) {
@@ -135,7 +135,7 @@ function drush_print_table($rows, $header = FALSE, $widths = array(), $handle = 
  * @return $output
  *   The formatted output.
  */
-function drush_format_table($rows, $header = FALSE, $widths = array(), $console_table_options = array()) {
+function drush_format_table($rows, $header = FALSE, $widths = [], $console_table_options = []) {
     $tbl = _drush_format_table($rows, $header, $widths, $console_table_options);
     $output = $tbl->getTable();
     if (!drush_is_windows()) {
@@ -144,16 +144,16 @@ function drush_format_table($rows, $header = FALSE, $widths = array(), $console_
     return $output;
 }
 
-function _drush_format_table($rows, $header = FALSE, $widths = array(), $console_table_options = array()) {
+function _drush_format_table($rows, $header = FALSE, $widths = [], $console_table_options = []) {
     // Add defaults.
     $tbl = new ReflectionClass('Console_Table');
-    $console_table_options += array(CONSOLE_TABLE_ALIGN_LEFT , '');
+    $console_table_options += [CONSOLE_TABLE_ALIGN_LEFT , ''];
     $tbl = $tbl->newInstanceArgs($console_table_options);
 
     $auto_widths = drush_table_column_autowidth($rows, $widths);
 
     // Do wordwrap on all cells.
-    $newrows = array();
+    $newrows = [];
     foreach ($rows as $rowkey => $row) {
         foreach ($row as $col_num => $cell) {
             $newrows[$rowkey][$col_num] = wordwrap($cell, $auto_widths[$col_num], "\n", TRUE);
@@ -175,7 +175,7 @@ function _drush_format_table($rows, $header = FALSE, $widths = array(), $console
  * Select the fields that should be used.
  */
 function drush_select_fields($all_field_labels, $fields, $strict = TRUE) {
-    $field_labels = array();
+    $field_labels = [];
     foreach ($fields as $field) {
         if (array_key_exists($field, $all_field_labels)) {
             $field_labels[$field] = $all_field_labels[$field];
@@ -214,7 +214,7 @@ function drush_table_column_autowidth($rows, $widths) {
     // This is an array of descending character length keys (i.e. starting at
     // the rightmost character column), with the value indicating the number
     // of rows where that character column is present.
-    $col_dist = array();
+    $col_dist = [];
     foreach ($rows as $rowkey => $row) {
         foreach ($row as $col_id => $cell) {
             if (empty($widths[$col_id])) {
@@ -293,7 +293,7 @@ function drush_table_column_autowidth($rows, $widths) {
  *   the db url. If the parse fails the array is empty.
  */
 function drush_convert_db_from_db_url($db_url) {
-  $db_spec = array();
+  $db_spec = [];
 
   if (is_array($db_url)) {
     $db_url_default = $db_url['default'];
@@ -304,32 +304,32 @@ function drush_convert_db_from_db_url($db_url) {
 
   // If it's a sqlite database, pick the database path and we're done.
   if (strpos($db_url_default, 'sqlite://') === 0) {
-    $db_spec = array(
+    $db_spec = [
       'driver'   => 'sqlite',
       'database' => substr($db_url_default, strlen('sqlite://')),
-    );
+    ];
   }
   else {
     $url = parse_url($db_url_default);
     if ($url) {
       // Fill in defaults to prevent notices.
-      $url += array(
+      $url += [
         'scheme' => NULL,
         'user'   => NULL,
         'pass'   => NULL,
         'host'   => NULL,
         'port'   => NULL,
         'path'   => NULL,
-      );
+      ];
       $url = (object)array_map('urldecode', $url);
-      $db_spec = array(
+      $db_spec = [
         'driver'   => $url->scheme == 'mysqli' ? 'mysql' : $url->scheme,
         'username' => $url->user,
         'password' => $url->pass,
         'host' => $url->host,
         'port' => $url->port,
         'database' => ltrim($url->path, '/'),
-      );
+      ];
     }
   }
 

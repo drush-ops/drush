@@ -15,16 +15,16 @@ class annotatedCommandCase extends CommandUnishTestCase {
     $options = [];
 
     // We modified the set of available Drush commands; we need to clear the Drush command cache
-    $this->drush('cc', array('drush'), $options);
+    $this->drush('cc', ['drush'], $options);
 
     // drush foobar
     $options['include'] = "$globalExtensions";
-    $this->drush('foobar', array(), $options);
+    $this->drush('foobar', [], $options);
     $output = $this->getOutput();
     $this->assertEquals('baz', $output);
 
     // Drush foobaz
-    $this->drush('foobaz', array(), $options);
+    $this->drush('foobaz', [], $options);
     $output = $this->getOutput();
     $this->assertEquals('bar', $output);
   }
@@ -38,7 +38,7 @@ class annotatedCommandCase extends CommandUnishTestCase {
     $this->setupModulesForTests($root);
 
     // Enable our module. This will also clear the commandfile cache.
-    $this->drush('pm-enable', array('woot'));
+    $this->drush('pm-enable', ['woot']);
 
     // In theory this is not necessary, but this test keeps failing.
     // $this->drush('cc', array('drush'), $options);
@@ -63,12 +63,12 @@ class annotatedCommandCase extends CommandUnishTestCase {
     $this->assertEquals('Woot!', $output);
 
     // drush my-cat bet alpha --flip
-    $this->drush('my-cat', array('bet', 'alpha'), ['flip' => NULL]);
+    $this->drush('my-cat', ['bet', 'alpha'], ['flip' => NULL]);
     $output = $this->getOutput();
     $this->assertEquals('alphabet', $output);
 
     // drush my-cat bet alpha --flip
-    $this->drush('my-cat', array('bet', 'alpha'), ['flip' => NULL, 'ignored-modules' => 'woot'], NULL, NULL, self::EXIT_ERROR);
+    $this->drush('my-cat', ['bet', 'alpha'], ['flip' => NULL, 'ignored-modules' => 'woot'], NULL, NULL, self::EXIT_ERROR);
 
     $this->drush('try-formatters');
     $output = $this->getOutput();
@@ -84,7 +84,7 @@ class annotatedCommandCase extends CommandUnishTestCase {
 EOT;
     $this->assertEquals(trim(preg_replace('#[ \n]+#', ' ', $expected)), trim(preg_replace('#[ \n]+#', ' ', $output)));
 
-    $this->drush('try-formatters --format=yaml --fields=III,II', array(), [], NULL, NULL, self::EXIT_SUCCESS);
+    $this->drush('try-formatters --format=yaml --fields=III,II', [], [], NULL, NULL, self::EXIT_SUCCESS);
     $output = $this->getOutput();
     // TODO: If there are different versions of symfony/yaml in Drush and Drupal,
     // then we can get indentation errors. Ignore that in these tests; this is not
@@ -106,7 +106,7 @@ es:
 EOT;
     $this->assertEquals($expected, $output);
 
-    $this->drush('try-formatters', array(), ['format' => 'json']);
+    $this->drush('try-formatters', [], ['format' => 'json']);
     $data = $this->getOutput();
     $expected = <<<EOT
 {
@@ -135,13 +135,13 @@ EOT;
     $this->assertEquals($expected, $data);
 
     // drush help my-cat
-    $this->drush('help', array('my-cat'));
+    $this->drush('help', ['my-cat']);
     $output = $this->getOutput();
     $this->assertContains('bet alpha --flip Concatinate "alpha" and "bet".', $output);
     $this->assertContains('Aliases: c', $output);
 
     // drush help woot
-    $this->drush('help', array('woot'));
+    $this->drush('help', ['woot']);
     $output = $this->getOutput();
     $this->assertContains('Woot mightily.', $output);
 
@@ -157,7 +157,7 @@ EOT;
     $this->markTestSkipped('--help not working yet.');
 
     // drush my-cat --help
-    $this->drush('my-cat', array(), ['help' => NULL]);
+    $this->drush('my-cat', [], ['help' => NULL]);
     $output = $this->getOutput();
     $this->assertContains('my-cat bet alpha --flip', $output);
     $this->assertContains('The first parameter', $output);
@@ -165,14 +165,14 @@ EOT;
     $this->assertContains('Whether or not the second parameter', $output);
 
     // drush woot --help
-    $this->drush('woot', array(), ['help' => NULL]);
+    $this->drush('woot', [], ['help' => NULL]);
     $output = $this->getOutput();
     $this->assertContains('Usage:', $output);
     $this->assertContains('woot [options]', $output);
     $this->assertContains('Woot mightily.', $output);
 
     // drush try-formatters --help
-    $this->drush('try-formatters', array(), ['help' => NULL]);
+    $this->drush('try-formatters', [], ['help' => NULL]);
     $output = $this->getOutput();
     $this->assertContains('Demonstrate formatters', $output);
     $this->assertContains('try:formatters --fields=first,third', $output);
@@ -185,7 +185,7 @@ EOT;
 
     // TODO: Support --ignored-modules
     // drush woot --help with the 'woot' module ignored
-    $this->drush('woot', array(), ['help' => NULL, 'ignored-modules' => 'woot'], NULL, NULL, self::EXIT_ERROR);
+    $this->drush('woot', [], ['help' => NULL, 'ignored-modules' => 'woot'], NULL, NULL, self::EXIT_ERROR);
   }
 
   public function setupGlobalExtensionsForTests() {

@@ -85,7 +85,7 @@ class SqlCommands extends DrushCommands
         if (!Drush::simulate()) {
             // @todo odd - maybe for sql-sync.
             $txt_destination = (isset($db_spec['remote-host']) ? $db_spec['remote-host'] . '/' : '') . $db_spec['database'];
-            $this->output()->writeln(dt("Creating database !target. Any existing database will be dropped!", array('!target' => $txt_destination)));
+            $this->output()->writeln(dt("Creating database !target. Any existing database will be dropped!", ['!target' => $txt_destination]));
 
             if (!$this->io()->confirm(dt('Do you really want to continue?'))) {
                 throw new UserAbortException();
@@ -110,7 +110,7 @@ class SqlCommands extends DrushCommands
     {
         $sql = SqlBase::create($options);
         $db_spec = $sql->getDbSpec();
-        if (!$this->io()->confirm(dt('Do you really want to drop all tables in the database !db?', array('!db' => $db_spec['database'])))) {
+        if (!$this->io()->confirm(dt('Do you really want to drop all tables in the database !db?', ['!db' => $db_spec['database']]))) {
             throw new UserAbortException();
         }
         $tables = $sql->listTables();
@@ -173,9 +173,9 @@ class SqlCommands extends DrushCommands
         }
         if (Drush::simulate()) {
             if ($query) {
-                $this->output()->writeln(dt('Simulating sql-query: !q', array('!q' => $query)));
+                $this->output()->writeln(dt('Simulating sql-query: !q', ['!q' => $query]));
             } else {
-                $this->output()->writeln(dt('Simulating sql-import from !f', array('!f' => $options['file'])));
+                $this->output()->writeln(dt('Simulating sql-import from !f', ['!f' => $options['file']]));
             }
         } else {
             $sql = SqlBase::create($options);
