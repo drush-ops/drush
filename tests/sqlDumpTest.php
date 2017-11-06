@@ -31,17 +31,13 @@ class SqlDumpTest extends CommandUnishTestCase {
       'skip-tables-list' => 'hist*,cache*,router,config*,watchdog,key_valu*',
       'yes' => NULL,
     );
-    $site_selection_options = array(
-      'root' => $root,
-      'uri' => $uri,
-    );
 
-    $this->drush('sql-dump', [], $options + $site_selection_options + ['simulate' => NULL]);
+    $this->drush('sql-dump', [], $options + ['simulate' => NULL]);
     $this->assertContains('--ignore-table=unish_dev.cache_discovery', $this->getErrorOutput());
 
     // Test --extra-dump option
     if ($this->db_driver() == 'mysql') {
-      $this->drush('sql-dump', array(), array_merge($options, $site_selection_options, array('extra-dump' => '--skip-add-drop-table')));
+      $this->drush('sql-dump', array(), array_merge($options, [], array('extra-dump' => '--skip-add-drop-table')));
       $this->assertFileExists($full_dump_file_path);
       $full_dump_file = file_get_contents($full_dump_file_path);
       $this->assertNotContains('DROP TABLE IF EXISTS', $full_dump_file);
@@ -49,7 +45,7 @@ class SqlDumpTest extends CommandUnishTestCase {
 
 
     // First, do a test without any aliases, and dump the whole database
-    $this->drush('sql-dump', array(), array_merge($options, $site_selection_options));
+    $this->drush('sql-dump', array(), $options);
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
@@ -61,7 +57,7 @@ class SqlDumpTest extends CommandUnishTestCase {
     // Control: insure options are not set when not specified
     unset($options['skip-tables-list']);
     unlink($full_dump_file_path);
-    $this->drush('sql-dump', array(), array_merge($options, $site_selection_options));
+    $this->drush('sql-dump', array(), $options);
     $this->assertFileExists($full_dump_file_path);
     $full_dump_file = file_get_contents($full_dump_file_path);
     // Test that we have sane contents.
@@ -100,7 +96,7 @@ class SqlDumpTest extends CommandUnishTestCase {
 //    $this->assertNotContains('CREATE TABLE `key_value', $full_dump_file);
 //    // Repeat control test:  options not recovered in absence of an alias.
 //    unlink($full_dump_file_path);
-//    $this->drush('sql-dump', array(), array_merge($options, $site_selection_options));
+//    $this->drush('sql-dump', array(), $options);
 //    $this->assertFileExists($full_dump_file_path);
 //    $full_dump_file = file_get_contents($full_dump_file_path);
 //    // Test that we have sane contents.
@@ -110,7 +106,7 @@ class SqlDumpTest extends CommandUnishTestCase {
 //    // Now run yet with @self, and test to see that Drush can recover the option
 //    // --skip-tables-list, defined in @test.
 //    unlink($full_dump_file_path);
-//    $this->drush('sql-dump', array(), array_merge($options, $site_selection_options), '@self');
+//    $this->drush('sql-dump', array(), $options, '@self');
 //    $this->assertFileExists($full_dump_file_path);
 //    $full_dump_file = file_get_contents($full_dump_file_path);
 //    // Test that we have sane contents.

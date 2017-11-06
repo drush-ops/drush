@@ -20,32 +20,32 @@ class userCase extends CommandUnishTestCase {
   }
 
   function testBlockUnblock() {
-    $this->drush('user-block', array(self::NAME), $this->options());
-    $this->drush('user-information', array(self::NAME), $this->options() + array('format' => 'json'));
+    $this->drush('user-block', array(self::NAME));
+    $this->drush('user-information', array(self::NAME), array('format' => 'json'));
     $uid = 2;
     $output = $this->getOutputFromJSON($uid);
     $this->assertEquals(0, $output->user_status, 'User is blocked.');
 
     // user-unblock
-    $this->drush('user-unblock', array(self::NAME), $this->options());
-    $this->drush('user-information', array(self::NAME), $this->options() + array('format' => 'json'));
+    $this->drush('user-unblock', array(self::NAME));
+    $this->drush('user-information', array(self::NAME), array('format' => 'json'));
     $output = $this->getOutputFromJSON($uid);
     $this->assertEquals(1, $output->user_status, 'User is unblocked.');
   }
 
    function testUserRole() {
     // First, create the role since we use testing install profile.
-    $this->drush('role-create', array('test role'), $this->options());
-    $this->drush('user-add-role', array('test role', self::NAME), $this->options());
-    $this->drush('user-information', array(self::NAME), $this->options() + array('format' => 'json'));
+    $this->drush('role-create', array('test role'));
+    $this->drush('user-add-role', array('test role', self::NAME));
+    $this->drush('user-information', array(self::NAME), array('format' => 'json'));
     $uid = 2;
     $output = $this->getOutputFromJSON($uid);
     $expected = array('authenticated', 'test role');
     $this->assertEquals($expected, array_values((array)$output->roles), 'User has test role.');
 
     // user-remove-role
-    $this->drush('user-remove-role', array('test role', self::NAME), $this->options());
-    $this->drush('user-information', array(self::NAME), $this->options() + array('format' => 'json'));
+    $this->drush('user-remove-role', array('test role', self::NAME));
+    $this->drush('user-information', array(self::NAME), array('format' => 'json'));
     $output = $this->getOutputFromJSON($uid);
     $expected = array('authenticated');
     $this->assertEquals($expected, array_values((array)$output->roles), 'User removed test role.');
@@ -54,19 +54,19 @@ class userCase extends CommandUnishTestCase {
   function testUserPassword() {
     $newpass = 'newpass';
     $name = self::NAME;
-    $this->drush('user-password', array(self::NAME, $newpass), $this->options());
+    $this->drush('user-password', array(self::NAME, $newpass));
     $eval = "return \\Drupal::service('user.auth')->authenticate('$name', '$newpass');";
-    $this->drush('php-eval', array($eval), $this->options());
+    $this->drush('php-eval', array($eval));
     $output = $this->getOutput();
     $this->assertEquals("2", $output, 'User can login with new password.');
   }
 
    function testUserLogin() {
-    // Check if user-login on non-bootstrapped environment returns error.
-    $this->drush('user-login', array(), array(), NULL, NULL, self::EXIT_ERROR);
+    // Check if user-login on a non-bootstrapped environment returns error.
+    $this->drush('user-login', array(), array('uri' => 'OMIT'), NULL, NULL, self::EXIT_ERROR);
 
     // Check user-login
-    $user_login_options = $this->options() + array('simulate' => null, 'browser' => 'unish');
+    $user_login_options = array('simulate' => null, 'browser' => 'unish');
     // Collect full logs so we can check browser.
     $this->drush('user-login', array(), $user_login_options + ['debug' => null]);
     $logOutput = $this->getErrorOutput();
@@ -116,30 +116,30 @@ class userCase extends CommandUnishTestCase {
     $answers = json_encode($answers);
     $original = getenv('SHELL_INTERACTIVE');
     putenv('SHELL_INTERACTIVE=1');
-    $this->drush('generate', ['content-entity'], $this->options() + ['answers' => $answers, 'directory' => Path::join(self::webroot(), 'modules/unish')]);
+    $this->drush('generate', ['content-entity'], ['answers' => $answers, 'directory' => Path::join(self::webroot(), 'modules/contrib')]);
     putenv('SHELL_INTERACTIVE=' . $original);
-    $this->drush('pm-enable', ['text,unish_article'], $this->options());
+    $this->drush('pm-enable', ['text,unish_article']);
     // Create one unish_article owned by our example user.
-    $this->drush('php-script', ['create_unish_articles'], $this->options() + ['script-path' => '../vendor/drush/drush/tests/resources']);
+    $this->drush('php-script', ['create_unish_articles'], ['script-path' => '../vendor/drush/drush/tests/resources']);
     // Verify that content entity exists.
     $code = "echo entity_load('unish_article', 1)->id()";
-    $this->drush('php-eval', [$code], $this->options());
+    $this->drush('php-eval', [$code]);
     $this->assertEquals(1, $this->getOutput());
 
     // Cancel user and verify that the account is deleted.
-    $this->drush('user-cancel', array(self::NAME), $this->options() + array('delete-content' => NULL));
-    $this->drush('user-information', [self::NAME], $this->options() + ['fields' => 'user_status', 'format' => 'string'], NULL, NULL, self::EXIT_ERROR);
+    $this->drush('user-cancel', array(self::NAME), array('delete-content' => NULL));
+    $this->drush('user-information', [self::NAME], ['fields' => 'user_status', 'format' => 'string'], NULL, NULL, self::EXIT_ERROR);
 
     // Verify that the content is deleted.
     // Sigh - only nodes actually honor the cancellation methods. @see node_user_cancel().
-    // $this->drush('php-eval', [$code], $this->options(), NULL, NULL, self::EXIT_ERROR);
+    // $this->drush('php-eval', [$code], [], NULL, NULL, self::EXIT_ERROR);
     // $output = $this->getOutput();
     // $this->assertEquals('', $this->getOutput());
   }
 
   function UserCreate() {
-    $this->drush('user-create', array(self::NAME), $this->options() + array('password' => 'password', 'mail' => "example@example.com"));
-    $this->drush('user-information', array(self::NAME), $this->options() + array('format' => 'json'));
+    $this->drush('user-create', array(self::NAME), array('password' => 'password', 'mail' => "example@example.com"));
+    $this->drush('user-information', array(self::NAME), array('format' => 'json'));
     $uid = 2;
     $output = $this->getOutputFromJSON($uid);
     $this->assertEquals('example@example.com', $output->mail);
@@ -147,13 +147,5 @@ class userCase extends CommandUnishTestCase {
     $this->assertEquals(1, $output->user_status, 'Newly created user is Active.');
     $expected = array('authenticated');
     $this->assertEquals($expected, array_values((array)$output->roles), 'Newly created user has one role.');
-  }
-
-  function options() {
-    return array(
-      'root' => $this->webroot(),
-      'uri' => $this->getUri(),
-      'yes' => NULL,
-    );
   }
 }

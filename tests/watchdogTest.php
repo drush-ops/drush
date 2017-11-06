@@ -8,17 +8,12 @@ namespace Unish;
 class WatchdogCase extends CommandUnishTestCase {
 
   function  testWatchdog() {
-    $sites = $this->setUpDrupal(1, TRUE);
-    $options = array(
-      'yes' => NULL,
-      'root' => $this->webroot(),
-      'uri' => key($sites),
-    );
-    $this->drush('pm-enable', array('dblog'), $options);
+    $this->setUpDrupal(1, TRUE);
+    $this->drush('pm-enable', array('dblog'));
 
     $eval1 = "\\Drupal::logger('drush')->notice('Unish rocks.');";
-    $this->drush('php-eval', array($eval1), $options);
-    $this->drush('watchdog-show', array(), $options + array('count' => 50));
+    $this->drush('php-eval', array($eval1));
+    $this->drush('watchdog-show', array(), array('count' => 50));
     $output = $this->getOutput();
     $this->assertContains('Unish rocks.', $output);
 
@@ -30,18 +25,18 @@ class WatchdogCase extends CommandUnishTestCase {
     $char = '*';
     $message = str_repeat($char, $message_chars);
     $eval2 = "\\Drupal::logger('drush')->notice('$message');";
-    $this->drush('php-eval', array($eval2), $options);
-    $this->drush('watchdog-show', array(), $options);
+    $this->drush('php-eval', array($eval2));
+    $this->drush('watchdog-show');
     $output = $this->getOutput();
     $this->assertGreaterThan(substr_count($output, $char), $message_chars);
-    $this->drush('watchdog-show', array(), $options + array('extended' => NULL));
+    $this->drush('watchdog-show', array(), array('extended' => NULL));
     $output = $this->getOutput();
     $this->assertGreaterThanOrEqual($message_chars, substr_count($output, $char));
 
     // Tests message deletion
-    $this->drush('watchdog-delete', array('all'), $options);
+    $this->drush('watchdog-delete', array('all'));
     $output = $this->getOutput();
-    $this->drush('watchdog-show', array(), $options);
+    $this->drush('watchdog-show');
     $output = $this->getOutput();
     $this->assertEmpty($output);
   }

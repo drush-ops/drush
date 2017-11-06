@@ -15,52 +15,48 @@ class roleCase extends CommandUnishTestCase {
   public function testRole() {
     $sites = $this->setUpDrupal(1, TRUE);
     $root = $this->webroot();
-    $options = array(
-      'root' => $root,
-      'uri' => key($sites),
-      'yes' => NULL,
-    );
+
     // In D8+, the testing profile has no perms.
     // Copy the module to where Drupal expects it.
     $this->setupModulesForTests($root);
-    $this->drush('pm-enable', ['user_form_test'], $options);
+    $this->drush('pm-enable', ['user_form_test']);
 
-    $this->drush('role-list', array(), $options);
+    $this->drush('role-list');
     $output = $this->getOutput();
     $this->assertNotContains('cancel other accounts', $output);
 
-    $this->drush('role-list', array(), $options + array('filter' => 'cancel other accounts'));
+    $this->drush('role-list', array(), array('filter' => 'cancel other accounts'));
     $output = $this->getOutput();
     $this->assertNotContains('authenticated', $output);
     $this->assertNotContains('anonymous', $output);
 
     // Create the role foo.
     $rid = 'foo';
-    $this->drush('role-create', array($rid), $options);
-    $this->drush('role-list', array(), $options);
+    $this->drush('role-create', array($rid));
+    $this->drush('role-list');
     $this->assertContains($rid, $this->getOutput());
 
     // Assert that anon user starts without 'cancel other accounts' perm.
     $perm = 'cancel other accounts';
-    $this->drush('role-list', array(), $options + array('format' => 'json'));
+    $this->drush('role-list', array(), array('format' => 'json'));
     $role = $this->getOutputFromJSON($rid);
     $this->assertFalse(in_array($perm, $role->perms));
 
     // Now grant that perm to foo.
-    $this->drush('role-add-perm', array($rid, 'cancel other accounts'), $options);
-    $this->drush('role-list', array(), $options + array('format' => 'json'));
+    $this->drush('role-add-perm', array($rid, 'cancel other accounts'));
+    $this->drush('role-list', array(), array('format' => 'json'));
     $role = $this->getOutputFromJSON($rid);
     $this->assertTrue(in_array($perm, $role->perms));
 
     // Now remove the perm from foo.
-    $this->drush('role-remove-perm', array($rid, 'cancel other accounts'), $options );
-    $this->drush('role-list', array(), $options + array('format' => 'json'));
+    $this->drush('role-remove-perm', array($rid, 'cancel other accounts'));
+    $this->drush('role-list', array(), array('format' => 'json'));
     $role = $this->getOutputFromJSON($rid);
     $this->assertFalse(in_array($perm, $role->perms));
 
     // Delete the foo role
-    $this->drush('role-delete', array($rid), $options);
-    $this->drush('role-list', array(), $options);
+    $this->drush('role-delete', array($rid));
+    $this->drush('role-list');
     $this->assertNotContains($rid, $this->getOutput());
   }
 

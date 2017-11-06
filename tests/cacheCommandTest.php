@@ -16,22 +16,20 @@ class cacheCommandCase extends CommandUnishTestCase {
   }
 
   function testCacheGet() {
-    $options = $this->getOptions();
     // Test the cache get command.
-    $this->drush('cache-get', array('system.date', 'config'), $options + array('format' => 'json'));
+    $this->drush('cache-get', array('system.date', 'config'), array('format' => 'json'));
     $schema = $this->getOutputFromJSON('data');
     $this->assertNotEmpty($schema);
 
     // Test that get-ing a non-existant cid fails.
-    $this->drush('cache-get', array('test-failure-cid'), $options + array('format' => 'json'), NULL, NULL, self::EXIT_ERROR);
+    $this->drush('cache-get', array('test-failure-cid'), array('format' => 'json'), NULL, NULL, self::EXIT_ERROR);
   }
 
   function testCacheSet() {
-    $options = $this->getOptions();
     // Test setting a new cache item.
     $expected = 'cache test string';
-    $this->drush('cache-set', array('cache-test-cid', $expected), $options);
-    $this->drush('cache-get', array('cache-test-cid'), $options + array('format' => 'json'));
+    $this->drush('cache-set', array('cache-test-cid', $expected));
+    $this->drush('cache-get', array('cache-test-cid'), array('format' => 'json'));
     $data = $this->getOutputFromJSON('data');
     $this->assertEquals($expected, $data);
 
@@ -40,25 +38,16 @@ class cacheCommandCase extends CommandUnishTestCase {
     $input = array('data'=> $expected);
     $stdin = json_encode($input);
     $bin = 'default';
-    $exec = sprintf('%s cache-set %s %s my_cache_id - %s CACHE_PERMANENT --input-format=json --cache-get 2>%s', self::getDrush(), "--root=" . self::escapeshellarg($options['root']), '--uri=' . $options['uri'], $bin, $this->bit_bucket());
+    $exec = sprintf('%s cache-set %s %s my_cache_id - %s CACHE_PERMANENT --input-format=json --cache-get 2>%s', self::getDrush(), "--root=" . self::escapeshellarg($this->webroot()), '--uri=' . $this->getUri(), $bin, $this->bit_bucket());
     $return = $this->execute($exec, self::EXIT_SUCCESS, NULL, [], $stdin);
-    $this->drush('cache-get', array('my_cache_id'), $options + array('format' => 'json'));
+    $this->drush('cache-get', array('my_cache_id'), array('format' => 'json'));
     $data = $this->getOutputFromJSON('data');
     $this->assertEquals((object)$expected, $data);
   }
 
   function testCacheRebuild() {
-    $options = $this->getOptions();
     // Test cache-clear all and cache-rebuild (D8+).
-    $this->drush('cache-rebuild', array(), $options);
-    $this->drush('cache-get', array('cache-test-cid'), $options + array('format' => 'json'), NULL, NULL, self::EXIT_ERROR);
-  }
-
-  function getOptions() {
-    return array(
-      'yes' => NULL,
-      'root' => $this->webroot(),
-      'uri' => $this->getUri(),
-    );
+    $this->drush('cache-rebuild');
+    $this->drush('cache-get', array('cache-test-cid'), ['format' => 'json'], NULL, NULL, self::EXIT_ERROR);
   }
 }

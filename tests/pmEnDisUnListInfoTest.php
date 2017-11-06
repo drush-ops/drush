@@ -15,23 +15,15 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
 
   public function testEnDisUnList() {
     $sites = $this->setUpDrupal(1, TRUE);
-    $options_no_pipe = array(
-      'yes' => NULL,
-      'root' => $this->webroot(),
-      'uri' => key($sites),
-    );
-    $options = $options_no_pipe + array(
-      'pipe' => NULL,
-    );
 
     // Test that pm-list lists uninstalled modules.
-    $this->drush('pm-list', array(), $options + array('no-core' => NULL, 'status' => 'disabled'));
+    $this->drush('pm-list', array(), array('no-core' => NULL, 'status' => 'disabled'));
     $out = $this->getOutput();
     $this->assertContains('devel', $out);
 
     // Test pm-enable enables a module, and pm-list verifies that.
-    $this->drush('pm-enable', array('devel'), $options_no_pipe);
-    $this->drush('pm-list', array(), $options + array('status' => 'enabled'));
+    $this->drush('pm-enable', array('devel'));
+    $this->drush('pm-list', array(), array('status' => 'enabled'));
     $out = $this->getOutput();
     $this->assertContains('devel', $out);
     // Test the testing install profile theme is installed.;
@@ -40,18 +32,18 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
     // Test cache was cleared after enabling a module.
     $table = 'router';
     $path = '/admin/config/development/devel';
-    $this->drush('sql-query', array("SELECT path FROM $table WHERE path = '$path';"), array('root' => $this->webroot(), 'uri' => key($sites)));
+    $this->drush('sql-query', array("SELECT path FROM $table WHERE path = '$path';"));
     $list = $this->getOutputAsList();
     $this->assertTrue(in_array($path, $list), 'Cache was cleared after modules were enabled');
 
     // Test pm-list filtering.
-    $this->drush('pm-list', array(), $options + array('package' => 'Core'));
+    $this->drush('pm-list', array(), array('package' => 'Core'));
     $out = $this->getOutput();
     $this->assertNotContains('devel', $out, 'Devel is not part of core package');
 
     // Test module uninstall.
-    $this->drush('pm-uninstall', array('devel'), $options);
-    $this->drush('pm-list', array(), $options + array('status' => 'disabled', 'type' => 'module'));
+    $this->drush('pm-uninstall', array('devel'));
+    $this->drush('pm-list', array(), array('status' => 'disabled', 'type' => 'module'));
     $out = $this->getOutput();
     $this->assertContains('devel', $out);
   }
