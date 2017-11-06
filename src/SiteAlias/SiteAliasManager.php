@@ -77,7 +77,7 @@ class SiteAliasManager
      *
      * @param string $name Alias name or site specification
      *
-     * @return AliasRecord
+     * @return AliasRecord|false
      */
     public function get($name)
     {
@@ -123,7 +123,7 @@ class SiteAliasManager
      * @param \Drush\Config\Environment $environment
      * @param string $root The default Drupal root (from site:set, --root or cwd)
      *
-     * @return \Drush\SiteAlias\type
+     * @return \Drush\SiteAlias\AliasRecord
      * @throws \Exception
      */
     public function findSelf(PreflightArgsInterface $preflightArgs, Environment $environment, $root)

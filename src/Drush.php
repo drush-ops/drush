@@ -132,7 +132,7 @@ class Drush
     /**
      * Returns the currently active global container.
      *
-     * @return \League\Container\Container|null
+     * @return \League\Container\ContainerInterface|null
      *
      * @throws RuntimeException
      */

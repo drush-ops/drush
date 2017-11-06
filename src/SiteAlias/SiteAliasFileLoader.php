@@ -207,7 +207,7 @@ class SiteAliasFileLoader
      *   this parameter will hold the sitename.
      * @param string $singleSitename If the alias is @sitename or @sitename.env,
      *   then this parameter will hold the sitename.
-     * @return array
+     * @return bool|array|\Drush\SiteAlias\AliasRecord
      */
     protected function getSiteDataForLoadMultiple($pathToGroup, $sitenameInGroup, $singleSitename)
     {
@@ -436,7 +436,7 @@ class SiteAliasFileLoader
      * TODO: Maybe this could be removed and `loadYml` could be called directly.
      *
      * @param string $path
-     * @return array
+     * @return array|bool
      */
     protected function loadSiteDataFromPath($path)
     {
@@ -645,7 +645,7 @@ class SiteAliasFileLoader
      * the single-environment alias never does.
      *
      * @param array $data
-     * @return array
+     * @return bool
      */
     protected function detectSingleAlias($data)
     {

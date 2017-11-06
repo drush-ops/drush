@@ -18,7 +18,7 @@ class WootController extends ControllerBase {
   /**
    * Woot.
    *
-   * @return string
+   * @return array
    *   Return Hello string.
    */
   public function woot() {

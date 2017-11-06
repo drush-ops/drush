@@ -59,7 +59,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
      * Clear a specific cache, or all Drupal caches.
      *
      * @command cache:clear
-     * @param $type The particular cache to clear. Omit this argument to choose from available types.
+     * @param string $type The particular cache to clear. Omit this argument to choose from available types.
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @hidden-options cache-clear
      * @aliases cc,cache-clear

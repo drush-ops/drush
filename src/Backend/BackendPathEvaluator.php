@@ -66,7 +66,7 @@ class BackendPathEvaluator
      * the alias record.
      *
      * @param AliasRecord $aliasRecord the host to use for lookups
-     * @param $pathAlias the alias to look up (`files`, not `%files`)
+     * @param string $pathAlias the alias to look up (`files`, not `%files`)
      * @return string
      */
     public function request(AliasRecord $aliasRecord, $pathAlias)
