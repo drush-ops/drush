@@ -13,7 +13,7 @@ use DrupalFinder\DrupalFinder;
  * The preflight happens after Drush has loaded its autoload file, but
  * prior to loading Drupal's autoload file and setting up the DI container.
  *
- * - Pre-parse commandline arguements
+ * - Pre-parse commandline arguments
  * - Read configuration .yml files
  * - Determine the site to use
  */
