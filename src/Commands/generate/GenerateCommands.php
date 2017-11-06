@@ -104,7 +104,7 @@ class GenerateCommands extends DrushCommands
         $dcg_generators = $discovery->getGenerators([DCG_ROOT . '/src/Command/Drupal_8'], '\DrupalCodeGenerator\Command\Drupal_8');
         $drush_generators = $discovery->getGenerators([__DIR__ . '/Generators'], '\Drush\Commands\generate\Generators');
         $module_generators = [];
-        if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+        if (Drush::bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
             $container = \Drupal::getContainer();
             if ($container->has(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)) {
                 $module_generators = $container->get(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)->getCommandList();

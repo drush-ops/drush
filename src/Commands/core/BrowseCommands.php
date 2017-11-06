@@ -45,7 +45,7 @@ class BrowseCommands extends DrushCommands implements SiteAliasManagerAwareInter
                 $link = $return['object'];
             }
         } else {
-            if (!drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+            if (!Drush::bootstrapManager()->doBootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
                 // Fail gracefully if unable to bootstrap Drupal. drush_bootstrap() has
                 // already logged an error.
                 return false;
