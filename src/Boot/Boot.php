@@ -20,7 +20,7 @@ interface Boot
     /**
      * Inject the uri for the specific site to be bootstrapped
      *
-     * @param $uri Site to bootstrap
+     * @param string $uri Site to bootstrap
      */
     public function setUri($uri);
 

@@ -351,8 +351,8 @@ class Environment
     /**
      * Check a list of directories and return the first one that exists.
      *
-     * @param string $candidates
-     * @return boolean
+     * @param array $candidates
+     * @return string|boolean
      */
     protected function findFromCandidates($candidates)
     {
