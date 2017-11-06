@@ -9,6 +9,7 @@ use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBoot;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
+use Drush\DrushConfig\DrushConfig;
 use Drush\Sql\SqlBase;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
@@ -130,7 +131,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
         }
         $status_table['drush-script'] = DRUSH_COMMAND;
         $status_table['drush-version'] = Drush::getVersion();
-        $status_table['drush-temp'] = drush_find_tmp();
+        $status_table['drush-temp'] = DrushConfig::tmp();
         $status_table['drush-conf'] = Drush::config()->get('runtime.config.paths');
         // List available alias files
         $alias_files = $this->siteAliasManager()->listAllFilePaths();
