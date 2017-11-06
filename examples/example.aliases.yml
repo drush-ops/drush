@@ -137,8 +137,7 @@
 #   $ drush @none status
 #
 # See `drush help site:alias` for more options for displaying site
-# aliases.  See `drush topic docs:bastion` for instructions on configuring
-# remote access to a Drupal site behind a firewall via a bastion server.
+# aliases.
 #
 # Although most aliases will contain only a few options, a number
 # of settings that are commonly used appear below:
