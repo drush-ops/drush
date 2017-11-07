@@ -2,8 +2,6 @@
 
 namespace Drush\Drupal\Commands\core;
 
-use Robo\Contract\ConfigAwareInterface;
-use Robo\Common\ConfigAwareTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Log\LogLevel;
@@ -14,10 +12,8 @@ use Drush\Psysh\Shell;
 use Psy\Configuration;
 use Psy\VersionUpdater\Checker;
 
-class CliCommands extends DrushCommands implements ConfigAwareInterface
+class CliCommands extends DrushCommands
 {
-    use ConfigAwareTrait;
-
     /**
      * Drush's PHP Shell.
      *

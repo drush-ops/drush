@@ -18,7 +18,10 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     const OPT=InputOption::VALUE_OPTIONAL;
 
     use LoggerAwareTrait;
-    use ConfigAwareTrait;
+    use ConfigAwareTrait {
+        // Move aside this method so we can replace. See https://stackoverflow.com/a/37687295.
+        getConfig as ConfigAwareGetConfig;
+    }
     use IO {
         io as roboIo;
     }
@@ -50,13 +53,15 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     }
 
     /**
-     * Overrides same method in ConfigAwareTrait in order to provide a
+     * Replaces same method in ConfigAwareTrait in order to provide a
      * DrushConfig as return type. Helps with IDE completion.
+     *
+     * @see https://stackoverflow.com/a/37687295.
      *
      * @return \Drush\Config\DrushConfig
      */
     public function getConfig() {
-        return $this->config;
+        return $this->ConfigAwareGetConfig();
     }
 
     /**

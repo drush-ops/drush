@@ -1,13 +1,10 @@
 <?php
 namespace Drush\Commands\core;
 
-use Robo\Common\ConfigAwareTrait;
 use Drush\Commands\DrushCommands;
-use Robo\Contract\ConfigAwareInterface;
 
-class PhpCommands extends DrushCommands implements ConfigAwareInterface
+class PhpCommands extends DrushCommands
 {
-    use ConfigAwareTrait;
 
     /**
      * Evaluate arbitrary php code after bootstrapping Drupal (if available).

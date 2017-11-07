@@ -9,7 +9,6 @@ use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\ListDataFromKeys;
 use Drush\Utils\StringUtils;
-use Robo\Common\ConfigAwareTrait;
 use Symfony\Component\Console\Input\Input;
 use Symfony\Component\Console\Output\Output;
 use Webmozart\PathUtil\Path;
@@ -17,7 +16,6 @@ use Webmozart\PathUtil\Path;
 class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
-    use ConfigAwareTrait;
 
     /**
      * Set a site alias that will persist for the current session.
