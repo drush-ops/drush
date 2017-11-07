@@ -478,7 +478,7 @@ class Environment
             return false;
         }
 
-        $tmp = getenv('TMPDIR') ? getenv('TMPDIR') : '/tmp';
+        $tmp = $this->getTmp();
         $username = $this->getUsername();
 
         return "{$tmp}/drush-env-{$username}/{$filename_prefix}" . $shell_pid;
