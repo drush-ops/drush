@@ -3,13 +3,13 @@
 namespace Drush\Sql;
 
 use Drupal\Core\Database\Database;
+use Drush\Config\DrushConfigAwareInterface;
 use Drush\Drush;
 use Drush\Log\LogLevel;
 use Robo\Common\ConfigAwareTrait;
-use Robo\Contract\ConfigAwareInterface;
 use Webmozart\PathUtil\Path;
 
-class SqlBase implements ConfigAwareInterface
+class SqlBase implements DrushConfigAwareInterface
 {
 
     use SqlTableSelectionTrait;

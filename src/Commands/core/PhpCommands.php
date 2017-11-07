@@ -1,11 +1,11 @@
 <?php
 namespace Drush\Commands\core;
 
-use Robo\Contract\ConfigAwareInterface;
+use Drush\Config\DrushConfigAwareInterface;
 use Robo\Common\ConfigAwareTrait;
 use Drush\Commands\DrushCommands;
 
-class PhpCommands extends DrushCommands implements ConfigAwareInterface
+class PhpCommands extends DrushCommands implements DrushConfigAwareInterface
 {
     use ConfigAwareTrait;
 

@@ -2,16 +2,14 @@
 
 namespace Drush\Boot;
 
-use Robo\Contract\ConfigAwareInterface;
+use Drush\Config\DrushConfigAwareInterface;
 use Robo\Common\ConfigAwareTrait;
 use DrupalFinder\DrupalFinder;
-use Drush\Drush;
 use Drush\Log\LogLevel;
-use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
-class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface, ConfigAwareInterface
+class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface, DrushConfigAwareInterface
 {
     use LoggerAwareTrait;
     use AutoloaderAwareTrait;

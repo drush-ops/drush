@@ -2,6 +2,7 @@
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
+use Drush\Config\DrushConfigAwareInterface;
 use Drush\Drush;
 use Drush\SiteAlias\LegacyAliasConverter;
 use Drush\SiteAlias\SiteAliasFileDiscovery;
@@ -10,12 +11,11 @@ use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\ListDataFromKeys;
 use Drush\Utils\StringUtils;
 use Robo\Common\ConfigAwareTrait;
-use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\Input;
 use Symfony\Component\Console\Output\Output;
 use Webmozart\PathUtil\Path;
 
-class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterface, ConfigAwareInterface
+class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterface, DrushConfigAwareInterface
 {
     use SiteAliasManagerAwareTrait;
     use ConfigAwareTrait;

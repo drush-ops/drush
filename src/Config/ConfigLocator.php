@@ -4,10 +4,7 @@ namespace Drush\Config;
 use Consolidation\Config\Loader\ConfigLoaderInterface;
 use Consolidation\Config\Loader\YamlConfigLoader;
 use Consolidation\Config\Loader\ConfigProcessor;
-use Consolidation\Config\Util\ConfigOverlay;
 use Consolidation\Config\Util\EnvConfig;
-
-use Drush\Preflight\PreflightArgsInterface;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -77,12 +74,12 @@ class ConfigLocator
     // 'stdin' context not implemented
     // 'specific' context obsolete; command-specific options handled differently by annotated command library
     const ALIAS_CONTEXT = 'alias';
-    // custom context is obsolect (loaded in USER_CONTEXT)
+    // custom context is obsolete (loaded in USER_CONTEXT)
     const SITE_CONTEXT = 'site';
     const DRUPAL_CONTEXT = 'drupal';
     const USER_CONTEXT = 'user';
     // home.drush is obsolete (loaded in USER_CONTEXT)
-    // system context is obsolect (loaded in USER_CONTEXT - note priority change)
+    // system context is obsolete (loaded in USER_CONTEXT - note priority change)
     const ENV_CONTEXT = 'env';
     const DRUSH_CONTEXT = 'drush';
 
@@ -93,7 +90,7 @@ class ConfigLocator
      */
     public function __construct($envPrefix = '')
     {
-        $this->config = new ConfigOverlay();
+        $this->config = new DrushConfig();
 
         // Add placeholders to establish priority. We add
         // contexts from lowest to highest priority.

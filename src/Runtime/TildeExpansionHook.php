@@ -4,10 +4,9 @@ namespace Drush\Runtime;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\ValidatorInterface;
-use Drush\Drush;
+use Drush\Config\DrushConfigAwareInterface;
 use Drush\Utils\StringUtils;
 use Robo\Common\ConfigAwareTrait;
-use Robo\Contract\ConfigAwareInterface;
 
 /**
  * The TildeExpansionHook is installed as a preValidate hook that runs before
@@ -18,7 +17,7 @@ use Robo\Contract\ConfigAwareInterface;
  * for commands that are redispatched to a remote site. That happens in the
  * RedispatchHook, which happens in hook init.
  */
-class TildeExpansionHook implements ValidatorInterface, ConfigAwareInterface
+class TildeExpansionHook implements ValidatorInterface, DrushConfigAwareInterface
 {
     use ConfigAwareTrait;
 

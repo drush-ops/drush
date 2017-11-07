@@ -5,6 +5,7 @@ use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Consolidation\Config\ConfigInterface;
 use Drush\Boot\BootstrapManager;
+use Drush\Config\DrushConfigAwareInterface;
 use Drush\Runtime\TildeExpansionHook;
 use Drush\SiteAlias\AliasManager;
 use Drush\Log\LogLevel;
@@ -12,7 +13,6 @@ use Drush\Command\RemoteCommandProxy;
 use Drush\Runtime\RedispatchHook;
 
 use Robo\Common\ConfigAwareTrait;
-use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
@@ -29,7 +29,7 @@ use Psr\Log\LoggerAwareTrait;
  * is because the application object is created prior to the DI container.
  * See DependencyInjection::injectApplicationServices() to add more services.
  */
-class Application extends SymfonyApplication implements LoggerAwareInterface, ConfigAwareInterface
+class Application extends SymfonyApplication implements LoggerAwareInterface, DrushConfigAwareInterface
 {
     use LoggerAwareTrait;
     use ConfigAwareTrait;

@@ -3,18 +3,18 @@ namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
+use Drush\Config\DrushConfigAwareInterface;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\SiteAlias\HostPath;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Backend\BackendPathEvaluator;
-use Robo\Contract\ConfigAwareInterface;
 use Robo\Common\ConfigAwareTrait;
 use Drush\Config\ConfigLocator;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
-class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface, ConfigAwareInterface
+class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface, DrushConfigAwareInterface
 {
     use SiteAliasManagerAwareTrait;
     use ConfigAwareTrait;
