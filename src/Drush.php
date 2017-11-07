@@ -234,7 +234,7 @@ class Drush
     /**
      * Return the configuration object
      *
-     * @return ConfigInterface
+     * @return \Drush\Config\DrushConfig
      */
     public static function config()
     {

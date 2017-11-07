@@ -397,10 +397,10 @@ function drush_save_data_to_temp_file($data, $suffix = NULL) {
 /**
  * Returns the path to a temporary directory.
  *
- * @deprecated Use $this->getConfig()->get('env.tmp').
+ * @deprecated Use $this->getConfig()->tmp() in a ConfigAware command.
  */
 function drush_find_tmp() {
-  return Drush::config()->get('env.tmp');
+  return Drush::config()->tmp();
 }
 
 /**
@@ -416,7 +416,7 @@ function drush_find_tmp() {
  */
 function drush_tempnam($pattern, $tmp_dir = NULL, $suffix = '') {
   if ($tmp_dir == NULL) {
-    $tmp_dir = Drush::config()->get('env.tmp');
+    $tmp_dir = Drush::config()->tmp();
   }
   $tmp_file = tempnam($tmp_dir, $pattern);
   drush_register_file_for_deletion($tmp_file);
@@ -429,7 +429,7 @@ function drush_tempnam($pattern, $tmp_dir = NULL, $suffix = '') {
  * Creates a temporary directory and return its path.
  */
 function drush_tempdir() {
-  $tmp_dir = drush_trim_path(Drush::config()->get('env.tmp'));
+  $tmp_dir = drush_trim_path(Drush::config()->tmp());
   $tmp_dir .= '/' . 'drush_tmp_' . uniqid(time() . '_');
 
   drush_mkdir($tmp_dir);
@@ -500,7 +500,7 @@ function drush_preflight_backup_dir($subdir = NULL) {
     // Save the date to be used in the backup directory's path name.
     $date = gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
 
-    $backup_dir = drush_get_option('backup-dir', Path::join(Drush::config()->get('env.home'), 'drush-backups'));
+    $backup_dir = drush_get_option('backup-dir', Path::join(Drush::config()->home(), 'drush-backups'));
     $backup_dir = Path::join($backup_dir, $subdir, $date);
     drush_set_context('DRUSH_BACKUP_DIR', $backup_dir);
   }

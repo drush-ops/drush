@@ -9,15 +9,12 @@ use Drush\SiteAlias\HostPath;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Backend\BackendPathEvaluator;
-use Robo\Contract\ConfigAwareInterface;
-use Robo\Common\ConfigAwareTrait;
 use Drush\Config\ConfigLocator;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
-class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface, ConfigAwareInterface
+class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
-    use ConfigAwareTrait;
 
     /**
      * These are arguments after the aliases and paths have been evaluated.

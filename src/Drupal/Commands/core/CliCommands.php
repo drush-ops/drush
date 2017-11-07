@@ -167,7 +167,7 @@ class CliCommands extends DrushCommands
         // path.
         // @todo Could use a global file within drush?
         if (!$drupal_major_version) {
-            $file_name = 'global-' . md5($this->getConfig()->get('env.cwd'));
+            $file_name = 'global-' . md5($this->getConfig()->cwd());
         } // If only the Drupal version is being used for the history.
         else if ($options['version-history']) {
             $file_name = "drupal-$drupal_major_version";

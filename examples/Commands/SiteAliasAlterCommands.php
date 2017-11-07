@@ -4,17 +4,14 @@ namespace Drush\Commands;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
-use Robo\Common\ConfigAwareTrait;
-use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
  * Load this example by using the --include option - e.g. `drush --include=/path/to/drush/examples`
  */
-class SiteAliasAlterCommands extends DrushCommands implements SiteAliasManagerAwareInterface, ConfigAwareInterface  {
+class SiteAliasAlterCommands extends DrushCommands implements SiteAliasManagerAwareInterface  {
 
   use SiteAliasManagerAwareTrait;
-  use ConfigAwareTrait;
 
   /**
    * A few example alterations to site aliases.

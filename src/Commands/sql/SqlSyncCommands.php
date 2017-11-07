@@ -10,15 +10,10 @@ use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Webmozart\PathUtil\Path;
-use Robo\Contract\ConfigAwareInterface;
-use Robo\Common\ConfigAwareTrait;
-use Drush\Config\ConfigLocator;
-use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
-class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface, ConfigAwareInterface
+class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
-    use ConfigAwareTrait;
 
     /**
      * Copy DB data from a source site to a target site. Transfers data via rsync.

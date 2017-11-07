@@ -4,7 +4,6 @@ namespace Drush\Runtime;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\ValidatorInterface;
-use Drush\Drush;
 use Drush\Utils\StringUtils;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
@@ -24,14 +23,13 @@ class TildeExpansionHook implements ValidatorInterface, ConfigAwareInterface
 
     public function validate(CommandData $commandData)
     {
-        $home_key = 'env.home';
         $input = $commandData->input();
         $args = $input->getArguments();
         $options = $input->getOptions();
 
         foreach ($options as $name => $value) {
             if (is_string($value)) {
-                $replaced = StringUtils::replaceTilde($value, $this->getConfig()->get($home_key));
+                $replaced = StringUtils::replaceTilde($value, $this->getConfig()->home());
                 if ($value != $replaced) {
                     $input->setOption($name, $replaced);
                 }
@@ -39,7 +37,7 @@ class TildeExpansionHook implements ValidatorInterface, ConfigAwareInterface
         }
         foreach ($args as $name => $value) {
             if (is_string($value)) {
-                $replaced = StringUtils::replaceTilde($value, $this->getConfig()->get($home_key));
+                $replaced = StringUtils::replaceTilde($value, $this->getConfig()->home());
                 if ($value != $replaced) {
                     $input->setArgument($name, $replaced);
                 }

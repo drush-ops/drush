@@ -4,10 +4,10 @@ namespace Drush\Runtime;
 
 use Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface;
 use Drush\Drush;
+use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drush\Log\LogLevel;
-use Robo\Contract\ConfigAwareInterface;
 use Robo\Common\ConfigAwareTrait;
 
 /**

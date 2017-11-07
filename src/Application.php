@@ -3,14 +3,12 @@ namespace Drush;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
-use Consolidation\Config\ConfigInterface;
 use Drush\Boot\BootstrapManager;
 use Drush\Runtime\TildeExpansionHook;
-use Drush\SiteAlias\AliasManager;
+use Drush\SiteAlias\SiteAliasManager;
 use Drush\Log\LogLevel;
 use Drush\Command\RemoteCommandProxy;
 use Drush\Runtime\RedispatchHook;
-
 use Robo\Common\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Application as SymfonyApplication;
@@ -37,7 +35,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     /** @var BootstrapManager */
     protected $bootstrapManager;
 
-    /** @var AliasManager */
+    /** @var SiteAliasManager */
     protected $aliasManager;
 
     /** @var RedispatchHook */
