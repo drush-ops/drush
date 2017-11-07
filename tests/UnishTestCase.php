@@ -152,7 +152,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
 
     putenv('ETC_PREFIX=' . $unish_sandbox);
     putenv('SHARE_PREFIX=' . $unish_sandbox);
-    putenv('TEMP=' . Path::join($unish_sandbox, 'drush-tmp'));
+    putenv('TEMP=' . Path::join($unish_sandbox, 'tmp'));
     putenv('DRUSH_AUTOLOAD_PHP=' . PHPUNIT_COMPOSER_INSTALL);
   }
 

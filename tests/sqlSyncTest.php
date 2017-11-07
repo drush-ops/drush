@@ -42,8 +42,8 @@ class sqlSyncTest extends CommandUnishTestCase {
     $this->drush('sql:sync', ['@synctest.remote', '@synctest.local'], $options, '@synctest.local', NULL, self::EXIT_SUCCESS, '2>&1');
     $output = $this->getSimplifiedOutput();
     $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=whatever www-admin@server.isp.simulated '/path/to/drush --backend=2 --strict=0 --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush --root=__SUT__/web --uri=remote sql-dump --no-ansi --no-interaction --gzip --result-file", $output);
-    $this->assertContains("Simulating backend invoke: __SUT__/vendor/drush/drush/drush --backend=2 --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush --root=__SUT__/web --uri=local core-rsync '@synctest.remote:/simulated/path/to/dump.tgz' '@synctest.local:__SANDBOX__/drush-tmp/dump.tgz' -- --remove-source-files", $output);
-    $this->assertContains("Simulating backend invoke: __SUT__/vendor/drush/drush/drush --backend=2 --strict=0 --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush --root=__SUT__/web --uri=local sql-query --no-ansi --no-interaction --file=__SANDBOX__/drush-tmp/dump.tgz --file-delete", $output);
+    $this->assertContains("Simulating backend invoke: __SUT__/vendor/drush/drush/drush --backend=2 --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush --root=__SUT__/web --uri=local core-rsync '@synctest.remote:/simulated/path/to/dump.tgz' '@synctest.local:__SANDBOX__/tmp/dump.tgz' -- --remove-source-files", $output);
+    $this->assertContains("Simulating backend invoke: __SUT__/vendor/drush/drush/drush --backend=2 --strict=0 --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush --root=__SUT__/web --uri=local sql-query --no-ansi --no-interaction --file=__SANDBOX__/tmp/dump.tgz --file-delete", $output);
 
     // Test simulated simple rsync local-to-remote
     $this->drush('sql:sync', ['@synctest.local', '@synctest.remote'], $options, '@synctest.local', NULL, self::EXIT_SUCCESS, '2>&1');
