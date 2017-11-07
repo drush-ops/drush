@@ -4,9 +4,9 @@ namespace Drush\Runtime;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\ValidatorInterface;
-use Drush\Config\DrushConfigAwareInterface;
 use Drush\Utils\StringUtils;
 use Robo\Common\ConfigAwareTrait;
+use Robo\Contract\ConfigAwareInterface;
 
 /**
  * The TildeExpansionHook is installed as a preValidate hook that runs before
@@ -17,20 +17,19 @@ use Robo\Common\ConfigAwareTrait;
  * for commands that are redispatched to a remote site. That happens in the
  * RedispatchHook, which happens in hook init.
  */
-class TildeExpansionHook implements ValidatorInterface, DrushConfigAwareInterface
+class TildeExpansionHook implements ValidatorInterface, ConfigAwareInterface
 {
     use ConfigAwareTrait;
 
     public function validate(CommandData $commandData)
     {
-        $home_key = 'env.home';
         $input = $commandData->input();
         $args = $input->getArguments();
         $options = $input->getOptions();
 
         foreach ($options as $name => $value) {
             if (is_string($value)) {
-                $replaced = StringUtils::replaceTilde($value, $this->getConfig()->get($home_key));
+                $replaced = StringUtils::replaceTilde($value, $this->getConfig()->home());
                 if ($value != $replaced) {
                     $input->setOption($name, $replaced);
                 }
@@ -38,7 +37,7 @@ class TildeExpansionHook implements ValidatorInterface, DrushConfigAwareInterfac
         }
         foreach ($args as $name => $value) {
             if (is_string($value)) {
-                $replaced = StringUtils::replaceTilde($value, $this->getConfig()->get($home_key));
+                $replaced = StringUtils::replaceTilde($value, $this->getConfig()->home());
                 if ($value != $replaced) {
                     $input->setArgument($name, $replaced);
                 }

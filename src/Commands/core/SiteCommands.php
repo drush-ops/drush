@@ -2,7 +2,6 @@
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
-use Drush\Config\DrushConfigAwareInterface;
 use Drush\Drush;
 use Drush\SiteAlias\LegacyAliasConverter;
 use Drush\SiteAlias\SiteAliasFileDiscovery;
@@ -15,7 +14,7 @@ use Symfony\Component\Console\Input\Input;
 use Symfony\Component\Console\Output\Output;
 use Webmozart\PathUtil\Path;
 
-class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterface, DrushConfigAwareInterface
+class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
     use ConfigAwareTrait;
@@ -201,7 +200,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
     public function interactSiteAliasConvert(Input $input, Output $output)
     {
         if (!$input->getArgument('destination')) {
-            $default = $this->getConfig()->get('env.cwd');
+            $default = $this->getConfig()->cwd();
             if ($composerRoot = Drush::bootstrapManager()->getComposerRoot()) {
                 $default = Path::join($composerRoot, 'drush/site-aliases');
             }

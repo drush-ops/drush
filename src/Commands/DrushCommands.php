@@ -5,17 +5,20 @@ use Drush\Style\DrushStyle;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
+use Robo\Common\ConfigAwareTrait;
+use Robo\Contract\ConfigAwareInterface;
 use Robo\Contract\IOAwareInterface;
 use Robo\Common\IO;
 use Symfony\Component\Console\Input\InputOption;
 
-abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface
+abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, ConfigAwareInterface
 {
     // This is more readable.
     const REQ=InputOption::VALUE_REQUIRED;
     const OPT=InputOption::VALUE_OPTIONAL;
 
     use LoggerAwareTrait;
+    use ConfigAwareTrait;
     use IO {
         io as roboIo;
     }
@@ -44,6 +47,16 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface
             $this->io = new DrushStyle($this->input(), $this->output());
         }
         return $this->io;
+    }
+
+    /**
+     * Overrides same method in ConfigAwareTrait in order to provide a
+     * DrushConfig as return type. Helps with IDE completion.
+     *
+     * @return \Drush\Config\DrushConfig
+     */
+    public function getConfig() {
+        return $this->config;
     }
 
     /**

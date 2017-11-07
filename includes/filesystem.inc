@@ -5,7 +5,6 @@
  * Filesystem utilities.
  */
 use Drush\Drush;
-use Drush\DrushConfig\DrushConfig;
 use Drush\Sql\SqlBase;
 use Webmozart\PathUtil\Path;
 

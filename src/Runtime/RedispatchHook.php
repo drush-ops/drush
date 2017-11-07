@@ -3,8 +3,8 @@
 namespace Drush\Runtime;
 
 use Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface;
-use Drush\Config\DrushConfigAwareInterface;
 use Drush\Drush;
+use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drush\Log\LogLevel;
@@ -16,7 +16,7 @@ use Robo\Common\ConfigAwareTrait;
  * that points at a remote machine, then we will stop execution of the
  * current command and instead run the command remotely.
  */
-class RedispatchHook implements InitializeHookInterface, DrushConfigAwareInterface
+class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface
 {
     use ConfigAwareTrait;
 

@@ -3,7 +3,6 @@ namespace Drush\Commands\sql;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
-use Drush\Config\DrushConfigAwareInterface;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\SiteAlias\AliasRecord;
@@ -13,10 +12,8 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 use Webmozart\PathUtil\Path;
 use Robo\Contract\ConfigAwareInterface;
 use Robo\Common\ConfigAwareTrait;
-use Drush\Config\ConfigLocator;
-use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
-class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface, DrushConfigAwareInterface
+class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInterface, ConfigAwareInterface
 {
     use SiteAliasManagerAwareTrait;
     use ConfigAwareTrait;
