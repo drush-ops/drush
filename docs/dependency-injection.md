@@ -66,7 +66,7 @@ All Drush command files extend DrushCommands; DrushCommands implements IOAwareIn
 
 Any additional services that are desired must be injected by implementing the appropriate inflection interface.
 
-Available Drush Services
+Available Interfaces:
 
 - AutoloaderAwareInterface: Provides access to the class loader.
 - SiteAliasManagerAwareInterface: The site alias manager [allows alias records to be obtained](site-alias-manager.md).
