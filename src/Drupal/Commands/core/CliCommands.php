@@ -2,8 +2,6 @@
 
 namespace Drush\Drupal\Commands\core;
 
-use Robo\Contract\ConfigAwareInterface;
-use Robo\Common\ConfigAwareTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Log\LogLevel;
@@ -11,8 +9,6 @@ use Drush\Psysh\DrushCommand;
 use Drush\Psysh\DrushHelpCommand;
 use Drupal\Component\Assertion\Handle;
 use Drush\Psysh\Shell;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
-use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Psy\Configuration;
 use Psy\VersionUpdater\Checker;
 
