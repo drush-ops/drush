@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Preflight, postflight and shutdown code.
+ * Postflight and shutdown code.
  */
 
-use Robo\Contract\BuilderAwareInterface;
+use Drush\Drush;
 
 /**
  * The main Drush function.
@@ -42,7 +42,7 @@ function drush_postflight() {
  */
 function drush_shutdown() {
   // Avoid doing anything if our container has not been initialized yet.
-  if (!\Drush\Drush::hasContainer()) {
+  if (!Drush::hasContainer()) {
     return;
   }
 
@@ -79,7 +79,7 @@ function drush_shutdown() {
     }
   }
 
-  if (\Drush\Drush::backend()) {
+  if (Drush::backend()) {
     drush_backend_output();
   }
 
