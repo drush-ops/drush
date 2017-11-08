@@ -478,7 +478,8 @@ class Environment
             return false;
         }
 
-        $tmp = $this->getTmp();
+        // The env variables below must match the variables in example.prompt.sh
+        $tmp = getenv('TMPDIR') ? getenv('TMPDIR') : '/tmp';
         $username = $this->getUsername();
 
         return "{$tmp}/drush-env-{$username}/{$filename_prefix}" . $shell_pid;
