@@ -191,7 +191,7 @@ class SqlBase implements ConfigAwareInterface
             if ($file === true) {
                 $backup_dir = drush_prepare_backup_dir($database);
                 if (empty($backup_dir)) {
-                    $backup_dir = Drush::config()->get('env.tmp');
+                    $backup_dir = Drush::config()->tmp();
                 }
                 $file = Path::join($backup_dir, '@DATABASE_@DATE.sql');
             }

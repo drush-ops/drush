@@ -31,7 +31,7 @@ class DrushAliasFile extends BaseGenerator
         $vars = $this->collectVars($input, $output, $questions);
 
         if ($vars['host']) {
-            $remote_questions['user'] = new Question('Remote user', Drush::config()->get('env.user'));
+            $remote_questions['user'] = new Question('Remote user', Drush::config()->user());
             $vars += $this->collectVars($input, $output, $remote_questions);
         }
 
