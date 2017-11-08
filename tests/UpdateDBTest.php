@@ -43,7 +43,7 @@ class UpdateDBTest extends CommandUnishTestCase {
 
     public function tearDown()
     {
-        $this->recursive_delete($this->pathPostUpdate, true);
+        $this->recursiveDelete($this->pathPostUpdate, true);
         parent::tearDown();
     }
 }

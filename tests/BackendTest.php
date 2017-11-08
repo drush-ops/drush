@@ -53,7 +53,7 @@ class BackendCase extends CommandUnishTestCase {
     public function testOrigin()
     {
         $site_specification = 'user@server/path/to/drupal#sitename';
-        $exec = sprintf('%s %s version --simulate --ssh-options=%s 2>%s', self::getDrush(), self::escapeshellarg($site_specification), self::escapeshellarg('-i mysite_dsa'), self::escapeshellarg($this->bit_bucket()));
+        $exec = sprintf('%s %s version --simulate --ssh-options=%s 2>%s', self::getDrush(), self::escapeshellarg($site_specification), self::escapeshellarg('-i mysite_dsa'), self::escapeshellarg($this->bitBucket()));
         $this->execute($exec);
         $bash = $this->escapeshellarg('drush --root=/path/to/drupal --uri=sitename version 2>&1');
         $expected = "Simulating backend invoke: ssh -i mysite_dsa user@server $bash 2>&1";
@@ -90,7 +90,7 @@ class BackendCase extends CommandUnishTestCase {
         $this->execute($exec, self::EXIT_SUCCESS, null, null, $stdin);
         $exec = sprintf('%s version --backend', self::getDrush());
         $this->execute($exec, self::EXIT_SUCCESS, null, null, $stdin);
-        $parsed = $this->parse_backend_output($this->getOutput());
+        $parsed = $this->parseBackendOutput($this->getOutput());
         $this->assertTrue((bool) $parsed, 'Successfully parsed backend output');
         $this->assertArrayHasKey('log', $parsed);
         $this->assertArrayHasKey('output', $parsed);
@@ -107,7 +107,7 @@ class BackendCase extends CommandUnishTestCase {
     {
         // Check error propogation by requesting an invalid command (missing Drupal site).
         $this->drush('core-cron', [], ['backend' => null], null, null, self::EXIT_ERROR);
-        $parsed = $this->parse_backend_output($this->getOutput());
+        $parsed = $this->parseBackendOutput($this->getOutput());
         $this->assertEquals(1, $parsed['error_status']);
     }
 
@@ -139,7 +139,7 @@ class BackendCase extends CommandUnishTestCase {
     {
         $php = "return 'bar'";
         $this->drush('php-eval', [$php], ['backend' => null]);
-        $parsed = $this->parse_backend_output($this->getOutput());
+        $parsed = $this->parseBackendOutput($this->getOutput());
         // assert that $parsed has 'bar'
         $this->assertEquals("'bar'", var_export($parsed['object'], true));
     }
@@ -154,7 +154,7 @@ class BackendCase extends CommandUnishTestCase {
     {
         $php = "drush_backend_set_result('foo'); return 'bar'";
         $this->drush('php-eval', [$php], ['backend' => null]);
-        $parsed = $this->parse_backend_output($this->getOutput());
+        $parsed = $this->parseBackendOutput($this->getOutput());
         // assert that $parsed has 'foo' and not 'bar'
         $this->assertEquals("'foo'", var_export($parsed['object'], true));
     }
@@ -175,7 +175,7 @@ class BackendCase extends CommandUnishTestCase {
         ];
         $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('x' => 'y'), array('invoke-multiple' => '3')); return \$values;";
         $this->drush('php-eval', [$php], $options);
-        $parsed = $this->parse_backend_output($this->getOutput());
+        $parsed = $this->parseBackendOutput($this->getOutput());
         // assert that $parsed has a 'concurrent'-format output result
         $this->assertEquals('concurrent', implode(',', array_keys($parsed['object'])));
         // assert that the concurrent output has indexes 0, 1 and 2 (in any order)
@@ -195,7 +195,7 @@ class BackendCase extends CommandUnishTestCase {
    *   - Insures that arrays can be returned as the function result of
    *     backend invoke.
    */
-    function testBackendMethodGet()
+    public function testBackendMethodGet()
     {
         $options = [
         'backend' => null,
@@ -203,7 +203,7 @@ class BackendCase extends CommandUnishTestCase {
         ];
         $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('x' => 'y', 'data' => array('a' => 1, 'b' => 2)), array('method' => 'GET')); return array_key_exists('object', \$values) ? \$values['object'] : 'no result';";
         $this->drush('php-eval', [$php], $options);
-        $parsed = $this->parse_backend_output($this->getOutput());
+        $parsed = $this->parseBackendOutput($this->getOutput());
         // assert that $parsed has value of 'x'
         $this->assertContains("'x' => 'y'", var_export($parsed['object'], true));
     }
@@ -214,7 +214,7 @@ class BackendCase extends CommandUnishTestCase {
    *   - Insures that arrays can be returned as the function result of
    *     backend invoke.
    */
-    function testBackendMethodPost()
+    public function testBackendMethodPost()
     {
         $options = [
         'backend' => null,
@@ -222,7 +222,7 @@ class BackendCase extends CommandUnishTestCase {
         ];
         $php = "\$values = drush_invoke_process('@none', 'unit-return-options', array('value'), array('x' => 'y', 'data' => array('a' => 1, 'b' => 2)), array('method' => 'POST')); return array_key_exists('object', \$values) ? \$values['object'] : 'no result';";
         $this->drush('php-eval', [$php], $options);
-        $parsed = $this->parse_backend_output($this->getOutput());
+        $parsed = $this->parseBackendOutput($this->getOutput());
         // assert that $parsed has 'x' and 'data'
         $this->assertEquals('y', $parsed['object']['x']);
         $this->assertEquals([

@@ -10,7 +10,7 @@ namespace Unish;
  */
 class InitCommandCase extends CommandUnishTestCase {
 
-    function testInitCommand()
+    public function testInitCommand()
     {
         // Call `drush core-init`
         $this->drush('core-init', [], ['add-path' => true, 'yes' => null, 'no-ansi' => null]);

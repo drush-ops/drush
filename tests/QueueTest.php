@@ -112,7 +112,7 @@ class QueueCase extends CommandUnishTestCase {
         $this->assertTrue(file_exists($wootModule));
         $targetDir = Path::join($root, 'modules/contrib/woot');
         $this->mkdir($targetDir);
-        $this->recursive_copy($wootModule, $targetDir);
+        $this->recursiveCopy($wootModule, $targetDir);
     }
 
 

@@ -72,7 +72,7 @@ class SqlSyncTest extends CommandUnishTestCase {
    */
     public function testLocalSqlSync()
     {
-        if ($this->db_driver() == 'sqlite') {
+        if ($this->dbDriver() == 'sqlite') {
             $this->markTestSkipped('SQL Sync does not apply to SQLite.');
             return;
         }

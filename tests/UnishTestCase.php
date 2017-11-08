@@ -92,18 +92,18 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         if (empty(getenv('UNISH_DIRTY'))) {
             $sandbox = self::getSandbox();
             if (file_exists($sandbox)) {
-                self::recursive_delete($sandbox);
+                self::recursiveDelete($sandbox);
             }
             foreach (['modules', 'themes', 'profiles', 'drush'] as $dir) {
                 $target = Path::join(self::getSut(), 'web', $dir, 'contrib');
                 if (file_exists($target)) {
-                    self::recursive_delete_dir_contents($target);
+                    self::recursiveDeleteDirContents($target);
                 }
             }
             foreach (['sites/dev', 'sites/stage', 'sites/prod'] as $dir) {
                 $target = Path::join(self::getSut(), 'web', $dir);
                 if (file_exists($target)) {
-                    self::recursive_delete($target);
+                    self::recursiveDelete($target);
                 }
             }
         }
@@ -214,7 +214,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     public function log($message, $type = 'notice')
     {
         $line = "\nLog: $message\n";
-        switch ($this->log_level()) {
+        switch ($this->logLevel()) {
             case 'verbose':
                 if (in_array($type, ['notice', 'verbose'])) {
                     fwrite(STDERR, $line);
@@ -231,7 +231,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         }
     }
 
-    public function log_level()
+    public function logLevel()
     {
         // -d is reserved by `phpunit`
         if (in_array('--debug', $_SERVER['argv'])) {
@@ -241,14 +241,14 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         }
     }
 
-    public static function is_windows()
+    public static function isWindows()
     {
         return strtoupper(substr(PHP_OS, 0, 3)) == "WIN";
     }
 
-    public static function get_tar_executable()
+    public static function getTarExecutable()
     {
-        return self::is_windows() ? "bsdtar.exe" : "tar";
+        return self::isWindows() ? "bsdtar.exe" : "tar";
     }
 
   /**
@@ -261,7 +261,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         static $chars = ['/', '-', '\\', '|'];
         static $counter = 0;
         // ANSI support is flaky on Win32, so don't try to do ticks there.
-        if (!$this->is_windows()) {
+        if (!$this->isWindows()) {
             print $chars[($counter++ % 4)] . "\033[1D";
         }
     }
@@ -271,9 +271,9 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * Checks operating system and returns
    * supported bit bucket folder.
    */
-    public function bit_bucket()
+    public function bitBucket()
     {
-        if (!$this->is_windows()) {
+        if (!$this->isWindows()) {
             return '/dev/null';
         } else {
             return 'nul';
@@ -285,14 +285,14 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         // Short-circuit escaping for simple params (keep stuff readable)
         if (preg_match('|^[a-zA-Z0-9.:/_-]*$|', $arg)) {
             return $arg;
-        } elseif (self::is_windows()) {
-            return self::_escapeshellarg_windows($arg);
+        } elseif (self::isWindows()) {
+            return self::_escapeshellargWindows($arg);
         } else {
             return escapeshellarg($arg);
         }
     }
 
-    public static function _escapeshellarg_windows($arg)
+    public static function _escapeshellargWindows($arg)
     {
         // Double up existing backslashes
         $arg = preg_replace('/\\\/', '\\\\\\\\', $arg);
@@ -356,14 +356,14 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         return true;
     }
 
-    public static function recursive_copy($src, $dst)
+    public static function recursiveCopy($src, $dst)
     {
         $dir = opendir($src);
         self::mkdir($dst);
         while (false !== ( $file = readdir($dir)) ) {
             if (( $file != '.' ) && ( $file != '..' )) {
                 if ( is_dir($src . '/' . $file) ) {
-                    self::recursive_copy($src . '/' . $file, $dst . '/' . $file);
+                    self::recursiveCopy($src . '/' . $file, $dst . '/' . $file);
                 } else {
                     copy($src . '/' . $file, $dst . '/' . $file);
                 }
@@ -401,7 +401,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    *
    * @see drush_delete_dir()
    */
-    public static function recursive_delete($dir, $force = true, $follow_symlinks = false)
+    public static function recursiveDelete($dir, $force = true, $follow_symlinks = false)
     {
         // Do not delete symlinked files, only unlink symbolic links
         if (is_link($dir) && !$follow_symlinks) {
@@ -418,7 +418,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
             }
             return unlink($dir);
         }
-        if (self::recursive_delete_dir_contents($dir, $force) === false) {
+        if (self::recursiveDeleteDirContents($dir, $force) === false) {
             return false;
         }
         if ($force) {
@@ -444,7 +444,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    *
    * @see drush_delete_dir_contents()
    */
-    public static function recursive_delete_dir_contents($dir, $force = false)
+    public static function recursiveDeleteDirContents($dir, $force = false)
     {
         $scandir = @scandir($dir);
         if (!is_array($scandir)) {
@@ -458,7 +458,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
             if ($force) {
                 @chmod($dir, 0777);
             }
-            if (!self::recursive_delete($dir . '/' . $item, $force)) {
+            if (!self::recursiveDelete($dir . '/' . $item, $force)) {
                 return false;
             }
         }
@@ -479,12 +479,12 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * @param $env
    * @return string
    */
-    public function db_url($env)
+    public function dbUrl($env)
     {
         return substr(self::getDbUrl(), 0, 6) == 'sqlite'  ?  "sqlite://sites/$env/files/unish.sqlite" : self::getDbUrl() . '/unish_' . $env;
     }
 
-    public function db_driver($db_url = null)
+    public function dbDriver($db_url = null)
     {
         return parse_url($db_url ?: self::getDbUrl(), PHP_URL_SCHEME);
     }
@@ -569,7 +569,7 @@ EOT;
             $sites[$subdir] = [
             'root' => $root,
             'uri' => $subdir,
-            'db_url' => $this->db_url($subdir),
+            'dbUrl' => $this->dbUrl($subdir),
             ];
         }
         return $sites;
@@ -599,7 +599,7 @@ EOT;
         if ($install) {
             $options = [
             'root' => $root,
-            'db-url' => $this->db_url($env),
+            'db-url' => $this->dbUrl($env),
             'sites-subdir' => $uri,
             'yes' => null,
             'quiet' => null,

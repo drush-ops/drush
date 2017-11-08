@@ -21,7 +21,7 @@ class SqlConnectCase extends CommandUnishTestCase {
 
         // Not all drivers need -e option like sqlite
         $shell_options = "-e";
-        $db_driver = $this->db_driver();
+        $db_driver = $this->dbDriver();
         if ($db_driver == 'mysql') {
             $this->assertRegExp('/^mysql --user=[^\s]+ --password=.* --database=[^\s]+ --host=[^\s]+/', $connectionString);
         } elseif ($db_driver == 'sqlite') {

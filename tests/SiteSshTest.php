@@ -15,7 +15,7 @@ class SiteSshCase extends CommandUnishTestCase {
    */
     public function testInteractive()
     {
-        if ($this->is_windows()) {
+        if ($this->isWindows()) {
             $this->markTestSkipped('ssh command not currently available on Windows.');
         }
 

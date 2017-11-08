@@ -9,7 +9,7 @@ namespace Unish;
  */
 class ImageCase extends CommandUnishTestCase {
 
-    function testImage()
+    public function testImage()
     {
         $this->setUpDrupal(1, true);
         $this->drush('pm-enable', ['image']);

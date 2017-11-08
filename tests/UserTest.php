@@ -12,7 +12,7 @@ class UserCase extends CommandUnishTestCase {
 
     const NAME = 'example';
 
-    function setUp()
+    public function setUp()
     {
         if (!$this->getSites()) {
             $this->setUpDrupal(1, true);

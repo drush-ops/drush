@@ -17,7 +17,7 @@ class batchCase extends CommandUnishTestCase {
         ];
         $this->drush('unit-batch', [], $options);
         // Collect log messages that begin with "!!!" (@see: _drush_unit_batch_operation())
-        $parsed = $this->parse_backend_output($this->getOutput());
+        $parsed = $this->parseBackendOutput($this->getOutput());
         $special_log_msgs = '';
         foreach ($parsed['log'] as $key => $log) {
             if (substr($log['message'], 0, 3) == '!!!') {

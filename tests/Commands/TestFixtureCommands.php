@@ -21,7 +21,7 @@ class TestFixtureCommands
    *
    * @command unit
    */
-    function unit()
+    public function unit()
     {
     }
 
@@ -31,7 +31,7 @@ class TestFixtureCommands
    * @command unit-eval
    * @bootstrap max
    */
-    function drush_unit_eval($code)
+    public function drush_unit_eval($code)
     {
         return eval($code . ';');
     }
@@ -42,7 +42,7 @@ class TestFixtureCommands
    * @command unit-batch
    * @bootstrap max
    */
-    function drush_unit_batch()
+    public function drush_unit_batch()
     {
         // Reduce php memory/time limits to test backend respawn.
         // TODO.
@@ -63,7 +63,7 @@ class TestFixtureCommands
         \drush_backend_output();
     }
 
-    function _drush_unit_batch_operation(&$context)
+    public function _drush_unit_batch_operation(&$context)
     {
         $context['message'] = "!!! ArrayObject does its job.";
 
@@ -73,7 +73,7 @@ class TestFixtureCommands
         $context['finished'] = 1;
     }
 
-    function _drush_unit_batch_finished()
+    public function _drush_unit_batch_finished()
     {
         // Restore php limits.
         // TODO.
@@ -83,7 +83,7 @@ class TestFixtureCommands
    * Return options as function result.
    * @command unit-return-options
    */
-    function drush_unit_return_options($arg = '', $options = ['x' => 'y', 'data' => [], 'format' => 'yaml'])
+    public function drush_unit_return_options($arg = '', $options = ['x' => 'y', 'data' => [], 'format' => 'yaml'])
     {
         unset($options['format']);
         return $options;
@@ -93,7 +93,7 @@ class TestFixtureCommands
    * Return original argv as function result.
    * @command unit-return-argv
    */
-    function drush_unit_return_argv(array $args)
+    public function drush_unit_return_argv(array $args)
     {
         return $args;
     }

@@ -207,7 +207,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
         // Travis, for unknown reasons.
         // @see https://github.com/drush-ops/drush/pull/646
         $prefix = '';
-        if ($env && !$this->is_windows()) {
+        if ($env && !$this->isWindows()) {
             foreach ($env as $env_name => $env_value) {
                 $prefix .= $env_name . '=' . self::escapeshellarg($env_value) . ' ';
             }
@@ -289,7 +289,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
             }
         }
 
-        if ($level = $this->log_level()) {
+        if ($level = $this->logLevel()) {
             $cmd[] = '--' . $level;
         }
         $cmd[] = "--no-ansi";
@@ -325,7 +325,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
 
         $cmd[] = $suffix;
         if ($hide_stderr) {
-            $cmd[] = '2>' . $this->bit_bucket();
+            $cmd[] = '2>' . $this->bitBucket();
         }
         $exec = array_filter($cmd, 'strlen'); // Remove NULLs
         // Set sendmail_path to 'true' to disable any outgoing emails
@@ -394,7 +394,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
   /**
    * A slightly less functional copy of drush_backend_parse_output().
    */
-    public function parse_backend_output($string)
+    public function parseBackendOutput($string)
     {
         $regex = sprintf(self::getBackendOutputDelimiter(), '(.*)');
         preg_match("/$regex/s", $string, $match);
@@ -459,7 +459,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
         return strtr($message, $replace);
     }
 
-    public function drush_major_version()
+    public function drushMajorVersion()
     {
         static $major;
 

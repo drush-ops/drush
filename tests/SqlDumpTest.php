@@ -16,7 +16,7 @@ class SqlDumpTest extends CommandUnishTestCase {
    */
     function testSqlDump()
     {
-        if ($this->db_driver() == 'sqlite') {
+        if ($this->dbDriver() == 'sqlite') {
             $this->markTestSkipped('SQL Dump does not apply to SQLite.');
             return;
         }
@@ -37,7 +37,7 @@ class SqlDumpTest extends CommandUnishTestCase {
         $this->assertContains('--ignore-table=unish_dev.cache_discovery', $this->getErrorOutput());
 
         // Test --extra-dump option
-        if ($this->db_driver() == 'mysql') {
+        if ($this->dbDriver() == 'mysql') {
             $this->drush('sql-dump', [], array_merge($options, [], ['extra-dump' => '--skip-add-drop-table']));
             $this->assertFileExists($full_dump_file_path);
             $full_dump_file = file_get_contents($full_dump_file_path);

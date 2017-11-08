@@ -4,7 +4,7 @@ namespace Unish;
 use Drush\Commands\core\XhprofCommands;
 
 /**
- * Unit tests for xh.drush.inc.
+ * Unit tests for xhCommands
  *
  * @group base
  */

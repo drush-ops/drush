@@ -54,7 +54,7 @@ class ContainerTest extends CommandUnishTestCase {
         // container to go invalid after tearDownAfterClass().
         $targetDir = Path::join($root, 'modules/unish/woot');
         $this->mkdir($targetDir);
-        $this->recursive_copy($wootModule, $targetDir);
+        $this->recursiveCopy($wootModule, $targetDir);
     }
 
 }

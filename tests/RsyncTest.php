@@ -15,7 +15,7 @@ class RsyncCase extends CommandUnishTestCase {
    */
     public function testRsyncSimulated()
     {
-        if ($this->is_windows()) {
+        if ($this->isWindows()) {
             $this->markTestSkipped('rsync command not currently available on Windows.');
         }
 
@@ -100,7 +100,7 @@ class RsyncCase extends CommandUnishTestCase {
    * This tests the non-optimized code path. The optimized code path (direct
    * call to Drush API functions rather than an `exec`) has not been implemented.
    */
-    function testRsyncAndPercentFiles()
+    public function testRsyncAndPercentFiles()
     {
         $root = $this->webroot();
         $site = current($this->getAliases());
@@ -110,7 +110,7 @@ class RsyncCase extends CommandUnishTestCase {
         ];
         $this->drush('core-rsync', ["$site:%files", "/tmp"], $options, null, null, self::EXIT_SUCCESS, '2>&1;');
         $output = $this->getOutput();
-        $level = $this->log_level();
+        $level = $this->logLevel();
         $pattern = in_array($level, ['verbose', 'debug']) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz %s /tmp);";
         $expected = sprintf($pattern, $this->webroot(). "/sites/$uri/files");
         $this->assertEquals($expected, $output);

@@ -41,7 +41,7 @@ class CacheCommandCase extends CommandUnishTestCase {
         $input = ['data'=> $expected];
         $stdin = json_encode($input);
         $bin = 'default';
-        $exec = sprintf('%s cache-set %s %s my_cache_id - %s CACHE_PERMANENT --input-format=json --cache-get 2>%s', self::getDrush(), "--root=" . self::escapeshellarg($this->webroot()), '--uri=' . $this->getUri(), $bin, $this->bit_bucket());
+        $exec = sprintf('%s cache-set %s %s my_cache_id - %s CACHE_PERMANENT --input-format=json --cache-get 2>%s', self::getDrush(), "--root=" . self::escapeshellarg($this->webroot()), '--uri=' . $this->getUri(), $bin, $this->bitBucket());
         $return = $this->execute($exec, self::EXIT_SUCCESS, null, [], $stdin);
         $this->drush('cache-get', ['my_cache_id'], ['format' => 'json']);
         $data = $this->getOutputFromJSON('data');

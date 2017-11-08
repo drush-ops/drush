@@ -7,7 +7,7 @@ use Webmozart\PathUtil\Path;
 /**
  * @group base
  */
-class annotatedCommandCase extends CommandUnishTestCase {
+class AnnotatedCommandCase extends CommandUnishTestCase {
 
     public function testGlobal()
     {
@@ -195,7 +195,7 @@ EOT;
         $globalExtension = __DIR__ . '/resources/global-includes';
         $targetDir = Path::join(self::getSandbox(), 'global-includes');
         $this->mkdir($targetDir);
-        $this->recursive_copy($globalExtension, $targetDir);
+        $this->recursiveCopy($globalExtension, $targetDir);
         return $targetDir;
     }
 
@@ -205,6 +205,6 @@ EOT;
         // We install into Unish so that we aren't cleaned up. That causes container to go invalid after tearDownAfterClass().
         $targetDir = Path::join($root, 'modules/unish/woot');
         $this->mkdir($targetDir);
-        $this->recursive_copy($wootModule, $targetDir);
+        $this->recursiveCopy($wootModule, $targetDir);
     }
 }
