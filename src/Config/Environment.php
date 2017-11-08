@@ -3,6 +3,7 @@ namespace Drush\Config;
 
 use Composer\Autoload\ClassLoader;
 
+use Drush\Drush;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -129,7 +130,7 @@ class Environment
 
         if (empty($temporary_directory)) {
             // If no directory has been found, create one in cwd.
-            $temporary_directory = Path::join(Drush::config()->get('env.cwd'), 'tmp');
+            $temporary_directory = Path::join(Drush::config()->cwd(), 'tmp');
             drush_mkdir($temporary_directory, true);
             if (!is_dir($temporary_directory)) {
                 throw new \Exception(dt("Unable to create a temporary directory."));
