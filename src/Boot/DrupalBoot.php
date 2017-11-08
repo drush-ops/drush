@@ -168,9 +168,9 @@ abstract class DrupalBoot extends BaseBoot
      * In this function, the pwd will be moved to the root
      * of the Drupal installation.
      *
-     * We also now load the drushrc.php for this specific Drupal site.
-     * We can now include files from the Drupal Tree, and figure
-     * out more context about the platform, such as the version of Drupal.
+     * We also now load the drush.yml for this specific Drupal site.
+     * We can now include files from the Drupal tree, and figure
+     * out more context about the codebase, such as the version of Drupal.
      */
     public function bootstrapDrupalRoot()
     {
@@ -218,7 +218,7 @@ abstract class DrupalBoot extends BaseBoot
      * Initialize a site on the Drupal root.
      *
      * We now set various contexts that we determined and confirmed to be valid.
-     * Additionally we load an optional drushrc.php file in the site directory.
+     * Additionally we load an optional drush.yml file in the site directory.
      */
     public function bootstrapDrupalSite()
     {

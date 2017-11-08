@@ -205,7 +205,7 @@ class SqlCommands extends DrushCommands
      * @usage drush sql:dump --result-file=../18.sql
      *   Save SQL dump to the directory above Drupal root.
      * @usage drush sql:dump --skip-tables-key=common
-     *   Skip standard tables. @see example.drushrc.php
+     *   Skip standard tables. @see example.drush.yml
      * @usage drush sql:dump --extra-dump=--no-data
      *   Pass extra option to mysqldump command.
      * @hidden-options create-db

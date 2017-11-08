@@ -57,12 +57,12 @@ class ConfigLocator
      *
      *   Specified by config files :
      *     custom   : Loaded from the config file specified by --config or -c
-     *     site     : Loaded from the drushrc.php file in the Drupal site directory.
-     *     drupal   : Loaded from the drushrc.php file in the Drupal root directory.
-     *     user     : Loaded from the drushrc.php file in the user's home directory.
-     *     home.drush Loaded from the drushrc.php file in the $HOME/.drush directory.
-     *     system   : Loaded from the drushrc.php file in the system's $PREFIX/etc/drush directory.
-     *     drush    : Loaded from the drushrc.php file in the same directory as drush.php.
+     *     site     : Loaded from the drush.yml file in the Drupal site directory.
+     *     drupal   : Loaded from the drush.yml file in the Drupal root directory.
+     *     user     : Loaded from the drush.yml file in the user's home directory.
+     *     home.drush Loaded from the drush.yml file in the $HOME/.drush directory.
+     *     system   : Loaded from the drush.yml file in the system's $PREFIX/etc/drush directory.
+     *     drush    : Loaded from the drush.yml file in the same directory as drush.php.
      *
      *   Specified by the script, but has the lowest priority :
      *     default  : The script might provide some sensible defaults during init.
