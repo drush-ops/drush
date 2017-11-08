@@ -68,11 +68,12 @@
     }
   },
   "scripts": {
-    "cs": "phpcs -n src",
-    "cbf": "phpcbf -n src",
+    "cs": "phpcs -n src tests",
+    "cbf": "phpcbf -n src tests",
     "lint": [
       "find includes -name '*.inc' -print0 | xargs -0 -n1 php -l",
-      "find src -name '*.php' -print0 | xargs -0 -n1 php -l"
+      "find src -name '*.php' -print0 | xargs -0 -n1 php -l",
+      "find tests -name '*.php' -print0 | xargs -0 -n1 php -l"
     ],
     "isolation": "cd isolation && vendor/bin/phpunit --colors=always",
     "post-update-cmd": "cd isolation && composer update"
