@@ -14,7 +14,7 @@ class SiteSetCommandCase extends CommandUnishTestCase
      */
     public function testSiteSet()
     {
-        if ($this->is_windows()) {
+        if ($this->isWindows()) {
             $this->markTestSkipped('Site-set not currently available on Windows.');
         }
         $sites = $this->setUpDrupal(2, true);

@@ -60,7 +60,8 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
      *
      * @return \Drush\Config\DrushConfig
      */
-    public function getConfig() {
+    public function getConfig()
+    {
         return $this->ConfigAwareGetConfig();
     }
 
