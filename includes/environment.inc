@@ -267,7 +267,7 @@ function drush_directory_cache($subdir = '') {
   if (getenv('CACHE_PREFIX')) {
     $cache_locations[getenv('CACHE_PREFIX')] = 'cache';
   }
-  $home = Drush::config()->get('env.home');
+  $home = Drush::config()->home();
   if ($home) {
     $cache_locations[$home] = '.drush/cache';
   }
