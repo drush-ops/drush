@@ -33,9 +33,9 @@ Take the value that is output and place it into your crontab entry in the place 
 Setting COLUMNS
 ---------------
 
-When running Drush in a terminal, the number of columns will be automatically determined by Drush by way of the tput command, which queries the active terminal to determine what the width of the screen is. When running Drush from cron, there will not be any terminal set, and the call to tput will produce an error message. Spurrious error messages are undesirable, as cron is often configured to send email whenever any output is produced, so it is important to make an effort to insure that successful runs of cron complete with no output.
+When running Drush in a terminal, the number of columns will be automatically determined by Drush by way of the tput command, which queries the active terminal to determine what the width of the screen is. When running Drush from cron, there will not be any terminal set, and the call to tput will produce an error message. Spurious error messages are undesirable, as cron is often configured to send email whenever any output is produced, so it is important to make an effort to insure that successful runs of cron complete with no output.
 
-In some cases, Drush is smart enough to recognize that there is no terminal -- if the terminal value is empty or "dumb", for example. However, there are some "non-terminal" values that Drush does not recognize, such as "unknown." If you manually set `COLUMNS`, then Drush will repect your setting and will not attempt to call tput.
+In some cases, Drush is smart enough to recognize that there is no terminal -- if the terminal value is empty or "dumb", for example. However, there are some "non-terminal" values that Drush does not recognize, such as "unknown." If you manually set `COLUMNS`, then Drush will respect your setting and will not attempt to call tput.
 
 Using --quiet
 -------------
