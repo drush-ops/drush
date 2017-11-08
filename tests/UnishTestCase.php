@@ -133,7 +133,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         return self::$backendOutputDelimiter;
     }
 
-    function __construct($name = null, array $data = [], $dataName = '')
+    public function __construct($name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
 
@@ -470,7 +470,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         return Path::join(self::getSut(), 'web');
     }
 
-    public function directory_cache($subdir = '')
+    public function directoryCache($subdir = '')
     {
         return getenv('CACHE_PREFIX') . '/' . $subdir;
     }

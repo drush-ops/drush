@@ -8,7 +8,7 @@ use Webmozart\PathUtil\Path;
  */
 class QueueCase extends CommandUnishTestCase {
 
-    function testQueue()
+    public function testQueue()
     {
         $expected = 'aggregator_feeds,%items,"Drupal\Core\Queue\DatabaseQueue"';
         $sites = $this->setUpDrupal(1, true);

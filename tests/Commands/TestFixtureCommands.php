@@ -31,7 +31,7 @@ class TestFixtureCommands
    * @command unit-eval
    * @bootstrap max
    */
-    public function drush_unit_eval($code)
+    public function drushUnitEval($code)
     {
         return eval($code . ';');
     }
@@ -42,16 +42,16 @@ class TestFixtureCommands
    * @command unit-batch
    * @bootstrap max
    */
-    public function drush_unit_batch()
+    public function drushUnitBatch()
     {
         // Reduce php memory/time limits to test backend respawn.
         // TODO.
 
         $batch = [
         'operations' => [
-         [[$this, '_drush_unit_batch_operation'], []],
+         [[$this, '_drushUnitBatchOperation'], []],
         ],
-        'finished' => [$this, '_drush_unit_batch_finished'],
+        'finished' => [$this, '_drushUnitBatchFinished'],
         // 'file' => Doesn't work for us. Drupal 7 enforces this path
         // to be relative to DRUPAL_ROOT.
         // @see _batch_process().
@@ -63,7 +63,7 @@ class TestFixtureCommands
         \drush_backend_output();
     }
 
-    public function _drush_unit_batch_operation(&$context)
+    public function _drushUnitBatchOperation(&$context)
     {
         $context['message'] = "!!! ArrayObject does its job.";
 
@@ -73,7 +73,7 @@ class TestFixtureCommands
         $context['finished'] = 1;
     }
 
-    public function _drush_unit_batch_finished()
+    public function _drushUnitBatchFinished()
     {
         // Restore php limits.
         // TODO.
@@ -83,7 +83,7 @@ class TestFixtureCommands
    * Return options as function result.
    * @command unit-return-options
    */
-    public function drush_unit_return_options($arg = '', $options = ['x' => 'y', 'data' => [], 'format' => 'yaml'])
+    public function drushUnitReturnOptions($arg = '', $options = ['x' => 'y', 'data' => [], 'format' => 'yaml'])
     {
         unset($options['format']);
         return $options;
@@ -93,7 +93,7 @@ class TestFixtureCommands
    * Return original argv as function result.
    * @command unit-return-argv
    */
-    public function drush_unit_return_argv(array $args)
+    public function drushUnitReturnArgv(array $args)
     {
         return $args;
     }

@@ -7,7 +7,7 @@ namespace Unish;
  *
  * @group base
  */
-class batchCase extends CommandUnishTestCase {
+class BatchCase extends CommandUnishTestCase {
 
     public function testBatch()
     {
@@ -16,7 +16,7 @@ class batchCase extends CommandUnishTestCase {
         'include' => __DIR__,
         ];
         $this->drush('unit-batch', [], $options);
-        // Collect log messages that begin with "!!!" (@see: _drush_unit_batch_operation())
+        // Collect log messages that begin with "!!!" (@see: _drushUnitBatchOperation())
         $parsed = $this->parseBackendOutput($this->getOutput());
         $special_log_msgs = '';
         foreach ($parsed['log'] as $key => $log) {
