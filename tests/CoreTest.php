@@ -10,16 +10,16 @@ use Webmozart\PathUtil\Path;
  *
  * @group commands
  */
-class coreCase extends CommandUnishTestCase {
+class CoreCase extends CommandUnishTestCase {
 
-    function setUp()
+    public function setUp()
     {
         if (!$this->getSites()) {
             $this->setUpDrupal(2, true);
         }
     }
 
-    function testDrupalDirectory()
+    public function testDrupalDirectory()
     {
         $root = $this->webroot();
         $sitewide = $this->drupalSitewideDirectory();
@@ -43,7 +43,7 @@ class coreCase extends CommandUnishTestCase {
         $this->assertEquals(Path::join($root, '/themes/unish/empty_theme'), $output);
     }
 
-    function testCoreRequirements()
+    public function testCoreRequirements()
     {
         $root = $this->webroot();
         $options = [
@@ -75,7 +75,7 @@ class coreCase extends CommandUnishTestCase {
         }
     }
 
-    function testSiteSelectionViaCwd()
+    public function testSiteSelectionViaCwd()
     {
         $cwd = getcwd();
         $root = $this->webroot();
@@ -94,7 +94,7 @@ class coreCase extends CommandUnishTestCase {
         chdir($cwd);
     }
 
-    function testOptionsUri()
+    public function testOptionsUri()
     {
         // Put a yml file in the drush folder.
         $drush_config_file = Path::join($this->getSut(), 'drush', 'drush.yml');

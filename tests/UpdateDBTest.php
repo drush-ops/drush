@@ -5,7 +5,7 @@ namespace Unish;
  *  @group slow
  *  @group commands
  */
-class updateDBTest extends CommandUnishTestCase {
+class UpdateDBTest extends CommandUnishTestCase {
 
     protected $pathPostUpdate;
 
@@ -41,7 +41,7 @@ class updateDBTest extends CommandUnishTestCase {
         $this->assertEquals('This is a test of the emergency broadcast system.', trim($out->description));
     }
 
-    function tearDown()
+    public function tearDown()
     {
         $this->recursive_delete($this->pathPostUpdate, true);
         parent::tearDown();

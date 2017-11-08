@@ -90,7 +90,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     public static function cleanDirs()
     {
         if (empty(getenv('UNISH_DIRTY'))) {
-            $sandbox = self::getSandBox();
+            $sandbox = self::getSandbox();
             if (file_exists($sandbox)) {
                 self::recursive_delete($sandbox);
             }
@@ -211,7 +211,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    *     - verbose
    *     - debug
    */
-    function log($message, $type = 'notice')
+    public function log($message, $type = 'notice')
     {
         $line = "\nLog: $message\n";
         switch ($this->log_level()) {
@@ -231,7 +231,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         }
     }
 
-    function log_level()
+    public function log_level()
     {
         // -d is reserved by `phpunit`
         if (in_array('--debug', $_SERVER['argv'])) {
@@ -256,7 +256,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    *
    * Useful for longer running tests to indicate they're working.
    */
-    function tick()
+    public function tick()
     {
         static $chars = ['/', '-', '\\', '|'];
         static $counter = 0;
@@ -271,7 +271,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * Checks operating system and returns
    * supported bit bucket folder.
    */
-    function bit_bucket()
+    public function bit_bucket()
     {
         if (!$this->is_windows()) {
             return '/dev/null';
@@ -465,12 +465,12 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         return true;
     }
 
-    function webroot()
+    public function webroot()
     {
         return Path::join(self::getSut(), 'web');
     }
 
-    function directory_cache($subdir = '')
+    public function directory_cache($subdir = '')
     {
         return getenv('CACHE_PREFIX') . '/' . $subdir;
     }
@@ -479,12 +479,12 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * @param $env
    * @return string
    */
-    function db_url($env)
+    public function db_url($env)
     {
         return substr(self::getDbUrl(), 0, 6) == 'sqlite'  ?  "sqlite://sites/$env/files/unish.sqlite" : self::getDbUrl() . '/unish_' . $env;
     }
 
-    function db_driver($db_url = null)
+    public function db_driver($db_url = null)
     {
         return parse_url($db_url ?: self::getDbUrl(), PHP_URL_SCHEME);
     }
@@ -496,7 +496,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
    * @param array $sites key=site_subder value=array of extra alias data
    * @param string $aliasGroup Write aliases into a file named group.alias.yml
    */
-    function setUpSettings(array $sites, $aliasGroup = 'fixture')
+    public function setUpSettings(array $sites, $aliasGroup = 'fixture')
     {
         foreach ($sites as $subdir => $extra) {
             $this->createSettings($subdir);
@@ -508,7 +508,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         $this->writeSiteAliases($siteAliasData, $aliasGroup);
     }
 
-    function createSettings($subdir)
+    public function createSettings($subdir)
     {
         $settingsContents = <<<EOT
 <?php
@@ -536,7 +536,7 @@ EOT;
    *
    * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
    */
-    function setUpDrupal($num_sites = 1, $install = false)
+    public function setUpDrupal($num_sites = 1, $install = false)
     {
         $sites_subdirs_all = ['dev', 'stage', 'prod', 'retired', 'elderly', 'dead', 'dust'];
         $sites_subdirs = array_slice($sites_subdirs_all, 0, $num_sites);
@@ -560,7 +560,7 @@ EOT;
         return self::$sites;
     }
 
-    function createAliasFileData($sites_subdirs, $aliasGroup = 'unish')
+    public function createAliasFileData($sites_subdirs, $aliasGroup = 'unish')
     {
         $root = $this->webroot();
         // Stash details about each site.
@@ -575,7 +575,7 @@ EOT;
         return $sites;
     }
 
-    function createAliasFile($sites_subdirs, $aliasGroup = 'unish')
+    public function createAliasFile($sites_subdirs, $aliasGroup = 'unish')
     {
         // Make an alias group for the sites.
         $sites = $this->createAliasFileData($sites_subdirs, $aliasGroup);
@@ -589,7 +589,7 @@ EOT;
    *
    * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
    */
-    function installDrupal($env = 'dev', $install = false)
+    public function installDrupal($env = 'dev', $install = false)
     {
         $root = $this->webroot();
         $uri = $env;
@@ -618,12 +618,12 @@ EOT;
    *
    * @param $sites
    */
-    function writeSiteAliases($sites, $aliasGroup = 'unish')
+    public function writeSiteAliases($sites, $aliasGroup = 'unish')
     {
         $this->writeUnishConfig($sites, [], $aliasGroup);
     }
 
-    function writeUnishConfig($unishAliases, $config = [], $aliasGroup = 'unish')
+    public function writeUnishConfig($unishAliases, $config = [], $aliasGroup = 'unish')
     {
         $etc = self::getSandbox() . '/etc/drush';
         file_put_contents(Path::join($etc, $aliasGroup . '.alias.yml'), Yaml::dump($unishAliases, PHP_INT_MAX, 2));
@@ -634,7 +634,7 @@ EOT;
   /**
    * The sitewide directory for Drupal extensions.
    */
-    function drupalSitewideDirectory()
+    public function drupalSitewideDirectory()
     {
         return '/sites/all';
     }

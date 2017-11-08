@@ -7,7 +7,7 @@ use Webmozart\PathUtil\Path;
  *  @group slow
  *  @group commands
  */
-class roleCase extends CommandUnishTestCase {
+class RoleCase extends CommandUnishTestCase {
 
   /**
    * Create, edit, block, and cancel users.

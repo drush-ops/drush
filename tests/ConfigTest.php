@@ -9,7 +9,7 @@ namespace Unish;
  */
 class ConfigCase extends CommandUnishTestCase {
 
-    function setUp()
+    public function setUp()
     {
         if (!$this->getSites()) {
             $this->setUpDrupal(1, true);
@@ -17,14 +17,14 @@ class ConfigCase extends CommandUnishTestCase {
         }
     }
 
-    function testConfigGetSet()
+    public function testConfigGetSet()
     {
         $this->drush('config-set', ['system.site', 'name', 'config_test']);
         $this->drush('config-get', ['system.site', 'name']);
         $this->assertEquals("'system.site:name': config_test", $this->getOutput(), 'Config was successfully set and get.');
     }
 
-    function testConfigExportImportStatus()
+    public function testConfigExportImportStatus()
     {
         // Get path to sync dir.
         $this->drush('core-status', [], ['format' => 'json', 'fields' => 'config-sync']);

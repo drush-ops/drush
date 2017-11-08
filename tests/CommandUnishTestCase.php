@@ -89,7 +89,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    *
    * @access public
    */
-    function getOutput()
+    public function getOutput()
     {
         return trim($this->getOutputRaw());
     }
@@ -102,7 +102,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    *
    * @access public
    */
-    function getOutputRaw()
+    public function getOutputRaw()
     {
         return $this->process ? $this->process->getOutput() : '';
     }
@@ -115,7 +115,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    *
    * @access public
    */
-    function getOutputAsList()
+    public function getOutputAsList()
     {
         return array_map('rtrim', explode("\n", $this->getOutput()));
     }
@@ -128,7 +128,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    *
    * @access public
    */
-    function getErrorOutput()
+    public function getErrorOutput()
     {
         return trim($this->getErrorOutputRaw());
     }
@@ -141,7 +141,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    *
    * @access public
    */
-    function getErrorOutputRaw()
+    public function getErrorOutputRaw()
     {
         return $this->process ? $this->process->getErrorOutput() : '';
     }
@@ -154,7 +154,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    *
    * @access public
    */
-    function getErrorOutputAsList()
+    public function getErrorOutputAsList()
     {
         return array_map('rtrim', explode("\n", $this->getErrorOutput()));
     }
@@ -168,7 +168,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    * @return object
    *   Decoded object.
    */
-    function getOutputFromJSON($key = null)
+    public function getOutputFromJSON($key = null)
     {
         $json = json_decode($this->getOutput());
         if (isset($key)) {
@@ -195,7 +195,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    * @return integer
    *   Exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
    */
-    function execute($command, $expected_return = self::EXIT_SUCCESS, $cd = null, $env = null, $input = null)
+    public function execute($command, $expected_return = self::EXIT_SUCCESS, $cd = null, $env = null, $input = null)
     {
         $return = 1;
         $this->tick();
@@ -262,7 +262,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     * @return integer
     *   An exit code.
     */
-    function drush($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $expected_return = self::EXIT_SUCCESS, $suffix = null, $env = [])
+    public function drush($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $expected_return = self::EXIT_SUCCESS, $suffix = null, $env = [])
     {
         // cd is added for the benefit of siteSshTest which tests a strict command.
         $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'backend', 'cd'];
@@ -394,7 +394,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
   /**
    * A slightly less functional copy of drush_backend_parse_output().
    */
-    function parse_backend_output($string)
+    public function parse_backend_output($string)
     {
         $regex = sprintf(self::getBackendOutputDelimiter(), '(.*)');
         preg_match("/$regex/s", $string, $match);
@@ -428,7 +428,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    *   types are ignored. If FALSE (the default), then all log types
    *   will be searched.
    */
-    function assertLogHasMessage($log, $message, $logType = false)
+    public function assertLogHasMessage($log, $message, $logType = false)
     {
         foreach ($log as $entry) {
             if (!$logType || ($entry['type'] == $logType)) {
@@ -459,7 +459,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
         return strtr($message, $replace);
     }
 
-    function drush_major_version()
+    public function drush_major_version()
     {
         static $major;
 

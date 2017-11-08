@@ -11,7 +11,7 @@ use Webmozart\PathUtil\Path;
  *
  * @see https://github.com/drush-ops/drush/issues/3123
  */
-class containerTest extends CommandUnishTestCase {
+class ContainerTest extends CommandUnishTestCase {
 
     /**
      * Tests that the existing container is available while Drush rebuilds it.

@@ -7,16 +7,16 @@ namespace Unish;
   *
   * @group base
   */
-class cacheCommandCase extends CommandUnishTestCase {
+class CacheCommandCase extends CommandUnishTestCase {
 
-    function setUp()
+    public function setUp()
     {
         if (!$this->getSites()) {
             $this->setUpDrupal(1, true);
         }
     }
 
-    function testCacheGet()
+    public function testCacheGet()
     {
         // Test the cache get command.
         $this->drush('cache-get', ['system.date', 'config'], ['format' => 'json']);
@@ -27,7 +27,7 @@ class cacheCommandCase extends CommandUnishTestCase {
         $this->drush('cache-get', ['test-failure-cid'], ['format' => 'json'], null, null, self::EXIT_ERROR);
     }
 
-    function testCacheSet()
+    public function testCacheSet()
     {
         // Test setting a new cache item.
         $expected = 'cache test string';
@@ -48,7 +48,7 @@ class cacheCommandCase extends CommandUnishTestCase {
         $this->assertEquals((object)$expected, $data);
     }
 
-    function testCacheRebuild()
+    public function testCacheRebuild()
     {
         // Test cache-clear all and cache-rebuild (D8+).
         $this->drush('cache-rebuild');

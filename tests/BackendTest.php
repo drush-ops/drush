@@ -15,8 +15,8 @@ namespace Unish;
  *
  *  @group base
  */
-class backendCase extends CommandUnishTestCase {
-    function testDispatchUsingAlias()
+class BackendCase extends CommandUnishTestCase {
+    public function testDispatchUsingAlias()
     {
         $unishAliases = [
         'remote' => [
@@ -50,7 +50,7 @@ class backendCase extends CommandUnishTestCase {
    *
    * General handling of site aliases will be in sitealiasTest.php.
    */
-    function testOrigin()
+    public function testOrigin()
     {
         $site_specification = 'user@server/path/to/drupal#sitename';
         $exec = sprintf('%s %s version --simulate --ssh-options=%s 2>%s', self::getDrush(), self::escapeshellarg($site_specification), self::escapeshellarg('-i mysite_dsa'), self::escapeshellarg($this->bit_bucket()));
@@ -65,7 +65,7 @@ class backendCase extends CommandUnishTestCase {
         $this->assertContains($expected, $output, 'Expected ssh command was built');
     }
 
-    function testNonExistentCommand()
+    public function testNonExistentCommand()
     {
         $this->markTestSkipped('Cannot run remote commands that do not exist locally');
         // Assure that arguments and options are passed along to a command thats not recognized locally.
@@ -82,7 +82,7 @@ class backendCase extends CommandUnishTestCase {
    *   - JSON object has expected contents (including errors).
    *   - JSON object is wrapped in expected delimiters.
    */
-    function testTarget()
+    public function testTarget()
     {
         // Backend invoke always runs in non-strict mode now.
         $stdin = json_encode([]);
@@ -103,7 +103,7 @@ class backendCase extends CommandUnishTestCase {
         $this->assertEquals('Bootstrap to none', $parsed['log'][0]['message']);
     }
 
-    function testBackendErrorStatus()
+    public function testBackendErrorStatus()
     {
         // Check error propogation by requesting an invalid command (missing Drupal site).
         $this->drush('core-cron', [], ['backend' => null], null, null, self::EXIT_ERROR);
@@ -117,7 +117,7 @@ class backendCase extends CommandUnishTestCase {
    *   - Insures that the backend output start marker appears in the output (this is a backend command).
    *   - Insures that the drush output appears before the backend output start marker (output is displayed in 'real time' as it is produced).
    */
-    function testRealtimeOutput()
+    public function testRealtimeOutput()
     {
         $exec = sprintf('%s core-status --backend --format=yaml --no-ansi 2>&1', self::getDrush());
         $this->execute($exec);
@@ -135,7 +135,7 @@ class backendCase extends CommandUnishTestCase {
    * Covers the following target responsibilities.
    *   - Insures that function result is returned in --backend mode
    */
-    function testBackendFunctionResult()
+    public function testBackendFunctionResult()
     {
         $php = "return 'bar'";
         $this->drush('php-eval', [$php], ['backend' => null]);
@@ -150,7 +150,7 @@ class backendCase extends CommandUnishTestCase {
    *   - Insures that the result code for the function does not overwrite
    *     the explicitly-set value
    */
-    function testBackendSetResult()
+    public function testBackendSetResult()
     {
         $php = "drush_backend_set_result('foo'); return 'bar'";
         $this->drush('php-eval', [$php], ['backend' => null]);
@@ -166,7 +166,7 @@ class backendCase extends CommandUnishTestCase {
    *   - Insures that the 'concurrent'-format result array is returned.
    *   - Insures that correct results are returned from each command.
    */
-    function testBackendInvokeMultiple()
+    public function testBackendInvokeMultiple()
     {
         $this->markTestIncomplete('Depends on concurrency');
         $options = [

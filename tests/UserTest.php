@@ -8,7 +8,7 @@ use Webmozart\PathUtil\Path;
  *  @group slow
  *  @group commands
  */
-class userCase extends CommandUnishTestCase {
+class UserCase extends CommandUnishTestCase {
 
     const NAME = 'example';
 
@@ -20,7 +20,7 @@ class userCase extends CommandUnishTestCase {
         }
     }
 
-    function testBlockUnblock()
+    public function testBlockUnblock()
     {
         $this->drush('user-block', [self::NAME]);
         $this->drush('user-information', [self::NAME], ['format' => 'json']);
@@ -35,7 +35,7 @@ class userCase extends CommandUnishTestCase {
         $this->assertEquals(1, $output->user_status, 'User is unblocked.');
     }
 
-    function testUserRole()
+    public function testUserRole()
     {
       // First, create the role since we use testing install profile.
         $this->drush('role-create', ['test role']);
@@ -54,7 +54,7 @@ class userCase extends CommandUnishTestCase {
         $this->assertEquals($expected, array_values((array)$output->roles), 'User removed test role.');
     }
 
-    function testUserPassword()
+    public function testUserPassword()
     {
         $newpass = 'newpass';
         $name = self::NAME;
@@ -65,7 +65,7 @@ class userCase extends CommandUnishTestCase {
         $this->assertEquals("2", $output, 'User can login with new password.');
     }
 
-    function testUserLogin()
+    public function testUserLogin()
     {
       // Check if user-login on a non-bootstrapped environment returns error.
         $this->drush('user-login', [], ['uri' => 'OMIT'], null, null, self::EXIT_ERROR);
@@ -95,7 +95,7 @@ class userCase extends CommandUnishTestCase {
         $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
     }
 
-    function testUserCancel()
+    public function testUserCancel()
     {
         // Create a content entity type and enable its module.
         $answers = [
@@ -143,7 +143,7 @@ class userCase extends CommandUnishTestCase {
         // $this->assertEquals('', $this->getOutput());
     }
 
-    function UserCreate()
+    public function userCreate()
     {
         $this->drush('user-create', [self::NAME], ['password' => 'password', 'mail' => "example@example.com"]);
         $this->drush('user-information', [self::NAME], ['format' => 'json']);

@@ -12,7 +12,7 @@ namespace Unish;
  */
 class SqlConnectCase extends CommandUnishTestCase {
 
-    function testSqlConnect()
+    public function testSqlConnect()
     {
         $this->setUpDrupal(1, true);
         // Get the connection details with sql-connect and check its structure.

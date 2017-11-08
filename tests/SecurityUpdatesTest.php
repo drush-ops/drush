@@ -8,12 +8,12 @@ namespace Unish;
  * @group slow
  * @group pm
  */
-class securityUpdatesTest extends CommandUnishTestCase {
+class SecurityUpdatesTest extends CommandUnishTestCase {
 
   /**
    * Test that insecure packages are correctly identified.
    */
-    function testInsecurePackage()
+    public function testInsecurePackage()
     {
         $this->drush('pm:security', [], ['format' => 'json'], null, null, self::EXIT_ERROR);
         $this->assertContains('One or more of your dependencies has an outstanding security update. Please apply update(s) immediately.', $this->getErrorOutput());

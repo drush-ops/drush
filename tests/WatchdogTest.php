@@ -7,7 +7,7 @@ namespace Unish;
  */
 class WatchdogCase extends CommandUnishTestCase {
 
-    function testWatchdog()
+    public function testWatchdog()
     {
         $this->setUpDrupal(1, true);
         $this->drush('pm-enable', ['dblog']);

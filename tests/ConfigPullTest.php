@@ -10,7 +10,7 @@ namespace Unish;
  */
 class ConfigPullCase extends CommandUnishTestCase {
 
-    function setUp()
+    public function setUp()
     {
         $this->setUpDrupal(2, true);
     }
@@ -18,7 +18,7 @@ class ConfigPullCase extends CommandUnishTestCase {
   /*
    * Make sure a change propagates using config-pull+config-import.
    */
-    function testConfigPull()
+    public function testConfigPull()
     {
         $aliases = $this->getAliases();
         $source = $aliases['stage'];

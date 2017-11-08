@@ -8,7 +8,7 @@ use Drush\Commands\core\XhprofCommands;
  *
  * @group base
  */
-class xhUnitCase extends UnishTestCase {
+class XhUnitCase extends UnishTestCase {
 
   /**
    * Test various combinations of XHProf flag options.

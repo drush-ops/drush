@@ -8,7 +8,7 @@ use Webmozart\PathUtil\Path;
 /**
  * @group base
  */
-class siteAliasConvertTest extends CommandUnishTestCase
+class SiteAliasConvertTest extends CommandUnishTestCase
 {
 
   /**
