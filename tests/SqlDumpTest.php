@@ -14,7 +14,7 @@ class SqlDumpTest extends CommandUnishTestCase {
   /**
    * Test that a dump file is created successfully.
    */
-    function testSqlDump()
+    public function testSqlDump()
     {
         if ($this->dbDriver() == 'sqlite') {
             $this->markTestSkipped('SQL Dump does not apply to SQLite.');
