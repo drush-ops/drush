@@ -2,8 +2,6 @@
 
 namespace Drush\Preflight;
 
-use Drush\Drush;
-
 class PreflightLog {
 
     protected $debug;
