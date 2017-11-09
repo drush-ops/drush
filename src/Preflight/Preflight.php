@@ -238,7 +238,9 @@ class Preflight
         // a site-local Drush. If there is, we will redispatch to it.
         // NOTE: termination handlers have not been set yet, so it is okay
         // to exit early without taking special action.
-        $status = RedispatchToSiteLocal::redispatchIfSiteLocalDrush($argv, $root, $this->environment->vendorPath());
+        $logger = new PreflightLog();
+        $logger->setDebug($this->preflightArgs->get(PreflightArgs::DEBUG));
+        $status = RedispatchToSiteLocal::redispatchIfSiteLocalDrush($argv, $root, $this->environment->vendorPath(), $logger);
         if ($status !== false) {
             return $status;
         }
