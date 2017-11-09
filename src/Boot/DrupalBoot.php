@@ -99,34 +99,6 @@ abstract class DrupalBoot extends BaseBoot
     }
 
     /**
-     * List of bootstrap phases where Drush should stop and look for commandfiles.
-     *
-     * For Drupal, we try at these bootstrap phases:
-     *
-     *   - Drush preflight: to find commandfiles in any system location,
-     *     out of a Drupal installation.
-     *   - Drupal root: to find commandfiles based on Drupal core version.
-     *   - Drupal full: to find commandfiles defined within a Drupal directory.
-     *
-     * Once a command is found, Drush will ensure a bootstrap to the phase
-     * declared by the command.
-     *
-     * @return array of PHASE indexes.
-     */
-    public function bootstrapInitPhases()
-    {
-        return [DRUSH_BOOTSTRAP_DRUSH, DRUSH_BOOTSTRAP_DRUPAL_ROOT, DRUSH_BOOTSTRAP_DRUPAL_FULL];
-    }
-
-    public function commandDefaults()
-    {
-        return [
-            'drupal dependencies' => [],
-            'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
-        ];
-    }
-
-    /**
      * Validate the DRUSH_BOOTSTRAP_DRUPAL_ROOT phase.
      *
      * In this function, we will check if a valid Drupal directory is available.
@@ -185,7 +157,6 @@ abstract class DrupalBoot extends BaseBoot
 
         // DRUSH_DRUPAL_CORE should point to the /core folder in Drupal 8+ or to DRUPAL_ROOT
         // in prior versions.
-        drush_set_context('DRUSH_DRUPAL_CORE', $core);
         define('DRUSH_DRUPAL_CORE', $core);
 
         $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal !version root directory at !drupal_root", ["!version" => $version, '!drupal_root' => $drupal_root]));
@@ -338,9 +309,6 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapDrupalFull()
     {
-
-        $this->addLogger();
-
         _drush_log_drupal_messages();
     }
 }

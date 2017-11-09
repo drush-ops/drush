@@ -74,25 +74,6 @@ interface Boot
     public function lookUpPhaseIndex($phase);
 
     /**
-     * List of bootstrap phases where Drush should stop and look for commandfiles.
-     *
-     * This allows us to bootstrap to a minimum neccesary to find commands.
-     *
-     * Once a command is found, Drush will ensure a bootstrap to the phase
-     * declared by the command.
-     *
-     * @return array of PHASE indexes.
-     */
-    public function bootstrapInitPhases();
-
-    /**
-     * Return an array of default values that should be added
-     * to every command (e.g. values needed in enforceRequirements(),
-     * etc.)
-     */
-    public function commandDefaults();
-
-    /**
      * Called by Drush if a command is not found, or if the
      * command was found, but did not meet requirements.
      *

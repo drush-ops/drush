@@ -172,6 +172,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $this->logger->debug(dt('Finished bootstrap of the Drupal Kernel.'));
 
         parent::bootstrapDrupalFull();
+        $this->addLogger();
 
         // Get a list of the modules to ignore
         $ignored_modules = drush_get_option_list('ignored-modules', []);
