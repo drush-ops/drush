@@ -11,18 +11,21 @@ class PreflightLog {
     /**
      * @return bool
      */
-    public function getDebug() {
+    public function getDebug()
+    {
         return $this->debug;
     }
 
     /**
      * @param bool $debug
      */
-    public function setDebug($debug) {
+    public function setDebug($debug)
+    {
         $this->debug = $debug;
     }
 
-    public function log($message) {
+    public function log($message)
+    {
         if ($this->getDebug()) {
             file_put_contents('php://stderr', ' [preflight] ' . $message . "\n", FILE_APPEND);
         }
