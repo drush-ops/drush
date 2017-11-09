@@ -127,8 +127,8 @@ after_success: ${PWD}/tests/testChildren.sh
 before_deploy:
   - gem install mime-types -v 2.6.2 # https://github.com/travis-ci/travis-ci/issues/5145
   - curl -LSs https://box-project.github.io/box2/installer.php | php
-  - php box.phar build
   - composer install --prefer-dist --no-dev --optimize-autoloader --no-interaction
+  - php box.phar build
   - test $TRAVIS_TAG=true && mkdir s3-stable && cp drush.phar s3-stable/drush.phar
   - test $TRAVIS_BRANCH=master && mkdir s3-unstable && cp drush.phar s3-unstable/drush-unstable.phar
 deploy:
