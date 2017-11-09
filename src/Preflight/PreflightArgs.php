@@ -231,7 +231,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return $this->get(self::ROOT, $default);
     }
 
-    public function setDebug($value) {
+    public function setDebug($value)
+    {
         $this->set(self::DEBUG, $value);
     }
 
