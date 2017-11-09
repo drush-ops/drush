@@ -31,18 +31,4 @@ class EmptyBoot extends BaseBoot
     {
         return [DRUSH_BOOTSTRAP_DRUSH];
     }
-
-    public function commandDefaults()
-    {
-        return [
-        // TODO: Historically, commands that do not explicitly specify
-        // their bootstrap level default to DRUSH_BOOTSTRAP_DRUPAL_LOGIN.
-        // This isn't right any more, but we can't just change this to
-        // DRUSH_BOOTSTRAP_DRUSH, or we will start running commands that
-        // needed a full bootstrap with no bootstrap, and that won't work.
-        // Any command that does not declare 'bootstrap' is declaring that
-        // it is a Drupal command.
-        'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
-        ];
-    }
 }
