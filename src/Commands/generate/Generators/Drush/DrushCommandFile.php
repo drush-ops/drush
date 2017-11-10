@@ -30,8 +30,15 @@ class DrushCommandFile extends BaseGenerator
         $vars = $this->collectVars($input, $output, $questions);
         $vars['class'] = Utils::camelize($vars['machine_name'] . 'Commands');
         if ($vars['source']) {
+            if (!is_file($vars['source'])) {
+                throw new \InvalidArgumentException('Could not open "' . $vars['source'] . '".');
+            }
             require_once $vars['source'];
             $filename = str_replace(['.drush.inc', '.drush8.inc'], '', basename($vars['source']));
+            $command_hook = $filename . '_drush_command';
+            if (!function_exists($command_hook)) {
+                throw new \InvalidArgumentException('Drush command hook "' . $command_hook . '" does not exist.');
+            }
             $commands = call_user_func($filename . '_drush_command');
             $vars['commands'] = $this->adjustCommands($commands);
         }
