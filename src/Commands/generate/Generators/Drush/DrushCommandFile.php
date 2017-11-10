@@ -26,13 +26,16 @@ class DrushCommandFile extends BaseGenerator
     {
         $questions = Utils::defaultQuestions();
         $questions['source'] = new Question('Absolute path to legacy Drush command file (optional - for porting)');
+        $questions['source']->setValidator(function ($path) {
+            if ($path && !is_file($path)) {
+                throw new \UnexpectedValueException(sprintf('Could not open file "%s"', $path));
+            }
+            return $path;
+        });
 
         $vars = $this->collectVars($input, $output, $questions);
         $vars['class'] = Utils::camelize($vars['machine_name'] . 'Commands');
         if ($vars['source']) {
-            if (!is_file($vars['source'])) {
-                throw new \InvalidArgumentException('Could not open "' . $vars['source'] . '".');
-            }
             require_once $vars['source'];
             $filename = str_replace(['.drush.inc', '.drush8.inc'], '', basename($vars['source']));
             $command_hook = $filename . '_drush_command';
