@@ -28,7 +28,7 @@ class DrushCommandFile extends BaseGenerator
         $questions['source'] = new Question('Absolute path to legacy Drush command file (optional - for porting)');
         $questions['source']->setValidator(function ($path) {
             if ($path && !is_file($path)) {
-                throw new \UnexpectedValueException(sprintf('Could not open file "%s"', $path));
+                throw new \UnexpectedValueException(sprintf('Could not open file "%s".', $path));
             }
             return $path;
         });
