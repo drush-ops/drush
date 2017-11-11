@@ -280,7 +280,7 @@ class ConfigLocator
     }
 
     /**
-     * Add any configruation file found at any of the provided paths. Both the
+     * Add any configuration file found at any of the provided paths. Both the
      * provided location, and the directory `config` inside each provided location
      * is searched for a drush.yml file.
      *

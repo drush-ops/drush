@@ -214,6 +214,11 @@ class Preflight
         return $this->configLocator->config();
     }
 
+    /**
+     * @param $argv
+     * @return bool
+     *   True if the request was successfully redispatched remotely. False if the request should proceed.
+     */
     public function preflight($argv)
     {
         // Fail fast if there is anything in our environment that does not check out

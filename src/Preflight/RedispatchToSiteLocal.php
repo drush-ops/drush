@@ -23,6 +23,7 @@ class RedispatchToSiteLocal
      * @param PreflightLog $preflightLog A basic logger.
      *
      * @return bool
+     *   True if redispatch occurred, and was returned successfully.
      */
     public static function redispatchIfSiteLocalDrush($argv, $root, $vendor, PreflightLog $preflightLog)
     {
