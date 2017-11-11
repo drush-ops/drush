@@ -169,7 +169,7 @@ class SqlCommands extends DrushCommands
         $filename = $options['file'];
         // Enable prefix processing when db-prefix option is used.
         if ($options['db-prefix']) {
-            drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
+            Drush::bootstrapManager()->bootstrapMax(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
         }
         if (Drush::simulate()) {
             if ($query) {
