@@ -58,6 +58,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     const SIMULATE = 'simulate';
     const BACKEND = 'backend';
     const STRICT = 'strict';
+    const DEBUG = 'preflight-debug';
 
     /**
      * PreflightArgs constructor
@@ -77,6 +78,9 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return [
             '-r=' => 'setSelectedSite',
             '--root=' => 'setSelectedSite',
+            '--debug' => 'setDebug',
+            '-vv' => 'setDebug',
+            '-vvv' => 'setDebug',
             '-l=' => 'setUri',
             '--uri=' => 'setUri',
             '-c=' => 'addConfigPath',
@@ -225,6 +229,11 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     public function selectedSite($default = false)
     {
         return $this->get(self::ROOT, $default);
+    }
+
+    public function setDebug($value)
+    {
+        $this->set(self::DEBUG, $value);
     }
 
     /**

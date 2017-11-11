@@ -49,6 +49,11 @@ class Preflight
     protected $aliasManager;
 
     /**
+     * @var PreflightLog $logger An early logger, just for Preflight.
+     */
+    protected $logger;
+
+    /**
      * Preflight constructor
      */
     public function __construct(Environment $environment, $verify = null, $configLocator = null)
@@ -57,6 +62,22 @@ class Preflight
         $this->verify = $verify ?: new PreflightVerify();
         $this->configLocator = $configLocator ?: new ConfigLocator('DRUSH_');
         $this->drupalFinder = new DrupalFinder();
+    }
+
+    /**
+     * @return PreflightLog
+     */
+    public function logger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     * @param PreflightLog $logger
+     */
+    public function setLogger(PreflightLog $logger)
+    {
+        $this->logger = $logger;
     }
 
     /**
@@ -202,6 +223,11 @@ class Preflight
         $this->preflightArgs = $this->preflightArgs($argv);
         $this->prepareConfig($this->environment);
 
+        // Setup our early logger.
+        $logger = new PreflightLog();
+        $logger->setDebug($this->preflightArgs->get(PreflightArgs::DEBUG));
+        $this->setLogger($logger);
+
         // Do legacy initialization (load static includes, define old constants, etc.)
         $this->init();
 
@@ -238,7 +264,7 @@ class Preflight
         // a site-local Drush. If there is, we will redispatch to it.
         // NOTE: termination handlers have not been set yet, so it is okay
         // to exit early without taking special action.
-        $status = RedispatchToSiteLocal::redispatchIfSiteLocalDrush($argv, $root, $this->environment->vendorPath());
+        $status = RedispatchToSiteLocal::redispatchIfSiteLocalDrush($argv, $root, $this->environment->vendorPath(), $this->logger())    ;
         if ($status !== false) {
             return $status;
         }
