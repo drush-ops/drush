@@ -75,7 +75,7 @@ class Preflight
     /**
      * @param PreflightLog $logger
      */
-    public function setLogger($logger)
+    public function setLogger(PreflightLog $logger)
     {
         $this->logger = $logger;
     }

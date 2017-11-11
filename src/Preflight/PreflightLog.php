@@ -25,7 +25,7 @@ class PreflightLog {
     public function log($message)
     {
         if ($this->getDebug()) {
-            file_put_contents('php://stderr', ' [preflight] ' . $message . "\n", FILE_APPEND);
+            fwrite(STDERR, ' [preflight] ' . $message . "\n");
         }
     }
 }
