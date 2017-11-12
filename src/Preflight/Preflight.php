@@ -62,6 +62,7 @@ class Preflight
         $this->verify = $verify ?: new PreflightVerify();
         $this->configLocator = $configLocator ?: new ConfigLocator('DRUSH_');
         $this->drupalFinder = new DrupalFinder();
+        $this->logger = new PreflightLog();
     }
 
     /**
@@ -228,10 +229,8 @@ class Preflight
         $this->preflightArgs = $this->preflightArgs($argv);
         $this->prepareConfig($this->environment);
 
-        // Setup our early logger.
-        $logger = new PreflightLog();
-        $logger->setDebug($this->preflightArgs->get(PreflightArgs::DEBUG));
-        $this->setLogger($logger);
+        // Now that we know the value, set debug flag.
+        $this->logger()->setDebug($this->preflightArgs->get(PreflightArgs::DEBUG));
 
         // Do legacy initialization (load static includes, define old constants, etc.)
         $this->init();
@@ -280,7 +279,10 @@ class Preflight
 
         // Remember the paths to all the files we loaded, so that we can
         // report on it from Drush status or wherever else it may be needed.
-        $config->set('runtime.config.paths', $this->configLocator->configFilePaths());
+        $configFilePaths = $this->configLocator->configFilePaths();
+        $config->set('runtime.config.paths', $configFilePaths);
+        $this->logger()->log(dt('Config paths: ' . implode(',', $configFilePaths)));
+        $this->logger()->log(dt('Alias paths: ' . implode(',', $paths)));
 
         // We need to check the php minimum version again, in case anyone
         // has set it to something higher in one of the config files we loaded.

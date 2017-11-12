@@ -79,6 +79,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
             '-r=' => 'setSelectedSite',
             '--root=' => 'setSelectedSite',
             '--debug' => 'setDebug',
+            '-d' => 'setDebug',
             '-vv' => 'setDebug',
             '-vvv' => 'setDebug',
             '-l=' => 'setUri',
@@ -234,6 +235,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     public function setDebug($value)
     {
         $this->set(self::DEBUG, $value);
+        $this->addArg('-vvv');
     }
 
     /**
