@@ -16,6 +16,8 @@ use Webmozart\PathUtil\Path;
  * This cache implementation uses plain text files
  * containing serialized php to store cached data. Each cache bin corresponds
  * to a directory by the same name.
+ *
+ * @deprecated
  */
 class FileCache implements CacheInterface
 {

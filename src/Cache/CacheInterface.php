@@ -32,6 +32,8 @@ namespace Drush\Cache;
  *
  * @see _drush_cache_get_object()
  * @see \Drupal\Core\Cache\CacheBackendInterface
+ *
+ * @deprecated
  */
 interface CacheInterface
 {

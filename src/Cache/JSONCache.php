@@ -9,6 +9,8 @@ namespace Drush\Cache;
 
 /**
  * JSON cache storage backend.
+ *
+ * @deprecated
  */
 class JSONCache extends FileCache
 {
