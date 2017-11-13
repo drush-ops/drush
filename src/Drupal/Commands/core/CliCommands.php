@@ -11,6 +11,7 @@ use Drupal\Component\Assertion\Handle;
 use Drush\Psysh\Shell;
 use Psy\Configuration;
 use Psy\VersionUpdater\Checker;
+use Webmozart\PathUtil\Path;
 
 class CliCommands extends DrushCommands
 {
@@ -160,7 +161,7 @@ class CliCommands extends DrushCommands
      */
     protected function historyPath(array $options)
     {
-        $cli_directory = drush_directory_cache('cli');
+        $cli_directory = Path::join($this->getConfig()->cache(), 'cli');
         $drupal_major_version = Drush::getMajorVersion();
 
         // If there is no drupal version (and thus no root). Just use the current
@@ -177,7 +178,7 @@ class CliCommands extends DrushCommands
              $aliasRecord = Drush::aliasManager()->getSelf();
 
             if ($aliasRecord->name()) {
-                $site_suffix = $aliasRecord->name();
+                $site_suffix = ltrim($aliasRecord->name(), '@');
             } else {
                 $drupal_root = Drush::bootstrapManager()->getRoot();
                 $site_suffix = md5($drupal_root);
@@ -188,10 +189,7 @@ class CliCommands extends DrushCommands
 
         $full_path = "$cli_directory/$file_name";
 
-        // Output the history path if verbose is enabled.
-        if (Drush::verbose()) {
-            $this->logger()->log(LogLevel::SUCCESS, dt('History: @full_path', ['@full_path' => $full_path]));
-        }
+        $this->logger()->info(dt('History: @full_path', ['@full_path' => $full_path]));
 
         return $full_path;
     }

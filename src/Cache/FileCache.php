@@ -7,6 +7,9 @@
 
 namespace Drush\Cache;
 
+use Drush\Drush;
+use Webmozart\PathUtil\Path;
+
 /**
  * Default cache implementation.
  *
@@ -33,7 +36,7 @@ class FileCache implements CacheInterface
     public function cacheDirectory($bin = null)
     {
         $bin = $bin ? $bin : $this->bin;
-        return drush_directory_cache($bin);
+        return Path::join(Drush::config()->cache(), $bin);
     }
 
     public function get($cid)

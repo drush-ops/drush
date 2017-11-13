@@ -2,6 +2,7 @@
 namespace Drush\Config;
 
 use Consolidation\Config\Util\ConfigOverlay;
+use Webmozart\PathUtil\Path;
 
 /**
  * Accessors for common Drush config keys.
@@ -31,5 +32,18 @@ class DrushConfig extends ConfigOverlay
     public function tmp()
     {
         return $this->get('env.tmp');
+    }
+
+    public function cache()
+    {
+        $candidates = [
+            Path::join($this->home(), '.drush/cache'),
+            Path::join($this->tmp(), 'drush-' . $this->user() . '/cache'),
+        ];
+        foreach ($candidates as $candidate) {
+            if (drush_mkdir($candidate)) {
+                return $candidate;
+            }
+        }
     }
 }
