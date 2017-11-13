@@ -311,12 +311,13 @@ function drush_move_dir($src, $dest, $overwrite = FALSE) {
  * @param required
  *   If TRUE, then drush_mkdir will call drush_set_error on failure.
  *
- * Callers should *always* do their own error handling after calling drush_mkdir.
- * If $required is FALSE, then a different location should be selected, and a final
- * error message should be displayed if no usable locations can be found.
- * @see drush_directory_cache().
- * If $required is TRUE, then the execution of the current command should be
- * halted if the required directory cannot be created.
+ * @return bool
+ *   Callers should *always* do their own error handling after calling drush_mkdir.
+ *   If $required is FALSE, then a different location should be selected, and a final
+ *   error message should be displayed if no usable locations can be found.
+ *
+ *   If $required is TRUE, then the execution of the current command should be
+ *   halted if the required directory cannot be created.
  */
 function drush_mkdir($path, $required = TRUE) {
   if (empty($path)) {
