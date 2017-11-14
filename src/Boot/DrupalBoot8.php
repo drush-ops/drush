@@ -105,11 +105,14 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     public function bootstrapDrupalSiteValidate()
     {
         parent::bootstrapDrupalSiteValidate();
+
+        $parsed_url = parse_url($this->uri);
+
         // Account for users who omit the http:// prefix.
-        if (!parse_url($this->uri, PHP_URL_SCHEME)) {
+        if (!$parsed_url['scheme']) {
             $this->uri = 'http://' . $this->uri;
         }
-        $request = Request::create($this->uri, 'GET', [], [], [], ['SCRIPT_NAME' => '/index.php']);
+        $request = Request::create($this->uri, 'GET', [], [], [], ['SCRIPT_NAME' => $parsed_url['path'] . 'index.php']);
         $this->setRequest($request);
         $confPath = drush_bootstrap_value('confPath', $this->confPath(true, true));
         drush_bootstrap_value('site', $request->getHttpHost());
