@@ -106,7 +106,9 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     {
         parent::bootstrapDrupalSiteValidate();
 
-        $parsed_url = parse_url($this->uri);
+        // Normalize URI.
+        $uri = rtrim($this->uri, '/') . '/';
+        $parsed_url = parse_url($uri);
 
         // Account for users who omit the http:// prefix.
         if (!$parsed_url['scheme']) {
@@ -117,7 +119,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             'SCRIPT_FILENAME' => getcwd() . '/index.php',
             'SCRIPT_NAME' => $parsed_url['path'] . 'index.php',
         ];
-        $request = Request::create($this->uri, 'GET', [], [], [], $server);
+        $request = Request::create($uri, 'GET', [], [], [], $server);
         $this->setRequest($request);
         $confPath = drush_bootstrap_value('confPath', $this->confPath(true, true));
         drush_bootstrap_value('site', $request->getHttpHost());
