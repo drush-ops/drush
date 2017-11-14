@@ -112,7 +112,12 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         if (!$parsed_url['scheme']) {
             $this->uri = 'http://' . $this->uri;
         }
-        $request = Request::create($this->uri, 'GET', [], [], [], ['SCRIPT_NAME' => $parsed_url['path'] . 'index.php']);
+
+        $server = [
+            'SCRIPT_FILENAME' => getcwd() . '/index.php',
+            'SCRIPT_NAME' => $parsed_url['path'] . 'index.php',
+        ];
+        $request = Request::create($this->uri, 'GET', [], [], [], $server);
         $this->setRequest($request);
         $confPath = drush_bootstrap_value('confPath', $this->confPath(true, true));
         drush_bootstrap_value('site', $request->getHttpHost());
