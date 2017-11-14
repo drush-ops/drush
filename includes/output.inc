@@ -26,7 +26,7 @@ use Drush\Log\LogLevel;
  * @param $newline
  *    Add a "\n" to the end of the output.  Defaults to TRUE.
  */
-function drush_print($message = '', $indent = 0, $handle = NULL, $newline = TRUE) {
+function drush_print($message = '', $indent = 0, $handle = STDOUT, $newline = TRUE) {
   $msg = str_repeat(' ', $indent) . (string)$message;
   if ($newline) {
     $msg .= "\n";
@@ -34,12 +34,7 @@ function drush_print($message = '', $indent = 0, $handle = NULL, $newline = TRUE
   if (($charset = drush_get_option('output_charset')) && function_exists('iconv')) {
     $msg = iconv('UTF-8', $charset, $msg);
   }
-  if (isset($handle)) {
-    fwrite($handle, $msg);
-  }
-  else {
-    print $msg;
-  }
+  fwrite($handle, $msg);
 }
 
 /**
