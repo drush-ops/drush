@@ -1173,7 +1173,10 @@ function _drush_backend_generate_command($site_record, $command, $args = [], $co
       $ssh_cmd[] = '-t';
     }
     $ssh_cmd[] = $username . drush_escapeshellarg($hostname, "LOCAL");
-    $ssh_cmd[] = drush_escapeshellarg($command . ' 2>&1', "LOCAL");
+
+    // Escape the remote command for the target OS, then escape for the host OS
+    $remote_cmd = drush_escapeshellarg($command . ' 2>&1', "LOCAL", TRUE);
+    $ssh_cmd[] = drush_escapeshellarg($remote_cmd);
 
     // Remove NULLs and separate with spaces
     $command = implode(' ', array_filter($ssh_cmd, 'strlen'));
