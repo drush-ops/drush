@@ -1174,13 +1174,13 @@ function _drush_backend_generate_command($site_record, $command, $args = [], $co
     }
     $ssh_cmd[] = $username . drush_escapeshellarg($hostname, "LOCAL");
 
-    // Escape the remote command for the LOCAL OS, then add in the proper quote style based on the host OS
-    $remote_cmd = drush_escapeshellarg($command . ' 2>&1', "LOCAL", TRUE);
-    if (drush_is_windows()) {
-      $remote_cmd = '"' . $remote_cmd . '"';
-    }
-    else {
-      $remote_cmd = "'" . $remote_cmd . "'";
+    // Escape the command for the LOCAL OS, then escape for the host OS if
+    // needed. When the host is Windows, we need to ensure the command is
+    // wrapped in double-quotes. Otherwise, the standard single-quotes are used.
+    $is_windows = drush_is_windows();
+    $remote_cmd = drush_escapeshellarg($command . ' 2>&1', "LOCAL", $is_windows);
+    if ($is_windows) {
+      $remote_cmd = drush_escapeshellarg($remote_cmd);
     }
     $ssh_cmd[] = $remote_cmd;
 
