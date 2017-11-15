@@ -649,7 +649,7 @@ function drush_prompt($prompt, $default = NULL, $required = TRUE, $password = FA
   fclose($stdin);
   if ($password) {
     drush_shell_exec("stty echo");
-    print "\n";
+    drush_print("\n");
   }
   return $line;
 }

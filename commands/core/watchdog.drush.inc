@@ -222,7 +222,7 @@ function drush_core_watchdog_show_many($filter = NULL) {
         $last_wid = $row->wid;
       }
       $tbl->addData($table);
-      print $tbl->_buildTable();
+      drush_print($tbl->_buildTable());
       sleep($sleep_delay);
     }
   }
