@@ -29,13 +29,16 @@ use Drush\Utils\StringUtils;
  * @deprecated
  *   Use $this->output()->writeln() in a command method.
  */
-function drush_print($message = '', $indent = 0, $handle = STDOUT, $newline = TRUE) {
+function drush_print($message = '', $indent = 0, $handle = NULL, $newline = TRUE) {
   $msg = str_repeat(' ', $indent) . (string)$message;
   if ($newline) {
     $msg .= "\n";
   }
   if (($charset = drush_get_option('output_charset')) && function_exists('iconv')) {
     $msg = iconv('UTF-8', $charset, $msg);
+  }
+  if (!$handle) {
+    $handle = STDOUT;
   }
   fwrite($handle, $msg);
 }
