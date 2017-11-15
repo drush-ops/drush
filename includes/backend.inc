@@ -1174,9 +1174,15 @@ function _drush_backend_generate_command($site_record, $command, $args = [], $co
     }
     $ssh_cmd[] = $username . drush_escapeshellarg($hostname, "LOCAL");
 
-    // Escape the remote command for the target OS, then escape for the host OS
+    // Escape the remote command for the LOCAL OS, then add in the proper quote style based on the host OS
     $remote_cmd = drush_escapeshellarg($command . ' 2>&1', "LOCAL", TRUE);
-    $ssh_cmd[] = drush_escapeshellarg($remote_cmd);
+    if (drush_is_windows()) {
+      $remote_cmd = '"' . $remote_cmd . '"';
+    }
+    else {
+      $remote_cmd = "'" . $remote_cmd . "'";
+    }
+    $ssh_cmd[] = $remote_cmd;
 
     // Remove NULLs and separate with spaces
     $command = implode(' ', array_filter($ssh_cmd, 'strlen'));
