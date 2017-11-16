@@ -100,6 +100,11 @@ class ArtCommands extends DrushCommands implements CustomEventAwareInterface
     public function builtInArt()
     {
         return [
+            'drush' => [
+                'name' => 'Drush',
+                'description' => 'The Drush logo.',
+                'path' => __DIR__ . '/art/drush-nocolor.txt',
+            ],
             'sandwich' => [
                 'name' => 'Sandwich',
                 'description' => 'A tasty meal with bread often consumed at lunchtime.',
