@@ -26,7 +26,7 @@ class XkcdCommands extends DrushCommands {
    *   Retrieve and display cartoon #123 in eog.
    * @usage drush xkcd random --image-viewer=firefox
    *   Retrieve and display a random cartoon in Firefox.
-   * @aliases @xkcd
+   * @aliases xkcd
    */
   public function fetch($search = NULL, $options = ['image-viewer' => 'open', 'google-custom-search-api-key' => 'AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek']) {
     if (empty($search)) {
