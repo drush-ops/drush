@@ -49,7 +49,7 @@ class LegacyPreflight
         define('DRUSH_COMMAND', $applicationPath);
 
         /*
-         * @deprecated. Use $config->get('env.cwd') instead.
+         * @deprecated. Use $config->cwd() instead.
          */
         drush_set_context('DRUSH_OLDCWD', $environment->cwd());
 

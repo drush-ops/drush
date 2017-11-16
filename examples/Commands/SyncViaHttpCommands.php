@@ -4,6 +4,7 @@ namespace Drush\Commands;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 
 /**
  * Load this commandfile using the --include option - e.g. `drush --include=/path/to/drush/examples`
@@ -41,8 +42,8 @@ class SyncViaHttpCommands extends DrushCommands {
       $password = $commandData->input()->getOption('http-sync-password');
       $source_dump_file = $this->downloadFile($sql_dump_download_url, $user, $password);
       $commandData->input()->setOption('target-dump', $source_dump_file);
-      $commandData->input()->setOption('no-dump', TRUE);
-      $commandData->input()->setOption('no-sync', TRUE);
+      $commandData->input()->setOption('no-dump', true);
+      $commandData->input()->setOption('no-sync', true);
     }
   }
 
@@ -74,13 +75,13 @@ class SyncViaHttpCommands extends DrushCommands {
         drush_shell_exec("curl -s -L --connect-timeout 30 -o %s %s", $destination_tmp, $url);
       }
     }
-    if (!\Drush\Drush::simulate()) {
+    if (!Drush::simulate()) {
       if (!drush_file_not_empty($destination_tmp) && $file = @file_get_contents($url)) {
         @file_put_contents($destination_tmp, $file);
       }
       if (!drush_file_not_empty($destination_tmp)) {
         // Download failed.
-        throw new \Exception(dt("The URL !url could not be downloaded.", array('!url' => $url)));
+        throw new \Exception(dt("The URL !url could not be downloaded.", ['!url' => $url]));
       }
     }
     if ($destination) {

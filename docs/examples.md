@@ -8,5 +8,6 @@ The _examples_ folder contains excellent example files which you may copy and ed
 * [helloworld.script](https://raw.githubusercontent.com/drush-ops/drush/master/examples/helloworld.script). An example Drush script. 
 * [PolicyCommands](https://raw.githubusercontent.com/drush-ops/drush/master/examples/Commands/PolicyCommands.php). A policy file can disallow prohibited commands/options etc.
 * [SandwichCommands](https://raw.githubusercontent.com/drush-ops/drush/master/lib/Drush/examples/Commands/SandwichCommands.php). A fun example command inspired by a famous XKCD comic.
+* [SiteAliasAlterCommands](https://raw.githubusercontent.com/drush-ops/drush/master/examples/Commands/SiteAliasAlterCommands.php). An example of dynamically changing site alias definition.
 * [SyncViaHttpCommands](https://raw.githubusercontent.com/drush-ops/drush/master/examples/Commands/SyncViaHttpCommands.php). sql-sync modification that transfers via http instead of rsync. 
 * [XkcdCommands](https://raw.githubusercontent.com/drush-ops/drush/master/examples/Commands/XkcdCommands.php). A fun example command that browses XKCD comics.  

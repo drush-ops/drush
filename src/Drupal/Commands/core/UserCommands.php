@@ -116,9 +116,9 @@ class UserCommands extends DrushCommands
                 if ($account = user_load_by_name($name)) {
                     $account->block();
                     $account->save();
-                    $this->logger->success(dt('Blocked user(s): !user', array('!user' => $name)));
+                    $this->logger->success(dt('Blocked user(s): !user', ['!user' => $name]));
                 } else {
-                    $this->logger->warning(dt('Unable to load user: !user', array('!user' => $name)));
+                    $this->logger->warning(dt('Unable to load user: !user', ['!user' => $name]));
                 }
             }
         }
@@ -141,9 +141,9 @@ class UserCommands extends DrushCommands
                 if ($account = user_load_by_name($name)) {
                     $account->activate();
                     $account->save();
-                    $this->logger->success(dt('Unblocked user(s): !user', array('!user' => $name)));
+                    $this->logger->success(dt('Unblocked user(s): !user', ['!user' => $name]));
                 } else {
-                    $this->logger->warning(dt('Unable to load user: !user', array('!user' => $name)));
+                    $this->logger->warning(dt('Unable to load user: !user', ['!user' => $name]));
                 }
             }
         }
@@ -168,12 +168,12 @@ class UserCommands extends DrushCommands
                 if ($account = user_load_by_name($name)) {
                     $account->addRole($role);
                     $account->save();
-                    $this->logger->success(dt('Added !role role to !user', array(
+                    $this->logger->success(dt('Added !role role to !user', [
                     '!role' => $role,
                     '!user' => $name,
-                    )));
+                    ]));
                 } else {
-                    $this->logger->warning(dt('Unable to load user: !user', array('!user' => $name)));
+                    $this->logger->warning(dt('Unable to load user: !user', ['!user' => $name]));
                 }
             }
         }
@@ -198,12 +198,12 @@ class UserCommands extends DrushCommands
                 if ($account = user_load_by_name($name)) {
                     $account->removeRole($role);
                     $account->save();
-                    $this->logger->success(dt('Removed !role role from !user', array(
+                    $this->logger->success(dt('Removed !role role from !user', [
                     '!role' => $role,
                     '!user' => $name,
-                    )));
+                    ]));
                 } else {
-                    $this->logger->warning(dt('Unable to load user: !user', array('!user' => $name)));
+                    $this->logger->warning(dt('Unable to load user: !user', ['!user' => $name]));
                 }
             }
         }
@@ -223,18 +223,18 @@ class UserCommands extends DrushCommands
      */
     public function create($name, $options = ['password' => self::REQ, 'mail' => self::REQ])
     {
-        $new_user = array(
+        $new_user = [
             'name' => $name,
             'pass' => $options['password'],
             'mail' => $options['mail'],
             'access' => '0',
             'status' => 1,
-        );
+        ];
         if (!Drush::simulate()) {
             if ($account = User::create($new_user)) {
                 $account->save();
                 drush_backend_set_result($this->infoArray($account));
-                $this->logger()->success(dt('Created a new user with uid !uid', array('!uid' => $account->id())));
+                $this->logger()->success(dt('Created a new user with uid !uid', ['!uid' => $account->id()]));
             } else {
                 return new CommandError("Could not create a new user account with the name " . $name . ".");
             }
@@ -250,12 +250,12 @@ class UserCommands extends DrushCommands
     {
         if ($mail = $commandData->input()->getOption('mail')) {
             if (user_load_by_mail($mail)) {
-                throw new \Exception(dt('There is already a user account with the email !mail', array('!mail' => $mail)));
+                throw new \Exception(dt('There is already a user account with the email !mail', ['!mail' => $mail]));
             }
         }
         $name = $commandData->input()->getArgument('name');
         if (user_load_by_name($name)) {
-            throw new \Exception((dt('There is already a user account with the name !name', array('!name' => $name))));
+            throw new \Exception((dt('There is already a user account with the name !name', ['!name' => $name])));
         }
     }
 
@@ -278,7 +278,7 @@ class UserCommands extends DrushCommands
             foreach ($names as $name) {
                 if ($account = user_load_by_name($name)) {
                     if ($options['delete-content']) {
-                        $this->logger()->warning(dt('All content created by !name will be deleted.', array('!name' => $account->getUsername())));
+                        $this->logger()->warning(dt('All content created by !name will be deleted.', ['!name' => $account->getUsername()]));
                     }
                     if ($this->io()->confirm('Cancel user account?: ')) {
                         $method = $options['delete-content'] ? 'user_cancel_delete' : 'user_cancel_block';
@@ -287,7 +287,7 @@ class UserCommands extends DrushCommands
                         // Drupal logs a message for us.
                     }
                 } else {
-                    $this->logger()->warning(dt('Unable to load user: !user', array('!user' => $name)));
+                    $this->logger()->warning(dt('Unable to load user: !user', ['!user' => $name]));
                 }
             }
         }
@@ -310,10 +310,10 @@ class UserCommands extends DrushCommands
             if (!Drush::simulate()) {
                 $account->setpassword($password);
                 $account->save();
-                $this->logger()->success(dt('Changed password for !name.', array('!name' => $name)));
+                $this->logger()->success(dt('Changed password for !name.', ['!name' => $name]));
             }
         } else {
-            throw new \Exception(dt('Unable to load user: !user', array('!user' => $name)));
+            throw new \Exception(dt('Unable to load user: !user', ['!user' => $name]));
         }
     }
 
@@ -325,7 +325,7 @@ class UserCommands extends DrushCommands
      */
     public function infoArray($account)
     {
-        return array(
+        return [
             'uid' => $account->id(),
             'name' => $account->getUsername(),
             'password' => $account->getPassword(),
@@ -342,6 +342,6 @@ class UserCommands extends DrushCommands
             'roles' => $account->getRoles(),
             'langcode' => $account->getPreferredLangcode(),
             'uuid' => $account->uuid->value,
-        );
+        ];
     }
 }

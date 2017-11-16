@@ -77,7 +77,7 @@ class ViewsCommands extends DrushCommands
      */
     public function dev()
     {
-        $settings = array(
+        $settings = [
             'ui.show.listing_filters' => true,
             'ui.show.master_display' => true,
             'ui.show.advanced_column' => true,
@@ -88,7 +88,7 @@ class ViewsCommands extends DrushCommands
             'ui.show.sql_query.where' => 'above',
             'ui.show.performance_statistics' => true,
             'ui.show.additional_queries' => true,
-        );
+        ];
 
         $config = $this->getConfigFactory()->getEditable('views.settings');
 
@@ -101,10 +101,10 @@ class ViewsCommands extends DrushCommands
             elseif (is_string($value)) {
                 $value = "\"$value\"";
             }
-            $this->logger()->success(dt('!setting set to !value', array(
+            $this->logger()->success(dt('!setting set to !value', [
                 '!setting' => $setting,
                 '!value' => $value
-            )));
+            ]));
         }
 
         // Save the new config.
@@ -144,8 +144,8 @@ class ViewsCommands extends DrushCommands
      */
     public function vlist($options = ['name' => self::REQ, 'tags' => self::REQ, 'status' => self::REQ, 'format' => 'table'])
     {
-        $disabled_views = array();
-        $enabled_views = array();
+        $disabled_views = [];
+        $enabled_views = [];
 
         $views = $this->getEntityTypeManager()->getStorage('view')->loadMultiple();
 
@@ -161,8 +161,8 @@ class ViewsCommands extends DrushCommands
         $status = $options['status'];
 
         // @todo See https://github.com/consolidation/annotated-command/issues/53
-        if ($status && !in_array($status, array('enabled', 'disabled'))) {
-            throw new \Exception(dt('Invalid status: @status. Available options are "enabled" or "disabled"', array('@status' => $status)));
+        if ($status && !in_array($status, ['enabled', 'disabled'])) {
+            throw new \Exception(dt('Invalid status: @status. Available options are "enabled" or "disabled"', ['@status' => $status]));
         }
 
         // Setup a row for each view.
@@ -181,13 +181,13 @@ class ViewsCommands extends DrushCommands
                 continue;
             }
 
-            $row = array(
+            $row = [
             'machine-name' => $view->id(),
             'label' => $view->label(),
             'description' =>  $view->get('description'),
             'status' =>  $view->status() ? dt('Enabled') : dt('Disabled'),
             'tag' =>  $view->get('tag'),
-            );
+            ];
 
             // Place the row in the appropriate array, so we can have disabled views at
             // the bottom.
@@ -288,7 +288,7 @@ class ViewsCommands extends DrushCommands
                 }
             }
 
-            $this->logger()->success(dt('A total of @total views were analyzed and @messages problems were found.', array('@total' => count($views), '@messages' => $messages_count)));
+            $this->logger()->success(dt('A total of @total views were analyzed and @messages problems were found.', ['@total' => count($views), '@messages' => $messages_count]));
             return new RowsOfFields($rows);
         } else {
             $this->logger()->success(dt('There are no views to analyze'));

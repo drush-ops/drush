@@ -130,7 +130,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
         }
         $status_table['drush-script'] = DRUSH_COMMAND;
         $status_table['drush-version'] = Drush::getVersion();
-        $status_table['drush-temp'] = drush_find_tmp();
+        $status_table['drush-temp'] = $this->getConfig()->tmp();
         $status_table['drush-conf'] = Drush::config()->get('runtime.config.paths');
         // List available alias files
         $alias_files = $this->siteAliasManager()->listAllFilePaths();
@@ -183,7 +183,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
      */
     public static function pathAliases(array $options, BootstrapManager $boot_manager, $boot)
     {
-        $paths = array();
+        $paths = [];
         $site_wide = 'sites/all';
         if ($drupal_root = $boot_manager->getRoot()) {
             $paths['%root'] = $drupal_root;

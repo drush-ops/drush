@@ -311,12 +311,13 @@ function drush_move_dir($src, $dest, $overwrite = FALSE) {
  * @param required
  *   If TRUE, then drush_mkdir will call drush_set_error on failure.
  *
- * Callers should *always* do their own error handling after calling drush_mkdir.
- * If $required is FALSE, then a different location should be selected, and a final
- * error message should be displayed if no usable locations can be found.
- * @see drush_directory_cache().
- * If $required is TRUE, then the execution of the current command should be
- * halted if the required directory cannot be created.
+ * @return bool
+ *   Callers should *always* do their own error handling after calling drush_mkdir.
+ *   If $required is FALSE, then a different location should be selected, and a final
+ *   error message should be displayed if no usable locations can be found.
+ *
+ *   If $required is TRUE, then the execution of the current command should be
+ *   halted if the required directory cannot be created.
  */
 function drush_mkdir($path, $required = TRUE) {
   if (empty($path)) {
@@ -397,61 +398,10 @@ function drush_save_data_to_temp_file($data, $suffix = NULL) {
 /**
  * Returns the path to a temporary directory.
  *
- * This is a custom version of Drupal's file_directory_path().
- * We can't directly rely on sys_get_temp_dir() as this
- * path is not valid in some setups for Mac, and we want to honor
- * an environment variable (used by tests).
+ * @deprecated Use $this->getConfig()->tmp() in a ConfigAware command.
  */
 function drush_find_tmp() {
-  static $temporary_directory;
-
-  if (!isset($temporary_directory)) {
-    $directories = array();
-
-    // Get user specific and operating system temp folders from system environment variables.
-    // See http://www.microsoft.com/resources/documentation/windows/xp/all/proddocs/en-us/ntcmds_shelloverview.mspx?mfr=true
-    $tempdir = getenv('TEMP');
-    if (!empty($tempdir)) {
-      $directories[] = $tempdir;
-    }
-    $tmpdir = getenv('TMP');
-    if (!empty($tmpdir)) {
-      $directories[] = $tmpdir;
-    }
-    // Operating system specific dirs.
-    if (drush_is_windows()) {
-      $windir = getenv('WINDIR');
-      if (isset($windir)) {
-        // WINDIR itself is not writable, but it always contains a /Temp dir,
-        // which is the system-wide temporary directory on older versions. Newer
-        // versions only allow system processes to use it.
-        $directories[] = Path::join($windir, 'Temp');
-      }
-    }
-    else {
-      $directories[] = Path::canonicalize('/tmp');
-    }
-    $directories[] = Path::canonicalize(sys_get_temp_dir());
-
-    foreach ($directories as $directory) {
-      if (is_dir($directory) && is_writable($directory)) {
-        $temporary_directory = $directory;
-        break;
-      }
-    }
-
-    if (empty($temporary_directory)) {
-      // If no directory has been found, create one in cwd.
-      $temporary_directory = Path::join(Drush::config()->get('env.cwd'), 'tmp');
-      drush_mkdir($temporary_directory, TRUE);
-      if (!is_dir($temporary_directory)) {
-        return drush_set_error('DRUSH_UNABLE_TO_CREATE_TMP_DIR', dt("Unable to create a temporary directory."));
-      }
-      drush_register_file_for_deletion($temporary_directory);
-    }
-  }
-
-  return $temporary_directory;
+  return Drush::config()->tmp();
 }
 
 /**
@@ -467,7 +417,7 @@ function drush_find_tmp() {
  */
 function drush_tempnam($pattern, $tmp_dir = NULL, $suffix = '') {
   if ($tmp_dir == NULL) {
-    $tmp_dir = drush_find_tmp();
+    $tmp_dir = Drush::config()->tmp();
   }
   $tmp_file = tempnam($tmp_dir, $pattern);
   drush_register_file_for_deletion($tmp_file);
@@ -480,7 +430,7 @@ function drush_tempnam($pattern, $tmp_dir = NULL, $suffix = '') {
  * Creates a temporary directory and return its path.
  */
 function drush_tempdir() {
-  $tmp_dir = drush_trim_path(drush_find_tmp());
+  $tmp_dir = drush_trim_path(Drush::config()->tmp());
   $tmp_dir .= '/' . 'drush_tmp_' . uniqid(time() . '_');
 
   drush_mkdir($tmp_dir);
@@ -551,7 +501,7 @@ function drush_preflight_backup_dir($subdir = NULL) {
     // Save the date to be used in the backup directory's path name.
     $date = gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
 
-    $backup_dir = drush_get_option('backup-dir', Path::join(Drush::config()->get('env.home'), 'drush-backups'));
+    $backup_dir = drush_get_option('backup-dir', Path::join(Drush::config()->home(), 'drush-backups'));
     $backup_dir = Path::join($backup_dir, $subdir, $date);
     drush_set_context('DRUSH_BACKUP_DIR', $backup_dir);
   }

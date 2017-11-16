@@ -75,19 +75,20 @@ use Drush\Log\LogLevel;
  *     default  : The script might provide some sensible defaults during init.
  */
 function drush_context_names() {
-  static $contexts = array(
+  static $contexts = [
     'process', 'cli', 'stdin', 'specific', 'alias',
     'custom', 'site', 'drupal', 'user', 'home.drush', 'system',
-    'drush', 'default');
+    'drush', 'default'
+  ];
 
   return $contexts;
 }
 
-function drush_set_config_options($context, $options, $override = array()) {
+function drush_set_config_options($context, $options, $override = []) {
   // Copy 'config-file' into 'context-path', converting to an array to hold multiple values if necessary
   if (isset($options['config-file'])) {
     if (isset($options['context-path'])) {
-      $options['context-path'] = array_merge(array($options['config-file']), is_array($options['context-path']) ? $options['context-path'] : array($options['context-path']));
+      $options['context-path'] = array_merge([$options['config-file']], is_array($options['context-path']) ? $options['context-path'] : [$options['context-path']]);
     }
     else {
       $options['context-path'] = $options['config-file'];
@@ -136,7 +137,7 @@ function drush_set_config_special_contexts(&$options) {
     // Change the keys of the site aliases from 'alias' to '@alias'
     if (array_key_exists('site-aliases', $options)) {
       $user_aliases = $options['site-aliases'];
-      $options['site-aliases'] = array();
+      $options['site-aliases'] = [];
       foreach ($user_aliases as $alias_name => $alias_value) {
         if (substr($alias_name,0,1) != '@') {
           $alias_name = "@$alias_name";
@@ -164,7 +165,7 @@ function drush_set_config_special_contexts(&$options) {
           }
           if (array_key_exists('merge-associative', $info)) {
             foreach ($value as $subkey => $subvalue) {
-              $cache[$subkey] = array_merge(isset($cache[$subkey]) ? $cache[$subkey] : array(), $subvalue);
+              $cache[$subkey] = array_merge(isset($cache[$subkey]) ? $cache[$subkey] : [], $subvalue);
             }
           }
           else {
@@ -236,10 +237,10 @@ function drush_set_context($context, $value) {
  *   If the context does not exist yet, it will be initialized to an empty array.
  */
 function &drush_get_context($context = NULL, $default = NULL) {
-  static $cache = array();
+  static $cache = [];
   if (isset($context)) {
     if (!isset($cache[$context])) {
-      $default = !isset($default) ? array() : $default;
+      $default = !isset($default) ? [] : $default;
       $cache[$context] = $default;
     }
     return $cache[$context];
@@ -359,7 +360,7 @@ function drush_get_option($option, $default = NULL, $context = NULL) {
  * @param context
  *   Optional. The context to check for the option. If this is set, only this context will be searched.
  */
-function drush_get_option_list($option, $default = array(), $context = NULL) {
+function drush_get_option_list($option, $default = [], $context = NULL) {
   $result = drush_get_option($option, $default, $context);
 
   if (!is_array($result)) {
@@ -421,7 +422,7 @@ function drush_sitealias_get_option($site_alias_record, $option, $default = NULL
  *   the specific value for the option in that context.
  */
 function drush_get_context_options($option, $flatten = FALSE) {
-  $result = array();
+  $result = [];
 
   $contexts = drush_context_names();
   foreach ($contexts as $context) {
@@ -446,7 +447,7 @@ function drush_get_context_options($option, $flatten = FALSE) {
 function drush_get_merged_options() {
   $contexts = drush_context_names();
   $cache = drush_get_context();
-  $result = array();
+  $result = [];
   foreach (array_reverse($contexts) as $context) {
     if (array_key_exists($context, $cache)) {
       $result = array_merge($result, $cache[$context]);

@@ -32,14 +32,13 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
      */
     public function initializeDrush($options = ['edit' => false, 'add-path' => ''])
     {
-        $home = Drush::config()->get('env.home');
+        $home = Drush::config()->home();
         $drush_config_dir = $home . "/.drush";
-        // @todo copy a config.yml.
-        $drush_config_file = $drush_config_dir . "/drushrc.php";
+        $drush_config_file = $drush_config_dir . "/drush.yml";
         $drush_bashrc = $drush_config_dir . "/drush.bashrc";
         $drush_prompt = $drush_config_dir . "/drush.prompt.sh";
         $examples_dir = DRUSH_BASE_PATH . "/examples";
-        $example_configuration = $examples_dir . "/example.drushrc.php";
+        $example_configuration = $examples_dir . "/example.drush.yml";
         $example_bashrc = $examples_dir . "/example.bashrc";
         $example_prompt = $examples_dir . "/example.prompt.sh";
 
@@ -48,8 +47,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
         // Create a ~/.drush directory if it does not yet exist
         $collection->taskFilesystemStack()->mkdir($drush_config_dir);
 
-        // If there is no ~/.drush/drushrc.php, then copy the
-        // example Drush configuration file here
+        // If there is no ~/.drush/drush.yml, copy example there.
         if (!is_file($drush_config_file)) {
             $collection->taskWriteToFile($drush_config_file)->textFromFile($example_configuration);
         }
@@ -99,7 +97,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
 
         $openEditor = false;
         if ($taskUpdateBashrc->wouldChange()) {
-            if ($this->io()->confirm(dt("Modify !file to include Drush configuration files?", array('!file' => $bashrc)))) {
+            if ($this->io()->confirm(dt("Modify !file to include Drush configuration files?", ['!file' => $bashrc]))) {
                 $collection->addTask($taskUpdateBashrc);
                 $collection->progressMessage('Updated bash configuration file {path}', ['path' => $bashrc], LogLevel::OK);
                 $collection->progressMessage('Start a new shell in order to experience the improvements (e.g. `{shell}`).', ['shell' => 'bash'], LogLevel::OK);

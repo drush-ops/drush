@@ -133,7 +133,7 @@ class UpdateDBCommands extends DrushCommands
 
         // If this update was aborted in a previous step, or has a dependency that
         // was aborted in a previous step, go no further.
-        if (!empty($context['results']['#abort']) && array_intersect($context['results']['#abort'], array_merge($dependency_map, array($function)))) {
+        if (!empty($context['results']['#abort']) && array_intersect($context['results']['#abort'], array_merge($dependency_map, [$function]))) {
             return;
         }
 
@@ -141,7 +141,7 @@ class UpdateDBCommands extends DrushCommands
 
         \Drupal::moduleHandler()->loadInclude($module, 'install');
 
-        $ret = array();
+        $ret = [];
         if (function_exists($function)) {
             try {
                 if ($context['log']) {
@@ -154,7 +154,7 @@ class UpdateDBCommands extends DrushCommands
             } // @TODO We may want to do different error handling for different exception
             // types, but for now we'll just print the message.
             catch (Exception $e) {
-                $ret['#abort'] = array('success' => false, 'query' => $e->getMessage());
+                $ret['#abort'] = ['success' => false, 'query' => $e->getMessage()];
                 $this->logger()->warning($e->getMessage());
             }
 
@@ -162,8 +162,8 @@ class UpdateDBCommands extends DrushCommands
                 $ret['queries'] = Database::getLog($function);
             }
         } else {
-            $ret['#abort'] = array('success' => false);
-            $this->logger()->warning(dt('Update function @function not found', array('@function' => $function)));
+            $ret['#abort'] = ['success' => false];
+            $this->logger()->warning(dt('Update function @function not found', ['@function' => $function]));
         }
 
         if (isset($context['sandbox']['#finished'])) {
@@ -172,10 +172,10 @@ class UpdateDBCommands extends DrushCommands
         }
 
         if (!isset($context['results'][$module])) {
-            $context['results'][$module] = array();
+            $context['results'][$module] = [];
         }
         if (!isset($context['results'][$module][$number])) {
-            $context['results'][$module][$number] = array();
+            $context['results'][$module][$number] = [];
         }
         $context['results'][$module][$number] = array_merge($context['results'][$module][$number], $ret);
 
@@ -206,12 +206,12 @@ class UpdateDBCommands extends DrushCommands
         // batch API can pass in to the batch operation each time it is called. (We
         // do not store the entire update dependency array here because it is
         // potentially very large.)
-        $dependency_map = array();
+        $dependency_map = [];
         foreach ($updates as $function => $update) {
-            $dependency_map[$function] = !empty($update['reverse_paths']) ? array_keys($update['reverse_paths']) : array();
+            $dependency_map[$function] = !empty($update['reverse_paths']) ? array_keys($update['reverse_paths']) : [];
         }
 
-        $operations = array();
+        $operations = [];
 
         foreach ($updates as $update) {
             if ($update['allowed']) {
@@ -224,7 +224,7 @@ class UpdateDBCommands extends DrushCommands
                 }
                 // Add this update function to the batch.
                 $function = $update['module'] . '_update_' . $update['number'];
-                $operations[] = array([$this, 'updateDoOne'], array($update['module'], $update['number'], $dependency_map[$function]));
+                $operations[] = [[$this, 'updateDoOne'], [$update['module'], $update['number'], $dependency_map[$function]]];
             }
         }
 
@@ -235,7 +235,7 @@ class UpdateDBCommands extends DrushCommands
         // @see \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface::applyEntityUpdate()
         // @see \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface::applyFieldUpdate()
         if ($options['entity-updates'] &&  \Drupal::entityDefinitionUpdateManager()->needsUpdates()) {
-            $operations[] = array([$this, 'updateEntityDefinitions'], array());
+            $operations[] = [[$this, 'updateEntityDefinitions'], []];
         }
 
         // Lastly, apply post update hooks if specified.
@@ -253,13 +253,13 @@ class UpdateDBCommands extends DrushCommands
         }
 
         $batch['operations'] = $operations;
-        $batch += array(
+        $batch += [
             'title' => 'Updating',
             'init_message' => 'Starting updates',
             'error_message' => 'An unrecoverable error has occurred. You can find the error message below. It is advised to copy it to the clipboard for reference.',
-            'finished' => [$this, 'drush_update_finished'],
+            'finished' => [$this, 'updateFinished'],
             'file' => 'core/includes/update.inc',
-        );
+        ];
         batch_set($batch);
         \Drupal::service('state')->set('system.maintenance_mode', true);
         drush_backend_batch_process();
@@ -280,7 +280,7 @@ class UpdateDBCommands extends DrushCommands
             // The exception message is run through
             // \Drupal\Component\Utility\SafeMarkup::checkPlain() by
             // \Drupal\Core\Utility\Error::decodeException().
-            $ret['#abort'] = array('success' => false, 'query' => t('%type: !message in %function (line %line of %file).', $variables));
+            $ret['#abort'] = ['success' => false, 'query' => t('%type: !message in %function (line %line of %file).', $variables)];
             $context['results']['core']['update_entity_definitions'] = $ret;
             $context['results']['#abort'][] = 'update_entity_definitions';
         }
@@ -289,7 +289,7 @@ class UpdateDBCommands extends DrushCommands
     // Copy of protected \Drupal\system\Controller\DbUpdateController::getModuleUpdates.
     public function getUpdateList()
     {
-        $return = array();
+        $return = [];
         $updates = update_get_update_list();
         foreach ($updates as $module => $update) {
             $return[$module] = $update['start'];
@@ -363,9 +363,9 @@ class UpdateDBCommands extends DrushCommands
         require_once DRUPAL_ROOT . '/core/includes/update.inc';
         $pending = \update_get_update_list();
 
-        $return = array();
+        $return = [];
         // Ensure system module's updates run first.
-        $start['system'] = array();
+        $start['system'] = [];
 
         foreach ($pending as $module => $updates) {
             if (isset($updates['start'])) {
@@ -419,7 +419,7 @@ class UpdateDBCommands extends DrushCommands
             }
         }
 
-        return array($return, $start);
+        return [$return, $start];
     }
 
     /**
@@ -443,16 +443,16 @@ class UpdateDBCommands extends DrushCommands
                 throw new UserAbortException();
             }
 
-            $operations[] = array([$this, 'updateEntityDefinitions'], array());
+            $operations[] = [[$this, 'updateEntityDefinitions'], []];
 
 
             $batch['operations'] = $operations;
-            $batch += array(
+            $batch += [
                 'title' => 'Updating',
                 'init_message' => 'Starting updates',
                 'error_message' => 'An unrecoverable error has occurred. You can find the error message below. It is advised to copy it to the clipboard for reference.',
                 'finished' => [$this, 'updateFinished'],
-            );
+            ];
             batch_set($batch);
             \Drupal::service('state')->set('system.maintenance_mode', true);
             drush_backend_batch_process();

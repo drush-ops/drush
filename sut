@@ -36,12 +36,12 @@ if (in_array('si', $arguments) || in_array('site-install', $arguments)) {
  * DRUSH_AUTOLOAD_PHP must be provided because Drush is symlinked into the SUT.
  * This confuses our autoload.php detection.
  */
-$cmd = "DRUSH_AUTOLOAD_PHP=$vendor/autoload.php ETC_PREFIX=$unish_sandbox SHARE_PREFIX=$unish_sandbox TEMP=$unish_sandbox/temp HOME=$unish_sandbox/home " . escapeshellarg($vendor . '/bin/drush') . ' ' . implode(' ', array_map(function ($item) { return escapeshellarg($item); }, $arguments));
+$cmd = "DRUSH_AUTOLOAD_PHP=$vendor/autoload.php ETC_PREFIX=$unish_sandbox SHARE_PREFIX=$unish_sandbox TEMP=$unish_sandbox/tmp HOME=$unish_sandbox/home " . escapeshellarg($vendor . '/bin/drush') . ' ' . implode(' ', array_map(function ($item) { return escapeshellarg($item); }, $arguments));
 if (unishIsVerbose()) {
   fwrite(STDERR, 'Executing: ' . $cmd . "\n");
 }
 chdir($sut);
-$process = proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
+$process = proc_open($cmd, [0 => STDIN, 1 => STDOUT, 2 => STDERR], $pipes);
 $proc_status = proc_get_status($process);
 $exit_code = proc_close($process);
 exit($proc_status["running"] ? $exit_code : $proc_status["exitcode"] );

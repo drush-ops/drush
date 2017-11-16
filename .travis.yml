@@ -23,7 +23,9 @@ sudo: false
 
 env:
   matrix:
-    - TEST_DIR=isolation
+    - TEST_DIR=isolation ISOLATION_INSTALL='install --prefer-dist'
+    - TEST_DIR=isolation ISOLATION_INSTALL='update --prefer-dist --prefer-lowest'
+    - TEST_DIR=isolation ISOLATION_INSTALL='update --prefer-dist'
     - PHPUNIT_ARGS=--group=base
     - PHPUNIT_ARGS=--group=commands
     - PHPUNIT_ARGS=--exclude-group=base,commands
@@ -48,7 +50,7 @@ before_install:
 
 # Build a System-Under-Test.
 install:
-  - if [ -n "$TEST_DIR" ] ; then composer --working-dir=${PWD}/$TEST_DIR install ; fi
+  - if [ -n "$TEST_DIR" ] ; then composer -n --working-dir=${PWD}/$TEST_DIR $ISOLATION_INSTALL ; fi
   - if [ -z "$TEST_DIR" ] ; then ${PWD}/unish.sut.php ; fi
 
 before_script:

@@ -9,16 +9,13 @@ use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\ListDataFromKeys;
 use Drush\Utils\StringUtils;
-use Robo\Common\ConfigAwareTrait;
-use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\Input;
 use Symfony\Component\Console\Output\Output;
 use Webmozart\PathUtil\Path;
 
-class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterface, ConfigAwareInterface
+class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
-    use ConfigAwareTrait;
 
     /**
      * Set a site alias that will persist for the current session.
@@ -81,7 +78,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
                     @unlink($last_site_filename);
                     @rename($filename, $last_site_filename);
                 }
-                $success_message = dt('Site set to @site', array('@site' => $site));
+                $success_message = dt('Site set to @site', ['@site' => $site]);
                 if ($site == '@none' || $site == '') {
                     if (drush_delete_dir($filename)) {
                         $this->logger()->success(dt('Site unset.'));
@@ -89,11 +86,11 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
                 } elseif (drush_mkdir(dirname($filename), true)) {
                     if (file_put_contents($filename, $site)) {
                         $this->logger()->success($success_message);
-                        $this->logger()->info(dt('Site information stored in @file', array('@file' => $filename)));
+                        $this->logger()->info(dt('Site information stored in @file', ['@file' => $filename]));
                     }
                 }
             } else {
-                throw new \Exception(dt('Could not find a site definition for @site.', array('@site' => $site)));
+                throw new \Exception(dt('Could not find a site definition for @site.', ['@site' => $site]));
             }
         }
     }
@@ -201,7 +198,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
     public function interactSiteAliasConvert(Input $input, Output $output)
     {
         if (!$input->getArgument('destination')) {
-            $default = $this->getConfig()->get('env.cwd');
+            $default = $this->getConfig()->cwd();
             if ($composerRoot = Drush::bootstrapManager()->getComposerRoot()) {
                 $default = Path::join($composerRoot, 'drush/site-aliases');
             }

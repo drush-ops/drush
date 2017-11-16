@@ -5,6 +5,9 @@ use PHPUnit\Framework\TestCase;
 
 class ArgsPreprocessorTest extends TestCase
 {
+
+    use \Drush\FixtureFactory;
+
     /**
      * @dataProvider argTestValues
      */
@@ -18,10 +21,10 @@ class ArgsPreprocessorTest extends TestCase
         $isLocal,
         $unprocessedArgs)
     {
-        $home = __DIR__ . '/fixtures/home';
 
-        $argProcessor = new ArgsPreprocessor($home);
+        $argProcessor = new ArgsPreprocessor();
         $preflightArgs = new PreflightArgs();
+        $preflightArgs->setHomeDir($this->environment()->homeDir());
         $argProcessor->parse($argv, $preflightArgs);
 
         $this->assertEquals($unprocessedArgs, implode(',', $preflightArgs->args()));

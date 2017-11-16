@@ -18,7 +18,7 @@ class Shell extends BaseShell
      *
      * @param string $input
      *
-     * @return null|Command
+     * @return null|string
      */
     protected function getCommand($input)
     {

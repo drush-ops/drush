@@ -109,18 +109,18 @@ class ConfigCommands extends DrushCommands
                 $data = $parser->parse($data, true);
         }
 
-        if (is_array($data) && $this->io()->confirm(dt('Do you want to update or set multiple keys on !name config.', array('!name' => $config_name)))) {
+        if (is_array($data) && $this->io()->confirm(dt('Do you want to update or set multiple keys on !name config.', ['!name' => $config_name]))) {
             foreach ($data as $key => $value) {
                 $config->set($key, $value);
             }
             return $config->save();
         } else {
             $confirmed = false;
-            if ($config->isNew() && $this->io()->confirm(dt('!name config does not exist. Do you want to create a new config object?', array('!name' => $config_name)))) {
+            if ($config->isNew() && $this->io()->confirm(dt('!name config does not exist. Do you want to create a new config object?', ['!name' => $config_name]))) {
                 $confirmed = true;
-            } elseif ($new_key && $this->io()->confirm(dt('!key key does not exist in !name config. Do you want to create a new config key?', array('!key' => $key, '!name' => $config_name)))) {
+            } elseif ($new_key && $this->io()->confirm(dt('!key key does not exist in !name config. Do you want to create a new config key?', ['!key' => $key, '!name' => $config_name]))) {
                 $confirmed = true;
-            } elseif ($this->io()->confirm(dt('Do you want to update !key key in !name config?', array('!key' => $key, '!name' => $config_name)))) {
+            } elseif ($this->io()->confirm(dt('Do you want to update !key key in !name config?', ['!key' => $key, '!name' => $config_name]))) {
                 $confirmed = true;
             }
             if ($confirmed && !\Drush\Drush::simulate()) {
@@ -164,9 +164,9 @@ class ConfigCommands extends DrushCommands
 
         // Perform import operation if user did not immediately exit editor.
         if (!$options['bg']) {
-            $options = Drush::redispatchOptions()   + array('partial' => true, 'source' => $temp_dir);
-            $backend_options = array('interactive' => true);
-            return (bool) drush_invoke_process('@self', 'config-import', array(), $options, $backend_options);
+            $options = Drush::redispatchOptions()   + ['partial' => true, 'source' => $temp_dir];
+            $backend_options = ['interactive' => true];
+            return (bool) drush_invoke_process('@self', 'config-import', [], $options, $backend_options);
         }
     }
 
@@ -189,7 +189,7 @@ class ConfigCommands extends DrushCommands
         $config = $this->getConfigFactory()->getEditable($config_name);
         if ($key) {
             if ($config->get($key) === null) {
-                throw new \Exception(dt('Configuration key !key not found.', array('!key' => $key)));
+                throw new \Exception(dt('Configuration key !key not found.', ['!key' => $key]));
             }
             $config->clear($key)->save();
         } else {
@@ -292,7 +292,7 @@ class ConfigCommands extends DrushCommands
      * @param string $directory
      *   A configuration directory.
      */
-    public function getDirectory($label, $directory = null)
+    public static function getDirectory($label, $directory = null)
     {
         // If the user provided a directory, use it.
         if (!empty($directory)) {
@@ -319,7 +319,7 @@ class ConfigCommands extends DrushCommands
 
         $config_comparer = new StorageComparer($active_storage, $target_storage, \Drupal::service('config.manager'));
 
-        $change_list = array();
+        $change_list = [];
         if ($config_comparer->createChangelist()->hasChanges()) {
             foreach ($config_comparer->getAllCollectionNames() as $collection) {
                 $change_list[$collection] = $config_comparer->getChangelist(null, $collection);
@@ -358,8 +358,8 @@ class ConfigCommands extends DrushCommands
             $green = "\033[1;32;40m\033[1m%s\033[0m";
         }
 
-        $rows = array();
-        $rows[] = array('Collection', 'Config', 'Operation');
+        $rows = [];
+        $rows[] = ['Collection', 'Config', 'Operation'];
         foreach ($config_changes as $collection => $changes) {
             foreach ($changes as $change => $configs) {
                 switch ($change) {
@@ -377,11 +377,11 @@ class ConfigCommands extends DrushCommands
                         break;
                 }
                 foreach ($configs as $config) {
-                    $rows[] = array(
+                    $rows[] = [
                     $collection,
                     $config,
                     sprintf($colour, $change)
-                    );
+                    ];
                 }
             }
         }
@@ -454,7 +454,7 @@ class ConfigCommands extends DrushCommands
         $config_name = $commandData->input()->getArgument($arg_name);
         $config = \Drupal::config($config_name);
         if ($config->isNew()) {
-            $msg = dt('Config !name does not exist', array('!name' => $config_name));
+            $msg = dt('Config !name does not exist', ['!name' => $config_name]);
             return new CommandError($msg);
         }
     }

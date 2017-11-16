@@ -16,7 +16,7 @@ class WootCommands
      */
     public function woot()
     {
-      return 'Woot!';
+        return 'Woot!';
     }
 
     /**

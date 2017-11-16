@@ -77,7 +77,7 @@ class SiteAliasManager
      *
      * @param string $name Alias name or site specification
      *
-     * @return AliasRecord
+     * @return AliasRecord|false
      */
     public function get($name)
     {
@@ -123,7 +123,7 @@ class SiteAliasManager
      * @param \Drush\Config\Environment $environment
      * @param string $root The default Drupal root (from site:set, --root or cwd)
      *
-     * @return \Drush\SiteAlias\type
+     * @return \Drush\SiteAlias\AliasRecord
      * @throws \Exception
      */
     public function findSelf(PreflightArgsInterface $preflightArgs, Environment $environment, $root)
@@ -252,13 +252,17 @@ class SiteAliasManager
         // Create the 'self' alias record. Note that the self
         // record will be named '@self' if it is manually constructed
         // here, and will otherwise have the name of the
-        // alias or site specification used by the user.
-        return new AliasRecord(
-            [
-                'root' => $root,
-                'uri' => $preflightArgs->uri(),
-            ],
-            '@self'
-        );
+        // alias or site specification used by the user. Also note that if we
+        // pass in a falsy uri the drush config (i.e drush.yml) can not override
+        // it.
+        $uri = $preflightArgs->uri();
+        $data = [
+            'root' => $root,
+        ];
+        if ($uri) {
+            $data['uri'] = $uri;
+        }
+
+        return new AliasRecord($data, '@self');
     }
 }

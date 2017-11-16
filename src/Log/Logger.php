@@ -39,7 +39,7 @@ class Logger extends RoboLogger
         parent::__construct($output);
     }
 
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = [])
     {
         // Convert to old $entry array for b/c calls
         $entry = $context + [
@@ -53,7 +53,7 @@ class Logger extends RoboLogger
         // of drush_log, including caching the log messages and sending
         // log messages along to backend invoke.
         // TODO: move these implementations inside this class.
-        $log =& drush_get_context('DRUSH_LOG', array());
+        $log =& drush_get_context('DRUSH_LOG', []);
         $log[] = $entry;
         if ($level != LogLevel::DEBUG_NOTIFY) {
             drush_backend_packet('log', $entry);
@@ -174,9 +174,9 @@ class Logger extends RoboLogger
         parent::log($level, $message, $context);
     }
 
-    public function error($message, array $context = array())
+    public function error($message, array $context = [])
     {
-        $error_log =& drush_get_context('DRUSH_ERROR_LOG', array());
+        $error_log =& drush_get_context('DRUSH_ERROR_LOG', []);
         $error_log[$message][] = $message;
         parent::error($message, $context);
     }

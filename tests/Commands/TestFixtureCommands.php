@@ -21,9 +21,9 @@ class TestFixtureCommands
    *
    * @command unit
    */
-  function unit()
-  {
-  }
+    public function unit()
+    {
+    }
 
   /**
    * Works like php-eval. Used for testing $command_specific context.
@@ -31,9 +31,10 @@ class TestFixtureCommands
    * @command unit-eval
    * @bootstrap max
    */
-  function drush_unit_eval($code) {
-    return eval($code . ';');
-  }
+    public function drushUnitEval($code)
+    {
+        return eval($code . ';');
+    }
 
   /**
    * Run a batch process.
@@ -41,54 +42,59 @@ class TestFixtureCommands
    * @command unit-batch
    * @bootstrap max
    */
-  function drush_unit_batch() {
-    // Reduce php memory/time limits to test backend respawn.
-    // TODO.
+    public function drushUnitBatch()
+    {
+        // Reduce php memory/time limits to test backend respawn.
+        // TODO.
 
-    $batch = array(
-      'operations' => array(
-         array([$this, '_drush_unit_batch_operation'], array()),
-      ),
-      'finished' => [$this, '_drush_unit_batch_finished'],
-      // 'file' => Doesn't work for us. Drupal 7 enforces this path
-      // to be relative to DRUPAL_ROOT.
-      // @see _batch_process().
-    );
-    \batch_set($batch);
-    \drush_backend_batch_process();
+        $batch = [
+        'operations' => [
+         [[$this, '_drushUnitBatchOperation'], []],
+        ],
+        'finished' => [$this, '_drushUnitBatchFinished'],
+        // 'file' => Doesn't work for us. Drupal 7 enforces this path
+        // to be relative to DRUPAL_ROOT.
+        // @see _batch_process().
+        ];
+        \batch_set($batch);
+        \drush_backend_batch_process();
 
-    // Print the batch output.
-    \drush_backend_output();
-  }
-
-  function _drush_unit_batch_operation(&$context) {
-    $context['message'] = "!!! ArrayObject does its job.";
-
-    for ($i = 0; $i < 5; $i++) {
-      \drush_print("Iteration $i");
+        // Print the batch output.
+        \drush_backend_output();
     }
-    $context['finished'] = 1;
-  }
 
-  function _drush_unit_batch_finished() {
-    // Restore php limits.
-    // TODO.
-  }
+    public function _drushUnitBatchOperation(&$context)
+    {
+        $context['message'] = "!!! ArrayObject does its job.";
+
+        for ($i = 0; $i < 5; $i++) {
+            \drush_print("Iteration $i");
+        }
+        $context['finished'] = 1;
+    }
+
+    public function _drushUnitBatchFinished()
+    {
+        // Restore php limits.
+        // TODO.
+    }
 
   /**
    * Return options as function result.
    * @command unit-return-options
    */
-  function drush_unit_return_options($arg = '', $options = ['x' => 'y', 'data' => [], 'format' => 'yaml']) {
-    unset($options['format']);
-    return $options;
-  }
+    public function drushUnitReturnOptions($arg = '', $options = ['x' => 'y', 'data' => [], 'format' => 'yaml'])
+    {
+        unset($options['format']);
+        return $options;
+    }
 
   /**
    * Return original argv as function result.
    * @command unit-return-argv
    */
-  function drush_unit_return_argv(array $args) {
-    return $args;
-  }
+    public function drushUnitReturnArgv(array $args)
+    {
+        return $args;
+    }
 }

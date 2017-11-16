@@ -40,21 +40,21 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
         // the *local* machine.
         $aliasRecord = $this->siteAliasManager()->getSelf();
         if ($aliasRecord->isRemote()) {
-            $return = drush_invoke_process($aliasRecord, 'user-login', [$path], Drush::redispatchOptions(), array('integrate' => false));
+            $return = drush_invoke_process($aliasRecord, 'user-login', [$path], Drush::redispatchOptions(), ['integrate' => false]);
             if ($return['error_status']) {
                 throw new \Exception('Unable to execute user login.');
             } else {
                 $link = is_string($return['object']) ?: current($return['object']);
             }
         } else {
-            if (!drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+            if (!Drush::bootstrapManager()->doBootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
                 throw new \Exception(dt('Unable to bootstrap Drupal.'));
             }
 
             if ($options['name'] == 1) {
                 $account = User::load(1);
             } elseif (!$account = user_load_by_name($options['name'])) {
-                throw new \Exception(dt('Unable to load user: !user', array('!user' => $options['name'])));
+                throw new \Exception(dt('Unable to load user: !user', ['!user' => $options['name']]));
             }
             $link = user_pass_reset_url($account). '/login';
             if ($path) {

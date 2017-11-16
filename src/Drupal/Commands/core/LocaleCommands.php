@@ -114,7 +114,7 @@ class LocaleCommands extends DrushCommands
         $last_checked = $this->getState()->get('locale.translation_last_checked');
         if ($last_checked < REQUEST_TIME - LOCALE_TRANSLATION_STATUS_TTL) {
             locale_translation_clear_status();
-            $batch = locale_translation_batch_update_build(array(), $langcodes, $translationOptions);
+            $batch = locale_translation_batch_update_build([], $langcodes, $translationOptions);
             batch_set($batch);
         } else {
             // Set a batch to download and import translations.

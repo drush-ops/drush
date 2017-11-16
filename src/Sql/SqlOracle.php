@@ -93,6 +93,6 @@ class SqlOracle extends SqlBase
         if ($option = $this->getOption('extra-dump', $this->queryExtra)) {
             $exec .= " $option";
         }
-        return array($exec, $file);
+        return [$exec, $file];
     }
 }

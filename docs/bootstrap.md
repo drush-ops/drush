@@ -4,7 +4,7 @@ When preparing to run a command, Drush works by "bootstrapping" the Drupal envir
 
 For efficiency and convenience, some Drush commands can work without first bootstrapping a Drupal site, or by only partially bootstrapping a site. This is faster than a full bootstrap. It is also a matter of convenience, because some commands are useful even when you don't have a working Drupal site.
 
-Commands may specify their bootstrap level with a `@bootstrap` annotation.
+Commands may specify their bootstrap level with a `@bootstrap` annotation. Commands supplied by Drupal modules are `@bootstrap max`.
 
 @bootstrap none
 -----------------------
@@ -16,11 +16,11 @@ Set up and test for a valid Drupal root, either through the --root options, or e
 
 @bootstrap site
 ------------------------------
-Set up a Drupal site directory and the correct environment variables to allow Drupal to find the configuration file. If no site is specified with the --uri options, Drush will assume the site is 'default', which mimics Drupal's behaviour.  Note that it is necessary to specify a full URI, e.g. --uri=http://example.com, in order for certain Drush commands and Drupal modules to behave correctly. See the [example Config file](../examples/example.drushrc.php) for more information. Any code that needs to modify or interact with a specific Drupal site's settings.php file should bootstrap to this phase.
+Set up a Drupal site directory and the correct environment variables to allow Drupal to find the configuration file. If no site is specified with the --uri options, Drush will assume the site is 'default', which mimics Drupal's behaviour.  Note that it is necessary to specify a full URI, e.g. --uri=http://example.com, in order for certain Drush commands and Drupal modules to behave correctly. See the [example Config file](../examples/example.drush.yml) for more information. Any code that needs to modify or interact with a specific Drupal site's settings.php file should bootstrap to this phase.
 
 @bootstrap configuration
 ---------------------------------------
-Load the settings from the Drupal sites directory. This phase is analagous to the DRUPAL\_BOOTSTRAP\_CONFIGURATION bootstrap phase in Drupal itself, and this is also the first step where Drupal specific code is included. This phase is commonly used for code that interacts with the Drupal install API, as both install.php and update.php start at this phase.
+Load the settings from the Drupal sites directory. This phase is analogous to the DRUPAL\_BOOTSTRAP\_CONFIGURATION bootstrap phase in Drupal itself, and this is also the first step where Drupal specific code is included. This phase is commonly used for code that interacts with the Drupal install API, as both install.php and update.php start at this phase.
 
 @bootstrap database
 ----------------------------------

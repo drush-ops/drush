@@ -72,7 +72,7 @@ class RunserverCommands extends DrushCommands
 
 
         $link = Url::fromUserInput('/' . $path, ['absolute' => true])->toString();
-        $this->logger()->notice(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site !site', array('!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $path, '!site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default'))));
+        $this->logger()->notice(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site !site', ['!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $path, '!site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default')]));
         // Start php built-in server.
         if (!empty($path)) {
             // Start a browser if desired. Include a 2 second delay to allow the server to come up.
@@ -89,11 +89,11 @@ class RunserverCommands extends DrushCommands
      */
     public function uri($uri, $options)
     {
-        $drush_default = array(
+        $drush_default = [
             'host' => '127.0.0.1',
             'port' => '8888',
             'path' => '',
-        );
+        ];
         $user_default = $this->parseUri($options['default-server']);
         $site_default = $this->parseUri($uri);
         $uri = $this->parseUri($uri);
@@ -129,7 +129,7 @@ class RunserverCommands extends DrushCommands
     public function parseUri($uri)
     {
         if (empty($uri)) {
-            return array();
+            return [];
         }
         if ($uri[0] == ':') {
             // ':port/path' shorthand, insert a placeholder hostname to allow parsing.

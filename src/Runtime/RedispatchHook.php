@@ -4,10 +4,10 @@ namespace Drush\Runtime;
 
 use Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface;
 use Drush\Drush;
+use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drush\Log\LogLevel;
-use Robo\Contract\ConfigAwareInterface;
 use Robo\Common\ConfigAwareTrait;
 
 /**
@@ -81,11 +81,9 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface
         // Remove argument patterns that should not be propagated
         $redispatchArgs = $this->alterArgsForRedispatch($redispatchArgs);
 
-        // Fetch the commandline options to pass along to the remote command.
         // The options the user provided on the commandline will be included
-        // in $redispatchArgs. Here, we only need to provide those
-        // preflight options that should be propagated.
-        $redispatchOptions = $this->redispatchOptions($input);
+        // in $redispatchArgs.
+        $redispatchOptions = [];
 
         $backend_options = [
             'drush-script' => $this->getConfig()->get('paths.drush-script', null),
@@ -126,31 +124,6 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface
         );
 
         return $this->exitEarly($values);
-    }
-
-    /**
-     * Collect the options to use in a redispatch.
-     *
-     * @param InputInterface $input
-     */
-    protected function redispatchOptions(InputInterface $input)
-    {
-        return [];
-        $result = [];
-        $redispatchOptionList = [
-            'root',
-            'uri',
-        ];
-        foreach ($redispatchOptionList as $option) {
-            $value = $input->hasOption($option) ? $input->getOption($option) : false;
-            if ($value === true) {
-                $result[$option] = true;
-            } elseif (is_string($value) && !empty($value)) {
-                $result[$option] = $value;
-            }
-        }
-
-        return $result;
     }
 
     /**

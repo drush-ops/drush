@@ -67,7 +67,7 @@ trait SqlTableSelectionTrait
     public function expandWildcardTables($tables, $db_tables)
     {
         // Table name expansion based on `*` wildcard.
-        $expanded_db_tables = array();
+        $expanded_db_tables = [];
         foreach ($tables as $k => $table) {
             // Only deal with table names containing a wildcard.
             if (strpos($table, '*') !== false) {
@@ -125,7 +125,7 @@ trait SqlTableSelectionTrait
         // Dump only the specified tables.  Takes precedence over skip-tables and structure-tables.
         $tables = $this->getRawTableList('tables', $options);
 
-        return array('skip' => $skip_tables, 'structure' => $structure_tables, 'tables' => $tables);
+        return ['skip' => $skip_tables, 'structure' => $structure_tables, 'tables' => $tables];
     }
 
     /**

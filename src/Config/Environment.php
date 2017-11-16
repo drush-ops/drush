@@ -3,6 +3,7 @@ namespace Drush\Config;
 
 use Composer\Autoload\ClassLoader;
 
+use Drush\Drush;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -92,6 +93,54 @@ class Environment
         return $name;
     }
 
+    protected function getTmp()
+    {
+        $directories = [];
+
+        // Get user specific and operating system temp folders from system environment variables.
+        // See http://www.microsoft.com/resources/documentation/windows/xp/all/proddocs/en-us/ntcmds_shelloverview.mspx?mfr=true
+        $tempdir = getenv('TEMP');
+        if (!empty($tempdir)) {
+            $directories[] = $tempdir;
+        }
+        $tmpdir = getenv('TMP');
+        if (!empty($tmpdir)) {
+            $directories[] = $tmpdir;
+        }
+        // Operating system specific dirs.
+        if (self::isWindows()) {
+            $windir = getenv('WINDIR');
+            if (isset($windir)) {
+                // WINDIR itself is not writable, but it always contains a /Temp dir,
+                // which is the system-wide temporary directory on older versions. Newer
+                // versions only allow system processes to use it.
+                $directories[] = Path::join($windir, 'Temp');
+            }
+        } else {
+            $directories[] = Path::canonicalize('/tmp');
+        }
+        $directories[] = Path::canonicalize(sys_get_temp_dir());
+
+        foreach ($directories as $directory) {
+            if (is_dir($directory) && is_writable($directory)) {
+                $temporary_directory = $directory;
+                break;
+            }
+        }
+
+        if (empty($temporary_directory)) {
+            // If no directory has been found, create one in cwd.
+            $temporary_directory = Path::join(Drush::config()->cwd(), 'tmp');
+            drush_mkdir($temporary_directory, true);
+            if (!is_dir($temporary_directory)) {
+                throw new \Exception(dt("Unable to create a temporary directory."));
+            }
+            // Function not available yet - this is not likely to get reached anyway.
+            // drush_register_file_for_deletion($temporary_directory);
+        }
+        return $temporary_directory;
+    }
+
     /**
      * Convert the environment object into an exported configuration
      * array. This will be fed though the EnvironmentConfigLoader to
@@ -111,6 +160,7 @@ class Environment
                 'home' => $this->homeDir(),
                 'user' => $this->getUsername(),
                 'is-windows' => $this->isWindows(),
+                'tmp' => $this->getTmp(),
             ],
             // These values are available as global options, and
             // will be passed in to the FormatterOptions et. al.
@@ -302,8 +352,8 @@ class Environment
     /**
      * Check a list of directories and return the first one that exists.
      *
-     * @param string $candidates
-     * @return boolean
+     * @param array $candidates
+     * @return string|boolean
      */
     protected function findFromCandidates($candidates)
     {
@@ -429,6 +479,7 @@ class Environment
             return false;
         }
 
+        // The env variables below must match the variables in example.prompt.sh
         $tmp = getenv('TMPDIR') ? getenv('TMPDIR') : '/tmp';
         $username = $this->getUsername();
 

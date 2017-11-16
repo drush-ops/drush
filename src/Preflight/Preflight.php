@@ -1,7 +1,6 @@
 <?php
 namespace Drush\Preflight;
 
-use Drush\Drush;
 use Drush\Config\Environment;
 use Drush\Config\ConfigLocator;
 use Drush\Config\EnvironmentConfigLoader;
@@ -13,7 +12,7 @@ use DrupalFinder\DrupalFinder;
  * The preflight happens after Drush has loaded its autoload file, but
  * prior to loading Drupal's autoload file and setting up the DI container.
  *
- * - Pre-parse commandline arguements
+ * - Pre-parse commandline arguments
  * - Read configuration .yml files
  * - Determine the site to use
  */
@@ -50,6 +49,11 @@ class Preflight
     protected $aliasManager;
 
     /**
+     * @var PreflightLog $logger An early logger, just for Preflight.
+     */
+    protected $logger;
+
+    /**
      * Preflight constructor
      */
     public function __construct(Environment $environment, $verify = null, $configLocator = null)
@@ -58,6 +62,23 @@ class Preflight
         $this->verify = $verify ?: new PreflightVerify();
         $this->configLocator = $configLocator ?: new ConfigLocator('DRUSH_');
         $this->drupalFinder = new DrupalFinder();
+        $this->logger = new PreflightLog();
+    }
+
+    /**
+     * @return PreflightLog
+     */
+    public function logger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     * @param PreflightLog $logger
+     */
+    public function setLogger(PreflightLog $logger)
+    {
+        $this->logger = $logger;
     }
 
     /**
@@ -135,7 +156,8 @@ class Preflight
     {
         $argProcessor = new ArgsPreprocessor();
         $remapper = new ArgsRemapper($this->remapOptions(), $this->remapCommandAliases());
-        $preflightArgs = new PreflightArgs([]);
+        $preflightArgs = new PreflightArgs();
+        $preflightArgs->setHomeDir($this->environment()->homeDir());
         $argProcessor->setArgsRemapper($remapper);
 
         $argProcessor->parse($argv, $preflightArgs);
@@ -193,6 +215,11 @@ class Preflight
         return $this->configLocator->config();
     }
 
+    /**
+     * @param $argv
+     * @return bool
+     *   True if the request was successfully redispatched remotely. False if the request should proceed.
+     */
     public function preflight($argv)
     {
         // Fail fast if there is anything in our environment that does not check out
@@ -201,6 +228,9 @@ class Preflight
         // Get the preflight args and begin collecting configuration files.
         $this->preflightArgs = $this->preflightArgs($argv);
         $this->prepareConfig($this->environment);
+
+        // Now that we know the value, set debug flag.
+        $this->logger()->setDebug($this->preflightArgs->get(PreflightArgs::DEBUG));
 
         // Do legacy initialization (load static includes, define old constants, etc.)
         $this->init();
@@ -238,7 +268,7 @@ class Preflight
         // a site-local Drush. If there is, we will redispatch to it.
         // NOTE: termination handlers have not been set yet, so it is okay
         // to exit early without taking special action.
-        $status = RedispatchToSiteLocal::redispatchIfSiteLocalDrush($argv, $root, $this->environment->vendorPath());
+        $status = RedispatchToSiteLocal::redispatchIfSiteLocalDrush($argv, $root, $this->environment->vendorPath(), $this->logger())    ;
         if ($status !== false) {
             return $status;
         }
@@ -249,7 +279,10 @@ class Preflight
 
         // Remember the paths to all the files we loaded, so that we can
         // report on it from Drush status or wherever else it may be needed.
-        $config->set('runtime.config.paths', $this->configLocator->configFilePaths());
+        $configFilePaths = $this->configLocator->configFilePaths();
+        $config->set('runtime.config.paths', $configFilePaths);
+        $this->logger()->log(dt('Config paths: ' . implode(',', $configFilePaths)));
+        $this->logger()->log(dt('Alias paths: ' . implode(',', $paths)));
 
         // We need to check the php minimum version again, in case anyone
         // has set it to something higher in one of the config files we loaded.

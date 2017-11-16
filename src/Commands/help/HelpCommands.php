@@ -55,7 +55,7 @@ class HelpCommands extends DrushCommands
         } else {
             $application = Drush::getApplication();
             if (!in_array($name, array_keys($application->all()))) {
-                throw new \Exception(dt("!name command not found.", array('!name' => $name)));
+                throw new \Exception(dt("!name command not found.", ['!name' => $name]));
             }
         }
     }

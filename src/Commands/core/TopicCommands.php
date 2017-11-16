@@ -70,7 +70,7 @@ class TopicCommands extends DrushCommands
     {
         $topic_name = $commandData->input()->getArgument('topic_name');
         if (!in_array($topic_name, array_keys(self::getAllTopics()))) {
-            throw new \Exception(dt("!topic topic not found.", array('!topic' => $topic_name)));
+            throw new \Exception(dt("!topic topic not found.", ['!topic' => $topic_name]));
         }
     }
 

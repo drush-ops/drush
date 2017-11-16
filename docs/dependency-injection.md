@@ -66,12 +66,11 @@ All Drush command files extend DrushCommands; DrushCommands implements IOAwareIn
 
 Any additional services that are desired must be injected by implementing the appropriate inflection interface.
 
-Available Drush Services
+Available Interfaces:
 
 - AutoloaderAwareInterface: Provides access to the class loader.
 - SiteAliasManagerAwareInterface: The site alias manager [allows alias records to be obtained](site-alias-manager.md).
-- CustomEventAwareInterface: Allows command files to [define and fire custom events](custom-hooks.md) that other command files can hook.
-- ConfigAwareInterface: Provides access to the [Drush configuration manager](using-drush-configuration.md).
+- CustomEventAwareInterface: Allows command files to [define and fire custom events](hooks.md) that other command files can hook.
 - ContainerAwareInterface: Provides Drush's dependency injection container.
 
 Note that although the autoloader and Drush dependency injection container is available and may be injected into your command file if needed, this should be avoided. Favor using services that can be injected from Drupal or Drush. Some of the objects in the container are not part of the Drush public API, and may not maintain compatibility in minor and patch releases.

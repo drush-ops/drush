@@ -79,7 +79,7 @@ class InputHandler extends BaseInputHandler
             return;
         }
 
-        $root_directory = basename(Utils::getExtensionRoot(Drush::config()->get('env.cwd')));
+        $root_directory = basename(Utils::getExtensionRoot(Drush::config()->cwd()));
 
         // Module related generators.
         if ($destination == 'modules/%') {

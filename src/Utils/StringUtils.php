@@ -2,6 +2,8 @@
 
 namespace Drush\Utils;
 
+use Drush\Drush;
+
 class StringUtils
 {
 
@@ -51,7 +53,7 @@ class StringUtils
         }
 
         // build a replacement array with braces around the context keys
-        $replace = array();
+        $replace = [];
         foreach ($context as $key => $val) {
             if (!is_array($val) && (!is_object($val) || method_exists($val, '__toString'))) {
                 $replace[static::interpolationKey($key)] = $val;
@@ -76,5 +78,27 @@ class StringUtils
             return sprintf('{%s}', $key);
         }
         return $key;
+    }
+
+    /**
+     * Replace tilde in a path with the HOME directory.
+     *
+     * @param $path
+     *   A path that may contain a ~ at front.
+     *
+     * @param $home
+     *   The effective home dir for this request.
+     *
+     * @return string The path with tilde replaced, if applicable.
+     * The path with tilde replaced, if applicable.
+     */
+    public static function replaceTilde($path, $home)
+    {
+        $replacement = $home . '/';
+        $match = '#^~/#';
+        if (preg_match($match, $path)) {
+            return preg_replace($match, $replacement, $path);
+        }
+        return $path;
     }
 }

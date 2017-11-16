@@ -25,7 +25,7 @@ class PreflightVerify
         // Fail if this is not a CLI php
         $this->confirmUsingCLI($environment);
 
-        // Fail if any manditory functions have been disabled, or any
+        // Fail if any mandatory functions have been disabled, or any
         // illegal options have been set in php.ini.
         $this->checkPhpIni();
     }

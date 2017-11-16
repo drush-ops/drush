@@ -57,7 +57,7 @@ class DrupalDirectoryCommands extends DrushCommands implements SiteAliasManagerA
         if ($path && (strpos($path, '%') === false)) {
             return $path;
         } else {
-            throw new \Exception(dt("Target '{target}' not found.", array('target' => $target)));
+            throw new \Exception(dt("Target '{target}' not found.", ['target' => $target]));
         }
     }
 

@@ -137,8 +137,7 @@
 #   $ drush @none status
 #
 # See `drush help site:alias` for more options for displaying site
-# aliases.  See `drush topic docs:bastion` for instructions on configuring
-# remote access to a Drupal site behind a firewall via a bastion server.
+# aliases.
 #
 # Although most aliases will contain only a few options, a number
 # of settings that are commonly used appear below:
@@ -150,7 +149,7 @@
 #   hosting the Drupal instance. **Important Note: The remote-host option
 #   must be omitted for local sites, as this option controls various
 #   operations, such as whether or not rsync parameters are for local or
-#   remote machines, and so on. @see hook_drush_sitealias_alter() in drush.api.php
+#   remote machines, and so on.
 # - 'user': The username to log in as when using ssh or rsync.
 # - 'os': The operating system of the remote server.  Valid values
 #   are 'Windows' and 'Linux'. Be sure to set this value for all remote
@@ -168,7 +167,7 @@
 #   Relative aliases are always taken from the Drupal root.
 #   - 'files': Path to 'files' directory.  This will be looked up if not
 #     specified.
-#   - 'drush-script': Path to the remot Drush command.
+#   - 'drush-script': Path to the remote Drush command.
 # - 'command': These options will only be set if the alias
 #   is used with the specified command.  In the example below, the option
 #   `--no-dump` will be selected whenever the @stage alias
@@ -201,7 +200,7 @@
 #
 # Altering aliases:
 #
-# See examples/Commands/SiteAliasAlter.php for an example.
+# See examples/Commands/SiteAliasAlterCommands.php for an example.
 #
 # Environment variables:
 #

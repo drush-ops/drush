@@ -4,6 +4,7 @@ namespace Drush\Preflight;
 use Consolidation\Config\Config;
 use Consolidation\Config\ConfigInterface;
 
+use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Input\ArgvInput;
 use Drush\Symfony\LessStrictArgvInput;
 
@@ -19,9 +20,30 @@ use Drush\Symfony\LessStrictArgvInput;
 class PreflightArgs extends Config implements PreflightArgsInterface
 {
     /**
-     * @var $args Remaining arguments not handled by the preprocessor
+     * @var array $args Remaining arguments not handled by the preprocessor
      */
     protected $args;
+
+    /**
+     * @var string $homeDir Path to directory to use when replacing ~ in paths
+     */
+    protected $homeDir;
+
+    /**
+     * @return string
+     */
+    public function homeDir()
+    {
+        return $this->homeDir;
+    }
+
+    /**
+     * @param string $homeDir
+     */
+    public function setHomeDir($homeDir)
+    {
+        $this->homeDir = $homeDir;
+    }
 
     const DRUSH_CONFIG_PATH_NAMESPACE = 'drush.paths';
     const DRUSH_RUNTIME_CONTEXT_NAMESPACE = 'runtime.contxt';
@@ -36,9 +58,10 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     const SIMULATE = 'simulate';
     const BACKEND = 'backend';
     const STRICT = 'strict';
+    const DEBUG = 'preflight-debug';
 
     /**
-     * PreflightArgs constroctor
+     * PreflightArgs constructor
      *
      * @param array $data Initial data (not usually used)
      */
@@ -55,6 +78,10 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return [
             '-r=' => 'setSelectedSite',
             '--root=' => 'setSelectedSite',
+            '--debug' => 'setDebug',
+            '-d' => 'setDebug',
+            '-vv' => 'setDebug',
+            '-vvv' => 'setDebug',
             '-l=' => 'setUri',
             '--uri=' => 'setUri',
             '-c=' => 'addConfigPath',
@@ -205,12 +232,18 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return $this->get(self::ROOT, $default);
     }
 
+    public function setDebug($value)
+    {
+        $this->set(self::DEBUG, $value);
+        $this->addArg('-vvv');
+    }
+
     /**
      * Set the selected site.
      */
     public function setSelectedSite($root)
     {
-        return $this->set(self::ROOT, $root);
+        return $this->set(self::ROOT, StringUtils::replaceTilde($root, $this->homeDir()));
     }
 
     /**
@@ -245,12 +278,12 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     public function addConfigPath($path)
     {
         $paths = $this->configPaths();
-        $paths[] = $path;
+        $paths[] = StringUtils::replaceTilde($path, $this->homeDir());
         return $this->set(self::CONFIG_PATH, $paths);
     }
 
     /**
-     * Add multiple additinoal locations where drush.yml files may be found
+     * Add multiple additional locations where drush.yml files may be found.
      *
      * @param string[] $configPaths
      */
@@ -270,19 +303,19 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     }
 
     /**
-     * Set one more path where aliases may be found
+     * Set one more path where aliases may be found.
      *
      * @param string $path
      */
     public function addAliasPath($path)
     {
         $paths = $this->aliasPaths();
-        $paths[] = $path;
+        $paths[] = StringUtils::replaceTilde($path, $this->homeDir());
         return $this->set(self::ALIAS_PATH, $paths);
     }
 
     /**
-     * Add multiple additional locations for alias paths
+     * Add multiple additional locations for alias paths.
      *
      * @param string $aliasPaths
      */
@@ -309,12 +342,12 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     public function addCommandPath($path)
     {
         $paths = $this->commandPaths();
-        $paths[] = $path;
+        $paths[] = StringUtils::replaceTilde($path, $this->homeDir());
         return $this->set(self::COMMAND_PATH, $paths);
     }
 
     /**
-     * Add multiple paths where commandfiles might be found
+     * Add multiple paths where commandfiles might be found.
      *
      * @param $commanPaths
      */
@@ -344,7 +377,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     }
 
     /**
-     * Determine whether Drush is in "simulated" mode
+     * Determine whether Drush is in "simulated" mode.
      */
     public function isSimulated()
     {
@@ -362,7 +395,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     }
 
     /**
-     * Determine whether Drush was placed in simulated mode
+     * Determine whether Drush was placed in simulated mode.
      */
     public function isBackend()
     {
@@ -388,17 +421,17 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     }
 
     /**
-     * Set the coverage file path
+     * Set the coverage file path.
      *
      * @param string
      */
     public function setCoverageFile($coverageFile)
     {
-        return $this->set(self::COVERAGE_FILE, $coverageFile);
+        return $this->set(self::COVERAGE_FILE, StringUtils::replaceTilde($coverageFile, $this->homeDir()));
     }
 
     /**
-     * Determne whether Drush is in "strict" mode or not.
+     * Determine whether Drush is in "strict" mode or not.
      */
     public function isStrict()
     {
@@ -406,7 +439,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     }
 
     /**
-     * Set strict mode
+     * Set strict mode.
      *
      * @param bool $strict
      */
@@ -444,7 +477,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     }
 
     /**
-     * Create a Symfony Input object
+     * Create a Symfony Input object.
      */
     public function createInput()
     {
@@ -455,7 +488,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         }
 
         // If in backend mode, read additional options from stdin.
-        // TODO: Maybe reading stdin options should be the responsibilty of some
+        // TODO: Maybe reading stdin options should be the responsibility of some
         // backend manager class? Could be called from preflight and injected here.
         $input = new LessStrictArgvInput($this->args());
         $input->injectAdditionalOptions($this->readStdinOptions());
@@ -502,7 +535,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         // So, redirecting input is okay, it is just the proc_open that is a problem.
         if (drush_is_windows()) {
             // Note that stream_select uses reference parameters, so we need variables (can't pass a constant NULL)
-            $read = array($fp);
+            $read = [$fp];
             $write = null;
             $except = null;
             // Question: might we need to wait a bit for STDIN to be ready,

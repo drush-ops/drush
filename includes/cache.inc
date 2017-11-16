@@ -73,7 +73,7 @@ function _drush_cache_get_object($bin) {
 function drush_cache_get($cid, $bin = 'default') {
   $ret = _drush_cache_get_object($bin)->get($cid);
   $mess = $ret ? "HIT" : "MISS";
-  drush_log(dt("Cache !mess cid: !cid", array('!mess' => $mess, '!cid' => $cid)), LogLevel::DEBUG);
+  drush_log(dt("Cache !mess cid: !cid", ['!mess' => $mess, '!cid' => $cid]), LogLevel::DEBUG);
   return $ret;
 }
 
@@ -116,7 +116,7 @@ function drush_cache_get_multiple(array &$cids, $bin = 'default') {
  */
 function drush_cache_set($cid, $data, $bin = 'default', $expire = DRUSH_CACHE_PERMANENT) {
   $ret = _drush_cache_get_object($bin)->set($cid, $data, $expire);
-  if ($ret) drush_log(dt("Cache SET cid: !cid", array('!cid' => $cid)), LogLevel::DEBUG);
+  if ($ret) drush_log(dt("Cache SET cid: !cid", ['!cid' => $cid]), LogLevel::DEBUG);
   return $ret;
 }
 
@@ -167,7 +167,7 @@ function _drush_cache_is_empty($bin) {
  * Return drush cache bins and any bins added by hook_drush_flush_caches().
  */
 function drush_cache_get_bins() {
-  $drush = array('default');
+  $drush = ['default'];
   return $drush;
   // return array_merge(drush_command_invoke_all('drush_flush_caches'), $drush);
 }
@@ -185,8 +185,8 @@ function drush_cache_get_bins() {
  * @return
  *   A cache id string.
  */
-function drush_get_cid($prefix, $contexts = array(), $params = array()) {
-  $cid = array();
+function drush_get_cid($prefix, $contexts = [], $params = []) {
+  $cid = [];
 
   foreach ($contexts as $context) {
     $c = drush_get_context($context);

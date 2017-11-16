@@ -25,7 +25,7 @@ use Drush\Preflight\PreflightArgs;
 /**
  * Static Service Container wrapper.
  *
- * This code is analagous to the \Drupal class in Drupal 8.
+ * This code is analogous to the \Drupal class in Drupal 8.
  *
  * We would like to move Drush towards the model of using constructor
  * injection rather than globals. This class serves as a unified global
@@ -132,7 +132,7 @@ class Drush
     /**
      * Returns the currently active global container.
      *
-     * @return \League\Container\Container|null
+     * @return \League\Container\ContainerInterface|null
      *
      * @throws RuntimeException
      */
@@ -234,7 +234,7 @@ class Drush
     /**
      * Return the configuration object
      *
-     * @return ConfigInterface
+     * @return \Drush\Config\DrushConfig
      */
     public static function config()
     {
