@@ -79,7 +79,7 @@ class ArtCommands extends DrushCommands implements CustomEventAwareInterface
      */
 
     /**
-     * Ruminations on the true meaning and philosophy of sandwiches.
+     * Ruminations on the true meaning and philosophy of artwork.
      *
      * @command artwork:explain
      * @hidden
