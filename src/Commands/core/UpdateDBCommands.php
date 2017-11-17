@@ -23,7 +23,7 @@ class UpdateDBCommands extends DrushCommands
      * @bootstrap full
      * @aliases updb
      */
-    public function updatedb($options = ['cache-clear' => true, 'entity-updates' => true, 'post-updates' => true])
+    public function updatedb($options = ['cache-clear' => true, 'entity-updates' => false, 'post-updates' => true])
     {
         $this->cache_clear = $options['cache-clear'];
         require_once DRUPAL_ROOT . '/core/includes/install.inc';
