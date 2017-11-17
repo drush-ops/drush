@@ -19,6 +19,10 @@ Support
 * Report bugs and request features in the [GitHub Drush Issue Queue](https://github.com/drush-ops/drush/issues).
 * Use pull requests (PRs) to contribute to Drush.
 
+Code of Conduct
+---------------
+The Drush project expects all participants to abide by the [Drupal Code of Conduct](https://www.drupal.org/dcoc).
+
 FAQ
 ------
 
