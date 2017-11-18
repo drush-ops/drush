@@ -76,7 +76,7 @@ class HelpCLIFormatter implements FormatterInterface
         }
 
         // @todo Fix this variability in key name upstream.
-        if (array_key_exists('aliases', $data) ? $data['aliases'] :  array_key_exists('alias', $data) ? [$data['alias']] : []) {
+        if (array_key_exists('aliases', $data) ? $data['aliases'] :  (array_key_exists('alias', $data) ? [$data['alias']] : [])) {
             $output->writeln('');
             $output->writeln('<comment>Aliases:</comment> ' . implode(', ', $data['aliases']));
         }
