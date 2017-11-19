@@ -10,8 +10,10 @@ use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\StorageInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Parser;
 
 class ConfigCommands extends DrushCommands
@@ -345,67 +347,48 @@ class ConfigCommands extends DrushCommands
      *
      * @param array $config_changes
      *   An array of changes keyed by collection.
+     *
+     * @return Table A Symfony table object.
      */
-    public static function configChangesTableFormat(array $config_changes, $use_color = false)
+    public static function configChangesTable(array $config_changes, OutputInterface $output, $use_color = true)
     {
-        if (!$use_color) {
-            $red = "%s";
-            $yellow = "%s";
-            $green = "%s";
-        } else {
-            $red = "\033[31;40m\033[1m%s\033[0m";
-            $yellow = "\033[1;33;40m\033[1m%s\033[0m";
-            $green = "\033[1;32;40m\033[1m%s\033[0m";
-        }
-
         $rows = [];
-        $rows[] = ['Collection', 'Config', 'Operation'];
         foreach ($config_changes as $collection => $changes) {
             foreach ($changes as $change => $configs) {
                 switch ($change) {
                     case 'delete':
-                        $colour = $red;
+                        $colour = '<fg=white;bg=red>';
                         break;
                     case 'update':
-                        $colour = $yellow;
+                        $colour = '<fg=black;bg=yellow>';
                         break;
                     case 'create':
-                        $colour = $green;
+                        $colour = '<fg=white;bg=green>';
                         break;
                     default:
-                        $colour = "%s";
+                        $colour = "<fg=black;bg=cyan>";
                         break;
+                }
+                if ($use_color) {
+                    $prefix = $colour;
+                    $suffix = '</>';
+                }
+                else {
+                    $prefix = $suffix = '';
                 }
                 foreach ($configs as $config) {
                     $rows[] = [
-                    $collection,
-                    $config,
-                    sprintf($colour, $change)
+                        $collection,
+                        $config,
+                        $prefix . ucfirst($change) . $suffix,
                     ];
                 }
             }
         }
-        $tbl = _drush_format_table($rows);
-        return $tbl;
-    }
-
-    /**
-     * Print a table of config changes.
-     *
-     * @param array $config_changes
-     *   An array of changes keyed by collection.
-     */
-    public static function configChangesTablePrint(array $config_changes)
-    {
-        $tbl =  self::configChangesTableFormat($config_changes, !drush_get_context('DRUSH_NOCOLOR'));
-
-        $output = $tbl->getTable();
-        if (!stristr(PHP_OS, 'WIN')) {
-            $output = str_replace("\r\n", PHP_EOL, $output);
-        }
-
-        drush_print(rtrim($output));
-        return $tbl;
+        $table = new Table($output);
+        $table->setHeaders(['Collection', 'Config', 'Operation']);
+        $table->addRows($rows);
+        return $table;
     }
 
     /**
