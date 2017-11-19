@@ -146,6 +146,5 @@ class LegacyPreflight
         require_once $drushBasePath . '/includes/output.inc';
         require_once $drushBasePath . '/includes/cache.inc';
         require_once $drushBasePath . '/includes/filesystem.inc';
-        require_once $drushBasePath . '/includes/legacy.inc';
     }
 }
