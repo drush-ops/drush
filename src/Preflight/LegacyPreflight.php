@@ -134,7 +134,6 @@ class LegacyPreflight
         require_once $drushBasePath . '/includes/preflight.inc';
         require_once $drushBasePath . '/includes/bootstrap.inc';
         require_once $drushBasePath . '/includes/environment.inc';
-        require_once $drushBasePath . '/includes/annotationcommand_adapter.inc';
         require_once $drushBasePath . '/includes/command.inc';
         require_once $drushBasePath . '/includes/drush.inc';
         require_once $drushBasePath . '/includes/backend.inc';
