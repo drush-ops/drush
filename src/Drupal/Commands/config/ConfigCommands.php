@@ -372,8 +372,7 @@ class ConfigCommands extends DrushCommands
                 if ($use_color) {
                     $prefix = $colour;
                     $suffix = '</>';
-                }
-                else {
+                } else {
                     $prefix = $suffix = '';
                 }
                 foreach ($configs as $config) {

@@ -524,13 +524,13 @@ class SqlBase implements ConfigAwareInterface
      *   An array of database values containing only the 'default' element of
      *   the db url. If the parse fails the array is empty.
      */
-    public static function dbSpecFromDbUrl($db_url) {
+    public static function dbSpecFromDbUrl($db_url)
+    {
         $db_spec = [];
 
         if (is_array($db_url)) {
             $db_url_default = $db_url['default'];
-        }
-        else {
+        } else {
             $db_url_default = $db_url;
         }
 
@@ -540,18 +540,17 @@ class SqlBase implements ConfigAwareInterface
                 'driver'   => 'sqlite',
                 'database' => substr($db_url_default, strlen('sqlite://')),
             ];
-        }
-        else {
+        } else {
             $url = parse_url($db_url_default);
             if ($url) {
                 // Fill in defaults to prevent notices.
                 $url += [
-                    'scheme' => NULL,
-                    'user'   => NULL,
-                    'pass'   => NULL,
-                    'host'   => NULL,
-                    'port'   => NULL,
-                    'path'   => NULL,
+                    'scheme' => null,
+                    'user'   => null,
+                    'pass'   => null,
+                    'host'   => null,
+                    'port'   => null,
+                    'path'   => null,
                 ];
                 $url = (object)array_map('urldecode', $url);
                 $db_spec = [
