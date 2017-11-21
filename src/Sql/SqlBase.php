@@ -467,7 +467,7 @@ class SqlBase implements ConfigAwareInterface
         $create_db_target = $this->getDbSpec();
 
         $create_db_target['database'] = '';
-        $db_superuser = $this->getOption('db-su');
+        $db_superuser = Drush::config()->get('sql.db-su');
         if (!empty($db_superuser)) {
             $create_db_target['username'] = $db_superuser;
         }
