@@ -93,7 +93,7 @@ EOT;
         }
         $sql[] = sprintf('DROP DATABASE IF EXISTS %s;', $dbname);
         $sql[] = sprintf('CREATE DATABASE %s /*!40100 DEFAULT CHARACTER SET utf8 */;', $dbname);
-        $db_superuser = Drush::config()->get('sql.db-su');
+        $db_superuser = $this->getConfig()->get('sql.db-su');
         if (isset($db_superuser)) {
             // - For a localhost database, create a localhost user.  This is important for security.
             //   localhost is special and only allows local Unix socket file connections.

@@ -191,7 +191,7 @@ class SqlBase implements ConfigAwareInterface
             if ($file === true) {
                 $backup_dir = drush_prepare_backup_dir($database);
                 if (empty($backup_dir)) {
-                    $backup_dir = Drush::config()->tmp();
+                    $backup_dir = $this->getConfig()->tmp();
                 }
                 $file = Path::join($backup_dir, '@DATABASE_@DATE.sql');
             }
@@ -467,7 +467,7 @@ class SqlBase implements ConfigAwareInterface
         $create_db_target = $this->getDbSpec();
 
         $create_db_target['database'] = '';
-        $db_superuser = Drush::config()->get('sql.db-su');
+        $db_superuser = $this->getConfig()->get('sql.db-su');
         if (!empty($db_superuser)) {
             $create_db_target['username'] = $db_superuser;
         }
