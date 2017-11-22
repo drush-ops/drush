@@ -75,7 +75,7 @@ class DrushBatchContext extends ArrayObject {
 function drush_backend_batch_process($command = 'batch-process', $args = [], $options = []) {
   // Command line options to pass to the command.
   $options['u'] = \Drupal::currentUser()->id();
-  _drush_backend_batch_process($command, $args, $options);
+  return _drush_backend_batch_process($command, $args, $options);
 }
 
 /**
@@ -106,6 +106,8 @@ function drush_batch_command($id) {
  *
  */
 function _drush_backend_batch_process($command = 'batch-process', $args, $options) {
+  $result = NULL;
+
   $batch =& batch_get();
 
   if (isset($batch)) {
@@ -139,11 +141,12 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
     $finished = FALSE;
 
     while (!$finished) {
-      $data = drush_invoke_process('@self', $command, $args);
-
-      $finished = drush_get_error() || !$data || (isset($data['context']['drush_batch_process_finished']) && $data['context']['drush_batch_process_finished'] == TRUE);
+      $result = drush_invoke_process('@self', $command, $args);
+      $finished = drush_get_error() || !$result || (isset($result['context']['drush_batch_process_finished']) && $result['context']['drush_batch_process_finished'] == TRUE);
     }
   }
+
+  return $result;
 }
 
 
