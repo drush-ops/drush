@@ -8,6 +8,7 @@ use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Config\StorageInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
+use Symfony\Component\Console\Output\BufferedOutput;
 
 class ConfigExportCommands extends DrushCommands
 {
@@ -115,12 +116,12 @@ class ConfigExportCommands extends DrushCommands
             }
             // Print a table with changes in color, then re-generate again without
             // color to place in the commit comment.
-            ConfigCommands::configChangesTablePrint($change_list);
-            $tbl = ConfigCommands::configChangesTableFormat($change_list);
-            $preview = $tbl->getTable();
-            if (!stristr(PHP_OS, 'WIN')) {
-                $preview = str_replace("\r\n", PHP_EOL, $preview);
-            }
+            $bufferedOutput = new BufferedOutput();
+            $table = ConfigCommands::configChangesTable($change_list, $bufferedOutput, false);
+            $table->render();
+            $preview = $bufferedOutput->fetch();
+            $table = ConfigCommands::configChangesTable($change_list, $this->output(), true);
+            $table->render();
 
             if (!$this->io()->confirm(dt('The .yml files in your export directory (!target) will be deleted and replaced with the active config.', ['!target' => $destination_dir]))) {
                 throw new UserAbortException();

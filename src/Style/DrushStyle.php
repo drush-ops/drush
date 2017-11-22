@@ -42,4 +42,21 @@ class DrushStyle extends SymfonyStyle
             return array_search($return, $choices);
         }
     }
+
+    public function warning($message)
+    {
+        $this->block($message, 'WARNING', 'fg=black;bg=yellow', ' ! ', true);
+    }
+
+    public function note($message)
+    {
+        $this->block($message, 'NOTE', 'fg=black;bg=yellow', ' ! ');
+    }
+
+    public function caution($message)
+    {
+        $this->block($message, 'CAUTION', 'fg=black;bg=yellow', ' ! ', true);
+    }
+
+
 }

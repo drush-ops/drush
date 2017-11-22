@@ -190,7 +190,8 @@ class ConfigImportCommands extends DrushCommands
             foreach ($storage_comparer->getAllCollectionNames() as $collection) {
                 $change_list[$collection] = $storage_comparer->getChangelist(null, $collection);
             }
-            ConfigCommands::configChangesTablePrint($change_list);
+            $table = ConfigCommands::configChangesTable($change_list, $this->output());
+            $table->render();
         } else {
             // Copy active storage to a temporary directory.
             $temp_active_dir = drush_tempdir();

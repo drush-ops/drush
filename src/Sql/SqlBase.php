@@ -58,7 +58,7 @@ class SqlBase implements ConfigAwareInterface
 
         if ($url = $options['db-url']) {
             $url =  is_array($url) ? $url[$database] : $url;
-            $db_spec = drush_convert_db_from_db_url($url);
+            $db_spec = self::dbSpecFromDbUrl($url);
             $db_spec['db_prefix'] = $options['db-prefix'];
             return self::getInstance($db_spec, $options);
         } elseif (($databases = $options['databases']) && (array_key_exists($database, $databases)) && (array_key_exists($target, $databases[$database]))) {
@@ -191,7 +191,7 @@ class SqlBase implements ConfigAwareInterface
             if ($file === true) {
                 $backup_dir = drush_prepare_backup_dir($database);
                 if (empty($backup_dir)) {
-                    $backup_dir = Drush::config()->tmp();
+                    $backup_dir = $this->getConfig()->tmp();
                 }
                 $file = Path::join($backup_dir, '@DATABASE_@DATE.sql');
             }
@@ -467,7 +467,7 @@ class SqlBase implements ConfigAwareInterface
         $create_db_target = $this->getDbSpec();
 
         $create_db_target['database'] = '';
-        $db_superuser = $this->getOption('db-su');
+        $db_superuser = $this->getConfig()->get('sql.db-su');
         if (!empty($db_superuser)) {
             $create_db_target['username'] = $db_superuser;
         }
@@ -514,4 +514,57 @@ class SqlBase implements ConfigAwareInterface
     {
         return $this->getExpandedTableSelection($options);
     }
+
+    /**
+     * Convert from an old-style database URL to an array of database settings.
+     *
+     * @param db_url
+     *   A Drupal 6 db url string to convert, or an array with a 'default' element.
+     * @return array
+     *   An array of database values containing only the 'default' element of
+     *   the db url. If the parse fails the array is empty.
+     */
+    public static function dbSpecFromDbUrl($db_url)
+    {
+        $db_spec = [];
+
+        if (is_array($db_url)) {
+            $db_url_default = $db_url['default'];
+        } else {
+            $db_url_default = $db_url;
+        }
+
+        // If it's a sqlite database, pick the database path and we're done.
+        if (strpos($db_url_default, 'sqlite://') === 0) {
+            $db_spec = [
+                'driver'   => 'sqlite',
+                'database' => substr($db_url_default, strlen('sqlite://')),
+            ];
+        } else {
+            $url = parse_url($db_url_default);
+            if ($url) {
+                // Fill in defaults to prevent notices.
+                $url += [
+                    'scheme' => null,
+                    'user'   => null,
+                    'pass'   => null,
+                    'host'   => null,
+                    'port'   => null,
+                    'path'   => null,
+                ];
+                $url = (object)array_map('urldecode', $url);
+                $db_spec = [
+                    'driver'   => $url->scheme == 'mysqli' ? 'mysql' : $url->scheme,
+                    'username' => $url->user,
+                    'password' => $url->pass,
+                    'host' => $url->host,
+                    'port' => $url->port,
+                    'database' => ltrim($url->path, '/'),
+                ];
+            }
+        }
+
+        return $db_spec;
+    }
+
 }
