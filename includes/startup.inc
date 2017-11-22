@@ -133,6 +133,8 @@ function drush_is_windows($os = NULL) {
 }
 
 function drush_escapeshellarg($arg, $os = NULL, $raw = FALSE) {
+  // "LOCAL" represents the local/host environment, so reset $os to NULL
+  $os = $os == 'LOCAL' ? NULL : $os;
   // Short-circuit escaping for simple params (keep stuff readable)
   if (preg_match('|^[a-zA-Z0-9.:/_-]*$|', $arg)) {
     return $arg;
