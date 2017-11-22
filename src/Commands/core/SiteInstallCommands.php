@@ -278,7 +278,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         }
 
         if (!$dir) {
-            throw new \Exception(dt('Could not determine target sites directory for site to install. Use --site-subdir to specify.'));
+            throw new \Exception(dt('Could not determine target sites directory for site to install. Use --sites-subdir to specify.'));
         }
 
         $sites_subdir = Path::join('sites', $dir);
