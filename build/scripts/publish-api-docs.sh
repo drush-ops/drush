@@ -23,7 +23,10 @@ set -ev
 composer sami-install
 
 # Build the API documentation using the api script in composer.json
-composer -v api
+# We have Sami parse errors so ignore return value: https://stackoverflow.com/questions/35452147/allow-non-zero-return-codes-in-travis-ci-yml
+composer -v api || true
+
+echo "Create build $API_BUID_DIR dir if needed."
 
 # Check out the gh-pages branch using our Github token (defined at https://travis-ci.org/lcache/lcache/settings)
 API_BUILD_DIR="$HOME/.drush-build/gh-pages"
@@ -36,6 +39,8 @@ fi
 # Replace the old 'api' folder with the newly-built API documentation
 rm -rf "$API_BUILD_DIR/api"
 cp -R api "$API_BUILD_DIR"
+
+echo "Commit new API docs."
 
 # Commit any changes to the documentation
 cd "$API_BUILD_DIR"
