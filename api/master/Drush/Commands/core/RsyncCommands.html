@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\Commands\core\RsyncCommands | Drush API</title>
+
+            <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../css/sami.css">
+        <script src="../../../js/jquery-1.11.1.min.js"></script>
+        <script src="../../../js/bootstrap.min.js"></script>
+        <script src="../../../js/typeahead.min.js"></script>
+        <script src="../../../sami.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    
+    
+    </head>
+
+    <body id="class" data-name="class:Drush_Commands_core_RsyncCommands" data-root-path="../../../">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <script>
+            $('option[data-version="'+window.projectVersion+'"]').prop('selected', true);
+        </script>
+        <form id="search-form" action="../../../search.html" method="GET">
+            <span class="glyphicon glyphicon-search"></span>
+            <input name="search"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search">
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../../index.html">Drush API</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../../classes.html">Classes</a></li>
+                                            <li><a href="../../../namespaces.html">Namespaces</a></li>
+                                        <li><a href="../../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../../traits.html">Traits</a></li>
+                    <li><a href="../../../doc-index.html">Index</a></li>
+                    <li><a href="../../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands.html">Commands</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands/core.html">core</a></li><li class="backslash">\</li><li>RsyncCommands</li>
+            </ol>
+        </div>
+                <div id="page-content">
+                
+    <div class="page-header">
+        <h1>
+            RsyncCommands
+                
+        </h1>
+    </div>
+
+    <p>    class
+    <strong>RsyncCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        implements
+        <a href="../../../Drush/SiteAlias/SiteAliasManagerAwareInterface.html"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareInterface">SiteAliasManagerAwareInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/RsyncCommands.php">View source</a>)
+</p>
+
+        
+    
+
+    
+            <h2>Traits</h2>
+
+        
+    <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                                            <a href="../../../Drush/SiteAlias/SiteAliasManagerAwareTrait.html"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a>
+                                            
+                </div>
+                <div class="col-md-6">
+                    Inflection trait for the site alias manager.
+                </div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <abbr title="Psr\Log\LoggerAwareTrait">LoggerAwareTrait</abbr>
+                                            
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr>
+                                            
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <abbr title="Robo\Common\IO">IO</abbr>
+                                            
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
+            </div>
+    
+            <h2>Constants</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td>REQ</td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>OPT</td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+            </table>
+
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_siteAliasManager">
+                                        protected                                        
+                </td>
+                <td>$siteAliasManager</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../../Drush/SiteAlias/SiteAliasManagerAwareTrait.html#property_siteAliasManager"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_sourceEvaluatedPath">
+                                                                                <a href="../../../Drush/SiteAlias/HostPath.html"><abbr title="Drush\SiteAlias\HostPath">HostPath</abbr></a>
+                </td>
+                <td>$sourceEvaluatedPath</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_targetEvaluatedPath">
+                                                                                <a href="../../../Drush/SiteAlias/HostPath.html"><abbr title="Drush\SiteAlias\HostPath">HostPath</abbr></a>
+                </td>
+                <td>$targetEvaluatedPath</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_pathEvaluator">
+                                        protected                                        <a href="../../../Drush/Backend/BackendPathEvaluator.html"><abbr title="Drush\Backend\BackendPathEvaluator">BackendPathEvaluator</abbr></a>
+                </td>
+                <td>$pathEvaluator</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method___construct">__construct</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_logger">logger</a>()
+        
+                                            <p>Returns a logger object.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_logger"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_io">io</a>()
+        
+                                            <p>Override Robo's IO function with our custom style.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_io"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getConfig">getConfig</a>()
+        
+                                            <p>Replaces same method in ConfigAwareTrait in order to provide a
+DrushConfig as return type. Helps with IDE completion.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_getConfig"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_printFile">printFile</a>(string $file)
+        
+                                            <p>Print the contents of a file.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_printFile"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_setSiteAliasManager">setSiteAliasManager</a>($siteAliasManager)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/SiteAlias/SiteAliasManagerAwareTrait.html#method_setSiteAliasManager"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../../Drush/SiteAlias/SiteAliasManager.html"><abbr title="Drush\SiteAlias\SiteAliasManager">SiteAliasManager</abbr></a>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_siteAliasManager">siteAliasManager</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/SiteAlias/SiteAliasManagerAwareTrait.html#method_siteAliasManager"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_hasSiteAliasManager">hasSiteAliasManager</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/SiteAlias/SiteAliasManagerAwareTrait.html#method_hasSiteAliasManager"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_rsync">rsync</a>($source, $target, array $extra, $options = [&#039;exclude-paths&#039; =&gt; self::REQ, &#039;include-paths&#039; =&gt; self::REQ, &#039;mode&#039; =&gt; &#039;akz&#039;])
+        
+                                            <p>Rsync Drupal code or files to/from another server using ssh.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_rsyncOptions">rsyncOptions</a>($options)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_preCommandEvent">preCommandEvent</a>(<abbr title="Symfony\Component\Console\Event\ConsoleCommandEvent">ConsoleCommandEvent</abbr> $event)
+        
+                                            <p>Evaluate the path aliases in the source and destination
+parameters. We do this in the pre-command-event so that
+we can set up the configuration object to include options
+from the source and target aliases, if any, so that these
+values may participate in configuration injection.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_injectAliasPathParameterOptions">injectAliasPathParameterOptions</a>($input, $parameterName)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_validate">validate</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
+        
+                                            <p>Validate that passed aliases are valid.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/RsyncCommands.php#L30">line 30</a></div>
+        <code>                    
+    <strong>__construct</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_logger">
+        <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_logger"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L38">line 38</a></div>
+        <code>            protected        <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
+    <strong>logger</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Returns a logger object.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_io">
+        <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_io"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L46">line 46</a></div>
+        <code>            protected        
+    <strong>io</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Override Robo's IO function with our custom style.</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getConfig">
+        <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_getConfig"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L63">line 63</a></div>
+        <code>                    <a href="../../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a>
+    <strong>getConfig</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Replaces same method in ConfigAwareTrait in order to provide a
+DrushConfig as return type. Helps with IDE completion.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>https://stackoverflow.com/a/37687295.</td>
+                <td></td>
+            </tr>
+            </table>
+
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_printFile">
+        <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_printFile"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L74">line 74</a></div>
+        <code>            protected        
+    <strong>printFile</strong>(string $file)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Print the contents of a file.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$file</td>
+                <td>Full path to a file.</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setSiteAliasManager">
+        <div class="location">in <a href="../../../Drush/SiteAlias/SiteAliasManagerAwareTrait.html#method_setSiteAliasManager"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManagerAwareTrait.php#L14">line 14</a></div>
+        <code>                    
+    <strong>setSiteAliasManager</strong>($siteAliasManager)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$siteAliasManager</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_siteAliasManager">
+        <div class="location">in <a href="../../../Drush/SiteAlias/SiteAliasManagerAwareTrait.html#method_siteAliasManager"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManagerAwareTrait.php#L22">line 22</a></div>
+        <code>                    <a href="../../../Drush/SiteAlias/SiteAliasManager.html"><abbr title="Drush\SiteAlias\SiteAliasManager">SiteAliasManager</abbr></a>
+    <strong>siteAliasManager</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../../Drush/SiteAlias/SiteAliasManager.html"><abbr title="Drush\SiteAlias\SiteAliasManager">SiteAliasManager</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_hasSiteAliasManager">
+        <div class="location">in <a href="../../../Drush/SiteAlias/SiteAliasManagerAwareTrait.html#method_hasSiteAliasManager"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManagerAwareTrait.php#L30">line 30</a></div>
+        <code>                    
+    <strong>hasSiteAliasManager</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_rsync">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/RsyncCommands.php#L59">line 59</a></div>
+        <code>                    
+    <strong>rsync</strong>($source, $target, array $extra, $options = [&#039;exclude-paths&#039; =&gt; self::REQ, &#039;include-paths&#039; =&gt; self::REQ, &#039;mode&#039; =&gt; &#039;akz&#039;])
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Rsync Drupal code or files to/from another server using ssh.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$source</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$target</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$extra</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_rsyncOptions">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/RsyncCommands.php#L85">line 85</a></div>
+        <code>                    
+    <strong>rsyncOptions</strong>($options)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_preCommandEvent">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/RsyncCommands.php#L121">line 121</a></div>
+        <code>                    void
+    <strong>preCommandEvent</strong>(<abbr title="Symfony\Component\Console\Event\ConsoleCommandEvent">ConsoleCommandEvent</abbr> $event)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Evaluate the path aliases in the source and destination
+parameters. We do this in the pre-command-event so that
+we can set up the configuration object to include options
+from the source and target aliases, if any, so that these
+values may participate in configuration injection.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Event\ConsoleCommandEvent">ConsoleCommandEvent</abbr></td>
+                <td>$event</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" href="http://php.net/Exception">Exception</a></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_injectAliasPathParameterOptions">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/RsyncCommands.php#L128">line 128</a></div>
+        <code>            protected        
+    <strong>injectAliasPathParameterOptions</strong>($input, $parameterName)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$input</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$parameterName</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_validate">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/RsyncCommands.php#L160">line 160</a></div>
+        <code>                    void
+    <strong>validate</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Validate that passed aliases are valid.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
+                <td>$commandData</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" href="http://php.net/Exception">Exception</a></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+            </div>
+                <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/">Sami, the API Documentation Generator</a>.
+    </div>
+
+        </div>
+    </div>
+    </body>
+
+</html>

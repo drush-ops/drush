@@ -1,0 +1,1895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\Sql\SqlSqlite | Drush API</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/sami.css">
+        <script src="../../js/jquery-1.11.1.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script src="../../js/typeahead.min.js"></script>
+        <script src="../../sami.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    
+    
+    </head>
+
+    <body id="class" data-name="class:Drush_Sql_SqlSqlite" data-root-path="../../">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <script>
+            $('option[data-version="'+window.projectVersion+'"]').prop('selected', true);
+        </script>
+        <form id="search-form" action="../../search.html" method="GET">
+            <span class="glyphicon glyphicon-search"></span>
+            <input name="search"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search">
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                                            <li><a href="../../namespaces.html">Namespaces</a></li>
+                                        <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Sql.html">Sql</a></li><li class="backslash">\</li><li>SqlSqlite</li>
+            </ol>
+        </div>
+                <div id="page-content">
+                
+    <div class="page-header">
+        <h1>
+            SqlSqlite
+                
+        </h1>
+    </div>
+
+    <p>    class
+    <strong>SqlSqlite</strong>        extends <a href="../../Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlSqlite.php">View source</a>)
+</p>
+
+        
+    
+
+    
+            <h2>Traits</h2>
+
+        
+    <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                                            <a href="../../Drush/Sql/SqlTableSelectionTrait.html"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a>
+                                            
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr>
+                                            
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
+            </div>
+    
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_dbSpec">
+                                                                                
+                </td>
+                <td>$dbSpec</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#property_dbSpec"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_queryExtra">
+                                                                                
+                </td>
+                <td>$queryExtra</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#property_queryExtra"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_queryFile">
+                                                                                
+                </td>
+                <td>$queryFile</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#property_queryFile"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_options">
+                                                                                
+                </td>
+                <td>$options</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#property_options"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getExpandedTableSelection">getExpandedTableSelection</a>(array $options)
+        
+                                            <p>Get a list of all table names and expand input that may contain
+wildcards (<code>*</code>) if necessary so that the array returned only contains valid
+table names i.e. actual tables that exist, without a wildcard.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_getExpandedTableSelection"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_expandAndFilterTables">expandAndFilterTables</a>(array $tables, array $db_tables)
+        
+                                            <p>Given the table names in the input array that may contain wildcards (<code>*</code>),
+expand the table names so that the array returned only contains table names
+that exist in the database.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_expandAndFilterTables"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drush\Sql\$tables">$tables</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_expandWildcardTables">expandWildcardTables</a>(array $tables, array $db_tables)
+        
+                                            <p>Expand wildcard tables.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_expandWildcardTables"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drush\Sql\An">An</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_filterTables">filterTables</a>(array $tables, array $db_tables)
+        
+                                            <p>Filters tables.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_filterTables"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getTableSelection">getTableSelection</a>($options)
+        
+                                            <p>Construct an array that places table names in appropriate
+buckets based on whether the table is to be skipped, included
+for structure only, or have structure and data dumped.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_getTableSelection"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getRawTableList">getRawTableList</a>(<abbr title="Drush\Sql\option_name">option_name</abbr> $option_name, array $options)
+        
+                                            <p>Consult the specified options and return the list of tables specified.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_getRawTableList"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method___construct">__construct</a>($db_spec, $options)
+        
+                                            <p>Typically, SqlBase instances are constructed via SqlBase::create($options).</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method___construct"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<a href="../../Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_create">create</a>($options = [])
+        
+                                            <p>Get a driver specific instance of this class.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_create"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getInstance">getInstance</a>($db_spec, $options)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_getInstance"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getDbSpec">getDbSpec</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_getDbSpec"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_setDbSpec">setDbSpec</a>(array $dbSpec)
+        
+                                            <p>Set the current db spec.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_setDbSpec"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_command">command</a>()
+        
+                                            <p>The unix command used to connect to the database.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_connect">connect</a>(bool $hide_password = true)
+        
+                                            <p>A string for connecting to a database.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_connect"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_dump">dump</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_dump"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_dumpCmd">dumpCmd</a>($table_selection)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_dumpFile">dumpFile</a>($file)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_dumpFile"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    boolean
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_query">query</a>(string $query, string $input_file = null, string $result_file = &#039;&#039;)
+        
+                                            <p>Execute a SQL query. Respect simulate mode.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_query"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    boolean
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_alwaysQuery">alwaysQuery</a>(string $query, string $input_file = null, string $result_file = &#039;&#039;)
+        
+                                            <p>Execute a SQL query. Always execute it regardless of simulate mode.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_alwaysQuery"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_logQueryInDebugMode">logQueryInDebugMode</a>($query, $input_file_original)
+        
+                                            <p>Show the query in debug mode and simulate mode</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_logQueryInDebugMode"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_silent">silent</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_silent"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_queryPrefix">queryPrefix</a>($query)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_queryPrefix"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_queryFormat">queryFormat</a>($query)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_queryFormat"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    boolean
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_drop">drop</a>(array $tables)
+        
+                                            <p>Drop specified database.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_createdbSql">createdbSql</a>(string $dbname, boolean $quoted = false)
+        
+                                            <p>Build a SQL string for dropping and creating a database.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    boolean
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_createdb">createdb</a>(boolean $quoted = false)
+        
+                                            <p>Create a new database.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_dropOrCreate">dropOrCreate</a>()
+        
+                                            <p>Drop all tables (if DB exists) or CREATE target database.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_dropOrCreate"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_dbExists">dbExists</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_delete">delete</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_delete"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_creds">creds</a>(bool $hide_password = true)
+        
+                                            <p>Build a fragment connection parameters.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_scheme">scheme</a>()
+        
+                                            <p>The active database driver.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_scheme"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array|null
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_listTables">listTables</a>()
+        
+                                            <p>Extract the name of all existing tables in the given database.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_paramsToOptions">paramsToOptions</a>($parameters)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_paramsToOptions"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    null
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_su">su</a>()
+        
+                                            <p>Adjust DB connection with superuser credentials if provided.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_su"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getOptions">getOptions</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_getOptions"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getOption">getOption</a>($name, $default = null)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_getOption"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_db_spec">db_spec</a>()
+        <small><sup><span class="label label-danger">deprecated</span></sup></small>
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_db_spec"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_get_expanded_table_selection">get_expanded_table_selection</a>($options = [])
+        <small><sup><span class="label label-danger">deprecated</span></sup></small>
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_get_expanded_table_selection"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;array
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_dbSpecFromDbUrl">dbSpecFromDbUrl</a>(<abbr title="Drush\Sql\db_url">db_url</abbr> $db_url)
+        
+                                            <p>Convert from an old-style database URL to an array of database settings.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_dbSpecFromDbUrl"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_getExpandedTableSelection">
+        <div class="location">in <a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_getExpandedTableSelection"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlTableSelectionTrait.php#L18">line 18</a></div>
+        <code>                    array
+    <strong>getExpandedTableSelection</strong>(array $options)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Get a list of all table names and expand input that may contain
+wildcards (<code>*</code>) if necessary so that the array returned only contains valid
+table names i.e. actual tables that exist, without a wildcard.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$options</td>
+                <td>An options array as passed to an Annotated Command.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td>An array of tables with each table name in the appropriate
+  element of the array.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_expandAndFilterTables">
+        <div class="location">in <a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_expandAndFilterTables"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlTableSelectionTrait.php#L48">line 48</a></div>
+        <code>                    array
+    <strong>expandAndFilterTables</strong>(array $tables, array $db_tables)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Given the table names in the input array that may contain wildcards (<code>*</code>),
+expand the table names so that the array returned only contains table names
+that exist in the database.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$tables</td>
+                <td>An array of table names where the table names may contain the
+  <code>*</code> wildcard character.</td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$db_tables</td>
+                <td>The list of tables present in a database.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td>An array of tables with non-existant tables removed.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_expandWildcardTables">
+        <div class="location">in <a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_expandWildcardTables"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlTableSelectionTrait.php#L67">line 67</a></div>
+        <code>                    <abbr title="Drush\Sql\$tables">$tables</abbr>
+    <strong>expandWildcardTables</strong>(array $tables, array $db_tables)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Expand wildcard tables.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$tables</td>
+                <td>An array of table names, some of which may contain wildcards (<code>*</code>).</td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$db_tables</td>
+                <td>An array with all the existing table names in the current database.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Sql\$tables">$tables</abbr></td>
+            <td>array with wildcards resolved to real table names.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_filterTables">
+        <div class="location">in <a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_filterTables"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlTableSelectionTrait.php#L94">line 94</a></div>
+        <code>                    <abbr title="Drush\Sql\An">An</abbr>
+    <strong>filterTables</strong>(array $tables, array $db_tables)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Filters tables.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$tables</td>
+                <td>An array of table names to filter.</td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$db_tables</td>
+                <td>An array with all the existing table names in the current database.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Sql\An">An</abbr></td>
+            <td>array with only valid table names (i.e. all of which actually exist in
+  the database).</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getTableSelection">
+        <div class="location">in <a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_getTableSelection"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlTableSelectionTrait.php#L119">line 119</a></div>
+        <code>                    array
+    <strong>getTableSelection</strong>($options)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Construct an array that places table names in appropriate
+buckets based on whether the table is to be skipped, included
+for structure only, or have structure and data dumped.</p>                    <p>The keys of the array are:
+- skip: tables to be skipped completed in the dump
+- structure: tables to only have their structure i.e. DDL dumped
+- tables: tables to have structure and data dumped</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td>An array of table names with each table name in the appropriate
+  element of the array.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getRawTableList">
+        <div class="location">in <a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_getRawTableList"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlTableSelectionTrait.php#L142">line 142</a></div>
+        <code>                    array
+    <strong>getRawTableList</strong>(<abbr title="Drush\Sql\option_name">option_name</abbr> $option_name, array $options)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Consult the specified options and return the list of tables specified.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drush\Sql\option_name">option_name</abbr></td>
+                <td>$option_name</td>
+                <td>The option name to check: skip-tables, structure-tables
+  or tables.  This function will check both *-key and *-list.</td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$options</td>
+                <td>An options array as passed to an Annotated Command.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td>Returns an array of tables based on the first option
+  found, or an empty array if there were no matches.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method___construct"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L33">line 33</a></div>
+        <code>                    
+    <strong>__construct</strong>($db_spec, $options)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Typically, SqlBase instances are constructed via SqlBase::create($options).</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$db_spec</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_create">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_create"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L46">line 46</a></div>
+        <code>        static            <a href="../../Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a>
+    <strong>create</strong>($options = [])
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Get a driver specific instance of this class.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td>An options array as handed to a command callback.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getInstance">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_getInstance"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L76">line 76</a></div>
+        <code>        static            
+    <strong>getInstance</strong>($db_spec, $options)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$db_spec</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getDbSpec">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_getDbSpec"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L89">line 89</a></div>
+        <code>                    
+    <strong>getDbSpec</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setDbSpec">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_setDbSpec"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L99">line 99</a></div>
+        <code>                    
+    <strong>setDbSpec</strong>(array $dbSpec)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Set the current db spec.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$dbSpec</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_command">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlSqlite.php#L9">line 9</a></div>
+        <code>                    string
+    <strong>command</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>The unix command used to connect to the database.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_connect">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_connect"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L121">line 121</a></div>
+        <code>                    string
+    <strong>connect</strong>(bool $hide_password = true)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>A string for connecting to a database.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>bool</td>
+                <td>$hide_password</td>
+                <td>If TRUE, DBMS should try to hide password from process list.
+ On mysql, that means using --defaults-file to supply the user+password.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_dump">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_dump"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L133">line 133</a></div>
+        <code>                    
+    <strong>dump</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_dumpCmd">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlSqlite.php#L96">line 96</a></div>
+        <code>                    
+    <strong>dumpCmd</strong>($table_selection)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$table_selection</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_dumpFile">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_dumpFile"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L182">line 182</a></div>
+        <code>                    
+    <strong>dumpFile</strong>($file)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$file</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_query">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_query"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L219">line 219</a></div>
+        <code>                    boolean
+    <strong>query</strong>(string $query, string $input_file = null, string $result_file = &#039;&#039;)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Execute a SQL query. Respect simulate mode.</p>                    <p>If you don't want to query results to print during --debug then
+provide a $result_file whose value can be drush_bit_bucket().</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$query</td>
+                <td>The SQL to be executed. Should be NULL if $input_file is provided.</td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$input_file</td>
+                <td>A path to a file containing the SQL to be executed.</td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$result_file</td>
+                <td>A path to save query results to. Can be drush_bit_bucket() if desired.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>boolean</td>
+            <td>TRUE on success, FALSE on failure</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_alwaysQuery">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_alwaysQuery"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L243">line 243</a></div>
+        <code>                    boolean
+    <strong>alwaysQuery</strong>(string $query, string $input_file = null, string $result_file = &#039;&#039;)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Execute a SQL query. Always execute it regardless of simulate mode.</p>                    <p>If you don't want to query results to print during --debug then
+provide a $result_file whose value can be drush_bit_bucket().</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$query</td>
+                <td>The SQL to be executed. Should be NULL if $input_file is provided.</td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$input_file</td>
+                <td>A path to a file containing the SQL to be executed.</td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$result_file</td>
+                <td>A path to save query results to. Can be drush_bit_bucket() if desired.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>boolean</td>
+            <td>TRUE on success, FALSE on failure</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_logQueryInDebugMode">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_logQueryInDebugMode"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L292">line 292</a></div>
+        <code>            protected        
+    <strong>logQueryInDebugMode</strong>($query, $input_file_original)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Show the query in debug mode and simulate mode</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$query</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$input_file_original</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_silent">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_silent"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L305">line 305</a></div>
+        <code>                    
+    <strong>silent</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_queryPrefix">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_queryPrefix"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L310">line 310</a></div>
+        <code>                    
+    <strong>queryPrefix</strong>($query)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$query</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_queryFormat">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_queryFormat"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L323">line 323</a></div>
+        <code>                    
+    <strong>queryFormat</strong>($query)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$query</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_drop">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlSqlite.php#L81">line 81</a></div>
+        <code>                    boolean
+    <strong>drop</strong>(array $tables)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Drop specified database.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$tables</td>
+                <td>An array of table names</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>boolean</td>
+            <td>True if successful, FALSE if failed.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_createdbSql">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlSqlite.php#L22">line 22</a></div>
+        <code>                    string
+    <strong>createdbSql</strong>(string $dbname, boolean $quoted = false)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Build a SQL string for dropping and creating a database.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$dbname</td>
+                <td>dbname
+  The database name.</td>
+            </tr>
+                    <tr>
+                <td>boolean</td>
+                <td>$quoted</td>
+                <td>Quote the database name. Mysql uses backticks to quote which can cause problems
+  in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_createdb">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlSqlite.php#L34">line 34</a></div>
+        <code>                    boolean
+    <strong>createdb</strong>(boolean $quoted = false)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Create a new database.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>boolean</td>
+                <td>$quoted</td>
+                <td>Quote the database name. Mysql uses backticks to quote which can cause problems
+  in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>boolean</td>
+            <td>True if successful, FALSE otherwise.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_dropOrCreate">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_dropOrCreate"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L384">line 384</a></div>
+        <code>                    
+    <strong>dropOrCreate</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Drop all tables (if DB exists) or CREATE target database.</p>                    <p>return boolean
+  TRUE or FALSE depending on success.</p>                            </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_dbExists">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlSqlite.php#L54">line 54</a></div>
+        <code>                    
+    <strong>dbExists</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_delete">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_delete"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L402">line 402</a></div>
+        <code>                    
+    <strong>delete</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_creds">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlSqlite.php#L14">line 14</a></div>
+        <code>                    string
+    <strong>creds</strong>(bool $hide_password = true)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Build a fragment connection parameters.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>bool</td>
+                <td>$hide_password</td>
+                <td>If TRUE, DBMS should try to hide password from process list.
+ On mysql, that means using --defaults-file to supply the user+password.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_scheme">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_scheme"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L422">line 422</a></div>
+        <code>                    string
+    <strong>scheme</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>The active database driver.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_listTables">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlSqlite.php#L59">line 59</a></div>
+        <code>                    array|null
+    <strong>listTables</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Extract the name of all existing tables in the given database.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array|null</td>
+            <td>An array of table names which exist in the current database.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_paramsToOptions">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_paramsToOptions"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L443">line 443</a></div>
+        <code>                    
+    <strong>paramsToOptions</strong>($parameters)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$parameters</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_su">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_su"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L465">line 465</a></div>
+        <code>                    null
+    <strong>su</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Adjust DB connection with superuser credentials if provided.</p>                    <p>The options 'db-su' and 'db-su-pw' will be retrieved from the
+specified site alias record.</p>                            </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>null</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getOptions">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_getOptions"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L488">line 488</a></div>
+        <code>                    array
+    <strong>getOptions</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getOption">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_getOption"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L493">line 493</a></div>
+        <code>                    
+    <strong>getOption</strong>($name, $default = null)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$name</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$default</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_db_spec">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_db_spec"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L502">line 502</a></div>
+        <code>                    
+    <strong>db_spec</strong>()
+        <small><sup><span class="label label-danger">deprecated</span></sup></small></code>
+    </h3>
+    <div class="details">
+            
+            <p>
+                <small><sup><span class="label label-danger">deprecated</span></sup></small>
+                            <tr>
+                    <td>.</td>
+                    <td></td>
+                </tr>
+                    </p>
+    
+
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_get_expanded_table_selection">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_get_expanded_table_selection"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L513">line 513</a></div>
+        <code>                    array
+    <strong>get_expanded_table_selection</strong>($options = [])
+        <small><sup><span class="label label-danger">deprecated</span></sup></small></code>
+    </h3>
+    <div class="details">
+            
+            <p>
+                <small><sup><span class="label label-danger">deprecated</span></sup></small>
+                            <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+                    </p>
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_dbSpecFromDbUrl">
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_dbSpecFromDbUrl"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L527">line 527</a></div>
+        <code>        static            array
+    <strong>dbSpecFromDbUrl</strong>(<abbr title="Drush\Sql\db_url">db_url</abbr> $db_url)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Convert from an old-style database URL to an array of database settings.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drush\Sql\db_url">db_url</abbr></td>
+                <td>$db_url</td>
+                <td>A Drupal 6 db url string to convert, or an array with a 'default' element.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td>An array of database values containing only the 'default' element of
+  the db url. If the parse fails the array is empty.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+            </div>
+                <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/">Sami, the API Documentation Generator</a>.
+    </div>
+
+        </div>
+    </div>
+    </body>
+
+</html>

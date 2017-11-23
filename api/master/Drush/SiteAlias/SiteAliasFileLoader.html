@@ -1,0 +1,1744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\SiteAlias\SiteAliasFileLoader | Drush API</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/sami.css">
+        <script src="../../js/jquery-1.11.1.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script src="../../js/typeahead.min.js"></script>
+        <script src="../../sami.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    
+    
+    </head>
+
+    <body id="class" data-name="class:Drush_SiteAlias_SiteAliasFileLoader" data-root-path="../../">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <script>
+            $('option[data-version="'+window.projectVersion+'"]').prop('selected', true);
+        </script>
+        <form id="search-form" action="../../search.html" method="GET">
+            <span class="glyphicon glyphicon-search"></span>
+            <input name="search"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search">
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                                            <li><a href="../../namespaces.html">Namespaces</a></li>
+                                        <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/SiteAlias.html">SiteAlias</a></li><li class="backslash">\</li><li>SiteAliasFileLoader</li>
+            </ol>
+        </div>
+                <div id="page-content">
+                
+    <div class="page-header">
+        <h1>
+            SiteAliasFileLoader
+                
+        </h1>
+    </div>
+
+    <p>    class
+    <strong>SiteAliasFileLoader</strong>        (<a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php">View source</a>)
+</p>
+
+        
+    
+
+            <div class="description">
+            <p>Discover alias files of two types:</p>            <p><ul>
+<li>sitename.alias.yml: contains multiple aliases, one for each of the
+environments of 'sitename'.</li>
+<li>group.aliases.yml: contains multiple aliases for all of the sites
+in the group 'group'. Each site can have multiple aliases for its
+environments.</li>
+</ul>
+
+<p>If an alais name is fully specified, with group, sitename and environment,
+then Drush will load only the group alias file that contains the alias.
+Otherwise, Drush will first search for the provided alias name in a
+single-alias alias file. If no such file can be found, then it will try
+all sitenames in all group alias files.</p>                    </div>
+    
+    
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_discovery">
+                                        protected                                        <a href="../../Drush/SiteAlias/SiteAliasFileDiscovery.html"><abbr title="Drush\SiteAlias\SiteAliasFileDiscovery">SiteAliasFileDiscovery</abbr></a>
+                </td>
+                <td>$discovery</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method___construct">__construct</a>(<a href="../../Drush/SiteAlias/SiteAliasFileDiscovery.html"><abbr title="Drush\SiteAlias\SiteAliasFileDiscovery">SiteAliasFileDiscovery</abbr></a>|null $discovery = null)
+        
+                                            <p>SiteAliasFileLoader constructor</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drush\SiteAlias\$this">$this</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_addSearchLocation">addSearchLocation</a>(string $path)
+        
+                                            <p>Add a search location to our discovery object.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Drush/SiteAlias/SiteAliasFileDiscovery.html"><abbr title="Drush\SiteAlias\SiteAliasFileDiscovery">SiteAliasFileDiscovery</abbr></a>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_discovery">discovery</a>()
+        
+                                            <p>Return our discovery object.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_load">load</a>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName)
+        
+                                            <p>Load the file containing the specified alias name.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>[]
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_loadAll">loadAll</a>()
+        
+                                            <p>Return a list of all site aliases loadable from any findable path.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string[]
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_listAll">listAll</a>()
+        
+                                            <p>Return a list of all available alias files. Does not include
+legacy files.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>[]|<abbr title="Drush\SiteAlias\false">false</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_loadMultiple">loadMultiple</a>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName)
+        
+                                            <p>Given an alias name that might represent multiple sites,
+return a list of all matching alias records. If nothing was found,
+or the name represents a single site + env, then we take
+no action and return <code>false</code>.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>[]
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_createAliasRecordsFromSiteData">createAliasRecordsFromSiteData</a>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName, $siteData)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool|array|<a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getSiteDataForLoadMultiple">getSiteDataForLoadMultiple</a>(string $pathToGroup, string $sitenameInGroup, string $singleSitename)
+        
+                                            <p>Given a path to an alias file, return multiple alias records for
+some specific site and its environments. This will either extract
+one site collection from a group alias file (group.aliases.yml), or
+load all of a the data from a single site alias file (site.alias.yml)</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_storeAliasRecordInResut">storeAliasRecordInResut</a>(<abbr title="Drush\SiteAlias\&AliasRecord">&AliasRecord</abbr>[] $result, <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a> $aliasRecord)
+        
+                                            <p>Store an alias record in a list. If the alias record has
+a known name, then the key of the list will be the record's name.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_loadSingleAliasFile">loadSingleAliasFile</a>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName)
+        
+                                            <p>If the alias name is '@sitename', or if it is '@sitename.env', then
+look for a sitename.alias.yml file that contains it.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>[]
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_loadSingleSiteAliasFileAtPath">loadSingleSiteAliasFileAtPath</a>(string $path)
+        
+                                            <p>Given only the path to an alias file <code>site.alias.yml</code>, return all
+of the alias records for every environment stored in that file.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_groupNameFromPath">groupNameFromPath</a>(string $path)
+        
+                                            <p>Given the path to a group alias file <code>group.aliases.yml</code>, return
+the <code>group</code> part.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_siteNameFromPath">siteNameFromPath</a>(string $path)
+        
+                                            <p>Given the path to a single site alias file <code>site.alias.yml</code>,
+return the <code>site</code> part.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_basenameWithoutExtension">basenameWithoutExtension</a>(string $path, string $extension)
+        
+                                            <p>Chop off the <code>aliases.yml</code> or <code>alias.yml</code> part of a path. This works
+just like <code>basename</code>, except it will throw if the provided path
+does not end in the specified extension.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_loadSingleAliasFileWithNameAtPath">loadSingleAliasFileWithNameAtPath</a>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName, string $path)
+        
+                                            <p>Given an alias name and a path, load the data from the path
+and process it as needed to generate the alias record.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_loadNamedGroupAliasFile">loadNamedGroupAliasFile</a>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName)
+        
+                                            <p>If the alias name is '@group.sitename' or '@group.sitename.env',
+then look for a group.aliases.yml file that contains 'sitename'.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>[]
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_loadAllRecordsFromGroupAliasPath">loadAllRecordsFromGroupAliasPath</a>(string $path)
+        
+                                            <p>Given a <code>group.aliases.yml</code> file, load all of the alias records
+for all environments.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_loadAliasRecordFromGroupAliasPath">loadAliasRecordFromGroupAliasPath</a>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName, string $path)
+        
+                                            <p>Load a single alias from a group alias path. Pick the best default
+environment if no environment name was specifically provided.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array|bool
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_loadSiteDataFromPath">loadSiteDataFromPath</a>(string $path)
+        
+                                            <p>Load the yml from the given path</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_loadSiteDataFromGroup">loadSiteDataFromGroup</a>(string $path, string $sitenameInGroup)
+        
+                                            <p>Given a path to a group alias file and the name of one entry in
+that file, return the site data for that alias.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_fetchAliasRecordFromGroupAliasData">fetchAliasRecordFromGroupAliasData</a>($aliasName, $data, $group = &#039;&#039;)
+        
+                                            <p>Given data from a <code>group.aliases.yml</code> file, look up and create
+a single alias record.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_searchAllGroupAliasFiles">searchAllGroupAliasFiles</a>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName)
+        
+                                            <p>If the alias name is '@sitename', or if it is '@sitename.env', and
+there was not a sitename.alias.yml file found, then we must search
+all available 'group.aliases.yml' and 'aliases.yml' files until we
+find a matching alias.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_loadYml">loadYml</a>(string $path)
+        
+                                            <p>Load the yaml contents of the specified file.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array|<abbr title="Drush\SiteAlias\false">false</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_fetchSiteAliasDataFromGroupAliasFile">fetchSiteAliasDataFromGroupAliasFile</a>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName, array $data)
+        
+                                            <p>Given data loaded from a group alias file, return the data for the
+sitename specified by the provided alias name, or 'false' if it does
+not exist.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_fetchAliasRecordFromSiteAliasData">fetchAliasRecordFromSiteAliasData</a>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName, <abbr title="Consolidation\Config\Loader\ConfigProcessor">ConfigProcessor</abbr> $processor, array $data, $group = &#039;&#039;)
+        
+                                            <p>Given an array containing site alias data, return an alias record
+containing the data for the requested record. If there is a 'common'
+section, then merge that in as well.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_siteEnvExists">siteEnvExists</a>(array $data, string $env)
+        
+                                            <p>Determine whether there is a valid-looking environment '$env' in the
+provided site alias data.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_adjustIfSingleAlias">adjustIfSingleAlias</a>(array $data)
+        
+                                            <p>Adjust the alias data for a single-site alias. Usually, a .yml alias
+file will contain multiple entries, one for each of the environments
+of an alias. If there are no environments</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_detectSingleAlias">detectSingleAlias</a>(array $data)
+        
+                                            <p>A single-environment alias looks something like this:</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getEnvironmentName">getEnvironmentName</a>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName, array $data)
+        
+                                            <p>Return the name of the environment requested.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L35">line 35</a></div>
+        <code>                    
+    <strong>__construct</strong>(<a href="../../Drush/SiteAlias/SiteAliasFileDiscovery.html"><abbr title="Drush\SiteAlias\SiteAliasFileDiscovery">SiteAliasFileDiscovery</abbr></a>|null $discovery = null)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>SiteAliasFileLoader constructor</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/SiteAlias/SiteAliasFileDiscovery.html"><abbr title="Drush\SiteAlias\SiteAliasFileDiscovery">SiteAliasFileDiscovery</abbr></a>|null</td>
+                <td>$discovery</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addSearchLocation">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L47">line 47</a></div>
+        <code>                    <abbr title="Drush\SiteAlias\$this">$this</abbr>
+    <strong>addSearchLocation</strong>(string $path)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Add a search location to our discovery object.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$path</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\SiteAlias\$this">$this</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_discovery">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L58">line 58</a></div>
+        <code>                    <a href="../../Drush/SiteAlias/SiteAliasFileDiscovery.html"><abbr title="Drush\SiteAlias\SiteAliasFileDiscovery">SiteAliasFileDiscovery</abbr></a>
+    <strong>discovery</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return our discovery object.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/SiteAlias/SiteAliasFileDiscovery.html"><abbr title="Drush\SiteAlias\SiteAliasFileDiscovery">SiteAliasFileDiscovery</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_load">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L70">line 70</a></div>
+        <code>                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr>
+    <strong>load</strong>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Load the file containing the specified alias name.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a></td>
+                <td>$aliasName</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loadAll">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L94">line 94</a></div>
+        <code>                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>[]
+    <strong>loadAll</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return a list of all site aliases loadable from any findable path.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_listAll">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L118">line 118</a></div>
+        <code>                    string[]
+    <strong>listAll</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return a list of all available alias files. Does not include
+legacy files.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loadMultiple">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L135">line 135</a></div>
+        <code>                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>[]|<abbr title="Drush\SiteAlias\false">false</abbr>
+    <strong>loadMultiple</strong>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Given an alias name that might represent multiple sites,
+return a list of all matching alias records. If nothing was found,
+or the name represents a single site + env, then we take
+no action and return <code>false</code>.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a></td>
+                <td>$aliasName</td>
+                <td>The alias name to look up.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>[]|<abbr title="Drush\SiteAlias\false">false</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_createAliasRecordsFromSiteData">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L183">line 183</a></div>
+        <code>            protected        <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>[]
+    <strong>createAliasRecordsFromSiteData</strong>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName, $siteData)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a></td>
+                <td>$aliasName</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$siteData</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getSiteDataForLoadMultiple">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L212">line 212</a></div>
+        <code>            protected        bool|array|<a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>
+    <strong>getSiteDataForLoadMultiple</strong>(string $pathToGroup, string $sitenameInGroup, string $singleSitename)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Given a path to an alias file, return multiple alias records for
+some specific site and its environments. This will either extract
+one site collection from a group alias file (group.aliases.yml), or
+load all of a the data from a single site alias file (site.alias.yml)</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$pathToGroup</td>
+                <td>Location of file containing group data</td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$sitenameInGroup</td>
+                <td>If the alias is @group.sitename, then
+  this parameter will hold the sitename.</td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$singleSitename</td>
+                <td>If the alias is @sitename or @sitename.env,
+  then this parameter will hold the sitename.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool|array|<a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_storeAliasRecordInResut">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L234">line 234</a></div>
+        <code>            protected        
+    <strong>storeAliasRecordInResut</strong>(<abbr title="Drush\SiteAlias\&AliasRecord">&AliasRecord</abbr>[] $result, <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a> $aliasRecord)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Store an alias record in a list. If the alias record has
+a known name, then the key of the list will be the record's name.</p>                    <p>Otherwise, append the record to the end of the list with
+a numeric index.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drush\SiteAlias\&AliasRecord">&AliasRecord</abbr>[]</td>
+                <td>$result</td>
+                <td>list of alias records</td>
+            </tr>
+                    <tr>
+                <td><a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a></td>
+                <td>$aliasRecord</td>
+                <td>one more alias to store in the result</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loadSingleAliasFile">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L255">line 255</a></div>
+        <code>            protected        <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr>
+    <strong>loadSingleAliasFile</strong>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>If the alias name is '@sitename', or if it is '@sitename.env', then
+look for a sitename.alias.yml file that contains it.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a></td>
+                <td>$aliasName</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loadSingleSiteAliasFileAtPath">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L283">line 283</a></div>
+        <code>            protected        <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>[]
+    <strong>loadSingleSiteAliasFileAtPath</strong>(string $path)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Given only the path to an alias file <code>site.alias.yml</code>, return all
+of the alias records for every environment stored in that file.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$path</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_groupNameFromPath">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L297">line 297</a></div>
+        <code>            protected        string
+    <strong>groupNameFromPath</strong>(string $path)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Given the path to a group alias file <code>group.aliases.yml</code>, return
+the <code>group</code> part.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$path</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_siteNameFromPath">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L313">line 313</a></div>
+        <code>            protected        
+    <strong>siteNameFromPath</strong>(string $path)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Given the path to a single site alias file <code>site.alias.yml</code>,
+return the <code>site</code> part.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$path</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_basenameWithoutExtension">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L328">line 328</a></div>
+        <code>            protected        string
+    <strong>basenameWithoutExtension</strong>(string $path, string $extension)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Chop off the <code>aliases.yml</code> or <code>alias.yml</code> part of a path. This works
+just like <code>basename</code>, except it will throw if the provided path
+does not end in the specified extension.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$path</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$extension</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" href="http://php.net/Exception">Exception</a></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loadSingleAliasFileWithNameAtPath">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L346">line 346</a></div>
+        <code>            protected        <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr>
+    <strong>loadSingleAliasFileWithNameAtPath</strong>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName, string $path)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Given an alias name and a path, load the data from the path
+and process it as needed to generate the alias record.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a></td>
+                <td>$aliasName</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$path</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loadNamedGroupAliasFile">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L364">line 364</a></div>
+        <code>            protected        <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr>
+    <strong>loadNamedGroupAliasFile</strong>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>If the alias name is '@group.sitename' or '@group.sitename.env',
+then look for a group.aliases.yml file that contains 'sitename'.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a></td>
+                <td>$aliasName</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loadAllRecordsFromGroupAliasPath">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L392">line 392</a></div>
+        <code>            protected        <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>[]
+    <strong>loadAllRecordsFromGroupAliasPath</strong>(string $path)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Given a <code>group.aliases.yml</code> file, load all of the alias records
+for all environments.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$path</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loadAliasRecordFromGroupAliasPath">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L421">line 421</a></div>
+        <code>            protected        <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr>
+    <strong>loadAliasRecordFromGroupAliasPath</strong>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName, string $path)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Load a single alias from a group alias path. Pick the best default
+environment if no environment name was specifically provided.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a></td>
+                <td>$aliasName</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$path</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loadSiteDataFromPath">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L441">line 441</a></div>
+        <code>            protected        array|bool
+    <strong>loadSiteDataFromPath</strong>(string $path)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Load the yml from the given path</p>                    <p>TODO: Maybe this could be removed and <code>loadYml</code> could be called directly.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$path</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array|bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loadSiteDataFromGroup">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L458">line 458</a></div>
+        <code>            protected        <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr>
+    <strong>loadSiteDataFromGroup</strong>(string $path, string $sitenameInGroup)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Given a path to a group alias file and the name of one entry in
+that file, return the site data for that alias.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$path</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$sitenameInGroup</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_fetchAliasRecordFromGroupAliasData">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L478">line 478</a></div>
+        <code>            protected        
+    <strong>fetchAliasRecordFromGroupAliasData</strong>($aliasName, $data, $group = &#039;&#039;)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Given data from a <code>group.aliases.yml</code> file, look up and create
+a single alias record.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$aliasName</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$data</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$group</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_searchAllGroupAliasFiles">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L503">line 503</a></div>
+        <code>            protected        <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr>
+    <strong>searchAllGroupAliasFiles</strong>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>If the alias name is '@sitename', or if it is '@sitename.env', and
+there was not a sitename.alias.yml file found, then we must search
+all available 'group.aliases.yml' and 'aliases.yml' files until we
+find a matching alias.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a></td>
+                <td>$aliasName</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loadYml">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L530">line 530</a></div>
+        <code>            protected        array
+    <strong>loadYml</strong>(string $path)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Load the yaml contents of the specified file.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$path</td>
+                <td>Path to file to load</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_fetchSiteAliasDataFromGroupAliasFile">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L548">line 548</a></div>
+        <code>            protected        array|<abbr title="Drush\SiteAlias\false">false</abbr>
+    <strong>fetchSiteAliasDataFromGroupAliasFile</strong>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName, array $data)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Given data loaded from a group alias file, return the data for the
+sitename specified by the provided alias name, or 'false' if it does
+not exist.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a></td>
+                <td>$aliasName</td>
+                <td>the alias we are loading</td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$data</td>
+                <td>data from the group alias file</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array|<abbr title="Drush\SiteAlias\false">false</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_fetchAliasRecordFromSiteAliasData">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L567">line 567</a></div>
+        <code>            protected        <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr>
+    <strong>fetchAliasRecordFromSiteAliasData</strong>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName, <abbr title="Consolidation\Config\Loader\ConfigProcessor">ConfigProcessor</abbr> $processor, array $data, $group = &#039;&#039;)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Given an array containing site alias data, return an alias record
+containing the data for the requested record. If there is a 'common'
+section, then merge that in as well.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a></td>
+                <td>$aliasName</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\Config\Loader\ConfigProcessor">ConfigProcessor</abbr></td>
+                <td>$processor</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$data</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$group</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_siteEnvExists">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L595">line 595</a></div>
+        <code>            protected        bool
+    <strong>siteEnvExists</strong>(array $data, string $env)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Determine whether there is a valid-looking environment '$env' in the
+provided site alias data.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$data</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$env</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_adjustIfSingleAlias">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L612">line 612</a></div>
+        <code>            protected        array
+    <strong>adjustIfSingleAlias</strong>(array $data)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Adjust the alias data for a single-site alias. Usually, a .yml alias
+file will contain multiple entries, one for each of the environments
+of an alias. If there are no environments</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$data</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_detectSingleAlias">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L650">line 650</a></div>
+        <code>            protected        bool
+    <strong>detectSingleAlias</strong>(array $data)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>A single-environment alias looks something like this:</p>                    <p><hr />
+
+<p>root: /path/to/drupal
+  uri: https://mysite.org</p>
+
+<p>A multiple-environment alias looks something like this:</p>
+
+<hr />
+
+<p>default: dev
+  dev:
+    root: /path/to/dev
+    uri: https://dev.mysite.org
+  stage:
+    root: /path/to/stage
+    uri: https://stage.mysite.org</p>
+
+<p>The differentiator between these two is that the multi-environment
+alias always has top-level elements that are associative arrays, and
+the single-environment alias never does.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$data</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getEnvironmentName">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileLoader.php#L668">line 668</a></div>
+        <code>            protected        string
+    <strong>getEnvironmentName</strong>(<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a> $aliasName, array $data)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return the name of the environment requested.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a></td>
+                <td>$aliasName</td>
+                <td>the alias we are loading</td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$data</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+            </div>
+                <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/">Sami, the API Documentation Generator</a>.
+    </div>
+
+        </div>
+    </div>
+    </body>
+
+</html>

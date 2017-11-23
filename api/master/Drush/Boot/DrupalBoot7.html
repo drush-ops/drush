@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\Boot\DrupalBoot7 | Drush API</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/sami.css">
+        <script src="../../js/jquery-1.11.1.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script src="../../js/typeahead.min.js"></script>
+        <script src="../../sami.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    
+    
+    </head>
+
+    <body id="class" data-name="class:Drush_Boot_DrupalBoot7" data-root-path="../../">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <script>
+            $('option[data-version="'+window.projectVersion+'"]').prop('selected', true);
+        </script>
+        <form id="search-form" action="../../search.html" method="GET">
+            <span class="glyphicon glyphicon-search"></span>
+            <input name="search"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search">
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                                            <li><a href="../../namespaces.html">Namespaces</a></li>
+                                        <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Boot.html">Boot</a></li><li class="backslash">\</li><li>DrupalBoot7</li>
+            </ol>
+        </div>
+                <div id="page-content">
+                
+    <div class="page-header">
+        <h1>
+            DrupalBoot7
+                
+        </h1>
+    </div>
+
+    <p>    class
+    <strong>DrupalBoot7</strong>        extends <a href="../../Drush/Boot/DrupalBoot.html"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot7.php">View source</a>)
+</p>
+
+        
+    
+
+    
+            <h2>Traits</h2>
+
+        
+    <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                                            <abbr title="Psr\Log\LoggerAwareTrait">LoggerAwareTrait</abbr>
+                                            
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <abbr title="League\Container\ContainerAwareTrait">ContainerAwareTrait</abbr>
+                                            
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
+            </div>
+    
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_uri">
+                                        protected                                        
+                </td>
+                <td>$uri</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../Drush/Boot/BaseBoot.html#property_uri"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></small></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method___construct">__construct</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/BaseBoot.html#method___construct"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_findUri">findUri</a>($root, $cwd)
+        
+                                            <p>Select the best URI for the provided cwd. Only called
+if the user did not explicitly specify a URI.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/DrupalBoot.html#method_findUri"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_setUri">setUri</a>(string $uri)
+        
+                                            <p>Inject the uri for the specific site to be bootstrapped</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/BaseBoot.html#method_setUri"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drush\Boot\TRUE">TRUE</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_validRoot">validRoot</a>($path)
+        
+                                            <p>This function determines if the specified path points to
+the root directory of a CMS that can be bootstrapped by
+the specific subclass that implements it.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|NULL
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getVersion">getVersion</a>($drupal_root)
+        
+                                            <p>Given a site root directory, determine the exact version of the software.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_commandDefaults">commandDefaults</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/BaseBoot.html#method_commandDefaults"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_reportCommandError">reportCommandError</a>($command)
+        
+                                            <p>Called by Drush if a command is not found, or if the
+command was found, but did not meet requirements.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/BaseBoot.html#method_reportCommandError"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_bootstrapPhases">bootstrapPhases</a>()
+        
+                                            <p>Bootstrap phases used with Drupal:</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/DrupalBoot.html#method_bootstrapPhases"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_bootstrapPhaseMap">bootstrapPhaseMap</a>()
+        
+                                            <p>Return an array mapping from bootstrap phase shorthand
+strings (e.g. "full") to the corresponding bootstrap
+phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/DrupalBoot.html#method_bootstrapPhaseMap"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_lookUpPhaseIndex">lookUpPhaseIndex</a>($phase)
+        
+                                            <p>Convert from a phase shorthand or constant to a phase index.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/BaseBoot.html#method_lookUpPhaseIndex"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_bootstrapDrush">bootstrapDrush</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/BaseBoot.html#method_bootstrapDrush"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_hasRegisteredSymfonyCommand">hasRegisteredSymfonyCommand</a>($application, $name)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/BaseBoot.html#method_hasRegisteredSymfonyCommand"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_inflect">inflect</a>($object)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/BaseBoot.html#method_inflect"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_terminate">terminate</a>()
+        
+                                            <p>This method is called during the shutdown of drush.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/BaseBoot.html#method_terminate"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_scanUpForUri">scanUpForUri</a>($root, $scan)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/DrupalBoot.html#method_scanUpForUri"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_confPath">confPath</a>($require_settings = true, $reset = false)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/DrupalBoot.html#method_confPath"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_bootstrapDrupalRootValidate">bootstrapDrupalRootValidate</a>()
+        
+                                            <p>Validate the DRUSH_BOOTSTRAP_DRUPAL_ROOT phase.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/DrupalBoot.html#method_bootstrapDrupalRootValidate"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_legacyValidRootCheck">legacyValidRootCheck</a>($root)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/DrupalBoot.html#method_legacyValidRootCheck"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_bootstrapDrupalRoot">bootstrapDrupalRoot</a>()
+        
+                                            <p>Bootstrap Drush with a valid Drupal Directory.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/DrupalBoot.html#method_bootstrapDrupalRoot"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_bootstrapDrupalSiteValidate">bootstrapDrupalSiteValidate</a>()
+        
+                                            <p>VALIDATE the DRUSH_BOOTSTRAP_DRUPAL_SITE phase.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/DrupalBoot.html#method_bootstrapDrupalSiteValidate"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_bootstrapDoDrupalSite">bootstrapDoDrupalSite</a>()
+        
+                                            <p>Called by bootstrapDrupalSite to do the main work
+of the drush drupal site bootstrap.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/DrupalBoot.html#method_bootstrapDoDrupalSite"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_bootstrapDrupalSite">bootstrapDrupalSite</a>()
+        
+                                            <p>Initialize a site on the Drupal root.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/DrupalBoot.html#method_bootstrapDrupalSite"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_bootstrapDrupalConfiguration">bootstrapDrupalConfiguration</a>()
+        
+                                            <p>Initialize and load the Drupal configuration files.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_bootstrapDrupalDatabaseValidate">bootstrapDrupalDatabaseValidate</a>()
+        
+                                            <p>Validate the DRUSH_BOOTSTRAP_DRUPAL_DATABASE phase</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drush\Boot\TRUE">TRUE</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_bootstrapDrupalDatabaseHasTable">bootstrapDrupalDatabaseHasTable</a>($required_tables)
+        
+                                            <p>Test to see if the Drupal database has a specified
+table or tables.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/DrupalBoot.html#method_bootstrapDrupalDatabaseHasTable"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_bootstrapDrupalDatabase">bootstrapDrupalDatabase</a>()
+        
+                                            <p>Boostrap the Drupal database.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_bootstrapDrupalFull">bootstrapDrupalFull</a>()
+        
+                                            <p>Attempt to load the full Drupal system.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getProfile">getProfile</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_addLogger">addLogger</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_bootstrapDrupalCore">bootstrapDrupalCore</a>($drupal_root)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location">in <a href="../../Drush/Boot/BaseBoot.html#method___construct"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/BaseBoot.php#L22">line 22</a></div>
+        <code>                    
+    <strong>__construct</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_findUri">
+        <div class="location">in <a href="../../Drush/Boot/DrupalBoot.html#method_findUri"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot.php#L19">line 19</a></div>
+        <code>                    
+    <strong>findUri</strong>($root, $cwd)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Select the best URI for the provided cwd. Only called
+if the user did not explicitly specify a URI.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$root</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$cwd</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setUri">
+        <div class="location">in <a href="../../Drush/Boot/BaseBoot.html#method_setUri"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/BaseBoot.php#L31">line 31</a></div>
+        <code>                    
+    <strong>setUri</strong>(string $uri)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Inject the uri for the specific site to be bootstrapped</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$uri</td>
+                <td>Site to bootstrap</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_validRoot">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot7.php#L10">line 10</a></div>
+        <code>                    <abbr title="Drush\Boot\TRUE">TRUE</abbr>
+    <strong>validRoot</strong>($path)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>This function determines if the specified path points to
+the root directory of a CMS that can be bootstrapped by
+the specific subclass that implements it.</p>                    <p>These functions should be written such that one and only
+one class will return TRUE for any given $path.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$path</td>
+                <td>to a directory to test</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Boot\TRUE">TRUE</abbr></td>
+            <td>if $path is a valid root directory</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getVersion">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot7.php#L22">line 22</a></div>
+        <code>                    string|NULL
+    <strong>getVersion</strong>($drupal_root)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Given a site root directory, determine the exact version of the software.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$drupal_root</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|NULL</td>
+            <td>The version string for the current version of the software, e.g. 8.1.3</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_commandDefaults">
+        <div class="location">in <a href="../../Drush/Boot/BaseBoot.html#method_commandDefaults"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/BaseBoot.php#L44">line 44</a></div>
+        <code>                    
+    <strong>commandDefaults</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_reportCommandError">
+        <div class="location">in <a href="../../Drush/Boot/BaseBoot.html#method_reportCommandError"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/BaseBoot.php#L48">line 48</a></div>
+        <code>                    
+    <strong>reportCommandError</strong>($command)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Called by Drush if a command is not found, or if the
+command was found, but did not meet requirements.</p>                    <p>The implementation in BaseBoot should be sufficient
+for most cases, so this method typically will not need
+to be overridden.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$command</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_bootstrapPhases">
+        <div class="location">in <a href="../../Drush/Boot/DrupalBoot.html#method_bootstrapPhases"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot.php#L77">line 77</a></div>
+        <code>                    array
+    <strong>bootstrapPhases</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Bootstrap phases used with Drupal:</p>                    <p>DRUSH_BOOTSTRAP_DRUSH                = Only Drush.
+    DRUSH_BOOTSTRAP_DRUPAL_ROOT          = Find a valid Drupal root.
+    DRUSH_BOOTSTRAP_DRUPAL_SITE          = Find a valid Drupal site.
+    DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION = Load the site's settings.
+    DRUSH_BOOTSTRAP_DRUPAL_DATABASE      = Initialize the database.
+    DRUSH_BOOTSTRAP_DRUPAL_FULL          = Initialize Drupal fully.</p>
+
+<p>The value is the name of the method of the Boot class to
+execute when bootstrapping.  Prior to bootstrapping, a "validate"
+method is called, if defined.  The validate method name is the
+bootstrap method name with "_validate" appended.</p>                            </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td>of PHASE index => method name.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_bootstrapPhaseMap">
+        <div class="location">in <a href="../../Drush/Boot/DrupalBoot.html#method_bootstrapPhaseMap"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot.php#L88">line 88</a></div>
+        <code>                    
+    <strong>bootstrapPhaseMap</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return an array mapping from bootstrap phase shorthand
+strings (e.g. "full") to the corresponding bootstrap
+phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_lookUpPhaseIndex">
+        <div class="location">in <a href="../../Drush/Boot/BaseBoot.html#method_lookUpPhaseIndex"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/BaseBoot.php#L88">line 88</a></div>
+        <code>                    
+    <strong>lookUpPhaseIndex</strong>($phase)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Convert from a phase shorthand or constant to a phase index.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$phase</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_bootstrapDrush">
+        <div class="location">in <a href="../../Drush/Boot/BaseBoot.html#method_bootstrapDrush"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/BaseBoot.php#L101">line 101</a></div>
+        <code>                    
+    <strong>bootstrapDrush</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_hasRegisteredSymfonyCommand">
+        <div class="location">in <a href="../../Drush/Boot/BaseBoot.html#method_hasRegisteredSymfonyCommand"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/BaseBoot.php#L105">line 105</a></div>
+        <code>            protected        
+    <strong>hasRegisteredSymfonyCommand</strong>($application, $name)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$application</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$name</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_inflect">
+        <div class="location">in <a href="../../Drush/Boot/BaseBoot.html#method_inflect"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/BaseBoot.php#L115">line 115</a></div>
+        <code>            protected        
+    <strong>inflect</strong>($object)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$object</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_terminate">
+        <div class="location">in <a href="../../Drush/Boot/BaseBoot.html#method_terminate"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/BaseBoot.php#L147">line 147</a></div>
+        <code>                    void
+    <strong>terminate</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>This method is called during the shutdown of drush.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_scanUpForUri">
+        <div class="location">in <a href="../../Drush/Boot/DrupalBoot.html#method_scanUpForUri"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot.php#L30">line 30</a></div>
+        <code>            protected        
+    <strong>scanUpForUri</strong>($root, $scan)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$root</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$scan</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_confPath">
+        <div class="location">in <a href="../../Drush/Boot/DrupalBoot.html#method_confPath"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot.php#L57">line 57</a></div>
+        <code>                    
+    <strong>confPath</strong>($require_settings = true, $reset = false)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$require_settings</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$reset</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_bootstrapDrupalRootValidate">
+        <div class="location">in <a href="../../Drush/Boot/DrupalBoot.html#method_bootstrapDrupalRootValidate"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot.php#L108">line 108</a></div>
+        <code>                    
+    <strong>bootstrapDrupalRootValidate</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Validate the DRUSH_BOOTSTRAP_DRUPAL_ROOT phase.</p>                    <p>In this function, we will check if a valid Drupal directory is available.
+We also determine the value that will be stored in the DRUSH_DRUPAL_ROOT
+context and DRUPAL_ROOT constant if it is considered a valid option.</p>                            </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_legacyValidRootCheck">
+        <div class="location">in <a href="../../Drush/Boot/DrupalBoot.html#method_legacyValidRootCheck"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot.php#L131">line 131</a></div>
+        <code>            protected        
+    <strong>legacyValidRootCheck</strong>($root)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$root</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_bootstrapDrupalRoot">
+        <div class="location">in <a href="../../Drush/Boot/DrupalBoot.html#method_bootstrapDrupalRoot"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot.php#L147">line 147</a></div>
+        <code>                    
+    <strong>bootstrapDrupalRoot</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Bootstrap Drush with a valid Drupal Directory.</p>                    <p>In this function, the pwd will be moved to the root
+of the Drupal installation.</p>
+
+<p>We also now load the drush.yml for this specific Drupal site.
+We can now include files from the Drupal tree, and figure
+out more context about the codebase, such as the version of Drupal.</p>                            </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_bootstrapDrupalSiteValidate">
+        <div class="location">in <a href="../../Drush/Boot/DrupalBoot.html#method_bootstrapDrupalSiteValidate"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot.php#L171">line 171</a></div>
+        <code>                    
+    <strong>bootstrapDrupalSiteValidate</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>VALIDATE the DRUSH_BOOTSTRAP_DRUPAL_SITE phase.</p>                    <p>In this function we determine the URL used for the command,
+and check for a valid settings.php file.</p>                            </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_bootstrapDoDrupalSite">
+        <div class="location">in <a href="../../Drush/Boot/DrupalBoot.html#method_bootstrapDoDrupalSite"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot.php#L179">line 179</a></div>
+        <code>                    
+    <strong>bootstrapDoDrupalSite</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Called by bootstrapDrupalSite to do the main work
+of the drush drupal site bootstrap.</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_bootstrapDrupalSite">
+        <div class="location">in <a href="../../Drush/Boot/DrupalBoot.html#method_bootstrapDrupalSite"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot.php#L194">line 194</a></div>
+        <code>                    
+    <strong>bootstrapDrupalSite</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Initialize a site on the Drupal root.</p>                    <p>We now set various contexts that we determined and confirmed to be valid.
+Additionally we load an optional drush.yml file in the site directory.</p>                            </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_bootstrapDrupalConfiguration">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot7.php#L62">line 62</a></div>
+        <code>                    
+    <strong>bootstrapDrupalConfiguration</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Initialize and load the Drupal configuration files.</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_bootstrapDrupalDatabaseValidate">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot7.php#L51">line 51</a></div>
+        <code>                    
+    <strong>bootstrapDrupalDatabaseValidate</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Validate the DRUSH_BOOTSTRAP_DRUPAL_DATABASE phase</p>                    <p>Attempt to make a working database connection using the
+database credentials that were loaded during the previous
+phase.</p>                            </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_bootstrapDrupalDatabaseHasTable">
+        <div class="location">in <a href="../../Drush/Boot/DrupalBoot.html#method_bootstrapDrupalDatabaseHasTable"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot.php#L269">line 269</a></div>
+        <code>                    <abbr title="Drush\Boot\TRUE">TRUE</abbr>
+    <strong>bootstrapDrupalDatabaseHasTable</strong>($required_tables)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Test to see if the Drupal database has a specified
+table or tables.</p>                    <p>This is a bootstrap helper function designed to be called
+from the bootstrapDrupalDatabaseValidate() methods of
+derived DrupalBoot classes.  If a database exists, but is
+empty, then the Drupal database bootstrap will fail.  To
+prevent this situation, we test for some table that is needed
+in an ordinary bootstrap, and return FALSE from the validate
+function if it does not exist, so that we do not attempt to
+start the database bootstrap.</p>
+
+<p>Note that we must manually do our own prefix testing here,
+because the existing wrappers we have for handling prefixes
+depend on bootstrapping to the "database" phase, and therefore
+are not available to validate this same phase.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$required_tables</td>
+                <td>Array of table names, or string with one table name</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Boot\TRUE">TRUE</abbr></td>
+            <td>if all tables in input parameter exist in
+  the database.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_bootstrapDrupalDatabase">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot7.php#L56">line 56</a></div>
+        <code>                    
+    <strong>bootstrapDrupalDatabase</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Boostrap the Drupal database.</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_bootstrapDrupalFull">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot7.php#L72">line 72</a></div>
+        <code>                    
+    <strong>bootstrapDrupalFull</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Attempt to load the full Drupal system.</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getProfile">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot7.php#L33">line 33</a></div>
+        <code>                    
+    <strong>getProfile</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addLogger">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot7.php#L38">line 38</a></div>
+        <code>                    
+    <strong>addLogger</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_bootstrapDrupalCore">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot7.php#L42">line 42</a></div>
+        <code>                    
+    <strong>bootstrapDrupalCore</strong>($drupal_root)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$drupal_root</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+            </div>
+                <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/">Sami, the API Documentation Generator</a>.
+    </div>
+
+        </div>
+    </div>
+    </body>
+
+</html>
