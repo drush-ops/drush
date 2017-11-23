@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Test for master branch, or other branches matching 0.x, 1.x, etc.
-BRANCH_REGEX='^\(master\|[[:digit:]]\+\.x\)$'
+BRANCH_REGEX='^\(master\|9\.[0-9x.]*\)$'
 
 # Check to make sure that our build environment is right. Skip with no error otherwise.
 test -n "$TRAVIS"                             || { echo "This script is only designed to be run on Travis."; exit 0; }
