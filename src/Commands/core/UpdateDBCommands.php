@@ -274,7 +274,7 @@ class UpdateDBCommands extends DrushCommands
         $result = drush_backend_batch_process();
         \Drupal::service('state')->set('system.maintenance_mode', false);
 
-        $success = (empty($result['context']['updatedb_with_failures']));
+        $success = is_array($result) && (array_key_exists('object', $result)) && empty($result['object'][0]['#abort']);
 
         return $success;
     }
@@ -349,13 +349,8 @@ class UpdateDBCommands extends DrushCommands
             drupal_flush_all_caches();
         }
 
-        // There's no success if any of the updates failed.
-        if (!empty($results['#abort'])) {
-            drush_set_option('updatedb_with_failures', TRUE);
-            unset($results['#abort']);
-        }
-
         // Log update results.
+        unset($results['#abort']);
         foreach ($results as $module => $updates) {
             foreach ($updates as $number => $update) {
                 if (empty($update['#abort'])) {
