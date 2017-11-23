@@ -23,7 +23,7 @@ use Symfony\Component\Finder\Finder;
 class SiteAliasFileDiscovery
 {
     protected $searchLocations = [];
-    protected $depth = '== 0';
+    protected $depth = '<= 1';
 
     /**
      * Add a location that alias files may be found.
@@ -70,14 +70,11 @@ class SiteAliasFileDiscovery
      */
     public function findSingleSiteAliasFile($siteName)
     {
-        $desiredFilename = "$siteName.site.yml";
-        foreach ($this->searchLocations as $dir) {
-            $check = "$dir/$desiredFilename";
-            if (file_exists($check)) {
-                return $check;
-            }
+        $matches = $this->searchForAliasFiles("$siteName.site.yml");
+        if (empty($matches)) {
+            return false;
         }
-        return false;
+        return reset($matches);
     }
 
     /**
