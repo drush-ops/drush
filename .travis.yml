@@ -62,5 +62,10 @@ script:
   - if [ -n "$TEST_DIR" ] ; then cd $TEST_DIR && phpunit ; fi
   - if [ -z "$TEST_DIR" ] ; then ${PWD}/unish.phpunit.php $PHPUNIT_ARGS; fi
 
-# Background: https://github.com/drush-ops/drush/pull/1426
-after_success: ${PWD}/tests/testChildren.sh
+after_success:
+  # Publish updated API documentation on every push to the master branch
+  - git config --global user.email $GITHUB_USER_EMAIL
+  - git config --global user.name "Drush Documentation Bot"
+  - build/scripts/publish-api-docs.sh
+  # Background: https://github.com/drush-ops/drush/pull/1426
+  #- ${PWD}/tests/testChildren.sh

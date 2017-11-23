@@ -74,6 +74,8 @@
       "find src -name '*.php' -print0 | xargs -0 -n1 php -l",
       "find tests -name '*.php' -print0 | xargs -0 -n1 php -l"
     ],
+    "api": "PATH=$HOME/bin:$PATH sami.phar --ansi update sami-config.php",
+    "sami-install": "mkdir -p $HOME/bin && curl --output $HOME/bin/sami.phar http://get.sensiolabs.org/sami.phar && chmod +x $HOME/bin/sami.phar",
     "isolation": "cd isolation && vendor/bin/phpunit --colors=always",
     "post-update-cmd": "cd isolation && composer update"
   },
