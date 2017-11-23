@@ -92,7 +92,7 @@ function drush_backend_batch_process($command = 'batch-process', $args = [], $op
  */
 function drush_batch_command($id) {
   include_once(DRUSH_DRUPAL_CORE . '/includes/batch.inc');
-  _drush_batch_command($id);
+  return _drush_batch_command($id);
 }
 
 /**
@@ -181,7 +181,7 @@ function _drush_batch_command($id) {
   register_shutdown_function('_drush_batch_shutdown');
 
   if (_drush_batch_worker()) {
-    _drush_batch_finished();
+    return _drush_batch_finished();
   }
 }
 
@@ -304,10 +304,12 @@ function _drush_batch_worker() {
  * and resolve page redirection.
  */
 function _drush_batch_finished() {
+  $results = [];
+
   $batch = &batch_get();
 
   // Execute the 'finished' callbacks for each batch set, if defined.
-  foreach ($batch['sets'] as $batch_set) {
+  foreach ($batch['sets'] as $id => $batch_set) {
     if (isset($batch_set['finished'])) {
       // Check if the set requires an additional file for function definitions.
       if (isset($batch_set['file']) && is_file($batch_set['file'])) {
@@ -319,6 +321,7 @@ function _drush_batch_finished() {
         $elapsed = $batch_set['elapsed'] / 1000;
         $elapsed = drush_drupal_major_version() >=8 ? \Drupal::service('date.formatter')->formatInterval($elapsed) : format_interval($elapsed);
         $batch_set['finished']($batch_set['success'], $batch_set['results'], $operations, $elapsed);
+        $results[$id] = $batch_set['results'];
       }
     }
   }
@@ -343,6 +346,8 @@ function _drush_batch_finished() {
   $_batch = $batch;
   $batch = NULL;
   drush_set_option('drush_batch_process_finished', TRUE);
+
+  return $results;
 }
 
 /**

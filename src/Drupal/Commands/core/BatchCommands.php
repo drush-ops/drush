@@ -16,6 +16,6 @@ class BatchCommands extends DrushCommands
      */
     public function process($batch_id)
     {
-        drush_batch_command($batch_id);
+        return drush_batch_command($batch_id);
     }
 }
