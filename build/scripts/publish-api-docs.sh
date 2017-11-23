@@ -22,8 +22,10 @@ set -ev
 # Install Sami using the install script in composer.json
 composer sami-install
 
+pwd
+
 # Build the API documentation using the api script in composer.json
-composer api
+composer -v api
 
 # Check out the gh-pages branch using our Github token (defined at https://travis-ci.org/lcache/lcache/settings)
 API_BUILD_DIR="$HOME/.drush-build/gh-pages"
