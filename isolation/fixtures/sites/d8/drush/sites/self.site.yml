@@ -1,0 +1,6 @@
+test:
+    root: /path/to/drupal-test
+    uri: https://test.example.com
+live:
+    root: /path/to/drupal-live
+    uri: https://live.example.com

@@ -19,7 +19,7 @@ class SiteAliasFileDiscoveryTest extends TestCase
 
         $path = $this->sut->findSingleSiteAliasFile('single');
         $this->assertLocation('single', $path);
-        $this->assertBasename('single.alias.yml', $path);
+        $this->assertBasename('single.site.yml', $path);
     }
 
     public function testSearchForMissingSingleAliasFile()
@@ -28,55 +28,6 @@ class SiteAliasFileDiscoveryTest extends TestCase
 
         $path = $this->sut->findSingleSiteAliasFile('missing');
         $this->assertFalse($path);
-    }
-
-    public function testSearchForGroupAliasFile()
-    {
-        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
-
-        $path = $this->sut->findGroupAliasFile('pets');
-        $this->assertLocation('group', $path);
-        $this->assertBasename('pets.aliases.yml', $path);
-    }
-
-    public function testSearchForMissingGroupAliasFile()
-    {
-        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
-
-        $path = $this->sut->findGroupAliasFile('missing');
-        $this->assertFalse($path);
-    }
-
-    public function testUnnamedGroupFileCache()
-    {
-        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
-        $this->assertTrue(file_exists($this->fixturesDir() . '/sitealiases/group/aliases.yml'));
-
-        $result = $this->callProtected('findUnnamedGroupAliasFiles');
-        $result = $this->simplifyToBasenamesWithLocation($result);
-        $this->assertEquals('group/aliases.yml', implode(',', $result));
-    }
-
-    public function testGroupFileCache()
-    {
-        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
-
-        $result = $this->callProtected('groupAliasFileCache');
-        $paths = $this->simplifyToBasenamesWithLocation($result);
-        $this->assertEquals('group/pets.aliases.yml,group/transportation.aliases.yml', implode(',', $paths));
-
-        $this->assertTrue(array_key_exists('pets', $result));
-        $this->assertLocation('group', $result['pets']);
-        $this->assertBasename('pets.aliases.yml', $result['pets']);
-    }
-
-    public function testFindAllGroupAliasFiles()
-    {
-        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
-
-        $result = $this->sut->findAllGroupAliasFiles();
-        $paths = $this->simplifyToBasenamesWithLocation($result);
-        $this->assertEquals('group/aliases.yml,group/pets.aliases.yml,group/transportation.aliases.yml', implode(',', $paths));
     }
 
     public function testFindAllLegacyAliasFiles()

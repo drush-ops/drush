@@ -9,7 +9,7 @@ trait FSUtils
         $files = array_diff(scandir($dir), ['.','..']);
         foreach ($files as $file) {
             if (is_dir("$dir/$file") && !is_link("$dir/$file")) {
-                removeDir("$dir/$file");
+                $this->removeDir("$dir/$file");
             } else {
                 unlink("$dir/$file");
             }

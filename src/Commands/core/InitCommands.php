@@ -62,15 +62,15 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
         // List of Drush bash configuration files, and
         // their source templates.
         $drushBashFiles = [
-        $drush_bashrc => $example_bashrc,
-        $drush_prompt => $example_prompt,
+            $drush_bashrc => $example_bashrc,
+            $drush_prompt => $example_prompt,
         ];
 
         // Mapping from Drush bash configuration files
         // to a description of what each one is.
         $drushBashFileDescriptions = [
-        $drush_bashrc => 'Drush bash customizations',
-        $drush_prompt => 'Drush prompt customizations',
+            $drush_bashrc => 'Drush bash customizations',
+            $drush_prompt => 'Drush prompt customizations',
         ];
 
         foreach ($drushBashFiles as $destFile => $sourceFile) {

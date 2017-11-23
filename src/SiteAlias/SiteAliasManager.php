@@ -57,7 +57,8 @@ class SiteAliasManager
     /**
      * Add search locations to our site alias discovery object.
      *
-     * @param array $paths
+     * @param array $paths Any path provided in --alias-path option
+     *   or drush.path.alias-path configuration item.
      *
      * @return $this
      */
@@ -67,6 +68,15 @@ class SiteAliasManager
             $this->aliasLoader->discovery()->addSearchLocation($path);
         }
         return $this;
+    }
+
+    /**
+     * Return all of the paths where alias files may be found.
+     * @return string[]
+     */
+    public function searchLocations()
+    {
+        return $this->aliasLoader->discovery()->searchLocations();
     }
 
     /**
@@ -129,7 +139,7 @@ class SiteAliasManager
     public function findSelf(PreflightArgsInterface $preflightArgs, Environment $environment, $root)
     {
         $aliasName = $preflightArgs->alias();
-        $selfAliasRecord = $this->buildSelf($preflightArgs, $environment, $root);
+        $selfAliasRecord = $this->determineSelf($preflightArgs, $environment, $root);
         if (!$selfAliasRecord) {
             throw new \Exception("The alias $aliasName could not be found.");
         }
@@ -146,7 +156,7 @@ class SiteAliasManager
      */
     public function getAlias($aliasName)
     {
-        $aliasName = new SiteAliasName($aliasName);
+        $aliasName = SiteAliasName::parse($aliasName);
 
         if ($aliasName->isSelf()) {
             return $this->getSelf();
@@ -163,12 +173,10 @@ class SiteAliasManager
     }
 
     /**
-     * Given a simple alias name, e.g. '@alias', returns either all of
-     * the sites and environments in that alias group, or all of the
+     * Given a simple alias name, e.g. '@alias', returns all of the
      * environments in the specified site.
      *
-     * If the provided name is a site specification, or if it contains
-     * a group or environment ('@group.site' or '@site.env' or '@group.site.env'),
+     * If the provided name is a site specification et. al.,
      * then this method will return 'false'.
      *
      * @param string $name Alias name or site specification
@@ -184,8 +192,19 @@ class SiteAliasManager
             return false;
         }
 
-        $aliasName = new SiteAliasName($name);
-        return $this->aliasLoader->loadMultiple($aliasName);
+        // Trim off the '@' and load all that match
+        $result = $this->aliasLoader->loadMultiple(ltrim($name, '@'));
+
+        // Special checking for @self
+        if ($name == '@self') {
+            $self = $this->getSelf();
+            $result = array_merge(
+                ['@self' => $self],
+                $result
+            );
+        }
+
+        return $result;
     }
 
     /**
@@ -210,12 +229,14 @@ class SiteAliasManager
      *
      * @return \Drush\SiteAlias\AliasRecord
      */
-    protected function buildSelf(PreflightArgsInterface $preflightArgs, Environment $environment, $root)
+    protected function determineSelf(PreflightArgsInterface $preflightArgs, Environment $environment, $root)
     {
         $aliasName = $preflightArgs->alias();
 
         // If the user specified an @alias, that takes precidence.
         if (SiteAliasName::isAliasName($aliasName)) {
+            // TODO: Should we do something about `@self` here? At the moment that will cause getAlias to
+            // call $this->getSelf(), but we haven't built @self yet.
             return $this->getAlias($aliasName);
         }
 
@@ -238,6 +259,19 @@ class SiteAliasManager
             }
         }
 
+        return $this->buildSelf($preflightArgs, $root);
+    }
+
+    /**
+     * Generate @self from the provided root and URI.
+     *
+     * @param \Drush\Preflight\PreflightArgsInterface $preflightArgs
+     * @param $root
+     *
+     * @return \Drush\SiteAlias\AliasRecord
+     */
+    protected function buildSelf(PreflightArgsInterface $preflightArgs, $root)
+    {
         // If there is no root, then return '@none'
         if (!$root) {
             return new AliasRecord([], '@none');
