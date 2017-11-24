@@ -40,16 +40,16 @@ class BackendCase extends CommandUnishTestCase {
         $output = preg_replace('#  *#', ' ', $output);
         $output = preg_replace('# -t #', ' ', $output); // volkswagon away the -t, it's not relevant to what we're testing here
         $output = preg_replace('#' . self::getSandbox() . '#', '__SANDBOX__', $output);
-        $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=no www-admin@server.isp.com '/usr/local/bin/drush --alias-path=__SANDBOX__/etc/drush --root=/path/to/drupal --uri=http://example.com --no-ansi --no-interaction status", $output);
+        $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=no www-admin@server.isp.com '/usr/local/bin/drush --alias-path=__SANDBOX__/etc/drush/sites --root=/path/to/drupal --uri=http://example.com --no-ansi --no-interaction status", $output);
     }
 
-  /**
-   * Covers the following origin responsibilities.
-   *   - A remote host is recognized in site specification.
-   *   - Generates expected ssh command.
-   *
-   * General handling of site aliases will be in sitealiasTest.php.
-   */
+    /**
+     * Covers the following origin responsibilities.
+     *   - A remote host is recognized in site specification.
+     *   - Generates expected ssh command.
+     *
+     * General handling of site aliases will be in sitealiasTest.php.
+     */
     public function testOrigin()
     {
         $site_specification = 'user@server/path/to/drupal#sitename';
@@ -75,13 +75,13 @@ class BackendCase extends CommandUnishTestCase {
         $this->assertContains('--bar=baz', $output);
     }
 
-  /**
-   * Covers the following target responsibilities.
-   *   - Interpret stdin as options as per REST API.
-   *   - Successfully execute specified command.
-   *   - JSON object has expected contents (including errors).
-   *   - JSON object is wrapped in expected delimiters.
-   */
+    /**
+     * Covers the following target responsibilities.
+     *   - Interpret stdin as options as per REST API.
+     *   - Successfully execute specified command.
+     *   - JSON object has expected contents (including errors).
+     *   - JSON object is wrapped in expected delimiters.
+     */
     public function testTarget()
     {
         // Backend invoke always runs in non-strict mode now.
@@ -111,12 +111,12 @@ class BackendCase extends CommandUnishTestCase {
         $this->assertEquals(1, $parsed['error_status']);
     }
 
-  /**
-   * Covers the following target responsibilities.
-   *   - Insures that the 'Drush version' line from drush status appears in the output.
-   *   - Insures that the backend output start marker appears in the output (this is a backend command).
-   *   - Insures that the drush output appears before the backend output start marker (output is displayed in 'real time' as it is produced).
-   */
+    /**
+     * Covers the following target responsibilities.
+     *   - Insures that the 'Drush version' line from drush status appears in the output.
+     *   - Insures that the backend output start marker appears in the output (this is a backend command).
+     *   - Insures that the drush output appears before the backend output start marker (output is displayed in 'real time' as it is produced).
+     */
     public function testRealtimeOutput()
     {
         $exec = sprintf('%s core-status --backend --format=yaml --no-ansi 2>&1', self::getDrush());
@@ -131,10 +131,10 @@ class BackendCase extends CommandUnishTestCase {
         $this->assertTrue($drush_version_offset < $backend_output_offset, "Drush version string appears in output before the backend output marker.");
     }
 
-  /**
-   * Covers the following target responsibilities.
-   *   - Insures that function result is returned in --backend mode
-   */
+    /**
+     * Covers the following target responsibilities.
+     *   - Insures that function result is returned in --backend mode
+     */
     public function testBackendFunctionResult()
     {
         $php = "return 'bar'";
@@ -144,12 +144,12 @@ class BackendCase extends CommandUnishTestCase {
         $this->assertEquals("'bar'", var_export($parsed['object'], true));
     }
 
-  /**
-   * Covers the following target responsibilities.
-   *   - Insures that backend_set_result is returned in --backend mode
-   *   - Insures that the result code for the function does not overwrite
-   *     the explicitly-set value
-   */
+    /**
+     * Covers the following target responsibilities.
+     *   - Insures that backend_set_result is returned in --backend mode
+     *   - Insures that the result code for the function does not overwrite
+     *     the explicitly-set value
+     */
     public function testBackendSetResult()
     {
         $php = "drush_backend_set_result('foo'); return 'bar'";
@@ -159,13 +159,13 @@ class BackendCase extends CommandUnishTestCase {
         $this->assertEquals("'foo'", var_export($parsed['object'], true));
     }
 
-  /**
-   * Covers the following target responsibilities.
-   *   - Insures that the backend option 'invoke-multiple' will cause multiple commands to be executed.
-   *   - Insures that the right number of commands run.
-   *   - Insures that the 'concurrent'-format result array is returned.
-   *   - Insures that correct results are returned from each command.
-   */
+    /**
+     * Covers the following target responsibilities.
+     *   - Insures that the backend option 'invoke-multiple' will cause multiple commands to be executed.
+     *   - Insures that the right number of commands run.
+     *   - Insures that the 'concurrent'-format result array is returned.
+     *   - Insures that correct results are returned from each command.
+     */
     public function testBackendInvokeMultiple()
     {
         $this->markTestIncomplete('Depends on concurrency');
@@ -189,12 +189,12 @@ class BackendCase extends CommandUnishTestCase {
 )", var_export($values['object'], true));
         }
     }
-  /**
-   * Covers the following target responsibilities.
-   *   - Insures that arrays are stripped when using --backend mode's method GET
-   *   - Insures that arrays can be returned as the function result of
-   *     backend invoke.
-   */
+    /**
+     * Covers the following target responsibilities.
+     *   - Insures that arrays are stripped when using --backend mode's method GET
+     *   - Insures that arrays can be returned as the function result of
+     *     backend invoke.
+     */
     public function testBackendMethodGet()
     {
         $options = [
@@ -208,12 +208,12 @@ class BackendCase extends CommandUnishTestCase {
         $this->assertContains("'x' => 'y'", var_export($parsed['object'], true));
     }
 
-  /**
-   * Covers the following target responsibilities.
-   *   - Insures that complex arrays can be passed through when using --backend mode's method POST
-   *   - Insures that arrays can be returned as the function result of
-   *     backend invoke.
-   */
+    /**
+     * Covers the following target responsibilities.
+     *   - Insures that complex arrays can be passed through when using --backend mode's method POST
+     *   - Insures that arrays can be returned as the function result of
+     *     backend invoke.
+     */
     public function testBackendMethodPost()
     {
         $options = [

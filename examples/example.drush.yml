@@ -68,32 +68,35 @@ drush:
     # are always merged with include paths defined on the command line or
     # in other configuration files.  On the command line, paths may be separated
     # by a colon (:) on Unix-based systems or a semi-colon (;) on Windows,
-    # or multiple --include options may be provided. Note that the locations shown
-    # in the example below were searched by default in Drush 8 and earlier.
+    # or multiple --include options may be provided. Drush 8 and earlier did
+    # a deep search in ~/.drush and /usr/share/drush/commands when loading
+    # command files.
     include:
-      - '${env.home}/.drush'
+      - '${env.home}/.drush/commands'
       - /usr/share/drush/commands
 
-    # Specify the folders to search for Drush alias files (*.alias.yml and
-    # *.aliases.yml).  These locations are always merged with alias paths
-    #  defined on the command line or in other configuration files.  On the command
-    # line, paths may be separated by a colon (:) on Unix-based systems or a
-    # semi-colon (;) on Windows, or multiple --alias-path options may be provided.
-    # Note that the locations shown in the example below were searched by default
-    # in Drush 8 and earlier.
+    # Specify the folders to search for Drush alias files (*.site.yml). These
+    # locations are always merged with alias paths defined on the command line
+    # or in other configuration files.  On the command line, paths may be
+    # separated by a colon (:) on Unix-based systems or a semi-colon (;) on
+    # Windows, or multiple --alias-path options may be provided. Note that
+    # Drush 8 and earlier did a deep search in ~/.drush and /etc/drush when
+    # loading alias files.
     alias-path:
-      - '${env.home}/.drush'
-      - /etc/drush
+      - '${env.home}/.drush/sites'
+      - /etc/drush/sites
 
 
 options:
   # Specify the base_url that should be used when generating links.
   # Not recommended if you have more than one Drupal site on your system.
-  uri: 'http://example.com/subdir'
+
+# uri: 'http://example.com/subdir'
 
   # Specify your Drupal core base directory (useful if you use symlinks).
   # Not recommended if you have more than one Drupal root on your system.
-  root: '/home/USER/workspace/drupal-6'
+
+# root: '/home/USER/workspace/drupal-6'
 
   # NOT SUPPORTED YET:
   # Specify the modules to ignore when searching for command files
@@ -102,7 +105,7 @@ options:
     - module2
 
   # Enable verbose mode.
-  verbose: true
+  # verbose: true
 
   # NOT SUPPORTED YET:
   # Specify the logging level for PHP notices.  Defaults to "notice".  Set to
@@ -115,11 +118,13 @@ options:
   # Specify the error handling of recoverable errors (E_RECOVERABLE_ERROR).
   # Defaults to true and will stop execution of Drush.
   # When set to false, execution will continue.
-  halt-on-error: false
+
+# halt-on-error: false
 
   # By default, unknown options are disallowed and result in an error.  Change
   # them to issue only a warning and let command proceed.
-  strict: false
+
+# strict: false
 
   # NOT SUPPORTED YET:
   # Set 'remote-os' to 'Windows' to make Drush use Windows shell escape rules
@@ -134,21 +139,23 @@ options:
   # is possible to use //TRANSLIT and //IGNORE charset name suffixes (see iconv
   # documentation).  If not defined, conversion will not be performed.
 
-  # output_charset: 'ISO-8859-1'
-  # output_charset: 'KOI8-R//IGNORE'
-  # output_charset: 'ISO-8859-1//TRANSLIT'
+# output_charset: 'ISO-8859-1'
+# output_charset: 'KOI8-R//IGNORE'
+# output_charset: 'ISO-8859-1//TRANSLIT'
 
 command:
   sql:
     options:
       # TODO: Confirm whether or not this is working
       # An explicit list of tables which should be included in sql-dump and sql-sync.
-      tables:
-        common:
-          - user
-          - permissions
-          - role_permissions
-          - role
+
+#     tables:
+#       common:
+#         - user
+#         - permissions
+#          - role_permissions
+#          - role
+
       # List of tables whose *data* is skipped by the 'sql-dump' and 'sql-sync'
       # commands when the "--structure-tables-key=common" option is provided.
       # You may add specific tables to the existing array or add a new element.
@@ -179,26 +186,27 @@ command:
         # NOT SUPPORTED YET:
         # Substitution variables with the database name, current date and so on
         # should be provided for composing filenames.
-        result-file: /path/to/backup/dir/dump.sql
+
+#       result-file: /path/to/backup/dir/dump.sql
+
   php:
     script:
       options:
         # Additional folders to search for scripts.
-        script-path: 'sites/all/scripts:profiles/myprofile/scripts'
+#       script-path: 'sites/all/scripts:profiles/myprofile/scripts'
   core:
     rsync:
       options:
         # Ensure all rsync commands use verbose output.
-        verbose: true
+#       verbose: true
 
   site:
     install:
       options:
         # Set a predetermined username and password when using site-install.
-        account-name: 'alice'
-        account-pass: 'secret'
+#       account-name: 'alice'
+#       account-pass: 'secret'
 
-# TODO: Move this to transport.ssh.options?
 ssh:
   # Specify options to pass to ssh in backend invoke.  The default is to prohibit
   # password authentication, and is included here, so you may add additional
@@ -209,11 +217,10 @@ notify:
   # Notify when command takes more than 30 seconds.
   duration: 30
   # Specify a command to run. Defaults to Notification Center (OSX) or libnotify (Linux)
-  cmd: /path/to/program
+# cmd: /path/to/program
   # See src/Commands/core/NotifyCommands.php for more configuration settings.
 
 xh:
   # Start profiling via xhprof/tideways and show a link to the run report.
-  link: http://xhprof.local
+# link: http://xhprof.local
   # See src/Commands/core/XhprofCommands.php for more configuration settings.
-

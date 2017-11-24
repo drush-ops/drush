@@ -51,19 +51,13 @@ class AliasRecord extends Config
      * @param string $name Alias name or site specification for this alias record
      * @param string $env Environment for this alias record. Will be appended to
      *   the alias name, separated by a "." if provided.
-     * @param string $group Group for this alias record. Will be prepended to
-     *   the alias name, separated by a "." if provided. Ignored unless $name is
-     *   an alias (must begin with "@").
      * @return type
      */
-    public function __construct(array $data = null, $name = '', $env = '', $group = '')
+    public function __construct(array $data = null, $name = '', $env = '')
     {
         parent::__construct($data);
         if (!empty($env)) {
             $name .= ".$env";
-        }
-        if (!empty($group)) {
-            $name = preg_replace('/^@/', "@{$group}.", $name);
         }
         $this->name = $name;
     }

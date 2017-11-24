@@ -49,6 +49,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
      *   drush-temp: Drush temp
      *   drush-conf: Drush configs
      *   drush-alias-files: Drush aliases
+     *   alias-searchpaths: Alias search paths
      *   install-profile: Install profile
      *   root: Drupal root
      *   drupal-settings-file: Drupal Settings
@@ -63,7 +64,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
      *   files-path: Files, Public
      *   temp-path: Files, Temp
      *   %paths: Other paths
-     * @default-fields drupal-version,uri,db-driver,db-hostname,db-port,db-username,db-name,db-status,bootstrap,theme,admin-theme,php-bin,php-conf,php-os,drush-script,drush-version,drush-temp,drush-conf,drush-alias-files,install-profile,root,site,files,private,temp
+     * @default-fields drupal-version,uri,db-driver,db-hostname,db-port,db-username,db-name,db-status,bootstrap,theme,admin-theme,php-bin,php-conf,php-os,drush-script,drush-version,drush-temp,drush-conf,install-profile,root,site,files,private,temp
      * @pipe-format json
      * @hidden-options project
      * @bootstrap max
@@ -136,6 +137,8 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
         $alias_files = $this->siteAliasManager()->listAllFilePaths();
         sort($alias_files);
         $status_table['drush-alias-files'] = $alias_files;
+        $alias_searchpaths = $this->siteAliasManager()->searchLocations();
+        $status_table['alias-searchpaths'] = $alias_searchpaths;
 
         $paths = self::pathAliases($options, $boot_manager, $boot_object);
         if (!empty($paths)) {

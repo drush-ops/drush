@@ -295,7 +295,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     }
 
     /**
-     * Get the alias paths where drush site.alias.yml files may be found
+     * Get the alias paths where drush site.site.yml files may be found
      */
     public function aliasPaths()
     {

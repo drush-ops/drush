@@ -381,12 +381,14 @@ class ConfigLocator
     {
         // In addition to the paths passed in to us (from --alias-paths
         // commandline options), add some site-local locations.
-        foreach ($this->siteRoots as $siteRoot) {
-            $paths[] = $siteRoot . '/drush';
-        }
-        $paths[] = $this->composerRoot . '/drush';
-        $candidates = [ '', 'site-aliases' ];
-        $paths = $this->identifyCandidates($paths, $candidates);
+        $base_dirs = array_filter(array_merge($this->siteRoots, [$this->composerRoot]));
+        $site_local_paths = array_map(
+            function ($item) {
+                return "$item/drush/sites";
+            },
+            $base_dirs
+        );
+        $paths = array_merge($paths, $site_local_paths);
 
         return $paths;
     }

@@ -87,7 +87,7 @@ class DocsCommands extends DrushCommands
      */
     public function siteAliases()
     {
-        self::printFile(DRUSH_BASE_PATH. '/examples/example.aliases.yml');
+        self::printFile(DRUSH_BASE_PATH. '/examples/example.site.yml');
     }
 
     /**
