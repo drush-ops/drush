@@ -5,6 +5,7 @@ use Drupal\Core\Site\Settings;
 use Drush\Log\LogLevel;
 use Drupal\Core\DrupalKernel as DrupalDrupalKernel;
 use Drupal\Core\DependencyInjection\ServiceModifierInterface;
+use Composer\Semver\Semver;
 
 class DrupalKernel extends DrupalDrupalKernel
 {
@@ -111,18 +112,80 @@ class DrupalKernel extends DrupalDrupalKernel
         $module_filenames = $this->getModuleFileNames();
         // Load each module's serviceProvider class.
         foreach ($module_filenames as $module => $filename) {
-            $filename = dirname($filename) . "/drush.services.yml";
-            $this->addDrushServiceProvider("_drush.$module", $filename);
+            $this->addModuleDrushServiceProvider($module, $filename);
         }
+    }
+
+    /**
+     * Determine whether or not the Drush services.yml file is applicable
+     * for this version of Drush.
+     */
+    protected function addModuleDrushServiceProvider($module, $filename)
+    {
+        $serviceYmlPath = $this->findModuleDrushServiceProvider($module, dirname($filename));
+        $this->addDrushServiceProvider("_drush.$module", $serviceYmlPath);
+    }
+
+    protected function findModuleDrushServiceProvider($module, $dir)
+    {
+        print "look for composer.json for $module\n";
+        // TODO: probably read composer.json and cache this info via a Composer script
+        $serviceYmlPath = $this->findModuleDrushServiceProviderFromComposer($dir);
+        if ($serviceYmlPath) {
+            return $serviceYmlPath;
+        }
+        $result = $dir . "/drush.services.yml";
+        if (!file_exists($result)) {
+            return;
+        }
+        drush_log(dt("$module should have an extra.drush.services section. In the future, this will be required in order to use this Drush extension."), LogLevel::WARNING);
+        return $result;
+    }
+
+    /**
+     * In composer.json, the Drush version constraints will appear
+     * in the 'extra' section like so:
+     *
+     *   "extra": {
+     *     "drush": {
+     *       "services": {
+     *         "drush.services.yml": "^9"
+     *       }
+     *     }
+     *   }
+     *
+     * There may be multiple drush service files listed; the first
+     * one that has a version constraint that matches the Drush version
+     * is used.
+     */
+    protected function findModuleDrushServiceProviderFromComposer($dir)
+    {
+        $composerJsonPath = "$dir/composer.json";
+        if (!file_exists($composerJsonPath)) {
+            return false;
+        }
+        $composerJsonContents = file_get_contents($composerJsonPath);
+        $info = json_decode($composerJsonContents, true);
+        print "contents: " . var_export($info, true) . "\n";
+        if (!isset($info['extra']['drush']['services'])) {
+            return false;
+        }
+        foreach ($info['extra']['drush']['services'] as $serviceYmlPath => $versionConstraint) {
+            $version = 9; // Current Drush version
+            if (Semver::satisfies($version, $versionConstraint)) {
+                return $dir . '/' . $serviceYmlPath;
+            }
+        }
+        return false;
     }
 
     /**
      * Add a services.yml file if it exists.
      */
-    protected function addDrushServiceProvider($serviceProviderName, $filename)
+    protected function addDrushServiceProvider($serviceProviderName, $serviceYmlPath)
     {
-        if (file_exists($filename)) {
-            $this->serviceYamls['app'][$serviceProviderName] = $filename;
+        if (file_exists($serviceYmlPath)) {
+            $this->serviceYamls['app'][$serviceProviderName] = $serviceYmlPath;
         }
     }
 }
