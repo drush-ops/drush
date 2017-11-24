@@ -49,9 +49,8 @@ class UpdateDBCommands extends DrushCommands
                 throw new UserAbortException();
             }
             if (Drush::simulate()) {
-                $success = TRUE;
-            }
-            else {
+                $success = true;
+            } else {
                 $success = $this->updateBatch($options);
                 // Clear all caches in a new process. We just performed major surgery.
                 drush_drupal_cache_clear_all();
