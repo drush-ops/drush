@@ -162,7 +162,40 @@
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_addDrushServiceProvider">addDrushServiceProvider</a>($serviceProviderName, $filename)
+                    <a href="#method_addModuleDrushServiceProvider">addModuleDrushServiceProvider</a>($module, $filename)
+        
+                                            <p>Determine whether or not the Drush services.yml file is applicable
+for this version of Drush.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_findModuleDrushServiceProvider">findModuleDrushServiceProvider</a>($module, $dir)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_findModuleDrushServiceProviderFromComposer">findModuleDrushServiceProviderFromComposer</a>($dir)
+        
+                                            <p>In composer.json, the Drush version constraints will appear
+in the 'extra' section like so:</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_addDrushServiceProvider">addDrushServiceProvider</a>($serviceProviderName, $serviceYmlPath)
         
                                             <p>Add a services.yml file if it exists.</p>                </div>
                 <div class="col-md-2"></div>
@@ -175,7 +208,7 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_addServiceModifier">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/DrupalKernel.php#L20">line 20</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/DrupalKernel.php#L22">line 22</a></div>
         <code>                    
     <strong>addServiceModifier</strong>(<abbr title="Drupal\Core\DependencyInjection\ServiceModifierInterface">ServiceModifierInterface</abbr> $serviceModifier)
         </code>
@@ -207,7 +240,7 @@ for clients to add compiler passes et. al. before then.</p>                     
             </div>
                     <div class="method-item">
                     <h3 id="method_getContainerBuilder">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/DrupalKernel.php#L29">line 29</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/DrupalKernel.php#L31">line 31</a></div>
         <code>            protected        
     <strong>getContainerBuilder</strong>()
         </code>
@@ -226,7 +259,7 @@ for clients to add compiler passes et. al. before then.</p>                     
             </div>
                     <div class="method-item">
                     <h3 id="method_initializeContainer">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/DrupalKernel.php#L44">line 44</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/DrupalKernel.php#L46">line 46</a></div>
         <code>            protected        <abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr>
     <strong>initializeContainer</strong>()
         </code>
@@ -256,7 +289,7 @@ for clients to add compiler passes et. al. before then.</p>                     
             </div>
                     <div class="method-item">
                     <h3 id="method_shouldDrushInvalidateContainer">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/DrupalKernel.php#L67">line 67</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/DrupalKernel.php#L69">line 69</a></div>
         <code>            protected        
     <strong>shouldDrushInvalidateContainer</strong>()
         </code>
@@ -275,7 +308,7 @@ for clients to add compiler passes et. al. before then.</p>                     
             </div>
                     <div class="method-item">
                     <h3 id="method_discoverServiceProviders">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/DrupalKernel.php#L83">line 83</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/DrupalKernel.php#L85">line 85</a></div>
         <code>                    
     <strong>discoverServiceProviders</strong>()
         </code>
@@ -295,10 +328,123 @@ for clients to add compiler passes et. al. before then.</p>                     
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_addDrushServiceProvider">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/DrupalKernel.php#L122">line 122</a></div>
+                    <h3 id="method_addModuleDrushServiceProvider">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/DrupalKernel.php#L124">line 124</a></div>
         <code>            protected        
-    <strong>addDrushServiceProvider</strong>($serviceProviderName, $filename)
+    <strong>addModuleDrushServiceProvider</strong>($module, $filename)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Determine whether or not the Drush services.yml file is applicable
+for this version of Drush.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$module</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$filename</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_findModuleDrushServiceProvider">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/DrupalKernel.php#L130">line 130</a></div>
+        <code>            protected        
+    <strong>findModuleDrushServiceProvider</strong>($module, $dir)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$module</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$dir</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_findModuleDrushServiceProviderFromComposer">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/DrupalKernel.php#L161">line 161</a></div>
+        <code>            protected        
+    <strong>findModuleDrushServiceProviderFromComposer</strong>($dir)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>In composer.json, the Drush version constraints will appear
+in the 'extra' section like so:</p>                    <p>"extra": {
+    "drush": {
+      "services": {
+        "drush.services.yml": "^9"
+      }
+    }
+  }</p>
+
+<p>There may be multiple drush service files listed; the first
+one that has a version constraint that matches the Drush version
+is used.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$dir</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addDrushServiceProvider">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/DrupalKernel.php#L185">line 185</a></div>
+        <code>            protected        
+    <strong>addDrushServiceProvider</strong>($serviceProviderName, $serviceYmlPath)
         </code>
     </h3>
     <div class="details">
@@ -318,7 +464,7 @@ for clients to add compiler passes et. al. before then.</p>                     
             </tr>
                     <tr>
                 <td></td>
-                <td>$filename</td>
+                <td>$serviceYmlPath</td>
                 <td></td>
             </tr>
             </table>
