@@ -6,6 +6,7 @@ use Drush\Log\LogLevel;
 use Drupal\Core\DrupalKernel as DrupalDrupalKernel;
 use Drupal\Core\DependencyInjection\ServiceModifierInterface;
 use Composer\Semver\Semver;
+use Drush\Drush;
 
 class DrupalKernel extends DrupalDrupalKernel
 {
@@ -128,7 +129,6 @@ class DrupalKernel extends DrupalDrupalKernel
 
     protected function findModuleDrushServiceProvider($module, $dir)
     {
-        print "look for composer.json for $module\n";
         // TODO: probably read composer.json and cache this info via a Composer script
         $serviceYmlPath = $this->findModuleDrushServiceProviderFromComposer($dir);
         if ($serviceYmlPath) {
@@ -166,12 +166,12 @@ class DrupalKernel extends DrupalDrupalKernel
         }
         $composerJsonContents = file_get_contents($composerJsonPath);
         $info = json_decode($composerJsonContents, true);
-        print "contents: " . var_export($info, true) . "\n";
         if (!isset($info['extra']['drush']['services'])) {
             return false;
         }
         foreach ($info['extra']['drush']['services'] as $serviceYmlPath => $versionConstraint) {
-            $version = 9; // Current Drush version
+            $version = Drush::getVersion();
+            $version = preg_replace('#-dev.*#', '', $version);
             if (Semver::satisfies($version, $versionConstraint)) {
                 return $dir . '/' . $serviceYmlPath;
             }
