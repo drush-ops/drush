@@ -86,19 +86,21 @@
     
 
             <div class="description">
-            <p>Discover alias files of two types:</p>            <p><ul>
-<li>sitename.alias.yml: contains multiple aliases, one for each of the
+            <p>Discover alias files named:</p>            <p><ul>
+<li>sitename.site.yml: contains multiple aliases, one for each of the
 environments of 'sitename'.</li>
-<li>group.aliases.yml: contains multiple aliases for all of the sites
-in the group 'group'. Each site can have multiple aliases for its
-environments.</li>
 </ul>
 
-<p>If an alias name is fully specified, with group, sitename and environment,
-then Drush will load only the group alias file that contains the alias.
-Otherwise, Drush will first search for the provided alias name in a
-single-alias alias file. If no such file can be found, then it will try
-all sitenames in all group alias files.</p>                    </div>
+<p>Drush aliases that contain both a site name and an environment
+(e.g. @site.env) will cause Drush to find the file named after
+the respective site name and retreive the specified environment
+record.</p>
+
+<p>Sites may also define a special alias file self.site.yml, which
+may be stored in the drush/sites directory relative to either
+the Drupal root or the Composer root of the site. The environments
+in this file will be merged with the available environments for
+the element @self, however it is defined.</p>                    </div>
     
     
     
@@ -110,14 +112,6 @@ all sitenames in all group alias files.</p>                    </div>
                                         protected                                        
                 </td>
                 <td>$searchLocations</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_groupAliasFiles">
-                                        protected                                        
-                </td>
-                <td>$groupAliasFiles</td>
                 <td class="last"></td>
                 <td></td>
             </tr>
@@ -147,6 +141,16 @@ all sitenames in all group alias files.</p>                    </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    string[]
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_searchLocations">searchLocations</a>()
+        
+                                            <p>Return all of the paths where alias files may be found.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     <abbr title="Drush\SiteAlias\$this">$this</abbr>
                 </div>
                 <div class="col-md-8 type">
@@ -162,30 +166,8 @@ all sitenames in all group alias files.</p>                    </div>
                 <div class="col-md-8 type">
                     <a href="#method_findSingleSiteAliasFile">findSingleSiteAliasFile</a>(string $siteName)
         
-                                            <p>Find an alias file SITENAME.alias.yml in one
+                                            <p>Find an alias file SITENAME.site.yml in one
 of the specified search locations.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    string|bool
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_findGroupAliasFile">findGroupAliasFile</a>(string $groupName)
-        
-                                            <p>Find a group alias file, GROUPNAME.aliases.yml, in
-one of the specified search locations.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    string[]
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_findAllGroupAliasFiles">findAllGroupAliasFiles</a>()
-        
-                                            <p>Return a list of all GROUPNAME.aliases.yml files in any
-of the search locations.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -195,7 +177,7 @@ of the search locations.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_findAllSingleAliasFiles">findAllSingleAliasFiles</a>()
         
-                                            <p>Return a list of all SITENAME.alias.yml files in any of
+                                            <p>Return a list of all SITENAME.site.yml files in any of
 the search locations.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
@@ -207,26 +189,6 @@ the search locations.</p>                </div>
                     <a href="#method_findAllLegacyAliasFiles">findAllLegacyAliasFiles</a>()
         
                                             <p>Return all of the legacy alias files used in previous Drush versions.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    string[]
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_findUnnamedGroupAliasFiles">findUnnamedGroupAliasFiles</a>()
-        
-                                            <p>Return a list of all aliases.yml alias files.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    string[]
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_groupAliasFileCache">groupAliasFileCache</a>()
-        
-                                            <p>Prime the cache of all GROUPNAME.aliases.yml files.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -279,7 +241,7 @@ for the specified search pattern.</p>                </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_addSearchLocation">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L33">line 33</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L34">line 34</a></div>
         <code>                    <abbr title="Drush\SiteAlias\$this">$this</abbr>
     <strong>addSearchLocation</strong>(string $path)
         </code>
@@ -318,8 +280,38 @@ for the specified search pattern.</p>                </div>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_searchLocations">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L46">line 46</a></div>
+        <code>                    string[]
+    <strong>searchLocations</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return all of the paths where alias files may be found.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_depth">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L48">line 48</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L58">line 58</a></div>
         <code>                    <abbr title="Drush\SiteAlias\$this">$this</abbr>
     <strong>depth</strong>(string|int $depth)
         </code>
@@ -359,7 +351,7 @@ for the specified search pattern.</p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_findSingleSiteAliasFile">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L61">line 61</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L71">line 71</a></div>
         <code>                    string|bool
     <strong>findSingleSiteAliasFile</strong>(string $siteName)
         </code>
@@ -369,7 +361,7 @@ for the specified search pattern.</p>                </div>
     
 
                     <div class="method-description">
-                                    <p>Find an alias file SITENAME.alias.yml in one
+                                    <p>Find an alias file SITENAME.site.yml in one
 of the specified search locations.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
@@ -399,80 +391,8 @@ of the specified search locations.</p>                                          
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_findGroupAliasFile">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L80">line 80</a></div>
-        <code>                    string|bool
-    <strong>findGroupAliasFile</strong>(string $groupName)
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>Find a group alias file, GROUPNAME.aliases.yml, in
-one of the specified search locations.</p>                                                </div>
-                <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$groupName</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>string|bool</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_findAllGroupAliasFiles">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L96">line 96</a></div>
-        <code>                    string[]
-    <strong>findAllGroupAliasFiles</strong>()
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>Return a list of all GROUPNAME.aliases.yml files in any
-of the search locations.</p>                                                </div>
-                <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>string[]</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_findAllSingleAliasFiles">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L110">line 110</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L86">line 86</a></div>
         <code>                    string[]
     <strong>findAllSingleAliasFiles</strong>()
         </code>
@@ -482,7 +402,7 @@ of the search locations.</p>                                                </di
     
 
                     <div class="method-description">
-                                    <p>Return a list of all SITENAME.alias.yml files in any of
+                                    <p>Return a list of all SITENAME.site.yml files in any of
 the search locations.</p>                                                </div>
                 <div class="tags">
             
@@ -503,7 +423,7 @@ the search locations.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_findAllLegacyAliasFiles">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L120">line 120</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L96">line 96</a></div>
         <code>                    string[]
     <strong>findAllLegacyAliasFiles</strong>()
         </code>
@@ -532,68 +452,8 @@ the search locations.</p>                                                </div>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_findUnnamedGroupAliasFiles">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L133">line 133</a></div>
-        <code>            protected        string[]
-    <strong>findUnnamedGroupAliasFiles</strong>()
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>Return a list of all aliases.yml alias files.</p>                                                </div>
-                <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>string[]</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_groupAliasFileCache">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L146">line 146</a></div>
-        <code>            protected        string[]
-    <strong>groupAliasFileCache</strong>()
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>Prime the cache of all GROUPNAME.aliases.yml files.</p>                                                </div>
-                <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>string[]</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_createFinder">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L161">line 161</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L111">line 111</a></div>
         <code>            protected        <abbr title="Symfony\Component\Finder\Finder">Finder</abbr>
     <strong>createFinder</strong>(string $searchPattern)
         </code>
@@ -634,7 +494,7 @@ for the specified search pattern.</p>                                           
             </div>
                     <div class="method-item">
                     <h3 id="method_searchForAliasFiles">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L177">line 177</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L127">line 127</a></div>
         <code>            protected        string[]
     <strong>searchForAliasFiles</strong>(string $searchPattern)
         </code>
@@ -674,7 +534,7 @@ for the specified search pattern.</p>                                           
             </div>
                     <div class="method-item">
                     <h3 id="method_searchForAliasFilesKeyedByBasenamePrefix">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L197">line 197</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L147">line 147</a></div>
         <code>            protected        string[]
     <strong>searchForAliasFilesKeyedByBasenamePrefix</strong>(string $filenameExensions)
         </code>
@@ -714,7 +574,7 @@ for the specified search pattern.</p>                                           
             </div>
                     <div class="method-item">
                     <h3 id="method_extractKey">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L214">line 214</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasFileDiscovery.php#L164">line 164</a></div>
         <code>            protected        
     <strong>extractKey</strong>($basename, $filenameExensions)
         </code>

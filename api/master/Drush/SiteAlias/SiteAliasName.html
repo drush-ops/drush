@@ -86,36 +86,45 @@
     
 
             <div class="description">
-            <p>Parse a string that contains an alias name, and provide convenience
+            <p>Parse a string that contains a site alias name, and provide convenience
 methods to access the parts.</p>            <p>When provided by users, aliases must be in one of the following forms:</p>
 
 <ul>
-<li><p>@group.sitename.env: Fully specify group, sitename and envioronment.</p></li>
 <li><p>@sitename.env: List only sitename and environment.</p></li>
+<li><p>@env: Look up a named environment in instances where the site root
+  is known (e.g. via cwd). In this form, there is an implicit sitename
+  'self' which is replaced by the actual site alias name once known.</p></li>
 <li><p>@sitename: Provides only the sitename; uses the 'default' environment,
   or 'dev' if there is no 'default' (or whatever is there if there is
-  only one).</p></li>
-<li><p>@group.sitename: Same environment lookup as above for a site specified
-  in a group.</p></li>
+  only one). With this form, the site alias name has no environment
+  until the appropriate default environment is looked up. This form
+  is checked only after <code>@env</code> returns no matches.</p></li>
 </ul>
+
+<p>There are also two special aliases that are recognized:</p>
+
+<ul>
+<li><p>@self: The current bootstrapped site.</p></li>
+<li><p>@none: No alias ('root' and 'uri' unset).</p></li>
+</ul>
+
+<p>The special alias forms have no environment component.</p>
 
 <p>When provided to an API, the '@' is optional.</p>
 
-<p>Note that @sitename.env and @group.sitename are ambiguous. Drush will
-attempt to interpret single-dot aliases both ways; however, having a site
-with the same name as a group will prevent the use of the @group.sitename
-alias form for that group.</p>
+<p>Note that @sitename and @env are ambiguous. Aliases in this form
+(that are not one of the special aliases) will first be assumed
+to be @env, and may be converted to @sitename later.</p>
 
 <p>Note that:</p>
 
 <ul>
-<li>'group', 'sitename' and 'env' MUST NOT contain a '.' (unlike previous
+<li>'sitename' and 'env' MUST NOT contain a '.' (unlike previous
 versions of Drush).</li>
-<li>Users SHOULD NOT create a group that has the same name as any single site.</li>
-<li>Users SHOULD NOT use the same 'sitename' in multiple groups. If they do,
-then they SHOULD always use @group.sitename.env whenever referencing
-one of the sitenames. In instances where they do not, Drush will return
-an arbitrary matching site.</li>
+<li>Users SHOULD NOT create any environments that have the same name
+as any site name (and visa-versa).</li>
+<li>All environments in one site record SHOULD be different versions
+of the same site (e.g. dev / test / live).</li>
 </ul>
 </p>                    </div>
     
@@ -126,7 +135,7 @@ an arbitrary matching site.</li>
                     <tr>
                 <td>ALIAS_NAME_REGEX</td>
                 <td class="last">
-                    <p><em>Match the parts of a regex name after the '@'.</em></p>
+                    <p><em>Match the parts of a regex name.</em></p>
                     <p></p>
                 </td>
             </tr>
@@ -136,14 +145,6 @@ an arbitrary matching site.</li>
             <h2>Properties</h2>
 
             <table class="table table-condensed">
-                    <tr>
-                <td class="type" id="property_group">
-                                        protected                                        
-                </td>
-                <td>$group</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
                     <tr>
                 <td class="type" id="property_sitename">
                                         protected                                        
@@ -160,14 +161,6 @@ an arbitrary matching site.</li>
                 <td class="last"></td>
                 <td></td>
             </tr>
-                    <tr>
-                <td class="type" id="property_ambiguous">
-                                        protected                                        
-                </td>
-                <td>$ambiguous</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
             </table>
 
     
@@ -176,10 +169,20 @@ an arbitrary matching site.</li>
             <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-2 type">
+                    static&nbsp;<a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_parse">parse</a>(string $item)
+        
+                                            <p>Create a new site alias name</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method___construct">__construct</a>(string $aliasName)
+                    <a href="#method___construct">__construct</a>(string $sitename = null, string $env = null)
         
                                             <p>Creae a SiteAliasName object from an alias name string.</p>                </div>
                 <div class="col-md-2"></div>
@@ -206,109 +209,14 @@ an arbitrary matching site.</li>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_assumeAmbiguousIsGroup">assumeAmbiguousIsGroup</a>()
-        
-                                            <p>If the alias name was ambiguous, assume for now that it was
-in the form '@group.sitename'.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_assumeAmbiguousIsSitename">assumeAmbiguousIsSitename</a>()
-        
-                                            <p>If the alias name was ambiguous, assume for now that it was
-in the form '@sitename.env'.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    string|<abbr title="Drush\SiteAlias\false">false</abbr>
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_couldBeCollectionName">couldBeCollectionName</a>()
-        
-                                            <p>In the case of calling SiteAliasManager::getMultiple(),
-we are interested in alias names that could be:</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    string|<abbr title="Drush\SiteAlias\false">false</abbr>
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_sitenameOfGroupCollection">sitenameOfGroupCollection</a>()
-        
-                                            <p>If this alias name is being used to call SiteALiasManager::getMultipl(),
-and it is in the form @group.sitename, then this method will return
-the 'sitename' component. Otherwise it returns 'false'.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    bool
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_isAmbiguous">isAmbiguous</a>()
-        
-                                            <p>Returns true if alias name was provided in an ambiguous form.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_disambiguate">disambiguate</a>()
-        
-                                            <p>Clears up the ambiguity of an alias name object once it is found
-as either a '@sitename.env' or a '@group.sitename'.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    bool
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_hasGroup">hasGroup</a>()
-        
-                                            <p>Return true if this alias name has a group.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    string
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_group">group</a>()
-        
-                                            <p>Return the name of the group portion of the alias name.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_setGroup">setGroup</a>(string $group)
-        
-                                            <p>Set the name of the group portion of the alias name.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
                     string
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_sitename">sitename</a>()
         
                                             <p>Return the sitename portion of the alias name. By definition,
-every alias must have a sitename. If the alias is in the form</p>                </div>
+every alias must have a sitename. If the site name is implicit,
+then 'self' is assumed.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -319,6 +227,17 @@ every alias must have a sitename. If the alias is in the form</p>               
                     <a href="#method_setSitename">setSitename</a>(string $sitename)
         
                                             <p>Set the sitename portion of the alias name</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_hasSitename">hasSitename</a>()
+        
+                                            <p>In general, all aliases have a sitename. The time when one will not
+is when an environment name <code>@env</code> is used as a shortcut for <code>@self.env</code></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -376,7 +295,7 @@ every alias must have a sitename. If the alias is in the form</p>               
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_parse">parse</a>(string $aliasName)
+                    <a href="#method_doParse">doParse</a>(string $aliasName)
         
                                             <p>Convert the parts of an alias name to its various component parts.</p>                </div>
                 <div class="col-md-2"></div>
@@ -386,32 +305,19 @@ every alias must have a sitename. If the alias is in the form</p>               
                     <abbr title="Drush\SiteAlias\true">true</abbr>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_processJustSitename">processJustSitename</a>(string $sitename)
+                    <a href="#method_processSingleItem">processSingleItem</a>($item)
         
                                             <p>Process an alias name provided as '@sitename'.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <abbr title="Drush\SiteAlias\true">true</abbr>
+                    boolean
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_processGroupSitenameAndEnv">processGroupSitenameAndEnv</a>(string $group, string $sitename, string $env)
+                    <a href="#method_isSpecialAliasName">isSpecialAliasName</a>(string $item)
         
-                                            <p>Process an alias name provided as '@group.sitename.env'.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    <abbr title="Drush\SiteAlias\true">true</abbr>
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_processAmbiguous">processAmbiguous</a>(string $groupOrSitename, string $sitenameOrEnv)
-        
-                                            <p>Process a two-part alias name that could be either '@group.sitename'
-or '@sitename.env'. We will start out assuming that the form was
-'@sitename.env'. The caller may use assumeAmbiguousIsGroup() or
-assumeAmbiguousIsSitename() to switch its 'mode'.</p>                </div>
+                                            <p>Determine whether the requested name is a special alias name.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -421,10 +327,50 @@ assumeAmbiguousIsSitename() to switch its 'mode'.</p>                </div>
 
             <div id="method-details">
                     <div class="method-item">
+                    <h3 id="method_parse">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L61">line 61</a></div>
+        <code>        static            <a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a>
+    <strong>parse</strong>(string $item)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Create a new site alias name</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$item</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/SiteAlias/SiteAliasName.html"><abbr title="Drush\SiteAlias\SiteAliasName">SiteAliasName</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L55">line 55</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L74">line 74</a></div>
         <code>                    
-    <strong>__construct</strong>(string $aliasName)
+    <strong>__construct</strong>(string $sitename = null, string $env = null)
         </code>
     </h3>
     <div class="details">
@@ -439,8 +385,13 @@ assumeAmbiguousIsSitename() to switch its 'mode'.</p>                </div>
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
-                <td>$aliasName</td>
-                <td>a string representation of an alias name.</td>
+                <td>$sitename</td>
+                <td>The alias name for the site.</td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$env</td>
+                <td>The name for the site's environment.</td>
             </tr>
             </table>
 
@@ -453,7 +404,7 @@ assumeAmbiguousIsSitename() to switch its 'mode'.</p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method___toString">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L65">line 65</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L85">line 85</a></div>
         <code>                    string
     <strong>__toString</strong>()
         </code>
@@ -483,7 +434,7 @@ assumeAmbiguousIsSitename() to switch its 'mode'.</p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_isAliasName">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L83">line 83</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L100">line 100</a></div>
         <code>        static            bool
     <strong>isAliasName</strong>(string $aliasName)
         </code>
@@ -522,269 +473,8 @@ assumeAmbiguousIsSitename() to switch its 'mode'.</p>                </div>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_assumeAmbiguousIsGroup">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L96">line 96</a></div>
-        <code>                    
-    <strong>assumeAmbiguousIsGroup</strong>()
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>If the alias name was ambiguous, assume for now that it was
-in the form '@group.sitename'.</p>                                                </div>
-                <div class="tags">
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_assumeAmbiguousIsSitename">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L109">line 109</a></div>
-        <code>                    
-    <strong>assumeAmbiguousIsSitename</strong>()
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>If the alias name was ambiguous, assume for now that it was
-in the form '@sitename.env'.</p>                                                </div>
-                <div class="tags">
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_couldBeCollectionName">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L132">line 132</a></div>
-        <code>                    string|<abbr title="Drush\SiteAlias\false">false</abbr>
-    <strong>couldBeCollectionName</strong>()
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>In the case of calling SiteAliasManager::getMultiple(),
-we are interested in alias names that could be:</p>                    <p><ul>
-<li>@group
-
-<ul>
-<li>@group.sitename</li>
-<li>@sitename</li>
-</ul></li>
-</ul>
-
-<p>This method will return the first component of an alias
-in one of those forms (the group or sitename), or 'false'
-for any alias name that does not match that pattern.</p>                            </div>
-                <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>string|<abbr title="Drush\SiteAlias\false">false</abbr></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_sitenameOfGroupCollection">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L148">line 148</a></div>
-        <code>                    string|<abbr title="Drush\SiteAlias\false">false</abbr>
-    <strong>sitenameOfGroupCollection</strong>()
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>If this alias name is being used to call SiteALiasManager::getMultipl(),
-and it is in the form @group.sitename, then this method will return
-the 'sitename' component. Otherwise it returns 'false'.</p>                                                </div>
-                <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>string|<abbr title="Drush\SiteAlias\false">false</abbr></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_isAmbiguous">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L161">line 161</a></div>
-        <code>                    bool
-    <strong>isAmbiguous</strong>()
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>Returns true if alias name was provided in an ambiguous form.</p>                                                </div>
-                <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>bool</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_disambiguate">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L170">line 170</a></div>
-        <code>                    
-    <strong>disambiguate</strong>()
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>Clears up the ambiguity of an alias name object once it is found
-as either a '@sitename.env' or a '@group.sitename'.</p>                                                </div>
-                <div class="tags">
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_hasGroup">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L180">line 180</a></div>
-        <code>                    bool
-    <strong>hasGroup</strong>()
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>Return true if this alias name has a group.</p>                                                </div>
-                <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>bool</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_group">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L190">line 190</a></div>
-        <code>                    string
-    <strong>group</strong>()
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>Return the name of the group portion of the alias name.</p>                                                </div>
-                <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>string</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_setGroup">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L200">line 200</a></div>
-        <code>                    
-    <strong>setGroup</strong>(string $group)
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>Set the name of the group portion of the alias name.</p>                                                </div>
-                <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$group</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_sitename">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L215">line 215</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L116">line 116</a></div>
         <code>                    string
     <strong>sitename</strong>()
         </code>
@@ -795,7 +485,8 @@ as either a '@sitename.env' or a '@group.sitename'.</p>                         
 
                     <div class="method-description">
                                     <p>Return the sitename portion of the alias name. By definition,
-every alias must have a sitename. If the alias is in the form</p>                                                </div>
+every alias must have a sitename. If the site name is implicit,
+then 'self' is assumed.</p>                                                </div>
                 <div class="tags">
             
                             <h4>Return Value</h4>
@@ -815,7 +506,7 @@ every alias must have a sitename. If the alias is in the form</p>               
             </div>
                     <div class="method-item">
                     <h3 id="method_setSitename">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L225">line 225</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L126">line 126</a></div>
         <code>                    
     <strong>setSitename</strong>(string $sitename)
         </code>
@@ -845,8 +536,39 @@ every alias must have a sitename. If the alias is in the form</p>               
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_hasSitename">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L137">line 137</a></div>
+        <code>                    bool
+    <strong>hasSitename</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>In general, all aliases have a sitename. The time when one will not
+is when an environment name <code>@env</code> is used as a shortcut for <code>@self.env</code></p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_hasEnv">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L235">line 235</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L147">line 147</a></div>
         <code>                    bool
     <strong>hasEnv</strong>()
         </code>
@@ -876,7 +598,7 @@ every alias must have a sitename. If the alias is in the form</p>               
             </div>
                     <div class="method-item">
                     <h3 id="method_setEnv">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L245">line 245</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L157">line 157</a></div>
         <code>                    
     <strong>setEnv</strong>(string $env)
         </code>
@@ -907,7 +629,7 @@ every alias must have a sitename. If the alias is in the form</p>               
             </div>
                     <div class="method-item">
                     <h3 id="method_env">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L255">line 255</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L167">line 167</a></div>
         <code>                    string
     <strong>env</strong>()
         </code>
@@ -937,7 +659,7 @@ every alias must have a sitename. If the alias is in the form</p>               
             </div>
                     <div class="method-item">
                     <h3 id="method_isSelf">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L265">line 265</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L177">line 177</a></div>
         <code>                    bool
     <strong>isSelf</strong>()
         </code>
@@ -967,7 +689,7 @@ every alias must have a sitename. If the alias is in the form</p>               
             </div>
                     <div class="method-item">
                     <h3 id="method_isNone">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L273">line 273</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L185">line 185</a></div>
         <code>                    
     <strong>isNone</strong>()
         </code>
@@ -987,10 +709,10 @@ every alias must have a sitename. If the alias is in the form</p>               
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_parse">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L283">line 283</a></div>
+                    <h3 id="method_doParse">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L195">line 195</a></div>
         <code>            protected        
-    <strong>parse</strong>(string $aliasName)
+    <strong>doParse</strong>(string $aliasName)
         </code>
     </h3>
     <div class="details">
@@ -1018,10 +740,10 @@ every alias must have a sitename. If the alias is in the form</p>               
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_processJustSitename">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L337">line 337</a></div>
+                    <h3 id="method_processSingleItem">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L232">line 232</a></div>
         <code>            protected        <abbr title="Drush\SiteAlias\true">true</abbr>
-    <strong>processJustSitename</strong>(string $sitename)
+    <strong>processSingleItem</strong>($item)
         </code>
     </h3>
     <div class="details">
@@ -1035,8 +757,8 @@ every alias must have a sitename. If the alias is in the form</p>               
 
                     <table class="table table-condensed">
                     <tr>
-                <td>string</td>
-                <td>$sitename</td>
+                <td></td>
+                <td>$item</td>
                 <td></td>
             </tr>
             </table>
@@ -1058,10 +780,10 @@ every alias must have a sitename. If the alias is in the form</p>               
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_processGroupSitenameAndEnv">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L354">line 354</a></div>
-        <code>            protected        <abbr title="Drush\SiteAlias\true">true</abbr>
-    <strong>processGroupSitenameAndEnv</strong>(string $group, string $sitename, string $env)
+                    <h3 id="method_isSpecialAliasName">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L249">line 249</a></div>
+        <code>            protected        boolean
+    <strong>isSpecialAliasName</strong>(string $item)
         </code>
     </h3>
     <div class="details">
@@ -1069,24 +791,14 @@ every alias must have a sitename. If the alias is in the form</p>               
     
 
                     <div class="method-description">
-                                    <p>Process an alias name provided as '@group.sitename.env'.</p>                                                </div>
+                                    <p>Determine whether the requested name is a special alias name.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
-                <td>$group</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>string</td>
-                <td>$sitename</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>string</td>
-                <td>$env</td>
+                <td>$item</td>
                 <td></td>
             </tr>
             </table>
@@ -1096,55 +808,7 @@ every alias must have a sitename. If the alias is in the form</p>               
 
                     <table class="table table-condensed">
         <tr>
-            <td><abbr title="Drush\SiteAlias\true">true</abbr></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_processAmbiguous">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasName.php#L373">line 373</a></div>
-        <code>            protected        <abbr title="Drush\SiteAlias\true">true</abbr>
-    <strong>processAmbiguous</strong>(string $groupOrSitename, string $sitenameOrEnv)
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>Process a two-part alias name that could be either '@group.sitename'
-or '@sitename.env'. We will start out assuming that the form was
-'@sitename.env'. The caller may use assumeAmbiguousIsGroup() or
-assumeAmbiguousIsSitename() to switch its 'mode'.</p>                                                </div>
-                <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$groupOrSitename</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>string</td>
-                <td>$sitenameOrEnv</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><abbr title="Drush\SiteAlias\true">true</abbr></td>
+            <td>boolean</td>
             <td></td>
         </tr>
     </table>

@@ -181,6 +181,16 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    string[]
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_searchLocations">searchLocations</a>()
+        
+                                            <p>Return all of the paths where alias files may be found.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr>
                 </div>
                 <div class="col-md-8 type">
@@ -240,8 +250,7 @@ provided on the commandline.</p>                </div>
                 <div class="col-md-8 type">
                     <a href="#method_getMultiple">getMultiple</a>(string $name)
         
-                                            <p>Given a simple alias name, e.g. '@alias', returns either all of
-the sites and environments in that alias group, or all of the
+                                            <p>Given a simple alias name, e.g. '@alias', returns all of the
 environments in the specified site.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
@@ -261,11 +270,21 @@ to the alias manager.</p>                </div>
                     <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_buildSelf">buildSelf</a>(<a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $preflightArgs, <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment, $root)
+                    <a href="#method_determineSelf">determineSelf</a>(<a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $preflightArgs, <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment, $root)
         
                                             <p>Either look up the specified alias name / site spec,
 or, if those are invalid, then generate one from
 the provided root and URI.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_buildSelf">buildSelf</a>(<a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $preflightArgs, $root)
+        
+                                            <p>Generate @self from the provided root and URI.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -392,7 +411,7 @@ the provided root and URI.</p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_addSearchLocations">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManager.php#L64">line 64</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManager.php#L65">line 65</a></div>
         <code>                    <abbr title="Drush\SiteAlias\$this">$this</abbr>
     <strong>addSearchLocations</strong>(array $paths)
         </code>
@@ -410,7 +429,8 @@ the provided root and URI.</p>                </div>
                     <tr>
                 <td>array</td>
                 <td>$paths</td>
-                <td></td>
+                <td>Any path provided in --alias-path option
+  or drush.path.alias-path configuration item.</td>
             </tr>
             </table>
 
@@ -431,8 +451,38 @@ the provided root and URI.</p>                </div>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_searchLocations">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManager.php#L77">line 77</a></div>
+        <code>                    string[]
+    <strong>searchLocations</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return all of the paths where alias files may be found.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_get">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManager.php#L82">line 82</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManager.php#L92">line 92</a></div>
         <code>                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|<abbr title="Drush\SiteAlias\false">false</abbr>
     <strong>get</strong>(string $name)
         </code>
@@ -475,7 +525,7 @@ as a sitename, and the default environment for that site is returned.</p>       
             </div>
                     <div class="method-item">
                     <h3 id="method_getSelf">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManager.php#L100">line 100</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManager.php#L110">line 110</a></div>
         <code>                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>
     <strong>getSelf</strong>()
         </code>
@@ -505,7 +555,7 @@ as a sitename, and the default environment for that site is returned.</p>       
             </div>
                     <div class="method-item">
                     <h3 id="method_setSelf">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManager.php#L111">line 111</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManager.php#L121">line 121</a></div>
         <code>                    <abbr title="Drush\SiteAlias\$this">$this</abbr>
     <strong>setSelf</strong>(<a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a> $selfAliasRecord)
         </code>
@@ -545,7 +595,7 @@ as a sitename, and the default environment for that site is returned.</p>       
             </div>
                     <div class="method-item">
                     <h3 id="method_findSelf">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManager.php#L129">line 129</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManager.php#L139">line 139</a></div>
         <code>                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>
     <strong>findSelf</strong>(<a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $preflightArgs, <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment, string $root)
         </code>
@@ -605,7 +655,7 @@ provided on the commandline.</p>                                                
             </div>
                     <div class="method-item">
                     <h3 id="method_getAlias">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManager.php#L147">line 147</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManager.php#L157">line 157</a></div>
         <code>                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>
     <strong>getAlias</strong>(string $aliasName)
         </code>
@@ -645,7 +695,7 @@ provided on the commandline.</p>                                                
             </div>
                     <div class="method-item">
                     <h3 id="method_getMultiple">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManager.php#L177">line 177</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManager.php#L185">line 185</a></div>
         <code>                    <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>[]|<abbr title="Drush\SiteAlias\false">false</abbr>
     <strong>getMultiple</strong>(string $name)
         </code>
@@ -655,10 +705,8 @@ provided on the commandline.</p>                                                
     
 
                     <div class="method-description">
-                                    <p>Given a simple alias name, e.g. '@alias', returns either all of
-the sites and environments in that alias group, or all of the
-environments in the specified site.</p>                    <p>If the provided name is a site specification, or if it contains
-a group or environment ('@group.site' or '@site.env' or '@group.site.env'),
+                                    <p>Given a simple alias name, e.g. '@alias', returns all of the
+environments in the specified site.</p>                    <p>If the provided name is a site specification et. al.,
 then this method will return 'false'.</p>                            </div>
                 <div class="tags">
                             <h4>Parameters</h4>
@@ -689,7 +737,7 @@ then this method will return 'false'.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_listAllFilePaths">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManager.php#L197">line 197</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManager.php#L216">line 216</a></div>
         <code>                    string[]
     <strong>listAllFilePaths</strong>()
         </code>
@@ -719,10 +767,10 @@ to the alias manager.</p>                                                </div>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_buildSelf">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManager.php#L213">line 213</a></div>
+                    <h3 id="method_determineSelf">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManager.php#L232">line 232</a></div>
         <code>            protected        <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>
-    <strong>buildSelf</strong>(<a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $preflightArgs, <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment, $root)
+    <strong>determineSelf</strong>(<a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $preflightArgs, <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment, $root)
         </code>
     </h3>
     <div class="details">
@@ -745,6 +793,51 @@ the provided root and URI.</p>                                                </
                     <tr>
                 <td><a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></td>
                 <td>$environment</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$root</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_buildSelf">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManager.php#L273">line 273</a></div>
+        <code>            protected        <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>
+    <strong>buildSelf</strong>(<a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $preflightArgs, $root)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Generate @self from the provided root and URI.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a></td>
+                <td>$preflightArgs</td>
                 <td></td>
             </tr>
                     <tr>
