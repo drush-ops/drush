@@ -6,7 +6,7 @@ Resources
 -----------
 * [Installing (and Upgrading)](http://docs.drush.org/en/master/install/) [(Drush8)](http://docs.drush.org/en/8.x/install/)
 * [General Documentation](http://docs.drush.org) [(Drush8)](http://docs.drush.org/en/8.x)
-* [API Documentation](http://api.drush.org)
+* [API Documentation](http://www.drush.org/api/master/index.html) [Drush8](http://api.drush.org)
 * [Drush Commands](http://drushcommands.com)
 * Subscribe [this atom feed](https://github.com/drush-ops/drush/releases.atom) to receive notification of new releases. Also, [Version eye](https://www.versioneye.com/).
 * [Drush packages available via Composer](https://packagist.org/search/?type=drupal-drush)
