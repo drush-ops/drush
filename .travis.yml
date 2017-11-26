@@ -47,6 +47,7 @@ matrix:
 before_install:
   - echo 'mbstring.http_input = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo 'mbstring.http_output = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - echo 'memory_limit = -1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
 # Build a System-Under-Test.
 install:
@@ -57,7 +58,6 @@ before_script:
   - phpenv config-rm xdebug.ini
   - echo 'sendmail_path = /bin/true' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   # - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
-  - echo 'memory_limit = -1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
 script:
   - if [ -n "$TEST_DIR" ] ; then cd $TEST_DIR && phpunit ; fi
