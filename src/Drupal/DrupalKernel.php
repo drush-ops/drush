@@ -129,16 +129,20 @@ class DrupalKernel extends DrupalDrupalKernel
 
     protected function findModuleDrushServiceProvider($module, $dir)
     {
-        // TODO: probably read composer.json and cache this info via a Composer script
-        $serviceYmlPath = $this->findModuleDrushServiceProviderFromComposer($dir);
-        if ($serviceYmlPath) {
-            return $serviceYmlPath;
+        $services = $this->findModuleDrushServiceProviderFromComposer($dir);
+        if (!$services) {
+            return $this->findDefaultSerivcesFile($module, $dir);
         }
+        return $this->findAppropriateServicesFile($module, $services, $dir);
+    }
+
+    protected function findDefaultSerivcesFile($module, $dir)
+    {
         $result = $dir . "/drush.services.yml";
         if (!file_exists($result)) {
             return;
         }
-        drush_log(dt("$module should have an extra.drush.services section. In the future, this will be required in order to use this Drush extension."), LogLevel::WARNING);
+        drush_log(dt("$module should have an extra.drush.services section. See 'Providing Multiple Services File' in 'drush docs:commands' for more information."), LogLevel::WARNING);
         return $result;
     }
 
@@ -166,16 +170,27 @@ class DrupalKernel extends DrupalDrupalKernel
         }
         $composerJsonContents = file_get_contents($composerJsonPath);
         $info = json_decode($composerJsonContents, true);
+        if (!$info) {
+            drush_log(dt('Invalid json in {composer}', ['composer' => $composerJsonPath]), LogLevel::WARNING);
+            return false;
+        }
         if (!isset($info['extra']['drush']['services'])) {
             return false;
         }
-        foreach ($info['extra']['drush']['services'] as $serviceYmlPath => $versionConstraint) {
-            $version = Drush::getVersion();
+        return $info['extra']['drush']['services'];
+    }
+
+    protected function findAppropriateServicesFile($module, $services, $dir)
+    {
+        $version = Drush::getVersion();
+        foreach ($services as $serviceYmlPath => $versionConstraint) {
             $version = preg_replace('#-dev.*#', '', $version);
             if (Semver::satisfies($version, $versionConstraint)) {
+                drush_log(dt('Found {services} for {module} Drush commands', ['module' => $module, 'services' => $serviceYmlPath]), LogLevel::DEBUG);
                 return $dir . '/' . $serviceYmlPath;
             }
         }
+        drush_log(dt('{module} has Drush commands, but none of {constraints} match the current Drush version "{version}"', ['module' => $module, 'constraints' => implode(',', $services), 'version' => $version]), LogLevel::DEBUG);
         return false;
     }
 
