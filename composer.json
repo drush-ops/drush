@@ -23,15 +23,21 @@
   "bin": [
     "drush"
   ],
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/thomscode/config"
+    }
+  ],
   "require": {
     "php": ">=5.6.0",
     "ext-dom": "*",
     "chi-teck/drupal-code-generator": "^1.17.3",
     "composer/semver": "^1.4",
     "consolidation/annotated-command": "^2.8.1",
-    "consolidation/config": "^1.0.7",
+    "consolidation/config": "dev-fix-defaults",
     "consolidation/output-formatters": "^3.1.12",
-    "consolidation/robo": "^1.1.5",
+    "consolidation/robo": "dev-fix-defaults",
     "grasmash/yaml-expander": "^1.1.1",
     "league/container": "~2",
     "psr/log": "~1.0",
