@@ -142,7 +142,7 @@ class DrupalKernel extends DrupalDrupalKernel
         if (!file_exists($result)) {
             return;
         }
-        drush_log(dt("$module should have an extra.drush.services section. In the future, this will be required in order to use this Drush extension."), LogLevel::WARNING);
+        drush_log(dt("$module should have an extra.drush.services section. See 'Providing Multiple Services File' in 'drush docs:commands' for more information."), LogLevel::WARNING);
         return $result;
     }
 
@@ -165,19 +165,16 @@ class DrupalKernel extends DrupalDrupalKernel
     protected function findModuleDrushServiceProviderFromComposer($dir)
     {
         $composerJsonPath = "$dir/composer.json";
-        drush_log(dt("Looking for $composerJsonPath"), LogLevel::DEBUG);
         if (!file_exists($composerJsonPath)) {
             return false;
         }
         $composerJsonContents = file_get_contents($composerJsonPath);
-        var_export($composerJsonContents);
         $info = json_decode($composerJsonContents, true);
         if (!$info) {
             drush_log(dt('Invalid json in {composer}', ['composer' => $composerJsonPath]), LogLevel::WARNING);
             return false;
         }
         if (!isset($info['extra']['drush']['services'])) {
-            drush_log("No extra.drush.services in $composerJsonPath");
             return false;
         }
         return $info['extra']['drush']['services'];

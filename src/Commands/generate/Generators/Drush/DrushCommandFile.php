@@ -133,10 +133,16 @@ class DrushCommandFile extends BaseGenerator
     // Maybe put in BaseGenerator?
     protected function _setFileJson($path, $data)
     {
-        $this->_setFileContent($path, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        $content = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $this->_setFileContent($path, $content);
+
+        // TODO: Once supported, use:
+        // $this->addFile()
+        //   ->path($path)
+        //  ->content($content);
     }
 
-    // Maybe put in BaseGenerator?
+    // TODO: Remove once `addFile` is available.
     protected function _setFileContent($path, $content)
     {
         $this->files[$path] = [
