@@ -21,6 +21,7 @@ class UpdateDBCommands extends DrushCommands
      * @option entity-updates Run automatic entity schema updates at the end of any update hooks.
      * @option post-updates Run post updates after hook_update_n and entity updates.
      * @bootstrap full
+     * @kernel update
      * @aliases updb
      */
     public function updatedb($options = ['cache-clear' => true, 'entity-updates' => false, 'post-updates' => true])
@@ -70,6 +71,7 @@ class UpdateDBCommands extends DrushCommands
      * @command entity:updates
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @bootstrap full
+     * @kernel update
      * @aliases entup,entity-updates
      *
      */
@@ -95,6 +97,7 @@ class UpdateDBCommands extends DrushCommands
      * @option entity-updates Show entity schema updates.
      * @option post-updates Show post updates.
      * @bootstrap full
+     * @kernel update
      * @aliases updbst,updatedb-status
      * @field-labels
      *   module: Module

@@ -254,13 +254,16 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      *   function itself but can be useful for other code called from within this
      *   function, to know if e.g. a caller is in the process of booting to the
      *   specified level. If specified, it should never be lower than $phase.
+     * @param string $kernel
+     *   Optional identifier of the kernel to boot. Defaults to
+     *   \Drush\Boot\Kernels::DRUPAL.
      *
      * @return bool
      *   TRUE if the specified bootstrap phase has completed.
      *
      * @see \Drush\Boot\Boot::bootstrapPhases()
      */
-    public function doBootstrap($phase, $phase_max = false)
+    public function doBootstrap($phase, $phase_max = false, $kernel = 'drupal')
     {
         $bootstrap = $this->bootstrap();
         $phases = $this->bootstrapPhases(true);
@@ -289,7 +292,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                 if ($result = $this->bootstrapValidate($phase_index)) {
                     if (method_exists($bootstrap, $current_phase) && !drush_get_error()) {
                         $this->logger->log(LogLevel::BOOTSTRAP, 'Drush bootstrap phase: {function}()', ['function' => $current_phase]);
-                        $bootstrap->{$current_phase}();
+                        $bootstrap->{$current_phase}($kernel);
                     }
                     drush_set_context('DRUSH_BOOTSTRAP_PHASE', $phase_index);
                 }
@@ -379,23 +382,31 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      *
      * @param string $bootstrapPhase
      *   Name of phase to bootstrap to. Will be converted to appropriate index.
+     * @param string $kernel
+     *   The identifier of the kernel to boot.
      *
      * @return bool
      *   TRUE if the specified bootstrap phase has completed.
+     *
+     * @throws \Exception
+     *   Thrown when an unknown bootstrap phase or kernel is passed.
      */
-    public function bootstrapToPhase($bootstrapPhase)
+    public function bootstrapToPhase($bootstrapPhase, $kernel)
     {
-        $this->logger->log(LogLevel::BOOTSTRAP, 'Bootstrap to {phase}', ['phase' => $bootstrapPhase]);
+        $this->logger->log(LogLevel::BOOTSTRAP, 'Bootstrap {kernel} kernel to {phase}', ['kernel' => $kernel, 'phase' => $bootstrapPhase]);
         $phase = $this->bootstrap()->lookUpPhaseIndex($bootstrapPhase);
         if (!isset($phase)) {
             throw new \Exception(dt('Bootstrap phase !phase unknown.', ['!phase' => $bootstrapPhase]));
+        }
+        if (!in_array($kernel, Kernels::availableKernels())) {
+          throw new \Exception(dt('Unknown kernel !kernel.', ['!kernel' => $kernel]));
         }
         // Do not attempt to bootstrap to a phase that is unknown to the selected bootstrap object.
         $phases = $this->bootstrapPhases();
         if (!array_key_exists($phase, $phases) && ($phase >= 0)) {
             return false;
         }
-        return $this->bootstrapToPhaseIndex($phase);
+        return $this->bootstrapToPhaseIndex($phase, $kernel);
     }
 
     /**
@@ -403,11 +414,13 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      *
      * @param int $max_phase_index
      *   Only attempt bootstrap to the specified level.
+     * @param string $kernel
+     *   The identifier of the kernel to boot.
      *
      * @return bool
      *   TRUE if the specified bootstrap phase has completed.
      */
-    public function bootstrapToPhaseIndex($max_phase_index)
+    public function bootstrapToPhaseIndex($max_phase_index, $kernel)
     {
         if ($max_phase_index == DRUSH_BOOTSTRAP_MAX) {
             $this->bootstrapMax();
@@ -430,7 +443,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
             if ($this->bootstrapValidate($phase_index)) {
                 if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE)) {
                     $this->logger->log(LogLevel::BOOTSTRAP, 'Try to bootstrap at phase {phase}', ['phase' => $max_phase_index]);
-                    $result = $this->doBootstrap($phase_index, $max_phase_index);
+                    $result = $this->doBootstrap($phase_index, $max_phase_index, $kernel);
                 }
             } else {
                 $this->logger->log(LogLevel::BOOTSTRAP, 'Could not bootstrap at phase {phase}', ['phase' => $max_phase_index]);

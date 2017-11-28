@@ -24,7 +24,8 @@ class BootstrapHook implements InitializeHookInterface
     {
         // Get the @bootstrap annotation. If there isn't one, then assume NONE.
         $phase = $annotationData->get('bootstrap', 'none');
-        $bootstrap_successful = $this->bootstrapManager->bootstrapToPhase($phase);
+        $kernel = $annotationData->get('kernel', 'drupal');
+        $bootstrap_successful = $this->bootstrapManager->bootstrapToPhase($phase, $kernel);
 
         if (!$bootstrap_successful) {
             // TODO: better exception class, better exception method
