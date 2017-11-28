@@ -160,15 +160,8 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     public function bootstrapDrupalFull()
     {
         $this->logger->debug(dt('Start bootstrap of the Drupal Kernel.'));
-        // TODO: do we need to do ob_start any longer?
-        if (!drush_get_context('DRUSH_QUIET', false)) {
-            ob_start();
-        }
         $this->kernel->boot();
         $this->kernel->prepareLegacyRequest($this->getRequest());
-        if (!drush_get_context('DRUSH_QUIET', false)) {
-            ob_end_clean();
-        }
         $this->logger->debug(dt('Finished bootstrap of the Drupal Kernel.'));
 
         parent::bootstrapDrupalFull();
