@@ -62,7 +62,11 @@ class OptionsCommands
         'tables-key' => self::REQ,
         'skip-tables-list' => self::REQ,
         'structure-tables-list' => self::REQ,
-        'tables-list' => self::REQ])
+        'tables-list' => self::REQ,
+        'skip-tables' => self::REQ,
+        'structure-tables' => self::REQ,
+        'tables' => self::REQ,
+        ])
     {
     }
 }
