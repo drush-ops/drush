@@ -2,6 +2,7 @@
 
 namespace Drush\Boot;
 
+use Consolidation\AnnotatedCommand\AnnotationData;
 use Drush\Log\DrushLog;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -139,8 +140,9 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         parent::bootstrapDrupalDatabase();
     }
 
-    public function bootstrapDrupalConfiguration($kernel = 'drupal')
+    public function bootstrapDrupalConfiguration(AnnotationData $annotationData)
     {
+        $kernel = $annotationData->get('kernel', 'drupal');
         $classloader = $this->autoloader();
         $request = $this->getRequest();
         $kernel_factory = $this->getKernelFactory($kernel);

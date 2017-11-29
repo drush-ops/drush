@@ -2,6 +2,7 @@
 
 namespace Drush\Boot;
 
+use Consolidation\AnnotatedCommand\AnnotationData;
 use Robo\Common\ConfigAwareTrait;
 use DrupalFinder\DrupalFinder;
 use Drush\Log\LogLevel;
@@ -254,16 +255,15 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      *   function itself but can be useful for other code called from within this
      *   function, to know if e.g. a caller is in the process of booting to the
      *   specified level. If specified, it should never be lower than $phase.
-     * @param string $kernel
-     *   Optional identifier of the kernel to boot. Defaults to
-     *   \Drush\Boot\Kernels::DRUPAL.
+     * @param \Consolidation\AnnotatedCommand\AnnotationData $annotationData
+     *   The annotation data from the command.
      *
      * @return bool
      *   TRUE if the specified bootstrap phase has completed.
      *
      * @see \Drush\Boot\Boot::bootstrapPhases()
      */
-    public function doBootstrap($phase, $phase_max = false, $kernel = 'drupal')
+    public function doBootstrap($phase, $phase_max = false, AnnotationData $annotationData)
     {
         $bootstrap = $this->bootstrap();
         $phases = $this->bootstrapPhases(true);
@@ -292,7 +292,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                 if ($result = $this->bootstrapValidate($phase_index)) {
                     if (method_exists($bootstrap, $current_phase) && !drush_get_error()) {
                         $this->logger->log(LogLevel::BOOTSTRAP, 'Drush bootstrap phase: {function}()', ['function' => $current_phase]);
-                        $bootstrap->{$current_phase}($kernel);
+                        $bootstrap->{$current_phase}($annotationData);
                     }
                     drush_set_context('DRUSH_BOOTSTRAP_PHASE', $phase_index);
                 }
@@ -380,33 +380,31 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     /**
      * Bootstrap to the specified phase.
      *
-     * @param string $bootstrapPhase
-     *   Name of phase to bootstrap to. Will be converted to appropriate index.
-     * @param string $kernel
-     *   The identifier of the kernel to boot.
+     * @param \Consolidation\AnnotatedCommand\AnnotationData $annotationData
+     *   The annotation data from the command.
      *
      * @return bool
      *   TRUE if the specified bootstrap phase has completed.
      *
      * @throws \Exception
-     *   Thrown when an unknown bootstrap phase or kernel is passed.
+     *   Thrown when an unknown bootstrap phase is passed in the annotation
+     *   data.
      */
-    public function bootstrapToPhase($bootstrapPhase, $kernel)
+    public function bootstrapToPhase(AnnotationData $annotationData)
     {
-        $this->logger->log(LogLevel::BOOTSTRAP, 'Bootstrap {kernel} kernel to {phase}', ['kernel' => $kernel, 'phase' => $bootstrapPhase]);
+        // Get the @bootstrap annotation. If there isn't one, then assume NONE.
+        $bootstrapPhase = $annotationData->get('bootstrap', 'none');
+        $this->logger->log(LogLevel::BOOTSTRAP, 'Bootstrap to {phase}', ['phase' => $bootstrapPhase]);
         $phase = $this->bootstrap()->lookUpPhaseIndex($bootstrapPhase);
         if (!isset($phase)) {
             throw new \Exception(dt('Bootstrap phase !phase unknown.', ['!phase' => $bootstrapPhase]));
-        }
-        if (!in_array($kernel, Kernels::availableKernels())) {
-          throw new \Exception(dt('Unknown kernel !kernel.', ['!kernel' => $kernel]));
         }
         // Do not attempt to bootstrap to a phase that is unknown to the selected bootstrap object.
         $phases = $this->bootstrapPhases();
         if (!array_key_exists($phase, $phases) && ($phase >= 0)) {
             return false;
         }
-        return $this->bootstrapToPhaseIndex($phase, $kernel);
+        return $this->bootstrapToPhaseIndex($phase, $annotationData);
     }
 
     /**
@@ -414,13 +412,13 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      *
      * @param int $max_phase_index
      *   Only attempt bootstrap to the specified level.
-     * @param string $kernel
-     *   The identifier of the kernel to boot.
+     * @param \Consolidation\AnnotatedCommand\AnnotationData $annotationData
+     *   The annotation data from the command.
      *
      * @return bool
      *   TRUE if the specified bootstrap phase has completed.
      */
-    public function bootstrapToPhaseIndex($max_phase_index, $kernel)
+    public function bootstrapToPhaseIndex($max_phase_index, AnnotationData $annotationData)
     {
         if ($max_phase_index == DRUSH_BOOTSTRAP_MAX) {
             $this->bootstrapMax();
@@ -443,7 +441,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
             if ($this->bootstrapValidate($phase_index)) {
                 if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE)) {
                     $this->logger->log(LogLevel::BOOTSTRAP, 'Try to bootstrap at phase {phase}', ['phase' => $max_phase_index]);
-                    $result = $this->doBootstrap($phase_index, $max_phase_index, $kernel);
+                    $result = $this->doBootstrap($phase_index, $max_phase_index, $annotationData);
                 }
             } else {
                 $this->logger->log(LogLevel::BOOTSTRAP, 'Could not bootstrap at phase {phase}', ['phase' => $max_phase_index]);
