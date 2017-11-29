@@ -8,9 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Drupal\Core\DrupalKernel;
 use Drush\Drush;
-use Drush\Drupal\DrupalKernel as DrushDrupalKernel;
 use Drush\Drupal\DrushServiceModifier;
-use Drush\Drupal\UpdateKernel as DrushUpdateKernel;
 
 use Drush\Log\LogLevel;
 
@@ -145,7 +143,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $kernel = $annotationData->get('kernel', 'drupal');
         $classloader = $this->autoloader();
         $request = $this->getRequest();
-        $kernel_factory = $this->getKernelFactory($kernel);
+        $kernel_factory = Kernels::getKernelFactory($kernel);
         /** @var \Drupal\Core\DrupalKernelInterface kernel */
         $this->kernel = $kernel_factory($request, $classloader, 'prod');
         // @see Drush\Drupal\DrupalKernel::addServiceModifier()
@@ -228,21 +226,4 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         }
     }
 
-  /**
-   * Returns the factory method that can be used to retrieve the given kernel.
-   *
-   * @param string $kernel
-   *   The kernel to retrieve.
-   *
-   * @return callable
-   *   The factory method.
-   */
-    protected function getKernelFactory($kernel)
-    {
-        $factories = [
-          Kernels::DRUPAL => [DrushDrupalKernel::class, 'createFromRequest'],
-          Kernels::UPDATE => [DrushUpdateKernel::class, 'createFromRequest'],
-        ];
-        return $factories[$kernel];
-    }
 }

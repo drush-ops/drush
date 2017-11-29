@@ -35,4 +35,22 @@ final class Kernels {
         ];
     }
 
+    /**
+     * Returns the factory method that can be used to retrieve the given kernel.
+     *
+     * @param string $kernel
+     *   The kernel to retrieve.
+     *
+     * @return callable
+     *   The factory method.
+     */
+    public static function getKernelFactory($kernel)
+    {
+        $factories = [
+            Kernels::DRUPAL => [DrushDrupalKernel::class, 'createFromRequest'],
+            Kernels::UPDATE => [DrushUpdateKernel::class, 'createFromRequest'],
+        ];
+        return $factories[$kernel];
+    }
+
 }
