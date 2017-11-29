@@ -1,8 +1,15 @@
 <?php
 namespace Drush\Sql;
 
+use Consolidation\Config\ConfigInterface;
+
 trait SqlTableSelectionTrait
 {
+
+    /**
+     * @var ConfigInterface
+     */
+    protected $config;
 
     /**
      * Get a list of all table names and expand input that may contain
@@ -143,12 +150,12 @@ trait SqlTableSelectionTrait
     {
         $key_list = _convert_csv_to_array($options[$option_name . '-key']);
         foreach ($key_list as $key) {
-            $all_tables = $options[$option_name] ?: [];
+            $all_tables = $this->config->get('sql.' . $option_name, []);
             if (array_key_exists($key, $all_tables)) {
                 return $all_tables[$key];
             }
             if ($option_name != 'tables') {
-                $all_tables = isset($options['tables']) ? $options['tables'] : [];
+                $all_tables = $this->config->get('sql.tables', []);
                 if (array_key_exists($key, $all_tables)) {
                     return $all_tables[$key];
                 }
