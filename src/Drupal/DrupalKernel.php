@@ -131,18 +131,18 @@ class DrupalKernel extends DrupalDrupalKernel
     {
         $services = $this->findModuleDrushServiceProviderFromComposer($dir);
         if (!$services) {
-            return $this->findDefaultSerivcesFile($module, $dir);
+            return $this->findDefaultServicesFile($module, $dir);
         }
         return $this->findAppropriateServicesFile($module, $services, $dir);
     }
 
-    protected function findDefaultSerivcesFile($module, $dir)
+    protected function findDefaultServicesFile($module, $dir)
     {
         $result = $dir . "/drush.services.yml";
         if (!file_exists($result)) {
             return;
         }
-        drush_log(dt("$module should have an extra.drush.services section. See 'Providing Multiple Services File' in 'drush docs:commands' for more information."), LogLevel::WARNING);
+        drush_log(dt("!module should have an extra.drush.services section in its composer.json. See http://docs.drush.org/en/master/commands/#specifying-the-services-file.", ['!module' => $module]), LogLevel::NOTICE);
         return $result;
     }
 
