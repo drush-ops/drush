@@ -145,37 +145,6 @@ options:
 
 command:
   sql:
-    options:
-      # TODO: Confirm whether or not this is working
-      # An explicit list of tables which should be included in sql-dump and sql-sync.
-
-#     tables:
-#       common:
-#         - user
-#         - permissions
-#          - role_permissions
-#          - role
-
-      # List of tables whose *data* is skipped by the 'sql-dump' and 'sql-sync'
-      # commands when the "--structure-tables-key=common" option is provided.
-      # You may add specific tables to the existing array or add a new element.
-      structure-tables:
-        common:
-          - cache
-          - 'cache_*'
-          - history
-          - 'search_*'
-          - 'sessions'
-          - 'watchdog'
-      # List of tables to be omitted entirely from SQL dumps made by the 'sql-dump'
-      # and 'sql-sync' commands when the "--skip-tables-key=common" option is
-      # provided on the command line.  This is useful if your database contains
-      # non-Drupal tables used by some other application or during a migration for
-      # example.  You may add new tables to the existing array or add a new element.
-      skip-tables:
-        common:
-          - 'migration_*'
-
     dump:
       options:
         # Specify the filename and path where 'sql-dump' should store backups of
@@ -206,6 +175,34 @@ command:
         # Set a predetermined username and password when using site-install.
 #       account-name: 'alice'
 #       account-pass: 'secret'
+
+sql:
+  # An explicit list of tables which should be included in sql-dump and sql-sync.
+  tables:
+    common:
+      - user
+      - permissions
+      - role_permissions
+      - role
+  # List of tables whose *data* is skipped by the 'sql-dump' and 'sql-sync'
+  # commands when the "--structure-tables-key=common" option is provided.
+  # You may add specific tables to the existing array or add a new element.
+  structure-tables:
+    common:
+      - cache
+      - 'cache_*'
+      - history
+      - 'search_*'
+      - 'sessions'
+      - 'watchdog'
+  # List of tables to be omitted entirely from SQL dumps made by the 'sql-dump'
+  # and 'sql-sync' commands when the "--skip-tables-key=common" option is
+  # provided on the command line.  This is useful if your database contains
+  # non-Drupal tables used by some other application or during a migration for
+  # example.  You may add new tables to the existing array or add a new element.
+  skip-tables:
+    common:
+      - 'migration_*'
 
 ssh:
   # Specify options to pass to ssh in backend invoke.  The default is to prohibit
