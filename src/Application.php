@@ -185,6 +185,9 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
      */
     public function find($name)
     {
+        if (empty($name)) {
+            return;
+        }
         $command = $this->bootstrapAndFind($name);
         // Avoid exception when help is being built by https://github.com/bamarni/symfony-console-autocomplete.
         // @todo Find a cleaner solution.
