@@ -2,8 +2,8 @@
 
 namespace Drush\Boot;
 
-use Drupal\Core\Update\UpdateKernel;
 use Drush\Drupal\DrupalKernel as DrushDrupalKernel;
+use Drush\Drupal\UpdateKernel as DrushUpdateKernel;
 
 /**
  * Defines the available kernels that can be bootstrapped.
@@ -48,7 +48,7 @@ final class Kernels {
     {
         $factories = [
             Kernels::DRUPAL => [DrushDrupalKernel::class, 'createFromRequest'],
-            Kernels::UPDATE => [UpdateKernel::class, 'createFromRequest'],
+            Kernels::UPDATE => [DrushUpdateKernel::class, 'createFromRequest'],
         ];
         return $factories[$kernel];
     }
