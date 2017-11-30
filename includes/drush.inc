@@ -167,6 +167,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['ssh-options']         = ['never-propagate' => TRUE, 'description' => 'A string of extra options that will be passed to the ssh command', 'example-value' => '-p 100'];
     $options['drush-coverage']      = ['hidden' => TRUE, 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'description' => 'File to save code coverage data into.'];
     $options['local']               = ['propagate' => TRUE, 'description' => 'Don\'t look in global locations for commandfiles, config, and site aliases'];
+    $options['ignored-directories'] = ['propagate' => TRUE, 'description' => "Exclude directories when searching for files in drush_scan_directory().", 'example-value' => 'node_modules,bower_components'];
   }
   return $options;
 }
