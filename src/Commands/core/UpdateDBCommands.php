@@ -120,6 +120,20 @@ class UpdateDBCommands extends DrushCommands
     }
 
     /**
+     * Process operations in the specified batch set.
+     *
+     * @command updatedb:batch-process
+     * @param string $batch_id The batch id that will be processed.
+     * @bootstrap full
+     * @kernel update
+     * @hidden
+     */
+    public function process($batch_id)
+    {
+        return drush_batch_command($batch_id);
+    }
+
+    /**
      * Perform one update and store the results which will later be displayed on
      * the finished page.
      *
@@ -273,7 +287,7 @@ class UpdateDBCommands extends DrushCommands
         batch_set($batch);
 
         \Drupal::service('state')->set('system.maintenance_mode', true);
-        $result = drush_backend_batch_process();
+        $result = drush_backend_batch_process('updatedb:batch-process');
         \Drupal::service('state')->set('system.maintenance_mode', false);
 
         $success = is_array($result) && (array_key_exists('object', $result)) && empty($result['object'][0]['#abort']);
