@@ -13,7 +13,6 @@ class BatchCommands extends DrushCommands
      * @aliases batch-process
      * @param $batch_id The batch id that will be processed.
      * @hidden
-     * @kernel update
      */
     public function process($batch_id)
     {
