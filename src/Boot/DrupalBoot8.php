@@ -138,7 +138,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         parent::bootstrapDrupalDatabase();
     }
 
-    public function bootstrapDrupalConfiguration(AnnotationData $annotationData = NULL)
+    public function bootstrapDrupalConfiguration(AnnotationData $annotationData = null)
     {
         $kernel = $annotationData->get('kernel', 'drupal');
         $classloader = $this->autoloader();
