@@ -61,7 +61,7 @@
 #   $ROOT/../drush/sites
 #
 # If you would like to add additional locations, you can do so by
-# listing additional locations in your configuraton files. For example,
+# listing additional locations in your configuration files. For example,
 # to re-add the default user alias path from Drush 8, put the following
 # in your ~/.drush/drush.yml configuration file:
 #
