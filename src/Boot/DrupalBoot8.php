@@ -140,12 +140,17 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
     public function bootstrapDrupalConfiguration(AnnotationData $annotationData = null)
     {
-        $kernel = $annotationData->get('kernel', 'drupal');
+        // Default to the standard kernel.
+        $kernel = Kernels::DRUPAL;
+        if (!empty($annotationData)) {
+            $kernel = $annotationData->get('kernel', Kernels::DRUPAL);
+        }
         $classloader = $this->autoloader();
         $request = $this->getRequest();
         $kernel_factory = Kernels::getKernelFactory($kernel);
         /** @var \Drupal\Core\DrupalKernelInterface kernel */
         $this->kernel = $kernel_factory($request, $classloader, 'prod');
+        // Include Drush services in the container.
         // @see Drush\Drupal\DrupalKernel::addServiceModifier()
         $this->kernel->addServiceModifier(new DrushServiceModifier());
 

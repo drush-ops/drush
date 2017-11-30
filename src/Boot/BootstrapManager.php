@@ -256,14 +256,14 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      *   function, to know if e.g. a caller is in the process of booting to the
      *   specified level. If specified, it should never be lower than $phase.
      * @param \Consolidation\AnnotatedCommand\AnnotationData $annotationData
-     *   The annotation data from the command.
+     *   Optional annotation data from the command.
      *
      * @return bool
      *   TRUE if the specified bootstrap phase has completed.
      *
      * @see \Drush\Boot\Boot::bootstrapPhases()
      */
-    public function doBootstrap($phase, $phase_max = false, AnnotationData $annotationData)
+    public function doBootstrap($phase, $phase_max = false, AnnotationData $annotationData = null)
     {
         $bootstrap = $this->bootstrap();
         $phases = $this->bootstrapPhases(true);
