@@ -328,6 +328,7 @@ function drush_get_global_options($brief = FALSE) {
     $options['redirect-port']       = array('hidden' => TRUE, 'never-propagate' => TRUE, 'description' => 'Used by the user-login command to specify the redirect port on the local machine; it therefore would not do to pass this to the remote machines.');
     $options['cache-clear']         = array('propagate' => TRUE, 'description' => 'If 0, Drush skips normal cache clearing; the caller should then clear if needed.', 'example-value' => '0', );
     $options['local']               = array('propagate' => TRUE, 'description' => 'Don\'t look in global locations for commandfiles, config, and site aliases');
+    $options['ignored-directories'] = array('propagate' => TRUE, 'description' => "Exclude directories when searching for files in drush_scan_directory().", 'example-value' => 'node_modules,bower_components');
 
     $command = array(
         'options' => $options,
