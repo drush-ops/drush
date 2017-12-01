@@ -5,6 +5,8 @@ use Drupal\Core\Site\Settings;
 use Drush\Log\LogLevel;
 use Drupal\Core\DrupalKernel as DrupalDrupalKernel;
 use Drupal\Core\DependencyInjection\ServiceModifierInterface;
+use Composer\Semver\Semver;
+use Drush\Drush;
 
 class DrupalKernel extends DrupalDrupalKernel
 {
@@ -111,18 +113,94 @@ class DrupalKernel extends DrupalDrupalKernel
         $module_filenames = $this->getModuleFileNames();
         // Load each module's serviceProvider class.
         foreach ($module_filenames as $module => $filename) {
-            $filename = dirname($filename) . "/drush.services.yml";
-            $this->addDrushServiceProvider("_drush.$module", $filename);
+            $this->addModuleDrushServiceProvider($module, $filename);
         }
+    }
+
+    /**
+     * Determine whether or not the Drush services.yml file is applicable
+     * for this version of Drush.
+     */
+    protected function addModuleDrushServiceProvider($module, $filename)
+    {
+        $serviceYmlPath = $this->findModuleDrushServiceProvider($module, dirname($filename));
+        $this->addDrushServiceProvider("_drush.$module", $serviceYmlPath);
+    }
+
+    protected function findModuleDrushServiceProvider($module, $dir)
+    {
+        $services = $this->findModuleDrushServiceProviderFromComposer($dir);
+        if (!$services) {
+            return $this->findDefaultServicesFile($module, $dir);
+        }
+        return $this->findAppropriateServicesFile($module, $services, $dir);
+    }
+
+    protected function findDefaultServicesFile($module, $dir)
+    {
+        $result = $dir . "/drush.services.yml";
+        if (!file_exists($result)) {
+            return;
+        }
+        drush_log(dt("!module should have an extra.drush.services section in its composer.json. See http://docs.drush.org/en/master/commands/#specifying-the-services-file.", ['!module' => $module]), LogLevel::NOTICE);
+        return $result;
+    }
+
+    /**
+     * In composer.json, the Drush version constraints will appear
+     * in the 'extra' section like so:
+     *
+     *   "extra": {
+     *     "drush": {
+     *       "services": {
+     *         "drush.services.yml": "^9"
+     *       }
+     *     }
+     *   }
+     *
+     * There may be multiple drush service files listed; the first
+     * one that has a version constraint that matches the Drush version
+     * is used.
+     */
+    protected function findModuleDrushServiceProviderFromComposer($dir)
+    {
+        $composerJsonPath = "$dir/composer.json";
+        if (!file_exists($composerJsonPath)) {
+            return false;
+        }
+        $composerJsonContents = file_get_contents($composerJsonPath);
+        $info = json_decode($composerJsonContents, true);
+        if (!$info) {
+            drush_log(dt('Invalid json in {composer}', ['composer' => $composerJsonPath]), LogLevel::WARNING);
+            return false;
+        }
+        if (!isset($info['extra']['drush']['services'])) {
+            return false;
+        }
+        return $info['extra']['drush']['services'];
+    }
+
+    protected function findAppropriateServicesFile($module, $services, $dir)
+    {
+        $version = Drush::getVersion();
+        foreach ($services as $serviceYmlPath => $versionConstraint) {
+            $version = preg_replace('#-dev.*#', '', $version);
+            if (Semver::satisfies($version, $versionConstraint)) {
+                drush_log(dt('Found {services} for {module} Drush commands', ['module' => $module, 'services' => $serviceYmlPath]), LogLevel::DEBUG);
+                return $dir . '/' . $serviceYmlPath;
+            }
+        }
+        drush_log(dt('{module} has Drush commands, but none of {constraints} match the current Drush version "{version}"', ['module' => $module, 'constraints' => implode(',', $services), 'version' => $version]), LogLevel::DEBUG);
+        return false;
     }
 
     /**
      * Add a services.yml file if it exists.
      */
-    protected function addDrushServiceProvider($serviceProviderName, $filename)
+    protected function addDrushServiceProvider($serviceProviderName, $serviceYmlPath)
     {
-        if (file_exists($filename)) {
-            $this->serviceYamls['app'][$serviceProviderName] = $filename;
+        if (file_exists($serviceYmlPath)) {
+            $this->serviceYamls['app'][$serviceProviderName] = $serviceYmlPath;
         }
     }
 }

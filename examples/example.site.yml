@@ -1,7 +1,8 @@
 #
 # Example of valid statements for an alias file.
 #
-# To convert legacy alias (*.aliases.drushrc.php) to yml, run the site:alias-convert command.
+# To convert legacy alias (*.aliases.drushrc.php) to yml, run the
+# site:alias-convert command.
 #
 # Use this file as a guide to creating your own aliases.
 #
@@ -19,28 +20,26 @@
 # Drupal site named "http://example.com" looks like this:
 #
 # @code
-# File: example.alias.yml
+# File: example.site.yml
 # dev:
 #   root: /path/to/drupal
 #   uri: http://example.com
 # @endcode
 #
+# Note that the first part of the filename (in this case "example")
+# defines the name of the site alias, and the top-level key ("dev")
+# defines the name of the environment.
+#
 # With this alias definition, then the following commands
 # are equivalent:
 #
-#   $ drush @example status
+#   $ drush @example.dev status
 #   $ drush --root=/path/to/drupal --uri=http://example.com status
 #
 # See the --uri option documentation below for hints on setting its value.
 #
 # Any option that can be placed on the Drush commandline
 # can also appear in an alias definition inside an 'options' section.
-#
-# There are several ways to create alias files.
-#
-#   + Put each alias in a separate file called ALIASNAME.alias.yml
-#   + Put multiple aliases in a single file called aliases.yml
-#   + Put groups of aliases into files called GROUPNAME.aliases.yml
 #
 # Drush will search for aliases in any of these files using
 # the alias search path.  The following locations are examined
@@ -50,20 +49,19 @@
 #      or (equivalently) any path passed in via --alias-path=...
 #      on the command line.
 #   2. In one of the site-specific locations:
-#        a. The /drush folder for the current Drupal site
-#        b. The /drush folder in the directory above the current Drupal site
+#        a. The /drush/sites folder for the current Drupal site
+#        b. The /drush/sites folder in the directory above the current Drupal site
 #
 # These locations are no longer searched recursively; alias files must
-# appear directly inside one of the search locations, or in a directory called
-# 'site-aliases' in a search location, or it will not be found.
+# appear directly inside one of the search locations, or it will not be found.
 #
 # The preferred locations for alias files, then, are:
 #
-#   $ROOT/drush/site-aliases
-#   $ROOT/../drush/site-aliases
+#   $ROOT/drush/sites
+#   $ROOT/../drush/sites
 #
 # If you would like to add additional locations, you can do so by
-# listing additional locations in your configuraton files. For example,
+# listing additional locations in your configuration files. For example,
 # to re-add the default user alias path from Drush 8, put the following
 # in your ~/.drush/drush.yml configuration file:
 #
@@ -71,46 +69,18 @@
 # drush:
 #   paths:
 #     alias-path:
-#       - '${env.home}/.drush/site-aliases'
-#       - /etc/drush
+#       - '${env.home}/.drush/sites'
+#       - /etc/drush/sites
 # @endcode
+#
+# If you run the command `drush core:init`, this configuration will
+# be done for you automatically.
 #
 # Files stored in one of the search path locations can be used to create
 # aliases to local and remote Drupal installations.  These aliases can be
 # used in place of a site specification on the command line, and may also
 # be used in arguments to certain commands such as "drush rsync" and
 # "drush sql:sync".
-#
-# Alias groups (aliases stored together in files called
-# GROUPNAME.aliases.yml can be used to collect related sites
-# together.
-#
-# For example:
-#
-# @code
-# # File: elements.aliases.yml
-# sites:
-#   earth:
-#     dev:
-#       root: /path/to/drupal-earth
-#       uri: https://dev.earth.com
-#     live:
-#       root: /other/path/to/drupal-earth
-#       uri: https://earth.com
-#   wind:
-#     dev:
-#       root: /path/to/drupal-wind
-#       uri: https://dev.wind.com
-#     live:
-#       root: /other/path/to/drupal-wind
-#       uri: https://earth.com
-# @endcode
-#
-# Then the following aliases are defined:
-# - @elements.earth.dev
-# - @elements.earth.live
-# - @elements.wind.dev
-# - @elements.wind.live
 #
 # To see an example alias definition for the current bootstrapped
 # site, use the "site:alias" command with the built-in alias "@self":
@@ -123,13 +93,20 @@
 # alias looks like this:
 #
 # @code
-# # File: remote.alias.yml
+# # File: remote.site.yml
 # live:
 #   host: server.domain.com
 #   user: www-admin
 #   root: /other/path/to/drupal
 #   uri: http://example.com
 # @endcode
+#
+# Drush also treats the site alias file /drush/sites/self.site.yml
+# (in the Drupal root or project root) specially. If your current
+# working directory is inside a Drupal project, then aliases such
+# as `@self.live` may be referenced simply as `@live`. Commit the
+# file self.site.yml to your site's repository to share remote aliases
+# for a site with team members.
 #
 # The built-in alias "@none" represents the state of no Drupal site;
 # to ignore the site at the cwd and just see default drush status:
@@ -181,7 +158,7 @@
 # Complex example:
 #
 # @code
-# # File: remote.alias.yml
+# # File: remote.site.yml
 # live:
 #   host: server.domain.com
 #   user: www-admin
@@ -211,7 +188,7 @@
 # leading hashes to enable.
 #
 # @code
-# # File: mysite.alias.yml
+# # File: mysite.site.yml
 # stage:
 #   uri: http://stage.example.com
 #   root: /path/to/remote/drupal/root

@@ -43,7 +43,7 @@ class LegacyAliasConverterTest extends TestCase
     public function testWriteOne()
     {
         $testPath = $this->target . '/testWriteOne.yml';
-        $checksumPath = $this->target . '/.testWriteOne.md5';
+        $checksumPath = $this->target . '/.checksums/testWriteOne.md5';
         $testContents = 'test: This is the initial file contents';
 
         // Write the data once, and confirm it was written.
@@ -94,8 +94,10 @@ class LegacyAliasConverterTest extends TestCase
     {
         $legacyFiles = $this->discovery->findAllLegacyAliasFiles();
         $result = $this->callProtected('convertAll', [$legacyFiles]);
-        $this->assertEquals('cc.alias.yml,cc.aliases.yml,one.alias.yml,pantheon.aliases.yml,server.alias.yml,server.aliases.yml', implode(',', array_keys($result)));
-        $this->assertEquals('dev-outlandish-josh.pantheonsite.io', $result['pantheon.aliases.yml']['sites']['outlandish-josh']['dev']['uri']);
+        ksort($result);
+        $this->assertEquals('cc.site.yml,isp.site.yml,live.site.yml,nitrogen.site.yml,one.site.yml,outlandish-josh.site.yml,pantheon.site.yml,server.site.yml,update.site.yml', implode(',', array_keys($result)));
+        //$this->assertEquals('', var_export($result, true));
+        $this->assertEquals('dev-outlandish-josh.pantheonsite.io', $result['outlandish-josh.site.yml']['dev']['uri']);
     }
 
     public function testWriteAll()
@@ -108,14 +110,15 @@ class LegacyAliasConverterTest extends TestCase
             ],
         ];
 
+        $this->callProtected('cacheConvertedFilePath', ['b.aliases.drushrc.php', 'b.yml']);
         $this->callProtected('writeAll', [$convertedFileFixtures]);
         $this->assertTrue(file_exists($this->target . '/a.yml'));
-        $this->assertTrue(file_exists($this->target . '/.a.md5'));
+        $this->assertTrue(file_exists($this->target . '/.checksums/a.md5'));
         $this->assertTrue(file_exists($this->target . '/b.yml'));
-        $this->assertTrue(file_exists($this->target . '/.b.md5'));
+        $this->assertTrue(file_exists($this->target . '/.checksums/b.md5'));
 
         $bContents = file_get_contents($this->target . '/b.yml');
-        $this->assertEquals("# This is a placeholder file used to track when b.drushrc.php was converted.\n# If you delete b.drushrc.php, then you may delete this file.", $bContents);
+        $this->assertEquals("# This is a placeholder file used to track when b.aliases.drushrc.php was converted.\n# If you delete b.aliases.drushrc.php, then you may delete this file.", $bContents);
         $aContents = file_get_contents($this->target . '/a.yml');
         $this->assertEquals('foo: bar', trim($aContents));
     }
@@ -139,7 +142,7 @@ class LegacyAliasConverterTest extends TestCase
             [
                 'one.alias.drushrc.php',
                 [
-                    'one.alias.yml' =>
+                    'one.site.yml' =>
                     [
                         'dev' =>
                         [
@@ -153,15 +156,17 @@ class LegacyAliasConverterTest extends TestCase
             [
                 'server.aliases.drushrc.php',
                 [
-                    'server.alias.yml' =>
+                    'isp.site.yml' =>
                     [
-                        'isp' =>
+                        'dev' =>
                         [
                             'host' => 'hydrogen.server.org',
                             'user' => 'www-admin',
                         ],
-
-                        'nitrogen' =>
+                    ],
+                    'nitrogen.site.yml' =>
+                    [
+                        'dev' =>
                         [
                             'host' => 'nitrogen.server.org',
                             'user' => 'admin',
@@ -173,57 +178,51 @@ class LegacyAliasConverterTest extends TestCase
             [
                 'pantheon.aliases.drushrc.php',
                 [
-                    'pantheon.aliases.yml' =>
+                    'outlandish-josh.site.yml' =>
                     [
-                        'sites' =>
+                        'dev' =>
                         [
-                            'outlandish-josh' =>
-                            [
-                                'dev' =>
-                                [
-                                    'uri' => 'dev-outlandish-josh.pantheonsite.io',
-                                    'host' => 'appserver.dev.site-id.drush.in',
-                                    'user' => 'dev.site-id',
-                                    'paths' => [
-                                        'files' => 'code/sites/default/files',
-                                        'drush-script' => 'drush',
-                                    ],
-                                    'options' => [
-                                        'db-url' => 'mysql://pantheon:pw@dbserver.dev.site-id.drush.in:21086/pantheon',
-                                        'db-allows-remote' => true,
-                                        'ssh-options' => '-p 2222 -o "AddressFamily inet"',
-                                    ],
-                                ],
-                                'live' =>
-                                [
-                                    'uri' => 'www.outlandishjosh.com',
-                                    'host' => 'appserver.live.site-id.drush.in',
-                                    'user' => 'live.site-id',
-                                    'paths' => [
-                                        'files' => 'code/sites/default/files',
-                                        'drush-script' => 'drush',
-                                    ],
-                                    'options' => [
-                                        'db-url' => 'mysql://pantheon:pw@dbserver.live.site-id.drush.in:10516/pantheon',
-                                        'db-allows-remote' => true,
-                                        'ssh-options' => '-p 2222 -o "AddressFamily inet"',
-                                    ],
-                                ],
-                                'test' =>
-                                [
-                                    'uri' => 'test-outlandish-josh.pantheonsite.io',
-                                    'host' => 'appserver.test.site-id.drush.in',
-                                    'user' => 'test.site-id',
-                                    'paths' => [
-                                        'files' => 'code/sites/default/files',
-                                        'drush-script' => 'drush',
-                                    ],
-                                    'options' => [
-                                        'db-url' => 'mysql://pantheon:pw@dbserver.test.site-id.drush.in:11621/pantheon',
-                                        'db-allows-remote' => true,
-                                        'ssh-options' => '-p 2222 -o "AddressFamily inet"',
-                                    ],
-                                ],
+                            'uri' => 'dev-outlandish-josh.pantheonsite.io',
+                            'host' => 'appserver.dev.site-id.drush.in',
+                            'user' => 'dev.site-id',
+                            'paths' => [
+                                'files' => 'code/sites/default/files',
+                                'drush-script' => 'drush',
+                            ],
+                            'options' => [
+                                'db-url' => 'mysql://pantheon:pw@dbserver.dev.site-id.drush.in:21086/pantheon',
+                                'db-allows-remote' => true,
+                                'ssh-options' => '-p 2222 -o "AddressFamily inet"',
+                            ],
+                        ],
+                        'live' =>
+                        [
+                            'uri' => 'www.outlandishjosh.com',
+                            'host' => 'appserver.live.site-id.drush.in',
+                            'user' => 'live.site-id',
+                            'paths' => [
+                                'files' => 'code/sites/default/files',
+                                'drush-script' => 'drush',
+                            ],
+                            'options' => [
+                                'db-url' => 'mysql://pantheon:pw@dbserver.live.site-id.drush.in:10516/pantheon',
+                                'db-allows-remote' => true,
+                                'ssh-options' => '-p 2222 -o "AddressFamily inet"',
+                            ],
+                        ],
+                        'test' =>
+                        [
+                            'uri' => 'test-outlandish-josh.pantheonsite.io',
+                            'host' => 'appserver.test.site-id.drush.in',
+                            'user' => 'test.site-id',
+                            'paths' => [
+                                'files' => 'code/sites/default/files',
+                                'drush-script' => 'drush',
+                            ],
+                            'options' => [
+                                'db-url' => 'mysql://pantheon:pw@dbserver.test.site-id.drush.in:11621/pantheon',
+                                'db-allows-remote' => true,
+                                'ssh-options' => '-p 2222 -o "AddressFamily inet"',
                             ],
                         ],
                     ],
@@ -237,7 +236,7 @@ class LegacyAliasConverterTest extends TestCase
             [
                 'cc.aliases.drushrc.php',
                 [
-                    'cc.alias.yml' =>
+                    'cc.site.yml' =>
                     [
                         'live' =>
                         [

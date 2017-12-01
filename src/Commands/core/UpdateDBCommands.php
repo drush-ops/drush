@@ -48,11 +48,18 @@ class UpdateDBCommands extends DrushCommands
             if (!$this->io()->confirm(dt('Do you wish to run the specified pending updates?'))) {
                 throw new UserAbortException();
             }
-            if (!Drush::simulate()) {
-                $this->updateBatch($options);
+            if (Drush::simulate()) {
+                $success = true;
+            } else {
+                $success = $this->updateBatch($options);
                 // Clear all caches in a new process. We just performed major surgery.
                 drush_drupal_cache_clear_all();
             }
+
+            if (!$success) {
+                drush_set_context('DRUSH_EXIT_CODE', DRUSH_FRAMEWORK_ERROR);
+            }
+
             $this->logger()->success(dt('Finished performing updates.'));
         }
     }
@@ -153,9 +160,9 @@ class UpdateDBCommands extends DrushCommands
                 $ret['results']['success'] = true;
             } // @TODO We may want to do different error handling for different exception
             // types, but for now we'll just print the message.
-            catch (Exception $e) {
+            catch (\Exception $e) {
                 $ret['#abort'] = ['success' => false, 'query' => $e->getMessage()];
-                $this->logger()->warning($e->getMessage());
+                $this->logger()->error($e->getMessage());
             }
 
             if ($context['log']) {
@@ -261,9 +268,14 @@ class UpdateDBCommands extends DrushCommands
             'file' => 'core/includes/update.inc',
         ];
         batch_set($batch);
+
         \Drupal::service('state')->set('system.maintenance_mode', true);
-        drush_backend_batch_process();
+        $result = drush_backend_batch_process();
         \Drupal::service('state')->set('system.maintenance_mode', false);
+
+        $success = is_array($result) && (array_key_exists('object', $result)) && empty($result['object'][0]['#abort']);
+
+        return $success;
     }
 
     /**
@@ -323,30 +335,26 @@ class UpdateDBCommands extends DrushCommands
      *
      * @see \Drupal\system\Controller\DbUpdateController::batchFinished()
      * @see \Drupal\system\Controller\DbUpdateController::results()
+     *
+     * @param boolean $success Whether the batch ended without a fatal error.
+     * @param array $results
+     * @param array $operations
      */
     public function updateFinished($success, $results, $operations)
     {
-
         if (!$this->cache_clear) {
             $this->logger()->info(dt("Skipping cache-clear operation due to --no-cache-clear option."));
         } else {
             drupal_flush_all_caches();
         }
 
+        // Log update results.
+        unset($results['#abort']);
         foreach ($results as $module => $updates) {
-            if ($module != '#abort') {
-                foreach ($updates as $number => $queries) {
-                    foreach ($queries as $query) {
-                        // If there is no message for this update, don't show anything.
-                        if (empty($query['query'])) {
-                            continue;
-                        }
-
-                        if ($query['success']) {
-                            $this->logger()->notice(strip_tags($query['query']));
-                        } else {
-                            throw new \Exception('Failed: ' . strip_tags($query['query']));
-                        }
+            foreach ($updates as $number => $update) {
+                if (empty($update['#abort'])) {
+                    foreach ($update['results'] as $result) {
+                        $this->logger()->notice(strip_tags($result['query']));
                     }
                 }
             }

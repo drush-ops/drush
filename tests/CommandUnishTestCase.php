@@ -471,9 +471,12 @@ abstract class CommandUnishTestCase extends UnishTestCase {
         return (int)$major;
     }
 
-    protected function assertOutputEquals($expected)
+    protected function assertOutputEquals($expected, $filter = '')
     {
         $output = $this->getSimplifiedOutput();
+        if (!empty($filter)) {
+            $output = preg_replace($filter, '', $output);
+        }
         $this->assertEquals($expected, $output);
     }
 }

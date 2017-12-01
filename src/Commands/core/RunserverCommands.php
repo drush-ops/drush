@@ -24,7 +24,7 @@ class RunserverCommands extends DrushCommands
      * @option browser If opening a web browser, which browser to use (defaults to operating system default). Use --no-browser to avoid opening a browser.
      * @option dns Resolve hostnames/IPs using DNS/rDNS (if possible) to determine binding IPs and/or human friendly hostnames for URLs and browser.
      * @bootstrap full
-     * @aliases rs
+     * @aliases rs,serve
      * @usage drush rs 8080
      *   Start a web server on 127.0.0.1, port 8080.
      * @usage drush rs 10.0.0.28:80

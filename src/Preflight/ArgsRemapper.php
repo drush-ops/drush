@@ -76,7 +76,7 @@ class ArgsRemapper
     /**
      * Check to see if the provided single arg matches the candidate.
      * If the candidate is `--foo`, then we will match the exact string
-     * `--foo`, or the leading substring `--foo=`, and nohting else.
+     * `--foo`, or the leading substring `--foo=`, and nothing else.
      * @param string $arg
      * @param string $candidate
      * @return bool

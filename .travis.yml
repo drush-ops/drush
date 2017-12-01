@@ -47,6 +47,7 @@ matrix:
 before_install:
   - echo 'mbstring.http_input = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo 'mbstring.http_output = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - echo 'memory_limit = -1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
 # Build a System-Under-Test.
 install:
@@ -62,5 +63,10 @@ script:
   - if [ -n "$TEST_DIR" ] ; then cd $TEST_DIR && phpunit ; fi
   - if [ -z "$TEST_DIR" ] ; then ${PWD}/unish.phpunit.php $PHPUNIT_ARGS; fi
 
-# Background: https://github.com/drush-ops/drush/pull/1426
-after_success: ${PWD}/tests/testChildren.sh
+after_success:
+  # Publish updated API documentation on every push to the master branch
+  - git config --global user.email $GITHUB_USER_EMAIL
+  - git config --global user.name "Drush Documentation Bot"
+  - build/scripts/publish-api-docs.sh
+  # Background: https://github.com/drush-ops/drush/pull/1426
+  #- ${PWD}/tests/testChildren.sh

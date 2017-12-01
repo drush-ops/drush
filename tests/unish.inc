@@ -9,7 +9,9 @@
  */
 function unishGetPaths()
 {
-    $unish_tmp = realpath(getenv('UNISH_TMP') ?: sys_get_temp_dir());
+    $unish_tmp = getenv('UNISH_TMP') ?: sys_get_temp_dir();
+    @mkdir($unish_tmp);
+    $unish_tmp = realpath($unish_tmp);
     $unish_sandbox = $unish_tmp . DIRECTORY_SEPARATOR . 'drush-sandbox';
     $unish_drush_dir = dirname($unish_sandbox) . '/drush-sut/vendor/drush/drush';
     return [$unish_tmp, $unish_sandbox, $unish_drush_dir];

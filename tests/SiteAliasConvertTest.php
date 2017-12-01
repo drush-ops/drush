@@ -26,9 +26,9 @@ class SiteAliasConvertTest extends CommandUnishTestCase
 
         $this->drush('site:alias', [], ['format' => 'json']);
         $json = $this->getOutputFromJSON();
-        $this->assertObjectHasAttribute('@drupalvm.drupalvm.dev', $json);
-        $this->assertObjectHasAttribute('@drupalvm.www-drupalvm.dev', $json);
-        $dev = $json->{'@drupalvm.drupalvm.dev'};
+        $this->assertObjectHasAttribute('@drupalvm.dev', $json);
+        $this->assertObjectHasAttribute('@www-drupalvm.dev', $json);
+        $dev = $json->{'@drupalvm.dev'};
         $this->assertSame('drupalvm.dev', $dev->host);
         $this->assertSame('-o PasswordAuthentication=no -i /.vagrant.d/insecure_private_key', $dev->options->{'ssh-options'});
         $this->assertSame('/var/www/drupalvm/drupal/vendor/drush/drush/drush', $dev->paths->{'drush-script'});

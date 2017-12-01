@@ -80,9 +80,14 @@ class DrushLog implements LoggerInterface
                 $error_type = LogLevel::WARNING;
                 break;
 
-            // TODO: RfcLogLevel::DEBUG should be 'debug' rather than 'notice'?
             case RfcLogLevel::DEBUG:
+                $error_type = LogLevel::DEBUG;
+                break;
+
             case RfcLogLevel::INFO:
+                $error_type = LogLevel::INFO;
+                break;
+
             case RfcLogLevel::NOTICE:
                 $error_type = LogLevel::NOTICE;
                 break;
