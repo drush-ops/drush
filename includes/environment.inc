@@ -259,12 +259,10 @@ function drush_is_local_host($host) {
  * Determine whether current OS is a Windows variant.
  */
 function drush_is_windows($os = NULL) {
-  return strtoupper(substr($os ?: PHP_OS, 0, 3)) === 'WIN';
+  return strtoupper(substr(_drush_get_os($os), 0, 3)) === 'WIN';
 }
 
 function drush_escapeshellarg($arg, $os = NULL, $raw = FALSE) {
-  // "LOCAL" represents the local/host environment, so reset $os to NULL
-  $os = $os == 'LOCAL' ? NULL : $os;
   // Short-circuit escaping for simple params (keep stuff readable)
   if (preg_match('|^[a-zA-Z0-9.:/_-]*$|', $arg)) {
     return $arg;

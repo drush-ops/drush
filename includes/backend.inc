@@ -1135,14 +1135,12 @@ function _drush_backend_generate_command($site_record, $command, $args = [], $co
   ];
   $backend_options += [
     '#tty' => FALSE,
-    '#local-os' => "LOCAL",
   ];
 
   $hostname = $site_record['remote-host'];
   $username = $site_record['remote-user'];
   $ssh_options = $site_record['ssh-options']; // TODO: update this (maybe make $site_record an AliasRecord)
-  $remote_os = drush_os($site_record);
-  $local_os = $backend_options['#local-os'];
+  $os = drush_os($site_record);
 
   if (drush_is_local_host($hostname)) {
     $hostname = null;
@@ -1157,15 +1155,15 @@ function _drush_backend_generate_command($site_record, $command, $args = [], $co
 
   $cmd[] = $command;
   foreach ($args as $arg) {
-    $cmd[] = drush_escapeshellarg($arg, $remote_os);
+    $cmd[] = drush_escapeshellarg($arg, $os);
   }
-  $option_str = _drush_backend_argument_string($command_options, $remote_os);
+  $option_str = _drush_backend_argument_string($command_options, $os);
   if (!empty($option_str)) {
     $cmd[] = " " . $option_str;
   }
   $command = implode(' ', array_filter($cmd, 'strlen'));
   if (isset($hostname)) {
-    $username = (isset($username)) ? drush_escapeshellarg($username, $local_os) . "@" : '';
+    $username = (isset($username)) ? drush_escapeshellarg($username, "LOCAL") . "@" : '';
     $ssh_options = $site_record['ssh-options']; // TODO: update
     $ssh_options = (isset($ssh_options)) ? $ssh_options : \Drush\Drush::config()->get('ssh.options', "-o PasswordAuthentication=no");
 
@@ -1174,8 +1172,8 @@ function _drush_backend_generate_command($site_record, $command, $args = [], $co
     if ($backend_options['#tty']) {
       $ssh_cmd[] = '-t';
     }
-    $ssh_cmd[] = $username . drush_escapeshellarg($hostname, $local_os);
-    $ssh_cmd[] = drush_escapeshellarg($command . ' 2>&1', $local_os);
+    $ssh_cmd[] = $username . drush_escapeshellarg($hostname, "LOCAL");
+    $ssh_cmd[] = drush_escapeshellarg($command . ' 2>&1', "LOCAL");
 
     // Remove NULLs and separate with spaces
     $command = implode(' ', array_filter($ssh_cmd, 'strlen'));
