@@ -894,21 +894,6 @@ function drush_memory_limit() {
   return $size;
 }
 
-/**
- * Unset the named key anywhere in the provided
- * data structure.
- */
-function drush_unset_recursive(&$data, $unset_key) {
-  if (!empty($data) && is_array($data)) {
-    unset($data[$unset_key]);
-    foreach ($data as $key => $value) {
-      if (is_array($value)) {
-        drush_unset_recursive($data[$key], $unset_key);
-      }
-    }
-  }
-}
-
 
 /**
  * Form an associative array from a linear array.
