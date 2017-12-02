@@ -1283,6 +1283,7 @@ window.projectVersion = 'master';
                                                         {"type": "Method", "fromName": "Drush\\Utils\\StringUtils", "fromLink": "Drush/Utils/StringUtils.html", "link": "Drush/Utils/StringUtils.html#method_csvToArray", "name": "Drush\\Utils\\StringUtils::csvToArray", "doc": "&quot;Convert a csv string, or an array of items which\nmay contain csv strings, into an array of items.&quot;"},
                     {"type": "Method", "fromName": "Drush\\Utils\\StringUtils", "fromLink": "Drush/Utils/StringUtils.html", "link": "Drush/Utils/StringUtils.html#method_interpolate", "name": "Drush\\Utils\\StringUtils::interpolate", "doc": "&quot;Replace placeholders in a string.&quot;"},
                     {"type": "Method", "fromName": "Drush\\Utils\\StringUtils", "fromLink": "Drush/Utils/StringUtils.html", "link": "Drush/Utils/StringUtils.html#method_replaceTilde", "name": "Drush\\Utils\\StringUtils::replaceTilde", "doc": "&quot;Replace tilde in a path with the HOME directory.&quot;"},
+                    {"type": "Method", "fromName": "Drush\\Utils\\StringUtils", "fromLink": "Drush/Utils/StringUtils.html", "link": "Drush/Utils/StringUtils.html#method_generatePassword", "name": "Drush\\Utils\\StringUtils::generatePassword", "doc": "&quot;Generate a random alphanumeric password.  Copied from user.module.&quot;"},
             
             
                                         // Fix trailing commas in the index
