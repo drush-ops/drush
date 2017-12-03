@@ -20,53 +20,6 @@ define('FILE_EXISTS_ABORT', 0);
 define('FILE_EXISTS_OVERWRITE', 1);
 define('FILE_EXISTS_MERGE', 2);
 
- /**
-  * Determines whether the provided path is absolute or not
-  * on the specified O.S. -- starts with "/" on *nix, or starts
-  * with "[A-Z]:\" or "[A-Z]:/" on Windows.
-  */
-function drush_is_absolute_path($path, $os = NULL) {
-  // Relative paths will never start with a '/', even on Windows,
-  // so it is safe to just call all paths that start with a '/'
-  // absolute.  This simplifies things for Windows with CYGWIN / MINGW / CWRSYNC,
-  // where absolute paths sometimes start c:\path and sometimes
-  // start /cygdrive/c/path.
-  if ($path[0] == '/') {
-    return TRUE;
-  }
-  if (drush_is_windows($os)) {
-    return preg_match('@^[a-zA-Z]:[\\\/]@', $path);
-  }
-  return FALSE;
-}
-
-/**
- * If we are going to pass a path to exec or proc_open,
- * then we need to fix it up under CYGWIN or MINGW.  In
- * both of these environments, PHP works with absolute paths
- * such as "C:\path".  CYGWIN expects these to be converted
- * to "/cygdrive/c/path" and MINGW expects these to be converted
- * to "/c/path"; otherwise, the exec will not work.
- *
- * This call does nothing if the parameter is not an absolute
- * path, or we are not running under CYGWIN / MINGW.
- *
- * UPDATE:  It seems I was mistaken; this is only necessary if we
- * are using cwRsync.  We do not need to correct every path to
- * exec or proc_open (thank god).
- */
-function drush_correct_absolute_path_for_exec($path, $os = NULL) {
-  if (drush_is_windows() && drush_is_absolute_path($path, "WINNT")) {
-    if (drush_is_mingw($os)) {
-      $path = preg_replace('/(\w):/', '/${1}', str_replace('\\', '/', $path));
-    }
-    elseif (drush_is_cygwin($os)) {
-      $path = preg_replace('/(\w):/', '/cygdrive/${1}', str_replace('\\', '/', $path));
-    }
-  }
-  return $path;
-}
-
 /**
  * Deletes the specified file or directory and everything inside it.
  *
