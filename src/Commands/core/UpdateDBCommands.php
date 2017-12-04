@@ -21,6 +21,7 @@ class UpdateDBCommands extends DrushCommands
      * @option entity-updates Run automatic entity schema updates at the end of any update hooks.
      * @option post-updates Run post updates after hook_update_n and entity updates.
      * @bootstrap full
+     * @kernel update
      * @aliases updb
      */
     public function updatedb($options = ['cache-clear' => true, 'entity-updates' => false, 'post-updates' => true])
@@ -70,6 +71,7 @@ class UpdateDBCommands extends DrushCommands
      * @command entity:updates
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @bootstrap full
+     * @kernel update
      * @aliases entup,entity-updates
      *
      */
@@ -95,6 +97,7 @@ class UpdateDBCommands extends DrushCommands
      * @option entity-updates Show entity schema updates.
      * @option post-updates Show post updates.
      * @bootstrap full
+     * @kernel update
      * @aliases updbst,updatedb-status
      * @field-labels
      *   module: Module
@@ -114,6 +117,20 @@ class UpdateDBCommands extends DrushCommands
         } else {
             return new RowsOfFields($pending);
         }
+    }
+
+    /**
+     * Process operations in the specified batch set.
+     *
+     * @command updatedb:batch-process
+     * @param string $batch_id The batch id that will be processed.
+     * @bootstrap full
+     * @kernel update
+     * @hidden
+     */
+    public function process($batch_id)
+    {
+        return drush_batch_command($batch_id);
     }
 
     /**
@@ -270,7 +287,7 @@ class UpdateDBCommands extends DrushCommands
         batch_set($batch);
 
         \Drupal::service('state')->set('system.maintenance_mode', true);
-        $result = drush_backend_batch_process();
+        $result = drush_backend_batch_process('updatedb:batch-process');
         \Drupal::service('state')->set('system.maintenance_mode', false);
 
         $success = is_array($result) && (array_key_exists('object', $result)) && empty($result['object'][0]['#abort']);
