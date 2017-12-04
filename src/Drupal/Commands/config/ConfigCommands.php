@@ -228,7 +228,7 @@ class ConfigCommands extends DrushCommands
             'Identical'
         );
 
-        $directory = $this->getDirectory(null, $options['label']);
+        $directory = $this->getDirectory($options['label']);
         $storage = $this->getStorage($directory);
         $state_map = [
             'create' => 'Only in DB',
