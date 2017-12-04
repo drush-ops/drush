@@ -439,8 +439,6 @@ function _drush_delete_registered_files() {
  *   Usually a database name.
  */
 function drush_preflight_backup_dir($subdir = NULL) {
-  $backup_dir = drush_get_context('DRUSH_BACKUP_DIR', drush_get_option('backup-location'));
-
   if (empty($backup_dir)) {
     // Try to use db name as subdir if none was provided.
     if (empty($subdir)) {
@@ -453,10 +451,7 @@ function drush_preflight_backup_dir($subdir = NULL) {
 
     // Save the date to be used in the backup directory's path name.
     $date = gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
-
-    $backup_dir = drush_get_option('backup-dir', Path::join(Drush::config()->home(), 'drush-backups'));
-    $backup_dir = Path::join($backup_dir, $subdir, $date);
-    drush_set_context('DRUSH_BACKUP_DIR', $backup_dir);
+    $backup_dir = Path::join(Drush::config()->home(), 'drush-backups', $subdir, $date);
   }
   else {
     Path::canonicalize($backup_dir);
