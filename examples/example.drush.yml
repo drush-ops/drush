@@ -33,7 +33,7 @@
 # will load the configuration file for the site specified by the source
 # parameter; however, they do not load the configuration file for the site
 # specified by the destination parameter, nor do they load configuration files
-# for remote sites.
+# at remote sites.
 
 drush:
   paths:
@@ -67,46 +67,14 @@ drush:
 options:
   # Specify the base_url that should be used when generating links.
   # Not recommended if you have more than one Drupal site on your system.
-
-# uri: 'http://example.com/subdir'
+  uri: 'http://example.com/subdir'
 
   # Specify your Drupal core base directory (useful if you use symlinks).
   # Not recommended if you have more than one Drupal root on your system.
-
-# root: '/home/USER/workspace/drupal-6'
-
-  # NOT SUPPORTED YET:
-  # Specify the modules to ignore when searching for command files
-  ignored-modules:
-    - module1
-    - module2
+  root: '/home/USER/workspace/drupal-6'
 
   # Enable verbose mode.
-  # verbose: true
-
-  # NOT SUPPORTED YET:
-  # Specify the logging level for PHP notices.  Defaults to "notice".  Set to
-  # "warning" when doing Drush development.  Also make sure that error_reporting
-  # is set to E_ALL in your php configuration file.  See `drush status` for the
-  # path to your php.ini file.
-  php-notices: warning
-
-  # NOT SUPPORTED YET:
-  # Specify the error handling of recoverable errors (E_RECOVERABLE_ERROR).
-  # Defaults to true and will stop execution of Drush.
-  # When set to false, execution will continue.
-
-# halt-on-error: false
-
-  # By default, unknown options are disallowed and result in an error.  Change
-  # them to issue only a warning and let command proceed.
-
-# strict: false
-
-  # NOT SUPPORTED YET:
-  # Set 'remote-os' to 'Windows' to make Drush use Windows shell escape rules
-  # for remote sites that do not have an 'os' item set.
-  remote-os: Linux
+  verbose: true
 
 command:
   sql:
