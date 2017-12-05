@@ -17,9 +17,6 @@
 # If a configuration file is found in any of the above locations, it will be
 # loaded and merged with other configuration files in the search list.
 #
-# See `drush topic docs:bootstrap` for more information on how bootstrapping
-# affects the loading of Drush configuration files.
-#
 # The Drush configuration system has been factored out Drush and shared with
 # the world at https://github.com/consolidation/config. Feel free to use it
 # for your projects. Lots more usage information is there.
