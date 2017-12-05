@@ -894,47 +894,6 @@ function drush_memory_limit() {
   return $size;
 }
 
-/**
- * Unset the named key anywhere in the provided
- * data structure.
- */
-function drush_unset_recursive(&$data, $unset_key) {
-  if (!empty($data) && is_array($data)) {
-    unset($data[$unset_key]);
-    foreach ($data as $key => $value) {
-      if (is_array($value)) {
-        drush_unset_recursive($data[$key], $unset_key);
-      }
-    }
-  }
-}
-
-/**
- * Generate a random alphanumeric password.  Copied from user.module.
- */
-function drush_generate_password($length = 10) {
-  // This variable contains the list of allowable characters for the
-  // password. Note that the number 0 and the letter 'O' have been
-  // removed to avoid confusion between the two. The same is true
-  // of 'I', 1, and 'l'.
-  $allowable_characters = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-
-  // Zero-based count of characters in the allowable list:
-  $len = strlen($allowable_characters) - 1;
-
-  // Declare the password as a blank string.
-  $pass = '';
-
-  // Loop the number of times specified by $length.
-  for ($i = 0; $i < $length; $i++) {
-
-    // Each iteration, pick a random character from the
-    // allowable string and append it to the password:
-    $pass .= $allowable_characters[mt_rand(0, $len)];
-  }
-
-  return $pass;
-}
 
 /**
  * Form an associative array from a linear array.
@@ -961,60 +920,4 @@ function drush_map_assoc($array, $function = NULL) {
     $array = array_map($function, $array);
   }
   return $array;
-}
-
-/*
- * Cast a value according to the provided format
- *
- * @param mixed $value.
- * @param string $format
- *   Allowed values: auto, integer, float, bool, boolean, json, yaml.
- *
- * @return $value
- *  The value, re-typed as needed.
- */
-function drush_value_format($value, $format) {
-  if ($format == 'auto') {
-    if (is_numeric($value)) {
-      $value = $value + 0; // http://php.net/manual/en/function.is-numeric.php#107326
-      $format = gettype($value);
-    }
-    elseif (($value == 'TRUE') || ($value == 'FALSE')) {
-      $format = 'bool';
-    }
-  }
-
-  // Now, we parse the object.
-  switch ($format) {
-    case 'integer':
-      $value = (integer)$value;
-      break;
-    // from: http://php.net/gettype
-    // for historical reasons "double" is returned in case of a float, and not simply "float"
-    case 'double':
-    case 'float':
-      $value = (float)$value;
-      break;
-    case 'bool':
-    case 'boolean':
-      if ($value == 'TRUE') {
-        $value = TRUE;
-      }
-      elseif ($value == 'FALSE') {
-        $value = FALSE;
-      }
-      else {
-        $value = (bool)$value;
-      }
-      break;
-
-    case 'json':
-      $value = json_decode($value, true);
-      break;
-
-    case 'yaml':
-      $value = \Symfony\Component\Yaml\Yaml::parse($value, FALSE, TRUE);
-      break;
-  }
-  return $value;
 }

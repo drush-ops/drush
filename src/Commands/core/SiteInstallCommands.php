@@ -12,6 +12,7 @@ use Drush\SiteAlias\SiteAliasManager;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Sql\SqlBase;
+use Drush\Utils\StringUtils;
 use Webmozart\PathUtil\Path;
 
 class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface
@@ -73,7 +74,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $sql = SqlBase::create($options);
         $db_spec = $sql->getDbSpec();
 
-        $account_pass = $options['account-pass'] ?: drush_generate_password();
+        $account_pass = $options['account-pass'] ?: StringUtils::generatePassword();
         $settings = [
             'parameters' => [
                 'profile' => $profile,

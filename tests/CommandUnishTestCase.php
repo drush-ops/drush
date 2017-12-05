@@ -60,7 +60,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     protected $idleTimeout = 15;
 
   /**
-   * Get command output and simiplify away things like full paths and extra
+   * Get command output and simplify away things like full paths and extra
    * whitespace.
    */
     protected function getSimplifiedOutput()
