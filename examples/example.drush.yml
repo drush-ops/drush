@@ -4,8 +4,8 @@
 # Use this file to cut down on typing out lengthy and repetitive command line
 # options in the Drush commands you use and to avoid mistakes.
 #
-# Rename this file to drush.yml and optionally copy it to one of the places
-# listed below in order of precedence:
+# Rename this file to drush.yml and copy it to one of the places listed below
+# in order of precedence:
 #
 # 1.  Drupal site folder (e.g. sites/{default|example.com}/drush.yml).
 # 2.  Drupal /drush and sites/all/drush folders, or the /drush folder
