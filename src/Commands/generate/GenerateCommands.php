@@ -58,6 +58,12 @@ class GenerateCommands extends DrushCommands
             ListCommands::renderListCLI($application, $namespaced, $this->output(), $preamble);
             return null;
         } else {
+            // Symfony console cannot recognize the command by alias when
+            // multiple commands have the same prefix.
+            if ($generator == 'module') {
+                $generator = 'module-standard';
+            }
+
             // Create an isolated input.
             $argv = [
                 $generator,
@@ -124,12 +130,6 @@ class GenerateCommands extends DrushCommands
             $generator->setName($new_name);
             // Remove alias if it is same as new name.
             if ($aliases = $generator->getAliases()) {
-                foreach ($aliases as $key => $alias) {
-                    // These dont work due to Console 'guessing' wrong.
-                    if ($alias == 'module' || $alias == 'theme') {
-                        unset($aliases[$key]);
-                    }
-                }
                 $generator->setAliases(array_diff($aliases, [$new_name]));
             }
         }
