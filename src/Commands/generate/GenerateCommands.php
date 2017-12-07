@@ -58,7 +58,6 @@ class GenerateCommands extends DrushCommands
             ListCommands::renderListCLI($application, $namespaced, $this->output(), $preamble);
             return null;
         } else {
-
             // Symfony console cannot recognize the command by alias when
             // multiple commands have the same prefix.
             if ($generator == 'module') {
