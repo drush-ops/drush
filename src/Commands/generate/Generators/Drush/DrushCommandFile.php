@@ -33,7 +33,7 @@ class DrushCommandFile extends BaseGenerator
             return $path;
         });
 
-        $vars = $this->collectVars($input, $output, $questions);
+        $vars = &$this->collectVars($input, $output, $questions);
         $vars['class'] = Utils::camelize($vars['machine_name'] . 'Commands');
         if ($vars['source']) {
             require_once $vars['source'];
@@ -45,13 +45,24 @@ class DrushCommandFile extends BaseGenerator
             $commands = call_user_func($filename . '_drush_command');
             $vars['commands'] = $this->adjustCommands($commands);
         }
-        $this->setFile('src/Commands/' . $vars['class'] . '.php', 'drush-command-file.twig', $vars);
-        $composer_json_data = $this->getComposerJson($vars);
-        $this->_setFileJson('composer.json', $composer_json_data);
-        $this->setServicesFile('drush.services.yml', 'drush.services.twig', $vars);
+
+        $this->addFile()
+            ->path('src/Commands/{class}.php')
+            ->template('drush-command-file.twig');
+
+        $json = $this->getComposerJson($vars);
+        $content = json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $this->addFile()
+            ->path('composer.json')
+            ->content($content)
+            ->action('replace');
+
+        $this->addFile()
+            ->path('drush.services.yml')
+            ->template('drush.services.twig');
     }
 
-    protected function getComposerJson($vars)
+    protected function getComposerJson(array $vars)
     {
         $composer_json_template_path = __DIR__ . '/dcf-composer.json';
         // TODO: look up the path of the 'machine_name' module.
@@ -73,7 +84,7 @@ class DrushCommandFile extends BaseGenerator
         return $composer_json_data;
     }
 
-    protected function getOwningModulePath($vars)
+    protected function getOwningModulePath(array $vars)
     {
         $module_name = $vars['machine_name'];
 
@@ -87,7 +98,7 @@ class DrushCommandFile extends BaseGenerator
         return $projects[$module_name]->getPath();
     }
 
-    protected function adjustCommands($commands)
+    protected function adjustCommands(array $commands)
     {
         foreach ($commands as $name => &$command) {
             // Drush9 uses colons in command names.
@@ -130,24 +141,4 @@ class DrushCommandFile extends BaseGenerator
         return $commands;
     }
 
-    // Maybe put in BaseGenerator?
-    protected function _setFileJson($path, $data)
-    {
-        $content = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-        $this->_setFileContent($path, $content);
-
-        // TODO: Once supported, use:
-        // $this->addFile()
-        //   ->path($path)
-        //  ->content($content);
-    }
-
-    // TODO: Remove once `addFile` is available.
-    protected function _setFileContent($path, $content)
-    {
-        $this->files[$path] = [
-            'content' => $content,
-            'action' => 'replace',
-        ];
-    }
 }
