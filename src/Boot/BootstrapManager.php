@@ -380,8 +380,10 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     /**
      * Bootstrap to the specified phase.
      *
+     * @param string $bootstrapPhase
+     *   Name of phase to bootstrap to. Will be converted to appropriate index.
      * @param \Consolidation\AnnotatedCommand\AnnotationData $annotationData
-     *   The annotation data from the command.
+     *   Optional annotation data from the command.
      *
      * @return bool
      *   TRUE if the specified bootstrap phase has completed.
@@ -390,10 +392,8 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      *   Thrown when an unknown bootstrap phase is passed in the annotation
      *   data.
      */
-    public function bootstrapToPhase(AnnotationData $annotationData)
+    public function bootstrapToPhase($bootstrapPhase, AnnotationData $annotationData = null)
     {
-        // Get the @bootstrap annotation. If there isn't one, then assume NONE.
-        $bootstrapPhase = $annotationData->get('bootstrap', 'none');
         $this->logger->log(LogLevel::BOOTSTRAP, 'Bootstrap to {phase}', ['phase' => $bootstrapPhase]);
         $phase = $this->bootstrap()->lookUpPhaseIndex($bootstrapPhase);
         if (!isset($phase)) {
@@ -413,12 +413,12 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      * @param int $max_phase_index
      *   Only attempt bootstrap to the specified level.
      * @param \Consolidation\AnnotatedCommand\AnnotationData $annotationData
-     *   The annotation data from the command.
+     *   Optional annotation data from the command.
      *
      * @return bool
      *   TRUE if the specified bootstrap phase has completed.
      */
-    public function bootstrapToPhaseIndex($max_phase_index, AnnotationData $annotationData)
+    public function bootstrapToPhaseIndex($max_phase_index, AnnotationData $annotationData = null)
     {
         if ($max_phase_index == DRUSH_BOOTSTRAP_MAX) {
             $this->bootstrapMax();
