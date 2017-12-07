@@ -51,7 +51,7 @@ class AnnotatedCommandCase extends CommandUnishTestCase {
         'machine_name' => 'bar',
         ]);
         $optionsExample['directory'] = self::getSandbox();
-        $optionsExample['yes'] = NULL;
+        $optionsExample['yes'] = null;
         $original = getenv('SHELL_INTERACTIVE');
         putenv('SHELL_INTERACTIVE=1');
         $this->drush('generate', ['woot-example'], $optionsExample);
