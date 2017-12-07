@@ -328,7 +328,7 @@ class UserCommands extends DrushCommands
         return [
             'uid' => $account->id(),
             'name' => $account->getUsername(),
-            'password' => $account->getPassword(),
+            'pass' => $account->getPassword(),
             'mail' => $account->getEmail(),
             'user_created' => $account->getCreatedTime(),
             'created' => format_date($account->getCreatedTime()),
