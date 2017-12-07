@@ -14,7 +14,7 @@ class SqlCommands extends DrushCommands
      * Print database connection details using print_r().
      *
      * @command sql:conf
-     * @command sql-conf
+     * @aliases sql-conf
      * @option all Show all database connections, instead of just one.
      * @option show-passwords Show database password.
      * @optionset_sql

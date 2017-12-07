@@ -20,6 +20,7 @@ class PreflightLog {
     public function setDebug($debug)
     {
         $this->debug = $debug;
+        return $this;
     }
 
     public function log($message)
