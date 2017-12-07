@@ -19,6 +19,11 @@ class SiteAliasFileLoader
     protected $discovery;
 
     /**
+     * @var array
+     */
+    protected $referenceData;
+
+    /**
      * SiteAliasFileLoader constructor
      *
      * @param SiteAliasFileDiscovery|null $discovery
@@ -26,6 +31,14 @@ class SiteAliasFileLoader
     public function __construct($discovery = null)
     {
         $this->discovery = $discovery ?: new SiteAliasFileDiscovery();
+    }
+
+    /**
+     * Allow configuration data to be used in replacements in the alias file.
+     */
+    public function setReferenceData($data)
+    {
+        $this->referenceData = $data;
     }
 
     /**
@@ -356,7 +369,7 @@ class SiteAliasFileLoader
         $processor->add($data[$env]);
 
         // Export the combined data and create an AliasRecord object to manage it.
-        return new AliasRecord($processor->export(), '@' . $aliasName->sitename(), $env);
+        return new AliasRecord($processor->export($this->referenceData), '@' . $aliasName->sitename(), $env);
     }
 
     /**
