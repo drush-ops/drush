@@ -30,7 +30,7 @@ function unish_setup_sut($unish_sandbox) {
   $working_dir = dirname($unish_sandbox) . DIRECTORY_SEPARATOR . 'build-drush-sut';
   $target_dir = dirname($working_dir) . DIRECTORY_SEPARATOR . 'drush-sut';
   drush_delete_dir($working_dir, TRUE);
-  $codebase = 'tests/resources/codebase';
+  $codebase = __DIR__ . '/tests/resources/codebase';
   drush_copy_dir($codebase, $working_dir);
   $composer_json = getenv('COMPOSER') ?: 'composer.json';
   foreach ([$composer_json] as $filename) {
