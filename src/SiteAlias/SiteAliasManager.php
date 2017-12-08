@@ -30,6 +30,14 @@ class SiteAliasManager
     }
 
     /**
+     * Allow configuration data to be used in replacements in the alias file.
+     */
+    public function setReferenceData($data)
+    {
+        $this->aliasLoader->setReferenceData($data);
+    }
+
+    /**
      * Inject the root of the selected site
      *
      * @param string $root

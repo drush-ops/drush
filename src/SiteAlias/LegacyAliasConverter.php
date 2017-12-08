@@ -2,6 +2,7 @@
 namespace Drush\SiteAlias;
 
 use Symfony\Component\Yaml\Yaml;
+use Dflydev\DotAccessData\Data;
 
 /**
  * Find all legacy alias files and convert them to an equivalent '.yml' file.
@@ -386,9 +387,30 @@ EOT;
         }
         ksort($data);
 
-        return $data;
+        return $this->remapData($data);
     }
 
+    protected function remapData($data)
+    {
+        $converter = new Data($data);
+
+        foreach ($this->dataRemap() as $from => $to) {
+            if ($converter->has($from)) {
+                $converter->set($to, $converter->get($from));
+                $converter->remove($from);
+            }
+        }
+
+        return $converter->export();
+    }
+
+    /**
+     * Anything in the key of the returned array is converted
+     * and written to a new top-level item in the result.
+     *
+     * Anything NOT identified by the key in the returned array
+     * is moved to the 'options' element.
+     */
     protected function keyConversion()
     {
         return [
@@ -397,6 +419,22 @@ EOT;
             'root' => 'root',
             'uri' => 'uri',
             'path-aliases' => 'paths',
+        ];
+    }
+
+    /**
+     * This table allows for flexible remapping from one location
+     * in the original alias to any other location in the target
+     * alias.
+     *
+     * n.b. Most arbitrary data from the original alias will have
+     * been moved into the 'options' element before this remapping
+     * table is consulted.
+     */
+    protected function dataRemap()
+    {
+        return [
+            'options.ssh-options' => 'ssh.options',
         ];
     }
 
