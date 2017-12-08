@@ -35,6 +35,7 @@
 # specified by the destination parameter, nor do they load configuration files
 # at remote sites.
 
+# This section is about Drush internals, and not any commands in particular.
 drush:
   paths:
     # Load a drush.yml configuration file from the current working directory.
@@ -63,7 +64,7 @@ drush:
       - '${env.home}/.drush/sites'
       - /etc/drush/sites
 
-
+# This section is for setting global options.
 options:
   # Specify the base_url that should be used when generating links.
   # Not recommended if you have more than one Drupal site on your system.
@@ -76,21 +77,19 @@ options:
   # Enable verbose mode.
   verbose: true
 
+# This section is for setting command-specific options.
 command:
   sql:
     dump:
       options:
-        # Specify the filename and path where 'sql-dump' should store backups of
-        # database dumps.  The default is to dump to STDOUT, however if this option is
-        # set in a drush.yml file, the default behaviour can be achieved by
-        # specifying a value of FALSE ("--result-file=0" on the command line).
-        #
-        # NOT SUPPORTED YET:
-        # Substitution variables with the database name, current date and so on
-        # should be provided for composing filenames.
-
-#       result-file: /path/to/backup/dir/dump.sql
-
+        sync:
+          options:
+            # Uncomment to omit cache and similar tables.
+            # structure-tables-key: common
+        dump:
+          options:
+            # Uncomment to omit cache and similar tables.
+            # structure-tables-key: common
   php:
     script:
       options:
@@ -108,6 +107,12 @@ command:
         # Set a predetermined username and password when using site-install.
 #       account-name: 'alice'
 #       account-pass: 'secret'
+
+
+#
+# The sections below are configuration thats consulted by various commands, outside
+# of the option system.
+#
 
 sql:
   # An explicit list of tables which should be included in sql-dump and sql-sync.
