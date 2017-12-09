@@ -143,9 +143,7 @@ class Environment
 
     /**
      * Convert the environment object into an exported configuration
-     * array. This will be fed though the EnvironmentConfigLoader to
-     * be added into the ConfigProcessor, where it will become accessible
-     * via the configuration object.
+     * array.
      *
      * @see PreflightArgs::applyToConfig(), which also exports information to config.
      *
