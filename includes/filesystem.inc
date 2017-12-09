@@ -467,16 +467,13 @@ function drush_prepare_backup_dir($subdir = NULL) {
   $backup_parent = Path::getDirectory($backup_dir);
   $drupal_root = Drush::bootstrapManager()->getRoot();
 
-  if ((!empty($drupal_root)) && (strpos($backup_parent, $drupal_root) === 0)) {
-    return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('It\'s not allowed to store backups inside the Drupal root directory.'));
-  }
   if (!file_exists($backup_parent)) {
     if (!drush_mkdir($backup_parent, TRUE)) {
-      return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('Unable to create backup directory !dir.', array('!dir' => $backup_parent)));
+      throw new Exception(dt('Unable to create backup directory !dir.', array('!dir' => $backup_parent)));
     }
   }
   if (!is_writable($backup_parent)) {
-    return drush_set_error('DRUSH_PM_BACKUP_FAILED', dt('Backup directory !dir is not writable.', array('!dir' => $backup_parent)));
+    throw new Exception(dt('Backup directory !dir is not writable.', array('!dir' => $backup_parent)));
   }
 
   if (!drush_mkdir($backup_dir, TRUE)) {
