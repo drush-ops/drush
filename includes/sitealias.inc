@@ -62,7 +62,34 @@ function drush_sitealias_get_record($alias, $alias_context = NULL) {
   }
   $config_record = $alias_record->exportConfig();
   $exported_config = $config_record->export();
-  return isset($exported_config['options']) ? $exported_config['options'] : [];
+  return isset($exported_config['options']) ? replaceEnvironmentVariables($exported_config['options']) : [];
+}
+
+/**
+ * Replace environment variables.
+ *
+ * The pattern for environment variables is defined as: %env(VARIABLE)%
+ * according to the Symfony standard.
+ *
+ * @param array $options
+ *   An array containing strings that might have an environment variable.
+ *
+ * @return array
+ *   The same array with the replace variables.
+ */
+function replaceEnvironmentVariables(array $options) {
+  foreach ($options as $key => $value) {
+    if (is_array($value)) {
+      $options[$key] = replaceEnvironmentVariables($value);
+    }
+    else {
+      preg_match("/\%env\((.*)\)\%/", $value, $matches);
+      if (count($matches) > 0) {
+        $options[$key] = getenv($matches[1]);
+      }
+    }
+  }
+  return $options;
 }
 
 /**
