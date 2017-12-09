@@ -300,7 +300,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
         // where options after the command are passed along to external commands.
         $result = $this->getTestResultObject();
         if ($result->getCollectCodeCoverageInformation()) {
-            $coverage_file = tempnam(UNISH_TMP, 'drush_coverage');
+            $coverage_file = tempnam($this->getTmp(), 'drush_coverage');
             if ($coverage_file) {
                 $cmd[] = "--drush-coverage=" . $coverage_file;
             }
