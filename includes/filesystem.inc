@@ -151,7 +151,7 @@ function drush_copy_dir($src, $dest, $overwrite = FILE_EXISTS_ABORT) {
 function _drush_recursive_copy($src, $dest) {
   // all subdirectories and contents:
   if(is_dir($src)) {
-    if (!drush_mkdir($dest, TRUE)) {
+    if (!mkdir($dest)) {
       return FALSE;
     }
     $dir_handle = opendir($src);
