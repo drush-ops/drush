@@ -6,6 +6,7 @@
  */
 use Drush\Drush;
 use Drush\Sql\SqlBase;
+use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -14,7 +15,7 @@ use Webmozart\PathUtil\Path;
  */
 
 /**
- * Behavior for drush_copy_dir() and drush_move_dir() when destinations exist.
+ * Behavior for drush_copy_dir() when destinations exist.
  */
 define('FILE_EXISTS_ABORT', 0);
 define('FILE_EXISTS_OVERWRITE', 1);
@@ -94,19 +95,6 @@ function drush_delete_dir_contents($dir, $force = FALSE) {
     }
   }
   return TRUE;
-}
-
-/**
- * Deletes the provided file or folder and everything inside it.
- * This function explicitely tries to delete read-only files / folders.
- *
- * @param $dir
- *   The directory to delete
- * @return
- *   FALSE on failure, TRUE if everything was deleted
- */
-function drush_delete_tmp_dir($dir) {
-  return drush_delete_dir($dir, TRUE);
 }
 
 /**
@@ -202,112 +190,17 @@ function _drush_recursive_copy($src, $dest) {
 }
 
 /**
- * Move $src to $dest.
- *
- * If the php 'rename' function doesn't work, then we'll do copy & delete.
- *
- * @param $src
- *   The directory to move.
- * @param $dest
- *   The destination to move the source to, including the new name of
- *   the directory.  To move directory "a" from "/b" to "/c", then
- *   $src = "/b/a" and $dest = "/c/a".  To move "a" to "/c" and rename
- *   it to "d", then $dest = "/c/d" (just like php rename function).
- * @param $overwrite
- *   If TRUE, the destination will be deleted if it exists.
- * @return
- *   TRUE on success, FALSE on failure.
- */
-function drush_move_dir($src, $dest, $overwrite = FALSE) {
-  // Preflight based on $overwrite if $dest exists.
-  if (file_exists($dest)) {
-    if ($overwrite) {
-      drush_op('drush_delete_dir', $dest, TRUE);
-    }
-    else {
-      return drush_set_error('DRUSH_DESTINATION_EXISTS', dt('Destination directory !dest already exists.', array('!dest' => $dest)));
-    }
-  }
-  // $src readable?
-  if (!drush_op('is_readable', $src)) {
-    return drush_set_error('DRUSH_SOURCE_NOT_EXISTS', dt('Source directory !src is not readable or does not exist.', array('!src' => $src)));
-  }
-  // $dest writable?
-  if (!drush_op('is_writable', dirname($dest))) {
-    return drush_set_error('DRUSH_DESTINATION_NOT_WRITABLE', dt('Destination directory !dest is not writable.', array('!dest' => dirname($dest))));
-  }
-  // Try rename. It will fail if $src and $dest are not in the same partition.
-  if (@drush_op('rename', $src, $dest)) {
-    return TRUE;
-  }
-  // Eventually it will create an empty file in $dest. See
-  // http://www.php.net/manual/es/function.rename.php#90025
-  elseif (is_file($dest)) {
-    drush_op('unlink', $dest);
-  }
-
-  // If 'rename' fails, then we will use copy followed
-  // by a delete of the source.
-  if (drush_copy_dir($src, $dest)) {
-    drush_op('drush_delete_dir', $src, TRUE);
-    return TRUE;
-  }
-
-  return drush_set_error('DRUSH_MOVE_DIR_FAILURE', dt('Unable to move !src to !dest.', array('!src' => $src, '!dest' => $dest)));
-}
-
-/**
- * Cross-platform compatible helper function to recursively create a directory tree.
+ * Recursively create a directory tree.
  *
  * @param path
  *   Path to directory to create.
- * @param required
- *   If TRUE, then drush_mkdir will call drush_set_error on failure.
  *
- * @return bool
- *   Callers should *always* do their own error handling after calling drush_mkdir.
- *   If $required is FALSE, then a different location should be selected, and a final
- *   error message should be displayed if no usable locations can be found.
- *
- *   If $required is TRUE, then the execution of the current command should be
- *   halted if the required directory cannot be created.
+ * @throws IOException On any directory creation failure
+ * @deprecated See \Symfony\Component\Filesystem\Filesystem::mkdir.
  */
-function drush_mkdir($path, $required = TRUE) {
-  if (empty($path)) {
-    return drush_set_error('DRUSH_MKDIR_NULL_PATH', dt('Path passed to drush_mkdir cannot be empty.'));
-  }
-  if (!is_dir($path)) {
-    if (drush_mkdir(dirname($path))) {
-      if (@mkdir($path)) {
-        return TRUE;
-      }
-      elseif (is_dir($path) && is_writable($path)) {
-        // The directory was created by a concurrent process.
-        return TRUE;
-      }
-      else {
-        if (!$required) {
-          return FALSE;
-        }
-        if (is_writable(dirname($path))) {
-          return drush_set_error('DRUSH_CREATE_DIR_FAILURE', dt('Unable to create !dir.', array('!dir' => preg_replace('/\w+\/\.\.\//', '', $path))));
-        }
-        else {
-          return drush_set_error('DRUSH_PARENT_NOT_WRITABLE', dt('Unable to create !newdir in !dir. Please check directory permissions.', array('!newdir' => basename($path), '!dir' => realpath(dirname($path)))));
-        }
-      }
-    }
-    return FALSE;
-  }
-  else {
-    if (!is_writable($path)) {
-      if (!$required) {
-        return FALSE;
-      }
-      return drush_set_error('DRUSH_DESTINATION_NOT_WRITABLE', dt('Directory !dir exists, but is not writable. Please check directory permissions.', array('!dir' => realpath($path))));
-    }
-    return TRUE;
-  }
+function drush_mkdir($path) {
+  $fs = new Filesystem();
+  $fs->mkdir($path);
 }
 
 /*
@@ -383,8 +276,7 @@ function drush_tempnam($pattern, $tmp_dir = NULL, $suffix = '') {
  * Creates a temporary directory and return its path.
  */
 function drush_tempdir() {
-  $tmp_dir = drush_trim_path(Drush::config()->tmp());
-  $tmp_dir .= '/' . 'drush_tmp_' . uniqid(time() . '_');
+  $tmp_dir = Path::join(Drush::config()->tmp(). 'drush_tmp_' . uniqid(time() . '_'));
 
   drush_mkdir($tmp_dir);
   drush_register_file_for_deletion($tmp_dir);
@@ -494,29 +386,6 @@ function drush_file_not_empty($file_to_test) {
     }
   }
   return FALSE;
-}
-
-/**
- * Simple helper function to append data to a given file.
- *
- * @param string $file
- *   The full path to the file to append the data to.
- * @param string $data
- *   The data to append.
- *
- * @return boolean
- *   TRUE on success, FALSE in case of failure to open or write to the file.
- */
-function drush_file_append_data($file, $data) {
-  if (!$fd = fopen($file, 'a+')) {
-    drush_set_error(dt("ERROR: fopen(@file, 'ab') failed", array('@file' => $file)));
-    return FALSE;
-  }
-  if (!fwrite($fd, $data)) {
-    drush_set_error(dt("ERROR: fwrite(@file) failed", array('@file' => $file)) . '<pre>' . $data);
-    return FALSE;
-  }
-  return TRUE;
 }
 
 /**
