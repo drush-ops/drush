@@ -8,6 +8,8 @@ use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
 use Drush\Drush;
 use Drush\Utils\StringUtils;
+use Symfony\Component\Finder\Finder;
+use Webmozart\PathUtil\Path;
 
 class DrupalCommands extends DrushCommands
 {
@@ -82,13 +84,16 @@ class DrupalCommands extends DrushCommands
             $searchpaths[] = $theme->getPath();
         }
 
-        foreach ($searchpaths as $searchpath) {
-            foreach ($file = drush_scan_directory($searchpath, '/\.html.twig/', ['tests']) as $file) {
-                $relative = str_replace(Drush::bootstrapManager()->getRoot() . '/', '', $file->filename);
-                // @todo Dynamically disable twig debugging since there is no good info there anyway.
-                twig_render_template($relative, ['theme_hook_original' => '']);
-                $this->logger()->notice(dt('Compiled twig template !path', ['!path' => $relative]));
-            }
+        $files = Finder::create()
+            ->files()
+            ->name('*.html.twig')
+            ->exclude('tests')
+            ->in($searchpaths);
+        foreach ($files as $file) {
+            $relative = Path::makeRelative($file->getRealPath(), Drush::bootstrapManager()->getRoot());
+            // @todo Dynamically disable twig debugging since there is no good info there anyway.
+            twig_render_template($relative, ['theme_hook_original' => '']);
+            $this->logger()->success(dt('Compiled twig template !path', ['!path' => $relative]));
         }
     }
 
