@@ -10,6 +10,7 @@ use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\StorageInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
+use Drush\Utils\FsUtils;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
@@ -300,7 +301,7 @@ class ConfigCommands extends DrushCommands
         if (!empty($directory)) {
             if ($directory === true) {
                 // The user did not pass a specific directory, make one.
-                return drush_prepare_backup_dir('config-import-export');
+                return FsUtils::prepareBackupDir('config-import-export');
             } else {
                 // The user has specified a directory.
                 drush_mkdir($directory);

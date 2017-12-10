@@ -103,7 +103,8 @@ class FileCache implements CacheInterface
 
         // Ensure the cache directory still exists, in case a backend process
         // cleared the cache after the cache was initialized.
-        drush_mkdir($this->directory);
+        $fs = new Filesystem();
+        $fs->mkdir($this->directory);
 
         $filename = $this->getFilePath($cid);
         return $this->writeFile($filename, $cache);

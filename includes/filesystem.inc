@@ -38,6 +38,8 @@ define('FILE_EXISTS_MERGE', 2);
  *
  * @return bool
  *   FALSE on failure, TRUE if everything was deleted.
+ *
+ * @deprecated Use \Symfony\Component\Filesystem\Filesystem::remove.
  */
 function drush_delete_dir($dir, $force = FALSE, $follow_symlinks = FALSE) {
   // Do not delete symlinked files, only unlink symbolic links
@@ -114,6 +116,8 @@ function drush_delete_dir_contents($dir, $force = FALSE) {
  *     - FILE_EXISTS_MERGE - Leaves existing files and directories in place.
  * @return
  *   TRUE on success, FALSE on failure.
+ *
+ * @deprecated Use \Symfony\Component\Filesystem\Filesystem::copy.
  */
 function drush_copy_dir($src, $dest, $overwrite = FILE_EXISTS_ABORT) {
   // Preflight based on $overwrite if $dest exists.
@@ -279,7 +283,8 @@ function drush_tempnam($pattern, $tmp_dir = NULL, $suffix = '') {
 function drush_tempdir() {
   $tmp_dir = Path::join(Drush::config()->tmp(). 'drush_tmp_' . uniqid(time() . '_'));
 
-  drush_mkdir($tmp_dir);
+  $fs = new Filesystem();
+  $fs->mkdir($tmp_dir);
   drush_register_file_for_deletion($tmp_dir);
 
   return $tmp_dir;
@@ -322,38 +327,6 @@ function _drush_delete_registered_files() {
       }
     }
   }
-}
-
-/**
- * Decide where our backup directory should go
- *
- * @param string $subdir
- *   The name of the desired subdirectory(s) under drush-backups.
- *   Usually a database name.
- */
-function drush_preflight_backup_dir($subdir = NULL) {
-  // Try to use db name as subdir if none was provided.
-  if (empty($subdir)) {
-    $subdir = 'unknown';
-    if ($sql = SqlBase::create()) {
-      $db_spec = $sql->getDbSpec();
-      $subdir = $db_spec['database'];
-    }
-  }
-
-  // Save the date to be used in the backup directory's path name.
-  $date = gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
-  return Path::join(Drush::config()->home(), 'drush-backups', $subdir, $date);
-}
-
-/**
- * Prepare a backup directory
- */
-function drush_prepare_backup_dir($subdir = NULL) {
-  $fs = new Filesystem();
-  $backup_dir = drush_preflight_backup_dir($subdir);
-  $fs->mkdir($backup_dir);
-  return $backup_dir;
 }
 
 /**

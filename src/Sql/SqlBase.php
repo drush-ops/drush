@@ -5,6 +5,7 @@ namespace Drush\Sql;
 use Drupal\Core\Database\Database;
 use Drush\Drush;
 use Drush\Log\LogLevel;
+use Drush\Utils\FsUtils;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 use Webmozart\PathUtil\Path;
@@ -189,7 +190,7 @@ class SqlBase implements ConfigAwareInterface
         // directory that pm-updatecode uses.
         if ($file) {
             if ($file === true) {
-                $backup_dir = drush_prepare_backup_dir($database);
+                $backup_dir = FsUtils::prepareBackupDir($database);
                 if (empty($backup_dir)) {
                     $backup_dir = $this->getConfig()->tmp();
                 }
