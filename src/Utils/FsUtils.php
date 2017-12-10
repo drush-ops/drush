@@ -34,8 +34,12 @@ class FsUtils
 
         // Save the date to be used in the backup directory's path name.
         $date = gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
-        return Path::join(Drush::config()->home(), 'drush-backups', $subdir,
-          $date);
+        return Path::join(
+            Drush::config()->home(),
+            'drush-backups',
+            $subdir,
+            $date
+        );
     }
 
     /**
