@@ -153,6 +153,7 @@ class FileCache implements CacheInterface
           ->files()
           ->name()
           ->exclude()
+          ->depth(0)
           ->in($this->directory);
         return empty($files);
     }
