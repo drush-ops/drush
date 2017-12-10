@@ -201,6 +201,7 @@ function _drush_recursive_copy($src, $dest) {
 function drush_mkdir($path) {
   $fs = new Filesystem();
   $fs->mkdir($path);
+  return true;
 }
 
 /*
@@ -331,46 +332,27 @@ function _drush_delete_registered_files() {
  *   Usually a database name.
  */
 function drush_preflight_backup_dir($subdir = NULL) {
-  if (empty($backup_dir)) {
-    // Try to use db name as subdir if none was provided.
-    if (empty($subdir)) {
-      $subdir = 'unknown';
-      if ($sql = SqlBase::create()) {
-        $db_spec = $sql->getDbSpec();
-        $subdir = $db_spec['database'];
-      }
+  // Try to use db name as subdir if none was provided.
+  if (empty($subdir)) {
+    $subdir = 'unknown';
+    if ($sql = SqlBase::create()) {
+      $db_spec = $sql->getDbSpec();
+      $subdir = $db_spec['database'];
     }
+  }
 
-    // Save the date to be used in the backup directory's path name.
-    $date = gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
-    $backup_dir = Path::join(Drush::config()->home(), 'drush-backups', $subdir, $date);
-  }
-  else {
-    Path::canonicalize($backup_dir);
-  }
-  return $backup_dir;
+  // Save the date to be used in the backup directory's path name.
+  $date = gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
+  return Path::join(Drush::config()->home(), 'drush-backups', $subdir, $date);
 }
 
 /**
  * Prepare a backup directory
  */
 function drush_prepare_backup_dir($subdir = NULL) {
+  $fs = new Filesystem();
   $backup_dir = drush_preflight_backup_dir($subdir);
-  $backup_parent = Path::getDirectory($backup_dir);
-  $drupal_root = Drush::bootstrapManager()->getRoot();
-
-  if (!file_exists($backup_parent)) {
-    if (!drush_mkdir($backup_parent, TRUE)) {
-      throw new Exception(dt('Unable to create backup directory !dir.', array('!dir' => $backup_parent)));
-    }
-  }
-  if (!is_writable($backup_parent)) {
-    throw new Exception(dt('Backup directory !dir is not writable.', array('!dir' => $backup_parent)));
-  }
-
-  if (!drush_mkdir($backup_dir, TRUE)) {
-    return FALSE;
-  }
+  $fs->mkdir($backup_dir);
   return $backup_dir;
 }
 
