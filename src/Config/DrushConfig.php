@@ -2,6 +2,8 @@
 namespace Drush\Config;
 
 use Consolidation\Config\Util\ConfigOverlay;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -40,10 +42,16 @@ class DrushConfig extends ConfigOverlay
             Path::join($this->home(), '.drush/cache'),
             Path::join($this->tmp(), 'drush-' . $this->user() . '/cache'),
         ];
+
+        $fs = new Filesystem();
         foreach ($candidates as $candidate) {
-            if (drush_mkdir($candidate)) {
+            try {
+                $fs->mkdir($candidate);
                 return $candidate;
+            } catch (IOException $ioException) {
+                // Do nothing. Jump to the next candidate.
             }
         }
+        throw new \Exception('Cannot create the Drush cache file. Tried directories: ' . implode(', ', $candidates));
     }
 }
