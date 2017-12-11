@@ -232,7 +232,7 @@ class SqlBase implements ConfigAwareInterface
      * provide a $result_file whose value can be drush_bit_bucket().
      *
      * @param string $query
-     *   The SQL to be executed. Should be NULL if $input_file is provided.
+     *   The SQL to be executed. Should be null if $input_file is provided.
      * @param string $input_file
      *   A path to a file containing the SQL to be executed.
      * @param string $result_file
@@ -260,12 +260,12 @@ class SqlBase implements ConfigAwareInterface
         }
 
         $parts = [
-        $this->command(),
-        $this->creds(),
-        $this->silent(), // This removes column header and various helpful things in mysql.
-        $this->getOption('extra', $this->queryExtra),
-        $this->queryFile,
-        drush_escapeshellarg($input_file),
+            $this->command(),
+            $this->creds(),
+            $this->silent(), // This removes column header and various helpful things in mysql.
+            $this->getOption('extra', $this->queryExtra),
+            $this->queryFile,
+            drush_escapeshellarg($input_file),
         ];
         $exec = implode(' ', $parts);
 
@@ -295,7 +295,7 @@ class SqlBase implements ConfigAwareInterface
         // In --verbose mode, drush_shell_exec() will show the call to mysql/psql/sqlite,
         // but the sql query itself is stored in a temp file and not displayed.
         // We show the query when --debug is used and this function created the temp file.
-        if ((drush_get_context('DRUSH_DEBUG') || Drush::simulate()) && empty($input_file_original)) {
+        if ((Drush::debug() || Drush::simulate()) && empty($input_file_original)) {
             drush_log('sql-query: ' . $query, LogLevel::INFO);
         }
     }
