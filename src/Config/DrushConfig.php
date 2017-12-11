@@ -52,6 +52,6 @@ class DrushConfig extends ConfigOverlay
                 // Do nothing. Jump to the next candidate.
             }
         }
-        throw new \Exception('Cannot create the Drush cache file. Tried directories: ' . implode(', ', $candidates));
+        throw new \Exception('Cannot create the Drush cache directory. Tried next candidates: ' . implode(', ', $candidates));
     }
 }
