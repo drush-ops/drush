@@ -263,8 +263,7 @@ abstract class DrupalBoot extends BaseBoot
      * @param $required_tables
      *   Array of table names, or string with one table name
      *
-     * @return TRUE if all tables in input parameter exist in
-     *   the database.
+     * @return TRUE if all required tables exist in the database.
      */
     public function bootstrapDrupalDatabaseHasTable($required_tables)
     {
@@ -275,13 +274,10 @@ abstract class DrupalBoot extends BaseBoot
             if (!is_array($prefix)) {
                 $prefix = ['default' => $prefix];
             }
-            $tables = $sql->listTables();
-            if (!$tables) {
-                return false;
-            }
             foreach ((array)$required_tables as $required_table) {
                 $prefix_key = array_key_exists($required_table, $prefix) ? $required_table : 'default';
-                if (!in_array($prefix[$prefix_key] . $required_table, $tables)) {
+                $table_name = $prefix[$prefix_key] . $required_table;
+                if (!$sql->alwaysQuery("SELECT 1 FROM $table_name LIMIT 1")) {
                     return false;
                 }
             }
