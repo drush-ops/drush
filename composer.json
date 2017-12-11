@@ -1,5 +1,5 @@
 {
-  "name": "drush/drush",
+  "name": "catworking/drush",
   "description": "Drush is a command line shell and scripting interface for Drupal, a veritable Swiss Army knife designed to make life easier for those of us who spend some of our working hours hacking away at the command prompt.",
   "homepage": "http://www.drush.org",
   "license": "GPL-2.0+",
@@ -42,7 +42,7 @@
     "symfony/event-dispatcher": "~2.7|^3",
     "symfony/finder": "~2.7|^3",
     "symfony/process": "~2.7|^3",
-    "symfony/var-dumper": "~2.7|^3",
+    "symfony/var-dumper": "~2.7|^3|^4",
     "symfony/yaml": "~2.3|^3",
     "webflo/drupal-finder": "^1.1",
     "webmozart/path-util": "^2.1.0"
