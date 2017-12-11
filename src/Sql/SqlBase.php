@@ -228,7 +228,7 @@ class SqlBase implements ConfigAwareInterface
     /**
      * Execute a SQL query. Always execute it regardless of simulate mode.
      *
-     * If you don't want to query results to print during --debug then
+     * If you don't want query results to print during --debug then
      * provide a $result_file whose value can be drush_bit_bucket().
      *
      * @param string $query
