@@ -159,7 +159,7 @@ function _drush_shell_exec($args, $interactive = FALSE, $simulate = false) {
       exec($command . ' 2>&1', $output, $result);
       _drush_shell_exec_output_set($output);
 
-      if (drush_get_context('DRUSH_DEBUG_NOTIFY')) {
+      if (Drush::debug()) {
         foreach ($output as $line) {
           drush_print($line, 2);
         }
