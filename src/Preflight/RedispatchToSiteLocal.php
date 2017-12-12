@@ -43,7 +43,7 @@ class RedispatchToSiteLocal
         }
 
         // If the site-local Drush is us, then we do not need to redispatch.
-        if (Path::isBasePath($vendor, $siteLocalDrush)) {
+        if (Path::isBasePath(realpath($vendor), realpath($siteLocalDrush))) {
             return false;
         }
 
