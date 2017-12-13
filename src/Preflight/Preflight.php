@@ -263,9 +263,7 @@ class Preflight
 
         // Process the selected alias. This might change the selected site,
         // so we will add new site-wide config location for the new root.
-        if ($localRoot = $selfAliasRecord->localRoot()) {
-            $root = $this->setSelectedSite($localRoot);
-        }
+        $root = $this->setSelectedSite($selfAliasRecord->localRoot());
 
         // Now that we have our final Drupal root, check to see if there is
         // a site-local Drush. If there is, we will redispatch to it.
@@ -319,11 +317,13 @@ class Preflight
      */
     protected function setSelectedSite($selectedRoot, $fallbackPath = false)
     {
-        $foundRoot = $this->drupalFinder->locateRoot($selectedRoot);
-        if (!$foundRoot && $fallbackPath) {
-            $this->drupalFinder->locateRoot($fallbackPath);
+        if ($selectedRoot || $fallbackPath) {
+            $foundRoot = $this->drupalFinder->locateRoot($selectedRoot);
+            if (!$foundRoot && $fallbackPath) {
+              $this->drupalFinder->locateRoot($fallbackPath);
+            }
+            return $this->drupalFinder()->getDrupalRoot();
         }
-        return $this->drupalFinder()->getDrupalRoot();
     }
 
     /**
