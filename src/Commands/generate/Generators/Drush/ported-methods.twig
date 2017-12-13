@@ -2,16 +2,23 @@
   /**
    * {{ command.description|raw }}
    *
-   * @command {{ command.name }}
+{% if command.arguments %}
 {% for argName, argDescription in command.arguments %}
-   * @param {{ argName }} {{ argDescription|raw }}
+   * @param {{ argName }}
+   *   {{ argDescription|raw }}
 {% endfor %}
+   *
+{% endif %}
 {% if command.optionsConcat|raw %}
     * @param array $options An associative array of options whose values come from cli, aliases, config, etc.
 {% endif %}
+{% if command.options %}
 {% for optionName, optionDescription in command.options %}
-   * @option {{ optionName }} {{ optionDescription|raw }}
+   * @option {{ optionName }}
+   *   {{ optionDescription|raw }}
 {% endfor %}
+   *
+{% endif %}
 {% for usageName, usageDescription in command.examples %}
    * @usage {{ usageName|raw }}
    *   {{ usageDescription|raw }}
@@ -19,6 +26,8 @@
 {% if command.depsConcat|raw %}
    * @validate-module-enabled {{ command.depsConcat|raw }}
 {% endif %}
+   *
+   * @command {{ command.name }}
    * @aliases {{ command.aliases|join(',')  }}
    */
   public function {{ command.method }}({{ command.argumentsConcat|raw }}{{ command.optionsConcat|raw }})
