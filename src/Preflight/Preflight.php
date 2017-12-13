@@ -317,11 +317,13 @@ class Preflight
      */
     protected function setSelectedSite($selectedRoot, $fallbackPath = false)
     {
-        $foundRoot = $this->drupalFinder->locateRoot($selectedRoot);
-        if (!$foundRoot && $fallbackPath) {
-            $this->drupalFinder->locateRoot($fallbackPath);
+        if ($selectedRoot || $fallbackPath) {
+            $foundRoot = $this->drupalFinder->locateRoot($selectedRoot);
+            if (!$foundRoot && $fallbackPath) {
+                $this->drupalFinder->locateRoot($fallbackPath);
+            }
+            return $this->drupalFinder()->getDrupalRoot();
         }
-        return $this->drupalFinder()->getDrupalRoot();
     }
 
     /**
