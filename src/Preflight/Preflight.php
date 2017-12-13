@@ -264,7 +264,7 @@ class Preflight
         // Process the selected alias. This might change the selected site,
         // so we will add new site-wide config location for the new root.
         if ($localRoot = $selfAliasRecord->localRoot()) {
-          $root = $this->setSelectedSite($localRoot);
+            $root = $this->setSelectedSite($localRoot);
         }
 
         // Now that we have our final Drupal root, check to see if there is
