@@ -263,7 +263,9 @@ class Preflight
 
         // Process the selected alias. This might change the selected site,
         // so we will add new site-wide config location for the new root.
-        $root = $this->setSelectedSite($selfAliasRecord->localRoot());
+        if ($localRoot = $selfAliasRecord->localRoot()) {
+          $root = $this->setSelectedSite($localRoot);
+        }
 
         // Now that we have our final Drupal root, check to see if there is
         // a site-local Drush. If there is, we will redispatch to it.
