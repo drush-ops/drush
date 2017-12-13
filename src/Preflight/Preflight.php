@@ -320,7 +320,7 @@ class Preflight
         if ($selectedRoot || $fallbackPath) {
             $foundRoot = $this->drupalFinder->locateRoot($selectedRoot);
             if (!$foundRoot && $fallbackPath) {
-              $this->drupalFinder->locateRoot($fallbackPath);
+                $this->drupalFinder->locateRoot($fallbackPath);
             }
             return $this->drupalFinder()->getDrupalRoot();
         }
