@@ -74,9 +74,7 @@ class FsUtils
      */
     public static function realpath($path)
     {
-        if (file_exists($path)) {
-            $path = realpath($path);
-        }
-        return $path;
+        $realpath = realpath($path);
+        return $realpath ?: $path;
     }
 }
