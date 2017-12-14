@@ -60,4 +60,23 @@ class FsUtils
         return $backup_dir;
     }
 
+    /**
+     * Returns canonicalized absolute pathname.
+     *
+     * The difference between this and PHP's realpath() is that this will
+     * return the original path even if it doesn't exist.
+     *
+     * @param string $path
+     *   The path being checked.
+     *
+     * @return string
+     *   The canonicalized absolute pathname.
+     */
+    public static function realpath($path)
+    {
+        if (file_exists($path)) {
+            $path = realpath($path);
+        }
+        return $path;
+    }
 }
