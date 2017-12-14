@@ -97,8 +97,8 @@ EOT;
         if (isset($db_superuser)) {
             // - For a localhost database, create a localhost user.  This is important for security.
             //   localhost is special and only allows local Unix socket file connections.
-            // - If the database is on a remote server, create a wilcard user with %.
-            //   We can't easily know what IP adderss or hostname would represent our server.
+            // - If the database is on a remote server, create a wildcard user with %.
+            //   We can't easily know what IP address or hostname would represent our server.
             $domain = ($dbSpec['host'] == 'localhost') ? 'localhost' : '%';
             $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO \'%s\'@\'%s\'', $dbname, $dbSpec['username'], $domain);
             $sql[] = sprintf("IDENTIFIED BY '%s';", $dbSpec['password']);

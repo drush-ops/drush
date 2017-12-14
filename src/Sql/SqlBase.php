@@ -58,7 +58,7 @@ class SqlBase implements ConfigAwareInterface
         $target = $options['target'];
 
         if ($url = $options['db-url']) {
-            $url =  is_array($url) ? $url[$database] : $url;
+            $url = is_array($url) ? $url[$database] : $url;
             $db_spec = self::dbSpecFromDbUrl($url);
             $db_spec['db_prefix'] = $options['db-prefix'];
             return self::getInstance($db_spec, $options);
