@@ -269,9 +269,10 @@ class UpdateDBCommands extends DrushCommands
         ];
         batch_set($batch);
 
+        $maintenance_mode_original_state = \Drupal::service('state')->get('system.maintenance_mode');
         \Drupal::service('state')->set('system.maintenance_mode', true);
         $result = drush_backend_batch_process();
-        \Drupal::service('state')->set('system.maintenance_mode', false);
+        \Drupal::service('state')->set('system.maintenance_mode', $maintenance_mode_original_state);
 
         $success = is_array($result) && (array_key_exists('object', $result)) && empty($result['object'][0]['#abort']);
 
@@ -460,9 +461,10 @@ class UpdateDBCommands extends DrushCommands
                 'finished' => [$this, 'updateFinished'],
             ];
             batch_set($batch);
+            $maintenance_mode_original_state = \Drupal::service('state')->get('system.maintenance_mode');
             \Drupal::service('state')->set('system.maintenance_mode', true);
             drush_backend_batch_process();
-            \Drupal::service('state')->set('system.maintenance_mode', false);
+            \Drupal::service('state')->set('system.maintenance_mode', $maintenance_mode_original_state);
         } else {
             $this->logger()->success(dt("No entity schema updates required"));
         }
