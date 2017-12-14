@@ -43,13 +43,13 @@ class RedispatchToSiteLocal
         }
 
         // If the site-local Drush is us, then we do not need to redispatch.
-        if (Path::isBasePath(realpath($vendor), realpath($siteLocalDrush))) {
+        if (Path::isBasePath($vendor, $siteLocalDrush)) {
             return false;
         }
 
         // Do another special check to detect symlinked Drush folder similar
         // to what the SUT sets up for Drush functional tests.
-        if (dirname(realpath($vendor)) == dirname(realpath($siteLocalDrush))) {
+        if (dirname($vendor) == dirname($siteLocalDrush)) {
             return false;
         }
 

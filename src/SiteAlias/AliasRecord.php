@@ -116,7 +116,7 @@ class AliasRecord extends Config
      */
     public function root()
     {
-        return $this->get('root');
+        return realpath($this->get('root'));
     }
 
     /**

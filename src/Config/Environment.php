@@ -36,7 +36,7 @@ class Environment
         $this->etcPrefix = '';
         $this->sharePrefix = '';
         $this->drushBasePath = dirname(dirname(__DIR__));
-        $this->vendorDir = dirname($autoloadFile);
+        $this->vendorDir = realpath(dirname($autoloadFile));
     }
 
     /**
