@@ -7,7 +7,6 @@
    * @param {{ argName }}
    *   {{ argDescription|raw }}
 {% endfor %}
-   *
 {% endif %}
 {% if command.optionsConcat|raw %}
     * @param array $options An associative array of options whose values come from cli, aliases, config, etc.
@@ -17,7 +16,6 @@
    * @option {{ optionName }}
    *   {{ optionDescription|raw }}
 {% endfor %}
-   *
 {% endif %}
 {% for usageName, usageDescription in command.examples %}
    * @usage {{ usageName|raw }}
@@ -30,10 +28,9 @@
    * @command {{ command.name }}
    * @aliases {{ command.aliases|join(',')  }}
    */
-  public function {{ command.method }}({{ command.argumentsConcat|raw }}{{ command.optionsConcat|raw }})
-  {
-      // See bottom of https://weitzman.github.io/blog/port-to-drush9 for details on what to change when porting a
-      // legacy command.
+  public function {{ command.method }}({{ command.argumentsConcat|raw }}{{ command.optionsConcat|raw }}) {
+    // See bottom of https://weitzman.github.io/blog/port-to-drush9 for details on what to change when porting a
+    // legacy command.
   }
 
 {% endfor %}
