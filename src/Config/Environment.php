@@ -4,6 +4,7 @@ namespace Drush\Config;
 use Composer\Autoload\ClassLoader;
 
 use Drush\Drush;
+use Drush\Utils\FsUtils;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -36,7 +37,7 @@ class Environment
         $this->etcPrefix = '';
         $this->sharePrefix = '';
         $this->drushBasePath = dirname(dirname(__DIR__));
-        $this->vendorDir = dirname($autoloadFile);
+        $this->vendorDir = FsUtils::realpath(dirname($autoloadFile));
     }
 
     /**
