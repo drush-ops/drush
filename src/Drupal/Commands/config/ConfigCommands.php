@@ -309,8 +309,7 @@ class ConfigCommands extends DrushCommands
                 drush_mkdir($directory);
                 $return = $directory;
             }
-        }
-        else {
+        } else {
             // If a directory isn't specified, use the label argument or default sync directory.
             $return = \config_get_config_directory($label ?: CONFIG_SYNC_DIRECTORY);
         }
