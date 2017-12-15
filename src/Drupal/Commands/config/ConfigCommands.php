@@ -321,7 +321,7 @@ class ConfigCommands extends DrushCommands
      */
     public function getChanges($target_storage)
     {
-        /** @var \Drupal\Core\Config\StorageInterface $active_storage */
+        /** @var StorageInterface $active_storage */
         $active_storage = \Drupal::service('config.storage');
 
         $config_comparer = new StorageComparer($active_storage, $target_storage, \Drupal::service('config.manager'));
@@ -449,9 +449,9 @@ class ConfigCommands extends DrushCommands
     /**
      * Copies configuration objects from source storage to target storage.
      *
-     * @param \Drupal\Core\Config\StorageInterface $source
+     * @param StorageInterface $source
      *   The source config storage service.
-     * @param \Drupal\Core\Config\StorageInterface $destination
+     * @param StorageInterface $destination
      *   The destination config storage service.
      */
     public static function copyConfig(StorageInterface $source, StorageInterface $destination)
@@ -477,5 +477,30 @@ class ConfigCommands extends DrushCommands
                 $destination->write($name, $source->read($name));
             }
         }
+    }
+
+    /**
+     * Get diff between two config sets.
+     *
+     * @param StorageInterface $destination_storage
+     * @param StorageInterface $source_storage
+     * @return array|bool
+     *   An array of strings containing the diff.
+     */
+    public static function getDiff(StorageInterface $destination_storage, StorageInterface $source_storage)
+    {
+        // Copy active storage to a temporary directory.
+        $temp_destination_dir = drush_tempdir();
+        $temp_destination_storage = new FileStorage($temp_destination_dir);
+        self::copyConfig($destination_storage, $temp_destination_storage);
+
+        // Copy source storage to a temporary directory as it could be
+        // modified by the partial option or by decorated sync storages.
+        $temp_source_dir = drush_tempdir();
+        $temp_source_storage = new FileStorage($temp_source_dir);
+        self::copyConfig($source_storage, $temp_source_storage);
+
+        drush_shell_exec('diff -u %s %s', $temp_destination_dir, $temp_source_dir);
+        return drush_shell_exec_output();
     }
 }

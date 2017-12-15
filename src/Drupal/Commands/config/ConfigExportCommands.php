@@ -77,11 +77,12 @@ class ConfigExportCommands extends DrushCommands
      * @option commit Run `git add -A` and `git commit` after exporting.  This commits everything that was exported without prompting.
      * @option message Commit comment for the exported configuration.  Optional; may only be used with --commit.
      * @option destination An arbitrary directory that should receive the exported files. A backup directory is used when no value is provided.
+     * @option diff Show preview as a diff, instead of a change list.
      * @usage drush config:export --destination
      *   Export configuration; Save files in a backup directory named config-export.
      * @aliases cex,config-export
      */
-    public function export($label = null, $options = ['add' => false, 'commit' => false, 'message' => self::REQ, 'destination' => ''])
+    public function export($label = null, $options = ['add' => false, 'commit' => false, 'message' => self::REQ, 'destination' => '', 'diff' => false])
     {
         // Get destination directory.
         $destination_dir = ConfigCommands::getDirectory($label, $options['destination']);
@@ -109,20 +110,25 @@ class ConfigExportCommands extends DrushCommands
                 $this->logger()->notice(dt('The active configuration is identical to the configuration in the export directory (!target).', ['!target' => $destination_dir]));
                 return;
             }
-
             $this->output()->writeln("Differences of the active config to the export directory:\n");
-            $change_list = [];
-            foreach ($config_comparer->getAllCollectionNames() as $collection) {
-                $change_list[$collection] = $config_comparer->getChangelist(null, $collection);
+
+            if ($options['diff']) {
+                $diff = ConfigCommands::getDiff($target_storage, $this->getConfigStorage());
+                $this->output()->writeln($diff);
+            } else {
+                $change_list = [];
+                foreach ($config_comparer->getAllCollectionNames() as $collection) {
+                    $change_list[$collection] = $config_comparer->getChangelist(null, $collection);
+                }
+                // Print a table with changes in color, then re-generate again without
+                // color to place in the commit comment.
+                $bufferedOutput = new BufferedOutput();
+                $table = ConfigCommands::configChangesTable($change_list, $bufferedOutput, false);
+                $table->render();
+                $preview = $bufferedOutput->fetch();
+                $table = ConfigCommands::configChangesTable($change_list, $this->output(), true);
+                $table->render();
             }
-            // Print a table with changes in color, then re-generate again without
-            // color to place in the commit comment.
-            $bufferedOutput = new BufferedOutput();
-            $table = ConfigCommands::configChangesTable($change_list, $bufferedOutput, false);
-            $table->render();
-            $preview = $bufferedOutput->fetch();
-            $table = ConfigCommands::configChangesTable($change_list, $this->output(), true);
-            $table->render();
 
             if (!$this->io()->confirm(dt('The .yml files in your export directory (!target) will be deleted and replaced with the active config.', ['!target' => $destination_dir]))) {
                 throw new UserAbortException();
