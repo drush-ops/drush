@@ -484,10 +484,11 @@ class ConfigCommands extends DrushCommands
      *
      * @param StorageInterface $destination_storage
      * @param StorageInterface $source_storage
+     * @param OutputInterface $output
      * @return array|bool
      *   An array of strings containing the diff.
      */
-    public static function getDiff(StorageInterface $destination_storage, StorageInterface $source_storage)
+    public static function getDiff(StorageInterface $destination_storage, StorageInterface $source_storage, OutputInterface $output)
     {
         // Copy active storage to a temporary directory.
         $temp_destination_dir = drush_tempdir();
@@ -500,7 +501,11 @@ class ConfigCommands extends DrushCommands
         $temp_source_storage = new FileStorage($temp_source_dir);
         self::copyConfig($source_storage, $temp_source_storage);
 
-        drush_shell_exec('diff -u %s %s', $temp_destination_dir, $temp_source_dir);
+        $prefix = 'diff';
+        if (drush_program_exists('git') && $output->isDecorated()) {
+            $prefix = 'git diff --color=always';
+        }
+        drush_shell_exec($prefix . ' -u %s %s', $temp_destination_dir, $temp_source_dir);
         return drush_shell_exec_output();
     }
 }

@@ -194,7 +194,7 @@ class ConfigImportCommands extends DrushCommands
             $table = ConfigCommands::configChangesTable($change_list, $this->output());
             $table->render();
         } else {
-            $output = ConfigCommands::getDiff($active_storage, $source_storage);
+            $output = ConfigCommands::getDiff($active_storage, $source_storage, $this->output());
 
             $this->output()->writeln(implode("\n", $output));
         }

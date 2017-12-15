@@ -113,7 +113,7 @@ class ConfigExportCommands extends DrushCommands
             $this->output()->writeln("Differences of the active config to the export directory:\n");
 
             if ($options['diff']) {
-                $diff = ConfigCommands::getDiff($target_storage, $this->getConfigStorage());
+                $diff = ConfigCommands::getDiff($target_storage, $this->getConfigStorage(), $this->output());
                 $this->output()->writeln($diff);
             } else {
                 $change_list = [];
