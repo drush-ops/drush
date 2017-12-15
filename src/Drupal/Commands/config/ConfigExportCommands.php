@@ -9,6 +9,7 @@ use Drupal\Core\Config\StorageInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Webmozart\PathUtil\Path;
 
 class ConfigExportCommands extends DrushCommands
 {
@@ -95,7 +96,7 @@ class ConfigExportCommands extends DrushCommands
     public function doExport($options, $destination_dir)
     {
         // Prepare the configuration storage for the export.
-        if ($destination_dir == \config_get_config_directory(CONFIG_SYNC_DIRECTORY)) {
+        if ($destination_dir ==  Path::canonicalize(\config_get_config_directory(CONFIG_SYNC_DIRECTORY))) {
             $target_storage = $this->getConfigStorageSync();
         } else {
             $target_storage = new FileStorage($destination_dir);
