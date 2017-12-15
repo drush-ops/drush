@@ -16,6 +16,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Parser;
+use Webmozart\PathUtil\Path;
 
 class ConfigCommands extends DrushCommands
 {
@@ -297,19 +298,22 @@ class ConfigCommands extends DrushCommands
      */
     public static function getDirectory($label, $directory = null)
     {
+        $return = null;
         // If the user provided a directory, use it.
         if (!empty($directory)) {
             if ($directory === true) {
                 // The user did not pass a specific directory, make one.
-                return FsUtils::prepareBackupDir('config-import-export');
+                $return = FsUtils::prepareBackupDir('config-import-export');
             } else {
                 // The user has specified a directory.
                 drush_mkdir($directory);
-                return $directory;
+                $return = $directory;
             }
+        } else {
+            // If a directory isn't specified, use the label argument or default sync directory.
+            $return = \config_get_config_directory($label ?: CONFIG_SYNC_DIRECTORY);
         }
-        // If a directory isn't specified, use the label argument or default sync directory.
-        return \config_get_config_directory($label ?: CONFIG_SYNC_DIRECTORY);
+        return Path::canonicalize($return);
     }
 
     /**
