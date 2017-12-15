@@ -114,8 +114,7 @@ class ConfigExportCommands extends DrushCommands
             if ($options['diff']) {
                 $diff = ConfigCommands::getDiff($target_storage, $this->getConfigStorage());
                 $this->output()->writeln($diff);
-            }
-            else {
+            } else {
                 $change_list = [];
                 foreach ($config_comparer->getAllCollectionNames() as $collection) {
                     $change_list[$collection] = $config_comparer->getChangelist(null, $collection);
