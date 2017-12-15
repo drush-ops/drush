@@ -355,7 +355,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     static&nbsp;array|bool
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_getDiff">getDiff</a>(<abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $destination_storage, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $source_storage)
+                    <a href="#method_getDiff">getDiff</a>(<abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $destination_storage, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $source_storage, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         
                                             <p>Get diff between two config sets.</p>                </div>
                 <div class="col-md-2"></div>
@@ -1039,9 +1039,9 @@ argument name as the value of the annotation.</p>                            </d
             </div>
                     <div class="method-item">
                     <h3 id="method_getDiff">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L490">line 490</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L491">line 491</a></div>
         <code>        static            array|bool
-    <strong>getDiff</strong>(<abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $destination_storage, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $source_storage)
+    <strong>getDiff</strong>(<abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $destination_storage, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $source_storage, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         </code>
     </h3>
     <div class="details">
@@ -1062,6 +1062,11 @@ argument name as the value of the annotation.</p>                            </d
                     <tr>
                 <td><abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr></td>
                 <td>$source_storage</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+                <td>$output</td>
                 <td></td>
             </tr>
             </table>
