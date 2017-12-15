@@ -350,6 +350,16 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                                             <p>Copies configuration objects from source storage to target storage.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;array|bool
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getDiff">getDiff</a>(<abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $destination_storage, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $source_storage)
+        
+                                            <p>Get diff between two config sets.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
             </div>
 
 
@@ -358,7 +368,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L41">line 41</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L42">line 42</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory)
         </code>
@@ -511,7 +521,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_getConfigFactory">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L31">line 31</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L32">line 32</a></div>
         <code>                    <abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr>
     <strong>getConfigFactory</strong>()
         </code>
@@ -539,7 +549,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_get">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L63">line 63</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L64">line 64</a></div>
         <code>                    
     <strong>get</strong>($config_name, $key = &#039;&#039;, $options = [&#039;format&#039; =&gt; &#039;yaml&#039;, &#039;source&#039; =&gt; &#039;active&#039;, &#039;include-overridden&#039; =&gt; false])
         </code>
@@ -580,7 +590,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_set">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L90">line 90</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L91">line 91</a></div>
         <code>                    
     <strong>set</strong>($config_name, $key, $value = null, $options = [&#039;format&#039; =&gt; &#039;string&#039;, &#039;value&#039; =&gt; self::REQ])
         </code>
@@ -626,7 +636,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_edit">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L154">line 154</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L155">line 155</a></div>
         <code>                    
     <strong>edit</strong>($config_name)
         </code>
@@ -657,7 +667,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_delete">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L190">line 190</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L191">line 191</a></div>
         <code>                    
     <strong>delete</strong>($config_name, $key = null)
         </code>
@@ -693,7 +703,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_status">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L225">line 225</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L226">line 226</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
     <strong>status</strong>($options = [&#039;state&#039; =&gt; &#039;Only in DB,Only in sync dir,Different&#039;, &#039;prefix&#039; =&gt; self::REQ, &#039;label&#039; =&gt; self::REQ])
         </code>
@@ -733,7 +743,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_getDirectory">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L298">line 298</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L299">line 299</a></div>
         <code>        static            
     <strong>getDirectory</strong>(string $label, string $directory = null)
         </code>
@@ -772,7 +782,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_getChanges">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L318">line 318</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L322">line 322</a></div>
         <code>                    
     <strong>getChanges</strong>($target_storage)
         </code>
@@ -803,7 +813,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_getStorage">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L337">line 337</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L341">line 341</a></div>
         <code>                    
     <strong>getStorage</strong>($directory)
         </code>
@@ -834,7 +844,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_configChangesTable">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L354">line 354</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L358">line 358</a></div>
         <code>        static            <abbr title="Symfony\Component\Console\Helper\Table">Table</abbr>
     <strong>configChangesTable</strong>(array $config_changes, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, $use_color = true)
         </code>
@@ -884,7 +894,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_interactConfigName">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L397">line 397</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L401">line 401</a></div>
         <code>                    
     <strong>interactConfigName</strong>($input, $output)
         </code>
@@ -918,7 +928,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_interactConfigLabel">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L409">line 409</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L413">line 413</a></div>
         <code>                    
     <strong>interactConfigLabel</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\ConsoleOutputInterface">ConsoleOutputInterface</abbr> $output)
         </code>
@@ -952,7 +962,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_validateConfigName">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L434">line 434</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L438">line 438</a></div>
         <code>                    <abbr title="Consolidation\AnnotatedCommand\CommandError">CommandError</abbr>|null
     <strong>validateConfigName</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -993,7 +1003,7 @@ argument name as the value of the annotation.</p>                            </d
             </div>
                     <div class="method-item">
                     <h3 id="method_copyConfig">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L453">line 453</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L457">line 457</a></div>
         <code>        static            
     <strong>copyConfig</strong>(<abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $source, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $destination)
         </code>
@@ -1021,6 +1031,51 @@ argument name as the value of the annotation.</p>                            </d
             </table>
 
             
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getDiff">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/config/ConfigCommands.php#L490">line 490</a></div>
+        <code>        static            array|bool
+    <strong>getDiff</strong>(<abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $destination_storage, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $source_storage)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Get diff between two config sets.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr></td>
+                <td>$destination_storage</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr></td>
+                <td>$source_storage</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array|bool</td>
+            <td>An array of strings containing the diff.</td>
+        </tr>
+    </table>
+
             
             
                     </div>
