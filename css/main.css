@@ -728,12 +728,12 @@ input[type="reset"],
 input[type="button"] {
 	display: inline-block;
 	font-family: "roboto-black", sans-serif;
-	font-size: 1.8rem;
+	font-size: 1.9rem;
 	text-transform: uppercase;
 	letter-spacing: .3rem;
 	height: 5.4rem;
 	line-height: 5.4rem;
-	padding: 0 3rem;
+	padding: 0 2rem;
 	margin: 0 .3rem 1.2rem 0;
 	background: #d8d8d8;
 	color: #001835;
