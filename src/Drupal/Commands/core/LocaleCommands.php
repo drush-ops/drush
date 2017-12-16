@@ -153,13 +153,13 @@ class LocaleCommands extends DrushCommands
      * @aliases locale-export
      * @drupal-dependencies locale
      */
-    public function export($langcode = NULL, $options = ['include' => ['customized']])
+    public function export($langcode = null, $options = ['include' => ['customized']])
     {
         // If template is required, language code is not given.
         if ($langcode != LanguageInterface::LANGCODE_SYSTEM) {
             $language = \Drupal::languageManager()->getLanguage($langcode);
         } else {
-            $language = NULL;
+            $language = null;
         }
 
         $includes_allowed = [
@@ -177,7 +177,7 @@ class LocaleCommands extends DrushCommands
         $content_options = is_array($options['include']) ? $options['include'] : [$options['include']];
         $reader = new PoDatabaseReader();
         $language_name = '';
-        if ($language != NULL) {
+        if ($language != null) {
             $reader->setLangcode($language->getId());
             $reader->setOptions($content_options);
             $languages = \Drupal::languageManager()->getLanguages();
