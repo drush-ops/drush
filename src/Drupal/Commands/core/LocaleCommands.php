@@ -2,8 +2,11 @@
 
 namespace Drush\Drupal\Commands\core;
 
+use Drupal\Component\Gettext\PoStreamWriter;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\State\StateInterface;
+use Drupal\locale\PoDatabaseReader;
 use Drush\Commands\DrushCommands;
 
 class LocaleCommands extends DrushCommands
@@ -128,4 +131,83 @@ class LocaleCommands extends DrushCommands
 
         drush_backend_batch_process();
     }
+
+    /**
+     * Exports to a gettext translation file.
+     *
+     * @command locale:export
+     *
+     * @param string $langcode The language code of the exported translations.
+     * @option $include
+     * @usage drush locale:export nl > nl.po
+     *   Export the Dutch non-customized translations.
+     * @usage drush locale:export nl --include=customized > nl.po
+     *   Export the Dutch customized translations.
+     * @usage drush locale:export > drupal.pot
+     *   Export the template file to translate.
+     * @see \Drupal\locale\Form\ExportForm::submitForm
+     *
+     * @throws \Exception
+     * @return string
+     *
+     * @aliases locale-export
+     * @drupal-dependencies locale
+     */
+    public function export($langcode = NULL, $options = ['include' => ['customized']])
+    {
+        // If template is required, language code is not given.
+        if ($langcode != LanguageInterface::LANGCODE_SYSTEM) {
+            $language = \Drupal::languageManager()->getLanguage($langcode);
+        } else {
+            $language = NULL;
+        }
+
+        $includes_allowed = [
+            'non_customized',
+            'customized',
+            'not_translated',
+        ];
+
+        foreach ($options['include'] as $include) {
+            if (!in_array($include, $includes_allowed)) {
+                throw new \Exception(dt('Include must contain one of: @types.', ['@types' => implode(', ', $includes_allowed)]));
+            }
+        }
+
+        $content_options = is_array($options['include']) ? $options['include'] : [$options['include']];
+        $reader = new PoDatabaseReader();
+        $language_name = '';
+        if ($language != NULL) {
+            $reader->setLangcode($language->getId());
+            $reader->setOptions($content_options);
+            $languages = \Drupal::languageManager()->getLanguages();
+            $language_name = isset($languages[$language->getId()]) ? $languages[$language->getId()]->getName() : '';
+        }
+
+        $item = $reader->readItem();
+        if (!empty($item)) {
+            /** @var \Drupal\Core\File\FileSystemInterface $file_system */
+            $file_system = \Drupal::service('file_system');
+            // @todo Replace with drush_save_data_to_temp_file()?
+            $uri = $file_system->tempnam('temporary://', 'po_');
+            $header = $reader->getHeader();
+            // @todo Get site name.
+            $header->setProjectName('Drush');
+            $header->setLanguageName($language_name);
+
+            $writer = new PoStreamWriter();
+            $writer->setUri($uri);
+            $writer->setHeader($header);
+            $writer->open();
+            // @todo Fix this, no translated strings in exported file?
+            $writer->writeItem($item);
+            $writer->writeItems($reader);
+            $writer->close();
+
+            $this->printFile($file_system->realpath($uri));
+        } else {
+            $this->logger()->error(dt('Nothing to export.'));
+        }
+    }
+
 }
