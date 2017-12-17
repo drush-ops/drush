@@ -228,23 +228,13 @@ class DrupalKernel extends DrupalDrupalKernel
         $all_profiles = $listing->scan('profile');
         $profiles = array_intersect_key($all_profiles, $theme_list);
 
-        // If a theme is within a profile directory but specifies another
-        // profile for testing, it needs to be found in the parent profile.
-        $settings = $this->getConfigStorage()->read('simpletest.settings');
-        $parent_profile = !empty($settings['parent_profile']) ? $settings['parent_profile'] : null;
-        if ($parent_profile && !isset($profiles[$parent_profile])) {
-            // In case both profile directories contain the same extension, the
-            // actual profile always has precedence.
-            $profiles = array($parent_profile => $all_profiles[$parent_profile]) + $profiles;
-        }
-
         $profile_directories = array_map(function ($profile) {
             return $profile->getPath();
         }, $profiles);
         $listing->setProfileDirectories($profile_directories);
 
         // Now find themes.
-        return $listing->scan('theme');
+        $listing->scan('theme');
     }
 
     /**
@@ -261,16 +251,15 @@ class DrupalKernel extends DrupalDrupalKernel
         }
         $extensions = $this->getConfigStorage()->read('core.extension');
         $theme_list = isset($extensions['theme']) ? $extensions['theme'] : [];
-        $theme = [];
-        $theme_data = $this->themeData($theme_list);
+        $this->themeData($theme_list);
         foreach ($theme_list as $theme => $weight) {
-            if (isset($theme_data[$theme])) {
-                // Skip themes that don't have a Drush service.yml.
-                if (!$this->findModuleDrushServiceProvider($theme, dirname($theme_data[$theme]->getPathname()))) {
-                    continue;
-                }
-                $this->themeNames[$theme] = $theme_data[$theme]->getPathname();
+            $dir = drupal_get_path('theme', $theme);
+
+            // Skip themes that don't have a Drush service.yml.
+            if (!$this->findModuleDrushServiceProvider($theme, $dir)) {
+                continue;
             }
+            $this->themeNames[$theme] = $dir. "/$theme.info.yml";
         }
         return $this->themeNames;
     }
