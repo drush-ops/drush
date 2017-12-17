@@ -66,7 +66,7 @@ class DrupalKernel extends DrupalDrupalKernel
 
             $this->invalidateContainer();
         }
-        $this->classLoaderAddMultiplePsr4($this->getModuleNamespacesPsr4($this->getThemeFileNames()));
+        $this->classLoaderAddMultiplePsr4($this->getThemeCommandNamespaces());
         return parent::initializeContainer();
     }
 
@@ -124,8 +124,7 @@ class DrupalKernel extends DrupalDrupalKernel
         $theme_filenames = $this->getThemeFileNames();
         // Load each theme's serviceProvider class.
         foreach ($theme_filenames as $theme => $filename) {
-            $filename = dirname($filename) . "/drush.services.yml";
-            $this->addDrushServiceProvider("_drush.$theme", $filename);
+            $this->addModuleDrushServiceProvider($theme, $filename);
         }
     }
 
@@ -266,9 +265,26 @@ class DrupalKernel extends DrupalDrupalKernel
         $theme_data = $this->themeData($theme_list);
         foreach ($theme_list as $theme => $weight) {
             if (isset($theme_data[$theme])) {
+                // Skip themes that don't have a Drush service.yml.
+                if (!$this->findModuleDrushServiceProvider($theme, dirname($theme_data[$theme]->getPathname()))) {
+                    continue;
+                }
                 $this->themeNames[$theme] = $theme_data[$theme]->getPathname();
             }
         }
         return $this->themeNames;
+    }
+
+    /**
+     * Get PSR4 namespaces for Drush Commands in themes.
+     */
+    protected function getThemeCommandNamespaces()
+    {
+        $namespaces = [];
+        $themes = $this->getThemeFileNames();
+        foreach ($themes as $theme => $path) {
+            $namespaces["Drupal\\$theme\Commands"] = dirname($path) . '/src/Commands';
+        }
+        return $namespaces;
     }
 }
