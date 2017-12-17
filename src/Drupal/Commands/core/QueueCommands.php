@@ -70,7 +70,7 @@ class QueueCommands extends DrushCommands
 
         while ((!$time_limit || time() < $end) && ($item = $queue->claimItem())) {
             try {
-                $this->logger()->info(dt('Processing item @id from @name queue.', array('@name' => $name, '@id' => $item->item_id)));
+                $this->logger()->info(dt('Processing item @id from @name queue.', ['@name' => $name, '@id' => $item->item_id]));
                 $worker->processItem($item->data);
                 $queue->deleteItem($item);
                 $count++;
@@ -85,7 +85,7 @@ class QueueCommands extends DrushCommands
             }
         }
         $elapsed = microtime(true) - $start;
-        $this->logger()->success(dt('Processed @count items from the @name queue in @elapsed sec.', array('@count' => $count, '@name' => $name, '@elapsed' => round($elapsed, 2))));
+        $this->logger()->success(dt('Processed @count items from the @name queue in @elapsed sec.', ['@count' => $count, '@name' => $name, '@elapsed' => round($elapsed, 2)]));
     }
 
     /**
@@ -102,14 +102,14 @@ class QueueCommands extends DrushCommands
      */
     public function qList($options = ['format' => 'table'])
     {
-        $result = array();
+        $result = [];
         foreach (array_keys($this->getQueues()) as $name) {
             $q = $this->getQueue($name);
-            $result[$name] = array(
+            $result[$name] = [
             'queue' => $name,
             'items' => $q->numberOfItems(),
             'class' => get_class($q),
-            );
+            ];
         }
         return new RowsOfFields($result);
     }
@@ -126,7 +126,7 @@ class QueueCommands extends DrushCommands
     {
         $queue = $this->getQueue($name);
         $queue->deleteQueue();
-        $this->logger()->success(dt('All items in @name queue deleted.', array('@name' => $name)));
+        $this->logger()->success(dt('All items in @name queue deleted.', ['@name' => $name]));
     }
 
     /**
@@ -155,7 +155,7 @@ class QueueCommands extends DrushCommands
     public function getQueues()
     {
         if (!isset(static::$queues)) {
-            static::$queues = array();
+            static::$queues = [];
             foreach ($this->getWorkerManager()->getDefinitions() as $name => $info) {
                 static::$queues[$name] = $info;
             }

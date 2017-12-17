@@ -24,12 +24,12 @@ class RoleCommands extends DrushCommands
      */
     public function create($machine_name, $human_readable_name = null)
     {
-        $role = Role::create(array(
+        $role = Role::create([
         'id' => $machine_name,
         'label' => $human_readable_name,
-        ), 'user_role');
+        ], 'user_role');
         $role->save();
-        $this->logger()->success(dt('Created "!role"', array('!role' => $machine_name)));
+        $this->logger()->success(dt('Created "!role"', ['!role' => $machine_name]));
         return $role;
     }
 
@@ -47,7 +47,7 @@ class RoleCommands extends DrushCommands
     {
         $role = Role::load($machine_name);
         $role->delete();
-        $this->logger()->success(dt('Deleted "!role"', array('!role' => $machine_name)));
+        $this->logger()->success(dt('Deleted "!role"', ['!role' => $machine_name]));
     }
 
     /**
@@ -73,7 +73,7 @@ class RoleCommands extends DrushCommands
     {
         $perms = _convert_csv_to_array($permissions);
         user_role_grant_permissions($machine_name, $perms);
-        $this->logger()->success(dt('Added "!permissions" to "!role"', array('!permissions' => $permissions, '!role' => $machine_name)));
+        $this->logger()->success(dt('Added "!permissions" to "!role"', ['!permissions' => $permissions, '!role' => $machine_name]));
         drush_drupal_cache_clear_all();
     }
 
@@ -94,7 +94,7 @@ class RoleCommands extends DrushCommands
     {
         $perms = _convert_csv_to_array($permissions);
         user_role_revoke_permissions($machine_name, $perms);
-        $this->logger()->success(dt('Removed "!permissions" to "!role"', array('!permissions' => $permissions, '!role' => $result->name)));
+        $this->logger()->success(dt('Removed "!permissions" to "!role"', ['!permissions' => $permissions, '!role' => $result->name]));
         drush_drupal_cache_clear_all();
     }
 
@@ -126,10 +126,10 @@ class RoleCommands extends DrushCommands
             if ($options['filter'] && !$role->hasPermission($options['filter'])) {
                 continue;
             }
-            $rows[$role->id()] = array(
+            $rows[$role->id()] = [
             'label' => $role->label(),
             'perms' => $role->getPermissions(),
-            );
+            ];
         }
         $result = new RowsOfFields($rows);
         $result->addRendererFunction([$this, 'renderPermsCell']);

@@ -11,7 +11,7 @@ use Symfony\Component\Console\Exception\RuntimeException;
  * extra options are provided.
  *
  * If the last argument of the command being called is not an array
- * argument, then an error will be thrown if there are two many arguments.
+ * argument, then an error will be thrown if there are too many arguments.
  *
  * We use this instead of a IndiscriminateInputDefinition in cases where we
  * know in advance that we wish to disable input validation for all commands.
@@ -171,7 +171,7 @@ class LessStrictArgvInput extends ArgvInput
         // if input is expecting another argument, add it
         if ($this->definition->hasArgument($c)) {
             $arg = $this->definition->getArgument($c);
-            $this->arguments[$arg->getName()] = $arg->isArray() ? array($token) : $token;
+            $this->arguments[$arg->getName()] = $arg->isArray() ? [$token] : $token;
 
         // if last argument isArray(), append token to last argument
         } elseif ($this->definition->hasArgument($c - 1) && $this->definition->getArgument($c - 1)->isArray()) {
@@ -239,11 +239,11 @@ class LessStrictArgvInput extends ArgvInput
             throw new RuntimeException(sprintf('The "--%s" option does not accept a value.', $name));
         }
 
-        if (in_array($value, array('', null), true) && $option->acceptValue() && count($this->parsed)) {
+        if (in_array($value, ['', null], true) && $option->acceptValue() && count($this->parsed)) {
             // if option accepts an optional or mandatory argument
             // let's see if there is one provided
             $next = array_shift($this->parsed);
-            if ((isset($next[0]) && '-' !== $next[0]) || in_array($next, array('', null), true)) {
+            if ((isset($next[0]) && '-' !== $next[0]) || in_array($next, ['', null], true)) {
                 $value = $next;
             } else {
                 array_unshift($this->parsed, $next);

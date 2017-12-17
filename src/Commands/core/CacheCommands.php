@@ -50,7 +50,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
     {
         $result = \Drupal::cache($bin)->get($cid);
         if (empty($result)) {
-            throw new \Exception(dt('The !cid object in the !bin bin was not found.', array('!cid' => $cid, '!bin' => $bin)));
+            throw new \Exception(dt('The !cid object in the !bin bin was not found.', ['!cid' => $cid, '!bin' => $bin]));
         }
         return new PropertyList($result);
     }
@@ -59,7 +59,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
      * Clear a specific cache, or all Drupal caches.
      *
      * @command cache:clear
-     * @param $type The particular cache to clear. Omit this argument to choose from available types.
+     * @param string $type The particular cache to clear. Omit this argument to choose from available types.
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @hidden-options cache-clear
      * @aliases cc,cache-clear
@@ -79,7 +79,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
 
         // Do it.
         drush_op($types[$type]);
-        $this->logger()->success(dt("'!name' cache was cleared.", array('!name' => $type)));
+        $this->logger()->success(dt("'!name' cache was cleared.", ['!name' => $type]));
     }
 
     /**
@@ -186,12 +186,11 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
         $autoloader = $this->loadDrupalAutoloader(DRUPAL_ROOT);
         require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';
 
-        $request = Request::createFromGlobals();
-        // Ensure that the HTTP method is set, which does not happen with Request::createFromGlobals().
-        $request->setMethod('GET');
+        $request = Drush::bootstrap()->getRequest();
         // Manually resemble early bootstrap of DrupalKernel::boot().
         require_once DRUSH_DRUPAL_CORE . '/includes/bootstrap.inc';
         DrupalKernel::bootEnvironment();
+
         // Avoid 'Only variables should be passed by reference'
         $root  = DRUPAL_ROOT;
         $site_path = DrupalKernel::findSitePath($request);
@@ -228,12 +227,12 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
             if (!$boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
                 $all_types = $this->getTypes(true);
                 if (array_key_exists($type, $all_types)) {
-                    throw new \Exception(dt("'!type' cache requires a working Drupal site to operate on. Use the --root and --uri options, or a site @alias, or cd to a directory containing a Drupal settings.php file.", array('!type' => $type)));
+                    throw new \Exception(dt("'!type' cache requires a working Drupal site to operate on. Use the --root and --uri options, or a site @alias, or cd to a directory containing a Drupal settings.php file.", ['!type' => $type]));
                 } else {
-                    throw new \Exception(dt("'!type' cache is not a valid cache type. There may be more cache types available if you select a working Drupal site.", array('!type' => $type)));
+                    throw new \Exception(dt("'!type' cache is not a valid cache type. There may be more cache types available if you select a working Drupal site.", ['!type' => $type]));
                 }
             }
-            throw new \Exception(dt("'!type' cache is not a valid cache type.", array('!type' => $type)));
+            throw new \Exception(dt("'!type' cache is not a valid cache type.", ['!type' => $type]));
         }
     }
 
@@ -242,20 +241,20 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
      */
     public function getTypes($include_bootstrapped_types = false)
     {
-        $types = array(
+        $types = [
             'drush' => [$this, 'clearDrush'],
-        );
+        ];
         if ($include_bootstrapped_types) {
-            $types += array(
+            $types += [
                 'theme-registry' => [$this, 'clearThemeRegistry'],
                 'router' => [$this, 'clearRouter'],
                 'css-js' => [$this, 'clearCssJs'],
                 'render' => [$this, 'clearRender'],
-              );
+            ];
         }
 
         // Command files may customize $types as desired.
-        $handlers = $this->getCustomEventHandlers('cache-clear', $types, $include_bootstrapped_types);
+        $handlers = $this->getCustomEventHandlers('cache-clear');
         foreach ($handlers as $handler) {
               $handler($types, $include_bootstrapped_types);
         }

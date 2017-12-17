@@ -87,20 +87,7 @@ class DocsCommands extends DrushCommands
      */
     public function siteAliases()
     {
-        self::printFile(DRUSH_BASE_PATH. '/examples/example.aliases.yml');
-    }
-
-    /**
-     * Bastion server configuration: remotely operate on a Drupal sites behind a firewall.
-     *
-     * @command docs:bastion
-     * @aliases docs-bastion
-     * @hidden
-     * @topic
-     */
-    public function bastion()
-    {
-        self::printFile(DRUSH_BASE_PATH. '/docs/bastion.md');
+        self::printFile(DRUSH_BASE_PATH. '/examples/example.site.yml');
     }
 
     /**
@@ -130,32 +117,6 @@ class DocsCommands extends DrushCommands
     }
 
     /**
-     * A script consisting of simple sequences of Drush statements.
-     *
-     * @command docs:scripts
-     * @aliases docs-scripts
-     * @hidden
-     * @topic
-     */
-    public function scripts()
-    {
-        self::printFile(DRUSH_BASE_PATH. '/docs/shellscripts.md');
-    }
-
-    /**
-     * Creating your own aliases for commonly used Drush commands.
-     *
-     * @command docs:shell-aliases
-     * @aliases docs-shell-aliases
-     * @hidden
-     * @topic
-     */
-    public function shellAliases()
-    {
-        self::printFile(DRUSH_BASE_PATH. '/docs/shellaliases.md');
-    }
-
-    /**
      * Instructions on creating your own Drush commands.
      *
      * @command docs:commands
@@ -179,19 +140,6 @@ class DocsCommands extends DrushCommands
     public function generators()
     {
         self::printFile(DRUSH_BASE_PATH. '/docs/generators.md');
-    }
-
-    /**
-     * Explaining how Drush manages command line options and configuration file settings.
-     *
-     * @command docs:context
-     * @aliases docs-context
-     * @hidden
-     * @topic
-     */
-    public function context()
-    {
-        self::printFile(DRUSH_BASE_PATH. 'docs/context.md');
     }
 
     /**

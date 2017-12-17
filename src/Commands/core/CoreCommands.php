@@ -33,11 +33,29 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         $application = Drush::getApplication();
         $def = $application->getDefinition();
         foreach ($def->getOptions() as $key => $value) {
+            $name = '--'. $key;
+            if ($value->getShortcut()) {
+                $name = '-' . $value->getShortcut() . ', ' . $name;
+            }
             $rows[] = [
-                'name' => '--'. $key,
+                'name' => $name,
                 'description' => $value->getDescription(),
             ];
         }
+
+        // Also document the keys recognized by PreflightArgs. It would be possible to redundantly declare
+        // those as global options. We don't do that for now, to avoid confusion.
+        $ancient = drush_get_global_options();
+        foreach (['config', 'alias-path', 'include', 'local', 'backend', 'strict'] as $name) {
+            $rows[] = [
+                'name' => '--' . $name,
+                'description' => $ancient[$name]['description'],
+            ];
+        }
+        usort($rows, function ($a, $b) {
+            return strnatcmp($a['name'], $b['name']);
+
+        });
         return new RowsOfFields($rows);
     }
 
@@ -79,7 +97,7 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         if ($options['escape']) {
             for ($x = 0; $x < count($args); $x++) {
                 // escape all args except for command separators.
-                if (!in_array($args[$x], array('&&', '||', ';'))) {
+                if (!in_array($args[$x], ['&&', '||', ';'])) {
                     $args[$x] = drush_escapeshellarg($args[$x]);
                 }
             }
@@ -108,7 +126,7 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         }
 
         if (!$result) {
-            throw new \Exception(dt("Command !command failed.", array('!command' => $cmd)));
+            throw new \Exception(dt("Command !command failed.", ['!command' => $cmd]));
         }
         return $result;
     }

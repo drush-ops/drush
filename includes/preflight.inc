@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Preflight, postflight and shutdown code.
+ * Postflight and shutdown code.
  */
 
-use Robo\Contract\BuilderAwareInterface;
+use Drush\Drush;
 
 /**
  * The main Drush function.
@@ -42,7 +42,7 @@ function drush_postflight() {
  */
 function drush_shutdown() {
   // Avoid doing anything if our container has not been initialized yet.
-  if (!\Drush\Drush::hasContainer()) {
+  if (!Drush::hasContainer()) {
     return;
   }
 
@@ -52,13 +52,13 @@ function drush_shutdown() {
   if (!drush_get_context('DRUSH_EXECUTION_COMPLETED', FALSE) && !drush_get_context('DRUSH_USER_ABORT', FALSE)) {
     $php_error_message = '';
     if ($error = error_get_last()) {
-      $php_error_message = "\n" . dt('Error: !message in !file, line !line', array('!message' => $error['message'], '!file' => $error['file'], '!line' => $error['line']));
+      $php_error_message = "\n" . dt('Error: !message in !file, line !line', ['!message' => $error['message'], '!file' => $error['file'], '!line' => $error['line']]);
     }
     // We did not reach the end of the drush_main function,
     // this generally means somewhere in the code a call to exit(),
     // was made. We catch this, so that we can trigger an error in
     // those cases.
-    drush_set_error("DRUSH_NOT_COMPLETED", dt("Drush command terminated abnormally due to an unrecoverable error.!message", array('!message' => $php_error_message)));
+    drush_set_error("DRUSH_NOT_COMPLETED", dt("Drush command terminated abnormally due to an unrecoverable error.!message", ['!message' => $php_error_message]));
     // Attempt to give the user some advice about how to fix the problem
     _drush_postmortem();
   }
@@ -79,7 +79,7 @@ function drush_shutdown() {
     }
   }
 
-  if (\Drush\Drush::backend()) {
+  if (Drush::backend()) {
     drush_backend_output();
   }
 

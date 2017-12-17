@@ -40,9 +40,9 @@ class ListCommands extends DrushCommands
         $filter_category = $options['filter'];
         if (!empty($filter_category)) {
             if (!array_key_exists($filter_category, $namespaced)) {
-                throw new \Exception(dt("The specified command category !filter does not exist.", array('!filter' => $filter_category)));
+                throw new \Exception(dt("The specified command category !filter does not exist.", ['!filter' => $filter_category]));
             }
-            $namespaced = array($filter_category => $namespaced[$filter_category]);
+            $namespaced = [$filter_category => $namespaced[$filter_category]];
         }
 
         /**
@@ -56,7 +56,7 @@ class ListCommands extends DrushCommands
         } elseif ($options['format'] == 'listcli') {
             $preamble = dt('Run `drush help [command]` to view command-specific help.  Run `drush topic` to read even more documentation.');
             $this->renderListCLI($application, $namespaced, $this->output(), $preamble);
-            if (!drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_ROOT)) {
+            if (!Drush::bootstrapManager()->hasBootstrapped((DRUSH_BOOTSTRAP_DRUPAL_ROOT))) {
                 $this->io()->note(dt('Drupal root not found. Pass --root or a @siteAlias in order to see Drupal-specific commands.'));
             }
             return null;
@@ -182,14 +182,16 @@ class ListCommands extends DrushCommands
 
     /**
      * @param Command[] $all
+     * @param string $separator
+     *
      * @return array
      */
-    public static function categorize($all)
+    public static function categorize($all, $separator = ':')
     {
         foreach ($all as $key => $command) {
             $hidden = method_exists($command, 'getAnnotationData') && $command->getAnnotationData()->has('hidden');
             if (!in_array($key, $command->getAliases()) && !$hidden) {
-                $parts = explode(':', $key);
+                $parts = explode($separator, $key);
                 $namespace = count($parts) >= 2 ? array_shift($parts) : '_global';
                 $namespaced[$namespace][$key] = $command;
             }

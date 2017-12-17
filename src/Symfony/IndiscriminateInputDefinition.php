@@ -9,11 +9,11 @@ use Symfony\Component\Console\Exception\LogicException;
 
 /**
  * This is an InputDefinition that allows any option to be considered valid.
- * Used when passing a command through to anohter dispatcher that will do
+ * Used when passing a command through to another dispatcher that will do
  * the option validation.
  *
  * We use this instead of a LessStrictArgvInput in cases where we do not
- * know in advance whether the input should be handled indescriminately.
+ * know in advance whether the input should be handled indiscriminately.
  * In other words, an IndiscriminateInputDefinition is attached to individual
  * Commands that should accept any option, whereas a LessStrictArgvInput
  * should be used to make all command skip option validation.

@@ -4,6 +4,7 @@ namespace Drush\SiteAlias;
 use Consolidation\Config\Config;
 use Consolidation\Config\ConfigInterface;
 use Consolidation\Config\Util\ArrayUtil;
+use Drush\Utils\FsUtils;
 
 /**
  * An alias record is a configuration record containing well-known items.
@@ -51,19 +52,13 @@ class AliasRecord extends Config
      * @param string $name Alias name or site specification for this alias record
      * @param string $env Environment for this alias record. Will be appended to
      *   the alias name, separated by a "." if provided.
-     * @param string $group Group for this alias record. Will be prepended to
-     *   the alias name, separated by a "." if provided. Ignored unless $name is
-     *   an alias (must begin with "@").
      * @return type
      */
-    public function __construct(array $data = null, $name = '', $env = '', $group = '')
+    public function __construct(array $data = null, $name = '', $env = '')
     {
         parent::__construct($data);
         if (!empty($env)) {
             $name .= ".$env";
-        }
-        if (!empty($group)) {
-            $name = preg_replace('/^@/', "@{$group}.", $name);
         }
         $this->name = $name;
     }
@@ -122,7 +117,9 @@ class AliasRecord extends Config
      */
     public function root()
     {
-        return $this->get('root');
+        $root = FsUtils::realpath($this->get('root'));
+
+        return $root;
     }
 
     /**
@@ -251,28 +248,6 @@ class AliasRecord extends Config
         }
 
         return new Config($data);
-    }
-
-    /**
-     * Copy options from the source and destination aliases into the
-     * alias context.
-     *
-     * This is essentially an `export` followed by `$config->combine()`.
-     * Parameter-specific options from the alias-parameters are also included.
-     *
-     * @param Config $config
-     * @param string $parameterName
-     * @return $this
-     */
-    public function injectIntoConfig($config, $parameterName = '')
-    {
-        $aliasData = $this->export();
-        $parameterSpecificData = $this->getParameterSpecificOptions($aliasData, $parameterName);
-        if (!empty($parameterSpecificData)) {
-            // Combine the data from the parameter-specific
-            $config->combine($parameterSpecificData);
-        }
-        return $this;
     }
 
     /**

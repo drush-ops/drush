@@ -49,6 +49,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
      *   drush-temp: Drush temp
      *   drush-conf: Drush configs
      *   drush-alias-files: Drush aliases
+     *   alias-searchpaths: Alias search paths
      *   install-profile: Install profile
      *   root: Drupal root
      *   drupal-settings-file: Drupal Settings
@@ -63,7 +64,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
      *   files-path: Files, Public
      *   temp-path: Files, Temp
      *   %paths: Other paths
-     * @default-fields drupal-version,uri,db-driver,db-hostname,db-port,db-username,db-name,db-status,bootstrap,theme,admin-theme,php-bin,php-conf,php-os,drush-script,drush-version,drush-temp,drush-conf,drush-alias-files,install-profile,root,site,files,private,temp
+     * @default-fields drupal-version,uri,db-driver,db-hostname,db-port,db-username,db-name,db-status,bootstrap,theme,admin-theme,php-bin,php-conf,php-os,drush-script,drush-version,drush-temp,drush-conf,install-profile,root,site,files,private,temp
      * @pipe-format json
      * @hidden-options project
      * @bootstrap max
@@ -86,12 +87,11 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
         $boot_manager = Drush::bootstrapManager();
         $boot_object = Drush::bootstrap();
         if (($drupal_root = $boot_manager->getRoot()) && ($boot_object instanceof DrupalBoot)) {
-            $status_table['drupal-version'] = drush_drupal_version();
+            $status_table['drupal-version'] = $boot_object->getVersion($drupal_root);
             $conf_dir = $boot_object->confPath();
             $settings_file = "$conf_dir/settings.php";
             $status_table['drupal-settings-file'] = file_exists($settings_file) ? $settings_file : '';
             if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_SITE)) {
-                // @todo for some reason getUri() is returning null.
                 $status_table['uri'] = $boot_manager->getUri();
                 try {
                     $sql = SqlBase::create($options);
@@ -107,7 +107,9 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
                     $status_table['db-name'] = isset($db_spec['database']) ? $db_spec['database'] : null;
                     $status_table['db-port'] = isset($db_spec['port']) ? $db_spec['port'] : null;
                     if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION)) {
-                        $status_table['install-profile'] = $boot_object->getProfile();
+                        if (method_exists('Drupal', 'installProfile')) {
+                            $status_table['install-profile'] = \Drupal::installProfile();
+                        }
                         if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
                             $status_table['db-status'] = dt('Connected');
                             if ($boot_manager->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
@@ -131,12 +133,14 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
         }
         $status_table['drush-script'] = DRUSH_COMMAND;
         $status_table['drush-version'] = Drush::getVersion();
-        $status_table['drush-temp'] = drush_find_tmp();
+        $status_table['drush-temp'] = $this->getConfig()->tmp();
         $status_table['drush-conf'] = Drush::config()->get('runtime.config.paths');
         // List available alias files
         $alias_files = $this->siteAliasManager()->listAllFilePaths();
         sort($alias_files);
         $status_table['drush-alias-files'] = $alias_files;
+        $alias_searchpaths = $this->siteAliasManager()->searchLocations();
+        $status_table['alias-searchpaths'] = $alias_searchpaths;
 
         $paths = self::pathAliases($options, $boot_manager, $boot_object);
         if (!empty($paths)) {
@@ -184,7 +188,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
      */
     public static function pathAliases(array $options, BootstrapManager $boot_manager, $boot)
     {
-        $paths = array();
+        $paths = [];
         $site_wide = 'sites/all';
         if ($drupal_root = $boot_manager->getRoot()) {
             $paths['%root'] = $drupal_root;

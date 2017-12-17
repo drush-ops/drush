@@ -65,7 +65,7 @@ class SqlOracle extends SqlBase
 
     public function listTables()
     {
-        $return = $this->query("SELECT TABLE_NAME FROM USER_TABLES WHERE TABLE_NAME NOT IN ('BLOBS','LONG_IDENTIFIERS')");
+        $return = $this->alwaysQuery("SELECT TABLE_NAME FROM USER_TABLES WHERE TABLE_NAME NOT IN ('BLOBS','LONG_IDENTIFIERS')");
         $tables = drush_shell_exec_output();
         if (!empty($tables)) {
             // Shift off the header of the column of data returned.
@@ -93,6 +93,6 @@ class SqlOracle extends SqlBase
         if ($option = $this->getOption('extra-dump', $this->queryExtra)) {
             $exec .= " $option";
         }
-        return array($exec, $file);
+        return [$exec, $file];
     }
 }

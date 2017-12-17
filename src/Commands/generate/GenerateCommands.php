@@ -53,11 +53,17 @@ class GenerateCommands extends DrushCommands
         $application = $this->createApplication();
         if (!$generator) {
             $all = $application->all();
-            $namespaced = ListCommands::categorize($all);
+            $namespaced = ListCommands::categorize($all, '-');
             $preamble = dt('Run `drush generate [command]` and answer a few questions in order to write starter code to your project.');
             ListCommands::renderListCLI($application, $namespaced, $this->output(), $preamble);
             return null;
         } else {
+            // Symfony console cannot recognize the command by alias when
+            // multiple commands have the same prefix.
+            if ($generator == 'module') {
+                $generator = 'module-standard';
+            }
+
             // Create an isolated input.
             $argv = [
                 $generator,
@@ -80,9 +86,9 @@ class GenerateCommands extends DrushCommands
         $helperSet = $application->getHelperSet();
 
         $override = null;
-        if (drush_get_context('DRUSH_AFFIRMATIVE')) {
+        if (Drush::affirmative()) {
             $override = true;
-        } elseif (drush_get_context('DRUSH_NEGATIVE')) {
+        } elseif (Drush::negative()) {
             $override = false;
         }
         $dumper = new Dumper(new Filesystem(), $override);
@@ -104,7 +110,7 @@ class GenerateCommands extends DrushCommands
         $dcg_generators = $discovery->getGenerators([DCG_ROOT . '/src/Command/Drupal_8'], '\DrupalCodeGenerator\Command\Drupal_8');
         $drush_generators = $discovery->getGenerators([__DIR__ . '/Generators'], '\Drush\Commands\generate\Generators');
         $module_generators = [];
-        if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+        if (Drush::bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
             $container = \Drupal::getContainer();
             if ($container->has(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)) {
                 $module_generators = $container->get(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)->getCommandList();
@@ -124,12 +130,6 @@ class GenerateCommands extends DrushCommands
             $generator->setName($new_name);
             // Remove alias if it is same as new name.
             if ($aliases = $generator->getAliases()) {
-                foreach ($aliases as $key => $alias) {
-                    // These dont work due to Console 'guessing' wrong.
-                    if ($alias == 'module' || $alias == 'theme') {
-                        unset($aliases[$key]);
-                    }
-                }
                 $generator->setAliases(array_diff($aliases, [$new_name]));
             }
         }

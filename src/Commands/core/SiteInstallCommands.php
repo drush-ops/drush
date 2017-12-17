@@ -12,6 +12,7 @@ use Drush\SiteAlias\SiteAliasManager;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Sql\SqlBase;
+use Drush\Utils\StringUtils;
 use Webmozart\PathUtil\Path;
 
 class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface
@@ -66,42 +67,43 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             $form_options[$key] = $value;
         }
 
+        $this->serverGlobals(Drush::bootstrapManager()->getUri());
         $class_loader = Drush::service('loader');
         $profile = $this->determineProfile($profile, $options, $class_loader);
 
         $sql = SqlBase::create($options);
         $db_spec = $sql->getDbSpec();
 
-        $account_pass = $options['account-pass'] ?: drush_generate_password();
-        $settings = array(
-            'parameters' => array(
+        $account_pass = $options['account-pass'] ?: StringUtils::generatePassword();
+        $settings = [
+            'parameters' => [
                 'profile' => $profile,
                 'langcode' => $options['locale'],
-            ),
-            'forms' => array(
-                'install_settings_form' => array(
+            ],
+            'forms' => [
+                'install_settings_form' => [
                     'driver' => $db_spec['driver'],
                     $db_spec['driver'] => $db_spec,
                     'op' => dt('Save and continue'),
-                ),
-                'install_configure_form' => array(
+                ],
+                'install_configure_form' => [
                     'site_name' => $options['site-name'],
                     'site_mail' => $options['site-mail'],
-                    'account' => array(
+                    'account' => [
                       'name' => $options['account-name'],
                       'mail' => $options['account-mail'],
-                      'pass' => array(
+                      'pass' => [
                         'pass1' => $account_pass,
                         'pass2' => $account_pass,
-                      ),
-                    ),
+                      ],
+                    ],
                     'enable_update_status_module' => true,
                     'enable_update_status_emails' => true,
                     'clean_url' => true,
                     'op' => dt('Save and continue'),
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
 
         // Merge in the additional options.
         foreach ($form_options as $key => $value) {
@@ -124,7 +126,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
         drush_op('install_drupal', $class_loader, $settings);
         if (empty($options['account-pass'])) {
-            $this->logger()->success(dt('Installation complete.  User name: @name  User password: @pass', array('@name' => $options['account-name'], '@pass' => $account_pass)));
+            $this->logger()->success(dt('Installation complete.  User name: @name  User password: @pass', ['@name' => $options['account-name'], '@pass' => $account_pass]));
         } else {
             $this->logger()->success(dt('Installation complete.'));
         }
@@ -156,7 +158,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             // block in the profile's info YAML file.
             // See https://www.drupal.org/node/2210443 for more information.
             require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
-            $install_state = array('interactive' => false) + install_state_defaults();
+            $install_state = ['interactive' => false] + install_state_defaults();
             try {
                 install_begin_request($class_loader, $install_state);
                 $profile = _install_select_profile($install_state);
@@ -182,9 +184,9 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             // Set the destination site UUID to match the source UUID, to bypass a core fail-safe.
             $source_storage = new FileStorage($config);
             $options = ['yes' => true];
-            drush_invoke_process('@self', 'config-set', array('system.site', 'uuid', $source_storage->read('system.site')['uuid']), $options);
+            drush_invoke_process('@self', 'config-set', ['system.site', 'uuid', $source_storage->read('system.site')['uuid']], $options);
             // Run a full configuration import.
-            drush_invoke_process('@self', 'config-import', array(), array('source' => $config) + $options);
+            drush_invoke_process('@self', 'config-import', [], ['source' => $config] + $options);
         }
     }
 
@@ -205,11 +207,11 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         if ($sites_subdir = $commandData->input()->getOption('sites-subdir')) {
             $lower = strtolower($sites_subdir);
             if ($sites_subdir != $lower) {
-                $this->logger()->warning(dt('Only lowercase sites-subdir are valid. Switching to !lower.', array('!lower' => $lower)));
+                $this->logger()->warning(dt('Only lowercase sites-subdir are valid. Switching to !lower.', ['!lower' => $lower]));
                 $commandData->input()->setOption('sites-subdir', $lower);
             }
             // Make sure that we will bootstrap to the 'sites-subdir' site.
-            $bootstrapManager = \Drush\Drush::bootstrapManager();
+            $bootstrapManager = Drush::bootstrapManager();
             $bootstrapManager->setUri('http://' . $sites_subdir);
         }
 
@@ -227,8 +229,8 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             }
         }
 
-        Drush::bootstrapManager()->bootstrapMax(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
         try {
+            Drush::bootstrapManager()->bootstrapMax(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
             $sql = SqlBase::create($commandData->input()->getOptions());
         } catch (\Exception $e) {
             // Ask questions to get our data.
@@ -277,7 +279,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         }
 
         if (!$dir) {
-            throw new \Exception(dt('Could not determine target sites directory for site to install. Use --site-subdir to specify.'));
+            throw new \Exception(dt('Could not determine target sites directory for site to install. Use --sites-subdir to specify.'));
         }
 
         $sites_subdir = Path::join('sites', $dir);
@@ -288,15 +290,15 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $sitesfile_write = realpath($confPath) != $default && !file_exists($sitesfile);
 
         if (!file_exists($settingsfile)) {
-            $msg[] = dt('create a @settingsfile file', array('@settingsfile' => $settingsfile));
+            $msg[] = dt('create a @settingsfile file', ['@settingsfile' => $settingsfile]);
         }
         if ($sitesfile_write) {
-            $msg[] = dt('create a @sitesfile file', array('@sitesfile' => $sitesfile));
+            $msg[] = dt('create a @sitesfile file', ['@sitesfile' => $sitesfile]);
         }
         if ($sql->dbExists()) {
-            $msg[] = dt("DROP all tables in your '@db' database.", array('@db' => $db_spec['database']));
+            $msg[] = dt("DROP all tables in your '@db' database.", ['@db' => $db_spec['database']]);
         } else {
-            $msg[] = dt("CREATE the '@db' database.", array('@db' => $db_spec['database']));
+            $msg[] = dt("CREATE the '@db' database.", ['@db' => $db_spec['database']]);
         }
 
         if (!$this->io()->confirm(dt('You are about to ') . implode(dt(' and '), $msg) . ' Do you want to continue?')) {
@@ -305,23 +307,23 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
 
         // Can't install without sites subdirectory and settings.php.
         if (!file_exists($confPath)) {
-            if (!drush_mkdir($confPath) && !\Drush\Drush::simulate()) {
-                throw new \Exception(dt('Failed to create directory @confPath', array('@confPath' => $confPath)));
+            if (!drush_mkdir($confPath) && !Drush::simulate()) {
+                throw new \Exception(dt('Failed to create directory @confPath', ['@confPath' => $confPath]));
             }
         } else {
-            $this->logger()->info(dt('Sites directory @subdir already exists - proceeding.', array('@subdir' => $confPath)));
+            $this->logger()->info(dt('Sites directory @subdir already exists - proceeding.', ['@subdir' => $confPath]));
         }
 
         if (!drush_file_not_empty($settingsfile)) {
-            if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !\Drush\Drush::simulate()) {
-                throw new \Exception(dt('Failed to copy sites/default/default.settings.php to @settingsfile', array('@settingsfile' => $settingsfile)));
+            if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !Drush::simulate()) {
+                throw new \Exception(dt('Failed to copy sites/default/default.settings.php to @settingsfile', ['@settingsfile' => $settingsfile]));
             }
         }
 
         // Write an empty sites.php if we using multi-site.
         if ($sitesfile_write) {
-            if (!drush_op('copy', 'sites/example.sites.php', $sitesfile) && !\Drush\Drush::simulate()) {
-                throw new \Exception(dt('Failed to copy sites/example.sites.php to @sitesfile', array('@sitesfile' => $sitesfile)));
+            if (!drush_op('copy', 'sites/example.sites.php', $sitesfile) && !Drush::simulate()) {
+                throw new \Exception(dt('Failed to copy sites/example.sites.php to @sitesfile', ['@sitesfile' => $sitesfile]));
             }
         }
 
@@ -331,7 +333,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $bootstrapManager->doBootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
 
         if (!$sql->dropOrCreate()) {
-            throw new \Exception(dt('Failed to create database: @error', array('@error' => implode(drush_shell_exec_output()))));
+            throw new \Exception(dt('Failed to create database: @error', ['@error' => implode(drush_shell_exec_output())]));
         }
     }
 
@@ -353,6 +355,44 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             return $dir;
         }
         return false;
+    }
+
+    /**
+     * Fake the necessary HTTP headers that the Drupal installer still needs:
+     * @see https://github.com/drupal/drupal/blob/d260101f1ea8a6970df88d2f1899248985c499fc/core/includes/install.core.inc#L287
+     */
+    public function serverGlobals($drupal_base_url)
+    {
+        $drupal_base_url = parse_url($drupal_base_url);
+
+        // Fill in defaults.
+        $drupal_base_url += [
+            'scheme' => null,
+            'path' => '',
+            'host' => null,
+            'port' => null,
+        ];
+        $_SERVER['HTTP_HOST'] = $drupal_base_url['host'];
+
+        if ($drupal_base_url['scheme'] == 'https') {
+              $_SERVER['HTTPS'] = 'on';
+        }
+
+        if ($drupal_base_url['port']) {
+              $_SERVER['HTTP_HOST'] .= ':' . $drupal_base_url['port'];
+        }
+        $_SERVER['SERVER_PORT'] = $drupal_base_url['port'];
+
+        $_SERVER['REQUEST_URI'] = $drupal_base_url['path'] . '/';
+
+        $_SERVER['PHP_SELF'] = $_SERVER['REQUEST_URI'] . 'index.php';
+        $_SERVER['SCRIPT_NAME'] = $_SERVER['PHP_SELF'];
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+        $_SERVER['REQUEST_METHOD']  = 'GET';
+
+        $_SERVER['SERVER_SOFTWARE'] = null;
+        $_SERVER['HTTP_USER_AGENT'] = null;
+        $_SERVER['SCRIPT_FILENAME'] = DRUPAL_ROOT . '/index.php';
     }
 }
 

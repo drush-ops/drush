@@ -9,7 +9,7 @@ use Drupal\Core\DrupalKernel;
 use Drush\Drush;
 use Drush\Drupal\DrupalKernel as DrushDrupalKernel;
 use Drush\Drupal\DrushServiceModifier;
-use Consolidation\AnnotatedCommand\AnnotatedCommandFactory;
+use Drupal\Core\Database\Database;
 
 use Drush\Log\LogLevel;
 
@@ -26,6 +26,22 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
      * @var \Symfony\Component\HttpFoundation\Request
      */
     protected $request;
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Request
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    /**
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     */
+    public function setRequest($request)
+    {
+        $this->request = $request;
+    }
 
     public function validRoot($path)
     {
@@ -54,26 +70,14 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         }
     }
 
-    public function getProfile()
+    public function confPath($require_settings = true, $reset = false)
     {
-        return drupal_get_profile();
-    }
 
-    public function confPath($require_settings = true, $reset = false, Request $request = null)
-    {
-        if (!isset($request)) {
-            if (\Drupal::hasRequest()) {
-                $request = \Drupal::request();
-            } // @todo Remove once external CLI scripts (Drush) are updated.
-            else {
-                $request = Request::createFromGlobals();
-            }
-        }
         if (\Drupal::hasService('kernel')) {
             $site_path = \Drupal::service('kernel')->getSitePath();
         }
         if (!isset($site_path) || empty($site_path)) {
-            $site_path = DrupalKernel::findSitePath($request, $require_settings);
+            $site_path = DrupalKernel::findSitePath($this->getRequest(), $require_settings);
         }
         return $site_path;
     }
@@ -98,6 +102,32 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         return $core;
     }
 
+    public function bootstrapDrupalSiteValidate()
+    {
+        parent::bootstrapDrupalSiteValidate();
+        // Account for users who omit the http:// prefix.
+        if (!parse_url($this->uri, PHP_URL_SCHEME)) {
+            $this->uri = 'http://' . $this->uri;
+        }
+        $request = Request::create($this->uri, 'GET', [], [], [], ['SCRIPT_NAME' => '/index.php']);
+        $this->setRequest($request);
+        $confPath = drush_bootstrap_value('confPath', $this->confPath(true, true));
+        drush_bootstrap_value('site', $request->getHttpHost());
+        return true;
+    }
+
+    public function bootstrapDrupalConfigurationValidate()
+    {
+        $conf_file = $this->confPath() . '/settings.php';
+        if (!file_exists($conf_file)) {
+            $msg = dt("Could not find a Drupal settings.php file at !file.", ['!file' => $conf_file]);
+            $this->logger->debug($msg);
+            // Cant do this because site:install deliberately bootstraps to configure without a settings.php file.
+            // return drush_set_error($msg);
+        }
+        return true;
+    }
+
     public function bootstrapDrupalDatabaseValidate()
     {
         return parent::bootstrapDrupalDatabaseValidate() && $this->bootstrapDrupalDatabaseHasTable('key_value');
@@ -111,11 +141,10 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
     public function bootstrapDrupalConfiguration()
     {
-        $this->request = Request::createFromGlobals();
         $classloader = $this->autoloader();
-        // @todo - use Request::create() and then no need to set PHP superglobals
         $kernelClass = new \ReflectionClass('\Drupal\Core\DrupalKernel');
-        $this->kernel = DrushDrupalKernel::createFromRequest($this->request, $classloader, 'prod', DRUPAL_ROOT);
+        $request = $this->getRequest();
+        $this->kernel = DrushDrupalKernel::createFromRequest($request, $classloader, 'prod');
         // @see Drush\Drupal\DrupalKernel::addServiceModifier()
         $this->kernel->addServiceModifier(new DrushServiceModifier());
 
@@ -131,21 +160,15 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     public function bootstrapDrupalFull()
     {
         $this->logger->debug(dt('Start bootstrap of the Drupal Kernel.'));
-        // TODO: do we need to do ob_start any longer?
-        if (!drush_get_context('DRUSH_QUIET', false)) {
-            ob_start();
-        }
         $this->kernel->boot();
-        $this->kernel->prepareLegacyRequest($this->request);
-        if (!drush_get_context('DRUSH_QUIET', false)) {
-            ob_end_clean();
-        }
+        $this->kernel->prepareLegacyRequest($this->getRequest());
         $this->logger->debug(dt('Finished bootstrap of the Drupal Kernel.'));
 
         parent::bootstrapDrupalFull();
+        $this->addLogger();
 
         // Get a list of the modules to ignore
-        $ignored_modules = drush_get_option_list('ignored-modules', array());
+        $ignored_modules = drush_get_option_list('ignored-modules', []);
 
         $application = Drush::getApplication();
         $runner = Drush::runner();
@@ -198,7 +221,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
         if ($this->kernel) {
             $response = Response::create('');
-            $this->kernel->terminate($this->request, $response);
+            $this->kernel->terminate($this->getRequest(), $response);
         }
     }
 }

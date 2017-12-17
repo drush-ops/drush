@@ -1,0 +1,25 @@
+dev:
+  root: /path/to/dev
+  uri: dev
+  command:
+    core:
+      rsync:
+        options:
+          include-paths: dev-path
+stage:
+  root: /path/to/stage
+  uri: stage
+  command:
+    core:
+      rsync:
+        options:
+          exclude-paths: stage-path
+live:
+  user: www-admin
+  host: service-provider.com
+  root: /path/on/service-provider
+  uri: https://example.com
+  ssh:
+    options: '-o PasswordAuthentication=example'
+  paths:
+    drush-script: '/example/path/to/drush'

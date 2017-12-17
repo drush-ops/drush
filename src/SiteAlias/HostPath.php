@@ -38,6 +38,9 @@ class HostPath
     /** @var string The "path" component from the host path */
     protected $path;
 
+    /** @var string The alias record is implicit (e.g. 'path' instead of '@self:path') */
+    protected $implicit;
+
     /**
      * HostPath constructor
      *
@@ -45,11 +48,12 @@ class HostPath
      * @param string $original_path The original host path
      * @param string $path Just the 'path' component
      */
-    protected function __construct($alias_record, $original_path, $path = '')
+    protected function __construct($alias_record, $original_path, $path = '', $implicit = false)
     {
         $this->alias_record = $alias_record;
         $this->original_path = $original_path;
         $this->path = $path;
+        $this->implicit = $implicit;
     }
 
     /**
@@ -130,7 +134,7 @@ class HostPath
         if (empty($this->path)) {
             return $this->alias_record->root();
         }
-        if ($this->alias_record->hasRoot()) {
+        if ($this->alias_record->hasRoot() && !$this->implicit) {
             return Path::makeAbsolute($this->path, $this->alias_record->root());
         }
         return $this->path;
@@ -172,9 +176,17 @@ class HostPath
     public function replacePathAlias($resolvedPath)
     {
         $pathAlias = $this->getPathAlias();
-        if (!empty($pathAlias)) {
-            $this->path = rtrim($resolvedPath, '/') . substr($this->path, strlen($pathAlias) + 1);
+        if (empty($pathAlias)) {
+            return $this;
         }
+        // Once the path alias is resolved, replace the alias in the $path with the result.
+        $this->path = rtrim($resolvedPath, '/') . substr($this->path, strlen($pathAlias) + 1);
+
+        // Using a path alias such as %files is equivalent to making explicit
+        // use of @self:%files. We set implicit to false here so that the resolved
+        // path will be returned as an absolute path rather than a relative path.
+        $this->implicit = false;
+
         return $this;
     }
 
@@ -214,7 +226,6 @@ class HostPath
     public function fullyQualifiedPathPreservingTrailingSlash()
     {
         $fqp = $this->fullyQualifiedPath();
-
         if ((substr($this->path, strlen($this->path) - 1) == '/') && (substr($fqp, strlen($fqp) - 1) != '/')) {
             $fqp .= '/';
         }
@@ -235,7 +246,7 @@ class HostPath
     {
         // If $alias_record is false, then $single_part must be a path.
         if ($alias_record === false) {
-            return new HostPath($manager->getSelf(), $hostPath, $single_part);
+            return new HostPath($manager->getSelf(), $hostPath, $single_part, true);
         }
 
         // Otherwise, we have a alias record without a path.

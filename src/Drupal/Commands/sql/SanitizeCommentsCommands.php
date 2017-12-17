@@ -4,6 +4,7 @@ namespace Drush\Drupal\Commands\sql;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Database\Database;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
@@ -70,7 +71,7 @@ class SanitizeCommentsCommands extends DrushCommands implements SanitizePluginIn
 
     protected function applies()
     {
-        drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
+        Drush::bootstrapManager()->doBootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
         return $this->moduleHandler->moduleExists('comment');
     }
 }

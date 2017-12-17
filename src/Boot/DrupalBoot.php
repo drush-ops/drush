@@ -7,6 +7,7 @@ use Drush\Log\LogLevel;
 use Drush\Sql\SqlBase;
 use Psr\Log\LoggerInterface;
 use Drupal\user\Entity\User;
+use Symfony\Component\HttpFoundation\Request;
 use Webmozart\PathUtil\Path;
 
 abstract class DrupalBoot extends BaseBoot
@@ -50,10 +51,6 @@ abstract class DrupalBoot extends BaseBoot
     }
 
     public function getVersion($drupal_root)
-    {
-    }
-
-    public function getProfile()
     {
     }
 
@@ -102,34 +99,6 @@ abstract class DrupalBoot extends BaseBoot
     }
 
     /**
-     * List of bootstrap phases where Drush should stop and look for commandfiles.
-     *
-     * For Drupal, we try at these bootstrap phases:
-     *
-     *   - Drush preflight: to find commandfiles in any system location,
-     *     out of a Drupal installation.
-     *   - Drupal root: to find commandfiles based on Drupal core version.
-     *   - Drupal full: to find commandfiles defined within a Drupal directory.
-     *
-     * Once a command is found, Drush will ensure a bootstrap to the phase
-     * declared by the command.
-     *
-     * @return array of PHASE indexes.
-     */
-    public function bootstrapInitPhases()
-    {
-        return array(DRUSH_BOOTSTRAP_DRUSH, DRUSH_BOOTSTRAP_DRUPAL_ROOT, DRUSH_BOOTSTRAP_DRUPAL_FULL);
-    }
-
-    public function commandDefaults()
-    {
-        return array(
-            'drupal dependencies' => array(),
-            'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
-        );
-    }
-
-    /**
      * Validate the DRUSH_BOOTSTRAP_DRUPAL_ROOT phase.
      *
      * In this function, we will check if a valid Drupal directory is available.
@@ -145,13 +114,13 @@ abstract class DrupalBoot extends BaseBoot
         }
         // TODO: Perhaps $drupal_root is now ALWAYS valid by the time we get here.
         if (!$this->legacyValidRootCheck($drupal_root)) {
-            return drush_bootstrap_error('DRUSH_INVALID_DRUPAL_ROOT', dt("The directory !drupal_root does not contain a valid Drupal installation", array('!drupal_root' => $drupal_root)));
+            return drush_bootstrap_error('DRUSH_INVALID_DRUPAL_ROOT', dt("The directory !drupal_root does not contain a valid Drupal installation", ['!drupal_root' => $drupal_root]));
         }
 
         $version = drush_drupal_version($drupal_root);
         $major_version = drush_drupal_major_version($drupal_root);
         if ($major_version <= 6) {
-            return drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', array('!drush_version' => Drush::getMajorVersion(), '!major_version' => $major_version)));
+            return drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', ['!drush_version' => Drush::getMajorVersion(), '!major_version' => $major_version]));
         }
 
         drush_bootstrap_value('drupal_root', $drupal_root);
@@ -171,20 +140,16 @@ abstract class DrupalBoot extends BaseBoot
      * In this function, the pwd will be moved to the root
      * of the Drupal installation.
      *
-     * The DRUSH_DRUPAL_ROOT context, DRUSH_DRUPAL_CORE context, DRUPAL_ROOT, and the
-     * DRUSH_DRUPAL_CORE constants are populated from the value that we determined during
-     * the validation phase.
-     *
-     * We also now load the drushrc.php for this specific Drupal site.
-     * We can now include files from the Drupal Tree, and figure
-     * out more context about the platform, such as the version of Drupal.
+     * We also now load the drush.yml for this specific Drupal site.
+     * We can now include files from the Drupal tree, and figure
+     * out more context about the codebase, such as the version of Drupal.
      */
     public function bootstrapDrupalRoot()
     {
 
         $drupal_root = drush_set_context('DRUSH_DRUPAL_ROOT', drush_bootstrap_value('drupal_root'));
         chdir($drupal_root);
-        $this->logger->log(LogLevel::BOOTSTRAP, dt("Change working directory to !drupal_root", array('!drupal_root' => $drupal_root)));
+        $this->logger->log(LogLevel::BOOTSTRAP, dt("Change working directory to !drupal_root", ['!drupal_root' => $drupal_root]));
         $version = drush_drupal_version();
         $major_version = drush_drupal_major_version();
 
@@ -192,10 +157,9 @@ abstract class DrupalBoot extends BaseBoot
 
         // DRUSH_DRUPAL_CORE should point to the /core folder in Drupal 8+ or to DRUPAL_ROOT
         // in prior versions.
-        drush_set_context('DRUSH_DRUPAL_CORE', $core);
         define('DRUSH_DRUPAL_CORE', $core);
 
-        $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal !version root directory at !drupal_root", array("!version" => $version, '!drupal_root' => $drupal_root)));
+        $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal !version root directory at !drupal_root", ["!version" => $version, '!drupal_root' => $drupal_root]));
     }
 
     /**
@@ -203,85 +167,10 @@ abstract class DrupalBoot extends BaseBoot
      *
      * In this function we determine the URL used for the command,
      * and check for a valid settings.php file.
-     *
-     * To do this, we need to set up the $_SERVER environment variable,
-     * to allow us to use confPath to determine what Drupal will load
-     * as a configuration file.
      */
     public function bootstrapDrupalSiteValidate()
     {
-        $this->bootstrapDrupalSiteSetupServerGlobal();
-        $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
-        $confPath = drush_bootstrap_value('confPath', $this->confPath(true, true));
-        return true; //$this->bootstrapDrupalSiteValidate_settings_present();
     }
-
-    /**
-     * Set up the $_SERVER globals so that Drupal will see the same values
-     * that it does when serving pages via the web server.
-     */
-    public function bootstrapDrupalSiteSetupServerGlobal()
-    {
-        // Fake the necessary HTTP headers that Drupal needs:
-        if ($this->uri) {
-            $drupal_base_url = parse_url($this->uri);
-            // If there's no url scheme set, add http:// and re-parse the url
-            // so the host and path values are set accurately.
-            if (!array_key_exists('scheme', $drupal_base_url)) {
-                $drush_uri = 'http://' . $this->uri;
-                $drupal_base_url = parse_url($drush_uri);
-            }
-            // Fill in defaults.
-            $drupal_base_url += array(
-            'path' => '',
-            'host' => null,
-            'port' => null,
-            );
-            $_SERVER['HTTP_HOST'] = $drupal_base_url['host'];
-
-            if ($drupal_base_url['scheme'] == 'https') {
-                  $_SERVER['HTTPS'] = 'on';
-            }
-
-            if ($drupal_base_url['port']) {
-                  $_SERVER['HTTP_HOST'] .= ':' . $drupal_base_url['port'];
-            }
-            $_SERVER['SERVER_PORT'] = $drupal_base_url['port'];
-
-            $_SERVER['REQUEST_URI'] = $drupal_base_url['path'] . '/';
-        } else {
-            $_SERVER['HTTP_HOST'] = 'default';
-            $_SERVER['REQUEST_URI'] = '/';
-        }
-
-        $_SERVER['PHP_SELF'] = $_SERVER['REQUEST_URI'] . 'index.php';
-        $_SERVER['SCRIPT_NAME'] = $_SERVER['PHP_SELF'];
-        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-        $_SERVER['REQUEST_METHOD']  = 'GET';
-
-        $_SERVER['SERVER_SOFTWARE'] = null;
-        $_SERVER['HTTP_USER_AGENT'] = null;
-        $_SERVER['SCRIPT_FILENAME'] = DRUPAL_ROOT . '/index.php';
-    }
-
-    /**
-     * Validate that the Drupal site has all of the settings that it
-     * needs to operated.
-     */
-//  public function bootstrapDrupalSiteValidate_settings_present() {
-//    $site = drush_bootstrap_value('site', $_SERVER['HTTP_HOST']);
-//
-//    $confPath = drush_bootstrap_value('confPath', $this->confPath(TRUE, TRUE));
-//    $conf_file = "$confPath/settings.php";
-//    if (!file_exists($conf_file)) {
-//      $this->logger()->notice(dt("Could not find a Drupal settings.php file at !file.",
-//        array('!file' => $conf_file)));
-//      return FALSE;
-//      // return drush_bootstrap_error('DRUPAL_SITE_SETTINGS_NOT_FOUND', );
-//    }
-//
-//    return TRUE;
-//  }
 
     /**
      * Called by bootstrapDrupalSite to do the main work
@@ -293,14 +182,14 @@ abstract class DrupalBoot extends BaseBoot
         $site = drush_set_context('DRUSH_DRUPAL_SITE', drush_bootstrap_value('site'));
         $confPath = drush_set_context('DRUSH_DRUPAL_SITE_ROOT', drush_bootstrap_value('confPath'));
 
-        $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal site !site at !site_root", array('!site' => $site, '!site_root' => $confPath)));
+        $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal site !site at !site_root", ['!site' => $site, '!site_root' => $confPath]));
     }
 
     /**
      * Initialize a site on the Drupal root.
      *
      * We now set various contexts that we determined and confirmed to be valid.
-     * Additionally we load an optional drushrc.php file in the site directory.
+     * Additionally we load an optional drush.yml file in the site directory.
      */
     public function bootstrapDrupalSite()
     {
@@ -347,7 +236,7 @@ abstract class DrupalBoot extends BaseBoot
                 return false;
             }
         } catch (\Exception $e) {
-            $this->logger->log(LogLevel::DEBUG, dt('Unable to validate DB: @e', array('@e' => $e->getMessage())));
+            $this->logger->log(LogLevel::DEBUG, dt('Unable to validate DB: @e', ['@e' => $e->getMessage()]));
             return false;
         }
         return true;
@@ -374,8 +263,7 @@ abstract class DrupalBoot extends BaseBoot
      * @param $required_tables
      *   Array of table names, or string with one table name
      *
-     * @return TRUE if all tables in input parameter exist in
-     *   the database.
+     * @return TRUE if all required tables exist in the database.
      */
     public function bootstrapDrupalDatabaseHasTable($required_tables)
     {
@@ -384,15 +272,12 @@ abstract class DrupalBoot extends BaseBoot
             $spec = $sql->getDbSpec();
             $prefix = isset($spec['prefix']) ? $spec['prefix'] : null;
             if (!is_array($prefix)) {
-                $prefix = array('default' => $prefix);
-            }
-            $tables = $sql->listTables();
-            if (!$tables) {
-                return false;
+                $prefix = ['default' => $prefix];
             }
             foreach ((array)$required_tables as $required_table) {
                 $prefix_key = array_key_exists($required_table, $prefix) ? $required_table : 'default';
-                if (!in_array($prefix[$prefix_key] . $required_table, $tables)) {
+                $table_name = $prefix[$prefix_key] . $required_table;
+                if (!$sql->alwaysQuery("SELECT 1 FROM $table_name LIMIT 1")) {
                     return false;
                 }
             }
@@ -420,9 +305,6 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapDrupalFull()
     {
-
-        $this->addLogger();
-
         _drush_log_drupal_messages();
     }
 }

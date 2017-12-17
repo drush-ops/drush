@@ -39,7 +39,7 @@ trait ExecTrait
             $hosterror = (gethostbynamel($host) === false);
             $iperror = (ip2long($host) && gethostbyaddr($host) == $host);
             if (!Drush::simulate() && ($hosterror || $iperror)) {
-                $this->logger()->warning(dt('!host does not appear to be a resolvable hostname or IP, not starting browser. You may need to use the --uri option in your command or site alias to indicate the correct URL of this site.', array('!host' => $host)));
+                $this->logger()->warning(dt('!host does not appear to be a resolvable hostname or IP, not starting browser. You may need to use the --uri option in your command or site alias to indicate the correct URL of this site.', ['!host' => $host]));
                 return false;
             }
             if ($port) {
@@ -63,10 +63,10 @@ trait ExecTrait
                 $prefix = 'sleep ' . $sleep . ' && ';
             }
             if ($browser) {
-                $this->logger()->success(dt('Opening browser !browser at !uri', array('!browser' => $browser, '!uri' => $uri)));
+                $this->logger()->success(dt('Opening browser !browser at !uri', ['!browser' => $browser, '!uri' => $uri]));
                 if (!Drush::simulate()) {
-                    $pipes = array();
-                    proc_close(proc_open($prefix . $browser . ' ' . drush_escapeshellarg($uri) . ' 2> ' . drush_bit_bucket() . ' &', array(), $pipes));
+                    $pipes = [];
+                    proc_close(proc_open($prefix . $browser . ' ' . drush_escapeshellarg($uri) . ' 2> ' . drush_bit_bucket() . ' &', [], $pipes));
                 }
                 return true;
             }

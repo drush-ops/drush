@@ -37,14 +37,10 @@ function drush_print($message = '', $indent = 0, $handle = NULL, $newline = TRUE
   if (($charset = drush_get_option('output_charset')) && function_exists('iconv')) {
     $msg = iconv('UTF-8', $charset, $msg);
   }
-  if (isset($handle)) {
-    fwrite($handle, $msg);
+  if (!$handle) {
+    $handle = STDOUT;
   }
-  else {
-    print $msg;
-    //$output = Drush::service('output');
-    //$output->write($msg);
-  }
+  fwrite($handle, $msg);
 }
 
 /**
@@ -58,7 +54,7 @@ function drush_print($message = '', $indent = 0, $handle = NULL, $newline = TRUE
  * @return
  *   The processed string.
  */
-function dt($string, $args = array()) {
+function dt($string, $args = []) {
   return StringUtils::interpolate($string, $args);
 }
 
@@ -75,7 +71,7 @@ function dt($string, $args = array()) {
  *   The plain-text representation of the input.
  */
 function drush_html_to_text($html, $allowed_tags = NULL) {
-  $replacements = array(
+  $replacements = [
     '<hr>' => '------------------------------------------------------------------------------',
     '<li>' => '  * ',
     '<h1>' => '===== ',
@@ -85,7 +81,7 @@ function drush_html_to_text($html, $allowed_tags = NULL) {
     '<h3>' => '::: ',
     '</h3>' => ' :::',
     '<br/>' => "\n",
-  );
+  ];
   $text = str_replace(array_keys($replacements), array_values($replacements), $html);
   return html_entity_decode(preg_replace('/ *<[^>]*> */', ' ', $text));
 }

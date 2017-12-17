@@ -8,6 +8,6 @@ class ExtensionDiscovery extends DrupalExtensionDiscovery
 {
     public static function reset()
     {
-        static::$files = array();
+        static::$files = [];
     }
 }

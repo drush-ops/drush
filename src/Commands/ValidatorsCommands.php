@@ -103,7 +103,7 @@ class ValidatorsCommands
         }
 
         if ($missing) {
-            $args = array('!command' => $commandData->input(), '!dependencies' => implode(', ', $missing));
+            $args = ['!command' => $commandData->input(), '!dependencies' => implode(', ', $missing)];
             return new CommandError(dt('Command !command needs the following PHP extensions installed and enabled: !dependencies.', $args));
         }
     }

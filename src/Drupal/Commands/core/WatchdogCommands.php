@@ -159,29 +159,29 @@ class WatchdogCommands extends DrushCommands
             $ret = Database::getConnection()->truncate('watchdog')->execute();
             $this->logger()->success(dt('All watchdog messages have been deleted.'));
         } else if (is_numeric($substring)) {
-            $this->output()->writeln(dt('Watchdog message #!wid will be deleted.', array('!wid' => $substring)));
+            $this->output()->writeln(dt('Watchdog message #!wid will be deleted.', ['!wid' => $substring]));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
             $affected_rows = Database::getConnection()->delete('watchdog')->condition('wid', $substring)->execute();
             if ($affected_rows == 1) {
-                $this->logger()->success(dt('Watchdog message #!wid has been deleted.', array('!wid' => $substring)));
+                $this->logger()->success(dt('Watchdog message #!wid has been deleted.', ['!wid' => $substring]));
             } else {
-                throw new \Exception(dt('Watchdog message #!wid does not exist.', array('!wid' => $substring)));
+                throw new \Exception(dt('Watchdog message #!wid does not exist.', ['!wid' => $substring]));
             }
         } else {
             if ((!isset($substring))&&(!isset($options['type']))&&(!isset($options['severity']))) {
                 throw new \Exception(dt('No options provided.'));
             }
             $where = $this->where($options['type'], $options['severity'], $substring, 'OR');
-            $this->output()->writeln(dt('All messages with !where will be deleted.', array('!where' => preg_replace("/message LIKE %$substring%/", "message body containing '$substring'", strtr($where['where'], $where['args'])))));
+            $this->output()->writeln(dt('All messages with !where will be deleted.', ['!where' => preg_replace("/message LIKE %$substring%/", "message body containing '$substring'", strtr($where['where'], $where['args']))]));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
             $affected_rows = Database::getConnection()->delete('watchdog')
                 ->where($where['where'], $where['args'])
                 ->execute();
-            $this->logger()->success(dt('!affected_rows watchdog messages have been deleted.', array('!affected_rows' => $affected_rows)));
+            $this->logger()->success(dt('!affected_rows watchdog messages have been deleted.', ['!affected_rows' => $affected_rows]));
         }
     }
 
@@ -205,7 +205,7 @@ class WatchdogCommands extends DrushCommands
             ->execute();
         $result = $rsc->fetchObject();
         if (!$result) {
-            throw new \Exception(dt('Watchdog message #!wid not found.', array('!wid' => $id)));
+            throw new \Exception(dt('Watchdog message #!wid not found.', ['!wid' => $id]));
         }
         return new PropertyList($this->formatResult($result));
     }
@@ -226,13 +226,13 @@ class WatchdogCommands extends DrushCommands
      */
     protected function where($type = null, $severity = null, $filter = null, $criteria = 'AND')
     {
-        $args = array();
-        $conditions = array();
+        $args = [];
+        $conditions = [];
         if ($type) {
             $types = $this->messageTypes();
             if (array_search($type, $types) === false) {
                 $msg = "Unrecognized message type: !type.\nRecognized types are: !types.";
-                throw new \Exception(dt($msg, array('!type' => $type, '!types' => implode(', ', $types))));
+                throw new \Exception(dt($msg, ['!type' => $type, '!types' => implode(', ', $types)]));
             }
             $conditions[] = "type = :type";
             $args[':type'] = $type;
@@ -251,7 +251,7 @@ class WatchdogCommands extends DrushCommands
                     $levels[] = "$value($key)";
                 }
                 $msg = "Unknown severity level: !severity.\nValid severity levels are: !levels.";
-                throw new \Exception(dt($msg, array('!severity' => $severity, '!levels' => implode(', ', $levels))));
+                throw new \Exception(dt($msg, ['!severity' => $severity, '!levels' => implode(', ', $levels)]));
             }
             $conditions[] = 'severity = :severity';
             $args[':severity'] = $level;
@@ -263,7 +263,7 @@ class WatchdogCommands extends DrushCommands
 
         $where = implode(" $criteria ", $conditions);
 
-        return array('where' => $where, 'args' => $args);
+        return ['where' => $where, 'args' => $args];
     }
 
     /**

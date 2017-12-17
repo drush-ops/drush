@@ -1,6 +1,14 @@
 <?php
 namespace Drush\Sql;
 
+use Consolidation\Config\ConfigInterface;
+use Drush\Utils\StringUtils;
+
+/**
+ * Note: when using this trait, also implement ConfigAwareInterface/ConfigAwareTrait.
+ *
+ * @package Drush\Sql
+ */
 trait SqlTableSelectionTrait
 {
 
@@ -67,7 +75,7 @@ trait SqlTableSelectionTrait
     public function expandWildcardTables($tables, $db_tables)
     {
         // Table name expansion based on `*` wildcard.
-        $expanded_db_tables = array();
+        $expanded_db_tables = [];
         foreach ($tables as $k => $table) {
             // Only deal with table names containing a wildcard.
             if (strpos($table, '*') !== false) {
@@ -125,7 +133,7 @@ trait SqlTableSelectionTrait
         // Dump only the specified tables.  Takes precedence over skip-tables and structure-tables.
         $tables = $this->getRawTableList('tables', $options);
 
-        return array('skip' => $skip_tables, 'structure' => $structure_tables, 'tables' => $tables);
+        return ['skip' => $skip_tables, 'structure' => $structure_tables, 'tables' => $tables];
     }
 
     /**
@@ -141,14 +149,14 @@ trait SqlTableSelectionTrait
      */
     public function getRawTableList($option_name, $options)
     {
-        $key_list = _convert_csv_to_array($options[$option_name . '-key']);
+        $key_list = StringUtils::csvToArray($options[$option_name . '-key']);
         foreach ($key_list as $key) {
-            $all_tables = $options[$option_name] ?: [];
+            $all_tables = $this->getConfig()->get('sql.' . $option_name, []);
             if (array_key_exists($key, $all_tables)) {
                 return $all_tables[$key];
             }
             if ($option_name != 'tables') {
-                $all_tables = isset($options['tables']) ? $options['tables'] : [];
+                $all_tables = $this->getConfig()->get('sql.tables', []);
                 if (array_key_exists($key, $all_tables)) {
                     return $all_tables[$key];
                 }
@@ -156,7 +164,7 @@ trait SqlTableSelectionTrait
         }
         $table_list = $options[$option_name . '-list'];
         if (!empty($table_list)) {
-            return _convert_csv_to_array($table_list);
+            return StringUtils::csvToArray($table_list);
         }
 
         return [];

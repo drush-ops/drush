@@ -19,8 +19,6 @@ class InputHandler extends BaseInputHandler
      */
     public function collectVars(InputInterface $input, OutputInterface $output, array $questions, array $vars = [])
     {
-        $questions = $this->normalizeQuestions($questions);
-
         /** @var \DrupalCodeGenerator\Command\GeneratorInterface $command */
         $command = $this->getHelperSet()->getCommand();
         $destination = $command->getDestination();
@@ -28,8 +26,6 @@ class InputHandler extends BaseInputHandler
         $this->preprocessQuestions($questions, $destination);
 
         $existing_extension = in_array($destination, ['modules/%', 'themes/%']);
-
-        $vars = [];
 
         // If both name and machine_name questions are defined it is quite
         // possible that we can provide the extension name without interacting
@@ -79,7 +75,7 @@ class InputHandler extends BaseInputHandler
             return;
         }
 
-        $root_directory = basename(Utils::getExtensionRoot(Drush::config()->get('env.cwd')));
+        $root_directory = basename(Utils::getExtensionRoot(Drush::config()->cwd()));
 
         // Module related generators.
         if ($destination == 'modules/%') {

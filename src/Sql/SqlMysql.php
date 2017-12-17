@@ -93,12 +93,12 @@ EOT;
         }
         $sql[] = sprintf('DROP DATABASE IF EXISTS %s;', $dbname);
         $sql[] = sprintf('CREATE DATABASE %s /*!40100 DEFAULT CHARACTER SET utf8 */;', $dbname);
-        $db_superuser = Drush::config()->get('mysql.db-su');
+        $db_superuser = $this->getConfig()->get('sql.db-su');
         if (isset($db_superuser)) {
             // - For a localhost database, create a localhost user.  This is important for security.
             //   localhost is special and only allows local Unix socket file connections.
-            // - If the database is on a remote server, create a wilcard user with %.
-            //   We can't easily know what IP adderss or hostname would represent our server.
+            // - If the database is on a remote server, create a wildcard user with %.
+            //   We can't easily know what IP address or hostname would represent our server.
             $domain = ($dbSpec['host'] == 'localhost') ? 'localhost' : '%';
             $sql[] = sprintf('GRANT ALL PRIVILEGES ON %s.* TO \'%s\'@\'%s\'', $dbname, $dbSpec['username'], $domain);
             $sql[] = sprintf("IDENTIFIED BY '%s';", $dbSpec['password']);
@@ -107,27 +107,19 @@ EOT;
         return implode(' ', $sql);
     }
 
-      /**
-       * @inheritdoc
-       */
+    /**
+     * @inheritdoc
+     */
     public function dbExists()
     {
-        $current = Drush::simulate();
-        Drush::config()->set(PreflightArgs::SIMULATE, false);
         // Suppress output. We only care about return value.
-        $return = $this->query("SELECT 1;", null, drush_bit_bucket());
-        Drush::config()->set(PreflightArgs::SIMULATE, $current);
-        return $return;
+        return $this->alwaysQuery("SELECT 1;", null, drush_bit_bucket());
     }
 
     public function listTables()
     {
-        $current = Drush::simulate();
-        Drush::config()->set(PreflightArgs::SIMULATE, false);
-        $return = $this->query('SHOW TABLES;');
-        $tables = drush_shell_exec_output();
-        Drush::config()->set(PreflightArgs::SIMULATE, $current);
-        return $tables;
+        $this->alwaysQuery('SHOW TABLES;');
+        return drush_shell_exec_output();
     }
 
     public function dumpCmd($table_selection)
@@ -138,7 +130,7 @@ EOT;
         $structure_tables = $table_selection['structure'];
         $tables = $table_selection['tables'];
 
-        $ignores = array();
+        $ignores = [];
         $skip_tables  = array_merge($structure_tables, $skip_tables);
         $data_only = $this->getOption('data-only');
         // The ordered-dump option is only supported by MySQL for now.

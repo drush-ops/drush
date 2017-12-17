@@ -71,9 +71,9 @@ function _convert_csv_to_array($args) {
  *   A simple list of items (e.g. array('a','b','c')
  */
 function drush_flatten_array($a) {
-  $result = array();
+  $result = [];
   if (!is_array($a)) {
-    return array($a);
+    return [$a];
   }
   foreach ($a as $value) {
     $result = array_merge($result, drush_flatten_array($value));
@@ -121,57 +121,52 @@ function drush_flatten_array($a) {
  *     - description: The help text for this item. displayed by `drush help`.
  */
 function drush_get_global_options($brief = FALSE) {
-  $options['root']               = array('short-form' => 'r', 'short-has-arg' => TRUE, 'never-post' => TRUE, 'description' => "Drupal root directory to use.", 'example-value' => 'path');
-  $options['uri']                = array('short-form' => 'l', 'short-has-arg' => TRUE, 'never-post' => TRUE, 'description' => 'URI of the drupal site to use.', 'example-value' => 'http://example.com:8888');
-  $options['verbose']            = array('short-form' => 'v', 'context' => 'DRUSH_VERBOSE', 'description' => 'Display extra information about the command.', 'symfony-conflict' => TRUE);
-  $options['debug']              = array('short-form' => 'd', 'context' => 'DRUSH_DEBUG', 'description' => 'Display even more information.');
-  $options['yes']                = array('short-form' => 'y', 'context' => 'DRUSH_AFFIRMATIVE', 'description' => "Assume 'yes' as answer to all prompts.");
-  $options['no']                 = array('short-form' => 'n', 'context' => 'DRUSH_NEGATIVE', 'description' => "Assume 'no' as answer to all prompts.");
-  $options['help']               = array('short-form' => 'h', 'description' => "This help system.");
+  $options['root']               = ['short-form' => 'r', 'short-has-arg' => TRUE, 'never-post' => TRUE, 'description' => "Drupal root directory to use.", 'example-value' => 'path'];
+  $options['uri']                = ['short-form' => 'l', 'short-has-arg' => TRUE, 'never-post' => TRUE, 'description' => 'URI of the drupal site to use.', 'example-value' => 'http://example.com:8888'];
+  $options['verbose']            = ['short-form' => 'v', 'context' => 'DRUSH_VERBOSE', 'description' => 'Display extra information about the command.', 'symfony-conflict' => TRUE];
+  $options['debug']              = ['short-form' => 'd', 'context' => 'DRUSH_DEBUG', 'description' => 'Display even more information.'];
+  $options['yes']                = ['short-form' => 'y', 'context' => 'DRUSH_AFFIRMATIVE', 'description' => "Assume 'yes' as answer to all prompts."];
+  $options['no']                 = ['short-form' => 'n', 'context' => 'DRUSH_NEGATIVE', 'description' => "Assume 'no' as answer to all prompts."];
+  $options['help']               = ['short-form' => 'h', 'description' => "This help system."];
 
   if (!$brief) {
-    $options['simulate']           = array('short-form' => 's', 'context' => 'DRUSH_SIMULATE', 'never-propagate' => TRUE, 'description' => "Simulate all relevant actions (don't actually change the system).", 'symfony-conflict' => TRUE);
-    $options['pipe']               = array('short-form' => 'p', 'hidden' => TRUE, 'description' => "Emit a compact representation of the command for scripting.");
-    $options['php']                = array('description' => "The absolute path to your PHP interpreter, if not 'php' in the path.", 'example-value' => '/path/to/file', 'never-propagate' => TRUE);
-    $options['interactive']        = array('short-form' => 'ia', 'description' => "Force interactive mode for commands run on multiple targets (e.g. `drush @site1,@site2 cc --ia`).", 'never-propagate' => TRUE);
-    $options['tty']                = array('hidden' => TRUE, 'description' => "Force allocation of tty for remote commands", 'never-propagate' => TRUE);
-    $options['quiet']               = array('short-form' => 'q', 'description' => 'Suppress non-error messages.');
-    $options['include']             = array('short-form' => 'i', 'short-has-arg' => TRUE, 'context' => 'DRUSH_INCLUDE', 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'merge-pathlist' => TRUE, 'description' => "A list of additional directory paths to search for Drush commands. Commandfiles should be placed in a subfolder called 'Commands'.", 'example-value' => '/path/dir');
-    $options['exclude']             = array('propagate-cli-value' => TRUE, 'never-post' => TRUE, 'merge-pathlist' => TRUE, 'description' => "A list of files and directory paths to exclude from consideration when searching for drush commandfiles.", 'example-value' => '/path/dir');
-    $options['config']              = array('short-form' => 'c', 'short-has-arg' => TRUE, 'context' => 'DRUSH_CONFIG', 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'merge-pathlist' => TRUE, 'description' => "Specify an additional config file to load. See example.drushrc.php.", 'example-value' => '/path/file');
-    $options['backend']             = array('short-form' => 'b', 'never-propagate' => TRUE, 'description' => "Hide all output and return structured data.");
-    $options['choice']              = array('description' => "Provide an answer to a multiple-choice prompt.", 'example-value' => 'number');
-    $options['search-depth']        = array('description' => "Control the depth that drush will search for alias files.", 'example-value' => 'number');
-    $options['ignored-modules']     = array('description' => "Exclude some modules from consideration when searching for drush command files.", 'example-value' => 'token,views');
-    $options['no-label']            = array('description' => "Remove the site label that drush includes in multi-site command output (e.g. `drush @site1,@site2 status`).");
-    $options['label-separator']     = array('description' => "Specify the separator to use in multi-site command output (e.g. `drush @sites pm-list --label-separator=',' --format=csv`).", 'example-value' => ',');
-    $options['nocolor']             = array('context' => 'DRUSH_NOCOLOR', 'propagate-cli-value' => TRUE, 'description' => "Suppress color highlighting on log messages.");
-    $options['show-invoke']         = array('description' => "Show all function names which could have been called for the current command. See drush_invoke().");
-    $options['cache-default-class'] = array('description' => "A cache backend class that implements CacheInterface. Defaults to JSONCache.", 'example-value' => 'JSONCache');
-    $options['cache-class-<bin>']   = array('description' => "A cache backend class that implements CacheInterface to use for a specific cache bin.", 'example-value' => 'className');
-    $options['early']               = array('description' => "Include a file (with relative or full path) and call the drush_early_hook() function (where 'hook' is the filename)");
-    $options['alias-path']          = array('context' => 'ALIAS_PATH', 'local-context-only' => TRUE, 'merge-pathlist' => TRUE, 'propagate-cli-value' => TRUE, 'description' => "Specifies the list of paths where drush will search for alias files.", 'example-value' => '/path/alias1:/path/alias2');
-    $options['confirm-rollback']    = array('description' => 'Wait for confirmation before doing a rollback when something goes wrong.');
-    $options['php-options']         = array('hidden' => TRUE, 'description' => "Options to pass to `php` when running drush.  Only effective when specified in a site alias definition.", 'never-propagate' => TRUE, 'example-value' => '-d error_reporting="E_ALL"');
-    $options['halt-on-error']       = array('propagate-cli-value' => TRUE, 'description' => "Manage recoverable errors. Values: 1=Execution halted. 0=Execution continues.");
-    $options['remote-host']         = array('hidden' => TRUE, 'description' => 'Remote site to execute drush command on. Managed by site alias.', 'example-value' => 'http://example.com');
-    $options['remote-user']         = array('hidden' => TRUE, 'description' => 'User account to use with a remote drush command. Managed by site alias.', 'example-value' => 'www-data');
-    $options['remote-os']           = array('hidden' => TRUE, 'description' => 'The operating system used on the remote host. Managed by site alias.', 'example-value' => 'linux');
-    $options['site-list']           = array('hidden' => TRUE, 'description' => 'List of sites to run commands on. Managed by site alias.', 'example-value' => '@site1,@site2');
-    $options['reserve-margin']      = array('hidden' => TRUE, 'description' => 'Remove columns from formatted opions. Managed by multi-site command handling.', 'example-value' => 'number');
-    $options['strict']              = array('propagate' => TRUE, 'description' => 'Return an error on unrecognized options. --strict=0: Allow unrecognized options.');
-    $options['command-specific']    = array('hidden' => TRUE, 'merge-associative' => TRUE, 'description' => 'Command-specific options.');
-    $options['site-aliases']        = array('hidden' => TRUE, 'merge-associative' => TRUE, 'description' => 'List of site aliases.');
-    $options['shell-aliases']       = array('hidden' => TRUE, 'merge' => TRUE, 'never-propagate' => TRUE, 'description' => 'List of shell aliases.');
-    $options['path-aliases']        = array('hidden' => TRUE, 'never-propagate' => TRUE, 'description' => 'Path aliases from site alias.');
-    $options['ssh-options']         = array('never-propagate' => TRUE, 'description' => 'A string of extra options that will be passed to the ssh command', 'example-value' => '-p 100');
-    $options['drush-coverage']      = array('hidden' => TRUE, 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'description' => 'File to save code coverage data into.');
-    $options['local']               = array('propagate' => TRUE, 'description' => 'Don\'t look in global locations for commandfiles, config, and site aliases');
-
-
-
-    // @todo How can Annotated Commands alter global options?
-    // drush_command_invoke_all_ref('drush_help_alter', $command);
+    $options['simulate']           = ['short-form' => 's', 'context' => 'DRUSH_SIMULATE', 'never-propagate' => TRUE, 'description' => "Simulate all relevant actions (don't actually change the system).", 'symfony-conflict' => TRUE];
+    $options['pipe']               = ['short-form' => 'p', 'hidden' => TRUE, 'description' => "Emit a compact representation of the command for scripting."];
+    $options['php']                = ['description' => "The absolute path to your PHP interpreter, if not 'php' in the path.", 'example-value' => '/path/to/file', 'never-propagate' => TRUE];
+    $options['interactive']        = ['short-form' => 'ia', 'description' => "Force interactive mode for commands run on multiple targets (e.g. `drush @site1,@site2 cc --ia`).", 'never-propagate' => TRUE];
+    $options['tty']                = ['hidden' => TRUE, 'description' => "Force allocation of tty for remote commands", 'never-propagate' => TRUE];
+    $options['quiet']               = ['short-form' => 'q', 'description' => 'Suppress non-error messages.'];
+    $options['include']             = ['short-form' => 'i', 'short-has-arg' => TRUE, 'context' => 'DRUSH_INCLUDE', 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'merge-pathlist' => TRUE, 'description' => "A list of additional directory paths to search for Drush commands. Commandfiles should be placed in a subfolder called 'Commands'.", 'example-value' => '/path/dir'];
+    $options['exclude']             = ['propagate-cli-value' => TRUE, 'never-post' => TRUE, 'merge-pathlist' => TRUE, 'description' => "A list of files and directory paths to exclude from consideration when searching for drush commandfiles.", 'example-value' => '/path/dir'];
+    $options['config']              = ['short-form' => 'c', 'short-has-arg' => TRUE, 'context' => 'DRUSH_CONFIG', 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'merge-pathlist' => TRUE, 'description' => "Specify an additional config file to load. See example.drush.yml", 'example-value' => '/path/file'];
+    $options['backend']             = ['short-form' => 'b', 'never-propagate' => TRUE, 'description' => "Hide all output and return structured data."];
+    $options['choice']              = ['description' => "Provide an answer to a multiple-choice prompt.", 'example-value' => 'number'];
+    $options['search-depth']        = ['description' => "Control the depth that drush will search for alias files.", 'example-value' => 'number'];
+    $options['ignored-modules']     = ['description' => "Exclude some modules from consideration when searching for drush command files.", 'example-value' => 'token,views'];
+    $options['no-label']            = ['description' => "Remove the site label that drush includes in multi-site command output (e.g. `drush @site1,@site2 status`)."];
+    $options['label-separator']     = ['description' => "Specify the separator to use in multi-site command output (e.g. `drush @sites pm-list --label-separator=',' --format=csv`).", 'example-value' => ','];
+    $options['nocolor']             = ['context' => 'DRUSH_NOCOLOR', 'propagate-cli-value' => TRUE, 'description' => "Suppress color highlighting on log messages."];
+    $options['show-invoke']         = ['description' => "Show all function names which could have been called for the current command. See drush_invoke()."];
+    $options['cache-default-class'] = ['description' => "A cache backend class that implements CacheInterface. Defaults to JSONCache.", 'example-value' => 'JSONCache'];
+    $options['cache-class-<bin>']   = ['description' => "A cache backend class that implements CacheInterface to use for a specific cache bin.", 'example-value' => 'className'];
+    $options['early']               = ['description' => "Include a file (with relative or full path) and call the drush_early_hook() function (where 'hook' is the filename)"];
+    $options['alias-path']          = ['context' => 'ALIAS_PATH', 'local-context-only' => TRUE, 'merge-pathlist' => TRUE, 'propagate-cli-value' => TRUE, 'description' => "Specifies the list of paths where drush will search for alias files.", 'example-value' => '/path/alias1:/path/alias2'];
+    $options['confirm-rollback']    = ['description' => 'Wait for confirmation before doing a rollback when something goes wrong.'];
+    $options['php-options']         = ['hidden' => TRUE, 'description' => "Options to pass to `php` when running drush.  Only effective when specified in a site alias definition.", 'never-propagate' => TRUE, 'example-value' => '-d error_reporting="E_ALL"'];
+    $options['halt-on-error']       = ['propagate-cli-value' => TRUE, 'description' => "Manage recoverable errors. Values: 1=Execution halted. 0=Execution continues."];
+    $options['remote-host']         = ['hidden' => TRUE, 'description' => 'Remote site to execute drush command on. Managed by site alias.', 'example-value' => 'http://example.com'];
+    $options['remote-user']         = ['hidden' => TRUE, 'description' => 'User account to use with a remote drush command. Managed by site alias.', 'example-value' => 'www-data'];
+    $options['remote-os']           = ['hidden' => TRUE, 'description' => 'The operating system used on the remote host. Managed by site alias.', 'example-value' => 'linux'];
+    $options['site-list']           = ['hidden' => TRUE, 'description' => 'List of sites to run commands on. Managed by site alias.', 'example-value' => '@site1,@site2'];
+    $options['reserve-margin']      = ['hidden' => TRUE, 'description' => 'Remove columns from formatted opions. Managed by multi-site command handling.', 'example-value' => 'number'];
+    $options['strict']              = ['propagate' => TRUE, 'description' => 'Return an error on unrecognized options. --strict=0: Allow unrecognized options.'];
+    $options['command-specific']    = ['hidden' => TRUE, 'merge-associative' => TRUE, 'description' => 'Command-specific options.'];
+    $options['site-aliases']        = ['hidden' => TRUE, 'merge-associative' => TRUE, 'description' => 'List of site aliases.'];
+    $options['shell-aliases']       = ['hidden' => TRUE, 'merge' => TRUE, 'never-propagate' => TRUE, 'description' => 'List of shell aliases.'];
+    $options['path-aliases']        = ['hidden' => TRUE, 'never-propagate' => TRUE, 'description' => 'Path aliases from site alias.'];
+    $options['ssh-options']         = ['never-propagate' => TRUE, 'description' => 'A string of extra options that will be passed to the ssh command', 'example-value' => '-p 100'];
+    $options['drush-coverage']      = ['hidden' => TRUE, 'never-post' => TRUE, 'propagate-cli-value' => TRUE, 'description' => 'File to save code coverage data into.'];
+    $options['local']               = ['propagate' => TRUE, 'description' => 'Don\'t look in global locations for commandfiles, config, and site aliases'];
   }
   return $options;
 }
@@ -194,7 +189,7 @@ function drush_get_global_options($brief = FALSE) {
  *
  */
 function drush_op($callable) {
-  $args_printed = array();
+  $args_printed = [];
   $args = func_get_args();
   array_shift($args); // Skip function name
   foreach ($args as $arg) {
@@ -232,7 +227,7 @@ function drush_op($callable) {
 /**
  * Mimic cufa but still call function directly. See http://drupal.org/node/329012#comment-1260752
  */
-function drush_call_user_func_array($function, $args = array() ) {
+function drush_call_user_func_array($function, $args = []) {
   if (is_array($function)) {
     // $callable is a method so always use CUFA.
     return call_user_func_array($function, $args);
@@ -268,10 +263,10 @@ function drush_call_user_func_array($function, $args = array() ) {
 function drush_mime_content_type($filename) {
   $content_type = drush_attempt_mime_content_type($filename);
   if ($content_type) {
-    drush_log(dt('Mime type for !file is !mt', array('!file' => $filename, '!mt' => $content_type)), LogLevel::INFO);
+    drush_log(dt('Mime type for !file is !mt', ['!file' => $filename, '!mt' => $content_type]), LogLevel::INFO);
     return $content_type;
   }
-  return drush_set_error('MIME_CONTENT_TYPE_UNKNOWN', dt('Unable to determine mime type for !file.', array('!file' => $filename)));
+  return drush_set_error('MIME_CONTENT_TYPE_UNKNOWN', dt('Unable to determine mime type for !file.', ['!file' => $filename]));
 }
 
 /**
@@ -284,7 +279,7 @@ function drush_attempt_mime_content_type($filename) {
     $finfo = new finfo(FILEINFO_MIME_TYPE);
     $content_type = $finfo->file($filename);
     if ($content_type == 'application/octet-stream') {
-      drush_log(dt('Mime type for !file is application/octet-stream.', array('!file' => $filename)), LogLevel::DEBUG);
+      drush_log(dt('Mime type for !file is application/octet-stream.', ['!file' => $filename]), LogLevel::DEBUG);
       $content_type = FALSE;
     }
   }
@@ -293,7 +288,7 @@ function drush_attempt_mime_content_type($filename) {
   // archives as octet-stream for other reasons) we'll detect mime types on our
   //  own by examing the file's magic header bytes.
   if (!$content_type) {
-    drush_log(dt('Examining !file headers.', array('!file' => $filename)), LogLevel::DEBUG);
+    drush_log(dt('Examining !file headers.', ['!file' => $filename]), LogLevel::DEBUG);
     if ($file = fopen($filename, 'rb')) {
       $first = fread($file, 2);
       fclose($file);
@@ -321,15 +316,15 @@ function drush_attempt_mime_content_type($filename) {
             break;
 
           default:
-            drush_log(dt('Unable to determine mime type from header bytes 0x!hex of !file.', array('!hex' => dechex($data[1]), '!file' => $filename,), LogLevel::DEBUG));
+            drush_log(dt('Unable to determine mime type from header bytes 0x!hex of !file.', ['!hex' => dechex($data[1]), '!file' => $filename,]), LogLevel::DEBUG);
         }
       }
       else {
-        drush_log(dt('Unable to read !file.', array('!file' => $filename)), LogLevel::WARNING);
+        drush_log(dt('Unable to read !file.', ['!file' => $filename]), LogLevel::WARNING);
       }
     }
     else {
-      drush_log(dt('Unable to open !file.', array('!file' => $filename)), LogLevel::WARNING);
+      drush_log(dt('Unable to open !file.', ['!file' => $filename]), LogLevel::WARNING);
     }
   }
 
@@ -337,14 +332,14 @@ function drush_attempt_mime_content_type($filename) {
   // the file extension. This is useful if the file has no identificable magic
   // header bytes (for example tarballs).
   if (!$content_type) {
-    drush_log(dt('Examining !file extension.', array('!file' => $filename)), LogLevel::DEBUG);
+    drush_log(dt('Examining !file extension.', ['!file' => $filename]), LogLevel::DEBUG);
 
     // Remove querystring from the filename, if present.
     $filename = basename(current(explode('?', $filename, 2)));
-    $extension_mimetype = array(
+    $extension_mimetype = [
       '.tar'     => 'application/x-tar',
       '.sql'     => 'application/octet-stream',
-    );
+    ];
     foreach ($extension_mimetype as $extension => $ct) {
       if (substr($filename, -strlen($extension)) === $extension) {
         $content_type = $ct;
@@ -363,149 +358,17 @@ function drush_attempt_mime_content_type($filename) {
  */
 function drush_file_is_tarball($path) {
   $content_type = drush_attempt_mime_content_type($path);
-  $supported = array(
+  $supported = [
     'application/x-bzip2',
     'application/x-gzip',
     'application/x-tar',
     'application/x-zip',
     'application/zip',
-  );
+  ];
   if (in_array($content_type, $supported)) {
     return $content_type;
   }
   return FALSE;
-}
-
-/**
- * Extract a tarball.
- *
- * @param string $path
- *   Path to the archive to be extracted.
- * @param string $destination
- *   The destination directory the tarball should be extracted into.
- *   Optional, if ommitted the tarball directory will be used as destination.
- * @param boolean $listing
- *   If TRUE, a listing of the tar contents will be returned on success.
- * @param string $tar_extra_options
- *   Extra options to be passed to the tar command.
- *
- * @return mixed
- *   TRUE on success, FALSE on fail. If $listing is TRUE, a file listing of the
- *   tarball is returned if the extraction reported success, instead of TRUE.
- */
-function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE, $tar_extra_options = '') {
-  // Check if tarball is supported.
-  if (!($mimetype = drush_file_is_tarball($path))) {
-    return drush_set_error('TARBALL_EXTRACT_UNKNOWN_FORMAT', dt('Unable to extract !path. Unknown archive format.', array('!path' => $path)));
-  }
-
-  // Check if destination is valid.
-  if (!$destination) {
-    $destination = dirname($path);
-  }
-  if (!drush_mkdir($destination)) {
-    // drush_mkdir already set an error.
-    return FALSE;
-  }
-
-  // Perform the extraction of a zip file.
-  if (($mimetype == 'application/zip') || ($mimetype == 'application/x-zip')) {
-    $return = drush_shell_cd_and_exec(dirname($path), "unzip %s -d %s", $path, $destination);
-    if (!$return) {
-      return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to unzip !filename.', array('!filename' => $path)));
-    }
-    if ($listing) {
-      // unzip prefixes the file listing output with a header line,
-      // and prefixes each line with a verb representing the compression type.
-      $output = drush_shell_exec_output();
-      // Remove the header line.
-      array_shift($output);
-      // Remove the prefix verb from each line.
-      $output = array_map(
-        function ($str) use ($destination) {
-          return substr($str, strpos($str, ":") + 3 + strlen($destination));
-        },
-        $output
-      );
-      // Remove any remaining blank lines.
-      $return = array_filter(
-        $output,
-        function ($str) {
-          return $str != "";
-        }
-      );
-    }
-  }
-  // Otherwise we have a possibly-compressed Tar file.
-  // If we are not on Windows, then try to do "tar" in a single operation.
-  elseif (!drush_is_windows()) {
-    $tar = drush_get_tar_executable();
-    $tar_compression_flag = '';
-    if ($mimetype == 'application/x-gzip') {
-      $tar_compression_flag = 'z';
-    }
-    elseif ($mimetype == 'application/x-bzip2') {
-      $tar_compression_flag = 'j';
-    }
-
-    $return = drush_shell_cd_and_exec(dirname($path), "$tar {$tar_extra_options} -C %s -x%sf %s", $destination, $tar_compression_flag, basename($path));
-    if (!$return) {
-      return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to untar !filename.', array('!filename' => $path)));
-    }
-    if ($listing) {
-      // We use a separate tar -tf instead of -xvf above because
-      // the output is not the same in Mac.
-      drush_shell_cd_and_exec(dirname($path), "$tar -t%sf %s", $tar_compression_flag, basename($path));
-      $return = drush_shell_exec_output();
-    }
-  }
-  // In windows, do the extraction by its primitive steps.
-  else {
-    // 1. copy the source tarball to the destination directory. Rename to a
-    // temp name in case the destination directory == dirname($path)
-    $tmpfile = drush_tempnam(basename($path), $destination);
-    drush_copy_dir($path, $tmpfile, FILE_EXISTS_OVERWRITE);
-
-    // 2. uncompress the tarball, if compressed.
-    if (($mimetype == 'application/x-gzip') || ($mimetype == 'application/x-bzip2')) {
-      if ($mimetype == 'application/x-gzip') {
-        $compressed = $tmpfile . '.gz';
-        // We used to use gzip --decompress in --stdout > out, but the output
-        // redirection sometimes failed on Windows for some binary output.
-        $command = 'gzip --decompress %s';
-      }
-      elseif ($mimetype == 'application/x-bzip2') {
-        $compressed = $tmpfile . '.bz2';
-        $command = 'bzip2 --decompress %s';
-      }
-      drush_op('rename', $tmpfile, $compressed);
-      $return = drush_shell_cd_and_exec(dirname($compressed), $command, $compressed);
-      if (!$return || !file_exists($tmpfile)) {
-        return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to decompress !filename.', array('!filename' => $compressed)));
-      }
-    }
-
-    // 3. Untar.
-    $tar = drush_get_tar_executable();
-    $return = drush_shell_cd_and_exec(dirname($tmpfile), "$tar {$tar_extra_options} -xvf %s", basename($tmpfile));
-    if (!$return) {
-      return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to untar !filename.', array('!filename' => $tmpfile)));
-    }
-    if ($listing) {
-      $return = drush_shell_exec_output();
-      // Cut off the 'x ' prefix for the each line of the tar output
-      // See http://drupal.org/node/1775520
-      foreach($return as &$line) {
-        if(strpos($line, "x ") === 0)
-          $line = substr($line, 2);
-      }
-    }
-
-    // Remove the temporary file so the md5 hash is accurate.
-    unlink($tmpfile);
-  }
-
-  return $return;
 }
 
 /**
@@ -542,12 +405,12 @@ function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE, $t
  *   Use this->logger()->warning (for example) from an Annotated command method.
  */
 function drush_log($message, $type = LogLevel::INFO, $error = null) {
-  $entry = array(
+  $entry = [
     'type' => $type,
     'message' => $message,
     'timestamp' => microtime(TRUE),
     'memory' => memory_get_usage(),
-  );
+  ];
   $entry['error'] = $error;
 
   return _drush_log($entry);
@@ -566,7 +429,7 @@ function _drush_log($entry) {
     _drush_log_to_logger($callback, $entry);
   }
   elseif ($callback) {
-    $log =& drush_get_context('DRUSH_LOG', array());
+    $log =& drush_get_context('DRUSH_LOG', []);
     $log[] = $entry;
     drush_backend_packet('log', $entry);
     return $callback($entry);
@@ -592,8 +455,8 @@ function _drush_log_to_logger($logger, $entry) {
     $logger->log($log_level, $message, $context);
 }
 
-function drush_log_has_errors($types = array(LogLevel::WARNING, LogLevel::ERROR, LogLevel::FAILED)) {
-  $log =& drush_get_context('DRUSH_LOG', array());
+function drush_log_has_errors($types = [LogLevel::WARNING, LogLevel::ERROR, LogLevel::FAILED]) {
+  $log =& drush_get_context('DRUSH_LOG', []);
   foreach ($log as $entry) {
     if (in_array($entry['type'], $types)) {
       return TRUE;
@@ -626,7 +489,7 @@ function drush_backend_packet_log($entry, $backend_options) {
     _drush_log($entry);
   }
   else {
-    $log =& drush_get_context('DRUSH_LOG', array());
+    $log =& drush_get_context('DRUSH_LOG', []);
     $log[] = $entry;
     // Yes, this looks odd, but we might in fact be a backend command
     // that ran another backend command.
@@ -641,7 +504,7 @@ function drush_backend_packet_log($entry, $backend_options) {
  *   Entire log history
  */
 function drush_get_log() {
-  return drush_get_context('DRUSH_LOG', array());
+  return drush_get_context('DRUSH_LOG', []);
 }
 
 /**
@@ -705,20 +568,20 @@ function _drush_log_drupal_messages() {
 function drush_format_size($size) {
   if ($size < DRUSH_KILOBYTE) {
     // format_plural() not always available.
-    return dt('@count bytes', array('@count' => $size));
+    return dt('@count bytes', ['@count' => $size]);
   }
   else {
     $size = $size / DRUSH_KILOBYTE; // Convert bytes to kilobytes.
-    $units = array(
-      dt('@size KB', array()),
-      dt('@size MB', array()),
-      dt('@size GB', array()),
-      dt('@size TB', array()),
-      dt('@size PB', array()),
-      dt('@size EB', array()),
-      dt('@size ZB', array()),
-      dt('@size YB', array()),
-    );
+    $units = [
+      dt('@size KB', []),
+      dt('@size MB', []),
+      dt('@size GB', []),
+      dt('@size TB', []),
+      dt('@size PB', []),
+      dt('@size EB', []),
+      dt('@size ZB', []),
+      dt('@size YB', []),
+    ];
     foreach ($units as $unit) {
       if (round($size, 2) >= DRUSH_KILOBYTE) {
         $size = $size / DRUSH_KILOBYTE;
@@ -765,7 +628,7 @@ function drush_set_error($error, $message = null, $output_label = "") {
   $error_code =& drush_get_context('DRUSH_ERROR_CODE', DRUSH_SUCCESS);
   $error_code = DRUSH_FRAMEWORK_ERROR;
 
-  $error_log =& drush_get_context('DRUSH_ERROR_LOG', array());
+  $error_log =& drush_get_context('DRUSH_ERROR_LOG', []);
 
   if (is_numeric($error)) {
     $error = 'DRUSH_FRAMEWORK_ERROR';
@@ -782,7 +645,7 @@ function drush_set_error($error, $message = null, $output_label = "") {
   }
 
   $error_log[$error][] = $message;
-  if (!drush_backend_packet('set_error', array('error' => $error, 'message' => $message))) {
+  if (!drush_backend_packet('set_error', ['error' => $error, 'message' => $message])) {
     drush_log(($message) ? $output_label . $message : $output_label . $error, LogLevel::ERROR, $error);
   }
 
@@ -806,7 +669,7 @@ function drush_get_error() {
  *   An associative array of error messages indexed by the type of message.
  */
 function drush_get_error_log() {
-  return drush_get_context('DRUSH_ERROR_LOG', array());
+  return drush_get_context('DRUSH_ERROR_LOG', []);
 }
 
 /**
@@ -899,47 +762,6 @@ function drush_memory_limit() {
   return $size;
 }
 
-/**
- * Unset the named key anywhere in the provided
- * data structure.
- */
-function drush_unset_recursive(&$data, $unset_key) {
-  if (!empty($data) && is_array($data)) {
-    unset($data[$unset_key]);
-    foreach ($data as $key => $value) {
-      if (is_array($value)) {
-        drush_unset_recursive($data[$key], $unset_key);
-      }
-    }
-  }
-}
-
-/**
- * Generate a random alphanumeric password.  Copied from user.module.
- */
-function drush_generate_password($length = 10) {
-  // This variable contains the list of allowable characters for the
-  // password. Note that the number 0 and the letter 'O' have been
-  // removed to avoid confusion between the two. The same is true
-  // of 'I', 1, and 'l'.
-  $allowable_characters = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-
-  // Zero-based count of characters in the allowable list:
-  $len = strlen($allowable_characters) - 1;
-
-  // Declare the password as a blank string.
-  $pass = '';
-
-  // Loop the number of times specified by $length.
-  for ($i = 0; $i < $length; $i++) {
-
-    // Each iteration, pick a random character from the
-    // allowable string and append it to the password:
-    $pass .= $allowable_characters[mt_rand(0, $len)];
-  }
-
-  return $pass;
-}
 
 /**
  * Form an associative array from a linear array.
@@ -961,65 +783,9 @@ function drush_generate_password($length = 10) {
 function drush_map_assoc($array, $function = NULL) {
   // array_combine() fails with empty arrays:
   // http://bugs.php.net/bug.php?id=34857.
-  $array = !empty($array) ? array_combine($array, $array) : array();
+  $array = !empty($array) ? array_combine($array, $array) : [];
   if (is_callable($function)) {
     $array = array_map($function, $array);
   }
   return $array;
-}
-
-/*
- * Cast a value according to the provided format
- *
- * @param mixed $value.
- * @param string $format
- *   Allowed values: auto, integer, float, bool, boolean, json, yaml.
- *
- * @return $value
- *  The value, re-typed as needed.
- */
-function drush_value_format($value, $format) {
-  if ($format == 'auto') {
-    if (is_numeric($value)) {
-      $value = $value + 0; // http://php.net/manual/en/function.is-numeric.php#107326
-      $format = gettype($value);
-    }
-    elseif (($value == 'TRUE') || ($value == 'FALSE')) {
-      $format = 'bool';
-    }
-  }
-
-  // Now, we parse the object.
-  switch ($format) {
-    case 'integer':
-      $value = (integer)$value;
-      break;
-    // from: http://php.net/gettype
-    // for historical reasons "double" is returned in case of a float, and not simply "float"
-    case 'double':
-    case 'float':
-      $value = (float)$value;
-      break;
-    case 'bool':
-    case 'boolean':
-      if ($value == 'TRUE') {
-        $value = TRUE;
-      }
-      elseif ($value == 'FALSE') {
-        $value = FALSE;
-      }
-      else {
-        $value = (bool)$value;
-      }
-      break;
-
-    case 'json':
-      $value = json_decode($value, true);
-      break;
-
-    case 'yaml':
-      $value = \Symfony\Component\Yaml\Yaml::parse($value, FALSE, TRUE);
-      break;
-  }
-  return $value;
 }

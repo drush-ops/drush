@@ -4,10 +4,7 @@ namespace Drush\Config;
 use Consolidation\Config\Loader\ConfigLoaderInterface;
 use Consolidation\Config\Loader\YamlConfigLoader;
 use Consolidation\Config\Loader\ConfigProcessor;
-use Consolidation\Config\Util\ConfigOverlay;
 use Consolidation\Config\Util\EnvConfig;
-
-use Drush\Preflight\PreflightArgsInterface;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -60,12 +57,12 @@ class ConfigLocator
      *
      *   Specified by config files :
      *     custom   : Loaded from the config file specified by --config or -c
-     *     site     : Loaded from the drushrc.php file in the Drupal site directory.
-     *     drupal   : Loaded from the drushrc.php file in the Drupal root directory.
-     *     user     : Loaded from the drushrc.php file in the user's home directory.
-     *     home.drush Loaded from the drushrc.php file in the $HOME/.drush directory.
-     *     system   : Loaded from the drushrc.php file in the system's $PREFIX/etc/drush directory.
-     *     drush    : Loaded from the drushrc.php file in the same directory as drush.php.
+     *     site     : Loaded from the drush.yml file in the Drupal site directory.
+     *     drupal   : Loaded from the drush.yml file in the Drupal root directory.
+     *     user     : Loaded from the drush.yml file in the user's home directory.
+     *     home.drush Loaded from the drush.yml file in the $HOME/.drush directory.
+     *     system   : Loaded from the drush.yml file in the system's $PREFIX/etc/drush directory.
+     *     drush    : Loaded from the drush.yml file in the same directory as drush.php.
      *
      *   Specified by the script, but has the lowest priority :
      *     default  : The script might provide some sensible defaults during init.
@@ -77,12 +74,12 @@ class ConfigLocator
     // 'stdin' context not implemented
     // 'specific' context obsolete; command-specific options handled differently by annotated command library
     const ALIAS_CONTEXT = 'alias';
-    // custom context is obsolect (loaded in USER_CONTEXT)
+    // custom context is obsolete (loaded in USER_CONTEXT)
     const SITE_CONTEXT = 'site';
     const DRUPAL_CONTEXT = 'drupal';
     const USER_CONTEXT = 'user';
     // home.drush is obsolete (loaded in USER_CONTEXT)
-    // system context is obsolect (loaded in USER_CONTEXT - note priority change)
+    // system context is obsolete (loaded in USER_CONTEXT - note priority change)
     const ENV_CONTEXT = 'env';
     const DRUSH_CONTEXT = 'drush';
 
@@ -93,7 +90,7 @@ class ConfigLocator
      */
     public function __construct($envPrefix = '')
     {
-        $this->config = new ConfigOverlay();
+        $this->config = new DrushConfig();
 
         // Add placeholders to establish priority. We add
         // contexts from lowest to highest priority.
@@ -283,7 +280,7 @@ class ConfigLocator
     }
 
     /**
-     * Add any configruation file found at any of the provided paths. Both the
+     * Add any configuration file found at any of the provided paths. Both the
      * provided location, and the directory `config` inside each provided location
      * is searched for a drush.yml file.
      *
@@ -384,12 +381,14 @@ class ConfigLocator
     {
         // In addition to the paths passed in to us (from --alias-paths
         // commandline options), add some site-local locations.
-        foreach ($this->siteRoots as $siteRoot) {
-            $paths[] = $siteRoot . '/drush';
-        }
-        $paths[] = $this->composerRoot . '/drush';
-        $candidates = [ '', 'site-aliases' ];
-        $paths = $this->identifyCandidates($paths, $candidates);
+        $base_dirs = array_filter(array_merge($this->siteRoots, [$this->composerRoot]));
+        $site_local_paths = array_map(
+            function ($item) {
+                return "$item/drush/sites";
+            },
+            $base_dirs
+        );
+        $paths = array_merge($paths, $site_local_paths);
 
         return $paths;
     }

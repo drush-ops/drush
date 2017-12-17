@@ -24,7 +24,7 @@ class BootstrapCompilerPass implements CompilerPassInterface
         foreach ($taggedServices as $id => $tags) {
             $definition->addMethodCall(
                 'add',
-                array(new Reference($id))
+                [new Reference($id)]
             );
         }
     }

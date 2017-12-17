@@ -26,12 +26,15 @@ class ExampleGenerator extends BaseGenerator
     /**
      * {@inheritdoc}
      */
-    protected function interact(InputInterface $input, OutputInterface $output) {
-
+    protected function interact(InputInterface $input, OutputInterface $output)
+    {
         $questions = Utils::defaultQuestions();
 
-        $vars = $this->collectVars($input, $output, $questions);
+        $vars = &$this->collectVars($input, $output, $questions);
         $vars['class'] = Utils::camelize('Example_' . $vars['machine_name'] . '_Commands');
-        $this->files['src/Commands/' . $vars['class'] . '.php'] = $this->render('example-generator.twig', $vars);
+
+        $this->addFile()
+            ->path('src/Commands/{class}.php')
+            ->template('example-generator.twig');
     }
 }

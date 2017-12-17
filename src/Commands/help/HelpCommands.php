@@ -27,7 +27,7 @@ class HelpCommands extends DrushCommands
      *
      * @return \Consolidation\AnnotatedCommand\Help\HelpDocument
      */
-    public function help($command_name, $options = ['format' => 'helpcli', 'include-field-labels' => false, 'table-style' => 'compact'])
+    public function help($command_name = '', $options = ['format' => 'helpcli', 'include-field-labels' => false, 'table-style' => 'compact'])
     {
         $application = Drush::getApplication();
         $command = $application->get($command_name);
@@ -55,7 +55,7 @@ class HelpCommands extends DrushCommands
         } else {
             $application = Drush::getApplication();
             if (!in_array($name, array_keys($application->all()))) {
-                throw new \Exception(dt("!name command not found.", array('!name' => $name)));
+                throw new \Exception(dt("!name command not found.", ['!name' => $name]));
             }
         }
     }

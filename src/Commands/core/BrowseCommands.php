@@ -38,14 +38,14 @@ class BrowseCommands extends DrushCommands implements SiteAliasManagerAwareInter
         // Redispatch if called against a remote-host so a browser is started on the
         // the *local* machine.
         if ($aliasRecord->isRemote()) {
-            $return = drush_invoke_process($aliasRecord, 'browse', [$path], Drush::redispatchOptions(), array('integrate' => true));
+            $return = drush_invoke_process($aliasRecord, 'browse', [$path], Drush::redispatchOptions(), ['integrate' => true]);
             if ($return['error_status']) {
                 throw new \Exception('Unable to execute browse command on remote alias.');
             } else {
                 $link = $return['object'];
             }
         } else {
-            if (!drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+            if (!Drush::bootstrapManager()->doBootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
                 // Fail gracefully if unable to bootstrap Drupal. drush_bootstrap() has
                 // already logged an error.
                 return false;

@@ -43,7 +43,7 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
 
         // Local sites run their bash without SSH.
         if (!$alias->isRemote()) {
-            $return = drush_invoke_process('@self', 'core-execute', array($command), array('escape' => false));
+            $return = drush_invoke_process('@self', 'core-execute', [$command], ['escape' => false]);
             return $return['object'];
         }
 
@@ -58,7 +58,7 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
         $cmd = drush_shell_proc_build($alias, $command, $cd, $interactive);
         $status = drush_shell_proc_open($cmd);
         if ($status != 0) {
-            throw new \Exception(dt('An error @code occurred while running the command `@command`', array('@command' => $cmd, '@code' => $status)));
+            throw new \Exception(dt('An error @code occurred while running the command `@command`', ['@command' => $cmd, '@code' => $status]));
         }
     }
 }

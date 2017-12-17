@@ -28,7 +28,7 @@ class WootManager
    *
    * @var \Drupal\Core\Session\AccountInterface
    */
-  protected $currentUser;
+    protected $currentUser;
 
   /**
    * Constructs the default content manager.
@@ -36,9 +36,10 @@ class WootManager
    * @param \Drupal\Core\Session|AccountInterface $current_user
    *   The current user.
    */
-  public function __construct(AccountInterface $current_user) {
-    $this->currentUser = $current_user;
-  }
+    public function __construct(AccountInterface $current_user)
+    {
+        $this->currentUser = $current_user;
+    }
 
   /**
    * Woof mightily. Note that we can include commands directly
@@ -47,8 +48,8 @@ class WootManager
    * @command woof
    * @aliases wf
    */
-  public function woof()
-  {
-    return 'Woof!';
-  }
+    public function woof()
+    {
+        return 'Woof!';
+    }
 }

@@ -66,17 +66,19 @@ class BackendPathEvaluator
      * the alias record.
      *
      * @param AliasRecord $aliasRecord the host to use for lookups
-     * @param $pathAlias the alias to look up (`files`, not `%files`)
+     * @param string $pathAlias the alias to look up (`files`, not `%files`)
      * @return string
      */
     public function request(AliasRecord $aliasRecord, $pathAlias)
     {
-        // TODO: Stop using `status` here and start using `drupal-directory`
+        // The drupal:directory command uses a path evaluator, which
+        // calls this function, so we cannot use dd here, as that
+        // would be recursive.
         $values = drush_invoke_process($aliasRecord, "core-status", [], ['project' => $pathAlias], ['integrate' => false, 'override-simulated' => true]);
         $statusValues = $values['object'];
         if (isset($statusValues[$pathAlias])) {
             return $statusValues[$pathAlias];
         }
-        return false;
+        throw new \Exception(dt('Cannot evaluate path alias %{path} for site alias {site}', ['path' => $pathAlias, 'site' => $aliasRecord->name()]));
     }
 }

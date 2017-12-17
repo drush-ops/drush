@@ -10,9 +10,13 @@ use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\StorageInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
+use Drush\Utils\FsUtils;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Parser;
+use Webmozart\PathUtil\Path;
 
 class ConfigCommands extends DrushCommands
 {
@@ -109,18 +113,18 @@ class ConfigCommands extends DrushCommands
                 $data = $parser->parse($data, true);
         }
 
-        if (is_array($data) && $this->io()->confirm(dt('Do you want to update or set multiple keys on !name config.', array('!name' => $config_name)))) {
+        if (is_array($data) && $this->io()->confirm(dt('Do you want to update or set multiple keys on !name config.', ['!name' => $config_name]))) {
             foreach ($data as $key => $value) {
                 $config->set($key, $value);
             }
             return $config->save();
         } else {
             $confirmed = false;
-            if ($config->isNew() && $this->io()->confirm(dt('!name config does not exist. Do you want to create a new config object?', array('!name' => $config_name)))) {
+            if ($config->isNew() && $this->io()->confirm(dt('!name config does not exist. Do you want to create a new config object?', ['!name' => $config_name]))) {
                 $confirmed = true;
-            } elseif ($new_key && $this->io()->confirm(dt('!key key does not exist in !name config. Do you want to create a new config key?', array('!key' => $key, '!name' => $config_name)))) {
+            } elseif ($new_key && $this->io()->confirm(dt('!key key does not exist in !name config. Do you want to create a new config key?', ['!key' => $key, '!name' => $config_name]))) {
                 $confirmed = true;
-            } elseif ($this->io()->confirm(dt('Do you want to update !key key in !name config?', array('!key' => $key, '!name' => $config_name)))) {
+            } elseif ($this->io()->confirm(dt('Do you want to update !key key in !name config?', ['!key' => $key, '!name' => $config_name]))) {
                 $confirmed = true;
             }
             if ($confirmed && !\Drush\Drush::simulate()) {
@@ -164,9 +168,9 @@ class ConfigCommands extends DrushCommands
 
         // Perform import operation if user did not immediately exit editor.
         if (!$options['bg']) {
-            $options = Drush::redispatchOptions()   + array('partial' => true, 'source' => $temp_dir);
-            $backend_options = array('interactive' => true);
-            return (bool) drush_invoke_process('@self', 'config-import', array(), $options, $backend_options);
+            $options = Drush::redispatchOptions()   + ['partial' => true, 'source' => $temp_dir];
+            $backend_options = ['interactive' => true];
+            return (bool) drush_invoke_process('@self', 'config-import', [], $options, $backend_options);
         }
     }
 
@@ -189,7 +193,7 @@ class ConfigCommands extends DrushCommands
         $config = $this->getConfigFactory()->getEditable($config_name);
         if ($key) {
             if ($config->get($key) === null) {
-                throw new \Exception(dt('Configuration key !key not found.', array('!key' => $key)));
+                throw new \Exception(dt('Configuration key !key not found.', ['!key' => $key]));
             }
             $config->clear($key)->save();
         } else {
@@ -226,7 +230,7 @@ class ConfigCommands extends DrushCommands
             'Identical'
         );
 
-        $directory = $this->getDirectory(null, $options['label']);
+        $directory = $this->getDirectory($options['label']);
         $storage = $this->getStorage($directory);
         $state_map = [
             'create' => 'Only in DB',
@@ -292,21 +296,24 @@ class ConfigCommands extends DrushCommands
      * @param string $directory
      *   A configuration directory.
      */
-    public function getDirectory($label, $directory = null)
+    public static function getDirectory($label, $directory = null)
     {
+        $return = null;
         // If the user provided a directory, use it.
         if (!empty($directory)) {
             if ($directory === true) {
                 // The user did not pass a specific directory, make one.
-                return drush_prepare_backup_dir('config-import-export');
+                $return = FsUtils::prepareBackupDir('config-import-export');
             } else {
                 // The user has specified a directory.
                 drush_mkdir($directory);
-                return $directory;
+                $return = $directory;
             }
+        } else {
+            // If a directory isn't specified, use the label argument or default sync directory.
+            $return = \config_get_config_directory($label ?: CONFIG_SYNC_DIRECTORY);
         }
-        // If a directory isn't specified, use the label argument or default sync directory.
-        return \config_get_config_directory($label ?: CONFIG_SYNC_DIRECTORY);
+        return Path::canonicalize($return);
     }
 
     /**
@@ -314,12 +321,12 @@ class ConfigCommands extends DrushCommands
      */
     public function getChanges($target_storage)
     {
-        /** @var \Drupal\Core\Config\StorageInterface $active_storage */
+        /** @var StorageInterface $active_storage */
         $active_storage = \Drupal::service('config.storage');
 
         $config_comparer = new StorageComparer($active_storage, $target_storage, \Drupal::service('config.manager'));
 
-        $change_list = array();
+        $change_list = [];
         if ($config_comparer->createChangelist()->hasChanges()) {
             foreach ($config_comparer->getAllCollectionNames() as $collection) {
                 $change_list[$collection] = $config_comparer->getChangelist(null, $collection);
@@ -345,67 +352,47 @@ class ConfigCommands extends DrushCommands
      *
      * @param array $config_changes
      *   An array of changes keyed by collection.
+     *
+     * @return Table A Symfony table object.
      */
-    public static function configChangesTableFormat(array $config_changes, $use_color = false)
+    public static function configChangesTable(array $config_changes, OutputInterface $output, $use_color = true)
     {
-        if (!$use_color) {
-            $red = "%s";
-            $yellow = "%s";
-            $green = "%s";
-        } else {
-            $red = "\033[31;40m\033[1m%s\033[0m";
-            $yellow = "\033[1;33;40m\033[1m%s\033[0m";
-            $green = "\033[1;32;40m\033[1m%s\033[0m";
-        }
-
-        $rows = array();
-        $rows[] = array('Collection', 'Config', 'Operation');
+        $rows = [];
         foreach ($config_changes as $collection => $changes) {
             foreach ($changes as $change => $configs) {
                 switch ($change) {
                     case 'delete':
-                        $colour = $red;
+                        $colour = '<fg=white;bg=red>';
                         break;
                     case 'update':
-                        $colour = $yellow;
+                        $colour = '<fg=black;bg=yellow>';
                         break;
                     case 'create':
-                        $colour = $green;
+                        $colour = '<fg=white;bg=green>';
                         break;
                     default:
-                        $colour = "%s";
+                        $colour = "<fg=black;bg=cyan>";
                         break;
                 }
+                if ($use_color) {
+                    $prefix = $colour;
+                    $suffix = '</>';
+                } else {
+                    $prefix = $suffix = '';
+                }
                 foreach ($configs as $config) {
-                    $rows[] = array(
-                    $collection,
-                    $config,
-                    sprintf($colour, $change)
-                    );
+                    $rows[] = [
+                        $collection,
+                        $config,
+                        $prefix . ucfirst($change) . $suffix,
+                    ];
                 }
             }
         }
-        $tbl = _drush_format_table($rows);
-        return $tbl;
-    }
-
-    /**
-     * Print a table of config changes.
-     *
-     * @param array $config_changes
-     *   An array of changes keyed by collection.
-     */
-    public static function configChangesTablePrint(array $config_changes)
-    {
-        $tbl =  self::configChangesTableFormat($config_changes, !drush_get_context('DRUSH_NOCOLOR'));
-
-        $output = $tbl->getTable();
-        if (!stristr(PHP_OS, 'WIN')) {
-            $output = str_replace("\r\n", PHP_EOL, $output);
-        }
-
-        drush_print(rtrim($output));
-        return $tbl;
+        $table = new Table($output);
+        $table->setHeaders(['Collection', 'Config', 'Operation']);
+        $table->addRows($rows);
+        return $table;
     }
 
     /**
@@ -454,7 +441,7 @@ class ConfigCommands extends DrushCommands
         $config_name = $commandData->input()->getArgument($arg_name);
         $config = \Drupal::config($config_name);
         if ($config->isNew()) {
-            $msg = dt('Config !name does not exist', array('!name' => $config_name));
+            $msg = dt('Config !name does not exist', ['!name' => $config_name]);
             return new CommandError($msg);
         }
     }
@@ -462,9 +449,9 @@ class ConfigCommands extends DrushCommands
     /**
      * Copies configuration objects from source storage to target storage.
      *
-     * @param \Drupal\Core\Config\StorageInterface $source
+     * @param StorageInterface $source
      *   The source config storage service.
-     * @param \Drupal\Core\Config\StorageInterface $destination
+     * @param StorageInterface $destination
      *   The destination config storage service.
      */
     public static function copyConfig(StorageInterface $source, StorageInterface $destination)
@@ -490,5 +477,35 @@ class ConfigCommands extends DrushCommands
                 $destination->write($name, $source->read($name));
             }
         }
+    }
+
+    /**
+     * Get diff between two config sets.
+     *
+     * @param StorageInterface $destination_storage
+     * @param StorageInterface $source_storage
+     * @param OutputInterface $output
+     * @return array|bool
+     *   An array of strings containing the diff.
+     */
+    public static function getDiff(StorageInterface $destination_storage, StorageInterface $source_storage, OutputInterface $output)
+    {
+        // Copy active storage to a temporary directory.
+        $temp_destination_dir = drush_tempdir();
+        $temp_destination_storage = new FileStorage($temp_destination_dir);
+        self::copyConfig($destination_storage, $temp_destination_storage);
+
+        // Copy source storage to a temporary directory as it could be
+        // modified by the partial option or by decorated sync storages.
+        $temp_source_dir = drush_tempdir();
+        $temp_source_storage = new FileStorage($temp_source_dir);
+        self::copyConfig($source_storage, $temp_source_storage);
+
+        $prefix = 'diff';
+        if (drush_program_exists('git') && $output->isDecorated()) {
+            $prefix = 'git diff --color=always';
+        }
+        drush_shell_exec($prefix . ' -u %s %s', $temp_destination_dir, $temp_source_dir);
+        return drush_shell_exec_output();
     }
 }

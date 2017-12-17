@@ -38,14 +38,14 @@ class SqlSqlsrv extends SqlBase
         unset($db_spec_no_db['database']);
         $sql_no_db = new SqlSqlsrv($db_spec_no_db, $this->getOptions());
         $query = "if db_id('$database') IS NOT NULL print 1";
-        drush_shell_exec($sql_no_db->connect() . ' -Q %s', $query);
+        drush_always_exec($sql_no_db->connect() . ' -Q %s', $query);
         $output = drush_shell_exec_output();
         return $output[0] == 1;
     }
 
     public function listTables()
     {
-        $return = $this->query('SELECT TABLE_NAME FROM information_schema.tables');
+        $return = $this->alwaysQuery('SELECT TABLE_NAME FROM information_schema.tables');
         $tables = drush_shell_exec_output();
         if (!empty($tables)) {
             // Shift off the header of the column of data returned.
@@ -66,6 +66,6 @@ class SqlSqlsrv extends SqlBase
         if ($option = $this->getOption('extra-dump', $this->queryExtra)) {
             $exec .= " $option";
         }
-        return array($exec, $file);
+        return [$exec, $file];
     }
 }

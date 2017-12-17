@@ -37,7 +37,6 @@ class Runtime
      */
     public function run($argv)
     {
-        $status = 0;
         try {
             $status = $this->doRun($argv);
         } catch (\Exception $e) {
@@ -45,7 +44,7 @@ class Runtime
             $message = $e->getMessage();
             // Uncaught exceptions could happen early, before our logger
             // and other classes are initialized. Print them and exit.
-            fwrite(STDERR, "$message\n");
+            $this->preflight->logger()->setDebug(true)->log($message);
         }
         return $status;
     }
@@ -64,6 +63,7 @@ class Runtime
         }
 
         $commandfileSearchpath = $this->preflight->getCommandFilePaths();
+        $this->preflight->logger()->log('Commandfile paths: ' . implode(',', $commandfileSearchpath));
 
         // Require the Composer autoloader for Drupal (if different)
         $loader = $this->preflight->loadSiteAutoloader();
@@ -96,6 +96,9 @@ class Runtime
         // TODO: Inject a termination handler into this class, so that we don't
         // need to add these e.g. when testing.
         $this->setTerminationHandlers();
+
+        // Add global options and copy their values into Config.
+        $application->configureGlobalOptions();
 
         // Configure the application object and register all of the commandfiles
         // from the search paths we found above.  After this point, the input

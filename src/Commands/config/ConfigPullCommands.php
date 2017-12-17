@@ -30,21 +30,21 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
      */
     public function pull($source, $destination, $options = ['safe' => false, 'label' => 'sync', 'runner' => null])
     {
-        $global_options = Drush::redispatchOptions()  + array('strict' => 0);
+        $global_options = Drush::redispatchOptions()  + ['strict' => 0];
 
         // @todo If either call is made interactive, we don't get an $return['object'] back.
-        $backend_options = array('interactive' => false);
+        $backend_options = ['interactive' => false];
         if (Drush::simulate()) {
             $backend_options['backend-simulate'] = true;
         }
 
-        $export_options = array(
+        $export_options = [
             // Use the standard backup directory on Destination.
             'destination' => true,
             'yes' => null,
-        );
+        ];
         $this->logger()->notice(dt('Starting to export configuration on Target.'));
-        $return = drush_invoke_process($source, 'config-export', array(), $global_options + $export_options, $backend_options);
+        $return = drush_invoke_process($source, 'config-export', [], $global_options + $export_options, $backend_options);
         if ($return['error_status']) {
               throw new \Exception(dt('Config-export failed.'));
         } else {
@@ -52,11 +52,11 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
               $export_path = $return['object'] . '/';
         }
 
-        $rsync_options = array(
+        $rsync_options = [
             '--remove-source-files',
             '--delete',
             '--exclude=.htaccess',
-        );
+        ];
         $label = $options['label'];
         if (!$runner = $options['runner']) {
             $sourceRecord = $this->siteAliasManager()->get($source);
@@ -64,13 +64,13 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
             $runner = $sourceRecord->isRemote() && $destinationRecord->isRemote() ? $destination : '@self';
         }
         $this->logger()
-          ->notice(dt('Starting to rsync configuration files from !source to !dest.', array(
+          ->notice(dt('Starting to rsync configuration files from !source to !dest.', [
           '!source' => $source,
           '!dest' => $destination
-          )));
+          ]));
         // This comment applies similarly to sql-sync's use of core-rsync.
         // Since core-rsync is a strict-handling command and drush_invoke_process() puts options at end, we can't send along cli options to rsync.
-        // Alternatively, add options like --ssh-options to a site alias (usually on the machine that initiates the sql-sync).
+        // Alternatively, add options like ssh.options to a site alias (usually on the machine that initiates the sql-sync).
         $return = drush_invoke_process($runner, 'core-rsync', array_merge([
             "$source:$export_path",
             "$destination:%config-$label",
@@ -90,7 +90,7 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
     {
         if ($commandData->input()->getOption('safe')) {
             $return = drush_invoke_process($commandData->input()
-            ->getArgument('destination'), 'core-execute', array('git diff --quiet'), array('escape' => 0));
+            ->getArgument('destination'), 'core-execute', ['git diff --quiet'], ['escape' => 0]);
             if ($return['error_status']) {
                   throw new \Exception('There are uncommitted changes in your git working copy.');
             }

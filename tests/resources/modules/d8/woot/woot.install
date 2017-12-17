@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * Good update.
+ */
+function woot_update_8101() {
+  return t('woot_update_8101');
+}
+
+/**
+ * Failing update.
+ */
+function woot_update_8102() {
+  throw new \Exception('8102 error');
+}

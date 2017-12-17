@@ -80,7 +80,14 @@ function drush_shell_cd_and_exec($effective_wd, $cmd) {
  *   TRUE on success, FALSE on failure
  */
 function drush_shell_exec($cmd) {
-  return _drush_shell_exec(func_get_args());
+  return _drush_shell_exec(func_get_args(), FALSE, Drush::simulate());
+}
+
+/**
+ * A versopm pf drush_shell_exec that ignores simulate mode
+ */
+function drush_always_exec($cmd) {
+  return _drush_shell_exec(func_get_args(), FALSE, FALSE);
 }
 
 /**
@@ -104,7 +111,7 @@ function drush_get_editor() {
  * @see drush_shell_exec.
  */
 function drush_shell_exec_interactive($cmd) {
-  return _drush_shell_exec(func_get_args(), TRUE);
+  return _drush_shell_exec(func_get_args(), TRUE, Drush::simulate());
 }
 
 /**
@@ -125,7 +132,7 @@ function drush_shell_exec_interactive($cmd) {
  *
  * @see drush_shell_exec.
  */
-function _drush_shell_exec($args, $interactive = FALSE) {
+function _drush_shell_exec($args, $interactive = FALSE, $simulate = false) {
   // Do not change the command itself, just the parameters.
   for ($x = 1; $x < count($args); $x++) {
     $args[$x] = drush_escapeshellarg($args[$x]);
@@ -143,7 +150,7 @@ function _drush_shell_exec($args, $interactive = FALSE) {
   }
 
   drush_log('Executing: ' . $command, LogLevel::INFO);
-  if (!Drush::simulate()) {
+  if (!$simulate) {
     if ($interactive) {
       $result = drush_shell_proc_open($command);
       return ($result == 0) ? TRUE : FALSE;
@@ -152,7 +159,7 @@ function _drush_shell_exec($args, $interactive = FALSE) {
       exec($command . ' 2>&1', $output, $result);
       _drush_shell_exec_output_set($output);
 
-      if (drush_get_context('DRUSH_DEBUG_NOTIFY')) {
+      if (Drush::debug()) {
         foreach ($output as $line) {
           drush_print($line, 2);
         }
@@ -238,7 +245,7 @@ function drush_shell_proc_open($cmd) {
     drush_print("Calling proc_open($cmd);", 0, STDERR);
   }
   if (!Drush::simulate()) {
-    $process = proc_open($cmd, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes);
+    $process = proc_open($cmd, [0 => STDIN, 1 => STDOUT, 2 => STDERR], $pipes);
     $proc_status = proc_get_status($process);
     $exit_code = proc_close($process);
     return ($proc_status["running"] ? $exit_code : $proc_status["exitcode"] );
@@ -269,7 +276,7 @@ function legacy_drush_os($site_record = NULL) {
     $os = $site_record['os'];
   }
   // Otherwise, we will assume that all remote machines are Linux
-  // (or whatever value 'remote-os' is set to in drushrc.php).
+  // (or whatever value 'remote-os' is set to in drush.yml).
   elseif (isset($site_record) && array_key_exists('remote-host', $site_record) && !empty($site_record['remote-host'])) {
     $os = Drush::config()->get('ssh.os', 'Linux');
   }
@@ -359,7 +366,7 @@ function drush_start_browser($uri = NULL, $sleep = FALSE, $port = FALSE, $browse
     $hosterror = (gethostbynamel($host) === FALSE);
     $iperror = (ip2long($host) && gethostbyaddr($host) == $host);
     if (!Drush::simulate() && ($hosterror || $iperror)) {
-      drush_log(dt('!host does not appear to be a resolvable hostname or IP, not starting browser. You may need to use the --uri option in your command or site alias to indicate the correct URL of this site.', array('!host' => $host)), LogLevel::WARNING);
+      drush_log(dt('!host does not appear to be a resolvable hostname or IP, not starting browser. You may need to use the --uri option in your command or site alias to indicate the correct URL of this site.', ['!host' => $host]), LogLevel::WARNING);
       return FALSE;
     }
     if ($port) {
@@ -386,10 +393,10 @@ function drush_start_browser($uri = NULL, $sleep = FALSE, $port = FALSE, $browse
       $prefix = 'sleep ' . $sleep . ' && ';
     }
     if ($browser) {
-      drush_log(dt('Opening browser !browser at !uri', array('!browser' => $browser, '!uri' => $uri)));
+      drush_log(dt('Opening browser !browser at !uri', ['!browser' => $browser, '!uri' => $uri]));
       if (!Drush::simulate()) {
-        $pipes = array();
-        proc_close(proc_open($prefix . $browser . ' ' . drush_escapeshellarg($uri) . ' 2> ' . drush_bit_bucket() . ' &', array(), $pipes));
+        $pipes = [];
+        proc_close(proc_open($prefix . $browser . ' ' . drush_escapeshellarg($uri) . ' 2> ' . drush_bit_bucket() . ' &', [], $pipes));
       }
       return TRUE;
     }

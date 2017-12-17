@@ -5,11 +5,12 @@ use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Drush\Boot\BootstrapManager;
 use Drush\Runtime\TildeExpansionHook;
-use Drush\SiteAlias\AliasManager;
+use Drush\SiteAlias\SiteAliasManager;
 use Drush\Log\LogLevel;
 use Drush\Command\RemoteCommandProxy;
 use Drush\Runtime\RedispatchHook;
-
+use Robo\Common\ConfigAwareTrait;
+use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
@@ -26,14 +27,15 @@ use Psr\Log\LoggerAwareTrait;
  * is because the application object is created prior to the DI container.
  * See DependencyInjection::injectApplicationServices() to add more services.
  */
-class Application extends SymfonyApplication implements LoggerAwareInterface
+class Application extends SymfonyApplication implements LoggerAwareInterface, ConfigAwareInterface
 {
     use LoggerAwareTrait;
+    use ConfigAwareTrait;
 
     /** @var BootstrapManager */
     protected $bootstrapManager;
 
-    /** @var AliasManager */
+    /** @var SiteAliasManager */
     protected $aliasManager;
 
     /** @var RedispatchHook */
@@ -43,13 +45,10 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
     protected $tildeExpansionHook;
 
     /**
-     * @param string $name
-     * @param string $version
+     * Add global options to the Application and their default values to Config.
      */
-    public function __construct($name, $version)
+    public function configureGlobalOptions()
     {
-        parent::__construct($name, $version);
-
         $this->getDefinition()
             ->addOption(
                 new InputOption('--debug', 'd', InputOption::VALUE_NONE, 'Equivalent to -vv')
@@ -58,6 +57,12 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
         $this->getDefinition()
             ->addOption(
                 new InputOption('--yes', 'y', InputOption::VALUE_NONE, 'Equivalent to --no-interaction.')
+            );
+
+        // Note that -n belongs to Symfony Console's --no-interaction.
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--no', null, InputOption::VALUE_NONE, 'Cancels at any confirmation prompt.')
             );
 
         $this->getDefinition()
@@ -149,13 +154,13 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
             return;
         }
         $selfAliasRecord = $this->aliasManager->getSelf();
-        if (!$selfAliasRecord->hasRoot()) {
+        if (!$selfAliasRecord->hasRoot() && !$this->bootstrapManager()->drupalFinder()->getDrupalRoot()) {
             return;
         }
         $uri = $selfAliasRecord->uri();
 
         if (empty($uri)) {
-            $uri = $this->bootstrapManager()->selectUri($cwd);
+            $uri = $this->selectUri($cwd);
             $selfAliasRecord->setUri($uri);
             $this->aliasManager->setSelf($selfAliasRecord);
         }
@@ -164,12 +169,31 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
     }
 
     /**
+     * Select a URI to use for the site, based on directory or config.
+     */
+    public function selectUri($cwd)
+    {
+        $uri = $this->config->get('options.uri');
+        if ($uri) {
+            return $uri;
+        }
+        return $this->bootstrapManager()->selectUri($cwd);
+    }
+
+    /**
      * @inheritdoc
      */
     public function find($name)
     {
+        if (empty($name)) {
+            return;
+        }
         $command = $this->bootstrapAndFind($name);
-        $this->checkObsolete($command);
+        // Avoid exception when help is being built by https://github.com/bamarni/symfony-console-autocomplete.
+        // @todo Find a cleaner solution.
+        if (Drush::config()->get('runtime.argv')[1] !== 'help') {
+            $this->checkObsolete($command);
+        }
         return $command;
     }
 
@@ -196,10 +220,14 @@ class Application extends SymfonyApplication implements LoggerAwareInterface
                 throw $e;
             }
 
-            // TODO: We could also fail-fast (throw $e) if bootstrapMax made no progress.
             $this->logger->log(LogLevel::DEBUG, 'Bootstrap further to find {command}', ['command' => $name]);
             $this->bootstrapManager->bootstrapMax();
             $this->logger->log(LogLevel::DEBUG, 'Done with bootstrap max in Application::find(): trying to find {command} again.', ['command' => $name]);
+
+            if (!$this->bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_ROOT)) {
+                // Unable to progress in the bootstrap. Give friendly error message.
+                throw new CommandNotFoundException(dt('Command !command was not found. Pass --root or a @siteAlias in order to run Drupal-specific commands.', ['!command' => $name]));
+            }
 
             // Try to find it again. This time the exception will
             // not be caught if the command cannot be found.

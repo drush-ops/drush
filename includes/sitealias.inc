@@ -5,7 +5,7 @@
  * The site alias API.
  *
  * Run commands on remote server(s).
- * @see example.aliases.drushrc.php
+ * @see example.aliases.yml
  * @see http://drupal.org/node/670460
  */
 
@@ -19,7 +19,7 @@ use Webmozart\PathUtil\Path;
  * Option keys used for site selection.
  */
 function drush_sitealias_site_selection_keys() {
-  return array('remote-host', 'remote-user', 'ssh-options', '#name', 'os');
+  return ['remote-host', 'remote-user', 'ssh-options', '#name', 'os'];
 }
 
 /**

@@ -117,8 +117,6 @@ class DependencyInjection
         $hookManager->addInitializeHook($container->get('bootstrap.hook'));
         $hookManager->addPreValidator($container->get('tildeExpansion.hook'));
         $hookManager->addOutputExtractor(new \Drush\Backend\BackendResultSetter());
-        // @todo: do we need both backend result setters? The one below should be removed at some point.
-        $hookManager->add('annotatedcomand_adapter_backend_result', \Consolidation\AnnotatedCommand\Hooks\HookManager::EXTRACT_OUTPUT);
 
         // Install our command cache into the command factory
         // TODO: Create class-based implementation of our cache management functions.
@@ -138,5 +136,6 @@ class DependencyInjection
         $application->setRedispatchHook($container->get('redispatch.hook'));
         $application->setTildeExpansionHook($container->get('tildeExpansion.hook'));
         $application->setDispatcher($container->get('eventDispatcher'));
+        $application->setConfig($container->get('config'));
     }
 }

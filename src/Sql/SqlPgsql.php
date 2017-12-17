@@ -15,22 +15,23 @@ class SqlPgsql extends SqlBase
 
     private function createPasswordFile()
     {
+        $password_file = null;
         $dbSpec = $this->getDbSpec();
         if (null !== ($this->getPasswordFile()) && isset($dbSpec['password'])) {
-            $pgpass_parts = array(
+            $pgpass_parts = [
             empty($dbSpec['host']) ? 'localhost' : $dbSpec['host'],
-            empty($Spec['port']) ? '5432' : $dbSpec['port'],
+            empty($dbSpec['port']) ? '5432' : $dbSpec['port'],
             // Database
             '*',
             $dbSpec['username'],
             $dbSpec['password']
-            );
+            ];
             // Escape colon and backslash characters in entries.
             // @see http://www.postgresql.org/docs/9.1/static/libpq-pgpass.html
             array_walk($pgpass_parts, function (&$part) {
                   // The order of the replacements is important so that backslashes are
                   // not replaced twice.
-                  $part = str_replace(array('\\', ':'), array('\\\\', '\:'), $part);
+                  $part = str_replace(['\\', ':'], ['\\\\', '\:'], $part);
             });
             $pgpass_contents = implode(':', $pgpass_parts);
             $password_file = drush_save_data_to_temp_file($pgpass_contents);
@@ -92,7 +93,7 @@ class SqlPgsql extends SqlBase
         unset($db_spec_no_db['database']);
         $sql_no_db = new SqlPgsql($db_spec_no_db, $this->getOptions());
         $query = "SELECT 1 AS result FROM pg_database WHERE datname='$database'";
-        drush_shell_exec($sql_no_db->connect() . ' -t -c %s', $query);
+        drush_always_exec($sql_no_db->connect() . ' -t -c %s', $query);
         $output = drush_shell_exec_output();
         return (bool)$output[0];
     }
@@ -107,12 +108,12 @@ class SqlPgsql extends SqlBase
 
     public function listTables()
     {
-        $return = $this->query(PSQL_SHOW_TABLES);
+        $return = $this->alwaysQuery(PSQL_SHOW_TABLES);
         $tables = drush_shell_exec_output();
         if (!empty($tables)) {
             return $tables;
         }
-        return array();
+        return [];
     }
 
     public function dumpCmd($table_selection)
@@ -122,7 +123,7 @@ class SqlPgsql extends SqlBase
         $structure_tables = $table_selection['structure'];
         $tables = $table_selection['tables'];
 
-        $ignores = array();
+        $ignores = [];
         $skip_tables  = array_merge($structure_tables, $skip_tables);
         $data_only = $this->getOption('data-only');
 
@@ -151,7 +152,7 @@ class SqlPgsql extends SqlBase
             // Run pg_dump again and append output if we need some structure only tables.
             if (!empty($structure_tables)) {
                 $parens = true;
-                $schemaonlies = array();
+                $schemaonlies = [];
                 foreach ($structure_tables as $table) {
                     $schemaonlies[] = "--table=$table";
                 }

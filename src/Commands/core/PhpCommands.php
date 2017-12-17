@@ -1,13 +1,11 @@
 <?php
 namespace Drush\Commands\core;
 
-use Robo\Contract\ConfigAwareInterface;
-use Robo\Common\ConfigAwareTrait;
 use Drush\Commands\DrushCommands;
+use Symfony\Component\Finder\Finder;
 
-class PhpCommands extends DrushCommands implements ConfigAwareInterface
+class PhpCommands extends DrushCommands
 {
-    use ConfigAwareTrait;
 
     /**
      * Evaluate arbitrary php code after bootstrapping Drupal (if available).
@@ -40,16 +38,19 @@ class PhpCommands extends DrushCommands implements ConfigAwareInterface
      * script via a variable called $extra.
      *
      * @command php:script
-     * @option script-path Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).
-     * @usage drush php:script example --script-path=/path/to/scripts:/another/path
-     *   Run a script named example.php from specified paths
+     * @option script-path Additional paths to search for scripts, separated by
+     *   : (Unix-based systems) or ; (Windows).
+     * @usage drush php:script example
+     *   --script-path=/path/to/scripts:/another/path Run a script named
+     *   example.php from specified paths
      * @usage drush php:script
      *   List all available scripts.
      * @usage drush php:script foo -- apple --cider
-     *  Run foo.php script with argument 'apple' and option 'cider'. Note the -- separator.
+     *  Run foo.php script with argument 'apple' and option 'cider'. Note the
+     *   -- separator.
      * @aliases scr,php-script
      * @bootstrap max
-     * @topics docs:examplescript,docs:scripts
+     * @throws \Exception
      */
     public function script(array $extra, $options = ['format' => 'var_export', 'script-path' => self::REQ])
     {
@@ -62,7 +63,7 @@ class PhpCommands extends DrushCommands implements ConfigAwareInterface
             $found = $script;
         } else {
             // Array of paths to search for scripts
-            $searchpath['cwd'] = $this->getConfig()->get('env.cwd');
+            $searchpath['cwd'] = $this->getConfig()->cwd();
 
             // Additional script paths, specified by 'script-path' option
             if ($script_path = $options['script-path']) {
@@ -73,11 +74,15 @@ class PhpCommands extends DrushCommands implements ConfigAwareInterface
             $this->logger()->debug(dt('Searching for scripts in ') . implode(',', $searchpath));
 
             if (empty($script)) {
+                $all = [];
                 // List all available scripts.
-                $all = array();
-                foreach ($searchpath as $key => $path) {
-                    $recurse = !(($key == 'cwd') || ($path == '/'));
-                    $all = array_merge($all, array_keys(drush_scan_directory($path, '/\.php$/', array('.', '..', 'CVS'), null, $recurse)));
+                $files = Finder::create()
+                    ->files()
+                    ->name('*.php')
+                    ->depth(0)
+                    ->in($searchpath);
+                foreach ($files as $file) {
+                    $all[] = $file->getRelativePathname();
                 }
                 return implode("\n", $all);
             } else {
@@ -94,7 +99,7 @@ class PhpCommands extends DrushCommands implements ConfigAwareInterface
                     $all[] = $script_filename;
                 }
                 if (!$found) {
-                    throw new \Exception(dt('Unable to find any of the following: @files', array('@files' => implode(', ', $all))));
+                    throw new \Exception(dt('Unable to find any of the following: @files', ['@files' => implode(', ', $all)]));
                 }
             }
         }

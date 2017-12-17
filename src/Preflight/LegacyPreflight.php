@@ -49,7 +49,7 @@ class LegacyPreflight
         define('DRUSH_COMMAND', $applicationPath);
 
         /*
-         * @deprecated. Use $config->get('env.cwd') instead.
+         * @deprecated. Use $config->cwd() instead.
          */
         drush_set_context('DRUSH_OLDCWD', $environment->cwd());
 
@@ -99,20 +99,14 @@ class LegacyPreflight
     {
         $verbose = $output->isVerbose();
         $debug = $output->isDebug();
-        $yes = $input->getOption('yes', false);
-        $no = $input->getOption('no-interaction', false);
-        $pipe = $input->getOption('pipe', false);
         $quiet = $input->getOption('quiet', false);
+        $pipe = $input->getOption('pipe', false);
         $simulate = Drush::simulate();
 
         drush_set_context('DRUSH_VERBOSE', $verbose || $debug);
         drush_set_context('DRUSH_DEBUG', $debug);
         drush_set_context('DRUSH_DEBUG_NOTIFY', $verbose && $debug);
         drush_set_context('DRUSH_SIMULATE', $simulate);
-
-        // Backend implies affirmative unless negative is explicitly specified
-        drush_set_context('DRUSH_NEGATIVE', $no);
-        drush_set_context('DRUSH_AFFIRMATIVE', $yes || $pipe || (Drush::backend() && !$no));
 
         // Pipe implies quiet.
         drush_set_context('DRUSH_QUIET', $quiet || $pipe);
@@ -140,7 +134,6 @@ class LegacyPreflight
         require_once $drushBasePath . '/includes/preflight.inc';
         require_once $drushBasePath . '/includes/bootstrap.inc';
         require_once $drushBasePath . '/includes/environment.inc';
-        require_once $drushBasePath . '/includes/annotationcommand_adapter.inc';
         require_once $drushBasePath . '/includes/command.inc';
         require_once $drushBasePath . '/includes/drush.inc';
         require_once $drushBasePath . '/includes/backend.inc';
@@ -152,6 +145,5 @@ class LegacyPreflight
         require_once $drushBasePath . '/includes/output.inc';
         require_once $drushBasePath . '/includes/cache.inc';
         require_once $drushBasePath . '/includes/filesystem.inc';
-        require_once $drushBasePath . '/includes/legacy.inc';
     }
 }

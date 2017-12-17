@@ -46,5 +46,5 @@ $ drush rsync @staging:%files/ @live:%files
 $ drush sql-sync --structure-tables-key=custom @live @dev
 ```
 
-See [example.aliases.config.yml](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.aliases.config.yml) for more information.
+See [example.aliases.yml](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.aliases.yml) for more information.
 

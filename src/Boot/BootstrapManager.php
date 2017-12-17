@@ -2,14 +2,12 @@
 
 namespace Drush\Boot;
 
-use Robo\Contract\ConfigAwareInterface;
 use Robo\Common\ConfigAwareTrait;
 use DrupalFinder\DrupalFinder;
-use Drush\Drush;
 use Drush\Log\LogLevel;
-use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Robo\Contract\ConfigAwareInterface;
 
 class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface, ConfigAwareInterface
 {
@@ -109,7 +107,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         // TODO: Throw if we already bootstrapped a framework?
 
         if (!isset($root)) {
-            $root = $this->getConfig()->get('env.cwd');
+            $root = $this->getConfig()->cwd();
         }
         if (!$this->drupalFinder()->locateRoot($root)) {
             //    echo ' Drush must be executed within a Drupal site.'. PHP_EOL;
@@ -232,7 +230,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      */
     public function bootstrapPhases($function_names = false)
     {
-        $result = array();
+        $result = [];
 
         if ($bootstrap = $this->bootstrap()) {
             $result = $bootstrap->bootstrapPhases();
@@ -299,7 +297,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         }
         drush_set_context('DRUSH_BOOTSTRAPPING', false);
         if (!$result || drush_get_error()) {
-            $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS', array());
+            $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS', []);
             foreach ($errors as $code => $message) {
                 drush_set_error($code, $message);
             }
@@ -351,11 +349,11 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     {
         $bootstrap = $this->bootstrap();
         $phases = $this->bootstrapPhases(true);
-        static $result_cache = array();
+        static $result_cache = [];
 
         if (!array_key_exists($phase, $result_cache)) {
-            drush_set_context('DRUSH_BOOTSTRAP_ERRORS', array());
-            drush_set_context('DRUSH_BOOTSTRAP_VALUES', array());
+            drush_set_context('DRUSH_BOOTSTRAP_ERRORS', []);
+            drush_set_context('DRUSH_BOOTSTRAP_VALUES', []);
 
             foreach ($phases as $phase_index => $current_phase) {
                 $validated_phase = drush_get_context('DRUSH_BOOTSTRAP_VALIDATION_PHASE', -1);

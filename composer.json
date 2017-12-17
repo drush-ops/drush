@@ -17,7 +17,8 @@
   ],
   "support": {
     "forum": "http://drupal.stackexchange.com/questions/tagged/drush",
-    "irc": "irc://irc.freenode.org/drush"
+    "irc": "irc://irc.freenode.org/drush",
+    "slack": "https://drupal.slack.com/messages/C62H9CWQM"
   },
   "bin": [
     "drush"
@@ -25,18 +26,17 @@
   "require": {
     "php": ">=5.6.0",
     "ext-dom": "*",
-    "chi-teck/drupal-code-generator": "^1.17.3",
+    "chi-teck/drupal-code-generator": "^1.21.0",
     "composer/semver": "^1.4",
     "consolidation/annotated-command": "^2.8.1",
-    "consolidation/config": "^1.0.5",
+    "consolidation/config": "^1.0.7",
     "consolidation/output-formatters": "^3.1.12",
-    "consolidation/robo": "^1.1.4",
+    "consolidation/robo": "^1.1.5",
     "grasmash/yaml-expander": "^1.1.1",
     "league/container": "~2",
-    "pear/console_table": "~1.3.0",
     "psr/log": "~1.0",
     "psy/psysh": "~0.6",
-    "sebastian/version": "~1",
+    "sebastian/version": "^1|^2",
     "symfony/config": "~2.2|^3",
     "symfony/console": "~2.7|^3",
     "symfony/event-dispatcher": "~2.7|^3",
@@ -44,12 +44,12 @@
     "symfony/process": "~2.7|^3",
     "symfony/var-dumper": "~2.7|^3",
     "symfony/yaml": "~2.3|^3",
-    "webflo/drupal-finder": "^1.0",
+    "webflo/drupal-finder": "^1.1",
     "webmozart/path-util": "^2.1.0"
   },
   "require-dev": {
     "lox/xhprof": "dev-master",
-    "phpunit/phpunit": "^4",
+    "phpunit/phpunit": "^4.8|^5.5.4",
     "squizlabs/php_codesniffer": "^2.7"
   },
   "autoload": {
@@ -67,13 +67,16 @@
     }
   },
   "scripts": {
-    "cs": "phpcs -n src",
-    "cbf": "phpcbf -n src",
+    "cs": "phpcs -n src tests",
+    "cbf": "phpcbf -n src tests",
     "lint": [
       "find includes -name '*.inc' -print0 | xargs -0 -n1 php -l",
-      "find src -name '*.php' -print0 | xargs -0 -n1 php -l"
+      "find src -name '*.php' -print0 | xargs -0 -n1 php -l",
+      "find tests -name '*.php' -print0 | xargs -0 -n1 php -l"
     ],
-    "isolation": "cd isolation && phpunit --colors=always",
+    "api": "PATH=$HOME/bin:$PATH sami.phar --ansi update sami-config.php",
+    "sami-install": "mkdir -p $HOME/bin && curl --output $HOME/bin/sami.phar http://get.sensiolabs.org/sami.phar && chmod +x $HOME/bin/sami.phar",
+    "isolation": "cd isolation && vendor/bin/phpunit --colors=always",
     "post-update-cmd": "cd isolation && composer update"
   },
   "extra": {

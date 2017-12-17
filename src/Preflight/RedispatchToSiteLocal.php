@@ -2,11 +2,6 @@
 
 namespace Drush\Preflight;
 
-use Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface;
-use Drush\Drush;
-use Symfony\Component\Console\Input\InputInterface;
-use Consolidation\AnnotatedCommand\AnnotationData;
-use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -18,14 +13,19 @@ use Webmozart\PathUtil\Path;
  */
 class RedispatchToSiteLocal
 {
+
     /**
      * Determine if a local redispatch is needed, and do so if it is.
      *
      * @param array $argv The commandline arguments
      * @param string $root The selected site root or false if none
      * @param string $vendor The path to the vendor directory
+     * @param PreflightLog $preflightLog A basic logger.
+     *
+     * @return bool
+     *   True if redispatch occurred, and was returned successfully.
      */
-    public static function redispatchIfSiteLocalDrush($argv, $root, $vendor)
+    public static function redispatchIfSiteLocalDrush($argv, $root, $vendor, PreflightLog $preflightLog)
     {
         // Special check for the SUT, which is always a site-local install.
         // The symlink that Composer sets up can make it challenging to
@@ -49,12 +49,13 @@ class RedispatchToSiteLocal
 
         // Do another special check to detect symlinked Drush folder similar
         // to what the SUT sets up for Drush functional tests.
-        if (dirname(realpath($vendor)) == dirname(realpath($siteLocalDrush))) {
+        if (dirname($vendor) == dirname($siteLocalDrush)) {
             return false;
         }
 
         // Redispatch!
         $command = $siteLocalDrush;
+        $preflightLog->log(dt('Redispatch to site-local Drush: !cmd.', ['!cmd' => $command]));
         array_shift($argv);
         $args = array_map(
             function ($item) {

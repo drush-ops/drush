@@ -5,12 +5,16 @@ namespace Drush\Sql;
 use Drupal\Core\Database\Database;
 use Drush\Drush;
 use Drush\Log\LogLevel;
+use Drush\Utils\FsUtils;
+use Robo\Common\ConfigAwareTrait;
+use Robo\Contract\ConfigAwareInterface;
 use Webmozart\PathUtil\Path;
 
-class SqlBase
+class SqlBase implements ConfigAwareInterface
 {
 
     use SqlTableSelectionTrait;
+    use ConfigAwareTrait;
 
     // An Drupal style array containing specs for connecting to database.
     public $dbSpec;
@@ -44,18 +48,18 @@ class SqlBase
     {
         // Set defaults in the unfortunate event that caller doesn't provide values.
         $options += [
-        'database' => 'default',
-        'target' => 'default',
-        'db-url' => null,
-        'databases' => null,
-        'db-prefix' => null,
+            'database' => 'default',
+            'target' => 'default',
+            'db-url' => null,
+            'databases' => null,
+            'db-prefix' => null,
         ];
         $database = $options['database'];
         $target = $options['target'];
 
         if ($url = $options['db-url']) {
-            $url =  is_array($url) ? $url[$database] : $url;
-            $db_spec = drush_convert_db_from_db_url($url);
+            $url = is_array($url) ? $url[$database] : $url;
+            $db_spec = self::dbSpecFromDbUrl($url);
             $db_spec['db_prefix'] = $options['db-prefix'];
             return self::getInstance($db_spec, $options);
         } elseif (($databases = $options['databases']) && (array_key_exists($database, $databases)) && (array_key_exists($target, $databases[$database]))) {
@@ -74,7 +78,10 @@ class SqlBase
     {
         $driver = $db_spec['driver'];
         $class_name = 'Drush\Sql\Sql'. ucfirst($driver);
-        return new $class_name($db_spec, $options);
+        $instance = new $class_name($db_spec, $options);
+        // Inject config
+        $instance->setConfig(Drush::config());
+        return $instance;
     }
 
     /*
@@ -145,7 +152,7 @@ class SqlBase
         // Avoid the php memory of the $output array in drush_shell_exec().
         if (!$return = drush_op_system($cmd)) {
             if ($file) {
-                drush_log(dt('Database dump saved to !path', array('!path' => $file)), LogLevel::SUCCESS);
+                drush_log(dt('Database dump saved to !path', ['!path' => $file]), LogLevel::SUCCESS);
                 drush_backend_set_result($file);
             }
         } else {
@@ -183,19 +190,19 @@ class SqlBase
         // directory that pm-updatecode uses.
         if ($file) {
             if ($file === true) {
-                $backup_dir = drush_prepare_backup_dir($database);
+                $backup_dir = FsUtils::prepareBackupDir($database);
                 if (empty($backup_dir)) {
-                    $backup_dir = drush_find_tmp();
+                    $backup_dir = $this->getConfig()->tmp();
                 }
                 $file = Path::join($backup_dir, '@DATABASE_@DATE.sql');
             }
-            $file = str_replace(array('@DATABASE', '@DATE'), array($database, gmdate('Ymd_His')), $file);
+            $file = str_replace(['@DATABASE', '@DATE'], [$database, gmdate('Ymd_His')], $file);
         }
         return $file;
     }
 
     /**
-     * Execute a SQL query.
+     * Execute a SQL query. Respect simulate mode.
      *
      * If you don't want to query results to print during --debug then
      * provide a $result_file whose value can be drush_bit_bucket().
@@ -212,9 +219,33 @@ class SqlBase
      */
     public function query($query, $input_file = null, $result_file = '')
     {
+        if (!Drush::simulate()) {
+            return $this->alwaysQuery($query, $input_file, $result_file);
+        }
+        $this->logQueryInDebugMode($query, $input_file);
+    }
+
+    /**
+     * Execute a SQL query. Always execute it regardless of simulate mode.
+     *
+     * If you don't want query results to print during --debug then
+     * provide a $result_file whose value can be drush_bit_bucket().
+     *
+     * @param string $query
+     *   The SQL to be executed. Should be null if $input_file is provided.
+     * @param string $input_file
+     *   A path to a file containing the SQL to be executed.
+     * @param string $result_file
+     *   A path to save query results to. Can be drush_bit_bucket() if desired.
+     *
+     * @return boolean
+     *   TRUE on success, FALSE on failure
+     */
+    public function alwaysQuery($query, $input_file = null, $result_file = '')
+    {
         $input_file_original = $input_file;
         if ($input_file && drush_file_is_tarball($input_file)) {
-            if (drush_shell_exec('gzip -d %s', $input_file)) {
+            if (drush_always_exec('gzip -d %s', $input_file)) {
                 $input_file = trim($input_file, '.gz');
             } else {
                 return drush_set_error(dt('Failed to decompress input file.'));
@@ -228,14 +259,14 @@ class SqlBase
             $input_file = drush_save_data_to_temp_file($query);
         }
 
-        $parts = array(
-        $this->command(),
-        $this->creds(),
-        $this->silent(), // This removes column header and various helpful things in mysql.
-        $this->getOption('extra', $this->queryExtra),
-        $this->queryFile,
-        drush_escapeshellarg($input_file),
-        );
+        $parts = [
+            $this->command(),
+            $this->creds(),
+            $this->silent(), // This removes column header and various helpful things in mysql.
+            $this->getOption('extra', $this->queryExtra),
+            $this->queryFile,
+            drush_escapeshellarg($input_file),
+        ];
         $exec = implode(' ', $parts);
 
         if ($result_file) {
@@ -245,17 +276,28 @@ class SqlBase
         // In --verbose mode, drush_shell_exec() will show the call to mysql/psql/sqlite,
         // but the sql query itself is stored in a temp file and not displayed.
         // We show the query when --debug is used and this function created the temp file.
-        if ((Drush::debug() || Drush::simulate()) && empty($input_file_original)) {
-            drush_log('sql-query: ' . $query, LogLevel::INFO);
-        }
+        $this->logQueryInDebugMode($query, $input_file_original);
 
-        $success = drush_shell_exec($exec);
+        $success = drush_always_exec($exec);
 
         if ($success && $this->getOption('file-delete')) {
-            drush_op('drush_delete_dir', $input_file);
+            drush_delete_dir($input_file);
         }
 
         return $success;
+    }
+
+    /**
+     * Show the query in debug mode and simulate mode
+     */
+    protected function logQueryInDebugMode($query, $input_file_original)
+    {
+        // In --verbose mode, drush_shell_exec() will show the call to mysql/psql/sqlite,
+        // but the sql query itself is stored in a temp file and not displayed.
+        // We show the query when --debug is used and this function created the temp file.
+        if ((Drush::debug() || Drush::simulate()) && empty($input_file_original)) {
+            drush_log('sql-query: ' . $query, LogLevel::INFO);
+        }
     }
 
     /*
@@ -402,7 +444,7 @@ class SqlBase
     public function paramsToOptions($parameters)
     {
         // Turn each parameter into a valid parameter string.
-        $parameter_strings = array();
+        $parameter_strings = [];
         foreach ($parameters as $key => $value) {
             // Only escape the values, not the keys or the rest of the string.
             $value = drush_escapeshellarg($value);
@@ -426,7 +468,7 @@ class SqlBase
         $create_db_target = $this->getDbSpec();
 
         $create_db_target['database'] = '';
-        $db_superuser = $this->getOption('db-su');
+        $db_superuser = $this->getConfig()->get('sql.db-su');
         if (!empty($db_superuser)) {
             $create_db_target['username'] = $db_superuser;
         }
@@ -473,4 +515,57 @@ class SqlBase
     {
         return $this->getExpandedTableSelection($options);
     }
+
+    /**
+     * Convert from an old-style database URL to an array of database settings.
+     *
+     * @param db_url
+     *   A Drupal 6 db url string to convert, or an array with a 'default' element.
+     * @return array
+     *   An array of database values containing only the 'default' element of
+     *   the db url. If the parse fails the array is empty.
+     */
+    public static function dbSpecFromDbUrl($db_url)
+    {
+        $db_spec = [];
+
+        if (is_array($db_url)) {
+            $db_url_default = $db_url['default'];
+        } else {
+            $db_url_default = $db_url;
+        }
+
+        // If it's a sqlite database, pick the database path and we're done.
+        if (strpos($db_url_default, 'sqlite://') === 0) {
+            $db_spec = [
+                'driver'   => 'sqlite',
+                'database' => substr($db_url_default, strlen('sqlite://')),
+            ];
+        } else {
+            $url = parse_url($db_url_default);
+            if ($url) {
+                // Fill in defaults to prevent notices.
+                $url += [
+                    'scheme' => null,
+                    'user'   => null,
+                    'pass'   => null,
+                    'host'   => null,
+                    'port'   => null,
+                    'path'   => null,
+                ];
+                $url = (object)array_map('urldecode', $url);
+                $db_spec = [
+                    'driver'   => $url->scheme == 'mysqli' ? 'mysql' : $url->scheme,
+                    'username' => $url->user,
+                    'password' => $url->pass,
+                    'host' => $url->host,
+                    'port' => $url->port,
+                    'database' => ltrim($url->path, '/'),
+                ];
+            }
+        }
+
+        return $db_spec;
+    }
+
 }
