@@ -216,7 +216,7 @@ class DrupalKernel extends DrupalDrupalKernel
     }
 
     /**
-     * populates theme data on the filesystem.
+     * Populates theme filesystem information.
      *
      * @see Drupal\Core\DrupalKernel::moduleData().
      */
