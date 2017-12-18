@@ -1,4 +1,9 @@
 services:
+  sql.commands:
+      class: \Drush\Drupal\Commands\sql\SqlCommands
+      arguments: []
+      tags:
+        -  { name: drush.command }
   sanitize.commands:
     class: \Drush\Drupal\Commands\sql\SanitizeCommands
     arguments: []
