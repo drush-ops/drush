@@ -1049,6 +1049,9 @@ function _drush_backend_invoke($cmds, $common_backend_options = array(), $contex
             $ret['concurrent'][] = $values;
           }
         }
+        elseif (is_string($values)) {
+          $ret['output'] = $values;
+        }
         else {
           $ret = drush_set_error('DRUSH_FRAMEWORK_ERROR', dt("The command could not be executed successfully (returned: !return, code: !code)", array("!return" => $proc['output'], "!code" =>  $proc['code'])));
         }
