@@ -59,14 +59,14 @@ class Logger extends RoboLogger
             drush_backend_packet('log', $entry);
         }
 
-        if (drush_get_context('DRUSH_NOCOLOR')) {
-            $red = "[%s]";
-            $yellow = "[%s]";
-            $green = "[%s]";
-        } else {
+        if ($this->output->isDecorated()) {
             $red = "\033[31;40m\033[1m[%s]\033[0m";
             $yellow = "\033[1;33;40m\033[1m[%s]\033[0m";
             $green = "\033[1;32;40m\033[1m[%s]\033[0m";
+        } else {
+            $red = "[%s]";
+            $yellow = "[%s]";
+            $green = "[%s]";
         }
 
         $verbose = \Drush\Drush::verbose();
