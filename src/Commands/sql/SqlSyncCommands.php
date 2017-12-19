@@ -79,6 +79,12 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         if (!$targetRecord = $manager->get($target)) {
             throw new \Exception(dt('Error: no alias record could be found for target !target', ['!target' => $target]));
         }
+        if (!$sourceRecord->uri() && $manager->getSelf()->uri()) {
+            $sourceRecord->setUri($manager->getSelf()->uri());
+        }
+        if (!$targetRecord->uri() && $manager->getSelf()->uri()) {
+            $targetRecord->setUri($manager->getSelf()->uri());
+        }
         if (!$source_db_name = $this->databaseName($sourceRecord)) {
             throw new \Exception(dt('Error: no database record could be found for source !source', ['!source' => $source]));
         }
