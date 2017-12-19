@@ -1049,7 +1049,7 @@ function _drush_backend_invoke($cmds, $common_backend_options = array(), $contex
             $ret['concurrent'][] = $values;
           }
         }
-        elseif (is_string($values)) {
+        elseif (is_string($values) && $proc['code'] == DRUSH_SUCCESS) {
           $ret['output'] = $values;
         }
         else {
