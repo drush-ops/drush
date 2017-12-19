@@ -245,7 +245,13 @@ class SiteAliasManager
         if (SiteAliasName::isAliasName($aliasName)) {
             // TODO: Should we do something about `@self` here? At the moment that will cause getAlias to
             // call $this->getSelf(), but we haven't built @self yet.
-            return $this->getAlias($aliasName);
+            // If the alias has no explicitly defined uri, use uri specified
+            // in cli arguments.
+            $alias = $this->getAlias($aliasName);
+            if (!$alias->get('uri') && $preflightArgs->uri()) {
+                $alias->set('uri', $preflightArgs->uri());
+            }
+            return $alias;
         }
 
         // Ditto for a site spec (/path/to/drupal#uri)
