@@ -112,7 +112,7 @@ class GenerateCommands extends DrushCommands
         $global_paths = $this->getConfig()->get('runtime.commandfile.paths', []);
         $global_paths = array_map(function ($str) { return "$str/Commands"; }, $global_paths);
         $global_paths = array_filter($global_paths, 'file_exists');
-        $global_generators[] =  $discovery->getGenerators($global_paths, '\Drush\Generators');
+        $global_generators =  $discovery->getGenerators($global_paths, '\Drush\Generators');
         $module_generators = [];
         if (Drush::bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
             $container = \Drupal::getContainer();
