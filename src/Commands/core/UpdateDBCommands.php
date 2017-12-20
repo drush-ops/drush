@@ -52,8 +52,7 @@ class UpdateDBCommands extends DrushCommands
                 $success = true;
             } else {
                 $success = $this->updateBatch($options);
-                // Clear all caches in a new process. We just performed major surgery.
-                drush_drupal_cache_clear_all();
+                // Caches were just cleared in updateFinished callback.
             }
 
             if (!$success) {

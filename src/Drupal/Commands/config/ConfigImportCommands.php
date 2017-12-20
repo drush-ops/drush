@@ -151,12 +151,13 @@ class ConfigImportCommands extends DrushCommands
      * @command config:import
      * @param $label A config directory label (i.e. a key in \$config_directories array in settings.php).
      * @interact-config-label
-     * @option preview Format for displaying proposed changes. Recognized values: list, diff.
+     * @option diff Show preview as a diff.
+     * @option preview Deprecated. Format for displaying proposed changes. Recognized values: list, diff.
      * @option source An arbitrary directory that holds the configuration files. An alternative to label argument
      * @option partial Allows for partial config imports from the source directory. Only updates and new configs will be processed with this flag (missing configs will not be deleted).
      * @aliases cim,config-import
      */
-    public function import($label = null, $options = ['preview' => 'list', 'source' => self::REQ, 'partial' => false])
+    public function import($label = null, $options = ['preview' => 'list', 'source' => self::REQ, 'partial' => false, 'diff' => false])
     {
         // Determine source directory.
         if ($target = $options['source']) {
@@ -185,7 +186,7 @@ class ConfigImportCommands extends DrushCommands
             return;
         }
 
-        if ($options['preview'] == 'list') {
+        if ($options['preview'] == 'list' && !$options['diff']) {
             $change_list = [];
             foreach ($storage_comparer->getAllCollectionNames() as $collection) {
                 $change_list[$collection] = $storage_comparer->getChangelist(null, $collection);
@@ -193,19 +194,8 @@ class ConfigImportCommands extends DrushCommands
             $table = ConfigCommands::configChangesTable($change_list, $this->output());
             $table->render();
         } else {
-            // Copy active storage to a temporary directory.
-            $temp_active_dir = drush_tempdir();
-            $temp_active_storage = new FileStorage($temp_active_dir);
-            ConfigCommands::copyConfig($active_storage, $temp_active_storage);
+            $output = ConfigCommands::getDiff($active_storage, $source_storage, $this->output());
 
-            // Copy sync storage to a temporary directory as it could be
-            // modified by the partial option or by decorated sync storages.
-            $temp_sync_dir = drush_tempdir();
-            $temp_sync_storage = new FileStorage($temp_sync_dir);
-            ConfigCommands::copyConfig($source_storage, $temp_sync_storage);
-
-            drush_shell_exec('diff -u %s %s', $temp_active_dir, $temp_sync_dir);
-            $output = drush_shell_exec_output();
             $this->output()->writeln(implode("\n", $output));
         }
 

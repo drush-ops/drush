@@ -281,7 +281,7 @@ function drush_tempnam($pattern, $tmp_dir = NULL, $suffix = '') {
  * Creates a temporary directory and return its path.
  */
 function drush_tempdir() {
-  $tmp_dir = Path::join(Drush::config()->tmp(). 'drush_tmp_' . uniqid(time() . '_'));
+  $tmp_dir = Path::join(Drush::config()->tmp(), 'drush_tmp_' . uniqid(time() . '_'));
 
   $fs = new Filesystem();
   $fs->mkdir($tmp_dir);
