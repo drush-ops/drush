@@ -276,7 +276,7 @@ class UpdateDBCommands extends DrushCommands
         $result = drush_backend_batch_process();
         \Drupal::service('state')->set('system.maintenance_mode', $maintenance_mode_original_state);
 
-        $success = FALSE;
+        $success = false;
         if (!is_array($result)) {
             $this->logger()->error(dt('Batch process did not return a result array. Returned: !type', ['!type' => gettype($result)]));
         } elseif (!array_key_exists('object', $result)) {
@@ -286,7 +286,7 @@ class UpdateDBCommands extends DrushCommands
                 '!process' => implode(', ', $result['object'][0]['#abort']),
             ]));
         } else {
-            $success = TRUE;
+            $success = true;
         }
 
         return $success;
