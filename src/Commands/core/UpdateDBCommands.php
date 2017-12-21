@@ -1,13 +1,15 @@
 <?php
 namespace Drush\Commands\core;
 
+use Consolidation\Log\ConsoleLogLevel;
+use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Utility\Error;
 use Drupal\Core\Entity\EntityStorageException;
 use Drush\Commands\DrushCommands;
-use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
-use Drush\Log\LogLevel;
+use Psr\Log\LogLevel;
 
 class UpdateDBCommands extends DrushCommands
 {
@@ -59,7 +61,8 @@ class UpdateDBCommands extends DrushCommands
                 drush_set_context('DRUSH_EXIT_CODE', DRUSH_FRAMEWORK_ERROR);
             }
 
-            $this->logger()->success(dt('Finished performing updates.'));
+            $level = $success ? ConsoleLogLevel::SUCCESS : LogLevel::ERROR;
+            $this->logger()->log($level, dt('Finished performing updates.'));
         }
     }
 
@@ -273,7 +276,18 @@ class UpdateDBCommands extends DrushCommands
         $result = drush_backend_batch_process();
         \Drupal::service('state')->set('system.maintenance_mode', $maintenance_mode_original_state);
 
-        $success = is_array($result) && (array_key_exists('object', $result)) && empty($result['object'][0]['#abort']);
+        $success = FALSE;
+        if (!is_array($result)) {
+            $this->logger()->error(dt('Batch process did not return a result array. Returned: !type', ['!type' => gettype($result)]));
+        } elseif (!array_key_exists('object', $result)) {
+            $this->logger()->error(dt('Batch process did not return a result object.'));
+        } elseif (!empty($result['object'][0]['#abort'])) {
+            $this->logger()->error(dt('Failed batch process: !process', [
+                '!process' => implode(', ', $result['object'][0]['#abort']),
+            ]));
+        } else {
+            $success = TRUE;
+        }
 
         return $success;
     }
