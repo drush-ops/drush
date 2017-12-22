@@ -33,7 +33,6 @@ class ContainerTest extends CommandUnishTestCase {
 
       // Trigger the container rebuild we need.
         $this->drush('cr');
-        $this->drush('cron');
 
       // If the event was registered successfully, then upon a config import, we
       // should get the error message.

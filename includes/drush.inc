@@ -145,7 +145,6 @@ function drush_get_global_options($brief = FALSE) {
     $options['ignored-modules']     = ['description' => "Exclude some modules from consideration when searching for drush command files.", 'example-value' => 'token,views'];
     $options['no-label']            = ['description' => "Remove the site label that drush includes in multi-site command output (e.g. `drush @site1,@site2 status`)."];
     $options['label-separator']     = ['description' => "Specify the separator to use in multi-site command output (e.g. `drush @sites pm-list --label-separator=',' --format=csv`).", 'example-value' => ','];
-    $options['nocolor']             = ['context' => 'DRUSH_NOCOLOR', 'propagate-cli-value' => TRUE, 'description' => "Suppress color highlighting on log messages."];
     $options['show-invoke']         = ['description' => "Show all function names which could have been called for the current command. See drush_invoke()."];
     $options['cache-default-class'] = ['description' => "A cache backend class that implements CacheInterface. Defaults to JSONCache.", 'example-value' => 'JSONCache'];
     $options['cache-class-<bin>']   = ['description' => "A cache backend class that implements CacheInterface to use for a specific cache bin.", 'example-value' => 'className'];
