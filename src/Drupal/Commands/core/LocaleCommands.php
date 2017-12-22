@@ -186,8 +186,7 @@ class LocaleCommands extends DrushCommands
         if (!empty($item)) {
             $uri = drush_save_data_to_temp_file('temporary://', 'po_');
             $header = $reader->getHeader();
-            // @todo Get site name.
-            $header->setProjectName('Drush');
+            $header->setProjectName(drush_get_context('DRUSH_DRUPAL_SITE'));
             $header->setLanguageName($language_name);
 
             $writer = new PoStreamWriter();
