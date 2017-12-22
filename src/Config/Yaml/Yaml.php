@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Yaml;
+namespace Drush\Config\Yaml;
 
-use Symfony\Component\Yaml\Exception\ParseException;
+use Drush\Config\Yaml\Exception\ParseException;
 
 /**
  * Yaml offers convenience methods to load and dump YAML.

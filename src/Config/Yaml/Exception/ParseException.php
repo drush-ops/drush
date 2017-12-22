@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Yaml\Exception;
+namespace Drush\Config\Yaml\Exception;
 
 /**
  * Exception class thrown when an error occurs during parsing.

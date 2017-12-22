@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Yaml;
+namespace Drush\Config\Yaml;
 
 /**
  * Escaper encapsulates escaping rules for single and double-quoted
