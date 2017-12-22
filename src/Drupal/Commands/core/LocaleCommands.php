@@ -184,10 +184,7 @@ class LocaleCommands extends DrushCommands
 
         $item = $reader->readItem();
         if (!empty($item)) {
-            /** @var \Drupal\Core\File\FileSystemInterface $file_system */
-            $file_system = \Drupal::service('file_system');
-            // @todo Replace with drush_save_data_to_temp_file()?
-            $uri = $file_system->tempnam('temporary://', 'po_');
+            $uri = drush_save_data_to_temp_file('temporary://', 'po_');
             $header = $reader->getHeader();
             // @todo Get site name.
             $header->setProjectName('Drush');
@@ -201,7 +198,7 @@ class LocaleCommands extends DrushCommands
             $writer->writeItems($reader);
             $writer->close();
 
-            $this->printFile($file_system->realpath($uri));
+            $this->printFile($uri);
         } else {
             $this->logger()->error(dt('Nothing to export.'));
         }
