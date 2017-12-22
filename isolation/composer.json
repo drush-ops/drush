@@ -23,7 +23,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Drush\\": "../src/"
+      "Drush\\": "../src/",
+      "Drush\\Internal\\":  "../internal-copy/"
     }
   },
   "autoload-dev": {
