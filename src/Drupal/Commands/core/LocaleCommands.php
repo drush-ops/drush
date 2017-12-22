@@ -136,24 +136,23 @@ class LocaleCommands extends DrushCommands
      * Exports to a gettext translation file.
      *
      * @command locale:export
-     *
+     * @drupal-dependencies locale
      * @param string $langcode The language code of the exported translations.
-     * @option $include
+     * @option types String types to include, defaults to 'customized'.
+     *      Allowed types: 'not_customized', 'customized', 'not_translated'.
      * @usage drush locale:export nl > nl.po
      *   Export the Dutch non-customized translations.
-     * @usage drush locale:export nl --include=customized > nl.po
-     *   Export the Dutch customized translations.
+     * @usage drush locale:export nl --types=customized,not_customized > nl.po
+     *   Export the Dutch customized and non_customized translations.
      * @usage drush locale:export > drupal.pot
      *   Export the template file to translate.
+     * @aliases locale-export
      * @see \Drupal\locale\Form\ExportForm::submitForm
      *
      * @throws \Exception
      * @return string
-     *
-     * @aliases locale-export
-     * @drupal-dependencies locale
      */
-    public function export($langcode = null, $options = ['include' => ['customized']])
+    public function export($langcode = null, $options = ['types' => 'customized'])
     {
         // If template is required, language code is not given.
         if ($langcode != LanguageInterface::LANGCODE_SYSTEM) {
@@ -162,24 +161,23 @@ class LocaleCommands extends DrushCommands
             $language = null;
         }
 
-        $includes_allowed = [
-            'non_customized',
-            'customized',
-            'not_translated',
-        ];
-
-        foreach ($options['include'] as $include) {
-            if (!in_array($include, $includes_allowed)) {
-                throw new \Exception(dt('Include must contain one of: @types.', ['@types' => implode(', ', $includes_allowed)]));
-            }
-        }
-
-        $content_options = is_array($options['include']) ? $options['include'] : [$options['include']];
         $reader = new PoDatabaseReader();
         $language_name = '';
+
         if ($language != null) {
+            $options['types'] = explode(',', $options['types']);
+            $allowed_types = [
+                'not_customized',
+                'customized',
+                'not_translated',
+            ];
+
+            if (array_diff($options['types'], $allowed_types)) {
+                throw new \Exception(dt('Types must contain one of: @types.', ['@types' => implode(', ', $allowed_types)]));
+            }
+
             $reader->setLangcode($language->getId());
-            $reader->setOptions($content_options);
+            $reader->setOptions(array_fill_keys($options['types'], true));
             $languages = \Drupal::languageManager()->getLanguages();
             $language_name = isset($languages[$language->getId()]) ? $languages[$language->getId()]->getName() : '';
         }
@@ -199,7 +197,6 @@ class LocaleCommands extends DrushCommands
             $writer->setUri($uri);
             $writer->setHeader($header);
             $writer->open();
-            // @todo Fix this, no translated strings in exported file?
             $writer->writeItem($item);
             $writer->writeItems($reader);
             $writer->close();
