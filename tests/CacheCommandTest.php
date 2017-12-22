@@ -7,7 +7,8 @@ namespace Unish;
   *
   * @group base
   */
-class CacheCommandCase extends CommandUnishTestCase {
+class CacheCommandCase extends CommandUnishTestCase
+{
 
     public function setUp()
     {

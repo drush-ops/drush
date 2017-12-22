@@ -1,10 +1,12 @@
 <?php
 
 namespace Unish;
+
 use Symfony\Component\Yaml\Yaml;
 use Webmozart\PathUtil\Path;
 
-abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
+abstract class UnishTestCase extends \PHPUnit_Framework_TestCase
+{
 
     /**
      * A list of Drupal sites that have been recently installed. They key is the
@@ -219,15 +221,15 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
                 if (in_array($type, ['notice', 'verbose'])) {
                     fwrite(STDERR, $line);
                 }
-              break;
+                break;
             case 'debug':
                 fwrite(STDERR, $line);
-              break;
+                break;
             default:
                 if ($type == 'notice') {
                     fwrite(STDERR, $line);
                 }
-              break;
+                break;
         }
     }
 
@@ -360,9 +362,9 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     {
         $dir = opendir($src);
         self::mkdir($dst);
-        while (false !== ( $file = readdir($dir)) ) {
+        while (false !== ( $file = readdir($dir))) {
             if (( $file != '.' ) && ( $file != '..' )) {
-                if ( is_dir($src . '/' . $file) ) {
+                if (is_dir($src . '/' . $file)) {
                     self::recursiveCopy($src . '/' . $file, $dst . '/' . $file);
                 } else {
                     copy($src . '/' . $file, $dst . '/' . $file);

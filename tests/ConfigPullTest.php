@@ -8,7 +8,8 @@ namespace Unish;
  * @group slow
  * @group config
  */
-class ConfigPullCase extends CommandUnishTestCase {
+class ConfigPullCase extends CommandUnishTestCase
+{
 
     public function setUp()
     {

@@ -2,7 +2,7 @@
 namespace Drush\Config;
 
 use Consolidation\Config\Loader\ConfigLoaderInterface;
-use Consolidation\Config\Loader\YamlConfigLoader;
+use Drush\Config\Loader\YamlConfigLoader;
 use Consolidation\Config\Loader\ConfigProcessor;
 use Consolidation\Config\Util\EnvConfig;
 use Symfony\Component\Finder\Finder;

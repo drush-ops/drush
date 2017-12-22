@@ -7,7 +7,8 @@ use Webmozart\PathUtil\Path;
 /**
  * @group base
  */
-class AnnotatedCommandCase extends CommandUnishTestCase {
+class AnnotatedCommandCase extends CommandUnishTestCase
+{
 
     public function testGlobal()
     {

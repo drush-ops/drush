@@ -23,8 +23,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * Install Drupal along with modules/themes/configuration/profile.
      *
      * @command site:install
-     * @param $profile An install profile name. Defaults to 'standard' unless an install profile is marked as a distribution.
-     * @param $additional Additional info for the install profile. The key is in the form [form name].[parameter name]
+     * @param $profile An install profile name. Defaults to 'standard' unless an install profile is marked as a distribution. Additional info for the install profile may also be provided with additional arguments. The key is in the form [form name].[parameter name]
      * @option db-url A Drupal 6 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.
      * @option db-prefix An optional table prefix to use for initial install.
      * @option db-su Account to use when creating a new database. Must have Grant permission (mysql only). Optional.
@@ -51,8 +50,10 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * @aliases si,sin,site-install
      *
      */
-    public function install($profile = '', array $additional, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ])
+    public function install(array $profile, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ])
     {
+        $additional = $profile;
+        $profile = array_shift($additional) ?: '';
         $form_options = [];
         foreach ((array)$additional as $arg) {
             list($key, $value) = explode('=', $arg, 2);
@@ -395,4 +396,3 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $_SERVER['SCRIPT_FILENAME'] = DRUPAL_ROOT . '/index.php';
     }
 }
-

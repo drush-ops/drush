@@ -567,5 +567,4 @@ class SqlBase implements ConfigAwareInterface
 
         return $db_spec;
     }
-
 }

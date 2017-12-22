@@ -15,7 +15,8 @@ namespace Unish;
  *
  *  @group base
  */
-class BackendCase extends CommandUnishTestCase {
+class BackendCase extends CommandUnishTestCase
+{
     public function testDispatchUsingAlias()
     {
         $unishAliases = [

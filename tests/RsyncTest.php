@@ -8,7 +8,8 @@ namespace Unish;
  *
  * @group commands
  */
-class RsyncCase extends CommandUnishTestCase {
+class RsyncCase extends CommandUnishTestCase
+{
 
   /**
    * Test drush rsync --simulate.
