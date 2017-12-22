@@ -6,7 +6,8 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use Webmozart\PathUtil\Path;
 
-abstract class CommandUnishTestCase extends UnishTestCase {
+abstract class CommandUnishTestCase extends UnishTestCase
+{
 
   // Unix exit codes.
     const EXIT_SUCCESS  = 0;

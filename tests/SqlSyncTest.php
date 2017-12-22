@@ -15,7 +15,8 @@ namespace Unish;
  *  @group commands
  *  @group sql
  */
-class SqlSyncTest extends CommandUnishTestCase {
+class SqlSyncTest extends CommandUnishTestCase
+{
 
     public function testSimulatedSqlSync()
     {

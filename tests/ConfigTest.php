@@ -7,7 +7,8 @@ namespace Unish;
  * @group commands
  * @group config
  */
-class ConfigCase extends CommandUnishTestCase {
+class ConfigCase extends CommandUnishTestCase
+{
 
     public function setUp()
     {

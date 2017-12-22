@@ -54,7 +54,6 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         }
         usort($rows, function ($a, $b) {
             return strnatcmp($a['name'], $b['name']);
-
         });
         return new RowsOfFields($rows);
     }

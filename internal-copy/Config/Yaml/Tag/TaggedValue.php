@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Drush\Config\Yaml\Tag;
+namespace Drush\Internal\Config\Yaml\Tag;
 
 /**
  * @author Nicolas Grekas <p@tchwork.com>

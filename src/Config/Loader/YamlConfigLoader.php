@@ -2,7 +2,7 @@
 
 namespace Drush\Config\Loader;
 
-use Drush\Config\Yaml\Yaml;
+use Drush\Internal\Config\Yaml\Yaml;
 use Consolidation\Config\Loader\ConfigLoader;
 
 /**

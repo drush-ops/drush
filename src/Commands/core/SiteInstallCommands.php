@@ -395,4 +395,3 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $_SERVER['SCRIPT_FILENAME'] = DRUPAL_ROOT . '/index.php';
     }
 }
-

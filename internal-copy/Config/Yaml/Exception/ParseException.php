@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Drush\Config\Yaml\Exception;
+namespace Drush\Internal\Config\Yaml\Exception;
 
 /**
  * Exception class thrown when an error occurs during parsing.

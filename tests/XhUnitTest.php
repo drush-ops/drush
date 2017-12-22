@@ -1,6 +1,7 @@
 <?php
 
 namespace Unish;
+
 use Drush\Commands\core\XhprofCommands;
 
 /**
@@ -8,7 +9,8 @@ use Drush\Commands\core\XhprofCommands;
  *
  * @group base
  */
-class XhUnitCase extends UnishTestCase {
+class XhUnitCase extends UnishTestCase
+{
 
   /**
    * Test various combinations of XHProf flag options.
@@ -98,5 +100,4 @@ class XhUnitCase extends UnishTestCase {
         ],
         ];
     }
-
 }

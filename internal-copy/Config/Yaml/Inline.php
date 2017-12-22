@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Drush\Config\Yaml;
+namespace Drush\Internal\Config\Yaml;
 
-use Drush\Config\Yaml\Exception\ParseException;
-use Drush\Config\Yaml\Exception\DumpException;
-use Drush\Config\Yaml\Tag\TaggedValue;
+use Drush\Internal\Config\Yaml\Exception\ParseException;
+use Drush\Internal\Config\Yaml\Exception\DumpException;
+use Drush\Internal\Config\Yaml\Tag\TaggedValue;
 
 /**
  * Inline implements a YAML parser/dumper for the YAML inline syntax.

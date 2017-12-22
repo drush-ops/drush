@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Drush\Config\Yaml\Exception;
+namespace Drush\Internal\Config\Yaml\Exception;
 
 /**
  * Exception interface for all exceptions thrown by the component.

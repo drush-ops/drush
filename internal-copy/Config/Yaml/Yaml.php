@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Drush\Config\Yaml;
+namespace Drush\Internal\Config\Yaml;
 
-use Drush\Config\Yaml\Exception\ParseException;
+use Drush\Internal\Config\Yaml\Exception\ParseException;
 
 /**
  * Yaml offers convenience methods to load and dump YAML.
