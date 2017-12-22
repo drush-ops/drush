@@ -68,7 +68,7 @@
     }
   },
   "scripts": {
-    "cs": "phpcs -n --standard=PSR2 --exclude=PEAR.Functions.ValidDefaultValue src tests",
+    "cs": "phpcs -n --standard=PSR2 src tests",
     "cbf": "phpcbf -n --standard=PSR2 src tests",
     "lint": [
       "find includes -name '*.inc' -print0 | xargs -0 -n1 php -l",
