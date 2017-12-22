@@ -256,7 +256,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_install">install</a>($profile = &#039;&#039;, array $additional, $options = [&#039;db-url&#039; =&gt; self::REQ, &#039;db-prefix&#039; =&gt; self::REQ, &#039;db-su&#039; =&gt; self::REQ, &#039;db-su-pw&#039; =&gt; self::REQ, &#039;account-name&#039; =&gt; &#039;admin&#039;, &#039;account-mail&#039; =&gt; &#039;admin@example.com&#039;, &#039;site-mail&#039; =&gt; &#039;admin@example.com&#039;, &#039;account-pass&#039; =&gt; self::REQ, &#039;locale&#039; =&gt; &#039;en&#039;, &#039;site-name&#039; =&gt; &#039;Drush Site-Install&#039;, &#039;site-pass&#039; =&gt; self::REQ, &#039;sites-subdir&#039; =&gt; self::REQ, &#039;config-dir&#039; =&gt; self::REQ])
+                    <a href="#method_install">install</a>(array $profile, $options = [&#039;db-url&#039; =&gt; self::REQ, &#039;db-prefix&#039; =&gt; self::REQ, &#039;db-su&#039; =&gt; self::REQ, &#039;db-su-pw&#039; =&gt; self::REQ, &#039;account-name&#039; =&gt; &#039;admin&#039;, &#039;account-mail&#039; =&gt; &#039;admin@example.com&#039;, &#039;site-mail&#039; =&gt; &#039;admin@example.com&#039;, &#039;account-pass&#039; =&gt; self::REQ, &#039;locale&#039; =&gt; &#039;en&#039;, &#039;site-name&#039; =&gt; &#039;Drush Site-Install&#039;, &#039;site-pass&#039; =&gt; self::REQ, &#039;sites-subdir&#039; =&gt; self::REQ, &#039;config-dir&#039; =&gt; self::REQ])
         
                                             <p>Install Drupal along with modules/themes/configuration/profile.</p>                </div>
                 <div class="col-md-2"></div>
@@ -559,9 +559,9 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_install">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L54">line 54</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L53">line 53</a></div>
         <code>                    
-    <strong>install</strong>($profile = &#039;&#039;, array $additional, $options = [&#039;db-url&#039; =&gt; self::REQ, &#039;db-prefix&#039; =&gt; self::REQ, &#039;db-su&#039; =&gt; self::REQ, &#039;db-su-pw&#039; =&gt; self::REQ, &#039;account-name&#039; =&gt; &#039;admin&#039;, &#039;account-mail&#039; =&gt; &#039;admin@example.com&#039;, &#039;site-mail&#039; =&gt; &#039;admin@example.com&#039;, &#039;account-pass&#039; =&gt; self::REQ, &#039;locale&#039; =&gt; &#039;en&#039;, &#039;site-name&#039; =&gt; &#039;Drush Site-Install&#039;, &#039;site-pass&#039; =&gt; self::REQ, &#039;sites-subdir&#039; =&gt; self::REQ, &#039;config-dir&#039; =&gt; self::REQ])
+    <strong>install</strong>(array $profile, $options = [&#039;db-url&#039; =&gt; self::REQ, &#039;db-prefix&#039; =&gt; self::REQ, &#039;db-su&#039; =&gt; self::REQ, &#039;db-su-pw&#039; =&gt; self::REQ, &#039;account-name&#039; =&gt; &#039;admin&#039;, &#039;account-mail&#039; =&gt; &#039;admin@example.com&#039;, &#039;site-mail&#039; =&gt; &#039;admin@example.com&#039;, &#039;account-pass&#039; =&gt; self::REQ, &#039;locale&#039; =&gt; &#039;en&#039;, &#039;site-name&#039; =&gt; &#039;Drush Site-Install&#039;, &#039;site-pass&#039; =&gt; self::REQ, &#039;sites-subdir&#039; =&gt; self::REQ, &#039;config-dir&#039; =&gt; self::REQ])
         </code>
     </h3>
     <div class="details">
@@ -575,13 +575,8 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
-                <td>$profile</td>
-                <td></td>
-            </tr>
-                    <tr>
                 <td>array</td>
-                <td>$additional</td>
+                <td>$profile</td>
                 <td></td>
             </tr>
                     <tr>
@@ -600,7 +595,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_determineProfile">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L135">line 135</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L136">line 136</a></div>
         <code>            protected        
     <strong>determineProfile</strong>($profile, $options, $class_loader)
         </code>
@@ -639,7 +634,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_post">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L181">line 181</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L182">line 182</a></div>
         <code>                    
     <strong>post</strong>($result, <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -675,7 +670,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_hasConfigFiles">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L196">line 196</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L197">line 197</a></div>
         <code>            protected        
     <strong>hasConfigFiles</strong>($config)
         </code>
@@ -706,7 +701,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_validate">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L205">line 205</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L206">line 206</a></div>
         <code>                    
     <strong>validate</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -735,7 +730,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_pre">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L264">line 264</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L265">line 265</a></div>
         <code>                    
     <strong>pre</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -766,7 +761,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_getSitesSubdirFromUri">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L344">line 344</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L345">line 345</a></div>
         <code>            protected        
     <strong>getSitesSubdirFromUri</strong>($root, $uri)
         </code>
@@ -803,7 +798,7 @@ provided uri.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_serverGlobals">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L364">line 364</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L365">line 365</a></div>
         <code>                    
     <strong>serverGlobals</strong>($drupal_base_url)
         </code>
