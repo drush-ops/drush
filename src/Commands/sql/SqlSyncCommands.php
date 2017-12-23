@@ -61,8 +61,6 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $target_dump_path = $this->rsync($options, $backend_options, $sourceRecord, $targetRecord, $source_dump_path);
 
         $this->import($global_options, $target_dump_path, $targetRecord, $backend_options);
-
-
     }
 
     /**
