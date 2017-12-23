@@ -41,7 +41,7 @@ class BackendCase extends CommandUnishTestCase
         $output = preg_replace('#  *#', ' ', $output);
         $output = preg_replace('# -t #', ' ', $output); // volkswagon away the -t, it's not relevant to what we're testing here
         $output = preg_replace('#' . self::getSandbox() . '#', '__SANDBOX__', $output);
-        $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=no www-admin@server.isp.com '/usr/local/bin/drush --alias-path=__SANDBOX__/etc/drush/sites --root=/path/to/drupal --uri=http://example.com --no-ansi --no-interaction status", $output);
+        $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=no www-admin@server.isp.com '/usr/local/bin/drush --alias-path=__SANDBOX__/etc/drush/sites --root=/path/to/drupal --uri=http://example.com --no-interaction status", $output);
     }
 
     /**
@@ -120,7 +120,7 @@ class BackendCase extends CommandUnishTestCase
      */
     public function testRealtimeOutput()
     {
-        $exec = sprintf('%s core-status --backend --format=yaml --no-ansi 2>&1', self::getDrush());
+        $exec = sprintf('%s core-status --backend --format=yaml 2>&1', self::getDrush());
         $this->execute($exec);
 
         $output = $this->getOutput();

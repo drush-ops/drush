@@ -293,7 +293,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
         if ($level = $this->logLevel()) {
             $cmd[] = '--' . $level;
         }
-        $cmd[] = "--no-ansi";
         $cmd[] = "--no-interaction";
 
         // Insert code coverage argument before command, in order for it to be
