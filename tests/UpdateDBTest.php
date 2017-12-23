@@ -8,7 +8,8 @@ use Webmozart\PathUtil\Path;
  *  @group slow
  *  @group commands
  */
-class UpdateDBTest extends CommandUnishTestCase {
+class UpdateDBTest extends CommandUnishTestCase
+{
 
     protected $pathPostUpdate;
 

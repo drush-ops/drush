@@ -8,7 +8,15 @@ namespace Unish;
  *
  * @group commands
  */
-class RsyncCase extends CommandUnishTestCase {
+class RsyncCase extends CommandUnishTestCase
+{
+
+    public function setUp()
+    {
+        if (!$this->getSites()) {
+            $this->setUpDrupal(2, true);
+        }
+    }
 
   /**
    * Test drush rsync --simulate.
@@ -20,8 +28,8 @@ class RsyncCase extends CommandUnishTestCase {
         }
 
         $options = [
-        'simulate' => null,
-        'alias-path' => __DIR__ . '/resources/alias-fixtures',
+            'simulate' => null,
+            'alias-path' => __DIR__ . '/resources/alias-fixtures',
         ];
 
         // Test simulated simple rsync with two local sites
@@ -41,25 +49,23 @@ class RsyncCase extends CommandUnishTestCase {
 
         // Test simulated backend invoke.
         // Note that command-specific options are not processed for remote
-        // targets. The aliases are not interpreted at all until they recach
+        // targets. The aliases are not interpreted at all until they recache
         // the remote side, at which point they will be evaluated & any needed
         // injection will be done.
         $this->drush('rsync', ['@example.dev', '@example.stage'], $options, 'user@server/path/to/drupal#sitename', null, self::EXIT_SUCCESS, '2>&1');
-        $expected = "Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --root=/path/to/drupal --uri=sitename --no-ansi --no-interaction rsync '\''@example.dev'\'' '\''@example.stage'\'' 2>&1' 2>&1";
+        $expected = "Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --root=/path/to/drupal --uri=sitename --no-interaction rsync '\''@example.dev'\'' '\''@example.stage'\'' 2>&1' 2>&1";
         $this->assertOutputEquals($expected, '# --alias-path=[^ ]*#');
     }
 
     public function testRsyncPathAliases()
     {
-
-        $this->setUpDrupal(2, true);
         $aliases = $this->getAliases();
         $source_alias = array_shift($aliases);
         $target_alias = current($aliases);
 
         $options = [
-        'yes' => null,
-        'alias-path' => __DIR__ . '/resources/alias-fixtures',
+            'yes' => null,
+            'alias-path' => __DIR__ . '/resources/alias-fixtures',
         ];
 
         $source = $this->webroot() . '/sites/dev/files/a';
@@ -102,12 +108,9 @@ class RsyncCase extends CommandUnishTestCase {
    */
     public function testRsyncAndPercentFiles()
     {
-        $root = $this->webroot();
         $site = current($this->getAliases());
         $uri = $this->getUri();
-        $options = [
-        'simulate' => null,
-        ];
+        $options['simulate'] = null;
         $this->drush('core-rsync', ["$site:%files", "/tmp"], $options, null, null, self::EXIT_SUCCESS, '2>&1;');
         $output = $this->getOutput();
         $level = $this->logLevel();
