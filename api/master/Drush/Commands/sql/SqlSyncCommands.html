@@ -283,6 +283,37 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                                     </div>
                 <div class="col-md-2"></div>
             </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_dump">dump</a>($options, $global_options, $sourceRecord, $backend_options)
+        
+                                            <p>Perform sql-dump on source unless told otherwise.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_rsync">rsync</a>(array $options, array $backend_options, <a href="../../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a> $sourceRecord, <a href="../../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a> $targetRecord, $source_dump_path)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_import">import</a>($global_options, $target_dump_path, $targetRecord, $backend_options)
+        
+                                            <p>Import file into target.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
             </div>
 
 
@@ -508,7 +539,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_sqlsync">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L40">line 40</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L41">line 41</a></div>
         <code>                    
     <strong>sqlsync</strong>($source, $target, $options = [&#039;no-dump&#039; =&gt; false, &#039;no-sync&#039; =&gt; false, &#039;runner&#039; =&gt; self::REQ, &#039;create-db&#039; =&gt; false, &#039;db-su&#039; =&gt; self::REQ, &#039;db-su-pw&#039; =&gt; self::REQ, &#039;target-dump&#039; =&gt; self::REQ, &#039;source-dump&#039; =&gt; self::OPT])
         </code>
@@ -542,6 +573,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
             
             
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" href="http://php.net/Exception">Exception</a></td>
+                <td></td>
+            </tr>
+            </table>
+
             
                     </div>
     </div>
@@ -549,7 +589,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_validate">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L138">line 138</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L70">line 70</a></div>
         <code>                    
     <strong>validate</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -571,6 +611,15 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
             
             
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" href="http://php.net/Exception">Exception</a></td>
+                <td></td>
+            </tr>
+            </table>
+
             
                     </div>
     </div>
@@ -578,7 +627,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_databaseName">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L178">line 178</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L110">line 110</a></div>
         <code>                    
     <strong>databaseName</strong>(<a href="../../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a> $record)
         </code>
@@ -594,6 +643,183 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <tr>
                 <td><a href="../../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a></td>
                 <td>$record</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_dump">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L133">line 133</a></div>
+        <code>                    string
+    <strong>dump</strong>($options, $global_options, $sourceRecord, $backend_options)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Perform sql-dump on source unless told otherwise.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$global_options</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$sourceRecord</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$backend_options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td>Path to the source dump file.</td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" href="http://php.net/Exception">Exception</a></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_rsync">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L168">line 168</a></div>
+        <code>                    string
+    <strong>rsync</strong>(array $options, array $backend_options, <a href="../../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a> $sourceRecord, <a href="../../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a> $targetRecord, $source_dump_path)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$backend_options</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a href="../../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a></td>
+                <td>$sourceRecord</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a href="../../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a></td>
+                <td>$targetRecord</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$source_dump_path</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td>Path to the target file.</td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" href="http://php.net/Exception">Exception</a></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_import">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L223">line 223</a></div>
+        <code>                    
+    <strong>import</strong>($global_options, $target_dump_path, $targetRecord, $backend_options)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Import file into target.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$global_options</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$target_dump_path</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$targetRecord</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$backend_options</td>
                 <td></td>
             </tr>
             </table>
