@@ -1,5 +1,6 @@
 <?php
 
+use Composer\XdebugHandler\XdebugHandler;
 use Drush\Config\Environment;
 use Drush\Preflight\Preflight;
 use Drush\Runtime\Runtime;
@@ -52,6 +53,10 @@ if (file_exists($autoloadFile = __DIR__ . '/vendor/autoload.php')
 } else {
     throw new \Exception("Could not locate autoload.php. cwd is $cwd; __DIR__ is " . __DIR__);
 }
+
+$xdebug = new XdebugHandler('drush', '--ansi');
+$xdebug->check();
+unset($xdebug);
 
 // Set up environment
 $environment = new Environment(Path::getHomeDirectory(), $cwd, $autoloadFile);
