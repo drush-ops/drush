@@ -13,6 +13,9 @@ class DrupalKernel extends DrupalDrupalKernel
   /** @var ServiceModifierInterface[] */
     protected $serviceModifiers = [];
 
+    /** @var array */
+    protected $themeNames;
+
     /**
      * Add a service modifier to the container builder.
      *
@@ -63,6 +66,7 @@ class DrupalKernel extends DrupalDrupalKernel
 
             $this->invalidateContainer();
         }
+        $this->classLoaderAddMultiplePsr4($this->getThemeCommandNamespaces());
         return parent::initializeContainer();
     }
 
@@ -109,11 +113,18 @@ class DrupalKernel extends DrupalDrupalKernel
         // necessary that the class files in these commands are available
         // in the autoloader.
 
-        // Also add Drush services from all modules
+        // Also add Drush services from all modules.
         $module_filenames = $this->getModuleFileNames();
         // Load each module's serviceProvider class.
         foreach ($module_filenames as $module => $filename) {
             $this->addModuleDrushServiceProvider($module, $filename);
+        }
+
+        // Also add Drush services from all themes.
+        $theme_filenames = $this->getThemeFileNames();
+        // Load each theme's serviceProvider class.
+        foreach ($theme_filenames as $theme => $filename) {
+            $this->addModuleDrushServiceProvider($theme, $filename);
         }
     }
 
@@ -202,5 +213,70 @@ class DrupalKernel extends DrupalDrupalKernel
         if (file_exists($serviceYmlPath)) {
             $this->serviceYamls['app'][$serviceProviderName] = $serviceYmlPath;
         }
+    }
+
+    /**
+     * Populates theme filesystem information.
+     *
+     * @see Drupal\Core\DrupalKernel::moduleData().
+     */
+    protected function themeData($theme_list)
+    {
+        // First, find profiles.
+        $listing = new ExtensionDiscovery($this->root);
+        $listing->setProfileDirectories([]);
+        $all_profiles = $listing->scan('profile');
+        $profiles = array_intersect_key($all_profiles, $theme_list);
+
+        $profile_directories = array_map(function ($profile) {
+            return $profile->getPath();
+        }, $profiles);
+        $listing->setProfileDirectories($profile_directories);
+
+        // Now find themes.
+        return $listing->scan('theme');
+    }
+
+    /**
+     * Gets the file name for each enabled theme.
+     *
+     * @return array
+     *   Array where each key is a theme name, and each value is a path to the
+     *   respective *.info.yml file.
+     */
+    protected function getThemeFileNames()
+    {
+        if ($this->themeNames) {
+            return $this->themeNames;
+        }
+        $extensions = $this->getConfigStorage()->read('core.extension');
+        $theme_list = isset($extensions['theme']) ? $extensions['theme'] : [];
+        $data = $this->themeData($theme_list);
+        foreach ($theme_list as $theme => $weight) {
+            if (!isset($data[$theme])) {
+                continue;
+            }
+            $path = $data[$theme]->getPathname();
+
+            // Skip themes that don't have a Drush service.yml.
+            if (!$this->findModuleDrushServiceProvider($theme, dirname($path))) {
+                continue;
+            }
+            $this->themeNames[$theme] = $path;
+        }
+        return $this->themeNames;
+    }
+
+    /**
+     * Get PSR4 namespaces for Drush Commands in themes.
+     */
+    protected function getThemeCommandNamespaces()
+    {
+        $namespaces = [];
+        $themes = $this->getThemeFileNames();
+        foreach ($themes as $theme => $path) {
+            $namespaces["Drupal\\$theme\Commands"] = dirname($path) . '/src/Commands';
+        }
+        return $namespaces;
     }
 }
