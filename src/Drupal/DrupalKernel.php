@@ -234,7 +234,7 @@ class DrupalKernel extends DrupalDrupalKernel
         $listing->setProfileDirectories($profile_directories);
 
         // Now find themes.
-        $listing->scan('theme');
+        return $listing->scan('theme');
     }
 
     /**
@@ -251,15 +251,18 @@ class DrupalKernel extends DrupalDrupalKernel
         }
         $extensions = $this->getConfigStorage()->read('core.extension');
         $theme_list = isset($extensions['theme']) ? $extensions['theme'] : [];
-        $this->themeData($theme_list);
+        $data = $this->themeData($theme_list);
         foreach ($theme_list as $theme => $weight) {
-            $dir = drupal_get_path('theme', $theme);
+            if (!isset($data[$theme])) {
+              continue;
+            }
+            $path = $data[$theme]->getPathname();
 
             // Skip themes that don't have a Drush service.yml.
-            if (!$this->findModuleDrushServiceProvider($theme, $dir)) {
+            if (!$this->findModuleDrushServiceProvider($theme, dirname($path))) {
                 continue;
             }
-            $this->themeNames[$theme] = $dir. "/$theme.info.yml";
+            $this->themeNames[$theme] = $path;
         }
         return $this->themeNames;
     }
