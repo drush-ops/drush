@@ -254,7 +254,7 @@ class DrupalKernel extends DrupalDrupalKernel
         $data = $this->themeData($theme_list);
         foreach ($theme_list as $theme => $weight) {
             if (!isset($data[$theme])) {
-              continue;
+                continue;
             }
             $path = $data[$theme]->getPathname();
 
