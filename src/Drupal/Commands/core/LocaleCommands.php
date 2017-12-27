@@ -137,26 +137,32 @@ class LocaleCommands extends DrushCommands
      *
      * @command locale:export
      * @drupal-dependencies locale
-     * @param string $langcode The language code of the exported translations.
-     * @option types String types to include, defaults to 'customized'.
-     *      Allowed types: 'not_customized', 'customized', 'not_translated'.
-     * @usage drush locale:export nl > nl.po
+     * @option langcode The language code of the exported translations.
+     * @option types String types to include, defaults to all types.
+     *      Types: 'not-customized', 'customized', 'not-translated'.
+     * @usage drush locale:export --langcode=nl > nl.po
      *   Export the Dutch non-customized translations.
-     * @usage drush locale:export nl --types=customized,not_customized > nl.po
-     *   Export the Dutch customized and non_customized translations.
+     * @usage drush locale:export --langcode=nl --types=customized,not-customized > nl.po
+     *   Export the Dutch customized and not customized translations.
      * @usage drush locale:export > drupal.pot
      *   Export the template file to translate.
      * @aliases locale-export
      * @see \Drupal\locale\Form\ExportForm::submitForm
      *
      * @throws \Exception
-     * @return string
      */
-    public function export($langcode = null, $options = ['types' => 'customized'])
+    public function export($options = ['langcode' => self::OPT, 'types' => self::OPT])
     {
         // If template is required, language code is not given.
-        if ($langcode != LanguageInterface::LANGCODE_SYSTEM) {
-            $language = \Drupal::languageManager()->getLanguage($langcode);
+        if ($options['langcode'] != LanguageInterface::LANGCODE_SYSTEM) {
+            $language = \Drupal::languageManager()->getLanguage($options['langcode']);
+
+            if ($language == null) {
+                $this->logger()->warning(dt('Language code @langcode is not configured.', [
+                    '@langcode' => $options['langcode'],
+                ]));
+                return;
+            }
         } else {
             $language = null;
         }
@@ -167,14 +173,22 @@ class LocaleCommands extends DrushCommands
         if ($language != null) {
             $options['types'] = explode(',', $options['types']);
             $allowed_types = [
-                'not_customized',
+                'not-customized',
                 'customized',
-                'not_translated',
+                'not-translated',
             ];
 
-            if (array_diff($options['types'], $allowed_types)) {
-                throw new \Exception(dt('Types must contain one of: @types.', ['@types' => implode(', ', $allowed_types)]));
+            if (empty(reset($options['types']))) {
+                $options['types'] = $allowed_types;
+            } elseif (array_diff($options['types'], $allowed_types)) {
+                throw new \Exception(dt('Types must contain one of: @types.', [
+                    '@types' => implode(', ', $allowed_types),
+                ]));
             }
+
+            $options['types'] = array_map(function ($value) {
+                return str_replace('-', '_', $value);
+            }, $options['types']);
 
             $reader->setLangcode($language->getId());
             $reader->setOptions(array_fill_keys($options['types'], true));
@@ -190,7 +204,7 @@ class LocaleCommands extends DrushCommands
             $header->setLanguageName($language_name);
 
             $writer = new PoStreamWriter();
-            $writer->setUri($uri);
+            $writer->setURI($uri);
             $writer->setHeader($header);
             $writer->open();
             $writer->writeItem($item);
@@ -199,8 +213,7 @@ class LocaleCommands extends DrushCommands
 
             $this->printFile($uri);
         } else {
-            $this->logger()->error(dt('Nothing to export.'));
+            $this->logger()->warning(dt('Nothing to export.'));
         }
     }
-
 }
