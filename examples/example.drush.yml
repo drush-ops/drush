@@ -35,11 +35,13 @@
 # specified by the destination parameter, nor do they load configuration files
 # at remote sites.
 
-# This section is about Drush internals, and not any commands in particular.
+# This section is about the Drush framework, and not any commands in particular.
 drush:
   paths:
-    # Load a drush.yml configuration file from the current working directory.
-    config: ./drush.yml
+    # Specify config files to load.
+    config:
+      # Load any personal config files. Is silently skipped if not found.
+      - ${env.home}/.drush/config/local.drush.yml
 
 
     # Specify folders to search for Drush command files.  These locations
