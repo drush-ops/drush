@@ -249,7 +249,7 @@ class Preflight
         // Extend configuration and alias files to include files in
         // target site.
         $root = $this->findSelectedSite();
-        $this->configLocator->addSitewideConfig($root);
+        $this->configLocator->addDrupalConfig($root);
         $this->configLocator->setComposerRoot($this->drupalFinder()->getComposerRoot());
 
         // Look up the locations where alias files may be found.
@@ -276,7 +276,10 @@ class Preflight
 
         // If we did not redispatch, then add the site-wide config for the
         // new root (if the root did in fact change) and continue.
-        $this->configLocator->addSitewideConfig($root);
+        $this->configLocator->addDrupalConfig($root);
+        // Set multisite config using uri from alias.
+        $uri = $this->aliasManager->getSelf()->uri() ?: 'default';
+        $this->configLocator->addSiteConfig($root, $uri);
 
         // Remember the paths to all the files we loaded, so that we can
         // report on it from Drush status or wherever else it may be needed.

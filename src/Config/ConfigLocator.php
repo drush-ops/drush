@@ -37,7 +37,9 @@ class ConfigLocator
 
     protected $sources = false;
 
-    protected $siteRoots = [];
+    protected $drupalRoots = [];
+
+    protected $siteUris = [];
 
     protected $composerRoot;
 
@@ -256,26 +258,57 @@ class ConfigLocator
      * Add any configuration files found around the Drupal root of the
      * selected site.
      *
-     * @param Path to the selected Drupal site
+     * @param $drupalRoot
+     *   Path to the selected Drupal site.
      * @return $this
      */
-    public function addSitewideConfig($siteRoot)
+    public function addDrupalConfig($drupalRoot)
     {
         // There might not be a site.
-        if (!is_dir($siteRoot)) {
+        if (!is_dir($drupalRoot)) {
             return;
         }
 
         // We might have already processed this root.
-        $siteRoot = realpath($siteRoot);
-        if (in_array($siteRoot, $this->siteRoots)) {
+        $drupalRoot = realpath($drupalRoot);
+        if (in_array($drupalRoot, $this->drupalRoots)) {
             return;
         }
 
         // Remember that we've seen this location.
-        $this->siteRoots[] = $siteRoot;
+        $this->drupalRoots[] = $drupalRoot;
 
-        $this->addConfigPaths(self::DRUPAL_CONTEXT, [ dirname($siteRoot) . '/drush', "$siteRoot/drush", "$siteRoot/sites/all/drush" ]);
+        $this->addConfigPaths(self::DRUPAL_CONTEXT, [ dirname($drupalRoot) . '/drush', "$drupalRoot/drush", "$drupalRoot/sites/all/drush" ]);
+        return $this;
+    }
+
+    /**
+     * Add any configuration files found around the Drupal root of the
+     * selected site.
+     *
+     * @param $drupalRoot
+     *   Path to the selected Drupal site.
+     * @param $uri
+     *   Site URI.
+     *
+     * @return $this
+     */
+    public function addSiteConfig($drupalRoot, $uri)
+    {
+        // There might not be a site.
+        if (!is_dir($drupalRoot)) {
+            return;
+        }
+
+        // We might have already processed this site.
+        if (in_array($uri, $this->siteUris)) {
+            return;
+        }
+
+        // Remember that we've seen this site.
+        $this->siteUris[] = $uri;
+
+        $this->addConfigPaths(self::SITE_CONTEXT, [ "$drupalRoot/sites/$uri", "$drupalRoot/sites/$uri/drush" ]);
         return $this;
     }
 
@@ -381,7 +414,7 @@ class ConfigLocator
     {
         // In addition to the paths passed in to us (from --alias-paths
         // commandline options), add some site-local locations.
-        $base_dirs = array_filter(array_merge($this->siteRoots, [$this->composerRoot]));
+        $base_dirs = array_filter(array_merge($this->drupalRoots, [$this->composerRoot]));
         $site_local_paths = array_map(
             function ($item) {
                 return "$item/drush/sites";
