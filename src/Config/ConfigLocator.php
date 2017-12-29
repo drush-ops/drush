@@ -295,13 +295,9 @@ class ConfigLocator
     {
         $uri = $alias->uri() ?: 'default';
 
-        // Convert a fqdn to a hostname and look for matching entry in
-        // sites/sites.php.
+        // Parse a fqdn and look for matching entry in sites/sites.php.
         if (filter_var($uri, FILTER_VALIDATE_URL)) {
-            $hostname = StringUtils::convertUriToHostname($uri);
-
-            // If $hostname matches a sites.php mappings, use dir from mapping.
-            if ($dir_name = $this->lookupSiteDirFromHostname($hostname, $alias->root())) {
+            if ($dir_name = StringUtils::lookupSiteDirFromUri($uri, $alias->root())) {
                 $uri = $dir_name;
             }
         }
@@ -322,27 +318,6 @@ class ConfigLocator
 
         $this->addConfigPaths(self::SITE_CONTEXT, [ "$site_dir", "$site_dir/drush" ]);
         return $this;
-    }
-
-    /**
-     * Lookup a site's directory via the sites.php file given a hostname.
-     *
-     * @param $hostname
-     *   The hostname of a site. May be converted from URI.
-     *
-     * @return $drupalRoot
-     *   The directory associated with that hostname.
-     */
-    public function lookupSiteDirFromHostname($hostname, $drupalRoot) {
-        if (file_exists($drupalRoot . '/sites/sites.php')) {
-            $sites = array();
-            // This will overwrite $sites with the desired mappings.
-            include ($drupalRoot . '/sites/sites.php');
-            return isset($sites[$hostname]) ? $sites[$hostname] : FALSE;
-        }
-        else {
-            return FALSE;
-        }
     }
 
     /**

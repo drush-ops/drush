@@ -134,23 +134,39 @@ class StringUtils
     }
 
     /**
-     * Convert from a URI to a site directory.
+     * Lookup a site's directory via the sites.php file given a uri.
      *
      * @param string $uri
-     *   A uri, such as http://domain.com:8080/drupal
-     *
-     * @return string
-     *   The hostname.
+     *   The site URI.
+     * @return string $drupalRoot
+     *   The directory associated with that URI.
+     * @param bool $require_settings
+     *   Only directories with an existing settings.php file will be recognized.
+     *   Defaults to TRUE.
+     * @see \Drupal\Core\DrupalKernel::findSitePath()
      */
-    public static function convertUriToHostname($uri) {
-        $uri = str_replace('http://', '', $uri);
-        $uri = str_replace('https://', '', $uri);
-        if (drush_is_windows()) {
-            // Handle absolute paths on windows
-            $uri = str_replace(array(':/', ':\\'), array('.', '.'), $uri);
-        }
-        $hostname = str_replace(array('/', ':', '\\'), array('.', '.', '.'), $uri);
+    public static function lookupSiteDirFromUri($uri, $drupalRoot, $require_settings = TRUE) {
+        if (file_exists($drupalRoot . '/sites/sites.php')) {
+            $sites = [];
+            // This will overwrite $sites with the desired mappings.
+            include ($drupalRoot . '/sites/sites.php');
 
-        return $hostname;
+            // This code is adapted from
+            // \Drupal\Core\DrupalKernel::findSitePath().
+            $path = explode('/', parse_url($uri, PHP_URL_PATH));
+            $server = explode('.', implode('.', array_reverse(explode(':', rtrim(parse_url($uri, PHP_URL_HOST), '.')))));
+            for ($i = count($path); $i > 0; $i--) {
+                for ($j = count($server); $j > 0; $j--) {
+                    $dir = implode('.', array_slice($server, -$j)) . implode('.', array_slice($path, 0, $i));
+                    if (isset($sites[$dir]) && file_exists($drupalRoot . '/sites/' . $sites[$dir])) {
+                        $dir = $sites[$dir];
+                    }
+                    if (file_exists($drupalRoot . '/sites/' . $dir . '/settings.php') || (!$require_settings && file_exists($drupalRoot . '/sites/' . $dir))) {
+                        return "$dir";
+                    }
+                }
+            }
+        }
+        return FALSE;
     }
 }
