@@ -283,20 +283,20 @@ class ConfigLocator
     }
 
     /**
-     * Add any configuration files found around the Drupal root of the
-     * selected site.
+     * Add any configuration files found around the multisite directory.
      *
      * @param $drupalRoot
      *   Path to the selected Drupal site.
      * @param $uri
-     *   Site URI.
+     *   Site URI of the multisite.
      *
      * @return $this
      */
     public function addSiteConfig($drupalRoot, $uri)
     {
-        // There might not be a site.
-        if (!is_dir($drupalRoot)) {
+        // There might not be a site directory.
+        $site_dir = "$drupalRoot/sites/$uri";
+        if (!is_dir($site_dir)) {
             return;
         }
 
@@ -308,7 +308,7 @@ class ConfigLocator
         // Remember that we've seen this site.
         $this->siteUris[] = $uri;
 
-        $this->addConfigPaths(self::SITE_CONTEXT, [ "$drupalRoot/sites/$uri", "$drupalRoot/sites/$uri/drush" ]);
+        $this->addConfigPaths(self::SITE_CONTEXT, [ "$site_dir", "$site_dir/drush" ]);
         return $this;
     }
 
