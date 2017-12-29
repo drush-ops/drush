@@ -145,11 +145,12 @@ class StringUtils
      *   Defaults to TRUE.
      * @see \Drupal\Core\DrupalKernel::findSitePath()
      */
-    public static function lookupSiteDirFromUri($uri, $drupalRoot, $require_settings = TRUE) {
+    public static function lookupSiteDirFromUri($uri, $drupalRoot, $require_settings = true)
+    {
         if (file_exists($drupalRoot . '/sites/sites.php')) {
             $sites = [];
             // This will overwrite $sites with the desired mappings.
-            include ($drupalRoot . '/sites/sites.php');
+            include($drupalRoot . '/sites/sites.php');
 
             // This code is adapted from
             // \Drupal\Core\DrupalKernel::findSitePath().
@@ -167,6 +168,6 @@ class StringUtils
                 }
             }
         }
-        return FALSE;
+        return false;
     }
 }
