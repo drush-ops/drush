@@ -103,7 +103,7 @@ class ConfigLocator
         }
         $this->config->addPlaceholder(self::USER_CONTEXT);
         $this->config->addPlaceholder(self::DRUPAL_CONTEXT);
-        $this->config->addPlaceholder(self::SITE_CONTEXT); // not implemented yet (multisite)
+        $this->config->addPlaceholder(self::SITE_CONTEXT);
         $this->config->addPlaceholder(self::ALIAS_CONTEXT);
         $this->config->addPlaceholder(self::PREFLIGHT_CONTEXT);
         $this->config->addPlaceholder(self::ENVIRONMENT_CONTEXT);
