@@ -278,7 +278,7 @@ class Preflight
         // new root (if the root did in fact change) and continue.
         $this->configLocator->addDrupalConfig($root);
         // Set multisite config using uri from alias.
-        $this->configLocator->addSiteConfig($root, $selfAliasRecord);
+        $this->configLocator->addSiteConfig($selfAliasRecord);
 
         // Remember the paths to all the files we loaded, so that we can
         // report on it from Drush status or wherever else it may be needed.

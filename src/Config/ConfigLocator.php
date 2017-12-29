@@ -5,6 +5,7 @@ use Consolidation\Config\Loader\ConfigLoaderInterface;
 use Drush\Config\Loader\YamlConfigLoader;
 use Consolidation\Config\Loader\ConfigProcessor;
 use Consolidation\Config\Util\EnvConfig;
+use Drush\Utils\StringUtils;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -39,7 +40,7 @@ class ConfigLocator
 
     protected $drupalRoots = [];
 
-    protected $siteUris = [];
+    protected $siteDirs = [];
 
     protected $composerRoot;
 
@@ -285,66 +286,42 @@ class ConfigLocator
     /**
      * Add any configuration files found around the multisite directory.
      *
-     * @param string $drupalRoot
-     *   Path to the selected Drupal site.
-     *
      * @param \Drush\SiteAlias\AliasRecord $alias
      *   Site URI of the multisite.
      *
      * @return $this
      */
-    public function addSiteConfig($drupalRoot, $alias)
+    public function addSiteConfig($alias)
     {
         $uri = $alias->uri() ?: 'default';
 
         // Convert a fqdn to a hostname and look for matching entry in
         // sites/sites.php.
         if (filter_var($uri, FILTER_VALIDATE_URL)) {
-            $hostname = $this->convertUriToHostname($uri);
+            $hostname = StringUtils::convertUriToHostname($uri);
 
             // If $hostname matches a sites.php mappings, use dir from mapping.
-            if ($dir_name = $this->lookupSiteDirFromHostname($hostname, $drupalRoot)) {
+            if ($dir_name = $this->lookupSiteDirFromHostname($hostname, $alias->root())) {
                 $uri = $dir_name;
             }
         }
 
-        // There might not be a site directory.
-        $site_dir = "$drupalRoot/sites/$uri";
+        // There might not be a site    directory.
+        $site_dir = $alias->root() ."/sites/$uri";
         if (!is_dir($site_dir)) {
             return;
         }
 
         // We might have already processed this site.
-        if (in_array($uri, $this->siteUris)) {
+        if (in_array($site_dir, $this->siteDirs)) {
             return;
         }
 
         // Remember that we've seen this site.
-        $this->siteUris[] = $uri;
+        $this->siteDirs[] = $site_dir;
 
         $this->addConfigPaths(self::SITE_CONTEXT, [ "$site_dir", "$site_dir/drush" ]);
         return $this;
-    }
-
-    /**
-     * Convert from a URI to a site directory.
-     *
-     * @param string $uri
-     *   A uri, such as http://domain.com:8080/drupal
-     *
-     * @return string
-     *   The hostname.
-     */
-     public function convertUriToHostname($uri) {
-        $uri = str_replace('http://', '', $uri);
-        $uri = str_replace('https://', '', $uri);
-        if (drush_is_windows()) {
-            // Handle absolute paths on windows
-            $uri = str_replace(array(':/', ':\\'), array('.', '.'), $uri);
-        }
-        $hostname = str_replace(array('/', ':', '\\'), array('.', '.', '.'), $uri);
-
-        return $hostname;
     }
 
     /**

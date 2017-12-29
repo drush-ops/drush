@@ -132,4 +132,25 @@ class StringUtils
 
         return $pass;
     }
+
+    /**
+     * Convert from a URI to a site directory.
+     *
+     * @param string $uri
+     *   A uri, such as http://domain.com:8080/drupal
+     *
+     * @return string
+     *   The hostname.
+     */
+    public static function convertUriToHostname($uri) {
+        $uri = str_replace('http://', '', $uri);
+        $uri = str_replace('https://', '', $uri);
+        if (drush_is_windows()) {
+            // Handle absolute paths on windows
+            $uri = str_replace(array(':/', ':\\'), array('.', '.'), $uri);
+        }
+        $hostname = str_replace(array('/', ':', '\\'), array('.', '.', '.'), $uri);
+
+        return $hostname;
+    }
 }
