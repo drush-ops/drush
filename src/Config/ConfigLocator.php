@@ -285,15 +285,29 @@ class ConfigLocator
     /**
      * Add any configuration files found around the multisite directory.
      *
-     * @param $drupalRoot
+     * @param string $drupalRoot
      *   Path to the selected Drupal site.
-     * @param $uri
+     *
+     * @param \Drush\SiteAlias\AliasRecord $alias
      *   Site URI of the multisite.
      *
      * @return $this
      */
-    public function addSiteConfig($drupalRoot, $uri)
+    public function addSiteConfig($drupalRoot, $alias)
     {
+        $uri = $alias->uri() ?: 'default';
+
+        // Convert a fqdn to a hostname and look for matching entry in
+        // sites/sites.php.
+        if (filter_var($uri, FILTER_VALIDATE_URL)) {
+            $hostname = $this->convertUriToHostname($uri);
+
+            // If $hostname matches a sites.php mappings, use dir from mapping.
+            if ($dir_name = $this->lookupSiteDirFromHostname($hostname, $drupalRoot)) {
+                $uri = $dir_name;
+            }
+        }
+
         // There might not be a site directory.
         $site_dir = "$drupalRoot/sites/$uri";
         if (!is_dir($site_dir)) {
@@ -310,6 +324,48 @@ class ConfigLocator
 
         $this->addConfigPaths(self::SITE_CONTEXT, [ "$site_dir", "$site_dir/drush" ]);
         return $this;
+    }
+
+    /**
+     * Convert from a URI to a site directory.
+     *
+     * @param string $uri
+     *   A uri, such as http://domain.com:8080/drupal
+     *
+     * @return string
+     *   The hostname.
+     */
+     public function convertUriToHostname($uri) {
+        $uri = str_replace('http://', '', $uri);
+        $uri = str_replace('https://', '', $uri);
+        if (drush_is_windows()) {
+            // Handle absolute paths on windows
+            $uri = str_replace(array(':/', ':\\'), array('.', '.'), $uri);
+        }
+        $hostname = str_replace(array('/', ':', '\\'), array('.', '.', '.'), $uri);
+
+        return $hostname;
+    }
+
+    /**
+     * Lookup a site's directory via the sites.php file given a hostname.
+     *
+     * @param $hostname
+     *   The hostname of a site. May be converted from URI.
+     *
+     * @return $drupalRoot
+     *   The directory associated with that hostname.
+     */
+    public function lookupSiteDirFromHostname($hostname, $drupalRoot) {
+        if (file_exists($drupalRoot . '/sites/sites.php')) {
+            $sites = array();
+            // This will overwrite $sites with the desired mappings.
+            include ($drupalRoot . '/sites/sites.php');
+            return isset($sites[$hostname]) ? $sites[$hostname] : FALSE;
+        }
+        else {
+            return FALSE;
+        }
     }
 
     /**
