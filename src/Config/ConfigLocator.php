@@ -305,7 +305,8 @@ class ConfigLocator
             'drush.yml',
             'config/drush.yml',
         ];
-        $this->addConfigCandidates($processor, $loader, $dirs, $candidates);
+        $discovered_config_files = $this->identifyCandidates($dirs, $candidates);
+        $this->addConfigFiles($processor, $loader, $discovered_config_files);
 
         // Add explicitly defined config files.
         $this->addConfigFiles($processor, $loader, $files);
@@ -316,23 +317,6 @@ class ConfigLocator
         $this->config->addContext($contextName, $context);
 
         return $this;
-    }
-
-    /**
-     * Adds config files in $paths matching filenames in $candidates.
-     *
-     * @param ConfigProcessor $processor
-     * @param ConfigLoaderInterface $loader
-     * @param string[] $paths
-     * @param string[] $candidates
-     */
-    protected function addConfigCandidates(ConfigProcessor $processor, ConfigLoaderInterface $loader, $paths, $candidates)
-    {
-        $configFiles = $this->identifyCandidates($paths, $candidates);
-        foreach ($configFiles as $configFile) {
-            $processor->extend($loader->load($configFile));
-            $this->configFilePaths[] = $configFile;
-        }
     }
 
     /**
