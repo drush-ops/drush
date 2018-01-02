@@ -16,6 +16,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Parser;
+use Webmozart\PathUtil\Path;
 
 class ConfigCommands extends DrushCommands
 {
@@ -297,19 +298,22 @@ class ConfigCommands extends DrushCommands
      */
     public static function getDirectory($label, $directory = null)
     {
+        $return = null;
         // If the user provided a directory, use it.
         if (!empty($directory)) {
             if ($directory === true) {
                 // The user did not pass a specific directory, make one.
-                return FsUtils::prepareBackupDir('config-import-export');
+                $return = FsUtils::prepareBackupDir('config-import-export');
             } else {
                 // The user has specified a directory.
                 drush_mkdir($directory);
-                return $directory;
+                $return = $directory;
             }
+        } else {
+            // If a directory isn't specified, use the label argument or default sync directory.
+            $return = \config_get_config_directory($label ?: CONFIG_SYNC_DIRECTORY);
         }
-        // If a directory isn't specified, use the label argument or default sync directory.
-        return \config_get_config_directory($label ?: CONFIG_SYNC_DIRECTORY);
+        return Path::canonicalize($return);
     }
 
     /**
@@ -317,7 +321,7 @@ class ConfigCommands extends DrushCommands
      */
     public function getChanges($target_storage)
     {
-        /** @var \Drupal\Core\Config\StorageInterface $active_storage */
+        /** @var StorageInterface $active_storage */
         $active_storage = \Drupal::service('config.storage');
 
         $config_comparer = new StorageComparer($active_storage, $target_storage, \Drupal::service('config.manager'));
@@ -445,9 +449,9 @@ class ConfigCommands extends DrushCommands
     /**
      * Copies configuration objects from source storage to target storage.
      *
-     * @param \Drupal\Core\Config\StorageInterface $source
+     * @param StorageInterface $source
      *   The source config storage service.
-     * @param \Drupal\Core\Config\StorageInterface $destination
+     * @param StorageInterface $destination
      *   The destination config storage service.
      */
     public static function copyConfig(StorageInterface $source, StorageInterface $destination)
@@ -473,5 +477,35 @@ class ConfigCommands extends DrushCommands
                 $destination->write($name, $source->read($name));
             }
         }
+    }
+
+    /**
+     * Get diff between two config sets.
+     *
+     * @param StorageInterface $destination_storage
+     * @param StorageInterface $source_storage
+     * @param OutputInterface $output
+     * @return array|bool
+     *   An array of strings containing the diff.
+     */
+    public static function getDiff(StorageInterface $destination_storage, StorageInterface $source_storage, OutputInterface $output)
+    {
+        // Copy active storage to a temporary directory.
+        $temp_destination_dir = drush_tempdir();
+        $temp_destination_storage = new FileStorage($temp_destination_dir);
+        self::copyConfig($destination_storage, $temp_destination_storage);
+
+        // Copy source storage to a temporary directory as it could be
+        // modified by the partial option or by decorated sync storages.
+        $temp_source_dir = drush_tempdir();
+        $temp_source_storage = new FileStorage($temp_source_dir);
+        self::copyConfig($source_storage, $temp_source_storage);
+
+        $prefix = 'diff';
+        if (drush_program_exists('git') && $output->isDecorated()) {
+            $prefix = 'git diff --color=always';
+        }
+        drush_shell_exec($prefix . ' -u %s %s', $temp_destination_dir, $temp_source_dir);
+        return drush_shell_exec_output();
     }
 }
