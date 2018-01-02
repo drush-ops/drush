@@ -109,11 +109,14 @@ class GenerateCommands extends DrushCommands
          */
         $dcg_generators = $discovery->getGenerators([DCG_ROOT . '/src/Command/Drupal_8'], '\DrupalCodeGenerator\Command\Drupal_8');
         $drush_generators = $discovery->getGenerators([__DIR__ . '/Generators'], '\Drush\Commands\generate\Generators');
-        $global_paths = $this->getConfig()->get('runtime.commandfile.paths', []);
+        $config_paths = $this->getConfig()->get('runtime.commandfile.paths', []);
 
-        $global_paths = array_map(function ($str) {
-            return "$str/Generators";
-        }, $global_paths);
+        $global_paths = [];
+
+        foreach ($config_paths as $path) {
+            $global_paths[] = $path . '/Generators';
+            $global_paths[] = $path . '/src/Generators';
+        }
 
         $global_paths = array_filter($global_paths, 'file_exists');
         $global_generators =  $discovery->getGenerators($global_paths, '\Drush\Generators');
