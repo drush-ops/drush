@@ -290,9 +290,6 @@ class ConfigLocator
      */
     public function addConfigPaths($contextName, $paths)
     {
-        // Separate $paths into files and directories.
-        list($files, $dirs) = $this->separateFilesAndDirs($paths);
-
         $loader = new YamlConfigLoader();
         // Make all of the config values parsed so far available in evaluations.
         $reference = $this->config()->export();
@@ -300,16 +297,12 @@ class ConfigLocator
         $context = $this->config->getContext($contextName);
         $processor->add($context->export());
 
-        // Add config files in $dirs that match filenames in $candidates.
         $candidates = [
             'drush.yml',
             'config/drush.yml',
         ];
-        $discovered_config_files = $this->identifyCandidates($dirs, $candidates);
-        $this->addConfigFiles($processor, $loader, $discovered_config_files);
-
-        // Add explicitly defined config files.
-        $this->addConfigFiles($processor, $loader, $files);
+        $config_files = $this->findConfigFiles($paths, $candidates);
+        $this->addConfigFiles($processor, $loader, $config_files);
 
         // Complete config import.
         $this->addToSources($processor->sources());
@@ -490,12 +483,16 @@ class ConfigLocator
      * Given an array of paths, separates files and directories.
      *
      * @param array $paths
+     *   An array of config paths. These may be config files or paths to dirs
+     *   containing config files.
+     * @param array $candidates
+     *   An array filenames that are considered config files.
      *
      * @return array
      *   An array. The first row is an array of files, the second row is an
      *   array of dirs.
      */
-    protected function separateFilesAndDirs($paths)
+    protected function findConfigFiles($paths, $candidates)
     {
         $files = [];
         $dirs = [];
@@ -508,6 +505,13 @@ class ConfigLocator
                 }
             }
         }
-        return array($files, $dirs);
+
+        // Search directories for config file candidates.
+        $discovered_config_files = $this->identifyCandidates($dirs, $candidates);
+
+        // Merge discoverd candidates with explicitly specified config files.
+        $config_files = array_merge($discovered_config_files, $files);
+
+        return $config_files;
     }
 }
