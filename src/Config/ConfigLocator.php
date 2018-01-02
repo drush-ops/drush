@@ -495,15 +495,15 @@ class ConfigLocator
      *   An array. The first row is an array of files, the second row is an
      *   array of dirs.
      */
-    protected function separateFilesAndDirs($paths) {
+    protected function separateFilesAndDirs($paths)
+    {
         $files = [];
         $dirs = [];
         foreach ($paths as $path) {
             if (file_exists($path)) {
                 if (is_dir($path)) {
                     $dirs[] = realpath($path);
-                }
-                else {
+                } else {
                     $files[] = realpath($path);
                 }
             }
