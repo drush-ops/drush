@@ -112,7 +112,7 @@ class GenerateCommands extends DrushCommands
         $global_paths = $this->getConfig()->get('runtime.commandfile.paths', []);
 
         $global_paths = array_map(function ($str) {
-            return "$str/Commands";
+            return "$str/Generators";
         }, $global_paths);
 
         $global_paths = array_filter($global_paths, 'file_exists');
