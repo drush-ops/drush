@@ -3,7 +3,7 @@ namespace Drush\SiteAlias;
 
 use Consolidation\Config\Loader\ConfigProcessor;
 use Dflydev\DotAccessData\Util as DotAccessDataUtil;
-use Symfony\Component\Yaml\Yaml;
+use Drush\Internal\Config\Yaml\Yaml;
 
 /**
  * Discover alias files:
@@ -19,6 +19,11 @@ class SiteAliasFileLoader
     protected $discovery;
 
     /**
+     * @var array
+     */
+    protected $referenceData;
+
+    /**
      * SiteAliasFileLoader constructor
      *
      * @param SiteAliasFileDiscovery|null $discovery
@@ -26,6 +31,14 @@ class SiteAliasFileLoader
     public function __construct($discovery = null)
     {
         $this->discovery = $discovery ?: new SiteAliasFileDiscovery();
+    }
+
+    /**
+     * Allow configuration data to be used in replacements in the alias file.
+     */
+    public function setReferenceData($data)
+    {
+        $this->referenceData = $data;
     }
 
     /**
@@ -326,6 +339,7 @@ class SiteAliasFileLoader
             return [];
         }
         // TODO: Perhaps cache these alias files, as they may be read multiple times.
+        // TODO: Maybe use a YamlConfigLoader?
         return (array) Yaml::parse(file_get_contents($path));
     }
 
@@ -356,7 +370,7 @@ class SiteAliasFileLoader
         $processor->add($data[$env]);
 
         // Export the combined data and create an AliasRecord object to manage it.
-        return new AliasRecord($processor->export(), '@' . $aliasName->sitename(), $env);
+        return new AliasRecord($processor->export($this->referenceData), '@' . $aliasName->sitename(), $env);
     }
 
     /**

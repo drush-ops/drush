@@ -28,12 +28,15 @@ class MigrationGenerator extends BaseGenerator
             'destination_plugin' => new Question('Destination plugin', 'entity:node'),
         ];
 
-        $vars = $this->collectVars($input, $output, $questions);
+        $vars = &$this->collectVars($input, $output, $questions);
         $vars['class'] = Utils::camelize($vars['plugin_label']);
 
-        $plugin_path = 'src/Plugin/migrate/source/' . $vars['class'] . '.php';
-        $this->setFile($plugin_path, 'migration.twig', $vars);
-        $migration_path = 'config/install/migrate_plus.migration.' . $vars['plugin_id'] . '.yml';
-        $this->setFile($migration_path, 'migration.yml.twig', $vars);
+        $this->addFile()
+            ->path('src/Plugin/migrate/source/{class}.php')
+            ->template('migration.twig');
+
+        $this->addFile()
+            ->path('config/install/migrate_plus.migration.{plugin_id}.yml')
+            ->template('migration.yml.twig');
     }
 }

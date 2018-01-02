@@ -7,7 +7,8 @@ namespace Unish;
  *
  * @group commands
  */
-class ImageCase extends CommandUnishTestCase {
+class ImageCase extends CommandUnishTestCase
+{
 
     public function testImage()
     {

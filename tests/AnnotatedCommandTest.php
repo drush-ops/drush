@@ -7,7 +7,8 @@ use Webmozart\PathUtil\Path;
 /**
  * @group base
  */
-class AnnotatedCommandCase extends CommandUnishTestCase {
+class AnnotatedCommandCase extends CommandUnishTestCase
+{
 
     public function testGlobal()
     {
@@ -51,6 +52,7 @@ class AnnotatedCommandCase extends CommandUnishTestCase {
         'machine_name' => 'bar',
         ]);
         $optionsExample['directory'] = self::getSandbox();
+        $optionsExample['yes'] = null;
         $original = getenv('SHELL_INTERACTIVE');
         putenv('SHELL_INTERACTIVE=1');
         $this->drush('generate', ['woot-example'], $optionsExample);

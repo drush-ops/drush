@@ -8,7 +8,8 @@ namespace Unish;
  *
  * @group commands
  */
-class SiteSshCase extends CommandUnishTestCase {
+class SiteSshCase extends CommandUnishTestCase
+{
 
   /**
    * Test drush ssh --simulate. No additional bash passed.

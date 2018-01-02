@@ -54,7 +54,7 @@ use Drush\SiteAlias\SiteSliasManagerAwareTrait;
 
 class MyModuleiCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
-  use SiteSliasManagerAwareTrait;
+  use SiteAliasManagerAwareTrait;
 public function commandName($) 
 {
   $selfAlias = $this->aliasManager()->getSelf();

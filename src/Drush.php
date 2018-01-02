@@ -21,7 +21,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 // reference them from there as well.
 use Drush\Preflight\PreflightArgs;
 
-
 /**
  * Static Service Container wrapper.
  *

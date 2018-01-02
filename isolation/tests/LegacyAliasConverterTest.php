@@ -192,7 +192,9 @@ class LegacyAliasConverterTest extends TestCase
                             'options' => [
                                 'db-url' => 'mysql://pantheon:pw@dbserver.dev.site-id.drush.in:21086/pantheon',
                                 'db-allows-remote' => true,
-                                'ssh-options' => '-p 2222 -o "AddressFamily inet"',
+                            ],
+                            'ssh' => [
+                                'options' => '-p 2222 -o "AddressFamily inet"',
                             ],
                         ],
                         'live' =>
@@ -207,7 +209,9 @@ class LegacyAliasConverterTest extends TestCase
                             'options' => [
                                 'db-url' => 'mysql://pantheon:pw@dbserver.live.site-id.drush.in:10516/pantheon',
                                 'db-allows-remote' => true,
-                                'ssh-options' => '-p 2222 -o "AddressFamily inet"',
+                            ],
+                            'ssh' => [
+                                'options' => '-p 2222 -o "AddressFamily inet"',
                             ],
                         ],
                         'test' =>
@@ -222,7 +226,9 @@ class LegacyAliasConverterTest extends TestCase
                             'options' => [
                                 'db-url' => 'mysql://pantheon:pw@dbserver.test.site-id.drush.in:11621/pantheon',
                                 'db-allows-remote' => true,
-                                'ssh-options' => '-p 2222 -o "AddressFamily inet"',
+                            ],
+                            'ssh' => [
+                                'options' => '-p 2222 -o "AddressFamily inet"',
                             ],
                         ],
                     ],

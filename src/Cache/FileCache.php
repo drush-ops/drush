@@ -8,6 +8,8 @@
 namespace Drush\Cache;
 
 use Drush\Drush;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -101,7 +103,8 @@ class FileCache implements CacheInterface
 
         // Ensure the cache directory still exists, in case a backend process
         // cleared the cache after the cache was initialized.
-        drush_mkdir($this->directory);
+        $fs = new Filesystem();
+        $fs->mkdir($this->directory);
 
         $filename = $this->getFilePath($cid);
         return $this->writeFile($filename, $cache);
@@ -122,33 +125,37 @@ class FileCache implements CacheInterface
 
     public function clear($cid = null, $wildcard = false)
     {
+        $fs = new Filesystem();
         $bin_dir = $this->cacheDirectory();
         $files = [];
         if (empty($cid)) {
-            drush_delete_dir($bin_dir, true);
+            $fs->remove($bin_dir);
         } else {
             if ($wildcard) {
                 if ($cid == '*') {
-                    drush_delete_dir($bin_dir, true);
+                    $fs->remove($bin_dir);
                 } else {
-                    $matches = drush_scan_directory($bin_dir, "/^$cid/", ['.', '..']);
-                    $files = $files + array_keys($matches);
+                    $files = Finder::create()
+                      ->files()
+                      ->name($cid)
+                      ->in($bin_dir);
                 }
             } else {
                 $files[] = $this->getFilePath($cid);
             }
 
-            foreach ($files as $f) {
-                if (file_exists($f)) {
-                    unlink($f);
-                }
-            }
+            $fs->remove($files);
         }
     }
 
     public function isEmpty()
     {
-        $files = drush_scan_directory($this->directory, "//", ['.', '..']);
+        $files = Finder::create()
+          ->files()
+          ->name()
+          ->exclude()
+          ->depth(0)
+          ->in($this->directory);
         return empty($files);
     }
 

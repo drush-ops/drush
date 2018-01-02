@@ -32,10 +32,11 @@ class DrushAliasFile extends BaseGenerator
 
         if ($vars['host']) {
             $remote_questions['user'] = new Question('Remote user', Drush::config()->user());
-            $vars += $this->collectVars($input, $output, $remote_questions);
+            $this->collectVars($input, $output, $remote_questions);
         }
 
-        $this->setFile('../drush/' . $vars['prefix'] . '.site.yml', 'drush-alias-file.twig', $vars);
+        $this->addFile()
+            ->path('../drush/{prefix}.site.yml')
+            ->template('drush-alias-file.twig');
     }
-
 }

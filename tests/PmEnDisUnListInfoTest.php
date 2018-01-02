@@ -11,7 +11,8 @@ namespace Unish;
  *  @group slow
  *  @group pm
  */
-class EnDisUnListInfoCase extends CommandUnishTestCase {
+class EnDisUnListInfoCase extends CommandUnishTestCase
+{
 
     public function testEnDisUnList()
     {

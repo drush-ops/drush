@@ -2,6 +2,7 @@
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
+use Symfony\Component\Finder\Finder;
 
 class PhpCommands extends DrushCommands
 {
@@ -37,15 +38,19 @@ class PhpCommands extends DrushCommands
      * script via a variable called $extra.
      *
      * @command php:script
-     * @option script-path Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).
-     * @usage drush php:script example --script-path=/path/to/scripts:/another/path
-     *   Run a script named example.php from specified paths
+     * @option script-path Additional paths to search for scripts, separated by
+     *   : (Unix-based systems) or ; (Windows).
+     * @usage drush php:script example
+     *   --script-path=/path/to/scripts:/another/path Run a script named
+     *   example.php from specified paths
      * @usage drush php:script
      *   List all available scripts.
      * @usage drush php:script foo -- apple --cider
-     *  Run foo.php script with argument 'apple' and option 'cider'. Note the -- separator.
+     *  Run foo.php script with argument 'apple' and option 'cider'. Note the
+     *   -- separator.
      * @aliases scr,php-script
      * @bootstrap max
+     * @throws \Exception
      */
     public function script(array $extra, $options = ['format' => 'var_export', 'script-path' => self::REQ])
     {
@@ -69,11 +74,15 @@ class PhpCommands extends DrushCommands
             $this->logger()->debug(dt('Searching for scripts in ') . implode(',', $searchpath));
 
             if (empty($script)) {
-                // List all available scripts.
                 $all = [];
-                foreach ($searchpath as $key => $path) {
-                    $recurse = !(($key == 'cwd') || ($path == '/'));
-                    $all = array_merge($all, array_keys(drush_scan_directory($path, '/\.php$/', ['.', '..', 'CVS'], null, $recurse)));
+                // List all available scripts.
+                $files = Finder::create()
+                    ->files()
+                    ->name('*.php')
+                    ->depth(0)
+                    ->in($searchpath);
+                foreach ($files as $file) {
+                    $all[] = $file->getRelativePathname();
                 }
                 return implode("\n", $all);
             } else {

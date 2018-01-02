@@ -8,7 +8,8 @@ use Webmozart\PathUtil\Path;
  *  @group slow
  *  @group commands
  */
-class UserCase extends CommandUnishTestCase {
+class UserCase extends CommandUnishTestCase
+{
 
     const NAME = 'example';
 
