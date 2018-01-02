@@ -8,7 +8,8 @@ namespace Unish;
  * @group slow
  * @group pm
  */
-class SecurityUpdatesTest extends CommandUnishTestCase {
+class SecurityUpdatesTest extends CommandUnishTestCase
+{
 
   /**
    * Test that insecure packages are correctly identified.

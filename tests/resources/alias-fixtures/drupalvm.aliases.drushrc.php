@@ -27,4 +27,3 @@ $aliases['www.drupalvm.dev'] = [
     '%drush-script' => '/var/www/drupalvm/drupal/vendor/drush/drush/drush',
   ],
 ];
-

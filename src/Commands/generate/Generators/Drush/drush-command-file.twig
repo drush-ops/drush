@@ -1,4 +1,5 @@
 <?php
+
 namespace Drupal\{{ machine_name }}\Commands;
 
 {% if not source %}
@@ -7,8 +8,9 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
 
 /**
+ * A Drush commandfile.
  *
- * In addition to a commandfile like this one, you need a drush.services.yml
+ * In addition to this file, you need a drush.services.yml
  * in root of your module, and a composer.json file that provides the name
  * of the services file to use.
  *
@@ -23,5 +25,4 @@ class {{ class }} extends DrushCommands {
 {% else %}
 {% include 'default-methods.twig' %}
 {% endif %}
-
 }

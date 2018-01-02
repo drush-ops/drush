@@ -8,7 +8,8 @@ namespace Unish;
  *
  *  @group base
  */
-class InitCommandCase extends CommandUnishTestCase {
+class InitCommandCase extends CommandUnishTestCase
+{
 
     public function testInitCommand()
     {

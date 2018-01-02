@@ -5,6 +5,7 @@ namespace Drush\Drupal\Commands\core;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drupal\Core\State\StateInterface;
 use Drush\Commands\DrushCommands;
+use Symfony\Component\Yaml\Yaml;
 
 class StateCommands extends DrushCommands
 {
@@ -79,7 +80,7 @@ class StateCommands extends DrushCommands
         // If the value is a string (usual case, unless we are called from code),
         // then format the input.
         if (is_string($value)) {
-            $value = drush_value_format($value, $options['input-format']);
+            $value = $this->format($value, $options['input-format']);
         }
 
         $this->getState()->set($key, $value);
@@ -100,5 +101,57 @@ class StateCommands extends DrushCommands
     public function delete($key)
     {
         $this->getState()->delete($key);
+    }
+
+  /*
+   * Cast a value according to the provided format
+   *
+   * @param mixed $value.
+   * @param string $format
+   *   Allowed values: auto, integer, float, bool, boolean, json, yaml.
+   *
+   * @return $value
+   *  The value, casted as needed.
+   */
+    public static function format($value, $format)
+    {
+        if ($format == 'auto') {
+            if (is_numeric($value)) {
+                $value = $value + 0; // http://php.net/manual/en/function.is-numeric.php#107326
+                $format = gettype($value);
+            } elseif (($value == 'TRUE') || ($value == 'FALSE')) {
+                $format = 'bool';
+            }
+        }
+
+        // Now, we parse the object.
+        switch ($format) {
+            case 'integer':
+                $value = (integer)$value;
+                break;
+            // from: http://php.net/gettype
+            // for historical reasons "double" is returned in case of a float, and not simply "float"
+            case 'double':
+            case 'float':
+                $value = (float)$value;
+                break;
+            case 'bool':
+            case 'boolean':
+                if ($value == 'TRUE') {
+                     $value = true;
+                } elseif ($value == 'FALSE') {
+                    $value = false;
+                } else {
+                    $value = (bool)$value;
+                }
+                break;
+            case 'json':
+                $value = json_decode($value, true);
+                break;
+            case 'yaml':
+                $value = Yaml::parse($value, false, true);
+                break;
+        }
+        return $value;
     }
 }

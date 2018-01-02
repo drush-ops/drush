@@ -5,6 +5,7 @@ namespace Drush\Sql;
 use Drupal\Core\Database\Database;
 use Drush\Drush;
 use Drush\Log\LogLevel;
+use Drush\Utils\FsUtils;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 use Webmozart\PathUtil\Path;
@@ -57,7 +58,7 @@ class SqlBase implements ConfigAwareInterface
         $target = $options['target'];
 
         if ($url = $options['db-url']) {
-            $url =  is_array($url) ? $url[$database] : $url;
+            $url = is_array($url) ? $url[$database] : $url;
             $db_spec = self::dbSpecFromDbUrl($url);
             $db_spec['db_prefix'] = $options['db-prefix'];
             return self::getInstance($db_spec, $options);
@@ -189,7 +190,7 @@ class SqlBase implements ConfigAwareInterface
         // directory that pm-updatecode uses.
         if ($file) {
             if ($file === true) {
-                $backup_dir = drush_prepare_backup_dir($database);
+                $backup_dir = FsUtils::prepareBackupDir($database);
                 if (empty($backup_dir)) {
                     $backup_dir = $this->getConfig()->tmp();
                 }
@@ -227,11 +228,11 @@ class SqlBase implements ConfigAwareInterface
     /**
      * Execute a SQL query. Always execute it regardless of simulate mode.
      *
-     * If you don't want to query results to print during --debug then
+     * If you don't want query results to print during --debug then
      * provide a $result_file whose value can be drush_bit_bucket().
      *
      * @param string $query
-     *   The SQL to be executed. Should be NULL if $input_file is provided.
+     *   The SQL to be executed. Should be null if $input_file is provided.
      * @param string $input_file
      *   A path to a file containing the SQL to be executed.
      * @param string $result_file
@@ -259,12 +260,12 @@ class SqlBase implements ConfigAwareInterface
         }
 
         $parts = [
-        $this->command(),
-        $this->creds(),
-        $this->silent(), // This removes column header and various helpful things in mysql.
-        $this->getOption('extra', $this->queryExtra),
-        $this->queryFile,
-        drush_escapeshellarg($input_file),
+            $this->command(),
+            $this->creds(),
+            $this->silent(), // This removes column header and various helpful things in mysql.
+            $this->getOption('extra', $this->queryExtra),
+            $this->queryFile,
+            drush_escapeshellarg($input_file),
         ];
         $exec = implode(' ', $parts);
 
@@ -294,7 +295,7 @@ class SqlBase implements ConfigAwareInterface
         // In --verbose mode, drush_shell_exec() will show the call to mysql/psql/sqlite,
         // but the sql query itself is stored in a temp file and not displayed.
         // We show the query when --debug is used and this function created the temp file.
-        if ((drush_get_context('DRUSH_DEBUG') || Drush::simulate()) && empty($input_file_original)) {
+        if ((Drush::debug() || Drush::simulate()) && empty($input_file_original)) {
             drush_log('sql-query: ' . $query, LogLevel::INFO);
         }
     }
@@ -566,5 +567,4 @@ class SqlBase implements ConfigAwareInterface
 
         return $db_spec;
     }
-
 }

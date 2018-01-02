@@ -1,13 +1,15 @@
 <?php
 namespace Drush\Commands\core;
 
+use Consolidation\Log\ConsoleLogLevel;
+use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Utility\Error;
 use Drupal\Core\Entity\EntityStorageException;
 use Drush\Commands\DrushCommands;
-use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
-use Drush\Log\LogLevel;
+use Psr\Log\LogLevel;
 
 class UpdateDBCommands extends DrushCommands
 {
@@ -52,15 +54,15 @@ class UpdateDBCommands extends DrushCommands
                 $success = true;
             } else {
                 $success = $this->updateBatch($options);
-                // Clear all caches in a new process. We just performed major surgery.
-                drush_drupal_cache_clear_all();
+                // Caches were just cleared in updateFinished callback.
             }
 
             if (!$success) {
                 drush_set_context('DRUSH_EXIT_CODE', DRUSH_FRAMEWORK_ERROR);
             }
 
-            $this->logger()->success(dt('Finished performing updates.'));
+            $level = $success ? ConsoleLogLevel::SUCCESS : LogLevel::ERROR;
+            $this->logger()->log($level, dt('Finished performing updates.'));
         }
     }
 
@@ -269,11 +271,23 @@ class UpdateDBCommands extends DrushCommands
         ];
         batch_set($batch);
 
+        $maintenance_mode_original_state = \Drupal::service('state')->get('system.maintenance_mode');
         \Drupal::service('state')->set('system.maintenance_mode', true);
         $result = drush_backend_batch_process();
-        \Drupal::service('state')->set('system.maintenance_mode', false);
+        \Drupal::service('state')->set('system.maintenance_mode', $maintenance_mode_original_state);
 
-        $success = is_array($result) && (array_key_exists('object', $result)) && empty($result['object'][0]['#abort']);
+        $success = false;
+        if (!is_array($result)) {
+            $this->logger()->error(dt('Batch process did not return a result array. Returned: !type', ['!type' => gettype($result)]));
+        } elseif (!array_key_exists('object', $result)) {
+            $this->logger()->error(dt('Batch process did not return a result object.'));
+        } elseif (!empty($result['object'][0]['#abort'])) {
+            $this->logger()->error(dt('Failed batch process: !process', [
+                '!process' => implode(', ', $result['object'][0]['#abort']),
+            ]));
+        } else {
+            $success = true;
+        }
 
         return $success;
     }
@@ -352,10 +366,8 @@ class UpdateDBCommands extends DrushCommands
         unset($results['#abort']);
         foreach ($results as $module => $updates) {
             foreach ($updates as $number => $update) {
-                if (empty($update['#abort'])) {
-                    foreach ($update['results'] as $result) {
-                        $this->logger()->notice(strip_tags($result['query']));
-                    }
+                if (empty($update['#abort']) && $update['results']['success'] && !empty($update['results']['query'])) {
+                    $this->logger()->notice(strip_tags($update['results']['query']));
                 }
             }
         }
@@ -462,9 +474,10 @@ class UpdateDBCommands extends DrushCommands
                 'finished' => [$this, 'updateFinished'],
             ];
             batch_set($batch);
+            $maintenance_mode_original_state = \Drupal::service('state')->get('system.maintenance_mode');
             \Drupal::service('state')->set('system.maintenance_mode', true);
             drush_backend_batch_process();
-            \Drupal::service('state')->set('system.maintenance_mode', false);
+            \Drupal::service('state')->set('system.maintenance_mode', $maintenance_mode_original_state);
         } else {
             $this->logger()->success(dt("No entity schema updates required"));
         }

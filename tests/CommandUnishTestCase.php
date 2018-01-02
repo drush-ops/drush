@@ -6,7 +6,8 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use Webmozart\PathUtil\Path;
 
-abstract class CommandUnishTestCase extends UnishTestCase {
+abstract class CommandUnishTestCase extends UnishTestCase
+{
 
   // Unix exit codes.
     const EXIT_SUCCESS  = 0;
@@ -60,7 +61,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     protected $idleTimeout = 15;
 
   /**
-   * Get command output and simiplify away things like full paths and extra
+   * Get command output and simplify away things like full paths and extra
    * whitespace.
    */
     protected function getSimplifiedOutput()
@@ -292,7 +293,6 @@ abstract class CommandUnishTestCase extends UnishTestCase {
         if ($level = $this->logLevel()) {
             $cmd[] = '--' . $level;
         }
-        $cmd[] = "--no-ansi";
         $cmd[] = "--no-interaction";
 
         // Insert code coverage argument before command, in order for it to be
@@ -300,7 +300,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
         // where options after the command are passed along to external commands.
         $result = $this->getTestResultObject();
         if ($result->getCollectCodeCoverageInformation()) {
-            $coverage_file = tempnam(UNISH_TMP, 'drush_coverage');
+            $coverage_file = tempnam($this->getTmp(), 'drush_coverage');
             if ($coverage_file) {
                 $cmd[] = "--drush-coverage=" . $coverage_file;
             }

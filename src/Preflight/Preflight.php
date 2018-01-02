@@ -257,6 +257,7 @@ class Preflight
 
         // Configure alias manager.
         $this->aliasManager = (new SiteAliasManager())->addSearchLocations($paths);
+        $this->aliasManager->setReferenceData($config->export());
         $selfAliasRecord = $this->aliasManager->findSelf($this->preflightArgs, $this->environment, $root);
         $this->configLocator->addAliasConfig($selfAliasRecord->exportConfig());
 
@@ -316,11 +317,13 @@ class Preflight
      */
     protected function setSelectedSite($selectedRoot, $fallbackPath = false)
     {
-        $foundRoot = $this->drupalFinder->locateRoot($selectedRoot);
-        if (!$foundRoot && $fallbackPath) {
-            $this->drupalFinder->locateRoot($fallbackPath);
+        if ($selectedRoot || $fallbackPath) {
+            $foundRoot = $this->drupalFinder->locateRoot($selectedRoot);
+            if (!$foundRoot && $fallbackPath) {
+                $this->drupalFinder->locateRoot($fallbackPath);
+            }
+            return $this->drupalFinder()->getDrupalRoot();
         }
-        return $this->drupalFinder()->getDrupalRoot();
     }
 
     /**

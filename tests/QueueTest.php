@@ -1,12 +1,14 @@
 <?php
 
 namespace Unish;
+
 use Webmozart\PathUtil\Path;
 
 /**
  * @group commands
  */
-class QueueCase extends CommandUnishTestCase {
+class QueueCase extends CommandUnishTestCase
+{
 
     public function testQueue()
     {
@@ -114,7 +116,4 @@ class QueueCase extends CommandUnishTestCase {
         $this->mkdir($targetDir);
         $this->recursiveCopy($wootModule, $targetDir);
     }
-
-
-
 }

@@ -11,7 +11,8 @@ use Webmozart\PathUtil\Path;
  *
  * @see https://github.com/drush-ops/drush/issues/3123
  */
-class ContainerTest extends CommandUnishTestCase {
+class ContainerTest extends CommandUnishTestCase
+{
 
     /**
      * Tests that the existing container is available while Drush rebuilds it.
@@ -33,7 +34,6 @@ class ContainerTest extends CommandUnishTestCase {
 
       // Trigger the container rebuild we need.
         $this->drush('cr');
-        $this->drush('cron');
 
       // If the event was registered successfully, then upon a config import, we
       // should get the error message.
@@ -56,5 +56,4 @@ class ContainerTest extends CommandUnishTestCase {
         $this->mkdir($targetDir);
         $this->recursiveCopy($wootModule, $targetDir);
     }
-
 }

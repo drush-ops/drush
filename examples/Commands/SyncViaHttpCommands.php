@@ -5,6 +5,7 @@ namespace Drush\Commands;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Load this commandfile using the --include option - e.g. `drush --include=/path/to/drush/examples`
@@ -85,7 +86,8 @@ class SyncViaHttpCommands extends DrushCommands {
       }
     }
     if ($destination) {
-      drush_move_dir($destination_tmp, $destination, $overwrite);
+        $fs = new Filesystem();
+        $fs->rename($destination_tmp, $destination, $overwrite);
       return $destination;
     }
     return $destination_tmp;
