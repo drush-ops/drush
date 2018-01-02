@@ -53,6 +53,7 @@ class GenerateCommands extends DrushCommands
         $application = $this->createApplication();
         if (!$generator) {
             $all = $application->all();
+            unset($all['help'], $all['list']);
             $namespaced = ListCommands::categorize($all, '-');
             $preamble = dt('Run `drush generate [command]` and answer a few questions in order to write starter code to your project.');
             ListCommands::renderListCLI($application, $namespaced, $this->output(), $preamble);
