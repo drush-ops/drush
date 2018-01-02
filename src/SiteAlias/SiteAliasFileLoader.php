@@ -3,7 +3,7 @@ namespace Drush\SiteAlias;
 
 use Consolidation\Config\Loader\ConfigProcessor;
 use Dflydev\DotAccessData\Util as DotAccessDataUtil;
-use Symfony\Component\Yaml\Yaml;
+use Drush\Internal\Config\Yaml\Yaml;
 
 /**
  * Discover alias files:
@@ -339,6 +339,7 @@ class SiteAliasFileLoader
             return [];
         }
         // TODO: Perhaps cache these alias files, as they may be read multiple times.
+        // TODO: Maybe use a YamlConfigLoader?
         return (array) Yaml::parse(file_get_contents($path));
     }
 

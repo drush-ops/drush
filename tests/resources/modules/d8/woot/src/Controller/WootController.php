@@ -14,7 +14,8 @@ use Drupal\Core\Controller\ControllerBase;
  *
  * @package Drupal\woot\Controller
  */
-class WootController extends ControllerBase {
+class WootController extends ControllerBase
+{
   /**
    * Woot.
    *
@@ -28,5 +29,4 @@ class WootController extends ControllerBase {
         '#markup' => $this->t('Woot!')
         ];
     }
-
 }

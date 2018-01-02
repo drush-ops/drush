@@ -9,7 +9,8 @@ namespace Unish;
  * @group sql
  * @group slow
  */
-class SqlDumpTest extends CommandUnishTestCase {
+class SqlDumpTest extends CommandUnishTestCase
+{
 
   /**
    * Test that a dump file is created successfully.

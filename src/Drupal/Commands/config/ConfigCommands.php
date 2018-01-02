@@ -65,7 +65,7 @@ class ConfigCommands extends DrushCommands
     {
         // Displaying overrides only applies to active storage.
         $factory = $this->getConfigFactory();
-        $config = $options['include-overridden'] ? $factory->getEditable($config_name) : $factory->get($config_name);
+        $config = $options['include-overridden'] ? $factory->get($config_name) : $factory->getEditable($config_name);
         $value = $config->get($key);
         // @todo If the value is TRUE (for example), nothing gets printed. Is this yaml formatter's fault?
         return $key ? ["$config_name:$key" => $value] : $value;

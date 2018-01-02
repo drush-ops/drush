@@ -14,7 +14,8 @@ use Drupal\Core\Queue\RequeueException;
  *   cron = {"time" = 60}
  * )
  */
-class WootRequeueException extends QueueWorkerBase {
+class WootRequeueException extends QueueWorkerBase
+{
 
   /**
    * {@inheritdoc}
@@ -29,5 +30,4 @@ class WootRequeueException extends QueueWorkerBase {
             $state->set('woot_requeue_exception', 2);
         }
     }
-
 }
