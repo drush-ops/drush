@@ -198,14 +198,14 @@ class ConfigLocator
     }
 
     /**
-     * Unused. See PreflightArgs::applyToConfig() instead.
+     *  Add config paths defined in preflight configuration.
      *
-     * @param array $preflightConfig
+     * @param array $paths
      * @return $this
      */
-    public function addPreflightConfig($preflightConfig)
+    public function addPreflightConfigFiles($filepaths)
     {
-        $this->config->addContext(self::PREFLIGHT_CONTEXT, $preflightConfig);
+        $this->addConfigPaths(self::PREFLIGHT_CONTEXT, (array) $filepaths);
         return $this;
     }
 
@@ -290,19 +290,27 @@ class ConfigLocator
      */
     public function addConfigPaths($contextName, $paths)
     {
+        // Separate $paths into files and directories.
+        list($files, $dirs) = $this->separateFilesAndDirs($paths);
+
         $loader = new YamlConfigLoader();
+        // Make all of the config values parsed so far available in evaluations.
+        $reference = $this->config()->export();
+        $processor = new ConfigProcessor();
+        $context = $this->config->getContext($contextName);
+        $processor->add($context->export());
+
+        // Add config files in $dirs that match filenames in $candidates.
         $candidates = [
             'drush.yml',
             'config/drush.yml',
         ];
+        $this->addConfigCandidates($processor, $loader, $dirs, $candidates);
 
-        // Make all of the config values parsed so far available in evaluations
-        $reference = $this->config()->export();
+        // Add explicitly defined config files.
+        $this->addConfigFiles($processor, $loader, $files);
 
-        $processor = new ConfigProcessor();
-        $context = $this->config->getContext($contextName);
-        $processor->add($context->export());
-        $this->addConfigCandidates($processor, $loader, $paths, $candidates);
+        // Complete config import.
         $this->addToSources($processor->sources());
         $context->import($processor->export($reference));
         $this->config->addContext($contextName, $context);
@@ -311,7 +319,7 @@ class ConfigLocator
     }
 
     /**
-     * Worker function for addConfigPaths
+     * Adds config files in $paths matching filenames in $candidates.
      *
      * @param ConfigProcessor $processor
      * @param ConfigLoaderInterface $loader
@@ -321,6 +329,21 @@ class ConfigLocator
     protected function addConfigCandidates(ConfigProcessor $processor, ConfigLoaderInterface $loader, $paths, $candidates)
     {
         $configFiles = $this->identifyCandidates($paths, $candidates);
+        foreach ($configFiles as $configFile) {
+            $processor->extend($loader->load($configFile));
+            $this->configFilePaths[] = $configFile;
+        }
+    }
+
+    /**
+     * Adds $configFiles config files.
+     *
+     * @param ConfigProcessor $processor
+     * @param ConfigLoaderInterface $loader
+     * @param array $configFiles
+     */
+    protected function addConfigFiles(ConfigProcessor $processor, ConfigLoaderInterface $loader, array $configFiles)
+    {
         foreach ($configFiles as $configFile) {
             $processor->extend($loader->load($configFile));
             $this->configFilePaths[] = $configFile;
@@ -477,5 +500,30 @@ class ConfigLocator
     public function setComposerRoot($selectedComposerRoot)
     {
         $this->composerRoot = $selectedComposerRoot;
+    }
+
+    /**
+     * Given an array of paths, separates files and directories.
+     *
+     * @param array $paths
+     *
+     * @return array
+     *   An array. The first row is an array of files, the second row is an
+     *   array of dirs.
+     */
+    protected function separateFilesAndDirs($paths) {
+        $files = [];
+        $dirs = [];
+        foreach ($paths as $path) {
+            if (file_exists($path)) {
+                if (is_dir($path)) {
+                    $dirs[] = realpath($path);
+                }
+                else {
+                    $files[] = realpath($path);
+                }
+            }
+        }
+        return array($files, $dirs);
     }
 }
