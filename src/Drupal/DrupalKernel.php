@@ -142,7 +142,7 @@ class DrupalKernel extends DrupalDrupalKernel
         if (!file_exists($result)) {
             return;
         }
-        drush_log(dt("!module should have an extra.drush.services section in its composer.json. See http://docs.drush.org/en/master/commands/#specifying-the-services-file.", ['!module' => $module]), LogLevel::NOTICE);
+        drush_log(dt("!module should have an extra.drush.services section in its composer.json. See http://docs.drush.org/en/master/commands/#specifying-the-services-file.", ['!module' => $module]), LogLevel::DEBUG);
         return $result;
     }
 

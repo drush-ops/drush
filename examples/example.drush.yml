@@ -40,8 +40,8 @@ drush:
   paths:
     # Specify config files to load.
     config:
-      # Load any personal config files. Is silently skipped if not found.
-      - ${env.home}/.drush/config/local.drush.yml
+      # Load any personal config files. Is silently skipped if not found. Filename must be drush.yml
+      - ${env.home}/.drush/config/drush.yml
 
 
     # Specify folders to search for Drush command files.  These locations
