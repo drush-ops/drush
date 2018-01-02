@@ -277,7 +277,7 @@ abstract class DrupalBoot extends BaseBoot
             foreach ((array)$required_tables as $required_table) {
                 $prefix_key = array_key_exists($required_table, $prefix) ? $required_table : 'default';
                 $table_name = $prefix[$prefix_key] . $required_table;
-                if (!$sql->alwaysQuery("SELECT 1 FROM $table_name LIMIT 1")) {
+                if (!$sql->alwaysQuery("SELECT 1 FROM $table_name LIMIT 1;")) {
                     return false;
                 }
             }

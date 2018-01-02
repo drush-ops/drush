@@ -5,7 +5,8 @@ namespace Unish;
 /**
  * @group commands
  */
-class WatchdogCase extends CommandUnishTestCase {
+class WatchdogCase extends CommandUnishTestCase
+{
 
     public function testWatchdog()
     {

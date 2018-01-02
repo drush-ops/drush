@@ -9,7 +9,8 @@ use Drupal\Core\Config\ConfigImportValidateEventSubscriberBase;
 /**
  * Subscribes to Symfony events and maps them to Rules events.
  */
-class ConfigSubscriber extends ConfigImportValidateEventSubscriberBase {
+class ConfigSubscriber extends ConfigImportValidateEventSubscriberBase
+{
 
   /**
    * {@inheritdoc}
@@ -38,5 +39,4 @@ class ConfigSubscriber extends ConfigImportValidateEventSubscriberBase {
         $importer = $event->getConfigImporter();
         $importer->logError($this->t('woot config error'));
     }
-
 }

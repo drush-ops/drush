@@ -10,7 +10,8 @@ use Webmozart\PathUtil\Path;
  *
  * @group commands
  */
-class CoreCase extends CommandUnishTestCase {
+class CoreCase extends CommandUnishTestCase
+{
 
     public function setUp()
     {
@@ -114,5 +115,4 @@ class CoreCase extends CommandUnishTestCase {
         $output = $this->getOutputFromJSON();
         $this->assertEquals($test_uri, $output->uri);
     }
-
 }

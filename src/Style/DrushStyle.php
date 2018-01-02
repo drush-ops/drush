@@ -57,6 +57,4 @@ class DrushStyle extends SymfonyStyle
     {
         $this->block($message, 'CAUTION', 'fg=black;bg=yellow', ' ! ', true);
     }
-
-
 }
