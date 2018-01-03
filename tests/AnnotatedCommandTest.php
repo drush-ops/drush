@@ -30,10 +30,25 @@ class AnnotatedCommandCase extends CommandUnishTestCase
         $output = $this->getOutput();
         $this->assertEquals('bar', $output);
 
-        // Test discovery of global generator.
+        // Test global generator 'foo'.
+        $answers = [
+            'directory' => self::getSandbox(),
+        ];
+
+        $options = [
+            'yes' => null,
+            'include' => $globalExtensions,
+            'answers' => json_encode($answers),
+        ];
+
+        $original = getenv('SHELL_INTERACTIVE');
+        putenv('SHELL_INTERACTIVE=1');
         $this->drush('generate', ['foo-example'], $options);
-        $output = $this->getOutput();
-        $this->assertContains('Welcome to foo-example generator!', $output);
+        putenv('SHELL_INTERACTIVE=' . $original);
+
+        $target = Path::join(self::getSandbox(), 'src/Generators/foo.php');
+        $actual = trim(file_get_contents($target));
+        $this->assertEquals('Foo.', $actual);
     }
 
     public function testExecute()
