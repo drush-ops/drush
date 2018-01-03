@@ -46,7 +46,7 @@ class AnnotatedCommandCase extends CommandUnishTestCase
         $this->drush('generate', ['foo-example'], $options);
         putenv('SHELL_INTERACTIVE=' . $original);
 
-        $target = Path::join(self::getSandbox(), 'src/Generators/foo.php');
+        $target = Path::join($this->webroot(), 'foo.php');
         $actual = trim(file_get_contents($target));
         $this->assertEquals('Foo.', $actual);
     }

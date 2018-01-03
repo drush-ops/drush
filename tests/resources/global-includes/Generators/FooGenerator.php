@@ -19,7 +19,7 @@ class FooGenerator extends BaseGenerator
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $this->addFile()
-            ->path('src/Generators/foo.php')
+            ->path('foo.php')
             ->template('foo.twig');
     }
 }
