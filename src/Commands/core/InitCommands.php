@@ -124,7 +124,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
     protected function findBashrc($home)
     {
         # Set a default value in case nothing else exists.
-        $file = $home . '/.bash_profile';
+        $file = $home . '/.bashrc';
 
         if (!empty($_ENV['SHELL']) && strstr($_ENV['SHELL'], 'zsh')) {
             $file = $home . '/.zshrc';
