@@ -173,7 +173,6 @@ class Preflight
     {
         // Make our environment settings available as configuration items
         $this->configLocator->addEnvironment($environment);
-
         $this->configLocator->setLocal($this->preflightArgs->isLocal());
         $this->configLocator->addUserConfig($this->preflightArgs->configPaths(), $environment->systemConfigPath(), $environment->userConfigPath());
         $this->configLocator->addDrushConfig($environment->drushBasePath());
