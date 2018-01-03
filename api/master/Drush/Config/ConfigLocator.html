@@ -319,9 +319,9 @@ obtained by commands et. al. as needed.</p>                </div>
                     <abbr title="Drush\Config\$this">$this</abbr>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_addPreflightConfig">addPreflightConfig</a>(array $preflightConfig)
+                    <a href="#method_addPreflightConfigFiles">addPreflightConfigFiles</a>($filepaths)
         
-                                            <p>Unused. See PreflightArgs::applyToConfig() instead.</p>                </div>
+                                            <p>Add config paths defined in preflight configuration.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -384,9 +384,9 @@ is searched for a drush.yml file.</p>                </div>
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_addConfigCandidates">addConfigCandidates</a>(<abbr title="Consolidation\Config\Loader\ConfigProcessor">ConfigProcessor</abbr> $processor, <abbr title="Consolidation\Config\Loader\ConfigLoaderInterface">ConfigLoaderInterface</abbr> $loader, string[] $paths, string[] $candidates)
+                    <a href="#method_addConfigFiles">addConfigFiles</a>(<abbr title="Consolidation\Config\Loader\ConfigProcessor">ConfigProcessor</abbr> $processor, <abbr title="Consolidation\Config\Loader\ConfigLoaderInterface">ConfigLoaderInterface</abbr> $loader, array $configFiles)
         
-                                            <p>Worker function for addConfigPaths</p>                </div>
+                                            <p>Adds $configFiles config files.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -472,6 +472,16 @@ file or a 'Commands' or 'src/Commands' directory.</p>                </div>
                     <a href="#method_setComposerRoot">setComposerRoot</a>($selectedComposerRoot)
         
                                             <p>Sets the composer root.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_findConfigFiles">findConfigFiles</a>(array $paths, array $candidates)
+        
+                                            <p>Given an array of paths, separates files and directories.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -754,10 +764,10 @@ obtained by commands et. al. as needed.</p>                    <p>see Environmen
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_addPreflightConfig">
+                    <h3 id="method_addPreflightConfigFiles">
         <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L206">line 206</a></div>
         <code>                    <abbr title="Drush\Config\$this">$this</abbr>
-    <strong>addPreflightConfig</strong>(array $preflightConfig)
+    <strong>addPreflightConfigFiles</strong>($filepaths)
         </code>
     </h3>
     <div class="details">
@@ -765,14 +775,14 @@ obtained by commands et. al. as needed.</p>                    <p>see Environmen
     
 
                     <div class="method-description">
-                                    <p>Unused. See PreflightArgs::applyToConfig() instead.</p>                                                </div>
+                                    <p>Add config paths defined in preflight configuration.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
-                <td>array</td>
-                <td>$preflightConfig</td>
+                <td></td>
+                <td>$filepaths</td>
                 <td></td>
             </tr>
             </table>
@@ -1014,10 +1024,10 @@ is searched for a drush.yml file.</p>                                           
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_addConfigCandidates">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L321">line 321</a></div>
+                    <h3 id="method_addConfigFiles">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L322">line 322</a></div>
         <code>            protected        
-    <strong>addConfigCandidates</strong>(<abbr title="Consolidation\Config\Loader\ConfigProcessor">ConfigProcessor</abbr> $processor, <abbr title="Consolidation\Config\Loader\ConfigLoaderInterface">ConfigLoaderInterface</abbr> $loader, string[] $paths, string[] $candidates)
+    <strong>addConfigFiles</strong>(<abbr title="Consolidation\Config\Loader\ConfigProcessor">ConfigProcessor</abbr> $processor, <abbr title="Consolidation\Config\Loader\ConfigLoaderInterface">ConfigLoaderInterface</abbr> $loader, array $configFiles)
         </code>
     </h3>
     <div class="details">
@@ -1025,7 +1035,7 @@ is searched for a drush.yml file.</p>                                           
     
 
                     <div class="method-description">
-                                    <p>Worker function for addConfigPaths</p>                                                </div>
+                                    <p>Adds $configFiles config files.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
@@ -1041,13 +1051,8 @@ is searched for a drush.yml file.</p>                                           
                 <td></td>
             </tr>
                     <tr>
-                <td>string[]</td>
-                <td>$paths</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>string[]</td>
-                <td>$candidates</td>
+                <td>array</td>
+                <td>$configFiles</td>
                 <td></td>
             </tr>
             </table>
@@ -1352,6 +1357,53 @@ file or a 'Commands' or 'src/Commands' directory.</p>                           
             </table>
 
             
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_findConfigFiles">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L495">line 495</a></div>
+        <code>            protected        array
+    <strong>findConfigFiles</strong>(array $paths, array $candidates)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Given an array of paths, separates files and directories.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$paths</td>
+                <td>An array of config paths. These may be config files or paths to dirs
+  containing config files.</td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$candidates</td>
+                <td>An array filenames that are considered config files.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td>An array. The first row is an array of files, the second row is an
+  array of dirs.</td>
+        </tr>
+    </table>
+
             
             
                     </div>
