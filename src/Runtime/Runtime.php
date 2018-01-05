@@ -63,7 +63,8 @@ class Runtime
         }
 
         $commandfileSearchpath = $this->preflight->getCommandFilePaths();
-        $this->preflight->logger()->log('Commandfile paths: ' . implode(',', $commandfileSearchpath));
+        $this->preflight->logger()->log('Commandfile search paths: ' . implode(',', $commandfileSearchpath));
+        $this->preflight->config()->set('runtime.commandfile.paths', $commandfileSearchpath);
 
         // Require the Composer autoloader for Drupal (if different)
         $loader = $this->preflight->loadSiteAutoloader();
