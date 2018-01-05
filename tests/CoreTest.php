@@ -167,8 +167,9 @@ class CoreCase extends CommandUnishTestCase
         unlink($a_drush_config_file);
         unlink($b_drush_config_file);
         $output = $this->getOutputFromJSON();
-        $this->assertContains('a.drush.yml', $output->{'drush-conf'});
-        $this->assertContains('b.drush.yml', $output->{'drush-conf'});
+        $drush_conf_as_string = print_r($output->{'drush-conf'}, TRUE);
+        $this->assertContains($a_drush_config_file, $output->{'drush-conf'}, "Failed asserting that " . $drush_conf_as_string . " contains $a_drush_config_file");
+        $this->assertContains($b_drush_config_file, $output->{'drush-conf'}, "Failed asserting that " . $drush_conf_as_string . " contains $b_drush_config_file");
         $this->assertEquals($test_uri, $output->uri);
     }
 }
