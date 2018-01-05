@@ -300,7 +300,9 @@ function _drush_format_table($rows, $header = FALSE, $widths = array(), $console
     $tbl->setHeaders($headers);
   }
 
-  $tbl->addData($newrows);
+  // Silent this call to prevent a count() notice due to uncountable variables.
+  // See https://github.com/drush-ops/drush/issues/3226
+  @$tbl->addData($newrows);
   return $tbl;
 }
 
