@@ -115,4 +115,37 @@ class CoreCase extends CommandUnishTestCase
         $output = $this->getOutputFromJSON();
         $this->assertEquals($test_uri, $output->uri);
     }
+
+    public function testRecursiveConfigLoading()
+    {
+        // Put a yml file in the drush folder.
+        $drush_config_file = Path::join($this->getSut(), 'drush', 'drush.yml');
+        $nested_drush_config_file = Path::join($this->getSut(), 'drush', 'drush2.yml');
+        $test_uri = 'http://test.uri';
+        $drush_yml_options = [
+          'drush' => [
+            'paths' => [
+              'config' => [
+                './drush2.yml'
+              ],
+            ],
+          ],
+        ];
+        $nested_drush_yml_options = [
+          'options' => [
+            'uri' => $test_uri,
+          ],
+        ];
+        $command_options = [
+        'format' => 'json',
+        'uri' => 'OMIT', // A special value which causes --uri to not be specified.
+        ];
+        file_put_contents($drush_config_file, Yaml::dump($drush_yml_options, PHP_INT_MAX, 2));
+        file_put_contents($nested_drush_config_file, Yaml::dump($nested_drush_yml_options, PHP_INT_MAX, 2));
+        $this->drush('core-status', [], $command_options);
+        unlink($drush_config_file);
+        unlink($nested_drush_config_file);
+        $output = $this->getOutputFromJSON();
+        $this->assertEquals($test_uri, $output->uri);
+    }
 }
