@@ -176,16 +176,10 @@ function drush_has_bash($os = NULL) {
 }
 
 /**
- * Checks operating system and returns
- * supported bit bucket folder.
+ * Checks operating system and returns supported bit bucket folder.
  */
 function drush_bit_bucket() {
-  if (drush_has_bash()) {
-    return '/dev/null';
-  }
-  else {
-    return 'nul';
-  }
+  return drush_has_bash() ? '/dev/null' : 'nul';
 }
 
 /**
@@ -245,14 +239,7 @@ function _drush_test_os($os, $os_list_to_check) {
 function drush_is_local_host($host) {
   // Check to see if the provided host is "local".
   // @see hook_drush_sitealias_alter() in drush.api.php.
-  if (
-    ($host == 'localhost') ||
-    ($host == '127.0.0.1')
-  ) {
-    return TRUE;
-  }
-
-  return FALSE;
+  return $host == 'localhost' || $host == '127.0.0.1';
 }
 
 /**
