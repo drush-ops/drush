@@ -176,16 +176,10 @@ function drush_has_bash($os = NULL) {
 }
 
 /**
- * Checks operating system and returns
- * supported bit bucket folder.
+ * Checks operating system and returns supported bit bucket folder.
  */
 function drush_bit_bucket() {
-  if (drush_has_bash()) {
-    return '/dev/null';
-  }
-  else {
-    return 'nul';
-  }
+  return drush_has_bash() ? '/dev/null' : 'nul';
 }
 
 /**
