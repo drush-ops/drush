@@ -129,7 +129,7 @@ class CoreCase extends CommandUnishTestCase
           'drush' => [
             'paths' => [
               'config' => [
-                'a.drush.yml'
+                $a_drush_config_file,
               ],
             ],
           ],
@@ -138,7 +138,7 @@ class CoreCase extends CommandUnishTestCase
           'drush' => [
             'paths' => [
               'config' => [
-                'b.drush.yml'
+                $b_drush_config_file,
               ],
             ],
           ],
@@ -147,7 +147,7 @@ class CoreCase extends CommandUnishTestCase
           'drush' => [
             'paths' => [
               'config' => [
-                'a.drush.yml'
+                $a_drush_config_file,
               ],
             ],
           ],
@@ -162,14 +162,14 @@ class CoreCase extends CommandUnishTestCase
         file_put_contents($drush_config_file, Yaml::dump($drush_yml_options, PHP_INT_MAX, 2));
         file_put_contents($a_drush_config_file, Yaml::dump($a_drush_yml_options, PHP_INT_MAX, 2));
         file_put_contents($b_drush_config_file, Yaml::dump($b_drush_yml_options, PHP_INT_MAX, 2));
-        $this->drush('core-status', [], $command_options);
+        $this->drush('core-status', [], $command_options, null, $this->getSut());
         unlink($drush_config_file);
         unlink($a_drush_config_file);
         unlink($b_drush_config_file);
         $output = $this->getOutputFromJSON();
-        $drush_conf_as_string = print_r($output->{'drush-conf'}, TRUE);
-        $this->assertContains($a_drush_config_file, $output->{'drush-conf'}, "Failed asserting that " . $drush_conf_as_string . " contains $a_drush_config_file");
-        $this->assertContains($b_drush_config_file, $output->{'drush-conf'}, "Failed asserting that " . $drush_conf_as_string . " contains $b_drush_config_file");
+        $drush_conf_as_string = print_r($output->{'drush-conf'}, true);
+        $this->assertContains($a_drush_config_file, $output->{'drush-conf'}, "Loaded drush config files are: " . $drush_conf_as_string);
+        $this->assertContains($b_drush_config_file, $output->{'drush-conf'}, "Loaded drush config files are: " . $drush_conf_as_string);
         $this->assertEquals($test_uri, $output->uri);
     }
 }
