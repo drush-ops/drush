@@ -25,6 +25,10 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
      * @command core:status
      * @param $filter A field to filter on. @deprecated - use --field option instead.
      * @option project A comma delimited list of projects. Their paths will be added to path-aliases section.
+     * @usage drush core-status --field=files
+     *   Emit just one field, not all the default fields.
+     * @usage drush core-status --fields=*
+     *   Emit all fields, not just the default ones.
      * @aliases status,st,core-status
      * @table-style compact
      * @list-delimiter :
