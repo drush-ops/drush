@@ -120,31 +120,52 @@ class CoreCase extends CommandUnishTestCase
     {
         // Put a yml file in the drush folder.
         $drush_config_file = Path::join($this->getSut(), 'drush', 'drush.yml');
-        $nested_drush_config_file = Path::join($this->getSut(), 'drush', 'drush2.yml');
+        $a_drush_config_file = Path::join($this->getSut(), 'drush', 'a.drush.yml');
+        $b_drush_config_file = Path::join($this->getSut(), 'drush', 'b.drush.yml');
         $test_uri = 'http://test.uri';
+        // Set up multiple drush.yml files that include one another to test
+        // potential infinite loop.
         $drush_yml_options = [
           'drush' => [
             'paths' => [
               'config' => [
-                './drush2.yml'
+                './a.drush.yml'
               ],
             ],
           ],
         ];
-        $nested_drush_yml_options = [
+        $a_drush_yml_options = [
+          'drush' => [
+            'paths' => [
+              'config' => [
+                './b.drush.yml'
+              ],
+            ],
+          ],
+        ];
+        $b_drush_yml_options = [
+          'drush' => [
+            'paths' => [
+              'config' => [
+                './a.drush.yml'
+              ],
+            ],
+          ],
           'options' => [
             'uri' => $test_uri,
           ],
         ];
         $command_options = [
-        'format' => 'json',
-        'uri' => 'OMIT', // A special value which causes --uri to not be specified.
+          'format' => 'json',
+          'uri' => 'OMIT', // A special value which causes --uri to not be specified.
         ];
         file_put_contents($drush_config_file, Yaml::dump($drush_yml_options, PHP_INT_MAX, 2));
-        file_put_contents($nested_drush_config_file, Yaml::dump($nested_drush_yml_options, PHP_INT_MAX, 2));
+        file_put_contents($a_drush_config_file, Yaml::dump($a_drush_yml_options, PHP_INT_MAX, 2));
+        file_put_contents($b_drush_config_file, Yaml::dump($b_drush_yml_options, PHP_INT_MAX, 2));
         $this->drush('core-status', [], $command_options);
         unlink($drush_config_file);
-        unlink($nested_drush_config_file);
+        unlink($a_drush_config_file);
+        unlink($b_drush_config_file);
         $output = $this->getOutputFromJSON();
         $this->assertEquals($test_uri, $output->uri);
     }
