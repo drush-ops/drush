@@ -239,14 +239,7 @@ function _drush_test_os($os, $os_list_to_check) {
 function drush_is_local_host($host) {
   // Check to see if the provided host is "local".
   // @see hook_drush_sitealias_alter() in drush.api.php.
-  if (
-    ($host == 'localhost') ||
-    ($host == '127.0.0.1')
-  ) {
-    return TRUE;
-  }
-
-  return FALSE;
+  return $host == 'localhost' || $host == '127.0.0.1';
 }
 
 /**
