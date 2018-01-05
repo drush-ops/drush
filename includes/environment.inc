@@ -192,28 +192,13 @@ function drush_bit_bucket() {
  *   MINGW* (e.g. MINGW32)
  */
 function _drush_get_os($os = NULL) {
-  // The special os "CWRSYNC" can be used to indicate that we are testing
-  // a path that will be passed as an argument to cwRsync, which requires
-  // that the path be converted to /cygdrive/c/path, even on DOS or Powershell.
-  // The special os "RSYNC" can be used to indicate that we want to assume
-  // "CWRSYNC" when cwrsync is installed, or default to the local OS otherwise.
-  if (strtoupper($os) == "RSYNC") {
-    $os = _drush_get_os("LOCAL");
-    // For now we assume that cwrsync is always installed on Windows, and never installed son any other platform.
-    return drush_is_windows($os) ? "CWRSYNC" : $os;
-  }
   // We allow "LOCAL" to document, in instances where some parameters are being escaped
   // for use on a remote machine, that one particular parameter will always be used on
   // the local machine (c.f. drush_backend_invoke).
   if (isset($os) && ($os != "LOCAL")) {
     return $os;
   }
-  if (_drush_test_os(getenv("MSYSTEM"), ["MINGW"])) {
-    return getenv("MSYSTEM");
-  }
-  // QUESTION: Can we differentiate between DOS and POWERSHELL? They appear to have the same environment.
-  // At the moment, it does not seem to matter; they behave the same from PHP.
-  // At this point we will just return PHP_OS.
+
   return PHP_OS;
 }
 
