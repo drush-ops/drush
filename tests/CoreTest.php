@@ -129,7 +129,7 @@ class CoreCase extends CommandUnishTestCase
           'drush' => [
             'paths' => [
               'config' => [
-                './a.drush.yml'
+                'a.drush.yml'
               ],
             ],
           ],
@@ -138,7 +138,7 @@ class CoreCase extends CommandUnishTestCase
           'drush' => [
             'paths' => [
               'config' => [
-                './b.drush.yml'
+                'b.drush.yml'
               ],
             ],
           ],
@@ -147,7 +147,7 @@ class CoreCase extends CommandUnishTestCase
           'drush' => [
             'paths' => [
               'config' => [
-                './a.drush.yml'
+                'a.drush.yml'
               ],
             ],
           ],
