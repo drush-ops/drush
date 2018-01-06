@@ -198,7 +198,12 @@ function _drush_get_os($os = NULL) {
   if (isset($os) && ($os != "LOCAL")) {
     return $os;
   }
-
+  if (_drush_test_os(getenv("MSYSTEM"), ["MINGW"])) {
+    return getenv("MSYSTEM");
+  }
+  // QUESTION: Can we differentiate between DOS and POWERSHELL? They appear to have the same environment.
+  // At the moment, it does not seem to matter; they behave the same from PHP.
+  // At this point we will just return PHP_OS.
   return PHP_OS;
 }
 
