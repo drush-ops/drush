@@ -75,7 +75,7 @@ function _drush_postmortem() {
  */
 function _drush_convert_path($path) {
   $path = str_replace('\\','/', $path);
-  if (drush_is_windows(_drush_get_os()) && !drush_is_cygwin(_drush_get_os())) {
+  if (drush_is_windows() && !drush_is_cygwin()) {
     $path = preg_replace('/^\/cygdrive\/([A-Za-z])(.*)$/', '\1:\2', $path);
   }
 
@@ -192,7 +192,7 @@ function drush_bit_bucket() {
  *   MINGW* (e.g. MINGW32)
  */
 function _drush_get_os($os = NULL) {
-  if (_drush_test_os(getenv("MSYSTEM"), ["MINGW"])) {
+  if (isset($os) && _drush_test_os(getenv("MSYSTEM"), ["MINGW"])) {
     return getenv("MSYSTEM");
   }
 
