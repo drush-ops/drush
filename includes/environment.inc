@@ -192,10 +192,6 @@ function drush_bit_bucket() {
  *   MINGW* (e.g. MINGW32)
  */
 function _drush_get_os($os = NULL) {
-  if (isset($os) && _drush_test_os(getenv("MSYSTEM"), ["MINGW"])) {
-    return getenv("MSYSTEM");
-  }
-
   // In most cases, $os will be NULL and PHP_OS will be returned. However, if an
   // OS is specified in $os, return that instead.
   return $os ?: PHP_OS;
