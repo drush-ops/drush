@@ -192,19 +192,13 @@ function drush_bit_bucket() {
  *   MINGW* (e.g. MINGW32)
  */
 function _drush_get_os($os = NULL) {
-  // We allow "LOCAL" to document, in instances where some parameters are being escaped
-  // for use on a remote machine, that one particular parameter will always be used on
-  // the local machine (c.f. drush_backend_invoke).
-  if (isset($os) && ($os != "LOCAL")) {
-    return $os;
-  }
   if (_drush_test_os(getenv("MSYSTEM"), ["MINGW"])) {
     return getenv("MSYSTEM");
   }
-  // QUESTION: Can we differentiate between DOS and POWERSHELL? They appear to have the same environment.
-  // At the moment, it does not seem to matter; they behave the same from PHP.
-  // At this point we will just return PHP_OS.
-  return PHP_OS;
+
+  // In most cases, $os will be NULL and PHP_OS will be returned. However, if an
+  // OS is specified in $os, return that instead.
+  return $os ?: PHP_OS;
 }
 
 function _drush_test_os($os, $os_list_to_check) {
