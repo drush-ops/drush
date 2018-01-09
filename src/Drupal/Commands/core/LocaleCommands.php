@@ -2,6 +2,7 @@
 
 namespace Drush\Drupal\Commands\core;
 
+use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Component\Gettext\PoStreamWriter;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Language\LanguageInterface;
@@ -138,11 +139,12 @@ class LocaleCommands extends DrushCommands
      *
      * @command locale:export
      * @drupal-dependencies locale
+     * @option template To export the template file.
      * @option langcode The language code of the exported translations.
      * @option types String types to include, defaults to all types.
      *      Types: 'not-customized', 'customized', 'not-translated'.
      * @usage drush locale:export --langcode=nl > nl.po
-     *   Export the Dutch non-customized translations.
+     *   Export the Dutch translations with all types.
      * @usage drush locale:export --langcode=nl --types=customized,not-customized > nl.po
      *   Export the Dutch customized and not customized translations.
      * @usage drush locale:export --template > drupal.pot
@@ -154,99 +156,132 @@ class LocaleCommands extends DrushCommands
      */
     public function export($options = ['template' => false, 'langcode' => self::OPT, 'types' => self::OPT])
     {
-        $language = null;
-        $poreader_options = null;
-        $template = (bool)$options['template'];
+        $language = $this->getTranslatableLanguage($options['langcode']);
+        $poreader_options = $this->getReaderOptions(StringUtils::csvToArray($options['types']));
 
-        // If template is required, language code is not given.
-        if ($options['langcode'] != null) {
-            $language = $this->getLanguage($options['langcode']);
-        } elseif ($template === false) {
-            throw new \Exception(dt('Set --langcode or --template, see help for more information.'));
+        $file_uri = drush_save_data_to_temp_file('temporary://', 'po_');
+        if ($this->writePoFile($file_uri, $language, $poreader_options)) {
+            $this->printFile($file_uri);
+        } else {
+            $this->logger()->notice(dt('Nothing to export.'));
         }
-
-        if ($language) {
-            $poreader_options = $this->getReaderOptions($options['types']);
-        }
-
-        $this->writePoFile($language, $poreader_options);
     }
 
     /**
-     * Get language object of user input.
+     * Assure that required options are set.
      *
-     * @param string $langcode
+     * @hook validate locale:export
+     */
+    public function exportValidate(CommandData $commandData)
+    {
+        $langcode = $commandData->input()->getOption('langcode');
+        $template = $commandData->input()->getOption('template');
+
+        if (!$langcode && !$template) {
+            throw new \Exception(dt('Set --langcode=LANGCODE or --template, see help for more information.'));
+        }
+    }
+
+    /**
+     * Get translatable language object.
+     *
+     * @param string $langcode The language code of the language object.
      * @return LanguageInterface|null
      * @throws \Exception
      */
-    private function getLanguage($langcode)
+    private function getTranslatableLanguage($langcode)
     {
-        if ($langcode === true) {
-            throw new \Exception(dt('Set --langcode.'));
+        if (!$langcode) {
+            return null;
         }
+
         $language = \Drupal::languageManager()->getLanguage($langcode);
 
-        if ($language == null) {
+        if (!$language) {
             throw new \Exception(dt('Language code @langcode is not configured.', [
                 '@langcode' => $langcode,
             ]));
         }
+
+        if (!$this->isTranslatable($language)) {
+            throw new \Exception(dt('Language code @langcode is not translatable.', [
+                '@langcode' => $langcode,
+            ]));
+        }
+
         return $language;
     }
 
     /**
-     * Get PODatabaseReader options from user input.
+     * Check if language is translatable.
      *
-     * @param string $types
+     * @param LanguageInterface $language
+     * @return bool
+     */
+    private function isTranslatable(LanguageInterface $language)
+    {
+        if ($language->isLocked()) {
+            return false;
+        }
+
+        if ($language->getId() != 'en') {
+            return true;
+        }
+
+        return (bool)\Drupal::config('locale.settings')->get('translate_english');
+    }
+
+    /**
+     * Get PODatabaseReader options.
+     *
+     * @param array $types
      * @return array
      * @throws \Exception
      */
-    private function getReaderOptions($types): array
+    private function getReaderOptions(array $types = [])
     {
         $allowed_types = [
-            'not-customized',
-            'customized',
-            'not-translated',
+            'not_customized' => 'not-customized',
+            'customized' => 'customized',
+            'not_translated' => 'not-translated',
         ];
-        $types = StringUtils::csvToArray($types);
 
         if (empty($types)) {
             $types = $allowed_types;
-        } elseif (array_diff($types, $allowed_types)) {
-            throw new \Exception(dt('Types must contain one of: @types.', [
+        }
+
+        if (array_diff($types, $allowed_types)) {
+            throw new \Exception(dt('Allowed types: @types.', [
                 '@types' => implode(', ', $allowed_types),
             ]));
         }
 
-        $types = array_map(function ($value) {
-            return str_replace('-', '_', $value);
-        }, $types);
-
-        return array_fill_keys($types, true);
+        $option_keys = array_keys(array_intersect($allowed_types, $types));
+        return array_fill_keys($option_keys, true);
     }
 
     /**
      * Write out the exported language or template file.
      *
+     * @param string $file_uri Uri string to gather the data.
      * @param LanguageInterface|null $language The language to export.
-     * @param array|null $poreader_options The export options for PoDatabaseReader.
+     * @param array $options The export options for PoDatabaseReader.
+     * @return bool True if successful.
      */
-    private function writePoFile($language, $poreader_options)
+    private function writePoFile($file_uri, LanguageInterface $language = null, array $options = [])
     {
         $reader = new PoDatabaseReader();
 
         if ($language) {
             $reader->setLangcode($language->getId());
-            $reader->setOptions($poreader_options);
+            $reader->setOptions($options);
         }
 
         $reader_item = $reader->readItem();
         if (empty($reader_item)) {
-            $this->logger()->notice(dt('Nothing to export.'));
-            return;
+            return false;
         }
 
-        $file_uri = drush_save_data_to_temp_file('temporary://', 'po_');
         $header = $reader->getHeader();
         $header->setProjectName(drush_get_context('DRUSH_DRUPAL_SITE'));
         $language_name = ($language) ? $language->getName() : '';
@@ -260,6 +295,6 @@ class LocaleCommands extends DrushCommands
         $writer->writeItems($reader);
         $writer->close();
 
-        $this->printFile($file_uri);
+        return true;
     }
 }
