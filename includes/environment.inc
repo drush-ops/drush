@@ -75,7 +75,7 @@ function _drush_postmortem() {
  */
 function _drush_convert_path($path) {
   $path = str_replace('\\','/', $path);
-  if (drush_is_windows(_drush_get_os()) && !drush_is_cygwin(_drush_get_os())) {
+  if (drush_is_windows() && !drush_is_cygwin()) {
     $path = preg_replace('/^\/cygdrive\/([A-Za-z])(.*)$/', '\1:\2', $path);
   }
 
@@ -176,16 +176,10 @@ function drush_has_bash($os = NULL) {
 }
 
 /**
- * Checks operating system and returns
- * supported bit bucket folder.
+ * Checks operating system and returns supported bit bucket folder.
  */
 function drush_bit_bucket() {
-  if (drush_has_bash()) {
-    return '/dev/null';
-  }
-  else {
-    return 'nul';
-  }
+  return drush_has_bash() ? '/dev/null' : 'nul';
 }
 
 /**
@@ -198,29 +192,9 @@ function drush_bit_bucket() {
  *   MINGW* (e.g. MINGW32)
  */
 function _drush_get_os($os = NULL) {
-  // The special os "CWRSYNC" can be used to indicate that we are testing
-  // a path that will be passed as an argument to cwRsync, which requires
-  // that the path be converted to /cygdrive/c/path, even on DOS or Powershell.
-  // The special os "RSYNC" can be used to indicate that we want to assume
-  // "CWRSYNC" when cwrsync is installed, or default to the local OS otherwise.
-  if (strtoupper($os) == "RSYNC") {
-    $os = _drush_get_os("LOCAL");
-    // For now we assume that cwrsync is always installed on Windows, and never installed son any other platform.
-    return drush_is_windows($os) ? "CWRSYNC" : $os;
-  }
-  // We allow "LOCAL" to document, in instances where some parameters are being escaped
-  // for use on a remote machine, that one particular parameter will always be used on
-  // the local machine (c.f. drush_backend_invoke).
-  if (isset($os) && ($os != "LOCAL")) {
-    return $os;
-  }
-  if (_drush_test_os(getenv("MSYSTEM"), ["MINGW"])) {
-    return getenv("MSYSTEM");
-  }
-  // QUESTION: Can we differentiate between DOS and POWERSHELL? They appear to have the same environment.
-  // At the moment, it does not seem to matter; they behave the same from PHP.
-  // At this point we will just return PHP_OS.
-  return PHP_OS;
+  // In most cases, $os will be NULL and PHP_OS will be returned. However, if an
+  // OS is specified in $os, return that instead.
+  return $os ?: PHP_OS;
 }
 
 function _drush_test_os($os, $os_list_to_check) {
@@ -245,21 +219,14 @@ function _drush_test_os($os, $os_list_to_check) {
 function drush_is_local_host($host) {
   // Check to see if the provided host is "local".
   // @see hook_drush_sitealias_alter() in drush.api.php.
-  if (
-    ($host == 'localhost') ||
-    ($host == '127.0.0.1')
-  ) {
-    return TRUE;
-  }
-
-  return FALSE;
+  return $host == 'localhost' || $host == '127.0.0.1';
 }
 
 /**
  * Determine whether current OS is a Windows variant.
  */
 function drush_is_windows($os = NULL) {
-  return strtoupper(substr($os ?: PHP_OS, 0, 3)) === 'WIN';
+  return strtoupper(substr(_drush_get_os($os), 0, 3)) === 'WIN';
 }
 
 function drush_escapeshellarg($arg, $os = NULL, $raw = FALSE) {

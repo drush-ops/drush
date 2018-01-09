@@ -43,6 +43,8 @@ class ConfigLocator
 
     protected $configFilePaths = [];
 
+    protected $processedConfigPaths = [];
+
     /*
      * From context.inc:
      *
@@ -308,6 +310,15 @@ class ConfigLocator
         $this->addToSources($processor->sources());
         $context->import($processor->export($reference));
         $this->config->addContext($contextName, $context);
+        $this->processedConfigPaths = array_merge($this->processedConfigPaths, $paths);
+
+        // Recursive case.
+        if ($context->has('drush.paths.config')) {
+            $new_config_paths = array_diff((array) $context->get('drush.paths.config'), $this->processedConfigPaths);
+            if ($new_config_paths) {
+                $this->addConfigPaths($contextName, $new_config_paths);
+            }
+        }
 
         return $this;
     }
