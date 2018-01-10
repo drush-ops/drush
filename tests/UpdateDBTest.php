@@ -70,6 +70,19 @@ class UpdateDBTest extends CommandUnishTestCase
 
         // Run updates.
         $this->drush('updatedb', [], $options, null, null, self::EXIT_ERROR);
+
+        $expected_output = <<<LOG
+ -------- ----------- --------------- ---------------------- 
+  Module   Update ID   Type            Description           
+ -------- ----------- --------------- ---------------------- 
+  woot     8101        hook_update_n   Good update.          
+  woot     8102        hook_update_n   Failing update.       
+  woot     failing     post-update     Failing post-update.  
+ -------- ----------- --------------- ---------------------- 
+
+ // Do you wish to run the specified pending updates?: yes.
+LOG;
+        $this->assertOutputEquals(preg_replace('#  *#', ' ', trim($expected_output)));
     }
 
     /**
