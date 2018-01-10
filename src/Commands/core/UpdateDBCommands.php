@@ -10,6 +10,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Psr\Log\LogLevel;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class UpdateDBCommands extends DrushCommands
 {
@@ -132,6 +133,10 @@ class UpdateDBCommands extends DrushCommands
      */
     public function process($batch_id)
     {
+        // Suppress the output of the batch process command. This is intended to
+        // be passed to the initiating command rather than being output to the
+        // console.
+        $this->output()->setVerbosity(OutputInterface::VERBOSITY_QUIET);
         return drush_batch_command($batch_id);
     }
 
