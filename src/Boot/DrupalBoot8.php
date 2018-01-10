@@ -230,5 +230,4 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             $this->kernel->terminate($this->getRequest(), $response);
         }
     }
-
 }

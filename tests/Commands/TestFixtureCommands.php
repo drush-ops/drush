@@ -160,5 +160,4 @@ class TestFixtureCommands
 
         return $autoloader;
     }
-
 }

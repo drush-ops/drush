@@ -161,5 +161,4 @@ YAML_FRAGMENT;
         $functions = serialize($functions);
         $this->drush('sql:query', ["UPDATE key_value SET value = '$functions' WHERE collection = 'post_update' AND name = 'existing_updates'"], $options);
     }
-
 }

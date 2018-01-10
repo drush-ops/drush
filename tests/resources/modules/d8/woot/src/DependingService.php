@@ -19,7 +19,8 @@ use Drupal\devel\DevelDumperManagerInterface;
  * @see https://www.drupal.org/project/drupal/issues/2863986
  * @see https://github.com/drush-ops/drush/issues/3193
  */
-class DependingService {
+class DependingService
+{
 
     /**
      * @var \Drupal\devel\DevelDumperManagerInterface
@@ -30,5 +31,4 @@ class DependingService {
     {
         $this->develDumperManager = $develDumperManager;
     }
-
 }

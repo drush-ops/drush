@@ -8,7 +8,8 @@ use Drush\Drupal\UpdateKernel as DrushUpdateKernel;
 /**
  * Defines the available kernels that can be bootstrapped.
  */
-final class Kernels {
+final class Kernels
+{
 
     /**
      * The default kernel that is used on standard requests.
@@ -52,5 +53,4 @@ final class Kernels {
         ];
         return $factories[$kernel];
     }
-
 }
