@@ -52,24 +52,37 @@ class UpdateDBTest extends CommandUnishTestCase
     {
         $sites = $this->setUpDrupal(1, true);
         $options = [
-        'yes' => null,
-        'root' => $root = $this->webroot(),
-        'uri' => key($sites),
+            'yes' => null,
+            'root' => $root = $this->webroot(),
+            'uri' => key($sites),
         ];
         $this->setupModulesForTests($root);
         $this->drush('pm-enable', ['woot'], $options);
 
-      // Force a pending update.
+        // Force a pending update.
         $this->drush('php-script', ['updatedb_script'], ['script-path' => __DIR__ . '/resources']);
 
-      // Force re-run of woot_update_8101().
+        // Force re-run of woot_update_8101().
         $this->drush('php:eval', array('drupal_set_installed_schema_version("woot", 8100)'), $options);
 
-      // Force re-run of the post-update woot_post_update_failing().
+        // Force re-run of the post-update woot_post_update_failing().
         $this->forcePostUpdate('woot_post_update_failing', $options);
 
-      // Run updates.
+        // Run updates.
         $this->drush('updatedb', [], $options, null, null, self::EXIT_ERROR);
+
+        $expected_output = <<<LOG
+ -------- ----------- --------------- ---------------------- 
+  Module   Update ID   Type            Description           
+ -------- ----------- --------------- ---------------------- 
+  woot     8101        hook_update_n   Good update.          
+  woot     8102        hook_update_n   Failing update.       
+  woot     failing     post-update     Failing post-update.  
+ -------- ----------- --------------- ---------------------- 
+
+ // Do you wish to run the specified pending updates?: yes.
+LOG;
+        $this->assertOutputEquals(preg_replace('#  *#', ' ', trim($expected_output)));
     }
 
     /**
@@ -133,7 +146,7 @@ YAML_FRAGMENT;
     protected function setupModulesForTests($root)
     {
         $wootModule = Path::join(__DIR__, '/resources/modules/d8/woot');
-      // We install into Unish so that we aren't cleaned up. That causes container to go invalid after tearDownAfterClass().
+        // We install into Unish so that we aren't cleaned up. That causes container to go invalid after tearDownAfterClass().
         $targetDir = Path::join($root, 'modules/unish/woot');
         $this->mkdir($targetDir);
         $this->recursiveCopy($wootModule, $targetDir);
