@@ -34,12 +34,10 @@ function drush_print($message = '', $indent = 0, $handle = NULL, $newline = TRUE
   if (($charset = drush_get_option('output_charset')) && function_exists('iconv')) {
     $msg = iconv('UTF-8', $charset, $msg);
   }
-  if (isset($handle)) {
-    fwrite($handle, $msg);
+  if (!$handle) {
+    $handle = STDOUT;
   }
-  else {
-    print $msg;
-  }
+  fwrite($handle, $msg);
 }
 
 /**
