@@ -1523,6 +1523,12 @@ header .logo a {
 	overflow: hidden;
 }
 
+#drush9 {
+	padding: 5rem 0 5rem;
+	background-color: #ffffff;
+	overflow: hidden;
+}
+
 #features .features-wrap {
 	margin-top: 1.5rem;
 	max-width: 1170px;
@@ -1536,7 +1542,7 @@ header .logo a {
 	font-family: "roboto-medium", sans-serif;
 }
 
-#features .feature-count {
+.feature-count {
 	display: block;
 	color: #ed254d;
 	font-family: "roboto-bold", serif;
