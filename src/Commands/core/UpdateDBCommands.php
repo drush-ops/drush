@@ -212,7 +212,7 @@ class UpdateDBCommands extends DrushCommands
 
         // Log the message that was returned.
         if (!empty($ret['results']['query'])) {
-          $this->logger()->notice(strip_tags((string) $ret['results']['query']));
+            $this->logger()->notice(strip_tags((string) $ret['results']['query']));
         }
 
         if (!empty($ret['#abort'])) {
@@ -270,7 +270,7 @@ class UpdateDBCommands extends DrushCommands
         // update themselves.
         // @see \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface::applyEntityUpdate()
         // @see \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface::applyFieldUpdate()
-        if ($options['entity-updates'] &&  \Drupal::entityDefinitionUpdateManager()->needsUpdates()) {
+        if ($options['entity-updates'] && \Drupal::entityDefinitionUpdateManager()->needsUpdates()) {
             $operations[] = [[$this, 'updateEntityDefinitions'], []];
         }
 
