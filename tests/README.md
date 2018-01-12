@@ -13,3 +13,4 @@ Advanced usage
 - Skip slow tests (usually those with network usage): `unish.phpunit.php --exclude-group slow`
 - XML results: `unish.phpunit.php --filter=testVersionString --log-junit results.xml`
 - Build the SUT and run test suite (slower) - `unish.clean.php`
+- Install the SUT in a given folder - `UNISH_TMP=/path/to/folder php unish.sut.php`
