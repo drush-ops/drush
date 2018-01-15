@@ -210,6 +210,11 @@ class UpdateDBCommands extends DrushCommands
         }
         $context['results'][$module][$number] = array_merge($context['results'][$module][$number], $ret);
 
+        // Log the message that was returned.
+        if (!empty($ret['results']['query'])) {
+            $this->logger()->notice(strip_tags((string) $ret['results']['query']));
+        }
+
         if (!empty($ret['#abort'])) {
             // Record this function in the list of updates that were aborted.
             $context['results']['#abort'][] = $function;
@@ -269,7 +274,7 @@ class UpdateDBCommands extends DrushCommands
         // update themselves.
         // @see \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface::applyEntityUpdate()
         // @see \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface::applyFieldUpdate()
-        if ($options['entity-updates'] &&  \Drupal::entityDefinitionUpdateManager()->needsUpdates()) {
+        if ($options['entity-updates'] && \Drupal::entityDefinitionUpdateManager()->needsUpdates()) {
             $operations[] = [[$this, 'updateEntityDefinitions'], []];
         }
 
@@ -374,7 +379,7 @@ class UpdateDBCommands extends DrushCommands
     }
 
     /**
-     * Process and display any returned update output.
+     * Batch update callback, clears the cache if needed.
      *
      * @see \Drupal\system\Controller\DbUpdateController::batchFinished()
      * @see \Drupal\system\Controller\DbUpdateController::results()
@@ -389,16 +394,6 @@ class UpdateDBCommands extends DrushCommands
             $this->logger()->info(dt("Skipping cache-clear operation due to --no-cache-clear option."));
         } else {
             drupal_flush_all_caches();
-        }
-
-        // Log update results.
-        unset($results['#abort']);
-        foreach ($results as $module => $updates) {
-            foreach ($updates as $number => $update) {
-                if (empty($update['#abort']) && $update['results']['success'] && !empty($update['results']['query'])) {
-                    $this->logger()->notice(strip_tags($update['results']['query']));
-                }
-            }
         }
     }
 
