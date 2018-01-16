@@ -82,7 +82,7 @@ class ConfigExportCommands extends DrushCommands
      *   Export configuration; Save files in a backup directory named config-export.
      * @aliases cex,config-export
      */
-    public function export($label = null, $options = ['add' => false, 'commit' => false, 'message' => self::REQ, 'destination' => '', 'diff' => false])
+    public function export($label = null, $options = ['add' => false, 'commit' => false, 'message' => self::REQ, 'destination' => null, 'diff' => false])
     {
         // Get destination directory.
         $destination_dir = ConfigCommands::getDirectory($label, $options['destination']);
