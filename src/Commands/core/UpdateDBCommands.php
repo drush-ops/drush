@@ -233,6 +233,78 @@ class UpdateDBCommands extends DrushCommands
     }
 
     /**
+     * Batch command that executes a single post-update.
+     *
+     * @param string $function
+     *   The post-update function to execute.
+     * @param array $context
+     *   The batch context.
+     */
+    public function updateDoOnePostUpdate($function, &$context)
+    {
+        $ret = [];
+
+        // If this update was aborted in a previous step, or has a dependency that was
+        // aborted in a previous step, go no further.
+        if (!empty($context['results']['#abort'])) {
+            return;
+        }
+
+        list($module, $name) = explode('_post_update_', $function, 2);
+        module_load_include('php', $module, $module . '.post_update');
+        if (function_exists($function)) {
+            $this->logger()->notice("Update started: $function");
+            try {
+                $ret['results']['query'] = $function($context['sandbox']);
+                $ret['results']['success'] = true;
+
+                if (!isset($context['sandbox']['#finished']) || (isset($context['sandbox']['#finished']) && $context['sandbox']['#finished'] >= 1)) {
+                    \Drupal::service('update.post_update_registry')->registerInvokedUpdates([$function]);
+                }
+            } catch (\Exception $e) {
+                // @TODO We may want to do different error handling for different exception
+                // types, but for now we'll just log the exception and return the message
+                // for printing.
+                // @see https://www.drupal.org/node/2564311
+                $this->logger()->error($e->getMessage());
+
+                $variables = Error::decodeException($e);
+                unset($variables['backtrace']);
+                $ret['#abort'] = [
+                    'success' => false,
+                    'query' => t('%type: @message in %function (line %line of %file).', $variables),
+                ];
+            }
+        }
+
+        if (isset($context['sandbox']['#finished'])) {
+            $context['finished'] = $context['sandbox']['#finished'];
+            unset($context['sandbox']['#finished']);
+        }
+        if (!isset($context['results'][$module][$name])) {
+            $context['results'][$module][$name] = [];
+        }
+        $context['results'][$module][$name] = array_merge($context['results'][$module][$name], $ret);
+
+        // Log the message that was returned.
+        if (!empty($ret['results']['query'])) {
+            $this->logger()->notice(strip_tags((string) $ret['results']['query']));
+        }
+
+        if (!empty($ret['#abort'])) {
+            // Record this function in the list of updates that were aborted.
+            $context['results']['#abort'][] = $function;
+            // Setting this value will output an error message.
+            // @see \DrushBatchContext::offsetSet()
+            $context['error_message'] = "Update failed: $function";
+        } else {
+            // Setting this value will output a success message.
+            // @see \DrushBatchContext::offsetSet()
+            $context['message'] = "Update completed: $function";
+        }
+    }
+
+    /**
      * Start the database update batch process.
      */
     public function updateBatch($options)
@@ -287,7 +359,7 @@ class UpdateDBCommands extends DrushCommands
                     $operations[] = [[$this, 'cacheRebuild'], []];
                 }
                 foreach ($post_updates as $function) {
-                    $operations[] = ['update_invoke_post_update', [$function]];
+                    $operations[] = [[$this, 'updateDoOnePostUpdate'], [$function]];
                 }
             }
         }
