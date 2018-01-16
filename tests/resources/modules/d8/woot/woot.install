@@ -13,3 +13,10 @@ function woot_update_8101() {
 function woot_update_8102() {
   throw new \Exception('This is the exception message thrown in woot_update_8102');
 }
+
+/**
+ * Another good update.
+ */
+function woot_update_8103() {
+  return t('This is the update message from woot_update_8103');
+}
