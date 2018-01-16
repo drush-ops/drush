@@ -211,6 +211,58 @@ YAML_FRAGMENT;
         $this->assertNull($out);
     }
 
+    /**
+     * Tests that updates and post-updated can be executed successfully.
+     */
+    public function testSuccessfulUpdate()
+    {
+        $sites = $this->setUpDrupal(1, true);
+        $options = [
+            'yes' => null,
+            'root' => $root = $this->webroot(),
+            'uri' => key($sites),
+        ];
+        $this->setupModulesForTests($root);
+        $this->drush('pm-enable', ['woot'], $options);
+
+        // Force re-run of woot_update_8103() which is expected to be completed successfully.
+        $this->drush('php:eval', array('drupal_set_installed_schema_version("woot", 8102)'), $options);
+
+        // Force re-run of post-update hooks which are expected to be completed successfully.
+        $this->forcePostUpdate('woot_post_update_a', $options);
+        $this->forcePostUpdate('woot_post_update_render', $options);
+
+        // Run updates.
+        $this->drush('updatedb', [], $options, null, null, self::EXIT_SUCCESS);
+
+        $expected_output = <<<LOG
+ -------- ----------- --------------- -------------------------
+  Module   Update ID    Type            Description
+ -------- ----------- --------------- -------------------------
+  woot     8103         hook_update_n   Another good update.
+  woot     a            post-update     Successful post-update.
+  woot     render       post-update     Renders some content.
+ -------- ----------- --------------- -------------------------
+
+ // Do you wish to run the specified pending updates?: yes.
+LOG;
+        $this->assertOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_output)));
+
+        $expected_error_output = <<<LOG
+ [notice] Update started: woot_update_8103
+ [notice] This is the update message from woot_update_8103
+ [ok] Update completed: woot_update_8103
+ [notice] Update started: woot_post_update_a
+ [notice] This is the update message from woot_post_update_a
+ [ok] Update completed: woot_post_update_a
+ [notice] Update started: woot_post_update_render
+ [ok] Update completed: woot_post_update_render
+ [success] Finished performing updates.
+LOG;
+
+        $this->assertErrorOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_error_output)));
+    }
+
     protected function setupModulesForTests($root)
     {
         $wootModule = Path::join(__DIR__, '/resources/modules/d8/woot');

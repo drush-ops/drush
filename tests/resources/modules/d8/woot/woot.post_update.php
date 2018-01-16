@@ -25,3 +25,18 @@ function woot_post_update_install_devel()
 {
     \Drupal::service('module_installer')->install(['devel']);
 }
+
+/**
+ * Renders some content.
+ */
+function woot_post_update_render()
+{
+    // This post-update function allows us to test that all Drupal modules are
+    // fully loaded when the updates are being performed. The renderer will
+    // throw an exception if this is not the case.
+    $render_array = [
+        '#theme' => 'item_list',
+        '#items' => ['a', 'b'],
+    ];
+    \Drupal::service('renderer')->renderPlain($render_array);
+}
