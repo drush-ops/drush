@@ -113,7 +113,7 @@ LOG;
         $this->setupModulesForTests($root);
         $this->drush('pm-enable', ['woot'], $options);
 
-        // Force re-run of woot_update_8101().
+        // Force re-run of woot_update_8103().
         $this->drush('php:eval', array('drupal_set_installed_schema_version("woot", 8102)'), $options);
 
         // Force re-run of post-update hooks.
