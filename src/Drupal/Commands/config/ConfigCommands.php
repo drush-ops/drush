@@ -205,7 +205,7 @@ class ConfigCommands extends DrushCommands
      * Display status of configuration (differences between the filesystem configuration and database configuration).
      *
      * @command config:status
-     * @option operation Operation A comma-separated list of operations to filter results.
+     * @option state  A comma-separated list of states to filter results.
      * @option prefix Prefix The config prefix. For example, "system". No prefix will return all names in the system.
      * @option string $label A config directory label (i.e. a key in \$config_directories array in settings.php).
      * @usage drush config:status
