@@ -12,25 +12,19 @@
 #       in the directory above the Drupal root.
 # 3.  In any location, as specified by the --config (-c) option.
 # 4.  User's .drush folder (i.e. ~/.drush/drush.yml).
-# 5.  System wide configuration folder (e.g. /etc/drush/drush.yml).
+# 5.  System wide configuration folder (e.g. /etc/drush/drush.yml or C:\ProgramData\Drush\drush.yml).
 #
 # If a configuration file is found in any of the above locations, it will be
 # loaded and merged with other configuration files in the search list.
 #
-# The Drush configuration system has been factored out Drush and shared with
+# The Drush configuration system has been factored out and shared with
 # the world at https://github.com/consolidation/config. Feel free to use it
 # for your projects. Lots more usage information is there.
 #
-# IMPORTANT NOTE regarding configuration file on Windows:
-#
-# For Windows 7, Windows Vista, Windows Server 2008 and later versions is the
-# system window configuration folder C:\ProgramData\Drush.  For previous
-# versions of Windows is the folder C:\Documents and Settings\All Users\Drush.
-#
 # NOT SUPPORTED YET:
 #
-# The Drush commands 'rsync' and 'sql-sync' are special cases.  These commands
-# will load the configuration file for the site specified by the source
+# The Drush commands 'rsync' and 'sql:sync' are special cases.  These commands
+# load the configuration file for the site specified by the source
 # parameter; however, they do not load the configuration file for the site
 # specified by the destination parameter, nor do they load configuration files
 # at remote sites.
