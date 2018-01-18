@@ -179,7 +179,7 @@ class UpdateDBCommands extends DrushCommands
                     Database::startLog($function);
                 }
 
-                $this->logger()->notice("Executing " . $function);
+                $this->logger()->notice("Update started: $function");
                 $ret['results']['query'] = $function($context['sandbox']);
                 $ret['results']['success'] = true;
             } // @TODO We may want to do different error handling for different exception
@@ -213,14 +213,18 @@ class UpdateDBCommands extends DrushCommands
         if (!empty($ret['#abort'])) {
             // Record this function in the list of updates that were aborted.
             $context['results']['#abort'][] = $function;
+            // Setting this value will output an error message.
+            // @see \DrushBatchContext::offsetSet()
+            $context['error_message'] = "Update failed: $function";
         }
 
         // Record the schema update if it was completed successfully.
         if ($context['finished'] == 1 && empty($ret['#abort'])) {
             drupal_set_installed_schema_version($module, $number);
+            // Setting this value will output a success message.
+            // @see \DrushBatchContext::offsetSet()
+            $context['message'] = "Update completed: $function";
         }
-
-        $context['message'] = 'Performing ' . $function;
     }
 
     /**
@@ -304,7 +308,10 @@ class UpdateDBCommands extends DrushCommands
         } elseif (!array_key_exists('object', $result)) {
             $this->logger()->error(dt('Batch process did not return a result object.'));
         } elseif (!empty($result['object'][0]['#abort'])) {
-            $this->logger()->error(dt('Failed batch process: !process', [
+            // Whenever an error occurs the batch process does not continue, so
+            // this array should only contain a single item, but we still output
+            // all available data for completeness.
+            $this->logger()->error(dt('Update aborted by: !process', [
                 '!process' => implode(', ', $result['object'][0]['#abort']),
             ]));
         } else {
