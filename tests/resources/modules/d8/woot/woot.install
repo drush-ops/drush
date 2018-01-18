@@ -4,7 +4,7 @@
  * Good update.
  */
 function woot_update_8101() {
-  return t('woot_update_8101');
+  return t('This is the update message from woot_update_8101');
 }
 
 /**

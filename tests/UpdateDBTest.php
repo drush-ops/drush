@@ -82,7 +82,20 @@ class UpdateDBTest extends CommandUnishTestCase
 
  // Do you wish to run the specified pending updates?: yes.
 LOG;
-        $this->assertOutputEquals(preg_replace('#  *#', ' ', trim($expected_output)));
+        $this->assertOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_output)));
+
+        $expected_error_output = <<<LOG
+ [notice] Executing woot_update_8101
+ [notice] This is the update message from woot_update_8101
+ [ok] Performing woot_update_8101
+ [notice] Executing woot_update_8102
+ [error]  8102 error
+ [ok] Performing woot_update_8102
+ [error]  Failed batch process: woot_update_8102
+ [error]  Finished performing updates.
+LOG;
+
+        $this->assertErrorOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_error_output)));
     }
 
     /**
