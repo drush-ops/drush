@@ -31,11 +31,13 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @option db-su-pw Password for the db-su account.
      * @option source-dump The path for retrieving the sql-dump on source machine.
      * @option target-dump The path for storing the sql-dump on target machine.
-     * @usage drush sql:sync @source @target
-     *   Copy the database from the site with the alias 'source' to the site with the alias 'target'.
+     * @usage drush sql:sync @source @self
+     *   Copy the database from the site with the alias 'source' to the local site.
+     * @usage drush sql:sync @self @target
+     *   Copy the database from the local site to the site with the alias 'target'.
      * @usage drush sql:sync #prod #dev
      *   Copy the database from the site in /sites/prod to the site in /sites/dev (multisite installation).
-     * @topics docs:aliases,docs:policy,docs:example-sync-via-http
+     * @topics docs:aliases,docs:policy,docs:configuration,docs:example-sync-via-http
      * @throws \Exception
      */
     public function sqlsync($source, $target, $options = ['no-dump' => false, 'no-sync' => false, 'runner' => self::REQ, 'create-db' => false, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'target-dump' => self::REQ, 'source-dump' => self::OPT])
