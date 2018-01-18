@@ -448,6 +448,11 @@ class UpdateDBCommands extends DrushCommands
     {
         drupal_flush_all_caches();
         \Drupal::service('kernel')->rebuildContainer();
+        // Load the module data which has been removed when the container was
+        // rebuilt.
+        $module_handler = \Drupal::moduleHandler();
+        $module_handler->loadAll();
+        $module_handler->invokeAll('rebuild');
     }
 
     /**
