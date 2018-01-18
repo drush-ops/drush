@@ -4,12 +4,19 @@
  * Good update.
  */
 function woot_update_8101() {
-  return t('woot_update_8101');
+  return t('This is the update message from woot_update_8101');
 }
 
 /**
  * Failing update.
  */
 function woot_update_8102() {
-  throw new \Exception('8102 error');
+  throw new \Exception('This is the exception message thrown in woot_update_8102');
+}
+
+/**
+ * Another good update.
+ */
+function woot_update_8103() {
+  return t('This is the update message from woot_update_8103');
 }

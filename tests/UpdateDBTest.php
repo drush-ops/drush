@@ -72,17 +72,85 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->drush('updatedb', [], $options, null, null, self::EXIT_ERROR);
 
         $expected_output = <<<LOG
- -------- ----------- --------------- ---------------------- 
-  Module   Update ID   Type            Description           
- -------- ----------- --------------- ---------------------- 
-  woot     8101        hook_update_n   Good update.          
-  woot     8102        hook_update_n   Failing update.       
-  woot     failing     post-update     Failing post-update.  
- -------- ----------- --------------- ---------------------- 
+ -------- ----------- --------------- -----------------------
+  Module   Update ID   Type            Description
+ -------- ----------- --------------- -----------------------
+  woot     8101        hook_update_n   Good update.
+  woot     8102        hook_update_n   Failing update.
+  woot     8103        hook_update_n   Another good update.
+  woot     failing     post-update     Failing post-update.
+ -------- ----------- --------------- -----------------------
 
  // Do you wish to run the specified pending updates?: yes.
 LOG;
-        $this->assertOutputEquals(preg_replace('#  *#', ' ', trim($expected_output)));
+        $this->assertOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_output)));
+
+        $expected_error_output = <<<LOG
+ [notice] Update started: woot_update_8101
+ [notice] This is the update message from woot_update_8101
+ [ok] Update completed: woot_update_8101
+ [notice] Update started: woot_update_8102
+ [error] This is the exception message thrown in woot_update_8102
+ [error] Update failed: woot_update_8102
+ [error] Update aborted by: woot_update_8102
+ [error] Finished performing updates.
+LOG;
+
+        $this->assertErrorOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_error_output)));
+    }
+
+    /**
+     * Tests that a failed post-update is handled correctly.
+     */
+    public function testFailedPostUpdate()
+    {
+        $sites = $this->setUpDrupal(1, true);
+        $options = [
+            'yes' => null,
+            'root' => $root = $this->webroot(),
+            'uri' => key($sites),
+        ];
+        $this->setupModulesForTests($root);
+        $this->drush('pm-enable', ['woot'], $options);
+
+        // Force re-run of woot_update_8103().
+        $this->drush('php:eval', array('drupal_set_installed_schema_version("woot", 8102)'), $options);
+
+        // Force re-run of post-update hooks.
+        $this->forcePostUpdate('woot_post_update_a', $options);
+        $this->forcePostUpdate('woot_post_update_failing', $options);
+
+        // Run updates.
+        $this->drush('updatedb', [], $options, null, null, self::EXIT_ERROR);
+
+        $expected_output = <<<LOG
+ -------- ----------- --------------- -------------------------
+  Module   Update ID    Type            Description
+ -------- ----------- --------------- -------------------------
+  woot     8103         hook_update_n   Another good update.
+  woot     a            post-update     Successful post-update.
+  woot     failing      post-update     Failing post-update.
+ -------- ----------- --------------- -------------------------
+
+ // Do you wish to run the specified pending updates?: yes.
+LOG;
+        $this->assertOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_output)));
+
+        $expected_error_output = <<<LOG
+ [notice] Update started: woot_update_8103
+ [notice] This is the update message from woot_update_8103
+ [ok] Update completed: woot_update_8103
+ [notice] Update started: woot_post_update_a
+ [notice] This is the update message from woot_post_update_a
+ [ok] Update completed: woot_post_update_a
+ [notice] Update started: woot_post_update_failing
+ [error]  This is the exception message thrown in woot_post_update_failing
+ [error]  Update failed: woot_post_update_failing
+ [error]  Update aborted by: woot_post_update_failing
+ [error] Finished performing updates.
+LOG;
+
+        $this->assertErrorOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_error_output)));
     }
 
     /**
