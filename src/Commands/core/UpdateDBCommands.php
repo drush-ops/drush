@@ -40,7 +40,9 @@ class UpdateDBCommands extends DrushCommands
 
         // Check requirements before updating.
         if (!$this->updateCheckRequirements()) {
-            return;
+            if (!$this->io()->confirm(dt('Requirements check reports errors. Do you wish to continue?'))) {
+                throw new UserAbortException();
+            }
         }
 
         $return = drush_invoke_process('@self', 'updatedb:status', [], ['entity-updates' => $options['entity-updates'], 'post-updates' => $options['post-updates']]);
@@ -589,7 +591,7 @@ class UpdateDBCommands extends DrushCommands
      */
     public function updateCheckRequirements()
     {
-        $continue = true;
+        $return = true;
 
         \Drupal::moduleHandler()->resetImplementations();
         $requirements = update_check_requirements();
@@ -598,7 +600,7 @@ class UpdateDBCommands extends DrushCommands
         // If there are issues, report them.
         if ($severity != REQUIREMENT_OK) {
             if ($severity === REQUIREMENT_ERROR) {
-                $continue = false;
+                $return = false;
             }
             foreach ($requirements as $requirement) {
                 if (isset($requirement['severity']) && $requirement['severity'] != REQUIREMENT_OK) {
@@ -612,6 +614,6 @@ class UpdateDBCommands extends DrushCommands
             }
         }
 
-        return $continue;
+        return $return;
     }
 }
