@@ -123,8 +123,8 @@ class SqlCommands extends DrushCommands
      * Open a SQL command-line interface using Drupal's credentials.
      *
      * @command sql:cli
+     * @option extra Add custom options to the connect string (e.g. --extra=--skip-column-names)
      * @optionset_sql
-     * @allow-additional-options sql-connect
      * @aliases sqlc,sql-cli
      * @usage drush sql:cli
      *   Open a SQL command-line interface using Drupal's credentials.
