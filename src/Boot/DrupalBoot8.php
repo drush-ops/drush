@@ -2,14 +2,13 @@
 
 namespace Drush\Boot;
 
+use Consolidation\AnnotatedCommand\AnnotationData;
 use Drush\Log\DrushLog;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Drupal\Core\DrupalKernel;
 use Drush\Drush;
-use Drush\Drupal\DrupalKernel as DrushDrupalKernel;
 use Drush\Drupal\DrushServiceModifier;
-use Drupal\Core\Database\Database;
 
 use Drush\Log\LogLevel;
 
@@ -139,12 +138,19 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         parent::bootstrapDrupalDatabase();
     }
 
-    public function bootstrapDrupalConfiguration()
+    public function bootstrapDrupalConfiguration(AnnotationData $annotationData = null)
     {
+        // Default to the standard kernel.
+        $kernel = Kernels::DRUPAL;
+        if (!empty($annotationData)) {
+            $kernel = $annotationData->get('kernel', Kernels::DRUPAL);
+        }
         $classloader = $this->autoloader();
-        $kernelClass = new \ReflectionClass('\Drupal\Core\DrupalKernel');
         $request = $this->getRequest();
-        $this->kernel = DrushDrupalKernel::createFromRequest($request, $classloader, 'prod');
+        $kernel_factory = Kernels::getKernelFactory($kernel);
+        /** @var \Drupal\Core\DrupalKernelInterface kernel */
+        $this->kernel = $kernel_factory($request, $classloader, 'prod');
+        // Include Drush services in the container.
         // @see Drush\Drupal\DrupalKernel::addServiceModifier()
         $this->kernel->addServiceModifier(new DrushServiceModifier());
 
