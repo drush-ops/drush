@@ -137,12 +137,16 @@ class LocaleCommands extends DrushCommands
     /**
      * Exports to a gettext translation file.
      *
+     * @see \Drupal\locale\Form\ExportForm::submitForm
+     *
+     * @throws \Exception
+     *
      * @command locale:export
      * @drupal-dependencies locale
      * @option template To export the template file.
      * @option langcode The language code of the exported translations.
      * @option types String types to include, defaults to all types.
-     *      Types: 'not-customized', 'customized', 'not-translated'.
+     *   Types: 'not-customized', 'customized', 'not-translated'.
      * @usage drush locale:export --langcode=nl > nl.po
      *   Export the Dutch translations with all types.
      * @usage drush locale:export --langcode=nl --types=customized,not-customized > nl.po
@@ -150,14 +154,11 @@ class LocaleCommands extends DrushCommands
      * @usage drush locale:export --template > drupal.pot
      *   Export the template file to translate.
      * @aliases locale-export
-     * @see \Drupal\locale\Form\ExportForm::submitForm
-     *
-     * @throws \Exception
      */
     public function export($options = ['template' => false, 'langcode' => self::OPT, 'types' => self::OPT])
     {
         $language = $this->getTranslatableLanguage($options['langcode']);
-        $poreader_options = $this->getReaderOptions(StringUtils::csvToArray($options['types']));
+        $poreader_options = $this->convertTypesToPoDbReaderOptions(StringUtils::csvToArray($options['types']));
 
         $file_uri = drush_save_data_to_temp_file('temporary://', 'po_');
         if ($this->writePoFile($file_uri, $language, $poreader_options)) {
@@ -232,32 +233,37 @@ class LocaleCommands extends DrushCommands
     }
 
     /**
-     * Get PODatabaseReader options.
+     * Get PODatabaseReader options for given types.
      *
      * @param array $types
      * @return array
+     *   Options list with value 'true'.
      * @throws \Exception
+     *   Triggered with incorrect types.
      */
-    private function getReaderOptions(array $types = [])
+    private function convertTypesToPoDbReaderOptions(array $types = [])
     {
-        $allowed_types = [
+        if (empty($types)) {
+          return [];
+        }
+
+        $valid_convertions = [
             'not_customized' => 'not-customized',
             'customized' => 'customized',
             'not_translated' => 'not-translated',
         ];
 
-        if (empty($types)) {
-            $types = $allowed_types;
-        }
-
-        if (array_diff($types, $allowed_types)) {
+        // Check for invalid conversions.
+        if (array_diff($types, $valid_convertions)) {
             throw new \Exception(dt('Allowed types: @types.', [
-                '@types' => implode(', ', $allowed_types),
+                '@types' => implode(', ', $valid_convertions),
             ]));
         }
 
-        $option_keys = array_keys(array_intersect($allowed_types, $types));
-        return array_fill_keys($option_keys, true);
+        // Convert Types to Options.
+        $options = array_keys(array_intersect($valid_convertions, $types));
+
+        return array_fill_keys($options, true);
     }
 
     /**
