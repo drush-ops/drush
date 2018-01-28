@@ -100,31 +100,31 @@ class UserCase extends CommandUnishTestCase
     {
         // Create a content entity type and enable its module.
         $answers = [
-        'name' => 'UnishArticle',
-        'machine_name' => 'unish_article',
-        'package' => 'custom',
-        'version' => '8.x-1.0-dev',
-        'dependencies' => 'text',
-        'entity_type_label' => 'UnishArticle',
-        'entity_type_id' => 'unish_article',
-        'entity_base_path' => 'admin/content/unish_article',
-        'fieldable' => 'no',
-        'revisionable' => 'no',
-        'template' => 'no',
-        'access_controller' => 'no',
-        'title_base_field' => 'yes',
-        'status_base_field' => 'yes',
-        'created_base_field' => 'yes',
-        'changed_base_field' => 'yes',
-        'author_base_field' => 'yes',
-        'description_base_field' => 'no',
-        'rest_configuration' => 'no',
+            'name' => 'UnishArticle',
+            'machine_name' => 'unish_article',
+            'package' => 'custom',
+            'version' => '8.x-1.0-dev',
+            'dependencies' => 'text',
+            'entity_type_label' => 'UnishArticle',
+            'entity_type_id' => 'unish_article',
+            'entity_base_path' => 'admin/content/unish_article',
+            'fieldable' => 'no',
+            'revisionable' => 'no',
+            'template' => 'no',
+            'access_controller' => 'no',
+            'title_base_field' => 'yes',
+            'status_base_field' => 'yes',
+            'created_base_field' => 'yes',
+            'changed_base_field' => 'yes',
+            'author_base_field' => 'yes',
+            'description_base_field' => 'no',
+            'rest_configuration' => 'no',
         ];
         $answers = json_encode($answers);
         $original = getenv('SHELL_INTERACTIVE');
-        putenv('SHELL_INTERACTIVE=1');
+        $this->setEnv(['SHELL_INTERACTIVE' => 1]);
         $this->drush('generate', ['content-entity'], ['answers' => $answers, 'directory' => Path::join(self::webroot(), 'modules/contrib')]);
-        putenv('SHELL_INTERACTIVE=' . $original);
+        $this->setEnv(['SHELL_INTERACTIVE' => $original]);
         $this->drush('pm-enable', ['text,unish_article']);
         // Create one unish_article owned by our example user.
         $this->drush('php-script', ['create_unish_articles'], ['script-path' => '../vendor/drush/drush/tests/resources']);

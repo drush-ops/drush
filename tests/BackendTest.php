@@ -20,15 +20,15 @@ class BackendCase extends CommandUnishTestCase
     public function testDispatchUsingAlias()
     {
         $unishAliases = [
-        'remote' => [
-        'host' => 'server.isp.com',
-        'user' => 'www-admin',
-        'root' => '/path/to/drupal',
-        'uri' => 'http://example.com',
-        'paths' => [
-          'drush-script' => '/usr/local/bin/drush',
-        ],
-        ],
+            'remote' => [
+                'host' => 'server.isp.com',
+                'user' => 'www-admin',
+                'root' => '/path/to/drupal',
+                'uri' => 'http://example.com',
+                'paths' => [
+                    'drush-script' => '/usr/local/bin/drush',
+                ],
+            ],
         ];
         // n.b. writeUnishConfig will overwrite the alias files create by setupDrupal
         $this->writeUnishConfig($unishAliases);
