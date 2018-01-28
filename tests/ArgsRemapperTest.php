@@ -2,7 +2,7 @@
 
 namespace Unish;
 
-use \Drush\Preflight\argsRemapper;
+use \Drush\Preflight\ArgsRemapper;
 
 /**
  * Tests the Arguments Remapper.
