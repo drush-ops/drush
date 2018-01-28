@@ -12,7 +12,7 @@ class AnnotatedCommandCase extends CommandUnishTestCase
 
     public function testGlobal()
     {
-        $globalExtensions = $this->setupGlobalExtensionsForTests();
+        $globalIncludes = $targetDir = Path::join(__DIR__, 'resources/global-includes');
 
         $options = [];
 
@@ -20,7 +20,7 @@ class AnnotatedCommandCase extends CommandUnishTestCase
         $this->drush('cc', ['drush'], $options);
 
         // drush foobar
-        $options['include'] = "$globalExtensions";
+        $options['include'] = "$globalIncludes";
         $this->drush('foobar', [], $options);
         $output = $this->getOutput();
         $this->assertEquals('baz', $output);
@@ -30,15 +30,10 @@ class AnnotatedCommandCase extends CommandUnishTestCase
         $output = $this->getOutput();
         $this->assertEquals('bar', $output);
 
-        // Test global generator 'foo'.
-        $answers = [
-            'directory' => self::getSandbox(),
-        ];
-
         $options = [
             'yes' => null,
-            'include' => $globalExtensions,
-            'answers' => json_encode($answers),
+            'include' => $globalIncludes,
+            'directory' => self::getSandbox(),
         ];
 
         $original = getenv('SHELL_INTERACTIVE');
@@ -46,7 +41,7 @@ class AnnotatedCommandCase extends CommandUnishTestCase
         $this->drush('generate', ['foo-example'], $options);
         $this->setEnv(['SHELL_INTERACTIVE' => $original]);
 
-        $target = Path::join($this->webroot(), 'foo.php');
+        $target = Path::join($this->getSandbox(), 'foo.php');
         $actual = trim(file_get_contents($target));
         $this->assertEquals('Foo.', $actual);
         unlink($target);
@@ -210,15 +205,6 @@ EOT;
         // TODO: Support --ignored-modules
         // drush woot --help with the 'woot' module ignored
         $this->drush('woot', [], ['help' => null, 'ignored-modules' => 'woot'], null, null, self::EXIT_ERROR);
-    }
-
-    public function setupGlobalExtensionsForTests()
-    {
-        $globalExtension = __DIR__ . '/resources/global-includes';
-        $targetDir = Path::join(self::getSandbox(), 'global-includes');
-        $this->mkdir($targetDir);
-        $this->recursiveCopy($globalExtension, $targetDir);
-        return $targetDir;
     }
 
     public function setupModulesForTests($root)
