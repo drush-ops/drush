@@ -49,12 +49,12 @@ class AnnotatedCommandCase extends CommandUnishTestCase
         $target = Path::join($this->webroot(), 'foo.php');
         $actual = trim(file_get_contents($target));
         $this->assertEquals('Foo.', $actual);
+        unlink($target);
     }
 
     public function testExecute()
     {
-        $sites = $this->setUpDrupal(1, true);
-        $uri = key($sites);
+        $this->setUpDrupal(1, true);
         $root = $this->webroot();
 
         // Copy the 'woot' module over to the Drupal site we just set up.
@@ -68,8 +68,8 @@ class AnnotatedCommandCase extends CommandUnishTestCase
 
         // Make sure that modules can supply DCG Generators and they work.
         $optionsExample['answers'] = json_encode([
-        'name' => 'foo',
-        'machine_name' => 'bar',
+            'name' => 'foo',
+            'machine_name' => 'bar',
         ]);
         $optionsExample['directory'] = self::getSandbox();
         $optionsExample['yes'] = null;
