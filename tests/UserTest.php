@@ -122,9 +122,9 @@ class UserCase extends CommandUnishTestCase
         ];
         $answers = json_encode($answers);
         $original = getenv('SHELL_INTERACTIVE');
-        putenv('SHELL_INTERACTIVE=1');
+        $this->setEnv(['SHELL_INTERACTIVE' => 1]);
         $this->drush('generate', ['content-entity'], ['answers' => $answers, 'directory' => Path::join(self::webroot(), 'modules/contrib')]);
-        putenv('SHELL_INTERACTIVE=' . $original);
+        $this->setEnv(['SHELL_INTERACTIVE' => $original]);
         $this->drush('pm-enable', ['text,unish_article']);
         // Create one unish_article owned by our example user.
         $this->drush('php-script', ['create_unish_articles'], ['script-path' => '../vendor/drush/drush/tests/resources']);
