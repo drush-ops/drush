@@ -152,13 +152,19 @@ class LocaleCommands extends DrushCommands
      * @usage drush locale:export --langcode=nl --types=customized,not-customized > nl.po
      *   Export the Dutch customized and not customized translations.
      * @usage drush locale:export --template > drupal.pot
-     *   Export the template file to translate.
+     *   Export the basic template file to translate.
+     * @usage drush locale:export --template --langcode=nl > nl.pot
+     *   Export the Dutch template file to translate.
      * @aliases locale-export
      */
     public function export($options = ['template' => false, 'langcode' => self::OPT, 'types' => self::OPT])
     {
         $language = $this->getTranslatableLanguage($options['langcode']);
-        $poreader_options = $this->convertTypesToPoDbReaderOptions(StringUtils::csvToArray($options['types']));
+        $poreader_options = [];
+
+        if (!(bool)$options['template']) {
+            $poreader_options = $this->convertTypesToPoDbReaderOptions(StringUtils::csvToArray($options['types']));
+        }
 
         $file_uri = drush_save_data_to_temp_file('temporary://', 'po_');
         if ($this->writePoFile($file_uri, $language, $poreader_options)) {
@@ -177,9 +183,13 @@ class LocaleCommands extends DrushCommands
     {
         $langcode = $commandData->input()->getOption('langcode');
         $template = $commandData->input()->getOption('template');
+        $types = $commandData->input()->getOption('types');
 
         if (!$langcode && !$template) {
             throw new \Exception(dt('Set --langcode=LANGCODE or --template, see help for more information.'));
+        }
+        if ($template && $types) {
+            throw new \Exception(dt('No need for --types, when --template is used, see help for more information.'));
         }
     }
 
@@ -243,15 +253,15 @@ class LocaleCommands extends DrushCommands
      */
     private function convertTypesToPoDbReaderOptions(array $types = [])
     {
-        if (empty($types)) {
-          return [];
-        }
-
         $valid_convertions = [
             'not_customized' => 'not-customized',
             'customized' => 'customized',
             'not_translated' => 'not-translated',
         ];
+
+        if (empty($types)) {
+            return array_fill_keys(array_keys($valid_convertions), true);
+        }
 
         // Check for invalid conversions.
         if (array_diff($types, $valid_convertions)) {
