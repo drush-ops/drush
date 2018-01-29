@@ -287,7 +287,8 @@ abstract class CommandUnishTestCase extends UnishTestCase
     * @param $suffix
     *   Any code to append to the command. For example, redirection like 2>&1.
     * @param array $env
-   *   Environment variables to pass along to the subprocess. @todo - not used.
+    *   Not used. Environment variables to pass along to the subprocess.
+   *    @todo Look into inheritEnvironmentVariables() - available since Process 3.1. See https://github.com/symfony/symfony/pull/19053/files.
     * @return integer
     *   An exit code.
     */
