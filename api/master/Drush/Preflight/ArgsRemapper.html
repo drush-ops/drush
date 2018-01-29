@@ -141,7 +141,7 @@ within it.</p>                </div>
                     string
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_checkRemap">checkRemap</a>($arg, $sawCommmand)
+                    <a href="#method_checkRemap">checkRemap</a>(string $arg, string $sawCommand)
         
                                             <p>Check to see if the provided single arg needs to be remapped. If
 it does, then the remapping is performed.</p>                </div>
@@ -255,9 +255,9 @@ within it.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_checkRemap">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/ArgsRemapper.php#L47">line 47</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/ArgsRemapper.php#L48">line 48</a></div>
         <code>            protected        string
-    <strong>checkRemap</strong>($arg, $sawCommmand)
+    <strong>checkRemap</strong>(string $arg, string $sawCommand)
         </code>
     </h3>
     <div class="details">
@@ -272,14 +272,14 @@ it does, then the remapping is performed.</p>                                   
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$arg</td>
-                <td></td>
+                <td>One argument to inspect</td>
             </tr>
                     <tr>
-                <td></td>
-                <td>$sawCommmand</td>
-                <td></td>
+                <td>string</td>
+                <td>$sawCommand</td>
+                <td>True if drush command was found</td>
             </tr>
             </table>
 
@@ -301,7 +301,7 @@ it does, then the remapping is performed.</p>                                   
             </div>
                     <div class="method-item">
                     <h3 id="method_remapOptions">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/ArgsRemapper.php#L56">line 56</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/ArgsRemapper.php#L57">line 57</a></div>
         <code>            protected        
     <strong>remapOptions</strong>($arg)
         </code>
@@ -330,7 +330,7 @@ it does, then the remapping is performed.</p>                                   
             </div>
                     <div class="method-item">
                     <h3 id="method_remapCommandAlias">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/ArgsRemapper.php#L66">line 66</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/ArgsRemapper.php#L67">line 67</a></div>
         <code>            protected        
     <strong>remapCommandAlias</strong>($arg)
         </code>
@@ -359,7 +359,7 @@ it does, then the remapping is performed.</p>                                   
             </div>
                     <div class="method-item">
                     <h3 id="method_matches">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/ArgsRemapper.php#L84">line 84</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/ArgsRemapper.php#L85">line 85</a></div>
         <code>            protected        bool
     <strong>matches</strong>(string $arg, string $candidate)
         </code>
