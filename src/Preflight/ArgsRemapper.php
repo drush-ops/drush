@@ -27,9 +27,9 @@ class ArgsRemapper
     public function remap($argv)
     {
         $result = [];
-        $sawCommmand = false;
+        $sawCommand = false;
         foreach ($argv as $arg) {
-            $arg = $this->checkRemap($arg, $sawCommmand);
+            $arg = $this->checkRemap($arg, $sawCommand);
             if (isset($arg)) {
                 $result[] = $arg;
             }
@@ -41,12 +41,13 @@ class ArgsRemapper
      * Check to see if the provided single arg needs to be remapped. If
      * it does, then the remapping is performed.
      *
-     * @param stinrg $arg One arguent to inspect
+     * @param string $arg One argument to inspect
+     * @param string $sawCommand True if drush command was found
      * @return string The altered argument
      */
-    protected function checkRemap($arg, &$sawCommmand)
+    protected function checkRemap($arg, &$sawCommand)
     {
-        if (!$sawCommmand && ctype_alpha($arg[0])) {
+        if (!$sawCommand && ctype_alpha($arg[0])) {
             $sawCommand = true;
             return $this->remapCommandAlias($arg);
         }
