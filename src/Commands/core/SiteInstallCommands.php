@@ -352,8 +352,16 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         // Strip off the protocol from the provided uri -- however,
         // now we will require that the sites subdir already exist.
         $dir = preg_replace('#[^/]*/*#', '', $dir);
-        if (file_exists(Path::join($root, $dir))) {
+        if ($dir && file_exists(Path::join($root, $dir))) {
             return $dir;
+        }
+        // Find the dir from sites.php file
+        $sites_file = $root . '/sites/sites.php';
+        if (file_exists($sites_file)) {
+            include $sites_file;
+            if (array_key_exists($uri, $sites)) {
+               return $sites[$uri];
+            }
         }
         return false;
     }
