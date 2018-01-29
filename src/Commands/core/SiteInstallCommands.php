@@ -360,7 +360,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         if (file_exists($sites_file)) {
             include $sites_file;
             if (array_key_exists($uri, $sites)) {
-               return $sites[$uri];
+                return $sites[$uri];
             }
         }
         return false;
