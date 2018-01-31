@@ -27,38 +27,12 @@ env:
     - TEST_DIR=isolation ISOLATION_INSTALL='install --prefer-dist'
     - TEST_DIR=isolation ISOLATION_INSTALL='update --prefer-dist --prefer-lowest'
     - TEST_DIR=isolation ISOLATION_INSTALL='update --prefer-dist'
-    - PHPUNIT_ARGS=--group=base
-    - PHPUNIT_ARGS=--group=commands
-    - PHPUNIT_ARGS=--exclude-group=base,commands
-    - COMPOSER=composer-highest.json PHPUNIT_ARGS=--group=base
-    - COMPOSER=composer-highest.json PHPUNIT_ARGS=--group=commands
-    - COMPOSER=composer-highest.json PHPUNIT_ARGS=--exclude-group=base,commands
   global:
     # Github deploy
     - secure: VfYokT2CchfuBRJp9/gSwfVGPfsVfkZdDVEuNWEqxww3z4vq+5aLKqoCtPL54E5EIMjhyCE3GVo+biG35Gab1KOVgUs8zD1hAUWA1FPKfMFhoPDfI3ZJC2rX2T1iWK4ZR90pBtcPzS+2OObzTYz8go0PfeSTT6eq69Na1KcNLaE=
     - UNISH_NO_TIMEOUTS=y
     - UNISH_DB_URL=mysql://root:@127.0.0.1
     - UNISH_TMP=/tmp
-
-matrix:
-  allow_failures:
-    - php: 7.0
-      env: COMPOSER=composer-highest.json
-  exclude:
-    # To save time, we will skip the functional tests on php 7.2
-    - php: 7.2
-      env: PHPUNIT_ARGS=--group=base
-    - php: 7.2
-      env: PHPUNIT_ARGS=--group=commands
-    - php: 7.2
-      env: PHPUNIT_ARGS=--exclude-group=base,commands
-    - php: 7.2
-      env: COMPOSER=composer-highest.json PHPUNIT_ARGS=--group=base
-    - php: 7.2
-      env: COMPOSER=composer-highest.json PHPUNIT_ARGS=--group=commands
-    - php: 7.2
-      env: COMPOSER=composer-highest.json PHPUNIT_ARGS=--exclude-group=base,commands
-
 
 before_install:
   - echo 'mbstring.http_input = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
@@ -67,8 +41,7 @@ before_install:
 
 # Build a System-Under-Test.
 install:
-  - if [ -n "$TEST_DIR" ] ; then composer -n --working-dir=${PWD}/$TEST_DIR $ISOLATION_INSTALL ; fi
-  - if [ -z "$TEST_DIR" ] ; then ${PWD}/unish.sut.php ; fi
+  - ${PWD}/unish.sut.php
 
 before_script:
   - phpenv config-rm xdebug.ini
@@ -76,8 +49,7 @@ before_script:
   # - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
 
 script:
-  - if [ -n "$TEST_DIR" ] ; then cd $TEST_DIR && phpunit ; fi
-  - if [ -z "$TEST_DIR" ] ; then ${PWD}/unish.phpunit.php $PHPUNIT_ARGS; fi
+  - ${PWD}/unish.phpunit.php $PHPUNIT_ARGS
 
 after_success:
   # Publish updated API documentation on every push to the master branch

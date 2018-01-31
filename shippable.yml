@@ -1,0 +1,30 @@
+language: php
+
+php:
+  - "7.0"
+
+env:
+  global:
+    - UNISH_NO_TIMEOUTS=y
+    - UNISH_DB_URL=mysql://root:@127.0.0.1
+    - UNISH_TMP=/tmp
+  matrix:
+    - PHPUNIT_ARGS=--group=base
+    - PHPUNIT_ARGS=--group=commands
+    - PHPUNIT_ARGS=--exclude-group=base,commands
+    - COMPOSER=composer-highest.json PHPUNIT_ARGS=--group=base
+    - COMPOSER=composer-highest.json PHPUNIT_ARGS=--group=commands
+    - COMPOSER=composer-highest.json PHPUNIT_ARGS=--exclude-group=base,commands
+
+build:
+  ci:
+    # Set up php configuration
+    - echo 'mbstring.http_input = pass' >> $HOME/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    - echo 'mbstring.http_output = pass' >> $HOME/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    - echo 'memory_limit = -1' >> $HOME/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    - echo 'sendmail_path = /bin/true' >> $HOME/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    - phpenv config-rm xdebug.ini
+    # Create the site-under-test
+    - unish.sut.php
+    # Run the tests
+    - unish.phpunit.php $PHPUNIT_ARGS
