@@ -34,6 +34,8 @@ env:
     - UNISH_DB_URL=mysql://root:@127.0.0.1
     - UNISH_TMP=/tmp
 
+
+
 before_install:
   - echo 'mbstring.http_input = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo 'mbstring.http_output = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
@@ -41,7 +43,7 @@ before_install:
 
 # Build a System-Under-Test.
 install:
-  - ${PWD}/unish.sut.php
+  - composer -n --working-dir=${PWD}/$TEST_DIR $ISOLATION_INSTALL
 
 before_script:
   - phpenv config-rm xdebug.ini
@@ -49,7 +51,7 @@ before_script:
   # - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
 
 script:
-  - ${PWD}/unish.phpunit.php $PHPUNIT_ARGS
+  - cd $TEST_DIR && phpunit
 
 after_success:
   # Publish updated API documentation on every push to the master branch
