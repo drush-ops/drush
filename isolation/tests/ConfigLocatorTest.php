@@ -99,7 +99,7 @@ class ConfigLocatorTest extends TestCase
         // Make our environment settings available as configuration items
         $configLocator->addEnvironment($this->environment());
 
-        $configLocator->addSitewideConfig($this->siteDir());
+        $configLocator->addDrupalConfig($this->siteDir());
 
         return $configLocator;
     }

@@ -5,6 +5,7 @@ use Consolidation\Config\Loader\ConfigLoaderInterface;
 use Drush\Config\Loader\YamlConfigLoader;
 use Consolidation\Config\Loader\ConfigProcessor;
 use Consolidation\Config\Util\EnvConfig;
+use Drush\Utils\StringUtils;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -37,7 +38,9 @@ class ConfigLocator
 
     protected $sources = false;
 
-    protected $siteRoots = [];
+    protected $drupalRoots = [];
+
+    protected $siteDirs = [];
 
     protected $composerRoot;
 
@@ -103,7 +106,7 @@ class ConfigLocator
         }
         $this->config->addPlaceholder(self::USER_CONTEXT);
         $this->config->addPlaceholder(self::DRUPAL_CONTEXT);
-        $this->config->addPlaceholder(self::SITE_CONTEXT); // not implemented yet (multisite)
+        $this->config->addPlaceholder(self::SITE_CONTEXT);
         $this->config->addPlaceholder(self::ALIAS_CONTEXT);
         $this->config->addPlaceholder(self::PREFLIGHT_CONTEXT);
         $this->config->addPlaceholder(self::ENVIRONMENT_CONTEXT);
@@ -258,26 +261,64 @@ class ConfigLocator
      * Add any configuration files found around the Drupal root of the
      * selected site.
      *
-     * @param Path to the selected Drupal site
+     * @param $drupalRoot
+     *   Path to the selected Drupal site.
      * @return $this
      */
-    public function addSitewideConfig($siteRoot)
+    public function addDrupalConfig($drupalRoot)
     {
         // There might not be a site.
-        if (!is_dir($siteRoot)) {
+        if (!is_dir($drupalRoot)) {
             return;
         }
 
         // We might have already processed this root.
-        $siteRoot = realpath($siteRoot);
-        if (in_array($siteRoot, $this->siteRoots)) {
+        $drupalRoot = realpath($drupalRoot);
+        if (in_array($drupalRoot, $this->drupalRoots)) {
             return;
         }
 
         // Remember that we've seen this location.
-        $this->siteRoots[] = $siteRoot;
+        $this->drupalRoots[] = $drupalRoot;
 
-        $this->addConfigPaths(self::DRUPAL_CONTEXT, [ dirname($siteRoot) . '/drush', "$siteRoot/drush", "$siteRoot/sites/all/drush" ]);
+        $this->addConfigPaths(self::DRUPAL_CONTEXT, [ dirname($drupalRoot) . '/drush', "$drupalRoot/drush", "$drupalRoot/sites/all/drush" ]);
+        return $this;
+    }
+
+    /**
+     * Add any configuration files found around the multisite directory.
+     *
+     * @param \Drush\SiteAlias\AliasRecord $alias
+     *   Site URI of the multisite.
+     *
+     * @return $this
+     */
+    public function addSiteConfig($alias)
+    {
+        $uri = $alias->uri() ?: 'default';
+
+        // Parse a fqdn and look for matching entry in sites/sites.php.
+        if (filter_var($uri, FILTER_VALIDATE_URL)) {
+            if ($dir_name = StringUtils::lookupSiteDirFromUri($uri, $alias->root())) {
+                $uri = $dir_name;
+            }
+        }
+
+        // There might not be a site    directory.
+        $site_dir = $alias->root() ."/sites/$uri";
+        if (!is_dir($site_dir)) {
+            return;
+        }
+
+        // We might have already processed this site.
+        if (in_array($site_dir, $this->siteDirs)) {
+            return;
+        }
+
+        // Remember that we've seen this site.
+        $this->siteDirs[] = $site_dir;
+
+        $this->addConfigPaths(self::SITE_CONTEXT, [ "$site_dir", "$site_dir/drush" ]);
         return $this;
     }
 
@@ -392,7 +433,7 @@ class ConfigLocator
     {
         // In addition to the paths passed in to us (from --alias-paths
         // commandline options), add some site-local locations.
-        $base_dirs = array_filter(array_merge($this->siteRoots, [$this->composerRoot]));
+        $base_dirs = array_filter(array_merge($this->drupalRoots, [$this->composerRoot]));
         $site_local_paths = array_map(
             function ($item) {
                 return "$item/drush/sites";

@@ -276,7 +276,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             // a fallback name when '--sites-subdir' is not specified, but
             // only if the uri and the folder name match, and only if
             // the sites directory has already been created.
-            $dir = $this->getSitesSubdirFromUri($root, $aliasRecord->get('uri'));
+            $dir = StringUtils::lookupSiteDirFromUri($aliasRecord->get('uri'), $root);
         }
 
         if (!$dir) {
@@ -336,26 +336,6 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         if (!$sql->dropOrCreate()) {
             throw new \Exception(dt('Failed to create database: @error', ['@error' => implode(drush_shell_exec_output())]));
         }
-    }
-
-    /**
-     * Determine an appropriate site subdir name to use for the
-     * provided uri.
-     */
-    protected function getSitesSubdirFromUri($root, $uri)
-    {
-        $dir = strtolower($uri);
-        // Always accept simple uris (e.g. 'dev', 'stage', etc.)
-        if (preg_match('#^[a-z0-9_-]*$#', $dir)) {
-            return $dir;
-        }
-        // Strip off the protocol from the provided uri -- however,
-        // now we will require that the sites subdir already exist.
-        $dir = preg_replace('#[^/]*/*#', '', $dir);
-        if (file_exists(Path::join($root, $dir))) {
-            return $dir;
-        }
-        return false;
     }
 
     /**
