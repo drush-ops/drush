@@ -2,7 +2,7 @@
   "name": "drush/drush",
   "description": "Drush is a command line shell and scripting interface for Drupal, a veritable Swiss Army knife designed to make life easier for those of us who spend some of our working hours hacking away at the command prompt.",
   "homepage": "http://www.drush.org",
-  "license": "GPL-2.0+",
+  "license": "GPL-2.0-or-later",
   "minimum-stability": "stable",
   "prefer-stable": true,
   "authors": [
