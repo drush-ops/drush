@@ -26,6 +26,6 @@ build:
     # Disable xdebug for faster Composer operations
     - rm $HOME/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
     # Create the site-under-test
-    - unish.sut.php
+    - ./unish.sut.php
     # Run the tests
-    - unish.phpunit.php $PHPUNIT_ARGS
+    - ./unish.phpunit.php $PHPUNIT_ARGS
