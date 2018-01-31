@@ -23,7 +23,8 @@ build:
     - echo 'mbstring.http_output = pass' >> $HOME/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     - echo 'memory_limit = -1' >> $HOME/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     - echo 'sendmail_path = /bin/true' >> $HOME/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-    - phpenv config-rm xdebug.ini
+    # Disable xdebug for faster Composer operations
+    - rm $HOME/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
     # Create the site-under-test
     - unish.sut.php
     # Run the tests
