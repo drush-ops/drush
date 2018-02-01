@@ -157,11 +157,10 @@
                     array
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_getExpandedTableSelection">getExpandedTableSelection</a>(array $options)
+                    <a href="#method_getExpandedTableSelection">getExpandedTableSelection</a>(array $options, array $all_tables)
         
-                                            <p>Get a list of all table names and expand input that may contain
-wildcards (<code>*</code>) if necessary so that the array returned only contains valid
-table names i.e. actual tables that exist, without a wildcard.</p>                </div>
+                                            <p>Given a list of all tables, expand the convert the wildcards in the
+option-provided lists into a list of actual table names.</p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_getExpandedTableSelection"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a></small></div>
             </div>
                     <div class="row">
@@ -534,17 +533,6 @@ for structure only, or have structure and data dumped.</p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    array
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_get_expanded_table_selection">get_expanded_table_selection</a>($options = [])
-        <small><sup><span class="label label-danger">deprecated</span></sup></small>
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_get_expanded_table_selection"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
                     static&nbsp;array
                 </div>
                 <div class="col-md-8 type">
@@ -574,7 +562,7 @@ for structure only, or have structure and data dumped.</p>                </div>
                     <h3 id="method_getExpandedTableSelection">
         <div class="location">in <a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_getExpandedTableSelection"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlTableSelectionTrait.php#L26">line 26</a></div>
         <code>                    array
-    <strong>getExpandedTableSelection</strong>(array $options)
+    <strong>getExpandedTableSelection</strong>(array $options, array $all_tables)
         </code>
     </h3>
     <div class="details">
@@ -582,9 +570,8 @@ for structure only, or have structure and data dumped.</p>                </div>
     
 
                     <div class="method-description">
-                                    <p>Get a list of all table names and expand input that may contain
-wildcards (<code>*</code>) if necessary so that the array returned only contains valid
-table names i.e. actual tables that exist, without a wildcard.</p>                                                </div>
+                                    <p>Given a list of all tables, expand the convert the wildcards in the
+option-provided lists into a list of actual table names.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
@@ -593,6 +580,11 @@ table names i.e. actual tables that exist, without a wildcard.</p>              
                 <td>array</td>
                 <td>$options</td>
                 <td>An options array as passed to an Annotated Command.</td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$all_tables</td>
+                <td>A list of all eligible tables.</td>
             </tr>
             </table>
 
@@ -615,7 +607,7 @@ table names i.e. actual tables that exist, without a wildcard.</p>              
             </div>
                     <div class="method-item">
                     <h3 id="method_expandAndFilterTables">
-        <div class="location">in <a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_expandAndFilterTables"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlTableSelectionTrait.php#L56">line 56</a></div>
+        <div class="location">in <a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_expandAndFilterTables"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlTableSelectionTrait.php#L55">line 55</a></div>
         <code>                    array
     <strong>expandAndFilterTables</strong>(array $tables, array $db_tables)
         </code>
@@ -663,7 +655,7 @@ that exist in the database.</p>                                                <
             </div>
                     <div class="method-item">
                     <h3 id="method_expandWildcardTables">
-        <div class="location">in <a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_expandWildcardTables"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlTableSelectionTrait.php#L75">line 75</a></div>
+        <div class="location">in <a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_expandWildcardTables"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlTableSelectionTrait.php#L74">line 74</a></div>
         <code>                    <abbr title="Drush\Sql\$tables">$tables</abbr>
     <strong>expandWildcardTables</strong>(array $tables, array $db_tables)
         </code>
@@ -708,7 +700,7 @@ that exist in the database.</p>                                                <
             </div>
                     <div class="method-item">
                     <h3 id="method_filterTables">
-        <div class="location">in <a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_filterTables"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlTableSelectionTrait.php#L102">line 102</a></div>
+        <div class="location">in <a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_filterTables"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlTableSelectionTrait.php#L101">line 101</a></div>
         <code>                    <abbr title="Drush\Sql\An">An</abbr>
     <strong>filterTables</strong>(array $tables, array $db_tables)
         </code>
@@ -754,7 +746,7 @@ that exist in the database.</p>                                                <
             </div>
                     <div class="method-item">
                     <h3 id="method_getTableSelection">
-        <div class="location">in <a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_getTableSelection"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlTableSelectionTrait.php#L127">line 127</a></div>
+        <div class="location">in <a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_getTableSelection"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlTableSelectionTrait.php#L126">line 126</a></div>
         <code>                    array
     <strong>getTableSelection</strong>($options)
         </code>
@@ -800,7 +792,7 @@ for structure only, or have structure and data dumped.</p>                    <p
             </div>
                     <div class="method-item">
                     <h3 id="method_getRawTableList">
-        <div class="location">in <a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_getRawTableList"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlTableSelectionTrait.php#L150">line 150</a></div>
+        <div class="location">in <a href="../../Drush/Sql/SqlTableSelectionTrait.html#method_getRawTableList"><abbr title="Drush\Sql\SqlTableSelectionTrait">SqlTableSelectionTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlTableSelectionTrait.php#L149">line 149</a></div>
         <code>                    array
     <strong>getRawTableList</strong>(<abbr title="Drush\Sql\option_name">option_name</abbr> $option_name, array $options)
         </code>
@@ -1806,53 +1798,8 @@ specified site alias record.</p>                            </div>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_get_expanded_table_selection">
-        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_get_expanded_table_selection"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L514">line 514</a></div>
-        <code>                    array
-    <strong>get_expanded_table_selection</strong>($options = [])
-        <small><sup><span class="label label-danger">deprecated</span></sup></small></code>
-    </h3>
-    <div class="details">
-            
-            <p>
-                <small><sup><span class="label label-danger">deprecated</span></sup></small>
-                            <tr>
-                    <td></td>
-                    <td></td>
-                </tr>
-                    </p>
-    
-
-                <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td></td>
-                <td>$options</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>array</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_dbSpecFromDbUrl">
-        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_dbSpecFromDbUrl"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L528">line 528</a></div>
+        <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_dbSpecFromDbUrl"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlBase.php#L517">line 517</a></div>
         <code>        static            array
     <strong>dbSpecFromDbUrl</strong>(<abbr title="Drush\Sql\db_url">db_url</abbr> $db_url)
         </code>
