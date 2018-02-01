@@ -136,7 +136,7 @@ class SqlBase implements ConfigAwareInterface
         /** @var string|bool $file Path where dump file should be stored. If TRUE, generate a path based on usual backup directory and current date.*/
         $file = $this->getOption('result-file');
         $file_suffix = '';
-        $table_selection = $this->getExpandedTableSelection($this->getOptions());
+        $table_selection = $this->getExpandedTableSelection($this->getOptions(), $this->listTables());
         $file = $this->dumpFile($file);
         $cmd = $this->dumpCmd($table_selection);
         // Gzip the output from dump command(s) if requested.
@@ -503,17 +503,6 @@ class SqlBase implements ConfigAwareInterface
     public function db_spec() // @codingStandardsIgnoreLine
     {
         return $this->getDbSpec();
-    }
-
-    /**
-     * @deprecated
-     *
-     * @param $options
-     * @return array
-     */
-    public function get_expanded_table_selection($options = []) // @codingStandardsIgnoreLine
-    {
-        return $this->getExpandedTableSelection($options);
     }
 
     /**
