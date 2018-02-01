@@ -11,13 +11,10 @@ env:
     - UNISH_NO_TIMEOUTS=y
     - UNISH_DB_URL=mysql://shippable:@127.0.0.1
     - UNISH_TMP=/tmp
+    - PHPUNIT_ARGS=
   matrix:
-    - PHPUNIT_ARGS=--group=base
-    - PHPUNIT_ARGS=--group=commands
-    - PHPUNIT_ARGS=--exclude-group=base,commands
-    - COMPOSER=composer-highest.json PHPUNIT_ARGS=--group=base
-    - COMPOSER=composer-highest.json PHPUNIT_ARGS=--group=commands
-    - COMPOSER=composer-highest.json PHPUNIT_ARGS=--exclude-group=base,commands
+    - COMPOSER=composer.json
+    - COMPOSER=composer-highest.json
 
 build:
   ci:
