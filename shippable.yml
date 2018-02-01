@@ -12,9 +12,6 @@ env:
     - UNISH_DB_URL=mysql://shippable:@127.0.0.1
     - UNISH_TMP=/tmp
     - PHPUNIT_ARGS=
-  matrix:
-    - COMPOSER=composer.json
-    - COMPOSER=composer-highest.json
 
 build:
   ci:
@@ -29,7 +26,15 @@ build:
     - composer self-update
     # Set up mysql user
     - mysql -e "CREATE USER shippable@localhost IDENTIFIED BY ''; GRANT ALL ON *.* TO shippable@localhost; FLUSH PRIVILEGES;"
-    # Create the site-under-test
+    # Create the site-under-test for the current stable version of Drupal
     - ./unish.sut.php
     # Run the tests
-    - ./unish.phpunit.php $PHPUNIT_ARGS
+    - ./unish.phpunit.php $PHPUNIT_ARGS --group=base
+    - ./unish.phpunit.php $PHPUNIT_ARGS --group=commands
+    - ./unish.phpunit.php $PHPUNIT_ARGS --exclude-group=base,commands
+    # Create the site-under-test for the composer-highest version of Drupal
+    - env COMPOSER=composer-highest.json ./unish.sut.php
+    # Run the tests
+    - ./unish.phpunit.php $PHPUNIT_ARGS --group=base
+    - ./unish.phpunit.php $PHPUNIT_ARGS --group=commands
+    - ./unish.phpunit.php $PHPUNIT_ARGS --exclude-group=base,commands
