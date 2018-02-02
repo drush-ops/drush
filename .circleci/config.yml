@@ -9,7 +9,7 @@ defaults: &defaults
     UNISH_NO_TIMEOUTS: y
     UNISH_DB_URL: mysql://root:@127.0.0.1
     UNISH_TMP: /tmp
-    PHPUNIT_ARGS: ""
+    PHPUNIT_ARGS: "--debug"
 
 version: 2
 jobs:
