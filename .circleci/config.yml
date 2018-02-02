@@ -25,9 +25,7 @@ jobs:
       - checkout
       - run: $HOME/drush/.circleci/setup.sh
       - run: unish.sut.php
-      - run: unish.phpunit.php $PHPUNIT_ARGS --group=base
-      - run: unish.phpunit.php $PHPUNIT_ARGS --group=commands
-      - run: unish.phpunit.php $PHPUNIT_ARGS --exclude-group=base,commands
+      - run: unish.phpunit.php $PHPUNIT_ARGS
 
   build_highest:
     <<: *defaults
@@ -42,9 +40,7 @@ jobs:
       - checkout
       - run: $HOME/drush/.circleci/setup.sh
       - run: unish.sut.php
-      - run: unish.phpunit.php $PHPUNIT_ARGS --group=base
-      - run: unish.phpunit.php $PHPUNIT_ARGS --group=commands
-      - run: unish.phpunit.php $PHPUNIT_ARGS --exclude-group=base,commands
+      - run: unish.phpunit.php $PHPUNIT_ARGS
 
   build_56:
     <<: *defaults
@@ -58,9 +54,7 @@ jobs:
       - checkout
       - run: $HOME/drush/.circleci/setup.sh
       - run: unish.sut.php
-      - run: unish.phpunit.php $PHPUNIT_ARGS --group=base
-      - run: unish.phpunit.php $PHPUNIT_ARGS --group=commands
-      - run: unish.phpunit.php $PHPUNIT_ARGS --exclude-group=base,commands
+      - run: unish.phpunit.php $PHPUNIT_ARGS
 
 workflows:
   version: 2
