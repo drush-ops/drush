@@ -20,14 +20,7 @@ jobs:
       - image: circleci/php:7.1-apache-node
         environment:
           - MYSQL_HOST=127.0.0.1
-      - image: mysql:5.7
-        environment:
-          - MYSQL_USER=root
-          - MYSQL_ROOT_PASSWORD=ubuntu
-          - MYSQL_PASSWORD=
-          - MYSQL_ALLOW_EMPTY_PASSWORD=true
-          - MYSQL_DATABASE=circle_test
-          - MYSQL_ROOT_HOST=%
+      - image: circleci/mysql:5.7.18
     steps:
       - run:
           name: Install PHP extensions
