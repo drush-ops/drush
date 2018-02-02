@@ -40,7 +40,7 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
         // Sanitize passwords.
         if ($this->isEnabled($options['sanitize-password'])) {
             // Mimic Drupal's /scripts/password-hash.sh
-            $hash = $this->passwordHasher->hash($options['sanitize-password']);
+            $hash = $this->passwordHasher->hash($options['sanitize-password'] == 'password' ?  user_password()  : $options['sanitize-password']);
             $query->fields(['pass' => $hash]);
             $messages[] = dt('User passwords sanitized.');
         }
@@ -83,8 +83,7 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
      * @option sanitize-email The pattern for test email addresses in the
      *   sanitization operation, or "no" to keep email addresses unchanged. May
      *   contain replacement patterns %uid, %mail or %name.
-     * @option sanitize-password The password to assign to all accounts in the
-     *   sanitization operation, or "no" to keep passwords unchanged.
+     * @option sanitize-password Use 'password' to randomize all passwords. Use 'no' to keep passwords unchanged. Any other value will set all passwords to that value.
      */
     public function options($options = ['sanitize-email' => 'user+%uid@localhost.localdomain', 'sanitize-password' => 'password'])
     {

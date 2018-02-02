@@ -119,12 +119,16 @@ class SqlSyncTest extends CommandUnishTestCase
         $info = $this->getOutputFromJSON(2);
         $this->assertEquals($mail, $info->mail, 'Email address is unchanged on source site.');
         $this->assertEquals($name, $info->name);
+        // Get the unchanged pass.
+        $this->drush('user-information', [$name], $options + ['field' => 'pass']);
+        $original_hashed_pass = $this->getOutput();
 
-        // Confirm that the sample user's email address has been sanitized on the dev site
-        $this->drush('user-information', [$name], $options + ['format' => 'json', 'yes' => null], '@unish.dev');
+        // Confirm that the sample user's email and password have been sanitized on the dev site
+        $this->drush('user-information', [$name], $options + ['fields' => 'uid,name,mail,pass', 'format' => 'json', 'yes' => null], '@unish.dev');
         $info = $this->getOutputFromJSON(2);
         $this->assertEquals("user+2@localhost.localdomain", $info->mail, 'Email address was sanitized on destination site.');
         $this->assertEquals($name, $info->name);
+        $this->assertNotEquals($info->pass, $original_hashed_pass);
 
         // Copy stage to dev with --sanitize and a fixed sanitized email
         $sync_options = [
