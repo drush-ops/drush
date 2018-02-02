@@ -7,7 +7,7 @@ defaults: &defaults
     TZ: "/usr/share/zoneinfo/America/Los_Angeles"
     TERM: dumb
     UNISH_NO_TIMEOUTS: y
-    UNISH_DB_URL: mysql://root:ubuntu@127.0.0.1
+    UNISH_DB_URL: mysql://root:@127.0.0.1
     UNISH_TMP: /tmp
     PHPUNIT_ARGS: ""
 
@@ -24,9 +24,9 @@ jobs:
         environment:
           - MYSQL_USER=root
           - MYSQL_ROOT_PASSWORD=ubuntu
-          - MYSQL_PASSWORD=ubuntu
+          - MYSQL_PASSWORD=
           - MYSQL_ALLOW_EMPTY_PASSWORD=true
-          - MYSQL_DATABASE=unish_dev
+          - MYSQL_DATABASE=circle_test
           - MYSQL_ROOT_HOST=%
     steps:
       - run:
