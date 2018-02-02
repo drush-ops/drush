@@ -19,10 +19,16 @@ composer --version
 # Install mysql-client
 sudo apt-get install mysql-client
 
-# Configure php.ini
+# Configure bash environment variables
 echo 'export PATH=~/.composer/vendor/bin:~/drush:$PATH' >> $BASH_ENV
+
+# Configure php.ini
 echo 'mbstring.http_input = pass' > $HOME/php.ini
 echo 'mbstring.http_output = pass' >> $HOME/php.ini
 echo 'memory_limit = -1' >> $HOME/php.ini
 echo 'sendmail_path = /bin/true' >> $HOME/php.ini
-cat $HOME/php.ini | sudo tee /usr/local/etc/php/php.ini > /dev/null
+echo 'date.timezone = "UTC"' >> $HOME/php.ini
+
+# Copy our php.ini configuration to the active php.ini file
+PHPINI_PATH="$(php -r 'print php_ini_loaded_file();')"
+cat $HOME/php.ini | sudo tee "$PHPINI_PATH" > /dev/null
