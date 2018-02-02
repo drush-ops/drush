@@ -30,5 +30,6 @@ echo 'sendmail_path = /bin/true' >> $HOME/php.ini
 echo 'date.timezone = "UTC"' >> $HOME/php.ini
 
 # Copy our php.ini configuration to the active php.ini file
-PHPINI_PATH="$(php -r 'print php_ini_loaded_file();')"
+# We can't use `php -r 'print php_ini_loaded_file();` when there is no php.ini
+PHPINI_PATH="$(php -i | grep 'Configuration File (php.ini) Path' | sed -e 's#.*=> *##')/php.ini"
 cat $HOME/php.ini | sudo tee "$PHPINI_PATH" > /dev/null
