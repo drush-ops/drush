@@ -603,7 +603,7 @@ EOT;
             'db-url' => $this->dbUrl($env),
             'sites-subdir' => $uri,
             'yes' => null,
-            'quiet' => null,
+            'debug' => null,
             ];
             $this->drush('site-install', ['testing', 'install_configure_form.enable_update_status_emails=NULL'], $options);
             // Give us our write perms back.
