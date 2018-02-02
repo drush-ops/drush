@@ -52,7 +52,6 @@ jobs:
           command: |
             sudo apt-get install mysql-client
       - checkout
-      - run: bash setup.sh
       - run: echo 'export PATH=~/.composer/vendor/bin:$PATH' >> $BASH_ENV
       - run: pwd
       - run: echo $HOME
