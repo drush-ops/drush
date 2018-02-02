@@ -3,16 +3,6 @@ language: php
 php:
   - "7.1"
 
-services:
-  - mysql
-
-env:
-  global:
-    - UNISH_NO_TIMEOUTS=y
-    - UNISH_DB_URL=mysql://shippable:@127.0.0.1
-    - UNISH_TMP=/tmp
-    - PHPUNIT_ARGS=
-
 build:
   ci:
     # Set up php configuration
@@ -24,17 +14,7 @@ build:
     - rm $HOME/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
     # Install / update our tools
     - composer self-update
-    # Set up mysql user
-    - mysql -e "CREATE USER shippable@localhost IDENTIFIED BY ''; GRANT ALL ON *.* TO shippable@localhost; FLUSH PRIVILEGES;"
-    # Create the site-under-test for the current stable version of Drupal
-    - ./unish.sut.php
-    # Run the tests
-    - ./unish.phpunit.php $PHPUNIT_ARGS --group=base
-    - ./unish.phpunit.php $PHPUNIT_ARGS --group=commands
-    - ./unish.phpunit.php $PHPUNIT_ARGS --exclude-group=base,commands
-    # Create the site-under-test for the composer-highest version of Drupal
-    - env COMPOSER=composer-highest.json ./unish.sut.php
-    # Run the tests
-    - ./unish.phpunit.php $PHPUNIT_ARGS --group=base
-    - ./unish.phpunit.php $PHPUNIT_ARGS --group=commands
-    - ./unish.phpunit.php $PHPUNIT_ARGS --exclude-group=base,commands
+    - composer install --prefer-dist --no-interaction
+    # Run code style and linting tools
+    - composer cs
+    - composer lint

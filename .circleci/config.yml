@@ -1,0 +1,78 @@
+# https://circleci.com/docs/2.0/workflows/#using-workspaces-to-share-data-among-jobs
+defaults: &defaults
+  docker:
+    - image: php:7.1.3-cli
+  working_directory: ~/work
+  environment:
+    BASH_ENV: ~/.bashrc
+    TZ: "/usr/share/zoneinfo/America/Los_Angeles"
+    TERM: dumb
+    UNISH_NO_TIMEOUTS: y
+    UNISH_DB_URL: mysql://root:@127.0.0.1
+    UNISH_TMP: /tmp
+    PHPUNIT_ARGS:
+
+version: 2
+jobs:
+  build:
+    <<: *defaults
+    docker:
+      # We can probably use a standard php container here. Maybe we should make our own w/ everything pre-installed
+      - image: circleci/php:7.1-apache-node
+        environment:
+          - MYSQL_HOST=127.0.0.1
+      - image: mysql:5.7
+        environment:
+          - MYSQL_USER=root
+          - MYSQL_ROOT_PASSWORD=ubuntu
+          - MYSQL_PASSWORD=
+          - MYSQL_ALLOW_EMPTY_PASSWORD=true
+          - MYSQL_DATABASE=circle_test
+          - MYSQL_ROOT_HOST=%
+    steps:
+      - run:
+          name: Install PHP extensions
+          command: sudo docker-php-ext-install pdo_mysql
+      - run:
+          name: Install extension
+          command: sudo apt-get install -y libpng-dev
+      - run:
+          name: Install PHP Extensions
+          command: sudo docker-php-ext-install gd
+      - run:
+          name: Install Composer
+          command: 'curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer'
+      - run:
+          name: Display versions
+          command: |
+            php -v
+            composer --version
+      - run:
+          name: Install mysql-client
+          command: |
+            sudo apt-get install mysql-client
+      - checkout
+      - run: bash setup.sh
+      - run: echo 'export PATH=~/.composer/vendor/bin:$PATH' >> $BASH_ENV
+      - run: pwd
+      - run: echo $HOME
+      - run: echo 'mbstring.http_input = pass' >> $HOME/php.ini
+      - run: echo 'mbstring.http_output = pass' >> $HOME/php.ini
+      - run: echo 'memory_limit = -1' >> $HOME/php.ini
+      - run: echo 'sendmail_path = /bin/true' >> $HOME/php.ini
+      - run: cat $HOME/php.ini | sudo tee /usr/local/etc/php/php.ini > /dev/null
+      - run: mysql -e "CREATE USER root@localhost IDENTIFIED BY ''; GRANT ALL ON *.* TO shippable@localhost; FLUSH PRIVILEGES;"
+      - run: $HOME/work/unish.sut.php
+      - run: ./unish.phpunit.php $PHPUNIT_ARGS --group=base
+      - run: ./unish.phpunit.php $PHPUNIT_ARGS --group=commands
+      - run: ./unish.phpunit.php $PHPUNIT_ARGS --exclude-group=base,commands
+
+workflows:
+  version: 2
+  build_test:
+    jobs:
+      - build
+#      - build_highest
+#          requires:
+#            - build
+
