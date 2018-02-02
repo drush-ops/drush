@@ -2,7 +2,7 @@
 defaults: &defaults
   docker:
     - image: php:7.1.3-cli
-  working_directory: ~/work
+  working_directory: ~/drush
   environment:
     TZ: "/usr/share/zoneinfo/America/Los_Angeles"
     TERM: dumb
