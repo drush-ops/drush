@@ -582,7 +582,7 @@ function sql_drush_sql_sync_sanitize($site) {
   $message_list = array();
 
   // Sanitize passwords.
-  $newpassword = drush_get_option(array('sanitize-password', 'destination-sanitize-password'), 'password');
+  $newpassword = drush_get_option(array('sanitize-password', 'destination-sanitize-password'), drush_generate_password());
   if ($newpassword != 'no' && $newpassword !== 0) {
     $pw_op = "";
 
