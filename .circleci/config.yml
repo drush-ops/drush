@@ -1,0 +1,59 @@
+# https://circleci.com/docs/2.0/workflows/#using-workspaces-to-share-data-among-jobs
+defaults: &defaults
+  working_directory: ~/drush
+  environment:
+    TZ: "/usr/share/zoneinfo/America/Los_Angeles"
+    TERM: dumb
+    UNISH_NO_TIMEOUTS: y
+    UNISH_DB_URL: mysql://root:@127.0.0.1
+    UNISH_TMP: /tmp
+    PHPUNIT_ARGS: ""
+
+version: 2
+jobs:
+  build:
+    <<: *defaults
+    docker:
+      - image: circleci/php:7.1-apache-node
+        environment:
+          - MYSQL_HOST=127.0.0.1
+      - image: circleci/mysql:5.7.18
+    steps:
+      - checkout
+      - run: $HOME/drush/.circleci/setup.sh
+      - run: /usr/bin/env UNISH_DRUPAL_MAJOR_VERSION=7 "${PWD}/unish.sh" $PHPUNIT_ARGS
+      - run: /usr/bin/env UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=3.7 "${PWD}/unish.sh" $PHPUNIT_ARGS
+
+  build_highest:
+    <<: *defaults
+    docker:
+      - image: circleci/php:7.1-apache-node
+        environment:
+          - MYSQL_HOST=127.0.0.1
+      - image: circleci/mysql:5.7.18
+    steps:
+      - checkout
+      - run: $HOME/drush/.circleci/setup.sh
+      - run: /usr/bin/env UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=3.7 "${PWD}/unish.sh" $PHPUNIT_ARGS
+
+  build_54:
+    <<: *defaults
+    docker:
+      - image: circleci/php:5.6-apache-node
+        environment:
+          - MYSQL_HOST=127.0.0.1
+      - image: circleci/mysql:5.7.18
+    steps:
+      - checkout
+      - run: $HOME/drush/.circleci/setup.sh
+      - run: /usr/bin/env UNISH_DRUPAL_MAJOR_VERSION=7 "${PWD}/unish.sh" $PHPUNIT_ARGS
+      - run: /usr/bin/env UNISH_DRUPAL_MAJOR_VERSION=6 "${PWD}/unish.sh" $PHPUNIT_ARGS
+
+workflows:
+  version: 2
+  build_test:
+    jobs:
+      - build
+      - build_highest
+      - build_54
+
