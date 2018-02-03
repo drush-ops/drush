@@ -1,19 +1,19 @@
 <?php
 
 /**
-* @file
-*  For now we only test sql-sync in simulated mode.
-*
-*  Future: Using two copies of Drupal, we could test
-*  overwriting one site with another.
-*/
+ * @file
+ *  For now we only test sql-sync in simulated mode.
+ *
+ *  Future: Using two copies of Drupal, we could test
+ *  overwriting one site with another.
+ */
 
 namespace Unish;
 
 /**
- *  @group slow
- *  @group commands
- *  @group sql
+ * @group slow
+ * @group commands
+ * @group sql
  */
 class SqlSyncTest extends CommandUnishTestCase
 {
@@ -21,18 +21,18 @@ class SqlSyncTest extends CommandUnishTestCase
     public function testSimulatedSqlSync()
     {
         $fixtureSites = [
-        'remote' => [
-        'host' => 'server.isp.simulated',
-        'user' => 'www-admin',
-        'ssh' => [
-            'options' => '-o PasswordAuthentication=whatever'
-        ],
-        'paths' => [
-            'drush-script' => '/path/to/drush',
-        ],
-        ],
-        'local' => [
-        ],
+            'remote' => [
+                'host' => 'server.isp.simulated',
+                'user' => 'www-admin',
+                'ssh' => [
+                    'options' => '-o PasswordAuthentication=whatever'
+                ],
+                'paths' => [
+                    'drush-script' => '/path/to/drush',
+                ],
+            ],
+            'local' => [
+            ],
         ];
         $this->setUpSettings($fixtureSites, 'synctest');
         $options = [
@@ -64,13 +64,13 @@ class SqlSyncTest extends CommandUnishTestCase
         $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush/sites --root=/path/to/drupal --uri=sitename --no-interaction sql:sync '\''@synctest.remote'\'' '\''@synctest.local'\''", $output);
     }
 
-  /**
-   * Covers the following responsibilities.
-   *   - A user created on the source site is copied to the destination site.
-   *   - The email address of the copied user is sanitized on the destination site.
-   *
-   * General handling of site aliases will be in sitealiasTest.php.
-   */
+    /**
+     * Covers the following responsibilities.
+     *   - A user created on the source site is copied to the destination site.
+     *   - The email address of the copied user is sanitized on the destination site.
+     *
+     * General handling of site aliases will be in sitealiasTest.php.
+     */
     public function testLocalSqlSync()
     {
         if ($this->dbDriver() == 'sqlite') {
@@ -78,7 +78,7 @@ class SqlSyncTest extends CommandUnishTestCase
             return;
         }
 
-        $sites = $this->setUpDrupal(2, true);
+        $this->setUpDrupal(2, true);
         return $this->localSqlSync();
     }
 
@@ -86,8 +86,8 @@ class SqlSyncTest extends CommandUnishTestCase
     {
 
         $options = [
-        'uri' => 'stage',
-        'yes' => null,
+            'uri' => 'stage',
+            'yes' => null,
         ];
 
         // Create a user in the staging site
@@ -96,19 +96,13 @@ class SqlSyncTest extends CommandUnishTestCase
 
         // Add user fields and a test User.
         $this->drush('pm-enable', ['field,text,telephone,comment'], $options + ['yes' => null]);
-        $this->drush('php-script', [
-        'user_fields-D' . UNISH_DRUPAL_MAJOR_VERSION,
-        $name,
-        $mail
-        ], $options + [
-        'script-path' => __DIR__ . '/resources',
-        ]);
+        $this->drush('php-script', ['user_fields-D' . UNISH_DRUPAL_MAJOR_VERSION, $name, $mail], $options + ['script-path' => __DIR__ . '/resources',]);
 
         // Copy stage to dev, and then sql:sanitize.
         $sync_options = [
-        'yes' => null,
-        // Test wildcards expansion from within sql-sync. Also avoid D8 persistent entity cache.
-        'structure-tables-list' => 'cache,cache*',
+            'yes' => null,
+            // Test wildcards expansion from within sql-sync. Also avoid D8 persistent entity cache.
+            'structure-tables-list' => 'cache,cache*',
         ];
         $this->drush('sql-sync', ['@unish.stage', '@unish.dev'], $sync_options);
         $this->drush('sql-sanitize', [], ['yes' => null], '@unish.dev');
@@ -118,18 +112,22 @@ class SqlSyncTest extends CommandUnishTestCase
         $info = $this->getOutputFromJSON(2);
         $this->assertEquals($mail, $info->mail, 'Email address is unchanged on source site.');
         $this->assertEquals($name, $info->name);
+        // Get the unchanged pass.
+        $this->drush('user-information', [$name], $options + ['field' => 'pass']);
+        $original_hashed_pass = $this->getOutput();
 
-        // Confirm that the sample user's email address has been sanitized on the dev site
-        $this->drush('user-information', [$name], $options + ['format' => 'json', 'yes' => null], '@unish.dev');
+        // Confirm that the sample user's email and password have been sanitized on the dev site
+        $this->drush('user-information', [$name], $options + ['fields' => 'uid,name,mail,pass', 'format' => 'json', 'yes' => null], '@unish.dev');
         $info = $this->getOutputFromJSON(2);
         $this->assertEquals("user+2@localhost.localdomain", $info->mail, 'Email address was sanitized on destination site.');
         $this->assertEquals($name, $info->name);
+        $this->assertNotEquals($info->pass, $original_hashed_pass);
 
         // Copy stage to dev with --sanitize and a fixed sanitized email
         $sync_options = [
-        'yes' => null,
-        // Test wildcards expansion from within sql-sync. Also avoid D8 persistent entity cache.
-        'structure-tables-list' => 'cache,cache*',
+            'yes' => null,
+            // Test wildcards expansion from within sql-sync. Also avoid D8 persistent entity cache.
+            'structure-tables-list' => 'cache,cache*',
         ];
         $this->drush('sql-sync', ['@unish.stage', '@unish.dev'], $sync_options);
         $this->drush('sql-sanitize', [], ['yes' => null, 'sanitize-email' => 'user@mysite.org'], '@unish.dev');
@@ -142,12 +140,12 @@ class SqlSyncTest extends CommandUnishTestCase
 
 
         $fields = [
-        'field_user_email' => 'joe.user.alt@myhome.com',
-        'field_user_string' => 'Private info',
-        'field_user_string_long' => 'Really private info',
-        'field_user_text' => 'Super private info',
-        'field_user_text_long' => 'Super duper private info',
-        'field_user_text_with_summary' => 'Private',
+            'field_user_email' => 'joe.user.alt@myhome.com',
+            'field_user_string' => 'Private info',
+            'field_user_string_long' => 'Really private info',
+            'field_user_text' => 'Super private info',
+            'field_user_text_long' => 'Super duper private info',
+            'field_user_text_with_summary' => 'Private',
         ];
         // Assert that field DO NOT contain values.
         foreach ($fields as $field_name => $value) {
@@ -158,21 +156,21 @@ class SqlSyncTest extends CommandUnishTestCase
         $this->assertUserFieldContents('field_user_telephone', '5555555555', true);
     }
 
-  /**
-   * Assert that a field on the user entity does or does not contain a value.
-   *
-   * @param string $field_name
-   *   The machine name of the field.
-   * @param string $value
-   *   The field value.
-   * @param bool $should_contain
-   *   Whether the field should contain the value. Defaults to false.
-   */
+    /**
+     * Assert that a field on the user entity does or does not contain a value.
+     *
+     * @param string $field_name
+     *   The machine name of the field.
+     * @param string $value
+     *   The field value.
+     * @param bool $should_contain
+     *   Whether the field should contain the value. Defaults to false.
+     */
     public function assertUserFieldContents($field_name, $value, $should_contain = false)
     {
         $table = 'user__' . $field_name;
         $column = $field_name . '_value';
-        $this->drush('sql-query', [ "SELECT $column FROM $table LIMIT 1" ], [], '@unish.dev');
+        $this->drush('sql-query', ["SELECT $column FROM $table LIMIT 1"], [], '@unish.dev');
         $output = $this->getOutput();
         $this->assertNotEmpty($output);
 
