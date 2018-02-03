@@ -18,11 +18,10 @@ Install a site-local Drush and Drush Launcher.
 
 Drupal Compatibility
 -----------------
-Drush Version | Drush Branch  | PHP | Compatible Drupal versions | Code Status
-------------- | ---------     | --- | -------------------------- | -----------
-Drush 9       | [master](https://travis-ci.org/drush-ops/drush)  | 5.6+ | D8.4+                    | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=master">
-Drush 8       | [8.x](https://travis-ci.org/drush-ops/drush)  | 5.4.5+ | D6, D7, D8.3-             | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=8.x">
-Drush 7       | [7.x](https://travis-ci.org/drush-ops/drush) | 5.3.0+ | D6, D7                     | Unsupported
-Drush 6       | [6.x](https://travis-ci.org/drush-ops/drush) | 5.3.0+ | D6, D7                     | Unsupported
-Drush 5       | [5.x](https://travis-ci.org/drush-ops/drush) | 5.2.0+ | D6, D7                     | Unsupported
-
+Drush Version | Drush Branch  | PHP | Compatible Drupal versions | Code Style | Isolation Tests | Functional Tests |
+------------- | ---------     | --- | -------------------------- | :--------: | :-------------: | :--------------: |
+Drush 9       | [master](https://travis-ci.org/drush-ops/drush)  | 5.6+ | D8.4+                    | <img src="https://api.shippable.com/projects/5507addd5ab6cc1352a213b5/badge?branch=master"> | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=master"> | <img src="https://circleci.com/gh/drush-ops/drush.svg?style=shield">
+Drush 8       | [8.x](https://travis-ci.org/drush-ops/drush)  | 5.4.5+ | D6, D7, D8.3-             | <img src="https://circleci.com/gh/drush-ops/drush.svg?style=shield"> | - | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=8.x">
+Drush 7       | [7.x](https://travis-ci.org/drush-ops/drush) | 5.3.0+ | D6, D7                     | n/a | n/a | Unsupported
+Drush 6       | [6.x](https://travis-ci.org/drush-ops/drush) | 5.3.0+ | D6, D7                     | n/a | n/a | Unsupported
+Drush 5       | [5.x](https://travis-ci.org/drush-ops/drush) | 5.2.0+ | D6, D7                     | n/a | n/a | Unsupported
