@@ -2,13 +2,6 @@
   "name": "Site Under Test",
   "repositories": [
     {
-      "type": "path",
-      "url": "%PATH-TO-DRUSH%",
-      "options": {
-        "symlink": true
-      }
-    },
-    {
       "type": "composer",
       "url": "https://packages.drupal.org/8"
     }
