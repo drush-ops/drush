@@ -47,10 +47,10 @@ jobs:
       - run: $HOME/drush/.circleci/setup.sh
       - run: /usr/bin/env UNISH_DRUPAL_MAJOR_VERSION=7 "${PWD}/unish.sh" $PHPUNIT_ARGS
 
-  build_54_d6:
+  build_56_d6:
     <<: *defaults
     docker:
-      - image: circleci/php:5.4-apache-node
+      - image: circleci/php:5.6-apache-node
         environment:
           - MYSQL_HOST=127.0.0.1
       - image: circleci/mysql:5.7.18
@@ -66,5 +66,5 @@ workflows:
       - build
       - build_d83
       - build_d7
-      - build_54_d6
+      - build_56_d6
 
