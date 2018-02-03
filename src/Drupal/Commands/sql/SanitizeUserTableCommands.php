@@ -90,8 +90,8 @@ class SanitizeUserTableCommands extends DrushCommands implements SanitizePluginI
      *   sanitization operation, or "no" to keep email addresses unchanged. May
      *   contain replacement patterns %uid, %mail or %name.
      * @option sanitize-password
-     *   The password to assign to all accounts. Pass without a value in order to get a
-     *   random password. or "no" to keep passwords unchanged.
+     *   By default, passwords are randomized. Specify 'no' to disable that. Specify any other value to set all passwords
+     *   to that value.
      */
     public function options($options = ['sanitize-email' => 'user+%uid@localhost.localdomain', 'sanitize-password' => null])
     {
