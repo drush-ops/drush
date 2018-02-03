@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Install sqlite for drush qd tests
+sudo apt-get install sqlite3
+
 # Install PHP extensions
 sudo docker-php-ext-install pdo_mysql
 
