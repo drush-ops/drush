@@ -21,10 +21,9 @@ jobs:
     steps:
       - checkout
       - run: $HOME/drush/.circleci/setup.sh
-      - run: /usr/bin/env UNISH_DRUPAL_MAJOR_VERSION=7 "${PWD}/unish.sh" $PHPUNIT_ARGS
-      - run: /usr/bin/env UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=3.7 "${PWD}/unish.sh" $PHPUNIT_ARGS
+      - run: /usr/bin/env UNISH_DRUPAL_MAJOR_VERSION=8 "${PWD}/unish.sh" $PHPUNIT_ARGS
 
-  build_highest:
+  build_d83:
     <<: *defaults
     docker:
       - image: circleci/php:7.1-apache-node
@@ -36,10 +35,10 @@ jobs:
       - run: $HOME/drush/.circleci/setup.sh
       - run: /usr/bin/env UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=3.7 "${PWD}/unish.sh" $PHPUNIT_ARGS
 
-  build_54:
+  build_d7:
     <<: *defaults
     docker:
-      - image: circleci/php:5.6-apache-node
+      - image: circleci/php:7.1-apache-node
         environment:
           - MYSQL_HOST=127.0.0.1
       - image: circleci/mysql:5.7.18
@@ -47,6 +46,17 @@ jobs:
       - checkout
       - run: $HOME/drush/.circleci/setup.sh
       - run: /usr/bin/env UNISH_DRUPAL_MAJOR_VERSION=7 "${PWD}/unish.sh" $PHPUNIT_ARGS
+
+  build_54_d6:
+    <<: *defaults
+    docker:
+      - image: circleci/php:5.4-apache-node
+        environment:
+          - MYSQL_HOST=127.0.0.1
+      - image: circleci/mysql:5.7.18
+    steps:
+      - checkout
+      - run: $HOME/drush/.circleci/setup.sh
       - run: /usr/bin/env UNISH_DRUPAL_MAJOR_VERSION=6 "${PWD}/unish.sh" $PHPUNIT_ARGS
 
 workflows:
@@ -54,6 +64,7 @@ workflows:
   build_test:
     jobs:
       - build
-      - build_highest
-      - build_54
+      - build_d83
+      - build_d7
+      - build_54_d6
 
