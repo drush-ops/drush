@@ -1,0 +1,22 @@
+language: php
+
+php:
+  - "7.1"
+
+build:
+  ci:
+    # Set up php configuration
+    - echo 'mbstring.http_input = pass' >> $HOME/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    - echo 'mbstring.http_output = pass' >> $HOME/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    - echo 'memory_limit = -1' >> $HOME/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    - echo 'sendmail_path = /bin/true' >> $HOME/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    # Disable xdebug for faster Composer operations
+    # - rm $HOME/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
+    # Install / update our tools
+    # - composer self-update
+    # - composer install --prefer-dist --no-interaction
+    # Run lint check
+    # - composer lint
+    # No tests here
+    - echo 'No shippable tests on this branch'
+
