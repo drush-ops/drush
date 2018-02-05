@@ -36,6 +36,11 @@ function drush_print($message = '', $indent = 0, $handle = NULL, $newline = TRUE
   }
   if (!isset($handle)) {
     $handle = STDOUT;
+    // In the past, Drush would use `print` here; now that we are using
+    // fwrite (to avoid problems with php sending the http headers), we
+    // must explicitly capture the output, because ob_start() / ob_end()
+    // does not capture output written via fwrite to STDOUT.
+    drush_backend_output_collect($msg);
   }
   fwrite($handle, $msg);
 }
