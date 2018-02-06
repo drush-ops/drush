@@ -498,10 +498,11 @@ function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, 
 
   // Add environmental variables, if present
   if (!empty($environment_variables)) {
-    $prefix .= ' env';
+    $env = 'env';
     foreach ($environment_variables as $key=>$value) {
-      $prefix .= ' ' . drush_escapeshellarg($key, $os) . '=' . drush_escapeshellarg($value, $os);
+      $env .= ' ' . drush_escapeshellarg($key, $os) . '=' . drush_escapeshellarg($value, $os);
     }
+    $prefix = $env . ' ' . $prefix;
   }
 
   return trim($prefix . ' ' . drush_escapeshellarg($drush_path, $os) . $additional_options);
