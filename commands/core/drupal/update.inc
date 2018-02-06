@@ -132,7 +132,9 @@ function update_main() {
 
   // Check requirements before updating.
   if (!drush_update_check_requirements()) {
-    return;
+    if (!drush_confirm(dt('Requirements check reports errors. Do you wish to continue?'))) {
+        return drush_user_abort();
+    }
   }
 
   // Pending hook_update_N() implementations.
