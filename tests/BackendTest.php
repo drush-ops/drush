@@ -28,6 +28,9 @@ class BackendCase extends CommandUnishTestCase
                 'paths' => [
                     'drush-script' => '/usr/local/bin/drush',
                 ],
+                '#env-vars' => [
+                    'TEST_VAR' => 'test_value'
+                ],
             ],
         ];
         // n.b. writeUnishConfig will overwrite the alias files create by setupDrupal
@@ -41,7 +44,7 @@ class BackendCase extends CommandUnishTestCase
         $output = preg_replace('#  *#', ' ', $output);
         $output = preg_replace('# -t #', ' ', $output); // volkswagon away the -t, it's not relevant to what we're testing here
         $output = preg_replace('#' . self::getSandbox() . '#', '__SANDBOX__', $output);
-        $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=no www-admin@server.isp.com '/usr/local/bin/drush --alias-path=__SANDBOX__/etc/drush/sites --root=/path/to/drupal --uri=http://example.com --no-interaction status", $output);
+        $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=no www-admin@server.isp.com 'env TEST_VAR=test_value /usr/local/bin/drush --alias-path=__SANDBOX__/etc/drush/sites --root=/path/to/drupal --uri=http://example.com --no-interaction status", $output);
     }
 
     /**
