@@ -45,9 +45,9 @@ In Drush 9, the default services file, `drush.services.yml`, will be used in ins
 Global Drush Commands
 ==============================
 
-Commandfiles that don't ship inside Drupal modules are called 'global' commandfiles. See the examples/Commands folder for examples. In general, its better to use modules to carry your Drush commands. If you still prefer using a global commandfiles, please note:
+Commandfiles that don't ship inside Drupal modules are called 'global' commandfiles. See the [examples/Commands](/examples/Commands) folder for examples. In general, its better to use modules to carry your Drush commands. If you still prefer using a global commandfiles, please note:
 
-1. The file's namespace should be `\Drush\Commands`.
+1. The file's fully qualified namespace should be `\Drush\Commands`.
 1. The filename must be have a name like Commands/FooCommands.php
     1. The prefix `Foo` can be whatever string you want. The file must end in `Commands.php`
     1. The enclosing directory must be named `Commands`
