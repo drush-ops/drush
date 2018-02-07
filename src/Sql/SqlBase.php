@@ -186,8 +186,7 @@ class SqlBase implements ConfigAwareInterface
 
         // $file is passed in to us usually via --result-file.  If the user
         // has set $options['result-file'] = TRUE, then we
-        // will generate an SQL dump file in the same backup
-        // directory that pm-updatecode uses.
+        // will generate an SQL dump file in the backup directory.
         if ($file) {
             if ($file === true) {
                 $backup_dir = FsUtils::prepareBackupDir($database);
