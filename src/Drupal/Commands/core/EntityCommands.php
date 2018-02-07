@@ -45,8 +45,7 @@ class EntityCommands extends DrushCommands
         $storage = $this->entityTypeManager->getStorage($entity_type);
         if ($ids = StringUtils::csvToArray($ids)) {
             $entities = $storage->loadMultiple($ids);
-        }
-        elseif ($bundle = $options['bundle']) {
+        } elseif ($bundle = $options['bundle']) {
             $entities = $storage->loadByProperties(['type' => $bundle]);
         } else {
             $entities = $storage->loadMultiple();
@@ -55,6 +54,6 @@ class EntityCommands extends DrushCommands
             throw new \Exception(dt('No matching entities found.'));
         }
         $storage->delete($entities);
-        $this->logger()->success(dt('Deleted !type entity Ids: !ids', ['!type' => $entity_type, '!ids' => implode(', ', array_keys($entities))])    );
+        $this->logger()->success(dt('Deleted !type entity Ids: !ids', ['!type' => $entity_type, '!ids' => implode(', ', array_keys($entities))]));
     }
 }
