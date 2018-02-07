@@ -8,6 +8,7 @@ use Drupal\Core\Logger\RfcLogLevel;
 use Drush\Commands\DrushCommands;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\Html;
+use Drush\Drupal\DrupalUtil;
 use Drush\Exceptions\UserAbortException;
 
 class WatchdogCommands extends DrushCommands
@@ -280,7 +281,7 @@ class WatchdogCommands extends DrushCommands
     {
         // Severity.
         $severities = RfcLogLevel::getLevels();
-        $result->severity = $severities[$result->severity];
+        $result->severity = trim(DrupalUtil::drushRender($severities[$result->severity]));
 
         // Date.
         $result->date = format_date($result->timestamp, 'custom', 'd/M H:i');
