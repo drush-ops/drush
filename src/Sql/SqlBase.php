@@ -135,10 +135,9 @@ class SqlBase implements ConfigAwareInterface
     {
         /** @var string|bool $file Path where dump file should be stored. If TRUE, generate a path based on usual backup directory and current date.*/
         $file = $this->getOption('result-file');
-        $file_auto = $this->getOption('result-file-auto');
         $file_suffix = '';
         $table_selection = $this->getExpandedTableSelection($this->getOptions(), $this->listTables());
-        $file = $this->dumpFile($file ? $file: $file_auto);
+        $file = $this->dumpFile($file);
         $cmd = $this->dumpCmd($table_selection);
         // Gzip the output from dump command(s) if requested.
         if ($this->getOption('gzip')) {
@@ -186,10 +185,10 @@ class SqlBase implements ConfigAwareInterface
         $database = $this->dbSpec['database'];
 
         // $file is passed in to us usually via --result-file.  If the user
-        // has set $options['result-file-auto'] = TRUE, then we
+        // has set $options['result-file'] = 'auto', then we
         // will generate an SQL dump file in the backup directory.
         if ($file) {
-            if ($file === true) {
+            if ($file === 'auto') {
                 $backup_dir = FsUtils::prepareBackupDir($database);
                 if (empty($backup_dir)) {
                     $backup_dir = $this->getConfig()->tmp();
