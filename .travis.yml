@@ -28,7 +28,7 @@ env:
     - TEST_DIR=isolation ISOLATION_INSTALL='update --prefer-dist --prefer-lowest'
     - TEST_DIR=isolation ISOLATION_INSTALL='update --prefer-dist'
   global:
-    # Github deploy
+    # GitHub deploy
     - secure: VfYokT2CchfuBRJp9/gSwfVGPfsVfkZdDVEuNWEqxww3z4vq+5aLKqoCtPL54E5EIMjhyCE3GVo+biG35Gab1KOVgUs8zD1hAUWA1FPKfMFhoPDfI3ZJC2rX2T1iWK4ZR90pBtcPzS+2OObzTYz8go0PfeSTT6eq69Na1KcNLaE=
     - UNISH_NO_TIMEOUTS=y
     - UNISH_DB_URL=mysql://root:@127.0.0.1
