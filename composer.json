@@ -68,8 +68,8 @@
     }
   },
   "scripts": {
-    "cs": "phpcs -n --standard=PSR2 src tests",
-    "cbf": "phpcbf -n --standard=PSR2 src tests",
+    "cs": "phpcs -n --standard=PSR2 src tests examples",
+    "cbf": "phpcbf -n --standard=PSR2 src tests examples",
     "lint": [
       "find includes -name '*.inc' -print0 | xargs -0 -n1 php -l",
       "find src -name '*.php' -print0 | xargs -0 -n1 php -l",
