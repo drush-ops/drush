@@ -185,10 +185,10 @@ class SqlBase implements ConfigAwareInterface
         $database = $this->dbSpec['database'];
 
         // $file is passed in to us usually via --result-file.  If the user
-        // has set $options['result-file'] = TRUE, then we
+        // has set $options['result-file'] = 'auto', then we
         // will generate an SQL dump file in the backup directory.
         if ($file) {
-            if ($file === true) {
+            if ($file === 'auto') {
                 $backup_dir = FsUtils::prepareBackupDir($database);
                 if (empty($backup_dir)) {
                     $backup_dir = $this->getConfig()->tmp();

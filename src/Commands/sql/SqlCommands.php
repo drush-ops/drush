@@ -195,7 +195,7 @@ class SqlCommands extends DrushCommands
      * @aliases sql-dump
      * @optionset_sql
      * @optionset_table_selection
-     * @option result-file Save to a file. The file should be relative to Drupal root.
+     * @option result-file Save to a file. The file should be relative to Drupal root. If --result-file is provided with the value 'auto', a date-based filename will be created under ~/drush-backups directory.
      * @option create-db Omit DROP TABLE statements. Used by Postgres and Oracle only.
      * @option data-only Dump data without statements to create any of the schema.
      * @option ordered-dump Order by primary key and add line breaks for efficient diffs. Slows down the dump. Mysql only.
