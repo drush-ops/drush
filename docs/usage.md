@@ -13,7 +13,7 @@ For even more documentation, use the 'topic' command:
 
     $ drush topic
 
-Options
+Using the --uri option and --root options.
 -----------
 
 For multisite installations, use a site alias or the --uri option to target a particular site.
