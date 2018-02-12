@@ -4,4 +4,4 @@ jobs:
     docker:
       - image: circleci/ruby:2.4.3
     steps:
-      - echo "done"
+      - run: echo "done"
