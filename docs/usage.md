@@ -28,7 +28,8 @@ base_url to be set correctly, you may force it by setting the uri in
 a drush.yml file located in the same directory as your settings.php file.
 
 ```
-uri: "http://example.com"
+options:
+  uri: "http://example.com"
 ```
 
 Site Aliases
