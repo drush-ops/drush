@@ -4,6 +4,12 @@
 # Use this file to cut down on typing out lengthy and repetitive command line
 # options in the Drush commands you use and to avoid mistakes.
 #
+# The Drush configuration system has been factored out and shared with
+# the world at https://github.com/consolidation/config. Feel free to use it
+# for your projects. Lots more usage information is there.
+
+# Directories and Discovery
+#
 # Rename this file to drush.yml and copy it to one of the places listed below
 # in order of precedence:
 #
@@ -16,10 +22,11 @@
 #
 # If a configuration file is found in any of the above locations, it will be
 # loaded and merged with other configuration files in the search list.
+
+# Environment variables
 #
-# The Drush configuration system has been factored out and shared with
-# the world at https://github.com/consolidation/config. Feel free to use it
-# for your projects. Lots more usage information is there.
+# Your Drush config file may reference environment variables using a syntax like ${env.home}.
+# For example see the drush.paths examples below.
 #
 # An alternative way to populate Drush configuration is to define environment variables that
 # correspond to config keys. For example, to populate the options.uri config item,
