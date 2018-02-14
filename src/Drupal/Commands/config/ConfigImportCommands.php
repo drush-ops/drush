@@ -159,24 +159,10 @@ class ConfigImportCommands extends DrushCommands
      */
     public function import($label = null, $options = ['preview' => 'list', 'source' => self::REQ, 'partial' => false, 'diff' => false])
     {
-        global $config_directories;
-
         // Determine source directory.
 
-        if ($target = $options['source']) {
-            if ($label) {
-                $this->logger()->notice('Ambiguous config source: both config label and source path provided. Using path specified as source.');
-            }
-            $source_storage = new FileStorage($target);
-        } else if ($label) {
-            if (array_key_exists($label, $config_directories)) {
-                $source_storage = new FileStorage($config_directories[$label]);
-            }
-        }
-
-        if (!isset($source_storage)) {
-            $source_storage = $this->getConfigStorageSync();
-        }
+        $source_storage_dir = ConfigCommands::getDirectory($label, $options['source']);
+        $source_storage = new FileStorage($source_storage_dir);
 
         // Determine $source_storage in partial case.
         $active_storage = $this->getConfigStorage();
