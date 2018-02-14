@@ -160,11 +160,9 @@ class ConfigImportCommands extends DrushCommands
     public function import($label = null, $options = ['preview' => 'list', 'source' => self::REQ, 'partial' => false, 'diff' => false])
     {
         // Determine source directory.
-        if ($target = $options['source']) {
-            $source_storage = new FileStorage($target);
-        } else {
-            $source_storage = $this->getConfigStorageSync();
-        }
+
+        $source_storage_dir = ConfigCommands::getDirectory($label, $options['source']);
+        $source_storage = new FileStorage($source_storage_dir);
 
         // Determine $source_storage in partial case.
         $active_storage = $this->getConfigStorage();
