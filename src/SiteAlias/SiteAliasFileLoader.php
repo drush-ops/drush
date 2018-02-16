@@ -153,14 +153,13 @@ class SiteAliasFileLoader
      */
     public function loadMultiple($sitename)
     {
-        $path = $this->discovery()->findSingleSiteAliasFile($sitename);
-        if (!$path) {
-            return false;
+        if ($path = $this->discovery()->findSingleSiteAliasFile($sitename)) {
+            if ($siteData = $this->loadSiteDataFromPath($path)) {
+                // Convert the raw array into a list of alias records.
+                return $this->createAliasRecordsFromSiteData($sitename, $siteData);
+            }
         }
-        $siteData = $this->loadSiteDataFromPath($path);
-
-        // Convert the raw array into a list of alias records.
-        return $this->createAliasRecordsFromSiteData($sitename, $siteData);
+        return false;
     }
 
     /**

@@ -28,7 +28,7 @@ env:
     - TEST_DIR=isolation ISOLATION_INSTALL='update --prefer-dist --prefer-lowest'
     - TEST_DIR=isolation ISOLATION_INSTALL='update --prefer-dist'
   global:
-    # Github deploy
+    # GitHub deploy
     - secure: VfYokT2CchfuBRJp9/gSwfVGPfsVfkZdDVEuNWEqxww3z4vq+5aLKqoCtPL54E5EIMjhyCE3GVo+biG35Gab1KOVgUs8zD1hAUWA1FPKfMFhoPDfI3ZJC2rX2T1iWK4ZR90pBtcPzS+2OObzTYz8go0PfeSTT6eq69Na1KcNLaE=
     - UNISH_NO_TIMEOUTS=y
     - UNISH_DB_URL=mysql://root:@127.0.0.1
@@ -57,6 +57,6 @@ after_success:
   # Publish updated API documentation on every push to the master branch
   - git config --global user.email $GITHUB_USER_EMAIL
   - git config --global user.name "Drush Documentation Bot"
-  - build/scripts/publish-api-docs.sh
+  - cd $TRAVIS_BUILD_DIR && build/scripts/publish-api-docs.sh
   # Background: https://github.com/drush-ops/drush/pull/1426
   #- ${PWD}/tests/testChildren.sh
