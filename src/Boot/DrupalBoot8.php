@@ -42,6 +42,14 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $this->request = $request;
     }
 
+    /**
+     * @return \Drupal\Core\DrupalKernelInterface
+     */
+    public function getKernel()
+    {
+        return $this->kernel;
+    }
+
     public function validRoot($path)
     {
         if (!empty($path) && is_dir($path) && file_exists($path . '/autoload.php')) {

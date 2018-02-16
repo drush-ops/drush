@@ -458,11 +458,13 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      *
      * @param int $max_phase_index
      *   (optional) Only attempt bootstrap to the specified level.
+     * @param \Consolidation\AnnotatedCommand\AnnotationData $annotationData
+     *   Optional annotation data from the command.
      *
      * @return int
      *   The maximum phase to which we bootstrapped.
      */
-    public function bootstrapMax($max_phase_index = false)
+    public function bootstrapMax($max_phase_index = false, AnnotationData $annotationData = null)
     {
         // Bootstrap as far as we can without throwing an error, but log for
         // debugging purposes.
@@ -485,7 +487,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
 
             if ($this->bootstrapValidate($phase_index)) {
                 if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE')) {
-                    $this->doBootstrap($phase_index, $max_phase_index);
+                    $this->doBootstrap($phase_index, $max_phase_index, $annotationData);
                 }
             } else {
                 // $this->bootstrapValidate() only logs successful validations. For us,
