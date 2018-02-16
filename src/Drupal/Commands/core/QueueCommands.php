@@ -79,7 +79,7 @@ class QueueCommands extends DrushCommands
                 $queue->releaseItem($item);
             } catch (SuspendQueueException $e) {
                 // If the worker indicates there is a problem with the whole queue,
-                // release the item and skip to the next queue.
+                // release the item.
                 $queue->releaseItem($item);
                 throw new \Exception($e->getMessage());
             }
