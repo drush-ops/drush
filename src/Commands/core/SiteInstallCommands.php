@@ -47,6 +47,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * @usage drush si standard install_configure_form.enable_update_status_emails=NULL
      *   Disable email notification during install and later. If your server has no mail transfer agent, this gets rid of an error during install.
      * @bootstrap root
+     * @kernel installer
      * @aliases si,sin,site-install
      *
      */
@@ -142,13 +143,10 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             $profile = 'minimal';
         }
         if (empty($profile)) {
-            try {
-                $profile = drupal_get_profile();
-            } catch (ConnectionNotDefinedException $exception) {
-                // This is only a best effort to provide a better default, no harm done
-                // if it fails.
-            }
+            $boot = Drush::bootstrap();
+            $profile = $boot->getKernel()->getInstallProfile();
         }
+
         if (empty($profile)) {
             // If there is an installation profile that acts as a distribution, use it.
             // You can turn your installation profile into a distribution by providing a
@@ -231,7 +229,9 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         }
 
         try {
-            Drush::bootstrapManager()->bootstrapMax(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+            // Get AnnotationData. @todo Find a better way.
+            $annotationData = Drush::getApplication()->find('site:install')->getAnnotationData();
+            Drush::bootstrapManager()->bootstrapMax(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION, $annotationData);
             $sql = SqlBase::create($commandData->input()->getOptions());
         } catch (\Exception $e) {
             // Ask questions to get our data.
