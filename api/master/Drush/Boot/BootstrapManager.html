@@ -441,7 +441,7 @@ are necessary to bootstrap the CMS.</p>                </div>
                     int
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_bootstrapMax">bootstrapMax</a>(int $max_phase_index = false)
+                    <a href="#method_bootstrapMax">bootstrapMax</a>(int $max_phase_index = false, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData = null)
         
                                             <p>Bootstrap to the highest level possible, without triggering any errors.</p>                </div>
                 <div class="col-md-2"></div>
@@ -1234,9 +1234,9 @@ validating phases multiple times.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapMax">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/BootstrapManager.php#L465">line 465</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/BootstrapManager.php#L467">line 467</a></div>
         <code>                    int
-    <strong>bootstrapMax</strong>(int $max_phase_index = false)
+    <strong>bootstrapMax</strong>(int $max_phase_index = false, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData = null)
         </code>
     </h3>
     <div class="details">
@@ -1253,6 +1253,11 @@ validating phases multiple times.</p>                            </div>
                 <td>int</td>
                 <td>$max_phase_index</td>
                 <td>(optional) Only attempt bootstrap to the specified level.</td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr></td>
+                <td>$annotationData</td>
+                <td>Optional annotation data from the command.</td>
             </tr>
             </table>
 
