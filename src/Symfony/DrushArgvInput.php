@@ -16,6 +16,7 @@ namespace Drush\Symfony;
 
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\Input;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputDefinition;
 
 /**
@@ -43,7 +44,7 @@ use Symfony\Component\Console\Input\InputDefinition;
  * @see http://www.gnu.org/software/libc/manual/html_node/Argument-Syntax.html
  * @see http://www.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap12.html#tag_12_02
  */
-class DrushArgvInput extends Input
+class DrushArgvInput extends ArgvInput
 {
     private $tokens;
     private $parsed;
