@@ -18,6 +18,7 @@ use Drupal\Core\Lock\LockBackendInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Webmozart\PathUtil\Path;
 
 class ConfigImportCommands extends DrushCommands
 {
@@ -162,7 +163,13 @@ class ConfigImportCommands extends DrushCommands
         // Determine source directory.
 
         $source_storage_dir = ConfigCommands::getDirectory($label, $options['source']);
-        $source_storage = new FileStorage($source_storage_dir);
+
+        // Prepare the configuration storage for the import.
+        if ($source_storage_dir == Path::canonicalize(\config_get_config_directory(CONFIG_SYNC_DIRECTORY))) {
+            $source_storage = $this->getConfigStorageSync();
+        } else {
+            $source_storage = new FileStorage($source_storage_dir);
+        }
 
         // Determine $source_storage in partial case.
         $active_storage = $this->getConfigStorage();
