@@ -135,17 +135,6 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         return true;
     }
 
-    public function bootstrapDrupalDatabaseValidate()
-    {
-        return parent::bootstrapDrupalDatabaseValidate() && $this->bootstrapDrupalDatabaseHasTable('key_value');
-    }
-
-    public function bootstrapDrupalDatabase()
-    {
-        // D8 omits this bootstrap level as nothing special needs to be done.
-        parent::bootstrapDrupalDatabase();
-    }
-
     public function bootstrapDrupalConfiguration(AnnotationData $annotationData = null)
     {
         // Default to the standard kernel.
