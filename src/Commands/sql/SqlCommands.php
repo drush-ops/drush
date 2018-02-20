@@ -19,6 +19,7 @@ class SqlCommands extends DrushCommands
      * @option show-passwords Show database password.
      * @optionset_sql
      * @bootstrap max
+     * @max configuration
      * @hidden
      */
     public function conf($options = ['format' => 'yaml', 'all' => false, 'show-passwords' => false])
@@ -76,6 +77,7 @@ class SqlCommands extends DrushCommands
      * @usage drush sql:create --db-su=root --db-su-pw=rootpassword --db-url="mysql://drupal_db_user:drupal_db_password@127.0.0.1/drupal_db"
      *   Create the database as specified in the db-url option.
      * @bootstrap max
+     * @max configuration
      */
     public function create($options = ['db-su' => self::REQ, 'db-su-pw' => self::REQ])
     {
@@ -104,6 +106,7 @@ class SqlCommands extends DrushCommands
      * @aliases sql-drop
      * @optionset_sql
      * @bootstrap max
+     * @max configuration
      * @topics docs:policy
      */
     public function drop($options = [])
@@ -132,6 +135,7 @@ class SqlCommands extends DrushCommands
      *   Open a SQL CLI and skip reading table information.
      * @remote-tty
      * @bootstrap max
+     * @max configuration
      */
     public function cli($options = [])
     {
@@ -162,6 +166,7 @@ class SqlCommands extends DrushCommands
      * @usage drush sql:query --file=example.sql
      *   Alternate way to import sql statements from a file.
      * @bootstrap max
+     * @max configuration
      *
      */
     public function query($query = '', $options = ['result-file' => null, 'file' => self::REQ, 'extra' => self::REQ, 'db-prefix' => false])
@@ -210,6 +215,7 @@ class SqlCommands extends DrushCommands
      *   Pass extra option to mysqldump command.
      * @hidden-options create-db
      * @bootstrap max
+     * @max configuration
      *
      * @notes
      *   createdb is used by sql-sync, since including the DROP TABLE statements interfere with the import when the database is created.
