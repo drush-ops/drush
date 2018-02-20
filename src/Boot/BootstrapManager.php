@@ -421,7 +421,12 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     public function bootstrapToPhaseIndex($max_phase_index, AnnotationData $annotationData = null)
     {
         if ($max_phase_index == DRUSH_BOOTSTRAP_MAX) {
-            $this->bootstrapMax();
+            // Try get a max phase.
+            $stopPhase = null;
+            if ($stopPhase = $annotationData->get('max')) {
+                $stopPhase = $this->bootstrap()->lookUpPhaseIndex($stopPhase);
+            }
+            $this->bootstrapMax($stopPhase);
             return true;
         }
 
