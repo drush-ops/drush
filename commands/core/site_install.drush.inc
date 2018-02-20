@@ -259,6 +259,10 @@ function drush_core_site_install($profile = NULL) {
     // Set the destination site UUID to match the source UUID, to bypass a core fail-safe.
     $source_storage = new FileStorage($config);
     $options = ['yes' => TRUE];
+    // Set URI if sites-subdir is set, to import the config to the new multisite.
+    if (drush_get_option('sites-subdir')) {
+      $options['uri'] = drush_get_option('sites-subdir');
+    }
     drush_invoke_process('@self', 'config-set', array('system.site', 'uuid', $source_storage->read('system.site')['uuid']), $options);
     // Run a full configuration import.
     drush_invoke_process('@self', 'config-import', array(), array('source' => $config) + $options);
