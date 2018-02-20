@@ -407,6 +407,17 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         return $this->bootstrapToPhaseIndex($phase, $annotationData);
     }
 
+    protected function maxPhaseLimit($bootstrap_str)
+    {
+        $bootstrap_words = explode(' ', $bootstrap_str);
+        array_shift($bootstrap_words);
+        if (empty($bootstrap_words)) {
+            return null;
+        }
+        $stop_phase_name = array_shift($bootstrap_words);
+        return $this->bootstrap()->lookUpPhaseIndex($stop_phase_name);
+    }
+
     /**
      * Bootstrap to the specified phase.
      *
@@ -423,9 +434,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         if ($max_phase_index == DRUSH_BOOTSTRAP_MAX) {
             // Try get a max phase.
             $bootstrap_str = $annotationData->get('bootstrap');
-            if ($stop_phase =  array_pop(explode(' ', $bootstrap_str))) {
-                $stop_phase = $this->bootstrap()->lookUpPhaseIndex($stop_phase);
-            }
+            $stop_phase = $this->maxPhaseLimit($bootstrap_str);
             $this->bootstrapMax($stop_phase);
             return true;
         }
