@@ -18,8 +18,7 @@ class SqlCommands extends DrushCommands
      * @option all Show all database connections, instead of just one.
      * @option show-passwords Show database password.
      * @optionset_sql
-     * @bootstrap max
-     * @max configuration
+     * @bootstrap max configuration
      * @hidden
      */
     public function conf($options = ['format' => 'yaml', 'all' => false, 'show-passwords' => false])
@@ -50,7 +49,7 @@ class SqlCommands extends DrushCommands
      * @aliases sql-connect
      * @option extra Add custom options to the connect string (e.g. --extra=--skip-column-names)
      * @optionset_sql
-     * @bootstrap max
+     * @bootstrap max configuration
      * @usage `drush sql-connect` < example.sql
      *   Bash: Import SQL statements from a file into the current database.
      * @usage eval (drush sql-connect) < example.sql
@@ -76,8 +75,7 @@ class SqlCommands extends DrushCommands
      *   Create the database as specified for @site.test.
      * @usage drush sql:create --db-su=root --db-su-pw=rootpassword --db-url="mysql://drupal_db_user:drupal_db_password@127.0.0.1/drupal_db"
      *   Create the database as specified in the db-url option.
-     * @bootstrap max
-     * @max configuration
+     * @bootstrap max configuration
      */
     public function create($options = ['db-su' => self::REQ, 'db-su-pw' => self::REQ])
     {
@@ -105,8 +103,7 @@ class SqlCommands extends DrushCommands
      * @command sql:drop
      * @aliases sql-drop
      * @optionset_sql
-     * @bootstrap max
-     * @max configuration
+     * @bootstrap max configuration
      * @topics docs:policy
      */
     public function drop($options = [])
@@ -134,8 +131,7 @@ class SqlCommands extends DrushCommands
      * @usage drush sql:cli --extra=-A
      *   Open a SQL CLI and skip reading table information.
      * @remote-tty
-     * @bootstrap max
-     * @max configuration
+     * @bootstrap max configuration
      */
     public function cli($options = [])
     {
@@ -165,8 +161,7 @@ class SqlCommands extends DrushCommands
      *   Import sql statements from a file into the current database.
      * @usage drush sql:query --file=example.sql
      *   Alternate way to import sql statements from a file.
-     * @bootstrap max
-     * @max configuration
+     * @bootstrap max configuration
      *
      */
     public function query($query = '', $options = ['result-file' => null, 'file' => self::REQ, 'extra' => self::REQ, 'db-prefix' => false])
@@ -214,8 +209,7 @@ class SqlCommands extends DrushCommands
      * @usage drush sql:dump --extra-dump=--no-data
      *   Pass extra option to mysqldump command.
      * @hidden-options create-db
-     * @bootstrap max
-     * @max configuration
+     * @bootstrap max configuration
      *
      * @notes
      *   createdb is used by sql-sync, since including the DROP TABLE statements interfere with the import when the database is created.
