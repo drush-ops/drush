@@ -49,7 +49,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      *   Migrations status formatted as table.
      */
-    public function status($migration_ids = '', $options = ['tag' => NULL, 'names-only' => NULL])
+    public function status($migration_ids = '', $options = ['tag' => null, 'names-only' => null])
     {
         $key_value = \Drupal::keyValue('migrate_last_imported');
         $date_formatter = \Drupal::service('date.formatter');
@@ -142,7 +142,7 @@ class MigrateRunnerCommands extends DrushCommands
      */
     protected function prepareTableRow(array $row, $names_only)
     {
-        $defaults = array_fill_keys(['id', 'status', 'total', 'imported', 'unprocessed', 'last_imported'], NULL);
+        $defaults = array_fill_keys(['id', 'status', 'total', 'imported', 'unprocessed', 'last_imported'], null);
         if (!$names_only) {
             $row += $defaults;
         }
@@ -186,16 +186,16 @@ class MigrateRunnerCommands extends DrushCommands
      *   When not enough options were provided.
      */
     public function import($migration_ids = '', $options = [
-        'all' => NULL,
-        'tag' => NULL,
-        'limit' => NULL,
-        'feedback' => NULL,
-        'idlist' => NULL,
-        'update' => NULL,
-        'force' => NULL,
-        'execute-dependencies' => NULL,
-        'timestamp' => NULL,
-        'total' => NULL,
+        'all' => null,
+        'tag' => null,
+        'limit' => null,
+        'feedback' => null,
+        'idlist' => null,
+        'update' => null,
+        'force' => null,
+        'execute-dependencies' => null,
+        'timestamp' => null,
+        'total' => null,
     ])
     {
         $tags = $options['tag'];
@@ -251,9 +251,9 @@ class MigrateRunnerCommands extends DrushCommands
      *   When not enough options were provided.
      */
     public function rollback($migration_ids = '', $options = [
-        'all' => NULL,
-        'tag' => NULL,
-        'feedback' => NULL
+        'all' => null,
+        'tag' => null,
+        'feedback' => null
     ])
     {
         $tags = $options['tag'];
@@ -414,12 +414,12 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @param string $migration_ids (optional) A comma-separated list of migration IDs. If omitted, will return all
      *   migrations.
-     * @param array $options (optional) Drush command passed options. Defaults to ['tag' => NULL, 'names-only' => NULL].
+     * @param array $options (optional) Drush command passed options. Defaults to ['tag' => null, 'names-only' => null].
      *
      * @return \Drupal\migrate\Plugin\MigrationInterface[][] An array keyed by migration tag, each value containing an
      *   array of migrations or an empty array if no migrations match the input criteria.
      */
-    protected function getMigrationList($migration_ids = '', $options = ['tag' => NULL, 'names-only' => NULL])
+    protected function getMigrationList($migration_ids = '', $options = ['tag' => null, 'names-only' => null])
     {
         $tags = $options['tag'];
         $migration_ids = array_filter(array_map('trim', explode(',', $migration_ids)));
@@ -429,11 +429,11 @@ class MigrateRunnerCommands extends DrushCommands
             ->createInstances($migration_ids);
 
         // If --tag was not passed, don't group on tags, use a single empty tag.
-        if ($tags === NULL) {
-            return [NULL => $migrations];
+        if ($tags === null) {
+            return [null => $migrations];
         }
 
-        if ($tags !== TRUE) {
+        if ($tags !== true) {
             $tags = array_filter(array_map('trim', explode(',', $tags)));
         }
 
@@ -478,11 +478,11 @@ class MigrateRunnerCommands extends DrushCommands
     {
         if ($data['execute_dependencies']) {
             $dependencies = $migration->getMigrationDependencies();
-            $required_ids = isset($dependencies['required']) ? $dependencies['required'] : NULL;
+            $required_ids = isset($dependencies['required']) ? $dependencies['required'] : null;
             if ($required_ids) {
                 $required_migrations = \Drupal::service('plugin.manager.migration')
                     ->createInstances($required_ids);
-                $data['is_dependency'] = TRUE;
+                $data['is_dependency'] = true;
                 array_walk($required_migrations, [static::class, __FUNCTION__], $data);
             }
         }
