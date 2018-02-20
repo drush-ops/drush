@@ -10,6 +10,7 @@ use Webmozart\PathUtil\Path;
  */
 class UpdateDBTest extends CommandUnishTestCase
 {
+    use TestModuleHelperTrait;
 
     protected $pathPostUpdate;
 
@@ -53,10 +54,10 @@ class UpdateDBTest extends CommandUnishTestCase
         $sites = $this->setUpDrupal(1, true);
         $options = [
             'yes' => null,
-            'root' => $root = $this->webroot(),
+            'root' => $this->webroot(),
             'uri' => key($sites),
         ];
-        $this->setupModulesForTests($root);
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
         $this->drush('pm-enable', ['woot'], $options);
 
         // Force a pending update.
@@ -107,10 +108,10 @@ LOG;
         $sites = $this->setUpDrupal(1, true);
         $options = [
             'yes' => null,
-            'root' => $root = $this->webroot(),
+            'root' => $this->webroot(),
             'uri' => key($sites),
         ];
-        $this->setupModulesForTests($root);
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
         $this->drush('pm-enable', ['woot'], $options);
 
         // Force re-run of woot_update_8103().
@@ -174,7 +175,7 @@ LOG;
             'uri' => key($sites),
             'include' => __DIR__,
         ];
-        $this->setupModulesForTests($root);
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
         $this->drush('pm-enable', ['woot'], $options);
 
         // Force re-run of the post-update woot_post_update_install_devel().
@@ -219,10 +220,10 @@ YAML_FRAGMENT;
         $sites = $this->setUpDrupal(1, true);
         $options = [
             'yes' => null,
-            'root' => $root = $this->webroot(),
+            'root' => $this->webroot(),
             'uri' => key($sites),
         ];
-        $this->setupModulesForTests($root);
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
         $this->drush('pm-enable', ['woot'], $options);
 
         // Force re-run of woot_update_8103() which is expected to be completed successfully.
@@ -261,15 +262,6 @@ LOG;
 LOG;
 
         $this->assertErrorOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_error_output)));
-    }
-
-    protected function setupModulesForTests($root)
-    {
-        $wootModule = Path::join(__DIR__, '/resources/modules/d8/woot');
-        // We install into Unish so that we aren't cleaned up. That causes container to go invalid after tearDownAfterClass().
-        $targetDir = Path::join($root, 'modules/unish/woot');
-        $this->mkdir($targetDir);
-        $this->recursiveCopy($wootModule, $targetDir);
     }
 
     public function tearDown()

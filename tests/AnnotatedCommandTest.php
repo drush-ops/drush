@@ -9,6 +9,7 @@ use Webmozart\PathUtil\Path;
  */
 class AnnotatedCommandCase extends CommandUnishTestCase
 {
+    use TestModuleHelperTrait;
 
     public function testGlobal()
     {
@@ -50,10 +51,9 @@ class AnnotatedCommandCase extends CommandUnishTestCase
     public function testExecute()
     {
         $this->setUpDrupal(1, true);
-        $root = $this->webroot();
 
         // Copy the 'woot' module over to the Drupal site we just set up.
-        $this->setupModulesForTests($root);
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
 
         // Enable our module. This will also clear the commandfile cache.
         $this->drush('pm-enable', ['woot']);
@@ -207,12 +207,12 @@ EOT;
         $this->drush('woot', [], ['help' => null, 'ignored-modules' => 'woot'], null, null, self::EXIT_ERROR);
     }
 
-    public function setupModulesForTests($root)
+    public function setupGlobalExtensionsForTests()
     {
-        $wootModule = Path::join(__DIR__, '/resources/modules/d8/woot');
-        // We install into Unish so that we aren't cleaned up. That causes container to go invalid after tearDownAfterClass().
-        $targetDir = Path::join($root, 'modules/unish/woot');
+        $globalExtension = __DIR__ . '/resources/global-includes';
+        $targetDir = Path::join(self::getSandbox(), 'global-includes');
         $this->mkdir($targetDir);
-        $this->recursiveCopy($wootModule, $targetDir);
+        $this->recursiveCopy($globalExtension, $targetDir);
+        return $targetDir;
     }
 }
