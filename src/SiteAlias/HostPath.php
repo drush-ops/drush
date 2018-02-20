@@ -179,8 +179,17 @@ class HostPath
         if (empty($pathAlias)) {
             return $this;
         }
+        // Make sure that the resolved path always ends in a '\'.
+        $resolvedPath .= '/';
+        // Avoid double / in path.
+        //   $this->path: %files/foo
+        //   $pathAlias:   files
+        // We add one to the length of $pathAlias to account for the '%' in $this->path.
+        if (strlen($this->path) > (strlen($pathAlias) + 1)) {
+            $resolvedPath = rtrim($resolvedPath, '/');
+        }
         // Once the path alias is resolved, replace the alias in the $path with the result.
-        $this->path = rtrim($resolvedPath, '/') . substr($this->path, strlen($pathAlias) + 1);
+        $this->path = $resolvedPath . substr($this->path, strlen($pathAlias) + 1);
 
         // Using a path alias such as %files is equivalent to making explicit
         // use of @self:%files. We set implicit to false here so that the resolved
