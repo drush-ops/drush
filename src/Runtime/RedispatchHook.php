@@ -85,13 +85,14 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface
         // in $redispatchArgs.
         $redispatchOptions = [];
 
+        // n.b. Defining the 'backend' flag here causes failed execution in the
+        // non-interactive case, even if 'backend' is set to 'false'.
         $backend_options = [
             'drush-script' => $this->getConfig()->get('paths.drush-script', null),
             'remote-host' => $remote_host,
             'remote-user' => $remote_user,
             'additional-global-options' => [],
             'integrate' => true,
-            'backend' => false,
         ];
         if ($input->isInteractive()) {
             $backend_options['#tty'] = true;
