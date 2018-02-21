@@ -26,10 +26,11 @@ class MigrateRunnerTest extends CommandUnishTestCase
 
     /**
      * @covers status
+     * @covers getMigrationList
      */
     public function testMigrateStatus()
     {
-        // No, arguments, no options.
+        // No arguments, no options.
         $this->drush('migrate:status', [], ['format' => 'json']);
         $output = $this->getOutputFromJSON(null, true);
         $actualIds = array_column($output, 'id');
@@ -85,17 +86,22 @@ class MigrateRunnerTest extends CommandUnishTestCase
      */
     public function testMigrateImportAndRollback()
     {
-        $this->drush('migrate:import', ['test_migration']);
+        // Expect that this command will fail because the 2nd row fails.
+        // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess
+        $this->drush('migrate:import', ['test_migration'], [], null, null, self::EXIT_ERROR);
         // Check for the expected command output.
-        $this->assertContains('Processed 2 items (2 created, 0 updated, 0 failed, 0 ignored)', $this->getErrorOutput());
+        $this->assertContains('Processed 2 items (1 created, 0 updated, 1 failed, 0 ignored)', $this->getErrorOutput());
+        $this->assertContains('test_migration migration: 1 failed.', $this->getErrorOutput());
 
         // Check that the migration import actually works.
         $eval = "echo \\Drupal\\node\\Entity\\Node::load(1)->label();";
         $this->drush('php:eval', [$eval]);
         $this->assertContains('foo', $this->getOutput());
-        $eval = "echo \\Drupal\\node\\Entity\\Node::load(2)->label();";
+        // The node with nid 2 import failed.
+        // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess
+        $eval = "var_export(\\Drupal\\node\\Entity\\Node::load(2));";
         $this->drush('php:eval', [$eval]);
-        $this->assertContains('bar', $this->getOutput());
+        $this->assertEquals('NULL', $this->getOutput());
 
         $this->drush('migrate:rollback', ['test_migration']);
         // Check for the expected command output.
@@ -103,9 +109,6 @@ class MigrateRunnerTest extends CommandUnishTestCase
 
         // Check that the migration rollback actually works.
         $eval = "var_export(\\Drupal\\node\\Entity\\Node::load(1));";
-        $this->drush('php:eval', [$eval]);
-        $this->assertEquals('NULL', $this->getOutput());
-        $eval = "var_export(\\Drupal\\node\\Entity\\Node::load(2));";
         $this->drush('php:eval', [$eval]);
         $this->assertEquals('NULL', $this->getOutput());
     }
@@ -117,11 +120,11 @@ class MigrateRunnerTest extends CommandUnishTestCase
     public function testMigrateStopAndResetStatus()
     {
         $this->drush('migrate:stop', ['test_migration']);
-        // @todo Find a way to stop am migration that runs.
+        // @todo Find a way to stop a migration that runs.
         $this->assertContains('Migration test_migration is idle', $this->getErrorOutput());
 
         $this->drush('migrate:reset', ['test_migration']);
-        // @todo Find a way to reset am migration that is not idle.
+        // @todo Find a way to reset a migration that is not idle.
         $this->assertContains('Migration test_migration is already Idle', $this->getErrorOutput());
     }
 

@@ -13,7 +13,9 @@ source:
     id:
       type: integer
 process:
-  nid: id
+  nid:
+    plugin: test_fail
+    source: id
   title: name
   type:
     plugin: default_value

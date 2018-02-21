@@ -473,6 +473,9 @@ class MigrateRunnerCommands extends DrushCommands
      *   The migration ID (not used, just an artifact of array_walk()).
      * @param array $data
      *   Additional data passed to the callback.
+     *
+     * @throws \Exception
+     *   If there are failed migrations.
      */
     protected function executeMigration(MigrationInterface $migration, $migration_id, array $data = [])
     {
@@ -495,6 +498,10 @@ class MigrateRunnerCommands extends DrushCommands
         $executable = new MigrateExecutable($migration, $this->getMigrateMessage(), $data['options']);
         // drush_op() provides --simulate support.
         drush_op([$executable, 'import']);
+        if ($count = $executable->getFailedCount()) {
+            // Nudge Drush to use a non-zero exit code.
+            throw new \Exception(dt('!name migration: !count failed.', ['!name' => $migration_id, '!count' => $count]));
+        }
     }
 
     /**
