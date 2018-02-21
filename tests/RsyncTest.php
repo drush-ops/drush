@@ -115,7 +115,7 @@ class RsyncCase extends CommandUnishTestCase
         $output = $this->getOutput();
         $level = $this->logLevel();
         $pattern = in_array($level, ['verbose', 'debug']) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz %s /tmp);";
-        $expected = sprintf($pattern, $this->webroot(). "/sites/$uri/files");
+        $expected = sprintf($pattern, $this->webroot(). "/sites/$uri/files/");
         $this->assertEquals($expected, $output);
     }
 }
