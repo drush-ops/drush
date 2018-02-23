@@ -56,6 +56,15 @@ if [ -n "$(type -t __git_ps1)" ] && [ "$(type -t __git_ps1)" = function ] && [ "
   # See http://ss64.com/bash/syntax-prompt.html for customization options.
   export PROMPT_COMMAND='__git_ps1 "\u@\h \w" "$(__drush_ps1 "[%s]") \\\$ "'
 
+  # macOS: New tabs open with same working directory
+  if [ $(uname) = "Darwin" ]; then
+    if type update_terminal_cwd > /dev/null 2>&1 ; then
+      if ! [[ $PROMPT_COMMAND =~ (^|;)update_terminal_cwd($|;) ]] ; then
+        export PROMPT_COMMAND="update_terminal_cwd;$PROMPT_COMMAND"
+      fi
+    fi
+  fi
+
   # PROMPT_COMMAND is used in the example above rather than PS1 because neither
   # Git nor Drush color hints are compatible with PS1. If you don't want color
   # hints, however, and prefer to use PS1, you can still do so by commenting out
