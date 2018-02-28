@@ -128,7 +128,12 @@ class SqlPgsql extends SqlBase
         $data_only = $this->getOption('data-only');
 
         $create_db = $this->getOption('create-db');
-        $exec = 'pg_dump ';
+        $environment = "";
+        $pw_file = $this->password_file();
+        if (isset($pw_file)) {
+            $environment = "PGPASSFILE={$pw_file} ";
+        }
+        $exec = $environment . 'pg_dump -w ';
         // Unlike psql, pg_dump does not take a '--dbname=' before the database name.
         $extra = str_replace('--dbname=', ' ', $this->creds());
         if (isset($data_only)) {
@@ -137,6 +142,7 @@ class SqlPgsql extends SqlBase
         if ($option = $this->getOption('extra-dump', $this->queryExtra)) {
             $extra .= " $option";
         }
+        $extra = str_replace("--no-align --field-separator=\"\t\" --pset tuples_only=on", '', $extra);
         $exec .= $extra;
         $exec .= (!isset($create_db) && !isset($data_only) ? ' --clean' : '');
 
@@ -156,7 +162,7 @@ class SqlPgsql extends SqlBase
                 foreach ($structure_tables as $table) {
                     $schemaonlies[] = "--table=$table";
                 }
-                $exec .= " && pg_dump --schema-only " . implode(' ', $schemaonlies) . $extra;
+                $exec .= " && " . $environment . "pg_dump -w --schema-only " . implode(' ', $schemaonlies) . $extra;
                 $exec .= (!isset($create_db) && !isset($data_only) ? ' --clean' : '');
             }
         }
