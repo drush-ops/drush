@@ -438,7 +438,7 @@ function _drush_preflight_base_environment() {
  * On Windows in CMD and PowerShell is this exported using mode con.
  */
 function _drush_preflight_columns() {
-  if (!($columns = getenv('COLUMNS'))) {
+  if (!($columns = getenv('COLUMNS') ?: 0)) {
     // Trying to export the columns using stty.
     exec('stty size 2>&1', $columns_output, $columns_status);
     if (!$columns_status) $columns = preg_replace('/\d+\s(\d+)/', '$1', $columns_output[0], -1, $columns_count);
