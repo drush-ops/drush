@@ -643,6 +643,14 @@ function drush_preflight_command_dispatch() {
   // remote command dispatching and site-list command dispatching, and always let
   // the command handler run on the local machine.
   if (is_array($command) && !empty($command['handle-remote-commands'])) {
+    if (isset($values)) {
+      if (is_array($values) && ($values['error_status'] > 0)) {
+        // Force an error result code.  Note that drush_shutdown() will still run.
+        drush_set_context('DRUSH_EXECUTION_COMPLETED', TRUE);
+        exit($values['error_status']);
+      }
+      return TRUE;
+    }
     return FALSE;
   }
   if (isset($remote_host)) {
