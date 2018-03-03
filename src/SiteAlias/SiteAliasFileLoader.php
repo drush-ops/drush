@@ -172,6 +172,9 @@ class SiteAliasFileLoader
     protected function createAliasRecordsFromSiteData($sitename, $siteData)
     {
         $result = [];
+        if (!is_array($siteData) || empty($siteData)) {
+            return $result;
+        }
         foreach ($siteData as $envName => $data) {
             if (is_array($data)) {
                 $aliasName = new SiteAliasName($sitename, $envName);

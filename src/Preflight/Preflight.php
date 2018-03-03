@@ -257,7 +257,9 @@ class Preflight
         // Configure alias manager.
         $this->aliasManager = (new SiteAliasManager())->addSearchLocations($paths);
         $this->aliasManager->setReferenceData($config->export());
-        $selfAliasRecord = $this->aliasManager->findSelf($this->preflightArgs, $this->environment, $root);
+        $siteLocator = new PreflightSiteLocator($this->aliasManager);
+        $selfAliasRecord = $siteLocator->findSite($this->preflightArgs, $this->environment, $root);
+        $this->aliasManager->setSelf($selfAliasRecord);
         $this->configLocator->addAliasConfig($selfAliasRecord->exportConfig());
 
         // Process the selected alias. This might change the selected site,
