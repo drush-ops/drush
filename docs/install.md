@@ -11,6 +11,7 @@ Install a site-local Drush and Drush Launcher.
 1. Run `drush init`. This edits ~/.bashrc so that Drush's custom prompt and bash integration are active.
 1. See [Usage](http://docs.drush.org/en/master/usage/) for details on using Drush.
 1. To use a non-default PHP, [edit ~/.bashrc so that the desired PHP is in front of your $PATH](http://stackoverflow.com/questions/4145667/how-to-override-the-path-of-php-to-use-the-mamp-path/10653443#10653443). If that is not desirable, you can change your PATH for just one request: `PATH=/path/to/php:$PATH` drush status ...`
+1. To use a custom php.ini for Drush requests, [see this comment](https://github.com/drush-ops/drush/issues/3294#issuecomment-370201342). 
 
 !!! note
 
