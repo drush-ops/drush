@@ -48,7 +48,7 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
         if ($return['error_status']) {
               throw new \Exception(dt('Config-export failed.'));
         } else {
-              // Trailing slash assures that transfer files and not the containing dir.
+              // Trailing slash assures that we transfer files and not the containing dir.
               $export_path = $return['object'] . '/';
         }
 

@@ -225,7 +225,7 @@ class HostPath
 
     /**
      * Our fully qualified path passes the result through Path::makeAbsolute()
-     * which canonicallizes the path, removing any trailing slashes.
+     * which canonicalizes the path, removing any trailing slashes.
      * That is what we want most of the time; however, the trailing slash is
      * sometimes significant, e.g. for rsync, so we provide a separate API
      * for those cases where the trailing slash should be preserved.
