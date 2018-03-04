@@ -74,6 +74,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @usage migrate-status classification,article
      *   Retrieve status for specific migrations
      * @aliases ms,migrate-status
+     * @topics docs:migrate
      * @validate-module-enabled migrate
      *
      * @field-labels
@@ -217,6 +218,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @usage migrate-import beer_user --limit=50 --feedback=20
      *   Import 50 users and show process message every 20th record
      * @aliases mim,migrate-import
+     * @topics docs:migrate
      * @validate-module-enabled migrate
      *
      * @throws \Exception
@@ -327,6 +329,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @usage migrate-rollback classification,article
      *   Rollback imported terms and nodes
      * @aliases mr,migrate-rollback
+     * @topics docs:migrate
      * @validate-module-enabled migrate
      *
      * @throws \Exception
@@ -371,6 +374,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @param string $migration_id
      *   The ID of migration to stop.
      * @aliases mst,migrate-stop
+     * @topics docs:migrate
      * @validate-module-enabled migrate
      */
     public function stop($migration_id)
@@ -403,6 +407,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @param string $migration_id
      *   The ID of migration to reset.
      * @aliases mrs,migrate-reset-status
+     * @topics docs:migrate
      * @validate-module-enabled migrate
      */
     public function resetStatus($migration_id)
@@ -433,6 +438,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @usage migrate-messages article
      *   Show all messages for the article migration
      * @aliases mmsg,migrate-messages
+     * @topics docs:migrate
      * @validate-module-enabled migrate
      *
      * @field-labels
@@ -470,6 +476,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @usage migrate-fields-source article
      *   List fields for the source in the article migration
      * @aliases mfs,migrate-fields-source
+     * @topics docs:migrate
      * @validate-module-enabled migrate
      *
      * @field-labels
