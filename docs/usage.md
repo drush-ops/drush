@@ -25,16 +25,15 @@ If you are outside the Composer project and not using a site alias, you need to 
 Site Aliases
 ------------
 
-Drush lets you run commands on a remote server, or even on a set of remote
-servers.  Once defined, aliases can be referenced with the @ nomenclature, i.e.
+Drush lets you run commands on a remote server. Once defined, aliases can be referenced with the @ nomenclature, i.e.
 
 ```bash
 # Run pending updates on staging site.
 $ drush @staging updatedb
 # Synchronize staging files to production
 $ drush rsync @staging:%files/ @live:%files
-# Synchronize database from production to dev, excluding the cache table
-$ drush sql:sync --structure-tables-key=custom @live @dev
+# Synchronize database from production to local, excluding the cache table
+$ drush sql:sync --structure-tables-key=custom @live @self
 ```
 
 See [example.site.yml](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.site.yml) for more information.

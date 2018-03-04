@@ -7,10 +7,13 @@
 Install a site-local Drush and Drush Launcher.
 -----------------
 1. It is recommended that Drupal 8 sites be [built using Composer, with Drush listed as a dependency](https://github.com/drupal-composer/drupal-project). That project already includes Drush in its composer.json. If your Composer project doesn't yet depend on Drush, run `composer require drush/drush` to add it. 
-1. To be able to call `drush` from anywhere, install the [Drush Launcher](https://github.com/drush-ops/drush-launcher). That is a small program which listens on your $PATH and hands control to a site-local Drush that is in the /vendor directory of your Composer project. If you skip this step, run Drush from Drupal root via `../vendor/bin/drush`. In that case Drush's bash integration and custom prompt won't work.
-1. Run `drush init`. This edits ~/.bashrc so that Drush's custom prompt and bash integration are active.
-1. See [Usage](http://docs.drush.org/en/master/usage/) for details on using Drush.
-1. To use a non-default PHP, [edit ~/.bashrc so that the desired PHP is in front of your $PATH](http://stackoverflow.com/questions/4145667/how-to-override-the-path-of-php-to-use-the-mamp-path/10653443#10653443). If that is not desirable, you can change your PATH for just one request: `PATH=/path/to/php:$PATH` drush status ...`
+1. Optional. To be able to call `drush` from anywhere, install the [Drush Launcher](https://github.com/drush-ops/drush-launcher). That is a small program which listens on your $PATH and hands control to a site-local Drush that is in the /vendor directory of your Composer project. If you skip this step, run Drush from Drupal root via `../vendor/bin/drush`. In that case Drush's bash integration and custom prompt won't work.
+1. Optional. Run `drush init`. This edits ~/.bashrc so that Drush's custom prompt and bash integration are active.
+
+See [Usage](http://docs.drush.org/en/master/usage/) for details on using Drush.
+
+- Tip: To use a non-default PHP, [edit ~/.bashrc so that the desired PHP is in front of your $PATH](http://stackoverflow.com/questions/4145667/how-to-override-the-path-of-php-to-use-the-mamp-path/10653443#10653443). If that is not desirable, you can change your PATH for just one request: `PATH=/path/to/php:$PATH` drush status ...`
+- Tip: To use a custom php.ini for Drush requests, [see this comment](https://github.com/drush-ops/drush/issues/3294#issuecomment-370201342). 
 
 !!! note
 

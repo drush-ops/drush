@@ -82,14 +82,8 @@ command:
   sql:
     dump:
       options:
-        sync:
-          options:
-            # Uncomment to omit cache and similar tables.
-            # structure-tables-key: common
-        dump:
-          options:
-            # Uncomment to omit cache and similar tables.
-            # structure-tables-key: common
+        # Uncomment to omit cache and similar tables (including during a sql:sync).
+#         structure-tables-key: common
   php:
     script:
       options:

@@ -182,7 +182,7 @@
 # Environment variables:
 #
 # It is no longer possible to set environment variables from within an alias.
-# This is also a planned feature.
+# This is a planned feature.
 #
 # An example appears below. Edit to suit and remove the @code / @endcode and
 # leading hashes to enable.
