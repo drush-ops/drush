@@ -7,7 +7,7 @@ use Webmozart\PathUtil\Path;
 /**
  * @group slow
  * @group commands
- * @coversDefaultClass \Drush\Commands\core\MigrateRunnerCommands
+ * @coversDefaultClass \Drush\Drupal\Commands\core\MigrateRunnerCommands
  */
 class MigrateRunnerTest extends CommandUnishTestCase
 {
@@ -111,6 +111,13 @@ class MigrateRunnerTest extends CommandUnishTestCase
         $eval = "var_export(\\Drupal\\node\\Entity\\Node::load(1));";
         $this->drush('php:eval', [$eval]);
         $this->assertEquals('NULL', $this->getOutput());
+
+        // Test that dependent migrations run only once.
+        $this->drush('migrate:import', ['test_migration_tagged,test_migration_untagged'], ['execute-dependencies' => true]);
+        foreach (['test_migration_tagged', 'test_migration_untagged'] as $migration_id) {
+            $occurrences = substr_count($this->getErrorOutput(), "done with '$migration_id'");
+            $this->assertEquals(1, $occurrences);
+        }
     }
 
     /**

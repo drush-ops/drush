@@ -1,8 +1,10 @@
 <?php
 
-namespace Drush\Commands\core;
+namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Core\Datetime\DateFormatter;
+use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drush\Drupal\Migrate\MigrateMessage;
 use Drush\Commands\DrushCommands;
@@ -11,6 +13,27 @@ use Drush\Drupal\Migrate\MigrateExecutable;
 class MigrateRunnerCommands extends DrushCommands
 {
     /**
+     * Migration plugin manager service.
+     *
+     * @var \Drupal\migrate\Plugin\MigrationPluginManagerInterface
+     */
+    protected $migrationPluginManager;
+
+    /**
+     * Date formatter service.
+     *
+     * @var \Drupal\Core\Datetime\DateFormatter
+     */
+    protected $dateFormatter;
+
+    /**
+     * The key-value store service.
+     *
+     * @var \Drupal\Core\KeyValueStore\KeyValueStoreInterface
+     */
+    protected $keyValue;
+
+    /**
      * Migrate message service.
      *
      * @var \Drupal\migrate\MigrateMessageInterface
@@ -18,10 +41,26 @@ class MigrateRunnerCommands extends DrushCommands
     protected $migrateMessage;
 
     /**
+     * MigrateToolsCommands constructor.
+     *
+     * @param \Drupal\Core\Datetime\DateFormatter $date_formatter
+     *   Date formatter service.
+     * @param \Drupal\Core\KeyValueStore\KeyValueFactoryInterface $key_value_factory
+     *   The key-value factory service.
+     */
+    public function __construct(DateFormatter $date_formatter, KeyValueFactoryInterface $key_value_factory)
+    {
+        parent::__construct();
+        $this->dateFormatter = $date_formatter;
+        $this->keyValue = $key_value_factory->get('migrate_last_imported');
+    }
+
+    /**
      * List all migrations with current status.
      *
      * @command migrate:status
      *
+     * @drupal-dependencies migrate
      * @param string $migration_ids
      *   Restrict to a comma-separated list of migrations. Optional.
      * @option tag A comma-separated list of migration tags to list. If only --tag is provided, all migrations will be listed, grouped by tags.
@@ -35,7 +74,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @usage migrate-status classification,article
      *   Retrieve status for specific migrations
      * @aliases ms,migrate-status
-     * @bootstrap max
+     * @validate-module-enabled migrate
      *
      * @field-labels
      *   id: Migration ID
@@ -51,9 +90,6 @@ class MigrateRunnerCommands extends DrushCommands
      */
     public function status($migration_ids = '', $options = ['tag' => null, 'names-only' => null])
     {
-        $key_value = \Drupal::keyValue('migrate_last_imported');
-        $date_formatter = \Drupal::service('date.formatter');
-
         $names_only = $options['names-only'];
         $list = $this->getMigrationList($migration_ids, $options);
 
@@ -102,8 +138,8 @@ class MigrateRunnerCommands extends DrushCommands
                 }
 
                 $status = $migration->getStatusLabel();
-                if ($last_imported = $key_value->get($migration->id(), '')) {
-                    $last_imported = $date_formatter->format(
+                if ($last_imported = $this->keyValue->get($migration->id(), '')) {
+                    $last_imported = $this->dateFormatter->format(
                         $last_imported / 1000,
                         'custom',
                         'Y-m-d H:i:s'
@@ -155,6 +191,7 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @command migrate:import
      *
+     * @drupal-dependencies migrate
      * @param string $migration_ids
      *   Comma-separated list of migration IDs.
      * @option all Process all migrations.
@@ -180,10 +217,10 @@ class MigrateRunnerCommands extends DrushCommands
      * @usage migrate-import beer_user --limit=50 --feedback=20
      *   Import 50 users and show process message every 20th record
      * @aliases mim,migrate-import
-     * @bootstrap full
+     * @validate-module-enabled migrate
      *
      * @throws \Exception
-     *   When not enough options were provided.
+     *   When not enough options were provided or no migration was found.
      */
     public function import($migration_ids = '', $options = [
         'all' => null,
@@ -205,6 +242,10 @@ class MigrateRunnerCommands extends DrushCommands
             throw new \Exception(dt('You must specify --all, --tag or one or more migration names separated by commas'));
         }
 
+        if (!$list = $this->getMigrationList($migration_ids)) {
+            throw new \Exception(dt('No migrations found.'));
+        }
+
         $user_data = [
             'options' => array_intersect_key($options, array_flip([
                 'limit',
@@ -216,11 +257,8 @@ class MigrateRunnerCommands extends DrushCommands
                 'total',
             ])),
             'execute_dependencies' => $options['execute-dependencies'],
+            'executed_migrations' => [],
         ];
-
-        if (!$list = $this->getMigrationList($migration_ids)) {
-            $this->logger()->error(dt('No migrations found.'));
-        }
 
         // Take it one group at a time, importing the migrations within each group.
         foreach ($list as $tag => $migrations) {
@@ -229,10 +267,54 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
+     * Executes a single migration.
+     *
+     * If the --execute-dependencies option was given, the migration's
+     * dependencies will also be executed first.
+     *
+     * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+     *   The migration to execute.
+     * @param string $migration_id
+     *   The migration ID (not used, just an artifact of array_walk()).
+     * @param array $user_data
+     *   Additional data passed to the callback.
+     *
+     * @throws \Exception
+     *   If there are failed migrations.
+     */
+    protected function executeMigration(MigrationInterface $migration, $migration_id, array &$user_data = [])
+    {
+        $user_data['executed_migrations'][] = $migration_id;
+        if ($user_data['execute_dependencies']) {
+            $dependencies = $migration->getMigrationDependencies()['required'];
+            // Remove already executed migrations.
+            $dependencies = array_diff($dependencies, $user_data['executed_migrations']);
+            if ($dependencies) {
+                $required_migrations = $this->getMigrationPluginManager()->createInstances($dependencies);
+                array_walk($required_migrations, [$this, __FUNCTION__], $user_data);
+            }
+        }
+        if (!empty($user_data['options']['force'])) {
+            $migration->set('requirements', []);
+        }
+        if (!empty($user_data['options']['update'])) {
+            $migration->getIdMap()->prepareUpdate();
+        }
+        $executable = new MigrateExecutable($migration, $this->getMigrateMessage(), $user_data['options']);
+        // drush_op() provides --simulate support.
+        drush_op([$executable, 'import']);
+        if ($count = $executable->getFailedCount()) {
+            // Nudge Drush to use a non-zero exit code.
+            throw new \Exception(dt('!name migration: !count failed.', ['!name' => $migration_id, '!count' => $count]));
+        }
+    }
+
+    /**
      * Rollback one or more migrations.
      *
      * @command migrate:rollback
      *
+     * @drupal-dependencies migrate
      * @param string $migration_ids
      *   Comma-separated list of migration IDs.
      * @option all Process all migrations.
@@ -245,7 +327,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @usage migrate-rollback classification,article
      *   Rollback imported terms and nodes
      * @aliases mr,migrate-rollback
-     * @bootstrap max
+     * @validate-module-enabled migrate
      *
      * @throws \Exception
      *   When not enough options were provided.
@@ -285,15 +367,16 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @command migrate:stop
      *
+     * @drupal-dependencies migrate
      * @param string $migration_id
      *   The ID of migration to stop.
      * @aliases mst,migrate-stop
-     * @bootstrap max
+     * @validate-module-enabled migrate
      */
     public function stop($migration_id)
     {
         /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
-        $migration = \Drupal::service('plugin.manager.migration')->createInstance($migration_id);
+        $migration = $this->getMigrationPluginManager()->createInstance($migration_id);
         switch ($migration->getStatus()) {
             case MigrationInterface::STATUS_IDLE:
                 $this->logger()->warning(dt('Migration @id is idle', ['@id' => $migration_id]));
@@ -316,15 +399,16 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @command migrate:reset-status
      *
+     * @drupal-dependencies migrate
      * @param string $migration_id
      *   The ID of migration to reset.
      * @aliases mrs,migrate-reset-status
-     * @bootstrap max
+     * @validate-module-enabled migrate
      */
     public function resetStatus($migration_id)
     {
         /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
-        $migration = \Drupal::service('plugin.manager.migration')->createInstance($migration_id);
+        $migration = $this->getMigrationPluginManager()->createInstance($migration_id);
         if ($migration) {
             $status = $migration->getStatus();
             if ($status == MigrationInterface::STATUS_IDLE) {
@@ -343,12 +427,13 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @command migrate:messages
      *
+     * @drupal-dependencies migrate
      * @param string $migration_id
      *   The ID of the migration.
      * @usage migrate-messages article
      *   Show all messages for the article migration
      * @aliases mmsg,migrate-messages
-     * @bootstrap max
+     * @validate-module-enabled migrate
      *
      * @field-labels
      *   level: Level
@@ -362,7 +447,7 @@ class MigrateRunnerCommands extends DrushCommands
     public function messages($migration_id)
     {
         /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
-        $migration = \Drupal::service('plugin.manager.migration')->createInstance($migration_id);
+        $migration = $this->getMigrationPluginManager()->createInstance($migration_id);
         $table = [];
         foreach ($migration->getIdMap()->getMessageIterator() as $row) {
             $table[] = [
@@ -379,12 +464,13 @@ class MigrateRunnerCommands extends DrushCommands
      *
      * @command migrate:fields-source
      *
+     * @drupal-dependencies migrate
      * @param string $migration_id
      *   The ID of the migration.
      * @usage migrate-fields-source article
      *   List fields for the source in the article migration
      * @aliases mfs,migrate-fields-source
-     * @bootstrap max
+     * @validate-module-enabled migrate
      *
      * @field-labels
      *   machine_name: Field name
@@ -397,7 +483,7 @@ class MigrateRunnerCommands extends DrushCommands
     public function fieldsSource($migration_id)
     {
         /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
-        $migration = \Drupal::service('plugin.manager.migration')->createInstance($migration_id);
+        $migration = $this->getMigrationPluginManager()->createInstance($migration_id);
         $source = $migration->getSourcePlugin();
         $table = [];
         foreach ($source->fields() as $machine_name => $description) {
@@ -425,8 +511,7 @@ class MigrateRunnerCommands extends DrushCommands
         $migration_ids = array_filter(array_map('trim', explode(',', $migration_ids)));
 
         /** @var \Drupal\migrate\Plugin\MigrationInterface[] $migrations */
-        $migrations = \Drupal::service('plugin.manager.migration')
-            ->createInstances($migration_ids);
+        $migrations = $this->getMigrationPluginManager()->createInstances($migration_ids);
 
         // If --tag was not passed, don't group on tags, use a single empty tag.
         if ($tags === null) {
@@ -462,49 +547,6 @@ class MigrateRunnerCommands extends DrushCommands
     }
 
     /**
-     * Executes a single migration.
-     *
-     * If the --execute-dependencies option was given, the migration's
-     * dependencies will also be executed first.
-     *
-     * @param \Drupal\migrate\Plugin\MigrationInterface $migration
-     *   The migration to execute.
-     * @param string $migration_id
-     *   The migration ID (not used, just an artifact of array_walk()).
-     * @param array $data
-     *   Additional data passed to the callback.
-     *
-     * @throws \Exception
-     *   If there are failed migrations.
-     */
-    protected function executeMigration(MigrationInterface $migration, $migration_id, array $data = [])
-    {
-        if ($data['execute_dependencies']) {
-            $dependencies = $migration->getMigrationDependencies();
-            $required_ids = isset($dependencies['required']) ? $dependencies['required'] : null;
-            if ($required_ids) {
-                $required_migrations = \Drupal::service('plugin.manager.migration')
-                    ->createInstances($required_ids);
-                $data['is_dependency'] = true;
-                array_walk($required_migrations, [static::class, __FUNCTION__], $data);
-            }
-        }
-        if (!empty($data['options']['force'])) {
-            $migration->set('requirements', []);
-        }
-        if (!empty($data['options']['update'])) {
-            $migration->getIdMap()->prepareUpdate();
-        }
-        $executable = new MigrateExecutable($migration, $this->getMigrateMessage(), $data['options']);
-        // drush_op() provides --simulate support.
-        drush_op([$executable, 'import']);
-        if ($count = $executable->getFailedCount()) {
-            // Nudge Drush to use a non-zero exit code.
-            throw new \Exception(dt('!name migration: !count failed.', ['!name' => $migration_id, '!count' => $count]));
-        }
-    }
-
-    /**
      * Returns the migrate message logger.
      *
      * @return \Drupal\migrate\MigrateMessageInterface
@@ -516,5 +558,26 @@ class MigrateRunnerCommands extends DrushCommands
             $this->migrateMessage = new MigrateMessage($this->logger());
         }
         return $this->migrateMessage;
+    }
+
+    /**
+     * Returns the migration plugin manager service.
+     *
+     * @return \Drupal\migrate\Plugin\MigrationPluginManagerInterface
+     *   The migration plugin manager service.
+     *
+     * @todo This service cannot be injected as the 'migrate' module might not be enabled and will throw the following
+     * exception:
+     *   Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+     *   The service "migrate_runner.commands" has a dependency on a non-existent service "plugin.manager.migration".
+     * Unfortunately, we cannot avoid the class instantiation, via an annotation (as @validate-module-enabled for
+     * methods), if a specific module is not installed. Open a followup to tackle this issue.
+     */
+    protected function getMigrationPluginManager()
+    {
+        if (!isset($this->migrationPluginManager)) {
+            $this->migrationPluginManager = \Drupal::service('plugin.manager.migration');
+        }
+        return $this->migrationPluginManager;
     }
 }

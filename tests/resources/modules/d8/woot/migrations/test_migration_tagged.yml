@@ -19,3 +19,6 @@ process:
     default_value: page
 destination:
   plugin: entity:node
+migration_dependencies:
+  required:
+    - test_migration_untagged
