@@ -34,11 +34,13 @@ abstract class DrupalBoot extends BaseBoot
             if (file_exists("$scan/settings.php")) {
                 return $scan;
             }
-            $next = dirname($scan);
+            // Use Path::getDirectory instead of dirname to
+            // avoid certain bugs. Returns a canonicalized path.
+            $next = Path::getDirectory($scan);
             if ($next == $scan) {
                 return false;
             }
-            $scan = Path::canonicalize($next);
+            $scan = $next;
             if ($scan == $root) {
                 return false;
             }
