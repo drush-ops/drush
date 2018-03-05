@@ -125,7 +125,17 @@ class HostPath
     }
 
     /**
-     * Return just the path portion of the host path
+     * Return just the path portion, without considering the alias root.
+     *
+     * @return string
+     */
+    public function getOriginalPath()
+    {
+        return $this->path;
+    }
+
+    /**
+     * Return the original path
      *
      * @return string
      */
