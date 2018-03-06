@@ -26,7 +26,7 @@ Drupal Compatibility
     <th> Drush Version </th> 
     <th> Drush Branch </th>
     <th> PHP </th>
-    <th> Compatible Drupal versions </th>
+    <th> Supported Drupal versions </th>
     <th> Code Style </th>
     <th> Isolation Tests </th>
     <th> Functional Tests </th>
