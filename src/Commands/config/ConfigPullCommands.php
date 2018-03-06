@@ -25,8 +25,8 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
      *   Export config from @prod and transfer to @stage.
      * @usage drush config:pull @prod @self --label=vcs
      *   Export config from @prod and transfer to the 'vcs' config directory of current site.
-     * @usage drush config:pull @prod @self:/tmp/config
-     *   Export config from @prod and transfer to the a custom directory.
+     * @usage drush config:pull @prod @self:../config/sync
+     *   Export config to a custom directory. Relative paths are calculated from Drupal root.
      * @aliases cpull,config-pull
      * @topics docs:aliases,docs:config-exporting
      *
