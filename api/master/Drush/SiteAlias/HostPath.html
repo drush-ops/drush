@@ -189,9 +189,19 @@ by a label, and the label may be an @alias or a site specification.</p>         
                     string
                 </div>
                 <div class="col-md-8 type">
+                    <a href="#method_getOriginalPath">getOriginalPath</a>()
+        
+                                            <p>Return just the path portion, without considering the alias root.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8 type">
                     <a href="#method_getPath">getPath</a>()
         
-                                            <p>Return just the path portion of the host path</p>                </div>
+                                            <p>Return the original path</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -450,8 +460,38 @@ a host or a path.</p>                </div>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_getPath">
+                    <h3 id="method_getOriginalPath">
         <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/HostPath.php#L132">line 132</a></div>
+        <code>                    string
+    <strong>getOriginalPath</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return just the path portion, without considering the alias root.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getPath">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/HostPath.php#L142">line 142</a></div>
         <code>                    string
     <strong>getPath</strong>()
         </code>
@@ -461,7 +501,7 @@ a host or a path.</p>                </div>
     
 
                     <div class="method-description">
-                                    <p>Return just the path portion of the host path</p>                                                </div>
+                                    <p>Return the original path</p>                                                </div>
                 <div class="tags">
             
                             <h4>Return Value</h4>
@@ -481,7 +521,7 @@ a host or a path.</p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasPathAlias">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/HostPath.php#L150">line 150</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/HostPath.php#L160">line 160</a></div>
         <code>                    bool
     <strong>hasPathAlias</strong>()
         </code>
@@ -513,7 +553,7 @@ of the path.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_getPathAlias">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/HostPath.php#L162">line 162</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/HostPath.php#L172">line 172</a></div>
         <code>                    string
     <strong>getPathAlias</strong>()
         </code>
@@ -544,7 +584,7 @@ empty if there is no alias in the path.</p>                                     
             </div>
                     <div class="method-item">
                     <h3 id="method_replacePathAlias">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/HostPath.php#L176">line 176</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/HostPath.php#L186">line 186</a></div>
         <code>                    <abbr title="Drush\SiteAlias\$this">$this</abbr>
     <strong>replacePathAlias</strong>(string $resolvedPath)
         </code>
@@ -584,7 +624,7 @@ empty if there is no alias in the path.</p>                                     
             </div>
                     <div class="method-item">
                     <h3 id="method_getHost">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/HostPath.php#L207">line 207</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/HostPath.php#L217">line 217</a></div>
         <code>                    string
     <strong>getHost</strong>()
         </code>
@@ -614,7 +654,7 @@ empty if there is no alias in the path.</p>                                     
             </div>
                     <div class="method-item">
                     <h3 id="method_fullyQualifiedPath">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/HostPath.php#L217">line 217</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/HostPath.php#L227">line 227</a></div>
         <code>                    string
     <strong>fullyQualifiedPath</strong>()
         </code>
@@ -644,7 +684,7 @@ empty if there is no alias in the path.</p>                                     
             </div>
                     <div class="method-item">
                     <h3 id="method_fullyQualifiedPathPreservingTrailingSlash">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/HostPath.php#L235">line 235</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/HostPath.php#L245">line 245</a></div>
         <code>                    string
     <strong>fullyQualifiedPathPreservingTrailingSlash</strong>()
         </code>
@@ -677,7 +717,7 @@ for those cases where the trailing slash should be preserved.</p>               
             </div>
                     <div class="method-item">
                     <h3 id="method_determinePathOrAlias">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/HostPath.php#L254">line 254</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/HostPath.php#L264">line 264</a></div>
         <code>        static    protected        
     <strong>determinePathOrAlias</strong>(<a href="../../Drush/SiteAlias/SiteAliasManager.html"><abbr title="Drush\SiteAlias\SiteAliasManager">SiteAliasManager</abbr></a> $manager, <a href="../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a>|bool $alias_record, string $hostPath, string $single_part)
         </code>
