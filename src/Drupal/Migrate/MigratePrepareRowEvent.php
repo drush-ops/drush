@@ -9,8 +9,15 @@ use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Wraps a prepare-row event for event listeners.
+ *
+ * @internal
+ *
+ * @todo When https://www.drupal.org/project/drupal/issues/2952291 lands, we will use the core event class but we will
+ * still keep this around for backward compatibility.
+ *
+ * @see https://www.drupal.org/project/drupal/issues/2952291
  */
-class MigratePrepareRowEvent extends Event
+final class MigratePrepareRowEvent extends Event
 {
     /**
      * Row object.

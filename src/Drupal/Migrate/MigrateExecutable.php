@@ -19,7 +19,6 @@ use Drupal\migrate\Event\MigrateImportEvent;
 
 class MigrateExecutable extends MigrateExecutableBase
 {
-
     /**
      * Counters of map statuses.
      *
@@ -128,7 +127,7 @@ class MigrateExecutable extends MigrateExecutableBase
         $this->listeners[MigrateEvents::POST_ROLLBACK] = [$this, 'onPostRollback'];
         $this->listeners[MigrateEvents::PRE_ROW_SAVE] = [$this, 'onPreRowSave'];
         $this->listeners[MigrateEvents::POST_ROW_DELETE] = [$this, 'onPostRowDelete'];
-        $this->listeners[MigrateRunnerEvents::PREPARE_ROW] = [$this, 'onPrepareRow'];
+        $this->listeners[MigrateRunnerEvents::DRUSH_MIGRATE_PREPARE_ROW] = [$this, 'onPrepareRow'];
         foreach ($this->listeners as $event => $listener) {
             \Drupal::service('event_dispatcher')->addListener($event, $listener);
         }

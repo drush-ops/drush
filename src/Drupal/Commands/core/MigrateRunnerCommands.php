@@ -9,6 +9,7 @@ use Drupal\migrate\Plugin\MigrationInterface;
 use Drush\Drupal\Migrate\MigrateMessage;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\Migrate\MigrateExecutable;
+use Webmozart\PathUtil\Path;
 
 class MigrateRunnerCommands extends DrushCommands
 {
@@ -261,6 +262,10 @@ class MigrateRunnerCommands extends DrushCommands
             'execute_dependencies' => $options['execute-dependencies'],
             'executed_migrations' => [],
         ];
+
+
+        // Include the file providing a 'migrate_prepare_row' hook implementation.
+        require_once Path::join(DRUSH_BASE_PATH, 'includes/migrate_runner.inc');
 
         // Take it one group at a time, importing the migrations within each group.
         foreach ($list as $tag => $migrations) {
