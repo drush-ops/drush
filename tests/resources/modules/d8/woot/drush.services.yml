@@ -21,3 +21,7 @@ services:
       arguments: ['@module_handler']
       tags:
         -  { name: drush.generator }
+  woot.command_info_alter:
+    class: Drupal\woot\WootCommandInfoAlterer
+    tags:
+      -  { name: drush.command_info_alterer }

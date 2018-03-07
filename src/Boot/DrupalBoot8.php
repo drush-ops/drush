@@ -192,6 +192,16 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         // The upshot is that the list of console commands is not available
         // until after $kernel->boot() is called.
         $container = \Drupal::getContainer();
+
+        // Set the command info alterers.
+        if ($container->has(DrushServiceModifier::DRUSH_COMMAND_INFO_ALTERER_SERVICES)) {
+            $serviceCommandInfoAltererlist = $container->get(DrushServiceModifier::DRUSH_COMMAND_INFO_ALTERER_SERVICES);
+            $commandFactory = Drush::commandFactory();
+            foreach ($serviceCommandInfoAltererlist->getCommandList() as $altererHandler) {
+                $commandFactory->addCommandInfoAlterer($altererHandler);
+            }
+        }
+
         $serviceCommandlist = $container->get(DrushServiceModifier::DRUSH_CONSOLE_SERVICES);
         if ($container->has(DrushServiceModifier::DRUSH_CONSOLE_SERVICES)) {
             foreach ($serviceCommandlist->getCommandList() as $command) {
