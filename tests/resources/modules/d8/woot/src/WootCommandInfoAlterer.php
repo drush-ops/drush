@@ -5,12 +5,13 @@ namespace Drupal\woot;
 use Consolidation\AnnotatedCommand\CommandInfoAltererInterface;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
 
-class WootCommandInfoAlterer implements CommandInfoAltererInterface, LoggerAwareInterface
+class WootCommandInfoAlterer implements CommandInfoAltererInterface
 {
-    use LoggerAwareTrait;
+    /**
+     * @var \Drupal\Core\Logger\LoggerChannelInterface
+     */
+    protected $logger;
 
     public function __construct(LoggerChannelFactoryInterface $loggerFactory)
     {
