@@ -34,6 +34,6 @@ class MigrateMessage implements MigrateMessageInterface, LoggerAwareInterface
     public function display($message, $type = 'status')
     {
         $type = ($type === 'status' ? 'notice' : $type);
-        $this->logger->$type($message);
+        $this->logger->$type((string)$message);
     }
 }
