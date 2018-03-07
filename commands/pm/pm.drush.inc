@@ -1180,6 +1180,12 @@ function drush_pm_enable() {
     drush_module_enable($modules);
   }
 
+  // Execute a batch if required. A batch is used by Locale module to import
+  // and update translations.
+  if (batch_get()) {
+    drush_backend_batch_process();
+  }
+
   // Inform the user of final status.
   $result_extensions = drush_get_named_extensions_list($extensions);
   $problem_extensions = array();
