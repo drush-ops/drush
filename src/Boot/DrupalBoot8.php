@@ -199,6 +199,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             $commandFactory = Drush::commandFactory();
             foreach ($serviceCommandInfoAltererlist->getCommandList() as $altererHandler) {
                 $commandFactory->addCommandInfoAlterer($altererHandler);
+                $this->logger->debug(dt('Commands are potentially altered in !class.', ['!class' => get_class($altererHandler)]));
             }
         }
 

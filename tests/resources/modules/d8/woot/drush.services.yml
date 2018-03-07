@@ -23,5 +23,6 @@ services:
         -  { name: drush.generator }
   woot.command_info_alter:
     class: Drupal\woot\WootCommandInfoAlterer
+    arguments: ['@logger.factory']
     tags:
       -  { name: drush.command_info_alterer }
