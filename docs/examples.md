@@ -7,7 +7,7 @@ The _examples_ folder contains excellent example files which you may copy and ed
 * [git-bisect.example.sh](https://raw.githubusercontent.com/drush-ops/drush/master/examples/git-bisect.example.sh). Spelunking through Drush's git history with bisect.
 * [helloworld.script](https://raw.githubusercontent.com/drush-ops/drush/master/examples/helloworld.script). An example Drush script. 
 * [PolicyCommands](https://raw.githubusercontent.com/drush-ops/drush/master/examples/Commands/PolicyCommands.php). A policy file can disallow prohibited commands/options etc.
-* [ArtCommands](https://raw.githubusercontent.com/drush-ops/drush/master/lib/Drush/examples/Commands/ArtCommands.php). A fun example command inspired by a famous XKCD comic.
+* [ArtCommands](https://raw.githubusercontent.com/drush-ops/drush/master/examples/Commands/ArtCommands.php). A fun example command inspired by a famous XKCD comic.
 * [SiteAliasAlterCommands](https://raw.githubusercontent.com/drush-ops/drush/master/examples/Commands/SiteAliasAlterCommands.php). An example of dynamically changing site alias definition.
 * [SyncViaHttpCommands](https://raw.githubusercontent.com/drush-ops/drush/master/examples/Commands/SyncViaHttpCommands.php). sql-sync modification that transfers via http instead of rsync. 
 * [XkcdCommands](https://raw.githubusercontent.com/drush-ops/drush/master/examples/Commands/XkcdCommands.php). A fun example command that browses XKCD comics.  
