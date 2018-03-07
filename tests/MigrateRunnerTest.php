@@ -89,9 +89,15 @@ class MigrateRunnerTest extends CommandUnishTestCase
         // Expect that this command will fail because the 2nd row fails.
         // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess
         $this->drush('migrate:import', ['test_migration'], [], null, null, self::EXIT_ERROR);
+
         // Check for the expected command output.
-        $this->assertContains('Processed 2 items (1 created, 0 updated, 1 failed, 0 ignored)', $this->getErrorOutput());
-        $this->assertContains('test_migration migration: 1 failed.', $this->getErrorOutput());
+        $output = $this->getErrorOutput();
+        $this->assertContains('Processed 2 items (1 created, 0 updated, 1 failed, 0 ignored)', $output);
+        $this->assertContains('test_migration migration: 1 failed.', $output);
+
+        // Check if the MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW event is dispatched.
+        $this->assertContains('MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW fired for row with ID 1', $output);
+        $this->assertContains('MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW fired for row with ID 2', $output);
 
         // Check that the migration import actually works.
         $eval = "echo \\Drupal\\node\\Entity\\Node::load(1)->label();";

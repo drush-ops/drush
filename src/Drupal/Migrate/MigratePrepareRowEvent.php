@@ -45,10 +45,8 @@ final class MigratePrepareRowEvent extends Event
      *
      * @param \Drupal\migrate\Row $row
      *   Row of source data to be analyzed/manipulated.
-     *
      * @param \Drupal\migrate\Plugin\MigrateSourceInterface $source
      *   Source plugin that is the source of the event.
-     *
      * @param \Drupal\migrate\Plugin\MigrationInterface $migration
      *   Migration entity.
      */
