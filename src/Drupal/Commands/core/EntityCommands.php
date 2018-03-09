@@ -46,7 +46,8 @@ class EntityCommands extends DrushCommands
         if ($ids = StringUtils::csvToArray($ids)) {
             $entities = $storage->loadMultiple($ids);
         } elseif ($bundle = $options['bundle']) {
-            $entities = $storage->loadByProperties(['type' => $bundle]);
+            $bundleKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('bundle');
+            $entities = $storage->loadByProperties([$bundleKey => $bundle]);
         } else {
             $entities = $storage->loadMultiple();
         }
