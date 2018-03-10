@@ -79,15 +79,11 @@ EOT;
     symlink("$target_dir/vendor", __DIR__ . '/vendor');
   }
 
-  // Create a symlink to modules directory inside tests/, so that PHPUnit is able to discover modules unish tests.
+  // Create a symlink to modules directory in Drush root, so that PHPUnit is able to discover module Unish tests.
   $modules_dir = "$target_dir/web/modules";
-  $modules_symlink = __DIR__ . '/tests/modules';
-  if (readlink($modules_symlink) !== $modules_dir) {
-    unlink($modules_dir);
-  }
-  if (!is_link($modules_symlink)) {
-    symlink("$target_dir/web/modules", __DIR__ . '/tests/modules');
-  }
+  $modules_symlink = __DIR__ . '/modules';
+  @unlink($modules_symlink);
+  symlink($modules_dir, $modules_symlink);
 
   return $return;
 }
