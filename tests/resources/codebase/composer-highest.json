@@ -41,7 +41,7 @@
       ],
       "recurse": true,
       "replace": false,
-      "merge-extra": false
+      "merge-extra": true
     }
   }
 }
