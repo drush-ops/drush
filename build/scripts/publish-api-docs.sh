@@ -7,7 +7,7 @@ BRANCH_REGEX='^\(master\|9\.[0-9x.]*\)$'
 test -n "$TRAVIS"                             || { echo "This script is only designed to be run on Travis."; exit 0; }
 echo "$TRAVIS_BRANCH" | grep -q $BRANCH_REGEX || { echo "Skipping docs update for branch $TRAVIS_BRANCH - docs only updated for master branch and tagged builds."; exit 0; }
 test "$TRAVIS_PULL_REQUEST" == "false"        || { echo "Skipping docs update -- not done on pull requests. (PR #$TRAVIS_PULL_REQUEST)"; exit 0; }
-test "${TRAVIS_PHP_VERSION:0:1}" == "7"     || { echo "Skipping docs update for PHP $TRAVIS_PHP_VERSION -- only update for PHP 5.6 build."; exit 0; }
+test "${TRAVIS_PHP_VERSION:0:1}" == "7"     || { echo "Skipping docs update for PHP $TRAVIS_PHP_VERSION -- only update for PHP 7 builds."; exit 0; }
 test "$TRAVIS_REPO_SLUG" == "drush-ops/drush"   || { echo "Skipping docs update for repository $TRAVIS_REPO_SLUG -- do not build docs for forks."; exit 0; }
 
 # Check our requirements for running this script have been met.

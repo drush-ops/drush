@@ -4,6 +4,12 @@
 # Use this file to cut down on typing out lengthy and repetitive command line
 # options in the Drush commands you use and to avoid mistakes.
 #
+# The Drush configuration system has been factored out and shared with
+# the world at https://github.com/consolidation/config. Feel free to use it
+# for your projects. Lots more usage information is there.
+
+# Directories and Discovery
+#
 # Rename this file to drush.yml and copy it to one of the places listed below
 # in order of precedence:
 #
@@ -16,20 +22,18 @@
 #
 # If a configuration file is found in any of the above locations, it will be
 # loaded and merged with other configuration files in the search list.
-#
-# The Drush configuration system has been factored out and shared with
-# the world at https://github.com/consolidation/config. Feel free to use it
-# for your projects. Lots more usage information is there.
-#
-# NOT SUPPORTED YET:
-#
-# The Drush commands 'rsync' and 'sql:sync' are special cases.  These commands
-# load the configuration file for the site specified by the source
-# parameter; however, they do not load the configuration file for the site
-# specified by the destination parameter, nor do they load configuration files
-# at remote sites.
 
-# This section is about the Drush framework, and not any commands in particular.
+# Environment variables
+#
+# Your Drush config file may reference environment variables using a syntax like ${env.home}.
+# For example see the drush.paths examples below.
+#
+# An alternative way to populate Drush configuration is to define environment variables that
+# correspond to config keys. For example, to populate the options.uri config item,
+# create an environment variable `DRUSH_OPTIONS_URI=http://example.com`.
+# As you can see, variable names should be uppercased, prefixed with `DRUSH_`, and periods
+# replaced with dashes.
+
 drush:
   paths:
     # Specify config files to load.
@@ -78,14 +82,8 @@ command:
   sql:
     dump:
       options:
-        sync:
-          options:
-            # Uncomment to omit cache and similar tables.
-            # structure-tables-key: common
-        dump:
-          options:
-            # Uncomment to omit cache and similar tables.
-            # structure-tables-key: common
+        # Uncomment to omit cache and similar tables (including during a sql:sync).
+#         structure-tables-key: common
   php:
     script:
       options:

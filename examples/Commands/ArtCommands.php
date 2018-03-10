@@ -46,8 +46,9 @@ class ArtCommands extends DrushCommands implements CustomEventAwareInterface
         $name = $data[$art]['name'];
         $description = $data[$art]['description'];
         $path = $data[$art]['path'];
-        $msg = dt('Okay. Here is {art}: {description}',
-          ['art' => $name, 'description' => $description]
+        $msg = dt(
+            'Okay. Here is {art}: {description}',
+            ['art' => $name, 'description' => $description]
         );
         $this->output()->writeln("\n" . $msg . "\n");
         $this->printFile($path);

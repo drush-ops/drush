@@ -4,6 +4,7 @@ namespace Drush\Commands\config;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
+use Drush\SiteAlias\HostPath;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 
@@ -24,6 +25,8 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
      *   Export config from @prod and transfer to @stage.
      * @usage drush config:pull @prod @self --label=vcs
      *   Export config from @prod and transfer to the 'vcs' config directory of current site.
+     * @usage drush config:pull @prod @self:../config/sync
+     *   Export config to a custom directory. Relative paths are calculated from Drupal root.
      * @aliases cpull,config-pull
      * @topics docs:aliases,docs:config-exporting
      *
@@ -48,7 +51,7 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
         if ($return['error_status']) {
               throw new \Exception(dt('Config-export failed.'));
         } else {
-              // Trailing slash assures that transfer files and not the containing dir.
+              // Trailing slash assures that we transfer files and not the containing dir.
               $export_path = $return['object'] . '/';
         }
 
@@ -57,23 +60,27 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
             '--delete',
             '--exclude=.htaccess',
         ];
-        $label = $options['label'];
+        if (strpos($destination, ':') === false) {
+            $destination .= ':%config-' . $options['label'];
+        }
+        $destinationHostPath = HostPath::create($this->siteAliasManager(), $destination);
+
         if (!$runner = $options['runner']) {
             $sourceRecord = $this->siteAliasManager()->get($source);
-            $destinationRecord = $this->siteAliasManager()->get($destination);
-            $runner = $sourceRecord->isRemote() && $destinationRecord->isRemote() ? $destination : '@self';
+            $destinationRecord = $destinationHostPath->getAliasRecord();
+            $runner = $sourceRecord->isRemote() && $destinationRecord->isRemote() ? $destinationRecord : '@self';
         }
         $this->logger()
           ->notice(dt('Starting to rsync configuration files from !source to !dest.', [
           '!source' => $source,
-          '!dest' => $destination
+          '!dest' => $destinationHostPath->getOriginal(),
           ]));
         // This comment applies similarly to sql-sync's use of core-rsync.
         // Since core-rsync is a strict-handling command and drush_invoke_process() puts options at end, we can't send along cli options to rsync.
         // Alternatively, add options like ssh.options to a site alias (usually on the machine that initiates the sql-sync).
         $return = drush_invoke_process($runner, 'core-rsync', array_merge([
             "$source:$export_path",
-            "$destination:%config-$label",
+            $destinationHostPath->getOriginal(),
             '--'
         ], $rsync_options), ['yes' => true], $backend_options);
         if ($return['error_status']) {

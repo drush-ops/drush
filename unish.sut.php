@@ -32,15 +32,14 @@ function unish_setup_sut($unish_sandbox) {
   drush_delete_dir($working_dir, TRUE);
   $codebase = __DIR__ . '/tests/resources/codebase';
   drush_copy_dir($codebase, $working_dir);
-  $composer_json = getenv('COMPOSER') ?: 'composer.json';
-  foreach ([$composer_json] as $filename) {
-    $path = $working_dir . "/$filename";
-    if (file_exists($path)) {
-      $contents = file_get_contents($path);
-      $new_contents = replace_token($contents);
-      file_put_contents($path, $new_contents);
-    }
-  }
+  $drush_project_root = escapeshellarg(__DIR__);
+  $composer_dir = escapeshellarg($working_dir);
+  // n.b. we expect the COMPOSER environment variable to be set to specify the target composer.json file
+  // TODO: We could probably use https://github.com/greg-1-anderson/composer-test-scenarios
+  // with a single composer.json file in tests/resources/codebase/web to manage our test scenarios.
+  // It might require slight modification to support the path repository below.
+  $cmd = "composer --working-dir=$composer_dir config repositories.1 '{\"type\":\"path\",\"url\":\"$drush_project_root\",\"options\":{\"symlink\":true}}'";
+  passthru($cmd);
 
   $alias_contents = <<<EOT
 dev:
@@ -77,14 +76,4 @@ EOT;
   }
 
   return $return;
-}
-
-/**
- * Replace a token with the /path/to/drush for this install.
- *
- * @param $contents
- */
-function replace_token($contents) {
-  // @todo Use https://getcomposer.org/doc/03-cli.md#modifying-repositories if it can edit composer.lock too.
-  return str_replace('%PATH-TO-DRUSH%', __DIR__, $contents);
 }
