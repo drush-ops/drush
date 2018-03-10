@@ -5,7 +5,9 @@
     colors="true">
   <testsuites>
     <testsuite name="Drush Test Suite">
-      <directory>.</directory>
+      <directory>./*Test.php</directory>
+      <!-- Also discover Unish tests in the contrib modules. -->
+      <directory>./modules/unish/*/tests/src/Unish</directory>
     </testsuite>
   </testsuites>
 

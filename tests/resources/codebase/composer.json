@@ -15,7 +15,8 @@
     "drupal/empty_theme": "1.0",
     "drupal/devel": "^1.0@RC",
     "drupal/alinks": "1.0.0",
-    "lox/xhprof": "dev-master"
+    "lox/xhprof": "dev-master",
+    "wikimedia/composer-merge-plugin": "^1.4"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
@@ -23,9 +24,8 @@
     "installer-paths": {
       "web/core": ["type:drupal-core"],
       "web/libraries/{$name}": ["type:drupal-library"],
-      "web/modules/unish/{$name}": ["drupal/devel"],
       "web/themes/unish/{$name}": ["drupal/empty_theme"],
-      "web/modules/contrib/{$name}": ["type:drupal-module"],
+      "web/modules/unish/{$name}": ["type:drupal-module"],
       "web/profiles/contrib/{$name}": ["type:drupal-profile"],
       "web/themes/contrib/{$name}": ["type:drupal-theme"],
       "drush/contrib/{$name}": ["type:drupal-drush"]
@@ -34,6 +34,14 @@
       "drupal/core": {
         "Allow updating modules with new service dependencies https://www.drupal.org/project/drupal/issues/2863986": "https://www.drupal.org/files/issues/2863986-2-49.patch"
       }
+    },
+    "merge-plugin": {
+      "include": [
+        "composer.custom.json"
+      ],
+      "recurse": true,
+      "replace": false,
+      "merge-extra": false
     }
   }
 }

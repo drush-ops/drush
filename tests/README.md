@@ -14,3 +14,35 @@ Advanced usage
 - XML results: `unish.phpunit.php --filter=testVersionString --log-junit results.xml`
 - Build the SUT and run test suite (slower) - `unish.clean.php`
 - Install the SUT in a given folder - `UNISH_TMP=/path/to/folder php unish.sut.php`
+
+Test contrib modules commands
+---------
+
+**Important:** The Unish tests should be placed under `tests/src/Unish` in your module. But if you still prefer other location, adjust the settings in `tests/phpunit.xml`.
+
+1. Create a copy of `tests/composer.json.dist` as `tests/composer.json`:
+    ```
+    cp tests/composer.json.dist tests/composer.json
+    ```
+1. Add the modules containing the Drush commands you want to test as composer dependencies in `tests/composer.json`, for example:
+    ```
+    "require": {
+        "drupal/migrate_plus": "*"
+    }
+    ```
+    Tip: If you're currently designing the module commands and you want to test your work, you can install the module as a symlink to your local directory where the development is taking place:
+    ```
+    "require": {
+        "drupal/migrate_plus": "*"
+    }
+    "repositories": [
+        {
+          "type": "path",
+          "url": "/path/to/the drupal/project/modules/contrib/migrate_plus",
+          "options": {
+              "symlink": true
+          }
+        }
+    ]
+    ```
+1. Follow the Usage section to setup your testing site and run the tests.
