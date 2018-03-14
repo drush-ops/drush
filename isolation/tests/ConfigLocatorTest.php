@@ -31,6 +31,7 @@ class ConfigLocatorTest extends TestCase
         $sources = $configLocator->sources();
         //$this->assertEquals('environment', $sources['env']['cwd']);
         $this->assertEquals($this->fixturesDir() . '/etc/drush/drush.yml', $sources['test']['system']);
+        $this->assertEquals($this->fixturesDir() . '/etc/drush/drushVARIANT.yml', $sources['test']['variant']);
         $this->assertEquals($this->fixturesDir() . '/home/.drush/drush.yml', $sources['test']['home']);
         $this->assertEquals($this->fixturesDir() . '/sites/d8/drush/drush.yml', $sources['test']['site']);
         $this->assertEquals($this->environment()->drushBasePath() . '/drush.yml', $sources['drush']['php']['minimum-version']);
@@ -90,7 +91,7 @@ class ConfigLocatorTest extends TestCase
      */
     protected function createConfigLocator($isLocal = false, $configPath = '')
     {
-        $configLocator = new ConfigLocator('TEST_');
+        $configLocator = new ConfigLocator('TEST_', 'VARIANT');
         $configLocator->collectSources();
         $configLocator->setLocal($isLocal);
         $configLocator->addUserConfig([$configPath], $this->environment()->systemConfigPath(), $this->environment()->userConfigPath());

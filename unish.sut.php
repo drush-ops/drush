@@ -38,7 +38,7 @@ function unish_setup_sut($unish_sandbox) {
   // TODO: We could probably use https://github.com/greg-1-anderson/composer-test-scenarios
   // with a single composer.json file in tests/resources/codebase/web to manage our test scenarios.
   // It might require slight modification to support the path repository below.
-  $cmd = "composer --working-dir=$composer_dir config repositories.1 '{\"type\":\"path\",\"url\":\"$drush_project_root\",\"options\":{\"symlink\":true}}'";
+  $cmd = "composer --working-dir=$composer_dir config repositories.drush '{\"type\":\"path\",\"url\":\"$drush_project_root\",\"options\":{\"symlink\":true}}'";
   passthru($cmd);
 
   $alias_contents = <<<EOT
