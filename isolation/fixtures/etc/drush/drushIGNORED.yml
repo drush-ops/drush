@@ -1,0 +1,2 @@
+test:
+  variant: 'This file should be ignored'

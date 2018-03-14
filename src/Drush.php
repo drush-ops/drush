@@ -81,7 +81,7 @@ class Drush
     {
         if (!static::$version) {
             $drush_info = static::drushReadDrushInfo();
-            $instance = new Version($drush_info['drush_version'], DRUSH_BASE_PATH);
+            $instance = new Version($drush_info['drush_version'], dirname(__DIR__));
             static::$version = $instance->getversion();
         }
         return static::$version;
