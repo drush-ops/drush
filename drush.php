@@ -1,5 +1,6 @@
 <?php
 
+use Drush\Drush;
 use Drush\Config\Environment;
 use Drush\Preflight\Preflight;
 use Drush\Runtime\Runtime;
@@ -55,6 +56,7 @@ if (file_exists($autoloadFile = __DIR__ . '/vendor/autoload.php')
 
 // Set up environment
 $environment = new Environment(Path::getHomeDirectory(), $cwd, $autoloadFile);
+$environment->setConfigFileVariant(Drush::getMajorVersion());
 $environment->setLoader($loader);
 $environment->applyEnvironment();
 
