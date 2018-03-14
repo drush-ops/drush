@@ -18,7 +18,7 @@ Advanced usage
 Testing contrib module commands
 ---------
 
-**Important:** The Unish tests should be placed under `tests/src/Unish` in your module. But if you still prefer other location, adjust the settings in `tests/phpunit.xml`.
+The Unish tests should be placed under `tests/src/Unish` in your module. But if you still prefer other location, adjust the settings in `tests/phpunit.xml`.
 
 1. Create a copy of `tests/composer.json.dist` as `tests/composer.json`:
     ```
@@ -27,18 +27,18 @@ Testing contrib module commands
 1. Add the modules containing the Drush commands you want to test as composer dependencies in `tests/composer.json`. For example:
     ```
     "require": {
-        "drupal/migrate_plus": "*"
+        "drupal/migrate_tools": "*"
     }
     ```
-    Tip: If you're currently designing the module commands and you want to test your work, you can install the module as a symlink to your local directory where the development is taking place:
+    Tip: If you're currently designing the module commands and you want to test your work, you can install the module as a symlink to your local directory where the development is taking place. Check the [Composer documentation about the "path" repository type](https://getcomposer.org/doc/05-repositories.md#path). Example:
     ```
     "require": {
-        "drupal/migrate_plus": "*"
+        "drupal/migrate_tools": "*"
     }
     "repositories": [
         {
           "type": "path",
-          "url": "/path/to/drupal/project/modules/contrib/migrate_plus",
+          "url": "/path/to/drupal/project/modules/contrib/migrate_tools",
           "options": {
               "symlink": true
           }
