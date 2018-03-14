@@ -22,6 +22,13 @@
 #
 # If a configuration file is found in any of the above locations, it will be
 # loaded and merged with other configuration files in the search list.
+#
+# Version-specific configuration
+#
+# Drush started using yml files for configuration in version 9; earlier versions
+# of Drush will never attempt to load a drush.yml file. It is also possible
+# to limit the version of Drush that will load a configuration file by placing
+# the Drush major version number in the filename, e.g. drush9.yml.
 
 # Environment variables
 #
