@@ -221,6 +221,14 @@ the necessary base directories:</p>
                 <td></td>
             </tr>
                     <tr>
+                <td class="type" id="property_configFileVariant">
+                                        protected                                        
+                </td>
+                <td>$configFileVariant</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
                 <td class="type" id="property_processedConfigPaths">
                                         protected                                        
                 </td>
@@ -239,7 +247,7 @@ the necessary base directories:</p>
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method___construct">__construct</a>($envPrefix = &#039;&#039;)
+                    <a href="#method___construct">__construct</a>($envPrefix = &#039;&#039;, $configFileVariant = &#039;&#039;)
         
                                             <p>ConfigLocator constructor</p>                </div>
                 <div class="col-md-2"></div>
@@ -484,6 +492,16 @@ file or a 'Commands' or 'src/Commands' directory.</p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_expandCandidates">expandCandidates</a>($candidates, $prefix)
+        
+                                            <p>Double the candidates, adding '$prefix' before each existing one.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     array
                 </div>
                 <div class="col-md-8 type">
@@ -500,9 +518,9 @@ file or a 'Commands' or 'src/Commands' directory.</p>                </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L93">line 93</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L95">line 95</a></div>
         <code>                    
-    <strong>__construct</strong>($envPrefix = &#039;&#039;)
+    <strong>__construct</strong>($envPrefix = &#039;&#039;, $configFileVariant = &#039;&#039;)
         </code>
     </h3>
     <div class="details">
@@ -520,6 +538,11 @@ file or a 'Commands' or 'src/Commands' directory.</p>                </div>
                 <td>$envPrefix</td>
                 <td></td>
             </tr>
+                    <tr>
+                <td></td>
+                <td>$configFileVariant</td>
+                <td></td>
+            </tr>
             </table>
 
             
@@ -531,7 +554,7 @@ file or a 'Commands' or 'src/Commands' directory.</p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_setLocal">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L121">line 121</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L124">line 124</a></div>
         <code>                    
     <strong>setLocal</strong>(bool $isLocal)
         </code>
@@ -562,7 +585,7 @@ file or a 'Commands' or 'src/Commands' directory.</p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_collectSources">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L135">line 135</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L138">line 138</a></div>
         <code>                    <abbr title="Drush\Config\$this">$this</abbr>
     <strong>collectSources</strong>(bool $collect = true)
         </code>
@@ -604,7 +627,7 @@ this information will not be saved.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_sources">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L150">line 150</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L153">line 153</a></div>
         <code>                    array
     <strong>sources</strong>()
         </code>
@@ -638,7 +661,7 @@ prior to loading configuration files.</p>                                       
             </div>
                     <div class="method-item">
                     <h3 id="method_configFilePaths">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L160">line 160</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L163">line 163</a></div>
         <code>                    string[]
     <strong>configFilePaths</strong>()
         </code>
@@ -668,7 +691,7 @@ prior to loading configuration files.</p>                                       
             </div>
                     <div class="method-item">
                     <h3 id="method_addToSources">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L168">line 168</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L171">line 171</a></div>
         <code>            protected        
     <strong>addToSources</strong>(array $sources)
         </code>
@@ -699,7 +722,7 @@ prior to loading configuration files.</p>                                       
             </div>
                     <div class="method-item">
                     <h3 id="method_config">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L182">line 182</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L185">line 185</a></div>
         <code>                    <abbr title="Drush\Config\Config">Config</abbr>
     <strong>config</strong>()
         </code>
@@ -730,7 +753,7 @@ all identified configuration if necessary.</p>                                  
             </div>
                     <div class="method-item">
                     <h3 id="method_addEnvironment">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L196">line 196</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L199">line 199</a></div>
         <code>                    <abbr title="Drush\Config\$this">$this</abbr>
     <strong>addEnvironment</strong>(<a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment)
         </code>
@@ -773,7 +796,7 @@ obtained by commands et. al. as needed.</p>                    <p>see Environmen
             </div>
                     <div class="method-item">
                     <h3 id="method_addPreflightConfigFiles">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L208">line 208</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L211">line 211</a></div>
         <code>                    <abbr title="Drush\Config\$this">$this</abbr>
     <strong>addPreflightConfigFiles</strong>($filepaths)
         </code>
@@ -813,7 +836,7 @@ obtained by commands et. al. as needed.</p>                    <p>see Environmen
             </div>
                     <div class="method-item">
                     <h3 id="method_addAliasConfig">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L219">line 219</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L222">line 222</a></div>
         <code>                    <abbr title="Drush\Config\$this">$this</abbr>
     <strong>addAliasConfig</strong>($aliasConfig)
         </code>
@@ -854,7 +877,7 @@ to our configuratino.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_addUserConfig">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L233">line 233</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L236">line 236</a></div>
         <code>                    <abbr title="Drush\Config\$this">$this</abbr>
     <strong>addUserConfig</strong>($configPaths, $systemConfigPath, $userConfigDir)
         </code>
@@ -905,7 +928,7 @@ add all of the user configuration paths.</p>                    <p>In 'local' mo
             </div>
                     <div class="method-item">
                     <h3 id="method_addDrushConfig">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L249">line 249</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L252">line 252</a></div>
         <code>                    <abbr title="Drush\Config\$this">$this</abbr>
     <strong>addDrushConfig</strong>($drushProjectDir)
         </code>
@@ -945,7 +968,7 @@ add all of the user configuration paths.</p>                    <p>In 'local' mo
             </div>
                     <div class="method-item">
                     <h3 id="method_addSitewideConfig">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L264">line 264</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L267">line 267</a></div>
         <code>                    <abbr title="Drush\Config\$this">$this</abbr>
     <strong>addSitewideConfig</strong>(<abbr title="Drush\Config\Path">Path</abbr> $siteRoot)
         </code>
@@ -986,7 +1009,7 @@ selected site.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_addConfigPaths">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L293">line 293</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L296">line 296</a></div>
         <code>                    <abbr title="Drush\Config\$this">$this</abbr>
     <strong>addConfigPaths</strong>(string $contextName, string[] $paths)
         </code>
@@ -1033,7 +1056,7 @@ is searched for a drush.yml file.</p>                                           
             </div>
                     <div class="method-item">
                     <h3 id="method_addConfigFiles">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L333">line 333</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L339">line 339</a></div>
         <code>            protected        
     <strong>addConfigFiles</strong>(<abbr title="Consolidation\Config\Loader\ConfigProcessor">ConfigProcessor</abbr> $processor, <abbr title="Consolidation\Config\Loader\ConfigLoaderInterface">ConfigLoaderInterface</abbr> $loader, array $configFiles)
         </code>
@@ -1074,7 +1097,7 @@ is searched for a drush.yml file.</p>                                           
             </div>
                     <div class="method-item">
                     <h3 id="method_identifyCandidates">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L350">line 350</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L356">line 356</a></div>
         <code>            protected        string[]
     <strong>identifyCandidates</strong>(string[] $paths, string[] $candidates)
         </code>
@@ -1121,7 +1144,7 @@ either directories or files.</p>                                                
             </div>
                     <div class="method-item">
                     <h3 id="method_identifyCandidatesAtPath">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L367">line 367</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L373">line 373</a></div>
         <code>            protected        string[]
     <strong>identifyCandidatesAtPath</strong>(string $path, string[] $candidates)
         </code>
@@ -1166,7 +1189,7 @@ either directories or files.</p>                                                
             </div>
                     <div class="method-item">
                     <h3 id="method_getSiteAliasPaths">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L391">line 391</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L397">line 397</a></div>
         <code>                    array
     <strong>getSiteAliasPaths</strong>($paths, <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment)
         </code>
@@ -1211,7 +1234,7 @@ either directories or files.</p>                                                
             </div>
                     <div class="method-item">
                     <h3 id="method_getCommandFilePaths">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L414">line 414</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L420">line 420</a></div>
         <code>                    array
     <strong>getCommandFilePaths</strong>($commandPaths, $root)
         </code>
@@ -1256,7 +1279,7 @@ either directories or files.</p>                                                
             </div>
                     <div class="method-item">
                     <h3 id="method_getBuiltinCommandFilePaths">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L430">line 430</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L436">line 436</a></div>
         <code>            protected        
     <strong>getBuiltinCommandFilePaths</strong>()
         </code>
@@ -1277,7 +1300,7 @@ either directories or files.</p>                                                
             </div>
                     <div class="method-item">
                     <h3 id="method_getIncludedCommandFilePaths">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L441">line 441</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L447">line 447</a></div>
         <code>            protected        
     <strong>getIncludedCommandFilePaths</strong>($commandPaths)
         </code>
@@ -1309,7 +1332,7 @@ an 'include' option.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_getSiteCommandFilePaths">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L458">line 458</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L464">line 464</a></div>
         <code>            protected        
     <strong>getSiteCommandFilePaths</strong>($directories)
         </code>
@@ -1342,7 +1365,7 @@ file or a 'Commands' or 'src/Commands' directory.</p>                           
             </div>
                     <div class="method-item">
                     <h3 id="method_setComposerRoot">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L488">line 488</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L494">line 494</a></div>
         <code>                    
     <strong>setComposerRoot</strong>($selectedComposerRoot)
         </code>
@@ -1372,8 +1395,44 @@ file or a 'Commands' or 'src/Commands' directory.</p>                           
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_expandCandidates">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L502">line 502</a></div>
+        <code>                    
+    <strong>expandCandidates</strong>($candidates, $prefix)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Double the candidates, adding '$prefix' before each existing one.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$candidates</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$prefix</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_findConfigFiles">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L506">line 506</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigLocator.php#L526">line 526</a></div>
         <code>            protected        array
     <strong>findConfigFiles</strong>(array $paths, array $candidates)
         </code>
