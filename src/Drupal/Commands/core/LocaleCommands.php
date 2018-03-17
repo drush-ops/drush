@@ -143,23 +143,23 @@ class LocaleCommands extends DrushCommands
      *
      * @command locale:export
      * @drupal-dependencies locale
+     * @param $langcode The language code of the exported translations.
      * @option template To export the template file.
-     * @option langcode The language code of the exported translations.
      * @option types String types to include, defaults to all types.
      *   Types: 'not-customized', 'customized', 'not-translated'.
-     * @usage drush locale:export --langcode=nl > nl.po
+     * @usage drush locale:export nl > nl.po
      *   Export the Dutch translations with all types.
-     * @usage drush locale:export --langcode=nl --types=customized,not-customized > nl.po
+     * @usage drush locale:export nl --types=customized,not-customized > nl.po
      *   Export the Dutch customized and not customized translations.
      * @usage drush locale:export --template > drupal.pot
      *   Export the basic template file to translate.
-     * @usage drush locale:export --template --langcode=nl > nl.pot
+     * @usage drush locale:export --template nl > nl.pot
      *   Export the Dutch template file to translate.
      * @aliases locale-export
      */
-    public function export($options = ['template' => false, 'langcode' => self::OPT, 'types' => self::OPT])
+    public function export($langcode = null, $options = ['template' => false, 'types' => self::OPT])
     {
-        $language = $this->getTranslatableLanguage($options['langcode']);
+        $language = $this->getTranslatableLanguage($langcode);
         $poreader_options = [];
 
         if (!(bool)$options['template']) {
@@ -181,12 +181,12 @@ class LocaleCommands extends DrushCommands
      */
     public function exportValidate(CommandData $commandData)
     {
-        $langcode = $commandData->input()->getOption('langcode');
+        $langcode = $commandData->input()->getArgument('langcode');
         $template = $commandData->input()->getOption('template');
         $types = $commandData->input()->getOption('types');
 
         if (!$langcode && !$template) {
-            throw new \Exception(dt('Set --langcode=LANGCODE or --template, see help for more information.'));
+            throw new \Exception(dt('Set LANGCODE or --template, see help for more information.'));
         }
         if ($template && $types) {
             throw new \Exception(dt('No need for --types, when --template is used, see help for more information.'));
