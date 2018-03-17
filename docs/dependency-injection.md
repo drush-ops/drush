@@ -62,11 +62,11 @@ $this->logger()->success(‘The current alias is {name}’, [‘name’ => $self
 }
 }
 ```
-All Drush command files extend DrushCommands; DrushCommands implements IOAwareInterface and LoggerAwareInterface, which gives access to `$this->logger()` and other ways to do input and output. See the [IO documentation](io.md) for more information.
+All Drush command files extend DrushCommands. DrushCommands implements ConfigAwareInterface, IOAwareInterface, LoggerAwareInterface, which gives access to `$this->getConfig()`, ```$this->logger()` and other ways to do input and output. See the [IO documentation](io.md) for more information.
 
 Any additional services that are desired must be injected by implementing the appropriate inflection interface.
 
-Available Interfaces:
+Additional Interfaces:
 
 - AutoloaderAwareInterface: Provides access to the class loader.
 - SiteAliasManagerAwareInterface: The site alias manager [allows alias records to be obtained](site-alias-manager.md).

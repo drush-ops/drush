@@ -60,7 +60,7 @@ class Preflight
     {
         $this->environment = $environment;
         $this->verify = $verify ?: new PreflightVerify();
-        $this->configLocator = $configLocator ?: new ConfigLocator('DRUSH_');
+        $this->configLocator = $configLocator ?: new ConfigLocator('DRUSH_', $environment->getConfigFileVariant());
         $this->drupalFinder = new DrupalFinder();
         $this->logger = new PreflightLog();
     }
@@ -257,7 +257,9 @@ class Preflight
         // Configure alias manager.
         $this->aliasManager = (new SiteAliasManager())->addSearchLocations($paths);
         $this->aliasManager->setReferenceData($config->export());
-        $selfAliasRecord = $this->aliasManager->findSelf($this->preflightArgs, $this->environment, $root);
+        $siteLocator = new PreflightSiteLocator($this->aliasManager);
+        $selfAliasRecord = $siteLocator->findSite($this->preflightArgs, $this->environment, $root);
+        $this->aliasManager->setSelf($selfAliasRecord);
         $this->configLocator->addAliasConfig($selfAliasRecord->exportConfig());
 
         // Process the selected alias. This might change the selected site,

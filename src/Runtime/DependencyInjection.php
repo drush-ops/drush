@@ -101,7 +101,7 @@ class DependencyInjection
             ->withMethodCall('addSearchLocation', ['CommandFiles'])
             ->withMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
 
-        // Add inflectors
+        // Add inflectors. @see \Drush\Boot\BaseBoot::inflect
         $container->inflector(\Drush\Boot\AutoloaderAwareInterface::class)
             ->invokeMethod('setAutoloader', ['loader']);
         $container->inflector(\Drush\SiteAlias\SiteAliasManagerAwareInterface::class)

@@ -21,7 +21,7 @@ class SecurityUpdateCommands extends DrushCommands
     protected $securityUpdates;
 
     /**
-     * Check Drupal Composer packages for security updates.
+     * Check Drupal Composer packages for pending security updates.
      *
      * This uses the Drupal security advisories package to determine if updates
      * are available.
@@ -29,7 +29,7 @@ class SecurityUpdateCommands extends DrushCommands
      * @see https://github.com/drupal-composer/drupal-security-advisories
      *
      * @command pm:security
-     * @aliases sec
+     * @aliases sec,pm-security
      * @bootstrap none
      * @table-style default
      * @field-labels
@@ -90,12 +90,12 @@ class SecurityUpdateCommands extends DrushCommands
             $result = new RowsOfFields($this->securityUpdates);
             return $result;
         } else {
-            $this->logger()->notice("<info>There are no outstanding security updates for Drupal projects.</info>");
+            $this->logger()->success("<info>There are no outstanding security updates for Drupal projects.</info>");
         }
     }
 
     /**
-     * Emit suggested composer command for security updates.
+     * Emit suggested Composer command for security updates.
      *
      * @hook post-command pm:security
      */
