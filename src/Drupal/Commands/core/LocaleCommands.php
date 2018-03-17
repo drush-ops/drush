@@ -144,9 +144,8 @@ class LocaleCommands extends DrushCommands
      * @command locale:export
      * @drupal-dependencies locale
      * @param $langcode The language code of the exported translations.
-     * @option template To export the template file.
-     * @option types String types to include, defaults to all types.
-     *   Types: 'not-customized', 'customized', 'not-translated'.
+     * @option template POT file output of extracted source texts to be translated.
+     * @option types String types to include, defaults to all types. Types: 'not-customized', 'customized', 'not-translated'.
      * @usage drush locale:export nl > nl.po
      *   Export the Dutch translations with all types.
      * @usage drush locale:export nl --types=customized,not-customized > nl.po
