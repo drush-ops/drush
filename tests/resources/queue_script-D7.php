@@ -3,7 +3,7 @@
 // Create a new feed.
 aggregator_save_feed(array(
   'title' => 'test',
-  'url' => 'http://drupal.org/project/issues/rss/drupal?categories=All',
+  'url' => 'https://www.drupal.org/project/issues/rss/goofy?categories=All',
   'refresh' => 3600,
   'block' => 5,
 ));
