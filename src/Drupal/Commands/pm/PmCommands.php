@@ -248,7 +248,7 @@ class PmCommands extends DrushCommands
         // Copied from \Drupal\Core\Extension\ModuleInstaller::install
         // Add dependencies to the list. The new modules will be processed as
         // the while loop continues.
-        while (list($module) = each($module_list)) {
+        foreach (array_keys($module_list) as $module) {
             foreach (array_keys($module_data[$module]->requires) as $dependency) {
                 if (!isset($module_data[$dependency])) {
                     // The dependency does not exist.
@@ -281,7 +281,7 @@ class PmCommands extends DrushCommands
         // Add dependent modules to the list. The new modules will be processed as
         // the while loop continues.
         $profile = drupal_get_profile();
-        while (list($module) = each($module_list)) {
+        foreach (array_keys($module_list) as $module) {
             foreach (array_keys($module_data[$module]->required_by) as $dependent) {
                 if (!isset($module_data[$dependent])) {
                     // The dependent module does not exist.
