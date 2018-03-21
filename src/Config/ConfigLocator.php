@@ -43,6 +43,8 @@ class ConfigLocator
 
     protected $configFilePaths = [];
 
+    protected $configFileVariant;
+
     protected $processedConfigPaths = [];
 
     /*
@@ -90,8 +92,9 @@ class ConfigLocator
     /**
      * ConfigLocator constructor
      */
-    public function __construct($envPrefix = '')
+    public function __construct($envPrefix = '', $configFileVariant = '')
     {
+        $this->configFileVariant = $configFileVariant;
         $this->config = new DrushConfig();
 
         // Add placeholders to establish priority. We add
@@ -301,8 +304,11 @@ class ConfigLocator
 
         $candidates = [
             'drush.yml',
-            'config/drush.yml',
         ];
+        if ($this->configFileVariant) {
+            $candidates[] = "drush{$this->configFileVariant}.yml";
+        }
+        $candidates = $this->expandCandidates($candidates, 'config/');
         $config_files = $this->findConfigFiles($paths, $candidates);
         $this->addConfigFiles($processor, $loader, $config_files);
 
@@ -488,6 +494,20 @@ class ConfigLocator
     public function setComposerRoot($selectedComposerRoot)
     {
         $this->composerRoot = $selectedComposerRoot;
+    }
+
+    /**
+     * Double the candidates, adding '$prefix' before each existing one.
+     */
+    public function expandCandidates($candidates, $prefix)
+    {
+        $additional = array_map(
+            function ($item) use ($prefix) {
+                return $prefix . $item;
+            },
+            $candidates
+        );
+        return array_merge($candidates, $additional);
     }
 
     /**

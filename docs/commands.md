@@ -42,6 +42,20 @@ It is also possible to use [version ranges](https://getcomposer.org/doc/articles
 
 In Drush 9, the default services file, `drush.services.yml`, will be used in instances where there is no `services` section in the Drush extras of the project's composer.json file. In Drush 10, however, the services section must exist, and must name the services file to be used. If a future Drush extension is written such that it only works with Drush 10 and later, then its entry would read `"drush.services.yml": "^10"`, and Drush 9 would not load the extension's commands. It is all the same recommended that Drush 9 extensions explicitly declare their services file with an appropriate version constraint.
 
+Altering Drush Command Info
+===========================
+
+Drush command info (annotations) can be altered from other modules. This is done by creating and registering 'command info alterers'. Alterers are class services that are able to intercept and manipulate an existing command annotation.
+
+In order to alter an existing command info, follow the next steps:
+
+1. In the module that wants to alter a command info, add a service class that implements the `\Consolidation\AnnotatedCommand\CommandInfoAltererInterface`.
+1. In the module `drush.services.yml` declare a service pointing to this class and tag the service with the `drush.command_info_alterer` tag.
+1. In the class implement the alteration logic the `alterCommandInfo()` method.
+1. Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This would allow the easy debugging. Also it's a good practice to inject the the logger in the class constructor.
+
+For an example, see the alterer class provided by the testing 'woot' module: `tests/resources/modules/d8/woot/src/WootCommandInfoAlterer.php`.
+
 Global Drush Commands
 ==============================
 
