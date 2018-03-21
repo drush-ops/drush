@@ -15,6 +15,11 @@ class PmEnLocaleImportCase extends CommandUnishTestCase
 
     public function testBatchImportTranslations()
     {
+        if (UNISH_DRUPAL_MAJOR_VERSION < 8) {
+            $this->markTestSkipped('This test class is designed for Drupal 8+.');
+            return;
+        }
+
         $sites = $this->setUpDrupal(1, true);
         $uri = key($sites);
         $root = $this->webroot();
