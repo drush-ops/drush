@@ -21,6 +21,7 @@ class PmEnLocaleImportCase extends CommandUnishTestCase
         $options = array(
             'root' => $root,
             'uri' => $uri,
+            'yes' => null,
         );
 
         $this->drush('pm-enable', ['language', 'locale', 'dblog'], $options);
