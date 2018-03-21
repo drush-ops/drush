@@ -34,11 +34,13 @@ abstract class DrupalBoot extends BaseBoot
             if (file_exists("$scan/settings.php")) {
                 return $scan;
             }
-            $next = dirname($scan);
+            // Use Path::getDirectory instead of dirname to
+            // avoid certain bugs. Returns a canonicalized path.
+            $next = Path::getDirectory($scan);
             if ($next == $scan) {
                 return false;
             }
-            $scan = Path::canonicalize($next);
+            $scan = $next;
             if ($scan == $root) {
                 return false;
             }
@@ -223,7 +225,7 @@ abstract class DrupalBoot extends BaseBoot
             // Drush requires a database client program during its Drupal bootstrap.
             $command = $sql->command();
             if (drush_program_exists($command) === false) {
-                $this->logger->log(LogLevel::BOOTSTRAP, dt('The command \'!command\' is required for preflight but cannot be found. Please install it and retry.', ['!command' => $command]));
+                $this->logger->warning(dt('The command \'!command\' is required for preflight but cannot be found. Please install it and retry.', ['!command' => $command]));
                 return false;
             }
             if (!$sql->query('SELECT 1;')) {

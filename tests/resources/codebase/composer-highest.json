@@ -1,15 +1,15 @@
 {
   "name": "Site Under Test",
-  "repositories": [
-    {
+  "repositories": {
+    "drupal_org": {
       "type": "composer",
       "url": "https://packages.drupal.org/8"
     }
-  ],
+  },
   "require": {
     "composer/installers": "^1.2",
     "cweagans/composer-patches": "~1.6",
-    "drupal/core": "8.5.x-dev",
+    "drupal/core": "8.6.x-dev",
     "drush/drush": "*@dev",
     "phpunit/phpunit": "^4.1",
     "drupal/empty_theme": "^1.0",
