@@ -80,7 +80,7 @@ class PmCommands extends DrushCommands
             throw new \Exception('Unable to install modules.');
         }
         if (batch_get()) {
-          drush_backend_batch_process();
+            drush_backend_batch_process();
         }
         $this->logger()->success(dt('Successfully enabled: !list', $todo_str));
         // Our logger got blown away during the container rebuild above.
