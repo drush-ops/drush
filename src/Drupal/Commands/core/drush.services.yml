@@ -23,7 +23,7 @@ services:
       -  { name: drush.command }
   locale.commands:
     class: \Drush\Drupal\Commands\core\LocaleCommands
-    arguments: ['@module_handler', '@state']
+    arguments: ['@language_manager', '@config.factory', '@module_handler', '@state']
     tags:
       -  { name: drush.command }
   queue.commands:

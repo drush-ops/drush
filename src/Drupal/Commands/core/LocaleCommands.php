@@ -4,8 +4,10 @@ namespace Drush\Drupal\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Component\Gettext\PoStreamWriter;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Language\LanguageInterface;
+use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\State\StateInterface;
 use Drupal\locale\PoDatabaseReader;
 use Drush\Commands\DrushCommands;
@@ -14,9 +16,29 @@ use Drush\Utils\StringUtils;
 class LocaleCommands extends DrushCommands
 {
 
+    protected $languageManager;
+
+    protected $configFactory;
+
     protected $moduleHandler;
 
     protected $state;
+
+    /**
+     * @return \Drupal\Core\Language\LanguageManagerInterface
+     */
+    public function getLanguageManager()
+    {
+        return $this->languageManager;
+    }
+
+    /**
+     * @return \Drupal\Core\Config\ConfigFactoryInterface
+     */
+    public function getConfigFactory()
+    {
+        return $this->configFactory;
+    }
 
     /**
      * @return \Drupal\Core\Extension\ModuleHandlerInterface
@@ -34,8 +56,10 @@ class LocaleCommands extends DrushCommands
         return $this->state;
     }
 
-    public function __construct(ModuleHandlerInterface $moduleHandler, StateInterface $state)
+    public function __construct(LanguageManagerInterface $languageManager, ConfigFactoryInterface $configFactory, ModuleHandlerInterface $moduleHandler, StateInterface $state)
     {
+        $this->languageManager = $languageManager;
+        $this->configFactory = $configFactory;
         $this->moduleHandler = $moduleHandler;
         $this->state = $state;
     }
@@ -205,7 +229,7 @@ class LocaleCommands extends DrushCommands
             return null;
         }
 
-        $language = \Drupal::languageManager()->getLanguage($langcode);
+        $language = $this->getLanguageManager()->getLanguage($langcode);
 
         if (!$language) {
             throw new \Exception(dt('Language code @langcode is not configured.', [
@@ -238,7 +262,9 @@ class LocaleCommands extends DrushCommands
             return true;
         }
 
-        return (bool)\Drupal::config('locale.settings')->get('translate_english');
+        return (bool)$this->getConfigFactory()
+            ->get('locale.settings')
+            ->get('translate_english');
     }
 
     /**
