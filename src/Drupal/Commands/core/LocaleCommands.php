@@ -189,7 +189,7 @@ class LocaleCommands extends DrushCommands
             $poreader_options = $this->convertTypesToPoDbReaderOptions(StringUtils::csvToArray($options['types']));
         }
 
-        $file_uri = drush_save_data_to_temp_file('temporary://', 'po_');
+        $file_uri = drush_tempnam('drush_', null, '.po');
         if ($this->writePoFile($file_uri, $language, $poreader_options)) {
             $this->printFile($file_uri);
         } else {
