@@ -87,8 +87,8 @@ class RsyncCase extends CommandUnishTestCase
         file_put_contents($source_file, $test_data);
 
         // We just deleted it -- should be missing
-        $this->assertFalse(file_exists($target_file));
-        $this->assertTrue(file_exists($source_file));
+        $this->assertFileNotExists($target_file);
+        $this->assertFileExists($source_file);
 
         // Test an actual rsync between our two fixture sites. Note that
         // these sites share the same web root.
@@ -96,9 +96,8 @@ class RsyncCase extends CommandUnishTestCase
         $this->assertContains('You will delete files in', $this->getOutput());
 
         // Test to see if our fixture file now exists at $target
-        $this->assertTrue(file_exists($target_file));
-        $actual = file_get_contents($target_file);
-        $this->assertEquals($test_data, $actual);
+        $this->assertFileExists($target_file);
+        $this->assertStringEqualsFile($target_file, $test_data);
     }
 
   /**
