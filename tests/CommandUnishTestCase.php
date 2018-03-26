@@ -6,7 +6,8 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use Webmozart\PathUtil\Path;
 
-abstract class CommandUnishTestCase extends UnishTestCase {
+abstract class CommandUnishTestCase extends UnishTestCase
+{
 
   // Unix exit codes.
     const EXIT_SUCCESS  = 0;
@@ -60,16 +61,44 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     protected $idleTimeout = 15;
 
   /**
-   * Get command output and simiplify away things like full paths and extra
+   * Get command output and simplify away things like full paths and extra
    * whitespace.
    */
     protected function getSimplifiedOutput()
     {
-        $output = $this->getOutput();
+        return $this->simplifyOutput($this->getOutput());
+    }
+
+    /**
+     * Returns a simplified version of the error output to facilitate testing.
+     *
+     * @return string
+     *   A simplified version of the error output that has things like full
+     *   paths and superfluous whitespace removed from it.
+     */
+    protected function getSimplifiedErrorOutput()
+    {
+        return $this->simplifyOutput($this->getErrorOutput());
+    }
+
+    /**
+     * Remove things like full paths and extra whitespace from the given string.
+     *
+     * @param string $output
+     *   The output string to simplify.
+     *
+     * @return string
+     *   The simplified output.
+     */
+    protected function simplifyOutput($output)
+    {
         // We do not care if Drush inserts a -t or not in the string. Depends on whether there is a tty.
         $output = preg_replace('# -t #', ' ', $output);
         // Remove double spaces from output to help protect test from false negatives if spacing changes subtlely
         $output = preg_replace('#  *#', ' ', $output);
+        // Remove leading and trailing spaces.
+        $output = preg_replace('#^ *#m', '', $output);
+        $output = preg_replace('# *$#m', '', $output);
         // Debug flags may be added to command strings if we are in debug mode. Take those out so that tests in phpunit --debug mode work
         $output = preg_replace('# --debug #', ' ', $output);
         $output = preg_replace('# --verbose #', ' ', $output);
@@ -258,7 +287,8 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     * @param $suffix
     *   Any code to append to the command. For example, redirection like 2>&1.
     * @param array $env
-   *   Environment variables to pass along to the subprocess. @todo - not used.
+    *   Not used. Environment variables to pass along to the subprocess.
+   *    @todo Look into inheritEnvironmentVariables() - available since Process 3.1. See https://github.com/symfony/symfony/pull/19053/files.
     * @return integer
     *   An exit code.
     */
@@ -292,7 +322,6 @@ abstract class CommandUnishTestCase extends UnishTestCase {
         if ($level = $this->logLevel()) {
             $cmd[] = '--' . $level;
         }
-        $cmd[] = "--no-ansi";
         $cmd[] = "--no-interaction";
 
         // Insert code coverage argument before command, in order for it to be
@@ -300,7 +329,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
         // where options after the command are passed along to external commands.
         $result = $this->getTestResultObject();
         if ($result->getCollectCodeCoverageInformation()) {
-            $coverage_file = tempnam(UNISH_TMP, 'drush_coverage');
+            $coverage_file = tempnam($this->getTmp(), 'drush_coverage');
             if ($coverage_file) {
                 $cmd[] = "--drush-coverage=" . $coverage_file;
             }
@@ -471,9 +500,33 @@ abstract class CommandUnishTestCase extends UnishTestCase {
         return (int)$major;
     }
 
-    protected function assertOutputEquals($expected)
+    protected function assertOutputEquals($expected, $filter = '')
     {
         $output = $this->getSimplifiedOutput();
+        if (!empty($filter)) {
+            $output = preg_replace($filter, '', $output);
+        }
+        $this->assertEquals($expected, $output);
+    }
+
+    /**
+     * Checks that the error output matches the expected output.
+     *
+     * This matches against a simplified version of the actual output that has
+     * absolute paths and duplicate whitespace removed, to avoid false negatives
+     * on minor differences.
+     *
+     * @param string $expected
+     *   The expected output.
+     * @param string $filter
+     *   Optional regular expression that should be ignored in the error output.
+     */
+    protected function assertErrorOutputEquals($expected, $filter = '')
+    {
+        $output = $this->getSimplifiedErrorOutput();
+        if (!empty($filter)) {
+            $output = preg_replace($filter, '', $output);
+        }
         $this->assertEquals($expected, $output);
     }
 }

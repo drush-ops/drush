@@ -3,6 +3,8 @@ namespace Drush\Preflight;
 
 use Drush\Drush;
 use Drush\Config\Environment;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -95,7 +97,7 @@ class LegacyPreflight
         drush_set_context('DRUSH_PER_USER_CONFIGURATION', $environment->userConfigPath());
     }
 
-    public static function setGlobalOptionContexts($input, $output)
+    public static function setGlobalOptionContexts(InputInterface $input, OutputInterface $output)
     {
         $verbose = $output->isVerbose();
         $debug = $output->isDebug();
@@ -110,18 +112,6 @@ class LegacyPreflight
 
         // Pipe implies quiet.
         drush_set_context('DRUSH_QUIET', $quiet || $pipe);
-
-        // Suppress colored logging if --no-ansi (was --nocolor) option is explicitly given or if
-        // terminal does not support it.
-        $nocolor = $input->getOption('no-ansi', false);
-        if (!$nocolor) {
-            // Check for colorless terminal.  If there is no terminal, then
-            // 'tput colors 2>&1' will return "tput: No value for $TERM and no -T specified",
-            // which is not numeric and therefore will put us in no-color mode.
-            $colors = exec('tput colors 2>&1');
-            $nocolor = !($colors === false || (is_numeric($colors) && $colors >= 3));
-        }
-        drush_set_context('DRUSH_NOCOLOR', $nocolor);
     }
 
     /**
@@ -134,7 +124,6 @@ class LegacyPreflight
         require_once $drushBasePath . '/includes/preflight.inc';
         require_once $drushBasePath . '/includes/bootstrap.inc';
         require_once $drushBasePath . '/includes/environment.inc';
-        require_once $drushBasePath . '/includes/annotationcommand_adapter.inc';
         require_once $drushBasePath . '/includes/command.inc';
         require_once $drushBasePath . '/includes/drush.inc';
         require_once $drushBasePath . '/includes/backend.inc';
@@ -146,6 +135,5 @@ class LegacyPreflight
         require_once $drushBasePath . '/includes/output.inc';
         require_once $drushBasePath . '/includes/cache.inc';
         require_once $drushBasePath . '/includes/filesystem.inc';
-        require_once $drushBasePath . '/includes/legacy.inc';
     }
 }

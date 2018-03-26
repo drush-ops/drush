@@ -2,14 +2,13 @@
 
 namespace Drush\Boot;
 
+use Consolidation\AnnotatedCommand\AnnotationData;
 use Drush\Log\DrushLog;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Drupal\Core\DrupalKernel;
 use Drush\Drush;
-use Drush\Drupal\DrupalKernel as DrushDrupalKernel;
 use Drush\Drupal\DrushServiceModifier;
-use Drupal\Core\Database\Database;
 
 use Drush\Log\LogLevel;
 
@@ -41,6 +40,14 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     public function setRequest($request)
     {
         $this->request = $request;
+    }
+
+    /**
+     * @return \Drupal\Core\DrupalKernelInterface
+     */
+    public function getKernel()
+    {
+        return $this->kernel;
     }
 
     public function validRoot($path)
@@ -149,12 +156,19 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         parent::bootstrapDrupalDatabase();
     }
 
-    public function bootstrapDrupalConfiguration()
+    public function bootstrapDrupalConfiguration(AnnotationData $annotationData = null)
     {
+        // Default to the standard kernel.
+        $kernel = Kernels::DRUPAL;
+        if (!empty($annotationData)) {
+            $kernel = $annotationData->get('kernel', Kernels::DRUPAL);
+        }
         $classloader = $this->autoloader();
-        $kernelClass = new \ReflectionClass('\Drupal\Core\DrupalKernel');
         $request = $this->getRequest();
-        $this->kernel = DrushDrupalKernel::createFromRequest($request, $classloader, 'prod');
+        $kernel_factory = Kernels::getKernelFactory($kernel);
+        /** @var \Drupal\Core\DrupalKernelInterface kernel */
+        $this->kernel = $kernel_factory($request, $classloader, 'prod');
+        // Include Drush services in the container.
         // @see Drush\Drupal\DrupalKernel::addServiceModifier()
         $this->kernel->addServiceModifier(new DrushServiceModifier());
 
@@ -170,15 +184,8 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     public function bootstrapDrupalFull()
     {
         $this->logger->debug(dt('Start bootstrap of the Drupal Kernel.'));
-        // TODO: do we need to do ob_start any longer?
-        if (!drush_get_context('DRUSH_QUIET', false)) {
-            ob_start();
-        }
         $this->kernel->boot();
         $this->kernel->prepareLegacyRequest($this->getRequest());
-        if (!drush_get_context('DRUSH_QUIET', false)) {
-            ob_end_clean();
-        }
         $this->logger->debug(dt('Finished bootstrap of the Drupal Kernel.'));
 
         parent::bootstrapDrupalFull();
@@ -195,6 +202,17 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         // The upshot is that the list of console commands is not available
         // until after $kernel->boot() is called.
         $container = \Drupal::getContainer();
+
+        // Set the command info alterers.
+        if ($container->has(DrushServiceModifier::DRUSH_COMMAND_INFO_ALTERER_SERVICES)) {
+            $serviceCommandInfoAltererlist = $container->get(DrushServiceModifier::DRUSH_COMMAND_INFO_ALTERER_SERVICES);
+            $commandFactory = Drush::commandFactory();
+            foreach ($serviceCommandInfoAltererlist->getCommandList() as $altererHandler) {
+                $commandFactory->addCommandInfoAlterer($altererHandler);
+                $this->logger->debug(dt('Commands are potentially altered in !class.', ['!class' => get_class($altererHandler)]));
+            }
+        }
+
         $serviceCommandlist = $container->get(DrushServiceModifier::DRUSH_CONSOLE_SERVICES);
         if ($container->has(DrushServiceModifier::DRUSH_CONSOLE_SERVICES)) {
             foreach ($serviceCommandlist->getCommandList() as $command) {

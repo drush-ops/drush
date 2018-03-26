@@ -1,13 +1,16 @@
 <?php
 namespace Drush\Commands\core;
 
+use Consolidation\Log\ConsoleLogLevel;
+use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Utility\Error;
 use Drupal\Core\Entity\EntityStorageException;
 use Drush\Commands\DrushCommands;
-use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
-use Drush\Log\LogLevel;
+use Psr\Log\LogLevel;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class UpdateDBCommands extends DrushCommands
 {
@@ -21,6 +24,7 @@ class UpdateDBCommands extends DrushCommands
      * @option entity-updates Run automatic entity schema updates at the end of any update hooks.
      * @option post-updates Run post updates after hook_update_n and entity updates.
      * @bootstrap full
+     * @kernel update
      * @aliases updb
      */
     public function updatedb($options = ['cache-clear' => true, 'entity-updates' => false, 'post-updates' => true])
@@ -36,7 +40,9 @@ class UpdateDBCommands extends DrushCommands
 
         // Check requirements before updating.
         if (!$this->updateCheckRequirements()) {
-            return;
+            if (!$this->io()->confirm(dt('Requirements check reports errors. Do you wish to continue?'))) {
+                throw new UserAbortException();
+            }
         }
 
         $return = drush_invoke_process('@self', 'updatedb:status', [], ['entity-updates' => $options['entity-updates'], 'post-updates' => $options['post-updates']]);
@@ -48,12 +54,19 @@ class UpdateDBCommands extends DrushCommands
             if (!$this->io()->confirm(dt('Do you wish to run the specified pending updates?'))) {
                 throw new UserAbortException();
             }
-            if (!Drush::simulate()) {
-                $this->updateBatch($options);
-                // Clear all caches in a new process. We just performed major surgery.
-                drush_drupal_cache_clear_all();
+            if (Drush::simulate()) {
+                $success = true;
+            } else {
+                $success = $this->updateBatch($options);
+                // Caches were just cleared in updateFinished callback.
             }
-            $this->logger()->success(dt('Finished performing updates.'));
+
+            if (!$success) {
+                drush_set_context('DRUSH_EXIT_CODE', DRUSH_FRAMEWORK_ERROR);
+            }
+
+            $level = $success ? ConsoleLogLevel::SUCCESS : LogLevel::ERROR;
+            $this->logger()->log($level, dt('Finished performing updates.'));
         }
     }
 
@@ -63,6 +76,7 @@ class UpdateDBCommands extends DrushCommands
      * @command entity:updates
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @bootstrap full
+     * @kernel update
      * @aliases entup,entity-updates
      *
      */
@@ -88,6 +102,7 @@ class UpdateDBCommands extends DrushCommands
      * @option entity-updates Show entity schema updates.
      * @option post-updates Show post updates.
      * @bootstrap full
+     * @kernel update
      * @aliases updbst,updatedb-status
      * @field-labels
      *   module: Module
@@ -107,6 +122,24 @@ class UpdateDBCommands extends DrushCommands
         } else {
             return new RowsOfFields($pending);
         }
+    }
+
+    /**
+     * Process operations in the specified batch set.
+     *
+     * @command updatedb:batch-process
+     * @param string $batch_id The batch id that will be processed.
+     * @bootstrap full
+     * @kernel update
+     * @hidden
+     */
+    public function process($batch_id)
+    {
+        // Suppress the output of the batch process command. This is intended to
+        // be passed to the initiating command rather than being output to the
+        // console.
+        $this->output()->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+        return drush_batch_command($batch_id);
     }
 
     /**
@@ -148,14 +181,14 @@ class UpdateDBCommands extends DrushCommands
                     Database::startLog($function);
                 }
 
-                $this->logger()->notice("Executing " . $function);
+                $this->logger()->notice("Update started: $function");
                 $ret['results']['query'] = $function($context['sandbox']);
                 $ret['results']['success'] = true;
             } // @TODO We may want to do different error handling for different exception
             // types, but for now we'll just print the message.
-            catch (Exception $e) {
+            catch (\Exception $e) {
                 $ret['#abort'] = ['success' => false, 'query' => $e->getMessage()];
-                $this->logger()->warning($e->getMessage());
+                $this->logger()->error($e->getMessage());
             }
 
             if ($context['log']) {
@@ -179,17 +212,98 @@ class UpdateDBCommands extends DrushCommands
         }
         $context['results'][$module][$number] = array_merge($context['results'][$module][$number], $ret);
 
+        // Log the message that was returned.
+        if (!empty($ret['results']['query'])) {
+            $this->logger()->notice(strip_tags((string) $ret['results']['query']));
+        }
+
         if (!empty($ret['#abort'])) {
             // Record this function in the list of updates that were aborted.
             $context['results']['#abort'][] = $function;
+            // Setting this value will output an error message.
+            // @see \DrushBatchContext::offsetSet()
+            $context['error_message'] = "Update failed: $function";
         }
 
         // Record the schema update if it was completed successfully.
         if ($context['finished'] == 1 && empty($ret['#abort'])) {
             drupal_set_installed_schema_version($module, $number);
+            // Setting this value will output a success message.
+            // @see \DrushBatchContext::offsetSet()
+            $context['message'] = "Update completed: $function";
+        }
+    }
+
+    /**
+     * Batch command that executes a single post-update.
+     *
+     * @param string $function
+     *   The post-update function to execute.
+     * @param array $context
+     *   The batch context.
+     */
+    public function updateDoOnePostUpdate($function, &$context)
+    {
+        $ret = [];
+
+        // If this update was aborted in a previous step, or has a dependency that was
+        // aborted in a previous step, go no further.
+        if (!empty($context['results']['#abort'])) {
+            return;
         }
 
-        $context['message'] = 'Performing ' . $function;
+        list($module, $name) = explode('_post_update_', $function, 2);
+        module_load_include('php', $module, $module . '.post_update');
+        if (function_exists($function)) {
+            $this->logger()->notice("Update started: $function");
+            try {
+                $ret['results']['query'] = $function($context['sandbox']);
+                $ret['results']['success'] = true;
+
+                if (!isset($context['sandbox']['#finished']) || (isset($context['sandbox']['#finished']) && $context['sandbox']['#finished'] >= 1)) {
+                    \Drupal::service('update.post_update_registry')->registerInvokedUpdates([$function]);
+                }
+            } catch (\Exception $e) {
+                // @TODO We may want to do different error handling for different exception
+                // types, but for now we'll just log the exception and return the message
+                // for printing.
+                // @see https://www.drupal.org/node/2564311
+                $this->logger()->error($e->getMessage());
+
+                $variables = Error::decodeException($e);
+                unset($variables['backtrace']);
+                $ret['#abort'] = [
+                    'success' => false,
+                    'query' => t('%type: @message in %function (line %line of %file).', $variables),
+                ];
+            }
+        }
+
+        if (isset($context['sandbox']['#finished'])) {
+            $context['finished'] = $context['sandbox']['#finished'];
+            unset($context['sandbox']['#finished']);
+        }
+        if (!isset($context['results'][$module][$name])) {
+            $context['results'][$module][$name] = [];
+        }
+        $context['results'][$module][$name] = array_merge($context['results'][$module][$name], $ret);
+
+        // Log the message that was returned.
+        if (!empty($ret['results']['query'])) {
+            $this->logger()->notice(strip_tags((string) $ret['results']['query']));
+        }
+
+        if (!empty($ret['#abort'])) {
+            // Record this function in the list of updates that were aborted.
+            $context['results']['#abort'][] = $function;
+            // Setting this value will output an error message.
+            // @see \DrushBatchContext::offsetSet()
+            $context['error_message'] = "Update failed: $function";
+        } else {
+            // Setting this value will output a success message.
+            // @see \DrushBatchContext::offsetSet()
+            $context['message'] = "Update completed: $function";
+        }
     }
 
     /**
@@ -234,7 +348,7 @@ class UpdateDBCommands extends DrushCommands
         // update themselves.
         // @see \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface::applyEntityUpdate()
         // @see \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface::applyFieldUpdate()
-        if ($options['entity-updates'] &&  \Drupal::entityDefinitionUpdateManager()->needsUpdates()) {
+        if ($options['entity-updates'] && \Drupal::entityDefinitionUpdateManager()->needsUpdates()) {
             $operations[] = [[$this, 'updateEntityDefinitions'], []];
         }
 
@@ -247,7 +361,7 @@ class UpdateDBCommands extends DrushCommands
                     $operations[] = [[$this, 'cacheRebuild'], []];
                 }
                 foreach ($post_updates as $function) {
-                    $operations[] = ['update_invoke_post_update', [$function]];
+                    $operations[] = [[$this, 'updateDoOnePostUpdate'], [$function]];
                 }
             }
         }
@@ -261,9 +375,29 @@ class UpdateDBCommands extends DrushCommands
             'file' => 'core/includes/update.inc',
         ];
         batch_set($batch);
+
+        $maintenance_mode_original_state = \Drupal::service('state')->get('system.maintenance_mode');
         \Drupal::service('state')->set('system.maintenance_mode', true);
-        drush_backend_batch_process();
-        \Drupal::service('state')->set('system.maintenance_mode', false);
+        $result = drush_backend_batch_process('updatedb:batch-process');
+        \Drupal::service('state')->set('system.maintenance_mode', $maintenance_mode_original_state);
+
+        $success = false;
+        if (!is_array($result)) {
+            $this->logger()->error(dt('Batch process did not return a result array. Returned: !type', ['!type' => gettype($result)]));
+        } elseif (!array_key_exists('object', $result)) {
+            $this->logger()->error(dt('Batch process did not return a result object.'));
+        } elseif (!empty($result['object'][0]['#abort'])) {
+            // Whenever an error occurs the batch process does not continue, so
+            // this array should only contain a single item, but we still output
+            // all available data for completeness.
+            $this->logger()->error(dt('Update aborted by: !process', [
+                '!process' => implode(', ', $result['object'][0]['#abort']),
+            ]));
+        } else {
+            $success = true;
+        }
+
+        return $success;
     }
 
     /**
@@ -316,40 +450,29 @@ class UpdateDBCommands extends DrushCommands
     {
         drupal_flush_all_caches();
         \Drupal::service('kernel')->rebuildContainer();
+        // Load the module data which has been removed when the container was
+        // rebuilt.
+        $module_handler = \Drupal::moduleHandler();
+        $module_handler->loadAll();
+        $module_handler->invokeAll('rebuild');
     }
 
     /**
-     * Process and display any returned update output.
+     * Batch update callback, clears the cache if needed.
      *
      * @see \Drupal\system\Controller\DbUpdateController::batchFinished()
      * @see \Drupal\system\Controller\DbUpdateController::results()
+     *
+     * @param boolean $success Whether the batch ended without a fatal error.
+     * @param array $results
+     * @param array $operations
      */
     public function updateFinished($success, $results, $operations)
     {
-
         if (!$this->cache_clear) {
             $this->logger()->info(dt("Skipping cache-clear operation due to --no-cache-clear option."));
         } else {
             drupal_flush_all_caches();
-        }
-
-        foreach ($results as $module => $updates) {
-            if ($module != '#abort') {
-                foreach ($updates as $number => $queries) {
-                    foreach ($queries as $query) {
-                        // If there is no message for this update, don't show anything.
-                        if (empty($query['query'])) {
-                            continue;
-                        }
-
-                        if ($query['success']) {
-                            $this->logger()->notice(strip_tags($query['query']));
-                        } else {
-                            throw new \Exception('Failed: ' . strip_tags($query['query']));
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -454,9 +577,10 @@ class UpdateDBCommands extends DrushCommands
                 'finished' => [$this, 'updateFinished'],
             ];
             batch_set($batch);
+            $maintenance_mode_original_state = \Drupal::service('state')->get('system.maintenance_mode');
             \Drupal::service('state')->set('system.maintenance_mode', true);
             drush_backend_batch_process();
-            \Drupal::service('state')->set('system.maintenance_mode', false);
+            \Drupal::service('state')->set('system.maintenance_mode', $maintenance_mode_original_state);
         } else {
             $this->logger()->success(dt("No entity schema updates required"));
         }
@@ -467,7 +591,7 @@ class UpdateDBCommands extends DrushCommands
      */
     public function updateCheckRequirements()
     {
-        $continue = true;
+        $return = true;
 
         \Drupal::moduleHandler()->resetImplementations();
         $requirements = update_check_requirements();
@@ -476,7 +600,7 @@ class UpdateDBCommands extends DrushCommands
         // If there are issues, report them.
         if ($severity != REQUIREMENT_OK) {
             if ($severity === REQUIREMENT_ERROR) {
-                $continue = false;
+                $return = false;
             }
             foreach ($requirements as $requirement) {
                 if (isset($requirement['severity']) && $requirement['severity'] != REQUIREMENT_OK) {
@@ -490,6 +614,6 @@ class UpdateDBCommands extends DrushCommands
             }
         }
 
-        return $continue;
+        return $return;
     }
 }

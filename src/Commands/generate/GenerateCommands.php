@@ -53,11 +53,18 @@ class GenerateCommands extends DrushCommands
         $application = $this->createApplication();
         if (!$generator) {
             $all = $application->all();
+            unset($all['help'], $all['list']);
             $namespaced = ListCommands::categorize($all, '-');
             $preamble = dt('Run `drush generate [command]` and answer a few questions in order to write starter code to your project.');
             ListCommands::renderListCLI($application, $namespaced, $this->output(), $preamble);
             return null;
         } else {
+            // Symfony console cannot recognize the command by alias when
+            // multiple commands have the same prefix.
+            if ($generator == 'module') {
+                $generator = 'module-standard';
+            }
+
             // Create an isolated input.
             $argv = [
                 $generator,
@@ -103,7 +110,20 @@ class GenerateCommands extends DrushCommands
          */
         $dcg_generators = $discovery->getGenerators([DCG_ROOT . '/src/Command/Drupal_8'], '\DrupalCodeGenerator\Command\Drupal_8');
         $drush_generators = $discovery->getGenerators([__DIR__ . '/Generators'], '\Drush\Commands\generate\Generators');
+        $config_paths = $this->getConfig()->get('runtime.commandfile.paths', []);
+
+        $global_paths = [];
+
+        foreach ($config_paths as $path) {
+            $global_paths[] = $path . '/Generators';
+            $global_paths[] = $path . '/src/Generators';
+        }
+
+        $global_paths = array_filter($global_paths, 'file_exists');
+        $global_generators =  $discovery->getGenerators($global_paths, '\Drush\Generators');
+
         $module_generators = [];
+
         if (Drush::bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
             $container = \Drupal::getContainer();
             if ($container->has(DrushServiceModifier::DRUSH_GENERATOR_SERVICES)) {
@@ -112,7 +132,7 @@ class GenerateCommands extends DrushCommands
         }
 
         /** @var \Symfony\Component\Console\Command\Command[] $generators */
-        $generators = array_merge($dcg_generators, $drush_generators, $module_generators);
+        $generators = array_merge($dcg_generators, $drush_generators, $global_generators, $module_generators);
 
         foreach ($generators as $generator) {
             $sub_names = explode(':', $generator->getName());
@@ -124,12 +144,6 @@ class GenerateCommands extends DrushCommands
             $generator->setName($new_name);
             // Remove alias if it is same as new name.
             if ($aliases = $generator->getAliases()) {
-                foreach ($aliases as $key => $alias) {
-                    // These dont work due to Console 'guessing' wrong.
-                    if ($alias == 'module' || $alias == 'theme') {
-                        unset($aliases[$key]);
-                    }
-                }
                 $generator->setAliases(array_diff($aliases, [$new_name]));
             }
         }

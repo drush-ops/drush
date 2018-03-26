@@ -154,7 +154,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             return;
         }
         $selfAliasRecord = $this->aliasManager->getSelf();
-        if (!$selfAliasRecord->hasRoot()) {
+        if (!$selfAliasRecord->hasRoot() && !$this->bootstrapManager()->drupalFinder()->getDrupalRoot()) {
             return;
         }
         $uri = $selfAliasRecord->uri();
@@ -185,6 +185,9 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
      */
     public function find($name)
     {
+        if (empty($name)) {
+            return;
+        }
         $command = $this->bootstrapAndFind($name);
         // Avoid exception when help is being built by https://github.com/bamarni/symfony-console-autocomplete.
         // @todo Find a cleaner solution.
@@ -334,8 +337,8 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $discovery = new CommandFileDiscovery();
         $discovery
             ->setIncludeFilesAtBase(true)
-            ->setSearchLocations(['Commands', 'Hooks'])
-            ->setSearchPattern('#.*(Command|Hook)s?.php$#');
+            ->setSearchLocations(['Commands', 'Hooks', 'Generators'])
+            ->setSearchPattern('#.*(Command|Hook|Generator)s?.php$#');
         return $discovery;
     }
 }

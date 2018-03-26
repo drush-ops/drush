@@ -62,15 +62,15 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
         // List of Drush bash configuration files, and
         // their source templates.
         $drushBashFiles = [
-        $drush_bashrc => $example_bashrc,
-        $drush_prompt => $example_prompt,
+            $drush_bashrc => $example_bashrc,
+            $drush_prompt => $example_prompt,
         ];
 
         // Mapping from Drush bash configuration files
         // to a description of what each one is.
         $drushBashFileDescriptions = [
-        $drush_bashrc => 'Drush bash customizations',
-        $drush_prompt => 'Drush prompt customizations',
+            $drush_bashrc => 'Drush bash customizations',
+            $drush_prompt => 'Drush prompt customizations',
         ];
 
         foreach ($drushBashFiles as $destFile => $sourceFile) {
@@ -123,7 +123,22 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
      */
     protected function findBashrc($home)
     {
-        return $home . "/.bashrc";
+        # Set a default value in case nothing else exists.
+        $file = $home . '/.bashrc';
+
+        if (!empty($_ENV['SHELL']) && strstr($_ENV['SHELL'], 'zsh')) {
+            $file = $home . '/.zshrc';
+        } elseif (file_exists($home . '/.bash_profile')) {
+            $file = $home . '/.bash_profile';
+        } elseif (file_exists($home . '/.bashrc')) {
+            $file = $home . '/.bashrc';
+        } elseif (file_exists($home . '/.profile')) {
+            $file = $home . '/.profile';
+        } elseif (file_exists($home . '/.functions')) {
+            $file = $home . '/.functions';
+        }
+
+        return $file;
     }
 
     /**

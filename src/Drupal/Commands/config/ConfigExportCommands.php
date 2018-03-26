@@ -8,6 +8,8 @@ use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Config\StorageInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
+use Symfony\Component\Console\Output\BufferedOutput;
+use Webmozart\PathUtil\Path;
 
 class ConfigExportCommands extends DrushCommands
 {
@@ -75,11 +77,12 @@ class ConfigExportCommands extends DrushCommands
      * @option commit Run `git add -A` and `git commit` after exporting.  This commits everything that was exported without prompting.
      * @option message Commit comment for the exported configuration.  Optional; may only be used with --commit.
      * @option destination An arbitrary directory that should receive the exported files. A backup directory is used when no value is provided.
+     * @option diff Show preview as a diff, instead of a change list.
      * @usage drush config:export --destination
      *   Export configuration; Save files in a backup directory named config-export.
      * @aliases cex,config-export
      */
-    public function export($label = null, $options = ['add' => false, 'commit' => false, 'message' => self::REQ, 'destination' => ''])
+    public function export($label = null, $options = ['add' => false, 'commit' => false, 'message' => self::REQ, 'destination' => self::OPT, 'diff' => false])
     {
         // Get destination directory.
         $destination_dir = ConfigCommands::getDirectory($label, $options['destination']);
@@ -94,7 +97,7 @@ class ConfigExportCommands extends DrushCommands
     public function doExport($options, $destination_dir)
     {
         // Prepare the configuration storage for the export.
-        if ($destination_dir == \config_get_config_directory(CONFIG_SYNC_DIRECTORY)) {
+        if ($destination_dir ==  Path::canonicalize(\config_get_config_directory(CONFIG_SYNC_DIRECTORY))) {
             $target_storage = $this->getConfigStorageSync();
         } else {
             $target_storage = new FileStorage($destination_dir);
@@ -107,19 +110,24 @@ class ConfigExportCommands extends DrushCommands
                 $this->logger()->notice(dt('The active configuration is identical to the configuration in the export directory (!target).', ['!target' => $destination_dir]));
                 return;
             }
-
             $this->output()->writeln("Differences of the active config to the export directory:\n");
-            $change_list = [];
-            foreach ($config_comparer->getAllCollectionNames() as $collection) {
-                $change_list[$collection] = $config_comparer->getChangelist(null, $collection);
-            }
-            // Print a table with changes in color, then re-generate again without
-            // color to place in the commit comment.
-            ConfigCommands::configChangesTablePrint($change_list);
-            $tbl = ConfigCommands::configChangesTableFormat($change_list);
-            $preview = $tbl->getTable();
-            if (!stristr(PHP_OS, 'WIN')) {
-                $preview = str_replace("\r\n", PHP_EOL, $preview);
+
+            if ($options['diff']) {
+                $diff = ConfigCommands::getDiff($target_storage, $this->getConfigStorage(), $this->output());
+                $this->output()->writeln($diff);
+            } else {
+                $change_list = [];
+                foreach ($config_comparer->getAllCollectionNames() as $collection) {
+                    $change_list[$collection] = $config_comparer->getChangelist(null, $collection);
+                }
+                // Print a table with changes in color, then re-generate again without
+                // color to place in the commit comment.
+                $bufferedOutput = new BufferedOutput();
+                $table = ConfigCommands::configChangesTable($change_list, $bufferedOutput, false);
+                $table->render();
+                $preview = $bufferedOutput->fetch();
+                $table = ConfigCommands::configChangesTable($change_list, $this->output(), true);
+                $table->render();
             }
 
             if (!$this->io()->confirm(dt('The .yml files in your export directory (!target) will be deleted and replaced with the active config.', ['!target' => $destination_dir]))) {

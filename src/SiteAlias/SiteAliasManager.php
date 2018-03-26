@@ -1,9 +1,6 @@
 <?php
 namespace Drush\SiteAlias;
 
-use Drush\Config\Environment;
-use Drush\Preflight\PreflightArgsInterface;
-
 /**
  * Site Alias manager
  */
@@ -27,6 +24,14 @@ class SiteAliasManager
         $this->specParser = new SiteSpecParser();
         $this->selfAliasRecord = new AliasRecord();
         $this->root = $root;
+    }
+
+    /**
+     * Allow configuration data to be used in replacements in the alias file.
+     */
+    public function setReferenceData($data)
+    {
+        $this->aliasLoader->setReferenceData($data);
     }
 
     /**
@@ -57,7 +62,8 @@ class SiteAliasManager
     /**
      * Add search locations to our site alias discovery object.
      *
-     * @param array $paths
+     * @param array $paths Any path provided in --alias-path option
+     *   or drush.path.alias-path configuration item.
      *
      * @return $this
      */
@@ -67,6 +73,15 @@ class SiteAliasManager
             $this->aliasLoader->discovery()->addSearchLocation($path);
         }
         return $this;
+    }
+
+    /**
+     * Return all of the paths where alias files may be found.
+     * @return string[]
+     */
+    public function searchLocations()
+    {
+        return $this->aliasLoader->discovery()->searchLocations();
     }
 
     /**
@@ -116,28 +131,6 @@ class SiteAliasManager
     }
 
     /**
-     * During bootstrap, finds the currently selected site from the parameters
-     * provided on the commandline.
-     *
-     * @param PreflightArgsInterface $preflightArgs An alias name or site specification
-     * @param \Drush\Config\Environment $environment
-     * @param string $root The default Drupal root (from site:set, --root or cwd)
-     *
-     * @return \Drush\SiteAlias\AliasRecord
-     * @throws \Exception
-     */
-    public function findSelf(PreflightArgsInterface $preflightArgs, Environment $environment, $root)
-    {
-        $aliasName = $preflightArgs->alias();
-        $selfAliasRecord = $this->buildSelf($preflightArgs, $environment, $root);
-        if (!$selfAliasRecord) {
-            throw new \Exception("The alias $aliasName could not be found.");
-        }
-        $this->setSelf($selfAliasRecord);
-        return $this->getSelf();
-    }
-
-    /**
      * Get an alias record from a name. Does not accept site specifications.
      *
      * @param string $aliasName alias name
@@ -146,7 +139,7 @@ class SiteAliasManager
      */
     public function getAlias($aliasName)
     {
-        $aliasName = new SiteAliasName($aliasName);
+        $aliasName = SiteAliasName::parse($aliasName);
 
         if ($aliasName->isSelf()) {
             return $this->getSelf();
@@ -163,12 +156,10 @@ class SiteAliasManager
     }
 
     /**
-     * Given a simple alias name, e.g. '@alias', returns either all of
-     * the sites and environments in that alias group, or all of the
+     * Given a simple alias name, e.g. '@alias', returns all of the
      * environments in the specified site.
      *
-     * If the provided name is a site specification, or if it contains
-     * a group or environment ('@group.site' or '@site.env' or '@group.site.env'),
+     * If the provided name is a site specification et. al.,
      * then this method will return 'false'.
      *
      * @param string $name Alias name or site specification
@@ -184,8 +175,19 @@ class SiteAliasManager
             return false;
         }
 
-        $aliasName = new SiteAliasName($name);
-        return $this->aliasLoader->loadMultiple($aliasName);
+        // Trim off the '@' and load all that match
+        $result = $this->aliasLoader->loadMultiple(ltrim($name, '@'));
+
+        // Special checking for @self
+        if ($name == '@self') {
+            $self = $this->getSelf();
+            $result = array_merge(
+                ['@self' => $self],
+                $result
+            );
+        }
+
+        return $result;
     }
 
     /**
@@ -197,72 +199,5 @@ class SiteAliasManager
     public function listAllFilePaths()
     {
         return $this->aliasLoader->listAll();
-    }
-
-    /**
-     * Either look up the specified alias name / site spec,
-     * or, if those are invalid, then generate one from
-     * the provided root and URI.
-     *
-     * @param \Drush\Preflight\PreflightArgsInterface $preflightArgs
-     * @param \Drush\Config\Environment $environment
-     * @param $root
-     *
-     * @return \Drush\SiteAlias\AliasRecord
-     */
-    protected function buildSelf(PreflightArgsInterface $preflightArgs, Environment $environment, $root)
-    {
-        $aliasName = $preflightArgs->alias();
-
-        // If the user specified an @alias, that takes precidence.
-        if (SiteAliasName::isAliasName($aliasName)) {
-            return $this->getAlias($aliasName);
-        }
-
-        // Ditto for a site spec (/path/to/drupal#uri)
-        $specParser = new SiteSpecParser();
-        if ($specParser->validSiteSpec($aliasName)) {
-            return new AliasRecord($specParser->parse($aliasName, $root), $aliasName);
-        }
-
-        // If the user provides the --root parameter then we don't want to use
-        // the site-set alias.
-        $selectedRoot = $preflightArgs->selectedSite();
-        if (!$selectedRoot) {
-            $aliasName = $environment->getSiteSetAliasName();
-            if (!empty($aliasName)) {
-                $alias = $this->getAlias($aliasName);
-                if ($alias) {
-                    return $alias;
-                }
-            }
-        }
-
-        // If there is no root, then return '@none'
-        if (!$root) {
-            return new AliasRecord([], '@none');
-        }
-
-        // If there is no URI specified, we will allow it to
-        // remain empty for now. We will refine it later via
-        // Application::refineUriSelection(), which is called
-        // in Preflight::doRun(). This method will set it to
-        // 'default' if no better directory can be devined.
-
-        // Create the 'self' alias record. Note that the self
-        // record will be named '@self' if it is manually constructed
-        // here, and will otherwise have the name of the
-        // alias or site specification used by the user. Also note that if we
-        // pass in a falsy uri the drush config (i.e drush.yml) can not override
-        // it.
-        $uri = $preflightArgs->uri();
-        $data = [
-            'root' => $root,
-        ];
-        if ($uri) {
-            $data['uri'] = $uri;
-        }
-
-        return new AliasRecord($data, '@self');
     }
 }

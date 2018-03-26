@@ -12,6 +12,7 @@ use Drush\SiteAlias\SiteAliasManager;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Sql\SqlBase;
+use Drush\Utils\StringUtils;
 use Webmozart\PathUtil\Path;
 
 class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface
@@ -22,8 +23,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * Install Drupal along with modules/themes/configuration/profile.
      *
      * @command site:install
-     * @param $profile An install profile name. Defaults to 'standard' unless an install profile is marked as a distribution.
-     * @param $additional Additional info for the install profile. The key is in the form [form name].[parameter name]
+     * @param $profile An install profile name. Defaults to 'standard' unless an install profile is marked as a distribution. Additional info for the install profile may also be provided with additional arguments. The key is in the form [form name].[parameter name]
      * @option db-url A Drupal 6 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.
      * @option db-prefix An optional table prefix to use for initial install.
      * @option db-su Account to use when creating a new database. Must have Grant permission (mysql only). Optional.
@@ -47,11 +47,14 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * @usage drush si standard install_configure_form.enable_update_status_emails=NULL
      *   Disable email notification during install and later. If your server has no mail transfer agent, this gets rid of an error during install.
      * @bootstrap root
+     * @kernel installer
      * @aliases si,sin,site-install
      *
      */
-    public function install($profile = '', array $additional, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ])
+    public function install(array $profile, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ])
     {
+        $additional = $profile;
+        $profile = array_shift($additional) ?: '';
         $form_options = [];
         foreach ((array)$additional as $arg) {
             list($key, $value) = explode('=', $arg, 2);
@@ -73,7 +76,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $sql = SqlBase::create($options);
         $db_spec = $sql->getDbSpec();
 
-        $account_pass = $options['account-pass'] ?: drush_generate_password();
+        $account_pass = $options['account-pass'] ?: StringUtils::generatePassword();
         $settings = [
             'parameters' => [
                 'profile' => $profile,
@@ -140,13 +143,10 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             $profile = 'minimal';
         }
         if (empty($profile)) {
-            try {
-                $profile = drupal_get_profile();
-            } catch (ConnectionNotDefinedException $exception) {
-                // This is only a best effort to provide a better default, no harm done
-                // if it fails.
-            }
+            $boot = Drush::bootstrap();
+            $profile = $boot->getKernel()->getInstallProfile();
         }
+
         if (empty($profile)) {
             // If there is an installation profile that acts as a distribution, use it.
             // You can turn your installation profile into a distribution by providing a
@@ -229,7 +229,9 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         }
 
         try {
-            Drush::bootstrapManager()->bootstrapMax(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION);
+            // Get AnnotationData. @todo Find a better way.
+            $annotationData = Drush::getApplication()->find('site:install')->getAnnotationData();
+            Drush::bootstrapManager()->bootstrapMax(DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION, $annotationData);
             $sql = SqlBase::create($commandData->input()->getOptions());
         } catch (\Exception $e) {
             // Ask questions to get our data.
@@ -278,7 +280,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         }
 
         if (!$dir) {
-            throw new \Exception(dt('Could not determine target sites directory for site to install. Use --site-subdir to specify.'));
+            throw new \Exception(dt('Could not determine target sites directory for site to install. Use --sites-subdir to specify.'));
         }
 
         $sites_subdir = Path::join('sites', $dir);
@@ -350,8 +352,16 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         // Strip off the protocol from the provided uri -- however,
         // now we will require that the sites subdir already exist.
         $dir = preg_replace('#[^/]*/*#', '', $dir);
-        if (file_exists(Path::join($root, $dir))) {
+        if ($dir && file_exists(Path::join($root, $dir))) {
             return $dir;
+        }
+        // Find the dir from sites.php file
+        $sites_file = $root . '/sites/sites.php';
+        if (file_exists($sites_file)) {
+            include $sites_file;
+            if (array_key_exists($uri, $sites)) {
+                return $sites[$uri];
+            }
         }
         return false;
     }
@@ -394,4 +404,3 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $_SERVER['SCRIPT_FILENAME'] = DRUPAL_ROOT . '/index.php';
     }
 }
-

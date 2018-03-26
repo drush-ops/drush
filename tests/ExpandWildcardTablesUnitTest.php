@@ -1,6 +1,7 @@
 <?php
 
 namespace Unish;
+
 use \Drush\Sql\SqlTableSelectionTrait;
 
 /**
@@ -9,7 +10,8 @@ use \Drush\Sql\SqlTableSelectionTrait;
   * @group base
   * @group sql
   */
-class WildcardUnitCase extends \PHPUnit_Framework_TestCase {
+class WildcardUnitCase extends \PHPUnit_Framework_TestCase
+{
 
     use SqlTableSelectionTrait;
 

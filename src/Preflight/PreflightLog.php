@@ -2,7 +2,8 @@
 
 namespace Drush\Preflight;
 
-class PreflightLog {
+class PreflightLog
+{
 
     protected $debug;
 
@@ -20,6 +21,7 @@ class PreflightLog {
     public function setDebug($debug)
     {
         $this->debug = $debug;
+        return $this;
     }
 
     public function log($message)

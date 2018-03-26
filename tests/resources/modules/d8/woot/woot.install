@@ -1,0 +1,30 @@
+<?php
+
+/**
+ * Good update.
+ */
+function woot_update_8101() {
+  return t('This is the update message from woot_update_8101');
+}
+
+/**
+ * Failing update.
+ */
+function woot_update_8102() {
+  throw new \Exception('This is the exception message thrown in woot_update_8102');
+}
+
+/**
+ * Another good update.
+ */
+function woot_update_8103() {
+  // By using the theme system we can test that all Drupal modules are fully
+  // loaded when the updates are being performed. The renderer will throw an
+  // exception if this is not the case.
+  $render_array = [
+    '#theme' => 'item_list',
+    '#items' => ['a', 'b'],
+  ];
+  \Drupal::service('renderer')->renderPlain($render_array);
+  return t('This is the update message from woot_update_8103');
+}

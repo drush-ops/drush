@@ -44,7 +44,7 @@ class Runtime
             $message = $e->getMessage();
             // Uncaught exceptions could happen early, before our logger
             // and other classes are initialized. Print them and exit.
-            $this->preflight->logger()->log($message);
+            $this->preflight->logger()->setDebug(true)->log($message);
         }
         return $status;
     }
@@ -63,7 +63,8 @@ class Runtime
         }
 
         $commandfileSearchpath = $this->preflight->getCommandFilePaths();
-        $this->preflight->logger()->log('Commandfile paths: ' . implode(',', $commandfileSearchpath));
+        $this->preflight->logger()->log('Commandfile search paths: ' . implode(',', $commandfileSearchpath));
+        $this->preflight->config()->set('runtime.commandfile.paths', $commandfileSearchpath);
 
         // Require the Composer autoloader for Drupal (if different)
         $loader = $this->preflight->loadSiteAutoloader();

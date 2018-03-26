@@ -4,25 +4,26 @@ namespace Drush\SiteAlias;
 use Symfony\Component\Finder\Finder;
 
 /**
- * Discover alias files of two types:
+ * Discover alias files named:
  *
- * - sitename.alias.yml: contains multiple aliases, one for each of the
+ * - sitename.site.yml: contains multiple aliases, one for each of the
  *     environments of 'sitename'.
- * - group.aliases.yml: contains multiple aliases for all of the sites
- *     in the group 'group'. Each site can have multiple aliases for its
- *     environments.
  *
- * If an alias name is fully specified, with group, sitename and environment,
- * then Drush will load only the group alias file that contains the alias.
- * Otherwise, Drush will first search for the provided alias name in a
- * single-alias alias file. If no such file can be found, then it will try
- * all sitenames in all group alias files.
+ * Drush aliases that contain both a site name and an environment
+ * (e.g. @site.env) will cause Drush to find the file named after
+ * the respective site name and retrieve the specified environment
+ * record.
+ *
+ * Sites may also define a special alias file self.site.yml, which
+ * may be stored in the drush/sites directory relative to either
+ * the Drupal root or the Composer root of the site. The environments
+ * in this file will be merged with the available environments for
+ * the element @self, however it is defined.
  */
 class SiteAliasFileDiscovery
 {
     protected $searchLocations = [];
-    protected $groupAliasFiles;
-    protected $depth = '== 0';
+    protected $depth = '<= 1';
 
     /**
      * Add a location that alias files may be found.
@@ -32,12 +33,21 @@ class SiteAliasFileDiscovery
      */
     public function addSearchLocation($path)
     {
-        $this->groupAliasFiles = null;
         if (is_dir($path)) {
             $this->searchLocations[] = $path;
         }
         return $this;
     }
+
+    /**
+     * Return all of the paths where alias files may be found.
+     * @return string[]
+     */
+    public function searchLocations()
+    {
+        return $this->searchLocations;
+    }
+
 
     /**
      * Set the search depth for finding alias files
@@ -52,7 +62,7 @@ class SiteAliasFileDiscovery
     }
 
     /**
-     * Find an alias file SITENAME.alias.yml in one
+     * Find an alias file SITENAME.site.yml in one
      * of the specified search locations.
      *
      * @param string $siteName
@@ -60,56 +70,22 @@ class SiteAliasFileDiscovery
      */
     public function findSingleSiteAliasFile($siteName)
     {
-        $desiredFilename = "$siteName.alias.yml";
-        foreach ($this->searchLocations as $dir) {
-            $check = "$dir/$desiredFilename";
-            if (file_exists($check)) {
-                return $check;
-            }
+        $matches = $this->searchForAliasFiles("$siteName.site.yml");
+        if (empty($matches)) {
+            return false;
         }
-        return false;
+        return reset($matches);
     }
 
     /**
-     * Find a group alias file, GROUPNAME.aliases.yml, in
-     * one of the specified search locations.
-     *
-     * @param string $groupName
-     * @return string|bool
-     */
-    public function findGroupAliasFile($groupName)
-    {
-        $groupAliasFileCache = $this->groupAliasFileCache();
-        if (isset($groupAliasFileCache[$groupName])) {
-            return $groupAliasFileCache[$groupName];
-        }
-
-        return false;
-    }
-
-    /**
-     * Return a list of all GROUPNAME.aliases.yml files in any
-     * of the search locations.
-     *
-     * @return string[]
-     */
-    public function findAllGroupAliasFiles()
-    {
-        $unnamedGroupAliasFiles = $this->findUnnamedGroupAliasFiles();
-        $groupAliasFileCache = $this->groupAliasFileCache();
-
-        return array_merge($unnamedGroupAliasFiles, $groupAliasFileCache);
-    }
-
-    /**
-     * Return a list of all SITENAME.alias.yml files in any of
+     * Return a list of all SITENAME.site.yml files in any of
      * the search locations.
      *
      * @return string[]
      */
     public function findAllSingleAliasFiles()
     {
-        return $this->searchForAliasFiles('*.alias.yml');
+        return $this->searchForAliasFiles('*.site.yml');
     }
 
     /**
@@ -123,32 +99,6 @@ class SiteAliasFileDiscovery
             $this->searchForAliasFiles('*.alias.drushrc.php'),
             $this->searchForAliasFiles('*.aliases.drushrc.php')
         );
-    }
-
-    /**
-     * Return a list of all aliases.yml alias files.
-     *
-     * @return string[]
-     */
-    protected function findUnnamedGroupAliasFiles()
-    {
-        if (empty($this->unknamedGroupAliasFiles)) {
-            $this->unknamedGroupAliasFiles = $this->searchForAliasFiles('aliases.yml');
-        }
-        return $this->unknamedGroupAliasFiles;
-    }
-
-    /**
-     * Prime the cache of all GROUPNAME.aliases.yml files.
-     *
-     * @return string[]
-     */
-    protected function groupAliasFileCache()
-    {
-        if (!isset($this->groupAliasFiles)) {
-            $this->groupAliasFiles = $this->searchForAliasFilesKeyedByBasenamePrefix('.aliases.yml');
-        }
-        return $this->groupAliasFiles;
     }
 
     /**

@@ -145,7 +145,6 @@ function drush_get_global_options($brief = FALSE) {
     $options['ignored-modules']     = ['description' => "Exclude some modules from consideration when searching for drush command files.", 'example-value' => 'token,views'];
     $options['no-label']            = ['description' => "Remove the site label that drush includes in multi-site command output (e.g. `drush @site1,@site2 status`)."];
     $options['label-separator']     = ['description' => "Specify the separator to use in multi-site command output (e.g. `drush @sites pm-list --label-separator=',' --format=csv`).", 'example-value' => ','];
-    $options['nocolor']             = ['context' => 'DRUSH_NOCOLOR', 'propagate-cli-value' => TRUE, 'description' => "Suppress color highlighting on log messages."];
     $options['show-invoke']         = ['description' => "Show all function names which could have been called for the current command. See drush_invoke()."];
     $options['cache-default-class'] = ['description' => "A cache backend class that implements CacheInterface. Defaults to JSONCache.", 'example-value' => 'JSONCache'];
     $options['cache-class-<bin>']   = ['description' => "A cache backend class that implements CacheInterface to use for a specific cache bin.", 'example-value' => 'className'];
@@ -369,138 +368,6 @@ function drush_file_is_tarball($path) {
     return $content_type;
   }
   return FALSE;
-}
-
-/**
- * Extract a tarball.
- *
- * @param string $path
- *   Path to the archive to be extracted.
- * @param string $destination
- *   The destination directory the tarball should be extracted into.
- *   Optional, if ommitted the tarball directory will be used as destination.
- * @param boolean $listing
- *   If TRUE, a listing of the tar contents will be returned on success.
- * @param string $tar_extra_options
- *   Extra options to be passed to the tar command.
- *
- * @return mixed
- *   TRUE on success, FALSE on fail. If $listing is TRUE, a file listing of the
- *   tarball is returned if the extraction reported success, instead of TRUE.
- */
-function drush_tarball_extract($path, $destination = FALSE, $listing = FALSE, $tar_extra_options = '') {
-  // Check if tarball is supported.
-  if (!($mimetype = drush_file_is_tarball($path))) {
-    return drush_set_error('TARBALL_EXTRACT_UNKNOWN_FORMAT', dt('Unable to extract !path. Unknown archive format.', ['!path' => $path]));
-  }
-
-  // Check if destination is valid.
-  if (!$destination) {
-    $destination = dirname($path);
-  }
-  if (!drush_mkdir($destination)) {
-    // drush_mkdir already set an error.
-    return FALSE;
-  }
-
-  // Perform the extraction of a zip file.
-  if (($mimetype == 'application/zip') || ($mimetype == 'application/x-zip')) {
-    $return = drush_shell_cd_and_exec(dirname($path), "unzip %s -d %s", $path, $destination);
-    if (!$return) {
-      return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to unzip !filename.', ['!filename' => $path]));
-    }
-    if ($listing) {
-      // unzip prefixes the file listing output with a header line,
-      // and prefixes each line with a verb representing the compression type.
-      $output = drush_shell_exec_output();
-      // Remove the header line.
-      array_shift($output);
-      // Remove the prefix verb from each line.
-      $output = array_map(
-        function ($str) use ($destination) {
-          return substr($str, strpos($str, ":") + 3 + strlen($destination));
-        },
-        $output
-      );
-      // Remove any remaining blank lines.
-      $return = array_filter(
-        $output,
-        function ($str) {
-          return $str != "";
-        }
-      );
-    }
-  }
-  // Otherwise we have a possibly-compressed Tar file.
-  // If we are not on Windows, then try to do "tar" in a single operation.
-  elseif (!drush_is_windows()) {
-    $tar = drush_get_tar_executable();
-    $tar_compression_flag = '';
-    if ($mimetype == 'application/x-gzip') {
-      $tar_compression_flag = 'z';
-    }
-    elseif ($mimetype == 'application/x-bzip2') {
-      $tar_compression_flag = 'j';
-    }
-
-    $return = drush_shell_cd_and_exec(dirname($path), "$tar {$tar_extra_options} -C %s -x%sf %s", $destination, $tar_compression_flag, basename($path));
-    if (!$return) {
-      return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to untar !filename.', ['!filename' => $path]));
-    }
-    if ($listing) {
-      // We use a separate tar -tf instead of -xvf above because
-      // the output is not the same in Mac.
-      drush_shell_cd_and_exec(dirname($path), "$tar -t%sf %s", $tar_compression_flag, basename($path));
-      $return = drush_shell_exec_output();
-    }
-  }
-  // In windows, do the extraction by its primitive steps.
-  else {
-    // 1. copy the source tarball to the destination directory. Rename to a
-    // temp name in case the destination directory == dirname($path)
-    $tmpfile = drush_tempnam(basename($path), $destination);
-    drush_copy_dir($path, $tmpfile, FILE_EXISTS_OVERWRITE);
-
-    // 2. uncompress the tarball, if compressed.
-    if (($mimetype == 'application/x-gzip') || ($mimetype == 'application/x-bzip2')) {
-      if ($mimetype == 'application/x-gzip') {
-        $compressed = $tmpfile . '.gz';
-        // We used to use gzip --decompress in --stdout > out, but the output
-        // redirection sometimes failed on Windows for some binary output.
-        $command = 'gzip --decompress %s';
-      }
-      elseif ($mimetype == 'application/x-bzip2') {
-        $compressed = $tmpfile . '.bz2';
-        $command = 'bzip2 --decompress %s';
-      }
-      drush_op('rename', $tmpfile, $compressed);
-      $return = drush_shell_cd_and_exec(dirname($compressed), $command, $compressed);
-      if (!$return || !file_exists($tmpfile)) {
-        return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to decompress !filename.', ['!filename' => $compressed]));
-      }
-    }
-
-    // 3. Untar.
-    $tar = drush_get_tar_executable();
-    $return = drush_shell_cd_and_exec(dirname($tmpfile), "$tar {$tar_extra_options} -xvf %s", basename($tmpfile));
-    if (!$return) {
-      return drush_set_error('DRUSH_TARBALL_EXTRACT_ERROR', dt('Unable to untar !filename.', ['!filename' => $tmpfile]));
-    }
-    if ($listing) {
-      $return = drush_shell_exec_output();
-      // Cut off the 'x ' prefix for the each line of the tar output
-      // See http://drupal.org/node/1775520
-      foreach($return as &$line) {
-        if(strpos($line, "x ") === 0)
-          $line = substr($line, 2);
-      }
-    }
-
-    // Remove the temporary file so the md5 hash is accurate.
-    unlink($tmpfile);
-  }
-
-  return $return;
 }
 
 /**
@@ -894,47 +761,6 @@ function drush_memory_limit() {
   return $size;
 }
 
-/**
- * Unset the named key anywhere in the provided
- * data structure.
- */
-function drush_unset_recursive(&$data, $unset_key) {
-  if (!empty($data) && is_array($data)) {
-    unset($data[$unset_key]);
-    foreach ($data as $key => $value) {
-      if (is_array($value)) {
-        drush_unset_recursive($data[$key], $unset_key);
-      }
-    }
-  }
-}
-
-/**
- * Generate a random alphanumeric password.  Copied from user.module.
- */
-function drush_generate_password($length = 10) {
-  // This variable contains the list of allowable characters for the
-  // password. Note that the number 0 and the letter 'O' have been
-  // removed to avoid confusion between the two. The same is true
-  // of 'I', 1, and 'l'.
-  $allowable_characters = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-
-  // Zero-based count of characters in the allowable list:
-  $len = strlen($allowable_characters) - 1;
-
-  // Declare the password as a blank string.
-  $pass = '';
-
-  // Loop the number of times specified by $length.
-  for ($i = 0; $i < $length; $i++) {
-
-    // Each iteration, pick a random character from the
-    // allowable string and append it to the password:
-    $pass .= $allowable_characters[mt_rand(0, $len)];
-  }
-
-  return $pass;
-}
 
 /**
  * Form an associative array from a linear array.
@@ -961,60 +787,4 @@ function drush_map_assoc($array, $function = NULL) {
     $array = array_map($function, $array);
   }
   return $array;
-}
-
-/*
- * Cast a value according to the provided format
- *
- * @param mixed $value.
- * @param string $format
- *   Allowed values: auto, integer, float, bool, boolean, json, yaml.
- *
- * @return $value
- *  The value, re-typed as needed.
- */
-function drush_value_format($value, $format) {
-  if ($format == 'auto') {
-    if (is_numeric($value)) {
-      $value = $value + 0; // http://php.net/manual/en/function.is-numeric.php#107326
-      $format = gettype($value);
-    }
-    elseif (($value == 'TRUE') || ($value == 'FALSE')) {
-      $format = 'bool';
-    }
-  }
-
-  // Now, we parse the object.
-  switch ($format) {
-    case 'integer':
-      $value = (integer)$value;
-      break;
-    // from: http://php.net/gettype
-    // for historical reasons "double" is returned in case of a float, and not simply "float"
-    case 'double':
-    case 'float':
-      $value = (float)$value;
-      break;
-    case 'bool':
-    case 'boolean':
-      if ($value == 'TRUE') {
-        $value = TRUE;
-      }
-      elseif ($value == 'FALSE') {
-        $value = FALSE;
-      }
-      else {
-        $value = (bool)$value;
-      }
-      break;
-
-    case 'json':
-      $value = json_decode($value, true);
-      break;
-
-    case 'yaml':
-      $value = \Symfony\Component\Yaml\Yaml::parse($value, FALSE, TRUE);
-      break;
-  }
-  return $value;
 }

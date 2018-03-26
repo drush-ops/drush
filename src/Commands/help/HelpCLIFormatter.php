@@ -52,7 +52,8 @@ class HelpCLIFormatter implements FormatterInterface
             $formatterManager->write($output, 'table', new RowsOfFields($rows), $options);
         }
 
-        if (array_key_exists('options', $data)) {
+        $this->cleanOptions($data);
+        if (!empty($data['options'])) {
             $rows = [];
             $output->writeln('');
             $output->writeln('<comment>Options:</comment>');
@@ -76,7 +77,7 @@ class HelpCLIFormatter implements FormatterInterface
         }
 
         // @todo Fix this variability in key name upstream.
-        if (array_key_exists('aliases', $data) ? $data['aliases'] :  array_key_exists('alias', $data) ? [$data['alias']] : []) {
+        if (array_key_exists('aliases', $data) ? $data['aliases'] :  (array_key_exists('alias', $data) ? [$data['alias']] : [])) {
             $output->writeln('');
             $output->writeln('<comment>Aliases:</comment> ' . implode(', ', $data['aliases']));
         }
@@ -128,5 +129,16 @@ class HelpCLIFormatter implements FormatterInterface
         }
 
         return $element;
+    }
+
+    protected function cleanOptions(&$data)
+    {
+        if (array_key_exists('options', $data)) {
+            foreach ($data['options'] as $key => $option) {
+                if (substr($option['name'], 0, 8) == '--notify' || substr($option['name'], 0, 5) == '--xh-' || substr($option['name'], 0, 11) == '--druplicon') {
+                    unset($data['options'][$key]);
+                }
+            }
+        }
     }
 }

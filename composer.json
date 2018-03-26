@@ -2,7 +2,7 @@
   "name": "drush/drush",
   "description": "Drush is a command line shell and scripting interface for Drupal, a veritable Swiss Army knife designed to make life easier for those of us who spend some of our working hours hacking away at the command prompt.",
   "homepage": "http://www.drush.org",
-  "license": "GPL-2.0+",
+  "license": "GPL-2.0-or-later",
   "minimum-stability": "dev",
   "prefer-stable": true,
   "authors": [
@@ -26,15 +26,14 @@
   "require": {
     "php": ">=5.6.0",
     "ext-dom": "*",
-    "chi-teck/drupal-code-generator": "^1.17.3",
+    "chi-teck/drupal-code-generator": "^1.21.0",
     "composer/semver": "^1.4",
     "consolidation/annotated-command": "^2.8.1",
-    "consolidation/config": "^1.0.7",
+    "consolidation/config": "^1.0.9",
     "consolidation/output-formatters": "^3.1.12",
     "consolidation/robo": "^1.1.5",
     "grasmash/yaml-expander": "^1.1.1",
     "league/container": "~2",
-    "pear/console_table": "~1.3.0",
     "psr/log": "~1.0",
     "psy/psysh": "~0.6",
     "sebastian/version": "^1|^2",
@@ -55,8 +54,9 @@
   },
   "autoload": {
     "psr-4": {
-      "Drush\\":        "src/",
-      "Unish\\":        "tests/"
+      "Drush\\":            "src/",
+      "Drush\\Internal\\":  "internal-copy/",
+      "Unish\\":            "tests/"
     }
   },
   "config": {
@@ -68,13 +68,15 @@
     }
   },
   "scripts": {
-    "cs": "phpcs -n src tests",
-    "cbf": "phpcbf -n src tests",
+    "cs": "phpcs -n --standard=PSR2 src tests examples",
+    "cbf": "phpcbf -n --standard=PSR2 src tests examples",
     "lint": [
       "find includes -name '*.inc' -print0 | xargs -0 -n1 php -l",
       "find src -name '*.php' -print0 | xargs -0 -n1 php -l",
       "find tests -name '*.php' -print0 | xargs -0 -n1 php -l"
     ],
+    "api": "PATH=$HOME/bin:$PATH sami.phar --ansi update sami-config.php",
+    "sami-install": "mkdir -p $HOME/bin && curl --output $HOME/bin/sami.phar http://get.sensiolabs.org/sami.phar && chmod +x $HOME/bin/sami.phar",
     "isolation": "cd isolation && vendor/bin/phpunit --colors=always",
     "post-update-cmd": "cd isolation && composer update"
   },

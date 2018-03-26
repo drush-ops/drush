@@ -14,11 +14,11 @@ class SqlCommands extends DrushCommands
      * Print database connection details using print_r().
      *
      * @command sql:conf
-     * @command sql-conf
+     * @aliases sql-conf
      * @option all Show all database connections, instead of just one.
      * @option show-passwords Show database password.
      * @optionset_sql
-     * @bootstrap max
+     * @bootstrap max configuration
      * @hidden
      */
     public function conf($options = ['format' => 'yaml', 'all' => false, 'show-passwords' => false])
@@ -49,7 +49,7 @@ class SqlCommands extends DrushCommands
      * @aliases sql-connect
      * @option extra Add custom options to the connect string (e.g. --extra=--skip-column-names)
      * @optionset_sql
-     * @bootstrap max
+     * @bootstrap max configuration
      * @usage `drush sql-connect` < example.sql
      *   Bash: Import SQL statements from a file into the current database.
      * @usage eval (drush sql-connect) < example.sql
@@ -75,7 +75,7 @@ class SqlCommands extends DrushCommands
      *   Create the database as specified for @site.test.
      * @usage drush sql:create --db-su=root --db-su-pw=rootpassword --db-url="mysql://drupal_db_user:drupal_db_password@127.0.0.1/drupal_db"
      *   Create the database as specified in the db-url option.
-     * @bootstrap max
+     * @bootstrap max configuration
      */
     public function create($options = ['db-su' => self::REQ, 'db-su-pw' => self::REQ])
     {
@@ -103,7 +103,7 @@ class SqlCommands extends DrushCommands
      * @command sql:drop
      * @aliases sql-drop
      * @optionset_sql
-     * @bootstrap max
+     * @bootstrap max configuration
      * @topics docs:policy
      */
     public function drop($options = [])
@@ -123,15 +123,15 @@ class SqlCommands extends DrushCommands
      * Open a SQL command-line interface using Drupal's credentials.
      *
      * @command sql:cli
+     * @option extra Add custom options to the connect string (e.g. --extra=--skip-column-names)
      * @optionset_sql
-     * @allow-additional-options sql-connect
      * @aliases sqlc,sql-cli
      * @usage drush sql:cli
      *   Open a SQL command-line interface using Drupal's credentials.
      * @usage drush sql:cli --extra=-A
      *   Open a SQL CLI and skip reading table information.
      * @remote-tty
-     * @bootstrap max
+     * @bootstrap max configuration
      */
     public function cli($options = [])
     {
@@ -161,7 +161,7 @@ class SqlCommands extends DrushCommands
      *   Import sql statements from a file into the current database.
      * @usage drush sql:query --file=example.sql
      *   Alternate way to import sql statements from a file.
-     * @bootstrap max
+     * @bootstrap max configuration
      *
      */
     public function query($query = '', $options = ['result-file' => null, 'file' => self::REQ, 'extra' => self::REQ, 'db-prefix' => false])
@@ -195,7 +195,7 @@ class SqlCommands extends DrushCommands
      * @aliases sql-dump
      * @optionset_sql
      * @optionset_table_selection
-     * @option result-file Save to a file. The file should be relative to Drupal root.
+     * @option result-file Save to a file. The file should be relative to Drupal root. If --result-file is provided with the value 'auto', a date-based filename will be created under ~/drush-backups directory.
      * @option create-db Omit DROP TABLE statements. Used by Postgres and Oracle only.
      * @option data-only Dump data without statements to create any of the schema.
      * @option ordered-dump Order by primary key and add line breaks for efficient diffs. Slows down the dump. Mysql only.
@@ -209,12 +209,12 @@ class SqlCommands extends DrushCommands
      * @usage drush sql:dump --extra-dump=--no-data
      *   Pass extra option to mysqldump command.
      * @hidden-options create-db
-     * @bootstrap max
+     * @bootstrap max configuration
      *
      * @notes
      *   createdb is used by sql-sync, since including the DROP TABLE statements interfere with the import when the database is created.
      */
-    public function dump($options = ['result-file' => null, 'create-db' => false, 'data-only' => false, 'ordered-dump' => false, 'gzip' => false, 'extra' => self::REQ, 'extra-dump' => self::REQ])
+    public function dump($options = ['result-file' => self::REQ, 'create-db' => false, 'data-only' => false, 'ordered-dump' => false, 'gzip' => false, 'extra' => self::REQ, 'extra-dump' => self::REQ])
     {
         $sql = SqlBase::create($options);
         if ($sql->dump() === false) {

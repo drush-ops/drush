@@ -8,7 +8,15 @@ namespace Unish;
  *
  * @group commands
  */
-class RsyncCase extends CommandUnishTestCase {
+class RsyncCase extends CommandUnishTestCase
+{
+
+    public function setUp()
+    {
+        if (!$this->getSites()) {
+            $this->setUpDrupal(2, true);
+        }
+    }
 
   /**
    * Test drush rsync --simulate.
@@ -20,8 +28,8 @@ class RsyncCase extends CommandUnishTestCase {
         }
 
         $options = [
-        'simulate' => null,
-        'alias-path' => __DIR__ . '/resources/alias-fixtures',
+            'simulate' => null,
+            'alias-path' => __DIR__ . '/resources/alias-fixtures',
         ];
 
         // Test simulated simple rsync with two local sites
@@ -41,25 +49,23 @@ class RsyncCase extends CommandUnishTestCase {
 
         // Test simulated backend invoke.
         // Note that command-specific options are not processed for remote
-        // targets. The aliases are not interpreted at all until they recach
+        // targets. The aliases are not interpreted at all until they recache
         // the remote side, at which point they will be evaluated & any needed
         // injection will be done.
         $this->drush('rsync', ['@example.dev', '@example.stage'], $options, 'user@server/path/to/drupal#sitename', null, self::EXIT_SUCCESS, '2>&1');
-        $expected = "Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --alias-path=__DIR__/resources/alias-fixtures --root=/path/to/drupal --uri=sitename --no-ansi --no-interaction rsync '\''@example.dev'\'' '\''@example.stage'\'' 2>&1' 2>&1";
-        $this->assertOutputEquals($expected);
+        $expected = "Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --root=/path/to/drupal --uri=sitename --no-interaction rsync '\''@example.dev'\'' '\''@example.stage'\'' 2>&1' 2>&1";
+        $this->assertOutputEquals($expected, '# --alias-path=[^ ]*#');
     }
 
     public function testRsyncPathAliases()
     {
-
-        $this->setUpDrupal(2, true);
         $aliases = $this->getAliases();
         $source_alias = array_shift($aliases);
         $target_alias = current($aliases);
 
         $options = [
-        'yes' => null,
-        'alias-path' => __DIR__ . '/resources/alias-fixtures',
+            'yes' => null,
+            'alias-path' => __DIR__ . '/resources/alias-fixtures',
         ];
 
         $source = $this->webroot() . '/sites/dev/files/a';
@@ -81,8 +87,8 @@ class RsyncCase extends CommandUnishTestCase {
         file_put_contents($source_file, $test_data);
 
         // We just deleted it -- should be missing
-        $this->assertFalse(file_exists($target_file));
-        $this->assertTrue(file_exists($source_file));
+        $this->assertFileNotExists($target_file);
+        $this->assertFileExists($source_file);
 
         // Test an actual rsync between our two fixture sites. Note that
         // these sites share the same web root.
@@ -90,9 +96,8 @@ class RsyncCase extends CommandUnishTestCase {
         $this->assertContains('You will delete files in', $this->getOutput());
 
         // Test to see if our fixture file now exists at $target
-        $this->assertTrue(file_exists($target_file));
-        $actual = file_get_contents($target_file);
-        $this->assertEquals($test_data, $actual);
+        $this->assertFileExists($target_file);
+        $this->assertStringEqualsFile($target_file, $test_data);
     }
 
   /**
@@ -102,17 +107,14 @@ class RsyncCase extends CommandUnishTestCase {
    */
     public function testRsyncAndPercentFiles()
     {
-        $root = $this->webroot();
         $site = current($this->getAliases());
         $uri = $this->getUri();
-        $options = [
-        'simulate' => null,
-        ];
+        $options['simulate'] = null;
         $this->drush('core-rsync', ["$site:%files", "/tmp"], $options, null, null, self::EXIT_SUCCESS, '2>&1;');
         $output = $this->getOutput();
         $level = $this->logLevel();
         $pattern = in_array($level, ['verbose', 'debug']) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz %s /tmp);";
-        $expected = sprintf($pattern, $this->webroot(). "/sites/$uri/files");
+        $expected = sprintf($pattern, $this->webroot(). "/sites/$uri/files/");
         $this->assertEquals($expected, $output);
     }
 }

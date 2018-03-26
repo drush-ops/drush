@@ -1,17 +1,19 @@
 <?php
 
 namespace Unish;
+
 use Symfony\Component\Yaml\Yaml;
 use Webmozart\PathUtil\Path;
 
-abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
+abstract class UnishTestCase extends \PHPUnit_Framework_TestCase
+{
 
-  /**
-   * A list of Drupal sites that have been recently installed. They key is the
-   * site name and values are details about each site.
-   *
-   * @var array
-   */
+    /**
+     * A list of Drupal sites that have been recently installed. They key is the
+     * site name and values are details about each site.
+     *
+     * @var array
+     */
     private static $sites = [];
 
     private static $sandbox;
@@ -26,17 +28,17 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
 
     private static $backendOutputDelimiter = 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END';
 
-  /**
-   * @return array
-   */
+    /**
+     * @return array
+     */
     public static function getSites()
     {
         return self::$sites;
     }
 
-  /**
-   * @return array
-   */
+    /**
+     * @return array
+     */
     public static function getAliases()
     {
         // Prefix @sut. onto each site.
@@ -51,42 +53,42 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         return self::$sites[$site]['uri'];
     }
 
-  /**
-   * @return string
-   */
+    /**
+     * @return string
+     */
     public static function getDrush()
     {
         return self::$drush;
     }
 
-  /**
-   * @return string
-   */
+    /**
+     * @return string
+     */
     public static function getTmp()
     {
         return self::$tmp;
     }
 
-  /**
-   * @return string
-   */
+    /**
+     * @return string
+     */
     public static function getSandbox()
     {
         return self::$sandbox;
     }
 
-  /**
-   * @return string
-   */
+    /**
+     * @return string
+     */
     public static function getSut()
     {
         return Path::join(self::getTmp(), 'drush-sut');
     }
 
-  /**
-   * - Remove sandbox directory.
-   * - Empty /modules, /profiles, /themes in SUT.
-   */
+    /**
+     * - Remove sandbox directory.
+     * - Empty /modules, /profiles, /themes in SUT.
+     */
     public static function cleanDirs()
     {
         if (empty(getenv('UNISH_DIRTY'))) {
@@ -109,25 +111,25 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         }
     }
 
-  /**
-   * @return string
-   */
+    /**
+     * @return string
+     */
     public static function getDbUrl()
     {
         return self::$db_url;
     }
 
-  /**
-   * @return string
-   */
+    /**
+     * @return string
+     */
     public static function getUserGroup()
     {
         return self::$usergroup;
     }
 
-  /**
-   * @return string
-   */
+    /**
+     * @return string
+     */
     public static function getBackendOutputDelimiter()
     {
         return self::$backendOutputDelimiter;
@@ -155,23 +157,22 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         self::$sandbox = $unish_sandbox;
         self::$usergroup = isset($GLOBALS['UNISH_USERGROUP']) ? $GLOBALS['UNISH_USERGROUP'] : null;
 
-        putenv("CACHE_PREFIX=" . $unish_cache);
+        self::setEnv(['CACHE_PREFIX' => $unish_cache]);
         $home = $unish_sandbox . '/home';
-        putenv("HOME=$home");
-        putenv("HOMEDRIVE=$home");
+        self::setEnv(['HOME' => $home]);
+        self::setEnv(['HOMEDRIVE' => $home]);
         $composer_home = $unish_cache . '/.composer';
-        putenv("COMPOSER_HOME=$composer_home");
-
-        putenv('ETC_PREFIX=' . $unish_sandbox);
-        putenv('SHARE_PREFIX=' . $unish_sandbox);
-        putenv('TEMP=' . Path::join($unish_sandbox, 'tmp'));
-        putenv('DRUSH_AUTOLOAD_PHP=' . PHPUNIT_COMPOSER_INSTALL);
+        self::setEnv(['COMPOSER_HOME' => $composer_home]);
+        self::setEnv(['ETC_PREFIX' => $unish_sandbox]);
+        self::setEnv(['SHARE_PREFIX' => $unish_sandbox]);
+        self::setEnv(['TEMP' => Path::join($unish_sandbox, 'tmp')]);
+        self::setEnv(['DRUSH_AUTOLOAD_PHP' => PHPUNIT_COMPOSER_INSTALL]);
     }
 
-  /**
-   * We used to assure that each class starts with an empty sandbox directory and
-   * a clean environment except for the SUT. History: http://drupal.org/node/1103568.
-   */
+    /**
+     * We used to assure that each class starts with an empty sandbox directory and
+     * a clean environment except for the SUT. History: http://drupal.org/node/1103568.
+     */
     public static function setUpBeforeClass()
     {
         self::cleanDirs();
@@ -190,9 +191,9 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         parent::setUpBeforeClass();
     }
 
-  /**
-   * Runs after all tests in a class are run.
-   */
+    /**
+     * Runs after all tests in a class are run.
+     */
     public static function tearDownAfterClass()
     {
         self::cleanDirs();
@@ -201,16 +202,16 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         parent::tearDownAfterClass();
     }
 
-  /**
-   * Print a log message to the console.
-   *
-   * @param string $message
-   * @param string $type
-   *   Supported types are:
-   *     - notice
-   *     - verbose
-   *     - debug
-   */
+    /**
+     * Print a log message to the console.
+     *
+     * @param string $message
+     * @param string $type
+     *   Supported types are:
+     *     - notice
+     *     - verbose
+     *     - debug
+     */
     public function log($message, $type = 'notice')
     {
         $line = "\nLog: $message\n";
@@ -219,15 +220,15 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
                 if (in_array($type, ['notice', 'verbose'])) {
                     fwrite(STDERR, $line);
                 }
-              break;
+                break;
             case 'debug':
                 fwrite(STDERR, $line);
-              break;
+                break;
             default:
                 if ($type == 'notice') {
                     fwrite(STDERR, $line);
                 }
-              break;
+                break;
         }
     }
 
@@ -251,11 +252,11 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         return self::isWindows() ? "bsdtar.exe" : "tar";
     }
 
-  /**
-   * Print out a tick mark.
-   *
-   * Useful for longer running tests to indicate they're working.
-   */
+    /**
+     * Print out a tick mark.
+     *
+     * Useful for longer running tests to indicate they're working.
+     */
     public function tick()
     {
         static $chars = ['/', '-', '\\', '|'];
@@ -266,11 +267,11 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         }
     }
 
-  /**
-   * Borrowed from Drush.
-   * Checks operating system and returns
-   * supported bit bucket folder.
-   */
+    /**
+     * Borrowed from Drush.
+     * Checks operating system and returns
+     * supported bit bucket folder.
+     */
     public function bitBucket()
     {
         if (!$this->isWindows()) {
@@ -309,16 +310,16 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         return $arg;
     }
 
-  /**
-   * Helper function to generate a random string of arbitrary length.
-   *
-   * Copied from drush_generate_password(), which is otherwise not available here.
-   *
-   * @param $length
-   *   Number of characters the generated string should contain.
-   * @return
-   *   The generated string.
-   */
+    /**
+     * Helper function to generate a random string of arbitrary length.
+     *
+     * Copied from drush_generate_password(), which is otherwise not available here.
+     *
+     * @param $length
+     *   Number of characters the generated string should contain.
+     * @return
+     *   The generated string.
+     */
     public function randomString($length = 10)
     {
         // This variable contains the list of allowable characters for the
@@ -360,9 +361,9 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     {
         $dir = opendir($src);
         self::mkdir($dst);
-        while (false !== ( $file = readdir($dir)) ) {
+        while (false !== ( $file = readdir($dir))) {
             if (( $file != '.' ) && ( $file != '..' )) {
-                if ( is_dir($src . '/' . $file) ) {
+                if (is_dir($src . '/' . $file)) {
                     self::recursiveCopy($src . '/' . $file, $dst . '/' . $file);
                 } else {
                     copy($src . '/' . $file, $dst . '/' . $file);
@@ -373,34 +374,34 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     }
 
 
-  /**
-   * Deletes the specified file or directory and everything inside it.
-   *
-   * Usually respects read-only files and folders. To do a forced delete use
-   * drush_delete_tmp_dir() or set the parameter $forced.
-   *
-   * To avoid permission denied error on Windows, make sure your CWD is not
-   * inside the directory being deleted.
-   *
-   * This is essentially a copy of drush_delete_dir().
-   *
-   * @todo This sort of duplication isn't very DRY. This is bound to get out of
-   *   sync with drush_delete_dir(), as in fact it already has before.
-   *
-   * @param string $dir
-   *   The file or directory to delete.
-   * @param bool $force
-   *   Whether or not to try everything possible to delete the directory, even if
-   *   it's read-only. Defaults to FALSE.
-   * @param bool $follow_symlinks
-   *   Whether or not to delete symlinked files. Defaults to FALSE--simply
-   *   unlinking symbolic links.
-   *
-   * @return bool
-   *   FALSE on failure, TRUE if everything was deleted.
-   *
-   * @see drush_delete_dir()
-   */
+    /**
+     * Deletes the specified file or directory and everything inside it.
+     *
+     * Usually respects read-only files and folders. To do a forced delete use
+     * drush_delete_tmp_dir() or set the parameter $forced.
+     *
+     * To avoid permission denied error on Windows, make sure your CWD is not
+     * inside the directory being deleted.
+     *
+     * This is essentially a copy of drush_delete_dir().
+     *
+     * @todo This sort of duplication isn't very DRY. This is bound to get out of
+     *   sync with drush_delete_dir(), as in fact it already has before.
+     *
+     * @param string $dir
+     *   The file or directory to delete.
+     * @param bool $force
+     *   Whether or not to try everything possible to delete the directory, even if
+     *   it's read-only. Defaults to FALSE.
+     * @param bool $follow_symlinks
+     *   Whether or not to delete symlinked files. Defaults to FALSE--simply
+     *   unlinking symbolic links.
+     *
+     * @return bool
+     *   FALSE on failure, TRUE if everything was deleted.
+     *
+     * @see drush_delete_dir()
+     */
     public static function recursiveDelete($dir, $force = true, $follow_symlinks = false)
     {
         // Do not delete symlinked files, only unlink symbolic links
@@ -428,22 +429,22 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         return rmdir($dir);
     }
 
-  /**
-   * Deletes the contents of a directory.
-   *
-   * This is essentially a copy of drush_delete_dir_contents().
-   *
-   * @param string $dir
-   *   The directory to delete.
-   * @param bool $force
-   *   Whether or not to try everything possible to delete the contents, even if
-   *   they're read-only. Defaults to FALSE.
-   *
-   * @return bool
-   *   FALSE on failure, TRUE if everything was deleted.
-   *
-   * @see drush_delete_dir_contents()
-   */
+    /**
+     * Deletes the contents of a directory.
+     *
+     * This is essentially a copy of drush_delete_dir_contents().
+     *
+     * @param string $dir
+     *   The directory to delete.
+     * @param bool $force
+     *   Whether or not to try everything possible to delete the contents, even if
+     *   they're read-only. Defaults to FALSE.
+     *
+     * @return bool
+     *   FALSE on failure, TRUE if everything was deleted.
+     *
+     * @see drush_delete_dir_contents()
+     */
     public static function recursiveDeleteDirContents($dir, $force = false)
     {
         $scandir = @scandir($dir);
@@ -475,10 +476,10 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         return getenv('CACHE_PREFIX') . '/' . $subdir;
     }
 
-  /**
-   * @param $env
-   * @return string
-   */
+    /**
+     * @param $env
+     * @return string
+     */
     public function dbUrl($env)
     {
         return substr(self::getDbUrl(), 0, 6) == 'sqlite'  ?  "sqlite://sites/$env/files/unish.sqlite" : self::getDbUrl() . '/unish_' . $env;
@@ -489,13 +490,13 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
         return parse_url($db_url ?: self::getDbUrl(), PHP_URL_SCHEME);
     }
 
-  /**
-   * Create some fixture sites that only have a 'settings.php' file
-   * with a database record.
-   *
-   * @param array $sites key=site_subder value=array of extra alias data
-   * @param string $aliasGroup Write aliases into a file named group.alias.yml
-   */
+    /**
+     * Create some fixture sites that only have a 'settings.php' file
+     * with a database record.
+     *
+     * @param array $sites key=site_subder value=array of extra alias data
+     * @param string $aliasGroup Write aliases into a file named group.alias.yml
+     */
     public function setUpSettings(array $sites, $aliasGroup = 'fixture')
     {
         foreach ($sites as $subdir => $extra) {
@@ -531,11 +532,11 @@ EOT;
         self::mkdir(dirname($settingsPath));
         file_put_contents($settingsPath, $settingsContents);
     }
-  /**
-   * Assemble (and optionally install) one or more Drupal sites using a single codebase.
-   *
-   * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
-   */
+    /**
+     * Assemble (and optionally install) one or more Drupal sites using a single codebase.
+     *
+     * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
+     */
     public function setUpDrupal($num_sites = 1, $install = false)
     {
         $sites_subdirs_all = ['dev', 'stage', 'prod', 'retired', 'elderly', 'dead', 'dust'];
@@ -584,11 +585,11 @@ EOT;
         return $sites;
     }
 
-  /**
-   * Install a Drupal site.
-   *
-   * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
-   */
+    /**
+     * Install a Drupal site.
+     *
+     * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
+     */
     public function installDrupal($env = 'dev', $install = false)
     {
         $root = $this->webroot();
@@ -613,11 +614,11 @@ EOT;
         }
     }
 
-  /**
-   * Write an alias group file and a config file which points to same dir.
-   *
-   * @param $sites
-   */
+    /**
+     * Write an alias group file and a config file which points to same dir.
+     *
+     * @param $sites
+     */
     public function writeSiteAliases($sites, $aliasGroup = 'unish')
     {
         $this->writeUnishConfig($sites, [], $aliasGroup);
@@ -626,16 +627,35 @@ EOT;
     public function writeUnishConfig($unishAliases, $config = [], $aliasGroup = 'unish')
     {
         $etc = self::getSandbox() . '/etc/drush';
-        file_put_contents(Path::join($etc, $aliasGroup . '.alias.yml'), Yaml::dump($unishAliases, PHP_INT_MAX, 2));
-        $config['drush']['paths']['alias-path'][] = $etc;
+        $aliases_dir = Path::join($etc, 'sites');
+        @mkdir($aliases_dir);
+        file_put_contents(Path::join($aliases_dir, $aliasGroup . '.site.yml'), Yaml::dump($unishAliases, PHP_INT_MAX, 2));
+        $config['drush']['paths']['alias-path'][] = $aliases_dir;
         file_put_contents(Path::join($etc, 'drush.yml'), Yaml::dump($config, PHP_INT_MAX, 2));
     }
 
-  /**
-   * The sitewide directory for Drupal extensions.
-   */
+    /**
+     * The sitewide directory for Drupal extensions.
+     */
     public function drupalSitewideDirectory()
     {
         return '/sites/all';
+    }
+
+    /**
+     * Set environment variables that should be passed to child processes.
+     *
+     * @param array $vars
+     *   The variables to set.
+     *
+     *   We will change implementation to take advantage of https://github.com/symfony/symfony/pull/19053/files once we drop Symfony 2 compat.
+     */
+    public static function setEnv(array $vars)
+    {
+        foreach ($vars as $k => $v) {
+            putenv($k . '=' . $v);
+            // Value must be a string. See \Symfony\Component\Process\Process::getDefaultEnv.
+            $_SERVER[$k]= (string) $v;
+        }
     }
 }

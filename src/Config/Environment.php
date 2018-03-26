@@ -4,6 +4,7 @@ namespace Drush\Config;
 use Composer\Autoload\ClassLoader;
 
 use Drush\Drush;
+use Drush\Utils\FsUtils;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -19,6 +20,7 @@ class Environment
     protected $vendorDir;
 
     protected $docPrefix;
+    protected $configFileVariant;
 
     protected $loader;
     protected $siteLoader;
@@ -36,7 +38,7 @@ class Environment
         $this->etcPrefix = '';
         $this->sharePrefix = '';
         $this->drushBasePath = dirname(dirname(__DIR__));
-        $this->vendorDir = dirname($autoloadFile);
+        $this->vendorDir = FsUtils::realpath(dirname($autoloadFile));
     }
 
     /**
@@ -143,9 +145,7 @@ class Environment
 
     /**
      * Convert the environment object into an exported configuration
-     * array. This will be fed though the EnvironmentConfigLoader to
-     * be added into the ConfigProcessor, where it will become accessible
-     * via the configuration object.
+     * array.
      *
      * @see PreflightArgs::applyToConfig(), which also exports information to config.
      *
@@ -229,6 +229,21 @@ class Environment
     public function userConfigPath()
     {
         return $this->homeDir() . '/.drush';
+    }
+
+    public function setConfigFileVariant($variant)
+    {
+        $this->configFileVariant = $variant;
+    }
+
+    /**
+     * Get the config file variant -- defined to be
+     * the Drush major version number. This is for
+     * loading drush.yml and drush9.yml, etc.
+     */
+    public function getConfigFileVariant()
+    {
+        return $this->configFileVariant;
     }
 
     /**

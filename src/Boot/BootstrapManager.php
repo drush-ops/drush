@@ -2,6 +2,7 @@
 
 namespace Drush\Boot;
 
+use Consolidation\AnnotatedCommand\AnnotationData;
 use Robo\Common\ConfigAwareTrait;
 use DrupalFinder\DrupalFinder;
 use Drush\Log\LogLevel;
@@ -254,13 +255,15 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      *   function itself but can be useful for other code called from within this
      *   function, to know if e.g. a caller is in the process of booting to the
      *   specified level. If specified, it should never be lower than $phase.
+     * @param \Consolidation\AnnotatedCommand\AnnotationData $annotationData
+     *   Optional annotation data from the command.
      *
      * @return bool
      *   TRUE if the specified bootstrap phase has completed.
      *
      * @see \Drush\Boot\Boot::bootstrapPhases()
      */
-    public function doBootstrap($phase, $phase_max = false)
+    public function doBootstrap($phase, $phase_max = false, AnnotationData $annotationData = null)
     {
         $bootstrap = $this->bootstrap();
         $phases = $this->bootstrapPhases(true);
@@ -289,7 +292,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                 if ($result = $this->bootstrapValidate($phase_index)) {
                     if (method_exists($bootstrap, $current_phase) && !drush_get_error()) {
                         $this->logger->log(LogLevel::BOOTSTRAP, 'Drush bootstrap phase: {function}()', ['function' => $current_phase]);
-                        $bootstrap->{$current_phase}();
+                        $bootstrap->{$current_phase}($annotationData);
                     }
                     drush_set_context('DRUSH_BOOTSTRAP_PHASE', $phase_index);
                 }
@@ -379,11 +382,17 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      *
      * @param string $bootstrapPhase
      *   Name of phase to bootstrap to. Will be converted to appropriate index.
+     * @param \Consolidation\AnnotatedCommand\AnnotationData $annotationData
+     *   Optional annotation data from the command.
      *
      * @return bool
      *   TRUE if the specified bootstrap phase has completed.
+     *
+     * @throws \Exception
+     *   Thrown when an unknown bootstrap phase is passed in the annotation
+     *   data.
      */
-    public function bootstrapToPhase($bootstrapPhase)
+    public function bootstrapToPhase($bootstrapPhase, AnnotationData $annotationData = null)
     {
         $this->logger->log(LogLevel::BOOTSTRAP, 'Bootstrap to {phase}', ['phase' => $bootstrapPhase]);
         $phase = $this->bootstrap()->lookUpPhaseIndex($bootstrapPhase);
@@ -395,7 +404,18 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         if (!array_key_exists($phase, $phases) && ($phase >= 0)) {
             return false;
         }
-        return $this->bootstrapToPhaseIndex($phase);
+        return $this->bootstrapToPhaseIndex($phase, $annotationData);
+    }
+
+    protected function maxPhaseLimit($bootstrap_str)
+    {
+        $bootstrap_words = explode(' ', $bootstrap_str);
+        array_shift($bootstrap_words);
+        if (empty($bootstrap_words)) {
+            return null;
+        }
+        $stop_phase_name = array_shift($bootstrap_words);
+        return $this->bootstrap()->lookUpPhaseIndex($stop_phase_name);
     }
 
     /**
@@ -403,14 +423,19 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      *
      * @param int $max_phase_index
      *   Only attempt bootstrap to the specified level.
+     * @param \Consolidation\AnnotatedCommand\AnnotationData $annotationData
+     *   Optional annotation data from the command.
      *
      * @return bool
      *   TRUE if the specified bootstrap phase has completed.
      */
-    public function bootstrapToPhaseIndex($max_phase_index)
+    public function bootstrapToPhaseIndex($max_phase_index, AnnotationData $annotationData = null)
     {
         if ($max_phase_index == DRUSH_BOOTSTRAP_MAX) {
-            $this->bootstrapMax();
+            // Try get a max phase.
+            $bootstrap_str = $annotationData->get('bootstrap');
+            $stop_phase = $this->maxPhaseLimit($bootstrap_str);
+            $this->bootstrapMax($stop_phase);
             return true;
         }
 
@@ -430,7 +455,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
             if ($this->bootstrapValidate($phase_index)) {
                 if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE)) {
                     $this->logger->log(LogLevel::BOOTSTRAP, 'Try to bootstrap at phase {phase}', ['phase' => $max_phase_index]);
-                    $result = $this->doBootstrap($phase_index, $max_phase_index);
+                    $result = $this->doBootstrap($phase_index, $max_phase_index, $annotationData);
                 }
             } else {
                 $this->logger->log(LogLevel::BOOTSTRAP, 'Could not bootstrap at phase {phase}', ['phase' => $max_phase_index]);
@@ -447,11 +472,13 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      *
      * @param int $max_phase_index
      *   (optional) Only attempt bootstrap to the specified level.
+     * @param \Consolidation\AnnotatedCommand\AnnotationData $annotationData
+     *   Optional annotation data from the command.
      *
      * @return int
      *   The maximum phase to which we bootstrapped.
      */
-    public function bootstrapMax($max_phase_index = false)
+    public function bootstrapMax($max_phase_index = false, AnnotationData $annotationData = null)
     {
         // Bootstrap as far as we can without throwing an error, but log for
         // debugging purposes.
@@ -474,7 +501,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
 
             if ($this->bootstrapValidate($phase_index)) {
                 if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE')) {
-                    $this->doBootstrap($phase_index, $max_phase_index);
+                    $this->doBootstrap($phase_index, $max_phase_index, $annotationData);
                 }
             } else {
                 // $this->bootstrapValidate() only logs successful validations. For us,

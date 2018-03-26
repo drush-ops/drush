@@ -9,9 +9,7 @@
     "php": ">=5.6.0",
     "ext-dom": "*",
     "psr/log": "~1.0",
-    "consolidation/config": "^1.0.5",
-    "grasmash/yaml-expander": "^1.1.1",
-    "symfony/yaml": "~2.3|^3",
+    "consolidation/config": "^1.0.9",
     "symfony/var-dumper": "~2.7|^3",
     "symfony/finder": "~2.7|^3",
     "webflo/drupal-finder": "^0",
@@ -24,7 +22,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Drush\\": "../src/"
+      "Drush\\": "../src/",
+      "Drush\\Internal\\":  "../internal-copy/"
     }
   },
   "autoload-dev": {

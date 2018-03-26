@@ -2,6 +2,7 @@
 namespace Drush\SiteAlias;
 
 use Symfony\Component\Yaml\Yaml;
+use Dflydev\DotAccessData\Data;
 
 /**
  * Find all legacy alias files and convert them to an equivalent '.yml' file.
@@ -30,6 +31,11 @@ class LegacyAliasConverter
      * @var boolean
      */
     protected $simulate = false;
+
+    /**
+     * @var array
+     */
+    protected $convertedFileMap = [];
 
     /**
      * LegacyAliasConverter constructor.
@@ -144,7 +150,10 @@ class LegacyAliasConverter
             return Yaml::dump($data, PHP_INT_MAX, $indent, false, true);
         }
 
-        $recoverSource = basename($path, '.yml') . '.drushrc.php';
+        $recoverSource = $this->recoverLegacyFile($path);
+        if (!$recoverSource) {
+            $recoverSource = 'the source alias file';
+        }
         $contents = <<<EOT
 # This is a placeholder file used to track when $recoverSource was converted.
 # If you delete $recoverSource, then you may delete this file.
@@ -186,7 +195,7 @@ EOT;
         // If the user deletes the checksum file, then we will never
         // overwrite the file again. This also covers potential collisions,
         // where the user might not realize that a legacy alias file
-        // would write to a new alias.yml file they created manually.
+        // would write to a new site.yml file they created manually.
         if (!file_exists($checksumPath)) {
             return false;
         }
@@ -212,6 +221,7 @@ EOT;
 # Delete this checksum file or modify $name to prevent further updates to it.
 EOT;
         $checksum = $this->calculateChecksum($contents);
+        @mkdir(dirname($checksumPath));
         file_put_contents($checksumPath, "{$comment}\n{$checksum}");
     }
 
@@ -225,7 +235,7 @@ EOT;
 
     protected function checksumPath($path)
     {
-        return dirname($path) . '/.' . basename($path, '.yml') . '.md5';
+        return dirname($path) . '/.checksums/' . basename($path, '.yml') . '.md5';
     }
 
     protected function calculateChecksum($data)
@@ -235,7 +245,7 @@ EOT;
 
     protected function determineConvertedFilename($legacyFile)
     {
-        $convertedFile = preg_replace('#\.drushrc\.php$#', '.yml', $legacyFile);
+        $convertedFile = preg_replace('#\.alias(|es)\.drushrc\.php$#', '.site.yml', $legacyFile);
         // Sanity check: if no replacement was done on the filesystem, then
         // we will presume that no conversion is needed here after all.
         if ($convertedFile == $legacyFile) {
@@ -249,7 +259,21 @@ EOT;
         if (!empty($this->target)) {
             $convertedFile = basename($convertedFile);
         }
+        $this->cacheConvertedFilePath($legacyFile, $convertedFile);
         return $convertedFile;
+    }
+
+    protected function cacheConvertedFilePath($legacyFile, $convertedFile)
+    {
+        $this->convertedFileMap[basename($convertedFile)] = basename($legacyFile);
+    }
+
+    protected function recoverLegacyFile($convertedFile)
+    {
+        if (!isset($this->convertedFileMap[basename($convertedFile)])) {
+            return false;
+        }
+        return $this->convertedFileMap[basename($convertedFile)];
     }
 
     protected function checkNeedsConversion($legacyFile, $convertedFile)
@@ -301,16 +325,11 @@ EOT;
 
     protected function convertMultipleAliasesLegacyFile($legacyFile, $aliases, $options)
     {
-        $groupName = basename($legacyFile, '.aliases.drushrc.php') . '.';
-        if ($groupName == $legacyFile) {
-            $groupName = '';
-        }
-
         $result = [];
         foreach ($aliases as $aliasName => $data) {
             // 'array_merge' is how Drush 8 combines these records.
             $data = array_merge($options, $data);
-            $convertedAlias = $this->convertAlias($groupName . $aliasName, $data, dirname($legacyFile));
+            $convertedAlias = $this->convertAlias($aliasName, $data, dirname($legacyFile));
             $result = static::arrayMergeRecursiveDistinct($result, $convertedAlias);
         }
         return $result;
@@ -319,34 +338,23 @@ EOT;
     protected function convertAlias($aliasName, $data, $dir = '')
     {
         $env = 'dev';
-        $group = '';
         // We allow $aliasname to be:
         //   - sitename
         //   - sitename.env
         //   - group.sitename.env
-        // If there are any more dots than that, we assume
-        // that the extras are part of the sitename, and
-        // convert to:
-        //   - group.site-name.env
+        // In the case of the last, we will convert to
+        // 'group-sitename.env' (and so on for any additional dots).
         // First, we will strip off the 'env' if it is present.
         if (preg_match('/(.*)\.([^.]+)$/', $aliasName, $matches)) {
             $aliasName = $matches[1];
             $env = $matches[2];
         }
-        // Next, strip off the 'group' if there is one.
-        if (preg_match('/^([^.]+)\.(.*)/', $aliasName, $matches)) {
-            $group = $matches[1];
-            $aliasName = $matches[2];
-        }
-        // Finally, convert all remaining dots to dashes.
+        // Convert all remaining dots to dashes.
         $aliasName = strtr($aliasName, '.', '-');
 
         $data = $this->fixSiteData($data);
 
-        if (empty($group)) {
-            return $this->convertSingleFileAlias($aliasName, $env, $data, $dir);
-        }
-        return $this->convertGroupAlias($group, $aliasName, $env, $data, $dir);
+        return $this->convertSingleFileAlias($aliasName, $env, $data, $dir);
     }
 
     protected function fixSiteData($data)
@@ -379,9 +387,30 @@ EOT;
         }
         ksort($data);
 
-        return $data;
+        return $this->remapData($data);
     }
 
+    protected function remapData($data)
+    {
+        $converter = new Data($data);
+
+        foreach ($this->dataRemap() as $from => $to) {
+            if ($converter->has($from)) {
+                $converter->set($to, $converter->get($from));
+                $converter->remove($from);
+            }
+        }
+
+        return $converter->export();
+    }
+
+    /**
+     * Anything in the key of the returned array is converted
+     * and written to a new top-level item in the result.
+     *
+     * Anything NOT identified by the key in the returned array
+     * is moved to the 'options' element.
+     */
     protected function keyConversion()
     {
         return [
@@ -390,6 +419,22 @@ EOT;
             'root' => 'root',
             'uri' => 'uri',
             'path-aliases' => 'paths',
+        ];
+    }
+
+    /**
+     * This table allows for flexible remapping from one location
+     * in the original alias to any other location in the target
+     * alias.
+     *
+     * n.b. Most arbitrary data from the original alias will have
+     * been moved into the 'options' element before this remapping
+     * table is consulted.
+     */
+    protected function dataRemap()
+    {
+        return [
+            'options.ssh-options' => 'ssh.options',
         ];
     }
 
@@ -408,24 +453,10 @@ EOT;
 
     protected function convertSingleFileAlias($aliasName, $env, $data, $dir = '')
     {
-        $filename = $this->outputFilename($aliasName, '.alias.yml', $dir);
+        $filename = $this->outputFilename($aliasName, '.site.yml', $dir);
         return [
             $filename => [
                 $env => $data,
-            ],
-        ];
-    }
-
-    protected function convertGroupAlias($group, $aliasName, $env, $data, $dir = '')
-    {
-        $filename = $this->outputFilename($group, '.aliases.yml', $dir);
-        return [
-            $filename => [
-                'sites' => [
-                    $aliasName => [
-                        $env => $data,
-                    ],
-                ],
             ],
         ];
     }

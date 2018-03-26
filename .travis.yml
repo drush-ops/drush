@@ -12,6 +12,7 @@ php:
 #  See master-fulltest branch for broader PHP version testing.
   - 5.6
   - 7.0
+  - 7.2
 
 # Cache Composer.
 cache:
@@ -26,32 +27,23 @@ env:
     - TEST_DIR=isolation ISOLATION_INSTALL='install --prefer-dist'
     - TEST_DIR=isolation ISOLATION_INSTALL='update --prefer-dist --prefer-lowest'
     - TEST_DIR=isolation ISOLATION_INSTALL='update --prefer-dist'
-    - PHPUNIT_ARGS=--group=base
-    - PHPUNIT_ARGS=--group=commands
-    - PHPUNIT_ARGS=--exclude-group=base,commands
-    - COMPOSER=composer-highest.json PHPUNIT_ARGS=--group=base
-    - COMPOSER=composer-highest.json PHPUNIT_ARGS=--group=commands
-    - COMPOSER=composer-highest.json PHPUNIT_ARGS=--exclude-group=base,commands
   global:
-    # Github deploy
+    # GitHub deploy
     - secure: VfYokT2CchfuBRJp9/gSwfVGPfsVfkZdDVEuNWEqxww3z4vq+5aLKqoCtPL54E5EIMjhyCE3GVo+biG35Gab1KOVgUs8zD1hAUWA1FPKfMFhoPDfI3ZJC2rX2T1iWK4ZR90pBtcPzS+2OObzTYz8go0PfeSTT6eq69Na1KcNLaE=
     - UNISH_NO_TIMEOUTS=y
     - UNISH_DB_URL=mysql://root:@127.0.0.1
     - UNISH_TMP=/tmp
 
-matrix:
-  allow_failures:
-    - php: 7.0
-      env: COMPOSER=composer-highest.json
+
 
 before_install:
   - echo 'mbstring.http_input = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo 'mbstring.http_output = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - echo 'memory_limit = -1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
 # Build a System-Under-Test.
 install:
-  - if [ -n "$TEST_DIR" ] ; then composer -n --working-dir=${PWD}/$TEST_DIR $ISOLATION_INSTALL ; fi
-  - if [ -z "$TEST_DIR" ] ; then ${PWD}/unish.sut.php ; fi
+  - composer -n --working-dir=${PWD}/$TEST_DIR $ISOLATION_INSTALL
 
 before_script:
   - phpenv config-rm xdebug.ini
@@ -59,8 +51,12 @@ before_script:
   # - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
 
 script:
-  - if [ -n "$TEST_DIR" ] ; then cd $TEST_DIR && phpunit ; fi
-  - if [ -z "$TEST_DIR" ] ; then ${PWD}/unish.phpunit.php $PHPUNIT_ARGS; fi
+  - cd $TEST_DIR && phpunit
 
-# Background: https://github.com/drush-ops/drush/pull/1426
-after_success: ${PWD}/tests/testChildren.sh
+after_success:
+  # Publish updated API documentation on every push to the master branch
+  - git config --global user.email $GITHUB_USER_EMAIL
+  - git config --global user.name "Drush Documentation Bot"
+  - cd $TRAVIS_BUILD_DIR && build/scripts/publish-api-docs.sh
+  # Background: https://github.com/drush-ops/drush/pull/1426
+  #- ${PWD}/tests/testChildren.sh
