@@ -1,0 +1,6 @@
+{
+    "_comment": "Copy this file in the same location but without the .dist extension and add your own dependencies to be used in tests.",
+    "require": {
+
+    }
+}

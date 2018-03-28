@@ -32,6 +32,10 @@ function unish_setup_sut($unish_sandbox) {
   drush_delete_dir($working_dir, TRUE);
   $codebase = __DIR__ . '/tests/resources/codebase';
   drush_copy_dir($codebase, $working_dir);
+  // Copy the custom composer file, if exists.
+  if (file_exists(__DIR__ . '/tests/composer.json')) {
+    copy(__DIR__ . '/tests/composer.json', $working_dir . '/composer.custom.json');
+  }
   $drush_project_root = escapeshellarg(__DIR__);
   $composer_dir = escapeshellarg($working_dir);
   // n.b. we expect the COMPOSER environment variable to be set to specify the target composer.json file
@@ -74,6 +78,12 @@ EOT;
   if (!is_dir(__DIR__ . '/vendor')) {
     symlink("$target_dir/vendor", __DIR__ . '/vendor');
   }
+
+  // Create a symlink to modules directory in Drush root, so that PHPUnit is able to discover module Unish tests.
+  $modules_dir = "$target_dir/web/modules";
+  $modules_symlink = __DIR__ . '/modules';
+  @unlink($modules_symlink);
+  symlink($modules_dir, $modules_symlink);
 
   return $return;
 }

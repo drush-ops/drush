@@ -11,3 +11,5 @@ api
 .idea/
 # https://github.com/drush-ops/drush/issues/2688
 composer.lock
+/tests/composer.json
+/modules

@@ -6,6 +6,8 @@
   <testsuites>
     <testsuite name="Drush Test Suite">
       <directory>.</directory>
+      <!-- Also discover Unish tests in contrib modules. -->
+      <directory>../modules/unish/*/tests/src/Unish</directory>
     </testsuite>
   </testsuites>
 
