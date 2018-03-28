@@ -89,17 +89,16 @@ class InputHandler extends BaseInputHandler
             // Name question.
             if (isset($questions['name'])) {
                 $questions['name']->setAutocompleterValues($modules);
-                $default_name = function ($vars) use ($root_directory) {
-                    return Utils::machine2human(isset($vars['machine_name']) ? $vars['machine_name'] : $root_directory);
+                $default_name = function () use ($root_directory) {
+                  return $root_directory ? Utils::human2machine($root_directory) : '';
                 };
                 $this->setQuestionDefault($questions['name'], $default_name);
             }
 
             // Machine name question.
             $questions['machine_name']->setAutocompleterValues(array_keys($modules));
-            $default_machine_name = function ($vars) use ($modules, $root_directory) {
-                $machine_name = array_search($vars['name'], $modules);
-                return $machine_name ?: Utils::human2machine(isset($vars['name']) ? $vars['name'] : $root_directory);
+            $default_machine_name = function () use ($root_directory) {
+                return $root_directory ? Utils::human2machine($root_directory) : '';
             };
             $this->setQuestionDefault($questions['machine_name'], $default_machine_name);
 
@@ -118,9 +117,8 @@ class InputHandler extends BaseInputHandler
 
             // Machine name question.
             $questions['machine_name']->setAutocompleterValues(array_keys($themes));
-            $default_machine_name = function ($vars) use ($themes, $root_directory) {
-                $machine_name = array_search($vars['name'], $themes);
-                return $machine_name ?: Utils::human2machine(isset($vars['name']) ? $vars['name'] : $root_directory);
+            $default_machine_name = function () use ($root_directory) {
+                return $root_directory ? Utils::human2machine($root_directory) : '';
             };
             $this->setQuestionDefault($questions['machine_name'], $default_machine_name);
         } elseif (isset($questions['name'])) {
