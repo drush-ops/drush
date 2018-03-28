@@ -76,7 +76,7 @@ class SqlPgsql extends SqlBase
     public function createdbSql($dbname, $quoted = false)
     {
         if ($quoted) {
-            $dbname = '`' . $dbname . '`';
+            $dbname = '"' . $dbname . '"';
         }
         $sql[] = sprintf('drop database if exists %s;', $dbname);
         $sql[] = sprintf("create database %s ENCODING 'UTF8';", $dbname);
