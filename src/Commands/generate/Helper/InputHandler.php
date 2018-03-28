@@ -97,9 +97,7 @@ class InputHandler extends BaseInputHandler
 
             // Machine name question.
             $questions['machine_name']->setAutocompleterValues(array_keys($modules));
-            $default_machine_name = function () use ($root_directory) {
-                return $root_directory ? Utils::human2machine($root_directory) : '';
-            };
+            $default_machine_name = $root_directory ? Utils::human2machine($root_directory) : '';
             $this->setQuestionDefault($questions['machine_name'], $default_machine_name);
 
         // Theme related generators.
@@ -117,9 +115,7 @@ class InputHandler extends BaseInputHandler
 
             // Machine name question.
             $questions['machine_name']->setAutocompleterValues(array_keys($themes));
-            $default_machine_name = function () use ($root_directory) {
-                return $root_directory ? Utils::human2machine($root_directory) : '';
-            };
+            $default_machine_name = $root_directory ? Utils::human2machine($root_directory) : '';
             $this->setQuestionDefault($questions['machine_name'], $default_machine_name);
         } elseif (isset($questions['name'])) {
             // For other generator types simply reset default value set by DCG.
