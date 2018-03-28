@@ -89,9 +89,7 @@ class InputHandler extends BaseInputHandler
             // Name question.
             if (isset($questions['name'])) {
                 $questions['name']->setAutocompleterValues($modules);
-                $default_name = function () use ($root_directory) {
-                  return $root_directory ? Utils::human2machine($root_directory) : '';
-                };
+                $default_name = $root_directory ? Utils::machine2human($root_directory) : '';
                 $this->setQuestionDefault($questions['name'], $default_name);
             }
 
