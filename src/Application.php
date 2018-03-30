@@ -240,8 +240,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
                 if (!$this->bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
                     // Unable to fully bootstrap. Give targetted error message.
                     throw new CommandNotFoundException(dt('Command !command was not found. Drush successfully connected to the database but was unable to fully bootstrap your site. As a result, many commands are unavailable. Re-run your command with --debug to see relevant log messages.', ['!command' => $name]));
-                }
-                else {
+                } else {
                     // We fully bootstrapped but still could not find command. Rethrow.
                     throw $e;
                 }
