@@ -231,7 +231,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
 
             // Try to find it again, now that we bootstrapped as far as possible.
             try {
-                parent::find($name);
+                return parent::find($name);
             } catch (CommandNotFoundException $e) {
                 if (!$this->bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
                     // Unable to bootstrap to DB. Give targetted error message.
