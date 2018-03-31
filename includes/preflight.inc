@@ -63,22 +63,6 @@ function drush_shutdown() {
     _drush_postmortem();
   }
 
-  // @todo Allow the bootstrap objects to register shutdown handlers on
-  // the bootstrap manager, and remove them when the bootstrap phase succeeds.
-  $phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
-  if (drush_get_context('DRUSH_BOOTSTRAPPING')) {
-    switch ($phase) {
-      case DRUSH_BOOTSTRAP_DRUPAL_FULL :
-        ob_end_clean();
-        _drush_log_drupal_messages();
-        $message = dt("Drush was not able to start (bootstrap) Drupal.\n");
-        $message .= dt("Hint: This error can only occur once the database connection has already been successfully initiated, therefore this error generally points to a site configuration issue, and not a problem connecting to the database.\n");
-        $message .= dt('More information may be available by running `drush status`');
-        drush_set_error($message);
-        break;
-    }
-  }
-
   if (Drush::backend()) {
     drush_backend_output();
   }
