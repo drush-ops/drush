@@ -10,7 +10,6 @@ use Drupal\language\Entity\ConfigurableLanguage;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 
-
 class LanguageCommands extends DrushCommands
 {
 
@@ -189,5 +188,4 @@ class LanguageCommands extends DrushCommands
             batch_set($batch);
         }
     }
-
 }
