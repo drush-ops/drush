@@ -26,6 +26,11 @@ services:
     arguments: ['@module_handler', '@state']
     tags:
       -  { name: drush.command }
+  messenger.commands:
+      class: \Drush\Drupal\Commands\core\MessengerCommands
+      arguments: ['@messenger']
+      tags:
+        -  { name: drush.command }
   queue.commands:
     class: \Drush\Drupal\Commands\core\QueueCommands
     arguments: ['@plugin.manager.queue_worker', '@queue']

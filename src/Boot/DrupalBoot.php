@@ -308,6 +308,5 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapDrupalFull()
     {
-        _drush_log_drupal_messages();
     }
 }
