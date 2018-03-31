@@ -79,6 +79,9 @@ class PmCommands extends DrushCommands
         if (!$this->getModuleInstaller()->install($modules, true)) {
             throw new \Exception('Unable to install modules.');
         }
+        if (batch_get()) {
+            drush_backend_batch_process();
+        }
         $this->logger()->success(dt('Successfully enabled: !list', $todo_str));
         // Our logger got blown away during the container rebuild above.
         $boot = Drush::bootstrapManager()->bootstrap();
