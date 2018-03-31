@@ -1,0 +1,18 @@
+id: test_migration_untagged
+label: 'Test untagged'
+source:
+  plugin: embedded_data
+  data_rows:
+    - id: 3
+      name: baz
+  ids:
+    id:
+      type: integer
+process:
+  nid: id
+  title: name
+  type:
+    plugin: default_value
+    default_value: page
+destination:
+  plugin: entity:node

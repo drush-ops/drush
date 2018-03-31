@@ -193,15 +193,21 @@ abstract class CommandUnishTestCase extends UnishTestCase
    *
    * @param string $key
    *   Optionally return only a top level element from the json object.
+   * @param bool $asAssocArray
+   *   Optionally return as an associative array.
    *
-   * @return object
-   *   Decoded object.
+   * @return object|array
+   *   Decoded object or associative array.
    */
-    public function getOutputFromJSON($key = null)
+    public function getOutputFromJSON($key = null, $asAssocArray = false)
     {
-        $json = json_decode($this->getOutput());
+        $json = json_decode($this->getOutput(), $asAssocArray);
         if (isset($key)) {
-            $json = $json->{$key}; // http://stackoverflow.com/questions/2925044/hyphens-in-keys-of-object
+            if (!$asAssocArray) {
+                $json = $json->{$key}; // http://stackoverflow.com/questions/2925044/hyphens-in-keys-of-object
+            } else {
+                $json = $json[$key];
+            }
         }
         return $json;
     }
