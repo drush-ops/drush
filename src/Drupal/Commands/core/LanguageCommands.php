@@ -14,21 +14,17 @@ class LanguageCommands extends DrushCommands
 {
 
     /**
-     * The language manager.
-     *
-     * @var \Drupal\Core\Language\ConfigurableLanguageManagerInterface
+     * @var \Drupal\Core\Language\LanguageManagerInterface
      */
     protected $languageManager;
 
     /**
-     * The module handler service.
-     *
      * @var \Drupal\Core\Extension\ModuleHandlerInterface
      */
     protected $moduleHandler;
 
     /**
-     * @return \Drupal\Core\Language\ConfigurableLanguageManagerInterface|\Drupal\Core\Language\LanguageManagerInterface
+     * @return \Drupal\Core\Language\LanguageManagerInterface
      */
     public function getLanguageManager()
     {
@@ -60,7 +56,6 @@ class LanguageCommands extends DrushCommands
      * @usage drush language:add nl --no-translations
      *   Add Dutch language without importing translations.
      * @aliases language-add
-     * @drupal-dependencies language
      * @validate-module-enabled language
      * @throws \Exception
      */
@@ -95,7 +90,7 @@ class LanguageCommands extends DrushCommands
     }
 
     /**
-     * Prints the currently available languages.
+     * Print the currently available languages.
      *
      * @command language:info
      * @aliases language-info
@@ -110,7 +105,7 @@ class LanguageCommands extends DrushCommands
     public function info()
     {
         $rows = [];
-        $languages = $this->languageManager->getLanguages();
+        $languages = $this->getLanguageManager()->getLanguages();
 
         foreach ($languages as $key => $language) {
             $row = [
@@ -155,7 +150,7 @@ class LanguageCommands extends DrushCommands
      */
     private function filterNewLangcode($langcodes)
     {
-        $enabledLanguages = $this->languageManager->getLanguages();
+        $enabledLanguages = $this->getLanguageManager()->getLanguages();
         foreach ($langcodes as $key => $langcode) {
             if (isset($enabledLanguages[$langcode])) {
                 $this->logger->warning(dt('The language !langcode is already enabled.', [
@@ -169,7 +164,7 @@ class LanguageCommands extends DrushCommands
     }
 
     /**
-     * Set a batch to download and import translations and update configurations.
+     * Sets a batch to download and import translations and update configurations.
      *
      * @param $langcodes
      */
