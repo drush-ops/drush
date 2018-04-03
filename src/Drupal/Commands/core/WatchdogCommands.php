@@ -168,7 +168,7 @@ class WatchdogCommands extends DrushCommands
                 throw new \Exception(dt('Watchdog message #!wid does not exist.', ['!wid' => $substring]));
             }
         } else {
-            if ((!isset($substring))&&(!isset($options['type']))&&(!isset($options['severity']))) {
+            if ((empty($substring))&&(!isset($options['type']))&&(!isset($options['severity']))) {
                 throw new \Exception(dt('No options provided.'));
             }
             $where = $this->where($options['type'], $options['severity'], $substring, 'OR');
