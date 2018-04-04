@@ -567,21 +567,89 @@ function drush_make_convert_make_to_composer($info) {
   $core_major_version = substr($info['core'], 0, 1);
   $core_project_name = $core_major_version == 7 ? 'drupal/drupal' : 'drupal/core';
 
-  // Add default projects.
-  $projects = array(
-    'composer/installers' => '^1.0.20',
-    'cweagans/composer-patches' => '~1.0',
-    $core_project_name => str_replace('x', '*', $info['core']),
-  );
+  if ($core_major_version == 7) {
+    // Add PHP version and extension requirements.
+    $php_reqs = array(
+      'php' => '>= 5.2.5',
+      'ext-curl' => '*',
+      'ext-gd' => '*',
+      'ext-json' => '*',
+      'ext-openssl' => '*',
+      'ext-pdo' => '*',
+      'ext-pdo_mysql' => '*',
+      'ext-xml' => '*',
+    );
 
-  $patches = array();
+    // Add default projects.
+    $projects = array(
+      'composer/installers' => '^1.2',
+      'cweagans/composer-patches' => '^1.6',
+      'drupal-composer/preserve-paths' => '^0.1',
+      'drush/drush' => '~8.0',
+      $core_project_name => str_replace('x', '*', $info['core']),
+    );
+
+    $conflict = array(
+      'drupal/core' => '8.*',
+    );
+
+    $extra = array(
+      'installer-paths' => array(
+        'web' => array('type:drupal-core'),
+        'web/profiles/{$name}' => array('type:drupal-profile'),
+        'web/sites/all/drush/{$name}' => array('type:drupal-drush'),
+        'web/sites/all/libraries/{$name}' => array('type:drupal-library'),
+        'web/sites/all/modules/contrib/{$name}' => array('type:drupal-module'),
+        'web/sites/all/themes/contrib/{$name}' => array('type:drupal-theme'),
+      ),
+      'patches' => array(),
+      'preserve-paths' => array(
+        'web/sites/all/drush',
+        'web/sites/all/libraries',
+        'web/sites/all/modules/contrib',
+        'web/sites/all/modules/custom',
+        'web/sites/all/modules/features',
+        'web/sites/all/themes/contrib',
+        'web/sites/all/themes/custom',
+        'web/sites/all/translations',
+        'web/sites/default'
+      ),
+    );
+  }
+  else {
+    $php_reqs = array();
+
+    // Add default projects.
+    $projects = array(
+      'composer/installers' => '^1.2',
+      'cweagans/composer-patches' => '^1.6',
+      'drush/drush' => '^9.0.0',
+      $core_project_name => str_replace('x', '*', $info['core']),
+    );
+
+    $conflict = array(
+      'drupal/drupal' => '*',
+    );
+
+    $extra = array(
+      'installer-paths' => array(
+        'web/core' => array('type:drupal-core'),
+        'web/libraries/{$name}' => array('type:drupal-library'),
+        'web/modules/contrib/{$name}' => array('type:drupal-module'),
+        'web/profiles/contrib/{$name}' => array('type:drupal-profile'),
+        'web/themes/contrib/{$name}' => array('type:drupal-theme'),
+        'drush/contrib/{$name}' => array('type:drupal-drush'),
+      ),
+      'patches' => array(),
+    );
+  }
 
   // Iterate over projects, populating composer-friendly array.
   foreach ($info['projects'] as $project_name => $project) {
     switch ($project['type']) {
       case 'core':
-        $project['name'] = 'drupal/core';
-        $projects[$project['name']] = str_replace('x', '*', $project['version']);
+        $project['name'] = $core_project_name;
+        $projects[$project['name']] = '^' . str_replace('x', '*', $project['version']);
         break;
 
       default:
@@ -594,7 +662,7 @@ function drush_make_convert_make_to_composer($info) {
     if (!empty($project['patch'])) {
       foreach($project['patch'] as $key => $patch) {
         $patch_description = "Enter {$project['name']} patch #$key description here";
-        $patches[$project['name']][$patch_description] = $patch;
+        $extra['patches'][$project['name']][$patch_description] = $patch;
       }
     }
   }
@@ -607,26 +675,25 @@ function drush_make_convert_make_to_composer($info) {
     }
   }
 
+  // Sort the projects to simplify pull requests on composer.json due to the
+  // sort-packages configuration.
+  ksort($projects);
+
   $output = array(
     'name' => 'Enter project name here',
     'description' => 'Enter project description here',
     'type' => 'project',
     'repositories' => array(
-      array('type' => 'composer', 'url' => 'https://packagist.drupal-composer.org'),
+      array('type' => 'composer', 'url' => 'https://packages.drupal.org/' . $core_major_version),
     ),
-    'require' => $projects,
+    'require' => array_merge($php_reqs, $projects),
+    'conflict'=> $conflict,
     'minimum-stability' => 'dev',
     'prefer-stable' => TRUE,
-    'extra' => array(
-      'installer-paths' => array(
-        'core' => array('type:drupal-core'),
-        'docroot/modules/contrib/{$name}' => array('type:drupal-module'),
-        'docroot/profiles/contrib/{$name}' => array('type:drupal-profile'),
-        'docroot/themes/contrib/{$name}' => array('type:drupal-theme'),
-        'drush/contrib/{$name}' => array('type:drupal-drush'),
-      ),
-      'patches' => $patches,
+    'config' => array(
+      'sort-packages' => TRUE,
     ),
+    'extra' => $extra,
   );
 
   $output = json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
@@ -650,19 +717,17 @@ function drush_make_convert_make_to_composer($info) {
 function drush_make_convert_project_to_composer($original_project, $core_major_version) {
   // Typical specified version with major version "x" removed.
   if (!empty($original_project['version'])) {
-    $version = str_replace('x', '0', $original_project['version']);
+    $version = drush_make_convert_version_to_composer($original_project['version']);
   }
   // Git branch or revision.
   elseif (!empty($original_project['download'])) {
     switch ($original_project['download']['type']) {
       case 'git':
         if (!empty($original_project['download']['branch'])) {
-          // @todo Determine if '0' will always be correct.
-          $version = str_replace('x', '0', $original_project['download']['branch']);
+          $version = drush_make_convert_version_to_composer($original_project['download']['branch']);
         }
         if (!empty($original_project['download']['tag'])) {
-          // @todo Determine if '0' will always be correct.
-          $version = str_replace('x', '0', $original_project['download']['tag']);
+          $version = drush_make_convert_version_to_composer($original_project['download']['tag']);
         }
         if (!empty($project['download']['revision'])) {
           $version .= '#' . $original_project['download']['revision'];
@@ -675,9 +740,32 @@ function drush_make_convert_project_to_composer($original_project, $core_major_v
     }
   }
 
-  $version = "$core_major_version." . $version;
-
   return $version;
+}
+
+/**
+ * Converts a drush version into a composer version.
+ *
+ * @param string $version
+ *   Original drush version.
+ *
+ * @return string
+ *   The converted composer version.
+ */
+function drush_make_convert_version_to_composer($version) {
+  $cver = '*';
+  if (!empty($version)) {
+    if (substr($version, -3) === 'dev') {
+      // Dev versions maintain the 7.x-dev syntax.
+      $cver = $version;
+    }
+    else {
+      // Replace '1.x' with '^1.*'.
+      $cver = '^' . str_replace('x', '*', $version);
+    }
+  }
+
+  return $cver;
 }
 
 /**
