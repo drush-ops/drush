@@ -50,17 +50,17 @@ class LanguageCommands extends DrushCommands
      *
      * @command language:add
      * @param $langcode A comma delimited list of language codes.
-     * @option no-translations Prevent translations to be downloaded and/or imported.
+     * @option skip-translations Prevent translations to be downloaded and/or imported.
      * @usage drush language:add nl,fr
      *   Add Dutch and French language and import their translations.
-     * @usage drush language:add nl --no-translations
+     * @usage drush language:add nl --skip-translations
      *   Add Dutch language without importing translations.
      * @aliases language-add
      * @validate-module-enabled language
      * @hidden
      * @throws \Exception
      */
-    public function add($langcode, $options = ['no-translations' => false])
+    public function add($langcode, $options = ['skip-translations' => false])
     {
         if ($langcodes = StringUtils::csvToArray($langcode)) {
             $langcodes = array_unique($langcodes);
@@ -79,7 +79,7 @@ class LanguageCommands extends DrushCommands
                 ]));
             }
 
-            if ($options['no-translations']) {
+            if ($options['skip-translations']) {
                 return;
             }
 
