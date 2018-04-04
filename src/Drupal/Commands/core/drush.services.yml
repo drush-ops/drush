@@ -21,6 +21,11 @@ services:
     class: \Drush\Drupal\Commands\core\ImageCommands
     tags:
       -  { name: drush.command }
+  language.commands:
+    class: \Drush\Drupal\Commands\core\LanguageCommands
+    arguments: ['@language_manager', '@module_handler']
+    tags:
+      -  { name: drush.command }
   locale.commands:
     class: \Drush\Drupal\Commands\core\LocaleCommands
     arguments: ['@module_handler', '@state']
@@ -28,7 +33,8 @@ services:
       -  { name: drush.command }
   messenger.commands:
       class: \Drush\Drupal\Commands\core\MessengerCommands
-      arguments: ['@messenger']
+      # Uncomment when Drupal 8.4 gets unsupported.
+      # arguments: ['@messenger']
       tags:
         -  { name: drush.command }
   queue.commands:
