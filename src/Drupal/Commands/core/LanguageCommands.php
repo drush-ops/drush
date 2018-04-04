@@ -57,6 +57,7 @@ class LanguageCommands extends DrushCommands
      *   Add Dutch language without importing translations.
      * @aliases language-add
      * @validate-module-enabled language
+     * @hidden
      * @throws \Exception
      */
     public function add($langcode, $options = ['no-translations' => false])
@@ -94,6 +95,7 @@ class LanguageCommands extends DrushCommands
      *
      * @command language:info
      * @aliases language-info
+     * @hidden
      * @field-labels
      *   language: Language
      *   direction: Direction
