@@ -27,7 +27,7 @@ class LanguageAddCase extends CommandUnishTestCase
         $this->setUpDrupal(1, true);
         $this->drush('pm-enable', ['language']);
 
-        $this->drush('language-add', ['nl,fr'], ['no-translations' => null]);
+        $this->drush('language-add', ['nl,fr'], ['skip-translations' => null]);
 
         $this->drush('language-info', []);
         $this->assertContains('Dutch (nl)', $this->getSimplifiedOutput());
