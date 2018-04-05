@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Drupal\Commands\core\DrupalCommands | Drush API</title>
+    <title>Drush\Drupal\Commands\core\TwigCommands | Drush API</title>
 
             <link rel="stylesheet" type="text/css" href="../../../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../../../css/bootstrap-theme.min.css">
@@ -19,7 +19,7 @@
     
     </head>
 
-    <body id="class" data-name="class:Drush_Drupal_Commands_core_DrupalCommands" data-root-path="../../../../">
+    <body id="class" data-name="class:Drush_Drupal_Commands_core_TwigCommands" data-root-path="../../../../">
             <div id="content">
         <div id="left-column">
                 <div id="control-panel">
@@ -66,20 +66,20 @@
                         <div class="namespace-breadcrumbs">
             <ol class="breadcrumb">
                 <li><span class="label label-default">class</span></li>
-                        <li><a href="../../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../../Drush/Drupal.html">Drupal</a></li><li class="backslash">\</li><li><a href="../../../../Drush/Drupal/Commands.html">Commands</a></li><li class="backslash">\</li><li><a href="../../../../Drush/Drupal/Commands/core.html">core</a></li><li class="backslash">\</li><li>DrupalCommands</li>
+                        <li><a href="../../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../../Drush/Drupal.html">Drupal</a></li><li class="backslash">\</li><li><a href="../../../../Drush/Drupal/Commands.html">Commands</a></li><li class="backslash">\</li><li><a href="../../../../Drush/Drupal/Commands/core.html">core</a></li><li class="backslash">\</li><li>TwigCommands</li>
             </ol>
         </div>
                 <div id="page-content">
                 
     <div class="page-header">
         <h1>
-            DrupalCommands
+            TwigCommands
                 
         </h1>
     </div>
 
     <p>    class
-    <strong>DrupalCommands</strong>        extends <a href="../../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/DrupalCommands.php">View source</a>)
+    <strong>TwigCommands</strong>        extends <a href="../../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/TwigCommands.php">View source</a>)
 </p>
 
         
@@ -143,10 +143,10 @@
 
             <table class="table table-condensed">
                     <tr>
-                <td class="type" id="property_cron">
-                                        protected                                        <abbr title="Drupal\Core\CronInterface">CronInterface</abbr>
+                <td class="type" id="property_twig">
+                                        protected                                        <abbr title="Drupal\Core\Template\TwigEnvironment">TwigEnvironment</abbr>
                 </td>
-                <td>$cron</td>
+                <td>$twig</td>
                 <td class="last"></td>
                 <td></td>
             </tr>
@@ -169,7 +169,7 @@
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\CronInterface">CronInterface</abbr> $cron, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler)
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Template\TwigEnvironment">TwigEnvironment</abbr> $twig, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -218,10 +218,10 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <abbr title="Drupal\Core\CronInterface">CronInterface</abbr>
+                    <abbr title="Drupal\Core\Template\TwigEnvironment">TwigEnvironment</abbr>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_getCron">getCron</a>()
+                    <a href="#method_getTwig">getTwig</a>()
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -240,22 +240,22 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_cron">cron</a>()
+                    <a href="#method_unused">unused</a>($searchpaths)
         
-                                            <p>Run all cron hooks in all active modules for specified site.</p>                </div>
+                                            <p>Find potentially unused Twig templates.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
+                    
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_requirements">requirements</a>($options = [&#039;format&#039; =&gt; &#039;table&#039;, &#039;severity&#039; =&gt; -1, &#039;ignore&#039; =&gt; &#039;&#039;])
+                    <a href="#method_twigCompile">twigCompile</a>()
         
-                                            <p>Information about things that may be wrong in your Drupal installation.</p>                </div>
+                                            <p>Compile all Twig template(s).</p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -266,9 +266,9 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/DrupalCommands.php#L47">line 47</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/TwigCommands.php#L47">line 47</a></div>
         <code>                    
-    <strong>__construct</strong>(<abbr title="Drupal\Core\CronInterface">CronInterface</abbr> $cron, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler)
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Template\TwigEnvironment">TwigEnvironment</abbr> $twig, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler)
         </code>
     </h3>
     <div class="details">
@@ -280,8 +280,8 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Drupal\Core\CronInterface">CronInterface</abbr></td>
-                <td>$cron</td>
+                <td><abbr title="Drupal\Core\Template\TwigEnvironment">TwigEnvironment</abbr></td>
+                <td>$twig</td>
                 <td></td>
             </tr>
                     <tr>
@@ -423,10 +423,10 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_getCron">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/DrupalCommands.php#L30">line 30</a></div>
-        <code>                    <abbr title="Drupal\Core\CronInterface">CronInterface</abbr>
-    <strong>getCron</strong>()
+                    <h3 id="method_getTwig">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/TwigCommands.php#L30">line 30</a></div>
+        <code>                    <abbr title="Drupal\Core\Template\TwigEnvironment">TwigEnvironment</abbr>
+    <strong>getTwig</strong>()
         </code>
     </h3>
     <div class="details">
@@ -439,7 +439,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
                     <table class="table table-condensed">
         <tr>
-            <td><abbr title="Drupal\Core\CronInterface">CronInterface</abbr></td>
+            <td><abbr title="Drupal\Core\Template\TwigEnvironment">TwigEnvironment</abbr></td>
             <td></td>
         </tr>
     </table>
@@ -452,7 +452,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_getModuleHandler">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/DrupalCommands.php#L38">line 38</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/TwigCommands.php#L38">line 38</a></div>
         <code>                    <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr>
     <strong>getModuleHandler</strong>()
         </code>
@@ -479,31 +479,10 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_cron">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/DrupalCommands.php#L60">line 60</a></div>
-        <code>                    
-    <strong>cron</strong>()
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>Run all cron hooks in all active modules for specified site.</p>                                                </div>
-                <div class="tags">
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_requirements">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/DrupalCommands.php#L89">line 89</a></div>
+                    <h3 id="method_unused">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/TwigCommands.php#L71">line 71</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
-    <strong>requirements</strong>($options = [&#039;format&#039; =&gt; &#039;table&#039;, &#039;severity&#039; =&gt; -1, &#039;ignore&#039; =&gt; &#039;&#039;])
+    <strong>unused</strong>($searchpaths)
         </code>
     </h3>
     <div class="details">
@@ -511,15 +490,16 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     
 
                     <div class="method-description">
-                                    <p>Information about things that may be wrong in your Drupal installation.</p>                                                </div>
+                                    <p>Find potentially unused Twig templates.</p>                    <p>Immediately before running this command, crawl your entire web site. Or
+use your Production PHPStorage dir for comparison.</p>                            </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
                 <td></td>
-                <td>$options</td>
-                <td></td>
+                <td>$searchpaths</td>
+                <td>A comma delimited list of paths to recursively search</td>
             </tr>
             </table>
 
@@ -533,6 +513,27 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
         </tr>
     </table>
 
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_twigCompile">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/TwigCommands.php#L106">line 106</a></div>
+        <code>                    
+    <strong>twigCompile</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Compile all Twig template(s).</p>                                                </div>
+                <div class="tags">
+            
             
             
                     </div>
