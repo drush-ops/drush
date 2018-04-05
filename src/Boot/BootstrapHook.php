@@ -33,4 +33,3 @@ class BootstrapHook implements InitializeHookInterface
         }
     }
 }
-

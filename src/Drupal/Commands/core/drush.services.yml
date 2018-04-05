@@ -51,6 +51,11 @@ services:
     arguments: ['@state']
     tags:
       -  { name: drush.command }
+  twig.commands:
+    class: \Drush\Drupal\Commands\core\TwigCommands
+    arguments: ['@twig', '@module_handler']
+    tags:
+      -  { name: drush.command }
   user.commands:
     class: \Drush\Drupal\Commands\core\UserCommands
     tags:
