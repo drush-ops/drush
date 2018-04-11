@@ -20,14 +20,14 @@ class EnvironmentTest extends TestCase
     function testDocsPath()
     {
         $docsPath = $this->environment()->docsPath();
-        $this->assertTrue(is_string($docsPath), 'A docsPath was found');
-        $this->assertTrue(file_exists("$docsPath/README.md"), 'README.md exists at docsPath');
+        $this->assertInternalType('string', $docsPath, 'A docsPath was found');
+        $this->assertFileExists("$docsPath/README.md", 'README.md exists at docsPath');
     }
 
     function testDrushConfigFileFixturesExist()
     {
         $fixturesDir = $this->fixturesDir();
-        $this->assertTrue(file_exists("$fixturesDir/etc/drush/drush.yml"), '/etc/drush/drush.yml exists');
-        $this->assertTrue(file_exists("$fixturesDir/home/.drush/drush.yml"), '/home/.drush/drush.yml exists');
+        $this->assertFileExists("$fixturesDir/etc/drush/drush.yml", '/etc/drush/drush.yml exists');
+        $this->assertFileExists("$fixturesDir/home/.drush/drush.yml", '/home/.drush/drush.yml exists');
     }
 }

@@ -9,7 +9,7 @@ class SiteAliasNameTest extends TestCase
     {
         // Test an ambiguous sitename or env alias.
         $name = SiteAliasName::parse('@simple');
-        $this->assertTrue(!$name->hasSitename());
+        $this->assertFalse($name->hasSitename());
         $this->assertTrue($name->hasEnv());
         $this->assertEquals('simple', $name->env());
         $this->assertEquals('@self.simple', (string)$name);

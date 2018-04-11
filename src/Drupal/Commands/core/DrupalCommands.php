@@ -42,6 +42,7 @@ class DrupalCommands extends DrushCommands
 
     /**
      * @param \Drupal\Core\CronInterface $cron
+     * @param ModuleHandlerInterface $moduleHandler
      */
     public function __construct(CronInterface $cron, ModuleHandlerInterface $moduleHandler)
     {
@@ -61,39 +62,6 @@ class DrupalCommands extends DrushCommands
         $result = $this->getCron()->run();
         if (!$result) {
             throw new \Exception(dt('Cron run failed.'));
-        }
-    }
-
-    /**
-     * Compile all Twig template(s).
-     *
-     * @command twig:compile
-     * @aliases twigc,twig-compile
-     */
-    public function twigCompile()
-    {
-        require_once DRUSH_DRUPAL_CORE . "/themes/engines/twig/twig.engine";
-        // Scan all enabled modules and themes.
-        $modules = array_keys($this->getModuleHandler()->getModuleList());
-        foreach ($modules as $module) {
-            $searchpaths[] = drupal_get_path('module', $module);
-        }
-
-        $themes = \Drupal::service('theme_handler')->listInfo();
-        foreach ($themes as $name => $theme) {
-            $searchpaths[] = $theme->getPath();
-        }
-
-        $files = Finder::create()
-            ->files()
-            ->name('*.html.twig')
-            ->exclude('tests')
-            ->in($searchpaths);
-        foreach ($files as $file) {
-            $relative = Path::makeRelative($file->getRealPath(), Drush::bootstrapManager()->getRoot());
-            // @todo Dynamically disable twig debugging since there is no good info there anyway.
-            twig_render_template($relative, ['theme_hook_original' => '']);
-            $this->logger()->success(dt('Compiled twig template !path', ['!path' => $relative]));
         }
     }
 

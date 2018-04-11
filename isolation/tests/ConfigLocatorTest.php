@@ -58,15 +58,15 @@ class ConfigLocatorTest extends TestCase
         /*
         $sources = $configLocator->sources();
         //$this->assertEquals('environment', $sources['env']['cwd']);
-        $this->assertTrue(!isset($sources['test']['system']));
-        $this->assertTrue(!isset($sources['test']['home']));
+        $this->assertArrayNotHasKey('system', $sources['test']);
+        $this->assertArrayNotHasKey('home', $sources['test']);
         $this->assertEquals($this->siteDir() . '/drush/drush.yml', $sources['test']['site']);
         */
 
         $config = $configLocator->config();
         $this->assertEquals($this->homeDir(), $config->get('env.cwd'));
-        $this->assertTrue(!$config->has('test.system'));
-        $this->assertTrue(!$config->has('test.home'));
+        $this->assertFalse($config->has('test.system'));
+        $this->assertFalse($config->has('test.home'));
         $this->assertEquals('A site-specific setting', $config->get('test.site'));
     }
 
