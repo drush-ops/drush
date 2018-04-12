@@ -243,7 +243,7 @@ function _drush_batch_finished() {
         $operations = $queue->getAllItems();
         $elapsed = $batch_set['elapsed'] / 1000;
         $elapsed = drush_drupal_major_version() >=8 ? \Drupal::service('date.formatter')->formatInterval($elapsed) : format_interval($elapsed);
-        $batch_set['finished']($batch_set['success'], $batch_set['results'], $operations, $elapsed);
+        call_user_func_array($batch_set['finished'], [$batch_set['success'], $batch_set['results'], $operations, $elapsed]);
       }
     }
   }
