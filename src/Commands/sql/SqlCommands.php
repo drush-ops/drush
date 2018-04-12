@@ -201,7 +201,7 @@ class SqlCommands extends DrushCommands
      * @option ordered-dump Order by primary key and add line breaks for efficient diffs. Slows down the dump. Mysql only.
      * @option gzip Compress the dump using the gzip program which must be in your $PATH.
      * @option extra Add custom arguments/options when connecting to database (used internally to list tables).
-     * @option extra-dump Add custom arguments/options to the dumping the database (e.g. mysqldump command).
+     * @option extra-dump Add custom arguments/options to the dumping of the database (e.g. mysqldump command).
      * @usage drush sql:dump --result-file=../18.sql
      *   Save SQL dump to the directory above Drupal root.
      * @usage drush sql:dump --skip-tables-key=common
