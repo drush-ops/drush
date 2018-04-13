@@ -441,9 +441,11 @@ function _drush_preflight_columns() {
   if (!($columns = getenv('COLUMNS') ?: 0)) {
     // Trying to export the columns using stty.
     exec('stty size 2>&1', $columns_output, $columns_status);
-    if (!$columns_status) $columns = preg_replace('/\d+\s(\d+)/', '$1', $columns_output[0], -1, $columns_count);
+    if (!$columns_status) {
+      $columns = intval(preg_replace('/\d+\s(\d+)/', '$1', $columns_output[0], -1, $columns_count));
+    }
 
-    // If stty fails and Drush us running on Windows are we trying with mode con.
+    // If stty fails and Drush is running on Windows try with mode con.
     if (($columns_status || !$columns_count) && drush_is_windows()) {
       $columns_output = array();
       exec('mode con', $columns_output, $columns_status);
@@ -455,7 +457,7 @@ function _drush_preflight_columns() {
       }
     }
 
-    // Failling back to default columns value
+    // Failing back to default columns value.
     if (empty($columns)) {
       $columns = 80;
     }
