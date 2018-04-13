@@ -453,10 +453,10 @@ class Environment
         // Trying to export the columns using stty.
         exec('stty size 2>&1', $columns_output, $columns_status);
         if (!$columns_status) {
-            $columns = preg_replace('/\d+\s(\d+)/', '$1', $columns_output[0], -1, $columns_count);
+            $columns = intval(preg_replace('/\d+\s(\d+)/', '$1', $columns_output[0], -1, $columns_count));
         }
 
-        // If stty fails and Drush us running on Windows are we trying with mode con.
+        // If stty fails and Drush is running on Windows try with mode con.
         if (($columns_status || !$columns_count) && static::isWindows()) {
             $columns_output = [];
             exec('mode con', $columns_output, $columns_status);
@@ -466,7 +466,7 @@ class Environment
             // TODO: else { 'Drush could not detect the console window width. Set a Windows Environment Variable of COLUMNS to the desired width.'
         }
 
-        // Failling back to default columns value
+        // Failing back to default columns value.
         if (empty($columns)) {
             $columns = 80;
         }
