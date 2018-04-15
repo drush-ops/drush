@@ -64,7 +64,7 @@ class LocaleTest extends CommandUnishTestCase
     {
         $this->drush('sql-query', ["SELECT ls.source, ls.context, lt.translation, lt.language, lt.customized FROM locales_source ls JOIN locales_target lt ON ls.lid = lt.lid WHERE ls.source = '$source' AND ls.context = '$context' AND lt.language = '$langcode'"]);
         $output = $this->getOutputAsList();
-        $expected = "$source|$context|$translation|$langcode|$custom";
-        $this->assertEquals($expected, array_pop($output));
+        $expected = "/$source.*$context.*$translation.*$langcode.*$custom/";
+        $this->assertRegExp($expected, array_pop($output));
     }
 }
