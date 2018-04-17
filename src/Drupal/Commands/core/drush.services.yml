@@ -17,6 +17,18 @@ services:
       arguments: ['@entity_type.manager']
       tags:
         -  { name: drush.command }
+  field.create.commands:
+      class: \Drush\Drupal\Commands\core\FieldCreateCommands
+      arguments:
+          - '@plugin.manager.field.field_type'
+          - '@plugin.manager.field.widget'
+          - '@plugin.manager.entity_reference_selection'
+          - '@entity_type.manager'
+          - '@entity_type.bundle.info'
+          - '@module_handler'
+          - '@entity_field.manager'
+      tags:
+        -  { name: drush.command }
   image.commands:
     class: \Drush\Drupal\Commands\core\ImageCommands
     tags:
