@@ -185,8 +185,7 @@ class FieldCreateCommands extends DrushCommands
                 $this->input->getOption('cardinality') ?? $this->askCardinality()
             );
 
-            if (
-                $this->input->getOption('field-type') === 'entity_reference'
+            if ($this->input->getOption('field-type') === 'entity_reference'
                 && !$this->input->getOption('target-type')
             ) {
                 $this->input->setOption('target-type', $this->askReferencedEntityType());
@@ -566,8 +565,7 @@ class FieldCreateCommands extends DrushCommands
                 ? $fieldTypes[$fieldType]['id']
                 : $fieldTypes[$fieldType]['label'];
 
-            if (
-                $fieldStorage instanceof FieldStorageConfigInterface
+            if ($fieldStorage instanceof FieldStorageConfigInterface
                 && !$fieldStorage->isLocked()
                 && empty($fieldTypes[$fieldType]['no_ui'])
                 && !in_array($bundle, $fieldStorage->getBundles(), true)
