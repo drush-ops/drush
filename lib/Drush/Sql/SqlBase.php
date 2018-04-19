@@ -200,10 +200,11 @@ class SqlBase {
     if (drush_has_boostrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
       // Enable prefix processing which can be dangerous so off by default. See http://drupal.org/node/1219850.
       if (drush_get_option('db-prefix')) {
-        if (drush_drupal_major_version() >= 8) {
+        $drupal_major_version = drush_drupal_major_version();
+        if ($drupal_major_version >= 8) {
           $query = \Drupal\Core\Database\Database::getConnection()->prefixTables($query);
         }
-        elseif (drush_drupal_major_version() == 7) {
+        elseif ($drupal_major_version == 7) {
           $query = \Database::getConnection()->prefixTables($query);
         }
         else {
