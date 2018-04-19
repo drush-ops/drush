@@ -8,10 +8,6 @@ branches:
     - 5.x
     - /^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+.*$/
 language: php
-php:
-#  See master-fulltest branch for broader PHP version testing.
-  - 5.4
-  - 7.0
 
 # Cache Composer & Unish directories.
 cache:
@@ -23,46 +19,6 @@ cache:
 sudo: false
 
 env:
-  matrix:
-#D6
-    - UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--group=base
-    - UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--group=commands
-    - UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--group=pm
-    - UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
-#D7
-    - UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=make
-    - UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=base
-    - UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=commands
-    - UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=pm
-    - UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=quick-drupal
-    - UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
-#D8.3.x
-    - UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--group=make
-    - UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--group=base
-    - UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--group=commands
-    - UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--group=pm
-    - UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--group=quick-drupal
-    - UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal TEST_CHILDREN="drush-ops/config-extra"
-#D8.4.x
-    - UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.x PHPUNIT_ARGS=--group=make
-    - UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.x PHPUNIT_ARGS=--group=base
-    - UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.x PHPUNIT_ARGS=--group=commands
-    - UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.x PHPUNIT_ARGS=--group=pm
-    - UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.x PHPUNIT_ARGS=--group=quick-drupal
-    - UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.x PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
-
-    # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=make
-    # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=base
-    # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=commands
-    # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=pm
-    # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--group=quick-drupal
-    # - UNISH_DB_URL=sqlite://none/of/this/matters PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
-    # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=make
-    # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=base
-    # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=commands
-    # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=pm
-    # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--group=quick-drupal
-    # - UNISH_DB_URL=pgsql://postgres:@localhost PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
   global:
     # Github deploy
     - secure: VfYokT2CchfuBRJp9/gSwfVGPfsVfkZdDVEuNWEqxww3z4vq+5aLKqoCtPL54E5EIMjhyCE3GVo+biG35Gab1KOVgUs8zD1hAUWA1FPKfMFhoPDfI3ZJC2rX2T1iWK4ZR90pBtcPzS+2OObzTYz8go0PfeSTT6eq69Na1KcNLaE=
@@ -70,41 +26,81 @@ env:
     - UNISH_DB_URL=mysql://root:@127.0.0.1
 
 matrix:
-  exclude:
-    # Drupal 6 does not work with php 7, so skip all of the Drupal 6 tests with this php.
+  include:
+    # D8.5.x
     - php: 7.0
-      env: UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--group=base
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=5.0-rc1 PHPUNIT_ARGS=--group=base'
     - php: 7.0
-      env: UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--group=commands
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=5.0-rc1 PHPUNIT_ARGS=--group=commands'
     - php: 7.0
-      env: UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--group=pm
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=5.0-rc1 PHPUNIT_ARGS=--group=pm'
     - php: 7.0
-      env: UNISH_DRUPAL_MAJOR_VERSION=6 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
-    # Drupal 8 requires a minimum php of 5.5, so skip all of the Drupal 8 tests with this php.
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=5.0-rc1 PHPUNIT_ARGS=--group=quick-drupal'
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=5.0-rc1 PHPUNIT_ARGS=--group=make'
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=5.0-rc1 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal TEST_CHILDREN="drush-ops/config-extra"'
+
+    # D8.4.x
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.5 PHPUNIT_ARGS=--group=base'
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.5 PHPUNIT_ARGS=--group=commands'
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.5 PHPUNIT_ARGS=--group=pm'
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.5 PHPUNIT_ARGS=--group=quick-drupal'
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.5 PHPUNIT_ARGS=--group=make'
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.5 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal TEST_CHILDREN="drush-ops/config-extra"'
+
+    # D8.3.x
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=3.7 PHPUNIT_ARGS=--group=commands'
+
+    # D8.2.x
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=2.8 PHPUNIT_ARGS=--group=commands'
+
+    # D7
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=base'
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=commands'
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=pm'
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=quick-drupal'
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=make'
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal TEST_CHILDREN="drush-ops/config-extra"'
+
+    # D7
+    - php: 5.6
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=base'
+    - php: 5.6
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=commands'
+    - php: 5.6
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=pm'
+    - php: 5.6
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=quick-drupal'
+    - php: 5.6
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=make'
+    - php: 5.6
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal TEST_CHILDREN="drush-ops/config-extra"'
+
+    # D6
+    # Note that Drupal 6 does not work with PHP 7
     - php: 5.4
-      env: UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--group=make
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=base'
     - php: 5.4
-      env: UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--group=base
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=commands'
     - php: 5.4
-      env: UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--group=commands
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=pm'
     - php: 5.4
-      env: UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--group=pm
-    - php: 5.4
-      env: UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--group=quick-drupal
-    - php: 5.4
-      env: UNISH_DRUPAL_MAJOR_VERSION=8 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal TEST_CHILDREN="drush-ops/config-extra"
-    - php: 5.4
-      env: UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.x PHPUNIT_ARGS=--group=make
-    - php: 5.4
-      env: UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.x PHPUNIT_ARGS=--group=base
-    - php: 5.4
-      env: UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.x PHPUNIT_ARGS=--group=commands
-    - php: 5.4
-      env: UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.x PHPUNIT_ARGS=--group=pm
-    - php: 5.4
-      env: UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.x PHPUNIT_ARGS=--group=quick-drupal
-    - php: 5.4
-      env: UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.x PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal TEST_CHILDREN="drush-ops/config-extra"'
 
 before_install:
   - echo 'mbstring.http_input = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
@@ -127,12 +123,14 @@ after_success: ${PWD}/tests/testChildren.sh
 before_deploy:
   - gem install mime-types -v 2.6.2 # https://github.com/travis-ci/travis-ci/issues/5145
   - curl -LSs https://box-project.github.io/box2/installer.php | php
+  - composer install --prefer-dist --no-dev --optimize-autoloader --no-interaction
   - php box.phar build
   - test $TRAVIS_TAG=true && mkdir s3-stable && cp drush.phar s3-stable/drush.phar
   - test $TRAVIS_BRANCH=master && mkdir s3-unstable && cp drush.phar s3-unstable/drush-unstable.phar
 deploy:
   # http://docs.travis-ci.com/user/deployment/releases/
   - provider: releases
+    skip_cleanup: true
     api_key:
       secure: vRtKwJNzm+FXS5VCsaCu5YM4IS02tAdqV4G557HEyVzNgRmSgPWkaHDR/95TnXtZRjmxuTI++rccEj9+jzjknQ9LWkWhl13WiJdZYobnb240f9Ja8g0gs6/r+EEZG2+DTTerK9zicpf51h5hUaE46zObHjSmzIuGxZBO1syDld8=
     file: drush.phar
@@ -140,32 +138,3 @@ deploy:
      tags: true
      repo: drush-ops/drush
      all_branches: true
-  # Latest unstable from master
-  #  http://docs.travis-ci.com/user/deployment/s3/
-  - provider: s3
-    # @weitzman's S3 for now.
-    access_key_id: "AKIAJFNCWLIBISLQYHPA"
-    secret_access_key:
-        secure: X9qpkhXxTsIcvO/sp0iBXnHKuZm27KJLsHhimDW2uviS+vt62reCeKl+JtGZUGEJWI6fITbyzJ71vy8+Iibpa261ShYVFJWtiG2cfHKPHsu9TdjSi/f0CW7bEA4IHwnLwxhTUH4wMCjIorKkf21UIH6dCb8qo9xexPb65eDfocs=
-    bucket: files.drush.org
-    skip_cleanup: true
-    local_dir: s3-unstable
-    detect_encoding: true
-    on:
-      repo: drush-ops/drush
-      branch: master
-# Latest stable
-  # http://docs.travis-ci.com/user/deployment/s3/
-  - provider: s3
-  # @weitzman's S3 for now.
-    access_key_id: "AKIAJFNCWLIBISLQYHPA"
-    secret_access_key:
-      secure: X9qpkhXxTsIcvO/sp0iBXnHKuZm27KJLsHhimDW2uviS+vt62reCeKl+JtGZUGEJWI6fITbyzJ71vy8+Iibpa261ShYVFJWtiG2cfHKPHsu9TdjSi/f0CW7bEA4IHwnLwxhTUH4wMCjIorKkf21UIH6dCb8qo9xexPb65eDfocs=
-    bucket: "files.drush.org"
-    skip_cleanup: true
-    local_dir: s3-stable
-    detect_encoding: true
-    on:
-      tags: true
-      repo: drush-ops/drush
-      branch: master

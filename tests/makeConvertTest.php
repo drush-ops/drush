@@ -60,7 +60,7 @@ class makeConvertCase extends CommandUnishTestCase {
         array('format' => 'composer'),
         array(
           '"drupal/drupal": "7.*",',
-          '"drupal/features": "7.1.0-beta4",',
+          '"drupal/features": "^1.0-beta4",',
           '"patches": {',
           '"drupal/features": {',
           '"Enter drupal/features patch #0 description here": "http://drupal.org/files/issues/features-drush-backend-invoke-25.patch"',
@@ -71,7 +71,7 @@ class makeConvertCase extends CommandUnishTestCase {
         array('format' => 'composer'),
         array(
           '"drupal/drupal": "7.*",',
-          '"drupal/features": "7.1.0-beta4",',
+          '"drupal/features": "^1.0-beta4",',
           '"patches": {',
           '"drupal/features": {',
           '"Enter drupal/features patch #0 description here": "http://drupal.org/files/issues/features-drush-backend-invoke-25.patch"',

@@ -130,6 +130,13 @@ function update_main() {
   drupal_load_updates();
   update_fix_compatibility();
 
+  // Check requirements before updating.
+  if (!drush_update_check_requirements()) {
+    if (!drush_confirm(dt('Requirements check reports errors. Do you wish to continue?'))) {
+        return drush_user_abort();
+    }
+  }
+
   // Pending hook_update_N() implementations.
   $pending = update_get_update_list();
 
@@ -184,6 +191,36 @@ function update_main() {
   }
 
   return count($pending) + count($change_summary) + count($post_updates);
+}
+
+/**
+ * Check update requirements and report any errors.
+ */
+function drush_update_check_requirements() {
+  $continue = TRUE;
+
+  \Drupal::moduleHandler()->resetImplementations();
+  $requirements = update_check_requirements();
+  $severity = drupal_requirements_severity($requirements);
+
+  // If there are issues, report them.
+  if ($severity != REQUIREMENT_OK) {
+    if ($severity === REQUIREMENT_ERROR) {
+      $continue = FALSE;
+    }
+    foreach ($requirements as $requirement) {
+      if (isset($requirement['severity']) && $requirement['severity'] != REQUIREMENT_OK) {
+        $message = isset($requirement['description']) ? $requirement['description'] : '';
+        if (isset($requirement['value']) && $requirement['value']) {
+          $message .= ' (Currently using '. $requirement['title'] .' '. $requirement['value'] .')';
+        }
+        $log_level = $requirement['severity'] === REQUIREMENT_ERROR ? LogLevel::ERROR : LogLevel::WARNING;
+        drush_log($message, $log_level);
+      }
+    }
+  }
+
+  return $continue;
 }
 
 function _update_batch_command($id) {

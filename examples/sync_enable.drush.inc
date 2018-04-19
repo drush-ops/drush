@@ -4,6 +4,9 @@
  * @file
  * Example "Sync enable" sql-sync command alter.
  *
+ * For Drupal 8, please use the config_split module instead of this code. Drupal
+ * 6 and 7 sites may use this example.
+ *
  * Sync_enable adds options to sql-sync to enable and disable
  * modules after an sql-sync operation.  One use case for this
  * is to use Drush site aliases to automatically enable your

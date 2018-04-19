@@ -263,13 +263,14 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     return parse_url(UNISH_DB_URL, PHP_URL_SCHEME);
   }
 
-  function defaultInstallationVerion() {
+  function defaultInstallationVersion() {
+    // There's a leading dot in UNISH_DRUPAL_MINOR_VERSION
     return UNISH_DRUPAL_MAJOR_VERSION . UNISH_DRUPAL_MINOR_VERSION;
   }
 
   function setUpDrupal($num_sites = 1, $install = FALSE, $version_string = NULL, $profile = NULL) {
     if (!$version_string) {
-      $version_string = UNISH_DRUPAL_MAJOR_VERSION;
+      $version_string = $this->defaultInstallationVersion();
     }
     $sites_subdirs_all = array('dev', 'stage', 'prod', 'retired', 'elderly', 'dead', 'dust');
     $sites_subdirs = array_slice($sites_subdirs_all, 0, $num_sites);
@@ -308,6 +309,15 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase {
     if ($major_version >= 7 && !file_exists($root . '/sites/sites.php')) {
       copy($root . '/sites/example.sites.php', $root . '/sites/sites.php');
     }
+
+    // Print the result of a run of 'drush status' on the Drupal we are testing against
+    $options = array(
+      'root' => $this->webroot(),
+      'uri' => reset($sites_subdirs),
+    );
+    $this->drush('core-status', array('Drupal version'), $options);
+    $header = "\nTesting on ";
+    fwrite(STDERR, $header . $this->getOutput() . "\n\n");
 
     // Stash details about each site.
     foreach ($sites_subdirs as $subdir) {

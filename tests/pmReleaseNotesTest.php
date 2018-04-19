@@ -14,7 +14,6 @@ class pmReleaseNotesCase extends CommandUnishTestCase {
     $this->drush('pm-releasenotes', array('drupal-7.1'));
     $output = $this->getOutput();
     $this->assertContains("RELEASE NOTES FOR 'DRUPAL' PROJECT, VERSION 7.1", $output);
-    $this->assertContains('Last updated:  25 May 2011 at 20:59 UTC.', $output);
     $this->assertContains('SA-CORE-2011-001 - Drupal core - Multiple vulnerabilities', $output);
   }
 }

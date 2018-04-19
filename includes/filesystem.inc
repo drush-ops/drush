@@ -680,7 +680,7 @@ function drush_scan_directory($dir, $mask, $nomask = array('.', '..', 'CVS'), $c
   $files = array();
 
   // Exclude Bower and Node directories.
-  $nomask = array_merge($nomask, array('node_modules', 'bower_components'));
+  $nomask = array_merge($nomask, drush_get_option_list('ignored-directories', array('node_modules', 'bower_components')));
 
   if (is_string($dir) && is_dir($dir) && $handle = opendir($dir)) {
     while (FALSE !== ($file = readdir($handle))) {

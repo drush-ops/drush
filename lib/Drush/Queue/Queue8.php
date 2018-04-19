@@ -65,9 +65,10 @@ class Queue8 extends QueueBase {
       }
       catch (SuspendQueueException $e) {
         // If the worker indicates there is a problem with the whole queue,
-        // release the item and skip to the next queue.
+        // release the item and stop further processing.
         $queue->releaseItem($item);
         drush_set_error('DRUSH_SUSPEND_QUEUE_EXCEPTION', $e->getMessage());
+        break;
       }
       catch (\Exception $e) {
         // In case of any other kind of exception, log it and leave the item

@@ -438,7 +438,7 @@ function _drush_preflight_base_environment() {
  * On Windows in CMD and PowerShell is this exported using mode con.
  */
 function _drush_preflight_columns() {
-  if (!($columns = getenv('COLUMNS'))) {
+  if (!($columns = getenv('COLUMNS') ?: 0)) {
     // Trying to export the columns using stty.
     exec('stty size 2>&1', $columns_output, $columns_status);
     if (!$columns_status) $columns = preg_replace('/\d+\s(\d+)/', '$1', $columns_output[0], -1, $columns_count);
@@ -611,8 +611,15 @@ function drush_preflight_command_dispatch() {
     $local_drush = find_wrapper_or_launcher($root);
   }
   $is_local = drush_get_option('local');
+  $must_use_site_local = !empty($root) && !empty($local_drush) && empty($is_local);
+  // If the command sets the 'handle-remote-commands' flag, then we will short-circuit
+  // remote command dispatching and site-list command dispatching, and always let
+  // the command handler run on the local machine.
+  if (is_array($command) && !empty($command['handle-remote-commands']) && !$must_use_site_local) {
+    return FALSE;
+  }
   $values = NULL;
-  if (!empty($root) && !empty($local_drush) && empty($is_local)) {
+  if (!isset($remote_host) && !isset($site_list) && $must_use_site_local) {
     if (!drush_is_absolute_path($local_drush)) {
       $local_drush = $root . DIRECTORY_SEPARATOR . $local_drush;
     }
@@ -638,12 +645,6 @@ function drush_preflight_command_dispatch() {
       chdir($root);
       $values = drush_do_command_redispatch(is_array($command) ? $command : $command_name, $args, NULL, NULL, $local_drush, TRUE, $aditional_options);
     }
-  }
-  // If the command sets the 'handle-remote-commands' flag, then we will short-circuit
-  // remote command dispatching and site-list command dispatching, and always let
-  // the command handler run on the local machine.
-  if (is_array($command) && !empty($command['handle-remote-commands'])) {
-    return FALSE;
   }
   if (isset($remote_host)) {
     $remote_user = drush_get_option('remote-user');
