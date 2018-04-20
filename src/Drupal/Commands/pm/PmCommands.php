@@ -59,7 +59,7 @@ class PmCommands extends DrushCommands
      *
      * @command pm:enable
      * @param $modules A comma delimited list of modules.
-     * @options skip-translations Prevent translations to be downloaded and/or imported.
+     * @options skip-translations Do not import interface translations of enabled modules.
      * @aliases en,pm-enable
      */
     public function enable(array $modules, $options = ['skip-translations' => self::OPT])
