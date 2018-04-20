@@ -59,9 +59,10 @@ class PmCommands extends DrushCommands
      *
      * @command pm:enable
      * @param $modules A comma delimited list of modules.
+     * @options skip-translations Prevent translations to be downloaded and/or imported.
      * @aliases en,pm-enable
      */
-    public function enable(array $modules)
+    public function enable(array $modules, $options = ['skip-translations' => self::OPT])
     {
         $modules = StringUtils::csvToArray($modules);
         $todo = $this->addInstallDependencies($modules);
@@ -79,7 +80,7 @@ class PmCommands extends DrushCommands
         if (!$this->getModuleInstaller()->install($modules, true)) {
             throw new \Exception('Unable to install modules.');
         }
-        if (batch_get()) {
+        if (batch_get() && !$options['skip-translations']) {
             drush_backend_batch_process();
         }
         $this->logger()->success(dt('Successfully enabled: !list', $todo_str));
