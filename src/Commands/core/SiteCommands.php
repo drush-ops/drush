@@ -110,8 +110,6 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *   List all alias records known to drush.
      * @usage drush site:alias @dev
      *   Print an alias record for the alias 'dev'.
-     * @usage drush @none site-alias
-     *   Print only actual aliases; omit multisites from the local Drupal installation.
      * @topics docs:aliases
      *
      */
