@@ -22,6 +22,13 @@ class PmCommands extends DrushCommands
 
     protected $themeHandler;
 
+    /**
+     * The original status of the translation import configuration.
+     *
+     * @var bool
+     */
+    protected $translationImport = null;
+
     public function __construct(ConfigFactoryInterface $configFactory, ModuleInstallerInterface $moduleInstaller, ThemeHandlerInterface $themeHandler)
     {
         parent::__construct();
@@ -77,16 +84,50 @@ class PmCommands extends DrushCommands
             }
         }
 
+        if ($options['skip-translations']) {
+            $this->disableTranslationImport();
+        }
+
         if (!$this->getModuleInstaller()->install($modules, true)) {
+            $this->restoreTranslationImport();
             throw new \Exception('Unable to install modules.');
         }
-        if (batch_get() && !$options['skip-translations']) {
+
+        if (batch_get()) {
             drush_backend_batch_process();
         }
+        $this->restoreTranslationImport();
+
         $this->logger()->success(dt('Successfully enabled: !list', $todo_str));
         // Our logger got blown away during the container rebuild above.
         $boot = Drush::bootstrapManager()->bootstrap();
         $boot->addLogger();
+    }
+
+    /**
+     * Disable the translation import configuration flag.
+     *
+     * The first time this is called, the original flag value is stored for later use.
+     */
+    private function disableTranslationImport() {
+        $config = $this->getConfigFactory()->getEditable('locale.settings');
+        if (!is_null($this->translationImport)) {
+            $this->originalTranslationImportEnabled = $config->get('translation.import_enabled');
+        }
+        $config->set('translation.import_enabled', false);
+        $config->save();
+    }
+
+    /**
+     * Restore the translation import configuration flag.
+     */
+    private function restoreTranslationImport() {
+        if (is_null($this->translationImport)) {
+            return;
+        }
+        $config = $this->getConfigFactory()->getEditable('locale.settings');
+        $config->set('translation.import_enabled', $this->translationImport);
+        $config->save();
     }
 
     /**
