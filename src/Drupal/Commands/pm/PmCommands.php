@@ -111,8 +111,8 @@ class PmCommands extends DrushCommands
      */
     private function disableTranslationImport() {
         $config = $this->getConfigFactory()->getEditable('locale.settings');
-        if (!is_null($this->translationImport)) {
-            $this->originalTranslationImportEnabled = $config->get('translation.import_enabled');
+        if (is_null($this->translationImport)) {
+            $this->translationImport = $config->get('translation.import_enabled');
         }
         $config->set('translation.import_enabled', false);
         $config->save();
