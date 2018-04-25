@@ -27,7 +27,7 @@ class LocaleCommands extends DrushCommands
     /**
      * @return \Drupal\Core\Language\LanguageManagerInterface
      */
-    public function getLanguageManager()
+    protected function getLanguageManager()
     {
         return $this->languageManager;
     }
@@ -35,7 +35,7 @@ class LocaleCommands extends DrushCommands
     /**
      * @return \Drupal\Core\Config\ConfigFactoryInterface
      */
-    public function getConfigFactory()
+    protected function getConfigFactory()
     {
         return $this->configFactory;
     }
@@ -182,8 +182,8 @@ class LocaleCommands extends DrushCommands
      */
     public function import($langcode, $file, $options = ['type' => self::OPT, 'override' => self::OPT])
     {
-        if (!file_exists($file)) {
-            throw new \Exception(dt('File @file not found.', ['@file' => $file]));
+        if (!drush_file_not_empty($file)) {
+            throw new \Exception(dt('File @file not found or empty.', ['@file' => $file]));
         }
 
         $language = $this->getTranslatableLanguage($langcode, true);
@@ -240,11 +240,11 @@ class LocaleCommands extends DrushCommands
      * Converts input of override option.
      *
      * @param $override
-     * @return array|null
+     * @return array
      */
     private function convertOverrideOption($override)
     {
-        $result = null;
+        $result = [];
 
         switch ($override) {
             case 'none':
