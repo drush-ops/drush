@@ -78,7 +78,19 @@ class SecurityUpdateCommands extends DrushCommands
                                 'min-version' => $min_version,
                             ];
                         }
-                    } else {
+                    }
+                    // Compare exact versions that are insecure.
+                    elseif (preg_match('/^[[:digit:]](?![-*><=~ ])/', $conflict_constraint)) {
+                        $exact_version = $conflict_constraint;
+                        if (Comparator::equalTo($package['version'], $exact_version)) {
+                            $this->securityUpdates[$name] = [
+                                'name' => $name,
+                                'version' => $package['version'],
+                                'min-version' => $exact_version,
+                            ];
+                        }
+                    }
+                    else {
                         $this->logger()->warning("Could not parse drupal-security-advisories conflicting version constraint $conflict_constraint for package $name.");
                     }
                 }
