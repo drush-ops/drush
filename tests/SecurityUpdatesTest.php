@@ -34,21 +34,51 @@ class SecurityUpdatesTest extends CommandUnishTestCase
    *
    * @dataProvider testConflictConstraintParsingProvider
    */
-  public function testConflictConstraintParsing($package, $min_version)
+  public function testConflictConstraintParsing($package, $conflict_constraint, $min_version, $updates_are_available)
   {
-    $available_updates = SecurityUpdateCommands::determineUpdatesFromConstraint($min_version, $package, $package['name']);
-    $this->assertEquals($package['version'], $available_updates['version']);
-    $this->assertEquals($min_version, $available_updates['min-version']);
+    $available_updates = SecurityUpdateCommands::determineUpdatesFromConstraint($conflict_constraint, $package, $package['name']);
+    $this->assertEquals($updates_are_available, (bool) $available_updates);
+
+    if ($available_updates) {
+      $this->assertEquals($package['version'], $available_updates['version']);
+      $this->assertEquals($min_version, $available_updates['min-version']);
+    }
   }
 
+  /**
+   * Data provider for testConflictConstraintParsing().
+   */
   public function testConflictConstraintParsingProvider() {
     return [
+      // Test "minimum version" conflict.
       [
         [
           'name' => 'Alinks',
           'version' => '1.0.0'
         ],
-        '^1.0.1',
+        '<1.0.1',
+        '1.0.1',
+        TRUE,
+      ],
+      // Test "exact version" conflict.
+      [
+        [
+          'name' => 'Alinks',
+          'version' => '1.0.0'
+        ],
+        '1.0.0',
+        '1.0.1',
+        TRUE,
+      ],
+      // Test "exact version" conflict with 2 digits. Should not work.
+      [
+        [
+          'name' => 'Alinks',
+          'version' => '1.0.0'
+        ],
+        '1.0',
+        '1.0.1',
+        FALSE,
       ],
     ];
   }

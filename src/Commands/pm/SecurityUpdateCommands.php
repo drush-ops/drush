@@ -80,10 +80,13 @@ class SecurityUpdateCommands extends DrushCommands
     }
 
     /**
+     * Fetches the generated composer.json from drupal-security-advisories.
+     *
      * @return mixed
+     *
      * @throws \Exception
      */
-    protected function fetchAdvisoryComposerJson(): mixed {
+    protected function fetchAdvisoryComposerJson() {
         try {
             $response_body = file_get_contents('https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/8.x/composer.json');
         } catch (Exception $e) {
@@ -94,10 +97,13 @@ class SecurityUpdateCommands extends DrushCommands
     }
 
     /**
-     * @return mixed
+     * Loads the contents of the local Drupal application's composer.lock file.
+     *
+     * @return array
+     *
      * @throws \Exception
      */
-    protected function loadSiteComposerLock(): mixed {
+    protected function loadSiteComposerLock() {
         $composer_root = Drush::bootstrapManager()->getComposerRoot();
         $composer_lock_file_name = getenv('COMPOSER') ? str_replace('.json', '',
             getenv('COMPOSER')) : 'composer';
@@ -116,8 +122,11 @@ class SecurityUpdateCommands extends DrushCommands
     }
 
     /**
-     * @param $composer_lock_data
-     * @param $security_advisories_composer_json
+     * Register all available security updates in $this->securityUpdates.
+     * @param array $composer_lock_data
+     *   The contents of the local Drupal application's composer.lock file.
+     * @param array $security_advisories_composer_json
+     *   The composer.json array from drupal-security-advisories.
      */
     protected function registerAllSecurityUpdates(
         $composer_lock_data,
@@ -130,9 +139,18 @@ class SecurityUpdateCommands extends DrushCommands
     }
 
     /**
-     * @param $conflict_constraint
+     * Determines if update is avaiable based on a conflict constraint.
+     *
+     * @param string $conflict_constraint
+     *   The constraint for the conflicting, insecure package version.
+     *   E.g., <1.0.0.
      * @param array $package
-     * @param $name
+     *   The package to be evaluated.
+     * @param string $name
+     *   The human readable display name for the package.
+     *
+     * @return array
+     *   An associative array containing name, version, and min-version keys.
      */
     public static function determineUpdatesFromConstraint(
         $conflict_constraint,
@@ -147,7 +165,7 @@ class SecurityUpdateCommands extends DrushCommands
                 return [
                     'name' => $name,
                     'version' => $package['version'],
-                    // Assume that conflict constraint of ^1.0.0 indicates that
+                    // Assume that conflict constraint of <1.0.0 indicates that
                     // 1.0.0 is the available, secure version.
                     'min-version' => $min_version,
                 ];
@@ -159,27 +177,32 @@ class SecurityUpdateCommands extends DrushCommands
             $exact_version = $conflict_constraint;
             if (Comparator::equalTo($package['version'],
                 $exact_version)) {
-                // $version_parts = explode('.', $package['version']);
-                $version_parser = new VersionParser();
-                $constraints = $version_parser->parseConstraints($package['version']);
-                return [
-                    'name' => $name,
-                    'version' => $package['version'],
-                    // Assume that conflict constraint of 1.0.0 indicates that
-                    // 1.0.1 is the available, secure version.
-                    'min-version' => $exact_version,
-                ];
+                $version_parts = explode('.', $package['version']);
+                if (count($version_parts) == 3) {
+                    $version_parts[2]++;
+                    $min_version = implode('.', $version_parts);
+                    return [
+                        'name' => $name,
+                        'version' => $package['version'],
+                        // Assume that conflict constraint of 1.0.0 indicates that
+                        // 1.0.1 is the available, secure version.
+                        'min-version' => $min_version,
+                    ];
+                }
             }
         }
-        else {
-            return [];
-        }
+        return [];
     }
 
     /**
-     * @param $security_advisories_composer_json
-     * @param $name
-     * @param $package
+     * Registers available security updates for a given package.
+     *
+     * @param array $security_advisories_composer_json
+     *   The composer.json array from drupal-security-advisories.
+     * @param string $name
+     *   The human readable display name for the package.
+     * @param array $package
+     *   The package to be evaluated.
      */
     protected function registerPackageSecurityUpdates(
         $security_advisories_composer_json,
