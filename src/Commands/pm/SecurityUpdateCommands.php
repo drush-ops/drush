@@ -2,6 +2,8 @@
 namespace Drush\Commands\pm;
 
 use Composer\Semver\Comparator;
+use Composer\Semver\Semver;
+use Composer\Semver\VersionParser;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
@@ -45,57 +47,9 @@ class SecurityUpdateCommands extends DrushCommands
     public function security()
     {
         $this->securityUpdates = [];
-        try {
-            $response_body = file_get_contents('https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/8.x/composer.json');
-        } catch (Exception $e) {
-            throw new Exception("Unable to fetch drupal-security-advisories information.");
-        }
-        $security_advisories_composer_json = json_decode($response_body, true);
-        $composer_root = Drush::bootstrapManager()->getComposerRoot();
-        $composer_lock_file_name = getenv('COMPOSER') ? str_replace('.json', '', getenv('COMPOSER')) : 'composer';
-        $composer_lock_file_name .= '.lock';
-        $composer_lock_file_path = Path::join($composer_root, $composer_lock_file_name);
-        if (!file_exists($composer_lock_file_path)) {
-            throw new Exception("Cannot find $composer_lock_file_path!");
-        }
-        $composer_lock_contents = file_get_contents($composer_lock_file_path);
-        $composer_lock_data = json_decode($composer_lock_contents, true);
-        if (!array_key_exists('packages', $composer_lock_data)) {
-            throw new Exception("No packages were found in $composer_lock_file_path! Contents:\n $composer_lock_contents");
-        }
-        foreach ($composer_lock_data['packages'] as $key => $package) {
-            $name = $package['name'];
-            if (!empty($security_advisories_composer_json['conflict'][$name])) {
-                $conflict_constraints = explode(',', $security_advisories_composer_json['conflict'][$name]);
-                foreach ($conflict_constraints as $conflict_constraint) {
-                    // Only parse constraints that follow pattern like "<1.0.0".
-                    if (substr($conflict_constraint, 0, 1) == '<') {
-                        $min_version = substr($conflict_constraint, 1);
-                        if (Comparator::lessThan($package['version'], $min_version)) {
-                            $this->securityUpdates[$name] = [
-                                'name' => $name,
-                                'version' => $package['version'],
-                                'min-version' => $min_version,
-                            ];
-                        }
-                    }
-                    // Compare exact versions that are insecure.
-                    elseif (preg_match('/^[[:digit:]](?![-*><=~ ])/', $conflict_constraint)) {
-                        $exact_version = $conflict_constraint;
-                        if (Comparator::equalTo($package['version'], $exact_version)) {
-                            $this->securityUpdates[$name] = [
-                                'name' => $name,
-                                'version' => $package['version'],
-                                'min-version' => $exact_version,
-                            ];
-                        }
-                    }
-                    else {
-                        $this->logger()->warning("Could not parse drupal-security-advisories conflicting version constraint $conflict_constraint for package $name.");
-                    }
-                }
-            }
-        }
+        $security_advisories_composer_json = $this->fetchAdvisoryComposerJson();
+        $composer_lock_data = $this->loadSiteComposerLock();
+        $this->registerAllSecurityUpdates($composer_lock_data, $security_advisories_composer_json);
         if ($this->securityUpdates) {
             // @todo Modernize.
             drush_set_context('DRUSH_EXIT_CODE', DRUSH_FRAMEWORK_ERROR);
@@ -122,6 +76,130 @@ class SecurityUpdateCommands extends DrushCommands
             $this->logger()->warning("One or more of your dependencies has an outstanding security update. Please apply update(s) immediately.");
             $this->logger()->notice("Try running: <comment>$suggested_command</comment>");
             $this->logger()->notice("If that fails due to a conflict then you must update one or more root dependencies.");
+        }
+    }
+
+    /**
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function fetchAdvisoryComposerJson(): mixed {
+        try {
+            $response_body = file_get_contents('https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/8.x/composer.json');
+        } catch (Exception $e) {
+            throw new Exception("Unable to fetch drupal-security-advisories information.");
+        }
+        $security_advisories_composer_json = json_decode($response_body, TRUE);
+        return $security_advisories_composer_json;
+    }
+
+    /**
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function loadSiteComposerLock(): mixed {
+        $composer_root = Drush::bootstrapManager()->getComposerRoot();
+        $composer_lock_file_name = getenv('COMPOSER') ? str_replace('.json', '',
+            getenv('COMPOSER')) : 'composer';
+        $composer_lock_file_name .= '.lock';
+        $composer_lock_file_path = Path::join($composer_root,
+            $composer_lock_file_name);
+        if (!file_exists($composer_lock_file_path)) {
+            throw new Exception("Cannot find $composer_lock_file_path!");
+        }
+        $composer_lock_contents = file_get_contents($composer_lock_file_path);
+        $composer_lock_data = json_decode($composer_lock_contents, TRUE);
+        if (!array_key_exists('packages', $composer_lock_data)) {
+            throw new Exception("No packages were found in $composer_lock_file_path! Contents:\n $composer_lock_contents");
+        }
+        return $composer_lock_data;
+    }
+
+    /**
+     * @param $composer_lock_data
+     * @param $security_advisories_composer_json
+     */
+    protected function registerAllSecurityUpdates(
+        $composer_lock_data,
+        $security_advisories_composer_json
+    ) {
+        foreach ($composer_lock_data['packages'] as $key => $package) {
+            $name = $package['name'];
+            $this->registerPackageSecurityUpdates($security_advisories_composer_json, $name, $package);
+        }
+    }
+
+    /**
+     * @param $conflict_constraint
+     * @param array $package
+     * @param $name
+     */
+    public static function determineUpdatesFromConstraint(
+        $conflict_constraint,
+        $package,
+        $name
+    ) {
+        // Only parse constraints that follow pattern like "<1.0.0".
+        if (substr($conflict_constraint, 0, 1) == '<') {
+            $min_version = substr($conflict_constraint, 1);
+            if (Comparator::lessThan($package['version'],
+                $min_version)) {
+                return [
+                    'name' => $name,
+                    'version' => $package['version'],
+                    // Assume that conflict constraint of ^1.0.0 indicates that
+                    // 1.0.0 is the available, secure version.
+                    'min-version' => $min_version,
+                ];
+            }
+        }
+        // Compare exact versions that are insecure.
+        elseif (preg_match('/^[[:digit:]](?![-*><=~ ])/',
+            $conflict_constraint)) {
+            $exact_version = $conflict_constraint;
+            if (Comparator::equalTo($package['version'],
+                $exact_version)) {
+                // $version_parts = explode('.', $package['version']);
+                $version_parser = new VersionParser();
+                $constraints = $version_parser->parseConstraints($package['version']);
+                return [
+                    'name' => $name,
+                    'version' => $package['version'],
+                    // Assume that conflict constraint of 1.0.0 indicates that
+                    // 1.0.1 is the available, secure version.
+                    'min-version' => $exact_version,
+                ];
+            }
+        }
+        else {
+            return [];
+        }
+    }
+
+    /**
+     * @param $security_advisories_composer_json
+     * @param $name
+     * @param $package
+     */
+    protected function registerPackageSecurityUpdates(
+        $security_advisories_composer_json,
+        $name,
+        $package
+    ) {
+        if (!empty($security_advisories_composer_json['conflict'][$name])) {
+            $conflict_constraints = explode(',',
+                $security_advisories_composer_json['conflict'][$name]);
+            foreach ($conflict_constraints as $conflict_constraint) {
+                $available_update = $this->determineUpdatesFromConstraint($conflict_constraint,
+                    $package, $name);
+                if ($available_update) {
+                    $this->securityUpdates[$name] = $available_update;
+                }
+                else {
+                    $this->logger()
+                        ->warning("Could not parse drupal-security-advisories conflicting version constraint $conflict_constraint for package $name.");
+                }
+            }
         }
     }
 }

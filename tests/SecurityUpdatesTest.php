@@ -2,6 +2,8 @@
 
 namespace Unish;
 
+use Drush\Commands\pm\SecurityUpdateCommands;
+
 /**
  * Tests "pm:security" commands for D8+.
  * @group commands
@@ -25,4 +27,30 @@ class SecurityUpdatesTest extends CommandUnishTestCase
         $this->assertEquals('1.0.0', $security_advisories->{"drupal/alinks"}->version);
         $this->assertEquals('1.1', $security_advisories->{"drupal/alinks"}->{"min-version"});
     }
+
+
+  /**
+   * Test that insecure packages are correctly identified.
+   *
+   * @dataProvider testConflictConstraintParsingProvider
+   */
+  public function testConflictConstraintParsing($package, $min_version)
+  {
+    $available_updates = SecurityUpdateCommands::determineUpdatesFromConstraint($min_version, $package, $package['name']);
+    $this->assertEquals($package['version'], $available_updates['version']);
+    $this->assertEquals($min_version, $available_updates['min-version']);
+  }
+
+  public function testConflictConstraintParsingProvider() {
+    return [
+      [
+        [
+          'name' => 'Alinks',
+          'version' => '1.0.0'
+        ],
+        '^1.0.1',
+      ],
+    ];
+  }
+
 }
