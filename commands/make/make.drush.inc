@@ -1022,7 +1022,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path, $ma
         $backend_options['integrate'] = TRUE;
       }
       $results = drush_backend_invoke_concurrent($invocations, $common_options, $backend_options, 'make-process', '@none');
-      if (count($results['error_log'])) {
+      if (!empty($results['error_log'])) {
         return FALSE;
       }
     }
