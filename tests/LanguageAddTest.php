@@ -10,10 +10,31 @@ use Webmozart\PathUtil\Path;
  *  @group slow
  *  @group pm
  */
-class PmEnLocaleImportCase extends CommandUnishTestCase
+class LanguageAddCase extends CommandUnishTestCase
 {
 
-    public function testBatchImportTranslations()
+    public function testLanguageInfo()
+    {
+        $this->setUpDrupal(1, true);
+        $this->drush('pm-enable', ['language']);
+
+        $this->drush('language-info', []);
+        $this->assertContains('English (en)', $this->getSimplifiedOutput());
+    }
+
+    public function testLanguageAdd()
+    {
+        $this->setUpDrupal(1, true);
+        $this->drush('pm-enable', ['language']);
+
+        $this->drush('language-add', ['nl,fr'], ['skip-translations' => null]);
+
+        $this->drush('language-info', []);
+        $this->assertContains('Dutch (nl)', $this->getSimplifiedOutput());
+        $this->assertContains('French (fr)', $this->getSimplifiedOutput());
+    }
+
+    public function testLanguageAddWithTranslations()
     {
         $this->setUpDrupal(1, true);
         $root = $this->webroot();
@@ -32,10 +53,10 @@ class PmEnLocaleImportCase extends CommandUnishTestCase
         $this->mkdir($translationDir);
         copy($source, $translationDir . '/devel.nl.po');
 
+        $this->drush('pm-enable', ['devel']);
         $this->drush('language-add', ['nl']);
 
-        $this->drush('pm-enable', ['devel']);
-        $this->drush('watchdog-show');
+        $this->drush('watchdog-show', []);
         $this->assertContains('Translations imported:', $this->getSimplifiedOutput());
 
         // Clean up the mess this test creates.

@@ -473,9 +473,9 @@ class ConfigLocator
 
         // Find projects
         $finder = new Finder();
-        $finder->files()
+        $finder->directories()
             ->ignoreUnreadableDirs()
-            ->path('#composer.json$|^src/Commands|^Commands#')
+            ->path('#^src/Commands$|^Commands$#')
             ->in($directories)
             ->depth('<= 3');
 

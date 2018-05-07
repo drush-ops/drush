@@ -280,6 +280,7 @@ abstract class DrupalBoot extends BaseBoot
                 $prefix_key = array_key_exists($required_table, $prefix) ? $required_table : 'default';
                 $table_name = $prefix[$prefix_key] . $required_table;
                 if (!$sql->alwaysQuery("SELECT 1 FROM $table_name LIMIT 1;")) {
+                    $this->logger->notice('Missing database table: '. $table_name);
                     return false;
                 }
             }
@@ -307,6 +308,5 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapDrupalFull()
     {
-        _drush_log_drupal_messages();
     }
 }
