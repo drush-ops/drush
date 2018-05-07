@@ -333,7 +333,6 @@ function drush_startup($argv) {
     while (!empty($c) && ($c != $last)) {
       $found_script = find_wrapper_or_launcher($c);
       if ($found_script) {
-        chdir($c);
         break;
       }
       $last = $c;
