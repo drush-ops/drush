@@ -414,6 +414,9 @@ function drush_startup($argv) {
     // Get the current environment for pnctl_exec.
     $env = drush_env();
 
+    // Make sure Drush can locates original working directory. https://github.com/drush-ops/drush/issues/2285
+    chdir($cwd);
+
     // Launch the new script in the same process.
     // If the launch succeeds, then it will not return.
     $error = pcntl_exec($found_script, $arguments, $env);
