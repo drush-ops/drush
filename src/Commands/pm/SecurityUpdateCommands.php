@@ -2,8 +2,6 @@
 namespace Drush\Commands\pm;
 
 use Composer\Semver\Comparator;
-use Composer\Semver\Semver;
-use Composer\Semver\VersionParser;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
@@ -209,7 +207,8 @@ class SecurityUpdateCommands extends DrushCommands
         $name,
         $package
     ) {
-        if (!empty($security_advisories_composer_json['conflict'][$name])) {
+        if (empty($this->securityUpdates[$name]) &&
+            !empty($security_advisories_composer_json['conflict'][$name])) {
             $conflict_constraints = explode(',',
                 $security_advisories_composer_json['conflict'][$name]);
             foreach ($conflict_constraints as $conflict_constraint) {
@@ -217,10 +216,6 @@ class SecurityUpdateCommands extends DrushCommands
                     $package, $name);
                 if ($available_update) {
                     $this->securityUpdates[$name] = $available_update;
-                }
-                else {
-                    $this->logger()
-                        ->warning("Could not parse drupal-security-advisories conflicting version constraint $conflict_constraint for package $name.");
                 }
             }
         }
