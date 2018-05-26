@@ -1,23 +1,16 @@
 {
   "name": "Site Under Test",
-  "repositories": [
-    {
-      "type": "path",
-      "url": "%PATH-TO-DRUSH%",
-      "options": {
-        "symlink": true
-      }
-    },
-    {
+  "repositories": {
+    "drupal_org": {
       "type": "composer",
       "url": "https://packages.drupal.org/8"
     }
-  ],
+  },
   "require": {
     "composer/installers": "^1.2",
     "cweagans/composer-patches": "~1.6",
-    "drupal/core": "8.5.x-dev",
-    "drush/drush": "*@dev",
+    "drupal/core": "8.6.x-dev",
+    "drush/drush": "9.x-dev",
     "phpunit/phpunit": "^4.1",
     "drupal/empty_theme": "^1.0",
     "drupal/devel": "^1.0@RC",
@@ -37,6 +30,10 @@
       "web/themes/contrib/{$name}": ["type:drupal-theme"],
       "drush/contrib/{$name}": ["type:drupal-drush"]
     },
-    "patches": {}
+    "patches": {
+      "drupal/core": {
+        "Allow updating modules with new service dependencies https://www.drupal.org/project/drupal/issues/2863986": "https://www.drupal.org/files/issues/2863986-2-49.patch"
+      }
+    }
   }
 }

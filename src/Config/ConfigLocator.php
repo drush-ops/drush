@@ -43,6 +43,10 @@ class ConfigLocator
 
     protected $configFilePaths = [];
 
+    protected $configFileVariant;
+
+    protected $processedConfigPaths = [];
+
     /*
      * From context.inc:
      *
@@ -88,8 +92,9 @@ class ConfigLocator
     /**
      * ConfigLocator constructor
      */
-    public function __construct($envPrefix = '')
+    public function __construct($envPrefix = '', $configFileVariant = '')
     {
+        $this->configFileVariant = $configFileVariant;
         $this->config = new DrushConfig();
 
         // Add placeholders to establish priority. We add
@@ -198,14 +203,14 @@ class ConfigLocator
     }
 
     /**
-     * Unused. See PreflightArgs::applyToConfig() instead.
+     *  Add config paths defined in preflight configuration.
      *
-     * @param array $preflightConfig
+     * @param array $paths
      * @return $this
      */
-    public function addPreflightConfig($preflightConfig)
+    public function addPreflightConfigFiles($filepaths)
     {
-        $this->config->addContext(self::PREFLIGHT_CONTEXT, $preflightConfig);
+        $this->addConfigPaths(self::PREFLIGHT_CONTEXT, (array) $filepaths);
         return $this;
     }
 
@@ -291,36 +296,48 @@ class ConfigLocator
     public function addConfigPaths($contextName, $paths)
     {
         $loader = new YamlConfigLoader();
-        $candidates = [
-            'drush.yml',
-            'config/drush.yml',
-        ];
-
-        // Make all of the config values parsed so far available in evaluations
+        // Make all of the config values parsed so far available in evaluations.
         $reference = $this->config()->export();
-
         $processor = new ConfigProcessor();
         $context = $this->config->getContext($contextName);
         $processor->add($context->export());
-        $this->addConfigCandidates($processor, $loader, $paths, $candidates);
+
+        $candidates = [
+            'drush.yml',
+        ];
+        if ($this->configFileVariant) {
+            $candidates[] = "drush{$this->configFileVariant}.yml";
+        }
+        $candidates = $this->expandCandidates($candidates, 'config/');
+        $config_files = $this->findConfigFiles($paths, $candidates);
+        $this->addConfigFiles($processor, $loader, $config_files);
+
+        // Complete config import.
         $this->addToSources($processor->sources());
         $context->import($processor->export($reference));
         $this->config->addContext($contextName, $context);
+        $this->processedConfigPaths = array_merge($this->processedConfigPaths, $paths);
+
+        // Recursive case.
+        if ($context->has('drush.paths.config')) {
+            $new_config_paths = array_diff((array) $context->get('drush.paths.config'), $this->processedConfigPaths);
+            if ($new_config_paths) {
+                $this->addConfigPaths($contextName, $new_config_paths);
+            }
+        }
 
         return $this;
     }
 
     /**
-     * Worker function for addConfigPaths
+     * Adds $configFiles config files.
      *
      * @param ConfigProcessor $processor
      * @param ConfigLoaderInterface $loader
-     * @param string[] $paths
-     * @param string[] $candidates
+     * @param array $configFiles
      */
-    protected function addConfigCandidates(ConfigProcessor $processor, ConfigLoaderInterface $loader, $paths, $candidates)
+    protected function addConfigFiles(ConfigProcessor $processor, ConfigLoaderInterface $loader, array $configFiles)
     {
-        $configFiles = $this->identifyCandidates($paths, $candidates);
         foreach ($configFiles as $configFile) {
             $processor->extend($loader->load($configFile));
             $this->configFilePaths[] = $configFile;
@@ -456,9 +473,9 @@ class ConfigLocator
 
         // Find projects
         $finder = new Finder();
-        $finder->files()
+        $finder->directories()
             ->ignoreUnreadableDirs()
-            ->path('#composer.json$|^src/Commands|^Commands#')
+            ->path('#^src/Commands$|^Commands$#')
             ->in($directories)
             ->depth('<= 3');
 
@@ -477,5 +494,55 @@ class ConfigLocator
     public function setComposerRoot($selectedComposerRoot)
     {
         $this->composerRoot = $selectedComposerRoot;
+    }
+
+    /**
+     * Double the candidates, adding '$prefix' before each existing one.
+     */
+    public function expandCandidates($candidates, $prefix)
+    {
+        $additional = array_map(
+            function ($item) use ($prefix) {
+                return $prefix . $item;
+            },
+            $candidates
+        );
+        return array_merge($candidates, $additional);
+    }
+
+    /**
+     * Given an array of paths, separates files and directories.
+     *
+     * @param array $paths
+     *   An array of config paths. These may be config files or paths to dirs
+     *   containing config files.
+     * @param array $candidates
+     *   An array filenames that are considered config files.
+     *
+     * @return array
+     *   An array. The first row is an array of files, the second row is an
+     *   array of dirs.
+     */
+    protected function findConfigFiles($paths, $candidates)
+    {
+        $files = [];
+        $dirs = [];
+        foreach ($paths as $path) {
+            if (file_exists($path)) {
+                if (is_dir($path)) {
+                    $dirs[] = realpath($path);
+                } else {
+                    $files[] = realpath($path);
+                }
+            }
+        }
+
+        // Search directories for config file candidates.
+        $discovered_config_files = $this->identifyCandidates($dirs, $candidates);
+
+        // Merge discoverd candidates with explicitly specified config files.
+        $config_files = array_merge($discovered_config_files, $files);
+
+        return $config_files;
     }
 }

@@ -66,11 +66,39 @@ abstract class CommandUnishTestCase extends UnishTestCase
    */
     protected function getSimplifiedOutput()
     {
-        $output = $this->getOutput();
+        return $this->simplifyOutput($this->getOutput());
+    }
+
+    /**
+     * Returns a simplified version of the error output to facilitate testing.
+     *
+     * @return string
+     *   A simplified version of the error output that has things like full
+     *   paths and superfluous whitespace removed from it.
+     */
+    protected function getSimplifiedErrorOutput()
+    {
+        return $this->simplifyOutput($this->getErrorOutput());
+    }
+
+    /**
+     * Remove things like full paths and extra whitespace from the given string.
+     *
+     * @param string $output
+     *   The output string to simplify.
+     *
+     * @return string
+     *   The simplified output.
+     */
+    protected function simplifyOutput($output)
+    {
         // We do not care if Drush inserts a -t or not in the string. Depends on whether there is a tty.
         $output = preg_replace('# -t #', ' ', $output);
         // Remove double spaces from output to help protect test from false negatives if spacing changes subtlely
         $output = preg_replace('#  *#', ' ', $output);
+        // Remove leading and trailing spaces.
+        $output = preg_replace('#^ *#m', '', $output);
+        $output = preg_replace('# *$#m', '', $output);
         // Debug flags may be added to command strings if we are in debug mode. Take those out so that tests in phpunit --debug mode work
         $output = preg_replace('# --debug #', ' ', $output);
         $output = preg_replace('# --verbose #', ' ', $output);
@@ -259,7 +287,8 @@ abstract class CommandUnishTestCase extends UnishTestCase
     * @param $suffix
     *   Any code to append to the command. For example, redirection like 2>&1.
     * @param array $env
-   *   Environment variables to pass along to the subprocess. @todo - not used.
+    *   Not used. Environment variables to pass along to the subprocess.
+   *    @todo Look into inheritEnvironmentVariables() - available since Process 3.1. See https://github.com/symfony/symfony/pull/19053/files.
     * @return integer
     *   An exit code.
     */
@@ -474,6 +503,27 @@ abstract class CommandUnishTestCase extends UnishTestCase
     protected function assertOutputEquals($expected, $filter = '')
     {
         $output = $this->getSimplifiedOutput();
+        if (!empty($filter)) {
+            $output = preg_replace($filter, '', $output);
+        }
+        $this->assertEquals($expected, $output);
+    }
+
+    /**
+     * Checks that the error output matches the expected output.
+     *
+     * This matches against a simplified version of the actual output that has
+     * absolute paths and duplicate whitespace removed, to avoid false negatives
+     * on minor differences.
+     *
+     * @param string $expected
+     *   The expected output.
+     * @param string $filter
+     *   Optional regular expression that should be ignored in the error output.
+     */
+    protected function assertErrorOutputEquals($expected, $filter = '')
+    {
+        $output = $this->getSimplifiedErrorOutput();
         if (!empty($filter)) {
             $output = preg_replace($filter, '', $output);
         }

@@ -7,9 +7,10 @@ use Drush\Exec\ExecTrait;
  * Run these commands using the --include option - e.g. `drush --include=/path/to/drush/examples xkcd`
  */
 
-class XkcdCommands extends DrushCommands {
+class XkcdCommands extends DrushCommands
+{
 
-  use ExecTrait;
+    use ExecTrait;
 
   /**
    * Retrieve and display xkcd cartoons.
@@ -28,30 +29,27 @@ class XkcdCommands extends DrushCommands {
    *   Retrieve and display a random cartoon in Firefox.
    * @aliases xkcd
    */
-  public function fetch($search = NULL, $options = ['image-viewer' => 'open', 'google-custom-search-api-key' => 'AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek']) {
-    if (empty($search)) {
-      $this->startBrowser('http://xkcd.com');
-    }
-    elseif (is_numeric($search)) {
-      $this->startBrowser('http://xkcd.com/' . $search);
-    }
-    elseif ($search == 'random') {
-      $xkcd_response = @json_decode(file_get_contents('http://xkcd.com/info.0.json'));
-      if (!empty($xkcd_response->num)) {
-        $this->startBrowser('http://xkcd.com/' . rand(1, $xkcd_response->num));
-      }
-    }
-    else {
-      // This uses an API key with a limited number of searches per.
-      $search_response = @json_decode(file_get_contents('https://www.googleapis.com/customsearch/v1?key=' . $options['google-custom-search-api-key'] . '&cx=012652707207066138651:zudjtuwe28q&q=' . $search));
-      if (!empty($search_response->items)) {
-        foreach ($search_response->items as $item) {
-          $this->startBrowser($item->link);
+    public function fetch($search = null, $options = ['image-viewer' => 'open', 'google-custom-search-api-key' => 'AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek'])
+    {
+        if (empty($search)) {
+            $this->startBrowser('http://xkcd.com');
+        } elseif (is_numeric($search)) {
+            $this->startBrowser('http://xkcd.com/' . $search);
+        } elseif ($search == 'random') {
+            $xkcd_response = @json_decode(file_get_contents('http://xkcd.com/info.0.json'));
+            if (!empty($xkcd_response->num)) {
+                $this->startBrowser('http://xkcd.com/' . rand(1, $xkcd_response->num));
+            }
+        } else {
+            // This uses an API key with a limited number of searches per.
+            $search_response = @json_decode(file_get_contents('https://www.googleapis.com/customsearch/v1?key=' . $options['google-custom-search-api-key'] . '&cx=012652707207066138651:zudjtuwe28q&q=' . $search));
+            if (!empty($search_response->items)) {
+                foreach ($search_response->items as $item) {
+                    $this->startBrowser($item->link);
+                }
+            } else {
+                throw new \Exception(dt('The search failed or produced no results.'));
+            }
         }
-      }
-      else {
-        throw new \Exception(dt('The search failed or produced no results.'));
-      }
     }
-  }
 }

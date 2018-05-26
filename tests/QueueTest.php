@@ -9,6 +9,7 @@ use Webmozart\PathUtil\Path;
  */
 class QueueCase extends CommandUnishTestCase
 {
+    use TestModuleHelperTrait;
 
     public function testQueue()
     {
@@ -68,7 +69,7 @@ class QueueCase extends CommandUnishTestCase
         $sites = $this->setUpDrupal(1, true);
 
         // Copy the 'woot' module over to the Drupal site we just set up.
-        $this->setupModulesForTests($this->webroot());
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
 
         // Enable woot module, which contains a queue worker that throws a
         // RequeueException.
@@ -100,20 +101,5 @@ class QueueCase extends CommandUnishTestCase
         $this->drush('queue-list', [], ['format' => 'csv']);
         $output = $this->getOutputAsList();
         $this->assertEquals(str_replace('%items', 0, $expected), array_pop($output), 'Queue item processed after being requeued.');
-    }
-
-  /**
-   * Copies the woot module into Drupal.
-   *
-   * @param string $root
-   *   The path to the root directory of Drupal.
-   */
-    public function setupModulesForTests($root)
-    {
-        $wootModule = Path::join(__DIR__, 'resources/modules/d8/woot');
-        $this->assertTrue(file_exists($wootModule));
-        $targetDir = Path::join($root, 'modules/contrib/woot');
-        $this->mkdir($targetDir);
-        $this->recursiveCopy($wootModule, $targetDir);
     }
 }

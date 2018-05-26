@@ -116,7 +116,7 @@ class LegacyCommands extends DrushCommands
     }
 
     /**
-     * dl has been deprecated. Please build your site using Composer. Add new projects with composer require drupal/[project-name]. Use https://www.drupal.org/project/composer_generate to build a composer.json which represents the the enabled modules on your site.
+     * dl has been deprecated. Please build your site using Composer. Add new projects with composer require drupal/[project-name]. Use https://www.drupal.org/project/composer_generate to build a composer.json which represents the enabled modules on your site.
      *
      * @command pm:download
      * @aliases dl,pm-download
