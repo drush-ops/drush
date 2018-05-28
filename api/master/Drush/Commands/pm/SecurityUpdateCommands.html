@@ -230,6 +230,56 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                                             <p>Emit suggested Composer command for security updates.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    mixed
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_fetchAdvisoryComposerJson">fetchAdvisoryComposerJson</a>()
+        
+                                            <p>Fetches the generated composer.json from drupal-security-advisories.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_loadSiteComposerLock">loadSiteComposerLock</a>()
+        
+                                            <p>Loads the contents of the local Drupal application's composer.lock file.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_registerAllSecurityUpdates">registerAllSecurityUpdates</a>(array $composer_lock_data, array $security_advisories_composer_json)
+        
+                                            <p>Register all available security updates in $this->securityUpdates.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;array
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_determineUpdatesFromConstraint">determineUpdatesFromConstraint</a>(string $conflict_constraint, array $package, string $name)
+        
+                                            <p>Determines if update is avaiable based on a conflict constraint.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_registerPackageSecurityUpdates">registerPackageSecurityUpdates</a>(array $security_advisories_composer_json, string $name, array $package)
+        
+                                            <p>Registers available security updates for a given package.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
             </div>
 
 
@@ -432,7 +482,7 @@ are available.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_suggestComposerCommand">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L102">line 102</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L66">line 66</a></div>
         <code>                    
     <strong>suggestComposerCommand</strong>($result, <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -456,6 +506,212 @@ are available.</p>                            </div>
                 <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
                 <td>$commandData</td>
                 <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_fetchAdvisoryComposerJson">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L87">line 87</a></div>
+        <code>            protected        mixed
+    <strong>fetchAdvisoryComposerJson</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Fetches the generated composer.json from drupal-security-advisories.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>mixed</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" href="http://php.net/Exception">Exception</a></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loadSiteComposerLock">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L105">line 105</a></div>
+        <code>            protected        array
+    <strong>loadSiteComposerLock</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Loads the contents of the local Drupal application's composer.lock file.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" href="http://php.net/Exception">Exception</a></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_registerAllSecurityUpdates">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L136">line 136</a></div>
+        <code>            protected        
+    <strong>registerAllSecurityUpdates</strong>(array $composer_lock_data, array $security_advisories_composer_json)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Register all available security updates in $this->securityUpdates.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$composer_lock_data</td>
+                <td>The contents of the local Drupal application's composer.lock file.</td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$security_advisories_composer_json</td>
+                <td>The composer.json array from drupal-security-advisories.</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_determineUpdatesFromConstraint">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L160">line 160</a></div>
+        <code>        static            array
+    <strong>determineUpdatesFromConstraint</strong>(string $conflict_constraint, array $package, string $name)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Determines if update is avaiable based on a conflict constraint.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$conflict_constraint</td>
+                <td>The constraint for the conflicting, insecure package version.
+  E.g., &lt;1.0.0.</td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$package</td>
+                <td>The package to be evaluated.</td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$name</td>
+                <td>The human readable display name for the package.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td>An associative array containing name, version, and min-version keys.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_registerPackageSecurityUpdates">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L217">line 217</a></div>
+        <code>            protected        
+    <strong>registerPackageSecurityUpdates</strong>(array $security_advisories_composer_json, string $name, array $package)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Registers available security updates for a given package.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$security_advisories_composer_json</td>
+                <td>The composer.json array from drupal-security-advisories.</td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$name</td>
+                <td>The human readable display name for the package.</td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$package</td>
+                <td>The package to be evaluated.</td>
             </tr>
             </table>
 
