@@ -101,7 +101,7 @@ class BackendCase extends CommandUnishTestCase
         $this->assertEquals('drush-version', key($parsed['object']));
         // @todo --backend not currently populating 'output' for Annotated commands.
         // $this->assertStringStartsWith(' Drush Version ', $parsed['output']);
-        $this->assertEquals('Bootstrap to none', $parsed['log'][0]['message']);
+        $this->assertEquals('Starting bootstrap to none', $parsed['log'][0]['message']);
     }
 
     public function testBackendErrorStatus()
