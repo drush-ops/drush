@@ -84,13 +84,14 @@ class SecurityUpdateCommands extends DrushCommands
      *
      * @throws \Exception
      */
-    protected function fetchAdvisoryComposerJson() {
+    protected function fetchAdvisoryComposerJson()
+    {
         try {
             $response_body = file_get_contents('https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/8.x/composer.json');
         } catch (Exception $e) {
             throw new Exception("Unable to fetch drupal-security-advisories information.");
         }
-        $security_advisories_composer_json = json_decode($response_body, TRUE);
+        $security_advisories_composer_json = json_decode($response_body, true);
         return $security_advisories_composer_json;
     }
 
@@ -101,18 +102,24 @@ class SecurityUpdateCommands extends DrushCommands
      *
      * @throws \Exception
      */
-    protected function loadSiteComposerLock() {
+    protected function loadSiteComposerLock()
+    {
         $composer_root = Drush::bootstrapManager()->getComposerRoot();
-        $composer_lock_file_name = getenv('COMPOSER') ? str_replace('.json', '',
-            getenv('COMPOSER')) : 'composer';
+        $composer_lock_file_name = getenv('COMPOSER') ? str_replace(
+            '.json',
+            '',
+            getenv('COMPOSER')
+        ) : 'composer';
         $composer_lock_file_name .= '.lock';
-        $composer_lock_file_path = Path::join($composer_root,
-            $composer_lock_file_name);
+        $composer_lock_file_path = Path::join(
+            $composer_root,
+            $composer_lock_file_name
+        );
         if (!file_exists($composer_lock_file_path)) {
             throw new Exception("Cannot find $composer_lock_file_path!");
         }
         $composer_lock_contents = file_get_contents($composer_lock_file_path);
-        $composer_lock_data = json_decode($composer_lock_contents, TRUE);
+        $composer_lock_data = json_decode($composer_lock_contents, true);
         if (!array_key_exists('packages', $composer_lock_data)) {
             throw new Exception("No packages were found in $composer_lock_file_path! Contents:\n $composer_lock_contents");
         }
@@ -158,8 +165,10 @@ class SecurityUpdateCommands extends DrushCommands
         // Only parse constraints that follow pattern like "<1.0.0".
         if (substr($conflict_constraint, 0, 1) == '<') {
             $min_version = substr($conflict_constraint, 1);
-            if (Comparator::lessThan($package['version'],
-                $min_version)) {
+            if (Comparator::lessThan(
+                $package['version'],
+                $min_version
+            )) {
                 return [
                     'name' => $name,
                     'version' => $package['version'],
@@ -168,13 +177,16 @@ class SecurityUpdateCommands extends DrushCommands
                     'min-version' => $min_version,
                 ];
             }
-        }
-        // Compare exact versions that are insecure.
-        elseif (preg_match('/^[[:digit:]](?![-*><=~ ])/',
-            $conflict_constraint)) {
+        } // Compare exact versions that are insecure.
+        elseif (preg_match(
+            '/^[[:digit:]](?![-*><=~ ])/',
+            $conflict_constraint
+        )) {
             $exact_version = $conflict_constraint;
-            if (Comparator::equalTo($package['version'],
-                $exact_version)) {
+            if (Comparator::equalTo(
+                $package['version'],
+                $exact_version
+            )) {
                 $version_parts = explode('.', $package['version']);
                 if (count($version_parts) == 3) {
                     $version_parts[2]++;
@@ -209,11 +221,16 @@ class SecurityUpdateCommands extends DrushCommands
     ) {
         if (empty($this->securityUpdates[$name]) &&
             !empty($security_advisories_composer_json['conflict'][$name])) {
-            $conflict_constraints = explode(',',
-                $security_advisories_composer_json['conflict'][$name]);
+            $conflict_constraints = explode(
+                ',',
+                $security_advisories_composer_json['conflict'][$name]
+            );
             foreach ($conflict_constraints as $conflict_constraint) {
-                $available_update = $this->determineUpdatesFromConstraint($conflict_constraint,
-                    $package, $name);
+                $available_update = $this->determineUpdatesFromConstraint(
+                    $conflict_constraint,
+                    $package,
+                    $name
+                );
                 if ($available_update) {
                     $this->securityUpdates[$name] = $available_update;
                 }
