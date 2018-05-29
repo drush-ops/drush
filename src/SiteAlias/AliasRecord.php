@@ -118,9 +118,8 @@ class AliasRecord extends Config
     public function root()
     {
         $root = $this->get('root');
-        if ($this->isLocal())
-        {
-          return FsUtils::realpath($root);
+        if ($this->isLocal()) {
+            return FsUtils::realpath($root);
         }
 
         return $root;
