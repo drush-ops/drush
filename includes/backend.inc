@@ -108,7 +108,7 @@ function drush_backend_set_result($value) {
  *       command.  Zero means "no error".
  *     - log: The log item contains an array of log messages from
  *       the command execution ordered chronologically.  Each log
- *       entery is an associative array.  A log entry contains
+ *       entry is an associative array.  A log entry contains
  *       following items:
  *         o  type: The type of log entry, such as 'notice' or 'warning'
  *         o  message: The log message
