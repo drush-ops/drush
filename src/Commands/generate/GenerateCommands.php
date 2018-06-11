@@ -71,6 +71,12 @@ class GenerateCommands extends DrushCommands
                 '--answers=' . escapeshellarg($options['answers']),
                 '--directory=' . $options['directory']
             ];
+            if ($options['ansi']) {
+                $argv[] = '--ansi';
+            }
+            if ($options['no-ansi']) {
+                $argv[] = '--no-ansi';
+            }
             return $application->run(new StringInput(implode(' ', $argv)));
         }
     }
