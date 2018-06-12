@@ -64,7 +64,7 @@ class ArgsPreprocessor
                 return $storage->passArgs($argv);
             }
 
-            if ($this->isAliasOrSiteSpec($opt) && !$storage->hasAlias() && !$sawArg) {
+            if (!$sawArg && !$storage->hasAlias() && $this->isAliasOrSiteSpec($opt)) {
                 $storage->setAlias($opt);
                 continue;
             }
