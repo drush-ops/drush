@@ -32,6 +32,7 @@ function core_drush_help($section) {
       $message .= dt("Hint: This may occur when Drush is trying to:\n");
       $message .= dt(" * bootstrap a site that has not been installed or does not have a configured database. In this case you can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line. See `drush topic docs-aliases` for details.\n");
       $message .= dt(" * connect the database through a socket. The socket file may be wrong or the php-cli may have no access to it in a jailed shell. See http://drupal.org/node/1428638 for details.\n");
+      $message .= dt(" * connect to the database through a cli command using the --defaults-extra-file parameter to pass credentials through a tmp file. This method can break if other credentials are specified in a ~/.my.cnf file in your home directory. You may have to delete or rename the ~/.my.cnf file in your home directory.\n");
       $message .= dt("\nDrush was attempting to connect to: \n!credentials\n", array('!credentials' => _core_site_credentials(12)));
       return $message;
     case 'error:DRUSH_DRUPAL_BOOTSTRAP_ERROR':
