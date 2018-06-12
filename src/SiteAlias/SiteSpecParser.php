@@ -77,34 +77,39 @@ class SiteSpecParser
      */
     protected function patterns()
     {
+        $PATH = '(/[^#]*)';
+        $USER = '([a-zA-Z0-9_-]+)';
+        $SERVER = '([a-zA-Z0-9\._-]+)';
+        $URI = '([a-zA-Z0-9_-]+)';
+
         return [
             // /path/to/drupal#uri
-            '%^(/[^#]*)#([a-zA-Z0-9_-]+)$%' => [
+            "%^{$PATH}#{$URI}\$%" => [
                 'root' => 1,
                 'uri' => 2,
             ],
             // user@server/path/to/drupal#uri
-            '%^([a-zA-Z0-9_-]+)@([a-zA-Z0-9_-]+)(/[^#]*)#([a-zA-Z0-9_-]+)$%' => [
+            "%^{$USER}@{$SERVER}{$PATH}#{$URI}\$%" => [
                 'user' => 1,
                 'host' => 2,
                 'root' => 3,
                 'uri' => 4,
             ],
             // user@server/path/to/drupal
-            '%^([a-zA-Z0-9_-]+)@([a-zA-Z0-9_-]+)(/[^#]*)$%' => [
+            "%^{$USER}@{$SERVER}{$PATH}\$%" => [
                 'user' => 1,
                 'host' => 2,
                 'root' => 3,
                 'uri' => 'default', // Or '2' if uri should be 'host'
             ],
             // user@server#uri
-            '%^([a-zA-Z0-9_-]+)@([a-zA-Z0-9_-]+)#([a-zA-Z0-9_-]+)$%' => [
+            "%^{$USER}@{$SERVER}#{$URI}\$%" => [
                 'user' => 1,
                 'host' => 2,
                 'uri' => 3,
             ],
             // #uri
-            '%^#([a-zA-Z0-9_-]+)$%' => [
+            "%^#{$URI}\$%" => [
                 'uri' => 1,
             ],
         ];
