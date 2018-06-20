@@ -363,6 +363,10 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
                 return $sites[$uri];
             }
         }
+        // Fall back to default directory if it exists.
+        if (file_exists(Path::join($root, 'sites', 'default'))) {
+            return 'default';
+        }
         return false;
     }
 
