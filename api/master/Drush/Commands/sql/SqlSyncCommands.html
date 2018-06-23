@@ -80,7 +80,7 @@
 
     <p>    class
     <strong>SqlSyncCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        implements
-        <a href="../../../Drush/SiteAlias/SiteAliasManagerAwareInterface.html"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareInterface">SiteAliasManagerAwareInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php">View source</a>)
+        <abbr title="Consolidation\SiteAlias\SiteAliasManagerAwareInterface">SiteAliasManagerAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php">View source</a>)
 </p>
 
         
@@ -93,11 +93,11 @@
     <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-6">
-                                            <a href="../../../Drush/SiteAlias/SiteAliasManagerAwareTrait.html"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a>
+                                            <abbr title="Consolidation\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr>
                                             
                 </div>
                 <div class="col-md-6">
-                    Inflection trait for the site alias manager.
+                    
                 </div>
             </div>
                     <div class="row">
@@ -149,19 +149,6 @@
             </table>
 
     
-            <h2>Properties</h2>
-
-            <table class="table table-condensed">
-                    <tr>
-                <td class="type" id="property_siteAliasManager">
-                                        protected                                        
-                </td>
-                <td>$siteAliasManager</td>
-                <td class="last"></td>
-                <td><small>from&nbsp;<a href="../../../Drush/SiteAlias/SiteAliasManagerAwareTrait.html#property_siteAliasManager"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a></small></td>
-            </tr>
-            </table>
-
     
             <h2>Methods</h2>
 
@@ -223,39 +210,6 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_setSiteAliasManager">setSiteAliasManager</a>($siteAliasManager)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/SiteAlias/SiteAliasManagerAwareTrait.html#method_setSiteAliasManager"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    <a href="../../../Drush/SiteAlias/SiteAliasManager.html"><abbr title="Drush\SiteAlias\SiteAliasManager">SiteAliasManager</abbr></a>
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_siteAliasManager">siteAliasManager</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/SiteAlias/SiteAliasManagerAwareTrait.html#method_siteAliasManager"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_hasSiteAliasManager">hasSiteAliasManager</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/SiteAlias/SiteAliasManagerAwareTrait.html#method_hasSiteAliasManager"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8 type">
                     <a href="#method_sqlsync">sqlsync</a>($source, $target, $options = [&#039;no-dump&#039; =&gt; false, &#039;no-sync&#039; =&gt; false, &#039;runner&#039; =&gt; self::REQ, &#039;create-db&#039; =&gt; false, &#039;db-su&#039; =&gt; self::REQ, &#039;db-su-pw&#039; =&gt; self::REQ, &#039;target-dump&#039; =&gt; self::REQ, &#039;source-dump&#039; =&gt; self::OPT])
         
                                             <p>Copy DB data from a source site to a target site. Transfers data via rsync.</p>                </div>
@@ -277,7 +231,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_databaseName">databaseName</a>(<a href="../../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a> $record)
+                    <a href="#method_databaseName">databaseName</a>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $record)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -298,7 +252,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     string
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_rsync">rsync</a>(array $options, array $backend_options, <a href="../../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a> $sourceRecord, <a href="../../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a> $targetRecord, $source_dump_path)
+                    <a href="#method_rsync">rsync</a>(array $options, array $backend_options, <abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $sourceRecord, <abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $targetRecord, $source_dump_path)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -464,82 +418,6 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_setSiteAliasManager">
-        <div class="location">in <a href="../../../Drush/SiteAlias/SiteAliasManagerAwareTrait.html#method_setSiteAliasManager"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManagerAwareTrait.php#L14">line 14</a></div>
-        <code>                    
-    <strong>setSiteAliasManager</strong>($siteAliasManager)
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td></td>
-                <td>$siteAliasManager</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_siteAliasManager">
-        <div class="location">in <a href="../../../Drush/SiteAlias/SiteAliasManagerAwareTrait.html#method_siteAliasManager"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManagerAwareTrait.php#L22">line 22</a></div>
-        <code>                    <a href="../../../Drush/SiteAlias/SiteAliasManager.html"><abbr title="Drush\SiteAlias\SiteAliasManager">SiteAliasManager</abbr></a>
-    <strong>siteAliasManager</strong>()
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><a href="../../../Drush/SiteAlias/SiteAliasManager.html"><abbr title="Drush\SiteAlias\SiteAliasManager">SiteAliasManager</abbr></a></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_hasSiteAliasManager">
-        <div class="location">in <a href="../../../Drush/SiteAlias/SiteAliasManagerAwareTrait.html#method_hasSiteAliasManager"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/SiteAliasManagerAwareTrait.php#L30">line 30</a></div>
-        <code>                    
-    <strong>hasSiteAliasManager</strong>()
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                <div class="tags">
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_sqlsync">
         <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L44">line 44</a></div>
         <code>                    
@@ -631,7 +509,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <h3 id="method_databaseName">
         <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L113">line 113</a></div>
         <code>                    
-    <strong>databaseName</strong>(<a href="../../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a> $record)
+    <strong>databaseName</strong>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $record)
         </code>
     </h3>
     <div class="details">
@@ -643,7 +521,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
                     <table class="table table-condensed">
                     <tr>
-                <td><a href="../../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a></td>
+                <td><abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr></td>
                 <td>$record</td>
                 <td></td>
             </tr>
@@ -724,7 +602,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <h3 id="method_rsync">
         <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L171">line 171</a></div>
         <code>                    string
-    <strong>rsync</strong>(array $options, array $backend_options, <a href="../../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a> $sourceRecord, <a href="../../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a> $targetRecord, $source_dump_path)
+    <strong>rsync</strong>(array $options, array $backend_options, <abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $sourceRecord, <abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $targetRecord, $source_dump_path)
         </code>
     </h3>
     <div class="details">
@@ -746,12 +624,12 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                 <td></td>
             </tr>
                     <tr>
-                <td><a href="../../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a></td>
+                <td><abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr></td>
                 <td>$sourceRecord</td>
                 <td></td>
             </tr>
                     <tr>
-                <td><a href="../../../Drush/SiteAlias/AliasRecord.html"><abbr title="Drush\SiteAlias\AliasRecord">AliasRecord</abbr></a></td>
+                <td><abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr></td>
                 <td>$targetRecord</td>
                 <td></td>
             </tr>
