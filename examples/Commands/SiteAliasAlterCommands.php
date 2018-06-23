@@ -2,8 +2,8 @@
 namespace Drush\Commands;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
-use Drush\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**

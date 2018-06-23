@@ -1,8 +1,8 @@
 <?php
 namespace Drush\Preflight;
 
-use Drush\SiteAlias\SiteAliasName;
-use Drush\SiteAlias\SiteSpecParser;
+use Consolidation\SiteAlias\SiteAliasName;
+use Consolidation\SiteAlias\SiteSpecParser;
 
 /**
  * Preprocess commandline arguments.

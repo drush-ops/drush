@@ -6,7 +6,7 @@ use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drush\Command\DrushInputAdapter;
-use Drush\SiteAlias\AliasRecord;
+use Consolidation\SiteAlias\AliasRecord;
 use Consolidation\AnnotatedCommand\CommandData;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
