@@ -31,6 +31,7 @@
     "consolidation/annotated-command": "^2.8.1",
     "consolidation/config": "^1.0.9",
     "consolidation/output-formatters": "^3.1.12",
+    "consolidation/site-alias": "^0.1",
     "consolidation/robo": "^1.1.5",
     "grasmash/yaml-expander": "^1.1.1",
     "league/container": "~2",

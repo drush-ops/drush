@@ -10,6 +10,7 @@
     "ext-dom": "*",
     "psr/log": "~1.0",
     "consolidation/config": "^1.0.9",
+    "consolidation/site-alias": "dev-master",
     "symfony/var-dumper": "~2.7|^3|^4",
     "symfony/finder": "~2.7|^3",
     "webflo/drupal-finder": "^0",

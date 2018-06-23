@@ -2,8 +2,8 @@
 namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
-use Drush\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 
 class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
