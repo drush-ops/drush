@@ -271,6 +271,11 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $root = $aliasRecord->root();
 
         $dir = $commandData->input()->getOption('sites-subdir');
+
+        if (!$dir) {
+            $dir = $this->config->get('options.sites-subdir');
+        }
+
         if (!$dir) {
             // We will allow the 'uri' from the site alias to provide
             // a fallback name when '--sites-subdir' is not specified, but
