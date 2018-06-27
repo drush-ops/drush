@@ -4,8 +4,6 @@
 # To convert legacy alias (*.aliases.drushrc.php) to yml, run the
 # site:alias-convert command.
 #
-# Use this file as a guide to creating your own aliases.
-#
 # Aliases are commonly used to define short names for
 # local or remote Drupal installations; however, an alias
 # is really nothing more than a collection of options.
@@ -183,6 +181,8 @@
 #
 # It is no longer possible to set environment variables from within an alias.
 # This is a planned feature.
+#
+# See https://github.com/consolidation/site-alias for more developer information about Site Aliases.
 #
 # An example appears below. Edit to suit and remove the @code / @endcode and
 # leading hashes to enable.
