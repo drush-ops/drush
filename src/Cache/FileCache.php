@@ -129,6 +129,15 @@ class FileCache implements CacheInterface
         $bin_dir = $this->cacheDirectory();
         $files = [];
         if (empty($cid)) {
+            // TODO: Extract this whole bit into a generic "remove" function so it can be reused below for specific bins.
+            $semaphore = Path::join($bin_dir, 'semaphore');
+            // See if our semaphore lock exists, and if so abort this cache clear in order to prevent race conditions.
+            // TODO: Check last file modification time, and if it's more than a few seconds assume the lock is stale and clear it.
+            if ($fs->exists($semaphore)) {
+                return;
+            }
+            // Write a semaphore lock file into the cache directory we are removing in order to prevent race conditions.
+            $fs->dumpfile($semaphore, null);
             $fs->remove($bin_dir);
         } else {
             if ($wildcard) {
