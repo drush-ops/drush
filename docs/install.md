@@ -80,6 +80,9 @@ Composer - One Drush per Project
 
 Git Clone (i.e. manual install)
 -----------
+
+Note: you will still need to run `composer install` to complete installation.
+
 1. Place the uncompressed drush.tar.gz, drush.zip, or cloned git repository in a directory that is outside of your web root.
 1. Make the 'drush' command executable:
 
@@ -109,6 +112,8 @@ Git Clone (i.e. manual install)
 1. From Drush root, run Composer to fetch dependencies.
 
      `$ composer install`
+
+   Without doing this, you will see this error: *Unable to load autoload.php. Drush now requires Composer in order to install its dependencies and autoload classes. Please see README.md*
 
 See [Configure](configure.md) for next steps.
 
