@@ -71,6 +71,25 @@
 #       - /etc/drush/sites
 # @endcode
 #
+# It is also possible to create a named location that contains a group
+# of related site aliases. For example, if you had a number of sites
+# for local schools, you could define a location named "schools":
+#
+# @code
+# drush:
+#   paths:
+#     alias-path:
+#       - '${env.home}/.drush/sites/schools'
+# @endcode
+#
+# Site aliases stored in this directory may then be referenced by its
+# full alias name, including its location, e.g.:
+#
+#   $ drush @schools.example.dev
+#
+# Such alias files may still be referenced by their shorter name, e.g.
+# `@example.dev`.
+#
 # If you run the command `drush core:init`, this configuration will
 # be done for you automatically.
 #
@@ -84,6 +103,18 @@
 # site, use the "site:alias" command with the built-in alias "@self":
 #
 #   $ drush site:alias @self
+#
+# The `site:alias` command may also be used to list all of the sites and
+# environments in a given location, e.g.:
+#
+#   $ drush site:alias @schools
+#
+# Or it may be used to list all of the environments in a given site:
+#
+#   $ drush site:alias @example
+#
+# If called without any parameters, it will list all of the sites and
+# environments in all locations.
 #
 # Drush also supports *remote* site aliases.  When a site alias is
 # defined for a remote site, Drush will use the ssh command to run
