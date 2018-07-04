@@ -1314,7 +1314,9 @@ function _drush_log($entry) {
     // TODO: need to check log level.
     // Maybe we just ensure that our PSR-2 logger is available early.
     $log_level = $entry['type'];
-//    printf("[%s] %s\n", $entry['type'], $entry['message']);
+    if ($log_level == 'error') {
+      printf("[%s] %s\n", $entry['type'], $entry['message']);
+    }
   }
 }
 
@@ -1569,8 +1571,8 @@ function drush_set_error($error, $message = null, $output_label = "") {
 
   $error_log[$error][] = $message;
   if (!drush_backend_packet('set_error', array('error' => $error, 'message' => $message))) {
-    debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-    drush_log(($message) ? $output_label . $message : $output_label . $error, LogLevel::ERROR, $error);
+    //debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+    drush_log(($message) ? $output_label . $message : $output_label . $error, 'error' /*LogLevel::ERROR*/, $error);
   }
 
   return FALSE;

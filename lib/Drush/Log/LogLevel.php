@@ -6,7 +6,7 @@ namespace Drush\Log;
  * Additional log levels that Drush uses for historical reasons.
  * Standard log levels should be preferred.
  */
-class LogLevel extends \Psr\Log\LogLevel
+class LogLevel
 {
     // Things that happen early on.  Like 'notice'
     const BOOTSTRAP = 'bootstrap';
@@ -29,4 +29,14 @@ class LogLevel extends \Psr\Log\LogLevel
 
     // Batch processes. Like 'notice'
     const BATCH = 'batch';
+
+    // Was: extends \Psr\Log\LogLevel
+    const EMERGENCY = 'emergency';
+    const ALERT     = 'alert';
+    const CRITICAL  = 'critical';
+    const ERROR     = 'error';
+    const WARNING   = 'warning';
+    const NOTICE    = 'notice';
+    const INFO      = 'info';
+    const DEBUG     = 'debug';
 }
