@@ -371,6 +371,7 @@ function drush_composer_autoloader() {
   // contains only the components that are not overlapping with Drupal 8.3.x
   // and earlier or Drupal 8.4.x and later.
   $vendor_path = drush_get_context('DRUSH_VENDOR_PATH');
+  // print "### AUTOLOAD at $vendor_path\n";
   $classloader = require $vendor_path . '/autoload.php';
   drush_set_context('DRUSH_CLASSLOADER', $classloader);
 }
@@ -378,7 +379,7 @@ function drush_composer_autoloader() {
 /**
  * If --root is provided, set context.
  */
-function drush_preflight_root() {
+function _drush_preflight_root() {
   $root = drush_get_option('root');
   if (!isset($root)) {
     $root = drush_locate_root();
@@ -386,14 +387,17 @@ function drush_preflight_root() {
   if ($root) {
     $root = realpath($root);
   }
-  // @todo This context name should not mention Drupal.
-  // @todo Drupal code should use DRUSH_DRUPAL_ROOT instead of this constant.
   drush_set_context('DRUSH_SELECTED_DRUPAL_ROOT', $root);
 
   // Load the config options from Drupal's /drush, ../drush, and sites/all/drush directories,
   // even prior to bootstrapping the root.
   drush_load_config('drupal');
 
+  return $root;
+}
+
+function drush_preflight_root() {
+  $root = _drush_preflight_root();
   // Search for commandfiles in the root locations
   $discovery = annotationcommand_adapter_get_discovery();
   $searchpath = [dirname($root) . '/drush', "$root/drush", "$root/sites/all/drush"];
@@ -545,7 +549,7 @@ function _drush_preflight_alias_path() {
  * Set root and uri.
  */
 function _drush_preflight_root_uri() {
-  drush_preflight_root();
+  _drush_preflight_root();
   _drush_preflight_uri();
 }
 
