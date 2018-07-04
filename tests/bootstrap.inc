@@ -22,6 +22,8 @@ unish_init();
  * Initialize our environment at the start of each run (i.e. suite).
  */
 function unish_init() {
+  spl_autoload_register('drush_unish_autoloader');
+
   // Default drupal major version to run tests over.
   $unish_drupal_major = '8';
   if (getenv('UNISH_DRUPAL_MAJOR_VERSION')) {
@@ -92,6 +94,20 @@ function unish_init() {
   define('UNISH_USERGROUP', isset($GLOBALS['UNISH_USERGROUP']) ? $GLOBALS['UNISH_USERGROUP'] : NULL);
 
   define('UNISH_BACKEND_OUTPUT_DELIMITER', 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END');
+}
+
+/**
+ * Autoload classes in the Drush namespace.
+ */
+function drush_unish_autoloader($className) {
+  if (substr($className,0,6) != "Drush\\") {
+    return;
+  }
+  $classFilePath = dirname(__DIR__) . '/lib/' . strtr($className, '\\', '/') . '.php';
+
+  if(file_exists($classFilePath) && is_readable($classFilePath)) {
+    require($classFilePath);
+  }
 }
 
 /**
