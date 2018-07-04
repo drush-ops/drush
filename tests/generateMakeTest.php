@@ -1,7 +1,6 @@
 <?php
 
 namespace Unish;
-use Webmozart\PathUtil\Path;
 
 /**
  * Generate makefile tests
@@ -79,7 +78,7 @@ EOD;
     $this->assertEquals($expected, $actual);
 
     // Download a module to a 'contrib' directory to test the subdir feature
-    $this->mkdir(Path::join($this->webroot(). '/sites/all/modules/contrib'));
+    $this->mkdir($this->webroot(). '/sites/all/modules/contrib');
     $this->drush('pm-download', array('libraries'), array('destination' => 'sites/all/modules/contrib') + $options);
     $this->drush('pm-enable', array('libraries'), $options);
     $makefile = UNISH_SANDBOX . '/dev.make.yml';

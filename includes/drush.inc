@@ -7,6 +7,7 @@
 
 use Drush\Log\Logger;
 use Drush\Log\LogLevel;
+use Drush\Log\StaticLogger;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -1311,12 +1312,8 @@ function _drush_log($entry) {
   }
   else {
     // Log early messages.
-    // TODO: need to check log level.
-    // Maybe we just ensure that our PSR-2 logger is available early.
     $log_level = $entry['type'];
-    if ($log_level == 'error') {
-      printf("[%s] %s\n", $entry['type'], $entry['message']);
-    }
+    StaticLogger::log($log_level, $entry['message'], $entry);
   }
 }
 
