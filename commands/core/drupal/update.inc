@@ -39,6 +39,11 @@ use Drupal\Core\Entity\EntityStorageException;
 function drush_update_do_one($module, $number, $dependency_map,  &$context) {
   $function = $module . '_update_' . $number;
 
+  // Disable config entity overrides.
+  if (!defined('MAINTENANCE_MODE')) {
+    define('MAINTENANCE_MODE', 'update');
+  }
+
   // If this update was aborted in a previous step, or has a dependency that
   // was aborted in a previous step, go no further.
   if (!empty($context['results']['#abort']) && array_intersect($context['results']['#abort'], array_merge($dependency_map, array($function)))) {
