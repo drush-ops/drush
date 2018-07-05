@@ -7,6 +7,7 @@
 
 use Drush\Log\Logger;
 use Drush\Log\LogLevel;
+use Drush\Log\StaticLogger;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -230,45 +231,12 @@ function drush_flatten_array($a) {
 }
 
 /**
- * Get the available global options. Used by help command. Command files may
- * modify this list using hook_drush_help_alter().
+ * Get the standard (built-in) global options, prior to modification by hook_drush_help_alter().
  *
  * @param boolean $brief
- *   Return a reduced set of important options. Used by help command.
- *
- * @return
- *   An associative array containing the option definition as the key,
- *   and a descriptive array for each of the available options.  The array
- *   elements for each item are:
- *
- *     - short-form: The shortcut form for specifying the key on the commandline.
- *     - propagate: backend invoke will use drush_get_option to propagate this
- *       option, when set, to any other Drush command that is called.
- *     - context: The drush context where the value of this item is cached.  Used
- *       by backend invoke to propagate values set in code.
- *     - never-post: If TRUE, backend invoke will never POST this item's value
- *       on STDIN; it will always be sent as a commandline option.
- *     - never-propagate: If TRUE, backend invoke will never pass this item on
- *       to the subcommand being executed.
- *     - local-context-only: Backend invoke will only pass this value on for local calls.
- *     - merge: For options such as $options['shell-aliases'] that consist of an array
- *       of items, make a merged array that contains all of the values specified for
- *       all of the contexts (config files) where the option is defined.  The value is stored in
- *       the specified 'context', or in a context named after the option itself if the
- *       context flag is not specified.
- *       IMPORTANT: When the merge flag is used, the option value must be obtained via
- *       drush_get_context('option') rather than drush_get_option('option').
- *     - merge-pathlist: For options such as --include and --config, make a merged list
- *       of options from all contexts; works like the 'merge' flag, but also handles string
- *       values separated by the PATH_SEPARATOR.
- *     - merge-associative: Like 'merge-pathlist', but key values are preserved.
- *     - propagate-cli-value: Used to tell backend invoke to include the value for
- *       this item as specified on the cli.  This can either override 'context'
- *       (e.g., propagate --include from cli value instead of DRUSH_INCLUDE context),
- *       or for an independent global setting (e.g. --user)
- *     - description: The help text for this item. displayed by `drush help`.
+ *   Return a reduced set of important options.
  */
-function drush_get_global_options($brief = FALSE) {
+function drush_get_standard_global_options($brief = FALSE) {
   $options['root']               = array('short-form' => 'r', 'short-has-arg' => TRUE, 'never-post' => TRUE, 'description' => "Drupal root directory to use (default: current directory).", 'example-value' => 'path');
   $options['uri']                = array('short-form' => 'l', 'short-has-arg' => TRUE, 'never-post' => TRUE, 'description' => 'URI of the drupal site to use (only needed in multisite environments or when running on an alternate port).', 'example-value' => 'http://example.com:8888');
   $options['verbose']            = array('short-form' => 'v', 'context' => 'DRUSH_VERBOSE', 'description' => 'Display extra information about the command.');
@@ -329,7 +297,52 @@ function drush_get_global_options($brief = FALSE) {
     $options['cache-clear']         = array('propagate' => TRUE, 'description' => 'If 0, Drush skips normal cache clearing; the caller should then clear if needed.', 'example-value' => '0', );
     $options['local']               = array('propagate' => TRUE, 'description' => 'Don\'t look in global locations for commandfiles, config, and site aliases');
     $options['ignored-directories'] = array('propagate' => TRUE, 'description' => "Exclude directories when searching for files in drush_scan_directory().", 'example-value' => 'node_modules,bower_components');
+  }
+  return $options;
+}
 
+/**
+ * Get the available global options. Used by help command. Command files may
+ * modify this list using hook_drush_help_alter().
+ *
+ * @param boolean $brief
+ *   Return a reduced set of important options. Used by help command.
+ *
+ * @return
+ *   An associative array containing the option definition as the key,
+ *   and a descriptive array for each of the available options.  The array
+ *   elements for each item are:
+ *
+ *     - short-form: The shortcut form for specifying the key on the commandline.
+ *     - propagate: backend invoke will use drush_get_option to propagate this
+ *       option, when set, to any other Drush command that is called.
+ *     - context: The drush context where the value of this item is cached.  Used
+ *       by backend invoke to propagate values set in code.
+ *     - never-post: If TRUE, backend invoke will never POST this item's value
+ *       on STDIN; it will always be sent as a commandline option.
+ *     - never-propagate: If TRUE, backend invoke will never pass this item on
+ *       to the subcommand being executed.
+ *     - local-context-only: Backend invoke will only pass this value on for local calls.
+ *     - merge: For options such as $options['shell-aliases'] that consist of an array
+ *       of items, make a merged array that contains all of the values specified for
+ *       all of the contexts (config files) where the option is defined.  The value is stored in
+ *       the specified 'context', or in a context named after the option itself if the
+ *       context flag is not specified.
+ *       IMPORTANT: When the merge flag is used, the option value must be obtained via
+ *       drush_get_context('option') rather than drush_get_option('option').
+ *     - merge-pathlist: For options such as --include and --config, make a merged list
+ *       of options from all contexts; works like the 'merge' flag, but also handles string
+ *       values separated by the PATH_SEPARATOR.
+ *     - merge-associative: Like 'merge-pathlist', but key values are preserved.
+ *     - propagate-cli-value: Used to tell backend invoke to include the value for
+ *       this item as specified on the cli.  This can either override 'context'
+ *       (e.g., propagate --include from cli value instead of DRUSH_INCLUDE context),
+ *       or for an independent global setting (e.g. --user)
+ *     - description: The help text for this item. displayed by `drush help`.
+ */
+function drush_get_global_options($brief = FALSE) {
+  $options = drush_get_standard_global_options($brief);
+  if (!$brief) {
     $command = array(
         'options' => $options,
         '#brief' => FALSE,
@@ -1296,6 +1309,11 @@ function _drush_log($entry) {
     $log[] = $entry;
     drush_backend_packet('log', $entry);
     return $callback($entry);
+  }
+  else {
+    // Log early messages.
+    $log_level = $entry['type'];
+    StaticLogger::log($log_level, $entry['message'], $entry);
   }
 }
 

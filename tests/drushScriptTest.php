@@ -1,7 +1,6 @@
 <?php
 
 namespace Unish;
-use Webmozart\PathUtil\Path;
 
 /**
  * Tests for the 'drush' script itself
@@ -33,7 +32,7 @@ class drushScriptCase extends CommandUnishTestCase {
     // files to allow us to bootstrap to the DRUPAL_ROOT phase.
     $this->setUpDrupal(1, TRUE);
 
-    $globalDrushDotPhp = Path::join(UNISH_DRUSH, '../drush.php');
+    $globalDrushDotPhp = dirname(UNISH_DRUSH) . '/drush.php';
 
     // Control: test `drush --root ` ... with no site-local Drush
     $drush_location = $this->getDrushLocation();

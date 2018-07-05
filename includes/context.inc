@@ -198,7 +198,7 @@ function drush_set_config_options($context, $options, $override = array()) {
  * array that use the short form into the long form.
  */
 function drush_expand_short_form_options(&$options) {
-  foreach (drush_get_global_options() as $name => $info) {
+  foreach (drush_get_standard_global_options() as $name => $info) {
     if (is_array($info)) {
       // For any option with a short form, check to see if the short form was set in the
       // options.  If it was, then rename it to its long form.
@@ -240,7 +240,7 @@ function drush_set_config_special_contexts(&$options) {
     // Expand -s into --simulate, etc.
     drush_expand_short_form_options($options);
 
-    foreach (drush_get_global_options() as $name => $info) {
+    foreach (drush_get_standard_global_options() as $name => $info) {
       if (is_array($info)) {
         // For any global option with the 'merge-pathlist' or 'merge-associative' flag, set its
         // value in the specified context.  The option is 'merged' because we
