@@ -88,10 +88,13 @@
 #   $ drush @schools.example.dev
 #
 # Such alias files may still be referenced by their shorter name, e.g.
-# `@example.dev`.
+# `@example.dev`. Note that it is necessary to individually list every
+# location where site alias files may be stored; Drush never does recursive
+# (deep) directory searches for alias files.
 #
-# If you run the command `drush core:init`, this configuration will
-# be done for you automatically.
+# The command `drush core:init` will automatically configure your
+# ~/.drush/drush.yml configuration file to add `~/.drush/sites` and
+# `/etc/drush/sites` as locations where alias files may be placed.
 #
 # Files stored in one of the search path locations can be used to create
 # aliases to local and remote Drupal installations.  These aliases can be
