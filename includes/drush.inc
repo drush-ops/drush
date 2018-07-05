@@ -1569,7 +1569,7 @@ function drush_set_error($error, $message = null, $output_label = "") {
   $error_log[$error][] = $message;
   if (!drush_backend_packet('set_error', array('error' => $error, 'message' => $message))) {
     //debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-    drush_log(($message) ? $output_label . $message : $output_label . $error, 'error' /*LogLevel::ERROR*/, $error);
+    drush_log(($message) ? $output_label . $message : $output_label . $error, LogLevel::ERROR, $error);
   }
 
   return FALSE;

@@ -157,10 +157,10 @@ function drush_load_config_file($context, $config_list) {
   foreach ((array)$config_list as $config) {
     if (file_exists($config)) {
       $options = $aliases = $command_specific = $override = array();
-      drush_log(dt('Loading drushrc "!config" into "!context" scope.', array('!config' => realpath($config), '!context' => $context)), 'bootstrap'); // LogLevel::BOOTSTRAP
+      drush_log(dt('Loading drushrc "!config" into "!context" scope.', array('!config' => realpath($config), '!context' => $context)), LogLevel::BOOTSTRAP);
       $ret = @include_once($config);
       if ($ret === FALSE) {
-        drush_log(dt('Cannot open drushrc "!config", ignoring.', array('!config' => realpath($config))), 'warning'); // LogLevel::WARNING
+        drush_log(dt('Cannot open drushrc "!config", ignoring.', array('!config' => realpath($config))), LogLevel::WARNING);
         return FALSE;
       }
       if (!empty($options) || !empty($aliases) || !empty($command_specific) || !empty($override)) {
