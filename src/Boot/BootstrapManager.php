@@ -394,7 +394,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         $this->logger->log(LogLevel::BOOTSTRAP, 'Starting bootstrap to {phase}', ['phase' => $bootstrapPhase]);
         $phase = $this->bootstrap()->lookUpPhaseIndex($bootstrapPhase);
         if (!isset($phase)) {
-            throw new BootstrapException(dt('Bootstrap phase !phase unknown.', ['!phase' => $bootstrapPhase]));
+            throw new BootstrapException('Bootstrap phase $bootstrapPhase unknown.');
         }
         // Do not attempt to bootstrap to a phase that is unknown to the selected bootstrap object.
         $phases = $this->bootstrapPhases();
