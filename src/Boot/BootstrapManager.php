@@ -451,8 +451,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
             if ($this->bootstrapValidate($phase_index)) {
                 if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE)) {
                     $this->logger->log(LogLevel::BOOTSTRAP, 'Try to bootstrap at phase {phase}', ['phase' => $max_phase_index]);
-                    if (!$this->doBootstrap($phase_index, $max_phase_index, $annotationData))
-                    {
+                    if (!$this->doBootstrap($phase_index, $max_phase_index, $annotationData)) {
                         throw new BootstrapException("Cannot bootstrap phase index $phase_index. Maximum phase index $max_phase_index.");
                     }
                 }
