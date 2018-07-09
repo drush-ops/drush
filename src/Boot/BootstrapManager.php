@@ -3,6 +3,7 @@
 namespace Drush\Boot;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
+use Drush\Exceptions\BootstrapException;
 use Robo\Common\ConfigAwareTrait;
 use DrupalFinder\DrupalFinder;
 use Drush\Log\LogLevel;
@@ -385,26 +386,22 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      * @param \Consolidation\AnnotatedCommand\AnnotationData $annotationData
      *   Optional annotation data from the command.
      *
-     * @return bool
-     *   TRUE if the specified bootstrap phase has completed.
-     *
-     * @throws \Exception
-     *   Thrown when an unknown bootstrap phase is passed in the annotation
-     *   data.
+     * @throws BootstrapException
+     *   If an unknown bootstrap phase is passed in the annotation data or the phase index doesn't exist.
      */
     public function bootstrapToPhase($bootstrapPhase, AnnotationData $annotationData = null)
     {
         $this->logger->log(LogLevel::BOOTSTRAP, 'Starting bootstrap to {phase}', ['phase' => $bootstrapPhase]);
         $phase = $this->bootstrap()->lookUpPhaseIndex($bootstrapPhase);
         if (!isset($phase)) {
-            throw new \Exception(dt('Bootstrap phase !phase unknown.', ['!phase' => $bootstrapPhase]));
+            throw new BootstrapException(dt('Bootstrap phase !phase unknown.', ['!phase' => $bootstrapPhase]));
         }
         // Do not attempt to bootstrap to a phase that is unknown to the selected bootstrap object.
         $phases = $this->bootstrapPhases();
         if (!array_key_exists($phase, $phases) && ($phase >= 0)) {
-            return false;
+            throw new BootstrapException("Unknown bootstrap phase: $phase.");
         }
-        return $this->bootstrapToPhaseIndex($phase, $annotationData);
+        $this->bootstrapToPhaseIndex($phase, $annotationData);
     }
 
     protected function maxPhaseLimit($bootstrap_str)
@@ -426,8 +423,8 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      * @param \Consolidation\AnnotatedCommand\AnnotationData $annotationData
      *   Optional annotation data from the command.
      *
-     * @return bool
-     *   TRUE if the specified bootstrap phase has completed.
+     * @throws BootstrapException
+     *   If cannot bootstrap at given index phase.
      */
     public function bootstrapToPhaseIndex($max_phase_index, AnnotationData $annotationData = null)
     {
@@ -436,12 +433,11 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
             $bootstrap_str = $annotationData->get('bootstrap');
             $stop_phase = $this->maxPhaseLimit($bootstrap_str);
             $this->bootstrapMax($stop_phase);
-            return true;
+            return;
         }
 
         $this->logger->log(LogLevel::BOOTSTRAP, 'Drush bootstrap phase {phase}', ['phase' => $max_phase_index]);
         $phases = $this->bootstrapPhases();
-        $result = true;
 
           // Try to bootstrap to the maximum possible level, without generating errors
         foreach ($phases as $phase_index) {
@@ -455,16 +451,16 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
             if ($this->bootstrapValidate($phase_index)) {
                 if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE)) {
                     $this->logger->log(LogLevel::BOOTSTRAP, 'Try to bootstrap at phase {phase}', ['phase' => $max_phase_index]);
-                    $result = $this->doBootstrap($phase_index, $max_phase_index, $annotationData);
+                    if (!$this->doBootstrap($phase_index, $max_phase_index, $annotationData))
+                    {
+                        throw new BootstrapException("Cannot bootstrap phase index $phase_index. Maximum phase index $max_phase_index.");
+                    }
                 }
             } else {
                 $this->logger->log(LogLevel::BOOTSTRAP, 'Could not bootstrap at phase {phase}', ['phase' => $max_phase_index]);
-                $result = false;
-                break;
+                throw new BootstrapException("Could not bootstrap at phase $max_phase_index.");
             }
         }
-
-        return $result;
     }
 
     /**
