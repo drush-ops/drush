@@ -13,9 +13,9 @@
 #    where $PROJECT is the project root (location of composer.json file).
 # 3. Run remote commands against the shared live or stage sites
 #
-# Following these steps, a cache-rebuild on the live environment would be:
+# Following these steps, a cache:rebuild on the live environment would be:
 #
-#   $ drush @live cache-rebuild
+#   $ drush @live cache:rebuild
 #
 # The site alias file should be named `self.site.yml` because this name is
 # special, and is used to define the different environments (usually remote)
