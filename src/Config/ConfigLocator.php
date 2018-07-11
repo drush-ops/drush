@@ -475,7 +475,8 @@ class ConfigLocator
         $finder = new Finder();
         $finder->directories()
             ->ignoreUnreadableDirs()
-            ->path('#^src/Commands$|^Commands$#')
+            ->followLinks()
+            ->path('#src/Commands$|Commands$#')
             ->in($directories)
             ->depth('<= 3');
 
