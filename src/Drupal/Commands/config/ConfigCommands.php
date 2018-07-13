@@ -340,7 +340,7 @@ class ConfigCommands extends DrushCommands
      */
     public function getStorage($directory)
     {
-        if ($directory == \config_get_config_directory(CONFIG_SYNC_DIRECTORY)) {
+        if ($directory == Path::canonicalize(\config_get_config_directory(CONFIG_SYNC_DIRECTORY))) {
             return \Drupal::service('config.storage.sync');
         } else {
             return new FileStorage($directory);
