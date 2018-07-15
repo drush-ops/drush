@@ -1,7 +1,7 @@
 ---
 name: Bug report or support request
-about: For support requests, please use [Drupal Answers](http://drupal.stackexchange.com/questions/tagged/drush)
-  instead
+about: For support requests, please use Drupal Answers [1]
+  instead. [1]: http://drupal.stackexchange.com/questions/tagged/drush
 
 ---
 
