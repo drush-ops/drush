@@ -27,3 +27,5 @@ pursuing one of the support options below.
 * Post support requests to [Drupal Answers](http://drupal.stackexchange.com/questions/tagged/drush).
 * Bug reports and feature requests should be reported in the [GitHub Drush Issue Queue](https://github.com/drush-ops/drush/issues).
 * Use pull requests (PRs) to contribute to Drush.
+
+Issues in the Drush queue are used only to track things that need to change in Drush. Support requests posted to the Drush Issue Queue will be answered if possible on a best-effort basis, and then closed regardless of the resolution. If a support question is closed, it does not mean that the question was invalid.
