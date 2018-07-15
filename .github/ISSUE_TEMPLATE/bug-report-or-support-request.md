@@ -1,7 +1,6 @@
 ---
 name: Bug report or support request
-about: For support requests, please use Drupal Answers
-  instead. See http://drupal.stackexchange.com/questions/tagged/drush
+about: For support requests, please use Drupal Answers instead. See http://drupal.stackexchange.com/questions/tagged/drush
 
 ---
 
