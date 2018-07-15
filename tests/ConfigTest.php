@@ -66,5 +66,14 @@ class ConfigCase extends CommandUnishTestCase
         $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
         $page = $this->getOutputFromJSON('system.site:page');
         $this->assertContains('unish partial', $page->front, '--partial was successfully imported.');
+
+        // Similar, but this time via import single command.
+        $contents = file_get_contents($system_site_yml);
+        $contents = preg_replace('/front: .*/', 'front: unish single', $contents);
+        $contents = file_put_contents($partial_path. '/system.site.yml', $contents);
+        $this->drush('config-import-single', ['system.site']);
+        $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
+        $page = $this->getOutputFromJSON('system.site:page');
+        $this->assertContains('unish single', $page->front, 'Config was successfully imported single item.');
     }
 }
