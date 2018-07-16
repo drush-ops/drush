@@ -1291,10 +1291,43 @@ function _drush_backend_get_stdin() {
     }
   }
   stream_set_blocking($fp, FALSE);
-  $string = stream_get_contents($fp);
+  $string = drush_stream_get_contents($fp);
   fclose($fp);
   if (trim($string)) {
     return json_decode($string, TRUE);
   }
   return FALSE;
+}
+
+/**
+ * Read stream contents one byte at a time.
+ *
+ * @return string $ret
+ *
+ * @see https://github.com/drush-ops/drush/issues/1887
+ */
+function drush_stream_get_contents($handle, $timeout_seconds = 0.5) {
+  $ret = '';
+
+  // Loop until finished reading.
+  while (true) {
+    $starttime = microtime(true);
+
+    $metadata = stream_get_meta_data($handle);
+
+    // Return what we've read if we get EOF or go over the timeout.
+    if ($metadata['eof'] === TRUE || $time_used >= $timeout_seconds) {
+      return $ret;
+    }
+
+    // Attempt to read one byte.
+    $new = stream_get_contents($handle, 1);
+    $endtime = microtime(true);
+
+    // If a byte was read, add it to the return value.
+    if (is_string($new) && strlen($new) >= 1) {
+      $ret .= $new;
+    }
+    $time_used = $endtime - $starttime;
+  }
 }
