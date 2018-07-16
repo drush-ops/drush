@@ -3,8 +3,8 @@ namespace Drush\Commands\core;
 
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
-use Drush\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 
 class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {

@@ -5,7 +5,7 @@ use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Drush\Boot\BootstrapManager;
 use Drush\Runtime\TildeExpansionHook;
-use Drush\SiteAlias\SiteAliasManager;
+use Consolidation\SiteAlias\SiteAliasManager;
 use Drush\Log\LogLevel;
 use Drush\Command\RemoteCommandProxy;
 use Drush\Runtime\RedispatchHook;

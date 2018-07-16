@@ -49,8 +49,8 @@ For example:
 namespace Drupal\my_module\Commands;
 
 use Drush\Commands\DrushCommands;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
-use Drush\SiteAlias\SiteSliasManagerAwareTrait;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteSliasManagerAwareTrait;
 
 class MyModuleiCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
@@ -62,7 +62,7 @@ $this->logger()->success(‘The current alias is {name}’, [‘name’ => $self
 }
 }
 ```
-All Drush command files extend DrushCommands. DrushCommands implements ConfigAwareInterface, IOAwareInterface, LoggerAwareInterface, which gives access to `$this->getConfig()`, ```$this->logger()` and other ways to do input and output. See the [IO documentation](io.md) for more information.
+All Drush command files extend DrushCommands. DrushCommands implements ConfigAwareInterface, IOAwareInterface, LoggerAwareInterface, which gives access to `$this->getConfig()`, `$this->logger()` and other ways to do input and output. See the [IO documentation](io.md) for more information.
 
 Any additional services that are desired must be injected by implementing the appropriate inflection interface.
 

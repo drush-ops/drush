@@ -4,9 +4,9 @@ namespace Drush\Commands\core;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\SiteAlias\LegacyAliasConverter;
-use Drush\SiteAlias\SiteAliasFileDiscovery;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
-use Drush\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteAlias\SiteAliasFileDiscovery;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\ListDataFromKeys;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Input\Input;
@@ -110,8 +110,6 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      *   List all alias records known to drush.
      * @usage drush site:alias @dev
      *   Print an alias record for the alias 'dev'.
-     * @usage drush @none site-alias
-     *   Print only actual aliases; omit multisites from the local Drupal installation.
      * @topics docs:aliases
      *
      */

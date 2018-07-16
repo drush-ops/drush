@@ -59,12 +59,19 @@ For an example, see the alterer class provided by the testing 'woot' module: `te
 Global Drush Commands
 ==============================
 
-Commandfiles that don't ship inside Drupal modules are called 'global' commandfiles. See the [examples/Commands](/examples/Commands) folder for examples. In general, its better to use modules to carry your Drush commands. If you still prefer using a global commandfiles, please note:
+Commandfiles that don't ship inside Drupal modules are called 'global' commandfiles. See the [examples/Commands](/examples/Commands) folder for examples. In general, it's better to use modules to carry your Drush commands. If you still prefer using a global commandfiles, here are two examples of valid commandfile names and namespaces:
 
-1. The file's fully qualified namespace should be `\Drush\Commands`.
-1. The filename must be have a name like Commands/FooCommands.php
-    1. The prefix `Foo` can be whatever string you want. The file must end in `Commands.php`
-    1. The enclosing directory must be named `Commands`
+1. Simple
+     - Filename: $PROJECT_ROOT/drush/Commands/ExampleCommands.php
+     - Namespace: Drush\Commands
+1. Nested (e.g. Commandfile is part of a Composer package)
+    - Filename: $PROJECT_ROOT/drush/Commands/dev_modules/ExampleCommands.php
+    - Namespace: Drush\Commands\dev_modules
+
+##### Tips
+1. The filename must be have a name like Commands/ExampleCommands.php
+    1. The prefix `Example` can be whatever string you want.
+    1. The file must end in `Commands.php`
 1. The directory above Commands must be one of: 
     1.  A Folder listed in the 'include' option. include may be provided via config or via CLI.
     1.  ../drush, /drush or /sites/all/drush. These paths are relative to Drupal root.

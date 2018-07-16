@@ -4,10 +4,10 @@ namespace Drush\Preflight;
 
 use Drush\Config\Environment;
 use Drush\Preflight\PreflightArgsInterface;
-use Drush\SiteAlias\AliasRecord;
-use Drush\SiteAlias\SiteAliasManager;
-use Drush\SiteAlias\SiteAliasName;
-use Drush\SiteAlias\SiteSpecParser;
+use Consolidation\SiteAlias\AliasRecord;
+use Consolidation\SiteAlias\SiteAliasManager;
+use Consolidation\SiteAlias\SiteAliasName;
+use Consolidation\SiteAlias\SiteSpecParser;
 
 class PreflightSiteLocator
 {
@@ -29,7 +29,7 @@ class PreflightSiteLocator
      * @param \Drush\Config\Environment $environment
      * @param string $root The default Drupal root (from site:set, --root or cwd)
      *
-     * @return \Drush\SiteAlias\AliasRecord
+     * @return \Consolidation\SiteAlias\AliasRecord
      * @throws \Exception
      */
     public function findSite(PreflightArgsInterface $preflightArgs, Environment $environment, $root)
@@ -51,7 +51,7 @@ class PreflightSiteLocator
      * @param \Drush\Config\Environment $environment
      * @param $root
      *
-     * @return \Drush\SiteAlias\AliasRecord
+     * @return \Consolidation\SiteAlias\AliasRecord
      */
     protected function determineSelf(PreflightArgsInterface $preflightArgs, Environment $environment, $root)
     {
@@ -92,7 +92,7 @@ class PreflightSiteLocator
      * @param \Drush\Preflight\PreflightArgsInterface $preflightArgs
      * @param $root
      *
-     * @return \Drush\SiteAlias\AliasRecord
+     * @return \Consolidation\SiteAlias\AliasRecord
      */
     protected function buildSelf(PreflightArgsInterface $preflightArgs, $root)
     {

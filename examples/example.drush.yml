@@ -71,6 +71,9 @@ drush:
       - '${env.home}/.drush/sites'
       - /etc/drush/sites
 
+    # Specify a folder where Drush should store its file based caches. If unspecified, defaults to $HOME/.drush.
+    cache-directory: /tmp/.drush
+
 # This section is for setting global options.
 options:
   # Specify the base_url that should be used when generating links.

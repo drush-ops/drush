@@ -4,20 +4,6 @@ namespace Drush\SiteAlias;
 /**
  * Inflection interface for the site alias manager.
  */
-interface SiteAliasManagerAwareInterface
+interface SiteAliasManagerAwareInterface extends \Consolidation\SiteAlias\SiteAliasManagerAwareInterface
 {
-    /**
-     * @param SiteAliasManager $siteAliasManager
-     */
-    public function setSiteAliasManager($siteAliasManager);
-
-    /**
-     * @return SiteAliasManager
-     */
-    public function siteAliasManager();
-
-    /**
-     * @return bool
-     */
-    public function hasSiteAliasManager();
 }

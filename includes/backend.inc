@@ -108,7 +108,7 @@ function drush_backend_set_result($value) {
  *       command.  Zero means "no error".
  *     - log: The log item contains an array of log messages from
  *       the command execution ordered chronologically.  Each log
- *       entery is an associative array.  A log entry contains
+ *       entry is an associative array.  A log entry contains
  *       following items:
  *         o  type: The type of log entry, such as 'notice' or 'warning'
  *         o  message: The log message
@@ -621,7 +621,8 @@ function _drush_backend_adjust_options($site_record, $command, $command_options,
 /**
  * Execute a new local or remote command in a new process.
  *
- * n.b. Prefer drush_invoke_process() to this function.
+ * @deprecated as of Drush 9.4.0 and will be removed in Drush 10. Instead, use
+ *   drush_invoke_process().
  *
  * @param invocations
  *   An array of command records to execute. Each record should contain:

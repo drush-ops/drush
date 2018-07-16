@@ -10,7 +10,7 @@
     "composer/installers": "^1.2",
     "cweagans/composer-patches": "~1.6",
     "drupal/core": "8.6.x-dev",
-    "drush/drush": "*@dev",
+    "drush/drush": "9.x-dev",
     "phpunit/phpunit": "^4.1",
     "drupal/empty_theme": "^1.0",
     "drupal/devel": "^1.0@RC",

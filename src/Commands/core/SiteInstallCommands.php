@@ -8,9 +8,9 @@ use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Log\LogLevel;
 use Drupal\Core\Config\FileStorage;
-use Drush\SiteAlias\SiteAliasManager;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
-use Drush\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteAlias\SiteAliasManager;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
 use Webmozart\PathUtil\Path;
@@ -362,6 +362,10 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             if (array_key_exists($uri, $sites)) {
                 return $sites[$uri];
             }
+        }
+        // Fall back to default directory if it exists.
+        if (file_exists(Path::join($root, 'sites', 'default'))) {
+            return 'default';
         }
         return false;
     }
