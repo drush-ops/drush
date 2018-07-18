@@ -51,6 +51,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
      *   drush-script: Drush script
      *   drush-version: Drush version
      *   drush-temp: Drush temp
+     *   drush-cache-directory: Drush cache folder
      *   drush-conf: Drush configs
      *   drush-alias-files: Drush aliases
      *   alias-searchpaths: Alias search paths
@@ -68,7 +69,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
      *   files-path: Files, Public
      *   temp-path: Files, Temp
      *   %paths: Other paths
-     * @default-fields drupal-version,uri,db-driver,db-hostname,db-port,db-username,db-name,db-status,bootstrap,theme,admin-theme,php-bin,php-conf,php-os,drush-script,drush-version,drush-temp,drush-conf,install-profile,root,site,files,private,temp
+     * @default-fields drupal-version,uri,db-driver,db-hostname,db-port,db-username,db-name,db-status,bootstrap,theme,admin-theme,php-bin,php-conf,php-os,drush-script,drush-version,drush-temp,drush-cache-directory,drush-conf,install-profile,root,site,files,private,temp
      * @pipe-format json
      * @hidden-options project
      * @bootstrap max
@@ -138,6 +139,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
         $status_table['drush-script'] = DRUSH_COMMAND;
         $status_table['drush-version'] = Drush::getVersion();
         $status_table['drush-temp'] = $this->getConfig()->tmp();
+        $status_table['drush-cache-directory'] = $this->getConfig()->cache();
         $status_table['drush-conf'] = Drush::config()->get('runtime.config.paths');
         // List available alias files
         $alias_files = $this->siteAliasManager()->listAllFilePaths();
