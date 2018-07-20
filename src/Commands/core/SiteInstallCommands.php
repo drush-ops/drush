@@ -35,7 +35,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * @option site-name Defaults to Site-Install
      * @option site-mail From: for system mailings. Defaults to admin@example.com
      * @option sites-subdir Name of directory under 'sites' which should be created.
-     * @option config-dir A path pointing to a full set of configuration which should be imported after installation.
+     * @option config-dir A path pointing to a full set of configuration which should be used during installation.
      * @usage drush si expert --locale=uk
      *   (Re)install using the expert install profile. Set default language to Ukrainian.
      * @usage drush si --db-url=mysql://root:pass@localhost:port/dbname
@@ -105,6 +105,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
                     'op' => dt('Save and continue'),
                 ],
             ],
+            'config_install_path' => $options['config-dir'],
         ];
 
         // Merge in the additional options.
@@ -136,12 +137,6 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
 
     protected function determineProfile($profile, $options, $class_loader)
     {
-        // --config-dir fails with Standard profile and any other one that carries content entities.
-        // Force to minimal install profile.
-        if ($options['config-dir']) {
-            $this->logger()->info(dt("Using 'minimal' install profile since --config-dir option was provided."));
-            $profile = 'minimal';
-        }
         if (empty($profile)) {
             $boot = Drush::bootstrap();
             $profile = $boot->getKernel()->getInstallProfile();
@@ -170,23 +165,6 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             $profile = 'standard';
         }
         return $profile;
-    }
-
-    /**
-     * Post installation, run the configuration import.
-     *
-     * @hook post-command site-install
-     */
-    public function post($result, CommandData $commandData)
-    {
-        if ($config = $commandData->input()->getOption('config-dir')) {
-            // Set the destination site UUID to match the source UUID, to bypass a core fail-safe.
-            $source_storage = new FileStorage($config);
-            $options = ['yes' => true];
-            drush_invoke_process('@self', 'config-set', ['system.site', 'uuid', $source_storage->read('system.site')['uuid']], $options);
-            // Run a full configuration import.
-            drush_invoke_process('@self', 'config-import', [], ['source' => $config] + $options);
-        }
     }
 
     /**
