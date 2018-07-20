@@ -35,7 +35,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * @option site-name Defaults to Site-Install
      * @option site-mail From: for system mailings. Defaults to admin@example.com
      * @option sites-subdir Name of directory under 'sites' which should be created.
-     * @option config-dir A path pointing to a full set of configuration which should be used during installation.
+     * @option config-dir A path pointing to a full set of configuration which should be installed during installation.
      * @usage drush si expert --locale=uk
      *   (Re)install using the expert install profile. Set default language to Ukrainian.
      * @usage drush si --db-url=mysql://root:pass@localhost:port/dbname
