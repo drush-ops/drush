@@ -413,6 +413,9 @@ class ConfigLocator
     /**
      * Get the commandfile paths according to preflight arguments.
      *
+     * This searches for commandfiles in '$root/drush/' and
+     * 'dirname($root)/drush'.
+     *
      * @param $preflightArgs
      *
      * @return array
@@ -457,19 +460,39 @@ class ConfigLocator
     }
 
     /**
-     * Return all of the commandfile paths in any '$root/drush' or
-     * 'dirname($root)/drush' directory that contains a composer.json
-     * file or a 'Commands' or 'src/Commands' directory.
+     * Return all of the commandfile paths in the given directories.
+     *
+     * Within each given directory, a commandfile may exist in any of the
+     * following structures:
+     *  - contrib/$package/Commands/$commandfile
+     *  - contrib/$package/src/Commands/$commandfile
+     *  - Commands/$package/Commands/$commandfile
+     *  - Commands/$package/src/Commands/$commandfile
      */
     protected function getSiteCommandFilePaths($directories)
     {
         $result = [];
 
-        $directories = array_filter($directories, 'is_dir');
-
         if (empty($directories)) {
             return $result;
         }
+
+        // In each drush directory, allow a command-providing package to be in
+        // the following subdirectories patterns. This is due there being
+        // different variants of Composer installer-paths configuration for
+        // "type:drupal-drush" packages.
+        $subdirectories = [
+            '/contrib',
+            '/Commands',
+        ];
+        $search_directories = [];
+        foreach ($directories as $directory) {
+            foreach ($subdirectories as $subdirectory) {
+                $search_directories[] = $directory . $subdirectory;
+            }
+        }
+
+        $search_directories = array_filter($search_directories, 'is_dir');
 
         // Find projects
         $finder = new Finder();
@@ -477,8 +500,8 @@ class ConfigLocator
             ->ignoreUnreadableDirs()
             ->followLinks()
             ->path('#src/Commands$|Commands$#')
-            ->in($directories)
-            ->depth('<= 3');
+            ->in($search_directories)
+            ->depth('<= 2');
 
         foreach ($finder as $file) {
             $result[] = dirname($file->getRealPath());
