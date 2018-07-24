@@ -11,7 +11,7 @@ use Symfony\Component\Console\Application;
 use Consolidation\Config\ConfigInterface;
 use Composer\Autoload\ClassLoader;
 use League\Container\ContainerInterface;
-use Drush\SiteAlias\SiteAliasManager;
+use Consolidation\SiteAlias\SiteAliasManager;
 
 /**
  * Prepare our Dependency Injection Container
@@ -104,7 +104,7 @@ class DependencyInjection
         // Add inflectors. @see \Drush\Boot\BaseBoot::inflect
         $container->inflector(\Drush\Boot\AutoloaderAwareInterface::class)
             ->invokeMethod('setAutoloader', ['loader']);
-        $container->inflector(\Drush\SiteAlias\SiteAliasManagerAwareInterface::class)
+        $container->inflector(\Consolidation\SiteAlias\SiteAliasManagerAwareInterface::class)
             ->invokeMethod('setSiteAliasManager', ['site.alias.manager']);
     }
 

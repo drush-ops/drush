@@ -64,8 +64,11 @@ class SiteSpecParserTest extends TestCase
         return [
             [ '/path/to/drupal#uri' ],
             [ 'user@server/path/to/drupal#uri' ],
+            [ 'user.name@example.com/path/to/drupal#uri' ],
             [ 'user@server/path/to/drupal' ],
+            [ 'user@example.com/path/to/drupal' ],
             [ 'user@server#uri' ],
+            [ 'user@example.com#uri' ],
             [ '#uri' ],
         ];
     }
@@ -98,10 +101,30 @@ class SiteSpecParserTest extends TestCase
             ],
 
             [
+                'user.name@example.com/path#somemultisite',
+                [
+                    'user' => 'user.name',
+                    'host' => 'example.com',
+                    'root' => '/path',
+                    'uri' => 'somemultisite',
+                ],
+            ],
+
+            [
                 'user@server/path',
                 [
                     'user' => 'user',
                     'host' => 'server',
+                    'root' => '/path',
+                    'uri' => 'default',
+                ],
+            ],
+
+            [
+                'user.name@example.com/path',
+                [
+                    'user' => 'user.name',
+                    'host' => 'example.com',
                     'root' => '/path',
                     'uri' => 'default',
                 ],

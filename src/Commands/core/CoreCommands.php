@@ -5,8 +5,8 @@ use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
-use Drush\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 
 class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
