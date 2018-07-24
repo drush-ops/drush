@@ -161,12 +161,11 @@ class LocaleCommands extends DrushCommands
     /**
      * Exports to a gettext translation file.
      *
-     * @see \Drupal\locale\Form\ExportForm::submitForm
+     * See Drupal Core: \Drupal\locale\Form\ExportForm::submitForm
      *
      * @throws \Exception
      *
      * @command locale:export
-     * @drupal-dependencies locale
      * @param $langcode The language code of the exported translations.
      * @option template POT file output of extracted source texts to be translated.
      * @option types String types to include, defaults to all types. Types: 'not-customized', 'customized', 'not-translated'.
@@ -179,6 +178,7 @@ class LocaleCommands extends DrushCommands
      * @usage drush locale:export --template nl > nl.pot
      *   Export the Dutch template file to translate.
      * @aliases locale-export
+     * @validate-module-enabled locale
      */
     public function export($langcode = null, $options = ['template' => false, 'types' => self::OPT])
     {
