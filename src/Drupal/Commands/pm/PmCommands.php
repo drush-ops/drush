@@ -109,7 +109,8 @@ class PmCommands extends DrushCommands
      *
      * The first time this is called, the original flag value is stored for later use.
      */
-    private function disableTranslationImport() {
+    private function disableTranslationImport()
+    {
         $config = $this->getConfigFactory()->getEditable('locale.settings');
         if (is_null($this->translationImport)) {
             $this->translationImport = $config->get('translation.import_enabled');
@@ -121,7 +122,8 @@ class PmCommands extends DrushCommands
     /**
      * Restore the translation import configuration flag.
      */
-    private function restoreTranslationImport() {
+    private function restoreTranslationImport()
+    {
         if (is_null($this->translationImport)) {
             return;
         }
