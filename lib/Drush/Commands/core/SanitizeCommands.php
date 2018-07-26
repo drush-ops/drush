@@ -2,8 +2,7 @@
 
 namespace Drush\Commands\core;
 
-use Drupal\Component\Utility\Random;
-use Drupal\Core\Database\Database;
+use Drush\Utility\Random;
 use Drush\Commands\DrushCommands;
 
 /**
