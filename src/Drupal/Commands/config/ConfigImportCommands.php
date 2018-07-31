@@ -225,7 +225,7 @@ class ConfigImportCommands extends DrushCommands
     public function importSingle($file, $label = null)
     {
         // Determine source directory.
-        $source_storage_dir = ConfigCommands::getDirectory($label, NULL);
+        $source_storage_dir = ConfigCommands::getDirectory($label, null);
 
         // Prepare the configuration storage for the import.
         if ($source_storage_dir == Path::canonicalize(\config_get_config_directory(CONFIG_SYNC_DIRECTORY))) {
@@ -242,7 +242,7 @@ class ConfigImportCommands extends DrushCommands
 
             if (!file_exists($configFile)) {
                 $this->logger()->error('File is missing.');
-                return FALSE;
+                return false;
             }
 
             $name = Path::getFilenameWithoutExtension($configFile);
@@ -259,10 +259,9 @@ class ConfigImportCommands extends DrushCommands
             if ($this->io()->confirm(dt('Import the listed configuration changes?'))) {
                 return drush_op([$this, 'doImport'], $storage_comparer);
             }
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->logger()->error($e->getMessage());
-            return FALSE;
+            return false;
         }
     }
 
