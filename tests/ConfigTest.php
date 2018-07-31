@@ -70,7 +70,7 @@ class ConfigCase extends CommandUnishTestCase
         // Similar, but this time via import single command.
         $contents = file_get_contents($system_site_yml);
         $contents = preg_replace('/front: .*/', 'front: unish single', $contents);
-        $contents = file_put_contents($partial_path. '/system.site.yml', $contents);
+        $contents = file_put_contents($system_site_yml, $contents);
         $this->drush('config-import-single', ['system.site']);
         $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
         $page = $this->getOutputFromJSON('system.site:page');

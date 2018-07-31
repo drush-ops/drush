@@ -211,7 +211,7 @@ class ConfigImportCommands extends DrushCommands
     }
 
     /**
-     * Import config from a config directory.
+     * Import single config file from a config directory.
      *
      * @command config:import:single
      * @param $file A config file (in the sync directory).
