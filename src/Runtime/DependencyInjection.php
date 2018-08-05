@@ -126,6 +126,9 @@ class DependencyInjection
         $factory = $container->get('commandFactory');
         $factory->setIncludeAllPublicMethods(false);
         $factory->setDataStore($commandCacheDataStore);
+
+        $commandProcessor = $container->get('commandProcessor');
+        $commandProcessor->setPassExceptions(true);
     }
 
     protected static function injectApplicationServices(ContainerInterface $container, Application $application)
