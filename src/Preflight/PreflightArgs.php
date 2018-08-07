@@ -327,7 +327,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         $aliasPaths = array_map(
             function ($item) {
                 return StringUtils::replaceTilde($item, $this->homeDir());
-            }, $aliasPaths
+            },
+            $aliasPaths
         );
         $paths = $this->aliasPaths();
         $merged_paths = array_merge($paths, $aliasPaths);
