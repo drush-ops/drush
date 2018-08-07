@@ -284,8 +284,8 @@ class Preflight
         // report on it from Drush status or wherever else it may be needed.
         $configFilePaths = $this->configLocator->configFilePaths();
         $config->set('runtime.config.paths', $configFilePaths);
-        $this->logger()->log(dt('Config paths: ' . implode(',', $configFilePaths)));
-        $this->logger()->log(dt('Alias paths: ' . implode(',', $paths)));
+        $this->logger()->log(dt('Config paths: ' . implode(',', (array)$configFilePaths)));
+        $this->logger()->log(dt('Alias paths: ' . implode(',', (array)$paths)));
 
         // We need to check the php minimum version again, in case anyone
         // has set it to something higher in one of the config files we loaded.
