@@ -38,7 +38,8 @@ before_install:
 
 # Build a System-Under-Test.
 install:
-  - rm -rf composer.lock vendor
+  - cat composer.json
+  - echo "Test dir is $TEST_DIR and isolation install is $ISOLATION_INSTALL"
   - composer -n --working-dir=${PWD}/$TEST_DIR $ISOLATION_INSTALL
 
 before_script:
