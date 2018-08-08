@@ -47,7 +47,6 @@ before_install:
 
 # Build a System-Under-Test.
 install:
-  - composer -n --working-dir=${PWD}/$TEST_DIR $ISOLATION_INSTALL
   - 'composer scenario "${SCENARIO}" "${DEPENDENCIES}"'
 
 before_script:
