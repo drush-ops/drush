@@ -82,14 +82,17 @@
       "find src -name '*.php' -print0 | xargs -0 -n1 php -l",
       "find tests -name '*.php' -print0 | xargs -0 -n1 php -l"
     ],
+    "test": [
+      "@lint",
+      "@unit",
+      "@cs",
+      "@functional"
+    ],
     "api": "PATH=$HOME/bin:$PATH sami.phar --ansi update sami-config.php",
     "sami-install": "mkdir -p $HOME/bin && curl --output $HOME/bin/sami.phar http://get.sensiolabs.org/sami.phar && chmod +x $HOME/bin/sami.phar",
     "scenario": "scenarios/install",
-    "isolation": [
-        "composer scenario isolation",
-        "cd isolation && ../vendor/bin/phpunit --colors=always",
-        "composer scenario default"
-    ],
+    "unit": "phpunit --colors=always",
+    "functional": "./unish.phpunit.php",
     "post-update-cmd": [
         "create-scenario isolation --autoload-dir isolation --autoload-dir internal-copy --keep '\\(psr/log\\|consolidation/config\\|site-alias\\|var-dumper\\|symfony/finder\\|drupal-finder\\|path-util\\|sebastian/version\\|xhprof\\)' 'phpunit/phpunit:^5.5.4'",
         "create-scenario isolation-phpunit4 --base isolation --autoload-dir isolation --autoload-dir internal-copy 'phpunit/phpunit:^4.8'"

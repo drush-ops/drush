@@ -56,7 +56,7 @@ before_script:
   # - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
 
 script:
-  - cd isolation && ../vendor/bin/phpunit
+  - composer unit
 
 after_success:
   # Publish updated API documentation on every push to the master branch
