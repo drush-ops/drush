@@ -1,6 +1,6 @@
 <!-- Copy and rename to phpunit.xml. Customize as needed. -->
 <phpunit backupGlobals="false"
-    bootstrap="vendor/autoload.php"
+    bootstrap="../vendor/autoload.php"
     backupStaticAttributes="false"
     syntaxCheck="false"
     colors="true">
