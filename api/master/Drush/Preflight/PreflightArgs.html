@@ -286,7 +286,8 @@ of the argument list.</p>                </div>
                     <a href="#method_optionConfigMap">optionConfigMap</a>()
         
                                             <p>Map of option key to the corresponding config key to store the
-preflight option in.</p>                </div>
+preflight option in. The values of the config items in this map
+must be BOOLEANS or STRINGS.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -297,7 +298,8 @@ preflight option in.</p>                </div>
                     <a href="#method_optionConfigPathMap">optionConfigPathMap</a>()
         
                                             <p>Map of path option keys to the corresponding config key to store the
-preflight option in.</p>                </div>
+preflight option in. The values of the items in this map must be
+STRINGS or ARRAYS OF STRINGS.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -798,7 +800,7 @@ of the argument list.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_optionConfigMap">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L117">line 117</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L118">line 118</a></div>
         <code>            protected        
     <strong>optionConfigMap</strong>()
         </code>
@@ -809,7 +811,8 @@ of the argument list.</p>                                                </div>
 
                     <div class="method-description">
                                     <p>Map of option key to the corresponding config key to store the
-preflight option in.</p>                                                </div>
+preflight option in. The values of the config items in this map
+must be BOOLEANS or STRINGS.</p>                                                </div>
                 <div class="tags">
             
             
@@ -820,7 +823,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_optionConfigPathMap">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L130">line 130</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L132">line 132</a></div>
         <code>            protected        
     <strong>optionConfigPathMap</strong>()
         </code>
@@ -831,7 +834,8 @@ preflight option in.</p>                                                </div>
 
                     <div class="method-description">
                                     <p>Map of path option keys to the corresponding config key to store the
-preflight option in.</p>                                                </div>
+preflight option in. The values of the items in this map must be
+STRINGS or ARRAYS OF STRINGS.</p>                                                </div>
                 <div class="tags">
             
             
@@ -842,7 +846,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_applyToConfig">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L144">line 144</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L146">line 146</a></div>
         <code>                    
     <strong>applyToConfig</strong>(<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config)
         </code>
@@ -882,7 +886,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_args">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L168">line 168</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L171">line 171</a></div>
         <code>                    
     <strong>args</strong>()
         </code>
@@ -901,7 +905,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_applicationPath">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L176">line 176</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L179">line 179</a></div>
         <code>                    
     <strong>applicationPath</strong>()
         </code>
@@ -920,7 +924,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_addArg">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L184">line 184</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L187">line 187</a></div>
         <code>                    
     <strong>addArg</strong>(string $arg)
         </code>
@@ -949,7 +953,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_passArgs">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L193">line 193</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L196">line 196</a></div>
         <code>                    
     <strong>passArgs</strong>($args)
         </code>
@@ -978,7 +982,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_alias">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L202">line 202</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L205">line 205</a></div>
         <code>                    
     <strong>alias</strong>()
         </code>
@@ -997,7 +1001,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasAlias">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L210">line 210</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L213">line 213</a></div>
         <code>                    
     <strong>hasAlias</strong>()
         </code>
@@ -1016,7 +1020,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_setAlias">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L218">line 218</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L221">line 221</a></div>
         <code>                    
     <strong>setAlias</strong>(string $alias)
         </code>
@@ -1045,7 +1049,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_selectedSite">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L230">line 230</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L233">line 233</a></div>
         <code>                    
     <strong>selectedSite</strong>($default = false)
         </code>
@@ -1076,7 +1080,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_setDebug">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L235">line 235</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L238">line 238</a></div>
         <code>                    
     <strong>setDebug</strong>($value)
         </code>
@@ -1105,7 +1109,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_setSelectedSite">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L244">line 244</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L247">line 247</a></div>
         <code>                    
     <strong>setSelectedSite</strong>($root)
         </code>
@@ -1136,7 +1140,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_uri">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L252">line 252</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L255">line 255</a></div>
         <code>                    
     <strong>uri</strong>($default = false)
         </code>
@@ -1167,7 +1171,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_setUri">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L260">line 260</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L263">line 263</a></div>
         <code>                    
     <strong>setUri</strong>($uri)
         </code>
@@ -1198,7 +1202,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_configPaths">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L268">line 268</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L271">line 271</a></div>
         <code>                    
     <strong>configPaths</strong>()
         </code>
@@ -1219,7 +1223,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_addConfigPath">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L278">line 278</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L281">line 281</a></div>
         <code>                    
     <strong>addConfigPath</strong>(string $path)
         </code>
@@ -1250,7 +1254,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_mergeConfigPaths">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L290">line 290</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L293">line 293</a></div>
         <code>                    
     <strong>mergeConfigPaths</strong>(string[] $configPaths)
         </code>
@@ -1281,7 +1285,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_aliasPaths">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L300">line 300</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L303">line 303</a></div>
         <code>                    
     <strong>aliasPaths</strong>()
         </code>
@@ -1302,7 +1306,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_addAliasPath">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L310">line 310</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L313">line 313</a></div>
         <code>                    
     <strong>addAliasPath</strong>(string $path)
         </code>
@@ -1333,7 +1337,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_mergeAliasPaths">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L322">line 322</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L325">line 325</a></div>
         <code>                    
     <strong>mergeAliasPaths</strong>(string $aliasPaths)
         </code>
@@ -1364,7 +1368,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_commandPaths">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L332">line 332</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L341">line 341</a></div>
         <code>                    
     <strong>commandPaths</strong>()
         </code>
@@ -1385,7 +1389,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_addCommandPath">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L342">line 342</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L351">line 351</a></div>
         <code>                    
     <strong>addCommandPath</strong>(string $path)
         </code>
@@ -1416,7 +1420,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_mergeCommandPaths">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L354">line 354</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L363">line 363</a></div>
         <code>                    
     <strong>mergeCommandPaths</strong>($commandPaths)
         </code>
@@ -1447,7 +1451,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_isLocal">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L364">line 364</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L373">line 373</a></div>
         <code>                    
     <strong>isLocal</strong>()
         </code>
@@ -1468,7 +1472,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_setLocal">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L374">line 374</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L383">line 383</a></div>
         <code>                    
     <strong>setLocal</strong>(bool $isLocal)
         </code>
@@ -1499,7 +1503,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_isSimulated">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L382">line 382</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L391">line 391</a></div>
         <code>                    
     <strong>isSimulated</strong>()
         </code>
@@ -1520,7 +1524,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_setSimulate">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L392">line 392</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L401">line 401</a></div>
         <code>                    
     <strong>setSimulate</strong>($simulate)
         </code>
@@ -1551,7 +1555,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_isBackend">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L400">line 400</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L409">line 409</a></div>
         <code>                    
     <strong>isBackend</strong>()
         </code>
@@ -1572,7 +1576,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_setBackend">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L410">line 410</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L419">line 419</a></div>
         <code>                    
     <strong>setBackend</strong>(bool $backend)
         </code>
@@ -1603,7 +1607,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_coverageFile">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L418">line 418</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L427">line 427</a></div>
         <code>                    
     <strong>coverageFile</strong>()
         </code>
@@ -1624,7 +1628,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_setCoverageFile">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L428">line 428</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L437">line 437</a></div>
         <code>                    
     <strong>setCoverageFile</strong>(string $coverageFile)
         </code>
@@ -1655,7 +1659,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_isStrict">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L436">line 436</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L445">line 445</a></div>
         <code>                    
     <strong>isStrict</strong>()
         </code>
@@ -1676,7 +1680,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_setStrict">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L446">line 446</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L455">line 455</a></div>
         <code>                    
     <strong>setStrict</strong>(bool $strict)
         </code>
@@ -1707,7 +1711,7 @@ preflight option in.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_getOptionNameList">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L458">line 458</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L467">line 467</a></div>
         <code>            protected        string[]
     <strong>getOptionNameList</strong>(array $argv)
         </code>
@@ -1748,7 +1752,7 @@ just the option name of any item that is an option.</p>                         
             </div>
                     <div class="method-item">
                     <h3 id="method_createInput">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L482">line 482</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L491">line 491</a></div>
         <code>                    
     <strong>createInput</strong>()
         </code>
@@ -1769,7 +1773,7 @@ just the option name of any item that is an option.</p>                         
             </div>
                     <div class="method-item">
                     <h3 id="method_readStdinOptions">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L509">line 509</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgs.php#L518">line 518</a></div>
         <code>            protected        <abbr title="Drush\Preflight\An">An</abbr>
     <strong>readStdinOptions</strong>()
         </code>
