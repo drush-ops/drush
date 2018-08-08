@@ -38,6 +38,7 @@ before_install:
 
 # Build a System-Under-Test.
 install:
+  - rm -rf composer.lock vendor
   - composer -n --working-dir=${PWD}/$TEST_DIR $ISOLATION_INSTALL
 
 before_script:
