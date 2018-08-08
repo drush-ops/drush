@@ -14,6 +14,11 @@ php:
   - 7.0
   - 7.2
 
+# Cache Composer.
+cache:
+  directories:
+    - $HOME/.composer/cache
+
 # http://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure/
 sudo: false
 
@@ -38,8 +43,6 @@ before_install:
 
 # Build a System-Under-Test.
 install:
-  - cat composer.json
-  - echo "Test dir is $TEST_DIR and isolation install is $ISOLATION_INSTALL"
   - composer -n --working-dir=${PWD}/$TEST_DIR $ISOLATION_INSTALL
 
 before_script:
