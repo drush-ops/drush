@@ -51,7 +51,7 @@
   "require-dev": {
     "lox/xhprof": "dev-master",
     "g1a/composer-test-scenarios": "dev-keep",
-    "phpunit/phpunit": "^4.8|^5.5.4",
+    "phpunit/phpunit": "^4.8.36|^5.5.4",
     "squizlabs/php_codesniffer": "^2.7"
   },
   "autoload": {
@@ -95,7 +95,7 @@
     "functional": "./unish.phpunit.php",
     "post-update-cmd": [
         "create-scenario isolation --autoload-dir isolation --autoload-dir internal-copy --keep '\\(psr/log\\|consolidation/config\\|site-alias\\|var-dumper\\|symfony/finder\\|drupal-finder\\|path-util\\|sebastian/version\\|xhprof\\)' 'phpunit/phpunit:^5.5.4'",
-        "create-scenario isolation-phpunit4 --base isolation --autoload-dir isolation --autoload-dir internal-copy 'phpunit/phpunit:^4.8'"
+        "create-scenario isolation-phpunit4 --base isolation --autoload-dir isolation --autoload-dir internal-copy 'phpunit/phpunit:^4.8.36'"
     ]
   },
   "extra": {
