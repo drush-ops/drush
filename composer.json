@@ -50,7 +50,7 @@
   },
   "require-dev": {
     "lox/xhprof": "dev-master",
-    "g1a/composer-test-scenarios": "dev-keep",
+    "g1a/composer-test-scenarios": "^2.2.0",
     "phpunit/phpunit": "^4.8.36|^5.5.4",
     "squizlabs/php_codesniffer": "^2.7"
   },
