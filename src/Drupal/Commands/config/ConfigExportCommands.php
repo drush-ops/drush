@@ -80,7 +80,7 @@ class ConfigExportCommands extends DrushCommands
      * @option diff Show preview as a diff, instead of a change list.
      * @usage drush config:export --destination
      *   Export configuration; Save files in a backup directory named config-export.
-     * @aliases cex,config-export
+     * @aliases ce,config-export
      */
     public function export($label = null, $options = ['add' => false, 'commit' => false, 'message' => self::REQ, 'destination' => self::OPT, 'diff' => false])
     {
