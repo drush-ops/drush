@@ -135,11 +135,14 @@
 #   if you set a 'remote-host' value, and your remote OS is Windows, if you
 #   do not set the 'OS' value, it will default to 'Linux' and could cause
 #   unintended consequences, particularly when running 'drush sql-sync'.
-# - 'ssh': If the target requires special options, such as a non-
-#   standard port, alternative identity file, or alternative
-#   authentication method, the `option` entry under the `ssh` item may
-#   contain a string of extra options that are used with the ssh command,
-#   e.g. "-p 100"
+# - 'ssh': Contains settings used to control how ssh commands are generated
+#   when running remote commands.
+#   - 'options': Contains additional commandline options for the ssh command
+#   itself, e.g. "-p 100"
+#   - 'tty': Usually, Drush will decide whether or not to create a tty (via
+#   the ssh '--t' option) based on whether the local Drush command is running
+#   interactively or not. To force Drush to always or never create a tty,
+#   set the 'ssh.tty' option to 'true' or 'false', respectively.
 # - 'paths': An array of aliases for common rsync targets.
 #   Relative aliases are always taken from the Drupal root.
 #   - 'files': Path to 'files' directory.  This will be looked up if not
