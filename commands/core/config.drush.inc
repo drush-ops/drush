@@ -91,7 +91,7 @@ function config_drush_command() {
   $items['config-export'] = array(
     'description' => 'Export configuration to a directory.',
     'core' => array('8+'),
-    'aliases' => array('cex'),
+    'aliases' => array('ce', 'cex'),
     'arguments' => array(
       'label' => "A config directory label (i.e. a key in \$config_directories array in settings.php). Defaults to 'sync'",
     ),
@@ -136,7 +136,7 @@ function config_drush_command() {
     'examples' => array(
       'drush config-import --partial' => 'Import configuration; do not remove missing configuration.',
     ),
-    'aliases' => array('cim'),
+    'aliases' => array('ci', 'cim'),
   );
 
   $items['config-list'] = array(
