@@ -118,7 +118,7 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr>
+                    <abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr>|false
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_findSite">findSite</a>(<a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $preflightArgs, <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment, string $root)
@@ -186,8 +186,8 @@ the provided root and URI.</p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_findSite">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightSiteLocator.php#L35">line 35</a></div>
-        <code>                    <abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightSiteLocator.php#L37">line 37</a></div>
+        <code>                    <abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr>|false
     <strong>findSite</strong>(<a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $preflightArgs, <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment, string $root)
         </code>
     </h3>
@@ -197,7 +197,8 @@ the provided root and URI.</p>                </div>
 
                     <div class="method-description">
                                     <p>During bootstrap, finds the currently selected site from the parameters
-provided on the commandline.</p>                                                </div>
+provided on the commandline.</p>                    <p>If 'false' is returned, that indicates that there was an alias name
+provided on the commandline that is either missing or invalid.</p>                            </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
@@ -224,21 +225,12 @@ provided on the commandline.</p>                                                
 
                     <table class="table table-condensed">
         <tr>
-            <td><abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr></td>
+            <td><abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr>|false</td>
             <td></td>
         </tr>
     </table>
 
             
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><a target="_blank" href="http://php.net/Exception">Exception</a></td>
-                <td></td>
-            </tr>
-            </table>
-
             
                     </div>
     </div>
@@ -246,7 +238,7 @@ provided on the commandline.</p>                                                
             </div>
                     <div class="method-item">
                     <h3 id="method_determineSelf">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightSiteLocator.php#L56">line 56</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightSiteLocator.php#L54">line 54</a></div>
         <code>            protected        <abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr>
     <strong>determineSelf</strong>(<a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $preflightArgs, <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment, $root)
         </code>
@@ -298,7 +290,7 @@ the provided root and URI.</p>                                                </
             </div>
                     <div class="method-item">
                     <h3 id="method_buildSelf">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightSiteLocator.php#L97">line 97</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightSiteLocator.php#L95">line 95</a></div>
         <code>            protected        <abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr>
     <strong>buildSelf</strong>(<a href="../../Drush/Preflight/PreflightArgsInterface.html"><abbr title="Drush\Preflight\PreflightArgsInterface">PreflightArgsInterface</abbr></a> $preflightArgs, $root)
         </code>
