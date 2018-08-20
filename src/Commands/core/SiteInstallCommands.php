@@ -20,6 +20,25 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
     use SiteAliasManagerAwareTrait;
 
     /**
+     * Drupal version exploded.
+     *
+     * eg. [8,6,0-alpha1]
+     *
+     * @var array
+     */
+    protected $version_parts = [];
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct()
+    {
+        $drupal_root = Drush::bootstrapManager()->getRoot();
+        $version = Drush::bootstrap()->getVersion($drupal_root);
+        $this->version_parts = explode('.', $version);
+    }
+
+    /**
      * Install Drupal along with modules/themes/configuration/profile.
      *
      * @command site:install
@@ -35,7 +54,8 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * @option site-name Defaults to Site-Install
      * @option site-mail From: for system mailings. Defaults to admin@example.com
      * @option sites-subdir Name of directory under 'sites' which should be created.
-     * @option config-dir A path pointing to a full set of configuration which should be imported after installation.
+     * @option config-dir A path pointing to a full set of configuration which should be installed during installation.
+     * @option existing-config Configuration from "sync" directory should be installed during installation. This option is ignored if --config-dir is already set.
      * @usage drush si expert --locale=uk
      *   (Re)install using the expert install profile. Set default language to Ukrainian.
      * @usage drush si --db-url=mysql://root:pass@localhost:port/dbname
@@ -51,7 +71,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * @aliases si,sin,site-install
      *
      */
-    public function install(array $profile, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ])
+    public function install(array $profile, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ, 'existing-config' => false])
     {
         $additional = $profile;
         $profile = array_shift($additional) ?: '';
@@ -81,6 +101,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             'parameters' => [
                 'profile' => $profile,
                 'langcode' => $options['locale'],
+                'existing_config' => $options['existing-config'],
             ],
             'forms' => [
                 'install_settings_form' => [
@@ -105,6 +126,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
                     'op' => dt('Save and continue'),
                 ],
             ],
+            'config_install_path' => $options['config-dir'],
         ];
 
         // Merge in the additional options.
@@ -137,11 +159,12 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
     protected function determineProfile($profile, $options, $class_loader)
     {
         // --config-dir fails with Standard profile and any other one that carries content entities.
-        // Force to minimal install profile.
-        if ($options['config-dir']) {
+        // Force to minimal install profile only for drupal <= 8.5.x.
+        if ($options['config-dir'] && $this->version_parts[0] <= 8 && $this->version_parts[1] <= 5) {
             $this->logger()->info(dt("Using 'minimal' install profile since --config-dir option was provided."));
             $profile = 'minimal';
         }
+
         if (empty($profile)) {
             $boot = Drush::bootstrap();
             $profile = $boot->getKernel()->getInstallProfile();
@@ -179,7 +202,8 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      */
     public function post($result, CommandData $commandData)
     {
-        if ($config = $commandData->input()->getOption('config-dir')) {
+        // Only for drupal <= 8.5.x.
+        if ($config = $commandData->input()->getOption('config-dir') && $this->version_parts[0] <= 8 && $this->version_parts[1] <= 5) {
             // Set the destination site UUID to match the source UUID, to bypass a core fail-safe.
             $source_storage = new FileStorage($config);
             $options = ['yes' => true];
