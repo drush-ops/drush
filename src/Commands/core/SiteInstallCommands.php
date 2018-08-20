@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Commands\core;
 
+use Composer\Semver\Comparator;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Database\ConnectionNotDefinedException;
 use Drush\Commands\DrushCommands;
@@ -18,25 +19,6 @@ use Webmozart\PathUtil\Path;
 class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
-
-    /**
-     * Drupal version exploded.
-     *
-     * eg. [8,6,0-alpha1]
-     *
-     * @var array
-     */
-    protected $version_parts = [];
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct()
-    {
-        $drupal_root = Drush::bootstrapManager()->getRoot();
-        $version = Drush::bootstrap()->getVersion($drupal_root);
-        $this->version_parts = explode('.', $version);
-    }
 
     /**
      * Install Drupal along with modules/themes/configuration/profile.
@@ -159,8 +141,8 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
     protected function determineProfile($profile, $options, $class_loader)
     {
         // --config-dir fails with Standard profile and any other one that carries content entities.
-        // Force to minimal install profile only for drupal <= 8.5.x.
-        if ($options['config-dir'] && $this->version_parts[0] <= 8 && $this->version_parts[1] <= 5) {
+        // Force to minimal install profile only for drupal < 8.6.
+        if ($options['config-dir'] && Comparator::lessThan(self::getVersion(), '8.6')) {
             $this->logger()->info(dt("Using 'minimal' install profile since --config-dir option was provided."));
             $profile = 'minimal';
         }
@@ -202,8 +184,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      */
     public function post($result, CommandData $commandData)
     {
-        // Only for drupal <= 8.5.x.
-        if ($config = $commandData->input()->getOption('config-dir') && $this->version_parts[0] <= 8 && $this->version_parts[1] <= 5) {
+        if ($config = $commandData->input()->getOption('config-dir') && Comparator::lessThan(self::getVersion(), '8.6')) {
             // Set the destination site UUID to match the source UUID, to bypass a core fail-safe.
             $source_storage = new FileStorage($config);
             $options = ['yes' => true];
@@ -383,6 +364,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $sites_file = $root . '/sites/sites.php';
         if (file_exists($sites_file)) {
             include $sites_file;
+            /** @var array $sites */
             if (array_key_exists($uri, $sites)) {
                 return $sites[$uri];
             }
@@ -392,6 +374,11 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             return 'default';
         }
         return false;
+    }
+
+    public static function getVersion() {
+        $drupal_root = Drush::bootstrapManager()->getRoot();
+        return Drush::bootstrap()->getVersion($drupal_root);
     }
 
     /**
