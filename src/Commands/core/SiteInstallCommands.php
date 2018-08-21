@@ -36,8 +36,8 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * @option site-name Defaults to Site-Install
      * @option site-mail From: for system mailings. Defaults to admin@example.com
      * @option sites-subdir Name of directory under 'sites' which should be created.
-     * @option config-dir Deprecated. A path pointing to a full set of configuration which should be installed during installation.
-     * @option existing-config Configuration from "sync" directory should be imported during installation. This option is ignored if --config-dir is already set.
+     * @option config-dir Deprecated - only use with Drupal 8.5-. A path pointing to a full set of configuration which should be installed during installation.
+     * @option existing-config Configuration from "sync" directory should be imported during installation. Use with Drupal 8.6+.
      * @usage drush si expert --locale=uk
      *   (Re)install using the expert install profile. Set default language to Ukrainian.
      * @usage drush si --db-url=mysql://root:pass@localhost:port/dbname
