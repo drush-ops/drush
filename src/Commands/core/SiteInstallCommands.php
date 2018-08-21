@@ -237,17 +237,10 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         }
 
         if ($config = $commandData->input()->getOption('config-dir')) {
-            if (!file_exists($config)) {
-                throw new \Exception('The config source directory does not exist.');
-            }
-            if (!is_dir($config)) {
-                throw new \Exception('The config source is not a directory.');
-            }
-            // Skip config import with a warning if specified config dir is empty.
-            if (!$this->hasConfigFiles($config)) {
-                $this->logger()->warning(dt('Configuration import directory @config does not contain any configuration; will skip import.', ['@config' => $config]));
-                $commandData->input()->setOption('config-dir', '');
-            }
+            $this->validateConfigDir($commandData, $config);
+        }
+        if ($existing = $commandData->input()->getOption('existing-config')) {
+            $this->validateConfigDir($commandData, $existing);
         }
 
         try {
@@ -435,5 +428,27 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $_SERVER['SERVER_SOFTWARE'] = null;
         $_SERVER['HTTP_USER_AGENT'] = null;
         $_SERVER['SCRIPT_FILENAME'] = DRUPAL_ROOT . '/index.php';
+    }
+
+    /**
+     * Assure that a config directory exists and is populated.
+     *
+     * @param CommandData $commandData
+     * @param $directory
+     * @throws \Exception
+     */
+    protected function validateConfigDir(CommandData $commandData, $directory)
+    {
+        if (!file_exists($directory)) {
+            throw new \Exception(dt('The config source directory @config does not exist.', ['@config' => $directory]));
+        }
+        if (!is_dir($directory)) {
+            throw new \Exception(dt('The config source @config is not a directory.', ['@config' => $directory]));
+        }
+        // Skip config import with a warning if specified config dir is empty.
+        if (!$this->hasConfigFiles($directory)) {
+            $this->logger()->warning(dt('Configuration import directory @config does not contain any configuration; will skip import.', ['@config' => $directory]));
+            $commandData->input()->setOption('config-dir', '');
+        }
     }
 }
