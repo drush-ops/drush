@@ -3,6 +3,7 @@ namespace Drush\Commands\core;
 
 use Composer\Semver\Comparator;
 use Consolidation\AnnotatedCommand\CommandData;
+use Drupal\Component\FileCache\FileCacheFactory;
 use Drupal\Core\Database\ConnectionNotDefinedException;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -149,6 +150,18 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             $profile = 'minimal';
         }
 
+        // Try to get profile from existing config if not provided as an argument.
+        // @todo Arguably Drupal core [$boot->getKernel()->getInstallProfile()] could do this - https://github.com/drupal/drupal/blob/8.6.x/core/lib/Drupal/Core/DrupalKernel.php#L1606 reads from DB storage but not file storage.
+        if (empty($profile) && $options['existing-config']) {
+            FileCacheFactory::setConfiguration([FileCacheFactory::DISABLE_CACHE => true]);
+            $source_storage = new FileStorage(config_get_config_directory(CONFIG_SYNC_DIRECTORY));
+            if (!$source_storage->exists('core.extension')) {
+                throw new \Exception('Existing configuration directory not found or does not contain a core.extension.yml file.".');
+            }
+            $config = $source_storage->read('core.extension');
+            $profile = $config['profile'];
+        }
+
         if (empty($profile)) {
             $boot = Drush::bootstrap();
             $profile = $boot->getKernel()->getInstallProfile();
@@ -173,6 +186,8 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
                 // if it fails.
             }
         }
+
+        // Drupal currently requires that non-interactive installs provide a profile.
         if (empty($profile)) {
             $profile = 'standard';
         }
