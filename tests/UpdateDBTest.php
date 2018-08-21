@@ -54,8 +54,6 @@ class UpdateDBTest extends CommandUnishTestCase
         $sites = $this->setUpDrupal(1, true);
         $options = [
             'yes' => null,
-            'root' => $this->webroot(),
-            'uri' => key($sites),
         ];
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
         $this->drush('pm-enable', ['woot'], $options);
@@ -105,11 +103,9 @@ LOG;
      */
     public function testFailedPostUpdate()
     {
-        $sites = $this->setUpDrupal(1, true);
+        $this->setUpDrupal(1, true);
         $options = [
             'yes' => null,
-            'root' => $this->webroot(),
-            'uri' => key($sites),
         ];
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
         $this->drush('pm-enable', ['woot'], $options);
@@ -168,11 +164,8 @@ LOG;
     public function testUpdateModuleWithServiceDependency()
     {
         $root = $this->webroot();
-        $sites = $this->setUpDrupal(1, true);
+        $this->setUpDrupal(1, true);
         $options = [
-            'yes' => null,
-            'root' => $root,
-            'uri' => key($sites),
             'include' => __DIR__,
         ];
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
@@ -217,11 +210,9 @@ YAML_FRAGMENT;
      */
     public function testSuccessfulUpdate()
     {
-        $sites = $this->setUpDrupal(1, true);
+        $this->setUpDrupal(1, true);
         $options = [
             'yes' => null,
-            'root' => $this->webroot(),
-            'uri' => key($sites),
         ];
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
         $this->drush('pm-enable', ['woot'], $options);
