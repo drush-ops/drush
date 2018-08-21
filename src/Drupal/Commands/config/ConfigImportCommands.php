@@ -17,6 +17,7 @@ use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drupal\Core\Lock\LockBackendInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drush\Commands\DrushCommands;
+use Symfony\Component\Yaml\Parser;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Webmozart\PathUtil\Path;
 
@@ -206,6 +207,61 @@ class ConfigImportCommands extends DrushCommands
 
         if ($this->io()->confirm(dt('Import the listed configuration changes?'))) {
             return drush_op([$this, 'doImport'], $storage_comparer);
+        }
+    }
+
+    /**
+     * Import single config file from a config directory.
+     *
+     * @command config:import:single
+     * @param $file A config file (in the sync directory).
+     * @interact-config-file
+     * @param $label A config directory label (i.e. a key in \$config_directories array in settings.php).
+     * @interact-config-label
+     * @aliases cis,config-import-single
+     *
+     * @return bool
+     */
+    public function importSingle($file, $label = null)
+    {
+        // Determine source directory.
+        $source_storage_dir = ConfigCommands::getDirectory($label, null);
+
+        // Prepare the configuration storage for the import.
+        if ($source_storage_dir == Path::canonicalize(\config_get_config_directory(CONFIG_SYNC_DIRECTORY))) {
+            $source_storage = $this->getConfigStorageSync();
+        } else {
+            $source_storage = new FileStorage($source_storage_dir);
+        }
+        // Determine $source_storage in partial case.
+        $active_storage = $this->getConfigStorage();
+
+        try {
+            $source_storage = new StorageReplaceDataWrapper($active_storage);
+            $configFile = Path::canonicalize($source_storage_dir) . '/' . $file;
+
+            if (!file_exists($configFile)) {
+                $this->logger()->error('File is missing.');
+                return false;
+            }
+
+            $name = Path::getFilenameWithoutExtension($configFile);
+            $ymlFile = new Parser();
+            $value = $ymlFile->parse(file_get_contents($configFile));
+            $source_storage->delete($name);
+            $source_storage->write($name, $value);
+
+            $config_manager = $this->getConfigManager();
+            $storage_comparer = new StorageComparer($source_storage, $active_storage, $config_manager);
+
+            // @todo Check the changeList
+
+            if ($this->io()->confirm(dt('Import the listed configuration changes?'))) {
+                return drush_op([$this, 'doImport'], $storage_comparer);
+            }
+        } catch (\Exception $e) {
+            $this->logger()->error($e->getMessage());
+            return false;
         }
     }
 
