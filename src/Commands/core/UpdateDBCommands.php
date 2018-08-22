@@ -16,6 +16,8 @@ class UpdateDBCommands extends DrushCommands
 {
     protected $cache_clear;
 
+    protected $maintenanceModeOriginalState;
+
     /**
      * Apply any database updates required (as with running update.php).
      *
@@ -164,6 +166,11 @@ class UpdateDBCommands extends DrushCommands
     {
         $function = $module . '_update_' . $number;
 
+        // Disable config entity overrides.
+        if (!defined('MAINTENANCE_MODE')) {
+            define('MAINTENANCE_MODE', 'update');
+        }
+
         // If this update was aborted in a previous step, or has a dependency that
         // was aborted in a previous step, go no further.
         if (!empty($context['results']['#abort']) && array_intersect($context['results']['#abort'], array_merge($dependency_map, [$function]))) {
@@ -245,6 +252,11 @@ class UpdateDBCommands extends DrushCommands
     public function updateDoOnePostUpdate($function, &$context)
     {
         $ret = [];
+
+        // Disable config entity overrides.
+        if (!defined('MAINTENANCE_MODE')) {
+            define('MAINTENANCE_MODE', 'update');
+        }
 
         // If this update was aborted in a previous step, or has a dependency that was
         // aborted in a previous step, go no further.
@@ -376,10 +388,10 @@ class UpdateDBCommands extends DrushCommands
         ];
         batch_set($batch);
 
-        $maintenance_mode_original_state = \Drupal::service('state')->get('system.maintenance_mode');
+        // See updateFinished() for the restore of maint mode.
+        $this->maintenanceModeOriginalState = \Drupal::service('state')->get('system.maintenance_mode');
         \Drupal::service('state')->set('system.maintenance_mode', true);
         $result = drush_backend_batch_process('updatedb:batch-process');
-        \Drupal::service('state')->set('system.maintenance_mode', $maintenance_mode_original_state);
 
         $success = false;
         if (!is_array($result)) {
@@ -458,7 +470,7 @@ class UpdateDBCommands extends DrushCommands
     }
 
     /**
-     * Batch update callback, clears the cache if needed.
+     * Batch update callback, clears the cache if needed, and restores maint mode.
      *
      * @see \Drupal\system\Controller\DbUpdateController::batchFinished()
      * @see \Drupal\system\Controller\DbUpdateController::results()
@@ -474,6 +486,8 @@ class UpdateDBCommands extends DrushCommands
         } else {
             drupal_flush_all_caches();
         }
+
+        \Drupal::service('state')->set('system.maintenance_mode', $this->maintenanceModeOriginalState);
     }
 
     /**
@@ -577,10 +591,11 @@ class UpdateDBCommands extends DrushCommands
                 'finished' => [$this, 'updateFinished'],
             ];
             batch_set($batch);
-            $maintenance_mode_original_state = \Drupal::service('state')->get('system.maintenance_mode');
+
+            // See updateFinished() for the restore of maint mode.
+            $this->maintenanceModeOriginalState = \Drupal::service('state')->get('system.maintenance_mode');
             \Drupal::service('state')->set('system.maintenance_mode', true);
             drush_backend_batch_process();
-            \Drupal::service('state')->set('system.maintenance_mode', $maintenance_mode_original_state);
         } else {
             $this->logger()->success(dt("No entity schema updates required"));
         }

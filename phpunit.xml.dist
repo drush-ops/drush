@@ -1,0 +1,24 @@
+<!--
+      This is the phpunit configuration file for the unit tests.
+      For the functional tests configuration, see:
+
+          tests/phpunit.xml.dist
+
+      This configuration usually does not need to be customized.
+      You may copy and rename to phpunit.xml to do so if you wish, though.
+-->
+<phpunit backupGlobals="false"
+    bootstrap="vendor/autoload.php"
+    backupStaticAttributes="false"
+    syntaxCheck="false"
+    colors="true">
+  <testsuites>
+    <testsuite name="Drush Preflight Isolation Unit Tests">
+      <directory suffix="Test.php">isolation/tests</directory>
+    </testsuite>
+  </testsuites>
+
+  <php>
+    <includePath>.</includePath>
+  </php>
+</phpunit>

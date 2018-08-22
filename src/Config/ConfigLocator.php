@@ -299,6 +299,7 @@ class ConfigLocator
         // Make all of the config values parsed so far available in evaluations.
         $reference = $this->config()->export();
         $processor = new ConfigProcessor();
+        $processor->useMergeStrategyForKeys(['drush.paths.include', 'drush.paths.alias-path']);
         $context = $this->config->getContext($contextName);
         $processor->add($context->export());
 

@@ -25,21 +25,19 @@ class PreflightSiteLocator
      * During bootstrap, finds the currently selected site from the parameters
      * provided on the commandline.
      *
+     * If 'false' is returned, that indicates that there was an alias name
+     * provided on the commandline that is either missing or invalid.
+     *
      * @param PreflightArgsInterface $preflightArgs An alias name or site specification
      * @param \Drush\Config\Environment $environment
      * @param string $root The default Drupal root (from site:set, --root or cwd)
      *
-     * @return \Consolidation\SiteAlias\AliasRecord
-     * @throws \Exception
+     * @return \Consolidation\SiteAlias\AliasRecord|false
      */
     public function findSite(PreflightArgsInterface $preflightArgs, Environment $environment, $root)
     {
         $aliasName = $preflightArgs->alias();
-        $selfAliasRecord = $this->determineSelf($preflightArgs, $environment, $root);
-        if (!$selfAliasRecord) {
-            throw new \Exception("The alias $aliasName could not be found.");
-        }
-        return $selfAliasRecord;
+        return $this->determineSelf($preflightArgs, $environment, $root);
     }
 
     /**

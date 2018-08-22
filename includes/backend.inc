@@ -745,11 +745,15 @@ function drush_backend_invoke_concurrent($invocations, $common_options = [], $co
     // Add in command-specific options as well
     // $command_options += drush_command_get_command_specific_options($site_record, $command);
 
+    $is_remote = array_key_exists('remote-host', $site_record);
+
     // Add in preflight option contexts (--include et. al)
-    $preflightContextOptions =
-      \Drush\Drush::config()->get(PreflightArgs::DRUSH_RUNTIME_CONTEXT_NAMESPACE, []) +
-      \Drush\Drush::config()->get(PreflightArgs::DRUSH_CONFIG_PATH_NAMESPACE, []);
+    $preflightContextOptions = \Drush\Drush::config()->get(PreflightArgs::DRUSH_RUNTIME_CONTEXT_NAMESPACE, []);
     $preflightContextOptions['local'] = \Drush\Drush::config()->get('runtime.local', false);
+    // If the command is local, also include the paths context.
+    if (!$is_remote) {
+      $preflightContextOptions += \Drush\Drush::config()->get(PreflightArgs::DRUSH_CONFIG_PATH_NAMESPACE, []);
+    }
     foreach ($preflightContextOptions as $key => $value) {
       if ($value) {
         $command_options[$key] = $value;

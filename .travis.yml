@@ -8,11 +8,6 @@ branches:
     - 5.x
     - /^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+.*$/
 language: php
-php:
-#  See master-fulltest branch for broader PHP version testing.
-  - 5.6
-  - 7.0
-  - 7.2
 
 # Cache Composer.
 cache:
@@ -22,11 +17,20 @@ cache:
 # http://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure/
 sudo: false
 
+matrix:
+  include:
+    - php: 7.2
+      env: 'SCENARIO=isolation DEPENDENCIES=highest'
+    - php: 7.2
+      env: 'SCENARIO=isolation'
+    - php: 7.0.11
+      env: 'SCENARIO=isolation'
+    - php: 5.6
+      env: 'SCENARIO=isolation-phpunit4 DEPENDENCIES=lowest'
+    - php: 5.6
+      env: 'SCENARIO=isolation-phpunit4 DEPENDENCIES=lowest'
+
 env:
-  matrix:
-    - TEST_DIR=isolation ISOLATION_INSTALL='install --prefer-dist'
-    - TEST_DIR=isolation ISOLATION_INSTALL='update --prefer-dist --prefer-lowest'
-    - TEST_DIR=isolation ISOLATION_INSTALL='update --prefer-dist'
   global:
     # GitHub deploy
     - secure: VfYokT2CchfuBRJp9/gSwfVGPfsVfkZdDVEuNWEqxww3z4vq+5aLKqoCtPL54E5EIMjhyCE3GVo+biG35Gab1KOVgUs8zD1hAUWA1FPKfMFhoPDfI3ZJC2rX2T1iWK4ZR90pBtcPzS+2OObzTYz8go0PfeSTT6eq69Na1KcNLaE=
@@ -43,7 +47,7 @@ before_install:
 
 # Build a System-Under-Test.
 install:
-  - composer -n --working-dir=${PWD}/$TEST_DIR $ISOLATION_INSTALL
+  - 'composer scenario "${SCENARIO}" "${DEPENDENCIES}"'
 
 before_script:
   - phpenv config-rm xdebug.ini
@@ -51,7 +55,7 @@ before_script:
   # - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
 
 script:
-  - cd $TEST_DIR && phpunit
+  - composer unit
 
 after_success:
   # Publish updated API documentation on every push to the master branch

@@ -112,7 +112,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
 
     /**
      * Map of option key to the corresponding config key to store the
-     * preflight option in.
+     * preflight option in. The values of the config items in this map
+     * must be BOOLEANS or STRINGS.
      */
     protected function optionConfigMap()
     {
@@ -125,7 +126,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
 
     /**
      * Map of path option keys to the corresponding config key to store the
-     * preflight option in.
+     * preflight option in. The values of the items in this map must be
+     * STRINGS or ARRAYS OF STRINGS.
      */
     protected function optionConfigPathMap()
     {
@@ -151,7 +153,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         foreach ($this->optionConfigPathMap() as $option_key => $config_key) {
             $cli_paths = $this->get($option_key, []);
             $config_paths = (array) $config->get($config_key, []);
-            $merged_paths = array_merge($cli_paths, $config_paths);
+
+            $merged_paths = array_unique(array_merge($cli_paths, $config_paths));
             $config->set($config_key, $merged_paths);
             $this->set($option_key, $merged_paths);
         }
@@ -321,6 +324,12 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      */
     public function mergeAliasPaths($aliasPaths)
     {
+        $aliasPaths = array_map(
+            function ($item) {
+                return StringUtils::replaceTilde($item, $this->homeDir());
+            },
+            $aliasPaths
+        );
         $paths = $this->aliasPaths();
         $merged_paths = array_merge($paths, $aliasPaths);
         return $this->set(self::ALIAS_PATH, $merged_paths);
