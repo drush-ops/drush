@@ -115,10 +115,11 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      */
     public function siteAlias($site = null, $options = ['format' => 'yaml'])
     {
-        // Check to see if the user provided a specification that matches
+        // First check to see if the user provided a specification that matches
         // multiple sites.
-        $aliasList = $this->siteAliasManager()->getMultiple($site);
-        if (is_array($aliasList)) {
+        list($locationPart, $sitePart) = $this->splitLocationFromSite($site);
+        $aliasList = $this->siteAliasManager()->getMultiple($sitePart, $locationPart);
+        if (is_array($aliasList) && !empty($aliasList)) {
             return new ListDataFromKeys($this->siteAliasExportList($aliasList, $options));
         }
 
@@ -133,6 +134,21 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         } else {
             $this->logger()->success('No site aliases found.');
         }
+    }
+
+    /**
+     * splitLocationFromSite returns the location and the site if the
+     * site alias is in the form '@location.site'. Otherwise it just
+     * returns the site unchanged, without a location.
+     */
+    protected function splitLocationFromSite($site)
+    {
+        $parts = explode('.', ltrim($site, '@'));
+
+        if (count($parts) == 2) {
+            return [$parts[0], '@' . $parts[1]];
+        }
+        return [null, $site];
     }
 
     /**
