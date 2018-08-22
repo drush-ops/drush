@@ -237,9 +237,6 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         if ($config = $commandData->input()->getOption('config-dir')) {
             $this->validateConfigDir($commandData, $config);
         }
-        if ($existing = $commandData->input()->getOption('existing-config')) {
-            $this->validateConfigDir($commandData, $existing);
-        }
 
         try {
             // Get AnnotationData. @todo Find a better way.
