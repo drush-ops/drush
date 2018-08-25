@@ -141,7 +141,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInt
         if ($object instanceof \Robo\Contract\VerbosityThresholdInterface) {
             $object->setOutputAdapter($container->get('outputAdapter'));
         }
-        if ($object instanceof \Drush\SiteAlias\SiteAliasManagerAwareInterface) {
+        if ($object instanceof \Consolidation\SiteAlias\SiteAliasManagerAwareInterface) {
             $object->setOutputAdapter($container->get('site.alias.manager'));
         }
     }

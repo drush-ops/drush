@@ -94,8 +94,8 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface
             'additional-global-options' => [],
             'interactive' => true,
         ];
+        $backend_options['#tty'] = $this->getConfig()->get('ssh.tty', $input->isInteractive());
         if ($input->isInteractive()) {
-            $backend_options['#tty'] = true;
             $backend_options['interactive'] = true;
         }
 

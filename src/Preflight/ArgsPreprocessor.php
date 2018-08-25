@@ -1,8 +1,8 @@
 <?php
 namespace Drush\Preflight;
 
-use Drush\SiteAlias\SiteAliasName;
-use Drush\SiteAlias\SiteSpecParser;
+use Consolidation\SiteAlias\SiteAliasName;
+use Consolidation\SiteAlias\SiteSpecParser;
 
 /**
  * Preprocess commandline arguments.
@@ -64,7 +64,7 @@ class ArgsPreprocessor
                 return $storage->passArgs($argv);
             }
 
-            if ($this->isAliasOrSiteSpec($opt) && !$storage->hasAlias() && !$sawArg) {
+            if (!$sawArg && !$storage->hasAlias() && $this->isAliasOrSiteSpec($opt)) {
                 $storage->setAlias($opt);
                 continue;
             }

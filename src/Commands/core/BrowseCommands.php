@@ -5,8 +5,8 @@ use Drupal\Core\Url;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
-use Drush\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 
 class BrowseCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {

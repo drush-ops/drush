@@ -6,7 +6,7 @@
  */
 namespace Drush;
 
-use Drush\SiteAlias\SiteAliasManager;
+use Consolidation\SiteAlias\SiteAliasManager;
 use League\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use SebastianBergmann\Version;

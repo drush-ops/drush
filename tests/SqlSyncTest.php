@@ -40,19 +40,21 @@ class SqlSyncTest extends CommandUnishTestCase
             'alias-path' => __DIR__ . '/resources/alias-fixtures',
         ];
 
+        $expectedAliasPath = '--alias-path=__SANDBOX__/etc/drush/sites';
+
         // Test simulated simple rsync remote-to-local
         $this->drush('sql:sync', ['@synctest.remote', '@synctest.local'], $options, '@synctest.local', null, self::EXIT_SUCCESS, '2>&1');
         $output = $this->getSimplifiedOutput();
-        $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=whatever www-admin@server.isp.simulated '/path/to/drush --backend=2 --strict=0 --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush/sites --root=__SUT__/web --uri=remote sql-dump --no-interaction --gzip --result-file", $output);
-        $this->assertContains("Simulating backend invoke: __SUT__/vendor/drush/drush/drush --backend=2 --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush/sites --root=__SUT__/web --uri=local core-rsync '@synctest.remote:/simulated/path/to/dump.tgz' '@synctest.local:__SANDBOX__/tmp/dump.tgz' -- --remove-source-files", $output);
-        $this->assertContains("Simulating backend invoke: __SUT__/vendor/drush/drush/drush --backend=2 --strict=0 --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush/sites --root=__SUT__/web --uri=local sql-query --no-interaction --file=__SANDBOX__/tmp/dump.tgz --file-delete", $output);
+        $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=whatever www-admin@server.isp.simulated '/path/to/drush --backend=2 --strict=0 --root=__SUT__/web --uri=remote sql-dump --no-interaction --gzip --result-file", $output);
+        $this->assertContains("Simulating backend invoke: __SUT__/vendor/drush/drush/drush --backend=2 $expectedAliasPath --root=__SUT__/web --uri=local core-rsync '@synctest.remote:/simulated/path/to/dump.tgz' '@synctest.local:__SANDBOX__/tmp/dump.tgz' -- --remove-source-files", $output);
+        $this->assertContains("Simulating backend invoke: __SUT__/vendor/drush/drush/drush --backend=2 --strict=0 $expectedAliasPath --root=__SUT__/web --uri=local sql-query --no-interaction --file=__SANDBOX__/tmp/dump.tgz --file-delete", $output);
 
         // Test simulated simple rsync local-to-remote
         $this->drush('sql:sync', ['@synctest.local', '@synctest.remote'], $options, '@synctest.local', null, self::EXIT_SUCCESS, '2>&1');
         $output = $this->getSimplifiedOutput();
-        $this->assertContains("Simulating backend invoke: __SUT__/vendor/drush/drush/drush --backend=2 --strict=0 --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush/sites --root=__SUT__/web --uri=local sql-dump --no-interaction --gzip --result-file", $output);
-        $this->assertContains("Simulating backend invoke: __SUT__/vendor/drush/drush/drush --backend=2 --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush/sites --root=__SUT__/web --uri=local core-rsync '@synctest.local:/simulated/path/to/dump.tgz' '@synctest.remote:/tmp/dump.tgz' -- --remove-source-files", $output);
-        $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=whatever www-admin@server.isp.simulated '/path/to/drush --backend=2 --strict=0 --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush/sites --root=__SUT__/web --uri=remote sql-query --no-interaction --file=/tmp/dump.tgz --file-delete", $output);
+        $this->assertContains("Simulating backend invoke: __SUT__/vendor/drush/drush/drush --backend=2 --strict=0 $expectedAliasPath --root=__SUT__/web --uri=local sql-dump --no-interaction --gzip --result-file", $output);
+        $this->assertContains("Simulating backend invoke: __SUT__/vendor/drush/drush/drush --backend=2 $expectedAliasPath --root=__SUT__/web --uri=local core-rsync '@synctest.local:/simulated/path/to/dump.tgz' '@synctest.remote:/tmp/dump.tgz' -- --remove-source-files", $output);
+        $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=whatever www-admin@server.isp.simulated '/path/to/drush --backend=2 --strict=0 --root=__SUT__/web --uri=remote sql-query --no-interaction --file=/tmp/dump.tgz --file-delete", $output);
 
 
         // Test simulated backend invoke with a remote runner.
@@ -61,7 +63,7 @@ class SqlSyncTest extends CommandUnishTestCase
         // they are used with drush_invoke_process.
         $this->drush('sql:sync', ['@synctest.remote', '@synctest.local'], $options, 'user@server/path/to/drupal#sitename', null, self::EXIT_SUCCESS, '2>&1');
         $output = $this->getSimplifiedOutput();
-        $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --alias-path=__DIR__/resources/alias-fixtures:__SANDBOX__/etc/drush/sites --root=/path/to/drupal --uri=sitename --no-interaction sql:sync '\''@synctest.remote'\'' '\''@synctest.local'\''", $output);
+        $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --root=/path/to/drupal --uri=sitename --no-interaction sql:sync '\''@synctest.remote'\'' '\''@synctest.local'\''", $output);
     }
 
     /**

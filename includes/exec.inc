@@ -7,7 +7,7 @@
 
 use Drush\Drush;
 use Drush\Log\LogLevel;
-use \Drush\SiteAlias\AliasRecord;
+use \Consolidation\SiteAlias\AliasRecord;
 
 /**
  * @defgroup commandwrappers Functions to execute commands.

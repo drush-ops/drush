@@ -48,7 +48,7 @@ class DocsCommands extends DrushCommands
      */
     public function bashrc()
     {
-        self::printFile(DRUSH_BASE_PATH. '/examples/example.bashrc\'');
+        self::printFile(DRUSH_BASE_PATH. '/examples/example.bashrc');
     }
 
     /**
@@ -152,7 +152,7 @@ class DocsCommands extends DrushCommands
      */
     public function exampleCommand()
     {
-        self::printFile(DRUSH_BASE_PATH. '/examples/Commands/SandwichCommands.php');
+        self::printFile(DRUSH_BASE_PATH. '/examples/Commands/ArtCommands.php');
     }
 
     /**

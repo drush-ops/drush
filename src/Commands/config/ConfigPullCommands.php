@@ -4,9 +4,9 @@ namespace Drush\Commands\config;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
-use Drush\SiteAlias\HostPath;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
-use Drush\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteAlias\HostPath;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 
 class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {

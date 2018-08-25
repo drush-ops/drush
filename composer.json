@@ -29,9 +29,10 @@
     "chi-teck/drupal-code-generator": "^1.24.0",
     "composer/semver": "^1.4",
     "consolidation/annotated-command": "^2.8.1",
-    "consolidation/config": "^1.0.9",
+    "consolidation/config": "^1.1.0",
     "consolidation/output-formatters": "^3.1.12",
     "consolidation/robo": "^1.1.5",
+    "consolidation/site-alias": "^1.1.2",
     "grasmash/yaml-expander": "^1.1.1",
     "league/container": "~2",
     "psr/log": "~1.0",
@@ -42,14 +43,15 @@
     "symfony/event-dispatcher": "~2.7|^3",
     "symfony/finder": "~2.7|^3",
     "symfony/process": "~2.7|^3",
-    "symfony/var-dumper": "~2.7|^3",
+    "symfony/var-dumper": "~2.7|^3|^4",
     "symfony/yaml": "~2.3|^3",
     "webflo/drupal-finder": "^1.1",
     "webmozart/path-util": "^2.1.0"
   },
   "require-dev": {
     "lox/xhprof": "dev-master",
-    "phpunit/phpunit": "^4.8|^5.5.4",
+    "g1a/composer-test-scenarios": "^2.2.0",
+    "phpunit/phpunit": "^4.8.36|^5.5.4",
     "squizlabs/php_codesniffer": "^2.7"
   },
   "autoload": {
@@ -57,6 +59,11 @@
       "Drush\\":            "src/",
       "Drush\\Internal\\":  "internal-copy/",
       "Unish\\":            "tests/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Drush\\": "isolation/src/"
     }
   },
   "config": {
@@ -75,10 +82,21 @@
       "find src -name '*.php' -print0 | xargs -0 -n1 php -l",
       "find tests -name '*.php' -print0 | xargs -0 -n1 php -l"
     ],
+    "test": [
+      "@lint",
+      "@unit",
+      "@cs",
+      "@functional"
+    ],
     "api": "PATH=$HOME/bin:$PATH sami.phar --ansi update sami-config.php",
     "sami-install": "mkdir -p $HOME/bin && curl --output $HOME/bin/sami.phar http://get.sensiolabs.org/sami.phar && chmod +x $HOME/bin/sami.phar",
-    "isolation": "cd isolation && vendor/bin/phpunit --colors=always",
-    "post-update-cmd": "cd isolation && composer update"
+    "scenario": "scenarios/install",
+    "unit": "phpunit --colors=always",
+    "functional": "./unish.phpunit.php",
+    "post-update-cmd": [
+        "create-scenario isolation --autoload-dir isolation --autoload-dir internal-copy --keep '\\(psr/log\\|consolidation/config\\|site-alias\\|var-dumper\\|symfony/finder\\|drupal-finder\\|path-util\\|sebastian/version\\|xhprof\\)' 'phpunit/phpunit:^5.5.4'",
+        "create-scenario isolation-phpunit4 --base isolation --autoload-dir isolation --autoload-dir internal-copy 'phpunit/phpunit:^4.8.36'"
+    ]
   },
   "extra": {
     "branch-alias": {

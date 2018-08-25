@@ -1,4 +1,15 @@
-<!-- Copy and rename to phpunit.xml. Customize as needed. -->
+<!--
+      This is the phpunit configuration file for the functional tests.
+      For the unit tests configuration, see the phpunit.xml.dist file
+      at the root of the project.
+
+      Copy and rename this file to phpunit.xml to customize.
+
+      The variables shown below must usually be defined in order to run the
+      functional tests. They may be set by customizing this file, or they may
+      be defined as environment variables. Alternately, you may run the
+      tests without defining these variables if you use the default values.
+-->
 <phpunit backupGlobals="false"
     backupStaticAttributes="false"
     syntaxCheck="false"

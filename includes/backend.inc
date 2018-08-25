@@ -108,7 +108,7 @@ function drush_backend_set_result($value) {
  *       command.  Zero means "no error".
  *     - log: The log item contains an array of log messages from
  *       the command execution ordered chronologically.  Each log
- *       entery is an associative array.  A log entry contains
+ *       entry is an associative array.  A log entry contains
  *       following items:
  *         o  type: The type of log entry, such as 'notice' or 'warning'
  *         o  message: The log message
@@ -621,7 +621,8 @@ function _drush_backend_adjust_options($site_record, $command, $command_options,
 /**
  * Execute a new local or remote command in a new process.
  *
- * n.b. Prefer drush_invoke_process() to this function.
+ * @deprecated as of Drush 9.4.0 and will be removed in Drush 10. Instead, use
+ *   drush_invoke_process().
  *
  * @param invocations
  *   An array of command records to execute. Each record should contain:
@@ -744,11 +745,15 @@ function drush_backend_invoke_concurrent($invocations, $common_options = [], $co
     // Add in command-specific options as well
     // $command_options += drush_command_get_command_specific_options($site_record, $command);
 
+    $is_remote = array_key_exists('remote-host', $site_record);
+
     // Add in preflight option contexts (--include et. al)
-    $preflightContextOptions =
-      \Drush\Drush::config()->get(PreflightArgs::DRUSH_RUNTIME_CONTEXT_NAMESPACE, []) +
-      \Drush\Drush::config()->get(PreflightArgs::DRUSH_CONFIG_PATH_NAMESPACE, []);
+    $preflightContextOptions = \Drush\Drush::config()->get(PreflightArgs::DRUSH_RUNTIME_CONTEXT_NAMESPACE, []);
     $preflightContextOptions['local'] = \Drush\Drush::config()->get('runtime.local', false);
+    // If the command is local, also include the paths context.
+    if (!$is_remote) {
+      $preflightContextOptions += \Drush\Drush::config()->get(PreflightArgs::DRUSH_CONFIG_PATH_NAMESPACE, []);
+    }
     foreach ($preflightContextOptions as $key => $value) {
       if ($value) {
         $command_options[$key] = $value;
