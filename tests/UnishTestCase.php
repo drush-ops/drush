@@ -234,10 +234,11 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase
 
     public function logLevel()
     {
+        $argv = $_SERVER['argv'];
         // -d is reserved by `phpunit`
-        if (in_array('--debug', $_SERVER['argv'])) {
+        if (in_array(['--debug'], $argv) || in_array('-vvv', $argv)) {
             return 'debug';
-        } elseif (in_array('--verbose', $_SERVER['argv']) || in_array('-v', $_SERVER['argv'])) {
+        } elseif (in_array('--verbose', $argv) || in_array('-v', $argv)) {
             return 'verbose';
         }
     }
@@ -537,7 +538,7 @@ EOT;
      *
      * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
      */
-    public function setUpDrupal($num_sites = 1, $install = false)
+    public function setUpDrupal($num_sites = 1, $install = false, $options = [])
     {
         $sites_subdirs_all = ['dev', 'stage', 'prod', 'retired', 'elderly', 'dead', 'dust'];
         $sites_subdirs = array_slice($sites_subdirs_all, 0, $num_sites);
@@ -545,7 +546,7 @@ EOT;
 
         // Install (if needed).
         foreach ($sites_subdirs as $subdir) {
-            $this->installDrupal($subdir, $install);
+            $this->installDrupal($subdir, $install, $options);
         }
 
         // Write an empty sites.php. Needed for multi-site on D8+.
@@ -590,7 +591,7 @@ EOT;
      *
      * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
      */
-    public function installDrupal($env = 'dev', $install = false)
+    public function installDrupal($env = 'dev', $install = false, $options = [])
     {
         $root = $this->webroot();
         $uri = $env;
@@ -598,14 +599,14 @@ EOT;
 
         // If specified, install Drupal as a multi-site.
         if ($install) {
-            $options = [
-            'root' => $root,
-            'db-url' => $this->dbUrl($env),
-            'sites-subdir' => $uri,
-            'yes' => null,
-            'quiet' => null,
+            $options += [
+                'root' => $root,
+                'db-url' => $this->dbUrl($env),
+                'sites-subdir' => $uri,
+                'yes' => null,
+                'quiet' => null,
             ];
-            $this->drush('site-install', ['testing', 'install_configure_form.enable_update_status_emails=NULL'], $options);
+            $this->drush('site:install', ['testing', 'install_configure_form.enable_update_status_emails=NULL'], $options);
             // Give us our write perms back.
             chmod($site, 0777);
         } else {
