@@ -2,6 +2,8 @@
 
 namespace Unish;
 
+use Composer\Semver\Comparator;
+
 /**
  * Tests for Configuration Management commands for D8+.
  * @group commands
@@ -69,13 +71,16 @@ class ConfigCase extends CommandUnishTestCase
         $this->assertContains('unish partial', $page->front, '--partial was successfully imported.');
 
         // Test the --existing-config option for site:install.
-        $contents = file_get_contents($system_site_yml);
-        $contents = preg_replace('/front: .*/', 'front: unish existing', $contents);
-        file_put_contents($system_site_yml, $contents);
-
-        $this->setUpDrupal(1, true, ['existing-config' => null]);
-        $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
-        $page = $this->getOutputFromJSON('system.site:page');
-        $this->assertContains('unish existing', $page->front, 'Existing config was successfully imported during site:install.');
+        $this->drush('core:status', ['drupal-version'], ['format' => 'string']);
+        $drupal_version = $this->getOutputRaw();
+        if (Comparator::greaterThan($drupal_version, '8.5')) {
+            $contents = file_get_contents($system_site_yml);
+            $contents = preg_replace('/front: .*/', 'front: unish existing', $contents);
+            file_put_contents($system_site_yml, $contents);
+            $this->setUpDrupal(1, true, ['existing-config' => null]);
+            $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
+            $page = $this->getOutputFromJSON('system.site:page');
+            $this->assertContains('unish existing', $page->front, 'Existing config was successfully imported during site:install.');
+        }
     }
 }
