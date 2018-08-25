@@ -73,7 +73,7 @@ class ConfigCase extends CommandUnishTestCase
         // Test the --existing-config option for site:install.
         $this->drush('core:status', ['drupal-version'], ['format' => 'string']);
         $drupal_version = $this->getOutputRaw();
-        if (Comparator::greaterThan($drupal_version, '8.5')) {
+        if (Comparator::greaterThanOrEqualTo($drupal_version, '8.6')) {
             $contents = file_get_contents($system_site_yml);
             $contents = preg_replace('/front: .*/', 'front: unish existing', $contents);
             file_put_contents($system_site_yml, $contents);
