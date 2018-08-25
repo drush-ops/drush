@@ -84,10 +84,10 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         // Was giving error during validate() so its here for now.
         if ($options['existing-config']) {
             $existing_config_dir = config_get_config_directory(CONFIG_SYNC_DIRECTORY);
-          if (!is_dir($existing_config_dir)) {
-            throw new \Exception(dt('Existing config directory @dir not found', ['@dir' => $existing_config_dir]));
-          }
-          $this->logger()->info(dt('Installing from existing config at @dir', ['@dir' => $existing_config_dir]));
+            if (!is_dir($existing_config_dir)) {
+                throw new \Exception(dt('Existing config directory @dir not found', ['@dir' => $existing_config_dir]));
+            }
+            $this->logger()->info(dt('Installing from existing config at @dir', ['@dir' => $existing_config_dir]));
         }
 
         $settings = [
