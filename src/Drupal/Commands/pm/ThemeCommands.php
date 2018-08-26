@@ -4,6 +4,7 @@ namespace Drush\Drupal\Commands\pm;
 use Drupal\Core\Extension\ThemeInstallerInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
+use Drush\Utils\StringUtils;
 
 class ThemeCommands extends DrushCommands
 {
@@ -33,7 +34,7 @@ class ThemeCommands extends DrushCommands
      */
     public function enable($themes)
     {
-        $themes = _convert_csv_to_array($themes);
+        $themes = StringUtils::csvToArray($themes);
         if (!$this->getThemeInstaller()->install($themes, true)) {
             throw new \Exception('Unable to install themes.');
         }
@@ -49,7 +50,7 @@ class ThemeCommands extends DrushCommands
      */
     public function uninstall($themes)
     {
-        $themes = _convert_csv_to_array($themes);
+        $themes = StringUtils::csvToArray($themes);
         if (!$this->getThemeInstaller()->uninstall($themes, true)) {
             throw new \Exception('Unable to uninstall themes.');
         }
