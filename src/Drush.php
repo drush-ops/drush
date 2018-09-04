@@ -9,7 +9,6 @@ namespace Drush;
 use Consolidation\SiteAlias\SiteAliasManager;
 use League\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
-use SebastianBergmann\Version;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -81,8 +80,7 @@ class Drush
     {
         if (!static::$version) {
             $drush_info = static::drushReadDrushInfo();
-            $instance = new Version($drush_info['drush_version'], dirname(__DIR__));
-            static::$version = $instance->getversion();
+            static::$version = $drush_info['drush_version'];
         }
         return static::$version;
     }
