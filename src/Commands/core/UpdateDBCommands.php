@@ -191,8 +191,13 @@ class UpdateDBCommands extends DrushCommands
                 $this->logger()->notice("Update started: $function");
                 $ret['results']['query'] = $function($context['sandbox']);
                 $ret['results']['success'] = true;
-            } // @TODO We may want to do different error handling for different exception
-            // types, but for now we'll just print the message.
+            }
+            // PHP 7 introduces Throwable, which covers both Error and Exception throwables.
+            catch (\Throwable $e) {
+                $ret['#abort'] = ['success' => false, 'query' => $e->getMessage()];
+                $this->logger()->error($e->getMessage());
+            }
+            // In order to be compatible with PHP 5 we also catch regular Exceptions.
             catch (\Exception $e) {
                 $ret['#abort'] = ['success' => false, 'query' => $e->getMessage()];
                 $this->logger()->error($e->getMessage());
