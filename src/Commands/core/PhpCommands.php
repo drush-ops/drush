@@ -40,9 +40,8 @@ class PhpCommands extends DrushCommands
      * @command php:script
      * @option script-path Additional paths to search for scripts, separated by
      *   : (Unix-based systems) or ; (Windows).
-     * @usage drush php:script example
-     *   --script-path=/path/to/scripts:/another/path Run a script named
-     *   example.php from specified paths
+     * @usage drush php:script example --script-path=/path/to/scripts:/another/path
+     *   Run a script named example.php from specified paths
      * @usage drush php:script
      *   List all available scripts.
      * @usage drush php:script foo -- apple --cider
