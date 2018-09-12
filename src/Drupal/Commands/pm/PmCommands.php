@@ -67,7 +67,7 @@ class PmCommands extends DrushCommands
 
         // Allow discovery of test modules. See https://github.com/drush-ops/drush/issues/667.
         $settings = Settings::getAll();
-        $settings['extension_discovery_scan_tests'] = TRUE;
+        $settings['extension_discovery_scan_tests'] = true;
         new Settings($settings);
 
         $todo = $this->addInstallDependencies($modules);
