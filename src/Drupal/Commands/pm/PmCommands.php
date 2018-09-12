@@ -8,6 +8,7 @@ use Drupal\Core\Extension\MissingDependencyException;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
+use Drupal\Core\Site\Settings;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
@@ -64,6 +65,12 @@ class PmCommands extends DrushCommands
     public function enable(array $modules)
     {
         $modules = StringUtils::csvToArray($modules);
+
+        // Allow discovery of test modules. See https://github.com/drush-ops/drush/issues/667.
+        $settings = Settings::getAll();
+        $settings['extension_discovery_scan_tests'] = true;
+        new Settings($settings);
+
         $todo = $this->addInstallDependencies($modules);
         $todo_str = ['!list' => implode(', ', $todo)];
         if (empty($todo)) {
