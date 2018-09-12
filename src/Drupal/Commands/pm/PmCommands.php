@@ -64,6 +64,12 @@ class PmCommands extends DrushCommands
     public function enable(array $modules)
     {
         $modules = StringUtils::csvToArray($modules);
+
+        // Allow discovery of test modules. See https://github.com/drush-ops/drush/issues/667.
+        $settings = Settings::getAll();
+        $settings['extension_discovery_scan_tests'] = TRUE;
+        new Settings($settings);
+
         $todo = $this->addInstallDependencies($modules);
         $todo_str = ['!list' => implode(', ', $todo)];
         if (empty($todo)) {
