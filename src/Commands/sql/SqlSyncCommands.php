@@ -5,9 +5,9 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
-use Drush\SiteAlias\AliasRecord;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
-use Drush\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteAlias\AliasRecord;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Webmozart\PathUtil\Path;
 
@@ -31,6 +31,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @option db-su-pw Password for the db-su account.
      * @option source-dump The path for retrieving the sql-dump on source machine.
      * @option target-dump The path for storing the sql-dump on target machine.
+     * @option extra-dump Add custom arguments/options to the dumping of the database (e.g. mysqldump command).
      * @usage drush sql:sync @source @self
      *   Copy the database from the site with the alias 'source' to the local site.
      * @usage drush sql:sync @self @target

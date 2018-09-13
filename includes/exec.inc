@@ -7,7 +7,7 @@
 
 use Drush\Drush;
 use Drush\Log\LogLevel;
-use \Drush\SiteAlias\AliasRecord;
+use \Consolidation\SiteAlias\AliasRecord;
 
 /**
  * @defgroup commandwrappers Functions to execute commands.
@@ -84,7 +84,7 @@ function drush_shell_exec($cmd) {
 }
 
 /**
- * A versopm pf drush_shell_exec that ignores simulate mode
+ * A version of drush_shell_exec() that ignores simulate mode
  */
 function drush_always_exec($cmd) {
   return _drush_shell_exec(func_get_args(), FALSE, FALSE);

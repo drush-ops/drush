@@ -1,0 +1,92 @@
+{
+  "name": "drush/drush",
+  "description": "Drush is a command line shell and scripting interface for Drupal, a veritable Swiss Army knife designed to make life easier for those of us who spend some of our working hours hacking away at the command prompt.",
+  "homepage": "http://www.drush.org",
+  "license": "GPL-2.0-or-later",
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "authors": [
+    { "name": "Moshe Weitzman", "email": "weitzman@tejasa.com" },
+    { "name": "Owen Barton", "email": "drupal@owenbarton.com" },
+    { "name": "Greg Anderson", "email": "greg.1.anderson@greenknowe.org" },
+    { "name": "Jonathan Araña Cruz", "email": "jonhattan@faita.net" },
+    { "name": "Jonathan Hedstrom", "email": "jhedstrom@gmail.com" },
+    { "name": "Christopher Gervais", "email": "chris@ergonlogic.com" },
+    { "name": "Dave Reid", "email": "dave@davereid.net" },
+    { "name": "Damian Lee", "email": "damiankloip@googlemail.com" }
+  ],
+  "support": {
+    "forum": "http://drupal.stackexchange.com/questions/tagged/drush",
+    "irc": "irc://irc.freenode.org/drush",
+    "slack": "https://drupal.slack.com/messages/C62H9CWQM"
+  },
+  "bin": [
+    "drush"
+  ],
+  "require": {
+    "php": ">=5.6.0",
+    "ext-dom": "*",
+    "consolidation/config": "^1.1.0",
+    "consolidation/site-alias": "^1.1.2",
+    "psr/log": "~1.0",
+    "sebastian/version": "^1|^2",
+    "symfony/finder": "~2.7|^3",
+    "symfony/var-dumper": "~2.7|^3|^4",
+    "webflo/drupal-finder": "^1.1",
+    "webmozart/path-util": "^2.1.0"
+  },
+  "require-dev": {
+    "lox/xhprof": "dev-master",
+    "phpunit/phpunit": "^5.5.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Drush\\":            "src/",
+      "Drush\\Internal\\":  "internal-copy/",
+      "Unish\\":            "tests/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Drush\\": "isolation/src/"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "platform": {
+
+    },
+    "vendor-dir": "../../vendor"
+  },
+  "scripts": {
+    "cs": "phpcs -n --standard=PSR2 src tests examples",
+    "cbf": "phpcbf -n --standard=PSR2 src tests examples",
+    "lint": [
+      "find includes -name '*.inc' -print0 | xargs -0 -n1 php -l",
+      "find src -name '*.php' -print0 | xargs -0 -n1 php -l",
+      "find tests -name '*.php' -print0 | xargs -0 -n1 php -l"
+    ],
+    "test": [
+      "@lint",
+      "@unit",
+      "@cs",
+      "@functional"
+    ],
+    "api": "PATH=$HOME/bin:$PATH sami.phar --ansi update sami-config.php",
+    "sami-install": "mkdir -p $HOME/bin && curl --output $HOME/bin/sami.phar http://get.sensiolabs.org/sami.phar && chmod +x $HOME/bin/sami.phar",
+    "scenario": "scenarios/install",
+    "unit": "phpunit --colors=always",
+    "functional": "./unish.phpunit.php",
+    "post-update-cmd": [
+        "create-scenario isolation --autoload-dir isolation --autoload-dir internal-copy --keep '\\(psr/log\\|consolidation/config\\|site-alias\\|var-dumper\\|symfony/finder\\|drupal-finder\\|path-util\\|sebastian/version\\|xhprof\\)' 'phpunit/phpunit:^5.5.4'",
+        "create-scenario isolation-phpunit4 --base isolation --autoload-dir isolation --autoload-dir internal-copy 'phpunit/phpunit:^4.8.36'"
+    ]
+  },
+  "extra": {
+    "branch-alias": {
+        "dev-master": "9.x-dev"
+    }
+  }
+}

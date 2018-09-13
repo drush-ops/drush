@@ -80,7 +80,7 @@ class ConfigCommands extends DrushCommands
      * @param $config_name The config object name, for example "system.site".
      * @param $key The config key, for example "page.front".
      * @param $value The value to assign to the config key. Use '-' to read from STDIN.
-     * @option format Format to parse the object. Use "string" for string (default), and "yaml" for YAML.
+     * @option input-format Format to parse the object. Use "string" for string (default), and "yaml" for YAML.
      * // A convenient way to pass a multiline value within a backend request.
      * @option value The value to assign to the config key (if any).
      * @hidden-options value
@@ -88,7 +88,7 @@ class ConfigCommands extends DrushCommands
      *   Sets system.site:page.front to "node".
      * @aliases cset,config-set
      */
-    public function set($config_name, $key, $value = null, $options = ['format' => 'string', 'value' => self::REQ])
+    public function set($config_name, $key, $value = null, $options = ['input-format' => 'string', 'value' => self::REQ])
     {
         // This hidden option is a convenient way to pass a value without passing a key.
         $data = $options['value'] ?: $value;
@@ -107,15 +107,15 @@ class ConfigCommands extends DrushCommands
         }
 
         // Now, we parse the value.
-        switch ($options['format']) {
+        switch ($options['input-format']) {
             case 'yaml':
                 $parser = new Parser();
                 $data = $parser->parse($data, true);
         }
 
         if (is_array($data) && $this->io()->confirm(dt('Do you want to update or set multiple keys on !name config.', ['!name' => $config_name]))) {
-            foreach ($data as $key => $value) {
-                $config->set($key, $value);
+            foreach ($data as $data_key => $value) {
+                $config->set("$key.$data_key", $value);
             }
             return $config->save();
         } else {
@@ -340,7 +340,7 @@ class ConfigCommands extends DrushCommands
      */
     public function getStorage($directory)
     {
-        if ($directory == \config_get_config_directory(CONFIG_SYNC_DIRECTORY)) {
+        if ($directory == Path::canonicalize(\config_get_config_directory(CONFIG_SYNC_DIRECTORY))) {
             return \Drupal::service('config.storage.sync');
         } else {
             return new FileStorage($directory);

@@ -1,16 +1,16 @@
 <?php
 namespace Drush\Commands\core;
 
+use Composer\Semver\Comparator;
 use Consolidation\AnnotatedCommand\CommandData;
+use Drupal\Component\FileCache\FileCacheFactory;
 use Drupal\Core\Database\ConnectionNotDefinedException;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
-use Drush\Log\LogLevel;
 use Drupal\Core\Config\FileStorage;
-use Drush\SiteAlias\SiteAliasManager;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
-use Drush\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
 use Webmozart\PathUtil\Path;
@@ -35,7 +35,8 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * @option site-name Defaults to Site-Install
      * @option site-mail From: for system mailings. Defaults to admin@example.com
      * @option sites-subdir Name of directory under 'sites' which should be created.
-     * @option config-dir A path pointing to a full set of configuration which should be imported after installation.
+     * @option config-dir Deprecated - only use with Drupal 8.5-. A path pointing to a full set of configuration which should be installed during installation.
+     * @option existing-config Configuration from "sync" directory should be imported during installation. Use with Drupal 8.6+.
      * @usage drush si expert --locale=uk
      *   (Re)install using the expert install profile. Set default language to Ukrainian.
      * @usage drush si --db-url=mysql://root:pass@localhost:port/dbname
@@ -44,6 +45,8 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      *   Install using SQLite
      * @usage drush si --account-pass=mom
      *   Re-install with specified uid1 password.
+     * @usage drush si --existing-config
+     *   Install based on the yml files stored in the config export/import directory.
      * @usage drush si standard install_configure_form.enable_update_status_emails=NULL
      *   Disable email notification during install and later. If your server has no mail transfer agent, this gets rid of an error during install.
      * @bootstrap root
@@ -51,7 +54,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * @aliases si,sin,site-install
      *
      */
-    public function install(array $profile, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ])
+    public function install(array $profile, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ, 'existing-config' => false])
     {
         $additional = $profile;
         $profile = array_shift($additional) ?: '';
@@ -77,10 +80,21 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $db_spec = $sql->getDbSpec();
 
         $account_pass = $options['account-pass'] ?: StringUtils::generatePassword();
+
+        // Was giving error during validate() so its here for now.
+        if ($options['existing-config']) {
+            $existing_config_dir = config_get_config_directory(CONFIG_SYNC_DIRECTORY);
+            if (!is_dir($existing_config_dir)) {
+                throw new \Exception(dt('Existing config directory @dir not found', ['@dir' => $existing_config_dir]));
+            }
+            $this->logger()->info(dt('Installing from existing config at @dir', ['@dir' => $existing_config_dir]));
+        }
+
         $settings = [
             'parameters' => [
                 'profile' => $profile,
                 'langcode' => $options['locale'],
+                'existing_config' => $options['existing-config'],
             ],
             'forms' => [
                 'install_settings_form' => [
@@ -105,6 +119,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
                     'op' => dt('Save and continue'),
                 ],
             ],
+            'config_install_path' => $options['config-dir'],
         ];
 
         // Merge in the additional options.
@@ -137,11 +152,24 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
     protected function determineProfile($profile, $options, $class_loader)
     {
         // --config-dir fails with Standard profile and any other one that carries content entities.
-        // Force to minimal install profile.
-        if ($options['config-dir']) {
+        // Force to minimal install profile only for drupal < 8.6.
+        if ($options['config-dir'] && Comparator::lessThan(self::getVersion(), '8.6')) {
             $this->logger()->info(dt("Using 'minimal' install profile since --config-dir option was provided."));
             $profile = 'minimal';
         }
+
+        // Try to get profile from existing config if not provided as an argument.
+        // @todo Arguably Drupal core [$boot->getKernel()->getInstallProfile()] could do this - https://github.com/drupal/drupal/blob/8.6.x/core/lib/Drupal/Core/DrupalKernel.php#L1606 reads from DB storage but not file storage.
+        if (empty($profile) && $options['existing-config']) {
+            FileCacheFactory::setConfiguration([FileCacheFactory::DISABLE_CACHE => true]);
+            $source_storage = new FileStorage(config_get_config_directory(CONFIG_SYNC_DIRECTORY));
+            if (!$source_storage->exists('core.extension')) {
+                throw new \Exception('Existing configuration directory not found or does not contain a core.extension.yml file.".');
+            }
+            $config = $source_storage->read('core.extension');
+            $profile = $config['profile'];
+        }
+
         if (empty($profile)) {
             $boot = Drush::bootstrap();
             $profile = $boot->getKernel()->getInstallProfile();
@@ -166,6 +194,8 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
                 // if it fails.
             }
         }
+
+        // Drupal currently requires that non-interactive installs provide a profile.
         if (empty($profile)) {
             $profile = 'standard';
         }
@@ -179,7 +209,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      */
     public function post($result, CommandData $commandData)
     {
-        if ($config = $commandData->input()->getOption('config-dir')) {
+        if ($config = $commandData->input()->getOption('config-dir') && Comparator::lessThan(self::getVersion(), '8.6')) {
             // Set the destination site UUID to match the source UUID, to bypass a core fail-safe.
             $source_storage = new FileStorage($config);
             $options = ['yes' => true];
@@ -215,17 +245,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         }
 
         if ($config = $commandData->input()->getOption('config-dir')) {
-            if (!file_exists($config)) {
-                throw new \Exception('The config source directory does not exist.');
-            }
-            if (!is_dir($config)) {
-                throw new \Exception('The config source is not a directory.');
-            }
-            // Skip config import with a warning if specified config dir is empty.
-            if (!$this->hasConfigFiles($config)) {
-                $this->logger()->warning(dt('Configuration import directory @config does not contain any configuration; will skip import.', ['@config' => $config]));
-                $commandData->input()->setOption('config-dir', '');
-            }
+            $this->validateConfigDir($commandData, $config);
         }
 
         try {
@@ -359,11 +379,22 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $sites_file = $root . '/sites/sites.php';
         if (file_exists($sites_file)) {
             include $sites_file;
+            /** @var array $sites */
             if (array_key_exists($uri, $sites)) {
                 return $sites[$uri];
             }
         }
+        // Fall back to default directory if it exists.
+        if (file_exists(Path::join($root, 'sites', 'default'))) {
+            return 'default';
+        }
         return false;
+    }
+
+    public static function getVersion()
+    {
+        $drupal_root = Drush::bootstrapManager()->getRoot();
+        return Drush::bootstrap()->getVersion($drupal_root);
     }
 
     /**
@@ -402,5 +433,27 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $_SERVER['SERVER_SOFTWARE'] = null;
         $_SERVER['HTTP_USER_AGENT'] = null;
         $_SERVER['SCRIPT_FILENAME'] = DRUPAL_ROOT . '/index.php';
+    }
+
+    /**
+     * Assure that a config directory exists and is populated.
+     *
+     * @param CommandData $commandData
+     * @param $directory
+     * @throws \Exception
+     */
+    protected function validateConfigDir(CommandData $commandData, $directory)
+    {
+        if (!file_exists($directory)) {
+            throw new \Exception(dt('The config source directory @config does not exist.', ['@config' => $directory]));
+        }
+        if (!is_dir($directory)) {
+            throw new \Exception(dt('The config source @config is not a directory.', ['@config' => $directory]));
+        }
+        // Skip config import with a warning if specified config dir is empty.
+        if (!$this->hasConfigFiles($directory)) {
+            $this->logger()->warning(dt('Configuration import directory @config does not contain any configuration; will skip import.', ['@config' => $directory]));
+            $commandData->input()->setOption('config-dir', '');
+        }
     }
 }

@@ -2,6 +2,7 @@
 namespace Drush\SiteAlias;
 
 use PHPUnit\Framework\TestCase;
+use Consolidation\SiteAlias\SiteAliasFileDiscovery;
 
 class LegacyAliasConverterTest extends TestCase
 {
