@@ -143,6 +143,22 @@
 
             <table class="table table-condensed">
                     <tr>
+                <td class="type" id="property_languageManager">
+                                        protected                                        
+                </td>
+                <td>$languageManager</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_configFactory">
+                                        protected                                        
+                </td>
+                <td>$configFactory</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
                 <td class="type" id="property_moduleHandler">
                                         protected                                        
                 </td>
@@ -169,7 +185,7 @@
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr> $state)
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Language\LanguageManagerInterface">LanguageManagerInterface</abbr> $languageManager, <abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr> $state)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -218,6 +234,28 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    <abbr title="Drupal\Core\Language\LanguageManagerInterface">LanguageManagerInterface</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getLanguageManager">getLanguageManager</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getConfigFactory">getConfigFactory</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr>
                 </div>
                 <div class="col-md-8 type">
@@ -258,6 +296,16 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                                             <p>Imports the available translation updates.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_import">import</a>($langcode, $file, $options = [&#039;type&#039; =&gt; self::OPT, &#039;override&#039; =&gt; self::OPT])
+        
+                                            <p>Imports to a gettext translation file.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
             </div>
 
 
@@ -266,9 +314,9 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L32">line 32</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L59">line 59</a></div>
         <code>                    
-    <strong>__construct</strong>(<abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr> $state)
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Language\LanguageManagerInterface">LanguageManagerInterface</abbr> $languageManager, <abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr> $state)
         </code>
     </h3>
     <div class="details">
@@ -279,6 +327,16 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\Core\Language\LanguageManagerInterface">LanguageManagerInterface</abbr></td>
+                <td>$languageManager</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr></td>
+                <td>$configFactory</td>
+                <td></td>
+            </tr>
                     <tr>
                 <td><abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr></td>
                 <td>$moduleHandler</td>
@@ -423,8 +481,64 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_getLanguageManager">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L30">line 30</a></div>
+        <code>            protected        <abbr title="Drupal\Core\Language\LanguageManagerInterface">LanguageManagerInterface</abbr>
+    <strong>getLanguageManager</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drupal\Core\Language\LanguageManagerInterface">LanguageManagerInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getConfigFactory">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L38">line 38</a></div>
+        <code>            protected        <abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr>
+    <strong>getConfigFactory</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_getModuleHandler">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L19">line 19</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L46">line 46</a></div>
         <code>                    <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr>
     <strong>getModuleHandler</strong>()
         </code>
@@ -452,7 +566,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_getState">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L27">line 27</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L54">line 54</a></div>
         <code>                    mixed
     <strong>getState</strong>()
         </code>
@@ -480,7 +594,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_check">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L45">line 45</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L74">line 74</a></div>
         <code>                    
     <strong>check</strong>()
         </code>
@@ -501,7 +615,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_update">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L77">line 77</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L106">line 106</a></div>
         <code>                    
     <strong>update</strong>($options = [&#039;langcodes&#039; =&gt; self::REQ])
         </code>
@@ -549,6 +663,56 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_import">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/LocaleCommands.php#L183">line 183</a></div>
+        <code>                    
+    <strong>import</strong>($langcode, $file, $options = [&#039;type&#039; =&gt; self::OPT, &#039;override&#039; =&gt; self::OPT])
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Imports to a gettext translation file.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$langcode</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$file</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" href="http://php.net/Exception">Exception</a></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
                     </div>
     </div>
 
