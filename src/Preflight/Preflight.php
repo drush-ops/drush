@@ -294,7 +294,7 @@ class Preflight
             // when preflightArgs->alias() returns an alias name. In all other
             // instances we will get an alias record, even if it is only a
             // placeholder 'self' with the root holding the cwd.
-            $aliasName = $preflightArgs->alias();
+            $aliasName = $this->preflightArgs->alias();
             throw new \Exception("The alias $aliasName could not be found.");
         }
 

@@ -250,6 +250,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
                 'router' => [$this, 'clearRouter'],
                 'css-js' => [$this, 'clearCssJs'],
                 'render' => [$this, 'clearRender'],
+                'plugin' => [$this, 'clearPlugin'],
             ];
         }
 
@@ -295,6 +296,11 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
     public static function clearRender()
     {
         Cache::invalidateTags(['rendered']);
+    }
+
+    public static function clearPlugin()
+    {
+        \Drupal::getContainer()->get('plugin.cache_clearer')->clearCachedDefinitions();
     }
 
     /**

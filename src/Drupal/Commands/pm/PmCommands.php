@@ -156,6 +156,7 @@ class PmCommands extends DrushCommands
     public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => self::REQ, 'core' => false, 'no-core' => false])
     {
         $rows = [];
+        // @todo Update this and other usages once Drupal 8.5 is unsupported by Drush https://www.drupal.org/node/2709919.
         $modules = \system_rebuild_module_data();
         $themes = $this->getThemeHandler()->rebuildThemeData();
         $both = array_merge($modules, $themes);

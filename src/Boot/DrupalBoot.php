@@ -228,7 +228,7 @@ abstract class DrupalBoot extends BaseBoot
                 $this->logger->warning(dt('The command \'!command\' is required for preflight but cannot be found. Please install it and retry.', ['!command' => $command]));
                 return false;
             }
-            if (!$sql->query('SELECT 1;')) {
+            if (!$sql->query('SELECT 1;', null, drush_bit_bucket())) {
                 $message = dt("Drush was not able to start (bootstrap) the Drupal database.\n");
                 $message .= dt("Hint: This may occur when Drush is trying to:\n");
                 $message .= dt(" * bootstrap a site that has not been installed or does not have a configured database. In this case you can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line. See `drush topic docs-aliases` for details.\n");
@@ -279,7 +279,7 @@ abstract class DrupalBoot extends BaseBoot
             foreach ((array)$required_tables as $required_table) {
                 $prefix_key = array_key_exists($required_table, $prefix) ? $required_table : 'default';
                 $table_name = $prefix[$prefix_key] . $required_table;
-                if (!$sql->alwaysQuery("SELECT 1 FROM $table_name LIMIT 1;")) {
+                if (!$sql->alwaysQuery("SELECT 1 FROM $table_name LIMIT 1;", null, drush_bit_bucket())) {
                     $this->logger->notice('Missing database table: '. $table_name);
                     return false;
                 }
