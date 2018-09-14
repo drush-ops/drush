@@ -47,10 +47,18 @@ class UpdateDBTest extends CommandUnishTestCase
     }
 
     /**
-     * Tests that updatedb command returns properly a failure.
+     * Tests that the updatedb command reports failed updates properly.
+     *
+     * @dataProvider failedUpdateProvider
      */
-    public function testFailedUpdate()
+    public function testFailedUpdate($last_successful_update, $expected_status_report, $expected_update_log_output)
     {
+        // This test relies on being able to catch fatal errors. Catching
+        // throwables has been introduced in PHP 7.0 and is not available in
+        // earlier versions.
+        if (version_compare(phpversion(), '7.0.0') < 0) {
+            $this->markTestSkipped('Catching fatal errors is supported in PHP 7.0 and higher.');
+        }
         $sites = $this->setUpDrupal(1, true);
         $options = [
             'yes' => null,
@@ -62,7 +70,7 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->drush('php-script', ['updatedb_script'], ['script-path' => __DIR__ . '/resources']);
 
         // Force re-run of woot_update_8101().
-        $this->drush('php:eval', array('drupal_set_installed_schema_version("woot", 8100)'), $options);
+        $this->drush('php:eval', array('drupal_set_installed_schema_version("woot", ' . $last_successful_update . ')'), $options);
 
         // Force re-run of the post-update woot_post_update_failing().
         $this->forcePostUpdate('woot_post_update_failing', $options);
@@ -70,21 +78,39 @@ class UpdateDBTest extends CommandUnishTestCase
         // Run updates.
         $this->drush('updatedb', [], $options, null, null, self::EXIT_ERROR);
 
-        $expected_output = <<<LOG
+        $this->assertOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_status_report)));
+        $this->assertErrorOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_update_log_output)));
+    }
+
+    /**
+     * Data provider for ::testFailedUpdate().
+     */
+    public function failedUpdateProvider()
+    {
+        return [
+            [
+                // The last successfully completed update. This means that the
+                // updates starting with woot_update_8101() will be performed in
+                // the test.
+                8100,
+                // The expected status report that will be output before the
+                // test is initiated.
+                <<<LOG
  -------- ----------- --------------- -----------------------
   Module   Update ID   Type            Description
  -------- ----------- --------------- -----------------------
   woot     8101        hook_update_n   Good update.
   woot     8102        hook_update_n   Failing update.
-  woot     8103        hook_update_n   Another good update.
+  woot     8103        hook_update_n   Failing update 2.
+  woot     8104        hook_update_n   Another good update.
   woot     failing     post-update     Failing post-update.
  -------- ----------- --------------- -----------------------
 
  // Do you wish to run the specified pending updates?: yes.
-LOG;
-        $this->assertOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_output)));
-
-        $expected_error_output = <<<LOG
+LOG
+                ,
+                // The expected output being logged during the update.
+                <<<LOG
  [notice] Update started: woot_update_8101
  [notice] This is the update message from woot_update_8101
  [ok] Update completed: woot_update_8101
@@ -93,9 +119,39 @@ LOG;
  [error] Update failed: woot_update_8102
  [error] Update aborted by: woot_update_8102
  [error] Finished performing updates.
-LOG;
+LOG
+                ,
+            ],
+            [
+                // The last successfully completed update. This means that the
+                // updates starting with woot_update_8103() will be performed in
+                // the test.
+                8102,
+                // The expected status report that will be output before the
+                // test is initiated.
+                <<<LOG
+ -------- ----------- --------------- -----------------------
+  Module   Update ID   Type            Description
+ -------- ----------- --------------- -----------------------
+  woot     8103        hook_update_n   Failing update 2.
+  woot     8104        hook_update_n   Another good update.
+  woot     failing     post-update     Failing post-update.
+ -------- ----------- --------------- -----------------------
 
-        $this->assertErrorOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_error_output)));
+ // Do you wish to run the specified pending updates?: yes.
+LOG
+                ,
+                // The expected output being logged during the update.
+                <<<LOG
+ [notice] Update started: woot_update_8103
+ [error] Call to undefined function non_existing_function()
+ [error] Update failed: woot_update_8103
+ [error] Update aborted by: woot_update_8103
+ [error] Finished performing updates.
+LOG
+                ,
+            ],
+        ];
     }
 
     /**
@@ -110,8 +166,8 @@ LOG;
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
         $this->drush('pm-enable', ['woot'], $options);
 
-        // Force re-run of woot_update_8103().
-        $this->drush('php:eval', array('drupal_set_installed_schema_version("woot", 8102)'), $options);
+        // Force re-run of woot_update_8104().
+        $this->drush('php:eval', array('drupal_set_installed_schema_version("woot", 8103)'), $options);
 
         // Force re-run of post-update hooks.
         $this->forcePostUpdate('woot_post_update_a', $options);
@@ -124,7 +180,7 @@ LOG;
  -------- ----------- --------------- -------------------------
   Module   Update ID    Type            Description
  -------- ----------- --------------- -------------------------
-  woot     8103         hook_update_n   Another good update.
+  woot     8104         hook_update_n   Another good update.
   woot     a            post-update     Successful post-update.
   woot     failing      post-update     Failing post-update.
  -------- ----------- --------------- -------------------------
@@ -134,9 +190,9 @@ LOG;
         $this->assertOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_output)));
 
         $expected_error_output = <<<LOG
- [notice] Update started: woot_update_8103
- [notice] This is the update message from woot_update_8103
- [ok] Update completed: woot_update_8103
+ [notice] Update started: woot_update_8104
+ [notice] This is the update message from woot_update_8104
+ [ok] Update completed: woot_update_8104
  [notice] Update started: woot_post_update_a
  [notice] This is the update message from woot_post_update_a
  [ok] Update completed: woot_post_update_a
@@ -217,8 +273,8 @@ YAML_FRAGMENT;
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
         $this->drush('pm-enable', ['woot'], $options);
 
-        // Force re-run of woot_update_8103() which is expected to be completed successfully.
-        $this->drush('php:eval', array('drupal_set_installed_schema_version("woot", 8102)'), $options);
+        // Force re-run of woot_update_8104() which is expected to be completed successfully.
+        $this->drush('php:eval', array('drupal_set_installed_schema_version("woot", 8103)'), $options);
 
         // Force re-run of post-update hooks which are expected to be completed successfully.
         $this->forcePostUpdate('woot_post_update_a', $options);
@@ -231,7 +287,7 @@ YAML_FRAGMENT;
  -------- ----------- --------------- -------------------------
   Module   Update ID    Type            Description
  -------- ----------- --------------- -------------------------
-  woot     8103         hook_update_n   Another good update.
+  woot     8104         hook_update_n   Another good update.
   woot     a            post-update     Successful post-update.
   woot     render       post-update     Renders some content.
  -------- ----------- --------------- -------------------------
@@ -241,9 +297,9 @@ LOG;
         $this->assertOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_output)));
 
         $expected_error_output = <<<LOG
- [notice] Update started: woot_update_8103
- [notice] This is the update message from woot_update_8103
- [ok] Update completed: woot_update_8103
+ [notice] Update started: woot_update_8104
+ [notice] This is the update message from woot_update_8104
+ [ok] Update completed: woot_update_8104
  [notice] Update started: woot_post_update_a
  [notice] This is the update message from woot_post_update_a
  [ok] Update completed: woot_post_update_a
