@@ -39,7 +39,7 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->assertNull($out);
 
         // Assure that a pending post-update is reported.
-        $this->pathPostUpdate = $this->getSut() . '/web/modules/unish/devel/devel.post_update.php';
+        $this->pathPostUpdate = Path::join($this->webroot(), 'modules/unish/devel/devel.post_update.php');
         copy(__DIR__ . '/resources/devel.post_update.php', $this->pathPostUpdate);
         $this->drush('updatedb:status', [], ['format' => 'json']);
         $out = $this->getOutputFromJSON('devel-post-null_op');
