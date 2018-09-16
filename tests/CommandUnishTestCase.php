@@ -94,6 +94,8 @@ abstract class CommandUnishTestCase extends UnishTestCase
     {
         // We do not care if Drush inserts a -t or not in the string. Depends on whether there is a tty.
         $output = preg_replace('# -t #', ' ', $output);
+        // We do not care about ssh settings.
+        $output = preg_replace('# -o PasswordAuthentication=no #', ' ', $output);
         // Remove double spaces from output to help protect test from false negatives if spacing changes subtlely
         $output = preg_replace('#  *#', ' ', $output);
         // Remove leading and trailing spaces.
