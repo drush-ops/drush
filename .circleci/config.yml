@@ -33,7 +33,7 @@ jobs:
     steps:
       - checkout
       - run: $HOME/drush/.circleci/setup.sh
-        run: composer remove "webflo/drupal-core-strict": "8.6.x-dev" --no-update,
+      - run: composer remove webflo/drupal-core-strict --no-update
       - run: composer require drupal/core:8.7.x-dev --no-update
       - run: composer install
       - run: composer functional
