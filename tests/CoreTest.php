@@ -98,7 +98,7 @@ class CoreCase extends CommandUnishTestCase
     public function testOptionsUri()
     {
         // Put a yml file in the drush folder.
-        $drush_config_file = Path::join($this->getSut(), 'drush', 'drush.yml');
+        $drush_config_file = Path::join($this->webrootSlashDrush(), 'drush.yml');
         $test_uri = 'http://test.uri';
         $options_with_uri = [
         'options' => [
@@ -119,9 +119,9 @@ class CoreCase extends CommandUnishTestCase
     public function testRecursiveConfigLoading()
     {
         // Put a yml file in the drush folder.
-        $drush_config_file = Path::join($this->getSut(), 'drush', 'drush.yml');
-        $a_drush_config_file = Path::join($this->getSut(), 'drush', 'a.drush.yml');
-        $b_drush_config_file = Path::join($this->getSut(), 'drush', 'b.drush.yml');
+        $drush_config_file = Path::join($this->webrootSlashDrush(), 'drush.yml');
+        $a_drush_config_file = Path::join($this->webrootSlashDrush(), 'a.drush.yml');
+        $b_drush_config_file = Path::join($this->webrootSlashDrush(), 'b.drush.yml');
         $test_uri = 'http://test.uri';
         // Set up multiple drush.yml files that include one another to test
         // potential infinite loop.

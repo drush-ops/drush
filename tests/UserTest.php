@@ -128,7 +128,7 @@ class UserCase extends CommandUnishTestCase
         $this->setEnv(['SHELL_INTERACTIVE' => $original]);
         $this->drush('pm-enable', ['text,unish_article']);
         // Create one unish_article owned by our example user.
-        $this->drush('php-script', ['create_unish_articles'], ['script-path' => '../vendor/drush/drush/tests/resources']);
+        $this->drush('php-script', ['create_unish_articles'], ['script-path' => Path::join(__DIR__, '/resources')]);
         // Verify that content entity exists.
         $code = "echo entity_load('unish_article', 1)->id()";
         $this->drush('php-eval', [$code]);

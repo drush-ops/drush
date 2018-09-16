@@ -2,6 +2,8 @@
 
 namespace Unish;
 
+use Webmozart\PathUtil\Path;
+
 /**
  *  We choose to test the backend system in two parts.
  *    - Origin. These tests assure that we are generate a proper ssh command
@@ -30,15 +32,16 @@ class BackendCase extends CommandUnishTestCase
                 ],
             ],
         ];
-        // n.b. writeUnishConfig will overwrite the alias files create by setupDrupal
-        $this->writeUnishConfig($unishAliases);
-        $this->drush('status', [], ['simulate' => null], '@unish.remote');
+
+        $this->writeSiteAliases($unishAliases, 'BackendCase');
+        $this->drush('status', [], ['simulate' => null], '@BackendCase.remote');
         $output = $this->getOutput();
 
-        // Clean up -- our other tests do not want extra configuration
-        unlink(self::getSandbox() . '/etc/drush/drush.yml');
+        // Clean up -- our other tests do not want extra aliases.
+        unlink(Path::join(self::webrootSlashDrush(), 'sites/BackendCase.site.yml'));
 
         $output = preg_replace('#  *#', ' ', $output);
+        $output = preg_replace('# --verbose #', ' ', $output);
         $output = preg_replace('# -t #', ' ', $output); // volkswagon away the -t, it's not relevant to what we're testing here
         $output = preg_replace('#' . self::getSandbox() . '#', '__SANDBOX__', $output);
         $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=no www-admin@server.isp.com '/usr/local/bin/drush --root=/path/to/drupal --uri=http://example.com --no-interaction status", $output);
@@ -68,6 +71,7 @@ class BackendCase extends CommandUnishTestCase
 
     public function testNonExistentCommand()
     {
+        // @todo
         $this->markTestSkipped('Cannot run remote commands that do not exist locally');
         // Assure that arguments and options are passed along to a command thats not recognized locally.
         $this->drush('non-existent-command', ['foo'], ['bar' => 'baz', 'simulate' => null], $site_specification);
