@@ -91,7 +91,11 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase
             if (file_exists($sandbox)) {
                 self::recursiveDelete($sandbox);
             }
-            foreach (['modules', 'themes', 'profiles', 'drush'] as $dir) {
+            $webrootSlashDrush = self::webrootSlashDrush();
+            if (file_exists($webrootSlashDrush)) {
+                self::recursiveDelete($webrootSlashDrush);
+            }
+            foreach (['modules', 'themes', 'profiles'] as $dir) {
                 $target = Path::join(self::webroot(), $dir, 'contrib');
                 if (file_exists($target)) {
                     self::recursiveDeleteDirContents($target);
@@ -624,6 +628,7 @@ EOT;
     public function writeSiteAliases($sites, $aliasGroup = 'sut')
     {
         $target = Path::join(self::webrootSlashDrush(), "sites/$aliasGroup.site.yml");
+        $this->mkdir(dirname($target));
         file_put_contents($target, Yaml::dump($sites, PHP_INT_MAX, 2));
     }
 
