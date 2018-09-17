@@ -34,12 +34,12 @@ class RsyncCase extends CommandUnishTestCase
 
         // Test simulated simple rsync with two local sites
         $this->drush('rsync', ['@example.stage', '@example.dev'], $options, null, null, self::EXIT_SUCCESS, '2>&1');
-        $expected = "Calling system(rsync -e 'ssh -o PasswordAuthentication=no' -akz /path/to/stage /path/to/dev);";
+        $expected = "Calling system(rsync -e 'ssh ' -akz /path/to/stage /path/to/dev);";
         $this->assertOutputEquals($expected);
 
         // Test simulated rsync with relative paths
         $this->drush('rsync', ['@example.dev:files', '@example.stage:files'], $options, null, null, self::EXIT_SUCCESS, '2>&1');
-        $expected = "Calling system(rsync -e 'ssh -o PasswordAuthentication=no' -akz /path/to/dev/files /path/to/stage/files);";
+        $expected = "Calling system(rsync -e 'ssh ' -akz /path/to/dev/files /path/to/stage/files);";
         $this->assertOutputEquals($expected);
 
         // Test simulated rsync on local machine with a remote target
@@ -53,7 +53,7 @@ class RsyncCase extends CommandUnishTestCase
         // the remote side, at which point they will be evaluated & any needed
         // injection will be done.
         $this->drush('rsync', ['@example.dev', '@example.stage'], $options, 'user@server/path/to/drupal#sitename', null, self::EXIT_SUCCESS, '2>&1');
-        $expected = "Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --root=/path/to/drupal --uri=sitename --no-interaction rsync '\''@example.dev'\'' '\''@example.stage'\'' 2>&1' 2>&1";
+        $expected = "Simulating backend invoke: ssh  user@server 'drush --root=/path/to/drupal --uri=sitename --no-interaction rsync '\''@example.dev'\'' '\''@example.stage'\'' 2>&1' 2>&1";
         $this->assertOutputEquals($expected, '# --alias-path=[^ ]*#');
     }
 
@@ -113,7 +113,7 @@ class RsyncCase extends CommandUnishTestCase
         $this->drush('core-rsync', ["$site:%files", "/tmp"], $options, null, null, self::EXIT_SUCCESS, '2>&1;');
         $output = $this->getOutput();
         $level = $this->logLevel();
-        $pattern = in_array($level, ['verbose', 'debug']) ? "Calling system(rsync -e 'ssh -o PasswordAuthentication=no' -akzv --stats --progress %s /tmp);" : "Calling system(rsync -e 'ssh -o PasswordAuthentication=no' -akz %s /tmp);";
+        $pattern = in_array($level, ['verbose', 'debug']) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz %s /tmp);";
         $expected = sprintf($pattern, $this->webroot(). "/sites/$uri/files/");
         $this->assertEquals($expected, $output);
     }
