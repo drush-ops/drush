@@ -336,6 +336,8 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     protected function loadCommandClasses($commandClasses)
     {
         foreach ($commandClasses as $file => $commandClass) {
+            // Hack: remap the namespace for sitewide commands from 'contrib' or 'custom' to 'Commands'.
+            $commandClass = str_replace(['\\Drush\\contrib\\', '\\Drush\\custom\\'], '\\Drush\\Commands\\', $commandClass);
             if (!class_exists($commandClass)) {
                 include $file;
             }

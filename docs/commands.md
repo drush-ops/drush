@@ -65,13 +65,15 @@ Commandfiles that don't ship inside Drupal modules are called 'global' commandfi
      - Filename: $PROJECT_ROOT/drush/Commands/ExampleCommands.php
      - Namespace: Drush\Commands
 1. Nested (e.g. Commandfile is part of a Composer package)
-    - Filename: $PROJECT_ROOT/drush/Commands/dev_modules/ExampleCommands.php
+    - Filename: $PROJECT_ROOT/drush/contrib/dev_modules/ExampleCommands.php
     - Namespace: Drush\Commands\dev_modules
+
+Installing commands as part of a Composer project requires that the project's type be `drupal-drush`, and that the `installer-paths` in the Drupal site's composer.json file contains `"drush/contrib/{$name}": ["type:drupal-drush"]`.
 
 ##### Tips
 1. The filename must be have a name like Commands/ExampleCommands.php
     1. The prefix `Example` can be whatever string you want.
     1. The file must end in `Commands.php`
-1. The directory above Commands must be one of: 
+1. The directory above `contrib` / `custom` must be one of: 
     1.  A Folder listed in the 'include' option. include may be provided via config or via CLI.
     1.  ../drush, /drush or /sites/all/drush. These paths are relative to Drupal root.
