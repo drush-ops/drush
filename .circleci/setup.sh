@@ -29,6 +29,8 @@ echo 'memory_limit = -1' >> $HOME/php.ini
 echo 'sendmail_path = /bin/true' >> $HOME/php.ini
 echo 'date.timezone = "UTC"' >> $HOME/php.ini
 echo 'opcache.enable_cli = 0' >> $HOME/php.ini
+echo 'variables_order = GPCS' >> $HOME/php.ini
+
 
 # Copy our php.ini configuration to the active php.ini file
 # We can't use `php -r 'print php_ini_loaded_file();` when there is no php.ini
