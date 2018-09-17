@@ -2,6 +2,8 @@
 
 namespace Unish;
 
+use Webmozart\PathUtil\Path;
+
 /**
  *  Test to see if the `drush init` command does the
  *  setup that it is supposed to do.
@@ -21,7 +23,7 @@ class InitCommandCase extends CommandUnishTestCase
         $this->assertContains("Updated bash configuration file", $logOutput);
 
         // Next we test to see if there is evidence that those operations worked.
-        $home = getenv("HOME");
+        $home = Path::join($this->getSandbox(), 'home');
         $this->assertFileExists("$home/.drush/drush.yml");
         $this->assertFileExists("$home/.drush/drush.bashrc");
         $this->assertFileExists("$home/.bashrc");
