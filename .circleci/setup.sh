@@ -21,8 +21,6 @@ sudo apt-get install mysql-client
 
 # Configure bash environment variables
 echo 'export PATH=~/.composer/vendor/bin:~/drush:$PATH' >> $BASH_ENV
-echo 'export HOME=/tmp/drush-sandbox/home' >> $BASH_ENV
-mkdir -p /tmp/drush-sandbox/home
 
 # Configure php.ini
 echo 'mbstring.http_input = pass' > $HOME/php.ini
