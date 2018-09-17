@@ -21,6 +21,7 @@ class InitCommandCase extends CommandUnishTestCase
         // First test to ensure that the command claimed to have made the expected progress
         $this->assertContains("Copied Drush bash customizations", $logOutput);
         $this->assertContains("Updated bash configuration file", $logOutput);
+        $this->log($logOutput);
 
         // Next we test to see if there is evidence that those operations worked.
         $home = Path::join($this->getSandbox(), 'home');

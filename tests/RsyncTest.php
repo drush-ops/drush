@@ -113,7 +113,7 @@ class RsyncCase extends CommandUnishTestCase
         $this->drush('core-rsync', ["$site:%files", "/tmp"], $options, null, null, self::EXIT_SUCCESS, '2>&1;');
         $output = $this->getOutput();
         $level = $this->logLevel();
-        $pattern = in_array($level, ['verbose', 'debug']) ? "Calling system(rsync -e 'ssh -o PasswordAuthentication=no' -akzv --stats --progress %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz %s /tmp);";
+        $pattern = in_array($level, ['verbose', 'debug']) ? "Calling system(rsync -e 'ssh -o PasswordAuthentication=no' -akzv --stats --progress %s /tmp);" : "Calling system(rsync -e 'ssh -o PasswordAuthentication=no' -akz %s /tmp);";
         $expected = sprintf($pattern, $this->webroot(). "/sites/$uri/files/");
         $this->assertEquals($expected, $output);
     }
