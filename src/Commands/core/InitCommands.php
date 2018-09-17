@@ -33,6 +33,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
     public function initializeDrush($options = ['edit' => false, 'add-path' => ''])
     {
         $home = Drush::config()->home();
+        $this->logger()->notice('initcommand home is ' . $home);
         $drush_config_dir = $home . "/.drush";
         $drush_config_file = $drush_config_dir . "/drush.yml";
         $drush_bashrc = $drush_config_dir . "/drush.bashrc";

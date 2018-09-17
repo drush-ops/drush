@@ -160,6 +160,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase
 
         self::setEnv(['CACHE_PREFIX' => $unish_cache]);
         $home = $unish_sandbox . '/home';
+        $this->log('home is ' . $home);
         self::setEnv(['HOME' => $home]);
         self::setEnv(['HOMEDRIVE' => $home]);
         $composer_home = $unish_cache . '/.composer';
