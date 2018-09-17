@@ -94,7 +94,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
     {
         // We do not care if Drush inserts a -t or not in the string. Depends on whether there is a tty.
         $output = preg_replace('# -t #', ' ', $output);
-        // Remove double spaces from output to help protect test from false negatives if spacing changes subtlely
+        // Remove double spaces from output to help protect test from false negatives if spacing changes subtly
         $output = preg_replace('#  *#', ' ', $output);
         // Remove leading and trailing spaces.
         $output = preg_replace('#^ *#m', '', $output);
@@ -329,7 +329,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
         // where options after the command are passed along to external commands.
         $result = $this->getTestResultObject();
         if ($result->getCollectCodeCoverageInformation()) {
-            $coverage_file = tempnam($this->getTmp(), 'drush_coverage');
+            $coverage_file = tempnam($this->getSandbox(), 'drush_coverage');
             if ($coverage_file) {
                 $cmd[] = "--drush-coverage=" . $coverage_file;
             }

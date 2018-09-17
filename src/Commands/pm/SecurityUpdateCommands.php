@@ -133,18 +133,17 @@ class SecurityUpdateCommands extends DrushCommands
      * @param array $security_advisories_composer_json
      *   The composer.json array from drupal-security-advisories.
      */
-    protected function registerAllSecurityUpdates(
-        $composer_lock_data,
-        $security_advisories_composer_json
-    ) {
-        foreach ($composer_lock_data['packages'] as $key => $package) {
+    protected function registerAllSecurityUpdates($composer_lock_data, $security_advisories_composer_json)
+    {
+        $both = $composer_lock_data['packages-dev'] + $composer_lock_data['packages'];
+        foreach ($both as $package) {
             $name = $package['name'];
             $this->registerPackageSecurityUpdates($security_advisories_composer_json, $name, $package);
         }
     }
 
     /**
-     * Determines if update is avaiable based on a conflict constraint.
+     * Determines if update is available based on a conflict constraint.
      *
      * @param string $conflict_constraint
      *   The constraint for the conflicting, insecure package version.

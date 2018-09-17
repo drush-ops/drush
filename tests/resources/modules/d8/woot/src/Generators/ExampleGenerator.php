@@ -34,7 +34,7 @@ class ExampleGenerator extends BaseGenerator
         $vars['class'] = Utils::camelize('Example_' . $vars['machine_name'] . '_Commands');
 
         $this->addFile()
-            ->path('src/Commands/{class}.php')
+            ->path('Commands/{class}.php')
             ->template('example-generator.twig');
     }
 }

@@ -23,10 +23,16 @@
   "bin": [
     "drush"
   ],
+  "repositories": {
+    "drupal_org": {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
+    }
+  },
   "require": {
     "php": ">=5.6.0",
     "ext-dom": "*",
-    "chi-teck/drupal-code-generator": "^1.24.0",
+    "chi-teck/drupal-code-generator": "^1.26.1",
     "composer/semver": "^1.4",
     "consolidation/annotated-command": "^2.8.1",
     "consolidation/config": "^1.1.0",
@@ -51,7 +57,13 @@
     "lox/xhprof": "dev-master",
     "g1a/composer-test-scenarios": "^2.2.0",
     "phpunit/phpunit": "^4.8.36|^5.5.4",
-    "squizlabs/php_codesniffer": "^2.7"
+    "squizlabs/php_codesniffer": "^2.7",
+    "composer/installers": "^1.2",
+    "cweagans/composer-patches": "~1.0",
+    "webflo/drupal-core-strict": "8.6.x-dev",
+    "drupal/empty_theme": "1.0",
+    "drupal/devel": "^1.0@RC",
+    "drupal/alinks": "1.0.0"
   },
   "autoload": {
     "psr-4": {
@@ -69,6 +81,7 @@
     "optimize-autoloader": true,
     "preferred-install": "dist",
     "sort-packages": true,
+    "process-timeout": 2400,
     "platform": {
       "php": "5.6"
     }
@@ -91,13 +104,28 @@
     "sami-install": "mkdir -p $HOME/bin && curl --output $HOME/bin/sami.phar http://get.sensiolabs.org/sami.phar && chmod +x $HOME/bin/sami.phar",
     "scenario": "scenarios/install",
     "unit": "phpunit --colors=always",
-    "functional": "./unish.phpunit.php",
+    "functional": "phpunit --colors=always --configuration tests",
     "post-update-cmd": [
         "create-scenario isolation --autoload-dir isolation --autoload-dir internal-copy --keep '\\(psr/log\\|consolidation/config\\|site-alias\\|var-dumper\\|symfony/finder\\|drupal-finder\\|path-util\\|sebastian/version\\|xhprof\\)' 'phpunit/phpunit:^5.5.4'",
         "create-scenario isolation-phpunit4 --base isolation --autoload-dir isolation --autoload-dir internal-copy 'phpunit/phpunit:^4.8.36'"
     ]
   },
   "extra": {
+    "installer-paths": {
+      "sut/core": ["type:drupal-core"],
+      "sut/libraries/{$name}": ["type:drupal-library"],
+      "sut/modules/unish/{$name}": ["drupal/devel"],
+      "sut/themes/unish/{$name}": ["drupal/empty_theme"],
+      "sut/modules/contrib/{$name}": ["type:drupal-module"],
+      "sut/profiles/contrib/{$name}": ["type:drupal-profile"],
+      "sut/themes/contrib/{$name}": ["type:drupal-theme"],
+      "sut/drush/contrib/{$name}": ["type:drupal-drush"]
+    },
+    "patches": {
+      "drupal/core": {
+        "Allow updating modules with new service dependencies https://www.drupal.org/project/drupal/issues/2863986": "https://www.drupal.org/files/issues/2863986-2-49.patch"
+      }
+    },
     "branch-alias": {
         "dev-master": "9.x-dev"
     }

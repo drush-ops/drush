@@ -42,7 +42,7 @@ class AnnotatedCommandCase extends CommandUnishTestCase
         $this->drush('generate', ['foo-example'], $options);
         $this->setEnv(['SHELL_INTERACTIVE' => $original]);
 
-        $target = Path::join($this->getSandbox(), 'foo.php');
+        $target = Path::join($options['directory'], 'foo.php');
         $actual = trim(file_get_contents($target));
         $this->assertEquals('Foo.', $actual);
         unlink($target);
@@ -66,15 +66,16 @@ class AnnotatedCommandCase extends CommandUnishTestCase
             'name' => 'foo',
             'machine_name' => 'bar',
         ]);
-        $optionsExample['directory'] = self::getSandbox();
+        $optionsExample['directory'] = self::webrootSlashDrush();
         $optionsExample['yes'] = null;
         $original = getenv('SHELL_INTERACTIVE');
         $this->setEnv(['SHELL_INTERACTIVE' => 1]);
         $this->drush('generate', ['woot-example'], $optionsExample);
         $this->setEnv(['SHELL_INTERACTIVE' => $original]);
-        $target = Path::join(self::getSandbox(), '/src/Commands/ExampleBarCommands.php');
+        $target = Path::join($optionsExample['directory'], 'Commands/ExampleBarCommands.php');
         $actual = trim(file_get_contents($target));
         $this->assertEquals('ExampleBarCommands says Woot mightily.', $actual);
+        unlink($target);
 
         // drush woot
         $this->drush('woot');

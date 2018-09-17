@@ -6,7 +6,6 @@ defaults: &defaults
     TERM: dumb
     UNISH_NO_TIMEOUTS: y
     UNISH_DB_URL: mysql://root:@127.0.0.1
-    UNISH_TMP: /tmp
     PHPUNIT_ARGS: ""
 
 version: 2
@@ -21,8 +20,8 @@ jobs:
     steps:
       - checkout
       - run: $HOME/drush/.circleci/setup.sh
-      - run: unish.sut.php
-      - run: unish.phpunit.php $PHPUNIT_ARGS
+      - run: composer install
+      - run: composer functional
 
   build_highest:
     <<: *defaults
@@ -30,13 +29,14 @@ jobs:
       - image: circleci/php:7.1-apache-node
         environment:
           - MYSQL_HOST=127.0.0.1
-          - COMPOSER=composer-highest.json
       - image: circleci/mysql:5.7.18
     steps:
       - checkout
       - run: $HOME/drush/.circleci/setup.sh
-      - run: unish.sut.php
-      - run: unish.phpunit.php $PHPUNIT_ARGS
+      - run: composer remove --dev webflo/drupal-core-strict --no-update
+      - run: composer require --dev drupal/core:8.7.x-dev --no-update
+      - run: composer install
+      - run: composer functional
 
   build_56:
     <<: *defaults
@@ -48,8 +48,8 @@ jobs:
     steps:
       - checkout
       - run: $HOME/drush/.circleci/setup.sh
-      - run: unish.sut.php
-      - run: unish.phpunit.php $PHPUNIT_ARGS
+      - run: composer install
+      - run: composer functional
 
 workflows:
   version: 2
