@@ -47,12 +47,12 @@ Altering Drush Command Info
 
 Drush command info (annotations) can be altered from other modules. This is done by creating and registering 'command info alterers'. Alterers are class services that are able to intercept and manipulate an existing command annotation.
 
-In order to alter an existing command info, follow the next steps:
+In order to alter an existing command info, follow the steps below:
 
 1. In the module that wants to alter a command info, add a service class that implements the `\Consolidation\AnnotatedCommand\CommandInfoAltererInterface`.
 1. In the module `drush.services.yml` declare a service pointing to this class and tag the service with the `drush.command_info_alterer` tag.
-1. In the class implement the alteration logic the `alterCommandInfo()` method.
-1. Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This would allow the easy debugging. Also it's a good practice to inject the the logger in the class constructor.
+1. In that class, implement the alteration logic the `alterCommandInfo()` method.
+1. Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also it's a good practice to inject the the logger in the class constructor.
 
 For an example, see the alterer class provided by the testing 'woot' module: `tests/resources/modules/d8/woot/src/WootCommandInfoAlterer.php`.
 
@@ -65,15 +65,16 @@ Commandfiles that don't ship inside Drupal modules are called 'global' commandfi
      - Filename: $PROJECT_ROOT/drush/Commands/ExampleCommands.php
      - Namespace: Drush\Commands
 1. Nested (e.g. Commandfile is part of a Composer package)
-    - Filename: $PROJECT_ROOT/drush/contrib/dev_modules/ExampleCommands.php
+    - Filename: $PROJECT_ROOT/drush/Commands/contrib/dev_modules/ExampleCommands.php
     - Namespace: Drush\Commands\dev_modules
 
-Installing commands as part of a Composer project requires that the project's type be `drupal-drush`, and that the `installer-paths` in the Drupal site's composer.json file contains `"drush/contrib/{$name}": ["type:drupal-drush"]`.
+Installing commands as part of a Composer project requires that the project's type be `drupal-drush`, and that the `installer-paths` in the Drupal site's composer.json file contains `"drush/Commands/contrib/{$name}": ["type:drupal-drush"]`.
 
 ##### Tips
 1. The filename must be have a name like Commands/ExampleCommands.php
     1. The prefix `Example` can be whatever string you want.
     1. The file must end in `Commands.php`
-1. The directory above `contrib` / `custom` must be one of: 
+1. The directory `contrib` may also be `custom`, or may be omitted. No other name is supported, though.
+1. The directory above `Commands` must be one of: 
     1.  A Folder listed in the 'include' option. include may be provided via config or via CLI.
     1.  ../drush, /drush or /sites/all/drush. These paths are relative to Drupal root.

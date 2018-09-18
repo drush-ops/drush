@@ -316,6 +316,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
 
         $discovery = $this->commandDiscovery();
         $commandClasses = $discovery->discover($commandfileSearchpath, '\Drush');
+
         $this->loadCommandClasses($commandClasses);
 
         // Uncomment the lines below to use Console's built in help and list commands.
@@ -336,8 +337,6 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     protected function loadCommandClasses($commandClasses)
     {
         foreach ($commandClasses as $file => $commandClass) {
-            // Hack: remap the namespace for sitewide commands from 'contrib' or 'custom' to 'Commands'.
-            $commandClass = str_replace(['\\Drush\\contrib\\', '\\Drush\\custom\\'], '\\Drush\\Commands\\', $commandClass);
             if (!class_exists($commandClass)) {
                 include $file;
             }
@@ -352,6 +351,8 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $discovery = new CommandFileDiscovery();
         $discovery
             ->setIncludeFilesAtBase(true)
+            ->ignoreNamespacePart('Commands', 'contrib')
+            ->ignoreNamespacePart('Commands', 'custom')
             ->setSearchLocations(['Commands', 'Hooks', 'Generators'])
             ->setSearchPattern('#.*(Command|Hook|Generator)s?.php$#');
         return $discovery;
