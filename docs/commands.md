@@ -59,7 +59,7 @@ For an example, see the alterer class provided by the testing 'woot' module: `te
 Global Drush Commands
 ==============================
 
-Commandfiles that don't ship inside Drupal modules are called 'global' commandfiles. See the [examples/Commands](/examples/Commands) folder for examples. In general, it's better to use modules to carry your Drush commands. If you still prefer using a global commandfiles, here are two examples of valid commandfile names and namespaces:
+Commandfiles that don't ship inside Drupal modules are called 'global' commandfiles. See the [examples/Commands](https://github.com/drush-ops/drush/tree/master/examples/Commands) folder for examples. In general, it's better to use modules to carry your Drush commands. If you still prefer using a global commandfiles, here are two examples of valid commandfile names and namespaces:
 
 1. Simple
      - Filename: $PROJECT_ROOT/drush/Commands/ExampleCommands.php
