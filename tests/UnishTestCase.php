@@ -107,6 +107,9 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase
                     self::recursiveDelete($target);
                 }
             }
+            // Bring back any committed assets removed above.
+            $webroot = self::webroot();
+            exec("git -C $webroot checkout -- .");
         }
     }
 

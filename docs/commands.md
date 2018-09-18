@@ -56,19 +56,38 @@ In order to alter an existing command info, follow the steps below:
 
 For an example, see the alterer class provided by the testing 'woot' module: `tests/resources/modules/d8/woot/src/WootCommandInfoAlterer.php`.
 
-Global Drush Commands
+Site-Wide Drush Commands
 ==============================
 
-Commandfiles that don't ship inside Drupal modules are called 'global' commandfiles. See the [examples/Commands](https://github.com/drush-ops/drush/tree/master/examples/Commands) folder for examples. In general, it's better to use modules to carry your Drush commands. If you still prefer using a global commandfiles, here are two examples of valid commandfile names and namespaces:
+Commandfiles that are added directly to a Drupal site that do not ship inside Drupal modules are called 'site-wide' commandfiles. See the [examples/Commands](/examples/Commands) folder for examples. In general, it's better to use modules to carry your Drush commands. If you still prefer using site-wide commandfiles, here are some examples of valid commandfile names and namespaces:
 
 1. Simple
      - Filename: $PROJECT_ROOT/drush/Commands/ExampleCommands.php
      - Namespace: Drush\Commands
-1. Nested (e.g. Commandfile is part of a Composer package)
+1. Nested in a subdirectory committed to the site's repository
+     - Filename: $PROJECT_ROOT/drush/Commands/example/ExampleCommands.php
+     - Namespace: Drush\Commands\example
+1. Nested in a subdirectory installed via a Composer package
     - Filename: $PROJECT_ROOT/drush/Commands/contrib/dev_modules/ExampleCommands.php
     - Namespace: Drush\Commands\dev_modules
 
-Installing commands as part of a Composer project requires that the project's type be `drupal-drush`, and that the `installer-paths` in the Drupal site's composer.json file contains `"drush/Commands/contrib/{$name}": ["type:drupal-drush"]`.
+Installing commands as part of a Composer project requires that the project's type be `drupal-drush`, and that the `installer-paths` in the Drupal site's composer.json file contains `"drush/Commands/contrib/{$name}": ["type:drupal-drush"]`. It is also possible to commit projects with a similar layout using a directory named `custom` in place of `contrib`; if this is done, then the directory `custom` will not be considered to be part of the commandfile's namespace.
+
+If a site-wide commandfile is added via a Composer package, then it may declare any dependencies that it may need in its composer.json file. Site-wide commandfiles that are committed directly to a site's repository only have access to the dependencies already available in the site.
+
+Global Drush Commands
+==============================
+
+Commandfiles that are not part of any Drupal site are called 'global' commandfiles. Global commandfiles are not supported by default; in order to enable them, you must configure your `drush.yml` configuration file to add an `include` search location.
+
+For example:
+
+drush:
+  paths:
+    include:
+      - '${env.home}/.drush/commands'
+      
+With this configuration in place, global commands may be placed as described in the Site-Wide Drush Commands section above. Global commandfiles may not declare any dependencies of their own; they may only use those dependencies already made available by Drush.
 
 ##### Tips
 1. The filename must be have a name like Commands/ExampleCommands.php
@@ -76,5 +95,5 @@ Installing commands as part of a Composer project requires that the project's ty
     1. The file must end in `Commands.php`
 1. The directory `contrib` may also be `custom`, or may be omitted. No other name is supported, though.
 1. The directory above `Commands` must be one of: 
-    1.  A Folder listed in the 'include' option. include may be provided via config or via CLI.
+    1.  A Folder listed in the 'include' option. Include may be provided via [config](#global-drush-commands) or via CLI.
     1.  ../drush, /drush or /sites/all/drush. These paths are relative to Drupal root.

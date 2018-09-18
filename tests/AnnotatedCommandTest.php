@@ -48,9 +48,27 @@ class AnnotatedCommandCase extends CommandUnishTestCase
         unlink($target);
     }
 
+    public function siteWideCommands()
+    {
+        $options = [
+            'yes' => null,
+        ];
+
+        $this->drush('sut:simple', [], $options);
+        $output = $this->getErrorOutput();
+        $this->assertContains("This is an example site-wide command committed to the repository in the SUT inside of the 'drush/Commands' directory.", $output);
+
+        $this->drush('sut:nested', [], $options);
+        $output = $this->getErrorOutput();
+        $this->assertContains("This is an example site-wide command committed to the repository in the SUT nested inside a custom/example-site-wide-command directory.", $output);
+    }
+
     public function testExecute()
     {
         $this->setUpDrupal(1, true);
+
+        // Test the site-wide commands first
+        $this->siteWideCommands();
 
         // Copy the 'woot' module over to the Drupal site we just set up.
         $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
