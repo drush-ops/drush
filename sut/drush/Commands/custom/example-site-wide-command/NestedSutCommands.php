@@ -1,5 +1,5 @@
 <?php
-namespace Drush\Commands;
+namespace Drush\Commands\example_site_wide_command;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
@@ -18,15 +18,15 @@ use Drush\Utils\StringUtils;
  * Site-wide commands for the System-Under-Test site
  */
 
-class TopLevelCommands extends DrushCommands
+class NestedSutCommands extends DrushCommands
 {
     /**
      * Show a fabulous picture.
      *
-     * @command sut:top
+     * @command sut:nested
      */
     public function example()
     {
-        $this->logger()->notice(dt("This is an example site-wide command committed to the repository in the SUT on the top level of the 'drush/Commands' directory."));
+        $this->logger()->notice(dt("This is an example site-wide command committed to the repository in the SUT nested inside a custom/example-site-wide-command directory."));
     }
 }
