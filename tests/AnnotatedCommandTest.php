@@ -57,6 +57,10 @@ class AnnotatedCommandCase extends CommandUnishTestCase
         $this->drush('sut:nested');
         $output = $this->getErrorOutput();
         $this->assertContains("This is an example site-wide command committed to the repository in the SUT nested inside a custom/example-site-wide-command directory.", $output);
+
+        $this->drush('sut:nested-src');
+        $output = $this->getErrorOutput();
+        $this->assertContains("This is an example site-wide command committed to the repository in the SUT nested inside a custom/example-site-wide-command/src directory.", $output);
     }
 
     public function testExecute()
