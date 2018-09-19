@@ -5,7 +5,6 @@ use Consolidation\Config\Loader\ConfigLoaderInterface;
 use Drush\Config\Loader\YamlConfigLoader;
 use Consolidation\Config\Loader\ConfigProcessor;
 use Consolidation\Config\Util\EnvConfig;
-use Symfony\Component\Finder\Finder;
 
 /**
  * Locate Drush configuration files and load them into the configuration
@@ -422,7 +421,7 @@ class ConfigLocator
     {
         $builtin = $this->getBuiltinCommandFilePaths();
         $included = $this->getIncludedCommandFilePaths($commandPaths);
-        $site = $this->getSiteCommandFilePaths(["$root/drush", dirname($root) . '/drush']);
+        $site = $this->getSiteCommandFilePaths($root);
 
         return array_merge(
             $builtin,
@@ -462,29 +461,11 @@ class ConfigLocator
      * 'dirname($root)/drush' directory that contains a composer.json
      * file or a 'Commands' or 'src/Commands' directory.
      */
-    protected function getSiteCommandFilePaths($directories)
+    protected function getSiteCommandFilePaths($root)
     {
-        $result = [];
+        $directories = ["$root/drush", dirname($root) . '/drush', "$root/sites/all/drush"];
 
-        $directories = array_filter($directories, 'is_dir');
-
-        if (empty($directories)) {
-            return $result;
-        }
-
-        // Find projects
-        $finder = new Finder();
-        $finder->directories()
-            ->ignoreUnreadableDirs()
-            ->path('#^src/Commands$|^Commands$#')
-            ->in($directories)
-            ->depth('<= 3');
-
-        foreach ($finder as $file) {
-            $result[] = dirname($file->getRealPath());
-        }
-
-        return $result;
+        return array_filter($directories, 'is_dir');
     }
 
     /**

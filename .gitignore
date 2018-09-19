@@ -11,6 +11,7 @@ api
 .idea/
 # https://github.com/drush-ops/drush/issues/2688
 composer.lock
-/sut/
+sut/*
+!sut/drush
 /sandbox/
 .env
