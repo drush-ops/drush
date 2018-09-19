@@ -5,7 +5,6 @@ use Consolidation\Config\Loader\ConfigLoaderInterface;
 use Drush\Config\Loader\YamlConfigLoader;
 use Consolidation\Config\Loader\ConfigProcessor;
 use Consolidation\Config\Util\EnvConfig;
-use Symfony\Component\Finder\Finder;
 
 /**
  * Locate Drush configuration files and load them into the configuration
@@ -464,7 +463,7 @@ class ConfigLocator
      */
     protected function getSiteCommandFilePaths($root)
     {
-        $directories = ["$root/drush", dirname($root) . '/drush'];
+        $directories = ["$root/drush", dirname($root) . '/drush', "$root/sites/all/drush"];
 
         return array_filter($directories, 'is_dir');
     }

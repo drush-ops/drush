@@ -50,15 +50,11 @@ class AnnotatedCommandCase extends CommandUnishTestCase
 
     public function siteWideCommands()
     {
-        $options = [
-            'yes' => null,
-        ];
-
-        $this->drush('sut:simple', [], $options);
+        $this->drush('sut:simple');
         $output = $this->getErrorOutput();
         $this->assertContains("This is an example site-wide command committed to the repository in the SUT inside of the 'drush/Commands' directory.", $output);
 
-        $this->drush('sut:nested', [], $options);
+        $this->drush('sut:nested');
         $output = $this->getErrorOutput();
         $this->assertContains("This is an example site-wide command committed to the repository in the SUT nested inside a custom/example-site-wide-command directory.", $output);
     }

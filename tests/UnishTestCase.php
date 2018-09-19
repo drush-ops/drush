@@ -93,7 +93,7 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase
             }
             $webrootSlashDrush = self::webrootSlashDrush();
             if (file_exists($webrootSlashDrush)) {
-                self::recursiveDelete($webrootSlashDrush);
+                self::recursiveDelete($webrootSlashDrush, true, false, ['Commands']);
             }
             foreach (['modules', 'themes', 'profiles'] as $dir) {
                 $target = Path::join(self::webroot(), $dir, 'contrib');
@@ -107,9 +107,6 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase
                     self::recursiveDelete($target);
                 }
             }
-            // Bring back any committed assets removed above.
-            $webroot = self::webroot();
-            exec("git -C $webroot checkout -- .");
         }
     }
 
@@ -400,13 +397,15 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase
      * @param bool $follow_symlinks
      *   Whether or not to delete symlinked files. Defaults to FALSE--simply
      *   unlinking symbolic links.
+     * @param string[] $exclude
+     *   Top-level items to retain
      *
      * @return bool
      *   FALSE on failure, TRUE if everything was deleted.
      *
      * @see drush_delete_dir()
      */
-    public static function recursiveDelete($dir, $force = true, $follow_symlinks = false)
+    public static function recursiveDelete($dir, $force = true, $follow_symlinks = false, $exclude = [])
     {
         // Do not delete symlinked files, only unlink symbolic links
         if (is_link($dir) && !$follow_symlinks) {
@@ -423,8 +422,12 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase
             }
             return unlink($dir);
         }
-        if (self::recursiveDeleteDirContents($dir, $force) === false) {
+        if (self::recursiveDeleteDirContents($dir, $force, $exclude) === false) {
             return false;
+        }
+        // Don't delete the directory itself if we are retaining some of its contents
+        if (!empty($exclude)) {
+            return true;
         }
         if ($force) {
             // Force deletion of items with readonly flag.
@@ -443,13 +446,15 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase
      * @param bool $force
      *   Whether or not to try everything possible to delete the contents, even if
      *   they're read-only. Defaults to FALSE.
+     * @param string[] $exclude
+     *   Top-level items to retain
      *
      * @return bool
      *   FALSE on failure, TRUE if everything was deleted.
      *
      * @see drush_delete_dir_contents()
      */
-    public static function recursiveDeleteDirContents($dir, $force = false)
+    public static function recursiveDeleteDirContents($dir, $force = false, $exclude = [])
     {
         $scandir = @scandir($dir);
         if (!is_array($scandir)) {
@@ -458,6 +463,9 @@ abstract class UnishTestCase extends \PHPUnit_Framework_TestCase
 
         foreach ($scandir as $item) {
             if ($item == '.' || $item == '..') {
+                continue;
+            }
+            if (in_array($item, $exclude)) {
                 continue;
             }
             if ($force) {
