@@ -1,0 +1,48 @@
+version: "3.1"
+
+services:
+  # More info at https://github.com/wodby/mariadb
+  mariadb:
+    image: wodby/mariadb:${MARIADB_TAG-10.1}
+    container_name: ${PROJECT_NAME-unish}_mariadb
+    stop_grace_period: 30s
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - mariadb-datavolume:/var/lib/mysql
+
+  # More info at https://github.com/wodby/php
+  # We don't want their drupal-php image as that ships with a Drush inside.
+  php:
+    image: wodby/php:${PHP_TAG-7.2}
+    container_name: ${PROJECT_NAME-unish}_php
+    environment:
+      PHP_SENDMAIL_PATH: /dev/null
+      UNISH_DB_URL: ${UNISH_DB_URL-mysql://root:password@mariadb}
+      UNISH_NO_TIMEOUTS: y
+      COLUMNS: ${COLUMNS-80} # Set 80 columns for docker exec -it.
+    ## Read instructions at https://wodby.com/stacks/drupal/docs/local/xdebug/
+      PHP_XDEBUG:
+      PHP_XDEBUG_DEFAULT_ENABLE:
+      PHP_IDE_CONFIG:
+      PHP_XDEBUG_REMOTE_HOST:
+    volumes:
+      - ./:/var/www/html:${VOLUME_FLAGS-cached}
+
+  # More info at https://github.com/wodby/postgres
+  postgres:
+    image: wodby/postgres:${POSTGRES_TAG-10.5}
+    container_name: unish_postgres
+    stop_grace_period: 30s
+    environment:
+      POSTGRES_PASSWORD: unish
+      POSTGRES_DB: unish_dev
+      POSTGRES_USER: unish
+    volumes:
+      - postgres-datavolume:/var/lib/postgresql/data
+
+#data volumes https://docs.docker.com/storage/volumes/
+volumes:
+  mariadb-datavolume:
+  postgres-datavolume:
+
