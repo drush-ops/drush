@@ -135,6 +135,12 @@ class ConfigExportCommands extends DrushCommands
             }
             // Only delete .yml files, and not .htaccess or .git.
             $target_storage->deleteAll();
+
+            // Also delete collections.
+            foreach ($target_storage->getAllCollectionNames() as $collection_name) {
+                $target_collection = $target_storage->createCollection($collection_name);
+                $target_collection->deleteAll();
+            }
         }
 
         // Write all .yml files.
