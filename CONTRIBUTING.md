@@ -1,10 +1,10 @@
 Drush is built by people like you! Please [join us](https://github.com/drush-ops/drush).
 
 ## Git and Pull requests
-* Contributions are submitted, reviewed, and accepted using GitHub pull requests. [Read this article](https://help.github.com/articles/using-pull-requests) for some details. We use the _Fork and Pull_ model, as described there.
+* Contributions are submitted, reviewed, and accepted using GitHub pull requests.
 * The latest changes are in the `master` branch. PR's should initially target this branch.
 * Try to make clean commits that are easily readable (including descriptive commit messages!)
-* Test before you push. Get familiar with Unish, our test suite. See the test-specific [README.md](tests/README.md)
+* Test before you push. Get familiar with Unish, our test suite. See the test-specific [README.md](tests/README.md). Optionally run tests in the provided Docker containers.
 * We maintain branches named 9.x, 8.x, etc. These are release branches. From these branches, we make new tags for patch and minor versions.
 
 ## Coding style
