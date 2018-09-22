@@ -273,7 +273,8 @@ abstract class CommandUnishTestCase extends UnishTestCase
      * @param Process $process
      * @return string
      */
-    public function buildProcessMessage(Process $process) {
+    public function buildProcessMessage(Process $process)
+    {
         $message = '';
         if ($output = $process->getOutput()) {
             $message = "\n\nCommand output:\n" . $output;
