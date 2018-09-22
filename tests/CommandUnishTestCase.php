@@ -2,9 +2,13 @@
 
 namespace Unish;
 
+use Drush\Config\Environment;
+use Drush\Drush;
+use Drush\Preflight\Preflight;
+use Drush\Runtime\Runtime;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
-use PHPUnit\Framework\TestResult;
+use Webmozart\PathUtil\Path;
 
 abstract class CommandUnishTestCase extends UnishTestCase
 {
@@ -13,13 +17,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
     const EXIT_SUCCESS  = 0;
     const EXIT_ERROR = 1;
     const UNISH_EXITCODE_USER_ABORT = 75; // Same as DRUSH_EXITCODE_USER_ABORT
-
-  /**
-   * Code coverage data collected during a single test.
-   *
-   * @var array
-   */
-    protected $coverage_data = [];
 
   /**
    * Process of last executed command.
@@ -340,17 +337,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
         }
         $cmd[] = "--no-interaction";
 
-        // Insert code coverage argument before command, in order for it to be
-        // parsed as a global option. This matters for commands like ssh and rsync
-        // where options after the command are passed along to external commands.
-        $result = $this->getTestResultObject();
-        if ($result->getCollectCodeCoverageInformation()) {
-            $coverage_file = tempnam($this->getSandbox(), 'drush_coverage');
-            if ($coverage_file) {
-                $cmd[] = "--drush-coverage=" . $coverage_file;
-            }
-        }
-
         // Insert site specification and drush command.
         $cmd[] = empty($site_specification) ? null : self::escapeshellarg($site_specification);
         $cmd[] = $command;
@@ -359,7 +345,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
         foreach ($args as $arg) {
             $cmd[] = self::escapeshellarg($arg);
         }
-        // insert drush command options
+        // Insert drush command options
         foreach ($options as $key => $value) {
             if (!isset($value)) {
                 $cmd[] = "--$key";
@@ -369,26 +355,25 @@ abstract class CommandUnishTestCase extends UnishTestCase
         }
 
         $cmd[] = $suffix;
-        if ($hide_stderr) {
+        // @todo deal with $hide_stderr
+        if (0 && $hide_stderr) {
             $cmd[] = '2>' . $this->bitBucket();
         }
         $exec = array_filter($cmd, 'strlen'); // Remove NULLs
-        // Set sendmail_path to 'true' to disable any outgoing emails
-        // that tests might cause Drupal to send.
 
-        $php_options = (array_key_exists('PHP_OPTIONS', $env)) ? $env['PHP_OPTIONS'] . " " : "";
-        // @todo The PHP Options below are not yet honored by execute(). See .travis.yml for an alternative way.
-        $env['PHP_OPTIONS'] = "${php_options}-d sendmail_path='true'";
-        $cmd = implode(' ', $exec);
-        $return = $this->execute($cmd, $expected_return, $cd, $env);
+        $this->log('Drush called: ' . implode(' ', $cmd));
 
-        // Save code coverage information.
-        if (!empty($coverage_file)) {
-            $data = unserialize(file_get_contents($coverage_file));
-            unlink($coverage_file);
-            // Save for appending after the test finishes.
-            $this->coverage_data[] = $data;
-        }
+        // Set up environment
+        $loader = require PHPUNIT_COMPOSER_INSTALL;
+        $environment = new Environment(Path::getHomeDirectory(), $cd ?: getcwd(), PHPUNIT_COMPOSER_INSTALL);
+        $environment->setConfigFileVariant(Drush::getMajorVersion());
+        $environment->setLoader($loader);
+        $environment->applyEnvironment();
+
+//      Preflight and run.
+        $preflight = new Preflight($environment);
+        $runtime = new Runtime($preflight);
+        $return = $runtime->run($cmd);
 
         return $return;
     }
