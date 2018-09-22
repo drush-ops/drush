@@ -378,45 +378,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
     }
 
   /**
-   * Override the run method, so we can add in our code coverage data after the
-   * test has run.
-   *
-   * We have to collect all coverage data, merge them and append them as one, to
-   * avoid having phpUnit duplicating the test function as many times as drush
-   * has been invoked.
-   *
-   * Runs the test case and collects the results in a TestResult object.
-   * If no TestResult object is passed a new one will be created.
-   */
-    public function run(TestResult $result = null)
-    {
-        $result = parent::run($result);
-        $data = [];
-        foreach ($this->coverage_data as $merge_data) {
-            foreach ($merge_data as $file => $lines) {
-                if (!isset($data[$file])) {
-                    $data[$file] = $lines;
-                } else {
-                    foreach ($lines as $num => $executed) {
-                        if (!isset($data[$file][$num])) {
-                            $data[$file][$num] = $executed;
-                        } else {
-                            $data[$file][$num] = ($executed == 1 ? $executed : $data[$file][$num]);
-                        }
-                    }
-                }
-            }
-        }
-
-        // Reset coverage data.
-        $this->coverage_data = [];
-        if (!empty($data)) {
-            $result->getCodeCoverage()->append($data, $this);
-        }
-        return $result;
-    }
-
-  /**
    * A slightly less functional copy of drush_backend_parse_output().
    */
     public function parseBackendOutput($string)
