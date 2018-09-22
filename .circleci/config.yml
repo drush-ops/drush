@@ -26,7 +26,7 @@ jobs:
   build_highest:
     <<: *defaults
     docker:
-      - image: circleci/php:7.1-apache-node
+      - image: circleci/php:7.2-apache-node
         environment:
           - MYSQL_HOST=127.0.0.1
       - image: circleci/mysql:5.7.18
@@ -35,6 +35,7 @@ jobs:
       - run: $HOME/drush/.circleci/setup.sh
       - run: composer remove --dev webflo/drupal-core-strict --no-update
       - run: composer require --dev drupal/core:8.7.x-dev --no-update
+      - run: composer config platform.php 7.2
       - run: composer install
       - run: composer functional
 
