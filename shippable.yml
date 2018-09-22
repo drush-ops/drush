@@ -11,8 +11,10 @@ build:
     - echo 'memory_limit = -1' >> $HOME/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     - echo 'sendmail_path = /bin/true' >> $HOME/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     # Disable xdebug for faster Composer operations
-    # - rm $HOME/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
+    - rm $HOME/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
     # Install / update our tools
-    #- composer self-update
-    #- composer install --prefer-dist --no-interaction
-    - vendor/bin/phpcs -n --standard=PSR2 src tests examples
+    - composer self-update
+    - composer install --no-interaction
+    # Run code style and linting tools
+    - composer cs
+    - composer lint
