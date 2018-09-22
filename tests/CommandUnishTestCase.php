@@ -4,7 +4,7 @@ namespace Unish;
 
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
-use Webmozart\PathUtil\Path;
+use PHPUnit\Framework\TestResult;
 
 abstract class CommandUnishTestCase extends UnishTestCase
 {
@@ -387,12 +387,8 @@ abstract class CommandUnishTestCase extends UnishTestCase
    *
    * Runs the test case and collects the results in a TestResult object.
    * If no TestResult object is passed a new one will be created.
-   *
-   * @param  \PHPUnit_Framework_TestResult $result
-   * @return \PHPUnit_Framework_TestResult
-   * @throws \PHPUnit_Framework_Exception
    */
-    public function run(\PHPUnit_Framework_TestResult $result = null)
+    public function run(TestResult $result = null)
     {
         $result = parent::run($result);
         $data = [];

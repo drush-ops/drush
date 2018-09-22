@@ -49,10 +49,10 @@ class CacheCommandCase extends CommandUnishTestCase
         $this->assertEquals((object)$expected, $data);
     }
 
-    public function testCacheRebuild()
-    {
-        // Test cache-clear all and cache-rebuild (D8+).
-        $this->drush('cache-rebuild');
-        $this->drush('cache-get', ['cache-test-cid'], ['format' => 'json'], null, null, self::EXIT_ERROR);
-    }
+//    public function testCacheRebuild()
+//    {
+//        // Test cache-clear all and cache-rebuild (D8+).
+//        $this->drush('cache-rebuild');
+//        $this->drush('cache-get', ['cache-test-cid'], ['format' => 'json'], null, null, self::EXIT_ERROR);
+//    }
 }
