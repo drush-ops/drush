@@ -2,10 +2,11 @@
 
 namespace Unish;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
 use Webmozart\PathUtil\Path;
 
-abstract class UnishTestCase extends \PHPUnit_Framework_TestCase
+abstract class UnishTestCase extends TestCase
 {
 
     /**

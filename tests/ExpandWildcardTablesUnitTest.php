@@ -3,6 +3,7 @@
 namespace Unish;
 
 use \Drush\Sql\SqlTableSelectionTrait;
+use PHPUnit\Framework\TestCase;
 
 /**
   * Unit tests for expandWildcardTables() and filterTables().
@@ -10,7 +11,7 @@ use \Drush\Sql\SqlTableSelectionTrait;
   * @group base
   * @group sql
   */
-class WildcardUnitCase extends \PHPUnit_Framework_TestCase
+class WildcardUnitCase extends TestCase
 {
 
     use SqlTableSelectionTrait;

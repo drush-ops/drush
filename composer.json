@@ -56,7 +56,7 @@
   "require-dev": {
     "lox/xhprof": "dev-master",
     "g1a/composer-test-scenarios": "^2.2.0",
-    "phpunit/phpunit": "^4.8.36|^5.5.4",
+    "phpunit/phpunit": "^4.8.36 || ^6.1",
     "squizlabs/php_codesniffer": "^2.7",
     "composer/installers": "^1.2",
     "cweagans/composer-patches": "~1.0",

@@ -4,7 +4,7 @@ namespace Unish;
 
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
-use Webmozart\PathUtil\Path;
+use PHPUnit\Framework\TestResult;
 
 abstract class CommandUnishTestCase extends UnishTestCase
 {
@@ -253,7 +253,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
             $return = $this->process->run();
             if ($expected_return !== $return) {
                 $message = 'Unexpected exit code ' . $return . ' (expected ' . $expected_return . ") for command:\n" .  $command;
-                throw new UnishProcessFailedError($message, $this->process);
+                throw new UnishProcessFailedException($message . $this->buildProcessMessage($this->process));
             }
             // Reset timeouts to default.
             $this->timeout = $this->defaultTimeout;
@@ -265,8 +265,24 @@ abstract class CommandUnishTestCase extends UnishTestCase
             } else {
                 $message = 'Command had no output for ' . $this->idleTimeout . " seconds:\n" .  $command;
             }
-            throw new UnishProcessFailedError($message, $this->process);
+            throw new UnishProcessFailedException($message . $this->buildProcessMessage($this->process));
         }
+    }
+
+    /**
+     * @param Process $process
+     * @return string
+     */
+    public function buildProcessMessage(Process $process)
+    {
+        $message = '';
+        if ($output = $process->getOutput()) {
+            $message = "\n\nCommand output:\n" . $output;
+        }
+        if ($stderr = $process->getErrorOutput()) {
+            $message = "\n\nCommand stderr:\n" . $stderr;
+        }
+        return $message;
     }
 
   /**
@@ -375,49 +391,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
         }
 
         return $return;
-    }
-
-  /**
-   * Override the run method, so we can add in our code coverage data after the
-   * test has run.
-   *
-   * We have to collect all coverage data, merge them and append them as one, to
-   * avoid having phpUnit duplicating the test function as many times as drush
-   * has been invoked.
-   *
-   * Runs the test case and collects the results in a TestResult object.
-   * If no TestResult object is passed a new one will be created.
-   *
-   * @param  \PHPUnit_Framework_TestResult $result
-   * @return \PHPUnit_Framework_TestResult
-   * @throws \PHPUnit_Framework_Exception
-   */
-    public function run(\PHPUnit_Framework_TestResult $result = null)
-    {
-        $result = parent::run($result);
-        $data = [];
-        foreach ($this->coverage_data as $merge_data) {
-            foreach ($merge_data as $file => $lines) {
-                if (!isset($data[$file])) {
-                    $data[$file] = $lines;
-                } else {
-                    foreach ($lines as $num => $executed) {
-                        if (!isset($data[$file][$num])) {
-                            $data[$file][$num] = $executed;
-                        } else {
-                            $data[$file][$num] = ($executed == 1 ? $executed : $data[$file][$num]);
-                        }
-                    }
-                }
-            }
-        }
-
-        // Reset coverage data.
-        $this->coverage_data = [];
-        if (!empty($data)) {
-            $result->getCodeCoverage()->append($data, $this);
-        }
-        return $result;
     }
 
   /**

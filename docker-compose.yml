@@ -14,7 +14,7 @@ services:
   # More info at https://github.com/wodby/php
   # We don't want their drupal-php image as that ships with a Drush inside.
   php:
-    image: wodby/php:${PHP_TAG-7.2}
+    image: wodby/php:${PHP_TAG-7.2-dev}
     container_name: ${PROJECT_NAME-unish}_php
     environment:
       PHP_SENDMAIL_PATH: /dev/null
@@ -28,6 +28,7 @@ services:
       PHP_XDEBUG_REMOTE_HOST:
     volumes:
       - ./:/var/www/html:${VOLUME_FLAGS-cached}
+      - ./.docker/zz-php.ini:/usr/local/etc/php/conf.d/zz-php.ini
 
   # More info at https://github.com/wodby/postgres
   postgres:

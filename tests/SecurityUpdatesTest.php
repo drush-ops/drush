@@ -32,7 +32,7 @@ class SecurityUpdatesTest extends CommandUnishTestCase
   /**
    * Test that insecure packages are correctly identified.
    *
-   * @dataProvider testConflictConstraintParsingProvider
+   * @dataProvider conflictConstraintParsingProvider
    */
     public function testConflictConstraintParsing($package, $conflict_constraint, $min_version, $updates_are_available)
     {
@@ -48,7 +48,7 @@ class SecurityUpdatesTest extends CommandUnishTestCase
   /**
    * Data provider for testConflictConstraintParsing().
    */
-    public function testConflictConstraintParsingProvider()
+    public function conflictConstraintParsingProvider()
     {
         return [
         // Test "minimum version" conflict.
