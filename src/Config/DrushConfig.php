@@ -45,7 +45,7 @@ class DrushConfig extends ConfigOverlay
         ];
 
         $fs = new Filesystem();
-        foreach ($candidates as $candidate) {
+        foreach (array_filter($candidates) as $candidate) {
             try {
                 $fs->mkdir($candidate);
                 return $candidate;
