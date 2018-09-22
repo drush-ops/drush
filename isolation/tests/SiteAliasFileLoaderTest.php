@@ -100,6 +100,6 @@ class SiteAliasFileLoaderTest extends TestCase
         $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/single');
 
         $all = $this->sut->loadAll();
-        $this->assertEquals('@single.single.alternate,@single.single.common,@single.single.dev', implode(',', array_keys($all)));
+        $this->assertEquals('@single.single.alternate,@single.single.dev', implode(',', array_keys($all)));
     }
 }
