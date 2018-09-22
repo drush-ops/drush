@@ -253,7 +253,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
             $return = $this->process->run();
             if ($expected_return !== $return) {
                 $message = 'Unexpected exit code ' . $return . ' (expected ' . $expected_return . ") for command:\n" .  $command;
-                throw new UnishProcessFailedError($message, $this->process);
+                throw new UnishProcessFailedException($message . $this->buildProcessMessage($this->process));
             }
             // Reset timeouts to default.
             $this->timeout = $this->defaultTimeout;
@@ -265,8 +265,23 @@ abstract class CommandUnishTestCase extends UnishTestCase
             } else {
                 $message = 'Command had no output for ' . $this->idleTimeout . " seconds:\n" .  $command;
             }
-            throw new UnishProcessFailedError($message, $this->process);
+            throw new UnishProcessFailedException($message . $this->buildProcessMessage($this->process));
         }
+    }
+
+    /**
+     * @param Process $process
+     * @return string
+     */
+    public function buildProcessMessage(Process $process) {
+        $message = '';
+        if ($output = $process->getOutput()) {
+            $message = "\n\nCommand output:\n" . $output;
+        }
+        if ($stderr = $process->getErrorOutput()) {
+            $message = "\n\nCommand stderr:\n" . $stderr;
+        }
+        return $message;
     }
 
   /**
