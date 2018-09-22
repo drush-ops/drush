@@ -3,6 +3,10 @@ language: php
 php:
   - "7.1"
 
+branches:
+  except:
+    - gh-pages
+
 build:
   ci:
     # Set up php configuration
