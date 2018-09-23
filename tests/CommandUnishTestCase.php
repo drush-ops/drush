@@ -327,7 +327,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
                 if (!isset($value)) {
                     $cmd[] = "--$key";
                 } else {
-                    $cmd[] = "--$key=" . self::escapeshellarg($value);
+                    $cmd[] = "--$key=" . $value;
                 }
             }
         }
@@ -338,19 +338,19 @@ abstract class CommandUnishTestCase extends UnishTestCase
         $cmd[] = "--no-interaction";
 
         // Insert site specification and drush command.
-        $cmd[] = empty($site_specification) ? null : self::escapeshellarg($site_specification);
+        $cmd[] = empty($site_specification) ? null : $site_specification;
         $cmd[] = $command;
 
         // Insert drush command arguments.
         foreach ($args as $arg) {
-            $cmd[] = self::escapeshellarg($arg);
+            $cmd[] = $arg;
         }
         // Insert drush command options
         foreach ($options as $key => $value) {
             if (!isset($value)) {
                 $cmd[] = "--$key";
             } else {
-                $cmd[] = "--$key=" . self::escapeshellarg($value);
+                $cmd[] = "--$key=" . $value;
             }
         }
 
@@ -374,6 +374,10 @@ abstract class CommandUnishTestCase extends UnishTestCase
         $preflight = new Preflight($environment);
         $runtime = new Runtime($preflight);
         $return = $runtime->run($cmd);
+
+        // Empty Drush's legacy context system
+        $cache = &drush_get_context();
+        $cache = [];
 
         return $return;
     }
