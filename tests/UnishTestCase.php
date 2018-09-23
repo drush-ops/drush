@@ -139,12 +139,6 @@ abstract class UnishTestCase extends TestCase
     {
         parent::__construct($name, $data, $dataName);
 
-        // Default drupal major version to run tests over.
-        // @todo Remove this.
-        if (!defined('UNISH_DRUPAL_MAJOR_VERSION')) {
-            define('UNISH_DRUPAL_MAJOR_VERSION', '8');
-        }
-
         // We read from env then globals then default to mysql.
         self::$db_url = getenv('UNISH_DB_URL') ?: (isset($GLOBALS['UNISH_DB_URL']) ? $GLOBALS['UNISH_DB_URL'] : 'mysql://root:@127.0.0.1');
 

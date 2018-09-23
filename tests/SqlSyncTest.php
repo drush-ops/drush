@@ -98,7 +98,7 @@ class SqlSyncTest extends CommandUnishTestCase
 
         // Add user fields and a test User.
         $this->drush('pm-enable', ['field,text,telephone,comment'], $options + ['yes' => null]);
-        $this->drush('php-script', ['user_fields-D' . UNISH_DRUPAL_MAJOR_VERSION, $name, $mail], $options + ['script-path' => __DIR__ . '/resources',]);
+        $this->drush('php-script', ['user_fields-D8', $name, $mail], $options + ['script-path' => __DIR__ . '/resources',]);
 
         // Copy stage to dev, and then sql:sanitize.
         $sync_options = [
