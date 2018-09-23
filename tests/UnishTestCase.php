@@ -151,7 +151,7 @@ abstract class UnishTestCase extends TestCase
         // require_once __DIR__ . '/unish.inc';
         // list($unish_tmp, $unish_sandbox, $unish_drush_dir) = \unishGetPaths();
         $unish_sandbox = Path::join(dirname(__DIR__), 'sandbox');
-        @mkdir($unish_sandbox);
+        self::mkdir($unish_sandbox);
         $unish_cache = Path::join($unish_sandbox, 'cache');
 
         self::$drush = self::getComposerRoot() . '/drush';
