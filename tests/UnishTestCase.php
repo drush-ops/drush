@@ -27,6 +27,35 @@ abstract class UnishTestCase extends TestCase
 
     private static $backendOutputDelimiter = 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END';
 
+    public function __construct($name = null, array $data = [], $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+
+        // We read from env then globals then default to mysql.
+        self::$db_url = getenv('UNISH_DB_URL') ?: (isset($GLOBALS['UNISH_DB_URL']) ? $GLOBALS['UNISH_DB_URL'] : 'mysql://root:@127.0.0.1');
+
+        // require_once __DIR__ . '/unish.inc';
+        // list($unish_tmp, $unish_sandbox, $unish_drush_dir) = \unishGetPaths();
+        $unish_sandbox = Path::join(dirname(__DIR__), 'sandbox');
+        self::mkdir($unish_sandbox);
+        $unish_cache = Path::join($unish_sandbox, 'cache');
+
+        self::$drush = self::getComposerRoot() . '/drush';
+
+        self::$sandbox = $unish_sandbox;
+        self::$usergroup = isset($GLOBALS['UNISH_USERGROUP']) ? $GLOBALS['UNISH_USERGROUP'] : null;
+
+        self::setEnv(['CACHE_PREFIX' => $unish_cache]);
+        $home = $unish_sandbox . '/home';
+        self::setEnv(['HOME' => $home]);
+        self::setEnv(['HOMEDRIVE' => $home]);
+        $composer_home = $unish_cache . '/.composer';
+        self::setEnv(['COMPOSER_HOME' => $composer_home]);
+        self::setEnv(['ETC_PREFIX' => $unish_sandbox]);
+        self::setEnv(['SHARE_PREFIX' => $unish_sandbox]);
+        self::setEnv(['TEMP' => Path::join($unish_sandbox, 'tmp')]);
+    }
+
     /**
      * @return array
      */
@@ -133,35 +162,6 @@ abstract class UnishTestCase extends TestCase
     public static function getBackendOutputDelimiter()
     {
         return self::$backendOutputDelimiter;
-    }
-
-    public function __construct($name = null, array $data = [], $dataName = '')
-    {
-        parent::__construct($name, $data, $dataName);
-
-        // We read from env then globals then default to mysql.
-        self::$db_url = getenv('UNISH_DB_URL') ?: (isset($GLOBALS['UNISH_DB_URL']) ? $GLOBALS['UNISH_DB_URL'] : 'mysql://root:@127.0.0.1');
-
-        // require_once __DIR__ . '/unish.inc';
-        // list($unish_tmp, $unish_sandbox, $unish_drush_dir) = \unishGetPaths();
-        $unish_sandbox = Path::join(dirname(__DIR__), 'sandbox');
-        self::mkdir($unish_sandbox);
-        $unish_cache = Path::join($unish_sandbox, 'cache');
-
-        self::$drush = self::getComposerRoot() . '/drush';
-
-        self::$sandbox = $unish_sandbox;
-        self::$usergroup = isset($GLOBALS['UNISH_USERGROUP']) ? $GLOBALS['UNISH_USERGROUP'] : null;
-
-        self::setEnv(['CACHE_PREFIX' => $unish_cache]);
-        $home = $unish_sandbox . '/home';
-        self::setEnv(['HOME' => $home]);
-        self::setEnv(['HOMEDRIVE' => $home]);
-        $composer_home = $unish_cache . '/.composer';
-        self::setEnv(['COMPOSER_HOME' => $composer_home]);
-        self::setEnv(['ETC_PREFIX' => $unish_sandbox]);
-        self::setEnv(['SHARE_PREFIX' => $unish_sandbox]);
-        self::setEnv(['TEMP' => Path::join($unish_sandbox, 'tmp')]);
     }
 
     /**
