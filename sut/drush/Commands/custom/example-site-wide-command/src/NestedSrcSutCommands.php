@@ -24,6 +24,7 @@ class NestedSrcSutCommands extends DrushCommands
      * Show a fabulous picture.
      *
      * @command sut:nested-src
+     * @hidden
      */
     public function example()
     {

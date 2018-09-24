@@ -24,6 +24,7 @@ class SimpleSutCommands extends DrushCommands
      * Show a fabulous picture.
      *
      * @command sut:simple
+     * @hidden
      */
     public function example()
     {

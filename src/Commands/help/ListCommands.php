@@ -199,8 +199,7 @@ class ListCommands extends DrushCommands
     public static function categorize($all, $separator = ':')
     {
         foreach ($all as $key => $command) {
-            $hidden = method_exists($command, 'getAnnotationData') && $command->getAnnotationData()->has('hidden');
-            if (!in_array($key, $command->getAliases()) && !$hidden) {
+            if (!in_array($key, $command->getAliases()) && !$command->isHidden()) {
                 $parts = explode($separator, $key);
                 $namespace = count($parts) >= 2 ? array_shift($parts) : '_global';
                 $namespaced[$namespace][$key] = $command;
