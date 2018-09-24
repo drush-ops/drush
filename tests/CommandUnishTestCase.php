@@ -216,8 +216,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
    * @param sting cd
    *   The directory to run the command in.
    * @param array $env
-   *  @todo: Not fully implemented yet. Inheriting environment is hard - http://stackoverflow.com/questions/3780866/why-is-my-env-empty.
-   *         @see drush_env().
    *  Extra environment variables.
    * @param string $input
    *   A string representing the STDIN that is piped to the command.
@@ -226,7 +224,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
    */
     public function execute($command, $expected_return = self::EXIT_SUCCESS, $cd = null, $env = null, $input = null)
     {
-        $return = 1;
         $this->tick();
 
         // Apply the environment variables we need for our test to the head of the
@@ -245,7 +242,8 @@ abstract class CommandUnishTestCase extends UnishTestCase
 
         try {
             // Process uses a default timeout of 60 seconds, set it to 0 (none).
-            $this->process = new Process($command, $cd, null, $input, 0);
+            $this->process = new Process($command, $cd, $env, $input, 0);
+            $this->process->inheritEnvironmentVariables(true);
             if (!getenv('UNISH_NO_TIMEOUTS')) {
                 $this->process->setTimeout($this->timeout)
                 ->setIdleTimeout($this->idleTimeout);

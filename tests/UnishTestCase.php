@@ -651,8 +651,6 @@ EOT;
      *
      * @param array $vars
      *   The variables to set.
-     *
-     *   We will change implementation to take advantage of https://github.com/symfony/symfony/pull/19053/files once we drop Symfony 2 compat.
      */
     public static function setEnv(array $vars)
     {
