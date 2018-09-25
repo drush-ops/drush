@@ -270,8 +270,7 @@ function annotationcommand_adapter_get_commands($annotation_commandfiles) {
   //   '\\Drupal\\default_content\\CliTools\\DefaultContentCommands',
   foreach ($annotation_commandfiles as $commandfile_path => $commandfile_class) {
     try {
-      $class = new \ReflectionClass($commandfile_class);
-      if (file_exists($commandfile_path) && (!$class->isAbstract())) {
+      if (file_exists($commandfile_path) && ($commandfile_class != '\Drush\Commands\DrushCommands')) {
         $commandhandler = annotationcommand_adapter_create_commandfile_instance($commandfile_path, $commandfile_class);
         $commands_for_this_commandhandler = annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path);
         $commands = array_merge($commands, $commands_for_this_commandhandler);
