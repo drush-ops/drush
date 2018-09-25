@@ -269,15 +269,15 @@ function annotationcommand_adapter_get_commands($annotation_commandfiles) {
   //   'modules/default_content/src/CliTools/DefaultContentCommands.php' =>
   //   '\\Drupal\\default_content\\CliTools\\DefaultContentCommands',
   foreach ($annotation_commandfiles as $commandfile_path => $commandfile_class) {
-    $class = new \ReflectionClass($commandfile_class);
-    if (file_exists($commandfile_path) && ($class && !$class->isAbstract())) {
-      try {
+    try {
+      $class = new \ReflectionClass($commandfile_class);
+      if (file_exists($commandfile_path) && (!$class->isAbstract())) {
         $commandhandler = annotationcommand_adapter_create_commandfile_instance($commandfile_path, $commandfile_class);
         $commands_for_this_commandhandler = annotationcommand_adapter_get_commands_for_commandhandler($commandhandler, $commandfile_path);
         $commands = array_merge($commands, $commands_for_this_commandhandler);
       }
-      catch (\Exception $e) {}
     }
+    catch (\Exception $e) {}
   }
   return $commands;
 }
