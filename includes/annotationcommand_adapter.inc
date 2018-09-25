@@ -391,6 +391,7 @@ function annotationcommand_adapter_bootstrap_phase_index($phase)
 function annotationcommand_adapter_bootstrap_phase_map()
 {
   return [
+    'none' => DRUSH_BOOTSTRAP_NONE,
     'root' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
     'site' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
     'config' => DRUSH_BOOTSTRAP_DRUPAL_CONFIGURATION,
@@ -438,7 +439,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
     // TODO: if there is no 'bootstrap' annotation, maybe we should default to NONE instead of FULL?
     if ($bootstrap = $commandinfo->getAnnotation('bootstrap')) {
       // Convert from the bootstrap string to the appropriate bootstrap phase index
-      $bootstrap = annotationcommand_adapter_bootstrap_phase_map($bootstrap);
+      $bootstrap = annotationcommand_adapter_bootstrap_phase_index($bootstrap);
     }
     $command = [
       'name' => $command_name,
