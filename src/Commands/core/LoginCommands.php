@@ -30,7 +30,7 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      *   Open default web browser and browse to homepage, logged in as uid=1.
      * @usage drush user:login --name=ryan node/add/blog
      *   Open default web browser (if configured or detected) for a one-time login link for username ryan that redirects to node/add/blog.
-     * @usage drush user:login --browser=firefox --mail=$(drush user:information --mail="drush@example.org" --fields=name --format=string)
+     * @usage drush user:login --browser=firefox --name=$(drush user:information --mail="drush@example.org" --fields=name --format=string)
      *   Open firefox web browser, and login as the user with the e-mail address drush@example.org.
      */
     public function login($path = '', $options = ['name' => '1', 'browser' => true, 'redirect-port' => self::REQ])
