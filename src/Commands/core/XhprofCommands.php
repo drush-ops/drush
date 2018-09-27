@@ -37,10 +37,7 @@ class XhprofCommands extends DrushCommands
     {
         if (self::xhprofIsEnabled()) {
             $namespace = 'Drush';
-            $xhprof_data = xhprof_disable();
-            $xhprof_runs = new \XHProfRuns_Default();
-            $run_id =  $xhprof_runs->save_run($xhprof_data, $namespace);
-            $namespace = 'Drush';
+            $run_id = self::xhprof_finish_run($namespace);
             $url = Drush::config()->get('xh.link') . '/index.php?run=' . urlencode($run_id) . '&source=' . urlencode($namespace);
             $this->logger()->notice(dt('XHProf run saved. View report at !url', ['!url' => $url]));
         }
@@ -53,17 +50,17 @@ class XhprofCommands extends DrushCommands
      */
     public function xhprofInitialize(InputInterface $input, AnnotationData $annotationData)
     {
-        if (self::xhprofIsEnabled($input)) {
+        if (self::xhprofIsEnabled()) {
             $config = Drush::config()->get('xh');
             $flags = self::xhprofFlags($config);
-            \xhprof_enable($flags);
+            self::xhprof_enable($flags);
         }
     }
 
     public static function xhprofIsEnabled()
     {
         if (Drush::config()->get('xh.link')) {
-            if (!extension_loaded('xhprof') && !extension_loaded('tideways')) {
+            if (!extension_loaded('xhprof') && !extension_loaded('tideways_xhprof')) {
                 throw new \Exception(dt('You must enable the xhprof or tideways PHP extensions in your CLI PHP in order to profile.'));
             }
             return true;
@@ -72,6 +69,8 @@ class XhprofCommands extends DrushCommands
 
     /**
      * Determines flags.
+     *
+     * TODO: Make these work for Tideways as well.
      */
     public static function xhprofFlags(array $config)
     {
@@ -86,5 +85,35 @@ class XhprofCommands extends DrushCommands
             $flags |= XHPROF_FLAGS_MEMORY;
         }
         return $flags;
+    }
+
+    /**
+     * Enable profiling.
+     */
+    public static function xhprof_enable($flags) {
+        if (extension_loaded('tideways_xhprof')) {
+            \tideways_xhprof_enable(TIDEWAYS_XHPROF_FLAGS_MEMORY | TIDEWAYS_XHPROF_FLAGS_CPU);
+        }
+        else {
+            \xhprof_enable($flags);
+        }
+    }
+
+    /**
+     * Disable profiling and save results.
+     */
+    public static function xhprof_finish_run($namespace) {
+        if (extension_loaded('tideways_xhprof')) {
+            $data = \tideways_xhprof_disable();
+            $dir = sys_get_temp_dir();
+            $run_id = uniqid();
+            file_put_contents($dir . DIRECTORY_SEPARATOR . $run_id . '.' . $namespace . '.xhprof', serialize($data));
+            return $run_id;
+        }
+        else {
+            $xhprof_data = \xhprof_disable();
+            $xhprof_runs = new \XHProfRuns_Default();
+            return $xhprof_runs->save_run($xhprof_data, $namespace);
+        }
     }
 }
