@@ -36,7 +36,7 @@
     "php": ">=5.4.5",
     "psr/log": "~1.0",
     "psy/psysh": "~0.6",
-    "consolidation/annotated-command": "^2.8.1",
+    "consolidation/annotated-command": "^2.9.1",
     "consolidation/output-formatters": "~3",
     "symfony/yaml": "~2.3|^3",
     "symfony/var-dumper": "~2.7|^3",
