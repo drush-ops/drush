@@ -1646,7 +1646,7 @@ function drush_convert_db_from_db_url($db_url) {
       );
       $url = (object)array_map('urldecode', $url);
       $db_spec = array(
-        'driver'   => $url->scheme,
+        'driver'   => $url->scheme == 'mysqli' && extension_loaded('mysql') ? 'mysql' : $url->scheme,
         'username' => $url->user,
         'password' => $url->pass,
         'host' => $url->host,
