@@ -37,7 +37,7 @@ class XhprofCommands extends DrushCommands
     {
         if (self::xhprofIsEnabled()) {
             $namespace = 'Drush';
-            $run_id = self::xhprof_finish_run($namespace);
+            $run_id = self::xhprofFinishRun($namespace);
             $url = Drush::config()->get('xh.link') . '/index.php?run=' . urlencode($run_id) . '&source=' . urlencode($namespace);
             $this->logger()->notice(dt('XHProf run saved. View report at !url', ['!url' => $url]));
         }
@@ -53,7 +53,7 @@ class XhprofCommands extends DrushCommands
         if (self::xhprofIsEnabled()) {
             $config = Drush::config()->get('xh');
             $flags = self::xhprofFlags($config);
-            self::xhprof_enable($flags);
+            self::xhprofEnable($flags);
         }
     }
 
@@ -90,11 +90,11 @@ class XhprofCommands extends DrushCommands
     /**
      * Enable profiling.
      */
-    public static function xhprof_enable($flags) {
+    public static function xhprofEnable($flags)
+    {
         if (extension_loaded('tideways_xhprof')) {
             \tideways_xhprof_enable(TIDEWAYS_XHPROF_FLAGS_MEMORY | TIDEWAYS_XHPROF_FLAGS_CPU);
-        }
-        else {
+        } else {
             \xhprof_enable($flags);
         }
     }
@@ -102,15 +102,15 @@ class XhprofCommands extends DrushCommands
     /**
      * Disable profiling and save results.
      */
-    public static function xhprof_finish_run($namespace) {
+    public static function xhprofFinishRun($namespace)
+    {
         if (extension_loaded('tideways_xhprof')) {
             $data = \tideways_xhprof_disable();
             $dir = sys_get_temp_dir();
             $run_id = uniqid();
             file_put_contents($dir . DIRECTORY_SEPARATOR . $run_id . '.' . $namespace . '.xhprof', serialize($data));
             return $run_id;
-        }
-        else {
+        } else {
             $xhprof_data = \xhprof_disable();
             $xhprof_runs = new \XHProfRuns_Default();
             return $xhprof_runs->save_run($xhprof_data, $namespace);
