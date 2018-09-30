@@ -62,8 +62,7 @@ class EntityCommands extends DrushCommands
 
         if (empty($entities)) {
             $this->logger()->success(dt('No matching entities found.'));
-        }
-        else {
+        } else {
             $storage->delete($entities);
             $this->logger()->success(dt('Deleted !type entity Ids: !ids', ['!type' => $entity_type, '!ids' => implode(', ', array_keys($entities))]));
         }
