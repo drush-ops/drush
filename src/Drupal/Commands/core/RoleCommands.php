@@ -116,6 +116,7 @@ class RoleCommands extends DrushCommands
      *   label: Role Label
      *   perms: Permissions
      *
+     * @filter-output
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function roleList($options = ['format' => 'yaml', 'filter' => self::REQ])

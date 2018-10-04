@@ -84,6 +84,7 @@ class DrupalCommands extends DrushCommands
      *   description: Description
      *   value: Summary
      * @default-fields title,severity,value
+     * @filter-output
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function requirements($options = ['format' => 'table', 'severity' => -1, 'ignore' => ''])

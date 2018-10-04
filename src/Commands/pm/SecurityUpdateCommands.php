@@ -38,6 +38,7 @@ class SecurityUpdateCommands extends DrushCommands
      *   min-version: Suggested version
      * @default-fields name,version,min-version
      *
+     * @filter-output
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      *
      * @throws \Exception

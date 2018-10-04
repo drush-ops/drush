@@ -102,6 +102,7 @@ class LanguageCommands extends DrushCommands
      *   default: Default
      *   locked: Locked
      * @default-fields language,direction,default
+     * @filter-output
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function info()

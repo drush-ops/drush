@@ -140,6 +140,7 @@ class ViewsCommands extends DrushCommands
      * @aliases vl,views-list
      * @validate-module-enabled views
      *
+     * @filter-output
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function vlist($options = ['name' => self::REQ, 'tags' => self::REQ, 'status' => self::REQ, 'format' => 'table'])
