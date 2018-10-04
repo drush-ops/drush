@@ -106,7 +106,6 @@ class RoleCommands extends DrushCommands
      * then all of the roles that have been granted that permission will be listed.
      *
      * @command role:list
-     * @validate-permissions filter
      * @usage drush role:list --filter='administer nodes'
      *   Display a list of roles that have the administer nodes permission assigned.
      * @aliases rls,role-list
