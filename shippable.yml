@@ -18,7 +18,8 @@ build:
     - rm $HOME/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
     # Install / update our tools
     - composer self-update
-    - composer install --no-interaction
+    - mkdir phpcs
+    - COMPOSER_BIN_DIR=$(pwd)/vendor/bin composer --working-dir=phpcs require "squizlabs/php_codesniffer:^2.7"
     # Run code style and linting tools
     - composer cs
     - composer lint
