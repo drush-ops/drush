@@ -107,7 +107,6 @@ class RoleCommands extends DrushCommands
      *
      * @command role:list
      * @validate-permissions filter
-     * @option filter Limits the list of roles to only those that have been assigned the specified permission.
      * @usage drush role:list --filter='administer nodes'
      *   Display a list of roles that have the administer nodes permission assigned.
      * @aliases rls,role-list
@@ -117,16 +116,14 @@ class RoleCommands extends DrushCommands
      *   perms: Permissions
      *
      * @filter-output
+     * @filter-default-field perms
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
-    public function roleList($options = ['format' => 'yaml', 'filter' => self::REQ])
+    public function roleList($options = ['format' => 'yaml'])
     {
         $rows = [];
         $roles = Role::loadMultiple();
         foreach ($roles as $role) {
-            if ($options['filter'] && !$role->hasPermission($options['filter'])) {
-                continue;
-            }
             $rows[$role->id()] = [
             'label' => $role->label(),
             'perms' => $role->getPermissions(),
