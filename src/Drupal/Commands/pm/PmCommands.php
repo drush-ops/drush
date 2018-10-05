@@ -152,6 +152,7 @@ class PmCommands extends DrushCommands
      * @default-fields package,display_name,status,version
      * @aliases pml,pm-list
      * @filter-output
+     * @filter-default-field display_name
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => self::REQ, 'core' => false, 'no-core' => false])

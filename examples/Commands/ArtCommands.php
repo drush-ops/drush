@@ -66,6 +66,7 @@ class ArtCommands extends DrushCommands implements CustomEventAwareInterface
      * @default-fields name,description
      *
      * @filter-output
+     * @filter-default-field name
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function listArt($options = ['format' => 'table'])

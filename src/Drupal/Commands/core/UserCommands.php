@@ -55,6 +55,7 @@ class UserCommands extends DrushCommands
      * @default-fields uid,name,mail,roles,user_status
      *
      * @filter-output
+     * @filter-default-field name
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function information($names = '', $options = ['format' => 'table', 'uid' => self::REQ, 'mail' => self::REQ])

@@ -99,6 +99,7 @@ class QueueCommands extends DrushCommands
      *   class: Class
      *
      * @filter-output
+     * @filter-default-field queue
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function qList($options = ['format' => 'table'])

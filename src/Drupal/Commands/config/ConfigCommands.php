@@ -222,6 +222,7 @@ class ConfigCommands extends DrushCommands
      * @default-fields name,state
      * @aliases cst,config-status
      * @filter-output
+     * @filter-default-field name
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function status($options = ['state' => 'Only in DB,Only in sync dir,Different', 'prefix' => self::REQ, 'label' => self::REQ])
