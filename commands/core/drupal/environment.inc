@@ -23,8 +23,20 @@ use Drupal\Core\Logger\RfcLogLevel;
  */
 function drush_get_modules($include_hidden = TRUE) {
   $modules = system_rebuild_module_data();
+  if (\Drupal::hasService('profile_handler')) {
+    // #1356276 adds the profile_handler service but it hasn't been committed
+    // to core yet so we need to check if it exists.
+    $profiles = \Drupal::service('profile_handler')->getProfiles();
+  }
+  else {
+    $profiles[drupal_get_profile()] = [];
+  }
 
   foreach ($modules as $key => $module) {
+    // Profiles don't count as real dependents.
+    if (!empty($module->required_by)) {
+      $module->required_by = array_diff_key($module->required_by, $profiles);
+    }
     if ((!$include_hidden) && (!empty($module->info['hidden']))) {
       unset($modules[$key]);
     }
