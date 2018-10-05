@@ -78,6 +78,19 @@ class DocsCommands extends DrushCommands
     }
 
     /**
+     * Explanation of how output filters work.
+     *
+     * @command docs:output-filters
+     * @aliases docs-output-filters
+     * @hidden
+     * @topic
+     */
+    public function outputFilters()
+    {
+        self::printFile(DRUSH_BASE_PATH. '/docs/output-filters.md');
+    }
+
+    /**
      * Creating site aliases for running Drush on remote sites.
      *
      * @command docs:aliases
