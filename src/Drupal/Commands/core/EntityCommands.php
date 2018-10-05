@@ -35,6 +35,8 @@ class EntityCommands extends DrushCommands
      *   Delete all shortcut entities.
      * @usage drush entity:delete node 22,24
      *   Delete nodes 22 and 24.
+     * @usage drush entity:delete user
+     *   Delete all users except uid=1.
      *
      * @command entity:delete
      * @aliases edel,entity-delete
@@ -51,10 +53,18 @@ class EntityCommands extends DrushCommands
         } else {
             $entities = $storage->loadMultiple();
         }
-        if (empty($entities)) {
-            throw new \Exception(dt('No matching entities found.'));
+
+        // Don't delete uid=1, uid=0.
+        if ($entity_type == 'user') {
+            unset($entities[1]);
+            unset($entities[0]);
         }
-        $storage->delete($entities);
-        $this->logger()->success(dt('Deleted !type entity Ids: !ids', ['!type' => $entity_type, '!ids' => implode(', ', array_keys($entities))]));
+
+        if (empty($entities)) {
+            $this->logger()->success(dt('No matching entities found.'));
+        } else {
+            $storage->delete($entities);
+            $this->logger()->success(dt('Deleted !type entity Ids: !ids', ['!type' => $entity_type, '!ids' => implode(', ', array_keys($entities))]));
+        }
     }
 }
