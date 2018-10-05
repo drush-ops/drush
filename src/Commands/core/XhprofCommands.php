@@ -8,6 +8,19 @@ use Drush\Drush;
 use Symfony\Component\Console\Input\InputInterface;
 use Drush\Commands\DrushCommands;
 
+/**
+ * Class XhprofCommands
+ * @package Drush\Commands\core
+ *
+ * Supports profiling Drush commands using either XHProf or Tideways XHProf.
+ *
+ * Note that XHProf is only compatible with PHP 5.6. For PHP 7+, you must use
+ * the Tideways XHProf fork. The Tideways XHProf extension recently underwent a
+ * major refactor; Drush is only compatible with the newer version.
+ * @see https://tideways.com/profiler/blog/releasing-new-tideways-xhprof-extension
+ *
+ * @todo Remove support for XHProf extension once PHP 5.6 is EOL.
+ */
 class XhprofCommands extends DrushCommands
 {
 
@@ -61,10 +74,15 @@ class XhprofCommands extends DrushCommands
     {
         if (Drush::config()->get('xh.link')) {
             if (!extension_loaded('xhprof') && !extension_loaded('tideways_xhprof')) {
-                throw new \Exception(dt('You must enable the xhprof or tideways PHP extensions in your CLI PHP in order to profile.'));
+                if (extension_loaded('tideways')) {
+                    throw new \Exception(dt('You are using an older incompatible version of the tideways extension. Please upgrade to the new tideways_xhprof extension.'));
+                } else {
+                    throw new \Exception(dt('You must enable the xhprof or tideways_xhprof PHP extensions in your CLI PHP in order to profile.'));
+                }
             }
             return true;
         }
+        return false;
     }
 
     /**
