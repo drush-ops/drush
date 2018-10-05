@@ -102,11 +102,11 @@ class XhprofCommands extends DrushCommands
     /**
      * Disable profiling and save results.
      */
-    public static function xhprofFinishRun($namespace)
+    public function xhprofFinishRun($namespace)
     {
         if (extension_loaded('tideways_xhprof')) {
             $data = \tideways_xhprof_disable();
-            $dir = sys_get_temp_dir();
+            $dir = $this->getConfig()->tmp();
             $run_id = uniqid();
             file_put_contents($dir . DIRECTORY_SEPARATOR . $run_id . '.' . $namespace . '.xhprof', serialize($data));
             return $run_id;
