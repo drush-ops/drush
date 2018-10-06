@@ -45,7 +45,6 @@ class WatchdogCommands extends DrushCommands
      *   date: Date
      *   username: Username
      * @default-fields wid,date,type,severity,message
-     * @filter-output
      * @filter-default-field message
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */

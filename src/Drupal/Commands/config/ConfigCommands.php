@@ -221,7 +221,6 @@ class ConfigCommands extends DrushCommands
      *   state: State
      * @default-fields name,state
      * @aliases cst,config-status
-     * @filter-output
      * @filter-default-field name
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */

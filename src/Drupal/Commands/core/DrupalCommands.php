@@ -84,7 +84,6 @@ class DrupalCommands extends DrushCommands
      *   description: Description
      *   value: Summary
      * @default-fields title,severity,value
-     * @filter-output
      * @filter-default-field severity
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */

@@ -112,7 +112,6 @@ class UpdateDBCommands extends DrushCommands
      *   description: Description
      *   type: Type
      * @default-fields module,update_id,type,description
-     * @filter-output
      * @filter-default-field module
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */

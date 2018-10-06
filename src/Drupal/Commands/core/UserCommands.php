@@ -54,7 +54,6 @@ class UserCommands extends DrushCommands
      * @table-style default
      * @default-fields uid,name,mail,roles,user_status
      *
-     * @filter-output
      * @filter-default-field name
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */

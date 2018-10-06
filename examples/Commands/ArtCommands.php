@@ -65,7 +65,6 @@ class ArtCommands extends DrushCommands implements CustomEventAwareInterface
      *   path: Path
      * @default-fields name,description
      *
-     * @filter-output
      * @filter-default-field name
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */

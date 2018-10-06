@@ -114,7 +114,6 @@ class RoleCommands extends DrushCommands
      *   label: Role Label
      *   perms: Permissions
      *
-     * @filter-output
      * @filter-default-field perms
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */

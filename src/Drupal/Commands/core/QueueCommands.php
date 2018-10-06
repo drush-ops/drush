@@ -98,7 +98,6 @@ class QueueCommands extends DrushCommands
      *   items: Items
      *   class: Class
      *
-     * @filter-output
      * @filter-default-field queue
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */

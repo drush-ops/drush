@@ -140,7 +140,6 @@ class ViewsCommands extends DrushCommands
      * @aliases vl,views-list
      * @validate-module-enabled views
      *
-     * @filter-output
      * @filter-default-field machine-name
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */

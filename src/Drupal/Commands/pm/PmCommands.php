@@ -151,7 +151,6 @@ class PmCommands extends DrushCommands
      *   version: Version
      * @default-fields package,display_name,status,version
      * @aliases pml,pm-list
-     * @filter-output
      * @filter-default-field display_name
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
