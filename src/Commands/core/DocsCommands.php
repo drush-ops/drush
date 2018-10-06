@@ -78,16 +78,17 @@ class DocsCommands extends DrushCommands
     }
 
     /**
-     * Explanation of how output filters work.
+     * Output formatters and filters: how to control the output produced by Drush commands
      *
-     * @command docs:output-filters
-     * @aliases docs-output-filters
+     * @command docs:output-formats-filters
+     * @aliases docs:output
+     * @aliases docs-output
      * @hidden
      * @topic
      */
-    public function outputFilters()
+    public function outputFormatsFilters()
     {
-        self::printFile(DRUSH_BASE_PATH. '/docs/output-filters.md');
+        self::printFile(DRUSH_BASE_PATH. '/docs/output-formats-filters.md');
     }
 
     /**
