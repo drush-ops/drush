@@ -122,6 +122,32 @@ To use a regular expression to find any core requirement notice whose title cont
 ```
 drush core:requirements --filter='title~=#(php|gd)#i'
 ```
-Finally, filter expressions may also use logical-and (`&&`) or logical-or (`||`) operations to separate multiple terms.  Parenthesis are not supported.
+Finally, filter expressions may also use logical-and (`&&`) or logical-or (`||`) operations to separate multiple terms.  Parenthesis are not supported. For example, to search both the `title` and `severity` fields in the `core:requirements` command:
+```
+drush core:requirements --filter='title~=#(php|gd)#i&&severity=warning'
+```
 
 The `=` and `*=` operators always use case-insensitive comparisons. The `~=` operator is case-sensitive, unless the `i` [PCRE modifier](http://php.net/manual/en/reference.pcre.pattern.modifiers.php) is used, as shown in the previous example.
+
+Comparison of Filters with Grep
+-------------------------------
+
+Using the `--filter` feature is similar to using `grep`. The main difference is that the filter feature does a semantic search, which is to say that it explicitly compares against the data in specific fields. In comparison, the `grep` command does a line-based search.
+
+Show only results where the severity is "warning":
+
+`drush core:requirements --filter='severity=warning'`
+
+Show only lines that contain the string "warning" (either in the severity field, or somewhere else on the line):
+
+`drush core:requirements | grep -i warning`
+
+The table below compares and contrasts the two ways of searching.
+
+| Feature                 | --filter            | grep                       |
+| ----------------------- | ------------------- | -------------------------- |
+| Regular expressions     | Yes, with `~=`      | Yes                        |
+| Word-wrapped field data | Searched correctly  | Might cause false negative |
+| Search just one field   | Yes                 | Might get false positives  |
+| Search multiple fields  | Yes, with `||`/`&&` | Yes (line-based searching) |
+| Searching hides header  | No                  | Yes (unless it matches)    |
