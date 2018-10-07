@@ -123,3 +123,5 @@ To use a regular expression to find any core requirement notice whose title cont
 drush core:requirements --filter='title~=#(php|gd)#i'
 ```
 Finally, filter expressions may also use logical-and (`&&`) or logical-or (`||`) operations to separate multiple terms.  Parenthesis are not supported.
+
+The `=` and `*=` operators always use case-insensitive comparisons. The `~=` operator is case-sensitive, unless the `i` [PCRE modifier](http://php.net/manual/en/reference.pcre.pattern.modifiers.php) is used, as shown in the previous example.
