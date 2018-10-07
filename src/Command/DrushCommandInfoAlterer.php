@@ -13,5 +13,10 @@ class DrushCommandInfoAlterer implements CommandInfoAltererInterface
         if ($commandInfo->hasAnnotation('filter-default-field') && !$commandInfo->hasAnnotation('filter-output')) {
             $commandInfo->addAnnotation('filter-output', true);
         }
+        // Automatically add the help topic for output formatters to
+        // any command that has any annotations related to output filters
+        if ($commandInfo->hasAnnotation('filter-output') || $commandInfo->hasAnnotation('field-labels')) {
+            $commandInfo->addAnnotation('topics', 'docs:output-formats-filters');
+        }
     }
 }
