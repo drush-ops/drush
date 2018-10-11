@@ -118,7 +118,7 @@ class LocaleCommands extends DrushCommands
             }
         }
 
-        if ($passed_langcodes = $translationOptions['langcodes']) {
+        if ($passed_langcodes = $options['langcodes']) {
             $langcodes = array_intersect($langcodes, explode(',', $passed_langcodes));
             // @todo Not selecting any language code in the user interface results in
             //   all translations being updated, so we mimick that behavior here.
