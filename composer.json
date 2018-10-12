@@ -32,7 +32,7 @@
   "require": {
     "php": ">=5.6.0",
     "ext-dom": "*",
-    "chi-teck/drupal-code-generator": "^1.26.1",
+    "chi-teck/drupal-code-generator": "^1.27.0",
     "composer/semver": "^1.4",
     "consolidation/annotated-command": "^2.9.1",
     "consolidation/config": "^1.1.0",
