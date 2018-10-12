@@ -64,6 +64,7 @@ class TwigCommands extends DrushCommands
      *   template: Template
      *   compiled: Compiled
      * @default-fields template,compiled
+     * @filter-output
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      *
      * @command twig:unused
