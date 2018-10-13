@@ -139,7 +139,7 @@ class SqlPgsql extends SqlBase
         if ($data_only) {
             $extra .= ' --data-only';
         }
-        if ($option = $this->getOption('extra-dump', $this->queryExtra)) {
+        if ($option = $this->getOption('extra-dump')) {
             $extra .= " $option";
         }
         $exec .= $extra;
