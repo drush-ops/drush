@@ -96,7 +96,9 @@ class Sqlpgsql extends SqlBase {
   }
 
   public function listTables() {
-    $return = $this->query(PSQL_SHOW_TABLES);
+    // listTables should only ever respect the query_extras of the base sql class
+    // and not the cmd extras @see https://github.com/drush-ops/drush/issues/3321
+    $return = $this->query(PSQL_SHOW_TABLES, NULL, '', $this->query_extra);
     $tables = drush_shell_exec_output();
     if (!empty($tables)) {
       return $tables;

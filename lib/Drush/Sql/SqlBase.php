@@ -141,7 +141,7 @@ class SqlBase {
    * @return
    *   TRUE on success, FALSE on failure
    */
-  public function query($query, $input_file = NULL, $result_file = '') {
+  public function query($query, $input_file = NULL, $result_file = '', $query_extras = '') {
     $input_file_original = $input_file;
     if ($input_file && drush_file_is_tarball($input_file)) {
       if (drush_shell_exec('gzip -d %s', $input_file)) {
@@ -151,6 +151,9 @@ class SqlBase {
         return drush_set_error(dt('Failed to decompress input file.'));
       }
     }
+    
+    // If no query_extras are passed in the use the default options from cmd or query base.
+    $query_extras = !empty($query_extras) ? $query_extras : drush_get_option('extra', $this->query_extra);
 
     // Save $query to a tmp file if needed. We will redirect it in.
     if (!$input_file) {
@@ -163,7 +166,7 @@ class SqlBase {
       $this->command(),
       $this->creds(),
       $this->silent(), // This removes column header and various helpful things in mysql.
-      drush_get_option('extra', $this->query_extra),
+      $query_extras,
       $this->query_file,
       drush_escapeshellarg($input_file),
     );
