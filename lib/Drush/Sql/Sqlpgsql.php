@@ -6,8 +6,6 @@ define('PSQL_SHOW_TABLES', "SELECT tablename FROM pg_tables WHERE schemaname='pu
 
 class Sqlpgsql extends SqlBase {
 
-  public $query_extra = "--no-align --field-separator=\"\t\" --pset tuples_only=on";
-
   public $query_file = "--file";
 
   private $password_file = NULL;
