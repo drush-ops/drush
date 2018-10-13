@@ -285,7 +285,6 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
         foreach ($bins as $bin) {
             \Drupal::service("cache.$bin")->deleteAll();
         }
-
     }
 
     public static function clearThemeRegistry()
