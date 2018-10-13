@@ -123,17 +123,17 @@ class SqlCommands extends DrushCommands
      * Open a SQL command-line interface using Drupal's credentials.
      *
      * @command sql:cli
-     * @option extra Add custom options to the connect string (e.g. --extra=--skip-column-names)
+     * @option extra Add custom options to the connect string
      * @optionset_sql
      * @aliases sqlc,sql-cli
      * @usage drush sql:cli
      *   Open a SQL command-line interface using Drupal's credentials.
-     * @usage drush sql:cli --extra=-A
+     * @usage drush sql:cli --extra=--progress-reports
      *   Open a SQL CLI and skip reading table information.
      * @remote-tty
      * @bootstrap max configuration
      */
-    public function cli($options = [])
+    public function cli($options = ['extra' => self::REQ])
     {
         $sql = SqlBase::create($options);
         if (drush_shell_proc_open($sql->connect())) {

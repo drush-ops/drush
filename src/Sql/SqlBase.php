@@ -19,7 +19,7 @@ class SqlBase implements ConfigAwareInterface
     // An Drupal style array containing specs for connecting to database.
     public $dbSpec;
 
-    // Default code appended to sql-query connections.
+    // Default code appended to sql connections.
     public $queryExtra = '';
 
     // The way you pass a sql file when issueing a query.
@@ -493,7 +493,7 @@ class SqlBase implements ConfigAwareInterface
     public function getOption($name, $default = null)
     {
         $options = $this->getOptions();
-        return array_key_exists($name, $options) ? $options[$name] : $default;
+        return array_key_exists($name, $options) && !is_null($options[$name]) ? $options[$name] : $default;
     }
 
     /**
