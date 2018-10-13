@@ -121,7 +121,7 @@ EOT;
     public function listTables()
     {
         $this->alwaysQuery('SHOW TABLES;');
-        return drush_shell_exec_output();
+        return explode(PHP_EOL, $this->getProcess()->getOutput());
     }
 
     public function dumpCmd($table_selection)

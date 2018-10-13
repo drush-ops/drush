@@ -136,9 +136,9 @@ class SqlCommands extends DrushCommands
     public function cli($options = ['extra' => self::REQ])
     {
         $sql = SqlBase::create($options);
-        if (drush_shell_proc_open($sql->connect())) {
-            throw new \Exception('Unable to open database shell. Rerun with --debug to see any error message.');
-        }
+        $process = Drush::process($sql->connect());
+        $process->setTty(TRUE);
+        $process->mustRun();
     }
 
     /**
@@ -183,7 +183,7 @@ class SqlCommands extends DrushCommands
             if (!$result) {
                 throw new \Exception(dt('Query failed.'));
             }
-            $this->output()->writeln(implode("\n", drush_shell_exec_output()));
+            $this->output()->writeln($sql->getProcess()->getOutput());
         }
         return true;
     }

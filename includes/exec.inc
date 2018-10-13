@@ -27,6 +27,7 @@ use \Consolidation\SiteAlias\AliasRecord;
  *   The result code from system():  0 == success.
  *
  * @see drush_shell_exec()
+ * @deprecated See Drush::process().
  */
 function drush_op_system($exec) {
   if (Drush::verbose() || Drush::simulate()) {
@@ -52,6 +53,9 @@ function drush_op_system($exec) {
  *   The command to execute. May include placeholders used for sprintf.
  * @param ...
  *   Values for the placeholders specified in $cmd. Each of these will be passed through escapeshellarg() to ensure they are safe to use on the command line.
+ *
+ * @deprecated See Drush::process().
+ *
  * @return
  *   TRUE on success, FALSE on failure
  */
@@ -76,6 +80,9 @@ function drush_shell_cd_and_exec($effective_wd, $cmd) {
  *   The command to execute. May include placeholders used for sprintf.
  * @param ...
  *   Values for the placeholders specified in $cmd. Each of these will be passed through escapeshellarg() to ensure they are safe to use on the command line.
+ *
+ * @deprecated See Drush::process().
+ *
  * @return
  *   TRUE on success, FALSE on failure
  */
@@ -85,6 +92,8 @@ function drush_shell_exec($cmd) {
 
 /**
  * A version of drush_shell_exec() that ignores simulate mode
+ *
+ * @deprecated See \Drush\Process\ProcessVerbose.
  */
 function drush_always_exec($cmd) {
   return _drush_shell_exec(func_get_args(), FALSE, FALSE);

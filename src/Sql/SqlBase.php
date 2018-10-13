@@ -5,9 +5,11 @@ namespace Drush\Sql;
 use Drupal\Core\Database\Database;
 use Drush\Drush;
 use Drush\Log\LogLevel;
+use Drush\Process\ProcessVerbose;
 use Drush\Utils\FsUtils;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
+use Symfony\Component\Process\Process;
 use Webmozart\PathUtil\Path;
 
 class SqlBase implements ConfigAwareInterface
@@ -28,6 +30,8 @@ class SqlBase implements ConfigAwareInterface
     // An options array.
     public $options;
 
+    public $process;
+
     /**
      * Typically, SqlBase instances are constructed via SqlBase::create($options).
      */
@@ -35,6 +39,24 @@ class SqlBase implements ConfigAwareInterface
     {
         $this->dbSpec = $db_spec;
         $this->options = $options;
+    }
+
+    /**
+     * Get the last used Process.
+     *
+     * @return Process
+     */
+    public function getProcess()
+    {
+        return $this->process;
+    }
+
+    /**
+     * @param Process $process
+     */
+    public function setProcess($process)
+    {
+        $this->process = $process;
     }
 
     /**
@@ -149,8 +171,18 @@ class SqlBase implements ConfigAwareInterface
             $cmd .= ' > ' . drush_escapeshellarg($file);
         }
 
-        // Avoid the php memory of the $output array in drush_shell_exec().
-        if (!$return = drush_op_system($cmd)) {
+        $process = Drush::process($cmd);
+        // Avoid the php memory of saving stdout.
+        $process->disableOutput();
+        // Show dump on stdout, for backward compat.
+        $process->run(function ($type, $buffer) {
+            if (Process::ERR === $type) {
+                echo 'ERR > ' . $buffer;
+            } else {
+                echo $buffer;
+            }
+        });
+        if ($process->isSuccessful()) {
             if ($file) {
                 drush_log(dt('Database dump saved to !path', ['!path' => $file]), LogLevel::SUCCESS);
                 drush_backend_set_result($file);
@@ -244,7 +276,11 @@ class SqlBase implements ConfigAwareInterface
     {
         $input_file_original = $input_file;
         if ($input_file && drush_file_is_tarball($input_file)) {
-            if (drush_always_exec('gzip -d %s', $input_file)) {
+            // This Process deliberately ignores simulated mode.
+            $process = new ProcessVerbose(['gzip', '-d', $input_file]);
+            $process->run();
+            $this->setProcess($process);
+            if ($process->isSuccessful()) {
                 $input_file = trim($input_file, '.gz');
             } else {
                 return drush_set_error(dt('Failed to decompress input file.'));
@@ -277,7 +313,11 @@ class SqlBase implements ConfigAwareInterface
         // We show the query when --debug is used and this function created the temp file.
         $this->logQueryInDebugMode($query, $input_file_original);
 
-        $success = drush_always_exec($exec);
+        // This Process deliberately ignores simulated mode.
+        $process = new ProcessVerbose($exec);
+        $process->run();
+        $success = $process->isSuccessful();
+        $this->setProcess($process);
 
         if ($success && $this->getOption('file-delete')) {
             drush_delete_dir($input_file);
@@ -295,7 +335,7 @@ class SqlBase implements ConfigAwareInterface
         // but the sql query itself is stored in a temp file and not displayed.
         // We show the query when --debug is used and this function created the temp file.
         if ((Drush::debug() || Drush::simulate()) && empty($input_file_original)) {
-            drush_log('sql-query: ' . $query, LogLevel::INFO);
+            drush_log('sql:query: ' . $query, LogLevel::INFO);
         }
     }
 

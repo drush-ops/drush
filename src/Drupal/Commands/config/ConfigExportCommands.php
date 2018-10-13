@@ -7,6 +7,7 @@ use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Config\StorageInterface;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Webmozart\PathUtil\Path;
@@ -157,24 +158,18 @@ class ConfigExportCommands extends DrushCommands
         if ($options['commit']) {
             // There must be changed files at the destination dir; if there are not, then
             // we will skip the commit step.
-            $result = drush_shell_cd_and_exec($destination_dir, 'git status --porcelain .');
-            if (!$result) {
-                throw new \Exception(dt("`git status` failed."));
-            }
-            $uncommitted_changes = drush_shell_exec_output();
+            $process = Drush::process('git status --porcelain .', $destination_dir);
+            $process->mustRun();
+            $uncommitted_changes = $process->getOutput();
             if (!empty($uncommitted_changes)) {
-                $result = drush_shell_cd_and_exec($destination_dir, 'git add -A .');
-                if (!$result) {
-                    throw new \Exception(dt("`git add -A` failed."));
-                }
+                $process = Drush::process('git add -A .', $destination_dir);
+                $process->mustRun();
                 $comment_file = drush_save_data_to_temp_file($options['message'] ?: 'Exported configuration.'. $preview);
-                $result = drush_shell_cd_and_exec($destination_dir, 'git commit --file=%s', $comment_file);
-                if (!$result) {
-                    throw new \Exception(dt("`git commit` failed.  Output:\n\n!output", ['!output' => implode("\n", drush_shell_exec_output())]));
-                }
+                $process = Drush::process(['git commit', "--file=$comment_file"], $destination_dir);
+                $process->mustRun();
             }
         } elseif ($options['add']) {
-            drush_shell_exec_interactive('git add -p %s', $destination_dir);
+            Drush::process(['git add -p ',  $destination_dir])->run();
         }
     }
 
