@@ -41,10 +41,10 @@ class SqlPgsql extends SqlBase
 
     public function command()
     {
-        $environment = "";
+        $environment = drush_is_windows() ? "SET " : "";
         $pw_file = $this->createPasswordFile();
         if (isset($pw_file)) {
-            $environment = "PGPASSFILE={$pw_file} ";
+            $environment .= "PGPASSFILE={$pw_file} ";
         }
         return "{$environment}psql -q";
     }
