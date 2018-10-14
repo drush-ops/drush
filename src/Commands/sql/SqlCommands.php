@@ -137,7 +137,7 @@ class SqlCommands extends DrushCommands
     {
         $sql = SqlBase::create($options);
         $process = Drush::process($sql->connect());
-        $process->setTty(TRUE);
+        $process->setTty(true);
         $process->mustRun();
     }
 

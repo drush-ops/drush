@@ -80,7 +80,8 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
             $file = $tmp_file;
         }
 
-        if (self::input()->isInteractive()) {;
+        if (self::input()->isInteractive()) {
+            ;
             $process = Drush::process(['less', $file])->setTty(true);
             if ($process->run() === 0) {
                 return;

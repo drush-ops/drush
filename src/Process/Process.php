@@ -56,14 +56,4 @@ class Process extends ProcessVerbose
         }
         return $return;
     }
-
-    /**
-     * @inheritDoc
-     */
-//    public function wait(callable $callback = null)
-//    {
-//        return $this->isSimulated() ? 0 : parent::wait($callback);
-//    }
-
-
 }

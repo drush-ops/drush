@@ -12,5 +12,4 @@ class ProcessVerbose extends Process
         Drush::logger()->info('Executing: ' . $this->getCommandLine());
         return parent::start($callback);
     }
-
 }
