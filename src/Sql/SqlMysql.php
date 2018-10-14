@@ -120,8 +120,12 @@ EOT;
 
     public function listTables()
     {
+        $tables = [];
         $this->alwaysQuery('SHOW TABLES;');
-        return explode(PHP_EOL, $this->getProcess()->getOutput());
+        if ($out = $this->getProcess()->getOutput()) {
+            $tables = explode(PHP_EOL, $out);
+        }
+        return $tables;
     }
 
     public function dumpCmd($table_selection)
