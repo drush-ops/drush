@@ -77,7 +77,7 @@
     "psr-4": {
       "Drush\\": "isolation/src/"
     },
-    "files": ["load.environment.php"]
+    "files": ["tests/load.environment.php"]
   },
   "config": {
     "optimize-autoloader": true,
