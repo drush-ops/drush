@@ -55,7 +55,7 @@
     "psr-4": {
       "Drush\\": "isolation/src/"
     },
-    "files": ["load.environment.php"]
+    "files": ["tests/load.environment.php"]
   },
   "config": {
     "optimize-autoloader": true,
@@ -84,7 +84,8 @@
     "api": "PATH=$HOME/bin:$PATH sami.phar --ansi update sami-config.php",
     "sami-install": "mkdir -p $HOME/bin && curl --output $HOME/bin/sami.phar http://get.sensiolabs.org/sami.phar && chmod +x $HOME/bin/sami.phar",
     "scenario": "scenarios/install",
-    "si-unish": "./drush site:install testing --uri=dev --sites-subdir=dev --db-url=mysql://root:password@mariadb/unish_dev -v",
+    "sut": "./drush --uri=dev",
+    "sut:si": "./drush site:install testing --uri=dev --sites-subdir=dev --db-url=mysql://root:password@mariadb/unish_dev -v",
     "unit": "phpunit --colors=always",
     "functional": "phpunit --colors=always --configuration tests",
     "post-update-cmd": [
