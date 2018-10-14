@@ -110,7 +110,7 @@
     "unit": "phpunit --colors=always",
     "functional": "phpunit --colors=always --configuration tests",
     "post-update-cmd": [
-        "create-scenario isolation --autoload-dir isolation --autoload-dir internal-copy --keep '\\(psr/log\\|consolidation/config\\|site-alias\\|var-dumper\\|symfony/finder\\|drupal-finder\\|path-util\\|sebastian/version\\|xhprof\\)' 'phpunit/phpunit:^5.5.4'",
+        "create-scenario isolation --autoload-dir isolation --autoload-dir internal-copy 'phpunit/phpunit:^5.5.4'",
         "create-scenario isolation-phpunit4 --base isolation --autoload-dir isolation --autoload-dir internal-copy 'phpunit/phpunit:^4.8.36'"
     ]
   },
