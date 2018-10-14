@@ -7,6 +7,10 @@ Drush is built by people like you! Please [join us](https://github.com/drush-ops
 * Test before you push. Get familiar with Unish, our test suite. See the test-specific [README.md](tests/README.md). Optionally run tests in the provided Docker containers.
 * We maintain branches named 9.x, 8.x, etc. These are release branches. From these branches, we make new tags for patch and minor versions.
 
+## Development Environment
+* You may choose to use the docker-compose file in root directory for an optimized environment.
+* See `composer run-script -l` for a list of helper scripts.
+
 ## Coding style
 * Do write comments. You don't have to comment every line, but if you come up with something thats a bit complex/weird, just leave a comment. Bear in mind that you will probably leave the project at some point and that other people will read your code. Undocumented huge amounts of code are nearly worthless!
 * We use [PSR-2](http://www.php-fig.org/psr/psr-2/) in the /src directory. [Drupal's coding standards](https://drupal.org/coding-standards) are still used in the includes directory (deprecated code).
