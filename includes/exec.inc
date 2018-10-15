@@ -93,7 +93,7 @@ function drush_shell_exec($cmd) {
 /**
  * A version of drush_shell_exec() that ignores simulate mode
  *
- * @deprecated See \Drush\Process\ProcessVerbose.
+ * @deprecated See Drush::process().
  */
 function drush_always_exec($cmd) {
   return _drush_shell_exec(func_get_args(), FALSE, FALSE);

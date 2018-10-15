@@ -30,7 +30,7 @@ class Process extends SymfonyProcess
     /**
      * @return bool
      */
-    public function IsVerbose()
+    public function isVerbose()
     {
         return $this->isVerbose;
     }
@@ -69,7 +69,7 @@ class Process extends SymfonyProcess
             Drush::logger()->notice('Simulating: ' . $cmd);
             // Run a command that always succeeds.
             $this->setCommandLine('exit 0');
-        } elseif ($this->IsVerbose()) {
+        } elseif ($this->isVerbose()) {
             Drush::logger()->info('Executing: ' . $cmd);
         }
         $return = parent::start($callback);
