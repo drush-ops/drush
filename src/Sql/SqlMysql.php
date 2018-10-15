@@ -122,7 +122,7 @@ EOT;
     {
         $tables = [];
         $this->alwaysQuery('SHOW TABLES;');
-        if ($out = $this->getProcess()->getOutput()) {
+        if ($out = trim($this->getProcess()->getOutput())) {
             $tables = explode(PHP_EOL, $out);
         }
         return $tables;

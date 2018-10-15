@@ -5,7 +5,6 @@ namespace Drush\Sql;
 use Drupal\Core\Database\Database;
 use Drush\Drush;
 use Drush\Log\LogLevel;
-use Drush\Process\ProcessVerbose;
 use Drush\Utils\FsUtils;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
@@ -257,7 +256,7 @@ class SqlBase implements ConfigAwareInterface
     }
 
     /**
-     * Execute a SQL query. Always execute it regardless of simulate mode.
+     * Execute a SQL query. Always execute regardless of simulate mode.
      *
      * If you don't want query results to print during --debug then
      * provide a $result_file whose value can be drush_bit_bucket().
@@ -276,8 +275,8 @@ class SqlBase implements ConfigAwareInterface
     {
         $input_file_original = $input_file;
         if ($input_file && drush_file_is_tarball($input_file)) {
-            // This Process deliberately ignores simulated mode.
-            $process = new ProcessVerbose(['gzip', '-d', $input_file]);
+            $process = Drush::process(['gzip', '-d', $input_file]);
+            $process->setIsSimulated(false);
             $process->run();
             $this->setProcess($process);
             if ($process->isSuccessful()) {
@@ -314,7 +313,8 @@ class SqlBase implements ConfigAwareInterface
         $this->logQueryInDebugMode($query, $input_file_original);
 
         // This Process deliberately ignores simulated mode.
-        $process = new ProcessVerbose($exec);
+        $process = Drush::process($exec);
+        $process->setIsSimulated(false);
         $process->run();
         $success = $process->isSuccessful();
         $this->setProcess($process);
