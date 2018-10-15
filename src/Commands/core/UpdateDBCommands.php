@@ -80,6 +80,8 @@ class UpdateDBCommands extends DrushCommands
      * @bootstrap full
      * @kernel update
      * @aliases entup,entity-updates
+     * @usage drush updatedb:status --entity-updates | grep entity-update
+     *   Use updatedb:status to detect pending updates.
      *
      */
     public function entityUpdates($options = ['cache-clear' => true])
