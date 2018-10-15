@@ -32,7 +32,7 @@
   "require": {
     "php": ">=5.6.0",
     "ext-dom": "*",
-    "chi-teck/drupal-code-generator": "^1.26.1",
+    "chi-teck/drupal-code-generator": "^1.27.0",
     "composer/semver": "^1.4",
     "consolidation/annotated-command": "^2.9.1",
     "consolidation/config": "^1.1.0",
@@ -64,7 +64,8 @@
     "webflo/drupal-core-strict": "8.6.x-dev",
     "drupal/empty_theme": "1.0",
     "drupal/devel": "^1.0@RC",
-    "drupal/alinks": "1.0.0"
+    "drupal/alinks": "1.0.0",
+    "vlucas/phpdotenv": "^2.4"
   },
   "autoload": {
     "psr-4": {
@@ -76,7 +77,8 @@
   "autoload-dev": {
     "psr-4": {
       "Drush\\": "isolation/src/"
-    }
+    },
+    "files": ["tests/load.environment.php"]
   },
   "config": {
     "optimize-autoloader": true,
@@ -104,11 +106,12 @@
     "api": "PATH=$HOME/bin:$PATH sami.phar --ansi update sami-config.php",
     "sami-install": "mkdir -p $HOME/bin && curl --output $HOME/bin/sami.phar http://get.sensiolabs.org/sami.phar && chmod +x $HOME/bin/sami.phar",
     "scenario": "scenarios/install",
-    "si-unish": "./drush site:install testing --uri=dev --sites-subdir=dev --db-url=mysql://root:password@mariadb/unish_dev -v",
+    "sut": "./drush --uri=dev",
+    "sut:si": "./drush site:install testing --uri=dev --sites-subdir=dev --db-url=mysql://root:password@mariadb/unish_dev -v",
     "unit": "phpunit --colors=always",
     "functional": "phpunit --colors=always --configuration tests",
     "post-update-cmd": [
-        "create-scenario isolation --autoload-dir isolation --autoload-dir internal-copy --keep '\\(psr/log\\|consolidation/config\\|site-alias\\|var-dumper\\|symfony/finder\\|drupal-finder\\|path-util\\|sebastian/version\\|xhprof\\)' 'phpunit/phpunit:^5.5.4'",
+        "create-scenario isolation --autoload-dir isolation --autoload-dir internal-copy --keep '\\(psr/log\\|consolidation/config\\|site-alias\\|var-dumper\\|symfony/finder\\|drupal-finder\\|path-util\\|vlucas/phpdotenv\\|xhprof\\)' 'phpunit/phpunit:^5.5.4'",
         "create-scenario isolation-phpunit4 --base isolation --autoload-dir isolation --autoload-dir internal-copy 'phpunit/phpunit:^4.8.36'"
     ]
   },

@@ -80,6 +80,8 @@ class UpdateDBCommands extends DrushCommands
      * @bootstrap full
      * @kernel update
      * @aliases entup,entity-updates
+     * @usage drush updatedb:status --entity-updates | grep entity-update
+     *   Use updatedb:status to detect pending updates.
      *
      */
     public function entityUpdates($options = ['cache-clear' => true])
@@ -92,7 +94,9 @@ class UpdateDBCommands extends DrushCommands
             throw new \Exception('Entity updates not run.');
         }
 
-        drush_drupal_cache_clear_all();
+        if ($options['cache-clear']) {
+            drush_drupal_cache_clear_all();
+        }
 
         $this->logger()->success(dt('Finished performing updates.'));
     }

@@ -132,9 +132,6 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         }
 
         $msg = 'Starting Drupal installation. This takes a while.';
-        if (is_null($options['notify'])) {
-            $msg .= ' Consider using the --notify global option.';
-        }
         $this->logger()->notice(dt($msg));
 
         // Define some functions which alter away the install_finished task.
