@@ -312,7 +312,6 @@ class SqlBase implements ConfigAwareInterface
         // We show the query when --debug is used and this function created the temp file.
         $this->logQueryInDebugMode($query, $input_file_original);
 
-        // This Process deliberately ignores simulated mode.
         $process = Drush::process($exec);
         $process->setIsSimulated(false);
         $process->run();
