@@ -92,7 +92,9 @@ class UpdateDBCommands extends DrushCommands
             throw new \Exception('Entity updates not run.');
         }
 
-        drush_drupal_cache_clear_all();
+        if ($options['cache-clear']) {
+            drush_drupal_cache_clear_all();
+        }
 
         $this->logger()->success(dt('Finished performing updates.'));
     }
