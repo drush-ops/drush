@@ -230,6 +230,10 @@ function drush_command() {
   if (!drush_get_error()) {
     $result = _drush_invoke_hooks($command, $args);
   }
+  
+  if ($result === FALSE && !drush_get_error()) {
+    drush_set_error('DRUSH_COMMAND_FAILED', dt('The Drush command ' . $command['command'] . ' failed.'));
+  }
 
   if (!drush_get_error()) {
     foreach (drush_command_implements('drush_exit') as $name) {
