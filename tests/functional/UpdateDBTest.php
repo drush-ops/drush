@@ -218,6 +218,18 @@ LOG;
     public function testUpdateModuleWithServiceDependency()
     {
         $root = $this->webroot();
+
+        // This test currently depends on a patched version of Drupal core. Skip
+        // the test if the patch is not present. We detect this by checking if
+        // the test module `new_dependency_test` is available.
+        // @see https://www.drupal.org/project/drupal/issues/2863986
+        // To apply the patch, execute the following in the `./sut/` folder:
+        // $ curl -S https://www.drupal.org/files/issues/2863986-62.patch | patch -p1
+        $filename = $root . '/core/modules/system/tests/modules/new_dependency_test';
+        if (!file_exists($filename)) {
+            $this->markTestSkipped('Requires a patched Drupal. See https://github.com/drush-ops/drush/pull/3738.');
+        }
+
         $this->setUpDrupal(1, true);
         $options = [
             'include' => __DIR__,
