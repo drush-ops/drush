@@ -26,6 +26,7 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * @default-fields name,description
      * @aliases core-global-options
      *
+     * @filter-default-field name
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function globalOptions($options = ['format' => 'table'])

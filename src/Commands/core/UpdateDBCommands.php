@@ -116,6 +116,7 @@ class UpdateDBCommands extends DrushCommands
      *   description: Description
      *   type: Type
      * @default-fields module,update_id,type,description
+     * @filter-default-field type
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function updatedbStatus($options = ['format'=> 'table', 'entity-updates' => true, 'post-updates' => true])
