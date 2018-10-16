@@ -15,7 +15,7 @@ Docker
 Drush's own tests may be run within provided Docker containers (see docker-compose.yml):
 
 - Start containers: `docker-compose up -d`
-- Run a test: `docker-compose exec php composer functional -- --filter testUserRole`
+- Run a test: `docker-compose exec drupal composer functional -- --filter testUserRole`
 - To change configuration, copy .env.example to .env, edit to taste, and run `docker-compose up -d` again
 - See that .env.example file for help on enabling Xdebug.
 
