@@ -240,7 +240,11 @@ function drush_sql_create() {
     }
   }
 
-  return $sql->createdb(TRUE);
+  $result = $sql->createdb(TRUE);
+  if (!$result) {
+    drush_set_error('DRUSH_SQL_CREATE_ERROR', dt('SQL create database error occurred.'));
+  }
+  return $result;
 }
 
 
