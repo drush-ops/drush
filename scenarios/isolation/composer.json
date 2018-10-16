@@ -36,7 +36,7 @@
     "consolidation/site-alias": "^1.1.5",
     "psr/log": "~1.0",
     "symfony/finder": "^3.4",
-    "symfony/var-dumper": "^3.4",
+    "symfony/var-dumper": "^3.4 || ^4.0",
     "webflo/drupal-finder": "^1.1",
     "webmozart/path-util": "^2.1.0"
   },
