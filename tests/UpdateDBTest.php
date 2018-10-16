@@ -219,6 +219,9 @@ LOG;
      */
     public function testUpdateModuleWithServiceDependency()
     {
+
+        $this->markTestSkipped('Requires a patched Drupal. See https://github.com/drush-ops/drush/pull/3735.');
+
         $root = $this->webroot();
         $this->setUpDrupal(1, true);
         $options = [
