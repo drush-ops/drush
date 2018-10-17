@@ -11,5 +11,5 @@
  * @see core/modules/statistics/statistics.php
  */
 
-// Use include instead of return because
+// Use include instead of return because See https://github.com/drush-ops/drush/issues/3741
 return include __DIR__ . '/../vendor/autoload.php';
