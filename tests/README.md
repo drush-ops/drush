@@ -7,6 +7,9 @@ high quality, our tests are run on every push.
 
 Usage
 --------
+1. git clone https://github.com/drush-ops/drush.git
+1. cd drush
+1. composer install
 1. Review the configuration settings in [tests/phpunit.xml.dist](phpunit.xml.dist). If customization is needed, copy to phpunit.xml and edit away.
 1. Run test suite: `composer test`
 
