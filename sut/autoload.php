@@ -11,4 +11,5 @@
  * @see core/modules/statistics/statistics.php
  */
 
-return require __DIR__ . '/../vendor/autoload.php';
+// Use include instead of return because
+return include __DIR__ . '/../vendor/autoload.php';

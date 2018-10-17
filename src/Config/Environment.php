@@ -59,6 +59,10 @@ class Environment
         }
 
         $this->siteLoader = require $autloadFilePath;
+        if ($this->siteLoader === false) {
+            // Nothing more to do. See https://github.com/drush-ops/drush/issues/3741.
+            return $this->loader;
+        }
         if ($this->siteLoader === true) {
             // The autoloader was already required. Assume that Drush and Drupal share an autoloader per
             // "Point autoload.php to the proper vendor directory" - https://www.drupal.org/node/2404989
