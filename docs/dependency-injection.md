@@ -36,7 +36,7 @@ services:
     tags:
       - { name: drush.command }
 ```
-See the [Drupal Documentation](drupal.org) for details on how to inject Drupal services into your command file. The process is exactly the same as using a Drupal services.yml file to inject services into your module classes.
+See the [Drupal Documentation](https://www.drupal.org/docs/8/api/services-and-dependency-injection/services-and-dependency-injection-in-drupal-8) for details on how to inject Drupal services into your command file. The process is exactly the same as using a Drupal services.yml file to inject services into your module classes.
 
 Inflection
 -------------
