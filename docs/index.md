@@ -13,7 +13,7 @@ Resources
 * [General documentation](https://docs.drush.org/) 
 * [API Documentation](https://www.drush.org/api/master/)
 * [Drush Commands](https://drushcommands.com)
-* Subscribe [this atom feed](https://github.com/drush-ops/drush/releases.atom) to receive notification on new releases. Also, [Version eye](https://www.versioneye.com/).
+* Subscribe [this atom feed](https://github.com/drush-ops/drush/releases.atom) to receive notification on new releases.
 * [Drush packages available via Composer](https://packagist.org/?query=drush)
 * [A list of modules that include Drush integration](https://www.drupal.org/project/project_module?f[2]=im_vid_3%3A4654&solrsort=ds_project_latest_release+desc)
 * Drush comes with a [full test suite](https://github.com/drush-ops/drush/blob/master/tests/README.md) powered by [PHPUnit](https://github.com/sebastianbergmann/phpunit). Each commit gets tested by the awesome [Travis.ci continuous integration service](https://travis-ci.org/drush-ops/drush).
