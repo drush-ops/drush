@@ -50,7 +50,7 @@
     "symfony/filesystem": "^3.4 || ^4.0",
     "symfony/finder": "^3.4",
     "symfony/process": "^3.4",
-    "symfony/var-dumper": "^3.4",
+    "symfony/var-dumper": "^3.4 || ^4.0",
     "symfony/yaml": "^3.4",
     "webflo/drupal-finder": "^1.1",
     "webmozart/path-util": "^2.1.0"
