@@ -23,19 +23,18 @@ class SqlDumpTest extends CommandUnishTestCase
         }
 
         $this->setUpDrupal(1, true);
-        $root = $this->webroot();
-        $uri = $this->getUri();
         $full_dump_file_path = self::getSandbox() . DIRECTORY_SEPARATOR . 'full_db.sql';
 
         $options = [
-        'result-file' => $full_dump_file_path,
-        // Last 5 entries are for D8+
-        'skip-tables-list' => 'hist*,cache*,router,config*,watchdog,key_valu*',
-        'yes' => null,
+            'result-file' => $full_dump_file_path,
+            // Last 5 entries are for D8+
+            'skip-tables-list' => 'hist*,cache*,router,config*,watchdog,key_valu*',
+            'yes' => null,
         ];
 
         $this->drush('sql-dump', [], $options + ['simulate' => null]);
-        $this->assertContains('--ignore-table=unish_dev.cache_discovery', $this->getErrorOutput());
+        $expected = $this->dbDriver() == 'mysql' ? '--ignore-table=unish_dev.cache_discovery' : '--exclude-table=cache_discovery';
+        $this->assertContains($expected, $this->getErrorOutput());
 
         // Test --extra-dump option
         if ($this->dbDriver() == 'mysql') {
@@ -63,9 +62,11 @@ class SqlDumpTest extends CommandUnishTestCase
         $this->assertFileExists($full_dump_file_path);
         $full_dump_file = file_get_contents($full_dump_file_path);
         // Test that we have sane contents.
-        $this->assertContains('CREATE TABLE `menu_tree', $full_dump_file);
+        $expected = $this->dbDriver() == 'mysql' ? 'CREATE TABLE `menu_tree' : 'CREATE TABLE public.menu_tree';
+        $this->assertContains($expected, $full_dump_file);
         // Test absence of skip-files-list.
-        $this->assertContains('CREATE TABLE `key_value', $full_dump_file);
+        $expected = $this->dbDriver() == 'mysql' ? 'CREATE TABLE `key_value' : 'CREATE TABLE public.key_value';
+        $this->assertContains($expected, $full_dump_file);
 
     // @todo Aliases to local sites are no longer supported. Throw exception?
     //    $aliasPath = self::getSandbox() . '/aliases';
