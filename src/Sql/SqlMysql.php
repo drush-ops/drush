@@ -2,8 +2,6 @@
 
 namespace Drush\Sql;
 
-use Drush\Drush;
-use Drush\Preflight\PreflightArgs;
 use PDO;
 
 class SqlMysql extends SqlBase

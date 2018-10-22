@@ -4,7 +4,6 @@ namespace Drush\Commands\core;
 use Composer\Semver\Comparator;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Component\FileCache\FileCacheFactory;
-use Drupal\Core\Database\ConnectionNotDefinedException;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;

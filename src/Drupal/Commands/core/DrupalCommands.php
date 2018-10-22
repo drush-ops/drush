@@ -6,10 +6,7 @@ use Drupal\Core\CronInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
-use Drush\Drush;
 use Drush\Utils\StringUtils;
-use Symfony\Component\Finder\Finder;
-use Webmozart\PathUtil\Path;
 
 class DrupalCommands extends DrushCommands
 {

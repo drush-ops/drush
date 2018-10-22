@@ -2,15 +2,10 @@
 
 namespace Drush\Boot;
 
-use Drush\Drush;
-use Drush\Log\LogLevel;
-use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
-
-use Symfony\Component\Console\Input\ArgvInput;
 
 abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInterface
 {

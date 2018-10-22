@@ -4,7 +4,6 @@ namespace Drush\Commands\core;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Webmozart\PathUtil\Path;
 
 class NotifyCommands extends DrushCommands

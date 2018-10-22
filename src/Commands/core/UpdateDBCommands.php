@@ -3,7 +3,6 @@ namespace Drush\Commands\core;
 
 use Consolidation\Log\ConsoleLogLevel;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Utility\Error;
 use Drupal\Core\Entity\EntityStorageException;
 use Drush\Commands\DrushCommands;
