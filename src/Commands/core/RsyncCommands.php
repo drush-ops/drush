@@ -73,9 +73,9 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
 
         $ssh_options = Drush::config()->get('ssh.options', '');
         $exec = "rsync -e 'ssh $ssh_options'". ' '. implode(' ', array_filter($parameters));
-        $exec_result = drush_op_system($exec);
+        $exec_result = Drush::process($exec)->run();
 
-        if ($exec_result == 0) {
+        if ($exec_result === 0) {
             drush_backend_set_result($this->targetEvaluatedPath->fullyQualifiedPath());
         } else {
             throw new \Exception(dt("Could not rsync from !source to !dest", ['!source' => $this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash(), '!dest' => $this->targetEvaluatedPath->fullyQualifiedPath()]));

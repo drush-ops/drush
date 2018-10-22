@@ -10,6 +10,8 @@ services:
       MYSQL_ROOT_PASSWORD: password
     volumes:
       - mariadb-datavolume:/var/lib/mysql
+    ports:
+      - '3006:3306'
 
   # More info at https://github.com/wodby/php
   # We don't want their drupal-php image as that ships with a Drush inside.
@@ -41,6 +43,8 @@ services:
       POSTGRES_USER: unish
     volumes:
       - postgres-datavolume:/var/lib/postgresql/data
+    ports:
+      - '5532:5432'
 
 #data volumes https://docs.docker.com/storage/volumes/
 volumes:

@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Commands;
 
+use Drush\Drush;
 use Drush\Style\DrushStyle;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -80,12 +81,17 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
         }
 
         if (self::input()->isInteractive()) {
-            if (drush_shell_exec_interactive("less %s", $file)) {
-                return;
-            } elseif (drush_shell_exec_interactive("more %s", $file)) {
+            ;
+            $process = Drush::process(['less', $file])->setTty(true);
+            if ($process->run() === 0) {
                 return;
             } else {
-                $this->output()->writeln(file_get_contents($file));
+                $process = Drush::process(['more', $file]);
+                if ($process->run() === 0) {
+                    return;
+                } else {
+                    $this->output()->writeln(file_get_contents($file));
+                }
             }
         }
     }

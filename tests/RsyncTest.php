@@ -7,6 +7,7 @@ namespace Unish;
  *   Tests for rsync command
  *
  * @group commands
+ * @group slow
  */
 class RsyncCase extends CommandUnishTestCase
 {
@@ -34,17 +35,17 @@ class RsyncCase extends CommandUnishTestCase
 
         // Test simulated simple rsync with two local sites
         $this->drush('rsync', ['@example.stage', '@example.dev'], $options, null, null, self::EXIT_SUCCESS, '2>&1');
-        $expected = "Calling system(rsync -e 'ssh ' -akz /path/to/stage /path/to/dev);";
+        $expected = "[notice] Simulating: rsync -e 'ssh ' -akz /path/to/stage /path/to/dev";
         $this->assertOutputEquals($expected);
 
         // Test simulated rsync with relative paths
         $this->drush('rsync', ['@example.dev:files', '@example.stage:files'], $options, null, null, self::EXIT_SUCCESS, '2>&1');
-        $expected = "Calling system(rsync -e 'ssh ' -akz /path/to/dev/files /path/to/stage/files);";
+        $expected = "[notice] Simulating: rsync -e 'ssh ' -akz /path/to/dev/files /path/to/stage/files";
         $this->assertOutputEquals($expected);
 
         // Test simulated rsync on local machine with a remote target
         $this->drush('rsync', ['@example.dev:files', '@example.live:files'], $options, null, null, self::EXIT_SUCCESS, '2>&1');
-        $expected = "Calling system(rsync -e 'ssh -o PasswordAuthentication=example' -akz /path/to/dev/files www-admin@service-provider.com:/path/on/service-provider/files);";
+        $expected = "[notice] Simulating: rsync -e 'ssh -o PasswordAuthentication=example' -akz /path/to/dev/files www-admin@service-provider.com:/path/on/service-provider/files";
         $this->assertOutputEquals($expected);
 
         // Test simulated backend invoke.
@@ -108,13 +109,8 @@ class RsyncCase extends CommandUnishTestCase
     public function testRsyncAndPercentFiles()
     {
         $site = current($this->getAliases());
-        $uri = $this->getUri();
         $options['simulate'] = null;
-        $this->drush('core-rsync', ["$site:%files", "/tmp"], $options, null, null, self::EXIT_SUCCESS, '2>&1;');
-        $output = $this->getOutput();
-        $level = $this->logLevel();
-        $pattern = in_array($level, ['verbose', 'debug']) ? "Calling system(rsync -e 'ssh ' -akzv --stats --progress %s /tmp);" : "Calling system(rsync -e 'ssh ' -akz %s /tmp);";
-        $expected = sprintf($pattern, $this->webroot(). "/sites/$uri/files/");
-        $this->assertEquals($expected, $output);
+        $this->drush('core:rsync', ["$site:%files", "/tmp"], $options, null, null, self::EXIT_SUCCESS, '2>&1;');
+        $this->assertContains('[notice] Simulating: rsync -e \'ssh \' -akz __SUT__/sut/sites/dev/files/ /tmp', $this->getSimplifiedOutput());
     }
 }

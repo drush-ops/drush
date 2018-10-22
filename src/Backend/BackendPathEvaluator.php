@@ -74,7 +74,7 @@ class BackendPathEvaluator
         // The drupal:directory command uses a path evaluator, which
         // calls this function, so we cannot use dd here, as that
         // would be recursive.
-        $values = drush_invoke_process($aliasRecord, "core-status", [], ['project' => $pathAlias], ['integrate' => false, 'override-simulated' => true]);
+        $values = drush_invoke_process($aliasRecord, "core:status", [], ['project' => $pathAlias], ['integrate' => false, 'override-simulated' => true]);
         $statusValues = $values['object'];
         if (isset($statusValues[$pathAlias])) {
             return $statusValues[$pathAlias];
