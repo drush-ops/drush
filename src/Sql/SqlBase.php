@@ -276,7 +276,7 @@ class SqlBase implements ConfigAwareInterface
         $input_file_original = $input_file;
         if ($input_file && drush_file_is_tarball($input_file)) {
             $process = Drush::process(['gzip', '-d', $input_file]);
-            $process->setIsSimulated(false);
+            $process->setSimulated(false);
             $process->run();
             $this->setProcess($process);
             if ($process->isSuccessful()) {
@@ -313,7 +313,7 @@ class SqlBase implements ConfigAwareInterface
         $this->logQueryInDebugMode($query, $input_file_original);
 
         $process = Drush::process($exec);
-        $process->setIsSimulated(false);
+        $process->setSimulated(false);
         $process->run();
         $success = $process->isSuccessful();
         $this->setProcess($process);

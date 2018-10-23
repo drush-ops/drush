@@ -7,7 +7,7 @@
 namespace Drush;
 
 use Consolidation\SiteAlias\SiteAliasManager;
-use Drush\Process\Process;
+use Drush\Process\ProcessBase;
 use League\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Application;
@@ -275,12 +275,15 @@ class Drush
      * @param int|float|null $timeout     The timeout in seconds or null to disable
      * @param array          $options     An array of options for proc_open
      *
-     * @throws RuntimeException When proc_open is not installed.
-     * @return Process
+     * @return ProcessBase
      */
     public static function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60, array $options = null)
     {
-        return new Process($commandline, $cwd, $env, $input, $timeout, $options);
+        $process = new ProcessBase($commandline, $cwd, $env, $input, $timeout, $options);
+        $process->setSimulated(Drush::simulate());
+        $process->setVerbose(Drush::verbose());
+        $process->setLogger(Drush::logger());
+        return $process;
     }
 
     /**
