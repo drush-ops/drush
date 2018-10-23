@@ -11,7 +11,7 @@ use Symfony\Component\Process\Process as SymfonyProcess;
  * - Supports simulated mode. Typically enabled via a --simulate option.
  * - Supports verbose mode - logs all runs.
  */
-class Process extends SymfonyProcess
+class ProcessBase extends SymfonyProcess
 {
     private $simulated = false;
 
