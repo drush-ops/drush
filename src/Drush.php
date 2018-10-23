@@ -280,8 +280,8 @@ class Drush
     public static function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60, array $options = null)
     {
         $process = new Process($commandline, $cwd, $env, $input, $timeout, $options);
-        $process->setIsSimulated(Drush::simulate());
-        $process->setIsVerbose(Drush::verbose());
+        $process->setSimulated(Drush::simulate());
+        $process->setVerbose(Drush::verbose());
         $process->setLogger(Drush::logger());
         return $process;
     }
