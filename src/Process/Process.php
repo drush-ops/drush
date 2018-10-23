@@ -3,6 +3,7 @@
 namespace Drush\Process;
 
 use Drush\Drush;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\Process as SymfonyProcess;
 
 /**
@@ -13,17 +14,20 @@ use Symfony\Component\Process\Process as SymfonyProcess;
  */
 class Process extends SymfonyProcess
 {
-    private $isSimulated;
+    private $isSimulated = false;
 
-    private $isVerbose;
+    private $isVerbose = false;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * @inheritDoc
      */
     public function __construct($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60, array $options = null)
     {
-        $this->setIsSimulated(Drush::simulate());
-        $this->setIsVerbose(Drush::verbose());
         parent::__construct($commandline, $cwd, $env, $input, $timeout, $options);
     }
 
@@ -60,17 +64,33 @@ class Process extends SymfonyProcess
     }
 
     /**
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
      * @inheritDoc
      */
     public function start(callable $callback = null)
     {
         $cmd = $this->getCommandLine();
         if ($this->isSimulated()) {
-            Drush::logger()->notice('Simulating: ' . $cmd);
+            $this->getLogger()->notice('Simulating: ' . $cmd);
             // Run a command that always succeeds.
             $this->setCommandLine('exit 0');
         } elseif ($this->isVerbose()) {
-            Drush::logger()->info('Executing: ' . $cmd);
+            $this->getLogger()->info('Executing: ' . $cmd);
         }
         $return = parent::start($callback);
         // Set command back to original value in case anyone asks.
