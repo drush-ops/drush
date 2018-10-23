@@ -326,7 +326,7 @@ implementing the actual logic.</p>                    </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;<a href="../Drush/Process/Process.html"><abbr title="Drush\Process\Process">Process</abbr></a>
+                    static&nbsp;<a href="../Drush/Process/ProcessBase.html"><abbr title="Drush\Process\ProcessBase">ProcessBase</abbr></a>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_process">process</a>(string|array $commandline, string|null $cwd = null, array $env = null, mixed|null $input = null, int|float|null $timeout = 60, array $options = null)
@@ -934,8 +934,8 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_process">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L281">line 281</a></div>
-        <code>        static            <a href="../Drush/Process/Process.html"><abbr title="Drush\Process\Process">Process</abbr></a>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L280">line 280</a></div>
+        <code>        static            <a href="../Drush/Process/ProcessBase.html"><abbr title="Drush\Process\ProcessBase">ProcessBase</abbr></a>
     <strong>process</strong>(string|array $commandline, string|null $cwd = null, array $env = null, mixed|null $input = null, int|float|null $timeout = 60, array $options = null)
         </code>
     </h3>
@@ -986,21 +986,12 @@ as they can return useful type hints.</p>                            </div>
 
                     <table class="table table-condensed">
         <tr>
-            <td><a href="../Drush/Process/Process.html"><abbr title="Drush\Process\Process">Process</abbr></a></td>
+            <td><a href="../Drush/Process/ProcessBase.html"><abbr title="Drush\Process\ProcessBase">ProcessBase</abbr></a></td>
             <td></td>
         </tr>
     </table>
 
             
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Drush\RuntimeException">RuntimeException</abbr></td>
-                <td>When proc_open is not installed.</td>
-            </tr>
-            </table>
-
             
                     </div>
     </div>
@@ -1008,7 +999,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_simulate">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L289">line 289</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L292">line 292</a></div>
         <code>        static            
     <strong>simulate</strong>()
         </code>
@@ -1029,7 +1020,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_backend">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L297">line 297</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L300">line 300</a></div>
         <code>        static            
     <strong>backend</strong>()
         </code>
@@ -1050,7 +1041,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_affirmative">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L305">line 305</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L308">line 308</a></div>
         <code>        static            
     <strong>affirmative</strong>()
         </code>
@@ -1071,7 +1062,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_negative">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L316">line 316</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L319">line 319</a></div>
         <code>        static            
     <strong>negative</strong>()
         </code>
@@ -1092,7 +1083,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_verbose">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L327">line 327</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L330">line 330</a></div>
         <code>        static            
     <strong>verbose</strong>()
         </code>
@@ -1113,7 +1104,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_debug">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L338">line 338</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L341">line 341</a></div>
         <code>        static            
     <strong>debug</strong>()
         </code>
@@ -1134,7 +1125,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapManager">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L351">line 351</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L354">line 354</a></div>
         <code>        static            <a href="../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a>
     <strong>bootstrapManager</strong>()
         </code>
@@ -1164,7 +1155,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrap">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L361">line 361</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L364">line 364</a></div>
         <code>        static            <a href="../Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a>
     <strong>bootstrap</strong>()
         </code>
@@ -1194,7 +1185,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_redispatchOptions">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L366">line 366</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L369">line 369</a></div>
         <code>        static            
     <strong>redispatchOptions</strong>($input = null)
         </code>

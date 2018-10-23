@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Process\Process | Drush API</title>
+    <title>Drush\Process\ProcessBase | Drush API</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -19,7 +19,7 @@
     
     </head>
 
-    <body id="class" data-name="class:Drush_Process_Process" data-root-path="../../">
+    <body id="class" data-name="class:Drush_Process_ProcessBase" data-root-path="../../">
             <div id="content">
         <div id="left-column">
                 <div id="control-panel">
@@ -66,29 +66,29 @@
                         <div class="namespace-breadcrumbs">
             <ol class="breadcrumb">
                 <li><span class="label label-default">class</span></li>
-                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Process.html">Process</a></li><li class="backslash">\</li><li>Process</li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Process.html">Process</a></li><li class="backslash">\</li><li>ProcessBase</li>
             </ol>
         </div>
                 <div id="page-content">
                 
     <div class="page-header">
         <h1>
-            Process
+            ProcessBase
                 
         </h1>
     </div>
 
     <p>    class
-    <strong>Process</strong>        extends <abbr title="Symfony\Component\Process\Process">Process</abbr>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Process/Process.php">View source</a>)
+    <strong>ProcessBase</strong>        extends <abbr title="Symfony\Component\Process\Process">Process</abbr>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Process/ProcessBase.php">View source</a>)
 </p>
 
         
     
 
             <div class="description">
-            <p>Drush's wrapper around Symfony Process.</p>            <p><ul>
-<li>Supports simulated mode. A user enables this by using --simulate option.</li>
-<li>Logs all commands. Use -v to see them.</li>
+            <p>A wrapper around Symfony Process.</p>            <p><ul>
+<li>Supports simulated mode. Typically enabled via a --simulate option.</li>
+<li>Supports verbose mode - logs all runs.</li>
 </ul>
 </p>                    </div>
     
@@ -100,10 +100,21 @@
             <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getVerbose">getVerbose</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method___construct">__construct</a>($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60, array $options = null)
+                    <a href="#method_setVerbose">setVerbose</a>(bool $verbose)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -114,7 +125,7 @@
                     bool
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_isVerbose">isVerbose</a>()
+                    <a href="#method_getSimulated">getSimulated</a>()
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -125,7 +136,7 @@
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_setIsVerbose">setIsVerbose</a>(bool $isVerbose)
+                    <a href="#method_setSimulated">setSimulated</a>(bool $simulated)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -133,10 +144,10 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    bool
+                    <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_isSimulated">isSimulated</a>()
+                    <a href="#method_getLogger">getLogger</a>()
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -147,7 +158,7 @@
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_setIsSimulated">setIsSimulated</a>(bool $isSimulated)
+                    <a href="#method_setLogger">setLogger</a>(<abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -171,64 +182,10 @@
 
             <div id="method-details">
                     <div class="method-item">
-                    <h3 id="method___construct">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Process/Process.php#L23">line 23</a></div>
-        <code>                    
-    <strong>__construct</strong>($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60, array $options = null)
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td></td>
-                <td>$commandline</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$cwd</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$env</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$input</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$timeout</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$options</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_isVerbose">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Process/Process.php#L33">line 33</a></div>
+                    <h3 id="method_getVerbose">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Process/ProcessBase.php#L28">line 28</a></div>
         <code>                    bool
-    <strong>isVerbose</strong>()
+    <strong>getVerbose</strong>()
         </code>
     </h3>
     <div class="details">
@@ -253,10 +210,10 @@
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_setIsVerbose">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Process/Process.php#L41">line 41</a></div>
+                    <h3 id="method_setVerbose">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Process/ProcessBase.php#L36">line 36</a></div>
         <code>                    
-    <strong>setIsVerbose</strong>(bool $isVerbose)
+    <strong>setVerbose</strong>(bool $verbose)
         </code>
     </h3>
     <div class="details">
@@ -269,7 +226,7 @@
                     <table class="table table-condensed">
                     <tr>
                 <td>bool</td>
-                <td>$isVerbose</td>
+                <td>$verbose</td>
                 <td></td>
             </tr>
             </table>
@@ -282,10 +239,10 @@
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_isSimulated">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Process/Process.php#L49">line 49</a></div>
+                    <h3 id="method_getSimulated">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Process/ProcessBase.php#L44">line 44</a></div>
         <code>                    bool
-    <strong>isSimulated</strong>()
+    <strong>getSimulated</strong>()
         </code>
     </h3>
     <div class="details">
@@ -310,10 +267,10 @@
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_setIsSimulated">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Process/Process.php#L57">line 57</a></div>
+                    <h3 id="method_setSimulated">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Process/ProcessBase.php#L52">line 52</a></div>
         <code>                    
-    <strong>setIsSimulated</strong>(bool $isSimulated)
+    <strong>setSimulated</strong>(bool $simulated)
         </code>
     </h3>
     <div class="details">
@@ -326,7 +283,64 @@
                     <table class="table table-condensed">
                     <tr>
                 <td>bool</td>
-                <td>$isSimulated</td>
+                <td>$simulated</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getLogger">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Process/ProcessBase.php#L60">line 60</a></div>
+        <code>                    <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
+    <strong>getLogger</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setLogger">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Process/ProcessBase.php#L68">line 68</a></div>
+        <code>                    
+    <strong>setLogger</strong>(<abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr></td>
+                <td>$logger</td>
                 <td></td>
             </tr>
             </table>
@@ -340,7 +354,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_start">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Process/Process.php#L65">line 65</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Process/ProcessBase.php#L76">line 76</a></div>
         <code>                    
     <strong>start</strong>(callable $callback = null)
         </code>
