@@ -296,10 +296,14 @@ class Drush
      * @return SiteProcess
      */
     public static function siteProcess(AliasRecord $siteAlias, $command, $args, $options = []) {
+        // Fill in the root and URI from the site alias, if the caller
+        // did not already provide them in $options.
+        $options += [
+            'uri' => $siteAlias->uri(),
+            'root' => $siteAlias->root(),
+        ];
         array_unshift($args, $command);
-        array_unshift($args, '--uri=' . $siteAlias->uri());
-        array_unshift($args, '--root=' . $siteAlias->root());
-        array_unshift($args, $siteAlias->get('paths.drush-script'));
+        array_unshift($args, $siteAlias->get('paths.drush-script', 'drush'));
 
         $process = new SiteProcess($siteAlias, $args, $options);
         $process->setSimulated(Drush::simulate());

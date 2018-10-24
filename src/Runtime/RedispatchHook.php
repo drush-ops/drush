@@ -2,14 +2,16 @@
 
 namespace Drush\Runtime;
 
+use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface;
 use Consolidation\SiteAlias\AliasRecord;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Drush;
-use Robo\Contract\ConfigAwareInterface;
-use Symfony\Component\Console\Input\InputInterface;
-use Consolidation\AnnotatedCommand\AnnotationData;
 use Drush\Log\LogLevel;
 use Robo\Common\ConfigAwareTrait;
+use Robo\Contract\ConfigAwareInterface;
+use Symfony\Component\Console\Input\InputInterface;
 
 /**
  * The RedispatchHook is installed as an init hook that runs before
@@ -17,9 +19,10 @@ use Robo\Common\ConfigAwareTrait;
  * that points at a remote machine, then we will stop execution of the
  * current command and instead run the command remotely.
  */
-class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface
+class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, SiteAliasManagerAwareInterface
 {
     use ConfigAwareTrait;
+    use SiteAliasManagerAwareTrait;
 
     /**
      * Check to see if it is necessary to redispatch to a remote site.
@@ -116,8 +119,7 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface
         ];
         $context = null;
 
-        // @inject this somehow.
-        $aliasManager = Drush::aliasManager();
+        $aliasManager = $this->siteAliasManager();
         $process = Drush::siteProcess($aliasManager->getSelf(), $command_name, $redispatchArgs, $redispatchOptions);
         $process->mustRun();
 
