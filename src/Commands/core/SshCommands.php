@@ -60,7 +60,7 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
         if ($cd) {
             $exec = $siteProcess->getCommandLine();
             // Shall we still use drush_escapeshellarg()?
-            $exec = 'cd ' . drush_escapeshellarg($alias->root()) . ' && ' . $exec;
+            $exec .= ' cd ' . drush_escapeshellarg($alias->root());
             $siteProcess->setCommandLine($exec);
         }
         // @todo Append the bash fragment.
