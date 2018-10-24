@@ -4,6 +4,7 @@ namespace Drush\Commands\core;
 use Drush\Commands\DrushCommands;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Drush\Drush;
 
 class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
@@ -54,6 +55,16 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
             $command = 'bash -l';
             $interactive = true;
         }
+
+        $siteProcess = Drush::siteProcess($alias, $args, []);
+        if ($cd) {
+            $exec = $siteProcess->getCommandLine();
+            // Shall we still use drush_escapeshellarg()?
+            $exec = 'cd ' . drush_escapeshellarg($alias->root()) . ' && ' . $exec;
+            $siteProcess->setCommandLine($exec);
+        }
+        // @todo Append the bash fragment.
+        $siteProcess->mustRun();
 
         $cmd = drush_shell_proc_build($alias, $command, $cd, $interactive);
         $status = drush_shell_proc_open($cmd);

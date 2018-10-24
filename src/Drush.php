@@ -6,7 +6,9 @@
  */
 namespace Drush;
 
+use Consolidation\SiteAlias\AliasRecord;
 use Consolidation\SiteAlias\SiteAliasManager;
+use Consolidation\SiteProcess\SiteProcess;
 use Drush\Process\ProcessBase;
 use League\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -280,6 +282,20 @@ class Drush
     public static function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60, array $options = null)
     {
         $process = new ProcessBase($commandline, $cwd, $env, $input, $timeout, $options);
+        $process->setSimulated(Drush::simulate());
+        $process->setVerbose(Drush::verbose());
+        $process->setLogger(Drush::logger());
+        return $process;
+    }
+
+    /**
+     * @param AliasRecord $siteAlias
+     * @param array $args
+     * @param array $options
+     * @return SiteProcess
+     */
+    public static function siteProcess(AliasRecord $siteAlias, $args, $options = []) {
+        $process = new SiteProcess($siteAlias, $args, $options);
         $process->setSimulated(Drush::simulate());
         $process->setVerbose(Drush::verbose());
         $process->setLogger(Drush::logger());
