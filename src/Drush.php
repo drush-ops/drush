@@ -309,7 +309,7 @@ class Drush
         $process->setSimulated(Drush::simulate());
         $process->setVerbose(Drush::verbose());
         $process->setLogger(Drush::logger());
-        $process->setTty(true);
+        // $process->setTty(true);
         return $process;
     }
 
