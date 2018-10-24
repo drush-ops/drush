@@ -290,15 +290,22 @@ class Drush
 
     /**
      * @param AliasRecord $siteAlias
+     * @param string $command
      * @param array $args
      * @param array $options
      * @return SiteProcess
      */
-    public static function siteProcess(AliasRecord $siteAlias, $args, $options = []) {
+    public static function siteProcess(AliasRecord $siteAlias, $command, $args, $options = []) {
+        array_unshift($args, $command);
+        array_unshift($args, '--uri=' . $siteAlias->uri());
+        array_unshift($args, '--root=' . $siteAlias->root());
+        array_unshift($args, $siteAlias->get('paths.drush-script'));
+
         $process = new SiteProcess($siteAlias, $args, $options);
         $process->setSimulated(Drush::simulate());
         $process->setVerbose(Drush::verbose());
         $process->setLogger(Drush::logger());
+        $process->setTty(true);
         return $process;
     }
 

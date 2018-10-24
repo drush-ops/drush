@@ -3,6 +3,7 @@
 namespace Drush\Runtime;
 
 use Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface;
+use Consolidation\SiteAlias\AliasRecord;
 use Drush\Drush;
 use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
@@ -114,6 +115,11 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface
             'uri' => $input->getOption('uri'),
         ];
         $context = null;
+
+        // @inject this somehow.
+        $aliasManager = Drush::aliasManager();
+        $process = Drush::siteProcess($aliasManager->getSelf(), $command_name, $redispatchArgs, $redispatchOptions);
+        $process->mustRun();
 
         $values = drush_backend_invoke_concurrent(
             $invocations,
