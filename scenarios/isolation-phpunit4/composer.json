@@ -30,7 +30,7 @@
     }
   },
   "require": {
-    "php": ">=5.6.0",
+    "php": ">=7.1",
     "ext-dom": "*",
     "consolidation/config": "^1.1.0",
     "consolidation/site-alias": "^1.1.5",

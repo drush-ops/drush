@@ -295,7 +295,8 @@ class Drush
      * @param array $options
      * @return SiteProcess
      */
-    public static function siteProcess(AliasRecord $siteAlias, $command, $args, $options = []) {
+    public static function siteProcess(AliasRecord $siteAlias, $command, $args, $options = [], $control = [])
+    {
         // Fill in the root and URI from the site alias, if the caller
         // did not already provide them in $options.
         $options += [
@@ -305,11 +306,15 @@ class Drush
         array_unshift($args, $command);
         array_unshift($args, $siteAlias->get('paths.drush-script', 'drush'));
 
-        $process = new SiteProcess($siteAlias, $args, $options);
+        return static::siteProcessCommand($siteAlias, $args, $options, $control);
+    }
+
+    public static function siteProcessCommand(AliasRecord $siteAlias, $args, $options = [], $control = [])
+    {
+        $process = new SiteProcess($siteAlias, $args, $options, $control);
         $process->setSimulated(Drush::simulate());
         $process->setVerbose(Drush::verbose());
         $process->setLogger(Drush::logger());
-        $process->setTty(true);
         return $process;
     }
 
