@@ -82,7 +82,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         if (!$targetRecord = $manager->get($target)) {
             throw new \Exception(dt('Error: no alias record could be found for target !target', ['!target' => $target]));
         }
-        if (!$source_db_name = $this->databaseName($sourceRecord)) {
+        if (!$commandData->input()->getOption('no-dump') && !$source_db_name = $this->databaseName($sourceRecord)) {
             throw new \Exception(dt('Error: no database record could be found for source !source', ['!source' => $source]));
         }
         if (!$target_db_name = $this->databaseName($targetRecord)) {
@@ -112,9 +112,21 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
     public function databaseName(AliasRecord $record)
     {
-        if ($record->isRemote() && preg_match('#\.simulated$#', $record->remoteHost())) {
+        if ($record->isRemote() && Drush::simulate()) {
             return 'simulated_db';
         }
+
+        $process = Drush::siteProcess($record, 'core-status', [], ['format' => 'json']);
+        $process->setSimulated(false);
+        try {
+            $process->mustRun();
+            $output = $process->getOutput();
+            $json = json_decode($output);
+            return $json->db-name;
+        } catch (\Exception $e) {
+            // Do nothing.
+        }
+
         $values = drush_invoke_process($record, "core-status", [], [], ['integrate' => false, 'override-simulated' => true]);
         if (is_array($values) && ($values['error_status'] == 0)) {
             return $values['object']['db-name'];
@@ -181,6 +193,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         } else {
             $tmp = '/tmp'; // Our fallback plan.
             $this->logger()->notice(dt('Starting to discover temporary files directory on target.'));
+
             $return = drush_invoke_process($targetRecord, 'core-status', [], [], ['integrate' => false, 'override-simulated' => true]);
             if (!$return['error_status'] && isset($return['object']['drush-temp'])) {
                 $tmp = $return['object']['drush-temp'];

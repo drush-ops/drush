@@ -315,6 +315,7 @@ class Drush
         $process->setSimulated(Drush::simulate());
         $process->setVerbose(Drush::verbose());
         $process->setLogger(Drush::logger());
+
         return $process;
     }
 
