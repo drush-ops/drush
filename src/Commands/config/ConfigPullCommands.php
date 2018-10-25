@@ -59,9 +59,10 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
         }
         $this->logger()
           ->notice(dt('Starting to rsync configuration files from !source to !dest.', [
-          '!source' => "$source:$export_path",
-          '!dest' => $destinationHostPath->getOriginal(),
-         ]));
+              '!source' => "$source:$export_path",
+              '!dest' => $destinationHostPath->getOriginal(),
+          ])
+        );
         $args = ["$source:$export_path", $destinationHostPath->getOriginal()];
         $options_double_dash = [
             '--remove-source-files',

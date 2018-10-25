@@ -47,7 +47,7 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
             $options['tty'] = true;
         }
 
-        $siteProcess = Drush::siteProcessCommand($alias, $args, [], $control);
+        $siteProcess = Drush::siteProcessCommand($alias, $args);
         $siteProcess->setTty($options['tty']);
         $siteProcess->mustRun();
     }
