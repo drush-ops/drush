@@ -39,10 +39,23 @@ jobs:
       - run: composer install
       - run: composer functional
 
+  build_56:
+    <<: *defaults
+    docker:
+      - image: circleci/php:5.6-apache-node
+        environment:
+          - MYSQL_HOST=127.0.0.1
+      - image: circleci/mysql:5.7.18
+    steps:
+      - checkout
+      - run: $HOME/drush/.circleci/setup.sh
+      - run: composer install
+      - run: composer functional
+
 workflows:
   version: 2
   build_test:
     jobs:
       - build
       - build_highest
-
+      - build_56
