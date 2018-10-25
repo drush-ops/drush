@@ -37,7 +37,7 @@
     "consolidation/annotated-command": "^2.9.1",
     "consolidation/config": "^1.1.0",
     "consolidation/filter-via-dot-access-data": "^0.4",
-    "consolidation/output-formatters": "dev-remove-can-be-formatted",
+    "consolidation/output-formatters": "^3.3.1",
     "consolidation/robo": "^1.1.5",
     "consolidation/site-alias": "^1.1.5",
     "consolidation/site-process": "^1.0@dev",
