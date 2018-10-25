@@ -152,7 +152,7 @@ class ConfigCommands extends DrushCommands
      * @aliases cedit,config-edit
      * @validate-module-enabled config
      */
-    public function edit($config_name)
+    public function edit($config_name, $options = [])
     {
         $config = $this->getConfigFactory()->get($config_name);
         $active_storage = $config->getStorage();
@@ -169,8 +169,8 @@ class ConfigCommands extends DrushCommands
         // Perform import operation if user did not immediately exit editor.
         if (!$options['bg']) {
             $options = Drush::redispatchOptions()   + ['partial' => true, 'source' => $temp_dir];
-            $backend_options = ['interactive' => true];
-            return (bool) drush_invoke_process('@self', 'config-import', [], $options, $backend_options);
+            $process = Drush::siteProcess('@self', 'config-import', [], $options);
+            $process->mustRun();
         }
     }
 

@@ -47,23 +47,21 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $sourceRecord = $manager->get($source);
         $targetRecord = $manager->get($target);
 
-        $backend_options = [];
+        // Append --strict in case we are calling older versions of Drush.
         $global_options = Drush::redispatchOptions()  + ['strict' => 0];
 
         // Create target DB if needed.
         if ($options['create-db']) {
             $this->logger()->notice(dt('Starting to create database on target.'));
-            $return = drush_invoke_process($target, 'sql-create', [], $global_options, $backend_options);
-            if ($return['error_status']) {
-                throw new \Exception(dt('sql-create failed.'));
-            }
+            $process = Drush::siteProcess($targetRecord, 'sql-create', [], $global_options);
+            $process->mustRun();
         }
 
-        $source_dump_path = $this->dump($options, $global_options, $sourceRecord, $backend_options);
+        $source_dump_path = $this->dump($options, $global_options, $sourceRecord);
 
-        $target_dump_path = $this->rsync($options, $backend_options, $sourceRecord, $targetRecord, $source_dump_path);
+        $target_dump_path = $this->rsync($options, $sourceRecord, $targetRecord, $source_dump_path);
 
-        $this->import($global_options, $target_dump_path, $targetRecord, $backend_options);
+        $this->import($global_options, $target_dump_path, $targetRecord);
     }
 
     /**
@@ -121,15 +119,10 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         try {
             $process->mustRun();
             $output = $process->getOutput();
-            $json = json_decode($output);
-            return $json->db-name;
+            $json = json_decode($output, true);
+            return $json['db-name'];
         } catch (\Exception $e) {
-            // Do nothing.
-        }
-
-        $values = drush_invoke_process($record, "core-status", [], [], ['integrate' => false, 'override-simulated' => true]);
-        if (is_array($values) && ($values['error_status'] == 0)) {
-            return $values['object']['db-name'];
+            // Do nothing, since thats what the prior code did.
         }
     }
 
@@ -139,13 +132,12 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @param $options
      * @param $global_options
      * @param $sourceRecord
-     * @param $backend_options
      *
      * @return string
      *   Path to the source dump file.
      * @throws \Exception
      */
-    public function dump($options, $global_options, $sourceRecord, $backend_options)
+    public function dump($options, $global_options, $sourceRecord)
     {
         $dump_options = $global_options + [
             'gzip' => true,
@@ -153,13 +145,13 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         ];
         if (!$options['no-dump']) {
             $this->logger()->notice(dt('Starting to dump database on source.'));
-            $return = drush_invoke_process($sourceRecord, 'sql-dump', [], $dump_options, $backend_options);
-            if ($return['error_status']) {
-                throw new \Exception(dt('sql-dump failed.'));
-            } elseif (Drush::simulate()) {
+            $process = Drush::siteProcess($sourceRecord, 'sql-dump', [], $dump_options);
+            $process->mustRun();
+
+            if (Drush::simulate()) {
                 $source_dump_path = '/simulated/path/to/dump.tgz';
             } else {
-                $source_dump_path = $return['object'];
+                $source_dump_path = trim($process->getOutput());
                 if (!is_string($source_dump_path)) {
                     throw new \Exception(dt('The Drush sql-dump command did not report the path to the dump file produced.  Try upgrading the version of Drush you are using on the source machine.'));
                 }
@@ -172,7 +164,6 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
     /**
      * @param array $options
-     * @param array $backend_options
      * @param AliasRecord $sourceRecord
      * @param AliasRecord $targetRecord
      * @param $source_dump_path
@@ -180,33 +171,33 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      *   Path to the target file.
      * @throws \Exception
      */
-    public function rsync($options, $backend_options, AliasRecord $sourceRecord, AliasRecord $targetRecord, $source_dump_path)
+    public function rsync($options, AliasRecord $sourceRecord, AliasRecord $targetRecord, $source_dump_path)
     {
         $do_rsync = !$options['no-sync'];
         // Determine path/to/dump on target.
         if ($options['target-dump']) {
             $target_dump_path = $options['target-dump'];
-            $backend_options['interactive'] = false;  // @temporary: See https://github.com/drush-ops/drush/pull/555
         } elseif (!$sourceRecord->isRemote() && !$targetRecord->isRemote()) {
             $target_dump_path = $source_dump_path;
             $do_rsync = false;
         } else {
             $tmp = '/tmp'; // Our fallback plan.
             $this->logger()->notice(dt('Starting to discover temporary files directory on target.'));
+            $process = Drush::siteProcess($targetRecord, 'core-status', []);
+            $process->setSimulated(false);
+            $process->run();
 
-            $return = drush_invoke_process($targetRecord, 'core-status', [], [], ['integrate' => false, 'override-simulated' => true]);
-            if (!$return['error_status'] && isset($return['object']['drush-temp'])) {
-                $tmp = $return['object']['drush-temp'];
+            if ($process->isSuccessful()) {
+                $tmp = $process->getOutput();
             }
             $target_dump_path = Path::join($tmp, basename($source_dump_path));
-            $backend_options['interactive'] = false;  // No need to prompt as target is a tmp file.
         }
 
         if ($do_rsync) {
             $rsync_options = [];
             if (!$options['no-dump']) {
                 // Cleanup if this command created the dump file.
-                $rsync_options[] = '--remove-source-files';
+                $rsync_options['remove-source-files'] = true;
             }
             if (!$runner = $options['runner']) {
                 $runner = $sourceRecord->isRemote() && $targetRecord->isRemote() ? $targetRecord : '@self';
@@ -217,13 +208,9 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
             if (($runner == 'target') || ($runner == 'destination')) {
                 $runner = $targetRecord;
             }
-            // Since core-rsync is a strict-handling command and drush_invoke_process() puts options at end, we can't send along cli options to rsync.
-            // Alternatively, add options like ssh.options to a site alias (usually on the machine that initiates the sql-sync).
-            $return = drush_invoke_process($runner, 'core-rsync', array_merge([$sourceRecord->name() . ":$source_dump_path", $targetRecord->name() . ":$target_dump_path", '--'], $rsync_options), [], $backend_options);
             $this->logger()->notice(dt('Copying dump file from source to target.'));
-            if ($return['error_status']) {
-                throw new \Exception(dt('core-rsync failed.'));
-            }
+            $process = Drush::siteProcess($runner, 'core-rsync', array_merge($sourceRecord->name() . ":$source_dump_path", $targetRecord->name() . ":$target_dump_path", '--', $rsync_options));
+            $process->mustRun();
         }
         return $target_dump_path;
     }
@@ -234,18 +221,15 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @param $global_options
      * @param $target_dump_path
      * @param $targetRecord
-     * @param $backend_options
      */
-    public function import($global_options, $target_dump_path, $targetRecord, $backend_options)
+    public function import($global_options, $target_dump_path, $targetRecord)
     {
         $this->logger()->notice(dt('Starting to import dump file onto target database.'));
         $query_options = $global_options + [
             'file' => $target_dump_path,
             'file-delete' => true,
         ];
-        $return = drush_invoke_process($targetRecord, 'sql-query', [], $query_options, $backend_options);
-        if ($return['error_status']) {
-            throw new Exception(dt('Failed to import !dump into target.', ['!dump' => $target_dump_path]));
-        }
+        $process = Drush::siteProcess($targetRecord, 'sql-query', [], $query_options);
+        $process->mustRun();
     }
 }

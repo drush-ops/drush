@@ -184,7 +184,7 @@ class SqlBase implements ConfigAwareInterface
         if ($process->isSuccessful()) {
             if ($file) {
                 drush_log(dt('Database dump saved to !path', ['!path' => $file]), LogLevel::SUCCESS);
-                drush_backend_set_result($file);
+                return $file;
             }
         } else {
             return drush_set_error('DRUSH_SQL_DUMP_FAIL', 'Database dump failed');
