@@ -209,7 +209,10 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
                 $runner = $targetRecord;
             }
             $this->logger()->notice(dt('Copying dump file from source to target.'));
-            $process = Drush::siteProcess($runner, 'core-rsync', array_merge($sourceRecord->name() . ":$source_dump_path", $targetRecord->name() . ":$target_dump_path", '--', $rsync_options));
+            if (is_string($runner)) {
+                $runner = $this->siteAliasManager()->get($runner);
+            }
+            $process = Drush::siteProcess($runner, 'core-rsync', [$sourceRecord->name() . ":$source_dump_path", $targetRecord->name() . ":$target_dump_path", '--'], $rsync_options);
             $process->mustRun();
         }
         return $target_dump_path;
