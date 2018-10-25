@@ -3,6 +3,8 @@ namespace Drush\Commands\core;
 
 use Consolidation\Log\ConsoleLogLevel;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Utility\Error;
 use Drupal\Core\Entity\EntityStorageException;
@@ -12,8 +14,10 @@ use Drush\Exceptions\UserAbortException;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class UpdateDBCommands extends DrushCommands
+class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+    use SiteAliasManagerAwareTrait;
+
     protected $cache_clear;
 
     protected $maintenanceModeOriginalState;
@@ -47,12 +51,11 @@ class UpdateDBCommands extends DrushCommands
             }
         }
 
-        $return = drush_invoke_process('@self', 'updatedb:status', [], ['entity-updates' => $options['entity-updates'], 'post-updates' => $options['post-updates']]);
-        if ($return['error_status']) {
-            throw new \Exception('Failed getting update status.');
-        } elseif (empty($return['object'])) {
-            // Do nothing. updatedb:status already logged a message.
-        } else {
+        $updatedb_options = ['entity-updates' => $options['entity-updates'], 'post-updates' => $options['post-updates']];
+        $process = Drush::siteProcess($this->siteAliasManager()->getSelf(), 'updatedb:status', [], $updatedb_options);
+        $process->mustRun();
+        if ($output = $process->getOutput()) {
+            // We have pending updates - let's run em.
             if (!$this->io()->confirm(dt('Do you wish to run the specified pending updates?'))) {
                 throw new UserAbortException();
             }

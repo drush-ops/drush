@@ -296,7 +296,7 @@ class Drush
      * @param array $options_double_dash
      * @return SiteProcess
      */
-    public static function siteProcess(AliasRecord $siteAlias, $command, $args, $options = [], $options_double_dash = [])
+    public static function siteProcess(AliasRecord $siteAlias, $command, $args = [], $options = [], $options_double_dash = [])
     {
         // Fill in the root and URI from the site alias, if the caller
         // did not already provide them in $options.
@@ -310,7 +310,7 @@ class Drush
         return static::siteProcessCommand($siteAlias, $args, $options, $options_double_dash);
     }
 
-    public static function siteProcessCommand(AliasRecord $siteAlias, $args, $options = [], $options_double_dash = [])
+    public static function siteProcessCommand(AliasRecord $siteAlias, $args = [], $options = [], $options_double_dash = [])
     {
         $process = new SiteProcess($siteAlias, $args, $options, $options_double_dash);
         $process->setSimulated(Drush::simulate());

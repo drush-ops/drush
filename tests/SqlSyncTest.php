@@ -57,10 +57,7 @@ class SqlSyncTest extends CommandUnishTestCase
         $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=whatever www-admin@server.isp.simulated '/path/to/drush --backend=2 --strict=0 --root=__SUT__/sut --uri=remote sql-query --no-interaction --file=/tmp/dump.tgz --file-delete", $output);
 
 
-        // Test simulated backend invoke with a remote runner.
-        // Note that the target aliases are not interpreted at all until they recach
-        // the remote side. Injection for alias parameters is currently only done when
-        // they are used with drush_invoke_process.
+        // Test simulated remote invoke with a remote runner.
         $this->drush('sql:sync', ['@synctest.remote', '@synctest.local'], $options, 'user@server/path/to/drupal#sitename', null, self::EXIT_SUCCESS, '2>&1');
         $output = $this->getSimplifiedOutput();
         $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=no user@server 'drush --root=/path/to/drupal --uri=sitename --no-interaction sql:sync '\''@synctest.remote'\'' '\''@synctest.local'\''", $output);

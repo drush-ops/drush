@@ -622,7 +622,7 @@ function _drush_backend_adjust_options($site_record, $command, $command_options,
  * Execute a new local or remote command in a new process.
  *
  * @deprecated as of Drush 9.4.0 and will be removed in Drush 10. Instead, use
- *   drush_invoke_process().
+ *   Drush::siteProcess().
  *
  * @param invocations
  *   An array of command records to execute. Each record should contain:
