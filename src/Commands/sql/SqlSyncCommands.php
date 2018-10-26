@@ -117,7 +117,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $process = Drush::siteProcess($record, 'core-status', ['db-name'], ['format' => 'string']);
         $process->setSimulated(false);
         $process->mustRun();
-        return $process->getOutput();
+        return trim($process->getOutput());
     }
 
     /**
@@ -182,7 +182,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
             $process->run();
 
             if ($process->isSuccessful()) {
-                $tmp = $process->getOutput();
+                $tmp = trim($process->getOutput());
             }
             $target_dump_path = Path::join($tmp, basename($source_dump_path));
         }
