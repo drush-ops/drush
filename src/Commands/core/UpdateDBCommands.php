@@ -5,6 +5,7 @@ use Consolidation\Log\ConsoleLogLevel;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteProcess\ProcessBase;
 use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Utility\Error;
 use Drupal\Core\Entity\EntityStorageException;
@@ -56,7 +57,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             'post-updates' => $options['post-updates'],
         ];
         $process = Drush::siteProcess($this->siteAliasManager()->getSelf(), 'updatedb:status', [], $updatedb_options);
-        $process->mustRun('\Consolidation\SiteProcess\ProcessBase::realTime');
+        $process->mustRun(ProcessBase::showRealtime());
         if ($output = $process->getOutput()) {
             // We have pending updates - let's run em.
             if (!$this->io()->confirm(dt('Do you wish to run the specified pending updates?'))) {

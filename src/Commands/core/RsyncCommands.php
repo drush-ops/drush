@@ -2,6 +2,7 @@
 namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\SiteProcess\ProcessBase;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
@@ -74,7 +75,7 @@ class RsyncCommands extends DrushCommands implements SiteAliasManagerAwareInterf
         $ssh_options = Drush::config()->get('ssh.options', '');
         $exec = "rsync -e 'ssh $ssh_options'". ' '. implode(' ', array_filter($parameters));
         $process = Drush::process($exec);
-        $process->run('\Consolidation\SiteProcess\ProcessBase::realTime');
+        $process->run(ProcessBase::showRealtime());
 
         if ($process->isSuccessful()) {
             drush_backend_set_result($this->targetEvaluatedPath->fullyQualifiedPath());

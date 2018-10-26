@@ -3,6 +3,7 @@ namespace Drush\Commands\core;
 
 use Composer\Semver\Comparator;
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\SiteProcess\ProcessBase;
 use Drupal\Component\FileCache\FileCacheFactory;
 use Drupal\Core\Database\ConnectionNotDefinedException;
 use Drush\Commands\DrushCommands;
@@ -216,7 +217,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             $process->mustRun();
 
             $process = Drush::siteProcess($selfRecord, 'config-import', [], ['source' => $config] + $options);
-            $process->mustRun();
+            $process->mustRun(ProcessBase::showRealtime());
         }
     }
 
