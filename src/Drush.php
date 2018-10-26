@@ -10,6 +10,7 @@ use Consolidation\SiteAlias\AliasRecord;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Consolidation\SiteProcess\SiteProcess;
 use Drush\Process\ProcessBase;
+use Drush\Style\DrushStyle;
 use League\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Application;
@@ -316,7 +317,8 @@ class Drush
         $process->setSimulated(Drush::simulate());
         $process->setVerbose(Drush::verbose());
         $process->setLogger(Drush::logger());
-
+        $io = new DrushStyle(Drush::input(), Drush::output());
+        $process->setIo($io);
         return $process;
     }
 
