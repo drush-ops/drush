@@ -59,7 +59,7 @@ class UpdateDBTest extends CommandUnishTestCase
         if (version_compare(phpversion(), '7.0.0') < 0) {
             $this->markTestSkipped('Catching fatal errors is supported in PHP 7.0 and higher.');
         }
-        $sites = $this->setUpDrupal(1, true);
+        $this->setUpDrupal(1, true);
         $options = [
             'yes' => null,
         ];
@@ -78,8 +78,8 @@ class UpdateDBTest extends CommandUnishTestCase
         // Run updates.
         $this->drush('updatedb', [], $options, null, null, self::EXIT_ERROR);
 
-        $this->assertOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_status_report)));
-        $this->assertErrorOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_update_log_output)));
+        $this->assertContains($this->simplifyOutput($expected_status_report), $this->getSimplifiedOutput());
+        $this->assertContains($this->simplifyOutput($expected_update_log_output), $this->getSimplifiedErrorOutput());
     }
 
     /**
@@ -187,7 +187,7 @@ LOG
 
  // Do you wish to run the specified pending updates?: yes.
 LOG;
-        $this->assertOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_output)));
+        $this->assertContains($this->simplifyOutput($expected_output), $this->getSimplifiedOutput());
 
         $expected_error_output = <<<LOG
  [notice] Update started: woot_update_8104
@@ -203,7 +203,7 @@ LOG;
  [error] Finished performing updates.
 LOG;
 
-        $this->assertErrorOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_error_output)));
+        $this->assertContains($this->simplifyOutput($expected_error_output), $this->getSimplifiedErrorOutput());
     }
 
     /**
@@ -297,7 +297,7 @@ YAML_FRAGMENT;
 
  // Do you wish to run the specified pending updates?: yes.
 LOG;
-        $this->assertOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_output)));
+        $this->assertContains($this->simplifyOutput($expected_output), $this->getSimplifiedOutput());
 
         $expected_error_output = <<<LOG
  [notice] Update started: woot_update_8104
@@ -311,7 +311,7 @@ LOG;
  [success] Finished performing updates.
 LOG;
 
-        $this->assertErrorOutputEquals(preg_replace('#  *#', ' ', $this->simplifyOutput($expected_error_output)));
+        $this->assertContains($this->simplifyOutput($expected_error_output), $this->getSimplifiedErrorOutput());
     }
 
     public function tearDown()
