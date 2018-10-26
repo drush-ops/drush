@@ -31,8 +31,7 @@ function drush_drupal_version($drupal_root = NULL) {
 }
 
 /**
- * @deprecated Just copy its code into the caller.$process = Drush::siteProcess($sourceRecord, 'config-export', [], $global_options + $export_options);
-$process->mustRun();
+ * @deprecated @see Drush::siteProcess()
  */
 function drush_drupal_cache_clear_all() {
     $process = Drush::siteProcess(Drush::aliasManager()->getSelf(), 'cache-rebuild');
