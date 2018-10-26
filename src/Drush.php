@@ -269,7 +269,7 @@ class Drush
     }
 
     /**
-     * Return a Drush Process object.
+     * Run a bash fragment locally.
      *
      * @param string|array   $commandline The command line to run
      * @param string|null    $cwd         The working directory or null to use the working dir of the current PHP process
@@ -279,6 +279,7 @@ class Drush
      * @param array          $options     An array of options for proc_open
      *
      * @return ProcessBase
+     *   A wrapper around Symfony Process.
      */
     public static function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60, array $options = null)
     {
@@ -290,6 +291,8 @@ class Drush
     }
 
     /**
+     * Run a Drush command on a site alias (or @self).
+     *
      * @param AliasRecord $siteAlias
      * @param string $command
      * @param array $args
@@ -311,6 +314,15 @@ class Drush
         return static::siteProcessCommand($siteAlias, $args, $options, $options_double_dash);
     }
 
+    /**
+     * Run a bash fragment on a site alias.
+     *
+     * @param AliasRecord $siteAlias
+     * @param array $args
+     * @param array $options
+     * @param array $options_double_dash
+     * @return SiteProcess
+     */
     public static function siteProcessCommand(AliasRecord $siteAlias, $args = [], $options = [], $options_double_dash = [])
     {
         $process = new SiteProcess($siteAlias, $args, $options, $options_double_dash);
