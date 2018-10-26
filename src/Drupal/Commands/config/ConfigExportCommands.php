@@ -95,7 +95,7 @@ class ConfigExportCommands extends DrushCommands
         // Do the VCS operations.
         $this->doAddCommit($options, $destination_dir, $preview);
 
-        return $destination_dir;
+        return ['destination-dir' => $destination_dir];
     }
 
     public function doExport($options, $destination_dir)

@@ -41,6 +41,7 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
             // Use the standard backup directory on Destination.
             'destination' => true,
             'yes' => null,
+            'format' => 'string',
         ];
         $this->logger()->notice(dt('Starting to export configuration on :destination.', [':destination' => $destination]));
         $process = Drush::siteProcess($sourceRecord, 'config-export', [], $global_options + $export_options);
