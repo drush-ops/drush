@@ -315,7 +315,7 @@ class Drush
     }
 
     /**
-     * Run a bash fragment on a site alias.
+     * Run a bash fragment on a site alias. Use Drush::siteProcess() instead of this method.
      *
      * @param AliasRecord $siteAlias
      * @param array $args
