@@ -75,7 +75,7 @@ class BackendPathEvaluator
         // The drupal:directory command uses a path evaluator, which
         // calls this function, so we cannot use dd here, as that
         // would be recursive.
-        $process = Drush::siteProcess($aliasRecord, 'core:status', [], ['project' => $pathAlias, 'format' => 'json']);
+        $process = Drush::siteProcess($aliasRecord, 'core-status', [], ['project' => $pathAlias, 'fields' => '*', 'format' => 'json']);
         $process->setSimulated(false);
         $process->mustRun();
 
