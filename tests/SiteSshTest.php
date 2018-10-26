@@ -23,10 +23,10 @@ class SiteSshCase extends CommandUnishTestCase
         $options = [
         'simulate' => null,
         ];
-        $this->drush('ssh', [], $options, 'user@server/path/to/drupal#sitename', null, self::EXIT_SUCCESS, '2>&1');
-        $output = $this->getOutput();
-        $expected = sprintf('Calling proc_open(ssh -o PasswordAuthentication=no -t %s@%s %s);', self::escapeshellarg('user'), self::escapeshellarg('server'), "'cd /path/to/drupal && bash -l'");
-        $this->assertEquals($expected, $output);
+        $this->drush('ssh', [], $options, 'user@server/path/to/drupal#sitename');
+        $output = $this->getErrorOutput();
+        $expected = "[notice] Simulating: 'ssh' -t '-o PasswordAuthentication=no' 'user@server' 'cd /path/to/drupal && bash -l'";
+        $this->assertContains($expected, $output);
     }
 
   /**
@@ -40,10 +40,10 @@ class SiteSshCase extends CommandUnishTestCase
         'cd' => '0',
         'simulate' => null,
         ];
-        $this->drush('ssh', ['date'], $options, 'user@server/path/to/drupal#sitename', null, self::EXIT_SUCCESS, '2>&1');
-        $output = $this->getOutput();
-        $expected = sprintf('Calling proc_open(ssh -o PasswordAuthentication=no %s@%s %s);', self::escapeshellarg('user'), self::escapeshellarg('server'), self::escapeshellarg('date'));
-        $this->assertEquals($expected, $output);
+        $this->drush('ssh', ['date'], $options, 'user@server/path/to/drupal#sitename');
+        $output = $this->getErrorOutput();
+        $expected = "ssh' '-o PasswordAuthentication=no' 'user@server' 'date'";
+        $this->assertContains($expected, $output);
     }
 
   /**
@@ -55,10 +55,10 @@ class SiteSshCase extends CommandUnishTestCase
         'cd' => '0',
         'simulate' => null,
         ];
-        $this->drush('ssh', ['ls', '/path1', '/path2'], $options, 'user@server/path/to/drupal#sitename', null, self::EXIT_SUCCESS, '2>&1');
-        $output = $this->getOutput();
-        $expected = sprintf('Calling proc_open(ssh -o PasswordAuthentication=no %s@%s %s);', self::escapeshellarg('user'), self::escapeshellarg('server'), self::escapeshellarg('ls /path1 /path2'));
-        $this->assertEquals($expected, $output);
+        $this->drush('ssh', ['ls', '/path1', '/path2'], $options, 'user@server/path/to/drupal#sitename');
+        $output = $this->getErrorOutput();
+        $expected = "[notice] Simulating: 'ssh' '-o PasswordAuthentication=no' 'user@server' 'ls /path1 /path2'";
+        $this->assertContains($expected, $output);
     }
 
   /**
@@ -70,9 +70,9 @@ class SiteSshCase extends CommandUnishTestCase
         'cd' => '0',
          'simulate' => null,
         ];
-        $this->drush('ssh', ['ls /path1 /path2'], $options, 'user@server/path/to/drupal#sitename', null, self::EXIT_SUCCESS, '2>&1');
+        $this->drush('ssh', ['ls /path1 /path2'], $options, 'user@server/path/to/drupal#sitename');
         $output = $this->getOutput();
-        $expected = sprintf('Calling proc_open(ssh -o PasswordAuthentication=no %s@%s %s);', self::escapeshellarg('user'), self::escapeshellarg('server'), self::escapeshellarg('ls /path1 /path2'));
-        $this->assertEquals($expected, $output);
+        $expected = "[notice] Simulating: 'ssh' '-o PasswordAuthentication=no' 'user@server' 'ls /path1 /path2'";
+        $this->assertContains($expected, $output);
     }
 }

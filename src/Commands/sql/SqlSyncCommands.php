@@ -114,16 +114,10 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
             return 'simulated_db';
         }
 
-        $process = Drush::siteProcess($record, 'core-status', [], ['format' => 'json']);
+        $process = Drush::siteProcess($record, 'core-status', ['db-name'], ['format' => 'string']);
         $process->setSimulated(false);
-        try {
-            $process->mustRun();
-            $output = $process->getOutput();
-            $json = json_decode($output, true);
-            return $json['db-name'];
-        } catch (\Exception $e) {
-            // Do nothing, since thats what the prior code did.
-        }
+        $process->mustRun();
+        return $process->getOutput();
     }
 
     /**
@@ -183,7 +177,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         } else {
             $tmp = '/tmp'; // Our fallback plan.
             $this->logger()->notice(dt('Starting to discover temporary files directory on target.'));
-            $process = Drush::siteProcess($targetRecord, 'core-status', []);
+            $process = Drush::siteProcess($targetRecord, 'core-status', ['drush-temp'], ['format' => 'string']);
             $process->setSimulated(false);
             $process->run();
 
@@ -194,10 +188,10 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         }
 
         if ($do_rsync) {
-            $rsync_options = [];
+            $double_dash_options = [];
             if (!$options['no-dump']) {
                 // Cleanup if this command created the dump file.
-                $rsync_options['remove-source-files'] = true;
+                $double_dash_options['remove-source-files'] = true;
             }
             if (!$runner = $options['runner']) {
                 $runner = $sourceRecord->isRemote() && $targetRecord->isRemote() ? $targetRecord : '@self';
@@ -212,7 +206,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
             if (is_string($runner)) {
                 $runner = $this->siteAliasManager()->get($runner);
             }
-            $process = Drush::siteProcess($runner, 'core-rsync', [$sourceRecord->name() . ":$source_dump_path", $targetRecord->name() . ":$target_dump_path", '--'], $rsync_options);
+            $process = Drush::siteProcess($runner, 'core-rsync', [$sourceRecord->name() . ":$source_dump_path", $targetRecord->name() . ":$target_dump_path"], [], $double_dash_options);
             $process->mustRun();
         }
         return $target_dump_path;
