@@ -1,0 +1,85 @@
+{% block toolbar %}
+    {% set icon %}
+    <a href="{{ url("webprofiler.dashboard", {profile: token}, {fragment: "translations"}) }}"
+       title="{{ 'Translations'|t }}">
+        <img height="28" alt="{{ 'Translations'|t }}"
+             src="data:image/png;base64,{{ collector.icon }}"/>
+        <span class="sf-toolbar-status">{{ collector.untranslatedCount }}</span>
+    </a>
+    {% endset %}
+    {% set text %}
+    <div class="sf-toolbar-info-piece">
+        <b>{{ 'Translated'|t }}</b>
+        <span>{{ collector.translatedCount }}</span>
+    </div>
+    <div class="sf-toolbar-info-piece">
+        <b>{{ 'Untranslated'|t }}</b>
+        <span>{{ collector.untranslatedCount }}</span>
+    </div>
+    {% endset %}
+
+    <div class="sf-toolbar-block">
+        <div class="sf-toolbar-icon">{{ icon|default('') }}</div>
+        <div class="sf-toolbar-info">{{ text|default('') }}</div>
+    </div>
+{% endblock %}
+
+{% block panel %}
+    <script id="translations" type="text/template">
+        <h2 class="panel__title">{{ 'Translations'|t }}</h2>
+        <div class="tabs">
+            <input class="tabs__radio" type="radio" id="translated" name="tabs" checked/>
+            <input class="tabs__radio" type="radio" id="untranslated" name="tabs"/>
+            <ul class="tabs__tabs list--inline">
+                <li><label class="tabs__label" for="translated">{{ 'Translated'|t }}</label></li>
+                <li><label class="tabs__label" for="untranslated">{{ 'Unranslated'|t }}</label></li>
+            </ul>
+
+            <div class="tabs__panels">
+                <div class="tabs__panel">
+                    <div class="panel__container">
+                        <table class="table--duo">
+                            <thead>
+                            <tr>
+                                <th>{{ 'Original'|t }}</th>
+                                <th>{{ 'Tanslation'|t }}</th>
+                                <th>{{ 'Action'|t }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% _.each( data.translations.translated, function( value, key ){ %>
+                            <tr>
+                                <td><%= key %></td>
+                                <td><%= value %></td>
+                                <td><a href="<%- data.user_interface_translations_path %>?string=<%- key%>" target="_blank" class="h--word-intact">{{ 'Edit'|t }}</a></td>
+                            </tr>
+                            <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tabs__panel">
+                    <div class="panel__container">
+                        <table class="table--duo">
+                            <thead>
+                            <tr>
+                                <th>{{ 'Original'|t }}</th>
+                                <th>{{ 'Action'|t }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% _.each( data.translations.untranslated, function( value, key ){ %>
+                            <tr>
+                                <td><%= key %></td>
+                                <td><a href="<%- data.user_interface_translations_path %>?string=<%- key%>" target="_blank" class="h--word-intact">{{ 'Edit'|t }}</a></td>
+                            </tr>
+                            <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+{% endblock %}

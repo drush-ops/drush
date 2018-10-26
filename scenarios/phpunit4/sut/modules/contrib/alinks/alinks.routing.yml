@@ -1,0 +1,8 @@
+alinks.alinks_controller_delete:
+  path: 'alinks/delete/{id}'
+  defaults:
+    _controller: '\Drupal\alinks\Controller\AlinksController::delete'
+    _title: 'delete'
+  requirements:
+    _permission: 'access content'
+

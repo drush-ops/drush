@@ -1,0 +1,2 @@
+devel_entity_test.local_tasks:
+  deriver: 'Drupal\devel_entity_test\Plugin\Derivative\DevelEntityTestLocalTasks'

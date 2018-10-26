@@ -1,0 +1,168 @@
+{% block toolbar %}
+    {% set icon %}
+    <a href="{{ url("webprofiler.dashboard", {profile: token}, {fragment: 'database'}) }}" title="{{ 'Database'|t }}">
+        <img width="20" height="28" alt="{{ 'Database'|t }}"
+             src="data:image/png;base64,{{ collector.icon }}"/>
+        <span class="sf-toolbar-info-piece-additional sf-toolbar-status sf-toolbar-status-{{ collector.colorCode }}">{{ collector.querycount }}</span>
+        {% if collector.querycount > 0 %}
+            <span class="sf-toolbar-info-piece-additional-detail">in {{ '%0.2f ms'|format(collector.time) }}</span>
+        {% endif %}
+    </a>
+    {% endset %}
+    {% set text %}
+    <div class="sf-toolbar-info-piece">
+        <b>{{ 'DB Queries'|t }}</b>
+        <span>{{ collector.querycount }}</span>
+    </div>
+    <div class="sf-toolbar-info-piece">
+        <b>{{ 'Query time'|t }}</b>
+        <span>{{ '%0.2f ms'|format(collector.time) }}</span>
+    </div>
+    <div class="sf-toolbar-info-piece">
+        <b>{{ 'Default database'|t }}</b>
+        <span>{{ collector.database.driver }}://{{ collector.database.host }}:{{ collector.database.port }}
+            /{{ collector.database.database }}</span>
+    </div>
+    {% endset %}
+
+    <div class="sf-toolbar-block">
+        <div class="sf-toolbar-icon">{{ icon|default('') }}</div>
+        <div class="sf-toolbar-info">{{ text|default('') }}</div>
+    </div>
+{% endblock %}
+
+{% block panel %}
+    <script id="database" type="text/template">
+        <h2 class="panel__title">{{ 'Database'|t }}</h2>
+
+        <form class="panel__toolbar">
+            <div class="panel__filter--text">
+                <input id="edit-caller" class="js--live-filter" placeholder="{{ 'Caller'|t }}" type="text"/>
+                <label for="edit-caller" class="panel__filter-label">{{ 'Caller'|t }}</label>
+            </div>
+            <div class="panel__filter--select">
+                <select id="edit-type" class="js--live-filter">
+                    <option value="">{{ 'Any'|t }}</option>
+                    <option value="select">Select</option>
+                    <option value="insert">Insert</option>
+                    <option value="update">Update</option>
+                    <option value="create">Create</option>
+                    <option value="delete">Delete</option>
+                </select>
+                <label for="edit-type" class="panel__filter-label">{{ 'Query type'|t }}</label>
+            </div>
+            <div class="panel__filter--select">
+                <select id="edit-hightlighted" class="js--live-filter">
+                    <option value="">{{ 'Any'|t }}</option>
+                    <option value="1">{{ 'Yes'|t }}</option>
+                    <option value="0">{{ 'No'|t }}</option>
+                </select>
+                <label for="edit-type" class="panel__filter-label">{{ 'Slow queryes'|t }}</label>
+            </div>
+            <div class="panel__filter--select">
+                <select id="edit-database" class="js--live-filter">
+                    <option value="">{{ 'Any'|t }}</option>
+                    <% _.each(data.connections, function( item ){ %>
+                        <option value="<%- item %>"><%- item %></option>
+                    <% }) %>
+                </select>
+                <label for="edit-database" class="panel__filter-label">{{ 'Database'|t }}</label>
+            </div>
+
+            <div class="button--flat l-right js--code-toggle--global js--placeholder-visible">{{ 'Swap Placeholders'|t }}</div>
+
+        </form>
+
+        <% _.each( data.queries, function( item, key ){ %>
+        <div class="panel__container<% if (item.time > data.query_highlight_threshold) { %> is--hightlighted <% } %>"
+             data-wp-caller="<%- item.caller.class != null ? item.caller.class.toLowerCase() : '' %>"
+             data-wp-database="<%- item.database %>"
+             data-wp-type="<%- item.type %>"
+             data-wp-hightlighted="<%- (item.time > data.query_highlight_threshold) ? '1' : '0' %>">
+            <div class="panel__expand-header ">
+                    <pre <% if( item.query_args) { %> class="js--code-target"<% } %> >
+                        <code class="sql js--placeholder-query">
+                            <%- item.query %>
+                        </code>
+                        <% if( item.query_args) { %>
+                        <code class="sql js--clipboard-target is--hidden js--original-query">
+                            <%- item.query_args %>
+                        </code>
+                        <% } %>
+                    </pre>
+                <ul class="list--inline">
+                    <li><b>{{ 'Time'|t }}</b>: <%- Drupal.webprofiler.helpers.printTime(item.time) %></li>
+                    <li><b>{{ 'Caller'|t }}</b>: <%= Drupal.webprofiler.helpers.classLink({"file" : item.caller.file,
+                        "class" : item.caller.class, "line" : item.caller.line, "method" : item.caller.function}) %>
+                    </li>
+                    <li><b>{{ 'Database'|t }}</b>: <%- item.database %></li>
+                    <li><b>{{ 'Target'|t }}</b>: <%- item.target %></li>
+                </ul>
+
+                <% if(item.query_args){ %>
+                <div class="button--flat l-right js--code-toggle">{{ 'Swap Placeholders'|t }}</div>
+                <% } %>
+                <% if(item.args){ %>
+                <div class="button--flat l-right js--panel-toggle">{{ 'Info'|t }}</div>
+                <% } %>
+                <!--div class="button--flat l-right js--clipboard-trigger">{{ 'Copy Query'|t }}</div-->
+                <% if(item.explain){ %>
+                <div class="button--flat l-right js--explain-trigger"
+                     data-wp-queryPosition="<%- key %>"
+                        >{{ 'Explain'|t }}</div>
+                <% } %>
+            </div>
+
+            <% if(item.explain){ %>
+            <div class="loader--linear js--loader" style="display: none">
+                <div class="loader__bar"></div>
+                <div class="loader__bar"></div>
+                <div class="loader__bar"></div>
+            </div>
+            <div class="panel__expand-content js--explain-target"></div>
+            <% } %>
+
+            <% if(item.args){ %>
+            <div class="panel__expand-content">
+                <div class="wp-query-arguments">
+                    <table class="table--duo">
+                        <thead>
+                        <tr>
+                            <th>{{ 'placeholder'|t }}</th>
+                            <th>{{ 'value'|t }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% _.each( item.args, function( item, key ){ %>
+                        <tr>
+                            <td><%- key %></td>
+                            <td><%= Drupal.webprofiler.helpers.frm(item) %></td>
+                        </tr>
+                        <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <% } %>
+        </div>
+        <% }); %>
+    </script>
+    <script id="wp-query-explain-template" type="text/template">
+        <table class="table--compact">
+            <thead>
+            <tr>
+                <% _.each(rc.data[1], function(value, key, list) { %>
+                <th><%= key %></th>
+                <% }); %>
+            </tr>
+            </thead>
+            <% _.each(rc.data, function(value) { %>
+            <tr>
+                <% _.each(value, function(value2, key, list) { %>
+                <td><%= value2 %></td>
+                <% }); %>
+            </tr>
+            <% }); %>
+        </table>
+    </script>
+{% endblock %}

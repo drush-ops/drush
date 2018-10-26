@@ -1,0 +1,74 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the image module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function image_install() {
+  // Create the styles directory and ensure it's writable.
+  $directory = file_default_scheme() . '://styles';
+  file_prepare_directory($directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function image_uninstall() {
+  // Remove the styles directory and generated images.
+  file_unmanaged_delete_recursive(file_default_scheme() . '://styles');
+}
+
+/**
+ * Implements hook_requirements() to check the PHP GD Library.
+ *
+ * @param $phase
+ */
+function image_requirements($phase) {
+  if ($phase != 'runtime') {
+    return [];
+  }
+
+  $toolkit = \Drupal::service('image.toolkit.manager')->getDefaultToolkit();
+  if ($toolkit) {
+    $plugin_definition = $toolkit->getPluginDefinition();
+    $requirements = [
+      'image.toolkit' => [
+        'title' => t('Image toolkit'),
+        'value' => $toolkit->getPluginId(),
+        'description' => $plugin_definition['title'],
+      ],
+    ];
+
+    foreach ($toolkit->getRequirements() as $key => $requirement) {
+      $namespaced_key = 'image.toolkit.' . $toolkit->getPluginId() . '.' . $key;
+      $requirements[$namespaced_key] = $requirement;
+    }
+  }
+  else {
+    $requirements = [
+      'image.toolkit' => [
+        'title' => t('Image toolkit'),
+        'value' => t('None'),
+        'description' => t("No image toolkit is configured on the site. Check PHP installed extensions or add a contributed toolkit that doesn't require a PHP extension. Make sure that at least one valid image toolkit is enabled."),
+        'severity' => REQUIREMENT_ERROR,
+      ],
+    ];
+  }
+
+  return $requirements;
+}
+
+/**
+ * Flush caches as we changed field formatter metadata.
+ */
+function image_update_8201() {
+  // Empty update to trigger a cache flush.
+
+  // Use hook_post_update_NAME() instead to clear the cache. The use of
+  // hook_update_N() to clear the cache has been deprecated see
+  // https://www.drupal.org/node/2960601 for more details.
+}

@@ -1,0 +1,2 @@
+route_callbacks:
+  - '\Drupal\devel_generate\Routing\DevelGenerateRoutes::routes'

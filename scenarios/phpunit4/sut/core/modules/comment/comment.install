@@ -1,0 +1,209 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the Comment module.
+ */
+
+use Drupal\comment\Entity\Comment;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\StringTranslation\PluralTranslatableMarkup;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\field\Entity\FieldStorageConfig;
+
+/**
+ * Implements hook_uninstall().
+ */
+function comment_uninstall() {
+  // Remove the comment fields.
+  $fields = entity_load_multiple_by_properties('field_storage_config', ['type' => 'comment']);
+  foreach ($fields as $field) {
+    $field->delete();
+  }
+
+  // Remove state setting.
+  \Drupal::state()->delete('comment.node_comment_statistics_scale');
+}
+
+/**
+ * Implements hook_install().
+ */
+function comment_install() {
+  // By default, maintain entity statistics for comments.
+  // @see \Drupal\comment\CommentStatisticsInterface
+  \Drupal::state()->set('comment.maintain_entity_statistics', TRUE);
+}
+
+/**
+ * Implements hook_schema().
+ */
+function comment_schema() {
+  $schema['comment_entity_statistics'] = [
+    'description' => 'Maintains statistics of entity and comments posts to show "new" and "updated" flags.',
+    'fields' => [
+      'entity_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The entity_id of the entity for which the statistics are compiled.',
+      ],
+      'entity_type' => [
+        'type' => 'varchar_ascii',
+        'not null' => TRUE,
+        'default' => 'node',
+        'length' => EntityTypeInterface::ID_MAX_LENGTH,
+        'description' => 'The entity_type of the entity to which this comment is a reply.',
+      ],
+      'field_name' => [
+        'type' => 'varchar_ascii',
+        'not null' => TRUE,
+        'default' => '',
+        'length' => FieldStorageConfig::NAME_MAX_LENGTH,
+        'description' => 'The field_name of the field that was used to add this comment.',
+      ],
+      'cid' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The {comment}.cid of the last comment.',
+      ],
+      'last_comment_timestamp' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp of the last comment that was posted within this node, from {comment}.changed.',
+      ],
+      'last_comment_name' => [
+        'type' => 'varchar',
+        'length' => 60,
+        'not null' => FALSE,
+        'description' => 'The name of the latest author to post a comment on this node, from {comment}.name.',
+      ],
+      'last_comment_uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The user ID of the latest author to post a comment on this node, from {comment}.uid.',
+      ],
+      'comment_count' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The total number of comments on this entity.',
+      ],
+    ],
+    'primary key' => ['entity_id', 'entity_type', 'field_name'],
+    'indexes' => [
+      'last_comment_timestamp' => ['last_comment_timestamp'],
+      'comment_count' => ['comment_count'],
+      'last_comment_uid' => ['last_comment_uid'],
+    ],
+    'foreign keys' => [
+      'last_comment_author' => [
+        'table' => 'users',
+        'columns' => [
+          'last_comment_uid' => 'uid',
+        ],
+      ],
+    ],
+  ];
+
+  return $schema;
+}
+
+/**
+ * Clear caches to fix Comment entity list builder and operations Views field.
+ */
+function comment_update_8001() {
+  // Empty update to cause a cache flush to rebuild comment entity handler
+  // information, so that comment operation links work.
+}
+
+/**
+ * Clear caches to fix Comment Views context filter.
+ */
+function comment_update_8002() {
+  // Empty update to cause a cache flush.
+}
+
+/**
+ * Add the 'view_mode' setting to displays having 'comment_default' formatter.
+ */
+function comment_update_8200() {
+  $config_factory = \Drupal::configFactory();
+  $displays = [];
+  // Iterate on all entity view displays.
+  foreach ($config_factory->listAll('core.entity_view_display.') as $name) {
+    $changed = FALSE;
+    $display = $config_factory->getEditable($name);
+    $components = $display->get('content') ?: [];
+    foreach ($components as $field_name => $component) {
+      if (isset($component['type']) && ($component['type'] === 'comment_default')) {
+        if (empty($display->get("content.{$field_name}.settings.view_mode"))) {
+          $display->set("content.{$field_name}.settings.view_mode", 'default');
+          $displays[] = $display->get('id');
+          $changed = TRUE;
+        }
+      }
+    }
+
+    if ($changed) {
+      $display->save(TRUE);
+    }
+  }
+
+  if ($displays) {
+    return new PluralTranslatableMarkup(count($displays), '1 entity display updated: @displays.', '@count entity displays updated: @displays.', ['@displays' => implode(', ', $displays)]);
+  }
+  else {
+    return new TranslatableMarkup('No entity view display updated.');
+  }
+}
+
+/**
+ * Update status field.
+ */
+function comment_update_8300() {
+  $entity_definition_update_manager = \Drupal::service('entity.definition_update_manager');
+  $field_definition = $entity_definition_update_manager->getFieldStorageDefinition('status', 'comment');
+  $field_definition->setDescription(new TranslatableMarkup('A boolean indicating the published state.'))
+    ->setRevisionable(TRUE);
+  $entity_definition_update_manager->updateFieldStorageDefinition($field_definition);
+}
+
+/**
+ * Set the 'published' entity key.
+ */
+function comment_update_8301() {
+  $definition_update_manager = \Drupal::entityDefinitionUpdateManager();
+  $entity_type = $definition_update_manager->getEntityType('comment');
+  $keys = $entity_type->getKeys();
+  $keys['published'] = 'status';
+  $entity_type->set('entity_keys', $keys);
+  $definition_update_manager->updateEntityType($entity_type);
+}
+
+/**
+ * Update the status field.
+ */
+function comment_update_8400() {
+  // The status field was promoted to an entity key in comment_update_8301(),
+  // which makes it NOT NULL in the default SQL storage, which means its storage
+  // definition needs to be updated as well.
+  $entity_definition_update_manager = \Drupal::service('entity.definition_update_manager');
+  $entity_definition_update_manager->updateFieldStorageDefinition($entity_definition_update_manager->getFieldStorageDefinition('status', 'comment'));
+}
+
+/**
+ * Configure the comment hostname base field to use a default value callback.
+ */
+function comment_update_8600() {
+  $entity_definition_update_manager = \Drupal::entityDefinitionUpdateManager();
+  /** @var \Drupal\Core\Field\BaseFieldDefinition $field_storage_definition */
+  $field_storage_definition = $entity_definition_update_manager->getFieldStorageDefinition('hostname', 'comment');
+  $field_storage_definition->setDefaultValueCallback(Comment::class . '::getDefaultHostname');
+  $entity_definition_update_manager->updateFieldStorageDefinition($field_storage_definition);
+}

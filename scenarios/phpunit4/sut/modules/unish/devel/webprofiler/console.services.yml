@@ -1,0 +1,14 @@
+services:
+  webprofiler.list:
+    class: Drupal\webprofiler\Command\ListCommand
+    tags:
+      - { name: drupal.command }
+    lazy: true
+  webprofiler.export:
+    class: Drupal\webprofiler\Command\ExportCommand
+    tags:
+      - { name: drupal.command }
+  webprofiler.benchmark:
+    class: Drupal\webprofiler\Command\BenchmarkCommand
+    tags:
+      - { name: drupal.command }

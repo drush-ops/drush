@@ -1,0 +1,76 @@
+/**
+* @file media_library.module.css
+*/
+
+.media-library-views-form > .form-actions {
+  flex-basis: 100%;
+}
+
+.media-library-views-form,
+.media-library-selection,
+.media-library-views-form__bulk_form,
+.media-library-view .form--inline {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.media-library-views-form__header {
+  flex-basis: 100%;
+}
+
+.media-library-item {
+  position: relative;
+}
+
+.media-library-item .js-click-to-select-trigger {
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.media-library-view .form-actions {
+  align-self: flex-end;
+}
+
+.media-library-item .js-click-to-select-checkbox {
+  position: absolute;
+  display: block;
+  z-index: 1;
+  top: 5px;
+  right: 0;
+}
+
+.media-library-item__status {
+  position: absolute;
+  top: 10px;
+  left: 2px;
+  pointer-events: none;
+}
+
+.media-library-select-all {
+  flex-basis: 100%;
+  width: 100%;
+}
+
+.media-library-view.view-display-id-widget .media-library-select-all {
+  display: none;
+}
+
+.media-library-item--disabled {
+  pointer-events: none;
+}
+
+.media-library-selection .media-library-item__preview {
+  cursor: move;
+}
+
+/* @todo Remove or re-work in https://www.drupal.org/node/2985168 */
+.media-library-widget .media-library-item__name a,
+.media-library-view.view-display-id-widget .media-library-item__name a {
+  pointer-events: none;
+}
+
+@media screen and (max-width: 600px) {
+  .media-library-view .form-actions {
+    flex-basis: 100%;
+  }
+}

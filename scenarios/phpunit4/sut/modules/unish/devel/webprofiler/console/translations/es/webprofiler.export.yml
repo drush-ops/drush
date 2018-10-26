@@ -1,0 +1,15 @@
+description: Exportar Webprofiler perfil(es) a un archivo.
+arguments:
+  id: Profile id.
+options:
+  directory: Directorio de destiono para almacenar archivo(s) exportados.
+messages:
+  success: Satisfactoriamente exportado en %s
+  exported_count: <info>Exportados %s perfiles</info>
+  error_writing: Error escribiendo el archivo %s
+  error_no_profile: No fue encontrado un perfil con id %s
+progress:
+    exporting: Exportando perfiles...
+    archive: Creando archivos...
+    delete_tmp: Borrando archivos temporales...
+    done: Terminado.

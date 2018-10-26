@@ -1,0 +1,4 @@
+access kint:
+  description: 'View developer debug output.'
+  title: 'Access kint information'
+  restrict access: TRUE

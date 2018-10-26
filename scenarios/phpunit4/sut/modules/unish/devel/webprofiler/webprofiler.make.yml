@@ -1,0 +1,12 @@
+core: "8.x"
+api: 2
+
+libraries:
+  highlightjs:
+    download:
+      type: "git"
+      url: "https://github.com/isagalaev/highlight.js.git"
+  d3:
+    download:
+      type: "git"
+      url: "https://github.com/d3/d3.git"

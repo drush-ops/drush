@@ -1,0 +1,63 @@
+{% block toolbar %}
+    {% set icon %}
+    <a href="{{ url("webprofiler.dashboard", {profile: token}, {fragment: 'cache'}) }}" title="{{ 'Cache'|t }}">
+        <img width="20" height="28" alt="{{ 'Cache'|t }}"
+             src="data:image/png;base64,{{ collector.icon }}"/>
+        <span class="sf-toolbar-info-piece-additional sf-toolbar-status">{{ collector.getCacheHitsCount }}
+            / {{ collector.getCacheMissesCount }}</span>
+    </a>
+    {% endset %}
+    {% set text %}
+
+    {% for bin, cids in collector.getCacheHits %}
+        <div class="sf-toolbar-info-piece">
+            <b>{{ bin }}</b>
+            <span>{{ cids }}</span>
+        </div>
+    {% endfor %}
+    {% endset %}
+
+    <div class="sf-toolbar-block">
+        <div class="sf-toolbar-icon">{{ icon|default('') }}</div>
+        <div class="sf-toolbar-info">{{ text|default('') }}</div>
+    </div>
+{% endblock %}
+
+{% block panel %}
+    <script id="cache" type="text/template">
+        <h2 class="panel__title">{{ 'Cache'|t }}</h2>
+        <% if( data.cache.length != 0){ %>
+        <% _.each( data.cache, function( item, key ){ %>
+        <div class="panel__container">
+
+            <ul class="list--inline">
+                <li><b>Bin</b> <%= key %></li>
+            </ul>
+
+            <table class="table--trio">
+                <thead>
+                <tr>
+                    <th>{{ 'ID'|t }}</th>
+                    <th>{{ 'hit'|t }}</th>
+                    <th>{{ 'miss'|t }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% _.each( item, function( value, key ){ %>
+                <tr>
+                    <td><%= key %></td>
+                    <td><%= value['bin_cids_hit'] %></td>
+                    <td><%= value['bin_cids_miss'] %></td>
+                </tr>
+                <% }); %>
+                </tbody>
+            </table>
+        </div>
+        <% }); %>
+        <% } else { %>
+        <div class="panel__container">
+            <p>{{ 'No results'|t }}</p>
+        </div>
+        <% } %>
+    </script>
+{% endblock %}

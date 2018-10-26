@@ -1,0 +1,16 @@
+name: Alinks
+type: module
+description: Allows editors to automatically transform keyword phrases into links.
+# core: 8.x
+package: Content
+dependencies:
+  - link
+  - user
+  - system
+configure: admin/config/content/alinks
+
+# Information added by Drupal.org packaging script on 2017-04-01
+version: '8.x-1.0'
+core: '8.x'
+project: 'alinks'
+datestamp: 1491071286

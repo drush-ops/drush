@@ -1,0 +1,9 @@
+webprofiler.settings:
+  title: 'Webprofiler'
+  route_name: webprofiler.settings
+  base_route: devel.admin_settings
+  weight: 10
+webprofiler.dashboard:
+  title: 'dashboard'
+  route_name: webprofiler.dashboard
+  base_route: webprofiler.dashboard

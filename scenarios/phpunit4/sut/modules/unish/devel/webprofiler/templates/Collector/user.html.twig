@@ -1,0 +1,63 @@
+{% block toolbar %}
+    {% set color_code = (collector.authenticated) ? 'green' : 'red' %}
+    {% set icon %}
+    <a href="{{ url("webprofiler.dashboard", {profile: token}, {fragment: 'user'}) }}" title="{{ 'User'|t }}">
+        <img width="24" height="28" alt="{{ 'User'|t }}"
+             src="data:image/png;base64,{{ collector.icon }}"/>
+        <span class="sf-toolbar-info-piece-additional sf-toolbar-status sf-toolbar-status-{{ color_code }}">
+            {% if collector.authenticated %}
+                {{ collector.username }}
+            {% endif %}
+        </span>
+    </a>
+    {% endset %}
+    {% set text %}
+    {% if collector.authenticated %}
+        <div class="sf-toolbar-info-piece">
+            <b>{{ 'Logged in as'|t }}</b>
+            <span class="sf-toolbar-status sf-toolbar-status-{{ color_code }}">{{ collector.username }}</span>
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>{{ 'Roles'|t }}</b>
+            <span>{{ collector.roles|join(', ') }}</span>
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>{{ 'Authenticated by'|t }}</b>
+            <span>{{ collector.provider }}</span>
+        </div>
+    {% else %}
+        {{ collector.anonymous }}
+    {% endif %}
+    {% endset %}
+
+    <div class="sf-toolbar-block">
+        <div class="sf-toolbar-icon">{{ icon|default('') }}</div>
+        <div class="sf-toolbar-info">{{ text|default('') }}</div>
+    </div>
+{% endblock %}
+
+{% block panel %}
+    <script id="user" type="text/template">
+        <h2 class="panel__title">{{ 'User'|t }}</h2>
+        <div class="panel__container">
+            <table class="table--duo">
+                <tr>
+                    <th>{{ 'Name'|t }}</th>
+                    <td><%- data.name %></td>
+                </tr>
+                <tr>
+                    <th>{{ 'Authenticated'|t }}</th>
+                    <td><%- data.authenticated %></td>
+                </tr>
+                <tr>
+                    <th>{{ 'Provider'|t }}</th>
+                    <td><%- data.provider %></td>
+                </tr>
+                <tr>
+                    <th>{{ 'Roles'|t }}</th>
+                    <td><%- data.roles.join(', ') %></td>
+                </tr>
+            </table>
+        </div>
+    </script>
+{% endblock %}

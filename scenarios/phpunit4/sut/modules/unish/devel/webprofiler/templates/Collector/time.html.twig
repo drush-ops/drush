@@ -1,0 +1,59 @@
+{% block toolbar %}
+    {% set duration = collector.events|length ? '%.0f ms'|format(collector.duration) : 'n/a' %}
+    {% set memory = '%.1f MB'|format(collector.memory / 1024 / 1024) %}
+    {% set total_memory = collector.memoryLimit == -1 ? '&infin;' : '%.1f MB'|format(collector.memoryLimit / 1024)|escape %}
+    {% set icon %}
+    <a href="{{ url("webprofiler.dashboard", {profile: token}, {fragment: "time"}) }}" title="{{ 'Timeline'|t }}">
+        <img width="20" height="28" alt="{{ 'Timeline'|t }}"
+             src="data:image/png;base64,{{ collector.icon }}"/>
+        <span>{{ duration }} / {{ memory }}</span>
+    </a>
+    {% endset %}
+    {% set text %}
+    <div class="sf-toolbar-info-piece">
+        <b>{{ 'Total time'|t }}</b>
+        <span>{{ duration }}</span>
+    </div>
+    <div class="sf-toolbar-info-piece">
+        <b>{{ 'Memory'|t }}</b>
+        <span>{{ memory }} / {{ total_memory }}</span>
+    </div>
+    {% endset %}
+
+    <div class="sf-toolbar-block">
+        <div class="sf-toolbar-icon">{{ icon|default('') }}</div>
+        <div class="sf-toolbar-info">{{ text|default('') }}</div>
+    </div>
+{% endblock %}
+
+{% block panel %}
+    <script id="time" type="text/template">
+        <h2 class="panel__title">{{ 'Timeline'|t }}</h2>
+
+        <div class="panel__container">
+            <ul class="list--inline">
+                <li>
+                    <b>{{ 'Total time'|t }}</b> <%- Drupal.webprofiler.helpers.printTime(data.duration) %>
+                </li>
+                <li>
+                    <b>{{ 'Initialization time'|t }}</b> <%- Drupal.webprofiler.helpers.printTime(data.initTime) %>
+                </li>
+            </ul>
+            <br/><br/>
+
+            <div class="timeline">
+                <div class="timeline__legends">
+                    <span class="timeline__legends--default">default</span>
+                    <span class="timeline__legends--section">section</span>
+                    <span class="timeline__legends--event_listener">event_listener</span>
+                    <span class="timeline__legends--event_listener_loading">event_listener_loading</span>
+                    <span class="timeline__legends--template">template</span>
+                    <span class="timeline__legends--service">service</span>
+                </div>
+
+                <div id="timeline"></div>
+            </div>
+        </div>
+
+    </script>
+{% endblock %}

@@ -1,0 +1,188 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the webprofiler module.
+ */
+
+use Drupal\Core\Url;
+
+/**
+ * Implements hook_schema().
+ */
+function webprofiler_schema() {
+  $schema['webprofiler'] = [
+    'description' => 'Webprofiler profiles storage.',
+    'fields' => [
+      'token' => [
+        'description' => 'Profile token.',
+        'type' => 'varchar',
+        'length' => 6,
+        'not null' => TRUE,
+      ],
+      'data' => [
+        'description' => 'Profile data.',
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => TRUE,
+      ],
+      'ip' => [
+        'description' => 'Request IP.',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+      ],
+      'method' => [
+        'description' => 'Request method.',
+        'type' => 'varchar',
+        'length' => 6,
+        'not null' => TRUE,
+      ],
+      'url' => [
+        'description' => 'Requested URL.',
+        'type' => 'varchar',
+        'length' => 2048,
+        'not null' => TRUE,
+      ],
+      'time' => [
+        'description' => 'Request time.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'parent' => [
+        'description' => 'Profile parent.',
+        'type' => 'varchar',
+        'length' => 6,
+        'not null' => FALSE,
+      ],
+      'created_at' => [
+        'description' => 'Profile created time.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'status_code' => [
+        'description' => 'Profile status code.',
+        'type' => 'int',
+        'size' => 'small',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+    ],
+    'indexes' => [
+      'created_at' => ['created_at'],
+      'ip' => ['ip'],
+      'method' => ['method'],
+      'parent' => ['parent'],
+    ],
+    'primary key' => ['token'],
+  ];
+
+  return $schema;
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function webprofiler_requirements($phase) {
+  $requirements = [];
+
+  if ('runtime' == $phase) {
+    $has_d3 = _webprofiler_verify_library('webprofiler', 'd3');
+    $requirements['d3js'] = [
+      'title' => t('D3.js library'),
+      'value' => $has_d3 ? t('Enabled') : t('Not found'),
+    ];
+
+    if (!$has_d3) {
+      $requirements['d3js']['severity'] = REQUIREMENT_WARNING;
+      $requirements['d3js']['description'] = [
+        '#prefix' => ' ',
+        '#markup' => t('Webprofiler module requires D3.js library to properly render data. Composer based install recommended, see README.md file for instructions.'),
+      ];
+    }
+
+    $has_highlight = _webprofiler_verify_library('webprofiler', 'highlightjs');
+    $requirements['highlightjs'] = [
+      'title' => t('highlight.js library'),
+      'value' => $has_highlight ? t('Enabled') : t('Not found'),
+    ];
+
+    if (!$has_highlight) {
+      $requirements['highlightjs']['severity'] = REQUIREMENT_WARNING;
+      $requirements['highlightjs']['description'] = [
+        '#prefix' => ' ',
+        '#markup' => t('Webprofiler module requires highlight.js library to syntax highlight collected queries. Composer based install recommended, see README.md file for instructions.'),
+      ];
+    }
+  }
+
+  return $requirements;
+}
+
+/**
+ * Verify that the library files exist.
+ *
+ * @param string $extension
+ *   The name of the extension that registered a library.
+ * @param string $name
+ *   The name of a registered library to retrieve.
+ *
+ * @return bool
+ *   TRUE if all files of this library exists, FALSE otherwise
+ *
+ * @see https://drupal.org/node/2231385
+ */
+function _webprofiler_verify_library($extension, $name) {
+  /** @var Drupal\Core\Asset\LibraryDiscovery $library_discovery */
+  $library_discovery = \Drupal::service('library.discovery');
+  $library = $library_discovery->getLibraryByName($extension, $name);
+
+  $exist = TRUE;
+  if ($library['js']) {
+    foreach ($library['js'] as $js) {
+      if ($js['type'] == 'file') {
+        if (!file_exists(DRUPAL_ROOT . '/' . $js['data'])) {
+          $exist = FALSE;
+        }
+      }
+    }
+  }
+
+  if ($library['css']) {
+    foreach ($library['css'] as $css) {
+      if ($css['type'] == 'file') {
+        if (!file_exists(DRUPAL_ROOT . '/' . $css['data'])) {
+          $exist = FALSE;
+        }
+      }
+    }
+  }
+
+  if ($library['dependencies']) {
+    foreach ($library['dependencies'] as $dependency) {
+      $parts = explode('/', $dependency);
+      $exist = _webprofiler_verify_library($parts[0], $parts[1]);
+    }
+  }
+
+  return $exist;
+}
+
+/**
+ * Add a status_code column to the webprofiler table.
+ */
+function webprofiler_update_8001() {
+  $database = \Drupal::database();
+  $schema = $database->schema();
+
+  $spec = array(
+    'description' => 'Profile status code.',
+    'type' => 'int',
+    'size' => 'small',
+    'unsigned' => TRUE,
+    'not null' => TRUE,
+  );
+  $schema->addField('webprofiler', 'status_code', $spec);
+}

@@ -15,7 +15,7 @@
   $aliases['outlandish-josh.test'] = array(
     'uri' => 'test-outlandish-josh.pantheonsite.io',
     'db-url' => 'mysql://pantheon:pw@dbserver.test.site-id.drush.in:11621/pantheon',
-    'db-allows-remote' => TRUE,
+    'db-allows-remote' => true,
     'remote-host' => 'appserver.test.site-id.drush.in',
     'remote-user' => 'test.site-id',
     'ssh-options' => '-p 2222 -o "AddressFamily inet"',
@@ -27,7 +27,7 @@
   $aliases['outlandish-josh.live'] = array(
     'uri' => 'www.outlandishjosh.com',
     'db-url' => 'mysql://pantheon:pw@dbserver.live.site-id.drush.in:10516/pantheon',
-    'db-allows-remote' => TRUE,
+    'db-allows-remote' => true,
     'remote-host' => 'appserver.live.site-id.drush.in',
     'remote-user' => 'live.site-id',
     'ssh-options' => '-p 2222 -o "AddressFamily inet"',
@@ -39,7 +39,7 @@
   $aliases['outlandish-josh.dev'] = array(
     'uri' => 'dev-outlandish-josh.pantheonsite.io',
     'db-url' => 'mysql://pantheon:pw@dbserver.dev.site-id.drush.in:21086/pantheon',
-    'db-allows-remote' => TRUE,
+    'db-allows-remote' => true,
     'remote-host' => 'appserver.dev.site-id.drush.in',
     'remote-user' => 'dev.site-id',
     'ssh-options' => '-p 2222 -o "AddressFamily inet"',

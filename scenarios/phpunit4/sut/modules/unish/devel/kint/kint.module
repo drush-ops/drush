@@ -1,0 +1,65 @@
+<?php
+
+use Drupal\Core\Render\Markup;
+
+/**
+ * Alias of Kint::dump().
+ *
+ * Prints passed argument(s) using Kint debug tool.
+ */
+function kint() {
+  kint_require();
+  if (\Drupal::currentUser()->hasPermission('access kint')) {
+    $args = func_get_args();
+    if (PHP_SAPI === 'cli') {
+      s($args);
+    }
+    else {
+      \Kint::dump($args);
+    }
+  }
+}
+
+/**
+ * Alias of Kint::trace().
+ *
+ * Prints backtrace in Kint debug tool.
+ */
+function kint_trace() {
+  kint_require();
+  if (\Drupal::currentUser()->hasPermission('access kint')) {
+    call_user_func_array(array('Kint', 'trace'), array());
+  }
+}
+
+/**
+ * Alias of Kint::kintLite().
+ *
+ * Prints with lightweight formatting, using whitespace for formatting instead
+ * of HTML.
+ */
+function kint_lite() {
+  if (\Drupal::currentUser()->hasPermission('access kint')) {
+    $args = func_get_args();
+    call_user_func_array('kintLite', $args);
+  }
+}
+
+/**
+ * Prints passed argument(s) to the 'message' area of the page.
+ */
+function ksm() {
+  kint_require();
+  if (\Drupal::currentUser()->hasPermission('access kint')) {
+    $args = func_get_args();
+    $msg = @Kint::dump($args);
+    drupal_set_message(Markup::create($msg));
+  }
+}
+
+/**
+ * Load the Kint class.
+ */
+function kint_require() {
+  return require_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'kint') . '/kint/Kint.class.php';
+}

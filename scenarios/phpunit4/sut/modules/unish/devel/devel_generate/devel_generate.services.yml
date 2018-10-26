@@ -1,0 +1,4 @@
+services:
+  plugin.manager.develgenerate:
+    class: Drupal\devel_generate\DevelGeneratePluginManager
+    parent: default_plugin_manager

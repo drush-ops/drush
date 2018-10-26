@@ -19,8 +19,9 @@ class ArgsPreprocessorTest extends TestCase
         $aliasPath,
         $commandPath,
         $isLocal,
-        $unprocessedArgs)
-    {
+        $unprocessedArgs
+    ) {
+    
 
         $argProcessor = new ArgsPreprocessor();
         $preflightArgs = new PreflightArgs();

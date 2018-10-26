@@ -31,7 +31,7 @@ class LegacyAliasConverterTest extends TestCase
 
     protected function tempdir()
     {
-        $tempfile = tempnam(sys_get_temp_dir(),'');
+        $tempfile = tempnam(sys_get_temp_dir(), '');
         if (file_exists($tempfile)) {
             unlink($tempfile);
         }

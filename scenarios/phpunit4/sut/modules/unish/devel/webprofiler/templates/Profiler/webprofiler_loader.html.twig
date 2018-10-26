@@ -1,0 +1,73 @@
+<div id="webprofiler{{ token }}" class="sf-toolbar" style="display: none"></div>
+
+<script>
+    Webprofiler = (function () {
+        "use strict";
+
+        var key = 'webprofiler/profiler/',
+
+                getPreference = function (name) {
+                    if (!window.localStorage) {
+                        return null;
+                    }
+
+                    return localStorage.getItem(key + name);
+                },
+
+                setPreference = function (name, value) {
+                    if (!window.localStorage) {
+                        return null;
+                    }
+
+                    localStorage.setItem(key + name, value);
+                    return true;
+                },
+
+                load = function () {
+                    ajax('{{ profiler_url }}', function (result) {
+                        var toolbar = document.getElementById('webprofiler{{ token }}');
+                        toolbar.innerHTML = result;
+                        toolbar.style.display = 'block';
+
+                        if (getPreference('toolbar/displayState') == 'none') {
+                            document.getElementById('sfToolbarMainContent-{{ token }}').style.display = 'none';
+                            document.getElementById('sfToolbarClearer-{{ token }}').style.display = 'none';
+                            document.getElementById('sfMiniToolbar-{{ token }}').style.display = 'block';
+                        } else {
+                            document.getElementById('sfToolbarMainContent-{{ token }}').style.display = 'block';
+                            document.getElementById('sfToolbarClearer-{{ token }}').style.display = 'block';
+                            document.getElementById('sfMiniToolbar-{{ token }}').style.display = 'none';
+                        }
+
+                        var arr = toolbar.getElementsByTagName('script');
+                        for (var n = 0; n < arr.length; n++) {
+                            eval(arr[n].innerHTML);
+                        }
+                    });
+                },
+
+                ajax = function (url, callback, data) {
+                    try {
+                        var x = new (XMLHttpRequest || ActiveXObject)('MSXML2.XMLHTTP.3.0');
+                        x.open(data ? 'POST' : 'GET', url, 1);
+                        x.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                        x.setRequestHeader('Content-type', 'application/json');
+                        x.onreadystatechange = function () {
+                            x.readyState > 3 && x.status === 200 && callback && callback(x.responseText, x);
+                        };
+                        x.send(data);
+                    } catch (e) {
+                        window.console && console.log(e);
+                    }
+                };
+
+        return {
+            getPreference: getPreference,
+            setPreference: setPreference,
+            load: load,
+            ajax: ajax
+        }
+    })();
+
+    Webprofiler.load();
+</script>

@@ -13,7 +13,7 @@ class ConfigLocatorTest extends TestCase
     /**
      * Test a config locator initialized only with data from the fixture's environment
      */
-    function testOnlyEnvironmentData()
+    public function testOnlyEnvironmentData()
     {
         $configLocator = new ConfigLocator('TEST_');
         $configLocator->addEnvironment($this->environment());
@@ -24,7 +24,7 @@ class ConfigLocatorTest extends TestCase
     /**
      * Test a comprehensive load of all default fixture data.
      */
-    function testLoadAll()
+    public function testLoadAll()
     {
         $configLocator = $this->createConfigLocator();
 
@@ -51,7 +51,7 @@ class ConfigLocatorTest extends TestCase
      * context, "global" means anything that is not site-local, including the
      * configuration file in the user's home directory, etc.
      */
-    function testLocalMode()
+    public function testLocalMode()
     {
         $configLocator = $this->createConfigLocator(true);
 
@@ -70,7 +70,7 @@ class ConfigLocatorTest extends TestCase
         $this->assertEquals('A site-specific setting', $config->get('test.site'));
     }
 
-    function testAliasPaths()
+    public function testAliasPaths()
     {
         $configLocator = $this->createConfigLocator();
         $aliasPaths = $configLocator->getSiteAliasPaths(['/home/user/aliases'], $this->environment());

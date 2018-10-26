@@ -1,0 +1,145 @@
+<?php
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\comment\Plugin\Field\FieldType\CommentItemInterface;
+use Drupal\Component\Utility\Random;
+use Drupal\devel_generate\DevelGenerateBase;
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_menu_links_discovered_alter().
+ */
+function devel_generate_menu_links_discovered_alter(&$links) {
+  $devel_generate_plugins = $devel_generate_manager = \Drupal::service('plugin.manager.develgenerate')->getDefinitions();
+  foreach ($devel_generate_plugins as $id => $plugin) {
+    $label = $plugin['label'];
+    $links["devel_generate.$id"] = array(
+      'title' => "Generate $label",
+      'parent' => 'system.admin_config_development',
+      'description' => $plugin['description'],
+      'route_name' => "devel_generate.$id",
+    );
+  }
+}
+
+/**
+ * Implements hook_entity_insert().
+ *
+ * Inserts nodes properly based on generation options.
+ *
+ * @param \Drupal\Core\Entity\EntityInterface $entity
+ *  The base node created on submit. Inspects $node->devel_generate.
+ */
+function devel_generate_entity_insert(EntityInterface $entity) {
+  if ($entity->getEntityTypeId() != 'node' || !isset($entity->devel_generate)) {
+    return;
+  }
+  /** @var \Drupal\node\NodeInterface $entity */
+  $results = $entity->devel_generate;
+
+  if (!empty($results['max_comments'])) {
+    foreach ($entity->getFieldDefinitions() as $field_name => $field_definition) {
+      if ($field_definition->getType() == 'comment' && $entity->get($field_name)->status == CommentItemInterface::OPEN) {
+        // Add comments for each comment field on entity.
+        devel_generate_add_comments($entity, $field_definition, $results['users'], $results['max_comments'], $results['title_length']);
+      }
+    }
+  }
+
+  // Add an url alias. Cannot happen before save because we don't know the nid.
+  if (!empty($results['add_alias'])) {
+    $path = array(
+      'source' => '/node/' . $entity->id(),
+      'alias' => '/node-' . $entity->id() . '-' . $entity->bundle(),
+    );
+    \Drupal::service('path.alias_storage')->save($path['source'], $path['alias']);
+  }
+
+  // Add node statistics.
+  if (!empty($results['add_statistics']) && \Drupal::moduleHandler()->moduleExists('statistics')) {
+    devel_generate_add_statistics($entity);
+  }
+}
+
+/**
+ * Create comments and add them to a node.
+ *
+ * @param \Drupal\node\NodeInterface $node
+ *   Node to add comments to.
+ * @param \Drupal\Core\Field\FieldDefinitionInterface $field_definition
+ *   The field storage definition.
+ * @param array $users
+ *   Array of users to assign comment authors.
+ * @param int $max_comments
+ *   Max number of comments to generate per node.
+ * @param int $title_length
+ *   Max length of the title of the comments.
+ */
+function devel_generate_add_comments(NodeInterface $node, FieldDefinitionInterface $field_definition, $users, $max_comments, $title_length = 8) {
+  $parents = array();
+  $field_name = $field_definition->getName();
+  $num_comments = mt_rand(1, $max_comments);
+  for ($i = 1; $i <= $num_comments; $i++) {
+    switch ($i % 3) {
+      case 0:
+        // No parent.
+      case 1:
+        // Top level parent.
+        $parents = \Drupal::entityQuery('comment')
+          ->condition('pid', 0)
+          ->condition('entity_id', $node->id())
+          ->condition('entity_type', 'node')
+          ->condition('field_name', $field_name)
+          ->range(0, 1)
+          ->execute();
+        break;
+      case 2:
+        // Non top level parent.
+        $parents = \Drupal::entityQuery('comment')
+          ->condition('pid', 0, '>')
+          ->condition('entity_id', $node->id())
+          ->condition('entity_type', 'node')
+          ->condition('field_name', $field_name)
+          ->range(0, 1)
+          ->execute();
+        break;
+    }
+    $random = new Random();
+    $stub = array(
+      'entity_type' => $node->getEntityTypeId(),
+      'entity_id' => $node->id(),
+      'field_name' => $field_name,
+      'name' => 'devel generate',
+      'mail' => 'devel_generate@example.com',
+      'timestamp' => mt_rand($node->getCreatedTime(), REQUEST_TIME),
+      'subject' => substr($random->sentences(mt_rand(2, $title_length), TRUE), 0, 63),
+      'uid' => $users[array_rand($users)],
+      'langcode' => $node->language()->getId(),
+    );
+    if ($parents) {
+      $stub['pid'] = current($parents);
+    }
+    $comment = entity_create('comment', $stub);
+
+    //Populate all core fields on behalf of field.module
+    DevelGenerateBase::populateFields($comment);
+    $comment->save();
+  }
+}
+
+/**
+ * Generate statistics information for a node.
+ *
+ * @param \Drupal\node\NodeInterface $node
+ *   A node object.
+ */
+function devel_generate_add_statistics(NodeInterface $node) {
+  $statistic = array(
+    'nid' => $node->id(),
+    'totalcount' => mt_rand(0, 500),
+    'timestamp' => REQUEST_TIME - mt_rand(0, $node->getCreatedTime()),
+  );
+  $statistic['daycount'] = mt_rand(0, $statistic['totalcount']);
+  db_insert('node_counter')->fields($statistic)->execute();
+}

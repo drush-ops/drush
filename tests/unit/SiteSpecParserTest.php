@@ -12,8 +12,9 @@ class SiteSpecParserTest extends TestCase
      */
     public function testSiteSpecParser(
         $spec,
-        $expected)
-    {
+        $expected
+    ) {
+    
         $root = $this->siteDir();
         $fixtureSite = '/' . basename($root);
         $parser = new SiteSpecParser();
@@ -84,7 +85,7 @@ class SiteSpecParserTest extends TestCase
             [ 'user@server/path/to/drupal#uri!' ],
             [ 'user@server/path/to/drupal##uri' ],
             [ 'user#server/path/to/drupal#uri' ],
-       ];
+        ];
     }
 
     public static function parserTestValues()

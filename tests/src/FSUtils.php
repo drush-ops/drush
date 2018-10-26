@@ -4,7 +4,7 @@ namespace Drush;
 // We want to avoid using symfony/filesystem in the isolation tests.
 trait FSUtils
 {
-    function removeDir($dir)
+    public function removeDir($dir)
     {
         $files = array_diff(scandir($dir), ['.','..']);
         foreach ($files as $file) {

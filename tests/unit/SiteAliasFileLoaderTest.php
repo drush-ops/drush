@@ -11,7 +11,7 @@ class SiteAliasFileLoaderTest extends TestCase
     use \Drush\FixtureFactory;
     use \Drush\FunctionUtils;
 
-    function setUp()
+    public function setUp()
     {
         $this->sut = new SiteAliasFileLoader();
 

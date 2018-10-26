@@ -1,0 +1,206 @@
+{% block toolbar %}
+    {% set request_handler %}
+    <a href="{{ idelink(collector.controller.file, collector.controller.line)|raw }}">{{ abbr(collector.controller.class)|raw }}
+        ::{{ collector.controller.method }}</a>
+    {% endset %}
+
+    {% set request_status_code_color = (400 > collector.statuscode) ? ((200 == collector.statuscode) ? 'green' : 'yellow') : 'red' %}
+
+    {% set request_route = collector.route ? collector.route : 'NONE' %}
+
+    {% set icon %}
+    <a href="{{ url("webprofiler.dashboard", {profile: token}, {fragment: 'request'}) }}" title="{{ 'Request'|t }}">
+        <img width="28" height="28" alt="{{ 'Request'|t }}"
+             src="data:image/png;base64,{{ collector.icon }}">
+    <span class="sf-toolbar-status sf-toolbar-status-{{ request_status_code_color }}"
+          title="{{ collector.statustext }}">{{ collector.statuscode }}</span>
+    </a>
+    {% endset %}
+
+    {% set text %}
+    {% spaceless %}
+        <div class="sf-toolbar-info-piece">
+            <b>{{ 'Status'|t }}</b>
+            <span class="sf-toolbar-status sf-toolbar-status-{{ request_status_code_color }}">{{ collector.statuscode }}</span> {{ collector.statustext }}
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>{{ 'Controller'|t }}</b>
+            {{ request_handler }}
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>{{ 'Route name'|t }}</b>
+            <span>{{ request_route }}</span>
+        </div>
+    {% endspaceless %}
+    {% endset %}
+
+    <div class="sf-toolbar-block">
+        <div class="sf-toolbar-icon">{{ icon|default('') }}</div>
+        <div class="sf-toolbar-info">{{ text|default('') }}</div>
+    </div>
+{% endblock %}
+
+{% block panel %}
+    <script id="request" type="text/template">
+        <h2 class="panel__title">{{ 'Request'|t }}</h2>
+
+        <% if (!_.isEmpty(data.request_query)) { %>
+        <div class="panel__container">
+            <table class="table--duo">
+                <thead>
+                <th>{{ 'GET Parameters'|t }}</th>
+                <th>{{ 'Value'|t }}</th>
+                </thead>
+                <tbody>
+                <% _.each( data.request_query, function( item, key ){ %>
+                <tr>
+                    <td><%- key %></td>
+                    <td><%- item %></td>
+                </tr>
+                <% }); %>
+                </tbody>
+            </table>
+        </div>
+        <% } %>
+
+        <% if (!_.isEmpty(data.request_request)) { %>
+        <div class="panel__container">
+            <table class="table--duo">
+                <thead>
+                <th>{{ 'POST Parameters'|t }}</th>
+                <th>{{ 'Value'|t }}</th>
+                </thead>
+                <tbody>
+                <% _.each( data.request_request, function( item, key ){ %>
+                <tr>
+                    <td><%- key %></td>
+                    <td><%= Drupal.webprofiler.helpers.frm(item) %></td>
+                </tr>
+                <% }); %>
+                </tbody>
+            </table>
+        </div>
+        <% } %>
+
+        <div class="panel__container">
+            <table class="table--duo">
+                <thead>
+                <th>{{ 'Attributes'|t }}</th>
+                <th>{{ 'Value'|t }}</th>
+                </thead>
+                <tbody>
+                <% _.each( data.request_attributes, function( item, key ){ %>
+                <tr>
+                    <td><%- key %></td>
+
+                    <% if(key == '_controller') { %>
+                    <td><%= Drupal.webprofiler.helpers.classLink(data.controller) %></td>
+                    <% } else { %>
+                    <td><%= Drupal.webprofiler.helpers.frm(item) %></td>
+                    <% } %>
+                </tr>
+                <% }); %>
+                </tbody>
+            </table>
+        </div>
+
+        <% if (!_.isEmpty(data.request_cookies)) { %>
+        <div class="panel__container">
+            <table class="table--duo">
+                <thead>
+                <th>{{ 'Cookies'|t }}</th>
+                <th>{{ 'Value'|t }}</th>
+                </thead>
+                <tbody>
+                <% _.each( data.request_cookies, function( item, key ){ %>
+                <tr>
+                    <td><%- key %></td>
+                    <td><%= Drupal.webprofiler.helpers.frm(item) %></td>
+                </tr>
+                <% }); %>
+                </tbody>
+            </table>
+        </div>
+        <% } %>
+
+        <div class="panel__container">
+            <table class="table--duo">
+                <thead>
+                <th>{{ 'Request headers'|t }}</th>
+                <th>{{ 'Value'|t }}</th>
+                </thead>
+                <tbody>
+                <% _.each( data.request_headers, function( item, key ){ %>
+                <tr>
+                    <td><%- key %></td>
+                    <td><%= Drupal.webprofiler.helpers.frm(item) %></td>
+                </tr>
+                <% }); %>
+                </tbody>
+            </table>
+        </div>
+
+        <% if (!_.isEmpty(data.content)) { %>
+        <div class="panel__container">
+            <div class="h--word-broken"><%- data.content %></div>
+        </div>
+        <% } %>
+
+        <% if (!_.isEmpty(data.access_check)) { %>
+        <div class="panel__container">
+            <table class="table--duo">
+                <thead>
+                <th>{{ 'Path'|t }}</th>
+                <th>{{ 'Access check'|t }}</th>
+                </thead>
+                <tbody>
+                <% _.each(data.access_check, function(items, key){ %>
+                <tr>
+                    <td><%- key %></td>
+                    <td>
+                        <% _.each(items, function(item){ %>
+                        <%- item.service_id %>
+                        <% }); %>
+                    </td>
+                </tr>
+                <% }); %>
+                </tbody>
+            </table>
+        </div>
+        <% } %>
+
+        <div class="panel__container">
+            <table class="table--duo">
+                <thead>
+                <th>{{ 'Server Parameters'|t }}</th>
+                <th>{{ 'Value'|t }}</th>
+                </thead>
+                <tbody>
+                <% _.each( data.request_server, function( item, key ){ %>
+                <tr>
+                    <td><%- key %></td>
+                    <td><%= Drupal.webprofiler.helpers.frm(item) %></td>
+                </tr>
+                <% }); %>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="panel__container">
+            <table class="table--duo">
+                <thead>
+                <th>{{ 'Response headers'|t }}</th>
+                <th>{{ 'Value'|t }}</th>
+                </thead>
+                <tbody>
+                <% _.each( data.response_headers, function( item, key ){ %>
+                <tr>
+                    <td><%- key %></td>
+                    <td><%= Drupal.webprofiler.helpers.frm(item) %></td>
+                </tr>
+                <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </script>
+{% endblock %}

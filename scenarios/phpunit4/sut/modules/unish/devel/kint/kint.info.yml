@@ -1,0 +1,13 @@
+name: 'Devel Kint'
+type: module
+description: 'Wrapper for Kint debugging tool'
+package: Development
+# core: 8.x
+tags:
+ - developer
+
+# Information added by Drupal.org packaging script on 2017-10-05
+version: '8.x-1.2'
+core: '8.x'
+project: 'devel'
+datestamp: 1507197848

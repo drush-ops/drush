@@ -1,0 +1,51 @@
+<?php
+
+/**
+ * @file
+ * Legacy Webprofiler module file.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function webprofiler_theme() {
+  return [
+    'webprofiler_loader' => [
+      'template' => 'Profiler/webprofiler_loader',
+      'variables' => ['token' => NULL, 'profiler_url' => NULL],
+    ],
+    'webprofiler_toolbar' => [
+      'template' => 'Profiler/webprofiler_toolbar',
+      'variables' => [
+        'token' => NULL,
+        'toolbar' => NULL,
+      ],
+    ],
+    'webprofiler_panel' => [
+      'template' => 'Profiler/webprofiler_panel',
+      'variables' => [
+        'panel' => NULL,
+      ],
+    ],
+    'webprofiler_dashboard' => [
+      'template' => 'Profiler/webprofiler_dashboard',
+      'variables' => [
+        'profile' => [],
+        'panels' => [],
+        'spinner_path' => NULL,
+      ],
+    ],
+  ];
+}
+
+/**
+ * Implements hook_cache_flush().
+ */
+function webprofiler_cache_flush() {
+  $config = \Drupal::configFactory()->get('webprofiler.config');
+
+  if ($config->get('purge_on_cache_clear')) {
+    $profiler = \Drupal::service('profiler');
+    $profiler->purge();
+  }
+}

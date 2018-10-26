@@ -1,0 +1,70 @@
+<?php
+
+/**
+ * @file
+ * Enables users to rename URLs.
+ */
+
+use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function path_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.path':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('The Path module allows you to specify an alias, or custom URL, for any existing internal system path. Aliases should not be confused with URL redirects, which allow you to forward a changed or inactive URL to a new URL. In addition to making URLs more readable, aliases also help search engines index content more effectively. Multiple aliases may be used for a single internal system path. To automate the aliasing of paths, you can install the contributed module <a href=":pathauto">Pathauto</a>. For more information, see the <a href=":path">online documentation for the Path module</a>.', [':path' => 'https://www.drupal.org/documentation/modules/path', ':pathauto' => 'https://www.drupal.org/project/pathauto']) . '</p>';
+      $output .= '<h3>' . t('Uses') . '</h3>';
+      $output .= '<dl>';
+      $output .= '<dt>' . t('Creating aliases') . '</dt>';
+      $output .= '<dd>' . t('If you create or edit a taxonomy term you can add an alias (for example <em>music/jazz</em>) in the field "URL alias". When creating or editing content you can add an alias (for example <em>about-us/team</em>) under the section "URL path settings" in the field "URL alias". Aliases for any other path can be added through the page <a href=":aliases">URL aliases</a>. To add aliases a user needs the permission <a href=":permissions">Create and edit URL aliases</a>.', [':aliases' => \Drupal::url('path.admin_overview'), ':permissions' => \Drupal::url('user.admin_permissions', [], ['fragment' => 'module-path'])]) . '</dd>';
+      $output .= '<dt>' . t('Managing aliases') . '</dt>';
+      $output .= '<dd>' . t('The Path module provides a way to search and view a <a href=":aliases">list of all aliases</a> that are in use on your website. Aliases can be added, edited and deleted through this list.', [':aliases' => \Drupal::url('path.admin_overview')]) . '</dd>';
+      $output .= '</dl>';
+      return $output;
+
+    case 'path.admin_overview':
+      return '<p>' . t("An alias defines a different name for an existing URL path - for example, the alias 'about' for the URL path 'node/1'. A URL path can have multiple aliases.") . '</p>';
+
+    case 'path.admin_add':
+      return '<p>' . t('Enter the path you wish to create the alias for, followed by the name of the new alias.') . '</p>';
+  }
+}
+
+/**
+ * Implements hook_entity_base_field_info().
+ */
+function path_entity_base_field_info(EntityTypeInterface $entity_type) {
+  if (in_array($entity_type->id(), ['taxonomy_term', 'node', 'media'], TRUE)) {
+    $fields['path'] = BaseFieldDefinition::create('path')
+      ->setLabel(t('URL alias'))
+      ->setTranslatable(TRUE)
+      ->setDisplayOptions('form', [
+        'type' => 'path',
+        'weight' => 30,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setComputed(TRUE);
+
+    return $fields;
+  }
+}
+
+/**
+ * Implements hook_entity_translation_create().
+ */
+function path_entity_translation_create(ContentEntityInterface $translation) {
+  foreach ($translation->getFieldDefinitions() as $field_name => $field_definition) {
+    if ($field_definition->getType() === 'path' && $translation->get($field_name)->pid) {
+      // If there are values and a path ID, update the langcode and unset the
+      // path ID to save this as a new alias.
+      $translation->get($field_name)->langcode = $translation->language()->getId();
+      $translation->get($field_name)->pid = NULL;
+    }
+  }
+}

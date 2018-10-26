@@ -1,0 +1,9 @@
+name: Empty theme
+type: theme
+description: 'An empty theme to use for testing.'
+# core: 8.x
+# Information added by Drupal.org packaging script on 2017-03-05
+version: '8.x-1.0'
+core: '8.x'
+project: 'empty_theme'
+datestamp: 1488718985

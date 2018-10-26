@@ -9,7 +9,7 @@ class SiteAliasFileDiscoveryTest extends TestCase
     use \Drush\FixtureFactory;
     use \Drush\FunctionUtils;
 
-    function setUp()
+    public function setUp()
     {
         $this->sut = new SiteAliasFileDiscovery();
     }
@@ -59,8 +59,7 @@ class SiteAliasFileDiscoveryTest extends TestCase
         $result = array_map(
             function ($item) {
                 return basename(dirname($item)) . '/' . basename($item);
-            }
-            ,
+            },
             $result
         );
 

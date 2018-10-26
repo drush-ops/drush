@@ -1,0 +1,93 @@
+devel.admin_settings:
+  title: 'Devel settings'
+  description: 'Helper functions, pages, and blocks to assist Drupal developers. The devel blocks can be managed via the block administration page.'
+  route_name: devel.admin_settings
+  parent: 'system.admin_config_development'
+devel.admin_settings_link:
+  title: 'Devel settings'
+  description: 'Helper functions, pages, and blocks to assist Drupal developers. The devel blocks can be managed via the block administration page.'
+  route_name: devel.admin_settings
+  menu_name: devel
+devel.configs_list:
+  title: 'Config editor'
+  description: 'Edit configuration.'
+  route_name: devel.configs_list
+  menu_name: devel
+devel.reinstall:
+  title: 'Reinstall Modules'
+  route_name: devel.reinstall
+  menu_name: devel
+  class: \Drupal\devel\Plugin\Menu\DestinationMenuLink
+devel.menu_rebuild:
+  title: 'Rebuild Menu'
+  route_name: devel.menu_rebuild
+  menu_name: devel
+  class: \Drupal\devel\Plugin\Menu\DestinationMenuLink
+devel.state_system_page:
+  title: 'State editor'
+  description: 'Edit state system values.'
+  route_name: devel.state_system_page
+  menu_name: devel
+devel.theme_registry:
+  title: 'Theme registry'
+  route_name: devel.theme_registry
+  menu_name: devel
+devel.entity_info_page:
+  title: 'Entity Info'
+  route_name: devel.entity_info_page
+#  parent: 'system.admin_config_development'
+  menu_name: devel
+devel.field_info_page:
+  title: 'Field Info'
+  route_name: devel.field_info_page
+#  parent: 'system.admin_config_development'
+  menu_name: devel
+devel.phpinfo:
+  title: 'PHPinfo()'
+  route_name: system.php
+  menu_name: devel
+devel.execute_php:
+  title: 'Execute PHP'
+  route_name: devel.execute_php
+  menu_name: devel
+devel.session:
+  title: 'View Session'
+  route_name: devel.session
+  menu_name: devel
+devel.elements_page:
+  title: 'Element Info'
+  route_name: devel.elements_page
+  menu_name: devel
+devel.cache_clear:
+  title: 'Cache clear'
+  route_name: devel.cache_clear
+  menu_name: devel
+  class: \Drupal\devel\Plugin\Menu\DestinationMenuLink
+devel.run_cron:
+  title: 'Run cron'
+  route_name: devel.run_cron
+  menu_name: devel
+  class: \Drupal\devel\Plugin\Menu\DestinationMenuLink
+
+# Container info
+devel.container_info.service:
+  title: 'Container Info'
+  route_name: devel.container_info.service
+  menu_name: devel
+
+# Routes info
+devel.route_info:
+  title: 'Routes Info'
+  route_name: devel.route_info
+  menu_name: devel
+devel.route_info.item:
+  title: 'Current route info'
+  route_name: devel.route_info.item
+  menu_name: devel
+  class: \Drupal\devel\Plugin\Menu\RouteDetailMenuLink
+
+# Event info
+devel.event_info:
+  title: 'Events Info'
+  route_name: devel.event_info
+  menu_name: devel

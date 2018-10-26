@@ -1,0 +1,58 @@
+{% block toolbar %}
+    {% set icon %}
+    <a href="{{ url("webprofiler.dashboard", {profile: token}, {fragment: 'views'}) }}" title="{{ 'Views'|t }}">
+        <img width="20" height="28" alt="{{ 'Views'|t }}"
+             src="data:image/png;base64,{{ collector.icon }}"/>
+        <span class="sf-toolbar-info-piece-additional sf-toolbar-status">{{ collector.getViewsCount }}</span>
+    </a>
+    {% endset %}
+    {% set text %}
+
+    <div class="sf-toolbar-info-piece">
+        <b>{{ 'Views'|t }}</b>
+        <span>{{ collector.getViewsCount }}</span>
+    </div>
+    {% endset %}
+
+    <div class="sf-toolbar-block">
+        <div class="sf-toolbar-icon">{{ icon|default('') }}</div>
+        <div class="sf-toolbar-info">{{ text|default('') }}</div>
+    </div>
+{% endblock %}
+
+{% block panel %}
+    <script id="views" type="text/template">
+        <h2 class="panel__title">{{ 'Views'|t }}</h2>
+        <div class="panel__container">
+            <% if( data.views.length != 0){ %>
+            <table class="table--duo">
+                <thead>
+                <tr>
+                    <th>{{ 'name'|t }}</th>
+                    <th>{{ 'display'|t }}</th>
+                    <th>{{ 'build time'|t }}</th>
+                    <th>{{ 'execute time'|t }}</th>
+                    <th>{{ 'render time'|t }}</th>
+                    <th>{{ 'Action'|t }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% _.each( data.views, function( item ){ %>
+                <tr>
+                    <td><%- item.id %></td>
+                    <td><%- item.current_display %></td>
+                    <td><%- Drupal.webprofiler.helpers.printTime(item.build_time) %></td>
+                    <td><%- Drupal.webprofiler.helpers.printTime(item.execute_time) %></td>
+                    <td><%- Drupal.webprofiler.helpers.printTime(item.render_time) %></td>
+                    <td><a href="<%- item.route %>">{{ 'Edit'|t }}</a></td>
+                </tr>
+                <% }); %>
+                </tbody>
+            </table>
+            <% } else { %>
+            <p>{{ 'No results'|t }}</p>
+            <% } %>
+        </div>
+
+    </script>
+{% endblock %}

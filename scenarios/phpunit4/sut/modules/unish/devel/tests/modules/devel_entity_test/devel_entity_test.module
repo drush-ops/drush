@@ -1,0 +1,29 @@
+<?php
+
+/**
+ * @file
+ * Test module for the entity API providing several entity types for testing.
+ */
+
+/**
+ * Implements hook_entity_view_mode_info_alter().
+ */
+function devel_entity_test_entity_view_mode_info_alter(&$view_modes) {
+  $entity_info = \Drupal::entityTypeManager()->getDefinitions();
+  foreach ($entity_info as $entity_type => $info) {
+    if ($entity_info[$entity_type]->getProvider() == 'devel_entity_test_canonical' && !isset($view_modes[$entity_type])) {
+      $view_modes[$entity_type] = array(
+        'full' => array(
+          'label' => t('Full object'),
+          'status' => TRUE,
+          'cache' => TRUE,
+        ),
+        'teaser' => array(
+          'label' => t('Teaser'),
+          'status' => TRUE,
+          'cache' => TRUE,
+        ),
+      );
+    }
+  }
+}

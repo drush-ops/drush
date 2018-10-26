@@ -1,0 +1,14 @@
+description: Listar perfiles Webprofiler.
+options:
+  ip: Filtrar por IP.
+  url: Filtrar por URL.
+  method: Filtrar por método HTTP.
+  limit: Limitar perfiles a mostrar.
+rows:
+  time: D, d/m/Y - H:i:s
+header:
+  token: Token
+  ip: IP
+  method: Método
+  url: URL
+  time: Fecha

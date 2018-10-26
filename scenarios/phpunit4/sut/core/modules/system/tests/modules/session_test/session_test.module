@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * @file
+ * Test module.
+ */
+
+/**
+ * Implements hook_user_login().
+ */
+function session_test_user_login($account) {
+  if ($account->getUsername() == 'session_test_user') {
+    // Exit so we can verify that the session was regenerated
+    // before hook_user_login() was called.
+    exit;
+  }
+  // Add some data in the session for retrieval testing purpose.
+  \Drupal::request()->getSession()->set("session_test_key", "foobar");
+}

@@ -1,0 +1,63 @@
+d3:
+  remote: https://github.com/d3/d3
+  version: 3.5.17
+  license:
+    name: BSD-3
+    url: https://github.com/d3/d3/blob/master/LICENSE
+    gpl-compatible: true
+  js:
+    /libraries/d3/d3.min.js: {}
+highlightjs:
+  remote: https://github.com/isagalaev/highlight.js
+  version: 9.7.0
+  license:
+    name: BSD-3
+    url: https://github.com/isagalaev/highlight.js/blob/master/LICENSE
+    gpl-compatible: true
+  js:
+    /libraries/highlightjs/highlight.pack.js: {}
+  css:
+    component:
+      /libraries/highlightjs/styles/idea.css: {}
+dashboard:
+  version: 2.0
+  js:
+    js/app/main.js: {}
+    js/app/helpers.js: {}
+    js/app/models/collector.js: {}
+    js/app/collections/collectors.js: {}
+    js/app/views/collector.js: {}
+    js/app/views/collectorsList.js: {}
+    js/app/views/layout.js: {}
+    js/app/views/details.js: {}
+    js/app/routers/collectors.js: {}
+  css:
+    component:
+      css/app/dashboard.css: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.once
+    - core/drupal
+    - core/drupalSettings
+    - core/backbone
+database:
+  version: 2.0
+  js:
+    js/database.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+    - webprofiler/highlightjs
+timeline:
+  version: 2.0
+  js:
+    js/timeline.js: {}
+  css:
+    component:
+      css/timeline.css: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+    - webprofiler/d3

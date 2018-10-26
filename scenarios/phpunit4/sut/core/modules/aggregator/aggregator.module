@@ -1,0 +1,187 @@
+<?php
+
+/**
+ * @file
+ * Used to aggregate syndicated content (RSS, RDF, and Atom).
+ */
+
+use Drupal\aggregator\Entity\Feed;
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Denotes that a feed's items should never expire.
+ *
+ * @deprecated in Drupal 8.3.x and will be removed before Drupal 9.0.0.
+ *   Use \Drupal\aggregator\FeedStorageInterface::CLEAR_NEVER instead.
+ *
+ * @see https://www.drupal.org/node/2831620
+ */
+const AGGREGATOR_CLEAR_NEVER = 0;
+
+/**
+ * Implements hook_help().
+ */
+function aggregator_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.aggregator':
+      $path_validator = \Drupal::pathValidator();
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('The Aggregator module is an on-site syndicator and news reader that gathers and displays fresh content from RSS-, RDF-, and Atom-based feeds made available across the web. Thousands of sites (particularly news sites and blogs) publish their latest headlines in feeds, using a number of standardized XML-based formats. For more information, see the <a href=":aggregator-module">online documentation for the Aggregator module</a>.', [':aggregator-module' => 'https://www.drupal.org/documentation/modules/aggregator']) . '</p>';
+      $output .= '<h3>' . t('Uses') . '</h3>';
+      $output .= '<dl>';
+      // Check if the aggregator sources View is enabled.
+      if ($url = $path_validator->getUrlIfValid('aggregator/sources')) {
+        $output .= '<dt>' . t('Viewing feeds') . '</dt>';
+        $output .= '<dd>' . t('Users view feed content in the <a href=":aggregator">main aggregator display</a>, or by <a href=":aggregator-sources">their source</a> (usually via an RSS feed reader). The most recent content in a feed can be displayed as a block through the <a href=":admin-block">Blocks administration page</a>.', [':aggregator' => \Drupal::url('aggregator.page_last'), ':aggregator-sources' => $url->toString(), ':admin-block' => (\Drupal::moduleHandler()->moduleExists('block')) ? \Drupal::url('block.admin_display') : '#']) . '</dd>';
+      }
+      $output .= '<dt>' . t('Adding, editing, and deleting feeds') . '</dt>';
+      $output .= '<dd>' . t('Administrators can add, edit, and delete feeds, and choose how often to check each feed for newly updated items on the <a href=":feededit">Aggregator administration page</a>.', [':feededit' => \Drupal::url('aggregator.admin_overview')]) . '</dd>';
+      $output .= '<dt>' . t('Configuring the display of feed items') . '</dt>';
+      $output .= '<dd>' . t('Administrators can choose how many items are displayed in the listing pages, which HTML tags are allowed in the content of feed items, and whether they should be trimmed to a maximum number of characters on the <a href=":settings">Aggregator settings page</a>.', [':settings' => \Drupal::url('aggregator.admin_settings')]) . '</dd>';
+      $output .= '<dt>' . t('Discarding old feed items') . '</dt>';
+      $output .= '<dd>' . t('Administrators can choose whether to discard feed items that are older than a specified period of time on the <a href=":settings">Aggregator settings page</a>. This requires a correctly configured cron maintenance task (see below).', [':settings' => \Drupal::url('aggregator.admin_settings')]) . '<dd>';
+
+      $output .= '<dt>' . t('<abbr title="Outline Processor Markup Language">OPML</abbr> integration') . '</dt>';
+      // Check if the aggregator opml View is enabled.
+      if ($url = $path_validator->getUrlIfValid('aggregator/opml')) {
+        $output .= '<dd>' . t('A <a href=":aggregator-opml">machine-readable OPML file</a> of all feeds is available. OPML is an XML-based file format used to share outline-structured information such as a list of RSS feeds. Feeds can also be <a href=":import-opml">imported via an OPML file</a>.', [':aggregator-opml' => $url->toString(), ':import-opml' => \Drupal::url('aggregator.opml_add')]) . '</dd>';
+      }
+      $output .= '<dt>' . t('Configuring cron') . '</dt>';
+      $output .= '<dd>' . t('A working <a href=":cron">cron maintenance task</a> is required to update feeds automatically.', [':cron' => \Drupal::url('system.cron_settings')]) . '</dd>';
+      $output .= '</dl>';
+      return $output;
+
+    case 'aggregator.admin_overview':
+      // Don't use placeholders for possibility to change URLs for translators.
+      $output = '<p>' . t('Many sites publish their headlines and posts in feeds, using a number of standardized XML-based formats. The aggregator supports <a href="http://en.wikipedia.org/wiki/Rss">RSS</a>, <a href="http://en.wikipedia.org/wiki/Resource_Description_Framework">RDF</a>, and <a href="http://en.wikipedia.org/wiki/Atom_%28standard%29">Atom</a>.') . '</p>';
+      $output .= '<p>' . t('Current feeds are listed below, and <a href=":addfeed">new feeds may be added</a>. For each feed, the <em>latest items</em> block may be enabled at the <a href=":block">blocks administration page</a>.', [':addfeed' => \Drupal::url('aggregator.feed_add'), ':block' => (\Drupal::moduleHandler()->moduleExists('block')) ? \Drupal::url('block.admin_display') : '#']) . '</p>';
+      return $output;
+
+    case 'aggregator.feed_add':
+      return '<p>' . t('Add a feed in RSS, RDF or Atom format. A feed may only have one entry.') . '</p>';
+
+    case 'aggregator.opml_add':
+      return '<p>' . t('<abbr title="Outline Processor Markup Language">OPML</abbr> is an XML format for exchanging feeds between aggregators. A single OPML document may contain many feeds. Aggregator uses this file to import all feeds at once. Upload a file from your computer or enter a URL where the OPML file can be downloaded.') . '</p>';
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function aggregator_theme() {
+  return [
+    'aggregator_feed' => [
+      'render element' => 'elements',
+      'file' => 'aggregator.theme.inc',
+    ],
+    'aggregator_item' => [
+      'render element' => 'elements',
+      'file' => 'aggregator.theme.inc',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_entity_extra_field_info().
+ */
+function aggregator_entity_extra_field_info() {
+  $extra = [];
+
+  $extra['aggregator_feed']['aggregator_feed'] = [
+    'display' => [
+      'items' => [
+        'label' => t('Items'),
+        'description' => t('Items associated with this feed'),
+        'weight' => 0,
+      ],
+      // @todo Move to a formatter at https://www.drupal.org/node/2339917.
+      'image' => [
+        'label' => t('Image'),
+        'description' => t('The feed image'),
+        'weight' => 2,
+      ],
+      // @todo Move to a formatter at https://www.drupal.org/node/2149845.
+      'description' => [
+        'label' => t('Description'),
+        'description' => t('The description of this feed'),
+        'weight' => 3,
+      ],
+      'more_link' => [
+        'label' => t('More link'),
+        'description' => t('A more link to the feed detail page'),
+        'weight' => 5,
+      ],
+      'feed_icon' => [
+        'label' => t('Feed icon'),
+        'description' => t('An icon that links to the feed URL'),
+        'weight' => 6,
+      ],
+    ],
+  ];
+
+  $extra['aggregator_item']['aggregator_item'] = [
+    'display' => [
+      // @todo Move to a formatter at https://www.drupal.org/node/2149845.
+      'description' => [
+        'label' => t('Description'),
+        'description' => t('The description of this feed item'),
+        'weight' => 2,
+      ],
+    ],
+  ];
+
+  return $extra;
+}
+
+/**
+ * Implements hook_cron().
+ *
+ * Queues news feeds for updates once their refresh interval has elapsed.
+ */
+function aggregator_cron() {
+  $queue = \Drupal::queue('aggregator_feeds');
+
+  $ids = \Drupal::entityManager()->getStorage('aggregator_feed')->getFeedIdsToRefresh();
+  foreach (Feed::loadMultiple($ids) as $feed) {
+    if ($queue->createItem($feed)) {
+      // Add timestamp to avoid queueing item more than once.
+      $feed->setQueuedTime(REQUEST_TIME);
+      $feed->save();
+    }
+  }
+
+  // Delete queued timestamp after 6 hours assuming the update has failed.
+  $ids = \Drupal::entityQuery('aggregator_feed')
+    ->condition('queued', REQUEST_TIME - (3600 * 6), '<')
+    ->execute();
+
+  if ($ids) {
+    $feeds = Feed::loadMultiple($ids);
+    foreach ($feeds as $feed) {
+      $feed->setQueuedTime(0);
+      $feed->save();
+    }
+  }
+}
+
+/**
+ * Gets the list of allowed tags.
+ *
+ * @return array
+ *   The list of allowed tags.
+ *
+ * @internal
+ */
+function _aggregator_allowed_tags() {
+  return preg_split('/\s+|<|>/', \Drupal::config('aggregator.settings')->get('items.allowed_html'), -1, PREG_SPLIT_NO_EMPTY);
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for block templates.
+ */
+function aggregator_preprocess_block(&$variables) {
+  if ($variables['configuration']['provider'] == 'aggregator') {
+    $variables['attributes']['role'] = 'complementary';
+  }
+}

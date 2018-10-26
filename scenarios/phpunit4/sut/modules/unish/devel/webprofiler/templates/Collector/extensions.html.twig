@@ -1,0 +1,95 @@
+{% block toolbar %}
+    {% set icon %}
+    <a href="{{ url("webprofiler.dashboard", {profile: token}, {fragment: 'drupal_extension'}) }}"
+       title="{{ 'Extensions'|t }}">
+        <img width="20" height="28" alt="{{ 'Extensions'|t }}"
+             src="data:image/png;base64,{{ collector.icon }}"/>
+        <span class="sf-toolbar-info-piece-additional sf-toolbar-status{% if 150 < collector.countExtensions %} sf-toolbar-status-yellow{% endif %}">{{ collector.getExtensionsCount }}</span>
+    </a>
+    {% endset %}
+    {% set text %}
+    <div class="sf-toolbar-info-piece">
+        <b>{{ 'Active Modules'|t }}</b>
+        <span>{{ collector.getModulesCount }}</span>
+    </div>
+    <div class="sf-toolbar-info-piece">
+        <b>{{ 'Active Themes'|t }}</b>
+        <span>{{ collector.getThemesCount }}</span>
+    </div>
+    {% endset %}
+
+    <div class="sf-toolbar-block">
+        <div class="sf-toolbar-icon">{{ icon|default('') }}</div>
+        <div class="sf-toolbar-info">{{ text|default('') }}</div>
+    </div>
+{% endblock %}
+
+{% block panel %}
+    <script id="drupal_extension" type="text/template">
+        <h2 class="panel__title">{{ 'Extensions'|t }}</h2>
+        <div class="tabs">
+            <input class="tabs__radio" type="radio" id="modules" name="tabs" checked/>
+            <input class="tabs__radio" type="radio" id="themes" name="tabs"/>
+            <ul class="tabs__tabs list--inline">
+                <li><label class="tabs__label" for="modules">{{ 'Modules'|t }}</label></li>
+                <li><label class="tabs__label" for="themes">{{ 'Themes'|t }}</label></li>
+            </ul>
+
+            <div class="tabs__panels">
+                <div class="tabs__panel">
+                    <div class="panel__container">
+                        <table class="table--compact">
+                            <thead>
+                            <tr>
+                                <th>{{ 'Name'|t }}</th>
+                                <th>{{ 'Path'|t }}</th>
+                                <th>{{ 'Info file'|t }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% _.each( data.drupal_extension.modules, function( value, key ){ %>
+                            <% if(value.public_type == 'module') { %>
+                            <tr>
+                                <td><%- key %></td>
+                                <td><%- value.public_path %></td>
+                                <td><%= Drupal.webprofiler.helpers.classLink({"file" :
+                                    data.drupal_extension.installation_path + value.public_pathname, "class":
+                                    value.public_pathname, "line": 0}) %>
+                                </td>
+                            </tr>
+                            <% } %>
+                            <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tabs__panel">
+                    <div class="panel__container">
+                        <table class="table--compact">
+                            <thead>
+                            <tr>
+                                <th>{{ 'Name'|t }}</th>
+                                <th>{{ 'Path'|t }}</th>
+                                <th>{{ 'Info file'|t }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% _.each( data.drupal_extension.themes, function( value, key ){ %>
+                            <tr>
+                                <td><%- key %></td>
+                                <td><%- value.public_path %></td>
+                                <td><%= Drupal.webprofiler.helpers.classLink({"file" :
+                                    data.drupal_extension.installation_path + value.public_pathname, "class":
+                                    value.public_pathname, "line": 0}) %>
+                                </td>
+                            </tr>
+                            <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+{% endblock %}

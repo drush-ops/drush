@@ -1,0 +1,22 @@
+alinks.settings:
+  type: config_object
+  label: 'Alinks settings'
+  mapping:
+    displays:
+      type: sequence
+      label: 'Displays'
+      sequence:
+        type: mapping
+        mapping:
+          entity_type:
+            label: 'Type'
+            type: string
+          entity_bundle:
+            label: 'Bundle'
+            type: string
+          entity_display:
+            label: 'Display'
+            type: string
+    xpathSelector:
+      type: string
+      label: 'xpath selector string'

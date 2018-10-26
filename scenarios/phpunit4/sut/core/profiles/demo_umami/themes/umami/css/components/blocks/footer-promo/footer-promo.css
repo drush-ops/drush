@@ -1,0 +1,62 @@
+/**
+ * @file
+ * This file is used to style the Footer promo block.
+ */
+
+.block-type-footer-promo-block .field--type-image {
+  padding-bottom: 14px;
+}
+
+.block-type-footer-promo-block .block__title {
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+.block-type-footer-promo-block .footer-promo-content {
+  margin-bottom: 1.28rem;
+}
+
+.block-type-footer-promo-block .footer-promo-content a {
+  background-color: inherit;
+  color: #fff;
+  font-weight: 700;
+}
+
+.block-type-footer-promo-block .footer-promo-content a:active,
+.block-type-footer-promo-block .footer-promo-content a:focus,
+.block-type-footer-promo-block .footer-promo-content a:hover {
+  background-color: transparent;
+}
+
+.block-type-footer-promo-block .footer-promo-content a:after {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  content: '';
+  background: url('../../../../images/svg/pointer--white.svg') no-repeat center center;
+  vertical-align: middle;
+}
+
+@media screen and (min-width: 60rem) {
+  .block-type-footer-promo-block {
+    flex-basis: 60%;
+    height: 200px;
+    overflow: hidden;
+    font-size: 0.9rem;
+  }
+
+  .block-type-footer-promo-block .field--type-image {
+    float: left; /* LTR */
+    margin-right: 14px; /* LTR */
+    padding-bottom: 0;
+  }
+
+  [dir="rtl"] .block-type-footer-promo-block .field--type-image {
+    float: right;
+    margin-left: 14px;
+  }
+
+  .block-type-footer-promo-block .block__title {
+    padding-top: 2rem;
+  }
+}

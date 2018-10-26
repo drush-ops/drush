@@ -1,0 +1,2175 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the system module.
+ */
+
+use Drupal\Component\Utility\Crypt;
+use Drupal\Component\Utility\Environment;
+use Drupal\Component\FileSystem\FileSystem;
+use Drupal\Component\Utility\OpCodeCache;
+use Drupal\Component\Utility\Unicode;
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Path\AliasStorage;
+use Drupal\Core\Url;
+use Drupal\Core\Database\Database;
+use Drupal\Core\Entity\ContentEntityTypeInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Entity\FieldableEntityInterface;
+use Drupal\Core\DrupalKernel;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Site\Settings;
+use Drupal\Core\StreamWrapper\PrivateStream;
+use Drupal\Core\StreamWrapper\PublicStream;
+use Drupal\system\SystemRequirements;
+use Symfony\Component\HttpFoundation\Request;
+
+/**
+ * Implements hook_requirements().
+ */
+function system_requirements($phase) {
+  global $install_state;
+  $requirements = [];
+
+  // Report Drupal version
+  if ($phase == 'runtime') {
+    $requirements['drupal'] = [
+      'title' => t('Drupal'),
+      'value' => \Drupal::VERSION,
+      'severity' => REQUIREMENT_INFO,
+      'weight' => -10,
+    ];
+
+    // Display the currently active installation profile, if the site
+    // is not running the default installation profile.
+    $profile = drupal_get_profile();
+    if ($profile != 'standard') {
+      $info = system_get_info('module', $profile);
+      $requirements['install_profile'] = [
+        'title' => t('Installation profile'),
+        'value' => t('%profile_name (%profile-%version)', [
+          '%profile_name' => $info['name'],
+          '%profile' => $profile,
+          '%version' => $info['version'],
+        ]),
+        'severity' => REQUIREMENT_INFO,
+        'weight' => -9,
+      ];
+    }
+
+    // Warn if any experimental modules are installed.
+    $experimental = [];
+    $enabled_modules = \Drupal::moduleHandler()->getModuleList();
+    foreach ($enabled_modules as $module => $data) {
+      $info = system_get_info('module', $module);
+      if (isset($info['package']) && $info['package'] === 'Core (Experimental)') {
+        $experimental[$module] = $info['name'];
+      }
+    }
+    if (!empty($experimental)) {
+      $requirements['experimental'] = [
+        'title' => t('Experimental modules enabled'),
+        'value' => t('Experimental modules found: %module_list. <a href=":url">Experimental modules</a> are provided for testing purposes only. Use at your own risk.', ['%module_list' => implode(', ', $experimental), ':url' => 'https://www.drupal.org/core/experimental']),
+        'severity' => REQUIREMENT_WARNING,
+      ];
+    }
+  }
+
+  // Web server information.
+  $request_object = \Drupal::request();
+  $software = $request_object->server->get('SERVER_SOFTWARE');
+  $requirements['webserver'] = [
+    'title' => t('Web server'),
+    'value' => $software,
+  ];
+
+  // Tests clean URL support.
+  if ($phase == 'install' && $install_state['interactive'] && !$request_object->query->has('rewrite') && strpos($software, 'Apache') !== FALSE) {
+    // If the Apache rewrite module is not enabled, Apache version must be >=
+    // 2.2.16 because of the FallbackResource directive in the root .htaccess
+    // file. Since the Apache version reported by the server is dependent on the
+    // ServerTokens setting in httpd.conf, we may not be able to determine if a
+    // given config is valid. Thus we are unable to use version_compare() as we
+    // need have three possible outcomes: the version of Apache is greater than
+    // 2.2.16, is less than 2.2.16, or cannot be determined accurately. In the
+    // first case, we encourage the use of mod_rewrite; in the second case, we
+    // raise an error regarding the minimum Apache version; in the third case,
+    // we raise a warning that the current version of Apache may not be
+    // supported.
+    $rewrite_warning = FALSE;
+    $rewrite_error = FALSE;
+    $apache_version_string = 'Apache';
+
+    // Determine the Apache version number: major, minor and revision.
+    if (preg_match('/Apache\/(\d+)\.?(\d+)?\.?(\d+)?/', $software, $matches)) {
+      $apache_version_string = $matches[0];
+
+      // Major version number
+      if ($matches[1] < 2) {
+        $rewrite_error = TRUE;
+      }
+      elseif ($matches[1] == 2) {
+        if (!isset($matches[2])) {
+          $rewrite_warning = TRUE;
+        }
+        elseif ($matches[2] < 2) {
+          $rewrite_error = TRUE;
+        }
+        elseif ($matches[2] == 2) {
+          if (!isset($matches[3])) {
+            $rewrite_warning = TRUE;
+          }
+          elseif ($matches[3] < 16) {
+            $rewrite_error = TRUE;
+          }
+        }
+      }
+    }
+    else {
+      $rewrite_warning = TRUE;
+    }
+
+    if ($rewrite_warning) {
+      $requirements['apache_version'] = [
+        'title' => t('Apache version'),
+        'value' => $apache_version_string,
+        'severity' => REQUIREMENT_WARNING,
+        'description' => t('Due to the settings for ServerTokens in httpd.conf, it is impossible to accurately determine the version of Apache running on this server. The reported value is @reported, to run Drupal without mod_rewrite, a minimum version of 2.2.16 is needed.', ['@reported' => $apache_version_string]),
+      ];
+    }
+
+    if ($rewrite_error) {
+      $requirements['Apache version'] = [
+        'title' => t('Apache version'),
+        'value' => $apache_version_string,
+        'severity' => REQUIREMENT_ERROR,
+        'description' => t('The minimum version of Apache needed to run Drupal without mod_rewrite enabled is 2.2.16. See the <a href=":link">enabling clean URLs</a> page for more information on mod_rewrite.', [':link' => 'http://drupal.org/node/15365']),
+      ];
+    }
+
+    if (!$rewrite_error && !$rewrite_warning) {
+      $requirements['rewrite_module'] = [
+        'title' => t('Clean URLs'),
+        'value' => t('Disabled'),
+        'severity' => REQUIREMENT_WARNING,
+        'description' => t('Your server is capable of using clean URLs, but it is not enabled. Using clean URLs gives an improved user experience and is recommended. <a href=":link">Enable clean URLs</a>', [':link' => 'http://drupal.org/node/15365']),
+      ];
+    }
+  }
+
+  // Verify the user is running a supported PHP version.
+  // If the site is running a recommended version of PHP, just display it
+  // as an informational message on the status report. This will be overridden
+  // with an error or warning if the site is running older PHP versions for
+  // which Drupal has already or will soon drop support.
+  $phpversion = $phpversion_label = phpversion();
+  if (function_exists('phpinfo')) {
+    if ($phase === 'runtime') {
+      $phpversion_label = t('@phpversion (<a href=":url">more information</a>)', ['@phpversion' => $phpversion, ':url' => (new Url('system.php'))->toString()]);
+    }
+    $requirements['php'] = [
+      'title' => t('PHP'),
+      'value' => $phpversion_label,
+    ];
+  }
+  else {
+    // @todo Revisit whether this description makes sense in
+    //   https://www.drupal.org/project/drupal/issues/2927318.
+    $requirements['php'] = [
+      'title' => t('PHP'),
+      'value' => $phpversion_label,
+      'description' => t('The phpinfo() function has been disabled for security reasons. To see your server\'s phpinfo() information, change your PHP settings or contact your server administrator. For more information, <a href=":phpinfo">Enabling and disabling phpinfo()</a> handbook page.', [':phpinfo' => 'https://www.drupal.org/node/243993']),
+      'severity' => REQUIREMENT_INFO,
+    ];
+  }
+
+  if (version_compare($phpversion, DRUPAL_MINIMUM_PHP) < 0) {
+    $requirements['php']['description'] = t('Your PHP installation is too old. Drupal requires at least PHP %version.', ['%version' => DRUPAL_MINIMUM_PHP]);
+    $requirements['php']['severity'] = REQUIREMENT_ERROR;
+    // If PHP is old, it's not safe to continue with the requirements check.
+    return $requirements;
+  }
+  if ((version_compare($phpversion, DRUPAL_RECOMMENDED_PHP) < 0) && ($phase === 'install' || $phase === 'runtime')) {
+    // Warn if still on PHP 5. If at least PHP 7.0, relax from "warning" to
+    // "info", and show it at runtime only, to not scare users while installing.
+    if (version_compare($phpversion, '7.0') < 0) {
+      $requirements['php']['description'] = t('Drupal will drop support for this version on March 6, 2019. Upgrade to PHP version %recommended or higher to ensure your site can receive updates and remain secure. See <a href="http://php.net/supported-versions.php">PHP\'s version support documentation</a> and the <a href=":php_requirements">Drupal 8 PHP requirements handbook page</a> for more information.', ['%recommended' => DRUPAL_RECOMMENDED_PHP, ':php_requirements' => 'https://www.drupal.org/docs/8/system-requirements/php']);
+      $requirements['php']['severity'] = REQUIREMENT_WARNING;
+    }
+    else {
+      if ($phase === 'runtime') {
+        $requirements['php']['description'] = t('It is recommended to upgrade to PHP version %recommended or higher for the best ongoing support.  See <a href="http://php.net/supported-versions.php">PHP\'s version support documentation</a> and the <a href=":php_requirements">Drupal 8 PHP requirements handbook page</a> for more information.', ['%recommended' => DRUPAL_RECOMMENDED_PHP, ':php_requirements' => 'https://www.drupal.org/docs/8/system-requirements/php']);
+        $requirements['php']['severity'] = REQUIREMENT_INFO;
+      }
+    }
+  }
+
+  // Suggest to update to at least 5.5.21 or 5.6.5 for disabling multiple
+  // statements.
+  if (($phase === 'install' || \Drupal::database()->driver() === 'mysql') && !SystemRequirements::phpVersionWithPdoDisallowMultipleStatements($phpversion)) {
+    $requirements['php_multiple_statement'] = [
+      'title' => t('PHP (multiple statement disabling)'),
+      'value' => $phpversion_label,
+      'description' => t('PHP versions higher than 5.6.5 or 5.5.21 provide built-in SQL injection protection for mysql databases. It is recommended to update.'),
+      'severity' => REQUIREMENT_INFO,
+    ];
+  }
+
+  // Test for PHP extensions.
+  $requirements['php_extensions'] = [
+    'title' => t('PHP extensions'),
+  ];
+
+  $missing_extensions = [];
+  $required_extensions = [
+    'date',
+    'dom',
+    'filter',
+    'gd',
+    'hash',
+    'json',
+    'pcre',
+    'pdo',
+    'session',
+    'SimpleXML',
+    'SPL',
+    'tokenizer',
+    'xml',
+  ];
+  foreach ($required_extensions as $extension) {
+    if (!extension_loaded($extension)) {
+      $missing_extensions[] = $extension;
+    }
+  }
+
+  if (!empty($missing_extensions)) {
+    $description = t('Drupal requires you to enable the PHP extensions in the following list (see the <a href=":system_requirements">system requirements page</a> for more information):', [
+      ':system_requirements' => 'https://www.drupal.org/requirements',
+    ]);
+
+    // We use twig inline_template to avoid twig's autoescape.
+    $description = [
+      '#type' => 'inline_template',
+      '#template' => '{{ description }}{{ missing_extensions }}',
+      '#context' => [
+        'description' => $description,
+        'missing_extensions' => [
+          '#theme' => 'item_list',
+          '#items' => $missing_extensions,
+        ],
+      ],
+    ];
+
+    $requirements['php_extensions']['value'] = t('Disabled');
+    $requirements['php_extensions']['severity'] = REQUIREMENT_ERROR;
+    $requirements['php_extensions']['description'] = $description;
+  }
+  else {
+    $requirements['php_extensions']['value'] = t('Enabled');
+  }
+
+  if ($phase == 'install' || $phase == 'runtime') {
+    // Check to see if OPcache is installed.
+    if (!OpCodeCache::isEnabled()) {
+      $requirements['php_opcache'] = [
+        'value' => t('Not enabled'),
+        'severity' => REQUIREMENT_WARNING,
+        'description' => t('PHP OPcode caching can improve your site\'s performance considerably. It is <strong>highly recommended</strong> to have <a href="http://php.net/manual/opcache.installation.php" target="_blank">OPcache</a> installed on your server.'),
+      ];
+    }
+    else {
+      $requirements['php_opcache']['value'] = t('Enabled');
+    }
+    $requirements['php_opcache']['title'] = t('PHP OPcode caching');
+  }
+
+  if ($phase != 'update') {
+    // Test whether we have a good source of random bytes.
+    $requirements['php_random_bytes'] = [
+      'title' => t('Random number generation'),
+    ];
+    try {
+      $bytes = random_bytes(10);
+      if (strlen($bytes) != 10) {
+        throw new \Exception(t('Tried to generate 10 random bytes, generated @count', ['@count' => strlen($bytes)]));
+      }
+      $requirements['php_random_bytes']['value'] = t('Successful');
+    }
+    catch (\Exception $e) {
+      // If /dev/urandom is not available on a UNIX-like system, check whether
+      // open_basedir restrictions are the cause.
+      $open_basedir_blocks_urandom = FALSE;
+      if (DIRECTORY_SEPARATOR === '/' && !@is_readable('/dev/urandom')) {
+        $open_basedir = ini_get('open_basedir');
+        if ($open_basedir) {
+          $open_basedir_paths = explode(PATH_SEPARATOR, $open_basedir);
+          $open_basedir_blocks_urandom = !array_intersect(['/dev', '/dev/', '/dev/urandom'], $open_basedir_paths);
+        }
+      }
+      $args = [
+        ':drupal-php' => 'https://www.drupal.org/docs/7/system-requirements/php#csprng',
+        '%exception_message' => $e->getMessage(),
+      ];
+      if ($open_basedir_blocks_urandom) {
+        $requirements['php_random_bytes']['description'] = t('Drupal is unable to generate highly randomized numbers, which means certain security features like password reset URLs are not as secure as they should be. Instead, only a slow, less-secure fallback generator is available. The most likely cause is that open_basedir restrictions are in effect and /dev/urandom is not on the whitelist. See the <a href=":drupal-php">system requirements</a> page for more information. %exception_message', $args);
+      }
+      else {
+        $requirements['php_random_bytes']['description'] = t('Drupal is unable to generate highly randomized numbers, which means certain security features like password reset URLs are not as secure as they should be. Instead, only a slow, less-secure fallback generator is available. See the <a href=":drupal-php">system requirements</a> page for more information. %exception_message', $args);
+      }
+      $requirements['php_random_bytes']['value'] = t('Less secure');
+      $requirements['php_random_bytes']['severity'] = REQUIREMENT_ERROR;
+    }
+  }
+
+  if ($phase == 'install' || $phase == 'update') {
+    // Test for PDO (database).
+    $requirements['database_extensions'] = [
+      'title' => t('Database support'),
+    ];
+
+    // Make sure PDO is available.
+    $database_ok = extension_loaded('pdo');
+    if (!$database_ok) {
+      $pdo_message = t('Your web server does not appear to support PDO (PHP Data Objects). Ask your hosting provider if they support the native PDO extension. See the <a href=":link">system requirements</a> page for more information.', [
+        ':link' => 'https://www.drupal.org/requirements/pdo',
+      ]);
+    }
+    else {
+      // Make sure at least one supported database driver exists.
+      $drivers = drupal_detect_database_types();
+      if (empty($drivers)) {
+        $database_ok = FALSE;
+        $pdo_message = t('Your web server does not appear to support any common PDO database extensions. Check with your hosting provider to see if they support PDO (PHP Data Objects) and offer any databases that <a href=":drupal-databases">Drupal supports</a>.', [
+          ':drupal-databases' => 'https://www.drupal.org/requirements/database',
+        ]);
+      }
+      // Make sure the native PDO extension is available, not the older PEAR
+      // version. (See install_verify_pdo() for details.)
+      if (!defined('PDO::ATTR_DEFAULT_FETCH_MODE')) {
+        $database_ok = FALSE;
+        $pdo_message = t('Your web server seems to have the wrong version of PDO installed. Drupal requires the PDO extension from PHP core. This system has the older PECL version. See the <a href=":link">system requirements</a> page for more information.', [
+          ':link' => 'https://www.drupal.org/requirements/pdo#pecl',
+        ]);
+      }
+    }
+
+    if (!$database_ok) {
+      $requirements['database_extensions']['value'] = t('Disabled');
+      $requirements['database_extensions']['severity'] = REQUIREMENT_ERROR;
+      $requirements['database_extensions']['description'] = $pdo_message;
+    }
+    else {
+      $requirements['database_extensions']['value'] = t('Enabled');
+    }
+  }
+  else {
+    // Database information.
+    $class = Database::getConnection()->getDriverClass('Install\\Tasks');
+    $tasks = new $class();
+    $requirements['database_system'] = [
+      'title' => t('Database system'),
+      'value' => $tasks->name(),
+    ];
+    $requirements['database_system_version'] = [
+      'title' => t('Database system version'),
+      'value' => Database::getConnection()->version(),
+    ];
+  }
+
+  // Test PHP memory_limit
+  $memory_limit = ini_get('memory_limit');
+  $requirements['php_memory_limit'] = [
+    'title' => t('PHP memory limit'),
+    'value' => $memory_limit == -1 ? t('-1 (Unlimited)') : $memory_limit,
+  ];
+
+  if (!Environment::checkMemoryLimit(DRUPAL_MINIMUM_PHP_MEMORY_LIMIT, $memory_limit)) {
+    $description = [];
+    if ($phase == 'install') {
+      $description['phase'] = t('Consider increasing your PHP memory limit to %memory_minimum_limit to help prevent errors in the installation process.', ['%memory_minimum_limit' => DRUPAL_MINIMUM_PHP_MEMORY_LIMIT]);
+    }
+    elseif ($phase == 'update') {
+      $description['phase'] = t('Consider increasing your PHP memory limit to %memory_minimum_limit to help prevent errors in the update process.', ['%memory_minimum_limit' => DRUPAL_MINIMUM_PHP_MEMORY_LIMIT]);
+    }
+    elseif ($phase == 'runtime') {
+      $description['phase'] = t('Depending on your configuration, Drupal can run with a %memory_limit PHP memory limit. However, a %memory_minimum_limit PHP memory limit or above is recommended, especially if your site uses additional custom or contributed modules.', ['%memory_limit' => $memory_limit, '%memory_minimum_limit' => DRUPAL_MINIMUM_PHP_MEMORY_LIMIT]);
+    }
+
+    if (!empty($description['phase'])) {
+      if ($php_ini_path = get_cfg_var('cfg_file_path')) {
+        $description['memory'] = t('Increase the memory limit by editing the memory_limit parameter in the file %configuration-file and then restart your web server (or contact your system administrator or hosting provider for assistance).', ['%configuration-file' => $php_ini_path]);
+      }
+      else {
+        $description['memory'] = t('Contact your system administrator or hosting provider for assistance with increasing your PHP memory limit.');
+      }
+
+      $handbook_link = t('For more information, see the online handbook entry for <a href=":memory-limit">increasing the PHP memory limit</a>.', [':memory-limit' => 'https://www.drupal.org/node/207036']);
+
+      $description = [
+        '#type' => 'inline_template',
+        '#template' => '{{ description_phase }} {{ description_memory }} {{ handbook }}',
+        '#context' => [
+          'description_phase' => $description['phase'],
+          'description_memory' => $description['memory'],
+          'handbook' => $handbook_link,
+        ],
+      ];
+
+      $requirements['php_memory_limit']['description'] = $description;
+      $requirements['php_memory_limit']['severity'] = REQUIREMENT_WARNING;
+    }
+  }
+
+  // Test configuration files and directory for writability.
+  if ($phase == 'runtime') {
+    $conf_errors = [];
+    // Find the site path. Kernel service is not always available at this point,
+    // but is preferred, when available.
+    if (\Drupal::hasService('kernel')) {
+      $site_path = \Drupal::service('site.path');
+    }
+    else {
+      $site_path = DrupalKernel::findSitePath(Request::createFromGlobals());
+    }
+    // Allow system administrators to disable permissions hardening for the site
+    // directory. This allows additional files in the site directory to be
+    // updated when they are managed in a version control system.
+    if (Settings::get('skip_permissions_hardening')) {
+      $error_value = t('Protection disabled');
+      // If permissions hardening is disabled, then only show a warning for a
+      // writable file, as a reminder, rather than an error.
+      $file_protection_severity = REQUIREMENT_WARNING;
+    }
+    else {
+      $error_value = t('Not protected');
+      // In normal operation, writable files or directories are an error.
+      $file_protection_severity = REQUIREMENT_ERROR;
+      if (!drupal_verify_install_file($site_path, FILE_NOT_WRITABLE, 'dir')) {
+        $conf_errors[] = t("The directory %file is not protected from modifications and poses a security risk. You must change the directory's permissions to be non-writable.", ['%file' => $site_path]);
+      }
+    }
+    foreach (['settings.php', 'settings.local.php', 'services.yml'] as $conf_file) {
+      $full_path = $site_path . '/' . $conf_file;
+      if (file_exists($full_path) && !drupal_verify_install_file($full_path, FILE_EXIST | FILE_READABLE | FILE_NOT_WRITABLE, 'file', !Settings::get('skip_permissions_hardening'))) {
+        $conf_errors[] = t("The file %file is not protected from modifications and poses a security risk. You must change the file's permissions to be non-writable.", ['%file' => $full_path]);
+      }
+    }
+    if (!empty($conf_errors)) {
+      if (count($conf_errors) == 1) {
+        $description = $conf_errors[0];
+      }
+      else {
+        // We use twig inline_template to avoid double escaping.
+        $description = [
+          '#type' => 'inline_template',
+          '#template' => '{{ configuration_error_list }}',
+          '#context' => [
+            'configuration_error_list' => [
+              '#theme' => 'item_list',
+              '#items' => $conf_errors,
+            ],
+          ],
+        ];
+      }
+      $requirements['configuration_files'] = [
+        'value' => $error_value,
+        'severity' => $file_protection_severity,
+        'description' => $description,
+      ];
+    }
+    else {
+      $requirements['configuration_files'] = [
+        'value' => t('Protected'),
+      ];
+    }
+    $requirements['configuration_files']['title'] = t('Configuration files');
+  }
+
+  // Test the contents of the .htaccess files.
+  if ($phase == 'runtime') {
+    // Try to write the .htaccess files first, to prevent false alarms in case
+    // (for example) the /tmp directory was wiped.
+    file_ensure_htaccess();
+    $file_system = \Drupal::service('file_system');
+    $htaccess_files['public://.htaccess'] = [
+      'title' => t('Public files directory'),
+      'directory' => $file_system->realpath('public://'),
+    ];
+    if (PrivateStream::basePath()) {
+      $htaccess_files['private://.htaccess'] = [
+        'title' => t('Private files directory'),
+        'directory' => $file_system->realpath('private://'),
+      ];
+    }
+    $htaccess_files['temporary://.htaccess'] = [
+      'title' => t('Temporary files directory'),
+      'directory' => $file_system->realpath('temporary://'),
+    ];
+    foreach ($htaccess_files as $htaccess_file => $info) {
+      // Check for the string which was added to the recommended .htaccess file
+      // in the latest security update.
+      if (!file_exists($htaccess_file) || !($contents = @file_get_contents($htaccess_file)) || strpos($contents, 'Drupal_Security_Do_Not_Remove_See_SA_2013_003') === FALSE) {
+        $url = 'https://www.drupal.org/SA-CORE-2013-003';
+        $requirements[$htaccess_file] = [
+          'title' => $info['title'],
+          'value' => t('Not fully protected'),
+          'severity' => REQUIREMENT_ERROR,
+          'description' => t('See <a href=":url">@url</a> for information about the recommended .htaccess file which should be added to the %directory directory to help protect against arbitrary code execution.', [':url' => $url, '@url' => $url, '%directory' => $info['directory']]),
+        ];
+      }
+    }
+  }
+
+  // Report cron status.
+  if ($phase == 'runtime') {
+    $cron_config = \Drupal::config('system.cron');
+    // Cron warning threshold defaults to two days.
+    $threshold_warning = $cron_config->get('threshold.requirements_warning');
+    // Cron error threshold defaults to two weeks.
+    $threshold_error = $cron_config->get('threshold.requirements_error');
+
+    // Determine when cron last ran.
+    $cron_last = \Drupal::state()->get('system.cron_last');
+    if (!is_numeric($cron_last)) {
+      $cron_last = \Drupal::state()->get('install_time', 0);
+    }
+
+    // Determine severity based on time since cron last ran.
+    $severity = REQUIREMENT_INFO;
+    if (REQUEST_TIME - $cron_last > $threshold_error) {
+      $severity = REQUIREMENT_ERROR;
+    }
+    elseif (REQUEST_TIME - $cron_last > $threshold_warning) {
+      $severity = REQUIREMENT_WARNING;
+    }
+
+    // Set summary and description based on values determined above.
+    $summary = t('Last run @time ago', ['@time' => \Drupal::service('date.formatter')->formatTimeDiffSince($cron_last)]);
+
+    $requirements['cron'] = [
+      'title' => t('Cron maintenance tasks'),
+      'severity' => $severity,
+      'value' => $summary,
+    ];
+    if ($severity != REQUIREMENT_INFO) {
+      $requirements['cron']['description'][] = [
+        [
+          '#markup' => t('Cron has not run recently.'),
+          '#suffix' => ' ',
+        ],
+        [
+          '#markup' => t('For more information, see the online handbook entry for <a href=":cron-handbook">configuring cron jobs</a>.', [':cron-handbook' => 'https://www.drupal.org/cron']),
+          '#suffix' => ' ',
+        ],
+      ];
+    }
+    $requirements['cron']['description'][] = [
+      [
+        '#type' => 'link',
+        '#prefix' => '(',
+        '#title' => t('more information'),
+        '#suffix' => ')',
+        '#url' => Url::fromRoute('system.cron_settings'),
+      ],
+      [
+        '#prefix' => '<span class="cron-description__run-cron">',
+        '#suffix' => '</span>',
+        '#type' => 'link',
+        '#title' => t('Run cron'),
+        '#url' => Url::fromRoute('system.run_cron'),
+      ],
+    ];
+  }
+  if ($phase != 'install') {
+    $filesystem_config = \Drupal::config('system.file');
+    $directories = [
+      PublicStream::basePath(),
+      // By default no private files directory is configured. For private files
+      // to be secure the admin needs to provide a path outside the webroot.
+      PrivateStream::basePath(),
+      file_directory_temp(),
+    ];
+  }
+
+  // During an install we need to make assumptions about the file system
+  // unless overrides are provided in settings.php.
+  if ($phase == 'install') {
+    $directories = [];
+    if ($file_public_path = Settings::get('file_public_path')) {
+      $directories[] = $file_public_path;
+    }
+    else {
+      // If we are installing Drupal, the settings.php file might not exist yet
+      // in the intended site directory, so don't require it.
+      $request = Request::createFromGlobals();
+      $site_path = DrupalKernel::findSitePath($request);
+      $directories[] = $site_path . '/files';
+    }
+    if ($file_private_path = Settings::get('file_private_path')) {
+      $directories[] = $file_private_path;
+    }
+    if (!empty($GLOBALS['config']['system.file']['path']['temporary'])) {
+      $directories[] = $GLOBALS['config']['system.file']['path']['temporary'];
+    }
+    else {
+      // If the temporary directory is not overridden use an appropriate
+      // temporary path for the system.
+      $directories[] = FileSystem::getOsTemporaryDirectory();
+    }
+  }
+
+  // Check the config directory if it is defined in settings.php. If it isn't
+  // defined, the installer will create a valid config directory later, but
+  // during runtime we must always display an error.
+  if (!empty($GLOBALS['config_directories'])) {
+    foreach (array_keys(array_filter($GLOBALS['config_directories'])) as $type) {
+      $directory = config_get_config_directory($type);
+      // If we're installing Drupal try and create the config sync directory.
+      if (!is_dir($directory) && $phase == 'install') {
+        file_prepare_directory($directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+      }
+      if (!is_dir($directory)) {
+        if ($phase == 'install') {
+          $description = t('An automated attempt to create the directory %directory failed, possibly due to a permissions problem. To proceed with the installation, either create the directory and modify its permissions manually or ensure that the installer has the permissions to create it automatically. For more information, see INSTALL.txt or the <a href=":handbook_url">online handbook</a>.', ['%directory' => $directory, ':handbook_url' => 'https://www.drupal.org/server-permissions']);
+        }
+        else {
+          $description = t('The directory %directory does not exist.', ['%directory' => $directory]);
+        }
+        $requirements['config directory ' . $type] = [
+          'title' => t('Configuration directory: %type', ['%type' => $type]),
+          'description' => $description,
+          'severity' => REQUIREMENT_ERROR,
+        ];
+      }
+    }
+  }
+  if ($phase != 'install' && (empty($GLOBALS['config_directories']) || empty($GLOBALS['config_directories'][CONFIG_SYNC_DIRECTORY]))) {
+    $requirements['config directories'] = [
+      'title' => t('Configuration directories'),
+      'value' => t('Not present'),
+      'description' => t('Your %file file must define the $config_directories variable as an array containing the names of directories in which configuration files can be found. It must contain a %sync_key key.', ['%file' => $site_path . '/settings.php', '%sync_key' => CONFIG_SYNC_DIRECTORY]),
+      'severity' => REQUIREMENT_ERROR,
+    ];
+  }
+
+  $requirements['file system'] = [
+    'title' => t('File system'),
+  ];
+
+  $error = '';
+  // For installer, create the directories if possible.
+  foreach ($directories as $directory) {
+    if (!$directory) {
+      continue;
+    }
+    if ($phase == 'install') {
+      file_prepare_directory($directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+    }
+    $is_writable = is_writable($directory);
+    $is_directory = is_dir($directory);
+    if (!$is_writable || !$is_directory) {
+      $description = '';
+      $requirements['file system']['value'] = t('Not writable');
+      if (!$is_directory) {
+        $error = t('The directory %directory does not exist.', ['%directory' => $directory]);
+      }
+      else {
+        $error = t('The directory %directory is not writable.', ['%directory' => $directory]);
+      }
+      // The files directory requirement check is done only during install and runtime.
+      if ($phase == 'runtime') {
+        $description = t('You may need to set the correct directory at the <a href=":admin-file-system">file system settings page</a> or change the current directory\'s permissions so that it is writable.', [':admin-file-system' => \Drupal::url('system.file_system_settings')]);
+      }
+      elseif ($phase == 'install') {
+        // For the installer UI, we need different wording. 'value' will
+        // be treated as version, so provide none there.
+        $description = t('An automated attempt to create this directory failed, possibly due to a permissions problem. To proceed with the installation, either create the directory and modify its permissions manually or ensure that the installer has the permissions to create it automatically. For more information, see INSTALL.txt or the <a href=":handbook_url">online handbook</a>.', [':handbook_url' => 'https://www.drupal.org/server-permissions']);
+        $requirements['file system']['value'] = '';
+      }
+      if (!empty($description)) {
+        $description = [
+          '#type' => 'inline_template',
+          '#template' => '{{ error }} {{ description }}',
+          '#context' => [
+            'error' => $error,
+            'description' => $description,
+          ],
+        ];
+        $requirements['file system']['description'] = $description;
+        $requirements['file system']['severity'] = REQUIREMENT_ERROR;
+      }
+    }
+    else {
+      // This function can be called before the config_cache table has been
+      // created.
+      if ($phase == 'install' || file_default_scheme() == 'public') {
+        $requirements['file system']['value'] = t('Writable (<em>public</em> download method)');
+      }
+      else {
+        $requirements['file system']['value'] = t('Writable (<em>private</em> download method)');
+      }
+    }
+  }
+
+  // See if updates are available in update.php.
+  if ($phase == 'runtime') {
+    $requirements['update'] = [
+      'title' => t('Database updates'),
+      'value' => t('Up to date'),
+    ];
+
+    // Check installed modules.
+    $has_pending_updates = FALSE;
+    foreach (\Drupal::moduleHandler()->getModuleList() as $module => $filename) {
+      $updates = drupal_get_schema_versions($module);
+      if ($updates !== FALSE) {
+        $default = drupal_get_installed_schema_version($module);
+        if (max($updates) > $default) {
+          $has_pending_updates = TRUE;
+          break;
+        }
+      }
+    }
+    if (!$has_pending_updates) {
+      /** @var \Drupal\Core\Update\UpdateRegistry $post_update_registry */
+      $post_update_registry = \Drupal::service('update.post_update_registry');
+      $missing_post_update_functions = $post_update_registry->getPendingUpdateFunctions();
+      if (!empty($missing_post_update_functions)) {
+        $has_pending_updates = TRUE;
+      }
+    }
+
+    if ($has_pending_updates) {
+      $requirements['update']['severity'] = REQUIREMENT_ERROR;
+      $requirements['update']['value'] = t('Out of date');
+      $requirements['update']['description'] = t('Some modules have database schema updates to install. You should run the <a href=":update">database update script</a> immediately.', [':update' => \Drupal::url('system.db_update')]);
+    }
+
+    $requirements['entity_update'] = [
+      'title' => t('Entity/field definitions'),
+      'value' => t('Up to date'),
+    ];
+    // Verify that no entity updates are pending.
+    if ($change_list = \Drupal::entityDefinitionUpdateManager()->getChangeSummary()) {
+      $build = [];
+      foreach ($change_list as $entity_type_id => $changes) {
+        $entity_type = \Drupal::entityManager()->getDefinition($entity_type_id);
+        $build[] = [
+          '#theme' => 'item_list',
+          '#title' => $entity_type->getLabel(),
+          '#items' => $changes,
+        ];
+      }
+
+      $entity_update_issues = \Drupal::service('renderer')->renderPlain($build);
+      $requirements['entity_update']['severity'] = REQUIREMENT_ERROR;
+      $requirements['entity_update']['value'] = t('Mismatched entity and/or field definitions');
+      $requirements['entity_update']['description'] = t('The following changes were detected in the entity type and field definitions. @updates', ['@updates' => $entity_update_issues]);
+    }
+  }
+
+  // Verify the update.php access setting
+  if ($phase == 'runtime') {
+    if (Settings::get('update_free_access')) {
+      $requirements['update access'] = [
+        'value' => t('Not protected'),
+        'severity' => REQUIREMENT_ERROR,
+        'description' => t('The update.php script is accessible to everyone without authentication check, which is a security risk. You must change the @settings_name value in your settings.php back to FALSE.', ['@settings_name' => '$settings[\'update_free_access\']']),
+      ];
+    }
+    else {
+      $requirements['update access'] = [
+        'value' => t('Protected'),
+      ];
+    }
+    $requirements['update access']['title'] = t('Access to update.php');
+  }
+
+  // Display an error if a newly introduced dependency in a module is not resolved.
+  if ($phase == 'update') {
+    $profile = drupal_get_profile();
+    $files = system_rebuild_module_data();
+    foreach ($files as $module => $file) {
+      // Ignore disabled modules and installation profiles.
+      if (!$file->status || $module == $profile) {
+        continue;
+      }
+      // Check the module's PHP version.
+      $name = $file->info['name'];
+      $php = $file->info['php'];
+      if (version_compare($php, PHP_VERSION, '>')) {
+        $requirements['php']['description'] .= t('@name requires at least PHP @version.', ['@name' => $name, '@version' => $php]);
+        $requirements['php']['severity'] = REQUIREMENT_ERROR;
+      }
+      // Check the module's required modules.
+      foreach ($file->requires as $requirement) {
+        $required_module = $requirement['name'];
+        // Check if the module exists.
+        if (!isset($files[$required_module])) {
+          $requirements["$module-$required_module"] = [
+            'title' => t('Unresolved dependency'),
+            'description' => t('@name requires this module.', ['@name' => $name]),
+            'value' => t('@required_name (Missing)', ['@required_name' => $required_module]),
+            'severity' => REQUIREMENT_ERROR,
+          ];
+          continue;
+        }
+        // Check for an incompatible version.
+        $required_file = $files[$required_module];
+        $required_name = $required_file->info['name'];
+        $version = str_replace(\Drupal::CORE_COMPATIBILITY . '-', '', $required_file->info['version']);
+        $compatibility = drupal_check_incompatibility($requirement, $version);
+        if ($compatibility) {
+          $compatibility = rtrim(substr($compatibility, 2), ')');
+          $requirements["$module-$required_module"] = [
+            'title' => t('Unresolved dependency'),
+            'description' => t('@name requires this module and version. Currently using @required_name version @version', ['@name' => $name, '@required_name' => $required_name, '@version' => $version]),
+            'value' => t('@required_name (Version @compatibility required)', ['@required_name' => $required_name, '@compatibility' => $compatibility]),
+            'severity' => REQUIREMENT_ERROR,
+          ];
+          continue;
+        }
+      }
+    }
+  }
+
+  // Returns Unicode library status and errors.
+  $libraries = [
+    Unicode::STATUS_SINGLEBYTE => t('Standard PHP'),
+    Unicode::STATUS_MULTIBYTE => t('PHP Mbstring Extension'),
+    Unicode::STATUS_ERROR => t('Error'),
+  ];
+  $severities = [
+    Unicode::STATUS_SINGLEBYTE => REQUIREMENT_WARNING,
+    Unicode::STATUS_MULTIBYTE => NULL,
+    Unicode::STATUS_ERROR => REQUIREMENT_ERROR,
+  ];
+  $failed_check = Unicode::check();
+  $library = Unicode::getStatus();
+
+  $requirements['unicode'] = [
+    'title' => t('Unicode library'),
+    'value' => $libraries[$library],
+    'severity' => $severities[$library],
+  ];
+  switch ($failed_check) {
+    case 'mb_strlen':
+      $requirements['unicode']['description'] = t('Operations on Unicode strings are emulated on a best-effort basis. Install the <a href="http://php.net/mbstring">PHP mbstring extension</a> for improved Unicode support.');
+      break;
+
+    case 'mbstring.func_overload':
+      $requirements['unicode']['description'] = t('Multibyte string function overloading in PHP is active and must be disabled. Check the php.ini <em>mbstring.func_overload</em> setting. Please refer to the <a href="http://php.net/mbstring">PHP mbstring documentation</a> for more information.');
+      break;
+
+    case 'mbstring.encoding_translation':
+      $requirements['unicode']['description'] = t('Multibyte string input conversion in PHP is active and must be disabled. Check the php.ini <em>mbstring.encoding_translation</em> setting. Please refer to the <a href="http://php.net/mbstring">PHP mbstring documentation</a> for more information.');
+      break;
+
+    case 'mbstring.http_input':
+      $requirements['unicode']['description'] = t('Multibyte string input conversion in PHP is active and must be disabled. Check the php.ini <em>mbstring.http_input</em> setting. Please refer to the <a href="http://php.net/mbstring">PHP mbstring documentation</a> for more information.');
+      break;
+
+    case 'mbstring.http_output':
+      $requirements['unicode']['description'] = t('Multibyte string output conversion in PHP is active and must be disabled. Check the php.ini <em>mbstring.http_output</em> setting. Please refer to the <a href="http://php.net/mbstring">PHP mbstring documentation</a> for more information.');
+      break;
+  }
+
+  if ($phase == 'runtime') {
+    // Check for update status module.
+    if (!\Drupal::moduleHandler()->moduleExists('update')) {
+      $requirements['update status'] = [
+        'value' => t('Not enabled'),
+        'severity' => REQUIREMENT_WARNING,
+        'description' => t('Update notifications are not enabled. It is <strong>highly recommended</strong> that you enable the Update Manager module from the <a href=":module">module administration page</a> in order to stay up-to-date on new releases. For more information, <a href=":update">Update status handbook page</a>.', [
+          ':update' => 'https://www.drupal.org/documentation/modules/update',
+          ':module' => \Drupal::url('system.modules_list'),
+        ]),
+      ];
+    }
+    else {
+      $requirements['update status'] = [
+        'value' => t('Enabled'),
+      ];
+    }
+    $requirements['update status']['title'] = t('Update notifications');
+
+    if (Settings::get('rebuild_access')) {
+      $requirements['rebuild access'] = [
+        'title' => t('Rebuild access'),
+        'value' => t('Enabled'),
+        'severity' => REQUIREMENT_ERROR,
+        'description' => t('The rebuild_access setting is enabled in settings.php. It is recommended to have this setting disabled unless you are performing a rebuild.'),
+      ];
+    }
+  }
+
+  // See if trusted hostnames have been configured, and warn the user if they
+  // are not set.
+  if ($phase == 'runtime') {
+    $trusted_host_patterns = Settings::get('trusted_host_patterns');
+    if (empty($trusted_host_patterns)) {
+      $requirements['trusted_host_patterns'] = [
+        'title' => t('Trusted Host Settings'),
+        'value' => t('Not enabled'),
+        'description' => t('The trusted_host_patterns setting is not configured in settings.php. This can lead to security vulnerabilities. It is <strong>highly recommended</strong> that you configure this. See <a href=":url">Protecting against HTTP HOST Header attacks</a> for more information.', [':url' => 'https://www.drupal.org/node/1992030']),
+        'severity' => REQUIREMENT_ERROR,
+      ];
+    }
+    else {
+      $requirements['trusted_host_patterns'] = [
+        'title' => t('Trusted Host Settings'),
+        'value' => t('Enabled'),
+        'description' => t('The trusted_host_patterns setting is set to allow %trusted_host_patterns', ['%trusted_host_patterns' => implode(', ', $trusted_host_patterns)]),
+      ];
+    }
+  }
+
+  // Check xdebug.max_nesting_level, as some pages will not work if it is too
+  // low.
+  if (extension_loaded('xdebug')) {
+    // Setting this value to 256 was considered adequate on Xdebug 2.3
+    // (see http://bugs.xdebug.org/bug_view_page.php?bug_id=00001100)
+    $minimum_nesting_level = 256;
+    $current_nesting_level = ini_get('xdebug.max_nesting_level');
+
+    if ($current_nesting_level < $minimum_nesting_level) {
+      $requirements['xdebug_max_nesting_level'] = [
+        'title' => t('Xdebug settings'),
+        'value' => t('xdebug.max_nesting_level is set to %value.', ['%value' => $current_nesting_level]),
+        'description' => t('Set <code>xdebug.max_nesting_level=@level</code> in your PHP configuration as some pages in your Drupal site will not work when this setting is too low.', ['@level' => $minimum_nesting_level]),
+        'severity' => REQUIREMENT_ERROR,
+      ];
+    }
+  }
+
+  // Warning for httpoxy on IIS with affected PHP versions
+  // @see https://www.drupal.org/node/2783079
+  if (strpos($software, 'Microsoft-IIS') !== FALSE
+    && (
+    version_compare(PHP_VERSION, '5.5.38', '<')
+    || (version_compare(PHP_VERSION, '5.6.0', '>=') && version_compare(PHP_VERSION, '5.6.24', '<'))
+    || (version_compare(PHP_VERSION, '7.0.0', '>=') && version_compare(PHP_VERSION, '7.0.9', '<'))
+    )) {
+    $dom = new \DOMDocument('1.0', 'UTF-8');
+    $webconfig = file_get_contents('web.config');
+    // If you are here the web.config file must - of course - be well formed.
+    // But the PHP DOM component will throw warnings on some XML compliant
+    // stuff, so silently parse the configuration file.
+    @$dom->loadHTML($webconfig);
+    $httpoxy_rewrite = FALSE;
+    foreach ($dom->getElementsByTagName('rule') as $rule) {
+      foreach ($rule->attributes as $attr) {
+        if (@$attr->name == 'name' && @$attr->nodeValue == 'Erase HTTP_PROXY') {
+          $httpoxy_rewrite = TRUE;
+          break 2;
+        }
+      }
+    }
+    if (!$httpoxy_rewrite) {
+      $requirements['iis_httpoxy_protection'] = [
+        'title' => t('IIS httpoxy protection'),
+        'value' => t('Your PHP runtime version is affected by the httpoxy vulnerability.'),
+        'description' => t('Either update your PHP runtime version or uncomment the "Erase HTTP_PROXY" rule in your web.config file and add HTTP_PROXY to the allowed headers list. See more details in the <a href=":link">security advisory</a>.', [':link' => 'https://www.drupal.org/SA-CORE-2016-003']),
+        'severity' => REQUIREMENT_ERROR,
+      ];
+    }
+  }
+
+  // Installations on Windows can run into limitations with MAX_PATH if the
+  // Drupal root directory is too deep in the filesystem. Generally this shows
+  // up in cached Twig templates and other public files with long directory or
+  // file names. There is no definite root directory depth below which Drupal is
+  // guaranteed to function correctly on Windows. Since problems are likely
+  // with more than 100 characters in the Drupal root path, show an error.
+  if (substr(PHP_OS, 0, 3) == 'WIN') {
+    $depth = strlen(realpath(DRUPAL_ROOT . '/' . PublicStream::basePath()));
+    if ($depth > 120) {
+      $requirements['max_path_on_windows'] = [
+        'title' => t('Windows installation depth'),
+        'description' => t('The public files directory path is %depth characters. Paths longer than 120 characters will cause problems on Windows.', ['%depth' => $depth]),
+        'severity' => REQUIREMENT_ERROR,
+      ];
+    }
+  }
+  // Check to see if dates will be limited to 1901-2038.
+  if (PHP_INT_SIZE <= 4) {
+    $requirements['limited_date_range'] = [
+      'title' => t('Limited date range'),
+      'value' => t('Your PHP installation has a limited date range.'),
+      'description' => t('You are running on a system where PHP is compiled or limited to using 32-bit integers. This will limit the range of dates and timestamps to the years 1901-2038. Read about the <a href=":url">limitations of 32-bit PHP</a>.', [':url' => 'https://www.drupal.org/docs/8/system-requirements/limitations-of-32-bit-php']),
+      'severity' => REQUIREMENT_WARNING,
+    ];
+  }
+
+  // During installs from configuration don't support install profiles that
+  // implement hook_install.
+  if ($phase == 'install' && !empty($install_state['config_install_path'])) {
+    $install_hook = $install_state['parameters']['profile'] . '_install';
+    if (function_exists($install_hook)) {
+      $requirements['config_install'] = [
+        'title' => t('Configuration install'),
+        'value' => $install_state['parameters']['profile'],
+        'description' => t('The selected profile has a hook_install() implementation and therefore can not be installed from configuration.'),
+        'severity' => REQUIREMENT_ERROR,
+      ];
+    }
+  }
+
+  if ($phase === 'runtime') {
+    $settings = Settings::getAll();
+    if (array_key_exists('install_profile', $settings)) {
+      // The following message is only informational because not all site owners
+      // have access to edit their settings.php as it may be controlled by their
+      // hosting provider.
+      $requirements['install_profile_in_settings'] = [
+        'title' => t('Install profile in settings'),
+        'value' => t("Drupal 8 no longer uses the \$settings['install_profile'] value in settings.php and it can be removed."),
+        'severity' => REQUIREMENT_INFO,
+      ];
+    }
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implements hook_install().
+ */
+function system_install() {
+  // Populate the cron key state variable.
+  $cron_key = Crypt::randomBytesBase64(55);
+  \Drupal::state()->set('system.cron_key', $cron_key);
+
+  // Populate the site UUID and default name (if not set).
+  $site = \Drupal::configFactory()->getEditable('system.site');
+  $site->set('uuid', \Drupal::service('uuid')->generate());
+  if (!$site->get('name')) {
+    $site->set('name', 'Drupal');
+  }
+  $site->save(TRUE);
+}
+
+/**
+ * Implements hook_schema().
+ */
+function system_schema() {
+  $schema['key_value'] = [
+    'description' => 'Generic key-value storage table. See the state system for an example.',
+    'fields' => [
+      'collection' => [
+        'description' => 'A named collection of key and value pairs.',
+        'type' => 'varchar_ascii',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'name' => [
+        'description' => 'The key of the key-value pair. As KEY is a SQL reserved keyword, name was chosen instead.',
+        'type' => 'varchar_ascii',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'value' => [
+        'description' => 'The value.',
+        'type' => 'blob',
+        'not null' => TRUE,
+        'size' => 'big',
+      ],
+    ],
+    'primary key' => ['collection', 'name'],
+  ];
+
+  $schema['key_value_expire'] = [
+    'description' => 'Generic key/value storage table with an expiration.',
+    'fields' => [
+      'collection' => [
+        'description' => 'A named collection of key and value pairs.',
+        'type' => 'varchar_ascii',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'name' => [
+        // KEY is an SQL reserved word, so use 'name' as the key's field name.
+        'description' => 'The key of the key/value pair.',
+        'type' => 'varchar_ascii',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'value' => [
+        'description' => 'The value of the key/value pair.',
+        'type' => 'blob',
+        'not null' => TRUE,
+        'size' => 'big',
+      ],
+      'expire' => [
+        'description' => 'The time since Unix epoch in seconds when this item expires. Defaults to the maximum possible time.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 2147483647,
+      ],
+    ],
+    'primary key' => ['collection', 'name'],
+    'indexes' => [
+      'all' => ['name', 'collection', 'expire'],
+      'expire' => ['expire'],
+    ],
+  ];
+
+  $schema['sequences'] = [
+    'description' => 'Stores IDs.',
+    'fields' => [
+      'value' => [
+        'description' => 'The value of the sequence.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+     ],
+    'primary key' => ['value'],
+  ];
+
+  $schema['sessions'] = [
+    'description' => "Drupal's session handlers read and write into the sessions table. Each record represents a user session, either anonymous or authenticated.",
+    'fields' => [
+      'uid' => [
+        'description' => 'The {users}.uid corresponding to a session, or 0 for anonymous user.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'sid' => [
+        'description' => "A session ID (hashed). The value is generated by Drupal's session handlers.",
+        'type' => 'varchar_ascii',
+        'length' => 128,
+        'not null' => TRUE,
+      ],
+      'hostname' => [
+        'description' => 'The IP address that last used this session ID (sid).',
+        'type' => 'varchar_ascii',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'timestamp' => [
+        'description' => 'The Unix timestamp when this session last requested a page. Old records are purged by PHP automatically.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'session' => [
+        'description' => 'The serialized contents of $_SESSION, an array of name/value pairs that persists across page requests by this session ID. Drupal loads $_SESSION from here at the start of each request and saves it at the end.',
+        'type' => 'blob',
+        'not null' => FALSE,
+        'size' => 'big',
+      ],
+    ],
+    'primary key' => [
+      'sid',
+    ],
+    'indexes' => [
+      'timestamp' => ['timestamp'],
+      'uid' => ['uid'],
+    ],
+    'foreign keys' => [
+      'session_user' => [
+        'table' => 'users',
+        'columns' => ['uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Create the url_alias table. The alias_storage service can auto-create its
+  // table, but this relies on exceptions being thrown. These exceptions will be
+  // thrown every request until an alias is created.
+  $schema['url_alias'] = AliasStorage::schemaDefinition();
+
+  return $schema;
+}
+
+/**
+ * Change two fields on the default menu link storage to be serialized data.
+ */
+function system_update_8001(&$sandbox = NULL) {
+  $database = \Drupal::database();
+  $schema = $database->schema();
+  if ($schema->tableExists('menu_tree')) {
+
+    if (!isset($sandbox['current'])) {
+      // Converting directly to blob can cause problems with reading out and
+      // serializing the string data later on postgres, so rename the existing
+      // columns and create replacement ones to hold the serialized objects.
+      $old_fields = [
+        'title' => [
+          'description' => 'The text displayed for the link.',
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+          'default' => '',
+        ],
+        'description' => [
+          'description' => 'The description of this link - used for admin pages and title attribute.',
+          'type' => 'text',
+          'not null' => FALSE,
+        ],
+      ];
+      foreach ($old_fields as $name => $spec) {
+        $schema->changeField('menu_tree', $name, 'system_update_8001_' . $name, $spec);
+      }
+      $spec = [
+        'description' => 'The title for the link. May be a serialized TranslatableMarkup.',
+        'type' => 'blob',
+        'size' => 'big',
+        'not null' => FALSE,
+        'serialize' => TRUE,
+      ];
+      $schema->addField('menu_tree', 'title', $spec);
+      $spec = [
+        'description' => 'The description of this link - used for admin pages and title attribute.',
+        'type' => 'blob',
+        'size' => 'big',
+        'not null' => FALSE,
+        'serialize' => TRUE,
+      ];
+      $schema->addField('menu_tree', 'description', $spec);
+
+      $sandbox['current'] = 0;
+      $sandbox['max'] = $database->query('SELECT COUNT(mlid) FROM {menu_tree}')
+        ->fetchField();
+    }
+
+    $menu_links = $database->queryRange('SELECT mlid, system_update_8001_title AS title, system_update_8001_description AS description FROM {menu_tree} ORDER BY mlid ASC', $sandbox['current'], $sandbox['current'] + 50)
+      ->fetchAllAssoc('mlid');
+
+    foreach ($menu_links as $menu_link) {
+      $menu_link = (array) $menu_link;
+      // Convert title and description to serialized strings.
+      $menu_link['title'] = serialize($menu_link['title']);
+      $menu_link['description'] = serialize($menu_link['description']);
+
+      $database->update('menu_tree')
+        ->fields($menu_link)
+        ->condition('mlid', $menu_link['mlid'])
+        ->execute();
+
+      $sandbox['current']++;
+    }
+
+    $sandbox['#finished'] = empty($sandbox['max']) ? 1 : ($sandbox['current'] / $sandbox['max']);
+
+    if ($sandbox['#finished'] >= 1) {
+      // Drop unnecessary fields from {menu_tree}.
+      $schema->dropField('menu_tree', 'system_update_8001_title');
+      $schema->dropField('menu_tree', 'title_arguments');
+      $schema->dropField('menu_tree', 'title_context');
+      $schema->dropField('menu_tree', 'system_update_8001_description');
+    }
+    return t('Menu links converted');
+  }
+  else {
+    return t('Menu link conversion skipped, because the {menu_tree} table did not exist yet.');
+  }
+}
+
+/**
+ * Removes the system.filter configuration.
+ */
+function system_update_8002() {
+  \Drupal::configFactory()->getEditable('system.filter')->delete();
+  return t('The system.filter configuration has been moved to a container parameter, see default.services.yml for more information.');
+}
+
+/**
+ * Change the index on the {router} table.
+ */
+function system_update_8003() {
+  $database = \Drupal::database();
+  $database->schema()->dropIndex('router', 'pattern_outline_fit');
+  $database->schema()->addIndex(
+    'router',
+    'pattern_outline_parts',
+    ['pattern_outline', 'number_parts'],
+    [
+      'fields' => [
+        'pattern_outline' => [
+          'description' => 'The pattern',
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+          'default' => '',
+        ],
+        'number_parts' => [
+          'description' => 'Number of parts in this router path.',
+          'type' => 'int',
+          'not null' => TRUE,
+          'default' => 0,
+          'size' => 'small',
+        ],
+      ],
+    ]
+  );
+}
+
+/**
+ * Add a (id, default_langcode, langcode) composite index to entities.
+ */
+function system_update_8004() {
+  // \Drupal\Core\Entity\Sql\SqlContentEntityStorageSchema was changed in
+  // https://www.drupal.org/node/2261669 to include a (id, default_langcode,
+  // langcode) compound index, but this update function wasn't added until
+  // https://www.drupal.org/node/2542748. Regenerate the related schemas to
+  // ensure they match the currently expected status.
+  $manager = \Drupal::entityDefinitionUpdateManager();
+  foreach (array_keys(\Drupal::entityManager()
+    ->getDefinitions()) as $entity_type_id) {
+    // Only update the entity type if it already exists. This condition is
+    // needed in case new entity types are introduced after this update.
+    if ($entity_type = $manager->getEntityType($entity_type_id)) {
+      $manager->updateEntityType($entity_type);
+    }
+  }
+}
+
+/**
+ * Place local actions and tasks blocks in every theme.
+ */
+function system_update_8005() {
+  // When block module is not installed, there is nothing that could be done
+  // except showing a warning.
+  if (!\Drupal::moduleHandler()->moduleExists('block')) {
+    return t('Block module is not enabled so local actions and tasks which have been converted to blocks, are not visible anymore.');
+  }
+  $config_factory = \Drupal::configFactory();
+  /** @var \Drupal\Core\Extension\ThemeHandlerInterface $theme_handler */
+  $theme_handler = \Drupal::service('theme_handler');
+  $custom_themes_installed = FALSE;
+  $message = NULL;
+  $langcode = \Drupal::service('language_manager')->getCurrentLanguage()->getId();
+
+  $local_actions_default_settings = [
+    'plugin' => 'local_actions_block',
+    'region' => 'content',
+    'settings.label' => 'Primary admin actions',
+    'settings.label_display' => 0,
+    'settings.cache.max_age' => 0,
+    'visibility' => [],
+    'weight' => 0,
+    'langcode' => $langcode,
+  ];
+  $tabs_default_settings = [
+    'plugin' => 'local_tasks_block',
+    'region' => 'content',
+    'settings.label' => 'Tabs',
+    'settings.label_display' => 0,
+    'settings.cache.max_age' => 0,
+    'visibility' => [],
+    'weight' => 0,
+    'langcode' => $langcode,
+  ];
+  foreach ($theme_handler->listInfo() as $theme) {
+    $theme_name = $theme->getName();
+    switch ($theme_name) {
+      case 'bartik':
+        $name = 'block.block.bartik_local_actions';
+        $values = [
+          'id' => 'bartik_local_actions',
+          'weight' => -1,
+        ] + $local_actions_default_settings;
+        _system_update_create_block($name, $theme_name, $values);
+
+        $name = 'block.block.bartik_local_tasks';
+        $values = [
+          'id' => 'bartik_local_tasks',
+          'weight' => -7,
+        ] + $tabs_default_settings;
+        _system_update_create_block($name, $theme_name, $values);
+
+        // Help region has been removed so all the blocks inside has to be moved
+        // to content region.
+        $weight = -6;
+        $blocks = [];
+        foreach ($config_factory->listAll('block.block.') as $block_config) {
+          $block = $config_factory->getEditable($block_config);
+          if ($block->get('theme') == 'bartik' && $block->get('region') == 'help') {
+            $blocks[] = $block;
+          }
+        }
+        // Sort blocks by block weight.
+        uasort($blocks, function ($a, $b) {
+          return $a->get('weight') - $b->get('weight');
+        });
+        // Move blocks to content region and set them in right order by their
+        // weight.
+        foreach ($blocks as $block) {
+          $block->set('region', 'content');
+          $block->set('weight', $weight++);
+          $block->save();
+        }
+        break;
+
+      case 'seven':
+        $name = 'block.block.seven_local_actions';
+        $values = [
+          'id' => 'seven_local_actions',
+          'weight' => -10,
+        ] + $local_actions_default_settings;
+        _system_update_create_block($name, $theme_name, $values);
+
+        $name = 'block.block.seven_primary_local_tasks';
+        $values = [
+          'region' => 'header',
+          'id' => 'seven_primary_local_tasks',
+          'settings.label' => 'Primary tabs',
+          'settings.primary' => TRUE,
+          'settings.secondary' => FALSE,
+        ] + $tabs_default_settings;
+        _system_update_create_block($name, $theme_name, $values);
+
+        $name = 'block.block.seven_secondary_local_tasks';
+        $values = [
+          'region' => 'pre_content',
+          'id' => 'seven_secondary_local_tasks',
+          'settings.label' => 'Secondary tabs',
+          'settings.primary' => FALSE,
+          'settings.secondary' => TRUE,
+        ] + $tabs_default_settings;
+        _system_update_create_block($name, $theme_name, $values);
+        break;
+
+      case 'stark':
+        $name = 'block.block.stark_local_actions';
+        $values = [
+          'id' => 'stark_local_actions',
+        ] + $local_actions_default_settings;
+        _system_update_create_block($name, $theme_name, $values);
+
+        $name = 'block.block.stark_local_tasks';
+        $values = [
+          'id' => 'stark_local_tasks',
+        ] + $tabs_default_settings;
+        _system_update_create_block($name, $theme_name, $values);
+        break;
+
+      case 'classy':
+      case 'stable':
+        // Don't place any blocks or trigger custom themes installed warning.
+        break;
+
+      default:
+        $custom_themes_installed = TRUE;
+        $name = 'block.block.' . $theme_name . '_local_actions';
+        $values = [
+          'id' => $theme_name . '_local_actions',
+          'weight' => -10,
+        ] + $local_actions_default_settings;
+        _system_update_create_block($name, $theme_name, $values);
+
+        $name = sprintf('block.block.%s_local_tasks', $theme_name);
+        $values = [
+          'id' => $theme_name . '_local_tasks',
+          'weight' => -20,
+        ] + $tabs_default_settings;
+        _system_update_create_block($name, $theme_name, $values);
+        break;
+    }
+  }
+
+  if ($custom_themes_installed) {
+    $message = t('Because your site has custom theme(s) installed, we had to set local actions and tasks blocks into the content region. Please manually review the block configurations and remove the removed variables from your templates.');
+  }
+
+  return $message;
+}
+
+/**
+ * Place branding blocks in every theme.
+ */
+function system_update_8006() {
+  // When block module is not installed, there is nothing that could be done
+  // except showing a warning.
+  if (!\Drupal::moduleHandler()->moduleExists('block')) {
+    return t('Block module is not enabled so site branding elements, which have been converted to a block, are not visible anymore.');
+  }
+
+  /** @var \Drupal\Core\Extension\ThemeHandlerInterface $theme_handler */
+  $theme_handler = \Drupal::service('theme_handler');
+  $custom_themes_installed = FALSE;
+  $message = NULL;
+  $langcode = \Drupal::service('language_manager')->getCurrentLanguage()->getId();
+
+  $site_branding_default_settings = [
+    'plugin' => 'system_branding_block',
+    'region' => 'content',
+    'settings.label' => 'Site branding',
+    'settings.label_display' => 0,
+    'visibility' => [],
+    'weight' => 0,
+    'langcode' => $langcode,
+  ];
+  foreach ($theme_handler->listInfo() as $theme) {
+    $theme_name = $theme->getName();
+    switch ($theme_name) {
+      case 'bartik':
+        $name = 'block.block.bartik_branding';
+        $values = [
+            'id' => 'bartik_branding',
+            'region' => 'header',
+          ] + $site_branding_default_settings;
+        _system_update_create_block($name, $theme_name, $values);
+        break;
+
+      case 'stark':
+        $name = 'block.block.stark_branding';
+        $values = [
+            'id' => 'stark_branding',
+            'region' => 'header',
+          ] + $site_branding_default_settings;
+        _system_update_create_block($name, $theme_name, $values);
+        break;
+
+      case 'seven':
+      case 'classy':
+      case 'stable':
+        // Don't place any blocks or trigger custom themes installed warning.
+        break;
+      default:
+        $custom_themes_installed = TRUE;
+        $name = sprintf('block.block.%s_branding', $theme_name);
+        $values = [
+            'id' => sprintf('%s_branding', $theme_name),
+            'region' => 'content',
+            'weight' => '-50',
+          ] + $site_branding_default_settings;
+        _system_update_create_block($name, $theme_name, $values);
+        break;
+    }
+  }
+
+  if ($custom_themes_installed) {
+    $message = t('Because your site has custom theme(s) installed, we had to set the branding block into the content region. Please manually review the block configuration and remove the site name, slogan, and logo variables from your templates.');
+  }
+
+  return $message;
+}
+
+/**
+ * Helper function to create block configuration objects for an update.
+ *
+ * @param string $name
+ *   The name of the config object.
+ * @param string $theme_name
+ *   The name of the theme the block is associated with.
+ * @param array $values
+ *   The block config values.
+ */
+function _system_update_create_block($name, $theme_name, array $values) {
+  if (!\Drupal::service('config.storage')->exists($name)) {
+    $block = \Drupal::configFactory()->getEditable($name);
+    $values['uuid'] = \Drupal::service('uuid')->generate();
+    $values['theme'] = $theme_name;
+    $values['dependencies.theme'] = [$theme_name];
+    foreach ($values as $key => $value) {
+      $block->set($key, $value);
+    }
+    $block->save();
+  }
+}
+
+/**
+ * Set langcode fields to be ASCII-only.
+ */
+function system_update_8007() {
+  $database = \Drupal::database();
+  $database_schema = $database->schema();
+  $entity_types = \Drupal::entityManager()->getDefinitions();
+
+  $schema = \Drupal::keyValue('entity.storage_schema.sql')->getAll();
+  $schema_copy = $schema;
+  foreach ($schema as $item_name => $item) {
+    list($entity_type_id, ,) = explode('.', $item_name);
+    if (!isset($entity_types[$entity_type_id])) {
+      continue;
+    }
+    foreach ($item as $table_name => $table_schema) {
+      foreach ($table_schema as $schema_key => $schema_data) {
+        if ($schema_key == 'fields') {
+          foreach ($schema_data as $field_name => $field_data) {
+            foreach ($field_data as $field_data_property => $field_data_value) {
+              // Langcode fields have the property 'is_ascii' set, instead
+              // they should have set the type to 'varchar_ascii'.
+              if ($field_data_property == 'is_ascii') {
+                unset($schema_copy[$item_name][$table_name]['fields'][$field_name]['is_ascii']);
+                $schema_copy[$item_name][$table_name]['fields'][$field_name]['type'] = 'varchar_ascii';
+                if ($database->driver() == 'mysql') {
+                  $database_schema->changeField($table_name, $field_name, $field_name, $schema_copy[$item_name][$table_name]['fields'][$field_name]);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  \Drupal::keyValue('entity.storage_schema.sql')->setMultiple($schema_copy);
+
+  $definitions = \Drupal::keyValue('entity.definitions.installed')->getAll();
+  $definitions_copy = $definitions;
+  foreach ($definitions as $item_name => $item_value) {
+    $suffix = '.field_storage_definitions';
+    if (substr($item_name, -strlen($suffix)) == $suffix) {
+      foreach ($item_value as $field_name => $field_definition) {
+        $reflection = new \ReflectionObject($field_definition);
+        $schema_property = $reflection->getProperty('schema');
+        $schema_property->setAccessible(TRUE);
+        $schema = $schema_property->getValue($field_definition);
+        if (isset($schema['columns']['value']['is_ascii'])) {
+          $schema['columns']['value']['type'] = 'varchar_ascii';
+          unset($schema['columns']['value']['is_ascii']);
+        }
+        $schema_property->setValue($field_definition, $schema);
+        $schema_property->setAccessible(FALSE);
+        $definitions_copy[$item_name][$field_name] = $field_definition;
+      }
+    }
+  }
+  \Drupal::keyValue('entity.definitions.installed')->setMultiple($definitions_copy);
+}
+
+/**
+ * Purge field schema data for uninstalled entity types.
+ */
+function system_update_8008() {
+  $entity_types = \Drupal::entityManager()->getDefinitions();
+  /** @var \Drupal\Core\KeyValueStore\KeyValueStoreInterface $schema */
+  $schema = \Drupal::keyValue('entity.storage_schema.sql');
+  foreach ($schema->getAll() as $key => $item) {
+    list($entity_type_id, ,) = explode('.', $key);
+    if (!isset($entity_types[$entity_type_id])) {
+      $schema->delete($key);
+    }
+  }
+}
+
+/**
+ * Add allowed attributes to existing html filters.
+ */
+function system_update_8009() {
+  $default_mapping = [
+    '<a>' => '<a href hreflang>',
+    '<blockquote>' => '<blockquote cite>',
+    '<ol>' => '<ol start type>',
+    '<ul>' => '<ul type>',
+    '<img>' => '<img src alt height width>',
+    '<h2>' => '<h2 id>',
+    '<h3>' => '<h3 id>',
+    '<h4>' => '<h4 id>',
+    '<h5>' => '<h5 id>',
+    '<h6>' => '<h6 id>',
+  ];
+  $config_factory = \Drupal::configFactory();
+  foreach ($config_factory->listAll('filter.format') as $name) {
+    $allowed_html_mapping = $default_mapping;
+    $config = $config_factory->getEditable($name);
+    // The image alignment filter needs the data-align attribute.
+    $align_enabled = $config->get('filters.filter_align.status');
+    if ($align_enabled) {
+      $allowed_html_mapping['<img>'] = str_replace('>', ' data-align>', $allowed_html_mapping['<img>']);
+    }
+    // The image caption filter needs the data-caption attribute.
+    $caption_enabled = $config->get('filters.filter_caption.status');
+    if ($caption_enabled) {
+      $allowed_html_mapping['<img>'] = str_replace('>', ' data-caption>', $allowed_html_mapping['<img>']);
+    }
+    $allowed_html = $config->get('filters.filter_html.settings.allowed_html');
+    if (!empty($allowed_html)) {
+      $allowed_html = strtr($allowed_html, $allowed_html_mapping);
+      $config->set('filters.filter_html.settings.allowed_html', $allowed_html);
+      $config->save();
+    }
+  }
+}
+
+/**
+ * Place page title blocks in every theme.
+ */
+function system_update_8010() {
+  // When block module is not installed, there is nothing that could be done
+  // except showing a warning.
+  if (!\Drupal::moduleHandler()->moduleExists('block')) {
+    return t('Block module is not enabled. The page title has been converted to a block, but default page title markup will still display at the top of the main content area.');
+  }
+
+  /** @var \Drupal\Core\Extension\ThemeHandlerInterface $theme_handler */
+  $theme_handler = \Drupal::service('theme_handler');
+  $custom_themes_installed = FALSE;
+  $message = NULL;
+  $langcode = \Drupal::service('language_manager')->getCurrentLanguage()->getId();
+
+  $page_title_default_settings = [
+    'plugin' => 'page_title_block',
+    'region' => 'content',
+    'settings.label' => 'Page title',
+    'settings.label_display' => 0,
+    'visibility' => [],
+    'weight' => -50,
+    'langcode' => $langcode,
+  ];
+  foreach ($theme_handler->listInfo() as $theme) {
+    $theme_name = $theme->getName();
+    switch ($theme_name) {
+      case 'bartik':
+        $name = 'block.block.bartik_page_title';
+        $values = [
+          'id' => 'bartik_page_title',
+        ] + $page_title_default_settings;
+        _system_update_create_block($name, $theme_name, $values);
+        break;
+
+      case 'stark':
+        $name = 'block.block.stark_page_title';
+        $values = [
+          'id' => 'stark_page_title',
+          'region' => 'content',
+        ] + $page_title_default_settings;
+        _system_update_create_block($name, $theme_name, $values);
+        break;
+
+      case 'seven':
+        $name = 'block.block.seven_page_title';
+        $values = [
+          'id' => 'seven_page_title',
+          'region' => 'header',
+        ] + $page_title_default_settings;
+        _system_update_create_block($name, $theme_name, $values);
+        break;
+
+      case 'classy':
+        $name = 'block.block.classy_page_title';
+        $values = [
+          'id' => 'classy_page_title',
+          'region' => 'content',
+        ] + $page_title_default_settings;
+        _system_update_create_block($name, $theme_name, $values);
+        break;
+
+      default:
+        $custom_themes_installed = TRUE;
+        $name = sprintf('block.block.%s_page_title', $theme_name);
+        $values = [
+          'id' => sprintf('%s_page_title', $theme_name),
+          'region' => 'content',
+          'weight' => '-50',
+        ] + $page_title_default_settings;
+        _system_update_create_block($name, $theme_name, $values);
+        break;
+    }
+  }
+
+  if ($custom_themes_installed) {
+    $message = t('Because your site has custom theme(s) installed, we have placed the page title block in the content region. Please manually review the block configuration and remove the page title variables from your page templates.');
+  }
+
+  return $message;
+}
+
+/**
+ * Add secondary local tasks block to Seven (fixes system_update_8005).
+ */
+function system_update_8011() {
+  $langcode = \Drupal::service('language_manager')->getCurrentLanguage()->getId();
+  $theme_name = 'seven';
+  $name = 'block.block.seven_secondary_local_tasks';
+  $values = [
+      'plugin' => 'local_tasks_block',
+      'region' => 'pre_content',
+      'id' => 'seven_secondary_local_tasks',
+      'settings.label' => 'Secondary tabs',
+      'settings.label_display' => 0,
+      'settings.primary' => FALSE,
+      'settings.secondary' => TRUE,
+      'visibility' => [],
+      'weight' => 0,
+      'langcode' => $langcode,
+    ];
+  _system_update_create_block($name, $theme_name, $values);
+}
+
+/**
+ * Enable automated cron module and move the config into it.
+ */
+function system_update_8013() {
+  $config_factory = \Drupal::configFactory();
+  $system_cron_config = $config_factory->getEditable('system.cron');
+  if ($autorun = $system_cron_config->get('threshold.autorun')) {
+    // Install 'automated_cron' module.
+    \Drupal::service('module_installer')->install(['automated_cron'], FALSE);
+
+    // Copy 'autorun' value into the new module's 'interval' setting.
+    $config_factory->getEditable('automated_cron.settings')
+      ->set('interval', $autorun)
+      ->save(TRUE);
+  }
+
+  // Remove the 'autorun' key in system module config.
+  $system_cron_config
+    ->clear('threshold.autorun')
+    ->save(TRUE);
+}
+
+/**
+ * Install the Stable base theme if needed.
+ */
+function system_update_8014() {
+  $theme_handler = \Drupal::service('theme_handler');
+  if ($theme_handler->themeExists('stable')) {
+    return;
+  }
+  $theme_handler->refreshInfo();
+  foreach ($theme_handler->listInfo() as $theme) {
+    // We first check that a base theme is set because if it's set to false then
+    // it's unset in \Drupal\Core\Extension\ThemeHandler::rebuildThemeData().
+    if (isset($theme->info['base theme']) && $theme->info['base theme'] == 'stable') {
+      $theme_handler->install(['stable']);
+      return;
+    }
+  }
+}
+
+/**
+ * Fix configuration overrides to not override non existing keys.
+ */
+function system_update_8200(&$sandbox) {
+  $config_factory = \Drupal::configFactory();
+  if (!array_key_exists('config_names', $sandbox)) {
+    $sandbox['config_names'] = $config_factory->listAll();
+    $sandbox['max'] = count($sandbox['config_names']);
+  }
+
+  // Get a list of 50 to work on at a time.
+  $config_names_to_process = array_slice($sandbox['config_names'], 0, 50);
+  // Preload in a single query.
+  $config_factory->loadMultiple($config_names_to_process);
+  foreach ($config_names_to_process as $config_name) {
+    $config_factory->getEditable($config_name)->save();
+  }
+
+  // Update the list of names to process.
+  $sandbox['config_names'] = array_diff($sandbox['config_names'], $config_names_to_process);
+  $sandbox['#finished'] = empty($sandbox['config_names']) ? 1 : ($sandbox['max'] - count($sandbox['config_names'])) / $sandbox['max'];
+}
+
+/**
+ * Clear caches due to behavior change in DefaultPluginManager.
+ */
+function system_update_8201() {
+  // Empty update to cause a cache rebuild.
+
+  // Use hook_post_update_NAME() instead to clear the cache.
+  // The use of hook_update_N() to clear the cache has been deprecated
+  // see https://www.drupal.org/node/2960601 for more details.
+}
+
+/**
+ * Clear caches due to behavior change in MachineName element.
+ */
+function system_update_8202() {
+  // Empty update to cause a cache rebuild.
+
+  // Use hook_post_update_NAME() instead to clear the cache.The use
+  // of hook_update_N to clear the cache has been deprecated see
+  // https://www.drupal.org/node/2960601 for more details.
+}
+
+/**
+ * Add detailed cron logging configuration.
+ */
+function system_update_8300() {
+  \Drupal::configFactory()->getEditable('system.cron')
+    ->set('logging', 1)
+    ->save(TRUE);
+}
+
+/**
+ * Add install profile to core.extension configuration.
+ */
+function system_update_8301() {
+  \Drupal::configFactory()->getEditable('core.extension')
+    ->set('profile', \Drupal::installProfile())
+    ->save();
+}
+
+/**
+ * Move revision metadata fields to the revision table.
+ */
+function system_update_8400(&$sandbox) {
+  // Due to the fields from RevisionLogEntityTrait not being explicitly
+  // mentioned in the storage they might have been installed wrongly in the base
+  // table for revisionable untranslatable entities and in the data and revision
+  // data tables for revisionable and translatable entities.
+  $entity_definition_update_manager = \Drupal::entityDefinitionUpdateManager();
+  $database = \Drupal::database();
+  $database_schema = $database->schema();
+
+  if (!isset($sandbox['current'])) {
+    // This must be the first run. Initialize the sandbox.
+    $sandbox['current'] = 0;
+
+    $definitions = array_filter(\Drupal::entityTypeManager()->getDefinitions(), function (EntityTypeInterface $entity_type) use ($entity_definition_update_manager) {
+      if ($entity_type = $entity_definition_update_manager->getEntityType($entity_type->id())) {
+        return is_subclass_of($entity_type->getClass(), FieldableEntityInterface::class) && ($entity_type instanceof ContentEntityTypeInterface) && $entity_type->isRevisionable();
+      }
+      return FALSE;
+    });
+    $sandbox['entity_type_ids'] = array_keys($definitions);
+    $sandbox['max'] = count($sandbox['entity_type_ids']);
+  }
+
+  $current_entity_type_key = $sandbox['current'];
+  for ($i = $current_entity_type_key; ($i < $current_entity_type_key + 1) && ($i < $sandbox['max']); $i++) {
+    $entity_type_id = $sandbox['entity_type_ids'][$i];
+    /** @var \Drupal\Core\Entity\ContentEntityTypeInterface $entity_type */
+    $entity_type = $entity_definition_update_manager->getEntityType($entity_type_id);
+
+    $base_fields = \Drupal::service('entity_field.manager')->getBaseFieldDefinitions($entity_type_id);
+    $revision_metadata_fields = $entity_type->getRevisionMetadataKeys();
+    $fields_to_update = array_intersect_key($base_fields, array_flip($revision_metadata_fields));
+
+    if (!empty($fields_to_update)) {
+      // Initialize the entity table names.
+      // @see \Drupal\Core\Entity\Sql\SqlContentEntityStorage::initTableLayout()
+      $base_table = $entity_type->getBaseTable() ?: $entity_type_id;
+      $data_table = $entity_type->getDataTable() ?: $entity_type_id . '_field_data';
+      $revision_table = $entity_type->getRevisionTable() ?: $entity_type_id . '_revision';
+      $revision_data_table = $entity_type->getRevisionDataTable() ?: $entity_type_id . '_field_revision';
+      $revision_field = $entity_type->getKey('revision');
+
+      // No data needs to be migrated if the entity type is not translatable.
+      if ($entity_type->isTranslatable()) {
+        if (!isset($sandbox[$entity_type_id])) {
+          // This must be the first run for this entity type. Initialize the
+          // sub-sandbox for it.
+
+          // Calculate the number of revisions to process.
+          $count = \Drupal::entityQuery($entity_type_id)
+            ->allRevisions()
+            ->count()
+            ->accessCheck(FALSE)
+            ->execute();
+
+          $sandbox[$entity_type_id]['current'] = 0;
+          $sandbox[$entity_type_id]['max'] = $count;
+        }
+        // Define the step size.
+        $steps = Settings::get('entity_update_batch_size', 50);
+
+        // Collect the revision IDs to process.
+        $revisions = \Drupal::entityQuery($entity_type_id)
+          ->allRevisions()
+          ->range($sandbox[$entity_type_id]['current'], $sandbox[$entity_type_id]['current'] + $steps)
+          ->sort($revision_field, 'ASC')
+          ->accessCheck(FALSE)
+          ->execute();
+        $revisions = array_keys($revisions);
+
+        foreach ($fields_to_update as $revision_metadata_field_name => $definition) {
+          // If the revision metadata field is present in the data and the
+          // revision data table, install its definition again with the updated
+          // storage code in order for the field to be installed in the
+          // revision table. Afterwards, copy over the field values and remove
+          // the field from the data and the revision data tables.
+          if ($database_schema->fieldExists($data_table, $revision_metadata_field_name) && $database_schema->fieldExists($revision_data_table, $revision_metadata_field_name)) {
+            // Install the field in the revision table.
+            if (!isset($sandbox[$entity_type_id]['storage_definition_installed'][$revision_metadata_field_name])) {
+              $entity_definition_update_manager->installFieldStorageDefinition($revision_metadata_field_name, $entity_type_id, $entity_type->getProvider(), $definition);
+              $sandbox[$entity_type_id]['storage_definition_installed'][$revision_metadata_field_name] = TRUE;
+            }
+
+            // Apply the field value from the revision data table to the
+            // revision table.
+            foreach ($revisions as $rev_id) {
+              $field_value = $database->select($revision_data_table, 't')
+                ->fields('t', [$revision_metadata_field_name])
+                ->condition($revision_field, $rev_id)
+                ->execute()
+                ->fetchField();
+              $database->update($revision_table)
+                ->condition($revision_field, $rev_id)
+                ->fields([$revision_metadata_field_name => $field_value])
+                ->execute();
+            }
+          }
+        }
+
+        $sandbox[$entity_type_id]['current'] += count($revisions);
+        $sandbox[$entity_type_id]['finished'] = ($sandbox[$entity_type_id]['current'] == $sandbox[$entity_type_id]['max']) || empty($revisions);
+
+        if ($sandbox[$entity_type_id]['finished']) {
+          foreach ($fields_to_update as $revision_metadata_field_name => $definition) {
+            // Drop the field from the data and revision data tables.
+            $database_schema->dropField($data_table, $revision_metadata_field_name);
+            $database_schema->dropField($revision_data_table, $revision_metadata_field_name);
+          }
+          $sandbox['current']++;
+        }
+      }
+      else {
+        foreach ($fields_to_update as $revision_metadata_field_name => $definition) {
+          if ($database_schema->fieldExists($base_table, $revision_metadata_field_name)) {
+            // Install the field in the revision table.
+            $entity_definition_update_manager->installFieldStorageDefinition($revision_metadata_field_name, $entity_type_id, $entity_type->getProvider(), $definition);
+            // Drop the field from the base table.
+            $database_schema->dropField($base_table, $revision_metadata_field_name);
+          }
+        }
+        $sandbox['current']++;
+      }
+    }
+    else {
+      $sandbox['current']++;
+    }
+
+  }
+
+  $sandbox['#finished'] = $sandbox['current'] == $sandbox['max'];
+}
+
+/**
+ * Remove response.gzip (and response) from system module configuration.
+ */
+function system_update_8401() {
+  \Drupal::configFactory()->getEditable('system.performance')
+    ->clear('response.gzip')
+    ->clear('response')
+    ->save();
+}
+
+/**
+ * Add the 'revision_translation_affected' field to all entity types.
+ */
+function system_update_8402() {
+  $definition_update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  // Clear the cached entity type definitions so we get the new
+  // 'revision_translation_affected' entity key.
+  \Drupal::entityTypeManager()->clearCachedDefinitions();
+
+  // Get a list of revisionable and translatable entity types.
+  /** @var \Drupal\Core\Entity\ContentEntityTypeInterface[] $definitions */
+  $definitions = array_filter(\Drupal::entityTypeManager()->getDefinitions(), function (EntityTypeInterface $entity_type) use ($definition_update_manager) {
+    if ($entity_type = $definition_update_manager->getEntityType($entity_type->id())) {
+      return $entity_type->isRevisionable() && $entity_type->isTranslatable();
+    }
+    return FALSE;
+  });
+
+  foreach ($definitions as $entity_type_id => $entity_type) {
+    $field_name = $entity_type->getKey('revision_translation_affected');
+    // Install the 'revision_translation_affected' field if needed.
+    if (!$definition_update_manager->getFieldStorageDefinition($field_name, $entity_type_id)) {
+      $storage_definition = BaseFieldDefinition::create('boolean')
+        ->setLabel(t('Revision translation affected'))
+        ->setDescription(t('Indicates if the last edit of a translation belongs to current revision.'))
+        ->setReadOnly(TRUE)
+        ->setRevisionable(TRUE)
+        ->setTranslatable(TRUE)
+        // Mark all pre-existing revisions as affected in order to be consistent
+        // with the previous API return value: if the field was not defined the
+        // value returned was always TRUE.
+        ->setInitialValue(TRUE);
+
+      $definition_update_manager
+        ->installFieldStorageDefinition($field_name, $entity_type_id, $entity_type_id, $storage_definition);
+    }
+  }
+}
+
+/**
+ * Delete all cache_* tables. They are recreated on demand with the new schema.
+ */
+function system_update_8403() {
+  foreach (Cache::getBins() as $bin => $cache_backend) {
+    // Try to delete the table regardless of which cache backend is handling it.
+    // This is to ensure the new schema is used if the configuration for the
+    // backend class is changed after the update hook runs.
+    $table_name = "cache_$bin";
+    $schema = Database::getConnection()->schema();
+    if ($schema->tableExists($table_name)) {
+      $schema->dropTable($table_name);
+    }
+  }
+}
+
+/**
+ * Add the 'revision_default' field to all relevant entity types.
+ */
+function system_update_8501() {
+  $definition_update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  // Clear the cached entity type definitions so we get the new
+  // 'revision_default' revision metadata key.
+  \Drupal::entityTypeManager()->clearCachedDefinitions();
+
+  // Get a list of revisionable entity types.
+  /** @var \Drupal\Core\Entity\ContentEntityTypeInterface[] $definitions */
+  $definitions = array_filter(\Drupal::entityTypeManager()->getDefinitions(), function (EntityTypeInterface $entity_type) use ($definition_update_manager) {
+    if ($entity_type = $definition_update_manager->getEntityType($entity_type->id())) {
+      return $entity_type->isRevisionable();
+    }
+    return FALSE;
+  });
+
+  // Install the 'revision_default' field.
+  foreach ($definitions as $entity_type_id => $entity_type) {
+    $field_name = $entity_type->getRevisionMetadataKey('revision_default');
+    // Install the 'revision_default' field if needed.
+    if (!$definition_update_manager->getFieldStorageDefinition($field_name, $entity_type_id)) {
+      // Make sure the new "revision_default" revision metadata key is available
+      // also to code using the latest installed definition.
+      $installed_entity_type = $definition_update_manager->getEntityType($entity_type_id);
+      $revision_metadata_keys = $installed_entity_type->get('revision_metadata_keys');
+
+      if (!isset($revision_metadata_keys['revision_default'])) {
+        // Update the property holding the required revision metadata keys,
+        // which is used by the BC layer for retrieving the revision metadata
+        // keys.
+        // @see \Drupal\Core\Entity\ContentEntityType::getRevisionMetadataKeys().
+        $required_revision_metadata_keys = $installed_entity_type->get('requiredRevisionMetadataKeys');
+        $required_revision_metadata_keys['revision_default'] = $field_name;
+        $installed_entity_type->set('requiredRevisionMetadataKeys', $required_revision_metadata_keys);
+
+        // Update the revision metadata keys to add the new required revision
+        // metadata key "revision_default".
+        $revision_metadata_keys['revision_default'] = $required_revision_metadata_keys['revision_default'];
+        $installed_entity_type->set('revision_metadata_keys', $revision_metadata_keys);
+
+        $definition_update_manager->updateEntityType($installed_entity_type);
+      }
+
+      $storage_definition = BaseFieldDefinition::create('boolean')
+        ->setLabel(t('Default revision'))
+        ->setDescription(t('A flag indicating whether this was a default revision when it was saved.'))
+        ->setStorageRequired(TRUE)
+        ->setTranslatable(FALSE)
+        ->setRevisionable(TRUE)
+        // We cannot tell whether existing revisions were default or not when
+        // they were created, but since we did not support creating non-default
+        // revisions in any core stable UI so far, we default to TRUE.
+        ->setInitialValue(TRUE);
+
+      $definition_update_manager
+        ->installFieldStorageDefinition($field_name, $entity_type_id, $entity_type_id, $storage_definition);
+    }
+    else {
+      $variables = ['@entity_type_label' => $entity_type->getLabel()];
+      if ($field_name === 'revision_default') {
+        \Drupal::logger('system')->error('An existing "Default revision" field was found for the @entity_type_label entity type, but no "revision_default" revision metadata key was found in its definition.', $variables);
+      }
+      else {
+        \Drupal::logger('system')->error('An existing "Default revision" field was found for the @entity_type_label entity type.', $variables);
+      }
+    }
+  }
+}

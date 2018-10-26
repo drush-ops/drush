@@ -1,0 +1,76 @@
+{% block toolbar %}
+    {% set icon %}
+    <a href="{{ url("webprofiler.dashboard", {profile: token}, {fragment: "mail"}) }}" title="{{ 'Mail'|t }}">
+        <img height="28" alt="{{ 'Mail'|t }}"
+             src="data:image/png;base64,{{ collector.icon }}"/>
+        <span class="sf-toolbar-status">{{ collector.mailsent }}</span>
+    </a>
+    {% endset %}
+    {% set text %}
+    <div class="sf-toolbar-info-piece">
+        <b>Mail sent</b>
+        <span>{{ collector.mailsent }}</span>
+    </div>
+    {% endset %}
+
+    <div class="sf-toolbar-block">
+        <div class="sf-toolbar-icon">{{ icon|default('') }}</div>
+        <div class="sf-toolbar-info">{{ text|default('') }}</div>
+    </div>
+{% endblock %}
+
+{% block panel %}
+    <script id="mail" type="text/template">
+        <h2 class="panel__title">{{ 'Mail dashboard'|t }}</h2>
+
+        <% if( data.mail.length != 0){ %>
+        <% _.each( data.mail, function( item ) { %>
+        <div class="panel__container">
+            <div class="panel__expand-header">
+                <ul class="list--inline">
+                    <li>
+                        <b>{{ 'Plugin'|t }}</b>: <%= Drupal.webprofiler.helpers.classLink(item.method) %>
+                    </li>
+                    <li>
+                        <b>{{ 'ID'|t }}</b>: <%- item.message.id %>
+                    </li>
+                    <li>
+                        <b>{{ 'To'|t }}</b>: <%- item.message.to %>
+                    </li>
+                    <li>
+                        <b>{{ 'Subject'|t }}</b>: <%- item.message.subject %>
+                    </li>
+                </ul>
+                <div class="button--flat l-right js--panel-toggle">{{ 'Info'|t }}</div>
+            </div>
+
+            <div class="panel__expand-content">
+                <table class="table--duo">
+                <% _.each( item.message, function( message, key ) { %>
+                <% if( key != 'params' && key != 'headers' ){ %>
+                <tr>
+                    <th><%- key %></th>
+                    <td><%- message %></td>
+                </tr>
+                <% } %>
+                <% }); %>
+                </table>
+                <table class="table--duo">
+                    <% _.each( item.message.headers, function( header, key ) { %>
+                    <tr>
+                        <th><%- key %></th>
+                        <td><%- header %></td>
+                    </tr>
+                    <% }); %>
+                </table>
+            </div>
+
+        </div>
+        <% }); %>
+        <% } else { %>
+        <div class="panel__container">
+            <p>{{ 'No mail sent'|t }}</p>
+        </div>
+        <% } %>
+    </script>
+{% endblock %}

@@ -1,0 +1,15 @@
+{
+  "name": "drupal/webprofiler",
+  "description": "Drupal Web Profiler.",
+  "type": "drupal-module",
+  "authors": [
+    {
+      "name": "Luca Lusso",
+      "email": "lussoluca@gmail.com",
+      "homepage": "https://github.com/lussoluca",
+      "role": "Maintainer"
+    }
+  ],
+  "license": "GPL-2.0+",
+  "require": {}
+}

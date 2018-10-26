@@ -1,0 +1,5 @@
+administer devel_generate:
+  title: 'Administer devel_generate'
+
+permission_callbacks:
+  - \Drupal\devel_generate\DevelGeneratePermissions::permissions
