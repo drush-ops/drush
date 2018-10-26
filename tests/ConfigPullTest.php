@@ -38,6 +38,7 @@ class ConfigPullCase extends CommandUnishTestCase
 
         // Test that custom target dir works
         $target = Path::join($this->getSandbox(), __CLASS__);
+        $this->recursiveDelete($target);
         $this->mkdir($target);
         $this->drush('config:pull', [$source, "$destination:$target"]);
         $this->assertFileExists(Path::join($target, 'system.site.yml'));

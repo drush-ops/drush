@@ -30,7 +30,7 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
      * @usage drush config:pull @prod @self:../config/sync
      *   Export config to a custom directory. Relative paths are calculated from Drupal root.
      * @aliases cpull,config-pull
-     * @topics docs:aliases,docs:config-exporting
+     * @topics docs:aliases,docs:config:exporting
      */
     public function pull($source, $destination, $options = ['safe' => false, 'label' => 'sync', 'runner' => null, 'format' => 'null'])
     {
@@ -47,7 +47,7 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
         $process = Drush::siteProcess($sourceRecord, 'config-export', [], $global_options + $export_options);
         $process->mustRun();
         // Trailing slash assures that we transfer files and not the containing dir.
-        $export_path = Drush::simulate() ? '/simulated/path' : $process->getOutput() . '/';
+        $export_path = Drush::simulate() ? '/simulated/path' : trim($process->getOutput()) . '/';
 
         if (strpos($destination, ':') === false) {
             $destination .= ':%config-' . $options['label'];
