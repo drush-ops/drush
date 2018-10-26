@@ -6,6 +6,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Sql\SqlBase;
+use Consolidation\OutputFormatters\StructuredData\PropertyList;
 
 class SqlCommands extends DrushCommands
 {
@@ -210,6 +211,10 @@ class SqlCommands extends DrushCommands
      *   Pass extra option to mysqldump command.
      * @hidden-options create-db
      * @bootstrap max configuration
+     * @field-labels
+     *   path: Path
+     *
+     * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
      *
      * @notes
      *   createdb is used by sql-sync, since including the DROP TABLE statements interfere with the import when the database is created.
@@ -221,6 +226,6 @@ class SqlCommands extends DrushCommands
         if ($return === false) {
             throw new \Exception('Unable to dump database. Rerun with --debug to see any error message.');
         }
-        return $return;
+        return new PropertyList(['path' => $return]);
     }
 }

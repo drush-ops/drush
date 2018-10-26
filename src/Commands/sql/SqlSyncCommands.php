@@ -136,6 +136,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $dump_options = $global_options + [
             'gzip' => true,
             'result-file' => $options['source-dump'] ?: 'auto',
+            'format' => 'string',
         ];
         if (!$options['no-dump']) {
             $this->logger()->notice(dt('Starting to dump database on source.'));
