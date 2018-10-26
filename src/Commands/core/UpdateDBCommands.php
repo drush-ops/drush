@@ -72,8 +72,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
 
             $level = $success ? ConsoleLogLevel::SUCCESS : LogLevel::ERROR;
             $this->logger()->log($level, dt('Finished performing updates.'));
-        }
-        else {
+        } else {
             $this->logger()->success(dt('No pending updates.'));
         }
     }
