@@ -287,6 +287,7 @@ class Drush
         $process->setSimulated(Drush::simulate());
         $process->setVerbose(Drush::verbose());
         $process->setLogger(Drush::logger());
+        $process->setIo(new DrushStyle(Drush::input(), Drush::output()));
         return $process;
     }
 
@@ -329,8 +330,7 @@ class Drush
         $process->setSimulated(Drush::simulate());
         $process->setVerbose(Drush::verbose());
         $process->setLogger(Drush::logger());
-        $io = new DrushStyle(Drush::input(), Drush::output());
-        $process->setIo($io);
+        $process->setIo(new DrushStyle(Drush::input(), Drush::output()));
         return $process;
     }
 
