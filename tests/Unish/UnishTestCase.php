@@ -107,7 +107,7 @@ abstract class UnishTestCase extends TestCase
 
     public static function getComposerRoot()
     {
-        return dirname(__DIR__);
+        return dirname(dirname(__DIR__));
     }
 
     /**
