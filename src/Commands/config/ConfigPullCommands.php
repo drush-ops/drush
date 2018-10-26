@@ -66,9 +66,9 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
         );
         $args = ["$source:$export_path", $destinationHostPath->getOriginal()];
         $options_double_dash = [
-            '--remove-source-files',
-            '--delete',
-            '--exclude=.htaccess',
+            'remove-source-files' => true,
+            'delete' => true,
+            'exclude' => '.htaccess',
         ];
         $process = Drush::siteProcess($runner, 'core-rsync', $args, ['yes' => true], $options_double_dash);
         $process->mustRun();
