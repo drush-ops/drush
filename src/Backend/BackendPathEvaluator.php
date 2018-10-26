@@ -75,14 +75,15 @@ class BackendPathEvaluator
         // The drupal:directory command uses a path evaluator, which
         // calls this function, so we cannot use dd here, as that
         // would be recursive.
-        $process = Drush::siteProcess($aliasRecord, 'core-status', [], ['project' => $pathAlias, 'fields' => '*', 'format' => 'json']);
+        $process = Drush::siteProcess($aliasRecord, 'core-status', [], ['project' => $pathAlias, 'fields' => '%paths', 'format' => 'json']);
         $process->setSimulated(false);
         $process->mustRun();
 
         $statusValues = $process->getOutput();
+
         $json = json_decode($statusValues, true);
-        if (isset($json[$pathAlias])) {
-            return $json[$pathAlias];
+        if (isset($json['%paths']["%{$pathAlias}"])) {
+            return $json['%paths']["%{$pathAlias}"];
         }
         throw new \Exception(dt('Cannot evaluate path alias %{path} for site alias {site}', ['path' => $pathAlias, 'site' => $aliasRecord->name()]));
     }
