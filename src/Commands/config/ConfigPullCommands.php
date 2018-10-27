@@ -7,6 +7,8 @@ use Drush\Drush;
 use Consolidation\SiteAlias\HostPath;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\OutputFormatters\StructuredData\PropertyList;
+use Consolidation\SiteProcess\ProcessBase;
 
 class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
@@ -31,6 +33,9 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
      *   Export config to a custom directory. Relative paths are calculated from Drupal root.
      * @aliases cpull,config-pull
      * @topics docs:aliases,docs:config:exporting
+     * @field-labels
+     *  path: Path
+     * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
      */
     public function pull($source, $destination, $options = ['safe' => false, 'label' => 'sync', 'runner' => null, 'format' => 'null'])
     {
@@ -44,7 +49,7 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
             'format' => 'string',
         ];
         $this->logger()->notice(dt('Starting to export configuration on :destination.', [':destination' => $destination]));
-        $process = Drush::siteProcess($sourceRecord, 'config-export', [], $global_options + $export_options);
+        $process = Drush::siteProcess($sourceRecord, 'config-export', [], $export_options + $global_options);
         $process->mustRun();
         // Trailing slash assures that we transfer files and not the containing dir.
         $export_path = Drush::simulate() ? '/simulated/path' : trim($process->getOutput()) . '/';
@@ -69,10 +74,11 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
             'delete' => true,
             'exclude' => '.htaccess',
         ];
-        $process = Drush::siteProcess($runner, 'core-rsync', $args, ['yes' => true], $options_double_dash);
+        $process = Drush::siteProcess($runner, 'core-rsync', $args, ['yes' => true, 'debug' => true], $options_double_dash);
         $process->mustRun();
+        $this->logger()->notice(dt('All done.'));
         drush_backend_set_result($destinationHostPath->getOriginal());
-        return $destinationHostPath->getOriginal();
+        return new PropertyList(['path' => $destinationHostPath->getOriginal()]);
     }
 
     /**

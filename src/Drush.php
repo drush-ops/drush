@@ -310,7 +310,7 @@ class Drush
             'root' => $siteAlias->root(),
         ];
         array_unshift($args, $command);
-        array_unshift($args, $siteAlias->get('paths.drush-script', 'drush'));
+        array_unshift($args, $siteAlias->get('paths.drush-script', static::drushScript()));
 
         return static::siteProcessCommand($siteAlias, $args, $options, $options_double_dash);
     }
@@ -332,6 +332,14 @@ class Drush
         $process->setLogger(Drush::logger());
         $process->setIo(new DrushStyle(Drush::input(), Drush::output()));
         return $process;
+    }
+
+    /**
+     * Return the path to this Drush
+     */
+    public static function drushScript()
+    {
+        return \Drush\Drush::config()->get('runtime.drush.script', 'drush');
     }
 
     /**
