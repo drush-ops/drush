@@ -327,6 +327,7 @@ class Drush
     public static function siteProcessCommand(AliasRecord $siteAlias, $args = [], $options = [], $options_double_dash = [])
     {
         $process = new SiteProcess($siteAlias, $args, $options, $options_double_dash);
+        $process->setAlias($siteAlias);
         $process->setSimulated(Drush::simulate());
         $process->setVerbose(Drush::verbose());
         $process->setLogger(Drush::logger());
