@@ -10,7 +10,6 @@ use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\Console\Output\NullOutput;
 use Webmozart\PathUtil\Path;
 
 class ConfigExportCommands extends DrushCommands
