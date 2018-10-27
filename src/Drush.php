@@ -303,6 +303,8 @@ class Drush
      */
     public static function siteProcess(AliasRecord $siteAlias, $command, $args = [], $options = [], $options_double_dash = [])
     {
+        $defaultDrushScript = $siteAlias->isRemote() ? 'drush' : static::drushScript();
+
         // Fill in the root and URI from the site alias, if the caller
         // did not already provide them in $options.
         $options += [
@@ -310,7 +312,7 @@ class Drush
             'root' => $siteAlias->root(),
         ];
         array_unshift($args, $command);
-        array_unshift($args, $siteAlias->get('paths.drush-script', static::drushScript()));
+        array_unshift($args, $siteAlias->get('paths.drush-script', $defaultDrushScript));
 
         return static::siteProcessCommand($siteAlias, $args, $options, $options_double_dash);
     }
