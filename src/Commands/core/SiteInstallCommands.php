@@ -217,7 +217,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             $process->mustRun();
 
             $process = Drush::siteProcess($selfRecord, 'config-import', [], ['source' => $config] + $options);
-            $process->mustRun(ProcessBase::showRealtime());
+            $process->mustRun($process->showRealtime());
         }
     }
 
