@@ -195,7 +195,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
                 $double_dash_options['remove-source-files'] = true;
             }
             if (!$runner = $options['runner']) {
-                $runner = $sourceRecord->isRemote() && $targetRecord->isRemote() ? $targetRecord : '@self';
+                $runner = $sourceRecord->isRemote() && $targetRecord->isRemote() ? $targetRecord : $this->siteAliasManager()->getSelf();
             }
             if ($runner == 'source') {
                 $runner = $sourceRecord;
@@ -204,9 +204,6 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
                 $runner = $targetRecord;
             }
             $this->logger()->notice(dt('Copying dump file from source to target.'));
-            if (is_string($runner)) {
-                $runner = $this->siteAliasManager()->get($runner);
-            }
             $process = Drush::siteProcess($runner, 'core-rsync', [$sourceRecord->name() . ":$source_dump_path", $targetRecord->name() . ":$target_dump_path"], [], $double_dash_options);
             $process->mustRun();
         }
