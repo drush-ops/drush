@@ -35,10 +35,6 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
         }
 
         if (empty($args)) {
-            $cd = $options['cd'];
-            if ($cd && $alias->has('root')) {
-                $args = ['cd', $alias->root(), '&&'];
-            }
             $args[] = 'bash';
             $args[] = '-l';
 
@@ -49,6 +45,7 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
 
         $siteProcess = Drush::siteProcessCommand($alias, $args);
         $siteProcess->setTty($options['tty']);
+        $siteProcess->chdirToSiteRoot($options['cd']);
         $siteProcess->mustRun();
     }
 }
