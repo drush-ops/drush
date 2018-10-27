@@ -75,6 +75,19 @@ class Drush
     protected static $runner;
 
     /**
+     * Number of seconds before timeout for subprocesses.
+     * @var int
+     */
+    const timeout = 1200;
+
+    /**
+     * @return int
+     */
+    public static function getTimeout() {
+        return self::timeout;
+    }
+
+    /**
      * Return the current Drush version.
      *
      * n.b. Called before the DI container is initialized.
@@ -288,6 +301,7 @@ class Drush
         $process->setVerbose(Drush::verbose());
         $process->setLogger(Drush::logger());
         $process->setIo(new DrushStyle(Drush::input(), Drush::output()));
+        $process->setTimeout(self::getTimeout());
         return $process;
     }
 
@@ -333,6 +347,7 @@ class Drush
         $process->setVerbose(Drush::verbose());
         $process->setLogger(Drush::logger());
         $process->setIo(new DrushStyle(Drush::input(), Drush::output()));
+        $process->setTimeout(self::getTimeout());
         return $process;
     }
 
