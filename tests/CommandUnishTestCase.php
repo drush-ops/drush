@@ -99,6 +99,8 @@ abstract class CommandUnishTestCase extends UnishTestCase
         // Remove leading and trailing spaces.
         $output = preg_replace('#^ *#m', '', $output);
         $output = preg_replace('# *$#m', '', $output);
+        // Remove multiple blank lines
+        $output = preg_replace("#\n\n\n*#m", "\n\n", $output);
         // Remove verbose info for rsync.
         $output = preg_replace('# -akzv --stats --progress #', ' -akz ', $output);
         // Debug flags may be added to command strings if we are in debug mode. Take those out so that tests in phpunit --debug mode work

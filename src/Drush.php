@@ -321,10 +321,12 @@ class Drush
 
         // Fill in the root and URI from the site alias, if the caller
         // did not already provide them in $options.
-        $options += [
-            'uri' => $siteAlias->uri(),
-            'root' => $siteAlias->root(),
-        ];
+        if ($siteAlias->has('uri')) {
+            $options += [ 'uri' => $siteAlias->uri(), ];
+        }
+        if ($siteAlias->hasRoot()) {
+            $options += [ 'root' => $siteAlias->root(), ];
+        }
         array_unshift($args, $command);
         array_unshift($args, $siteAlias->get('paths.drush-script', $defaultDrushScript));
 

@@ -282,13 +282,14 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
      * Perform setup tasks before installation.
      *
      * @hook pre-command site-install
-     *
      */
     public function pre(CommandData $commandData)
     {
         $sql = SqlBase::create($commandData->input()->getOptions());
         $db_spec = $sql->getDbSpec();
 
+        // This command is 'bootstrap root', so we should always have a
+        // Drupal root. If we do not, $aliasRecord->root will throw.
         $aliasRecord = $this->siteAliasManager()->getSelf();
         $root = $aliasRecord->root();
 
