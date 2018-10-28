@@ -25,7 +25,7 @@ class SiteSshCase extends CommandUnishTestCase
         ];
         $this->drush('ssh', [], $options, 'user@server/path/to/drupal#sitename');
         $output = $this->getErrorOutput();
-        $expected = "[notice] Simulating: 'ssh' '-t' '-o PasswordAuthentication=no' 'user@server' 'cd /path/to/drupal && bash -l'";
+        $expected = "[notice] Simulating: ssh -t -o PasswordAuthentication=no user@server 'cd /path/to/drupal && bash -l'";
         $this->assertContains($expected, $output);
     }
 
@@ -42,7 +42,7 @@ class SiteSshCase extends CommandUnishTestCase
         ];
         $this->drush('ssh', ['date'], $options, 'user@server/path/to/drupal#sitename');
         $output = $this->getErrorOutput();
-        $expected = "ssh' '-o PasswordAuthentication=no' 'user@server' 'date'";
+        $expected = "ssh -o PasswordAuthentication=no user@server date";
         $this->assertContains($expected, $output);
     }
 
@@ -57,7 +57,7 @@ class SiteSshCase extends CommandUnishTestCase
         ];
         $this->drush('ssh', ['ls', '/path1', '/path2'], $options, 'user@server/path/to/drupal#sitename');
         $output = $this->getSimplifiedErrorOutput();
-        $expected = "[notice] Simulating: 'ssh' '-o PasswordAuthentication=no' 'user@server' 'ls /path1 /path2'";
+        $expected = "[notice] Simulating: ssh -o PasswordAuthentication=no user@server 'ls /path1 /path2'";
         $this->assertContains($expected, $output);
     }
 
@@ -66,12 +66,15 @@ class SiteSshCase extends CommandUnishTestCase
    */
     public function testSshMultipleArgsLegacy()
     {
+        // @TODO: Bring this back?
+        $this->markTestSkipped('Legacy ssh form, where first element of commandline contains both program and arguments is not supported.');
+
         $options = [
         'cd' => '0',
          'simulate' => null,
         ];
         $this->drush('ssh', ['ls /path1 /path2'], $options, 'user@server/path/to/drupal#sitename');
-        $expected = "[notice] Simulating: 'ssh' '-o PasswordAuthentication=no' 'user@server' 'ls /path1 /path2'";
+        $expected = "[notice] Simulating: ssh -o PasswordAuthentication=no user@server 'ls /path1 /path2'";
         $this->assertContains($expected, $this->getSimplifiedErrorOutput());
     }
 }
