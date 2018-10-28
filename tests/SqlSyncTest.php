@@ -45,21 +45,21 @@ class SqlSyncTest extends CommandUnishTestCase
         // Test simulated simple rsync remote-to-local
         $this->drush('sql:sync', ['@synctest.remote', '@synctest.local'], $options, '@synctest.local');
         $output = $this->getSimplifiedErrorOutput();
-        $this->assertContains("[notice] Simulating: 'ssh' '-o PasswordAuthentication=whatever' 'www-admin@server.isp.simulated' '/path/to/drush sql-dump --no-interaction --strict=0 --gzip --result-file=auto --format=string --uri=remote --root=__SUT__/sut'", $output);
-        $this->assertContains("[notice] Simulating: '__SUT__/drush' 'core-rsync' '@synctest.remote:/simulated/path/to/dump.tgz' '@synctest.local:__SANDBOX__/tmp/dump.tgz' '--uri=local' '--root=__SUT__/sut' '--' '--remove-source-files'", $output);
-        $this->assertContains("[notice] Simulating: '__SUT__/drush' 'sql-query' '--no-interaction' '--strict=0' '--file=__SANDBOX__/tmp/dump.tgz' '--file-delete' '--uri=local' '--root=__SUT__/sut'", $output);
+        $this->assertContains("[notice] Simulating: ssh -o PasswordAuthentication=whatever www-admin@server.isp.simulated '/path/to/drush sql-dump --no-interaction --strict=0 --gzip --result-file=auto --format=string --uri=remote --root=__SUT__/sut", $output);
+        $this->assertContains("[notice] Simulating: __SUT__/drush core-rsync @synctest.remote:/simulated/path/to/dump.tgz @synctest.local:__SANDBOX__/tmp/dump.tgz --uri=local --root=__SUT__/sut -- --remove-source-files", $output);
+        $this->assertContains("[notice] Simulating: __SUT__/drush sql-query --no-interaction --strict=0 --file=__SANDBOX__/tmp/dump.tgz --file-delete --uri=local --root=__SUT__/sut", $output);
 
         // Test simulated simple sql:sync local-to-remote
         $this->drush('sql:sync', ['@synctest.local', '@synctest.remote'], $options, '@synctest.local');
         $output = $this->getSimplifiedErrorOutput();
-        $this->assertContains("[notice] Simulating: '__SUT__/drush' 'sql-dump' '--no-interaction' '--strict=0' '--gzip' '--result-file=auto' '--format=string' '--uri=local' '--root=__SUT__/sut'", $output);
-        $this->assertContains("[notice] Simulating: '__SUT__/drush' 'core-rsync' '@synctest.local:/simulated/path/to/dump.tgz' '@synctest.remote:/tmp/dump.tgz' '--uri=local' '--root=__SUT__/sut' '--' '--remove-source-files'", $output);
-        $this->assertContains("[notice] Simulating: 'ssh' '-o PasswordAuthentication=whatever' 'www-admin@server.isp.simulated' '/path/to/drush sql-query --no-interaction --strict=0 --file=/tmp/dump.tgz --file-delete --uri=remote --root=__SUT__/sut", $output);
+        $this->assertContains("[notice] Simulating: __SUT__/drush sql-dump --no-interaction --strict=0 --gzip --result-file=auto --format=string --uri=local --root=__SUT__/sut", $output);
+        $this->assertContains("[notice] Simulating: __SUT__/drush core-rsync @synctest.local:/simulated/path/to/dump.tgz @synctest.remote:/tmp/dump.tgz --uri=local --root=__SUT__/sut -- --remove-source-files", $output);
+        $this->assertContains("[notice] Simulating: ssh -o PasswordAuthentication=whatever www-admin@server.isp.simulated '/path/to/drush sql-query --no-interaction --strict=0 --file=/tmp/dump.tgz --file-delete --uri=remote --root=__SUT__/sut'", $output);
 
         // Test simulated remote invoke with a remote runner.
         $this->drush('sql:sync', ['@synctest.remote', '@synctest.local'], $options, 'user@server/path/to/drupal#sitename');
         $output = $this->getSimplifiedErrorOutput();
-        $this->assertContains("[notice] Simulating: 'ssh' '-o PasswordAuthentication=no' 'user@server' 'drush --no-interaction sql:sync @synctest.remote @synctest.local --uri=sitename --root=/path/to/drupal'", $output);
+        $this->assertContains("[notice] Simulating: ssh -o PasswordAuthentication=no user@server 'drush --no-interaction sql:sync @synctest.remote @synctest.local --uri=sitename --root=/path/to/drupal'", $output);
     }
 
     /**
