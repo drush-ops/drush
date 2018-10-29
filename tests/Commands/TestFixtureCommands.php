@@ -8,10 +8,11 @@ namespace Drush\Commands;
 
 use Drupal\Core\DrupalKernel;
 use Drupal\Core\Site\Settings;
+use Drush\Boot\AutoloaderAwareInterface;
 use Drush\Boot\AutoloaderAwareTrait;
 use Drush\Drush;
 
-class TestFixtureCommands
+class TestFixtureCommands extends DrushCommands implements AutoloaderAwareInterface
 {
 
     use AutoloaderAwareTrait;
@@ -55,33 +56,14 @@ class TestFixtureCommands
         // Reduce php memory/time limits to test backend respawn.
         // TODO.
 
+        $operations[] = ['\Unish\resources\UnitBatchOperations::operate', []];
+
         $batch = [
-        'operations' => [
-         [[$this, '_drushUnitBatchOperation'], []],
-        ],
-        'finished' => [$this, '_drushUnitBatchFinished'],
-        // 'file' => Doesn't work for us. Drupal 7 enforces this path
-        // to be relative to DRUPAL_ROOT.
-        // @see _batch_process().
+            'operations' => $operations,
+            'finished' => '\Unish\resources\UnitBatchOperations::finish',
         ];
         \batch_set($batch);
         $result = \drush_backend_batch_process();
-    }
-
-    public function _drushUnitBatchOperation(&$context)
-    {
-        $context['message'] = "!!! ArrayObject does its job.";
-
-        for ($i = 0; $i < 5; $i++) {
-            Drush::logger()->info("Iteration $i");
-        }
-        $context['finished'] = 1;
-    }
-
-    public function _drushUnitBatchFinished()
-    {
-        // Restore php limits.
-        // TODO.
     }
 
   /**
