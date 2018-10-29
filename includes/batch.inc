@@ -26,6 +26,7 @@
 
 use Drush\Drush;
 use Drush\Log\LogLevel;
+use Symfony\Component\Console\Output\NullOutput;
 
 /**
  * Class extending ArrayObject to allow the batch API to perform logging when
@@ -149,6 +150,8 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
 
     while (!$finished) {
       $process = Drush::siteProcess(Drush::aliasManager()->getSelf(), $command, $args);
+      // Suppress printing stdout since we return a JSON array to the caller there.
+      $process->setRealtimeOutput(new NullOutput(), Drush::output());
       $process->run($process->showRealtime());
       if ($output = $process->getOutput()) {
           $result = json_decode($output, true);

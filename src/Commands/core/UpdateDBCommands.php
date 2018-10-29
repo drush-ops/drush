@@ -3,6 +3,7 @@ namespace Drush\Commands\core;
 
 use Consolidation\Log\ConsoleLogLevel;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drupal\Core\Utility\Error;
@@ -152,7 +153,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
     public function process($batch_id, $options = ['format' => 'json'])
     {
         $result = drush_batch_command($batch_id);
-        return $result;
+        return new UnstructuredListData($result);
     }
 
     /**
@@ -343,8 +344,8 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      */
     public static function updateFinished($success, $results, $operations)
     {
-        // No code needed but the batch result keeping is failing without a finished callback.
-        $no = 1;
+        // No code needed but the batch result bookkeeping fails without a finished callback.
+        $noop = 1;
     }
 
 
