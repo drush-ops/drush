@@ -71,12 +71,11 @@
   "autoload": {
     "psr-4": {
       "Drush\\":            "src/",
-      "Drush\\Internal\\":  "internal-copy/"
+      "Drush\\Internal\\":  "src/internal-forks"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Drush\\": "tests/src/",
       "Unish\\": "tests/Unish"
     },
     "files": ["tests/load.environment.php"]
