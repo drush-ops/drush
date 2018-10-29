@@ -13,7 +13,7 @@ class SiteAliasFileLoaderTest extends TestCase
 
     protected $sut;
 
-    function setUp()
+    public function setUp()
     {
         $this->sut = new SiteAliasFileLoader();
 

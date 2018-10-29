@@ -207,8 +207,7 @@ class Parser
                 if ($isRef) {
                     $this->refs[$isRef] = end($data);
                 }
-            } elseif (
-                self::preg_match('#^(?P<key>'.Inline::REGEX_QUOTED_STRING.'|(?:!?!php/const:)?(?:![^\s]++\s++)?[^ \'"\[\{!].*?) *\:(\s++(?P<value>.+))?$#u', rtrim($this->currentLine), $values)
+            } elseif (self::preg_match('#^(?P<key>'.Inline::REGEX_QUOTED_STRING.'|(?:!?!php/const:)?(?:![^\s]++\s++)?[^ \'"\[\{!].*?) *\:(\s++(?P<value>.+))?$#u', rtrim($this->currentLine), $values)
                 && (false === strpos($values['key'], ' #') || in_array($values['key'][0], array('"', "'")))
             ) {
                 if ($context && 'sequence' == $context) {
@@ -785,8 +784,7 @@ class Parser
         if ($indentation > 0) {
             $pattern = sprintf('/^ {%d}(.*)$/', $indentation);
 
-            while (
-                $notEOF && (
+            while ($notEOF && (
                     $isCurrentLineBlank ||
                     self::preg_match($pattern, $this->currentLine, $matches)
                 )
