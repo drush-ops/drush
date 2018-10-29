@@ -190,7 +190,7 @@ LOG;
         $this->assertContains($this->simplifyOutput($expected_output), $this->getSimplifiedOutput());
 
         $expected_error_output =
-' [notice] Update started: woot_update_8104
+        ' [notice] Update started: woot_update_8104
  [notice] This is the update message from woot_update_8104
  [ok] Update completed: woot_update_8104
  [notice] Update started: woot_post_update_a

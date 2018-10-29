@@ -78,13 +78,14 @@ class Drush
      * Number of seconds before timeout for subprocesses.
      * @var int
      */
-    const timeout = 1200;
+    const TIMEOUT = 1200;
 
     /**
      * @return int
      */
-    public static function getTimeout() {
-        return self::timeout;
+    public static function getTimeout()
+    {
+        return self::TIMEOUT;
     }
 
     /**
