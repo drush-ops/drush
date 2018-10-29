@@ -76,7 +76,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Unish\\": "tests/Unish"
+      "Unish\\": "tests/unish"
     },
     "files": ["tests/load.environment.php"]
   },
