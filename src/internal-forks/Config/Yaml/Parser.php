@@ -166,13 +166,13 @@ class Parser
             }
 
             $isRef = $mergeNode = false;
-            if (self::preg_match('#^\-((?P<leadspaces>\s+)(?P<value>.+))?$#u', rtrim($this->currentLine), $values)) {
+            if (self::pregMatch('#^\-((?P<leadspaces>\s+)(?P<value>.+))?$#u', rtrim($this->currentLine), $values)) {
                 if ($context && 'mapping' == $context) {
                     throw new ParseException('You cannot define a sequence item when in a mapping', $this->getRealCurrentLineNb() + 1, $this->currentLine);
                 }
                 $context = 'sequence';
 
-                if (isset($values['value']) && self::preg_match('#^&(?P<ref>[^ ]+) *(?P<value>.*)#u', $values['value'], $matches)) {
+                if (isset($values['value']) && self::pregMatch('#^&(?P<ref>[^ ]+) *(?P<value>.*)#u', $values['value'], $matches)) {
                     $isRef = $matches['ref'];
                     $values['value'] = $matches['value'];
                 }
@@ -191,7 +191,7 @@ class Parser
                     );
                 } else {
                     if (isset($values['leadspaces'])
-                        && self::preg_match('#^(?P<key>'.Inline::REGEX_QUOTED_STRING.'|[^ \'"\{\[].*?) *\:(\s+(?P<value>.+?))?\s*$#u', $this->trimTag($values['value']), $matches)
+                        && self::pregMatch('#^(?P<key>'.Inline::REGEX_QUOTED_STRING.'|[^ \'"\{\[].*?) *\:(\s+(?P<value>.+?))?\s*$#u', $this->trimTag($values['value']), $matches)
                     ) {
                         // this is a compact notation element, add to next block and parse
                         $block = $values['value'];
@@ -207,7 +207,7 @@ class Parser
                 if ($isRef) {
                     $this->refs[$isRef] = end($data);
                 }
-            } elseif (self::preg_match('#^(?P<key>'.Inline::REGEX_QUOTED_STRING.'|(?:!?!php/const:)?(?:![^\s]++\s++)?[^ \'"\[\{!].*?) *\:(\s++(?P<value>.+))?$#u', rtrim($this->currentLine), $values)
+            } elseif (self::pregMatch('#^(?P<key>'.Inline::REGEX_QUOTED_STRING.'|(?:!?!php/const:)?(?:![^\s]++\s++)?[^ \'"\[\{!].*?) *\:(\s++(?P<value>.+))?$#u', rtrim($this->currentLine), $values)
                 && (false === strpos($values['key'], ' #') || in_array($values['key'][0], array('"', "'")))
             ) {
                 if ($context && 'sequence' == $context) {
@@ -245,7 +245,7 @@ class Parser
                     $key = (string) $key;
                 }
 
-                if ('<<' === $key && (!isset($values['value']) || !self::preg_match('#^&(?P<ref>[^ ]+)#u', $values['value'], $refMatches))) {
+                if ('<<' === $key && (!isset($values['value']) || !self::pregMatch('#^&(?P<ref>[^ ]+)#u', $values['value'], $refMatches))) {
                     $mergeNode = true;
                     $allowOverwrite = true;
                     if (isset($values['value'][0]) && '*' === $values['value'][0]) {
@@ -302,7 +302,7 @@ class Parser
                             $data += $parsed; // array union
                         }
                     }
-                } elseif ('<<' !== $key && isset($values['value']) && self::preg_match('#^&(?P<ref>[^ ]++) *+(?P<value>.*)#u', $values['value'], $matches)) {
+                } elseif ('<<' !== $key && isset($values['value']) && self::pregMatch('#^&(?P<ref>[^ ]++) *+(?P<value>.*)#u', $values['value'], $matches)) {
                     $isRef = $matches['ref'];
                     $values['value'] = $matches['value'];
                 }
@@ -675,7 +675,7 @@ class Parser
             return $this->refs[$value];
         }
 
-        if (self::preg_match('/^(?:'.self::TAG_PATTERN.' +)?'.self::BLOCK_SCALAR_HEADER_PATTERN.'$/', $value, $matches)) {
+        if (self::pregMatch('/^(?:'.self::TAG_PATTERN.' +)?'.self::BLOCK_SCALAR_HEADER_PATTERN.'$/', $value, $matches)) {
             $modifiers = isset($matches['modifiers']) ? $matches['modifiers'] : '';
 
             $data = $this->parseBlockScalar($matches['separator'], preg_replace('#\d+#', '', $modifiers), (int) abs($modifiers));
@@ -695,7 +695,7 @@ class Parser
             $quotation = '' !== $value && ('"' === $value[0] || "'" === $value[0]) ? $value[0] : null;
 
             // do not take following lines into account when the current line is a quoted single line value
-            if (null !== $quotation && self::preg_match('/^'.$quotation.'.*'.$quotation.'(\s*#.*)?$/', $value)) {
+            if (null !== $quotation && self::pregMatch('/^'.$quotation.'.*'.$quotation.'(\s*#.*)?$/', $value)) {
                 return Inline::parse($value, $flags, $this->refs);
             }
 
@@ -776,7 +776,7 @@ class Parser
 
         // determine indentation if not specified
         if (0 === $indentation) {
-            if (self::preg_match('/^ +/', $this->currentLine, $matches)) {
+            if (self::pregMatch('/^ +/', $this->currentLine, $matches)) {
                 $indentation = strlen($matches[0]);
             }
         }
@@ -786,7 +786,7 @@ class Parser
 
             while ($notEOF && (
                     $isCurrentLineBlank ||
-                    self::preg_match($pattern, $this->currentLine, $matches)
+                    self::pregMatch($pattern, $this->currentLine, $matches)
                 )
             ) {
                 if ($isCurrentLineBlank && strlen($this->currentLine) > $indentation) {
@@ -999,7 +999,7 @@ class Parser
      */
     private function isBlockScalarHeader()
     {
-        return (bool) self::preg_match('~'.self::BLOCK_SCALAR_HEADER_PATTERN.'$~', $this->currentLine);
+        return (bool) self::pregMatch('~'.self::BLOCK_SCALAR_HEADER_PATTERN.'$~', $this->currentLine);
     }
 
     /**
@@ -1009,13 +1009,17 @@ class Parser
      * This avoids us needing to check for "false" every time PCRE is used
      * in the YAML engine
      *
+     * DRUSH FORK: Renamed from preg_match to pregMatch. Not what I would have
+     * preferred, but easier / cleaner than customizing phpcs to not flag this
+     * one warning.
+     *
      * @throws ParseException on a PCRE internal error
      *
      * @see preg_last_error()
      *
      * @internal
      */
-    public static function preg_match($pattern, $subject, &$matches = null, $flags = 0, $offset = 0)
+    public static function pregMatch($pattern, $subject, &$matches = null, $flags = 0, $offset = 0)
     {
         if (false === $ret = preg_match($pattern, $subject, $matches, $flags, $offset)) {
             switch (preg_last_error()) {
@@ -1061,7 +1065,7 @@ class Parser
 
     private function getLineTag($value, $flags, $nextLineCheck = true)
     {
-        if ('' === $value || '!' !== $value[0] || 1 !== self::preg_match('/^'.self::TAG_PATTERN.' *( +#.*)?$/', $value, $matches)) {
+        if ('' === $value || '!' !== $value[0] || 1 !== self::pregMatch('/^'.self::TAG_PATTERN.' *( +#.*)?$/', $value, $matches)) {
             return;
         }
 
