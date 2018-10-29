@@ -65,10 +65,7 @@ class TestFixtureCommands
         // @see _batch_process().
         ];
         \batch_set($batch);
-        \drush_backend_batch_process();
-
-        // Print the batch output.
-        \drush_backend_output();
+        $result = \drush_backend_batch_process();
     }
 
     public function _drushUnitBatchOperation(&$context)
@@ -76,7 +73,7 @@ class TestFixtureCommands
         $context['message'] = "!!! ArrayObject does its job.";
 
         for ($i = 0; $i < 5; $i++) {
-            \drush_print("Iteration $i");
+            Drush::logger()->info("Iteration $i");
         }
         $context['finished'] = 1;
     }
