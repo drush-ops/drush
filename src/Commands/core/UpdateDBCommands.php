@@ -442,7 +442,8 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         return $success;
     }
 
-    public static function restoreMaintMode($status) {
+    public static function restoreMaintMode($status)
+    {
         \Drupal::service('state')->set('system.maintenance_mode', $status);
     }
 
