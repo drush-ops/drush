@@ -13,8 +13,10 @@ class BatchCommands extends DrushCommands
      * @aliases batch-process
      * @param $batch_id The batch id that will be processed.
      * @hidden
+     *
+     * @return \Consolidation\OutputFormatters\StructuredData\UnstructuredListData
      */
-    public function process($batch_id)
+    public function process($batch_id, $options = ['format' => 'json'])
     {
         $return = drush_batch_command($batch_id);
         return $return;

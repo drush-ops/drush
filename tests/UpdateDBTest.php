@@ -190,19 +190,18 @@ LOG;
         $this->assertContains($this->simplifyOutput($expected_output), $this->getSimplifiedOutput());
 
         $expected_error_output =
-" [notice] Update started: woot_update_8104
+' [notice] Update started: woot_update_8104
  [notice] This is the update message from woot_update_8104
  [ok] Update completed: woot_update_8104
  [notice] Update started: woot_post_update_a
  [notice] This is the update message from woot_post_update_a
  [ok] Update completed: woot_post_update_a
  [notice] Update started: woot_post_update_failing
- [error]  This is the exception message thrown in woot_post_update_failing
- [error]  Update failed: woot_post_update_failing
-[error]  Update aborted by: woot_post_update_failing
-[error] Finished performing updates.";
-
-        $this->assertContains($this->simplifyOutput($expected_error_output), $this->getSimplifiedErrorOutput());
+ [error] This is the exception message thrown in woot_post_update_failing
+ [error] Update failed: woot_post_update_failing
+[error] Update aborted by: woot_post_update_failing
+[error] Finished performing updates.';
+        $this->assertEquals($expected_error_output, $this->getSimplifiedErrorOutput());
     }
 
     /**
@@ -310,7 +309,7 @@ LOG;
 [success] Finished performing updates.
 LOG;
 
-        $this->assertContains($this->simplifyOutput($expected_error_output), $this->getSimplifiedErrorOutput());
+        $this->assertEquals($expected_error_output, $this->getSimplifiedErrorOutput());
     }
 
     public function tearDown()
