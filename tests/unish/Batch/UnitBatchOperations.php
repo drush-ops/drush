@@ -1,6 +1,6 @@
 <?php
 
-namespace Unish\resources;
+namespace Unish\Batch;
 
 use Drush\Drush;
 
