@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ConfigLocatorTest extends TestCase
 {
-    use \Drush\FixtureFactory;
+    use \Unish\Utils\Fixtures;
 
     /**
      * Test a config locator initialized only with data from the fixture's environment

@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
  */
 class EnvironmentTest extends TestCase
 {
-    use \Drush\FixtureFactory;
+    use \Unish\Utils\Fixtures;
 
     public function testExportConfigData()
     {

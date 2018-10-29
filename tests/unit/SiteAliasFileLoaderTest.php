@@ -8,10 +8,12 @@ use Consolidation\SiteAlias\AliasRecord;
 
 class SiteAliasFileLoaderTest extends TestCase
 {
-    use \Drush\FixtureFactory;
-    use \Drush\FunctionUtils;
+    use \Unish\Utils\Fixtures;
+    use \Unish\Utils\FunctionUtils;
 
-    public function setUp()
+    protected $sut;
+
+    function setUp()
     {
         $this->sut = new SiteAliasFileLoader();
 
@@ -30,27 +32,27 @@ class SiteAliasFileLoaderTest extends TestCase
 
         // Look for a simple alias with no environments defined
         $name = new SiteAliasName('simple');
-        $result = $this->callProtected('loadSingleAliasFile', [$name]);
+        $result = $this->callProtected($this->sut, 'loadSingleAliasFile', [$name]);
         $this->assertEquals(AliasRecord::class, get_class($result));
         $this->assertEquals('/path/to/simple', $result->get('root'));
 
         // Look for a single alias without an environment specified.
         $name = new SiteAliasName('single');
-        $result = $this->callProtected('loadSingleAliasFile', [$name]);
+        $result = $this->callProtected($this->sut, 'loadSingleAliasFile', [$name]);
         $this->assertTrue($result instanceof AliasRecord);
         $this->assertEquals('/path/to/single', $result->get('root'));
         $this->assertEquals('bar', $result->get('foo'));
 
         // Same test, but with environment explicitly requested.
         $name = new SiteAliasName('single', 'alternate');
-        $result = $this->callProtected('loadSingleAliasFile', [$name]);
+        $result = $this->callProtected($this->sut, 'loadSingleAliasFile', [$name]);
         $this->assertTrue($result instanceof AliasRecord);
         $this->assertEquals('/alternate/path/to/single', $result->get('root'));
         $this->assertEquals('bar', $result->get('foo'));
 
         // Try to fetch an alias that does not exist.
         $name = new SiteAliasName('missing');
-        $result = $this->callProtected('loadSingleAliasFile', [$name]);
+        $result = $this->callProtected($this->sut, 'loadSingleAliasFile', [$name]);
         $this->assertFalse($result);
     }
 

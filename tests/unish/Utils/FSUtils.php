@@ -1,5 +1,5 @@
 <?php
-namespace Drush;
+namespace Unish\Utils;
 
 // We want to avoid using symfony/filesystem in the isolation tests.
 trait FSUtils

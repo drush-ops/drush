@@ -1,13 +1,13 @@
 <?php
-namespace Drush;
+namespace Unish\Utils;
 
 use \Drush\Config\Environment;
 
-trait FixtureFactory
+trait Fixtures
 {
     protected function fixturesDir()
     {
-        return dirname(__DIR__) . '/fixtures';
+        return dirname(dirname(__DIR__)) . '/fixtures';
     }
 
     protected function homeDir()

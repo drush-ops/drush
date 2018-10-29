@@ -6,8 +6,8 @@ use Consolidation\SiteAlias\SiteAliasFileDiscovery;
 
 class SiteAliasFileDiscoveryTest extends TestCase
 {
-    use \Drush\FixtureFactory;
-    use \Drush\FunctionUtils;
+    use \Unish\Utils\Fixtures;
+    use \Unish\Utils\FunctionUtils;
 
     public function setUp()
     {

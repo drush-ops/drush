@@ -6,12 +6,13 @@ use Consolidation\SiteAlias\SiteAliasFileDiscovery;
 
 class LegacyAliasConverterTest extends TestCase
 {
-    use \Drush\FixtureFactory;
-    use \Drush\FunctionUtils;
-    use \Drush\FSUtils;
+    use \Unish\Utils\Fixtures;
+    use \Unish\Utils\FunctionUtils;
+    use \Unish\Utils\FSUtils;
 
     protected $discovery;
     protected $target;
+    protected $sut;
 
     protected function setUp()
     {
@@ -48,7 +49,7 @@ class LegacyAliasConverterTest extends TestCase
         $testContents = 'test: This is the initial file contents';
 
         // Write the data once, and confirm it was written.
-        $this->callProtected('writeOne', [$testPath, $testContents]);
+        $this->callProtected($this->sut, 'writeOne', [$testPath, $testContents]);
         $this->assertStringEqualsFile($testPath, $testContents);
 
         // Check to see that the checksum file was written, and that
@@ -59,7 +60,7 @@ class LegacyAliasConverterTest extends TestCase
         $overwriteContents = 'test: Overwrite the file contents';
 
         // Write the data again, and confirm it was changed.
-        $this->callProtected('writeOne', [$testPath, $overwriteContents]);
+        $this->callProtected($this->sut, 'writeOne', [$testPath, $overwriteContents]);
         $this->assertStringEqualsFile($testPath, $overwriteContents);
 
         $simulatedEditedContents = 'test: My simulated edit';
@@ -69,27 +70,27 @@ class LegacyAliasConverterTest extends TestCase
 
         // Write the yet data again; this time, confirm that
         // nothing changed, because the checksum does not match.
-        $this->callProtected('writeOne', [$testPath, $ignoredContents]);
+        $this->callProtected($this->sut, 'writeOne', [$testPath, $ignoredContents]);
         $this->assertStringEqualsFile($testPath, $simulatedEditedContents);
 
         // Write yet again, this time removing the target so that it will
         // be writable again.
         unlink($testPath);
-        $this->callProtected('writeOne', [$testPath, $overwriteContents]);
+        $this->callProtected($this->sut, 'writeOne', [$testPath, $overwriteContents]);
         $this->assertStringEqualsFile($testPath, $overwriteContents);
         $this->assertFileExists($checksumPath);
 
         // Remove the checksum file, and confirm that the target cannot
         // be overwritten
         unlink($checksumPath);
-        $this->callProtected('writeOne', [$testPath, $ignoredContents]);
+        $this->callProtected($this->sut, 'writeOne', [$testPath, $ignoredContents]);
         $this->assertStringEqualsFile($testPath, $overwriteContents);
     }
 
     public function testConvertAll()
     {
         $legacyFiles = $this->discovery->findAllLegacyAliasFiles();
-        $result = $this->callProtected('convertAll', [$legacyFiles]);
+        $result = $this->callProtected($this->sut, 'convertAll', [$legacyFiles]);
         ksort($result);
         $this->assertEquals('cc.site.yml,isp.site.yml,live.site.yml,nitrogen.site.yml,one.site.yml,outlandish-josh.site.yml,pantheon.site.yml,server.site.yml,update.site.yml', implode(',', array_keys($result)));
         //$this->assertEquals('', var_export($result, true));
@@ -106,8 +107,8 @@ class LegacyAliasConverterTest extends TestCase
             ],
         ];
 
-        $this->callProtected('cacheConvertedFilePath', ['b.aliases.drushrc.php', 'b.yml']);
-        $this->callProtected('writeAll', [$convertedFileFixtures]);
+        $this->callProtected($this->sut, 'cacheConvertedFilePath', ['b.aliases.drushrc.php', 'b.yml']);
+        $this->callProtected($this->sut, 'writeAll', [$convertedFileFixtures]);
         $this->assertFileExists($this->target . '/a.yml');
         $this->assertFileExists($this->target . '/.checksums/a.md5');
         $this->assertFileExists($this->target . '/b.yml');
@@ -127,7 +128,7 @@ class LegacyAliasConverterTest extends TestCase
     public function testConvertLegacyFile($source, $expected)
     {
         $legacyFile = $this->fixturesDir() . '/sitealiases/legacy/' . $source;
-        $result = $this->callProtected('convertLegacyFile', [$legacyFile]);
+        $result = $this->callProtected($this->sut, 'convertLegacyFile', [$legacyFile]);
         $this->assertEquals($expected, $result);
     }
 

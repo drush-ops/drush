@@ -5,8 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 class ArgsPreprocessorTest extends TestCase
 {
-
-    use \Drush\FixtureFactory;
+    use \Unish\Utils\Fixtures;
 
     /**
      * @dataProvider argTestValues
@@ -21,7 +20,7 @@ class ArgsPreprocessorTest extends TestCase
         $isLocal,
         $unprocessedArgs
     ) {
-    
+
 
         $argProcessor = new ArgsPreprocessor();
         $preflightArgs = new PreflightArgs();

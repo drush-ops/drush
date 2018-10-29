@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 class SiteSpecParserTest extends TestCase
 {
-    use \Drush\FixtureFactory;
+    use \Unish\Utils\Fixtures;
 
     /**
      * @dataProvider parserTestValues
@@ -14,7 +14,7 @@ class SiteSpecParserTest extends TestCase
         $spec,
         $expected
     ) {
-    
+
         $root = $this->siteDir();
         $fixtureSite = '/' . basename($root);
         $parser = new SiteSpecParser();
