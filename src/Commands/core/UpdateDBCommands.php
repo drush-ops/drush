@@ -166,6 +166,8 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * aborted updates will continue to appear on update.php as updates that
      * have not yet been run.
      *
+     * This method is static since since it is called by _drush_batch_worker().
+     *
      * @param $module
      *   The module whose update will be run.
      * @param $number
@@ -173,7 +175,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * @param $context
      *   The batch context array
      */
-    public function updateDoOne($module, $number, $dependency_map, &$context)
+    public static function updateDoOne($module, $number, $dependency_map, &$context)
     {
         $function = $module . '_update_' . $number;
 
@@ -263,7 +265,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * @param array $context
      *   The batch context.
      */
-    public function updateDoOnePostUpdate($function, &$context)
+    public static function updateDoOnePostUpdate($function, &$context)
     {
         $ret = [];
 
@@ -333,6 +335,20 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
     }
 
     /**
+     * Batch finished callback.
+     *
+     * @param boolean $success Whether the batch ended without a fatal error.
+     * @param array $results
+     * @param array $operations
+     */
+    public static function updateFinished($success, $results, $operations)
+    {
+        // No code needed but the batch result keeping is failing without a finished callback.
+        $no = 1;
+    }
+
+
+        /**
      * Start the database update batch process.
      */
     public function updateBatch($options)
@@ -364,7 +380,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                 }
                 // Add this update function to the batch.
                 $function = $update['module'] . '_update_' . $update['number'];
-                $operations[] = [[$this, 'updateDoOne'], [$update['module'], $update['number'], $dependency_map[$function]]];
+                $operations[] = ['\Drush\Commands\core\UpdateDBCommands::updateDoOne', [$update['module'], $update['number'], $dependency_map[$function]]];
             }
         }
 
@@ -384,12 +400,18 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             if ($post_updates) {
                 if ($operations) {
                     // Only needed if we performed updates earlier.
-                    $operations[] = [[$this, 'cacheRebuild'], []];
+                    $operations[] = ['\Drush\Commands\core\UpdateDBCommands::cacheRebuild', []];
                 }
                 foreach ($post_updates as $function) {
-                    $operations[] = [[$this, 'updateDoOnePostUpdate'], [$function]];
+                    $operations[] = ['\Drush\Commands\core\UpdateDBCommands::updateDoOnePostUpdate', [$function]];
                 }
             }
+        }
+
+        $original_maint_mode = \Drupal::service('state')->get('system.maintenance_mode');
+        if (!$original_maint_mode) {
+            \Drupal::service('state')->set('system.maintenance_mode', true);
+            $operations[] = ['\Drush\Commands\core\UpdateDBCommands::restoreMaintMode', [false]];
         }
 
         $batch['operations'] = $operations;
@@ -397,14 +419,10 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             'title' => 'Updating',
             'init_message' => 'Starting updates',
             'error_message' => 'An unrecoverable error has occurred. You can find the error message below. It is advised to copy it to the clipboard for reference.',
-            'finished' => [$this, 'updateFinished'],
+            'finished' => '\Drush\Commands\core\UpdateDBCommands::updateFinished',
             'file' => 'core/includes/update.inc',
         ];
         batch_set($batch);
-
-        // See updateFinished() for the restore of maint mode.
-        $this->maintenanceModeOriginalState = \Drupal::service('state')->get('system.maintenance_mode');
-        \Drupal::service('state')->set('system.maintenance_mode', true);
         $result = drush_backend_batch_process('updatedb:batch-process');
 
         $success = false;
@@ -422,6 +440,10 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         }
 
         return $success;
+    }
+
+    public static function restoreMaintMode($status) {
+        \Drupal::service('state')->set('system.maintenance_mode', $status);
     }
 
     /**
@@ -470,7 +492,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      * @see drush_drupal_cache_clear_all()
      * @see \Drupal\system\Controller\DbUpdateController::triggerBatch()
      */
-    public function cacheRebuild()
+    public static function cacheRebuild()
     {
         drupal_flush_all_caches();
         \Drupal::service('kernel')->rebuildContainer();
@@ -479,27 +501,6 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         $module_handler = \Drupal::moduleHandler();
         $module_handler->loadAll();
         $module_handler->invokeAll('rebuild');
-    }
-
-    /**
-     * Batch update callback, clears the cache if needed, and restores maint mode.
-     *
-     * @see \Drupal\system\Controller\DbUpdateController::batchFinished()
-     * @see \Drupal\system\Controller\DbUpdateController::results()
-     *
-     * @param boolean $success Whether the batch ended without a fatal error.
-     * @param array $results
-     * @param array $operations
-     */
-    public function updateFinished($success, $results, $operations)
-    {
-        if (!$this->cache_clear) {
-            $this->logger()->info(dt("Skipping cache-clear operation due to --no-cache-clear option."));
-        } else {
-            drupal_flush_all_caches();
-        }
-
-        \Drupal::service('state')->set('system.maintenance_mode', $this->maintenanceModeOriginalState);
     }
 
     /**

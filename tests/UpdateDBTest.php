@@ -79,7 +79,7 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->drush('updatedb', [], $options, null, null, self::EXIT_ERROR);
 
         $this->assertContains($this->simplifyOutput($expected_status_report), $this->getSimplifiedOutput());
-        $this->assertContains($this->simplifyOutput($expected_update_log_output), $this->getSimplifiedErrorOutput());
+        $this->assertEquals($expected_update_log_output, $this->getSimplifiedErrorOutput());
     }
 
     /**
@@ -117,8 +117,8 @@ LOG
  [notice] Update started: woot_update_8102
  [error] This is the exception message thrown in woot_update_8102
  [error] Update failed: woot_update_8102
- [error] Update aborted by: woot_update_8102
- [error] Finished performing updates.
+[error] Update aborted by: woot_update_8102
+[error] Finished performing updates.
 LOG
                 ,
             ],
@@ -146,8 +146,8 @@ LOG
  [notice] Update started: woot_update_8103
  [error] Call to undefined function non_existing_function()
  [error] Update failed: woot_update_8103
- [error] Update aborted by: woot_update_8103
- [error] Finished performing updates.
+[error] Update aborted by: woot_update_8103
+[error] Finished performing updates.
 LOG
                 ,
             ],
