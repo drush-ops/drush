@@ -25,8 +25,6 @@ matrix:
     - php: 7.0.11
     - php: 5.6
       env: 'SCENARIO=phpunit4 DEPENDENCIES=lowest'
-    - php: 5.6
-      env: 'SCENARIO=phpunit4 DEPENDENCIES=lowest'
 
 env:
   global:
@@ -60,5 +58,3 @@ after_success:
   - git config --global user.email $GITHUB_USER_EMAIL
   - git config --global user.name "Drush Documentation Bot"
   - cd $TRAVIS_BUILD_DIR && build/scripts/publish-api-docs.sh
-  # Background: https://github.com/drush-ops/drush/pull/1426
-  #- ${PWD}/tests/testChildren.sh
