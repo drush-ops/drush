@@ -45,22 +45,20 @@ trait OutputUtilsTrait
     {
         // We do not care if Drush inserts a -t or not in the string. Depends on whether there is a tty.
         $output = preg_replace('# -t #', ' ', $output);
+        // Remove multiple blank lines
+        $output = preg_replace("#\n\n\n*#m", "\n\n", $output);
         // Remove double spaces from output to help protect test from false negatives if spacing changes subtly
         $output = preg_replace('#  *#', ' ', $output);
         // Remove leading and trailing spaces.
-        $output = preg_replace('#^ *#m', '', $output);
-        $output = preg_replace('# *$#m', '', $output);
-        // Remove multiple blank lines
-        $output = preg_replace("#\n\n\n*#m", "\n\n", $output);
-        // Remove stderr marker. @see realTimeOutput during siteProcess.
-        $output = preg_replace('#ERR >#', '', $output);
+        $output = preg_replace('#^[ \t]*#m', '', $output);
+        $output = preg_replace('#[ \t]*$#m', '', $output);
         // Remove verbose info for rsync.
         $output = preg_replace('# -akzv --stats --progress #', ' -akz ', $output);
         // Debug flags may be added to command strings if we are in debug mode. Take those out so that tests in phpunit --debug mode work
         $output = preg_replace('# --debug #', ' ', $output);
         $output = preg_replace('# --verbose #', ' ', $output);
         // Get rid of any full paths in the output
-        $output = str_replace(__DIR__, '__DIR__', $output);
+        $output = preg_replace('#' . dirname(dirname(__DIR__)) . '/[^/]*#', '__DIR__', $output);
         $output = str_replace(self::getSandbox(), '__SANDBOX__', $output);
         $output = str_replace(self::getSut(), '__SUT__', $output);
 
