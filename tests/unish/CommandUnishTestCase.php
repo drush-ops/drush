@@ -5,229 +5,100 @@ namespace Unish;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use PHPUnit\Framework\TestResult;
+use Unish\Utils\OutputUtilsTrait;
 
 abstract class CommandUnishTestCase extends UnishTestCase
 {
+    use OutputUtilsTrait;
 
-  // Unix exit codes.
-    const EXIT_SUCCESS  = 0;
-    const EXIT_ERROR = 1;
-    const UNISH_EXITCODE_USER_ABORT = 75; // Same as DRUSH_EXITCODE_USER_ABORT
-
-  /**
-   * Code coverage data collected during a single test.
-   *
-   * @var array
-   */
+    /**
+     * Code coverage data collected during a single test.
+     *
+     * @var array
+     */
     protected $coverage_data = [];
 
-  /**
-   * Process of last executed command.
-   *
-   * @var Process
-   */
+    /**
+     * Process of last executed command.
+     *
+     * @var Process
+     */
     private $process;
 
-  /**
-   * Default timeout for commands.
-   *
-   * @var int
-   */
+    /**
+     * Default timeout for commands.
+     *
+     * @var int
+     */
     private $defaultTimeout = 60;
 
-  /**
-   * Timeout for command.
-   *
-   * Reset to $defaultTimeout after executing a command.
-   *
-   * @var int
-   */
+    /**
+     * Timeout for command.
+     *
+     * Reset to $defaultTimeout after executing a command.
+     *
+     * @var int
+     */
     protected $timeout = 60;
 
-  /**
-   * Default idle timeout for commands.
-   *
-   * @var int
-   */
+    /**
+     * Default idle timeout for commands.
+     *
+     * @var int
+     */
     private $defaultIdleTimeout = 15;
 
-  /**
-   * Idle timeouts for commands.
-   *
-   * Reset to $defaultIdleTimeout after executing a command.
-   *
-   * @var int
-   */
+    /**
+     * Idle timeouts for commands.
+     *
+     * Reset to $defaultIdleTimeout after executing a command.
+     *
+     * @var int
+     */
     protected $idleTimeout = 15;
 
-  /**
-   * Get command output and simplify away things like full paths and extra
-   * whitespace.
-   */
-    protected function getSimplifiedOutput()
-    {
-        return $this->simplifyOutput($this->getOutput());
-    }
-
     /**
-     * Returns a simplified version of the error output to facilitate testing.
+     * Accessor for the last output, non-trimmed.
      *
      * @return string
-     *   A simplified version of the error output that has things like full
-     *   paths and superfluous whitespace removed from it.
-     */
-    protected function getSimplifiedErrorOutput()
-    {
-        return $this->simplifyOutput($this->getErrorOutput());
-    }
-
-    /**
-     * Remove things like full paths and extra whitespace from the given string.
+     *   Raw output as text.
      *
-     * @param string $output
-     *   The output string to simplify.
-     *
-     * @return string
-     *   The simplified output.
+     * @access public
      */
-    protected function simplifyOutput($output)
-    {
-        // We do not care if Drush inserts a -t or not in the string. Depends on whether there is a tty.
-        $output = preg_replace('# -t #', ' ', $output);
-        // Remove double spaces from output to help protect test from false negatives if spacing changes subtly
-        $output = preg_replace('#  *#', ' ', $output);
-        // Remove leading and trailing spaces.
-        $output = preg_replace('#^ *#m', '', $output);
-        $output = preg_replace('# *$#m', '', $output);
-        // Remove multiple blank lines
-        $output = preg_replace("#\n\n\n*#m", "\n\n", $output);
-        // Remove stderr marker. @see realTimeOutput during siteProcess.
-        $output = preg_replace('#ERR >#', '', $output);
-        // Remove verbose info for rsync.
-        $output = preg_replace('# -akzv --stats --progress #', ' -akz ', $output);
-        // Debug flags may be added to command strings if we are in debug mode. Take those out so that tests in phpunit --debug mode work
-        $output = preg_replace('# --debug #', ' ', $output);
-        $output = preg_replace('# --verbose #', ' ', $output);
-        // Get rid of any full paths in the output
-        $output = str_replace(__DIR__, '__DIR__', $output);
-        $output = str_replace(self::getSandbox(), '__SANDBOX__', $output);
-        $output = str_replace(self::getSut(), '__SUT__', $output);
-
-        return $output;
-    }
-
-  /**
-   * Accessor for the last output, trimmed.
-   *
-   * @return string
-   *   Trimmed output as text.
-   *
-   * @access public
-   */
-    public function getOutput()
-    {
-        return trim($this->getOutputRaw());
-    }
-
-  /**
-   * Accessor for the last output, non-trimmed.
-   *
-   * @return string
-   *   Raw output as text.
-   *
-   * @access public
-   */
     public function getOutputRaw()
     {
         return $this->process ? $this->process->getOutput() : '';
     }
 
-  /**
-   * Accessor for the last output, rtrimmed and split on newlines.
-   *
-   * @return array
-   *   Output as array of lines.
-   *
-   * @access public
-   */
-    public function getOutputAsList()
-    {
-        return array_map('rtrim', explode("\n", $this->getOutput()));
-    }
-
-  /**
-   * Accessor for the last stderr output, trimmed.
-   *
-   * @return string
-   *   Trimmed stderr as text.
-   *
-   * @access public
-   */
-    public function getErrorOutput()
-    {
-        return trim($this->getErrorOutputRaw());
-    }
-
-  /**
-   * Accessor for the last stderr output, non-trimmed.
-   *
-   * @return string
-   *   Raw stderr as text.
-   *
-   * @access public
-   */
+    /**
+     * Accessor for the last stderr output, non-trimmed.
+     *
+     * @return string
+     *   Raw stderr as text.
+     *
+     * @access public
+     */
     public function getErrorOutputRaw()
     {
         return $this->process ? $this->process->getErrorOutput() : '';
     }
 
-  /**
-   * Accessor for the last stderr output, rtrimmed and split on newlines.
-   *
-   * @return array
-   *   Stderr as array of lines.
-   *
-   * @access public
-   */
-    public function getErrorOutputAsList()
-    {
-        return array_map('rtrim', explode("\n", $this->getErrorOutput()));
-    }
-
-  /**
-   * Accessor for the last output, decoded from json.
-   *
-   * @param string $key
-   *   Optionally return only a top level element from the json object.
-   *
-   * @return object
-   *   Decoded object.
-   */
-    public function getOutputFromJSON($key = null)
-    {
-        $json = json_decode($this->getOutput());
-        if (isset($key)) {
-            $json = $json->{$key}; // http://stackoverflow.com/questions/2925044/hyphens-in-keys-of-object
-        }
-        return $json;
-    }
-
-  /**
-   * Actually runs the command.
-   *
-   * @param string $command
-   *   The actual command line to run.
-   * @param integer $expected_return
-   *   The return code to expect
-   * @param sting cd
-   *   The directory to run the command in.
-   * @param array $env
-   *  Extra environment variables.
-   * @param string $input
-   *   A string representing the STDIN that is piped to the command.
-   * @return integer
-   *   Exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
-   */
+    /**
+     * Actually runs the command.
+     *
+     * @param string $command
+     *   The actual command line to run.
+     * @param integer $expected_return
+     *   The return code to expect
+     * @param sting cd
+     *   The directory to run the command in.
+     * @param array $env
+     *  Extra environment variables.
+     * @param string $input
+     *   A string representing the STDIN that is piped to the command.
+     * @return integer
+     *   Exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
+     */
     public function execute($command, $expected_return = self::EXIT_SUCCESS, $cd = null, $env = null, $input = null)
     {
         $this->tick();
@@ -289,29 +160,29 @@ abstract class CommandUnishTestCase extends UnishTestCase
         return $message;
     }
 
-  /**
-   * Invoke drush in via execute().
-   *
-   * @param command
-    *   A defined drush command such as 'cron', 'status' or any of the available ones such as 'drush pm'.
-    * @param args
-    *   Command arguments.
-    * @param $options
-    *   An associative array containing options.
-    * @param $site_specification
-    *   A site alias or site specification. Include the '@' at start of a site alias.
-    * @param $cd
-    *   A directory to change into before executing.
-    * @param $expected_return
-    *   The expected exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
-    * @param $suffix
-    *   Any code to append to the command. For example, redirection like 2>&1.
-    * @param array $env
-    *   Not used. Environment variables to pass along to the subprocess.
-   *    @todo Look into inheritEnvironmentVariables() - available since Process 3.1. See https://github.com/symfony/symfony/pull/19053/files.
-    * @return integer
-    *   An exit code.
-    */
+    /**
+     * Invoke drush in via execute().
+     *
+     * @param command
+      *   A defined drush command such as 'cron', 'status' or any of the available ones such as 'drush pm'.
+      * @param args
+      *   Command arguments.
+      * @param $options
+      *   An associative array containing options.
+      * @param $site_specification
+      *   A site alias or site specification. Include the '@' at start of a site alias.
+      * @param $cd
+      *   A directory to change into before executing.
+      * @param $expected_return
+      *   The expected exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
+      * @param $suffix
+      *   Any code to append to the command. For example, redirection like 2>&1.
+      * @param array $env
+      *   Not used. Environment variables to pass along to the subprocess.
+     *    @todo Look into inheritEnvironmentVariables() - available since Process 3.1. See https://github.com/symfony/symfony/pull/19053/files.
+      * @return integer
+      *   An exit code.
+      */
     public function drush($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $expected_return = self::EXIT_SUCCESS, $suffix = null, $env = [])
     {
         // cd is added for the benefit of siteSshTest which tests a strict command.
@@ -397,9 +268,9 @@ abstract class CommandUnishTestCase extends UnishTestCase
         return $return;
     }
 
-  /**
-   * A slightly less functional copy of drush_backend_parse_output().
-   */
+    /**
+     * A slightly less functional copy of drush_backend_parse_output().
+     */
     public function parseBackendOutput($string)
     {
         $regex = sprintf(self::getBackendOutputDelimiter(), '(.*)');
@@ -420,20 +291,20 @@ abstract class CommandUnishTestCase extends UnishTestCase
         return $string;
     }
 
-  /**
-   * Ensure that an expected log message appears in the Drush log.
-   *
-   *     $this->drush('command', array(), array('backend' => NULL));
-   *     $parsed = $this->parse_backend_output($this->getOutput());
-   *     $this->assertLogHasMessage($parsed['log'], "Expected message", 'debug')
-   *
-   * @param $log Parsed log entries from backend invoke
-   * @param $message The expected message that must be contained in
-   *   some log entry's 'message' field.  Substrings will match.
-   * @param $logType The type of log message to look for; all other
-   *   types are ignored. If FALSE (the default), then all log types
-   *   will be searched.
-   */
+    /**
+     * Ensure that an expected log message appears in the Drush log.
+     *
+     *     $this->drush('command', array(), array('backend' => NULL));
+     *     $parsed = $this->parse_backend_output($this->getOutput());
+     *     $this->assertLogHasMessage($parsed['log'], "Expected message", 'debug')
+     *
+     * @param $log Parsed log entries from backend invoke
+     * @param $message The expected message that must be contained in
+     *   some log entry's 'message' field.  Substrings will match.
+     * @param $logType The type of log message to look for; all other
+     *   types are ignored. If FALSE (the default), then all log types
+     *   will be searched.
+     */
     public function assertLogHasMessage($log, $message, $logType = false)
     {
         foreach ($log as $entry) {

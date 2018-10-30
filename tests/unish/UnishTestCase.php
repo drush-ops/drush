@@ -8,6 +8,10 @@ use Webmozart\PathUtil\Path;
 
 abstract class UnishTestCase extends TestCase
 {
+    // Unix exit codes.
+    const EXIT_SUCCESS  = 0;
+    const EXIT_ERROR = 1;
+    const UNISH_EXITCODE_USER_ABORT = 75; // Same as DRUSH_EXITCODE_USER_ABORT
 
     /**
      * A list of Drupal sites that have been recently installed. They key is the
