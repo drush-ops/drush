@@ -147,8 +147,8 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
                 $source_dump_path = '/simulated/path/to/dump.tgz';
             } else {
                 $source_dump_path = trim($process->getOutput());
-                if (!is_string($source_dump_path)) {
-                    throw new \Exception(dt('The Drush sql-dump command did not report the path to the dump file produced.  Try upgrading the version of Drush you are using on the source machine.'));
+                if (empty($source_dump_path)) {
+                    throw new \Exception(dt('The Drush sql-dump command did not report the path to the dump file produced.'));
                 }
             }
         } else {
