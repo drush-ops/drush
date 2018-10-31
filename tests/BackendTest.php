@@ -6,10 +6,10 @@ use Webmozart\PathUtil\Path;
 
 /**
  *  We choose to test the backend system in two parts.
- *    - Origin. These tests assure that we are generate a proper ssh command
- *        when a backend invoke is needed.
+ *    - Origin. These tests assure that we generate a proper ssh command
+ *        when a redispatch is needed.
  *    - Target. These tests assure that drush generates a delimited JSON array
- *        when called with --backend option.
+ *        when called with --backend option (legacy backend invoke).
  *
  *  Advantages of this approach:
  *    - No network calls and thus more robust.
@@ -19,7 +19,12 @@ use Webmozart\PathUtil\Path;
  */
 class BackendCase extends CommandUnishTestCase
 {
-    public function testDispatchUsingAlias()
+    /**
+     * Covers the following origin responsibilities.
+     *  - A remote host is recognized in site specification.
+     *  - Generates expected ssh command.
+     */
+    public function testOrigin()
     {
         $unishAliases = [
             'remote' => [
@@ -35,49 +40,21 @@ class BackendCase extends CommandUnishTestCase
 
         $this->writeSiteAliases($unishAliases, 'BackendCase');
         $this->drush('status', [], ['simulate' => null], '@BackendCase.remote');
-        $output = $this->getOutput();
 
         // Clean up -- our other tests do not want extra aliases.
         unlink(Path::join(self::webrootSlashDrush(), 'sites/BackendCase.site.yml'));
 
-        $output = preg_replace('#  *#', ' ', $output);
-        $output = preg_replace('# --verbose #', ' ', $output);
-        $output = preg_replace('# -t #', ' ', $output); // volkswagon away the -t, it's not relevant to what we're testing here
-        $output = preg_replace('#' . self::getSandbox() . '#', '__SANDBOX__', $output);
-        $this->assertContains("Simulating backend invoke: ssh -o PasswordAuthentication=no www-admin@server.isp.com '/usr/local/bin/drush --root=/path/to/drupal --uri=http://example.com --no-interaction status", $output);
-    }
-
-    /**
-     * Covers the following origin responsibilities.
-     *   - A remote host is recognized in site specification.
-     *   - Generates expected ssh command.
-     *
-     * General handling of site aliases will be in sitealiasTest.php.
-     */
-    public function testOrigin()
-    {
-        $site_specification = 'user@server/path/to/drupal#sitename';
-        $exec = sprintf('%s %s version --simulate --ssh-options=%s 2>%s', self::getDrush(), self::escapeshellarg($site_specification), self::escapeshellarg('-i mysite_dsa'), self::escapeshellarg($this->bitBucket()));
-        $this->execute($exec);
-        $bash = $this->escapeshellarg('drush --root=/path/to/drupal --uri=sitename version 2>&1');
-        $expected = "Simulating backend invoke: ssh -i mysite_dsa user@server $bash 2>&1";
-        $output = $this->getOutput();
-        // We do not care if Drush inserts a -t or not in the string. Depends on whether there is a tty.
-        $output = preg_replace('# -t #', ' ', $output);
-        // Remove double spaces from output to help protect test from false negatives if spacing changes subtlely
-        $output = preg_replace('#  *#', ' ', $output);
-        $this->assertContains($expected, $output, 'Expected ssh command was built');
+        $this->assertContains("[notice] Simulating: ssh -o PasswordAuthentication=no www-admin@server.isp.com '/usr/local/bin/drush --no-interaction status --uri=http://example.com --root=/path/to/drupal'", $this->getErrorOutput());
     }
 
     public function testNonExistentCommand()
     {
-        // @todo
-        $this->markTestSkipped('Cannot run remote commands that do not exist locally');
         // Assure that arguments and options are passed along to a command thats not recognized locally.
-        $this->drush('non-existent-command', ['foo'], ['bar' => 'baz', 'simulate' => null], $site_specification);
-        $output = $this->getOutput();
+        $this->drush('non-existent-command', ['foo'], ['bar' => 'baz', 'simulate' => null], 'user@server/path/to/drupal#sitename');
+        $output = $this->getErrorOutput();
         $this->assertContains('foo', $output);
         $this->assertContains('--bar=baz', $output);
+        $this->assertContains('non-existent-command', $output);
     }
 
     /**
@@ -110,13 +87,15 @@ class BackendCase extends CommandUnishTestCase
 
     public function testBackendErrorStatus()
     {
-        // Check error propogation by requesting an invalid command (missing Drupal site).
+        // Check error propagation by requesting an invalid command (missing Drupal site).
         $this->drush('core-cron', [], ['backend' => null], null, null, self::EXIT_ERROR);
         $parsed = $this->parseBackendOutput($this->getOutput());
         $this->assertEquals(1, $parsed['error_status']);
     }
 
     /**
+     * @deprecated Covers old backend invoke system.
+     *
      * Covers the following target responsibilities.
      *   - Insures that the 'Drush version' line from drush status appears in the output.
      *   - Insures that the backend output start marker appears in the output (this is a backend command).
