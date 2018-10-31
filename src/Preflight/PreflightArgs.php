@@ -91,7 +91,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
             '--local' => 'setLocal',
             '--simulate' => 'setSimulate',
             '-s' => 'setSimulate',
-            '--backend' => 'setBackend',
+            '--backend=' => 'setBackend',
             '--drush-coverage=' => 'setCoverageFile',
             '--strict=' => 'setStrict',
             '--help' => 'adjustHelpOption',
@@ -419,7 +419,14 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      */
     public function setBackend($backend)
     {
-        return $this->set(self::BACKEND, $backend);
+        if ($backend == 'json') {
+            // Remap to --format. See \Drush\Commands\sql\SqlSyncCommands::dump.
+            $args = $this->args();
+            $args[] = "--format=json";
+        }
+        else {
+            return $this->set(self::BACKEND, true);
+        }
     }
 
     /**

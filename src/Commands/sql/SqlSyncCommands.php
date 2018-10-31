@@ -136,19 +136,31 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         $dump_options = $global_options + [
             'gzip' => true,
             'result-file' => $options['source-dump'] ?: 'auto',
-            'format' => 'string',
         ];
         if (!$options['no-dump']) {
             $this->logger()->notice(dt('Starting to dump database on source.'));
-            $process = Drush::drush($sourceRecord, 'sql-dump', [], $dump_options);
+            // Set --backend=json. Drush 9.6+ changes that to --format=json. See .
+            // Drush 9.5- handles this just like --backend.
+            $process = Drush::drush(($sourceRecord, 'sql-dump', [], $dump_options + ['backend' => 'json']);
             $process->mustRun();
 
             if (Drush::simulate()) {
                 $source_dump_path = '/simulated/path/to/dump.tgz';
             } else {
-                $source_dump_path = trim($process->getOutput());
-                if (empty($source_dump_path)) {
-                    throw new \Exception(dt('The Drush sql-dump command did not report the path to the dump file produced.'));
+                try {
+                    // First try a Drush 9.6+ return format.
+                    $json = $process->getOutputAsJson();
+                    $source_dump_path = $json['path'];
+                } catch (\Exception $e) {
+                    // Next, try all prior format.
+                    $return = drush_backend_parse_output($process->getOutput());
+                    if ($return['error_status'] || empty($return['object'])) {
+                        // Neither attempt worked.
+                        throw new \Exception(dt('The Drush sql:dump command did not report the path to the dump file.'));
+                    }
+                    else {
+                        $source_dump_path = $return['object'];
+                    }
                 }
             }
         } else {
@@ -205,7 +217,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
             }
             $this->logger()->notice(dt('Copying dump file from source to target.'));
             $process = Drush::drush($runner, 'core-rsync', [$sourceRecord->name() . ":$source_dump_path", $targetRecord->name() . ":$target_dump_path"], [], $double_dash_options);
-            $process->mustRun();
+            $process->mustRun($process->showRealtime());
         }
         return $target_dump_path;
     }
