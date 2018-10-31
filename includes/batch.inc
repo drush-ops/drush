@@ -26,7 +26,6 @@
 
 use Drush\Drush;
 use Drush\Log\LogLevel;
-use Symfony\Component\Console\Output\NullOutput;
 
 /**
  * Class extending ArrayObject to allow the batch API to perform logging when

@@ -106,11 +106,6 @@ class ConfigExportCommands extends DrushCommands
             $target_storage = new FileStorage($destination_dir);
         }
 
-//        $output = new NullOutput();
-//        if (is_a($this->output(), '\Symfony\Component\Console\Output\ConsoleOutputInterface')) {
-//            $output = $this->output();
-//        }
-
         if (count(glob($destination_dir . '/*')) > 0) {
             // Retrieve a list of differences between the active and target configuration (if any).
             $config_comparer = new StorageComparer($this->getConfigStorage(), $target_storage, $this->getConfigManager());

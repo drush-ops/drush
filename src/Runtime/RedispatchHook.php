@@ -59,8 +59,8 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
     {
         // Determine if this is a remote command.
         // n.b. 'hasOption' only means that the option definition exists, so don't use that here.
-        $root = $input->getOption('remote-host');
-        if (!empty($root)) {
+        $remote = $input->getOption('remote-host');
+        if (!empty($remote)) {
             return $this->redispatch($input);
         }
     }
