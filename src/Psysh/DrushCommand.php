@@ -82,7 +82,7 @@ class DrushCommand extends BaseCommand
         }
 
         $options = array_diff_assoc($input->getOptions(), $this->getDefinition()->getOptionDefaults());
-        $process = Drush::siteProcess(Drush::aliasManager()->get($alias), $command, array_filter(array_values($args)), $options);
+        $process = Drush::drush(Drush::aliasManager()->get($alias), $command, array_filter(array_values($args)), $options);
         $process->run();
 
         if ((!$process->isSuccessful()) && !empty($process->getErrorOutput())) {

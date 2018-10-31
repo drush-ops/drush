@@ -213,10 +213,10 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             $options = ['yes' => true];
             $selfRecord = $this->siteAliasManager()->getSelf();
 
-            $process = Drush::siteProcess($selfRecord, 'config-set', ['system.site', 'uuid', $source_storage->read('system.site')['uuid']], $options);
+            $process = Drush::drush($selfRecord, 'config-set', ['system.site', 'uuid', $source_storage->read('system.site')['uuid']], $options);
             $process->mustRun();
 
-            $process = Drush::siteProcess($selfRecord, 'config-import', [], ['source' => $config] + $options);
+            $process = Drush::drush($selfRecord, 'config-import', [], ['source' => $config] + $options);
             $process->mustRun($process->showRealtime());
         }
     }

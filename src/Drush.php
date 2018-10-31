@@ -283,6 +283,50 @@ class Drush
     }
 
     /**
+     * Run a Drush command on a site alias (or @self).
+     *
+     * @param AliasRecord $siteAlias
+     * @param string $command
+     * @param array $args
+     * @param array $options
+     * @param array $options_double_dash
+     * @return SiteProcess
+     */
+    public static function drush(AliasRecord $siteAlias, $command, $args = [], $options = [], $options_double_dash = [])
+    {
+        $defaultDrushScript = $siteAlias->isRemote() ? 'drush' : static::drushScript();
+
+        // Fill in the root and URI from the site alias, if the caller
+        // did not already provide them in $options.
+        if ($siteAlias->has('uri')) {
+            $options += [ 'uri' => $siteAlias->uri(), ];
+        }
+        if ($siteAlias->hasRoot()) {
+            $options += [ 'root' => $siteAlias->root(), ];
+        }
+        array_unshift($args, $command);
+        array_unshift($args, $siteAlias->get('paths.drush-script', $defaultDrushScript));
+
+        return static::siteProcess($siteAlias, $args, $options, $options_double_dash);
+    }
+
+    /**
+     * Run a bash fragment on a site alias. Use Drush::drush() instead of this
+     * method when calling Drush.
+     *
+     * @param AliasRecord $siteAlias
+     * @param array $args
+     * @param array $options
+     * @param array $options_double_dash
+     * @return SiteProcess
+     */
+    public static function siteProcess(AliasRecord $siteAlias, $args = [], $options = [], $options_double_dash = [])
+    {
+        $process = new SiteProcess($siteAlias, $args, $options, $options_double_dash);
+        return static::configureProcess($process);
+    }
+
+    /**
      * Run a bash fragment locally.
      *
      * @param string|array   $commandline The command line to run
@@ -298,54 +342,14 @@ class Drush
     public static function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60, array $options = null)
     {
         $process = new ProcessBase($commandline, $cwd, $env, $input, $timeout, $options);
-        $process->setSimulated(Drush::simulate());
-        $process->setVerbose(Drush::verbose());
-        $process->setLogger(Drush::logger());
-        $process->setRealtimeOutput(new DrushStyle(Drush::input(), Drush::output()));
-        $process->setTimeout(self::getTimeout());
-        return $process;
+        return static::configureProcess($process);
     }
 
     /**
-     * Run a Drush command on a site alias (or @self).
-     *
-     * @param AliasRecord $siteAlias
-     * @param string $command
-     * @param array $args
-     * @param array $options
-     * @param array $options_double_dash
-     * @return SiteProcess
+     * configureProcess sets up a process object so that it is ready to use.
      */
-    public static function siteProcess(AliasRecord $siteAlias, $command, $args = [], $options = [], $options_double_dash = [])
+    protected function configureProcess(ProcessBase $process)
     {
-        $defaultDrushScript = $siteAlias->isRemote() ? 'drush' : static::drushScript();
-
-        // Fill in the root and URI from the site alias, if the caller
-        // did not already provide them in $options.
-        if ($siteAlias->has('uri')) {
-            $options += [ 'uri' => $siteAlias->uri(), ];
-        }
-        if ($siteAlias->hasRoot()) {
-            $options += [ 'root' => $siteAlias->root(), ];
-        }
-        array_unshift($args, $command);
-        array_unshift($args, $siteAlias->get('paths.drush-script', $defaultDrushScript));
-
-        return static::siteProcessCommand($siteAlias, $args, $options, $options_double_dash);
-    }
-
-    /**
-     * Run a bash fragment on a site alias. Use Drush::siteProcess() instead of this method.
-     *
-     * @param AliasRecord $siteAlias
-     * @param array $args
-     * @param array $options
-     * @param array $options_double_dash
-     * @return SiteProcess
-     */
-    public static function siteProcessCommand(AliasRecord $siteAlias, $args = [], $options = [], $options_double_dash = [])
-    {
-        $process = new SiteProcess($siteAlias, $args, $options, $options_double_dash);
         $process->setSimulated(Drush::simulate());
         $process->setVerbose(Drush::verbose());
         $process->setLogger(Drush::logger());

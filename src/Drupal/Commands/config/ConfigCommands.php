@@ -169,7 +169,7 @@ class ConfigCommands extends DrushCommands
         // Perform import operation if user did not immediately exit editor.
         if (!$options['bg']) {
             $redispatch_options = Drush::redispatchOptions()   + ['partial' => true, 'source' => $temp_dir];
-            $process = Drush::siteProcess(Drush::aliasManager()->getSelf(), 'config-import', [], $redispatch_options);
+            $process = Drush::drush(Drush::aliasManager()->getSelf(), 'config-import', [], $redispatch_options);
             $process->mustRun($process->showRealtime());
         }
     }

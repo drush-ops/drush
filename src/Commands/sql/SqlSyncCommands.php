@@ -53,7 +53,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         // Create target DB if needed.
         if ($options['create-db']) {
             $this->logger()->notice(dt('Starting to create database on target.'));
-            $process = Drush::siteProcess($targetRecord, 'sql-create', [], $global_options);
+            $process = Drush::drush($targetRecord, 'sql-create', [], $global_options);
             $process->mustRun();
         }
 
@@ -114,7 +114,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
             return 'simulated_db';
         }
 
-        $process = Drush::siteProcess($record, 'core-status', ['db-name'], ['format' => 'string']);
+        $process = Drush::drush($record, 'core-status', ['db-name'], ['format' => 'string']);
         $process->setSimulated(false);
         $process->mustRun();
         return trim($process->getOutput());
@@ -140,7 +140,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         ];
         if (!$options['no-dump']) {
             $this->logger()->notice(dt('Starting to dump database on source.'));
-            $process = Drush::siteProcess($sourceRecord, 'sql-dump', [], $dump_options);
+            $process = Drush::drush($sourceRecord, 'sql-dump', [], $dump_options);
             $process->mustRun();
 
             if (Drush::simulate()) {
@@ -178,7 +178,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         } else {
             $tmp = '/tmp'; // Our fallback plan.
             $this->logger()->notice(dt('Starting to discover temporary files directory on target.'));
-            $process = Drush::siteProcess($targetRecord, 'core-status', ['drush-temp'], ['format' => 'string']);
+            $process = Drush::drush($targetRecord, 'core-status', ['drush-temp'], ['format' => 'string']);
             $process->setSimulated(false);
             $process->run();
 
@@ -204,7 +204,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
                 $runner = $targetRecord;
             }
             $this->logger()->notice(dt('Copying dump file from source to target.'));
-            $process = Drush::siteProcess($runner, 'core-rsync', [$sourceRecord->name() . ":$source_dump_path", $targetRecord->name() . ":$target_dump_path"], [], $double_dash_options);
+            $process = Drush::drush($runner, 'core-rsync', [$sourceRecord->name() . ":$source_dump_path", $targetRecord->name() . ":$target_dump_path"], [], $double_dash_options);
             $process->mustRun();
         }
         return $target_dump_path;
@@ -224,7 +224,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
             'file' => $target_dump_path,
             'file-delete' => true,
         ];
-        $process = Drush::siteProcess($targetRecord, 'sql-query', [], $query_options);
+        $process = Drush::drush($targetRecord, 'sql-query', [], $query_options);
         $process->mustRun();
     }
 }

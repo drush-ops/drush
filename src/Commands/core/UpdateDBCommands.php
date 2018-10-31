@@ -54,7 +54,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             'entity-updates' => $options['entity-updates'],
             'post-updates' => $options['post-updates'],
         ];
-        $process = Drush::siteProcess($this->siteAliasManager()->getSelf(), 'updatedb:status', [], $updatedb_options);
+        $process = Drush::drush($this->siteAliasManager()->getSelf(), 'updatedb:status', [], $updatedb_options);
         $process->mustRun();
         if ($output = $process->getOutput()) {
             // We have pending updates - let's run em.

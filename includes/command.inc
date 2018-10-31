@@ -66,7 +66,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
  * Do not change the signature of this function!  drush_invoke_process
  * was one of the key Drush APIs.  See http://drupal.org/node/1152908
  *
- * @deprecated See Drush::siteProcess().
+ * @deprecated See Drush::drush().
  */
 function drush_invoke_process($site_alias_record, $command_name, $commandline_args = [], $commandline_options = [], $backend_options = TRUE) {
   if ($site_alias_record instanceof AliasRecord) {

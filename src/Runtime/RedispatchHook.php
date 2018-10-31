@@ -120,7 +120,7 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
         $context = null;
 
         $aliasManager = $this->siteAliasManager();
-        $process = Drush::siteProcess($aliasManager->getSelf(), $command_name, $redispatchArgs, $redispatchOptions);
+        $process = Drush::drush($aliasManager->getSelf(), $command_name, $redispatchArgs, $redispatchOptions);
         $process->mustRun();
 
         $values = drush_backend_invoke_concurrent(

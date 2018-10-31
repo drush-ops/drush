@@ -149,7 +149,7 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
     $finished = FALSE;
 
     while (!$finished) {
-      $process = Drush::siteProcess(Drush::aliasManager()->getSelf(), $command, $args);
+      $process = Drush::drush(Drush::aliasManager()->getSelf(), $command, $args);
       // Suppress printing stdout since we return a JSON array to the caller there.
       $process->setRealtimeOutput(new NullOutput(), Drush::output());
       $process->run($process->showRealtime());

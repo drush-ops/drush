@@ -38,7 +38,7 @@ class BrowseCommands extends DrushCommands implements SiteAliasManagerAwareInter
         // Redispatch if called against a remote-host so a browser is started on the
         // the *local* machine.
         if ($aliasRecord->isRemote()) {
-            $process = Drush::siteProcess($aliasRecord, 'browse', [$path], Drush::redispatchOptions());
+            $process = Drush::drush($aliasRecord, 'browse', [$path], Drush::redispatchOptions());
             $process->mustRun();
             $link = $process->getOutput();
         } else {

@@ -49,7 +49,7 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
             'format' => 'string',
         ];
         $this->logger()->notice(dt('Starting to export configuration on :destination.', [':destination' => $destination]));
-        $process = Drush::siteProcess($sourceRecord, 'config-export', [], $export_options + $global_options);
+        $process = Drush::drush($sourceRecord, 'config-export', [], $export_options + $global_options);
         $process->mustRun();
         // Trailing slash assures that we transfer files and not the containing dir.
         $export_path = Drush::simulate() ? '/simulated/path' : trim($process->getOutput()) . '/';
@@ -74,7 +74,7 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
             'delete' => true,
             'exclude' => '.htaccess',
         ];
-        $process = Drush::siteProcess($runner, 'core-rsync', $args, ['yes' => true, 'debug' => true], $options_double_dash);
+        $process = Drush::drush($runner, 'core-rsync', $args, ['yes' => true, 'debug' => true], $options_double_dash);
         $process->mustRun();
         $this->logger()->notice(dt('All done.'));
         drush_backend_set_result($destinationHostPath->getOriginal());
@@ -88,7 +88,7 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
     {
         if ($commandData->input()->getOption('safe')) {
             $destinationRecord = $this->siteAliasManager()->get($commandData->input()->getArgument('destination'));
-            $process = Drush::siteProcess($destinationRecord, 'core-execute', ['git diff --quiet'], ['escape' => 0]);
+            $process = Drush::drush($destinationRecord, 'core-execute', ['git diff --quiet'], ['escape' => 0]);
             $process->run();
             if (!$process->isSuccessful()) {
                 throw new \Exception('There are uncommitted changes in your git working copy.');
