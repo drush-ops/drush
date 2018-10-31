@@ -141,7 +141,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
             $this->logger()->notice(dt('Starting to dump database on source.'));
             // Set --backend=json. Drush 9.6+ changes that to --format=json. See .
             // Drush 9.5- handles this just like --backend.
-            $process = Drush::drush(($sourceRecord, 'sql-dump', [], $dump_options + ['backend' => 'json']);
+            $process = Drush::drush($sourceRecord, 'sql-dump', [], $dump_options + ['backend' => 'json']);
             $process->mustRun();
 
             if (Drush::simulate()) {

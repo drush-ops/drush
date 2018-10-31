@@ -78,10 +78,7 @@ class BackendPathEvaluator
         $process = Drush::drush($aliasRecord, 'core-status', [], ['project' => $pathAlias, 'fields' => '%paths', 'format' => 'json']);
         $process->setSimulated(false);
         $process->mustRun();
-
-        $statusValues = $process->getOutput();
-
-        $json = json_decode($statusValues, true);
+        $json = $process->getOutputAsJson();
         if (isset($json['%paths']["%{$pathAlias}"])) {
             return $json['%paths']["%{$pathAlias}"];
         }
