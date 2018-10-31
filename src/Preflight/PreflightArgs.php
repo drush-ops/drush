@@ -421,8 +421,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
     {
         if ($backend == 'json') {
             // Remap to --format. See \Drush\Commands\sql\SqlSyncCommands::dump.
-            $args = $this->args();
-            $args[] = "--format=json";
+            $this->addArg('--format=json');
         } else {
             return $this->set(self::BACKEND, true);
         }

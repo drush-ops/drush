@@ -348,7 +348,7 @@ class Drush
     /**
      * configureProcess sets up a process object so that it is ready to use.
      */
-    protected function configureProcess(ProcessBase $process)
+    protected static function configureProcess(ProcessBase $process)
     {
         $process->setSimulated(Drush::simulate());
         $process->setVerbose(Drush::verbose());
