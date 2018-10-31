@@ -157,8 +157,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
                     if ($return['error_status'] || empty($return['object'])) {
                         // Neither attempt worked.
                         throw new \Exception(dt('The Drush sql:dump command did not report the path to the dump file.'));
-                    }
-                    else {
+                    }  else {
                         $source_dump_path = $return['object'];
                     }
                 }
