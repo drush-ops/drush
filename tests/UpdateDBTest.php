@@ -111,12 +111,12 @@ LOG
                 ,
                 // The expected output being logged during the update.
                 <<<LOG
- [notice] Update started: woot_update_8101
- [notice] This is the update message from woot_update_8101
- [ok] Update completed: woot_update_8101
- [notice] Update started: woot_update_8102
- [error] This is the exception message thrown in woot_update_8102
- [error] Update failed: woot_update_8102
+> [notice] Update started: woot_update_8101
+> [notice] This is the update message from woot_update_8101
+> [ok] Update completed: woot_update_8101
+> [notice] Update started: woot_update_8102
+> [error] This is the exception message thrown in woot_update_8102
+> [error] Update failed: woot_update_8102
 [error] Update aborted by: woot_update_8102
 [error] Finished performing updates.
 LOG
@@ -143,9 +143,9 @@ LOG
                 ,
                 // The expected output being logged during the update.
                 <<<LOG
- [notice] Update started: woot_update_8103
- [error] Call to undefined function non_existing_function()
- [error] Update failed: woot_update_8103
+> [notice] Update started: woot_update_8103
+> [error] Call to undefined function non_existing_function()
+> [error] Update failed: woot_update_8103
 [error] Update aborted by: woot_update_8103
 [error] Finished performing updates.
 LOG
@@ -190,15 +190,15 @@ LOG;
         $this->assertContains($this->simplifyOutput($expected_output), $this->getSimplifiedOutput());
 
         $expected_error_output =
-        ' [notice] Update started: woot_update_8104
- [notice] This is the update message from woot_update_8104
- [ok] Update completed: woot_update_8104
- [notice] Update started: woot_post_update_a
- [notice] This is the update message from woot_post_update_a
- [ok] Update completed: woot_post_update_a
- [notice] Update started: woot_post_update_failing
- [error] This is the exception message thrown in woot_post_update_failing
- [error] Update failed: woot_post_update_failing
+        '> [notice] Update started: woot_update_8104
+> [notice] This is the update message from woot_update_8104
+> [ok] Update completed: woot_update_8104
+> [notice] Update started: woot_post_update_a
+> [notice] This is the update message from woot_post_update_a
+> [ok] Update completed: woot_post_update_a
+> [notice] Update started: woot_post_update_failing
+> [error] This is the exception message thrown in woot_post_update_failing
+> [error] Update failed: woot_post_update_failing
 [error] Update aborted by: woot_post_update_failing
 [error] Finished performing updates.';
         $this->assertEquals($expected_error_output, $this->getSimplifiedErrorOutput());
@@ -298,14 +298,14 @@ LOG;
         $this->assertContains($this->simplifyOutput($expected_output), $this->getSimplifiedOutput());
 
         $expected_error_output = <<<LOG
- [notice] Update started: woot_update_8104
- [notice] This is the update message from woot_update_8104
- [ok] Update completed: woot_update_8104
- [notice] Update started: woot_post_update_a
- [notice] This is the update message from woot_post_update_a
- [ok] Update completed: woot_post_update_a
- [notice] Update started: woot_post_update_render
- [ok] Update completed: woot_post_update_render
+> [notice] Update started: woot_update_8104
+> [notice] This is the update message from woot_update_8104
+> [ok] Update completed: woot_update_8104
+> [notice] Update started: woot_post_update_a
+> [notice] This is the update message from woot_post_update_a
+> [ok] Update completed: woot_post_update_a
+> [notice] Update started: woot_post_update_render
+> [ok] Update completed: woot_post_update_render
 [success] Finished performing updates.
 LOG;
 
