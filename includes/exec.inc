@@ -192,7 +192,6 @@ function _drush_shell_exec($args, $interactive = FALSE, $simulate = false) {
  * @return bool
  */
 function drush_which($command) {
-  exec("which $command 2>&1", $output, $result);
   $process = Drush::process(['which', $command]);
   $process->run();
   return $process->isSuccessful();
@@ -370,6 +369,8 @@ function drush_shell_exec_output() {
  * @return
  *   TRUE if browser was opened, FALSE if browser was disabled by the user or a,
  *   default browser could not be found.
+ *
+ * @deprecated. See \Drush\Exec\ExecTrait::startBrowser
  */
 function drush_start_browser($uri = NULL, $sleep = FALSE, $port = FALSE, $browser = true) {
   if ($browser) {
