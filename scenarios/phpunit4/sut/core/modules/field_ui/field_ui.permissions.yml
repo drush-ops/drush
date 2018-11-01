@@ -1,5 +1,0 @@
-administer display modes:
-  title: 'Add, edit, and delete custom display modes.'
-
-permission_callbacks:
-  - Drupal\field_ui\FieldUiPermissions::fieldPermissions

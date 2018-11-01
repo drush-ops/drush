@@ -1,8 +1,0 @@
-langcode: en
-status: true
-dependencies: {  }
-id: anonymous
-label: 'Anonymous user'
-weight: 0
-is_admin: false
-permissions: {  }

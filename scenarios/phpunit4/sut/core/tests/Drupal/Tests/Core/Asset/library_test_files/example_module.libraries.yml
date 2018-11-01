@@ -1,5 +1,0 @@
-example:
-  version: VERSION
-  css:
-    theme:
-      css/example.css: {}

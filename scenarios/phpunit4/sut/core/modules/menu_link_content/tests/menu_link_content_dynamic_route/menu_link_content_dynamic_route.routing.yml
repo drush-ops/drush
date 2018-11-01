@@ -1,2 +1,0 @@
-route_callbacks:
-  - 'Drupal\menu_link_content_dynamic_route\Routes::dynamic'

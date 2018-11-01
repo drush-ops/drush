@@ -1,4 +1,0 @@
-example:
-  js:
-    js/unminified.js: {}
-    js/minified.js: { minified: true }

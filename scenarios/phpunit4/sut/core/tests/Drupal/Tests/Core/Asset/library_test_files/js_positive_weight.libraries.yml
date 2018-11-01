@@ -1,4 +1,0 @@
-example:
-  js:
-    js/positive_weight.js:
-      weight: 10

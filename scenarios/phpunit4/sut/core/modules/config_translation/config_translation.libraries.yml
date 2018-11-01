@@ -1,5 +1,0 @@
-drupal.config_translation.admin:
-  version: VERSION
-  css:
-    theme:
-      css/config_translation.admin.css: {}

@@ -1,3 +1,0 @@
-config_translation.local_tasks:
-  deriver: 'Drupal\config_translation\Plugin\Derivative\ConfigTranslationLocalTasks'
-  weight: 100

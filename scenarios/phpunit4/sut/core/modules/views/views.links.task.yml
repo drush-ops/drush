@@ -1,3 +1,0 @@
-views_view:
-  class: Drupal\Core\Menu\LocalTaskDefault
-  deriver: \Drupal\views\Plugin\Derivative\ViewsLocalTask

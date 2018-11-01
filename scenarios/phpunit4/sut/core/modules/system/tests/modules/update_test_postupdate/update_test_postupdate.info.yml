@@ -1,5 +1,0 @@
-core: 8.x
-name: Update test after
-type: module
-package: Testing
-version: VERSION

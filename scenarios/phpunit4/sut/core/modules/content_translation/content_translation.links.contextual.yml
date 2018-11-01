@@ -1,3 +1,0 @@
-content_translation.contextual_links:
-  deriver: 'Drupal\content_translation\Plugin\Derivative\ContentTranslationContextualLinks'
-  weight: 2

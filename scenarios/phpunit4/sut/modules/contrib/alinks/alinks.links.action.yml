@@ -1,5 +1,0 @@
-entity.alink_keyword.add_form:
-  route_name: entity.alink_keyword.add_form
-  title: 'Add Keyword'
-  appears_on:
-    - entity.alink_keyword.collection

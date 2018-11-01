@@ -1,4 +1,0 @@
-translate configuration:
-  title: 'Translate configuration'
-  description: 'Translate any configuration including those shipped with modules and themes.'
-  restrict access: true

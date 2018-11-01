@@ -1,7 +1,0 @@
-devel_dumper_test:
-  version: 0
-  css:
-    theme:
-      css/devel_dumper_test.css: {}
-  js:
-    js/devel_dumper_test.js: {}

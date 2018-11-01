@@ -1,5 +1,0 @@
-webprofiler.admin_list:
-  title: 'Webprofiler'
-  description: 'List saved profiles.'
-  route_name: webprofiler.admin_list
-  parent: system.admin_reports

@@ -1,6 +1,0 @@
-displays:
-  -
-    entity_type: node
-    entity_bundle: article
-    entity_display: full
-xpathSelector: '//*//p//text()[not(ancestor::a) and not(ancestor::script) and not(ancestor::*[@data-alink-ignore])]'

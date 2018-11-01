@@ -1,5 +1,0 @@
-services:
-  kint.twig.kint_extension:
-    class: Drupal\kint\Twig\KintExtension
-    tags:
-      - { name: twig.extension }

@@ -1,5 +1,0 @@
-global-styling:
-  version: VERSION
-  css:
-    base:
-      css/layout.css: {}

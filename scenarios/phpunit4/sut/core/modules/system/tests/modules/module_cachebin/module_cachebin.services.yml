@@ -1,7 +1,0 @@
-services:
-  module_cachebin.cache_bin:
-    class: Drupal\Core\Cache\CacheBackendInterface
-    tags:
-      - { name: cache.bin }
-    factory: cache.backend.database:get
-    arguments: [module_cachebin]

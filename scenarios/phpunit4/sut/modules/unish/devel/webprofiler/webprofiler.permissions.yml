@@ -1,7 +1,0 @@
-'access webprofiler':
-  title: 'Access webprofiler'
-  description: 'Access webprofiler collected data.'
-  'restrict access': TRUE
-'view webprofiler toolbar':
-  title: 'View webprofiler toolbar'
-  description: 'View webprofiler toolbar.'

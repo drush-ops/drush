@@ -1,7 +1,0 @@
-name: 'Help Page Test'
-type: module
-description: 'Module to test the help page.'
-package: Testing
-version: VERSION
-core: 8.x
-hidden: true

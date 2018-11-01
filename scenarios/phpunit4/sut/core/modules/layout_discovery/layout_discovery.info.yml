@@ -1,6 +1,0 @@
-name: 'Layout Discovery'
-type: module
-description: 'Provides a way for modules or themes to register layouts.'
-package: Core
-version: VERSION
-core: 8.x

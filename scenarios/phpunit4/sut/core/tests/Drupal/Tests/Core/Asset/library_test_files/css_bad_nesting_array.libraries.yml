@@ -1,4 +1,0 @@
-bad_nesting_array:
-  css:
-    # Specified as an array will break.
-    - css/styles.css

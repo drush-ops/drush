@@ -1,7 +1,0 @@
-example:
-  css:
-    theme:
-      css/example.css: {}
-  dependencies:
-    - external/example_external
-    - example_module/example

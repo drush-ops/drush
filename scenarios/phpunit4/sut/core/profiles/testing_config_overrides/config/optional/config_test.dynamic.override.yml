@@ -1,8 +1,0 @@
-id: override
-label: Override
-weight: 0
-protected_property: Default
-status: true
-dependencies:
-  module:
-    - tour

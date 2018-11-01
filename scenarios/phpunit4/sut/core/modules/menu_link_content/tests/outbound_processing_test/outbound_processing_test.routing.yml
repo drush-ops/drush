@@ -1,5 +1,0 @@
-outbound_processing_test.route.csrf:
-  path: '/outbound_processing_test/route/csrf'
-  requirements:
-    _access: 'TRUE'
-    _csrf_token: 'TRUE'

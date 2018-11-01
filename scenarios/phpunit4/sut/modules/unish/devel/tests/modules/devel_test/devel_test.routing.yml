@@ -1,7 +1,0 @@
-devel.simple_page:
-  path: '/devel/simple-page'
-  defaults:
-    _controller: '\Drupal\devel_test\Controller\DevelTestController::simplePage'
-    _title: 'Simple Page'
-  requirements:
-    _permission: 'access devel information'

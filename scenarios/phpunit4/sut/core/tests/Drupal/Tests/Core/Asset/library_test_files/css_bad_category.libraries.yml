@@ -1,5 +1,0 @@
-bad_category:
-  css:
-    # Non-existent category.
-    bad_category:
-      css/styles.css: { minified: true }

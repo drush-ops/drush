@@ -1,8 +1,0 @@
-page_alter: FALSE
-raw_names: FALSE
-error_handlers:
-  1: 1
-rebuild_theme: FALSE
-debug_mail_file_format: '%to-%subject-%datetime.mail.txt'
-debug_mail_directory: 'temporary://devel-mails'
-devel_dumper: 'default'

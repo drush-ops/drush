@@ -1,5 +1,0 @@
-config_other_module_config_test.weird_simple_config:
-  type: config_object
-  mapping:
-    foo:
-      type: string

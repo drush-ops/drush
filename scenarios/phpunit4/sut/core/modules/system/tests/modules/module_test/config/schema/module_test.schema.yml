@@ -1,2 +1,0 @@
-node.type.*.third_party.module_test:
-  type: ignore

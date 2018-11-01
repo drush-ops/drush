@@ -1,7 +1,0 @@
-services:
-  develgenerate.command:
-    class: Drupal\devel_generate\Commands\DevelGenerateCommands
-    arguments: ['@plugin.manager.develgenerate']
-    tags:
-      -  { name: drush.command }
-
