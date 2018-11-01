@@ -96,7 +96,7 @@ class ArgsPreprocessor
      */
     protected static function nextCouldBeValue($argv)
     {
-        if(empty($argv)) {
+        if (empty($argv)) {
             return false;
         }
         return $argv[0][0] != '-';
