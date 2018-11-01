@@ -70,6 +70,9 @@ class ArgsPreprocessor
             }
 
             if ($opt[0] != '-') {
+                if (!$sawArg) {
+                    $storage->setCommandName($opt);
+                }
                 $sawArg = true;
             }
 

@@ -29,6 +29,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      */
     protected $homeDir;
 
+    protected $commandName;
+
     /**
      * @return string
      */
@@ -162,6 +164,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         // Store the runtime arguments and options (sans the runtime context items)
         // in runtime.argv et. al.
         $config->set('runtime.drush.script', $this->applicationPath());
+        $config->set('runtime.command', $this->commandName() ?: 'help');
         $config->set('runtime.argv', $this->args());
         $config->set('runtime.options', $this->getOptionNameList($this->args()));
     }
@@ -182,6 +185,21 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return realpath(reset($this->args));
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function commandName()
+    {
+        return $this->commandName;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setCommandName($commandName)
+    {
+        $this->commandName = $commandName;
+    }
     /**
      * @inheritdoc
      */

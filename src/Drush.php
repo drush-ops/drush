@@ -294,6 +294,23 @@ class Drush
      */
     public static function drush(AliasRecord $siteAlias, $command, $args = [], $options = [], $options_double_dash = [])
     {
+        array_unshift($args, $command);
+        return static::drushSiteProcess($siteAlias, $args, $options, $options_double_dash);
+    }
+
+    /**
+     * drushSiteProcess should be avoided in favor of the drush method above.
+     * drushSiteProcess exists specifically for use by the RedispatchHook,
+     * which does not have specific knowledge about which argument is the command.
+     *
+     * @param AliasRecord $siteAlias
+     * @param array $args
+     * @param array $options
+     * @param array $options_double_dash
+     * @return SiteProcess
+     */
+    public static function drushSiteProcess(AliasRecord $siteAlias, $args = [], $options = [], $options_double_dash = [])
+    {
         $defaultDrushScript = $siteAlias->isRemote() ? 'drush' : static::drushScript();
 
         // Fill in the root and URI from the site alias, if the caller
@@ -304,7 +321,6 @@ class Drush
         if ($siteAlias->hasRoot()) {
             $options += [ 'root' => $siteAlias->root(), ];
         }
-        array_unshift($args, $command);
         array_unshift($args, $siteAlias->get('paths.drush-script', $defaultDrushScript));
 
         return static::siteProcess($siteAlias, $args, $options, $options_double_dash);

@@ -75,7 +75,7 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
         // Get the command arguments, and shift off the Drush command.
         $redispatchArgs = Drush::config()->get('runtime.argv');
         $drush_path = array_shift($redispatchArgs);
-        $command_name = array_shift($redispatchArgs);
+        $command_name = Drush::config()->get('runtime.command');
 
         Drush::logger()->debug('Redispatch hook {command}', ['command' => $command_name]);
 
@@ -87,7 +87,7 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
         $redispatchOptions = [];
 
         $aliasRecord = $this->siteAliasManager()->getSelf();
-        $process = Drush::drush($aliasRecord, $command_name, $redispatchArgs, $redispatchOptions);
+        $process = Drush::drushSiteProcess($aliasRecord, $redispatchArgs, $redispatchOptions);
         $process->setTty($this->getConfig()->get('ssh.tty', $input->isInteractive()));
         $process->mustRun($process->showRealtime());
 
