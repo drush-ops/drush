@@ -118,6 +118,8 @@ function drush_get_editor() {
  * Executes a command in interactive mode.
  *
  * @see drush_shell_exec.
+ *
+ * @deprecated See Drush::process().
  */
 function drush_shell_exec_interactive($cmd) {
   return _drush_shell_exec(func_get_args(), TRUE, Drush::simulate());
@@ -186,10 +188,14 @@ function _drush_shell_exec($args, $interactive = FALSE, $simulate = false) {
 /**
  * Determine whether 'which $command' can find
  * a command on this system.
+ *
+ * @return bool
  */
 function drush_which($command) {
   exec("which $command 2>&1", $output, $result);
-  return ($result == 0);
+  $process = Drush::process(['which', $command]);
+  $process->run();
+  return $process->isSuccessful();
 }
 
 /**
@@ -208,6 +214,8 @@ function drush_which($command) {
  *   Force creation of a tty
  * @return string
  *   A string suitable for execution with drush_shell_remote_exec().
+ *
+ * @deprecated See Drush::process and Drush::siteProcess().
  *
  */
 function drush_shell_proc_build(AliasRecord $site, $command = '', $cd = NULL, $interactive = FALSE) {
@@ -248,6 +256,8 @@ function drush_shell_proc_build(AliasRecord $site, $command = '', $cd = NULL, $i
  *     0 no error
  *     1 general error
  *     127 command not found
+ *
+ * @deprecated See Drush::process().
  */
 function drush_shell_proc_open($cmd) {
   if (Drush::verbose() || Drush::simulate()) {
@@ -268,6 +278,8 @@ function drush_shell_proc_open($cmd) {
  *
  * @returns
  *   NULL for 'same as local machine', 'Windows' or 'Linux'.
+ *
+ * @deprecated. See \Consolidation\SiteAlias\AliasRecord::os
  */
 function drush_os($site_record = NULL) {
   if (!$site_record instanceof AliasRecord) {
@@ -297,6 +309,8 @@ function legacy_drush_os($site_record = NULL) {
  * Make an attempt to simply wrap the arg with the
  * kind of quote characters it does not already contain.
  * If it contains both kinds, then this function reverts to drush_escapeshellarg.
+ *
+ * @deprecated. Quoting performed by Drush::process() and friends.
  */
 function drush_wrap_with_quotes($arg) {
   $has_double = strpos($arg, '"') !== FALSE;
@@ -337,6 +351,8 @@ function _drush_shell_exec_output_set($output = FALSE) {
 
 /**
  * Returns the output of the most recent shell command as an array of lines.
+ *
+ * @deprecated Use Drush:process() and Drush::drush. Output is retried via $process->getOutput().
  */
 function drush_shell_exec_output() {
   return _drush_shell_exec_output_set();
@@ -382,11 +398,11 @@ function drush_start_browser($uri = NULL, $sleep = FALSE, $port = FALSE, $browse
       $uri = str_replace($host, "localhost:$port", $uri);
     }
     if ($browser === TRUE) {
-      // See if we can find an OS helper to open URLs in default browser.
-      if (drush_shell_exec('which xdg-open')) {
+      // @todo See if we can find an OS helper to open URLs in default browser.
+      if (drush_which('xdg-open')) {
         $browser = 'xdg-open';
       }
-      else if (drush_shell_exec('which open')) {
+      else if (drush_which('open')) {
         $browser = 'open';
       }
       else if (!drush_has_bash()) {
@@ -397,15 +413,14 @@ function drush_start_browser($uri = NULL, $sleep = FALSE, $port = FALSE, $browse
         $browser = FALSE;
       }
     }
-    $prefix = '';
-    if ($sleep) {
-      $prefix = 'sleep ' . $sleep . ' && ';
-    }
+
     if ($browser) {
       drush_log(dt('Opening browser !browser at !uri', ['!browser' => $browser, '!uri' => $uri]));
       if (!Drush::simulate()) {
-        $pipes = [];
-        proc_close(proc_open($prefix . $browser . ' ' . drush_escapeshellarg($uri) . ' 2> ' . drush_bit_bucket() . ' &', [], $pipes));
+        if ($sleep) {
+          sleep($sleep);
+        }
+        Drush::process([$browser, $uri])->run();
       }
       return TRUE;
     }
