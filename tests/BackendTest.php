@@ -2,12 +2,10 @@
 
 namespace Unish;
 
-use Webmozart\PathUtil\Path;
-
 /**
  *  We choose to test the backend system in two parts.
  *    - Origin. These tests assure that we generate a proper ssh command
- *        when a redispatch is needed.
+ *        when a redispatch is needed. See RedispatchTest.php
  *    - Target. These tests assure that drush generates a delimited JSON array
  *        when called with --backend option (legacy backend invoke).
  *
@@ -19,44 +17,6 @@ use Webmozart\PathUtil\Path;
  */
 class BackendCase extends CommandUnishTestCase
 {
-    /**
-     * Covers the following origin responsibilities.
-     *  - A remote host is recognized in site specification.
-     *  - Generates expected ssh command.
-     */
-    public function testOrigin()
-    {
-        $unishAliases = [
-            'remote' => [
-                'host' => 'server.isp.com',
-                'user' => 'www-admin',
-                'root' => '/path/to/drupal',
-                'uri' => 'http://example.com',
-                'paths' => [
-                    'drush-script' => '/usr/local/bin/drush',
-                ],
-            ],
-        ];
-
-        $this->writeSiteAliases($unishAliases, 'BackendCase');
-        $this->drush('status', [], ['simulate' => null], '@BackendCase.remote');
-
-        // Clean up -- our other tests do not want extra aliases.
-        unlink(Path::join(self::webrootSlashDrush(), 'sites/BackendCase.site.yml'));
-
-        $this->assertContains("[notice] Simulating: ssh -o PasswordAuthentication=no www-admin@server.isp.com '/usr/local/bin/drush --no-interaction status --uri=http://example.com --root=/path/to/drupal'", $this->getErrorOutput());
-    }
-
-    public function testNonExistentCommand()
-    {
-        // Assure that arguments and options are passed along to a command thats not recognized locally.
-        $this->drush('non-existent-command', ['foo'], ['bar' => 'baz', 'simulate' => null], 'user@server/path/to/drupal#sitename');
-        $output = $this->getErrorOutput();
-        $this->assertContains('foo', $output);
-        $this->assertContains('--bar=baz', $output);
-        $this->assertContains('non-existent-command', $output);
-    }
-
     /**
      * Covers the following target responsibilities.
      *   - Interpret stdin as options as per REST API.
