@@ -31,5 +31,4 @@ class RedispatchTest extends CommandUnishTestCase
         $this->assertContains('--bar=baz', $output);
         $this->assertContains('non-existent-command', $output);
     }
-
 }
