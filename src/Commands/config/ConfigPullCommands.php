@@ -87,7 +87,8 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
     {
         if ($commandData->input()->getOption('safe')) {
             $destinationRecord = $this->siteAliasManager()->get($commandData->input()->getArgument('destination'));
-            $process = Drush::drush($destinationRecord, 'core-execute', ['git diff --quiet'], ['escape' => 0]);
+            $process = Drush::siteProcess($destinationRecord, ['git', 'diff', '--quiet']);
+            $process->chdirToSiteRoot();
             $process->run();
             if (!$process->isSuccessful()) {
                 throw new \Exception('There are uncommitted changes in your git working copy.');
