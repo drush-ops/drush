@@ -1,6 +1,4 @@
-
 <?php
-
 namespace Unish;
 
 use Symfony\Component\Process\Process;
