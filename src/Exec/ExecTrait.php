@@ -68,7 +68,7 @@ trait ExecTrait
                     }
                     Drush::process([$browser, $uri])->run();
                 }
-                return TRUE;
+                return true;
             }
         }
         return false;
