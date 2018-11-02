@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Exec;
 
+use Consolidation\SiteProcess\Util\Shell;
 use Drush\Drush;
 use Drush\Log\LogLevel;
 
@@ -62,11 +63,15 @@ trait ExecTrait
 
             if ($browser) {
                 drush_log(dt('Opening browser !browser at !uri', ['!browser' => $browser, '!uri' => $uri]), LogLevel::INFO);
+                $args = [];
                 if (!Drush::simulate()) {
                     if ($sleep) {
-                        sleep($sleep);
+                        $args = ['sleep', $sleep, Shell::op('&&')];
                     }
-                    Drush::process([$browser, $uri])->run();
+                    // @todo We implode because quoting is messing up the sleep.
+                    $process = Drush::process(implode(' ', array_merge($args, [$browser, $uri])));
+                    $process->setTty(true);
+                    $process->run();
                 }
                 return true;
             }
