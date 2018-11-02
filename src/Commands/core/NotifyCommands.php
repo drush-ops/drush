@@ -2,9 +2,9 @@
 namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\SiteProcess\Util\Escape;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Webmozart\PathUtil\Path;
 
 class NotifyCommands extends DrushCommands
@@ -88,9 +88,10 @@ class NotifyCommands extends DrushCommands
             }
         }
 
-        if (!drush_shell_exec($cmd, $msg)) {
-            throw new \Exception($error_message . ' ' . dt('Or you may specify an alternate command to run by setting notify:cmd in a drush.yml file'));
-        }
+        // Keep backward compat and prepare a string here.
+        $cmd = sprintf($cmd, Escape::forSite(Drush::aliasManager()->getSelf(), $msg));
+        $process = Drush::process($cmd);
+        $process->mustRun();
 
         return true;
     }
