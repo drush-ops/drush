@@ -506,7 +506,8 @@ class ConfigCommands extends DrushCommands
         if (drush_program_exists('git') && $output->isDecorated()) {
             $prefix = 'git diff --color=always';
         }
-        drush_shell_exec($prefix . ' -u %s %s', $temp_destination_dir, $temp_source_dir);
+        $args = [$prefix, '-u', $temp_destination_dir, $temp_source_dir];
+        $process = Drush::process($args);
         return drush_shell_exec_output();
     }
 }

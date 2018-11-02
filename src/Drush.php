@@ -21,6 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 // Maybe these constants should be in config, and PreflightArgs can
 // reference them from there as well.
 use Drush\Preflight\PreflightArgs;
+use Symfony\Component\Process\Process;
 
 /**
  * Static Service Container wrapper.
@@ -307,7 +308,7 @@ class Drush
      * @param array $args
      * @param array $options
      * @param array $options_double_dash
-     * @return SiteProcess
+     * @return ProcessBase
      */
     public static function drushSiteProcess(AliasRecord $siteAlias, $args = [], $options = [], $options_double_dash = [])
     {
@@ -334,7 +335,7 @@ class Drush
      * @param array $args
      * @param array $options
      * @param array $options_double_dash
-     * @return SiteProcess
+     * @return ProcessBase
      */
     public static function siteProcess(AliasRecord $siteAlias, $args = [], $options = [], $options_double_dash = [])
     {

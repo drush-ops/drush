@@ -60,23 +60,28 @@ class SyncViaHttpCommands extends DrushCommands
     {
         static $use_wget;
         if ($use_wget === null) {
-            $use_wget = drush_shell_exec('which wget');
+            $use_wget = drush_which('wget');
         }
 
         $destination_tmp = drush_tempnam('download_file');
         if ($use_wget) {
+            $args = ['wget', '-q', '--timeout=30'];
             if ($user && $password) {
-                drush_shell_exec("wget -q --timeout=30 --user=%s --password=%s -O %s %s", $user, $password, $destination_tmp, $url);
+                $args = array_merge($args, ["--user=$user", "--password=$password", '-O', $destination_tmp, $url]);
             } else {
-                drush_shell_exec("wget -q --timeout=30 -O %s %s", $destination_tmp, $url);
+                $args = array_merge($args, ['-O', $destination_tmp, $url]);
             }
         } else {
+            $args = ['curl', '-s', '-L', '--connect-timeout 30'];
             if ($user && $password) {
-                drush_shell_exec("curl -s -L --connect-timeout 30 --user %s:%s -o %s %s", $user, $password, $destination_tmp, $url);
+                $args = array_merge($args, ['--user', "$user:$password", '-o', $destination_tmp, $url]);
             } else {
-                drush_shell_exec("curl -s -L --connect-timeout 30 -o %s %s", $destination_tmp, $url);
+                $args = array_merge($args, ['-o', $destination_tmp, $url]);
             }
         }
+        $process = Drush::process($args);
+        $process->mustRun();
+
         if (!Drush::simulate()) {
             if (!drush_file_not_empty($destination_tmp) && $file = @file_get_contents($url)) {
                 @file_put_contents($destination_tmp, $file);
