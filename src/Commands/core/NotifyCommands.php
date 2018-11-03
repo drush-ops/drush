@@ -76,20 +76,19 @@ class NotifyCommands extends DrushCommands
         } else {
             switch (PHP_OS) {
                 case 'Darwin':
-                    $cmd = 'terminal-notifier -message %s -title Drush';
+                    $cmd = ['terminal-notifier', '-message', $msg, '-title', 'Drush'];
                     $error_message = dt('terminal-notifier command failed. Please install it from https://github.com/alloy/terminal-notifier.');
                     break;
                 case 'Linux':
                 default:
                     $icon = Path::join(DRUSH_BASE_PATH, 'drush_logo-black.png');
-                    $cmd = "notify-send %s -i $icon";
+                    $cmd = ['notify-send', $msg, '-i', "$icon"];
                     $error_message = dt('notify-send command failed. Please install it as per http://coderstalk.blogspot.com/2010/02/how-to-install-notify-send-in-ubuntu.html.');
                     break;
             }
         }
 
         // Keep backward compat and prepare a string here.
-        $cmd = sprintf($cmd, Escape::forSite(Drush::aliasManager()->getSelf(), $msg));
         $process = Drush::process($cmd);
         $process->mustRun();
 
