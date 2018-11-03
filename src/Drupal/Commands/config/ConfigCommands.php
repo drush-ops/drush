@@ -166,7 +166,7 @@ class ConfigCommands extends DrushCommands
 
         //
         $exec = drush_get_editor();
-        $cmd = sprintf($exec, Escape::forSite(Drush::aliasManager()->getSelf(), $temp_storage->getFilePath($config_name)));
+        $cmd = sprintf($exec, Escape::shellArg($temp_storage->getFilePath($config_name)));
         $process = Drush::process($cmd);
         $process->setTty(true);
         $process->mustRun();

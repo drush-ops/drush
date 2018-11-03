@@ -89,7 +89,7 @@ class NotifyCommands extends DrushCommands
         }
 
         // Keep backward compat and prepare a string here.
-        $cmd = sprintf($cmd, Escape::forSite(Drush::aliasManager()->getSelf(), $msg));
+        $cmd = sprintf($cmd, Escape::shellArg($msg));
         $process = Drush::process($cmd, $msg);
         $process->run();
         if (!$process->isSuccessful()) {

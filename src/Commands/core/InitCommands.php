@@ -114,7 +114,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
         if ($result->wasSuccessful() && $openEditor) {
             $editor = drush_get_editor();
             // A bit awkward due to backward compat.
-            $cmd = sprintf($editor, Escape::forSite(Drush::aliasManager()->getSelf(), $drush_config_file));
+            $cmd = sprintf($editor, Escape::shellArg($drush_config_file));
             $process = Drush::process($cmd);
             $process->setTty(true);
             $process->mustRun();
