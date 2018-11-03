@@ -4,6 +4,7 @@ namespace Drush\Drupal\Commands\config;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Consolidation\SiteProcess\Util\Escape;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Config\StorageComparer;
@@ -163,8 +164,12 @@ class ConfigCommands extends DrushCommands
         $temp_storage = new FileStorage($temp_dir);
         $temp_storage->write($config_name, $contents);
 
+        //
         $exec = drush_get_editor();
-        drush_shell_exec_interactive($exec, $temp_storage->getFilePath($config_name));
+        $cmd = sprintf($exec, Escape::forSite(Drush::aliasManager()->getSelf(), $temp_storage->getFilePath($config_name)));
+        $process = Drush::process($cmd);
+        $process->setTty(true);
+        $process->mustRun();
 
         // Perform import operation if user did not immediately exit editor.
         if (!$options['bg']) {

@@ -103,6 +103,9 @@ function drush_always_exec($cmd) {
  * Returns executable code for invoking preferred test editor.
  *
  * @see drush_config_edit()
+ *
+ * @deprecated
+ *   Please make sure your shell is configured as desired.
  */
 function drush_get_editor() {
   $bg = drush_get_option('bg') ? '&' : '';
