@@ -380,7 +380,7 @@ class Drush
      */
     public static function drushScript()
     {
-        return \Drush\Drush::config()->get('runtime.drush.script', 'drush');
+        return \Drush\Drush::config()->get('runtime.drush-script', 'drush');
     }
 
     /**
