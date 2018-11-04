@@ -34,7 +34,7 @@ class NotifyCommands extends DrushCommands
         }
 
         if (Drush::config()->get('notify.duration')) {
-            if (self::isAllowed($commandData)) {
+            if (self::isAllowed()) {
                 $msg = dt("Command '!command' completed.", ['!command' => $cmd]);
                 self::shutdownSend($msg, $commandData);
             }
@@ -93,7 +93,7 @@ class NotifyCommands extends DrushCommands
         $process = Drush::process($cmd, $msg);
         $process->run();
         if (!$process->isSuccessful()) {
-            $this->logger()->warning($error_message);
+            Drush::logger()->warning($error_message);
         }
 
         return true;
@@ -102,13 +102,9 @@ class NotifyCommands extends DrushCommands
     /**
      * Identify if the given Drush request should trigger a notification.
      *
-     * @param $command
-     *   Name of the command.
-     *
-     * @return
-     *   Boolean
+     * @return bool
      */
-    public static function isAllowed(CommandData $commandData)
+    public static function isAllowed()
     {
         $duration = Drush::config()->get('notify.duration');
         $execution = time() - $_SERVER['REQUEST_TIME'];
