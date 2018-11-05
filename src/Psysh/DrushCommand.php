@@ -10,6 +10,7 @@
 namespace Drush\Psysh;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
+use Symfony\Component\Console\Command\Command;
 use Psy\Command\Command as BaseCommand;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,17 +23,17 @@ class DrushCommand extends BaseCommand
 {
 
     /**
-     * @var \Consolidation\AnnotatedCommand\AnnotatedCommand
+     * @var \Symfony\Component\Console\Command\Command
      */
     private $command;
 
     /**
      * DrushCommand constructor.
      *
-     * @param \Consolidation\AnnotatedCommand\AnnotatedCommand $command
-     *   Original (annotated) Drush command.
+     * @param \Symfony\Component\Console\Command\Command $command
+     *   Original Drush command.
      */
-    public function __construct(AnnotatedCommand $command)
+    public function __construct(Command $command)
     {
         $this->command = $command;
         parent::__construct();
@@ -110,14 +111,17 @@ class DrushCommand extends BaseCommand
         $help = wordwrap($this->command->getDescription());
 
         $examples = [];
-        foreach ($this->command->getExampleUsages() as $ex => $def) {
-            // Skip empty examples and things with obvious pipes...
-            if (($ex === '') || (strpos($ex, '|') !== false)) {
-                continue;
-            }
 
-            $ex = preg_replace('/^drush\s+/', '', $ex);
-            $examples[$ex] = $def;
+        if ($this->command instanceof AnnotatedCommand) {
+            foreach ($this->command->getExampleUsages() as $ex => $def) {
+                // Skip empty examples and things with obvious pipes...
+                if (($ex === '') || (strpos($ex, '|') !== false)) {
+                    continue;
+                }
+
+                $ex = preg_replace('/^drush\s+/', '', $ex);
+                $examples[$ex] = $def;
+            }
         }
 
         if (!empty($examples)) {
