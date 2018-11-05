@@ -1,8 +1,0 @@
-dev:
-  root: /Users/ganderson/local/drupal/drush9/drush/sut
-  uri: dev
-  dbUrl: 'mysql://root:@127.0.0.1/unish_dev'
-stage:
-  root: /Users/ganderson/local/drupal/drush9/drush/sut
-  uri: stage
-  dbUrl: 'mysql://root:@127.0.0.1/unish_stage'
