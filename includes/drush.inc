@@ -177,10 +177,6 @@ function drush_get_global_options($brief = FALSE) {
  * (e.g. unlink() and other file system functions) so that can be suppressed
  * if the simulation mode is enabled.
  *
- * Important:  Call @see drush_op_system() to execute a shell command,
- * or @see drush_shell_exec() to execute a shell command and capture the
- * shell output.
- *
  * @param $callable
  *   The name of the function. Any additional arguments are passed along.
  * @return

@@ -30,8 +30,12 @@ function drush_drupal_version($drupal_root = NULL) {
   return $version;
 }
 
+/**
+ * @deprecated @see Drush::drush()
+ */
 function drush_drupal_cache_clear_all() {
-  drush_invoke_process('@self', 'cache-rebuild');
+    $process = Drush::drush(Drush::aliasManager()->getSelf(), 'cache-rebuild');
+    $process->mustrun();
 }
 
 /**

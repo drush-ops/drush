@@ -10,6 +10,7 @@
 namespace Drush\Psysh;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
+use Drush\Drush;
 use Symfony\Component\Console\Command\Command;
 use Psy\Command\Command as BaseCommand;
 use Symfony\Component\Console\Formatter\OutputFormatter;
@@ -82,19 +83,15 @@ class DrushCommand extends BaseCommand
         }
 
         $options = array_diff_assoc($input->getOptions(), $this->getDefinition()->getOptionDefaults());
-        // Force the 'backend' option to TRUE.
-        $options['backend'] = true;
+        $process = Drush::drush(Drush::aliasManager()->get($alias), $command, array_filter(array_values($args)), $options);
+        $process->run();
 
-        $return = drush_invoke_process($alias, $command, array_values($args), $options, ['interactive' => true]);
-
-        if (($return['error_status'] > 0) && !empty($return['error_log'])) {
-            foreach ($return['error_log'] as $error_type => $errors) {
-                $output->write($errors);
-            }
+        if ((!$process->isSuccessful()) && !empty($process->getErrorOutput())) {
+            $output->write($process->getErrorOutput());
             // Add a newline after so the shell returns on a new line.
             $output->writeln('');
         } else {
-            $output->page(drush_backend_get_result());
+            $output->page($process->getOutput());
         }
     }
 

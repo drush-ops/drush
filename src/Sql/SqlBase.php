@@ -173,18 +173,12 @@ class SqlBase implements ConfigAwareInterface
         $process = Drush::process($cmd);
         // Avoid the php memory of saving stdout.
         $process->disableOutput();
-        // Show dump on stdout, for backward compat.
-        $process->run(function ($type, $buffer) {
-            if (Process::ERR === $type) {
-                echo 'ERR > ' . $buffer;
-            } else {
-                echo $buffer;
-            }
-        });
+        // Show dump in real-time on stdout, for backward compat.
+        $process->run($process->showRealtime());
         if ($process->isSuccessful()) {
             if ($file) {
                 drush_log(dt('Database dump saved to !path', ['!path' => $file]), LogLevel::SUCCESS);
-                drush_backend_set_result($file);
+                return $file;
             }
         } else {
             return drush_set_error('DRUSH_SQL_DUMP_FAIL', 'Database dump failed');

@@ -83,7 +83,7 @@ class ConfigExportCommands extends DrushCommands
      *   Export configuration; Save files in a backup directory named config-export.
      * @aliases cex,config-export
      */
-    public function export($label = null, $options = ['add' => false, 'commit' => false, 'message' => self::REQ, 'destination' => self::OPT, 'diff' => false])
+    public function export($label = null, $options = ['add' => false, 'commit' => false, 'message' => self::REQ, 'destination' => self::OPT, 'diff' => false, 'format' => null])
     {
         // Get destination directory.
         $destination_dir = ConfigCommands::getDirectory($label, $options['destination']);
@@ -93,6 +93,8 @@ class ConfigExportCommands extends DrushCommands
 
         // Do the VCS operations.
         $this->doAddCommit($options, $destination_dir, $preview);
+
+        return ['destination-dir' => $destination_dir];
     }
 
     public function doExport($options, $destination_dir)
@@ -111,11 +113,11 @@ class ConfigExportCommands extends DrushCommands
                 $this->logger()->notice(dt('The active configuration is identical to the configuration in the export directory (!target).', ['!target' => $destination_dir]));
                 return;
             }
-            $this->output()->writeln("Differences of the active config to the export directory:\n");
+            $preamble = "Differences of the active config to the export directory:\n";
 
             if ($options['diff']) {
                 $diff = ConfigCommands::getDiff($target_storage, $this->getConfigStorage(), $this->output());
-                $this->output()->writeln($diff);
+                $this->logger()->notice($preamble . $diff);
             } else {
                 $change_list = [];
                 foreach ($config_comparer->getAllCollectionNames() as $collection) {
@@ -127,13 +129,13 @@ class ConfigExportCommands extends DrushCommands
                 $table = ConfigCommands::configChangesTable($change_list, $bufferedOutput, false);
                 $table->render();
                 $preview = $bufferedOutput->fetch();
-                $table = ConfigCommands::configChangesTable($change_list, $this->output(), true);
-                $table->render();
+                $this->logger()->notice($preamble . $preview);
             }
 
             if (!$this->io()->confirm(dt('The .yml files in your export directory (!target) will be deleted and replaced with the active config.', ['!target' => $destination_dir]))) {
                 throw new UserAbortException();
             }
+
             // Only delete .yml files, and not .htaccess or .git.
             $target_storage->deleteAll();
 

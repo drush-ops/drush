@@ -6,8 +6,11 @@
  */
 namespace Drush;
 
+use Consolidation\SiteAlias\AliasRecord;
 use Consolidation\SiteAlias\SiteAliasManager;
-use Drush\Process\ProcessBase;
+use Consolidation\SiteProcess\ProcessBase;
+use Consolidation\SiteProcess\SiteProcess;
+use Drush\Style\DrushStyle;
 use League\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Application;
@@ -18,6 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 // Maybe these constants should be in config, and PreflightArgs can
 // reference them from there as well.
 use Drush\Preflight\PreflightArgs;
+use Symfony\Component\Process\Process;
 
 /**
  * Static Service Container wrapper.
@@ -70,6 +74,20 @@ class Drush
      * @var \Robo\Runner
      */
     protected static $runner;
+
+    /**
+     * Number of seconds before timeout for subprocesses.
+     * @var int
+     */
+    const TIMEOUT = 1200;
+
+    /**
+     * @return int
+     */
+    public static function getTimeout()
+    {
+        return self::TIMEOUT;
+    }
 
     /**
      * Return the current Drush version.
@@ -266,7 +284,67 @@ class Drush
     }
 
     /**
-     * Return a Drush Process object.
+     * Run a Drush command on a site alias (or @self).
+     *
+     * @param AliasRecord $siteAlias
+     * @param string $command
+     * @param array $args
+     * @param array $options
+     * @param array $options_double_dash
+     * @return SiteProcess
+     */
+    public static function drush(AliasRecord $siteAlias, $command, $args = [], $options = [], $options_double_dash = [])
+    {
+        array_unshift($args, $command);
+        return static::drushSiteProcess($siteAlias, $args, $options, $options_double_dash);
+    }
+
+    /**
+     * drushSiteProcess should be avoided in favor of the drush method above.
+     * drushSiteProcess exists specifically for use by the RedispatchHook,
+     * which does not have specific knowledge about which argument is the command.
+     *
+     * @param AliasRecord $siteAlias
+     * @param array $args
+     * @param array $options
+     * @param array $options_double_dash
+     * @return ProcessBase
+     */
+    public static function drushSiteProcess(AliasRecord $siteAlias, $args = [], $options = [], $options_double_dash = [])
+    {
+        $defaultDrushScript = $siteAlias->isRemote() ? 'drush' : static::drushScript();
+
+        // Fill in the root and URI from the site alias, if the caller
+        // did not already provide them in $options.
+        if ($siteAlias->has('uri')) {
+            $options += [ 'uri' => $siteAlias->uri(), ];
+        }
+        if ($siteAlias->hasRoot()) {
+            $options += [ 'root' => $siteAlias->root(), ];
+        }
+        array_unshift($args, $siteAlias->get('paths.drush-script', $defaultDrushScript));
+
+        return static::siteProcess($siteAlias, $args, $options, $options_double_dash);
+    }
+
+    /**
+     * Run a bash fragment on a site alias. Use Drush::drush() instead of this
+     * method when calling Drush.
+     *
+     * @param AliasRecord $siteAlias
+     * @param array $args
+     * @param array $options
+     * @param array $options_double_dash
+     * @return ProcessBase
+     */
+    public static function siteProcess(AliasRecord $siteAlias, $args = [], $options = [], $options_double_dash = [])
+    {
+        $process = new SiteProcess($siteAlias, $args, $options, $options_double_dash);
+        return static::configureProcess($process);
+    }
+
+    /**
+     * Run a bash fragment locally.
      *
      * @param string|array   $commandline The command line to run
      * @param string|null    $cwd         The working directory or null to use the working dir of the current PHP process
@@ -276,14 +354,33 @@ class Drush
      * @param array          $options     An array of options for proc_open
      *
      * @return ProcessBase
+     *   A wrapper around Symfony Process.
      */
     public static function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60, array $options = null)
     {
         $process = new ProcessBase($commandline, $cwd, $env, $input, $timeout, $options);
+        return static::configureProcess($process);
+    }
+
+    /**
+     * configureProcess sets up a process object so that it is ready to use.
+     */
+    protected static function configureProcess(ProcessBase $process)
+    {
         $process->setSimulated(Drush::simulate());
         $process->setVerbose(Drush::verbose());
         $process->setLogger(Drush::logger());
+        $process->setRealtimeOutput(new DrushStyle(Drush::input(), Drush::output()));
+        $process->setTimeout(self::getTimeout());
         return $process;
+    }
+
+    /**
+     * Return the path to this Drush
+     */
+    public static function drushScript()
+    {
+        return \Drush\Drush::config()->get('runtime.drush-script', 'drush');
     }
 
     /**
