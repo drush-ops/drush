@@ -136,7 +136,7 @@ class SecurityUpdateCommands extends DrushCommands
      */
     protected function registerAllSecurityUpdates($composer_lock_data, $security_advisories_composer_json)
     {
-        $both = $composer_lock_data['packages-dev'] + $composer_lock_data['packages'];
+        $both = array_merge($composer_lock_data['packages-dev'], $composer_lock_data['packages']);
         foreach ($both as $package) {
             $name = $package['name'];
             $this->registerPackageSecurityUpdates($security_advisories_composer_json, $name, $package);
