@@ -242,7 +242,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     string
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_dump">dump</a>($options, $global_options, $sourceRecord, $backend_options)
+                    <a href="#method_dump">dump</a>($options, $global_options, $sourceRecord)
         
                                             <p>Perform sql-dump on source unless told otherwise.</p>                </div>
                 <div class="col-md-2"></div>
@@ -252,7 +252,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     string
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_rsync">rsync</a>(array $options, array $backend_options, <abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $sourceRecord, <abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $targetRecord, $source_dump_path)
+                    <a href="#method_rsync">rsync</a>(array $options, <abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $sourceRecord, <abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $targetRecord, $source_dump_path)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -263,7 +263,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_import">import</a>($global_options, $target_dump_path, $targetRecord, $backend_options)
+                    <a href="#method_import">import</a>($global_options, $target_dump_path, $targetRecord)
         
                                             <p>Import file into target.</p>                </div>
                 <div class="col-md-2"></div>
@@ -419,7 +419,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_sqlsync">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L44">line 44</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L43">line 43</a></div>
         <code>                    
     <strong>sqlsync</strong>($source, $target, $options = [&#039;no-dump&#039; =&gt; false, &#039;no-sync&#039; =&gt; false, &#039;runner&#039; =&gt; self::REQ, &#039;create-db&#039; =&gt; false, &#039;db-su&#039; =&gt; self::REQ, &#039;db-su-pw&#039; =&gt; self::REQ, &#039;target-dump&#039; =&gt; self::REQ, &#039;source-dump&#039; =&gt; self::OPT])
         </code>
@@ -469,7 +469,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_validate">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L73">line 73</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L70">line 70</a></div>
         <code>                    
     <strong>validate</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -507,7 +507,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_databaseName">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L113">line 113</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L110">line 110</a></div>
         <code>                    
     <strong>databaseName</strong>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $record)
         </code>
@@ -536,9 +536,9 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_dump">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L136">line 136</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L133">line 133</a></div>
         <code>                    string
-    <strong>dump</strong>($options, $global_options, $sourceRecord, $backend_options)
+    <strong>dump</strong>($options, $global_options, $sourceRecord)
         </code>
     </h3>
     <div class="details">
@@ -564,11 +564,6 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <tr>
                 <td></td>
                 <td>$sourceRecord</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$backend_options</td>
                 <td></td>
             </tr>
             </table>
@@ -600,9 +595,9 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_rsync">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L171">line 171</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L179">line 179</a></div>
         <code>                    string
-    <strong>rsync</strong>(array $options, array $backend_options, <abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $sourceRecord, <abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $targetRecord, $source_dump_path)
+    <strong>rsync</strong>(array $options, <abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $sourceRecord, <abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $targetRecord, $source_dump_path)
         </code>
     </h3>
     <div class="details">
@@ -616,11 +611,6 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <tr>
                 <td>array</td>
                 <td>$options</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$backend_options</td>
                 <td></td>
             </tr>
                     <tr>
@@ -667,9 +657,9 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_import">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L226">line 226</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlSyncCommands.php#L230">line 230</a></div>
         <code>                    
-    <strong>import</strong>($global_options, $target_dump_path, $targetRecord, $backend_options)
+    <strong>import</strong>($global_options, $target_dump_path, $targetRecord)
         </code>
     </h3>
     <div class="details">
@@ -695,11 +685,6 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <tr>
                 <td></td>
                 <td>$targetRecord</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$backend_options</td>
                 <td></td>
             </tr>
             </table>

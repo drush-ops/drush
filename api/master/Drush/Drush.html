@@ -101,6 +101,18 @@ than a few non-reusable lines, it is recommended to instantiate an object
 implementing the actual logic.</p>                    </div>
     
     
+            <h2>Constants</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td>TIMEOUT</td>
+                <td class="last">
+                    <p><em>Number of seconds before timeout for subprocesses.</em></p>
+                    <p></p>
+                </td>
+            </tr>
+            </table>
+
     
             <h2>Properties</h2>
 
@@ -151,6 +163,17 @@ implementing the actual logic.</p>                    </div>
             <h2>Methods</h2>
 
             <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;int
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getTimeout">getTimeout</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
                     <div class="row">
                 <div class="col-md-2 type">
                     static&nbsp;
@@ -326,12 +349,63 @@ implementing the actual logic.</p>                    </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;<a href="../Drush/Process/ProcessBase.html"><abbr title="Drush\Process\ProcessBase">ProcessBase</abbr></a>
+                    static&nbsp;<abbr title="Consolidation\SiteProcess\SiteProcess">SiteProcess</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_drush">drush</a>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, string $command, array $args = [], array $options = [], array $options_double_dash = [])
+        
+                                            <p>Run a Drush command on a site alias (or @self).</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_drushSiteProcess">drushSiteProcess</a>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
+        
+                                            <p>drushSiteProcess should be avoided in favor of the drush method above.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_siteProcess">siteProcess</a>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
+        
+                                            <p>Run a bash fragment on a site alias. Use Drush::drush() instead of this
+method when calling Drush.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_process">process</a>(string|array $commandline, string|null $cwd = null, array $env = null, mixed|null $input = null, int|float|null $timeout = 60, array $options = null)
         
-                                            <p>Return a Drush Process object.</p>                </div>
+                                            <p>Run a bash fragment locally.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_configureProcess">configureProcess</a>(<abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr> $process)
+        
+                                            <p>configureProcess sets up a process object so that it is ready to use.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_drushScript">drushScript</a>()
+        
+                                            <p>Return the path to this Drush</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -432,8 +506,36 @@ implementing the actual logic.</p>                    </div>
 
             <div id="method-details">
                     <div class="method-item">
+                    <h3 id="method_getTimeout">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L87">line 87</a></div>
+        <code>        static            int
+    <strong>getTimeout</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>int</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_getVersion">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L80">line 80</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L98">line 98</a></div>
         <code>        static            
     <strong>getVersion</strong>()
         </code>
@@ -455,7 +557,7 @@ Do not log, etc. here.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_getMajorVersion">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L89">line 89</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L107">line 107</a></div>
         <code>        static            
     <strong>getMajorVersion</strong>()
         </code>
@@ -474,7 +576,7 @@ Do not log, etc. here.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_getMinorVersion">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L99">line 99</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L117">line 117</a></div>
         <code>        static            
     <strong>getMinorVersion</strong>()
         </code>
@@ -493,7 +595,7 @@ Do not log, etc. here.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_setContainer">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L115">line 115</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L133">line 133</a></div>
         <code>        static            
     <strong>setContainer</strong>(<abbr title="League\Container\ContainerInterface">ContainerInterface</abbr> $container)
         </code>
@@ -524,7 +626,7 @@ Do not log, etc. here.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_unsetContainer">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L123">line 123</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L141">line 141</a></div>
         <code>        static            
     <strong>unsetContainer</strong>()
         </code>
@@ -545,7 +647,7 @@ Do not log, etc. here.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_getContainer">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L135">line 135</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L153">line 153</a></div>
         <code>        static            <abbr title="League\Container\ContainerInterface">ContainerInterface</abbr>|null
     <strong>getContainer</strong>()
         </code>
@@ -584,7 +686,7 @@ Do not log, etc. here.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasContainer">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L149">line 149</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L167">line 167</a></div>
         <code>        static            bool
     <strong>hasContainer</strong>()
         </code>
@@ -614,7 +716,7 @@ Do not log, etc. here.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_getApplication">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L159">line 159</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L177">line 177</a></div>
         <code>        static            <abbr title="Symfony\Component\Console\Application">Application</abbr>
     <strong>getApplication</strong>()
         </code>
@@ -644,7 +746,7 @@ Do not log, etc. here.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_runner">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L169">line 169</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L187">line 187</a></div>
         <code>        static            <abbr title="Robo\Runner">Runner</abbr>
     <strong>runner</strong>()
         </code>
@@ -674,7 +776,7 @@ Do not log, etc. here.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_service">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L190">line 190</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L208">line 208</a></div>
         <code>        static            mixed
     <strong>service</strong>(string $id)
         </code>
@@ -716,7 +818,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasService">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L204">line 204</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L222">line 222</a></div>
         <code>        static            bool
     <strong>hasService</strong>(string $id)
         </code>
@@ -756,7 +858,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_commandFactory">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L215">line 215</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L233">line 233</a></div>
         <code>        static            <abbr title="Consolidation\AnnotatedCommand\AnnotatedCommandFactory">AnnotatedCommandFactory</abbr>
     <strong>commandFactory</strong>()
         </code>
@@ -786,7 +888,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_logger">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L225">line 225</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L243">line 243</a></div>
         <code>        static            <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
     <strong>logger</strong>()
         </code>
@@ -816,7 +918,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_config">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L235">line 235</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L253">line 253</a></div>
         <code>        static            <a href="../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a>
     <strong>config</strong>()
         </code>
@@ -846,7 +948,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_aliasManager">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L243">line 243</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L261">line 261</a></div>
         <code>        static            <abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr>
     <strong>aliasManager</strong>()
         </code>
@@ -874,7 +976,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_input">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L253">line 253</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L271">line 271</a></div>
         <code>        static            <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr>
     <strong>input</strong>()
         </code>
@@ -904,7 +1006,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_output">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L263">line 263</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L281">line 281</a></div>
         <code>        static            <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
     <strong>output</strong>()
         </code>
@@ -933,9 +1035,181 @@ as they can return useful type hints.</p>                            </div>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_drush">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L296">line 296</a></div>
+        <code>        static            <abbr title="Consolidation\SiteProcess\SiteProcess">SiteProcess</abbr>
+    <strong>drush</strong>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, string $command, array $args = [], array $options = [], array $options_double_dash = [])
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Run a Drush command on a site alias (or @self).</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr></td>
+                <td>$siteAlias</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$command</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$args</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$options_double_dash</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\SiteProcess\SiteProcess">SiteProcess</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_drushSiteProcess">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L313">line 313</a></div>
+        <code>        static            <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
+    <strong>drushSiteProcess</strong>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>drushSiteProcess should be avoided in favor of the drush method above.</p>                    <p>drushSiteProcess exists specifically for use by the RedispatchHook,
+which does not have specific knowledge about which argument is the command.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr></td>
+                <td>$siteAlias</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$args</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$options_double_dash</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_siteProcess">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L340">line 340</a></div>
+        <code>        static            <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
+    <strong>siteProcess</strong>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Run a bash fragment on a site alias. Use Drush::drush() instead of this
+method when calling Drush.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr></td>
+                <td>$siteAlias</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$args</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$options_double_dash</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_process">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L280">line 280</a></div>
-        <code>        static            <a href="../Drush/Process/ProcessBase.html"><abbr title="Drush\Process\ProcessBase">ProcessBase</abbr></a>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L359">line 359</a></div>
+        <code>        static            <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
     <strong>process</strong>(string|array $commandline, string|null $cwd = null, array $env = null, mixed|null $input = null, int|float|null $timeout = 60, array $options = null)
         </code>
     </h3>
@@ -944,7 +1218,7 @@ as they can return useful type hints.</p>                            </div>
     
 
                     <div class="method-description">
-                                    <p>Return a Drush Process object.</p>                                                </div>
+                                    <p>Run a bash fragment locally.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
@@ -986,8 +1260,8 @@ as they can return useful type hints.</p>                            </div>
 
                     <table class="table table-condensed">
         <tr>
-            <td><a href="../Drush/Process/ProcessBase.html"><abbr title="Drush\Process\ProcessBase">ProcessBase</abbr></a></td>
-            <td></td>
+            <td><abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr></td>
+            <td>A wrapper around Symfony Process.</td>
         </tr>
     </table>
 
@@ -998,8 +1272,60 @@ as they can return useful type hints.</p>                            </div>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_configureProcess">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L368">line 368</a></div>
+        <code>        static    protected        
+    <strong>configureProcess</strong>(<abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr> $process)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>configureProcess sets up a process object so that it is ready to use.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr></td>
+                <td>$process</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_drushScript">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L381">line 381</a></div>
+        <code>        static            
+    <strong>drushScript</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return the path to this Drush</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_simulate">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L292">line 292</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L389">line 389</a></div>
         <code>        static            
     <strong>simulate</strong>()
         </code>
@@ -1020,7 +1346,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_backend">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L300">line 300</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L397">line 397</a></div>
         <code>        static            
     <strong>backend</strong>()
         </code>
@@ -1041,7 +1367,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_affirmative">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L308">line 308</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L405">line 405</a></div>
         <code>        static            
     <strong>affirmative</strong>()
         </code>
@@ -1062,7 +1388,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_negative">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L319">line 319</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L416">line 416</a></div>
         <code>        static            
     <strong>negative</strong>()
         </code>
@@ -1083,7 +1409,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_verbose">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L330">line 330</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L427">line 427</a></div>
         <code>        static            
     <strong>verbose</strong>()
         </code>
@@ -1104,7 +1430,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_debug">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L341">line 341</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L438">line 438</a></div>
         <code>        static            
     <strong>debug</strong>()
         </code>
@@ -1125,7 +1451,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapManager">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L354">line 354</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L451">line 451</a></div>
         <code>        static            <a href="../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a>
     <strong>bootstrapManager</strong>()
         </code>
@@ -1155,7 +1481,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrap">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L364">line 364</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L461">line 461</a></div>
         <code>        static            <a href="../Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a>
     <strong>bootstrap</strong>()
         </code>
@@ -1185,7 +1511,7 @@ as they can return useful type hints.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_redispatchOptions">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L369">line 369</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L466">line 466</a></div>
         <code>        static            
     <strong>redispatchOptions</strong>($input = null)
         </code>

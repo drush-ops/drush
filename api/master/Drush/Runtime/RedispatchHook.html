@@ -80,7 +80,7 @@
 
     <p>    class
     <strong>RedispatchHook</strong>        implements
-        <abbr title="Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface">InitializeHookInterface</abbr>, <abbr title="Robo\Contract\ConfigAwareInterface">ConfigAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/RedispatchHook.php">View source</a>)
+        <abbr title="Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface">InitializeHookInterface</abbr>, <abbr title="Robo\Contract\ConfigAwareInterface">ConfigAwareInterface</abbr>, <abbr title="Consolidation\SiteAlias\SiteAliasManagerAwareInterface">SiteAliasManagerAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/RedispatchHook.php">View source</a>)
 </p>
 
         
@@ -99,6 +99,15 @@ current command and instead run the command remotely.</p>                       
                     <div class="row">
                 <div class="col-md-6">
                                             <abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr>
+                                            
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <abbr title="Consolidation\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr>
                                             
                 </div>
                 <div class="col-md-6">
@@ -158,7 +167,7 @@ if it is.</p>                </div>
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_exitEarly">exitEarly</a>(array $values)
+                    <a href="#method_exitEarly">exitEarly</a>($exit_code)
         
                                             <p>Abort the current execution without causing distress to our
 shutdown handler.</p>                </div>
@@ -172,7 +181,7 @@ shutdown handler.</p>                </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_initialize">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/RedispatchHook.php#L32">line 32</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/RedispatchHook.php#L36">line 36</a></div>
         <code>                    
     <strong>initialize</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData)
         </code>
@@ -210,7 +219,7 @@ is needed, it happens in the RedispatchToSiteLocal class.</p>                   
             </div>
                     <div class="method-item">
                     <h3 id="method_redispatchIfRemote">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/RedispatchHook.php#L54">line 54</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/RedispatchHook.php#L58">line 58</a></div>
         <code>                    
     <strong>redispatchIfRemote</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         </code>
@@ -242,7 +251,7 @@ if it is.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_redispatch">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/RedispatchHook.php#L69">line 69</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/RedispatchHook.php#L73">line 73</a></div>
         <code>                    
     <strong>redispatch</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         </code>
@@ -273,7 +282,7 @@ if it is.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_alterArgsForRedispatch">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/RedispatchHook.php#L137">line 137</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/RedispatchHook.php#L104">line 104</a></div>
         <code>            protected        
     <strong>alterArgsForRedispatch</strong>(array $redispatchArgs)
         </code>
@@ -305,9 +314,9 @@ provided via -D.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_exitEarly">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/RedispatchHook.php#L150">line 150</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/RedispatchHook.php#L117">line 117</a></div>
         <code>            protected        
-    <strong>exitEarly</strong>(array $values)
+    <strong>exitEarly</strong>($exit_code)
         </code>
     </h3>
     <div class="details">
@@ -322,9 +331,9 @@ shutdown handler.</p>                                                </div>
 
                     <table class="table table-condensed">
                     <tr>
-                <td>array</td>
-                <td>$values</td>
-                <td>The results from backend invoke.</td>
+                <td></td>
+                <td>$exit_code</td>
+                <td></td>
             </tr>
             </table>
 

@@ -141,6 +141,29 @@ by the ArgsPreprocessor (anything not listed in optionsWithValues).</p>         
                     
                 </div>
                 <div class="col-md-8 type">
+                    <a href="#method_commandName">commandName</a>()
+        
+                                            <p>Return the command name from the runtime args. Note that the
+command name also exists inside the runtime args, because the
+runtime args maintain the order of the options relative to the
+command name (save for those options removed by preflight args).</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_setCommandName">setCommandName</a>($commandName)
+        
+                                            <p>Store the command name, once it is found.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
                     <a href="#method_addArg">addArg</a>(string $arg)
         
                                             <p>Add one argument to the end of the list returned by the <code>args()</code> method.</p>                </div>
@@ -292,8 +315,63 @@ by the ArgsPreprocessor (anything not listed in optionsWithValues).</p>         
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_commandName">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L44">line 44</a></div>
+        <code>                    
+    <strong>commandName</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Return the command name from the runtime args. Note that the
+command name also exists inside the runtime args, because the
+runtime args maintain the order of the options relative to the
+command name (save for those options removed by preflight args).</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setCommandName">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L49">line 49</a></div>
+        <code>                    
+    <strong>setCommandName</strong>($commandName)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Store the command name, once it is found.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$commandName</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_addArg">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L43">line 43</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L56">line 56</a></div>
         <code>                    
     <strong>addArg</strong>(string $arg)
         </code>
@@ -324,7 +402,7 @@ by the ArgsPreprocessor (anything not listed in optionsWithValues).</p>         
             </div>
                     <div class="method-item">
                     <h3 id="method_passArgs">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L50">line 50</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L63">line 63</a></div>
         <code>                    
     <strong>passArgs</strong>($args)
         </code>
@@ -355,7 +433,7 @@ by the ArgsPreprocessor (anything not listed in optionsWithValues).</p>         
             </div>
                     <div class="method-item">
                     <h3 id="method_alias">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L56">line 56</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L69">line 69</a></div>
         <code>                    
     <strong>alias</strong>()
         </code>
@@ -377,7 +455,7 @@ holding the command name.</p>                                                </d
             </div>
                     <div class="method-item">
                     <h3 id="method_hasAlias">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L61">line 61</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L74">line 74</a></div>
         <code>                    
     <strong>hasAlias</strong>()
         </code>
@@ -398,7 +476,7 @@ holding the command name.</p>                                                </d
             </div>
                     <div class="method-item">
                     <h3 id="method_setAlias">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L68">line 68</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightArgsInterface.php#L81">line 81</a></div>
         <code>                    
     <strong>setAlias</strong>(string $alias)
         </code>

@@ -153,6 +153,17 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_nextCouldBeValue">nextCouldBeValue</a>($argv)
+        
+                                            <p>nextCouldBeValue determines whether there is a next argument that
+exists and does not begin with a <code>-</code>.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     bool
                 </div>
                 <div class="col-md-8 type">
@@ -279,8 +290,40 @@ option table.</p>                </div>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_nextCouldBeValue">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/ArgsPreprocessor.php#L97">line 97</a></div>
+        <code>        static    protected        
+    <strong>nextCouldBeValue</strong>($argv)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>nextCouldBeValue determines whether there is a next argument that
+exists and does not begin with a <code>-</code>.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$argv</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_isAliasOrSiteSpec">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/ArgsPreprocessor.php#L98">line 98</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/ArgsPreprocessor.php#L113">line 113</a></div>
         <code>            protected        bool
     <strong>isAliasOrSiteSpec</strong>(string $arg)
         </code>
@@ -321,7 +364,7 @@ a site specification.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_findMethodForOptionWithValues">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/ArgsPreprocessor.php#L115">line 115</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/ArgsPreprocessor.php#L130">line 130</a></div>
         <code>            protected        <abbr title="Drush\Preflight\[$methodName,">[$methodName,</abbr>
     <strong>findMethodForOptionWithValues</strong>($optionsTable, $opt)
         </code>
@@ -356,7 +399,7 @@ that takes a value.</p>                                                </div>
                     <table class="table table-condensed">
         <tr>
             <td><abbr title="Drush\Preflight\[$methodName,">[$methodName,</abbr></td>
-            <td>$optionValue]</td>
+            <td>$optionValue, $acceptsValueFromNextArg]</td>
         </tr>
     </table>
 
@@ -368,7 +411,7 @@ that takes a value.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_checkMatchingOption">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/ArgsPreprocessor.php#L145">line 145</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/ArgsPreprocessor.php#L160">line 160</a></div>
         <code>            protected        <abbr title="Drush\Preflight\[$methodName,">[$methodName,</abbr>
     <strong>checkMatchingOption</strong>($opt, $keyParam, $methodName)
         </code>
@@ -407,7 +450,7 @@ option table.</p>                                                </div>
                     <table class="table table-condensed">
         <tr>
             <td><abbr title="Drush\Preflight\[$methodName,">[$methodName,</abbr></td>
-            <td>$optionValue]</td>
+            <td>$optionValue, $acceptsValueFromNextArg]</td>
         </tr>
     </table>
 

@@ -207,10 +207,10 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    <abbr title="Consolidation\OutputFormatters\StructuredData\PropertyList">PropertyList</abbr>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_pull">pull</a>($source, $destination, $options = [&#039;safe&#039; =&gt; false, &#039;label&#039; =&gt; &#039;sync&#039;, &#039;runner&#039; =&gt; null])
+                    <a href="#method_pull">pull</a>(string $source, string $destination, array $options = [&#039;safe&#039; =&gt; false, &#039;label&#039; =&gt; &#039;sync&#039;, &#039;runner&#039; =&gt; null, &#039;format&#039; =&gt; &#039;null&#039;])
         
                                             <p>Export and transfer config from one environment to another.</p>                </div>
                 <div class="col-md-2"></div>
@@ -377,9 +377,9 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_pull">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/config/ConfigPullCommands.php#L34">line 34</a></div>
-        <code>                    
-    <strong>pull</strong>($source, $destination, $options = [&#039;safe&#039; =&gt; false, &#039;label&#039; =&gt; &#039;sync&#039;, &#039;runner&#039; =&gt; null])
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/config/ConfigPullCommands.php#L40">line 40</a></div>
+        <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\PropertyList">PropertyList</abbr>
+    <strong>pull</strong>(string $source, string $destination, array $options = [&#039;safe&#039; =&gt; false, &#039;label&#039; =&gt; &#039;sync&#039;, &#039;runner&#039; =&gt; null, &#039;format&#039; =&gt; &#039;null&#039;])
         </code>
     </h3>
     <div class="details">
@@ -393,24 +393,42 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$source</td>
-                <td></td>
+                <td>A site-alias or the name of a subdirectory within /sites whose config you want to copy from.</td>
             </tr>
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$destination</td>
-                <td></td>
+                <td>A site-alias or the name of a subdirectory within /sites whose config you want to replace.</td>
             </tr>
                     <tr>
-                <td></td>
+                <td>array</td>
                 <td>$options</td>
                 <td></td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\OutputFormatters\StructuredData\PropertyList">PropertyList</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
             
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" href="http://php.net/Exception">Exception</a></td>
+                <td></td>
+            </tr>
+            </table>
+
             
                     </div>
     </div>
@@ -418,7 +436,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_validateConfigPull">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/config/ConfigPullCommands.php#L96">line 96</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/config/ConfigPullCommands.php#L86">line 86</a></div>
         <code>                    
     <strong>validateConfigPull</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>

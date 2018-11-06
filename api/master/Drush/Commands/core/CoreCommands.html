@@ -227,7 +227,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    bool
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_execute">execute</a>(array $args, array $options = [&#039;escape&#039; =&gt; true])
@@ -476,8 +476,8 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_execute">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/CoreCommands.php#L94">line 94</a></div>
-        <code>                    
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/CoreCommands.php#L97">line 97</a></div>
+        <code>                    bool
     <strong>execute</strong>(array $args, array $options = [&#039;escape&#039; =&gt; true])
         </code>
     </h3>
@@ -494,7 +494,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <tr>
                 <td>array</td>
                 <td>$args</td>
-                <td></td>
+                <td>The shell command to be executed.</td>
             </tr>
                     <tr>
                 <td>array</td>
@@ -504,7 +504,25 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
             
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" href="http://php.net/Exception">Exception</a></td>
+                <td></td>
+            </tr>
+            </table>
+
             
                     </div>
     </div>
@@ -512,7 +530,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_executeCmd">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/CoreCommands.php#L137">line 137</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/CoreCommands.php#L141">line 141</a></div>
         <code>            protected        
     <strong>executeCmd</strong>($site, $cmd)
         </code>
