@@ -85,18 +85,18 @@ class Runtime
             $this->preflight->aliasManager()
         );
 
+        // Our termination handlers depend on classes we set up via DependencyInjection,
+        // so we do not want to enable it any earlier than this.
+        // TODO: Inject a termination handler into this class, so that we don't
+        // need to add these e.g. when testing.
+        $this->setTerminationHandlers();
+
         // Now that the DI container has been set up, the Application object will
         // have a reference to the bootstrap manager et. al., so we may use it
         // as needed. Tell the application to coordinate between the Bootstrap
         // manager and the alias manager to select a more specific URI, if
         // one was not explicitly provided earlier in the preflight.
         $application->refineUriSelection($this->preflight->environment()->cwd());
-
-        // Our termination handlers depend on classes we set up via DependencyInjection,
-        // so we do not want to enable it any earlier than this.
-        // TODO: Inject a termination handler into this class, so that we don't
-        // need to add these e.g. when testing.
-        $this->setTerminationHandlers();
 
         // Add global options and copy their values into Config.
         $application->configureGlobalOptions();
