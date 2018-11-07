@@ -456,12 +456,13 @@ class Environment
 
         // Trying to export the columns using stty.
         exec('stty size 2>&1', $columns_output, $columns_status);
-        if (!$columns_status) {
-            $columns = preg_replace('/\d+\s(\d+)/', '$1', $columns_output[0], -1, $columns_count);
+        $matched = false;
+        if (!$columns_status && $matched = preg_match('/^\d+\s(\d+)$/', $columns_output[0], $matches, 0)) {
+            $columns = $matches[1];
         }
 
         // If stty fails and Drush us running on Windows are we trying with mode con.
-        if (($columns_status || !$columns_count) && static::isWindows()) {
+        if (($columns_status || !$matched) && static::isWindows()) {
             $columns_output = [];
             exec('mode con', $columns_output, $columns_status);
             if (!$columns_status && is_array($columns_output)) {
