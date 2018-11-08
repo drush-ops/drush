@@ -5,9 +5,6 @@ namespace Drush\Boot;
 use Drush\Drush;
 use Drush\Log\LogLevel;
 use Drush\Sql\SqlBase;
-use Psr\Log\LoggerInterface;
-use Drupal\user\Entity\User;
-use Symfony\Component\HttpFoundation\Request;
 use Webmozart\PathUtil\Path;
 
 abstract class DrupalBoot extends BaseBoot

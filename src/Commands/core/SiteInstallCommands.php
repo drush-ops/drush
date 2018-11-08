@@ -5,7 +5,6 @@ use Composer\Semver\Comparator;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\SiteProcess\ProcessBase;
 use Drupal\Component\FileCache\FileCacheFactory;
-use Drupal\Core\Database\ConnectionNotDefinedException;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;

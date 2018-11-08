@@ -2,8 +2,6 @@
 
 namespace Drush\Exceptions;
 
-use Throwable;
-
 /**
  * Throw an exception indicating that the user cancelled the operation.
  */

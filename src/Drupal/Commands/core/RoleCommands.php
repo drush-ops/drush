@@ -5,8 +5,6 @@ use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Drupal\user\Entity\Role;
 use Drush\Commands\DrushCommands;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-use Drush\Log\LogLevel;
-use Drush\Role\RoleBase;
 
 class RoleCommands extends DrushCommands
 {

@@ -1,8 +1,6 @@
 <?php
 namespace Drush\Runtime;
 
-use Consolidation\AnnotatedCommand\CommandData;
-use Consolidation\AnnotatedCommand\Hooks\ValidatorInterface;
 use Drush\Drush;
 use Drush\Preflight\Preflight;
 

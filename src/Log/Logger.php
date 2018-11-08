@@ -26,7 +26,6 @@
 namespace Drush\Log;
 
 use Drush\Log\LogLevel;
-use Psr\Log\AbstractLogger;
 use Robo\Log\RoboLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Drush\Utils\StringUtils;
