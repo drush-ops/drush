@@ -39,7 +39,8 @@
     "consolidation/filter-via-dot-access-data": "^0.4",
     "consolidation/output-formatters": "^3.3.1",
     "consolidation/robo": "^1.1.5",
-    "consolidation/site-alias": "^1.1.5",
+    "consolidation/site-alias": "^1.1.6|^2",
+    "consolidation/site-process": "^0.1.13",
     "grasmash/yaml-expander": "^1.1.1",
     "league/container": "~2",
     "psr/log": "~1.0",
@@ -70,13 +71,12 @@
   "autoload": {
     "psr-4": {
       "Drush\\":            "src/",
-      "Drush\\Internal\\":  "internal-copy/",
-      "Unish\\":            "tests/"
+      "Drush\\Internal\\":  "src/internal-forks"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Drush\\": "isolation/src/"
+      "Unish\\": "tests/unish"
     },
     "files": ["tests/load.environment.php"]
   },
@@ -107,12 +107,11 @@
     "sami-install": "mkdir -p $HOME/bin && curl --output $HOME/bin/sami.phar http://get.sensiolabs.org/sami.phar && chmod +x $HOME/bin/sami.phar",
     "scenario": "scenarios/install",
     "sut": "./drush --uri=dev",
-    "sut:si": "./drush site:install testing --uri=dev --sites-subdir=dev --db-url=mysql://root:password@mariadb/unish_dev -v",
-    "unit": "phpunit --colors=always",
-    "functional": "phpunit --colors=always --configuration tests",
+    "sut:si": "./drush site:install testing --uri=dev --sites-subdir=dev --db-url=${UNISH_DB_URL:-mysql://root:password@mariadb}/unish_dev -v",
+    "unit": "phpunit --colors=always --configuration tests/unit",
+    "functional": "phpunit --colors=always --configuration tests/functional",
     "post-update-cmd": [
-        "create-scenario isolation --autoload-dir isolation --autoload-dir internal-copy --keep '\\(psr/log\\|consolidation/config\\|site-alias\\|var-dumper\\|symfony/finder\\|drupal-finder\\|path-util\\|vlucas/phpdotenv\\|xhprof\\)' 'phpunit/phpunit:^5.5.4'",
-        "create-scenario isolation-phpunit4 --base isolation --autoload-dir isolation --autoload-dir internal-copy 'phpunit/phpunit:^4.8.36'"
+        "create-scenario phpunit4 --autoload-dir internal-copy 'phpunit/phpunit:^4.8.36'"
     ]
   },
   "extra": {

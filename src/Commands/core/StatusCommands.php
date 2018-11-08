@@ -136,7 +136,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
         if ($phpIniFiles = EditCommands::phpIniFiles()) {
             $status_table['php-conf'] = $phpIniFiles;
         }
-        $status_table['drush-script'] = DRUSH_COMMAND;
+        $status_table['drush-script'] = $this->getConfig()->get('runtime.drush-script');
         $status_table['drush-version'] = Drush::getVersion();
         $status_table['drush-temp'] = $this->getConfig()->tmp();
         $status_table['drush-cache-directory'] = $this->getConfig()->cache();
