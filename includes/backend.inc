@@ -213,6 +213,9 @@ function drush_backend_output_discard($string) {
 function drush_backend_packet($packet, $data) {
   if (\Drush\Drush::backend()) {
     $data['packet'] = $packet;
+    // Ensure $data['_style'] isn't encoded, to avoid errors during decode and
+    // subsequent logging.
+    unset($data['_style']);
     $data = json_encode($data);
     // We use 'fwrite' instead of 'drush_print' here because
     // this backend packet is out-of-band data.
@@ -536,6 +539,8 @@ function drush_backend_parse_packets(&$string, &$remainder, $backend_options) {
     drush_set_context('DRUSH_RECEIVED_BACKEND_PACKETS', TRUE);
     foreach ($match[1] as $packet_data) {
       $entry = (array) json_decode($packet_data);
+      // Ensure $entry['_style'] isn't set to avoid type mismatch errors.
+      unset($entry['_style']);
       if (is_array($entry) && isset($entry['packet'])) {
         $function = 'drush_backend_packet_' . $entry['packet'];
         if (function_exists($function)) {
