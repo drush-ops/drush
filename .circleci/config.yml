@@ -21,6 +21,7 @@ jobs:
       - checkout
       - run: $HOME/drush/.circleci/setup.sh
       - run: composer install
+      - run: $HOME/drush/.circleci/patch.sh
       - run: composer functional
 
   build_highest:
@@ -37,6 +38,7 @@ jobs:
       - run: composer require --dev drupal/core:8.7.x-dev --no-update
       - run: composer config platform.php 7.2
       - run: composer install
+      - run: $HOME/drush/.circleci/patch.sh
       - run: composer functional
 
   build_56:
@@ -50,6 +52,7 @@ jobs:
       - checkout
       - run: $HOME/drush/.circleci/setup.sh
       - run: composer install
+      - run: $HOME/drush/.circleci/patch.sh
       - run: composer functional
 
 workflows:
