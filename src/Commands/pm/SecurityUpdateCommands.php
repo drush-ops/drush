@@ -2,6 +2,7 @@
 namespace Drush\Commands\pm;
 
 use Composer\Semver\Comparator;
+use Composer\Semver\Semver;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
@@ -137,103 +138,17 @@ class SecurityUpdateCommands extends DrushCommands
     protected function registerAllSecurityUpdates($composer_lock_data, $security_advisories_composer_json)
     {
         $both = array_merge($composer_lock_data['packages-dev'], $composer_lock_data['packages']);
+        $conflict = $security_advisories_composer_json['conflict'];
         foreach ($both as $package) {
             $name = $package['name'];
-            $this->registerPackageSecurityUpdates($security_advisories_composer_json, $name, $package);
-        }
-    }
-
-    /**
-     * Determines if update is available based on a conflict constraint.
-     *
-     * @param string $conflict_constraint
-     *   The constraint for the conflicting, insecure package version.
-     *   E.g., <1.0.0.
-     * @param array $package
-     *   The package to be evaluated.
-     * @param string $name
-     *   The human readable display name for the package.
-     *
-     * @return array
-     *   An associative array containing name, version, and min-version keys.
-     */
-    public static function determineUpdatesFromConstraint(
-        $conflict_constraint,
-        $package,
-        $name
-    ) {
-        // Only parse constraints that follow pattern like "<1.0.0".
-        if (substr($conflict_constraint, 0, 1) == '<') {
-            $min_version = substr($conflict_constraint, 1);
-            if (Comparator::lessThan(
-                $package['version'],
-                $min_version
-            )) {
-                return [
+            if (!empty($conflict[$name]) && Semver::satisfies($package['version'], $security_advisories_composer_json['conflict'][$name])) {
+                $this->securityUpdates[$name] = [
                     'name' => $name,
                     'version' => $package['version'],
                     // Assume that conflict constraint of <1.0.0 indicates that
                     // 1.0.0 is the available, secure version.
-                    'min-version' => $min_version,
+                    'min-version' => '@todo',
                 ];
-            }
-        } // Compare exact versions that are insecure.
-        elseif (preg_match(
-            '/^[[:digit:]](?![-*><=~ ])/',
-            $conflict_constraint
-        )) {
-            $exact_version = $conflict_constraint;
-            if (Comparator::equalTo(
-                $package['version'],
-                $exact_version
-            )) {
-                $version_parts = explode('.', $package['version']);
-                if (count($version_parts) == 3) {
-                    $version_parts[2]++;
-                    $min_version = implode('.', $version_parts);
-                    return [
-                        'name' => $name,
-                        'version' => $package['version'],
-                        // Assume that conflict constraint of 1.0.0 indicates that
-                        // 1.0.1 is the available, secure version.
-                        'min-version' => $min_version,
-                    ];
-                }
-            }
-        }
-        return [];
-    }
-
-    /**
-     * Registers available security updates for a given package.
-     *
-     * @param array $security_advisories_composer_json
-     *   The composer.json array from drupal-security-advisories.
-     * @param string $name
-     *   The human readable display name for the package.
-     * @param array $package
-     *   The package to be evaluated.
-     */
-    protected function registerPackageSecurityUpdates(
-        $security_advisories_composer_json,
-        $name,
-        $package
-    ) {
-        if (empty($this->securityUpdates[$name]) &&
-            !empty($security_advisories_composer_json['conflict'][$name])) {
-            $conflict_constraints = explode(
-                ',',
-                $security_advisories_composer_json['conflict'][$name]
-            );
-            foreach ($conflict_constraints as $conflict_constraint) {
-                $available_update = $this->determineUpdatesFromConstraint(
-                    $conflict_constraint,
-                    $package,
-                    $name
-                );
-                if ($available_update) {
-                    $this->securityUpdates[$name] = $available_update;
-                }
             }
         }
     }
