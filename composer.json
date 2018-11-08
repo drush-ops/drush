@@ -48,7 +48,7 @@
     "symfony/config": "^3.4",
     "symfony/console": "^3.4",
     "symfony/event-dispatcher": "^3.4",
-    "symfony/finder": "^3.4",
+    "symfony/finder": "^3.4 || ^4.0",
     "symfony/process": "^3.4",
     "symfony/var-dumper": "^3.4 || ^4.0",
     "symfony/yaml": "^3.4",
