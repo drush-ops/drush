@@ -69,7 +69,7 @@ class SecurityUpdateCommands extends DrushCommands
         if (!empty($this->securityUpdates)) {
             $suggested_command = 'composer require ';
             foreach ($this->securityUpdates as $package) {
-                $suggested_command .= $package['name'];
+                $suggested_command .= $package['name'] . ' ';
             }
             $suggested_command .= '--update-with-dependencies';
             $this->logger()->warning("One or more of your dependencies has an outstanding security update. Please apply update(s) immediately.");
