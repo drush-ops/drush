@@ -138,7 +138,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInt
             $object->setOutputAdapter($container->get('outputAdapter'));
         }
         if ($object instanceof \Consolidation\SiteAlias\SiteAliasManagerAwareInterface) {
-            $object->setOutputAdapter($container->get('site.alias.manager'));
+            $object->setSiteAliasManager($container->get('site.alias.manager'));
         }
     }
 
