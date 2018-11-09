@@ -88,7 +88,7 @@ class SecurityUpdateCommands extends DrushCommands
     protected function fetchAdvisoryComposerJson()
     {
         try {
-            $response_body = file_get_contents('/Users/moshe.weitzman/Downloads/d8-composer.json (2).txt'); // https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/8.x/composer.json
+            $response_body = file_get_contents('https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/8.x/composer.json');
         } catch (Exception $e) {
             throw new Exception("Unable to fetch drupal-security-advisories information.");
         }
