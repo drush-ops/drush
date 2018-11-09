@@ -36,8 +36,7 @@ class SecurityUpdateCommands extends DrushCommands
      * @field-labels
      *   name: Name
      *   version: Installed Version
-     *   min-version: Suggested version
-     * @default-fields name,version,min-version
+     * @default-fields name,version
      *
      * @filter-default-field name
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
@@ -70,7 +69,7 @@ class SecurityUpdateCommands extends DrushCommands
         if (!empty($this->securityUpdates)) {
             $suggested_command = 'composer require ';
             foreach ($this->securityUpdates as $package) {
-                $suggested_command .= $package['name'] . ':^' . $package['min-version'] . ' ';
+                $suggested_command .= $package['name'];
             }
             $suggested_command .= '--update-with-dependencies';
             $this->logger()->warning("One or more of your dependencies has an outstanding security update. Please apply update(s) immediately.");
@@ -89,7 +88,7 @@ class SecurityUpdateCommands extends DrushCommands
     protected function fetchAdvisoryComposerJson()
     {
         try {
-            $response_body = file_get_contents('https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/8.x/composer.json');
+            $response_body = file_get_contents('/Users/moshe.weitzman/Downloads/d8-composer.json (2).txt'); // https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/8.x/composer.json
         } catch (Exception $e) {
             throw new Exception("Unable to fetch drupal-security-advisories information.");
         }
@@ -145,9 +144,6 @@ class SecurityUpdateCommands extends DrushCommands
                 $this->securityUpdates[$name] = [
                     'name' => $name,
                     'version' => $package['version'],
-                    // Assume that conflict constraint of <1.0.0 indicates that
-                    // 1.0.0 is the available, secure version.
-                    'min-version' => '@todo',
                 ];
             }
         }
