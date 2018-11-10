@@ -1,9 +1,7 @@
 <?php
 namespace Drush\Commands\pm;
 
-use Composer\Semver\Comparator;
 use Composer\Semver\Semver;
-use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -15,11 +13,6 @@ use Webmozart\PathUtil\Path;
  */
 class SecurityUpdateCommands extends DrushCommands
 {
-
-    /**
-     * @var array
-     */
-    protected $securityUpdates;
 
     /**
      * Check Drupal Composer packages for pending security updates.
@@ -45,15 +38,12 @@ class SecurityUpdateCommands extends DrushCommands
      */
     public function security()
     {
-        $this->securityUpdates = [];
         $security_advisories_composer_json = $this->fetchAdvisoryComposerJson();
         $composer_lock_data = $this->loadSiteComposerLock();
-        $this->registerAllSecurityUpdates($composer_lock_data, $security_advisories_composer_json);
-        if ($this->securityUpdates) {
-            // @todo Modernize.
-            drush_set_context('DRUSH_EXIT_CODE', DRUSH_FRAMEWORK_ERROR);
-            $result = new RowsOfFields($this->securityUpdates);
-            return $result;
+        $updates = $this->calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json);
+        if ($updates) {
+            $this->suggestComposerCommand($updates);
+            return new RowsOfFields($updates);
         } else {
             $this->logger()->success("<info>There are no outstanding security updates for Drupal projects.</info>");
         }
@@ -61,21 +51,17 @@ class SecurityUpdateCommands extends DrushCommands
 
     /**
      * Emit suggested Composer command for security updates.
-     *
-     * @hook post-command pm:security
      */
-    public function suggestComposerCommand($result, CommandData $commandData)
+    public function suggestComposerCommand($updates)
     {
-        if (!empty($this->securityUpdates)) {
-            $suggested_command = 'composer require ';
-            foreach ($this->securityUpdates as $package) {
-                $suggested_command .= $package['name'] . ' ';
-            }
-            $suggested_command .= '--update-with-dependencies';
-            $this->logger()->warning("One or more of your dependencies has an outstanding security update. Please apply update(s) immediately.");
-            $this->logger()->notice("Try running: <comment>$suggested_command</comment>");
-            $this->logger()->notice("If that fails due to a conflict then you must update one or more root dependencies.");
+        $suggested_command = 'composer require ';
+        foreach ($updates as $package) {
+            $suggested_command .= $package['name'] . ' ';
         }
+        $suggested_command .= '--update-with-dependencies';
+        $this->logger()->warning('One or more of your dependencies has an outstanding security update.');
+        $this->logger()->notice("Try running: <comment>$suggested_command</comment>");
+        $this->logger()->notice("If that fails due to a conflict then you must update one or more root dependencies.");
     }
 
     /**
@@ -128,24 +114,29 @@ class SecurityUpdateCommands extends DrushCommands
     }
 
     /**
-     * Register all available security updates in $this->securityUpdates.
+     * Return  available security updates.
+     *
      * @param array $composer_lock_data
      *   The contents of the local Drupal application's composer.lock file.
      * @param array $security_advisories_composer_json
      *   The composer.json array from drupal-security-advisories.
+     *
+     * @return array
      */
-    protected function registerAllSecurityUpdates($composer_lock_data, $security_advisories_composer_json)
+    protected function calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json)
     {
+        $updates = [];
         $both = array_merge($composer_lock_data['packages-dev'], $composer_lock_data['packages']);
         $conflict = $security_advisories_composer_json['conflict'];
         foreach ($both as $package) {
             $name = $package['name'];
             if (!empty($conflict[$name]) && Semver::satisfies($package['version'], $security_advisories_composer_json['conflict'][$name])) {
-                $this->securityUpdates[$name] = [
+                $updates[$name] = [
                     'name' => $name,
                     'version' => $package['version'],
                 ];
             }
         }
+        return $updates;
     }
 }

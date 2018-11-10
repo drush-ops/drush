@@ -69,15 +69,14 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                 // Caches were just cleared in updateFinished callback.
             }
 
-            if (!$success) {
-                drush_set_context('DRUSH_EXIT_CODE', DRUSH_FRAMEWORK_ERROR);
-            }
-
             $level = $success ? ConsoleLogLevel::SUCCESS : LogLevel::ERROR;
             $this->logger()->log($level, dt('Finished performing updates.'));
         } else {
             $this->logger()->success(dt('No pending updates.'));
+            $success = true;
         }
+
+        return $success ? DRUSH_SUCCESS : DRUSH_FRAMEWORK_ERROR;
     }
 
     /**

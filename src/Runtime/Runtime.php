@@ -109,10 +109,6 @@ class Runtime
         // Bootstrap: bootstrap site to the level requested by the command (via a 'post-init' hook)
         $status = $application->run($input, $output);
 
-        // Placate the Drush shutdown handler.
-        // TODO: use a more modern termination management strategy
-        drush_set_context('DRUSH_EXECUTION_COMPLETED', true);
-
         // For backwards compatibility (backend invoke needs this in drush_backend_output())
         drush_set_context('DRUSH_ERROR_CODE', $status);
 

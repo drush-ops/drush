@@ -64,11 +64,6 @@ class CliCommands extends DrushCommands
         $shell->addCommands([new DrushHelpCommand()]);
         $shell->addCommands($this->getDrushCommands());
 
-        // PsySH will never return control to us, but our shutdown handler will still
-        // run after the user presses ^D.  Mark this command as completed to avoid a
-        // spurious error message.
-        drush_set_context('DRUSH_EXECUTION_COMPLETED', true);
-
         // Run the terminate event before the shell is run. Otherwise, if the shell
         // is forking processes (the default), any child processes will close the
         // database connection when they are killed. So when we return back to the
