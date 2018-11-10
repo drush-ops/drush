@@ -360,7 +360,6 @@ function _drush_batch_finished() {
   }
   $_batch = $batch;
   $batch = NULL;
-  drush_set_option('drush_batch_process_finished', TRUE);
   $results['drush_batch_process_finished'] = TRUE;
 
   return $results;
