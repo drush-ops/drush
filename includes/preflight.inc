@@ -39,6 +39,10 @@ function drush_shutdown() {
   if (Drush::backend()) {
     drush_backend_output();
   }
+
+  // This way drush_return_status() will always be the last shutdown function (unless other shutdown functions register shutdown functions...)
+  // and won't prevent other registered shutdown functions (IE from numerous cron methods) from running by calling exit() before they get a chance.
+  register_shutdown_function('drush_return_status');
 }
 
 /**
@@ -75,4 +79,17 @@ function drush_coverage_shutdown() {
 
     file_put_contents($file_name, serialize($data));
   }
+}
+
+/**
+ * @deprecated. This function will be removed in Drush 10. Throw an exception to indicate an error.
+ */
+function drush_return_status() {
+  // If a specific exit code was set, then use it.
+  $exit_code = drush_get_context('DRUSH_EXIT_CODE');
+  if (empty($exit_code)) {
+    $exit_code = (drush_get_error()) ? DRUSH_FRAMEWORK_ERROR : DRUSH_SUCCESS;
+  }
+
+  exit($exit_code);
 }
