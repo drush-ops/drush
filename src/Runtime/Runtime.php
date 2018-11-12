@@ -18,6 +18,8 @@ class Runtime
     /** @var Preflight */
     protected $preflight;
 
+    const DRUSH_RUNTIME_COMPLETED_NAMESPACE = 'runtime.execution.completed';
+
     /**
      * Runtime constructor
      *
@@ -109,6 +111,9 @@ class Runtime
         // Bootstrap: bootstrap site to the level requested by the command (via a 'post-init' hook)
         $status = $application->run($input, $output);
 
+        // Placate the Drush shutdown handler.
+        Runtime::setCompleted();
+
         // For backwards compatibility (backend invoke needs this in drush_backend_output())
         drush_set_context('DRUSH_ERROR_CODE', $status);
 
@@ -124,5 +129,13 @@ class Runtime
         // TODO: move these to a class somewhere
         set_error_handler('drush_error_handler');
         register_shutdown_function('drush_shutdown');
+    }
+
+    /**
+     * Mark the current request as having completed successfully.
+     */
+    public static function setCompleted()
+    {
+        Drush::config()->set(self::DRUSH_RUNTIME_COMPLETED_NAMESPACE, true);
     }
 }

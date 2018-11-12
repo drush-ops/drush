@@ -8,6 +8,7 @@ use Drush\Psysh\DrushCommand;
 use Drush\Psysh\DrushHelpCommand;
 use Drupal\Component\Assertion\Handle;
 use Drush\Psysh\Shell;
+use Drush\Runtime\Runtime;
 use Psy\Configuration;
 use Psy\VersionUpdater\Checker;
 use Webmozart\PathUtil\Path;
@@ -63,6 +64,11 @@ class CliCommands extends DrushCommands
         // Add Drush commands to the shell.
         $shell->addCommands([new DrushHelpCommand()]);
         $shell->addCommands($this->getDrushCommands());
+
+        // PsySH will never return control to us, but our shutdown handler will still
+        // run after the user presses ^D.  Mark this command as completed to avoid a
+        // spurious error message.
+        Runtime::setCompleted();
 
         // Run the terminate event before the shell is run. Otherwise, if the shell
         // is forking processes (the default), any child processes will close the

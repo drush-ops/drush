@@ -6,6 +6,7 @@
  */
 
 use Drush\Drush;
+use Drush\Runtime\Runtime;
 
 /**
  * The main Drush function.
@@ -29,6 +30,10 @@ function drush_shutdown() {
   // Avoid doing anything if our container has not been initialized yet.
   if (!Drush::hasContainer()) {
     return;
+  }
+
+  if (!Drush::config()->get(Runtime::DRUSH_RUNTIME_COMPLETED_NAMESPACE)) {
+      throw new RuntimeException('Drush command terminated abnormally. Check for an exit() in your Drupal site.');
   }
 
   if (Drush::backend()) {

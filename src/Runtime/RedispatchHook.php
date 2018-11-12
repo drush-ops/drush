@@ -121,6 +121,7 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
         // Note that RemoteCommandProxy::execute() is expecting that
         // the redispatch() method will not return, so that will need
         // to be altered if this behavior is changed.
+        Runtime::setCompleted();
         exit($exit_code);
     }
 }
