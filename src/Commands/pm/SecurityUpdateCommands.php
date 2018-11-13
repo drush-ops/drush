@@ -2,6 +2,7 @@
 namespace Drush\Commands\pm;
 
 use Composer\Semver\Semver;
+use Consolidation\AnnotatedCommand\CommandResult;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -13,7 +14,6 @@ use Webmozart\PathUtil\Path;
  */
 class SecurityUpdateCommands extends DrushCommands
 {
-
     /**
      * Check Drupal Composer packages for pending security updates.
      *
@@ -43,7 +43,7 @@ class SecurityUpdateCommands extends DrushCommands
         $updates = $this->calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json);
         if ($updates) {
             $this->suggestComposerCommand($updates);
-            return new RowsOfFields($updates);
+            return CommandResult::dataWithExitCode(new RowsOfFields($updates), self::EXIT_FAILURE);
         } else {
             $this->logger()->success("<info>There are no outstanding security updates for Drupal projects.</info>");
         }
