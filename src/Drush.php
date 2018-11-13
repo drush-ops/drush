@@ -76,10 +76,11 @@ class Drush
     protected static $runner;
 
     /**
-     * Number of seconds before timeout for subprocesses.
+     * Number of seconds before timeout for subprocesses. Can be customized via setTimeout() method.
+     *
      * @var int
      */
-    const TIMEOUT = 1200;
+    const TIMEOUT = 14400;
 
     /**
      * @return int
