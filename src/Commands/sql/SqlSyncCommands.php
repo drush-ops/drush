@@ -150,8 +150,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
                 $json = $process->getOutputAsJson();
                 if (!empty($json['path'])) {
                     $source_dump_path = $json['path'];
-                }
-                else {
+                } else {
                     // Next, try 9.5- format.
                     $return = drush_backend_parse_output($process->getOutput());
                     if (!$return['error_status'] || !empty($return['object'])) {
