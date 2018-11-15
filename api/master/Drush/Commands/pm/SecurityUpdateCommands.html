@@ -138,22 +138,23 @@
                     <p></p>
                 </td>
             </tr>
-            </table>
-
-    
-            <h2>Properties</h2>
-
-            <table class="table table-condensed">
                     <tr>
-                <td class="type" id="property_securityUpdates">
-                                        protected                                        array
+                <td>EXIT_SUCCESS</td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
                 </td>
-                <td>$securityUpdates</td>
-                <td class="last"></td>
-                <td></td>
+            </tr>
+                    <tr>
+                <td>EXIT_FAILURE</td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
             </tr>
             </table>
 
+    
     
             <h2>Methods</h2>
 
@@ -225,7 +226,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_suggestComposerCommand">suggestComposerCommand</a>($result, <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
+                    <a href="#method_suggestComposerCommand">suggestComposerCommand</a>($updates)
         
                                             <p>Emit suggested Composer command for security updates.</p>                </div>
                 <div class="col-md-2"></div>
@@ -252,12 +253,12 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    array
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_registerAllSecurityUpdates">registerAllSecurityUpdates</a>(array $composer_lock_data, array $security_advisories_composer_json)
+                    <a href="#method_calculateSecurityUpdates">calculateSecurityUpdates</a>(array $composer_lock_data, array $security_advisories_composer_json)
         
-                                            <p>Register all available security updates in $this->securityUpdates.</p>                </div>
+                                            <p>Return  available security updates.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -268,7 +269,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method___construct"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L30">line 30</a></div>
+        <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method___construct"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L34">line 34</a></div>
         <code>                    
     <strong>__construct</strong>()
         </code>
@@ -287,7 +288,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_logger">
-        <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_logger"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L39">line 39</a></div>
+        <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_logger"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L43">line 43</a></div>
         <code>            protected        <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
     <strong>logger</strong>()
         </code>
@@ -317,7 +318,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_io">
-        <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_io"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L47">line 47</a></div>
+        <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_io"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L51">line 51</a></div>
         <code>            protected        
     <strong>io</strong>()
         </code>
@@ -338,7 +339,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_getConfig">
-        <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_getConfig"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L64">line 64</a></div>
+        <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_getConfig"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L68">line 68</a></div>
         <code>                    <a href="../../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a>
     <strong>getConfig</strong>()
         </code>
@@ -380,7 +381,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_printFile">
-        <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_printFile"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L75">line 75</a></div>
+        <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_printFile"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/DrushCommands.php#L79">line 79</a></div>
         <code>            protected        
     <strong>printFile</strong>(string $file)
         </code>
@@ -411,7 +412,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_security">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L46">line 46</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L39">line 39</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
     <strong>security</strong>()
         </code>
@@ -462,9 +463,9 @@ are available.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_suggestComposerCommand">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L67">line 67</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L55">line 55</a></div>
         <code>                    
-    <strong>suggestComposerCommand</strong>($result, <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
+    <strong>suggestComposerCommand</strong>($updates)
         </code>
     </h3>
     <div class="details">
@@ -479,12 +480,7 @@ are available.</p>                            </div>
                     <table class="table table-condensed">
                     <tr>
                 <td></td>
-                <td>$result</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
-                <td>$commandData</td>
+                <td>$updates</td>
                 <td></td>
             </tr>
             </table>
@@ -498,7 +494,7 @@ are available.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_fetchAdvisoryComposerJson">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L88">line 88</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L74">line 74</a></div>
         <code>            protected        mixed
     <strong>fetchAdvisoryComposerJson</strong>()
         </code>
@@ -537,7 +533,7 @@ are available.</p>                            </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_loadSiteComposerLock">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L106">line 106</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L92">line 92</a></div>
         <code>            protected        array
     <strong>loadSiteComposerLock</strong>()
         </code>
@@ -575,10 +571,10 @@ are available.</p>                            </div>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_registerAllSecurityUpdates">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L137">line 137</a></div>
-        <code>            protected        
-    <strong>registerAllSecurityUpdates</strong>(array $composer_lock_data, array $security_advisories_composer_json)
+                    <h3 id="method_calculateSecurityUpdates">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/pm/SecurityUpdateCommands.php#L126">line 126</a></div>
+        <code>            protected        array
+    <strong>calculateSecurityUpdates</strong>(array $composer_lock_data, array $security_advisories_composer_json)
         </code>
     </h3>
     <div class="details">
@@ -586,7 +582,7 @@ are available.</p>                            </div>
     
 
                     <div class="method-description">
-                                    <p>Register all available security updates in $this->securityUpdates.</p>                                                </div>
+                                    <p>Return  available security updates.</p>                                                </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
@@ -604,6 +600,15 @@ are available.</p>                            </div>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>

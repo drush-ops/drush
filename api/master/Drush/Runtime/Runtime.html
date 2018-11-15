@@ -96,6 +96,18 @@
 </p>                    </div>
     
     
+            <h2>Constants</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td>DRUSH_RUNTIME_COMPLETED_NAMESPACE</td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+            </table>
+
     
             <h2>Properties</h2>
 
@@ -154,6 +166,16 @@
                                             <p>Make sure we are notified on exit, and when bad things happen.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_setCompleted">setCompleted</a>()
+        
+                                            <p>Mark the current request as having completed successfully.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
             </div>
 
 
@@ -162,7 +184,7 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L26">line 26</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L28">line 28</a></div>
         <code>                    
     <strong>__construct</strong>(<a href="../../Drush/Preflight/Preflight.html"><abbr title="Drush\Preflight\Preflight">Preflight</abbr></a> $preflight)
         </code>
@@ -193,7 +215,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_run">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L36">line 36</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L38">line 38</a></div>
         <code>                    
     <strong>run</strong>($argv)
         </code>
@@ -225,7 +247,7 @@ preflight. Later code should catch and handle its own exceptions.</p>           
             </div>
                     <div class="method-item">
                     <h3 id="method_doRun">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L53">line 53</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L55">line 55</a></div>
         <code>            protected        
     <strong>doRun</strong>($argv)
         </code>
@@ -256,7 +278,7 @@ preflight. Later code should catch and handle its own exceptions.</p>           
             </div>
                     <div class="method-item">
                     <h3 id="method_setTerminationHandlers">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L125">line 125</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L126">line 126</a></div>
         <code>            protected        
     <strong>setTerminationHandlers</strong>()
         </code>
@@ -267,6 +289,27 @@ preflight. Later code should catch and handle its own exceptions.</p>           
 
                     <div class="method-description">
                                     <p>Make sure we are notified on exit, and when bad things happen.</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setCompleted">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L137">line 137</a></div>
+        <code>        static            
+    <strong>setCompleted</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Mark the current request as having completed successfully.</p>                                                </div>
                 <div class="tags">
             
             
