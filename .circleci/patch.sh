@@ -7,4 +7,12 @@
 # Ref. https://www.drupal.org/project/drupal/issues/2863986
 
 cd $HOME/drush/sut
-curl -S https://www.drupal.org/files/issues/2863986-62.patch | patch -p1
+
+# There are two versions of the patch, for 8.7.x and for 8.6.x and below.
+PATCH=https://www.drupal.org/files/issues/2863986-62.patch
+
+if [ "$1" == "8.7.x" ]; then
+  PATCH=https://www.drupal.org/files/issues/2018-11-15/2863986-77-8.7.x.patch
+fi
+
+curl -S $PATCH | patch -p1
