@@ -56,19 +56,6 @@ function drush_error_handler($errno, $message, $filename, $line) {
 }
 
 /**
- * Evalute the environment after an abnormal termination and
- * see if we can determine any configuration settings that the user might
- * want to adjust.
- */
-function _drush_postmortem() {
-  // Make sure that the memory limit has been bumped up from the minimum default value of 32M.
-  $php_memory_limit = drush_memory_limit();
-  if (($php_memory_limit > 0) && ($php_memory_limit <= 32*DRUSH_KILOBYTE*DRUSH_KILOBYTE)) {
-    drush_set_error('DRUSH_MEMORY_LIMIT', dt('Your memory limit is set to !memory_limit; Drush needs as much memory to run as Drupal.  !php_ini_msg', ['!memory_limit' => $php_memory_limit / (DRUSH_KILOBYTE*DRUSH_KILOBYTE) . 'M', '!php_ini_msg' => _drush_php_ini_loaded_file_message()]));
-  }
-}
-
-/**
  * Converts a Windows path (dir1\dir2\dir3) into a Unix path (dir1/dir2/dir3).
  * Also converts a cygwin "drive emulation" path (/cygdrive/c/dir1) into a
  * proper drive path, still with Unix slashes (c:/dir1).

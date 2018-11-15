@@ -18,6 +18,10 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     const REQ=InputOption::VALUE_REQUIRED;
     const OPT=InputOption::VALUE_OPTIONAL;
 
+    // Common exit codes.
+    const EXIT_SUCCESS = 0;
+    const EXIT_FAILURE = 1;
+
     use LoggerAwareTrait;
     use ConfigAwareTrait {
         // Move aside this method so we can replace. See https://stackoverflow.com/a/37687295.

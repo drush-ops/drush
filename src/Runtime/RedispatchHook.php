@@ -116,14 +116,12 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
      */
     protected function exitEarly($exit_code)
     {
-        Drush::logger()->log(LogLevel::DEBUG, 'Redispatch hook exit early');
+        Drush::logger()->debug('Redispatch hook exit early');
 
-        // TODO: This is how Drush exits from redispatch commands today;
-        // perhaps this could be somewhat improved, though.
         // Note that RemoteCommandProxy::execute() is expecting that
         // the redispatch() method will not return, so that will need
         // to be altered if this behavior is changed.
-        drush_set_context('DRUSH_EXECUTION_COMPLETED', true);
+        Runtime::setCompleted();
         exit($exit_code);
     }
 }
