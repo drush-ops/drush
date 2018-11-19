@@ -53,7 +53,9 @@
 #   must be omitted for local sites, as this option controls various
 #   operations, such as whether or not rsync parameters are for local or
 #   remote machines, and so on.
-# - 'user': The username to log in as when using ssh or rsync.
+# - 'user': The username to log in as when using ssh or rsync. If each user
+#    has to use own username, omit this item and instead specify that user in
+#    each user's ~/.ssh/config file.
 # - 'root': The Drupal root; must not be specified as a relative path.
 # - 'uri': The value of --uri should always be the same as
 #   when the site is being accessed from a web browser (e.g. http://example.com)
