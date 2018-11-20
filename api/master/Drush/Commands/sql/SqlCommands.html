@@ -264,7 +264,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_query">query</a>($query = &#039;&#039;, $options = [&#039;result-file&#039; =&gt; null, &#039;file&#039; =&gt; self::REQ, &#039;extra&#039; =&gt; self::REQ, &#039;db-prefix&#039; =&gt; false])
+                    <a href="#method_query">query</a>($query = &#039;&#039;, $options = [&#039;result-file&#039; =&gt; null, &#039;file&#039; =&gt; self::REQ, &#039;file-delete&#039; =&gt; false, &#039;extra&#039; =&gt; self::REQ, &#039;db-prefix&#039; =&gt; false])
         
                                             <p>Execute a query against a database.</p>                </div>
                 <div class="col-md-2"></div>
@@ -585,9 +585,9 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_query">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php#L168">line 168</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php#L169">line 169</a></div>
         <code>                    
-    <strong>query</strong>($query = &#039;&#039;, $options = [&#039;result-file&#039; =&gt; null, &#039;file&#039; =&gt; self::REQ, &#039;extra&#039; =&gt; self::REQ, &#039;db-prefix&#039; =&gt; false])
+    <strong>query</strong>($query = &#039;&#039;, $options = [&#039;result-file&#039; =&gt; null, &#039;file&#039; =&gt; self::REQ, &#039;file-delete&#039; =&gt; false, &#039;extra&#039; =&gt; self::REQ, &#039;db-prefix&#039; =&gt; false])
         </code>
     </h3>
     <div class="details">
@@ -621,7 +621,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_dump">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php#L222">line 222</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/sql/SqlCommands.php#L223">line 223</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\PropertyList">PropertyList</abbr>
     <strong>dump</strong>($options = [&#039;result-file&#039; =&gt; self::REQ, &#039;create-db&#039; =&gt; false, &#039;data-only&#039; =&gt; false, &#039;ordered-dump&#039; =&gt; false, &#039;gzip&#039; =&gt; false, &#039;extra&#039; =&gt; self::REQ, &#039;extra-dump&#039; =&gt; self::REQ, &#039;format&#039; =&gt; &#039;null&#039;])
         </code>
