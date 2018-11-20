@@ -150,6 +150,7 @@ class SqlCommands extends DrushCommands
      * @optionset_sql
      * @option result-file Save to a file. The file should be relative to Drupal root.
      * @option file Path to a file containing the SQL to be run. Gzip files are accepted.
+     * @option file-delete Delete the --file after running it.
      * @option extra Add custom options to the connect string (e.g. --extra=--skip-column-names)
      * @option db-prefix Enable replacement of braces in your query.
      * @validate-file-exists file
@@ -165,7 +166,7 @@ class SqlCommands extends DrushCommands
      * @bootstrap max configuration
      *
      */
-    public function query($query = '', $options = ['result-file' => null, 'file' => self::REQ, 'extra' => self::REQ, 'db-prefix' => false])
+    public function query($query = '', $options = ['result-file' => null, 'file' => self::REQ, 'file-delete' => false, 'extra' => self::REQ, 'db-prefix' => false])
     {
         $filename = $options['file'];
         // Enable prefix processing when db-prefix option is used.
