@@ -12,6 +12,8 @@ use Drush\Drush;
  * if any. Returns FALSE if there is no current Drupal installation,
  * or it is somehow broken.
  *
+ * @deprecated See \Drush\Boot\Boot::getVersion.
+ *
  * @return
  *   A string containing the version number of the current
  *   Drupal installation, if any. Otherwise, return FALSE.
