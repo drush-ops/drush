@@ -27,33 +27,17 @@ env:
 
 matrix:
   include:
+    # D8.6.x
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=6.3'
+
     # D8.5.x
     - php: 7.0
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=5.0-rc1 PHPUNIT_ARGS=--group=base'
-    - php: 7.0
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=5.0-rc1 PHPUNIT_ARGS=--group=commands'
-    - php: 7.0
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=5.0-rc1 PHPUNIT_ARGS=--group=pm'
-    - php: 7.0
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=5.0-rc1 PHPUNIT_ARGS=--group=quick-drupal'
-    - php: 7.0
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=5.0-rc1 PHPUNIT_ARGS=--group=make'
-    - php: 7.0
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=5.0-rc1 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal TEST_CHILDREN="drush-ops/config-extra"'
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=5.8'
 
     # D8.4.x
     - php: 7.0
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.5 PHPUNIT_ARGS=--group=base'
-    - php: 7.0
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.5 PHPUNIT_ARGS=--group=commands'
-    - php: 7.0
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.5 PHPUNIT_ARGS=--group=pm'
-    - php: 7.0
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.5 PHPUNIT_ARGS=--group=quick-drupal'
-    - php: 7.0
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.5 PHPUNIT_ARGS=--group=make'
-    - php: 7.0
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.5 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal TEST_CHILDREN="drush-ops/config-extra"'
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=8 UNISH_DRUPAL_MINOR_VERSION=4.5'
 
     # D8.3.x
     - php: 7.0
@@ -65,42 +49,19 @@ matrix:
 
     # D7
     - php: 7.0
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=base'
-    - php: 7.0
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=commands'
-    - php: 7.0
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=pm'
-    - php: 7.0
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=quick-drupal'
-    - php: 7.0
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=make'
-    - php: 7.0
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal TEST_CHILDREN="drush-ops/config-extra"'
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=7'
 
     # D7
     - php: 5.6
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=base'
-    - php: 5.6
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=commands'
-    - php: 5.6
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=pm'
-    - php: 5.6
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=quick-drupal'
-    - php: 5.6
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=make'
-    - php: 5.6
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal TEST_CHILDREN="drush-ops/config-extra"'
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=7'
 
     # D6
-    # Note that Drupal 6 does not work with PHP 7
+    - php: 7.0
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=6'
+
+    # D6
     - php: 5.4
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=base'
-    - php: 5.4
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=commands'
-    - php: 5.4
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--group=pm'
-    - php: 5.4
-      env: 'UNISH_DRUPAL_MAJOR_VERSION=7 PHPUNIT_ARGS=--exclude-group=base,make,commands,pm,quick-drupal TEST_CHILDREN="drush-ops/config-extra"'
+      env: 'UNISH_DRUPAL_MAJOR_VERSION=6'
 
 before_install:
   - echo 'mbstring.http_input = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini

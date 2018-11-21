@@ -1646,7 +1646,7 @@ function drush_convert_db_from_db_url($db_url) {
       );
       $url = (object)array_map('urldecode', $url);
       $db_spec = array(
-        'driver'   => $url->scheme == 'mysqli' && extension_loaded('mysql') ? 'mysql' : $url->scheme,
+        'driver'   => $url->scheme,
         'username' => $url->user,
         'password' => $url->pass,
         'host' => $url->host,
@@ -1657,6 +1657,13 @@ function drush_convert_db_from_db_url($db_url) {
   }
 
   return $db_spec;
+}
+
+function drush_convert_db_url($db_url) {
+  if (extension_loaded('mysql') && !extension_loaded('mysqli')) {
+    return preg_replace('#^mysqli://#', 'mysql://', $db_url);;
+  }
+  return preg_replace('#^mysql://#', 'mysqli://', $db_url);
 }
 
 /**
