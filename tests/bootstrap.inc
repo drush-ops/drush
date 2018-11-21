@@ -50,6 +50,9 @@ function unish_init() {
   elseif (isset($GLOBALS['UNISH_DB_URL'])) {
     $unish_db_url = $GLOBALS['UNISH_DB_URL'];
   }
+  if (UNISH_DRUPAL_MAJOR_VERSION == '6') {
+    $unish_db_url = preg_replace('#^mysql://#', 'mysqli://', $unish_db_url);
+  }
   define('UNISH_DB_URL', $unish_db_url);
 
   // UNISH_DRUSH value can come from phpunit.xml.

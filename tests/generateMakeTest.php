@@ -27,6 +27,9 @@ class generateMakeCase extends CommandUnishTestCase {
   }
 
   function _testGenerateMake($module, $theme) {
+    if (UNISH_DRUPAL_MAJOR_VERSION != '7') {
+      $this->markTestSkipped("Drush generate make tests depend on projects not available on older and newer versions of Drupal. Tests need updating, but Drush make is deprecated; Composer is recommended.");
+    }
     $sites = $this->setUpDrupal(1, TRUE);
     $major_version = UNISH_DRUPAL_MAJOR_VERSION . '.x';
 
