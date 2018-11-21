@@ -138,6 +138,8 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         require_once Path::join(DRUSH_BASE_PATH, 'includes/site_install.inc');
 
         require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
+        // This can lead to an exit() in Drupal. See install_display_output() (e.g. config validation failure).
+        // @todo Get Drupal to not call that function when on the CLI.
         drush_op('install_drupal', $class_loader, $settings);
         if (empty($options['account-pass'])) {
             $this->logger()->success(dt('Installation complete.  User name: @name  User password: @pass', ['@name' => $options['account-name'], '@pass' => $account_pass]));
