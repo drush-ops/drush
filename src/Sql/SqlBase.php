@@ -576,7 +576,7 @@ class SqlBase implements ConfigAwareInterface
                 ];
                 $url = (object)array_map('urldecode', $url);
                 $db_spec = [
-                    'driver'   => $url->scheme == 'mysqli' ? 'mysql' : $url->scheme,
+                    'driver'   => $url->scheme,
                     'username' => $url->user,
                     'password' => $url->pass,
                     'host' => $url->host,
