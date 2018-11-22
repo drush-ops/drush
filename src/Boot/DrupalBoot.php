@@ -265,26 +265,20 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapDrupalDatabaseHasTable($required_tables)
     {
-        try {
-            $sql = SqlBase::create();
-            $spec = $sql->getDbSpec();
-            $prefix = isset($spec['prefix']) ? $spec['prefix'] : null;
-            if (!is_array($prefix)) {
-                $prefix = ['default' => $prefix];
+
+        $sql = SqlBase::create();
+        $spec = $sql->getDbSpec();
+        $prefix = isset($spec['prefix']) ? $spec['prefix'] : null;
+        if (!is_array($prefix)) {
+            $prefix = ['default' => $prefix];
+        }
+        foreach ((array)$required_tables as $required_table) {
+            $prefix_key = array_key_exists($required_table, $prefix) ? $required_table : 'default';
+            $table_name = $prefix[$prefix_key] . $required_table;
+            if (!$sql->alwaysQuery("SELECT 1 FROM $table_name LIMIT 1;", null, drush_bit_bucket())) {
+                $this->logger->notice('Missing database table: '. $table_name);
+                return false;
             }
-            foreach ((array)$required_tables as $required_table) {
-                $prefix_key = array_key_exists($required_table, $prefix) ? $required_table : 'default';
-                $table_name = $prefix[$prefix_key] . $required_table;
-                if (!$sql->alwaysQuery("SELECT 1 FROM $table_name LIMIT 1;", null, drush_bit_bucket())) {
-                    $this->logger->notice('Missing database table: '. $table_name);
-                    return false;
-                }
-            }
-        } catch (Exception $e) {
-            // Usually the checks above should return a result without
-            // throwing an exception, but we'll catch any that are
-            // thrown just in case.
-            return false;
         }
         return true;
     }
