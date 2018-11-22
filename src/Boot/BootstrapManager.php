@@ -62,7 +62,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     }
 
     /**
-     * Add a bootstrap object to the list of candidates
+     * Add a bootstrap object to the list of candidates.
      *
      * @param \Drush\Boot\Boot|Array
      *   List of boot candidates
@@ -282,7 +282,6 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
             $this->latch($bootstrap);
         }
 
-        drush_set_context('DRUSH_BOOTSTRAPPING', true);
         foreach ($phases as $phase_index => $current_phase) {
             $bootstrapped_phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE', -1);
             if ($phase_index > $phase) {
@@ -298,7 +297,6 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                 }
             }
         }
-        drush_set_context('DRUSH_BOOTSTRAPPING', false);
         if (!$result || drush_get_error()) {
             $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS', []);
             foreach ($errors as $code => $message) {

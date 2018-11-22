@@ -78,16 +78,12 @@ class DependencyInjection
 
         // Add some of our own objects to the container
         $container->share('bootstrap.default', 'Drush\Boot\EmptyBoot');
-        $container->share('bootstrap.drupal6', 'Drush\Boot\DrupalBoot6');
-        $container->share('bootstrap.drupal7', 'Drush\Boot\DrupalBoot7');
         $container->share('bootstrap.drupal8', 'Drush\Boot\DrupalBoot8');
         $container->share('bootstrap.manager', 'Drush\Boot\BootstrapManager')
             ->withArgument('bootstrap.default')
             ->withMethodCall('setDrupalFinder', [$drupalFinder]);
         // TODO: Can we somehow add these via discovery (e.g. backdrop extension?)
         $container->extend('bootstrap.manager')
-            ->withMethodCall('add', ['bootstrap.drupal6'])
-            ->withMethodCall('add', ['bootstrap.drupal7'])
             ->withMethodCall('add', ['bootstrap.drupal8']);
         $container->share('bootstrap.hook', 'Drush\Boot\BootstrapHook')
           ->withArgument('bootstrap.manager');
