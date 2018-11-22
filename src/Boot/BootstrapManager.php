@@ -362,11 +362,8 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         static $result_cache = [];
 
         if (!array_key_exists($phase, $result_cache)) {
-            drush_set_context('DRUSH_BOOTSTRAP_ERRORS', []);
-            drush_set_context('DRUSH_BOOTSTRAP_VALUES', []);
-
+            $validated_phase = -1;
             foreach ($phases as $phase_index => $current_phase) {
-                $validated_phase = drush_get_context('DRUSH_BOOTSTRAP_VALIDATION_PHASE', -1);
                 if ($phase_index > $phase) {
                     break;
                 }
@@ -377,7 +374,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                     } else {
                         $result_cache[$phase_index] = true;
                     }
-                    drush_set_context('DRUSH_BOOTSTRAP_VALIDATION_PHASE', $phase_index);
+                    $validated_phase = $phase_index;
                 }
             }
         }
