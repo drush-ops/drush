@@ -11,6 +11,7 @@ use Drush\Drush;
 use Drush\Drupal\DrushServiceModifier;
 
 use Drush\Log\LogLevel;
+use Webmozart\PathUtil\Path;
 
 class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 {
@@ -104,9 +105,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
     public function bootstrapDrupalCore($drupal_root)
     {
-        $core = DRUPAL_ROOT . '/core';
-
-        return $core;
+        return Path::join($drupal_root, 'core');
     }
 
     public function bootstrapDrupalSiteValidate()
@@ -129,8 +128,6 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         ];
         $request = Request::create($this->uri, 'GET', [], [], [], $server);
         $this->setRequest($request);
-        // @todo.
-        $confPath = drush_bootstrap_value('confPath', $this->confPath(true, true));
         return true;
     }
 

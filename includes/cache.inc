@@ -184,6 +184,8 @@ function drush_cache_get_bins() {
  *
  * @return
  *   A cache id string.
+ *
+ * @deprecated
  */
 function drush_get_cid($prefix, $contexts = [], $params = []) {
   $cid = [];

@@ -124,15 +124,13 @@ abstract class DrupalBoot extends BaseBoot
         $drupal_root = Drush::bootstrapManager()->getRoot();
         chdir($drupal_root);
         $this->logger->log(LogLevel::BOOTSTRAP, dt("Change working directory to !drupal_root", ['!drupal_root' => $drupal_root]));
-        $version = drush_drupal_version();
-        $major_version = drush_drupal_major_version();
 
         $core = $this->bootstrapDrupalCore($drupal_root);
 
         // DRUSH_DRUPAL_CORE should point to the /core folder in Drupal 8+.
         define('DRUSH_DRUPAL_CORE', $core);
 
-        $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal !version root directory at !drupal_root", ["!version" => $version, '!drupal_root' => $drupal_root]));
+        $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal !version root directory at !drupal_root", ["!version" => Drush::bootstrap()->getVersion($drupal_root), '!drupal_root' => $drupal_root]));
     }
 
     /**

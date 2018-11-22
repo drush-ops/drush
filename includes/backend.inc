@@ -57,6 +57,7 @@
  * drush_backend_get_result().
  */
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
 use Drush\Preflight\PreflightArgs;
 
@@ -848,8 +849,8 @@ function drush_backend_invoke_concurrent($invocations, $common_options = [], $co
     $is_remote = array_key_exists('remote-host', $site_record);
     $is_different_site =
       $is_remote ||
-      (isset($site_record['root']) && ($site_record['root'] != drush_get_context('DRUSH_DRUPAL_ROOT'))) ||
-      (isset($site_record['uri']) && ($site_record['uri'] != drush_get_context('DRUSH_SELECTED_URI')));
+      (isset($site_record['root']) && ($site_record['root'] != Drush::bootstrapManager()->getRoot())) ||
+      (isset($site_record['uri']) && ($site_record['uri'] != Drush::bootstrapManager()->getUri()));
     $os = drush_os($site_record);
     // If the caller did not pass in a specific path to drush, then we will
     // use a default value.  For commands that are being executed on the same

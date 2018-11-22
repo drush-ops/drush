@@ -295,7 +295,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         // phases, it means that the command requires bootstrap to a certain
         // level, but no site root could be found.
         if (!isset($phases[$phase])) {
-            $result = drush_bootstrap_error('DRUSH_NO_SITE', dt("We could not find an applicable site for that command."));
+            throw new \Exception(dt("We could not find an applicable site for that command."));
         }
 
         // Once we start bootstrapping past the DRUSH_BOOTSTRAP_DRUSH phase, we
@@ -317,12 +317,6 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                     }
                     $this->setPhase($phase_index);
                 }
-            }
-        }
-        if (!$result || drush_get_error()) {
-            $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS', []);
-            foreach ($errors as $code => $message) {
-                drush_set_error($code, $message);
             }
         }
         return !drush_get_error();
