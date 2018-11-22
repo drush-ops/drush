@@ -129,9 +129,18 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         ];
         $request = Request::create($this->uri, 'GET', [], [], [], $server);
         $this->setRequest($request);
+        // @todo.
         $confPath = drush_bootstrap_value('confPath', $this->confPath(true, true));
-        drush_bootstrap_value('site', $request->getHttpHost());
         return true;
+    }
+
+    /**
+     * Called by bootstrapDrupalSite to do the main work
+     * of the drush drupal site bootstrap.
+     */
+    public function bootstrapDoDrupalSite()
+    {
+        $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal site !site at !site_root", ['!site' => $this->getRequest()->getHttpHost(), '!site_root' => $this->confPath()]));
     }
 
     public function bootstrapDrupalConfigurationValidate()

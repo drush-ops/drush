@@ -47,6 +47,11 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     protected $uri;
 
     /**
+     * @var int
+     */
+    protected $phase;
+
+    /**
      * Constructor.
      *
      * @param \Drush\Boot\Boot
@@ -58,8 +63,25 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         $this->defaultBootstrapObject = $default;
 
         // Reset our bootstrap phase to the beginning
-        drush_set_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE);
+        $this->setPhase(DRUSH_BOOTSTRAP_NONE);
     }
+
+    /**
+     * @return int
+     */
+    public function getPhase()
+    {
+        return $this->phase;
+    }
+
+    /**
+     * @param int $phase
+     */
+    public function setPhase($phase)
+    {
+        $this->phase = $phase;
+    }
+
 
     /**
      * Add a bootstrap object to the list of candidates.
@@ -250,7 +272,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      *
      * @param int $phase
      *   The bootstrap phase to bootstrap to.
-     * @param int $phase_max
+     * @param int|bool $phase_max
      *   (optional) The maximum level to boot to. This does not have a use in this
      *   function itself but can be useful for other code called from within this
      *   function, to know if e.g. a caller is in the process of booting to the
@@ -283,7 +305,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         }
 
         foreach ($phases as $phase_index => $current_phase) {
-            $bootstrapped_phase = drush_get_context('DRUSH_BOOTSTRAP_PHASE', -1);
+            $bootstrapped_phase = $this->getPhase();
             if ($phase_index > $phase) {
                 break;
             }
@@ -293,7 +315,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                         $this->logger->log(LogLevel::BOOTSTRAP, 'Drush bootstrap phase: {function}()', ['function' => $current_phase]);
                         $bootstrap->{$current_phase}($annotationData);
                     }
-                    drush_set_context('DRUSH_BOOTSTRAP_PHASE', $phase_index);
+                    $this->setPhase($phase_index);
                 }
             }
         }
@@ -307,12 +329,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     }
 
     /**
-     * Determine whether a given bootstrap phase has been completed
-     *
-     * This function name has a typo which makes me laugh so we choose not to
-     * fix it. Take a deep breath, and smile. See
-     * http://en.wikipedia.org/wiki/HTTP_referer
-     *
+     * Determine whether a given bootstrap phase has been completed.
      *
      * @param int $phase
      *   The bootstrap phase to test
@@ -322,9 +339,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      */
     public function hasBootstrapped($phase)
     {
-        $phase_index = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
-
-        return isset($phase_index) && ($phase_index >= $phase);
+        return $this->getPhase() >= $phase;
     }
 
     /**
@@ -451,7 +466,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
             $this->logger->log(LogLevel::BOOTSTRAP, 'Try to validate bootstrap phase {phase}', ['phase' => $max_phase_index]);
 
             if ($this->bootstrapValidate($phase_index)) {
-                if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE', DRUSH_BOOTSTRAP_NONE)) {
+                if ($phase_index > $this->getPhase()) {
                     $this->logger->log(LogLevel::BOOTSTRAP, 'Try to bootstrap at phase {phase}', ['phase' => $max_phase_index]);
                     $result = $this->doBootstrap($phase_index, $max_phase_index, $annotationData);
                 }
@@ -498,18 +513,18 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
             }
 
             if ($this->bootstrapValidate($phase_index)) {
-                if ($phase_index > drush_get_context('DRUSH_BOOTSTRAP_PHASE')) {
+                if ($phase_index > $this->getPhase()) {
                     $this->doBootstrap($phase_index, $max_phase_index, $annotationData);
                 }
             } else {
                 // $this->bootstrapValidate() only logs successful validations. For us,
                 // knowing what failed can also be important.
-                $previous = drush_get_context('DRUSH_BOOTSTRAP_PHASE');
+                $previous = $this->getPhase();
                 $this->logger->log(LogLevel::DEBUG, 'Bootstrap phase {function}() failed to validate; continuing at {current}()', ['function' => $current_phase, 'current' => $phases[$previous]]);
                 break;
             }
         }
 
-        return drush_get_context('DRUSH_BOOTSTRAP_PHASE');
+        return $this->getPhase();
     }
 }
