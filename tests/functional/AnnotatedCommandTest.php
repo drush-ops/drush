@@ -99,9 +99,6 @@ class AnnotatedCommandCase extends CommandUnishTestCase
         $output = $this->getOutput();
         $this->assertEquals('alphabet', $output);
 
-        // drush my-cat bet alpha --flip
-        $this->drush('my-cat', ['bet', 'alpha'], ['flip' => null], null, null, self::EXIT_ERROR);
-
         $this->drush('try-formatters');
         $output = $this->getOutput();
         $expected = <<<EOT

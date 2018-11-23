@@ -132,10 +132,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         if (!isset($root)) {
             $root = $this->getConfig()->cwd();
         }
-        if (!$this->drupalFinder()->locateRoot($root)) {
-            //    echo ' Drush must be executed within a Drupal site.'. PHP_EOL;
-            //    exit(1);
-        }
+        $this->drupalFinder()->locateRoot($root);
     }
 
     /**
