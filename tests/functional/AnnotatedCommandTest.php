@@ -100,7 +100,7 @@ class AnnotatedCommandCase extends CommandUnishTestCase
         $this->assertEquals('alphabet', $output);
 
         // drush my-cat bet alpha --flip
-        $this->drush('my-cat', ['bet', 'alpha'], ['flip' => null, 'ignored-modules' => 'woot'], null, null, self::EXIT_ERROR);
+        $this->drush('my-cat', ['bet', 'alpha'], ['flip' => null], null, null, self::EXIT_ERROR);
 
         $this->drush('try-formatters');
         $output = $this->getOutput();
@@ -212,12 +212,6 @@ EOT;
         // $this->assertContains('--fields=<first, second, third>', $output);
         $this->assertContains('Available fields:', $output);
         $this->assertContains('[default: "table"]', $output);
-
-        $this->markTestSkipped('--ignored-modules not supported yet');
-
-        // TODO: Support --ignored-modules
-        // drush woot --help with the 'woot' module ignored
-        $this->drush('woot', [], ['help' => null, 'ignored-modules' => 'woot'], null, null, self::EXIT_ERROR);
     }
 
     public function setupGlobalExtensionsForTests()

@@ -11,6 +11,7 @@
  * option in drushrc.php.
  */
 
+use Drush\Cache\JSONCache;
 use Drush\Drush;
 use Drush\Log\LogLevel;
 
@@ -45,11 +46,7 @@ function _drush_cache_get_object($bin) {
   static $cache_objects;
 
   if (!isset($cache_objects[$bin])) {
-    $class = drush_get_option('cache-class-' . $bin, NULL);
-    if (!isset($class)) {
-      $class = drush_get_option('cache-default-class', '\Drush\Cache\JSONCache');
-    }
-    $cache_objects[$bin] = new $class($bin);
+    $cache_objects[$bin] = new JSONCache($bin);
   }
   return $cache_objects[$bin];
 }

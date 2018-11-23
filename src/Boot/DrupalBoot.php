@@ -55,7 +55,6 @@ abstract class DrupalBoot extends BaseBoot
 
     public function confPath($require_settings = true, $reset = false)
     {
-        return confPath($require_settings, $reset);
     }
 
     /**
@@ -244,7 +243,7 @@ abstract class DrupalBoot extends BaseBoot
     }
 
     /**
-     * Boostrap the Drupal database.
+     * Bootstrap the Drupal database.
      */
     public function bootstrapDrupalDatabase()
     {
