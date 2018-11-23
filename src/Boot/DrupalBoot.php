@@ -55,7 +55,6 @@ abstract class DrupalBoot extends BaseBoot
 
     public function confPath($require_settings = true, $reset = false)
     {
-        return confPath($require_settings, $reset);
     }
 
     /**
@@ -101,36 +100,11 @@ abstract class DrupalBoot extends BaseBoot
      * Validate the DRUSH_BOOTSTRAP_DRUPAL_ROOT phase.
      *
      * In this function, we will check if a valid Drupal directory is available.
-     * We also determine the value that will be stored in the DRUSH_DRUPAL_ROOT
-     * context and DRUPAL_ROOT constant if it is considered a valid option.
      */
     public function bootstrapDrupalRootValidate()
     {
         $drupal_root = Drush::bootstrapManager()->getRoot();
-
-        if (empty($drupal_root)) {
-            return drush_bootstrap_error('DRUSH_NO_DRUPAL_ROOT', dt("A Drupal installation directory could not be found"));
-        }
-        // TODO: Perhaps $drupal_root is now ALWAYS valid by the time we get here.
-        if (!$this->legacyValidRootCheck($drupal_root)) {
-            return drush_bootstrap_error('DRUSH_INVALID_DRUPAL_ROOT', dt("The directory !drupal_root does not contain a valid Drupal installation", ['!drupal_root' => $drupal_root]));
-        }
-
-        $version = drush_drupal_version($drupal_root);
-        $major_version = drush_drupal_major_version($drupal_root);
-        if ($major_version <= 6) {
-            return drush_set_error('DRUSH_DRUPAL_VERSION_UNSUPPORTED', dt('Drush !drush_version does not support Drupal !major_version.', ['!drush_version' => Drush::getMajorVersion(), '!major_version' => $major_version]));
-        }
-
-        drush_bootstrap_value('drupal_root', $drupal_root);
-
-        return true;
-    }
-
-    protected function legacyValidRootCheck($root)
-    {
-        $bootstrap_class = Drush::bootstrapManager()->bootstrapObjectForRoot($root);
-        return $bootstrap_class != null;
+        return (bool) $drupal_root;
     }
 
     /**
@@ -146,18 +120,16 @@ abstract class DrupalBoot extends BaseBoot
     public function bootstrapDrupalRoot()
     {
 
-        $drupal_root = drush_set_context('DRUSH_DRUPAL_ROOT', drush_bootstrap_value('drupal_root'));
+        $drupal_root = Drush::bootstrapManager()->getRoot();
         chdir($drupal_root);
         $this->logger->log(LogLevel::BOOTSTRAP, dt("Change working directory to !drupal_root", ['!drupal_root' => $drupal_root]));
-        $version = drush_drupal_version();
-        $major_version = drush_drupal_major_version();
 
         $core = $this->bootstrapDrupalCore($drupal_root);
 
         // DRUSH_DRUPAL_CORE should point to the /core folder in Drupal 8+.
         define('DRUSH_DRUPAL_CORE', $core);
 
-        $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal !version root directory at !drupal_root", ["!version" => $version, '!drupal_root' => $drupal_root]));
+        $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal !version root directory at !drupal_root", ["!version" => Drush::bootstrap()->getVersion($drupal_root), '!drupal_root' => $drupal_root]));
     }
 
     /**
@@ -168,19 +140,6 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapDrupalSiteValidate()
     {
-    }
-
-    /**
-     * Called by bootstrapDrupalSite to do the main work
-     * of the drush drupal site bootstrap.
-     */
-    public function bootstrapDoDrupalSite()
-    {
-        drush_set_context('DRUSH_URI', $this->uri);
-        $site = drush_set_context('DRUSH_DRUPAL_SITE', drush_bootstrap_value('site'));
-        $confPath = drush_set_context('DRUSH_DRUPAL_SITE_ROOT', drush_bootstrap_value('confPath'));
-
-        $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal site !site at !site_root", ['!site' => $site, '!site_root' => $confPath]));
     }
 
     /**
@@ -284,7 +243,7 @@ abstract class DrupalBoot extends BaseBoot
     }
 
     /**
-     * Boostrap the Drupal database.
+     * Bootstrap the Drupal database.
      */
     public function bootstrapDrupalDatabase()
     {
