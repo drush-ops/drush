@@ -76,7 +76,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             $success = true;
         }
 
-        return $success ? DRUSH_SUCCESS : DRUSH_FRAMEWORK_ERROR;
+        return $success ? self::EXIT_SUCCESS : self::EXIT_FAILURE;
     }
 
     /**
