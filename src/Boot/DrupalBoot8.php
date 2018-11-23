@@ -11,6 +11,7 @@ use Drush\Drush;
 use Drush\Drupal\DrushServiceModifier;
 
 use Drush\Log\LogLevel;
+use Webmozart\PathUtil\Path;
 
 class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 {
@@ -104,9 +105,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
     public function bootstrapDrupalCore($drupal_root)
     {
-        $core = DRUPAL_ROOT . '/core';
-
-        return $core;
+        return Path::join($drupal_root, 'core');
     }
 
     public function bootstrapDrupalSiteValidate()
@@ -129,9 +128,16 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         ];
         $request = Request::create($this->uri, 'GET', [], [], [], $server);
         $this->setRequest($request);
-        $confPath = drush_bootstrap_value('confPath', $this->confPath(true, true));
-        drush_bootstrap_value('site', $request->getHttpHost());
         return true;
+    }
+
+    /**
+     * Called by bootstrapDrupalSite to do the main work
+     * of the drush drupal site bootstrap.
+     */
+    public function bootstrapDoDrupalSite()
+    {
+        $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal site !site at !site_root", ['!site' => $this->getRequest()->getHttpHost(), '!site_root' => $this->confPath()]));
     }
 
     public function bootstrapDrupalConfigurationValidate()
@@ -193,9 +199,6 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         parent::bootstrapDrupalFull();
         $this->addLogger();
 
-        // Get a list of the modules to ignore
-        $ignored_modules = drush_get_option_list('ignored-modules', []);
-
         $application = Drush::getApplication();
         $runner = Drush::runner();
 
@@ -218,35 +221,20 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $serviceCommandlist = $container->get(DrushServiceModifier::DRUSH_CONSOLE_SERVICES);
         if ($container->has(DrushServiceModifier::DRUSH_CONSOLE_SERVICES)) {
             foreach ($serviceCommandlist->getCommandList() as $command) {
-                if (!$this->commandIgnored($command, $ignored_modules)) {
-                    $this->inflect($command);
-                    $this->logger->log(LogLevel::DEBUG_NOTIFY, dt('Add a command: !name', ['!name' => $command->getName()]));
-                    $application->add($command);
-                }
+                $this->inflect($command);
+                $this->logger->log(LogLevel::DEBUG_NOTIFY, dt('Add a command: !name', ['!name' => $command->getName()]));
+                $application->add($command);
             }
         }
         // Do the same thing with the annotation commands.
         if ($container->has(DrushServiceModifier::DRUSH_COMMAND_SERVICES)) {
             $serviceCommandlist = $container->get(DrushServiceModifier::DRUSH_COMMAND_SERVICES);
             foreach ($serviceCommandlist->getCommandList() as $commandHandler) {
-                if (!$this->commandIgnored($commandHandler, $ignored_modules)) {
-                    $this->inflect($commandHandler);
-                    $this->logger->log(LogLevel::DEBUG_NOTIFY, dt('Add a commandfile class: !name', ['!name' => get_class($commandHandler)]));
-                    $runner->registerCommandClass($application, $commandHandler);
-                }
+                $this->inflect($commandHandler);
+                $this->logger->log(LogLevel::DEBUG_NOTIFY, dt('Add a commandfile class: !name', ['!name' => get_class($commandHandler)]));
+                $runner->registerCommandClass($application, $commandHandler);
             }
         }
-    }
-
-    public function commandIgnored($command, $ignored_modules)
-    {
-        if (empty($ignored_modules)) {
-            return false;
-        }
-        $ignored_regex = '#\\\\(' . implode('|', $ignored_modules) . ')\\\\#';
-        $class = new \ReflectionClass($command);
-        $commandNamespace = $class->getNamespaceName();
-        return preg_match($ignored_regex, $commandNamespace);
     }
 
     /**

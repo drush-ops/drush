@@ -25,6 +25,7 @@
 
 namespace Drush\Log;
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
 use Robo\Log\RoboLogger;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -69,7 +70,7 @@ class Logger extends RoboLogger
         }
 
         $verbose = \Drush\Drush::verbose();
-        $debug = drush_get_context('DRUSH_DEBUG');
+        $debug = Drush::debug();
         $debugnotify = drush_get_context('DRUSH_DEBUG_NOTIFY');
 
         $oldStyleEarlyExit = drush_get_context('DRUSH_LEGACY_CONTEXT');
