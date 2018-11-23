@@ -23,7 +23,7 @@ function drush_main() {
  * will return a json string containing the options and log information
  * used by the script.
  *
- * The command will exit with '1' if it was successfully executed, and the
+ * The command will exit with '0' if it was successfully executed, and the
  * result of drush_get_error() if it wasn't.
  */
 function drush_shutdown() {
@@ -33,7 +33,7 @@ function drush_shutdown() {
   }
 
   if (!Drush::config()->get(Runtime::DRUSH_RUNTIME_COMPLETED_NAMESPACE)) {
-      throw new RuntimeException('Drush command terminated abnormally. Check for an exit() in your Drupal site.');
+      Drush::logger()->warning('Drush command terminated abnormally. Check for an exit() in your Drupal site.');
   }
 
   if (Drush::backend()) {
