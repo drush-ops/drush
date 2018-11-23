@@ -19,11 +19,12 @@ class Runtime
     protected $preflight;
 
     const DRUSH_RUNTIME_COMPLETED_NAMESPACE = 'runtime.execution.completed';
+    const DRUSH_RUNTIME_EXIT_CODE_NAMESPACE = 'runtime.exit_code';
 
     /**
      * Runtime constructor
      *
-     * @param Preflight $preflight the prefligth object
+     * @param Preflight $preflight the preflight object
      */
     public function __construct(Preflight $preflight)
     {
@@ -113,9 +114,8 @@ class Runtime
 
         // Placate the Drush shutdown handler.
         Runtime::setCompleted();
-
-        // For backwards compatibility (backend invoke needs this in drush_backend_output())
-        drush_set_context('DRUSH_ERROR_CODE', $status);
+        // Placate drush_backend_output().
+        Runtime::setExitCode($status);
 
         return $status;
     }
@@ -137,5 +137,28 @@ class Runtime
     public static function setCompleted()
     {
         Drush::config()->set(self::DRUSH_RUNTIME_COMPLETED_NAMESPACE, true);
+    }
+
+    /**
+     * @deprecated
+     *   Used by backend.inc
+     *
+     * Mark the exit code for current request.
+     * @param int $code
+     */
+    public static function setExitCode($code)
+    {
+        Drush::config()->set(self::DRUSH_RUNTIME_EXIT_CODE_NAMESPACE, $code);
+    }
+
+    /**
+     * @deprecated
+     *   Used by backend.inc
+     *
+     * Get the exit code for current request.
+     */
+    public static function exitCode()
+    {
+        return Drush::config()->get(self::DRUSH_RUNTIME_EXIT_CODE_NAMESPACE, DRUSH_SUCCESS);
     }
 }
