@@ -1,5 +1,6 @@
 {
   "name": "drush/drush",
+  "version": "9.6.0-dev",
   "description": "Drush is a command line shell and scripting interface for Drupal, a veritable Swiss Army knife designed to make life easier for those of us who spend some of our working hours hacking away at the command prompt.",
   "homepage": "http://www.drush.org",
   "license": "GPL-2.0-or-later",
@@ -56,7 +57,7 @@
   },
   "require-dev": {
     "lox/xhprof": "dev-master",
-    "g1a/composer-test-scenarios": "^2.2.0",
+    "g1a/composer-test-scenarios": "^3",
     "phpunit/phpunit": "^4.8.36 || ^6.1",
     "squizlabs/php_codesniffer": "^2.7",
     "composer/installers": "^1.2",
@@ -99,19 +100,17 @@
     "test": [
       "@lint",
       "@unit",
-      "@cs",
-      "@functional"
+      "@integration",
+      "@functional",
+      "@cs"
     ],
     "api": "PATH=$HOME/bin:$PATH sami.phar --ansi update sami-config.php",
     "sami-install": "mkdir -p $HOME/bin && curl --output $HOME/bin/sami.phar http://get.sensiolabs.org/sami.phar && chmod +x $HOME/bin/sami.phar",
-    "scenario": "scenarios/install",
     "sut": "./drush --uri=dev",
     "sut:si": "./drush site:install testing --uri=dev --sites-subdir=dev --db-url=${UNISH_DB_URL:-mysql://root:password@mariadb}/unish_dev -v",
     "unit": "phpunit --colors=always --configuration tests --testsuite unit",
-    "functional": "phpunit --colors=always --configuration tests --testsuite functional",
-    "post-update-cmd": [
-        "create-scenario phpunit4 --autoload-dir internal-copy 'phpunit/phpunit:^4.8.36'"
-    ]
+    "integration": "phpunit --colors=always --configuration tests --testsuite integration",
+    "functional": "phpunit --colors=always --configuration tests --testsuite functional"
   },
   "extra": {
     "installer-paths": {
