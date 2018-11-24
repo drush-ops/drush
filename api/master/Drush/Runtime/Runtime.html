@@ -106,6 +106,13 @@
                     <p></p>
                 </td>
             </tr>
+                    <tr>
+                <td>DRUSH_RUNTIME_EXIT_CODE_NAMESPACE</td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
             </table>
 
     
@@ -176,6 +183,28 @@
                                             <p>Mark the current request as having completed successfully.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_setExitCode">setExitCode</a>(int $code)
+        <small><sup><span class="label label-danger">deprecated</span></sup></small>
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_exitCode">exitCode</a>()
+        <small><sup><span class="label label-danger">deprecated</span></sup></small>
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
             </div>
 
 
@@ -184,7 +213,7 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L28">line 28</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L29">line 29</a></div>
         <code>                    
     <strong>__construct</strong>(<a href="../../Drush/Preflight/Preflight.html"><abbr title="Drush\Preflight\Preflight">Preflight</abbr></a> $preflight)
         </code>
@@ -202,7 +231,7 @@
                     <tr>
                 <td><a href="../../Drush/Preflight/Preflight.html"><abbr title="Drush\Preflight\Preflight">Preflight</abbr></a></td>
                 <td>$preflight</td>
-                <td>the prefligth object</td>
+                <td>the preflight object</td>
             </tr>
             </table>
 
@@ -215,7 +244,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_run">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L38">line 38</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L39">line 39</a></div>
         <code>                    
     <strong>run</strong>($argv)
         </code>
@@ -247,7 +276,7 @@ preflight. Later code should catch and handle its own exceptions.</p>           
             </div>
                     <div class="method-item">
                     <h3 id="method_doRun">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L55">line 55</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L56">line 56</a></div>
         <code>            protected        
     <strong>doRun</strong>($argv)
         </code>
@@ -310,6 +339,72 @@ preflight. Later code should catch and handle its own exceptions.</p>           
 
                     <div class="method-description">
                                     <p>Mark the current request as having completed successfully.</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setExitCode">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L149">line 149</a></div>
+        <code>        static            
+    <strong>setExitCode</strong>(int $code)
+        <small><sup><span class="label label-danger">deprecated</span></sup></small></code>
+    </h3>
+    <div class="details">
+            
+            <p>
+                <small><sup><span class="label label-danger">deprecated</span></sup></small>
+                            <tr>
+                    <td>Used</td>
+                    <td>by backend.inc
+
+Mark the exit code for current request.</td>
+                </tr>
+                    </p>
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>int</td>
+                <td>$code</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_exitCode">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L160">line 160</a></div>
+        <code>        static            
+    <strong>exitCode</strong>()
+        <small><sup><span class="label label-danger">deprecated</span></sup></small></code>
+    </h3>
+    <div class="details">
+            
+            <p>
+                <small><sup><span class="label label-danger">deprecated</span></sup></small>
+                            <tr>
+                    <td>Used</td>
+                    <td>by backend.inc
+
+Get the exit code for current request.</td>
+                </tr>
+                    </p>
+    
+
                 <div class="tags">
             
             
