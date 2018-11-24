@@ -169,34 +169,6 @@ abstract class DrupalBoot extends BaseBoot
      */
     public function bootstrapDrupalDatabaseValidate()
     {
-        // Drupal requires PDO, and Drush requires php 5.6+ which ships with PDO
-        // but PHP may be compiled with --disable-pdo.
-        if (!class_exists('\PDO')) {
-            $this->logger->log(LogLevel::BOOTSTRAP, dt('PDO support is required.'));
-            return false;
-        }
-        try {
-            $sql = SqlBase::create();
-            // Drush requires a database client program during its Drupal bootstrap.
-            $command = $sql->command();
-            if (drush_program_exists($command) === false) {
-                $this->logger->warning(dt('The command \'!command\' is required for preflight but cannot be found. Please install it and retry.', ['!command' => $command]));
-                return false;
-            }
-            if (!$sql->query('SELECT 1;', null, drush_bit_bucket())) {
-                $message = dt("Drush was not able to start (bootstrap) the Drupal database.\n");
-                $message .= dt("Hint: This may occur when Drush is trying to:\n");
-                $message .= dt(" * bootstrap a site that has not been installed or does not have a configured database. In this case you can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line. See `drush topic docs-aliases` for details.\n");
-                $message .= dt(" * connect the database through a socket. The socket file may be wrong or the php-cli may have no access to it in a jailed shell. See http://drupal.org/node/1428638 for details.\n");
-                $message .= dt('More information may be available by running `drush status`');
-                $this->logger->log(LogLevel::BOOTSTRAP, $message);
-                return false;
-            }
-        } catch (\Exception $e) {
-            $this->logger->log(LogLevel::DEBUG, dt('Unable to validate DB: @e', ['@e' => $e->getMessage()]));
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -221,6 +193,9 @@ abstract class DrupalBoot extends BaseBoot
      *   Array of table names, or string with one table name
      *
      * @return TRUE if all required tables exist in the database.
+     *
+     * @deprecated
+     *   No longer used by Drush core.
      */
     public function bootstrapDrupalDatabaseHasTable($required_tables)
     {
