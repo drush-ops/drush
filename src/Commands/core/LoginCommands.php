@@ -30,7 +30,7 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
      *   Open default web browser and browse to homepage, logged in as uid=1.
      * @usage drush user:login --name=ryan node/add/blog
      *   Open default web browser (if configured or detected) for a one-time login link for username ryan that redirects to node/add/blog.
-     * @usage drush user:login --browser=firefox --mail=drush@example.org
+     * @usage drush user:login --browser=firefox --name=$(drush user:information --mail="drush@example.org" --fields=name --format=string)
      *   Open firefox web browser, and login as the user with the e-mail address drush@example.org.
      */
     public function login($path = '', $options = ['name' => '1', 'browser' => true, 'redirect-port' => self::REQ])
@@ -40,12 +40,9 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
         // the *local* machine.
         $aliasRecord = $this->siteAliasManager()->getSelf();
         if ($aliasRecord->isRemote()) {
-            $return = drush_invoke_process($aliasRecord, 'user-login', [$path], Drush::redispatchOptions(), ['integrate' => false]);
-            if ($return['error_status']) {
-                throw new \Exception('Unable to execute user login.');
-            } else {
-                $link = is_string($return['object']) ?: current($return['object']);
-            }
+            $process = Drush::drush($aliasRecord, 'user-login', [$path], Drush::redispatchOptions());
+            $process->mustRun();
+            $link = $process->getOutput();
         } else {
             if (!Drush::bootstrapManager()->doBootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
                 throw new \Exception(dt('Unable to bootstrap Drupal.'));
@@ -63,7 +60,7 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
         }
         $port = $options['redirect-port'];
         $this->startBrowser($link, false, $port, $options['browser']);
-        // Use an array for backwards compat.
+        // Use an array for backwards compat. Going forward, please expect a string.
         drush_backend_set_result([$link]);
         return $link;
     }

@@ -57,8 +57,10 @@
  * drush_backend_get_result().
  */
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
 use Drush\Preflight\PreflightArgs;
+use Drush\Runtime\Runtime;
 
 /**
  * Identify the JSON encoded output from a command.
@@ -152,9 +154,7 @@ function drush_backend_output() {
     $data['object'] = $result_object;
   }
 
-  $error = drush_get_error();
-  $data['error_status'] = ($error) ? $error : DRUSH_SUCCESS;
-
+  $data['error_status'] = Runtime::exitCode();
   $data['log'] = drush_get_log(); // Append logging information
   // The error log is a more specific version of the log, and may be used by calling
   // scripts to check for specific errors that have occurred.
@@ -213,6 +213,9 @@ function drush_backend_output_discard($string) {
 function drush_backend_packet($packet, $data) {
   if (\Drush\Drush::backend()) {
     $data['packet'] = $packet;
+    // Ensure $data['_style'] isn't encoded, to avoid errors during decode and
+    // subsequent logging.
+    unset($data['_style']);
     $data = json_encode($data);
     // We use 'fwrite' instead of 'drush_print' here because
     // this backend packet is out-of-band data.
@@ -536,6 +539,8 @@ function drush_backend_parse_packets(&$string, &$remainder, $backend_options) {
     drush_set_context('DRUSH_RECEIVED_BACKEND_PACKETS', TRUE);
     foreach ($match[1] as $packet_data) {
       $entry = (array) json_decode($packet_data);
+      // Ensure $entry['_style'] isn't set to avoid type mismatch errors.
+      unset($entry['_style']);
       if (is_array($entry) && isset($entry['packet'])) {
         $function = 'drush_backend_packet_' . $entry['packet'];
         if (function_exists($function)) {
@@ -622,7 +627,7 @@ function _drush_backend_adjust_options($site_record, $command, $command_options,
  * Execute a new local or remote command in a new process.
  *
  * @deprecated as of Drush 9.4.0 and will be removed in Drush 10. Instead, use
- *   drush_invoke_process().
+ *   Drush::drush().
  *
  * @param invocations
  *   An array of command records to execute. Each record should contain:
@@ -843,8 +848,8 @@ function drush_backend_invoke_concurrent($invocations, $common_options = [], $co
     $is_remote = array_key_exists('remote-host', $site_record);
     $is_different_site =
       $is_remote ||
-      (isset($site_record['root']) && ($site_record['root'] != drush_get_context('DRUSH_DRUPAL_ROOT'))) ||
-      (isset($site_record['uri']) && ($site_record['uri'] != drush_get_context('DRUSH_SELECTED_URI')));
+      (isset($site_record['root']) && ($site_record['root'] != Drush::bootstrapManager()->getRoot())) ||
+      (isset($site_record['uri']) && ($site_record['uri'] != Drush::bootstrapManager()->getUri()));
     $os = drush_os($site_record);
     // If the caller did not pass in a specific path to drush, then we will
     // use a default value.  For commands that are being executed on the same

@@ -5,6 +5,7 @@ use Drush\Drush;
 use Drupal\Core\Url;
 use Drush\Commands\DrushCommands;
 use Drush\Exec\ExecTrait;
+use Webmozart\PathUtil\Path;
 
 class RunserverCommands extends DrushCommands
 {
@@ -79,9 +80,12 @@ class RunserverCommands extends DrushCommands
             $this->startBrowser($link, 2);
         }
         // Start the server using 'php -S'.
-        $extra = ' "' . DRUSH_BASE_PATH . '/misc/d8-rs-router.php"';
-        $root = Drush::bootstrapManager()->getRoot();
-        drush_shell_exec_interactive('cd %s && %s -S ' . $addr . ':' . $uri['port']. $extra, $root, Drush::config()->get('php', 'php'));
+        $router = Path::join(DRUSH_BASE_PATH, '/misc/d8-rs-router.php');
+        $php = Drush::config()->get('php', 'php');
+        $process = Drush::process([$php, '-S', $addr . ':' . $uri['port'], $router]);
+        $process->setWorkingDirectory(Drush::bootstrapManager()->getRoot());
+        $process->setTty(true);
+        $process->mustRun();
     }
 
     /**

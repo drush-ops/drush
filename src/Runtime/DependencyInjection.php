@@ -12,6 +12,7 @@ use Consolidation\Config\ConfigInterface;
 use Composer\Autoload\ClassLoader;
 use League\Container\ContainerInterface;
 use Consolidation\SiteAlias\SiteAliasManager;
+use Drush\Command\DrushCommandInfoAlterer;
 
 /**
  * Prepare our Dependency Injection Container
@@ -77,16 +78,12 @@ class DependencyInjection
 
         // Add some of our own objects to the container
         $container->share('bootstrap.default', 'Drush\Boot\EmptyBoot');
-        $container->share('bootstrap.drupal6', 'Drush\Boot\DrupalBoot6');
-        $container->share('bootstrap.drupal7', 'Drush\Boot\DrupalBoot7');
         $container->share('bootstrap.drupal8', 'Drush\Boot\DrupalBoot8');
         $container->share('bootstrap.manager', 'Drush\Boot\BootstrapManager')
             ->withArgument('bootstrap.default')
             ->withMethodCall('setDrupalFinder', [$drupalFinder]);
         // TODO: Can we somehow add these via discovery (e.g. backdrop extension?)
         $container->extend('bootstrap.manager')
-            ->withMethodCall('add', ['bootstrap.drupal6'])
-            ->withMethodCall('add', ['bootstrap.drupal7'])
             ->withMethodCall('add', ['bootstrap.drupal8']);
         $container->share('bootstrap.hook', 'Drush\Boot\BootstrapHook')
           ->withArgument('bootstrap.manager');
@@ -126,6 +123,7 @@ class DependencyInjection
         $factory = $container->get('commandFactory');
         $factory->setIncludeAllPublicMethods(false);
         $factory->setDataStore($commandCacheDataStore);
+        $factory->addCommandInfoAlterer(new DrushCommandInfoAlterer());
 
         $commandProcessor = $container->get('commandProcessor');
         $commandProcessor->setPassExceptions(true);

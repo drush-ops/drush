@@ -1,8 +1,6 @@
 <?php
 namespace Drush\Commands;
 
-use Drush\Drush;
-
 class LegacyCommands extends DrushCommands
 {
 

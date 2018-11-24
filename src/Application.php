@@ -316,6 +316,8 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
 
         $discovery = $this->commandDiscovery();
         $commandClasses = $discovery->discover($commandfileSearchpath, '\Drush');
+        $commandClasses[] = \Consolidation\Filter\Hooks\FilterHooks::class;
+
         $this->loadCommandClasses($commandClasses);
 
         // Uncomment the lines below to use Console's built in help and list commands.
@@ -350,6 +352,10 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $discovery = new CommandFileDiscovery();
         $discovery
             ->setIncludeFilesAtBase(true)
+            ->setSearchDepth(3)
+            ->ignoreNamespacePart('contrib', 'Commands')
+            ->ignoreNamespacePart('custom', 'Commands')
+            ->ignoreNamespacePart('src')
             ->setSearchLocations(['Commands', 'Hooks', 'Generators'])
             ->setSearchPattern('#.*(Command|Hook|Generator)s?.php$#');
         return $discovery;

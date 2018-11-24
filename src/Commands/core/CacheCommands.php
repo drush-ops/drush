@@ -12,7 +12,7 @@ use Drupal\Core\DrupalKernel;
 use Drupal\Core\Site\Settings;
 use Drupal\Core\Cache\Cache;
 use Drush\Drush;
-use Symfony\Component\HttpFoundation\Request;
+use Drush\Utils\StringUtils;
 
 /*
  * Interact with Drupal's Cache API.
@@ -60,13 +60,16 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
      *
      * @command cache:clear
      * @param string $type The particular cache to clear. Omit this argument to choose from available types.
+     * @param array $args Additional arguments as might be expected (e.g. bin name).
      * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @hidden-options cache-clear
      * @aliases cc,cache-clear
      * @bootstrap max
      * @notify Caches have been cleared.
+     * @usage drush cc bin entity,bootstrap
+     *   Clear the entity and bootstrap cache bins.
      */
-    public function clear($type, $options = ['cache-clear' => true])
+    public function clear($type, array $args, $options = ['cache-clear' => true])
     {
         $boot_manager = Drush::bootstrapManager();
 
@@ -78,7 +81,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
         $types = $this->getTypes($boot_manager->hasBootstrapped((DRUSH_BOOTSTRAP_DRUPAL_FULL)));
 
         // Do it.
-        drush_op($types[$type]);
+        drush_op($types[$type], $args);
         $this->logger()->success(dt("'!name' cache was cleared.", ['!name' => $type]));
     }
 
@@ -251,6 +254,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
                 'css-js' => [$this, 'clearCssJs'],
                 'render' => [$this, 'clearRender'],
                 'plugin' => [$this, 'clearPlugin'],
+                'bin' => [$this, 'clearBins'],
             ];
         }
 
@@ -269,6 +273,17 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
     {
         drush_cache_clear_all(null, 'default'); // commandfiles, etc.
         drush_cache_clear_all(null, 'factory'); // command info from annotated-command library
+    }
+
+    /**
+     * Clear one or more cache bins.
+     */
+    public static function clearBins($args = ['default'])
+    {
+        $bins = StringUtils::csvToArray($args);
+        foreach ($bins as $bin) {
+            \Drupal::service("cache.$bin")->deleteAll();
+        }
     }
 
     public static function clearThemeRegistry()

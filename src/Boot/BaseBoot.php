@@ -2,15 +2,10 @@
 
 namespace Drush\Boot;
 
-use Drush\Drush;
-use Drush\Log\LogLevel;
-use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
-
-use Symfony\Component\Console\Input\ArgvInput;
 
 abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInterface
 {
@@ -48,21 +43,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInt
 
     public function reportCommandError($command)
     {
-        // Set errors related to this command.
-        $args = implode(' ', drush_get_arguments());
-        if (isset($command) && is_array($command)) {
-            foreach ($command['bootstrap_errors'] as $key => $error) {
-                drush_set_error($key, $error);
-            }
-            drush_set_error('DRUSH_COMMAND_NOT_EXECUTABLE', dt("The Drush command '!args' could not be executed.", ['!args' => $args]));
-        } elseif (!empty($args)) {
-            drush_set_error('DRUSH_COMMAND_NOT_FOUND', dt("The Drush command '!args' could not be found. Use 'drush core-status' to verify that Drupal is found and bootstrapped successfully. Look for 'Drupal bootstrap : Successful' in its output.", ['!args' => $args]));
-        }
-        // Set errors that occurred in the bootstrap phases.
-        $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS', []);
-        foreach ($errors as $code => $message) {
-            drush_set_error($code, $message);
-        }
+        // No longer used.
     }
 
     public function bootstrapPhases()
@@ -143,7 +124,7 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface, ContainerAwareInt
             $object->setOutputAdapter($container->get('outputAdapter'));
         }
         if ($object instanceof \Consolidation\SiteAlias\SiteAliasManagerAwareInterface) {
-            $object->setOutputAdapter($container->get('site.alias.manager'));
+            $object->setSiteAliasManager($container->get('site.alias.manager'));
         }
     }
 

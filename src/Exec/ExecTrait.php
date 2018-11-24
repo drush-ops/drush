@@ -1,7 +1,9 @@
 <?php
 namespace Drush\Exec;
 
+use Consolidation\SiteProcess\Util\Shell;
 use Drush\Drush;
+use Drush\Log\LogLevel;
 
 trait ExecTrait
 {
@@ -47,9 +49,9 @@ trait ExecTrait
             }
             if ($browser === true) {
                 // See if we can find an OS helper to open URLs in default browser.
-                if (drush_shell_exec('which xdg-open')) {
+                if (drush_which('xdg-open')) {
                     $browser = 'xdg-open';
-                } else if (drush_shell_exec('which open')) {
+                } else if (drush_which('open')) {
                     $browser = 'open';
                 } else if (!drush_has_bash()) {
                     $browser = 'start';
@@ -58,15 +60,18 @@ trait ExecTrait
                     $browser = false;
                 }
             }
-            $prefix = '';
-            if ($sleep) {
-                $prefix = 'sleep ' . $sleep . ' && ';
-            }
+
             if ($browser) {
-                $this->logger()->success(dt('Opening browser !browser at !uri', ['!browser' => $browser, '!uri' => $uri]));
+                drush_log(dt('Opening browser !browser at !uri', ['!browser' => $browser, '!uri' => $uri]), LogLevel::INFO);
+                $args = [];
                 if (!Drush::simulate()) {
-                    $pipes = [];
-                    proc_close(proc_open($prefix . $browser . ' ' . drush_escapeshellarg($uri) . ' 2> ' . drush_bit_bucket() . ' &', [], $pipes));
+                    if ($sleep) {
+                        $args = ['sleep', $sleep, Shell::op('&&')];
+                    }
+                    // @todo We implode because quoting is messing up the sleep.
+                    $process = Drush::process(implode(' ', array_merge($args, [$browser, $uri])));
+                    $process->setTty(true);
+                    $process->run();
                 }
                 return true;
             }

@@ -26,6 +26,7 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * @default-fields name,description
      * @aliases core-global-options
      *
+     * @filter-default-field name
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function globalOptions($options = ['format' => 'table'])
@@ -81,7 +82,10 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * Used by shell aliases that start with !.
      *
      * @command core:execute
-     * @param $args The shell command to be executed.
+     * @param array $args The shell command to be executed.
+     * @param array $options
+     * @return bool
+     * @throws \Exception
      * @option escape Escape parameters before executing them with the shell. Default is escape; use --no-escape to disable.
      * @optionset_proc_build
      * @handle-remote-commands
@@ -92,6 +96,7 @@ class CoreCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      */
     public function execute(array $args, array $options = ['escape' => true])
     {
+        $this->logger()->notice('The core:execute command is deprecated and will soon be removed. Please use the site:ssh command instead.');
         $result = true;
         if ($options['escape']) {
             for ($x = 0; $x < count($args); $x++) {

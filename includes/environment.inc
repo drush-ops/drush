@@ -18,7 +18,7 @@ use Webmozart\PathUtil\Path;
  * Log PHP errors to the Drush log. This is in effect until Drupal's error
  * handler takes over.
  */
-function drush_error_handler($errno, $message, $filename, $line, $context) {
+function drush_error_handler($errno, $message, $filename, $line) {
   // E_DEPRECATED was added in PHP 5.3. Drupal 6 will not fix all the
   // deprecated errors, but suppresses them. So we suppress them as well.
   if (defined('E_DEPRECATED')) {
@@ -52,19 +52,6 @@ function drush_error_handler($errno, $message, $filename, $line, $context) {
     }
 
     return TRUE;
-  }
-}
-
-/**
- * Evalute the environment after an abnormal termination and
- * see if we can determine any configuration settings that the user might
- * want to adjust.
- */
-function _drush_postmortem() {
-  // Make sure that the memory limit has been bumped up from the minimum default value of 32M.
-  $php_memory_limit = drush_memory_limit();
-  if (($php_memory_limit > 0) && ($php_memory_limit <= 32*DRUSH_KILOBYTE*DRUSH_KILOBYTE)) {
-    drush_set_error('DRUSH_MEMORY_LIMIT', dt('Your memory limit is set to !memory_limit; Drush needs as much memory to run as Drupal.  !php_ini_msg', ['!memory_limit' => $php_memory_limit / (DRUSH_KILOBYTE*DRUSH_KILOBYTE) . 'M', '!php_ini_msg' => _drush_php_ini_loaded_file_message()]));
   }
 }
 

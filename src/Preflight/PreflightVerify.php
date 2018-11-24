@@ -1,7 +1,6 @@
 <?php
 namespace Drush\Preflight;
 
-use Drush\Drush;
 use Drush\Config\Environment;
 use Drush\Utils\StringUtils;
 

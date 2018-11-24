@@ -2,15 +2,12 @@
 
 namespace Drush\Drupal\Commands\core;
 
-use Consolidation\AnnotatedCommand\CommandData;
-use Drupal\Component\Gettext\PoStreamWriter;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\State\StateInterface;
 use Drupal\language\Entity\ConfigurableLanguage;
-use Drupal\locale\PoDatabaseReader;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 
@@ -119,7 +116,7 @@ class LocaleCommands extends DrushCommands
             }
         }
 
-        if ($passed_langcodes = $translationOptions['langcodes']) {
+        if ($passed_langcodes = $options['langcodes']) {
             $langcodes = array_intersect($langcodes, explode(',', $passed_langcodes));
             // @todo Not selecting any language code in the user interface results in
             //   all translations being updated, so we mimick that behavior here.

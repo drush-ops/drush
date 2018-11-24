@@ -27,14 +27,6 @@ class RedispatchToSiteLocal
      */
     public static function redispatchIfSiteLocalDrush($argv, $root, $vendor, PreflightLog $preflightLog)
     {
-        // Special check for the SUT, which is always a site-local install.
-        // The symlink that Composer sets up can make it challenging to
-        // detect that the vendor directory is in the same place. Do not
-        // set DRUSH_AUTOLOAD_PHP unless you know what you are doing! This
-        // mechanism should be reserved for use with test fixtures.
-        if (getenv('DRUSH_AUTOLOAD_PHP')) {
-            return false;
-        }
 
         // Try to find the site-local Drush. If there is none, we are done.
         $siteLocalDrush = static::findSiteLocalDrush($root);

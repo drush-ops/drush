@@ -200,6 +200,8 @@ function drush_set_config_special_contexts(&$options) {
  *
  * @return
  *   An associative array of the settings specified in the request context.
+ *
+ * @deprecated
  */
 function drush_set_context($context, $value) {
   $cache =& drush_get_context($context);
@@ -235,6 +237,8 @@ function drush_set_context($context, $value) {
  *   If context is not supplied, the entire context cache will be returned.
  *   Otherwise only the requested context will be returned.
  *   If the context does not exist yet, it will be initialized to an empty array.
+ *
+ * @deprecated
  */
 function &drush_get_context($context = NULL, $default = NULL) {
   static $cache = [];
@@ -273,6 +277,8 @@ function drush_set_arguments($arguments) {
  *   the array will not include the command name.
  *
  * @see drush_set_arguments()
+ *
+ * @deprecated
  */
 function drush_get_arguments() {
   return drush_get_context('arguments');
@@ -294,6 +300,8 @@ function drush_set_command($command) {
 
 /**
  * Return the command being executed.
+ *
+ * @deprecated()
  */
 function drush_get_command() {
   return drush_get_context('command');
@@ -312,6 +320,8 @@ function drush_get_command() {
  *   Optional. The value to return if the option has not been set
  * @param context
  *   Optional. The context to check for the option. If this is set, only this context will be searched.
+ *
+ * @deprecated
  */
 function drush_get_option($option, $default = NULL, $context = NULL) {
   // Uncomment when fumigating.

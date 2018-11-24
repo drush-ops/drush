@@ -4,8 +4,6 @@ namespace Drush\Symfony;
 
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Exception\InvalidArgumentException;
-use Symfony\Component\Console\Exception\LogicException;
 
 /**
  * This is an InputDefinition that allows any option to be considered valid.

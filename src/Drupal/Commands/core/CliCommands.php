@@ -4,11 +4,11 @@ namespace Drush\Drupal\Commands\core;
 
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
-use Drush\Log\LogLevel;
 use Drush\Psysh\DrushCommand;
 use Drush\Psysh\DrushHelpCommand;
 use Drupal\Component\Assertion\Handle;
 use Drush\Psysh\Shell;
+use Drush\Runtime\Runtime;
 use Psy\Configuration;
 use Psy\VersionUpdater\Checker;
 use Webmozart\PathUtil\Path;
@@ -35,10 +35,12 @@ class CliCommands extends DrushCommands
      * @aliases php,core:cli,core-cli
      * @option $version-history Use command history based on Drupal version
      *   (Default is per site).
+     * @option $cwd Changes the working directory of the shell
+     *   (Default is the project root directory)
      * @topics docs:repl
      * @remote-tty
      */
-    public function cli(array $options = ['version-history' => false])
+    public function cli(array $options = ['version-history' => false, 'cwd' => null])
     {
         $configuration = new Configuration();
 
@@ -66,7 +68,7 @@ class CliCommands extends DrushCommands
         // PsySH will never return control to us, but our shutdown handler will still
         // run after the user presses ^D.  Mark this command as completed to avoid a
         // spurious error message.
-        drush_set_context('DRUSH_EXECUTION_COMPLETED', true);
+        Runtime::setCompleted();
 
         // Run the terminate event before the shell is run. Otherwise, if the shell
         // is forking processes (the default), any child processes will close the
@@ -77,6 +79,12 @@ class CliCommands extends DrushCommands
         // DrupalBoot classes except DrupalBoot8.
         if ($bootstrap = Drush::bootstrap()) {
             $bootstrap->terminate();
+        }
+
+        // If the cwd option is passed, lets change the current working directory to wherever
+        // the user wants to go before we lift psysh.
+        if ($options['cwd']) {
+            chdir($options['cwd']);
         }
 
         $shell->run();

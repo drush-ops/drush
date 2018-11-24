@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Commands\core;
 
+use Consolidation\SiteProcess\Util\Escape;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
@@ -44,7 +45,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
             }
         }
 
-        $exec = drush_get_editor();
+        $editor = drush_get_editor();
         if (count($all) == 1) {
             $filepath = current($all);
         } else {
@@ -55,7 +56,12 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
                 $filepath = substr($filepath, 0, $pos);
             }
         }
-        return drush_shell_exec_interactive($exec, $filepath, $filepath);
+
+        // A bit awkward due to backward compat.
+        $cmd = sprintf($editor, Escape::shellArg($filepath));
+        $process = Drush::process($cmd);
+        $process->setTty(true);
+        $process->mustRun();
     }
 
     public function load($headers = true)

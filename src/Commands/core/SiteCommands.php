@@ -7,7 +7,7 @@ use Drush\SiteAlias\LegacyAliasConverter;
 use Consolidation\SiteAlias\SiteAliasFileDiscovery;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
-use Consolidation\OutputFormatters\StructuredData\ListDataFromKeys;
+use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Input\Input;
 use Symfony\Component\Console\Output\Output;
@@ -103,9 +103,10 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * @param string $site Site alias or site specification.
      * @param array $options
      *
-     * @return \Consolidation\OutputFormatters\StructuredData\ListDataFromKeys
+     * @return \Consolidation\OutputFormatters\StructuredData\UnstructuredListData
      * @throws \Exception
      * @aliases sa
+     * @filter-default-field id
      * @usage drush site:alias
      *   List all alias records known to drush.
      * @usage drush site:alias @dev
@@ -117,16 +118,15 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
     {
         // First check to see if the user provided a specification that matches
         // multiple sites.
-        list($locationPart, $sitePart) = $this->splitLocationFromSite($site);
-        $aliasList = $this->siteAliasManager()->getMultiple($sitePart, $locationPart);
+        $aliasList = $this->siteAliasManager()->getMultiple($site);
         if (is_array($aliasList) && !empty($aliasList)) {
-            return new ListDataFromKeys($this->siteAliasExportList($aliasList, $options));
+            return new UnstructuredListData($this->siteAliasExportList($aliasList, $options));
         }
 
         // Next check for a specific alias or a site specification.
         $aliasRecord = $this->siteAliasManager()->get($site);
         if ($aliasRecord !== false) {
-            return new ListDataFromKeys([$aliasRecord->name() => $aliasRecord->export()]);
+            return new UnstructuredListData([$aliasRecord->name() => $aliasRecord->export()]);
         }
 
         if ($site) {
@@ -134,21 +134,6 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         } else {
             $this->logger()->success('No site aliases found.');
         }
-    }
-
-    /**
-     * splitLocationFromSite returns the location and the site if the
-     * site alias is in the form '@location.site'. Otherwise it just
-     * returns the site unchanged, without a location.
-     */
-    protected function splitLocationFromSite($site)
-    {
-        $parts = explode('.', ltrim($site, '@'));
-
-        if (count($parts) == 2) {
-            return [$parts[0], '@' . $parts[1]];
-        }
-        return [null, $site];
     }
 
     /**

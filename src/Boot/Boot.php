@@ -6,8 +6,6 @@ namespace Drush\Boot;
  * Defines the interface for a Boot classes.  Any CMS that wishes
  * to work with Drush should extend BaseBoot.  If the CMS has a
  * Drupal-Compatibility layer, then it should extend DrupalBoot.
- *
- * @todo Doc these methods.
  */
 interface Boot
 {

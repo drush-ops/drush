@@ -1,8 +1,8 @@
 <?php
 namespace Drush\Commands\pm;
 
-use Composer\Semver\Comparator;
-use Consolidation\AnnotatedCommand\CommandData;
+use Composer\Semver\Semver;
+use Consolidation\AnnotatedCommand\CommandResult;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -14,12 +14,6 @@ use Webmozart\PathUtil\Path;
  */
 class SecurityUpdateCommands extends DrushCommands
 {
-
-    /**
-     * @var array
-     */
-    protected $securityUpdates;
-
     /**
      * Check Drupal Composer packages for pending security updates.
      *
@@ -35,24 +29,21 @@ class SecurityUpdateCommands extends DrushCommands
      * @field-labels
      *   name: Name
      *   version: Installed Version
-     *   min-version: Suggested version
-     * @default-fields name,version,min-version
+     * @default-fields name,version
      *
+     * @filter-default-field name
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      *
      * @throws \Exception
      */
     public function security()
     {
-        $this->securityUpdates = [];
         $security_advisories_composer_json = $this->fetchAdvisoryComposerJson();
         $composer_lock_data = $this->loadSiteComposerLock();
-        $this->registerAllSecurityUpdates($composer_lock_data, $security_advisories_composer_json);
-        if ($this->securityUpdates) {
-            // @todo Modernize.
-            drush_set_context('DRUSH_EXIT_CODE', DRUSH_FRAMEWORK_ERROR);
-            $result = new RowsOfFields($this->securityUpdates);
-            return $result;
+        $updates = $this->calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json);
+        if ($updates) {
+            $this->suggestComposerCommand($updates);
+            return CommandResult::dataWithExitCode(new RowsOfFields($updates), self::EXIT_FAILURE);
         } else {
             $this->logger()->success("<info>There are no outstanding security updates for Drupal projects.</info>");
         }
@@ -60,21 +51,17 @@ class SecurityUpdateCommands extends DrushCommands
 
     /**
      * Emit suggested Composer command for security updates.
-     *
-     * @hook post-command pm:security
      */
-    public function suggestComposerCommand($result, CommandData $commandData)
+    public function suggestComposerCommand($updates)
     {
-        if (!empty($this->securityUpdates)) {
-            $suggested_command = 'composer require ';
-            foreach ($this->securityUpdates as $package) {
-                $suggested_command .= $package['name'] . ':^' . $package['min-version'] . ' ';
-            }
-            $suggested_command .= '--update-with-dependencies';
-            $this->logger()->warning("One or more of your dependencies has an outstanding security update. Please apply update(s) immediately.");
-            $this->logger()->notice("Try running: <comment>$suggested_command</comment>");
-            $this->logger()->notice("If that fails due to a conflict then you must update one or more root dependencies.");
+        $suggested_command = 'composer require ';
+        foreach ($updates as $package) {
+            $suggested_command .= $package['name'] . ' ';
         }
+        $suggested_command .= '--update-with-dependencies';
+        $this->logger()->warning('One or more of your dependencies has an outstanding security update.');
+        $this->logger()->notice("Try running: <comment>$suggested_command</comment>");
+        $this->logger()->notice("If that fails due to a conflict then you must update one or more root dependencies.");
     }
 
     /**
@@ -127,114 +114,29 @@ class SecurityUpdateCommands extends DrushCommands
     }
 
     /**
-     * Register all available security updates in $this->securityUpdates.
+     * Return  available security updates.
+     *
      * @param array $composer_lock_data
      *   The contents of the local Drupal application's composer.lock file.
      * @param array $security_advisories_composer_json
      *   The composer.json array from drupal-security-advisories.
-     */
-    protected function registerAllSecurityUpdates(
-        $composer_lock_data,
-        $security_advisories_composer_json
-    ) {
-        foreach ($composer_lock_data['packages'] as $key => $package) {
-            $name = $package['name'];
-            $this->registerPackageSecurityUpdates($security_advisories_composer_json, $name, $package);
-        }
-    }
-
-    /**
-     * Determines if update is avaiable based on a conflict constraint.
-     *
-     * @param string $conflict_constraint
-     *   The constraint for the conflicting, insecure package version.
-     *   E.g., <1.0.0.
-     * @param array $package
-     *   The package to be evaluated.
-     * @param string $name
-     *   The human readable display name for the package.
      *
      * @return array
-     *   An associative array containing name, version, and min-version keys.
      */
-    public static function determineUpdatesFromConstraint(
-        $conflict_constraint,
-        $package,
-        $name
-    ) {
-        // Only parse constraints that follow pattern like "<1.0.0".
-        if (substr($conflict_constraint, 0, 1) == '<') {
-            $min_version = substr($conflict_constraint, 1);
-            if (Comparator::lessThan(
-                $package['version'],
-                $min_version
-            )) {
-                return [
+    protected function calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json)
+    {
+        $updates = [];
+        $both = array_merge($composer_lock_data['packages-dev'], $composer_lock_data['packages']);
+        $conflict = $security_advisories_composer_json['conflict'];
+        foreach ($both as $package) {
+            $name = $package['name'];
+            if (!empty($conflict[$name]) && Semver::satisfies($package['version'], $security_advisories_composer_json['conflict'][$name])) {
+                $updates[$name] = [
                     'name' => $name,
                     'version' => $package['version'],
-                    // Assume that conflict constraint of <1.0.0 indicates that
-                    // 1.0.0 is the available, secure version.
-                    'min-version' => $min_version,
                 ];
             }
-        } // Compare exact versions that are insecure.
-        elseif (preg_match(
-            '/^[[:digit:]](?![-*><=~ ])/',
-            $conflict_constraint
-        )) {
-            $exact_version = $conflict_constraint;
-            if (Comparator::equalTo(
-                $package['version'],
-                $exact_version
-            )) {
-                $version_parts = explode('.', $package['version']);
-                if (count($version_parts) == 3) {
-                    $version_parts[2]++;
-                    $min_version = implode('.', $version_parts);
-                    return [
-                        'name' => $name,
-                        'version' => $package['version'],
-                        // Assume that conflict constraint of 1.0.0 indicates that
-                        // 1.0.1 is the available, secure version.
-                        'min-version' => $min_version,
-                    ];
-                }
-            }
         }
-        return [];
-    }
-
-    /**
-     * Registers available security updates for a given package.
-     *
-     * @param array $security_advisories_composer_json
-     *   The composer.json array from drupal-security-advisories.
-     * @param string $name
-     *   The human readable display name for the package.
-     * @param array $package
-     *   The package to be evaluated.
-     */
-    protected function registerPackageSecurityUpdates(
-        $security_advisories_composer_json,
-        $name,
-        $package
-    ) {
-        if (empty($this->securityUpdates[$name]) &&
-            !empty($security_advisories_composer_json['conflict'][$name])) {
-            $conflict_constraints = explode(
-                ',',
-                $security_advisories_composer_json['conflict'][$name]
-            );
-            foreach ($conflict_constraints as $conflict_constraint) {
-                $available_update = $this->determineUpdatesFromConstraint(
-                    $conflict_constraint,
-                    $package,
-                    $name
-                );
-                if ($available_update) {
-                    $this->securityUpdates[$name] = $available_update;
-                }
-            }
-        }
+        return $updates;
     }
 }
