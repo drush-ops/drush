@@ -363,17 +363,6 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                </di
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    TRUE
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_bootstrapDrupalDatabaseHasTable">bootstrapDrupalDatabaseHasTable</a>($required_tables)
-        
-                                            <p>Test to see if the Drupal database has a specified
-table or tables.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
                     
                 </div>
                 <div class="col-md-8 type">
@@ -1031,61 +1020,8 @@ phase.</p>                            </div>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_bootstrapDrupalDatabaseHasTable">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot.php#L225">line 225</a></div>
-        <code>                    TRUE
-    <strong>bootstrapDrupalDatabaseHasTable</strong>($required_tables)
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>Test to see if the Drupal database has a specified
-table or tables.</p>                    <p>This is a bootstrap helper function designed to be called
-from the bootstrapDrupalDatabaseValidate() methods of
-derived DrupalBoot classes.  If a database exists, but is
-empty, then the Drupal database bootstrap will fail.  To
-prevent this situation, we test for some table that is needed
-in an ordinary bootstrap, and return FALSE from the validate
-function if it does not exist, so that we do not attempt to
-start the database bootstrap.</p>
-
-<p>Note that we must manually do our own prefix testing here,
-because the existing wrappers we have for handling prefixes
-depend on bootstrapping to the "database" phase, and therefore
-are not available to validate this same phase.</p>                            </div>
-                <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td></td>
-                <td>$required_tables</td>
-                <td>Array of table names, or string with one table name</td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>TRUE</td>
-            <td>if all required tables exist in the database.</td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_bootstrapDrupalDatabase">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot.php#L248">line 248</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot.php#L177">line 177</a></div>
         <code>                    
     <strong>bootstrapDrupalDatabase</strong>()
         </code>
@@ -1106,7 +1042,7 @@ are not available to validate this same phase.</p>                            </
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapDrupalFull">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot.php#L258">line 258</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot.php#L187">line 187</a></div>
         <code>                    
     <strong>bootstrapDrupalFull</strong>()
         </code>

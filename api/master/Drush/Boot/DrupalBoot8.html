@@ -397,17 +397,6 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                </di
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    TRUE
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_bootstrapDrupalDatabaseHasTable">bootstrapDrupalDatabaseHasTable</a>($required_tables)
-        
-                                            <p>Test to see if the Drupal database has a specified
-table or tables.</p>                </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Boot/DrupalBoot.html#method_bootstrapDrupalDatabaseHasTable"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
                     
                 </div>
                 <div class="col-md-8 type">
@@ -631,7 +620,7 @@ if the user did not explicitly specify a URI.</p>                               
             </div>
                     <div class="method-item">
                     <h3 id="method_validRoot">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L54">line 54</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L55">line 55</a></div>
         <code>                    TRUE
     <strong>validRoot</strong>($path)
         </code>
@@ -674,7 +663,7 @@ one class will return TRUE for any given $path.</p>                            <
             </div>
                     <div class="method-item">
                     <h3 id="method_getVersion">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L68">line 68</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L69">line 69</a></div>
         <code>                    string|NULL
     <strong>getVersion</strong>($drupal_root)
         </code>
@@ -943,7 +932,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                    
             </div>
                     <div class="method-item">
                     <h3 id="method_terminate">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L243">line 243</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L263">line 263</a></div>
         <code>                    void
     <strong>terminate</strong>()
         </code>
@@ -1007,7 +996,7 @@ phase index constant (e.g. DRUSH_BOOTSTRAP_DRUPAL_FULL).</p>                    
             </div>
                     <div class="method-item">
                     <h3 id="method_confPath">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L81">line 81</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L82">line 82</a></div>
         <code>                    
     <strong>confPath</strong>($require_settings = true, $reset = false)
         </code>
@@ -1088,7 +1077,7 @@ out more context about the codebase, such as the version of Drupal.</p>         
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapDrupalSiteValidate">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L111">line 111</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L112">line 112</a></div>
         <code>                    
     <strong>bootstrapDrupalSiteValidate</strong>()
         </code>
@@ -1132,7 +1121,7 @@ Additionally we load an optional drush.yml file in the site directory.</p>      
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapDrupalConfiguration">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L166">line 166</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L186">line 186</a></div>
         <code>                    
     <strong>bootstrapDrupalConfiguration</strong>(<abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData = null)
         </code>
@@ -1163,7 +1152,7 @@ Additionally we load an optional drush.yml file in the site directory.</p>      
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapDrupalDatabaseValidate">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L155">line 155</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L156">line 156</a></div>
         <code>                    
     <strong>bootstrapDrupalDatabaseValidate</strong>()
         </code>
@@ -1185,61 +1174,8 @@ phase.</p>                            </div>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_bootstrapDrupalDatabaseHasTable">
-        <div class="location">in <a href="../../Drush/Boot/DrupalBoot.html#method_bootstrapDrupalDatabaseHasTable"><abbr title="Drush\Boot\DrupalBoot">DrupalBoot</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot.php#L225">line 225</a></div>
-        <code>                    TRUE
-    <strong>bootstrapDrupalDatabaseHasTable</strong>($required_tables)
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>Test to see if the Drupal database has a specified
-table or tables.</p>                    <p>This is a bootstrap helper function designed to be called
-from the bootstrapDrupalDatabaseValidate() methods of
-derived DrupalBoot classes.  If a database exists, but is
-empty, then the Drupal database bootstrap will fail.  To
-prevent this situation, we test for some table that is needed
-in an ordinary bootstrap, and return FALSE from the validate
-function if it does not exist, so that we do not attempt to
-start the database bootstrap.</p>
-
-<p>Note that we must manually do our own prefix testing here,
-because the existing wrappers we have for handling prefixes
-depend on bootstrapping to the "database" phase, and therefore
-are not available to validate this same phase.</p>                            </div>
-                <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td></td>
-                <td>$required_tables</td>
-                <td>Array of table names, or string with one table name</td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>TRUE</td>
-            <td>if all required tables exist in the database.</td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_bootstrapDrupalDatabase">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L160">line 160</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L180">line 180</a></div>
         <code>                    
     <strong>bootstrapDrupalDatabase</strong>()
         </code>
@@ -1260,7 +1196,7 @@ are not available to validate this same phase.</p>                            </
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapDrupalFull">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L192">line 192</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L212">line 212</a></div>
         <code>                    
     <strong>bootstrapDrupalFull</strong>()
         </code>
@@ -1348,7 +1284,7 @@ are not available to validate this same phase.</p>                            </
             </div>
                     <div class="method-item">
                     <h3 id="method_getRequest">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L33">line 33</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L34">line 34</a></div>
         <code>                    <abbr title="Symfony\Component\HttpFoundation\Request">Request</abbr>
     <strong>getRequest</strong>()
         </code>
@@ -1376,7 +1312,7 @@ are not available to validate this same phase.</p>                            </
             </div>
                     <div class="method-item">
                     <h3 id="method_setRequest">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L41">line 41</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L42">line 42</a></div>
         <code>                    
     <strong>setRequest</strong>(<abbr title="Symfony\Component\HttpFoundation\Request">Request</abbr> $request)
         </code>
@@ -1405,7 +1341,7 @@ are not available to validate this same phase.</p>                            </
             </div>
                     <div class="method-item">
                     <h3 id="method_getKernel">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L49">line 49</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L50">line 50</a></div>
         <code>                    <abbr title="Drupal\Core\DrupalKernelInterface">DrupalKernelInterface</abbr>
     <strong>getKernel</strong>()
         </code>
@@ -1433,7 +1369,7 @@ are not available to validate this same phase.</p>                            </
             </div>
                     <div class="method-item">
                     <h3 id="method_addLogger">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L93">line 93</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L94">line 94</a></div>
         <code>                    
     <strong>addLogger</strong>()
         </code>
@@ -1452,7 +1388,7 @@ are not available to validate this same phase.</p>                            </
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapDrupalCore">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L106">line 106</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L107">line 107</a></div>
         <code>                    
     <strong>bootstrapDrupalCore</strong>($drupal_root)
         </code>
@@ -1481,7 +1417,7 @@ are not available to validate this same phase.</p>                            </
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapDoDrupalSite">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L138">line 138</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L139">line 139</a></div>
         <code>                    
     <strong>bootstrapDoDrupalSite</strong>()
         </code>
@@ -1503,7 +1439,7 @@ of the drush drupal site bootstrap.</p>                                         
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapDrupalConfigurationValidate">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L143">line 143</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Boot/DrupalBoot8.php#L144">line 144</a></div>
         <code>                    
     <strong>bootstrapDrupalConfigurationValidate</strong>()
         </code>
