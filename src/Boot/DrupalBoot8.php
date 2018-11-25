@@ -3,6 +3,7 @@
 namespace Drush\Boot;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
+use Drupal\Core\Database\Database;
 use Drush\Log\DrushLog;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -154,7 +155,26 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
     public function bootstrapDrupalDatabaseValidate()
     {
-        return parent::bootstrapDrupalDatabaseValidate() && $this->bootstrapDrupalDatabaseHasTable('key_value');
+        // Drupal requires PDO, and Drush requires php 5.6+ which ships with PDO
+        // but PHP may be compiled with --disable-pdo.
+        if (!class_exists('\PDO')) {
+            $this->logger->log(LogLevel::BOOTSTRAP, dt('PDO support is required.'));
+            return false;
+        }
+
+        try {
+            // @todo Log queries in addition to logging failure messages?
+            $connection = Database::getConnection();
+            $connection->query('SELECT 1;');
+        } catch (\Exception $e) {
+            $this->logger->log(LogLevel::BOOTSTRAP, 'Unable to connect to database. More information may be available by running `drush status`. This may occur when Drush is trying to bootstrap a site that has not been installed or does not have a configured database. In this case you can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line. See `drush topic docs-aliases` for details.');
+            return false;
+        }
+        if (!$connection->schema()->tableExists('key_value')) {
+            $this->logger->log(LogLevel::BOOTSTRAP, 'key_value table not found. Database may be empty.');
+            return false;
+        }
+        return true;
     }
 
     public function bootstrapDrupalDatabase()
