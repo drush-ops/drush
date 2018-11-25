@@ -78,4 +78,15 @@ trait ExecTrait
         }
         return false;
     }
+
+    /*
+     * Determine if program exists on user's PATH.
+     *
+     * @return bool
+     */
+    public static function programExists($program) {
+        $process = Drush::process(['command', '-v', $program]);
+        $process->run();
+        return $process->isSuccessful();
+    }
 }
