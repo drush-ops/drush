@@ -172,52 +172,6 @@ abstract class DrupalBoot extends BaseBoot
     }
 
     /**
-     * Test to see if the Drupal database has a specified
-     * table or tables.
-     *
-     * This is a bootstrap helper function designed to be called
-     * from the bootstrapDrupalDatabaseValidate() methods of
-     * derived DrupalBoot classes.  If a database exists, but is
-     * empty, then the Drupal database bootstrap will fail.  To
-     * prevent this situation, we test for some table that is needed
-     * in an ordinary bootstrap, and return FALSE from the validate
-     * function if it does not exist, so that we do not attempt to
-     * start the database bootstrap.
-     *
-     * Note that we must manually do our own prefix testing here,
-     * because the existing wrappers we have for handling prefixes
-     * depend on bootstrapping to the "database" phase, and therefore
-     * are not available to validate this same phase.
-     *
-     * @param $required_tables
-     *   Array of table names, or string with one table name
-     *
-     * @return TRUE if all required tables exist in the database.
-     *
-     * @deprecated
-     *   No longer used by Drush core.
-     */
-    public function bootstrapDrupalDatabaseHasTable($required_tables)
-    {
-
-        $sql = SqlBase::create();
-        $spec = $sql->getDbSpec();
-        $prefix = isset($spec['prefix']) ? $spec['prefix'] : null;
-        if (!is_array($prefix)) {
-            $prefix = ['default' => $prefix];
-        }
-        foreach ((array)$required_tables as $required_table) {
-            $prefix_key = array_key_exists($required_table, $prefix) ? $required_table : 'default';
-            $table_name = $prefix[$prefix_key] . $required_table;
-            if (!$sql->alwaysQuery("SELECT 1 FROM $table_name LIMIT 1;", null, drush_bit_bucket())) {
-                $this->logger->notice('Missing database table: '. $table_name);
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * Bootstrap the Drupal database.
      */
     public function bootstrapDrupalDatabase()

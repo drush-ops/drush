@@ -171,7 +171,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             return false;
         }
         try {
-            $connection->query('SELECT * from {key_value};');
+            $connection->schema()->tableExists('key_value');
         } catch (\Exception $e) {
             $this->logger->log(LogLevel::BOOTSTRAP, 'key_value table not found. Database may be empty.');
             return false;
