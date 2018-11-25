@@ -11,6 +11,41 @@ use Webmozart\PathUtil\Path;
 class LocaleTest extends CommandUnishTestCase
 {
 
+    public function testLocaleExport()
+    {
+        $this->setUpDrupal(1, true);
+        $this->drush('pm:enable', ['language', 'locale']);
+        $this->drush('language:add', ['nl'], ['skip-translations' => null]);
+
+        $source = Path::join(__DIR__, '/resources/devel.nl.po');
+
+        $this->drush('locale:import', ['nl', $source]);
+        $this->assertTranslation('Devel', 'NL Devel', 'nl', 0);
+
+        // Export standard translations.
+        $this->drush('locale:export', ['nl'], ['types' => 'not-customized']);
+        $this->assertGettextTranslation('Devel', 'NL Devel');
+
+        // Export customized translations.
+        $this->drush('sql:query', ["UPDATE locales_target SET translation = 'CUSTOM Devel', customized = 1"]);
+        $this->assertTranslation('Devel', 'CUSTOM Devel', 'nl', 1);
+        $this->drush('locale:export', ['nl'], ['types' => 'customized']);
+
+        // Export untranslated strings.
+        $this->drush('sql:query', ["INSERT locales_source SET source = 'Something untranslated'"]);
+        $this->drush('locale:export', ['nl'], ['types' => 'not-translated']);
+
+        // Export all.
+        $this->drush('locale:export', ['nl']);
+        $this->assertGettextTranslation('Devel', 'CUSTOM Devel');
+        $this->assertGettextTranslation('Something untranslated', '');
+
+        // Export template file.
+        $this->drush('locale:export', ['nl'], ['template' => null]);
+        $this->assertGettextTranslation('Devel', '');
+        $this->assertGettextTranslation('Something untranslated', '');
+    }
+
     public function testLocaleImport()
     {
         $this->setUpDrupal(1, true);
@@ -66,5 +101,43 @@ class LocaleTest extends CommandUnishTestCase
         $output = $this->getOutputAsList();
         $expected = "/$source.*$context.*$translation.*$langcode.*$custom/";
         $this->assertRegExp($expected, array_pop($output));
+    }
+
+    /**
+     * @param $source
+     * @param $translation
+     * @param $langcode
+     *
+     * @throws \Exception
+     */
+    private function assertGettextTranslation($source, $translation)
+    {
+        if (strlen($source) > 71 || strlen($translation) > 71)
+        {
+            throw new \Exception('This assertion can handle strings up to 71 characters.');
+        }
+        $output = $this->getOutputAsList();
+
+        $expectedSource = "msgid \"$source\"";
+        $expectedTranslation = "msgstr \"$translation\"";
+        $sourceLine = 0;
+
+        // The gettext format has source (msgid) and translation (msgstr)
+        // strings on consecutive lines.
+        foreach ($output as $key => $row)
+        {
+            if ($row === $expectedSource) {
+                $sourceLine = $key;
+                break;
+            }
+        }
+        if ($sourceLine)
+        {
+            $this->assertEquals($expectedTranslation, $output[$sourceLine + 1]);
+        }
+        else
+        {
+            $this->fail(sprintf('Source string "%s" not found', $source));
+        }
     }
 }
