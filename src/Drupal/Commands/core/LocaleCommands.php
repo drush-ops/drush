@@ -2,12 +2,15 @@
 
 namespace Drush\Drupal\Commands\core;
 
+use Consolidation\AnnotatedCommand\CommandData;
+use Drupal\Component\Gettext\PoStreamWriter;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\State\StateInterface;
 use Drupal\language\Entity\ConfigurableLanguage;
+use Drupal\locale\PoDatabaseReader;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 
@@ -155,7 +158,7 @@ class LocaleCommands extends DrushCommands
 
         drush_backend_batch_process();
     }
-  
+
     /**
      * Exports to a gettext translation file.
      *
@@ -213,7 +216,7 @@ class LocaleCommands extends DrushCommands
             throw new \Exception(dt('No need for --types, when --template is used, see help for more information.'));
         }
     }
- 
+
     /**
      * Imports to a gettext translation file.
      *
