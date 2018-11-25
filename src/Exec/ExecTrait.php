@@ -84,7 +84,8 @@ trait ExecTrait
      *
      * @return bool
      */
-    public static function programExists($program) {
+    public static function programExists($program)
+    {
         $process = Drush::process(['command', '-v', $program]);
         $process->run();
         return $process->isSuccessful();
