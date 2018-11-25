@@ -112,8 +112,7 @@ class LocaleTest extends CommandUnishTestCase
      */
     private function assertGettextTranslation($source, $translation)
     {
-        if (strlen($source) > 71 || strlen($translation) > 71)
-        {
+        if (strlen($source) > 71 || strlen($translation) > 71) {
             throw new \Exception('This assertion can handle strings up to 71 characters.');
         }
         $output = $this->getOutputAsList();
@@ -124,19 +123,15 @@ class LocaleTest extends CommandUnishTestCase
 
         // The gettext format has source (msgid) and translation (msgstr)
         // strings on consecutive lines.
-        foreach ($output as $key => $row)
-        {
+        foreach ($output as $key => $row) {
             if ($row === $expectedSource) {
                 $sourceLine = $key;
                 break;
             }
         }
-        if ($sourceLine)
-        {
+        if ($sourceLine) {
             $this->assertEquals($expectedTranslation, $output[$sourceLine + 1]);
-        }
-        else
-        {
+        } else {
             $this->fail(sprintf('Source string "%s" not found', $source));
         }
     }
