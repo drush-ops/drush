@@ -175,9 +175,7 @@ class LocaleCommands extends DrushCommands
      * @usage drush locale:export nl --types=customized,not-customized > nl.po
      *   Export the Dutch customized and not customized translations.
      * @usage drush locale:export --template > drupal.pot
-     *   Export the basic template file to translate.
-     * @usage drush locale:export --template nl > nl.pot
-     *   Export the Dutch template file to translate.
+     *   Export the source strings only as template file for translation.
      * @aliases locale-export
      * @validate-module-enabled locale
      */
