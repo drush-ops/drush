@@ -3,13 +3,14 @@
 namespace Unish;
 
 use Drush\Commands\core\XhprofCommands;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for xhCommands
  *
  * @group base
  */
-class XhUnitCase extends UnishTestCase
+class XhProfTest extends TestCase
 {
 
   /**
