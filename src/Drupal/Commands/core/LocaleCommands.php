@@ -186,7 +186,7 @@ class LocaleCommands extends DrushCommands
         $language = $this->getTranslatableLanguage($langcode);
         $poreader_options = [];
 
-        if (!(bool)$options['template']) {
+        if (!$options['template']) {
             $poreader_options = $this->convertTypesToPoDbReaderOptions(StringUtils::csvToArray($options['types']));
         }
 
@@ -194,7 +194,7 @@ class LocaleCommands extends DrushCommands
         if ($this->writePoFile($file_uri, $language, $poreader_options)) {
             $this->output()->writeln(file_get_contents($file_uri));
         } else {
-            $this->logger()->notice(dt('Nothing to export.'));
+            $this->logger()->success(dt('Nothing to export.'));
         }
     }
 
@@ -456,7 +456,7 @@ class LocaleCommands extends DrushCommands
         }
 
         $header = $reader->getHeader();
-        $header->setProjectName(drush_get_context('DRUSH_DRUPAL_SITE'));
+        $header->setProjectName($this->configFactory->get('system.site')->get('name'));
         $language_name = ($language) ? $language->getName() : '';
         $header->setLanguageName($language_name);
 
