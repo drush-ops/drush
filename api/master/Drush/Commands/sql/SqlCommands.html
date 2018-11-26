@@ -220,10 +220,10 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    TRUE
+                    bool
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_startBrowser">startBrowser</a>($uri = null, $sleep = false, $port = false, $browser = true)
+                    <a href="#method_startBrowser">startBrowser</a>($uri = null, int $sleep = 0, bool $port = false, bool $browser = true)
         
                                             <p>Starts a background browser/tab for the current site or a specified URL.</p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Exec/ExecTrait.html#method_startBrowser"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a></small></div>
@@ -470,9 +470,9 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_startBrowser">
-        <div class="location">in <a href="../../../Drush/Exec/ExecTrait.html#method_startBrowser"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Exec/ExecTrait.php#L23">line 23</a></div>
-        <code>                    TRUE
-    <strong>startBrowser</strong>($uri = null, $sleep = false, $port = false, $browser = true)
+        <div class="location">in <a href="../../../Drush/Exec/ExecTrait.html#method_startBrowser"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Exec/ExecTrait.php#L25">line 25</a></div>
+        <code>                    bool
+    <strong>startBrowser</strong>($uri = null, int $sleep = 0, bool $port = false, bool $browser = true)
         </code>
     </h3>
     <div class="details">
@@ -488,20 +488,22 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <tr>
                 <td></td>
                 <td>$uri</td>
-                <td></td>
+                <td>Optional URI or site path to open in browser. If omitted, or if a site path
+  is specified, the current site home page uri will be prepended if the site's
+  hostname resolves.</td>
             </tr>
                     <tr>
-                <td></td>
+                <td>int</td>
                 <td>$sleep</td>
                 <td></td>
             </tr>
                     <tr>
-                <td></td>
+                <td>bool</td>
                 <td>$port</td>
                 <td></td>
             </tr>
                     <tr>
-                <td></td>
+                <td>bool</td>
                 <td>$browser</td>
                 <td></td>
             </tr>
@@ -512,8 +514,9 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
                     <table class="table table-condensed">
         <tr>
-            <td>TRUE</td>
-            <td>if browser was opened, FALSE if browser was disabled by the user or a,
+            <td>bool</td>
+            <td>TRUE if browser was opened, FALSE if browser was disabled by the user or a,
+  TRUE if browser was opened, FALSE if browser was disabled by the user or a,
   default browser could not be found.</td>
         </tr>
     </table>
@@ -526,7 +529,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_programExists">
-        <div class="location">in <a href="../../../Drush/Exec/ExecTrait.html#method_programExists"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Exec/ExecTrait.php#L88">line 88</a></div>
+        <div class="location">in <a href="../../../Drush/Exec/ExecTrait.html#method_programExists"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Exec/ExecTrait.php#L90">line 90</a></div>
         <code>        static            
     <strong>programExists</strong>($program)
         </code>
