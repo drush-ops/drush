@@ -3,13 +3,14 @@
 namespace Unish;
 
 use \Drush\Preflight\ArgsRemapper;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the Arguments Remapper.
  *
  * @group base
  */
-class ArgsRemapperTest extends CommandUnishTestCase
+class ArgsRemapperTest extends TestCase
 {
 
     /**
@@ -29,7 +30,7 @@ class ArgsRemapperTest extends CommandUnishTestCase
     }
 
     /**
-     * Provides argumens for ::ArgsRemapper
+     * Provides arguments for ::ArgsRemapper
      */
     public function argsProvider()
     {
