@@ -78,6 +78,9 @@ class RunserverCommands extends DrushCommands
         $process = Drush::process([$php, '-S', $addr . ':' . $uri['port'], $router]);
         $process->setWorkingDirectory(Drush::bootstrapManager()->getRoot());
         $process->setTty(true);
+        if ($options['quiet']) {
+            $process->disableOutput();
+        }
         $process->mustRun();
     }
 
