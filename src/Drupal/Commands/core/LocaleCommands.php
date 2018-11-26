@@ -194,7 +194,7 @@ class LocaleCommands extends DrushCommands
         if ($this->writePoFile($file_uri, $language, $poreader_options)) {
             $this->output()->writeln(file_get_contents($file_uri));
         } else {
-            $this->logger()->notice(dt('Nothing to export.'));
+            $this->logger()->success(dt('Nothing to export.'));
         }
     }
 
