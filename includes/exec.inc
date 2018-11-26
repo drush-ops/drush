@@ -190,6 +190,8 @@ function _drush_shell_exec($args, $interactive = FALSE, $simulate = false) {
  * a command on this system.
  *
  * @return bool
+ *
+ * @deprecated See \Drush\Exec\ExecTrait::programExists
  */
 function drush_which($command) {
   $process = Drush::process(['which', $command]);
