@@ -456,7 +456,7 @@ class LocaleCommands extends DrushCommands
         }
 
         $header = $reader->getHeader();
-        $header->setProjectName(drush_get_context('DRUSH_DRUPAL_SITE'));
+        $header->setProjectName($this->configFactory->get('system.site')->get('name'));
         $language_name = ($language) ? $language->getName() : '';
         $header->setLanguageName($language_name);
 
