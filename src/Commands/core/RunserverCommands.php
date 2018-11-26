@@ -12,6 +12,8 @@ class RunserverCommands extends DrushCommands
 
     use ExecTrait;
 
+    protected $uri;
+
     /**
      * Runs PHP's built-in http server for development.
      *
@@ -58,7 +60,7 @@ class RunserverCommands extends DrushCommands
         $hostname = $uri['host'];
         $addr = $uri['addr'];
 
-        drush_set_context('DRUSH_URI', 'http://' . $hostname . ':' . $uri['port']);
+        $this->uri = 'http://' . $hostname . ':' . $uri['port'];
 
         // We delete any registered files here, since they are not caught by Ctrl-C.
         _drush_delete_registered_files();
@@ -73,7 +75,7 @@ class RunserverCommands extends DrushCommands
 
 
         $link = Url::fromUserInput('/' . $path, ['absolute' => true])->toString();
-        $this->logger()->notice(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site !site', ['!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $path, '!site' => drush_get_context('DRUSH_DRUPAL_SITE', 'default')]));
+        $this->logger()->notice(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site, !site', ['!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $path, '!site' => Drush::bootstrap()->confPath()]));
         // Start php built-in server.
         if (!empty($path)) {
             // Start a browser if desired. Include a 2 second delay to allow the server to come up.
