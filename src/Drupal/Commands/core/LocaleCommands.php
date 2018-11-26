@@ -186,7 +186,7 @@ class LocaleCommands extends DrushCommands
         $language = $this->getTranslatableLanguage($langcode);
         $poreader_options = [];
 
-        if (!(bool)$options['template']) {
+        if (!$options['template']) {
             $poreader_options = $this->convertTypesToPoDbReaderOptions(StringUtils::csvToArray($options['types']));
         }
 
