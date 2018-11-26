@@ -5,6 +5,7 @@ use Consolidation\SiteProcess\Util\Escape;
 use Drush\Drush;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
+use Drush\Exec\ExecTrait;
 use Drush\Log\LogLevel;
 use Robo\LoadAllTasks;
 use Robo\Contract\IOAwareInterface;
@@ -13,6 +14,7 @@ use Robo\Contract\BuilderAwareInterface;
 class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwareInterface
 {
     use LoadAllTasks;
+    use ExecTrait;
 
     /**
      * Enrich the bash startup file with bash aliases and a smart command prompt.
@@ -89,7 +91,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
         // If Drush is not in the $PATH, then figure out which
         // path to add so that Drush can be found globally.
         $add_path = $options['add-path'];
-        if ((!drush_which("drush") || $add_path) && ($add_path !== false)) {
+        if ((!self::programExists('drush') || $add_path) && ($add_path !== false)) {
             $drush_path = $this->findPathToDrush();
             $drush_path = preg_replace("%^" . preg_quote($home) . "/%", '$HOME/', $drush_path);
             $pattern = "$drush_path";
