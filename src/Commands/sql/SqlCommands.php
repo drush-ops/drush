@@ -1,18 +1,21 @@
 <?php
 namespace Drush\Commands\sql;
 
+use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Database\Database;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
+use Drush\Exec\ExecTrait;
 use Drush\Sql\SqlBase;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 
 class SqlCommands extends DrushCommands
 {
+    use ExecTrait;
 
     /**
-     * Print database connection details using print_r().
+     * Print database connection details.
      *
      * @command sql:conf
      * @aliases sql-conf
@@ -228,5 +231,33 @@ class SqlCommands extends DrushCommands
             throw new \Exception('Unable to dump database. Rerun with --debug to see any error message.');
         }
         return new PropertyList(['path' => $return]);
+    }
+
+    /**
+     * Assert that `mysql` or similar are on the user's PATH.
+     *
+     * @hook validate
+     * @param CommandData $commandData
+     * @return bool
+     * @throws \Exception
+     */
+    public function validate(CommandData $commandData)
+    {
+        if (in_array($commandData->annotationData()->get('command'), ['sql:connect', 'sql:conf'])) {
+            // These commands don't require a program.
+            return;
+        }
+
+        $sql = SqlBase::create($commandData->options());
+        $program = $sql->command();
+
+        // Remove environment variables (eg. PGPASSFILE=) before testing program.
+        // @todo Remove once postgres is passing env variables via Process.
+        $program = preg_replace('#^([A-Z0-9]+=.+? )+#', '', $program);
+
+        if (!$this->programExists($program)) {
+            $this->logger->warning(dt('The shell command \'!command\' is required but cannot be found. Please install it and retry.', ['!command' => $program]));
+            return false;
+        }
     }
 }

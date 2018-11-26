@@ -11,6 +11,7 @@ use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\StorageInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
+use Drush\Exec\ExecTrait;
 use Drush\Utils\FsUtils;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,6 +22,7 @@ use Webmozart\PathUtil\Path;
 
 class ConfigCommands extends DrushCommands
 {
+    use ExecTrait;
 
     /**
      * @var ConfigFactoryInterface
@@ -507,12 +509,13 @@ class ConfigCommands extends DrushCommands
         $temp_source_storage = new FileStorage($temp_source_dir);
         self::copyConfig($source_storage, $temp_source_storage);
 
-        $prefix = 'diff';
-        if (drush_program_exists('git') && $output->isDecorated()) {
-            $prefix = 'git diff --color=always';
+        $prefix = ['diff'];
+        if (self::programExists('git') && $output->isDecorated()) {
+            $prefix = ['git', 'diff', '--color=always'];
         }
-        $args = [$prefix, '-u', $temp_destination_dir, $temp_source_dir];
+        $args = array_merge($prefix, ['-u', $temp_destination_dir, $temp_source_dir]);
         $process = Drush::process($args);
-        return drush_shell_exec_output();
+        $process->run();
+        return $process->getOutput();
     }
 }

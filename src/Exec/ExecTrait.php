@@ -62,7 +62,7 @@ trait ExecTrait
             }
 
             if ($browser) {
-                drush_log(dt('Opening browser !browser at !uri', ['!browser' => $browser, '!uri' => $uri]), LogLevel::INFO);
+                $this->logger()->info(dt('Opening browser !browser at !uri', ['!browser' => $browser, '!uri' => $uri]));
                 $args = [];
                 if (!Drush::simulate()) {
                     if ($sleep) {
@@ -77,5 +77,18 @@ trait ExecTrait
             }
         }
         return false;
+    }
+
+    /*
+     * Determine if program exists on user's PATH.
+     *
+     * @return bool
+     *   True if program exists on PATH.
+     */
+    public static function programExists($program)
+    {
+        $process = Drush::process("command -v $program");
+        $process->run();
+        return $process->isSuccessful();
     }
 }
