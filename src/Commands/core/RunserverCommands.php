@@ -42,11 +42,11 @@ class RunserverCommands extends DrushCommands
      *   Use a default (would be specified in your drushrc) that starts runserver on port 8080, and opens a browser to the front page. Set path to a single hyphen path in argument to prevent opening browser for this session.
      * @usage drush rs :9000/admin
      *   Start runserver on 127.0.0.1, port 9000, and open /admin in browser. Note that you need a colon when you specify port and path, but no IP.
+     * @usage drush --quiet rs
+     *   Silence logging the printing of web requests to the console.
      */
     public function runserver($uri = null, $options = ['default-server' => self::REQ, 'browser' => true, 'dns' => false])
     {
-        global $base_url;
-
         // Determine active configuration.
         $uri = $this->uri($uri, $options);
         if (!$uri) {
@@ -64,15 +64,6 @@ class RunserverCommands extends DrushCommands
 
         // We delete any registered files here, since they are not caught by Ctrl-C.
         _drush_delete_registered_files();
-
-        // We set the effective base_url, since we have now detected the current site,
-        // and need to ensure generated URLs point to our runserver host.
-        // We also pass in the effective base_url to our auto_prepend_script via the
-        // CGI environment. This allows Drupal to generate working URLs to this http
-        // server, whilst finding the correct multisite from the HTTP_HOST header.
-        $base_url = 'http://' . $addr . ':' . $uri['port'];
-        $env['RUNSERVER_BASE_URL'] = $base_url;
-
 
         $link = Url::fromUserInput('/' . $path, ['absolute' => true])->toString();
         $this->logger()->notice(dt('HTTP server listening on !addr, port !port (see http://!hostname:!port/!path), serving site, !site', ['!addr' => $addr, '!hostname' => $hostname, '!port' => $uri['port'], '!path' => $path, '!site' => Drush::bootstrap()->confPath()]));
