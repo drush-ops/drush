@@ -51,7 +51,7 @@ jobs:
     steps:
       - checkout
       - run: $HOME/drush/.circleci/setup.sh
-      - run: composer install
+      - run: ./scenaro.lock/install php5
       - run: $HOME/drush/.circleci/patch.sh
       - run: composer functional
 
