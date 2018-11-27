@@ -38,13 +38,12 @@ jobs:
       - run: composer require --dev drupal/core:8.7.x-dev --no-update
       - run: composer config platform.php 7.2
       - run: composer install
-      - run: $HOME/drush/.circleci/patch.sh 8.7.x
       - run: composer functional
 
   build_56:
     <<: *defaults
     docker:
-      - image: circleci/php:5.6-apache-node
+      - image: circleci/5.6.37-apache-jessie
         environment:
           - MYSQL_HOST=127.0.0.1
       - image: circleci/mysql:5.7.24
