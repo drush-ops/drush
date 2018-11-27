@@ -24,7 +24,7 @@ matrix:
     - php: 7.2
     - php: 7.0.11
     - php: 5.6
-      env: 'DEPENDENCIES=lowest'
+      env: 'SCENARIO=php5 DEPENDENCIES=lowest'
 
 env:
   global:
@@ -50,7 +50,7 @@ before_script:
 
 script:
   - composer unit
-  - composer integration
+#  - composer integration
 
 after_success:
   # Publish updated API documentation on every push to the master branch
