@@ -43,7 +43,9 @@ jobs:
   build_56:
     <<: *defaults
     docker:
-      - image: circleci/5.6.37-apache-jessie
+      # circleci/php:5.6.38-apache-node appears broken.
+      # Put this back to circleci/php:5.6-apache-node when .37 no longer available
+      - image: circleci/php:5.6.37-apache-node
         environment:
           - MYSQL_HOST=127.0.0.1
       - image: circleci/mysql:5.7.24
