@@ -16,7 +16,7 @@ jobs:
       - image: circleci/php:7.1-apache-node
         environment:
           - MYSQL_HOST=127.0.0.1
-      - image: circleci/mysql:5.7.18
+      - image: circleci/mysql:5.7.24
     steps:
       - checkout
       - run: $HOME/drush/.circleci/setup.sh
@@ -30,7 +30,7 @@ jobs:
       - image: circleci/php:7.2-apache-node
         environment:
           - MYSQL_HOST=127.0.0.1
-      - image: circleci/mysql:5.7.18
+      - image: circleci/mysql:5.7.24
     steps:
       - checkout
       - run: $HOME/drush/.circleci/setup.sh
@@ -47,7 +47,7 @@ jobs:
       - image: circleci/php:5.6-apache-node
         environment:
           - MYSQL_HOST=127.0.0.1
-      - image: circleci/mysql:5.7.18
+      - image: circleci/mysql:5.7.24
     steps:
       - checkout
       - run: $HOME/drush/.circleci/setup.sh
