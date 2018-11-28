@@ -92,7 +92,7 @@ class RoleCommands extends DrushCommands
     {
         $perms = _convert_csv_to_array($permissions);
         user_role_revoke_permissions($machine_name, $perms);
-        $this->logger()->success(dt('Removed "!permissions" to "!role"', ['!permissions' => $permissions, '!role' => $result->name]));
+        $this->logger()->success(dt('Removed "!permissions" to "!role"', ['!permissions' => $permissions, '!role' => $machine_name]));
         drush_drupal_cache_clear_all();
     }
 
