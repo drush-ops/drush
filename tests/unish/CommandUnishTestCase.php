@@ -145,18 +145,27 @@ abstract class CommandUnishTestCase extends UnishTestCase
     }
 
     /**
+     * Borrowed from \Symfony\Component\Process\Exception\ProcessTimedOutException
+     *
      * @return string
      */
     public function buildProcessMessage()
     {
-        $message = '';
-        if ($output = $this->process->getOutput()) {
-            $message = "\n\nCommand output:\n" . $output;
+        $error = sprintf("\n\nExit Code: %s(%s)\n\nWorking directory: %s",
+            $this->process->getCommandLine(),
+            $this->process->getExitCode(),
+            $this->process->getExitCodeText(),
+            $this->process->getWorkingDirectory()
+        );
+
+        if (!$this->process->isOutputDisabled()) {
+            $error .= sprintf("\n\nOutput:\n================\n%s\n\nError Output:\n================\n%s",
+                $this->process->getOutput(),
+                $this->process->getErrorOutput()
+            );
         }
-        if ($stderr = $this->process->getErrorOutput()) {
-            $message = "\n\nCommand stderr:\n" . $stderr;
-        }
-        return $message;
+
+        return $error;
     }
 
     /**

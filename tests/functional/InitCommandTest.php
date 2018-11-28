@@ -24,10 +24,9 @@ class InitCommandCase extends CommandUnishTestCase
 
         // Next we test to see if there is evidence that those operations worked.
         $home = Path::join($this->getSandbox(), 'home');
-        $this->log($this->buildProcessMessage());
-        $this->assertFileExists("$home/.drush/drush.yml");
-        $this->assertFileExists("$home/.drush/drush.bashrc");
-        $this->assertFileExists("$home/.bashrc");
+        $this->assertFileExists("$home/.drush/drush.yml", $this->buildProcessMessage());
+        $this->assertFileExists("$home/.drush/drush.bashrc", $this->buildProcessMessage());
+        $this->assertFileExists("$home/.bashrc", $this->buildProcessMessage());
 
         // Check to see if the .bashrc file sources our drush.bashrc file,
         // and whether it adds the path to self::getDrush() to the $PATH
