@@ -53,6 +53,11 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
         // If there is no ~/.drush/drush.yml, copy example there.
         if (!is_file($drush_config_file)) {
             $collection->taskWriteToFile($drush_config_file)->textFromFile($example_configuration);
+            $collection->progressMessage('Copied example.drush.yml to {path}', ['path' => $drush_config_file], LogLevel::OK);
+            $this->logger()->notice('Copied drush.yml to ' . $drush_config_file);
+        }
+        else {
+            $this->logger()->error($drush_config_file . ' already exists');
         }
 
         // Decide whether we want to add our Bash commands to
