@@ -16,7 +16,7 @@ jobs:
       - image: circleci/php:7.1-apache-node
         environment:
           - MYSQL_HOST=127.0.0.1
-      - image: circleci/mysql:5.7.18
+      - image: circleci/mysql:5.7.24
     steps:
       - checkout
       - run: $HOME/drush/.circleci/setup.sh
@@ -30,7 +30,7 @@ jobs:
       - image: circleci/php:7.2-apache-node
         environment:
           - MYSQL_HOST=127.0.0.1
-      - image: circleci/mysql:5.7.18
+      - image: circleci/mysql:5.7.24
     steps:
       - checkout
       - run: $HOME/drush/.circleci/setup.sh
@@ -38,20 +38,21 @@ jobs:
       - run: composer require --dev drupal/core:8.7.x-dev --no-update
       - run: composer config platform.php 7.2
       - run: composer install
-      - run: $HOME/drush/.circleci/patch.sh 8.7.x
       - run: composer functional
 
   build_56:
     <<: *defaults
     docker:
-      - image: circleci/php:5.6-apache-node
+      # circleci/php:5.6.38-apache-node appears broken.
+      # Put this back to circleci/php:5.6-apache-node when .37 no longer available
+      - image: circleci/php:5.6.37-apache-node
         environment:
           - MYSQL_HOST=127.0.0.1
-      - image: circleci/mysql:5.7.18
+      - image: circleci/mysql:5.7.24
     steps:
       - checkout
       - run: $HOME/drush/.circleci/setup.sh
-      - run: composer install
+      - run: .scenarios.lock/install php5
       - run: $HOME/drush/.circleci/patch.sh
       - run: composer functional
 

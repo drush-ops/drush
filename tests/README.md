@@ -2,7 +2,7 @@ Drush's test suite (aka Unish) is based on [PHPUnit](http://www.phpunit.de). In 
 high quality, our tests are run on every push. 
 
 - Functional tests at [CircleCi](https://circleci.com/gh/drush-ops/drush) 
-- Unit tests at [Travis](https://travis-ci.org/drush-ops/drush)
+- Unit and integration tests at [Travis](https://travis-ci.org/drush-ops/drush)
 - Coding standards at [Shippable](https://app.shippable.com/github/drush-ops/drush/).
 
 Usage
@@ -10,8 +10,12 @@ Usage
 1. git clone https://github.com/drush-ops/drush.git
 1. cd drush
 1. composer install
-1. Review the configuration settings in [tests/phpunit.xml.dist](phpunit.xml.dist). If customization is needed, copy to phpunit.xml and edit away.
-1. Run test suite: `composer test`
+1. Review the configuration settings in:
+   - [tests/unit/phpunit.xml.dist](unit/phpunit.xml.dist). 
+   - [tests/integration/phpunit.xml.dist](integration/phpunit.xml.dist). 
+   - [tests/functional/phpunit.xml.dist](functional/phpunit.xml.dist).
+1. If customization is needed, copy phpunit.xml.dist to phpunit.xml and edit away.
+1. Run all test suites: `composer test`
 
 Docker
 ----------
@@ -24,6 +28,16 @@ Drush's own tests may be run within provided Docker containers (see docker-compo
 
 Advanced usage
 ---------
+- Run only one test suite
+  - `composer unit`
+  - `composer integration`
+  - `composer functional`
 - Run only tests matching a regex: `composer functional -- --filter testUserRole`
 - Skip slow tests (usually those with network usage): `composer functional -- --exclude-group slow`
 - XML results: `composer functional -- --log-junit results.xml`
+
+About the Test Suites
+---------
+- Unit tests operate on functions that take values and return results without creating side effects. No database connection is required to run these tests, and no Drupal site is set up.
+- Integration tests set up a test dependency injection container and operate by calling the Symfony Application APIs directly. A Drupal site called the System Under Test is set up and used for the tests. The SUT is set up only once, bootstrapped at the beginning of the test execution, and then is re-used for all tests. Integration tests therefore cannot be destructive.
+- Functional tests operate by `exec`ing the Drush executable. All functional tests therefore run in a separate process. The Drupal System Under Test is set up every time it is needed by any functional test. It is therefore okay if a functional test changes the state of the SUT.
