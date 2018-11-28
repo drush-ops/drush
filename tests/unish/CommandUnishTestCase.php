@@ -262,7 +262,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
         // that tests might cause Drupal to send.
 
         $php_options = (array_key_exists('PHP_OPTIONS', $env)) ? $env['PHP_OPTIONS'] . " " : "";
-        // @todo The PHP Options below are not yet honored by execute(). See .travis.yml for an alternative way.
         $env['PHP_OPTIONS'] = "${php_options}-d sendmail_path='true'";
         $cmd = implode(' ', $exec);
         $return = $this->execute($cmd, $expected_return, $cd, $env);

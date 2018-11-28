@@ -20,6 +20,7 @@ jobs:
       - image: circleci/mysql:5.7.24
     steps:
       - checkout
+      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: composer install
       - run: $HOME/drush/.circleci/patch.sh
       - run: composer functional
@@ -34,6 +35,7 @@ jobs:
       - image: circleci/mysql:5.7.24
     steps:
       - checkout
+      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: composer remove --dev webflo/drupal-core-strict --no-update
       - run: composer require --dev drupal/core:8.7.x-dev --no-update
       - run: composer config platform.php 7.2
@@ -50,6 +52,7 @@ jobs:
       - image: circleci/mysql:5.7.24
     steps:
       - checkout
+      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: .scenarios.lock/install php5
       - run: $HOME/drush/.circleci/patch.sh
       - run: composer functional
