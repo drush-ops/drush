@@ -2,14 +2,18 @@
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\Options\FormatterOptions;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drupal\user\Entity\Role;
 use Drush\Commands\DrushCommands;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Drush;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\Utils\StringUtils;
 
-class RoleCommands extends DrushCommands
+class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+    use SiteAliasManagerAwareTrait;
+
     /**
      * Create a new role.
      *
@@ -73,7 +77,7 @@ class RoleCommands extends DrushCommands
         $perms = StringUtils::csvToArray($permissions);
         user_role_grant_permissions($machine_name, $perms);
         $this->logger()->success(dt('Added "!permissions" to "!role"', ['!permissions' => $permissions, '!role' => $machine_name]));
-        Drush::drush(Drush::aliasManager()->getSelf(), 'cache-rebuild');
+        Drush::drush($this->siteAliasManager()->getSelf(), 'cache-rebuild');
     }
 
     /**
@@ -93,7 +97,7 @@ class RoleCommands extends DrushCommands
         $perms = StringUtils::csvToArray($permissions);
         user_role_revoke_permissions($machine_name, $perms);
         $this->logger()->success(dt('Removed "!permissions" to "!role"', ['!permissions' => $permissions, '!role' => $machine_name]));
-        Drush::drush(Drush::aliasManager()->getSelf(), 'cache-rebuild');
+        Drush::drush($this->siteAliasManager()->getSelf(), 'cache-rebuild');
     }
 
     /**
