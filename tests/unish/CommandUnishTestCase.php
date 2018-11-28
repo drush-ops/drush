@@ -151,7 +151,8 @@ abstract class CommandUnishTestCase extends UnishTestCase
      */
     public function buildProcessMessage()
     {
-        $error = sprintf("\n\nExit Code: %s(%s)\n\nWorking directory: %s",
+        $error = sprintf(
+            "\n\nExit Code: %s(%s)\n\nWorking directory: %s",
             $this->process->getCommandLine(),
             $this->process->getExitCode(),
             $this->process->getExitCodeText(),
@@ -159,7 +160,8 @@ abstract class CommandUnishTestCase extends UnishTestCase
         );
 
         if (!$this->process->isOutputDisabled()) {
-            $error .= sprintf("\n\nOutput:\n================\n%s\n\nError Output:\n================\n%s",
+            $error .= sprintf(
+                "\n\nOutput:\n================\n%s\n\nError Output:\n================\n%s",
                 $this->process->getOutput(),
                 $this->process->getErrorOutput()
             );
