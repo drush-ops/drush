@@ -45,6 +45,9 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
         $example_bashrc = $examples_dir . "/example.bashrc";
         $example_prompt = $examples_dir . "/example.prompt.sh";
 
+        /**
+         * That's right. Robo collections and tasks are usable in Drush.
+         */
         $collection = $this->collectionBuilder();
 
         // Create a ~/.drush directory if it does not yet exist
