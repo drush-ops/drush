@@ -152,7 +152,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
     public function buildProcessMessage()
     {
         $error = sprintf(
-            "\n\nExit Code: %s(%s)\n\nWorking directory: %s",
+            "%s\n\nExit Code: %s(%s)\n\nWorking directory: %s",
             $this->process->getCommandLine(),
             $this->process->getExitCode(),
             $this->process->getExitCodeText(),
