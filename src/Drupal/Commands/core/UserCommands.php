@@ -266,12 +266,12 @@ class UserCommands extends DrushCommands
      * @command user:cancel
      *
      * @param string $names A comma delimited list of user names.
-     * @option delete-content Delete all content created by the user
+     * @option delete-content Delete the user, and all content created by the user
      * @aliases ucan,user-cancel
      * @usage drush user:cancel username
      *   Cancel the user account with the name username and anonymize all content created by that user.
      * @usage drush user:cancel --delete-content username
-     *   Cancel the user account with the name username and delete all content created by that user.
+     *   Delete the user account with the name username and delete all content created by that user.
      */
     public function cancel($names, $options = ['delete-content' => false])
     {
