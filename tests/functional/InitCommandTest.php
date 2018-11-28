@@ -24,6 +24,7 @@ class InitCommandCase extends CommandUnishTestCase
 
         // Next we test to see if there is evidence that those operations worked.
         $home = Path::join($this->getSandbox(), 'home');
+        $this->log($this->buildProcessMessage());
         $this->assertFileExists("$home/.drush/drush.yml");
         $this->assertFileExists("$home/.drush/drush.bashrc");
         $this->assertFileExists("$home/.bashrc");
