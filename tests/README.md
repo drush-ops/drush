@@ -40,4 +40,4 @@ About the Test Suites
 ---------
 - Unit tests operate on functions that take values and return results without creating side effects. No database connection is required to run these tests, and no Drupal site is set up.
 - Integration tests set up a test dependency injection container and operate by calling the Symfony Application APIs directly. A Drupal site called the System Under Test is set up and used for the tests. The SUT is set up only once, bootstrapped at the beginning of the test execution, and then is re-used for all tests. Integration tests therefore cannot be destructive.
-- Functional tests operate by `exec`ing the Drush executable. All functional tests therefore run in a spearte process. The Drupal System Under Test is set up every time it is needed by any functional test. It is therefore okay if a functional test changes the state of the SUT.
+- Functional tests operate by `exec`ing the Drush executable. All functional tests therefore run in a separate process. The Drupal System Under Test is set up every time it is needed by any functional test. It is therefore okay if a functional test changes the state of the SUT.
