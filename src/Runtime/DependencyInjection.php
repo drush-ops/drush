@@ -19,6 +19,13 @@ use Drush\Command\DrushCommandInfoAlterer;
  */
 class DependencyInjection
 {
+    protected $handlers = [];
+
+    public function desiredHandlers($handlerList)
+    {
+        $this->handlers = $handlerList;
+    }
+
     /**
      * Set up our dependency injection container.
      */
@@ -59,6 +66,17 @@ class DependencyInjection
         return $container;
     }
 
+    /**
+     * Make sure we are notified on exit, and when bad things happen.
+     */
+    public function installHandlers($container)
+    {
+        foreach ($this->handlers as $handlerId) {
+            $handler = $container->get($handlerId);
+            $handler->installHandler();
+        }
+    }
+
     protected function addDrushServices(ContainerInterface $container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager)
     {
         // Override Robo's logger with our own
@@ -96,6 +114,10 @@ class DependencyInjection
         $container->share('commandDiscovery', 'Consolidation\AnnotatedCommand\CommandFileDiscovery')
             ->withMethodCall('addSearchLocation', ['CommandFiles'])
             ->withMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
+
+        // Error and Shutdown handlers
+        $container->share('errorHandler', 'Drush\Runtime\ErrorHandler');
+        $container->share('shutdownHandler', 'Drush\Runtime\ShutdownHandler');
 
         // Add inflectors. @see \Drush\Boot\BaseBoot::inflect
         $container->inflector(\Drush\Boot\AutoloaderAwareInterface::class)

@@ -92,11 +92,10 @@ class Runtime
             $this->preflight->aliasManager()
         );
 
-        // Our termination handlers depend on classes we set up via DependencyInjection,
-        // so we do not want to enable it any earlier than this.
-        // TODO: Inject a termination handler into this class, so that we don't
-        // need to add these e.g. when testing.
-        $this->setTerminationHandlers($container);
+        // Our termination handlers are set up via dependency injection,
+        // as they require classes that are set up in the DI container.
+        // We therefore cannot configure them any earlier than this.
+        $this->di->installHandlers($container);
 
         // Now that the DI container has been set up, the Application object will
         // have a reference to the bootstrap manager et. al., so we may use it
@@ -124,22 +123,6 @@ class Runtime
         Runtime::setExitCode($status);
 
         return $status;
-    }
-
-    /**
-     * Make sure we are notified on exit, and when bad things happen.
-     */
-    protected function setTerminationHandlers($container)
-    {
-        // TODO: Inject error handlers if we want
-        // them. Install them here.
-        $errorHandler = new ErrorHandler();
-        $errorHandler->setLogger($container->get('logger'));
-        $errorHandler->installHandler();
-
-        $shutdownHandler = new ShutdownHandler();
-        $shutdownHandler->setLogger($container->get('logger'));
-        $shutdownHandler->installHandler();
     }
 
     /**

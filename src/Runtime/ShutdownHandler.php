@@ -24,7 +24,7 @@ use Psr\Log\LoggerAwareTrait;
  * result of drush_get_error() if it wasn't.
  *
  */
-class ShutdownHandler implements LoggerAwareInterface
+class ShutdownHandler implements LoggerAwareInterface, HandlerInterface
 {
     use LoggerAwareTrait;
 

@@ -17,7 +17,7 @@ use Psr\Log\LoggerAwareTrait;
  * Log PHP errors to the Drush log. This is in effect until Drupal's error
  * handler takes over.
  */
-class ErrorHandler implements LoggerAwareInterface
+class ErrorHandler implements LoggerAwareInterface, HandlerInterface
 {
     use LoggerAwareTrait;
 
