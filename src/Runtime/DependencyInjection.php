@@ -22,7 +22,7 @@ class DependencyInjection
     /**
      * Set up our dependency injection container.
      */
-    public static function initContainer(
+    public function initContainer(
         Application $application,
         ConfigInterface $config,
         InputInterface $input,
@@ -45,22 +45,21 @@ class DependencyInjection
         \Robo\Robo::configureContainer($container, $application, $config, $input, $output);
         $container->add('container', $container);
 
-        static::addDrushServices($container, $loader, $drupalFinder, $aliasManager);
+        $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager);
 
         // Store the container in the \Drush object
         Drush::setContainer($container);
-        \Robo\Robo::setContainer($container);
 
         // Change service definitions as needed for our application.
-        static::alterServicesForDrush($container, $application);
+        $this->alterServicesForDrush($container, $application);
 
         // Inject needed services into our application object.
-        static::injectApplicationServices($container, $application);
+        $this->injectApplicationServices($container, $application);
 
         return $container;
     }
 
-    protected static function addDrushServices(ContainerInterface $container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager)
+    protected function addDrushServices(ContainerInterface $container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager)
     {
         // Override Robo's logger with our own
         $container->share('logger', 'Drush\Log\Logger')
@@ -105,7 +104,7 @@ class DependencyInjection
             ->invokeMethod('setSiteAliasManager', ['site.alias.manager']);
     }
 
-    protected static function alterServicesForDrush(ContainerInterface $container, Application $application)
+    protected function alterServicesForDrush(ContainerInterface $container, Application $application)
     {
         // Add our own callback to the hook manager
         $hookManager = $container->get('hookManager');
@@ -129,7 +128,7 @@ class DependencyInjection
         $commandProcessor->setPassExceptions(true);
     }
 
-    protected static function injectApplicationServices(ContainerInterface $container, Application $application)
+    protected function injectApplicationServices(ContainerInterface $container, Application $application)
     {
         $application->setLogger($container->get('logger'));
         $application->setBootstrapManager($container->get('bootstrap.manager'));

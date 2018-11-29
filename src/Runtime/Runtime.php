@@ -20,6 +20,9 @@ class Runtime
     /** @var Preflight */
     protected $preflight;
 
+    /** @var DependencyInjection */
+    protected $di;
+
     const DRUSH_RUNTIME_COMPLETED_NAMESPACE = 'runtime.execution.completed';
     const DRUSH_RUNTIME_EXIT_CODE_NAMESPACE = 'runtime.exit_code';
 
@@ -28,9 +31,10 @@ class Runtime
      *
      * @param Preflight $preflight the preflight object
      */
-    public function __construct(Preflight $preflight)
+    public function __construct(Preflight $preflight, DependencyInjection $di)
     {
         $this->preflight = $preflight;
+        $this->di = $di;
     }
 
     /**
@@ -41,7 +45,8 @@ class Runtime
     public function run($argv)
     {
         try {
-            $status = $this->doRun($argv);
+            $output = new \Symfony\Component\Console\Output\ConsoleOutput();
+            $status = $this->execute($argv, $output);
         } catch (\Exception $e) {
             $status = $e->getCode();
             $message = $e->getMessage();
@@ -55,7 +60,7 @@ class Runtime
     /**
      * Start up Drush
      */
-    protected function doRun($argv)
+    public function execute($argv, $output)
     {
         // Do the preflight steps
         $status = $this->preflight->preflight($argv);
@@ -74,11 +79,10 @@ class Runtime
 
         // Create the Symfony Application et. al.
         $input = $this->preflight->createInput();
-        $output = new \Symfony\Component\Console\Output\ConsoleOutput();
         $application = new \Drush\Application('Drush Commandline Tool', Drush::getVersion());
 
         // Set up the DI container.
-        $container = DependencyInjection::initContainer(
+        $container = $this->di->initContainer(
             $application,
             $this->preflight->config(),
             $input,

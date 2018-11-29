@@ -17,7 +17,7 @@ class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
         // Run some garbage php with a syntax error.
         $this->drush('ev', ['exit(0);']);
 
-        $this->assertContains("Drush command terminated abnormally.", $this->getErrorOutput(), 'Error handler logged a message.');
+        $this->assertContains("Drush command terminated abnormally.", $this->getErrorOutput(), 'Error handler did not log a message.');
     }
 
     /**
@@ -28,6 +28,6 @@ class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
         // Access a missing array element
         $this->drush('ev', ['$a = []; print $a["b"];']);
 
-        $this->assertEquals('', $this->getErrorOutput(), 'Error handler prevented message.');
+        $this->assertEquals('', $this->getErrorOutput(), 'Error handler did not suppress deprecated message.');
     }
 }
