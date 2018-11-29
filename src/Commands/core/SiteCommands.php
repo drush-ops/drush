@@ -11,7 +11,6 @@ use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Input\Input;
 use Symfony\Component\Console\Output\Output;
-use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
 
 class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterface
@@ -45,8 +44,6 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      */
     public function siteSet($site = '@none')
     {
-
-        $fs = new Filesystem();
         $filename = $this->getConfig()->get('runtime.site-file-current');
         if ($filename) {
             $last_site_filename = $this->getConfig()->get('runtime.site-file-previous');
@@ -83,10 +80,10 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
                 }
                 $success_message = dt('Site set to @site', ['@site' => $site]);
                 if ($site == '@none' || $site == '') {
-                    if ($fs->remove($filename)) {
+                    if (drush_delete_dir($filename)) {
                         $this->logger()->success(dt('Site unset.'));
                     }
-                } elseif ($fs->mkdir(dirname($filename))) {
+                } elseif (drush_mkdir(dirname($filename), true)) {
                     if (file_put_contents($filename, $site)) {
                         $this->logger()->success($success_message);
                         $this->logger()->info(dt('Site information stored in @file', ['@file' => $filename]));
@@ -179,8 +176,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         $legacyAliasConverter->setSimulate(Drush::simulate());
 
         // Find and convert.
-        $fs = new Filesystem();
-        $fs->mkdir($destination);
+        drush_mkdir($destination, true);
         $legacyFiles = $discovery->findAllLegacyAliasFiles();
         if ($convertedFiles = $legacyAliasConverter->convert()) {
             $args = ['!num' => count($convertedFiles), '!dest' => $destination];
