@@ -83,7 +83,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
                 }
                 $success_message = dt('Site set to @site', ['@site' => $site]);
                 if ($site == '@none' || $site == '') {
-                    if ( $fs->remove($filename)) {
+                    if ($fs->remove($filename)) {
                         $this->logger()->success(dt('Site unset.'));
                     }
                 } elseif ($fs->mkdir(dirname($filename))) {
