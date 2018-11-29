@@ -18,8 +18,6 @@ class DrupalDirectoryCommands extends DrushCommands implements SiteAliasManagerA
 
     public function __construct()
     {
-        // TODO: once the BackendInvoke service exists, inject it here
-        // and use it to get the path evaluator
         $this->pathEvaluator = new BackendPathEvaluator();
     }
 
@@ -50,7 +48,7 @@ class DrupalDirectoryCommands extends DrushCommands implements SiteAliasManagerA
         // %blah into the path to the item referred to by the key 'blah'.
         // If there is no such key, then no replacement is done.  In the
         // case of the dd command, we will consider it an error if
-        // any keys are -not- replaced in _drush_core_directory.
+        // any keys are -not- replaced.
         if ($path && (strpos($path, '%') === false)) {
             return $path;
         } else {
