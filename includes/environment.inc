@@ -15,47 +15,6 @@ use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 
 /**
- * Log PHP errors to the Drush log. This is in effect until Drupal's error
- * handler takes over.
- */
-function drush_error_handler($errno, $message, $filename, $line) {
-  // E_DEPRECATED was added in PHP 5.3. Drupal 6 will not fix all the
-  // deprecated errors, but suppresses them. So we suppress them as well.
-  if (defined('E_DEPRECATED')) {
-    $errno = $errno & ~E_DEPRECATED;
-  }
-
-  // "error_reporting" is usually set in php.ini, but may be changed by
-  // drush_errors_on() and drush_errors_off().
-  if ($errno & error_reporting()) {
-    // By default we log notices.
-    $type = Drush::config()->get('runtime.php.notices', LogLevel::INFO);
-    $halt_on_error = Drush::config()->get('runtime.php.halt-on-error', (drush_drupal_major_version() != 6));
-
-    // Bitmask value that constitutes an error needing to be logged.
-    $error = E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR;
-    if ($errno & $error) {
-      $type = 'error';
-    }
-
-    // Bitmask value that constitutes a warning being logged.
-    $warning = E_WARNING | E_CORE_WARNING | E_COMPILE_WARNING | E_USER_WARNING;
-    if ($errno & $warning) {
-      $type = LogLevel::WARNING;
-    }
-
-    drush_log($message . ' ' . basename($filename) . ':' . $line, $type);
-
-    if ($errno == E_RECOVERABLE_ERROR && $halt_on_error) {
-      drush_log(dt('E_RECOVERABLE_ERROR encountered; aborting. To ignore recoverable errors, run again with --no-halt-on-error'), 'error');
-      exit(DRUSH_APPLICATION_ERROR);
-    }
-
-    return TRUE;
-  }
-}
-
-/**
  * Converts a Windows path (dir1\dir2\dir3) into a Unix path (dir1/dir2/dir3).
  * Also converts a cygwin "drive emulation" path (/cygdrive/c/dir1) into a
  * proper drive path, still with Unix slashes (c:/dir1).

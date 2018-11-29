@@ -3,6 +3,8 @@ namespace Drush\Runtime;
 
 use Drush\Drush;
 use Drush\Preflight\Preflight;
+use Drush\Runtime\ErrorHandler;
+use Drush\Runtime\ShutdownHandler;
 
 /**
  * Control the Drush runtime environment
@@ -90,7 +92,7 @@ class Runtime
         // so we do not want to enable it any earlier than this.
         // TODO: Inject a termination handler into this class, so that we don't
         // need to add these e.g. when testing.
-        $this->setTerminationHandlers();
+        $this->setTerminationHandlers($container);
 
         // Now that the DI container has been set up, the Application object will
         // have a reference to the bootstrap manager et. al., so we may use it
@@ -123,12 +125,17 @@ class Runtime
     /**
      * Make sure we are notified on exit, and when bad things happen.
      */
-    protected function setTerminationHandlers()
+    protected function setTerminationHandlers($container)
     {
-        // Set an error handler and a shutdown function
-        // TODO: move these to a class somewhere
-//        set_error_handler('drush_error_handler');
-//        register_shutdown_function('drush_shutdown');
+        // TODO: Inject error handlers if we want
+        // them. Install them here.
+        $errorHandler = new ErrorHandler();
+        $errorHandler->setLogger($container->get('logger'));
+        $errorHandler->installHandler();
+
+        $shutdownHandler = new ShutdownHandler();
+        $shutdownHandler->setLogger($container->get('logger'));
+        $shutdownHandler->installHandler();
     }
 
     /**
