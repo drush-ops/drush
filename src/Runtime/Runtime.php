@@ -127,8 +127,8 @@ class Runtime
     {
         // Set an error handler and a shutdown function
         // TODO: move these to a class somewhere
-        set_error_handler('drush_error_handler');
-        register_shutdown_function('drush_shutdown');
+//        set_error_handler('drush_error_handler');
+//        register_shutdown_function('drush_shutdown');
     }
 
     /**
