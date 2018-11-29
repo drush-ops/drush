@@ -15,7 +15,7 @@ class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
     public function testShutdownFunction()
     {
         // Run some garbage php with a syntax error.
-        $this->drush('ev', ['x = foo']);
+        $this->drush('ev', ['exit(0);']);
 
         $this->assertContains("Drush command terminated abnormally.", $this->getErrorOutput(), 'Error handler logged a message.');
     }
