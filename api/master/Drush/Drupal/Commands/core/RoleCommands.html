@@ -79,7 +79,8 @@
     </div>
 
     <p>    class
-    <strong>RoleCommands</strong>        extends <a href="../../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/RoleCommands.php">View source</a>)
+    <strong>RoleCommands</strong>        extends <a href="../../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        implements
+        <a href="../../../../Drush/SiteAlias/SiteAliasManagerAwareInterface.html"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareInterface">SiteAliasManagerAwareInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/RoleCommands.php">View source</a>)
 </p>
 
         
@@ -90,6 +91,15 @@
 
         
     <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                                            <abbr title="Consolidation\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr>
+                                            
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
                     <div class="row">
                 <div class="col-md-6">
                                             <abbr title="Psr\Log\LoggerAwareTrait">LoggerAwareTrait</abbr>
@@ -421,7 +431,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_create">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/RoleCommands.php#L23">line 23</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/RoleCommands.php#L29">line 29</a></div>
         <code>                    
     <strong>create</strong>($machine_name, $human_readable_name = null)
         </code>
@@ -457,7 +467,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_delete">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/RoleCommands.php#L44">line 44</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/RoleCommands.php#L50">line 50</a></div>
         <code>                    
     <strong>delete</strong>($machine_name)
         </code>
@@ -488,7 +498,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_roleAddPerm">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/RoleCommands.php#L70">line 70</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/RoleCommands.php#L75">line 75</a></div>
         <code>                    
     <strong>roleAddPerm</strong>($machine_name, $permissions)
         </code>
@@ -524,7 +534,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_roleRemovePerm">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/RoleCommands.php#L91">line 91</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/RoleCommands.php#L95">line 95</a></div>
         <code>                    
     <strong>roleRemovePerm</strong>($machine_name, $permissions)
         </code>
@@ -560,7 +570,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_roleList">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/RoleCommands.php#L118">line 118</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/RoleCommands.php#L122">line 122</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr>
     <strong>roleList</strong>($options = [&#039;format&#039; =&gt; &#039;yaml&#039;])
         </code>
@@ -602,7 +612,7 @@ then all of the roles that have been granted that permission will be listed.</p>
             </div>
                     <div class="method-item">
                     <h3 id="method_renderPermsCell">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/RoleCommands.php#L136">line 136</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/RoleCommands.php#L140">line 140</a></div>
         <code>                    
     <strong>renderPermsCell</strong>($key, $cellData, <abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr> $options)
         </code>
