@@ -13,13 +13,14 @@ jobs:
   build:
     <<: *defaults
     docker:
-      - image: circleci/php:7.1-apache-node
+      - image: wodby/php:7.1
         environment:
           - MYSQL_HOST=127.0.0.1
+          - PHP_SENDMAIL_PATH=/dev/null
       - image: circleci/mysql:5.7.24
     steps:
       - checkout
-      - run: $HOME/drush/.circleci/setup.sh
+      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: composer install
       - run: $HOME/drush/.circleci/patch.sh
       - run: composer functional
@@ -27,13 +28,14 @@ jobs:
   build_highest:
     <<: *defaults
     docker:
-      - image: circleci/php:7.2-apache-node
+      - image: wodby/php:7.2
         environment:
           - MYSQL_HOST=127.0.0.1
+          - PHP_SENDMAIL_PATH=/dev/null
       - image: circleci/mysql:5.7.24
     steps:
       - checkout
-      - run: $HOME/drush/.circleci/setup.sh
+      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: composer remove --dev webflo/drupal-core-strict --no-update
       - run: composer require --dev drupal/core:8.7.x-dev --no-update
       - run: composer config platform.php 7.2
@@ -43,15 +45,14 @@ jobs:
   build_56:
     <<: *defaults
     docker:
-      # circleci/php:5.6.38-apache-node appears broken.
-      # Put this back to circleci/php:5.6-apache-node when .37 no longer available
-      - image: circleci/php:5.6.37-apache-node
+      - image: wodby/php:5.6
         environment:
           - MYSQL_HOST=127.0.0.1
+          - PHP_SENDMAIL_PATH=/dev/null
       - image: circleci/mysql:5.7.24
     steps:
       - checkout
-      - run: $HOME/drush/.circleci/setup.sh
+      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: .scenarios.lock/install php5
       - run: $HOME/drush/.circleci/patch.sh
       - run: composer functional

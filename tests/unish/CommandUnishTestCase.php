@@ -128,7 +128,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
             $return = $this->process->run();
             if ($expected_return !== $return) {
                 $message = 'Unexpected exit code ' . $return . ' (expected ' . $expected_return . ") for command:\n" .  $command;
-                throw new UnishProcessFailedException($message . $this->buildProcessMessage($this->process));
+                throw new UnishProcessFailedException($message . $this->buildProcessMessage());
             }
             // Reset timeouts to default.
             $this->timeout = $this->defaultTimeout;
@@ -140,24 +140,34 @@ abstract class CommandUnishTestCase extends UnishTestCase
             } else {
                 $message = 'Command had no output for ' . $this->idleTimeout . " seconds:\n" .  $command;
             }
-            throw new UnishProcessFailedException($message . $this->buildProcessMessage($this->process));
+            throw new UnishProcessFailedException($message . $this->buildProcessMessage());
         }
     }
 
     /**
-     * @param Process $process
+     * Borrowed from \Symfony\Component\Process\Exception\ProcessTimedOutException
+     *
      * @return string
      */
-    public function buildProcessMessage(Process $process)
+    public function buildProcessMessage()
     {
-        $message = '';
-        if ($output = $process->getOutput()) {
-            $message = "\n\nCommand output:\n" . $output;
+        $error = sprintf(
+            "%s\n\nExit Code: %s(%s)\n\nWorking directory: %s",
+            $this->process->getCommandLine(),
+            $this->process->getExitCode(),
+            $this->process->getExitCodeText(),
+            $this->process->getWorkingDirectory()
+        );
+
+        if (!$this->process->isOutputDisabled()) {
+            $error .= sprintf(
+                "\n\nOutput:\n================\n%s\n\nError Output:\n================\n%s",
+                $this->process->getOutput(),
+                $this->process->getErrorOutput()
+            );
         }
-        if ($stderr = $process->getErrorOutput()) {
-            $message = "\n\nCommand stderr:\n" . $stderr;
-        }
-        return $message;
+
+        return $error;
     }
 
     /**
@@ -252,7 +262,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
         // that tests might cause Drupal to send.
 
         $php_options = (array_key_exists('PHP_OPTIONS', $env)) ? $env['PHP_OPTIONS'] . " " : "";
-        // @todo The PHP Options below are not yet honored by execute(). See .travis.yml for an alternative way.
         $env['PHP_OPTIONS'] = "${php_options}-d sendmail_path='true'";
         $cmd = implode(' ', $exec);
         $return = $this->execute($cmd, $expected_return, $cd, $env);

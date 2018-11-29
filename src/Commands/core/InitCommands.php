@@ -35,7 +35,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
      */
     public function initializeDrush($options = ['edit' => false, 'add-path' => ''])
     {
-        $home = Drush::config()->home();
+        $home = $this->getConfig()->home();
         $drush_config_dir = $home . "/.drush";
         $drush_config_file = $drush_config_dir . "/drush.yml";
         $drush_bashrc = $drush_config_dir . "/drush.bashrc";
@@ -45,6 +45,9 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
         $example_bashrc = $examples_dir . "/example.bashrc";
         $example_prompt = $examples_dir . "/example.prompt.sh";
 
+        /**
+         * That's right. Robo collections and tasks are usable in Drush.
+         */
         $collection = $this->collectionBuilder();
 
         // Create a ~/.drush directory if it does not yet exist
@@ -53,6 +56,10 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
         // If there is no ~/.drush/drush.yml, copy example there.
         if (!is_file($drush_config_file)) {
             $collection->taskWriteToFile($drush_config_file)->textFromFile($example_configuration);
+            $collection->progressMessage('Copied example.drush.yml to {path}', ['path' => $drush_config_file], LogLevel::OK);
+            $this->logger()->notice('Copied drush.yml to ' . $drush_config_file);
+        } else {
+            $this->logger()->debug($drush_config_file . ' already exists. Skip copy.');
         }
 
         // Decide whether we want to add our Bash commands to
