@@ -1,10 +1,16 @@
 <?php
 namespace Unish;
 
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessTimedOutException;
+use Drush\Config\Environment;
+use Drush\Drush;
+use Drush\Preflight\Preflight;
+use Drush\Runtime\DependencyInjection;
+use Drush\Runtime\Runtime;
 use PHPUnit\Framework\TestResult;
+use Symfony\Component\Process\Exception\ProcessTimedOutException;
+use Symfony\Component\Process\Process;
 use Unish\Utils\OutputUtilsTrait;
+use Webmozart\PathUtil\Path;
 
 /**
  * UnishIntegrationTestCase will prepare a pair of Drupal multisites,
@@ -21,12 +27,17 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
 {
     use OutputUtilsTrait;
 
+    protected $buffer = false;
+
     /**
      * @inheritdoc
      */
     public function getOutputRaw()
     {
-        return '';
+        if (!$this->buffer) {
+            return '';
+        }
+        return $this->buffer->fetch();
     }
 
     /**
@@ -34,7 +45,24 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
      */
     public function getErrorOutputRaw()
     {
-        return '';
+        if (!$this->buffer) {
+            return '';
+        }
+        return $this->buffer->getErrorOutput()->fetch();
+    }
+
+    protected function initializeRuntime($cd, $env)
+    {
+        $loader = require PHPUNIT_COMPOSER_INSTALL;
+        $environment = new Environment(Path::getHomeDirectory(), $cd ?: $this->webroot(), PHPUNIT_COMPOSER_INSTALL);
+        $environment->setConfigFileVariant(Drush::getMajorVersion());
+        $environment->setLoader($loader);
+        $environment->applyEnvironment();
+        $preflight = new Preflight($environment);
+        $di = new DependencyInjection();
+        $runtime = new Runtime($preflight, $di);
+
+        return $runtime;
     }
 
     /**
@@ -55,29 +83,45 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
      * @return integer
      *   An exit code.
      */
-    public function drush($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $expected_return = self::EXIT_SUCCESS)
+    public function drush($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $expected_return = self::EXIT_SUCCESS, $suffix = null, $env = [])
     {
-        // cd is added for the benefit of siteSshTest which tests a strict command.
+        // Flag invalid test parameters.
+        $this->assertTrue(empty($suffix), '$suffix not supported for integration tests.');
+
+        $cmd = $this->buildCommandLine($command, $args, $options, $site_specification);
+
+        // Erase whatever cached content existed previously
+        $this->buffer = new \Drush\Symfony\BufferedConsoleOutput();
+
+        // Set up the runtime object and execute the command.
+        $runtime = $this->initializeRuntime($cd, $env);
+        $return = $runtime->execute($cmd, $this->buffer);
+
+        // Empty Drush's legacy context system
+        $cache = &drush_get_context();
+        $cache = [];
+
+        $this->assertEquals($expected_return, $return);
+        return $return;
+    }
+
+    protected function buildCommandLine($command, $args, $options, $site_specification)
+    {
         $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'backend', 'cd'];
         $options += ['uri' => 'dev']; // Default value.
-        $hide_stderr = false;
-        $cmd[] = self::getDrush();
+        $cmd = [self::getDrush()];
 
         // Insert global options.
         foreach ($options as $key => $value) {
             if (in_array($key, $global_option_list)) {
                 unset($options[$key]);
-                if ($key == 'backend') {
-                    $hide_stderr = true;
-                    $value = null;
-                }
                 if ($key == 'uri' && $value == 'OMIT') {
                     continue;
                 }
                 if (!isset($value)) {
                     $cmd[] = "--$key";
                 } else {
-                    $cmd[] = "--$key=" . self::escapeshellarg($value);
+                    $cmd[] = "--$key=" . $value;
                 }
             }
         }
@@ -87,57 +131,27 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         }
         $cmd[] = "--no-interaction";
 
-        // Insert code coverage argument before command, in order for it to be
-        // parsed as a global option. This matters for commands like ssh and rsync
-        // where options after the command are passed along to external commands.
-        $result = $this->getTestResultObject();
-        if ($result->getCollectCodeCoverageInformation()) {
-            $coverage_file = tempnam($this->getSandbox(), 'drush_coverage');
-            if ($coverage_file) {
-                $cmd[] = "--drush-coverage=" . $coverage_file;
-            }
-        }
-
         // Insert site specification and drush command.
-        $cmd[] = empty($site_specification) ? null : self::escapeshellarg($site_specification);
+        $cmd[] = empty($site_specification) ? null : $site_specification;
         $cmd[] = $command;
 
         // Insert drush command arguments.
         foreach ($args as $arg) {
-            $cmd[] = self::escapeshellarg($arg);
+            $cmd[] = $arg;
         }
         // insert drush command options
         foreach ($options as $key => $value) {
             if (!isset($value)) {
                 $cmd[] = "--$key";
             } else {
-                $cmd[] = "--$key=" . self::escapeshellarg($value);
+                $cmd[] = "--$key=" . $value;
             }
         }
 
-        $cmd[] = $suffix;
-        if ($hide_stderr) {
-            $cmd[] = '2>' . $this->bitBucket();
-        }
-        $exec = array_filter($cmd, 'strlen'); // Remove NULLs
-        // Set sendmail_path to 'true' to disable any outgoing emails
-        // that tests might cause Drupal to send.
+        // Remove NULLs
+        $cmd = array_filter($cmd, 'strlen');
 
-        $php_options = (array_key_exists('PHP_OPTIONS', $env)) ? $env['PHP_OPTIONS'] . " " : "";
-        // @todo The PHP Options below are not yet honored by execute(). See .travis.yml for an alternative way.
-        $env['PHP_OPTIONS'] = "${php_options}-d sendmail_path='true'";
-        $cmd = implode(' ', $exec);
-        $return = $this->execute($cmd, $expected_return, $cd, $env);
-
-        // Save code coverage information.
-        if (!empty($coverage_file)) {
-            $data = unserialize(file_get_contents($coverage_file));
-            unlink($coverage_file);
-            // Save for appending after the test finishes.
-            $this->coverage_data[] = $data;
-        }
-
-        return $return;
+        return $cmd;
     }
 
     protected function assertOutputEquals($expected, $filter = '')

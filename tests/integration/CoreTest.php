@@ -16,6 +16,11 @@ class CoreTest extends UnishIntegrationTestCase
     {
         $root = $this->webroot();
         $sitewide = $this->drupalSitewideDirectory();
+
+        $this->drush('drupal-directory', ['%files'], [], '@none', null, self::EXIT_ERROR);
+        $stderr = $this->getErrorOutput();
+        $this->assertContains('Cannot evaluate path alias %files for site alias @none', $stderr);
+
         $this->drush('drupal-directory', ['%files']);
         $output = $this->getOutput();
         $this->assertEquals(Path::join($root, '/sites/dev/files'), $output);
