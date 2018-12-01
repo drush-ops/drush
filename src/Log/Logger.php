@@ -71,7 +71,8 @@ class Logger extends RoboLogger
      *
      * @return array
      */
-    public function getErrorLogs() {
+    public function getErrorLogs()
+    {
         return $this->logs_error;
     }
 
