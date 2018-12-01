@@ -71,7 +71,7 @@ class CoreCase extends CommandUnishTestCase
         ];
         foreach ($expected as $key => $value) {
             if (isset($loaded->$key)) {
-                $this->assertEquals($value, $loaded->$key->sid);
+                $this->assertEquals("{$key}={$value}", "{$key}=" . $loaded->$key->sid);
             }
         }
     }

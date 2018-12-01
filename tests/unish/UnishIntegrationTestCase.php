@@ -6,9 +6,11 @@ use Drush\Drush;
 use Drush\Preflight\Preflight;
 use Drush\Runtime\DependencyInjection;
 use Drush\Runtime\Runtime;
+use Drush\Symfony\LessStrictArgvInput;
 use PHPUnit\Framework\TestResult;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use Symfony\Component\Process\Process;
+use Unish\Controllers\RuntimeController;
 use Unish\Utils\OutputUtilsTrait;
 use Webmozart\PathUtil\Path;
 
@@ -27,17 +29,15 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
 {
     use OutputUtilsTrait;
 
-    protected $buffer = false;
+    protected $stdout = '';
+    protected $stderr = '';
 
     /**
      * @inheritdoc
      */
     public function getOutputRaw()
     {
-        if (!$this->buffer) {
-            return '';
-        }
-        return $this->buffer->fetch();
+        return $this->stdout;
     }
 
     /**
@@ -45,24 +45,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
      */
     public function getErrorOutputRaw()
     {
-        if (!$this->buffer) {
-            return '';
-        }
-        return $this->buffer->getErrorOutput()->fetch();
-    }
-
-    protected function initializeRuntime($cd, $env)
-    {
-        $loader = require PHPUNIT_COMPOSER_INSTALL;
-        $environment = new Environment(Path::getHomeDirectory(), $cd ?: $this->webroot(), PHPUNIT_COMPOSER_INSTALL);
-        $environment->setConfigFileVariant(Drush::getMajorVersion());
-        $environment->setLoader($loader);
-        $environment->applyEnvironment();
-        $preflight = new Preflight($environment);
-        $di = new DependencyInjection();
-        $runtime = new Runtime($preflight, $di);
-
-        return $runtime;
+        return $this->stderr;
     }
 
     /**
@@ -86,22 +69,29 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
     public function drush($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $expected_return = self::EXIT_SUCCESS, $suffix = null, $env = [])
     {
         // Flag invalid test parameters.
+        $this->assertTrue(empty($cd), '$cd not supported for integration tests.');
         $this->assertTrue(empty($suffix), '$suffix not supported for integration tests.');
+        $this->assertTrue(empty($env), '$env not supported for integration tests.');
 
         $cmd = $this->buildCommandLine($command, $args, $options, $site_specification);
 
-        // Erase whatever cached content existed previously
-        $this->buffer = new \Drush\Symfony\BufferedConsoleOutput();
+        // Set up our input and output objects
+        $input = new LessStrictArgvInput($cmd);
+        $output = RuntimeController::instance()->output();
 
         // Set up the runtime object and execute the command.
-        $runtime = $this->initializeRuntime($cd, $env);
-        $return = $runtime->execute($cmd, $this->buffer);
+        $application = RuntimeController::instance()->application($this->webroot());
+        $return = $application->run($input, $output);
+
+        $this->stdout = $output->fetch();
+        $this->stderr = $output->getErrorOutput()->fetch();
 
         // Empty Drush's legacy context system
         $cache = &drush_get_context();
         $cache = [];
 
-        $this->assertEquals($expected_return, $return);
+        $this->assertEquals($expected_return, $return, "Command failed: \n\n" . $this->getErrorOutput());
+
         return $return;
     }
 
@@ -131,8 +121,6 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         }
         $cmd[] = "--no-interaction";
 
-        // Insert site specification and drush command.
-        $cmd[] = empty($site_specification) ? null : $site_specification;
         $cmd[] = $command;
 
         // Insert drush command arguments.

@@ -46,7 +46,7 @@ class Runtime
     {
         try {
             $output = new \Symfony\Component\Console\Output\ConsoleOutput();
-            $status = $this->execute($argv, $output);
+            $status = $this->doRun($argv, $output);
         } catch (\Exception $e) {
             $status = $e->getCode();
             $message = $e->getMessage();
@@ -60,7 +60,7 @@ class Runtime
     /**
      * Start up Drush
      */
-    public function execute($argv, $output)
+    protected function doRun($argv, $output)
     {
         // Do the preflight steps
         $status = $this->preflight->preflight($argv);
