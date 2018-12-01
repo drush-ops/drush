@@ -33,28 +33,54 @@ use Drush\Utils\StringUtils;
 
 class Logger extends RoboLogger
 {
+    /**
+     * Array of logs. For use by backend responses.
+     *
+     * @var array
+     *
+     * @deprecated
+     */
+    protected $logs = [];
+
+    /**
+     * Array of error logs. For use by backend responses.
+     *
+     * @var array
+     *
+     * @deprecated
+     */
+    protected $logs_error = [];
 
     public function __construct(OutputInterface $output)
     {
         parent::__construct($output);
     }
 
+    /**
+     * Get an array of logs for the current request.
+     *
+     * @return array
+     */
+    public function getLogs()
+    {
+        return $this->logs;
+    }
+
+    /**
+     * Get an array of error logs for the current request.
+     *
+     * @return array
+     */
+    public function getErrorLogs() {
+        return $this->logs_error;
+    }
+
     public function log($level, $message, array $context = [])
     {
-        // Convert to old $entry array for b/c calls
-        $entry = $context + [
-            'type' => $level,
-            'message' => StringUtils::interpolate($message, $context),
-            'timestamp' => microtime(true),
-            'memory' => memory_get_usage(),
-        ];
+        $entry = $this->buildEntry($level, $message, $context);
 
-        // Drush\Log\Logger should take over all of the responsibilities
-        // of drush_log, including caching the log messages and sending
-        // log messages along to backend invoke.
-        // TODO: move these implementations inside this class.
-        $log =& drush_get_context('DRUSH_LOG', []);
-        $log[] = $entry;
+        $this->logs[] = $entry;
+
         if ($level != LogLevel::DEBUG_NOTIFY) {
             drush_backend_packet('log', $entry);
         }
@@ -176,8 +202,25 @@ class Logger extends RoboLogger
 
     public function error($message, array $context = [])
     {
-        $error_log =& drush_get_context('DRUSH_ERROR_LOG', []);
-        $error_log[$message][] = $message;
+        $this->logs_error[] = $this->buildEntry(LogLevel::ERROR, $message, $context);
         parent::error($message, $context);
+    }
+
+    /**
+     * @param $level
+     * @param $message
+     * @param array $context
+     * @return array
+     */
+    protected function buildEntry($level, $message, array $context)
+    {
+// Convert to old $entry array for b/c calls
+        $entry = $context + [
+                'type' => $level,
+                'message' => StringUtils::interpolate($message, $context),
+                'timestamp' => microtime(true),
+                'memory' => memory_get_usage(),
+            ];
+        return $entry;
     }
 }
