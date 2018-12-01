@@ -57,30 +57,26 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
      *   Command arguments.
      * @param $options
      *   An associative array containing options.
-     * @param $site_specification
-     *   A site alias or site specification. Include the '@' at start of a site alias.
-     * @param $cd
-     *   A directory to change into before executing.
      * @param $expected_return
      *   The expected exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
      * @return integer
      *   An exit code.
      */
-    public function drush($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $expected_return = self::EXIT_SUCCESS, $suffix = null, $env = [])
+    public function drush($command, array $args = [], array $options = [], $expected_return = self::EXIT_SUCCESS)
     {
-        // Flag invalid test parameters.
-        $this->assertTrue(empty($cd), '$cd not supported for integration tests.');
-        $this->assertTrue(empty($suffix), '$suffix not supported for integration tests.');
-        $this->assertTrue(empty($env), '$env not supported for integration tests.');
-
-        $cmd = $this->buildCommandLine($command, $args, $options, $site_specification);
+        $cmd = $this->buildCommandLine($command, $args, $options);
 
         // Set up our input and output objects
         $input = new LessStrictArgvInput($cmd);
         $output = RuntimeController::instance()->output();
 
-        // Set up the runtime object and execute the command.
+        // Get the application instance from the runtime controller.
         $application = RuntimeController::instance()->application($this->webroot());
+
+        // We only bootstrap the first time, and phpunit likes to reset the
+        // cwd at the beginning of every test function. We therefore need to
+        // change the working directory back to where Drupal expects it to be.
+        chdir($this->webroot());
         $return = $application->run($input, $output);
 
         $this->stdout = $output->fetch();
@@ -95,7 +91,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         return $return;
     }
 
-    protected function buildCommandLine($command, $args, $options, $site_specification)
+    protected function buildCommandLine($command, $args, $options)
     {
         $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'backend', 'cd'];
         $options += ['uri' => 'dev']; // Default value.

@@ -5,10 +5,12 @@ namespace Unish\Controllers;
 use Drush\Config\Environment;
 use Drush\Drush;
 use Drush\Preflight\Preflight;
+use Drush\Preflight\PreflightLog;
 use Drush\Runtime\DependencyInjection;
 use Drush\Runtime\Runtime;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
+use Symfony\Component\Console\Output\NullOutput;
 use PHPUnit\Framework\TestResult;
 use Unish\Utils\OutputUtilsTrait;
 use Webmozart\PathUtil\Path;
@@ -73,7 +75,8 @@ class RuntimeController
         $environment->setConfigFileVariant(Drush::getMajorVersion());
         $environment->setLoader($loader);
         $environment->applyEnvironment();
-        $this->preflight = new Preflight($environment);
+        $preflightLog = new PreflightLog(new NullOutput());
+        $this->preflight = new Preflight($environment, null, null, $preflightLog);
         $di = new DependencyInjection();
 
         // Set up the invariant section of our argv for preflight

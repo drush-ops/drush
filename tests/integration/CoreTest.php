@@ -12,7 +12,6 @@ use Webmozart\PathUtil\Path;
  */
 class CoreTest extends UnishIntegrationTestCase
 {
-    /*
     public function testCoreRequirements()
     {
         $root = $this->webroot();
@@ -44,7 +43,7 @@ class CoreTest extends UnishIntegrationTestCase
             }
         }
     }
-    */
+
     public function testDrupalDirectory()
     {
         $root = $this->webroot();
