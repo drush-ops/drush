@@ -203,13 +203,8 @@ function drush_op($callable) {
     }
   }
 
-  // Special checking for drush_op('system')
-  if ($callable == 'system') {
-    drush_log(dt("Do not call drush_op('system'); use drush_op_system instead"), LogLevel::DEBUG);
-  }
-
   if (\Drush\Drush::verbose() || \Drush\Drush::simulate()) {
-    drush_log(sprintf("Calling %s(%s)", $callable_string, implode(", ", $args_printed)), LogLevel::DEBUG);
+    Drush::logger()->debug('Calling %s(%s)', [$callable_string, implode(", ", $args_printed)]);
   }
 
   if (\Drush\Drush::simulate()) {
@@ -252,16 +247,17 @@ function drush_call_user_func_array($function, $args = []) {
  *
  * If mime type can't be obtained, an error will be set.
  *
- * @return mixed
+ * @return string|bool
  *   The MIME content type of the file or FALSE.
  */
 function drush_mime_content_type($filename) {
   $content_type = drush_attempt_mime_content_type($filename);
   if ($content_type) {
-    drush_log(dt('Mime type for !file is !mt', ['!file' => $filename, '!mt' => $content_type]), LogLevel::INFO);
+    Drush::logger()->info(dt('Mime type for !file is !mt', ['!file' => $filename, '!mt' => $content_type]));
     return $content_type;
   }
-  return drush_set_error('MIME_CONTENT_TYPE_UNKNOWN', dt('Unable to determine mime type for !file.', ['!file' => $filename]));
+  Drush::logger()->error(dt('Unable to determine mime type for !file.', ['!file' => $filename]));
+  return false;
 }
 
 /**
@@ -274,7 +270,7 @@ function drush_attempt_mime_content_type($filename) {
     $finfo = new finfo(FILEINFO_MIME_TYPE);
     $content_type = $finfo->file($filename);
     if ($content_type == 'application/octet-stream') {
-      drush_log(dt('Mime type for !file is application/octet-stream.', ['!file' => $filename]), LogLevel::DEBUG);
+      Drush::logger()->debug(dt('Mime type for !file is application/octet-stream.', ['!file' => $filename]));
       $content_type = FALSE;
     }
   }
@@ -283,7 +279,7 @@ function drush_attempt_mime_content_type($filename) {
   // archives as octet-stream for other reasons) we'll detect mime types on our
   //  own by examing the file's magic header bytes.
   if (!$content_type) {
-    drush_log(dt('Examining !file headers.', ['!file' => $filename]), LogLevel::DEBUG);
+    Drush::logger()->debug(dt('Examining !file headers.', ['!file' => $filename]));
     if ($file = fopen($filename, 'rb')) {
       $first = fread($file, 2);
       fclose($file);
@@ -311,23 +307,23 @@ function drush_attempt_mime_content_type($filename) {
             break;
 
           default:
-            drush_log(dt('Unable to determine mime type from header bytes 0x!hex of !file.', ['!hex' => dechex($data[1]), '!file' => $filename,]), LogLevel::DEBUG);
+            Drush::logger()->debug(dt('Unable to determine mime type from header bytes 0x!hex of !file.', ['!hex' => dechex($data[1]), '!file' => $filename,]));
         }
       }
       else {
-        drush_log(dt('Unable to read !file.', ['!file' => $filename]), LogLevel::WARNING);
+        Drush::logger()->warning(dt('Unable to read !file.', ['!file' => $filename]));
       }
     }
     else {
-      drush_log(dt('Unable to open !file.', ['!file' => $filename]), LogLevel::WARNING);
+      Drush::logger()->warning(dt('Unable to open !file.', ['!file' => $filename]));
     }
   }
 
   // 3. Lastly if above methods didn't work, try to guess the mime type from
-  // the file extension. This is useful if the file has no identificable magic
+  // the file extension. This is useful if the file has no identifiable magic
   // header bytes (for example tarballs).
   if (!$content_type) {
-    drush_log(dt('Examining !file extension.', ['!file' => $filename]), LogLevel::DEBUG);
+    Drush::logger()->debug(dt('Examining !file extension.', ['!file' => $filename]));
 
     // Remove querystring from the filename, if present.
     $filename = basename(current(explode('?', $filename, 2)));
@@ -506,7 +502,7 @@ function drush_get_log() {
  * Run print_r on a variable and log the output.
  */
 function dlm($object) {
-  drush_log(print_r($object, TRUE));
+  Drush::logger()->notice(print_r($object, TRUE));
 }
 
 // Copy of format_size() in Drupal.

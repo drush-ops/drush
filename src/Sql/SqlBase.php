@@ -149,8 +149,8 @@ class SqlBase implements ConfigAwareInterface
     /*
      * Execute a SQL dump and return the path to the resulting dump file.
      *
-     * @return bool|null
-     *   Returns null, or false on failure.
+     * @return string|bool|null
+     *   Returns path to dump file, null, or false on failure.
      */
     public function dump()
     {
@@ -175,14 +175,7 @@ class SqlBase implements ConfigAwareInterface
         $process->disableOutput();
         // Show dump in real-time on stdout, for backward compat.
         $process->run($process->showRealtime());
-        if ($process->isSuccessful()) {
-            if ($file) {
-                drush_log(dt('Database dump saved to !path', ['!path' => $file]), LogLevel::SUCCESS);
-                return $file;
-            }
-        } else {
-            return drush_set_error('DRUSH_SQL_DUMP_FAIL', 'Database dump failed');
-        }
+        return $process->isSuccessful() ? $file : false;
     }
 
     /*
@@ -276,7 +269,8 @@ class SqlBase implements ConfigAwareInterface
             if ($process->isSuccessful()) {
                 $input_file = trim($input_file, '.gz');
             } else {
-                return drush_set_error(dt('Failed to decompress input file.'));
+                Drush::logger()->error(dt('Failed to decompress input file.'));
+                return false;
             }
         }
 
@@ -324,11 +318,11 @@ class SqlBase implements ConfigAwareInterface
      */
     protected function logQueryInDebugMode($query, $input_file_original)
     {
-        // In --verbose mode, drush_shell_exec() will show the call to mysql/psql/sqlite,
+        // In --verbose mode, Drush::process() will show the call to mysql/psql/sqlite,
         // but the sql query itself is stored in a temp file and not displayed.
         // We show the query when --debug is used and this function created the temp file.
         if ((Drush::debug() || Drush::simulate()) && empty($input_file_original)) {
-            drush_log('sql:query: ' . $query, LogLevel::INFO);
+            Drush::logger()->info('sql:query: ' . $query);
         }
     }
 

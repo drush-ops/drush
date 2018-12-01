@@ -229,6 +229,8 @@ class SqlCommands extends DrushCommands
         $return = $sql->dump();
         if ($return === false) {
             throw new \Exception('Unable to dump database. Rerun with --debug to see any error message.');
+        } elseif ($return) {
+            $this->logger()->success(dt('Database dump saved to !path', ['!path' => $return]));
         }
         return new PropertyList(['path' => $return]);
     }

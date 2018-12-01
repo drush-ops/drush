@@ -44,10 +44,10 @@ function drush_error_handler($errno, $message, $filename, $line) {
       $type = LogLevel::WARNING;
     }
 
-    drush_log($message . ' ' . basename($filename) . ':' . $line, $type);
+    Drush::logger()->log($type, $message . ' ' . basename($filename) . ':' . $line);
 
     if ($errno == E_RECOVERABLE_ERROR && $halt_on_error) {
-      drush_log(dt('E_RECOVERABLE_ERROR encountered; aborting. To ignore recoverable errors, run again with --no-halt-on-error'), 'error');
+      Drush::logger()->error(dt('E_RECOVERABLE_ERROR encountered; aborting. To ignore recoverable errors, run again with --no-halt-on-error'));
       exit(DRUSH_APPLICATION_ERROR);
     }
 
