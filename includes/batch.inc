@@ -39,7 +39,7 @@ use Drush\Log\LogLevel;
 class DrushBatchContext extends ArrayObject {
   function offsetSet($name, $value) {
     if ($name == 'message') {
-      Drush::logger()->info(strip_tags($value));
+      Drush::logger()->notice(strip_tags($value));
     }
     elseif ($name == 'error_message') {
       Drush::logger()->error(strip_tags($value));
