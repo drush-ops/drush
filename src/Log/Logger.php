@@ -60,6 +60,8 @@ class Logger extends RoboLogger
      * Get an array of logs for the current request.
      *
      * @return array
+     *
+     * @deprecated Used by drush_backend_output().
      */
     public function getLogs()
     {
@@ -70,6 +72,8 @@ class Logger extends RoboLogger
      * Get an array of error logs for the current request.
      *
      * @return array
+     *
+     * @deprecated Used by drush_backend_output().
      */
     public function getErrorLogs()
     {
