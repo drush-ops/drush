@@ -318,11 +318,11 @@ class SqlBase implements ConfigAwareInterface
      */
     protected function logQueryInDebugMode($query, $input_file_original)
     {
-        // In --verbose mode, drush_shell_exec() will show the call to mysql/psql/sqlite,
+        // In --verbose mode, Drush::process() will show the call to mysql/psql/sqlite,
         // but the sql query itself is stored in a temp file and not displayed.
         // We show the query when --debug is used and this function created the temp file.
         if ((Drush::debug() || Drush::simulate()) && empty($input_file_original)) {
-            drush_log('sql:query: ' . $query, LogLevel::INFO);
+            Drush::logger()->info('sql:query: ' . $query);
         }
     }
 

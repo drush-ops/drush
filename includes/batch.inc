@@ -39,7 +39,7 @@ use Drush\Log\LogLevel;
 class DrushBatchContext extends ArrayObject {
   function offsetSet($name, $value) {
     if ($name == 'message') {
-      drush_log(strip_tags($value), LogLevel::OK);
+      Drush::logger()->info(strip_tags($value));
     }
     elseif ($name == 'error_message') {
       Drush::logger()->error(strip_tags($value));
@@ -282,7 +282,7 @@ function _drush_batch_worker() {
 
     // If we are in progressive mode, break processing after 1 second.
     if (drush_memory_limit() > 0 && (memory_get_usage() * 2) >= drush_memory_limit()) {
-      drush_log(dt("Batch process has consumed in excess of 50% of available memory. Starting new thread"), LogLevel::BATCH);
+      Drush::logger()->notice(dt("Batch process has consumed in excess of 50% of available memory. Starting new thread"), LogLevel::BATCH);
       // Record elapsed wall clock time.
       $current_set['elapsed'] = round((microtime(TRUE) - $current_set['start']) * 1000, 2);
       break;

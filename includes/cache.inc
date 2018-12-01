@@ -70,7 +70,7 @@ function _drush_cache_get_object($bin) {
 function drush_cache_get($cid, $bin = 'default') {
   $ret = _drush_cache_get_object($bin)->get($cid);
   $mess = $ret ? "HIT" : "MISS";
-  drush_log(dt("Cache !mess cid: !cid", ['!mess' => $mess, '!cid' => $cid]), LogLevel::DEBUG);
+  Drush::logger()->debug(dt("Cache !mess cid: !cid", ['!mess' => $mess, '!cid' => $cid]));
   return $ret;
 }
 
@@ -112,9 +112,10 @@ function drush_cache_get_multiple(array &$cids, $bin = 'default') {
  * @return bool
  */
 function drush_cache_set($cid, $data, $bin = 'default', $expire = DRUSH_CACHE_PERMANENT) {
-  $ret = _drush_cache_get_object($bin)->set($cid, $data, $expire);
-  if ($ret) drush_log(dt("Cache SET cid: !cid", ['!cid' => $cid]), LogLevel::DEBUG);
-  return $ret;
+  if ($ret = _drush_cache_get_object($bin)->set($cid, $data, $expire)) {
+    Drush::logger()->debug(dt("Cache SET cid: !cid", ['!cid' => $cid]));
+    return $ret;
+  }
 }
 
 /**
