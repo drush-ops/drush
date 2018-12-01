@@ -252,16 +252,17 @@ function drush_call_user_func_array($function, $args = []) {
  *
  * If mime type can't be obtained, an error will be set.
  *
- * @return mixed
+ * @return string|bool
  *   The MIME content type of the file or FALSE.
  */
 function drush_mime_content_type($filename) {
   $content_type = drush_attempt_mime_content_type($filename);
   if ($content_type) {
-    drush_log(dt('Mime type for !file is !mt', ['!file' => $filename, '!mt' => $content_type]), LogLevel::INFO);
+    Drush::logger()->info(dt('Mime type for !file is !mt', ['!file' => $filename, '!mt' => $content_type]));
     return $content_type;
   }
-  return drush_set_error('MIME_CONTENT_TYPE_UNKNOWN', dt('Unable to determine mime type for !file.', ['!file' => $filename]));
+  Drush::logger()->error(dt('Unable to determine mime type for !file.', ['!file' => $filename]));
+  return false;
 }
 
 /**

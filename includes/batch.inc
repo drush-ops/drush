@@ -42,7 +42,7 @@ class DrushBatchContext extends ArrayObject {
       drush_log(strip_tags($value), LogLevel::OK);
     }
     elseif ($name == 'error_message') {
-      drush_set_error('DRUSH_BATCH_ERROR', strip_tags($value));
+      Drush::logger()->error(strip_tags($value));
     }
     parent::offsetSet($name, $value);
   }

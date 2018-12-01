@@ -149,8 +149,8 @@ class SqlBase implements ConfigAwareInterface
     /*
      * Execute a SQL dump and return the path to the resulting dump file.
      *
-     * @return bool|null
-     *   Returns null, or false on failure.
+     * @return string|bool|null
+     *   Returns path to dump file, null, or false on failure.
      */
     public function dump()
     {
@@ -175,14 +175,7 @@ class SqlBase implements ConfigAwareInterface
         $process->disableOutput();
         // Show dump in real-time on stdout, for backward compat.
         $process->run($process->showRealtime());
-        if ($process->isSuccessful()) {
-            if ($file) {
-                drush_log(dt('Database dump saved to !path', ['!path' => $file]), LogLevel::SUCCESS);
-                return $file;
-            }
-        } else {
-            return drush_set_error('DRUSH_SQL_DUMP_FAIL', 'Database dump failed');
-        }
+        return $process->isSuccessful() ? $file : false;
     }
 
     /*
@@ -276,7 +269,8 @@ class SqlBase implements ConfigAwareInterface
             if ($process->isSuccessful()) {
                 $input_file = trim($input_file, '.gz');
             } else {
-                return drush_set_error(dt('Failed to decompress input file.'));
+                Drush::logger()->error(dt('Failed to decompress input file.'));
+                return false;
             }
         }
 
