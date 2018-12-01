@@ -215,13 +215,13 @@ class Logger extends RoboLogger
      */
     protected function buildEntry($level, $message, array $context)
     {
-// Convert to old $entry array for b/c calls
+        // Convert to old $entry array for b/c calls
         $entry = $context + [
-                'type' => $level,
-                'message' => StringUtils::interpolate($message, $context),
-                'timestamp' => microtime(true),
-                'memory' => memory_get_usage(),
-            ];
+            'type' => $level,
+            'message' => StringUtils::interpolate($message, $context),
+            'timestamp' => microtime(true),
+            'memory' => memory_get_usage(),
+        ];
         return $entry;
     }
 }
