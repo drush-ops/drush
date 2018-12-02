@@ -493,6 +493,8 @@ function drush_backend_packet_log($entry, $backend_options) {
  *
  * @return
  *   Entire log history
+ *
+ * @deprecated
  */
 function drush_get_log() {
   return drush_get_context('DRUSH_LOG', []);
@@ -598,6 +600,8 @@ function drush_set_error($error, $message = null, $output_label = "") {
  *
  * @return
  *   The current aggregate error status
+ *
+ * @deprecated
  */
 function drush_get_error() {
   return drush_get_context('DRUSH_ERROR_CODE', DRUSH_SUCCESS);
@@ -608,6 +612,8 @@ function drush_get_error() {
  *
  * @return
  *   An associative array of error messages indexed by the type of message.
+ *
+ * @deprecated
  */
 function drush_get_error_log() {
   return drush_get_context('DRUSH_ERROR_LOG', []);

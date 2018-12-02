@@ -85,7 +85,8 @@ class Logger extends RoboLogger
      *
      * @deprecated
      */
-    public function clearLogs() {
+    public function clearLogs()
+    {
         $this->logs_error = $this->logs = [];
     }
 
