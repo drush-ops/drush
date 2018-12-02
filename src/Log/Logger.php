@@ -80,11 +80,22 @@ class Logger extends RoboLogger
         return $this->logs_error;
     }
 
+    /**
+     * Empty log collections.
+     *
+     * @deprecated
+     */
+    public function clearLogs() {
+        $this->logs_error = $this->logs = [];
+    }
+
     public function log($level, $message, array $context = [])
     {
         $entry = $this->buildEntry($level, $message, $context);
 
-        $this->logs[] = $entry;
+        if (Drush::backend()) {
+            $this->logs[] = $entry;
+        }
 
         if ($level != LogLevel::DEBUG_NOTIFY) {
             drush_backend_packet('log', $entry);
@@ -182,32 +193,15 @@ class Logger extends RoboLogger
             $message = $message . ' ' . $timer;
         }
 
-/*
-      // Drush-styled output
-
-      $message = $this->interpolate(
-          $message,
-          $this->getLogOutputStyler()->style($context)
-      );
-
-      $width[0] = ($columns - 11);
-
-      $format = sprintf("%%-%ds%%%ds", $width[0], $width[1]);
-
-      // Place the status message right aligned with the top line of the error message.
-      $message = wordwrap($message, $width[0]);
-      $lines = explode("\n", $message);
-      $lines[0] = sprintf($format, $lines[0], $type_msg);
-      $message = implode("\n", $lines);
-      $this->getErrorStreamWrapper()->writeln($message);
-*/
       // Robo-styled output
         parent::log($level, $message, $context);
     }
 
     public function error($message, array $context = [])
     {
-        $this->logs_error[] = $this->buildEntry(LogLevel::ERROR, $message, $context);
+        if (Drush::backend()) {
+            $this->logs_error[] = $this->buildEntry(LogLevel::ERROR, $message, $context);
+        }
         parent::error($message, $context);
     }
 
