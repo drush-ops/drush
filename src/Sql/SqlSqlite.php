@@ -4,6 +4,7 @@ namespace Drush\Sql;
 
 use Drush\Drush;
 use Drush\Log\LogLevel;
+use mysql_xdevapi\Exception;
 
 class SqlSqlite extends SqlBase
 {
@@ -44,7 +45,7 @@ class SqlSqlite extends SqlBase
         $path = dirname($file);
         Drush::logger()->debug("SQLITE: creating '$path' for creating '$file'");
         if (!drush_mkdir($path)) {
-            Drush::logger()->error("SQLITE: Cannot create $path");
+            throw new Exception("SQLITE: Cannot create $path");
         }
         return file_exists($path);
     }

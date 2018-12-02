@@ -149,8 +149,8 @@ class SqlBase implements ConfigAwareInterface
     /*
      * Execute a SQL dump and return the path to the resulting dump file.
      *
-     * @return string|bool|null
-     *   Returns path to dump file, null, or false on failure.
+     * @return string|bool
+     *   Returns path to dump file, or false on failure.
      */
     public function dump()
     {
