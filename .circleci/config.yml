@@ -10,7 +10,21 @@ defaults: &defaults
 
 version: 2
 jobs:
-  build:
+  code_style:
+    <<: *defaults
+    docker:
+      - image: wodby/php:7.1
+        environment:
+          - MYSQL_HOST=127.0.0.1
+          - PHP_SENDMAIL_PATH=/dev/null
+      - image: circleci/mysql:5.7.24
+    steps:
+      - checkout
+      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
+      - run: composer install
+      - run: composer cs
+
+  test_71:
     <<: *defaults
     docker:
       - image: wodby/php:7.1
@@ -23,9 +37,9 @@ jobs:
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: composer install
       - run: $HOME/drush/.circleci/patch.sh
-      - run: composer functional
+      - run: composer phpunit
 
-  build_highest:
+  test_72_highest:
     <<: *defaults
     docker:
       - image: wodby/php:7.2
@@ -39,10 +53,11 @@ jobs:
       - run: composer remove --dev webflo/drupal-core-strict --no-update
       - run: composer require --dev drupal/core:8.7.x-dev --no-update
       - run: composer config platform.php 7.2
-      - run: composer install
-      - run: composer functional
+      - run: composer update
+      - run: composer lint
+      - run: composer phpunit
 
-  build_56:
+  test_56:
     <<: *defaults
     docker:
       - image: wodby/php:5.6
@@ -55,12 +70,14 @@ jobs:
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: .scenarios.lock/install php5
       - run: $HOME/drush/.circleci/patch.sh
-      - run: composer functional
+      - run: composer lint
+      - run: composer phpunit
 
 workflows:
   version: 2
-  build_test:
+  drush:
     jobs:
-      - build
-      - build_highest
-      - build_56
+      - code_style
+      - test_71
+      - test_72_highest
+      - test_56
