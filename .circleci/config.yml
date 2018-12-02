@@ -37,7 +37,7 @@ jobs:
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: composer install
       - run: $HOME/drush/.circleci/patch.sh
-      - run: composer phpunit
+      - run: composer functional
 
   test_72_highest:
     <<: *defaults
@@ -54,8 +54,7 @@ jobs:
       - run: composer require --dev drupal/core:8.7.x-dev --no-update
       - run: composer config platform.php 7.2
       - run: composer update
-      - run: composer lint
-      - run: composer phpunit
+      - run: composer functional
 
   test_56:
     <<: *defaults
@@ -70,8 +69,7 @@ jobs:
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: .scenarios.lock/install php5
       - run: $HOME/drush/.circleci/patch.sh
-      - run: composer lint
-      - run: composer phpunit
+      - run: composer functional
 
 workflows:
   version: 2
