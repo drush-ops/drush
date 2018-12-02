@@ -8,10 +8,10 @@ use Drush\Preflight\Preflight;
 use Drush\Preflight\PreflightLog;
 use Drush\Runtime\DependencyInjection;
 use Drush\Runtime\Runtime;
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessTimedOutException;
-use Symfony\Component\Console\Output\NullOutput;
 use PHPUnit\Framework\TestResult;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Process\Exception\ProcessTimedOutException;
+use Symfony\Component\Process\Process;
 use Unish\Utils\OutputUtilsTrait;
 use Webmozart\PathUtil\Path;
 
@@ -54,10 +54,15 @@ class RuntimeController
         return static::$instance;
     }
 
-    public function application($root)
+    public function initialized()
     {
-        if (!$this->application) {
-            $this->initializeRuntime($root);
+        return $this->application != null;
+    }
+
+    public function application($root, $uri)
+    {
+        if (!$this->initialized()) {
+            $this->initializeRuntime($root, $uri);
         }
         return $this->application;
     }
@@ -67,7 +72,7 @@ class RuntimeController
         return $this->output;
     }
 
-    protected function initializeRuntime($root)
+    protected function initializeRuntime($root, $uri)
     {
         // Create our objects
         $loader = require PHPUNIT_COMPOSER_INSTALL;
@@ -84,7 +89,7 @@ class RuntimeController
             'drush',
             'version',
             "--root=$root",
-            '--uri=dev',
+            '--uri=' . $uri,
             '--debug',
         ];
 

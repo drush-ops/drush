@@ -64,6 +64,11 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
      */
     public function drush($command, array $args = [], array $options = [], $expected_return = self::EXIT_SUCCESS)
     {
+        // Install the SUT if necessary
+        if (!RuntimeController::instance()->initialized()) {
+            $this->checkInstallSut($this->webroot());
+        }
+
         $cmd = $this->buildCommandLine($command, $args, $options);
 
         // Set up our input and output objects
@@ -71,7 +76,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         $output = RuntimeController::instance()->output();
 
         // Get the application instance from the runtime controller.
-        $application = RuntimeController::instance()->application($this->webroot());
+        $application = RuntimeController::instance()->application($this->webroot(), self::INTEGRATION_TEST_ENV);
 
         // We only bootstrap the first time, and phpunit likes to reset the
         // cwd at the beginning of every test function. We therefore need to

@@ -2,6 +2,8 @@
 
 namespace Unish;
 
+use Consolidation\SiteAlias\AliasRecord;
+use Consolidation\SiteProcess\SiteProcess;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
 use Webmozart\PathUtil\Path;
@@ -12,6 +14,7 @@ abstract class UnishTestCase extends TestCase
     const EXIT_SUCCESS  = 0;
     const EXIT_ERROR = 1;
     const UNISH_EXITCODE_USER_ABORT = 75; // Same as DRUSH_EXITCODE_USER_ABORT
+    const INTEGRATION_TEST_ENV = 'default';
 
     /**
      * A list of Drupal sites that have been recently installed. They key is the
@@ -640,6 +643,30 @@ EOT;
         $target = Path::join(self::webrootSlashDrush(), "sites/$aliasGroup.site.yml");
         $this->mkdir(dirname($target));
         file_put_contents($target, Yaml::dump($sites, PHP_INT_MAX, 2));
+    }
+
+    protected function sutAlias($root, $uri = self::INTEGRATION_TEST_ENV)
+    {
+        return new AliasRecord(['root' => $root, 'uri' => $uri], "@sut.$uri");
+    }
+
+    protected function checkInstallSut($root, $uri = self::INTEGRATION_TEST_ENV)
+    {
+        $sutAlias = $this->sutAlias($root, $uri);
+        $options = ['root' => $root, 'uri' => $uri];
+        $drushPath = __DIR__ . '/../../drush';
+        $process = new SiteProcess($sutAlias, [$drushPath, 'pm:list'], $options);
+        $process->run();
+        //fwrite(STDERR, $process->getOutput());
+        if (!$process->isSuccessful()) {
+            fwrite(STDERR, "======== need to install\n");
+            $options['db-url'] = $this->dbUrl($uri);
+            $options['no-interaction'] = true;
+            $process = new SiteProcess($sutAlias, [$drushPath, 'site:install'], $options);
+            $process->run();
+            fwrite(STDERR, $process->getOutput());
+            fwrite(STDERR, $process->getErrorOutput());
+        }
     }
 
     /**

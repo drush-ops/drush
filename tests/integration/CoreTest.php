@@ -51,7 +51,7 @@ class CoreTest extends UnishIntegrationTestCase
 
         $this->drush('drupal-directory', ['%files']);
         $output = $this->getOutput();
-        $this->assertEquals(Path::join($root, '/sites/dev/files'), $output);
+        $this->assertEquals(Path::join($root, '/sites/default/files'), $output);
 
         $this->drush('drupal-directory', ['%modules']);
         $output = $this->getOutput();
