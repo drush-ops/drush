@@ -115,15 +115,10 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
      */
     public function set($cid, $data, $bin = 'default', $expire = null, $tags = null, $options = ['input-format' => 'string', 'cache-get' => false])
     {
-        $tags = is_string($tags) ? _convert_csv_to_array($tags) : [];
-
+        $tags = is_string($tags) ? StringUtils::csvToArray($tags) : [];
         // In addition to prepare, this also validates. Can't easily be in own validate callback as
         // reading once from STDIN empties it.
         $data = $this->setPrepareData($data, $options);
-        if ($data === false && drush_get_error()) {
-            // An error was logged above.
-            return;
-        }
 
         if (!isset($expire) || $expire == 'CACHE_PERMANENT') {
             $expire = Cache::PERMANENT;
@@ -142,6 +137,9 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
         switch ($options['input-format']) {
             case 'json':
                 $data = json_decode($data, true);
+                if ($data === false) {
+                    throw new \Exception('Unable to parse JSON.');
+                }
                 break;
         }
 

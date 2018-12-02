@@ -85,11 +85,5 @@ function drush_coverage_shutdown() {
  * @deprecated. This function will be removed in Drush 10. Throw an exception to indicate an error.
  */
 function drush_return_status() {
-  // If a specific exit code was set, then use it.
-  $exit_code = Runtime::exitCode();
-  if (empty($exit_code)) {
-    $exit_code = (drush_get_error()) ? DRUSH_FRAMEWORK_ERROR : DRUSH_SUCCESS;
-  }
-
-  exit($exit_code);
+  exit(Runtime::exitCode());
 }

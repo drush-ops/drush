@@ -308,7 +308,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
             }
             if ($phase_index > $bootstrapped_phase) {
                 if ($result = $this->bootstrapValidate($phase_index)) {
-                    if (method_exists($bootstrap, $current_phase) && !drush_get_error()) {
+                    if (method_exists($bootstrap, $current_phase)) {
                         $this->logger->log(LogLevel::BOOTSTRAP, 'Drush bootstrap phase: {function}()', ['function' => $current_phase]);
                         $bootstrap->{$current_phase}($annotationData);
                     }
@@ -316,7 +316,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                 }
             }
         }
-        return !drush_get_error();
+        return true;
     }
 
     /**

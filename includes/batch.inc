@@ -152,7 +152,7 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
       // Suppress printing stdout since we return a JSON array to the caller there.
       $process->run($process->showRealtime()->hideStdout());
       $result = $process->getOutputAsJson();
-      $finished = drush_get_error() || !$process->isSuccessful() || (isset($result['drush_batch_process_finished']) && $result['drush_batch_process_finished'] === TRUE);
+      $finished = !$process->isSuccessful() || (isset($result['drush_batch_process_finished']) && $result['drush_batch_process_finished'] === TRUE);
     }
   }
 
