@@ -933,8 +933,12 @@ window.projectVersion = 'master';
                     
             {"type": "Class", "fromName": "Drush\\Log", "fromLink": "Drush/Log.html", "link": "Drush/Log/Logger.html", "name": "Drush\\Log\\Logger", "doc": "&quot;&quot;"},
                                                         {"type": "Method", "fromName": "Drush\\Log\\Logger", "fromLink": "Drush/Log/Logger.html", "link": "Drush/Log/Logger.html#method___construct", "name": "Drush\\Log\\Logger::__construct", "doc": "&quot;&quot;"},
+                    {"type": "Method", "fromName": "Drush\\Log\\Logger", "fromLink": "Drush/Log/Logger.html", "link": "Drush/Log/Logger.html#method_getLogs", "name": "Drush\\Log\\Logger::getLogs", "doc": "&quot;Get an array of logs for the current request.&quot;"},
+                    {"type": "Method", "fromName": "Drush\\Log\\Logger", "fromLink": "Drush/Log/Logger.html", "link": "Drush/Log/Logger.html#method_getErrorLogs", "name": "Drush\\Log\\Logger::getErrorLogs", "doc": "&quot;Get an array of error logs for the current request.&quot;"},
+                    {"type": "Method", "fromName": "Drush\\Log\\Logger", "fromLink": "Drush/Log/Logger.html", "link": "Drush/Log/Logger.html#method_clearLogs", "name": "Drush\\Log\\Logger::clearLogs", "doc": "&quot;Empty log collections.&quot;"},
                     {"type": "Method", "fromName": "Drush\\Log\\Logger", "fromLink": "Drush/Log/Logger.html", "link": "Drush/Log/Logger.html#method_log", "name": "Drush\\Log\\Logger::log", "doc": "&quot;&quot;"},
                     {"type": "Method", "fromName": "Drush\\Log\\Logger", "fromLink": "Drush/Log/Logger.html", "link": "Drush/Log/Logger.html#method_error", "name": "Drush\\Log\\Logger::error", "doc": "&quot;&quot;"},
+                    {"type": "Method", "fromName": "Drush\\Log\\Logger", "fromLink": "Drush/Log/Logger.html", "link": "Drush/Log/Logger.html#method_buildEntry", "name": "Drush\\Log\\Logger::buildEntry", "doc": "&quot;&quot;"},
             
             {"type": "Class", "fromName": "Drush\\Preflight", "fromLink": "Drush/Preflight.html", "link": "Drush/Preflight/ArgsPreprocessor.html", "name": "Drush\\Preflight\\ArgsPreprocessor", "doc": "&quot;Preprocess commandline arguments.&quot;"},
                                                         {"type": "Method", "fromName": "Drush\\Preflight\\ArgsPreprocessor", "fromLink": "Drush/Preflight/ArgsPreprocessor.html", "link": "Drush/Preflight/ArgsPreprocessor.html#method___construct", "name": "Drush\\Preflight\\ArgsPreprocessor::__construct", "doc": "&quot;ArgsPreprocessor constructor&quot;"},
