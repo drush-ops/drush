@@ -66,7 +66,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
     {
         // Install the SUT if necessary
         if (!RuntimeController::instance()->initialized()) {
-            $this->checkInstallSut($this->webroot());
+            $this->checkInstallSut();
         }
 
         $cmd = $this->buildCommandLine($command, $args, $options);

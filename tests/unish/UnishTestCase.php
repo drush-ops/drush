@@ -617,16 +617,7 @@ EOT;
 
         // If specified, install Drupal as a multi-site.
         if ($install) {
-            $options += [
-                'root' => $root,
-                'db-url' => $this->dbUrl($env),
-                'sites-subdir' => $uri,
-                'yes' => null,
-                'quiet' => null,
-            ];
-            $this->drush('site:install', ['testing', 'install_configure_form.enable_update_status_emails=NULL'], $options);
-            // Give us our write perms back.
-            chmod($site, 0777);
+            $this->installSut($uri);
         } else {
             $this->mkdir($site);
             touch("$site/settings.php");
@@ -645,28 +636,54 @@ EOT;
         file_put_contents($target, Yaml::dump($sites, PHP_INT_MAX, 2));
     }
 
-    protected function sutAlias($root, $uri = self::INTEGRATION_TEST_ENV)
+    protected function sutAlias($uri = self::INTEGRATION_TEST_ENV)
     {
-        return new AliasRecord(['root' => $root, 'uri' => $uri], "@sut.$uri");
+        return new AliasRecord(['root' => $this->webroot(), 'uri' => $uri], "@sut.$uri");
     }
 
-    protected function checkInstallSut($root, $uri = self::INTEGRATION_TEST_ENV)
+    protected function checkInstallSut($uri = self::INTEGRATION_TEST_ENV)
     {
-        $sutAlias = $this->sutAlias($root, $uri);
-        $options = ['root' => $root, 'uri' => $uri];
-        $drushPath = __DIR__ . '/../../drush';
-        $process = new SiteProcess($sutAlias, [$drushPath, 'pm:list'], $options);
+        $sutAlias = $this->sutAlias($uri);
+        $options = [
+            'root' => $this->webroot(),
+            'uri' => $uri
+        ];
+        // TODO: Maybe there is a faster command to use for this check
+        $process = new SiteProcess($sutAlias, [self::getDrush(), 'pm:list'], $options);
         $process->run();
         //fwrite(STDERR, $process->getOutput());
         if (!$process->isSuccessful()) {
-            fwrite(STDERR, "======== need to install\n");
-            $options['db-url'] = $this->dbUrl($uri);
-            $options['no-interaction'] = true;
-            $process = new SiteProcess($sutAlias, [$drushPath, 'site:install'], $options);
-            $process->run();
-            fwrite(STDERR, $process->getOutput());
-            fwrite(STDERR, $process->getErrorOutput());
+            $this->installSut($uri);
         }
+    }
+
+    protected function installSut($uri = self::INTEGRATION_TEST_ENV)
+    {
+        fwrite(STDERR, "\n> Installing Drupal...\n");
+        $root = $this->webroot();
+        $siteDir = "$root/sites/$uri";
+        @mkdir($siteDir);
+        chmod("$siteDir", 0777);
+        @chmod("$siteDir/settings.php", 0777);
+        copy("$root/sites/default/default.settings.php", "$siteDir/settings.php");
+        $sutAlias = $this->sutAlias($uri);
+        $options = [
+            'root' => $this->webroot(),
+            'uri' => $uri,
+            'db-url' => $this->dbUrl($uri),
+            'sites-subdir' => $uri,
+            'yes' => true,
+            'quiet' => true,
+        ];
+        $process = new SiteProcess($sutAlias, [self::getDrush(), 'site:install', 'testing', 'install_configure_form.enable_update_status_emails=NULL'], $options);
+        // TODO: Setting PHP_OPTIONS is pointless now, isn't it?
+        $env = ['PHP_OPTIONS' => "-d sendmail_path='true'"];
+        $process->run(null, $env);
+        fwrite(STDERR, $process->getOutput());
+        fwrite(STDERR, $process->getErrorOutput());
+
+        // Give us our write perms back.
+        chmod($this->webroot() . "/sites/$uri", 0777);
     }
 
     /**
