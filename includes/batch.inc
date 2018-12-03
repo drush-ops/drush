@@ -125,7 +125,7 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
 
     // The batch is now completely built. Allow other modules to make changes
     // to the batch so that it is easier to reuse batch processes in other
-    // enviroments.
+    // environments.
     \Drupal::moduleHandler()->alter('batch', $batch);
 
     // Assign an arbitrary id: don't rely on a serial column in the 'batch'
