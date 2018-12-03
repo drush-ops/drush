@@ -341,24 +341,15 @@ function _drush_batch_finished() {
     }
   }
 
-  // Clean up the batch table and unset the static $batch variable.
-  if (drush_drupal_major_version() >= 8) {
-    /** @var \Drupal\Core\Batch\BatchStorage $batch_storage */
-    $batch_storage = \Drupal::service('batch.storage');
-    $batch_storage->delete($batch['id']);
-  }
-  else {
-    db_delete('batch')
-      ->condition('bid', $batch['id'])
-      ->execute();
-  }
+  // Clean up the batch table.
+  \Drupal::service('batch.storage')->delete($batch['id']);
 
   foreach ($batch['sets'] as $batch_set) {
     if ($queue = _batch_queue($batch_set)) {
       $queue->deleteQueue();
     }
   }
-  $_batch = $batch;
+
   $batch = NULL;
   $results['drush_batch_process_finished'] = TRUE;
 
