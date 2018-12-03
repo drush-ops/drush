@@ -2,7 +2,9 @@
 
 namespace Drush\Sql;
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
+use mysql_xdevapi\Exception;
 
 class SqlSqlite extends SqlBase
 {
@@ -35,20 +37,17 @@ class SqlSqlite extends SqlBase
     {
         $file = $this->getDbSpec()['database'];
         if (file_exists($file)) {
-            drush_log("SQLITE: Deleting existing database '$file'", LogLevel::DEBUG);
+            Drush::logger()->debug("SQLITE: Deleting existing database '$file'");
             drush_delete_dir($file, true);
         }
 
         // Make sure sqlite can create file
         $path = dirname($file);
-        drush_log("SQLITE: creating '$path' for creating '$file'", LogLevel::DEBUG);
-        drush_mkdir($path);
-        if (!file_exists($path)) {
-            drush_log("SQLITE: Cannot create $path", LogLevel::ERROR);
-            return false;
-        } else {
-            return true;
+        Drush::logger()->debug("SQLITE: creating '$path' for creating '$file'");
+        if (!drush_mkdir($path)) {
+            throw new Exception("SQLITE: Cannot create $path");
         }
+        return file_exists($path);
     }
 
     public function dbExists()

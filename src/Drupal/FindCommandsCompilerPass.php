@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Drupal;
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -43,12 +44,12 @@ class FindCommandsCompilerPass implements CompilerPassInterface
 
     public function process(ContainerBuilder $container)
     {
-        drush_log(dt("process !storage !tag", ['!storage' => $this->storageClassId, '!tag' => $this->tagId]), LogLevel::DEBUG);
+        Drush::logger()->debug(dt("process !storage !tag", ['!storage' => $this->storageClassId, '!tag' => $this->tagId]));
         // We expect that our called registered the storage
         // class under the storage class id before adding this
         // compiler pass, but we will test this presumption to be sure.
         if (!$container->has($this->storageClassId)) {
-            drush_log(dt("storage class not registered"), LogLevel::DEBUG);
+            Drush::logger()->debug(dt("storage class not registered"));
             return;
         }
 
@@ -60,7 +61,7 @@ class FindCommandsCompilerPass implements CompilerPassInterface
             $this->tagId
         );
         foreach ($taggedServices as $id => $tags) {
-            drush_log(dt("Found tagged service !id", ['!id' => $id]), LogLevel::DEBUG_NOTIFY);
+            Drush::logger()->log(LogLevel::DEBUG_NOTIFY, dt("Found tagged service !id", ['!id' => $id]));
             $definition->addMethodCall(
                 'addCommandReference',
                 [new Reference($id)]

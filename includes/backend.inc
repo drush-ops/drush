@@ -155,10 +155,10 @@ function drush_backend_output() {
   }
 
   $data['error_status'] = Runtime::exitCode();
-  $data['log'] = drush_get_log(); // Append logging information
+  $data['log'] = Drush::logger()->getLogs(); // Append logging information
   // The error log is a more specific version of the log, and may be used by calling
   // scripts to check for specific errors that have occurred.
-  $data['error_log'] = drush_get_error_log();
+  $data['error_log'] = Drush::logger()->getErrorLogs();
   // If there is a @self record, then include it in the result
   $self_record = drush_sitealias_get_record('@self');
   if (!empty($self_record)) {
