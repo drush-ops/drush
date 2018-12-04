@@ -100,6 +100,8 @@ workflows:
   #     (except code style)
   #   - If code style check fails, then run only the LOWEST test and skip
   #     all of the others.
+  #   - If both the code style and mergable checks pass, then run the
+  #     standard and LOWEST tests.
   drush:
     jobs:
       - code_style
@@ -108,11 +110,19 @@ workflows:
           requires:
             - check_mergable
             - code_style
-      - test_72_highest:
+      - test_56_lowest:
           requires:
             - check_mergable
-            - code_style
-      - test_56:
-          requires:
-            - check_mergable
+  # Drush scheduled jobs:
+  #   - Run the HIGHEST tests daily at the stroke of midnight UTC
+  scheduled:
+    triggers:
+       - schedule:
+           cron: "0 0 * * *"
+           filters:
+             branches:
+               only:
+                 - master
+    jobs:
+      - test_72_highest
 
