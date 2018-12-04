@@ -178,9 +178,9 @@ class SqlCommands extends DrushCommands
         }
         if (Drush::simulate()) {
             if ($query) {
-                $this->output()->writeln(dt('Simulating sql-query: !q', ['!q' => $query]));
+                $this->output()->writeln(dt('Simulating sql:query: !q', ['!q' => $query]));
             } else {
-                $this->output()->writeln(dt('Simulating sql-import from !f', ['!f' => $options['file']]));
+                $this->output()->writeln(dt('Simulating sql:query from file !f', ['!f' => $options['file']]));
             }
         } else {
             $sql = SqlBase::create($options);
