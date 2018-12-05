@@ -98,6 +98,13 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $container = \Drupal::getContainer();
         $parser = $container->get('logger.log_message_parser');
 
+        // TODO: This does not work with our integration test bootstrap refactor,
+        // as the Drush logger will be thrown away and re-created each time we
+        // preflight. To fix this, we would need to create a delegation logger
+        // to use here. We would inject a new Drush::logger() into the delegation logger
+        // each time. We'd have to cache the delegation logger on the first
+        // bootstrap so that we could recover a reference to it to re-inject
+        // the new logger (and clear out the old) each test run.
         $drushLogger = Drush::logger();
         $logger = new DrushLog($parser, $drushLogger);
         $container->get('logger.factory')->addLogger($logger);
@@ -220,6 +227,16 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
 
         $application = Drush::getApplication();
         $runner = Drush::runner();
+
+        // TODO: This does not work with our integration test bootstrap refactor,
+        // because the actual bootstrap only happens on the first test run.
+        // On subsequent test runs, the bootstrap object is in a good state, but
+        // all of the commands that are created and injected below are gone, because
+        // in the strategy in this branch, we throw away the DI container and
+        // recreate it on each test run, saving only the bootstrap object (this object).
+        // To fix this, we would need to factor out the code below into a separate
+        // class, and call it both from here, and from the integration test
+        // code when the bootstrap object is re-injected into the DI container.
 
         // We have to get the service command list from the container, because
         // it is constructed in an indirect way during the container initialization.
