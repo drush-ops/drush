@@ -800,7 +800,7 @@ function drush_config_pull($source, $destination) {
   );
   drush_log(dt('Starting to export configuration on Target.'), LogLevel::OK);
   $return = drush_invoke_process($source, 'config-export', array(), $global_options + $export_options, $backend_options);
-  if ($return['error_status']) {
+  if ($return === FALSE || $return['error_status']) {
     return drush_set_error('DRUSH_CONFIG_PULL_EXPORT_FAILED', dt('Config-export failed.'));
   }
   else {
