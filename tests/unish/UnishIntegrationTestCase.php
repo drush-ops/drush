@@ -15,15 +15,16 @@ use Unish\Utils\OutputUtilsTrait;
 use Webmozart\PathUtil\Path;
 
 /**
- * UnishIntegrationTestCase will prepare a pair of Drupal multisites,
- * 'dev' and 'stage', and bootstrap Drupal ONCE.  All integration tests
- * will run in this same bootstrapped environment in the same phpunit
- * process, and must not do anything to damage or alter it.
+ * UnishIntegrationTestCase will prepare a single of Drupal site,
+ * bootstrap it.  All integration tests will run in this same bootstrapped
+ * environment in the same phpunit process, and must not do anything to
+ * damage or alter it.
  *
- * Note that each php process can bootstrap Drupal at most one time; attempting
- * to bootstrap Drupal twice may lead to undefined behavior. Bootstrapping
- * two different versions of Drupal in the same process will almost certainly
- * crash.
+ * Note that it is a general limitation of Drupal that any one php process
+ * may bootstrap Drupal at most once. Attempting to bootstrap Drupal twice
+ * will lead to undefined behavior -- usually a fatal error from defining
+ * the same constant more than once. The unish runtime controller is used
+ * to ensure that only one bootstrap is done.
  */
 abstract class UnishIntegrationTestCase extends UnishTestCase
 {
@@ -76,7 +77,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         $output = RuntimeController::instance()->output();
 
         // Get the application instance from the runtime controller.
-        $application = RuntimeController::instance()->application($this->webroot(), self::INTEGRATION_TEST_ENV);
+        $application = RuntimeController::instance()->application($this->webroot(), $cmd);
 
         // We only bootstrap the first time, and phpunit likes to reset the
         // cwd at the beginning of every test function. We therefore need to
@@ -99,7 +100,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
     protected function buildCommandLine($command, $args, $options)
     {
         $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'backend', 'cd'];
-        $options += ['uri' => 'dev']; // Default value.
+        $options += ['root' => $this->webroot(), 'uri' => self::INTEGRATION_TEST_ENV]; // Default value.
         $cmd = [self::getDrush()];
 
         // Insert global options.

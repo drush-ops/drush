@@ -40,6 +40,10 @@ class RuntimeController
 
     protected $application;
 
+    protected $bootstrap;
+
+    protected $loader;
+
     private function __construct()
     {
         // Create a reusable output buffer
@@ -59,11 +63,9 @@ class RuntimeController
         return $this->application != null;
     }
 
-    public function application($root, $uri)
+    public function application($root, $argv)
     {
-        if (!$this->initialized()) {
-            $this->initializeRuntime($root, $uri);
-        }
+        $this->initializeRuntime($root, $argv);
         return $this->application;
     }
 
@@ -72,10 +74,18 @@ class RuntimeController
         return $this->output;
     }
 
-    protected function initializeRuntime($root, $uri)
+    public function loader()
+    {
+        if (!$this->loader) {
+            $this->loader = require PHPUNIT_COMPOSER_INSTALL;
+        }
+        return $this->loader;
+    }
+
+    protected function initializeRuntime($root, $argv)
     {
         // Create our objects
-        $loader = require PHPUNIT_COMPOSER_INSTALL;
+        $loader = $this->loader();
         $environment = new Environment(Path::getHomeDirectory(), $root, PHPUNIT_COMPOSER_INSTALL);
         $environment->setConfigFileVariant(Drush::getMajorVersion());
         $environment->setLoader($loader);
@@ -83,15 +93,6 @@ class RuntimeController
         $preflightLog = new PreflightLog(new NullOutput());
         $this->preflight = new Preflight($environment, null, null, $preflightLog);
         $di = new DependencyInjection();
-
-        // Set up the invariant section of our argv for preflight
-        $argv = [
-            'drush',
-            'version',
-            "--root=$root",
-            '--uri=' . $uri,
-            '--debug',
-        ];
 
         // Begin our version of Runtime::doRun
         $status = $this->preflight->preflight($argv);
@@ -122,15 +123,16 @@ class RuntimeController
             $this->preflight->aliasManager()
         );
 
-        // Note that at this point, Runtime::doRun installs error and
+        // At this point, Runtime::doRun installs error and
         // shutdown handlers. We do not need or want those here.
 
-        // Now that the DI container has been set up, the Application object will
-        // have a reference to the bootstrap manager et. al., so we may use it
-        // as needed. Tell the application to coordinate between the Bootstrap
-        // manager and the alias manager to select a more specific URI, if
-        // one was not explicitly provided earlier in the preflight.
-        $this->application->refineUriSelection($this->preflight->environment()->cwd());
+        // Ensure that the bootstrap object gets its root and uri set
+        $this->application->refineUriSelection($root);
+
+        // Get the bootstrap manager and either:
+        // - re-inject the cached bootstrap object into the bootstrap manager
+        // - do a full bootstrap and cache the bootstrap object
+        $this->handleBootstrap();
 
         // Add global options and copy their values into Config.
         $this->application->configureGlobalOptions();
@@ -139,5 +141,26 @@ class RuntimeController
         // from the search paths we found above.  After this point, the input
         // and output objects are ready & we can start using the logger, etc.
         $this->application->configureAndRegisterCommands($input, $this->output, $commandfileSearchpath);
+    }
+
+    protected function handleBootstrap()
+    {
+        $manager = $this->container->get('bootstrap.manager');
+
+        // If we have a cached bootstrap object that has already bootstrapped
+        // Drupal, re-inject it into the bootstrap manager.
+        if ($this->bootstrap) {
+            fwrite(STDERR, "inject bootstrap\n");
+            $manager->injectBootstrap($this->bootstrap);
+            return;
+        }
+
+        // Do a full bootstrap and cache the result.
+        // Note that we do not pass any auxiliary data here, so the
+        // bootstrap manager will always use the DrupalKernel. This
+        // is necessary, since we cannot bootstrap more than once.
+            fwrite(STDERR, "bootstrap full\n");
+        $manager->bootstrapToPhase('full');
+        $this->bootstrap = $manager->bootstrap();
     }
 }
