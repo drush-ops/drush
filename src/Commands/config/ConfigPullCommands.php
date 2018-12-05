@@ -48,7 +48,7 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
         ];
         $this->logger()->notice(dt('Starting to export configuration on Target.'));
         $return = drush_invoke_process($source, 'config-export', [], $global_options + $export_options, $backend_options);
-        if ($return['error_status']) {
+        if ($return === false || $return['error_status']) {
               throw new \Exception(dt('Config-export failed.'));
         } else {
               // Trailing slash assures that we transfer files and not the containing dir.
