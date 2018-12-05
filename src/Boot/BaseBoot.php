@@ -24,6 +24,7 @@ abstract class BaseBoot implements Boot
 
     public function setUri($uri)
     {
+            fwrite(STDERR, "set uri to $uri\n");
         $this->uri = $uri;
     }
 
