@@ -177,7 +177,8 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         if ($uri) {
             return $uri;
         }
-        return $this->bootstrapManager()->selectUri($cwd);
+        $uri = $this->bootstrapManager()->selectUri($cwd);
+        return $uri;
     }
 
     /**
