@@ -50,7 +50,7 @@ before_script:
 
 script:
   - composer unit
-#  - composer integration
+  - composer integration
 
 after_success:
   # Publish updated API documentation on every push to the master branch

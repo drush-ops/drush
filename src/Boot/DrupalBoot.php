@@ -126,6 +126,14 @@ abstract class DrupalBoot extends BaseBoot
 
         $core = $this->bootstrapDrupalCore($drupal_root);
 
+        // Make sure we are not bootstrapping twice
+        if (defined('DRUSH_DRUPAL_CORE')) {
+            if (DRUSH_DRUPAL_CORE != $core) {
+                $this->logger->warning('Attempted to redefine DRUSH_DRUPAL_CORE. Original value: ' . DRUSH_DRUPAL_CORE . '; new value: ' . $core);
+            }
+            return;
+        }
+
         // DRUSH_DRUPAL_CORE should point to the /core folder in Drupal 8+.
         define('DRUSH_DRUPAL_CORE', $core);
 

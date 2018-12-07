@@ -56,13 +56,13 @@ class Preflight
     /**
      * Preflight constructor
      */
-    public function __construct(Environment $environment, $verify = null, $configLocator = null)
+    public function __construct(Environment $environment, $verify = null, $configLocator = null, $preflightLog = null)
     {
         $this->environment = $environment;
         $this->verify = $verify ?: new PreflightVerify();
         $this->configLocator = $configLocator ?: new ConfigLocator('DRUSH_', $environment->getConfigFileVariant());
         $this->drupalFinder = new DrupalFinder();
-        $this->logger = new PreflightLog();
+        $this->logger = $preflightLog ?: new PreflightLog();
     }
 
     /**
