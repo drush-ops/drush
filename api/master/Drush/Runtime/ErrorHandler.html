@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Preflight\PreflightLog | Drush API</title>
+    <title>Drush\Runtime\ErrorHandler | Drush API</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -19,7 +19,7 @@
     
     </head>
 
-    <body id="class" data-name="class:Drush_Preflight_PreflightLog" data-root-path="../../">
+    <body id="class" data-name="class:Drush_Runtime_ErrorHandler" data-root-path="../../">
             <div id="content">
         <div id="left-column">
                 <div id="control-panel">
@@ -66,49 +66,46 @@
                         <div class="namespace-breadcrumbs">
             <ol class="breadcrumb">
                 <li><span class="label label-default">class</span></li>
-                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Preflight.html">Preflight</a></li><li class="backslash">\</li><li>PreflightLog</li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Runtime.html">Runtime</a></li><li class="backslash">\</li><li>ErrorHandler</li>
             </ol>
         </div>
                 <div id="page-content">
                 
     <div class="page-header">
         <h1>
-            PreflightLog
+            ErrorHandler
                 
         </h1>
     </div>
 
     <p>    class
-    <strong>PreflightLog</strong>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightLog.php">View source</a>)
+    <strong>ErrorHandler</strong>        implements
+        <abbr title="Psr\Log\LoggerAwareInterface">LoggerAwareInterface</abbr>, <a href="../../Drush/Runtime/HandlerInterface.html"><abbr title="Drush\Runtime\HandlerInterface">HandlerInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/ErrorHandler.php">View source</a>)
 </p>
 
         
     
 
+            <div class="description">
+            <p>Log PHP errors to the Drush log. This is in effect until Drupal's error
+handler takes over.</p>                                </div>
     
-    
-    
-            <h2>Properties</h2>
+            <h2>Traits</h2>
 
-            <table class="table table-condensed">
-                    <tr>
-                <td class="type" id="property_debug">
-                                        protected                                        
-                </td>
-                <td>$debug</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_output">
-                                        protected                                        
-                </td>
-                <td>$output</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
-            </table>
-
+        
+    <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                                            <abbr title="Psr\Log\LoggerAwareTrait">LoggerAwareTrait</abbr>
+                                            
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
+            </div>
+    
+    
     
             <h2>Methods</h2>
 
@@ -118,18 +115,7 @@
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method___construct">__construct</a>($output = null)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    bool
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_getDebug">getDebug</a>()
+                    <a href="#method_installHandler">installHandler</a>()
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -140,18 +126,7 @@
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_setDebug">setDebug</a>(bool $debug)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_log">log</a>($message)
+                    <a href="#method_errorHandler">errorHandler</a>($errno, $message, $filename, $line)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -164,10 +139,29 @@
 
             <div id="method-details">
                     <div class="method-item">
-                    <h3 id="method___construct">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightLog.php#L13">line 13</a></div>
+                    <h3 id="method_installHandler">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/ErrorHandler.php#L24">line 24</a></div>
         <code>                    
-    <strong>__construct</strong>($output = null)
+    <strong>installHandler</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_errorHandler">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/ErrorHandler.php#L29">line 29</a></div>
+        <code>                    
+    <strong>errorHandler</strong>($errno, $message, $filename, $line)
         </code>
     </h3>
     <div class="details">
@@ -180,93 +174,22 @@
                     <table class="table table-condensed">
                     <tr>
                 <td></td>
-                <td>$output</td>
+                <td>$errno</td>
                 <td></td>
             </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getDebug">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightLog.php#L20">line 20</a></div>
-        <code>                    bool
-    <strong>getDebug</strong>()
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>bool</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_setDebug">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightLog.php#L28">line 28</a></div>
-        <code>                    
-    <strong>setDebug</strong>(bool $debug)
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>bool</td>
-                <td>$debug</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_log">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/PreflightLog.php#L34">line 34</a></div>
-        <code>                    
-    <strong>log</strong>($message)
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
                     <tr>
                 <td></td>
                 <td>$message</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$filename</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$line</td>
                 <td></td>
             </tr>
             </table>

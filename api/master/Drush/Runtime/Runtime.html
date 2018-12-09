@@ -127,6 +127,14 @@
                 <td class="last"></td>
                 <td></td>
             </tr>
+                    <tr>
+                <td class="type" id="property_di">
+                                        protected                                        <a href="../../Drush/Runtime/DependencyInjection.html"><abbr title="Drush\Runtime\DependencyInjection">DependencyInjection</abbr></a>
+                </td>
+                <td>$di</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
             </table>
 
     
@@ -138,7 +146,7 @@
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method___construct">__construct</a>(<a href="../../Drush/Preflight/Preflight.html"><abbr title="Drush\Preflight\Preflight">Preflight</abbr></a> $preflight)
+                    <a href="#method___construct">__construct</a>(<a href="../../Drush/Preflight/Preflight.html"><abbr title="Drush\Preflight\Preflight">Preflight</abbr></a> $preflight, <a href="../../Drush/Runtime/DependencyInjection.html"><abbr title="Drush\Runtime\DependencyInjection">DependencyInjection</abbr></a> $di)
         
                                             <p>Runtime constructor</p>                </div>
                 <div class="col-md-2"></div>
@@ -158,19 +166,9 @@
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_doRun">doRun</a>($argv)
+                    <a href="#method_doRun">doRun</a>($argv, $output)
         
                                             <p>Start up Drush</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_setTerminationHandlers">setTerminationHandlers</a>()
-        
-                                            <p>Make sure we are notified on exit, and when bad things happen.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -213,9 +211,9 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L29">line 29</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L34">line 34</a></div>
         <code>                    
-    <strong>__construct</strong>(<a href="../../Drush/Preflight/Preflight.html"><abbr title="Drush\Preflight\Preflight">Preflight</abbr></a> $preflight)
+    <strong>__construct</strong>(<a href="../../Drush/Preflight/Preflight.html"><abbr title="Drush\Preflight\Preflight">Preflight</abbr></a> $preflight, <a href="../../Drush/Runtime/DependencyInjection.html"><abbr title="Drush\Runtime\DependencyInjection">DependencyInjection</abbr></a> $di)
         </code>
     </h3>
     <div class="details">
@@ -231,7 +229,12 @@
                     <tr>
                 <td><a href="../../Drush/Preflight/Preflight.html"><abbr title="Drush\Preflight\Preflight">Preflight</abbr></a></td>
                 <td>$preflight</td>
-                <td>the preflight object</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a href="../../Drush/Runtime/DependencyInjection.html"><abbr title="Drush\Runtime\DependencyInjection">DependencyInjection</abbr></a></td>
+                <td>$di</td>
+                <td></td>
             </tr>
             </table>
 
@@ -244,7 +247,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_run">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L39">line 39</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L45">line 45</a></div>
         <code>                    
     <strong>run</strong>($argv)
         </code>
@@ -276,9 +279,9 @@ preflight. Later code should catch and handle its own exceptions.</p>           
             </div>
                     <div class="method-item">
                     <h3 id="method_doRun">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L56">line 56</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L63">line 63</a></div>
         <code>            protected        
-    <strong>doRun</strong>($argv)
+    <strong>doRun</strong>($argv, $output)
         </code>
     </h3>
     <div class="details">
@@ -296,6 +299,11 @@ preflight. Later code should catch and handle its own exceptions.</p>           
                 <td>$argv</td>
                 <td></td>
             </tr>
+                    <tr>
+                <td></td>
+                <td>$output</td>
+                <td></td>
+            </tr>
             </table>
 
             
@@ -306,29 +314,8 @@ preflight. Later code should catch and handle its own exceptions.</p>           
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_setTerminationHandlers">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L126">line 126</a></div>
-        <code>            protected        
-    <strong>setTerminationHandlers</strong>()
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>Make sure we are notified on exit, and when bad things happen.</p>                                                </div>
-                <div class="tags">
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_setCompleted">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L137">line 137</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L131">line 131</a></div>
         <code>        static            
     <strong>setCompleted</strong>()
         </code>
@@ -349,7 +336,7 @@ preflight. Later code should catch and handle its own exceptions.</p>           
             </div>
                     <div class="method-item">
                     <h3 id="method_setExitCode">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L149">line 149</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L143">line 143</a></div>
         <code>        static            
     <strong>setExitCode</strong>(int $code)
         <small><sup><span class="label label-danger">deprecated</span></sup></small></code>
@@ -387,7 +374,7 @@ Mark the exit code for current request.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_exitCode">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L160">line 160</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/Runtime.php#L154">line 154</a></div>
         <code>        static            
     <strong>exitCode</strong>()
         <small><sup><span class="label label-danger">deprecated</span></sup></small></code>
