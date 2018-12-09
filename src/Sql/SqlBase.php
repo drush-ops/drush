@@ -162,7 +162,9 @@ class SqlBase implements ConfigAwareInterface
         $cmd = $this->dumpCmd($table_selection);
         // Gzip the output from dump command(s) if requested.
         if ($this->getOption('gzip')) {
-            $cmd .= ' | gzip -f';
+            // See https://github.com/drush-ops/drush/issues/3816.
+            $pipefail = $this->getConfig()->get('ssh.pipefail', 'set -o pipefail;');
+            $cmd = "$pipefail $cmd | gzip -f";
             $file_suffix .= '.gz';
         }
         if ($file) {
