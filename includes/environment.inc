@@ -72,6 +72,8 @@ function _drush_convert_path($path) {
 /**
  * Build a drush command suitable for use for Drush to call itself.
  * Used in backend_invoke.
+ *
+ * @deprecated.
  */
 function drush_build_drush_command($drush_path = NULL, $php = NULL, $os = NULL, $remote_command = FALSE, $environment_variables = []) {
   $os = _drush_get_os($os);
@@ -177,6 +179,8 @@ function drush_bit_bucket() {
  *   WIN* (e.g. WINNT)
  *   CYGWIN
  *   MINGW* (e.g. MINGW32)
+ *
+ * @deprecated. Use \Consolidation\SiteProcess\Util\Escape.
  */
 function _drush_get_os($os = NULL) {
   // In most cases, $os will be NULL and PHP_OS will be returned. However, if an
@@ -211,11 +215,16 @@ function drush_is_local_host($host) {
 
 /**
  * Determine whether current OS is a Windows variant.
+ *
+ * @deprecated. Use \Consolidation\SiteProcess\Util\Escape.
  */
 function drush_is_windows($os = NULL) {
   return strtoupper(substr(_drush_get_os($os), 0, 3)) === 'WIN';
 }
 
+/**
+ * @deprecated. Use \Consolidation\SiteProcess\Util\Escape.
+ */
 function drush_escapeshellarg($arg, $os = NULL, $raw = FALSE) {
   // Short-circuit escaping for simple params (keep stuff readable)
   if (preg_match('|^[a-zA-Z0-9.:/_-]*$|', $arg)) {
@@ -235,7 +244,9 @@ function drush_escapeshellarg($arg, $os = NULL, $raw = FALSE) {
  * This is intended to work the same way that escapeshellarg() does on
  * Linux.  If we need to escape a string that will be used remotely on
  * a Linux system, then we need our own implementation of escapeshellarg,
- * because the Windows version behaves differently.
+ * because the Windows version behaves differently
+ *
+ * @deprecated. Use \Consolidation\SiteProcess\Util\Escape.
  */
 function _drush_escapeshellarg_linux($arg, $raw = FALSE) {
   // For single quotes existing in the string, we will "exit"
@@ -263,6 +274,8 @@ function _drush_escapeshellarg_linux($arg, $raw = FALSE) {
 
 /**
  * Windows version of escapeshellarg().
+ *
+ * @deprecated. Use \Consolidation\SiteProcess\Util\Escape.
  */
 function _drush_escapeshellarg_windows($arg, $raw = FALSE) {
   // Double up existing backslashes
