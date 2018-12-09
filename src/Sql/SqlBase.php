@@ -2,12 +2,14 @@
 
 namespace Drush\Sql;
 
+use Consolidation\SiteProcess\Util\Escape;
+use Consolidation\SiteProcess\Util\Shell;
 use Drupal\Core\Database\Database;
 use Drush\Drush;
-use Drush\Log\LogLevel;
 use Drush\Utils\FsUtils;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 use Webmozart\PathUtil\Path;
 
@@ -29,7 +31,10 @@ class SqlBase implements ConfigAwareInterface
     // An options array.
     public $options;
 
-    public $process;
+    /**
+     * @var Process
+     */
+    protected $process;
 
     /**
      * Typically, SqlBase instances are constructed via SqlBase::create($options).
@@ -169,7 +174,7 @@ class SqlBase implements ConfigAwareInterface
         }
         if ($file) {
             $file .= $file_suffix;
-            $cmd .= ' > ' . drush_escapeshellarg($file);
+            $cmd .= ' > ' . Escape::shellArg($file);
         }
 
         $process = Drush::process($cmd);
@@ -247,7 +252,7 @@ class SqlBase implements ConfigAwareInterface
     /**
      * Execute a SQL query. Always execute regardless of simulate mode.
      *
-     * If you don't want query results to print during --debug then
+     * If you don't want query to print during --debug then
      * provide a $result_file whose value can be drush_bit_bucket().
      *
      * @param string $query
@@ -276,7 +281,7 @@ class SqlBase implements ConfigAwareInterface
             }
         }
 
-        // Save $query to a tmp file if needed. We will redirect it in.
+        // Save $query to a tmp file if needed. We redirect it in.
         if (!$input_file) {
             $query = $this->queryPrefix($query);
             $query = $this->queryFormat($query);
@@ -289,12 +294,12 @@ class SqlBase implements ConfigAwareInterface
             $this->silent(), // This removes column header and various helpful things in mysql.
             $this->getOption('extra', $this->queryExtra),
             $this->queryFile,
-            drush_escapeshellarg($input_file),
+            Escape::shellArg($input_file),
         ];
         $exec = implode(' ', $parts);
 
         if ($result_file) {
-            $exec .= ' > '. drush_escapeshellarg($result_file);
+            $exec .= ' > '. Escape::shellArg($result_file);
         }
 
         // In --verbose mode, drush_shell_exec() will show the call to mysql/psql/sqlite,
@@ -309,7 +314,8 @@ class SqlBase implements ConfigAwareInterface
         $this->setProcess($process);
 
         if ($success && $this->getOption('file-delete')) {
-            drush_delete_dir($input_file);
+            $fs = new Filesystem();
+            $fs->remove($input_file);
         }
 
         return $success;
