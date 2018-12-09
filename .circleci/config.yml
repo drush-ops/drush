@@ -10,7 +10,35 @@ defaults: &defaults
 
 version: 2
 jobs:
-  build:
+  # Code style test:
+  #   FAIL if code does not conform to PSR-2 conventions
+  #   PASS otherwise
+  code_style:
+    <<: *defaults
+    docker:
+      - image: wodby/php:7.1
+    steps:
+      - checkout
+      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
+      - run: composer install
+      - run: composer cs
+
+  # Mergable test:
+  #   FAIL if merging test branch with master produces conflicts
+  #   PASS if the test branch is out of date, but mergable without conflicts
+  check_mergable:
+    <<: *defaults
+    docker:
+      - image: wodby/php:7.1
+    steps:
+      - checkout
+      - run: git config --global user.email "nobody@drush.org"
+      - run: git config --global user.name "Drush Merge Test Bot"
+      - run: git merge -q -m 'Merge check' origin/master
+
+  # PHP 7.1 test:
+  #   Checks the most common configuration.
+  test_71:
     <<: *defaults
     docker:
       - image: wodby/php:7.1
@@ -23,9 +51,12 @@ jobs:
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: composer install
       - run: $HOME/drush/.circleci/patch.sh
+      - run: composer lint
       - run: composer functional
 
-  build_highest:
+  # PHP 7.2 test with HIGHEST dependencies:
+  #   Determines whether a newer version of a dependency has broken Drush.
+  test_72_highest:
     <<: *defaults
     docker:
       - image: wodby/php:7.2
@@ -39,10 +70,16 @@ jobs:
       - run: composer remove --dev webflo/drupal-core-strict --no-update
       - run: composer require --dev drupal/core:8.7.x-dev --no-update
       - run: composer config platform.php 7.2
-      - run: composer install
+      - run: composer update
+      - run: composer lint
       - run: composer functional
 
-  build_56:
+  # PHP 5.6 test with LOWEST dependencies:
+  #   Determines whether any code introduced in this branch uses language
+  #   features not available in PHP 5.6, or whether there are any API calls
+  #   to dependency features not available in the lowest version listed
+  #   for a dependency in our composer.json file.
+  test_56_lowest:
     <<: *defaults
     docker:
       - image: wodby/php:5.6
@@ -53,14 +90,41 @@ jobs:
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-      - run: .scenarios.lock/install php5
+      - run: .scenarios.lock/install php5 lowest
       - run: $HOME/drush/.circleci/patch.sh
+      - run: composer lint
       - run: composer functional
 
 workflows:
   version: 2
-  build_test:
+  # Drush test jobs:
+  #   - If the mergable test fails, then skip all of the other tests
+  #     (except code style)
+  #   - If code style check fails, then run only the LOWEST test and skip
+  #     all of the others.
+  #   - If both the code style and mergable checks pass, then run the
+  #     standard and LOWEST tests.
+  drush:
     jobs:
-      - build
-      - build_highest
-      - build_56
+      - code_style
+      - check_mergable
+      - test_71:
+          requires:
+            - check_mergable
+            - code_style
+      - test_56_lowest:
+          requires:
+            - check_mergable
+  # Drush scheduled jobs:
+  #   - Run the HIGHEST tests daily at the stroke of midnight UTC
+  scheduled:
+    triggers:
+       - schedule:
+           cron: "0 0 * * *"
+           filters:
+             branches:
+               only:
+                 - master
+    jobs:
+      - test_72_highest
+

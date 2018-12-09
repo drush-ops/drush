@@ -62,13 +62,6 @@ class Drush
     protected static $minorVersion = false;
 
     /**
-     * The currently active container object, or NULL if not initialized yet.
-     *
-     * @var \League\Container\ContainerInterface|null
-     */
-    protected static $container;
-
-    /**
      * The Robo Runner -- manages and constructs all commandfile classes
      *
      * @var \Robo\Runner
@@ -133,7 +126,7 @@ class Drush
      */
     public static function setContainer(ContainerInterface $container)
     {
-        static::$container = $container;
+        \Robo\Robo::setContainer($container);
     }
 
     /**
@@ -141,7 +134,7 @@ class Drush
      */
     public static function unsetContainer()
     {
-        static::$container = null;
+        \Robo\Robo::unsetContainer();
     }
 
     /**
@@ -153,11 +146,11 @@ class Drush
      */
     public static function getContainer()
     {
-        if (static::$container === null) {
+        if (!\Robo\Robo::hasContainer()) {
             debug_print_backtrace();
-            throw new \RuntimeException('Drush::$container is not initialized yet. \Drupal::setContainer() must be called with a real container.');
+            throw new \RuntimeException('Drush::$container is not initialized yet. \Drush::setContainer() must be called with a real container.');
         }
-        return static::$container;
+        return \Robo\Robo::getContainer();
     }
 
     /**
@@ -167,7 +160,7 @@ class Drush
      */
     public static function hasContainer()
     {
-        return static::$container !== null;
+        return \Robo\Robo::hasContainer();
     }
 
     /**

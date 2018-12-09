@@ -38,7 +38,7 @@ class UserCase extends CommandUnishTestCase
 
     public function testUserRole()
     {
-      // First, create the role since we use testing install profile.
+        // First, create the role since we use testing install profile.
         $this->drush('role-create', ['test role']);
         $this->drush('user-add-role', ['test role', self::NAME]);
         $this->drush('user-information', [self::NAME], ['format' => 'json']);
@@ -47,7 +47,7 @@ class UserCase extends CommandUnishTestCase
         $expected = ['authenticated', 'test role'];
         $this->assertEquals($expected, array_values((array)$output->roles), 'User has test role.');
 
-      // user-remove-role
+        // user-remove-role
         $this->drush('user-remove-role', ['test role', self::NAME]);
         $this->drush('user-information', [self::NAME], ['format' => 'json']);
         $output = $this->getOutputFromJSON($uid);
@@ -66,20 +66,24 @@ class UserCase extends CommandUnishTestCase
         $this->assertEquals("2", $output, 'User can login with new password.');
     }
 
+    public function testUserLoginNoBootstrappedSite()
+    {
+        $this->markTestSkipped('TODO: @none should prevent selection of site at cwd');
+        // Check if user-login on a non-bootstrapped environment returns error.
+        $this->drush('user-login', [], [], '@none', null, self::EXIT_ERROR);
+    }
+
     public function testUserLogin()
     {
-      // Check if user-login on a non-bootstrapped environment returns error.
-        $this->drush('user-login', [], ['uri' => 'OMIT'], null, null, self::EXIT_ERROR);
-
-      // Check user-login
+        // Check user-login
         $user_login_options = ['simulate' => null, 'browser' => 'unish'];
-      // Collect full logs so we can check browser.
+        // Collect full logs so we can check browser.
         $this->drush('user-login', [], $user_login_options + ['debug' => null]);
         $logOutput = $this->getErrorOutput();
         $url = parse_url($this->getOutput());
         $this->assertContains('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
         $this->assertContains('Opening browser unish at http://', $logOutput);
-      // Check specific user with a path argument.
+        // Check specific user with a path argument.
         $uid = 2;
         $this->drush('user-login', ['node/add'], $user_login_options + ['name' => self::NAME]);
         $output = $this->getOutput();
@@ -87,7 +91,7 @@ class UserCase extends CommandUnishTestCase
         $query = $url['query'];
         $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with user argument returned a valid reset URL');
         $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
-      // Check path used as only argument when using uid option.
+        // Check path used as only argument when using uid option.
         $this->drush('user-login', ['node/add'], $user_login_options + ['name' => self::NAME]);
         $output = $this->getOutput();
         $url = parse_url($output);
