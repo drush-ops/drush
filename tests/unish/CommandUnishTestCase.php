@@ -261,8 +261,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
         // Set sendmail_path to 'true' to disable any outgoing emails
         // that tests might cause Drupal to send.
 
-        $php_options = (array_key_exists('PHP_OPTIONS', $env)) ? $env['PHP_OPTIONS'] . " " : "";
-        $env['PHP_OPTIONS'] = "${php_options}-d sendmail_path='true'";
         $cmd = implode(' ', $exec);
         $return = $this->execute($cmd, $expected_return, $cd, $env);
 

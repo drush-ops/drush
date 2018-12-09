@@ -21,7 +21,7 @@ use Psr\Log\LoggerAwareTrait;
  * used by the script.
  *
  * The command will exit with '0' if it was successfully executed, and the
- * result of drush_get_error() if it wasn't.
+ * result of Runtime::exitCode() if it wasn't.
  *
  */
 class ShutdownHandler implements LoggerAwareInterface, HandlerInterface
@@ -58,12 +58,6 @@ class ShutdownHandler implements LoggerAwareInterface, HandlerInterface
      */
     public function returnStatus()
     {
-        // If a specific exit code was set, then use it.
-        $exit_code = Runtime::exitCode();
-        if (empty($exit_code)) {
-            $exit_code = (drush_get_error()) ? DRUSH_FRAMEWORK_ERROR : DRUSH_SUCCESS;
-        }
-
-        exit($exit_code);
+        exit(Runtime::exitCode());
     }
 }

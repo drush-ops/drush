@@ -652,7 +652,6 @@ EOT;
         // TODO: Maybe there is a faster command to use for this check
         $process = new SiteProcess($sutAlias, [self::getDrush(), 'pm:list'], $options);
         $process->run();
-        //fwrite(STDERR, $process->getOutput());
         if (!$process->isSuccessful()) {
             $this->installSut($uri);
         }
@@ -660,7 +659,6 @@ EOT;
 
     protected function installSut($uri = self::INTEGRATION_TEST_ENV, $optionsFromTest = [], $refreshSettings = true)
     {
-        fwrite(STDERR, "\n> Installing Drupal...\n");
         $root = $this->webroot();
         $siteDir = "$root/sites/$uri";
         @mkdir($siteDir);
@@ -680,12 +678,8 @@ EOT;
             'quiet' => true,
         ];
         $process = new SiteProcess($sutAlias, [self::getDrush(), 'site:install', 'testing', 'install_configure_form.enable_update_status_emails=NULL'], $options);
-        // TODO: Setting PHP_OPTIONS is pointless now, isn't it?
-        $env = ['PHP_OPTIONS' => "-d sendmail_path='true'"];
-        $process->run(null, $env);
-        fwrite(STDERR, $process->getOutput());
-        fwrite(STDERR, $process->getErrorOutput());
-        $this->assertTrue($process->isSuccessful(), 'Could not install SUT. Options: ' . var_export($optionsFromTest, true));
+        $process->run();
+        $this->assertTrue($process->isSuccessful(), 'Could not install SUT. Options: ' . var_export($optionsFromTest, true) . "\nStdout:\n" . $process->getOutput() . "\n\nStderr:\n" . $process->getErrorOutput());
 
         // Give us our write perms back.
         chmod($this->webroot() . "/sites/$uri", 0777);
