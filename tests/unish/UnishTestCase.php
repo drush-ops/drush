@@ -522,11 +522,6 @@ abstract class UnishTestCase extends TestCase
         foreach ($sites as $subdir => $extra) {
             $this->createSettings($subdir);
         }
-        // Create basic site alias data with root and uri
-        $siteAliasData = $this->createAliasFileData(array_keys($sites), $aliasGroup);
-        // Add in caller-provided site alias data
-        $siteAliasData = array_merge_recursive($siteAliasData, $sites);
-        $this->writeSiteAliases($siteAliasData, $aliasGroup);
     }
 
     public function createSettings($subdir)
@@ -573,7 +568,7 @@ EOT;
             copy($root . '/sites/example.sites.php', $root . '/sites/sites.php');
         }
 
-        $siteData = $this->createAliasFile($sites_subdirs, 'sut');
+        $siteData = $this->aliasFileData($sites_subdirs);
         self::$sites = [];
         foreach ($siteData as $key => $data) {
             self::$sites[$key] = $data;
@@ -581,7 +576,7 @@ EOT;
         return self::$sites;
     }
 
-    public function createAliasFileData($sites_subdirs)
+    public function aliasFileData($sites_subdirs)
     {
         $root = $this->webroot();
         // Stash details about each site.
@@ -596,13 +591,9 @@ EOT;
         return $sites;
     }
 
-    public function createAliasFile($sites_subdirs, $aliasGroup)
+    protected function sutAlias($uri = self::INTEGRATION_TEST_ENV)
     {
-        // Make an alias group for the sites.
-        $sites = $this->createAliasFileData($sites_subdirs);
-        $this->writeSiteAliases($sites, $aliasGroup);
-
-        return $sites;
+        return new AliasRecord(['root' => $this->webroot(), 'uri' => $uri], "@sut.$uri");
     }
 
     /**
@@ -623,23 +614,6 @@ EOT;
             $this->mkdir($site);
             touch("$site/settings.php");
         }
-    }
-
-    /**
-     * Write an alias group file and a config file which points to same dir.
-     *
-     * @param $sites
-     */
-    public function writeSiteAliases($sites, $aliasGroup = 'sut')
-    {
-        $target = Path::join(self::webrootSlashDrush(), "sites/$aliasGroup.site.yml");
-        $this->mkdir(dirname($target));
-        file_put_contents($target, Yaml::dump($sites, PHP_INT_MAX, 2));
-    }
-
-    protected function sutAlias($uri = self::INTEGRATION_TEST_ENV)
-    {
-        return new AliasRecord(['root' => $this->webroot(), 'uri' => $uri], "@sut.$uri");
     }
 
     protected function checkInstallSut($uri = self::INTEGRATION_TEST_ENV)

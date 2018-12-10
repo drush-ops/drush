@@ -1,0 +1,5 @@
+common:
+  root: /Users/ganderson/local/drupal/drush9/drush/sut
+'*':
+  uri: ${env-name}
+  dbUrl: 'mysql://root:@127.0.0.1/unish_${env-name}'
