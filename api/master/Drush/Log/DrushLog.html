@@ -80,7 +80,7 @@
 
     <p>    class
     <strong>DrushLog</strong>        implements
-        <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Log/DrushLog.php">View source</a>)
+        <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>, <abbr title="Psr\Log\LoggerAwareInterface">LoggerAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Log/DrushLog.php">View source</a>)
 </p>
 
         
@@ -96,6 +96,15 @@ but we can't help that here -- we just need to convert back.</p>                
 
         
     <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                                            <abbr title="Psr\Log\LoggerAwareTrait">LoggerAwareTrait</abbr>
+                                            
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
                     <div class="row">
                 <div class="col-md-6">
                                             <abbr title="Drupal\Core\Logger\RfcLoggerTrait">RfcLoggerTrait</abbr>
@@ -117,14 +126,6 @@ but we can't help that here -- we just need to convert back.</p>                
                 </td>
                 <td>$parser</td>
                 <td class="last">The message's placeholders parser.</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_logger">
-                                        protected                                        
-                </td>
-                <td>$logger</td>
-                <td class="last">The logger that messages will be passed through to.</td>
                 <td></td>
             </tr>
             </table>
@@ -161,7 +162,7 @@ but we can't help that here -- we just need to convert back.</p>                
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Log/DrushLog.php#L55">line 55</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Log/DrushLog.php#L52">line 52</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Drupal\Core\Logger\LogMessageParserInterface">LogMessageParserInterface</abbr> $parser, <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger)
         </code>
@@ -197,7 +198,7 @@ but we can't help that here -- we just need to convert back.</p>                
             </div>
                     <div class="method-item">
                     <h3 id="method_log">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Log/DrushLog.php#L64">line 64</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Log/DrushLog.php#L61">line 61</a></div>
         <code>                    
     <strong>log</strong>($level, $message, array $context = [])
         </code>
