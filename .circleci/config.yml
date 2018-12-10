@@ -8,6 +8,15 @@ defaults: &defaults
     UNISH_DB_URL: mysql://root:@127.0.0.1
     PHPUNIT_ARGS: ""
 
+test_71_steps: &test71steps
+  steps:
+    - checkout
+    - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
+    - run: composer install
+    - run: $HOME/drush/.circleci/patch.sh
+    - run: composer lint
+    - run: composer functional
+
 version: 2.1
 jobs:
   # Code style test:
@@ -23,9 +32,9 @@ jobs:
       - run: composer install
       - run: composer cs
 
-  # Mergable test:
+  # Mergeable test:
   #   FAIL if merging test branch with master produces conflicts
-  #   PASS if the test branch is out of date, but mergable without conflicts
+  #   PASS if the test branch is out of date, but mergeable without conflicts
   check_mergable:
     <<: *defaults
     docker:
@@ -38,31 +47,47 @@ jobs:
 
   # PHP 7.1 test:
   #   Checks the most common configuration.
-  test_71:
-    parameters:
-      unish-db-url:
-        type: string
-        default: mysql://root:@127.0.0.1
+  test_71_mysql:
     <<: *defaults
     docker:
       - image: wodby/php:7.1
         environment:
           - MYSQL_HOST=127.0.0.1
           - PHP_SENDMAIL_PATH=/dev/null
-          - UNISH_DB_URL=<< unish-db-url >>
+          - UNISH_DB_URL=mysql://root:@127.0.0.1
+      - image: circleci/mysql:5.7.24
+    <<: *test71steps
+
+  # See scheduled workflow
+  test_71_sqlite:
+    <<: *defaults
+    docker:
+      - image: wodby/php:7.1
+        environment:
+          - PHP_SENDMAIL_PATH=/dev/null
+          - UNISH_DB_URL=mysql://root:@127.0.0.1
       - image: circleci/mysql:5.7.24
       - image: wodby/postgres:10.5
         environment:
           POSTGRES_PASSWORD: unish
           POSTGRES_DB: unish_dev
           POSTGRES_USER: unish
-    steps:
-      - checkout
-      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-      - run: composer install
-      - run: $HOME/drush/.circleci/patch.sh
-      - run: composer lint
-      - run: composer functional
+    <<: *test71steps
+
+  # See scheduled workflow
+  test_71_postgres:
+    <<: *defaults
+    docker:
+      - image: wodby/php:7.1
+        environment:
+          - PHP_SENDMAIL_PATH=/dev/null
+          - UNISH_DB_URL=mysql://root:@127.0.0.1
+      - image: wodby/postgres:10.5
+        environment:
+          POSTGRES_PASSWORD: unish
+          POSTGRES_DB: unish_dev
+          POSTGRES_USER: unish
+    <<: *test71steps
 
   # PHP 7.2 test with HIGHEST dependencies:
   #   Determines whether a newer version of a dependency has broken Drush.
@@ -118,7 +143,7 @@ workflows:
     jobs:
       - code_style
       - check_mergable
-      - test_71:
+      - test_71_mysql:
           requires:
             - check_mergable
             - code_style
@@ -137,10 +162,6 @@ workflows:
                  - master
     jobs:
       - test_72_highest
-      - test_71:
-          name: test_71_postgres
-          unish-db-url: pgsql://unish:unish@127.0.0.1
-      - test_71:
-          name: test_71_sqlite
-          unish-db-url: sqlite://sut/sites/dev/files/.ht.sqlite
+      - test_71_sqlite
+      - test_71_postgres
 
