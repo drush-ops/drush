@@ -2,8 +2,13 @@
 
 namespace Drush\Boot;
 
-abstract class BaseBoot implements Boot
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+
+abstract class BaseBoot implements Boot, LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     protected $uri = false;
     protected $phase = false;
 
@@ -24,7 +29,6 @@ abstract class BaseBoot implements Boot
 
     public function setUri($uri)
     {
-            fwrite(STDERR, "set uri to $uri\n");
         $this->uri = $uri;
     }
 

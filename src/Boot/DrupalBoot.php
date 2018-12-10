@@ -121,14 +121,14 @@ abstract class DrupalBoot extends BaseBoot
     {
         $drupal_root = $manager->getRoot();
         chdir($drupal_root);
-        $manager->logger()->log(LogLevel::BOOTSTRAP, dt("Change working directory to !drupal_root", ['!drupal_root' => $drupal_root]));
+        $this->logger->log(LogLevel::BOOTSTRAP, dt("Change working directory to !drupal_root", ['!drupal_root' => $drupal_root]));
 
         $core = $this->bootstrapDrupalCore($manager, $drupal_root);
 
         // Make sure we are not bootstrapping twice
         if (defined('DRUSH_DRUPAL_CORE')) {
             if (DRUSH_DRUPAL_CORE != $core) {
-                $manager->logger()->warning('Attempted to redefine DRUSH_DRUPAL_CORE. Original value: ' . DRUSH_DRUPAL_CORE . '; new value: ' . $core);
+                $this->logger->warning('Attempted to redefine DRUSH_DRUPAL_CORE. Original value: ' . DRUSH_DRUPAL_CORE . '; new value: ' . $core);
             }
             return;
         }
@@ -136,7 +136,7 @@ abstract class DrupalBoot extends BaseBoot
         // DRUSH_DRUPAL_CORE should point to the /core folder in Drupal 8+.
         define('DRUSH_DRUPAL_CORE', $core);
 
-        $manager->logger()->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal !version root directory at !drupal_root", ["!version" => Drush::bootstrap()->getVersion($drupal_root), '!drupal_root' => $drupal_root]));
+        $this->logger->log(LogLevel::BOOTSTRAP, dt("Initialized Drupal !version root directory at !drupal_root", ["!version" => Drush::bootstrap()->getVersion($drupal_root), '!drupal_root' => $drupal_root]));
     }
 
     /**
@@ -185,7 +185,7 @@ abstract class DrupalBoot extends BaseBoot
     {
         // We presume that our derived classes will connect and then
         // either fail, or call us via parent::
-        $manager->logger()->log(LogLevel::BOOTSTRAP, dt("Successfully connected to the Drupal database."));
+        $this->logger->log(LogLevel::BOOTSTRAP, dt("Successfully connected to the Drupal database."));
     }
 
     /**

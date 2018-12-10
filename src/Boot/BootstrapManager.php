@@ -162,7 +162,12 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      */
     public function injectBootstrap($bootstrap)
     {
+        $this->inflect($bootstrap);
         $this->bootstrap = $bootstrap;
+
+        // Our bootstrap object is always a DrupalBoot8.
+        // TODO: make an API in the Boot interface to call.
+        $bootstrap->addDrupalModuleDrushCommands($this);
     }
 
     /**
@@ -282,7 +287,6 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                 break;
             }
             if ($phase_index > $bootstrapped_phase) {
-                fwrite(STDERR, "bootstrap to $phase_index\n");
                 if ($result = $this->bootstrapValidate($phase_index)) {
                     if (method_exists($bootstrap, $current_phase)) {
                         $this->logger->log(LogLevel::BOOTSTRAP, 'Drush bootstrap phase: {function}()', ['function' => $current_phase]);

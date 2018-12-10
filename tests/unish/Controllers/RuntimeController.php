@@ -150,7 +150,6 @@ class RuntimeController
         // If we have a cached bootstrap object that has already bootstrapped
         // Drupal, re-inject it into the bootstrap manager.
         if ($this->bootstrap) {
-            fwrite(STDERR, "inject bootstrap\n");
             $manager->injectBootstrap($this->bootstrap);
             return;
         }
@@ -159,7 +158,6 @@ class RuntimeController
         // Note that we do not pass any auxiliary data here, so the
         // bootstrap manager will always use the DrupalKernel. This
         // is necessary, since we cannot bootstrap more than once.
-            fwrite(STDERR, "bootstrap full\n");
         $manager->bootstrapToPhase('full');
         $this->bootstrap = $manager->bootstrap();
     }
