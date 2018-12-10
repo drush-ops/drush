@@ -1,5 +1,11 @@
 common:
   root: ${drush.base-dir}/sut
-'*':
-  uri: ${env-name}
   dbUrl: 'mysql://root:@127.0.0.1/unish_${env-name}'
+default:
+  uri: default
+dev:
+  uri: dev
+stage:
+  uri: stage
+prod:
+  uri: prod
