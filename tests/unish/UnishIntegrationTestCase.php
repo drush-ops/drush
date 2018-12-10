@@ -15,8 +15,8 @@ use Unish\Utils\OutputUtilsTrait;
 use Webmozart\PathUtil\Path;
 
 /**
- * UnishIntegrationTestCase will prepare a single of Drupal site,
- * bootstrap it.  All integration tests will run in this same bootstrapped
+ * UnishIntegrationTestCase will prepare a single Drupal site and
+ * bootstrap it once.  All integration tests will run in this same bootstrapped
  * environment in the same phpunit process, and must not do anything to
  * damage or alter it.
  *
