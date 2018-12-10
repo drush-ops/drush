@@ -613,7 +613,7 @@ function drush_preflight_command_dispatch() {
     $local_drush = find_wrapper_or_launcher($root);
   }
   $is_local = drush_get_option('local');
-  $must_use_site_local = !empty($root) && !empty($local_drush) && empty($is_local);
+  $must_use_site_local = !empty($root) && !empty($local_drush) && !empty($is_local);
   // If the command sets the 'handle-remote-commands' flag, then we will short-circuit
   // remote command dispatching and site-list command dispatching, and always let
   // the command handler run on the local machine.
