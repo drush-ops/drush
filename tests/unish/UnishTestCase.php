@@ -131,7 +131,7 @@ abstract class UnishTestCase extends TestCase
             }
             $webrootSlashDrush = self::webrootSlashDrush();
             if (file_exists($webrootSlashDrush)) {
-                self::recursiveDelete($webrootSlashDrush, true, false, ['Commands']);
+                self::recursiveDelete($webrootSlashDrush, true, false, ['Commands', 'sites']);
             }
             foreach (['modules', 'themes', 'profiles'] as $dir) {
                 $target = Path::join(self::webroot(), $dir, 'contrib');
