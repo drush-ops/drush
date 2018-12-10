@@ -8,7 +8,7 @@ defaults: &defaults
     UNISH_DB_URL: mysql://root:@127.0.0.1
     PHPUNIT_ARGS: ""
 
-version: 2
+version: 2.1
 jobs:
   # Code style test:
   #   FAIL if code does not conform to PSR-2 conventions
