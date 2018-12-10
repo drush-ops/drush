@@ -8,7 +8,7 @@ defaults: &defaults
     UNISH_DB_URL: mysql://root:@127.0.0.1
     PHPUNIT_ARGS: ""
 
-version: 2
+version: 2.1
 jobs:
   # Code style test:
   #   FAIL if code does not conform to PSR-2 conventions
@@ -39,13 +39,23 @@ jobs:
   # PHP 7.1 test:
   #   Checks the most common configuration.
   test_71:
+    parameters:
+      unish-db-url:
+        type: string
+        default: mysql://root:@127.0.0.1
     <<: *defaults
     docker:
       - image: wodby/php:7.1
         environment:
           - MYSQL_HOST=127.0.0.1
           - PHP_SENDMAIL_PATH=/dev/null
+          - UNISH_DB_URL=<< unish-db-url >>
       - image: circleci/mysql:5.7.24
+      - image: wodby/postgres:10.5
+        environment:
+          POSTGRES_PASSWORD: unish
+          POSTGRES_DB: unish_dev
+          POSTGRES_USER: unish
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
@@ -98,11 +108,11 @@ jobs:
 workflows:
   version: 2
   # Drush test jobs:
-  #   - If the mergable test fails, then skip all of the other tests
+  #   - If the mergeable test fails, then skip all of the other tests
   #     (except code style)
   #   - If code style check fails, then run only the LOWEST test and skip
   #     all of the others.
-  #   - If both the code style and mergable checks pass, then run the
+  #   - If both the code style and mergeable checks pass, then run the
   #     standard and LOWEST tests.
   drush:
     jobs:
@@ -127,4 +137,10 @@ workflows:
                  - master
     jobs:
       - test_72_highest
+      - test_71:
+          name: test_71_postgres
+          unish-db-url: pgsql://unish:unish@127.0.0.1
+      - test_71:
+          name: test_71_sqlite
+          unish-db-url: sqlite://sut/sites/dev/files/.ht.sqlite
 
