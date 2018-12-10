@@ -3,18 +3,21 @@
 namespace Drush\Boot;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
-use Robo\Common\ConfigAwareTrait;
 use DrupalFinder\DrupalFinder;
 use Drush\Log\LogLevel;
+use League\Container\ContainerAwareInterface;
+use League\Container\ContainerAwareTrait;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Robo\Common\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 
-class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface, ConfigAwareInterface
+class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface, ConfigAwareInterface, ContainerAwareInterface
 {
     use LoggerAwareTrait;
     use AutoloaderAwareTrait;
     use ConfigAwareTrait;
+    use ContainerAwareTrait;
 
     /**
      * @var DrupalFinder
@@ -29,22 +32,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     /**
      * @var \Drush\Boot\Boot
      */
-    protected $defaultBootstrapObject;
-
-    /**
-     * @var \Drush\Boot\Boot
-     */
     protected $bootstrap;
-
-    /**
-     * @var string
-     */
-    protected $root;
-
-    /**
-     * @var string
-     */
-    protected $uri;
 
     /**
      * @var int
@@ -52,36 +40,25 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     protected $phase;
 
     /**
-     * Constructor.
-     *
-     * @param \Drush\Boot\Boot
-     *   The default bootstrap object to use when there are
-     *   no viable candidates to use (e.g. no selected site)
-     */
-    public function __construct(Boot $default)
-    {
-        $this->defaultBootstrapObject = $default;
-
-        // Reset our bootstrap phase to the beginning
-        $this->setPhase(DRUSH_BOOTSTRAP_NONE);
-    }
-
-    /**
      * @return int
      */
     public function getPhase()
     {
-        return $this->phase;
+        if (!$this->hasBootstrap()) {
+            return DRUSH_BOOTSTRAP_NONE;
+        }
+        return $this->bootstrap()->getPhase();
     }
 
     /**
      * @param int $phase
      */
-    public function setPhase($phase)
+    protected function setPhase($phase)
     {
-        $this->phase = $phase;
+        if ($this->bootstrap) {
+            $this->bootstrap()->setPhase($phase);
+        }
     }
-
 
     /**
      * Add a bootstrap object to the list of candidates.
@@ -140,7 +117,10 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      */
     public function getUri()
     {
-        return $this->uri;
+        if (!$this->hasBootstrap()) {
+            return false;
+        }
+        return $this->bootstrap()->getUri();
     }
 
     /**
@@ -158,10 +138,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     {
         // TODO: Throw if we already bootstrapped a framework?
         // n.b. site-install needs to set the uri.
-        $this->uri = $uri;
-        if ($this->bootstrap) {
-            $this->bootstrap->setUri($this->getUri());
-        }
+        $this->bootstrap()->setUri($uri);
     }
 
     /**
@@ -174,10 +151,23 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      */
     public function bootstrap()
     {
-        if ($this->bootstrap) {
-            return $this->bootstrap;
+        if (!$this->bootstrap) {
+            $this->bootstrap = $this->selectBootstrapClass();
         }
-        return $this->selectBootstrapClass();
+        return $this->bootstrap;
+    }
+
+    /**
+     * For use in testing
+     */
+    public function injectBootstrap($bootstrap)
+    {
+        $this->inflect($bootstrap);
+        $this->bootstrap = $bootstrap;
+
+        // Our bootstrap object is always a DrupalBoot8.
+        // TODO: make an API in the Boot interface to call.
+        $bootstrap->addDrupalModuleDrushCommands($this);
     }
 
     /**
@@ -195,7 +185,6 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                 if ($candidate instanceof AutoloaderAwareInterface) {
                     $candidate->setAutoloader($this->autoloader());
                 }
-                $candidate->setUri($this->getUri());
                 return $candidate;
             }
         }
@@ -214,16 +203,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     {
         // Once we have selected a Drupal root, we will reduce our bootstrap
         // candidates down to just the one used to select this site root.
-        $bootstrap = $this->bootstrapObjectForRoot($this->getRoot());
-        // If we have not found a bootstrap class by this point,
-        // then return our default bootstrap object.  The default bootstrap object
-        // should pass through all calls without doing anything that
-        // changes state in a CMS-specific way.
-        if ($bootstrap == null) {
-            $bootstrap = $this->defaultBootstrapObject;
-        }
-
-        return $bootstrap;
+        return $this->bootstrapObjectForRoot($this->getRoot());
     }
 
     /**
@@ -310,13 +290,21 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                 if ($result = $this->bootstrapValidate($phase_index)) {
                     if (method_exists($bootstrap, $current_phase)) {
                         $this->logger->log(LogLevel::BOOTSTRAP, 'Drush bootstrap phase: {function}()', ['function' => $current_phase]);
-                        $bootstrap->{$current_phase}($annotationData);
+                        $bootstrap->{$current_phase}($this, $annotationData);
                     }
-                    $this->setPhase($phase_index);
+                    $bootstrap->setPhase($phase_index);
                 }
             }
         }
         return true;
+    }
+
+    /**
+     * hasBootstrap determines whether the manager has a bootstrap object yet.
+     */
+    public function hasBootstrap()
+    {
+        return $this->bootstrap != null;
     }
 
     /**
@@ -367,7 +355,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                 if ($phase_index > $validated_phase) {
                     $current_phase .= 'Validate';
                     if (method_exists($bootstrap, $current_phase)) {
-                        $result_cache[$phase_index] = $bootstrap->{$current_phase}();
+                        $result_cache[$phase_index] = $bootstrap->{$current_phase}($this);
                     } else {
                         $result_cache[$phase_index] = true;
                     }
@@ -514,5 +502,47 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         }
 
         return $this->getPhase();
+    }
+
+    /**
+     * Allow those with an instance to us to the BootstrapManager to use its logger
+     */
+    public function logger()
+    {
+        return $this->logger;
+    }
+
+    public function inflect($object)
+    {
+        // See \Drush\Runtime\DependencyInjection::addDrushServices and
+        // \Robo\Robo\addInflectors
+        $container = $this->getContainer();
+        if ($object instanceof \Robo\Contract\ConfigAwareInterface) {
+            $object->setConfig($container->get('config'));
+        }
+        if ($object instanceof \Psr\Log\LoggerAwareInterface) {
+            $object->setLogger($container->get('logger'));
+        }
+        if ($object instanceof \League\Container\ContainerAwareInterface) {
+            $object->setContainer($container->get('container'));
+        }
+        if ($object instanceof \Symfony\Component\Console\Input\InputAwareInterface) {
+            $object->setInput($container->get('input'));
+        }
+        if ($object instanceof \Robo\Contract\OutputAwareInterface) {
+            $object->setOutput($container->get('output'));
+        }
+        if ($object instanceof \Robo\Contract\ProgressIndicatorAwareInterface) {
+            $object->setProgressIndicator($container->get('progressIndicator'));
+        }
+        if ($object instanceof \Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface) {
+            $object->setHookManager($container->get('hookManager'));
+        }
+        if ($object instanceof \Robo\Contract\VerbosityThresholdInterface) {
+            $object->setOutputAdapter($container->get('outputAdapter'));
+        }
+        if ($object instanceof \Consolidation\SiteAlias\SiteAliasManagerAwareInterface) {
+            $object->setSiteAliasManager($container->get('site.alias.manager'));
+        }
     }
 }

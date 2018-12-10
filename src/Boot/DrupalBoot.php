@@ -101,9 +101,9 @@ abstract class DrupalBoot extends BaseBoot
      *
      * In this function, we will check if a valid Drupal directory is available.
      */
-    public function bootstrapDrupalRootValidate()
+    public function bootstrapDrupalRootValidate(BootstrapManager $manager)
     {
-        $drupal_root = Drush::bootstrapManager()->getRoot();
+        $drupal_root = $manager->getRoot();
         return (bool) $drupal_root;
     }
 
@@ -117,14 +117,13 @@ abstract class DrupalBoot extends BaseBoot
      * We can now include files from the Drupal tree, and figure
      * out more context about the codebase, such as the version of Drupal.
      */
-    public function bootstrapDrupalRoot()
+    public function bootstrapDrupalRoot(BootstrapManager $manager)
     {
-
-        $drupal_root = Drush::bootstrapManager()->getRoot();
+        $drupal_root = $manager->getRoot();
         chdir($drupal_root);
         $this->logger->log(LogLevel::BOOTSTRAP, dt("Change working directory to !drupal_root", ['!drupal_root' => $drupal_root]));
 
-        $core = $this->bootstrapDrupalCore($drupal_root);
+        $core = $this->bootstrapDrupalCore($manager, $drupal_root);
 
         // Make sure we are not bootstrapping twice
         if (defined('DRUSH_DRUPAL_CORE')) {
@@ -146,7 +145,7 @@ abstract class DrupalBoot extends BaseBoot
      * In this function we determine the URL used for the command,
      * and check for a valid settings.php file.
      */
-    public function bootstrapDrupalSiteValidate()
+    public function bootstrapDrupalSiteValidate(BootstrapManager $manager)
     {
     }
 
@@ -156,15 +155,15 @@ abstract class DrupalBoot extends BaseBoot
      * We now set various contexts that we determined and confirmed to be valid.
      * Additionally we load an optional drush.yml file in the site directory.
      */
-    public function bootstrapDrupalSite()
+    public function bootstrapDrupalSite(BootstrapManager $manager)
     {
-        $this->bootstrapDoDrupalSite();
+        $this->bootstrapDoDrupalSite($manager);
     }
 
     /**
      * Initialize and load the Drupal configuration files.
      */
-    public function bootstrapDrupalConfiguration()
+    public function bootstrapDrupalConfiguration(BootstrapManager $manager)
     {
     }
 
@@ -175,14 +174,14 @@ abstract class DrupalBoot extends BaseBoot
      * database credentials that were loaded during the previous
      * phase.
      */
-    public function bootstrapDrupalDatabaseValidate()
+    public function bootstrapDrupalDatabaseValidate(BootstrapManager $manager)
     {
     }
 
     /**
      * Bootstrap the Drupal database.
      */
-    public function bootstrapDrupalDatabase()
+    public function bootstrapDrupalDatabase(BootstrapManager $manager)
     {
         // We presume that our derived classes will connect and then
         // either fail, or call us via parent::
@@ -192,7 +191,7 @@ abstract class DrupalBoot extends BaseBoot
     /**
      * Attempt to load the full Drupal system.
      */
-    public function bootstrapDrupalFull()
+    public function bootstrapDrupalFull(BootstrapManager $manager)
     {
     }
 }
