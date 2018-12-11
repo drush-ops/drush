@@ -669,6 +669,8 @@ EOT;
             'quiet' => true,
         ];
         $process = new SiteProcess($sutAlias, [self::getDrush(), 'site:install', 'testing', 'install_configure_form.enable_update_status_emails=NULL'], $options);
+        // Set long timeout because Xdebug slows everything.
+        $process->setTimeout(0);
         $process->run();
         $this->assertTrue($process->isSuccessful(), 'Could not install SUT. Options: ' . var_export($optionsFromTest, true) . "\nStdout:\n" . $process->getOutput() . "\n\nStderr:\n" . $process->getErrorOutput());
 

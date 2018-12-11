@@ -35,7 +35,7 @@ class SqlConnectCase extends CommandUnishTestCase
         }
 
         // Issue a query and check the result to verify the connection.
-        $this->execute($connectionString . ' ' . $shell_options . ' "SELECT uid FROM users where uid = 1;"');
+        $this->execute($connectionString . ' ' . $shell_options . ' "SELECT uid FROM users where uid = 1;"', self::EXIT_SUCCESS, $this->webroot());
         $output = $this->getOutput();
         $this->assertContains('1', $output);
 
