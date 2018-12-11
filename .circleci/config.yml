@@ -5,8 +5,8 @@ defaults: &defaults
     TZ: "/usr/share/zoneinfo/America/Los_Angeles"
     TERM: dumb
     UNISH_NO_TIMEOUTS: y
-    UNISH_DB_URL: mysql://root:@127.0.0.1
     PHPUNIT_ARGS: ""
+    PHP_SENDMAIL_PATH: /dev/null
 
 test_71_steps: &test71steps
   steps:
@@ -53,7 +53,6 @@ jobs:
       - image: wodby/php:7.1
         environment:
           - MYSQL_HOST=127.0.0.1
-          - PHP_SENDMAIL_PATH=/dev/null
           - UNISH_DB_URL=mysql://root:@127.0.0.1
       - image: circleci/mysql:5.7.24
     <<: *test71steps
@@ -64,7 +63,6 @@ jobs:
     docker:
       - image: wodby/php:7.1
         environment:
-          - PHP_SENDMAIL_PATH=/dev/null
           - UNISH_DB_URL=sqlite://sut/sites/dev/files/.ht.sqlite
     <<: *test71steps
 
@@ -74,7 +72,6 @@ jobs:
     docker:
       - image: wodby/php:7.1
         environment:
-          - PHP_SENDMAIL_PATH=/dev/null
           - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1
       - image: wodby/postgres:10.5
         environment:
@@ -91,7 +88,7 @@ jobs:
       - image: wodby/php:7.2
         environment:
           - MYSQL_HOST=127.0.0.1
-          - PHP_SENDMAIL_PATH=/dev/null
+          - UNISH_DB_URL=mysql://root:@127.0.0.1
       - image: circleci/mysql:5.7.24
     steps:
       - checkout
@@ -114,7 +111,7 @@ jobs:
       - image: wodby/php:5.6
         environment:
           - MYSQL_HOST=127.0.0.1
-          - PHP_SENDMAIL_PATH=/dev/null
+          - UNISH_DB_URL=mysql://root:@127.0.0.1
       - image: circleci/mysql:5.7.24
     steps:
       - checkout
@@ -150,7 +147,7 @@ workflows:
   scheduled:
     triggers:
        - schedule:
-           cron: "8 0 * * *"
+           cron: "16 2 * * *"
            filters:
              branches:
                only:
@@ -158,5 +155,14 @@ workflows:
     jobs:
       - test_72_highest
       - test_71_sqlite
-      - test_71_postgres
+      - test_71_postgres:
+          pre-steps:
+            - run:
+                name: install dockerize
+                command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+                environment:
+                  DOCKERIZE_VERSION: v0.3.0
+            - run:
+                name: Wait for db
+                command: dockerize -wait tcp://localhost:5432 -timeout 1m
 
