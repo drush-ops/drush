@@ -72,12 +72,12 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
 
         $cmd = $this->buildCommandLine($command, $args, $options);
 
-        // Set up our input and output objects
-        $input = new LessStrictArgvInput($cmd);
-        $output = RuntimeController::instance()->output();
-
         // Get the application instance from the runtime controller.
         $application = RuntimeController::instance()->application($this->webroot(), $cmd);
+
+        // Get a reference to the input and output objects
+        $input = RuntimeController::instance()->input();
+        $output = RuntimeController::instance()->output();
 
         // We only bootstrap the first time, and phpunit likes to reset the
         // cwd at the beginning of every test function. We therefore need to
@@ -133,7 +133,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         }
         // insert drush command options
         foreach ($options as $key => $value) {
-            if (!isset($value)) {
+            if (!isset($value) || $value === true) {
                 $cmd[] = "--$key";
             } else {
                 $cmd[] = "--$key=" . $value;
