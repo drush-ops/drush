@@ -65,13 +65,7 @@ jobs:
       - image: wodby/php:7.1
         environment:
           - PHP_SENDMAIL_PATH=/dev/null
-          - UNISH_DB_URL=mysql://root:@127.0.0.1
-      - image: circleci/mysql:5.7.24
-      - image: wodby/postgres:10.5
-        environment:
-          POSTGRES_PASSWORD: unish
-          POSTGRES_DB: unish_dev
-          POSTGRES_USER: unish
+          - UNISH_DB_URL=sqlite://sut/sites/dev/files/.ht.sqlite
     <<: *test71steps
 
   # See scheduled workflow
@@ -81,7 +75,7 @@ jobs:
       - image: wodby/php:7.1
         environment:
           - PHP_SENDMAIL_PATH=/dev/null
-          - UNISH_DB_URL=mysql://root:@127.0.0.1
+          - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1
       - image: wodby/postgres:10.5
         environment:
           POSTGRES_PASSWORD: unish
@@ -151,11 +145,12 @@ workflows:
           requires:
             - check_mergable
   # Drush scheduled jobs:
-  #   - Run the HIGHEST tests daily at the stroke of midnight UTC
+  #   - Run the HIGHEST tests daily 8 minutes after midnight UTC
+  #   - Run functional tests under Sqlite and Postgres.
   scheduled:
     triggers:
        - schedule:
-           cron: "0 0 * * *"
+           cron: "8 0 * * *"
            filters:
              branches:
                only:
