@@ -38,6 +38,8 @@ class RuntimeController
 
     protected $container;
 
+    protected $input;
+
     protected $application;
 
     protected $bootstrap;
@@ -67,6 +69,11 @@ class RuntimeController
     {
         $this->initializeRuntime($root, $argv);
         return $this->application;
+    }
+
+    public function input()
+    {
+        return $this->input;
     }
 
     public function output()
@@ -109,14 +116,14 @@ class RuntimeController
         $loader = $this->preflight->loadSiteAutoloader();
 
         // Create the Symfony Application et. al.
-        $input = $this->preflight->createInput();
+        $this->input = $this->preflight->createInput();
         $this->application = new \Drush\Application('Drush Commandline Tool (Unish-scaffolded)', Drush::getVersion());
 
         // Set up the DI container.
         $this->container = $di->initContainer(
             $this->application,
             $this->preflight->config(),
-            $input,
+            $this->input,
             $this->output,
             $loader,
             $this->preflight->drupalFinder(),
@@ -140,7 +147,7 @@ class RuntimeController
         // Configure the application object and register all of the commandfiles
         // from the search paths we found above.  After this point, the input
         // and output objects are ready & we can start using the logger, etc.
-        $this->application->configureAndRegisterCommands($input, $this->output, $commandfileSearchpath);
+        $this->application->configureAndRegisterCommands($this->input, $this->output, $commandfileSearchpath);
     }
 
     protected function handleBootstrap()

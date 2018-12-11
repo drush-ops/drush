@@ -5,13 +5,15 @@ namespace Unish;
 /**
  * @group commands
  */
-class WatchdogCase extends CommandUnishTestCase
+class WatchdogTest extends UnishIntegrationTestCase
 {
 
     public function testWatchdog()
     {
-        $this->setUpDrupal(1, true);
-        $this->drush('pm-enable', ['dblog']);
+        $this->drush('pm-enable', ['dblog'], [], self::IGNORE_EXIT_CODE);
+        $this->drush('watchdog-delete', ['all'], ['yes' => true]);
+        $output = $this->getErrorOutput();
+        $this->assertContains('All watchdog messages have been deleted', $output);
 
         $eval1 = "\\Drupal::logger('drush')->notice('Unish rocks.');";
         $this->drush('php-eval', [$eval1]);
@@ -30,16 +32,18 @@ class WatchdogCase extends CommandUnishTestCase
         $this->drush('php-eval', [$eval2]);
         $this->drush('watchdog-show');
         $output = $this->getOutput();
+        $this->assertContains('Unish rocks', $output);
         $this->assertGreaterThan(substr_count($output, $char), $message_chars);
         $this->drush('watchdog-show', [], ['extended' => null]);
         $output = $this->getOutput();
         $this->assertGreaterThanOrEqual($message_chars, substr_count($output, $char));
 
         // Tests message deletion
-        $this->drush('watchdog-delete', ['all']);
-        $output = $this->getOutput();
+        $this->drush('watchdog-delete', ['all'], ['yes' => true]);
+        $output = $this->getErrorOutput();
+        $this->assertContains('All watchdog messages have been deleted', $output);
         $this->drush('watchdog-show');
         $output = $this->getOutput();
-        $this->assertEmpty($output);
+        $this->assertEquals('', $output);
     }
 }
