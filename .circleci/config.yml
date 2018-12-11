@@ -61,7 +61,8 @@ jobs:
   test_71_sqlite:
     <<: *defaults
     docker:
-      - image: wodby/php:7.1
+      # We use a custom image here because wodby/php does not ship with sqlite3 program.
+      - image: drush/php:7.1
         environment:
           - UNISH_DB_URL=sqlite://sut/sites/dev/files/.ht.sqlite
     <<: *test71steps
@@ -141,17 +142,18 @@ workflows:
       - test_56_lowest:
           requires:
             - check_mergable
-  # Drush scheduled jobs:
-  #   - Run the HIGHEST tests daily 8 minutes after midnight UTC
+  # Drush nightly scheduled jobs:
+  #   - Run the HIGHEST tests.
   #   - Run functional tests under Sqlite and Postgres.
   scheduled:
     triggers:
        - schedule:
-           cron: "16 2 * * *"
+           # Uses UTC timezone.
+           cron: "02 18 * * *"
            filters:
              branches:
                only:
-                 - master
+                 - nightly
     jobs:
       - test_72_highest
       - test_71_sqlite
@@ -159,7 +161,7 @@ workflows:
           pre-steps:
             - run:
                 name: install dockerize
-                command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+                command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
                 environment:
                   DOCKERIZE_VERSION: v0.3.0
             - run:
