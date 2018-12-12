@@ -112,7 +112,7 @@ class SqlPgsql extends SqlBase
     {
         $return = $this->alwaysQuery(PSQL_SHOW_TABLES);
         $tables = explode(PHP_EOL, trim($this->getProcess()->getOutput()));
-        return $tables;
+        return array_filter($tables);
     }
 
     public function dumpCmd($table_selection)
