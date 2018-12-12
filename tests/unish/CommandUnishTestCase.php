@@ -19,13 +19,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
     protected $coverage_data = [];
 
     /**
-     * Process of last executed command.
-     *
-     * @var Process
-     */
-    private $process;
-
-    /**
      * Default timeout for commands.
      *
      * @var int
@@ -142,32 +135,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
             }
             throw new UnishProcessFailedException($message . $this->buildProcessMessage());
         }
-    }
-
-    /**
-     * Borrowed from \Symfony\Component\Process\Exception\ProcessTimedOutException
-     *
-     * @return string
-     */
-    public function buildProcessMessage()
-    {
-        $error = sprintf(
-            "%s\n\nExit Code: %s(%s)\n\nWorking directory: %s",
-            $this->process->getCommandLine(),
-            $this->process->getExitCode(),
-            $this->process->getExitCodeText(),
-            $this->process->getWorkingDirectory()
-        );
-
-        if (!$this->process->isOutputDisabled()) {
-            $error .= sprintf(
-                "\n\nOutput:\n================\n%s\n\nError Output:\n================\n%s",
-                $this->process->getOutput(),
-                $this->process->getErrorOutput()
-            );
-        }
-
-        return $error;
     }
 
     /**

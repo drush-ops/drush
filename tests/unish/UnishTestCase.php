@@ -18,6 +18,13 @@ abstract class UnishTestCase extends TestCase
     const INTEGRATION_TEST_ENV = 'default';
 
     /**
+     * Process of last executed command.
+     *
+     * @var Process
+     */
+    protected $process;
+
+    /**
      * A list of Drupal sites that have been recently installed. They key is the
      * site name and values are details about each site.
      *
@@ -553,7 +560,7 @@ EOT;
         file_put_contents($settingsPath, $settingsContents);
     }
     /**
-     * Assemble (and optionally install) one or more Drupal sites using a single codebase.
+     * Prepare (and optionally install) one or more Drupal sites using a single codebase.
      *
      * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
      */
@@ -668,11 +675,15 @@ EOT;
             'yes' => true,
             'quiet' => true,
         ];
+        if ($level = $this->logLevel()) {
+            $options[$level] = true;
+        }
         $process = new SiteProcess($sutAlias, [self::getDrush(), 'site:install', 'testing', 'install_configure_form.enable_update_status_emails=NULL'], $options);
         // Set long timeout because Xdebug slows everything.
         $process->setTimeout(0);
+        $this->process = $process;
         $process->run();
-        $this->assertTrue($process->isSuccessful(), 'Could not install SUT. Options: ' . var_export($optionsFromTest, true) . "\nStdout:\n" . $process->getOutput() . "\n\nStderr:\n" . $process->getErrorOutput());
+        $this->assertTrue($process->isSuccessful(), $this->buildProcessMessage());
 
         // Give us our write perms back.
         chmod($this->webroot() . "/sites/$uri", 0777);
@@ -699,5 +710,31 @@ EOT;
             // Value must be a string. See \Symfony\Component\Process\Process::getDefaultEnv.
             $_SERVER[$k]= (string) $v;
         }
+    }
+
+    /**
+     * Borrowed from \Symfony\Component\Process\Exception\ProcessTimedOutException
+     *
+     * @return string
+     */
+    public function buildProcessMessage()
+    {
+        $error = sprintf(
+            "%s\n\nExit Code: %s(%s)\n\nWorking directory: %s",
+            $this->process->getCommandLine(),
+            $this->process->getExitCode(),
+            $this->process->getExitCodeText(),
+            $this->process->getWorkingDirectory()
+        );
+
+        if (!$this->process->isOutputDisabled()) {
+            $error .= sprintf(
+                "\n\nOutput:\n================\n%s\n\nError Output:\n================\n%s",
+                $this->process->getOutput(),
+                $this->process->getErrorOutput()
+            );
+        }
+
+        return $error;
     }
 }
