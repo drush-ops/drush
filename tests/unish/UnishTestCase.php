@@ -131,11 +131,24 @@ abstract class UnishTestCase extends TestCase
      */
     public static function cleanDirs()
     {
-        if (empty(getenv('UNISH_DIRTY'))) {
-            $sandbox = self::getSandbox();
-            if (file_exists($sandbox)) {
-                self::recursiveDelete($sandbox);
-            }
+        $dirty = getenv('UNISH_DIRTY');
+
+        // First step: delete the entire sandbox unless 'UNISH_DIRTY' is set,
+        // in which case we will delete only the 'transient' directory.
+        $sandbox = self::getSandbox();
+        if (!empty($dirty)) {
+            $sandbox = Path::join($sandbox, 'transient');
+        }
+        // The transient files generally should not need to be inspected, but
+        // if you need to examine them, use the special value of 'UNISH_DIRTY=VERY'
+        // to keep them.
+        if (file_exists($sandbox) && ($dirty != 'VERY')) {
+            self::recursiveDelete($sandbox);
+        }
+
+        // Next step: If 'UNISH_DIRTY' is not set, then delete the portions
+        // of our fixtures that we set up dynamically during the tests.
+        if (empty($dirty)) {
             $webrootSlashDrush = self::webrootSlashDrush();
             if (file_exists($webrootSlashDrush)) {
                 self::recursiveDelete($webrootSlashDrush, true, false, ['Commands', 'sites']);
@@ -207,7 +220,6 @@ abstract class UnishTestCase extends TestCase
     public static function tearDownAfterClass()
     {
         self::cleanDirs();
-
         self::$sites = [];
         parent::tearDownAfterClass();
     }
@@ -663,7 +675,6 @@ EOT;
         chmod("$siteDir", 0777);
         @chmod("$siteDir/settings.php", 0777);
         if ($refreshSettings) {
-            //fwrite(STDERR, "> Overwriting $siteDir/settings.php\n");
             copy("$root/sites/default/default.settings.php", "$siteDir/settings.php");
         }
         $sutAlias = $this->sutAlias($uri);
@@ -695,6 +706,19 @@ EOT;
     public function drupalSitewideDirectory()
     {
         return '/sites/all';
+    }
+
+    /**
+     * Write the provided string to a temporary file that will be
+     * automatically deleted one exit.
+     */
+    protected function writeToTmpFile($contents)
+    {
+        $transient = Path::join($this->getSandbox(), 'transient');
+        self::mkdir($transient);
+        $path = tempnam($transient, "unishtmp");
+        file_put_contents($path, $contents);
+        return $path;
     }
 
     /**
