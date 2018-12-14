@@ -63,7 +63,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
      * @return integer
      *   An exit code.
      */
-    public function drush($command, array $args = [], array $options = [], $expected_return = self::EXIT_SUCCESS)
+    public function drush($command, array $args = [], array $options = [], $expected_return = self::EXIT_SUCCESS, $stdin = false)
     {
         // Install the SUT if necessary
         if (!RuntimeController::instance()->initialized()) {
@@ -78,6 +78,11 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         // Get a reference to the input and output objects
         $input = RuntimeController::instance()->input();
         $output = RuntimeController::instance()->output();
+
+        // Set up stdin if it was provided
+        if ($stdin) {
+            $this->setStdin($stdin);
+        }
 
         // We only bootstrap the first time, and phpunit likes to reset the
         // cwd at the beginning of every test function. We therefore need to
@@ -97,6 +102,13 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         }
 
         return $return;
+    }
+
+    protected function setStdin($contents)
+    {
+        $path = $this->writeToTmpFile($contents);
+        $stdinHandler = RuntimeController::instance()->stdinHandler();
+        $stdinHandler->redirect($path);
     }
 
     protected function buildCommandLine($command, $args, $options)

@@ -17,6 +17,8 @@ abstract class UnishTestCase extends TestCase
     const UNISH_EXITCODE_USER_ABORT = 75; // Same as DRUSH_EXITCODE_USER_ABORT
     const INTEGRATION_TEST_ENV = 'default';
 
+    protected static $tmpFiles = [];
+
     /**
      * Process of last executed command.
      *
@@ -207,7 +209,10 @@ abstract class UnishTestCase extends TestCase
     public static function tearDownAfterClass()
     {
         self::cleanDirs();
-
+        foreach (self::$tmpFiles as $tmpFile) {
+            @unlink($tmpFile);
+        }
+        self::$tmpFiles = [];
         self::$sites = [];
         parent::tearDownAfterClass();
     }
@@ -663,7 +668,6 @@ EOT;
         chmod("$siteDir", 0777);
         @chmod("$siteDir/settings.php", 0777);
         if ($refreshSettings) {
-            //fwrite(STDERR, "> Overwriting $siteDir/settings.php\n");
             copy("$root/sites/default/default.settings.php", "$siteDir/settings.php");
         }
         $sutAlias = $this->sutAlias($uri);
@@ -695,6 +699,18 @@ EOT;
     public function drupalSitewideDirectory()
     {
         return '/sites/all';
+    }
+
+    /**
+     * Write the provided string to a temporary file that will be
+     * automatically deleted one exit.
+     */
+    protected function writeToTmpFile($contents)
+    {
+        $path = tempnam(sys_get_temp_dir(), "unishtmp");
+        file_put_contents($path, $contents);
+        self::$tmpFiles[] = $path;
+        return $path;
     }
 
     /**

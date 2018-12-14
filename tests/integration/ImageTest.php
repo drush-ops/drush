@@ -17,6 +17,9 @@ class ImageTest extends UnishIntegrationTestCase
         $thumbnail = $styles_dir . 'thumbnail/public/' . $logo;
         $medium = $styles_dir . 'medium/public/' . $logo;
 
+        // Remove stray files left over from previous runs
+        @unlink($thumbnail);
+
         // Test that "drush image-derive" works.
         $style_name = 'thumbnail';
         $this->drush('image-derive', [$style_name, $logo]);

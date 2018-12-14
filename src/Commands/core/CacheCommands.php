@@ -13,15 +13,18 @@ use Drupal\Core\Site\Settings;
 use Drupal\Core\Cache\Cache;
 use Drush\Drush;
 use Drush\Utils\StringUtils;
+use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
+use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 
 /*
  * Interact with Drupal's Cache API.
  */
-class CacheCommands extends DrushCommands implements CustomEventAwareInterface, AutoloaderAwareInterface
+class CacheCommands extends DrushCommands implements CustomEventAwareInterface, AutoloaderAwareInterface, StdinAwareInterface
 {
 
     use CustomEventAwareTrait;
     use AutoloaderAwareTrait;
+    use StdinAwareTrait;
 
     /**
      * Fetch a cached object and display it.
@@ -130,7 +133,7 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
     protected function setPrepareData($data, $options)
     {
         if ($data == '-') {
-            $data = file_get_contents("php://stdin");
+            $data = $this->stdin()->contents();
         }
 
         // Now, we parse the object.

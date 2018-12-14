@@ -71,6 +71,11 @@ class RuntimeController
         return $this->application;
     }
 
+    public function stdinHandler()
+    {
+        return $this->container->get('stdinHandler');
+    }
+
     public function input()
     {
         return $this->input;
