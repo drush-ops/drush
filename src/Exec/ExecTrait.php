@@ -9,7 +9,7 @@ trait ExecTrait
     /**
      * Starts a background browser/tab for the current site or a specified URL.
      *
-     * Uses a non-blocking proc_open call, so Drush execution will continue.
+     * Uses a non-blocking Process call, so Drush execution will continue.
      *
      * @param $uri
      *   Optional URI or site path to open in browser. If omitted, or if a site path
@@ -18,8 +18,8 @@ trait ExecTrait
      * @param int $sleep
      * @param bool $port
      * @param bool $browser
-     * @return bool TRUE if browser was opened, FALSE if browser was disabled by the user or a,
-     *   TRUE if browser was opened, FALSE if browser was disabled by the user or a,
+     * @return bool
+     *   TRUE if browser was opened. FALSE if browser was disabled by the user or a
      *   default browser could not be found.
      */
     public function startBrowser($uri = null, $sleep = 0, $port = false, $browser = true)
@@ -72,7 +72,6 @@ trait ExecTrait
                     }
                     // @todo We implode because quoting is messing up the sleep.
                     $process = Drush::process(implode(' ', array_merge($args, [$browser, $uri])));
-                    $process->setTty(true);
                     $process->run();
                 }
                 return true;
