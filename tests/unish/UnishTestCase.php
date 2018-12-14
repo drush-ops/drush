@@ -17,8 +17,6 @@ abstract class UnishTestCase extends TestCase
     const UNISH_EXITCODE_USER_ABORT = 75; // Same as DRUSH_EXITCODE_USER_ABORT
     const INTEGRATION_TEST_ENV = 'default';
 
-    protected static $tmpFiles = [];
-
     /**
      * Process of last executed command.
      *
@@ -133,11 +131,24 @@ abstract class UnishTestCase extends TestCase
      */
     public static function cleanDirs()
     {
-        if (empty(getenv('UNISH_DIRTY'))) {
-            $sandbox = self::getSandbox();
-            if (file_exists($sandbox)) {
-                self::recursiveDelete($sandbox);
-            }
+        $dirty = getenv('UNISH_DIRTY');
+
+        // First step: delete the entire sandbox unless 'UNISH_DIRTY' is set,
+        // in which case we will delete only the 'transient' directory.
+        $sandbox = self::getSandbox();
+        if (!empty($dirty)) {
+            $sandbox = Path::join($sandbox, 'transient');
+        }
+        // The transient files generally should not need to be inspected, but
+        // if you need to examine them, use the special value of 'UNISH_DIRTY=VERY'
+        // to keep them.
+        if (file_exists($sandbox) && ($dirty != 'VERY')) {
+            self::recursiveDelete($sandbox);
+        }
+
+        // Next step: If 'UNISH_DIRTY' is not set, then delete the portions
+        // of our fixtures that we set up dynamically during the tests.
+        if (empty($dirty)) {
             $webrootSlashDrush = self::webrootSlashDrush();
             if (file_exists($webrootSlashDrush)) {
                 self::recursiveDelete($webrootSlashDrush, true, false, ['Commands', 'sites']);
@@ -209,10 +220,6 @@ abstract class UnishTestCase extends TestCase
     public static function tearDownAfterClass()
     {
         self::cleanDirs();
-        foreach (self::$tmpFiles as $tmpFile) {
-            @unlink($tmpFile);
-        }
-        self::$tmpFiles = [];
         self::$sites = [];
         parent::tearDownAfterClass();
     }
@@ -707,9 +714,10 @@ EOT;
      */
     protected function writeToTmpFile($contents)
     {
-        $path = tempnam(sys_get_temp_dir(), "unishtmp");
+        $transient = Path::join($this->getSandbox(), 'transient');
+        self::mkdir($transient);
+        $path = tempnam($transient, "unishtmp");
         file_put_contents($path, $contents);
-        self::$tmpFiles[] = $path;
         return $path;
     }
 
