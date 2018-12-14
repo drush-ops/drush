@@ -11,9 +11,9 @@ namespace Unish;
 class SiteSshCase extends CommandUnishTestCase
 {
 
-  /**
-   * Test drush ssh --simulate. No additional bash passed.
-   */
+    /**
+     * Test drush ssh --simulate. No additional bash passed.
+     */
     public function testInteractive()
     {
         if ($this->isWindows()) {
@@ -21,7 +21,7 @@ class SiteSshCase extends CommandUnishTestCase
         }
 
         $options = [
-        'simulate' => null,
+            'simulate' => true,
         ];
         $this->drush('ssh', [], $options, 'user@server/path/to/drupal#sitename');
         $output = $this->getErrorOutput();
@@ -29,16 +29,16 @@ class SiteSshCase extends CommandUnishTestCase
         $this->assertContains($expected, $output);
     }
 
-  /**
-   * Test drush ssh --simulate 'date'.
-   * @todo Run over a site list. drush_sitealias_get_record() currently cannot
-   * handle a site list comprised of longhand site specifications.
-   */
+    /**
+     * Test drush ssh --simulate 'date'.
+     * @todo Run over a site list. drush_sitealias_get_record() currently cannot
+     * handle a site list comprised of longhand site specifications.
+     */
     public function testNonInteractive()
     {
         $options = [
-        'cd' => '0',
-        'simulate' => null,
+            'cd' => '0',
+            'simulate' => true,
         ];
         $this->drush('ssh', ['date'], $options, 'user@server/path/to/drupal#sitename');
         $output = $this->getErrorOutput();
@@ -46,14 +46,14 @@ class SiteSshCase extends CommandUnishTestCase
         $this->assertContains($expected, $output);
     }
 
-  /**
-  * Test drush ssh with multiple arguments (preferred form).
-  */
+    /**
+    * Test drush ssh with multiple arguments (preferred form).
+    */
     public function testSshMultipleArgs()
     {
         $options = [
-        'cd' => '0',
-        'simulate' => null,
+            'cd' => '0',
+            'simulate' => true,
         ];
         $this->drush('ssh', ['ls', '/path1', '/path2'], $options, 'user@server/path/to/drupal#sitename');
         $output = $this->getSimplifiedErrorOutput();
@@ -61,17 +61,14 @@ class SiteSshCase extends CommandUnishTestCase
         $this->assertContains($expected, $output);
     }
 
-  /**
-   * Test drush ssh with multiple arguments (legacy form).
-   */
+    /**
+     * Test drush ssh with multiple arguments (legacy form).
+     */
     public function testSshMultipleArgsLegacy()
     {
-        // @TODO: Bring this back?
-        $this->markTestSkipped('Legacy ssh form, where first element of commandline contains both program and arguments is not supported.');
-
         $options = [
-        'cd' => '0',
-         'simulate' => null,
+            'cd' => '0',
+            'simulate' => true,
         ];
         $this->drush('ssh', ['ls /path1 /path2'], $options, 'user@server/path/to/drupal#sitename');
         $expected = "[notice] Simulating: ssh -o PasswordAuthentication=no user@server 'ls /path1 /path2'";
