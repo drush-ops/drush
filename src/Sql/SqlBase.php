@@ -252,7 +252,7 @@ class SqlBase implements ConfigAwareInterface
     /**
      * Execute a SQL query. Always execute regardless of simulate mode.
      *
-     * If you don't want query to print during --debug then
+     * If you don't want results to print during --debug then
      * provide a $result_file whose value can be drush_bit_bucket().
      *
      * @param string $query
@@ -302,7 +302,7 @@ class SqlBase implements ConfigAwareInterface
             $exec .= ' > '. Escape::shellArg($result_file);
         }
 
-        // In --verbose mode, drush_shell_exec() will show the call to mysql/psql/sqlite,
+        // In --verbose mode, Process will show the call to mysql/psql/sqlite,
         // but the sql query itself is stored in a temp file and not displayed.
         // We show the query when --debug is used and this function created the temp file.
         $this->logQueryInDebugMode($query, $input_file_original);
