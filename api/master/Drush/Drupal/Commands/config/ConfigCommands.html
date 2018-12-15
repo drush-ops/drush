@@ -577,7 +577,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
     
 
                     <div class="method-description">
-                                    <p>Starts a background browser/tab for the current site or a specified URL.</p>                    <p>Uses a non-blocking proc_open call, so Drush execution will continue.</p>                            </div>
+                                    <p>Starts a background browser/tab for the current site or a specified URL.</p>                    <p>Uses a non-blocking Process call, so Drush execution will continue.</p>                            </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
@@ -612,8 +612,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
                     <table class="table table-condensed">
         <tr>
             <td>bool</td>
-            <td>TRUE if browser was opened, FALSE if browser was disabled by the user or a,
-  TRUE if browser was opened, FALSE if browser was disabled by the user or a,
+            <td>TRUE if browser was opened. FALSE if browser was disabled by the user or a
   default browser could not be found.</td>
         </tr>
     </table>
@@ -626,7 +625,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_programExists">
-        <div class="location">in <a href="../../../../Drush/Exec/ExecTrait.html#method_programExists"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Exec/ExecTrait.php#L90">line 90</a></div>
+        <div class="location">in <a href="../../../../Drush/Exec/ExecTrait.html#method_programExists"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Exec/ExecTrait.php#L89">line 89</a></div>
         <code>        static            
     <strong>programExists</strong>($program)
         </code>
