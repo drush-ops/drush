@@ -95,19 +95,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
     public function execute($command, $expected_return = self::EXIT_SUCCESS, $cd = null, $env = null, $input = null)
     {
         $this->tick();
-
-        // Apply the environment variables we need for our test to the head of the
-        // command (excludes Windows). Process does have an $env argument, but it replaces the entire
-        // environment with the one given. This *could* be used for ensuring the
-        // test ran with a clean environment, but it also makes tests fail hard on
-        // Travis, for unknown reasons.
-        // @see https://github.com/drush-ops/drush/pull/646
-        $prefix = '';
-        if ($env && !$this->isWindows()) {
-            foreach ($env as $env_name => $env_value) {
-                $prefix .= $env_name . '=' . self::escapeshellarg($env_value) . ' ';
-            }
-        }
         $this->log("Executing: $command", 'verbose');
 
         try {
@@ -155,8 +142,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
       * @param $suffix
       *   Any code to append to the command. For example, redirection like 2>&1.
       * @param array $env
-      *   Not used. Environment variables to pass along to the subprocess.
-     *    @todo Look into inheritEnvironmentVariables() - available since Process 3.1. See https://github.com/symfony/symfony/pull/19053/files.
+      *   Environment variables to pass along to the subprocess.
       * @return integer
       *   An exit code.
       */

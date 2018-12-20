@@ -366,6 +366,7 @@ class Drush
     {
         $process->setSimulated(Drush::simulate());
         $process->setVerbose(Drush::verbose());
+        $process->inheritEnvironmentVariables();
         $process->setLogger(Drush::logger());
         $process->setRealtimeOutput(new DrushStyle(Drush::input(), Drush::output()));
         $process->setTimeout(self::getTimeout());
