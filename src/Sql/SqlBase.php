@@ -47,7 +47,9 @@ class SqlBase implements ConfigAwareInterface
     /**
      * Get environment variables to pass to Process.
      */
-    public function getEnv() {}
+    public function getEnv()
+    {
+    }
 
     /**
      * Get the last used Process.
