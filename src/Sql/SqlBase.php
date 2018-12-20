@@ -3,7 +3,6 @@
 namespace Drush\Sql;
 
 use Consolidation\SiteProcess\Util\Escape;
-use Consolidation\SiteProcess\Util\Shell;
 use Drupal\Core\Database\Database;
 use Drush\Drush;
 use Drush\Utils\FsUtils;
@@ -44,6 +43,11 @@ class SqlBase implements ConfigAwareInterface
         $this->dbSpec = $db_spec;
         $this->options = $options;
     }
+
+    /**
+     * Get environment variables to pass to Process.
+     */
+    public function getEnv() {}
 
     /**
      * Get the last used Process.
@@ -177,7 +181,7 @@ class SqlBase implements ConfigAwareInterface
             $cmd .= ' > ' . Escape::shellArg($file);
         }
 
-        $process = Drush::process($cmd);
+        $process = Drush::process($cmd, null, $this->getEnv());
         // Avoid the php memory of saving stdout.
         $process->disableOutput();
         // Show dump in real-time on stdout, for backward compat.
@@ -307,7 +311,7 @@ class SqlBase implements ConfigAwareInterface
         // We show the query when --debug is used and this function created the temp file.
         $this->logQueryInDebugMode($query, $input_file_original);
 
-        $process = Drush::process($exec);
+        $process = Drush::process($exec, null, $this->getEnv());
         $process->setSimulated(false);
         $process->run();
         $success = $process->isSuccessful();

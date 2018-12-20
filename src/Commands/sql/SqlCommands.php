@@ -140,7 +140,7 @@ class SqlCommands extends DrushCommands
     public function cli($options = ['extra' => self::REQ])
     {
         $sql = SqlBase::create($options);
-        $process = Drush::process($sql->connect());
+        $process = Drush::process($sql->connect(), null, $sql->getEnv());
         $process->setTty(true);
         $process->mustRun();
     }
@@ -252,10 +252,6 @@ class SqlCommands extends DrushCommands
 
         $sql = SqlBase::create($commandData->options());
         $program = $sql->command();
-
-        // Remove environment variables (eg. PGPASSFILE=) before testing program.
-        // @todo Remove once postgres is passing env variables via Process.
-        $program = preg_replace('#^([A-Z0-9]+=.+? )+#', '', $program);
 
         if (!$this->programExists($program)) {
             $this->logger->warning(dt('The shell command \'!command\' is required but cannot be found. Please install it and retry.', ['!command' => $program]));
