@@ -22,3 +22,9 @@ stage:
   uri: stage
 prod:
   uri: prod
+
+# An example of a Docker Compose environment. Used for ad hoc testing, and not by Unish.
+local:
+  service: drupal
+  uri: dev
+  root: /var/www/html/web

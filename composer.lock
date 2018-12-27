@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fbc03efc6a857c1a763af64b8c96adc2",
+    "content-hash": "8015a8774442f29a21efe158d7a81eb6",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -636,35 +636,50 @@
         },
         {
             "name": "consolidation/site-process",
-            "version": "0.1.18",
+            "version": "dev-dockerComposeTransport",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-process.git",
-                "reference": "eb869cdd24249ff92b0709ffb68f4719c4329bba"
+                "reference": "9edec0f609510fc434bf63e16bde9c29a18c1e6c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-process/zipball/eb869cdd24249ff92b0709ffb68f4719c4329bba",
-                "reference": "eb869cdd24249ff92b0709ffb68f4719c4329bba",
+                "url": "https://api.github.com/repos/consolidation/site-process/zipball/9edec0f609510fc434bf63e16bde9c29a18c1e6c",
+                "reference": "9edec0f609510fc434bf63e16bde9c29a18c1e6c",
                 "shasum": ""
             },
             "require": {
                 "consolidation/config": "^1.1.1",
-                "consolidation/site-alias": "^1|^2",
+                "consolidation/site-alias": "^1.1.9|^2",
                 "php": ">=5.6.0",
                 "symfony/process": "^3.4|^4"
             },
             "require-dev": {
                 "consolidation/robo": "^1.3",
-                "g1a/composer-test-scenarios": "^2",
+                "g1a/composer-test-scenarios": "^3",
                 "knplabs/github-api": "^2.7",
+                "php-coveralls/php-coveralls": "^1",
                 "php-http/guzzle6-adapter": "^1.1",
                 "phpunit/phpunit": "^6",
-                "satooshi/php-coveralls": "^2",
                 "squizlabs/php_codesniffer": "^2.8"
             },
             "type": "library",
             "extra": {
+                "scenarios": {
+                    "phpunit5": {
+                        "require-dev": {
+                            "phpunit/phpunit": "^5.7.27"
+                        },
+                        "remove": [
+                            "php-coveralls/php-coveralls"
+                        ],
+                        "config": {
+                            "platform": {
+                                "php": "5.6.33"
+                            }
+                        }
+                    }
+                },
                 "branch-alias": {
                     "dev-master": "0.x-dev"
                 }
@@ -685,7 +700,7 @@
                 }
             ],
             "description": "A thin wrapper around the Symfony Process Component that allows applications to use the Site Alias library to specify the target for a remote call.",
-            "time": "2018-11-01T23:55:59+00:00"
+            "time": "2018-12-27T11:32:10+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -6120,6 +6135,11 @@
         {
             "name": "webflo/drupal-core-strict",
             "version": "8.6.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webflo/drupal-core-strict.git",
+                "reference": "55bbc3930acef3120133185a5b0a4827ab89a841"
+            },
             "require": {
                 "asm89/stack-cors": "1.2.0",
                 "composer/installers": "v1.5.0",
@@ -6465,6 +6485,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "consolidation/site-process": 20,
         "lox/xhprof": 20,
         "webflo/drupal-core-strict": 20,
         "drupal/devel": 5

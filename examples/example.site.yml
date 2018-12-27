@@ -121,7 +121,7 @@
 
 # Environment variables:
 #
-# It is no longer possible to set environment variables from within an alias.
+# SSH environments may no longer possible set environment variables from within an alias.
 # This is a planned feature.
 
 # Additional Site Alias Options
@@ -130,6 +130,9 @@
 # local or remote Drupal installations; however, an alias
 # is really nothing more than a collection of options.
 #
+# - 'service': When specified, Drush executes via docker-compose exec rather than ssh
+# - 'exec':
+#   - 'options': Options for the exec subcommand.
 # - 'os': The operating system of the remote server.  Valid values
 #   are 'Windows' and 'Linux'. Be sure to set this value for all remote
 #   aliases because the default value is PHP_OS if 'remote-host'
@@ -223,6 +226,12 @@
 #
 # @code
 # # File: mysite.site.yml
+# local:
+# This environment is an example of the DockerCompose transport.
+#   service: drupal
+#   uri: http://local.example.com
+#   exec:
+#     options: --user USER
 # stage:
 #   uri: http://stage.example.com
 #   root: /path/to/remote/drupal/root
