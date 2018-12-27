@@ -196,7 +196,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      * times, the bootstrap class returned might change on subsequent
      * calls, if the root directory changes.  Once the bootstrap object
      * starts changing the state of the system, however, it will
-     * be 'latched', and further calls to Drush::bootstrapf()
+     * be 'latched', and further calls to Drush::bootstrap()
      * will always return the same object.
      */
     protected function selectBootstrapClass()
