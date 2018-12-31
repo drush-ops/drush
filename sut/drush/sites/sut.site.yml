@@ -28,3 +28,5 @@ local:
   service: drupal
   uri: dev
   root: /var/www/html/web
+  paths:
+    drush-script: /var/www/html/drush
