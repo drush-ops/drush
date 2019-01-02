@@ -31,6 +31,25 @@ services:
     volumes:
       - ./:/var/www/html:${VOLUME_FLAGS-cached}
       - ./.docker/zz-php.ini:/usr/local/etc/php/conf.d/zz-php.ini
+      - sharedfiles-datavolume:/var/lib/sharedfiles
+
+  drupal2:
+    image: wodby/php:${PHP_TAG-7.2-dev}
+    container_name: ${PROJECT_NAME-unish}_drupal2
+    environment:
+      PHP_SENDMAIL_PATH: /dev/null
+      UNISH_DB_URL: ${UNISH_DB_URL-mysql://root:password@mariadb}
+      UNISH_NO_TIMEOUTS: y
+      COLUMNS: ${COLUMNS-80} # Set 80 columns for docker exec -it.
+      ## Read instructions at https://wodby.com/stacks/drupal/docs/local/xdebug/
+      PHP_XDEBUG:
+      PHP_XDEBUG_DEFAULT_ENABLE:
+      PHP_IDE_CONFIG:
+      PHP_XDEBUG_REMOTE_HOST:
+    volumes:
+      - ./:/var/www/html:${VOLUME_FLAGS-cached}
+      - ./.docker/zz-php.ini:/usr/local/etc/php/conf.d/zz-php.ini
+      - sharedfiles-datavolume:/var/lib/sharedfiles
 
   # More info at https://github.com/wodby/postgres
   postgres:
@@ -50,4 +69,5 @@ services:
 volumes:
   mariadb-datavolume:
   postgres-datavolume:
+  sharedfiles-datavolume:
 
