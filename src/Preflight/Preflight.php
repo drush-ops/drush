@@ -266,7 +266,7 @@ class Preflight
         // If we did not find a local site, then we are destined to fail
         // UNLESS RedispatchToSiteLocal::redispatchIfSiteLocalDrush takes over.
         // Before we try to redispatch to the site-local Drush, though, we must
-        // initiaze the alias manager & c. based on any alias record we did find.
+        // initialize the alias manager & c. based on any alias record we did find.
         if ($selfAliasRecord) {
             $this->aliasManager->setSelf($selfAliasRecord);
             $this->configLocator->addAliasConfig($selfAliasRecord->exportConfig());
