@@ -427,7 +427,7 @@ class ConfigCommands extends DrushCommands
             $choices = drush_map_assoc(array_keys($config_directories));
             unset($choices[CONFIG_ACTIVE_DIRECTORY]);
             if (count($choices) >= 2) {
-                $label = $this->io()->choice('Choose a '. $option_name. '.', $choices);
+                $label = $this->io()->choice('Choose a '. $option_name, $choices);
                 $input->setArgument('label', $label);
             }
         }
