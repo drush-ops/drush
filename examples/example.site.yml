@@ -130,9 +130,10 @@
 # local or remote Drupal installations; however, an alias
 # is really nothing more than a collection of options.
 #
-# - 'service': When specified, Drush executes via docker-compose exec rather than ssh
-# - 'exec':
-#   - 'options': Options for the exec subcommand.
+# - 'docker': When specified, Drush executes via docker-compose exec rather than ssh
+#    - 'service': the name of the container to run on.
+#    - 'exec':
+#      - 'options': Options for the exec subcommand.
 # - 'os': The operating system of the remote server.  Valid values
 #   are 'Windows' and 'Linux'. Be sure to set this value for all remote
 #   aliases because the default value is PHP_OS if 'remote-host'
@@ -228,10 +229,10 @@
 # # File: mysite.site.yml
 # local:
 # This environment is an example of the DockerCompose transport.
-#   service: drupal
-#   uri: http://local.example.com
-#   exec:
-#     options: --user USER
+#   docker:
+#     service: drupal
+#     exec:
+#       options: --user USER
 # stage:
 #   uri: http://stage.example.com
 #   root: /path/to/remote/drupal/root

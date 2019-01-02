@@ -23,21 +23,13 @@ stage:
 prod:
   uri: prod
 
-# An example of a Docker Compose environment. Used for ad hoc testing, and not by Unish.
+# An example of a Docker Compose environment. See exa,ple.site.yml for a bit more info.
+# Used for ad hoc testing, and not by Unish.
 local:
-  service: drupal
-  exec:
-    options: --user root
-  uri: dev
-  root: /var/www/html/web
-  paths:
-    drush-script: /var/www/html/drush
-
-# Another example of a Docker Compose environment. Used for ad hoc testing, and not by Unish.
-local2:
-  service: drupal2
-  exec:
-    options: --user root
+  docker:
+    service: drupal
+    exec:
+      options: --user root
   uri: dev
   root: /var/www/html/web
   paths:
