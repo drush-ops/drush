@@ -23,7 +23,7 @@ stage:
 prod:
   uri: prod
 
-# An example of a Docker Compose environment. See exa,ple.site.yml for a bit more info.
+# An example of a Docker Compose environment. See example.site.yml for a bit more info.
 # Used for ad hoc testing, and not by Unish.
 local:
   docker:
