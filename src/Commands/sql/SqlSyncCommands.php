@@ -109,7 +109,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
     public function databaseName(AliasRecord $record)
     {
-        if ($record->isRemote() && Drush::simulate()) {
+        if (!$record->isLocal() && Drush::simulate()) {
             return 'simulated_db';
         }
 

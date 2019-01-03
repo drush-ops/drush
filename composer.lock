@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fbc03efc6a857c1a763af64b8c96adc2",
+    "content-hash": "37071355a8551900672d4ca3017c0cc4",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -580,16 +580,16 @@
         },
         {
             "name": "consolidation/site-alias",
-            "version": "2.0.0",
+            "version": "2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-alias.git",
-                "reference": "679f47adc28db1350861c070508a8da7f0b09bf3"
+                "reference": "13588daf533c9a8df4c9495e3418685cd06867c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-alias/zipball/679f47adc28db1350861c070508a8da7f0b09bf3",
-                "reference": "679f47adc28db1350861c070508a8da7f0b09bf3",
+                "url": "https://api.github.com/repos/consolidation/site-alias/zipball/13588daf533c9a8df4c9495e3418685cd06867c4",
+                "reference": "13588daf533c9a8df4c9495e3418685cd06867c4",
                 "shasum": ""
             },
             "require": {
@@ -597,17 +597,32 @@
             },
             "require-dev": {
                 "consolidation/robo": "^1.2.3",
-                "g1a/composer-test-scenarios": "^2",
+                "g1a/composer-test-scenarios": "^3",
                 "knplabs/github-api": "^2.7",
+                "php-coveralls/php-coveralls": "^1",
                 "php-http/guzzle6-adapter": "^1.1",
-                "phpunit/phpunit": "^5",
-                "satooshi/php-coveralls": "^2",
+                "phpunit/phpunit": "^6",
                 "squizlabs/php_codesniffer": "^2.8",
                 "symfony/console": "^2.8|^3|^4",
                 "symfony/yaml": "~2.3|^3"
             },
             "type": "library",
             "extra": {
+                "scenarios": {
+                    "phpunit5": {
+                        "require-dev": {
+                            "phpunit/phpunit": "^5.7.27"
+                        },
+                        "remove": [
+                            "php-coveralls/php-coveralls"
+                        ],
+                        "config": {
+                            "platform": {
+                                "php": "5.6.33"
+                            }
+                        }
+                    }
+                },
                 "branch-alias": {
                     "dev-master": "2.x-dev"
                 }
@@ -632,39 +647,54 @@
                 }
             ],
             "description": "Manage alias records for local and remote sites.",
-            "time": "2018-11-01T23:45:29+00:00"
+            "time": "2019-01-03T14:40:53+00:00"
         },
         {
             "name": "consolidation/site-process",
-            "version": "0.1.18",
+            "version": "0.1.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-process.git",
-                "reference": "eb869cdd24249ff92b0709ffb68f4719c4329bba"
+                "reference": "d8236099fd925167d97a9fc0dcd2eb182d667d2a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-process/zipball/eb869cdd24249ff92b0709ffb68f4719c4329bba",
-                "reference": "eb869cdd24249ff92b0709ffb68f4719c4329bba",
+                "url": "https://api.github.com/repos/consolidation/site-process/zipball/d8236099fd925167d97a9fc0dcd2eb182d667d2a",
+                "reference": "d8236099fd925167d97a9fc0dcd2eb182d667d2a",
                 "shasum": ""
             },
             "require": {
                 "consolidation/config": "^1.1.1",
-                "consolidation/site-alias": "^1|^2",
+                "consolidation/site-alias": "^2.1.1",
                 "php": ">=5.6.0",
                 "symfony/process": "^3.4|^4"
             },
             "require-dev": {
                 "consolidation/robo": "^1.3",
-                "g1a/composer-test-scenarios": "^2",
+                "g1a/composer-test-scenarios": "^3",
                 "knplabs/github-api": "^2.7",
+                "php-coveralls/php-coveralls": "^1",
                 "php-http/guzzle6-adapter": "^1.1",
                 "phpunit/phpunit": "^6",
-                "satooshi/php-coveralls": "^2",
                 "squizlabs/php_codesniffer": "^2.8"
             },
             "type": "library",
             "extra": {
+                "scenarios": {
+                    "phpunit5": {
+                        "require-dev": {
+                            "phpunit/phpunit": "^5.7.27"
+                        },
+                        "remove": [
+                            "php-coveralls/php-coveralls"
+                        ],
+                        "config": {
+                            "platform": {
+                                "php": "5.6.33"
+                            }
+                        }
+                    }
+                },
                 "branch-alias": {
                     "dev-master": "0.x-dev"
                 }
@@ -685,7 +715,7 @@
                 }
             ],
             "description": "A thin wrapper around the Symfony Process Component that allows applications to use the Site Alias library to specify the target for a remote call.",
-            "time": "2018-11-01T23:55:59+00:00"
+            "time": "2019-01-03T15:29:12+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -6120,6 +6150,11 @@
         {
             "name": "webflo/drupal-core-strict",
             "version": "8.6.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webflo/drupal-core-strict.git",
+                "reference": "55bbc3930acef3120133185a5b0a4827ab89a841"
+            },
             "require": {
                 "asm89/stack-cors": "1.2.0",
                 "composer/installers": "v1.5.0",
