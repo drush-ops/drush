@@ -57,10 +57,9 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
      */
     public function redispatchIfRemote(InputInterface $input)
     {
+        $aliasRecord = $this->siteAliasManager()->getSelf();
         // Determine if this is a remote command.
-        // n.b. 'hasOption' only means that the option definition exists, so don't use that here.
-        $remote = $input->getOption('remote-host');
-        if (!empty($remote)) {
+        if (!$aliasRecord->isLocal()) {
             return $this->redispatch($input);
         }
     }
