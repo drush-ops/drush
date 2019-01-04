@@ -7,6 +7,7 @@ use Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface;
 use Consolidation\SiteAlias\AliasRecord;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteProcess\TransportManager;
 use Drush\Drush;
 use Drush\Log\LogLevel;
 use Robo\Common\ConfigAwareTrait;
@@ -23,6 +24,14 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
 {
     use ConfigAwareTrait;
     use SiteAliasManagerAwareTrait;
+
+    /** @var TransportManager */
+    protected $transportManager;
+
+    public function __construct(TransportManager $transportManager)
+    {
+        $this->transportManager = $transportManager;
+    }
 
     /**
      * Check to see if it is necessary to redispatch to a remote site.
@@ -59,7 +68,7 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
     {
         $aliasRecord = $this->siteAliasManager()->getSelf();
         // Determine if this is a remote command.
-        if (!$aliasRecord->isLocal()) {
+        if ($this->transportManager->hasTransport($aliasRecord)) {
             return $this->redispatch($input);
         }
     }

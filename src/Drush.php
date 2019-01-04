@@ -306,6 +306,8 @@ class Drush
      */
     public static function drushSiteProcess(AliasRecord $siteAlias, $args = [], $options = [], $options_double_dash = [])
     {
+        // TODO: If local, we should try to find vendor/bin/drush at the local root
+        // and use that if it exists, falling back to static::drushScript() if it does not.
         $defaultDrushScript = !$siteAlias->isLocal() ? 'drush' : static::drushScript();
 
         // Fill in the root and URI from the site alias, if the caller
@@ -333,7 +335,8 @@ class Drush
      */
     public static function siteProcess(AliasRecord $siteAlias, $args = [], $options = [], $options_double_dash = [])
     {
-        $process = new SiteProcess($siteAlias, $args, $options, $options_double_dash);
+        $transportManager = self::service('transport.manager');
+        $process = $transportManager->siteProcess($siteAlias, $args, $options, $options_double_dash);
         return static::configureProcess($process);
     }
 

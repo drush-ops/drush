@@ -102,8 +102,14 @@ class DependencyInjection
             ->withMethodCall('add', ['bootstrap.drupal8']);
         $container->share('bootstrap.hook', 'Drush\Boot\BootstrapHook')
           ->withArgument('bootstrap.manager');
-        $container->share('redispatch.hook', 'Drush\Runtime\RedispatchHook');
         $container->share('tildeExpansion.hook', 'Drush\Runtime\TildeExpansionHook');
+        $container->share('ssh.transport', \Consolidation\SiteProcess\Factory\SshTransportFactory::class);
+        $container->share('docker-compose.transport', \Consolidation\SiteProcess\Factory\DockerComposeTransportFactory::class);
+        $container->share('transport.manager', 'Consolidation\SiteProcess\TransportManager')
+            ->withMethodCall('add', ['ssh.transport'])
+            ->withMethodCall('add', ['docker-compose.transport']);
+        $container->share('redispatch.hook', 'Drush\Runtime\RedispatchHook')
+            ->withArgument('transport.manager');
 
         // Robo does not manage the command discovery object in the container,
         // but we will register and configure one for our use.
