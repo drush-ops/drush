@@ -7,7 +7,7 @@ use Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface;
 use Consolidation\SiteAlias\AliasRecord;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
-use Consolidation\SiteProcess\TransportManager;
+use Consolidation\SiteProcess\ProcessManager;
 use Drush\Drush;
 use Drush\Log\LogLevel;
 use Robo\Common\ConfigAwareTrait;
@@ -25,12 +25,12 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
     use ConfigAwareTrait;
     use SiteAliasManagerAwareTrait;
 
-    /** @var TransportManager */
-    protected $transportManager;
+    /** @var ProcessManager */
+    protected $processManager;
 
-    public function __construct(TransportManager $transportManager)
+    public function __construct(ProcessManager $processManager)
     {
-        $this->transportManager = $transportManager;
+        $this->processManager = $processManager;
     }
 
     /**
@@ -68,7 +68,7 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
     {
         $aliasRecord = $this->siteAliasManager()->getSelf();
         // Determine if this is a remote command.
-        if ($this->transportManager->hasTransport($aliasRecord)) {
+        if ($this->processManager->hasTransport($aliasRecord)) {
             return $this->redispatch($input);
         }
     }
@@ -95,7 +95,7 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
         $redispatchOptions = [];
 
         $aliasRecord = $this->siteAliasManager()->getSelf();
-        $process = Drush::drushSiteProcess($aliasRecord, $redispatchArgs, $redispatchOptions);
+        $process = $this->processManager->drushSiteProcess($aliasRecord, $redispatchArgs, $redispatchOptions);
         $process->setTty($this->getConfig()->get('ssh.tty', $input->isInteractive()));
         $process->mustRun($process->showRealtime());
 
