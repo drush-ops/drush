@@ -7,6 +7,7 @@ use Consolidation\SiteProcess\SiteProcess;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
 use Webmozart\PathUtil\Path;
+use Consolidation\SiteProcess\ProcessManager;
 
 abstract class UnishTestCase extends TestCase
 {
@@ -16,6 +17,8 @@ abstract class UnishTestCase extends TestCase
     const IGNORE_EXIT_CODE = 'n/a';
     const UNISH_EXITCODE_USER_ABORT = 75; // Same as DRUSH_EXITCODE_USER_ABORT
     const INTEGRATION_TEST_ENV = 'default';
+
+    protected $processManager;
 
     /**
      * Process of last executed command.
@@ -652,6 +655,14 @@ EOT;
         }
     }
 
+    protected function processManager()
+    {
+        if (!$this->processManager) {
+            $this->processManager = new ProcessManager();
+        }
+        return $this->processManager;
+    }
+
     protected function checkInstallSut($uri = self::INTEGRATION_TEST_ENV)
     {
         $sutAlias = $this->sutAlias($uri);
@@ -660,7 +671,7 @@ EOT;
             'uri' => $uri
         ];
         // TODO: Maybe there is a faster command to use for this check
-        $process = new SiteProcess($sutAlias, [self::getDrush(), 'pm:list'], $options);
+        $process = $this->processManager()->siteProcess($sutAlias, [self::getDrush(), 'pm:list'], $options);
         $process->run();
         if (!$process->isSuccessful()) {
             $this->installSut($uri);
@@ -689,7 +700,7 @@ EOT;
         if ($level = $this->logLevel()) {
             $options[$level] = true;
         }
-        $process = new SiteProcess($sutAlias, [self::getDrush(), 'site:install', 'testing', 'install_configure_form.enable_update_status_emails=NULL'], $options);
+        $process = $this->processManager()->siteProcess($sutAlias, [self::getDrush(), 'site:install', 'testing', 'install_configure_form.enable_update_status_emails=NULL'], $options);
         // Set long timeout because Xdebug slows everything.
         $process->setTimeout(0);
         $this->process = $process;
