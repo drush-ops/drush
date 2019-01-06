@@ -102,8 +102,14 @@ class DependencyInjection
             ->withMethodCall('add', ['bootstrap.drupal8']);
         $container->share('bootstrap.hook', 'Drush\Boot\BootstrapHook')
           ->withArgument('bootstrap.manager');
-        $container->share('redispatch.hook', 'Drush\Runtime\RedispatchHook');
         $container->share('tildeExpansion.hook', 'Drush\Runtime\TildeExpansionHook');
+        $container->share('ssh.transport', \Consolidation\SiteProcess\Factory\SshTransportFactory::class);
+        $container->share('docker-compose.transport', \Consolidation\SiteProcess\Factory\DockerComposeTransportFactory::class);
+        $container->share('process.manager', 'Drush\SiteAlias\ProcessManager')
+            ->withMethodCall('add', ['ssh.transport'])
+            ->withMethodCall('add', ['docker-compose.transport']);
+        $container->share('redispatch.hook', 'Drush\Runtime\RedispatchHook')
+            ->withArgument('process.manager');
 
         // Robo does not manage the command discovery object in the container,
         // but we will register and configure one for our use.
@@ -122,6 +128,8 @@ class DependencyInjection
             ->invokeMethod('setAutoloader', ['loader']);
         $container->inflector(\Consolidation\SiteAlias\SiteAliasManagerAwareInterface::class)
             ->invokeMethod('setSiteAliasManager', ['site.alias.manager']);
+        $container->inflector(\Consolidation\SiteProcess\ProcessManagerAwareInterface::class)
+            ->invokeMethod('setProcessManager', ['process.manager']);
     }
 
     protected function alterServicesForDrush(ContainerInterface $container, Application $application)
