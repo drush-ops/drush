@@ -343,7 +343,7 @@ class Drush
     public function shell($command, $cwd = null, array $env = null, $input = null, $timeout = 60)
     {
         $processManager = self::service('process.manager');
-        return $processManager->shell($commandline, $cwd, $env, $input, $timeout);
+        return $processManager->shell($command, $cwd, $env, $input, $timeout);
     }
 
     /**
