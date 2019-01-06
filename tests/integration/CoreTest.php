@@ -16,16 +16,15 @@ class CoreTest extends UnishIntegrationTestCase
     {
         $root = $this->webroot();
         $options = [
-        'pipe' => null,
         'ignore' => 'cron,http requests,update,update_core,trusted_host_patterns', // no network access when running in tests, so ignore these
         // 'strict' => 0, // invoke from script: do not verify options
         ];
         // Verify that there are no severity 2 items in the status report
-        $this->drush('core-requirements', [], $options + ['severity' => '2']);
+        $this->drush('core-requirements', [], $options + ['severity' => '2', 'pipe' => true]);
         $output = $this->getOutput();
         $this->assertEquals('', $output);
 
-        $this->drush('core-requirements', [], $options);
+        $this->drush('core-requirements', [], $options + ['format' => 'json']);
         $loaded = $this->getOutputFromJSON();
         // Pick a subset that are valid for D6/D7/D8.
         $expected = [

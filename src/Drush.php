@@ -325,10 +325,25 @@ class Drush
      * @return ProcessBase
      *   A wrapper around Symfony Process.
      */
-    public static function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60, array $options = null)
+    public static function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60)
     {
         $processManager = self::service('process.manager');
-        return $processManager->process($commandline, $cwd, $env, $input, $timeout, $options);
+        return $processManager->process($commandline, $cwd, $env, $input, $timeout);
+    }
+
+    /**
+     * Create a Process instance from a commandline string.
+     * @param string $command The commandline string to run
+     * @param string|null $cwd     The working directory or null to use the working dir of the current PHP process
+     * @param array|null $env     The environment variables or null to use the same environment as the current PHP process
+     * @param mixed|null $input   The input as stream resource, scalar or \Traversable, or null for no input
+     * @param int|float|null $timeout The timeout in seconds or null to disable
+     * @return Process
+     */
+    public function shell($command, $cwd = null, array $env = null, $input = null, $timeout = 60)
+    {
+        $processManager = self::service('process.manager');
+        return $processManager->shell($commandline, $cwd, $env, $input, $timeout);
     }
 
     /**
