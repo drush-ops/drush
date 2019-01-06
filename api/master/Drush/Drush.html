@@ -354,16 +354,6 @@ implementing the actual logic.</p>                    </div>
                     static&nbsp;<abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_drushSiteProcess">drushSiteProcess</a>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
-        
-                                            <p>drushSiteProcess should be avoided in favor of the drush method above.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;<abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
-                </div>
-                <div class="col-md-8 type">
                     <a href="#method_siteProcess">siteProcess</a>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
         
                                             <p>Run a bash fragment on a site alias. Use Drush::drush() instead of this
@@ -378,16 +368,6 @@ method when calling Drush.</p>                </div>
                     <a href="#method_process">process</a>(string|array $commandline, string|null $cwd = null, array $env = null, mixed|null $input = null, int|float|null $timeout = 60, array $options = null)
         
                                             <p>Run a bash fragment locally.</p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_configureProcess">configureProcess</a>(<abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr> $process)
-        
-                                            <p>configureProcess sets up a process object so that it is ready to use.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -1087,64 +1067,8 @@ as they can return useful type hints.</p>                            </div>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_drushSiteProcess">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L307">line 307</a></div>
-        <code>        static            <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
-    <strong>drushSiteProcess</strong>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>drushSiteProcess should be avoided in favor of the drush method above.</p>                    <p>drushSiteProcess exists specifically for use by the RedispatchHook,
-which does not have specific knowledge about which argument is the command.</p>                            </div>
-                <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr></td>
-                <td>$siteAlias</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$args</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$options</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$options_double_dash</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_siteProcess">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L334">line 334</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L306">line 306</a></div>
         <code>        static            <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
     <strong>siteProcess</strong>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
         </code>
@@ -1200,7 +1124,7 @@ method when calling Drush.</p>                                                </
             </div>
                     <div class="method-item">
                     <h3 id="method_process">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L356">line 356</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L328">line 328</a></div>
         <code>        static            <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
     <strong>process</strong>(string|array $commandline, string|null $cwd = null, array $env = null, mixed|null $input = null, int|float|null $timeout = 60, array $options = null)
         </code>
@@ -1265,39 +1189,8 @@ Call this method to get a Process and then call setters as needed.</p>          
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_configureProcess">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L365">line 365</a></div>
-        <code>        static    protected        
-    <strong>configureProcess</strong>(<abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr> $process)
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>configureProcess sets up a process object so that it is ready to use.</p>                                                </div>
-                <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr></td>
-                <td>$process</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_drushScript">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L379">line 379</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L337">line 337</a></div>
         <code>        static            
     <strong>drushScript</strong>()
         </code>
@@ -1318,7 +1211,7 @@ Call this method to get a Process and then call setters as needed.</p>          
             </div>
                     <div class="method-item">
                     <h3 id="method_simulate">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L387">line 387</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L345">line 345</a></div>
         <code>        static            
     <strong>simulate</strong>()
         </code>
@@ -1339,7 +1232,7 @@ Call this method to get a Process and then call setters as needed.</p>          
             </div>
                     <div class="method-item">
                     <h3 id="method_backend">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L395">line 395</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L353">line 353</a></div>
         <code>        static            
     <strong>backend</strong>()
         </code>
@@ -1360,7 +1253,7 @@ Call this method to get a Process and then call setters as needed.</p>          
             </div>
                     <div class="method-item">
                     <h3 id="method_affirmative">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L403">line 403</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L361">line 361</a></div>
         <code>        static            
     <strong>affirmative</strong>()
         </code>
@@ -1381,7 +1274,7 @@ Call this method to get a Process and then call setters as needed.</p>          
             </div>
                     <div class="method-item">
                     <h3 id="method_negative">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L414">line 414</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L372">line 372</a></div>
         <code>        static            
     <strong>negative</strong>()
         </code>
@@ -1402,7 +1295,7 @@ Call this method to get a Process and then call setters as needed.</p>          
             </div>
                     <div class="method-item">
                     <h3 id="method_verbose">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L425">line 425</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L383">line 383</a></div>
         <code>        static            
     <strong>verbose</strong>()
         </code>
@@ -1423,7 +1316,7 @@ Call this method to get a Process and then call setters as needed.</p>          
             </div>
                     <div class="method-item">
                     <h3 id="method_debug">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L436">line 436</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L394">line 394</a></div>
         <code>        static            
     <strong>debug</strong>()
         </code>
@@ -1444,7 +1337,7 @@ Call this method to get a Process and then call setters as needed.</p>          
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapManager">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L449">line 449</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L407">line 407</a></div>
         <code>        static            <a href="../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a>
     <strong>bootstrapManager</strong>()
         </code>
@@ -1474,7 +1367,7 @@ Call this method to get a Process and then call setters as needed.</p>          
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrap">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L459">line 459</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L417">line 417</a></div>
         <code>        static            <a href="../Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a>
     <strong>bootstrap</strong>()
         </code>
@@ -1504,7 +1397,7 @@ Call this method to get a Process and then call setters as needed.</p>          
             </div>
                     <div class="method-item">
                     <h3 id="method_redispatchOptions">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L464">line 464</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L422">line 422</a></div>
         <code>        static            
     <strong>redispatchOptions</strong>($input = null)
         </code>
