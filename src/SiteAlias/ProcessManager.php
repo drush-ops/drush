@@ -66,7 +66,8 @@ class ProcessManager extends ConsolidationProcessManager
     /**
      * @inheritdoc
      *
-     * Use ProcessManager::drush() instead of this method when calling Drush.
+     * Use Drush::drush() or ProcessManager::drush() instead of this method
+     * when calling Drush.
      */
     public function siteProcess(AliasRecord $siteAlias, $args = [], $options = [], $optionsPassedAsArgs = [])
     {

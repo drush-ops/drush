@@ -128,6 +128,8 @@ class DependencyInjection
             ->invokeMethod('setAutoloader', ['loader']);
         $container->inflector(\Consolidation\SiteAlias\SiteAliasManagerAwareInterface::class)
             ->invokeMethod('setSiteAliasManager', ['site.alias.manager']);
+        $container->inflector(\Consolidation\SiteProcess\ProcessManagerAwareInterface::class)
+            ->invokeMethod('setProcessManager', ['process.manager']);
     }
 
     protected function alterServicesForDrush(ContainerInterface $container, Application $application)

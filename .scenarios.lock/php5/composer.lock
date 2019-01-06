@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8ffffb17776a20e56d94964f46edce78",
+    "content-hash": "2b5dfece43aabb8a7594c0d754b745e5",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -692,23 +692,23 @@
         },
         {
             "name": "consolidation/site-process",
-            "version": "dev-process-from-transport",
+            "version": "0.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-process.git",
-                "reference": "3d198ec83c4bbe11851bd934ed839d03944c3eec"
+                "reference": "7ddc78bca0c6a547994f3af559a83e6266e5c80d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-process/zipball/3d198ec83c4bbe11851bd934ed839d03944c3eec",
-                "reference": "3d198ec83c4bbe11851bd934ed839d03944c3eec",
+                "url": "https://api.github.com/repos/consolidation/site-process/zipball/7ddc78bca0c6a547994f3af559a83e6266e5c80d",
+                "reference": "7ddc78bca0c6a547994f3af559a83e6266e5c80d",
                 "shasum": ""
             },
             "require": {
                 "consolidation/config": "^1.1.1",
                 "consolidation/site-alias": "^2.1.1",
                 "php": ">=5.6.0",
-                "symfony/process": "^3.4|^4"
+                "symfony/process": "^3.4"
             },
             "require-dev": {
                 "consolidation/robo": "^1.3",
@@ -760,7 +760,7 @@
                 }
             ],
             "description": "A thin wrapper around the Symfony Process Component that allows applications to use the Site Alias library to specify the target for a remote call.",
-            "time": "2019-01-05T05:05:51+00:00"
+            "time": "2019-01-06T01:00:28+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -6145,7 +6145,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "consolidation/site-process": 20,
         "lox/xhprof": 20,
         "webflo/drupal-core-strict": 20,
         "drupal/devel": 5
