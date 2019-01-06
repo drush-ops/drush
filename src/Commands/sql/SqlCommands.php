@@ -140,7 +140,7 @@ class SqlCommands extends DrushCommands
     public function cli($options = ['extra' => self::REQ])
     {
         $sql = SqlBase::create($options);
-        $process = Drush::process($sql->connect(), null, $sql->getEnv());
+        $process = Drush::shell($sql->connect(), null, $sql->getEnv());
         $process->setTty(true);
         $process->mustRun();
     }

@@ -166,10 +166,11 @@ class ConfigCommands extends DrushCommands
         $temp_storage = new FileStorage($temp_dir);
         $temp_storage->write($config_name, $contents);
 
-        //
+        // Note that `drush_get_editor` returns a string that contains a
+        // %s placeholder for the config file path.
         $exec = drush_get_editor();
         $cmd = sprintf($exec, Escape::shellArg($temp_storage->getFilePath($config_name)));
-        $process = Drush::process($cmd);
+        $process = Drush::shell($cmd);
         $process->setTty(true);
         $process->mustRun();
 

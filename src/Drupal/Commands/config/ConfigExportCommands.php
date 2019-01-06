@@ -160,18 +160,18 @@ class ConfigExportCommands extends DrushCommands
         if ($options['commit']) {
             // There must be changed files at the destination dir; if there are not, then
             // we will skip the commit step.
-            $process = Drush::process('git status --porcelain .', $destination_dir);
+            $process = Drush::process(['git', 'status', '--porcelain', '.'], $destination_dir);
             $process->mustRun();
             $uncommitted_changes = $process->getOutput();
             if (!empty($uncommitted_changes)) {
-                $process = Drush::process('git add -A .', $destination_dir);
+                $process = Drush::process(['git', 'add', '-A', '.'], $destination_dir);
                 $process->mustRun();
                 $comment_file = drush_save_data_to_temp_file($options['message'] ?: 'Exported configuration.'. $preview);
-                $process = Drush::process(['git commit', "--file=$comment_file"], $destination_dir);
+                $process = Drush::process(['git', 'commit', "--file=$comment_file"], $destination_dir);
                 $process->mustRun();
             }
         } elseif ($options['add']) {
-            Drush::process(['git add -p ',  $destination_dir])->run();
+            Drush::process(['git', 'add', '-p',  $destination_dir])->run();
         }
     }
 

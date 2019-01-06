@@ -59,7 +59,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
 
         // A bit awkward due to backward compat.
         $cmd = sprintf($editor, Escape::shellArg($filepath));
-        $process = Drush::process($cmd);
+        $process = Drush::shell($cmd);
         $process->setTty(true);
         $process->mustRun();
     }

@@ -97,7 +97,7 @@ class SqlPgsql extends SqlBase
         unset($db_spec_no_db['database']);
         $sql_no_db = new SqlPgsql($db_spec_no_db, $this->getOptions());
         $query = "SELECT 1 AS result FROM pg_database WHERE datname='$database'";
-        $process = Drush::process($sql_no_db->connect() . ' -t -c ' . $query, null, $this->getEnv());
+        $process = Drush::shell($sql_no_db->connect() . ' -t -c ' . $query, null, $this->getEnv());
         $process->setSimulated(false);
         $process->run();
         return $process->isSuccessful();
