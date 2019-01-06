@@ -71,7 +71,7 @@ trait ExecTrait
                         $args = ['sleep', $sleep, Shell::op('&&')];
                     }
                     // @todo We implode because quoting is messing up the sleep.
-                    $process = Drush::process(array_merge($args, [$browser, $uri]));
+                    $process = Drush::shell(implode(' ', array_merge($args, [$browser, $uri])));
                     $process->run();
                 }
                 return true;
@@ -88,7 +88,7 @@ trait ExecTrait
      */
     public static function programExists($program)
     {
-        $process = Drush::process(['command', '-v', $program]);
+        $process = Drush::shell("command -v $program");
         $process->run();
         return $process->isSuccessful();
     }
