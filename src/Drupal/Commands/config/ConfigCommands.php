@@ -170,14 +170,14 @@ class ConfigCommands extends DrushCommands
         // %s placeholder for the config file path.
         $exec = drush_get_editor();
         $cmd = sprintf($exec, Escape::shellArg($temp_storage->getFilePath($config_name)));
-        $process = Drush::shell($cmd);
+        $process = $this->processManager()->shell($cmd);
         $process->setTty(true);
         $process->mustRun();
 
         // Perform import operation if user did not immediately exit editor.
         if (!$options['bg']) {
             $redispatch_options = Drush::redispatchOptions()   + ['partial' => true, 'source' => $temp_dir];
-            $process = Drush::drush(Drush::aliasManager()->getSelf(), 'config-import', [], $redispatch_options);
+            $process = $this->processManager()->drush(Drush::aliasManager()->getSelf(), 'config-import', [], $redispatch_options);
             $process->mustRun($process->showRealtime());
         }
     }
@@ -515,7 +515,7 @@ class ConfigCommands extends DrushCommands
             $prefix = ['git', 'diff', '--color=always'];
         }
         $args = array_merge($prefix, ['-u', $temp_destination_dir, $temp_source_dir]);
-        $process = Drush::process($args);
+        $process = $this->processManager()->process($args);
         $process->run();
         return $process->getOutput();
     }

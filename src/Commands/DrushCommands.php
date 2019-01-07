@@ -11,9 +11,13 @@ use Robo\Contract\ConfigAwareInterface;
 use Robo\Contract\IOAwareInterface;
 use Robo\Common\IO;
 use Symfony\Component\Console\Input\InputOption;
+use Consolidation\SiteProcess\ProcessManagerAwareTrait;
+use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 
-abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, ConfigAwareInterface
+abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, ConfigAwareInterface, ProcessManagerAwareInterface
 {
+    use ProcessManagerAwareTrait;
+
     // This is more readable.
     const REQ=InputOption::VALUE_REQUIRED;
     const OPT=InputOption::VALUE_OPTIONAL;
@@ -86,11 +90,11 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
 
         if (self::input()->isInteractive()) {
             ;
-            $process = Drush::process(['less', $file])->setTty(true);
+            $process = $this->processManager()->process(['less', $file])->setTty(true);
             if ($process->run() === 0) {
                 return;
             } else {
-                $process = Drush::process(['more', $file]);
+                $process = $this->processManager()->process(['more', $file]);
                 if ($process->run() === 0) {
                     return;
                 } else {
