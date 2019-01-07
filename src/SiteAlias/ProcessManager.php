@@ -11,12 +11,17 @@ use Drush\Drush;
 use Drush\Style\DrushStyle;
 use Consolidation\SiteProcess\ProcessBase;
 use Consolidation\SiteProcess\SiteProcess;
+use Webmozart\PathUtil\Path;
+use Robo\Common\ConfigAwareTrait;
+use Robo\Contract\ConfigAwareInterface;
 
 /**
  * The Drush ProcessManager adds a few Drush-specific service methods.
  */
-class ProcessManager extends ConsolidationProcessManager
+class ProcessManager extends ConsolidationProcessManager implements ConfigAwareInterface
 {
+    use ConfigAwareTrait;
+
     /**
      * Run a Drush command on a site alias (or @self).
      *
@@ -46,10 +51,6 @@ class ProcessManager extends ConsolidationProcessManager
      */
     public function drushSiteProcess(AliasRecord $siteAlias, $args = [], $options = [], $options_double_dash = [])
     {
-        // TODO: If local, we should try to find vendor/bin/drush at the local root
-        // and use that if it exists, falling back to Drush::drushScript() if it does not.
-        $defaultDrushScript = !$siteAlias->isLocal() ? 'drush' : Drush::drushScript();
-
         // Fill in the root and URI from the site alias, if the caller
         // did not already provide them in $options.
         if ($siteAlias->has('uri')) {
@@ -58,9 +59,43 @@ class ProcessManager extends ConsolidationProcessManager
         if ($siteAlias->hasRoot()) {
             $options += [ 'root' => $siteAlias->root(), ];
         }
-        array_unshift($args, $siteAlias->get('paths.drush-script', $defaultDrushScript));
+
+        // The executable is always 'drush' (at some path or another)
+        array_unshift($args, $this->drushScript($siteAlias));
 
         return $this->siteProcess($siteAlias, $args, $options, $options_double_dash);
+    }
+
+    /**
+     * Determine the path to Drush to use
+     */
+    public function drushScript(AliasRecord $siteAlias)
+    {
+        $defaultDrushScript = 'drush';
+
+        // If the site alias has 'paths.drush-script', always use that.
+        if ($siteAlias->has('paths.drush-script')) {
+            return $siteAlias->get('paths.drush-script');
+        }
+
+        // If the provided site alias is for a remote site / container et. al.,
+        // then use the 'drush' in the $PATH.
+        if ($this->hasTransport($siteAlias)) {
+            return $defaultDrushScript;
+        }
+
+        // If the target is a local Drupal site that has a vendor/bin/drush,
+        // then use that.
+        if ($siteAlias->hasRoot()) {
+            $localDrushScript = Path::join($siteAlias->root(), 'vendor/bin/drush');
+            if (file_exists($localDrushScript)) {
+                return $localDrushScript;
+            }
+        }
+
+        // Otherwise, use the path to the version of Drush that is running
+        // right now (if available).
+        return $this->getConfig()->get('runtime.drush-script', $defaultDrushScript);
     }
 
     /**
