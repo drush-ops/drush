@@ -23,6 +23,7 @@ class PostgreSqlSchemaTest extends CommandUnishTestCase
         } else {
             // Create schema.
             $this->drush('sql-query', ["CREATE SCHEMA drupal"]);
+            $this->drush('sql-query', ["DROP SCHEMA public"]);
 
             // Install Drupal in "drupal" schema.
             $this->installDrupal('dev', true, ['db-prefix' => 'drupal.']);
