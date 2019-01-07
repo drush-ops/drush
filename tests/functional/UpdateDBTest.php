@@ -18,9 +18,9 @@ class UpdateDBTest extends CommandUnishTestCase
     {
         $this->setUpDrupal(1, true);
         $this->drush('pm:enable', ['devel']);
-        $this->drush('updatedb:status', [], ['format' => 'json']);
-        $out = $this->getOutputFromJSON();
-        $this->assertNull($out);
+        $this->drush('updatedb:status');
+        $err = $this->getErrorOutput();
+        $this->assertEquals('[success] No database updates required.', $err);
 
         // Force a pending update.
         $this->drush('php-script', ['updatedb_script'], ['script-path' => __DIR__ . '/resources']);
@@ -34,9 +34,9 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->drush('updatedb', []);
 
         // Assert that we ran hook_update_n properly
-        $this->drush('updatedb:status', [], ['format' => 'json']);
-        $out = $this->getOutputFromJSON();
-        $this->assertNull($out);
+        $this->drush('updatedb:status');
+        $err = $this->getErrorOutput();
+        $this->assertEquals('[success] No database updates required.', $err);
 
         // Assure that a pending post-update is reported.
         $this->pathPostUpdate = Path::join($this->webroot(), 'modules/unish/devel/devel.post_update.php');
@@ -266,9 +266,9 @@ YAML_FRAGMENT;
         $this->drush('updatedb');
 
         // Assert that the updates were run correctly.
-        $this->drush('updatedb:status', [], ['format' => 'json']);
-        $out = $this->getOutputFromJSON();
-        $this->assertNull($out);
+        $this->drush('updatedb:status');
+        $err = $this->getErrorOutput();
+        $this->assertEquals('[success] No database updates required.', $err);
     }
 
     /**

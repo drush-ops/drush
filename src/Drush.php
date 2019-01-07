@@ -91,31 +91,31 @@ class Drush
      */
     public static function getVersion()
     {
-        if (!static::$version) {
-            $drush_info = static::drushReadDrushInfo();
-            static::$version = $drush_info['drush_version'];
+        if (!self::$version) {
+            $drush_info = self::drushReadDrushInfo();
+            self::$version = $drush_info['drush_version'];
         }
-        return static::$version;
+        return self::$version;
     }
 
     public static function getMajorVersion()
     {
-        if (!static::$majorVersion) {
-            $drush_version = static::getVersion();
+        if (!self::$majorVersion) {
+            $drush_version = self::getVersion();
             $version_parts = explode('.', $drush_version);
-            static::$majorVersion = $version_parts[0];
+            self::$majorVersion = $version_parts[0];
         }
-        return static::$majorVersion;
+        return self::$majorVersion;
     }
 
     public static function getMinorVersion()
     {
-        if (!static::$minorVersion) {
-            $drush_version = static::getVersion();
+        if (!self::$minorVersion) {
+            $drush_version = self::getVersion();
             $version_parts = explode('.', $drush_version);
-            static::$minorVersion = $version_parts[1];
+            self::$minorVersion = $version_parts[1];
         }
-        return static::$minorVersion;
+        return self::$minorVersion;
     }
 
     /**
@@ -180,10 +180,10 @@ class Drush
      */
     public static function runner()
     {
-        if (!isset(static::$runner)) {
-            static::$runner = new \Robo\Runner();
+        if (!isset(self::$runner)) {
+            self::$runner = new \Robo\Runner();
         }
-        return static::$runner;
+        return self::$runner;
     }
 
     /**
@@ -201,7 +201,7 @@ class Drush
      */
     public static function service($id)
     {
-        return static::getContainer()->get($id);
+        return self::getContainer()->get($id);
     }
 
     /**
@@ -216,7 +216,7 @@ class Drush
     public static function hasService($id)
     {
         // Check hasContainer() first in order to always return a Boolean.
-        return static::hasContainer() && static::getContainer()->has($id);
+        return self::hasContainer() && self::getContainer()->has($id);
     }
 
     /**
@@ -226,7 +226,7 @@ class Drush
      */
     public static function commandFactory()
     {
-        return static::service('commandFactory');
+        return self::service('commandFactory');
     }
 
     /**
@@ -236,7 +236,7 @@ class Drush
      */
     public static function logger()
     {
-        return static::service('logger');
+        return self::service('logger');
     }
 
     /**
@@ -246,7 +246,7 @@ class Drush
      */
     public static function config()
     {
-        return static::service('config');
+        return self::service('config');
     }
 
     /**
@@ -254,7 +254,7 @@ class Drush
      */
     public static function aliasManager()
     {
-        return static::service('site.alias.manager');
+        return self::service('site.alias.manager');
     }
 
     /**
@@ -264,7 +264,7 @@ class Drush
      */
     public static function input()
     {
-        return static::service('input');
+        return self::service('input');
     }
 
     /**
@@ -274,7 +274,7 @@ class Drush
      */
     public static function output()
     {
-        return static::service('output');
+        return self::service('output');
     }
 
     /**
@@ -325,10 +325,25 @@ class Drush
      * @return ProcessBase
      *   A wrapper around Symfony Process.
      */
-    public static function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60, array $options = null)
+    public static function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60)
     {
         $processManager = self::service('process.manager');
-        return $processManager->process($commandline, $cwd, $env, $input, $timeout, $options);
+        return $processManager->process($commandline, $cwd, $env, $input, $timeout);
+    }
+
+    /**
+     * Create a Process instance from a commandline string.
+     * @param string $command The commandline string to run
+     * @param string|null $cwd     The working directory or null to use the working dir of the current PHP process
+     * @param array|null $env     The environment variables or null to use the same environment as the current PHP process
+     * @param mixed|null $input   The input as stream resource, scalar or \Traversable, or null for no input
+     * @param int|float|null $timeout The timeout in seconds or null to disable
+     * @return Process
+     */
+    public function shell($command, $cwd = null, array $env = null, $input = null, $timeout = 60)
+    {
+        $processManager = self::service('process.manager');
+        return $processManager->shell($command, $cwd, $env, $input, $timeout);
     }
 
     /**
@@ -360,7 +375,7 @@ class Drush
      */
     public static function affirmative()
     {
-        if (!static::hasService('input')) {
+        if (!self::hasService('input')) {
             throw new \Exception('No input service available.');
         }
         return Drush::input()->getOption('yes') || (Drush::backend() && !Drush::negative());
@@ -371,7 +386,7 @@ class Drush
      */
     public static function negative()
     {
-        if (!static::hasService('input')) {
+        if (!self::hasService('input')) {
             throw new \Exception('No input service available.');
         }
         return Drush::input()->getOption('no');
@@ -382,7 +397,7 @@ class Drush
      */
     public static function verbose()
     {
-        if (!static::hasService('output')) {
+        if (!self::hasService('output')) {
             return false;
         }
         return \Drush\Drush::output()->isVerbose();
@@ -393,7 +408,7 @@ class Drush
      */
     public static function debug()
     {
-        if (!static::hasService('output')) {
+        if (!self::hasService('output')) {
             return false;
         }
         return \Drush\Drush::output()->isDebug();
@@ -406,7 +421,7 @@ class Drush
      */
     public static function bootstrapManager()
     {
-        return static::service('bootstrap.manager');
+        return self::service('bootstrap.manager');
     }
 
     /**
@@ -416,24 +431,24 @@ class Drush
      */
     public static function bootstrap()
     {
-        return static::bootstrapManager()->bootstrap();
+        return self::bootstrapManager()->bootstrap();
     }
 
     public static function redispatchOptions($input = null)
     {
-        $input = $input ?: static::input();
+        $input = $input ?: self::input();
 
         // $input->getOptions() returns an associative array of option => value
         $options = $input->getOptions();
 
         // The 'runtime.options' config contains a list of option names on th cli
-        $optionNamesFromCommandline = static::config()->get('runtime.options');
+        $optionNamesFromCommandline = self::config()->get('runtime.options');
 
         // Remove anything in $options that was not on the cli
         $options = array_intersect_key($options, array_flip($optionNamesFromCommandline));
 
         // Add in the 'runtime.context' items, which includes --include, --alias-path et. al.
-        return $options + array_filter(static::config()->get(PreflightArgs::DRUSH_RUNTIME_CONTEXT_NAMESPACE));
+        return $options + array_filter(self::config()->get(PreflightArgs::DRUSH_RUNTIME_CONTEXT_NAMESPACE));
     }
 
     /**

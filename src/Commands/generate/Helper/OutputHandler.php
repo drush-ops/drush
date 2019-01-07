@@ -31,7 +31,7 @@ class OutputHandler extends BaseOutputHandler
         if (defined('DRUPAL_ROOT') && $dumped_files) {
             $exec = drush_get_editor();
             $exec = str_replace('%s', Escape::shellArg(Path::makeAbsolute($dumped_files[0], DRUPAL_ROOT)), $exec);
-            $process = Drush::process($exec);
+            $process = Drush::shell($exec);
             // Use start() in order to get an async fork.
             $process->start();
         }

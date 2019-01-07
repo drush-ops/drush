@@ -81,19 +81,33 @@ class ProcessManager extends ConsolidationProcessManager
      * The timeout parameter on this method doesn't work. It exists for compatibility with parent.
      * Call this method to get a Process and then call setters as needed.
      *
-     * @param string|array   $commandline The command line to run
+     * @param array          $commandline The command line to run with arguments as separate items in an array
      * @param string|null    $cwd         The working directory or null to use the working dir of the current PHP process
      * @param array|null     $env         The environment variables or null to use the same environment as the current PHP process
      * @param mixed|null     $input       The input as stream resource, scalar or \Traversable, or null for no input
      * @param int|float|null $timeout     The timeout in seconds or null to disable
-     * @param array          $options     An array of options for proc_open
      *
      * @return ProcessBase
      *   A wrapper around Symfony Process.
      */
-    public function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60, array $options = null)
+    public function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60)
     {
-        $process = new ProcessBase($commandline, $cwd, $env, $input, $timeout, $options);
+        $process = parent::process($commandline, $cwd, $env, $input, $timeout);
+        return $this->configureProcess($process);
+    }
+
+    /**
+     * Create a Process instance from a commandline string.
+     * @param string $command The commandline string to run
+     * @param string|null $cwd     The working directory or null to use the working dir of the current PHP process
+     * @param array|null $env     The environment variables or null to use the same environment as the current PHP process
+     * @param mixed|null $input   The input as stream resource, scalar or \Traversable, or null for no input
+     * @param int|float|null $timeout The timeout in seconds or null to disable
+     * @return Process
+     */
+    public function shell($command, $cwd = null, array $env = null, $input = null, $timeout = 60)
+    {
+        $process = parent::shell($command, $cwd, $env, $input, $timeout);
         return $this->configureProcess($process);
     }
 
