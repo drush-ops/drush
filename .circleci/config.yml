@@ -133,15 +133,7 @@ workflows:
   #     standard and LOWEST tests.
   drush:
     jobs:
-      - code_style
-      - check_mergable
-      - test_71_mysql:
-          requires:
-            - check_mergable
-            - code_style
-      - test_56_lowest:
-          requires:
-            - check_mergable
+      - test_71_postgres:
   # Drush nightly scheduled jobs:
   #   - Run the HIGHEST tests.
   #   - Run functional tests under Sqlite and Postgres.
