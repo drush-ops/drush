@@ -68,10 +68,6 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
     {
         $aliasRecord = $this->siteAliasManager()->getSelf();
         // Determine if this is a remote command.
-        // TODO: We could also redispatch here if we determined that
-        // the target site was a Drupal site of a version not supported
-        // by this Drush, AND if the ProcessManager::drushScript() returns
-        // an path to some Drush other than this Drush.
         if ($this->processManager->hasTransport($aliasRecord)) {
             return $this->redispatch($input);
         }
