@@ -133,7 +133,7 @@ workflows:
   #     standard and LOWEST tests.
   drush:
     jobs:
-      - test_71_postgres:
+      - test_71_postgres
   # Drush nightly scheduled jobs:
   #   - Run the HIGHEST tests.
   #   - Run functional tests under Sqlite and Postgres.
