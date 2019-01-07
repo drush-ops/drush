@@ -129,6 +129,9 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      */
     public function selectUri($cwd)
     {
+        if (!$this->hasBootstrap()) {
+            return false;
+        }
         $uri = $this->bootstrap()->findUri($this->getRoot(), $cwd);
         $this->setUri($uri);
         return $uri;
@@ -138,7 +141,9 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
     {
         // TODO: Throw if we already bootstrapped a framework?
         // n.b. site-install needs to set the uri.
-        $this->bootstrap()->setUri($uri);
+        if ($this->hasBootstrap()) {
+            $this->bootstrap()->setUri($uri);
+        }
     }
 
     /**
@@ -383,6 +388,9 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
      */
     public function bootstrapToPhase($bootstrapPhase, AnnotationData $annotationData = null)
     {
+        if (!$this->hasBootstrap()) {
+            return true;
+        }
         $this->logger->log(LogLevel::BOOTSTRAP, 'Starting bootstrap to {phase}', ['phase' => $bootstrapPhase]);
         $phase = $this->bootstrap()->lookUpPhaseIndex($bootstrapPhase);
         if (!isset($phase)) {
