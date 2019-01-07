@@ -15,12 +15,13 @@ class PostgreSqlSchemaTest extends CommandUnishTestCase
 
     public function testPostgreSqlSchema()
     {
-        $this->setUpDrupal(1, true);
-
         $db_driver = $this->dbDriver();
         if (!$db_driver == 'pgsql') {
             $this->markTestSkipped('PostgreSQL specific test.');
         } else {
+            // Install Drupal in default schema.
+            $this->installDrupal('dev', true);
+
             // Create schema.
             $this->drush('sql-query', ["CREATE SCHEMA drupal"]);
             $this->drush('sql-query', ["DROP SCHEMA public"]);
@@ -38,13 +39,13 @@ class PostgreSqlSchemaTest extends CommandUnishTestCase
             $output = $this->getOutput();
             $this->assertContains('1', $output);
 
-          // Drop DB.
-          $this->drush('sql-drop');
+            // Drop DB.
+            $this->drush('sql-drop');
 
-          // Run 'core-status' and insure that we no longer can bootstrap Drupal.
-          $this->drush('core-status', [], ['fields' => 'bootstrap']);
-          $output = $this->getOutput();
-          $this->assertNotContains('Successful', $output);
+            // Run 'core-status' and insure that we no longer can bootstrap Drupal.
+            $this->drush('core-status', [], ['fields' => 'bootstrap']);
+            $output = $this->getOutput();
+            $this->assertNotContains('Successful', $output);
         }
     }
 }
