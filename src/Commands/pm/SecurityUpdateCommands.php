@@ -154,6 +154,10 @@ class SecurityUpdateCommands extends DrushCommands
      *
      * @return string
      *   A new conflict string thats specific to major version of the package and uses OR operator.
+     *   For example, from drupal/jsonapi
+     *
+     *  - Input: <1.9,<1.10,<1.14,<1.16,<1.24,<2.0-rc4 and $major=1
+     *  - Output: <1.9||<1.10||<1.14||<1.16||<1.24
      */
     protected function adjustConflict($conflict, $major) {
         foreach (explode(',', $conflict) as $requirement) {
