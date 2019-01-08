@@ -286,6 +286,8 @@ class Drush
      * @param array $options
      * @param array $options_double_dash
      * @return SiteProcess
+     *
+     * @deprecated Use injected process manager instead.
      */
     public static function drush(AliasRecord $siteAlias, $command, $args = [], $options = [], $options_double_dash = [])
     {
@@ -302,6 +304,8 @@ class Drush
      * @param array $options
      * @param array $options_double_dash
      * @return ProcessBase
+     *
+     * @deprecated Use injected process manager instead.
      */
     public static function siteProcess(AliasRecord $siteAlias, $args = [], $options = [], $options_double_dash = [])
     {
@@ -324,6 +328,8 @@ class Drush
      *
      * @return ProcessBase
      *   A wrapper around Symfony Process.
+     *
+     * @deprecated Use injected process manager instead.
      */
     public static function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60)
     {
@@ -339,6 +345,8 @@ class Drush
      * @param mixed|null $input   The input as stream resource, scalar or \Traversable, or null for no input
      * @param int|float|null $timeout The timeout in seconds or null to disable
      * @return Process
+     *
+     * @deprecated Use injected process manager instead.
      */
     public function shell($command, $cwd = null, array $env = null, $input = null, $timeout = 60)
     {

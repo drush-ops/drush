@@ -173,7 +173,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         $discovery->depth('< 9');
         $legacyAliasConverter = new LegacyAliasConverter($discovery);
         $legacyAliasConverter->setTargetDir($destination);
-        $legacyAliasConverter->setSimulate(Drush::simulate());
+        $legacyAliasConverter->setSimulate($this->getConfig()->simulate());
 
         // Find and convert.
         drush_mkdir($destination, true);

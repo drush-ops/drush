@@ -231,7 +231,7 @@ class UserCommands extends DrushCommands
             'access' => '0',
             'status' => 1,
         ];
-        if (!Drush::simulate()) {
+        if (!$this->getConfig()->simulate()) {
             if ($account = User::create($new_user)) {
                 $account->save();
                 drush_backend_set_result($this->infoArray($account));
@@ -308,7 +308,7 @@ class UserCommands extends DrushCommands
     public function password($name, $password)
     {
         if ($account = user_load_by_name($name)) {
-            if (!Drush::simulate()) {
+            if (!$this->getConfig()->simulate()) {
                 $account->setpassword($password);
                 $account->save();
                 $this->logger()->success(dt('Changed password for !name.', ['!name' => $name]));

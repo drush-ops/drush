@@ -49,7 +49,7 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
             $args = explode(' ', $args[0]);
         }
 
-        $process = Drush::siteProcess($alias, $args);
+        $process = $this->processManager()->siteProcess($alias, $args);
         $process->setTty($options['tty']);
         $process->chdirToSiteRoot($options['cd']);
         $process->mustRun($process->showRealtime());

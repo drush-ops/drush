@@ -50,7 +50,7 @@ class DrushConfig extends ConfigOverlay
     }
 
     /**
-     * Return 'true' if we are in simulated mode
+     * Return 'true' if we are in simulated mode.
      */
     public function simulate()
     {
@@ -58,11 +58,20 @@ class DrushConfig extends ConfigOverlay
     }
 
     /**
-     * Return 'true' if we are in backend mode
+     * Return 'true' if we are in backend mode.
      */
     public function backend()
     {
         return $this->get(PreflightArgs::BACKEND);
+    }
+
+    /**
+     * Return the list of paths to active Drush configuration files.
+     * @return array
+     */
+    public function configPaths()
+    {
+        return $this->get('runtime.config.paths', []);
     }
 
     public function cache()
