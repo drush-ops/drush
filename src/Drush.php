@@ -233,6 +233,8 @@ class Drush
      * Return the Drush logger object.
      *
      * @return LoggerInterface
+     *
+     * @deprecated Use injected logger instead. @see Drush::drush()
      */
     public static function logger()
     {
@@ -243,6 +245,8 @@ class Drush
      * Return the configuration object
      *
      * @return \Drush\Config\DrushConfig
+     *
+     * @deprecated Use injected configuration instead. @see Drush::drush()
      */
     public static function config()
     {
@@ -251,6 +255,8 @@ class Drush
 
     /**
      * @return SiteAliasManager
+     *
+     * @deprecated Use injected alias manager instead. @see Drush::drush()
      */
     public static function aliasManager()
     {
@@ -288,6 +294,53 @@ class Drush
      * @return SiteProcess
      *
      * @deprecated Use injected process manager instead.
+     *
+     * A class should use ProcessManagerAwareInterface / ProcessManagerAwareTrait
+     * in order to have the Process Manager injected by Drush's DI container.
+     * For example:
+     *
+     *     use Consolidation\SiteProcess\ProcessManagerAwareTrait;
+     *     use Consolidation\SiteProcess\ProcessManagerAwareInterface;
+     *
+     *     abstract class DrushCommands implements ProcessManagerAwareInterface ...
+     *     {
+     *         use ProcessManagerAwareTrait;
+     *     }
+     *
+     * Since DrushCommands already uses ProcessManagerAwareTrait, all Drush
+     * commands may use the process manager to call other Drush commands.
+     * Other classes will need to ensure that the process manager is injected
+     * as shown above.
+     *
+     * Note, however, that an alias record is required to use the `drush` method.
+     * The alias manager will provide an alias record, but the alias manager is
+     * not injected by default into Drush commands. In order to use it, it is
+     * neccessary to use SiteAliasManagerAwareTrait:
+     *
+     *     use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+     *     use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+     *
+     *     class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+     *     {
+     *         use SiteAliasManagerAwareTrait;
+     *
+     *         public function install(array $profile, ...)
+     *         {
+     *             $selfRecord = $this->siteAliasManager()->getSelf();
+     *             $args = ['system.site', ...];
+     *             $options = ['yes' => true];
+     *             $process = $this->processManager()->drush(selfRecord, 'config-set', $args, $options);
+     *             $process->mustRun();
+     *         }
+     *     }
+     *
+     * Objects that are fetched from the DI container, or any Drush command will
+     * automatically be given a reference to the alias manager if SiteAliasManagerAwareTrait
+     * is used. Other objects will need to be manually provided with a reference
+     * to the alias manager once it is created (call $obj->setAliasManager($aliasManager);).
+     *
+     * Clients that are using Drush::drush(), and need a reference to the alias
+     * manager may use Drush::aliasManager().
      */
     public static function drush(AliasRecord $siteAlias, $command, $args = [], $options = [], $options_double_dash = [])
     {
