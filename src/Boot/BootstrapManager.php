@@ -544,6 +544,9 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         if ($object instanceof \Consolidation\SiteAlias\SiteAliasManagerAwareInterface) {
             $object->setSiteAliasManager($container->get('site.alias.manager'));
         }
+        if ($object instanceof \Consolidation\SiteProcess\ProcessManagerAwareInterface) {
+            $object->setProcessManager($container->get('process.manager'));
+        }
         if ($object instanceof \Consolidation\AnnotatedCommand\Input\StdinAwareInterface) {
             $object->setStdinHandler($container->get('stdinHandler'));
         }
