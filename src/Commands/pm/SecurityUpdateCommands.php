@@ -130,7 +130,11 @@ class SecurityUpdateCommands extends DrushCommands
         $conflict = $security_advisories_composer_json['conflict'];
         foreach ($both as $package) {
             $name = $package['name'];
-            if (!empty($conflict[$name]) && Semver::satisfies($package['version'], $security_advisories_composer_json['conflict'][$name])) {
+            if (empty($conflict[$name])) {
+                continue;
+            }
+            $conflict_adjusted = $this->adjustConflict($conflict[$name], substr($package['version'], 0, 1));
+            if (Semver::satisfies($package['version'], $conflict_adjusted)) {
                 $updates[$name] = [
                     'name' => $name,
                     'version' => $package['version'],
@@ -138,5 +142,26 @@ class SecurityUpdateCommands extends DrushCommands
             }
         }
         return $updates;
+    }
+
+    /**
+     * Temporary code until https://github.com/drupal-composer/drupal-security-advisories/pull/11 is merged.
+     *
+     * @param $conflict
+     *   The raw conflict string from security advisories project.
+     * @param $major
+     *   The major version of the package that we are currently using.
+     *
+     * @return string
+     *   A new conflict string thats specific to major version of the package and uses OR operator.
+     */
+    protected function adjustConflict($conflict, $major) {
+        foreach (explode(',', $conflict) as $requirement) {
+            $version = ltrim($requirement, '<');
+            if (substr($version, 0, 1) == $major) {
+                $new[] = "<$version";
+            }
+        }
+        return implode('||', $new);
     }
 }
