@@ -39,7 +39,7 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
         // Redispatch if called against a remote-host so a browser is started on the
         // the *local* machine.
         $aliasRecord = $this->siteAliasManager()->getSelf();
-        if (!$aliasRecord->isLocal()) {
+        if ($this->processManager()->hasTransport($aliasRecord)) {
             $process = $this->processManager()->drush($aliasRecord, 'user-login', [$path], Drush::redispatchOptions());
             $process->mustRun();
             $link = $process->getOutput();

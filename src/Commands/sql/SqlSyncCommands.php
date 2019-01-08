@@ -109,7 +109,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
     public function databaseName(AliasRecord $record)
     {
-        if (!$record->isLocal() && $this->getConfig()->simulate()) {
+        if ($this->processManager()->hasTransport($record) && $this->getConfig()->simulate()) {
             return 'simulated_db';
         }
 
