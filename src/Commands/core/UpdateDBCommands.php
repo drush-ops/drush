@@ -201,17 +201,17 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                     Database::startLog($function);
                 }
 
-                $this->logger()->notice("Update started: $function");
+                Drush::logger()->notice("Update started: $function");
                 $ret['results']['query'] = $function($context['sandbox']);
                 $ret['results']['success'] = true;
             } catch (\Throwable $e) {
                 // PHP 7 introduces Throwable, which covers both Error and Exception throwables.
                 $ret['#abort'] = ['success' => false, 'query' => $e->getMessage()];
-                $this->logger()->error($e->getMessage());
+                Drush::logger()->error($e->getMessage());
             } catch (\Exception $e) {
                 // In order to be compatible with PHP 5 we also catch regular Exceptions.
                 $ret['#abort'] = ['success' => false, 'query' => $e->getMessage()];
-                $this->logger()->error($e->getMessage());
+                Drush::logger()->error($e->getMessage());
             }
 
             if ($context['log']) {
@@ -219,7 +219,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             }
         } else {
             $ret['#abort'] = ['success' => false];
-            $this->logger()->warning(dt('Update function @function not found', ['@function' => $function]));
+            Drush::logger()->warning(dt('Update function @function not found', ['@function' => $function]));
         }
 
         if (isset($context['sandbox']['#finished'])) {
@@ -237,7 +237,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
 
         // Log the message that was returned.
         if (!empty($ret['results']['query'])) {
-            $this->logger()->notice(strip_tags((string) $ret['results']['query']));
+            Drush::logger()->notice(strip_tags((string) $ret['results']['query']));
         }
 
         if (!empty($ret['#abort'])) {
@@ -283,7 +283,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
         list($module, $name) = explode('_post_update_', $function, 2);
         module_load_include('php', $module, $module . '.post_update');
         if (function_exists($function)) {
-            $this->logger()->notice("Update started: $function");
+            Drush::logger()->notice("Update started: $function");
             try {
                 $ret['results']['query'] = $function($context['sandbox']);
                 $ret['results']['success'] = true;
@@ -296,7 +296,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
                 // types, but for now we'll just log the exception and return the message
                 // for printing.
                 // @see https://www.drupal.org/node/2564311
-                $this->logger()->error($e->getMessage());
+                Drush::logger()->error($e->getMessage());
 
                 $variables = Error::decodeException($e);
                 unset($variables['backtrace']);
@@ -318,7 +318,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
 
         // Log the message that was returned.
         if (!empty($ret['results']['query'])) {
-            $this->logger()->notice(strip_tags((string) $ret['results']['query']));
+            Drush::logger()->notice(strip_tags((string) $ret['results']['query']));
         }
 
         if (!empty($ret['#abort'])) {
