@@ -12,7 +12,7 @@ use Drush\Style\DrushStyle;
 use Consolidation\SiteProcess\ProcessBase;
 use Consolidation\SiteProcess\SiteProcess;
 use Webmozart\PathUtil\Path;
-use Robo\Common\ConfigAwareTrait;
+use Drush\Config\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 
 /**

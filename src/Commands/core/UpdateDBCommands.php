@@ -54,7 +54,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             'entity-updates' => $options['entity-updates'],
             'post-updates' => $options['post-updates'],
         ];
-        $process = Drush::drush($this->siteAliasManager()->getSelf(), 'updatedb:status', [], $updatedb_options);
+        $process = $this->processManager()->drush($this->siteAliasManager()->getSelf(), 'updatedb:status', [], $updatedb_options);
         $process->mustRun();
         if ($output = $process->getOutput()) {
             // We have pending updates - let's run em.
@@ -62,7 +62,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
             if (!$this->io()->confirm(dt('Do you wish to run the specified pending updates?'))) {
                 throw new UserAbortException();
             }
-            if (Drush::simulate()) {
+            if ($this->getConfig()->simulate()) {
                 $success = true;
             } else {
                 $success = $this->updateBatch($options);
@@ -93,7 +93,7 @@ class UpdateDBCommands extends DrushCommands implements SiteAliasManagerAwareInt
      */
     public function entityUpdates($options = ['cache-clear' => true])
     {
-        if (Drush::simulate()) {
+        if ($this->getConfig()->simulate()) {
             throw new \Exception(dt('entity-updates command does not support --simulate option.'));
         }
 

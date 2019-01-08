@@ -33,7 +33,7 @@ class NotifyCommands extends DrushCommands
             return;
         }
 
-        if (Drush::config()->get('notify.duration')) {
+        if ($this->getConfig()->get('notify.duration')) {
             if (self::isAllowed()) {
                 $msg = dt("Command '!command' completed.", ['!command' => $cmd]);
                 self::shutdownSend($msg, $commandData);
@@ -90,7 +90,7 @@ class NotifyCommands extends DrushCommands
 
         // Keep backward compat and prepare a string here.
         $cmd = sprintf($cmd, Escape::shellArg($msg));
-        $process = $this->processManager()->shell($cmd);
+        $process = Drush::shell($cmd);
         $process->run();
         if (!$process->isSuccessful()) {
             Drush::logger()->warning($error_message);

@@ -9,7 +9,7 @@ use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Robo\Common\ConfigAwareTrait;
+use Drush\Config\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 
 class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface, ConfigAwareInterface, ContainerAwareInterface
@@ -543,6 +543,9 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
         }
         if ($object instanceof \Consolidation\SiteAlias\SiteAliasManagerAwareInterface) {
             $object->setSiteAliasManager($container->get('site.alias.manager'));
+        }
+        if ($object instanceof \Consolidation\SiteProcess\ProcessManagerAwareInterface) {
+            $object->setProcessManager($container->get('process.manager'));
         }
         if ($object instanceof \Consolidation\AnnotatedCommand\Input\StdinAwareInterface) {
             $object->setStdinHandler($container->get('stdinHandler'));
