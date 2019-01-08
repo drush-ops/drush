@@ -9,7 +9,7 @@ use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Robo\Common\ConfigAwareTrait;
+use Drush\Config\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 
 class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface, ConfigAwareInterface, ContainerAwareInterface

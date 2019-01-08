@@ -347,27 +347,33 @@ class Drush
     }
 
     /**
-     * Return the path to this Drush
+     * Return the path to this Drush.
+     *
+     * @deprecated Inject configuration and use $this->getConfig()->drushScript().
      */
     public static function drushScript()
     {
-        return \Drush\Drush::config()->get('runtime.drush-script', 'drush');
+        return \Drush\Drush::config()->drushScript();
     }
 
     /**
      * Return 'true' if we are in simulated mode
+     *
+     * @deprecated Inject configuration and use $this->getConfig()->simulate().
      */
     public static function simulate()
     {
-        return \Drush\Drush::config()->get(\Robo\Config\Config::SIMULATE);
+        return \Drush\Drush::config()->simulate();
     }
 
     /**
      * Return 'true' if we are in backend mode
+     *
+     * @deprecated Inject configuration and use $this->getConfig()->backend().
      */
     public static function backend()
     {
-        return \Drush\Drush::config()->get(PreflightArgs::BACKEND);
+        return \Drush\Drush::config()->backend();
     }
 
     /**

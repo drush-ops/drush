@@ -9,7 +9,7 @@ use Consolidation\SiteAlias\SiteAliasManager;
 use Drush\Log\LogLevel;
 use Drush\Command\RemoteCommandProxy;
 use Drush\Runtime\RedispatchHook;
-use Robo\Common\ConfigAwareTrait;
+use Drush\Config\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Input\InputOption;

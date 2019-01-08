@@ -6,7 +6,7 @@ use Drush\Style\DrushStyle;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
-use Robo\Common\ConfigAwareTrait;
+use Drush\Config\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 use Robo\Contract\IOAwareInterface;
 use Robo\Common\IO;
@@ -27,10 +27,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     const EXIT_FAILURE = 1;
 
     use LoggerAwareTrait;
-    use ConfigAwareTrait {
-        // Move aside this method so we can replace. See https://stackoverflow.com/a/37687295.
-        getConfig as ConfigAwareGetConfig;
-    }
+    use ConfigAwareTrait;
     use IO {
         io as roboIo;
     }
@@ -59,19 +56,6 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
             $this->io = new DrushStyle($this->input(), $this->output());
         }
         return $this->io;
-    }
-
-    /**
-     * Replaces same method in ConfigAwareTrait in order to provide a
-     * DrushConfig as return type. Helps with IDE completion.
-     *
-     * @see https://stackoverflow.com/a/37687295.
-     *
-     * @return \Drush\Config\DrushConfig
-     */
-    public function getConfig()
-    {
-        return $this->ConfigAwareGetConfig();
     }
 
     /**

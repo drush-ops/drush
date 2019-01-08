@@ -10,7 +10,7 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\SiteProcess\ProcessManager;
 use Drush\Drush;
 use Drush\Log\LogLevel;
-use Robo\Common\ConfigAwareTrait;
+use Drush\Config\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
