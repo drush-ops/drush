@@ -159,7 +159,8 @@ class SecurityUpdateCommands extends DrushCommands
      *  - Input: <1.9,<1.10,<1.14,<1.16,<1.24,<2.0-rc4 and $major=1
      *  - Output: <1.9||<1.10||<1.14||<1.16||<1.24
      */
-    protected function adjustConflict($conflict, $major) {
+    protected function adjustConflict($conflict, $major)
+    {
         foreach (explode(',', $conflict) as $requirement) {
             $version = ltrim($requirement, '<');
             if (substr($version, 0, 1) == $major) {
