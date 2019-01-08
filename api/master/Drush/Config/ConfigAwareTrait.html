@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Runtime\TildeExpansionHook | Drush API</title>
+    <title>Drush\Config\ConfigAwareTrait | Drush API</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -19,7 +19,7 @@
     
     </head>
 
-    <body id="class" data-name="class:Drush_Runtime_TildeExpansionHook" data-root-path="../../">
+    <body id="class" data-name="class:Drush_Config_ConfigAwareTrait" data-root-path="../../">
             <div id="content">
         <div id="left-column">
                 <div id="control-panel">
@@ -65,47 +65,31 @@
 
                         <div class="namespace-breadcrumbs">
             <ol class="breadcrumb">
-                <li><span class="label label-default">class</span></li>
-                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Runtime.html">Runtime</a></li><li class="backslash">\</li><li>TildeExpansionHook</li>
+                <li><span class="label label-default">trait</span></li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Config.html">Config</a></li><li class="backslash">\</li><li>ConfigAwareTrait</li>
             </ol>
         </div>
                 <div id="page-content">
                 
     <div class="page-header">
         <h1>
-            TildeExpansionHook
+            ConfigAwareTrait
                 
         </h1>
     </div>
 
-    <p>    class
-    <strong>TildeExpansionHook</strong>        implements
-        <abbr title="Consolidation\AnnotatedCommand\Hooks\ValidatorInterface">ValidatorInterface</abbr>, <abbr title="Robo\Contract\ConfigAwareInterface">ConfigAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/TildeExpansionHook.php">View source</a>)
+    <p>    trait
+    <strong>ConfigAwareTrait</strong>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigAwareTrait.php">View source</a>)
 </p>
 
         
     
 
-            <div class="description">
-            <p>The TildeExpansionHook is installed as a preValidate hook that runs before
-all commands. Argument or option values containing a leading tilde will be expanded
-to an absolute path.</p>            <p>This is a pre-validate hook because we do not want to do tilde expansion
-for commands that are redispatched to a remote site. That happens in the
-RedispatchHook, which happens in hook init.</p>                    </div>
     
             <h2>Traits</h2>
 
         
     <div class="container-fluid underlined">
-                    <div class="row">
-                <div class="col-md-6">
-                                            <a href="../../Drush/Config/ConfigAwareTrait.html"><abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a>
-                                            
-                </div>
-                <div class="col-md-6">
-                    
-                </div>
-            </div>
                     <div class="row">
                 <div class="col-md-6">
                                             <abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr>
@@ -131,17 +115,6 @@ RedispatchHook, which happens in hook init.</p>                    </div>
         
                                             <p>Replaces same method in ConfigAwareTrait in order to provide a
 DrushConfig as return type. Helps with IDE completion.</p>                </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Config/ConfigAwareTrait.html#method_getConfig"><abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_validate">validate</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -152,7 +125,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_getConfig">
-        <div class="location">in <a href="../../Drush/Config/ConfigAwareTrait.html#method_getConfig"><abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigAwareTrait.php#L18">line 18</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigAwareTrait.php#L18">line 18</a></div>
         <code>                    <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a>
     <strong>getConfig</strong>()
         </code>
@@ -188,35 +161,6 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </tr>
             </table>
 
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_validate">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Runtime/TildeExpansionHook.php#L24">line 24</a></div>
-        <code>                    
-    <strong>validate</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
-                <td>$commandData</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
                     </div>
     </div>
 
