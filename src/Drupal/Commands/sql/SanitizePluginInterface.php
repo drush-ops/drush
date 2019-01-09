@@ -13,8 +13,8 @@ interface SanitizePluginInterface
     /**
      * Run your sanitization logic using standard Drupal APIs.
      *
-     * @param $result Exit code from the main operation for sql-santize.
-     * @param $commandData Information about the current request.
+     * @param $result Exit code from the main operation for sql-sanitize.
+     * @param CommandData $commandData Information about the current request.
      *
      * @hook post-command sql-sanitize
      */
@@ -22,8 +22,12 @@ interface SanitizePluginInterface
 
     /**
      * @hook on-event sql-sanitize-confirms
-     * @param $messages An array of messages to show during confirmation.
-     * @param $input The effective commandline input for this request.
+     *
+     * @param array $messages An array of messages to show during confirmation.
+     * @param InputInterface $input The effective commandline input for this request.
+     *
+     * @return String[]
+     *   An array of messages.
      */
     public function messages(&$messages, InputInterface $input);
 }
