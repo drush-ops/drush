@@ -283,10 +283,10 @@ database sanitizer for sql-sync.</p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    String[]
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_messages">messages</a>($messages, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
+                    <a href="#method_messages">messages</a>(array $messages, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -492,7 +492,7 @@ database sanitizer for sql-sync.</p>                                            
                     <tr>
                 <td></td>
                 <td>$result</td>
-                <td>Exit code from the main operation for sql-santize.</td>
+                <td>Exit code from the main operation for sql-sanitize.</td>
             </tr>
                     <tr>
                 <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
@@ -540,8 +540,8 @@ database sanitizer for sql-sync.</p>                                            
                     <div class="method-item">
                     <h3 id="method_messages">
         <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/sql/SanitizeUserTableCommands.php#L104">line 104</a></div>
-        <code>                    
-    <strong>messages</strong>($messages, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
+        <code>                    String[]
+    <strong>messages</strong>(array $messages, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         </code>
     </h3>
     <div class="details">
@@ -553,7 +553,7 @@ database sanitizer for sql-sync.</p>                                            
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>array</td>
                 <td>$messages</td>
                 <td>An array of messages to show during confirmation.</td>
             </tr>
@@ -565,6 +565,15 @@ database sanitizer for sql-sync.</p>                                            
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>String[]</td>
+            <td>An array of messages.</td>
+        </tr>
+    </table>
+
             
             
                     </div>
