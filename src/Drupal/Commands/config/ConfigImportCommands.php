@@ -4,6 +4,7 @@ namespace Drush\Drupal\Commands\config;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\config\StorageReplaceDataWrapper;
+use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigManagerInterface;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\ConfigImporter;
@@ -44,6 +45,11 @@ class ConfigImportCommands extends DrushCommands
     protected $themeHandler;
 
     protected $stringTranslation;
+
+    /**
+     * @var CacheBackendInterface
+     */
+    protected $configCacheBin;
 
     /**
      * @var \Drupal\Core\Extension\ModuleHandlerInterface
@@ -128,11 +134,19 @@ class ConfigImportCommands extends DrushCommands
     }
 
     /**
+     * @return CacheBackendInterface
+     */
+    public function getConfigCacheBin()
+    {
+        return $this->configCacheBin;
+    }
+
+    /**
      * @param ConfigManagerInterface $configManager
      * @param StorageInterface $configStorage
      * @param StorageInterface $configStorageSync
      */
-    public function __construct(ConfigManagerInterface $configManager, StorageInterface $configStorage, StorageInterface $configStorageSync, ModuleHandlerInterface $moduleHandler, EventDispatcherInterface $eventDispatcher, LockBackendInterface $lock, TypedConfigManagerInterface $configTyped, ModuleInstallerInterface $moduleInstaller, ThemeHandlerInterface $themeHandler, TranslationInterface $stringTranslation)
+    public function __construct(ConfigManagerInterface $configManager, StorageInterface $configStorage, StorageInterface $configStorageSync, ModuleHandlerInterface $moduleHandler, EventDispatcherInterface $eventDispatcher, LockBackendInterface $lock, TypedConfigManagerInterface $configTyped, ModuleInstallerInterface $moduleInstaller, ThemeHandlerInterface $themeHandler, TranslationInterface $stringTranslation, CacheBackendInterface $configCacheBin)
     {
         parent::__construct();
         $this->configManager = $configManager;
@@ -145,6 +159,7 @@ class ConfigImportCommands extends DrushCommands
         $this->moduleInstaller = $moduleInstaller;
         $this->themeHandler = $themeHandler;
         $this->stringTranslation = $stringTranslation;
+        $this->configCacheBin = $configCacheBin;
     }
 
     /**
@@ -161,8 +176,13 @@ class ConfigImportCommands extends DrushCommands
      */
     public function import($label = null, $options = ['preview' => 'list', 'source' => self::REQ, 'partial' => false, 'diff' => false])
     {
-        // Determine source directory.
+        // The importer might run when the cache is out-of-sync, for example when using a memory cache backend (Redis,
+        // Memcache) and after a database restore. In such circumstances the config change list might not be computed
+        // correctly because the active store valued might be taken from cache. Clear the config cache prior building
+        // the config change list.
+        $this->getConfigCacheBin()->deleteAll();
 
+        // Determine source directory.
         $source_storage_dir = ConfigCommands::getDirectory($label, $options['source']);
 
         // Prepare the configuration storage for the import.
