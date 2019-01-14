@@ -16,7 +16,7 @@ class PostgreSqlSchemaTest extends CommandUnishTestCase
     public function testPostgreSqlSchema()
     {
         $db_driver = $this->dbDriver();
-        if (!$db_driver == 'pgsql') {
+        if ($db_driver !== 'pgsql') {
             $this->markTestSkipped('PostgreSQL specific test.');
         } else {
             // Install Drupal in default schema.
