@@ -92,7 +92,7 @@ class SqlBase implements ConfigAwareInterface
         if ($url = $options['db-url']) {
             $url = is_array($url) ? $url[$database] : $url;
             $db_spec = self::dbSpecFromDbUrl($url);
-            $db_spec['db_prefix'] = $options['db-prefix'];
+            $db_spec['prefix'] = $options['db-prefix'];
             return self::getInstance($db_spec, $options);
         } elseif (($databases = $options['databases']) && (array_key_exists($database, $databases)) && (array_key_exists($target, $databases[$database]))) {
             // @todo 'databases' option is not declared anywhere?
