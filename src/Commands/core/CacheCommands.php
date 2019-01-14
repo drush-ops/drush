@@ -200,9 +200,6 @@ class CacheCommands extends DrushCommands implements CustomEventAwareInterface, 
         $site_path = DrupalKernel::findSitePath($request);
         Settings::initialize($root, $site_path, $autoloader);
 
-        // Use our error handler since _drupal_log_error() depends on an unavailable theme system (ugh).
-        set_error_handler('drush_error_handler');
-
         // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it manually.
         drupal_rebuild($autoloader, $request);
         $this->logger()->success(dt('Cache rebuild complete.'));
