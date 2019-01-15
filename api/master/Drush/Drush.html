@@ -345,7 +345,7 @@ implementing the actual logic.</p>                    </div>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_drush">drush</a>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, string $command, array $args = [], array $options = [], array $options_double_dash = [])
-        <small><sup><span class="label label-danger">deprecated</span></sup></small>
+        
                                             <p>Run a Drush command on a site alias (or @self).</p>                </div>
                 <div class="col-md-2"></div>
             </div>
@@ -355,7 +355,7 @@ implementing the actual logic.</p>                    </div>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_siteProcess">siteProcess</a>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
-        <small><sup><span class="label label-danger">deprecated</span></sup></small>
+        
                                             <p>Run a bash fragment on a site alias. Use Drush::drush() instead of this
 method when calling Drush.</p>                </div>
                 <div class="col-md-2"></div>
@@ -366,7 +366,7 @@ method when calling Drush.</p>                </div>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_process">process</a>($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60)
-        <small><sup><span class="label label-danger">deprecated</span></sup></small>
+        
                                             <p>Run a bash fragment locally.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
@@ -376,7 +376,7 @@ method when calling Drush.</p>                </div>
                 </div>
                 <div class="col-md-8 type">
                     <a href="#method_shell">shell</a>(string $command, string|null $cwd = null, array $env = null, mixed|null $input = null, int|float|null $timeout = 60)
-        <small><sup><span class="label label-danger">deprecated</span></sup></small>
+        
                                             <p>Create a Process instance from a commandline string.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
@@ -1042,64 +1042,10 @@ as they can return useful type hints.</p>                            </div>
         <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L345">line 345</a></div>
         <code>        static            <abbr title="Consolidation\SiteProcess\SiteProcess">SiteProcess</abbr>
     <strong>drush</strong>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, string $command, array $args = [], array $options = [], array $options_double_dash = [])
-        <small><sup><span class="label label-danger">deprecated</span></sup></small></code>
+        </code>
     </h3>
     <div class="details">
             
-            <p>
-                <small><sup><span class="label label-danger">deprecated</span></sup></small>
-                            <tr>
-                    <td>Use</td>
-                    <td>injected process manager instead.
-
-A class should use ProcessManagerAwareInterface / ProcessManagerAwareTrait
-in order to have the Process Manager injected by Drush's DI container.
-For example:
-
-    use Consolidation\SiteProcess\ProcessManagerAwareTrait;
-    use Consolidation\SiteProcess\ProcessManagerAwareInterface;
-
-    abstract class DrushCommands implements ProcessManagerAwareInterface ...
-    {
-        use ProcessManagerAwareTrait;
-    }
-
-Since DrushCommands already uses ProcessManagerAwareTrait, all Drush
-commands may use the process manager to call other Drush commands.
-Other classes will need to ensure that the process manager is injected
-as shown above.
-
-Note, however, that an alias record is required to use the `drush` method.
-The alias manager will provide an alias record, but the alias manager is
-not injected by default into Drush commands. In order to use it, it is
-neccessary to use SiteAliasManagerAwareTrait:
-
-    use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-    use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
-
-    class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface
-    {
-        use SiteAliasManagerAwareTrait;
-
-        public function install(array $profile, ...)
-        {
-            $selfRecord = $this->siteAliasManager()->getSelf();
-            $args = ['system.site', ...];
-            $options = ['yes' => true];
-            $process = $this->processManager()->drush(selfRecord, 'config-set', $args, $options);
-            $process->mustRun();
-        }
-    }
-
-Objects that are fetched from the DI container, or any Drush command will
-automatically be given a reference to the alias manager if SiteAliasManagerAwareTrait
-is used. Other objects will need to be manually provided with a reference
-to the alias manager once it is created (call $obj->setAliasManager($aliasManager);).
-
-Clients that are using Drush::drush(), and need a reference to the alias
-manager may use Drush::aliasManager().</td>
-                </tr>
-                    </p>
     
 
                     <div class="method-description">
@@ -1141,7 +1087,56 @@ manager may use Drush::aliasManager().</td>
                     <table class="table table-condensed">
         <tr>
             <td><abbr title="Consolidation\SiteProcess\SiteProcess">SiteProcess</abbr></td>
-            <td></td>
+            <td>Tip: Use injected process manager instead of this method. See below.</p>
+
+<p>A class should use ProcessManagerAwareInterface / ProcessManagerAwareTrait
+in order to have the Process Manager injected by Drush's DI container.
+For example:</p>
+
+<pre><code>use Consolidation\SiteProcess\ProcessManagerAwareTrait;
+use Consolidation\SiteProcess\ProcessManagerAwareInterface;
+
+abstract class DrushCommands implements ProcessManagerAwareInterface ...
+{
+    use ProcessManagerAwareTrait;
+}
+</code></pre>
+
+<p>Since DrushCommands already uses ProcessManagerAwareTrait, all Drush
+commands may use the process manager to call other Drush commands.
+Other classes will need to ensure that the process manager is injected
+as shown above.</p>
+
+<p>Note, however, that an alias record is required to use the <code>drush</code> method.
+The alias manager will provide an alias record, but the alias manager is
+not injected by default into Drush commands. In order to use it, it is
+necessary to use SiteAliasManagerAwareTrait:</p>
+
+<pre><code>use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+
+class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+{
+    use SiteAliasManagerAwareTrait;
+
+    public function install(array $profile, ...)
+    {
+        $selfRecord = $this-&gt;siteAliasManager()-&gt;getSelf();
+        $args = ['system.site', ...];
+        $options = ['yes' =&gt; true];
+        $process = $this-&gt;processManager()-&gt;drush(selfRecord, 'config-set', $args, $options);
+        $process-&gt;mustRun();
+    }
+}
+</code></pre>
+
+<p>Objects that are fetched from the DI container, or any Drush command will
+automatically be given a reference to the alias manager if SiteAliasManagerAwareTrait
+is used. Other objects will need to be manually provided with a reference
+to the alias manager once it is created (call $obj->setAliasManager($aliasManager);).</p>
+
+<p>Clients that are using Drush::drush(), and need a reference to the alias
+manager may use Drush::aliasManager().</td>
         </tr>
     </table>
 
@@ -1156,17 +1151,10 @@ manager may use Drush::aliasManager().</td>
         <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L363">line 363</a></div>
         <code>        static            <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
     <strong>siteProcess</strong>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
-        <small><sup><span class="label label-danger">deprecated</span></sup></small></code>
+        </code>
     </h3>
     <div class="details">
             
-            <p>
-                <small><sup><span class="label label-danger">deprecated</span></sup></small>
-                            <tr>
-                    <td>Use</td>
-                    <td>injected process manager instead.</td>
-                </tr>
-                    </p>
     
 
                     <div class="method-description">
@@ -1204,7 +1192,7 @@ method when calling Drush.</p>                                                </
                     <table class="table table-condensed">
         <tr>
             <td><abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr></td>
-            <td></td>
+            <td>Tip: Use injected process manager instead of this method. see \Drush\Drush::drush().</td>
         </tr>
     </table>
 
@@ -1219,17 +1207,10 @@ method when calling Drush.</p>                                                </
         <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L387">line 387</a></div>
         <code>        static            <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
     <strong>process</strong>($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60)
-        <small><sup><span class="label label-danger">deprecated</span></sup></small></code>
+        </code>
     </h3>
     <div class="details">
             
-            <p>
-                <small><sup><span class="label label-danger">deprecated</span></sup></small>
-                            <tr>
-                    <td>Use</td>
-                    <td>injected process manager instead.</td>
-                </tr>
-                    </p>
     
 
                     <div class="method-description">
@@ -1272,7 +1253,9 @@ Call this method to get a Process and then call setters as needed.</p>          
                     <table class="table table-condensed">
         <tr>
             <td><abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr></td>
-            <td>A wrapper around Symfony Process.</td>
+            <td>A wrapper around Symfony Process.</p>
+
+<p>Tip: Use injected process manager instead of this method. see \Drush\Drush::drush().</td>
         </tr>
     </table>
 
@@ -1287,17 +1270,10 @@ Call this method to get a Process and then call setters as needed.</p>          
         <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L404">line 404</a></div>
         <code>                    <abbr title="Symfony\Component\Process\Process">Process</abbr>
     <strong>shell</strong>(string $command, string|null $cwd = null, array $env = null, mixed|null $input = null, int|float|null $timeout = 60)
-        <small><sup><span class="label label-danger">deprecated</span></sup></small></code>
+        </code>
     </h3>
     <div class="details">
             
-            <p>
-                <small><sup><span class="label label-danger">deprecated</span></sup></small>
-                            <tr>
-                    <td>Use</td>
-                    <td>injected process manager instead.</td>
-                </tr>
-                    </p>
     
 
                     <div class="method-description">
@@ -1339,7 +1315,7 @@ Call this method to get a Process and then call setters as needed.</p>          
                     <table class="table table-condensed">
         <tr>
             <td><abbr title="Symfony\Component\Process\Process">Process</abbr></td>
-            <td></td>
+            <td>Tip: Use injected process manager instead of this method. see \Drush\Drush::drush().</td>
         </tr>
     </table>
 
