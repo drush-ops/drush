@@ -293,7 +293,7 @@ class Drush
      * @param array $options_double_dash
      * @return SiteProcess
      *
-     * @deprecated Use injected process manager instead.
+     * Tip: Use injected process manager instead of this method. See below.
      *
      * A class should use ProcessManagerAwareInterface / ProcessManagerAwareTrait
      * in order to have the Process Manager injected by Drush's DI container.
@@ -315,7 +315,7 @@ class Drush
      * Note, however, that an alias record is required to use the `drush` method.
      * The alias manager will provide an alias record, but the alias manager is
      * not injected by default into Drush commands. In order to use it, it is
-     * neccessary to use SiteAliasManagerAwareTrait:
+     * necessary to use SiteAliasManagerAwareTrait:
      *
      *     use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
      *     use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
@@ -358,7 +358,7 @@ class Drush
      * @param array $options_double_dash
      * @return ProcessBase
      *
-     * @deprecated Use injected process manager instead.
+     * Tip: Use injected process manager instead of this method. @see \Drush\Drush::drush().
      */
     public static function siteProcess(AliasRecord $siteAlias, $args = [], $options = [], $options_double_dash = [])
     {
@@ -382,7 +382,7 @@ class Drush
      * @return ProcessBase
      *   A wrapper around Symfony Process.
      *
-     * @deprecated Use injected process manager instead.
+     * Tip: Use injected process manager instead of this method. @see \Drush\Drush::drush().
      */
     public static function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60)
     {
@@ -399,7 +399,7 @@ class Drush
      * @param int|float|null $timeout The timeout in seconds or null to disable
      * @return Process
      *
-     * @deprecated Use injected process manager instead.
+     * Tip: Use injected process manager instead of this method. @see \Drush\Drush::drush().
      */
     public function shell($command, $cwd = null, array $env = null, $input = null, $timeout = 60)
     {
