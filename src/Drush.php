@@ -399,7 +399,7 @@ class Drush
      * @param int|float|null $timeout The timeout in seconds or null to disable
      * @return Process
      *
-     * Tip: Use injected process manager instead instead of this method. @see \Drush\Drush::drush().
+     * Tip: Use injected process manager instead of this method. @see \Drush\Drush::drush().
      */
     public function shell($command, $cwd = null, array $env = null, $input = null, $timeout = 60)
     {
