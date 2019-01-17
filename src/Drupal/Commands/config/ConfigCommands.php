@@ -3,6 +3,8 @@ namespace Drush\Drupal\Commands\config;
 
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
+use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\SiteProcess\Util\Escape;
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -20,8 +22,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Parser;
 use Webmozart\PathUtil\Path;
 
-class ConfigCommands extends DrushCommands
+class ConfigCommands extends DrushCommands implements StdinAwareInterface
 {
+    use StdinAwareTrait;
     use ExecTrait;
 
     /**
@@ -84,7 +87,6 @@ class ConfigCommands extends DrushCommands
      * @param $key The config key, for example "page.front".
      * @param $value The value to assign to the config key. Use '-' to read from STDIN.
      * @option input-format Format to parse the object. Use "string" for string (default), and "yaml" for YAML.
-     * // A convenient way to pass a multiline value within a backend request.
      * @option value The value to assign to the config key (if any).
      * @hidden-options value
      * @usage drush config:set system.site page.front node
@@ -106,7 +108,7 @@ class ConfigCommands extends DrushCommands
 
         // Special flag indicating that the value has been passed via STDIN.
         if ($data === '-') {
-            $data = stream_get_contents(STDIN);
+            $data = $this->stdin()->contents();
         }
 
         // Now, we parse the value.
