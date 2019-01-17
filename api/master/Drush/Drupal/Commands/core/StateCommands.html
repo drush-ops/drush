@@ -79,7 +79,8 @@
     </div>
 
     <p>    class
-    <strong>StateCommands</strong>        extends <a href="../../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/StateCommands.php">View source</a>)
+    <strong>StateCommands</strong>        extends <a href="../../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        implements
+        <abbr title="Consolidation\AnnotatedCommand\Input\StdinAwareInterface">StdinAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/StateCommands.php">View source</a>)
 </p>
 
         
@@ -90,6 +91,15 @@
 
         
     <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                                            <abbr title="Consolidation\AnnotatedCommand\Input\StdinAwareTrait">StdinAwareTrait</abbr>
+                                            
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
                     <div class="row">
                 <div class="col-md-6">
                                             <abbr title="Consolidation\SiteProcess\ProcessManagerAwareTrait">ProcessManagerAwareTrait</abbr>
@@ -342,7 +352,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/StateCommands.php#L15">line 15</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/StateCommands.php#L18">line 18</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr> $state)
         </code>
@@ -453,7 +463,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_getState">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/StateCommands.php#L23">line 23</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/StateCommands.php#L26">line 26</a></div>
         <code>                    <abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr>
     <strong>getState</strong>()
         </code>
@@ -481,7 +491,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_get">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/StateCommands.php#L40">line 40</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/StateCommands.php#L43">line 43</a></div>
         <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\PropertyList">PropertyList</abbr>
     <strong>get</strong>($key, $options = [&#039;format&#039; =&gt; &#039;string&#039;])
         </code>
@@ -526,7 +536,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_set">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/StateCommands.php#L66">line 66</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/StateCommands.php#L69">line 69</a></div>
         <code>                    void
     <strong>set</strong>($key, $value, $options = [&#039;input-format&#039; =&gt; &#039;auto&#039;, &#039;value&#039; =&gt; self::REQ])
         </code>
@@ -576,7 +586,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_delete">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/StateCommands.php#L101">line 101</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/StateCommands.php#L104">line 104</a></div>
         <code>                    void
     <strong>delete</strong>(string $key)
         </code>
@@ -616,7 +626,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_format">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/StateCommands.php#L116">line 116</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drupal/Commands/core/StateCommands.php#L119">line 119</a></div>
         <code>        static            
     <strong>format</strong>($value, $format)
         </code>

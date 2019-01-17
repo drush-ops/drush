@@ -79,7 +79,8 @@
     </div>
 
     <p>    class
-    <strong>PhpCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/PhpCommands.php">View source</a>)
+    <strong>PhpCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        implements
+        <abbr title="Consolidation\AnnotatedCommand\Input\StdinAwareInterface">StdinAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/PhpCommands.php">View source</a>)
 </p>
 
         
@@ -90,6 +91,15 @@
 
         
     <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                                            <abbr title="Consolidation\AnnotatedCommand\Input\StdinAwareTrait">StdinAwareTrait</abbr>
+                                            
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
                     <div class="row">
                 <div class="col-md-6">
                                             <abbr title="Consolidation\SiteProcess\ProcessManagerAwareTrait">ProcessManagerAwareTrait</abbr>
@@ -398,7 +408,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_evaluate">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/PhpCommands.php#L26">line 26</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/PhpCommands.php#L29">line 29</a></div>
         <code>                    
     <strong>evaluate</strong>($code, $options = [&#039;format&#039; =&gt; &#039;var_export&#039;])
         </code>
@@ -434,7 +444,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_script">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/PhpCommands.php#L54">line 54</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/PhpCommands.php#L57">line 57</a></div>
         <code>                    
     <strong>script</strong>(array $extra, $options = [&#039;format&#039; =&gt; &#039;var_export&#039;, &#039;script-path&#039; =&gt; self::REQ])
         </code>
