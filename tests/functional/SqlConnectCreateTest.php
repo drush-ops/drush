@@ -34,8 +34,12 @@ class SqlConnectCase extends CommandUnishTestCase
             $this->markTestSkipped('sql-connect test does not recognize database type in ' . self::getDbUrl());
         }
 
+        if ($db_driver == 'pgsql') {
+            $this->markTestSkipped('Postgres prepends PGPASSFILE=/var/www/html/sandbox/tmp/drush_[RANDOM] and that file got deleted already.');
+        }
+
         // Issue a query and check the result to verify the connection.
-        $this->execute($connectionString . ' ' . $shell_options . ' "SELECT uid FROM users where uid = 1;"');
+        $this->execute($connectionString . ' ' . $shell_options . ' "SELECT uid FROM users where uid = 1;"', self::EXIT_SUCCESS, $this->webroot());
         $output = $this->getOutput();
         $this->assertContains('1', $output);
 
@@ -50,7 +54,7 @@ class SqlConnectCase extends CommandUnishTestCase
         $this->drush('sql-create');
 
         // Try to execute a query.  This should give a "table not found" error.
-        $this->execute($connectionString . ' ' . $shell_options . ' "SELECT uid FROM users where uid = 1;"', self::EXIT_ERROR);
+        $this->execute($connectionString . ' ' . $shell_options . ' "SELECT uid FROM users where uid = 1;"', self::EXIT_ERROR, $this->webroot());
 
         // We should still be able to run 'core-status' without getting an
         // error, although Drupal should not bootstrap any longer.

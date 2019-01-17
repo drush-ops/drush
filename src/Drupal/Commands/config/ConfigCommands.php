@@ -11,6 +11,7 @@ use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\StorageInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
+use Drush\Exec\ExecTrait;
 use Drush\Utils\FsUtils;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,6 +22,7 @@ use Webmozart\PathUtil\Path;
 
 class ConfigCommands extends DrushCommands
 {
+    use ExecTrait;
 
     /**
      * @var ConfigFactoryInterface
@@ -128,7 +130,7 @@ class ConfigCommands extends DrushCommands
             } elseif ($this->io()->confirm(dt('Do you want to update !key key in !name config?', ['!key' => $key, '!name' => $config_name]))) {
                 $confirmed = true;
             }
-            if ($confirmed && !\Drush\Drush::simulate()) {
+            if ($confirmed && !$this->getConfig()->simulate()) {
                 return $config->set($key, $data)->save();
             }
         }
@@ -164,17 +166,18 @@ class ConfigCommands extends DrushCommands
         $temp_storage = new FileStorage($temp_dir);
         $temp_storage->write($config_name, $contents);
 
-        //
+        // Note that `drush_get_editor` returns a string that contains a
+        // %s placeholder for the config file path.
         $exec = drush_get_editor();
         $cmd = sprintf($exec, Escape::shellArg($temp_storage->getFilePath($config_name)));
-        $process = Drush::process($cmd);
+        $process = $this->processManager()->shell($cmd);
         $process->setTty(true);
         $process->mustRun();
 
         // Perform import operation if user did not immediately exit editor.
         if (!$options['bg']) {
             $redispatch_options = Drush::redispatchOptions()   + ['partial' => true, 'source' => $temp_dir];
-            $process = Drush::drush(Drush::aliasManager()->getSelf(), 'config-import', [], $redispatch_options);
+            $process = $this->processManager()->drush(Drush::aliasManager()->getSelf(), 'config-import', [], $redispatch_options);
             $process->mustRun($process->showRealtime());
         }
     }
@@ -425,7 +428,7 @@ class ConfigCommands extends DrushCommands
             $choices = drush_map_assoc(array_keys($config_directories));
             unset($choices[CONFIG_ACTIVE_DIRECTORY]);
             if (count($choices) >= 2) {
-                $label = $this->io()->choice('Choose a '. $option_name. '.', $choices);
+                $label = $this->io()->choice('Choose a '. $option_name, $choices);
                 $input->setArgument('label', $label);
             }
         }
@@ -507,12 +510,13 @@ class ConfigCommands extends DrushCommands
         $temp_source_storage = new FileStorage($temp_source_dir);
         self::copyConfig($source_storage, $temp_source_storage);
 
-        $prefix = 'diff';
-        if (drush_program_exists('git') && $output->isDecorated()) {
-            $prefix = 'git diff --color=always';
+        $prefix = ['diff'];
+        if (self::programExists('git') && $output->isDecorated()) {
+            $prefix = ['git', 'diff', '--color=always'];
         }
-        $args = [$prefix, '-u', $temp_destination_dir, $temp_source_dir];
-        $process = Drush::process($args);
-        return drush_shell_exec_output();
+        $args = array_merge($prefix, ['-u', $temp_destination_dir, $temp_source_dir]);
+        $process = $this->processManager()->process($args);
+        $process->run();
+        return $process->getOutput();
     }
 }

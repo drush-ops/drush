@@ -21,6 +21,15 @@ class LegacyPreflight
      */
     public static function defineConstants(Environment $environment, $applicationPath)
     {
+        // 'define' is undesirable in that it will error if the same identifier
+        // is defined more than once. Ideally we would inject the legacy preflight
+        // object into the Preflight class, and wherever else it was needed,
+        // and omit it for the integration tests. This is probably not practicable
+        // at the moment, though.
+        if (defined('DRUSH_REQUEST_TIME')) {
+            return;
+        }
+
         $applicationPath = Path::makeAbsolute($applicationPath, $environment->cwd());
 
         define('DRUSH_REQUEST_TIME', microtime(true));

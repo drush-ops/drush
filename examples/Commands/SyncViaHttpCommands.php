@@ -4,6 +4,7 @@ namespace Drush\Commands;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
+use Drush\Exec\ExecTrait;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -60,7 +61,7 @@ class SyncViaHttpCommands extends DrushCommands
     {
         static $use_wget;
         if ($use_wget === null) {
-            $use_wget = drush_which('wget');
+            $use_wget = ExecTrait::programExists('wget');
         }
 
         $destination_tmp = drush_tempnam('download_file');

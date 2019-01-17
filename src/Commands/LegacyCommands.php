@@ -136,4 +136,16 @@ class LegacyCommands extends DrushCommands
     public function field()
     {
     }
+
+    /**
+     * core:execute has been deprecated. Please try `site:ssh` command.
+     *
+     * @command core:execute
+     * @aliases core-execute
+     * @hidden
+     * @obsolete
+     */
+    public function execute()
+    {
+    }
 }

@@ -77,7 +77,7 @@ class ConfigCase extends CommandUnishTestCase
             $contents = file_get_contents($system_site_yml);
             $contents = preg_replace('/front: .*/', 'front: unish existing', $contents);
             file_put_contents($system_site_yml, $contents);
-            $this->setUpDrupal(1, true, ['existing-config' => null]);
+            $this->installDrupal('dev', true, ['existing-config' => true], false);
             $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
             $page = $this->getOutputFromJSON('system.site:page');
             $this->assertContains('unish existing', $page->front, 'Existing config was successfully imported during site:install.');

@@ -59,7 +59,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
 
         // A bit awkward due to backward compat.
         $cmd = sprintf($editor, Escape::shellArg($filepath));
-        $process = Drush::process($cmd);
+        $process = $this->processManager()->shell($cmd);
         $process->setTty(true);
         $process->mustRun();
     }
@@ -81,7 +81,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
             }
         }
 
-        if ($rcs = Drush::config()->get('runtime.config.paths')) {
+        if ($rcs = $this->getConfig()->configPaths()) {
             // @todo filter out any files that are within Drush.
             $rcs = array_combine($rcs, $rcs);
             if ($headers) {
@@ -135,7 +135,7 @@ class EditCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
     public static function bashFiles()
     {
         $bashFiles = [];
-        $home = Drush::config()->home();
+        $home = $this->getConfig()->home();
         if ($bashrc = self::findBashrc($home)) {
             $bashFiles[$bashrc] = $bashrc;
         }

@@ -6,14 +6,18 @@ use Drush\Style\DrushStyle;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
-use Robo\Common\ConfigAwareTrait;
+use Drush\Config\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 use Robo\Contract\IOAwareInterface;
 use Robo\Common\IO;
 use Symfony\Component\Console\Input\InputOption;
+use Consolidation\SiteProcess\ProcessManagerAwareTrait;
+use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 
-abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, ConfigAwareInterface
+abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, ConfigAwareInterface, ProcessManagerAwareInterface
 {
+    use ProcessManagerAwareTrait;
+
     // This is more readable.
     const REQ=InputOption::VALUE_REQUIRED;
     const OPT=InputOption::VALUE_OPTIONAL;
@@ -23,10 +27,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     const EXIT_FAILURE = 1;
 
     use LoggerAwareTrait;
-    use ConfigAwareTrait {
-        // Move aside this method so we can replace. See https://stackoverflow.com/a/37687295.
-        getConfig as ConfigAwareGetConfig;
-    }
+    use ConfigAwareTrait;
     use IO {
         io as roboIo;
     }
@@ -58,19 +59,6 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     }
 
     /**
-     * Replaces same method in ConfigAwareTrait in order to provide a
-     * DrushConfig as return type. Helps with IDE completion.
-     *
-     * @see https://stackoverflow.com/a/37687295.
-     *
-     * @return \Drush\Config\DrushConfig
-     */
-    public function getConfig()
-    {
-        return $this->ConfigAwareGetConfig();
-    }
-
-    /**
      * Print the contents of a file.
      *
      * @param string $file
@@ -86,11 +74,11 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
 
         if (self::input()->isInteractive()) {
             ;
-            $process = Drush::process(['less', $file])->setTty(true);
+            $process = $this->processManager()->process(['less', $file])->setTty(true);
             if ($process->run() === 0) {
                 return;
             } else {
-                $process = Drush::process(['more', $file]);
+                $process = $this->processManager()->process(['more', $file]);
                 if ($process->run() === 0) {
                     return;
                 } else {

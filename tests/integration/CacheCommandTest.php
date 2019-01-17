@@ -3,20 +3,12 @@
 namespace Unish;
 
 /**
-  * Cache command testing.
-  *
-  * @group base
-  */
-class CacheCommandCase extends CommandUnishTestCase
+ * Cache command testing.
+ *
+ * @group base
+ */
+class CacheCommandCase extends UnishIntegrationTestCase
 {
-
-    public function setUp()
-    {
-        if (!$this->getSites()) {
-            $this->setUpDrupal(1, true);
-        }
-    }
-
     public function testCacheGet()
     {
         // Test the cache get command.
@@ -25,7 +17,7 @@ class CacheCommandCase extends CommandUnishTestCase
         $this->assertNotEmpty($schema);
 
         // Test that get-ing a non-existant cid fails.
-        $this->drush('cache-get', ['test-failure-cid'], ['format' => 'json'], null, null, self::EXIT_ERROR);
+        $this->drush('cache-get', ['test-failure-cid'], ['format' => 'json'], self::EXIT_ERROR);
     }
 
     public function testCacheSet()
@@ -39,20 +31,13 @@ class CacheCommandCase extends CommandUnishTestCase
 
         // Test cache-set using all arguments and many options.
         $expected = ['key' => 'value'];
-        $input = ['data'=> $expected];
-        $stdin = json_encode($input);
+        $stdin = json_encode(['data'=> $expected]);
         $bin = 'default';
-        $exec = sprintf('%s cache-set %s %s my_cache_id - %s CACHE_PERMANENT --input-format=json --cache-get 2>%s', self::getDrush(), "--root=" . self::escapeshellarg($this->webroot()), '--uri=' . $this->getUri(), $bin, $this->bitBucket());
-        $return = $this->execute($exec, self::EXIT_SUCCESS, null, [], $stdin);
+
+        $this->drush('cache-set', ['my_cache_id', '-', $bin, 'CACHE_PERMANENT'], ['input-format' => 'json', 'cache-get' => true], self::EXIT_SUCCESS, $stdin);
+
         $this->drush('cache-get', ['my_cache_id'], ['format' => 'json']);
         $data = $this->getOutputFromJSON('data');
         $this->assertEquals((object)$expected, $data);
     }
-
-//    public function testCacheRebuild()
-//    {
-//        // Test cache-clear all and cache-rebuild (D8+).
-//        $this->drush('cache-rebuild');
-//        $this->drush('cache-get', ['cache-test-cid'], ['format' => 'json'], null, null, self::EXIT_ERROR);
-//    }
 }

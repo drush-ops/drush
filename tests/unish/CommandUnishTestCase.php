@@ -19,13 +19,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
     protected $coverage_data = [];
 
     /**
-     * Process of last executed command.
-     *
-     * @var Process
-     */
-    private $process;
-
-    /**
      * Default timeout for commands.
      *
      * @var int
@@ -102,19 +95,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
     public function execute($command, $expected_return = self::EXIT_SUCCESS, $cd = null, $env = null, $input = null)
     {
         $this->tick();
-
-        // Apply the environment variables we need for our test to the head of the
-        // command (excludes Windows). Process does have an $env argument, but it replaces the entire
-        // environment with the one given. This *could* be used for ensuring the
-        // test ran with a clean environment, but it also makes tests fail hard on
-        // Travis, for unknown reasons.
-        // @see https://github.com/drush-ops/drush/pull/646
-        $prefix = '';
-        if ($env && !$this->isWindows()) {
-            foreach ($env as $env_name => $env_value) {
-                $prefix .= $env_name . '=' . self::escapeshellarg($env_value) . ' ';
-            }
-        }
         $this->log("Executing: $command", 'verbose');
 
         try {
@@ -128,7 +108,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
             $return = $this->process->run();
             if ($expected_return !== $return) {
                 $message = 'Unexpected exit code ' . $return . ' (expected ' . $expected_return . ") for command:\n" .  $command;
-                throw new UnishProcessFailedException($message . $this->buildProcessMessage($this->process));
+                throw new UnishProcessFailedException($message . $this->buildProcessMessage());
             }
             // Reset timeouts to default.
             $this->timeout = $this->defaultTimeout;
@@ -140,24 +120,8 @@ abstract class CommandUnishTestCase extends UnishTestCase
             } else {
                 $message = 'Command had no output for ' . $this->idleTimeout . " seconds:\n" .  $command;
             }
-            throw new UnishProcessFailedException($message . $this->buildProcessMessage($this->process));
+            throw new UnishProcessFailedException($message . $this->buildProcessMessage());
         }
-    }
-
-    /**
-     * @param Process $process
-     * @return string
-     */
-    public function buildProcessMessage(Process $process)
-    {
-        $message = '';
-        if ($output = $process->getOutput()) {
-            $message = "\n\nCommand output:\n" . $output;
-        }
-        if ($stderr = $process->getErrorOutput()) {
-            $message = "\n\nCommand stderr:\n" . $stderr;
-        }
-        return $message;
     }
 
     /**
@@ -178,8 +142,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
       * @param $suffix
       *   Any code to append to the command. For example, redirection like 2>&1.
       * @param array $env
-      *   Not used. Environment variables to pass along to the subprocess.
-     *    @todo Look into inheritEnvironmentVariables() - available since Process 3.1. See https://github.com/symfony/symfony/pull/19053/files.
+      *   Environment variables to pass along to the subprocess.
       * @return integer
       *   An exit code.
       */
@@ -251,9 +214,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
         // Set sendmail_path to 'true' to disable any outgoing emails
         // that tests might cause Drupal to send.
 
-        $php_options = (array_key_exists('PHP_OPTIONS', $env)) ? $env['PHP_OPTIONS'] . " " : "";
-        // @todo The PHP Options below are not yet honored by execute(). See .travis.yml for an alternative way.
-        $env['PHP_OPTIONS'] = "${php_options}-d sendmail_path='true'";
         $cmd = implode(' ', $exec);
         $return = $this->execute($cmd, $expected_return, $cd, $env);
 

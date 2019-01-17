@@ -2,12 +2,18 @@
 namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\Options\FormatterOptions;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drupal\user\Entity\Role;
 use Drush\Commands\DrushCommands;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drush\Drush;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
+use Drush\Utils\StringUtils;
 
-class RoleCommands extends DrushCommands
+class RoleCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
+    use SiteAliasManagerAwareTrait;
+
     /**
      * Create a new role.
      *
@@ -58,7 +64,6 @@ class RoleCommands extends DrushCommands
      * @validate-permissions permissions
      * @param $machine_name The role to modify.
      * @param $permissions The list of permission to grant, delimited by commas.
-     * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @usage  drush role-add-perm anonymous 'post comments'
      *   Allow anon users to post comments.
      * @usage drush role:add-perm anonymous "'post comments','access content'"
@@ -69,10 +74,10 @@ class RoleCommands extends DrushCommands
      */
     public function roleAddPerm($machine_name, $permissions)
     {
-        $perms = _convert_csv_to_array($permissions);
+        $perms = StringUtils::csvToArray($permissions);
         user_role_grant_permissions($machine_name, $perms);
         $this->logger()->success(dt('Added "!permissions" to "!role"', ['!permissions' => $permissions, '!role' => $machine_name]));
-        drush_drupal_cache_clear_all();
+        $this->processManager()->drush($this->siteAliasManager()->getSelf(), 'cache-rebuild');
     }
 
     /**
@@ -83,17 +88,16 @@ class RoleCommands extends DrushCommands
      * @validate-permissions permissions
      * @param $machine_name The role to modify.
      * @param $permissions The list of permission to grant, delimited by commas.
-     * @option cache-clear Set to 0 to suppress normal cache clearing; the caller should then clear if needed.
      * @usage drush role:remove-perm anonymous 'access content'
      *   Hide content from anon users.
      * @aliases rmp,role-remove-perm
      */
     public function roleRemovePerm($machine_name, $permissions)
     {
-        $perms = _convert_csv_to_array($permissions);
+        $perms = StringUtils::csvToArray($permissions);
         user_role_revoke_permissions($machine_name, $perms);
-        $this->logger()->success(dt('Removed "!permissions" to "!role"', ['!permissions' => $permissions, '!role' => $result->name]));
-        drush_drupal_cache_clear_all();
+        $this->logger()->success(dt('Removed "!permissions" to "!role"', ['!permissions' => $permissions, '!role' => $machine_name]));
+        $this->processManager()->drush($this->siteAliasManager()->getSelf(), 'cache-rebuild');
     }
 
     /**

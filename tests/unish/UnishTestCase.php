@@ -2,16 +2,30 @@
 
 namespace Unish;
 
+use Consolidation\SiteAlias\AliasRecord;
+use Consolidation\SiteProcess\SiteProcess;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
 use Webmozart\PathUtil\Path;
+use Consolidation\SiteProcess\ProcessManager;
 
 abstract class UnishTestCase extends TestCase
 {
     // Unix exit codes.
     const EXIT_SUCCESS  = 0;
     const EXIT_ERROR = 1;
+    const IGNORE_EXIT_CODE = 'n/a';
     const UNISH_EXITCODE_USER_ABORT = 75; // Same as DRUSH_EXITCODE_USER_ABORT
+    const INTEGRATION_TEST_ENV = 'default';
+
+    protected $processManager;
+
+    /**
+     * Process of last executed command.
+     *
+     * @var Process
+     */
+    protected $process;
 
     /**
      * A list of Drupal sites that have been recently installed. They key is the
@@ -120,14 +134,27 @@ abstract class UnishTestCase extends TestCase
      */
     public static function cleanDirs()
     {
-        if (empty(getenv('UNISH_DIRTY'))) {
-            $sandbox = self::getSandbox();
-            if (file_exists($sandbox)) {
-                self::recursiveDelete($sandbox);
-            }
+        $dirty = getenv('UNISH_DIRTY');
+
+        // First step: delete the entire sandbox unless 'UNISH_DIRTY' is set,
+        // in which case we will delete only the 'transient' directory.
+        $sandbox = self::getSandbox();
+        if (!empty($dirty)) {
+            $sandbox = Path::join($sandbox, 'transient');
+        }
+        // The transient files generally should not need to be inspected, but
+        // if you need to examine them, use the special value of 'UNISH_DIRTY=VERY'
+        // to keep them.
+        if (file_exists($sandbox) && ($dirty != 'VERY')) {
+            self::recursiveDelete($sandbox);
+        }
+
+        // Next step: If 'UNISH_DIRTY' is not set, then delete the portions
+        // of our fixtures that we set up dynamically during the tests.
+        if (empty($dirty)) {
             $webrootSlashDrush = self::webrootSlashDrush();
             if (file_exists($webrootSlashDrush)) {
-                self::recursiveDelete($webrootSlashDrush, true, false, ['Commands']);
+                self::recursiveDelete($webrootSlashDrush, true, false, ['Commands', 'sites']);
             }
             foreach (['modules', 'themes', 'profiles'] as $dir) {
                 $target = Path::join(self::webroot(), $dir, 'contrib');
@@ -196,7 +223,6 @@ abstract class UnishTestCase extends TestCase
     public static function tearDownAfterClass()
     {
         self::cleanDirs();
-
         self::$sites = [];
         parent::tearDownAfterClass();
     }
@@ -519,7 +545,7 @@ abstract class UnishTestCase extends TestCase
             $this->createSettings($subdir);
         }
         // Create basic site alias data with root and uri
-        $siteAliasData = $this->createAliasFileData(array_keys($sites), $aliasGroup);
+        $siteAliasData = $this->aliasFileData(array_keys($sites), $aliasGroup);
         // Add in caller-provided site alias data
         $siteAliasData = array_merge_recursive($siteAliasData, $sites);
         $this->writeSiteAliases($siteAliasData, $aliasGroup);
@@ -549,13 +575,13 @@ EOT;
         file_put_contents($settingsPath, $settingsContents);
     }
     /**
-     * Assemble (and optionally install) one or more Drupal sites using a single codebase.
+     * Prepare (and optionally install) one or more Drupal sites using a single codebase.
      *
      * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
      */
     public function setUpDrupal($num_sites = 1, $install = false, $options = [])
     {
-        $sites_subdirs_all = ['dev', 'stage', 'prod', 'retired', 'elderly', 'dead', 'dust'];
+        $sites_subdirs_all = ['dev', 'stage', 'prod'];
         $sites_subdirs = array_slice($sites_subdirs_all, 0, $num_sites);
         $root = $this->webroot();
 
@@ -569,7 +595,7 @@ EOT;
             copy($root . '/sites/example.sites.php', $root . '/sites/sites.php');
         }
 
-        $siteData = $this->createAliasFile($sites_subdirs, 'sut');
+        $siteData = $this->aliasFileData($sites_subdirs);
         self::$sites = [];
         foreach ($siteData as $key => $data) {
             self::$sites[$key] = $data;
@@ -577,7 +603,7 @@ EOT;
         return self::$sites;
     }
 
-    public function createAliasFileData($sites_subdirs)
+    public function aliasFileData($sites_subdirs)
     {
         $root = $this->webroot();
         // Stash details about each site.
@@ -592,42 +618,9 @@ EOT;
         return $sites;
     }
 
-    public function createAliasFile($sites_subdirs, $aliasGroup)
+    protected function sutAlias($uri = self::INTEGRATION_TEST_ENV)
     {
-        // Make an alias group for the sites.
-        $sites = $this->createAliasFileData($sites_subdirs);
-        $this->writeSiteAliases($sites, $aliasGroup);
-
-        return $sites;
-    }
-
-    /**
-     * Install a Drupal site.
-     *
-     * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
-     */
-    public function installDrupal($env = 'dev', $install = false, $options = [])
-    {
-        $root = $this->webroot();
-        $uri = $env;
-        $site = "$root/sites/$uri";
-
-        // If specified, install Drupal as a multi-site.
-        if ($install) {
-            $options += [
-                'root' => $root,
-                'db-url' => $this->dbUrl($env),
-                'sites-subdir' => $uri,
-                'yes' => null,
-                'quiet' => null,
-            ];
-            $this->drush('site:install', ['testing', 'install_configure_form.enable_update_status_emails=NULL'], $options);
-            // Give us our write perms back.
-            chmod($site, 0777);
-        } else {
-            $this->mkdir($site);
-            touch("$site/settings.php");
-        }
+        return new AliasRecord(['root' => $this->webroot(), 'uri' => $uri], "@sut.$uri");
     }
 
     /**
@@ -643,11 +636,100 @@ EOT;
     }
 
     /**
+     * Install a Drupal site.
+     *
+     * It is no longer supported to pass alternative versions of Drupal or an alternative install_profile.
+     */
+    public function installDrupal($env = 'dev', $install = false, $options = [], $refreshSettings = true)
+    {
+        $root = $this->webroot();
+        $uri = $env;
+        $site = "$root/sites/$uri";
+
+        // If specified, install Drupal as a multi-site.
+        if ($install) {
+            $this->installSut($uri, $options, $refreshSettings);
+        } else {
+            $this->mkdir($site);
+            touch("$site/settings.php");
+        }
+    }
+
+    protected function processManager()
+    {
+        if (!$this->processManager) {
+            $this->processManager = new ProcessManager();
+        }
+        return $this->processManager;
+    }
+
+    protected function checkInstallSut($uri = self::INTEGRATION_TEST_ENV)
+    {
+        $sutAlias = $this->sutAlias($uri);
+        $options = [
+            'root' => $this->webroot(),
+            'uri' => $uri
+        ];
+        // TODO: Maybe there is a faster command to use for this check
+        $process = $this->processManager()->siteProcess($sutAlias, [self::getDrush(), 'pm:list'], $options);
+        $process->run();
+        if (!$process->isSuccessful()) {
+            $this->installSut($uri);
+        }
+    }
+
+    protected function installSut($uri = self::INTEGRATION_TEST_ENV, $optionsFromTest = [], $refreshSettings = true)
+    {
+        $root = $this->webroot();
+        $siteDir = "$root/sites/$uri";
+        @mkdir($siteDir);
+        chmod("$siteDir", 0777);
+        @chmod("$siteDir/settings.php", 0777);
+        if ($refreshSettings) {
+            copy("$root/sites/default/default.settings.php", "$siteDir/settings.php");
+        }
+        $sutAlias = $this->sutAlias($uri);
+        $options = $optionsFromTest + [
+            'root' => $this->webroot(),
+            'uri' => $uri,
+            'db-url' => $this->dbUrl($uri),
+            'sites-subdir' => $uri,
+            'yes' => true,
+            'quiet' => true,
+        ];
+        if ($level = $this->logLevel()) {
+            $options[$level] = true;
+        }
+        $process = $this->processManager()->siteProcess($sutAlias, [self::getDrush(), 'site:install', 'testing', 'install_configure_form.enable_update_status_emails=NULL'], $options);
+        // Set long timeout because Xdebug slows everything.
+        $process->setTimeout(0);
+        $this->process = $process;
+        $process->run();
+        $this->assertTrue($process->isSuccessful(), $this->buildProcessMessage());
+
+        // Give us our write perms back.
+        chmod($this->webroot() . "/sites/$uri", 0777);
+    }
+
+    /**
      * The sitewide directory for Drupal extensions.
      */
     public function drupalSitewideDirectory()
     {
         return '/sites/all';
+    }
+
+    /**
+     * Write the provided string to a temporary file that will be
+     * automatically deleted one exit.
+     */
+    protected function writeToTmpFile($contents)
+    {
+        $transient = Path::join($this->getSandbox(), 'transient');
+        self::mkdir($transient);
+        $path = tempnam($transient, "unishtmp");
+        file_put_contents($path, $contents);
+        return $path;
     }
 
     /**
@@ -663,5 +745,31 @@ EOT;
             // Value must be a string. See \Symfony\Component\Process\Process::getDefaultEnv.
             $_SERVER[$k]= (string) $v;
         }
+    }
+
+    /**
+     * Borrowed from \Symfony\Component\Process\Exception\ProcessTimedOutException
+     *
+     * @return string
+     */
+    public function buildProcessMessage()
+    {
+        $error = sprintf(
+            "%s\n\nExit Code: %s(%s)\n\nWorking directory: %s",
+            $this->process->getCommandLine(),
+            $this->process->getExitCode(),
+            $this->process->getExitCodeText(),
+            $this->process->getWorkingDirectory()
+        );
+
+        if (!$this->process->isOutputDisabled()) {
+            $error .= sprintf(
+                "\n\nOutput:\n================\n%s\n\nError Output:\n================\n%s",
+                $this->process->getOutput(),
+                $this->process->getErrorOutput()
+            );
+        }
+
+        return $error;
     }
 }

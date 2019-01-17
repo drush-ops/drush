@@ -140,7 +140,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
         $status_table['drush-version'] = Drush::getVersion();
         $status_table['drush-temp'] = $this->getConfig()->tmp();
         $status_table['drush-cache-directory'] = $this->getConfig()->cache();
-        $status_table['drush-conf'] = Drush::config()->get('runtime.config.paths');
+        $status_table['drush-conf'] = $this->getConfig()->configPaths();
         // List available alias files
         $alias_files = $this->siteAliasManager()->listAllFilePaths();
         sort($alias_files);
