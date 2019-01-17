@@ -97,6 +97,7 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
         $aliasRecord = $this->siteAliasManager()->getSelf();
         $process = $this->processManager->drushSiteProcess($aliasRecord, $redispatchArgs, $redispatchOptions);
         $process->setTty($this->getConfig()->get('ssh.tty', $input->isInteractive()));
+        $process->setInput(STDIN);
         $process->mustRun($process->showRealtime());
 
         return $this->exitEarly($process->getExitCode());

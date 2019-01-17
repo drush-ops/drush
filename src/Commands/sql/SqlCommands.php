@@ -9,6 +9,7 @@ use Drush\Exceptions\UserAbortException;
 use Drush\Exec\ExecTrait;
 use Drush\Sql\SqlBase;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
+use Symfony\Component\Console\Input\InputInterface;
 
 class SqlCommands extends DrushCommands
 {
@@ -137,11 +138,13 @@ class SqlCommands extends DrushCommands
      * @remote-tty
      * @bootstrap max configuration
      */
-    public function cli($options = ['extra' => self::REQ])
+    public function cli(InputInterface $input, $options = ['extra' => self::REQ])
     {
         $sql = SqlBase::create($options);
         $process = $this->processManager()->shell($sql->connect(), null, $sql->getEnv());
-        $process->setTty(true);
+        $process->setTty($this->getConfig()->get('ssh.tty', $input->isInteractive()));
+        $process->setInput(STDIN);
+        $process->mustRun($process->showRealtime());
         $process->mustRun();
     }
 
