@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2769df20bf6a6fc4781635dd053eaf6e",
+    "content-hash": "437321b5d62d778273735d8a769cf1b9",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -265,16 +265,16 @@
         },
         {
             "name": "consolidation/filter-via-dot-access-data",
-            "version": "0.4.1",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/filter-via-dot-access-data.git",
-                "reference": "eabc83a9ab9c1d3365e32ce05dc567a6133c5f3d"
+                "reference": "a53e96c6b9f7f042f5e085bf911f3493cea823c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/filter-via-dot-access-data/zipball/eabc83a9ab9c1d3365e32ce05dc567a6133c5f3d",
-                "reference": "eabc83a9ab9c1d3365e32ce05dc567a6133c5f3d",
+                "url": "https://api.github.com/repos/consolidation/filter-via-dot-access-data/zipball/a53e96c6b9f7f042f5e085bf911f3493cea823c6",
+                "reference": "a53e96c6b9f7f042f5e085bf911f3493cea823c6",
                 "shasum": ""
             },
             "require": {
@@ -283,9 +283,9 @@
             },
             "require-dev": {
                 "consolidation/robo": "^1.2.3",
-                "g1a/composer-test-scenarios": "^2",
+                "g1a/composer-test-scenarios": "^3",
                 "knplabs/github-api": "^2.7",
-                "php-coveralls/php-coveralls": "^2",
+                "php-coveralls/php-coveralls": "^1",
                 "php-http/guzzle6-adapter": "^1.1",
                 "phpunit/phpunit": "^5",
                 "squizlabs/php_codesniffer": "^2.8",
@@ -293,6 +293,21 @@
             },
             "type": "library",
             "extra": {
+                "scenarios": {
+                    "phpunit5": {
+                        "require-dev": {
+                            "phpunit/phpunit": "^5.7.27"
+                        },
+                        "remove": [
+                            "php-coveralls/php-coveralls"
+                        ],
+                        "config": {
+                            "platform": {
+                                "php": "5.6.33"
+                            }
+                        }
+                    }
+                },
                 "branch-alias": {
                     "dev-master": "1.x-dev"
                 }
@@ -313,7 +328,7 @@
                 }
             ],
             "description": "This project uses dflydev/dot-access-data to provide simple output filtering for applications built with annotated-command / Robo.",
-            "time": "2018-10-31T01:35:46+00:00"
+            "time": "2019-01-18T06:05:07+00:00"
         },
         {
             "name": "consolidation/log",
@@ -692,16 +707,16 @@
         },
         {
             "name": "consolidation/site-process",
-            "version": "0.3.1",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-process.git",
-                "reference": "e68741377720d9eb758409af8c10165a3407043d"
+                "reference": "e52dfbc4898fe8234e17ea32472776dbdfb0c8ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-process/zipball/e68741377720d9eb758409af8c10165a3407043d",
-                "reference": "e68741377720d9eb758409af8c10165a3407043d",
+                "url": "https://api.github.com/repos/consolidation/site-process/zipball/e52dfbc4898fe8234e17ea32472776dbdfb0c8ef",
+                "reference": "e52dfbc4898fe8234e17ea32472776dbdfb0c8ef",
                 "shasum": ""
             },
             "require": {
@@ -760,7 +775,7 @@
                 }
             ],
             "description": "A thin wrapper around the Symfony Process Component that allows applications to use the Site Alias library to specify the target for a remote call.",
-            "time": "2019-01-06T16:14:05+00:00"
+            "time": "2019-01-18T05:12:07+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -1135,16 +1150,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v4.1.1",
+            "version": "v4.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "8aae5b59b83bb4d0dbf07b0a835f2680a658f610"
+                "reference": "594bcae1fc0bccd3993d2f0d61a018e26ac2865a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/8aae5b59b83bb4d0dbf07b0a835f2680a658f610",
-                "reference": "8aae5b59b83bb4d0dbf07b0a835f2680a658f610",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/594bcae1fc0bccd3993d2f0d61a018e26ac2865a",
+                "reference": "594bcae1fc0bccd3993d2f0d61a018e26ac2865a",
                 "shasum": ""
             },
             "require": {
@@ -1160,7 +1175,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.1-dev"
+                    "dev-master": "4.2-dev"
                 }
             },
             "autoload": {
@@ -1182,7 +1197,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2018-12-26T11:32:39+00:00"
+            "time": "2019-01-12T16:31:37+00:00"
         },
         {
             "name": "psr/container",
@@ -2883,16 +2898,16 @@
         },
         {
             "name": "drupal/core",
-            "version": "8.6.5",
+            "version": "8.6.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core.git",
-                "reference": "b66c9334d4a4264589c8b8a2fef73eefcb34a26e"
+                "reference": "e0a09bda1da7552204464894811a59387608c9f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core/zipball/b66c9334d4a4264589c8b8a2fef73eefcb34a26e",
-                "reference": "b66c9334d4a4264589c8b8a2fef73eefcb34a26e",
+                "url": "https://api.github.com/repos/drupal/core/zipball/e0a09bda1da7552204464894811a59387608c9f9",
+                "reference": "e0a09bda1da7552204464894811a59387608c9f9",
                 "shasum": ""
             },
             "require": {
@@ -2936,6 +2951,7 @@
                 "symfony/validator": "~3.4.0",
                 "symfony/yaml": "~3.4.5",
                 "twig/twig": "^1.35.0",
+                "typo3/phar-stream-wrapper": "^2.0.1",
                 "zendframework/zend-diactoros": "^1.1",
                 "zendframework/zend-feed": "^2.4"
             },
@@ -3117,7 +3133,7 @@
                 "GPL-2.0-or-later"
             ],
             "description": "Drupal is an open source content management platform powering millions of websites and applications.",
-            "time": "2019-01-02T21:52:52+00:00"
+            "time": "2019-01-16T23:30:03+00:00"
         },
         {
             "name": "drupal/devel",
@@ -6100,6 +6116,46 @@
             "time": "2017-04-07T12:08:54+00:00"
         },
         {
+            "name": "typo3/phar-stream-wrapper",
+            "version": "v2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TYPO3/phar-stream-wrapper.git",
+                "reference": "0469d9fefa0146ea4299d3b11cfbb76faa7045bf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TYPO3/phar-stream-wrapper/zipball/0469d9fefa0146ea4299d3b11cfbb76faa7045bf",
+                "reference": "0469d9fefa0146ea4299d3b11cfbb76faa7045bf",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3.3|^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.36"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "TYPO3\\PharStreamWrapper\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Interceptors for PHP's native phar:// stream handling",
+            "homepage": "https://typo3.org/",
+            "keywords": [
+                "phar",
+                "php",
+                "security",
+                "stream-wrapper"
+            ],
+            "time": "2018-10-18T08:46:28+00:00"
+        },
+        {
             "name": "vlucas/phpdotenv",
             "version": "v2.5.2",
             "source": {
@@ -6237,6 +6293,7 @@
                 "symfony/validator": "v3.4.15",
                 "symfony/yaml": "v3.4.15",
                 "twig/twig": "v1.35.4",
+                "typo3/phar-stream-wrapper": "v2.0.1",
                 "wikimedia/composer-merge-plugin": "v1.4.1",
                 "zendframework/zend-diactoros": "1.4.1",
                 "zendframework/zend-escaper": "2.5.2",
@@ -6284,7 +6341,7 @@
                 "GPL-2.0-or-later"
             ],
             "description": "Locked core dependencies",
-            "time": "2019-01-02T22:30:45+00:00"
+            "time": "2019-01-17T00:00:45+00:00"
         },
         {
             "name": "wikimedia/composer-merge-plugin",
