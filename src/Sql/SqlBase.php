@@ -11,6 +11,7 @@ use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 use Webmozart\PathUtil\Path;
+use Consolidation\Config\Util\Interpolator;
 
 class SqlBase implements ConfigAwareInterface
 {
@@ -171,16 +172,24 @@ class SqlBase implements ConfigAwareInterface
         $table_selection = $this->getExpandedTableSelection($this->getOptions(), $this->listTables());
         $file = $this->dumpFile($file);
         $cmd = $this->dumpCmd($table_selection);
+        $pipefail = '';
         // Gzip the output from dump command(s) if requested.
         if ($this->getOption('gzip')) {
             // See https://github.com/drush-ops/drush/issues/3816.
-            $pipefail = $this->getConfig()->get('ssh.pipefail', 'set -o pipefail;');
-            $cmd = "$pipefail $cmd | gzip -f";
+            $pipefail = $this->getConfig()->get('sh.pipefail', 'bash -c "set -o pipefail; {{cmd}}"');
+            $cmd .= " | gzip -f";
             $file_suffix .= '.gz';
         }
         if ($file) {
             $file .= $file_suffix;
             $cmd .= ' > ' . Escape::shellArg($file);
+        }
+        if ($pipefail) {
+            $interpolator = new Interpolator();
+            $replacements = [
+                'cmd' => addslashes($cmd),
+            ];
+            $cmd = $interpolator->interpolate($replacements, $pipefail);
         }
 
         $process = Drush::shell($cmd, null, $this->getEnv());
