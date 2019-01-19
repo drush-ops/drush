@@ -103,9 +103,9 @@ class Logger extends RoboLogger
         }
 
         if ($this->output->isDecorated()) {
-            $red = "\033[31;40m\033[1m[%s]\033[0m";
-            $yellow = "\033[1;33;40m\033[1m[%s]\033[0m";
-            $green = "\033[1;32;40m\033[1m[%s]\033[0m";
+            $red = "\033[31m\033[1m[%s]\033[0m";
+            $yellow = "\033[1;33m\033[1m[%s]\033[0m";
+            $green = "\033[1;32m\033[1m[%s]\033[0m";
         } else {
             $red = "[%s]";
             $yellow = "[%s]";
