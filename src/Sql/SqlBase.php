@@ -184,13 +184,7 @@ class SqlBase implements ConfigAwareInterface
             $file .= $file_suffix;
             $cmd .= ' > ' . Escape::shellArg($file);
         }
-        if ($pipefail) {
-            $interpolator = new Interpolator();
-            $replacements = [
-                'cmd' => addslashes($cmd),
-            ];
-            $cmd = $interpolator->interpolate($replacements, $pipefail);
-        }
+        $cmd = $this->addPipeFail($cmd, $pipefail);
 
         $process = Drush::shell($cmd, null, $this->getEnv());
         // Avoid the php memory of saving stdout.
@@ -198,6 +192,33 @@ class SqlBase implements ConfigAwareInterface
         // Show dump in real-time on stdout, for backward compat.
         $process->run($process->showRealtime());
         return $process->isSuccessful() ? $file : false;
+    }
+
+    /**
+     * We have three possibilities for $pipefail:
+     *
+     *   - empty: Return $cmd unmodified
+     *   - simple string: Return $cmd appended to $pipefail
+     *   - interpolated: Add slashes to $cmd and insert in $pipefail
+     *
+     * The last is particularly for environments such as Ubuntu
+     * that use something other than bash as the default shell. To
+     * make pipefail work right in this instance, we must wrap it
+     * in 'bash -c', since pipefail is a bash feature.
+     */
+    protected function addPipeFail($cmd, $pipefail)
+    {
+        if (empty($pipefail)) {
+            return $cmd;
+        }
+        if (strpos($pipefail, '{{cmd}}') === false) {
+            return $pipefail . ' ' . $cmd;
+        }
+        $interpolator = new Interpolator();
+        $replacements = [
+            'cmd' => addslashes($cmd),
+        ];
+        return $interpolator->interpolate($replacements, $pipefail);
     }
 
     /*
