@@ -195,13 +195,16 @@ class SqlBase implements ConfigAwareInterface
     }
 
     /**
-     * We have three possibilities for $pipefail:
+     * Handle 'pipefail' option for the specified command.
      *
+     * @param string $cmd Script command to execute; should contain a pipe command
+     * @param string $pipefail Script statements to insert into / wrap around $cmd
+     * @return string Result varies based on value of $pipefail
      *   - empty: Return $cmd unmodified
      *   - simple string: Return $cmd appended to $pipefail
      *   - interpolated: Add slashes to $cmd and insert in $pipefail
      *
-     * The last is particularly for environments such as Ubuntu
+     * Interpolation is particularly for environments such as Ubuntu
      * that use something other than bash as the default shell. To
      * make pipefail work right in this instance, we must wrap it
      * in 'bash -c', since pipefail is a bash feature.
