@@ -11,6 +11,7 @@ use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 use Webmozart\PathUtil\Path;
+use Consolidation\Config\Util\Interpolator;
 
 class SqlBase implements ConfigAwareInterface
 {
@@ -171,17 +172,19 @@ class SqlBase implements ConfigAwareInterface
         $table_selection = $this->getExpandedTableSelection($this->getOptions(), $this->listTables());
         $file = $this->dumpFile($file);
         $cmd = $this->dumpCmd($table_selection);
+        $pipefail = '';
         // Gzip the output from dump command(s) if requested.
         if ($this->getOption('gzip')) {
             // See https://github.com/drush-ops/drush/issues/3816.
-            $pipefail = $this->getConfig()->get('ssh.pipefail', 'set -o pipefail;');
-            $cmd = "$pipefail $cmd | gzip -f";
+            $pipefail = $this->getConfig()->get('sh.pipefail', 'bash -c "set -o pipefail; {{cmd}}"');
+            $cmd .= " | gzip -f";
             $file_suffix .= '.gz';
         }
         if ($file) {
             $file .= $file_suffix;
             $cmd .= ' > ' . Escape::shellArg($file);
         }
+        $cmd = $this->addPipeFail($cmd, $pipefail);
 
         $process = Drush::shell($cmd, null, $this->getEnv());
         // Avoid the php memory of saving stdout.
@@ -189,6 +192,36 @@ class SqlBase implements ConfigAwareInterface
         // Show dump in real-time on stdout, for backward compat.
         $process->run($process->showRealtime());
         return $process->isSuccessful() ? $file : false;
+    }
+
+    /**
+     * Handle 'pipefail' option for the specified command.
+     *
+     * @param string $cmd Script command to execute; should contain a pipe command
+     * @param string $pipefail Script statements to insert into / wrap around $cmd
+     * @return string Result varies based on value of $pipefail
+     *   - empty: Return $cmd unmodified
+     *   - simple string: Return $cmd appended to $pipefail
+     *   - interpolated: Add slashes to $cmd and insert in $pipefail
+     *
+     * Interpolation is particularly for environments such as Ubuntu
+     * that use something other than bash as the default shell. To
+     * make pipefail work right in this instance, we must wrap it
+     * in 'bash -c', since pipefail is a bash feature.
+     */
+    protected function addPipeFail($cmd, $pipefail)
+    {
+        if (empty($pipefail)) {
+            return $cmd;
+        }
+        if (strpos($pipefail, '{{cmd}}') === false) {
+            return $pipefail . ' ' . $cmd;
+        }
+        $interpolator = new Interpolator();
+        $replacements = [
+            'cmd' => addslashes($cmd),
+        ];
+        return $interpolator->interpolate($replacements, $pipefail);
     }
 
     /*
