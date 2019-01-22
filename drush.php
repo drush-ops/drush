@@ -1,5 +1,6 @@
 <?php
 
+
 use Drush\Drush;
 use Drush\Config\Environment;
 use Drush\Preflight\Preflight;
@@ -54,6 +55,12 @@ if (file_exists($autoloadFile = __DIR__ . '/vendor/autoload.php')
     throw new \Exception("Could not locate autoload.php. cwd is $cwd; __DIR__ is " . __DIR__);
 }
 
+$argv = explode(' ',$_SERVER['args']);
+$argc = count($argv);
+$_SERVER['argc'] = $argc;
+$_SERVER['argv'] = $argv;
+
+
 // Set up environment
 $environment = new Environment(Path::getHomeDirectory(), $cwd, $autoloadFile);
 $environment->setConfigFileVariant(Drush::getMajorVersion());
@@ -63,6 +70,6 @@ $environment->applyEnvironment();
 // Preflight and run
 $preflight = new Preflight($environment);
 $runtime = new Runtime($preflight);
-$status_code = $runtime->run($_SERVER['argv']);
+$status_code = $runtime->run($argv);
 
 exit($status_code);
