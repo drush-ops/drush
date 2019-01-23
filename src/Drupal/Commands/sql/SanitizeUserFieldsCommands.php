@@ -52,7 +52,7 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
         $conn = $this->getDatabase();
         $field_definitions = $this->getEntityManager()->getFieldDefinitions('user', 'user');
         $field_storage = $this->getEntityManager()->getFieldStorageDefinitions('user');
-        foreach (explode(',', $options['whitelist-fields']) as $key => $def) {
+        foreach (explode(',', $options['whitelist-fields']) as $key) {
             unset($field_definitions[$key], $field_storage[$key]);
         }
 
