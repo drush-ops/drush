@@ -71,7 +71,6 @@ class Runtime
 
         // Create the Symfony Application et. al.
         $input = $this->preflight->createInput();
-        //$output = new \Symfony\Component\Console\Output\BufferedOutput();
         $output = new \Symfony\Component\Console\Output\StreamOutput(fopen('php://output', 'w'));
         $application = new \Drush\Application('Drush Commandline Tool', Drush::getVersion());
 
