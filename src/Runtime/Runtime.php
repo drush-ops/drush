@@ -71,7 +71,8 @@ class Runtime
 
         // Create the Symfony Application et. al.
         $input = $this->preflight->createInput();
-        $output = new \Symfony\Component\Console\Output\BufferedOutput();
+        //$output = new \Symfony\Component\Console\Output\BufferedOutput();
+        $output = new \Symfony\Component\Console\Output\StreamOutput(fopen('php://output', 'w'));
         $application = new \Drush\Application('Drush Commandline Tool', Drush::getVersion());
 
         // Set up the DI container.
@@ -117,7 +118,7 @@ class Runtime
 
         // For backwards compatibility (backend invoke needs this in drush_backend_output())
         drush_set_context('DRUSH_ERROR_CODE', $status);
-	print $output->fetch();
+	//print $output->fetch();
 	//var_dump($output);
 
         return $status;

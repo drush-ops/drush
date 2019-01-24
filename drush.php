@@ -55,10 +55,12 @@ if (file_exists($autoloadFile = __DIR__ . '/vendor/autoload.php')
     throw new \Exception("Could not locate autoload.php. cwd is $cwd; __DIR__ is " . __DIR__);
 }
 
-$argv = explode(' ',$_SERVER['args']);
-$argc = count($argv);
-$_SERVER['argc'] = $argc;
-$_SERVER['argv'] = $argv;
+if(array_key_exists('args', $_SERVER)) {
+    $argv = explode(' ',$_SERVER['args']);
+    $argc = count($argv);
+    $_SERVER['argc'] = $argc;
+    $_SERVER['argv'] = $argv;
+}
 
 
 // Set up environment
