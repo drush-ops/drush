@@ -117,8 +117,6 @@ class Runtime
 
         // For backwards compatibility (backend invoke needs this in drush_backend_output())
         drush_set_context('DRUSH_ERROR_CODE', $status);
-	//print $output->fetch();
-	//var_dump($output);
 
         return $status;
     }
