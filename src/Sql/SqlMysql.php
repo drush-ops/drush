@@ -113,7 +113,7 @@ EOT;
     public function dbExists()
     {
         // Suppress output. We only care about return value.
-        return $this->alwaysQuery("SELECT 1;", null, drush_bit_bucket());
+        return $this->alwaysQuery("SELECT 1;");
     }
 
     public function listTables()

@@ -18,9 +18,9 @@ class UpdateDBTest extends CommandUnishTestCase
     {
         $this->setUpDrupal(1, true);
         $this->drush('pm:enable', ['devel']);
-        $this->drush('updatedb:status', [], ['format' => 'json']);
-        $out = $this->getOutputFromJSON();
-        $this->assertNull($out);
+        $this->drush('updatedb:status');
+        $err = $this->getErrorOutput();
+        $this->assertEquals('[success] No database updates required.', $err);
 
         // Force a pending update.
         $this->drush('php-script', ['updatedb_script'], ['script-path' => __DIR__ . '/resources']);
@@ -34,9 +34,9 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->drush('updatedb', []);
 
         // Assert that we ran hook_update_n properly
-        $this->drush('updatedb:status', [], ['format' => 'json']);
-        $out = $this->getOutputFromJSON();
-        $this->assertNull($out);
+        $this->drush('updatedb:status');
+        $err = $this->getErrorOutput();
+        $this->assertEquals('[success] No database updates required.', $err);
 
         // Assure that a pending post-update is reported.
         $this->pathPostUpdate = Path::join($this->webroot(), 'modules/unish/devel/devel.post_update.php');
@@ -113,7 +113,7 @@ LOG
                 <<<LOG
 > [notice] Update started: woot_update_8101
 > [notice] This is the update message from woot_update_8101
-> [ok] Update completed: woot_update_8101
+> [notice] Update completed: woot_update_8101
 > [notice] Update started: woot_update_8102
 > [error] This is the exception message thrown in woot_update_8102
 > [error] Update failed: woot_update_8102
@@ -192,10 +192,10 @@ LOG;
         $expected_error_output =
         '> [notice] Update started: woot_update_8104
 > [notice] This is the update message from woot_update_8104
-> [ok] Update completed: woot_update_8104
+> [notice] Update completed: woot_update_8104
 > [notice] Update started: woot_post_update_a
 > [notice] This is the update message from woot_post_update_a
-> [ok] Update completed: woot_post_update_a
+> [notice] Update completed: woot_post_update_a
 > [notice] Update started: woot_post_update_failing
 > [error] This is the exception message thrown in woot_post_update_failing
 > [error] Update failed: woot_post_update_failing
@@ -266,9 +266,9 @@ YAML_FRAGMENT;
         $this->drush('updatedb');
 
         // Assert that the updates were run correctly.
-        $this->drush('updatedb:status', [], ['format' => 'json']);
-        $out = $this->getOutputFromJSON();
-        $this->assertNull($out);
+        $this->drush('updatedb:status');
+        $err = $this->getErrorOutput();
+        $this->assertEquals('[success] No database updates required.', $err);
     }
 
     /**
@@ -309,12 +309,12 @@ LOG;
         $expected_error_output = <<<LOG
 > [notice] Update started: woot_update_8104
 > [notice] This is the update message from woot_update_8104
-> [ok] Update completed: woot_update_8104
+> [notice] Update completed: woot_update_8104
 > [notice] Update started: woot_post_update_a
 > [notice] This is the update message from woot_post_update_a
-> [ok] Update completed: woot_post_update_a
+> [notice] Update completed: woot_post_update_a
 > [notice] Update started: woot_post_update_render
-> [ok] Update completed: woot_post_update_render
+> [notice] Update completed: woot_post_update_render
 [success] Finished performing updates.
 LOG;
 

@@ -3,6 +3,8 @@ namespace Drush\Runtime;
 
 use Drush\Drush;
 use Drush\Preflight\Preflight;
+use Drush\Runtime\ErrorHandler;
+use Drush\Runtime\ShutdownHandler;
 
 /**
  * Control the Drush runtime environment
@@ -18,16 +20,21 @@ class Runtime
     /** @var Preflight */
     protected $preflight;
 
+    /** @var DependencyInjection */
+    protected $di;
+
     const DRUSH_RUNTIME_COMPLETED_NAMESPACE = 'runtime.execution.completed';
+    const DRUSH_RUNTIME_EXIT_CODE_NAMESPACE = 'runtime.exit_code';
 
     /**
      * Runtime constructor
      *
-     * @param Preflight $preflight the prefligth object
+     * @param Preflight $preflight the preflight object
      */
-    public function __construct(Preflight $preflight)
+    public function __construct(Preflight $preflight, DependencyInjection $di)
     {
         $this->preflight = $preflight;
+        $this->di = $di;
     }
 
     /**
@@ -38,7 +45,8 @@ class Runtime
     public function run($argv)
     {
         try {
-            $status = $this->doRun($argv);
+            $output = new \Symfony\Component\Console\Output\ConsoleOutput();
+            $status = $this->doRun($argv, $output);
         } catch (\Exception $e) {
             $status = $e->getCode();
             $message = $e->getMessage();
@@ -52,7 +60,7 @@ class Runtime
     /**
      * Start up Drush
      */
-    protected function doRun($argv)
+    protected function doRun($argv, $output)
     {
         // Do the preflight steps
         $status = $this->preflight->preflight($argv);
@@ -71,11 +79,10 @@ class Runtime
 
         // Create the Symfony Application et. al.
         $input = $this->preflight->createInput();
-        $output = new \Symfony\Component\Console\Output\ConsoleOutput();
         $application = new \Drush\Application('Drush Commandline Tool', Drush::getVersion());
 
         // Set up the DI container.
-        $container = DependencyInjection::initContainer(
+        $container = $this->di->initContainer(
             $application,
             $this->preflight->config(),
             $input,
@@ -85,11 +92,10 @@ class Runtime
             $this->preflight->aliasManager()
         );
 
-        // Our termination handlers depend on classes we set up via DependencyInjection,
-        // so we do not want to enable it any earlier than this.
-        // TODO: Inject a termination handler into this class, so that we don't
-        // need to add these e.g. when testing.
-        $this->setTerminationHandlers();
+        // Our termination handlers are set up via dependency injection,
+        // as they require classes that are set up in the DI container.
+        // We therefore cannot configure them any earlier than this.
+        $this->di->installHandlers($container);
 
         // Now that the DI container has been set up, the Application object will
         // have a reference to the bootstrap manager et. al., so we may use it
@@ -113,22 +119,10 @@ class Runtime
 
         // Placate the Drush shutdown handler.
         Runtime::setCompleted();
-
-        // For backwards compatibility (backend invoke needs this in drush_backend_output())
-        drush_set_context('DRUSH_ERROR_CODE', $status);
+        // Placate drush_backend_output().
+        Runtime::setExitCode($status);
 
         return $status;
-    }
-
-    /**
-     * Make sure we are notified on exit, and when bad things happen.
-     */
-    protected function setTerminationHandlers()
-    {
-        // Set an error handler and a shutdown function
-        // TODO: move these to a class somewhere
-        set_error_handler('drush_error_handler');
-        register_shutdown_function('drush_shutdown');
     }
 
     /**
@@ -137,5 +131,28 @@ class Runtime
     public static function setCompleted()
     {
         Drush::config()->set(self::DRUSH_RUNTIME_COMPLETED_NAMESPACE, true);
+    }
+
+    /**
+     * @deprecated
+     *   Used by backend.inc
+     *
+     * Mark the exit code for current request.
+     * @param int $code
+     */
+    public static function setExitCode($code)
+    {
+        Drush::config()->set(self::DRUSH_RUNTIME_EXIT_CODE_NAMESPACE, $code);
+    }
+
+    /**
+     * @deprecated
+     *   Used by backend.inc
+     *
+     * Get the exit code for current request.
+     */
+    public static function exitCode()
+    {
+        return Drush::config()->get(self::DRUSH_RUNTIME_EXIT_CODE_NAMESPACE, DRUSH_SUCCESS);
     }
 }

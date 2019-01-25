@@ -11,15 +11,13 @@ use PHPUnit\Framework\TestCase;
   * @group base
   * @group sql
   */
-class WildcardUnitCase extends TestCase
+class ExpandWildcardTablesTest extends TestCase
 {
 
     use SqlTableSelectionTrait;
 
   /**
-   * Tests drush_sql_expand_wildcard_tables().
-   *
-   * @see drush_sql_expand_wildcard_tables().
+   * Tests \Drush\Sql\SqlTableSelectionTrait
    */
     public function testExpandWildcardTables()
     {
@@ -49,9 +47,7 @@ class WildcardUnitCase extends TestCase
     }
 
   /**
-   * Tests drush_sql_filter_tables().
-   *
-   * @see drush_sql_filter_tables().
+   * Tests \Drush\Sql\SqlTableSelectionTrait
    */
     public function testFilterTables()
     {

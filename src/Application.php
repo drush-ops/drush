@@ -9,7 +9,7 @@ use Consolidation\SiteAlias\SiteAliasManager;
 use Drush\Log\LogLevel;
 use Drush\Command\RemoteCommandProxy;
 use Drush\Runtime\RedispatchHook;
-use Robo\Common\ConfigAwareTrait;
+use Drush\Config\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Input\InputOption;
@@ -177,7 +177,8 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         if ($uri) {
             return $uri;
         }
-        return $this->bootstrapManager()->selectUri($cwd);
+        $uri = $this->bootstrapManager()->selectUri($cwd);
+        return $uri;
     }
 
     /**
@@ -208,7 +209,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             // Is the unknown command destined for a remote site?
             if ($this->aliasManager) {
                 $selfAlias = $this->aliasManager->getSelf();
-                if ($selfAlias->isRemote()) {
+                if (!$selfAlias->isLocal()) {
                     $command = new RemoteCommandProxy($name, $this->redispatchHook);
                     $command->setApplication($this);
                     return $command;

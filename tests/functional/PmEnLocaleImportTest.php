@@ -7,7 +7,8 @@ use Drupal\language\Entity\ConfigurableLanguage;
 use Webmozart\PathUtil\Path;
 
 /**
- *  @group slow
+ * @group locale
+ * @group slow
  *  @group pm
  */
 class PmEnLocaleImportCase extends CommandUnishTestCase

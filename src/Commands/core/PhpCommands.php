@@ -1,11 +1,14 @@
 <?php
 namespace Drush\Commands\core;
 
+use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
+use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Finder\Finder;
 
-class PhpCommands extends DrushCommands
+class PhpCommands extends DrushCommands implements StdinAwareInterface
 {
+    use StdinAwareTrait;
 
     /**
      * Evaluate arbitrary php code after bootstrapping Drupal (if available).
@@ -57,7 +60,7 @@ class PhpCommands extends DrushCommands
         $script = array_shift($extra);
 
         if ($script == '-') {
-            return eval(stream_get_contents(STDIN));
+            return eval($this->stdin()->contents());
         } elseif (file_exists($script)) {
             $found = $script;
         } else {

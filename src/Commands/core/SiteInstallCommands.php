@@ -214,10 +214,10 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             $options = ['yes' => true];
             $selfRecord = $this->siteAliasManager()->getSelf();
 
-            $process = Drush::drush($selfRecord, 'config-set', ['system.site', 'uuid', $source_storage->read('system.site')['uuid']], $options);
+            $process = $this->processManager()->drush($selfRecord, 'config-set', ['system.site', 'uuid', $source_storage->read('system.site')['uuid']], $options);
             $process->mustRun();
 
-            $process = Drush::drush($selfRecord, 'config-import', [], ['source' => $config] + $options);
+            $process = $this->processManager()->drush($selfRecord, 'config-import', [], ['source' => $config] + $options);
             $process->mustRun($process->showRealtime());
         }
     }
@@ -332,7 +332,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
 
         // Can't install without sites subdirectory and settings.php.
         if (!file_exists($confPath)) {
-            if (!drush_mkdir($confPath) && !Drush::simulate()) {
+            if (!drush_mkdir($confPath) && !$this->getConfig()->simulate()) {
                 throw new \Exception(dt('Failed to create directory @confPath', ['@confPath' => $confPath]));
             }
         } else {
@@ -340,14 +340,14 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         }
 
         if (!drush_file_not_empty($settingsfile)) {
-            if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !Drush::simulate()) {
+            if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !$this->getConfig()->simulate()) {
                 throw new \Exception(dt('Failed to copy sites/default/default.settings.php to @settingsfile', ['@settingsfile' => $settingsfile]));
             }
         }
 
         // Write an empty sites.php if we using multi-site.
         if ($sitesfile_write) {
-            if (!drush_op('copy', 'sites/example.sites.php', $sitesfile) && !Drush::simulate()) {
+            if (!drush_op('copy', 'sites/example.sites.php', $sitesfile) && !$this->getConfig()->simulate()) {
                 throw new \Exception(dt('Failed to copy sites/example.sites.php to @sitesfile', ['@sitesfile' => $sitesfile]));
             }
         }

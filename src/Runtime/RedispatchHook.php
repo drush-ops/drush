@@ -7,9 +7,10 @@ use Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface;
 use Consolidation\SiteAlias\AliasRecord;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteProcess\ProcessManager;
 use Drush\Drush;
 use Drush\Log\LogLevel;
-use Robo\Common\ConfigAwareTrait;
+use Drush\Config\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
@@ -23,6 +24,14 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
 {
     use ConfigAwareTrait;
     use SiteAliasManagerAwareTrait;
+
+    /** @var ProcessManager */
+    protected $processManager;
+
+    public function __construct(ProcessManager $processManager)
+    {
+        $this->processManager = $processManager;
+    }
 
     /**
      * Check to see if it is necessary to redispatch to a remote site.
@@ -57,10 +66,9 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
      */
     public function redispatchIfRemote(InputInterface $input)
     {
+        $aliasRecord = $this->siteAliasManager()->getSelf();
         // Determine if this is a remote command.
-        // n.b. 'hasOption' only means that the option definition exists, so don't use that here.
-        $remote = $input->getOption('remote-host');
-        if (!empty($remote)) {
+        if ($this->processManager->hasTransport($aliasRecord)) {
             return $this->redispatch($input);
         }
     }
@@ -73,9 +81,9 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
     public function redispatch(InputInterface $input)
     {
         // Get the command arguments, and shift off the Drush command.
-        $redispatchArgs = Drush::config()->get('runtime.argv');
+        $redispatchArgs = $this->getConfig()->get('runtime.argv');
         $drush_path = array_shift($redispatchArgs);
-        $command_name = Drush::config()->get('runtime.command');
+        $command_name = $this->getConfig()->get('runtime.command');
 
         Drush::logger()->debug('Redispatch hook {command}', ['command' => $command_name]);
 
@@ -87,8 +95,9 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
         $redispatchOptions = [];
 
         $aliasRecord = $this->siteAliasManager()->getSelf();
-        $process = Drush::drushSiteProcess($aliasRecord, $redispatchArgs, $redispatchOptions);
+        $process = $this->processManager->drushSiteProcess($aliasRecord, $redispatchArgs, $redispatchOptions);
         $process->setTty($this->getConfig()->get('ssh.tty', $input->isInteractive()));
+        $process->setInput(STDIN);
         $process->mustRun($process->showRealtime());
 
         return $this->exitEarly($process->getExitCode());

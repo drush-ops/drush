@@ -1,18 +1,22 @@
 <?php
 namespace Drush\Commands\sql;
 
+use Consolidation\AnnotatedCommand\CommandData;
 use Drupal\Core\Database\Database;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
+use Drush\Exec\ExecTrait;
 use Drush\Sql\SqlBase;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
+use Symfony\Component\Console\Input\InputInterface;
 
 class SqlCommands extends DrushCommands
 {
+    use ExecTrait;
 
     /**
-     * Print database connection details using print_r().
+     * Print database connection details.
      *
      * @command sql:conf
      * @aliases sql-conf
@@ -83,7 +87,7 @@ class SqlCommands extends DrushCommands
         $sql = SqlBase::create($options);
         $db_spec = $sql->getDbSpec();
         // Prompt for confirmation.
-        if (!Drush::simulate()) {
+        if (!$this->getConfig()->simulate()) {
             // @todo odd - maybe for sql-sync.
             $txt_destination = (isset($db_spec['remote-host']) ? $db_spec['remote-host'] . '/' : '') . $db_spec['database'];
             $this->output()->writeln(dt("Creating database !target. Any existing database will be dropped!", ['!target' => $txt_destination]));
@@ -134,11 +138,13 @@ class SqlCommands extends DrushCommands
      * @remote-tty
      * @bootstrap max configuration
      */
-    public function cli($options = ['extra' => self::REQ])
+    public function cli(InputInterface $input, $options = ['extra' => self::REQ])
     {
         $sql = SqlBase::create($options);
-        $process = Drush::process($sql->connect());
-        $process->setTty(true);
+        $process = $this->processManager()->shell($sql->connect(), null, $sql->getEnv());
+        $process->setTty($this->getConfig()->get('ssh.tty', $input->isInteractive()));
+        $process->setInput(STDIN);
+        $process->mustRun($process->showRealtime());
         $process->mustRun();
     }
 
@@ -173,11 +179,11 @@ class SqlCommands extends DrushCommands
         if ($options['db-prefix']) {
             Drush::bootstrapManager()->bootstrapMax(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
         }
-        if (Drush::simulate()) {
+        if ($this->getConfig()->simulate()) {
             if ($query) {
-                $this->output()->writeln(dt('Simulating sql-query: !q', ['!q' => $query]));
+                $this->output()->writeln(dt('Simulating sql:query: !q', ['!q' => $query]));
             } else {
-                $this->output()->writeln(dt('Simulating sql-import from !f', ['!f' => $options['file']]));
+                $this->output()->writeln(dt('Simulating sql:query from file !f', ['!f' => $options['file']]));
             }
         } else {
             $sql = SqlBase::create($options);
@@ -227,6 +233,32 @@ class SqlCommands extends DrushCommands
         if ($return === false) {
             throw new \Exception('Unable to dump database. Rerun with --debug to see any error message.');
         }
+
+        $this->logger()->success(dt('Database dump saved to !path', ['!path' => $return]));
         return new PropertyList(['path' => $return]);
+    }
+
+    /**
+     * Assert that `mysql` or similar are on the user's PATH.
+     *
+     * @hook validate
+     * @param CommandData $commandData
+     * @return bool
+     * @throws \Exception
+     */
+    public function validate(CommandData $commandData)
+    {
+        if (in_array($commandData->annotationData()->get('command'), ['sql:connect', 'sql:conf'])) {
+            // These commands don't require a program.
+            return;
+        }
+
+        $sql = SqlBase::create($commandData->options());
+        $program = $sql->command();
+
+        if (!$this->programExists($program)) {
+            $this->logger->warning(dt('The shell command \'!command\' is required but cannot be found. Please install it and retry.', ['!command' => $program]));
+            return false;
+        }
     }
 }

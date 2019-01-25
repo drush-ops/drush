@@ -3,24 +3,26 @@ namespace Drush\Exec;
 
 use Consolidation\SiteProcess\Util\Shell;
 use Drush\Drush;
-use Drush\Log\LogLevel;
 
 trait ExecTrait
 {
     /**
      * Starts a background browser/tab for the current site or a specified URL.
      *
-     * Uses a non-blocking proc_open call, so Drush execution will continue.
+     * Uses a non-blocking Process call, so Drush execution will continue.
      *
      * @param $uri
      *   Optional URI or site path to open in browser. If omitted, or if a site path
-     *   is specified, the current site home page uri will be prepended if the sites
+     *   is specified, the current site home page uri will be prepended if the site's
      *   hostname resolves.
-     * @return
-     *   TRUE if browser was opened, FALSE if browser was disabled by the user or a,
+     * @param int $sleep
+     * @param bool $port
+     * @param bool $browser
+     * @return bool
+     *   TRUE if browser was opened. FALSE if browser was disabled by the user or a
      *   default browser could not be found.
      */
-    public function startBrowser($uri = null, $sleep = false, $port = false, $browser = true)
+    public function startBrowser($uri = null, $sleep = 0, $port = false, $browser = true)
     {
         if ($browser) {
             // We can only open a browser if we have a DISPLAY environment variable on
@@ -32,7 +34,7 @@ trait ExecTrait
             $host = parse_url($uri, PHP_URL_HOST);
             if (!$host) {
                 // Build a URI for the current site, if we were passed a path.
-                $site = drush_get_context('DRUSH_URI');
+                $site = $this->uri;
                 $host = parse_url($site, PHP_URL_HOST);
                 $uri = $site . '/' . ltrim($uri, '/');
             }
@@ -49,9 +51,9 @@ trait ExecTrait
             }
             if ($browser === true) {
                 // See if we can find an OS helper to open URLs in default browser.
-                if (drush_which('xdg-open')) {
+                if (self::programExists('xdg-open')) {
                     $browser = 'xdg-open';
-                } else if (drush_which('open')) {
+                } else if (self::programExists('open')) {
                     $browser = 'open';
                 } else if (!drush_has_bash()) {
                     $browser = 'start';
@@ -62,20 +64,32 @@ trait ExecTrait
             }
 
             if ($browser) {
-                drush_log(dt('Opening browser !browser at !uri', ['!browser' => $browser, '!uri' => $uri]), LogLevel::INFO);
+                $this->logger()->info(dt('Opening browser !browser at !uri', ['!browser' => $browser, '!uri' => $uri]));
                 $args = [];
                 if (!Drush::simulate()) {
                     if ($sleep) {
                         $args = ['sleep', $sleep, Shell::op('&&')];
                     }
                     // @todo We implode because quoting is messing up the sleep.
-                    $process = Drush::process(implode(' ', array_merge($args, [$browser, $uri])));
-                    $process->setTty(true);
+                    $process = Drush::shell(implode(' ', array_merge($args, [$browser, $uri])));
                     $process->run();
                 }
                 return true;
             }
         }
         return false;
+    }
+
+    /*
+     * Determine if program exists on user's PATH.
+     *
+     * @return bool
+     *   True if program exists on PATH.
+     */
+    public static function programExists($program)
+    {
+        $process = Drush::shell("command -v $program");
+        $process->run();
+        return $process->isSuccessful();
     }
 }

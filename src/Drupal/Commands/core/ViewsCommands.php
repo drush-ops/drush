@@ -248,7 +248,7 @@ class ViewsCommands extends DrushCommands
             return null;
         } elseif ($options['count']) {
             drush_backend_set_result(count($view->result));
-            drush_print(count($view->result));
+            $this->io()->writeln(count($view->result));
             return null;
         } else {
             // Don't show admin links in markup by default.

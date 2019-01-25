@@ -2,6 +2,7 @@
 
 namespace Drush\Drupal;
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
 use Drupal\Core\DependencyInjection\ServiceModifierInterface;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
@@ -22,7 +23,7 @@ class DrushServiceModifier implements ServiceModifierInterface
      */
     public function alter(ContainerBuilder $container)
     {
-        drush_log(dt("Service modifier alter."), LogLevel::DEBUG_NOTIFY);
+        Drush::logger()->log(LogLevel::DEBUG_NOTIFY, dt("Service modifier alter."));
         // http://symfony.com/doc/2.7/components/dependency_injection/tags.html#register-the-pass-with-the-container
         $container->register(self::DRUSH_CONSOLE_SERVICES, 'Drush\Command\ServiceCommandlist');
         $container->addCompilerPass(new FindCommandsCompilerPass(self::DRUSH_CONSOLE_SERVICES, 'console.command'));

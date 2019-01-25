@@ -9,8 +9,6 @@ api
 .sami-cache
 # IDE config
 .idea/
-# https://github.com/drush-ops/drush/issues/2688
-composer.lock
 sut/*
 !sut/drush
 /sandbox/

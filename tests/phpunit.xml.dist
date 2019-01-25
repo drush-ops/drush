@@ -1,7 +1,4 @@
 <!--
-      This is the phpunit configuration file for the functional tests.
-      For the unit tests configuration, see the phpunit.xml.dist file
-      at the root of the project.
 
       Copy and rename this file to phpunit.xml to customize.
 
@@ -10,13 +7,21 @@
       be defined as environment variables. Alternately, you may run the
       tests without defining these variables if you use the default values.
 -->
-<phpunit backupGlobals="false"
+<phpunit
+    bootstrap="../vendor/autoload.php"
+    backupGlobals="false"
     backupStaticAttributes="false"
     syntaxCheck="false"
     colors="true">
   <testsuites>
-    <testsuite name="Drush Test Suite">
-      <directory>.</directory>
+    <testsuite name="unit">
+      <directory suffix="Test.php">unit</directory>
+    </testsuite>
+    <testsuite name="integration">
+      <directory suffix="Test.php">integration</directory>
+    </testsuite>
+    <testsuite name="functional">
+      <directory>functional</directory>
     </testsuite>
   </testsuites>
 

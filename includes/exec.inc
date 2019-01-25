@@ -160,7 +160,7 @@ function _drush_shell_exec($args, $interactive = FALSE, $simulate = false) {
     $command = call_user_func_array('sprintf', $args);
   }
 
-  drush_log('Executing: ' . $command, LogLevel::INFO);
+  Drush::logger()->info('Executing: ' . $command);
   if (!$simulate) {
     if ($interactive) {
       $result = drush_shell_proc_open($command);
@@ -190,6 +190,8 @@ function _drush_shell_exec($args, $interactive = FALSE, $simulate = false) {
  * a command on this system.
  *
  * @return bool
+ *
+ * @deprecated See \Drush\Exec\ExecTrait::programExists
  */
 function drush_which($command) {
   $process = Drush::process(['which', $command]);

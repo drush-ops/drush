@@ -60,6 +60,7 @@
 use Drush\Drush;
 use Drush\Log\LogLevel;
 use Drush\Preflight\PreflightArgs;
+use Drush\Runtime\Runtime;
 
 /**
  * Identify the JSON encoded output from a command.
@@ -153,13 +154,11 @@ function drush_backend_output() {
     $data['object'] = $result_object;
   }
 
-  $error = drush_get_error();
-  $data['error_status'] = ($error) ? $error : DRUSH_SUCCESS;
-
-  $data['log'] = drush_get_log(); // Append logging information
+  $data['error_status'] = Runtime::exitCode();
+  $data['log'] = Drush::logger()->getLogs(); // Append logging information
   // The error log is a more specific version of the log, and may be used by calling
   // scripts to check for specific errors that have occurred.
-  $data['error_log'] = drush_get_error_log();
+  $data['error_log'] = Drush::logger()->getErrorLogs();
   // If there is a @self record, then include it in the result
   $self_record = drush_sitealias_get_record('@self');
   if (!empty($self_record)) {
