@@ -1,0 +1,14 @@
+#/bin/bash
+
+export SCRIPT_NAME=drush 
+CGDRUSH=$( readlink -f "$0" )
+SCRIPT_PATH=$( dirname "$CGDRUSH" )
+export SCRIPT_FILENAME=$SCRIPT_PATH/drush.php 
+export REQUEST_METHOD=GET 
+export args="drush" 
+for i in $* 
+  do
+  arg=$(urlencode $i)
+  args="$args&$arg"
+done
+cgi-fcgi -bind -connect /var/run/php/php7.2-fpm.sock | tail +3

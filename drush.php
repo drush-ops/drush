@@ -56,12 +56,13 @@ if (file_exists($autoloadFile = __DIR__ . '/vendor/autoload.php')
 }
 
 if(array_key_exists('args', $_SERVER)) {
-    $argv = explode(' ',$_SERVER['args']);
+    foreach( explode('&',$_SERVER['args']) as $arg) {
+      $argv[] = rawurldecode($arg);
+    }
     $argc = count($argv);
     $_SERVER['argc'] = $argc;
     $_SERVER['argv'] = $argv;
 }
-
 
 // Set up environment
 $environment = new Environment(Path::getHomeDirectory(), $cwd, $autoloadFile);
