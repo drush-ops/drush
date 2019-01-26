@@ -56,9 +56,8 @@ if (file_exists($autoloadFile = __DIR__ . '/vendor/autoload.php')
 }
 
 if(array_key_exists('args', $_SERVER)) {
-    preg_replace_callback("/(\S+)|(\".+\")|('.+')/" ,
-             function($m) use (&$argv, &$argc) { $argv[$argc++] =  preg_replace('/(^[\'"])|([\'"]$)/','',$m[0]); },
-            $_SERVER['args']);
+    $argv = explode(' ',$_SERVER['args']);
+    $argc = count($argv);
     $_SERVER['argc'] = $argc;
     $_SERVER['argv'] = $argv;
 }
