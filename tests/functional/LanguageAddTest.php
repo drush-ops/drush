@@ -12,20 +12,19 @@ use Webmozart\PathUtil\Path;
  */
 class LanguageAddCase extends CommandUnishTestCase
 {
-
-    public function testLanguageInfo()
+    protected function setUp()
     {
-        $this->setUpDrupal(1, true);
-        $this->drush('pm-enable', ['language']);
-
-        $this->drush('language-info', []);
-        $this->assertContains('English (en)', $this->getSimplifiedOutput());
+        parent::setUp();
+        if (empty($this->getSites())) {
+            $this->setUpDrupal(1, true);
+            $this->drush('pm-enable', ['language']);
+        }
     }
 
-    public function testLanguageAdd()
+    public function testLanguageInfoAdd()
     {
-        $this->setUpDrupal(1, true);
-        $this->drush('pm-enable', ['language']);
+        $this->drush('language-info', []);
+        $this->assertContains('English (en)', $this->getSimplifiedOutput());
 
         $this->drush('language-add', ['nl,fr'], ['skip-translations' => null]);
 
@@ -36,9 +35,6 @@ class LanguageAddCase extends CommandUnishTestCase
 
     public function testLanguageAddWithTranslations()
     {
-        $this->setUpDrupal(1, true);
-        $root = $this->webroot();
-
         $this->drush('pm-enable', ['language', 'locale', 'dblog']);
         $this->drush('config-set', ['locale.settings', 'translation.import_enabled', true]);
 
@@ -49,7 +45,7 @@ class LanguageAddCase extends CommandUnishTestCase
         $this->drush('config-set', ['locale.settings', 'translation.default_filename', '%project.%language.po']);
         $this->drush('config-set', ['locale.settings', 'translation.path', '../translations']);
         $source = Path::join(__DIR__, '/resources/devel.nl.po');
-        $translationDir = Path::join($root, '../translations');
+        $translationDir = Path::join($this->webroot(), '../translations');
         $this->mkdir($translationDir);
         copy($source, $translationDir . '/devel.nl.po');
 
