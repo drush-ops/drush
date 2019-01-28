@@ -14,7 +14,6 @@ abstract class UnishTestCase extends TestCase
     // Unix exit codes.
     const EXIT_SUCCESS  = 0;
     const EXIT_ERROR = 1;
-    const IGNORE_EXIT_CODE = 'n/a';
     const UNISH_EXITCODE_USER_ABORT = 75; // Same as DRUSH_EXITCODE_USER_ABORT
     const INTEGRATION_TEST_ENV = 'default';
 
@@ -261,7 +260,7 @@ abstract class UnishTestCase extends TestCase
     {
         $argv = $_SERVER['argv'];
         // -d is reserved by `phpunit`
-        if (in_array(['--debug'], $argv) || in_array('-vvv', $argv)) {
+        if (in_array('--debug', $argv) || in_array('-vvv', $argv)) {
             return 'debug';
         } elseif (in_array('--verbose', $argv) || in_array('-v', $argv)) {
             return 'verbose';
