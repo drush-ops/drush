@@ -261,7 +261,7 @@ abstract class UnishTestCase extends TestCase
     {
         $argv = $_SERVER['argv'];
         // -d is reserved by `phpunit`
-        if (in_array(['--debug'], $argv) || in_array('-vvv', $argv)) {
+        if (in_array('--debug', $argv) || in_array('-vvv', $argv)) {
             return 'debug';
         } elseif (in_array('--verbose', $argv) || in_array('-v', $argv)) {
             return 'verbose';
