@@ -8,7 +8,11 @@ Class DrushConsoleOutput extends \Symfony\Component\Console\Output\ConsoleOutput
 
     protected function hasStdoutSupport()
     {
-        return false;
+        if(PHP_SAPI == 'fpm-fcgi')  {
+          return false;
+        } else {
+          return parent::hasStdoutSupport(); 
+        }
     }
 
 }
