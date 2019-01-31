@@ -145,7 +145,6 @@ class SqlCommands extends DrushCommands
         $process->setTty($this->getConfig()->get('ssh.tty', $input->isInteractive()));
         $process->setInput(STDIN);
         $process->mustRun($process->showRealtime());
-        $process->mustRun();
     }
 
     /**
