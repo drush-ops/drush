@@ -326,19 +326,19 @@ class SqlBase implements ConfigAwareInterface
             $query = $this->queryFormat($query);
             $input_file = drush_save_data_to_temp_file($query);
         }
-        $os = _drush_get_os();
+
         $parts = [
             $this->command(),
             $this->creds(),
             $this->silent(), // This removes column header and various helpful things in mysql.
             $this->getOption('extra', $this->queryExtra),
             $this->queryFile,
-            Escape::shellArg($input_file, $os),
+            Escape::shellArg($input_file),
         ];
         $exec = implode(' ', $parts);
 
         if ($result_file) {
-            $exec .= ' > '. Escape::shellArg($result_file, $os);
+            $exec .= ' > '. Escape::shellArg($result_file);
         }
 
         // In --verbose mode, Process will show the call to mysql/psql/sqlite,
