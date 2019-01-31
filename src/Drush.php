@@ -286,13 +286,6 @@ class Drush
     /**
      * Run a Drush command on a site alias (or @self).
      *
-     * @param AliasRecord $siteAlias
-     * @param string $command
-     * @param array $args
-     * @param array $options
-     * @param array $options_double_dash
-     * @return SiteProcess
-     *
      * Tip: Use injected process manager instead of this method. See below.
      *
      * A class should use ProcessManagerAwareInterface / ProcessManagerAwareTrait
@@ -341,6 +334,13 @@ class Drush
      *
      * Clients that are using Drush::drush(), and need a reference to the alias
      * manager may use Drush::aliasManager().
+     *
+     * @param AliasRecord $siteAlias
+     * @param string $command
+     * @param array $args
+     * @param array $options
+     * @param array $options_double_dash
+     * @return SiteProcess
      */
     public static function drush(AliasRecord $siteAlias, $command, $args = [], $options = [], $options_double_dash = [])
     {
@@ -349,16 +349,16 @@ class Drush
     }
 
     /**
-     * Run a bash fragment on a site alias. Use Drush::drush() instead of this
-     * method when calling Drush.
+     * Run a bash fragment on a site alias. U
+     *
+     * Use Drush::drush() instead of this method when calling Drush.
+     * Tip: Consider using injected process manager instead of this method. @see \Drush\Drush::drush().
      *
      * @param AliasRecord $siteAlias
      * @param array $args
      * @param array $options
      * @param array $options_double_dash
      * @return ProcessBase
-     *
-     * Tip: Use injected process manager instead of this method. @see \Drush\Drush::drush().
      */
     public static function siteProcess(AliasRecord $siteAlias, $args = [], $options = [], $options_double_dash = [])
     {
@@ -372,6 +372,8 @@ class Drush
      * The timeout parameter on this method doesn't work. It exists for compatibility with parent.
      * Call this method to get a Process and then call setters as needed.
      *
+     * Tip: Consider using injected process manager instead of this method. @see \Drush\Drush::drush().
+     *
      * @param string|array   $commandline The command line to run
      * @param string|null    $cwd         The working directory or null to use the working dir of the current PHP process
      * @param array|null     $env         The environment variables or null to use the same environment as the current PHP process
@@ -381,8 +383,6 @@ class Drush
      *
      * @return ProcessBase
      *   A wrapper around Symfony Process.
-     *
-     * Tip: Use injected process manager instead of this method. @see \Drush\Drush::drush().
      */
     public static function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60)
     {
@@ -392,14 +392,15 @@ class Drush
 
     /**
      * Create a Process instance from a commandline string.
+     *
+     * Tip: Consider using injected process manager instead of this method. @see \Drush\Drush::drush().
+     *
      * @param string $command The commandline string to run
      * @param string|null $cwd     The working directory or null to use the working dir of the current PHP process
      * @param array|null $env     The environment variables or null to use the same environment as the current PHP process
      * @param mixed|null $input   The input as stream resource, scalar or \Traversable, or null for no input
      * @param int|float|null $timeout The timeout in seconds or null to disable
      * @return Process
-     *
-     * Tip: Use injected process manager instead of this method. @see \Drush\Drush::drush().
      */
     public function shell($command, $cwd = null, array $env = null, $input = null, $timeout = 60)
     {

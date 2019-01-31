@@ -63,7 +63,7 @@
     "cweagans/composer-patches": "~1.0",
     "webflo/drupal-core-strict": "8.6.x-dev",
     "drupal/empty_theme": "1.0",
-    "drupal/devel": "^1.0@RC",
+    "drupal/devel": "^2",
     "drupal/alinks": "1.0.0",
     "vlucas/phpdotenv": "^2.4"
   },

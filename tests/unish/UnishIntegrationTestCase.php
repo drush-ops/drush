@@ -52,14 +52,15 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
     /**
      * Invoke drush via a direct method call to Application::run().
      *
-     * @param command
+     * @param $command
      *   A defined drush command such as 'cron', 'status' and so on
-     * @param args
+     * @param array $args
      *   Command arguments.
-     * @param $options
+     * @param array $options
      *   An associative array containing options.
-     * @param $expected_return
+     * @param int $expected_return
      *   The expected exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
+     * @param string|bool $stdin
      * @return integer
      *   An exit code.
      */
@@ -88,7 +89,9 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         // cwd at the beginning of every test function. We therefore need to
         // change the working directory back to where Drupal expects it to be.
         chdir($this->webroot());
+        $this->log("Executing: " . implode(' ', $cmd), 'verbose');
         $return = $application->run($input, $output);
+        $this->assertEquals($expected_return, $return, "Command failed: \n\n" . $this->getErrorOutput());
 
         $this->stdout = $output->fetch();
         $this->stderr = $output->getErrorOutput()->fetch();
@@ -96,10 +99,6 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         // Empty Drush's legacy context system
         $cache = &drush_get_context();
         $cache = [];
-
-        if ($expected_return != self::IGNORE_EXIT_CODE) {
-            $this->assertEquals($expected_return, $return, "Command failed: \n\n" . $this->getErrorOutput());
-        }
 
         return $return;
     }

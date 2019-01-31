@@ -2,6 +2,7 @@
 
 namespace Unish\Controllers;
 
+use Drush\Application;
 use Drush\Config\Environment;
 use Drush\Drush;
 use Drush\Preflight\Preflight;
@@ -40,6 +41,7 @@ class RuntimeController
 
     protected $input;
 
+    /** @var Application */
     protected $application;
 
     protected $bootstrap;
