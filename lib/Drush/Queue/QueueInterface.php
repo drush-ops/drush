@@ -24,7 +24,7 @@ interface QueueInterface {
    * @return int
    *   The number of items successfully processed from the queue.
    */
-  public function run($name, $time_limit = 0);
+  public function run($name, $time_limit = 0, $items_limit = 0);
 
   /**
    * Returns a given queue definition.

@@ -39,14 +39,14 @@ class Queue7 extends QueueBase {
   /**
    * {@inheritdoc}
    */
-  public function run($name, $time_limit = 0) {
+  public function run($name, $time_limit = 0, $items_limit = 0) {
     $info = $this->getInfo($name);
     $function = $info['worker callback'];
     $end = time() + $time_limit;
     $queue = $this->getQueue($name);
     $count = 0;
 
-    while ((!$time_limit || time() < $end) && ($item = $queue->claimItem())) {
+    while ((!$time_limit || time() < $end) && (!$items_limit || $items_limit > $count) && ($item = $queue->claimItem())) {
       try {
         drush_log(dt('Processing item @id from @name queue.', array('@name' => $name, 'id' => $item->item_id)), LogLevel::INFO);
         $function($item->data);

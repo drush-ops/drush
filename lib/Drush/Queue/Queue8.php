@@ -46,13 +46,13 @@ class Queue8 extends QueueBase {
   /**
    * {@inheritdoc}
    */
-  public function run($name, $time_limit = 0) {
+  public function run($name, $time_limit = 0, $items_limit = 0) {
     $worker = $this->workerManager->createInstance($name);
     $end = time() + $time_limit;
     $queue = $this->getQueue($name);
     $count = 0;
 
-    while ((!$time_limit || time() < $end) && ($item = $queue->claimItem())) {
+    while ((!$time_limit || time() < $end) && (!$items_limit || $items_limit > $count) && ($item = $queue->claimItem())) {
       try {
         drush_log(dt('Processing item @id from @name queue.', array('@name' => $name, '@id' => $item->item_id)), LogLevel::INFO);
         $worker->processItem($item->data);

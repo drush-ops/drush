@@ -1,9 +1,6 @@
 <?php
 
 use Drush\Log\LogLevel;
-use Drupal\Component\Plugin\Exception\PluginNotFoundException;
-use Drupal\Core\Queue\RequeueException;
-use Drupal\Core\Queue\SuspendQueueException;
 
 /**
  * Implements hook_drush_help().
@@ -27,6 +24,7 @@ function queue_drush_command() {
     'required-arguments' => TRUE,
     'options' => array(
       'time-limit' => 'The maximum number of seconds allowed to run the queue',
+      'items-limit' => 'The maximum number of items allowed to run the queue',
     ),
   );
   $items['queue-list'] = array(
@@ -45,15 +43,6 @@ function queue_drush_command() {
       ),
       'output-data-type' => 'format-table',
     ),
-  );
-
-  $items['queue-run-single'] = array(
-    'description' => dt('Process a single item of a queue.'),
-    'arguments' => array(
-      'queue_name' => 'The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.',
-    ),
-    'required-arguments' => TRUE,
-    'aliases' => ['qrs'],
   );
 
   return $items;
@@ -91,8 +80,9 @@ function drush_queue_get_class() {
 function drush_queue_run($queue_name) {
   $queue = drush_queue_get_class();
   $time_limit = (int) drush_get_option('time-limit');
+  $items_limit = (int) drush_get_option('items-limit');
   $start = microtime(TRUE);
-  $count = $queue->run($queue_name, $time_limit);
+  $count = $queue->run($queue_name, $time_limit, $items_limit);
   $elapsed = microtime(TRUE) - $start;
   drush_log(dt('Processed @count items from the @name queue in @elapsed sec.', array('@count' => $count, '@name' => $queue_name, '@elapsed' => round($elapsed, 2))), drush_get_error() ? LogLevel::WARNING : LogLevel::OK);
 }
@@ -105,40 +95,3 @@ function drush_queue_list() {
   return $queue->listQueues();
 }
 
-/**
- * Command callback for drush queue-run-single.
- */
-function drush_queue_run_single($queue_name) {
-
-  // @var \Drupal\Core\Queue\QueueWorkerManager $worker_manager
-  $worker_manager =\Drupal::service('plugin.manager.queue_worker');
-  try {
-    $worker = $worker_manager->createInstance($queue_name);
-  } catch (PluginNotFoundException $e) {
-    drush_print(dt('Queue @name not found.', array('@name' => $queue_name)));
-  }
-  $queue = \Drupal::queue($queue_name);
-
-  if ($item = $queue->claimItem()) {
-    try {
-      drush_print(dt('Processing item @id from @name queue.', array('@name' => $queue_name, '@id' => $item->item_id)));
-      $worker->processItem($item->data);
-      $queue->deleteItem($item);
-    }
-    catch (RequeueException $e) {
-      // The worker requested the task to be immediately requeued.
-      $queue->releaseItem($item);
-    }
-    catch (SuspendQueueException $e) {
-      // If the worker indicates there is a problem with the whole queue,
-      // release the item and skip to the next queue.
-      $queue->releaseItem($item);
-      drush_set_error('DRUSH_SUSPEND_QUEUE_EXCEPTION', $e->getMessage());
-    }
-    catch (Exception $e) {
-      // In case of any other kind of exception, log it and leave the item
-      // in the queue to be processed again later.
-      drush_set_error('DRUSH_QUEUE_EXCEPTION', $e->getMessage());
-    }
-  }
-}
