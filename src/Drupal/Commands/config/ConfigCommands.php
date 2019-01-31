@@ -517,7 +517,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
             $prefix = ['git', 'diff', '--color=always'];
         }
         $args = array_merge($prefix, ['-u', $temp_destination_dir, $temp_source_dir]);
-        $process = $this->processManager()->process($args);
+        $process = Drush::process($args);
         $process->run();
         return $process->getOutput();
     }
