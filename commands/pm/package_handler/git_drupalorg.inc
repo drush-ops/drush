@@ -49,7 +49,7 @@ function package_handler_validate() {
 function package_handler_download_project(&$request, $release) {
   if ($username = drush_get_option('gitusername')) {
     // Uses SSH, which enables pushing changes back to git.drupal.org.
-    $repository = $username . '@git.drupal.org:project/' . $request['name'] . '.git';
+    $repository = 'git@git.drupal.org:project/' . $request['name'] . '.git';
   }
   else {
     $repository = 'git://git.drupal.org/project/' . $request['name'] . '.git';
