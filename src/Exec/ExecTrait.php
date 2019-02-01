@@ -2,6 +2,7 @@
 namespace Drush\Exec;
 
 use Consolidation\SiteProcess\Util\Shell;
+use Consolidation\SiteProcess\Util\Escape;
 use Drush\Drush;
 
 trait ExecTrait
@@ -88,7 +89,11 @@ trait ExecTrait
      */
     public static function programExists($program)
     {
-        $process = Drush::shell("command -v $program");
+        $cmd = "command -v $program";
+        if ($program == 'mysql' && Escape::isWindows()) {
+            $cmd = 'mysql -V';
+        }
+        $process = Drush::shell($cmd);
         $process->run();
         return $process->isSuccessful();
     }
