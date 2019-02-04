@@ -15,7 +15,7 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
      * Connect to a Drupal site's server via SSH.
      *
      * @command site:ssh
-     * @option cd Directory to change to if Drupal root is not desired (the default).
+     * @option cd Directory to change to. Defaults to Drupal root.
      * @optionset_proc_build
      * @handle-remote-commands
      * @usage drush @mysite ssh
