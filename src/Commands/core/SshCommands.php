@@ -27,7 +27,7 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
      * @aliases ssh,site-ssh
      * @topics docs:aliases
      */
-    public function ssh(array $args, $options = ['cd' => true, 'tty' => false, 'legacy' => true])
+    public function ssh(array $args, $options = ['cd' => self::REQ, 'tty' => false, 'legacy' => true])
     {
         $alias = $this->siteAliasManager()->getSelf();
         if ($alias->isNone()) {
@@ -51,7 +51,11 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
 
         $process = $this->processManager()->siteProcess($alias, $args);
         $process->setTty($options['tty']);
-        $process->chdirToSiteRoot($options['cd']);
+        if ($options['cd']) {
+            $process->setWorkingDirectory($options['cd']);
+        } else {
+            $process->chdirToSiteRoot();
+        }
         $process->mustRun($process->showRealtime());
     }
 }
