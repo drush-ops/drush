@@ -30,16 +30,16 @@ class SiteSshCase extends CommandUnishTestCase
     }
 
     /**
-     * Test drush ssh --simulate 'date'.
+     * Test drush ssh --simulate 'time && date'.
      */
     public function testNonInteractive()
     {
         $options = [
             'simulate' => true,
         ];
-        $this->drush('ssh', ['date'], $options, 'user@server/path/to/drupal#sitename');
+        $this->drush('ssh', ['time && date'], $options, 'user@server/path/to/drupal#sitename');
         $output = $this->getErrorOutput();
-        $expected = "ssh -o PasswordAuthentication=no user@server 'cd /path/to/drupal && date'";
+        $expected = "ssh -o PasswordAuthentication=no user@server 'cd /path/to/drupal && time && date'";
         $this->assertContains($expected, $output);
     }
 
@@ -58,9 +58,9 @@ class SiteSshCase extends CommandUnishTestCase
     }
 
     /**
-     * Test drush ssh with multiple arguments (legacy form). Also test --cd option.
+     * Test with single arg and --cd option.
      */
-    public function testSshMultipleArgsLegacy()
+    public function testSshSingleArgs()
     {
         $options = [
             'cd' => '/foo/bar',

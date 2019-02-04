@@ -1,6 +1,7 @@
 <?php
 namespace Drush\Commands\core;
 
+use Consolidation\SiteProcess\Util\Shell;
 use Drush\Commands\DrushCommands;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
@@ -21,13 +22,13 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
      * @usage drush @mysite ssh
      *   Open an interactive shell on @mysite's server.
      * @usage drush @prod ssh ls /tmp
-     *   Run "ls /tmp" on @prod site. If @prod is a site list, then ls will be executed on each site.
+     *   Run "ls /tmp" on @prod site.
      * @usage drush @prod ssh git pull
      *   Run "git pull" on the Drupal root directory on the @prod site.
      * @aliases ssh,site-ssh
      * @topics docs:aliases
      */
-    public function ssh(array $args, $options = ['cd' => self::REQ, 'tty' => false, 'legacy' => true])
+    public function ssh(array $args, $options = ['cd' => self::REQ, 'tty' => false])
     {
         $alias = $this->siteAliasManager()->getSelf();
         if ($alias->isNone()) {
@@ -43,10 +44,8 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
             $options['tty'] = true;
         }
 
-        // Legacy support: if there is only one argument provided, then
-        // explode it. This may be disabled via the --no-legacy option.
-        if ((count($args) == 1) && $options['legacy']) {
-            $args = explode(' ', $args[0]);
+        if ((count($args) == 1)) {
+            $args = [Shell::preEscaped($args[0])];
         }
 
         $process = $this->processManager()->siteProcess($alias, $args);
