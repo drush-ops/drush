@@ -5,8 +5,6 @@ use Consolidation\SiteProcess\Util\Shell;
 use Drush\Commands\DrushCommands;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
-use Consolidation\SiteProcess\SiteProcess;
-use Drush\Drush;
 
 class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
