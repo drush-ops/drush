@@ -15,7 +15,7 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
      * Connect to a Drupal site's server via SSH.
      *
      * @command site:ssh
-     * @option cd Directory to change to if Drupal root is not desired (the default).
+     * @option cd Directory to change to. Defaults to Drupal root.
      * @optionset_proc_build
      * @handle-remote-commands
      * @usage drush @mysite ssh
@@ -27,7 +27,7 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
      * @aliases ssh,site-ssh
      * @topics docs:aliases
      */
-    public function ssh(array $args, $options = ['cd' => true, 'tty' => false, 'legacy' => true])
+    public function ssh(array $args, $options = ['cd' => self::REQ, 'tty' => false, 'legacy' => true])
     {
         $alias = $this->siteAliasManager()->getSelf();
         if ($alias->isNone()) {
@@ -51,7 +51,11 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
 
         $process = $this->processManager()->siteProcess($alias, $args);
         $process->setTty($options['tty']);
-        $process->chdirToSiteRoot($options['cd']);
+        if ($options['cd']) {
+            $process->setWorkingDirectory($options['cd']);
+        } else {
+            $process->chdirToSiteRoot();
+        }
         $process->mustRun($process->showRealtime());
     }
 }
