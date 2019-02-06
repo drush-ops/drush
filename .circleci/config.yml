@@ -1,0 +1,24 @@
+# https://circleci.com/docs/2.0/workflows/#using-workspaces-to-share-data-among-jobs
+defaults: &defaults
+  working_directory: ~/drush
+  environment:
+    TZ: "/usr/share/zoneinfo/America/Los_Angeles"
+    TERM: dumb
+    PHPUNIT_ARGS: ""
+
+version: 2
+jobs:
+  lint:
+    <<: *defaults
+    docker:
+      - image: circleci/php:7.1-apache-node
+    steps:
+      - checkout
+      - run: composer install --prefer-dist --no-interaction
+      - run: composer lint
+
+workflows:
+  version: 2
+  build_test:
+    jobs:
+      - lint
