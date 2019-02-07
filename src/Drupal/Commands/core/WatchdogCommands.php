@@ -45,6 +45,7 @@ class WatchdogCommands extends DrushCommands
      *   date: Date
      *   username: Username
      * @default-fields wid,date,type,severity,message
+     * @filter-default-field message
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'type' => self::REQ, 'extended' => false])
@@ -168,7 +169,7 @@ class WatchdogCommands extends DrushCommands
                 throw new \Exception(dt('Watchdog message #!wid does not exist.', ['!wid' => $substring]));
             }
         } else {
-            if ((!isset($substring))&&(!isset($options['type']))&&(!isset($options['severity']))) {
+            if ((empty($substring))&&(!isset($options['type']))&&(!isset($options['severity']))) {
                 throw new \Exception(dt('No options provided.'));
             }
             $where = $this->where($options['type'], $options['severity'], $substring, 'OR');

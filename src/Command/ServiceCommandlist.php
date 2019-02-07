@@ -1,8 +1,6 @@
 <?php
 namespace Drush\Command;
 
-use Drush\Log\LogLevel;
-
 /**
  * Keep a list of all of the service commands that we can find when the
  * Drupal Kernel is booted.

@@ -5,11 +5,11 @@ use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Drush\Boot\BootstrapManager;
 use Drush\Runtime\TildeExpansionHook;
-use Drush\SiteAlias\SiteAliasManager;
+use Consolidation\SiteAlias\SiteAliasManager;
 use Drush\Log\LogLevel;
 use Drush\Command\RemoteCommandProxy;
 use Drush\Runtime\RedispatchHook;
-use Robo\Common\ConfigAwareTrait;
+use Drush\Config\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Input\InputOption;
@@ -177,7 +177,8 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         if ($uri) {
             return $uri;
         }
-        return $this->bootstrapManager()->selectUri($cwd);
+        $uri = $this->bootstrapManager()->selectUri($cwd);
+        return $uri;
     }
 
     /**
@@ -208,7 +209,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             // Is the unknown command destined for a remote site?
             if ($this->aliasManager) {
                 $selfAlias = $this->aliasManager->getSelf();
-                if ($selfAlias->isRemote()) {
+                if (!$selfAlias->isLocal()) {
                     $command = new RemoteCommandProxy($name, $this->redispatchHook);
                     $command->setApplication($this);
                     return $command;
@@ -229,9 +230,22 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
                 throw new CommandNotFoundException(dt('Command !command was not found. Pass --root or a @siteAlias in order to run Drupal-specific commands.', ['!command' => $name]));
             }
 
-            // Try to find it again. This time the exception will
-            // not be caught if the command cannot be found.
-            return parent::find($name);
+            // Try to find it again, now that we bootstrapped as far as possible.
+            try {
+                return parent::find($name);
+            } catch (CommandNotFoundException $e) {
+                if (!$this->bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_DATABASE)) {
+                    // Unable to bootstrap to DB. Give targetted error message.
+                    throw new CommandNotFoundException(dt('Command !command was not found. Drush was unable to query the database. As a result, many commands are unavailable. Re-run your command with --debug to see relevant log messages.', ['!command' => $name]));
+                }
+                if (!$this->bootstrapManager()->hasBootstrapped(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
+                    // Unable to fully bootstrap. Give targetted error message.
+                    throw new CommandNotFoundException(dt('Command !command was not found. Drush successfully connected to the database but was unable to fully bootstrap your site. As a result, many commands are unavailable. Re-run your command with --debug to see relevant log messages.', ['!command' => $name]));
+                } else {
+                    // We fully bootstrapped but still could not find command. Rethrow.
+                    throw $e;
+                }
+            }
         }
     }
 
@@ -303,6 +317,8 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
 
         $discovery = $this->commandDiscovery();
         $commandClasses = $discovery->discover($commandfileSearchpath, '\Drush');
+        $commandClasses[] = \Consolidation\Filter\Hooks\FilterHooks::class;
+
         $this->loadCommandClasses($commandClasses);
 
         // Uncomment the lines below to use Console's built in help and list commands.
@@ -337,6 +353,10 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $discovery = new CommandFileDiscovery();
         $discovery
             ->setIncludeFilesAtBase(true)
+            ->setSearchDepth(3)
+            ->ignoreNamespacePart('contrib', 'Commands')
+            ->ignoreNamespacePart('custom', 'Commands')
+            ->ignoreNamespacePart('src')
             ->setSearchLocations(['Commands', 'Hooks', 'Generators'])
             ->setSearchPattern('#.*(Command|Hook|Generator)s?.php$#');
         return $discovery;

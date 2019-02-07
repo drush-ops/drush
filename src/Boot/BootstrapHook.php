@@ -29,7 +29,7 @@ class BootstrapHook implements InitializeHookInterface
 
         if (!$bootstrap_successful) {
             // TODO: better exception class, better exception method
-            throw new \Exception('Bootstrap failed.');
+            throw new \Exception('Bootstrap failed. Run your command with -vvv for more information.');
         }
     }
 }

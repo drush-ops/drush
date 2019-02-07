@@ -1,0 +1,37 @@
+#
+# Aliases for the System Under Test (SUT)
+#
+
+# The 'common' section is added to every alias environment.
+# - ${drush.base-dir} is the path where Drush is installed
+# - ${env-name} is the name of the environment that this info
+#   is being injected in (e.g. 'dev', 'stage', etc.)
+common:
+  root: ${drush.base-dir}/sut
+  dbUrl: 'mysql://root:@127.0.0.1/unish_${env-name}'
+
+# The 'default' environment is used by the integration tests
+default:
+  uri: default
+
+# The 'dev' and 'stage' environments are used by the functional tests.
+# 'prod' may be used for ad-hoc testing, or may be used in future tests.
+dev:
+  uri: dev
+stage:
+  uri: stage
+prod:
+  uri: prod
+
+# An example of a Docker Compose environment. See example.site.yml for a bit more info.
+# Used for ad hoc testing, and not by Unish.
+local:
+  docker:
+    service: drupal
+    exec:
+      options: --user root
+  uri: dev
+  root: /var/www/html/web
+  paths:
+    drush-script: /var/www/html/drush
+

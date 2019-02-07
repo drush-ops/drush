@@ -11,17 +11,25 @@ use Symfony\Component\Console\Application;
 use Consolidation\Config\ConfigInterface;
 use Composer\Autoload\ClassLoader;
 use League\Container\ContainerInterface;
-use Drush\SiteAlias\SiteAliasManager;
+use Consolidation\SiteAlias\SiteAliasManager;
+use Drush\Command\DrushCommandInfoAlterer;
 
 /**
  * Prepare our Dependency Injection Container
  */
 class DependencyInjection
 {
+    protected $handlers = [];
+
+    public function desiredHandlers($handlerList)
+    {
+        $this->handlers = $handlerList;
+    }
+
     /**
      * Set up our dependency injection container.
      */
-    public static function initContainer(
+    public function initContainer(
         Application $application,
         ConfigInterface $config,
         InputInterface $input,
@@ -44,22 +52,32 @@ class DependencyInjection
         \Robo\Robo::configureContainer($container, $application, $config, $input, $output);
         $container->add('container', $container);
 
-        static::addDrushServices($container, $loader, $drupalFinder, $aliasManager);
+        $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager);
 
         // Store the container in the \Drush object
         Drush::setContainer($container);
-        \Robo\Robo::setContainer($container);
 
         // Change service definitions as needed for our application.
-        static::alterServicesForDrush($container, $application);
+        $this->alterServicesForDrush($container, $application);
 
         // Inject needed services into our application object.
-        static::injectApplicationServices($container, $application);
+        $this->injectApplicationServices($container, $application);
 
         return $container;
     }
 
-    protected static function addDrushServices(ContainerInterface $container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager)
+    /**
+     * Make sure we are notified on exit, and when bad things happen.
+     */
+    public function installHandlers($container)
+    {
+        foreach ($this->handlers as $handlerId) {
+            $handler = $container->get($handlerId);
+            $handler->installHandler();
+        }
+    }
+
+    protected function addDrushServices(ContainerInterface $container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager)
     {
         // Override Robo's logger with our own
         $container->share('logger', 'Drush\Log\Logger')
@@ -76,22 +94,22 @@ class DependencyInjection
             ->withMethodCall('addDefaultSimplifiers', []);
 
         // Add some of our own objects to the container
-        $container->share('bootstrap.default', 'Drush\Boot\EmptyBoot');
-        $container->share('bootstrap.drupal6', 'Drush\Boot\DrupalBoot6');
-        $container->share('bootstrap.drupal7', 'Drush\Boot\DrupalBoot7');
         $container->share('bootstrap.drupal8', 'Drush\Boot\DrupalBoot8');
         $container->share('bootstrap.manager', 'Drush\Boot\BootstrapManager')
-            ->withArgument('bootstrap.default')
             ->withMethodCall('setDrupalFinder', [$drupalFinder]);
         // TODO: Can we somehow add these via discovery (e.g. backdrop extension?)
         $container->extend('bootstrap.manager')
-            ->withMethodCall('add', ['bootstrap.drupal6'])
-            ->withMethodCall('add', ['bootstrap.drupal7'])
             ->withMethodCall('add', ['bootstrap.drupal8']);
         $container->share('bootstrap.hook', 'Drush\Boot\BootstrapHook')
           ->withArgument('bootstrap.manager');
-        $container->share('redispatch.hook', 'Drush\Runtime\RedispatchHook');
         $container->share('tildeExpansion.hook', 'Drush\Runtime\TildeExpansionHook');
+        $container->share('ssh.transport', \Consolidation\SiteProcess\Factory\SshTransportFactory::class);
+        $container->share('docker-compose.transport', \Consolidation\SiteProcess\Factory\DockerComposeTransportFactory::class);
+        $container->share('process.manager', 'Drush\SiteAlias\ProcessManager')
+            ->withMethodCall('add', ['ssh.transport'])
+            ->withMethodCall('add', ['docker-compose.transport']);
+        $container->share('redispatch.hook', 'Drush\Runtime\RedispatchHook')
+            ->withArgument('process.manager');
 
         // Robo does not manage the command discovery object in the container,
         // but we will register and configure one for our use.
@@ -101,14 +119,20 @@ class DependencyInjection
             ->withMethodCall('addSearchLocation', ['CommandFiles'])
             ->withMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
 
+        // Error and Shutdown handlers
+        $container->share('errorHandler', 'Drush\Runtime\ErrorHandler');
+        $container->share('shutdownHandler', 'Drush\Runtime\ShutdownHandler');
+
         // Add inflectors. @see \Drush\Boot\BaseBoot::inflect
         $container->inflector(\Drush\Boot\AutoloaderAwareInterface::class)
             ->invokeMethod('setAutoloader', ['loader']);
-        $container->inflector(\Drush\SiteAlias\SiteAliasManagerAwareInterface::class)
+        $container->inflector(\Consolidation\SiteAlias\SiteAliasManagerAwareInterface::class)
             ->invokeMethod('setSiteAliasManager', ['site.alias.manager']);
+        $container->inflector(\Consolidation\SiteProcess\ProcessManagerAwareInterface::class)
+            ->invokeMethod('setProcessManager', ['process.manager']);
     }
 
-    protected static function alterServicesForDrush(ContainerInterface $container, Application $application)
+    protected function alterServicesForDrush(ContainerInterface $container, Application $application)
     {
         // Add our own callback to the hook manager
         $hookManager = $container->get('hookManager');
@@ -126,9 +150,13 @@ class DependencyInjection
         $factory = $container->get('commandFactory');
         $factory->setIncludeAllPublicMethods(false);
         $factory->setDataStore($commandCacheDataStore);
+        $factory->addCommandInfoAlterer(new DrushCommandInfoAlterer());
+
+        $commandProcessor = $container->get('commandProcessor');
+        $commandProcessor->setPassExceptions(true);
     }
 
-    protected static function injectApplicationServices(ContainerInterface $container, Application $application)
+    protected function injectApplicationServices(ContainerInterface $container, Application $application)
     {
         $application->setLogger($container->get('logger'));
         $application->setBootstrapManager($container->get('bootstrap.manager'));

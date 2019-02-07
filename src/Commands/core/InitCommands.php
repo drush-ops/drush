@@ -1,9 +1,11 @@
 <?php
 namespace Drush\Commands\core;
 
+use Consolidation\SiteProcess\Util\Escape;
 use Drush\Drush;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
+use Drush\Exec\ExecTrait;
 use Drush\Log\LogLevel;
 use Robo\LoadAllTasks;
 use Robo\Contract\IOAwareInterface;
@@ -12,6 +14,7 @@ use Robo\Contract\BuilderAwareInterface;
 class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwareInterface
 {
     use LoadAllTasks;
+    use ExecTrait;
 
     /**
      * Enrich the bash startup file with bash aliases and a smart command prompt.
@@ -32,7 +35,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
      */
     public function initializeDrush($options = ['edit' => false, 'add-path' => ''])
     {
-        $home = Drush::config()->home();
+        $home = $this->getConfig()->home();
         $drush_config_dir = $home . "/.drush";
         $drush_config_file = $drush_config_dir . "/drush.yml";
         $drush_bashrc = $drush_config_dir . "/drush.bashrc";
@@ -42,6 +45,9 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
         $example_bashrc = $examples_dir . "/example.bashrc";
         $example_prompt = $examples_dir . "/example.prompt.sh";
 
+        /**
+         * That's right. Robo collections and tasks are usable in Drush.
+         */
         $collection = $this->collectionBuilder();
 
         // Create a ~/.drush directory if it does not yet exist
@@ -50,6 +56,10 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
         // If there is no ~/.drush/drush.yml, copy example there.
         if (!is_file($drush_config_file)) {
             $collection->taskWriteToFile($drush_config_file)->textFromFile($example_configuration);
+            $collection->progressMessage('Copied example.drush.yml to {path}', ['path' => $drush_config_file], LogLevel::OK);
+            $this->logger()->notice('Copied drush.yml to ' . $drush_config_file);
+        } else {
+            $this->logger()->debug($drush_config_file . ' already exists. Skip copy.');
         }
 
         // Decide whether we want to add our Bash commands to
@@ -88,7 +98,7 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
         // If Drush is not in the $PATH, then figure out which
         // path to add so that Drush can be found globally.
         $add_path = $options['add-path'];
-        if ((!drush_which("drush") || $add_path) && ($add_path !== false)) {
+        if ((!self::programExists('drush') || $add_path) && ($add_path !== false)) {
             $drush_path = $this->findPathToDrush();
             $drush_path = preg_replace("%^" . preg_quote($home) . "/%", '$HOME/', $drush_path);
             $pattern = "$drush_path";
@@ -111,8 +121,12 @@ class InitCommands extends DrushCommands implements BuilderAwareInterface, IOAwa
         $result = $collection->run();
 
         if ($result->wasSuccessful() && $openEditor) {
-            $exec = drush_get_editor();
-            drush_shell_exec_interactive($exec, $drush_config_file, $drush_config_file);
+            $editor = drush_get_editor();
+            // A bit awkward due to backward compat.
+            $cmd = sprintf($editor, Escape::shellArg($drush_config_file));
+            $process = $this->processManager()->shell($cmd);
+            $process->setTty(true);
+            $process->mustRun();
         }
 
         return $result;

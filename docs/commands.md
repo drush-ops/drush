@@ -47,24 +47,60 @@ Altering Drush Command Info
 
 Drush command info (annotations) can be altered from other modules. This is done by creating and registering 'command info alterers'. Alterers are class services that are able to intercept and manipulate an existing command annotation.
 
-In order to alter an existing command info, follow the next steps:
+In order to alter an existing command info, follow the steps below:
 
 1. In the module that wants to alter a command info, add a service class that implements the `\Consolidation\AnnotatedCommand\CommandInfoAltererInterface`.
 1. In the module `drush.services.yml` declare a service pointing to this class and tag the service with the `drush.command_info_alterer` tag.
-1. In the class implement the alteration logic the `alterCommandInfo()` method.
-1. Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This would allow the easy debugging. Also it's a good practice to inject the the logger in the class constructor.
+1. In that class, implement the alteration logic in the `alterCommandInfo()` method.
+1. Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also it's a good practice to inject the the logger in the class constructor.
 
 For an example, see the alterer class provided by the testing 'woot' module: `tests/resources/modules/d8/woot/src/WootCommandInfoAlterer.php`.
+
+Site-Wide Drush Commands
+==============================
+
+Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called 'site-wide' commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via `composer require`. See the [examples/Commands](/examples/Commands) folder for examples. In general, it's better to use modules to carry your Drush commands, as module-based commands may [participate in Drupal's dependency injection via the drush.services.yml](#specifying-the-services-file). 
+
+If you still prefer using site-wide commandfiles, here are some examples of valid commandfile names and namespaces:
+
+1. Simple
+     - Filename: $PROJECT_ROOT/drush/Commands/ExampleCommands.php
+     - Namespace: Drush\Commands
+1. Nested in a subdirectory committed to the site's repository
+     - Filename: $PROJECT_ROOT/drush/Commands/example/ExampleCommands.php
+     - Namespace: Drush\Commands\example
+1. Nested in a subdirectory installed via a Composer package
+    - Filename: $PROJECT_ROOT/drush/Commands/contrib/dev_modules/ExampleCommands.php
+    - Namespace: Drush\Commands\dev_modules
+
+Installing commands as part of a Composer project requires that the project's type be `drupal-drush`, and that the `installer-paths` in the Drupal site's composer.json file contains `"drush/Commands/contrib/{$name}": ["type:drupal-drush"]`. It is also possible to commit projects with a similar layout using a directory named `custom` in place of `contrib`; if this is done, then the directory `custom` will not be considered to be part of the commandfile's namespace.
+
+If a site-wide commandfile is added via a Composer package, then it may declare any dependencies that it may need in its composer.json file. Site-wide commandfiles that are committed directly to a site's repository only have access to the dependencies already available in the site. Site-wide commandfiles should declare their Drush version compatibility via a `conflict` directive. For example, a Composer-managed site-wide command that works with both Drush 8 and Drush 9 might contain something similar to the following in its composer.json file:
+```
+    "conflict": {
+        "drush/drush": "<8.1 || >=9.0 <9.5 || >=10.0",
+    }
+```
+Using `require` in place of `conflict` is not recommended.
 
 Global Drush Commands
 ==============================
 
-Commandfiles that don't ship inside Drupal modules are called 'global' commandfiles. See the [examples/Commands](/examples/Commands) folder for examples. In general, its better to use modules to carry your Drush commands. If you still prefer using a global commandfiles, please note:
+Commandfiles that are not part of any Drupal site are called 'global' commandfiles. Global commandfiles are not supported by default; in order to enable them, you must configure your `drush.yml` configuration file to add an `include` search location.
 
-1. The file's fully qualified namespace should be `\Drush\Commands`.
-1. The filename must be have a name like Commands/FooCommands.php
-    1. The prefix `Foo` can be whatever string you want. The file must end in `Commands.php`
-    1. The enclosing directory must be named `Commands`
-1. The directory above Commands must be one of: 
-    1.  A Folder listed in the 'include' option. include may be provided via config or via CLI.
+For example:
+
+drush:
+  paths:
+    include:
+      - '${env.home}/.drush/commands'
+      
+With this configuration in place, global commands may be placed as described in the Site-Wide Drush Commands section above. Global commandfiles may not declare any dependencies of their own; they may only use those dependencies already available via the autoloader.
+
+##### Tips
+1. The filename must be have a name like Commands/ExampleCommands.php
+    1. The prefix `Example` can be whatever string you want.
+    1. The file must end in `Commands.php`
+1. The directory above `Commands` must be one of: 
+    1.  A Folder listed in the 'include' option. Include may be provided via [config](#global-drush-commands) or via CLI.
     1.  ../drush, /drush or /sites/all/drush. These paths are relative to Drupal root.

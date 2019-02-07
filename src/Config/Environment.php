@@ -59,6 +59,10 @@ class Environment
         }
 
         $this->siteLoader = require $autloadFilePath;
+        if ($this->siteLoader === false) {
+            // Nothing more to do. See https://github.com/drush-ops/drush/issues/3741.
+            return $this->loader;
+        }
         if ($this->siteLoader === true) {
             // The autoloader was already required. Assume that Drush and Drupal share an autoloader per
             // "Point autoload.php to the proper vendor directory" - https://www.drupal.org/node/2404989
@@ -452,12 +456,13 @@ class Environment
 
         // Trying to export the columns using stty.
         exec('stty size 2>&1', $columns_output, $columns_status);
-        if (!$columns_status) {
-            $columns = preg_replace('/\d+\s(\d+)/', '$1', $columns_output[0], -1, $columns_count);
+        $matched = false;
+        if (!$columns_status && $matched = preg_match('/^\d+\s(\d+)$/', $columns_output[0], $matches, 0)) {
+            $columns = $matches[1];
         }
 
         // If stty fails and Drush us running on Windows are we trying with mode con.
-        if (($columns_status || !$columns_count) && static::isWindows()) {
+        if (($columns_status || !$matched) && static::isWindows()) {
             $columns_output = [];
             exec('mode con', $columns_output, $columns_status);
             if (!$columns_status && is_array($columns_output)) {

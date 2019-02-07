@@ -11,7 +11,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Descriptor\JsonDescriptor;
 use Symfony\Component\Console\Descriptor\XmlDescriptor;
 use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ListCommands extends DrushCommands
@@ -199,8 +198,7 @@ class ListCommands extends DrushCommands
     public static function categorize($all, $separator = ':')
     {
         foreach ($all as $key => $command) {
-            $hidden = method_exists($command, 'getAnnotationData') && $command->getAnnotationData()->has('hidden');
-            if (!in_array($key, $command->getAliases()) && !$hidden) {
+            if (!in_array($key, $command->getAliases()) && !$command->isHidden()) {
                 $parts = explode($separator, $key);
                 $namespace = count($parts) >= 2 ? array_shift($parts) : '_global';
                 $namespaced[$namespace][$key] = $command;

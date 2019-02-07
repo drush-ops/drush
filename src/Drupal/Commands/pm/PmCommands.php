@@ -5,7 +5,6 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\MissingDependencyException;
-use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drush\Commands\DrushCommands;
@@ -79,6 +78,9 @@ class PmCommands extends DrushCommands
         if (!$this->getModuleInstaller()->install($modules, true)) {
             throw new \Exception('Unable to install modules.');
         }
+        if (batch_get()) {
+            drush_backend_batch_process();
+        }
         $this->logger()->success(dt('Successfully enabled: !list', $todo_str));
         // Our logger got blown away during the container rebuild above.
         $boot = Drush::bootstrapManager()->bootstrap();
@@ -148,11 +150,13 @@ class PmCommands extends DrushCommands
      *   version: Version
      * @default-fields package,display_name,status,version
      * @aliases pml,pm-list
+     * @filter-default-field display_name
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function pmList($options = ['format' => 'table', 'type' => 'module,theme', 'status' => 'enabled,disabled', 'package' => self::REQ, 'core' => false, 'no-core' => false])
     {
         $rows = [];
+        // @todo Update this and other usages once Drupal 8.5 is unsupported by Drush https://www.drupal.org/node/2709919.
         $modules = \system_rebuild_module_data();
         $themes = $this->getThemeHandler()->rebuildThemeData();
         $both = array_merge($modules, $themes);

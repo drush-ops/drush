@@ -1,8 +1,8 @@
 <?php
 namespace Drush\Preflight;
 
-use Drush\SiteAlias\SiteAliasName;
-use Drush\SiteAlias\SiteSpecParser;
+use Consolidation\SiteAlias\SiteAliasName;
+use Consolidation\SiteAlias\SiteSpecParser;
 
 /**
  * Preprocess commandline arguments.
@@ -64,18 +64,21 @@ class ArgsPreprocessor
                 return $storage->passArgs($argv);
             }
 
-            if ($this->isAliasOrSiteSpec($opt) && !$storage->hasAlias() && !$sawArg) {
+            if (!$sawArg && !$storage->hasAlias() && $this->isAliasOrSiteSpec($opt)) {
                 $storage->setAlias($opt);
                 continue;
             }
 
             if ($opt[0] != '-') {
+                if (!$sawArg) {
+                    $storage->setCommandName($opt);
+                }
                 $sawArg = true;
             }
 
-            list($methodName, $value) = $this->findMethodForOptionWithValues($optionsTable, $opt);
+            list($methodName, $value, $acceptsValueFromNextArg) = $this->findMethodForOptionWithValues($optionsTable, $opt);
             if ($methodName) {
-                if (!isset($value)) {
+                if (!isset($value) && $acceptsValueFromNextArg && static::nextCouldBeValue($argv)) {
                     $value = array_shift($argv);
                 }
                 $method = [$storage, $methodName];
@@ -85,6 +88,18 @@ class ArgsPreprocessor
             }
         }
         return $storage;
+    }
+
+    /**
+     * nextCouldBeValue determines whether there is a next argument that
+     * exists and does not begin with a `-`.
+     */
+    protected static function nextCouldBeValue($argv)
+    {
+        if (empty($argv)) {
+            return false;
+        }
+        return $argv[0][0] != '-';
     }
 
     /**
@@ -110,13 +125,13 @@ class ArgsPreprocessor
      * @param $optionsTable Table of option names and the name of the
      *   method that should be called to process that option.
      * @param $opt The option string to check
-     * @return [$methodName, $optionValue]
+     * @return [$methodName, $optionValue, $acceptsValueFromNextArg]
      */
     protected function findMethodForOptionWithValues($optionsTable, $opt)
     {
         // Skip $opt if it is empty, or if it is not an option.
         if (empty($opt) || ($opt[0] != '-')) {
-            return [false, false];
+            return [false, false, false];
         }
 
         // Check each entry in the option table in turn; return as soon
@@ -128,7 +143,7 @@ class ArgsPreprocessor
             }
         }
 
-        return [false, false];
+        return [false, false, false];
     }
 
     /**
@@ -140,18 +155,19 @@ class ArgsPreprocessor
      *   '--'.  If $key ends with '=', then the option must have a value.
      *   Otherwise, it cannot be supplied with a value, and always defaults
      *   to 'true'.
-     * @return [$methodName, $optionValue]
+     * @return [$methodName, $optionValue, $acceptsValueFromNextArg]
      */
     protected function checkMatchingOption($opt, $keyParam, $methodName)
     {
         // Test to see if $key ends in '='; remove the character if present.
-        // If the char is removed, it means the option has a value.
-        $key = rtrim($keyParam, '=');
-        $hasValue = $key != $keyParam;
+        // If the char is removed, it means the option accepts a value.
+        $key = rtrim($keyParam, '=~');
+        $acceptsValue = $key != $keyParam;
+        $acceptsValueFromNextArg = $keyParam[strlen($keyParam) - 1] != '~';
 
         // If $opt does not begin with $key, then it cannot be a match.
         if ($key != substr($opt, 0, strlen($key))) {
-            return [false, false];
+            return [false, false, false];
         }
 
         // If $key and $opt are exact matches, then return a positive result.
@@ -160,32 +176,32 @@ class ArgsPreprocessor
         // argument in the calling function. If this option does not take a
         // supplied value, then we set its value to 'true'
         if (strlen($key) == strlen($opt)) {
-            return [$methodName, $hasValue ? null: true];
+            return [$methodName, $acceptsValue ? null: true, $acceptsValueFromNextArg];
         }
 
         // If the option is not an exact match for the key, then the next
         // character in the option after the key name must be an '='. Otherwise,
         // we might confuse `--locale` for `--local`, etc.
         if ($opt[strlen($key)] != '=') {
-            return [false, false];
+            return [false, false, false];
         }
 
         // If $opt does not take a value, then we will ignore
         // of the form --opt=value
-        if (!$hasValue) {
+        if (!$acceptsValue) {
             // TODO: We could fail with "The "--foo" option does not accept a value." here.
             // It is important that we ignore the value for '--backend', but other options could throw.
             // For now, we just ignore the value if it is there. This only affects --simulate and --local at the moment.
-            return [$methodName, true];
+            return [$methodName, true, $acceptsValueFromNextArg];
         }
 
         // If $opt is a double-dash option, and it contains an '=', then
         // the option value is everything after the '='.
         if ((strlen($key) < strlen($opt)) && ($opt[1] == '-') && ($opt[strlen($key)] == '=')) {
             $value = substr($opt, strlen($key) + 1);
-            return [$methodName, $value];
+            return [$methodName, $value, false];
         }
 
-        return [false, false];
+        return [false, false, $acceptsValueFromNextArg];
     }
 }

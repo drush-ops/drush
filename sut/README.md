@@ -1,0 +1,1 @@
+This directory is used by Unish, Drush's own test suite. Its name is short for System Under Test https://en.wikipedia.org/wiki/System_under_test

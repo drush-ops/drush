@@ -2,8 +2,6 @@
 
 namespace Drush\Utils;
 
-use Drush\Drush;
-
 class StringUtils
 {
 

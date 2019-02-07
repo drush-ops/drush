@@ -2,7 +2,7 @@
 namespace Drush\Preflight;
 
 /**
- * Map commandline arguments from one value to anohter during preflight.
+ * Map commandline arguments from one value to another during preflight.
  */
 class ArgsRemapper
 {

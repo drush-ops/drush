@@ -71,18 +71,21 @@ drush:
       - '${env.home}/.drush/sites'
       - /etc/drush/sites
 
+    # Specify a folder where Drush should store its file based caches. If unspecified, defaults to $HOME/.drush.
+    #cache-directory: /tmp/.drush
+
 # This section is for setting global options.
 options:
   # Specify the base_url that should be used when generating links.
   # Not recommended if you have more than one Drupal site on your system.
-  uri: 'http://example.com/subdir'
+# uri: 'http://example.com/subdir'
 
   # Specify your Drupal core base directory (useful if you use symlinks).
   # Not recommended if you have more than one Drupal root on your system.
-  root: '/home/USER/workspace/drupal-6'
+# root: '/home/USER/workspace/drupal-6'
 
   # Enable verbose mode.
-  verbose: true
+# verbose: true
 
 # This section is for setting command-specific options.
 command:
@@ -148,10 +151,12 @@ ssh:
   # password authentication, and is included here, so you may add additional
   # parameters without losing the default configuration.
   options: '-o PasswordAuthentication=no'
+  # This string is valid for Bash shell. Override in case you need something different. See https://github.com/drush-ops/drush/issues/3816.
+  pipefail: 'set -o pipefail; '
 
 notify:
   # Notify when command takes more than 30 seconds.
-  duration: 30
+# duration: 30
   # Specify a command to run. Defaults to Notification Center (OSX) or libnotify (Linux)
 # cmd: /path/to/program
   # See src/Commands/core/NotifyCommands.php for more configuration settings.

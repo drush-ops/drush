@@ -17,6 +17,7 @@ use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drupal\Core\Lock\LockBackendInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Webmozart\PathUtil\Path;
 
@@ -201,12 +202,13 @@ class ConfigImportCommands extends DrushCommands
         } else {
             $output = ConfigCommands::getDiff($active_storage, $source_storage, $this->output());
 
-            $this->output()->writeln(implode("\n", $output));
+            $this->output()->writeln($output);
         }
 
-        if ($this->io()->confirm(dt('Import the listed configuration changes?'))) {
-            return drush_op([$this, 'doImport'], $storage_comparer);
+        if (!$this->io()->confirm(dt('Import the listed configuration changes?'))) {
+            throw new UserAbortException();
         }
+        return drush_op([$this, 'doImport'], $storage_comparer);
     }
 
     // Copied from submitForm() at /core/modules/config/src/Form/ConfigSync.php

@@ -1,11 +1,27 @@
-<!-- Copy and rename to phpunit.xml. Customize as needed. -->
-<phpunit backupGlobals="false"
+<!--
+
+      Copy and rename this file to phpunit.xml to customize.
+
+      The variables shown below must usually be defined in order to run the
+      functional tests. They may be set by customizing this file, or they may
+      be defined as environment variables. Alternately, you may run the
+      tests without defining these variables if you use the default values.
+-->
+<phpunit
+    bootstrap="../vendor/autoload.php"
+    backupGlobals="false"
     backupStaticAttributes="false"
     syntaxCheck="false"
     colors="true">
   <testsuites>
-    <testsuite name="Drush Test Suite">
-      <directory>.</directory>
+    <testsuite name="unit">
+      <directory suffix="Test.php">unit</directory>
+    </testsuite>
+    <testsuite name="integration">
+      <directory suffix="Test.php">integration</directory>
+    </testsuite>
+    <testsuite name="functional">
+      <directory>functional</directory>
     </testsuite>
   </testsuites>
 
