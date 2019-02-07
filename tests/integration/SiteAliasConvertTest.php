@@ -8,7 +8,7 @@ use Webmozart\PathUtil\Path;
 /**
  * @group base
  */
-class SiteAliasConvertTest extends CommandUnishTestCase
+class SiteAliasConvertTest extends UnishIntegrationTestCase
 {
 
   /**
@@ -18,7 +18,7 @@ class SiteAliasConvertTest extends CommandUnishTestCase
     {
         // Use a custom destination so we don't have to install a Drupal.
         $destination = Path::join(self::getSandbox(), 'testSiteAliasConvert');
-        $this->drush('site:alias-convert', ['destination' => $destination], ['sources' =>  Path::join(__DIR__, '/resources/alias-fixtures')]);
+        $this->drush('site:alias-convert', ['destination' => $destination], ['sources' =>  Path::join(dirname(__DIR__), 'functional/resources/alias-fixtures')]);
 
         // Write config alias-path that specifies our destination.
         $config['drush']['paths']['alias-path'][] = $destination;
