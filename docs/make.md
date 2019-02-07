@@ -484,7 +484,7 @@ Properties in the includer takes precedence over the includee.
         type: "module"
         download:
           type: "git"
-          url: "http://git.drupal.org/project/views.git"
+          url: "https://git.drupal.org/project/views.git"
 
 A project or library entry of an included makefile can be removed entirely by
 setting the corresponding key to NULL:
