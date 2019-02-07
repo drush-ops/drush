@@ -199,6 +199,11 @@ function update_main_prepare() {
   // @see https://github.com/drush-ops/drush/pull/399
   module_implements('', FALSE, TRUE);
 
+  // Ensure we re-evaluate the stream wrappers on full bootstrap.
+  // update_check_requirements() invokes a writeable check and hence loads the
+  // stream wrappers while not all modules are available.
+  drupal_static_reset('file_get_stream_wrappers');
+  
   // Now proceed with a full bootstrap.
 
   drush_bootstrap(DRUSH_BOOTSTRAP_DRUPAL_FULL);
