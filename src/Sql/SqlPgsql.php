@@ -8,7 +8,11 @@ class SqlPgsql extends SqlBase
 {
 
     public $queryExtra = "--no-align --field-separator=\"\t\" --pset tuples_only=on";
+    //public $queryExtra = "--no-align --field-separator='\t' --pset tuples_only=on";
+    //public $queryExtra = "--no-align --pset tuples_only=on";
+    //public $queryExtra = "";		// это для drush sql-dump
 
+  
     public $queryFile = "--file";
 
     private $password_file = null;
@@ -41,10 +45,12 @@ class SqlPgsql extends SqlBase
 
     public function command()
     {
-        $environment = drush_is_windows() ? "SET " : "";
         $pw_file = $this->createPasswordFile();
         if (isset($pw_file)) {
             $environment .= "PGPASSFILE={$pw_file} ";
+        }
+        if (drush_is_windows()) {
+            $environment = "SET SET " . $environment . "& ";
         }
         return "{$environment}psql -q";
     }
@@ -58,8 +64,9 @@ class SqlPgsql extends SqlBase
         $dbSpec = $this->getDbSpec();
         // Some drush commands (e.g. site-install) want to connect to the
         // server, but not the database.  Connect to the built-in database.
-        $parameters['dbname'] = empty($dbSpec['database']) ? 'template1' : $dbSpec['database'];
-
+        if (!drush_is_windows()) {
+            $parameters['dbname'] = empty($dbSpec['database']) ? 'template1' : $dbSpec['database'];
+        }
         // Host and port are optional but have defaults.
         $parameters['host'] = empty($dbSpec['host']) ? 'localhost' : $dbSpec['host'];
         $parameters['port'] = empty($dbSpec['port']) ? '5432' : $dbSpec['port'];
@@ -70,6 +77,9 @@ class SqlPgsql extends SqlBase
         // Don't set the password.
         // @see http://drupal.org/node/438828
 
+        if (drush_is_windows()) {
+            $parameters['dbname'] = empty($dbSpec['database']) ? 'template1' : $dbSpec['database'];
+        }
         return $this->paramsToOptions($parameters);
     }
 
@@ -133,9 +143,15 @@ class SqlPgsql extends SqlBase
         if (isset($pw_file)) {
             $environment = "PGPASSFILE={$pw_file} ";
         }
+        if (drush_is_windows()) {
+            $environment = "SET " . $environment . "& ";
+        }
         $exec = "{$environment}pg_dump ";
         // Unlike psql, pg_dump does not take a '--dbname=' before the database name.
         $extra = str_replace('--dbname=', ' ', $this->creds());
+        if (drush_is_windows()) {
+            $extra = "";
+        }
         if ($data_only) {
             $extra .= ' --data-only';
         }
@@ -164,6 +180,9 @@ class SqlPgsql extends SqlBase
                 $exec .= " && pg_dump --schema-only " . implode(' ', $schemaonlies) . $extra;
                 $exec .= (!$create_db && !$data_only ? ' --clean' : '');
             }
+        }
+        if (drush_is_windows()) {
+            $exec .= str_replace('--dbname=', ' ', $this->creds());
         }
         return $parens ? "($exec)" : $exec;
     }
