@@ -76,8 +76,7 @@
         "symfony/var-dumper": "^3.4 || ^4.0",
         "symfony/yaml": "^3.4",
         "webflo/drupal-finder": "^1.1",
-        "webmozart/path-util": "^2.1.0",
-        "zaporylie/composer-drupal-optimizations": "^1.0"
+        "webmozart/path-util": "^2.1.0"
     },
     "require-dev": {
         "lox/xhprof": "dev-master",
