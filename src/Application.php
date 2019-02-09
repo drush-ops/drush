@@ -354,7 +354,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $discovery
             ->setIncludeFilesAtBase(true)
             ->setSearchDepth(3)
-            ->followLinks(true)
+            ->followLinks($this->getConfig()->get('drush.command-follow-symlinks'))
             ->ignoreNamespacePart('contrib', 'Commands')
             ->ignoreNamespacePart('custom', 'Commands')
             ->ignoreNamespacePart('src')
