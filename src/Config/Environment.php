@@ -37,7 +37,7 @@ class Environment
         $this->originalCwd = Path::canonicalize($cwd);
         $this->etcPrefix = '';
         $this->sharePrefix = '';
-        $this->drushBasePath = dirname(dirname(__DIR__));
+        $this->drushBasePath = Path::canonicalize(dirname(__DIR__)));
         $this->vendorDir = FsUtils::realpath(dirname($autoloadFile));
     }
 
