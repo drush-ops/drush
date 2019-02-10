@@ -1,4 +1,5 @@
 build: off
+
 shallow_clone: false
 platform: 'x86'
 clone_folder: C:\projects\work
@@ -7,6 +8,7 @@ branches:
     - appveyor
 
 build_script:
+  -
 
   ## Cache composer bits
 cache:
