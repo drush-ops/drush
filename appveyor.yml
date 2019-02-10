@@ -53,7 +53,7 @@ install:
   - SET PATH=%APPVEYOR_BUILD_FOLDER%;%APPVEYOR_BUILD_FOLDER%/vendor/bin;%PATH%
 
 test_script:
-  - vendor/bin/phpunit --colors=always --configuration tests --testsuite unit
+  # - vendor/bin/phpunit --colors=always --configuration tests --testsuite unit
   - vendor/bin/phpunit --colors=always --configuration tests --testsuite functional
   - vendor/bin/phpunit --colors=always --configuration tests --testsuite integration
 
