@@ -7,9 +7,6 @@ branches:
   only:
     - appveyor
 
-build_script:
-  -
-
   ## Cache composer bits
 cache:
   - '%LOCALAPPDATA%\Composer\files -> composer.lock'
