@@ -1,5 +1,4 @@
-build: off
-
+build: false
 shallow_clone: false
 platform: 'x86'
 clone_folder: C:\projects\work
