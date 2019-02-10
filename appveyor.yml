@@ -53,11 +53,12 @@ install:
   - SET PATH=%APPVEYOR_BUILD_FOLDER%;%APPVEYOR_BUILD_FOLDER%/vendor/bin;%PATH%
 
 test_script:
-  - php -d sendmail_path='true' vendor/bin/phpunit --colors=always --configuration tests --testsuite unit
-  - php -d sendmail_path='true' vendor/bin/phpunit --colors=always --configuration tests --testsuite functional
-  - php -d sendmail_path='true' vendor/bin/phpunit --colors=always --configuration tests --testsuite integration
+  - php composer.phar unit
+  - php composer.phar functional
+  - php composer.phar integration
 
 # environment variables
 environment:
   global:
     php_ver_target: 7.1
+    UNISH_DB_URL: "mysql://root:Password12!@localhost"
