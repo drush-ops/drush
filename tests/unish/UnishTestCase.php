@@ -57,7 +57,7 @@ abstract class UnishTestCase extends TestCase
         self::mkdir($unish_sandbox);
         $unish_cache = Path::join($unish_sandbox, 'cache');
 
-        self::$drush = self::getComposerRoot() . '/drush';
+        self::$drush = Path::join(self::getComposerRoot(), self::isWindows() ? 'dr.bat' : 'drush');
 
         self::$sandbox = $unish_sandbox;
         self::$usergroup = isset($GLOBALS['UNISH_USERGROUP']) ? $GLOBALS['UNISH_USERGROUP'] : null;
