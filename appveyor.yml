@@ -14,8 +14,9 @@ services:
   - mysql
 
 init:
-#https://github.com/composer/composer/blob/master/appveyor.yml
-#- SET ANSICON=121x90 (121x90)
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+  #https://github.com/composer/composer/blob/master/appveyor.yml
+  #- SET ANSICON=121x90 (121x90)
 
 # Inspired by https://github.com/Codeception/base/blob/master/appveyor.yml and https://github.com/phpmd/phpmd/blob/master/appveyor.yml
 install:
@@ -65,3 +66,4 @@ environment:
   global:
     php_ver_target: 7.1
     UNISH_DB_URL: "mysql://root:Password12!@localhost"
+    APPVEYOR_RDP_PASSWORD: unish
