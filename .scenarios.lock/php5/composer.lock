@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4493f5b10a44fe1be3d6ad55fc8e5625",
+    "content-hash": "c4673065b12551f876c5657ff78b96d9",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -707,16 +707,16 @@
         },
         {
             "name": "consolidation/site-process",
-            "version": "1.1.1",
+            "version": "dev-true",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-process.git",
-                "reference": "410cede9409851c32b50ba05724363b5ff9e019c"
+                "reference": "a0288761feba62273904cad9ba98f8411088951c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-process/zipball/410cede9409851c32b50ba05724363b5ff9e019c",
-                "reference": "410cede9409851c32b50ba05724363b5ff9e019c",
+                "url": "https://api.github.com/repos/consolidation/site-process/zipball/a0288761feba62273904cad9ba98f8411088951c",
+                "reference": "a0288761feba62273904cad9ba98f8411088951c",
                 "shasum": ""
             },
             "require": {
@@ -775,7 +775,7 @@
                 }
             ],
             "description": "A thin wrapper around the Symfony Process Component that allows applications to use the Site Alias library to specify the target for a remote call.",
-            "time": "2019-01-31T17:45:17+00:00"
+            "time": "2019-02-11T13:46:33+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -6217,6 +6217,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "consolidation/site-process": 20,
         "lox/xhprof": 20,
         "webflo/drupal-core-strict": 20
     },

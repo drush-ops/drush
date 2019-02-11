@@ -5,6 +5,8 @@ clone_folder: C:\projects\work
 branches:
   only:
     - appveyor
+  except:
+    - gh-pages
 
   ## Cache composer bits
 cache:
