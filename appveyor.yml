@@ -57,13 +57,13 @@ install:
   - SET PATH=%APPVEYOR_BUILD_FOLDER%;%APPVEYOR_BUILD_FOLDER%/vendor/bin;%PATH%
 
 test_script:
-  # - vendor/bin/phpunit --colors=always --configuration tests --testsuite unit
-  - vendor/bin/phpunit --colors=always --configuration tests --testsuite functional
-  - vendor/bin/phpunit --colors=always --configuration tests --testsuite integration
+  # - vendor/bin/phpunit --colors=always --configuration tests --testsuite unit --debug
+  - vendor/bin/phpunit --colors=always --configuration tests --testsuite functional --debug
+  - vendor/bin/phpunit --colors=always --configuration tests --testsuite integration --debug
 
 # environment variables
 environment:
   global:
     php_ver_target: 7.1
     UNISH_DB_URL: "mysql://root:Password12!@localhost"
-    APPVEYOR_RDP_PASSWORD: unish
+    APPVEYOR_RDP_PASSWORD: un1sh@Windows
