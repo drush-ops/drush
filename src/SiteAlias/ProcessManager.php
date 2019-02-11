@@ -3,6 +3,7 @@ namespace Drush\SiteAlias;
 
 use Consolidation\SiteProcess\ProcessManager as ConsolidationProcessManager;
 
+use Consolidation\SiteProcess\Util\Escape;
 use Psr\Log\LoggerInterface;
 use Consolidation\SiteAlias\AliasRecord;
 use Consolidation\SiteProcess\Factory\TransportFactoryInterface;
@@ -71,7 +72,8 @@ class ProcessManager extends ConsolidationProcessManager implements ConfigAwareI
      */
     public function drushScript(AliasRecord $siteAlias)
     {
-        $defaultDrushScript = 'drush';
+        // @todo always use batch file in Windows case?
+        $defaultDrushScript = Escape::isWindows($siteAlias->os()) ? 'dr.bat' : 'drush';
 
         // If the site alias has 'paths.drush-script', always use that.
         if ($siteAlias->has('paths.drush-script')) {
