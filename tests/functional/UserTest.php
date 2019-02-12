@@ -2,6 +2,7 @@
 
 namespace Unish;
 
+use Consolidation\SiteProcess\Util\Escape;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -60,7 +61,7 @@ class UserCase extends CommandUnishTestCase
         $newpass = 'newpass';
         $name = self::NAME;
         $this->drush('user-password', [self::NAME, $newpass]);
-        $eval = "return \\Drupal::service('user.auth')->authenticate('$name', '$newpass');";
+        $eval = Escape::shellArg("return \Drupal::service('user.auth')->authenticate('$name', '$newpass');");
         $this->drush('php-eval', [$eval]);
         $output = $this->getOutput();
         $this->assertEquals("2", $output, 'User can login with new password.');
