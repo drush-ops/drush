@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bffffa79d08361fd1bcdd9bbfb42f183",
+    "content-hash": "87f646ffdbbec872762e337f3eb3cb3c",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -707,16 +707,16 @@
         },
         {
             "name": "consolidation/site-process",
-            "version": "1.1.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/consolidation/site-process.git",
-                "reference": "9be74d6e3513241f1d21f74856470637f9ce7946"
+                "url": "https://github.com/ms-slasher13/site-process.git",
+                "reference": "953d5c4aecf1746af203289b48545fcc9060a21b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-process/zipball/9be74d6e3513241f1d21f74856470637f9ce7946",
-                "reference": "9be74d6e3513241f1d21f74856470637f9ce7946",
+                "url": "https://api.github.com/repos/ms-slasher13/site-process/zipball/953d5c4aecf1746af203289b48545fcc9060a21b",
+                "reference": "953d5c4aecf1746af203289b48545fcc9060a21b",
                 "shasum": ""
             },
             "require": {
@@ -760,22 +760,61 @@
                     "Consolidation\\SiteProcess\\": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Consolidation\\SiteProcess\\": "tests/src"
+                }
+            },
+            "scripts": {
+                "phar:install-tools": [
+                    "gem install mime-types -v 2.6.2",
+                    "curl -LSs https://box-project.github.io/box2/installer.php | php",
+                    "mkdir -p tools",
+                    "mv -f box.phar tools/box"
+                ],
+                "phar:build": [
+                    "env PATH=tools:$PATH box build"
+                ],
+                "cs": [
+                    "phpcs --standard=PSR2 -n src"
+                ],
+                "cbf": [
+                    "phpcbf --standard=PSR2 -n src"
+                ],
+                "unit": [
+                    "phpunit --colors=always"
+                ],
+                "lint": [
+                    "find src -name '*.php' -print0 | xargs -0 -n1 php -l",
+                    "find tests/src -name '*.php' -print0 | xargs -0 -n1 php -l"
+                ],
+                "test": [
+                    "@lint",
+                    "@unit",
+                    "@cs"
+                ],
+                "release": [
+                    "release VERSION"
+                ]
+            },
             "license": [
                 "MIT"
             ],
             "authors": [
                 {
-                    "name": "Moshe Weitzman",
-                    "email": "weitzman@tejasa.com"
-                },
-                {
                     "name": "Greg Anderson",
                     "email": "greg.1.anderson@greenknowe.org"
+                },
+                {
+                    "name": "Moshe Weitzman",
+                    "email": "weitzman@tejasa.com"
                 }
             ],
             "description": "A thin wrapper around the Symfony Process Component that allows applications to use the Site Alias library to specify the target for a remote call.",
-            "time": "2019-01-31T00:08:26+00:00"
+            "support": {
+                "source": "https://github.com/ms-slasher13/site-process/tree/master"
+            },
+            "time": "2019-02-12T11:21:02+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -6613,6 +6652,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "consolidation/site-process": 20,
         "lox/xhprof": 20,
         "webflo/drupal-core-strict": 20
     },
