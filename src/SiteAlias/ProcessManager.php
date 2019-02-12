@@ -72,8 +72,7 @@ class ProcessManager extends ConsolidationProcessManager implements ConfigAwareI
      */
     public function drushScript(AliasRecord $siteAlias)
     {
-        // @todo always use batch file in Windows case?
-        $defaultDrushScript = Escape::isWindows($siteAlias->os()) ? 'dr.bat' : 'drush';
+        $defaultDrushScript = 'drush';
 
         // If the site alias has 'paths.drush-script', always use that.
         if ($siteAlias->has('paths.drush-script')) {
