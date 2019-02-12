@@ -117,6 +117,9 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "process-timeout": 9600,
+        "github-oauth": {
+            "github.com": "154fbc0cb25b34e837a43f018d63b2e6803a568e"
+        },
         "vendor-dir": "../../vendor"
     },
     "scripts": {

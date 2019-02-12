@@ -90,6 +90,9 @@
     "process-timeout": 9600,
     "platform": {
       "php": "7.0.11"
+    },
+    "github-oauth": {
+      "github.com": "154fbc0cb25b34e837a43f018d63b2e6803a568e"
     }
   },
   "scripts": {
