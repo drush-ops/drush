@@ -1,8 +1,10 @@
 <?php
 
+use Drush\Drush;
 use Drush\Config\Environment;
 use Drush\Preflight\Preflight;
 use Drush\Runtime\Runtime;
+use Drush\Runtime\DependencyInjection;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -55,12 +57,15 @@ if (file_exists($autoloadFile = __DIR__ . '/vendor/autoload.php')
 
 // Set up environment
 $environment = new Environment(Path::getHomeDirectory(), $cwd, $autoloadFile);
+$environment->setConfigFileVariant(Drush::getMajorVersion());
 $environment->setLoader($loader);
 $environment->applyEnvironment();
 
 // Preflight and run
 $preflight = new Preflight($environment);
-$runtime = new Runtime($preflight);
+$di = new DependencyInjection();
+$di->desiredHandlers(['errorHandler', 'shutdownHandler']);
+$runtime = new Runtime($preflight, $di);
 $status_code = $runtime->run($_SERVER['argv']);
 
 exit($status_code);

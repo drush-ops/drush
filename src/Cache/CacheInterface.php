@@ -30,7 +30,6 @@ namespace Drush\Cache;
  *  $options['cache-default-class'] = 'MyCustomCache;
  * @endcode
  *
- * @see _drush_cache_get_object()
  * @see \Drupal\Core\Cache\CacheBackendInterface
  *
  * @deprecated

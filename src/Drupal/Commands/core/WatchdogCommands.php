@@ -8,6 +8,7 @@ use Drupal\Core\Logger\RfcLogLevel;
 use Drush\Commands\DrushCommands;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\Html;
+use Drush\Drupal\DrupalUtil;
 use Drush\Exceptions\UserAbortException;
 
 class WatchdogCommands extends DrushCommands
@@ -17,7 +18,6 @@ class WatchdogCommands extends DrushCommands
      * Show watchdog messages.
      *
      * @command watchdog:show
-     * @drupal-dependencies dblog
      * @param $substring A substring to look search in error messages.
      * @option count The number of messages to show. Defaults to 10.
      * @option severity Restrict to messages of a given severity level.
@@ -45,6 +45,7 @@ class WatchdogCommands extends DrushCommands
      *   date: Date
      *   username: Username
      * @default-fields wid,date,type,severity,message
+     * @filter-default-field message
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'type' => self::REQ, 'extended' => false])
@@ -73,7 +74,6 @@ class WatchdogCommands extends DrushCommands
      * Interactively filter the watchdog message listing.
      *
      * @command watchdog:list
-     * @drupal-dependencies dblog
      * @param $substring A substring to look search in error messages.
      * @option count The number of messages to show. Defaults to 10.
      * @option extended Return extended information about each message.
@@ -134,7 +134,6 @@ class WatchdogCommands extends DrushCommands
      * @param $substring Delete all log records with this text in the messages.
      * @option severity Delete messages of a given severity level.
      * @option type Delete messages of a given type.
-     * @drupal-dependencies dblog
      * @usage drush watchdog:delete all
      *   Delete all messages.
      * @usage drush watchdog:delete 64
@@ -170,7 +169,7 @@ class WatchdogCommands extends DrushCommands
                 throw new \Exception(dt('Watchdog message #!wid does not exist.', ['!wid' => $substring]));
             }
         } else {
-            if ((!isset($substring))&&(!isset($options['type']))&&(!isset($options['severity']))) {
+            if ((empty($substring))&&(!isset($options['type']))&&(!isset($options['severity']))) {
                 throw new \Exception(dt('No options provided.'));
             }
             $where = $this->where($options['type'], $options['severity'], $substring, 'OR');
@@ -190,7 +189,6 @@ class WatchdogCommands extends DrushCommands
      *
      * @command watchdog:show-one
      * @param $id Watchdog Id
-     * @drupal-dependencies dblog
      * @aliases wd-one,watchdog-show-one
      * @validate-module-enabled dblog
      *
@@ -280,7 +278,7 @@ class WatchdogCommands extends DrushCommands
     {
         // Severity.
         $severities = RfcLogLevel::getLevels();
-        $result->severity = $severities[$result->severity];
+        $result->severity = trim(DrupalUtil::drushRender($severities[$result->severity]));
 
         // Date.
         $result->date = format_date($result->timestamp, 'custom', 'd/M H:i');

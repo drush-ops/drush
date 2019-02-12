@@ -2,7 +2,9 @@
 
 namespace Drush\Sql;
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
+use mysql_xdevapi\Exception;
 
 class SqlSqlite extends SqlBase
 {
@@ -35,20 +37,17 @@ class SqlSqlite extends SqlBase
     {
         $file = $this->getDbSpec()['database'];
         if (file_exists($file)) {
-            drush_log("SQLITE: Deleting existing database '$file'", LogLevel::DEBUG);
+            Drush::logger()->debug("SQLITE: Deleting existing database '$file'");
             drush_delete_dir($file, true);
         }
 
         // Make sure sqlite can create file
         $path = dirname($file);
-        drush_log("SQLITE: creating '$path' for creating '$file'", LogLevel::DEBUG);
-        drush_mkdir($path);
-        if (!file_exists($path)) {
-            drush_log("SQLITE: Cannot create $path", LogLevel::ERROR);
-            return false;
-        } else {
-            return true;
+        Drush::logger()->debug("SQLITE: creating '$path' for creating '$file'");
+        if (!drush_mkdir($path)) {
+            throw new Exception("SQLITE: Cannot create $path");
         }
+        return file_exists($path);
     }
 
     public function dbExists()
@@ -59,7 +58,7 @@ class SqlSqlite extends SqlBase
     public function listTables()
     {
         $return = $this->alwaysQuery('.tables');
-        $tables_raw = drush_shell_exec_output();
+        $tables_raw = explode(PHP_EOL, trim($this->getProcess()->getOutput()));
         // SQLite's '.tables' command always outputs the table names in a column
         // format, like this:
         // table_alpha    table_charlie    table_echo
@@ -104,7 +103,7 @@ class SqlSqlite extends SqlBase
         // Postgres or MySQL equivalents. We may be able to fake some in the
         // future, but for now, let's just support simple dumps.
         $exec .= ' ".dump"';
-        if ($option = $this->getOption('extra-dump', $this->queryExtra)) {
+        if ($option = $this->getOption('extra-dump')) {
             $exec .= " $option";
         }
         return $exec;

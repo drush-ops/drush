@@ -54,6 +54,7 @@ class UserCommands extends DrushCommands
      * @table-style default
      * @default-fields uid,name,mail,roles,user_status
      *
+     * @filter-default-field name
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function information($names = '', $options = ['format' => 'table', 'uid' => self::REQ, 'mail' => self::REQ])
@@ -230,7 +231,7 @@ class UserCommands extends DrushCommands
             'access' => '0',
             'status' => 1,
         ];
-        if (!Drush::simulate()) {
+        if (!$this->getConfig()->simulate()) {
             if ($account = User::create($new_user)) {
                 $account->save();
                 drush_backend_set_result($this->infoArray($account));
@@ -265,12 +266,12 @@ class UserCommands extends DrushCommands
      * @command user:cancel
      *
      * @param string $names A comma delimited list of user names.
-     * @option delete-content Delete all content created by the user
+     * @option delete-content Delete the user, and all content created by the user
      * @aliases ucan,user-cancel
      * @usage drush user:cancel username
      *   Cancel the user account with the name username and anonymize all content created by that user.
      * @usage drush user:cancel --delete-content username
-     *   Cancel the user account with the name username and delete all content created by that user.
+     *   Delete the user account with the name username and delete all content created by that user.
      */
     public function cancel($names, $options = ['delete-content' => false])
     {
@@ -307,7 +308,7 @@ class UserCommands extends DrushCommands
     public function password($name, $password)
     {
         if ($account = user_load_by_name($name)) {
-            if (!Drush::simulate()) {
+            if (!$this->getConfig()->simulate()) {
                 $account->setpassword($password);
                 $account->save();
                 $this->logger()->success(dt('Changed password for !name.', ['!name' => $name]));

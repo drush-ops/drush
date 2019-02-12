@@ -144,5 +144,4 @@ class DrushCommandFile extends BaseGenerator
         }
         return $commands;
     }
-
 }

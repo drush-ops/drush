@@ -36,7 +36,7 @@ services:
     tags:
       - { name: drush.command }
 ```
-See the [Drupal Documentation](drupal.org) for details on how to inject Drupal services into your command file. The process is exactly the same as using a Drupal services.yml file to inject services into your module classes.
+See the [Drupal Documentation](https://www.drupal.org/docs/8/api/services-and-dependency-injection/services-and-dependency-injection-in-drupal-8) for details on how to inject Drupal services into your command file. The process is exactly the same as using a Drupal services.yml file to inject services into your module classes.
 
 Inflection
 -------------
@@ -49,8 +49,8 @@ For example:
 namespace Drupal\my_module\Commands;
 
 use Drush\Commands\DrushCommands;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
-use Drush\SiteAlias\SiteSliasManagerAwareTrait;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteSliasManagerAwareTrait;
 
 class MyModuleiCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
@@ -62,11 +62,11 @@ $this->logger()->success(‘The current alias is {name}’, [‘name’ => $self
 }
 }
 ```
-All Drush command files extend DrushCommands; DrushCommands implements IOAwareInterface and LoggerAwareInterface, which gives access to `$this->logger()` and other ways to do input and output. See the [IO documentation](io.md) for more information.
+All Drush command files extend DrushCommands. DrushCommands implements ConfigAwareInterface, IOAwareInterface, LoggerAwareInterface, which gives access to `$this->getConfig()`, `$this->logger()` and other ways to do input and output. See the [IO documentation](io.md) for more information.
 
 Any additional services that are desired must be injected by implementing the appropriate inflection interface.
 
-Available Interfaces:
+Additional Interfaces:
 
 - AutoloaderAwareInterface: Provides access to the class loader.
 - SiteAliasManagerAwareInterface: The site alias manager [allows alias records to be obtained](site-alias-manager.md).

@@ -4,8 +4,8 @@ namespace Drush\Preflight;
 use Consolidation\Config\Config;
 use Consolidation\Config\ConfigInterface;
 
+use Drush\Symfony\DrushArgvInput;
 use Drush\Utils\StringUtils;
-use Symfony\Component\Console\Input\ArgvInput;
 use Drush\Symfony\LessStrictArgvInput;
 
 /**
@@ -28,6 +28,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      * @var string $homeDir Path to directory to use when replacing ~ in paths
      */
     protected $homeDir;
+
+    protected $commandName;
 
     /**
      * @return string
@@ -91,7 +93,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
             '--local' => 'setLocal',
             '--simulate' => 'setSimulate',
             '-s' => 'setSimulate',
-            '--backend' => 'setBackend',
+            '--backend=' => 'setBackend',
             '--drush-coverage=' => 'setCoverageFile',
             '--strict=' => 'setStrict',
             '--help' => 'adjustHelpOption',
@@ -112,7 +114,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
 
     /**
      * Map of option key to the corresponding config key to store the
-     * preflight option in.
+     * preflight option in. The values of the config items in this map
+     * must be BOOLEANS or STRINGS.
      */
     protected function optionConfigMap()
     {
@@ -125,7 +128,8 @@ class PreflightArgs extends Config implements PreflightArgsInterface
 
     /**
      * Map of path option keys to the corresponding config key to store the
-     * preflight option in.
+     * preflight option in. The values of the items in this map must be
+     * STRINGS or ARRAYS OF STRINGS.
      */
     protected function optionConfigPathMap()
     {
@@ -151,13 +155,16 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         foreach ($this->optionConfigPathMap() as $option_key => $config_key) {
             $cli_paths = $this->get($option_key, []);
             $config_paths = (array) $config->get($config_key, []);
-            $merged_paths = array_merge($cli_paths, $config_paths);
+
+            $merged_paths = array_unique(array_merge($cli_paths, $config_paths));
             $config->set($config_key, $merged_paths);
             $this->set($option_key, $merged_paths);
         }
 
         // Store the runtime arguments and options (sans the runtime context items)
         // in runtime.argv et. al.
+        $config->set('runtime.drush-script', $this->applicationPath());
+        $config->set('runtime.command', $this->commandName() ?: 'help');
         $config->set('runtime.argv', $this->args());
         $config->set('runtime.options', $this->getOptionNameList($this->args()));
     }
@@ -175,9 +182,24 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      */
     public function applicationPath()
     {
-        return reset($this->args);
+        return realpath(reset($this->args));
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function commandName()
+    {
+        return $this->commandName;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setCommandName($commandName)
+    {
+        $this->commandName = $commandName;
+    }
     /**
      * @inheritdoc
      */
@@ -321,6 +343,12 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      */
     public function mergeAliasPaths($aliasPaths)
     {
+        $aliasPaths = array_map(
+            function ($item) {
+                return StringUtils::replaceTilde($item, $this->homeDir());
+            },
+            $aliasPaths
+        );
         $paths = $this->aliasPaths();
         $merged_paths = array_merge($paths, $aliasPaths);
         return $this->set(self::ALIAS_PATH, $merged_paths);
@@ -409,7 +437,12 @@ class PreflightArgs extends Config implements PreflightArgsInterface
      */
     public function setBackend($backend)
     {
-        return $this->set(self::BACKEND, $backend);
+        if ($backend == 'json') {
+            // Remap to --format. See \Drush\Commands\sql\SqlSyncCommands::dump.
+            $this->addArg('--format=json');
+        } else {
+            return $this->set(self::BACKEND, true);
+        }
     }
 
     /**
@@ -484,7 +517,7 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         // In strict mode (the default), create an ArgvInput. When
         // strict mode is disabled, create a more forgiving input object.
         if ($this->isStrict() && !$this->isBackend()) {
-            return new ArgvInput($this->args());
+            return new DrushArgvInput($this->args());
         }
 
         // If in backend mode, read additional options from stdin.

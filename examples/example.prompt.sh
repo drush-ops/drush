@@ -2,7 +2,13 @@
 #
 # Example PS1 prompt.
 #
-# Use `drush init` to copy this to ~/.drush/drush.prompt.sh, and source it in ~/.bashrc
+# Use `drush init` to copy this to ~/.drush/drush.prompt.sh, and source it in
+# ~/.bashrc or ~/.bash_profile.
+#
+# Note that your Bash session must already have the __git_ps1 function available.
+# Typically this is provided by git-prompt.sh, see instructions for downloading
+# and including this file here:
+# https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
 #
 # Features:
 #

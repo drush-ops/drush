@@ -48,7 +48,7 @@ class DocsCommands extends DrushCommands
      */
     public function bashrc()
     {
-        self::printFile(DRUSH_BASE_PATH. '/examples/example.bashrc\'');
+        self::printFile(DRUSH_BASE_PATH. '/examples/example.bashrc');
     }
 
     /**
@@ -75,6 +75,20 @@ class DocsCommands extends DrushCommands
     public function configExport()
     {
         self::printFile(DRUSH_BASE_PATH. '/docs/config-exporting.md');
+    }
+
+    /**
+     * Output formatters and filters: how to control the output produced by Drush commands
+     *
+     * @command docs:output-formats-filters
+     * @aliases docs:output
+     * @aliases docs-output
+     * @hidden
+     * @topic
+     */
+    public function outputFormatsFilters()
+    {
+        self::printFile(DRUSH_BASE_PATH. '/docs/output-formats-filters.md');
     }
 
     /**
@@ -152,7 +166,7 @@ class DocsCommands extends DrushCommands
      */
     public function exampleCommand()
     {
-        self::printFile(DRUSH_BASE_PATH. '/examples/Commands/SandwichCommands.php');
+        self::printFile(DRUSH_BASE_PATH. '/examples/Commands/ArtCommands.php');
     }
 
     /**

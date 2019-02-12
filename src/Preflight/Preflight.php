@@ -4,7 +4,7 @@ namespace Drush\Preflight;
 use Drush\Config\Environment;
 use Drush\Config\ConfigLocator;
 use Drush\Config\EnvironmentConfigLoader;
-use Drush\SiteAlias\SiteAliasManager;
+use Consolidation\SiteAlias\SiteAliasManager;
 use DrupalFinder\DrupalFinder;
 
 /**
@@ -56,13 +56,13 @@ class Preflight
     /**
      * Preflight constructor
      */
-    public function __construct(Environment $environment, $verify = null, $configLocator = null)
+    public function __construct(Environment $environment, $verify = null, $configLocator = null, $preflightLog = null)
     {
         $this->environment = $environment;
         $this->verify = $verify ?: new PreflightVerify();
-        $this->configLocator = $configLocator ?: new ConfigLocator('DRUSH_');
+        $this->configLocator = $configLocator ?: new ConfigLocator('DRUSH_', $environment->getConfigFileVariant());
         $this->drupalFinder = new DrupalFinder();
-        $this->logger = new PreflightLog();
+        $this->logger = $preflightLog ?: new PreflightLog();
     }
 
     /**
@@ -173,7 +173,6 @@ class Preflight
     {
         // Make our environment settings available as configuration items
         $this->configLocator->addEnvironment($environment);
-
         $this->configLocator->setLocal($this->preflightArgs->isLocal());
         $this->configLocator->addUserConfig($this->preflightArgs->configPaths(), $environment->systemConfigPath(), $environment->userConfigPath());
         $this->configLocator->addDrushConfig($environment->drushBasePath());
@@ -256,14 +255,26 @@ class Preflight
         $paths = $this->configLocator->getSiteAliasPaths($this->preflightArgs->aliasPaths(), $this->environment);
 
         // Configure alias manager.
-        $this->aliasManager = (new SiteAliasManager())->addSearchLocations($paths);
+        $aliasFileLoader = new \Drush\SiteAlias\SiteAliasFileLoader();
+        $this->aliasManager = (new SiteAliasManager($aliasFileLoader))->addSearchLocations($paths);
         $this->aliasManager->setReferenceData($config->export());
-        $selfAliasRecord = $this->aliasManager->findSelf($this->preflightArgs, $this->environment, $root);
-        $this->configLocator->addAliasConfig($selfAliasRecord->exportConfig());
 
-        // Process the selected alias. This might change the selected site,
-        // so we will add new site-wide config location for the new root.
-        $root = $this->setSelectedSite($selfAliasRecord->localRoot());
+        // Find the local site
+        $siteLocator = new PreflightSiteLocator($this->aliasManager);
+        $selfAliasRecord = $siteLocator->findSite($this->preflightArgs, $this->environment, $root);
+
+        // If we did not find a local site, then we are destined to fail
+        // UNLESS RedispatchToSiteLocal::redispatchIfSiteLocalDrush takes over.
+        // Before we try to redispatch to the site-local Drush, though, we must
+        // initialize the alias manager & c. based on any alias record we did find.
+        if ($selfAliasRecord) {
+            $this->aliasManager->setSelf($selfAliasRecord);
+            $this->configLocator->addAliasConfig($selfAliasRecord->exportConfig());
+
+            // Process the selected alias. This might change the selected site,
+            // so we will add new site-wide config location for the new root.
+            $root = $this->setSelectedSite($selfAliasRecord->localRoot());
+        }
 
         // Now that we have our final Drupal root, check to see if there is
         // a site-local Drush. If there is, we will redispatch to it.
@@ -272,6 +283,19 @@ class Preflight
         $status = RedispatchToSiteLocal::redispatchIfSiteLocalDrush($argv, $root, $this->environment->vendorPath(), $this->logger())    ;
         if ($status !== false) {
             return $status;
+        }
+
+        // If the site locator couldn't find a local site, and we did not
+        // redispatch to a site-local Drush, then we cannot continue.
+        // This can happen when using Drush 9 to call a site-local Drush 8
+        // using an alias record that is only defined in a Drush 8 format.
+        if (!$selfAliasRecord) {
+            // Note that PreflightSiteLocator::findSite only returns 'false'
+            // when preflightArgs->alias() returns an alias name. In all other
+            // instances we will get an alias record, even if it is only a
+            // placeholder 'self' with the root holding the cwd.
+            $aliasName = $this->preflightArgs->alias();
+            throw new \Exception("The alias $aliasName could not be found.");
         }
 
         // If we did not redispatch, then add the site-wide config for the

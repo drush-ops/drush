@@ -1,27 +1,33 @@
 <?php
 namespace Drush\Commands;
 
+use Drush\Drush;
 use Drush\Style\DrushStyle;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
-use Robo\Common\ConfigAwareTrait;
+use Drush\Config\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 use Robo\Contract\IOAwareInterface;
 use Robo\Common\IO;
 use Symfony\Component\Console\Input\InputOption;
+use Consolidation\SiteProcess\ProcessManagerAwareTrait;
+use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 
-abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, ConfigAwareInterface
+abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, ConfigAwareInterface, ProcessManagerAwareInterface
 {
+    use ProcessManagerAwareTrait;
+
     // This is more readable.
     const REQ=InputOption::VALUE_REQUIRED;
     const OPT=InputOption::VALUE_OPTIONAL;
 
+    // Common exit codes.
+    const EXIT_SUCCESS = 0;
+    const EXIT_FAILURE = 1;
+
     use LoggerAwareTrait;
-    use ConfigAwareTrait {
-        // Move aside this method so we can replace. See https://stackoverflow.com/a/37687295.
-        getConfig as ConfigAwareGetConfig;
-    }
+    use ConfigAwareTrait;
     use IO {
         io as roboIo;
     }
@@ -53,19 +59,6 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     }
 
     /**
-     * Replaces same method in ConfigAwareTrait in order to provide a
-     * DrushConfig as return type. Helps with IDE completion.
-     *
-     * @see https://stackoverflow.com/a/37687295.
-     *
-     * @return \Drush\Config\DrushConfig
-     */
-    public function getConfig()
-    {
-        return $this->ConfigAwareGetConfig();
-    }
-
-    /**
      * Print the contents of a file.
      *
      * @param string $file
@@ -80,12 +73,17 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
         }
 
         if (self::input()->isInteractive()) {
-            if (drush_shell_exec_interactive("less %s", $file)) {
-                return;
-            } elseif (drush_shell_exec_interactive("more %s", $file)) {
+            ;
+            $process = $this->processManager()->process(['less', $file])->setTty(true);
+            if ($process->run() === 0) {
                 return;
             } else {
-                $this->output()->writeln(file_get_contents($file));
+                $process = $this->processManager()->process(['more', $file]);
+                if ($process->run() === 0) {
+                    return;
+                } else {
+                    $this->output()->writeln(file_get_contents($file));
+                }
             }
         }
     }

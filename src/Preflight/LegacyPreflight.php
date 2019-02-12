@@ -3,6 +3,8 @@ namespace Drush\Preflight;
 
 use Drush\Drush;
 use Drush\Config\Environment;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -19,6 +21,15 @@ class LegacyPreflight
      */
     public static function defineConstants(Environment $environment, $applicationPath)
     {
+        // 'define' is undesirable in that it will error if the same identifier
+        // is defined more than once. Ideally we would inject the legacy preflight
+        // object into the Preflight class, and wherever else it was needed,
+        // and omit it for the integration tests. This is probably not practicable
+        // at the moment, though.
+        if (defined('DRUSH_REQUEST_TIME')) {
+            return;
+        }
+
         $applicationPath = Path::makeAbsolute($applicationPath, $environment->cwd());
 
         define('DRUSH_REQUEST_TIME', microtime(true));
@@ -95,7 +106,7 @@ class LegacyPreflight
         drush_set_context('DRUSH_PER_USER_CONFIGURATION', $environment->userConfigPath());
     }
 
-    public static function setGlobalOptionContexts($input, $output)
+    public static function setGlobalOptionContexts(InputInterface $input, OutputInterface $output)
     {
         $verbose = $output->isVerbose();
         $debug = $output->isDebug();
@@ -110,18 +121,6 @@ class LegacyPreflight
 
         // Pipe implies quiet.
         drush_set_context('DRUSH_QUIET', $quiet || $pipe);
-
-        // Suppress colored logging if --no-ansi (was --nocolor) option is explicitly given or if
-        // terminal does not support it.
-        $nocolor = $input->getOption('no-ansi', false);
-        if (!$nocolor) {
-            // Check for colorless terminal.  If there is no terminal, then
-            // 'tput colors 2>&1' will return "tput: No value for $TERM and no -T specified",
-            // which is not numeric and therefore will put us in no-color mode.
-            $colors = exec('tput colors 2>&1');
-            $nocolor = !($colors === false || (is_numeric($colors) && $colors >= 3));
-        }
-        drush_set_context('DRUSH_NOCOLOR', $nocolor);
     }
 
     /**
