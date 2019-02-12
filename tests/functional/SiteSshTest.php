@@ -16,6 +16,10 @@ class SiteSshCase extends CommandUnishTestCase
      */
     public function testInteractive()
     {
+        if ($this->isWindows()) {
+            $this->markTestSkipped('TTY mode not supported on Windows.');
+        }
+
         $options = [
             'simulate' => true,
         ];
