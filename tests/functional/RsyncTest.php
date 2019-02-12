@@ -25,7 +25,7 @@ class RsyncCase extends CommandUnishTestCase
     public function testRsyncSimulated()
     {
         if ($this->isWindows()) {
-            $this->markTestSkipped('rsync command not currently available on Windows.');
+            $this->markTestSkipped('rsync paths may not contain colons on Windows.');
         }
 
         $options = [

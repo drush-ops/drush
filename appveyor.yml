@@ -54,15 +54,15 @@ install:
   #- appveyor DownloadFile https://getcomposer.org/composer.phar
   - php -r "readfile('http://getcomposer.org/installer');" | php
   #Install dependencies via Composer
-  - php composer.phar -q install --prefer-dist -n
+  - php composer.phar -q install --prefer-dist -n -v
   - SET PATH=%APPVEYOR_BUILD_FOLDER%;%APPVEYOR_BUILD_FOLDER%/vendor/bin;%PATH%
   # Keep this at end.
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 test_script:
   # - vendor/bin/phpunit --colors=always --configuration tests --testsuite unit --debug
-  - vendor/bin/phpunit --colors=always --configuration tests --testsuite functional --debug
-  - vendor/bin/phpunit --colors=always --configuration tests --testsuite integration --debug
+  - ps: vendor/bin/phpunit --colors=always --configuration tests --testsuite functional --verbose
+  - ps: vendor/bin/phpunit --colors=always --configuration tests --testsuite integration --verbose
 
 on_finish:
   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))

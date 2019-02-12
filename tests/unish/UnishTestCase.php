@@ -124,7 +124,7 @@ abstract class UnishTestCase extends TestCase
 
     public static function getComposerRoot()
     {
-        return dirname(dirname(__DIR__));
+        return Path::canonicalize(dirname(dirname(__DIR__)));
     }
 
     /**
