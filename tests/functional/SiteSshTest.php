@@ -4,7 +4,7 @@ namespace Unish;
 
 /**
  * @file
- *   Tests for ssh.drush.inc
+ *   Tests for SSHCommands
  *
  * @group commands
  */
@@ -30,19 +30,16 @@ class SiteSshCase extends CommandUnishTestCase
     }
 
     /**
-     * Test drush ssh --simulate 'date'.
-     * @todo Run over a site list. drush_sitealias_get_record() currently cannot
-     * handle a site list comprised of longhand site specifications.
+     * Test drush ssh --simulate 'time && date'.
      */
     public function testNonInteractive()
     {
         $options = [
-            'cd' => '0',
             'simulate' => true,
         ];
-        $this->drush('ssh', ['date'], $options, 'user@server/path/to/drupal#sitename');
+        $this->drush('ssh', ['time && date'], $options, 'user@server/path/to/drupal#sitename');
         $output = $this->getErrorOutput();
-        $expected = "ssh -o PasswordAuthentication=no user@server date";
+        $expected = "ssh -o PasswordAuthentication=no user@server 'cd /path/to/drupal && time && date'";
         $this->assertContains($expected, $output);
     }
 
@@ -52,26 +49,25 @@ class SiteSshCase extends CommandUnishTestCase
     public function testSshMultipleArgs()
     {
         $options = [
-            'cd' => '0',
             'simulate' => true,
         ];
         $this->drush('ssh', ['ls', '/path1', '/path2'], $options, 'user@server/path/to/drupal#sitename');
         $output = $this->getSimplifiedErrorOutput();
-        $expected = "[notice] Simulating: ssh -o PasswordAuthentication=no user@server 'ls /path1 /path2'";
+        $expected = "[notice] Simulating: ssh -o PasswordAuthentication=no user@server 'cd /path/to/drupal && ls /path1 /path2'";
         $this->assertContains($expected, $output);
     }
 
     /**
-     * Test drush ssh with multiple arguments (legacy form).
+     * Test with single arg and --cd option.
      */
-    public function testSshMultipleArgsLegacy()
+    public function testSshSingleArgs()
     {
         $options = [
-            'cd' => '0',
+            'cd' => '/foo/bar',
             'simulate' => true,
         ];
         $this->drush('ssh', ['ls /path1 /path2'], $options, 'user@server/path/to/drupal#sitename');
-        $expected = "[notice] Simulating: ssh -o PasswordAuthentication=no user@server 'ls /path1 /path2'";
+        $expected = "[notice] Simulating: ssh -o PasswordAuthentication=no user@server 'cd /foo/bar && ls /path1 /path2'";
         $this->assertContains($expected, $this->getSimplifiedErrorOutput());
     }
 }
