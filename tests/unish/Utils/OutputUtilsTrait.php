@@ -58,6 +58,7 @@ trait OutputUtilsTrait
         // Debug flags may be added to command strings if we are in debug mode. Take those out so that tests in phpunit --debug mode work
         $output = preg_replace('# --debug #', ' ', $output);
         $output = preg_replace('# --verbose #', ' ', $output);
+        $output = preg_replace('# --vvv #', ' ', $output);
         // Get rid of any full paths in the output
         $output = preg_replace('#' . Path::canonicalize(dirname(dirname(__DIR__))) . '/[^/]*#', '__DIR__', $output);
         $output = str_replace(self::getSandbox(), '__SANDBOX__', $output);

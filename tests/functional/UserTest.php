@@ -60,9 +60,9 @@ class UserCase extends CommandUnishTestCase
     {
         $newpass = 'newpass';
         $name = self::NAME;
-        $this->drush('user-password', [self::NAME, $newpass]);
-        $eval = Escape::shellArg("return \Drupal::service('user.auth')->authenticate('$name', '$newpass');");
-        $this->drush('php-eval', [$eval]);
+        $this->drush('user:password', [self::NAME, $newpass]);
+        $eval = "return \Drupal::service('user.auth')->authenticate('$name', '$newpass');";
+        $this->drush('php:eval', [$eval]);
         $output = $this->getOutput();
         $this->assertEquals("2", $output, 'User can login with new password.');
     }
@@ -126,7 +126,7 @@ class UserCase extends CommandUnishTestCase
             'description_base_field' => 'no',
             'rest_configuration' => 'no',
         ];
-        $answers = json_encode($answers);
+        $answers = json_encode($answers, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
         $this->drush('generate', ['content-entity'], ['answers' => $answers, 'directory' => Path::join(self::webroot(), 'modules/contrib')], null, null, self::EXIT_SUCCESS, null, ['SHELL_INTERACTIVE' => 1]);
         $this->drush('pm-enable', ['text,unish_article']);
         // Create one unish_article owned by our example user.
