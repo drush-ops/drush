@@ -91,7 +91,7 @@ trait ExecTrait
     {
         $cmd = "command -v $program";
         if (Escape::isWindows()) {
-          $cmd = "where $program";
+            $cmd = "where $program";
         }
         $process = Drush::shell($cmd);
         $process->run();
