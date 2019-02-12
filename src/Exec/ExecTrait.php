@@ -90,8 +90,8 @@ trait ExecTrait
     public static function programExists($program)
     {
         $cmd = "command -v $program";
-        if ($program == 'mysql' && Escape::isWindows()) {
-            $cmd = 'mysql -V';
+        if (Escape::isWindows()) {
+          $cmd = "where $program";
         }
         $process = Drush::shell($cmd);
         $process->run();
