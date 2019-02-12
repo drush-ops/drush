@@ -60,9 +60,9 @@ install:
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 test_script:
-  # - vendor/bin/phpunit --colors=always --configuration tests --testsuite unit --debug
-  - ps: vendor/bin/phpunit --colors=always --configuration tests --testsuite functional --verbose
-  - ps: vendor/bin/phpunit --colors=always --configuration tests --testsuite integration --verbose
+  # - ps: vendor/bin/phpunit --colors=always --configuration tests --testsuite unit --debug
+  - ps: vendor/bin/phpunit --colors=always --configuration tests --testsuite functional --debug
+  - ps: vendor/bin/phpunit --colors=always --configuration tests --testsuite integration --debug
 
 on_finish:
   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))

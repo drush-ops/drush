@@ -50,6 +50,7 @@ trait OutputUtilsTrait
         $output = preg_replace("#\n\n\n*#m", "\n\n", $output);
         // Replace Windows chars
         $output = preg_replace("#\r\n*#m", "\n", $output);
+        $output = preg_replace('#\n*#m', "", $output);
         // Remove double spaces from output to help protect test from false negatives if spacing changes subtly
         $output = preg_replace('#  *#', ' ', $output);
         // Remove leading and trailing spaces.
