@@ -16,10 +16,6 @@ class SiteSshCase extends CommandUnishTestCase
      */
     public function testInteractive()
     {
-        if ($this->isWindows()) {
-            $this->markTestSkipped('ssh command not currently available on Windows.');
-        }
-
         $options = [
             'simulate' => true,
         ];
@@ -63,11 +59,10 @@ class SiteSshCase extends CommandUnishTestCase
     public function testSshSingleArgs()
     {
         $options = [
-            'cd' => $this->webrootSlashDrush(),
             'simulate' => true,
         ];
         $this->drush('ssh', ['ls /path1 /path2'], $options, 'user@server/path/to/drupal#sitename');
-        $expected = "[notice] Simulating: ssh -o PasswordAuthentication=no user@server 'cd __SUT__/sut/drush && ls /path1 /path2'";
+        $expected = "[notice] Simulating: ssh -o PasswordAuthentication=no user@server 'cd /path/to/drupal && ls /path1 /path2'";
         $this->assertContains($expected, $this->getSimplifiedErrorOutput());
     }
 }
