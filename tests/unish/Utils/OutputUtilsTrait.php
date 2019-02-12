@@ -48,6 +48,8 @@ trait OutputUtilsTrait
         $output = preg_replace('# -t #', ' ', $output);
         // Remove multiple blank lines
         $output = preg_replace("#\n\n\n*#m", "\n\n", $output);
+        // remove Windows chars
+        $output = preg_replace("#\r\n*#m", "", $output);
         // Remove double spaces from output to help protect test from false negatives if spacing changes subtly
         $output = preg_replace('#  *#', ' ', $output);
         // Remove leading and trailing spaces.

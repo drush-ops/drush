@@ -711,12 +711,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-process.git",
-                "reference": "a0288761feba62273904cad9ba98f8411088951c"
+                "reference": "cad5f31e6fa5f7433c5b7b5c41c4a7789faf0765"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-process/zipball/a0288761feba62273904cad9ba98f8411088951c",
-                "reference": "a0288761feba62273904cad9ba98f8411088951c",
+                "url": "https://api.github.com/repos/consolidation/site-process/zipball/cad5f31e6fa5f7433c5b7b5c41c4a7789faf0765",
+                "reference": "cad5f31e6fa5f7433c5b7b5c41c4a7789faf0765",
                 "shasum": ""
             },
             "require": {
@@ -775,7 +775,7 @@
                 }
             ],
             "description": "A thin wrapper around the Symfony Process Component that allows applications to use the Site Alias library to specify the target for a remote call.",
-            "time": "2019-02-11T13:46:33+00:00"
+            "time": "2019-02-12T16:22:17+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -3387,16 +3387,16 @@
         },
         {
             "name": "g1a/composer-test-scenarios",
-            "version": "3.0.1",
+            "version": "3.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/g1a/composer-test-scenarios.git",
-                "reference": "224531e20d13a07942a989a70759f726cd2df9a1"
+                "reference": "28f932580981e912ab8f01d15788f1dee06550c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/g1a/composer-test-scenarios/zipball/224531e20d13a07942a989a70759f726cd2df9a1",
-                "reference": "224531e20d13a07942a989a70759f726cd2df9a1",
+                "url": "https://api.github.com/repos/g1a/composer-test-scenarios/zipball/28f932580981e912ab8f01d15788f1dee06550c8",
+                "reference": "28f932580981e912ab8f01d15788f1dee06550c8",
                 "shasum": ""
             },
             "require": {
@@ -3435,7 +3435,7 @@
                 }
             ],
             "description": "Useful scripts for testing multiple sets of Composer dependencies.",
-            "time": "2018-11-27T05:58:39+00:00"
+            "time": "2019-02-11T20:22:44+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
