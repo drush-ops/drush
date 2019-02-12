@@ -16,7 +16,6 @@ services:
   - mysql
 
 init:
-  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   #https://github.com/composer/composer/blob/master/appveyor.yml
   #- SET ANSICON=121x90 (121x90)
 
@@ -57,6 +56,8 @@ install:
   #Install dependencies via Composer
   - php composer.phar -q install --prefer-dist -n
   - SET PATH=%APPVEYOR_BUILD_FOLDER%;%APPVEYOR_BUILD_FOLDER%/vendor/bin;%PATH%
+  # Keep this at end.
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 test_script:
   # - vendor/bin/phpunit --colors=always --configuration tests --testsuite unit --debug

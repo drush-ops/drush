@@ -4,6 +4,7 @@ namespace Unish\Utils;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use PHPUnit\Framework\TestResult;
+use Webmozart\PathUtil\Path;
 
 /**
  * OutputUtilsTrait provides some useful utility methods for test classes
@@ -58,7 +59,7 @@ trait OutputUtilsTrait
         $output = preg_replace('# --debug #', ' ', $output);
         $output = preg_replace('# --verbose #', ' ', $output);
         // Get rid of any full paths in the output
-        $output = preg_replace('#' . dirname(dirname(__DIR__)) . '/[^/]*#', '__DIR__', $output);
+        $output = preg_replace('#' . Path::canonicalize(dirname(dirname(__DIR__))) . '/[^/]*#', '__DIR__', $output);
         $output = str_replace(self::getSandbox(), '__SANDBOX__', $output);
         $output = str_replace(self::getSut(), '__SUT__', $output);
 
