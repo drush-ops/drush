@@ -67,7 +67,7 @@ class SiteSshCase extends CommandUnishTestCase
             'simulate' => true,
         ];
         $this->drush('ssh', ['ls /path1 /path2'], $options, 'user@server/path/to/drupal#sitename');
-        $expected = "[notice] Simulating: ssh -o PasswordAuthentication=no user@server 'cd " . $this->webrootSlashDrush() . " && ls /path1 /path2'";
+        $expected = "[notice] Simulating: ssh -o PasswordAuthentication=no user@server 'cd __SUT__/sut/drush && ls /path1 /path2'";
         $this->assertContains($expected, $this->getSimplifiedErrorOutput());
     }
 }
