@@ -43,7 +43,7 @@ use Webmozart\PathUtil\Path;
 // We use PWD if available because getcwd() resolves symlinks, which  could take
 // us outside of the Drupal root, making it impossible to find. In addition,
 // is_dir() is used as the provided path may not be recognizable by PHP. For
-// instance, Cygwin adds the 'cygdrive' prefix to the path which is a virtual
+// instance, Cygwin adds a '/cygdrive' prefix to the path which is a virtual
 // directory.
 $cwd = isset($_SERVER['PWD']) && is_dir($_SERVER['PWD']) ? $_SERVER['PWD'] : getcwd();
 
