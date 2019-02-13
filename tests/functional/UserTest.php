@@ -60,7 +60,7 @@ class UserCase extends CommandUnishTestCase
         $newpass = 'newpass';
         $name = self::NAME;
         $this->drush('user:password', [self::NAME, $newpass]);
-        $eval = "return \Drupal::service(\"user.auth\")->authenticate(\"$name\", \"$newpass\");";
+        $eval = "return Drupal::service(\"user.auth\")->authenticate(\"$name\", \"$newpass\");";
         $this->drush('php:eval', [$eval]);
         $output = $this->getOutput();
         $this->assertEquals("2", $output, 'User can login with new password.');

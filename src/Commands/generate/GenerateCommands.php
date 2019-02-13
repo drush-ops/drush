@@ -45,10 +45,6 @@ class GenerateCommands extends DrushCommands
      */
     public function generate($generator = '', $options = ['answers' => self::REQ, 'directory' => self::REQ])
     {
-
-        var_dump($options['answers']);
-        var_dump(json_decode($options['answers']));
-
         // Disallow default Symfony console commands.
         if ($generator == 'help' || $generator == 'list') {
             $generator = null;
