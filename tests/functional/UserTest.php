@@ -2,7 +2,6 @@
 
 namespace Unish;
 
-use Consolidation\SiteProcess\Util\Escape;
 use Webmozart\PathUtil\Path;
 
 /**
