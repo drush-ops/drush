@@ -78,8 +78,12 @@ class UpdateDBTest extends CommandUnishTestCase
         // Run updates.
         $this->drush('updatedb', [], $options, null, null, self::EXIT_ERROR);
 
-        $this->assertContains($this->simplifyOutput($expected_status_report), $this->getSimplifiedOutput());
-        $this->assertEquals($expected_update_log_output, $this->getSimplifiedErrorOutput());
+        foreach ($expected_status_report as $needle) {
+            $this->assertContains($needle, $this->getOutput());
+        }
+        foreach ($expected_update_log_output as $needle) {
+            $this->assertContains($needle, $this->getErrorOutput());
+        }
     }
 
     /**
@@ -95,32 +99,17 @@ class UpdateDBTest extends CommandUnishTestCase
                 8100,
                 // The expected status report that will be output before the
                 // test is initiated.
-                <<<LOG
- -------- ----------- --------------- -----------------------
-  Module   Update ID   Type            Description
- -------- ----------- --------------- -----------------------
-  woot     8101        hook_update_n   Good update.
-  woot     8102        hook_update_n   Failing update.
-  woot     8103        hook_update_n   Failing update 2.
-  woot     8104        hook_update_n   Another good update.
-  woot     failing     post-update     Failing post-update.
- -------- ----------- --------------- -----------------------
-
- // Do you wish to run the specified pending updates?: yes.
-LOG
-                ,
-                // The expected output being logged during the update.
-                <<<LOG
-> [notice] Update started: woot_update_8101
-> [notice] This is the update message from woot_update_8101
-> [notice] Update completed: woot_update_8101
-> [notice] Update started: woot_update_8102
-> [error] This is the exception message thrown in woot_update_8102
-> [error] Update failed: woot_update_8102
-[error] Update aborted by: woot_update_8102
-[error] Finished performing updates.
-LOG
-                ,
+                [
+                    'woot     8104        hook_update_n   Another good update.',
+                    'woot     failing     post-update     Failing post-update.',
+                ],
+                [
+                    '[notice] Update started: woot_update_8101',
+                    'This is the exception message thrown in woot_update_8102',
+                    'Update failed: woot_update_8102',
+                    'Update aborted by: woot_update_8102',
+                    'Finished performing updates.',
+                ],
             ],
             [
                 // The last successfully completed update. This means that the
@@ -129,27 +118,18 @@ LOG
                 8102,
                 // The expected status report that will be output before the
                 // test is initiated.
-                <<<LOG
- -------- ----------- --------------- -----------------------
-  Module   Update ID   Type            Description
- -------- ----------- --------------- -----------------------
-  woot     8103        hook_update_n   Failing update 2.
-  woot     8104        hook_update_n   Another good update.
-  woot     failing     post-update     Failing post-update.
- -------- ----------- --------------- -----------------------
-
- // Do you wish to run the specified pending updates?: yes.
-LOG
-                ,
-                // The expected output being logged during the update.
-                <<<LOG
-> [notice] Update started: woot_update_8103
-> [error] Call to undefined function non_existing_function()
-> [error] Update failed: woot_update_8103
-[error] Update aborted by: woot_update_8103
-[error] Finished performing updates.
-LOG
-                ,
+                [
+                    'woot     8103        hook_update_n   Failing update 2.',
+                    'woot     8104        hook_update_n   Another good update.',
+                    'woot     failing     post-update     Failing post-update.',
+                ],
+                [
+                    'Update started: woot_update_8103',
+                    'Call to undefined function non_existing_function()',
+                    'Update failed: woot_update_8103',
+                    'Update aborted by: woot_update_8103',
+                    'Finished performing updates.',
+                ],
             ],
         ];
     }
@@ -175,33 +155,12 @@ LOG
 
         // Run updates.
         $this->drush('updatedb', [], $options, null, null, self::EXIT_ERROR);
-
-        $expected_output = <<<LOG
- -------- ----------- --------------- -------------------------
-  Module   Update ID    Type            Description
- -------- ----------- --------------- -------------------------
-  woot     8104         hook_update_n   Another good update.
-  woot     a            post-update     Successful post-update.
-  woot     failing      post-update     Failing post-update.
- -------- ----------- --------------- -------------------------
-
- // Do you wish to run the specified pending updates?: yes.
-LOG;
-        $this->assertContains($this->simplifyOutput($expected_output), $this->getSimplifiedOutput());
-
-        $expected_error_output =
-        '> [notice] Update started: woot_update_8104
-> [notice] This is the update message from woot_update_8104
-> [notice] Update completed: woot_update_8104
-> [notice] Update started: woot_post_update_a
-> [notice] This is the update message from woot_post_update_a
-> [notice] Update completed: woot_post_update_a
-> [notice] Update started: woot_post_update_failing
-> [error] This is the exception message thrown in woot_post_update_failing
-> [error] Update failed: woot_post_update_failing
-[error] Update aborted by: woot_post_update_failing
-[error] Finished performing updates.';
-        $this->assertEquals($expected_error_output, $this->getSimplifiedErrorOutput());
+        $this->assertContains('woot     a           post-update     Successful post-update.', $this->getOutput());
+        $this->assertContains('woot     failing     post-update     Failing post-update.', $this->getOutput());
+        $this->assertContains('This is the exception message thrown in woot_post_update_failing', $this->getErrorOutput());
+        $this->assertContains('Update failed: woot_post_update_failing', $this->getErrorOutput());
+        $this->assertContains('Update aborted by: woot_post_update_failing', $this->getErrorOutput());
+        $this->assertContains('Finished performing updates.', $this->getErrorOutput());
     }
 
     /**
@@ -292,33 +251,14 @@ YAML_FRAGMENT;
 
         // Run updates.
         $this->drush('updatedb', [], $options);
-
-        $expected_output = <<<LOG
- -------- ----------- --------------- -------------------------
-  Module   Update ID    Type            Description
- -------- ----------- --------------- -------------------------
-  woot     8104         hook_update_n   Another good update.
-  woot     a            post-update     Successful post-update.
-  woot     render       post-update     Renders some content.
- -------- ----------- --------------- -------------------------
-
- // Do you wish to run the specified pending updates?: yes.
-LOG;
-        $this->assertContains($this->simplifyOutput($expected_output), $this->getSimplifiedOutput());
-
-        $expected_error_output = <<<LOG
-> [notice] Update started: woot_update_8104
-> [notice] This is the update message from woot_update_8104
-> [notice] Update completed: woot_update_8104
-> [notice] Update started: woot_post_update_a
-> [notice] This is the update message from woot_post_update_a
-> [notice] Update completed: woot_post_update_a
-> [notice] Update started: woot_post_update_render
-> [notice] Update completed: woot_post_update_render
-[success] Finished performing updates.
-LOG;
-
-        $this->assertEquals($expected_error_output, $this->getSimplifiedErrorOutput());
+        // Check output.
+        $this->assertContains('woot 8104 hook_update_n Another good update.', $this->getSimplifiedOutput());
+        $this->assertContains('woot a post-update Successful post-update.', $this->getSimplifiedOutput());
+        $this->assertContains('woot render post-update Renders some content.', $this->getSimplifiedOutput());
+        // Check error output.
+        $this->assertContains('Update started: woot_update_8104', $this->getErrorOutput());
+        $this->assertContains('Finished performing updates.', $this->getErrorOutput());
+        $this->assertNotContains('Failed', $this->getErrorOutput());
     }
 
     public function tearDown()
