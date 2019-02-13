@@ -49,7 +49,7 @@ trait OutputUtilsTrait
         // Remove multiple blank lines
         $output = preg_replace("#\n\n\n*#m", "\n\n", $output);
         // Replace Windows chars
-        // $output = preg_replace("#\r\n*#m", "\n", $output);
+        $output = preg_replace('#\r\n*#m', "", $output);
         // $output = preg_replace('#\n*#m', "", $output);
         // Remove double spaces from output to help protect test from false negatives if spacing changes subtly
         $output = preg_replace('#  *#', ' ', $output);
@@ -61,7 +61,7 @@ trait OutputUtilsTrait
         // Debug flags may be added to command strings if we are in debug mode. Take those out so that tests in phpunit --debug mode work
         $output = preg_replace('# --debug #', ' ', $output);
         $output = preg_replace('# --verbose #', ' ', $output);
-        $output = preg_replace('# --vvv #', ' ', $output);
+        $output = preg_replace('# -vvv #', ' ', $output);
         // Get rid of any full paths in the output
         $output = preg_replace('#' . Path::canonicalize(dirname(dirname(__DIR__))) . '/[^/]*#', '__DIR__', $output);
         $output = str_replace(self::getSandbox(), '__SANDBOX__', $output);
