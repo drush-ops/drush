@@ -325,6 +325,13 @@ function drush_preflight_root() {
   if (!isset($root)) {
     $root = drush_locate_root();
   }
+  // If the old ways do not find a Drupal root, use DrupalFinder.
+  if (!$root) {
+    $finder = new \DrupalFinder\DrupalFinder();
+    if ($finder->locateRoot(getcwd())) {
+      $root = $finder->getDrupalRoot();
+    }
+  }
   if ($root) {
     $root = realpath($root);
   }
@@ -382,7 +389,7 @@ function _drush_preflight_global_options() {
 
   // Backend implies affirmative unless negative is explicitly specified
   drush_set_context('DRUSH_NEGATIVE',    drush_get_option('no', FALSE));
-  drush_set_context('DRUSH_AFFIRMATIVE', drush_get_option(array('yes', 'pipe'), FALSE) || (drush_get_context('DRUSH_BACKEND') && !drush_get_context('DRUSH_NEGATIVE')));
+  drush_set_context('DRUSH_AFFIRMATIVE', drush_get_option(array('yes', 'pipe', 'no-interaction'), FALSE) || (drush_get_context('DRUSH_BACKEND') && !drush_get_context('DRUSH_NEGATIVE')));
 
   // Pipe implies quiet.
   drush_set_context('DRUSH_QUIET', drush_get_option(array('quiet', 'pipe')));

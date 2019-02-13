@@ -290,6 +290,9 @@ function annotationcommand_adapter_get_commands($annotation_commandfiles) {
   return $commands;
 }
 
+use Psr\Log\LoggerAwareInterface;
+
+
 /**
  * Create and cache a commandfile instance.
  *
@@ -303,6 +306,13 @@ function annotationcommand_adapter_create_commandfile_instance($commandfile_path
   if (!isset($cache[$commandfile_path])) {
     include_once $commandfile_path;
     $commandhandler = new $commandfile_class;
+
+    // Inject logger if requested
+    if ($commandhandler instanceof LoggerAwareInterface) {
+      $drush_logger = drush_get_context('DRUSH_LOGGER');
+      $commandhandler->setLogger($drush_logger);
+    }
+
     $cache[$commandfile_path] = $commandhandler;
   }
   return $cache[$commandfile_path];
