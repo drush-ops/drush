@@ -74,10 +74,6 @@ drush:
     # Specify a folder where Drush should store its file based caches. If unspecified, defaults to $HOME/.drush.
     #cache-directory: /tmp/.drush
 
-  # Enable to make Drush follow symlinks when searching for commandfiles. This
-  # is typically best only done for setting up test fixtures for Drush extensions.
-  command-follow-symlinks: false
-
 # This section is for setting global options.
 options:
   # Specify the base_url that should be used when generating links.
