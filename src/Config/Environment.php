@@ -395,7 +395,7 @@ class Environment
         if ($override) {
             return $override;
         }
-        return static::isWindows() ? getenv('ALLUSERSPROFILE') . '/Drush' : $defaultPrefix;
+        return static::isWindows() ? Path::join(getenv('ALLUSERSPROFILE'), 'Drush') : $defaultPrefix;
     }
 
     /**
