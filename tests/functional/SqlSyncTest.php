@@ -20,6 +20,10 @@ class SqlSyncTest extends CommandUnishTestCase
 
     public function testSimulatedSqlSync()
     {
+        if ($this->isWindows()) {
+            $this->markTestSkipped('On Windows, Paths mismatch and confuse rsync.');
+        }
+
         $fixtureSites = [
             'remote' => [
                 'host' => 'server.isp.simulated',
