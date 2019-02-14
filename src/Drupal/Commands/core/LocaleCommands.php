@@ -12,6 +12,7 @@ use Drupal\Core\State\StateInterface;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\locale\PoDatabaseReader;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\CommandFailedException;
 use Drush\Utils\StringUtils;
 
 class LocaleCommands extends DrushCommands
@@ -208,10 +209,10 @@ class LocaleCommands extends DrushCommands
         $types = $commandData->input()->getOption('types');
 
         if (!$langcode && !$template) {
-            throw new \Exception(dt('Set LANGCODE or --template, see help for more information.'));
+            throw new CommandFailedException('Set LANGCODE or --template, see help for more information.');
         }
         if ($template && $types) {
-            throw new \Exception(dt('No need for --types, when --template is used, see help for more information.'));
+            throw new CommandFailedException('Can not use both --types and --template, see help for more information.');
         }
     }
 
@@ -361,14 +362,14 @@ class LocaleCommands extends DrushCommands
                     '@language' => $language->label(),
                 ]));
             } else {
-                throw new \Exception(dt('Language code @langcode is not configured.', [
+                throw new CommandFailedException(dt('Language code @langcode is not configured.', [
                     '@langcode' => $langcode,
                 ]));
             }
         }
 
         if (!$this->isTranslatable($language)) {
-            throw new \Exception(dt('Language code @langcode is not translatable.', [
+            throw new CommandFailedException(dt('Language code @langcode is not translatable.', [
                 '@langcode' => $langcode,
             ]));
         }
@@ -420,7 +421,7 @@ class LocaleCommands extends DrushCommands
 
         // Check for invalid conversions.
         if (array_diff($types, $valid_convertions)) {
-            throw new \Exception(dt('Allowed types: @types.', [
+            throw new CommandFailedException(dt('Allowed types: @types.', [
                 '@types' => implode(', ', $valid_convertions),
             ]));
         }
