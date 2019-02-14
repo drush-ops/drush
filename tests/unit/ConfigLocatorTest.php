@@ -31,9 +31,9 @@ class ConfigLocatorTest extends TestCase
 
         $sources = $configLocator->sources();
         //$this->assertEquals('environment', $sources['env']['cwd']);
-        $this->assertEquals($this->fixturesDir() . '/etc/drush/drush.yml', $sources['test']['system']);
-        $this->assertEquals($this->fixturesDir() . '/etc/drush/drushVARIANT.yml', $sources['test']['variant']);
-        $this->assertEquals($this->fixturesDir() . '/home/.drush/drush.yml', $sources['test']['home']);
+        $this->assertEquals($this->fixturesDir() . '/etc/drush/drush.yml', Path::canonicalize($sources['test']['system']));
+        $this->assertEquals($this->fixturesDir() . '/etc/drush/drushVARIANT.yml', Path::canonicalize($sources['test']['variant']));
+        $this->assertEquals($this->fixturesDir() . '/home/.drush/drush.yml', Path::canonicalize($sources['test']['home']));
         $this->assertEquals($this->fixturesDir() . '/sites/d8/drush/drush.yml', $sources['test']['site']);
         $this->assertEquals($this->environment()->drushBasePath() . '/drush.yml', $sources['drush']['php']['minimum-version']);
 

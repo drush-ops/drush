@@ -461,7 +461,7 @@ class Environment
             $columns = $matches[1];
         }
 
-        // If stty fails and Drush us running on Windows are we trying with mode con.
+        // If stty fails and Drush is running on Windows are we trying with mode con.
         if (($columns_status || !$matched) && static::isWindows()) {
             $columns_output = [];
             exec('mode con', $columns_output, $columns_status);
