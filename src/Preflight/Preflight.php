@@ -199,7 +199,7 @@ class Preflight
     public function getCommandFilePaths()
     {
         $commandlinePaths = $this->preflightArgs->commandPaths();
-        $configPaths = $this->config()->get('drush.include');
+        $configPaths = $this->config()->get('drush.include', []);
 
         // Find all of the available commandfiles, save for those that are
         // provided by modules in the selected site; those will be added

@@ -461,8 +461,7 @@ class ConfigLocator
                 if (is_dir($path)) {
                     if (is_numeric($key)) {
                         $searchpath[] = $path;
-                    }
-                    else {
+                    } else {
                         $key = strtr($key, '-/', '_\\');
                         $searchpath[$key] = $path;
                     }
