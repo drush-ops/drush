@@ -75,10 +75,15 @@ class ConfigLocatorTest extends TestCase
     {
         $configLocator = $this->createConfigLocator();
         $aliasPaths = $configLocator->getSiteAliasPaths(['/home/user/aliases'], $this->environment());
+        $aliasPaths = array_map(
+            function ($item) {
+                return str_replace(Path::canonicalize(dirname(__DIR__)), '', $item);
+            },
+            $aliasPaths
+        );
         sort($aliasPaths);
-        $aliasPaths[1] = Path::makeRelative($aliasPaths[1], dirname(__DIR__));
 
-        $expected = '/home/user/aliases,fixtures/sites/d8/drush/sites';
+        $expected = '/fixtures/sites/d8/drush/sites,/home/user/aliases';
         $this->assertEquals($expected, implode(',', $aliasPaths));
     }
 
