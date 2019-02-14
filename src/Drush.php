@@ -402,7 +402,7 @@ class Drush
      * @param int|float|null $timeout The timeout in seconds or null to disable
      * @return Process
      */
-    public function shell($command, $cwd = null, array $env = null, $input = null, $timeout = 60)
+    public static function shell($command, $cwd = null, array $env = null, $input = null, $timeout = 60)
     {
         $processManager = self::service('process.manager');
         return $processManager->shell($command, $cwd, $env, $input, $timeout);
