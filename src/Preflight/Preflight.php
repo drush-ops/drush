@@ -198,10 +198,13 @@ class Preflight
 
     public function getCommandFilePaths()
     {
+        $commandlinePaths = $this->preflightArgs->commandPaths();
+        $configPaths = $this->config()->get('drush.include');
+
         // Find all of the available commandfiles, save for those that are
         // provided by modules in the selected site; those will be added
         // during bootstrap.
-        return $this->configLocator->getCommandFilePaths($this->preflightArgs->commandPaths(), $this->drupalFinder()->getDrupalRoot());
+        return $this->configLocator->getCommandFilePaths(array_merge($commandlinePaths, $configPaths), $this->drupalFinder()->getDrupalRoot());
     }
 
     public function loadSiteAutoloader()

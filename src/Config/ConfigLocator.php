@@ -447,12 +447,29 @@ class ConfigLocator
     protected function getIncludedCommandFilePaths($commandPaths)
     {
         $searchpath = [];
+
         // Commands specified by 'include' option
-        foreach ($commandPaths as $commandPath) {
-            if (is_dir($commandPath)) {
-                $searchpath[] = $commandPath;
+        foreach ($commandPaths as $key => $commandPath) {
+            // Check to see if there is a `#` in the include path.
+            // This indicates an include path that has a namespace,
+            // e.g. `namespace#/path`.
+            if (is_numeric($key) && strpos($commandPath, '#') !== false) {
+                list($key, $commandPath) = explode('#', $commandPath, 2);
+            }
+            $sep = (DIRECTORY_SEPARATOR == '\\') ? ';' : ':';
+            foreach (explode($sep, $commandPath) as $path) {
+                if (is_dir($path)) {
+                    if (is_numeric($key)) {
+                        $searchpath[] = $path;
+                    }
+                    else {
+                        $key = strtr($key, '-/', '_\\');
+                        $searchpath[$key] = $path;
+                    }
+                }
             }
         }
+
         return $searchpath;
     }
 
