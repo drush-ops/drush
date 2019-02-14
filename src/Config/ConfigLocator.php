@@ -402,7 +402,7 @@ class ConfigLocator
         $base_dirs = array_filter(array_merge($this->siteRoots, [$this->composerRoot]));
         $site_local_paths = array_map(
             function ($item) {
-                return "$item/drush/sites";
+                return Path::join($item, '/drush/sites');
             },
             $base_dirs
         );

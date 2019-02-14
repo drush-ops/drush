@@ -54,7 +54,7 @@ install:
   #- appveyor DownloadFile https://getcomposer.org/composer.phar
   - php -r "readfile('http://getcomposer.org/installer');" | php
   #Install dependencies via Composer
-  - php composer.phar -q install --prefer-dist -n -v
+  - php composer.phar install --prefer-dist -n
   - SET PATH=%APPVEYOR_BUILD_FOLDER%;%APPVEYOR_BUILD_FOLDER%/vendor/bin;%PATH%
   # Keep this at end.
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))

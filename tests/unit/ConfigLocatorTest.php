@@ -83,8 +83,8 @@ class ConfigLocatorTest extends TestCase
         );
         sort($aliasPaths);
 
-        $expected = '/fixtures/sites/d8/drush/sites,/home/user/aliases';
-        $this->assertEquals($expected, implode(',', $aliasPaths));
+        $expected = ['/fixtures/sites/d8/drush/sites', '/home/user/aliases'];
+        $this->assertEquals($expected, $aliasPaths);
     }
 
     /**
