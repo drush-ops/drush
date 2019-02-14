@@ -54,7 +54,7 @@ In order to alter an existing command info, follow the steps below:
 1. In that class, implement the alteration logic in the `alterCommandInfo()` method.
 1. Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also it's a good practice to inject the the logger in the class constructor.
 
-For an example, see the alterer class provided by the testing 'woot' module: `tests/resources/modules/d8/woot/src/WootCommandInfoAlterer.php`.
+For an example, see the alterer class provided by the testing 'woot' module: `tests/functional/resources/modules/d8/woot/src/WootCommandInfoAlterer.php`.
 
 Site-Wide Drush Commands
 ==============================
