@@ -1,7 +1,6 @@
 <?php
 namespace Drush\Exec;
 
-use Consolidation\SiteProcess\Util\Escape;
 use Consolidation\SiteProcess\Util\Shell;
 use Consolidation\SiteProcess\Util\Escape;
 use Drush\Drush;
