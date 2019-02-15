@@ -3,6 +3,7 @@ namespace Drush\Exec;
 
 use Consolidation\SiteProcess\Util\Escape;
 use Consolidation\SiteProcess\Util\Shell;
+use Consolidation\SiteProcess\Util\Escape;
 use Drush\Drush;
 
 trait ExecTrait
@@ -89,7 +90,7 @@ trait ExecTrait
      */
     public static function programExists($program)
     {
-        $command = Escape::isWindows(PHP_OS) ? "where $program" : "command -v $program";
+        $command = Escape::isWindows() ? "where $program" : "command -v $program";
         $process = Drush::shell($command);
         $process->run();
         if (!$process->isSuccessful()) {
