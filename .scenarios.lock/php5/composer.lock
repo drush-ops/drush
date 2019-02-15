@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c4673065b12551f876c5657ff78b96d9",
+    "content-hash": "6d11aab68306f8f238fc2482807389e0",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -707,16 +707,16 @@
         },
         {
             "name": "consolidation/site-process",
-            "version": "dev-true",
+            "version": "2.0.0-beta1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-process.git",
-                "reference": "1ee3403d9721f1ef8ee2e74a1d1e3e31d0920b43"
+                "reference": "54787b001bc6447742795f82a69e29aae4d9ba0d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-process/zipball/1ee3403d9721f1ef8ee2e74a1d1e3e31d0920b43",
-                "reference": "1ee3403d9721f1ef8ee2e74a1d1e3e31d0920b43",
+                "url": "https://api.github.com/repos/consolidation/site-process/zipball/54787b001bc6447742795f82a69e29aae4d9ba0d",
+                "reference": "54787b001bc6447742795f82a69e29aae4d9ba0d",
                 "shasum": ""
             },
             "require": {
@@ -775,7 +775,7 @@
                 }
             ],
             "description": "A thin wrapper around the Symfony Process Component that allows applications to use the Site Alias library to specify the target for a remote call.",
-            "time": "2019-02-15T12:39:33+00:00"
+            "time": "2019-02-15T17:13:24+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -1701,7 +1701,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "BackEndTea@gmail.com"
+                    "email": "backendtea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
@@ -5860,17 +5860,6 @@
         {
             "name": "webflo/drupal-core-strict",
             "version": "8.6.x-dev",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/webflo/drupal-core-strict.git",
-                "reference": "0e445007504878ac9080dba88e6aa906e3d42592"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/webflo/drupal-core-strict/zipball/0e445007504878ac9080dba88e6aa906e3d42592",
-                "reference": "0e445007504878ac9080dba88e6aa906e3d42592",
-                "shasum": ""
-            },
             "require": {
                 "asm89/stack-cors": "1.2.0",
                 "composer/installers": "v1.5.0",
@@ -6217,7 +6206,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "consolidation/site-process": 20,
         "lox/xhprof": 20,
         "webflo/drupal-core-strict": 20
     },
