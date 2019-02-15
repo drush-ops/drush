@@ -11,6 +11,7 @@
  * option in drushrc.php.
  */
 
+use Drush\Cache\JSONCache;
 use Drush\Drush;
 use Drush\Log\LogLevel;
 
@@ -45,11 +46,7 @@ function _drush_cache_get_object($bin) {
   static $cache_objects;
 
   if (!isset($cache_objects[$bin])) {
-    $class = drush_get_option('cache-class-' . $bin, NULL);
-    if (!isset($class)) {
-      $class = drush_get_option('cache-default-class', '\Drush\Cache\JSONCache');
-    }
-    $cache_objects[$bin] = new $class($bin);
+    $cache_objects[$bin] = new JSONCache($bin);
   }
   return $cache_objects[$bin];
 }
@@ -73,7 +70,7 @@ function _drush_cache_get_object($bin) {
 function drush_cache_get($cid, $bin = 'default') {
   $ret = _drush_cache_get_object($bin)->get($cid);
   $mess = $ret ? "HIT" : "MISS";
-  drush_log(dt("Cache !mess cid: !cid", ['!mess' => $mess, '!cid' => $cid]), LogLevel::DEBUG);
+  Drush::logger()->debug(dt("Cache !mess cid: !cid", ['!mess' => $mess, '!cid' => $cid]));
   return $ret;
 }
 
@@ -115,9 +112,10 @@ function drush_cache_get_multiple(array &$cids, $bin = 'default') {
  * @return bool
  */
 function drush_cache_set($cid, $data, $bin = 'default', $expire = DRUSH_CACHE_PERMANENT) {
-  $ret = _drush_cache_get_object($bin)->set($cid, $data, $expire);
-  if ($ret) drush_log(dt("Cache SET cid: !cid", ['!cid' => $cid]), LogLevel::DEBUG);
-  return $ret;
+  if ($ret = _drush_cache_get_object($bin)->set($cid, $data, $expire)) {
+    Drush::logger()->debug(dt("Cache SET cid: !cid", ['!cid' => $cid]));
+    return $ret;
+  }
 }
 
 /**
@@ -184,6 +182,8 @@ function drush_cache_get_bins() {
  *
  * @return
  *   A cache id string.
+ *
+ * @deprecated
  */
 function drush_get_cid($prefix, $contexts = [], $params = []) {
   $cid = [];

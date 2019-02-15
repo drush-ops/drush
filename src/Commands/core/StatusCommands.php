@@ -10,8 +10,8 @@ use Drush\Boot\DrupalBoot;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Sql\SqlBase;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
-use Drush\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\AnnotatedCommand\CommandData;
 
@@ -51,6 +51,7 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
      *   drush-script: Drush script
      *   drush-version: Drush version
      *   drush-temp: Drush temp
+     *   drush-cache-directory: Drush cache folder
      *   drush-conf: Drush configs
      *   drush-alias-files: Drush aliases
      *   alias-searchpaths: Alias search paths
@@ -135,10 +136,11 @@ class StatusCommands extends DrushCommands implements SiteAliasManagerAwareInter
         if ($phpIniFiles = EditCommands::phpIniFiles()) {
             $status_table['php-conf'] = $phpIniFiles;
         }
-        $status_table['drush-script'] = DRUSH_COMMAND;
+        $status_table['drush-script'] = $this->getConfig()->get('runtime.drush-script');
         $status_table['drush-version'] = Drush::getVersion();
         $status_table['drush-temp'] = $this->getConfig()->tmp();
-        $status_table['drush-conf'] = Drush::config()->get('runtime.config.paths');
+        $status_table['drush-cache-directory'] = $this->getConfig()->cache();
+        $status_table['drush-conf'] = $this->getConfig()->configPaths();
         // List available alias files
         $alias_files = $this->siteAliasManager()->listAllFilePaths();
         sort($alias_files);

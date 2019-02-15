@@ -4,7 +4,6 @@ namespace Drush\Drupal\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drush\Commands\DrushCommands;
@@ -102,6 +101,7 @@ class LanguageCommands extends DrushCommands
      *   default: Default
      *   locked: Locked
      * @default-fields language,direction,default
+     * @filter-default-field language
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function info()

@@ -1,8 +1,8 @@
 <?php
 namespace Drush\Commands\pm;
 
-use Composer\Semver\Comparator;
-use Consolidation\AnnotatedCommand\CommandData;
+use Composer\Semver\Semver;
+use Consolidation\AnnotatedCommand\CommandResult;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -14,12 +14,6 @@ use Webmozart\PathUtil\Path;
  */
 class SecurityUpdateCommands extends DrushCommands
 {
-
-    /**
-     * @var array
-     */
-    protected $securityUpdates;
-
     /**
      * Check Drupal Composer packages for pending security updates.
      *
@@ -35,26 +29,83 @@ class SecurityUpdateCommands extends DrushCommands
      * @field-labels
      *   name: Name
      *   version: Installed Version
-     *   min-version: Suggested version
-     * @default-fields name,version,min-version
+     * @default-fields name,version
      *
+     * @filter-default-field name
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      *
      * @throws \Exception
      */
     public function security()
     {
-        $this->securityUpdates = [];
+        $security_advisories_composer_json = $this->fetchAdvisoryComposerJson();
+        $composer_lock_data = $this->loadSiteComposerLock();
+        $updates = $this->calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json);
+        if ($updates) {
+            $this->suggestComposerCommand($updates);
+            return CommandResult::dataWithExitCode(new RowsOfFields($updates), self::EXIT_FAILURE);
+        } else {
+            $this->logger()->success("<info>There are no outstanding security updates for Drupal projects.</info>");
+        }
+    }
+
+    /**
+     * Emit suggested Composer command for security updates.
+     */
+    public function suggestComposerCommand($updates)
+    {
+        $suggested_command = 'composer require ';
+        foreach ($updates as $package) {
+            $suggested_command .= $package['name'] . ' ';
+        }
+        $suggested_command .= '--update-with-dependencies';
+        $this->logger()->warning('One or more of your dependencies has an outstanding security update.');
+        $this->logger()->notice("Try running: <comment>$suggested_command</comment>");
+        $this->logger()->notice("If that fails due to a conflict then you must update one or more root dependencies.");
+    }
+
+    /**
+     * Fetches the generated composer.json from drupal-security-advisories.
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    protected function fetchAdvisoryComposerJson()
+    {
         try {
-            $response_body = file_get_contents('https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/8.x/composer.json');
+            // We use the v2 branch for now, as per https://github.com/drupal-composer/drupal-security-advisories/pull/11.
+            $response_body = file_get_contents('https://raw.githubusercontent.com/drupal-composer/drupal-security-advisories/8.x-v2/composer.json');
+            if ($response_body === false) {
+                throw new Exception("Unable to fetch drupal-security-advisories information.");
+            }
         } catch (Exception $e) {
             throw new Exception("Unable to fetch drupal-security-advisories information.");
         }
         $security_advisories_composer_json = json_decode($response_body, true);
+        return $security_advisories_composer_json;
+    }
+
+    /**
+     * Loads the contents of the local Drupal application's composer.lock file.
+     *
+     * @return array
+     *
+     * @throws \Exception
+     */
+    protected function loadSiteComposerLock()
+    {
         $composer_root = Drush::bootstrapManager()->getComposerRoot();
-        $composer_lock_file_name = getenv('COMPOSER') ? str_replace('.json', '', getenv('COMPOSER')) : 'composer';
+        $composer_lock_file_name = getenv('COMPOSER') ? str_replace(
+            '.json',
+            '',
+            getenv('COMPOSER')
+        ) : 'composer';
         $composer_lock_file_name .= '.lock';
-        $composer_lock_file_path = Path::join($composer_root, $composer_lock_file_name);
+        $composer_lock_file_path = Path::join(
+            $composer_root,
+            $composer_lock_file_name
+        );
         if (!file_exists($composer_lock_file_path)) {
             throw new Exception("Cannot find $composer_lock_file_path!");
         }
@@ -63,53 +114,33 @@ class SecurityUpdateCommands extends DrushCommands
         if (!array_key_exists('packages', $composer_lock_data)) {
             throw new Exception("No packages were found in $composer_lock_file_path! Contents:\n $composer_lock_contents");
         }
-        foreach ($composer_lock_data['packages'] as $key => $package) {
-            $name = $package['name'];
-            if (!empty($security_advisories_composer_json['conflict'][$name])) {
-                $conflict_constraints = explode(',', $security_advisories_composer_json['conflict'][$name]);
-                foreach ($conflict_constraints as $conflict_constraint) {
-                    // Only parse constraints that follow pattern like "<1.0.0".
-                    if (substr($conflict_constraint, 0, 1) == '<') {
-                        $min_version = substr($conflict_constraint, 1);
-                        if (Comparator::lessThan($package['version'], $min_version)) {
-                            $this->securityUpdates[$name] = [
-                                'name' => $name,
-                                'version' => $package['version'],
-                                'min-version' => $min_version,
-                            ];
-                        }
-                    } else {
-                        $this->logger()->warning("Could not parse drupal-security-advisories conflicting version constraint $conflict_constraint for package $name.");
-                    }
-                }
-            }
-        }
-        if ($this->securityUpdates) {
-            // @todo Modernize.
-            drush_set_context('DRUSH_EXIT_CODE', DRUSH_FRAMEWORK_ERROR);
-            $result = new RowsOfFields($this->securityUpdates);
-            return $result;
-        } else {
-            $this->logger()->success("<info>There are no outstanding security updates for Drupal projects.</info>");
-        }
+        return $composer_lock_data;
     }
 
     /**
-     * Emit suggested Composer command for security updates.
+     * Return  available security updates.
      *
-     * @hook post-command pm:security
+     * @param array $composer_lock_data
+     *   The contents of the local Drupal application's composer.lock file.
+     * @param array $security_advisories_composer_json
+     *   The composer.json array from drupal-security-advisories.
+     *
+     * @return array
      */
-    public function suggestComposerCommand($result, CommandData $commandData)
+    protected function calculateSecurityUpdates($composer_lock_data, $security_advisories_composer_json)
     {
-        if (!empty($this->securityUpdates)) {
-            $suggested_command = 'composer require ';
-            foreach ($this->securityUpdates as $package) {
-                $suggested_command .= $package['name'] . ':^' . $package['min-version'] . ' ';
+        $updates = [];
+        $both = array_merge($composer_lock_data['packages-dev'], $composer_lock_data['packages']);
+        $conflict = $security_advisories_composer_json['conflict'];
+        foreach ($both as $package) {
+            $name = $package['name'];
+            if (!empty($conflict[$name]) && Semver::satisfies($package['version'], $security_advisories_composer_json['conflict'][$name])) {
+                $updates[$name] = [
+                    'name' => $name,
+                    'version' => $package['version'],
+                ];
             }
-            $suggested_command .= '--update-with-dependencies';
-            $this->logger()->warning("One or more of your dependencies has an outstanding security update. Please apply update(s) immediately.");
-            $this->logger()->notice("Try running: <comment>$suggested_command</comment>");
-            $this->logger()->notice("If that fails due to a conflict then you must update one or more root dependencies.");
         }
+        return $updates;
     }
 }

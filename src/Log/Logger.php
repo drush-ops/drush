@@ -25,36 +25,79 @@
 
 namespace Drush\Log;
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
-use Psr\Log\AbstractLogger;
 use Robo\Log\RoboLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Drush\Utils\StringUtils;
 
 class Logger extends RoboLogger
 {
+    /**
+     * Array of logs. For use by backend responses.
+     *
+     * @var array
+     *
+     * @deprecated
+     */
+    protected $logs = [];
+
+    /**
+     * Array of error logs. For use by backend responses.
+     *
+     * @var array
+     *
+     * @deprecated
+     */
+    protected $logs_error = [];
 
     public function __construct(OutputInterface $output)
     {
         parent::__construct($output);
     }
 
+    /**
+     * Get an array of logs for the current request.
+     *
+     * @return array
+     *
+     * @deprecated Used by drush_backend_output().
+     */
+    public function getLogs()
+    {
+        return $this->logs;
+    }
+
+    /**
+     * Get an array of error logs for the current request.
+     *
+     * @return array
+     *
+     * @deprecated Used by drush_backend_output().
+     */
+    public function getErrorLogs()
+    {
+        return $this->logs_error;
+    }
+
+    /**
+     * Empty log collections.
+     *
+     * @deprecated
+     */
+    public function clearLogs()
+    {
+        $this->logs_error = $this->logs = [];
+    }
+
     public function log($level, $message, array $context = [])
     {
-        // Convert to old $entry array for b/c calls
-        $entry = $context + [
-            'type' => $level,
-            'message' => StringUtils::interpolate($message, $context),
-            'timestamp' => microtime(true),
-            'memory' => memory_get_usage(),
-        ];
+        $entry = $this->buildEntry($level, $message, $context);
 
-        // Drush\Log\Logger should take over all of the responsibilities
-        // of drush_log, including caching the log messages and sending
-        // log messages along to backend invoke.
-        // TODO: move these implementations inside this class.
-        $log =& drush_get_context('DRUSH_LOG', []);
-        $log[] = $entry;
+        if (Drush::backend()) {
+            $this->logs[] = $entry;
+        }
+
         if ($level != LogLevel::DEBUG_NOTIFY) {
             drush_backend_packet('log', $entry);
         }
@@ -70,7 +113,7 @@ class Logger extends RoboLogger
         }
 
         $verbose = \Drush\Drush::verbose();
-        $debug = drush_get_context('DRUSH_DEBUG');
+        $debug = Drush::debug();
         $debugnotify = drush_get_context('DRUSH_DEBUG_NOTIFY');
 
         $oldStyleEarlyExit = drush_get_context('DRUSH_LEGACY_CONTEXT');
@@ -151,33 +194,33 @@ class Logger extends RoboLogger
             $message = $message . ' ' . $timer;
         }
 
-/*
-      // Drush-styled output
-
-      $message = $this->interpolate(
-          $message,
-          $this->getLogOutputStyler()->style($context)
-      );
-
-      $width[0] = ($columns - 11);
-
-      $format = sprintf("%%-%ds%%%ds", $width[0], $width[1]);
-
-      // Place the status message right aligned with the top line of the error message.
-      $message = wordwrap($message, $width[0]);
-      $lines = explode("\n", $message);
-      $lines[0] = sprintf($format, $lines[0], $type_msg);
-      $message = implode("\n", $lines);
-      $this->getErrorStreamWrapper()->writeln($message);
-*/
       // Robo-styled output
         parent::log($level, $message, $context);
     }
 
     public function error($message, array $context = [])
     {
-        $error_log =& drush_get_context('DRUSH_ERROR_LOG', []);
-        $error_log[$message][] = $message;
+        if (Drush::backend()) {
+            $this->logs_error[] = $this->buildEntry(LogLevel::ERROR, $message, $context);
+        }
         parent::error($message, $context);
+    }
+
+    /**
+     * @param $level
+     * @param $message
+     * @param array $context
+     * @return array
+     */
+    protected function buildEntry($level, $message, array $context)
+    {
+        // Convert to old $entry array for b/c calls
+        $entry = $context + [
+            'type' => $level,
+            'message' => StringUtils::interpolate($message, $context),
+            'timestamp' => microtime(true),
+            'memory' => memory_get_usage(),
+        ];
+        return $entry;
     }
 }

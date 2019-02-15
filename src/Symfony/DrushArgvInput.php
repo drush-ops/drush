@@ -15,7 +15,6 @@
 namespace Drush\Symfony;
 
 use Symfony\Component\Console\Exception\RuntimeException;
-use Symfony\Component\Console\Input\Input;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputDefinition;
 

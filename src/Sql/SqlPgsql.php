@@ -2,6 +2,8 @@
 
 namespace Drush\Sql;
 
+use Drush\Drush;
+
 define('PSQL_SHOW_TABLES', "SELECT tablename FROM pg_tables WHERE schemaname='public';");
 
 class SqlPgsql extends SqlBase
@@ -41,12 +43,15 @@ class SqlPgsql extends SqlBase
 
     public function command()
     {
-        $environment = "";
+        return 'psql -q';
+    }
+
+    public function getEnv()
+    {
         $pw_file = $this->createPasswordFile();
         if (isset($pw_file)) {
-            $environment = "PGPASSFILE={$pw_file} ";
+            return ['PGPASSFILE' => $pw_file];
         }
-        return "{$environment}psql -q";
     }
 
     /*
@@ -92,9 +97,10 @@ class SqlPgsql extends SqlBase
         unset($db_spec_no_db['database']);
         $sql_no_db = new SqlPgsql($db_spec_no_db, $this->getOptions());
         $query = "SELECT 1 AS result FROM pg_database WHERE datname='$database'";
-        drush_always_exec($sql_no_db->connect() . ' -t -c %s', $query);
-        $output = drush_shell_exec_output();
-        return (bool)$output[0];
+        $process = Drush::shell($sql_no_db->connect() . ' -t -c ' . $query, null, $this->getEnv());
+        $process->setSimulated(false);
+        $process->run();
+        return $process->isSuccessful();
     }
 
     public function queryFormat($query)
@@ -108,11 +114,8 @@ class SqlPgsql extends SqlBase
     public function listTables()
     {
         $return = $this->alwaysQuery(PSQL_SHOW_TABLES);
-        $tables = drush_shell_exec_output();
-        if (!empty($tables)) {
-            return $tables;
-        }
-        return [];
+        $tables = explode(PHP_EOL, trim($this->getProcess()->getOutput()));
+        return array_filter($tables);
     }
 
     public function dumpCmd($table_selection)
@@ -136,14 +139,14 @@ class SqlPgsql extends SqlBase
         $exec = "{$environment}pg_dump ";
         // Unlike psql, pg_dump does not take a '--dbname=' before the database name.
         $extra = str_replace('--dbname=', ' ', $this->creds());
-        if (isset($data_only)) {
+        if ($data_only) {
             $extra .= ' --data-only';
         }
-        if ($option = $this->getOption('extra-dump', $this->queryExtra)) {
+        if ($option = $this->getOption('extra-dump')) {
             $extra .= " $option";
         }
         $exec .= $extra;
-        $exec .= (!isset($create_db) && !isset($data_only) ? ' --clean' : '');
+        $exec .= (!$create_db && !$data_only ? ' --clean' : '');
 
         if (!empty($tables)) {
             foreach ($tables as $table) {
@@ -162,7 +165,7 @@ class SqlPgsql extends SqlBase
                     $schemaonlies[] = "--table=$table";
                 }
                 $exec .= " && pg_dump --schema-only " . implode(' ', $schemaonlies) . $extra;
-                $exec .= (!isset($create_db) && !isset($data_only) ? ' --clean' : '');
+                $exec .= (!$create_db && !$data_only ? ' --clean' : '');
             }
         }
         return $parens ? "($exec)" : $exec;

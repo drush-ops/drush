@@ -1,8 +1,9 @@
 <?php
 namespace Drush\Backend;
 
-use Drush\SiteAlias\AliasRecord;
-use Drush\SiteAlias\HostPath;
+use Consolidation\SiteAlias\AliasRecord;
+use Consolidation\SiteAlias\HostPath;
+use Drush\Drush;
 
 class BackendPathEvaluator
 {
@@ -74,10 +75,12 @@ class BackendPathEvaluator
         // The drupal:directory command uses a path evaluator, which
         // calls this function, so we cannot use dd here, as that
         // would be recursive.
-        $values = drush_invoke_process($aliasRecord, "core-status", [], ['project' => $pathAlias], ['integrate' => false, 'override-simulated' => true]);
-        $statusValues = $values['object'];
-        if (isset($statusValues[$pathAlias])) {
-            return $statusValues[$pathAlias];
+        $process = Drush::drush($aliasRecord, 'core-status', [], ['project' => $pathAlias, 'fields' => '%paths', 'format' => 'json']);
+        $process->setSimulated(false);
+        $process->mustRun();
+        $json = $process->getOutputAsJson();
+        if (isset($json['%paths']["%{$pathAlias}"])) {
+            return $json['%paths']["%{$pathAlias}"];
         }
         throw new \Exception(dt('Cannot evaluate path alias %{path} for site alias {site}', ['path' => $pathAlias, 'site' => $aliasRecord->name()]));
     }

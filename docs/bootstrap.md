@@ -4,7 +4,7 @@ When preparing to run a command, Drush works by "bootstrapping" the Drupal envir
 
 For efficiency and convenience, some Drush commands can work without first bootstrapping a Drupal site, or by only partially bootstrapping a site. This is faster than a full bootstrap. It is also a matter of convenience, because some commands are useful even when you don't have a working Drupal site.
 
-Commands may specify their bootstrap level with a `@bootstrap` annotation. Commands supplied by Drupal modules are `@bootstrap max`.
+Commands may specify their bootstrap level with a `@bootstrap` annotation. Commands supplied by Drupal modules are always `@bootstrap full`.
 
 @bootstrap none
 -----------------------

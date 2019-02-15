@@ -6,10 +6,7 @@ use Drupal\Core\CronInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
-use Drush\Drush;
 use Drush\Utils\StringUtils;
-use Symfony\Component\Finder\Finder;
-use Webmozart\PathUtil\Path;
 
 class DrupalCommands extends DrushCommands
 {
@@ -84,6 +81,7 @@ class DrupalCommands extends DrushCommands
      *   description: Description
      *   value: Summary
      * @default-fields title,severity,value
+     * @filter-default-field severity
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function requirements($options = ['format' => 'table', 'severity' => -1, 'ignore' => ''])
@@ -118,6 +116,7 @@ class DrupalCommands extends DrushCommands
         $min_severity = $options['severity'];
         $i = 0;
         foreach ($requirements as $key => $info) {
+            $info += ['value' => '', 'description' => ''];
             $severity = array_key_exists('severity', $info) ? $info['severity'] : -1;
             $rows[$i] = [
                 'title' => (string) $info['title'],

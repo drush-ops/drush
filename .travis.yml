@@ -8,11 +8,6 @@ branches:
     - 5.x
     - /^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+.*$/
 language: php
-php:
-#  See master-fulltest branch for broader PHP version testing.
-  - 5.6
-  - 7.0
-  - 7.2
 
 # Cache Composer.
 cache:
@@ -22,19 +17,22 @@ cache:
 # http://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure/
 sudo: false
 
+matrix:
+  include:
+    - php: 7.2
+      env: 'DEPENDENCIES=highest'
+    - php: 7.2
+    - php: 7.0.11
+    - php: 5.6
+      env: 'SCENARIO=php5 DEPENDENCIES=lowest'
+
 env:
-  matrix:
-    - TEST_DIR=isolation ISOLATION_INSTALL='install --prefer-dist'
-    - TEST_DIR=isolation ISOLATION_INSTALL='update --prefer-dist --prefer-lowest'
-    - TEST_DIR=isolation ISOLATION_INSTALL='update --prefer-dist'
   global:
     # GitHub deploy
     - secure: VfYokT2CchfuBRJp9/gSwfVGPfsVfkZdDVEuNWEqxww3z4vq+5aLKqoCtPL54E5EIMjhyCE3GVo+biG35Gab1KOVgUs8zD1hAUWA1FPKfMFhoPDfI3ZJC2rX2T1iWK4ZR90pBtcPzS+2OObzTYz8go0PfeSTT6eq69Na1KcNLaE=
     - UNISH_NO_TIMEOUTS=y
     - UNISH_DB_URL=mysql://root:@127.0.0.1
     - UNISH_TMP=/tmp
-
-
 
 before_install:
   - echo 'mbstring.http_input = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
@@ -43,7 +41,7 @@ before_install:
 
 # Build a System-Under-Test.
 install:
-  - composer -n --working-dir=${PWD}/$TEST_DIR $ISOLATION_INSTALL
+  - '.scenarios.lock/install "${SCENARIO}" "${DEPENDENCIES}"'
 
 before_script:
   - phpenv config-rm xdebug.ini
@@ -51,12 +49,11 @@ before_script:
   # - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
 
 script:
-  - cd $TEST_DIR && phpunit
+  - composer unit
+  - composer integration
 
 after_success:
   # Publish updated API documentation on every push to the master branch
   - git config --global user.email $GITHUB_USER_EMAIL
   - git config --global user.name "Drush Documentation Bot"
   - cd $TRAVIS_BUILD_DIR && build/scripts/publish-api-docs.sh
-  # Background: https://github.com/drush-ops/drush/pull/1426
-  #- ${PWD}/tests/testChildren.sh

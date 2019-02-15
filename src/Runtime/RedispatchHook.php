@@ -2,13 +2,17 @@
 
 namespace Drush\Runtime;
 
+use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface;
+use Consolidation\SiteAlias\AliasRecord;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteProcess\ProcessManager;
 use Drush\Drush;
+use Drush\Log\LogLevel;
+use Drush\Config\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
-use Consolidation\AnnotatedCommand\AnnotationData;
-use Drush\Log\LogLevel;
-use Robo\Common\ConfigAwareTrait;
 
 /**
  * The RedispatchHook is installed as an init hook that runs before
@@ -16,9 +20,18 @@ use Robo\Common\ConfigAwareTrait;
  * that points at a remote machine, then we will stop execution of the
  * current command and instead run the command remotely.
  */
-class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface
+class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, SiteAliasManagerAwareInterface
 {
     use ConfigAwareTrait;
+    use SiteAliasManagerAwareTrait;
+
+    /** @var ProcessManager */
+    protected $processManager;
+
+    public function __construct(ProcessManager $processManager)
+    {
+        $this->processManager = $processManager;
+    }
 
     /**
      * Check to see if it is necessary to redispatch to a remote site.
@@ -53,10 +66,9 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface
      */
     public function redispatchIfRemote(InputInterface $input)
     {
+        $aliasRecord = $this->siteAliasManager()->getSelf();
         // Determine if this is a remote command.
-        // n.b. 'hasOption' only means that the option definition exists, so don't use that here.
-        $root = $input->getOption('remote-host');
-        if (!empty($root)) {
+        if ($this->processManager->hasTransport($aliasRecord)) {
             return $this->redispatch($input);
         }
     }
@@ -68,13 +80,10 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface
      */
     public function redispatch(InputInterface $input)
     {
-        $remote_host = $input->getOption('remote-host');
-        $remote_user = $input->getOption('remote-user');
-
         // Get the command arguments, and shift off the Drush command.
-        $redispatchArgs = Drush::config()->get('runtime.argv');
+        $redispatchArgs = $this->getConfig()->get('runtime.argv');
         $drush_path = array_shift($redispatchArgs);
-        $command_name = array_shift($redispatchArgs);
+        $command_name = $this->getConfig()->get('runtime.command');
 
         Drush::logger()->debug('Redispatch hook {command}', ['command' => $command_name]);
 
@@ -85,46 +94,13 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface
         // in $redispatchArgs.
         $redispatchOptions = [];
 
-        // n.b. Defining the 'backend' flag here causes failed execution in the
-        // non-interactive case, even if 'backend' is set to 'false'.
-        $backend_options = [
-            'drush-script' => $this->getConfig()->get('paths.drush-script', null),
-            'remote-host' => $remote_host,
-            'remote-user' => $remote_user,
-            'additional-global-options' => [],
-            'interactive' => true,
-        ];
-        if ($input->isInteractive()) {
-            $backend_options['#tty'] = true;
-            $backend_options['interactive'] = true;
-        }
+        $aliasRecord = $this->siteAliasManager()->getSelf();
+        $process = $this->processManager->drushSiteProcess($aliasRecord, $redispatchArgs, $redispatchOptions);
+        $process->setTty($this->getConfig()->get('ssh.tty', $input->isInteractive()));
+        $process->setInput(STDIN);
+        $process->mustRun($process->showRealtime());
 
-        $invocations = [
-            [
-                'command' => $command_name,
-                'args' => $redispatchArgs,
-            ],
-        ];
-        $common_backend_options = [];
-        $default_command = null;
-        $default_site = [
-            'remote-host' => $remote_host,
-            'remote-user' => $remote_user,
-            'root' => $input->getOption('root'),
-            'uri' => $input->getOption('uri'),
-        ];
-        $context = null;
-
-        $values = drush_backend_invoke_concurrent(
-            $invocations,
-            $redispatchOptions,
-            $backend_options,
-            $default_command,
-            $default_site,
-            $context
-        );
-
-        return $this->exitEarly($values);
+        return $this->exitEarly($process->getExitCode());
     }
 
     /**
@@ -145,18 +121,16 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface
      * Abort the current execution without causing distress to our
      * shutdown handler.
      *
-     * @param array $values The results from backend invoke.
+     * @param int $exit_code.
      */
-    protected function exitEarly($values)
+    protected function exitEarly($exit_code)
     {
-        Drush::logger()->log(LogLevel::DEBUG, 'Redispatch hook exit early');
+        Drush::logger()->debug('Redispatch hook exit early');
 
-        // TODO: This is how Drush exits from redispatch commands today;
-        // perhaps this could be somewhat improved, though.
         // Note that RemoteCommandProxy::execute() is expecting that
         // the redispatch() method will not return, so that will need
         // to be altered if this behavior is changed.
-        drush_set_context('DRUSH_EXECUTION_COMPLETED', true);
-        exit($values['error_status']);
+        Runtime::setCompleted();
+        exit($exit_code);
     }
 }

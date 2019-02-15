@@ -24,6 +24,7 @@
  * implementations.
  */
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
 
 /**
@@ -38,10 +39,10 @@ use Drush\Log\LogLevel;
 class DrushBatchContext extends ArrayObject {
   function offsetSet($name, $value) {
     if ($name == 'message') {
-      drush_log(strip_tags($value), LogLevel::OK);
+      Drush::logger()->notice(strip_tags($value));
     }
     elseif ($name == 'error_message') {
-      drush_set_error('DRUSH_BATCH_ERROR', strip_tags($value));
+      Drush::logger()->error(strip_tags($value));
     }
     parent::offsetSet($name, $value);
   }
@@ -51,13 +52,12 @@ class DrushBatchContext extends ArrayObject {
  * Process a Drupal batch by spawning multiple Drush processes.
  *
  * This function will include the correct batch engine for the current
- * major version of Drupal, and will make use of the drush_backend_invoke
- * system to spawn multiple worker threads to handle the processing of
- * the current batch, while keeping track of available memory.
+ * major version of Drupal, and will make use of the site-process
+ * library to spawn multiple worker threads to handle the processing of
+ * the current batch.
  *
  * The batch system will process as many batch sets as possible until
- * the entire batch has been completed or half of the available memory
- * has been used.
+ * the entire batch has been completed.
  *
  * This function is a drop in replacement for the existing batch_process()
  * function of Drupal.
@@ -89,6 +89,9 @@ function drush_backend_batch_process($command = 'batch-process', $args = [], $op
  *
  * @param int $id
  *   The batch ID of the batch being processed.
+ *
+ * @return bool|array
+ *   A results array.
  */
 function drush_batch_command($id) {
   include_once(DRUSH_DRUPAL_CORE . '/includes/batch.inc');
@@ -104,6 +107,9 @@ function drush_batch_command($id) {
  * @param command
  *    The command to call to process the batch.
  *
+ * @return array
+ *   A return array. The callers only care about the finished marker and an #abort on an operation.
+ *
  */
 function _drush_backend_batch_process($command = 'batch-process', $args, $options) {
   $result = NULL;
@@ -118,7 +124,7 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
 
     // The batch is now completely built. Allow other modules to make changes
     // to the batch so that it is easier to reuse batch processes in other
-    // enviroments.
+    // environments.
     \Drupal::moduleHandler()->alter('batch', $batch);
 
     // Assign an arbitrary id: don't rely on a serial column in the 'batch'
@@ -141,8 +147,11 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
     $finished = FALSE;
 
     while (!$finished) {
-      $result = drush_invoke_process('@self', $command, $args);
-      $finished = drush_get_error() || !$result || (isset($result['context']['drush_batch_process_finished']) && $result['context']['drush_batch_process_finished'] == TRUE);
+      $process = Drush::drush(Drush::aliasManager()->getSelf(), $command, $args);
+      // Suppress printing stdout since we return a JSON array to the caller there.
+      $process->run($process->showRealtime()->hideStdout());
+      $result = $process->getOutputAsJson();
+      $finished = !$process->isSuccessful() || (isset($result['drush_batch_process_finished']) && $result['drush_batch_process_finished'] === TRUE);
     }
   }
 
@@ -158,6 +167,9 @@ function _drush_backend_batch_process($command = 'batch-process', $args, $option
  *
  * @param id
  *   The batch id of the batch being processed.
+ *
+ * @return bool|array
+ *   A results array.
  */
 function _drush_batch_command($id) {
   $batch =& batch_get();
@@ -234,7 +246,7 @@ function _drush_batch_worker() {
       \Drush\Drush::config()->set('runtime.php.halt-on-error', FALSE);
       $message = call_user_func_array($function, array_merge($args, [&$batch_context]));
       if (!empty($message)) {
-        drush_print(strip_tags($message), 2);
+        Drush::logger()->notice($message);
       }
       \Drush\Drush::config()->set('runtime.php.halt-on-error', $halt_on_error);
 
@@ -266,14 +278,6 @@ function _drush_batch_worker() {
     // At this point, either $current_set contains operations that need to be
     // processed or all sets have been completed.
     $queue = _batch_queue($current_set);
-
-    // If we are in progressive mode, break processing after 1 second.
-    if (drush_memory_limit() > 0 && (memory_get_usage() * 2) >= drush_memory_limit()) {
-      drush_log(dt("Batch process has consumed in excess of 50% of available memory. Starting new thread"), LogLevel::BATCH);
-      // Record elapsed wall clock time.
-      $current_set['elapsed'] = round((microtime(TRUE) - $current_set['start']) * 1000, 2);
-      break;
-    }
   }
 
   // Reporting 100% progress will cause the whole batch to be considered
@@ -302,6 +306,8 @@ function _drush_batch_worker() {
  * End the batch processing:
  * Call the 'finished' callbacks to allow custom handling of results,
  * and resolve page redirection.
+ *
+ * @return array
  */
 function _drush_batch_finished() {
   $results = [];
@@ -319,33 +325,24 @@ function _drush_batch_finished() {
         $queue = _batch_queue($batch_set);
         $operations = $queue->getAllItems();
         $elapsed = $batch_set['elapsed'] / 1000;
-        $elapsed = drush_drupal_major_version() >=8 ? \Drupal::service('date.formatter')->formatInterval($elapsed) : format_interval($elapsed);
+        $elapsed = \Drupal::service('date.formatter')->formatInterval($elapsed);
         call_user_func_array($batch_set['finished'], [$batch_set['success'], $batch_set['results'], $operations, $elapsed]);
         $results[$id] = $batch_set['results'];
       }
     }
   }
 
-  // Clean up the batch table and unset the static $batch variable.
-  if (drush_drupal_major_version() >= 8) {
-    /** @var \Drupal\Core\Batch\BatchStorage $batch_storage */
-    $batch_storage = \Drupal::service('batch.storage');
-    $batch_storage->delete($batch['id']);
-  }
-  else {
-    db_delete('batch')
-      ->condition('bid', $batch['id'])
-      ->execute();
-  }
+  // Clean up the batch table.
+  \Drupal::service('batch.storage')->delete($batch['id']);
 
   foreach ($batch['sets'] as $batch_set) {
     if ($queue = _batch_queue($batch_set)) {
       $queue->deleteQueue();
     }
   }
-  $_batch = $batch;
+
   $batch = NULL;
-  drush_set_option('drush_batch_process_finished', TRUE);
+  $results['drush_batch_process_finished'] = TRUE;
 
   return $results;
 }
