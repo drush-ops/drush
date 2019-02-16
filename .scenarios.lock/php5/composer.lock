@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b7d71ad12db9bc18f4fb8d6e5eb6f386",
+    "content-hash": "d0a8a171804f8751fd3be6225f929a12",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -707,16 +707,16 @@
         },
         {
             "name": "consolidation/site-process",
-            "version": "1.1.2",
+            "version": "2.0.0-beta2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-process.git",
-                "reference": "318e6d7e8bb70f97546f59fe94f95a0a17fdf3d6"
+                "reference": "eed34b4da9fd58dc17d6245d8da71bcef5fa7df4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-process/zipball/318e6d7e8bb70f97546f59fe94f95a0a17fdf3d6",
-                "reference": "318e6d7e8bb70f97546f59fe94f95a0a17fdf3d6",
+                "url": "https://api.github.com/repos/consolidation/site-process/zipball/eed34b4da9fd58dc17d6245d8da71bcef5fa7df4",
+                "reference": "eed34b4da9fd58dc17d6245d8da71bcef5fa7df4",
                 "shasum": ""
             },
             "require": {
@@ -775,7 +775,7 @@
                 }
             ],
             "description": "A thin wrapper around the Symfony Process Component that allows applications to use the Site Alias library to specify the target for a remote call.",
-            "time": "2019-02-13T22:15:36+00:00"
+            "time": "2019-02-15T23:47:05+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -5860,17 +5860,6 @@
         {
             "name": "webflo/drupal-core-strict",
             "version": "8.6.x-dev",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/webflo/drupal-core-strict.git",
-                "reference": "0e445007504878ac9080dba88e6aa906e3d42592"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/webflo/drupal-core-strict/zipball/0e445007504878ac9080dba88e6aa906e3d42592",
-                "reference": "0e445007504878ac9080dba88e6aa906e3d42592",
-                "shasum": ""
-            },
             "require": {
                 "asm89/stack-cors": "1.2.0",
                 "composer/installers": "v1.5.0",
