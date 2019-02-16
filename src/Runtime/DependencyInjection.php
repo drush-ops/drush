@@ -106,6 +106,7 @@ class DependencyInjection
         $container->share('ssh.transport', \Consolidation\SiteProcess\Factory\SshTransportFactory::class);
         $container->share('docker-compose.transport', \Consolidation\SiteProcess\Factory\DockerComposeTransportFactory::class);
         $container->share('process.manager', 'Drush\SiteAlias\ProcessManager')
+            ->withMethodCall('setConfig', ['config'])
             ->withMethodCall('add', ['ssh.transport'])
             ->withMethodCall('add', ['docker-compose.transport']);
         $container->share('redispatch.hook', 'Drush\Runtime\RedispatchHook')

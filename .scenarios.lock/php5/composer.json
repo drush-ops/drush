@@ -64,7 +64,7 @@
         "consolidation/output-formatters": "^3.3.1",
         "consolidation/robo": "^1.4.4",
         "consolidation/site-alias": "^2.1.1",
-        "consolidation/site-process": "^2.0.0-beta1",
+        "consolidation/site-process": "^2.0.0-beta2",
         "grasmash/yaml-expander": "^1.1.1",
         "league/container": "~2",
         "psr/log": "~1.0",
@@ -133,9 +133,9 @@
         "sut": "./drush --uri=dev",
         "sut:si": "./drush site:install testing --uri=dev --sites-subdir=dev --db-url=${UNISH_DB_URL:-mysql://root:password@mariadb}/unish_dev -v",
         "phpunit": "php -d sendmail_path='true' vendor/bin/phpunit --colors=always --configuration tests",
-        "unit": "@phpunit --testsuite unit",
-        "integration": "@phpunit --testsuite integration",
-        "functional": "@phpunit --testsuite functional"
+        "unit": "composer phpunit -- --testsuite unit",
+        "integration": "composer phpunit -- --testsuite integration",
+        "functional": "composer phpunit -- --testsuite functional"
     },
     "extra": {
         "installer-paths": {

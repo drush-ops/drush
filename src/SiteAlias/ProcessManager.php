@@ -13,16 +13,12 @@ use Drush\Style\DrushStyle;
 use Consolidation\SiteProcess\ProcessBase;
 use Consolidation\SiteProcess\SiteProcess;
 use Webmozart\PathUtil\Path;
-use Drush\Config\ConfigAwareTrait;
-use Robo\Contract\ConfigAwareInterface;
 
 /**
  * The Drush ProcessManager adds a few Drush-specific service methods.
  */
-class ProcessManager extends ConsolidationProcessManager implements ConfigAwareInterface
+class ProcessManager extends ConsolidationProcessManager
 {
-    use ConfigAwareTrait;
-
     /**
      * Run a Drush command on a site alias (or @self).
      *
