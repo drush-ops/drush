@@ -79,8 +79,7 @@
     </div>
 
     <p>    class
-    <strong>ProcessManager</strong>        extends <abbr title="Consolidation\SiteProcess\ProcessManager">ProcessManager</abbr>        implements
-        <abbr title="Robo\Contract\ConfigAwareInterface">ConfigAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/ProcessManager.php">View source</a>)
+    <strong>ProcessManager</strong>        extends <abbr title="Consolidation\SiteProcess\ProcessManager">ProcessManager</abbr>        (<a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/ProcessManager.php">View source</a>)
 </p>
 
         
@@ -89,46 +88,12 @@
             <div class="description">
             <p>The Drush ProcessManager adds a few Drush-specific service methods.</p>                                </div>
     
-            <h2>Traits</h2>
-
-        
-    <div class="container-fluid underlined">
-                    <div class="row">
-                <div class="col-md-6">
-                                            <a href="../../Drush/Config/ConfigAwareTrait.html"><abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a>
-                                            
-                </div>
-                <div class="col-md-6">
-                    
-                </div>
-            </div>
-                    <div class="row">
-                <div class="col-md-6">
-                                            <abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr>
-                                            
-                </div>
-                <div class="col-md-6">
-                    
-                </div>
-            </div>
-            </div>
     
     
     
             <h2>Methods</h2>
 
             <div class="container-fluid underlined">
-                    <div class="row">
-                <div class="col-md-2 type">
-                    <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a>
-                </div>
-                <div class="col-md-8 type">
-                    <a href="#method_getConfig">getConfig</a>()
-        
-                                            <p>Replaces same method in ConfigAwareTrait in order to provide a
-DrushConfig as return type. Helps with IDE completion.</p>                </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Config/ConfigAwareTrait.html#method_getConfig"><abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
-            </div>
                     <div class="row">
                 <div class="col-md-2 type">
                     <abbr title="Consolidation\SiteProcess\SiteProcess">SiteProcess</abbr>
@@ -207,50 +172,8 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
 
             <div id="method-details">
                     <div class="method-item">
-                    <h3 id="method_getConfig">
-        <div class="location">in <a href="../../Drush/Config/ConfigAwareTrait.html#method_getConfig"><abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Config/ConfigAwareTrait.php#L18">line 18</a></div>
-        <code>                    <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a>
-    <strong>getConfig</strong>()
-        </code>
-    </h3>
-    <div class="details">
-            
-    
-
-                    <div class="method-description">
-                                    <p>Replaces same method in ConfigAwareTrait in order to provide a
-DrushConfig as return type. Helps with IDE completion.</p>                                                </div>
-                <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                            <h4>See also</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>
-                                            <a href="https://stackoverflow.com/a/37687295.">https://stackoverflow.com/a/37687295.</a>
-                                    </td>
-                <td></td>
-            </tr>
-            </table>
-
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_drush">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/ProcessManager.php#L35">line 35</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/ProcessManager.php#L31">line 31</a></div>
         <code>                    <abbr title="Consolidation\SiteProcess\SiteProcess">SiteProcess</abbr>
     <strong>drush</strong>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, string $command, array $args = [], array $options = [], array $options_double_dash = [])
         </code>
@@ -310,7 +233,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_drushSiteProcess">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/ProcessManager.php#L52">line 52</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/ProcessManager.php#L48">line 48</a></div>
         <code>                    <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
     <strong>drushSiteProcess</strong>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
         </code>
@@ -366,7 +289,7 @@ which does not have specific knowledge about which argument is the command.</p> 
             </div>
                     <div class="method-item">
                     <h3 id="method_drushScript">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/ProcessManager.php#L72">line 72</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/ProcessManager.php#L68">line 68</a></div>
         <code>                    
     <strong>drushScript</strong>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias)
         </code>
@@ -397,7 +320,7 @@ which does not have specific knowledge about which argument is the command.</p> 
             </div>
                     <div class="method-item">
                     <h3 id="method_siteProcess">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/ProcessManager.php#L107">line 107</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/ProcessManager.php#L103">line 103</a></div>
         <code>                    
     <strong>siteProcess</strong>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, $args = [], $options = [], $optionsPassedAsArgs = [])
         </code>
@@ -441,7 +364,7 @@ which does not have specific knowledge about which argument is the command.</p> 
             </div>
                     <div class="method-item">
                     <h3 id="method_process">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/ProcessManager.php#L128">line 128</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/ProcessManager.php#L124">line 124</a></div>
         <code>                    <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
     <strong>process</strong>(array $commandline, string|null $cwd = null, array $env = null, mixed|null $input = null, int|float|null $timeout = 60)
         </code>
@@ -502,7 +425,7 @@ Call this method to get a Process and then call setters as needed.</p>          
             </div>
                     <div class="method-item">
                     <h3 id="method_shell">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/ProcessManager.php#L143">line 143</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/ProcessManager.php#L139">line 139</a></div>
         <code>                    <abbr title="Symfony\Component\Process\Process">Process</abbr>
     <strong>shell</strong>(string $command, string|null $cwd = null, array $env = null, mixed|null $input = null, int|float|null $timeout = 60)
         </code>
@@ -562,7 +485,7 @@ Call this method to get a Process and then call setters as needed.</p>          
             </div>
                     <div class="method-item">
                     <h3 id="method_configureProcess">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/ProcessManager.php#L152">line 152</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/ProcessManager.php#L148">line 148</a></div>
         <code>        static    protected        
     <strong>configureProcess</strong>(<abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr> $process)
         </code>
