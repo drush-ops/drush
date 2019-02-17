@@ -112,7 +112,7 @@ class EnDisUnListInfoCase extends CommandUnishTestCase {
     }
 
     if (UNISH_DRUPAL_MAJOR_VERSION !=6) {
-      if (substr(UNISH_DRUPAL_MINOR_VERSION, 0, 1) == '4') {
+      if (substr(UNISH_DRUPAL_MINOR_VERSION, 0, 2) == '.4') {
         $this->markTestSkipped("panels module broken with Drupal 8.4.x");
       }
       // Test that pm-enable downloads missing projects and dependencies.
