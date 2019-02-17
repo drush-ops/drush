@@ -492,6 +492,10 @@ class ConfigLocator
     public function setComposerRoot($selectedComposerRoot)
     {
         $this->composerRoot = $selectedComposerRoot;
+
+        // Also export the project directory: the composer root of the
+        // project that contains the selected site.
+        $this->config->getContext(self::ENVIRONMENT_CONTEXT)->set('runtime.project', $this->composerRoot);
     }
 
     /**
