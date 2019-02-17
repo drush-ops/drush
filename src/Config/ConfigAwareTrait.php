@@ -3,8 +3,8 @@ namespace Drush\Config;
 
 trait ConfigAwareTrait
 {
-    use \Consolidation\Config\ConfigAwareTrait {
-        \Consolidation\Config\ConfigAwareTrait::getConfig as parentGetConfig;
+    use \Robo\Common\ConfigAwareTrait {
+        \Robo\Common\ConfigAwareTrait::getConfig as parentGetConfig;
     }
 
     /**
