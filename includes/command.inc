@@ -847,6 +847,7 @@ function drush_parse_args() {
   // into options (starting with a '-') and arguments.
   $arguments = $options = array();
 
+  $verbosity = 0;
   for ($i = 1; $i < count($args); $i++) {
     $opt = $args[$i];
     // We set $command_args to NULL until the first argument that is not
@@ -861,7 +862,11 @@ function drush_parse_args() {
       if (strlen($opt) > 2 && $opt{1} != "-") {
         // Each char becomes a key of its own.
         for ($j = 1; $j < strlen($opt); $j++) {
-          $options[substr($opt, $j, 1)] = TRUE;
+          $opt_char = substr($opt, $j, 1);
+          $options[$opt_char] = TRUE;
+          if ($opt_char == 'v') {
+            ++$verbosity;
+          }
         }
       }
       // Do we have a longopt (starting with '--')?
@@ -911,6 +916,9 @@ function drush_parse_args() {
         }
       }
     }
+  }
+  if ($verbosity >= 3) {
+    $options['debug'] = TRUE;
   }
   // If no arguments are specified, then the command will
   // be either 'help' or 'version' (the latter if --version is specified)
