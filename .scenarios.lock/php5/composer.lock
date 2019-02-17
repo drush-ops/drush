@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8f0225eb4aaac25c587313167be1fef5",
+    "content-hash": "4b3e014c78d6202c136b66a74a646a1f",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -505,21 +505,21 @@
         },
         {
             "name": "consolidation/robo",
-            "version": "1.4.5",
+            "version": "1.4.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/Robo.git",
-                "reference": "59be95fc5648d551476abdc955f85840d5f7cc87"
+                "reference": "d4805a1abbc730e9a6d64ede2eba56f91a2b4eb3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/Robo/zipball/59be95fc5648d551476abdc955f85840d5f7cc87",
-                "reference": "59be95fc5648d551476abdc955f85840d5f7cc87",
+                "url": "https://api.github.com/repos/consolidation/Robo/zipball/d4805a1abbc730e9a6d64ede2eba56f91a2b4eb3",
+                "reference": "d4805a1abbc730e9a6d64ede2eba56f91a2b4eb3",
                 "shasum": ""
             },
             "require": {
                 "consolidation/annotated-command": "^2.10.2",
-                "consolidation/config": "^1.2",
+                "consolidation/config": "^1.0.10",
                 "consolidation/log": "~1",
                 "consolidation/output-formatters": "^3.1.13",
                 "consolidation/self-update": "^1",
@@ -609,7 +609,7 @@
                 }
             ],
             "description": "Modern task runner",
-            "time": "2019-02-16T02:24:42+00:00"
+            "time": "2019-02-17T05:32:27+00:00"
         },
         {
             "name": "consolidation/self-update",
@@ -734,16 +734,16 @@
         },
         {
             "name": "consolidation/site-process",
-            "version": "dev-config-aware",
+            "version": "2.0.0-beta3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-process.git",
-                "reference": "531899a5c1f3a760a1bf3513eac5459e0493b9aa"
+                "reference": "8c2e940a524325fe46bef2600560682045ebe09b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-process/zipball/531899a5c1f3a760a1bf3513eac5459e0493b9aa",
-                "reference": "531899a5c1f3a760a1bf3513eac5459e0493b9aa",
+                "url": "https://api.github.com/repos/consolidation/site-process/zipball/8c2e940a524325fe46bef2600560682045ebe09b",
+                "reference": "8c2e940a524325fe46bef2600560682045ebe09b",
                 "shasum": ""
             },
             "require": {
@@ -802,7 +802,7 @@
                 }
             ],
             "description": "A thin wrapper around the Symfony Process Component that allows applications to use the Site Alias library to specify the target for a remote call.",
-            "time": "2019-02-17T04:42:14+00:00"
+            "time": "2019-02-17T05:43:24+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -6234,7 +6234,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "consolidation/site-process": 20,
         "lox/xhprof": 20,
         "webflo/drupal-core-strict": 20
     },
