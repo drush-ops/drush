@@ -456,7 +456,7 @@ class ConfigLocator
             if (is_numeric($key) && strpos($commandPath, '#') !== false) {
                 list($key, $commandPath) = explode('#', $commandPath, 2);
             }
-            $sep = (DIRECTORY_SEPARATOR == '\\') ? ';' : ':';
+            $sep = ($this->config->isWindows()) ? ';' : ':';
             foreach (explode($sep, $commandPath) as $path) {
                 if (is_dir($path)) {
                     if (is_numeric($key)) {
