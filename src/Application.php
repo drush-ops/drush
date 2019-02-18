@@ -343,8 +343,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             if (is_numeric($key)) {
                 $classname = $value;
                 $commandList[] = $classname;
-            }
-            else {
+            } else {
                 $commandList[$path] = $classname;
             }
         }
