@@ -27,9 +27,6 @@ Drupal Compatibility
     <th rowspan="2"> Drush Branch </th>
     <th rowspan="2"> PHP </th>
     <th colspan="4"> Drupal versions </th>
-    <th rowspan="2"> Code Style </th>
-    <th rowspan="2"> Isolation Tests </th>
-    <th rowspan="2"> Functional Tests </th>
   </tr>
     <th>6</th> <th>7</th> <th>-8.3</th> <th>8.4+</th>
   </tr>
@@ -38,51 +35,30 @@ Drupal Compatibility
     <td> <a href="https://travis-ci.org/drush-ops/drush">master</a> </td>
     <td> 5.6+ </td>
     <td></td> <td></td> <td></td> <td>✅</td>
-    <td align="center">
-      <img src="https://api.shippable.com/projects/5507addd5ab6cc1352a213b5/badge?branch=master" />
-    </td>
-    <td align="center">
-      <img src="https://travis-ci.org/drush-ops/drush.svg?branch=master" />
-    </td>
-    <td align="center">
-      <img src="https://circleci.com/gh/drush-ops/drush.svg?style=shield" />
-    </td>
   </tr>
   <tr>
     <td> Drush 8 </td>
     <td> <a href="https://travis-ci.org/drush-ops/drush">8.x</a> </td>
     <td> 5.4.5+ </td>
     <td>✅</td> <td>✅</td> <td>✅</td> <td><b>⚠️</b></td>
-    <td align="center">
-      <img src="https://circleci.com/gh/drush-ops/drush.svg?style=shield" />
-    </td>
-    <td align="center">
-      -
-    </td>
-    <td align="center">
-      <img src="https://travis-ci.org/drush-ops/drush.svg?branch=8.x" />
-    </td>
   </tr>
   <tr>
     <td> Drush 7 </td>
     <td> <a href="https://travis-ci.org/drush-ops/drush">7.x</a> </td>
     <td> 5.3.0+ </td>
     <td>✓</td> <td>✓</td> <td></td> <td></td>
-    <td colspan="3" align="center"> Unsupported </td>
   </tr>
   <tr>
     <td> Drush 6 </td>
     <td> <a href="https://travis-ci.org/drush-ops/drush">6.x</a> </td>
     <td> 5.3.0+ </td>
     <td>✓</td> <td>✓</td> <td></td> <td></td>
-    <td colspan="3" align="center"> Unsupported </td>
   </tr>
   <tr>
     <td> Drush 5 </td>
     <td> <a href="https://travis-ci.org/drush-ops/drush">5.x</a> </td>
     <td> 5.2.0+ </td>
     <td>✓</td> <td>✓</td> <td></td> <td></td>
-    <td colspan="3" align="center"> Unsupported </td>
   </tr>
 </table>
 
