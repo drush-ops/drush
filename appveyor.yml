@@ -21,6 +21,7 @@ init:
 
 # Inspired by https://github.com/Codeception/base/blob/master/appveyor.yml and https://github.com/phpmd/phpmd/blob/master/appveyor.yml
 install:
+  - ps: Set-Service wuauserv -StartupType Manual
   - cinst -y curl
   - SET PATH=C:\Program Files\curl;%PATH%
   #which is only needed by the test suite.
