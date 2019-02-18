@@ -73,6 +73,6 @@ Drupal Compatibility
         <td><b>⚠️</b></td> <td>Supported but not recommended</td>
     </tr>
     <tr>
-        <td>✓</td> <td>No longer supported</td>
+        <td>✓</td> <td>Compatible but no longer supported</td>
     </tr>
 </table>
