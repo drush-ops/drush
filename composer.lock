@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3f9d40a47cdef10eae384cdd010daf63",
+    "content-hash": "7123fbdd8726ab15f0c4a9e255145e38",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -211,16 +211,16 @@
         },
         {
             "name": "consolidation/config",
-            "version": "1.1.1",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/config.git",
-                "reference": "925231dfff32f05b787e1fddb265e789b939cf4c"
+                "reference": "11ab7ecd19131ce084390171b9c070eedecf7dab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/config/zipball/925231dfff32f05b787e1fddb265e789b939cf4c",
-                "reference": "925231dfff32f05b787e1fddb265e789b939cf4c",
+                "url": "https://api.github.com/repos/consolidation/config/zipball/11ab7ecd19131ce084390171b9c070eedecf7dab",
+                "reference": "11ab7ecd19131ce084390171b9c070eedecf7dab",
                 "shasum": ""
             },
             "require": {
@@ -229,9 +229,9 @@
                 "php": ">=5.4.0"
             },
             "require-dev": {
-                "g1a/composer-test-scenarios": "^1",
+                "g1a/composer-test-scenarios": "^3",
+                "php-coveralls/php-coveralls": "^1",
                 "phpunit/phpunit": "^5",
-                "satooshi/php-coveralls": "^1.0",
                 "squizlabs/php_codesniffer": "2.*",
                 "symfony/console": "^2.5|^3|^4",
                 "symfony/yaml": "^2.8.11|^3|^4"
@@ -241,6 +241,33 @@
             },
             "type": "library",
             "extra": {
+                "scenarios": {
+                    "symfony4": {
+                        "require-dev": {
+                            "symfony/console": "^4.0"
+                        },
+                        "config": {
+                            "platform": {
+                                "php": "7.1.3"
+                            }
+                        }
+                    },
+                    "symfony2": {
+                        "require-dev": {
+                            "symfony/console": "^2.8",
+                            "symfony/event-dispatcher": "^2.8",
+                            "phpunit/phpunit": "^4.8.36"
+                        },
+                        "remove": [
+                            "php-coveralls/php-coveralls"
+                        ],
+                        "config": {
+                            "platform": {
+                                "php": "5.4.8"
+                            }
+                        }
+                    }
+                },
                 "branch-alias": {
                     "dev-master": "1.x-dev"
                 }
@@ -261,7 +288,7 @@
                 }
             ],
             "description": "Provide configuration services for a commandline tool.",
-            "time": "2018-10-24T17:55:35+00:00"
+            "time": "2019-02-16T01:18:47+00:00"
         },
         {
             "name": "consolidation/filter-via-dot-access-data",
@@ -478,16 +505,16 @@
         },
         {
             "name": "consolidation/robo",
-            "version": "1.4.4",
+            "version": "1.4.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/Robo.git",
-                "reference": "8bec6a6ea54a7d03d56552a4250c49dec3b3083d"
+                "reference": "d4805a1abbc730e9a6d64ede2eba56f91a2b4eb3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/Robo/zipball/8bec6a6ea54a7d03d56552a4250c49dec3b3083d",
-                "reference": "8bec6a6ea54a7d03d56552a4250c49dec3b3083d",
+                "url": "https://api.github.com/repos/consolidation/Robo/zipball/d4805a1abbc730e9a6d64ede2eba56f91a2b4eb3",
+                "reference": "d4805a1abbc730e9a6d64ede2eba56f91a2b4eb3",
                 "shasum": ""
             },
             "require": {
@@ -582,7 +609,7 @@
                 }
             ],
             "description": "Modern task runner",
-            "time": "2019-02-08T20:59:23+00:00"
+            "time": "2019-02-17T05:32:27+00:00"
         },
         {
             "name": "consolidation/self-update",
@@ -707,20 +734,20 @@
         },
         {
             "name": "consolidation/site-process",
-            "version": "2.0.0-beta2",
+            "version": "2.0.0-beta3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-process.git",
-                "reference": "eed34b4da9fd58dc17d6245d8da71bcef5fa7df4"
+                "reference": "8c2e940a524325fe46bef2600560682045ebe09b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-process/zipball/eed34b4da9fd58dc17d6245d8da71bcef5fa7df4",
-                "reference": "eed34b4da9fd58dc17d6245d8da71bcef5fa7df4",
+                "url": "https://api.github.com/repos/consolidation/site-process/zipball/8c2e940a524325fe46bef2600560682045ebe09b",
+                "reference": "8c2e940a524325fe46bef2600560682045ebe09b",
                 "shasum": ""
             },
             "require": {
-                "consolidation/config": "^1.1.1",
+                "consolidation/config": "^1.2",
                 "consolidation/site-alias": "^2.1.1",
                 "php": ">=5.6.0",
                 "symfony/process": "^3.4"
@@ -775,7 +802,7 @@
                 }
             ],
             "description": "A thin wrapper around the Symfony Process Component that allows applications to use the Site Alias library to specify the target for a remote call.",
-            "time": "2019-02-15T23:47:05+00:00"
+            "time": "2019-02-17T05:43:24+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -1150,16 +1177,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v4.2.0",
+            "version": "v4.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "594bcae1fc0bccd3993d2f0d61a018e26ac2865a"
+                "reference": "5221f49a608808c1e4d436df32884cbc1b821ac0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/594bcae1fc0bccd3993d2f0d61a018e26ac2865a",
-                "reference": "594bcae1fc0bccd3993d2f0d61a018e26ac2865a",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/5221f49a608808c1e4d436df32884cbc1b821ac0",
+                "reference": "5221f49a608808c1e4d436df32884cbc1b821ac0",
                 "shasum": ""
             },
             "require": {
@@ -1197,7 +1224,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2019-01-12T16:31:37+00:00"
+            "time": "2019-02-16T20:54:15+00:00"
         },
         {
             "name": "psr/container",
