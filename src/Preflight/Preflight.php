@@ -343,8 +343,17 @@ class Preflight
     {
         if ($selectedRoot || $fallbackPath) {
             $foundRoot = $this->drupalFinder->locateRoot($selectedRoot);
+            // If we did not find a site at the selected root, check the
+            // PARENT directory of the fallback path. This will find a site
+            // that Drush is installed in while avoiding the SUT.
             if (!$foundRoot && $fallbackPath) {
-                $this->drupalFinder->locateRoot($fallbackPath);
+                $foundRoot = $this->drupalFinder->locateRoot(dirname(dirname($fallbackPath)));
+            }
+            // If we can't find a site that Drush is installed in, and
+            // Drush has been installed with a sut (git or composer dev install),
+            // then look for the sut.
+            if (!$foundRoot && $fallbackPath && is_dir($fallbackPath . '/sut') && is_dir($fallbackPath . '/vendor')) {
+                $foundRoot = $this->drupalFinder->locateRoot($fallbackPath);
             }
             return $this->drupalFinder()->getDrupalRoot();
         }
