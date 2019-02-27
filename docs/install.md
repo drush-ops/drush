@@ -23,63 +23,56 @@ Drupal Compatibility
 -----------------
 <table>
   <tr>
-    <th> Drush Version </th> 
-    <th> Drush Branch </th>
-    <th> PHP </th>
-    <th> Supported Drupal versions </th>
-    <th> Code Style </th>
-    <th> Isolation Tests </th>
-    <th> Functional Tests </th>
+    <th rowspan="2"> Drush Version </th> 
+    <th rowspan="2"> Drush Branch </th>
+    <th rowspan="2"> PHP </th>
+    <th colspan="4"> Drupal versions </th>
+  </tr>
+    <th>6</th> <th>7</th> <th>-8.3</th> <th>8.4+</th>
   </tr>
   <tr>
     <td> Drush 9 </td>
     <td> <a href="https://travis-ci.org/drush-ops/drush">master</a> </td>
     <td> 5.6+ </td>
-    <td> D8.4+ </td>
-    <td align="center">
-      <img src="https://api.shippable.com/projects/5507addd5ab6cc1352a213b5/badge?branch=master" />
-    </td>
-    <td align="center">
-      <img src="https://travis-ci.org/drush-ops/drush.svg?branch=master" />
-    </td>
-    <td align="center">
-      <img src="https://circleci.com/gh/drush-ops/drush.svg?style=shield" />
-    </td>
+    <td></td> <td></td> <td></td> <td>✅</td>
   </tr>
   <tr>
     <td> Drush 8 </td>
     <td> <a href="https://travis-ci.org/drush-ops/drush">8.x</a> </td>
     <td> 5.4.5+ </td>
-    <td> D6, D7, D8.3- </td>
-    <td align="center">
-      <img src="https://circleci.com/gh/drush-ops/drush.svg?style=shield" />
-    </td>
-    <td align="center">
-      -
-    </td>
-    <td align="center">
-      <img src="https://travis-ci.org/drush-ops/drush.svg?branch=8.x" />
-    </td>
+    <td>✅</td> <td>✅</td> <td>✅</td> <td><b>⚠️</b></td>
   </tr>
   <tr>
     <td> Drush 7 </td>
     <td> <a href="https://travis-ci.org/drush-ops/drush">7.x</a> </td>
     <td> 5.3.0+ </td>
-    <td> D6, D7 </td>
-    <td colspan="3" align="center"> Unsupported </td>
+    <td>✓</td> <td>✓</td> <td></td> <td></td>
   </tr>
   <tr>
     <td> Drush 6 </td>
     <td> <a href="https://travis-ci.org/drush-ops/drush">6.x</a> </td>
     <td> 5.3.0+ </td>
-    <td> D6, D7 </td>
-    <td colspan="3" align="center"> Unsupported </td>
+    <td>✓</td> <td>✓</td> <td></td> <td></td>
   </tr>
   <tr>
     <td> Drush 5 </td>
     <td> <a href="https://travis-ci.org/drush-ops/drush">5.x</a> </td>
     <td> 5.2.0+ </td>
-    <td> D6, D7 </td>
-    <td colspan="3" align="center"> Unsupported </td>
+    <td>✓</td> <td>✓</td> <td></td> <td></td>
   </tr>
+</table>
+
+<table>
+    <tr>
+        <th colspan="2">Legend</th>
+    </tr>
+    <tr>
+        <td>✅</td> <td>Supported and recommended</td>
+    </tr>
+    <tr>
+        <td><b>⚠️</b></td> <td>Supported but not recommended</td>
+    </tr>
+    <tr>
+        <td>✓</td> <td>Compatible but no longer supported</td>
+    </tr>
 </table>
