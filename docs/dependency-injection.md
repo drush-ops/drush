@@ -49,17 +49,25 @@ For example:
 namespace Drupal\my_module\Commands;
 
 use Drush\Commands\DrushCommands;
+use Consolidation\OutputFormatters\StructuredData\ListDataFromKeys;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
-use Consolidation\SiteAlias\SiteSliasManagerAwareTrait;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 
-class MyModuleiCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+class MyModuleCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
   use SiteAliasManagerAwareTrait;
-public function commandName($) 
-{
-  $selfAlias = $this->aliasManager()->getSelf();
-$this->logger()->success(‘The current alias is {name}’, [‘name’ => $selfAlias]);
-}
+  /**
+   * Prints the currenbt alias name and info.
+   *
+   * @command mymodule:myAlias
+   * @return \Consolidation\OutputFormatters\StructuredData\ListDataFromKeys
+   */
+  public function myAlias() 
+  {
+    $selfAlias = $this->siteAliasManager()->getSelf();
+    $this->logger()->success(‘The current alias is {name}’, [‘name’ => $selfAlias]);
+    return new ListDataFromKeys($aliasRecord->export());
+  }
 }
 ```
 All Drush command files extend DrushCommands. DrushCommands implements ConfigAwareInterface, IOAwareInterface, LoggerAwareInterface, which gives access to `$this->getConfig()`, `$this->logger()` and other ways to do input and output. See the [IO documentation](io.md) for more information.
