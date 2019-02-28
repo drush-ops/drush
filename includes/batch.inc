@@ -196,6 +196,9 @@ function _drush_batch_command($id) {
   if (_drush_batch_worker()) {
     return _drush_batch_finished();
   }
+  else {
+    return ['drush_batch_process_finished' => FALSE];
+  }
 }
 
 
@@ -203,7 +206,7 @@ function _drush_batch_command($id) {
  * Process batch operations
  *
  * Using the current $batch process each of the operations until the batch
- * has been completed or half of the available memory for the process has been
+ * has been completed or 60% of the available memory for the process has been
  * reached.
  */
 function _drush_batch_worker() {
@@ -280,8 +283,9 @@ function _drush_batch_worker() {
     // processed or all sets have been completed.
     $queue = _batch_queue($current_set);
 
-    // If we are in progressive mode, break processing after 1 second.
-    if (drush_memory_limit() > 0 && (memory_get_usage() * 2) >= drush_memory_limit()) {
+    // If we are in progressive mode, break processing after 60% of memory usage
+    // is reached.
+    if (drush_memory_limit() > 0 && (memory_get_usage() * 1.6) >= drush_memory_limit()) {
       Drush::logger()->notice(dt("Batch process has consumed in excess of 50% of available memory. Starting new thread"));
       // Record elapsed wall clock time.
       $current_set['elapsed'] = round((microtime(TRUE) - $current_set['start']) * 1000, 2);
