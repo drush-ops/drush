@@ -139,6 +139,10 @@ class UpdateDBTest extends CommandUnishTestCase
      */
     public function testFailedPostUpdate()
     {
+        if ($this->isWindows()) {
+            $this->markTestSkipped('See https://github.com/consolidation/site-process/pull/27');
+        }
+
         $this->setUpDrupal(1, true);
         $options = [
             'yes' => null,

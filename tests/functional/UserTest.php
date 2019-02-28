@@ -102,12 +102,6 @@ class UserCase extends CommandUnishTestCase
 
     public function testUserCancel()
     {
-        $this->log('OS is '. strtoupper(substr(PHP_OS, 0, 3)) == "WIN");
-        $this->assertEquals('WIN', strtoupper(substr(PHP_OS, 0, 3)));
-        if ($this->isWindows()) {
-            $this->markTestSkipped('See https://github.com/consolidation/site-process/pull/27');
-        }
-
         // Create a content entity type and enable its module.
         $answers = [
             'name' => 'UnishArticle',
