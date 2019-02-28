@@ -142,7 +142,7 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         // Account for users who omit the http:// prefix.
         if (empty($parsed_url['scheme'])) {
             $this->uri = 'http://' . $this->uri;
-            $parsed_url = parse_url($this->uri);
+            $parsed_url = parse_url('http://' . $uri);
         }
 
         $server = [
