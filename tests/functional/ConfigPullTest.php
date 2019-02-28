@@ -22,6 +22,10 @@ class ConfigPullCase extends CommandUnishTestCase
    */
     public function testConfigPull()
     {
+        if ($this->isWindows()) {
+            $this->markTestSkipped('rsync paths may not contain colons on Windows.');
+        }
+
         $aliases = $this->getAliases();
         $source = $aliases['stage'];
         $destination = $aliases['dev'];

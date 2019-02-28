@@ -2,6 +2,7 @@
 
 namespace Drush\Commands\generate;
 
+use Consolidation\SiteProcess\Util\Escape;
 use DrupalCodeGenerator\GeneratorDiscovery;
 use DrupalCodeGenerator\Helper\Dumper;
 use DrupalCodeGenerator\Helper\Renderer;
@@ -44,7 +45,6 @@ class GenerateCommands extends DrushCommands
      */
     public function generate($generator = '', $options = ['answers' => self::REQ, 'directory' => self::REQ])
     {
-
         // Disallow default Symfony console commands.
         if ($generator == 'help' || $generator == 'list') {
             $generator = null;
@@ -68,7 +68,7 @@ class GenerateCommands extends DrushCommands
             // Create an isolated input.
             $argv = [
                 $generator,
-                '--answers=' . escapeshellarg($options['answers']),
+                '--answers=' .  Escape::shellArg($options['answers']),
                 '--directory=' . $options['directory']
             ];
             if ($options['ansi']) {

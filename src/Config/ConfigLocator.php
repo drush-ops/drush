@@ -5,6 +5,7 @@ use Consolidation\Config\Loader\ConfigLoaderInterface;
 use Drush\Config\Loader\YamlConfigLoader;
 use Consolidation\Config\Loader\ConfigProcessor;
 use Consolidation\Config\Util\EnvConfig;
+use Webmozart\PathUtil\Path;
 
 /**
  * Locate Drush configuration files and load them into the configuration
@@ -340,7 +341,7 @@ class ConfigLocator
     {
         foreach ($configFiles as $configFile) {
             $processor->extend($loader->load($configFile));
-            $this->configFilePaths[] = $configFile;
+            $this->configFilePaths[] = Path::canonicalize($configFile);
         }
     }
 
@@ -401,7 +402,7 @@ class ConfigLocator
         $base_dirs = array_filter(array_merge($this->siteRoots, [$this->composerRoot]));
         $site_local_paths = array_map(
             function ($item) {
-                return "$item/drush/sites";
+                return Path::join($item, '/drush/sites');
             },
             $base_dirs
         );
