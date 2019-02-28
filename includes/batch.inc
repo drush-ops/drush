@@ -57,7 +57,7 @@ class DrushBatchContext extends ArrayObject {
  * the current batch, while keeping track of available memory.
  *
  * The batch system will process as many batch sets as possible until
- * the entire batch has been completed or half of the available memory
+ * the entire batch has been completed or 60% of the available memory
  * has been used.
  *
  * This function is a drop in replacement for the existing batch_process()
@@ -286,7 +286,7 @@ function _drush_batch_worker() {
     // If we are in progressive mode, break processing after 60% of memory usage
     // is reached.
     if (drush_memory_limit() > 0 && (memory_get_usage() * 1.6) >= drush_memory_limit()) {
-      Drush::logger()->notice(dt("Batch process has consumed in excess of 50% of available memory. Starting new thread"));
+      Drush::logger()->notice(dt("Batch process has consumed in excess of 60% of available memory. Starting new thread"));
       // Record elapsed wall clock time.
       $current_set['elapsed'] = round((microtime(TRUE) - $current_set['start']) * 1000, 2);
       break;
