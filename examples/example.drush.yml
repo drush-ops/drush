@@ -56,6 +56,12 @@ drush:
     # or multiple --include options may be provided. Drush 8 and earlier did
     # a deep search in ~/.drush and /usr/share/drush/commands when loading
     # command files.
+    #
+    # For testing, specify the namespace component in the key. e.g.:
+    #
+    # drush:
+    #  include:
+    #    'Commands/example_drush_extension': '${env.PWD}'
     include:
       - '${env.home}/.drush/commands'
       - /usr/share/drush/commands
@@ -73,10 +79,6 @@ drush:
 
     # Specify a folder where Drush should store its file based caches. If unspecified, defaults to $HOME/.drush.
     #cache-directory: /tmp/.drush
-
-  # Enable to make Drush follow symlinks when searching for commandfiles. This
-  # is typically best only done for setting up test fixtures for Drush extensions.
-  command-follow-symlinks: false
 
 # This section is for setting global options.
 options:
