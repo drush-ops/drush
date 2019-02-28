@@ -57,8 +57,8 @@ install:
   #Install dependencies via Composer
   - php composer.phar install --prefer-dist -n
   - SET PATH=%APPVEYOR_BUILD_FOLDER%;%APPVEYOR_BUILD_FOLDER%/vendor/bin;%PATH%
-  # Uncomment this and below line to enable RDP into build machine https://www.appveyor.com/docs/how-to/rdp-to-build-worker/
-  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+  # Uncomment this and on_finish line below to enable RDP into build machine https://www.appveyor.com/docs/how-to/rdp-to-build-worker/
+  # - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 test_script:
   - vendor/bin/phpunit --colors=always --configuration tests --testsuite functional --debug
@@ -67,7 +67,7 @@ test_script:
 
 on_finish:
   # Uncomment this and above line to enable RDP into build machine https://www.appveyor.com/docs/how-to/rdp-to-build-worker/
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+  # - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 # environment variables
 environment:

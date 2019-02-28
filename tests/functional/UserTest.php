@@ -102,6 +102,10 @@ class UserCase extends CommandUnishTestCase
 
     public function testUserCancel()
     {
+        if ($this->isWindows()) {
+            $this->markTestSkipped('See https://github.com/consolidation/site-process/pull/27');
+        }
+
         // Create a content entity type and enable its module.
         $answers = [
             'name' => 'UnishArticle',
