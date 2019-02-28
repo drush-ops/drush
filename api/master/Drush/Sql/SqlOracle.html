@@ -469,7 +469,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
                     string
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_createdbSql">createdbSql</a>(string $dbname)
+                    <a href="#method_createdbSql">createdbSql</a>(string $dbname, boolean $quoted = false)
         
                                             <p>Build a SQL string for dropping and creating a database.</p>                </div>
                 <div class="col-md-2"></div>
@@ -1637,7 +1637,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
                     <h3 id="method_createdbSql">
         <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Sql/SqlOracle.php#L31">line 31</a></div>
         <code>                    string
-    <strong>createdbSql</strong>(string $dbname)
+    <strong>createdbSql</strong>(string $dbname, boolean $quoted = false)
         </code>
     </h3>
     <div class="details">
@@ -1655,6 +1655,12 @@ provide a $result_file whose value can be drush_bit_bucket().</p>               
                 <td>$dbname</td>
                 <td>dbname
   The database name.</td>
+            </tr>
+                    <tr>
+                <td>boolean</td>
+                <td>$quoted</td>
+                <td>Quote the database name. Mysql uses backticks to quote which can cause problems
+  in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.</td>
             </tr>
             </table>
 
