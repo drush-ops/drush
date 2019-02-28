@@ -1,6 +1,8 @@
 
 Drush make
 ----------
+**Drush make is no longer maintained ([#3946](https://github.com/drush-ops/drush/issues/3946#issuecomment-467861007)), use [drupal-composer/drupal-project](https://github.com/drupal-composer/drupal-project) template for Drupal projects!**
+
 Drush make is an extension to drush that can create a ready-to-use drupal site,
 pulling sources from various locations. It does this by parsing a flat text file
 (similar to a drupal `.info` file) and downloading the sources it describes. In
