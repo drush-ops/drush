@@ -22,6 +22,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @param $source A site-alias or the name of a subdirectory within /sites whose database you want to copy from.
      * @param $target A site-alias or the name of a subdirectory within /sites whose database you want to replace.
      * @optionset_table_selection
+     * @optionset_sql
      * @option no-dump Do not dump the sql database; always use an existing dump file.
      * @option no-sync Do not rsync the database dump file from source to target.
      * @option runner Where to run the rsync command; defaults to the local site. Can also be 'source' or 'target'.
