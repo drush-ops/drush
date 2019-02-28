@@ -68,7 +68,7 @@ class GenerateCommands extends DrushCommands
             // Create an isolated input.
             $argv = [
                 $generator,
-                '--answers=' .  Escape::shellArg($options['answers']),
+                '--answers=' .  Escape::shellArg($options['answers'], 'LINUX'),
                 '--directory=' . $options['directory']
             ];
             if ($options['ansi']) {
