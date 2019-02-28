@@ -318,6 +318,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $discovery = $this->commandDiscovery();
         $commandClasses = $discovery->discover($commandfileSearchpath, '\Drush');
         $commandClasses[] = \Consolidation\Filter\Hooks\FilterHooks::class;
+        $commandClasses = array_merge($this->commandsFromConfiguration(), $commandClasses);
 
         $this->loadCommandClasses($commandClasses);
 
@@ -330,6 +331,23 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         // it without creating a Runner object that we would not otherwise need.
         $runner = new \Robo\Runner();
         $runner->registerCommandClasses($this, $commandClasses);
+    }
+
+    protected function commandsFromConfiguration()
+    {
+        $commandList = [];
+
+        foreach ($this->config->get('drush.commands', []) as $key => $value) {
+            $classname = $key;
+            $path = $value;
+            if (is_numeric($key)) {
+                $classname = $value;
+                $commandList[] = $classname;
+            } else {
+                $commandList[$path] = $classname;
+            }
+        }
+        return $commandList;
     }
 
     /**
