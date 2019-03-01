@@ -57,7 +57,7 @@ abstract class UnishTestCase extends TestCase
         self::mkdir($unish_sandbox);
         $unish_cache = Path::join($unish_sandbox, 'cache');
 
-        self::$drush = self::getComposerRoot() . '/drush';
+        self::$drush = Path::join(self::getComposerRoot(), 'drush');
 
         self::$sandbox = $unish_sandbox;
         self::$usergroup = isset($GLOBALS['UNISH_USERGROUP']) ? $GLOBALS['UNISH_USERGROUP'] : null;
@@ -124,7 +124,7 @@ abstract class UnishTestCase extends TestCase
 
     public static function getComposerRoot()
     {
-        return dirname(dirname(__DIR__));
+        return Path::canonicalize(dirname(dirname(__DIR__)));
     }
 
     /**
@@ -327,7 +327,7 @@ abstract class UnishTestCase extends TestCase
         $arg = preg_replace('/"/', '""', $arg);
 
         // Double up percents.
-        $arg = preg_replace('/%/', '%%', $arg);
+        // $arg = preg_replace('/%/', '%%', $arg);
 
         // Add surrounding quotes.
         $arg = '"' . $arg . '"';

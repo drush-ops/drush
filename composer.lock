@@ -6284,6 +6284,17 @@
         {
             "name": "webflo/drupal-core-strict",
             "version": "8.6.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webflo/drupal-core-strict.git",
+                "reference": "0e445007504878ac9080dba88e6aa906e3d42592"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webflo/drupal-core-strict/zipball/0e445007504878ac9080dba88e6aa906e3d42592",
+                "reference": "0e445007504878ac9080dba88e6aa906e3d42592",
+                "shasum": ""
+            },
             "require": {
                 "asm89/stack-cors": "1.2.0",
                 "composer/installers": "v1.5.0",
