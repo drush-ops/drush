@@ -2,8 +2,6 @@
 
 namespace Unish;
 
-use Consolidation\SiteProcess\Util\Escape;
-use Consolidation\SiteProcess\Util\Shell;
 use Symfony\Component\Yaml\Yaml;
 use Webmozart\PathUtil\Path;
 
@@ -50,7 +48,7 @@ class CoreTest extends UnishIntegrationTestCase
         $root = $this->webroot();
         $sitewide = $this->drupalSitewideDirectory();
 
-        $this->drush('drupal-directory', [Shell::preEscaped(escapeshellarg('%files'))]);
+        $this->drush('drupal-directory', ['%files']);
         $output = $this->getOutput();
         $this->assertEquals(Path::join($root, '/sites/default/files'), $output);
 
