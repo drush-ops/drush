@@ -55,9 +55,9 @@ class Logger extends AbstractLogger {
         $green = "[%s]";
       }
       else {
-        $red = "\033[31;40m\033[1m[%s]\033[0m";
-        $yellow = "\033[1;33;40m\033[1m[%s]\033[0m";
-        $green = "\033[1;32;40m\033[1m[%s]\033[0m";
+        $red = "\033[31m\033[1m[%s]\033[0m";
+        $yellow = "\033[1;33m\033[1m[%s]\033[0m";
+        $green = "\033[1;32m\033[1m[%s]\033[0m";
       }
 
       $verbose = drush_get_context('DRUSH_VERBOSE');
