@@ -89,12 +89,12 @@ trait ExecTrait
      */
     public static function programExists($program)
     {
-        $cmd = "command -v $program";
-        if (Escape::isWindows()) {
-            $cmd = "where $program";
-        }
-        $process = Drush::shell($cmd);
+        $command = Escape::isWindows() ? "where $program" : "command -v $program";
+        $process = Drush::shell($command);
         $process->run();
+        if (!$process->isSuccessful()) {
+            Drush::logger()->debug($process->getErrorOutput());
+        }
         return $process->isSuccessful();
     }
 }
