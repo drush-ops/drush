@@ -294,7 +294,7 @@ function drush_get_site_alias_config($site_record, $key, $default)
   $config = Drush::config();
   $configRuntime = $config->getContext(ConfigOverlay::PROCESS_CONTEXT);
 
-  $siteAliasWithConfig = new SiteAliasWithConfig($configRuntime, $site_record, $config);
+  $siteAliasWithConfig = new SiteAliasWithConfig($site_record, $config, $configRuntime);
 
   return $siteAliasWithConfig->get($key, $default);
 }

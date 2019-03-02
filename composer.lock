@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "34b53ce303da025b6cdf6c85f312ec43",
+    "content-hash": "d58b9fcc7f8284d0eb8091a75648bda7",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -663,7 +663,7 @@
         },
         {
             "name": "consolidation/site-alias",
-            "version": "3.0.0-alpha1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-alias.git",
@@ -734,7 +734,7 @@
         },
         {
             "name": "consolidation/site-process",
-            "version": "2.0.0-beta4",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-process.git",
@@ -6284,17 +6284,6 @@
         {
             "name": "webflo/drupal-core-strict",
             "version": "8.6.x-dev",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/webflo/drupal-core-strict.git",
-                "reference": "0e445007504878ac9080dba88e6aa906e3d42592"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/webflo/drupal-core-strict/zipball/0e445007504878ac9080dba88e6aa906e3d42592",
-                "reference": "0e445007504878ac9080dba88e6aa906e3d42592",
-                "shasum": ""
-            },
             "require": {
                 "asm89/stack-cors": "1.2.0",
                 "composer/installers": "v1.5.0",
@@ -6638,9 +6627,18 @@
             "time": "2016-04-12T21:19:36+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "alias": "3.0.0-alpha1",
+            "alias_normalized": "3.0.0.0-alpha1",
+            "version": "9999999-dev",
+            "package": "consolidation/site-alias"
+        }
+    ],
     "minimum-stability": "dev",
     "stability-flags": {
+        "consolidation/site-alias": 20,
+        "consolidation/site-process": 20,
         "lox/xhprof": 20,
         "webflo/drupal-core-strict": 20
     },
