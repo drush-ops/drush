@@ -17,11 +17,11 @@
     <testsuite name="unit">
       <directory suffix="Test.php">unit</directory>
     </testsuite>
-    <testsuite name="integration">
-      <directory suffix="Test.php">integration</directory>
-    </testsuite>
     <testsuite name="functional">
       <directory>functional</directory>
+    </testsuite>
+    <testsuite name="integration">
+      <directory suffix="Test.php">integration</directory>
     </testsuite>
   </testsuites>
 
