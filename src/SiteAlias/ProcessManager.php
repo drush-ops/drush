@@ -3,6 +3,7 @@ namespace Drush\SiteAlias;
 
 use Consolidation\SiteProcess\ProcessManager as ConsolidationProcessManager;
 
+use Consolidation\SiteProcess\Util\Escape;
 use Psr\Log\LoggerInterface;
 use Consolidation\SiteAlias\AliasRecordInterface;
 use Consolidation\SiteProcess\Factory\TransportFactoryInterface;

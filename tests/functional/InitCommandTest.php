@@ -33,6 +33,6 @@ class InitCommandCase extends CommandUnishTestCase
         $bashrc_contents = file_get_contents("$home/.bashrc");
         $this->assertContains('drush.bashrc', $bashrc_contents);
 
-        $this->assertContains(realpath(dirname(self::getDrush())), $bashrc_contents);
+        $this->assertContains(Path::canonicalize(realpath(dirname(self::getDrush()))), $bashrc_contents);
     }
 }
