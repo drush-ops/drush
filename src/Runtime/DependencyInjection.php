@@ -13,6 +13,8 @@ use Composer\Autoload\ClassLoader;
 use League\Container\ContainerInterface;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Drush\Command\DrushCommandInfoAlterer;
+use Consolidation\Config\Util\ConfigOverlay;
+use Drush\Config\DrushConfig;
 
 /**
  * Prepare our Dependency Injection Container
@@ -52,7 +54,7 @@ class DependencyInjection
         \Robo\Robo::configureContainer($container, $application, $config, $input, $output);
         $container->add('container', $container);
 
-        $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager);
+        $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager, $config);
 
         // Store the container in the \Drush object
         Drush::setContainer($container);
@@ -77,7 +79,7 @@ class DependencyInjection
         }
     }
 
-    protected function addDrushServices(ContainerInterface $container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager)
+    protected function addDrushServices(ContainerInterface $container, ClassLoader $loader, DrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config)
     {
         // Override Robo's logger with our own
         $container->share('logger', 'Drush\Log\Logger')
@@ -86,6 +88,10 @@ class DependencyInjection
 
         $container->share('loader', $loader);
         $container->share('site.alias.manager', $aliasManager);
+
+        // Fetch the runtime config, where -D et. al. are stored, and
+        // add a reference to it to the container.
+        $container->share('config.runtime', $config->getContext(ConfigOverlay::PROCESS_CONTEXT));
 
         // Override Robo's formatter manager with our own
         // @todo not sure that we'll use this. Maybe remove it.
@@ -107,6 +113,7 @@ class DependencyInjection
         $container->share('docker-compose.transport', \Consolidation\SiteProcess\Factory\DockerComposeTransportFactory::class);
         $container->share('process.manager', 'Drush\SiteAlias\ProcessManager')
             ->withMethodCall('setConfig', ['config'])
+            ->withMethodCall('setConfigRuntime', ['config.runtime'])
             ->withMethodCall('add', ['ssh.transport'])
             ->withMethodCall('add', ['docker-compose.transport']);
         $container->share('redispatch.hook', 'Drush\Runtime\RedispatchHook')
