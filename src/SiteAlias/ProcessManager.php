@@ -4,7 +4,7 @@ namespace Drush\SiteAlias;
 use Consolidation\SiteProcess\ProcessManager as ConsolidationProcessManager;
 
 use Psr\Log\LoggerInterface;
-use Consolidation\SiteAlias\AliasRecord;
+use Consolidation\SiteAlias\AliasRecordInterface;
 use Consolidation\SiteProcess\Factory\TransportFactoryInterface;
 use Symfony\Component\Process\Process;
 use Drush\Drush;
@@ -21,14 +21,14 @@ class ProcessManager extends ConsolidationProcessManager
     /**
      * Run a Drush command on a site alias (or @self).
      *
-     * @param AliasRecord $siteAlias
+     * @param AliasRecordInterface $siteAlias
      * @param string $command
      * @param array $args
      * @param array $options
      * @param array $options_double_dash
      * @return SiteProcess
      */
-    public function drush(AliasRecord $siteAlias, $command, $args = [], $options = [], $options_double_dash = [])
+    public function drush(AliasRecordInterface $siteAlias, $command, $args = [], $options = [], $options_double_dash = [])
     {
         array_unshift($args, $command);
         return $this->drushSiteProcess($siteAlias, $args, $options, $options_double_dash);
@@ -39,13 +39,13 @@ class ProcessManager extends ConsolidationProcessManager
      * drushSiteProcess exists specifically for use by the RedispatchHook,
      * which does not have specific knowledge about which argument is the command.
      *
-     * @param AliasRecord $siteAlias
+     * @param AliasRecordInterface $siteAlias
      * @param array $args
      * @param array $options
      * @param array $options_double_dash
      * @return ProcessBase
      */
-    public function drushSiteProcess(AliasRecord $siteAlias, $args = [], $options = [], $options_double_dash = [])
+    public function drushSiteProcess(AliasRecordInterface $siteAlias, $args = [], $options = [], $options_double_dash = [])
     {
         // Fill in the root and URI from the site alias, if the caller
         // did not already provide them in $options.
@@ -65,7 +65,7 @@ class ProcessManager extends ConsolidationProcessManager
     /**
      * Determine the path to Drush to use
      */
-    public function drushScript(AliasRecord $siteAlias)
+    public function drushScript(AliasRecordInterface $siteAlias)
     {
         $defaultDrushScript = 'drush';
 
@@ -100,7 +100,7 @@ class ProcessManager extends ConsolidationProcessManager
      * Use Drush::drush() or ProcessManager::drush() instead of this method
      * when calling Drush.
      */
-    public function siteProcess(AliasRecord $siteAlias, $args = [], $options = [], $optionsPassedAsArgs = [])
+    public function siteProcess(AliasRecordInterface $siteAlias, $args = [], $options = [], $optionsPassedAsArgs = [])
     {
         $process = parent::siteProcess($siteAlias, $args, $options, $optionsPassedAsArgs);
         return $this->configureProcess($process);
