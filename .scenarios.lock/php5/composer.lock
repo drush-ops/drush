@@ -667,12 +667,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-alias.git",
-                "reference": "0b91adc788c456bf1d797611bcdee9cd7cf82fe9"
+                "reference": "411065a2eae77cf3dd0f114f27e2df3adbe5e5d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-alias/zipball/0b91adc788c456bf1d797611bcdee9cd7cf82fe9",
-                "reference": "0b91adc788c456bf1d797611bcdee9cd7cf82fe9",
+                "url": "https://api.github.com/repos/consolidation/site-alias/zipball/411065a2eae77cf3dd0f114f27e2df3adbe5e5d7",
+                "reference": "411065a2eae77cf3dd0f114f27e2df3adbe5e5d7",
                 "shasum": ""
             },
             "require": {
@@ -730,7 +730,7 @@
                 }
             ],
             "description": "Manage alias records for local and remote sites.",
-            "time": "2019-03-02T02:32:18+00:00"
+            "time": "2019-03-02T04:23:48+00:00"
         },
         {
             "name": "consolidation/site-process",
