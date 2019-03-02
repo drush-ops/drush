@@ -344,7 +344,7 @@ implementing the actual logic.</p>                    </div>
                     static&nbsp;<abbr title="Consolidation\SiteProcess\SiteProcess">SiteProcess</abbr>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_drush">drush</a>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, string $command, array $args = [], array $options = [], array $options_double_dash = [])
+                    <a href="#method_drush">drush</a>(<abbr title="Consolidation\SiteAlias\AliasRecordInterface">AliasRecordInterface</abbr> $siteAlias, string $command, array $args = [], array $options = [], array $options_double_dash = [])
         
                                             <p>Run a Drush command on a site alias (or @self).</p>                </div>
                 <div class="col-md-2"></div>
@@ -354,7 +354,7 @@ implementing the actual logic.</p>                    </div>
                     static&nbsp;<abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_siteProcess">siteProcess</a>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
+                    <a href="#method_siteProcess">siteProcess</a>(<abbr title="Consolidation\SiteAlias\AliasRecordInterface">AliasRecordInterface</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
         
                                             <p>Run a bash fragment on a site alias. U</p>                </div>
                 <div class="col-md-2"></div>
@@ -1040,7 +1040,7 @@ as they can return useful type hints.</p>                            </div>
                     <h3 id="method_drush">
         <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L345">line 345</a></div>
         <code>        static            <abbr title="Consolidation\SiteProcess\SiteProcess">SiteProcess</abbr>
-    <strong>drush</strong>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, string $command, array $args = [], array $options = [], array $options_double_dash = [])
+    <strong>drush</strong>(<abbr title="Consolidation\SiteAlias\AliasRecordInterface">AliasRecordInterface</abbr> $siteAlias, string $command, array $args = [], array $options = [], array $options_double_dash = [])
         </code>
     </h3>
     <div class="details">
@@ -1103,7 +1103,7 @@ manager may use Drush::aliasManager().</p>                            </div>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr></td>
+                <td><abbr title="Consolidation\SiteAlias\AliasRecordInterface">AliasRecordInterface</abbr></td>
                 <td>$siteAlias</td>
                 <td></td>
             </tr>
@@ -1149,7 +1149,7 @@ manager may use Drush::aliasManager().</p>                            </div>
                     <h3 id="method_siteProcess">
         <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Drush.php#L363">line 363</a></div>
         <code>        static            <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
-    <strong>siteProcess</strong>(<abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
+    <strong>siteProcess</strong>(<abbr title="Consolidation\SiteAlias\AliasRecordInterface">AliasRecordInterface</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
         </code>
     </h3>
     <div class="details">
@@ -1164,7 +1164,7 @@ Tip: Consider using injected process manager instead of this method. see \Drush\
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Consolidation\SiteAlias\AliasRecord">AliasRecord</abbr></td>
+                <td><abbr title="Consolidation\SiteAlias\AliasRecordInterface">AliasRecordInterface</abbr></td>
                 <td>$siteAlias</td>
                 <td></td>
             </tr>
