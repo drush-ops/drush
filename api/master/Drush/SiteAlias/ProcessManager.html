@@ -99,7 +99,7 @@
                     <abbr title="Consolidation\SiteProcess\SiteProcess">SiteProcess</abbr>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_drush">drush</a>(<abbr title="Consolidation\SiteAlias\AliasRecordInterface">AliasRecordInterface</abbr> $siteAlias, string $command, array $args = [], array $options = [], array $options_double_dash = [])
+                    <a href="#method_drush">drush</a>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias, string $command, array $args = [], array $options = [], array $options_double_dash = [])
         
                                             <p>Run a Drush command on a site alias (or @self).</p>                </div>
                 <div class="col-md-2"></div>
@@ -109,7 +109,7 @@
                     <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_drushSiteProcess">drushSiteProcess</a>(<abbr title="Consolidation\SiteAlias\AliasRecordInterface">AliasRecordInterface</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
+                    <a href="#method_drushSiteProcess">drushSiteProcess</a>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
         
                                             <p>drushSiteProcess should be avoided in favor of the drush method above.</p>                </div>
                 <div class="col-md-2"></div>
@@ -119,7 +119,7 @@
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_drushScript">drushScript</a>(<abbr title="Consolidation\SiteAlias\AliasRecordInterface">AliasRecordInterface</abbr> $siteAlias)
+                    <a href="#method_drushScript">drushScript</a>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias)
         
                                             <p>Determine the path to Drush to use</p>                </div>
                 <div class="col-md-2"></div>
@@ -129,7 +129,7 @@
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_siteProcess">siteProcess</a>(<abbr title="Consolidation\SiteAlias\AliasRecordInterface">AliasRecordInterface</abbr> $siteAlias, $args = [], $options = [], $optionsPassedAsArgs = [])
+                    <a href="#method_siteProcess">siteProcess</a>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias, $args = [], $options = [], $optionsPassedAsArgs = [])
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -175,7 +175,7 @@
                     <h3 id="method_drush">
         <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/ProcessManager.php#L32">line 32</a></div>
         <code>                    <abbr title="Consolidation\SiteProcess\SiteProcess">SiteProcess</abbr>
-    <strong>drush</strong>(<abbr title="Consolidation\SiteAlias\AliasRecordInterface">AliasRecordInterface</abbr> $siteAlias, string $command, array $args = [], array $options = [], array $options_double_dash = [])
+    <strong>drush</strong>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias, string $command, array $args = [], array $options = [], array $options_double_dash = [])
         </code>
     </h3>
     <div class="details">
@@ -189,7 +189,7 @@
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Consolidation\SiteAlias\AliasRecordInterface">AliasRecordInterface</abbr></td>
+                <td><abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr></td>
                 <td>$siteAlias</td>
                 <td></td>
             </tr>
@@ -235,7 +235,7 @@
                     <h3 id="method_drushSiteProcess">
         <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/ProcessManager.php#L49">line 49</a></div>
         <code>                    <abbr title="Consolidation\SiteProcess\ProcessBase">ProcessBase</abbr>
-    <strong>drushSiteProcess</strong>(<abbr title="Consolidation\SiteAlias\AliasRecordInterface">AliasRecordInterface</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
+    <strong>drushSiteProcess</strong>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias, array $args = [], array $options = [], array $options_double_dash = [])
         </code>
     </h3>
     <div class="details">
@@ -250,7 +250,7 @@ which does not have specific knowledge about which argument is the command.</p> 
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Consolidation\SiteAlias\AliasRecordInterface">AliasRecordInterface</abbr></td>
+                <td><abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr></td>
                 <td>$siteAlias</td>
                 <td></td>
             </tr>
@@ -291,7 +291,7 @@ which does not have specific knowledge about which argument is the command.</p> 
                     <h3 id="method_drushScript">
         <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/ProcessManager.php#L69">line 69</a></div>
         <code>                    
-    <strong>drushScript</strong>(<abbr title="Consolidation\SiteAlias\AliasRecordInterface">AliasRecordInterface</abbr> $siteAlias)
+    <strong>drushScript</strong>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias)
         </code>
     </h3>
     <div class="details">
@@ -305,7 +305,7 @@ which does not have specific knowledge about which argument is the command.</p> 
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Consolidation\SiteAlias\AliasRecordInterface">AliasRecordInterface</abbr></td>
+                <td><abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr></td>
                 <td>$siteAlias</td>
                 <td></td>
             </tr>
@@ -322,7 +322,7 @@ which does not have specific knowledge about which argument is the command.</p> 
                     <h3 id="method_siteProcess">
         <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/SiteAlias/ProcessManager.php#L104">line 104</a></div>
         <code>                    
-    <strong>siteProcess</strong>(<abbr title="Consolidation\SiteAlias\AliasRecordInterface">AliasRecordInterface</abbr> $siteAlias, $args = [], $options = [], $optionsPassedAsArgs = [])
+    <strong>siteProcess</strong>(<abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr> $siteAlias, $args = [], $options = [], $optionsPassedAsArgs = [])
         </code>
     </h3>
     <div class="details">
@@ -334,7 +334,7 @@ which does not have specific knowledge about which argument is the command.</p> 
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Consolidation\SiteAlias\AliasRecordInterface">AliasRecordInterface</abbr></td>
+                <td><abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr></td>
                 <td>$siteAlias</td>
                 <td></td>
             </tr>
