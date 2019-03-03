@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ffa0e3d294d86b1698e361f1e293cc7f",
+    "content-hash": "b3f1b5c7be89f1d03937a429e3b2c6f8",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -5891,12 +5891,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/webflo/drupal-core-strict.git",
-                "reference": "0e445007504878ac9080dba88e6aa906e3d42592"
+                "reference": "77919809646d790f8060b3c3fc695ae2b5dca6c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webflo/drupal-core-strict/zipball/0e445007504878ac9080dba88e6aa906e3d42592",
-                "reference": "0e445007504878ac9080dba88e6aa906e3d42592",
+                "url": "https://api.github.com/repos/webflo/drupal-core-strict/zipball/77919809646d790f8060b3c3fc695ae2b5dca6c4",
+                "reference": "77919809646d790f8060b3c3fc695ae2b5dca6c4",
                 "shasum": ""
             },
             "require": {
@@ -6252,7 +6252,8 @@
     "prefer-lowest": false,
     "platform": {
         "php": ">=5.6.0",
-        "ext-dom": "*"
+        "ext-dom": "*",
+        "ext-json": "*"
     },
     "platform-dev": [],
     "platform-overrides": {

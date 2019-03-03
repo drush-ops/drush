@@ -8,17 +8,16 @@
       tests without defining these variables if you use the default values.
 -->
 <phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../vendor/phpunit/phpunit/phpunit.xsd"
     bootstrap="../vendor/autoload.php"
-    backupGlobals="false"
-    backupStaticAttributes="false"
-    syntaxCheck="false"
     colors="true">
   <testsuites>
     <testsuite name="unit">
-      <directory suffix="Test.php">unit</directory>
+      <directory>unit</directory>
     </testsuite>
     <testsuite name="integration">
-      <directory suffix="Test.php">integration</directory>
+      <directory>integration</directory>
     </testsuite>
     <testsuite name="functional">
       <directory>functional</directory>

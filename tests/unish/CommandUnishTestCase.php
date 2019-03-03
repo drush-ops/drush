@@ -4,7 +4,6 @@ namespace Unish;
 
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
-use PHPUnit\Framework\TestResult;
 use Unish\Utils\OutputUtilsTrait;
 
 abstract class CommandUnishTestCase extends UnishTestCase
@@ -105,14 +104,17 @@ abstract class CommandUnishTestCase extends UnishTestCase
                 $this->process->setTimeout($this->timeout)
                 ->setIdleTimeout($this->idleTimeout);
             }
+
             $return = $this->process->run();
             if ($expected_return !== $return) {
                 $message = 'Unexpected exit code ' . $return . ' (expected ' . $expected_return . ") for command:\n" .  $command;
                 throw new UnishProcessFailedException($message . $this->buildProcessMessage());
             }
+
             // Reset timeouts to default.
             $this->timeout = $this->defaultTimeout;
             $this->idleTimeout = $this->defaultIdleTimeout;
+
             return $return;
         } catch (ProcessTimedOutException $e) {
             if ($e->isGeneralTimeout()) {
@@ -120,6 +122,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
             } else {
                 $message = 'Command had no output for ' . $this->idleTimeout . " seconds:\n" .  $command;
             }
+
             throw new UnishProcessFailedException($message . $this->buildProcessMessage());
         }
     }
@@ -127,25 +130,26 @@ abstract class CommandUnishTestCase extends UnishTestCase
     /**
      * Invoke drush in via execute().
      *
-     * @param command
-      *   A defined drush command such as 'cron', 'status' or any of the available ones such as 'drush pm'.
-      * @param args
-      *   Command arguments.
-      * @param $options
-      *   An associative array containing options.
-      * @param $site_specification
-      *   A site alias or site specification. Include the '@' at start of a site alias.
-      * @param $cd
-      *   A directory to change into before executing.
-      * @param $expected_return
-      *   The expected exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
-      * @param $suffix
-      *   Any code to append to the command. For example, redirection like 2>&1.
-      * @param array $env
-      *   Environment variables to pass along to the subprocess.
-      * @return integer
-      *   An exit code.
-      */
+     * @param string $command
+     *   A defined drush command such as 'cron', 'status' or any of the available ones such as 'drush pm'.
+     * @param array $args
+     *   Command arguments.
+     * @param $options
+     *   An associative array containing options.
+     * @param $site_specification
+     *   A site alias or site specification. Include the '@' at start of a site alias.
+     * @param $cd
+     *   A directory to change into before executing.
+     * @param $expected_return
+     *   The expected exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
+     * @param $suffix
+     *   Any code to append to the command. For example, redirection like 2>&1.
+     * @param array $env
+     *   Environment variables to pass along to the subprocess.
+     *
+     * @return integer
+     *   An exit code.
+     */
     public function drush($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $expected_return = self::EXIT_SUCCESS, $suffix = null, $env = [])
     {
         // cd is added for the benefit of siteSshTest which tests a strict command.

@@ -1,18 +1,9 @@
 <?php
+
 namespace Unish;
 
-use Drush\Config\Environment;
-use Drush\Drush;
-use Drush\Preflight\Preflight;
-use Drush\Runtime\DependencyInjection;
-use Drush\Runtime\Runtime;
-use Drush\Symfony\LessStrictArgvInput;
-use PHPUnit\Framework\TestResult;
-use Symfony\Component\Process\Exception\ProcessTimedOutException;
-use Symfony\Component\Process\Process;
 use Unish\Controllers\RuntimeController;
 use Unish\Utils\OutputUtilsTrait;
-use Webmozart\PathUtil\Path;
 
 /**
  * UnishIntegrationTestCase will prepare a single Drupal site and
@@ -30,11 +21,18 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
 {
     use OutputUtilsTrait;
 
+    /**
+     * @var string
+     */
     protected $stdout = '';
+
+    /**
+     * @var string
+     */
     protected $stderr = '';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getOutputRaw()
     {
@@ -42,7 +40,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getErrorOutputRaw()
     {
@@ -52,16 +50,17 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
     /**
      * Invoke drush via a direct method call to Application::run().
      *
-     * @param $command
+     * @param string $command
      *   A defined drush command such as 'cron', 'status' and so on
      * @param array $args
      *   Command arguments.
      * @param array $options
      *   An associative array containing options.
      * @param int $expected_return
-     *   The expected exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
+     *   The expected exit code. Usually static::EXIT_ERROR or static::EXIT_SUCCESS.
      * @param string|bool $stdin
-     * @return integer
+     *
+     * @return int
      *   An exit code.
      */
     public function drush($command, array $args = [], array $options = [], $expected_return = self::EXIT_SUCCESS, $stdin = false)
@@ -88,10 +87,10 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         // We only bootstrap the first time, and phpunit likes to reset the
         // cwd at the beginning of every test function. We therefore need to
         // change the working directory back to where Drupal expects it to be.
-        chdir($this->webroot());
+        chdir(static::webroot());
         $this->log("Executing: " . implode(' ', $cmd), 'verbose');
         $return = $application->run($input, $output);
-        $this->assertEquals($expected_return, $return, "Command failed: \n\n" . $this->getErrorOutput());
+        static::assertEquals($expected_return, $return, "Command failed: \n\n" . $this->getErrorOutput());
 
         $this->stdout = $output->fetch();
         $this->stderr = $output->getErrorOutput()->fetch();
@@ -103,6 +102,9 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         return $return;
     }
 
+    /**
+     * @param string $contents
+     */
     protected function setStdin($contents)
     {
         $path = $this->writeToTmpFile($contents);
@@ -110,60 +112,97 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         $stdinHandler->redirect($path);
     }
 
-    protected function buildCommandLine($command, $args, $options)
+    /**
+     * @return string[]
+     */
+    protected function getGlobalOptionNames()
     {
-        $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options', 'backend', 'cd'];
-        $options += ['root' => $this->webroot(), 'uri' => self::INTEGRATION_TEST_ENV]; // Default value.
-        $cmd = [self::getDrush()];
-
-        // Insert global options.
-        foreach ($options as $key => $value) {
-            if (in_array($key, $global_option_list)) {
-                unset($options[$key]);
-                if ($key == 'uri' && $value == 'OMIT') {
-                    continue;
-                }
-                if (!isset($value)) {
-                    $cmd[] = "--$key";
-                } else {
-                    $cmd[] = "--$key=" . $value;
-                }
-            }
-        }
-
-        if ($level = $this->logLevel()) {
-            $cmd[] = '--' . $level;
-        }
-        $cmd[] = "--no-interaction";
-
-        $cmd[] = $command;
-
-        // Insert drush command arguments.
-        foreach ($args as $arg) {
-            $cmd[] = $arg;
-        }
-        // insert drush command options
-        foreach ($options as $key => $value) {
-            if (!isset($value) || $value === true) {
-                $cmd[] = "--$key";
-            } else {
-                $cmd[] = "--$key=" . $value;
-            }
-        }
-
-        // Remove NULLs
-        $cmd = array_filter($cmd, 'strlen');
-
-        return $cmd;
+        return [
+            'simulate',
+            'root',
+            'uri',
+            'include',
+            'config',
+            'alias-path',
+            'ssh-options',
+            'backend',
+            'cd',
+        ];
     }
 
+    /**
+     * @return array
+     */
+    protected function getCommonCommandLineOptions()
+    {
+        return [
+            'root' => static::webroot(),
+            'uri' => static::INTEGRATION_TEST_ENV,
+        ];
+    }
+
+    /**
+     * @param string $command
+     * @param array $args
+     * @param array $options
+     *
+     * @return array
+     */
+    protected function buildCommandLine($command, $args, $options)
+    {
+        $logLevel = $this->logLevel();
+        $globalOptionNames = array_flip($this->getGlobalOptionNames());
+
+        $options += $this->getCommonCommandLineOptions();
+        if (isset($options['uri']) && $options['uri'] === 'OMIT') {
+            unset($options['uri']);
+        }
+
+        $globalOptions = array_intersect_key($options, $globalOptionNames);
+        $options = array_diff_key($options, $globalOptionNames);
+
+        $globalOptions['no-interaction'] = true;
+        if (in_array($logLevel, ['debug', 'verbose'])) {
+            $globalOptions[$logLevel] = true;
+        }
+
+        $cmd = [static::getDrush()];
+        $this->buildCommandLineOptions($cmd, $globalOptions);
+        $cmd = array_merge($cmd, [$command], $args);
+        $this->buildCommandLineOptions($cmd, $options);
+
+        return array_filter($cmd, 'strlen');
+    }
+
+    /**
+     * @param array $cmd
+     * @param array $options
+     */
+    protected function buildCommandLineOptions(&$cmd, $options)
+    {
+        foreach ($options as $name => $value) {
+            if (!is_array($value)) {
+                $value = [$value];
+            }
+
+            foreach ($value as $v) {
+                $cmd[] = "--$name" . ($v === null || $v === true ? '' : "=$v");
+            }
+        }
+    }
+
+    /**
+     * @param string $expected
+     * @param string $filter
+     */
     protected function assertOutputEquals($expected, $filter = '')
     {
         $output = $this->getSimplifiedOutput();
         if (!empty($filter)) {
             $output = preg_replace($filter, '', $output);
         }
-        $this->assertEquals($expected, $output);
+
+        static::assertEquals($expected, $output);
     }
 
     /**
@@ -184,6 +223,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         if (!empty($filter)) {
             $output = preg_replace($filter, '', $output);
         }
-        $this->assertEquals($expected, $output);
+
+        static::assertEquals($expected, $output);
     }
 }

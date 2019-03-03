@@ -73,6 +73,9 @@ class RuntimeController
         return $this->application;
     }
 
+    /**
+     * @return \Consolidation\AnnotatedCommand\Input\StdinHandler
+     */
     public function stdinHandler()
     {
         return $this->container->get('stdinHandler');

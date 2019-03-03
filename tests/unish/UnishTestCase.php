@@ -2,9 +2,11 @@
 
 namespace Unish;
 
+use Composer\Autoload\ClassLoader as ComposerClassLoader;
 use Consolidation\SiteAlias\AliasRecord;
-use Consolidation\SiteProcess\SiteProcess;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use RuntimeException;
 use Symfony\Component\Yaml\Yaml;
 use Webmozart\PathUtil\Path;
 use Consolidation\SiteProcess\ProcessManager;
@@ -13,16 +15,32 @@ abstract class UnishTestCase extends TestCase
 {
     // Unix exit codes.
     const EXIT_SUCCESS  = 0;
+
     const EXIT_ERROR = 1;
+
     const UNISH_EXITCODE_USER_ABORT = 75; // Same as DRUSH_EXITCODE_USER_ABORT
+
     const INTEGRATION_TEST_ENV = 'default';
 
+    /**
+     * @var string[]
+     */
+    protected static $tickChars = ['/', '-', '\\', '|'];
+
+    /**
+     * @var int
+     */
+    protected static $tickCounter = 0;
+
+    /**
+     * @var \Consolidation\SiteProcess\ProcessManager
+     */
     protected $processManager;
 
     /**
      * Process of last executed command.
      *
-     * @var Process
+     * @var \Symfony\Component\Process\Process
      */
     protected $process;
 
@@ -32,45 +50,204 @@ abstract class UnishTestCase extends TestCase
      *
      * @var array
      */
-    private static $sites = [];
+    protected static $sites = [];
 
-    private static $sandbox;
+    /**
+     * @deprecated
+     */
+    protected static $sandbox;
 
-    private static $drush;
+    /**
+     * @var string
+     */
+    protected static $drushExecutable;
 
-    private static $db_url;
+    /**
+     * @var string
+     */
+    protected static $gitExecutable = 'git';
 
-    private static $usergroup = null;
+    /**
+     * @var string
+     */
+    protected static $dbUrl;
 
-    private static $backendOutputDelimiter = 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END';
+    /**
+     * @var string
+     */
+    protected static $userGroup = '';
+
+    /**
+     * @var string
+     */
+    protected static $backendOutputDelimiter = 'DRUSH_BACKEND_OUTPUT_START>>>%s<<<DRUSH_BACKEND_OUTPUT_END';
+
+    /**
+     * @var string
+     */
+    protected static $drushRootDir = '';
+
+    /**
+     * @var string
+     */
+    protected static $unishSandboxDir = '';
+
+    /**
+     * @var int
+     */
+    protected static $vendorDirDepth = 1;
+
+    /**
+     * @var string
+     */
+    protected static $composerRoot = '';
+
+    /**
+     * @var string
+     */
+    protected static $webRoot = '';
 
     public function __construct($name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
 
-        // We read from env then globals then default to mysql.
-        self::$db_url = getenv('UNISH_DB_URL') ?: (isset($GLOBALS['UNISH_DB_URL']) ? $GLOBALS['UNISH_DB_URL'] : 'mysql://root:@127.0.0.1');
+        $this
+            ->initGitExecutable()
+            ->initDrushRootDir()
+            ->initDrushExecutable()
+            ->initComposerRoot()
+            ->initUnishSandboxDir()
+            ->initWebRoot()
+            ->initUserGroup()
+            ->initDbUrl()
+            ->initEnvVars();
+    }
 
-        // require_once __DIR__ . '/unish.inc';
-        // list($unish_tmp, $unish_sandbox, $unish_drush_dir) = \unishGetPaths();
-        $unish_sandbox = Path::join(dirname(dirname(__DIR__)), 'sandbox');
-        self::mkdir($unish_sandbox);
-        $unish_cache = Path::join($unish_sandbox, 'cache');
+    /**
+     * @return $this
+     */
+    protected function initComposerRoot()
+    {
+        $class = new ReflectionClass(ComposerClassLoader::class);
+        static::$composerRoot = $class->getFileName();
+        for ($i = 0; $i < static::$vendorDirDepth + 2; $i++) {
+            static::$composerRoot = dirname(static::$composerRoot);
+        }
 
-        self::$drush = Path::join(self::getComposerRoot(), 'drush');
+        return $this;
+    }
 
-        self::$sandbox = $unish_sandbox;
-        self::$usergroup = isset($GLOBALS['UNISH_USERGROUP']) ? $GLOBALS['UNISH_USERGROUP'] : null;
+    protected function initWebRoot()
+    {
+        $fileName = Path::join(static::$composerRoot, static::getComposerFile());
+        $info = file_exists($fileName) ?
+            json_decode($this->fileGetContents($fileName), true)
+            : [];
 
-        self::setEnv(['CACHE_PREFIX' => $unish_cache]);
-        $home = $unish_sandbox . '/home';
-        self::setEnv(['HOME' => $home]);
-        self::setEnv(['HOMEDRIVE' => $home]);
-        $composer_home = $unish_cache . '/.composer';
-        self::setEnv(['COMPOSER_HOME' => $composer_home]);
-        self::setEnv(['ETC_PREFIX' => $unish_sandbox]);
-        self::setEnv(['SHARE_PREFIX' => $unish_sandbox]);
-        self::setEnv(['TEMP' => Path::join($unish_sandbox, 'tmp')]);
+        $info += ['extra' => []];
+        $info['extra'] += ['installer-paths' => []];
+
+        $coreDir = $this->getComposerInstallerPath(
+            $info['extra']['installer-paths'],
+            'drupal/core',
+            'drupal-core'
+        );
+
+        if (!$coreDir) {
+            // @todo Lack of $coreDir should be an error.
+            $coreDir = 'sut/core';
+        }
+
+        static::$webRoot = Path::join(static::getComposerRoot(), Path::getDirectory($coreDir));
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function initDrushRootDir()
+    {
+        static::$drushRootDir = Path::canonicalize(__DIR__ . '/../..');
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function initDrushExecutable()
+    {
+        static::$drushExecutable = Path::join(static::$drushRootDir, 'drush');
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function initGitExecutable()
+    {
+        static::$gitExecutable = 'git';
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function initUnishSandboxDir()
+    {
+        static::$unishSandboxDir = Path::join(static::$drushRootDir, 'sandbox');
+        static::mkdir(static::$unishSandboxDir);
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function initUserGroup()
+    {
+        static::$userGroup = isset($GLOBALS['UNISH_USERGROUP']) ? $GLOBALS['UNISH_USERGROUP'] : null;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function initDbUrl()
+    {
+        static::$dbUrl = getenv('UNISH_DB_URL') ?: (isset($GLOBALS['UNISH_DB_URL']) ? $GLOBALS['UNISH_DB_URL'] : $this->getDefaultDbUrl());
+
+        return $this;
+    }
+
+    protected function initEnvVars()
+    {
+        $cacheDir = Path::join(static::$unishSandboxDir, 'cache');
+        $home = Path::join(static::$unishSandboxDir, 'home');
+
+        static::setEnv([
+            'CACHE_PREFIX' => $cacheDir,
+            'HOME' => $home,
+            'HOMEDRIVE' => $home,
+            'COMPOSER_HOME' => Path::join($cacheDir, '.composer'),
+            'ETC_PREFIX' => static::$unishSandboxDir,
+            'SHARE_PREFIX' => static::$unishSandboxDir,
+            'TEMP' => Path::join(static::$unishSandboxDir, 'tmp'),
+        ]);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultDbUrl()
+    {
+        return 'mysql://root:@127.0.0.1';
     }
 
     /**
@@ -78,24 +255,32 @@ abstract class UnishTestCase extends TestCase
      */
     public static function getSites()
     {
-        return self::$sites;
+        return static::$sites;
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public static function getAliases()
     {
+        $aliases = [];
+
         // Prefix @sut. onto each site.
-        foreach (self::$sites as $key => $site) {
+        foreach (static::$sites as $key => $site) {
             $aliases[$key] = '@sut.' . $key;
         }
+
         return $aliases;
     }
 
+    /**
+     * @param string $site
+     *
+     * @return string
+     */
     public static function getUri($site = 'dev')
     {
-        return self::$sites[$site]['uri'];
+        return static::$sites[$site]['uri'];
     }
 
     /**
@@ -103,7 +288,7 @@ abstract class UnishTestCase extends TestCase
      */
     public static function getDrush()
     {
-        return self::$drush;
+        return static::$drushExecutable;
     }
 
     /**
@@ -111,7 +296,7 @@ abstract class UnishTestCase extends TestCase
      */
     public static function getSandbox()
     {
-        return self::$sandbox;
+        return static::$unishSandboxDir;
     }
 
     /**
@@ -119,12 +304,15 @@ abstract class UnishTestCase extends TestCase
      */
     public static function getSut()
     {
-        return self::getComposerRoot();
+        return Path::getDirectory(static::webroot());
     }
 
+    /**
+     * @return string
+     */
     public static function getComposerRoot()
     {
-        return Path::canonicalize(dirname(dirname(__DIR__)));
+        return static::$composerRoot;
     }
 
     /**
@@ -137,34 +325,37 @@ abstract class UnishTestCase extends TestCase
 
         // First step: delete the entire sandbox unless 'UNISH_DIRTY' is set,
         // in which case we will delete only the 'transient' directory.
-        $sandbox = self::getSandbox();
+        $sandbox = static::getSandbox();
         if (!empty($dirty)) {
             $sandbox = Path::join($sandbox, 'transient');
         }
+
         // The transient files generally should not need to be inspected, but
         // if you need to examine them, use the special value of 'UNISH_DIRTY=VERY'
         // to keep them.
         if (file_exists($sandbox) && ($dirty != 'VERY')) {
-            self::recursiveDelete($sandbox);
+            static::recursiveDelete($sandbox);
         }
 
         // Next step: If 'UNISH_DIRTY' is not set, then delete the portions
         // of our fixtures that we set up dynamically during the tests.
         if (empty($dirty)) {
-            $webrootSlashDrush = self::webrootSlashDrush();
+            $webrootSlashDrush = static::webrootSlashDrush();
             if (file_exists($webrootSlashDrush)) {
-                self::recursiveDelete($webrootSlashDrush, true, false, ['Commands', 'sites']);
+                static::recursiveDelete($webrootSlashDrush, true, false, ['Commands', 'sites']);
             }
+
             foreach (['modules', 'themes', 'profiles'] as $dir) {
-                $target = Path::join(self::webroot(), $dir, 'contrib');
+                $target = Path::join(static::webroot(), $dir, 'contrib');
                 if (file_exists($target)) {
-                    self::recursiveDeleteDirContents($target);
+                    static::recursiveDeleteDirContents($target);
                 }
             }
+
             foreach (['sites/dev', 'sites/stage', 'sites/prod'] as $dir) {
-                $target = Path::join(self::webroot(), $dir);
+                $target = Path::join(static::webroot(), $dir);
                 if (file_exists($target)) {
-                    self::recursiveDelete($target);
+                    static::recursiveDelete($target);
                 }
             }
         }
@@ -175,7 +366,7 @@ abstract class UnishTestCase extends TestCase
      */
     public static function getDbUrl()
     {
-        return self::$db_url;
+        return static::$dbUrl;
     }
 
     /**
@@ -183,7 +374,7 @@ abstract class UnishTestCase extends TestCase
      */
     public static function getUserGroup()
     {
-        return self::$usergroup;
+        return static::$userGroup;
     }
 
     /**
@@ -191,7 +382,7 @@ abstract class UnishTestCase extends TestCase
      */
     public static function getBackendOutputDelimiter()
     {
-        return self::$backendOutputDelimiter;
+        return static::$backendOutputDelimiter;
     }
 
     /**
@@ -200,20 +391,60 @@ abstract class UnishTestCase extends TestCase
      */
     public static function setUpBeforeClass()
     {
-        self::cleanDirs();
+        static::cleanDirs();
+        static::createRequiredDirs();
+        static::setUpBeforeClassGitConfig();
 
-        // Create all the dirs.
-        $sandbox = self::getSandbox();
-        $dirs = [getenv('HOME') . '/.drush', $sandbox . '/etc/drush', $sandbox . '/share/drush/commands', "$sandbox/cache", getenv('TEMP')];
-        foreach ($dirs as $dir) {
-            self::mkdir($dir);
-        }
-
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            // Hack to make git use unix line endings on windows
-            exec("git config --file $sandbox\\home\\.gitconfig core.autocrlf false", $output, $return);
-        }
         parent::setUpBeforeClass();
+    }
+
+    protected static function createRequiredDirs()
+    {
+        // Create all the dirs.
+        $sandbox = static::getSandbox();
+        $dirs = [
+            getenv('HOME') . '/.drush',
+            "$sandbox/etc/drush",
+            "$sandbox/share/drush/commands",
+            "$sandbox/cache",
+            getenv('TEMP'),
+        ];
+
+        foreach ($dirs as $dir) {
+            static::mkdir($dir);
+        }
+    }
+
+    protected static function setUpBeforeClassGitConfig()
+    {
+        if (static::isWindows()) {
+            // Hack to make git use unix line endings on windows.
+            static::gitConfigSet(
+                'core.autocrlf',
+                'false',
+                Path::join(static::getSandbox(), 'home', '.gitconfig')
+            );
+        }
+    }
+
+    protected static function gitConfigSet($key, $value, $file = '')
+    {
+        $cmdPattern = '%s config';
+        $cmdArgs = [
+            escapeshellcmd(static::$gitExecutable),
+        ];
+
+        if ($file) {
+            $cmdPattern .= ' --file %s';
+            $cmdArgs[] = self::escapeshellarg($file);
+        }
+
+        $cmdPattern .= ' %s %s';
+        $cmdArgs[] = static::escapeshellarg($key);
+        $cmdArgs[] = static::escapeshellarg($value);
+
+        // @todo Do something if $exitCode is not 0.
+        exec(vsprintf($cmdPattern, $cmdArgs), $output, $exitCode);
     }
 
     /**
@@ -221,8 +452,9 @@ abstract class UnishTestCase extends TestCase
      */
     public static function tearDownAfterClass()
     {
-        self::cleanDirs();
-        self::$sites = [];
+        static::cleanDirs();
+        static::$sites = [];
+
         parent::tearDownAfterClass();
     }
 
@@ -256,68 +488,96 @@ abstract class UnishTestCase extends TestCase
         }
     }
 
+    /**
+     * @return string
+     */
     public function logLevel()
     {
         $argv = $_SERVER['argv'];
+
         // -d is reserved by `phpunit`
         if (in_array('--debug', $argv) || in_array('-vvv', $argv)) {
             return 'debug';
-        } elseif (in_array('--verbose', $argv) || in_array('-v', $argv)) {
+        }
+
+        if (in_array('--verbose', $argv) || in_array('-v', $argv)) {
             return 'verbose';
         }
+
+        return '';
     }
 
     public static function isWindows()
     {
-        return strtoupper(substr(PHP_OS, 0, 3)) == "WIN";
+        return strtoupper(substr(PHP_OS, 0, 3)) == 'WIN';
     }
 
     public static function getTarExecutable()
     {
-        return self::isWindows() ? "bsdtar.exe" : "tar";
+        return static::isWindows() ? 'bsdtar.exe' : 'tar';
     }
 
     /**
      * Print out a tick mark.
      *
      * Useful for longer running tests to indicate they're working.
+     *
+     * @return $this
      */
     public function tick()
     {
-        static $chars = ['/', '-', '\\', '|'];
-        static $counter = 0;
         // ANSI support is flaky on Win32, so don't try to do ticks there.
-        if (!$this->isWindows()) {
-            print $chars[($counter++ % 4)] . "\033[1D";
+        if (static::isWindows()) {
+            return $this;
         }
+
+        print $this->getNextTickChar() . "\033[1D";
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getNextTickChar()
+    {
+        $i = static::$tickCounter++ % count(static::$tickChars);
+
+        return static::$tickChars[$i];
     }
 
     /**
      * Borrowed from Drush.
      * Checks operating system and returns
      * supported bit bucket folder.
+     *
+     * @return string
      */
     public function bitBucket()
     {
-        if (!$this->isWindows()) {
-            return '/dev/null';
-        } else {
-            return 'nul';
-        }
+        return static::isWindows() ? 'nul' : '/dev/null';
     }
 
+    /**
+     * @param string $arg
+     *
+     * @return string
+     */
     public static function escapeshellarg($arg)
     {
-        // Short-circuit escaping for simple params (keep stuff readable)
-        if (preg_match('|^[a-zA-Z0-9.:/_-]*$|', $arg)) {
+        // Short-circuit escaping for simple params (keep stuff readable).
+        if (preg_match('@^[a-zA-Z0-9\.:/_-]*$@', $arg)) {
             return $arg;
-        } elseif (self::isWindows()) {
-            return self::_escapeshellargWindows($arg);
-        } else {
-            return escapeshellarg($arg);
         }
+
+        return static::isWindows() ? static::_escapeshellargWindows($arg) : escapeshellarg($arg);
     }
 
+    /**
+     * @param string $arg
+     *
+     * @return string
+     */
     public static function _escapeshellargWindows($arg)
     {
         // Double up existing backslashes
@@ -340,9 +600,10 @@ abstract class UnishTestCase extends TestCase
      *
      * Copied from drush_generate_password(), which is otherwise not available here.
      *
-     * @param $length
+     * @param int $length
      *   Number of characters the generated string should contain.
-     * @return
+     *
+     * @return string
      *   The generated string.
      */
     public function randomString($length = 10)
@@ -369,27 +630,38 @@ abstract class UnishTestCase extends TestCase
         return $pass;
     }
 
+    /**
+     * @param string $path
+     *
+     * @return bool
+     */
     public static function mkdir($path)
     {
         if (!is_dir($path)) {
-            if (self::mkdir(dirname($path))) {
+            if (static::mkdir(dirname($path))) {
                 if (@mkdir($path)) {
                     return true;
                 }
             }
+
             return false;
         }
+
         return true;
     }
 
+    /**
+     * @param string $src
+     * @param string $dst
+     */
     public static function recursiveCopy($src, $dst)
     {
         $dir = opendir($src);
-        self::mkdir($dst);
+        static::mkdir($dst);
         while (false !== ( $file = readdir($dir))) {
             if (( $file != '.' ) && ( $file != '..' )) {
                 if (is_dir($src . '/' . $file)) {
-                    self::recursiveCopy($src . '/' . $file, $dst . '/' . $file);
+                    static::recursiveCopy($src . '/' . $file, $dst . '/' . $file);
                 } else {
                     copy($src . '/' . $file, $dst . '/' . $file);
                 }
@@ -435,28 +707,35 @@ abstract class UnishTestCase extends TestCase
         if (is_link($dir) && !$follow_symlinks) {
             return unlink($dir);
         }
+
         // Allow to delete symlinks even if the target doesn't exist.
         if (!is_link($dir) && !file_exists($dir)) {
             return true;
         }
+
         if (!is_dir($dir)) {
             if ($force) {
                 // Force deletion of items with readonly flag.
                 @chmod($dir, 0777);
             }
+
             return unlink($dir);
         }
-        if (self::recursiveDeleteDirContents($dir, $force, $exclude) === false) {
+
+        if (static::recursiveDeleteDirContents($dir, $force, $exclude) === false) {
             return false;
         }
+
         // Don't delete the directory itself if we are retaining some of its contents
         if (!empty($exclude)) {
             return true;
         }
+
         if ($force) {
             // Force deletion of items with readonly flag.
             @chmod($dir, 0777);
         }
+
         return rmdir($dir);
     }
 
@@ -489,13 +768,16 @@ abstract class UnishTestCase extends TestCase
             if ($item == '.' || $item == '..') {
                 continue;
             }
+
             if (in_array($item, $exclude)) {
                 continue;
             }
+
             if ($force) {
                 @chmod($dir, 0777);
             }
-            if (!self::recursiveDelete($dir . '/' . $item, $force)) {
+
+            if (!static::recursiveDelete($dir . '/' . $item, $force)) {
                 return false;
             }
         }
@@ -504,12 +786,12 @@ abstract class UnishTestCase extends TestCase
 
     public static function webroot()
     {
-        return Path::join(self::getSut(), 'sut');
+        return static::$webRoot;
     }
 
     public static function webrootSlashDrush()
     {
-        return Path::join(self::webroot(), 'drush');
+        return Path::join(static::webroot(), 'drush');
     }
 
     public static function directoryCache($subdir = '')
@@ -518,17 +800,36 @@ abstract class UnishTestCase extends TestCase
     }
 
     /**
-     * @param $env
+     * @param string $env
+     *
      * @return string
      */
     public function dbUrl($env)
     {
-        return substr(self::getDbUrl(), 0, 6) == 'sqlite'  ?  "sqlite://sites/$env/files/unish.sqlite" : self::getDbUrl() . '/unish_' . $env;
+        $dbUrl = static::getDbUrl();
+        $driver = $this->dbDriver($dbUrl);
+
+        return $driver === 'sqlite' ? "sqlite://sites/$env/files/unish.sqlite" : "$dbUrl/" . $this->getDatabaseName($env);
     }
 
-    public function dbDriver($db_url = null)
+    /**
+     * @param string $env
+     *
+     * @return string
+     */
+    protected function getDatabaseName($env)
     {
-        return parse_url($db_url ?: self::getDbUrl(), PHP_URL_SCHEME);
+        return "unish_$env";
+    }
+
+    /**
+     * @param string $dbUrl
+     *
+     * @return string
+     */
+    public function dbDriver($dbUrl = '')
+    {
+        return parse_url($dbUrl ?: static::getDbUrl(), PHP_URL_SCHEME);
     }
 
     /**
@@ -543,10 +844,13 @@ abstract class UnishTestCase extends TestCase
         foreach ($sites as $subdir => $extra) {
             $this->createSettings($subdir);
         }
+
         // Create basic site alias data with root and uri
-        $siteAliasData = $this->aliasFileData(array_keys($sites), $aliasGroup);
+        $siteAliasData = $this->aliasFileData(array_keys($sites));
+
         // Add in caller-provided site alias data
         $siteAliasData = array_merge_recursive($siteAliasData, $sites);
+
         $this->writeSiteAliases($siteAliasData, $aliasGroup);
     }
 
@@ -570,8 +874,8 @@ EOT;
 
         $root = $this->webroot();
         $settingsPath = "$root/sites/$subdir/settings.php";
-        self::mkdir(dirname($settingsPath));
-        file_put_contents($settingsPath, $settingsContents);
+        static::mkdir(dirname($settingsPath));
+        $this->filePutContents($settingsPath, $settingsContents);
     }
     /**
      * Prepare (and optionally install) one or more Drupal sites using a single codebase.
@@ -595,11 +899,11 @@ EOT;
         }
 
         $siteData = $this->aliasFileData($sites_subdirs);
-        self::$sites = [];
+        static::$sites = [];
         foreach ($siteData as $key => $data) {
-            self::$sites[$key] = $data;
+            static::$sites[$key] = $data;
         }
-        return self::$sites;
+        return static::$sites;
     }
 
     public function aliasFileData($sites_subdirs)
@@ -609,11 +913,12 @@ EOT;
         $sites = [];
         foreach ($sites_subdirs as $subdir) {
             $sites[$subdir] = [
-            'root' => $root,
-            'uri' => $subdir,
-            'dbUrl' => $this->dbUrl($subdir),
+                'root' => $root,
+                'uri' => $subdir,
+                'dbUrl' => $this->dbUrl($subdir),
             ];
         }
+
         return $sites;
     }
 
@@ -629,9 +934,9 @@ EOT;
      */
     public function writeSiteAliases($sites, $aliasGroup = 'sut')
     {
-        $target = Path::join(self::webrootSlashDrush(), "sites/$aliasGroup.site.yml");
+        $target = Path::join(static::webrootSlashDrush(), "sites/$aliasGroup.site.yml");
         $this->mkdir(dirname($target));
-        file_put_contents($target, Yaml::dump($sites, PHP_INT_MAX, 2));
+        $this->filePutContents($target, Yaml::dump($sites, PHP_INT_MAX, 2));
     }
 
     /**
@@ -641,7 +946,7 @@ EOT;
      */
     public function installDrupal($env = 'dev', $install = false, $options = [], $refreshSettings = true)
     {
-        $root = $this->webroot();
+        $root = static::webroot();
         $uri = $env;
         $site = "$root/sites/$uri";
 
@@ -654,11 +959,15 @@ EOT;
         }
     }
 
+    /**
+     * @return \Consolidation\SiteProcess\ProcessManager
+     */
     protected function processManager()
     {
         if (!$this->processManager) {
             $this->processManager = new ProcessManager();
         }
+
         return $this->processManager;
     }
 
@@ -670,7 +979,7 @@ EOT;
             'uri' => $uri
         ];
         // TODO: Maybe there is a faster command to use for this check
-        $process = $this->processManager()->siteProcess($sutAlias, [self::getDrush(), 'pm:list'], $options);
+        $process = $this->processManager()->siteProcess($sutAlias, [static::getDrush(), 'pm:list'], $options);
         $process->run();
         if (!$process->isSuccessful()) {
             $this->installSut($uri);
@@ -699,7 +1008,7 @@ EOT;
         if ($level = $this->logLevel()) {
             $options[$level] = true;
         }
-        $process = $this->processManager()->siteProcess($sutAlias, [self::getDrush(), 'site:install', 'testing', 'install_configure_form.enable_update_status_emails=NULL'], $options);
+        $process = $this->processManager()->siteProcess($sutAlias, [static::getDrush(), 'site:install', 'testing', 'install_configure_form.enable_update_status_emails=NULL'], $options);
         // Set long timeout because Xdebug slows everything.
         $process->setTimeout(0);
         $this->process = $process;
@@ -725,9 +1034,10 @@ EOT;
     protected function writeToTmpFile($contents)
     {
         $transient = Path::join($this->getSandbox(), 'transient');
-        self::mkdir($transient);
+        static::mkdir($transient);
         $path = tempnam($transient, "unishtmp");
-        file_put_contents($path, $contents);
+        $this->filePutContents($path, $contents);
+
         return $path;
     }
 
@@ -770,5 +1080,59 @@ EOT;
         }
 
         return $error;
+    }
+
+    protected function fileGetContents($fileName)
+    {
+        $content = file_get_contents($fileName);
+        if ($content === false) {
+            throw new RuntimeException("Could not read file: '$fileName'");
+        }
+
+        return $content;
+    }
+
+    protected function filePutContents($fileName, $content)
+    {
+        $result = file_put_contents($fileName, $content);
+        if ($result === false) {
+            throw new RuntimeException("Could not write file: '$fileName'");
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array $installerPaths
+     * @param string $name
+     * @param string $type
+     *
+     * @return  string
+     */
+    protected function getComposerInstallerPath($installerPaths, $name, $type)
+    {
+        foreach ($installerPaths as $dir => $conditions) {
+            if (in_array($name, $conditions) || in_array("type:$type", $conditions)) {
+                list($vendor, $project) = explode('/', $name) + [1 => ''];
+
+                return strtr(
+                    $dir,
+                    [
+                        '{$vendor}' => $vendor,
+                        '{$name}' => $project,
+                    ]
+                );
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * @return string
+     */
+    public static function getComposerFile()
+    {
+        return trim(getenv('COMPOSER')) ?: './composer.json';
     }
 }
