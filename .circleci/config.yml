@@ -54,7 +54,7 @@ jobs:
       - run: composer install
       - run: $HOME/drush/.circleci/patch.sh
       - run: composer test
-      - run: composer exec php-coveralls -v
+      - run: composer exec coveralls -v
 
   # See scheduled workflow
   test_71_sqlite:
