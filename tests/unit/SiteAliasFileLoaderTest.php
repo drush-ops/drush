@@ -4,7 +4,7 @@ namespace Drush\SiteAlias;
 use PHPUnit\Framework\TestCase;
 
 use Consolidation\SiteAlias\Util\YamlDataFileLoader;
-use Consolidation\SiteAlias\AliasRecord;
+use Consolidation\SiteAlias\SiteAlias;
 
 class SiteAliasFileLoaderTest extends TestCase
 {
@@ -33,20 +33,20 @@ class SiteAliasFileLoaderTest extends TestCase
         // Look for a simple alias with no environments defined
         $name = new SiteAliasName('simple');
         $result = $this->callProtected($this->sut, 'loadSingleAliasFile', [$name]);
-        $this->assertEquals(AliasRecord::class, get_class($result));
+        $this->assertEquals(SiteAlias::class, get_class($result));
         $this->assertEquals('/path/to/simple', $result->get('root'));
 
         // Look for a single alias without an environment specified.
         $name = new SiteAliasName('single');
         $result = $this->callProtected($this->sut, 'loadSingleAliasFile', [$name]);
-        $this->assertTrue($result instanceof AliasRecord);
+        $this->assertTrue($result instanceof SiteAlias);
         $this->assertEquals('/path/to/single', $result->get('root'));
         $this->assertEquals('bar', $result->get('foo'));
 
         // Same test, but with environment explicitly requested.
         $name = new SiteAliasName('single', 'alternate');
         $result = $this->callProtected($this->sut, 'loadSingleAliasFile', [$name]);
-        $this->assertTrue($result instanceof AliasRecord);
+        $this->assertTrue($result instanceof SiteAlias);
         $this->assertEquals('/alternate/path/to/single', $result->get('root'));
         $this->assertEquals('bar', $result->get('foo'));
 
@@ -54,11 +54,6 @@ class SiteAliasFileLoaderTest extends TestCase
         $name = new SiteAliasName('missing');
         $result = $this->callProtected($this->sut, 'loadSingleAliasFile', [$name]);
         $this->assertFalse($result);
-    }
-
-    public function testLoadLegacy()
-    {
-        $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/legacy');
     }
 
     public function testLoad()
@@ -69,20 +64,20 @@ class SiteAliasFileLoaderTest extends TestCase
         // Look for a simple alias with no environments defined
         $name = new SiteAliasName('simple');
         $result = $this->sut->load($name);
-        $this->assertTrue($result instanceof AliasRecord);
+        $this->assertTrue($result instanceof SiteAlias);
         $this->assertEquals('/path/to/simple', $result->get('root'));
 
         // Look for a single alias without an environment specified.
         $name = new SiteAliasName('single');
         $result = $this->sut->load($name);
-        $this->assertTrue($result instanceof AliasRecord);
+        $this->assertTrue($result instanceof SiteAlias);
         $this->assertEquals('/path/to/single', $result->get('root'));
         $this->assertEquals('bar', $result->get('foo'));
 
         // Same test, but with environment explicitly requested.
         $name = new SiteAliasName('single', 'alternate');
         $result = $this->sut->load($name);
-        $this->assertTrue($result instanceof AliasRecord);
+        $this->assertTrue($result instanceof SiteAlias);
         $this->assertEquals('/alternate/path/to/single', $result->get('root'));
         $this->assertEquals('bar', $result->get('foo'));
 

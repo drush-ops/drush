@@ -6,6 +6,11 @@ use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
 
+// TODO: Not sure if we should have a reference to PreflightArgs here.
+// Maybe these constants should be in config, and PreflightArgs can
+// reference them from there as well.
+use Drush\Preflight\PreflightArgs;
+
 /**
  * Accessors for common Drush config keys.
  */
@@ -34,6 +39,39 @@ class DrushConfig extends ConfigOverlay
     public function tmp()
     {
         return $this->get('env.tmp');
+    }
+
+    /**
+     * Return the path to this Drush
+     */
+    public function drushScript()
+    {
+        return $this->get('runtime.drush-script', 'drush');
+    }
+
+    /**
+     * Return 'true' if we are in simulated mode.
+     */
+    public function simulate()
+    {
+        return $this->get(\Robo\Config\Config::SIMULATE);
+    }
+
+    /**
+     * Return 'true' if we are in backend mode.
+     */
+    public function backend()
+    {
+        return $this->get(PreflightArgs::BACKEND);
+    }
+
+    /**
+     * Return the list of paths to active Drush configuration files.
+     * @return array
+     */
+    public function configPaths()
+    {
+        return $this->get('runtime.config.paths', []);
     }
 
     public function cache()

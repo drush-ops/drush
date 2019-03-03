@@ -16,6 +16,12 @@ class DrushCommandInfoAlterer implements CommandInfoAltererInterface
         // Automatically add the help topic for output formatters to
         // any command that has any annotations related to output filters
         if ($commandInfo->hasAnnotation('filter-output') || $commandInfo->hasAnnotation('field-labels')) {
+            if ($commandInfo->hasAnnotation('topics')) {
+                // Topic value may have multiple values separated by a comma.
+                $values = $commandInfo->getAnnotationList('topics');
+                $commandInfo->removeAnnotation('topics');
+                $commandInfo->addAnnotation('topics', $values);
+            }
             $commandInfo->addAnnotation('topics', 'docs:output-formats-filters');
         }
     }

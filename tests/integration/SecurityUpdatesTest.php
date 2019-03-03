@@ -2,15 +2,12 @@
 
 namespace Unish;
 
-use Drush\Commands\pm\SecurityUpdateCommands;
-
 /**
- * Tests "pm:security" commands for D8+.
+ * Tests "pm:security" command.
  * @group commands
- * @group slow
  * @group pm
  */
-class SecurityUpdatesTest extends CommandUnishTestCase
+class SecurityUpdatesTest extends UnishIntegrationTestCase
 {
 
   /**
@@ -18,9 +15,9 @@ class SecurityUpdatesTest extends CommandUnishTestCase
    */
     public function testInsecurePackage()
     {
-        $this->drush('pm:security', [], ['format' => 'json'], null, null, self::EXIT_ERROR);
+        $this->drush('pm:security', [], ['format' => 'json'], self::EXIT_ERROR);
         $this->assertContains('One or more of your dependencies has an outstanding security update.', $this->getErrorOutput());
-        $this->assertContains('Try running: composer require drupal/alinks --update-with-dependencies', $this->getErrorOutput());
+        $this->assertContains('Try running: composer require drupal/alinks', $this->getErrorOutput());
         $security_advisories = $this->getOutputFromJSON();
         $this->assertObjectHasAttribute('drupal/alinks', $security_advisories);
         $this->assertEquals('drupal/alinks', $security_advisories->{"drupal/alinks"}->name);

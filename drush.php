@@ -4,6 +4,7 @@ use Drush\Drush;
 use Drush\Config\Environment;
 use Drush\Preflight\Preflight;
 use Drush\Runtime\Runtime;
+use Drush\Runtime\DependencyInjection;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -39,9 +40,12 @@ use Webmozart\PathUtil\Path;
  *   - Return status code
  */
 
-// We use PWD if available because getcwd() resolves symlinks, which
-// could take us outside of the Drupal root, making it impossible to find.
-$cwd = empty($_SERVER['PWD']) ? getcwd() : $_SERVER['PWD'];
+// We use PWD if available because getcwd() resolves symlinks, which  could take
+// us outside of the Drupal root, making it impossible to find. In addition,
+// is_dir() is used as the provided path may not be recognizable by PHP. For
+// instance, Cygwin adds a '/cygdrive' prefix to the path which is a virtual
+// directory.
+$cwd = isset($_SERVER['PWD']) && is_dir($_SERVER['PWD']) ? $_SERVER['PWD'] : getcwd();
 
 // Set up autoloader
 $loader = false;
@@ -62,7 +66,9 @@ $environment->applyEnvironment();
 
 // Preflight and run
 $preflight = new Preflight($environment);
-$runtime = new Runtime($preflight);
+$di = new DependencyInjection();
+$di->desiredHandlers(['errorHandler', 'shutdownHandler']);
+$runtime = new Runtime($preflight, $di);
 $status_code = $runtime->run($_SERVER['argv']);
 
 exit($status_code);

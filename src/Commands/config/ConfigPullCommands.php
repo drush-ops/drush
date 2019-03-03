@@ -49,10 +49,10 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
             'format' => 'string',
         ];
         $this->logger()->notice(dt('Starting to export configuration on :destination.', [':destination' => $destination]));
-        $process = Drush::drush($sourceRecord, 'config-export', [], $export_options + $global_options);
+        $process = $this->processManager()->drush($sourceRecord, 'config-export', [], $export_options + $global_options);
         $process->mustRun();
         // Trailing slash assures that we transfer files and not the containing dir.
-        $export_path = Drush::simulate() ? '/simulated/path' : trim($process->getOutput()) . '/';
+        $export_path = $this->getConfig()->simulate() ? '/simulated/path' : trim($process->getOutput()) . '/';
 
         if (strpos($destination, ':') === false) {
             $destination .= ':%config-' . $options['label'];
@@ -60,7 +60,7 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
         $destinationHostPath = HostPath::create($this->siteAliasManager(), $destination);
 
         if (!$runner = $options['runner']) {
-            $destinationRecord = $destinationHostPath->getAliasRecord();
+            $destinationRecord = $destinationHostPath->getSiteAlias();
             $runner = $sourceRecord->isRemote() && $destinationRecord->isRemote() ? $destinationRecord : $this->siteAliasManager()->getSelf();
         }
         $this->logger()
@@ -74,7 +74,7 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
             'delete' => true,
             'exclude' => '.htaccess',
         ];
-        $process = Drush::drush($runner, 'core-rsync', $args, ['yes' => true, 'debug' => true], $options_double_dash);
+        $process = $this->processManager()->drush($runner, 'core-rsync', $args, ['yes' => true, 'debug' => true], $options_double_dash);
         $process->mustRun();
         drush_backend_set_result($destinationHostPath->getOriginal());
         return new PropertyList(['path' => $destinationHostPath->getOriginal()]);
@@ -87,7 +87,7 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
     {
         if ($commandData->input()->getOption('safe')) {
             $destinationRecord = $this->siteAliasManager()->get($commandData->input()->getArgument('destination'));
-            $process = Drush::siteProcess($destinationRecord, ['git', 'diff', '--quiet']);
+            $process = $this->processManager()->siteProcess($destinationRecord, ['git', 'diff', '--quiet']);
             $process->chdirToSiteRoot();
             $process->run();
             if (!$process->isSuccessful()) {

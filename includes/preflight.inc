@@ -19,33 +19,6 @@ function drush_main() {
 }
 
 /**
- * If the command is being executed with the --backend option, the script
- * will return a json string containing the options and log information
- * used by the script.
- *
- * The command will exit with '1' if it was successfully executed, and the
- * result of drush_get_error() if it wasn't.
- */
-function drush_shutdown() {
-  // Avoid doing anything if our container has not been initialized yet.
-  if (!Drush::hasContainer()) {
-    return;
-  }
-
-  if (!Drush::config()->get(Runtime::DRUSH_RUNTIME_COMPLETED_NAMESPACE)) {
-      throw new RuntimeException('Drush command terminated abnormally. Check for an exit() in your Drupal site.');
-  }
-
-  if (Drush::backend()) {
-    drush_backend_output();
-  }
-
-  // This way drush_return_status() will always be the last shutdown function (unless other shutdown functions register shutdown functions...)
-  // and won't prevent other registered shutdown functions (IE from numerous cron methods) from running by calling exit() before they get a chance.
-  register_shutdown_function('drush_return_status');
-}
-
-/**
  * Shutdown function to save code coverage data.
  */
 function drush_coverage_shutdown() {
@@ -79,17 +52,4 @@ function drush_coverage_shutdown() {
 
     file_put_contents($file_name, serialize($data));
   }
-}
-
-/**
- * @deprecated. This function will be removed in Drush 10. Throw an exception to indicate an error.
- */
-function drush_return_status() {
-  // If a specific exit code was set, then use it.
-  $exit_code = drush_get_context('DRUSH_EXIT_CODE');
-  if (empty($exit_code)) {
-    $exit_code = (drush_get_error()) ? DRUSH_FRAMEWORK_ERROR : DRUSH_SUCCESS;
-  }
-
-  exit($exit_code);
 }

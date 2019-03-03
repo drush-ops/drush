@@ -57,8 +57,10 @@
  * drush_backend_get_result().
  */
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
 use Drush\Preflight\PreflightArgs;
+use Drush\Runtime\Runtime;
 
 /**
  * Identify the JSON encoded output from a command.
@@ -152,13 +154,11 @@ function drush_backend_output() {
     $data['object'] = $result_object;
   }
 
-  $error = drush_get_error();
-  $data['error_status'] = ($error) ? $error : DRUSH_SUCCESS;
-
-  $data['log'] = drush_get_log(); // Append logging information
+  $data['error_status'] = Runtime::exitCode();
+  $data['log'] = Drush::logger()->getLogs(); // Append logging information
   // The error log is a more specific version of the log, and may be used by calling
   // scripts to check for specific errors that have occurred.
-  $data['error_log'] = drush_get_error_log();
+  $data['error_log'] = Drush::logger()->getErrorLogs();
   // If there is a @self record, then include it in the result
   $self_record = drush_sitealias_get_record('@self');
   if (!empty($self_record)) {
@@ -848,8 +848,8 @@ function drush_backend_invoke_concurrent($invocations, $common_options = [], $co
     $is_remote = array_key_exists('remote-host', $site_record);
     $is_different_site =
       $is_remote ||
-      (isset($site_record['root']) && ($site_record['root'] != drush_get_context('DRUSH_DRUPAL_ROOT'))) ||
-      (isset($site_record['uri']) && ($site_record['uri'] != drush_get_context('DRUSH_SELECTED_URI')));
+      (isset($site_record['root']) && ($site_record['root'] != Drush::bootstrapManager()->getRoot())) ||
+      (isset($site_record['uri']) && ($site_record['uri'] != Drush::bootstrapManager()->getUri()));
     $os = drush_os($site_record);
     // If the caller did not pass in a specific path to drush, then we will
     // use a default value.  For commands that are being executed on the same

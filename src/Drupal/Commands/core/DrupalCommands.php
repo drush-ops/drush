@@ -116,6 +116,7 @@ class DrupalCommands extends DrushCommands
         $min_severity = $options['severity'];
         $i = 0;
         foreach ($requirements as $key => $info) {
+            $info += ['value' => '', 'description' => ''];
             $severity = array_key_exists('severity', $info) ? $info['severity'] : -1;
             $rows[$i] = [
                 'title' => (string) $info['title'],

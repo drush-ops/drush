@@ -2,13 +2,16 @@
 
 namespace Drush\Drupal\Commands\core;
 
+use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
+use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drupal\Core\State\StateInterface;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Yaml\Yaml;
 
-class StateCommands extends DrushCommands
+class StateCommands extends DrushCommands implements StdinAwareInterface
 {
+    use StdinAwareTrait;
 
     protected $state;
 
@@ -74,7 +77,7 @@ class StateCommands extends DrushCommands
 
         // Special flag indicating that the value has been passed via STDIN.
         if ($value === '-') {
-            $value = stream_get_contents(STDIN);
+            $value = $this->stdin()->contents();
         }
 
         // If the value is a string (usual case, unless we are called from code),

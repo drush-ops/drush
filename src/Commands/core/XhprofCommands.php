@@ -51,7 +51,7 @@ class XhprofCommands extends DrushCommands
         if (self::xhprofIsEnabled()) {
             $namespace = 'Drush';
             $run_id = self::xhprofFinishRun($namespace);
-            $url = Drush::config()->get('xh.link') . '/index.php?run=' . urlencode($run_id) . '&source=' . urlencode($namespace);
+            $url = $this->getConfig()->get('xh.link') . '/index.php?run=' . urlencode($run_id) . '&source=' . urlencode($namespace);
             $this->logger()->notice(dt('XHProf run saved. View report at !url', ['!url' => $url]));
         }
     }
@@ -64,7 +64,7 @@ class XhprofCommands extends DrushCommands
     public function xhprofInitialize(InputInterface $input, AnnotationData $annotationData)
     {
         if (self::xhprofIsEnabled()) {
-            $config = Drush::config()->get('xh');
+            $config = $this->getConfig()->get('xh');
             $flags = self::xhprofFlags($config);
             self::xhprofEnable($flags);
         }

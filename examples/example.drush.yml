@@ -56,6 +56,12 @@ drush:
     # or multiple --include options may be provided. Drush 8 and earlier did
     # a deep search in ~/.drush and /usr/share/drush/commands when loading
     # command files.
+    #
+    # For testing, specify the namespace component in the key. e.g.:
+    #
+    # drush:
+    #  include:
+    #    'Commands/example_drush_extension': '${env.PWD}'
     include:
       - '${env.home}/.drush/commands'
       - /usr/share/drush/commands
@@ -151,6 +157,8 @@ ssh:
   # password authentication, and is included here, so you may add additional
   # parameters without losing the default configuration.
   options: '-o PasswordAuthentication=no'
+  # This string is valid for Bash shell. Override in case you need something different. See https://github.com/drush-ops/drush/issues/3816.
+  pipefail: 'set -o pipefail; '
 
 notify:
   # Notify when command takes more than 30 seconds.

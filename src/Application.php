@@ -9,7 +9,7 @@ use Consolidation\SiteAlias\SiteAliasManager;
 use Drush\Log\LogLevel;
 use Drush\Command\RemoteCommandProxy;
 use Drush\Runtime\RedispatchHook;
-use Robo\Common\ConfigAwareTrait;
+use Drush\Config\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Input\InputOption;
@@ -153,16 +153,16 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         if (!$this->bootstrapManager || !$this->aliasManager) {
             return;
         }
-        $selfAliasRecord = $this->aliasManager->getSelf();
-        if (!$selfAliasRecord->hasRoot() && !$this->bootstrapManager()->drupalFinder()->getDrupalRoot()) {
+        $selfSiteAlias = $this->aliasManager->getSelf();
+        if (!$selfSiteAlias->hasRoot() && !$this->bootstrapManager()->drupalFinder()->getDrupalRoot()) {
             return;
         }
-        $uri = $selfAliasRecord->uri();
+        $uri = $selfSiteAlias->uri();
 
         if (empty($uri)) {
             $uri = $this->selectUri($cwd);
-            $selfAliasRecord->setUri($uri);
-            $this->aliasManager->setSelf($selfAliasRecord);
+            $selfSiteAlias->setUri($uri);
+            $this->aliasManager->setSelf($selfSiteAlias);
         }
         // Update the uri in the bootstrap manager
         $this->bootstrapManager->setUri($uri);
@@ -177,7 +177,8 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         if ($uri) {
             return $uri;
         }
-        return $this->bootstrapManager()->selectUri($cwd);
+        $uri = $this->bootstrapManager()->selectUri($cwd);
+        return $uri;
     }
 
     /**
@@ -208,7 +209,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             // Is the unknown command destined for a remote site?
             if ($this->aliasManager) {
                 $selfAlias = $this->aliasManager->getSelf();
-                if ($selfAlias->isRemote()) {
+                if (!$selfAlias->isLocal()) {
                     $command = new RemoteCommandProxy($name, $this->redispatchHook);
                     $command->setApplication($this);
                     return $command;
@@ -317,6 +318,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $discovery = $this->commandDiscovery();
         $commandClasses = $discovery->discover($commandfileSearchpath, '\Drush');
         $commandClasses[] = \Consolidation\Filter\Hooks\FilterHooks::class;
+        $commandClasses = array_merge($this->commandsFromConfiguration(), $commandClasses);
 
         $this->loadCommandClasses($commandClasses);
 
@@ -329,6 +331,23 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         // it without creating a Runner object that we would not otherwise need.
         $runner = new \Robo\Runner();
         $runner->registerCommandClasses($this, $commandClasses);
+    }
+
+    protected function commandsFromConfiguration()
+    {
+        $commandList = [];
+
+        foreach ($this->config->get('drush.commands', []) as $key => $value) {
+            $classname = $key;
+            $path = $value;
+            if (is_numeric($key)) {
+                $classname = $value;
+                $commandList[] = $classname;
+            } else {
+                $commandList[$path] = $classname;
+            }
+        }
+        return $commandList;
     }
 
     /**

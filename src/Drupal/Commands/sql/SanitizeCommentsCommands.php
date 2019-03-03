@@ -47,8 +47,8 @@ class SanitizeCommentsCommands extends DrushCommands implements SanitizePluginIn
 
             // Update auth.
             $this->database->update('comment_field_data')
-              ->expression('name', "CONCAT('User', `uid`)")
-              ->expression('mail', "CONCAT('user+', `uid`, '@example.com')")
+              ->expression('name', "CONCAT('User', uid)")
+              ->expression('mail', "CONCAT('user+', uid, '@example.com')")
               ->fields(['homepage' => 'http://example.com'])
               ->condition('uid', 1, '>=')
               ->execute();

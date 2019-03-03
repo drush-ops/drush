@@ -5,7 +5,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
-use Consolidation\SiteAlias\AliasRecord;
+use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Webmozart\PathUtil\Path;
@@ -52,7 +52,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         // Create target DB if needed.
         if ($options['create-db']) {
             $this->logger()->notice(dt('Starting to create database on target.'));
-            $process = Drush::drush($targetRecord, 'sql-create', [], $global_options);
+            $process = $this->processManager()->drush($targetRecord, 'sql-create', [], $global_options);
             $process->mustRun();
         }
 
@@ -96,7 +96,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
             throw new \Exception(dt('The --target-dump option must be supplied when --no-sync is specified.'));
         }
 
-        if (!Drush::simulate()) {
+        if (!$this->getConfig()->simulate()) {
             $this->output()->writeln(dt("You will destroy data in !target and replace with data from !source.", [
                 '!source' => $txt_source,
                 '!target' => $txt_target
@@ -107,13 +107,13 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         }
     }
 
-    public function databaseName(AliasRecord $record)
+    public function databaseName(SiteAlias $record)
     {
-        if ($record->isRemote() && Drush::simulate()) {
+        if ($this->processManager()->hasTransport($record) && $this->getConfig()->simulate()) {
             return 'simulated_db';
         }
 
-        $process = Drush::drush($record, 'core-status', ['db-name'], ['format' => 'string']);
+        $process = $this->processManager()->drush($record, 'core-status', ['db-name'], ['format' => 'string']);
         $process->setSimulated(false);
         $process->mustRun();
         return trim($process->getOutput());
@@ -140,10 +140,10 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
             $this->logger()->notice(dt('Starting to dump database on source.'));
             // Set --backend=json. Drush 9.6+ changes that to --format=json. See \Drush\Preflight\PreflightArgs::setBackend.
             // Drush 9.5- handles this as --backend.
-            $process = Drush::drush($sourceRecord, 'sql-dump', [], $dump_options + ['backend' => 'json']);
+            $process = $this->processManager()->drush($sourceRecord, 'sql-dump', [], $dump_options + ['backend' => 'json']);
             $process->mustRun();
 
-            if (Drush::simulate()) {
+            if ($this->getConfig()->simulate()) {
                 $source_dump_path = '/simulated/path/to/dump.tgz';
             } else {
                 // First try a Drush 9.6+ return format.
@@ -170,14 +170,14 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
     /**
      * @param array $options
-     * @param AliasRecord $sourceRecord
-     * @param AliasRecord $targetRecord
+     * @param SiteAlias $sourceRecord
+     * @param SiteAlias $targetRecord
      * @param $source_dump_path
      * @return string
      *   Path to the target file.
      * @throws \Exception
      */
-    public function rsync($options, AliasRecord $sourceRecord, AliasRecord $targetRecord, $source_dump_path)
+    public function rsync($options, SiteAlias $sourceRecord, SiteAlias $targetRecord, $source_dump_path)
     {
         $do_rsync = !$options['no-sync'];
         // Determine path/to/dump on target.
@@ -189,7 +189,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         } else {
             $tmp = '/tmp'; // Our fallback plan.
             $this->logger()->notice(dt('Starting to discover temporary files directory on target.'));
-            $process = Drush::drush($targetRecord, 'core-status', ['drush-temp'], ['format' => 'string']);
+            $process = $this->processManager()->drush($targetRecord, 'core-status', ['drush-temp'], ['format' => 'string']);
             $process->setSimulated(false);
             $process->run();
 
@@ -215,7 +215,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
                 $runner = $targetRecord;
             }
             $this->logger()->notice(dt('Copying dump file from source to target.'));
-            $process = Drush::drush($runner, 'core-rsync', [$sourceRecord->name() . ":$source_dump_path", $targetRecord->name() . ":$target_dump_path"], [], $double_dash_options);
+            $process = $this->processManager()->drush($runner, 'core-rsync', [$sourceRecord->name() . ":$source_dump_path", $targetRecord->name() . ":$target_dump_path"], [], $double_dash_options);
             $process->mustRun($process->showRealtime());
         }
         return $target_dump_path;
@@ -235,7 +235,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
             'file' => $target_dump_path,
             'file-delete' => true,
         ];
-        $process = Drush::drush($targetRecord, 'sql-query', [], $query_options);
+        $process = $this->processManager()->drush($targetRecord, 'sql-query', [], $query_options);
         $process->mustRun();
     }
 }
