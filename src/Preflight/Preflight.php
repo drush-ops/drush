@@ -264,19 +264,19 @@ class Preflight
 
         // Find the local site
         $siteLocator = new PreflightSiteLocator($this->aliasManager);
-        $selfAliasRecord = $siteLocator->findSite($this->preflightArgs, $this->environment, $root);
+        $selfSiteAlias = $siteLocator->findSite($this->preflightArgs, $this->environment, $root);
 
         // If we did not find a local site, then we are destined to fail
         // UNLESS RedispatchToSiteLocal::redispatchIfSiteLocalDrush takes over.
         // Before we try to redispatch to the site-local Drush, though, we must
         // initialize the alias manager & c. based on any alias record we did find.
-        if ($selfAliasRecord) {
-            $this->aliasManager->setSelf($selfAliasRecord);
-            $this->configLocator->addAliasConfig($selfAliasRecord->exportConfig());
+        if ($selfSiteAlias) {
+            $this->aliasManager->setSelf($selfSiteAlias);
+            $this->configLocator->addAliasConfig($selfSiteAlias->exportConfig());
 
             // Process the selected alias. This might change the selected site,
             // so we will add new site-wide config location for the new root.
-            $root = $this->setSelectedSite($selfAliasRecord->localRoot());
+            $root = $this->setSelectedSite($selfSiteAlias->localRoot());
         }
 
         // Now that we have our final Drupal root, check to see if there is
@@ -292,7 +292,7 @@ class Preflight
         // redispatch to a site-local Drush, then we cannot continue.
         // This can happen when using Drush 9 to call a site-local Drush 8
         // using an alias record that is only defined in a Drush 8 format.
-        if (!$selfAliasRecord) {
+        if (!$selfSiteAlias) {
             // Note that PreflightSiteLocator::findSite only returns 'false'
             // when preflightArgs->alias() returns an alias name. In all other
             // instances we will get an alias record, even if it is only a

@@ -6,7 +6,7 @@ use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drush\Command\DrushInputAdapter;
-use Consolidation\SiteAlias\AliasRecord;
+use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\AnnotatedCommand\CommandData;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -69,7 +69,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
  * @deprecated See Drush::drush().
  */
 function drush_invoke_process($site_alias_record, $command_name, $commandline_args = [], $commandline_options = [], $backend_options = TRUE) {
-  if ($site_alias_record instanceof AliasRecord) {
+  if ($site_alias_record instanceof SiteAlias) {
     $site_alias_record = $site_alias_record->legacyRecord();
   }
 

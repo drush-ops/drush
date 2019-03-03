@@ -1,5 +1,5 @@
 remote:
-  root: /Users/ganderson/local/drupal/drush9/drush/sut
+  root: /Users/ganderson/local/drupal/drush9/sut
   uri: remote
   dbUrl: 'mysql://root:@127.0.0.1/unish_remote'
   host: server.isp.simulated
@@ -9,6 +9,6 @@ remote:
   paths:
     drush-script: /path/to/drush
 local:
-  root: /Users/ganderson/local/drupal/drush9/drush/sut
+  root: /Users/ganderson/local/drupal/drush9/sut
   uri: local
   dbUrl: 'mysql://root:@127.0.0.1/unish_local'
