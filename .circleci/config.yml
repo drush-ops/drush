@@ -8,13 +8,6 @@ defaults: &defaults
     PHPUNIT_ARGS: ""
     PHP_SENDMAIL_PATH: /dev/null
 
-test_71_steps: &test71steps
-  steps:
-    - checkout
-    - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-    - run: composer install
-    - run: $HOME/drush/.circleci/patch.sh
-    - run: composer test
 
 version: 2.1
 jobs:
@@ -46,6 +39,7 @@ jobs:
 
   # PHP 7.1 test:
   #   Checks the most common configuration.
+  #   Push code up to coveralls after completion
   test_71_mysql:
     <<: *defaults
     docker:
@@ -54,7 +48,13 @@ jobs:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
       - image: circleci/mysql:5.7.24
-    <<: *test71steps
+    steps:
+      - checkout
+      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
+      - run: composer install
+      - run: $HOME/drush/.circleci/patch.sh
+      - run: composer test
+      - run: composer exec php-coveralls -v
 
   # See scheduled workflow
   test_71_sqlite:
@@ -64,7 +64,12 @@ jobs:
       - image: drush/php:7.1
         environment:
           - UNISH_DB_URL=sqlite://sut/sites/dev/files/.ht.sqlite
-    <<: *test71steps
+    steps:
+      - checkout
+      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
+      - run: composer install
+      - run: $HOME/drush/.circleci/patch.sh
+      - run: composer functional
 
   # See scheduled workflow
   test_71_postgres:
@@ -78,7 +83,12 @@ jobs:
           POSTGRES_PASSWORD: unish
           POSTGRES_DB: unish_dev
           POSTGRES_USER: unish
-    <<: *test71steps
+    steps:
+      - checkout
+      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
+      - run: composer install
+      - run: $HOME/drush/.circleci/patch.sh
+      - run: composer functional
 
   # PHP 7.2 test with HIGHEST dependencies:
   #   Determines whether a newer version of a dependency has broken Drush.
@@ -97,8 +107,7 @@ jobs:
       - run: composer require --dev drupal/core:8.7.x-dev --no-update
       - run: composer config platform.php 7.2
       - run: composer update
-      - run: composer lint
-      - run: composer functional
+      - run: composer test
 
   # PHP 5.6 test with LOWEST dependencies:
   #   Determines whether any code introduced in this branch uses language
@@ -118,8 +127,7 @@ jobs:
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - run: .scenarios.lock/install php5 lowest
       - run: $HOME/drush/.circleci/patch.sh
-      - run: composer lint
-      - run: composer functional
+      - run: composer test
 
 workflows:
   version: 2

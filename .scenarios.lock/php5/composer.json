@@ -83,6 +83,7 @@
         "g1a/composer-test-scenarios": "^3",
         "phpunit/phpunit": "^4.8.36 || ^6.1",
         "squizlabs/php_codesniffer": "^2.7",
+        "php-coveralls/php-coveralls": "^1",
         "composer/installers": "^1.2",
         "cweagans/composer-patches": "~1.0",
         "webflo/drupal-core-strict": "8.6.x-dev",
