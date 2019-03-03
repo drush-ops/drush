@@ -153,16 +153,16 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         if (!$this->bootstrapManager || !$this->aliasManager) {
             return;
         }
-        $selfAliasRecord = $this->aliasManager->getSelf();
-        if (!$selfAliasRecord->hasRoot() && !$this->bootstrapManager()->drupalFinder()->getDrupalRoot()) {
+        $selfSiteAlias = $this->aliasManager->getSelf();
+        if (!$selfSiteAlias->hasRoot() && !$this->bootstrapManager()->drupalFinder()->getDrupalRoot()) {
             return;
         }
-        $uri = $selfAliasRecord->uri();
+        $uri = $selfSiteAlias->uri();
 
         if (empty($uri)) {
             $uri = $this->selectUri($cwd);
-            $selfAliasRecord->setUri($uri);
-            $this->aliasManager->setSelf($selfAliasRecord);
+            $selfSiteAlias->setUri($uri);
+            $this->aliasManager->setSelf($selfSiteAlias);
         }
         // Update the uri in the bootstrap manager
         $this->bootstrapManager->setUri($uri);
