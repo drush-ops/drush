@@ -2,7 +2,7 @@
 
 namespace Unish;
 
-use Consolidation\SiteAlias\AliasRecord;
+use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteProcess\SiteProcess;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
@@ -619,7 +619,7 @@ EOT;
 
     protected function sutAlias($uri = self::INTEGRATION_TEST_ENV)
     {
-        return new AliasRecord(['root' => $this->webroot(), 'uri' => $uri], "@sut.$uri");
+        return new SiteAlias(['root' => $this->webroot(), 'uri' => $uri], "@sut.$uri");
     }
 
     /**
