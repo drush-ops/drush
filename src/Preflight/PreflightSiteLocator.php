@@ -41,9 +41,8 @@ class PreflightSiteLocator
 
         // If the user provided a uri on the commandline, inject it
         // into the alias that we found.
-        $uri = $preflightArgs->uri();
-        if (isset($uri)) {
-            $self->setUri($uri);
+        if ($preflightArgs->hasUri()) {
+            $self->setUri($preflightArgs->uri());
         }
 
         return $self;
