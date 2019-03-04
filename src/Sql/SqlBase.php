@@ -219,7 +219,7 @@ class SqlBase implements ConfigAwareInterface
         }
         $interpolator = new Interpolator();
         $replacements = [
-            'cmd' => addslashes($cmd),
+            'cmd' => str_replace('"', '\\"', $cmd),
         ];
         return $interpolator->interpolate($replacements, $pipefail);
     }
