@@ -48,6 +48,10 @@ class CoreTest extends UnishIntegrationTestCase
         $root = $this->webroot();
         $sitewide = $this->drupalSitewideDirectory();
 
+        if ($this->isWindows()) {
+            $this->markTestSkipped('Windows escpaping woes.');
+        }
+
         $this->drush('drupal-directory', ['%files']);
         $output = $this->getOutput();
         $this->assertEquals(Path::join($root, '/sites/default/files'), $output);

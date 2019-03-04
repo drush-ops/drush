@@ -5,7 +5,7 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
-use Consolidation\SiteAlias\AliasRecord;
+use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Webmozart\PathUtil\Path;
@@ -107,7 +107,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
         }
     }
 
-    public function databaseName(AliasRecord $record)
+    public function databaseName(SiteAlias $record)
     {
         if ($this->processManager()->hasTransport($record) && $this->getConfig()->simulate()) {
             return 'simulated_db';
@@ -170,14 +170,14 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
     /**
      * @param array $options
-     * @param AliasRecord $sourceRecord
-     * @param AliasRecord $targetRecord
+     * @param SiteAlias $sourceRecord
+     * @param SiteAlias $targetRecord
      * @param $source_dump_path
      * @return string
      *   Path to the target file.
      * @throws \Exception
      */
-    public function rsync($options, AliasRecord $sourceRecord, AliasRecord $targetRecord, $source_dump_path)
+    public function rsync($options, SiteAlias $sourceRecord, SiteAlias $targetRecord, $source_dump_path)
     {
         $do_rsync = !$options['no-sync'];
         // Determine path/to/dump on target.

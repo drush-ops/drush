@@ -21,13 +21,17 @@ class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
     }
 
     /**
-     * Check to see if the error handler is working.
+     * Check to see if the error handler is using correct error level (info).
      */
     public function testErrorHandler()
     {
         // Access a missing array element
         $this->drush('ev', ['$a = []; print $a["b"];']);
 
-        $this->assertEquals('', $this->getErrorOutput(), 'Error handler did not suppress deprecated message.');
+        if (empty($this->logLevel())) {
+            $this->assertEquals('', $this->getErrorOutput(), 'Error handler did not suppress deprecated message.');
+        } else {
+            $this->assertContains('Undefined index: b PhpCommands.php', $this->getErrorOutput());
+        }
     }
 }

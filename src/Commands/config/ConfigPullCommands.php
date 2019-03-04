@@ -60,7 +60,7 @@ class ConfigPullCommands extends DrushCommands implements SiteAliasManagerAwareI
         $destinationHostPath = HostPath::create($this->siteAliasManager(), $destination);
 
         if (!$runner = $options['runner']) {
-            $destinationRecord = $destinationHostPath->getAliasRecord();
+            $destinationRecord = $destinationHostPath->getSiteAlias();
             $runner = $sourceRecord->isRemote() && $destinationRecord->isRemote() ? $destinationRecord : $this->siteAliasManager()->getSelf();
         }
         $this->logger()

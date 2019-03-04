@@ -11,5 +11,6 @@ api
 .idea/
 sut/*
 !sut/drush
+sut/drush/sites/*test.site.yml
 /sandbox/
 .env

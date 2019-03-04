@@ -188,7 +188,7 @@ class BootstrapManager implements LoggerAwareInterface, AutoloaderAwareInterface
                 return $candidate;
             }
         }
-        return null;
+        return new EmptyBoot();
     }
 
     /**

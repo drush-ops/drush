@@ -59,7 +59,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
                 // alias by directory / by env.cwd.
                 //     $path = drush_cwd();
                 //     $site_record = drush_sitealias_lookup_alias_by_path($path, true);
-                $site_record = []; // This should be returned as an AliasRecord, not an array.
+                $site_record = []; // This should be returned as an SiteAlias, not an array.
                 if (isset($site_record['#name'])) {
                     $site = '@' . $site_record['#name']; // $site_record->name();
                 } else {
