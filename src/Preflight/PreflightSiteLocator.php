@@ -37,7 +37,16 @@ class PreflightSiteLocator
     public function findSite(PreflightArgsInterface $preflightArgs, Environment $environment, $root)
     {
         $aliasName = $preflightArgs->alias();
-        return $this->determineSelf($preflightArgs, $environment, $root);
+        $self = $this->determineSelf($preflightArgs, $environment, $root);
+
+        // If the user provided a uri on the commandline, inject it
+        // into the alias that we found.
+        $uri = $preflightArgs->uri();
+        if (isset($uri)) {
+            $self->setUri($uri);
+        }
+
+        return $self;
     }
 
     /**
