@@ -59,6 +59,10 @@ abstract class UnishTestCase extends TestCase
 
         self::$drush = Path::join(self::getComposerRoot(), 'drush');
 
+        // These are not available unless explicitly installed
+        self::$site_with_older_drush = Path::join(self::$sandbox, "drupal-with-old-drush");
+        self::$older_drush = Path::join(self::$site_with_older_drush, 'vendor/bin/drush');
+
         self::$sandbox = $unish_sandbox;
         self::$usergroup = isset($GLOBALS['UNISH_USERGROUP']) ? $GLOBALS['UNISH_USERGROUP'] : null;
 
@@ -71,6 +75,7 @@ abstract class UnishTestCase extends TestCase
         self::setEnv(['ETC_PREFIX' => $unish_sandbox]);
         self::setEnv(['SHARE_PREFIX' => $unish_sandbox]);
         self::setEnv(['TEMP' => Path::join($unish_sandbox, 'tmp')]);
+        self::setEnv(['SITE_WITH_OLDER_DRUSH' => self::$site_with_older_drush]);
     }
 
     /**
@@ -770,5 +775,31 @@ EOT;
         }
 
         return $error;
+    }
+
+    protected function olderDrushInstancePath()
+    {
+        $old_site = Path::join(self::$sandbox, "drupal-with-old-drush");
+        return $old_site;
+    }
+
+    protected function olderDrushInstance($drush_version = '~9.5.0')
+    {
+        $old_site = $this->olderDrushInstancePath();
+
+        // TODO: If installed Drush != $drush_version then delete $old_site contents
+
+        if (is_dir($old_site)) {
+            return $old_site;
+        }
+
+        passthru("git clone git@github.com:drupal-composer/drupal-project.git --branch='8.x' $old_site");
+
+        passthru("composer --working-dir=$old_site remove drupal/console --no-update");
+        passthru("composer --working-dir=$old_site require drush/drush:$drush_version --no-update");
+
+        passthru("composer --working-dir=$old_site install");
+
+        return $old_site;
     }
 }

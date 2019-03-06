@@ -35,3 +35,8 @@ local:
   paths:
     drush-script: /var/www/html/drush
 
+# A Drupal site loaded with an older version of Drush.  Does not exist
+# by default; must be created. Some tests skipped if it is not present.
+old:
+  root: ${drush.base-dir}/tests/fixtures/sites/drupal-with-old-drush
+  uri: default

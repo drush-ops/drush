@@ -1,0 +1,29 @@
+commit 12d94e6adbc0b6b35dfc1a95ec81b1c2cc8f8bda
+Author: Greg Anderson <greg.1.anderson@greenknowe.org>
+Date:   Wed Feb 20 09:36:25 2019 -0800
+
+    Fixes #3940: If Drush is installed as a dependency of a Drupal site (as we stipulate it alwasy should be) and the cwd / alias does not find a site, then search for the site that Drush is installed in, and fall back to the sut only as a last resort. (#3942)
+
+diff --git a/src/Preflight/Preflight.php b/src/Preflight/Preflight.php
+index b361432fd..597e36f23 100644
+--- a/src/Preflight/Preflight.php
++++ b/src/Preflight/Preflight.php
+@@ -343,8 +343,17 @@ class Preflight
+     {
+         if ($selectedRoot || $fallbackPath) {
+             $foundRoot = $this->drupalFinder->locateRoot($selectedRoot);
++            // If we did not find a site at the selected root, check the
++            // PARENT directory of the fallback path. This will find a site
++            // that Drush is installed in while avoiding the SUT.
+             if (!$foundRoot && $fallbackPath) {
+-                $this->drupalFinder->locateRoot($fallbackPath);
++                $foundRoot = $this->drupalFinder->locateRoot(dirname(dirname($fallbackPath)));
++            }
++            // If we can't find a site that Drush is installed in, and
++            // Drush has been installed with a sut (git or composer dev install),
++            // then look for the sut.
++            if (!$foundRoot && $fallbackPath && is_dir($fallbackPath . '/sut') && is_dir($fallbackPath . '/vendor')) {
++                $foundRoot = $this->drupalFinder->locateRoot($fallbackPath);
+             }
+             return $this->drupalFinder()->getDrupalRoot();
+         }

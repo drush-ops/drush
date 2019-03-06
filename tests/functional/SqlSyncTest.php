@@ -17,6 +17,12 @@ namespace Unish;
  */
 class SqlSyncTest extends CommandUnishTestCase
 {
+    public function testSyncWithOlderDrush()
+    {
+        $old_drush = $this->olderDrushInstance();
+
+        $this->assertEquals('', $old_drush);
+    }
 
     public function testSimulatedSqlSync()
     {
