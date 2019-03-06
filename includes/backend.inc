@@ -283,7 +283,7 @@ function _drush_backend_integrate($data, $backend_options, $outputted) {
   // Drush (version 4.x) that does not send backend packets, then we will
   // not have processed the log entries yet, and must print them here.
   $received_packets = drush_get_context('DRUSH_RECEIVED_BACKEND_PACKETS', FALSE);
-  if (is_array($data['log']) && $backend_options['log'] && (!$received_packets)) {
+  if (is_array($data['log']) && !empty($backend_options['log']) && (!$received_packets)) {
     foreach($data['log'] as $log) {
       $message = is_array($log['message']) ? implode("\n", $log['message']) : $log['message'];
       if (isset($backend_options['#output-label'])) {
@@ -303,7 +303,7 @@ function _drush_backend_integrate($data, $backend_options, $outputted) {
     if (drush_cmp_error('DRUSH_APPLICATION_ERROR') && !empty($data['output'])) {
       drush_set_error("DRUSH_APPLICATION_ERROR", dt("Output from failed command :\n !output", ['!output' => $data['output']]));
     }
-    elseif ($backend_options['output']) {
+    elseif (!empty($backend_options['output'])) {
       _drush_backend_print_output($data['output'], $backend_options);
     }
   }

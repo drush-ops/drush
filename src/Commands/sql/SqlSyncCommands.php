@@ -113,10 +113,14 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
             return 'simulated_db';
         }
 
-        $process = $this->processManager()->drush($record, 'core-status', ['db-name'], ['format' => 'string']);
+        $process = $this->processManager()->drush($record, 'core-status', ['db-name'], ['format' => 'json']);
         $process->setSimulated(false);
         $process->mustRun();
-        return trim($process->getOutput());
+        $data = $process->getOutputAsJson();
+        if (!isset($data['db-name'])) {
+            throw new \Exception('Could not look up database name for ' . $record->name());
+        }
+        return trim($data['db-name']);
     }
 
     /**

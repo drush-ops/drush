@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "922372170c58f5ef6b802595d51e3af4",
+    "content-hash": "94ea33e34e641a9826bea5f4beba3767",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -663,16 +663,16 @@
         },
         {
             "name": "consolidation/site-alias",
-            "version": "3.0.0-beta1",
+            "version": "dev-find-self-site",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-alias.git",
-                "reference": "8a785ca8544e009e69b65fa2e41c84742001d011"
+                "reference": "72ba41ddd7c32c3a5e3f37ece2d9d39d57afc8f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-alias/zipball/8a785ca8544e009e69b65fa2e41c84742001d011",
-                "reference": "8a785ca8544e009e69b65fa2e41c84742001d011",
+                "url": "https://api.github.com/repos/consolidation/site-alias/zipball/72ba41ddd7c32c3a5e3f37ece2d9d39d57afc8f0",
+                "reference": "72ba41ddd7c32c3a5e3f37ece2d9d39d57afc8f0",
                 "shasum": ""
             },
             "require": {
@@ -731,7 +731,7 @@
                 }
             ],
             "description": "Manage alias records for local and remote sites.",
-            "time": "2019-03-03T20:24:22+00:00"
+            "time": "2019-03-06T16:33:14+00:00"
         },
         {
             "name": "consolidation/site-process",
@@ -1729,7 +1729,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "BackEndTea@gmail.com"
+                    "email": "backendtea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
@@ -6285,17 +6285,6 @@
         {
             "name": "webflo/drupal-core-strict",
             "version": "8.6.x-dev",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/webflo/drupal-core-strict.git",
-                "reference": "77919809646d790f8060b3c3fc695ae2b5dca6c4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/webflo/drupal-core-strict/zipball/77919809646d790f8060b3c3fc695ae2b5dca6c4",
-                "reference": "77919809646d790f8060b3c3fc695ae2b5dca6c4",
-                "shasum": ""
-            },
             "require": {
                 "asm89/stack-cors": "1.2.0",
                 "composer/installers": "v1.5.0",
@@ -6639,9 +6628,17 @@
             "time": "2016-04-12T21:19:36+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "alias": "3.0.0-beta1",
+            "alias_normalized": "3.0.0.0-beta1",
+            "version": "dev-find-self-site",
+            "package": "consolidation/site-alias"
+        }
+    ],
     "minimum-stability": "dev",
     "stability-flags": {
+        "consolidation/site-alias": 20,
         "lox/xhprof": 20,
         "webflo/drupal-core-strict": 20
     },

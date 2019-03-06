@@ -9,7 +9,7 @@ namespace Unish;
  * @group commands
  * @group slow
  */
-class RsyncCase extends CommandUnishTestCase
+class RsyncTest extends CommandUnishTestCase
 {
 
     public function setUp()
@@ -33,21 +33,6 @@ class RsyncCase extends CommandUnishTestCase
             'simulate' => null,
             'alias-path' => __DIR__ . '/resources/alias-fixtures',
         ];
-
-        // Test simulated simple rsync with two local sites
-        $this->drush('rsync', ['@example.stage', '@example.dev'], $options, null, null, self::EXIT_SUCCESS, '2>&1');
-        $expected = "[notice] Simulating: rsync -e 'ssh ' -akz /path/to/stage /path/to/dev";
-        $this->assertOutputEquals($expected);
-
-        // Test simulated rsync with relative paths
-        $this->drush('rsync', ['@example.dev:files', '@example.stage:files'], $options, null, null, self::EXIT_SUCCESS, '2>&1');
-        $expected = "[notice] Simulating: rsync -e 'ssh ' -akz /path/to/dev/files /path/to/stage/files";
-        $this->assertOutputEquals($expected);
-
-        // Test simulated rsync on local machine with a remote target
-        $this->drush('rsync', ['@example.dev:files', '@example.live:files'], $options, null, null, self::EXIT_SUCCESS, '2>&1');
-        $expected = "[notice] Simulating: rsync -e 'ssh -o PasswordAuthentication=example' -akz /path/to/dev/files www-admin@service-provider.com:/path/on/service-provider/files";
-        $this->assertOutputEquals($expected);
 
         // Test simulated backend invoke.
         // Note that command-specific options are not processed for remote
