@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5a5c5f495eaceb747d99fbf3a157ad2e",
+    "content-hash": "27763652ea6dbfc078432fa1f6afec71",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -5889,6 +5889,17 @@
         {
             "name": "webflo/drupal-core-strict",
             "version": "8.6.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webflo/drupal-core-strict.git",
+                "reference": "77919809646d790f8060b3c3fc695ae2b5dca6c4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webflo/drupal-core-strict/zipball/77919809646d790f8060b3c3fc695ae2b5dca6c4",
+                "reference": "77919809646d790f8060b3c3fc695ae2b5dca6c4",
+                "shasum": ""
+            },
             "require": {
                 "asm89/stack-cors": "1.2.0",
                 "composer/installers": "v1.5.0",
