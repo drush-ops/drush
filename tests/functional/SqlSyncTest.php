@@ -40,6 +40,7 @@ class SqlSyncTest extends CommandUnishTestCase
         ];
         $this->setUpSettings($fixtureSites, 'synctest');
         $options = [
+            'uri' => 'OMIT',
             'simulate' => null,
             'alias-path' => __DIR__ . '/resources/alias-fixtures',
         ];
@@ -88,26 +89,31 @@ class SqlSyncTest extends CommandUnishTestCase
     {
 
         $options = [
-            'uri' => 'stage',
             'yes' => null,
+            'uri' => 'OMIT',
         ];
+
+        $stage_options = [
+            'uri' => 'stage',
+        ] + $options;
 
         // Create a user in the staging site
         $name = 'joe.user';
         $mail = "joe.user@myhome.com";
 
         // Add user fields and a test User.
-        $this->drush('pm-enable', ['field,text,telephone,comment'], $options + ['yes' => null]);
-        $this->drush('php-script', ['user_fields-D8', $name, $mail], $options + ['script-path' => __DIR__ . '/resources',]);
+        $this->drush('pm-enable', ['field,text,telephone,comment'], $stage_options + ['yes' => null]);
+        $this->drush('php-script', ['user_fields-D8', $name, $mail], $stage_options + ['script-path' => __DIR__ . '/resources',]);
 
         // Copy stage to dev, and then sql:sanitize.
         $sync_options = [
             'yes' => null,
+            'uri' => 'OMIT',
             // Test wildcards expansion from within sql-sync. Also avoid D8 persistent entity cache.
             'structure-tables-list' => 'cache,cache*',
         ];
         $this->drush('sql-sync', ['@sut.stage', '@sut.dev'], $sync_options);
-        $this->drush('sql-sanitize', [], ['yes' => null], '@sut.dev');
+        $this->drush('sql-sanitize', [], ['yes' => null, 'uri' => 'dev',], '@sut.dev');
 
         // Confirm that the sample user is unchanged on the staging site
         $this->drush('user-information', [$name], $options + ['format' => 'json'], '@sut.stage');
@@ -115,7 +121,7 @@ class SqlSyncTest extends CommandUnishTestCase
         $this->assertEquals($mail, $info->mail, 'Email address is unchanged on source site.');
         $this->assertEquals($name, $info->name);
         // Get the unchanged pass.
-        $this->drush('user-information', [$name], $options + ['field' => 'pass']);
+        $this->drush('user-information', [$name], $stage_options + ['field' => 'pass']);
         $original_hashed_pass = $this->getOutput();
 
         // Confirm that the sample user's email and password have been sanitized on the dev site
@@ -128,11 +134,12 @@ class SqlSyncTest extends CommandUnishTestCase
         // Copy stage to dev with --sanitize and a fixed sanitized email
         $sync_options = [
             'yes' => null,
+            'uri' => 'OMIT',
             // Test wildcards expansion from within sql-sync. Also avoid D8 persistent entity cache.
             'structure-tables-list' => 'cache,cache*',
         ];
         $this->drush('sql-sync', ['@sut.stage', '@sut.dev'], $sync_options);
-        $this->drush('sql-sanitize', [], ['yes' => null, 'sanitize-email' => 'user@mysite.org'], '@sut.dev');
+        $this->drush('sql-sanitize', [], ['yes' => null, 'sanitize-email' => 'user@mysite.org', 'uri' => 'OMIT',], '@sut.dev');
 
         // Confirm that the sample user's email address has been sanitized on the dev site
         $this->drush('user-information', [$name], $options + ['yes' => null, 'format' => 'json'], '@sut.dev');
@@ -172,7 +179,7 @@ class SqlSyncTest extends CommandUnishTestCase
     {
         $table = 'user__' . $field_name;
         $column = $field_name . '_value';
-        $this->drush('sql-query', ["SELECT $column FROM $table LIMIT 1"], [], '@sut.dev');
+        $this->drush('sql-query', ["SELECT $column FROM $table LIMIT 1"], ['uri' => 'OMIT',], '@sut.dev');
         $output = $this->getOutput();
         $this->assertNotEmpty($output);
 

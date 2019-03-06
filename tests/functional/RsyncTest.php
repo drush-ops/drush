@@ -29,6 +29,7 @@ class RsyncCase extends CommandUnishTestCase
     public function testRsyncSimulated()
     {
         $options = [
+            'uri' => 'OMIT',
             'simulate' => null,
             'alias-path' => __DIR__ . '/resources/alias-fixtures',
         ];
