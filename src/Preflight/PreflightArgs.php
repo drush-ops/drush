@@ -276,6 +276,11 @@ class PreflightArgs extends Config implements PreflightArgsInterface
         return $this->get(self::URI, $default);
     }
 
+    public function hasUri()
+    {
+        return $this->has(self::URI);
+    }
+
     /**
      * Set the uri option
      */
