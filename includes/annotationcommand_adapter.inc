@@ -16,6 +16,8 @@ use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Command\DrushInputAdapter;
 use Drush\Command\DrushOutputAdapter;
+use Drush\Adapters\AliasManagerAdapterInjector;
+use Drush\Adapters\ProcessManagerInjector;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -103,9 +105,28 @@ function annotationcommand_adapter_commands() {
       unset($annotation_commandfiles[$key]);
     }
   }
-  $commands = annotationcommand_adapter_get_commands($annotation_commandfiles);
+  $site_wide_commands = annotationcommand_adapter_get_commands($annotation_commandfiles);
   $module_service_commands = drush_get_context('DRUSH_MODULE_SERVICE_COMMANDS');
-  return array_merge($commands, $module_service_commands);
+  $commands = array_merge($site_wide_commands, $module_service_commands);
+
+  return $commands;
+}
+
+function annotationcommand_adapter_initialize_commands($commands) {
+  if (class_exists('\Consolidation\SiteAlias\SiteAliasManagerInterface
+')) {
+    $alias_manager_injector = new AliasManagerAdapterInjector();
+    foreach($commands as $command) {
+      $alias_manager_injector->inflect($command);
+    }
+  }
+
+  if (class_exists('\Consolidation\SiteProcess\ProcessManager')) {
+    $process_manager_injector = new ProcessManagerInjector();
+    foreach($commands as $command) {
+      $process_manager_injector->inflect($command);
+    }
+  }
 }
 
 /**
