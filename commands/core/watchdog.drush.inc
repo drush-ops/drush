@@ -37,7 +37,7 @@ function watchdog_drush_command() {
       'column-widths' => array('type' => 8, 'severity' => 8),
       'output-data-type' => 'format-table',
     ),
-    'aliases' => array('wd-list'),
+    'aliases' => array('wd-list', 'watchdog:list'),
   );
   $items['watchdog-show'] = array(
     'description' => 'Show watchdog messages.',
@@ -71,7 +71,7 @@ function watchdog_drush_command() {
       'column-widths' => array('type' => 8, 'severity' => 8),
       'output-data-type' => 'format-table',
     ),
-    'aliases' => array('wd-show', 'ws'),
+    'aliases' => array('wd-show', 'ws', 'watchdog:show'),
   );
   $items['watchdog-delete'] = array(
     'description' => 'Delete watchdog messages.',
@@ -87,7 +87,7 @@ function watchdog_drush_command() {
       'drush watchdog-delete --severity=notice' => 'Delete all messages with a severity of notice.',
       'drush watchdog-delete --type=cron' => 'Delete all messages of type cron.',
     ),
-    'aliases' => array('wd-del', 'wd-delete'),
+    'aliases' => array('wd-del', 'wd-delete', 'watchdog:delete'),
   );
   return $items;
 }

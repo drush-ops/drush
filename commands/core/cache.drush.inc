@@ -42,7 +42,7 @@ function cache_drush_command() {
       'pipe-format' => 'var_export',
       'output-data-type' => TRUE,
     ),
-    'aliases' => array('cg'),
+    'aliases' => array('cg','cache:get'),
   );
   $items['cache-clear'] = array(
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
@@ -51,7 +51,7 @@ function cache_drush_command() {
       'type' => 'The particular cache to clear. Omit this argument to choose from available caches.',
     ),
     'callback' => 'drush_cache_command_clear',
-    'aliases' => array('cc'),
+    'aliases' => array('cc','cache:clear'),
   );
   $items['cache-set'] = array(
     'description' => 'Cache an object expressed in JSON or var_export() format.',
@@ -69,7 +69,7 @@ function cache_drush_command() {
       'cache-get' => 'If the object is the result a previous fetch from the cache, only store the value in the "data" property of the object in the cache.',
     ),
     'callback' => 'drush_cache_command_set',
-    'aliases' => array('cs'),
+    'aliases' => array('cs','cache:set'),
   );
   $items['cache-rebuild'] = array(
     'description' => 'Rebuild a Drupal 8 site and clear all its caches.',
@@ -79,7 +79,7 @@ function cache_drush_command() {
     // Further bootstrap is done by the rebuild script.
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
     'core' => array('8+'),
-    'aliases' => array('cr', 'rebuild'),
+    'aliases' => array('cr', 'rebuild', 'cache:rebuild'),
   );
 
   return $items;

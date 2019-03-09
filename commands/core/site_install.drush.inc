@@ -67,7 +67,7 @@ function site_install_drush_command() {
       'drush site-install standard install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=NULL' => 'Disable email notification during install and later (D8). If your server has no mail transfer agent, this gets rid of an error during install.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_ROOT,
-    'aliases' => array('si'),
+    'aliases' => array('si', 'site:install'),
   );
   return $items;
 }

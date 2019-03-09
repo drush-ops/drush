@@ -27,7 +27,7 @@ function image_drush_command() {
       'drush image-flush thumbnail' => 'Delete all thumbnail images.',
       'drush image-flush --all' => 'Flush all derived images. They will be regenerated on the fly.',
     ),
-    'aliases' => array('if'),
+    'aliases' => array('if', 'image:flush'),
   );
   $items['image-derive'] = array(
     'description' => 'Create an image derivative.',
@@ -42,7 +42,7 @@ function image_drush_command() {
     'examples' => array(
       'drush image-derive thumbnail themes/bartik/logo.png' => 'Save thumbnail sized derivative of logo image.',
     ),
-    'aliases' => array('id'),
+    'aliases' => array('id', 'image:derive'),
   );
   return $items;
 }

@@ -14,7 +14,7 @@ function cli_drush_command() {
   $items['core-cli'] = array(
     'description' => 'Open an interactive shell on a Drupal site.',
     'remote-tty' => TRUE,
-    'aliases' => array('php'),
+    'aliases' => array('php', 'core:cli'),
     'bootstrap' => DRUSH_BOOTSTRAP_MAX,
     'topics' => array('docs-repl'),
     'options' => array(
@@ -29,6 +29,7 @@ function cli_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'callback' => 'drush_print_file',
     'callback arguments' => array(drush_get_context('DOC_PREFIX', DRUSH_BASE_PATH) . '/docs/repl.md'),
+    'aliases' => array('docs:repl'),
   );
   return $items;
 }
@@ -95,7 +96,7 @@ function drush_cli_core_cli() {
   if ($drupal_major_version == 7) {
     Database::closeConnection();
   }
-  
+
   // if the cwd option is passed, lets change the current working directory to wherever
   // the user wants to go before we lift psysh.
   if ($cwd = drush_get_option('cwd',FALSE)) {

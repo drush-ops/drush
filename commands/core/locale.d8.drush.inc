@@ -31,6 +31,7 @@ function locale_drush_command() {
       'langcodes' => 'A comma-separated list of language codes to update. If omitted, all translations will be updated.'
     ],
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+    'aliases' => array('locale:check'),
   ];
   // @todo Implement proper export and import commands.
   return $items;
