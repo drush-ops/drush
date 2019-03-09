@@ -122,7 +122,7 @@ class Drush
             static::$config = new DrushConfig();
         }
 
-        return $this->config;
+        return static::$config;
     }
 
     /**
@@ -148,7 +148,7 @@ class Drush
     {
         if (!static::$processManager) {
             static::$processManager = new ProcessManager();
-
+            ProcessManager::addTransports(static::$processManager);
             static::$processManager->setConfig(new ConfigAdapter(new DrushConfig()));
             // TODO: static::$processManager->setConfigRuntime()
         }

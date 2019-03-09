@@ -3,13 +3,15 @@ namespace Drush\SiteAlias;
 
 use Consolidation\SiteProcess\ProcessManager as ConsolidationProcessManager;
 
-use Consolidation\SiteProcess\Util\Escape;
-use Psr\Log\LoggerInterface;
 use Consolidation\SiteAlias\SiteAliasInterface;
 use Consolidation\SiteProcess\Factory\TransportFactoryInterface;
-use Symfony\Component\Process\Process;
 use Consolidation\SiteProcess\ProcessBase;
 use Consolidation\SiteProcess\SiteProcess;
+use Consolidation\SiteProcess\Util\Escape;
+use Drush\Drush;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Process\Process;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -150,7 +152,7 @@ class ProcessManager extends ConsolidationProcessManager
         $process->setVerbose(Drush::verbose());
         $process->inheritEnvironmentVariables();
         $process->setLogger(Drush::logger());
-        $process->setRealtimeOutput(new DrushStyle(Drush::input(), Drush::output()));
+        $process->setRealtimeOutput(new SymfonyStyle(Drush::input(), Drush::output()));
         $process->setTimeout(Drush::getTimeout());
         return $process;
     }
