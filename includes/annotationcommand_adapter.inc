@@ -16,8 +16,8 @@ use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Command\DrushInputAdapter;
 use Drush\Command\DrushOutputAdapter;
-use Drush\Adapters\AliasManagerAdapterInjector;
-use Drush\Adapters\ProcessManagerInjector;
+use Drush\SiteAlias\AliasManagerAdapterInjector;
+use Drush\SiteAlias\ProcessManagerInjector;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -110,23 +110,6 @@ function annotationcommand_adapter_commands() {
   $commands = array_merge($site_wide_commands, $module_service_commands);
 
   return $commands;
-}
-
-function annotationcommand_adapter_initialize_commands($commands) {
-  if (class_exists('\Consolidation\SiteAlias\SiteAliasManagerInterface
-')) {
-    $alias_manager_injector = new AliasManagerAdapterInjector();
-    foreach($commands as $command) {
-      $alias_manager_injector->inflect($command);
-    }
-  }
-
-  if (class_exists('\Consolidation\SiteProcess\ProcessManager')) {
-    $process_manager_injector = new ProcessManagerInjector();
-    foreach($commands as $command) {
-      $process_manager_injector->inflect($command);
-    }
-  }
 }
 
 /**
@@ -330,8 +313,17 @@ function annotationcommand_adapter_create_commandfile_instance($commandfile_path
 
     // Inject logger if requested
     if ($commandhandler instanceof LoggerAwareInterface) {
-      $drush_logger = drush_get_context('DRUSH_LOGGER');
-      $commandhandler->setLogger($drush_logger);
+      $commandhandler->setLogger(Drush::logger());
+    }
+
+    if (class_exists('\Consolidation\SiteAlias\SiteAliasManagerInterface')) {
+      $alias_manager_injector = new AliasManagerAdapterInjector();
+      $alias_manager_injector->inflect($commandhandler);
+    }
+
+    if (class_exists('\Consolidation\SiteProcess\ProcessManager')) {
+      $process_manager_injector = new ProcessManagerInjector();
+      $process_manager_injector->inject($commandhandler);
     }
 
     $cache[$commandfile_path] = $commandhandler;

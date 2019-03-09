@@ -91,4 +91,25 @@ class DrushConfig
     {
         drush_set_default($key, $value);
     }
+
+    /**
+     * Determine whether we are in 'backend' mode
+     */
+    public function backend()
+    {
+        return drush_get_context('DRUSH_BACKEND');
+    }
+
+    /**
+     * Determine whether we are in 'simulate' mode
+     */
+    public function simulate()
+    {
+        return drush_get_context('DRUSH_SIMULATE');
+    }
+
+    public function drushScript()
+    {
+        return DRUSH_COMMAND;
+    }
 }

@@ -1,8 +1,9 @@
 <?php
-namespace Drush\Adapters;
+namespace Drush\SiteAlias;
 
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
+use Drush\Drush;
 
 class AliasManagerAdapterInjector
 {
@@ -11,16 +12,7 @@ class AliasManagerAdapterInjector
     public function inflect($command)
     {
         if ($command instanceof SiteAliasManagerAwareInterface) {
-            $command->setSiteAliasManager(static::getAliasManagerAdapter());
+            $command->setSiteAliasManager(Drush::aliasManager());
         }
-    }
-
-    protected static function getAliasManagerAdapter()
-    {
-        if (!static::$aliasManager) {
-            static::$aliasManager = new AliasManagerAdapter();
-        }
-
-        return static::$aliasManager;
     }
 }

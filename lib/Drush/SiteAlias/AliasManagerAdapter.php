@@ -1,8 +1,9 @@
 <?php
-namespace Drush\Adapters;
+namespace Drush\SiteAlias;
 
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
+use Consolidation\SiteAlias\SiteAlias;
 
 class AliasManagerAdapter implements SiteAliasManagerInterface
 {
