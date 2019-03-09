@@ -13,8 +13,10 @@ use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Consolidation\SiteProcess\ProcessBase;
 use Consolidation\SiteProcess\SiteProcess;
 use Drush\Command\DrushOutputAdapter;
+use Drush\ConfigAdapter;
 use Drush\DrushConfig;
 use Drush\SiteAlias\ProcessManager;
+use Drush\SiteAlias\AliasManagerAdapter;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -35,6 +37,7 @@ class Drush
     protected static $config = null;
     protected static $aliasManager = null;
     protected static $processManager = null;
+    protected static $input = null;
     protected static $output = null;
 
     /**
@@ -144,8 +147,9 @@ class Drush
     public static function processManager()
     {
         if (!static::$processManager) {
-            static::$processManager = ProcessManager::createDefault();
-            static::$processManager->setConfig(new DrushConfig());
+            static::$processManager = new ProcessManager();
+
+            static::$processManager->setConfig(new ConfigAdapter(new DrushConfig()));
             // TODO: static::$processManager->setConfigRuntime()
         }
 

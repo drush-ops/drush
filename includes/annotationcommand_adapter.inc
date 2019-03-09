@@ -16,6 +16,7 @@ use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Command\DrushInputAdapter;
 use Drush\Command\DrushOutputAdapter;
+use Drush\Drush;
 use Drush\SiteAlias\AliasManagerAdapterInjector;
 use Drush\SiteAlias\ProcessManagerInjector;
 
@@ -316,14 +317,14 @@ function annotationcommand_adapter_create_commandfile_instance($commandfile_path
       $commandhandler->setLogger(Drush::logger());
     }
 
-    if (class_exists('\Consolidation\SiteAlias\SiteAliasManagerInterface')) {
+    if (class_exists('\Consolidation\SiteAlias\SiteAliasManager')) {
       $alias_manager_injector = new AliasManagerAdapterInjector();
       $alias_manager_injector->inflect($commandhandler);
     }
 
     if (class_exists('\Consolidation\SiteProcess\ProcessManager')) {
       $process_manager_injector = new ProcessManagerInjector();
-      $process_manager_injector->inject($commandhandler);
+      $process_manager_injector->inflect($commandhandler);
     }
 
     $cache[$commandfile_path] = $commandhandler;
