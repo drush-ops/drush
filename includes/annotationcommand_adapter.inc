@@ -250,6 +250,15 @@ function annotationcommand_adapter_process_command() {
   $commandData->setIncludeOptionsInArgs($command['add-options-to-arguments']);
   $names = annotationcommand_adapter_command_names($command);
 
+  // For now, the only thing that can be injected is the InputInterface.
+  foreach ($command['injected-classes'] as $injected) {
+    switch ($injected) {
+      case 'Symfony\Component\Console\Input\InputInterface':
+        $commandData->injectInstance($input);
+        break;
+    }
+  }
+
   // n.b.: backend result is set by a post-alter hook.
   $result = $commandprocessor->process(
     $output,
@@ -513,6 +522,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       }
     }
     $command['annotations'] = $commandinfo->getAnnotations();
+    $command['injected-classes'] = $commandinfo->getInjectedClasses();
     // If the command has a '@return' annotation, then
     // remember information we will need to use the output formatter.
     $returnType = $commandinfo->getReturnType();
