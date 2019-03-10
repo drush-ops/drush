@@ -53,6 +53,17 @@ class DrushConfig
     }
 
     /**
+     * export returns a collection of all of the
+     * configuration available in the config object, although
+     * in truth this list is pared down to include only
+     * those values that are common to Drush 8 and Drush 9.
+     */
+    public function export()
+    {
+        return drush_get_merged_options();
+    }
+
+    /**
      * Return the default value for a given configuration item.
      *
      * @param string $key
