@@ -25,6 +25,7 @@ function queue_drush_command() {
     'options' => array(
       'time-limit' => 'The maximum number of seconds allowed to run the queue',
     ),
+    'aliases' => array('queue:run'),
   );
   $items['queue-list'] = array(
     'description' => 'Returns a list of all defined queues',
@@ -41,6 +42,7 @@ function queue_drush_command() {
         'key-value-item' => 'items',
       ),
       'output-data-type' => 'format-table',
+      'aliases' => array('queue:list'),
     ),
   );
 

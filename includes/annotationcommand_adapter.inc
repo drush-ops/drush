@@ -16,6 +16,9 @@ use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Command\DrushInputAdapter;
 use Drush\Command\DrushOutputAdapter;
+use Drush\Drush;
+use Drush\SiteAlias\AliasManagerAdapterInjector;
+use Drush\SiteAlias\ProcessManagerInjector;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -103,9 +106,11 @@ function annotationcommand_adapter_commands() {
       unset($annotation_commandfiles[$key]);
     }
   }
-  $commands = annotationcommand_adapter_get_commands($annotation_commandfiles);
+  $site_wide_commands = annotationcommand_adapter_get_commands($annotation_commandfiles);
   $module_service_commands = drush_get_context('DRUSH_MODULE_SERVICE_COMMANDS');
-  return array_merge($commands, $module_service_commands);
+  $commands = array_merge($site_wide_commands, $module_service_commands);
+
+  return $commands;
 }
 
 /**
@@ -245,6 +250,15 @@ function annotationcommand_adapter_process_command() {
   $commandData->setIncludeOptionsInArgs($command['add-options-to-arguments']);
   $names = annotationcommand_adapter_command_names($command);
 
+  // For now, the only thing that can be injected is the InputInterface.
+  foreach ($command['injected-classes'] as $injected) {
+    switch ($injected) {
+      case 'Symfony\Component\Console\Input\InputInterface':
+        $commandData->injectInstance($input);
+        break;
+    }
+  }
+
   // n.b.: backend result is set by a post-alter hook.
   $result = $commandprocessor->process(
     $output,
@@ -309,8 +323,17 @@ function annotationcommand_adapter_create_commandfile_instance($commandfile_path
 
     // Inject logger if requested
     if ($commandhandler instanceof LoggerAwareInterface) {
-      $drush_logger = drush_get_context('DRUSH_LOGGER');
-      $commandhandler->setLogger($drush_logger);
+      $commandhandler->setLogger(Drush::logger());
+    }
+
+    if (class_exists('\Consolidation\SiteAlias\SiteAliasManager')) {
+      $alias_manager_injector = new AliasManagerAdapterInjector();
+      $alias_manager_injector->inflect($commandhandler);
+    }
+
+    if (class_exists('\Consolidation\SiteProcess\ProcessManager')) {
+      $process_manager_injector = new ProcessManagerInjector();
+      $process_manager_injector->inflect($commandhandler);
     }
 
     $cache[$commandfile_path] = $commandhandler;
@@ -499,6 +522,7 @@ function annotationcommand_adapter_get_commands_for_commandhandler($commandhandl
       }
     }
     $command['annotations'] = $commandinfo->getAnnotations();
+    $command['injected-classes'] = $commandinfo->getInjectedClasses();
     // If the command has a '@return' annotation, then
     // remember information we will need to use the output formatter.
     $returnType = $commandinfo->getReturnType();

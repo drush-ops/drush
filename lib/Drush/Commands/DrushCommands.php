@@ -1,16 +1,17 @@
 <?php
 namespace Drush\Commands;
 
+use Drush\Command\DrushInputAdapter;
+use Drush\Command\DrushOutputAdapter;
+use Drush\Drush;
+use Drush\SiteAlias\ProcessManager;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Drush\Command\DrushInputAdapter;
-use Drush\Command\DrushOutputAdapter;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\OutputInterface;
-use Drush\DrushConfig;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * DrushCommands provides access to configuration, IO and the logger,
@@ -40,7 +41,15 @@ abstract class DrushCommands implements LoggerAwareInterface
      */
     protected function getConfig()
     {
-        return new DrushConfig();
+        return Drush::config();
+    }
+
+    /**
+     * @return ProcessManager
+     */
+    public function processManager()
+    {
+        return Drush::processManager();
     }
 
     /**
@@ -59,7 +68,7 @@ abstract class DrushCommands implements LoggerAwareInterface
      */
     protected function input()
     {
-        return annotationcommand_adapter_input();
+        return Drush::input();
     }
 
     /**
@@ -67,7 +76,7 @@ abstract class DrushCommands implements LoggerAwareInterface
      */
     protected function output()
     {
-        return new DrushOutputAdapter();
+        return Drush::output();
     }
 
     /**

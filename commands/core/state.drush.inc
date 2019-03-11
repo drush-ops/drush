@@ -34,7 +34,7 @@ function state_drush_command() {
       'default' => 'json',
       'pipe-format' => 'json',
     ),
-    'aliases' => array('sget'),
+    'aliases' => array('sget', 'state:get'),
     'core' => array('8+'),
   );
 
@@ -66,7 +66,7 @@ function state_drush_command() {
       'drush state-set system.cron_last 1406682882 --format=integer' => 'Sets a timestamp for last cron run.',
       'php -r "print json_encode(array(\'drupal\', \'simpletest\'));"  | drush state-set --format=json foo.name -'=> 'Set a key to a complex value (e.g. array)',
     ),
-    'aliases' => array('sset'),
+    'aliases' => array('sset', 'state:set'),
     'core' => array('8+'),
   );
 
@@ -79,7 +79,7 @@ function state_drush_command() {
     'examples' => array(
       'drush state-del system.cron_last' => 'Delete state entry for system.cron_last.',
     ),
-    'aliases' => array('sdel'),
+    'aliases' => array('sdel', 'state:delete'),
     'core' => array('8+'),
   );
 

@@ -1,6 +1,8 @@
 <?php
 namespace Drush;
 
+use Dflydev\DotAccessData\Data;
+
 /**
  * Provides minimal access to Drush configuration in a way that is
  * forward-compatible with the Consolidation\Config classes used
@@ -53,6 +55,27 @@ class DrushConfig
     }
 
     /**
+     * export returns a collection of all of the
+     * configuration available in the config object, although
+     * in truth this list is pared down to include only
+     * those values that are common to Drush 8 and Drush 9.
+     */
+    public function export()
+    {
+        $data = new Data;
+        $contextData = drush_get_merged_options();
+        $cliData = drush_get_context('cli');
+        foreach ($cliData as $key => $value) {
+            $data->set("options.$key", $value);
+            unset($contextData[$key]);
+        }
+        foreach ($contextData as $key => $value) {
+            $data->set($key, $value);
+        }
+        return $data->export();
+    }
+
+    /**
      * Return the default value for a given configuration item.
      *
      * @param string $key
@@ -90,5 +113,26 @@ class DrushConfig
     public function setDefault($key, $value)
     {
         drush_set_default($key, $value);
+    }
+
+    /**
+     * Determine whether we are in 'backend' mode
+     */
+    public function backend()
+    {
+        return drush_get_context('DRUSH_BACKEND');
+    }
+
+    /**
+     * Determine whether we are in 'simulate' mode
+     */
+    public function simulate()
+    {
+        return drush_get_context('DRUSH_SIMULATE');
+    }
+
+    public function drushScript()
+    {
+        return DRUSH_COMMAND;
     }
 }

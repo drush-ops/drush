@@ -139,6 +139,10 @@ function drush_cwd() {
   // Save original working dir case some command wants it.
   drush_set_context('DRUSH_OLDCWD', $path);
 
+  // Make a read-only copy of the original cwd at env.cwd
+  // for forwards-compatibility
+  drush_set_option('env.cwd', $path);
+
   return $path;
 }
 

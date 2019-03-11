@@ -35,7 +35,7 @@ function archive_drush_command() {
       'drush archive-dump --tar-options="--exclude=%files"' => 'Placeholder %files is replaced with the real path for the current site, and that path is excluded.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_SITE,
-    'aliases' => array('ard', 'archive-backup', 'arb'),
+    'aliases' => array('ard', 'archive-backup', 'arb', 'archive:dump'),
   );
   $items['archive-restore'] = array(
     'description' => 'Expand a site archive into a Drupal web site.',
@@ -63,7 +63,7 @@ function archive_drush_command() {
       'drush archive-restore ./example.tar.gz --db-url=mysql://root:pass@127.0.0.1/dbname' => 'Restore archive to a new database (and customize settings.php to point there.).',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
-    'aliases' => array('arr'),
+    'aliases' => array('arr', 'archive:restore'),
   );
   return $items;
 }

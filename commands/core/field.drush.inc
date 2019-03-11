@@ -37,6 +37,7 @@ function field_drush_command() {
       'open `drush field-create article`' => 'Define new article fields and then open field edit form for refinement.',
       'drush field-create article city,text,text_textfield subtitle,text,text_textfield' => 'Create two new fields.'
     ),
+    'aliases' => array('field:create'),
   );
   $items['field-update'] = array(
     'description' => 'Return URL for field editing web page.',
@@ -47,6 +48,7 @@ function field_drush_command() {
     'examples' => array(
       'field-update comment_body' => 'Quickly navigate to a field edit web page.',
     ),
+    'aliases' => array('field:update'),
   );
   $items['field-delete'] = array(
     'description' => 'Delete a field and its instances.',
@@ -62,6 +64,7 @@ function field_drush_command() {
       'field-delete city' => 'Delete the city field and any instances it might have.',
       'field-delete city --bundle=article' => 'Delete the city instance on the article bundle',
     ),
+    'aliases' => array('field:delete'),
   );
   $items['field-clone'] = array(
     'description' => 'Clone a field and all its instances.',
@@ -74,6 +77,7 @@ function field_drush_command() {
       'field-clone tags labels' => 'Copy \'tags\' field into a new field \'labels\' field which has same instances.',
       'open `field-clone tags labels`' => 'Clone field and then open field edit forms for refinement.',
     ),
+    'aliases' => array('field:clone'),
   );
   $items['field-info'] = array(
     'description' => 'View information about fields, field_types, and widgets.',
@@ -99,6 +103,7 @@ function field_drush_command() {
         'process-cell' => '_drush_field_info_process_cell',
       ),
       'output-data-type' => 'format-table',
+      'aliases' => array('field:info'),
     ),
   );
   return $items;
