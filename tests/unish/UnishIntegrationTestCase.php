@@ -186,4 +186,25 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         }
         $this->assertEquals($expected, $output);
     }
+
+    /**
+     * Checks that the error output contains the expected output.
+     *
+     * This matches against a simplified version of the actual output that has
+     * absolute paths and duplicate whitespace removed, to avoid false negatives
+     * on minor differences.
+     *
+     * @param string $expected
+     *   The expected output.
+     * @param string $filter
+     *   Optional regular expression that should be ignored in the error output.
+     */
+    protected function assertErrorOutputContains($expected, $filter = '')
+    {
+        $output = $this->getSimplifiedErrorOutput();
+        if (!empty($filter)) {
+            $output = preg_replace($filter, '', $output);
+        }
+        $this->assertContains($expected, $output);
+    }
 }
