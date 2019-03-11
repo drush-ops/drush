@@ -1,6 +1,8 @@
 <?php
 namespace Drush;
 
+use Dflydev\DotAccessData\Data;
+
 /**
  * Provides minimal access to Drush configuration in a way that is
  * forward-compatible with the Consolidation\Config classes used
@@ -60,7 +62,17 @@ class DrushConfig
      */
     public function export()
     {
-        return drush_get_merged_options();
+        $data = new Data;
+        $contextData = drush_get_merged_options();
+        $cliData = drush_get_context('cli');
+        foreach ($cliData as $key => $value) {
+            $data->set("options.$key", $value);
+            unset($contextData[$key]);
+        }
+        foreach ($contextData as $key => $value) {
+            $data->set($key, $value);
+        }
+        return $data->export();
     }
 
     /**
