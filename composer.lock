@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "94ea33e34e641a9826bea5f4beba3767",
+    "content-hash": "023ff293bb4a594a9d7e280cac10808a",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -115,16 +115,16 @@
         },
         {
             "name": "consolidation/annotated-command",
-            "version": "2.11.2",
+            "version": "2.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/annotated-command.git",
-                "reference": "004af26391cd7d1cd04b0ac736dc1324d1b4f572"
+                "reference": "512a2e54c98f3af377589de76c43b24652bcb789"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/004af26391cd7d1cd04b0ac736dc1324d1b4f572",
-                "reference": "004af26391cd7d1cd04b0ac736dc1324d1b4f572",
+                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/512a2e54c98f3af377589de76c43b24652bcb789",
+                "reference": "512a2e54c98f3af377589de76c43b24652bcb789",
                 "shasum": ""
             },
             "require": {
@@ -207,7 +207,7 @@
                 }
             ],
             "description": "Initialize Symfony Console commands from annotated command class methods.",
-            "time": "2019-02-02T02:29:53+00:00"
+            "time": "2019-03-08T16:55:03+00:00"
         },
         {
             "name": "consolidation/config",
@@ -663,16 +663,16 @@
         },
         {
             "name": "consolidation/site-alias",
-            "version": "dev-find-self-site",
+            "version": "3.0.0-beta3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-alias.git",
-                "reference": "72ba41ddd7c32c3a5e3f37ece2d9d39d57afc8f0"
+                "reference": "1cc54f0cf8ff019c07ebc8b4ba557aacfd0a16c2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-alias/zipball/72ba41ddd7c32c3a5e3f37ece2d9d39d57afc8f0",
-                "reference": "72ba41ddd7c32c3a5e3f37ece2d9d39d57afc8f0",
+                "url": "https://api.github.com/repos/consolidation/site-alias/zipball/1cc54f0cf8ff019c07ebc8b4ba557aacfd0a16c2",
+                "reference": "1cc54f0cf8ff019c07ebc8b4ba557aacfd0a16c2",
                 "shasum": ""
             },
             "require": {
@@ -731,20 +731,20 @@
                 }
             ],
             "description": "Manage alias records for local and remote sites.",
-            "time": "2019-03-06T16:33:14+00:00"
+            "time": "2019-03-11T16:02:18+00:00"
         },
         {
             "name": "consolidation/site-process",
-            "version": "2.0.0-beta5",
+            "version": "2.0.0-beta6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-process.git",
-                "reference": "de0dd63e67ba4d9b96f28a2258d776dfaaa21f19"
+                "reference": "0a588d0db653b8d8d1af4e50f996a575d9d83687"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-process/zipball/de0dd63e67ba4d9b96f28a2258d776dfaaa21f19",
-                "reference": "de0dd63e67ba4d9b96f28a2258d776dfaaa21f19",
+                "url": "https://api.github.com/repos/consolidation/site-process/zipball/0a588d0db653b8d8d1af4e50f996a575d9d83687",
+                "reference": "0a588d0db653b8d8d1af4e50f996a575d9d83687",
                 "shasum": ""
             },
             "require": {
@@ -803,7 +803,7 @@
                 }
             ],
             "description": "A thin wrapper around the Symfony Process Component that allows applications to use the Site Alias library to specify the target for a remote call.",
-            "time": "2019-03-03T21:22:40+00:00"
+            "time": "2019-03-09T06:40:54+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -6628,17 +6628,9 @@
             "time": "2016-04-12T21:19:36+00:00"
         }
     ],
-    "aliases": [
-        {
-            "alias": "3.0.0-beta1",
-            "alias_normalized": "3.0.0.0-beta1",
-            "version": "dev-find-self-site",
-            "package": "consolidation/site-alias"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "consolidation/site-alias": 20,
         "lox/xhprof": 20,
         "webflo/drupal-core-strict": 20
     },
