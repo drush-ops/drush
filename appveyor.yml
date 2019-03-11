@@ -3,8 +3,8 @@ shallow_clone: false
 platform: 'x86'
 clone_folder: C:\projects\work
 branches:
-  except:
-    - gh-pages
+  only:
+    - master
 
   ## Cache composer bits
 cache:
