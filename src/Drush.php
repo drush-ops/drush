@@ -354,7 +354,7 @@ class Drush
      */
     public static function drush(SiteAliasInterface $siteAlias, $command, $args = [], $options = [], $options_double_dash = [])
     {
-        return $this->processManager()->drush($siteAlias, $command, $args, $options, $options_double_dash);
+        return self::processManager()->drush($siteAlias, $command, $args, $options, $options_double_dash);
     }
 
     /**
@@ -371,7 +371,7 @@ class Drush
      */
     public static function siteProcess(SiteAliasInterface $siteAlias, $args = [], $options = [], $options_double_dash = [])
     {
-        return $this->processManager()->siteProcess($siteAlias, $args, $options, $options_double_dash);
+        return self::processManager()->siteProcess($siteAlias, $args, $options, $options_double_dash);
     }
 
     /**
@@ -394,7 +394,7 @@ class Drush
      */
     public static function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60)
     {
-        return $this->processManager()->process($commandline, $cwd, $env, $input, $timeout);
+        return self::processManager()->process($commandline, $cwd, $env, $input, $timeout);
     }
 
     /**
@@ -411,7 +411,7 @@ class Drush
      */
     public static function shell($command, $cwd = null, array $env = null, $input = null, $timeout = 60)
     {
-        return $this->processManager()->shell($command, $cwd, $env, $input, $timeout);
+        return self::processManager()->shell($command, $cwd, $env, $input, $timeout);
     }
 
     /**
