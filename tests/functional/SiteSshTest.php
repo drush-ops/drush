@@ -17,7 +17,7 @@ class SiteSshCase extends CommandUnishTestCase
     public function testInteractive()
     {
         if ($this->isWindows()) {
-            $this->markTestSkipped('ssh command not currently available on Windows.');
+            $this->markTestSkipped('TTY mode not supported on Windows.');
         }
 
         $options = [
@@ -63,11 +63,10 @@ class SiteSshCase extends CommandUnishTestCase
     public function testSshSingleArgs()
     {
         $options = [
-            'cd' => '/foo/bar',
             'simulate' => true,
         ];
         $this->drush('ssh', ['ls /path1 /path2'], $options, 'user@server/path/to/drupal#sitename');
-        $expected = "[notice] Simulating: ssh -o PasswordAuthentication=no user@server 'cd /foo/bar && ls /path1 /path2'";
+        $expected = "[notice] Simulating: ssh -o PasswordAuthentication=no user@server 'cd /path/to/drupal && ls /path1 /path2'";
         $this->assertContains($expected, $this->getSimplifiedErrorOutput());
     }
 }

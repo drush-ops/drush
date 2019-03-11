@@ -7,7 +7,7 @@
 
 use Drush\Drush;
 use Drush\Log\LogLevel;
-use \Consolidation\SiteAlias\AliasRecord;
+use \Consolidation\SiteAlias\SiteAlias;
 
 /**
  * @defgroup commandwrappers Functions to execute commands.
@@ -219,10 +219,9 @@ function drush_which($command) {
  * @deprecated See Drush::process and Drush::siteProcess().
  *
  */
-function drush_shell_proc_build(AliasRecord $site, $command = '', $cd = NULL, $interactive = FALSE) {
-  // Build up the command. TODO: We maybe refactor this soon.
+function drush_shell_proc_build(SiteAlias $site, $command = '', $cd = NULL, $interactive = FALSE) {
   $hostname = $site->remoteHostWithUser();
-  $ssh_options = $site->getConfig(Drush::config(), 'ssh.options', "-o PasswordAuthentication=no");
+  $ssh_options = drush_get_site_alias_config($site, 'ssh.options', "-o PasswordAuthentication=no");
   $os = drush_os($site);
   if ($site->get('tty') || $interactive) {
     $ssh_options .= ' -t';
@@ -280,14 +279,21 @@ function drush_shell_proc_open($cmd) {
  * @returns
  *   NULL for 'same as local machine', 'Windows' or 'Linux'.
  *
- * @deprecated. See \Consolidation\SiteAlias\AliasRecord::os
+ * @deprecated. See \Consolidation\SiteAlias\SiteAlias::os
  */
 function drush_os($site_record = NULL) {
-  if (!$site_record instanceof AliasRecord) {
+  if (!$site_record instanceof SiteAlias) {
     return legacy_drush_os($site_record);
   }
   // n.b. $options['remote-os'] has become 'ssh.os' in drush.yml
-  return $site_record->getConfig(Drush::config(), 'ssh.os', 'Linux');
+  return drush_get_site_alias_config($site_record, 'ssh.os', 'Linux');
+}
+
+function drush_get_site_alias_config($site_record, $key, $default)
+{
+  $siteAliasWithConfig = SiteAliasWithConfig::create($site_record, Drush::config());
+
+  return $siteAliasWithConfig->get($key, $default);
 }
 
 function legacy_drush_os($site_record = NULL) {

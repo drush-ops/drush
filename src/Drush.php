@@ -6,7 +6,7 @@
  */
 namespace Drush;
 
-use Consolidation\SiteAlias\AliasRecord;
+use Consolidation\SiteAlias\SiteAliasInterface;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Consolidation\SiteProcess\ProcessBase;
 use Consolidation\SiteProcess\SiteProcess;
@@ -335,14 +335,14 @@ class Drush
      * Clients that are using Drush::drush(), and need a reference to the alias
      * manager may use Drush::aliasManager().
      *
-     * @param AliasRecord $siteAlias
+     * @param SiteAliasInterface $siteAlias
      * @param string $command
      * @param array $args
      * @param array $options
      * @param array $options_double_dash
      * @return SiteProcess
      */
-    public static function drush(AliasRecord $siteAlias, $command, $args = [], $options = [], $options_double_dash = [])
+    public static function drush(SiteAliasInterface $siteAlias, $command, $args = [], $options = [], $options_double_dash = [])
     {
         $processManager = self::service('process.manager');
         return $processManager->drush($siteAlias, $command, $args, $options, $options_double_dash);
@@ -354,13 +354,13 @@ class Drush
      * Use Drush::drush() instead of this method when calling Drush.
      * Tip: Consider using injected process manager instead of this method. @see \Drush\Drush::drush().
      *
-     * @param AliasRecord $siteAlias
+     * @param SiteAliasInterface $siteAlias
      * @param array $args
      * @param array $options
      * @param array $options_double_dash
      * @return ProcessBase
      */
-    public static function siteProcess(AliasRecord $siteAlias, $args = [], $options = [], $options_double_dash = [])
+    public static function siteProcess(SiteAliasInterface $siteAlias, $args = [], $options = [], $options_double_dash = [])
     {
         $processManager = self::service('process.manager');
         return $processManager->siteProcess($siteAlias, $args, $options, $options_double_dash);

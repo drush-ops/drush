@@ -14,6 +14,10 @@ class RsyncCase extends CommandUnishTestCase
 
     public function setUp()
     {
+        if ($this->isWindows()) {
+            $this->markTestSkipped('rsync paths may not contain colons on Windows.');
+        }
+
         if (!$this->getSites()) {
             $this->setUpDrupal(2, true);
         }
@@ -24,11 +28,8 @@ class RsyncCase extends CommandUnishTestCase
    */
     public function testRsyncSimulated()
     {
-        if ($this->isWindows()) {
-            $this->markTestSkipped('rsync command not currently available on Windows.');
-        }
-
         $options = [
+            'uri' => 'OMIT',
             'simulate' => null,
             'alias-path' => __DIR__ . '/resources/alias-fixtures',
         ];

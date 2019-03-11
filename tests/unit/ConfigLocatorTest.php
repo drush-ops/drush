@@ -2,6 +2,7 @@
 namespace Drush\Config;
 
 use PHPUnit\Framework\TestCase;
+use Webmozart\PathUtil\Path;
 
 /**
  * Test the config loader. Also exercises the EnvironmentConfigLoader.
@@ -30,11 +31,11 @@ class ConfigLocatorTest extends TestCase
 
         $sources = $configLocator->sources();
         //$this->assertEquals('environment', $sources['env']['cwd']);
-        $this->assertEquals($this->fixturesDir() . '/etc/drush/drush.yml', $sources['test']['system']);
-        $this->assertEquals($this->fixturesDir() . '/etc/drush/drushVARIANT.yml', $sources['test']['variant']);
-        $this->assertEquals($this->fixturesDir() . '/home/.drush/drush.yml', $sources['test']['home']);
-        $this->assertEquals($this->fixturesDir() . '/sites/d8/drush/drush.yml', $sources['test']['site']);
-        $this->assertEquals($this->environment()->drushBasePath() . '/drush.yml', $sources['drush']['php']['minimum-version']);
+        $this->assertEquals($this->fixturesDir() . '/etc/drush/drush.yml', Path::canonicalize($sources['test']['system']));
+        $this->assertEquals($this->fixturesDir() . '/etc/drush/drushVARIANT.yml', Path::canonicalize($sources['test']['variant']));
+        $this->assertEquals($this->fixturesDir() . '/home/.drush/drush.yml', Path::canonicalize($sources['test']['home']));
+        $this->assertEquals($this->fixturesDir() . '/sites/d8/drush/drush.yml', Path::canonicalize($sources['test']['site']));
+        $this->assertEquals($this->environment()->drushBasePath() . '/drush.yml', Path::canonicalize($sources['drush']['php']['minimum-version']));
 
         $config = $configLocator->config();
 
@@ -76,14 +77,14 @@ class ConfigLocatorTest extends TestCase
         $aliasPaths = $configLocator->getSiteAliasPaths(['/home/user/aliases'], $this->environment());
         $aliasPaths = array_map(
             function ($item) {
-                return str_replace(dirname(__DIR__) . '/', '', $item);
+                return str_replace(Path::canonicalize(dirname(__DIR__)), '', $item);
             },
             $aliasPaths
         );
         sort($aliasPaths);
 
-        $expected = '/home/user/aliases,fixtures/sites/d8/drush/sites';
-        $this->assertEquals($expected, implode(',', $aliasPaths));
+        $expected = ['/fixtures/sites/d8/drush/sites', '/home/user/aliases'];
+        $this->assertEquals($expected, $aliasPaths);
     }
 
     /**
