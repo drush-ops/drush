@@ -47,13 +47,6 @@ class CoreCase extends CommandUnishTestCase
         'format' => 'json',
         'uri' => 'OMIT', // A special value which causes --uri to not be specified.
         ];
-        // Modify settings.php to check whether site paths correctly resolve.
-        $root = $this->webroot();
-        $fp = fopen($root . '/sites/sites.php', 'a+');
-        fwrite($fp, '
-$sites["test.uri"] = "dev";
-$sites["test.uri.subpath"] = "stage";
-');
         foreach ([
                    'test.uri' => ['http://test.uri', 'sites/dev'],
                    'test.uri/' => ['http://test.uri/', 'sites/dev'],
