@@ -234,7 +234,7 @@ class Drush
      *
      * @return LoggerInterface
      *
-     * @deprecated Use injected logger instead. @see Drush::drush()
+     * @deprecated Use injected logger instead.
      */
     public static function logger()
     {
@@ -246,7 +246,7 @@ class Drush
      *
      * @return \Drush\Config\DrushConfig
      *
-     * @deprecated Use injected configuration instead. @see Drush::drush()
+     * @deprecated Use injected configuration instead.
      */
     public static function config()
     {
@@ -261,6 +261,16 @@ class Drush
     public static function aliasManager()
     {
         return self::service('site.alias.manager');
+    }
+
+    /**
+     * @return ProcessManager
+     *
+     * @deprecated Use injected process manager instead. @see Drush::drush()
+     */
+    public static function processManager()
+    {
+        return self::service('process.manager');
     }
 
     /**
@@ -344,8 +354,7 @@ class Drush
      */
     public static function drush(SiteAliasInterface $siteAlias, $command, $args = [], $options = [], $options_double_dash = [])
     {
-        $processManager = self::service('process.manager');
-        return $processManager->drush($siteAlias, $command, $args, $options, $options_double_dash);
+        return $this->processManager()->drush($siteAlias, $command, $args, $options, $options_double_dash);
     }
 
     /**
@@ -362,8 +371,7 @@ class Drush
      */
     public static function siteProcess(SiteAliasInterface $siteAlias, $args = [], $options = [], $options_double_dash = [])
     {
-        $processManager = self::service('process.manager');
-        return $processManager->siteProcess($siteAlias, $args, $options, $options_double_dash);
+        return $this->processManager()->siteProcess($siteAlias, $args, $options, $options_double_dash);
     }
 
     /**
@@ -386,8 +394,7 @@ class Drush
      */
     public static function process($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60)
     {
-        $processManager = self::service('process.manager');
-        return $processManager->process($commandline, $cwd, $env, $input, $timeout);
+        return $this->processManager()->process($commandline, $cwd, $env, $input, $timeout);
     }
 
     /**
@@ -404,8 +411,7 @@ class Drush
      */
     public static function shell($command, $cwd = null, array $env = null, $input = null, $timeout = 60)
     {
-        $processManager = self::service('process.manager');
-        return $processManager->shell($command, $cwd, $env, $input, $timeout);
+        return $this->processManager()->shell($command, $cwd, $env, $input, $timeout);
     }
 
     /**
