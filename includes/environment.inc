@@ -10,6 +10,7 @@
  * @see includes/bootstrap.inc
  */
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
 use Webmozart\PathUtil\Path;
 
@@ -612,9 +613,7 @@ function _drush_test_os($os, $os_list_to_check) {
  * Read the drush info file.
  */
 function drush_read_drush_info() {
-  $drush_info_file = dirname(__FILE__) . '/../drush.info';
-
-  return parse_ini_file($drush_info_file);
+  return Drush::ReadDrushInfo();
 }
 
 /**
