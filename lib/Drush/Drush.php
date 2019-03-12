@@ -39,6 +39,9 @@ class Drush
     protected static $processManager = null;
     protected static $input = null;
     protected static $output = null;
+    protected static $drushVersion = null;
+    protected static $drushMajorVersion = null;
+    protected static $drushMinorVersion = null;
 
     /**
      * Number of seconds before timeout for subprocesses. Can be customized via setTimeout() method.
@@ -60,17 +63,49 @@ class Drush
      */
     public static function getVersion()
     {
-        return DRUSH_VERSION;
+        if (!isset(self::$drushVersion)) {
+            $drush_info = self::ReadDrushInfo();
+            self::$drushVersion = $drush_info['drush_version'];
+        }
+
+        return self::$drushVersion;
     }
 
+    /**
+     * Return the Drush major version, e.g. 8, 9 or 10
+     */
     public static function getMajorVersion()
     {
-        return DRUSH_MAJOR_VERSION;
+        if (!isset(self::$drushMajorVersion)) {
+            $version_parts = explode('.', self::getVersion());
+            self::$drushMajorVersion = $version_parts[0];
+        }
+
+        return self::$drushMajorVersion;
     }
 
+    /**
+     * Return the Drush minor version, e.g. the minor version of
+     * Drush 9.5.2 is "5".
+     */
     public static function getMinorVersion()
     {
-        return DRUSH_MINOR_VERSION;
+        if (!isset(self::$drushMinorVersion)) {
+            $version_parts = explode('.', self::getVersion());
+            self::$drushMinorVersion = $version_parts[1];
+        }
+
+        return self::$drushMinorVersion;
+    }
+
+    /**
+     * Read the drush info file.
+     */
+    public static function ReadDrushInfo()
+    {
+        $drush_info_file = dirname(dirname(__DIR__)) . '/drush.info';
+
+        return parse_ini_file($drush_info_file);
     }
 
     // public static function setContainer(ContainerInterface $container)
