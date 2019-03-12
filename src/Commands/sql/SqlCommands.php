@@ -143,7 +143,7 @@ class SqlCommands extends DrushCommands
     {
         $sql = SqlBase::create($options);
         $process = $this->processManager()->shell($sql->connect(), null, $sql->getEnv());
-        if (!TerminalUtils::stdinIsTerminal(false)) {
+        if (!TerminalUtils::isTty(false)) {
             $process->setInput(STDIN);
         } else {
             $process->setTty($this->getConfig()->get('ssh.tty', $input->isInteractive()));
