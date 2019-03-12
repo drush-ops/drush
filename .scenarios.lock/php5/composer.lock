@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "878a65dec65a4bbf51eac087c865b75e",
+    "content-hash": "4fe244b092ed9504be2b7ff3eff95a2f",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -663,16 +663,16 @@
         },
         {
             "name": "consolidation/site-alias",
-            "version": "3.0.0-beta3",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-alias.git",
-                "reference": "1cc54f0cf8ff019c07ebc8b4ba557aacfd0a16c2"
+                "reference": "8cfd3b6ab6d541086fc970bf850864293b284e6f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-alias/zipball/1cc54f0cf8ff019c07ebc8b4ba557aacfd0a16c2",
-                "reference": "1cc54f0cf8ff019c07ebc8b4ba557aacfd0a16c2",
+                "url": "https://api.github.com/repos/consolidation/site-alias/zipball/8cfd3b6ab6d541086fc970bf850864293b284e6f",
+                "reference": "8cfd3b6ab6d541086fc970bf850864293b284e6f",
                 "shasum": ""
             },
             "require": {
@@ -731,25 +731,25 @@
                 }
             ],
             "description": "Manage alias records for local and remote sites.",
-            "time": "2019-03-11T16:02:18+00:00"
+            "time": "2019-03-12T17:31:48+00:00"
         },
         {
             "name": "consolidation/site-process",
-            "version": "2.0.0-beta6",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-process.git",
-                "reference": "0a588d0db653b8d8d1af4e50f996a575d9d83687"
+                "reference": "29d6860e65eb22c1ffaff9777a6f1ce6e7adf188"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-process/zipball/0a588d0db653b8d8d1af4e50f996a575d9d83687",
-                "reference": "0a588d0db653b8d8d1af4e50f996a575d9d83687",
+                "url": "https://api.github.com/repos/consolidation/site-process/zipball/29d6860e65eb22c1ffaff9777a6f1ce6e7adf188",
+                "reference": "29d6860e65eb22c1ffaff9777a6f1ce6e7adf188",
                 "shasum": ""
             },
             "require": {
                 "consolidation/config": "^1.2.1",
-                "consolidation/site-alias": "^3.0.0-beta1",
+                "consolidation/site-alias": "^3",
                 "php": ">=5.6.0",
                 "symfony/process": "^3.4"
             },
@@ -803,7 +803,7 @@
                 }
             ],
             "description": "A thin wrapper around the Symfony Process Component that allows applications to use the Site Alias library to specify the target for a remote call.",
-            "time": "2019-03-09T06:40:54+00:00"
+            "time": "2019-03-12T17:36:24+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -1729,7 +1729,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "backendtea@gmail.com"
+                    "email": "BackEndTea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
@@ -6235,6 +6235,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "consolidation/site-alias": 0,
+        "consolidation/site-process": 0,
         "lox/xhprof": 20,
         "webflo/drupal-core-strict": 20
     },
