@@ -94,7 +94,7 @@ function docs_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'callback' => 'drush_print_file',
     'callback arguments' => array($docs_dir . '/examples/example.drush.ini'),
-    'aliases' => array('docs:ini:files'),
+    'aliases' => array('docs:ini-files'),
   );
   $items['docs-bastion'] = array(
     'description' => 'Bastion server configuration: remotely operate on a Drupal sites behind a firewall.',
@@ -139,7 +139,7 @@ function docs_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'callback' => 'drush_print_file',
     'callback arguments' => array($docs_dir . '/docs/shellaliases.md'),
-    'aliases' => array('docs:shell:aliases'),
+    'aliases' => array('docs:shell-aliases'),
   );
   $items['docs-commands'] = array(
     'description' => 'Drush command instructions on creating your own Drush commands.',
@@ -200,7 +200,7 @@ function docs_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'callback' => 'drush_print_file',
     'callback arguments' => array($docs_dir . '/examples/sync_enable.drush.inc'),
-    'aliases' => array('docs:example:sync:extension'),
+    'aliases' => array('docs:example-sync-extension'),
   );
   $items['docs-example-sync-via-http'] = array(
     'description' => 'Example Drush commandfile that extends sql-sync to allow transfer of the sql dump file via http rather than ssh and rsync.',
@@ -209,7 +209,7 @@ function docs_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'callback' => 'drush_print_file',
     'callback arguments' => array($docs_dir . '/examples/sync_via_http.drush.inc'),
-    'aliases' => array('docs:example:sync:via:http'),
+    'aliases' => array('docs:example-sync-via-http'),
   );
   $items['docs-policy'] = array(
     'description' => 'Example policy file.',
@@ -227,7 +227,7 @@ function docs_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'callback' => 'drush_print_file',
     'callback arguments' => array($docs_dir . '/docs/strict-options.md'),
-    'aliases' => array('docs:strict:options'),
+    'aliases' => array('docs:strict-options'),
   );
   return $items;
 }
