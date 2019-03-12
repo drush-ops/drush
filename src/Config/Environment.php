@@ -47,8 +47,12 @@ class Environment
      * @param string $root
      * @return ClassLoader
      */
-    public function loadSiteAutoloader($root)
+    public function loadSiteAutoloader($root, $selfAlias)
     {
+        if ($selfAlias->isRemote()) {
+            return $this->loader;
+        }
+
         $autloadFilePath = "$root/autoload.php";
         if (!file_exists($autloadFilePath)) {
             return $this->loader;

@@ -209,7 +209,7 @@ class Preflight
 
     public function loadSiteAutoloader()
     {
-        return $this->environment()->loadSiteAutoloader($this->drupalFinder()->getDrupalRoot());
+        return $this->environment()->loadSiteAutoloader($this->drupalFinder()->getDrupalRoot(), $this->aliasManager()->getSelf());
     }
 
     public function config()
