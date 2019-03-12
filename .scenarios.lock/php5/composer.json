@@ -102,7 +102,7 @@
             "Unish\\": "../../tests/unish"
         },
         "files": [
-            "tests/load.environment.php"
+            "../../tests/load.environment.php"
         ]
     },
     "config": {
