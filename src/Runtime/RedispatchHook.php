@@ -13,6 +13,7 @@ use Drush\Log\LogLevel;
 use Drush\Config\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
+use Drush\Utils\TerminalUtils;
 
 /**
  * The RedispatchHook is installed as an init hook that runs before
@@ -96,8 +97,11 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
 
         $aliasRecord = $this->siteAliasManager()->getSelf();
         $process = $this->processManager->drushSiteProcess($aliasRecord, $redispatchArgs, $redispatchOptions);
-        $process->setTty($this->getConfig()->get('ssh.tty', $input->isInteractive()));
-        $process->setInput(STDIN);
+        if (!TerminalUtils::stdinIsTerminal()) {
+            $process->setInput(STDIN);
+        } else {
+            $process->setTty($this->getConfig()->get('ssh.tty', $input->isInteractive()));
+        }
         $process->mustRun($process->showRealtime());
 
         return $this->exitEarly($process->getExitCode());
