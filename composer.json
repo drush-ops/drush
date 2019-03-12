@@ -34,7 +34,7 @@
     "ext-dom": "*",
     "chi-teck/drupal-code-generator": "^1.27.0",
     "composer/semver": "^1.4",
-    "consolidation/annotated-command": "^2.11.2",
+    "consolidation/annotated-command": "^2.12",
     "consolidation/config": "^1.2",
     "consolidation/filter-via-dot-access-data": "^1",
     "consolidation/output-formatters": "^3.3.1",
