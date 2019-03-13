@@ -276,14 +276,14 @@ class Preflight
 
             // Process the selected alias. This might change the selected site,
             // so we will add new site-wide config location for the new root.
-            $root = $this->setSelectedSite($selfSiteAlias->localRoot());
+            $root = $this->setSelectedSite($selfSiteAlias->localRoot(), false, $root);
         }
 
         // Now that we have our final Drupal root, check to see if there is
         // a site-local Drush. If there is, we will redispatch to it.
         // NOTE: termination handlers have not been set yet, so it is okay
         // to exit early without taking special action.
-        $status = RedispatchToSiteLocal::redispatchIfSiteLocalDrush($argv, $root, $this->environment->vendorPath(), $this->logger())    ;
+        $status = RedispatchToSiteLocal::redispatchIfSiteLocalDrush($argv, $root, $this->environment->vendorPath(), $this->logger());
         if ($status !== false) {
             return $status;
         }
@@ -342,7 +342,7 @@ class Preflight
      * @param string $selectedRoot The location to being searching for a site
      * @param string|bool $fallbackPath The secondary location to search (usualy the vendor director)
      */
-    protected function setSelectedSite($selectedRoot, $fallbackPath = false)
+    protected function setSelectedSite($selectedRoot, $fallbackPath = false, $originalSelection = null)
     {
         if ($selectedRoot || $fallbackPath) {
             $foundRoot = $this->drupalFinder->locateRoot($selectedRoot);
@@ -360,6 +360,7 @@ class Preflight
             }
             return $this->drupalFinder()->getDrupalRoot();
         }
+        return $originalSelection;
     }
 
     /**
