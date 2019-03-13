@@ -333,7 +333,7 @@ those result in a site, then we will fall back to the vendor path.</p>          
                     
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_setSelectedSite">setSelectedSite</a>(string $selectedRoot, string|bool $fallbackPath = false)
+                    <a href="#method_setSelectedSite">setSelectedSite</a>($selectedRoot, $fallbackPath = false, $originalSelection = null)
         
                                             <p>Use the DrupalFinder to locate the Drupal Root + Composer Root at
 the selected root, or, if nothing is found there, at a fallback path.</p>                </div>
@@ -785,7 +785,7 @@ those result in a site, then we will fall back to the vendor path.</p>          
                     <h3 id="method_setSelectedSite">
         <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L345">line 345</a></div>
         <code>            protected        
-    <strong>setSelectedSite</strong>(string $selectedRoot, string|bool $fallbackPath = false)
+    <strong>setSelectedSite</strong>($selectedRoot, $fallbackPath = false, $originalSelection = null)
         </code>
     </h3>
     <div class="details">
@@ -800,14 +800,19 @@ the selected root, or, if nothing is found there, at a fallback path.</p>       
 
                     <table class="table table-condensed">
                     <tr>
-                <td>string</td>
+                <td></td>
                 <td>$selectedRoot</td>
-                <td>The location to being searching for a site</td>
+                <td></td>
             </tr>
                     <tr>
-                <td>string|bool</td>
+                <td></td>
                 <td>$fallbackPath</td>
-                <td>The secondary location to search (usualy the vendor director)</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$originalSelection</td>
+                <td></td>
             </tr>
             </table>
 
@@ -820,7 +825,7 @@ the selected root, or, if nothing is found there, at a fallback path.</p>       
             </div>
                     <div class="method-item">
                     <h3 id="method_drupalFinder">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L370">line 370</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L371">line 371</a></div>
         <code>                    <abbr title="DrupalFinder\DrupalFinder">DrupalFinder</abbr>
     <strong>drupalFinder</strong>()
         </code>
@@ -850,7 +855,7 @@ the selected root, or, if nothing is found there, at a fallback path.</p>       
             </div>
                     <div class="method-item">
                     <h3 id="method_aliasManager">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L380">line 380</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L381">line 381</a></div>
         <code>                    <abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr>
     <strong>aliasManager</strong>()
         </code>
@@ -880,7 +885,7 @@ the selected root, or, if nothing is found there, at a fallback path.</p>       
             </div>
                     <div class="method-item">
                     <h3 id="method_environment">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L390">line 390</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Preflight/Preflight.php#L391">line 391</a></div>
         <code>                    <a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a>
     <strong>environment</strong>()
         </code>
