@@ -37,6 +37,8 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      *   Copy the database from the local site to the site with the alias 'target'.
      * @usage drush sql:sync #prod #dev
      *   Copy the database from the site in /sites/prod to the site in /sites/dev (multisite installation).
+     * @usage drush sql:sync @source @self --database=foo --strict=0
+     *   Copy a secondary database whose $databases key is named 'foo'. Additional options to sql:dump may also be passed.
      * @topics docs:aliases,docs:policy,docs:configuration,docs:example-sync-via-http
      * @throws \Exception
      */
