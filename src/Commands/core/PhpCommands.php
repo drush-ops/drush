@@ -45,10 +45,12 @@ class PhpCommands extends DrushCommands implements StdinAwareInterface
      *   : (Unix-based systems) or ; (Windows).
      * @usage drush php:script example --script-path=/path/to/scripts:/another/path
      *   Run a script named example.php from specified paths
+     * @usage drush php:script -
+     *   Run PHP code from standard input.
      * @usage drush php:script
      *   List all available scripts.
      * @usage drush php:script foo -- apple --cider
-     *  Run foo.php script with argument 'apple' and option 'cider'. Note the
+     *   Run foo.php script with argument 'apple' and option 'cider'. Note the
      *   -- separator.
      * @aliases scr,php-script
      * @bootstrap max
