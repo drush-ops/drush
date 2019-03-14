@@ -154,7 +154,6 @@ workflows:
              branches:
                only:
                  - master
-                 - highest
     jobs:
       - test_72_highest
       - test_71_sqlite
