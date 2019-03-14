@@ -16,6 +16,11 @@ class PmEnLocaleImportCase extends CommandUnishTestCase
 
     public function testBatchImportTranslations()
     {
+        $info_yml = Path::join($this->webroot(), 'modules/unish/devel/devel.info.yml');
+        if (strpos(file_get_contents($info_yml), 'project:') === false) {
+            $this->markTestSkipped('Devel dev snapshot detected. Incompatible with translation import.');
+        }
+
         $this->setUpDrupal(1, true);
         $root = $this->webroot();
 
