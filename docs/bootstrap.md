@@ -13,7 +13,7 @@ Prior to bootstrapping, Drush goes through the "preflight" process, where the fo
 1. The site-alias included on the commandline is loaded if present.
 1. The local selected site is determined, if any.
 1. [Dependency injection](dependency-injection.md) is done.
-1. The available commandfiles are loaded.
+1. Global commandfiles are loaded. Commandfiles with a drush.services.yml are loaded later, during bootstrap @full. 
 1. The command is dispatched via the Symfony Console component.
 
 Bootstrapping is done from a Symfony Console command hook. The different bootstrap levels are discribed below.
