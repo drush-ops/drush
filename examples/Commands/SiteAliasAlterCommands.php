@@ -14,14 +14,14 @@ class SiteAliasAlterCommands extends DrushCommands implements SiteAliasManagerAw
 
     use SiteAliasManagerAwareTrait;
 
-  /**
-   * A few example alterations to site aliases.
-   *
-   * @hook pre-init *
-   *
-   * @param \Symfony\Component\Console\Input\InputInterface $input
-   * @param \Consolidation\AnnotatedCommand\AnnotationData $annotationData
-   */
+    /**
+     * A few example alterations to site aliases.
+     *
+     * @hook pre-init *
+     *
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Consolidation\AnnotatedCommand\AnnotationData $annotationData
+     */
     public function alter(InputInterface $input, AnnotationData $annotationData)
     {
         $self = $this->siteAliasManager()->getSelf();

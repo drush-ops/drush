@@ -78,10 +78,12 @@ Installing commands as part of a Composer project requires that the project's ty
 If a site-wide commandfile is added via a Composer package, then it may declare any dependencies that it may need in its composer.json file. Site-wide commandfiles that are committed directly to a site's repository only have access to the dependencies already available in the site. Site-wide commandfiles should declare their Drush version compatibility via a `conflict` directive. For example, a Composer-managed site-wide command that works with both Drush 8 and Drush 9 might contain something similar to the following in its composer.json file:
 ```
     "conflict": {
-        "drush/drush": "<8.1 || >=9.0 <9.5 || >=10.0",
+        "drush/drush": "<8.2 || >=9.0 <9.6 || >=10.0",
     }
 ```
 Using `require` in place of `conflict` is not recommended.
+
+A site-wide commandfile should have tests that run with each (major) version of Drush that is supported. You may model your test suite after the [example drush extension](https://github.com/drush-ops/example-drush-extension) project, which works on Drush ^8.2 and ^9.6.
 
 Global Drush Commands
 ==============================
@@ -104,3 +106,5 @@ With this configuration in place, global commands may be placed as described in 
 1. The directory above `Commands` must be one of: 
     1.  A Folder listed in the 'include' option. Include may be provided via [config](#global-drush-commands) or via CLI.
     1.  ../drush, /drush or /sites/all/drush. These paths are relative to Drupal root.
+
+It is recommended that you avoid global Drush commands, and favor site-wide commandfiles instead. If you really need a command or commands that are not part of any Drupal site, consider making a stand-alone script or custom .phar instead. See [ahoy](https://github.com/ahoy-cli/ahoy), [Robo](https://github.com/consolidation/robo) and [g1a/starter](https://github.com/g1a/starter) as potential starting points.
