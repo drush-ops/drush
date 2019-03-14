@@ -22,7 +22,6 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @param $source A site-alias or the name of a subdirectory within /sites whose database you want to copy from.
      * @param $target A site-alias or the name of a subdirectory within /sites whose database you want to replace.
      * @optionset_table_selection
-     * @optionset_sql
      * @option no-dump Do not dump the sql database; always use an existing dump file.
      * @option no-sync Do not rsync the database dump file from source to target.
      * @option runner Where to run the rsync command; defaults to the local site. Can also be 'source' or 'target'.
@@ -32,8 +31,12 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @option source-dump The path for retrieving the sql-dump on source machine.
      * @option target-dump The path for storing the sql-dump on target machine.
      * @option extra-dump Add custom arguments/options to the dumping of the database (e.g. mysqldump command).
+     * @option database-key The DB connection key if using multiple connections in settings.php.
+     * @option database-target The name of a target within the specified database connection.
      * @usage drush sql:sync @source @self
      *   Copy the database from the site with the alias 'source' to the local site.
+     * @usage drush sql:sync @source @self --database-key=foo --database-target=bar
+     *   Copy the database configured in the settings.php as $databases['foo']['bar'] from the site with the alias 'source' to the local site.
      * @usage drush sql:sync @self @target
      *   Copy the database from the local site to the site with the alias 'target'.
      * @usage drush sql:sync #prod #dev
@@ -41,7 +44,7 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
      * @topics docs:aliases,docs:policy,docs:configuration,docs:example-sync-via-http
      * @throws \Exception
      */
-    public function sqlsync($source, $target, $options = ['no-dump' => false, 'no-sync' => false, 'runner' => self::REQ, 'create-db' => false, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'target-dump' => self::REQ, 'source-dump' => self::OPT])
+    public function sqlsync($source, $target, $options = ['no-dump' => false, 'no-sync' => false, 'runner' => self::REQ, 'create-db' => false, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'target-dump' => self::REQ, 'source-dump' => self::OPT, 'database-key' => 'default', 'database-target' => 'default'])
     {
         $manager = $this->siteAliasManager();
         $sourceRecord = $manager->get($source);
@@ -49,6 +52,11 @@ class SqlSyncCommands extends DrushCommands implements SiteAliasManagerAwareInte
 
         // Append --strict in case we are calling older versions of Drush.
         $global_options = Drush::redispatchOptions()  + ['strict' => 0];
+
+        // Remap the source-database & target-database options.
+        $options['database'] = $global_options['database'] = $options['database-key'];
+        $options['target'] = $global_options['target'] = $options['database-target'];
+        unset($options['database-key'], $global_options['database-key'], $options['database-target'], $global_options['database-target']);
 
         // Create target DB if needed.
         if ($options['create-db']) {
