@@ -149,11 +149,12 @@ workflows:
     triggers:
        - schedule:
            # Uses UTC timezone.
-           cron: "42 14 * * *"
+           cron: "33 0 * * *"
            filters:
              branches:
                only:
                  - master
+                 - highest
     jobs:
       - test_72_highest
       - test_71_sqlite
