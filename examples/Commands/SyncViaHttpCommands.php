@@ -31,14 +31,14 @@ class SyncViaHttpCommands extends DrushCommands
     {
     }
 
-  /**
-   * During the pre hook, determine if the http-sync option has been
-   * specified.  If it has been, then disable the normal ssh + rsync
-   * dump-and-transfer that sql-sync usually does, and transfer the
-   * database dump via an http download.
-   *
-   * @hook pre-command sql-sync
-   */
+    /**
+     * During the pre hook, determine if the http-sync option has been
+     * specified.  If it has been, then disable the normal ssh + rsync
+     * dump-and-transfer that sql-sync usually does, and transfer the
+     * database dump via an http download.
+     *
+     * @hook pre-command sql-sync
+     */
     public function preSqlSync(CommandData $commandData)
     {
         $sql_dump_download_url = $commandData->input()->getOption('http-sync');
@@ -52,11 +52,11 @@ class SyncViaHttpCommands extends DrushCommands
         }
     }
 
-  /**
-   * Downloads a file.
-   *
-   * Optionally uses user authentication, using either wget or curl, as available.
-   */
+    /**
+     * Downloads a file.
+     *
+     * Optionally uses user authentication, using either wget or curl, as available.
+     */
     protected function downloadFile($url, $user = false, $password = false, $destination = false, $overwrite = true)
     {
         static $use_wget;

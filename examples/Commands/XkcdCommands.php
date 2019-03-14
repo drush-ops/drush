@@ -12,23 +12,23 @@ class XkcdCommands extends DrushCommands
 
     use ExecTrait;
 
-  /**
-   * Retrieve and display xkcd cartoons.
-   *
-   * @command xkcd:fetch
-   * @param $search Optional argument to retrieve the cartoons matching an index number, keyword search or "random". If omitted the latest cartoon will be retrieved.
-   * @option image-viewer Command to use to view images (e.g. xv, firefox). Defaults to "display" (from ImageMagick).
-   * @option google-custom-search-api-key Google Custom Search API Key, available from https://code.google.com/apis/console/. Default key limited to 100 queries/day globally.
-   * @usage drush xkcd
-   *   Retrieve and display the latest cartoon.
-   * @usage drush xkcd sandwich
-   *   Retrieve and display cartoons about sandwiches.
-   * @usage drush xkcd 123 --image-viewer=eog
-   *   Retrieve and display cartoon #123 in eog.
-   * @usage drush xkcd random --image-viewer=firefox
-   *   Retrieve and display a random cartoon in Firefox.
-   * @aliases xkcd
-   */
+    /**
+     * Retrieve and display xkcd cartoons.
+     *
+     * @command xkcd:fetch
+     * @param $search Optional argument to retrieve the cartoons matching an index number, keyword search or "random". If omitted the latest cartoon will be retrieved.
+     * @option image-viewer Command to use to view images (e.g. xv, firefox). Defaults to "display" (from ImageMagick).
+     * @option google-custom-search-api-key Google Custom Search API Key, available from https://code.google.com/apis/console/. Default key limited to 100 queries/day globally.
+     * @usage drush xkcd
+     *   Retrieve and display the latest cartoon.
+     * @usage drush xkcd sandwich
+     *   Retrieve and display cartoons about sandwiches.
+     * @usage drush xkcd 123 --image-viewer=eog
+     *   Retrieve and display cartoon #123 in eog.
+     * @usage drush xkcd random --image-viewer=firefox
+     *   Retrieve and display a random cartoon in Firefox.
+     * @aliases xkcd
+     */
     public function fetch($search = null, $options = ['image-viewer' => 'open', 'google-custom-search-api-key' => 'AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek'])
     {
         if (empty($search)) {
