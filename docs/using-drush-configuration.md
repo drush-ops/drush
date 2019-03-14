@@ -9,5 +9,3 @@ Drush users may provide configuration via:
 If you are authoring a commandfile and wish to access the user's configuration, see [Command Authoring](commands.md).
 
 The Drush configuration system has been factored out of Drush and shared with the world at [https://github.com/consolidation/config](https://github.com/consolidation/config). Feel free to use it for your projects. Lots more usage information is there.
-
-

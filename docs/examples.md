@@ -2,6 +2,7 @@ The _examples_ folder contains excellent example files which you may copy and ed
 
 * [example.site.yml](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.site.yml). Example site alias definitions.
 * [example.bashrc](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.bashrc). Enhance your shell with lots of Drush niceties including bash completion.
+* [Example drush extension](https://github.com/drush-ops/example-drush-extension)
 * [example.drush.yml](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.drush.yml). A Drush configuration file. 
 * [example.prompt.sh](https://raw.githubusercontent.com/drush-ops/drush/master/examples/example.prompt.sh). Displays Git repository and Drush alias status in your prompt.
 * [git-bisect.example.sh](https://raw.githubusercontent.com/drush-ops/drush/master/examples/git-bisect.example.sh). Spelunking through Drush's git history with bisect.
