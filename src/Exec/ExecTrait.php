@@ -91,6 +91,7 @@ trait ExecTrait
     {
         $command = Escape::isWindows() ? "where $program" : "command -v $program";
         $process = Drush::shell($command);
+        $process->setSimulated(false);
         $process->run();
         if (!$process->isSuccessful()) {
             Drush::logger()->debug($process->getErrorOutput());
