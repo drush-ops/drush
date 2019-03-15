@@ -323,10 +323,9 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
             $msg[] = dt('create a @sitesfile file', ['@sitesfile' => $sitesfile]);
         }
 
-
         $program_exists = $this->programExists($sql->command());
         if (!$program_exists) {
-            $msg[] = dt('Program @program not found. Please create or empty the database prior to running site:install', ['@program' => $sql->command()]);
+            $msg[] = dt('Program @program not found. Proceed if you have already created or emptied the Drupal database.', ['@program' => $sql->command()]);
         }
         elseif ($sql->dbExists()) {
             $msg[] = dt("DROP all tables in your '@db' database.", ['@db' => $db_spec['database']]);
