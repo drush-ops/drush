@@ -11,6 +11,7 @@ use Drush\Exceptions\UserAbortException;
 use Drupal\Core\Config\FileStorage;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Drush\Exec\ExecTrait;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
 use Webmozart\PathUtil\Path;
@@ -18,6 +19,7 @@ use Webmozart\PathUtil\Path;
 class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
     use SiteAliasManagerAwareTrait;
+    use ExecTrait;
 
     /**
      * Install Drupal along with modules/themes/configuration/profile.
@@ -320,7 +322,11 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         if ($sitesfile_write) {
             $msg[] = dt('create a @sitesfile file', ['@sitesfile' => $sitesfile]);
         }
-        if ($sql->dbExists()) {
+
+        $program_exists = $this->programExists($sql->command());
+        if (!$program_exists) {
+            $msg[] = dt('Program @program not found. Proceed if you have already created or emptied the Drupal database.', ['@program' => $sql->command()]);
+        } elseif ($sql->dbExists()) {
             $msg[] = dt("DROP all tables in your '@db' database.", ['@db' => $db_spec['database']]);
         } else {
             $msg[] = dt("CREATE the '@db' database.", ['@db' => $db_spec['database']]);
@@ -357,7 +363,7 @@ class SiteInstallCommands extends DrushCommands implements SiteAliasManagerAware
         $bootstrapManager = Drush::bootstrapManager();
         $bootstrapManager->doBootstrap(DRUSH_BOOTSTRAP_DRUPAL_SITE);
 
-        if (!$sql->dropOrCreate()) {
+        if ($program_exists && !$sql->dropOrCreate()) {
             throw new \Exception(dt('Failed to drop or create the database: @error', ['@error' => $sql->getProcess()->getOutput()]));
         }
     }
