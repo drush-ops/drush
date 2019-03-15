@@ -122,7 +122,6 @@ class Preflight
             '--halt-on-error' => '-Druntime.php.halt-on-error',
             '--output_charset' => '-Dio.output.charset',
             '--output-charset' => '-Dio.output.charset',
-            '--db-su' => '-Dsql.db-su',
             '--notify' => '-Dnotify.duration',
             '--xh-link' => '-Dxh.link',
         ];
