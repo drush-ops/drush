@@ -36,7 +36,6 @@ class LanguageAddCase extends CommandUnishTestCase
     public function testLanguageAddWithTranslations()
     {
         $info_yml = Path::join($this->webroot(), 'modules/unish/devel/devel.info.yml');
-        // /Users/moshe.weitzman/drush/sut/modules/unish/devel/devel.info.yml
         if (strpos(file_get_contents($info_yml), 'project:') === false) {
             $this->markTestSkipped('Devel dev snapshot detected. Incompatible with translation import.');
         }
