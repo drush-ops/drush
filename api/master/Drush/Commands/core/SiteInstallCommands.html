@@ -102,6 +102,15 @@
             </div>
                     <div class="row">
                 <div class="col-md-6">
+                                            <a href="../../../Drush/Exec/ExecTrait.html"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a>
+                                            
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
                                             <abbr title="Consolidation\SiteProcess\ProcessManagerAwareTrait">ProcessManagerAwareTrait</abbr>
                                             
                 </div>
@@ -236,6 +245,27 @@ DrushConfig as return type. Helps with IDE completion.</p>                </div>
         
                                             <p>Print the contents of a file.</p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_printFile"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_startBrowser">startBrowser</a>($uri = null, int $sleep = 0, bool $port = false, bool $browser = true)
+        
+                                            <p>Starts a background browser/tab for the current site or a specified URL.</p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Exec/ExecTrait.html#method_startBrowser"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_programExists">programExists</a>($program)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Exec/ExecTrait.html#method_programExists"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
@@ -491,8 +521,95 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_startBrowser">
+        <div class="location">in <a href="../../../Drush/Exec/ExecTrait.html#method_startBrowser"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Exec/ExecTrait.php#L26">line 26</a></div>
+        <code>                    bool
+    <strong>startBrowser</strong>($uri = null, int $sleep = 0, bool $port = false, bool $browser = true)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Starts a background browser/tab for the current site or a specified URL.</p>                    <p>Uses a non-blocking Process call, so Drush execution will continue.</p>                            </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$uri</td>
+                <td>Optional URI or site path to open in browser. If omitted, or if a site path
+  is specified, the current site home page uri will be prepended if the site's
+  hostname resolves.</td>
+            </tr>
+                    <tr>
+                <td>int</td>
+                <td>$sleep</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>bool</td>
+                <td>$port</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>bool</td>
+                <td>$browser</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td>TRUE if browser was opened. FALSE if browser was disabled by the user or a
+  default browser could not be found.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_programExists">
+        <div class="location">in <a href="../../../Drush/Exec/ExecTrait.html#method_programExists"><abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> at         <a href="https://github.com/drush-ops/drush/blob/master/src/Exec/ExecTrait.php#L90">line 90</a></div>
+        <code>        static            
+    <strong>programExists</strong>($program)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$program</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_install">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L57">line 57</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L59">line 59</a></div>
         <code>                    
     <strong>install</strong>(array $profile, $options = [&#039;db-url&#039; =&gt; self::REQ, &#039;db-prefix&#039; =&gt; self::REQ, &#039;db-su&#039; =&gt; self::REQ, &#039;db-su-pw&#039; =&gt; self::REQ, &#039;account-name&#039; =&gt; &#039;admin&#039;, &#039;account-mail&#039; =&gt; &#039;admin@example.com&#039;, &#039;site-mail&#039; =&gt; &#039;admin@example.com&#039;, &#039;account-pass&#039; =&gt; self::REQ, &#039;locale&#039; =&gt; &#039;en&#039;, &#039;site-name&#039; =&gt; &#039;Drush Site-Install&#039;, &#039;site-pass&#039; =&gt; self::REQ, &#039;sites-subdir&#039; =&gt; self::REQ, &#039;config-dir&#039; =&gt; self::REQ, &#039;existing-config&#039; =&gt; false])
         </code>
@@ -528,7 +645,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_determineProfile">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L151">line 151</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L153">line 153</a></div>
         <code>            protected        
     <strong>determineProfile</strong>($profile, $options, $class_loader)
         </code>
@@ -567,7 +684,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_post">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L209">line 209</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L211">line 211</a></div>
         <code>                    
     <strong>post</strong>($result, <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -603,7 +720,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_hasConfigFiles">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L228">line 228</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L230">line 230</a></div>
         <code>            protected        
     <strong>hasConfigFiles</strong>($config)
         </code>
@@ -634,7 +751,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_validate">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L237">line 237</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L239">line 239</a></div>
         <code>                    
     <strong>validate</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -663,7 +780,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_pre">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L287">line 287</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L289">line 289</a></div>
         <code>                    
     <strong>pre</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -694,7 +811,7 @@ DrushConfig as return type. Helps with IDE completion.</p>                      
             </div>
                     <div class="method-item">
                     <h3 id="method_getSitesSubdirFromUri">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L369">line 369</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L375">line 375</a></div>
         <code>            protected        
     <strong>getSitesSubdirFromUri</strong>($root, $uri)
         </code>
@@ -731,7 +848,7 @@ provided uri.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_getVersion">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L398">line 398</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L404">line 404</a></div>
         <code>        static            
     <strong>getVersion</strong>()
         </code>
@@ -750,7 +867,7 @@ provided uri.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_serverGlobals">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L408">line 408</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L414">line 414</a></div>
         <code>                    
     <strong>serverGlobals</strong>($drupal_base_url)
         </code>
@@ -792,7 +909,7 @@ provided uri.</p>                                                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_validateConfigDir">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L449">line 449</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Commands/core/SiteInstallCommands.php#L455">line 455</a></div>
         <code>            protected        
     <strong>validateConfigDir</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData, $directory)
         </code>
