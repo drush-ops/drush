@@ -1279,7 +1279,7 @@ function _drush_backend_get_stdin() {
     // stream_select will return FALSE for streams returned by proc_open.
     // That is not applicable to us, is it? Our stream is connected to a stream
     // created by proc_open, but is not a stream returned by proc_open.
-    if ($changed_streams < 1) {
+    if ($changed_streams > 0) {
       return FALSE;
     }
   }
