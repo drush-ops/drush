@@ -19,7 +19,7 @@ trait DrushTestTrait
     public function getPathToDrush()
     {
         if (!$this->pathToDrush) {
-          $this->pathToDrush = __DIR__ . '/../../vendor/bin/drush';
+            $this->pathToDrush = __DIR__ . '/../../vendor/bin/drush';
         }
 
         return $this->pathToDrush;
@@ -70,7 +70,7 @@ trait DrushTestTrait
 
         // Insert site specification and drush command.
         if (!empty($site_specification)) {
-          $cmd[] = self::escapeshellarg($site_specification);
+            $cmd[] = self::escapeshellarg($site_specification);
         }
         $cmd[] = $command;
 
