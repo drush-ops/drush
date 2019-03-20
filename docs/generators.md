@@ -14,6 +14,8 @@ See [Woot module](https://github.com/drush-ops/drush/blob/master/tests/functiona
   1. Add a .twig file to the same directory. This template specifies what gets output from the generator.
   1. Add your class to your module's drush.services.yml file ([example](https://github.com/drush-ops/drush/blob/master/tests/functional/resources/modules/d8/woot/drush.services.yml)). Use the tag `drush.generator` instead of `drush.command`.
   1. Perform a `drush cache-rebuild` to compile your drush.services.yml changes into the Drupal container.
+  
+  Note that now your module has a service that depends on a class that is discovered by the composer autoloader so it will only support a composer installation of drupal.
 
 Global Generators
 ==============================
