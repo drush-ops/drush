@@ -11,26 +11,12 @@ trait DrushTestTrait
 {
     use CliTestTrait;
 
-    protected $pathToDrush;
-
     /**
      * @return string
      */
     public function getPathToDrush()
     {
-        if (!$this->pathToDrush) {
-            $this->pathToDrush = __DIR__ . '/../../vendor/bin/drush';
-        }
-
-        return $this->pathToDrush;
-    }
-
-    /**
-     * setPathToDrush sets the path that will be used to run Drush in tests.
-     */
-    public function setPathToDrush($pathToDrush)
-    {
-        $this->pathToDrush = $pathToDrush;
+        return dirname(dirname(__DIR__)) . '/drush';
     }
 
     /**
