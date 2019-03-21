@@ -5,7 +5,7 @@ namespace Unish;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use PHPUnit\Framework\TestResult;
-use Unish\Utils\OutputUtilsTrait;
+use Drush\TestTraits\OutputUtilsTrait;
 
 abstract class CommandUnishTestCase extends UnishTestCase
 {
