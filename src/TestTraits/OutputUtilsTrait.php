@@ -77,7 +77,16 @@ trait OutputUtilsTrait
         $output = preg_replace('# --verbose #', ' ', $output);
         $output = preg_replace('# -vvv #', ' ', $output);
 
+        foreach ($this->pathsToSimplify() as $path => $simplification) {
+            $output = str_replace($path, $simplification, $output);
+        }
+
         return $output;
+    }
+
+    public function pathsToSimplify()
+    {
+        return [];
     }
 
     /**

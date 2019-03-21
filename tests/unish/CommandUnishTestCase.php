@@ -11,9 +11,6 @@ use Drush\TestTraits\CliTestTrait;
 abstract class CommandUnishTestCase extends UnishTestCase
 {
     use CliTestTrait;
-    use OutputUtilsTrait {
-        OutputUtilsTrait::simplifyOutput as parentSimplifyOutput;
-    }
 
     /**
      * Code coverage data collected during a single test.
@@ -250,22 +247,16 @@ abstract class CommandUnishTestCase extends UnishTestCase
         $this->assertEquals($expected, $output);
     }
 
-    /**
-     * Also simplify paths in the output
-     */
-    protected function simplifyOutput($output)
+    public function pathsToSimplify()
     {
-        $output = $this->parentSimplifyOutput($output);
+        $basedir = dirname(dirname(__DIR__));
 
-        $baseDir = dirname(dirname(__DIR__));
+        return [
 
-        // Replace references to our sandbox and sut
-        $output = str_replace(self::getSandbox(), '__SANDBOX__', $output);
-        $output = str_replace(self::getSut(), '__SUT__', $output);
+            self::getSandbox() => '__SANDBOX__',
+            $basedir => '__DIR__',
 
-        // Get rid of any full paths in the output
-        $output = str_replace("{$baseDir}/", '__DIR__/', $output);
-
-        return $output;
+        ];
     }
+
 }
