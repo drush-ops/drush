@@ -9,7 +9,9 @@ use Drush\TestTraits\OutputUtilsTrait;
 
 abstract class CommandUnishTestCase extends UnishTestCase
 {
-    use OutputUtilsTrait;
+    use OutputUtilsTrait {
+        OutputUtilsTrait::simplifyOutput as parentSimplifyOutput;
+    }
 
     /**
      * Code coverage data collected during a single test.
@@ -336,5 +338,20 @@ abstract class CommandUnishTestCase extends UnishTestCase
             $output = preg_replace($filter, '', $output);
         }
         $this->assertEquals($expected, $output);
+    }
+
+    /**
+     * Also simplify paths in the output
+     */
+    protected function simplifyOutput($output)
+    {
+        $output = $this->parentSimplifyOutput($output);
+
+        $baseDir = dirname(dirname(__DIR__));
+
+        // Get rid of any full paths in the output
+        $output = preg_replace("#{$baseDir}/#", '__DIR__/', $output);
+
+        return $output;
     }
 }

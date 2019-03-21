@@ -72,7 +72,7 @@ class CoreCase extends CommandUnishTestCase
             unlink($drush_config_file);
             $output = $this->getOutputFromJSON();
             // Include the test URI, for some context in errors.
-            $this->assertEquals([$test_uri => $expected], [$test_uri => [$output->uri, $output->site]]);
+            $this->assertEquals([$test_uri => $expected], [$test_uri => [$output['uri'], $output['site']]]);
         }
     }
 
@@ -127,9 +127,9 @@ class CoreCase extends CommandUnishTestCase
         unlink($a_drush_config_file);
         unlink($b_drush_config_file);
         $output = $this->getOutputFromJSON();
-        $drush_conf_as_string = print_r($output->{'drush-conf'}, true);
-        $this->assertContains($a_drush_config_file, $output->{'drush-conf'}, "Loaded drush config files are: " . $drush_conf_as_string);
-        $this->assertContains($b_drush_config_file, $output->{'drush-conf'}, "Loaded drush config files are: " . $drush_conf_as_string);
-        $this->assertEquals($test_uri, $output->uri);
+        $drush_conf_as_string = print_r($output['drush-conf'], true);
+        $this->assertContains($a_drush_config_file, $output['drush-conf'], "Loaded drush config files are: " . $drush_conf_as_string);
+        $this->assertContains($b_drush_config_file, $output['drush-conf'], "Loaded drush config files are: " . $drush_conf_as_string);
+        $this->assertEquals($test_uri, $output['uri']);
     }
 }
