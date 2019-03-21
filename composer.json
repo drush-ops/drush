@@ -64,6 +64,9 @@
     "psr-0": {
       "Drush":        "lib/",
       "Consolidation": "lib/"
+    },
+    "psr-4": {
+      "Drush\\":      "src/"
     }
   },
   "autoload-dev": {
