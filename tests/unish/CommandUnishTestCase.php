@@ -258,5 +258,4 @@ abstract class CommandUnishTestCase extends UnishTestCase
 
         ];
     }
-
 }
