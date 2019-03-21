@@ -349,8 +349,12 @@ abstract class CommandUnishTestCase extends UnishTestCase
 
         $baseDir = dirname(dirname(__DIR__));
 
+        // Replace references to our sandbox and sut
+        $output = str_replace(self::getSandbox(), '__SANDBOX__', $output);
+        $output = str_replace(self::getSut(), '__SUT__', $output);
+
         // Get rid of any full paths in the output
-        $output = preg_replace("#{$baseDir}/#", '__DIR__/', $output);
+        $output = str_replace("{$baseDir}/", '__DIR__/', $output);
 
         return $output;
     }
