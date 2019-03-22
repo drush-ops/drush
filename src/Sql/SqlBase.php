@@ -308,7 +308,7 @@ class SqlBase implements ConfigAwareInterface
     {
         $input_file_original = $input_file;
         if ($input_file && drush_file_is_tarball($input_file)) {
-            $process = Drush::process(['gzip', '-d', $input_file]);
+            $process = Drush::process(['gzip', '-df', $input_file]);
             $process->setSimulated(false);
             $process->run();
             $this->setProcess($process);
