@@ -97,6 +97,6 @@ class RsyncTest extends CommandUnishTestCase
         $site = current($this->getAliases());
         $options['simulate'] = null;
         $this->drush('core:rsync', ["$site:%files", "/tmp"], $options, null, null, self::EXIT_SUCCESS, '2>&1;');
-        $this->assertContains('[notice] Simulating: rsync -e \'ssh \' -akz __SUT__/sut/sites/dev/files/ /tmp', $this->getSimplifiedOutput());
+        $this->assertContains('[notice] Simulating: rsync -e \'ssh \' -akz __DIR__/sut/sites/dev/files/ /tmp', $this->getSimplifiedOutput());
     }
 }

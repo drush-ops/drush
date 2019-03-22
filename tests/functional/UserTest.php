@@ -27,13 +27,13 @@ class UserCase extends CommandUnishTestCase
         $this->drush('user-information', [self::NAME], ['format' => 'json']);
         $uid = 2;
         $output = $this->getOutputFromJSON($uid);
-        $this->assertEquals(0, $output->user_status, 'User is blocked.');
+        $this->assertEquals(0, $output['user_status'], 'User is blocked.');
 
         // user-unblock
         $this->drush('user-unblock', [self::NAME]);
         $this->drush('user-information', [self::NAME], ['format' => 'json']);
         $output = $this->getOutputFromJSON($uid);
-        $this->assertEquals(1, $output->user_status, 'User is unblocked.');
+        $this->assertEquals(1, $output['user_status'], 'User is unblocked.');
     }
 
     public function testUserRole()
@@ -45,14 +45,14 @@ class UserCase extends CommandUnishTestCase
         $uid = 2;
         $output = $this->getOutputFromJSON($uid);
         $expected = ['authenticated', 'test role'];
-        $this->assertEquals($expected, array_values((array)$output->roles), 'User has test role.');
+        $this->assertEquals($expected, array_values($output['roles']), 'User has test role.');
 
         // user-remove-role
         $this->drush('user-remove-role', ['test role', self::NAME]);
         $this->drush('user-information', [self::NAME], ['format' => 'json']);
         $output = $this->getOutputFromJSON($uid);
         $expected = ['authenticated'];
-        $this->assertEquals($expected, array_values((array)$output->roles), 'User removed test role.');
+        $this->assertEquals($expected, array_values($output['roles']), 'User removed test role.');
     }
 
     public function testUserPassword()
@@ -152,10 +152,10 @@ class UserCase extends CommandUnishTestCase
         $this->drush('user-information', [self::NAME], ['format' => 'json']);
         $uid = 2;
         $output = $this->getOutputFromJSON($uid);
-        $this->assertEquals('example@example.com', $output->mail);
-        $this->assertEquals(self::NAME, $output->name);
-        $this->assertEquals(1, $output->user_status, 'Newly created user is Active.');
+        $this->assertEquals('example@example.com', $output['mail']);
+        $this->assertEquals(self::NAME, $output['name']);
+        $this->assertEquals(1, $output['user_status'], 'Newly created user is Active.');
         $expected = ['authenticated'];
-        $this->assertEquals($expected, array_values((array)$output->roles), 'Newly created user has one role.');
+        $this->assertEquals($expected, array_values($output['roles']), 'Newly created user has one role.');
     }
 }

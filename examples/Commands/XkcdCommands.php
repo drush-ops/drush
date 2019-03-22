@@ -5,6 +5,9 @@ use Drush\Exec\ExecTrait;
 
 /**
  * Run these commands using the --include option - e.g. `drush --include=/path/to/drush/examples xkcd`
+ *
+ * For an example of a Drush extension with tests for Drush 9 and Drush 8:
+ * - https://github.com/drush-ops/example-drush-extension
  */
 
 class XkcdCommands extends DrushCommands

@@ -5,11 +5,12 @@ namespace Unish;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use PHPUnit\Framework\TestResult;
-use Unish\Utils\OutputUtilsTrait;
+use Drush\TestTraits\OutputUtilsTrait;
+use Drush\TestTraits\CliTestTrait;
 
 abstract class CommandUnishTestCase extends UnishTestCase
 {
-    use OutputUtilsTrait;
+    use CliTestTrait;
 
     /**
      * Code coverage data collected during a single test.
@@ -17,38 +18,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
      * @var array
      */
     protected $coverage_data = [];
-
-    /**
-     * Default timeout for commands.
-     *
-     * @var int
-     */
-    private $defaultTimeout = 60;
-
-    /**
-     * Timeout for command.
-     *
-     * Reset to $defaultTimeout after executing a command.
-     *
-     * @var int
-     */
-    protected $timeout = 60;
-
-    /**
-     * Default idle timeout for commands.
-     *
-     * @var int
-     */
-    private $defaultIdleTimeout = 15;
-
-    /**
-     * Idle timeouts for commands.
-     *
-     * Reset to $defaultIdleTimeout after executing a command.
-     *
-     * @var int
-     */
-    protected $idleTimeout = 15;
 
     /**
      * Accessor for the last output, non-trimmed.
@@ -74,54 +43,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
     public function getErrorOutputRaw()
     {
         return $this->process ? $this->process->getErrorOutput() : '';
-    }
-
-    /**
-     * Actually runs the command.
-     *
-     * @param string $command
-     *   The actual command line to run.
-     * @param integer $expected_return
-     *   The return code to expect
-     * @param sting cd
-     *   The directory to run the command in.
-     * @param array $env
-     *  Extra environment variables.
-     * @param string $input
-     *   A string representing the STDIN that is piped to the command.
-     * @return integer
-     *   Exit code. Usually self::EXIT_ERROR or self::EXIT_SUCCESS.
-     */
-    public function execute($command, $expected_return = self::EXIT_SUCCESS, $cd = null, $env = null, $input = null)
-    {
-        $this->tick();
-        $this->log("Executing: $command", 'verbose');
-
-        try {
-            // Process uses a default timeout of 60 seconds, set it to 0 (none).
-            $this->process = new Process($command, $cd, $env, $input, 0);
-            $this->process->inheritEnvironmentVariables(true);
-            if (!getenv('UNISH_NO_TIMEOUTS')) {
-                $this->process->setTimeout($this->timeout)
-                ->setIdleTimeout($this->idleTimeout);
-            }
-            $return = $this->process->run();
-            if ($expected_return !== $return) {
-                $message = 'Unexpected exit code ' . $return . ' (expected ' . $expected_return . ") for command:\n" .  $command;
-                throw new UnishProcessFailedException($message . $this->buildProcessMessage());
-            }
-            // Reset timeouts to default.
-            $this->timeout = $this->defaultTimeout;
-            $this->idleTimeout = $this->defaultIdleTimeout;
-            return $return;
-        } catch (ProcessTimedOutException $e) {
-            if ($e->isGeneralTimeout()) {
-                $message = 'Command runtime exceeded ' . $this->timeout . " seconds:\n" .  $command;
-            } else {
-                $message = 'Command had no output for ' . $this->idleTimeout . " seconds:\n" .  $command;
-            }
-            throw new UnishProcessFailedException($message . $this->buildProcessMessage());
-        }
     }
 
     /**
@@ -296,18 +217,6 @@ abstract class CommandUnishTestCase extends UnishTestCase
         return strtr($message, $replace);
     }
 
-    public function drushMajorVersion()
-    {
-        static $major;
-
-        if (!isset($major)) {
-            $this->drush('version', [], ['field' => 'drush-version']);
-            $version = trim($this->getOutput());
-            list($major) = explode('.', $version);
-        }
-        return (int)$major;
-    }
-
     protected function assertOutputEquals($expected, $filter = '')
     {
         $output = $this->getSimplifiedOutput();
@@ -336,5 +245,17 @@ abstract class CommandUnishTestCase extends UnishTestCase
             $output = preg_replace($filter, '', $output);
         }
         $this->assertEquals($expected, $output);
+    }
+
+    public function pathsToSimplify()
+    {
+        $basedir = dirname(dirname(__DIR__));
+
+        return [
+
+            self::getSandbox() => '__SANDBOX__',
+            $basedir => '__DIR__',
+
+        ];
     }
 }

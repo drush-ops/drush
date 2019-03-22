@@ -7,6 +7,9 @@ use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Load this commandfile using the --include option - e.g. `drush --include=/path/to/drush/examples`
+ *
+ * For an example of a Drush extension with tests for Drush 9 and Drush 8, see:
+ * - https://github.com/drush-ops/example-drush-extension
  */
 
 class PolicyCommands extends DrushCommands

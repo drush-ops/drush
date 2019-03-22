@@ -1,17 +1,34 @@
 <?php
-namespace Unish\Utils;
-
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessTimedOutException;
-use PHPUnit\Framework\TestResult;
-use Webmozart\PathUtil\Path;
+namespace Drush\TestTraits;
 
 /**
  * OutputUtilsTrait provides some useful utility methods for test classes
  * that define `getOutputRaw()` and `getErrorOutputRaw()` methods.
+ *
+ * This trait is used by CliTestTrait and DrushTestTrait.
  */
 trait OutputUtilsTrait
 {
+    /**
+     * Accessor for the last output, non-trimmed.
+     *
+     * @return string
+     *   Raw output as text.
+     *
+     * @access public
+     */
+    public abstract function getOutputRaw();
+
+    /**
+     * Accessor for the last stderr output, non-trimmed.
+     *
+     * @return string
+     *   Raw stderr as text.
+     *
+     * @access public
+     */
+    public abstract function getErrorOutputRaw();
+
     /**
      * Get command output and simplify away things like full paths and extra
      * whitespace.
@@ -48,9 +65,6 @@ trait OutputUtilsTrait
         $output = preg_replace('# -t #', ' ', $output);
         // Remove multiple blank lines
         $output = preg_replace("#\n\n\n*#m", "\n\n", $output);
-        // Replace Windows chars
-        // $output = preg_replace('#\r\n*#m', "", $output);
-        // $output = preg_replace('#\n*#m', "", $output);
         // Remove double spaces from output to help protect test from false negatives if spacing changes subtly
         $output = preg_replace('#  *#', ' ', $output);
         // Remove leading and trailing spaces.
@@ -62,12 +76,17 @@ trait OutputUtilsTrait
         $output = preg_replace('# --debug #', ' ', $output);
         $output = preg_replace('# --verbose #', ' ', $output);
         $output = preg_replace('# -vvv #', ' ', $output);
-        // Get rid of any full paths in the output
-        $output = preg_replace('#' . Path::canonicalize(dirname(dirname(__DIR__))) . '/[^/]*#', '__DIR__', $output);
-        $output = str_replace(self::getSandbox(), '__SANDBOX__', $output);
-        $output = str_replace(self::getSut(), '__SUT__', $output);
+
+        foreach ($this->pathsToSimplify() as $path => $simplification) {
+            $output = str_replace($path, $simplification, $output);
+        }
 
         return $output;
+    }
+
+    public function pathsToSimplify()
+    {
+        return [];
     }
 
     /**
@@ -134,33 +153,13 @@ trait OutputUtilsTrait
     public function getOutputFromJSON($key = null)
     {
         $output = $this->getOutput();
-        $json = json_decode($output);
+        $json = json_decode($output, true);
         if (!$json) {
             throw new \Exception("No json output received.\n\nOutput:\n\n$output\n\nStderr:\n\n" . $this->getErrorOutput());
         }
         if (isset($key)) {
-            $json = $json->{$key}; // http://stackoverflow.com/questions/2925044/hyphens-in-keys-of-object
+            $json = $json[$key];
         }
         return $json;
     }
-
-    /**
-     * Accessor for the last output, non-trimmed.
-     *
-     * @return string
-     *   Raw output as text.
-     *
-     * @access public
-     */
-    public abstract function getOutputRaw();
-
-    /**
-     * Accessor for the last stderr output, non-trimmed.
-     *
-     * @return string
-     *   Raw stderr as text.
-     *
-     * @access public
-     */
-    public abstract function getErrorOutputRaw();
 }

@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestResult;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use Symfony\Component\Process\Process;
 use Unish\Controllers\RuntimeController;
-use Unish\Utils\OutputUtilsTrait;
+use Drush\TestTraits\OutputUtilsTrait;
 use Webmozart\PathUtil\Path;
 
 /**
