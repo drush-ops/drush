@@ -37,8 +37,8 @@ class CoreTest extends UnishIntegrationTestCase
         'settings.php' => -1,
         ];
         foreach ($expected as $key => $value) {
-            if (isset($loaded->$key)) {
-                $this->assertEquals("{$key}={$value}", "{$key}=" . $loaded->$key->sid);
+            if (isset($loaded[$key])) {
+                $this->assertEquals("{$key}={$value}", "{$key}=" . $loaded[$key]['sid']);
             }
         }
     }
