@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\TestTraits\OutputUtilsTrait | Drush API</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/sami.css">
+        <script src="../../js/jquery-1.11.1.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script src="../../js/typeahead.min.js"></script>
+        <script src="../../sami.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    
+    
+    </head>
+
+    <body id="class" data-name="class:Drush_TestTraits_OutputUtilsTrait" data-root-path="../../">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <script>
+            $('option[data-version="'+window.projectVersion+'"]').prop('selected', true);
+        </script>
+        <form id="search-form" action="../../search.html" method="GET">
+            <span class="glyphicon glyphicon-search"></span>
+            <input name="search"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search">
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                                            <li><a href="../../namespaces.html">Namespaces</a></li>
+                                        <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">trait</span></li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/TestTraits.html">TestTraits</a></li><li class="backslash">\</li><li>OutputUtilsTrait</li>
+            </ol>
+        </div>
+                <div id="page-content">
+                
+    <div class="page-header">
+        <h1>
+            OutputUtilsTrait
+                
+        </h1>
+    </div>
+
+    <p>    trait
+    <strong>OutputUtilsTrait</strong>        (<a href="https://github.com/drush-ops/drush/blob/master/src/TestTraits/OutputUtilsTrait.php">View source</a>)
+</p>
+
+        
+    
+
+            <div class="description">
+            <p>OutputUtilsTrait provides some useful utility methods for test classes
+that define <code>getOutputRaw()</code> and <code>getErrorOutputRaw()</code> methods.</p>            <p>This trait is used by CliTestTrait and DrushTestTrait.</p>                    </div>
+    
+    
+    
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getOutputRaw">getOutputRaw</a>()
+        
+                                            <p>Accessor for the last output, non-trimmed.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getErrorOutputRaw">getErrorOutputRaw</a>()
+        
+                                            <p>Accessor for the last stderr output, non-trimmed.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getSimplifiedOutput">getSimplifiedOutput</a>()
+        
+                                            <p>Get command output and simplify away things like full paths and extra
+whitespace.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getSimplifiedErrorOutput">getSimplifiedErrorOutput</a>()
+        
+                                            <p>Returns a simplified version of the error output to facilitate testing.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_simplifyOutput">simplifyOutput</a>(string $output)
+        
+                                            <p>Remove things like full paths and extra whitespace from the given string.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_pathsToSimplify">pathsToSimplify</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getOutput">getOutput</a>()
+        
+                                            <p>Accessor for the last output, trimmed.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getErrorOutput">getErrorOutput</a>()
+        
+                                            <p>Accessor for the last stderr output, trimmed.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getOutputAsList">getOutputAsList</a>()
+        
+                                            <p>Accessor for the last output, rtrimmed and split on newlines.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getErrorOutputAsList">getErrorOutputAsList</a>()
+        
+                                            <p>Accessor for the last stderr output, rtrimmed and split on newlines.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    object
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_getOutputFromJSON">getOutputFromJSON</a>(string $key = null)
+        
+                                            <p>Accessor for the last output, decoded from json.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_getOutputRaw">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/TestTraits/OutputUtilsTrait.php#L20">line 20</a></div>
+        <code>    abstract                string
+    <strong>getOutputRaw</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Accessor for the last output, non-trimmed.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td>Raw output as text.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getErrorOutputRaw">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/TestTraits/OutputUtilsTrait.php#L30">line 30</a></div>
+        <code>    abstract                string
+    <strong>getErrorOutputRaw</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Accessor for the last stderr output, non-trimmed.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td>Raw stderr as text.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getSimplifiedOutput">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/TestTraits/OutputUtilsTrait.php#L36">line 36</a></div>
+        <code>            protected        
+    <strong>getSimplifiedOutput</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Get command output and simplify away things like full paths and extra
+whitespace.</p>                                                </div>
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getSimplifiedErrorOutput">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/TestTraits/OutputUtilsTrait.php#L48">line 48</a></div>
+        <code>            protected        string
+    <strong>getSimplifiedErrorOutput</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Returns a simplified version of the error output to facilitate testing.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td>A simplified version of the error output that has things like full
+  paths and superfluous whitespace removed from it.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_simplifyOutput">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/TestTraits/OutputUtilsTrait.php#L62">line 62</a></div>
+        <code>            protected        string
+    <strong>simplifyOutput</strong>(string $output)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Remove things like full paths and extra whitespace from the given string.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$output</td>
+                <td>The output string to simplify.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td>The simplified output.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_pathsToSimplify">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/TestTraits/OutputUtilsTrait.php#L87">line 87</a></div>
+        <code>                    
+    <strong>pathsToSimplify</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getOutput">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/TestTraits/OutputUtilsTrait.php#L100">line 100</a></div>
+        <code>                    string
+    <strong>getOutput</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Accessor for the last output, trimmed.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td>Trimmed output as text.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getErrorOutput">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/TestTraits/OutputUtilsTrait.php#L113">line 113</a></div>
+        <code>                    string
+    <strong>getErrorOutput</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Accessor for the last stderr output, trimmed.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td>Trimmed stderr as text.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getOutputAsList">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/TestTraits/OutputUtilsTrait.php#L126">line 126</a></div>
+        <code>                    array
+    <strong>getOutputAsList</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Accessor for the last output, rtrimmed and split on newlines.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td>Output as array of lines.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getErrorOutputAsList">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/TestTraits/OutputUtilsTrait.php#L139">line 139</a></div>
+        <code>                    array
+    <strong>getErrorOutputAsList</strong>()
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Accessor for the last stderr output, rtrimmed and split on newlines.</p>                                                </div>
+                <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td>Stderr as array of lines.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getOutputFromJSON">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/TestTraits/OutputUtilsTrait.php#L153">line 153</a></div>
+        <code>                    object
+    <strong>getOutputFromJSON</strong>(string $key = null)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>Accessor for the last output, decoded from json.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$key</td>
+                <td>Optionally return only a top level element from the json object.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>object</td>
+            <td>Decoded object.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+            </div>
+                <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/">Sami, the API Documentation Generator</a>.
+    </div>
+
+        </div>
+    </div>
+    </body>
+
+</html>
