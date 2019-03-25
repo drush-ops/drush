@@ -94,6 +94,12 @@ trait CliTestTrait
         try {
             // Process uses a default timeout of 60 seconds, set it to 0 (none).
             $this->process = new Process($command, $cd, $env, $input, 0);
+            if (isset($this->databasePrefix) && function_exists('drupal_generate_test_ua')) {
+                // Set UA for SimpleTests which typically extend BrowserTestCase (i.e. contrib modules).
+                $new_env = $this->process->getEnv();
+                $new_env['HTTP_USER_AGENT'] = drupal_generate_test_ua($this->databasePrefix);
+                $this->process->setEnv($new_env);
+            }
             $this->process->inheritEnvironmentVariables(true);
             if ($this->timeout) {
                 $this->process->setTimeout($this->timeout)
