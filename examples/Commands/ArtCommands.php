@@ -20,11 +20,10 @@ use Drush\Utils\StringUtils;
  * - http://cgit.drupalcode.org/devel/tree/devel_generate/src/Commands
  * - http://cgit.drupalcode.org/devel/tree/devel_generate/drush.services.yml
  *
- * For an example of a Drush extension with tests for Drush 9 and Drush 8:
- * - https://github.com/drush-ops/example-drush-extension
- *
  * This file is a good example of the first of those bullets (a commandfile) but
  * since it isn't part of a module, it does not implement drush.services.yml.
+ *
+ * See [Drush Test Traits](https://github.com/drush-ops/drush/blob/master/tests/README.md#about-the-test-suites) for info on testing Drush commands.
  */
 
 class ArtCommands extends DrushCommands implements CustomEventAwareInterface
