@@ -48,7 +48,7 @@ About the Test Suites
 Drush Test Traits
 -------
 Drush provides test traits that may be used to test your own Drush extensions. Adding the traits varies slightly depending how you package your Drush extension:
-- An extension that ships inside a contributed module. See [DevelCommandsTest](https://cgit.drupalcode.org/devel/tree/tests/src/Functional/DevelCommandsTest.php?h=8.x-2.x) for an example. Note that you also need a drupalci.yml, which performs a `composer require drush/drush`. You can copy devel's [drupalci.yml](https://cgit.drupalcode.org/devel/tree/drupalci.yml?h=8.x-2.x).
+- An extension that ships inside a contributed module. See [DevelCommandsTest](https://cgit.drupalcode.org/devel/tree/tests/src/Functional/DevelCommandsTest.php?h=8.x-2.x) for an example. Note that you also need a [drupalci.yml](https://www.drupal.org/drupalorg/docs/drupal-ci/customizing-drupalci-testing-for-projects), which performs a `composer require drush/drush`. You can copy devel's [drupalci.yml](https://cgit.drupalcode.org/devel/tree/drupalci.yml?h=8.x-2.x).
 - A standalone Drush extension or one that ships inside a custom module. See [example drush extension](https://github.com/drush-ops/example-drush-extension). 
 
 Once you have included the Drush Test Traits, you will be able to write simple tests that call your extension's commands and makes assertions against the output.
