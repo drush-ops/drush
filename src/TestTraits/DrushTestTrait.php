@@ -41,6 +41,11 @@ trait DrushTestTrait
      */
     public function drush($command, array $args = [], array $options = [], $site_specification = null, $cd = null, $expected_return = 0, $suffix = null, $env = [])
     {
+        // Set UA for SimpleTests which typically extend BrowserTestCase (i.e. contrib modules).
+        if (isset($this->databasePrefix) && function_exists('drupal_generate_test_ua') && !isset($env['HTTP_USER_AGENT'])) {
+            $env['HTTP_USER_AGENT'] = drupal_generate_test_ua($this->databasePrefix);
+        }
+
         $global_option_list = ['simulate', 'root', 'uri', 'include', 'config', 'alias-path', 'ssh-options'];
         $cmd[] = self::getPathToDrush();
 
@@ -71,8 +76,6 @@ trait DrushTestTrait
 
         $cmd[] = $suffix;
         $exec = array_filter($cmd, 'strlen'); // Remove NULLs
-        // Set sendmail_path to 'true' to disable any outgoing emails
-        // that tests might cause Drupal to send.
 
         $cmd = implode(' ', $exec);
         $this->execute($cmd, $expected_return, $cd, $env);
