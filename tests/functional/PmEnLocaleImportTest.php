@@ -33,10 +33,10 @@ class PmEnLocaleImportCase extends CommandUnishTestCase
         $this->drush('config-set', ['locale.settings', 'translation.use_source', 'locale']);
         $this->drush('config-set', ['locale.settings', 'translation.default_filename', '%project.%language.po']);
         $this->drush('config-set', ['locale.settings', 'translation.path', '../translations']);
-        $source = Path::join(__DIR__, '/resources/devel.nl.po');
+        $source = Path::join(__DIR__, 'resources/devel.nl.po');
         $translationDir = Path::join($root, '../translations');
         $this->mkdir($translationDir);
-        copy($source, $translationDir . '/devel.nl.po');
+        copy($source, Path::join($translationDir, 'devel.nl.po');
 
         $this->drush('language-add', ['nl']);
 
@@ -45,7 +45,7 @@ class PmEnLocaleImportCase extends CommandUnishTestCase
         $this->assertContains('Translations imported:', $this->getSimplifiedOutput());
 
         // Clean up the mess this test creates.
-        unlink($translationDir . '/devel.nl.po');
+        unlink(Path::join($translationDir, 'devel.nl.po'));
         rmdir($translationDir);
     }
 }
