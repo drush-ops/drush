@@ -53,7 +53,7 @@ class ConfigCase extends CommandUnishTestCase
         $this->drush('config-import');
         $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
         $page = $this->getOutputFromJSON('system.site:page');
-        $this->assertContains('unish', $page->front, 'Config was successfully imported.');
+        $this->assertContains('unish', $page['front'], 'Config was successfully imported.');
 
         // Test status of identical configuration.
         $this->drush('config:status', [], ['format' => 'list']);
@@ -68,7 +68,7 @@ class ConfigCase extends CommandUnishTestCase
         $this->drush('config-import', [], ['partial' => null, 'source' => $partial_path]);
         $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
         $page = $this->getOutputFromJSON('system.site:page');
-        $this->assertContains('unish partial', $page->front, '--partial was successfully imported.');
+        $this->assertContains('unish partial', $page['front'], '--partial was successfully imported.');
 
         // Test the --existing-config option for site:install.
         $this->drush('core:status', ['drupal-version'], ['format' => 'string']);
@@ -80,7 +80,7 @@ class ConfigCase extends CommandUnishTestCase
             $this->installDrupal('dev', true, ['existing-config' => true], false);
             $this->drush('config-get', ['system.site', 'page'], ['format' => 'json']);
             $page = $this->getOutputFromJSON('system.site:page');
-            $this->assertContains('unish existing', $page->front, 'Existing config was successfully imported during site:install.');
+            $this->assertContains('unish existing', $page['front'], 'Existing config was successfully imported during site:install.');
         }
     }
 }

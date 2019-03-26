@@ -27,11 +27,11 @@ class SiteAliasConvertTest extends UnishIntegrationTestCase
         $this->drush('site:alias', [], ['format' => 'json']);
         // $this->assertEquals('', $this->getOutput());
         $json = $this->getOutputFromJSON();
-        $this->assertObjectHasAttribute('@testSiteAliasConvert.drupalvm.dev', $json);
-        $this->assertObjectHasAttribute('@testSiteAliasConvert.www-drupalvm.dev', $json);
-        $dev = $json->{'@testSiteAliasConvert.drupalvm.dev'};
-        $this->assertSame('drupalvm.dev', $dev->host);
-        $this->assertSame('-o PasswordAuthentication=no -i /.vagrant.d/insecure_private_key', $dev->ssh->{'options'});
-        $this->assertSame('/var/www/drupalvm/drupal/vendor/drush/drush/drush', $dev->paths->{'drush-script'});
+        $this->assertArrayHasKey('@testSiteAliasConvert.drupalvm.dev', $json);
+        $this->assertArrayHasKey('@testSiteAliasConvert.www-drupalvm.dev', $json);
+        $dev = $json['@testSiteAliasConvert.drupalvm.dev'];
+        $this->assertSame('drupalvm.dev', $dev['host']);
+        $this->assertSame('-o PasswordAuthentication=no -i /.vagrant.d/insecure_private_key', $dev['ssh']['options']);
+        $this->assertSame('/var/www/drupalvm/drupal/vendor/drush/drush/drush', $dev['paths']['drush-script']);
     }
 }

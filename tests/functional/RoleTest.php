@@ -43,19 +43,19 @@ class RoleCase extends CommandUnishTestCase
         $perm = 'cancel other accounts';
         $this->drush('role-list', [], ['format' => 'json']);
         $role = $this->getOutputFromJSON($rid);
-        $this->assertFalse(in_array($perm, $role->perms));
+        $this->assertFalse(in_array($perm, $role['perms']));
 
         // Now grant that perm to foo.
         $this->drush('role-add-perm', [$rid, 'cancel other accounts']);
         $this->drush('role-list', [], ['format' => 'json']);
         $role = $this->getOutputFromJSON($rid);
-        $this->assertTrue(in_array($perm, $role->perms));
+        $this->assertTrue(in_array($perm, $role['perms']));
 
         // Now remove the perm from foo.
         $this->drush('role-remove-perm', [$rid, 'cancel other accounts']);
         $this->drush('role-list', [], ['format' => 'json']);
         $role = $this->getOutputFromJSON($rid);
-        $this->assertFalse(in_array($perm, $role->perms));
+        $this->assertFalse(in_array($perm, $role['perms']));
 
         // Delete the foo role
         $this->drush('role-delete', [$rid]);

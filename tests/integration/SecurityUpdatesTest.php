@@ -19,8 +19,8 @@ class SecurityUpdatesTest extends UnishIntegrationTestCase
         $this->assertContains('One or more of your dependencies has an outstanding security update.', $this->getErrorOutput());
         $this->assertContains('Try running: composer require drupal/alinks', $this->getErrorOutput());
         $security_advisories = $this->getOutputFromJSON();
-        $this->assertObjectHasAttribute('drupal/alinks', $security_advisories);
-        $this->assertEquals('drupal/alinks', $security_advisories->{"drupal/alinks"}->name);
-        $this->assertEquals('1.0.0', $security_advisories->{"drupal/alinks"}->version);
+        $this->arrayHasKey('drupal/alinks', $security_advisories);
+        $this->assertEquals('drupal/alinks', $security_advisories["drupal/alinks"]['name']);
+        $this->assertEquals('1.0.0', $security_advisories["drupal/alinks"]['version']);
     }
 }

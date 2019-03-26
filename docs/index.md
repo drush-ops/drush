@@ -14,7 +14,7 @@ Resources
 * [API Documentation](https://www.drush.org/api/master/)
 * [Drush packages available via Composer](https://packagist.org/?query=drush)
 * [A list of modules that include Drush integration](https://www.drupal.org/project/project_module?f[2]=im_vid_3%3A4654&solrsort=ds_project_latest_release+desc)
-* Drush comes with a [full test suite](https://github.com/drush-ops/drush/blob/master/tests/README.md) powered by [PHPUnit](https://github.com/sebastianbergmann/phpunit). Each commit gets tested by our CI bots.
+* [Testing Drush](https://github.com/drush-ops/drush/blob/master/tests/README.md) or your own Drush extensions with [PHPUnit](https://github.com/sebastianbergmann/phpunit).
 
 Support
 -----------
