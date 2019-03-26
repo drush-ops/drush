@@ -36,7 +36,7 @@ class PmEnLocaleImportCase extends CommandUnishTestCase
         $source = Path::join(__DIR__, 'resources/devel.nl.po');
         $translationDir = Path::join($root, '../translations');
         $this->mkdir($translationDir);
-        copy($source, Path::join($translationDir, 'devel.nl.po');
+        copy($source, Path::join($translationDir, 'devel.nl.po'));
 
         $this->drush('language-add', ['nl']);
 
