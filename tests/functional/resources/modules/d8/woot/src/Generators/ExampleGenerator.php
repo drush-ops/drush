@@ -28,7 +28,7 @@ class ExampleGenerator extends BaseGenerator
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $questions = Utils::defaultQuestions();
+        $questions = Utils::moduleQuestions();
 
         $vars = &$this->collectVars($input, $output, $questions);
         $vars['class'] = Utils::camelize('Example_' . $vars['machine_name'] . '_Commands');
