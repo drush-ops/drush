@@ -33,7 +33,7 @@ trait CliTestTrait
      *
      * @var int
      */
-    private $defaultIdleTimeout = 15;
+    private $defaultIdleTimeout = 60;
 
     /**
      * Idle timeouts for commands.
@@ -42,7 +42,7 @@ trait CliTestTrait
      *
      * @var int
      */
-    protected $idleTimeout = 15;
+    protected $idleTimeout = 60;
 
     /**
      * @var Process
