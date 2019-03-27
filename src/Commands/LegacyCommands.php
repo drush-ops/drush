@@ -68,7 +68,9 @@ class LegacyCommands extends DrushCommands
     }
 
     /**
-     * The pm-updatecode command was deprecated. Please see `composer outdated` and `composer update`. For security release notification, see `drush pm:security`.
+     * The pm-updatecode command was deprecated. Please see
+     * `composer update --dry-run` and `composer update`.
+     * For security release notification, see `drush pm:security`.
      *
      * @command pm:updatecode
      * @aliases upc,pm-update,pm-updatecode
