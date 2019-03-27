@@ -54,7 +54,9 @@ class LegacyCommands extends DrushCommands
     }
 
     /**
-     * The pm-updatestatus command was deprecated. Please see `composer show` and `composer outdated`. For security release notification, see `drush pm:security`.
+     * The pm-updatestatus command was deprecated. Please see `composer show`
+     * and `composer update --dry-run`. For security release notification,
+     * see `drush pm:security`.
      *
      * @command pm:updatestatus
      * @aliases ups,pm-updatestatus
