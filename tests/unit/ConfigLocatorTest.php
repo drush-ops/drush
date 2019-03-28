@@ -19,7 +19,7 @@ class ConfigLocatorTest extends TestCase
         $configLocator = new ConfigLocator('TEST_');
         $configLocator->addEnvironment($this->environment());
         $config = $configLocator->config();
-        $this->assertEquals($this->homeDir(), $config->get('env.cwd'));
+        $this->assertEquals($this->homeDir(), str_replace('\\', '/', $config->get('env.cwd')));
     }
 
     /**
@@ -39,7 +39,7 @@ class ConfigLocatorTest extends TestCase
 
         $config = $configLocator->config();
 
-        $this->assertEquals($this->homeDir(), $config->get('env.cwd'));
+        $this->assertEquals($this->homeDir(), str_replace('\\', '/', $config->get('env.cwd')));
         $this->assertEquals('A system-wide setting', $config->get('test.system'));
         $this->assertEquals('A user-specific setting', $config->get('test.home'));
         $this->assertEquals('A site-specific setting', $config->get('test.site'));
@@ -65,7 +65,7 @@ class ConfigLocatorTest extends TestCase
         */
 
         $config = $configLocator->config();
-        $this->assertEquals($this->homeDir(), $config->get('env.cwd'));
+        $this->assertEquals($this->homeDir(), str_replace('\\', '/', $config->get('env.cwd')));
         $this->assertFalse($config->has('test.system'));
         $this->assertFalse($config->has('test.home'));
         $this->assertEquals('A site-specific setting', $config->get('test.site'));
