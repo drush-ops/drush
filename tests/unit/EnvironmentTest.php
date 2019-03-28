@@ -14,7 +14,7 @@ class EnvironmentTest extends TestCase
     public function testExportConfigData()
     {
         $data = $this->environment()->exportConfigData();
-        $this->assertEquals($this->homeDir(), $data['env']['cwd']);
+        $this->assertEquals($this->homeDir(), str_replace('\\', '/', $data['env']['cwd']));
     }
 
     public function testDocsPath()
