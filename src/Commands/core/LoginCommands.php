@@ -54,7 +54,7 @@ class LoginCommands extends DrushCommands implements SiteAliasManagerAwareInterf
                 throw new \Exception(dt('Unable to bootstrap Drupal.'));
             }
 
-            $account = NULL;
+            $account = null;
             if (!is_null($options['name']) && !$account = user_load_by_name($options['name'])) {
                 throw new \Exception(dt('Unable to load user by name: !name', ['!name' => $options['name']]));
             }
