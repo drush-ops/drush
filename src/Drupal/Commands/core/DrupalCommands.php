@@ -6,10 +6,7 @@ use Drupal\Core\CronInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
-use Drush\Drush;
 use Drush\Utils\StringUtils;
-use Symfony\Component\Finder\Finder;
-use Webmozart\PathUtil\Path;
 
 class DrupalCommands extends DrushCommands
 {
@@ -42,6 +39,7 @@ class DrupalCommands extends DrushCommands
 
     /**
      * @param \Drupal\Core\CronInterface $cron
+     * @param ModuleHandlerInterface $moduleHandler
      */
     public function __construct(CronInterface $cron, ModuleHandlerInterface $moduleHandler)
     {
@@ -65,39 +63,6 @@ class DrupalCommands extends DrushCommands
     }
 
     /**
-     * Compile all Twig template(s).
-     *
-     * @command twig:compile
-     * @aliases twigc,twig-compile
-     */
-    public function twigCompile()
-    {
-        require_once DRUSH_DRUPAL_CORE . "/themes/engines/twig/twig.engine";
-        // Scan all enabled modules and themes.
-        $modules = array_keys($this->getModuleHandler()->getModuleList());
-        foreach ($modules as $module) {
-            $searchpaths[] = drupal_get_path('module', $module);
-        }
-
-        $themes = \Drupal::service('theme_handler')->listInfo();
-        foreach ($themes as $name => $theme) {
-            $searchpaths[] = $theme->getPath();
-        }
-
-        $files = Finder::create()
-            ->files()
-            ->name('*.html.twig')
-            ->exclude('tests')
-            ->in($searchpaths);
-        foreach ($files as $file) {
-            $relative = Path::makeRelative($file->getRealPath(), Drush::bootstrapManager()->getRoot());
-            // @todo Dynamically disable twig debugging since there is no good info there anyway.
-            twig_render_template($relative, ['theme_hook_original' => '']);
-            $this->logger()->success(dt('Compiled twig template !path', ['!path' => $relative]));
-        }
-    }
-
-    /**
      * Information about things that may be wrong in your Drupal installation.
      *
      * @command core:requirements
@@ -116,6 +81,7 @@ class DrupalCommands extends DrushCommands
      *   description: Description
      *   value: Summary
      * @default-fields title,severity,value
+     * @filter-default-field severity
      * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
      */
     public function requirements($options = ['format' => 'table', 'severity' => -1, 'ignore' => ''])
@@ -150,6 +116,7 @@ class DrupalCommands extends DrushCommands
         $min_severity = $options['severity'];
         $i = 0;
         foreach ($requirements as $key => $info) {
+            $info += ['value' => '', 'description' => ''];
             $severity = array_key_exists('severity', $info) ? $info['severity'] : -1;
             $rows[$i] = [
                 'title' => (string) $info['title'],

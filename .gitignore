@@ -9,5 +9,10 @@ api
 .sami-cache
 # IDE config
 .idea/
-# https://github.com/drush-ops/drush/issues/2688
-composer.lock
+sut/*
+!sut/drush
+sut/drush/sites/*test.site.yml
+/sandbox/
+.env
+# Test fixtures
+sut/drush/sites/synctest.site.yml

@@ -20,6 +20,7 @@ class Environment
     protected $vendorDir;
 
     protected $docPrefix;
+    protected $configFileVariant;
 
     protected $loader;
     protected $siteLoader;
@@ -33,10 +34,10 @@ class Environment
     public function __construct($homeDir, $cwd, $autoloadFile)
     {
         $this->homeDir = $homeDir;
-        $this->originalCwd = Path::canonicalize($cwd);
+        $this->originalCwd = Path::canonicalize(FsUtils::realpath($cwd));
         $this->etcPrefix = '';
         $this->sharePrefix = '';
-        $this->drushBasePath = dirname(dirname(__DIR__));
+        $this->drushBasePath = Path::canonicalize(dirname(dirname(__DIR__)));
         $this->vendorDir = FsUtils::realpath(dirname($autoloadFile));
     }
 
@@ -58,6 +59,10 @@ class Environment
         }
 
         $this->siteLoader = require $autloadFilePath;
+        if ($this->siteLoader === false) {
+            // Nothing more to do. See https://github.com/drush-ops/drush/issues/3741.
+            return $this->loader;
+        }
         if ($this->siteLoader === true) {
             // The autoloader was already required. Assume that Drush and Drupal share an autoloader per
             // "Point autoload.php to the proper vendor directory" - https://www.drupal.org/node/2404989
@@ -230,6 +235,21 @@ class Environment
         return $this->homeDir() . '/.drush';
     }
 
+    public function setConfigFileVariant($variant)
+    {
+        $this->configFileVariant = $variant;
+    }
+
+    /**
+     * Get the config file variant -- defined to be
+     * the Drush major version number. This is for
+     * loading drush.yml and drush9.yml, etc.
+     */
+    public function getConfigFileVariant()
+    {
+        return $this->configFileVariant;
+    }
+
     /**
      * The original working directory
      *
@@ -375,7 +395,7 @@ class Environment
         if ($override) {
             return $override;
         }
-        return static::isWindows() ? getenv('ALLUSERSPROFILE') . '/Drush' : $defaultPrefix;
+        return static::isWindows() ? Path::join(getenv('ALLUSERSPROFILE'), 'Drush') : $defaultPrefix;
     }
 
     /**
@@ -436,12 +456,13 @@ class Environment
 
         // Trying to export the columns using stty.
         exec('stty size 2>&1', $columns_output, $columns_status);
-        if (!$columns_status) {
-            $columns = preg_replace('/\d+\s(\d+)/', '$1', $columns_output[0], -1, $columns_count);
+        $matched = false;
+        if (!$columns_status && $matched = preg_match('/^\d+\s(\d+)$/', $columns_output[0], $matches, 0)) {
+            $columns = $matches[1];
         }
 
-        // If stty fails and Drush us running on Windows are we trying with mode con.
-        if (($columns_status || !$columns_count) && static::isWindows()) {
+        // If stty fails and Drush is running on Windows are we trying with mode con.
+        if (($columns_status || !$matched) && static::isWindows()) {
             $columns_output = [];
             exec('mode con', $columns_output, $columns_status);
             if (!$columns_status && is_array($columns_output)) {

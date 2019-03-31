@@ -2,6 +2,7 @@
 
 namespace Drush\Sql;
 
+use Drush\Drush;
 use Drush\Log\LogLevel;
 
 class SqlOracle extends SqlBase
@@ -27,9 +28,10 @@ class SqlOracle extends SqlBase
         return ' ' . $this->dbSpec['username'] . '/' . $this->dbSpec['password'] . ($this->dbSpec['host'] == 'USETNS' ? '@' . $this->dbSpec['database'] : '@//' . $this->dbSpec['host'] . ':' . ($db_spec['port'] ? $db_spec['port'] : '1521') . '/' . $this->dbSpec['database']);
     }
 
-    public function createdbSql($dbname)
+    public function createdbSql($dbname, $quoted = false)
     {
-        return drush_log("Unable to generate CREATE DATABASE sql for $dbname", LogLevel::ERROR);
+        Drush::logger()->error("Unable to generate CREATE DATABASE sql for $dbname");
+        return false;
     }
 
     // @todo $suffix = '.sql';

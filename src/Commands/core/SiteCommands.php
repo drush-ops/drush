@@ -4,10 +4,10 @@ namespace Drush\Commands\core;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\SiteAlias\LegacyAliasConverter;
-use Drush\SiteAlias\SiteAliasFileDiscovery;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
-use Drush\SiteAlias\SiteAliasManagerAwareTrait;
-use Consolidation\OutputFormatters\StructuredData\ListDataFromKeys;
+use Consolidation\SiteAlias\SiteAliasFileDiscovery;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Input\Input;
 use Symfony\Component\Console\Output\Output;
@@ -59,7 +59,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
                 // alias by directory / by env.cwd.
                 //     $path = drush_cwd();
                 //     $site_record = drush_sitealias_lookup_alias_by_path($path, true);
-                $site_record = []; // This should be returned as an AliasRecord, not an array.
+                $site_record = []; // This should be returned as an SiteAlias, not an array.
                 if (isset($site_record['#name'])) {
                     $site = '@' . $site_record['#name']; // $site_record->name();
                 } else {
@@ -103,31 +103,30 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
      * @param string $site Site alias or site specification.
      * @param array $options
      *
-     * @return \Consolidation\OutputFormatters\StructuredData\ListDataFromKeys
+     * @return \Consolidation\OutputFormatters\StructuredData\UnstructuredListData
      * @throws \Exception
      * @aliases sa
+     * @filter-default-field id
      * @usage drush site:alias
      *   List all alias records known to drush.
      * @usage drush site:alias @dev
      *   Print an alias record for the alias 'dev'.
-     * @usage drush @none site-alias
-     *   Print only actual aliases; omit multisites from the local Drupal installation.
      * @topics docs:aliases
      *
      */
     public function siteAlias($site = null, $options = ['format' => 'yaml'])
     {
-        // Check to see if the user provided a specification that matches
+        // First check to see if the user provided a specification that matches
         // multiple sites.
         $aliasList = $this->siteAliasManager()->getMultiple($site);
-        if (is_array($aliasList)) {
-            return new ListDataFromKeys($this->siteAliasExportList($aliasList, $options));
+        if (is_array($aliasList) && !empty($aliasList)) {
+            return new UnstructuredListData($this->siteAliasExportList($aliasList, $options));
         }
 
         // Next check for a specific alias or a site specification.
         $aliasRecord = $this->siteAliasManager()->get($site);
         if ($aliasRecord !== false) {
-            return new ListDataFromKeys([$aliasRecord->name() => $aliasRecord->export()]);
+            return new UnstructuredListData([$aliasRecord->name() => $aliasRecord->export()]);
         }
 
         if ($site) {
@@ -174,7 +173,7 @@ class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterfa
         $discovery->depth('< 9');
         $legacyAliasConverter = new LegacyAliasConverter($discovery);
         $legacyAliasConverter->setTargetDir($destination);
-        $legacyAliasConverter->setSimulate(Drush::simulate());
+        $legacyAliasConverter->setSimulate($this->getConfig()->simulate());
 
         // Find and convert.
         drush_mkdir($destination, true);

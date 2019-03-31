@@ -36,7 +36,7 @@ services:
     tags:
       - { name: drush.command }
 ```
-See the [Drupal Documentation](drupal.org) for details on how to inject Drupal services into your command file. The process is exactly the same as using a Drupal services.yml file to inject services into your module classes.
+See the [Drupal Documentation](https://www.drupal.org/docs/8/api/services-and-dependency-injection/services-and-dependency-injection-in-drupal-8) for details on how to inject Drupal services into your command file. The process is exactly the same as using a Drupal services.yml file to inject services into your module classes.
 
 Inflection
 -------------
@@ -44,29 +44,39 @@ Inflection
 Drush will also inject dependencies that it provides using a technique called inflection. Inflection is a kind of dependency injection that works by way of a set of provided inflection interfaces, one for each available service. Each of these interfaces will define one or more setter methods (usually only one); these will automatically be called by Drush when the commandfile object is instantiated. The command only needs to implement this method and save the provided object in a class field. There is usually a corresponding trait that may be included via a `use` statement to fulfill this requirement.
 
 For example:
+
 ```
 <?php
 namespace Drupal\my_module\Commands;
 
 use Drush\Commands\DrushCommands;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
-use Drush\SiteAlias\SiteSliasManagerAwareTrait;
+use Consolidation\OutputFormatters\StructuredData\ListDataFromKeys;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 
-class MyModuleiCommands extends DrushCommands implements SiteAliasManagerAwareInterface
+class MyModuleCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
   use SiteAliasManagerAwareTrait;
-public function commandName($) 
-{
-  $selfAlias = $this->aliasManager()->getSelf();
-$this->logger()->success(‘The current alias is {name}’, [‘name’ => $selfAlias]);
-}
+  /**
+   * Prints the currenbt alias name and info.
+   *
+   * @command mymodule:myAlias
+   * @return \Consolidation\OutputFormatters\StructuredData\ListDataFromKeys
+   */
+  public function myAlias() 
+  {
+    $selfAlias = $this->siteAliasManager()->getSelf();
+    $this->logger()->success(‘The current alias is {name}’, [‘name’ => $selfAlias]);
+    return new ListDataFromKeys($aliasRecord->export());
+  }
 }
 ```
-All Drush command files extend DrushCommands; DrushCommands implements IOAwareInterface and LoggerAwareInterface, which gives access to `$this->logger()` and other ways to do input and output. See the [IO documentation](io.md) for more information.
+
+All Drush command files extend DrushCommands. DrushCommands implements ConfigAwareInterface, IOAwareInterface, LoggerAwareInterface, which gives access to `$this->getConfig()`, `$this->logger()` and other ways to do input and output. See the [IO documentation](io.md) for more information.
 
 Any additional services that are desired must be injected by implementing the appropriate inflection interface.
 
-Available Interfaces:
+Additional Interfaces:
 
 - AutoloaderAwareInterface: Provides access to the class loader.
 - SiteAliasManagerAwareInterface: The site alias manager [allows alias records to be obtained](site-alias-manager.md).

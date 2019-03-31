@@ -1,11 +1,14 @@
 <?php
 namespace Drush\Commands\core;
 
+use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
+use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Finder\Finder;
 
-class PhpCommands extends DrushCommands
+class PhpCommands extends DrushCommands implements StdinAwareInterface
 {
+    use StdinAwareTrait;
 
     /**
      * Evaluate arbitrary php code after bootstrapping Drupal (if available).
@@ -40,13 +43,14 @@ class PhpCommands extends DrushCommands
      * @command php:script
      * @option script-path Additional paths to search for scripts, separated by
      *   : (Unix-based systems) or ; (Windows).
-     * @usage drush php:script example
-     *   --script-path=/path/to/scripts:/another/path Run a script named
-     *   example.php from specified paths
+     * @usage drush php:script example --script-path=/path/to/scripts:/another/path
+     *   Run a script named example.php from specified paths
+     * @usage drush php:script -
+     *   Run PHP code from standard input.
      * @usage drush php:script
      *   List all available scripts.
      * @usage drush php:script foo -- apple --cider
-     *  Run foo.php script with argument 'apple' and option 'cider'. Note the
+     *   Run foo.php script with argument 'apple' and option 'cider'. Note the
      *   -- separator.
      * @aliases scr,php-script
      * @bootstrap max
@@ -58,7 +62,7 @@ class PhpCommands extends DrushCommands
         $script = array_shift($extra);
 
         if ($script == '-') {
-            return eval(stream_get_contents(STDIN));
+            return eval($this->stdin()->contents());
         } elseif (file_exists($script)) {
             $found = $script;
         } else {

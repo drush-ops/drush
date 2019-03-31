@@ -1,0 +1,3 @@
+fake:
+  root: /path/to/fake/root
+  uri: https://fake.example.com

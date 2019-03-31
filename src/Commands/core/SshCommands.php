@@ -1,9 +1,10 @@
 <?php
 namespace Drush\Commands\core;
 
+use Consolidation\SiteProcess\Util\Shell;
 use Drush\Commands\DrushCommands;
-use Drush\SiteAlias\SiteAliasManagerAwareInterface;
-use Drush\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 
 class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
@@ -13,52 +14,43 @@ class SshCommands extends DrushCommands implements SiteAliasManagerAwareInterfac
      * Connect to a Drupal site's server via SSH.
      *
      * @command site:ssh
-     * @option cd Directory to change to if Drupal root is not desired (the default).
+     * @option cd Directory to change to. Defaults to Drupal root.
      * @optionset_proc_build
      * @handle-remote-commands
      * @usage drush @mysite ssh
      *   Open an interactive shell on @mysite's server.
      * @usage drush @prod ssh ls /tmp
-     *   Run "ls /tmp" on @prod site. If @prod is a site list, then ls will be executed on each site.
+     *   Run "ls /tmp" on @prod site.
      * @usage drush @prod ssh git pull
      *   Run "git pull" on the Drupal root directory on the @prod site.
      * @aliases ssh,site-ssh
      * @topics docs:aliases
      */
-    public function ssh(array $args, $options = ['cd' => true])
+    public function ssh(array $args, $options = ['cd' => self::REQ, 'tty' => false])
     {
-        // n.b. we do not escape the first (0th) arg to allow `drush ssh 'ls /path'`
-        // to work in addition to the preferred form of `drush ssh ls /path`.
-        // Supporting the legacy form means that we cannot give the full path to an
-        // executable if it contains spaces.
-        for ($x = 1; $x < count($args); $x++) {
-            $args[$x] = drush_escapeshellarg($args[$x]);
-        }
-        $command = implode(' ', $args);
-
         $alias = $this->siteAliasManager()->getSelf();
         if ($alias->isNone()) {
             throw new \Exception('A site alias is required. The way you call ssh command has changed to `drush @alias ssh`.');
         }
 
-        // Local sites run their bash without SSH.
-        if (!$alias->isRemote()) {
-            $return = drush_invoke_process('@self', 'core-execute', [$command], ['escape' => false]);
-            return $return['object'];
+        if (empty($args)) {
+            $args[] = 'bash';
+            $args[] = '-l';
+
+            // We're calling an interactive 'bash' shell, so we want to
+            // force tty to true.
+            $options['tty'] = true;
         }
 
-        // We have a remote site - build ssh command and run.
-        $interactive = false;
-        $cd = $options['cd'];
-        if (empty($command)) {
-            $command = 'bash -l';
-            $interactive = true;
+        if ((count($args) == 1)) {
+            $args = [Shell::preEscaped($args[0])];
         }
 
-        $cmd = drush_shell_proc_build($alias, $command, $cd, $interactive);
-        $status = drush_shell_proc_open($cmd);
-        if ($status != 0) {
-            throw new \Exception(dt('An error @code occurred while running the command `@command`', ['@command' => $cmd, '@code' => $status]));
-        }
+        $process = $this->processManager()->siteProcess($alias, $args);
+        $process->setTty($options['tty']);
+        // The transport handles the chdir during processArgs().
+        $fallback = $alias->hasRoot() ? $alias->root() : null;
+        $process->setWorkingDirectory($options['cd'] ?: $fallback);
+        $process->mustRun($process->showRealtime());
     }
 }

@@ -1,0 +1,160 @@
+# https://circleci.com/docs/2.0/workflows/#using-workspaces-to-share-data-among-jobs
+defaults: &defaults
+  working_directory: ~/drush
+  environment:
+    TZ: "/usr/share/zoneinfo/America/Los_Angeles"
+    TERM: dumb
+    UNISH_NO_TIMEOUTS: y
+    PHPUNIT_ARGS: ""
+    PHP_SENDMAIL_PATH: /dev/null
+
+test_71_steps: &test71steps
+  steps:
+    - checkout
+    - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
+    - run: composer install
+    - run: $HOME/drush/.circleci/patch.sh
+    - run: composer lint
+    - run: composer functional
+
+version: 2.1
+jobs:
+  # Code style test:
+  #   FAIL if code does not conform to PSR-2 conventions
+  #   PASS otherwise
+  code_style:
+    <<: *defaults
+    docker:
+      - image: wodby/php:7.1
+    steps:
+      - checkout
+      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
+      - run: composer install
+      - run: composer cs
+
+  # Mergeable test:
+  #   FAIL if merging test branch with master produces conflicts
+  #   PASS if the test branch is out of date, but mergeable without conflicts
+  check_mergable:
+    <<: *defaults
+    docker:
+      - image: wodby/php:7.1
+    steps:
+      - checkout
+      - run: git config --global user.email "nobody@drush.org"
+      - run: git config --global user.name "Drush Merge Test Bot"
+      - run: git merge -q -m 'Merge check' origin/master
+
+  # PHP 7.1 test:
+  #   Checks the most common configuration.
+  test_71_mysql:
+    <<: *defaults
+    docker:
+      - image: wodby/php:7.1
+        environment:
+          - MYSQL_HOST=127.0.0.1
+          - UNISH_DB_URL=mysql://root:@127.0.0.1
+      - image: circleci/mysql:5.7.24
+    <<: *test71steps
+
+  # See scheduled workflow
+  test_71_sqlite:
+    <<: *defaults
+    docker:
+      # We use a custom image here because wodby/php does not ship with sqlite3 program.
+      - image: drush/php:7.1
+        environment:
+          - UNISH_DB_URL=sqlite://sut/sites/dev/files/.ht.sqlite
+    <<: *test71steps
+
+  # See scheduled workflow
+  test_71_postgres:
+    <<: *defaults
+    docker:
+      - image: wodby/php:7.1
+        environment:
+          - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1
+      - image: wodby/postgres:10.5
+        environment:
+          POSTGRES_PASSWORD: unish
+          POSTGRES_DB: unish_dev
+          POSTGRES_USER: unish
+    <<: *test71steps
+
+  # PHP 7.2 test with HIGHEST dependencies:
+  #   Determines whether a newer version of a dependency has broken Drush.
+  test_72_highest:
+    <<: *defaults
+    docker:
+      - image: wodby/php:7.2
+        environment:
+          - MYSQL_HOST=127.0.0.1
+          - UNISH_DB_URL=mysql://root:@127.0.0.1
+      - image: circleci/mysql:5.7.24
+    steps:
+      - checkout
+      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
+      - run: composer remove --dev webflo/drupal-core-strict --no-update
+      - run: composer require --dev drupal/core:8.7.x-dev --no-update
+      - run: composer config platform.php 7.2
+      - run: composer update
+      - run: composer lint
+      - run: composer functional
+
+  # PHP 5.6 test with LOWEST dependencies:
+  #   Determines whether any code introduced in this branch uses language
+  #   features not available in PHP 5.6, or whether there are any API calls
+  #   to dependency features not available in the lowest version listed
+  #   for a dependency in our composer.json file.
+  test_56_lowest:
+    <<: *defaults
+    docker:
+      - image: wodby/php:5.6
+        environment:
+          - MYSQL_HOST=127.0.0.1
+          - UNISH_DB_URL=mysql://root:@127.0.0.1
+      - image: circleci/mysql:5.7.24
+    steps:
+      - checkout
+      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
+      - run: .scenarios.lock/install php5 lowest
+      - run: $HOME/drush/.circleci/patch.sh
+      - run: composer lint
+      - run: composer functional
+
+workflows:
+  version: 2
+  # Drush test jobs:
+  #   - If the mergeable test fails, then skip all of the other tests
+  #     (except code style)
+  #   - If code style check fails, then run only the LOWEST test and skip
+  #     all of the others.
+  #   - If both the code style and mergeable checks pass, then run the
+  #     standard and LOWEST tests.
+  drush:
+    jobs:
+      - code_style
+      - check_mergable
+      - test_71_mysql:
+          requires:
+            - check_mergable
+            - code_style
+      - test_56_lowest:
+          requires:
+            - check_mergable
+  # Drush nightly scheduled jobs:
+  #   - Run the HIGHEST tests.
+  #   - Run functional tests under Sqlite and Postgres.
+  scheduled:
+    triggers:
+       - schedule:
+           # Uses UTC timezone.
+           cron: "33 0 * * *"
+           filters:
+             branches:
+               only:
+                 - master
+    jobs:
+      - test_72_highest
+      - test_71_sqlite
+      - test_71_postgres

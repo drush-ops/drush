@@ -90,6 +90,9 @@ define('DRUSH_BOOTSTRAP_DRUPAL_FULL', 5);
 
 /**
  * Helper function to store any context settings that are being validated.
+ *
+ * @deprecated
+ *   No longer used in Drush core.
  */
 function drush_bootstrap_value($context, $value = null) {
   $values =& drush_get_context('DRUSH_BOOTSTRAP_VALUES', []);
@@ -108,6 +111,9 @@ function drush_bootstrap_value($context, $value = null) {
 /**
  * Helper function to collect any errors that occur during the bootstrap process.
  * Always returns FALSE, for convenience.
+ *
+ * @deprecated
+ *   No longer used in Drush core.
  */
 function drush_bootstrap_error($code, $message = null) {
   $errors = drush_get_context('DRUSH_BOOTSTRAP_ERRORS');
