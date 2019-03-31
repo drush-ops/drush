@@ -12,8 +12,15 @@ class Sqlpgsql extends SqlBase {
 
   private $password_file = NULL;
 
+  /**
+   * @return string|null
+   */
+  public function getPasswordFile() {
+    return $this->password_file;
+  }
+
   private function password_file() {
-    if (!isset($password_file) && isset($this->db_spec['password'])) {
+    if (null == ($this->getPasswordFile()) && isset($this->db_spec['password'])) {
       $pgpass_parts = array(
         empty($this->db_spec['host']) ? 'localhost' : $this->db_spec['host'],
         empty($this->db_spec['port']) ? '5432' : $this->db_spec['port'],
@@ -30,10 +37,10 @@ class Sqlpgsql extends SqlBase {
         $part = str_replace(array('\\', ':'), array('\\\\', '\:'), $part);
       });
       $pgpass_contents = implode(':', $pgpass_parts);
-      $password_file = drush_save_data_to_temp_file($pgpass_contents);
-      chmod($password_file, 0600);
+      $this->password_file = drush_save_data_to_temp_file($pgpass_contents);
+      chmod($this->password_file, 0600);
     }
-    return $password_file;
+    return $this->password_file;
   }
 
   public function command() {
@@ -115,7 +122,14 @@ class Sqlpgsql extends SqlBase {
     $data_only = drush_get_option('data-only');
 
     $create_db = drush_get_option('create-db');
-    $exec = 'pg_dump ';
+
+    $environment = "";
+    $pw_file = $this->password_file();
+    if (isset($pw_file)) {
+      $environment = "PGPASSFILE={$pw_file} ";
+    }
+    $exec = "{$environment}pg_dump ";
+
     // Unlike psql, pg_dump does not take a '--dbname=' before the database name.
     $extra = str_replace('--dbname=', ' ', $this->creds());
     if (isset($data_only)) {
