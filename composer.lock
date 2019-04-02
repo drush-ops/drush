@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e9211771eab31cbdc509bf754a65fe2b",
+    "content-hash": "356206bc561c48d2a351be671273db2d",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -780,16 +780,16 @@
         },
         {
             "name": "consolidation/site-process",
-            "version": "2.0.0",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-process.git",
-                "reference": "29d6860e65eb22c1ffaff9777a6f1ce6e7adf188"
+                "reference": "d923bbf8843f4b273733db5912198b7dba0f236d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-process/zipball/29d6860e65eb22c1ffaff9777a6f1ce6e7adf188",
-                "reference": "29d6860e65eb22c1ffaff9777a6f1ce6e7adf188",
+                "url": "https://api.github.com/repos/consolidation/site-process/zipball/d923bbf8843f4b273733db5912198b7dba0f236d",
+                "reference": "d923bbf8843f4b273733db5912198b7dba0f236d",
                 "shasum": ""
             },
             "require": {
@@ -848,7 +848,7 @@
                 }
             ],
             "description": "A thin wrapper around the Symfony Process Component that allows applications to use the Site Alias library to specify the target for a remote call.",
-            "time": "2019-03-12T17:36:24+00:00"
+            "time": "2019-04-02T18:47:44+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -1632,7 +1632,7 @@
         },
         {
             "name": "symfony/filesystem",
-            "version": "v3.4.23",
+            "version": "v3.4.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
@@ -1682,7 +1682,7 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v3.4.23",
+            "version": "v3.4.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
@@ -1897,7 +1897,7 @@
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v3.4.23",
+            "version": "v3.4.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
@@ -2898,7 +2898,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://git.drupal.org/project/alinks",
+                "url": "https://git.drupalcode.org/project/alinks.git",
                 "reference": "8.x-1.0"
             },
             "dist": {
@@ -2918,7 +2918,7 @@
                 },
                 "drupal": {
                     "version": "8.x-1.0",
-                    "datestamp": "1501766275",
+                    "datestamp": "1533185792",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -3213,7 +3213,7 @@
             "version": "2.0.0",
             "source": {
                 "type": "git",
-                "url": "https://git.drupal.org/project/devel",
+                "url": "https://git.drupalcode.org/project/devel.git",
                 "reference": "8.x-2.0"
             },
             "dist": {
@@ -3298,7 +3298,7 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://git.drupal.org/project/empty_theme",
+                "url": "https://git.drupalcode.org/project/empty_theme.git",
                 "reference": "8.x-1.0"
             },
             "dist": {
@@ -6688,7 +6688,6 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "consolidation/site-alias": 0,
-        "consolidation/site-process": 0,
         "lox/xhprof": 20,
         "webflo/drupal-core-strict": 20
     },

@@ -100,7 +100,7 @@ class RedispatchHook implements InitializeHookInterface, ConfigAwareInterface, S
         if (!TerminalUtils::isTty()) {
             $process->setInput(STDIN);
         } else {
-            $process->setTty($this->getConfig()->get('ssh.tty', $input->isInteractive()));
+            $process->setTty($this->getConfig()->get('ssh.tty', TerminalUtils::useTty() && $input->isInteractive()));
         }
         $process->mustRun($process->showRealtime());
 
