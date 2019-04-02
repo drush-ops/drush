@@ -158,7 +158,7 @@ class Sqlpgsql extends SqlBase {
         foreach ($structure_tables as $table) {
           $schemaonlies[] = "--table=$table";
         }
-        $exec .= " && pg_dump --schema-only " . implode(' ', $schemaonlies) . $extra;
+        $exec .= " && {$environment}pg_dump --schema-only " . implode(' ', $schemaonlies) . $extra;
         $exec .= (!isset($create_db) && !isset($data_only) ? ' --clean' : '');
       }
     }
