@@ -1386,7 +1386,8 @@ window.projectVersion = 'master';
                     {"type": "Method", "fromName": "Drush\\Utils\\StringUtils", "fromLink": "Drush/Utils/StringUtils.html", "link": "Drush/Utils/StringUtils.html#method_generatePassword", "name": "Drush\\Utils\\StringUtils::generatePassword", "doc": "&quot;Generate a random alphanumeric password.  Copied from user.module.&quot;"},
             
             {"type": "Class", "fromName": "Drush\\Utils", "fromLink": "Drush/Utils.html", "link": "Drush/Utils/TerminalUtils.html", "name": "Drush\\Utils\\TerminalUtils", "doc": "&quot;&quot;"},
-                                                        {"type": "Method", "fromName": "Drush\\Utils\\TerminalUtils", "fromLink": "Drush/Utils/TerminalUtils.html", "link": "Drush/Utils/TerminalUtils.html#method_isTty", "name": "Drush\\Utils\\TerminalUtils::isTty", "doc": "&quot;isTty determines if the STDIN stream is a TTY. If we cannot tell,\nthen we return a default value.&quot;"},
+                                                        {"type": "Method", "fromName": "Drush\\Utils\\TerminalUtils", "fromLink": "Drush/Utils/TerminalUtils.html", "link": "Drush/Utils/TerminalUtils.html#method_isTty", "name": "Drush\\Utils\\TerminalUtils::isTty", "doc": "&quot;isTty determines if the STDIN stream is a TTY. We use this function\nto determine whether or not we should redirect input of a process\nusing our STDIN stream. If we cannot tell, then we return a default value.&quot;"},
+                    {"type": "Method", "fromName": "Drush\\Utils\\TerminalUtils", "fromLink": "Drush/Utils/TerminalUtils.html", "link": "Drush/Utils/TerminalUtils.html#method_useTty", "name": "Drush\\Utils\\TerminalUtils::useTty", "doc": "&quot;useTty determines if both the STDIN and STDOUT streams connect to a TTY.&quot;"},
             
             
                                         // Fix trailing commas in the index

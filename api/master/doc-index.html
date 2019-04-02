@@ -947,8 +947,9 @@ legacy systems.</dd><dt><a href="Drush/Preflight/PreflightArgs.html#method_isLoc
                     <dd>Idle timeouts for commands.</dd><dt><a href="Drush/TestTraits/CliTestTrait.html#method_isWindows"><abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr>::isWindows</a>() &mdash; <em>Method in class <a href="Drush/TestTraits/CliTestTrait.html"><abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Utils/StringUtils.html#method_interpolate"><abbr title="Drush\Utils\StringUtils">StringUtils</abbr>::interpolate</a>() &mdash; <em>Method in class <a href="Drush/Utils/StringUtils.html"><abbr title="Drush\Utils\StringUtils">StringUtils</abbr></a></em></dt>
                     <dd>Replace placeholders in a string.</dd><dt><a href="Drush/Utils/TerminalUtils.html#method_isTty"><abbr title="Drush\Utils\TerminalUtils">TerminalUtils</abbr>::isTty</a>() &mdash; <em>Method in class <a href="Drush/Utils/TerminalUtils.html"><abbr title="Drush\Utils\TerminalUtils">TerminalUtils</abbr></a></em></dt>
-                    <dd>isTty determines if the STDIN stream is a TTY. If we cannot tell,
-then we return a default value.</dd>        </dl><h2 id="letterJ">J</h2>
+                    <dd>isTty determines if the STDIN stream is a TTY. We use this function
+to determine whether or not we should redirect input of a process
+using our STDIN stream. If we cannot tell, then we return a default value.</dd>        </dl><h2 id="letterJ">J</h2>
         <dl id="index"><dt><a href="Drush/Cache/JSONCache.html"><abbr title="Drush\Cache\JSONCache">JSONCache</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Cache.html">Drush\Cache</a></em></dt>
                     <dd>JSON cache storage backend.</dd>        </dl><h2 id="letterK">K</h2>
         <dl id="index"><dt>$<a href="Drush/Boot/DrupalBoot8.html#property_kernel"><abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr>#kernel</a> &mdash; <em>Property in class <a href="Drush/Boot/DrupalBoot8.html"><abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr></a></em></dt>
@@ -1507,7 +1508,8 @@ the finished page.</dd><dt><a href="Drush/Commands/core/UpdateDBCommands.html#me
 YAML strings.</dd><dt><a href="Drush/Internal/Config/Yaml/Unescaper.html#method_unescapeSingleQuotedString"><abbr title="Drush\Internal\Config\Yaml\Unescaper">Unescaper</abbr>::unescapeSingleQuotedString</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Unescaper.html"><abbr title="Drush\Internal\Config\Yaml\Unescaper">Unescaper</abbr></a></em></dt>
                     <dd>Unescapes a single quoted string.</dd><dt><a href="Drush/Internal/Config/Yaml/Unescaper.html#method_unescapeDoubleQuotedString"><abbr title="Drush\Internal\Config\Yaml\Unescaper">Unescaper</abbr>::unescapeDoubleQuotedString</a>() &mdash; <em>Method in class <a href="Drush/Internal/Config/Yaml/Unescaper.html"><abbr title="Drush\Internal\Config\Yaml\Unescaper">Unescaper</abbr></a></em></dt>
                     <dd>Unescapes a double quoted string.</dd><dt><a href="Drush/Preflight/PreflightArgs.html#method_uri"><abbr title="Drush\Preflight\PreflightArgs">PreflightArgs</abbr>::uri</a>() &mdash; <em>Method in class <a href="Drush/Preflight/PreflightArgs.html"><abbr title="Drush\Preflight\PreflightArgs">PreflightArgs</abbr></a></em></dt>
-                    <dd>Get the selected uri</dd>        </dl><h2 id="letterV">V</h2>
+                    <dd>Get the selected uri</dd><dt><a href="Drush/Utils/TerminalUtils.html#method_useTty"><abbr title="Drush\Utils\TerminalUtils">TerminalUtils</abbr>::useTty</a>() &mdash; <em>Method in class <a href="Drush/Utils/TerminalUtils.html"><abbr title="Drush\Utils\TerminalUtils">TerminalUtils</abbr></a></em></dt>
+                    <dd>useTty determines if both the STDIN and STDOUT streams connect to a TTY.</dd>        </dl><h2 id="letterV">V</h2>
         <dl id="index"><dt><a href="Drush/Boot/BaseBoot.html#method_validRoot"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr>::validRoot</a>() &mdash; <em>Method in class <a href="Drush/Boot/BaseBoot.html"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></em></dt>
                     <dd>This function determines if the specified path points to
 the root directory of a CMS that can be bootstrapped by

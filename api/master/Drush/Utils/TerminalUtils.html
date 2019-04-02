@@ -99,8 +99,19 @@
                 <div class="col-md-8 type">
                     <a href="#method_isTty">isTty</a>(bool $default = true)
         
-                                            <p>isTty determines if the STDIN stream is a TTY. If we cannot tell,
-then we return a default value.</p>                </div>
+                                            <p>isTty determines if the STDIN stream is a TTY. We use this function
+to determine whether or not we should redirect input of a process
+using our STDIN stream. If we cannot tell, then we return a default value.</p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;bool
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_useTty">useTty</a>(bool $default = true)
+        
+                                            <p>useTty determines if both the STDIN and STDOUT streams connect to a TTY.</p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -111,7 +122,7 @@ then we return a default value.</p>                </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_isTty">
-        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/TerminalUtils.php#L15">line 15</a></div>
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/TerminalUtils.php#L16">line 16</a></div>
         <code>        static            bool
     <strong>isTty</strong>(bool $default = true)
         </code>
@@ -121,8 +132,51 @@ then we return a default value.</p>                </div>
     
 
                     <div class="method-description">
-                                    <p>isTty determines if the STDIN stream is a TTY. If we cannot tell,
-then we return a default value.</p>                                                </div>
+                                    <p>isTty determines if the STDIN stream is a TTY. We use this function
+to determine whether or not we should redirect input of a process
+using our STDIN stream. If we cannot tell, then we return a default value.</p>                                                </div>
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>bool</td>
+                <td>$default</td>
+                <td>Result to assume when the posix functions
+  are not available.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_useTty">
+        <div class="location">at         <a href="https://github.com/drush-ops/drush/blob/master/src/Utils/TerminalUtils.php#L34">line 34</a></div>
+        <code>        static            bool
+    <strong>useTty</strong>(bool $default = true)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                    <div class="method-description">
+                                    <p>useTty determines if both the STDIN and STDOUT streams connect to a TTY.</p>                    <p>We use this to determine whether we should use tty mode with our process
+component. If we cannot tell, then we return a default value.</p>                            </div>
                 <div class="tags">
                             <h4>Parameters</h4>
 
