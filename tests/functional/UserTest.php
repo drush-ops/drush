@@ -98,6 +98,19 @@ class UserCase extends CommandUnishTestCase
         $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
         $query = $url['query'];
         $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
+        // Test specific user by uid.
+        $uid = 2;
+        $this->drush('user-login', [], $user_login_options + ['uid' => $uid]);
+        $output = $this->getOutput();
+        $url = parse_url($output);
+        $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
+        // Test specific user by mail.
+        $uid = 2;
+        $mail = 'example@example.com';
+        $this->drush('user-login', [], $user_login_options + ['mail' => $mail]);
+        $output = $this->getOutput();
+        $url = parse_url($output);
+        $this->assertContains('/user/reset/' . $uid, $url['path'], 'Login with mail option returned a valid reset URL');
     }
 
     public function testUserCancel()
