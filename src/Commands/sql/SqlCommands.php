@@ -236,7 +236,10 @@ class SqlCommands extends DrushCommands
             throw new \Exception('Unable to dump database. Rerun with --debug to see any error message.');
         }
 
-        $this->logger()->success(dt('Database dump saved to !path', ['!path' => $return]));
+        // SqlBase::dump() returns null if 'result-file' option is empty.
+        if ($return) {
+            $this->logger()->success(dt('Database dump saved to !path', ['!path' => $return]));
+        }
         return new PropertyList(['path' => $return]);
     }
 
