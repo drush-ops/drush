@@ -13,27 +13,27 @@ trait CliTestTrait
     use OutputUtilsTrait;
 
     /**
-     * Default timeout for commands.
+     * Default timeout for commands. By default, there is no timeout.
      *
      * @var int
      */
-    private $defaultTimeout = 60;
+    private $defaultTimeout = 0;
 
     /**
-     * Timeout for command. Set to zero for no timeouts.
+     * Timeout for command.
      *
      * Reset to $defaultTimeout after executing a command.
      *
      * @var int
      */
-    protected $timeout = 60;
+    protected $timeout = 0;
 
     /**
      * Default idle timeout for commands.
      *
      * @var int
      */
-    private $defaultIdleTimeout = 60;
+    private $defaultIdleTimeout = 0;
 
     /**
      * Idle timeouts for commands.
@@ -42,7 +42,7 @@ trait CliTestTrait
      *
      * @var int
      */
-    protected $idleTimeout = 60;
+    protected $idleTimeout = 0;
 
     /**
      * @var Process
