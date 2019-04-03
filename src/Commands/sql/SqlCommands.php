@@ -238,7 +238,7 @@ class SqlCommands extends DrushCommands
 
         // SqlBase::dump() returns null if 'result-file' option is empty.
         if ($return) {
-          $this->logger()->success(dt('Database dump saved to !path', ['!path' => $return]));
+            $this->logger()->success(dt('Database dump saved to !path', ['!path' => $return]));
         }
         return new PropertyList(['path' => $return]);
     }
