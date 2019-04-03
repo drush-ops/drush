@@ -5,7 +5,7 @@ namespace Drush\TestTraits;
  * DrushTestTrait provides a `drush()` method that may be
  * used to write functional tests for Drush extensions.
  *
- * See the [example-drush-extension](https://github.com/drush-ops/example-drush-extension) for example usage.
+ * More information is available at https://github.com/drush-ops/drush/tree/master/tests#drush-test-traits.
  */
 trait DrushTestTrait
 {
