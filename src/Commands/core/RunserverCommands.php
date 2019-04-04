@@ -78,7 +78,8 @@ class RunserverCommands extends DrushCommands
         $process = $this->processManager()->process([$php, '-S', $addr . ':' . $uri['port'], $router]);
         $process->setWorkingDirectory(Drush::bootstrapManager()->getRoot());
         // See https://github.com/drush-ops/drush/issues/4015
-        $process->setTty(is_writable('/dev/tty'));
+        $isTtySupported = (bool) @proc_open('echo 1 >/dev/null', array(array('file', '/dev/tty', 'r'), array('file', '/dev/tty', 'w'), array('file', '/dev/tty', 'w')), $pipes);
+        $process->setTty($isTtySupported);
         if ($options['quiet']) {
             $process->disableOutput();
         }
