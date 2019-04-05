@@ -66,8 +66,9 @@ class QueueCommands extends DrushCommands
         $end = time() + $time_limit;
         $queue = $this->getQueue($name);
         $count = 0;
+        $remaining = $time_limit;
 
-        while ((!$time_limit || time() < $end) && ($item = $queue->claimItem())) {
+        while ((!$time_limit || $remaining > 0) && ($item = $queue->claimItem($remaining))) {
             try {
                 $this->logger()->info(dt('Processing item @id from @name queue.', ['@name' => $name, '@id' => $item->item_id]));
                 $worker->processItem($item->data);
@@ -82,6 +83,7 @@ class QueueCommands extends DrushCommands
                 $queue->releaseItem($item);
                 throw new \Exception($e->getMessage());
             }
+            $remaining = $end - time();
         }
         $elapsed = microtime(true) - $start;
         $this->logger()->success(dt('Processed @count items from the @name queue in @elapsed sec.', ['@count' => $count, '@name' => $name, '@elapsed' => round($elapsed, 2)]));
