@@ -204,7 +204,7 @@ function drush_op($callable) {
   }
 
   if (\Drush\Drush::verbose() || \Drush\Drush::simulate()) {
-    Drush::logger()->debug('Calling %s(%s)', [$callable_string, implode(", ", $args_printed)]);
+    Drush::logger()->debug('Calling {method}({args})', ['method' => $callable_string, 'args' => implode(", ", $args_printed)]);
   }
 
   if (\Drush\Drush::simulate()) {

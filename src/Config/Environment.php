@@ -34,7 +34,7 @@ class Environment
     public function __construct($homeDir, $cwd, $autoloadFile)
     {
         $this->homeDir = $homeDir;
-        $this->originalCwd = Path::canonicalize($cwd);
+        $this->originalCwd = Path::canonicalize(FsUtils::realpath($cwd));
         $this->etcPrefix = '';
         $this->sharePrefix = '';
         $this->drushBasePath = Path::canonicalize(dirname(dirname(__DIR__)));
