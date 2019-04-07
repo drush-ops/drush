@@ -110,15 +110,9 @@ class DependencyInjection
         $container->share('bootstrap.hook', 'Drush\Boot\BootstrapHook')
           ->withArgument('bootstrap.manager');
         $container->share('tildeExpansion.hook', 'Drush\Runtime\TildeExpansionHook');
-        $container->share('ssh.transport', \Consolidation\SiteProcess\Factory\SshTransportFactory::class);
-        $container->share('docker-compose.transport', \Consolidation\SiteProcess\Factory\DockerComposeTransportFactory::class);
-        $container->share('vagrant.transport', \Consolidation\SiteProcess\Factory\VagrantTransportFactory::class);
         $container->share('process.manager', ProcessManager::class)
             ->withMethodCall('setConfig', ['config'])
-            ->withMethodCall('setConfigRuntime', ['config.runtime'])
-            ->withMethodCall('add', ['ssh.transport'])
-            ->withMethodCall('add', ['docker-compose.transport'])
-            ->withMethodCall('add', ['vagrant.transport']);
+            ->withMethodCall('setConfigRuntime', ['config.runtime']);
         $container->share('redispatch.hook', 'Drush\Runtime\RedispatchHook')
             ->withArgument('process.manager');
 
@@ -165,6 +159,8 @@ class DependencyInjection
 
         $commandProcessor = $container->get('commandProcessor');
         $commandProcessor->setPassExceptions(true);
+
+        ProcessManager::addTransports($container->get('process.manager'));
     }
 
     protected function injectApplicationServices(ContainerInterface $container, Application $application)
