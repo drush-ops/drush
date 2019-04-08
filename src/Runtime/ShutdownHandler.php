@@ -8,6 +8,7 @@ namespace Drush\Runtime;
 
 use Drush\Drush;
 use Drush\Log\LogLevel;
+use Drush\Commands\DrushCommands;
 use Webmozart\PathUtil\Path;
 
 use Psr\Log\LoggerAwareInterface;
@@ -45,7 +46,7 @@ class ShutdownHandler implements LoggerAwareInterface, HandlerInterface
             // Make sure that we will return an error code when we exit,
             // even if the code that got us here did not.
             if (!Runtime::exitCode()) {
-                Runtime::setExitCode(1);
+                Runtime::setExitCode(DrushCommands::EXIT_FAILURE);
             }
         }
 
