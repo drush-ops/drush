@@ -131,6 +131,8 @@ class StatusInfoDrush implements StatusInfoInterface {
         'install_type'     => $install_type,
         'existing_version' => $project['version'],
         'existing_major'   => $version['version_major'],
+        'existing_minor'   => $version['version_minor'],
+        'existing_patch'   => $version['version_patch'],
         'status'           => $project_status,
         'datestamp'        => empty($project['datestamp']) ? NULL : $project['datestamp'],
       );
@@ -358,8 +360,12 @@ class StatusInfoDrush implements StatusInfoInterface {
     //
 
     if (!empty($project_data['security updates'])) {
-      // If we found security updates, that always trumps any other status.
-      $project_data['status'] = DRUSH_UPDATESTATUS_NOT_SECURE;
+      foreach ($project_data['security updates'] as $securityCandidate) {
+        if ($securityCandidate['version_major'] > $existing_major || $securityCandidate['version_patch'] > $project_data['existing_patch']) {
+          // If we found security updates, that always trumps any other status.
+          $project_data['status'] = DRUSH_UPDATESTATUS_NOT_SECURE;
+        }
+      }
     }
 
     if (isset($project_data['status'])) {

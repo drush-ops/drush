@@ -1642,12 +1642,14 @@ function pm_parse_version($version, $is_core = FALSE) {
       else {
         $version_parts = array(
           'version' => '',
+          // This could be incorrect (e.g., returns 2.1 and not a valid Drupal
+          // version), but keeping for BC. All other lines were historically ''.
           'drupal_version'  => $core_parts['major'] . '.x',
-          'project_version' => '',
-          'version_major'   => '',
+          'project_version' => $core_parts['major'] . '.' . $core_parts['patch'],
+          'version_major'   => $core_parts['major'],
           'version_minor'   => '',
-          'version_patch'   => '',
-          'version_extra'   => '',
+          'version_patch'   => $core_parts['patch'],
+          'version_extra'   => ($core_parts['patch'] == 'x') ? 'dev' : $core_parts['extra'],
           'version_offset'  => '',
         );
       }
