@@ -11,7 +11,6 @@ use Drush\Exec\ExecTrait;
 use Drush\Sql\SqlBase;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Symfony\Component\Console\Input\InputInterface;
-use Drush\Utils\TerminalUtils;
 
 class SqlCommands extends DrushCommands
 {
@@ -146,7 +145,7 @@ class SqlCommands extends DrushCommands
         if (!Tty::isTtySupported()) {
             $process->setInput(STDIN);
         } else {
-            $process->setTty($this->getConfig()->get('ssh.tty', TRUE));
+            $process->setTty($this->getConfig()->get('ssh.tty', $input->isInteractive()));
         }
         $process->mustRun($process->showRealtime());
     }
