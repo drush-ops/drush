@@ -2,6 +2,7 @@
 namespace Drush\Commands\sql;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\SiteProcess\Util\Tty;
 use Drupal\Core\Database\Database;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -142,10 +143,10 @@ class SqlCommands extends DrushCommands
     {
         $sql = SqlBase::create($options);
         $process = $this->processManager()->shell($sql->connect(), null, $sql->getEnv());
-        if (!TerminalUtils::isTty(false)) {
+        if (!Tty::isTtySupported()) {
             $process->setInput(STDIN);
         } else {
-            $process->setTty($this->getConfig()->get('ssh.tty', $input->isInteractive()));
+            $process->setTty($this->getConfig()->get('ssh.tty', TRUE));
         }
         $process->mustRun($process->showRealtime());
     }
