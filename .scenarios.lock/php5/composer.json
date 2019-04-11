@@ -86,6 +86,7 @@
         "composer/installers": "^1.2",
         "cweagans/composer-patches": "~1.0",
         "webflo/drupal-core-strict": "8.6.x-dev",
+        "webflo/drupal-core-require-dev": "8.6.x-dev",
         "drupal/empty_theme": "1.0",
         "drupal/devel": "^2",
         "drupal/alinks": "1.0.0",
