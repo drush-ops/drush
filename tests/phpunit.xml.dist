@@ -37,6 +37,8 @@
     <!-- Uncomment to disable the total runtime and output timeouts for commands run through CommandUnishTestCase::execute().  -->
     <!-- <env name="UNISH_NO_TIMEOUTS" value="y"/> -->
 
+    <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
+
     <includePath>.</includePath>
   </php>
 </phpunit>
