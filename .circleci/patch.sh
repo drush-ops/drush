@@ -8,11 +8,6 @@
 
 cd $HOME/drush/sut
 
-# There are two versions of the patch, for 8.7.x and for 8.6.x and below.
-PATCH=https://www.drupal.org/files/issues/2863986-62.patch
-
-if [ "$1" == "8.7.x" ]; then
-  PATCH=https://www.drupal.org/files/issues/2018-11-15/2863986-77-8.7.x.patch
-fi
+PATCH=https://www.drupal.org/files/issues/2018-11-15/2863986-77-8.7.x.patch
 
 curl -S $PATCH | patch -p1
