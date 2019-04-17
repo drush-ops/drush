@@ -7,7 +7,8 @@ use Drush\Drush;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class JsonapiCommands extends DrushCommands {
+class JsonapiCommands extends DrushCommands
+{
 
     /**
      * Execute a JSONAPI request.
@@ -23,7 +24,8 @@ class JsonapiCommands extends DrushCommands {
      *
      * @return UnstructuredData
      */
-    public function get($url, $options = ['format' => 'json']) {
+    public function get($url, $options = ['format' => 'json'])
+    {
         $kernel = Drush::bootstrap()->getKernel();
         $sub_request = Request::create($url, 'GET');
         $subResponse = $kernel->handle($sub_request, HttpKernelInterface::SUB_REQUEST);
