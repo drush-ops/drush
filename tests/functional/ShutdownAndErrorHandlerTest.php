@@ -43,7 +43,7 @@ class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
     public function testShutdownFunctionPHPError()
     {
         // Run some garbage php with a syntax error.
-        $this->drush('ev', ['\Drush\Drush::setContainer("string is the wrong type to pass here");'], [], null, null, DrushCommands::EXIT_FAILURE);
+        $this->drush('ev', ['\Drush\Drush::setContainer("string is the wrong type to pass here");'], [], null, null, PHP_MAJOR_VERSION == 5 ? 255 : DrushCommands::EXIT_FAILURE);
 
         $this->assertContains("Drush command terminated abnormally.", $this->getErrorOutput(), 'Error handler did not log a message.');
     }
