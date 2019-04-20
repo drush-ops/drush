@@ -113,6 +113,7 @@ jobs:
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
+          - COMPOSER_MEMORY_LIMIT=-1
       - image: circleci/mysql:5.7.24
     steps:
       - checkout
