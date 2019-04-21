@@ -4,7 +4,6 @@ defaults: &defaults
   environment:
     TZ: "/usr/share/zoneinfo/America/Los_Angeles"
     TERM: dumb
-    UNISH_NO_TIMEOUTS: y
     SYMFONY_DEPRECATIONS_HELPER: disabled
     PHPUNIT_ARGS: ""
     PHP_SENDMAIL_PATH: /dev/null
