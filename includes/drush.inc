@@ -188,7 +188,7 @@ function drush_op($callable) {
   $args = func_get_args();
   array_shift($args); // Skip function name
   foreach ($args as $arg) {
-    $args_printed[] = is_scalar($arg) ? $arg : (is_array($arg) ? 'Array' : 'Object');
+    $args_printed[] = is_scalar($arg) ? $arg : (is_object($arg) ? get_class($arg) : gettype($arg));
   }
 
   if (!is_array($callable)) {
