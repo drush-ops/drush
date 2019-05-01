@@ -214,6 +214,11 @@ class ListCommands extends DrushCommands
         }
 
         ksort($namespaced);
+
+        // Sort inside namespaces.
+        foreach ($namespaced as $key => &$items) {
+            ksort($items);
+        }
         return $namespaced;
     }
 }
