@@ -45,6 +45,8 @@ class ConfigImportCommands extends DrushCommands
 
     protected $stringTranslation;
 
+    protected $importStorageTransformer;
+
     /**
      * @var \Drupal\Core\Extension\ModuleHandlerInterface
      */
@@ -128,6 +130,31 @@ class ConfigImportCommands extends DrushCommands
     }
 
     /**
+     * @param \Drupal\Core\Config\ImportStorageTransformer $importStorageTransformer
+     */
+    public function setImportTransformer($importStorageTransformer)
+    {
+        $this->importStorageTransformer = $importStorageTransformer;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasImportTransformer()
+    {
+        return isset($this->importStorageTransformer);
+    }
+
+    /**
+     * @return \Drupal\Core\Config\ImportStorageTransformer
+     */
+    public function getImportTransformer()
+    {
+        return $this->importStorageTransformer;
+    }
+
+
+    /**
      * @param ConfigManagerInterface $configManager
      * @param StorageInterface $configStorage
      * @param StorageInterface $configStorageSync
@@ -181,6 +208,11 @@ class ConfigImportCommands extends DrushCommands
                 $replacement_storage->replaceData($name, $data);
             }
             $source_storage = $replacement_storage;
+        }
+
+        // Use the import transformer if it is available.
+        if ($this->hasImportTransformer()) {
+            $source_storage = $this->getImportTransformer()->transform($source_storage);
         }
 
         $config_manager = $this->getConfigManager();
