@@ -145,10 +145,9 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
             $parsed_url = parse_url('http://' . $uri);
         }
 
-        $server = [
-            'SCRIPT_FILENAME' => getcwd() . '/index.php',
-            'SCRIPT_NAME' => isset($parsed_url['path']) ? $parsed_url['path'] . 'index.php' : '/index.php',
-        ];
+        $server = $_SERVER;
+        $server['SCRIPT_FILENAME'] = getcwd() . '/index.php';
+        $server['SCRIPT_NAME'] = isset($parsed_url['path']) ? $parsed_url['path'] . 'index.php' : '/index.php';
         $request = Request::create($this->uri, 'GET', [], [], [], $server);
         $this->setRequest($request);
         return true;
