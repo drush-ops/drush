@@ -54,8 +54,9 @@
 #   operations, such as whether or not rsync parameters are for local or
 #   remote machines, and so on.
 # - 'user': The username to log in as when using ssh or rsync. If each user
-#    has to use own username, omit this item and instead specify that user in
-#    each user's ~/.ssh/config file.
+#    has to use own username, you can create an environment variable which holds
+#    the value, and reference via ${env.PROJECT_SSH_USER} (for example). Or you may
+#    omit the `user:` item and specify a user in the `~/.ssh/config` file.
 # - 'root': The Drupal root; must not be specified as a relative path.
 # - 'uri': The value of --uri should always be the same as
 #   when the site is being accessed from a web browser (e.g. http://example.com)
@@ -121,7 +122,11 @@
 
 # Environment variables:
 #
-# SSH environments may no longer possible set environment variables from within an alias.
+# Site aliases may reference environment variables, just like any Drush config
+# file. For example, ${env.PROJECT_SSH_USER} will be replaced by the value
+# of the PROJECT_SSH_USER environment value.
+#
+# SSH site aliases may no longer _set_ environment variables.
 # This is a planned feature.
 
 # Additional Site Alias Options
