@@ -22,7 +22,7 @@ services:
       PHP_SENDMAIL_PATH: /dev/null
       UNISH_DB_URL: ${UNISH_DB_URL-mysql://root:password@mariadb}
       COLUMNS: ${COLUMNS-80} # Set 80 columns for docker exec -it.
-    ## Read instructions at https://wodby.com/stacks/drupal/docs/local/xdebug/
+    ## Read instructions at https://wodby.com/docs/stacks/drupal/local/#debugging-cli-requests
       PHP_XDEBUG:
       PHP_XDEBUG_DEFAULT_ENABLE:
       PHP_IDE_CONFIG:
