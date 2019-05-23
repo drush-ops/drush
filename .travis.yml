@@ -9,6 +9,9 @@ branches:
     - /^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+.*$/
 language: php
 
+services:
+  - mysql
+
 # Cache Composer.
 cache:
   directories:
