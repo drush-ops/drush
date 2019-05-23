@@ -139,4 +139,30 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
     public function options($options = ['whitelist-fields' => '', 'whitelist-uids' => '', 'whitelist-mails' => ''])
     {
     }
+
+    /**
+     * @hook pre-command sql-sanitize
+     */
+    public function adjustSanitizeOptions(CommandData $commandData) {
+        $input = $commandData->input();
+        $whitelist_mails = $input->getOption('whitelist-mails');
+        $mail_list = explode(',', $whitelist_mails);
+        foreach ($mail_list as $key => $mail) {
+            $mail_parts = explode('@', $mail);
+            if ($mail_parts[0] === '*') {
+                $conn = $this->getDatabase();
+                $result = $conn->select('users_field_data', 'ufd')
+                    ->fields('ufd', ['mail'])
+                    ->condition('mail', "%@" . $mail_parts[1], "LIKE")
+                    ->execute()
+                    ->fetchAll();
+                unset($mail_list[$key]);
+                if (!empty($result)) {
+                    $mail_list += $result;
+                }
+            }
+        }
+
+        $input->setOption('whitelist-mails', implode(",", $mail_list));
+    }
 }
