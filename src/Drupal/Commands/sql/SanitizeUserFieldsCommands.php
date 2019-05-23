@@ -4,6 +4,7 @@ namespace Drush\Drupal\Commands\sql;
 use Consolidation\AnnotatedCommand\CommandData;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputInterface;
+use Drush\Utils\StringUtils;
 
 /**
  * This class is a good example of how to build a sql-sanitize plugin.
@@ -66,6 +67,7 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
 
             $table = 'user__' . $key;
             $query = $conn->update($table);
+
             $name = $def->getName();
             $field_type_class = \Drupal::service('plugin.manager.field.field_type')->getPluginClass($def->getType());
             $value_array = $field_type_class::generateSampleValue($def);
@@ -141,12 +143,21 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
     }
 
     /**
+     * Handles wildcard mail addresses and conversion of mails to uids.
+     *
      * @hook pre-command sql-sanitize
      */
     public function adjustSanitizeOptions(CommandData $commandData) {
         $input = $commandData->input();
         $whitelist_mails = $input->getOption('whitelist-mails');
-        $mail_list = explode(',', $whitelist_mails);
+        $whitelist_uids = $input->getOption('whitelist-uids');
+        $mail_list = $this->handleMailWildcard(StringUtils::csvToArray($whitelist_mails));
+        
+
+        $input->setOption('whitelist-mails', implode(",", $mail_list));
+    }
+
+    private function handleMailWildcard($mail_list) {
         foreach ($mail_list as $key => $mail) {
             $mail_parts = explode('@', $mail);
             if ($mail_parts[0] === '*') {
@@ -162,7 +173,6 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
                 }
             }
         }
-
-        $input->setOption('whitelist-mails', implode(",", $mail_list));
+        return $mail_list;
     }
 }
