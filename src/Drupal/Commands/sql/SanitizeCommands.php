@@ -27,6 +27,11 @@ class SanitizeCommands extends DrushCommands implements CustomEventAwareInterfac
      *   Sanitize database without modifying any passwords.
      * @usage drush sql:sanitize --whitelist-fields=field_biography,field_phone_number
      *   Sanitizes database but exempts two user fields from modification.
+     * @usage drush sql:sanitize --whitelist-uids=4,5
+     *   Sanitizes database but exempts two user accounts from modification based on uids.
+     * @usage drush sql:sanitize --whitelist-mails=user1@example.org, *@mycompany.org
+     *   Sanitizes database but exempts user accounts from modification based on account mail.
+     *   You can use * as a wildcard to target every mail account on domain.
      */
     public function sanitize()
     {
