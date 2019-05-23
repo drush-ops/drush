@@ -2,9 +2,9 @@ Drush is a command line shell and Unix scripting interface for Drupal. Drush cor
 
 [![Latest Stable Version](https://poser.pugx.org/drush/drush/v/stable.png)](https://packagist.org/packages/drush/drush) [![Total Downloads](https://poser.pugx.org/drush/drush/downloads.png)](https://packagist.org/packages/drush/drush) [![Latest Unstable Version](https://poser.pugx.org/drush/drush/v/unstable.png)](https://packagist.org/packages/drush/drush) [![License](https://poser.pugx.org/drush/drush/license.png)](https://packagist.org/packages/drush/drush) [![Documentation Status](https://readthedocs.org/projects/drush/badge/?version=master)](https://readthedocs.org/projects/drush/?badge=master)
 
-| Code style | Isolation Tests | Functional Tests |
-| :--------: | :-------------: | :--------------: |
-| <img src="https://api.shippable.com/projects/5507addd5ab6cc1352a213b5/badge?branch=master"> | <img src="https://travis-ci.org/drush-ops/drush.svg?branch=master"> | <img src="https://circleci.com/gh/drush-ops/drush.svg?style=shield"> |
+| Isolation Tests | Functional Tests |
+| :-------------: | :--------------: |
+| <a href="https://travis-ci.org/drush-ops/drush"><img src="https://travis-ci.org/drush-ops/drush.svg?branch=master"></a> | <a href="https://circleci.com/gh/drush-ops/drush"><img src="https://circleci.com/gh/drush-ops/drush.svg?style=shield"></a> |
 
 Resources
 -----------
