@@ -81,9 +81,8 @@ class QueueCase extends CommandUnishTestCase
         // Check that the queue exists and it has one item in it.
         $expected = 'woot_requeue_exception,%items,"Drupal\Core\Queue\DatabaseQueue"';
         $this->drush('queue-list', [], ['format' => 'csv']);
-        $output = $this->getOutputAsList();
-        $this->assertEquals(str_replace('%items', 1, $expected), array_pop($output), 'Item was successfully added to the queue.');
-
+        $output = $this->getOutput();
+        $this->assertContains(str_replace('%items', 1, $expected), $output, 'Item was successfully added to the queue.');
         // Process the queue.
         $this->drush('queue-run', ['woot_requeue_exception']);
 
@@ -99,8 +98,8 @@ class QueueCase extends CommandUnishTestCase
         // 6. Drush removes the item from the queue.
         // 7. Command finishes. The queue is empty.
         $this->drush('queue-list', [], ['format' => 'csv']);
-        $output = $this->getOutputAsList();
-        $this->assertEquals(str_replace('%items', 0, $expected), array_pop($output), 'Queue item processed after being requeued.');
+        $output = $this->getOutput();
+        $this->assertContains(str_replace('%items', 0, $expected), $output, 'Queue item processed after being requeued.');
     }
 
   /**
@@ -123,8 +122,8 @@ class QueueCase extends CommandUnishTestCase
         // Check that the queue exists and it has two items in it.
         $expected = 'woot_custom_exception,%items,"Drupal\Core\Queue\DatabaseQueue"';
         $this->drush('queue-list', [], ['format' => 'csv']);
-        $output = $this->getOutputAsList();
-        $this->assertEquals(str_replace('%items', 2, $expected), array_pop($output), 'Item was successfully added to the queue.');
+        $output = $this->getOutput();
+        $this->assertContains(str_replace('%items', 2, $expected), $output, 'Items were successfully added to the queue.');
 
         // Process the queue.
         $this->drush('queue-run', ['woot_custom_exception']);
@@ -143,7 +142,7 @@ class QueueCase extends CommandUnishTestCase
         // 7. Command finishes. The queue is left with the first item, which was
         // skipped.
         $this->drush('queue-list', [], ['format' => 'csv']);
-        $output = $this->getOutputAsList();
-        $this->assertEquals(str_replace('%items', 1, $expected), array_pop($output), 'Queue item processed after being requeued.');
+        $output = $this->getOutput();
+        $this->assertContains(str_replace('%items', 1, $expected), $output, 'Last queue item processed after first threw custom exception.');
     }
 }

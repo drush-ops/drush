@@ -5,7 +5,7 @@ namespace Drupal\woot\Plugin\QueueWorker;
 use Drupal\Core\Queue\QueueWorkerBase;
 
 /**
- * Queue worker used to test RequeueException.
+ * Queue worker used to test custom exceptions.
  *
  * @QueueWorker(
  *   id = "woot_custom_exception",
