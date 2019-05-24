@@ -82,11 +82,10 @@ class QueueCommands extends DrushCommands
                 // release the item.
                 $queue->releaseItem($item);
                 throw new \Exception($e->getMessage());
-            }
-            catch (\Exception $e) {
-              // In case of any other kind of exception, log it and leave the
-              // item in the queue to be processed again later.
-              $this->logger()->error($e->getMessage());
+            } catch (\Exception $e) {
+                // In case of any other kind of exception, log it and leave the
+                // item in the queue to be processed again later.
+                $this->logger()->error($e->getMessage());
             }
             $remaining = $end - time();
         }
