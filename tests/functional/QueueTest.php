@@ -102,4 +102,48 @@ class QueueCase extends CommandUnishTestCase
         $output = $this->getOutputAsList();
         $this->assertEquals(str_replace('%items', 0, $expected), array_pop($output), 'Queue item processed after being requeued.');
     }
+
+  /**
+   * Tests that CustomExceptions do not hold up the queue.
+   */
+    public function testCustomException()
+    {
+        $this->setUpDrupal(1, true);
+
+        // Copy the 'woot' module over to the Drupal site we just set up.
+        $this->setupModulesForTests(['woot'], Path::join(__DIR__, 'resources/modules/d8'));
+
+        // Enable woot module, which contains a queue worker that throws a
+        // custom exception.
+        $this->drush('pm-enable', ['woot'], [], null, null, self::EXIT_SUCCESS);
+
+        // Add a couple of items to the queue.
+        $this->drush('php-script', ['queue_custom_exception_script'], ['script-path' => __DIR__ . '/resources']);
+
+        // Check that the queue exists and it has two items in it.
+        $expected = 'woot_custom_exception,%items,"Drupal\Core\Queue\DatabaseQueue"';
+        $this->drush('queue-list', [], ['format' => 'csv']);
+        $output = $this->getOutputAsList();
+        $this->assertEquals(str_replace('%items', 2, $expected), array_pop($output), 'Item was successfully added to the queue.');
+
+        // Process the queue.
+        $this->drush('queue-run', ['woot_custom_exception']);
+
+        // Check that the item was processed after being requeued once.
+        // Here is the detailed workflow of what the above command did. Note
+        // there are two items in the queue when we begin.
+        // 1. Drush calls drush queue-run woot_custom_exception.
+        // 2. Drush claims the item. The worker sets a state variable (see below)
+        // and throws a CustomException.
+        // 3. Drush catches the exception and skips the item.
+        // 4. Drush claims the second item.
+        // 5. The worker finds the state variable, so it does not throw the
+        // CustomException this time (see below).
+        // 6. Drush removes the second item from the queue.
+        // 7. Command finishes. The queue is left with the first item, which was
+        // skipped.
+        $this->drush('queue-list', [], ['format' => 'csv']);
+        $output = $this->getOutputAsList();
+        $this->assertEquals(str_replace('%items', 1, $expected), array_pop($output), 'Queue item processed after being requeued.');
+    }
 }
