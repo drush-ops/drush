@@ -4,7 +4,7 @@ defaults: &defaults
   environment:
     TZ: "/usr/share/zoneinfo/America/Los_Angeles"
     TERM: dumb
-    UNISH_NO_TIMEOUTS: y
+    SYMFONY_DEPRECATIONS_HELPER: disabled
     PHPUNIT_ARGS: ""
     PHP_SENDMAIL_PATH: /dev/null
 
@@ -13,7 +13,7 @@ test_71_steps: &test71steps
     - checkout
     - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
     - run: composer install
-    - run: $HOME/drush/.circleci/patch.sh
+    - run: $HOME/drush/.circleci/patch.sh 8.7.x
     - run: composer lint
     - run: composer functional
 
@@ -113,6 +113,7 @@ jobs:
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
+          - COMPOSER_MEMORY_LIMIT=-1
       - image: circleci/mysql:5.7.24
     steps:
       - checkout

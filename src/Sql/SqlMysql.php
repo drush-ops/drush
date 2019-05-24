@@ -44,8 +44,8 @@ EOT;
         // Default to unix socket if configured.
         if (!empty($dbSpec['unix_socket'])) {
             $parameters['socket'] = $dbSpec['unix_socket'];
-        } // EMPTY host is not the same as NO host, and is valid (see unix_socket).
-        elseif (isset($dbSpec['host'])) {
+        } elseif (isset($dbSpec['host'])) {
+            // EMPTY host is not the same as NO host, and is valid (see unix_socket).
             $parameters['host'] = $dbSpec['host'];
         }
 

@@ -177,13 +177,13 @@ class CliCommands extends DrushCommands
         // @todo Could use a global file within drush?
         if (!$drupal_major_version) {
             $file_name = 'global-' . md5($this->getConfig()->cwd());
-        } // If only the Drupal version is being used for the history.
-        else if ($options['version-history']) {
+        } elseif ($options['version-history']) {
+            // If only the Drupal version is being used for the history.
             $file_name = "drupal-$drupal_major_version";
-        } // If there is an alias, use that in the site specific name. Otherwise,
-        // use a hash of the root path.
-        else {
-             $aliasRecord = Drush::aliasManager()->getSelf();
+        } else {
+            // If there is an alias, use that in the site specific name. Otherwise,
+            // use a hash of the root path.
+            $aliasRecord = Drush::aliasManager()->getSelf();
 
             if ($aliasRecord->name()) {
                 $site_suffix = ltrim($aliasRecord->name(), '@');

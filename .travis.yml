@@ -9,6 +9,9 @@ branches:
     - /^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+.*$/
 language: php
 
+services:
+  - mysql
+
 # Cache Composer.
 cache:
   directories:
@@ -24,15 +27,15 @@ matrix:
     - php: 7.2
     - php: 7.0.11
     - php: 5.6
-      env: 'SCENARIO=php5 DEPENDENCIES=lowest'
+      env: 'SCENARIO=php5 DEPENDENCIES=lowest COMPOSER_MEMORY_LIMIT=-1'
 
 env:
   global:
     # GitHub deploy
     - secure: VfYokT2CchfuBRJp9/gSwfVGPfsVfkZdDVEuNWEqxww3z4vq+5aLKqoCtPL54E5EIMjhyCE3GVo+biG35Gab1KOVgUs8zD1hAUWA1FPKfMFhoPDfI3ZJC2rX2T1iWK4ZR90pBtcPzS+2OObzTYz8go0PfeSTT6eq69Na1KcNLaE=
-    - UNISH_NO_TIMEOUTS=y
     - UNISH_DB_URL=mysql://root:@127.0.0.1
     - UNISH_TMP=/tmp
+    - SYMFONY_DEPRECATIONS_HELPER=disabled
 
 before_install:
   - echo 'mbstring.http_input = pass' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
