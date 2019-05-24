@@ -151,10 +151,17 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
         $input = $commandData->input();
         $whitelist_mails = $input->getOption('whitelist-mails');
         $whitelist_uids = $input->getOption('whitelist-uids');
-        $mail_list = $this->handleMailWildcard(StringUtils::csvToArray($whitelist_mails));
-        
+        $uids_mail_list = $this->uidsByMails($this->handleMailWildcard(StringUtils::csvToArray($whitelist_mails)));
+        $input->setOption('whitelist-mails', implode(",", $uids_mail_list));
+    }
 
-        $input->setOption('whitelist-mails', implode(",", $mail_list));
+    private function uidsByMails($mail_list) {
+        $conn = $this->getDatabase();
+        return $conn->select('users_field_data', 'ufd')
+            ->fields('ufd', ['uid'])
+            ->condition('mail', $mail_list, 'IN')
+            ->execute()
+            ->fetchCol(0);
     }
 
     private function handleMailWildcard($mail_list) {
@@ -166,7 +173,8 @@ class SanitizeUserFieldsCommands extends DrushCommands implements SanitizePlugin
                     ->fields('ufd', ['mail'])
                     ->condition('mail', "%@" . $mail_parts[1], "LIKE")
                     ->execute()
-                    ->fetchAll();
+                    ->fetchCol(0);
+                
                 unset($mail_list[$key]);
                 if (!empty($result)) {
                     $mail_list += $result;
