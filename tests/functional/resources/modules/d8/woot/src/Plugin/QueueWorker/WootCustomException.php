@@ -30,8 +30,3 @@ class WootCustomException extends QueueWorkerBase
         }
     }
 }
-
-/**
- * CustomException for test purposes.
- */
-class CustomException extends \Exception {};
