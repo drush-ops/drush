@@ -2,8 +2,8 @@
 #
 # Example PS1 prompt.
 #
-# Note: This file does a lot, and is designed for Bash. If youo want to show the
-# currently set alias in your prompt, use the first 2 lines below as an example.
+# Note: This file does a lot, and is designed for Bash. If you want to show the
+# currently set alias in your prompt, use the first 2 values below as an example.
 # This example can be used directly for the POWERLEVEL9K theme for Oh My Zsh.
 #FILE="${TMPDIR:-/tmp/}/drush-env-${USER}/drush-drupal-site-$$"
 #POWERLEVEL9K_CUSTOM_DRUSH="[ -r $FILE ] && cat $FILE"
