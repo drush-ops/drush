@@ -194,7 +194,7 @@ class ConfigCommands extends DrushCommands implements StdinAwareInterface
      * @param $key A config key to clear, for example "page.front".
      * @usage drush config:delete system.site
      *   Delete the the system.site config object.
-     * @usage drush config:delete system.site page.front node
+     * @usage drush config:delete system.site page.front
      *   Delete the 'page.front' key from the system.site object.
      * @aliases cdel,config-delete
      */
